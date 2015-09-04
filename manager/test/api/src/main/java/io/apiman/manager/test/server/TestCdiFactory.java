@@ -15,10 +15,26 @@
  */
 package io.apiman.manager.test.server;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.New;
+import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.spi.InjectionPoint;
+import javax.inject.Named;
+
 import io.apiman.common.config.SystemPropertiesConfiguration;
+import io.apiman.manager.api.beans.services.EndpointType;
+import io.apiman.manager.api.beans.summary.AvailableServiceBean;
 import io.apiman.manager.api.core.IApiKeyGenerator;
 import io.apiman.manager.api.core.IIdmStorage;
 import io.apiman.manager.api.core.IMetricsAccessor;
+import io.apiman.manager.api.core.IPluginRegistry;
+import io.apiman.manager.api.core.IServiceCatalog;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.UuidApiKeyGenerator;
@@ -37,16 +53,6 @@ import io.apiman.manager.test.util.ManagerTestUtils.TestType;
 import io.searchbox.client.JestClient;
 import io.searchbox.client.JestClientFactory;
 import io.searchbox.client.config.HttpClientConfig;
-
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.New;
-import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.inject.Named;
 
 /**
  * Attempt to create producer methods for CDI beans.
@@ -121,6 +127,31 @@ public class TestCdiFactory {
     @Produces @ApplicationScoped
     public static IApiKeyGenerator provideApiKeyGenerator(@New UuidApiKeyGenerator uuidApiKeyGen) {
         return uuidApiKeyGen;
+    }
+
+    @Produces @ApplicationScoped
+    public static IServiceCatalog provideServiceCatalog(IPluginRegistry pluginRegistry) {
+        return new IServiceCatalog() {
+            @Override
+            public List<AvailableServiceBean> search(String keyword) {
+                List<AvailableServiceBean> rval = new ArrayList<>();
+                AvailableServiceBean asb = new AvailableServiceBean();
+                asb.setName("Test Service 1");
+                asb.setDescription("The first test service.");
+                asb.setEndpoint("http://service1.example.org/api");
+                asb.setEndpointType(EndpointType.rest);
+                rval.add(asb);
+
+                asb = new AvailableServiceBean();
+                asb.setName("Test Service 2");
+                asb.setDescription("The second test service.");
+                asb.setEndpoint("http://service2.example.org/api");
+                asb.setEndpointType(EndpointType.rest);
+                rval.add(asb);
+
+                return rval;
+            }
+        };
     }
 
     @Produces @ApplicationScoped

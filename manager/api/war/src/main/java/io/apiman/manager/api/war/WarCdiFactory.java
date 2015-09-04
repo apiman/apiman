@@ -15,6 +15,17 @@
  */
 package io.apiman.manager.api.war;
 
+import java.lang.reflect.Constructor;
+import java.util.Map;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.New;
+import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.spi.InjectionPoint;
+import javax.inject.Named;
+
+import org.apache.commons.lang.StringUtils;
+
 import io.apiman.common.plugin.Plugin;
 import io.apiman.common.plugin.PluginClassLoader;
 import io.apiman.common.plugin.PluginCoordinates;
@@ -23,6 +34,7 @@ import io.apiman.manager.api.core.IApiKeyGenerator;
 import io.apiman.manager.api.core.IIdmStorage;
 import io.apiman.manager.api.core.IMetricsAccessor;
 import io.apiman.manager.api.core.IPluginRegistry;
+import io.apiman.manager.api.core.IServiceCatalog;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.UuidApiKeyGenerator;
@@ -44,17 +56,6 @@ import io.searchbox.client.JestClient;
 import io.searchbox.client.JestClientFactory;
 import io.searchbox.client.config.HttpClientConfig;
 import io.searchbox.client.config.HttpClientConfig.Builder;
-
-import java.lang.reflect.Constructor;
-import java.util.Map;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.New;
-import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.inject.Named;
-
-import org.apache.commons.lang.StringUtils;
 
 /**
  * Attempt to create producer methods for CDI beans.
@@ -149,6 +150,16 @@ public class WarCdiFactory {
     @Produces @ApplicationScoped
     public static IApiKeyGenerator provideApiKeyGenerator(@New UuidApiKeyGenerator uuidApiKeyGen) {
         return uuidApiKeyGen;
+    }
+
+    @Produces @ApplicationScoped
+    public static IServiceCatalog provideServiceCatalog(WarApiManagerConfig config, IPluginRegistry pluginRegistry) {
+        try {
+            return createCustomComponent(IServiceCatalog.class, config.getServiceCatalogType(),
+                    config.getServiceCatalogProperties(), pluginRegistry);
+        } catch (Throwable t) {
+            throw new RuntimeException("Error or unknown service catalog type: " + config.getServiceCatalogType(), t); //$NON-NLS-1$
+        }
     }
 
     @Produces @ApplicationScoped

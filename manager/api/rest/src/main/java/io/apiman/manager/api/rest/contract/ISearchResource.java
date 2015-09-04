@@ -16,23 +16,24 @@
 
 package io.apiman.manager.api.rest.contract;
 
-import io.apiman.manager.api.beans.search.SearchCriteriaBean;
-import io.apiman.manager.api.beans.search.SearchResultsBean;
-import io.apiman.manager.api.beans.summary.ApplicationSummaryBean;
-import io.apiman.manager.api.beans.summary.OrganizationSummaryBean;
-import io.apiman.manager.api.beans.summary.ServiceSummaryBean;
-import io.apiman.manager.api.rest.contract.exceptions.InvalidSearchCriteriaException;
-import io.apiman.manager.api.rest.contract.exceptions.OrganizationNotFoundException;
-
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import io.apiman.manager.api.beans.search.SearchCriteriaBean;
+import io.apiman.manager.api.beans.search.SearchResultsBean;
+import io.apiman.manager.api.beans.summary.ApplicationSummaryBean;
+import io.apiman.manager.api.beans.summary.AvailableServiceBean;
+import io.apiman.manager.api.beans.summary.OrganizationSummaryBean;
+import io.apiman.manager.api.beans.summary.ServiceSummaryBean;
+import io.apiman.manager.api.rest.contract.exceptions.InvalidSearchCriteriaException;
+import io.apiman.manager.api.rest.contract.exceptions.OrganizationNotFoundException;
+
 /**
  * The Search API.
- * 
+ *
  * @author eric.wittmann@redhat.com
  */
 @Path("search")
@@ -46,7 +47,7 @@ public interface ISearchResource {
      * @param criteria The search criteria.
      * @statuscode 200 If the search is successful.
      * @return The search results (a page of organizations).
-     * @throws InvalidSearchCriteriaException when provided criteria are invalid when provided criteria are invalid 
+     * @throws InvalidSearchCriteriaException when provided criteria are invalid when provided criteria are invalid
      */
     @POST
     @Path("organizations")
@@ -90,5 +91,22 @@ public interface ISearchResource {
     @Produces(MediaType.APPLICATION_JSON)
     public SearchResultsBean<ServiceSummaryBean> searchServices(SearchCriteriaBean criteria)
             throws OrganizationNotFoundException, InvalidSearchCriteriaException;
+
+    /**
+     * Use this endpoint to search for available services within any configured service
+     * catalogs.  If no service catalogs are configured, this will always return zero
+     * results.
+     * @summary Search for Services in Service Catalogs
+     * @param criteria The search criteria.
+     * @statuscode 200 If the search is successful.
+     * @return The search results (a page of available services).
+     * @throws InvalidSearchCriteriaException when provided criteria are invalid
+     */
+    @POST
+    @Path("serviceCatalogs")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public SearchResultsBean<AvailableServiceBean> searchServiceCatalogs(SearchCriteriaBean criteria)
+            throws InvalidSearchCriteriaException;
 
 }

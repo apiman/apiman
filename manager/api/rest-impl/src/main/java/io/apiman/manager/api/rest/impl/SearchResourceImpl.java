@@ -16,11 +16,20 @@
 
 package io.apiman.manager.api.rest.impl;
 
+import java.util.List;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
+import io.apiman.manager.api.beans.search.PagingBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaBean;
+import io.apiman.manager.api.beans.search.SearchCriteriaFilterBean;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
 import io.apiman.manager.api.beans.summary.ApplicationSummaryBean;
+import io.apiman.manager.api.beans.summary.AvailableServiceBean;
 import io.apiman.manager.api.beans.summary.OrganizationSummaryBean;
 import io.apiman.manager.api.beans.summary.ServiceSummaryBean;
+import io.apiman.manager.api.core.IServiceCatalog;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.StorageException;
@@ -30,12 +39,9 @@ import io.apiman.manager.api.rest.contract.exceptions.OrganizationNotFoundExcept
 import io.apiman.manager.api.rest.contract.exceptions.SystemErrorException;
 import io.apiman.manager.api.rest.impl.util.SearchCriteriaUtil;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 /**
  * Implementation of the Search API.
- * 
+ *
  * @author eric.wittmann@redhat.com
  */
 @ApplicationScoped
@@ -43,13 +49,14 @@ public class SearchResourceImpl implements ISearchResource {
 
     @Inject IStorage storage;
     @Inject IStorageQuery query;
-    
+    @Inject IServiceCatalog serviceCatalog;
+
     /**
      * Constructor.
      */
     public SearchResourceImpl() {
     }
-    
+
     /**
      * @see io.apiman.manager.api.rest.contract.ISearchResource#searchOrgs(io.apiman.manager.api.beans.search.SearchCriteriaBean)
      */
@@ -63,7 +70,7 @@ public class SearchResourceImpl implements ISearchResource {
             throw new SystemErrorException(e);
         }
     }
-    
+
     /**
      * @see io.apiman.manager.api.rest.contract.ISearchResource#searchApps(io.apiman.manager.api.beans.search.SearchCriteriaBean)
      */
@@ -92,6 +99,50 @@ public class SearchResourceImpl implements ISearchResource {
             storage.rollbackTx();
             throw new SystemErrorException(e);
         }
+    }
+
+    /**
+     * @see io.apiman.manager.api.rest.contract.ISearchResource#searchServiceCatalogs(io.apiman.manager.api.beans.search.SearchCriteriaBean)
+     */
+    @Override
+    public SearchResultsBean<AvailableServiceBean> searchServiceCatalogs(SearchCriteriaBean criteria)
+            throws InvalidSearchCriteriaException {
+        SearchCriteriaUtil.validateSearchCriteria(criteria);
+
+        SearchResultsBean<AvailableServiceBean> rval = new SearchResultsBean<>();
+
+        if (criteria.getFilters().isEmpty()) {
+            return rval;
+        }
+        SearchCriteriaFilterBean bean = criteria.getFilters().get(0);
+        if (bean == null) {
+            return rval;
+        }
+        if (!bean.getName().equals("name")) { //$NON-NLS-1$
+            return rval;
+        }
+
+        String keyword = bean.getValue();
+        List<AvailableServiceBean> services = serviceCatalog.search(keyword);
+
+        PagingBean paging = criteria.getPaging();
+        if (paging == null) {
+            paging = new PagingBean();
+            paging.setPage(1);
+            paging.setPageSize(20);
+        }
+        int page = paging.getPage();
+        int pageSize = paging.getPageSize();
+        int start = (page - 1) * pageSize;
+
+        int totalSize = services.size();
+        if (start <= totalSize) {
+            int end = Math.min(start + pageSize, services.size());
+            rval.getBeans().addAll(services.subList(start, end));
+        }
+
+        rval.setTotalSize(totalSize);
+        return rval;
     }
 
     /**

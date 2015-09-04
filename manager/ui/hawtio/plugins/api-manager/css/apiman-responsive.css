@@ -151,6 +151,10 @@
     width: 300px;
   }
 
+  .apiman-wizard-buttons button, .apiman-wizard-buttons a {
+    min-width: 60px;
+  }
+
 }
 
 /* Original iPhone */

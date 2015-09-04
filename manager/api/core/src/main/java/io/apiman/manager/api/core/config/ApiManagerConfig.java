@@ -52,6 +52,8 @@ public abstract class ApiManagerConfig {
     public static final String APIMAN_MANAGER_STORAGE_QUERY_TYPE = "apiman-manager.storage-query.type"; //$NON-NLS-1$
     public static final String APIMAN_MANAGER_IDM_STORAGE_TYPE = "apiman-manager.idm-storage.type"; //$NON-NLS-1$
 
+    public static final String APIMAN_MANAGER_SERVICE_CATALOG_TYPE = "apiman-manager.service-catalog.type"; //$NON-NLS-1$
+
     /* -------------------------------------------------------
      * Metrics
      * ------------------------------------------------------- */
@@ -147,6 +149,13 @@ public abstract class ApiManagerConfig {
      */
     public String getIdmStorageType() {
         return config.getString(APIMAN_MANAGER_IDM_STORAGE_TYPE, getStorageType());
+    }
+
+    /**
+     * @return the configured service catalog query type
+     */
+    public String getServiceCatalogType() {
+        return config.getString(APIMAN_MANAGER_SERVICE_CATALOG_TYPE, null);
     }
 
     /**
@@ -273,6 +282,13 @@ public abstract class ApiManagerConfig {
      */
     public Map<String, String> getMetricsProperties() {
         return getPrefixedProperties("apiman-manager.metrics."); //$NON-NLS-1$
+    }
+
+    /**
+     * @return any custom properties associated with the Service Catalog impl
+     */
+    public Map<String, String> getServiceCatalogProperties() {
+        return getPrefixedProperties("apiman-manager.service-catalog."); //$NON-NLS-1$
     }
 
     /**

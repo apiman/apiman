@@ -52,6 +52,8 @@ module Apiman {
         '/orgs/:org/services/:service/:version/activity'    : { templateUrl: 'service/service-activity.html' },
         '/orgs/:org/services/:service/:version/new-version' : { templateUrl: 'forms/new-serviceversion.html' },
 
+        '/orgs/:org/import/services'                        : { templateUrl: 'service/import-services.html' },
+
         '/browse/orgs'                            : { templateUrl: 'consumer/consumer-orgs.html' },
         '/browse/services'                        : { templateUrl: 'consumer/consumer-services.html' },
         '/browse/orgs/:org'                       : { templateUrl: 'consumer/consumer-org.html' },

@@ -1,0 +1,41 @@
+POST /search/serviceCatalogs admin/admin
+Content-Type: application/json
+
+{
+  "filters" : [
+    {
+      "name" : "name",
+      "value" : "Test",
+      "operator" : "like"
+    }
+  ],
+  "orderBy" : {
+    "name" : "id",
+    "ascending" : true
+  },
+  "paging" : {
+    "page" : 1,
+    "pageSize" : 20
+  }
+}
+----
+200
+Content-Type: application/json
+
+{
+  "beans": [
+    {
+      "endpoint": "http://service1.example.org/api",
+      "endpointType": "rest",
+      "name": "Test Service 1",
+      "description": "The first test service."
+    },
+    {
+      "endpoint": "http://service2.example.org/api",
+      "endpointType": "rest",
+      "name": "Test Service 2",
+      "description": "The second test service."
+    }
+  ],
+  "totalSize": 2
+}

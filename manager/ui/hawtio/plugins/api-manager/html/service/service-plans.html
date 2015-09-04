@@ -35,6 +35,12 @@
             <div>
               <span apiman-i18n-key="available-plans-help">Choose which plans should be presented when Applications create a link (Contract) to this Service. Note that only plans in a 'Locked' state show up in this list.</span>
             </div>
+            <div class="apiman-divider-40" ng-show="plans.length == 0">
+              <div class="alert alert-warning">
+                <span class="pficon pficon-info"></span>
+                <span>No locked plans were found in the Organization.  Please create and lock at least one plan before attempting to configure them here.  Or simply make your services "public" using the checkbox above!</span>
+              </div>            
+            </div>
             <!-- The plans to choose from -->
             <div class="apiman-plan-selector apiman-divider-40">
               <div class="container-fluid apiman-summaryrow" ng-repeat="plan in plans">
