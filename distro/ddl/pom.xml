@@ -3,7 +3,7 @@
   <parent>
     <groupId>io.apiman</groupId>
     <artifactId>apiman-distro</artifactId>
-    <version>1.1.5.Final</version>
+    <version>1.2.0-SNAPSHOT</version>
   </parent>
   <artifactId>apiman-distro-ddl</artifactId>
   <name>apiman-distro-ddl</name>
@@ -11,7 +11,7 @@
   <properties>
     <version.org.postgresql.jdbc.driver>9.4-1201-jdbc41</version.org.postgresql.jdbc.driver>
     <version.mysql.jdbc.driver>5.1.35</version.mysql.jdbc.driver>
-    <version.liquibase>3.3.5</version.liquibase>
+    <version.liquibase>3.4.1</version.liquibase>
   </properties>
 
   <dependencies>
@@ -121,7 +121,7 @@
           </execution>
           <execution>
             <id>h2-ddl</id>
-            <phase>process-resources</phase>
+            <phase>compile</phase>
             <goals>
               <goal>updateSQL</goal>
             </goals>
@@ -137,7 +137,7 @@
           </execution>
           <execution>
             <id>postgresql-ddl</id>
-            <phase>process-resources</phase>
+            <phase>compile</phase>
             <goals>
               <goal>updateSQL</goal>
             </goals>
@@ -147,20 +147,23 @@
               <url>offline:postgresql?version=9.3&amp;caseSensitive=true&amp;changeLogFile=${basedir}/target/changelog/postgresql/databasechangelog.csv</url>
               <username>apiman</username>
               <password>apiman</password>
+              <!-- Note: when upgrading from liquibase 3.3.5 -> 3.4.1, adding the defaultSchemaName below became a
+              requirement - otherwise this goal will fail.  This setting only appears to be required for Postgres. -->
+              <defaultSchemaName>public</defaultSchemaName>
               <promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
               <verbose>true</verbose>
             </configuration>
           </execution>
           <execution>
             <id>mysql-ddl</id>
-            <phase>process-resources</phase>
+            <phase>compile</phase>
             <goals>
               <goal>updateSQL</goal>
             </goals>
             <configuration>
               <migrationSqlOutputFile>${basedir}/target/apiman_mysql5.ddl</migrationSqlOutputFile>
               <driver>com.mysql.jdbc.Driver</driver>
-              <url>offline:mysql?version=5.1&amp;caseSensitive=false&amp;changeLogFile=${basedir}/target/changelog/mysql/databasechangelog.csv</url>
+              <url>offline:mysql?version=5.1&amp;caseSensitive=true&amp;changeLogFile=${basedir}/target/changelog/mysql/databasechangelog.csv</url>
               <username>apiman</username>
               <password>apiman</password>
               <promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
@@ -184,7 +187,7 @@
                   <pluginExecutionFilter>
                     <groupId>org.liquibase</groupId>
                     <artifactId>liquibase-maven-plugin</artifactId>
-                    <versionRange>[3.3.5,)</versionRange>
+                    <versionRange>[3.4.1,)</versionRange>
                     <goals>
                       <goal>update</goal>
                       <goal>updateSQL</goal>
