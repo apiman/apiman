@@ -18,13 +18,6 @@
     <main.verticle>io.apiman.gateway.platforms.vertx3.verticles.InitVerticle</main.verticle>
   </properties>
 
-  <repositories>
-    <repository>
-      <id>snapshots-repo</id>
-      <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-    </repository>
-  </repositories>
-
   <dependencies>
     <!-- Vert.x provided dependencies -->
     <dependency>
