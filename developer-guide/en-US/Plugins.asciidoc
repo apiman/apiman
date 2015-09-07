@@ -422,9 +422,20 @@ data format that will be passed to the policy implementation at runtime.
   "policyImpl" : "plugin:${project.groupId}:${project.artifactId}:${project.version}:${project.packaging}/io.apiman.plugins.config_policy.ConfigPolicy",
   "icon" : "pie-chart",
   "formType" : "JsonSchema",
+  "templates" : [
+    {
+      "language": null,
+      "template": "Set policy with @{property1} and @{property2}!"
+    }
+  ],
   "form" : "schemas/config-policyDef.schema"
 }
 ```
+
+TIP: The templates 'language' field will support other languages in future, but
+for now is null (i.e. single-language only). The template field itself is
+https://github.com/mvel/mvel[MVEL] (Orb tag syntax), and displays in the UI
+after a plugin has been selected by a user. 
 
 .META-INF/apiman/policyDefs/schemas/my-policy.schema
 ```json
@@ -589,9 +600,9 @@ The following annotations can then be added to your test:
 The @TestingPolicy annotation is always placed at the class level, but the @Configuration annotation can
 either be global or specified at the test method level.
 
-These annotations tell the apiman Policy Testing framework *what* policy you want to test and the 
+These annotations tell the apiman Policy Testing framework *what* policy you want to test and the
 policy configuration you want to use when testsing, but you still need to actually send requests to a
-"service".  This is done using the "send(PolicyTestReqest)" method defined by the base class.  The 
+"service".  This is done using the "send(PolicyTestReqest)" method defined by the base class.  The
 send() method allows you to send a request (that you build) to the mock back-end service governed by
 your policy.  By default the mock back-end service is a simple "echo" service that responds to all
 requests with a JSON payload describing the request it received (more on how to override this default
@@ -615,7 +626,7 @@ public class CustomPolicyTest extends ApimanPolicyTest {
         // Send a test HTTP request to the service (resulting in executing the policy).
         PolicyTestResponse response = send(PolicyTestRequest.build(PolicyTestRequestType.GET, "/some/resource")
                 .header("X-Test-Name", "testGet"));
-                
+
         // Now do some assertions on the result!
         Assert.assertEquals(200, response.code());
         EchoResponse entity = response.entity(EchoResponse.class);
@@ -660,5 +671,5 @@ public class CustomPolicyTest extends ApimanPolicyTest {
 ```
 
 In this example everything works as it did before, but instead of responding with an Echo Response
-the send() method will return with a custom response (as created and returned by the provided custom 
+the send() method will return with a custom response (as created and returned by the provided custom
 back-end service implementation).
