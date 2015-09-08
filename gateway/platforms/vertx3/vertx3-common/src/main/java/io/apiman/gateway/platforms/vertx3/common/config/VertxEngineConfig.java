@@ -284,19 +284,19 @@ public class VertxEngineConfig implements IEngineConfig {
     }
 
     public String getKeyStore() {
-        return config.getJsonObject(SSL).getJsonObject(SSL_KEYSTORE).getString(SSL_PATH);
+        return config.getJsonObject(SSL, new JsonObject()).getJsonObject(SSL_KEYSTORE, new JsonObject()).getString(SSL_PATH);
     }
 
     public String getKeyStorePassword() {
-        return config.getJsonObject(SSL).getJsonObject(SSL_KEYSTORE).getString(API_PASSWORD);
+        return config.getJsonObject(SSL, new JsonObject()).getJsonObject(SSL_KEYSTORE, new JsonObject()).getString(API_PASSWORD);
     }
 
     public String getTrustStore() {
-        return config.getJsonObject(SSL).getJsonObject(SSL_TRUSTSTORE).getString(SSL_PATH);
+        return config.getJsonObject(SSL, new JsonObject()).getJsonObject(SSL_TRUSTSTORE, new JsonObject()).getString(SSL_PATH);
     }
 
     public String getTrustStorePassword() {
-        return config.getJsonObject(SSL).getJsonObject(SSL_TRUSTSTORE).getString(API_PASSWORD);
+        return config.getJsonObject(SSL, new JsonObject()).getJsonObject(SSL_TRUSTSTORE, new JsonObject()).getString(API_PASSWORD);
     }
 
 }
