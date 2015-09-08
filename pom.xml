@@ -1225,6 +1225,11 @@
         <updatePolicy>daily</updatePolicy>
       </snapshots>
     </repository>
+    
+    <repository>
+      <id>snapshots-repo</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+    </repository>
   </repositories>
 
   <pluginRepositories>
