@@ -20,6 +20,11 @@ import io.vertx.core.AsyncResult;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Future;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Initialiser verticle
  *
@@ -27,34 +32,65 @@ import io.vertx.core.Future;
  */
 public class InitVerticle extends ApimanVerticleBase {
 
+    class ApimanDeployment {
+        public DeploymentOptions deploymentOptions;
+        public String className;
+
+        public ApimanDeployment(DeploymentOptions deploymentOptions, String className) {
+            this.deploymentOptions = deploymentOptions;
+            this.className = className;
+        }
+    }
+
+    private boolean failed = false;
+    private int ctr;
+
     @Override
     public void start(Future<Void> start) {
         super.start();
 
         DeploymentOptions base = new DeploymentOptions().setConfig(config());
-        DeploymentOptions policy = buildDeploymentOptions(base, PolicyVerticle.VERTICLE_TYPE);
-        DeploymentOptions api = buildDeploymentOptions(base, ApiVerticle.VERTICLE_TYPE);
-        DeploymentOptions http = buildDeploymentOptions(base, HttpGatewayVerticle.VERTICLE_TYPE);
 
-        vertx.deployVerticle(PolicyVerticle.class.getCanonicalName(), policy, (AsyncResult<String> policyResult) -> {
-            checkFail(policyResult);
-            vertx.deployVerticle(HttpGatewayVerticle.class.getCanonicalName(), http, (AsyncResult<String> httpResult) -> {
-                checkFail(httpResult);
-                vertx.deployVerticle(ApiVerticle.class.getCanonicalName(), api, (AsyncResult<String> apiResult) -> {
-                    checkFail(apiResult);
-                    start.complete();
+        @SuppressWarnings("serial")
+        List<ApimanDeployment> deployList = new ArrayList<ApimanDeployment>() {{
+            add(buildDeploymentOptions(base, PolicyVerticle.class.getCanonicalName(), PolicyVerticle.VERTICLE_TYPE));
+            add(buildDeploymentOptions(base, ApiVerticle.class.getCanonicalName(), ApiVerticle.VERTICLE_TYPE));
+            add(buildDeploymentOptions(base, HttpGatewayVerticle.class.getCanonicalName(), HttpGatewayVerticle.VERTICLE_TYPE));
+            add(buildDeploymentOptions(base, HttpsGatewayVerticle.class.getCanonicalName(), HttpsGatewayVerticle.VERTICLE_TYPE));
+        }};
+
+        ctr = deployList.size();
+
+        deployList.forEach(deployment -> {
+            if (!failed) {
+                vertx.deployVerticle(deployment.className, deployment.deploymentOptions, result -> {
+                    checkAndSetStatus(result, start);
                 });
-            });
+            }
         });
     }
 
-    private void checkFail(AsyncResult<String> result) {
-        if (result.failed())
-            throw new RuntimeException("Failed to deploy verticles", result.cause()); //$NON-NLS-1$
+    private void checkAndSetStatus(AsyncResult<String> result, Future<Void> start) {
+        ctr--;
+        if (result.failed()) {
+            start.fail(result.cause());
+            failed = true;
+            printError(result.cause());
+        } else if (ctr == 0) {
+            start.complete();
+        }
     }
 
-    private DeploymentOptions buildDeploymentOptions(DeploymentOptions base, VerticleType type) {
-        return new DeploymentOptions(base).setInstances(apimanConfig.getVerticleCount(type));
+    private void printError(Throwable cause) {
+        StringWriter errorTrace = new StringWriter();
+        cause.printStackTrace(new PrintWriter(errorTrace));
+        System.err.println("Failed to deploy verticles: " + cause.getMessage()); //$NON-NLS-1$
+        System.err.println(errorTrace);
+    }
+
+    private ApimanDeployment buildDeploymentOptions(DeploymentOptions base, String className, VerticleType type) {
+        DeploymentOptions deploymentOptions = new DeploymentOptions(base).setInstances(apimanConfig.getVerticleCount(type));
+        return new ApimanDeployment(deploymentOptions, className);
     }
 
     @Override
