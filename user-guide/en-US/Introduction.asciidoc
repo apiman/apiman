@@ -2,14 +2,14 @@
 
 === What is API Management?
 A popular trend in enterprise software development these days is to design applications to be very decoupled 
-and use API's to connect them.  This approach provides an excellent way to reuse functionality across various 
+and use APIs to connect them.  This approach provides an excellent way to reuse functionality across various 
 applications and business units. Another great benefit of API usage in enterprises is the ability to create 
-those API's using a variety of disparate technologies.
+those APIs using a variety of disparate technologies.
 
 However, this approach also introduces its own pitfalls and disadvantages. Some of those disadvantages 
 include things like:
 
-* Difficulty discovering or sharing existing API's
+* Difficulty discovering or sharing existing APIs
 * Difficulty sharing common functionality across API implementations
 * Tracking of API usage/consumption
 
@@ -20,9 +20,9 @@ This API Gateway is responsible for applying the policies configured during mana
 Therefore an API management system tends to provide the following features:
 
 * Centralized governance policy configuration
-* Tracking of API's and consumers of those API's
-* Easy sharing and discovery of API's
-* Leveraging common policy configuration across different API's
+* Tracking of APIs and consumers of those APIs
+* Easy sharing and discovery of APIs
+* Leveraging common policy configuration across different APIs
 
 
 === Project Goals
@@ -47,10 +47,10 @@ including BASIC, digest, OAuth, etc.
 
 ==== Throttling/Rate Limiting
 The API management layer is a convenient place to ensure throttling (also known as rate limiting) to your 
-API's.  Throttling is a way to prevent individual clients from issuing too many requests to an API. Because 
+APIs.  Throttling is a way to prevent individual clients from issuing too many requests to an API. Because 
 all requests to an API go through the API Gateway it is an excellent place to do this throttling work.
 
 ==== Metering/Billing
 There are a number of reasons why an API provider would be interested in the number of requests made to her 
-API. The most common reason for public facing API's is to implement billing based on usage per consumer.  
+API. The most common reason for public facing APIs is to implement billing based on usage per consumer.  
 Metering is the feature that provides this API management capability.

@@ -1,7 +1,7 @@
 
 == API Manager
 There are two layers to the API management project. There is an API Manager which allows end users to
-centrally manage their API's. Additionally there is an API Gateway which is responsible for applying those
+centrally manage their APIs. Additionally there is an API Gateway which is responsible for applying those
 policies to API requests.
 
 The API Manager allows end-users to track, configure, and share APIs with other users. All of this is
