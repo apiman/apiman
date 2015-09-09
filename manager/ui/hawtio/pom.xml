@@ -4,7 +4,7 @@
   <parent>
     <groupId>io.apiman</groupId>
     <artifactId>apiman-manager-ui</artifactId>
-    <version>1.2.0.Alpha1</version>
+    <version>1.2.0-SNAPSHOT</version>
   </parent>
   <artifactId>apiman-manager-ui-hawtio</artifactId>
   <packaging>war</packaging>
