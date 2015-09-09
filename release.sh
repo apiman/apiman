@@ -48,7 +48,7 @@ mvn clean install
 
 echo ""
 echo ""
-echo " ***** USER ACTION REQUIRED *****
+echo " ***** USER ACTION REQUIRED *****"
 read -p "Do some smoke tests now!  Press Enter if everything is OK." CONFIRM
 mkdir ~/tmp
 mkdir ~/tmp/apiman-releases
