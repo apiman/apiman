@@ -52,11 +52,19 @@
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-gateway-engine-policies</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
       <artifactId>apiman-gateway-engine-beans</artifactId>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-gateway-engine-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-gateway-engine-beans</artifactId>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
@@ -109,27 +117,24 @@
   <build>
     <pluginManagement>
       <plugins>
-        <!-- This is a hack to prevent manually edited codegen stuff from being overwritten.
-        It should be reverted when upstream has been fixed. -->
-
         <!-- Configure the execution of the compiler to execute the codegen processor -->
-        <!-- <plugin> -->
-        <!--   <artifactId>maven-compiler-plugin</artifactId> -->
-        <!--   <version>3.1</version> -->
-        <!--   <configuration> -->
-        <!--     <source>1.8</source> -->
-        <!--     <target>1.8</target> -->
-        <!--     <annotationProcessors> -->
-        <!--       <annotationProcessor>io.vertx.codegen.CodeGenProcessor</annotationProcessor>  -->
-        <!--     </annotationProcessors> -->
-        <!--     <generatedSourcesDirectory> -->
-        <!--       ${project.basedir}/src/main/generated -->
-        <!--     </generatedSourcesDirectory> -->
-        <!--     <compilerArgs> -->
-        <!--       <arg>-AoutputDirectory=${project.basedir}/src/main</arg> -->
-        <!--     </compilerArgs> -->
-        <!--   </configuration> -->
-        <!-- </plugin> -->
+        <plugin>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.1</version>
+          <configuration>
+            <source>1.8</source>
+            <target>1.8</target>
+            <annotationProcessors>
+              <annotationProcessor>io.vertx.codegen.CodeGenProcessor</annotationProcessor>
+            </annotationProcessors>
+            <generatedSourcesDirectory>
+              ${project.basedir}/src/main/generated
+            </generatedSourcesDirectory>
+            <compilerArgs>
+              <arg>-AoutputDirectory=${project.basedir}/src/main</arg>
+            </compilerArgs>
+          </configuration>
+        </plugin>
       </plugins>
     </pluginManagement>
 
