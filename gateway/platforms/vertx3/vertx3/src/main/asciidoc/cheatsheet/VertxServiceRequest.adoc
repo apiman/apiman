@@ -16,6 +16,12 @@
 |[[destination]]`destination`
 |`String`
 |-
+|[[headers]]`headers`
+|`String`
+|-
+|[[queryParams]]`queryParams`
+|`String`
+|-
 |[[remoteAddr]]`remoteAddr`
 |`String`
 |-

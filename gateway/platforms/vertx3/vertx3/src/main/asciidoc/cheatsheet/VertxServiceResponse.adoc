@@ -13,6 +13,9 @@
 |[[code]]`code`
 |`Number (int)`
 |-
+|[[headers]]`headers`
+|`String`
+|-
 |[[message]]`message`
 |`String`
 |-|===
