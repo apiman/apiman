@@ -12,12 +12,13 @@
 
   <modules>
     <module>servlet</module>
-    <module>undertow</module>
+    <!--<module>undertow</module>-->
     <module>war</module>
     <module>war/micro</module>
-    <module>war/wildfly8</module>
+    <!--<module>war/wildfly8</module>-->
   </modules>
 
+  <!--
   <profiles>
     <profile>
       <id>java8</id>
@@ -30,4 +31,5 @@
       </modules>
     </profile>
   </profiles>
+  -->
 </project>

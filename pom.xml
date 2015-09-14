@@ -107,7 +107,6 @@
     <version.commons-io>2.4</version.commons-io>
     <version.commons-lang>2.6</version.commons-lang>
     <version.commons-pool>1.6</version.commons-pool>
-    <version.io.apiman.quickstarts>1.2.0.Alpha1</version.io.apiman.quickstarts>
     <version.io.searchbox.jest>0.1.6</version.io.searchbox.jest>
     <version.io.undertow>1.0.1.Final</version.io.undertow>
     <version.javax.enterprise>1.2</version.javax.enterprise>
@@ -482,14 +481,6 @@
         <version>${project.version}</version>
         <type>zip</type>
         <classifier>overlay</classifier>
-      </dependency>
-
-      <!-- apiman Quickstarts -->
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-quickstarts</artifactId>
-        <version>${version.io.apiman.quickstarts}</version>
-        <type>zip</type>
       </dependency>
 
       <!-- Undertow -->
@@ -1271,7 +1262,7 @@
 
   <modules>
     <module>common</module>
-    <module>distro</module>
+    <!--<module>distro</module>-->
     <module>manager</module>
     <module>gateway</module>
     <module>tools</module>
