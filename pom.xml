@@ -1324,7 +1324,7 @@
     <!--<module>distro</module>-->
     <module>manager</module>
     <module>gateway</module>
-    <module>tools</module>
+    <!-- <module>tools</module> -->
     <module>test</module>
   </modules>
 
