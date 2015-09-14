@@ -673,3 +673,158 @@ public class CustomPolicyTest extends ApimanPolicyTest {
 In this example everything works as it did before, but instead of responding with an Echo Response
 the send() method will return with a custom response (as created and returned by the provided custom
 back-end service implementation).
+
+
+=== Contributing a Core Component
+In addition to policies, the apiman plugin framework allows developers to provide custom implementations
+of core apiman components.  What does this mean?  Apiman is composed of a number of different core
+components, all working together to provide API Management functionality.  Both the API Gateway and 
+the API Manager have core components that can be customized by providing new implementations via plugins.
+
+Some examples of API Manager components include (but are not limited to):
+
+* Storage Component
+* Query Component
+* IDM Component
+* Metrics Accessor (consumes metrics data recorded by the API Gateway at runtime)
+
+Additionally, some examples of API Gateway components include:
+
+* Configuration Registry
+* Rate Limiting Component
+* Metrics Emitter (records metrics data for each request)
+
+By default, the apiman quickstart uses default values for all of these, resulting in a stable, working 
+system with the following characteristics:
+
+* Stores API Manager data in a JDBC database
+* Records and queries metrics data via Elasticsearch
+* Stores Gateway configuration information in Elasticsearch
+* Uses Elasticsearch to share rate limiting state across gateway nodes
+
+However, if you wish to provide a custom implementation of something, you can implement the appropriate
+Java interface for the correct component, bundle the implementation up into a plugin, and then tell
+apiman to use yours instead of the default.
+
+==== Implementing a Custom Core Component
+The procedure for creating a plugin to hold your custom component is exactly the same as already 
+described in the *Creating a Plugin* section above.  Once you have created your plugin, including
+a custom implementation of a core component is simply a matter of creating a Java class that 
+implements the appropriate component interface.
+
+Let's try an example.
+
+By default, apiman stores API Gateway configuration in Elasticsearch.  The component responsible
+for this is called ESRegistry, and it implements this interface:
+
+```java
+package io.apiman.gateway.engine;
+
+public interface IRegistry {
+
+    public void getContract(ServiceRequest request, IAsyncResultHandler<ServiceContract> handler);
+
+    public void publishService(Service service, IAsyncResultHandler<Void> handler);
+    
+    public void retireService(Service service, IAsyncResultHandler<Void> handler);
+    
+    public void registerApplication(Application application, IAsyncResultHandler<Void> handler);
+
+    public void unregisterApplication(Application application, IAsyncResultHandler<Void> handler);
+
+    public void getService(String organizationId, String serviceId, String serviceVersion, IAsyncResultHandler<Service> handler);
+
+}
+```
+
+Perhaps you'd rather store the API Gateway configuration information into mongodb instead of 
+Elasticsearch.  Since we don't support a mongodb registry, you would need to implement your own
+and contribute it via a plugin.  Simple create a new plugin and include in it the following 
+Java class:
+
+```java
+package org.example.apiman.plugins;
+
+public class MongoDbRegistry implements IRegistry {
+
+    public MongoDbRegistry(Map<String, String> config) {
+        // TODO consume any config params - these come from apiman.properties
+    }
+
+    public void getContract(ServiceRequest request, IAsyncResultHandler<ServiceContract> handler) {
+        // TODO implement mongodb specific logic here
+    }
+
+    public void publishService(Service service, IAsyncResultHandler<Void> handler) {
+        // TODO implement mongodb specific logic here
+    }
+    
+    public void retireService(Service service, IAsyncResultHandler<Void> handler) {
+        // TODO implement mongodb specific logic here
+    }
+    
+    public void registerApplication(Application application, IAsyncResultHandler<Void> handler) {
+        // TODO implement mongodb specific logic here
+    }
+
+    public void unregisterApplication(Application application, IAsyncResultHandler<Void> handler) {
+        // TODO implement mongodb specific logic here
+    }
+
+    public void getService(String organizationId, String serviceId, String serviceVersion, IAsyncResultHandler<Service> handler) {
+        // TODO implement mongodb specific logic here
+    }
+
+}
+```
+
+TIP: While optional, it is often useful to provide a constructor that takes a map of configuration
+params.  These values comes from the apiman.properties and is an arbitrary set of keys/values.  It
+can be extremely helpful when, for example, configuring the mongodb connection information.
+
+==== Enabling Your Custom Component
+Now that you have a custom component built and included in a plugin, you will need to make sure
+that the plugin is available to your server.  You can do this by deploying the plugin artifact
+to a maven repository and then making that repository available to apiman by adding its URL to 
+the following property in apiman.properties:
+
+```
+apiman.plugins.repositories=http://repository.jboss.org/nexus/content/groups/public/
+```
+
+Simply add your organization's maven repository to that (the value can be a comma separated list of
+URLs).
+
+Alternatively, you can make sure your plugin is installed in the ".m2" directory on the machine
+that is running your server.  Obviously you can use "mvn install" to accomplish this.
+
+Next, simply enable the custom component implementation by updating your *apiman.properties* file
+like this (for example):
+
+```
+apiman-gateway.registry=plugin:GROUP_ID:ARTIFACT_ID:VERSION/org.example.apiman.plugins.MongoDbRegistry
+apiman-gateway.registry.mongo.host=localhost
+apiman-gateway.registry.mongo.port=27017
+apiman-gateway.registry.mongo.username=sa
+apiman-gateway.registry.mongo.password=sa123!
+apiman-gateway.registry.mongo.database=apiman
+```
+
+The most important part above is the format for the registry itself.  It might look something like
+this:
+
+```
+apiman-gateway.registry=plugin:org.example.apiman-plugins:plugin-mongodb:1.0.0.Final/org.example.apiman.plugins.MongoDbRegistry
+```
+
+Finally, the set of properties prefixed with "apiman-gateway.registry" will be processed and passed
+to your MongoDbRegistry class's *Map* constructor if one is provided.  The map that is passed to
+the constructor will contain the following:
+
+```
+mongo.host=localhost
+mongo.port=27017
+mongo.username=sa
+mongo.password=sa123!
+mongo.database=apiman
+```
