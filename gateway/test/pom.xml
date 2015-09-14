@@ -125,6 +125,7 @@
     </dependency>
   </dependencies>
 
+  <!--
   <profiles>
     <profile>
       <id>java8</id>
@@ -154,4 +155,5 @@
       </dependencies>
     </profile>
   </profiles>
+  -->
 </project>
