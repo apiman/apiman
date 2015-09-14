@@ -16,25 +16,6 @@
 
 package io.apiman.manager.api.rest.impl;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
-import org.apache.commons.io.IOUtils;
-import org.codehaus.jackson.map.ObjectMapper;
-
 import io.apiman.common.plugin.Plugin;
 import io.apiman.common.plugin.PluginClassLoader;
 import io.apiman.common.plugin.PluginCoordinates;
@@ -65,6 +46,25 @@ import io.apiman.manager.api.rest.contract.exceptions.SystemErrorException;
 import io.apiman.manager.api.rest.impl.i18n.Messages;
 import io.apiman.manager.api.rest.impl.util.ExceptionFactory;
 import io.apiman.manager.api.security.ISecurityContext;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
+import org.apache.commons.io.IOUtils;
+import org.codehaus.jackson.map.ObjectMapper;
 
 /**
  * Implementation of the Plugin API.
@@ -319,7 +319,11 @@ public class PluginResourceImpl implements IPluginResource {
 
         for (URL registryUrl : registries) {
             PluginRegistryBean registry = loadRegistry(registryUrl);
-            rval.addAll(registry.getPlugins());
+            if (registry == null) {
+                System.out.println("WARN: plugin registry failed to load - " + registryUrl); //$NON-NLS-1$
+            } else {
+                rval.addAll(registry.getPlugins());
+            }
         }
 
         // Sort before returning

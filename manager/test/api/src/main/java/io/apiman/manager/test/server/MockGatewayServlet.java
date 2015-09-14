@@ -30,7 +30,7 @@ import org.apache.commons.io.IOUtils;
 
 /**
  * A simple servlet that pretends to be an API Management Gateway REST endpoint.  But
- * really all it does is record information about what requests it handled so that we 
+ * really all it does is record information about what requests it handled so that we
  * can do assertions in the tests.
  *
  * @author eric.wittmann@redhat.com
@@ -38,7 +38,7 @@ import org.apache.commons.io.IOUtils;
 public class MockGatewayServlet extends HttpServlet {
 
     private static final long serialVersionUID = 4814869997856449004L;
-    
+
     private static StringBuilder builder = new StringBuilder();
     private static List<String> payloads = new ArrayList<>();
     public static void reset() {
@@ -51,13 +51,13 @@ public class MockGatewayServlet extends HttpServlet {
     public static List<String> getPayloads() {
         return payloads;
     }
-    
+
     /**
      * Constructor.
      */
     public MockGatewayServlet() {
     }
-    
+
     /**
      * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
@@ -84,7 +84,7 @@ public class MockGatewayServlet extends HttpServlet {
             resp.setStatus(204);
         }
     }
-    
+
     /**
      * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
@@ -95,7 +95,7 @@ public class MockGatewayServlet extends HttpServlet {
         payloads.add(getPayload(req));
         resp.setStatus(204);
     }
-    
+
     /**
      * @see javax.servlet.http.HttpServlet#doPut(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
@@ -106,7 +106,7 @@ public class MockGatewayServlet extends HttpServlet {
         payloads.add(getPayload(req));
         resp.setStatus(204);
     }
-    
+
     /**
      * @see javax.servlet.http.HttpServlet#doDelete(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
@@ -116,7 +116,7 @@ public class MockGatewayServlet extends HttpServlet {
         builder.append("DELETE:").append(req.getRequestURI()).append("\n"); //$NON-NLS-1$ //$NON-NLS-2$
         resp.setStatus(204);
     }
-    
+
     /**
      * Gets the payload body and returns it as a string.
      * @param req

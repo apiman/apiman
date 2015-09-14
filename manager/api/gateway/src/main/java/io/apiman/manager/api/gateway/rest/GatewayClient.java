@@ -15,6 +15,7 @@
  */
 package io.apiman.manager.api.gateway.rest;
 
+import io.apiman.gateway.api.rest.contract.exceptions.GatewayApiErrorBean;
 import io.apiman.gateway.engine.beans.Application;
 import io.apiman.gateway.engine.beans.Service;
 import io.apiman.gateway.engine.beans.ServiceEndpoint;
@@ -24,8 +25,12 @@ import io.apiman.gateway.engine.beans.exceptions.RegistrationException;
 import io.apiman.manager.api.gateway.GatewayAuthenticationException;
 import io.apiman.manager.api.gateway.i18n.Messages;
 
+import java.io.BufferedReader;
 import java.io.InputStream;
+import java.io.StringReader;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.http.Header;
@@ -40,21 +45,21 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 /**
  * A REST client for accessing the Gateway API.
- * 
+ *
  * @author eric.wittmann@redhat.com
  */
 @SuppressWarnings("javadoc") // class is temporarily delinked from its interfaces
 public class GatewayClient /*implements ISystemResource, IServiceResource, IApplicationResource*/ {
-    
+
     private static final String SYSTEM_STATUS = "/system/status"; //$NON-NLS-1$
     private static final String SERVICES = "/services"; //$NON-NLS-1$
     private static final String APPLICATIONS = "/applications"; //$NON-NLS-1$
-    
+
     private static final ObjectMapper mapper = new ObjectMapper();
-    
+
     private String endpoint;
     private CloseableHttpClient httpClient;
-    
+
     /**
      * Constructor.
      * @param endpoint the endpoint
@@ -63,7 +68,7 @@ public class GatewayClient /*implements ISystemResource, IServiceResource, IAppl
     public GatewayClient(String endpoint, CloseableHttpClient httpClient) {
         this.endpoint = endpoint;
         this.httpClient = httpClient;
-        
+
         if (this.endpoint.endsWith("/")) { //$NON-NLS-1$
             this.endpoint = this.endpoint.substring(0, this.endpoint.length() - 1);
         }
@@ -261,9 +266,9 @@ public class GatewayClient /*implements ISystemResource, IServiceResource, IAppl
         PublishingException exception;
         try {
             is = response.getEntity().getContent();
-            GatewayAuthenticationException error = mapper.reader(GatewayAuthenticationException.class).readValue(is);
+            GatewayApiErrorBean error = mapper.reader(GatewayApiErrorBean.class).readValue(is);
             exception = new PublishingException(error.getMessage());
-            // TODO parse the stack trace and set it on the exception
+            exception.setStackTrace(parseStackTrace(error.getStacktrace()));
         } catch (Exception e) {
             exception = new PublishingException(e.getMessage(), e);
         } finally {
@@ -281,15 +286,47 @@ public class GatewayClient /*implements ISystemResource, IServiceResource, IAppl
         RegistrationException exception;
         try {
             is = response.getEntity().getContent();
-            GatewayAuthenticationException error = mapper.reader(GatewayAuthenticationException.class).readValue(is);
+            GatewayApiErrorBean error = mapper.reader(GatewayApiErrorBean.class).readValue(is);
             exception = new RegistrationException(error.getMessage());
-            // TODO parse the stack trace and set it on the exception
+            exception.setStackTrace(parseStackTrace(error.getStacktrace()));
         } catch (Exception e) {
             exception = new RegistrationException(e.getMessage(), e);
         } finally {
             IOUtils.closeQuietly(is);
         }
         return exception;
+    }
+
+    /**
+     * Parses a stack trace from the given string.
+     * @param stacktrace
+     */
+    protected static StackTraceElement[] parseStackTrace(String stacktrace) {
+        try {
+            List<StackTraceElement> elements = new ArrayList<>();
+            BufferedReader reader = new BufferedReader(new StringReader(stacktrace));
+            String line = null;
+            // Example lines:
+            // \tat io.apiman.gateway.engine.es.ESRegistry$1.completed(ESRegistry.java:79)
+            // \tat org.apache.http.impl.nio.client.InternalIODispatch.onInputReady(InternalIODispatch.java:81)\r\n
+            while ( (line = reader.readLine()) != null) {
+                if (line.startsWith("\tat ")) { //$NON-NLS-1$
+                    int openParenIdx = line.indexOf('(');
+                    int closeParenIdx = line.indexOf(')');
+                    String classAndMethod = line.substring(4, openParenIdx);
+                    String fileAndLineNum = line.substring(openParenIdx + 1, closeParenIdx);
+                    String className = classAndMethod.substring(0, classAndMethod.lastIndexOf('.'));
+                    String methodName = classAndMethod.substring(classAndMethod.lastIndexOf('.') + 1);
+                    String [] split = fileAndLineNum.split(":"); //$NON-NLS-1$
+                    String fileName = split[0];
+                    String lineNum = split[1];
+                    elements.add(new StackTraceElement(className, methodName, fileName, new Integer(lineNum)));
+                }
+            }
+            return elements.toArray(new StackTraceElement[elements.size()]);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
 }
