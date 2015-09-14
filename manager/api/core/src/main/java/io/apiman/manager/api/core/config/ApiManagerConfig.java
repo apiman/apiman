@@ -15,6 +15,9 @@
  */
 package io.apiman.manager.api.core.config;
 
+import io.apiman.common.config.ConfigFactory;
+import io.apiman.manager.api.core.logging.IApimanLogger;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
@@ -24,9 +27,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.configuration.Configuration;
-
-import io.apiman.common.config.ConfigFactory;
-import io.apiman.manager.api.core.logging.IApimanLogger;
 
 /**
  * Configuration object for the API Manager.
@@ -176,7 +176,7 @@ public abstract class ApiManagerConfig {
      * @return the elasticsearch port
      */
     public int getStorageESPort() {
-        return config.getInt(APIMAN_MANAGER_STORAGE_ES_PORT, 19300);
+        return config.getInt(APIMAN_MANAGER_STORAGE_ES_PORT, 19200);
     }
 
     /**
