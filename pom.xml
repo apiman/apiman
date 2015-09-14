@@ -1310,7 +1310,7 @@
 
   <modules>
     <module>common</module>
-    <module>distro</module>
+    <!--<module>distro</module>-->
     <module>manager</module>
     <module>gateway</module>
     <module>tools</module>
