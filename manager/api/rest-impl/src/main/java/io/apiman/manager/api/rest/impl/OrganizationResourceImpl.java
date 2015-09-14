@@ -2839,6 +2839,14 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             TreeMap<String, MemberBean> members = new TreeMap<>();
             for (RoleMembershipBean membershipBean : memberships) {
                 String userId = membershipBean.getUserId();
+                String roleId = membershipBean.getRoleId();
+                RoleBean role = idmStorage.getRole(roleId);
+
+                // Role does not exist!
+                if (role == null) {
+                    continue;
+                }
+
                 MemberBean member = members.get(userId);
                 if (member == null) {
                     UserBean user = idmStorage.getUser(userId);
@@ -2849,8 +2857,6 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                     member.setRoles(new ArrayList<MemberRoleBean>());
                     members.put(userId, member);
                 }
-                String roleId = membershipBean.getRoleId();
-                RoleBean role = idmStorage.getRole(roleId);
                 MemberRoleBean mrb = new MemberRoleBean();
                 mrb.setRoleId(roleId);
                 mrb.setRoleName(role.getName());
