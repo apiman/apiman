@@ -67,11 +67,10 @@ public abstract class AbstractPluginRegistry implements IPluginRegistry {
      */
     @Override
     public Plugin loadPlugin(PluginCoordinates coordinates) throws InvalidPluginException {
-        if (pluginCache.containsKey(coordinates)) {
-            return pluginCache.get(coordinates);
-        }
-
         synchronized (mutex) {
+            if (pluginCache.containsKey(coordinates)) {
+                return pluginCache.get(coordinates);
+            }
             String pluginRelativePath = PluginUtils.getPluginRelativePath(coordinates);
             File pluginDir = new File(pluginsDir, pluginRelativePath);
             if (!pluginDir.exists()) {
@@ -99,6 +98,7 @@ public abstract class AbstractPluginRegistry implements IPluginRegistry {
             try {
                 PluginSpec spec = PluginUtils.readPluginSpecFile(specFile);
                 Plugin plugin = new Plugin(spec, coordinates, pluginClassLoader);
+                pluginCache.put(coordinates, plugin);
                 return plugin;
             } catch (Exception e) {
                 throw new InvalidPluginException(Messages.i18n.format("AbstractPluginRegistry.FailedToReadSpecFile", PluginUtils.PLUGIN_SPEC_PATH), e); //$NON-NLS-1$
