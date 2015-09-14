@@ -779,14 +779,14 @@ public class MongoDbRegistry implements IRegistry {
 ```
 
 TIP: While optional, it is often useful to provide a constructor that takes a map of configuration
-params.  These values comes from the apiman.properties and is an arbitrary set of keys/values.  It
+params.  These values comes from the *apiman.properties* and is an arbitrary set of keys/values.  It
 can be extremely helpful when, for example, configuring the mongodb connection information.
 
 ==== Enabling Your Custom Component
 Now that you have a custom component built and included in a plugin, you will need to make sure
 that the plugin is available to your server.  You can do this by deploying the plugin artifact
 to a maven repository and then making that repository available to apiman by adding its URL to 
-the following property in apiman.properties:
+the following property in *apiman.properties*:
 
 ```
 apiman.plugins.repositories=http://repository.jboss.org/nexus/content/groups/public/
@@ -818,7 +818,7 @@ apiman-gateway.registry=plugin:org.example.apiman-plugins:plugin-mongodb:1.0.0.F
 ```
 
 Finally, the set of properties prefixed with "apiman-gateway.registry" will be processed and passed
-to your MongoDbRegistry class's *Map* constructor if one is provided.  The map that is passed to
+to your *MongoDbRegistry* class's *Map* constructor if one is provided.  The map that is passed to
 the constructor will contain the following:
 
 ```
