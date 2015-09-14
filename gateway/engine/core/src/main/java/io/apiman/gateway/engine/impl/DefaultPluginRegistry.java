@@ -163,7 +163,15 @@ public class DefaultPluginRegistry implements IPluginRegistry {
                     if (result.isError()) {
                         errorCache.put(coordinates, result.getError());
                     } else {
-                        pluginCache.put(coordinates, result.getResult());
+                        // Make sure we *always* use whatever is in the cache.  This resolves a
+                        // race condition where multiple threads could ask for the plugin at the
+                        // same time, resulting in two or more threads downloading the plugin.
+                        // This is OK as long as we make sure we only ever use one.
+                        if (pluginCache.containsKey(coordinates)) {
+                            result = AsyncResultImpl.create(pluginCache.get(coordinates));
+                        } else {
+                            pluginCache.put(coordinates, result.getResult());
+                        }
                     }
                 }
                 if (userHandler != null) {
