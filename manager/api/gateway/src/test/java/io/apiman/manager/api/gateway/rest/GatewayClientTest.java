@@ -71,7 +71,11 @@ public class GatewayClientTest {
         exception.printStackTrace(new PrintWriter(sw));
         String output = sw.toString();
 
-        Assert.assertEquals(EXPECTED_STACK, output);
+        Assert.assertEquals(normalize(EXPECTED_STACK), normalize(output));
+    }
+
+    private static String normalize(String output) {
+        return output.replaceAll("\r\n", "\n");
     }
 
 }
