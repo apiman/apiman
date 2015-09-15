@@ -84,10 +84,10 @@
   
   <div>
     <dl>
-      <dt apiman-i18n-key="unmatched-request-action">Multiple Match Action</dt>
+      <dt apiman-i18n-key="multiple-match-action">Multiple Match Action</dt>
       <dd>
         <span apiman-i18n-key="auth.multi-match-pre">I want the request to pass when</span>
-        <select id="unmatched-request-action" ng-model="config.multiMatch" apiman-select-picker="" class="inline-form-select selectpicker" data-live-search="false">
+        <select id="multiple-match-action" ng-model="config.multiMatch" apiman-select-picker="" class="inline-form-select selectpicker" data-live-search="false">
           <option value="any" apiman-i18n-key="auth.any">at least one</option>
           <option value="all" apiman-i18n-key="auth.all">all</option>
         </select>
