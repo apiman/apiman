@@ -1219,6 +1219,8 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                 newServiceVersion.setPlans(bean.getPlans());
                 newServiceVersion.setPublicService(bean.getPublicService());
                 newServiceVersion.setVersion(bean.getInitialVersion());
+                newServiceVersion.setDefinitionUrl(bean.getDefinitionUrl());
+                newServiceVersion.setDefinitionType(bean.getDefinitionType());
                 createServiceVersionInternal(newServiceVersion, newService, gateway);
             }
 
@@ -1385,21 +1387,34 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                 if (bean.getPublicService() == null) {
                     updatedService.setPublicService(cloneSource.isPublicService());
                 }
-                newVersion = updateServiceVersion(organizationId, serviceId, bean.getVersion(), updatedService );
+                newVersion = updateServiceVersion(organizationId, serviceId, bean.getVersion(), updatedService);
 
-                // Clone the service definition document
-                InputStream definition = null;
-                try {
-                    Response response = getServiceDefinition(organizationId, serviceId, bean.getCloneVersion());
-                    definition = (InputStream) response.getEntity();
-                    storeServiceDefinition(organizationId, serviceId, newVersion.getVersion(),
-                            cloneSource.getDefinitionType(), definition);
-                } catch (ServiceDefinitionNotFoundException svnfe) {
-                    // This is ok - it just means the service doesn't have one, so do nothing.
-                } catch (Exception sdnfe) {
-                    log.error("Unable to create response", sdnfe); //$NON-NLS-1$
-                } finally {
-                    IOUtils.closeQuietly(definition);
+                if (bean.getDefinitionUrl() != null) {
+                    InputStream definition = null;
+                    try {
+                        definition = new URL(bean.getDefinitionUrl()).openStream();
+                        storeServiceDefinition(organizationId, serviceId, newVersion.getVersion(),
+                                bean.getDefinitionType(), definition);
+                    } catch (Exception e) {
+                        log.error("Unable to store service definition from: " + bean.getDefinitionUrl(), e); //$NON-NLS-1$
+                    } finally {
+                        IOUtils.closeQuietly(definition);
+                    }
+                } else {
+                    // Clone the service definition document
+                    InputStream definition = null;
+                    try {
+                        Response response = getServiceDefinition(organizationId, serviceId, bean.getCloneVersion());
+                        definition = (InputStream) response.getEntity();
+                        storeServiceDefinition(organizationId, serviceId, newVersion.getVersion(),
+                                cloneSource.getDefinitionType(), definition);
+                    } catch (ServiceDefinitionNotFoundException svnfe) {
+                        // This is ok - it just means the service doesn't have one, so do nothing.
+                    } catch (Exception sdnfe) {
+                        log.error("Unable to create response", sdnfe); //$NON-NLS-1$
+                    } finally {
+                        IOUtils.closeQuietly(definition);
+                    }
                 }
 
                 // Clone all service policies
@@ -1777,7 +1792,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                     InvalidServiceStatusException {
         InputStream data;
         try {
-            String definitionURL = bean.getDefinitionURL();
+            String definitionURL = bean.getDefinitionUrl();
             URL url = new URL(definitionURL);
             data = url.openStream();
         } catch (IOException e) {
@@ -1785,7 +1800,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         }
         try {
             storeServiceDefinition(organizationId, serviceId, version, bean.getDefinitionType(), data);
-            log.debug(String.format("Updated service definition for %s from URL %s", serviceId, bean.getDefinitionURL())); //$NON-NLS-1$
+            log.debug(String.format("Updated service definition for %s from URL %s", serviceId, bean.getDefinitionUrl())); //$NON-NLS-1$
         } finally {
             IOUtils.closeQuietly(data);
         }

@@ -29,7 +29,7 @@ public class NewServiceDefinitionBean implements Serializable {
 
     private static final long serialVersionUID = 8305206288757642775L;
 
-    private String definitionURL;
+    private String definitionUrl;
     private ServiceDefinitionType definitionType;
 
     /**
@@ -39,17 +39,17 @@ public class NewServiceDefinitionBean implements Serializable {
     }
 
     /**
-     * @return the definitionURL
+     * @return the definitionUrl
      */
-    public String getDefinitionURL() {
-        return definitionURL;
+    public String getDefinitionUrl() {
+        return definitionUrl;
     }
 
     /**
-     * @param definitionURL the definitionURL to set
+     * @param definitionUrl the definitionUrl to set
      */
-    public void setDefinitionURL(String definitionURL) {
-        this.definitionURL = definitionURL;
+    public void setDefinitionUrl(String definitionUrl) {
+        this.definitionUrl = definitionUrl;
     }
 
     /**

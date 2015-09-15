@@ -38,6 +38,8 @@ public class NewServiceVersionBean implements Serializable {
     private EndpointType endpointType;
     private Boolean publicService;
     private Set<ServicePlanBean> plans;
+    private String definitionUrl;
+    private ServiceDefinitionType definitionType;
 
     /**
      * Constructor.
@@ -141,6 +143,34 @@ public class NewServiceVersionBean implements Serializable {
      */
     public void setPlans(Set<ServicePlanBean> plans) {
         this.plans = plans;
+    }
+
+    /**
+     * @return the definitionUrl
+     */
+    public String getDefinitionUrl() {
+        return definitionUrl;
+    }
+
+    /**
+     * @param definitionUrl the definitionUrl to set
+     */
+    public void setDefinitionUrl(String definitionUrl) {
+        this.definitionUrl = definitionUrl;
+    }
+
+    /**
+     * @return the definitionType
+     */
+    public ServiceDefinitionType getDefinitionType() {
+        return definitionType;
+    }
+
+    /**
+     * @param definitionType the definitionType to set
+     */
+    public void setDefinitionType(ServiceDefinitionType definitionType) {
+        this.definitionType = definitionType;
     }
 
 }

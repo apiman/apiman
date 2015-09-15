@@ -171,7 +171,9 @@ module Apiman {
                     endpoint: service.endpoint,
                     endpointType: service.endpointType,
                     publicService: $scope.importInfo.isPublic,
-                    plans: $scope.importInfo.plans
+                    plans: $scope.importInfo.plans,
+                    definitionUrl: service.definitionUrl,
+                    definitionType: service.definitionType
                 };
                 OrgSvcs.save({ organizationId: params.org, entityType: 'services' }, newService, function(reply) {
                     service.status = 'imported';

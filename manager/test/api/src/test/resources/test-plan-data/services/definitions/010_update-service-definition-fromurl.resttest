@@ -2,7 +2,7 @@ POST /organizations/Organization1/services/Service1/versions/2.0/definition admi
 Content-Type: application/json
 
 {
-  "definitionURL" : "${apiman.test.service-definition-url}",
+  "definitionUrl" : "${apiman.test.service-definition-url}",
   "definitionType" : "SwaggerJSON"
 }
 ----

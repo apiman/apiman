@@ -64,6 +64,7 @@ public class Bootstrapper implements ServletContextListener {
         settings.put("path.home", esHome.getAbsolutePath());
         settings.put("http.port", config.getHttpPortRange());
         settings.put("transport.tcp.port", config.getTransportPortRange());
+        settings.put("discovery.zen.ping.multicast.enabled", false);
         if (config.getBindHost() != null) {
             settings.put("network.bind_host", config.getBindHost());
         }
