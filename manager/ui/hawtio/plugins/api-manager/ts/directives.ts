@@ -399,7 +399,7 @@ module Apiman {
                     id: "@pageId",
                     version: "@"
                 },
-                controller: function($scope) {
+                controller: ['$scope', ($scope) => {
                     $scope.policyListOptions = {
                         containerPositioning: 'relative',
 
@@ -410,7 +410,7 @@ module Apiman {
                     };
 
                     $scope.pluginName = $scope.$parent.pluginName;
-                },
+                }],
                 controllerAs: 'ctrl',
                 bindToController: true,
                 templateUrl: 'plugins/api-manager/html/directives/policyList.html'
@@ -427,9 +427,8 @@ module Apiman {
                     descr: '=description',
                     callback: '='
                 },
-                controller: function($scope) {
-
-                },
+                controller: ['$scope', ($scope) => {
+                }],
                 link: function($scope, $elem, $attrs) {
                     $scope.defaultValue = $attrs.defaultValue;
 
