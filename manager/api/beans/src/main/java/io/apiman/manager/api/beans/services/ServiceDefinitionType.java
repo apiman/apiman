@@ -22,6 +22,6 @@ package io.apiman.manager.api.beans.services;
  */
 public enum ServiceDefinitionType {
 
-    None, SwaggerJSON, SwaggerYAML, WSDL
+    None, SwaggerJSON, SwaggerYAML, WSDL, WADL, RAML
 
 }

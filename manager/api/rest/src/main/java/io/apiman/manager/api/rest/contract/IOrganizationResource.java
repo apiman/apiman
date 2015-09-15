@@ -49,6 +49,7 @@ import io.apiman.manager.api.beans.policies.PolicyChainBean;
 import io.apiman.manager.api.beans.policies.UpdatePolicyBean;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
 import io.apiman.manager.api.beans.services.NewServiceBean;
+import io.apiman.manager.api.beans.services.NewServiceDefinitionBean;
 import io.apiman.manager.api.beans.services.NewServiceVersionBean;
 import io.apiman.manager.api.beans.services.ServiceBean;
 import io.apiman.manager.api.beans.services.ServiceVersionBean;
@@ -969,6 +970,35 @@ public interface IOrganizationResource {
     @Consumes({ MediaType.APPLICATION_JSON, "application/wsdl+xml", "application/x-yaml" })
     public void updateServiceDefinition(@PathParam("organizationId") String organizationId,
             @PathParam("serviceId") String serviceId, @PathParam("version") String version)
+            throws ServiceVersionNotFoundException, NotAuthorizedException, InvalidServiceStatusException;
+
+
+    /**
+     * Use this endpoint to update the Service's definition document by providing
+     * a URL (reference) to the definition.  This is an alternative to providing the
+     * full service definition document via a PUT to the same endpoint.  This endpoint
+     * can be used to either add a definition if one does not already exist, as well
+     * as update/replace an existing definition.
+     *
+     * Note that apiman will not store the definition reference, but instead will
+     * download the service definition document and store it.  Additionally, the
+     * the Service's "Definition Type" field will be updated.
+     * @summary Update Service Definition from URL
+     * @param organizationId The Organization ID.
+     * @param serviceId The Service ID.
+     * @param version The Service version.
+     * @param bean The service definition reference information.
+     * @statuscode 204 If the Service definition was successfully updated.
+     * @statuscode 404 If the Service does not exist.
+     * @throws ServiceVersionNotFoundException when trying to get, update, or delete a service version that does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
+     * @throws InvalidServiceStatusException when the user attempts some action on the service when it is not in an appropriate state/status
+     */
+    @POST
+    @Path("{organizationId}/services/{serviceId}/versions/{version}/definition")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void updateServiceDefinitionFromURL(@PathParam("organizationId") String organizationId,
+            @PathParam("serviceId") String serviceId, @PathParam("version") String version, NewServiceDefinitionBean bean)
             throws ServiceVersionNotFoundException, NotAuthorizedException, InvalidServiceStatusException;
 
     /**

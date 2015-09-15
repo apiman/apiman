@@ -67,6 +67,7 @@ import io.apiman.manager.api.beans.search.SearchCriteriaBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaFilterOperator;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
 import io.apiman.manager.api.beans.services.NewServiceBean;
+import io.apiman.manager.api.beans.services.NewServiceDefinitionBean;
 import io.apiman.manager.api.beans.services.NewServiceVersionBean;
 import io.apiman.manager.api.beans.services.ServiceBean;
 import io.apiman.manager.api.beans.services.ServiceDefinitionType;
@@ -144,6 +145,7 @@ import io.apiman.manager.api.security.ISecurityContext;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -1761,6 +1763,29 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             }
             storeServiceDefinition(organizationId, serviceId, version, newDefinitionType, data);
             log.debug(String.format("Updated service definition for %s", serviceId)); //$NON-NLS-1$
+        } finally {
+            IOUtils.closeQuietly(data);
+        }
+    }
+
+    /**
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#updateServiceDefinitionFromURL(java.lang.String, java.lang.String, java.lang.String, io.apiman.manager.api.beans.services.NewServiceDefinitionBean)
+     */
+    @Override
+    public void updateServiceDefinitionFromURL(String organizationId, String serviceId, String version,
+            NewServiceDefinitionBean bean) throws ServiceVersionNotFoundException, NotAuthorizedException,
+                    InvalidServiceStatusException {
+        InputStream data;
+        try {
+            String definitionURL = bean.getDefinitionURL();
+            URL url = new URL(definitionURL);
+            data = url.openStream();
+        } catch (IOException e) {
+            throw new SystemErrorException(e);
+        }
+        try {
+            storeServiceDefinition(organizationId, serviceId, version, bean.getDefinitionType(), data);
+            log.debug(String.format("Updated service definition for %s from URL %s", serviceId, bean.getDefinitionURL())); //$NON-NLS-1$
         } finally {
             IOUtils.closeQuietly(data);
         }

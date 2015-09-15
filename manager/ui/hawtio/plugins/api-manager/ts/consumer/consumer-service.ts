@@ -108,7 +108,6 @@ module Apiman {
                     var url = ServiceDefinitionSvcs.getServiceDefinitionUrl($scope.params.org, $scope.params.service, $scope.params.version);
                     Logger.debug("!!!!! Using definition URL: {0}", url);
 
-                    // TODO this code was copied from apimanPlugin.ts - it needs to be shared
                     var authHeader = Configuration.getAuthorizationHeader();
                     
                     $scope.definitionStatus = 'loading';

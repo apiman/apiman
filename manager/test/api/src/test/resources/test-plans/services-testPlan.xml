@@ -93,6 +93,8 @@
     <test name="Add Service Definition (WSDL)">test-plan-data/services/definitions/007_add-service-definition-wsdl.resttest</test>
     <test name="Get Version 2.0 (def) (WSDL)">test-plan-data/services/definitions/008_get-version-2.0-wsdl.resttest</test>
     <test name="Get Service Definition (WSDL)">test-plan-data/services/definitions/009_get-service-definition-wsdl.resttest</test>
+    <test name="Update Service Definition (From URL)">test-plan-data/services/definitions/010_update-service-definition-fromurl.resttest</test>
+    <test name="Get Version 2.0 (def) (Swagger)">test-plan-data/services/definitions/011_get-version-2.0-swagger.resttest</test>
   </testGroup>
 
   <!-- Cloning -->

@@ -20,6 +20,9 @@ import io.apiman.manager.test.junit.ManagerRestTestPlan;
 import io.apiman.manager.test.junit.ManagerRestTestPublishPayload;
 import io.apiman.manager.test.junit.ManagerRestTester;
 
+import java.net.URL;
+
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
 /**
@@ -38,5 +41,11 @@ import org.junit.runner.RunWith;
     "{\"publicService\":false,\"organizationId\":\"Organization1\",\"serviceId\":\"Service1\",\"version\":\"1.0\",\"endpointType\":\"rest\",\"endpoint\":\"http://localhost:8080/ping\",\"endpointProperties\":{\"foo\":\"foo-value\",\"bar\":\"bar-value\"},\"servicePolicies\":[]}"
 })
 public class ServicesTest {
+
+    @BeforeClass
+    public static void setup() {
+        URL resource = ServicesTest.class.getResource("sample-swagger-definition.json"); //$NON-NLS-1$
+        System.setProperty("apiman.test.service-definition-url", resource.toExternalForm()); //$NON-NLS-1$
+    }
 
 }
