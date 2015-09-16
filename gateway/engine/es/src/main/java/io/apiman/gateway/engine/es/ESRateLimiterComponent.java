@@ -77,9 +77,9 @@ public class ESRateLimiterComponent extends AbstractESComponent implements IRate
                 if (bucket.getCount() > limit) {
                     rlr.setAccepted(false);
                 } else {
+                    rlr.setAccepted(bucket.getCount() < limit);
                     bucket.setCount(bucket.getCount() + increment);
                     bucket.setLast(System.currentTimeMillis());
-                    rlr.setAccepted(bucket.getCount() <= limit);
                 }
                 int reset = (int) (bucket.getResetMillis(period) / 1000L);
                 rlr.setReset(reset);

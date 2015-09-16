@@ -59,9 +59,9 @@ public class InMemoryRateLimiterComponent implements IRateLimiterComponent {
             if (bucket.getCount() > limit) {
                 response.setAccepted(false);
             } else {
+                response.setAccepted(bucket.getCount() < limit);
                 bucket.setCount(bucket.getCount() + increment);
                 bucket.setLast(System.currentTimeMillis());
-                response.setAccepted(bucket.getCount() <= limit);
             }
             int reset = (int) (bucket.getResetMillis(period) / 1000L);
             response.setReset(reset);
