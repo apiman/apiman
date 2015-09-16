@@ -198,8 +198,6 @@ public class ServiceRequestExecutorImpl implements IServiceRequestExecutor {
         final IAsyncHandler<List<PolicyWithConfiguration>> policiesLoadedHandler = new IAsyncHandler<List<PolicyWithConfiguration>>() {
             @Override
             public void handle(List<PolicyWithConfiguration> result) {
-
-
                 policyImpls = result;
                 // Set up the policy chain request, call #doApply to execute.
                 requestChain = createRequestChain(new IAsyncHandler<ServiceRequest>() {
@@ -365,7 +363,7 @@ public class ServiceRequestExecutorImpl implements IServiceRequestExecutor {
                     if (result.isSuccess()) {
                         IPolicy policyImpl = result.getResult();
                         try {
-                            Object policyConfig = policyFactory.loadConfig(policyImpl, policy.getPolicyJsonConfig());
+                            Object policyConfig = policyFactory.loadConfig(policyImpl, policy.getPolicyImpl(), policy.getPolicyJsonConfig());
                             PolicyWithConfiguration pwc = new PolicyWithConfiguration(policyImpl, policyConfig);
                             rval.set(localIdx, pwc);
                         } catch (Throwable t) {

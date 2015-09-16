@@ -21,7 +21,7 @@ import io.apiman.gateway.engine.async.IAsyncResultHandler;
 
 /**
  * Factory used to create instances of policies.  This is done asynchronously in case
- * a policy implementation is being provided via a plugin that has not yet been 
+ * a policy implementation is being provided via a plugin that has not yet been
  * downloaded.
  *
  * @author eric.wittmann@redhat.com
@@ -32,7 +32,7 @@ public interface IPolicyFactory {
      * @param pluginRegistry the plugin registry
      */
     public void setPluginRegistry(IPluginRegistry pluginRegistry);
-    
+
     /**
      * Load a policy implementation asynchronously.
      * @param policyImpl the policy implementation
@@ -43,9 +43,10 @@ public interface IPolicyFactory {
     /**
      * Loads the given configuration data into a config object.
      * @param policy the policy
+     * @param policySpec the string identifier for the policy
      * @param configData the config data
      * @return config the loaded config object
      */
-    public Object loadConfig(IPolicy policy, String configData);
-    
+    public Object loadConfig(IPolicy policy, String policySpec, String configData);
+
 }
