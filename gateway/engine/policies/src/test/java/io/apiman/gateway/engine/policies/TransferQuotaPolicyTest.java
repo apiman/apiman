@@ -111,6 +111,7 @@ public class TransferQuotaPolicyTest extends ApimanPolicyTest {
 
         send(request);
         send(request);
+        send(request);
 
         // Now if we try it one more time, we'll get a failure!
         try {
@@ -121,6 +122,8 @@ public class TransferQuotaPolicyTest extends ApimanPolicyTest {
             Assert.assertEquals(PolicyFailureCodes.BYTE_QUOTA_EXCEEDED, failure.getFailureCode());
             Assert.assertEquals("Transfer quota exceeded.", failure.getMessage());
             Assert.assertEquals(429, failure.getResponseCode());
+            String remaining = failure.getHeaders().get("X-Data-Remaining");
+            Assert.assertEquals("-514240", remaining);
         }
     }
 
