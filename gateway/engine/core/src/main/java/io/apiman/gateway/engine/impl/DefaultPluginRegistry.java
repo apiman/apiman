@@ -269,7 +269,8 @@ public class DefaultPluginRegistry implements IPluginRegistry {
                                 }
                                 File pluginFile = new File(pluginDir, "plugin." + coordinates.getType()); //$NON-NLS-1$
                                 if (!pluginFile.exists()) {
-                                    FileUtils.moveFile(downloadedArtifactFile, pluginFile);
+                                    FileUtils.copyFile(downloadedArtifactFile, pluginFile);
+                                    FileUtils.deleteQuietly(downloadedArtifactFile);
                                 } else {
                                     FileUtils.deleteQuietly(downloadedArtifactFile);
                                 }

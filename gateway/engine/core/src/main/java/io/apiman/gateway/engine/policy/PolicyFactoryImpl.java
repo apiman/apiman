@@ -33,7 +33,7 @@ import java.util.Map;
  * @author eric.wittmann@redhat.com
  */
 public class PolicyFactoryImpl implements IPolicyFactory {
-    
+
     private IPluginRegistry pluginRegistry;
     private Map<String, IPolicy> policyCache = new HashMap<>();
     private Map<String, Object> policyConfigCache = new HashMap<>();
@@ -43,7 +43,7 @@ public class PolicyFactoryImpl implements IPolicyFactory {
      */
     public PolicyFactoryImpl() {
     }
-    
+
     /**
      * @see io.apiman.gateway.engine.policy.IPolicyFactory#setPluginRegistry(io.apiman.gateway.engine.IPluginRegistry)
      */
@@ -51,20 +51,21 @@ public class PolicyFactoryImpl implements IPolicyFactory {
     public void setPluginRegistry(IPluginRegistry pluginRegistry) {
         this.pluginRegistry = pluginRegistry;
     }
-    
+
     /**
-     * @see io.apiman.gateway.engine.policy.IPolicyFactory#loadConfig(io.apiman.gateway.engine.policy.IPolicy, java.lang.String)
+     * @see io.apiman.gateway.engine.policy.IPolicyFactory#loadConfig(io.apiman.gateway.engine.policy.IPolicy, java.lang.String, java.lang.String)
      */
     @Override
-    public Object loadConfig(IPolicy policy, String configData) {
-        if (policyConfigCache.containsKey(configData)) {
-            return policyConfigCache.get(configData);
+    public Object loadConfig(IPolicy policy, String policySpec, String configData) {
+        String cacheKey = policySpec + "||" + configData; //$NON-NLS-1$
+        if (policyConfigCache.containsKey(cacheKey)) {
+            return policyConfigCache.get(cacheKey);
         }
         Object config = policy.parseConfiguration(configData);
-        policyConfigCache.put(configData, config);
+        policyConfigCache.put(cacheKey, config);
         return config;
     }
-    
+
     /**
      * @see io.apiman.gateway.engine.policy.IPolicyFactory#loadPolicy(java.lang.String, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
@@ -102,7 +103,7 @@ public class PolicyFactoryImpl implements IPolicyFactory {
         IPolicy rval = null;
         String classname = policyImpl.substring(6);
         Class<?> c = null;
-        
+
         // First try a simple Class.forName()
         try { c = Class.forName(classname); } catch (ClassNotFoundException e) { }
         // Didn't work?  Try using this class's classloader.
@@ -161,7 +162,7 @@ public class PolicyFactoryImpl implements IPolicyFactory {
                         handler.handle(AsyncResultImpl.<IPolicy>create(new PolicyNotFoundException(policyImpl, e)));
                         return;
                     }
-                    
+
                     policyCache.put(policyImpl, rval);
                     handler.handle(AsyncResultImpl.create(rval));
                 } else {

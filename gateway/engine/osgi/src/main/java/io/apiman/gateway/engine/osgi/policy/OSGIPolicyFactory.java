@@ -22,7 +22,7 @@ import io.apiman.gateway.engine.policy.IPolicyFactory;
 
 /**
  * A version of the policy factory that works in an OSGi environment.
- * 
+ *
  * @author eric.wittmann@redhat.com
  */
 public class OSGIPolicyFactory implements IPolicyFactory {
@@ -32,7 +32,7 @@ public class OSGIPolicyFactory implements IPolicyFactory {
      */
     public OSGIPolicyFactory() {
     }
-    
+
     /**
      * @see io.apiman.gateway.engine.policy.IPolicyFactory#setPluginRegistry(io.apiman.gateway.engine.IPluginRegistry)
      */
@@ -40,15 +40,15 @@ public class OSGIPolicyFactory implements IPolicyFactory {
     public void setPluginRegistry(IPluginRegistry pluginRegistry) {
         throw new RuntimeException("Not yet implemented."); //$NON-NLS-1$
     }
-    
+
     /**
-     * @see io.apiman.gateway.engine.policy.IPolicyFactory#loadConfig(io.apiman.gateway.engine.policy.IPolicy, java.lang.String)
+     * @see io.apiman.gateway.engine.policy.IPolicyFactory#loadConfig(io.apiman.gateway.engine.policy.IPolicy, java.lang.String, java.lang.String)
      */
     @Override
-    public Object loadConfig(IPolicy policy, String configData) {
+    public Object loadConfig(IPolicy policy, String policySpec, String configData) {
         throw new RuntimeException("Not yet implemented."); //$NON-NLS-1$
     }
-    
+
     /**
      * @see io.apiman.gateway.engine.policy.IPolicyFactory#loadPolicy(java.lang.String, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
