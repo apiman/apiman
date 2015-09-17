@@ -73,7 +73,7 @@
             <column name="policydef_id" value="TransferQuotaPolicy"/>
             <column name="language"/>
             <column name="template"
-                    value="Consumers are limited to transferring @{limit} bytes per per @{granularity} per @{period}."/>
+                    value="Consumers are limited to transferring @{limit} bytes per @{granularity} per @{period}."/>
         </insert>
     </changeSet>
     <changeSet author="apiman" id="1434686531709-3">

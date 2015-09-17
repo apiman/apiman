@@ -9,7 +9,7 @@ Content-Type: application/json
   "templates" : [
     {
       "language" : null,
-      "template" : "Consumers are limited to transferring @{limit} bytes per per @{granularity} per @{period}."
+      "template" : "Consumers are limited to transferring @{limit} bytes per @{granularity} per @{period}."
     }
   ]
 }

@@ -183,9 +183,6 @@ module Apiman {
 
             var validate = function(config) {
                 var valid = true;
-                if (config.limit) {
-                    config.limit = Number(config.limit);
-                }
                 if (!config.limit || config.limit < 1) {
                     valid = false;
                 }
@@ -217,8 +214,13 @@ module Apiman {
                     if (den == 'GB') {
                         denFact = 1024 * 1024 * 1024;
                     }
-                    $scope.config.limit = Number(amt) * denFact;
-                    Logger.debug("Set limit to {0}", $scope.config.limit);
+                    try {
+                        $scope.config.limit = Number(amt) * denFact;
+                    } catch (e) {
+                        $scope.config.limit = null;
+                    }
+                } else {
+                    $scope.config.limit = null;
                 }
             };
             $scope.$watch('config', validate, true);
