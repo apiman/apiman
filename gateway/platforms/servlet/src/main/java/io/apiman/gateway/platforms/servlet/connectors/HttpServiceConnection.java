@@ -15,6 +15,23 @@
  */
 package io.apiman.gateway.platforms.servlet.connectors;
 
+import io.apiman.common.config.options.BasicAuthOptions;
+import io.apiman.gateway.engine.IServiceConnection;
+import io.apiman.gateway.engine.IServiceConnectionResponse;
+import io.apiman.gateway.engine.async.AsyncResultImpl;
+import io.apiman.gateway.engine.async.IAsyncHandler;
+import io.apiman.gateway.engine.async.IAsyncResultHandler;
+import io.apiman.gateway.engine.auth.RequiredAuthType;
+import io.apiman.gateway.engine.beans.Service;
+import io.apiman.gateway.engine.beans.ServiceRequest;
+import io.apiman.gateway.engine.beans.ServiceResponse;
+import io.apiman.gateway.engine.beans.exceptions.ConnectorException;
+import io.apiman.gateway.engine.io.ByteBuffer;
+import io.apiman.gateway.engine.io.IApimanBuffer;
+import io.apiman.gateway.platforms.servlet.GatewayThreadContext;
+import io.apiman.gateway.platforms.servlet.connectors.ok.OkUrlFactory;
+import io.apiman.gateway.platforms.servlet.connectors.ssl.SSLSessionStrategy;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -47,23 +64,6 @@ import com.squareup.okhttp.internal.Network;
 import com.squareup.okhttp.internal.Util;
 import com.squareup.okhttp.internal.http.AuthenticatorAdapter;
 
-import io.apiman.common.config.options.BasicAuthOptions;
-import io.apiman.gateway.engine.IServiceConnection;
-import io.apiman.gateway.engine.IServiceConnectionResponse;
-import io.apiman.gateway.engine.async.AsyncResultImpl;
-import io.apiman.gateway.engine.async.IAsyncHandler;
-import io.apiman.gateway.engine.async.IAsyncResultHandler;
-import io.apiman.gateway.engine.auth.RequiredAuthType;
-import io.apiman.gateway.engine.beans.Service;
-import io.apiman.gateway.engine.beans.ServiceRequest;
-import io.apiman.gateway.engine.beans.ServiceResponse;
-import io.apiman.gateway.engine.beans.exceptions.ConnectorException;
-import io.apiman.gateway.engine.io.ByteBuffer;
-import io.apiman.gateway.engine.io.IApimanBuffer;
-import io.apiman.gateway.platforms.servlet.GatewayThreadContext;
-import io.apiman.gateway.platforms.servlet.connectors.ok.OkUrlFactory;
-import io.apiman.gateway.platforms.servlet.connectors.ssl.SSLSessionStrategy;
-
 /**
  * Models a live connection to a back end service.
  *
@@ -71,12 +71,19 @@ import io.apiman.gateway.platforms.servlet.connectors.ssl.SSLSessionStrategy;
  */
 public class HttpServiceConnection implements IServiceConnection, IServiceConnectionResponse {
 
-    private static final Set<String> SUPPRESSED_HEADERS = new HashSet<>();
+    private static final Set<String> SUPPRESSED_REQUEST_HEADERS = new HashSet<>();
+    private static final Set<String> SUPPRESSED_RESPONSE_HEADERS = new HashSet<>();
     static {
-        SUPPRESSED_HEADERS.add("Transfer-Encoding"); //$NON-NLS-1$
-        SUPPRESSED_HEADERS.add("Content-Length"); //$NON-NLS-1$
-        SUPPRESSED_HEADERS.add("X-API-Key"); //$NON-NLS-1$
-        SUPPRESSED_HEADERS.add("Host"); //$NON-NLS-1$
+        SUPPRESSED_REQUEST_HEADERS.add("Transfer-Encoding"); //$NON-NLS-1$
+        SUPPRESSED_REQUEST_HEADERS.add("Content-Length"); //$NON-NLS-1$
+        SUPPRESSED_REQUEST_HEADERS.add("X-API-Key"); //$NON-NLS-1$
+        SUPPRESSED_REQUEST_HEADERS.add("Host"); //$NON-NLS-1$
+        
+        
+        SUPPRESSED_RESPONSE_HEADERS.add("OkHttp-Received-Millis"); //$NON-NLS-1$
+        SUPPRESSED_RESPONSE_HEADERS.add("OkHttp-Response-Source"); //$NON-NLS-1$
+        SUPPRESSED_RESPONSE_HEADERS.add("OkHttp-Selected-Protocol"); //$NON-NLS-1$
+        SUPPRESSED_RESPONSE_HEADERS.add("OkHttp-Sent-Millis"); //$NON-NLS-1$
     }
 
     private static final OkHttpClient okClient;
@@ -143,7 +150,7 @@ public class HttpServiceConnection implements IServiceConnection, IServiceConnec
      */
     private void connect() throws ConnectorException {
         try {
-            Set<String> suppressedHeaders = new HashSet<>(SUPPRESSED_HEADERS);
+            Set<String> suppressedHeaders = new HashSet<>(SUPPRESSED_REQUEST_HEADERS);
 
             String endpoint = service.getEndpoint();
             if (endpoint.endsWith("/")) { //$NON-NLS-1$
@@ -336,7 +343,7 @@ public class HttpServiceConnection implements IServiceConnection, IServiceConnec
             response = GatewayThreadContext.getServiceResponse();
             Map<String, List<String>> headerFields = connection.getHeaderFields();
             for (String headerName : headerFields.keySet()) {
-                if (headerName != null) {
+                if (headerName != null && !SUPPRESSED_RESPONSE_HEADERS.contains(headerName)) {
                     response.getHeaders().put(headerName, connection.getHeaderField(headerName));
                 }
             }
