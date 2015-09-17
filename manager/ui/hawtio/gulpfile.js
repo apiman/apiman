@@ -97,9 +97,6 @@ gulp.task('clean', ['concat'], function() {
 });
 
 gulp.task('watch', ['build'], function() {
-  plugins.watch(['libs/**/*.js', 'libs/**/*.css', 'plugins/api-manager/css/**/*.*', 'plugins/api-manager/html/**/*.*', 'index.html', config.dist + '/' + config.js], function() {
-    gulp.start('reload');
-  });
   plugins.watch(['libs/**/*.d.ts', config.ts, config.templates], function() {
     gulp.start(['tsc', 'template', 'concat', 'clean']);
   });
@@ -108,7 +105,7 @@ gulp.task('watch', ['build'], function() {
 gulp.task('connect', ['watch'], function() {
   plugins.connect.server({
     root: '.',
-    livereload: true,
+    livereload: false,
     port: 2772,
     fallback: 'index.html'
   });

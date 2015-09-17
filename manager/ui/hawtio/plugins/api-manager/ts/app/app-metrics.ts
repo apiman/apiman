@@ -128,6 +128,7 @@ module Apiman {
                     refreshUsageCharts();
                 }
             };
+            $scope.refreshCharts = refreshCharts;
             
             $scope.$watch('metricsRange', function(newValue, oldValue) {
                 if (newValue && newValue != oldValue) {

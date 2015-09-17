@@ -405,6 +405,7 @@ module Apiman {
             }
             
             var refreshCharts = function() {
+                Logger.debug("Refreshing charts!");
                 if ($scope.metricsType == 'usage') {
                     refreshUsageCharts();
                 }
@@ -412,6 +413,7 @@ module Apiman {
                     refreshResponseTypeCharts();
                 }
             };
+            $scope.refreshCharts = refreshCharts;
             
             $scope.$watch('metricsRange', function(newValue, oldValue) {
                 if (newValue && newValue != oldValue) {
