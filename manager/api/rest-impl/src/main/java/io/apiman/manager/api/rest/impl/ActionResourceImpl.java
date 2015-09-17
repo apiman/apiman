@@ -16,17 +16,6 @@
 
 package io.apiman.manager.api.rest.impl;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 import io.apiman.gateway.engine.beans.Application;
 import io.apiman.gateway.engine.beans.Contract;
 import io.apiman.gateway.engine.beans.Policy;
@@ -66,6 +55,17 @@ import io.apiman.manager.api.rest.impl.audit.AuditUtils;
 import io.apiman.manager.api.rest.impl.i18n.Messages;
 import io.apiman.manager.api.rest.impl.util.ExceptionFactory;
 import io.apiman.manager.api.security.ISecurityContext;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 /**
  * Implementation of the Action API.
@@ -135,12 +135,8 @@ public class ActionResourceImpl implements IActionResource {
         }
 
         // Validate that it's ok to perform this action - service must be Ready.
-        try {
-            if (!serviceValidator.isReady(versionBean)) {
-                throw ExceptionFactory.actionException(Messages.i18n.format("InvalidServiceStatus")); //$NON-NLS-1$
-            }
-        } catch (Exception e) {
-            throw ExceptionFactory.actionException(Messages.i18n.format("InvalidServiceStatus"), e); //$NON-NLS-1$
+        if (versionBean.getStatus() != ServiceStatus.Ready) {
+            throw ExceptionFactory.actionException(Messages.i18n.format("InvalidServiceStatus")); //$NON-NLS-1$
         }
 
         Service gatewaySvc = new Service();
@@ -242,7 +238,7 @@ public class ActionResourceImpl implements IActionResource {
             throw ExceptionFactory.actionException(Messages.i18n.format("ServiceNotFound")); //$NON-NLS-1$
         }
 
-        // Validate that it's ok to perform this action - service must be Ready.
+        // Validate that it's ok to perform this action - service must be Published.
         if (versionBean.getStatus() != ServiceStatus.Published) {
             throw ExceptionFactory.actionException(Messages.i18n.format("InvalidServiceStatus")); //$NON-NLS-1$
         }
@@ -305,12 +301,8 @@ public class ActionResourceImpl implements IActionResource {
         }
 
         // Validate that it's ok to perform this action - application must be Ready.
-        try {
-            if (!applicationValidator.isReady(versionBean)) {
-                throw ExceptionFactory.actionException(Messages.i18n.format("InvalidApplicationStatus")); //$NON-NLS-1$
-            }
-        } catch (Exception e) {
-            throw ExceptionFactory.actionException(Messages.i18n.format("InvalidApplicationStatus"), e); //$NON-NLS-1$
+        if (versionBean.getStatus() != ApplicationStatus.Ready) {
+            throw ExceptionFactory.actionException(Messages.i18n.format("InvalidApplicationStatus")); //$NON-NLS-1$
         }
 
         Application application = new Application();
