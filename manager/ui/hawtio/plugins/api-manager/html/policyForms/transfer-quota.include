@@ -9,46 +9,43 @@
     }
   </style>
   <div>
-    <span apiman-i18n-key="transfer-quota.config-sentence-preamble">I want to set a transfer (data) quota of </span>
-      <table>
-        <tr>
-          <td>
-            <input id="num-bytes" ng-model="limitAmount" class="apiman-form-control form-control inline-apiman-form-control form-control" style="width: 75px; border-right: none; margin: 0px" type="text"></input>
-          </td>
-          <td>
-            <select id="denomination" ng-model="limitDenomination" class="selectpicker inline-line apiman-inline-form-dropdown" data-style="btn-default apiman-inline-form-dropdown" style="width: auto; margin: 0px; margin-left: -4px">
-              <option apiman-i18n-key="transfer-quota.bytes" value="B">B</option>
-              <option apiman-i18n-key="transfer-quota.kilobytes" value="KB">KB</option>
-              <option apiman-i18n-key="transfer-quota.megabytes" value="MB">MB</option>
-              <option apiman-i18n-key="transfer-quota.gigabytes" value="GB">GB</option>
-            </select>
-          </td>
-        </tr>
-      </table>
-    <span apiman-i18n-key="transfer-quota.of">of</span>
-    <select id="direction" ng-model="config.direction" apiman-select-picker="" class="selectpicker inline-line apiman-inline-form-dropdown" data-style="btn-default apiman-inline-form-dropdown" style="width: auto;">
-      <option value="" data-content="<span class='apiman-label-faded'>transfer direction</span>" apiman-i18n-key="transfer-direction">transfer direction</option>
-      <option apiman-i18n-key="upload" value="upload">upload</option>
-      <option apiman-i18n-key="download" value="download">download</option>
-      <option apiman-i18n-key="upload-plus-download" value="both">upload+download</option>
-    </select>
-    <span apiman-i18n-key="transfer-quota.per">data per</span>
-    <select id="granularity" ng-model="config.granularity" apiman-select-picker="" class="selectpicker inline-line apiman-inline-form-dropdown" data-style="btn-default apiman-inline-form-dropdown" style="width: 100px">
-      <option value="" data-content="<span class='apiman-label-faded'>Granularity</span>" apiman-i18n-key="granularity">Granularity</option>
-      <option value="Application" apiman-i18n-key="rate-limiting.application">Application</option>
-      <option value="User" apiman-i18n-key="rate-limiting.user">User</option>
-      <option value="Service" apiman-i18n-key="rate-limiting.service">Service</option>
-    </select>
-    <span apiman-i18n-key="per">per</span>
-    <select id="period" ng-model="config.period" apiman-select-picker="" class="selectpicker inline-line apiman-inline-form-dropdown" data-style="btn-default apiman-inline-form-dropdown" style="width: 100px">
-      <option value="" data-content="<span class='apiman-label-faded'>Period</span>" apiman-i18n-key="rate-limiting.period">Period</option>
-      <option value="Second" apiman-i18n-key="rate-limiting.second">Second</option>
-      <option value="Minute" apiman-i18n-key="rate-limiting.minute">Minute</option>
-      <option value="Hour" apiman-i18n-key="rate-limiting.hour">Hour</option>
-      <option value="Day" apiman-i18n-key="rate-limiting.day">Day</option>
-      <option value="Month" apiman-i18n-key="rate-limiting.month">Month</option>
-      <option value="Year" apiman-i18n-key="rate-limiting.year">Year</option>
-    </select>
+    <form class="form-inline">
+	    <span apiman-i18n-key="transfer-quota.config-sentence-preamble">I want to set a transfer (data) quota of </span>
+        <input id="num-bytes" ng-model="limitAmount" type="text" class="form-control" style="width: 85px; height: 28px; margin-top: -2px; margin-left: 5px; margin-right: -8px"></input>
+        <select id="denomination" ng-model="limitDenomination" apiman-select-picker="" class="selectpicker inline-line apiman-inline-form-dropdown" data-style="btn-default apiman-inline-form-dropdown" style="width: auto; margin-left: 0px">
+          <option apiman-i18n-key="transfer-quota.bytes" value="B">B</option>
+          <option apiman-i18n-key="transfer-quota.kilobytes" value="KB">KB</option>
+          <option apiman-i18n-key="transfer-quota.megabytes" value="MB">MB</option>
+          <option apiman-i18n-key="transfer-quota.gigabytes" value="GB">GB</option>
+        </select>
+
+	    <span apiman-i18n-key="transfer-quota.of">of</span>
+	    <select id="direction" ng-model="config.direction" apiman-select-picker="" class="selectpicker inline-line apiman-inline-form-dropdown" data-style="btn-default apiman-inline-form-dropdown" style="width: auto;">
+	      <option value="" data-content="<span class='apiman-label-faded'>transfer direction</span>" apiman-i18n-key="transfer-direction">transfer direction</option>
+	      <option apiman-i18n-key="upload" value="upload">upload</option>
+	      <option apiman-i18n-key="download" value="download">download</option>
+	      <option apiman-i18n-key="upload-plus-download" value="both">upload+download</option>
+	    </select>
+	    
+	    <span apiman-i18n-key="transfer-quota.per">data per</span>
+	    <select id="granularity" ng-model="config.granularity" apiman-select-picker="" class="selectpicker inline-line apiman-inline-form-dropdown" data-style="btn-default apiman-inline-form-dropdown" style="width: 100px">
+	      <option value="" data-content="<span class='apiman-label-faded'>Granularity</span>" apiman-i18n-key="granularity">Granularity</option>
+	      <option value="Application" apiman-i18n-key="rate-limiting.application">Application</option>
+	      <option value="User" apiman-i18n-key="rate-limiting.user">User</option>
+	      <option value="Service" apiman-i18n-key="rate-limiting.service">Service</option>
+	    </select>
+	    
+	    <span apiman-i18n-key="per">per</span>
+	    <select id="period" ng-model="config.period" apiman-select-picker="" class="selectpicker inline-line apiman-inline-form-dropdown" data-style="btn-default apiman-inline-form-dropdown" style="width: 100px">
+	      <option value="" data-content="<span class='apiman-label-faded'>Period</span>" apiman-i18n-key="rate-limiting.period">Period</option>
+	      <option value="Second" apiman-i18n-key="rate-limiting.second">Second</option>
+	      <option value="Minute" apiman-i18n-key="rate-limiting.minute">Minute</option>
+	      <option value="Hour" apiman-i18n-key="rate-limiting.hour">Hour</option>
+	      <option value="Day" apiman-i18n-key="rate-limiting.day">Day</option>
+	      <option value="Month" apiman-i18n-key="rate-limiting.month">Month</option>
+	      <option value="Year" apiman-i18n-key="rate-limiting.year">Year</option>
+	    </select>
+    </form>
   </div>
   <div style="margin-top: 8px;" id="userRow" ng-show="config.granularity == 'User'">
     <span apiman-i18n-key="reate-limiting.get-user-id-from">Get the user's id from:</span>
