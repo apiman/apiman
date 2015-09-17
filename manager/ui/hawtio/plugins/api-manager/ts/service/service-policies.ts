@@ -3,12 +3,13 @@
 module Apiman {
 
  export var ServicePoliciesController = _module.controller("Apiman.ServicePoliciesController",
-        ['$q', '$scope', '$location', 'PageLifecycle', 'ServiceEntityLoader', 'OrgSvcs', 'Dialogs', '$routeParams',
-        ($q, $scope, $location, PageLifecycle, ServiceEntityLoader, OrgSvcs, Dialogs, $routeParams) => {
+        ['$q', '$scope', '$location', 'PageLifecycle', 'ServiceEntityLoader', 'OrgSvcs', 'Dialogs', '$routeParams', 'Configuration',
+        ($q, $scope, $location, PageLifecycle, ServiceEntityLoader, OrgSvcs, Dialogs, $routeParams, Configuration) => {
             var params = $routeParams;
             $scope.organizationId = params.org;
             $scope.tab = 'policies';
             $scope.version = params.version;
+            $scope.showMetrics = Configuration.ui.metrics;
 
             var removePolicy = function(policy) {
                 angular.forEach($scope.policies, function(p, index) {

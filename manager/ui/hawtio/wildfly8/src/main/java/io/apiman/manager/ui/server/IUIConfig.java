@@ -25,6 +25,11 @@ import io.apiman.manager.ui.server.beans.ApiAuthType;
 public interface IUIConfig {
 
     /**
+     * Returns true if the metrics UI should be enabled.
+     */
+    public boolean isMetricsEnabled();
+
+    /**
      * Gets the management layer's API endpoint.
      * @return the management api endpoint
      */

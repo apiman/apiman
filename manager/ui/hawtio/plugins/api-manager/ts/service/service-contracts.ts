@@ -3,12 +3,13 @@
 module Apiman {
 
     export var ServiceContractsController = _module.controller("Apiman.ServiceContractsController",
-        ['$q', '$scope', '$location', 'PageLifecycle', 'ServiceEntityLoader', 'OrgSvcs', 'Logger', '$routeParams',
-        ($q, $scope, $location, PageLifecycle, ServiceEntityLoader, OrgSvcs, Logger, $routeParams) => {
+        ['$q', '$scope', '$location', 'PageLifecycle', 'ServiceEntityLoader', 'OrgSvcs', 'Logger', '$routeParams', 'Configuration',
+        ($q, $scope, $location, PageLifecycle, ServiceEntityLoader, OrgSvcs, Logger, $routeParams, Configuration) => {
             var params = $routeParams;
             $scope.organizationId = params.org;
             $scope.tab = 'contracts';
             $scope.version = params.version;
+            $scope.showMetrics = Configuration.ui.metrics;
 
             var getNextPage = function(successHandler, errorHandler) {
                 var maxCount = 10;

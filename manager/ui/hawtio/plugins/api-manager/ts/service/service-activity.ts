@@ -3,12 +3,13 @@
 module Apiman {
 
  export var ServiceActivityController = _module.controller("Apiman.ServiceActivityController",
-        ['$q', '$scope', '$location', 'PageLifecycle', 'ServiceEntityLoader', 'AuditSvcs', '$routeParams',
-         ($q, $scope, $location, PageLifecycle, ServiceEntityLoader, AuditSvcs, $routeParams) => {
+        ['$q', '$scope', '$location', 'PageLifecycle', 'ServiceEntityLoader', 'AuditSvcs', '$routeParams', 'Configuration',
+         ($q, $scope, $location, PageLifecycle, ServiceEntityLoader, AuditSvcs, $routeParams, Configuration) => {
             var params = $routeParams;
             $scope.organizationId = params.org;
             $scope.tab = 'activity';
             $scope.version = params.version;
+            $scope.showMetrics = Configuration.ui.metrics;
             
             var getNextPage = function(successHandler, errorHandler) {
                 $scope.currentPage = $scope.currentPage + 1;

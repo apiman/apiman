@@ -3,8 +3,8 @@
 module Apiman {
 
  export var ServiceImplController = _module.controller("Apiman.ServiceImplController",
-        ['$q', '$scope', '$location', 'PageLifecycle', 'ServiceEntityLoader', 'OrgSvcs', 'ApimanSvcs', '$routeParams', 'EntityStatusService', 'Logger',
-        ($q, $scope, $location, PageLifecycle, ServiceEntityLoader, OrgSvcs, ApimanSvcs, $routeParams, EntityStatusService, Logger) => {
+        ['$q', '$scope', '$location', 'PageLifecycle', 'ServiceEntityLoader', 'OrgSvcs', 'ApimanSvcs', '$routeParams', 'EntityStatusService', 'Logger', 'Configuration',
+        ($q, $scope, $location, PageLifecycle, ServiceEntityLoader, OrgSvcs, ApimanSvcs, $routeParams, EntityStatusService, Logger, Configuration) => {
             var params = $routeParams;
             $scope.organizationId = params.org;
             $scope.tab = 'impl';
@@ -12,6 +12,7 @@ module Apiman {
             $scope.typeOptions = ["rest", "soap"];
             $scope.updatedService = new Object();
             $scope.apiSecurity = new Object();
+            $scope.showMetrics = Configuration.ui.metrics;
 
             var pageData = ServiceEntityLoader.getCommonData($scope, $location);
             if (params.version != null) {

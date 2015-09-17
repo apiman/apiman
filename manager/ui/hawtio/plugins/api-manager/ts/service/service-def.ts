@@ -3,12 +3,14 @@
 module Apiman {
 
  export var ServiceDefController = _module.controller("Apiman.ServiceDefController",
-        ['$q', '$scope', '$location', 'PageLifecycle', 'ServiceEntityLoader', 'OrgSvcs', 'Logger', '$routeParams', 'ServiceDefinitionSvcs',
-        ($q, $scope, $location, PageLifecycle, ServiceEntityLoader, OrgSvcs, Logger, $routeParams, ServiceDefinitionSvcs) => {
+        ['$q', '$scope', '$location', 'PageLifecycle', 'ServiceEntityLoader', 'OrgSvcs', 'Logger', '$routeParams', 'ServiceDefinitionSvcs', 'Configuration',
+        ($q, $scope, $location, PageLifecycle, ServiceEntityLoader, OrgSvcs, Logger, $routeParams, ServiceDefinitionSvcs, Configuration) => {
             var params = $routeParams;
             $scope.organizationId = params.org;
             $scope.tab = 'def';
             $scope.version = params.version;
+            $scope.showMetrics = Configuration.ui.metrics;
+
             $scope.typeOptions = [
                 { "label" : "No Service Definition", "value" : "None" },
                 { "label" : "Swagger (JSON)",        "value" : "SwaggerJSON" },

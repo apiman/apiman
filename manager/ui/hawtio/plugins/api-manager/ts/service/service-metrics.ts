@@ -9,12 +9,13 @@ module Apiman {
     export var ONE_HOUR = 1 * 60 * 60 * 1000;
 
     export var ServiceMetricsController = _module.controller("Apiman.ServiceMetricsController",
-        ['$q', 'Logger', '$scope', '$location', 'PageLifecycle', 'ServiceEntityLoader', 'OrgSvcs', 'MetricsSvcs', '$routeParams', '$timeout',
-        ($q, Logger, $scope, $location, PageLifecycle, ServiceEntityLoader, OrgSvcs, MetricsSvcs, $routeParams, $timeout) => {
+        ['$q', 'Logger', '$scope', '$location', 'PageLifecycle', 'ServiceEntityLoader', 'OrgSvcs', 'MetricsSvcs', '$routeParams', '$timeout', 'Configuration',
+        ($q, Logger, $scope, $location, PageLifecycle, ServiceEntityLoader, OrgSvcs, MetricsSvcs, $routeParams, $timeout, Configuration) => {
             var params = $routeParams;
             $scope.organizationId = params.org;
             $scope.tab = 'metrics';
             $scope.version = params.version;
+            $scope.showMetrics = Configuration.ui.metrics;
             $scope.metricsRange = '7days';
             $scope.metricsType = 'usage';
             

@@ -26,6 +26,15 @@ module ApimanConfiguration {
                 }
                 return authHeader;
             };
+            if (!cdata.ui) {
+                cdata.ui = {
+                  header: false,
+                  metrics: true
+                };
+            }
+            if (cdata.ui.metrics == undefined || cdata.ui.metrics == null) {
+                cdata.ui.metrics = true;
+            }
             return cdata;
         }]);
 

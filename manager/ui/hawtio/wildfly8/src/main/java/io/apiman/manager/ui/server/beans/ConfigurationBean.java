@@ -31,6 +31,7 @@ public class ConfigurationBean implements Serializable {
 
     private AppConfigurationBean apiman;
     private UserConfigurationBean user;
+    private UiConfigurationBean ui;
     private ApiConfigurationBean api;
 
     /**
@@ -82,5 +83,19 @@ public class ConfigurationBean implements Serializable {
      */
     public void setApi(ApiConfigurationBean api) {
         this.api = api;
+    }
+
+    /**
+     * @return the ui
+     */
+    public UiConfigurationBean getUi() {
+        return ui;
+    }
+
+    /**
+     * @param ui the ui to set
+     */
+    public void setUi(UiConfigurationBean ui) {
+        this.ui = ui;
     }
 }

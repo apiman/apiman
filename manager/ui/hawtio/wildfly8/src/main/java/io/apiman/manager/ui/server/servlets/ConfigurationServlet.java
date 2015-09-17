@@ -23,6 +23,7 @@ import io.apiman.manager.ui.server.beans.ApiConfigurationBean;
 import io.apiman.manager.ui.server.beans.AppConfigurationBean;
 import io.apiman.manager.ui.server.beans.BasicAuthCredentialsBean;
 import io.apiman.manager.ui.server.beans.ConfigurationBean;
+import io.apiman.manager.ui.server.beans.UiConfigurationBean;
 import io.apiman.manager.ui.server.beans.UserConfigurationBean;
 
 import java.io.IOException;
@@ -86,7 +87,10 @@ public class ConfigurationServlet extends AbstractUIServlet {
             ConfigurationBean configBean = new ConfigurationBean();
             configBean.setApiman(new AppConfigurationBean());
             configBean.setUser(new UserConfigurationBean());
+            configBean.setUi(new UiConfigurationBean());
             configBean.setApi(new ApiConfigurationBean());
+            configBean.getUi().setHeader(true);
+            configBean.getUi().setMetrics(getConfig().isMetricsEnabled());
             configBean.getApiman().setVersion(version.getVersionString());
             configBean.getApiman().setBuiltOn(version.getVersionDate());
             configBean.getApiman().setLogoutUrl(getConfig().getLogoutUrl());

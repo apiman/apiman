@@ -3,12 +3,13 @@
 module Apiman {
     
     export var AppContractsController = _module.controller("Apiman.AppContractsController",
-        ['$q', '$scope', '$location', 'PageLifecycle', 'AppEntityLoader', 'OrgSvcs', 'Logger', 'Dialogs', '$routeParams',
-        ($q, $scope, $location, PageLifecycle, AppEntityLoader, OrgSvcs, Logger, Dialogs, $routeParams) => {
+        ['$q', '$scope', '$location', 'PageLifecycle', 'AppEntityLoader', 'OrgSvcs', 'Logger', 'Dialogs', '$routeParams', 'Configuration',
+        ($q, $scope, $location, PageLifecycle, AppEntityLoader, OrgSvcs, Logger, Dialogs, $routeParams, Configuration) => {
             var params = $routeParams;
             $scope.organizationId = params.org;
             $scope.tab = 'contracts';
             $scope.version = params.version;
+            $scope.showMetrics = Configuration.ui.metrics;
             var pageData = AppEntityLoader.getCommonData($scope, $location);
             pageData = angular.extend(pageData, {
                 contracts: $q(function(resolve, reject) {

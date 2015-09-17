@@ -33,6 +33,8 @@ public class UIConfig implements IUIConfig {
     public static final String APIMAN_MANAGER_UI_API_BASIC_AUTH_PASS = "apiman-manager-ui.api.authentication.basic.password"; //$NON-NLS-1$
     public static final String APIMAN_MANAGER_UI_API_AUTH_TOKEN_GENERATOR = "apiman-manager-ui.api.authentication.token.generator"; //$NON-NLS-1$
 
+    public static final String APIMAN_MANAGER_UI_ENABLE_METRICS = "apiman-manager-ui.metrics.enable"; //$NON-NLS-1$
+
     public static final String APIMAN_MANAGER_UI_LOGOUT_URL = "apiman-manager-ui.logout-url"; //$NON-NLS-1$
 
     private static Configuration config;
@@ -44,6 +46,14 @@ public class UIConfig implements IUIConfig {
      * Constructor.
      */
     public UIConfig() {
+    }
+
+    /**
+     * @see io.apiman.manager.ui.server.IUIConfig#isMetricsEnabled()
+     */
+    @Override
+    public boolean isMetricsEnabled() {
+        return config.getBoolean(UIConfig.APIMAN_MANAGER_UI_ENABLE_METRICS, true);
     }
 
     /**
