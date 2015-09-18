@@ -228,7 +228,6 @@ public class ServiceRequestExecutorImpl implements IServiceRequestExecutor {
                         requestChain.bodyHandler(new IAsyncHandler<IApimanBuffer>() {
                             @Override
                             public void handle(IApimanBuffer buffer) {
-                                // TODO count the # of bytes uploaded here
                                 requestMetric.setBytesUploaded(requestMetric.getBytesUploaded() + buffer.length());
                                 serviceConnection.write(buffer);
                             }
