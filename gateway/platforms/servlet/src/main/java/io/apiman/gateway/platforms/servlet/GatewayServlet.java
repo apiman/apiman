@@ -264,6 +264,7 @@ public abstract class GatewayServlet extends HttpServlet {
         srequest.setServiceOrgId(pathInfo.orgId);
         srequest.setServiceId(pathInfo.serviceId);
         srequest.setServiceVersion(pathInfo.serviceVersion);
+        srequest.setUrl(request.getRequestURL().toString());
         srequest.setDestination(pathInfo.resource);
         srequest.setQueryParams(queryParams);
         readHeaders(srequest, request);

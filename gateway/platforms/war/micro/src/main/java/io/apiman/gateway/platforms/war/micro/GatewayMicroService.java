@@ -25,10 +25,10 @@ import io.apiman.gateway.engine.components.ICacheStoreComponent;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.components.IRateLimiterComponent;
 import io.apiman.gateway.engine.components.ISharedStateComponent;
+import io.apiman.gateway.engine.es.CachingESRegistry;
 import io.apiman.gateway.engine.es.ESCacheStoreComponent;
 import io.apiman.gateway.engine.es.ESMetrics;
 import io.apiman.gateway.engine.es.ESRateLimiterComponent;
-import io.apiman.gateway.engine.es.ESRegistry;
 import io.apiman.gateway.engine.es.ESSharedStateComponent;
 import io.apiman.gateway.engine.impl.ByteBufferFactoryComponent;
 import io.apiman.gateway.engine.impl.DefaultPluginRegistry;
@@ -193,7 +193,7 @@ public class GatewayMicroService {
      * The registry.
      */
     protected void configureRegistry() {
-        System.setProperty(WarEngineConfig.APIMAN_GATEWAY_REGISTRY_CLASS, ESRegistry.class.getName());
+        System.setProperty(WarEngineConfig.APIMAN_GATEWAY_REGISTRY_CLASS, CachingESRegistry.class.getName());
         System.setProperty("apiman-gateway.registry.client.type", "jest");
         System.setProperty("apiman-gateway.registry.client.cluster-name", "${apiman.es.cluster-name}");
         System.setProperty("apiman-gateway.registry.client.protocol", "${apiman.es.protocol}");

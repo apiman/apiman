@@ -20,6 +20,7 @@ import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+
 import io.apiman.gateway.engine.IComponentRegistry;
 import io.apiman.gateway.engine.IConnectorFactory;
 import io.apiman.gateway.engine.IEngine;
@@ -220,6 +221,7 @@ public class DefaultEngineFactoryTest {
         ServiceRequest request = new ServiceRequest();
         request.setApiKey("12345");
         request.setDestination("/");
+        request.setUrl("http://localhost:9999/");
         request.setType("TEST");
 
         IServiceRequestExecutor prExecutor = engine.executor(request, new IAsyncResultHandler<IEngineResult>() {

@@ -40,6 +40,7 @@ public class GatewayThreadContext {
             serviceRequest.set(request);
         }
         request.setApiKey(null);
+        request.setUrl(null);
         request.setDestination(null);
         request.getHeaders().clear();
         request.setRawRequest(null);

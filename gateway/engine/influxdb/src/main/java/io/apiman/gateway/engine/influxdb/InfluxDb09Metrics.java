@@ -15,14 +15,6 @@
  */
 package io.apiman.gateway.engine.influxdb;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.concurrent.CountDownLatch;
-
 import io.apiman.gateway.engine.IComponentRegistry;
 import io.apiman.gateway.engine.IMetrics;
 import io.apiman.gateway.engine.IRequiresInitialization;
@@ -34,6 +26,14 @@ import io.apiman.gateway.engine.components.IHttpClientComponent;
 import io.apiman.gateway.engine.components.http.IHttpClientResponse;
 import io.apiman.gateway.engine.i18n.Messages;
 import io.apiman.gateway.engine.metrics.RequestMetric;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * InfluxDB 0.9.x metrics implementation
@@ -154,6 +154,7 @@ public class InfluxDb09Metrics implements IMetrics, IRequiresInitialization {
         write("requestEnd", dateToLong(metric.getRequestEnd()), sb);
         write("serviceStart", dateToLong(metric.getServiceStart()), sb);
         write("serviceEnd", dateToLong(metric.getServiceEnd()), sb);
+        write("url", quote(metric.getUrl()), sb);
         write("resource", quote(metric.getResource()), sb);
         write("method", quote(metric.getMethod()), sb);
         write("responseCode", Integer.toString(metric.getResponseCode()), sb);

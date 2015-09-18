@@ -29,10 +29,10 @@ import java.util.Collection;
  * @author eric.wittmann@redhat.com
  */
 public class UndertowGateway {
-    
+
 //    private IEngine engine;
     private UndertowGatewayServer server;
-    
+
     /**
      * Constructor.
      */
@@ -80,6 +80,7 @@ public class UndertowGateway {
         ServiceRequest request = new ServiceRequest();
         request.setApiKey(getApiKey(exchange));
         request.setType(exchange.getRequestMethod().toString());
+        request.setUrl(exchange.getRequestURL());
         request.setDestination(getDestination(exchange));
         readHeaders(request, exchange);
         request.setRawRequest(exchange);
@@ -145,8 +146,8 @@ public class UndertowGateway {
             return null;
         }
     }
-    
-    
+
+
     /**
      * @param exchange
      * @return
@@ -182,7 +183,7 @@ public class UndertowGateway {
      */
     protected void writeResponse(HttpServerExchange exchange, ServiceResponse response) {
         // TODO Auto-generated method stub
-        
+
     }
 
     /**
@@ -191,7 +192,7 @@ public class UndertowGateway {
      */
     protected void writeError(HttpServerExchange exchange, Exception e) {
         // TODO Auto-generated method stub
-        
+
     }
 
     /**

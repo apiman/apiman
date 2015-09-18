@@ -51,6 +51,7 @@ public abstract class ApimanPolicyTest {
 
         IEngine engine = tester.getEngine();
         ServiceRequest srequest = tester.createServiceRequest();
+        srequest.setUrl("http://localhost:8080" + ptRequest.resource()); //$NON-NLS-1$
         srequest.setDestination(ptRequest.resource());
         srequest.setType(ptRequest.method().name());
         srequest.getHeaders().putAll(ptRequest.headers());

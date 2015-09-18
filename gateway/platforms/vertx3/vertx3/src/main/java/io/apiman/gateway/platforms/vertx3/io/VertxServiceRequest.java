@@ -41,6 +41,7 @@ public class VertxServiceRequest extends ServiceRequest {
         super();
         setApiKey(copy.getApiKey());
         setContract(copy.getContract());
+        setUrl(copy.getUrl());
         setDestination(copy.getDestination());
         setHeaders(copy.getHeaders());
         setQueryParams(copy.getQueryParams());

@@ -36,6 +36,7 @@ public class RequestMetric implements Serializable {
     private Date serviceStart;
     private Date serviceEnd;
     private long serviceDuration = 1;
+    private String url;
     private String resource;
     private String method;
     private String serviceOrgId;
@@ -54,6 +55,8 @@ public class RequestMetric implements Serializable {
     private String failureReason;
     private boolean error;
     private String errorMessage;
+    private long bytesUploaded;
+    private long bytesDownloaded;
 
     /**
      * Constructor.
@@ -397,6 +400,48 @@ public class RequestMetric implements Serializable {
      */
     public void setUser(String user) {
         this.user = user;
+    }
+
+    /**
+     * @return the url
+     */
+    public String getUrl() {
+        return url;
+    }
+
+    /**
+     * @param url the url to set
+     */
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    /**
+     * @return the bytesUploaded
+     */
+    public long getBytesUploaded() {
+        return bytesUploaded;
+    }
+
+    /**
+     * @param bytesUploaded the bytesUploaded to set
+     */
+    public void setBytesUploaded(long bytesUploaded) {
+        this.bytesUploaded = bytesUploaded;
+    }
+
+    /**
+     * @return the bytesDownloaded
+     */
+    public long getBytesDownloaded() {
+        return bytesDownloaded;
+    }
+
+    /**
+     * @param bytesDownloaded the bytesDownloaded to set
+     */
+    public void setBytesDownloaded(long bytesDownloaded) {
+        this.bytesDownloaded = bytesDownloaded;
     }
 
 }
