@@ -66,7 +66,7 @@ public class PolicyDefinitionBean implements Serializable {
     private Set<PolicyDefinitionTemplateBean> templates = new HashSet<>();
     @Column(name = "plugin_id", updatable=false, nullable=true)
     private Long pluginId;
-    @Column(name = "form_type", updatable=false, nullable=true)
+    @Column(name = "form_type", updatable=true, nullable=true)
     @Enumerated(EnumType.STRING)
     private PolicyFormType formType;
     @Column(updatable=false, nullable=true)

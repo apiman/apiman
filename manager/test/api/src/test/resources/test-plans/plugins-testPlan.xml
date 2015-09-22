@@ -24,4 +24,12 @@
     <test name="Get Available Plugins">test-plan-data/plugins/200_available-plugins.resttest</test>
   </testGroup>
 
+  <testGroup name="Refresh Snapshot Plugin">
+    <test name="Add Fields Plugin">test-plan-data/plugins/300_add-fields-plugin.resttest</test>
+    <test name="List Policy Defs (2)">test-plan-data/plugins/301_list-policy-defs.resttest</test>
+    <test name="Refresh Fields Plugin">test-plan-data/plugins/302_refresh-fields-plugin.resttest</test>
+    <test name="List Policy Defs (3)">test-plan-data/plugins/303_list-policy-defs.resttest</test>
+    <test name="Get Fields Config Schema">test-plan-data/plugins/304_get-fields-config-form-v2.resttest</test>
+  </testGroup>
+
 </testPlan>

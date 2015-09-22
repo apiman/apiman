@@ -40,22 +40,22 @@ public class PluginUtils {
             throw new RuntimeException(e);
         }
     }
-    
+
     /**
      * @return a set of default maven repositories to search for plugins
      */
     public static Set<URL> getDefaultMavenRepositories() {
         return MAVEN_REPOSITORIES;
     }
-    
+
     /**
      * Returns the relative path (within a plugin registry's plugins directory) where
      * the plugin with the given coordinates can be found.  For example, if the plugin
-     * coordinate are "io.apiman.sample:sample-plugin:1.0.1:classifier:war" then the 
+     * coordinate are "io.apiman.sample:sample-plugin:1.0.1:classifier:war" then the
      * path will be:
-     * 
+     *
      * io.apiman.sample/sample-plugin/1.0.1/sample-plugin-classifier.war/
-     * 
+     *
      * @param coordinates the coordinates
      * @return plugin's relative path
      */
@@ -75,7 +75,7 @@ public class PluginUtils {
         pluginRelativePath.append(coordinates.getType());
         return pluginRelativePath.toString();
     }
-    
+
     /**
      * Reads a plugin spec file and returns a {@link PluginSpec}.
      * @param pluginSpec the plugin spec
@@ -89,7 +89,7 @@ public class PluginUtils {
 
     /**
      * Gets the user's local m2 directory or null if not found.
-     * 
+     *
      * @return user's M2 repo
      */
     public static File getUserM2Repository() {
@@ -117,7 +117,7 @@ public class PluginUtils {
         File artifactFile = new File(m2Dir, artifactSubPath);
         return artifactFile;
     }
-    
+
     /**
      * Calculates the relative path of the artifact from the given coordinates.
      * @param coordinates the coordinates
@@ -141,6 +141,15 @@ public class PluginUtils {
         artifactSubPath.append('.');
         artifactSubPath.append(coordinates.getType());
         return artifactSubPath.toString();
+    }
+
+    /**
+     * Returns true if the plugin identified by the given coordinates is a
+     * snapshot plugin.
+     * @param coordinates
+     */
+    public static boolean isSnapshot(PluginCoordinates coordinates) {
+        return coordinates.getVersion().endsWith("-SNAPSHOT"); //$NON-NLS-1$
     }
 
 }

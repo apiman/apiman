@@ -40,11 +40,11 @@ import java.util.List;
  * @author eric.wittmann@redhat.com
  */
 public interface IStorage {
-    
+
     /*
      * Transaction related methods
      */
-    
+
     public void beginTx() throws StorageException;
     public void commitTx() throws StorageException;
     public void rollbackTx();
@@ -52,7 +52,7 @@ public interface IStorage {
     /*
      * Various creation methods.  These are called by the REST layer to create stuff.
      */
-    
+
     public void createOrganization(OrganizationBean organization) throws StorageException;
     public void createApplication(ApplicationBean application) throws StorageException;
     public void createApplicationVersion(ApplicationVersionBean version) throws StorageException;
@@ -82,6 +82,7 @@ public interface IStorage {
     public void updatePolicy(PolicyBean policy) throws StorageException;
     public void updateGateway(GatewayBean gateway) throws StorageException;
     public void updatePolicyDefinition(PolicyDefinitionBean policyDef) throws StorageException;
+    public void updatePlugin(PluginBean pluginBean) throws StorageException;
 
     /*
      * Various delete methods.  These are called by the REST layer to delete stuff.

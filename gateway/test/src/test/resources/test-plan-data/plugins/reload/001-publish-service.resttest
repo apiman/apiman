@@ -1,0 +1,19 @@
+PUT /services admin/admin
+Content-Type: application/json
+
+{
+  "organizationId" : "PluginTestPolicyTest",
+  "serviceId" : "reload",
+  "version" : "1.0",
+  "publicService" : true,
+  "endpointType" : "REST",
+  "endpoint" : "${apiman-gateway-test.endpoints.echo}/",
+  "servicePolicies" : [
+    {
+      "policyImpl" : "plugin:io.apiman.test:custom-fields-plugin:1.0-SNAPSHOT:war/io.apiman.test.plugins.FieldsPolicy",
+      "policyJsonConfig" : "{ \"field1\" : \"foo\", \"field2\" : \"fighters\" }"
+    }
+  ]
+}
+----
+204

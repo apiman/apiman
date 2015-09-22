@@ -1,0 +1,15 @@
+GET /PluginTestPolicyTest/reload/1.0/path/to/app/resource bwayne/bwayne
+X-RestTest-System-Property: apiman.gateway.m2-repository-path=src/test/resources/test-plan-data/plugins/m2-fields-v1
+
+----
+200
+Content-Type: application/json
+
+{
+  "method" : "GET",
+  "resource" : "/path/to/app/resource",
+  "uri" : "/path/to/app/resource",
+  "headers" : {
+    "X-FieldsPolicy-Version" : "v1"
+  }
+}

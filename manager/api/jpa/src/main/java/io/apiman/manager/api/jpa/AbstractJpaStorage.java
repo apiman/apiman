@@ -151,7 +151,9 @@ public abstract class AbstractJpaStorage {
     public <T> void update(T bean) throws StorageException {
         EntityManager entityManager = getActiveEntityManager();
         try {
-            entityManager.merge(bean);
+            if (!entityManager.contains(bean)) {
+                entityManager.merge(bean);
+            }
         } catch (Throwable t) {
             logger.error(t.getMessage(), t);
             throw new StorageException(t);

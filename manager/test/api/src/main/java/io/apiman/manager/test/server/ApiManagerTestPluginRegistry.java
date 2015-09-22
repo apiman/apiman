@@ -27,7 +27,7 @@ import javax.enterprise.context.ApplicationScoped;
 import org.apache.commons.io.FileUtils;
 
 /**
- * A concrete implementation of the plugin registry.  This one is used for 
+ * A concrete implementation of the plugin registry.  This one is used for
  * testing only.
  *
  * @author eric.wittmann@redhat.com
@@ -37,7 +37,7 @@ public class ApiManagerTestPluginRegistry extends AbstractPluginRegistry {
 
     /**
      * Creates the temp directory to use for the plugin registry.  This will put
-     * the temp dir in the target directory so it gets cleaned when a maven 
+     * the temp dir in the target directory so it gets cleaned when a maven
      * build is done.
      */
     private static File getTestPluginDir() {
@@ -46,6 +46,11 @@ public class ApiManagerTestPluginRegistry extends AbstractPluginRegistry {
             throw new RuntimeException("Maven 'target' directory does not exist!"); //$NON-NLS-1$
         }
         File pluginDir = new File(targetDir, "plugintmp"); //$NON-NLS-1$
+        try {
+            FileUtils.deleteDirectory(pluginDir);
+            pluginDir.mkdirs();
+        } catch (IOException e) {
+        }
         return pluginDir;
     }
 
@@ -55,7 +60,7 @@ public class ApiManagerTestPluginRegistry extends AbstractPluginRegistry {
     public ApiManagerTestPluginRegistry() {
         super(getTestPluginDir());
     }
-    
+
     /**
      * @see io.apiman.manager.api.core.plugin.AbstractPluginRegistry#downloadPlugin(java.io.File, io.apiman.common.plugin.PluginCoordinates)
      */

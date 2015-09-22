@@ -337,6 +337,10 @@ div.page {
   margin-right: 15px;
   margin-bottom: 15px;
 }
+.browse-items .item.card {
+  height: 110px;
+  overflow: hidden;
+}
 .browse-items .item:hover {
   border: 1px solid rgb(200, 200, 200);
   background-color: #f9f9f9;
