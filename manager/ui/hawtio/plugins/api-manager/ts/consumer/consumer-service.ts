@@ -108,7 +108,6 @@ module Apiman {
                     var url = ServiceDefinitionSvcs.getServiceDefinitionUrl($scope.params.org, $scope.params.service, $scope.params.version);
                     Logger.debug("!!!!! Using definition URL: {0}", url);
 
-                    // TODO this code was copied from apimanPlugin.ts - it needs to be shared
                     var authHeader = Configuration.getAuthorizationHeader();
                     
                     $scope.definitionStatus = 'loading';
@@ -117,6 +116,9 @@ module Apiman {
                         dom_id:"swagger-ui-container",
                         validatorUrl:null,
                         sorter : "alpha",
+                        authorizations: {
+                            apimanauth: new SwaggerClient.ApiKeyAuthorization("Authorization", authHeader, "header")
+                        },
                         onComplete: function() {
                             $('#swagger-ui-container a').each(function(idx, elem) {
                                 var href = $(elem).attr('href');
@@ -145,7 +147,6 @@ module Apiman {
                             });
                         }
                     };
-                    $window.authorizations.add("apimanauth", new ApiKeyAuthorization("Authorization", authHeader, "header"));
                     $window.swaggerUi = new SwaggerUi(swaggerOptions);
                     $window.swaggerUi.load();
                     $scope.hasDefinition = true;
