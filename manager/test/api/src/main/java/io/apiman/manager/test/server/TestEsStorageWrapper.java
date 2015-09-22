@@ -541,6 +541,14 @@ public class TestEsStorageWrapper implements IStorage {
     }
 
     /**
+     * @see io.apiman.manager.api.core.IStorage#updatePlugin(io.apiman.manager.api.beans.plugins.PluginBean)
+     */
+    @Override
+    public void updatePlugin(PluginBean pluginBean) throws StorageException {
+        delegate.updatePlugin(pluginBean);
+    }
+
+    /**
      * Force a refresh in elasticsearch so that the result of any indexing operations
      * up to this point will be visible to searches.
      */

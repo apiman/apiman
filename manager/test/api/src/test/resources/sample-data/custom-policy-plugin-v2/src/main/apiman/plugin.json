@@ -1,0 +1,6 @@
+{
+  "frameworkVersion" : 1.0,
+  "name" : "Fields Policy Plugin",
+  "description" : "This is a simple plugin that tests refreshing a plugin in the API manager. (v2)",
+  "version" : "${project.version}"
+}

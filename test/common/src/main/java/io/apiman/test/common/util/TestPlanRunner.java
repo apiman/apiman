@@ -148,6 +148,12 @@ public class TestPlanRunner {
             Map<String, String> requestHeaders = restTest.getRequestHeaders();
             for (Entry<String, String> entry : requestHeaders.entrySet()) {
                 String value = TestUtil.doPropertyReplacement(entry.getValue());
+                // Handle system properties that may be configured in the rest-test itself
+                if (entry.getKey().startsWith("X-RestTest-System-Property")) {
+                    String [] split = value.split("=");
+                    System.setProperty(split[0], split[1]);
+                    continue;
+                }
                 requestBuilder.addHeader(entry.getKey(), value);
             }
 

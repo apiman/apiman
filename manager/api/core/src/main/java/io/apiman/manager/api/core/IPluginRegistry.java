@@ -20,13 +20,13 @@ import io.apiman.common.plugin.PluginCoordinates;
 import io.apiman.manager.api.core.exceptions.InvalidPluginException;
 
 /**
- * The plugin registry used by the API Manager.  The plugin registry provides a way to 
+ * The plugin registry used by the API Manager.  The plugin registry provides a way to
  * download plugins and crack them open to discover features they provide.
  *
  * @author eric.wittmann@redhat.com
  */
 public interface IPluginRegistry {
-    
+
     /**
      * Loads a plugin with the given coordinates.
      * @param coordinates plugin coordinates

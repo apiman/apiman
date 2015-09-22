@@ -527,6 +527,13 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
         updateEntity("policyDef", policyDef.getId(), EsMarshalling.marshall(policyDef)); //$NON-NLS-1$
     }
 
+    /**
+     * @see io.apiman.manager.api.core.IStorage#updatePlugin(io.apiman.manager.api.beans.plugins.PluginBean)
+     */
+    @Override
+    public void updatePlugin(PluginBean pluginBean) throws StorageException {
+        updateEntity("plugin", String.valueOf(pluginBean.getId()), EsMarshalling.marshall(pluginBean)); //$NON-NLS-1$
+    }
 
     /**
      * @see io.apiman.manager.api.core.IIdmStorage#updateRole(io.apiman.manager.api.beans.idm.RoleBean)

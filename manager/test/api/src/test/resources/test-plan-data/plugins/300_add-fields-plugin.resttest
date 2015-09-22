@@ -1,0 +1,20 @@
+POST /plugins admin/admin
+Content-Type: application/json
+X-RestTest-System-Property: apiman.test.m2-path=src/test/resources/test-plan-data/plugins/m2-fields-v1
+
+{
+  "groupId" : "io.apiman.test",
+  "artifactId" : "custom-fields-plugin",
+  "version" : "1.0-SNAPSHOT"
+}
+----
+200
+Content-Type: application/json
+
+{
+  "name" : "Fields Policy Plugin",
+  "description" : "This is a simple plugin that tests refreshing a plugin in the API manager. (v1)",
+  "groupId" : "io.apiman.test",
+  "artifactId" : "custom-fields-plugin",
+  "version" : "1.0-SNAPSHOT"
+}

@@ -54,7 +54,7 @@
               Found {{ services.length}} matching services.
             </div>
 
-            <div class="item" ng-repeat="service in services">
+            <div class="item card" ng-repeat="service in services">
               <div class="title">
                 <i class="fa fa-puzzle-piece icon"></i><a href="{{ pluginName }}/browse/orgs/{{service.organizationId}}">{{ service.organizationName }}</a>
                 <span apiman-i18n-skip> / </span>

@@ -3,8 +3,8 @@
 module Apiman {
 
     export var AdminPluginsController = _module.controller("Apiman.AdminPluginsController",
-        ['$q', '$scope', 'ApimanSvcs', 'PageLifecycle', 'Dialogs', 
-        ($q, $scope, ApimanSvcs, PageLifecycle, Dialogs) => {
+        ['$q', '$scope', 'ApimanSvcs', 'PageLifecycle', 'Dialogs', 'Logger',
+        ($q, $scope, ApimanSvcs, PageLifecycle, Dialogs, Logger) => {
             $scope.tab = 'plugins';
             $scope.filterAvailablePlugins = function(value) {
                 if (!value) {
@@ -21,7 +21,12 @@ module Apiman {
             };
             var pageData = {
                 plugins: $q(function(resolve, reject) {
-                    ApimanSvcs.query({ entityType: 'plugins' }, resolve, reject);
+                    ApimanSvcs.query({ entityType: 'plugins' }, function(plugins) {
+                        angular.forEach(plugins, function(p) {
+                            p.isSnapshot = p.version.indexOf("-SNAPSHOT", this.length - "-SNAPSHOT".length) !== -1;
+                        });
+                        resolve(plugins);
+                    }, reject);
                 }),
                 availablePlugins: $q(function(resolve, reject) {
                     ApimanSvcs.query({ entityType: 'plugins', secondaryType: 'availablePlugins' }, function(plugins) {

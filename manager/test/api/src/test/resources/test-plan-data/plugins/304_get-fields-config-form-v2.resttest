@@ -1,0 +1,36 @@
+GET /plugins/${plugin-id}/policyDefs/fields-policy/form admin/admin
+----
+200
+Content-Type: application/json
+
+{
+  "title" : "Configure Fields v2",
+  "description" : "A simple policy with multiple config fields. (v2)",
+  "type" : "object",
+  "properties": {
+    "field1": {
+      "title" : "Field One",
+      "type" : "string",
+      "minLength" : 1,
+      "maxLength" : 64
+    },
+    "field2": {
+      "title" : "Field Two",
+      "type" : "string",
+      "minLength" : 1,
+      "maxLength" : 64
+    },
+    "field3": {
+      "title" : "Field Three",
+      "type" : "string",
+      "minLength" : 1,
+      "maxLength" : 64
+    },
+    "field4": {
+      "title" : "Field Four",
+      "type" : "string",
+      "minLength" : 1,
+      "maxLength" : 64
+    }
+  }
+}

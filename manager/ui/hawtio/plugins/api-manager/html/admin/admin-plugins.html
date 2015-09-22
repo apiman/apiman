@@ -52,12 +52,13 @@
                         <tr>
                           <th apiman-i18n-key="name">Name</th>
                           <th apiman-i18n-key="description">Description</th>
+                          <th apiman-i18n-key="version">Version</th>
                           <th apiman-i18n-key="actions">Actions</th>
                         </tr>
                       </thead>
                       <tbody>
                         <tr ng-hide="plugins.length > 0">
-                          <td colspan="3">
+                          <td colspan="4">
                             <div class="apiman-no-content container-fluid">
                               <div class="row">
                                 <div class="col-md-12">
@@ -70,10 +71,9 @@
                         <tr ng-repeat="plugin in plugins" ng-class="{apiman_deleting: plugin.deleting}">
                           <td><a href="{{ pluginName }}/admin/plugins/{{ plugin.id }}">{{ plugin.name }}</a></td>
                           <td><span>{{plugin.description}}</span></td>
+                          <td nowrap="nowrap"><span>{{plugin.version}}</span></td>
                           <td nowrap="nowrap">
                             <a href="#" ng-click="uninstallPlugin(plugin)" apiman-i18n-key="uninstall">Uninstall</a>
-<!--                             | -->
-<!--                             <a href="#" apiman-i18n-key="upgrade">Upgrade</a> -->
                           </td>
                         </tr>
                       </tbody>
