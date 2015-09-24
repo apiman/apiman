@@ -10,6 +10,12 @@
   <packaging>war</packaging>
   <name>apiman-manager-ui-hawtio</name>
 
+  <properties>
+    <maven.build.timestamp.format>yyyy-MM-dd_HH:mm</maven.build.timestamp.format>
+    <ui.webcontext>/apimanui/</ui.webcontext>
+    <timestamp>${maven.build.timestamp}</timestamp>
+  </properties>
+
   <build>
     <finalName>apimanui</finalName>
     <plugins>
@@ -17,7 +23,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-deploy-plugin</artifactId>
         <configuration>
-          <skip>true</skip>
+          <skip>false</skip>
         </configuration>
       </plugin>
 
@@ -90,6 +96,70 @@
 
         </executions>
       </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant</artifactId>
+            <version>1.8.2</version>
+          </dependency>
+        </dependencies>
+        <executions>
+          <execution>
+            <id>transform-indexhtml</id>
+            <phase>package</phase>
+            <configuration>
+              <target>
+                <antversion property="antversion" />
+                <echo>Ant Version: ${antversion}</echo>
+
+                <echo></echo>
+                <echo>********************************************************************</echo>
+                <echo>Generating API Manager index.html file</echo>
+                <echo>********************************************************************</echo>
+                <echo></echo>
+
+                <replaceregexp file="${basedir}/target/apimanui/index.html"
+                  match="&lt;base.href....&gt;" replace="&lt;base href=&apos;${ui.webcontext}&apos;&gt;" byline="true" />
+                <replaceregexp file="${basedir}/target/apimanui/index.html"
+                  match="&lt;script.src=&quot;([\w\/\.\-]+)&quot;" replace="&lt;script src=&quot;\1?cid=${timestamp}&quot;" byline="true" />
+                <replaceregexp file="${basedir}/target/apimanui/index.html"
+                  match="&lt;link.rel=&quot;stylesheet&quot;.href=&quot;([\w\/\.\-]+)&quot;" replace="&lt;link rel=&quot;stylesheet&quot; href=&quot;\1?cid=${timestamp}&quot;" byline="true" />
+                <echo>Successfully processed file ${project.build.directory}/${project.artifactId}-${project.version}/index.html</echo>
+              </target>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>ui</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+              <attach>true</attach>
+              <descriptors>
+                <descriptor>src/main/assembly/ui.xml</descriptor>
+              </descriptors>
+              <archiverConfig>
+                <defaultDirectoryMode>0755</defaultDirectoryMode>
+              </archiverConfig>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      
     </plugins>
   </build>
 

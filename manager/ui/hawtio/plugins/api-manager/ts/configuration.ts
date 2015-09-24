@@ -9,6 +9,8 @@ module ApimanConfiguration {
             if ($window['APIMAN_CONFIG_DATA']) {
                 cdata = angular.copy($window['APIMAN_CONFIG_DATA']);
                 delete $window['APIMAN_CONFIG_DATA'];
+            } else {
+                console.log('***  Missing variable: APIMAN_CONFIG_DATA  ***');
             }
             cdata.getAuthorizationHeader = function() {
                 var authHeader = null;

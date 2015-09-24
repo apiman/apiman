@@ -15,6 +15,16 @@
  */
 package io.apiman.manager.api.micro;
 
+import io.apiman.common.servlet.ApimanCorsFilter;
+import io.apiman.common.servlet.AuthenticationFilter;
+import io.apiman.common.servlet.DisableCachingFilter;
+import io.apiman.common.servlet.LocaleFilter;
+import io.apiman.common.servlet.RootResourceFilter;
+import io.apiman.manager.api.micro.util.ApimanResource;
+import io.apiman.manager.api.security.impl.DefaultSecurityContextFilter;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.EnumSet;
 
 import javax.servlet.DispatcherType;
@@ -24,21 +34,16 @@ import org.eclipse.jetty.security.HashLoginService;
 import org.eclipse.jetty.security.SecurityHandler;
 import org.eclipse.jetty.security.authentication.BasicAuthenticator;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.handler.ContextHandlerCollection;
+import org.eclipse.jetty.server.handler.HandlerCollection;
+import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.util.security.Credential;
 import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
 import org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap;
 import org.jboss.weld.environment.servlet.BeanManagerResourceBindingListener;
 import org.jboss.weld.environment.servlet.Listener;
-
-import io.apiman.common.servlet.ApimanCorsFilter;
-import io.apiman.common.servlet.AuthenticationFilter;
-import io.apiman.common.servlet.DisableCachingFilter;
-import io.apiman.common.servlet.LocaleFilter;
-import io.apiman.common.servlet.RootResourceFilter;
-import io.apiman.manager.api.security.impl.DefaultSecurityContextFilter;
 
 /**
  * This class starts up an embedded Jetty test server so that integration tests
@@ -65,7 +70,7 @@ public class ManagerApiMicroService {
     public void start() throws Exception {
         long startTime = System.currentTimeMillis();
 
-        ContextHandlerCollection handlers = new ContextHandlerCollection();
+        HandlerCollection handlers = new HandlerCollection();
         addModulesToJetty(handlers);
 
         // Create the server.
@@ -98,7 +103,7 @@ public class ManagerApiMicroService {
      * @param handlers
      * @throws Exception
      */
-    protected void addModulesToJetty(ContextHandlerCollection handlers) throws Exception {
+    protected void addModulesToJetty(HandlerCollection handlers) throws Exception {
     	/* *************
          * Manager API
          * ************* */
@@ -124,7 +129,64 @@ public class ManagerApiMicroService {
         apiManServer.setInitParameter("resteasy.servlet.mapping.prefix", "");
 
         handlers.addHandler(apiManServer);
+
+        /* ********** *
+         * Manager UI *
+         * ********** */
+        ResourceHandler apimanUiServer = new ResourceHandler() {
+            /**
+             * @see org.eclipse.jetty.server.handler.ResourceHandler#getResource(java.lang.String)
+             */
+            @Override
+            public Resource getResource(String path) throws MalformedURLException {
+                Resource resource = null;
+
+                if (path == null) {
+                    return null;
+                }
+                if (!path.startsWith("/apimanui")) {
+                    return null;
+                }
+                if (path.startsWith("/apimanui/api-manager") || path.equals("/apimanui") || path.equals("/apimanui/")) {
+                    path = "/apimanui/index.html";
+                }
+                if (path.equals("/apimanui/apiman/config.js")) {
+                    resource = getConfigResource(path);
+                }
+                if (path.equals("/apimanui/apiman/translations.js")) {
+                    resource = getTranslationsResource(path);
+                }
+
+                if (resource == null) {
+                    URL url = getClass().getResource(path);
+                    if (url != null) {
+                        resource = new ApimanResource(url);
+                    }
+                }
+
+                return resource;
+            }
+        };
+        apimanUiServer.setResourceBase("/apimanui/");
+        apimanUiServer.setWelcomeFiles(new String[] { "index.html" });
+        handlers.addHandler(apimanUiServer);
     }
+
+    /**
+     * @return a resource representing the translations.js file
+     */
+    protected Resource getTranslationsResource(String path) {
+        return new ApimanResource(getClass().getResource(path));
+    }
+
+
+    /**
+     * @return a resource representing the config.js file
+     */
+    protected Resource getConfigResource(String path) {
+        return new ApimanResource(getClass().getResource(path));
+    }
+
 
     /**
      * @param apiManServer
