@@ -439,11 +439,8 @@ module Apiman {
                     $scope.leftPosition = 0;
                     $scope.height = 60;
                     
-                    console.log('$scope.desc: ' + $scope.desc);
-
                     // If description is updated, call updateFunction.
                     $scope.$watch(function() {
-                        //console.log('Description: ' + $scope.org.description);
                         return $scope.descr;
                     },
                     function(new_value, old_value) {
