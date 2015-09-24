@@ -9,6 +9,11 @@
   <artifactId>apiman-manager-api-micro</artifactId>
   <name>apiman-manager-api-micro</name>
 
+  <properties>
+    <maven.build.timestamp.format>yyyy-MM-dd_HH:mm</maven.build.timestamp.format>
+    <timestamp>${maven.build.timestamp}</timestamp>
+  </properties>
+
   <dependencies>
     <!-- Project JARs -->
     <dependency>
@@ -64,6 +69,12 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-manager-api-gateway</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-manager-ui-hawtio</artifactId>
+      <classifier>ui</classifier>
+      <type>jar</type>
     </dependency>
 
     <!-- Third Party Dependencies -->
@@ -157,7 +168,7 @@
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-jaxb-provider</artifactId>
     </dependency>
-    
+
     <!-- Other Dependencies -->
     <dependency>
       <groupId>org.jboss.logging</groupId>
@@ -205,4 +216,16 @@
     </dependency>
   </dependencies>
 
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>false</filtering>
+      </resource>
+      <resource>
+        <directory>src/main/resources-filtered</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+  </build>
 </project>

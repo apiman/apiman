@@ -288,6 +288,13 @@
         <groupId>${project.groupId}</groupId>
         <artifactId>apiman-manager-ui-hawtio</artifactId>
         <version>${project.version}</version>
+        <classifier>ui</classifier>
+        <type>jar</type>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>apiman-manager-ui-hawtio</artifactId>
+        <version>${project.version}</version>
         <classifier>classes</classifier>
       </dependency>
       <dependency>
