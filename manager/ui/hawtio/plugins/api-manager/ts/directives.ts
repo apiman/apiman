@@ -438,13 +438,18 @@ module Apiman {
                     $scope.topPosition = 0;
                     $scope.leftPosition = 0;
                     $scope.height = 60;
+                    
+                    console.log('$scope.desc: ' + $scope.desc);
 
                     // If description is updated, call updateFunction.
                     $scope.$watch(function() {
+                        //console.log('Description: ' + $scope.org.description);
                         return $scope.descr;
                     },
                     function(new_value, old_value) {
-                        if (old_value !== new_value && typeof old_value !== 'undefined') {
+                        if (old_value !== new_value && typeof new_value !== 'undefined') {
+                            console.log('old_value: ' + old_value);
+                            console.log('new_value: ' + new_value);
                              $scope.callback(new_value || '');
                          }
                     });
