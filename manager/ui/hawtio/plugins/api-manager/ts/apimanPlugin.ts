@@ -160,19 +160,26 @@ module Apiman {
         if (Configuration.api && Configuration.api.auth && Configuration.api.auth.type == 'bearerTokenFromHash') {
             var bearerToken = null;
             var tokenKey = "Apiman.BearerToken";
+            var backToKey = "Apiman.BackToConsole";
+
             var hash = $location.hash();
             if (hash) {
-                bearerToken = window.atob(hash);
-                localStorage[tokenKey] = bearerToken;
+                console.log("*** HASH: " + hash);
+                var settings = JSON.parse(hash);
+                console.log("*** Settings: " + settings);
+                localStorage[tokenKey] = settings.token;
+                localStorage[backToKey] = settings.backTo;
                 $location.hash(null);
-                $location.replace();
+                bearerToken = settings.token;
                 console.log('*** Bearer token from hash: ' + bearerToken);
             } else {
                 try {
                     bearerToken = localStorage[tokenKey];
                     console.log('*** Bearer token from local storage: ' + bearerToken);
                 } catch (e) {
+                    console.log('*** Bearer token from local storage was invalid!');
                     localStorage.removeItem(tokenKey);
+                    bearerToken = null;
                 }
             }
             if (bearerToken) {
