@@ -448,8 +448,6 @@ module Apiman {
                     },
                     function(new_value, old_value) {
                         if (old_value !== new_value && typeof new_value !== 'undefined') {
-                            console.log('old_value: ' + old_value);
-                            console.log('new_value: ' + new_value);
                              $scope.callback(new_value || '');
                          }
                     });
