@@ -440,14 +440,23 @@ module Apiman {
                     $scope.height = 60;
                     
                     // If description is updated, call updateFunction.
+                    /*
                     $scope.$watch(function() {
                         return $scope.descr;
                     },
                     function(new_value, old_value) {
                         if (old_value !== new_value && typeof new_value !== 'undefined') {
+                            console.log('old_value' + old_value);
+                            console.log('new_value: ' + new_value);
+                            console.log('callback()');
                              $scope.callback(new_value || '');
                          }
-                    });
+                    });*/
+                    
+                    
+                    $scope.saveDescription = function() {
+                        $scope.callback($scope.descr);
+                    };
 
                     $scope.focusOnDescription = function(event) {
                         elem = event.target;
