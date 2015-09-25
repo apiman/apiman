@@ -439,8 +439,8 @@ module Apiman {
                     $scope.leftPosition = 0;
                     $scope.height = 60;
                     
-                    // If description is updated, call updateFunction.
                     /*
+                    // If description is updated, call updateFunction.
                     $scope.$watch(function() {
                         return $scope.descr;
                     },
