@@ -83,8 +83,10 @@ module ApimanPageLifecycle {
         ['$q', 'Logger', '$rootScope', '$location', 'CurrentUserSvcs', 'Configuration', 'TranslationService', '$window',
         ($q, Logger, $rootScope, $location, CurrentUserSvcs, Configuration, TranslationService, $window) => {
             $rootScope.showHeader = true;
-            if (Configuration['ui'] && Configuration.ui.header == false) {
-                $rootScope.showHeader = false;
+            if (Configuration.ui) {
+                if (Configuration.ui.header && Configuration.ui.header != "apiman") {
+                    $rootScope.showHeader = false;
+                }
             }
 
             var processCurrentUser = function(currentUser) {

@@ -1389,18 +1389,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                 }
                 newVersion = updateServiceVersion(organizationId, serviceId, bean.getVersion(), updatedService);
 
-                if (bean.getDefinitionUrl() != null) {
-                    InputStream definition = null;
-                    try {
-                        definition = new URL(bean.getDefinitionUrl()).openStream();
-                        storeServiceDefinition(organizationId, serviceId, newVersion.getVersion(),
-                                bean.getDefinitionType(), definition);
-                    } catch (Exception e) {
-                        log.error("Unable to store service definition from: " + bean.getDefinitionUrl(), e); //$NON-NLS-1$
-                    } finally {
-                        IOUtils.closeQuietly(definition);
-                    }
-                } else {
+                if (bean.getDefinitionUrl() == null) {
                     // Clone the service definition document
                     InputStream definition = null;
                     try {
@@ -1468,6 +1457,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         if (bean.getPlans() != null) {
             newVersion.setPlans(bean.getPlans());
         }
+        if (bean.getDefinitionType() != null) {
+            newVersion.setDefinitionType(bean.getDefinitionType());
+        }
 
         if (gateway != null) {
             if (newVersion.getGateways() == null) {
@@ -1501,6 +1493,19 @@ public class OrganizationResourceImpl implements IOrganizationResource {
 
         storage.createServiceVersion(newVersion);
         storage.createAuditEntry(AuditUtils.serviceVersionCreated(newVersion, securityContext));
+
+        if (bean.getDefinitionUrl() != null) {
+            InputStream definition = null;
+            try {
+                definition = new URL(bean.getDefinitionUrl()).openStream();
+                storage.updateServiceDefinition(newVersion, definition);
+            } catch (Exception e) {
+                log.error("Unable to store service definition from: " + bean.getDefinitionUrl(), e); //$NON-NLS-1$
+            } finally {
+                IOUtils.closeQuietly(definition);
+            }
+        }
+
         return newVersion;
     }
 

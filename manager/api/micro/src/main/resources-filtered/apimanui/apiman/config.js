@@ -9,7 +9,7 @@ var APIMAN_CONFIG_DATA = {
         "username" : "admin"
     },
     "ui" : {
-        "header" : true,
+        "header" : "apiman",
         "metrics" : true
     },
     "api" : {
