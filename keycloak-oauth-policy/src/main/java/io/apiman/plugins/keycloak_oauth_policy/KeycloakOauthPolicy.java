@@ -189,8 +189,8 @@ public class KeycloakOauthPolicy extends AbstractMappedPolicy<KeycloakOauthConfi
     private String getRawAuthToken(ServiceRequest request) {
         String rawToken = StringUtils.strip(request.getHeaders().get(AUTHORIZATION_KEY));
 
-        if (rawToken != null && StringUtils.startsWith(rawToken, BEARER)) {
-            rawToken = StringUtils.removeStart(rawToken, BEARER);
+        if (rawToken != null && StringUtils.startsWithIgnoreCase(rawToken, BEARER)) {
+            rawToken = StringUtils.removeStartIgnoreCase(rawToken, BEARER);
         } else {
             rawToken = request.getQueryParams().get(ACCESS_TOKEN_QUERY_KEY);
         }
