@@ -36,6 +36,7 @@ module Apiman {
         ($scope, Logger, PluginSvcs) => {
             var initEditor = function(schema) {
                 var holder = document.getElementById('json-editor-holder');
+                
                 var editor = new window['JSONEditor'](holder, {
                     // Disable fetching schemas via ajax
                     ajax: false,
@@ -50,7 +51,10 @@ module Apiman {
                     iconlib: "fontawesome4",
                     theme: "bootstrap3"
                 });
+                
                 editor.on('change', function() {
+                    console.log('Editor change');
+                    
                     $scope.$apply(function() {
                         // Get an array of errors from the validator
                         var errors = editor.validate();
@@ -63,8 +67,10 @@ module Apiman {
                         }
                     });
                 });
+                
                 $scope.editor = editor;
             };
+            
             var destroyEditor = function() {
                 if ($scope.editor) {
                     $scope.editor.destroy();
