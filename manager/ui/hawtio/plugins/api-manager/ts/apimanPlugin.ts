@@ -158,23 +158,10 @@ module Apiman {
         $rootScope.isDirty = false;
         
         $rootScope.$on('$locationChangeStart', function(event, newUrl, oldUrl) {
-            console.log('newUrl: ' + newUrl);
-            console.log('oldUrl: ' + oldUrl);
-            
             if($rootScope.isDirty) {
-                console.log('Form is dirty');
-                
                 if(confirm('You have unsaved changes. Are you sure you would like to navigate away from this page? You will lose these changes.') != true) {
-                    console.log('User pressed Cancel.');
                     event.preventDefault();
-                } else {
-                    // Set isDirty to false since user is okay with losing data
-                    //$rootScope.isDirty = false;
-                    $window.location.url = newUrl;
                 }
-            } else {
-                console.log('Form is not dirty');
-                $window.location.url = newUrl;
             }
         });
         
