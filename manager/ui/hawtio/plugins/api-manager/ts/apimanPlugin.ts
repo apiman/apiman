@@ -154,9 +154,20 @@ module Apiman {
 
     _module.run(['$rootScope', 'SystemSvcs', 'HawtioNav', 'Configuration', '$location', ($rootScope, SystemSvcs, HawtioNav: HawtioMainNav.Registry, Configuration, $location) => 
     {
+        $rootScope.isDirty = false;
+        
+        $rootScope.$on('$locationChangeStart', function(event, newUrl, oldUrl) {
+            if($rootScope.isDirty) {
+                if(confirm('You have unsaved changes. Are you sure you would like to navigate away from this page? You will lose these changes.') != true) {
+                    event.preventDefault();
+                }
+            }
+        });
+        
         if (!Configuration.platform || Configuration.platform == 'standalone') {
             HawtioNav.add(tab);
         }
+        
         if (Configuration.api && Configuration.api.auth && Configuration.api.auth.type == 'bearerTokenFromHash') {
             var bearerToken = null;
             var tokenKey = "Apiman.BearerToken";

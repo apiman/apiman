@@ -3,8 +3,8 @@
 module Apiman {
 
  export var ServiceImplController = _module.controller("Apiman.ServiceImplController",
-        ['$q', '$scope', '$location', 'PageLifecycle', 'ServiceEntityLoader', 'OrgSvcs', 'ApimanSvcs', '$routeParams', 'EntityStatusService', 'Logger', 'Configuration',
-        ($q, $scope, $location, PageLifecycle, ServiceEntityLoader, OrgSvcs, ApimanSvcs, $routeParams, EntityStatusService, Logger, Configuration) => {
+        ['$q', '$rootScope', '$scope', '$location', 'PageLifecycle', 'ServiceEntityLoader', 'OrgSvcs', 'ApimanSvcs', '$routeParams', 'EntityStatusService', 'Logger', 'Configuration',
+        ($q, $rootScope, $scope, $location, PageLifecycle, ServiceEntityLoader, OrgSvcs, ApimanSvcs, $routeParams, EntityStatusService, Logger, Configuration) => {
             var params = $routeParams;
             $scope.organizationId = params.org;
             $scope.tab = 'impl';
@@ -110,7 +110,7 @@ module Apiman {
                     
                     checkValid();
                     
-                    $scope.isDirty = dirty;
+                    $rootScope.isDirty = dirty;
                 }
             }, true);
             
@@ -149,13 +149,13 @@ module Apiman {
                         }
                     });
                 }
-                $scope.isDirty = false;
+                $rootScope.isDirty = false;
             };
 
             $scope.saveService = function() {
                 $scope.saveButton.state = 'in-progress';
                 OrgSvcs.update({ organizationId: params.org, entityType: 'services', entityId:params.service, versionsOrActivity: 'versions', version: params.version }, $scope.updatedService, function(reply) {
-                    $scope.isDirty = false;
+                    $rootScope.isDirty = false;
                     $scope.autoGateway = false;
                     $scope.saveButton.state = 'complete';
                     $scope.version = reply;

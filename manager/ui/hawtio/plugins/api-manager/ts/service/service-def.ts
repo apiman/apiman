@@ -3,14 +3,14 @@
 module Apiman {
 
  export var ServiceDefController = _module.controller("Apiman.ServiceDefController",
-        ['$q', '$scope', '$location', 'PageLifecycle', 'ServiceEntityLoader', 'OrgSvcs', 'Logger', '$routeParams', 'ServiceDefinitionSvcs', 'Configuration',
-        ($q, $scope, $location, PageLifecycle, ServiceEntityLoader, OrgSvcs, Logger, $routeParams, ServiceDefinitionSvcs, Configuration) => {
+        ['$q', '$rootScope', '$scope', '$location', 'PageLifecycle', 'ServiceEntityLoader', 'OrgSvcs', 'Logger', '$routeParams', 'ServiceDefinitionSvcs', 'Configuration',
+        ($q, $rootScope, $scope, $location, PageLifecycle, ServiceEntityLoader, OrgSvcs, Logger, $routeParams, ServiceDefinitionSvcs, Configuration) => {
             var params = $routeParams;
             $scope.organizationId = params.org;
             $scope.tab = 'def';
             $scope.version = params.version;
             $scope.showMetrics = Configuration.ui.metrics;
-
+            
             $scope.typeOptions = [
                 { "label" : "No Service Definition", "value" : "None" },
                 { "label" : "Swagger (JSON)",        "value" : "SwaggerJSON" },
@@ -72,7 +72,7 @@ module Apiman {
                         Logger.debug("**** dirty because of def type: {0} != {1}", $scope.selectedDefinitionType.value, $scope.definitionType);
                         dirty = true;
                     }
-                    $scope.isDirty = dirty;
+                    $rootScope.isDirty = dirty;
                 }
             };
 
@@ -88,7 +88,7 @@ module Apiman {
             $scope.reset = function() {
                 selectType($scope.definitionType);
                 $scope.updatedServiceDefinition = $scope.serviceDefinition;
-                $scope.isDirty = false;
+                $rootScope.isDirty = false;
             };
 
             $scope.saveService = function() {
@@ -102,7 +102,7 @@ module Apiman {
                     function(definition) {
                         Logger.debug("Updated the service definition!");
                         $scope.serviceDefinition = $scope.updatedServiceDefinition;
-                        $scope.isDirty = false;
+                        $rootScope.isDirty = false;
                         $scope.saveButton.state = 'complete';
                     },
                     function(error) {
