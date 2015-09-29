@@ -3,8 +3,8 @@
 module Apiman {
 
     export var EditGatewayController = _module.controller("Apiman.EditGatewayController",
-        ['$q', '$scope', '$location', 'ApimanSvcs', 'PageLifecycle', 'Dialogs', '$routeParams',
-        ($q, $scope, $location, ApimanSvcs, PageLifecycle, Dialogs, $routeParams) => {
+        ['$q', '$rootScope', '$scope', '$location', 'ApimanSvcs', 'PageLifecycle', 'Dialogs', '$routeParams',
+        ($q, $rootScope, $scope, $location, ApimanSvcs, PageLifecycle, Dialogs, $routeParams) => {
             $scope.isValid = false;
             var params = $routeParams;
             
@@ -40,7 +40,7 @@ module Apiman {
                 if ($scope.configuration.password != $scope.originalConfig.password) {
                     dirty = true;
                 }
-                $scope.isDirty = dirty;
+                $rootScope.isDirty = dirty;
             };
             
             var Gateway = function() {
@@ -59,7 +59,7 @@ module Apiman {
                         $scope.passwordConfirm = $scope.configuration.password;
                         $scope.originalGateway = angular.copy(gateway);
                         $scope.originalConfig = angular.copy($scope.configuration);
-                        $scope.isDirty = false;
+                        $rootScope.isDirty = false;
                         resolve(gateway);
                     }, reject);
                 })

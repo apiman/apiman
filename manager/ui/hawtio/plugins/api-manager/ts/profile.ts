@@ -3,15 +3,15 @@
 module Apiman {
     
     export var UserProfileController = _module.controller("Apiman.UserProfileController",
-        ['$q', '$scope', '$location', 'CurrentUserSvcs', 'PageLifecycle',
-        ($q, $scope, $location, CurrentUserSvcs, PageLifecycle) => {
+        ['$q', '$rootScope', '$scope', '$location', 'CurrentUserSvcs', 'PageLifecycle',
+        ($q, $rootScope, $scope, $location, CurrentUserSvcs, PageLifecycle) => {
             var pageData = {
                 user: $q(function(resolve, reject) {
                     CurrentUserSvcs.get({ what: 'info' }, resolve, reject);
                 })
             };
 
-            $scope.isDirty = false;
+            $rootScope.isDirty = false;
             $scope.isValid = true;
             $scope.updatedUser = {
                 fullName: undefined,
@@ -34,7 +34,7 @@ module Apiman {
                     dirty = true;
                 }
                 
-                $scope.isDirty = dirty;
+                $rootScope.isDirty = dirty;
                 $scope.isValid = valid;
             }, true);
             
@@ -45,7 +45,7 @@ module Apiman {
                     $scope.user.fullName = $scope.updatedUser.fullName;
                     $scope.user.email = $scope.updatedUser.email;
                     $scope.isValid = true;
-                    $scope.isDirty = false;
+                    $rootScope.isDirty = false;
                 }, PageLifecycle.handleError);
             }
             
