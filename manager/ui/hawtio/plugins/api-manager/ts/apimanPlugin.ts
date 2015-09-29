@@ -152,9 +152,8 @@ module Apiman {
         $httpProvider.interceptors.push('authInterceptor');
     }]);
 
-    _module.run(['$rootScope', '$window', 'SystemSvcs', 'HawtioNav', 'Configuration', '$location', ($rootScope, $window, SystemSvcs, HawtioNav: HawtioMainNav.Registry, Configuration, $location) => 
+    _module.run(['$rootScope', 'SystemSvcs', 'HawtioNav', 'Configuration', '$location', ($rootScope, SystemSvcs, HawtioNav: HawtioMainNav.Registry, Configuration, $location) => 
     {
-        //$window.$rootScope = $rootScope;
         $rootScope.isDirty = false;
         
         $rootScope.$on('$locationChangeStart', function(event, newUrl, oldUrl) {
