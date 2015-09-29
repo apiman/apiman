@@ -152,11 +152,29 @@ module Apiman {
         $httpProvider.interceptors.push('authInterceptor');
     }]);
 
-    _module.run(['$rootScope', 'SystemSvcs', 'HawtioNav', 'Configuration', '$location', ($rootScope, SystemSvcs, HawtioNav: HawtioMainNav.Registry, Configuration, $location) => 
+    _module.run(['$rootScope', '$window', 'SystemSvcs', 'HawtioNav', 'Configuration', '$location', ($rootScope, $window, SystemSvcs, HawtioNav: HawtioMainNav.Registry, Configuration, $location) => 
     {
+        //$window.$rootScope = $rootScope;
+        //$rootScope.isDirty = false;
+        
+        $rootScope.$on('$locationChangeStart', function(event, newUrl, oldUrl) {
+            console.log('newUrl: ' + newUrl);
+            console.log('oldUrl: ' + oldUrl);
+            
+            if($rootScope.isDirty) {
+                console.log('Form is dirty');
+                event.preventDefault();
+                alert('Please save your changes before navigating away from this page.');
+            } else {
+                console.log('Form is not dirty');
+                $window.location.url = newUrl;
+            }
+        });
+        
         if (!Configuration.platform || Configuration.platform == 'standalone') {
             HawtioNav.add(tab);
         }
+        
         if (Configuration.api && Configuration.api.auth && Configuration.api.auth.type == 'bearerTokenFromHash') {
             var bearerToken = null;
             var tokenKey = "Apiman.BearerToken";
