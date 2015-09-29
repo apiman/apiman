@@ -155,7 +155,7 @@ module Apiman {
     _module.run(['$rootScope', '$window', 'SystemSvcs', 'HawtioNav', 'Configuration', '$location', ($rootScope, $window, SystemSvcs, HawtioNav: HawtioMainNav.Registry, Configuration, $location) => 
     {
         //$window.$rootScope = $rootScope;
-        //$rootScope.isDirty = false;
+        $rootScope.isDirty = false;
         
         $rootScope.$on('$locationChangeStart', function(event, newUrl, oldUrl) {
             console.log('newUrl: ' + newUrl);
@@ -163,8 +163,15 @@ module Apiman {
             
             if($rootScope.isDirty) {
                 console.log('Form is dirty');
-                event.preventDefault();
-                alert('Please save your changes before navigating away from this page.');
+                
+                if(confirm('You have unsaved changes. Are you sure you would like to navigate away from this page? You will lose these changes.') != true) {
+                    console.log('User pressed Cancel.');
+                    event.preventDefault();
+                } else {
+                    // Set isDirty to false since user is okay with losing data
+                    //$rootScope.isDirty = false;
+                    $window.location.url = newUrl;
+                }
             } else {
                 console.log('Form is not dirty');
                 $window.location.url = newUrl;
