@@ -68,7 +68,7 @@ public class JDBCIdentityValidator implements IIdentityValidator<JDBCIdentitySou
             sqlPwd = DigestUtils.md5Hex(password);
             break;
         case SHA1:
-            sqlPwd = DigestUtils.sha1Hex(password);
+            sqlPwd = DigestUtils.shaHex(password);
             break;
         case SHA256:
             sqlPwd = DigestUtils.sha256Hex(password);

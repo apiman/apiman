@@ -25,14 +25,12 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import org.hibernate.ejb.HibernatePersistence;
-import org.hibernate.jpa.HibernatePersistenceProvider;
 
 /**
  * Produces an instance of {@link EntityManagerFactory}.
  *
  * @author eric.wittmann@redhat.com
  */
-@SuppressWarnings("deprecation")
 @ApplicationScoped
 public class EntityManagerFactoryAccessor implements IEntityManagerFactoryAccessor {
 
@@ -77,15 +75,15 @@ public class EntityManagerFactoryAccessor implements IEntityManagerFactoryAccess
         try {
             emf = Persistence.createEntityManagerFactory("apiman-manager-api-jpa", properties); //$NON-NLS-1$
         } catch (Throwable t1) {
-            try {
-                emf = new HibernatePersistenceProvider().createEntityManagerFactory("apiman-manager-api-jpa", properties); //$NON-NLS-1$
-            } catch (Throwable t2) {
+//            try {
+//                emf = new HibernatePersistenceProvider().createEntityManagerFactory("apiman-manager-api-jpa", properties); //$NON-NLS-1$
+//            } catch (Throwable t2) {
                 try {
                     emf = new HibernatePersistence().createEntityManagerFactory("apiman-manager-api-jpa", properties); //$NON-NLS-1$
                 } catch (Throwable t3) {
                     throw t1;
                 }
-            }
+//            }
         }
     }
 
