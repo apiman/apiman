@@ -219,7 +219,7 @@ public class PolicyDefinitionBean implements Serializable {
     /**
      * @param deleted the deleted to set
      */
-    public void setDeleted(boolean deleted) {
+    public void setDeleted(Boolean deleted) {
         this.deleted = deleted;
     }
 
