@@ -152,7 +152,7 @@ module Apiman {
         $httpProvider.interceptors.push('authInterceptor');
     }]);
 
-    _module.run(['$rootScope', 'SystemSvcs', 'HawtioNav', 'Configuration', '$location', ($rootScope, SystemSvcs, HawtioNav: HawtioMainNav.Registry, Configuration, $location) => 
+    _module.run(['$rootScope', 'SystemSvcs', 'HawtioNav', 'Configuration', '$location', ($rootScope, SystemSvcs, HawtioNav: HawtioMainNav.Registry, Configuration, $location) =>
     {
         $rootScope.isDirty = false;
         
