@@ -168,6 +168,14 @@ textarea.apiman-form-data {
 }
 #apiman-header .user-menu a {
 }
+#apiman-header h2 {
+  font-size: 14px;
+  color: white;
+  margin: 8px 0px 0px 0px;
+}
+#apiman-header.apiman-f8 {
+  background-color: black;
+}
 
 .alert-warning {
   background-color: rgb(255,213,185)
