@@ -1,0 +1,7 @@
+      <div style=""></div>
+      <div id="apiman-header" class="apiman-f8">
+        <div class="main-header container" ng-controller="Apiman.NavbarController" style="padding-bottom: 8px">
+          <h2 apiman-i18n-key="connected-to-apiman">Connected to API Management</h2>
+          <a ng-show="goBack" href="" ng-click="goBack()"><i class="fa fa-arrow-left"></i> <span apiman-i18n-key="back">Back</span></a>
+        </div>
+      </div>
