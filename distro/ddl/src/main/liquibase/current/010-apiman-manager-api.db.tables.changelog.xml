@@ -258,6 +258,7 @@
             <column name="version" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
+            <column name="deleted" type="BOOLEAN"/>
         </createTable>
     </changeSet>
     <changeSet author="apiman (generated)" id="1436469846462-14">
@@ -321,6 +322,7 @@
             <column name="policy_impl" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
+            <column name="deleted" type="BOOLEAN"/>
         </createTable>
     </changeSet>
     <changeSet author="apiman (generated)" id="1436469846462-16">

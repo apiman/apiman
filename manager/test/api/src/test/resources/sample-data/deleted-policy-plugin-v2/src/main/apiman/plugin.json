@@ -1,0 +1,6 @@
+{
+  "frameworkVersion" : 1.0,
+  "name" : "Deleted Plugin Policy",
+  "description" : "This is a simple plugin that tests deleting a plugin and upgrading it. (v2)",
+  "version" : "${project.version}"
+}

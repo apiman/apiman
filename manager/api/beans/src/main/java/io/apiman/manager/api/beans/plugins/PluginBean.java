@@ -45,21 +45,24 @@ public class PluginBean implements Serializable {
     private String groupId;
     @Column(name = "artifact_id", updatable=false, nullable=false)
     private String artifactId;
-    @Column(updatable=false, nullable=false)
+    @Column(updatable=true, nullable=false)
     private String version;
-    @Column(updatable=false, nullable=true)
+    @Column(updatable=true, nullable=true)
     private String classifier;
-    @Column(updatable=false, nullable=true)
+    @Column(updatable=true, nullable=true)
     private String type;
 
-    @Column(nullable=false)
+    @Column(updatable=true, nullable=false)
     private String name;
     @Column(updatable=true, nullable=true, length=512)
     private String description;
-    @Column(name = "created_by", updatable=false, nullable=false)
+    @Column(name = "created_by", updatable=true, nullable=false)
     private String createdBy;
-    @Column(name = "created_on", updatable=false, nullable=false)
+    @Column(name = "created_on", updatable=true, nullable=false)
     private Date createdOn;
+
+    @Column(nullable=true)
+    private Boolean deleted;
 
     /**
      * Constructor.
@@ -205,6 +208,23 @@ public class PluginBean implements Serializable {
      */
     public void setType(String type) {
         this.type = type;
+    }
+
+    /**
+     * @return the deleted
+     */
+    public boolean isDeleted() {
+        if (deleted == null) {
+            return false;
+        }
+        return deleted;
+    }
+
+    /**
+     * @param deleted the deleted to set
+     */
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
     }
 
     /* (non-Javadoc)

@@ -38,6 +38,8 @@ public class NewPluginBean implements Serializable {
     private String name;
     private String description;
 
+    private boolean upgrade;
+
     /**
      * Constructor.
      */
@@ -140,6 +142,20 @@ public class NewPluginBean implements Serializable {
      */
     public void setType(String type) {
         this.type = type;
+    }
+
+    /**
+     * @return the upgrade
+     */
+    public boolean isUpgrade() {
+        return upgrade;
+    }
+
+    /**
+     * @param upgrade the upgrade to set
+     */
+    public void setUpgrade(boolean upgrade) {
+        this.upgrade = upgrade;
     }
 
     /* (non-Javadoc)

@@ -22,7 +22,7 @@ package io.apiman.manager.api.rest.contract.exceptions;
  *
  * @author eric.wittmann@redhat.com
  */
-public class PolicyDefinitionInvalidException extends AbstractNotFoundException {
+public class PolicyDefinitionInvalidException extends AbstractAlreadyExistsException {
 
     private static final long serialVersionUID = -4260177488116158192L;
 
@@ -33,7 +33,7 @@ public class PolicyDefinitionInvalidException extends AbstractNotFoundException 
     public PolicyDefinitionInvalidException(String message) {
         super(message);
     }
-    
+
     /**
      * @see io.apiman.manager.api.rest.contract.exceptions.AbstractRestException#getErrorCode()
      */
@@ -41,7 +41,7 @@ public class PolicyDefinitionInvalidException extends AbstractNotFoundException 
     public int getErrorCode() {
         return ErrorCodes.POLICY_DEF_INVALID;
     }
-    
+
     /**
      * @see io.apiman.manager.api.rest.contract.exceptions.AbstractRestException#getMoreInfoUrl()
      */
