@@ -22,10 +22,10 @@ package io.apiman.manager.ui.server.beans;
  * @author eric.wittmann@redhat.com
  */
 public class UiConfigurationBean {
-    
-    private Boolean header;
+
+    private String header;
     private Boolean metrics;
-    
+
     /**
      * Constructor.
      */
@@ -35,14 +35,14 @@ public class UiConfigurationBean {
     /**
      * @return the header
      */
-    public Boolean getHeader() {
+    public String getHeader() {
         return header;
     }
 
     /**
      * @param header the header to set
      */
-    public void setHeader(Boolean header) {
+    public void setHeader(String header) {
         this.header = header;
     }
 

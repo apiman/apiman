@@ -570,7 +570,8 @@ public class EsMarshalling {
                     .field("formType", bean.getFormType())
                     .field("icon", bean.getIcon())
                     .field("pluginId", bean.getPluginId())
-                    .field("policyImpl", bean.getPolicyImpl());
+                    .field("policyImpl", bean.getPolicyImpl())
+                    .field("deleted", bean.isDeleted());
 
             Set<PolicyDefinitionTemplateBean> templates = bean.getTemplates();
             if (templates != null) {
@@ -613,6 +614,7 @@ public class EsMarshalling {
                     .field("version", bean.getVersion())
                     .field("classifier", bean.getClassifier())
                     .field("type", bean.getType())
+                    .field("deleted", bean.isDeleted())
                 .endObject();
             postMarshall(bean);
             return builder;
@@ -1209,6 +1211,7 @@ public class EsMarshalling {
         bean.setIcon(asString(source.get("icon")));
         bean.setPluginId(asLong(source.get("pluginId")));
         bean.setPolicyImpl(asString(source.get("policyImpl")));
+        bean.setDeleted(asBoolean(source.get("deleted")));
         @SuppressWarnings("unchecked")
         List<Map<String, Object>> templates = (List<Map<String, Object>>) source.get("templates");
         if (templates != null && !templates.isEmpty()) {
@@ -1271,6 +1274,7 @@ public class EsMarshalling {
         bean.setVersion(asString(source.get("version")));
         bean.setType(asString(source.get("type")));
         bean.setClassifier(asString(source.get("classifier")));
+        bean.setDeleted(asBoolean(source.get("deleted")));
         postMarshall(bean);
         return bean;
     }

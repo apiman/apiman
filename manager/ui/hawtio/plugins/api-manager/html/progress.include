@@ -1,1 +1,0 @@
-<div id="apiman-progress-indicator" ng-class="pageState" ng-show="showHeader"></div>

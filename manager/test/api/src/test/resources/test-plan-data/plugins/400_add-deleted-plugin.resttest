@@ -1,0 +1,21 @@
+POST /plugins admin/admin
+Content-Type: application/json
+X-RestTest-System-Property: apiman.test.m2-path=src/test/resources/test-plan-data/plugins/m2-deleted
+
+{
+  "groupId" : "io.apiman.test",
+  "artifactId" : "deleted-plugin",
+  "version" : "1.0"
+}
+----
+200
+Content-Type: application/json
+X-RestTest-BindTo-plugin-id-1: id
+
+{
+  "name" : "Deleted Plugin Policy",
+  "description" : "This is a simple plugin that tests deleting a plugin and upgrading it. (v1)",
+  "groupId" : "io.apiman.test",
+  "artifactId" : "deleted-plugin",
+  "version" : "1.0"
+}

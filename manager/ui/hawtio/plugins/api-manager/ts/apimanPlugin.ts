@@ -170,18 +170,19 @@ module Apiman {
         
         if (Configuration.api && Configuration.api.auth && Configuration.api.auth.type == 'bearerTokenFromHash') {
             var bearerToken = null;
+            var backTo = null;
+            
             var tokenKey = "Apiman.BearerToken";
             var backToKey = "Apiman.BackToConsole";
 
             var hash = $location.hash();
             if (hash) {
-                console.log("*** HASH: " + hash);
                 var settings = JSON.parse(hash);
-                console.log("*** Settings: " + settings);
                 localStorage[tokenKey] = settings.token;
                 localStorage[backToKey] = settings.backTo;
                 $location.hash(null);
                 bearerToken = settings.token;
+                backTo = settings.backTo;
                 console.log('*** Bearer token from hash: ' + bearerToken);
             } else {
                 try {
@@ -192,11 +193,22 @@ module Apiman {
                     localStorage.removeItem(tokenKey);
                     bearerToken = null;
                 }
+                try {
+                    backTo = localStorage[backToKey];
+                    console.log('*** Back-to-console link: ' + backTo);
+                } catch (e) {
+                    console.log('*** Back-to-console link from local storage was invalid!');
+                    localStorage.removeItem(backToKey);
+                    backTo = null;
+                }
             }
             if (bearerToken) {
                 Configuration.api.auth.bearerToken = {
                     token: bearerToken
                 };
+            }
+            if (backTo) {
+                Configuration.ui.backToConsole = backTo;
             }
         }
         $rootScope.pluginName = Apiman.pluginName;

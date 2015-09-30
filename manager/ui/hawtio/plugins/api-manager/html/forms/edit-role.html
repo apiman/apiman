@@ -8,8 +8,8 @@
 
   <body>
   <div>
-    <div ng-include="'plugins/api-manager/html/progress.include'"></div>
-    <div id="apiman-header" ng-include="'plugins/api-manager/html/navbar.include'"></div>   
+    
+    <div ng-include="headerInclude"></div>   
     <div ng-controller="Apiman.EditRoleController" id="form-page" class="container apiman-edit-role apiman-entity-new page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
       <div class="row">
         <h2 class="title" apiman-i18n-key="edit-role">Edit Role</h2>

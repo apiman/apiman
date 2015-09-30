@@ -20,8 +20,12 @@ module ApimanConfiguration {
                     var enc = btoa(username + ':' + password);
                     authHeader = 'Basic ' + enc;
                 } else if (cdata.api.auth.type == 'bearerToken' || cdata.api.auth.type == 'bearerTokenFromHash') {
-                    var token = cdata.api.auth.bearerToken.token;
-                    authHeader = 'Bearer ' + token;
+                    if (cdata.api.auth.bearerToken && cdata.api.auth.bearerToken.token) {
+                        var token = cdata.api.auth.bearerToken.token;
+                        authHeader = 'Bearer ' + token;
+                    } else {
+                        console.log("** Auth type was " + cdata.api.auth.type + " but no bearer-token was found! **");
+                    }
                 } else if (cdata.api.auth.type == 'authToken') {
                     var token = cdata.api.auth.bearerToken.token;
                     authHeader = 'AUTH-TOKEN ' + token;

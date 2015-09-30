@@ -1,0 +1,47 @@
+GET /plugins admin/admin
+----
+200
+Content-Type: application/json
+
+[
+  {
+    "groupId": "io.apiman.plugins",
+    "artifactId": "apiman-plugins-config-policy",
+    "version": "1.0.2-SNAPSHOT",
+    "name": "Config Policy Plugin",
+    "description": "This plugin adds a header to the inbound http request and to the outbound http response.  The headers are configurable.",
+    "createdBy": "admin"
+  },
+  {
+    "groupId": "io.apiman.test",
+    "artifactId": "custom-fields-plugin",
+    "version": "1.0-SNAPSHOT",
+    "name": "Fields Policy Plugin",
+    "description": "This is a simple plugin that tests refreshing a plugin in the API manager. (v2)",
+    "createdBy": "admin"
+  },
+  {
+    "groupId": "io.apiman",
+    "artifactId": "apiman-plugins-noop-policy",
+    "version": "1.0.2-SNAPSHOT",
+    "name": "No-op Policy Plugin",
+    "description": "This plugin doesn't really do anything except contribute a single no-op policy.  This is useful as a starting point for real plugins.",
+    "createdBy": "admin"
+  },
+  {
+    "groupId": "io.apiman.test",
+    "artifactId": "apiman-test-plugin-1",
+    "version": "2.0",
+    "name": "Plugin One 2.0",
+    "description": "This is version 2.0 of Plugin One.",
+    "createdBy": "admin"
+  },
+  {
+    "groupId": "io.apiman.test",
+    "artifactId": "apiman-test-plugin-2",
+    "version": "1.0",
+    "name": "Plugin Two",
+    "description": "This is the second plugin.",
+    "createdBy": "admin"
+  }
+]

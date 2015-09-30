@@ -7,8 +7,8 @@
 
   <body>
   <div>
-    <div ng-include="'plugins/api-manager/html/progress.include'"></div>
-    <div id="apiman-header" ng-include="'plugins/api-manager/html/navbar.include'"></div>
+    
+    <div ng-include="headerInclude"></div>
     <div ng-controller="Apiman.AppApisController" class="container page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
       <div ng-include="'plugins/api-manager/html/app/app_bc.include'"></div>
       <!-- Entity Summary Row -->

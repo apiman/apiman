@@ -526,7 +526,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
 
             @SuppressWarnings("nls")
             String sql =
-                    "SELECT p.id, p.artifact_id, p.group_id, p.version, p.classifier, p.type, p.name, p.description, p.created_by, p.created_on" +
+                    "SELECT p.id, p.artifact_id, p.group_id, p.version, p.classifier, p.type, p.name, p.description, p.created_by, p.created_on, p.deleted" +
                     "  FROM plugins p" +
                     " WHERE p.group_id = ? AND p.artifact_id = ?";
             Query query = entityManager.createNativeQuery(sql);
@@ -546,6 +546,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
                 plugin.setDescription(String.valueOf(row[7]));
                 plugin.setCreatedBy(String.valueOf(row[8]));
                 plugin.setCreatedOn((Date) row[9]);
+                plugin.setDeleted((Boolean) row[10]);
                 return plugin;
             } else {
                 return null;
@@ -812,6 +813,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             String sql =
                     "SELECT p.id, p.artifact_id, p.group_id, p.version, p.classifier, p.type, p.name, p.description, p.created_by, p.created_on" +
                     "  FROM plugins p" +
+                    " WHERE p.deleted IS NULL OR p.deleted = 0" +
                     " ORDER BY p.name ASC";
             Query query = entityManager.createNativeQuery(sql);
 
@@ -853,6 +855,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             String sql =
                     "SELECT pd.id, pd.policy_impl, pd.name, pd.description, pd.icon, pd.plugin_id, pd.form_type" +
                     "  FROM policydefs pd" +
+                    " WHERE pd.deleted IS NULL OR pd.deleted = 0" +
                     " ORDER BY pd.name ASC";
             Query query = entityManager.createNativeQuery(sql);
 
