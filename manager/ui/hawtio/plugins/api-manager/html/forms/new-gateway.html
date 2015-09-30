@@ -6,8 +6,8 @@
   </head>
 
   <body>
-    <div ng-include="'plugins/api-manager/html/progress.include'"></div>
-    <div id="apiman-header" ng-include="'plugins/api-manager/html/navbar.include'"></div>   
+    
+    <div ng-include="headerInclude"></div>   
     <div ng-controller="Apiman.NewGatewayController" id="form-page" class="container apiman-entity-new page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
       <fieldset>
       <div class="row">

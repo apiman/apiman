@@ -82,12 +82,15 @@ module ApimanPageLifecycle {
     export var PageLifecycle = _module.factory('PageLifecycle', 
         ['$q', 'Logger', '$rootScope', '$location', 'CurrentUserSvcs', 'Configuration', 'TranslationService', '$window',
         ($q, Logger, $rootScope, $location, CurrentUserSvcs, Configuration, TranslationService, $window) => {
-            $rootScope.showHeader = true;
-            if (Configuration.ui) {
-                if (Configuration.ui.header && Configuration.ui.header != "apiman") {
-                    $rootScope.showHeader = false;
-                }
+            var header = 'community';
+            if (Configuration.ui && Configuration.ui.header) {
+                header = Configuration.ui.header;
             }
+            if (header == 'apiman') {
+                header = 'community';
+            }
+            $rootScope.headerInclude = 'plugins/api-manager/html/headers/' + header + '.include';
+            console.log('Using header: ' + $rootScope.headerInclude);
 
             var processCurrentUser = function(currentUser) {
                 $rootScope.currentUser = currentUser;
