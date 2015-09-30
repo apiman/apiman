@@ -71,6 +71,8 @@ public class PolicyDefinitionBean implements Serializable {
     private PolicyFormType formType;
     @Column(updatable=false, nullable=true)
     private String form;
+    @Column(nullable=true)
+    private Boolean deleted;
 
     /**
      * Constructor.
@@ -202,6 +204,23 @@ public class PolicyDefinitionBean implements Serializable {
      */
     public void setForm(String form) {
         this.form = form;
+    }
+
+    /**
+     * @return the deleted
+     */
+    public boolean isDeleted() {
+        if (deleted == null) {
+            return false;
+        }
+        return deleted;
+    }
+
+    /**
+     * @param deleted the deleted to set
+     */
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 
     /**

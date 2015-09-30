@@ -121,6 +121,7 @@ public class PluginResourceImpl implements IPluginResource {
         if (isSnapshot) {
             log.debug("Loading a snapshot version of plugin: " + coordinates); //$NON-NLS-1$
         }
+        boolean isUpgrade = isSnapshot || bean.isUpgrade();
 
         Plugin plugin = null;
         try {
@@ -145,17 +146,36 @@ public class PluginResourceImpl implements IPluginResource {
             storage.beginTx();
             PluginBean existingPlugin = storage.getPlugin(bean.getGroupId(), bean.getArtifactId());
 
-            boolean hasExistingPlugin = existingPlugin != null;
-            boolean isUpdate = false;
+            boolean hasExistingPlugin = existingPlugin != null && !existingPlugin.isDeleted();
+            boolean isUpdatePolicyDefs = false;
 
-            if (hasExistingPlugin && !isSnapshot) {
+            if (hasExistingPlugin && !isUpgrade) {
                 throw ExceptionFactory.pluginAlreadyExistsException();
-            } else if (hasExistingPlugin && isSnapshot) {
-                isUpdate = true;
+            } else if (hasExistingPlugin && isUpgrade) {
+                isUpdatePolicyDefs = true;
+                existingPlugin.setName(pluginBean.getName());
                 existingPlugin.setDescription(pluginBean.getDescription());
+                existingPlugin.setVersion(pluginBean.getVersion());
+                existingPlugin.setClassifier(pluginBean.getClassifier());
+                existingPlugin.setType(pluginBean.getType());
+                pluginBean.setId(existingPlugin.getId());
+                storage.updatePlugin(existingPlugin);
+            } else if (!hasExistingPlugin && existingPlugin != null) {
+                isUpdatePolicyDefs = true;
+                existingPlugin.setName(pluginBean.getName());
+                existingPlugin.setDescription(pluginBean.getDescription());
+                existingPlugin.setVersion(pluginBean.getVersion());
+                existingPlugin.setClassifier(pluginBean.getClassifier());
+                existingPlugin.setType(pluginBean.getType());
+                existingPlugin.setCreatedOn(new Date());
+                existingPlugin.setCreatedBy(securityContext.getCurrentUser());
+                existingPlugin.setDeleted(false);
                 pluginBean.setId(existingPlugin.getId());
                 storage.updatePlugin(existingPlugin);
             } else {
+                if (bean.isUpgrade()) {
+                    throw ExceptionFactory.pluginNotFoundException(0L);
+                }
                 storage.createPlugin(pluginBean);
             }
 
@@ -181,13 +201,14 @@ public class PluginResourceImpl implements IPluginResource {
                 if (existingPolicyDef == null) {
                     storage.createPolicyDefinition(policyDef);
                     createdPolicyDefCounter++;
-                } else if (isUpdate) {
+                } else if (isUpdatePolicyDefs) {
                     existingPolicyDef.setDescription(policyDef.getDescription());
                     existingPolicyDef.setIcon(policyDef.getIcon());
                     existingPolicyDef.getTemplates().clear();
                     existingPolicyDef.getTemplates().addAll(policyDef.getTemplates());
                     existingPolicyDef.setFormType(policyDef.getFormType());
                     existingPolicyDef.setForm(policyDef.getForm());
+                    existingPolicyDef.setDeleted(false);
                     storage.updatePolicyDefinition(existingPolicyDef);
                     updatedPolicyDefCounter++;
                 } else {
@@ -199,7 +220,7 @@ public class PluginResourceImpl implements IPluginResource {
             log.info(String.format("Created plugin mvn:%s:%s:%s", pluginBean.getGroupId(), pluginBean.getArtifactId(),  //$NON-NLS-1$
                     pluginBean.getVersion()));
             log.info(String.format("\tCreated %s policy definitions from plugin.", String.valueOf(createdPolicyDefCounter))); //$NON-NLS-1$
-            if (isUpdate) {
+            if (isUpdatePolicyDefs) {
                 log.info(String.format("\tUpdated %s policy definitions from plugin.", String.valueOf(updatedPolicyDefCounter))); //$NON-NLS-1$
             }
         } catch (AbstractRestException e) {
@@ -244,13 +265,27 @@ public class PluginResourceImpl implements IPluginResource {
             NotAuthorizedException {
         if (!securityContext.isAdmin())
             throw ExceptionFactory.notAuthorizedException();
+
         try {
+            List<PolicyDefinitionSummaryBean> policyDefs = query.listPluginPolicyDefs(pluginId);
+
             storage.beginTx();
             PluginBean pbean = storage.getPlugin(pluginId);
             if (pbean == null) {
                 throw ExceptionFactory.pluginNotFoundException(pluginId);
             }
-            storage.deletePlugin(pbean);
+            pbean.setDeleted(true);
+            storage.updatePlugin(pbean);
+
+            // Now delete all the policy definitions for this plugin.
+            for (PolicyDefinitionSummaryBean policyDef : policyDefs) {
+                PolicyDefinitionBean definition = storage.getPolicyDefinition(policyDef.getId());
+                if (definition != null) {
+                    definition.setDeleted(true);
+                    storage.updatePolicyDefinition(definition);
+                }
+            }
+
             storage.commitTx();
             log.info(String.format("Deleted plugin mvn:%s:%s:%s", pbean.getGroupId(), pbean.getArtifactId(),  //$NON-NLS-1$
                     pbean.getVersion()));

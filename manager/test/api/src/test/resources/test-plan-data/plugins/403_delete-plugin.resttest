@@ -1,0 +1,3 @@
+DELETE /plugins/${plugin-id-1} admin/admin
+----
+204

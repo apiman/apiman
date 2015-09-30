@@ -1,0 +1,31 @@
+GET /policyDefs admin/admin
+----
+200
+Content-Type: application/json
+
+[
+  {
+    "id": "config-policy",
+    "policyImpl": "plugin:io.apiman.plugins:apiman-plugins-config-policy:1.0.2-SNAPSHOT:war/io.apiman.plugins.config_policy.ConfigPolicy",
+    "name": "Config Policy",
+    "description": "A policy used to showcase policy configuration.",
+    "icon": "sliders",
+    "formType": "JsonSchema"
+  },
+  {
+    "id": "fields-policy",
+    "policyImpl": "plugin:io.apiman.test:custom-fields-plugin:1.0-SNAPSHOT:war/io.apiman.test.plugins.FieldsPolicy",
+    "name": "Fields Policy",
+    "description": "A policy used to test refreshing a snapshot plugin policy... (v2)",
+    "icon": "warning-sign",
+    "formType": "JsonSchema"
+  },
+  {
+    "id": "noop-policy",
+    "policyImpl": "plugin:io.apiman:apiman-plugins-noop-policy:1.0.2-SNAPSHOT:war/io.apiman.plugins.noop_policy.NoopPolicy",
+    "name": "No-op Policy",
+    "description": "A policy that can be added but does nothing.  Useful only as a sample or a starting point for implementing real plugin policies.",
+    "icon": "fire",
+    "formType": "Default"
+  }
+]
