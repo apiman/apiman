@@ -27,76 +27,73 @@ var config = {
 
 gulp.task('bower', function() {
   gulp.src('index.html')
-    .pipe(wiredep({}))
-    .pipe(gulp.dest('.'));
+      .pipe(wiredep({}))
+      .pipe(gulp.dest('.'));
 });
 
 /** Adjust the reference path of any typescript-built plugin this project depends on */
 gulp.task('path-adjust', function() {
   gulp.src('libs/**/includes.d.ts')
-    .pipe(map(function(buf, filename) {
-      var textContent = buf.toString();
-      var newTextContent = textContent.replace(/"\.\.\/libs/gm, '"../../../libs');
-      // console.log("Filename: ", filename, " old: ", textContent, " new:", newTextContent);
-      return newTextContent;
-    }))
-    .pipe(gulp.dest('libs'));
+      .pipe(map(function(buf, filename) {
+        var textContent = buf.toString();
+        var newTextContent = textContent.replace(/"\.\.\/libs/gm, '"../../../libs');
+        // console.log("Filename: ", filename, " old: ", textContent, " new:", newTextContent);
+        return newTextContent;
+      }))
+      .pipe(gulp.dest('libs'));
 });
 
 gulp.task('clean-defs', function() {
-  //return gulp.src('defs.d.ts', { read: false })
-  return gulp.src('tsd.d.ts', { read: false })
-    .pipe(plugins.clean());
+  return gulp.src('defs.d.ts', { read: false })
+      .pipe(plugins.clean());
 });
 
 gulp.task('tsc', ['clean-defs'], function() {
   var cwd = process.cwd();
   var tsResult = gulp.src(config.ts)
-    .pipe(plugins.typescript(config.tsProject))
-    .on('error', plugins.notify.onError({
-      message: '#{ error.message }',
-      title: 'Typescript compilation error'
-    }));
+      .pipe(plugins.typescript(config.tsProject))
+      .on('error', plugins.notify.onError({
+        message: '#{ error.message }',
+        title: 'Typescript compilation error'
+      }));
 
-    return eventStream.merge(
+  return eventStream.merge(
       tsResult.js
-        .pipe(plugins.concat('compiled.js'))
-        .pipe(gulp.dest('.')),
+          .pipe(plugins.concat('compiled.js'))
+          .pipe(gulp.dest('.')),
       tsResult.dts
-        .pipe(gulp.dest('d.ts')))
-        .pipe(map(function(buf, filename) {
-          if (!s.endsWith(filename, 'd.ts')) {
-            return buf;
-          }
-          var relative = path.relative(cwd, filename);
-          fs.appendFileSync('defs.d.ts', '/// <reference path="' + relative + '"/>\n');
-          //fs.appendFileSync('tsd.d.ts', '/// <reference path="' + relative + '"/>\n');
+          .pipe(gulp.dest('d.ts')))
+      .pipe(map(function(buf, filename) {
+        if (!s.endsWith(filename, 'd.ts')) {
           return buf;
-        }));
+        }
+        var relative = path.relative(cwd, filename);
+        fs.appendFileSync('defs.d.ts', '/// <reference path="' + relative + '"/>\n');
+        return buf;
+      }));
 });
 
 gulp.task('template', ['tsc'], function() {
   return gulp.src(config.templates)
-    .pipe(plugins.angularTemplatecache({
-      filename: 'templates.js',
-      root: 'plugins/',
-      standalone: true,
-      module: config.templateModule,
-        //templateFooter: '}]);'
-      templateFooter: '}]); hawtioPluginLoader.addModule("' + config.templateModule + '");'
-    }))
-    .pipe(gulp.dest('.'));
+      .pipe(plugins.angularTemplatecache({
+        filename: 'templates.js',
+        root: 'plugins/',
+        standalone: true,
+        module: config.templateModule,
+        templateFooter: '}]); hawtioPluginLoader.addModule("' + config.templateModule + '");'
+      }))
+      .pipe(gulp.dest('.'));
 });
 
 gulp.task('concat', ['template'], function() {
   return gulp.src(['compiled.js', 'templates.js'])
-    .pipe(plugins.concat(config.js))
-    .pipe(gulp.dest(config.dist));
+      .pipe(plugins.concat(config.js))
+      .pipe(gulp.dest(config.dist));
 });
 
 gulp.task('clean', ['concat'], function() {
   return gulp.src(['templates.js', 'compiled.js'], { read: false })
-    .pipe(plugins.clean());
+      .pipe(plugins.clean());
 });
 
 gulp.task('watch', ['build'], function() {
@@ -116,7 +113,7 @@ gulp.task('connect', ['watch'], function() {
 
 gulp.task('reload', function() {
   gulp.src('.')
-    .pipe(plugins.connect.reload());
+      .pipe(plugins.connect.reload());
 });
 
 gulp.task('build', ['bower', 'path-adjust', 'tsc', 'template', 'concat', 'clean']);

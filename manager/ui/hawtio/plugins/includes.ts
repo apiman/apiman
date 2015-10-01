@@ -1,4 +1,4 @@
-/// <reference path="../typings/tsd.d.ts"/>
+/// <reference path="../libs/hawtio-utilities/defs.d.ts"/>
 declare var SwaggerUi;
 declare var SwaggerClient;
 declare var ApiKeyAuthorization;
