@@ -2,13 +2,23 @@
 /// <reference path="apimanGlobals.ts"/>
 module Apiman {
 
-    export var _module = angular.module(Apiman.pluginName,
-        ['ApimanServices', 'ApimanLogger', 'ApimanConfiguration', 'ApimanTranslation', 'ApimanPageLifecycle',
-            'ApimanCurrentUser', 'ApimanDialogs', 'ui.sortable', 'xeditable']);
+    export var _module = angular.module(Apiman.pluginName, [
+        'ApimanServices',
+        'ApimanLogger',
+        'ApimanConfiguration',
+        'ApimanTranslation',
+        'ApimanPageLifecycle',
+        'ApimanCurrentUser',
+        'ApimanDialogs',
+        'ui.sortable',
+        'xeditable'
+    ]);
 
-    _module.config(['$locationProvider', '$routeProvider',
-        ($locationProvider, $routeProvider) => {
-            var prefix = '/api-manager';
+    _module.config([
+        '$locationProvider',
+        '$routeProvider',
+        ($locationProvider,
+         $routeProvider) => {
             var path = 'plugins/api-manager/html/';
 
             // Define Routes
@@ -229,7 +239,7 @@ module Apiman {
                 .when('/errors/500', {
                     templateUrl: path + 'errors/500.html'
                 })
-                .otherwise({redirectTo: prefix + '/dash'});
+                .otherwise({redirectTo: '/'});
 
             $locationProvider.html5Mode(true);
         }]);
@@ -328,6 +338,7 @@ module Apiman {
                 Configuration.ui.backToConsole = backTo;
             }
         }
+
         $rootScope.pluginName = Apiman.pluginName;
     }]);
 
