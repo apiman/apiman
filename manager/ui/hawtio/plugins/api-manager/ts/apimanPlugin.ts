@@ -16,12 +16,12 @@ module Apiman {
 
     _module.config([
         '$locationProvider',
-        '$routeProvider',
-        ($locationProvider,
-         $routeProvider) => {
+        '$routeProvider', ($locationProvider,
+                           $routeProvider) => {
             var path = 'plugins/api-manager/html/';
 
             // Define Routes
+
             $routeProvider
                 .when('/', {
                     templateUrl: path + 'dash.html'
@@ -280,11 +280,21 @@ module Apiman {
                 return requestInterceptor;
             }]);
 
+
     _module.config(['$httpProvider', function ($httpProvider) {
         $httpProvider.interceptors.push('authInterceptor');
     }]);
 
-    _module.run(['$rootScope', 'SystemSvcs', 'HawtioNav', 'Configuration', '$location', ($rootScope, SystemSvcs, HawtioNav:HawtioMainNav.Registry, Configuration, $location) => {
+
+    _module.run([
+        '$rootScope',
+        'SystemSvcs',
+        'Configuration',
+        '$location', ($rootScope,
+                      SystemSvcs,
+                      Configuration,
+                      $location) => {
+
         $rootScope.isDirty = false;
 
         $rootScope.$on('$locationChangeStart', function (event, newUrl, oldUrl) {
@@ -295,7 +305,10 @@ module Apiman {
             }
         });
 
-        if (Configuration.api && Configuration.api.auth && Configuration.api.auth.type == 'bearerTokenFromHash') {
+
+        if (Configuration.api
+            && Configuration.api.auth
+            && Configuration.api.auth.type == 'bearerTokenFromHash') {
             var bearerToken = null;
             var backTo = null;
 
@@ -303,6 +316,7 @@ module Apiman {
             var backToKey = "Apiman.BackToConsole";
 
             var hash = $location.hash();
+
             if (hash) {
                 var settings = JSON.parse(hash);
                 localStorage[tokenKey] = settings.token;
@@ -329,11 +343,13 @@ module Apiman {
                     backTo = null;
                 }
             }
+
             if (bearerToken) {
                 Configuration.api.auth.bearerToken = {
                     token: bearerToken
                 };
             }
+
             if (backTo) {
                 Configuration.ui.backToConsole = backTo;
             }
