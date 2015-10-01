@@ -75,9 +75,9 @@ module Apiman {
                     var ip = getInstalledPlugin(plugin);
                     if (ip) {
                         plugin.isInstalled = true;
-                        //plugin.installedVersion = ip.version;
-                        //ip.latestVersion = plugin.version;
-                        //ip.needsUpgrade = plugin.version != ip.version;
+                        plugin.installedVersion = ip.version;
+                        ip.latestVersion = plugin.version;
+                        ip.needsUpgrade = plugin.version != ip.version;
                     }
                 });
             };
