@@ -26,10 +26,26 @@
 
   <testGroup name="Refresh Snapshot Plugin">
     <test name="Add Fields Plugin">test-plan-data/plugins/300_add-fields-plugin.resttest</test>
-    <test name="List Policy Defs (2)">test-plan-data/plugins/301_list-policy-defs.resttest</test>
+    <test name="List Policy Defs [2]">test-plan-data/plugins/301_list-policy-defs.resttest</test>
     <test name="Refresh Fields Plugin">test-plan-data/plugins/302_refresh-fields-plugin.resttest</test>
-    <test name="List Policy Defs (3)">test-plan-data/plugins/303_list-policy-defs.resttest</test>
+    <test name="List Policy Defs [3]">test-plan-data/plugins/303_list-policy-defs.resttest</test>
     <test name="Get Fields Config Schema">test-plan-data/plugins/304_get-fields-config-form-v2.resttest</test>
+  </testGroup>
+
+  <testGroup name="Delete/Upgrade Plugin">
+    <test name="Add 'Deleted' Plugin">test-plan-data/plugins/400_add-deleted-plugin.resttest</test>
+    <test name="List Plugins [1]">test-plan-data/plugins/401_list-plugins.resttest</test>
+    <test name="List Policy Defs [4]">test-plan-data/plugins/402_list-policy-defs.resttest</test>
+    <test name="Remove 'Deleted' Plugin">test-plan-data/plugins/403_delete-plugin.resttest</test>
+    <test name="List Plugins [2]">test-plan-data/plugins/404_list-plugins.resttest</test>
+    <test name="List Policy Defs [5]">test-plan-data/plugins/405_list-policy-defs.resttest</test>
+    <test name="Restore Deleted Plugin">test-plan-data/plugins/406_restore-deleted-plugin.resttest</test>
+    <test name="List Plugins [3]">test-plan-data/plugins/407_list-plugins.resttest</test>
+    <test name="List Policy Defs [6]">test-plan-data/plugins/408_list-policy-defs.resttest</test>
+    <test name="Add Deleted Plugin v2 [Conflict]">test-plan-data/plugins/409_add-deleted-plugin-v2-error.resttest</test>
+    <test name="Upgrade Deleted Plugin to v2">test-plan-data/plugins/410_upgrade-deleted-plugin-v2.resttest</test>
+    <test name="List Plugins [4]">test-plan-data/plugins/411_list-plugins.resttest</test>
+    <test name="List Policy Defs [7]">test-plan-data/plugins/412_list-policy-defs.resttest</test>
   </testGroup>
 
 </testPlan>

@@ -1,0 +1,19 @@
+POST /plugins admin/admin
+Content-Type: application/json
+
+{
+  "groupId" : "io.apiman.test",
+  "artifactId" : "deleted-plugin",
+  "version" : "1.0"
+}
+----
+200
+Content-Type: application/json
+
+{
+  "name" : "Deleted Plugin Policy",
+  "description" : "This is a simple plugin that tests deleting a plugin and upgrading it. (v1)",
+  "groupId" : "io.apiman.test",
+  "artifactId" : "deleted-plugin",
+  "version" : "1.0"
+}

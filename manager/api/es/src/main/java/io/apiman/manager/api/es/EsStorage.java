@@ -925,8 +925,16 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
         @SuppressWarnings("nls")
         String[] fields = {"id", "artifactId", "groupId", "version", "classifier", "type", "name",
             "description", "createdBy", "createdOn"};
+
+        @SuppressWarnings("nls")
+        QueryBuilder query = QueryBuilders.filteredQuery(
+            QueryBuilders.matchAllQuery(),
+            FilterBuilders.orFilter(
+                    FilterBuilders.missingFilter("deleted"),
+                    FilterBuilders.termFilter("deleted", false))
+        );
         SearchSourceBuilder builder = new SearchSourceBuilder()
-                .fetchSource(fields, null).sort("name.raw", SortOrder.ASC).size(200); //$NON-NLS-1$
+                .fetchSource(fields, null).query(query).sort("name.raw", SortOrder.ASC).size(200); //$NON-NLS-1$
         List<Hit<Map<String,Object>,Void>> hits = listEntities("plugin", builder); //$NON-NLS-1$
         List<PluginSummaryBean> rval = new ArrayList<>(hits.size());
         for (Hit<Map<String,Object>,Void> hit : hits) {
@@ -1417,8 +1425,16 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
     public List<PolicyDefinitionSummaryBean> listPolicyDefinitions() throws StorageException {
         @SuppressWarnings("nls")
         String[] fields = {"id", "policyImpl", "name", "description", "icon", "pluginId", "formType"};
+        @SuppressWarnings("nls")
+        QueryBuilder query = QueryBuilders.filteredQuery(
+            QueryBuilders.matchAllQuery(),
+            FilterBuilders.orFilter(
+                    FilterBuilders.missingFilter("deleted"),
+                    FilterBuilders.termFilter("deleted", false))
+        );
         SearchSourceBuilder builder = new SearchSourceBuilder()
                 .fetchSource(fields, null)
+                .query(query)
                 .sort("name.raw", SortOrder.ASC).size(100); //$NON-NLS-1$
         List<Hit<Map<String,Object>,Void>> hits = listEntities("policyDef", builder); //$NON-NLS-1$
         List<PolicyDefinitionSummaryBean> rval = new ArrayList<>(hits.size());
