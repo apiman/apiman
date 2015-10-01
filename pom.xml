@@ -110,7 +110,7 @@
     <version.io.apiman.quickstarts>1.2.0.Alpha3</version.io.apiman.quickstarts>
     <version.io.searchbox.jest>0.1.6</version.io.searchbox.jest>
     <version.io.undertow>1.0.1.Final</version.io.undertow>
-    <version.javax.enterprise>1.0-SP4</version.javax.enterprise>
+    <version.javax.enterprise>1.2</version.javax.enterprise>
     <version.javax.ws.rs-api>2.0</version.javax.ws.rs-api>
     <version.joda-time>1.6.2</version.joda-time>
     <version.junit>4.11</version.junit>
@@ -122,6 +122,8 @@
     <version.org.apache.geronimo.specs.geronimo-servlet_3.0_spec>1.0</version.org.apache.geronimo.specs.geronimo-servlet_3.0_spec>
     <version.org.apache.httpcomponents.httpclient>4.3.6</version.org.apache.httpcomponents.httpclient>
     <version.org.apache.httpcomponents.httpcore>4.3.3</version.org.apache.httpcomponents.httpcore>
+    <version.org.apache.httpcomponents.asyncclient>4.0.2</version.org.apache.httpcomponents.asyncclient>
+    <version.org.apache.httpcomponents.httpcore-nio>4.3.2</version.org.apache.httpcomponents.httpcore-nio>
     <version.org.apache.logging.log4j>2.2</version.org.apache.logging.log4j>
     <version.org.apache.servicemix.bundles.antlr>2.7.7_5</version.org.apache.servicemix.bundles.antlr>
     <version.org.apache.servicemix.bundles.cglib>3.0_1</version.org.apache.servicemix.bundles.cglib>
@@ -137,7 +139,7 @@
     <version.org.jboss.logging.jboss-logging>3.1.4.GA</version.org.jboss.logging.jboss-logging>
     <version.org.jboss.resteasy>2.3.10.Final</version.org.jboss.resteasy>
     <version.org.jboss.spec.javax.servlet.jboss-servlet-api_3.0_spec>1.0.2.Final</version.org.jboss.spec.javax.servlet.jboss-servlet-api_3.0_spec>
-    <version.org.jboss.weld.weld>1.1.30.Final</version.org.jboss.weld.weld>
+    <version.org.jboss.weld.weld>2.3.0.Final</version.org.jboss.weld.weld>
     <version.org.keycloak>1.2.0.Final</version.org.keycloak>
     <version.org.mockito>1.9.5</version.org.mockito>
     <version.org.mvel>2.2.2.Final</version.org.mvel>
@@ -350,9 +352,9 @@
         <version>${project.version}</version>
       </dependency>
       <dependency>
-	<groupId>${project.groupId}</groupId>
-	<artifactId>apiman-gateway-engine-prometheus</artifactId>
-	<version>${project.version}</version>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>apiman-gateway-engine-prometheus</artifactId>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
@@ -403,9 +405,9 @@
         <version>${project.version}</version>
       </dependency>
       <dependency>
-	<groupId>${project.groupId}</groupId>
-	<artifactId>apiman-gateway-platforms-vertx3-common</artifactId>
-	<version>${project.version}</version>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>apiman-gateway-platforms-vertx3-common</artifactId>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
@@ -610,6 +612,11 @@
         <groupId>org.apache.httpcomponents</groupId>
         <artifactId>httpcore-osgi</artifactId>
         <version>${version.org.apache.httpcomponents.httpcore}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpasyncclient</artifactId>
+        <version>${version.org.apache.httpcomponents.asyncclient}</version>
       </dependency>
       <dependency>
         <groupId>commons-io</groupId>
@@ -826,6 +833,11 @@
         <version>${version.org.apache.httpcomponents.httpcore}</version>
       </dependency>
       <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpcore-nio</artifactId>
+        <version>${version.org.apache.httpcomponents.httpcore-nio}</version>
+      </dependency>
+      <dependency>
         <groupId>com.squareup.okhttp</groupId>
         <artifactId>okhttp</artifactId>
         <version>${version.com.squareup.okhttp}</version>
@@ -921,24 +933,24 @@
         <version>${version.io.vertx}</version>
       </dependency>
       <dependency>
-	<groupId>io.vertx</groupId>
-	<artifactId>vertx-service-proxy</artifactId>
-	<version>${version.io.vertx}</version>
+        <groupId>io.vertx</groupId>
+        <artifactId>vertx-service-proxy</artifactId>
+        <version>${version.io.vertx}</version>
       </dependency>
       <dependency>
-	<groupId>io.vertx</groupId>
-	<artifactId>vertx-codegen</artifactId>
-	<version>${version.io.vertx}</version>
+        <groupId>io.vertx</groupId>
+        <artifactId>vertx-codegen</artifactId>
+        <version>${version.io.vertx}</version>
       </dependency>
       <dependency>
-	<groupId>io.vertx</groupId>
-	<artifactId>vertx-web</artifactId>
-	<version>${version.io.vertx}</version>
+        <groupId>io.vertx</groupId>
+        <artifactId>vertx-web</artifactId>
+        <version>${version.io.vertx}</version>
       </dependency>
       <dependency>
-	<groupId>io.vertx</groupId>
-	<artifactId>vertx-auth-shiro</artifactId>
-	<version>${version.io.vertx}</version>
+        <groupId>io.vertx</groupId>
+        <artifactId>vertx-auth-shiro</artifactId>
+        <version>${version.io.vertx}</version>
       </dependency>
 
       <!-- Test -->
@@ -1063,7 +1075,7 @@
         </plugin>
         <plugin>
           <groupId>io.vertx</groupId>
-	      <artifactId>vertx-maven-plugin</artifactId>
+          <artifactId>vertx-maven-plugin</artifactId>
           <version>${version.vertx.plugin}</version>
           <dependencies>
             <dependency>
@@ -1232,7 +1244,7 @@
         <updatePolicy>daily</updatePolicy>
       </snapshots>
     </repository>
-    
+
     <repository>
       <id>snapshots-repo</id>
       <url>https://oss.sonatype.org/content/repositories/snapshots/</url>

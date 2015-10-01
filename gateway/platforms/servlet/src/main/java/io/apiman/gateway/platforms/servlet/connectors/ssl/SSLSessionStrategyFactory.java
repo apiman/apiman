@@ -347,7 +347,7 @@ public class SSLSessionStrategyFactory {
     private static SSLContextBuilder loadTrustMaterial(SSLContextBuilder builder, final File file,
             final char[] tsp, final TrustStrategy trustStrategy)
                     throws NoSuchAlgorithmException, KeyStoreException, CertificateException, IOException {
-        Args.notNull(file, "Truststore file");
+        Args.notNull(file, "Truststore file"); //$NON-NLS-1$
         final KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
         final FileInputStream instream = new FileInputStream(file);
         try {
@@ -364,7 +364,7 @@ public class SSLSessionStrategyFactory {
     private static SSLContextBuilder loadKeyMaterial(SSLContextBuilder builder, File file, char[] ksp,
             char[] kp, PrivateKeyStrategy privateKeyStrategy) throws NoSuchAlgorithmException,
                     KeyStoreException, UnrecoverableKeyException, CertificateException, IOException {
-        Args.notNull(file, "Keystore file");
+        Args.notNull(file, "Keystore file"); //$NON-NLS-1$
         final KeyStore identityStore = KeyStore.getInstance(KeyStore.getDefaultType());
         final FileInputStream instream = new FileInputStream(file);
         try {
