@@ -1,10 +1,10 @@
 {
-  "name": "apiman-manager",
-  "version": "0.1.0",
+  "name": "apiman-manager-ui",
+  "version": "1.2.0",
   "devDependencies": {
-    "bower": "^1.4.0",
+    "angular-mocks": "~1.3.7",
     "event-stream": "^3.1.7",
-    "gulp": "^3.8.10",
+    "gulp": "3.9.0",
     "gulp-angular-templatecache": "^1.5.0",
     "gulp-clean": "^0.3.1",
     "gulp-concat": "^2.4.2",
@@ -17,7 +17,38 @@
     "underscore.string": "^2.4.0",
     "vinyl-map": "^1.0.1",
     "which": "^1.0.8",
-    "wiredep": "^2.2.2"
+    "typescript": "1.6.2"
   },
-  "dependencies": {}
+  "description": "Apiman's UI component, written principally in AngularJS",
+  "main": "dist/apiman-manager.js",
+  "dependencies": {
+    "bootstrap": "3.3.1",
+    "bootstrap-select": "1.6.3",
+    "json-editor": "0.7.18",
+    "swagger-ui": "2.1.2",
+    "patternfly": "1.3.0",
+    "angular-resource": "1.3.0",
+    "ng-sortable": "1.2.2",
+    "d3": "3.5.0",
+    "c3": "0.4.10",
+    "angular-xeditable": "git://github.com/vitalets/angular-xeditable#0.1.9"
+  },
+  "scripts": {
+    "test": "echo \"No tests specified, yet\" && exit 0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/apiman/apiman.git"
+  },
+  "keywords": [
+    "apiman",
+    "api",
+    "management"
+  ],
+  "author": "Apiman team",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/apiman/apiman/issues"
+  },
+  "homepage": "https://github.com/apiman/apiman#readme"
 }

@@ -1,0 +1,98 @@
+﻿<html>
+
+<script src="https://raw.github.com/termi1uc1/ES5-DOM-SHIM/master/__SRC/a.js"></script>
+
+<label id=label1>
+	<form id=form1>
+		<label id=label2>
+			<input id=input1 />
+			<label id=label3>
+				<input id=input2 />
+			</label>
+		</label>
+	</form>
+</label>
+
+<div>
+	<form id=form2>
+		<label id=label4 for=test1></label>
+		<label id=label5>
+			<input id=test1 />
+			
+			<label id=label6 for=test2></label>
+			<label id=label8 for=test2></label>
+			<label id=label9 for=test1></label>
+			<label id=label7>
+				<input id=test2 />
+			</label>
+		</label>
+	</form>
+</div>
+
+<script>
+
+
+var input1 = document.getElementById('input1'),	
+	input2 = document.getElementById('input2'),
+	
+	test1 = document.getElementById('test1'),
+	test2 = document.getElementById('test2'),
+	
+	fn = function(value, label) {
+		return value + "" + label.id
+	},
+	
+	chrome_Result1 = Array.from(input1.labels).reduce(fn, ""),
+	chrome_Result2 = Array.from(input2.labels).reduce(fn, ""),
+	chrome_Result3 = Array.from(test1.labels).reduce(fn, ""),
+	chrome_Result4 = Array.from(test2.labels).reduce(fn, "");
+	
+var fakeLabels = {
+	enumerable: true,
+	"get" : function() {
+		if(!~["INPUT", "BUTTON", "KEYGEN", "METER", "OUTPUT", "PROGRESS", "TEXTAREA", "SELECT"].indexOf(this.nodeName))
+			return void 0;
+		
+		var node = this,
+			/**
+			 * represents the list of label elements, in [!]tree order[!]
+			 * @type {Array}
+			 */
+			result = this.id ?
+				Array.from(document.querySelectorAll("label[for='" + this.id + "']")) :	
+				[],
+			_lastInTreeOrder_index = result.length - 1;
+
+		while((node = node.parentNode) && (node.nodeName !== "LABEL" || node.control === this))
+			if(node.nodeName === "LABEL") {
+				
+				while(result[_lastInTreeOrder_index] && 
+					result[_lastInTreeOrder_index].compareDocumentPosition(node) & 2)//DOCUMENT_POSITION_PRECEDING
+					_lastInTreeOrder_index--;
+				result.splice(_lastInTreeOrder_index + 1, 0, node)
+			}
+
+		console.log("fake 'labels' work")
+			
+		return result;//.reverse();
+	}
+}
+
+Object.defineProperty(input1, "labels", fakeLabels);
+Object.defineProperty(input2, "labels", fakeLabels);
+Object.defineProperty(test1, "labels", fakeLabels);
+Object.defineProperty(test2, "labels", fakeLabels);
+
+//if(chrome_Result1 != input1.labels.reduce(fn, ""))
+	alert("input1:\noriginal: " + chrome_Result1 + "\nfake: " + input1.labels.reduce(fn, ""))
+
+//if(chrome_Result2 != input2.labels.reduce(fn, ""))
+	alert("input2:\noriginal: " + chrome_Result2 + "\nfake: " + input2.labels.reduce(fn, ""))
+
+//if(chrome_Result3 != test1.labels.reduce(fn, ""))
+	alert("test1:\noriginal: " + chrome_Result3 + "\nfake: " + test1.labels.reduce(fn, ""))
+
+//if(chrome_Result4 != test2.labels.reduce(fn, ""))
+	alert("test2:\noriginal: " + chrome_Result4 + "\nfake: " + test2.labels.reduce(fn, ""))
+
+</script>

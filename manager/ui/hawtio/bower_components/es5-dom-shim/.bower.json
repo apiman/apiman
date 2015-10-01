@@ -1,0 +1,13 @@
+{
+  "name": "es5-dom-shim",
+  "homepage": "https://github.com/termi/ES5-DOM-SHIM",
+  "_release": "e25207e9ed",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "e25207e9ed2fd89aed7f9b5b3529a13f1baed48f"
+  },
+  "_source": "git://github.com/termi/ES5-DOM-SHIM.git",
+  "_target": "*",
+  "_originalSource": "es5-dom-shim"
+}
