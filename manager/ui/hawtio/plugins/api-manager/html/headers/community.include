@@ -3,7 +3,7 @@
         <div class="main-header container" ng-controller="Apiman.NavbarController">
           <div class="row">
             <div class="col-md-12">
-              <a href="{{ pluginName }}/dash">
+              <a href="{{ pluginName }}/">
                 <div class="logo"></div>
               </a>
               <ul class="user-menu pull-right">
@@ -15,7 +15,7 @@
                   </a>
                   <ul class="dropdown-menu">
                     <li>
-                      <a id="navbar-home" href="{{ pluginName }}/dash" apiman-i18n-key="home">Home</a>
+                      <a id="navbar-home" href="{{ pluginName }}/" apiman-i18n-key="home">Home</a>
                     </li>
                     <li>
                       <a id="navbar-my-stuff" href="{{ pluginName }}/users/{{ username }}/orgs" apiman-i18n-key="my-stuff">My Stuff</a>
