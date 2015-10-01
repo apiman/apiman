@@ -44,7 +44,8 @@ gulp.task('path-adjust', function() {
 });
 
 gulp.task('clean-defs', function() {
-  return gulp.src('defs.d.ts', { read: false })
+  //return gulp.src('defs.d.ts', { read: false })
+  return gulp.src('tsd.d.ts', { read: false })
     .pipe(plugins.clean());
 });
 
@@ -68,7 +69,8 @@ gulp.task('tsc', ['clean-defs'], function() {
             return buf;
           }
           var relative = path.relative(cwd, filename);
-          fs.appendFileSync('defs.d.ts', '/// <reference path="' + relative + '"/>\n');
+          //fs.appendFileSync('defs.d.ts', '/// <reference path="' + relative + '"/>\n');
+          fs.appendFileSync('tsd.d.ts', '/// <reference path="' + relative + '"/>\n');
           return buf;
         }));
 });
@@ -80,6 +82,7 @@ gulp.task('template', ['tsc'], function() {
       root: 'plugins/',
       standalone: true,
       module: config.templateModule,
+        //templateFooter: '}]);'
       templateFooter: '}]); hawtioPluginLoader.addModule("' + config.templateModule + '");'
     }))
     .pipe(gulp.dest('.'));

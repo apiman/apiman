@@ -3,15 +3,17 @@
 module Apiman {
 
     export var _module = angular.module(Apiman.pluginName, [
+        'ngRoute',
+        'ui.sortable',
+        'xeditable',
+
         'ApimanServices',
         'ApimanLogger',
         'ApimanConfiguration',
         'ApimanTranslation',
         'ApimanPageLifecycle',
         'ApimanCurrentUser',
-        'ApimanDialogs',
-        'ui.sortable',
-        'xeditable'
+        'ApimanDialogs'
     ]);
 
     _module.config([
@@ -358,6 +360,31 @@ module Apiman {
         $rootScope.pluginName = Apiman.pluginName;
     }]);
 
+    function preBootstrap() {
+        // Load the configuration jsonp script
+        $.getScript('apiman/config.js').done((script, textStatus) => {
+            log.info("Loaded the config.js config!");
+        }).fail((response) => {
+            log.debug("Error fetching configuration: ", response);
+        }).always(() => {
+            // Load the i18n jsonp script
+            $.getScript('apiman/translations.js').done((script, textStatus) => {
+                log.info("Loaded the translations.js bundle!");
+            }).fail((response) => {
+                log.debug("Error fetching translations: ", response);
+            }).always(() => {
+                //next();
+            });
+        });
+    }
+
+    preBootstrap();
+
+    angular.element(document).ready(function() {
+        angular.bootstrap(document, ['api-manager']);
+    });
+
+    /*
     hawtioPluginLoader.registerPreBootstrapTask((next) => {
         // Load the configuration jsonp script
         $.getScript('apiman/config.js').done((script, textStatus) => {
@@ -376,6 +403,7 @@ module Apiman {
         });
 
     }, true);
+    */
 
-    hawtioPluginLoader.addModule(Apiman.pluginName);
+    //hawtioPluginLoader.addModule(Apiman.pluginName);
 }
