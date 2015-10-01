@@ -371,12 +371,14 @@ public abstract class GatewayServlet extends HttpServlet {
      * @param error
      */
     protected void writeError(HttpServletResponse resp, Throwable error) {
+        resp.setHeader("X-Gateway-Error", error.getMessage()); //$NON-NLS-1$
+        resp.setContentType("application/json"); //$NON-NLS-1$
+        resp.setStatus(500);
+
         EngineErrorResponse response = new EngineErrorResponse();
         response.setResponseCode(500);
         response.setMessage(error.getMessage());
         response.setTrace(error);
-        resp.setHeader("X-Gateway-Error", error.getMessage()); //$NON-NLS-1$
-        resp.setStatus(500);
 
         try {
             mapper.writer().writeValue(resp.getOutputStream(), response);
