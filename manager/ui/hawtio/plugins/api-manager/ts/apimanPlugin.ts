@@ -6,8 +6,6 @@ module Apiman {
         ['ApimanServices', 'ApimanLogger', 'ApimanConfiguration', 'ApimanTranslation', 'ApimanPageLifecycle',
             'ApimanCurrentUser', 'ApimanDialogs', 'ui.sortable', 'xeditable']);
 
-    //var tab = undefined;
-
     _module.config(['$locationProvider', '$routeProvider',
         ($locationProvider, $routeProvider) => {
             var prefix = '/api-manager';
@@ -286,10 +284,6 @@ module Apiman {
                 }
             }
         });
-
-        if (!Configuration.platform || Configuration.platform == 'standalone') {
-            //HawtioNav.add(tab);
-        }
 
         if (Configuration.api && Configuration.api.auth && Configuration.api.auth.type == 'bearerTokenFromHash') {
             var bearerToken = null;
