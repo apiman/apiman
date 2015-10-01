@@ -15,11 +15,6 @@
  */
 package io.apiman.gateway.engine.es;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-
 import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
@@ -31,6 +26,11 @@ import io.apiman.gateway.engine.beans.ServiceRequest;
 import io.searchbox.client.JestResult;
 import io.searchbox.client.JestResultHandler;
 import io.searchbox.core.Get;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Extends the {@link ESRegistry} to provide single-node caching.  This caching solution
@@ -193,9 +193,11 @@ public class CachingESRegistry extends ESRegistry {
      * @param service
      */
     protected void cacheService(Service service) {
-        String serviceKey = getServiceKey(service);
-        synchronized (mutex) {
-            serviceCache.put(serviceKey, service);
+        if (service != null) {
+            String serviceKey = getServiceKey(service);
+            synchronized (mutex) {
+                serviceCache.put(serviceKey, service);
+            }
         }
     }
 

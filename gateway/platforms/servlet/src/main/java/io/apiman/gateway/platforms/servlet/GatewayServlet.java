@@ -23,6 +23,7 @@ import io.apiman.gateway.engine.IServiceRequestExecutor;
 import io.apiman.gateway.engine.async.IAsyncHandler;
 import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
+import io.apiman.gateway.engine.beans.EngineErrorResponse;
 import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.beans.PolicyFailureType;
 import io.apiman.gateway.engine.beans.ServiceRequest;
@@ -34,8 +35,6 @@ import io.apiman.gateway.platforms.servlet.i18n.Messages;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.Enumeration;
@@ -372,21 +371,18 @@ public abstract class GatewayServlet extends HttpServlet {
      * @param error
      */
     protected void writeError(HttpServletResponse resp, Throwable error) {
+        EngineErrorResponse response = new EngineErrorResponse();
+        response.setResponseCode(500);
+        response.setMessage(error.getMessage());
+        response.setTrace(error);
+        resp.setHeader("X-Gateway-Error", error.getMessage()); //$NON-NLS-1$
+        resp.setStatus(500);
+
         try {
-            resp.setHeader("X-Exception", error.getMessage()); //$NON-NLS-1$
-            resp.setStatus(500);
-            OutputStream outputStream = null;
-            try {
-                outputStream = resp.getOutputStream();
-                PrintWriter writer = new PrintWriter(outputStream);
-                error.printStackTrace(writer);
-                writer.flush();
-                outputStream.flush();
-            } finally {
-                IOUtils.closeQuietly(outputStream);
-            }
-        } catch (IOException e1) {
-            throw new RuntimeException(error);
+            mapper.writer().writeValue(resp.getOutputStream(), response);
+            IOUtils.closeQuietly(resp.getOutputStream());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
