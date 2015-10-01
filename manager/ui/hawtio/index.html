@@ -18,13 +18,17 @@
     <link rel="stylesheet" href="libs/swagger-ui/dist/css/typography.css" />
     <link rel="stylesheet" href="plugins/api-manager/css/apiman.css" />
     <link rel="stylesheet" href="plugins/api-manager/css/apiman-responsive.css" />
+  </head>
+
+  <body>
+    <div ng-view=""></div>
 
     <!-- ES6/ES6 shim -->
     <!--[if IE 8]>
     <script src="libs/es5-dom-shim/__COMIPLE/a.ie8.js"></script>
     <![endif]-->
     <script src="libs/es5-dom-shim/__COMPILE/a.js"></script>
-
+    
     <!-- bower:js -->
     <script src="libs/jquery/dist/jquery.js"></script>
     <script src="libs/bootstrap/dist/js/bootstrap.js"></script>
@@ -44,16 +48,12 @@
     <script src="libs/swagger-ui/dist/lib/shred.bundle.js"></script>
     <script src="libs/swagger-ui/dist/lib/backbone-min.js"></script>
     <script src="libs/swagger-ui/dist/lib/handlebars-2.0.0.js"></script>
-    -->
     <script src="libs/swagger-ui/dist/swagger-ui.js"></script>
     <script src="libs/swagger-ui/dist/lib/highlight.7.3.pack.js"></script>
     <script src="libs/swagger-ui/dist/lib/marked.js"></script>
     <script src="libs/swagger-ui/dist/lib/swagger-client.js"></script>
     <script src="libs/swagger-ui/dist/lib/swagger-oauth.js"></script>
-  </head>
 
-  <body>
-    <div ng-view=""></div>
     <script src="dist/apiman-manager.js"></script>
   </body>
 </html>

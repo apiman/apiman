@@ -69,8 +69,8 @@ gulp.task('tsc', ['clean-defs'], function() {
             return buf;
           }
           var relative = path.relative(cwd, filename);
-          //fs.appendFileSync('defs.d.ts', '/// <reference path="' + relative + '"/>\n');
-          fs.appendFileSync('tsd.d.ts', '/// <reference path="' + relative + '"/>\n');
+          fs.appendFileSync('defs.d.ts', '/// <reference path="' + relative + '"/>\n');
+          //fs.appendFileSync('tsd.d.ts', '/// <reference path="' + relative + '"/>\n');
           return buf;
         }));
 });
