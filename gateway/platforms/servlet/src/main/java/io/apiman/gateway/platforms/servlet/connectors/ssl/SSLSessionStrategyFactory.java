@@ -18,9 +18,11 @@ package io.apiman.gateway.platforms.servlet.connectors.ssl;
 import io.apiman.common.config.options.TLSOptions;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.security.KeyManagementException;
+import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -40,13 +42,13 @@ import javax.net.ssl.SSLParameters;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.X509TrustManager;
 
+import org.apache.http.conn.ssl.PrivateKeyDetails;
+import org.apache.http.conn.ssl.PrivateKeyStrategy;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.SSLContextBuilder;
+import org.apache.http.conn.ssl.SSLContexts;
 import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.conn.ssl.TrustStrategy;
-import org.apache.http.ssl.PrivateKeyDetails;
-import org.apache.http.ssl.PrivateKeyStrategy;
-import org.apache.http.ssl.SSLContextBuilder;
-import org.apache.http.ssl.SSLContexts;
 import org.apache.http.util.Args;
 
 /**
@@ -204,14 +206,15 @@ public class SSLSessionStrategyFactory {
 
         TrustStrategy trustStrategy = trustSelfSigned ?  SELF_SIGNED : null;
         HostnameVerifier hostnameVerifier = allowAnyHostname ? ALLOW_ANY :
-            SSLConnectionSocketFactory.getDefaultHostnameVerifier();
+            SSLConnectionSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER;
         PrivateKeyStrategy privateKeyStrategy = keyAliases == null ? null : new SelectByAlias(keyAliases);
         boolean clientAuth = keyStore == null ? false : true;
 
         SSLContextBuilder builder = SSLContexts.custom();
 
         if (trustStore != null) {
-            builder.loadTrustMaterial(new File(trustStore),
+            loadTrustMaterial(builder,
+                    new File(trustStore),
                     trustStorePassword.toCharArray(),
                     trustStrategy);
         }
@@ -219,7 +222,7 @@ public class SSLSessionStrategyFactory {
         if (keyStore != null) {
             char[] ksp = keyStorePassword == null ? null : keyStorePassword.toCharArray();
             char[] kp = keyPassword == null ? null : keyPassword.toCharArray();
-            builder.loadKeyMaterial(new File(keyStore), ksp, kp, privateKeyStrategy);
+            loadKeyMaterial(builder, new File(keyStore), ksp, kp, privateKeyStrategy);
         }
 
         SSLContext sslContext = builder.build();
@@ -337,4 +340,39 @@ public class SSLSessionStrategyFactory {
             return null;
         }
     }
+
+    // This code is adapted from
+    // apache/httpcore/blob/4.4.x/httpcore/src/main/java/org/apache/http/ssl/SSLContextBuilder.java
+    // for compatibility purposes.
+    private static SSLContextBuilder loadTrustMaterial(SSLContextBuilder builder, final File file,
+            final char[] tsp, final TrustStrategy trustStrategy)
+                    throws NoSuchAlgorithmException, KeyStoreException, CertificateException, IOException {
+        Args.notNull(file, "Truststore file"); //$NON-NLS-1$
+        final KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
+        final FileInputStream instream = new FileInputStream(file);
+        try {
+            trustStore.load(instream, tsp);
+        } finally {
+            instream.close();
+        }
+        return builder.loadTrustMaterial(trustStore, trustStrategy);
+    }
+
+    // This code is adapted from
+    // apache/httpcore/blob/4.4.x/httpcore/src/main/java/org/apache/http/ssl/SSLContextBuilder.java
+    // for compatibility purposes.
+    private static SSLContextBuilder loadKeyMaterial(SSLContextBuilder builder, File file, char[] ksp,
+            char[] kp, PrivateKeyStrategy privateKeyStrategy) throws NoSuchAlgorithmException,
+                    KeyStoreException, UnrecoverableKeyException, CertificateException, IOException {
+        Args.notNull(file, "Keystore file"); //$NON-NLS-1$
+        final KeyStore identityStore = KeyStore.getInstance(KeyStore.getDefaultType());
+        final FileInputStream instream = new FileInputStream(file);
+        try {
+            identityStore.load(instream, ksp);
+        } finally {
+            instream.close();
+        }
+        return builder.loadKeyMaterial(identityStore, kp, privateKeyStrategy);
+    }
+
 }

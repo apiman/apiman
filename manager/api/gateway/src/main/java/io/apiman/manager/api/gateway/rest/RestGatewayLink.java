@@ -33,19 +33,16 @@ import java.io.UnsupportedEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLSession;
-
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.HttpException;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.SSLContextBuilder;
 import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.protocol.HttpContext;
-import org.apache.http.ssl.SSLContextBuilder;
 import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
@@ -58,15 +55,8 @@ import org.codehaus.jackson.map.ObjectMapper;
 public class RestGatewayLink implements IGatewayLink {
 
     private static final ObjectMapper mapper = new ObjectMapper();
-    private static HostnameVerifier allHostsValid;
     private static SSLConnectionSocketFactory sslConnectionFactory;
     static {
-        allHostsValid = new HostnameVerifier() {
-            @Override
-            public boolean verify(String hostname, SSLSession session) {
-                return true;
-            }
-        };
         try {
             SSLContextBuilder builder = new SSLContextBuilder();
             builder.loadTrustMaterial(null, new TrustStrategy() {
@@ -75,7 +65,7 @@ public class RestGatewayLink implements IGatewayLink {
                     return true;
                 }
             });
-            sslConnectionFactory = new SSLConnectionSocketFactory(builder.build(), allHostsValid);
+            sslConnectionFactory = new SSLConnectionSocketFactory(builder.build(), SSLConnectionSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -98,7 +88,7 @@ public class RestGatewayLink implements IGatewayLink {
             setConfig((RestGatewayConfigBean) mapper.reader(RestGatewayConfigBean.class).readValue(cfg));
             getConfig().setPassword(AesEncrypter.decrypt(getConfig().getPassword()));
             httpClient = HttpClientBuilder.create()
-                    .setSSLHostnameVerifier(allHostsValid)
+                    .setHostnameVerifier(SSLConnectionSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER)
                     .setSSLSocketFactory(sslConnectionFactory)
                     .addInterceptorFirst(new HttpRequestInterceptor() {
                         @Override

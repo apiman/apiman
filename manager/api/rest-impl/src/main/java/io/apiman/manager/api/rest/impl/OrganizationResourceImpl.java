@@ -3165,7 +3165,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
      */
     private DateTime parseFromDate(String fromDate) {
         // Default to the last 30 days
-        DateTime defaultFrom = DateTime.now().withZone(DateTimeZone.UTC).minusDays(30).withHourOfDay(0)
+        DateTime defaultFrom = new DateTime().withZone(DateTimeZone.UTC).minusDays(30).withHourOfDay(0)
                 .withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0);
         return parseDate(fromDate, defaultFrom, true);
     }
@@ -3176,7 +3176,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
      */
     private DateTime parseToDate(String toDate) {
         // Default to now
-        return parseDate(toDate, DateTime.now().withZone(DateTimeZone.UTC), false);
+        return parseDate(toDate, new DateTime().withZone(DateTimeZone.UTC), false);
     }
 
     /**
@@ -3187,10 +3187,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
      */
     private static DateTime parseDate(String dateStr, DateTime defaultDate, boolean floor) {
         if ("now".equals(dateStr)) { //$NON-NLS-1$
-            return DateTime.now();
+            return new DateTime();
         }
         if (dateStr.length() == 10) {
-            DateTime parsed = ISODateTimeFormat.date().withZoneUTC().parseDateTime(dateStr);
+            DateTime parsed = ISODateTimeFormat.date().withZone(DateTimeZone.UTC).parseDateTime(dateStr);
             // If what we want is the floor, then just return it.  But if we want the
             // ceiling of the date, then we need to set the right params.
             if (!floor) {
@@ -3199,10 +3199,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             return parsed;
         }
         if (dateStr.length() == 20) {
-            return ISODateTimeFormat.dateTimeNoMillis().withZoneUTC().parseDateTime(dateStr);
+            return ISODateTimeFormat.dateTimeNoMillis().withZone(DateTimeZone.UTC).parseDateTime(dateStr);
         }
         if (dateStr.length() == 24) {
-            return ISODateTimeFormat.dateTime().withZoneUTC().parseDateTime(dateStr);
+            return ISODateTimeFormat.dateTime().withZone(DateTimeZone.UTC).parseDateTime(dateStr);
         }
         return defaultDate;
     }

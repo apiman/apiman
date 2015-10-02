@@ -133,7 +133,7 @@ public class ESMetricsAccessorTest {
         metrics.setEsClient(client);
 
         UsageHistogramBean usage = metrics.getUsage("JBossOverlord", "s-ramp-api", "1.0", HistogramIntervalType.day,
-                parseDate("2015-01-01"), DateTime.now().withZone(DateTimeZone.UTC));
+                parseDate("2015-01-01"), new DateTime().withZone(DateTimeZone.UTC));
         List<UsageDataPoint> data = usage.getData();
         Assert.assertTrue(data.size() > 0);
         Assert.assertTrue(data.size() > 1);
@@ -171,7 +171,7 @@ public class ESMetricsAccessorTest {
 
         // data exists - all data for JBossOverlord/s-ramp-api:1.0
         UsagePerAppBean usagePerApp = metrics.getUsagePerApp("JBossOverlord", "s-ramp-api", "1.0",
-                parseDate("2015-01-01"), DateTime.now().withZone(DateTimeZone.UTC));
+                parseDate("2015-01-01"), new DateTime().withZone(DateTimeZone.UTC));
         Assert.assertNotNull(usagePerApp);
         Map<String, Long> expectedData = new HashMap<>();
         expectedData.put("dtgov", 29L);
@@ -180,7 +180,7 @@ public class ESMetricsAccessorTest {
 
         // data exists - all data for Test/echo:1.0
         usagePerApp = metrics.getUsagePerApp("Test", "echo", "1.0",
-                parseDate("2015-01-01"), DateTime.now().withZone(DateTimeZone.UTC));
+                parseDate("2015-01-01"), new DateTime().withZone(DateTimeZone.UTC));
         Assert.assertNotNull(usagePerApp);
         expectedData.clear();
         expectedData.put("my-app", 136L);
@@ -189,7 +189,7 @@ public class ESMetricsAccessorTest {
 
         // Test/echo:1.0 bounded by a different date range
         usagePerApp = metrics.getUsagePerApp("Test", "echo", "1.0",
-                parseDate("2015-06-18"), DateTime.now().withZone(DateTimeZone.UTC));
+                parseDate("2015-06-18"), new DateTime().withZone(DateTimeZone.UTC));
         Assert.assertNotNull(usagePerApp);
         expectedData.clear();
         Assert.assertEquals(expectedData, usagePerApp.getData());
@@ -205,7 +205,7 @@ public class ESMetricsAccessorTest {
         Assert.assertEquals(expectedData, usagePerApp.getData());
 
         // No data for service
-        usagePerApp = metrics.getUsagePerApp("NA", "NA", "NA", parseDate("2015-01-01"), DateTime.now().withZone(DateTimeZone.UTC));
+        usagePerApp = metrics.getUsagePerApp("NA", "NA", "NA", parseDate("2015-01-01"), new DateTime().withZone(DateTimeZone.UTC));
         Assert.assertNotNull(usagePerApp);
         expectedData.clear();
         Assert.assertEquals(expectedData, usagePerApp.getData());
@@ -221,7 +221,7 @@ public class ESMetricsAccessorTest {
 
         // data exists - all data for JBossOverlord/s-ramp-api:1.0
         UsagePerPlanBean usagePerPlan = metrics.getUsagePerPlan("JBossOverlord", "s-ramp-api", "1.0",
-                parseDate("2015-01-01"), DateTime.now().withZone(DateTimeZone.UTC));
+                parseDate("2015-01-01"), new DateTime().withZone(DateTimeZone.UTC));
         Assert.assertNotNull(usagePerPlan);
         Map<String, Long> expectedData = new HashMap<>();
         expectedData.put("Platinum", 17L);
@@ -231,7 +231,7 @@ public class ESMetricsAccessorTest {
 
         // data exists - all data for Test/echo:1.0
         usagePerPlan = metrics.getUsagePerPlan("Test", "echo", "1.0",
-                parseDate("2015-01-01"), DateTime.now().withZone(DateTimeZone.UTC));
+                parseDate("2015-01-01"), new DateTime().withZone(DateTimeZone.UTC));
         Assert.assertNotNull(usagePerPlan);
         expectedData.clear();
         expectedData.put("Platinum", 31L);
@@ -242,7 +242,7 @@ public class ESMetricsAccessorTest {
 
         // Test/echo:1.0 bounded by a different date range
         usagePerPlan = metrics.getUsagePerPlan("Test", "echo", "1.0",
-                parseDate("2015-06-18"), DateTime.now().withZone(DateTimeZone.UTC));
+                parseDate("2015-06-18"), new DateTime().withZone(DateTimeZone.UTC));
         Assert.assertNotNull(usagePerPlan);
         expectedData.clear();
         Assert.assertEquals(expectedData, usagePerPlan.getData());
@@ -351,7 +351,7 @@ public class ESMetricsAccessorTest {
 
         // s-ramp-api data
         ResponseStatsHistogramBean stats = metrics.getResponseStats("JBossOverlord", "s-ramp-api", "1.0", HistogramIntervalType.day,
-                parseDate("2015-06-01"), DateTime.now().withZone(DateTimeZone.UTC));
+                parseDate("2015-06-01"), new DateTime().withZone(DateTimeZone.UTC));
         List<ResponseStatsDataPoint> data = stats.getData();
         Assert.assertTrue(data.size() > 0);
         Assert.assertTrue(data.size() > 1);
@@ -362,7 +362,7 @@ public class ESMetricsAccessorTest {
 
         // test/echo data
         stats = metrics.getResponseStats("Test", "echo", "1.0", HistogramIntervalType.day,
-                parseDate("2015-06-01"), DateTime.now().withZone(DateTimeZone.UTC));
+                parseDate("2015-06-01"), new DateTime().withZone(DateTimeZone.UTC));
         data = stats.getData();
         Assert.assertTrue(data.size() > 0);
         Assert.assertTrue(data.size() > 1);
@@ -382,14 +382,14 @@ public class ESMetricsAccessorTest {
 
         // s-ramp-api data
         ResponseStatsSummaryBean stats = metrics.getResponseStatsSummary("JBossOverlord", "s-ramp-api", "1.0",
-                parseDate("2015-06-01"), DateTime.now().withZone(DateTimeZone.UTC));
+                parseDate("2015-06-01"), new DateTime().withZone(DateTimeZone.UTC));
         Assert.assertEquals(46L, stats.getTotal());
         Assert.assertEquals(3L, stats.getErrors());
         Assert.assertEquals(0L, stats.getFailures());
 
         // test/echo data
         stats = metrics.getResponseStatsSummary("Test", "echo", "1.0",
-                parseDate("2015-06-01"), DateTime.now().withZone(DateTimeZone.UTC));
+                parseDate("2015-06-01"), new DateTime().withZone(DateTimeZone.UTC));
         Assert.assertEquals(214L, stats.getTotal());
         Assert.assertEquals(2L, stats.getErrors());
         Assert.assertEquals(41L, stats.getFailures());
@@ -406,7 +406,7 @@ public class ESMetricsAccessorTest {
 
         // s-ramp-api data
         ResponseStatsPerAppBean stats = metrics.getResponseStatsPerApp("JBossOverlord", "s-ramp-api", "1.0",
-                parseDate("2015-06-01"), DateTime.now().withZone(DateTimeZone.UTC));
+                parseDate("2015-06-01"), new DateTime().withZone(DateTimeZone.UTC));
         Map<String, ResponseStatsDataPoint> data = stats.getData();
         Assert.assertEquals(2, data.size());
         ResponseStatsDataPoint point = data.get("dtgov");
@@ -422,7 +422,7 @@ public class ESMetricsAccessorTest {
 
         // test/echo data
         stats = metrics.getResponseStatsPerApp("Test", "echo", "1.0",
-                parseDate("2015-06-01"), DateTime.now().withZone(DateTimeZone.UTC));
+                parseDate("2015-06-01"), new DateTime().withZone(DateTimeZone.UTC));
         data = stats.getData();
         Assert.assertEquals(2, data.size());
         point = data.get("app1");
@@ -447,7 +447,7 @@ public class ESMetricsAccessorTest {
 
         // s-ramp-api data
         ResponseStatsPerPlanBean stats = metrics.getResponseStatsPerPlan("JBossOverlord", "s-ramp-api", "1.0",
-                parseDate("2015-06-01"), DateTime.now().withZone(DateTimeZone.UTC));
+                parseDate("2015-06-01"), new DateTime().withZone(DateTimeZone.UTC));
         Map<String, ResponseStatsDataPoint> data = stats.getData();
         Assert.assertTrue(data.size() > 0);
         ResponseStatsDataPoint point = data.get("Gold");
@@ -468,7 +468,7 @@ public class ESMetricsAccessorTest {
 
         // test/echo data
         stats = metrics.getResponseStatsPerPlan("Test", "echo", "1.0",
-                parseDate("2015-06-01"), DateTime.now().withZone(DateTimeZone.UTC));
+                parseDate("2015-06-01"), new DateTime().withZone(DateTimeZone.UTC));
         data = stats.getData();
         Assert.assertTrue(data.size() > 0);
         point = data.get("Gold");
@@ -488,14 +488,14 @@ public class ESMetricsAccessorTest {
 
         // data exists - all data for JBossOverlord/s-ramp-api:1.0
         AppUsagePerServiceBean usagePerSvc = metrics.getAppUsagePerService("JBossOverlord", "dtgov", "1.0",
-                parseDate("2015-01-01"), DateTime.now().withZone(DateTimeZone.UTC));
+                parseDate("2015-01-01"), new DateTime().withZone(DateTimeZone.UTC));
         Assert.assertNotNull(usagePerSvc);
         Map<String, Long> expectedData = new HashMap<>();
         expectedData.put("s-ramp-api", 29L);
         Assert.assertEquals(expectedData, usagePerSvc.getData());
 
         usagePerSvc = metrics.getAppUsagePerService("JBossOverlord", "rtgov", "1.0",
-                parseDate("2015-01-01"), DateTime.now().withZone(DateTimeZone.UTC));
+                parseDate("2015-01-01"), new DateTime().withZone(DateTimeZone.UTC));
         Assert.assertNotNull(usagePerSvc);
         expectedData = new HashMap<>();
         expectedData.put("s-ramp-api", 14L);
@@ -508,9 +508,9 @@ public class ESMetricsAccessorTest {
      */
     private DateTime parseDate(String date) throws ParseException {
         if (date.length() == 10) {
-            return ISODateTimeFormat.date().withZoneUTC().parseDateTime(date);
+            return ISODateTimeFormat.date().withZone(DateTimeZone.UTC).parseDateTime(date);
         }
-        return ISODateTimeFormat.dateTimeNoMillis().withZoneUTC().parseDateTime(date);
+        return ISODateTimeFormat.dateTimeNoMillis().withZone(DateTimeZone.UTC).parseDateTime(date);
     }
 
 }

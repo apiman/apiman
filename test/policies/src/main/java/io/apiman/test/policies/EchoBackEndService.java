@@ -45,7 +45,7 @@ public class EchoBackEndService implements IPolicyTestBackEndService {
             EchoResponse echoResponse = new EchoResponse();
             if (requestBody != null) {
                 echoResponse.setBodyLength(new Long(requestBody.length));
-                echoResponse.setBodySha1(DigestUtils.sha1Hex(requestBody));
+                echoResponse.setBodySha1(DigestUtils.shaHex(requestBody));
             }
             echoResponse.setCounter(counter++);
             echoResponse.setHeaders(request.getHeaders());
