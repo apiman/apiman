@@ -68,7 +68,7 @@ module Apiman {
                 }, function() {
                     delete plugin.deleting;
                 });
-            }
+            };
             
             var refreshPlugins = function() {
                 angular.forEach($scope.availablePlugins, function(plugin) {

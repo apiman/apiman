@@ -1,7 +1,7 @@
       <div class="row">
         <div class="col-md-12">
           <ol class="breadcrumb" data-field="breadcrumb">
-            <li><a id="bc-home" href="{{ pluginName }}/dash"><i class="fa fa-home fa-fw"></i><span apiman-i18n-key="home">Home</span></a></li>
+            <li><a id="bc-home" href="{{ pluginName }}/"><i class="fa fa-home fa-fw"></i><span apiman-i18n-key="home">Home</span></a></li>
             <li class="active"><i class="fa fa-user fa-fw"></i><span>{{ user.fullName }}</span></li>
           </ol>
         </div>
