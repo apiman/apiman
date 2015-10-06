@@ -3,3 +3,8 @@ X-Custom-Header: MyValue
 
 ----
 500
+
+{
+  "responseCode": 500,
+  "message": "Service not public."
+}

@@ -3,7 +3,7 @@
 
   <testGroup name="Configure the Gateway" endpoint="api">
     <test name="Publish Service">test-plan-data/simple/simple-echo-public/setup/001-publish-service.resttest</test>
-    <test name="Publish Service">test-plan-data/simple/simple-echo-public/setup/002-publish-service-public.resttest</test>
+    <test name="Publish Service (public)">test-plan-data/simple/simple-echo-public/setup/002-publish-service-public.resttest</test>
   </testGroup>
 
   <testGroup name="Test the Echo Server through the Gateway">
