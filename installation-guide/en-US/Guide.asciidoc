@@ -37,12 +37,48 @@ The apiman overlay contains everything needed to run apiman, including:
 * apiman rdbms datasource (h2)
 * pre-configured *admin* user with password *admin123!*
 * pre-configured h2 database for the API Manager (populated with default values)
+* embedded Elasticsearch instance for metrics and gateway storage
 
 For this reason, there is no additional configuration required to run apiman.  Simply start up
 WildFly using the apiman configuration file:
 
 ....
 cd wildfly-8.2.0.Final
+./bin/standalone.sh -c standalone-apiman.xml
+....
+
+
+=== Installing in JBoss EAP 6.4
+If you prefer to run apiman on a Red Hat supported application server, you can install it
+into JBoss EAP 6.4.  In order to install apiman you will need to download both EAP and the apiman 
+overlay distribution.  Once both are downloaded, it's a simple matter of unpacking both into the 
+same location.
+
+==== Download
+First you will need to download both EAP 6.4 and apiman:
+
+* http://www.jboss.org/products/eap/download/[Download EAP 6.4]
+* http://downloads.jboss.org/apiman/1.1.8.Final/apiman-distro-eap64-1.1.8.Final-overlay.zip[Download apiman 1.1.8.Final]
+
+==== Unpack
+Once both files have been downloaded, simply unpack both in the same location (see the instructions
+for Wildfly above).
+
+==== Run EAP 6.4
+The apiman overlay contains everything needed to run apiman, including:
+
+* apiman binaries (several WAR files)
+* apiman-specific EAP configuration (*standalone-apiman.xml*)
+* apiman rdbms datasource (h2)
+* pre-configured *admin* user with password *admin123!*
+* pre-configured h2 database for the API Manager (populated with default values)
+* embedded Elasticsearch instance for metrics and gateway storage
+
+For this reason, there is no additional configuration required to run apiman.  Simply start up
+EAP using the apiman configuration file:
+
+....
+cd jboss-eap*
 ./bin/standalone.sh -c standalone-apiman.xml
 ....
 
@@ -139,56 +175,31 @@ This registry is updated whenever a user publishes a service (or registers an ap
 within the API Manager UI.  The registry contains just the configuration information necessary for
 the API Gateway to properly apply the appropriate policies to all inbound requests.
 
-Out of the box, the API Gateway is configured to use a persistent Infinispan cache to store the
-published/registered data.  The configuration of the Infinispan cache can be found in
-*standalone-apiman.xml* and is detailed here:
+Out of the box, the API Gateway is configured to use Elasticsearch to store the
+published/registered data.
 
-```xml
-<subsystem xmlns="urn:jboss:domain:infinispan:2.0">
-  <cache-container name="apiman-gateway" default-cache="registry" start="EAGER">
-    <local-cache name="registry" batching="true">
-      <file-store passivation="false" purge="false" />
-    </local-cache>
-  </cache-container>
-</subsystem>
-```
+The configuration of the Registry can be found in the *apiman.properties* file.
 
-This cache can be configured however you choose, but in all cases should be made persistent.
-
+See section 4.2 for more information on modifying Elasticsearch settings.
 
 === API Gateway Rate Limiter
 Part of the running apiman system is a "Rate Limiter" component.  This component is used by
-apiman policies to enforce rate limits and uses an Infinispan cache to store data.  The
-configuration of the Infinispan cache can be found in *standalone-apiman.xml* and is
-detailed here:
+apiman policies to enforce rate limits and uses Elasticsearch to store data.
 
-```xml
-<subsystem xmlns="urn:jboss:domain:infinispan:2.0">
-  <cache-container name="apiman-gateway" default-cache="registry" start="EAGER">
-    <local-cache name="rate-limiter" batching="true">
-      <file-store passivation="false" purge="false"/>
-    </local-cache>
-  </cache-container>
-</subsystem>
-```
+The configuration of the Rate Limiter component can be found in the *apiman.properties*
+file.
 
+See section 4.2 for more information on modifying Elasticsearch settings.
 
 === API Gateway Shared State
 Part of the running apiman system is a "Shared State" component.  This component is used by
 apiman policies to share interesting state information across multiple requests.  The
-shared state component uses another Infinispan cache to store data.  The
-configuration of the Infinispan cache can be found in *standalone-apiman.xml* and is
-detailed here:
+shared state component uses Elasticsearch to store data.
 
-```xml
-<subsystem xmlns="urn:jboss:domain:infinispan:2.0">
-  <cache-container name="apiman-gateway" default-cache="registry" start="EAGER">
-    <local-cache name="shared-state" batching="true">
-      <file-store passivation="false" purge="false" />
-    </local-cache>
-  </cache-container>
-</subsystem>
-```
+The configuration of the Shared State component can be found in the *apiman.properties*
+file.
+
+See section 4.2 for more information on modifying Elasticsearch settings.
 
 === Gateway API Authentication
 The Gateway's REST API is what the API Manager invokes when publishing services and applications
@@ -269,25 +280,14 @@ need to use the apiman admin UI to reconfigure these settings.  Refer to the "Sy
 section of the User Guide for more information on this.
 
 
-=== How To:  Use Elasticsearch instead of Infinispan in the API Gateway
-The apiman quickstart ships by default with an Infinispan based provider for various
-runtime components in the API Gateway.  This includes, for example, the Rate Limiter
-component which is used to track limits across a potential cluster of API Gateway
-nodes (ensuring that the limits are consistent and effective despite traffic being
-split across API Gateway nodes in a cluster).
-
-The following components currently use Infinispan and can be switched to Elasticsearch:
-
-* API Gateway Registry (used to store the gateway configuration)
-* Rate Limiter Component (used to track limits)
-* Shared State Component (used by policies to share state across multiple requests)
-
-Each of these components can be configured separately.  So you can use Infinispan for
-the last two but Elasticsearch for the first one, for example.
+=== How To:  Use a standalone Elasticsearch instance/cluster instead of the quickstart instance
+The apiman quickstart ships by default with an embedded instance of Elasticsearch.  This is
+suitable for getting up and running quickly, but is not a good long term solution.  Instead,
+users are encouraged to install a standalone instance of Elasticsearch and point apiman to it.
 
 ==== High Level Overview
 1. Download and install https://www.elastic.co/downloads/elasticsearch[Elasticsearch]
-2. Make changes to "apiman.properties" to switch from JPA to Elasticsearch
+2. Make changes to "apiman.properties" to point to your standalone Elasticsearch instance
 3. (Re)start apiman!
 
 ==== Download and install Elasticsearch
@@ -296,60 +296,23 @@ resource for this can be found here:
 
 http://www.elastic.co/guide/en/elasticsearch/guide/master/getting-started.html
 
-TIP: As of apiman 1.1.4.Final, an instance of Elasticsearch is included in the default
-apiman distribution.  You may use it as your API Manager persistence store.  It is running
-on port 19200.
-
 ==== Make changes to "apiman.properties"
-Once Elasticsearch is running smoothly, you must make some changes to the *apiman.properties*
-file in order to tell apiman to use ES for the runtime components.
+Once Elasticsearch is running smoothly, you must make some minor changes to the *apiman.properties*
+file in order to tell apiman where your Elasticsearch instance is located.
 
-First, it's often useful to set a common set of properties for the Elasticsearch
-host, port, and cluster-name.  This way these properties can be re-used for the
-configuration of each of the components.
+There are a set of global properties used for all apiman components that use Elasticsearch to
+load data.  These properties are:
 
 ----
-apiman-gateway.es.host=
-apiman-gateway.es.port=
-apiman-gateway.es.cluster-name=
-----
-
-Make sure you enter appropriate values for the apiman.es.host, apiman.es.port, and apiman.es.cluster-name
-properties.  These values should reflect the settings of your Elasticsearch installation.
-
-Next, each of the components can be configured by changing/adding the following properties
-in *apiman.properties*.  Make sure any of the properties below which already have values
-are removed before the ones below are copied in.
-
-===== API Gateway Registry
-Here is how you switch the API Gateway Registry over to Elasticsearch.
-----
-apiman-gateway.registry=io.apiman.gateway.engine.es.ESRegistry
-apiman-gateway.registry.client.type=jest
-apiman-gateway.registry.client.cluster-name=${apiman-gateway.es.cluster-name}
-apiman-gateway.registry.client.host=${apiman-gateway.es.host}
-apiman-gateway.registry.client.port=${apiman-gateway.es.port}
+apiman.es.protocol=http
+apiman.es.host=localhost
+apiman.es.port=19200
+apiman.es.username=
+apiman.es.password=
 ----
 
-===== Rate Limiter Component
-Here is how you switch the Rate Limiter Component over to Elasticsearch.
-----
-apiman-gateway.components.IRateLimiterComponent=io.apiman.gateway.engine.es.ESRateLimiterComponent
-apiman-gateway.components.IRateLimiterComponent.client.type=jest
-apiman-gateway.components.IRateLimiterComponent.client.cluster-name=${apiman-gateway.es.cluster-name}
-apiman-gateway.components.IRateLimiterComponent.client.host=${apiman-gateway.es.host}
-apiman-gateway.components.IRateLimiterComponent.client.port=${apiman-gateway.es.port}
-----
-
-===== Shared State Component
-Here is how you switch the Shared State Component over to Elasticsearch.
-----
-apiman-gateway.components.ISharedStateComponent=io.apiman.gateway.engine.es.ESSharedStateComponent
-apiman-gateway.components.ISharedStateComponent.client.type=jest
-apiman-gateway.components.ISharedStateComponent.client.cluster-name=${apiman-gateway.es.cluster-name}
-apiman-gateway.components.ISharedStateComponent.client.host=${apiman-gateway.es.host}
-apiman-gateway.components.ISharedStateComponent.client.port=${apiman-gateway.es.port}
-----
+Make sure you enter appropriate values for this properties - they should reflect the settings 
+of your Elasticsearch installation.
 
 ==== (Re)start apiman
 If apiman was running, you should stop it now.  Once everything is shutdown, and the changes
