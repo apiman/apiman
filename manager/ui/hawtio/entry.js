@@ -12,7 +12,8 @@ var angular = require('angular');
 var ngResource = require('angular-resource');
 var ngSortable = require('ng-sortable/dist/ng-sortable.js');
 var d3 = require('d3');
-var c3 = require('c3');
+// On hold for now, we will be re-adding this once c3 resolves this issue, for which we will be submitting a PR: https://github.com/masayuki0812/c3/issues/1392
+//var c3 = require('c3');
 var ngXEditable = require('angular-xeditable/dist/js/xeditable.js');
 var ngSanitize = require('angular-sanitize');
 global.Logger = require('js-logger');

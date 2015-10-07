@@ -74,16 +74,6 @@
           </execution>
 
           <execution>
-            <id>bower install</id>
-            <goals>
-              <goal>bower</goal>
-            </goals>
-            <configuration>
-              <arguments>--config.strict-ssl=false install</arguments>
-            </configuration>
-          </execution>
-
-          <execution>
             <id>gulp build</id>
             <goals>
               <goal>gulp</goal>
