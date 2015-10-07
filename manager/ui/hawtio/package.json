@@ -54,6 +54,7 @@
     "gulp-replace": "^0.5.4",
     "gulp-typescript": "^2.9.1",
     "gulp-watch": "^4.3.5",
+    "run-sequence": "^1.1.4",
     "through2": "^0.6.3",
     "typescript": "1.6.2",
     "underscore.string": "^2.4.0",

@@ -21,6 +21,7 @@ var concatCss = require('gulp-concat-css');
 var connect = require('gulp-connect');
 var notify = require('gulp-notify');
 var replace = require('gulp-replace');
+var runSequence = require('run-sequence');
 var typescript = require('gulp-typescript');
 var watch = require('gulp-watch');
 
@@ -67,24 +68,17 @@ gulp.task('browserify', function() {
 });
 
 
-
 // Build Task
-gulp.task('build', ['browserify', 'css', 'fonts', 'images', 'path-adjust', 'tsc', 'template', 'concat', 'clean']);
-
-
-// Concat Task
-// Concatenates two files (compiled.js and templates.js) into ./dist/apiman-manager.js
-gulp.task('concat', ['template'], function() {
-    return gulp.src(['compiled.js', 'templates.js'])
-        .pipe(concat(config.js))
-        .pipe(gulp.dest(config.dest));
+//gulp.task('build', ['browserify', 'css', 'fonts', 'images', 'path-adjust', 'tsc', 'template', 'concat']);
+gulp.task('build', function() {
+    return runSequence('browserify', 'css', ['fonts', 'images'], 'path-adjust', 'clean-defs', 'tsc', 'template', 'concat', 'clean');
 });
 
 
 // Clean Task
 // Cleans the compiled.js and templates.js files
 // created in the 'tsc' and 'templates' tasks, respectively
-gulp.task('clean', ['concat'], function() {
+gulp.task('clean', ['css', 'concat', 'tsc'], function() {
     return gulp.src(['templates.js', 'compiled.js', 'deps.css'], {read: false})
         .pipe(clean());
 });
@@ -95,6 +89,15 @@ gulp.task('clean', ['concat'], function() {
 gulp.task('clean-defs', function() {
     return gulp.src('defs.d.ts', {read: false})
         .pipe(clean());
+});
+
+
+// Concat Task
+// Concatenates two files (compiled.js and templates.js) into ./dist/apiman-manager.js
+gulp.task('concat', function() {
+    return gulp.src(['compiled.js', 'templates.js'])
+        .pipe(concat(config.js))
+        .pipe(gulp.dest(config.dest));
 });
 
 
@@ -185,7 +188,7 @@ gulp.task('reload', function() {
 
 // Template Task
 // Creates the templates.js file in the project root (/manager/ui/hawtio)
-gulp.task('template', ['tsc'], function() {
+gulp.task('template', function() {
     return gulp.src(config.templates)
         .pipe(angularTemplatecache({
             filename: 'templates.js',
@@ -201,7 +204,7 @@ gulp.task('template', ['tsc'], function() {
 // TSC Task
 // Compiles TS into JS
 // Creates the compiled.js file in the project root (/manager/ui/hawtio)
-gulp.task('tsc', ['clean-defs'], function() {
+gulp.task('tsc', function() {
     var cwd = process.cwd();
 
     // Grab all TypeScript files (controllers, services, directives, etc.)
@@ -241,8 +244,8 @@ gulp.task('tsc', ['clean-defs'], function() {
 // Watch Task
 // Builds, then watches for changes
 gulp.task('watch', ['build'], function() {
-    watch(['hawtio-deps/**/*.d.ts', config.ts, config.templates, config.templateIncludes], function() {
-        gulp.start(['tsc', 'template', 'path-adjust', 'concat', 'clean']);
+    watch([config.ts, config.templates, config.templateIncludes], function() {
+        return runSequence('browserify', 'css', ['fonts', 'images'], 'path-adjust', 'clean-defs', 'tsc', 'template', 'concat', 'clean');
     });
 });
 
