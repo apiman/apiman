@@ -245,7 +245,7 @@ gulp.task('tsc', function() {
 // Watch Task
 // Builds, then watches for changes
 gulp.task('watch', function() {
-    watch([config.ts, config.templates, config.templateIncludes], function() {
+    watch(['entry.js', config.ts, config.templates, config.templateIncludes], function() {
         return runSequence(['browserify', 'css', 'fonts', 'images'], 'path-adjust', 'clean-defs', 'tsc', 'template', 'concat', 'clean');
     });
 });

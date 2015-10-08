@@ -21,4 +21,6 @@ global._ = require('lodash');
 var ngRoute = require('angular-route');
 var URI = require('urijs');
 var ngSchemaForm = require('angular-schema-form');
-global.SwaggerClient = require('swagger-ui-browserify');
+global.SwaggerUi = require('swagger-ui-browserify');
+global.SwaggerClient = require('swagger-client');
+var SwaggerAuthorizations = '';
