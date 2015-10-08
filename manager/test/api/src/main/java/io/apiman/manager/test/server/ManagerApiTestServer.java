@@ -88,6 +88,7 @@ public class ManagerApiTestServer {
     private Node node = null;
     //private Client client = null;
     private JestClient client = null;
+    private static final int JEST_TIMEOUT = 6000;
 
     /**
      * Constructor.
@@ -201,7 +202,7 @@ public class ManagerApiTestServer {
             String connectionUrl = "http://localhost:6500";
             JestClientFactory factory = new JestClientFactory();
             factory.setHttpClientConfig(new HttpClientConfig.Builder(connectionUrl).multiThreaded(true)
-                    .build());
+                    .connTimeout(JEST_TIMEOUT ).readTimeout(JEST_TIMEOUT).build());
             client = factory.getObject();
             ES_CLIENT = client;
         }
