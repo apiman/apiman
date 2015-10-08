@@ -23,4 +23,4 @@ var URI = require('urijs');
 var ngSchemaForm = require('angular-schema-form');
 global.SwaggerUi = require('swagger-ui-browserify');
 global.SwaggerClient = require('swagger-client');
-var SwaggerAuthorizations = '';
+global.SwaggerAuthorizations = require('swagger-ui-browserify/node_modules/swagger-ui/dist/lib/swagger-oauth.js');
