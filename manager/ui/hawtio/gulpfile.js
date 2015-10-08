@@ -118,7 +118,7 @@ gulp.task('connect', function() {
 gulp.task('css', function() {
     return gulp.src(
         [
-            'node_modules/bootstrap-select/dist/css/bootstrap-select.css',
+            'node_modules/patternfly/components/bootstrap-select/bootstrap-select.css',
             'node_modules/patternfly/dist/css/patternfly.css',
             'node_modules/ng-sortable/dist/ng-sortable.css',
             //'node_modules/c3/c3.css',
