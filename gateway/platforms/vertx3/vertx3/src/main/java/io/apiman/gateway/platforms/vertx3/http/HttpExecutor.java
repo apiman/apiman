@@ -15,12 +15,8 @@
  */
 package io.apiman.gateway.platforms.vertx3.http;
 
-import java.util.Map.Entry;
-import java.util.UUID;
-
-import org.apache.commons.lang3.exception.ExceptionUtils;
-
 import io.apiman.common.util.MediaType;
+import io.apiman.gateway.engine.beans.EngineErrorResponse;
 import io.apiman.gateway.platforms.vertx3.common.config.VertxEngineConfig;
 import io.apiman.gateway.platforms.vertx3.io.VertxApimanBuffer;
 import io.apiman.gateway.platforms.vertx3.io.VertxPolicyFailure;
@@ -38,8 +34,12 @@ import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpHeaders;
 import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.http.HttpServerResponse;
+import io.vertx.core.json.Json;
 import io.vertx.core.logging.Logger;
 import io.vertx.serviceproxy.ProxyHelper;
+
+import java.util.Map.Entry;
+import java.util.UUID;
 
 /**
  * Execute request and response, with requests and responses piped over the bus to/from a policy verticle
@@ -166,7 +166,14 @@ public class HttpExecutor implements Handler<HttpServerRequest> {
         response.setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
         response.setStatusMessage(HttpResponseStatus.INTERNAL_SERVER_ERROR.reasonPhrase());
         response.headers().add("X-Exception", String.valueOf(error.getMessage())); //$NON-NLS-1$
-        response.write(ExceptionUtils.getStackTrace(error));
+        response.headers().add(HttpHeaders.CONTENT_TYPE,  MediaType.APPLICATION_JSON);
+
+        EngineErrorResponse errorResponse = new EngineErrorResponse();
+        errorResponse.setResponseCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
+        errorResponse.setMessage(error.getMessage());
+        errorResponse.setTrace(error);
+
+        response.write(Json.encode(errorResponse));
         log.debug("Finished setting error");
 
         if (!response.ended())
