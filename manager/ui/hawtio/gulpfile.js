@@ -53,7 +53,9 @@ var SwaggerUIPath = './node_modules/swagger-ui-browserify/node_modules/swagger-u
 
 // Default Task
 // Builds, watches for changes, and spins up the server
-gulp.task('default', ['connect']);
+gulp.task('default', function() {
+    return runSequence('build', 'watch', 'connect');
+});
 
 
 
@@ -69,16 +71,15 @@ gulp.task('browserify', function() {
 
 
 // Build Task
-//gulp.task('build', ['browserify', 'css', 'fonts', 'images', 'path-adjust', 'tsc', 'template', 'concat']);
 gulp.task('build', function() {
-    return runSequence('browserify', 'css', ['fonts', 'images'], 'path-adjust', 'clean-defs', 'tsc', 'template', 'concat', 'clean');
+    return runSequence(['browserify', 'css', 'fonts', 'images'], 'path-adjust', 'clean-defs', 'tsc', 'template', 'concat', 'clean');
 });
 
 
 // Clean Task
 // Cleans the compiled.js and templates.js files
 // created in the 'tsc' and 'templates' tasks, respectively
-gulp.task('clean', ['css', 'concat', 'tsc'], function() {
+gulp.task('clean', function() {
     return gulp.src(['templates.js', 'compiled.js', 'deps.css'], {read: false})
         .pipe(clean());
 });
@@ -102,7 +103,7 @@ gulp.task('concat', function() {
 
 
 // Connect Task
-gulp.task('connect', ['watch'], function() {
+gulp.task('connect', function() {
     connect.server({
         root: '.',
         livereload: false,
@@ -170,7 +171,7 @@ gulp.task('path-adjust', function() {
         .pipe(gulp.dest(config.dest));
 
     // Adjust the reference path of any typescript-built plugins
-    gulp.src('hawtio-deps/**/includes.d.ts')
+    return gulp.src('hawtio-deps/**/includes.d.ts')
         .pipe(map(function(buf, filename) {
             var textContent = buf.toString();
             return textContent.replace(/"\.\.\/hawtio-deps/gm, '"../../../hawtio-deps');
@@ -243,9 +244,9 @@ gulp.task('tsc', function() {
 
 // Watch Task
 // Builds, then watches for changes
-gulp.task('watch', ['build'], function() {
+gulp.task('watch', function() {
     watch([config.ts, config.templates, config.templateIncludes], function() {
-        return runSequence('browserify', 'css', ['fonts', 'images'], 'path-adjust', 'clean-defs', 'tsc', 'template', 'concat', 'clean');
+        return runSequence(['browserify', 'css', 'fonts', 'images'], 'path-adjust', 'clean-defs', 'tsc', 'template', 'concat', 'clean');
     });
 });
 
