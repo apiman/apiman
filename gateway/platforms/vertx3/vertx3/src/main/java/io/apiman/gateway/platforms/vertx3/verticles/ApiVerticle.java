@@ -15,9 +15,6 @@
  */
 package io.apiman.gateway.platforms.vertx3.verticles;
 
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.codec.digest.DigestUtils;
-
 import io.apiman.gateway.platforms.vertx3.api.ApplicationResourceImpl;
 import io.apiman.gateway.platforms.vertx3.api.IRouteBuilder;
 import io.apiman.gateway.platforms.vertx3.api.ServiceResourceImpl;
@@ -31,6 +28,10 @@ import io.vertx.ext.auth.User;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.AuthHandler;
 import io.vertx.ext.web.handler.BasicAuthHandler;
+
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * API verticle provides the Gateway API RESTful service. Config is validated and pushed into the registry
@@ -46,7 +47,6 @@ public class ApiVerticle extends ApimanVerticleWithEngine {
     @Override
     public void start() {
         super.start();
-        // This will be refactored shortly to factory pattern. This is just a quick testing bodge..
         IRouteBuilder applicationResource = new ApplicationResourceImpl(apimanConfig, engine);
         IRouteBuilder serviceResource = new ServiceResourceImpl(apimanConfig, engine);
         IRouteBuilder systemResource = new SystemResourceImpl(apimanConfig, engine);
@@ -74,7 +74,7 @@ public class ApiVerticle extends ApimanVerticleWithEngine {
 
     public void authenticateBasic(JsonObject authInfo, Handler<AsyncResult<User>> resultHandler) {
         String username = authInfo.getString("username");
-        String password = Base64.encodeBase64String(DigestUtils.sha256(authInfo.getString("password")));
+        String password = StringUtils.chomp(Base64.encodeBase64String(DigestUtils.sha256(authInfo.getString("password")))); // Chomp, Digest, Base64Encode
         String storedPassword = apimanConfig.getBasicAuthCredentials().get(username);
 
         if (storedPassword != null && password.equals(storedPassword)) {
