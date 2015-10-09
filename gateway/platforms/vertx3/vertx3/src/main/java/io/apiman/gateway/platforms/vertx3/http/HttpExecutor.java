@@ -165,7 +165,7 @@ public class HttpExecutor implements Handler<HttpServerRequest> {
     private void setError(Throwable error) {
         response.setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
         response.setStatusMessage(HttpResponseStatus.INTERNAL_SERVER_ERROR.reasonPhrase());
-        response.headers().add("X-Exception", String.valueOf(error.getMessage())); //$NON-NLS-1$
+        response.headers().add("X-Gateway-Error", String.valueOf(error.getMessage())); //$NON-NLS-1$
         response.headers().add(HttpHeaders.CONTENT_TYPE,  MediaType.APPLICATION_JSON);
 
         EngineErrorResponse errorResponse = new EngineErrorResponse();
