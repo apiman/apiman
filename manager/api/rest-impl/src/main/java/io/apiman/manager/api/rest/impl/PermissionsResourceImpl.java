@@ -17,7 +17,7 @@
 package io.apiman.manager.api.rest.impl;
 
 import io.apiman.manager.api.beans.idm.UserPermissionsBean;
-import io.apiman.manager.api.core.IIdmStorage;
+import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.rest.contract.IPermissionsResource;
 import io.apiman.manager.api.rest.contract.exceptions.NotAuthorizedException;
@@ -38,7 +38,7 @@ import javax.inject.Inject;
 public class PermissionsResourceImpl implements IPermissionsResource {
     
     @Inject
-    IIdmStorage idmStorage;
+    IStorageQuery query;
     @Inject
     ISecurityContext securityContext;
     
@@ -59,7 +59,7 @@ public class PermissionsResourceImpl implements IPermissionsResource {
         try {
             UserPermissionsBean bean = new UserPermissionsBean();
             bean.setUserId(userId);
-            bean.setPermissions(idmStorage.getPermissions(userId));
+            bean.setPermissions(query.getPermissions(userId));
             return bean;
         } catch (StorageException e) {
             throw new SystemErrorException(e);
@@ -75,25 +75,11 @@ public class PermissionsResourceImpl implements IPermissionsResource {
             String currentUser = securityContext.getCurrentUser();
             UserPermissionsBean bean = new UserPermissionsBean();
             bean.setUserId(currentUser);
-            bean.setPermissions(idmStorage.getPermissions(currentUser));
+            bean.setPermissions(query.getPermissions(currentUser));
             return bean;
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }
-    }
-
-    /**
-     * @return the idmStorage
-     */
-    public IIdmStorage getIdmStorage() {
-        return idmStorage;
-    }
-
-    /**
-     * @param idmStorage the idmStorage to set
-     */
-    public void setIdmStorage(IIdmStorage idmStorage) {
-        this.idmStorage = idmStorage;
     }
 
     /**

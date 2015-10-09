@@ -35,7 +35,6 @@ import io.apiman.manager.api.beans.services.ServiceGatewayBean;
 import io.apiman.manager.api.beans.services.ServicePlanBean;
 import io.apiman.manager.api.beans.services.ServiceStatus;
 import io.apiman.manager.api.beans.services.ServiceVersionBean;
-import io.apiman.manager.api.core.IIdmStorage;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.test.server.DefaultTestDataSeeder;
@@ -58,11 +57,11 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
     }
 
     /**
-     * @see io.apiman.manager.test.server.DefaultTestDataSeeder#seed(io.apiman.manager.api.core.IIdmStorage, io.apiman.manager.api.core.IStorage)
+     * @see io.apiman.manager.test.server.DefaultTestDataSeeder#seed(io.apiman.manager.api.core.IStorage)
      */
     @Override
-    public void seed(IIdmStorage idmStorage, IStorage storage) throws StorageException {
-        super.seed(idmStorage, storage);
+    public void seed(IStorage storage) throws StorageException {
+        super.seed(storage);
 
         GatewayBean gateway = new GatewayBean();
         gateway.setId("TheGateway");
@@ -74,9 +73,9 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         gateway.setCreatedOn(new Date());
         gateway.setModifiedBy("admin");
         gateway.setModifiedOn(new Date());
-        storage.beginTx();
+        
         storage.createGateway(gateway);
-        storage.commitTx();
+        
 
         // Create Organization Owner role
         RoleBean role = new RoleBean();
@@ -99,7 +98,7 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         role.getPermissions().add(PermissionType.svcView);
         role.getPermissions().add(PermissionType.svcEdit);
         role.getPermissions().add(PermissionType.svcAdmin);
-        idmStorage.createRole(role);
+        storage.createRole(role);
 
         // Create Application Developer role
         role = new RoleBean();
@@ -113,7 +112,7 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         role.getPermissions().add(PermissionType.appView);
         role.getPermissions().add(PermissionType.appEdit);
         role.getPermissions().add(PermissionType.appAdmin);
-        idmStorage.createRole(role);
+        storage.createRole(role);
 
         // Create Service Developer role
         role = new RoleBean();
@@ -130,9 +129,9 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         role.getPermissions().add(PermissionType.planView);
         role.getPermissions().add(PermissionType.planEdit);
         role.getPermissions().add(PermissionType.planAdmin);
-        idmStorage.createRole(role);
+        storage.createRole(role);
 
-        storage.beginTx();
+        
 
         // Create JBoss Overlord org
         OrganizationBean org = new OrganizationBean();
@@ -156,18 +155,18 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         org.setModifiedBy("admin");
         storage.createOrganization(org);
 
-        storage.commitTx();
+        
 
         // Make admin the owner of both orgs
         RoleMembershipBean membership = RoleMembershipBean.create("admin", "OrganizationOwner", "JBossOverlord");
         membership.setCreatedOn(new Date());
-        idmStorage.createMembership(membership);
+        storage.createMembership(membership);
 
         membership = RoleMembershipBean.create("admin", "OrganizationOwner", "ApereoBedework");
         membership.setCreatedOn(new Date());
-        idmStorage.createMembership(membership);
+        storage.createMembership(membership);
 
-        storage.beginTx();
+        
 
         // Create some plans
         PlanBean plan = new PlanBean();
@@ -215,8 +214,8 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         pvb.setModifiedOn(new Date());
         storage.createPlanVersion(pvb);
 
-        storage.commitTx();
-        storage.beginTx();
+        
+        
 
         // Create some applications
         ApplicationBean app = new ApplicationBean();
@@ -273,8 +272,8 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         avb.setModifiedOn(new Date());
         storage.createApplicationVersion(avb);
 
-        storage.commitTx();
-        storage.beginTx();
+        
+        
 
         // Create some services
         ServiceBean service = new ServiceBean();
@@ -303,8 +302,8 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         svb.getGateways().add(sgb);
         storage.createServiceVersion(svb);
 
-        storage.commitTx();
-        storage.beginTx();
+        
+        
 
         // Create some policy definitions
         PolicyDefinitionBean whitelistPolicyDef = new PolicyDefinitionBean();
@@ -379,7 +378,7 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         authorizationPolicyDef.getTemplates().add(templateBean);
         storage.createPolicyDefinition(authorizationPolicyDef);
 
-        storage.commitTx();
+        
     }
 
 }

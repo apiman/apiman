@@ -52,7 +52,6 @@ public abstract class ApiManagerConfig {
     public static final String APIMAN_MANAGER_STORAGE_ES_INITIALIZE = "apiman-manager.storage.es.initialize"; //$NON-NLS-1$
 
     public static final String APIMAN_MANAGER_STORAGE_QUERY_TYPE = "apiman-manager.storage-query.type"; //$NON-NLS-1$
-    public static final String APIMAN_MANAGER_IDM_STORAGE_TYPE = "apiman-manager.idm-storage.type"; //$NON-NLS-1$
 
     public static final String APIMAN_MANAGER_SERVICE_CATALOG_TYPE = "apiman-manager.service-catalog.type"; //$NON-NLS-1$
 
@@ -144,13 +143,6 @@ public abstract class ApiManagerConfig {
      */
     public String getStorageQueryType() {
         return config.getString(APIMAN_MANAGER_STORAGE_QUERY_TYPE, "jpa"); //$NON-NLS-1$
-    }
-
-    /**
-     * @return the configured storage query type
-     */
-    public String getIdmStorageType() {
-        return config.getString(APIMAN_MANAGER_IDM_STORAGE_TYPE, getStorageType());
     }
 
     /**

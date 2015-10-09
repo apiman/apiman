@@ -92,7 +92,6 @@ import io.apiman.manager.api.beans.summary.ServiceVersionEndpointSummaryBean;
 import io.apiman.manager.api.beans.summary.ServiceVersionSummaryBean;
 import io.apiman.manager.api.core.IApiKeyGenerator;
 import io.apiman.manager.api.core.IApplicationValidator;
-import io.apiman.manager.api.core.IIdmStorage;
 import io.apiman.manager.api.core.IMetricsAccessor;
 import io.apiman.manager.api.core.IServiceValidator;
 import io.apiman.manager.api.core.IStorage;
@@ -197,7 +196,6 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     private static final long ONE_MONTH_MILLIS = 30 * 24 * 60 * 60 * 1000;
 
     @Inject IStorage storage;
-    @Inject IIdmStorage idmStorage;
     @Inject IStorageQuery query;
     @Inject IMetricsAccessor metrics;
 
@@ -234,7 +232,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         criteria.setPageSize(100);
         criteria.addFilter("autoGrant", "true", SearchCriteriaFilterOperator.bool_eq); //$NON-NLS-1$ //$NON-NLS-2$
         try {
-            autoGrantedRoles = idmStorage.findRoles(criteria).getBeans();
+            autoGrantedRoles = query.findRoles(criteria).getBeans();
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }
@@ -261,7 +259,6 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             }
             storage.createOrganization(orgBean);
             storage.createAuditEntry(AuditUtils.organizationCreated(orgBean, securityContext));
-            storage.commitTx();
 
             // Auto-grant memberships in roles to the creator of the organization
             for (RoleBean roleBean : autoGrantedRoles) {
@@ -269,9 +266,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                 String orgId = orgBean.getId();
                 RoleMembershipBean membership = RoleMembershipBean.create(currentUser, roleBean.getId(), orgId);
                 membership.setCreatedOn(new Date());
-                idmStorage.createMembership(membership);
+                storage.createMembership(membership);
             }
-
+            storage.commitTx();
             log.debug(String.format("Created organization %s: %s", orgBean.getName(), orgBean)); //$NON-NLS-1$
             return orgBean;
         } catch (AbstractRestException e) {
@@ -2796,20 +2793,16 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         MembershipData auditData = new MembershipData();
         auditData.setUserId(bean.getUserId());
         try {
+            storage.beginTx();
             for (String roleId : bean.getRoleIds()) {
                 RoleMembershipBean membership = RoleMembershipBean.create(bean.getUserId(), roleId, organizationId);
                 membership.setCreatedOn(new Date());
                 // If the membership already exists, that's fine!
-                if (idmStorage.getMembership(bean.getUserId(), roleId, organizationId) == null) {
-                    idmStorage.createMembership(membership);
+                if (storage.getMembership(bean.getUserId(), roleId, organizationId) == null) {
+                    storage.createMembership(membership);
                 }
                 auditData.addRole(roleId);
             }
-        } catch (StorageException e) {
-            throw new SystemErrorException(e);
-        }
-        try {
-            storage.beginTx();
             storage.createAuditEntry(AuditUtils.membershipGranted(organizationId, auditData, securityContext));
             storage.commitTx();
         } catch (AbstractRestException e) {
@@ -2836,28 +2829,20 @@ public class OrganizationResourceImpl implements IOrganizationResource {
 
         MembershipData auditData = new MembershipData();
         auditData.setUserId(userId);
-        boolean revoked = false;
+        
         try {
-            idmStorage.deleteMembership(userId, roleId, organizationId);
+            storage.beginTx();
+            storage.deleteMembership(userId, roleId, organizationId);
             auditData.addRole(roleId);
-            revoked = true;
-        } catch (StorageException e) {
+            storage.createAuditEntry(AuditUtils.membershipRevoked(organizationId, auditData, securityContext));
+            storage.commitTx();
+            log.debug(String.format("Revoked User %s Role %s Org %s", userId, roleId, organizationId)); //$NON-NLS-1$
+        } catch (AbstractRestException e) {
+            storage.rollbackTx();
+            throw e;
+        } catch (Exception e) {
+            storage.rollbackTx();
             throw new SystemErrorException(e);
-        }
-
-        if (revoked) {
-            try {
-                storage.beginTx();
-                storage.createAuditEntry(AuditUtils.membershipRevoked(organizationId, auditData, securityContext));
-                storage.commitTx();
-                log.debug(String.format("Revoked User %s Role %s Org %s", userId, roleId, organizationId)); //$NON-NLS-1$
-            } catch (AbstractRestException e) {
-                storage.rollbackTx();
-                throw e;
-            } catch (Exception e) {
-                storage.rollbackTx();
-                throw new SystemErrorException(e);
-            }
         }
     }
 
@@ -2872,17 +2857,12 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         get(organizationId);
         users.get(userId);
 
-        try {
-            idmStorage.deleteMemberships(userId, organizationId);
-        } catch (StorageException e) {
-            throw new SystemErrorException(e);
-        }
-
         MembershipData auditData = new MembershipData();
         auditData.setUserId(userId);
         auditData.addRole("*"); //$NON-NLS-1$
         try {
             storage.beginTx();
+            storage.deleteMemberships(userId, organizationId);
             storage.createAuditEntry(AuditUtils.membershipRevoked(organizationId, auditData, securityContext));
             storage.commitTx();
         } catch (AbstractRestException e) {
@@ -2903,12 +2883,13 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         get(organizationId);
 
         try {
-            Set<RoleMembershipBean> memberships = idmStorage.getOrgMemberships(organizationId);
+            Set<RoleMembershipBean> memberships = query.getOrgMemberships(organizationId);
             TreeMap<String, MemberBean> members = new TreeMap<>();
+            storage.beginTx();
             for (RoleMembershipBean membershipBean : memberships) {
                 String userId = membershipBean.getUserId();
                 String roleId = membershipBean.getRoleId();
-                RoleBean role = idmStorage.getRole(roleId);
+                RoleBean role = storage.getRole(roleId);
 
                 // Role does not exist!
                 if (role == null) {
@@ -2917,7 +2898,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
 
                 MemberBean member = members.get(userId);
                 if (member == null) {
-                    UserBean user = idmStorage.getUser(userId);
+                    UserBean user = storage.getUser(userId);
                     member = new MemberBean();
                     member.setEmail(user.getEmail());
                     member.setUserId(userId);
@@ -2936,6 +2917,8 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             return new ArrayList<>(members.values());
         } catch (StorageException e) {
             throw new SystemErrorException(e);
+        } finally {
+            storage.rollbackTx();
         }
     }
 
@@ -3031,20 +3014,6 @@ public class OrganizationResourceImpl implements IOrganizationResource {
      */
     public void setStorage(IStorage storage) {
         this.storage = storage;
-    }
-
-    /**
-     * @return the idmStorage
-     */
-    public IIdmStorage getIdmStorage() {
-        return idmStorage;
-    }
-
-    /**
-     * @param idmStorage the idmStorage to set
-     */
-    public void setIdmStorage(IIdmStorage idmStorage) {
-        this.idmStorage = idmStorage;
     }
 
     /**

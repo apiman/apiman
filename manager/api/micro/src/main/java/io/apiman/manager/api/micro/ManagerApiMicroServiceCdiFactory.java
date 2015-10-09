@@ -15,21 +15,11 @@
  */
 package io.apiman.manager.api.micro;
 
-import java.lang.reflect.Constructor;
-import java.util.Map;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.New;
-import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.inject.Named;
-
 import io.apiman.common.plugin.Plugin;
 import io.apiman.common.plugin.PluginClassLoader;
 import io.apiman.common.plugin.PluginCoordinates;
 import io.apiman.common.util.ReflectionUtils;
 import io.apiman.manager.api.core.IApiKeyGenerator;
-import io.apiman.manager.api.core.IIdmStorage;
 import io.apiman.manager.api.core.IMetricsAccessor;
 import io.apiman.manager.api.core.IPluginRegistry;
 import io.apiman.manager.api.core.IServiceCatalog;
@@ -43,13 +33,21 @@ import io.apiman.manager.api.core.noop.NoOpMetricsAccessor;
 import io.apiman.manager.api.es.ESMetricsAccessor;
 import io.apiman.manager.api.es.EsStorage;
 import io.apiman.manager.api.jpa.JpaStorage;
-import io.apiman.manager.api.jpa.roles.JpaIdmStorage;
 import io.apiman.manager.api.security.ISecurityContext;
 import io.apiman.manager.api.security.impl.DefaultSecurityContext;
 import io.searchbox.client.JestClient;
 import io.searchbox.client.JestClientFactory;
 import io.searchbox.client.config.HttpClientConfig;
 import io.searchbox.client.config.HttpClientConfig.Builder;
+
+import java.lang.reflect.Constructor;
+import java.util.Map;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.New;
+import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.spi.InjectionPoint;
+import javax.inject.Named;
 
 /**
  * Attempt to create producer methods for CDI beans.
@@ -143,23 +141,6 @@ public class ManagerApiMicroServiceCdiFactory {
                     config.getServiceCatalogProperties(), pluginRegistry);
         } catch (Throwable t) {
             throw new RuntimeException("Error or unknown service catalog type: " + config.getServiceCatalogType(), t); //$NON-NLS-1$
-        }
-    }
-
-    @Produces @ApplicationScoped
-    public static IIdmStorage provideIdmStorage(ManagerApiMicroServiceConfig config,
-            @New JpaIdmStorage jpaIdmStorage, @New EsStorage esStorage, IPluginRegistry pluginRegistry) {
-        if ("jpa".equals(config.getStorageType())) { //$NON-NLS-1$
-            return jpaIdmStorage;
-        } else if ("es".equals(config.getStorageType())) { //$NON-NLS-1$
-            return initES(config, esStorage);
-        } else {
-            try {
-                return createCustomComponent(IIdmStorage.class, config.getIdmStorageType(),
-                        config.getIdmStorageProperties(), pluginRegistry);
-            } catch (Throwable t) {
-                throw new RuntimeException("Error or unknown IDM storage type: " + config.getIdmStorageType(), t); //$NON-NLS-1$
-            }
         }
     }
 

@@ -17,7 +17,6 @@
     <module>es</module>
     <module>ispn</module>
     <module>jpa</module>
-    <module>jpa-idm</module>
     <module>micro</module>
     <module>rest</module>
     <module>rest-impl</module>

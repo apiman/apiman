@@ -71,7 +71,7 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Import-Package>io.apiman.manager.api.beans.idm,!javax.enterprise.context,!javax.enterprise.inject,!javax.inject,*</Import-Package>
+            <Import-Package>!javax.enterprise.context,!javax.enterprise.inject,!javax.inject,*</Import-Package>
           </instructions>
         </configuration>
       </plugin>

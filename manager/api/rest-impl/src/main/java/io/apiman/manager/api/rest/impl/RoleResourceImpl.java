@@ -22,7 +22,8 @@ import io.apiman.manager.api.beans.idm.RoleBean;
 import io.apiman.manager.api.beans.idm.UpdateRoleBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaBean;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
-import io.apiman.manager.api.core.IIdmStorage;
+import io.apiman.manager.api.core.IStorage;
+import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.rest.contract.IRoleResource;
 import io.apiman.manager.api.rest.contract.exceptions.InvalidSearchCriteriaException;
@@ -49,7 +50,9 @@ import javax.inject.Inject;
 public class RoleResourceImpl implements IRoleResource {
     
     @Inject
-    IIdmStorage idmStorage;
+    IStorage storage;
+    @Inject
+    IStorageQuery query;
     @Inject
     ISecurityContext securityContext;
     
@@ -76,12 +79,15 @@ public class RoleResourceImpl implements IRoleResource {
         role.setName(bean.getName());
         role.setPermissions(bean.getPermissions());
         try {
-            if (idmStorage.getRole(role.getId()) != null) {
+            getStorage().beginTx();
+            if (getStorage().getRole(role.getId()) != null) {
                 throw ExceptionFactory.roleAlreadyExistsException(role.getId());
             }
-            idmStorage.createRole(role);
+            getStorage().createRole(role);
+            getStorage().commitTx();
             return role;
         } catch (StorageException e) {
+            getStorage().rollbackTx();
             throw new SystemErrorException(e);
         }
     }
@@ -92,13 +98,16 @@ public class RoleResourceImpl implements IRoleResource {
     @Override
     public RoleBean get(String roleId) throws RoleNotFoundException, NotAuthorizedException {
         try {
-            RoleBean role = idmStorage.getRole(roleId);
+            getStorage().beginTx();
+            RoleBean role = getStorage().getRole(roleId);
             if (role == null) {
                 throw ExceptionFactory.roleNotFoundException(roleId);
             }
             return role;
         } catch (StorageException e) {
             throw new SystemErrorException(e);
+        } finally {
+            getStorage().rollbackTx();
         }
     }
     
@@ -110,7 +119,8 @@ public class RoleResourceImpl implements IRoleResource {
         if (!securityContext.isAdmin())
             throw ExceptionFactory.notAuthorizedException();
         try {
-            RoleBean role = idmStorage.getRole(roleId);
+            getStorage().beginTx();
+            RoleBean role = getStorage().getRole(roleId);
             if (role == null) {
                 throw ExceptionFactory.roleNotFoundException(roleId);
             }
@@ -127,8 +137,10 @@ public class RoleResourceImpl implements IRoleResource {
                 role.getPermissions().clear();
                 role.getPermissions().addAll(bean.getPermissions());
             }
-            idmStorage.updateRole(role);
+            getStorage().updateRole(role);
+            getStorage().commitTx();
         } catch (StorageException e) {
+            getStorage().rollbackTx();
             throw new SystemErrorException(e);
         }
     }
@@ -142,8 +154,11 @@ public class RoleResourceImpl implements IRoleResource {
             throw ExceptionFactory.notAuthorizedException();
         RoleBean bean = get(roleId);
         try {
-            idmStorage.deleteRole(bean);
+            getStorage().beginTx();
+            getStorage().deleteRole(bean);
+            getStorage().commitTx();
         } catch (StorageException e) {
+            getStorage().rollbackTx();
             throw new SystemErrorException(e);
         }
     }
@@ -156,7 +171,7 @@ public class RoleResourceImpl implements IRoleResource {
         try {
             SearchCriteriaBean criteria = new SearchCriteriaBean();
             criteria.setOrder("name", true); //$NON-NLS-1$
-            return idmStorage.findRoles(criteria).getBeans();
+            return getQuery().findRoles(criteria).getBeans();
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }
@@ -170,24 +185,10 @@ public class RoleResourceImpl implements IRoleResource {
             throws InvalidSearchCriteriaException, NotAuthorizedException {
         try {
             SearchCriteriaUtil.validateSearchCriteria(criteria);
-            return idmStorage.findRoles(criteria);
+            return getQuery().findRoles(criteria);
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }
-    }
-
-    /**
-     * @return the idmStorage
-     */
-    public IIdmStorage getIdmStorage() {
-        return idmStorage;
-    }
-
-    /**
-     * @param idmStorage the idmStorage to set
-     */
-    public void setIdmStorage(IIdmStorage idmStorage) {
-        this.idmStorage = idmStorage;
     }
 
     /**
@@ -202,5 +203,33 @@ public class RoleResourceImpl implements IRoleResource {
      */
     public void setSecurityContext(ISecurityContext securityContext) {
         this.securityContext = securityContext;
+    }
+
+    /**
+     * @return the storage
+     */
+    public IStorage getStorage() {
+        return storage;
+    }
+
+    /**
+     * @param storage the storage to set
+     */
+    public void setStorage(IStorage storage) {
+        this.storage = storage;
+    }
+
+    /**
+     * @return the query
+     */
+    public IStorageQuery getQuery() {
+        return query;
+    }
+
+    /**
+     * @param query the query to set
+     */
+    public void setQuery(IStorageQuery query) {
+        this.query = query;
     }
 }

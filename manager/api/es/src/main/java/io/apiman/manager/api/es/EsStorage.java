@@ -58,7 +58,6 @@ import io.apiman.manager.api.beans.summary.PolicySummaryBean;
 import io.apiman.manager.api.beans.summary.ServicePlanSummaryBean;
 import io.apiman.manager.api.beans.summary.ServiceSummaryBean;
 import io.apiman.manager.api.beans.summary.ServiceVersionSummaryBean;
-import io.apiman.manager.api.core.IIdmStorage;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.StorageException;
@@ -119,7 +118,7 @@ import org.elasticsearch.search.sort.SortOrder;
  * @author eric.wittmann@redhat.com
  */
 @ApplicationScoped @Alternative
-public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
+public class EsStorage implements IStorage, IStorageQuery {
 
     private static final String INDEX_NAME = "apiman_manager"; //$NON-NLS-1$
 
@@ -371,7 +370,7 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
     }
 
     /**
-     * @see io.apiman.manager.api.core.IIdmStorage#createRole(io.apiman.manager.api.beans.idm.RoleBean)
+     * @see io.apiman.manager.api.core.IStorage#createRole(io.apiman.manager.api.beans.idm.RoleBean)
      */
     @Override
     public void createRole(RoleBean role) throws StorageException {
@@ -536,7 +535,7 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
     }
 
     /**
-     * @see io.apiman.manager.api.core.IIdmStorage#updateRole(io.apiman.manager.api.beans.idm.RoleBean)
+     * @see io.apiman.manager.api.core.IStorage#updateRole(io.apiman.manager.api.beans.idm.RoleBean)
      */
     @Override
     public void updateRole(RoleBean role) throws StorageException {
@@ -675,7 +674,7 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
     }
 
     /* (non-Javadoc)
-     * @see io.apiman.manager.api.core.IIdmStorage#deleteRole(io.apiman.manager.api.beans.idm.RoleBean)
+     * @see io.apiman.manager.api.core.IStorage#deleteRole(io.apiman.manager.api.beans.idm.RoleBean)
      */
     @Override
     public void deleteRole(RoleBean role) throws StorageException {
@@ -909,7 +908,7 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
     }
 
     /**
-     * @see io.apiman.manager.api.core.IIdmStorage#getRole(java.lang.String)
+     * @see io.apiman.manager.api.core.IStorage#getRole(java.lang.String)
      */
     @Override
     public RoleBean getRole(String id) throws StorageException {
@@ -1508,7 +1507,7 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
     }
 
     /**
-     * @see io.apiman.manager.api.core.IIdmStorage#createUser(io.apiman.manager.api.beans.idm.UserBean)
+     * @see io.apiman.manager.api.core.IStorage#createUser(io.apiman.manager.api.beans.idm.UserBean)
      */
     @Override
     public void createUser(UserBean user) throws StorageException {
@@ -1516,7 +1515,7 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
     }
 
     /**
-     * @see io.apiman.manager.api.core.IIdmStorage#getUser(java.lang.String)
+     * @see io.apiman.manager.api.core.IStorage#getUser(java.lang.String)
      */
     @Override
     public UserBean getUser(String userId) throws StorageException {
@@ -1525,7 +1524,7 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
     }
 
     /**
-     * @see io.apiman.manager.api.core.IIdmStorage#updateUser(io.apiman.manager.api.beans.idm.UserBean)
+     * @see io.apiman.manager.api.core.IStorage#updateUser(io.apiman.manager.api.beans.idm.UserBean)
      */
     @Override
     public void updateUser(UserBean user) throws StorageException {
@@ -1533,7 +1532,7 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
     }
 
     /**
-     * @see io.apiman.manager.api.core.IIdmStorage#findUsers(io.apiman.manager.api.beans.search.SearchCriteriaBean)
+     * @see io.apiman.manager.api.core.IStorageQuery#findUsers(io.apiman.manager.api.beans.search.SearchCriteriaBean)
      */
     @Override
     public SearchResultsBean<UserBean> findUsers(SearchCriteriaBean criteria) throws StorageException {
@@ -1546,7 +1545,7 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
     }
 
     /**
-     * @see io.apiman.manager.api.core.IIdmStorage#findRoles(io.apiman.manager.api.beans.search.SearchCriteriaBean)
+     * @see io.apiman.manager.api.core.IStorageQuery#findRoles(io.apiman.manager.api.beans.search.SearchCriteriaBean)
      */
     @Override
     public SearchResultsBean<RoleBean> findRoles(SearchCriteriaBean criteria) throws StorageException {
@@ -1559,7 +1558,7 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
     }
 
     /**
-     * @see io.apiman.manager.api.core.IIdmStorage#createMembership(io.apiman.manager.api.beans.idm.RoleMembershipBean)
+     * @see io.apiman.manager.api.core.IStorage#createMembership(io.apiman.manager.api.beans.idm.RoleMembershipBean)
      */
     @Override
     public void createMembership(RoleMembershipBean membership) throws StorageException {
@@ -1569,7 +1568,7 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
     }
 
     /**
-     * @see io.apiman.manager.api.core.IIdmStorage#getMembership(java.lang.String, java.lang.String, java.lang.String)
+     * @see io.apiman.manager.api.core.IStorage#getMembership(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
     public RoleMembershipBean getMembership(String userId, String roleId, String organizationId) throws StorageException {
@@ -1583,7 +1582,7 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
     }
 
     /**
-     * @see io.apiman.manager.api.core.IIdmStorage#deleteMembership(java.lang.String, java.lang.String, java.lang.String)
+     * @see io.apiman.manager.api.core.IStorage#deleteMembership(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
     public void deleteMembership(String userId, String roleId, String organizationId) throws StorageException {
@@ -1592,7 +1591,7 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
     }
 
     /**
-     * @see io.apiman.manager.api.core.IIdmStorage#deleteMemberships(java.lang.String, java.lang.String)
+     * @see io.apiman.manager.api.core.IStorage#deleteMemberships(java.lang.String, java.lang.String)
      */
     @Override
     @SuppressWarnings("nls")
@@ -1622,7 +1621,7 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
     }
 
     /**
-     * @see io.apiman.manager.api.core.IIdmStorage#getUserMemberships(java.lang.String)
+     * @see io.apiman.manager.api.core.IStorageQuery#getUserMemberships(java.lang.String)
      */
     @Override
     public Set<RoleMembershipBean> getUserMemberships(String userId) throws StorageException {
@@ -1646,7 +1645,7 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
     }
 
     /**
-     * @see io.apiman.manager.api.core.IIdmStorage#getUserMemberships(java.lang.String, java.lang.String)
+     * @see io.apiman.manager.api.core.IStorageQuery#getUserMemberships(java.lang.String, java.lang.String)
      */
     @Override
     public Set<RoleMembershipBean> getUserMemberships(String userId, String organizationId)
@@ -1674,7 +1673,7 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
     }
 
     /**
-     * @see io.apiman.manager.api.core.IIdmStorage#getOrgMemberships(java.lang.String)
+     * @see io.apiman.manager.api.core.IStorageQuery#getOrgMemberships(java.lang.String)
      */
     @Override
     public Set<RoleMembershipBean> getOrgMemberships(String organizationId) throws StorageException {
@@ -1698,7 +1697,7 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
     }
 
     /**
-     * @see io.apiman.manager.api.core.IIdmStorage#getPermissions(java.lang.String)
+     * @see io.apiman.manager.api.core.IStorageQuery#getPermissions(java.lang.String)
      */
     @Override
     public Set<PermissionBean> getPermissions(String userId) throws StorageException {

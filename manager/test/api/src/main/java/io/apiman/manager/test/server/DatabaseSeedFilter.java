@@ -15,7 +15,6 @@
  */
 package io.apiman.manager.test.server;
 
-import io.apiman.manager.api.core.IIdmStorage;
 import io.apiman.manager.api.core.IStorage;
 
 import java.io.IOException;
@@ -35,7 +34,6 @@ import javax.servlet.ServletResponse;
  */
 public class DatabaseSeedFilter implements Filter {
     
-    @Inject IIdmStorage idmStorage;
     @Inject IStorage storage;
     
     /**
@@ -52,8 +50,11 @@ public class DatabaseSeedFilter implements Filter {
         String seederClass = System.getProperty(ISeeder.SYSTEM_PROPERTY, DefaultTestDataSeeder.class.getName());
         try {
             ISeeder seeder = (ISeeder) Class.forName(seederClass).newInstance();
-            seeder.seed(idmStorage, storage);
+            storage.beginTx();
+            seeder.seed(storage);
+            storage.commitTx();
         } catch (Exception e) {
+            storage.rollbackTx();
             throw new ServletException(e);
         }
     }
