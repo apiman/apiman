@@ -1,0 +1,130 @@
+<html>
+
+<script src="https://raw.github.com/termi1uc1/ES5-DOM-SHIM/master/__SRC/a.js"></script>
+
+<label id=label1 for=no_such_id1>
+	<form id=form1>
+		<label id=label2>
+			<input id=input1 />
+			<label id=label3>
+				<input id=input2 />
+			</label>
+		</label>
+	</form>
+</label>
+
+<div>
+	<form id=form2>
+		<label id=label4 for=test1></label>
+		<label id=label5>
+			<input id=test1 />
+			
+			<label id=label6 for=test2></label>
+			<label id=label8 for=test2></label>
+			<label id=label9 for=test1></label>
+			<label id=label7>
+				<input id=test2 />
+			</label>
+		</label>
+	</form>
+</div>
+
+<script>
+
+function _recursivelyWalk(nodes, cb) {
+    for (var i = 0, len = nodes.length; i < len; i++) {
+        var node = nodes[i],
+			ret = cb(node);
+        if (ret) {
+            return ret;
+        }
+        if (node.childNodes && node.childNodes.length > 0) {
+            ret = _recursivelyWalk(node.childNodes, cb);
+            if (ret) {
+                return ret;
+            }
+        }
+    }
+};
+
+var label1 = document.getElementById('label1'),	
+	label2 = document.getElementById('label2'),
+	
+	label4 = document.getElementById('label4'),
+	label5 = document.getElementById('label5'),
+	
+	labelableElements = ["INPUT", "BUTTON", "KEYGEN", "METER", "OUTPUT", "PROGRESS", "TEXTAREA", "SELECT"],
+	
+	fakeLabels_prop1 = {
+		enumerable: true,
+		"get" : function() {
+			if(this.nodeName !== "LABEL")
+				return void 0;
+			
+			if(this.getAttribute("for") !== null)//hasAttribute
+				return document.getElementById(this.htmlFor);
+			
+			return _recursivelyWalk(this.childNodes,
+					function(el) {
+						if(~labelableElements.indexOf(el.nodeName))
+							return el
+					}
+				) || null;
+		}
+	},
+	
+	fakeLabels_prop2 = {//use TreeWalker
+		enumerable: true,
+		"get" : function() {
+			if(this.nodeName !== "LABEL")
+				return void 0;
+			
+			if(this.getAttribute("for") !== null)//hasAttribute
+				return document.getElementById(this.htmlFor);
+			
+			var tw = document.createTreeWalker(this, NodeFilter.SHOW_ELEMENT, function(el) {
+				if(~["INPUT", "BUTTON", "KEYGEN", "METER", "OUTPUT", "PROGRESS", "TEXTAREA", "SELECT"].indexOf(el.nodeName))
+					return 1;//NodeFilter.FILTER_ACCEPT
+				else return 3;//NodeFilter.FILTER_SKIP
+			})
+			
+			return tw.nextNode();
+			
+			return _recursivelyWalk(this.childNodes,
+					function(el) {
+						if(~labelableElements.indexOf(el.nodeName))
+							return el
+					}
+				) || null;
+		}
+	};
+
+Object.defineProperty(label1, "control1", fakeLabels_prop1);
+Object.defineProperty(label2, "control1", fakeLabels_prop1);
+Object.defineProperty(label4, "control1", fakeLabels_prop1);
+Object.defineProperty(label5, "control1", fakeLabels_prop1);
+
+if(label1.control != label1.control1)
+	alert("Original: " + label1.control.id + "\nfake: " + label1.control1.id)
+if(label2.control != label2.control1)
+	alert("Original: " + label2.control.id + "\nfake: " + label2.control1.id)
+if(label4.control != label4.control1)
+	alert("Original: " + label4.control.id + "\nfake: " + label4.control1.id)
+if(label5.control != label5.control1)
+	alert("Original: " + label5.control.id + "\nfake: " + label5.control1.id)
+
+Object.defineProperty(label1, "control2", fakeLabels_prop2);
+Object.defineProperty(label2, "control2", fakeLabels_prop2);
+Object.defineProperty(label4, "control2", fakeLabels_prop2);
+Object.defineProperty(label5, "control2", fakeLabels_prop2);
+
+if(label1.control != label1.control2)
+	alert("Original: " + label1.control.id + "\nfake: " + label1.control2.id)
+if(label2.control != label2.control2)
+	alert("Original: " + label2.control.id + "\nfake: " + label2.control2.id)
+if(label4.control != label4.control2)
+	alert("Original: " + label4.control.id + "\nfake: " + label4.control2.id)
+if(label5.control != label5.control2)
+	alert("Original: " + label5.control.id + "\nfake: " + label5.control2.id)
+	
+</script>

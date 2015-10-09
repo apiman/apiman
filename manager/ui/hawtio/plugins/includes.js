@@ -1,1 +1,1 @@
-/// <reference path="../libs/hawtio-utilities/defs.d.ts"/>
+/// <reference path="../hawtio-deps/hawtio-utilities/defs.d.ts"/>

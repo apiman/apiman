@@ -1,0 +1,17 @@
+machine:
+  node:
+    version: 0.10.33
+  services:
+
+dependencies:
+  pre:
+    - npm install -g bower gulp
+    - npm install
+  override:
+    - gulp build build-example
+
+test:
+  override:
+    - echo yes
+
+

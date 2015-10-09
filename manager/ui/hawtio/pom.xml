@@ -36,9 +36,8 @@
               <directory>.</directory>
               <includes>
                 <include>index.html</include>
-                <include>bower.json</include>
                 <include>favicon.ico</include>
-                <include>libs/**</include>
+                <include>hawtio-deps/**</include>
                 <include>dist/**</include>
                 <include>plugins/**</include>
               </includes>
@@ -70,16 +69,6 @@
             </goals>
             <configuration>
               <arguments>install</arguments>
-            </configuration>
-          </execution>
-
-          <execution>
-            <id>bower install</id>
-            <goals>
-              <goal>bower</goal>
-            </goals>
-            <configuration>
-              <arguments>--config.strict-ssl=false install</arguments>
             </configuration>
           </execution>
 

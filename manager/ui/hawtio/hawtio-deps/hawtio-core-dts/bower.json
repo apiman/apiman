@@ -1,0 +1,11 @@
+{
+  "name": "hawtio-core-dts",
+  "version": "2.0.21",
+  "description": "Collection of d.ts files for hawtio plugins written with typescript",
+  "keywords": [
+    "hawtio",
+    "typescript"
+  ],
+  "license": "ASL 2.0",
+  "homepage": "http://hawt.io"
+}

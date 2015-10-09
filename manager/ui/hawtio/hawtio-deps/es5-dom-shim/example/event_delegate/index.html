@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html debug=true>
+<head>
+<script type='text/javascript' src='../libs/firebug/firebug.js'></script>
+
+<style>
+.null {
+	background: black !important;
+	color: red
+}
+
+.cotainer, .header, .footer {
+	display: block;
+}
+
+</style>
+<!--[if lt IE 9]>
+<script src="/__COMPILE/a.ie8.js"></script>
+<![endif]-->
+<!--[if lt IE 8]>
+<script src="/__COMPILE/a.ielt8.js"></script>
+<![endif]-->
+<script src="/__COMPILE/a.js?1"></script>
+<script>
+document.createElement("c");
+document.createElement("h");
+document.createElement("f");
+document.createElement("x");
+</script>
+
+</head>
+<body>
+
+<c class="container" id=container>
+	<h class="header">
+		<h4>Event delegation</h4>
+	</h>
+	 
+	<ul class="data controller" a=a>
+		<li class="controller data" a=a data-this-is-it="1">
+			<x style="margin:10px 0">Click me</x>
+		</li>
+	</ul>
+	
+	<f class="footer">
+		<button id="cloneNode">Clone one more node</button>
+	</f>
+</c>
+
+<script>
+
+;(function(g){"use strict";function h(b,a){switch(typeof a){case "string":return b.matchesSelector(a);case "object":var c=!0,f;for(f in a){var e;if(e=a.hasOwnProperty(f)){a:{c=f;e=a[f];var d=b;switch(typeof e){case "undefined":c=d.hasAttribute(c);break a;case "string":c=d.getAttribute(c)===e;break a;case "function":h(d,c)&&e.call(d,c);c=!0;break a}c=void 0}e=!c}if(e)break}return c;case "function":return a(b)}}function d(b,a){if(!(this instanceof d))return new d(b,a);a&&a.handleEvent&&(this.b=a,a=a.handleEvent);
+this.filter=b;this.a=a}d.prototype.handleEvent=function(b){var a=b.target,c=b.currentTarget,d;do 1===a.nodeType&&h(a,this.filter)&&(b.currentTarget=c,b.currentTarget!==c&&(delete b.currentTarget,b.currentTarget=c),b.target=a,b.target!==c&&(delete b.target,b.target=a),this.a&&(d=this.a.call(this.b||c,b)));while(!1!==d&&a!=c&&(a=a.parentNode));return d};"undefined"!==typeof module&&module.exports?module.exports=d:"undefined"!==typeof g&&(g.DelegateListener=d)})(this);
+
+function main() {
+	var container = document.getElementById("container"),
+		containerData = container.querySelector(".data"),
+		controllerTeamplate = containerData.children[0],
+		__i = controllerTeamplate.getAttribute("data-this-is-it"),
+		cloneNode = document.getElementById("cloneNode");
+
+
+	var core = {
+		test : 123,
+		handleEvent : function(_event) {
+			var eventHandler = this[_event.type];
+			eventHandler ?
+				eventHandler(_event) :
+				console.log("No handlers for '" + _event.type + "' type");
+			
+			if(this.test !== 123)console.log(_event.type, this, this.test, "Not cool");
+		},
+		click : function(_event) {
+			var thisObj = _event.currentTarget;
+			thisObj === document ?
+				console.log("document") :
+				console.log(thisObj, thisObj.tagName, thisObj.className);
+
+			if(thisObj == cloneNode) {
+				console.log(1);
+				var newNode = controllerTeamplate.cloneNode(true);
+				console.log(2, newNode);
+				newNode.setAttribute("data-this-is-it", ++__i);
+				console.log(3);
+				newNode.textContent = newNode.textContent + " | " + __i;
+				console.log(4);
+				//containerData.append(newNode, "______________");
+				controllerTeamplate.after(newNode, "______________");
+				console.log("Create one more controller node | __i == " + __i, _event);
+				_event.stopPropagation();
+			}
+			else if(thisObj == container) {
+				if(_event.target.hasAttribute("data-this-is-it"))
+					console.log("Delegeted event is here | __i == " + _event.target.getAttribute("data-this-is-it"), _event)
+				_event.stopPropagation();
+			}
+			else {
+				console.log("Something else");
+			}
+			
+		}
+	}
+
+	document.addEventListener("click", core, false);
+	container.addEventListener("click", core, false);
+	cloneNode.addEventListener("click", core, false);
+
+	container.addEventListener("click", DelegateListener(".controller", core), false);
+
+	container.addEventListener("click", DelegateListener(
+		{"data-this-is-it" : void 0},
+	function(e) {
+		console.log(e.target.getAttribute("data-this-is-it"));
+	}), false);
+	
+	container.addEventListener("click", DelegateListener(function(node) {
+		return (+node.getAttribute("data-this-is-it") || 1) % 2 === 0;
+	}, function(e) {
+		alert(e.target.textContent);
+	}), false);
+
+	document.addEventListener("click", function(e) {
+		console.log("document", (e.returnValue || {a:33}).a);
+	}, false);
+	container.addEventListener("click", function(e) {
+		if(!e.returnValue)e.returnValue = {a:22};
+		console.log("container", e.returnValue.a);
+	}, false);
+	cloneNode.addEventListener("click", function(e) {
+		e.returnValue = {a:11};
+		console.log("cloneNode", e.returnValue.a);
+	}, false);
+
+document.addEventListener("dblclick", DelegateListener({
+	"a" : "a",
+	".controller" : function(selector) {
+		console.log(this, selector);
+	},
+	".data" : function(selector) {
+		console.log(this, selector);
+	}
+}, function(e){
+	console.log(e, e.target, this)
+}));
+}
+
+window.addEventListener('DOMContentLoaded', main, false);
+//window.attachEvent("onload", function(){alert("ololo")})
+
+</script>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html debug=true>
+<head>
+<!--script src="https://getfirebug.com/firebug-lite.js"></script-->
+
+<style>
+.null {
+	background: black !important;
+	color: red
+}
+
+.cotainer, .header, .footer {
+	display: block;
+}
+
+</style>
+<!-- https://raw.github.com/termi/ES5-DOM-SHIM/master/__COMPILE/a.js -->
+<!--[if lt IE 8]>
+<script src="../../__SRC/a.ielt8.js"></script>
+<![endif]-->
+<!--[if IE 8]>
+<script src="../../__SRC/a.ie8.js"></script>
+<![endif]-->
+<script src="../../__SRC/a.js"></script>
+<script>
+document.createElement("j");
+document.createElement("c");
+document.createElement("h");
+document.createElement("f");
+</script>
+
+</head>
+<body>
+
+<j id=test1 style="display:block;background:green;height:40px" class=test color1=gray color2=red color3=yellow>
+test123
+</j>
+
+<div id=test2 class="test2 linked_data" onrowenter1>
+test2
+</div>
+
+<c class="container" id=testContainer>
+	<h class="header">
+		<h4>Container header</h4>
+	</h>
+	
+	<data class="data">
+		<c class="container">
+			<h class="header">
+				<h5>List</h5>
+			</h>
+			
+			<ul class="data">
+				<li>asdf</li>
+				<li>asdf</li>
+				<li>asdf</li>
+				<li>asdf</li>
+			</ul>
+			
+			<f class="footer">
+				<p>List up here</p>
+			</f>
+		</c>
+		<c class="container">
+			<h class="header">
+				<h5>Img</h5>
+			</h>
+			
+			<img id="test3" class="data" src="https://www.google.ru/images/srpr/logo3w.png?1" />
+				
+			<f class="footer">
+				<p>Image up here</p>
+			</f>
+		</c>
+	</data>
+	
+	<f class="footer">
+		<p>Container footer</p>
+	</f>
+</c>
+
+<OBJECT id="testObject" WIDTH="162" HEIGHT="150" DATA="gerl.jpg" TYPE="image/jpeg"></OBJECT>
+
+<script>
+
+function main() {
+	window.addEventListener("someEvent", function doSomething(e) {
+		var i,
+			j = e.target;
+		
+		if(e.detail) {
+			!isNaN(e.detail) && 
+				(i = "color" + e.detail), 
+					j.attributes[i] &&
+						(j.style.backgroundColor = j.attributes[i].value);
+		}
+		else {
+			!~(j.classList+"").indexOf("null") ? 
+				j.classList.add(null) :
+				j.classList.remove(null)
+		}
+	}, false)
+	
+	var dosome1;
+	document.addEventListener("someEvent", dosome1 = function(e) {
+		console.log(1, (this === document ? "document" : "window") + " someEvent " + (e.eventPhase === Event.BUBBLING_PHASE ? "bubble" : e.eventPhase === Event.AT_TARGET ? "target" : "capture") + "" + e.timeStamp)
+	}, false);
+	document.addEventListener("someEvent", dosome1, true);
+	window.addEventListener("someEvent", dosome1, false);
+	document.addEventListener("someEvent", dosome1, false);//the duplicate instances are discarde
+
+	var j = document.getElementsByClassName("test")[0];
+	j.addEventListener("someEvent", function(e) {
+		console.log(2, "j someEvent bubble | ", e.eventPhase == Event.AT_TARGET ? "at target" : "");
+	} , false);
+	
+	j = document.querySelector(".test");
+	j.addEventListener("someEvent", function(){console.log(3, "j someEvent capture")}, true);
+	
+	//$("test2").addEventListener("someEvent", console.log.bind(null, "test2 someEvent capture"), true);
+	
+	var att = 0;
+	
+	var testInterval = setInterval(function() {
+		j.dispatchEvent(new CustomEvent("someEvent", {bubbles : true, detail : ++att > 3 ? att = 0 : att}));
+	}, 1000)
+	
+	
+	window.stopIt = function() {
+		clearInterval(testInterval);
+	}
+	//stopIt();
+	//window.console.open();
+	
+}
+
+document.addEventListener('DOMContentLoaded', main, false);
+//window.attachEvent("onload", function(){alert("ololo")})
+
+</script>
