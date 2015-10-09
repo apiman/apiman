@@ -146,7 +146,7 @@ the API Manager will sometimes ask the Gateway to report on the Managed Endpoint
 
 To set the public URL/endpoint of the API Gateway, add the following to apiman.properties:
 
-    apiman-gateway.public-endpoint=https://api-gateway-host.org:8443/api-gateway/
+    apiman-gateway.public-endpoint=https://api-gateway-host.org:8443/apiman-gateway/
 
 WARNING: Please make sure to use your appropriate values for the host and port.
 
