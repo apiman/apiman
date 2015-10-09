@@ -55,5 +55,4 @@ public class WarApiManagerConfig extends ApiManagerConfig implements IJpaPropert
         }
         return rval;
     }
-
 }

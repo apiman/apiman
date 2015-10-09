@@ -32,6 +32,7 @@ import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
 
 /**
@@ -83,6 +84,8 @@ public class ESClientFactory {
         String port = config.get("client.port"); //$NON-NLS-1$
         String protocol = config.get("client.protocol"); //$NON-NLS-1$
         String initialize = config.get("client.initialize"); //$NON-NLS-1$
+        String timeout = config.get("client.timeout"); //$NON-NLS-1$
+
         if (initialize == null) {
             initialize = "true"; //$NON-NLS-1$
         }
@@ -98,8 +101,11 @@ public class ESClientFactory {
         if (StringUtils.isBlank(protocol)) {
             protocol = "http"; //$NON-NLS-1$
         }
+        if (StringUtils.isBlank(timeout)) {
+            timeout = "6000"; //$NON-NLS-1$
+        }
         return createJestClient(protocol, host, Integer.parseInt(port), indexName, username, password,
-                "true".equals(initialize)); //$NON-NLS-1$
+                BooleanUtils.toBoolean(initialize), Integer.parseInt(timeout));
     }
 
     /**
@@ -107,11 +113,15 @@ public class ESClientFactory {
      * @param protocol http or https
      * @param host the host
      * @param port the port
+     * @param indexName the index name
+     * @param username the username to authenticate with
+     * @param password the password to authenticate with
      * @param initialize true if the index should be initialized
+     * @param timeout the connection and read timeouts in ms
      * @return the ES client
      */
     public static JestClient createJestClient(String protocol, String host, int port, String indexName,
-            String username, String password, boolean initialize) {
+            String username, String password, boolean initialize, int timeout) {
         String clientKey = "jest:" + host + ':' + port + '/' + indexName; //$NON-NLS-1$
         synchronized (clients) {
             if (clients.containsKey(clientKey)) {
@@ -126,7 +136,8 @@ public class ESClientFactory {
                 String connectionUrl = builder.toString();
 
                 JestClientFactory factory = new JestClientFactory();
-                Builder httpClientConfig = new HttpClientConfig.Builder(connectionUrl).multiThreaded(true);
+                Builder httpClientConfig = new HttpClientConfig.Builder(connectionUrl).connTimeout(timeout)
+                        .readTimeout(timeout).multiThreaded(true);
                 if (!StringUtils.isBlank(username)) {
                     httpClientConfig.defaultCredentials(username, password);
                 }

@@ -55,6 +55,7 @@ public class GatewayServer {
 
     public static GatewayServer gatewayServer;
     private static final String ES_CLUSTER_NAME = "_apimantest";
+    private static final int JEST_TIMEOUT = 6000;
     public static JestClient ES_CLIENT = null;
 
     private Server server;
@@ -150,7 +151,7 @@ public class GatewayServer {
             String connectionUrl = "http://localhost:6500";
             JestClientFactory factory = new JestClientFactory();
             factory.setHttpClientConfig(new HttpClientConfig.Builder(connectionUrl).multiThreaded(true)
-                    .build());
+                    .connTimeout(JEST_TIMEOUT).readTimeout(JEST_TIMEOUT).build());
             client = factory.getObject();
             ES_CLIENT = client;
         }

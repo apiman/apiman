@@ -15,18 +15,6 @@
  */
 package io.apiman.manager.test.server;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.New;
-import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.inject.Named;
-
 import io.apiman.common.config.SystemPropertiesConfiguration;
 import io.apiman.manager.api.beans.services.EndpointType;
 import io.apiman.manager.api.beans.summary.AvailableServiceBean;
@@ -54,6 +42,18 @@ import io.searchbox.client.JestClient;
 import io.searchbox.client.JestClientFactory;
 import io.searchbox.client.config.HttpClientConfig;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.New;
+import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.spi.InjectionPoint;
+import javax.inject.Named;
+
 /**
  * Attempt to create producer methods for CDI beans.
  *
@@ -63,6 +63,8 @@ import io.searchbox.client.config.HttpClientConfig;
 @SuppressWarnings("nls")
 @Named("ApimanLogFactory")
 public class TestCdiFactory {
+
+    private static final int JEST_TIMEOUT = 6000;
 
     @Produces @ApplicationScoped
     public static ISecurityContext provideSecurityContext(@New DefaultSecurityContext defaultSC) {
@@ -188,8 +190,8 @@ public class TestCdiFactory {
 
             String connectionUrl = "http://" + host + ":" + port + "";
             JestClientFactory factory = new JestClientFactory();
-            factory.setHttpClientConfig(new HttpClientConfig.Builder(connectionUrl).multiThreaded(true)
-                    .build());
+            factory.setHttpClientConfig(new HttpClientConfig.Builder(connectionUrl).multiThreaded(true).
+                    connTimeout(JEST_TIMEOUT).readTimeout(JEST_TIMEOUT).build());
             return factory.getObject();
         } else {
             return null;

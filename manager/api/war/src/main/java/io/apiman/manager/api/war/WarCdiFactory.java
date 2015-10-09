@@ -67,6 +67,7 @@ public class WarCdiFactory {
 
     private static JestClient sStorageESClient;
     private static JestClient sMetricsESClient;
+    private static final int JEST_TIMEOUT = 6000;
     private static EsStorage sESStorage;
 
     @Produces @ApimanLogger
@@ -227,7 +228,8 @@ public class WarCdiFactory {
         builder.append(config.getStorageESPort());
         String connectionUrl = builder.toString();
         JestClientFactory factory = new JestClientFactory();
-        Builder httpConfig = new HttpClientConfig.Builder(connectionUrl).multiThreaded(true);
+        Builder httpConfig = new HttpClientConfig.Builder(connectionUrl).connTimeout(JEST_TIMEOUT).readTimeout(JEST_TIMEOUT)
+                .multiThreaded(true);
         String username = config.getStorageESUsername();
         String password = config.getStorageESPassword();
         if (username != null) {
@@ -250,7 +252,8 @@ public class WarCdiFactory {
         builder.append(config.getMetricsESPort());
         String connectionUrl = builder.toString();
         JestClientFactory factory = new JestClientFactory();
-        Builder httpConfig = new HttpClientConfig.Builder(connectionUrl).multiThreaded(true);
+        Builder httpConfig = new HttpClientConfig.Builder(connectionUrl).connTimeout(JEST_TIMEOUT).readTimeout(JEST_TIMEOUT)
+                .multiThreaded(true);
         String username = config.getMetricsESUsername();
         String password = config.getMetricsESPassword();
         if (username != null) {
