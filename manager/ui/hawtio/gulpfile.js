@@ -122,6 +122,7 @@ gulp.task('css', function() {
             'node_modules/patternfly/dist/css/patternfly.css',
             'node_modules/ng-sortable/dist/ng-sortable.css',
             //'node_modules/c3/c3.css',
+            'node_modules/patternfly/components/cs/c3.css',
             'node_modules/angular-xeditable/dist/css/xeditable.css',
             SwaggerUIPath + '/dist/css/screen.css',
             SwaggerUIPath + '/dist/css/typography.css'
