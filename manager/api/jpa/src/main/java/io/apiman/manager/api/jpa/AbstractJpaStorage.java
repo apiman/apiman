@@ -26,11 +26,13 @@ import io.apiman.manager.api.beans.search.SearchResultsBean;
 import io.apiman.manager.api.core.exceptions.StorageException;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.inject.Inject;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.persistence.RollbackException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -214,6 +216,62 @@ public abstract class AbstractJpaStorage {
             throw new StorageException(t);
         }
         return rval;
+    }
+
+    int elemsAtOnce = 100;
+
+    protected <T> Iterator<T> getAll(final Class<T> type, final Query query) {
+        return new Iterator<T>() {
+            List<T> subsetList = null;
+
+            {
+                tryGet();
+            }
+
+            @Override
+            public boolean hasNext() {
+                if (!subsetList.isEmpty()) {
+                    return true;
+                } else {
+                    return tryGet();
+                }
+            }
+
+            @Override
+            public T next() {
+                if (!subsetList.isEmpty()) {
+                    return subsetList.remove(subsetList.size()-1);
+                } else {
+                    if (tryGet()) {
+                        return next();
+                    } else {
+                        return null;
+                    }
+                }
+            }
+
+            private boolean tryGet() {
+                try {
+                    subsetList = getAll(0, elemsAtOnce, type, query);
+                } catch (StorageException e) {
+                    throw new RuntimeException(e);
+                }
+                return !subsetList.isEmpty();
+            }
+
+            @Override
+            public void remove() {
+                throw new UnsupportedOperationException("remove");
+            }
+        };
+    }
+
+    private <T> List<T> getAll(int offset, int max, Class<T> type, Query query) throws StorageException {
+        EntityManager entityManager = getActiveEntityManager();
+        return query
+                .setFirstResult(offset)
+                .setMaxResults(max)
+                .getResultList();
     }
 
     /**

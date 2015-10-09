@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 JBoss Inc
+ * Copyright 2015 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,25 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package io.apiman.manager.api.exportimport.read;
 
-package io.apiman.manager.api.rest.impl;
-
-import io.apiman.manager.api.exportimport.manager.ExportImportManager;
-
-import javax.ws.rs.ApplicationPath;
-import javax.ws.rs.core.Application;
-
-
-/**
- * The jax-rs application for the API Manager rest api.
- *
- * @author eric.wittmann@redhat.com
- */
-@ApplicationPath("/")
-public class ApiManagerApplication extends Application {
-    public ApiManagerApplication() {
-        if (ExportImportManager.isExportImport()) {
-            new ExportImportManager().doImportExport();
-        }
-    }
+public interface IStreamReader {
+    void parse() throws Exception;
 }

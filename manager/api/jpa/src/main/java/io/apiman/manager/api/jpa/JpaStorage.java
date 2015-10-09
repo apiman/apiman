@@ -71,6 +71,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -1894,4 +1895,156 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         return super.get(roleId, RoleBean.class);
     }
 
+    @Override
+    public Iterator<OrganizationBean> getAllOrganizations() throws StorageException {
+        EntityManager entityManager = getActiveEntityManager();
+
+        String jqpl = "FROM OrganizationBean";
+        Query query = entityManager.createQuery(jqpl);
+
+        return super.getAll(OrganizationBean.class, query);
+    }
+
+    @Override
+    public Iterator<ApplicationVersionBean> getAllApplicationVersions(String organizationId)
+            throws StorageException {
+        EntityManager entityManager = getActiveEntityManager();
+
+        String jpql =
+                "SELECT v"
+              + " FROM ApplicationVersionBean v"
+              + " WHERE v.application.organization.id = :orgId";
+
+        Query query = entityManager.createQuery(jpql);
+        query.setParameter("orgId", organizationId);
+        return super.getAll(ApplicationVersionBean.class, query);
+    }
+
+    @Override
+    public Iterator<ContractBean> getContracts(String organizationId) throws StorageException {
+        EntityManager entityManager = getActiveEntityManager();
+
+        String jpql =
+                "SELECT c from ContractBean c " +
+                "  JOIN c.service svcv " +
+                "  JOIN svcv.service svc " +
+                "  JOIN c.application appv " +
+                "  JOIN appv.application app " +
+                "  JOIN svc.organization sorg" +
+                "  JOIN app.organization aorg" +
+                " WHERE sorg.id = :orgId "; //$NON-NLS-1$
+
+        Query query = entityManager.createQuery(jpql);
+        query.setParameter("orgId", organizationId);
+        return super.getAll(ContractBean.class, query);
+    }
+
+    @Override
+    public Iterator<ServiceVersionBean> getAllServiceVersions(String organizationId) throws StorageException {
+        EntityManager entityManager = getActiveEntityManager();
+
+        String jpql =
+                "SELECT s "
+                + "FROM ServiceVersionBean s "
+                + "WHERE s.service.organization.id = :orgId "; //$NON-NLS-1$
+
+        Query query = entityManager.createQuery(jpql);
+        query.setParameter("orgId", organizationId);
+        return super.getAll(ServiceVersionBean.class, query);
+    }
+
+    @Override
+    public Iterator<PlanVersionBean> getAllPlanVersions(String organizationId) throws StorageException {
+        EntityManager entityManager = getActiveEntityManager();
+
+        String jpql =
+                "SELECT p "
+                + "FROM PlanVersionBean p "
+                + "WHERE p.service.organization.id = :orgId "; //$NON-NLS-1$
+
+        Query query = entityManager.createQuery(jpql);
+        query.setParameter("orgId", organizationId);
+        return super.getAll(PlanVersionBean.class, query);
+    }
+
+    @Override
+    public Iterator<GatewayBean> getAllGateways() throws StorageException {
+        EntityManager entityManager = getActiveEntityManager();
+
+        String jpql =
+                "FROM GatewayBean";
+
+        Query query = entityManager.createQuery(jpql);
+        return super.getAll(GatewayBean.class, query);
+    }
+
+    @Override
+    public Iterator<AuditEntryBean> getAllAuditEntries(String orgId) throws StorageException {
+        EntityManager entityManager = getActiveEntityManager();
+
+        String jpql =
+                "SELECT b "
+                + "FROM AuditEntryBean b "
+                + "WHERE organization_id = :orgId "; //$NON-NLS-1$
+
+        Query query = entityManager.createQuery(jpql);
+        query.setParameter("orgId", orgId);
+        return super.getAll(AuditEntryBean.class, query);
+    }
+
+    @Override
+    public Iterator<PolicyBean> getAllPolicies(String orgId) throws StorageException {
+        EntityManager entityManager = getActiveEntityManager();
+
+        String jpql =
+                "SELECT b "
+                + "FROM PolicyBean b "
+                + "WHERE organization_id = :orgId "; //$NON-NLS-1$
+
+        Query query = entityManager.createQuery(jpql);
+        query.setParameter("orgId", orgId);
+        return super.getAll(PolicyBean.class, query);
+    }
+
+    @Override
+    public Iterator<PluginBean> getAllPlugins() throws StorageException {
+        EntityManager entityManager = getActiveEntityManager();
+
+        String jpql =
+                "SELECT b "
+                + "FROM PluginBean b ";
+
+        Query query = entityManager.createQuery(jpql);
+        return super.getAll(PluginBean.class, query);
+    }
+
+    @Override
+    public Iterator<RoleMembershipBean> getAllMemberships(String orgId) throws StorageException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Iterator<UserBean> getAllUsers(String orgId) throws StorageException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Iterator<UserBean> getAllUsers() throws StorageException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Iterator<RoleBean> getAllRoles(String orgId) throws StorageException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Iterator<RoleBean> getAllRoles() throws StorageException {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }
