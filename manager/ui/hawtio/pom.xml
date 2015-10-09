@@ -36,9 +36,8 @@
               <directory>.</directory>
               <includes>
                 <include>index.html</include>
-                <include>bower.json</include>
                 <include>favicon.ico</include>
-                <include>libs/**</include>
+                <include>hawtio-deps/**</include>
                 <include>dist/**</include>
                 <include>plugins/**</include>
               </includes>
