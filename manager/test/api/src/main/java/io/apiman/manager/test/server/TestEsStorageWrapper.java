@@ -38,6 +38,7 @@ import io.searchbox.client.JestClient;
 import io.searchbox.indices.Refresh;
 
 import java.io.InputStream;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -650,6 +651,91 @@ public class TestEsStorageWrapper implements IStorage {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public Iterator<OrganizationBean> getAllOrganizations() throws StorageException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Iterator<ApplicationVersionBean> getAllApplicationVersions(String organizationId)
+            throws StorageException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Iterator<ContractBean> getContracts(String organizationId) throws StorageException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Iterator<ServiceVersionBean> getAllServiceVersions(String organizationId) throws StorageException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Iterator<PlanVersionBean> getAllPlanVersions(String organizationId) throws StorageException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Iterator<GatewayBean> getAllGateways() throws StorageException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Iterator<AuditEntryBean> getAllAuditEntries(String orgId) throws StorageException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Iterator<PolicyBean> getAllPolicies(String id) throws StorageException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Iterator<PluginBean> getAllPlugins() throws StorageException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Iterator<RoleMembershipBean> getAllMemberships(String orgId) throws StorageException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Iterator<UserBean> getAllUsers(String orgId) throws StorageException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Iterator<UserBean> getAllUsers() throws StorageException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Iterator<RoleBean> getAllRoles(String orgId) throws StorageException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Iterator<RoleBean> getAllRoles() throws StorageException {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }
