@@ -12,7 +12,6 @@ var angular = require('angular');
 var ngResource = require('angular-resource');
 var ngSortable = require('ng-sortable/dist/ng-sortable.js');
 var d3 = require('d3');
-//var d3 = require('patternfly/components/d3/d3.js');
 global.c3 = require('patternfly/components/c3/c3.js');
 var ngXEditable = require('angular-xeditable/dist/js/xeditable.js');
 var ngSanitize = require('angular-sanitize');
