@@ -1,4 +1,5 @@
 {
+  "id" : "apiman-plugin-registry",
   "name" : "Official apiman Plugins",
   "description" : "This plugin registry lists all of the official apiman plugins.  No third party plugins are included in this registry.",
   "version" : "1.2.0-SNAPSHOT",
