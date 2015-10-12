@@ -117,6 +117,7 @@ module Apiman {
                         return EntityStatusService.getEntityStatus();
                     }, function(newValue, oldValue) {
                         var entityStatus = newValue;
+                        console.log('entityStatus: ' + entityStatus);
                         var elem = element;
                         if (entityStatus) {
                             var validStatuses = attrs.apimanStatus.split(',');
@@ -158,7 +159,7 @@ module Apiman {
         }]);
 
     _module.directive('apimanEntityStatus',
-        ['Logger', 'EntityStatusService', 
+        ['Logger', 'EntityStatusService',
         function(Logger, EntityStatusService) {
             return {
                 restrict: 'A',

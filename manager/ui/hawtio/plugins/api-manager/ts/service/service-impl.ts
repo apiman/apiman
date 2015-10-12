@@ -15,6 +15,7 @@ module Apiman {
             $scope.showMetrics = Configuration.ui.metrics;
 
             var pageData = ServiceEntityLoader.getCommonData($scope, $location);
+
             if (params.version != null) {
                 pageData = angular.extend(pageData, {
                     gateways: $q(function(resolve, reject) {
@@ -22,6 +23,10 @@ module Apiman {
                     })
                 });
             }
+
+            $scope.getEntityStatus = function() {
+                return EntityStatusService.getEntityStatus();
+            };
             
             var epValue = function(endpointProperties, key) {
                 if (endpointProperties && endpointProperties[key]) {

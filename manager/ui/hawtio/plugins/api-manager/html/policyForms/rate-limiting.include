@@ -1,16 +1,16 @@
 <div class="form policy-config rates" data-field="form" ng-controller="Apiman.RateLimitingFormController" style="margin-top: 10px">
   <div>
     <span apiman-i18n-key="config-sentence-preamble">I want to limit request rates to</span>
-    <input id="num-requests" ng-model="config.limit" class="apiman-form-control form-control inline-apiman-form-control form-control" style="width: 100px" type="text" apiman-i18n-key="rate-limiting.enter-num-requests" placeholder="# of requests"></input>
+    <input id="num-requests" ng-model="config.limit" class="apiman-form-control form-control inline-apiman-form-control form-control" style="width: 100px" type="text" apiman-i18n-key="rate-limiting.enter-num-requests" placeholder="# of requests" ng-disabled="getEntityStatus() !== 'Ready'"></input>
     <span apiman-i18n-key="requests-per">requests per</span>
-    <select id="granularity" ng-model="config.granularity" apiman-select-picker="" data-field="granularity" class="selectpicker inline-line apiman-inline-form-dropdown" data-style="btn-default apiman-inline-form-dropdown" style="width: 100px">
+    <select id="granularity" ng-model="config.granularity" apiman-select-picker="" data-field="granularity" class="selectpicker inline-line apiman-inline-form-dropdown" data-style="btn-default apiman-inline-form-dropdown" style="width: 100px" ng-disabled="getEntityStatus() !== 'Ready'">
       <option value="" data-content="<span class='apiman-label-faded'>Granularity</span>" apiman-i18n-key="granularity">Granularity</option>
       <option value="Application" apiman-i18n-key="rate-limiting.application">Application</option>
       <option value="User" apiman-i18n-key="rate-limiting.user">User</option>
       <option value="Service" apiman-i18n-key="rate-limiting.service">Service</option>
     </select>
     <span apiman-i18n-key="per">per</span>
-    <select id="period" ng-model="config.period" apiman-select-picker="" data-field="period" class="selectpicker inline-line apiman-inline-form-dropdown" data-style="btn-default apiman-inline-form-dropdown" style="width: 100px">
+    <select id="period" ng-model="config.period" apiman-select-picker="" data-field="period" class="selectpicker inline-line apiman-inline-form-dropdown" data-style="btn-default apiman-inline-form-dropdown" style="width: 100px" ng-disabled="getEntityStatus() !== 'Ready'">
       <option value="" data-content="<span class='apiman-label-faded'>Period</span>" apiman-i18n-key="rate-limiting.period">Period</option>
       <option value="Second" apiman-i18n-key="rate-limiting.second">Second</option>
       <option value="Minute" apiman-i18n-key="rate-limiting.minute">Minute</option>
@@ -22,7 +22,7 @@
   </div>
   <div style="margin-top: 8px;" id="userRow" ng-show="config.granularity == 'User'">
     <span apiman-i18n-key="reate-limiting.get-user-id-from">Get the user's id from:</span>
-    <input id="user-header" ng-model="config.userHeader" data-field="userHeader" class="apiman-form-control form-control inline-apiman-form-control form-control" style="width: 250px" type="text" apiman-i18n-key="rate-limiting.enter-user-header" placeholder="Enter header (e.g. X-Identity)..."></input>
+    <input id="user-header" ng-model="config.userHeader" data-field="userHeader" class="apiman-form-control form-control inline-apiman-form-control form-control" style="width: 250px" type="text" apiman-i18n-key="rate-limiting.enter-user-header" placeholder="Enter header (e.g. X-Identity)..." ng-disabled="getEntityStatus() !== 'Ready'"></input>
   </div>
   <hr/>
   <div>
@@ -37,15 +37,15 @@
     <dl>
       <dt apiman-i18n-key="rate-limiting.limit-header">Limit Response Header</dt>
       <dd>
-        <input id="limit-header" ng-model="config.headerLimit" data-field="limitHeader" class="apiman-form-control form-control" style="" type="text" apiman-i18n-key="rate-limiting.enter-limit-header" placeholder="X-RateLimit-Limit"></input>
+        <input id="limit-header" ng-model="config.headerLimit" data-field="limitHeader" class="apiman-form-control form-control" style="" type="text" apiman-i18n-key="rate-limiting.enter-limit-header" placeholder="X-RateLimit-Limit" ng-disabled="getEntityStatus() !== 'Ready'"></input>
       </dd>
       <dt apiman-i18n-key="rate-limiting.remaining-header">Remaining Response Header</dt>
       <dd>
-        <input id="remaining-header" ng-model="config.headerRemaining" data-field="remainingHeader" class="apiman-form-control form-control" style="" type="text" apiman-i18n-key="rate-limiting.enter-remaining-header" placeholder="X-RateLimit-Remaining"></input>
+        <input id="remaining-header" ng-model="config.headerRemaining" data-field="remainingHeader" class="apiman-form-control form-control" style="" type="text" apiman-i18n-key="rate-limiting.enter-remaining-header" placeholder="X-RateLimit-Remaining" ng-disabled="getEntityStatus() !== 'Ready'"></input>
       </dd>
       <dt apiman-i18n-key="rate-limiting.reset-header">Reset Response Header</dt>
       <dd>
-        <input id="reset-header" ng-model="config.headerReset" data-field="resetHeader" class="apiman-form-control form-control" style="" type="text" apiman-i18n-key="rate-limiting.enter-reset-header" placeholder="X-RateLimit-Reset"></input>
+        <input id="reset-header" ng-model="config.headerReset" data-field="resetHeader" class="apiman-form-control form-control" style="" type="text" apiman-i18n-key="rate-limiting.enter-reset-header" placeholder="X-RateLimit-Reset" ng-disabled="getEntityStatus() !== 'Ready'"></input>
       </dd>
     </dl>
   </div>

@@ -3,8 +3,8 @@
 module Apiman {
 
  export var ServiceDefController = _module.controller("Apiman.ServiceDefController",
-        ['$q', '$rootScope', '$scope', '$location', 'PageLifecycle', 'ServiceEntityLoader', 'OrgSvcs', 'Logger', '$routeParams', 'ServiceDefinitionSvcs', 'Configuration',
-        ($q, $rootScope, $scope, $location, PageLifecycle, ServiceEntityLoader, OrgSvcs, Logger, $routeParams, ServiceDefinitionSvcs, Configuration) => {
+        ['$q', '$rootScope', '$scope', '$location', 'PageLifecycle', 'ServiceEntityLoader', 'OrgSvcs', 'Logger', '$routeParams', 'ServiceDefinitionSvcs', 'Configuration', 'EntityStatusService',
+        ($q, $rootScope, $scope, $location, PageLifecycle, ServiceEntityLoader, OrgSvcs, Logger, $routeParams, ServiceDefinitionSvcs, Configuration, EntityStatusService) => {
             var params = $routeParams;
             $scope.organizationId = params.org;
             $scope.tab = 'def';
@@ -23,15 +23,22 @@ module Apiman {
                     }
                 });
             };
+
             selectType('None');
+
+            $scope.getEntityStatus = function() {
+                return EntityStatusService.getEntityStatus();
+            };
 
             jQuery('#service-definition').height(100);
             jQuery('#service-definition').focus(function() {
                 jQuery('#service-definition').height(450);
             });
+
             jQuery('#service-definition').blur(function() {
                 jQuery('#service-definition').height(100);
             });
+
             $scope.$on('afterdrop', function(event, data) {
                 var newValue = data.value;
                 if (newValue) {

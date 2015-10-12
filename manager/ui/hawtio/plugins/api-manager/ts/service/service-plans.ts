@@ -13,6 +13,7 @@ module Apiman {
             $scope.showMetrics = Configuration.ui.metrics;
 
             var lockedPlans = [];
+
             var getSelectedPlans = function() {
                 var selectedPlans = [];
                 for (var i = 0; i < lockedPlans.length; i++) {
@@ -25,6 +26,10 @@ module Apiman {
                     }
                 }
                 return selectedPlans;
+            };
+
+            $scope.getEntityStatus = function() {
+                return EntityStatusService.getEntityStatus();
             };
 
             var pageData = ServiceEntityLoader.getCommonData($scope, $location);

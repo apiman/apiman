@@ -56,7 +56,8 @@ module Apiman {
             $scope.setEntityStatus = function(status) {
                 EntityStatusService.setEntityStatus(status);
             };
-            $scope.getEntityStatus = function(){
+
+            $scope.getEntityStatus = function() {
                 return EntityStatusService.getEntityStatus();
             };
 
