@@ -137,18 +137,23 @@ public class CachingESRegistry extends ESRegistry {
      */
     @Override
     public void getContract(final ServiceRequest request, final IAsyncResultHandler<ServiceContract> handler) {
+        ServiceContract contract = null;
+        Service service = null;
+        boolean cacheResult = false;
+        
         String contractKey = getContractKey(request);
         synchronized (mutex) {
-            ServiceContract contract = contractCache.get(contractKey);
+            contract = contractCache.get(contractKey);
             if (contract != null) {
                 String serviceKey = getServiceKey(contract.getService());
-                Service service = serviceCache.get(serviceKey);
-                if (service == null) {
-                    super.getContract(request, handler);
-                } else {
-                    handler.handle(AsyncResultImpl.create(contract));
-                }
+                service = serviceCache.get(serviceKey);
             } else {
+                cacheResult = true;
+            }
+        }
+        
+        if (service == null) {
+            if (cacheResult) {
                 super.getContract(request, new IAsyncResultHandler<ServiceContract>() {
                     @Override
                     public void handle(IAsyncResult<ServiceContract> result) {
@@ -158,8 +163,13 @@ public class CachingESRegistry extends ESRegistry {
                         handler.handle(result);
                     }
                 });
+            } else {
+                super.getContract(request, handler);
             }
+        } else {
+            handler.handle(AsyncResultImpl.create(contract));
         }
+        
     }
 
     /**
@@ -168,23 +178,24 @@ public class CachingESRegistry extends ESRegistry {
     @Override
     public void getService(final String organizationId, final String serviceId, final String serviceVersion,
             final IAsyncResultHandler<Service> handler) {
+        String serviceKey = getServiceKey(organizationId, serviceId, serviceVersion);
+        Service service = null;
         synchronized (mutex) {
-            String serviceKey = getServiceKey(organizationId, serviceId, serviceVersion);
-            Service service = serviceCache.get(serviceKey);
-            if (service != null) {
-                handler.handle(AsyncResultImpl.create(service));
-            } else {
-                super.getService(organizationId, serviceId, serviceVersion, new IAsyncResultHandler<Service>() {
-                    @Override
-                    public void handle(IAsyncResult<Service> result) {
-                        if (result.isSuccess()) {
-                            Service svc = result.getResult();
-                            cacheService(svc);
-                        }
-                        handler.handle(result);
+            service = serviceCache.get(serviceKey);
+        }
+        if (service != null) {
+            handler.handle(AsyncResultImpl.create(service));
+        } else {
+            super.getService(organizationId, serviceId, serviceVersion, new IAsyncResultHandler<Service>() {
+                @Override
+                public void handle(IAsyncResult<Service> result) {
+                    if (result.isSuccess()) {
+                        Service svc = result.getResult();
+                        cacheService(svc);
                     }
-                });
-            }
+                    handler.handle(result);
+                }
+            });
         }
     }
 
