@@ -6,6 +6,7 @@ module Apiman {
         ['$q', '$rootScope', '$scope', '$location', 'PageLifecycle', 'ServiceEntityLoader', 'OrgSvcs', 'ApimanSvcs', '$routeParams', 'EntityStatusService', 'Configuration',
         ($q, $rootScope, $scope, $location, PageLifecycle, ServiceEntityLoader, OrgSvcs, ApimanSvcs, $routeParams, EntityStatusService, Configuration) => {
             var params = $routeParams;
+
             $scope.organizationId = params.org;
             $scope.tab = 'plans';
             $scope.version = params.version;
@@ -16,8 +17,10 @@ module Apiman {
 
             var getSelectedPlans = function() {
                 var selectedPlans = [];
+
                 for (var i = 0; i < lockedPlans.length; i++) {
                     var plan = lockedPlans[i];
+
                     if (plan.checked) {
                         var selectedPlan:any = {};
                         selectedPlan.planId = plan.id;
@@ -25,14 +28,18 @@ module Apiman {
                         selectedPlans.push(selectedPlan);
                     }
                 }
+
                 return selectedPlans;
             };
 
-            $scope.getEntityStatus = function() {
-                return EntityStatusService.getEntityStatus();
+            $scope.isEntityDisabled = function() {
+                var status = EntityStatusService.getEntityStatus();
+
+                return (status !== 'Created' && status !== 'Ready');
             };
 
             var pageData = ServiceEntityLoader.getCommonData($scope, $location);
+
             if (params.version != null) {
                 pageData = angular.extend(pageData, {
                     plans: $q(function(resolve, reject) {
@@ -59,6 +66,7 @@ module Apiman {
                                     }, reject);
                                 }))
                             });
+
                             $q.all(promises).then(function() {
                                 lockedPlans.sort(function(a,b) {
                                     if (a.id.toLowerCase() < b.id.toLowerCase()) {
@@ -69,6 +77,7 @@ module Apiman {
                                         return 0;
                                     }
                                 });
+
                                 resolve(lockedPlans);
                             });
                         }, reject);
@@ -78,9 +87,11 @@ module Apiman {
 
             $scope.$watch('updatedService', function(newValue) {
                 var dirty = false;
+
                 if (newValue.publicService != $scope.version.publicService) {
                     dirty = true;
                 }
+
                 if (newValue.plans && $scope.version.plans && newValue.plans.length != $scope.version.plans.length) {
                     dirty = true;
                 } else if (newValue.plans && $scope.version.plans) {
@@ -92,6 +103,7 @@ module Apiman {
                         }
                     }
                 }
+
                 $rootScope.isDirty = dirty;
             }, true);
 
@@ -101,8 +113,10 @@ module Apiman {
 
             $scope.reset = function() {
                 $scope.updatedService.publicService = $scope.version.publicService;
+
                 for (var i = 0; i < lockedPlans.length; i++) {
                     lockedPlans[i].selectedVersion = lockedPlans[i].lockedVersions[0];
+
                     for (var j = 0; j < $scope.version.plans.length; j++) {
                         if (lockedPlans[i].id == $scope.version.plans[j].planId) {
                             lockedPlans[i].checked = true;
@@ -111,6 +125,7 @@ module Apiman {
                         }
                     }
                 }
+
                 $scope.updatedService.plans = getSelectedPlans();
                 $rootScope.isDirty = false;
             };
@@ -131,6 +146,5 @@ module Apiman {
                 $scope.reset();
                 PageLifecycle.setPageTitle('service-plans', [ $scope.service.name ]);
             });
-        }])
-
+        }]);
 }

@@ -7,6 +7,7 @@ module Apiman {
         ($q, $scope, $location, OrgSvcs, PageLifecycle, $rootScope, CurrentUser, $routeParams) => {
             var orgId = $routeParams.org;
             var serviceId = $routeParams.service;
+
             var pageData = {
                 versions: $q(function(resolve, reject) {
                     OrgSvcs.query({ organizationId: orgId, entityType: 'services', entityId: serviceId, versionsOrActivity: 'versions' }, resolve, reject);
@@ -59,6 +60,12 @@ module Apiman {
 
             $scope.getEntityStatus = function() {
                 return EntityStatusService.getEntityStatus();
+            };
+
+            $scope.isEntityDisabled = function() {
+                var status = EntityStatusService.getEntityStatus();
+
+                return (status !== 'Created' && status !== 'Ready');
             };
 
             $scope.setVersion = function(service) {

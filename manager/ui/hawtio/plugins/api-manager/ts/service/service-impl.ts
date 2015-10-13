@@ -6,6 +6,7 @@ module Apiman {
         ['$q', '$rootScope', '$scope', '$location', 'PageLifecycle', 'ServiceEntityLoader', 'OrgSvcs', 'ApimanSvcs', '$routeParams', 'EntityStatusService', 'Logger', 'Configuration',
         ($q, $rootScope, $scope, $location, PageLifecycle, ServiceEntityLoader, OrgSvcs, ApimanSvcs, $routeParams, EntityStatusService, Logger, Configuration) => {
             var params = $routeParams;
+
             $scope.organizationId = params.org;
             $scope.tab = 'impl';
             $scope.version = params.version;
@@ -24,8 +25,10 @@ module Apiman {
                 });
             }
 
-            $scope.getEntityStatus = function() {
-                return EntityStatusService.getEntityStatus();
+            $scope.isEntityDisabled = function() {
+                var status = EntityStatusService.getEntityStatus();
+
+                return (status !== 'Created' && status !== 'Ready');
             };
             
             var epValue = function(endpointProperties, key) {
@@ -181,6 +184,5 @@ module Apiman {
                     }
                 }
             });
-        }])
-
+        }]);
 }

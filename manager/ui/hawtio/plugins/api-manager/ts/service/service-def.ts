@@ -2,10 +2,11 @@
 /// <reference path="../services.ts"/>
 module Apiman {
 
- export var ServiceDefController = _module.controller("Apiman.ServiceDefController",
+ export var ServiceDefController = _module.controller('Apiman.ServiceDefController',
         ['$q', '$rootScope', '$scope', '$location', 'PageLifecycle', 'ServiceEntityLoader', 'OrgSvcs', 'Logger', '$routeParams', 'ServiceDefinitionSvcs', 'Configuration', 'EntityStatusService',
         ($q, $rootScope, $scope, $location, PageLifecycle, ServiceEntityLoader, OrgSvcs, Logger, $routeParams, ServiceDefinitionSvcs, Configuration, EntityStatusService) => {
             var params = $routeParams;
+
             $scope.organizationId = params.org;
             $scope.tab = 'def';
             $scope.version = params.version;
@@ -16,6 +17,7 @@ module Apiman {
                 { "label" : "Swagger (JSON)",        "value" : "SwaggerJSON" },
                 { "label" : "Swagger (YAML)",        "value" : "SwaggerYAML" }
             ];
+
             var selectType = function(newType) {
                 angular.forEach($scope.typeOptions, function(option) {
                     if (option.value == newType) {
@@ -26,11 +28,14 @@ module Apiman {
 
             selectType('None');
 
-            $scope.getEntityStatus = function() {
-                return EntityStatusService.getEntityStatus();
+            $scope.isEntityDisabled = function() {
+                var status = EntityStatusService.getEntityStatus();
+
+                return (status !== 'Created' && status !== 'Ready');
             };
 
             jQuery('#service-definition').height(100);
+
             jQuery('#service-definition').focus(function() {
                 jQuery('#service-definition').height(450);
             });
@@ -41,12 +46,14 @@ module Apiman {
 
             $scope.$on('afterdrop', function(event, data) {
                 var newValue = data.value;
+
                 if (newValue) {
                     if (newValue.lastIndexOf('{', 0) === 0) {
                         $scope.$apply(function() {
                             selectType('SwaggerJSON');
                         });
                     }
+
                     if (newValue.lastIndexOf('swagger:', 0) === 0) {
                         $scope.$apply(function() {
                             selectType('SwaggerYAML');
@@ -71,25 +78,31 @@ module Apiman {
             var checkDirty = function() {
                 if ($scope.version) {
                     var dirty = false;
+
                     if ($scope.serviceDefinition != $scope.updatedServiceDefinition) {
                         Logger.debug("**** dirty because of service def");
                         dirty = true;
                     }
+
                     if ($scope.selectedDefinitionType.value != $scope.definitionType) {
                         Logger.debug("**** dirty because of def type: {0} != {1}", $scope.selectedDefinitionType.value, $scope.definitionType);
                         dirty = true;
                     }
+
                     $rootScope.isDirty = dirty;
                 }
             };
 
             $scope.$watch('updatedService', checkDirty, true);
+
             $scope.$watch('updatedServiceDefinition', function(newValue, oldValue) {
                 if (!newValue) {
                     return;
                 }
+
                 checkDirty();
             });
+
             $scope.$watch('selectedDefinitionType', checkDirty, true);
 
             $scope.reset = function() {
@@ -101,9 +114,11 @@ module Apiman {
             $scope.saveService = function() {
                 $scope.saveButton.state = 'in-progress';
                 var update = OrgSvcs.updateJSON;
+
                 if ($scope.selectedDefinitionType.value == 'SwaggerJSON') {
                     update = OrgSvcs.updateYAML;
                 }
+
                 ServiceDefinitionSvcs.updateServiceDefinition(params.org, params.service, params.version,
                     $scope.updatedServiceDefinition, $scope.selectedDefinitionType.value,
                     function(definition) {
@@ -120,17 +135,20 @@ module Apiman {
 
             PageLifecycle.loadPage('ServiceDef', pageData, $scope, function() {
                 $scope.definitionType = $scope.version.definitionType;
+
                 if (!$scope.definitionType) {
                     $scope.definitionType = 'None';
                 }
+
                 if ($scope.version.definitionType && $scope.version.definitionType != 'None') {
                     loadDefinition();
                 } else {
                     Logger.debug("Skipped loading service definition - None defined.");
                 }
+
                 $scope.reset();
+
                 PageLifecycle.setPageTitle('service-def', [ $scope.service.name ]);
             });
-        }])
-
+        }]);
 }

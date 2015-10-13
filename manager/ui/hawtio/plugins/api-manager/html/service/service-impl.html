@@ -44,7 +44,7 @@
                      data-field="endpoint"
                      class="apiman-form-control form-control"
                      type="text"
-                     ng-disabled="getEntityStatus() !== ('Ready' || 'Created')"></input>
+                     ng-disabled="isEntityDisabled()"></input>
             </div>
             <div style="margin-top: 10px">
               <span class="clearfix"
@@ -55,7 +55,7 @@
                       ng-model="updatedService.endpointType"
                       class="selectpicker"
                       ng-options="type.toUpperCase() for type in typeOptions"
-                      ng-disabled="getEntityStatus() !== ('Ready' || 'Created')">
+                      ng-disabled="isEntityDisabled()">
               </select>
             </div>
             
@@ -65,7 +65,7 @@
               <select apiman-select-picker=""
                       ng-model="apiSecurity.type"
                       class="selectpicker"
-                      ng-disabled="getEntityStatus() !== ('Ready' || 'Created')">
+                      ng-disabled="isEntityDisabled()">
                 <option value="none"
                         apiman-i18n-key="none">None</option>
                 <option value="mtls"

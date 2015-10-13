@@ -1,5 +1,5 @@
-/// <reference path="apimanPlugin.ts"/>
-/// <reference path="services.ts"/>
+/// <reference path='apimanPlugin.ts'/>
+/// <reference path='services.ts'/>
 module Apiman {
     
     export var isRegexpValid = function(v) {
@@ -14,9 +14,9 @@ module Apiman {
         return valid;
     };
     
-    _module.controller("Apiman.DefaultPolicyConfigFormController",
-        ['$scope', 'Logger',
-        ($scope, Logger) => {
+    _module.controller('Apiman.DefaultPolicyConfigFormController',
+        ['$scope', 'Logger', 'EntityStatusService',
+        ($scope, Logger, EntityStatusService) => {
             var validateRaw = function(config) {
                 var valid = true;
 
@@ -30,6 +30,12 @@ module Apiman {
                 $scope.setValid(valid);
             };
 
+            $scope.isEntityDisabled = function() {
+                var status = EntityStatusService.getEntityStatus();
+
+                return (status !== 'Created' && status !== 'Ready');
+            };
+
             if ($scope.getConfig()) {
                 $scope.rawConfig = JSON.stringify($scope.getConfig(), null, 2);
             }
@@ -38,8 +44,14 @@ module Apiman {
         }]);
 
     _module.controller('Apiman.JsonSchemaPolicyConfigFormController',
-        ['$scope', 'Logger', 'PluginSvcs',
-        ($scope, Logger, PluginSvcs) => {
+        ['$scope', 'Logger', 'PluginSvcs', 'EntityStatusService',
+        ($scope, Logger, PluginSvcs, EntityStatusService) => {
+            $scope.isEntityDisabled = function() {
+                var status = EntityStatusService.getEntityStatus();
+
+                return (status !== 'Created' && status !== 'Ready');
+            };
+
             var initEditor = function(schema) {
                 var holder = document.getElementById('json-editor-holder');
 
@@ -73,7 +85,7 @@ module Apiman {
                     });
                 });
 
-                if($scope.getEntityStatus() !== 'Ready') {
+                if ($scope.isEntityDisabled() === true) {
                     editor.disable();
                 }
 
@@ -123,9 +135,9 @@ module Apiman {
             loadSchema();
         }]);
 
-    _module.controller("Apiman.RateLimitingFormController",
-        ['$scope', 'Logger',
-        ($scope, Logger) => {
+    _module.controller('Apiman.RateLimitingFormController',
+        ['$scope', 'Logger', 'EntityStatusService',
+        ($scope, Logger, EntityStatusService) => {
             var validate = function(config) {
                 var valid = true;
 
@@ -148,6 +160,12 @@ module Apiman {
                 if (config.granularity == 'User' && !config.userHeader) {
                     valid = false;
                 }
+
+                $scope.isEntityDisabled = function() {
+                    var status = EntityStatusService.getEntityStatus();
+
+                    return (status !== 'Created' && status !== 'Ready');
+                };
 
                 $scope.setValid(valid);
             };
@@ -155,9 +173,9 @@ module Apiman {
             $scope.$watch('config', validate, true);
         }]);
 
-    _module.controller("Apiman.QuotaFormController",
-        ['$scope', 'Logger',
-        ($scope, Logger) => {
+    _module.controller('Apiman.QuotaFormController',
+        ['$scope', 'Logger', 'EntityStatusService',
+        ($scope, Logger, EntityStatusService) => {
             var validate = function(config) {
                 var valid = true;
                 if (config.limit) {
@@ -182,6 +200,13 @@ module Apiman {
 
                 $scope.setValid(valid);
             };
+
+            $scope.isEntityDisabled = function() {
+                var status = EntityStatusService.getEntityStatus();
+
+                return (status !== 'Created' && status !== 'Ready');
+            };
+
             $scope.$watch('config', validate, true);
         }]);
     
@@ -189,9 +214,9 @@ module Apiman {
     export var MB = 1024 * 1024;
     export var GB = 1024 * 1024 * 1024;
 
-    _module.controller("Apiman.TransferQuotaFormController",
-        ['$scope', 'Logger',
-        ($scope, Logger) => {
+    _module.controller('Apiman.TransferQuotaFormController',
+        ['$scope', 'Logger', 'EntityStatusService',
+        ($scope, Logger, EntityStatusService) => {
             $scope.limitDenomination = 'B';
             
             if ($scope.config && $scope.config.limit) {
@@ -266,14 +291,20 @@ module Apiman {
                 }
             };
 
+            $scope.isEntityDisabled = function() {
+                var status = EntityStatusService.getEntityStatus();
+
+                return (status !== 'Created' && status !== 'Ready');
+            };
+
             $scope.$watch('config', validate, true);
             $scope.$watch('limitDenomination', onLimitChange, false);
             $scope.$watch('limitAmount', onLimitChange, false);
         }]);
 
-    _module.controller("Apiman.IPListFormController",
-        ['$scope', 'Logger',
-        ($scope, Logger) => {
+    _module.controller('Apiman.IPListFormController',
+        ['$scope', 'Logger', 'EntityStatusService',
+        ($scope, Logger, EntityStatusService) => {
             var validate = function(config) {
                 var valid = true;
                 $scope.setValid(valid);
@@ -319,11 +350,17 @@ module Apiman {
                 $scope.config.ipList = [];
                 $scope.selectedIP = undefined;
             };
+
+            $scope.isEntityDisabled = function() {
+                var status = EntityStatusService.getEntityStatus();
+
+                return (status !== 'Created' && status !== 'Ready');
+            };
         }]);
 
-    _module.controller("Apiman.IgnoredResourcesFormController",
-        ['$scope', 'Logger',
-        ($scope, Logger) => {
+    _module.controller('Apiman.IgnoredResourcesFormController',
+        ['$scope', 'Logger', 'EntityStatusService',
+        ($scope, Logger, EntityStatusService) => {
             var validate = function(config) {
                 var valid = true;
 
@@ -366,11 +403,17 @@ module Apiman {
                 $scope.config.pathsToIgnore = [];
                 $scope.selectedPath = undefined;
             };
+
+            $scope.isEntityDisabled = function() {
+                var status = EntityStatusService.getEntityStatus();
+
+                return (status !== 'Created' && status !== 'Ready');
+            };
         }]);
 
-    _module.controller("Apiman.BasicAuthFormController",
-        ['$scope', 'Logger',
-        ($scope, Logger) => {
+    _module.controller('Apiman.BasicAuthFormController',
+        ['$scope', 'Logger', 'EntityStatusService',
+        ($scope, Logger, EntityStatusService) => {
             var validate = function(config) {
                 if (!config) {
                     return;
@@ -524,11 +567,16 @@ module Apiman {
                 $scope.selectedIdentity = undefined;
             };
 
+            $scope.isEntityDisabled = function() {
+                var status = EntityStatusService.getEntityStatus();
+
+                return (status !== 'Created' && status !== 'Ready');
+            };
         }]);
 
-    _module.controller("Apiman.AuthorizationFormController",
-        ['$scope', 'Logger',
-        ($scope, Logger) => {
+    _module.controller('Apiman.AuthorizationFormController',
+        ['$scope', 'Logger', 'EntityStatusService',
+        ($scope, Logger, EntityStatusService) => {
             var validate = function(config) {
                 var valid = config.rules && config.rules.length > 0;
 
@@ -555,9 +603,9 @@ module Apiman {
                 }
 
                 var rule = {
-                    "verb" : verb,
-                    "pathPattern" : path,
-                    "role" : role
+                    'verb' : verb,
+                    'pathPattern' : path,
+                    'role' : role
                 };
 
                 $scope.config.rules.push(rule);
@@ -585,11 +633,17 @@ module Apiman {
             $scope.clear = function() {
                 $scope.config.rules = [];
             };
+
+            $scope.isEntityDisabled = function() {
+                var status = EntityStatusService.getEntityStatus();
+
+                return (status !== 'Created' && status !== 'Ready');
+            };
         }]);
 
-    _module.controller("Apiman.CachingFormController",
-        ['$scope', 'Logger',
-        ($scope, Logger) => {
+    _module.controller('Apiman.CachingFormController',
+        ['$scope', 'Logger', 'EntityStatusService',
+        ($scope, Logger, EntityStatusService) => {
             var validate = function(config) {
                 var valid = false;
 
@@ -604,12 +658,18 @@ module Apiman {
                 $scope.setValid(valid);
             };
 
+            $scope.isEntityDisabled = function() {
+                var status = EntityStatusService.getEntityStatus();
+
+                return (status !== 'Created' && status !== 'Ready');
+            };
+
             $scope.$watch('config', validate, true);
         }]);
 
-    _module.controller("Apiman.URLRewritingFormController",
-        ['$scope', 'Logger',
-        ($scope, Logger) => {
+    _module.controller('Apiman.URLRewritingFormController',
+        ['$scope', 'Logger', 'EntityStatusService',
+        ($scope, Logger, EntityStatusService) => {
             var validate = function(config) {
                 var valid = true;
 
@@ -630,6 +690,12 @@ module Apiman {
                 }
 
                 $scope.setValid(valid);
+            };
+
+            $scope.isEntityDisabled = function() {
+                var status = EntityStatusService.getEntityStatus();
+
+                return (status !== 'Created' && status !== 'Ready');
             };
 
             $scope.$watch('config', validate, true);

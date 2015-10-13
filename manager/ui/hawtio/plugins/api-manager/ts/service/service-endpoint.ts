@@ -19,10 +19,11 @@ module Apiman {
                 })
             });
 
-            $scope.getEntityStatus = function() {
-                return EntityStatusService.getEntityStatus();
+            $scope.isEntityDisabled = function() {
+                var status = EntityStatusService.getEntityStatus();
+
+                return (status !== 'Created' && status !== 'Ready');
             };
-            
 
             PageLifecycle.loadPage('ServiceEndpoint', pageData, $scope, function() {
                 PageLifecycle.setPageTitle('service-endpoint', [ $scope.service.name ]);
