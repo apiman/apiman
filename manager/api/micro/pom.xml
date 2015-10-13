@@ -60,10 +60,6 @@
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>apiman-manager-api-jpa-idm</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
       <artifactId>apiman-manager-api-es</artifactId>
     </dependency>
     <dependency>

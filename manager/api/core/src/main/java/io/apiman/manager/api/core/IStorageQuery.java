@@ -16,6 +16,10 @@
 package io.apiman.manager.api.core;
 
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
+import io.apiman.manager.api.beans.idm.PermissionBean;
+import io.apiman.manager.api.beans.idm.RoleBean;
+import io.apiman.manager.api.beans.idm.RoleMembershipBean;
+import io.apiman.manager.api.beans.idm.UserBean;
 import io.apiman.manager.api.beans.policies.PolicyType;
 import io.apiman.manager.api.beans.search.PagingBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaBean;
@@ -288,5 +292,55 @@ public interface IStorageQuery {
      * @throws StorageException if a storage problem occurs while storing a bean. 
      */
     public List<PolicyDefinitionSummaryBean> listPluginPolicyDefs(Long pluginId) throws StorageException;
+
+    /**
+     * Returns a list of users that match the given search criteria.
+     * @param criteria search criteria
+     * @return found users
+     * @throws StorageException if an exception occurs during storage attempt
+     */
+    public SearchResultsBean<UserBean> findUsers(SearchCriteriaBean criteria) throws StorageException;
+
+    /**
+     * Returns a list of users that match the given search criteria.
+     * @param criteria search criteria
+     * @return the found roles
+     * @throws StorageException if an exception occurs during storage attempt
+     */
+    public SearchResultsBean<RoleBean> findRoles(SearchCriteriaBean criteria) throws StorageException;
+
+    /**
+     * Gets all the user's memberships.
+     * @param userId the user's id
+     * @return set of memberships
+     * @throws StorageException if an exception occurs during storage attempt
+     */
+    public Set<RoleMembershipBean> getUserMemberships(String userId) throws StorageException;
+
+    /**
+     * Gets all the user's memberships for the given organization.
+     * @param userId the user's id
+     * @param organizationId the organization's id
+     * @return set of memberships
+     * @throws StorageException if an exception occurs during storage attempt
+     */
+    public Set<RoleMembershipBean> getUserMemberships(String userId, String organizationId) throws StorageException;
+
+    /**
+     * Gets all the memberships configured for a particular organization.
+     * @param organizationId the organization's id
+     * @return set of memberships
+     * @throws StorageException if an exception occurs during storage attempt
+     */
+    public Set<RoleMembershipBean> getOrgMemberships(String organizationId) throws StorageException;
+
+    /**
+     * Returns a set of permissions granted to the user due to their role
+     * memberships.
+     * @param userId the user's id
+     * @return set of permissions
+     * @throws StorageException if an exception occurs during storage attempt
+     */
+    public Set<PermissionBean> getPermissions(String userId) throws StorageException;
 
 }

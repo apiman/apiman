@@ -19,7 +19,6 @@ import io.apiman.common.config.SystemPropertiesConfiguration;
 import io.apiman.manager.api.beans.services.EndpointType;
 import io.apiman.manager.api.beans.summary.AvailableServiceBean;
 import io.apiman.manager.api.core.IApiKeyGenerator;
-import io.apiman.manager.api.core.IIdmStorage;
 import io.apiman.manager.api.core.IMetricsAccessor;
 import io.apiman.manager.api.core.IPluginRegistry;
 import io.apiman.manager.api.core.IServiceCatalog;
@@ -33,7 +32,6 @@ import io.apiman.manager.api.es.ESMetricsAccessor;
 import io.apiman.manager.api.es.EsStorage;
 import io.apiman.manager.api.jpa.IJpaProperties;
 import io.apiman.manager.api.jpa.JpaStorage;
-import io.apiman.manager.api.jpa.roles.JpaIdmStorage;
 import io.apiman.manager.api.security.ISecurityContext;
 import io.apiman.manager.api.security.impl.DefaultSecurityContext;
 import io.apiman.manager.test.util.ManagerTestUtils;
@@ -154,19 +152,6 @@ public class TestCdiFactory {
                 return rval;
             }
         };
-    }
-
-    @Produces @ApplicationScoped
-    public static IIdmStorage provideIdmStorage(@New JpaIdmStorage jpaIdmStorage, @New EsStorage esStorage) {
-        TestType testType = ManagerTestUtils.getTestType();
-        if (testType == TestType.jpa) {
-            return jpaIdmStorage;
-        } else if (testType == TestType.es) {
-            esStorage.initialize();
-            return new TestEsIdmStorageWrapper(ManagerApiTestServer.ES_CLIENT, esStorage);
-        } else {
-            throw new RuntimeException("Unexpected test type: " + testType);
-        }
     }
 
     @Produces @ApplicationScoped @Named("storage")
