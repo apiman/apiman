@@ -111,6 +111,7 @@
     <version.io.searchbox.jest>0.1.6</version.io.searchbox.jest>
     <version.io.undertow>1.0.1.Final</version.io.undertow>
     <version.javax.enterprise>1.2</version.javax.enterprise>
+    <version.javax.servlet-api>3.1.0</version.javax.servlet-api>
     <version.javax.ws.rs-api>2.0</version.javax.ws.rs-api>
     <version.joda-time>1.6.2</version.joda-time>
     <version.junit>4.11</version.junit>
@@ -888,6 +889,11 @@
         <groupId>org.jboss.spec.javax.servlet</groupId>
         <artifactId>jboss-servlet-api_3.0_spec</artifactId>
         <version>${version.org.jboss.spec.javax.servlet.jboss-servlet-api_3.0_spec}</version>
+      </dependency>
+      <dependency>
+        <groupId>javax.servlet</groupId>
+        <artifactId>javax.servlet-api</artifactId>
+        <version>${version.javax.servlet-api}</version>
       </dependency>
       <dependency>
         <groupId>org.hibernate.javax.persistence</groupId>
