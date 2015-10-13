@@ -87,7 +87,7 @@
       <dt apiman-i18n-key="multiple-match-action">Multiple Match Action</dt>
       <dd>
         <span apiman-i18n-key="auth.multi-match-pre">I want the request to pass when</span>
-        <select id="multiple-match-action" ng-model="config.multiMatch" apiman-select-picker="" class="inline-form-select selectpicker" data-live-search="false" ng-disabled="getEntityStatus() !== 'Ready'">
+        <select id="multiple-match-action" ng-model="config.multiMatch" apiman-select-picker="" class="inline-form-select selectpicker" data-live-search="false" ng-disabled="getEntityStatus() !== ('Ready' || 'Created')">
           <option value="any" apiman-i18n-key="auth.any">at least one</option>
           <option value="all" apiman-i18n-key="auth.all">all</option>
         </select>
@@ -98,7 +98,7 @@
       <dt apiman-i18n-key="unmatched-request-action">Unmatched Request Action</dt>
       <dd>
         <span apiman-i18n-key="auth.if-request-unmatched-pre">I want the request to</span>
-        <select id="unmatched-request-action" ng-model="config.requestUnmatched" apiman-select-picker="" class="inline-form-select selectpicker" data-live-search="false" ng-disabled="getEntityStatus() !== 'Ready'">
+        <select id="unmatched-request-action" ng-model="config.requestUnmatched" apiman-select-picker="" class="inline-form-select selectpicker" data-live-search="false" ng-disabled="getEntityStatus() !== ('Ready' || 'Created')">
           <option value="fail" apiman-i18n-key="auth.fail">fail</option>
           <option value="pass" apiman-i18n-key="auth.pass">pass</option>
         </select>
@@ -106,5 +106,4 @@
       </dd>
     </dl>
   </div>
-
 </div>

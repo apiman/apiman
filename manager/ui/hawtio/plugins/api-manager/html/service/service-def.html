@@ -48,7 +48,7 @@
                       ng-model="selectedDefinitionType"
                       class="selectpicker"
                       ng-options="type.label for type in typeOptions track by type.value"
-                      ng-disabled="getEntityStatus() !== 'Ready'">
+                      ng-disabled="getEntityStatus() !== ('Ready' || 'Created')">
               </select>
               <textarea apiman-i18n-key="enter-service-definition"
                         id="service-definition"
@@ -58,7 +58,7 @@
                         ng-model="updatedServiceDefinition"
                         data-field="data"
                         class="apiman-form-control form-control apiman-form-data"
-                        ng-disabled="getEntityStatus() !== 'Ready'"></textarea>
+                        ng-disabled="getEntityStatus() !== ('Ready' || 'Created')"></textarea>
             </div>
             <div apiman-permission="svcEdit"
                  apiman-status="Created,Ready"

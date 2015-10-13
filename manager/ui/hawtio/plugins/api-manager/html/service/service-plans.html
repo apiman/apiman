@@ -39,7 +39,7 @@
                      type="checkbox"
                      id="public-service"
                      data-field="publicService"
-                     ng-disabled="getEntityStatus() !== 'Ready'"></input>
+                     ng-disabled="getEntityStatus() !== ('Ready' || 'Created')"></input>
               <label for="public-service"
                      apiman-i18n-key="make-service-public"
                      style="padding-left: 3px">Make this service public</label>
@@ -64,7 +64,7 @@
                   <input ng-model="plan.checked"
                          data-field="checkbox"
                          type="checkbox"
-                         ng-disabled="getEntityStatus() !== 'Ready'"></input>
+                         ng-disabled="getEntityStatus() !== ('Ready' || 'Created')"></input>
                   <span class="title">
                     <a href="{{ pluginName }}/orgs/{{ plan.organizationId }}/plans/{{ plan.id }}" data-field="name" title="{{ plan.description }}">{{ plan.name }}</a>
                   </span>
@@ -72,7 +72,7 @@
                           ng-model="plan.selectedVersion"
                           ng-options="version for version in plan.lockedVersions"
                           class="selectpicker pull-right"
-                          ng-disabled="getEntityStatus() !== 'Ready'">
+                          ng-disabled="getEntityStatus() !== ('Ready' || 'Created')">
                   </select>
                 </div>
                 <hr>

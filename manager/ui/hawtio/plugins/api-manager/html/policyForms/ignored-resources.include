@@ -1,14 +1,14 @@
 <div class="form policy-config ip-list" data-field="form" ng-controller="Apiman.IgnoredResourcesFormController">
   <div apiman-i18n-key="ignored-resources-message">Manage the list of regular expressions to be ignored in the box below.</div>
   <div style="width: 100%; float: left; margin-bottom: 5px; margin-top: 5px">
-    <select id="paths" ng-model="selectedPath" data-field="pathsToIgnore" multiple class="apiman-form-control form-control" style="height: 150px; width: 200px; float: left;" ng-options="item for item in config.pathsToIgnore | orderBy: 'toString()'" ng-disabled="getEntityStatus() !== 'Ready'">
+    <select id="paths" ng-model="selectedPath" data-field="pathsToIgnore" multiple class="apiman-form-control form-control" style="height: 150px; width: 200px; float: left;" ng-options="item for item in config.pathsToIgnore | orderBy: 'toString()'" ng-disabled="getEntityStatus() !== ('Ready' || 'Created')">
     </select>
     <div style="margin-left: 5px; float: left">
-      <button id="clear" ng-click="clear()" ng-disabled="!config.pathsToIgnore || getEntityStatus() !== 'Ready'" data-field="clear" apiman-i18n-key="clear" class="btn btn-default" style="min-width: 75px">Clear</button>
+      <button id="clear" ng-click="clear()" ng-disabled="!config.pathsToIgnore || getEntityStatus() !== ('Ready' || 'Created')" data-field="clear" apiman-i18n-key="clear" class="btn btn-default" style="min-width: 75px">Clear</button>
       <div class="clear:both"></div>
-      <button id="remove" ng-click="remove(selectedPath)" ng-disabled="!selectedPath" data-field="remove" apiman-i18n-key="remove" class="btn btn-default" style="min-width: 75px; margin-top: 5px;" ng-disabled="getEntityStatus() !== 'Ready'">Remove</button>
+      <button id="remove" ng-click="remove(selectedPath)" ng-disabled="!selectedPath || getEntityStatus() !== ('Ready' || 'Created')" data-field="remove" apiman-i18n-key="remove" class="btn btn-default" style="min-width: 75px; margin-top: 5px;">Remove</button>
     </div>
   </div>
-  <input id="path" ng-model="path" data-field="pathToIgnore" class="apiman-form-control form-control" style="width: 200px; float: left; margin-right: 5px" type="text" apiman-i18n-key="ignored-resources.enter-path" placeholder="Enter a Path to ignore..." ng-disabled="getEntityStatus() !== 'Ready'"></input>
-  <button id="add" ng-disabled="!path" ng-click="add(path)" data-field="add" apiman-i18n-key="add" class="btn btn-default" style="min-width: 75px">Add</button>
+  <input id="path" ng-model="path" data-field="pathToIgnore" class="apiman-form-control form-control" style="width: 200px; float: left; margin-right: 5px" type="text" apiman-i18n-key="ignored-resources.enter-path" placeholder="Enter a Path to ignore..." ng-disabled="getEntityStatus() !== ('Ready' || 'Created')"></input>
+  <button id="add" ng-disabled="!path || getEntityStatus() !== ('Ready' || 'Created')" ng-click="add(path)" data-field="add" apiman-i18n-key="add" class="btn btn-default" style="min-width: 75px">Add</button>
 </div>

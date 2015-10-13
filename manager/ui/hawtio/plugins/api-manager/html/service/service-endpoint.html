@@ -43,7 +43,7 @@
             <textarea class="apiman-endpoint form-control"
                       style="width:100%"
                       data-field="mangedEndpoint"
-                      ng-disabled="getEntityStatus() !== 'Ready'">
+                      ng-disabled="getEntityStatus() !== ('Ready' || 'Created')">
               {{ managedEndpoint.managedEndpoint }}
             </textarea>
           </div>
