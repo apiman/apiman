@@ -16,6 +16,10 @@
 package io.apiman.manager.test.server;
 
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
+import io.apiman.manager.api.beans.idm.PermissionBean;
+import io.apiman.manager.api.beans.idm.RoleBean;
+import io.apiman.manager.api.beans.idm.RoleMembershipBean;
+import io.apiman.manager.api.beans.idm.UserBean;
 import io.apiman.manager.api.beans.policies.PolicyType;
 import io.apiman.manager.api.beans.search.PagingBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaBean;
@@ -308,6 +312,61 @@ public class TestEsStorageQueryWrapper implements IStorageQuery {
     public List<PolicyDefinitionSummaryBean> listPluginPolicyDefs(Long pluginId) throws StorageException {
         refresh();
         return this.delegate.listPluginPolicyDefs(pluginId);
+    }
+
+    /**
+     * @see io.apiman.manager.api.core.IStorageQuery#findUsers(io.apiman.manager.api.beans.search.SearchCriteriaBean)
+     */
+    @Override
+    public SearchResultsBean<UserBean> findUsers(SearchCriteriaBean criteria) throws StorageException {
+        refresh();
+        return this.delegate.findUsers(criteria);
+    }
+
+    /**
+     * @see io.apiman.manager.api.core.IStorageQuery#findRoles(io.apiman.manager.api.beans.search.SearchCriteriaBean)
+     */
+    @Override
+    public SearchResultsBean<RoleBean> findRoles(SearchCriteriaBean criteria) throws StorageException {
+        refresh();
+        return this.delegate.findRoles(criteria);
+    }
+
+    /**
+     * @see io.apiman.manager.api.core.IStorageQuery#getUserMemberships(java.lang.String)
+     */
+    @Override
+    public Set<RoleMembershipBean> getUserMemberships(String userId) throws StorageException {
+        refresh();
+        return this.delegate.getUserMemberships(userId);
+    }
+
+    /**
+     * @see io.apiman.manager.api.core.IStorageQuery#getUserMemberships(java.lang.String, java.lang.String)
+     */
+    @Override
+    public Set<RoleMembershipBean> getUserMemberships(String userId, String organizationId)
+            throws StorageException {
+        refresh();
+        return this.delegate.getUserMemberships(userId);
+    }
+
+    /**
+     * @see io.apiman.manager.api.core.IStorageQuery#getOrgMemberships(java.lang.String)
+     */
+    @Override
+    public Set<RoleMembershipBean> getOrgMemberships(String organizationId) throws StorageException {
+        refresh();
+        return this.delegate.getOrgMemberships(organizationId);
+    }
+
+    /**
+     * @see io.apiman.manager.api.core.IStorageQuery#getPermissions(java.lang.String)
+     */
+    @Override
+    public Set<PermissionBean> getPermissions(String userId) throws StorageException {
+        refresh();
+        return this.delegate.getPermissions(userId);
     }
 
     /**

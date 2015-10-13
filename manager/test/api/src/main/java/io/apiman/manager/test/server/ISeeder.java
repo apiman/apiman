@@ -15,7 +15,6 @@
  */
 package io.apiman.manager.test.server;
 
-import io.apiman.manager.api.core.IIdmStorage;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.exceptions.StorageException;
 
@@ -30,10 +29,9 @@ public interface ISeeder {
     public static final String SYSTEM_PROPERTY = "apiman-manager.seeder.class"; //$NON-NLS-1$
     
     /**
-     * @param idmStorage the IDM storage
      * @param storage the storage
      * @throws StorageException when storage attempt fails
      */
-    public void seed(IIdmStorage idmStorage, IStorage storage) throws StorageException;
+    public void seed(IStorage storage) throws StorageException;
 
 }

@@ -20,6 +20,9 @@ import io.apiman.manager.api.beans.apps.ApplicationVersionBean;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
 import io.apiman.manager.api.beans.contracts.ContractBean;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
+import io.apiman.manager.api.beans.idm.RoleBean;
+import io.apiman.manager.api.beans.idm.RoleMembershipBean;
+import io.apiman.manager.api.beans.idm.UserBean;
 import io.apiman.manager.api.beans.orgs.OrganizationBean;
 import io.apiman.manager.api.beans.plans.PlanBean;
 import io.apiman.manager.api.beans.plans.PlanVersionBean;
@@ -546,6 +549,95 @@ public class TestEsStorageWrapper implements IStorage {
     @Override
     public void updatePlugin(PluginBean pluginBean) throws StorageException {
         delegate.updatePlugin(pluginBean);
+    }
+
+    /**
+     * @see io.apiman.manager.api.core.IStorage#createUser(io.apiman.manager.api.beans.idm.UserBean)
+     */
+    @Override
+    public void createUser(UserBean user) throws StorageException {
+        this.delegate.createUser(user);
+    }
+
+    /**
+     * @see io.apiman.manager.api.core.IStorage#getUser(java.lang.String)
+     */
+    @Override
+    public UserBean getUser(String userId) throws StorageException {
+        return this.delegate.getUser(userId);
+    }
+
+    /**
+     * @see io.apiman.manager.api.core.IStorage#updateUser(io.apiman.manager.api.beans.idm.UserBean)
+     */
+    @Override
+    public void updateUser(UserBean user) throws StorageException {
+        this.delegate.updateUser(user);
+    }
+
+    /**
+     * @see io.apiman.manager.api.core.IStorage#createRole(io.apiman.manager.api.beans.idm.RoleBean)
+     */
+    @Override
+    public void createRole(RoleBean role) throws StorageException {
+        this.delegate.createRole(role);
+    }
+
+    /**
+     * @see io.apiman.manager.api.core.IStorage#getRole(java.lang.String)
+     */
+    @Override
+    public RoleBean getRole(String roleId) throws StorageException {
+        return this.delegate.getRole(roleId);
+    }
+
+    /**
+     * @see io.apiman.manager.api.core.IStorage#updateRole(io.apiman.manager.api.beans.idm.RoleBean)
+     */
+    @Override
+    public void updateRole(RoleBean role) throws StorageException {
+        this.delegate.updateRole(role);
+    }
+
+    /**
+     * @see io.apiman.manager.api.core.IStorage#deleteRole(io.apiman.manager.api.beans.idm.RoleBean)
+     */
+    @Override
+    public void deleteRole(RoleBean role) throws StorageException {
+        this.delegate.deleteRole(role);
+    }
+
+    /**
+     * @see io.apiman.manager.api.core.IStorage#createMembership(io.apiman.manager.api.beans.idm.RoleMembershipBean)
+     */
+    @Override
+    public void createMembership(RoleMembershipBean membership) throws StorageException {
+        this.delegate.createMembership(membership);
+    }
+
+    /**
+     * @see io.apiman.manager.api.core.IStorage#getMembership(java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public RoleMembershipBean getMembership(String userId, String roleId, String organizationId) throws StorageException {
+        return this.delegate.getMembership(userId, roleId, organizationId);
+    }
+
+    /**
+     * @see io.apiman.manager.api.core.IStorage#deleteMembership(java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public void deleteMembership(String userId, String roleId, String organizationId) throws StorageException {
+        this.delegate.deleteMembership(userId, roleId, organizationId);
+    }
+
+    /**
+     * @see io.apiman.manager.api.core.IStorage#deleteMemberships(java.lang.String, java.lang.String)
+     */
+    @Override
+    public void deleteMemberships(String userId, String organizationId) throws StorageException {
+        refresh();
+        this.delegate.deleteMemberships(userId, organizationId);
     }
 
     /**

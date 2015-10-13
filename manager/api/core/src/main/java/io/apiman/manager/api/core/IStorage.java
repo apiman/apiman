@@ -20,6 +20,9 @@ import io.apiman.manager.api.beans.apps.ApplicationVersionBean;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
 import io.apiman.manager.api.beans.contracts.ContractBean;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
+import io.apiman.manager.api.beans.idm.RoleBean;
+import io.apiman.manager.api.beans.idm.RoleMembershipBean;
+import io.apiman.manager.api.beans.idm.UserBean;
 import io.apiman.manager.api.beans.orgs.OrganizationBean;
 import io.apiman.manager.api.beans.plans.PlanBean;
 import io.apiman.manager.api.beans.plans.PlanVersionBean;
@@ -126,4 +129,21 @@ public interface IStorage {
      */
     public void reorderPolicies(PolicyType type, String organizationId, String entityId,
             String entityVersion, List<Long> newOrder) throws StorageException;
+
+    /*
+     * Here are some IDM related storage methods.
+     */
+    
+    public void createUser(UserBean user) throws StorageException;
+    public UserBean getUser(String userId) throws StorageException;
+    public void updateUser(UserBean user) throws StorageException;
+    public void createRole(RoleBean role) throws StorageException;
+    public RoleBean getRole(String roleId) throws StorageException;
+    public void updateRole(RoleBean role) throws StorageException;
+    public void deleteRole(RoleBean role) throws StorageException;
+    public void createMembership(RoleMembershipBean membership) throws StorageException;
+    public RoleMembershipBean getMembership(String userId, String roleId, String organizationId) throws StorageException;
+    public void deleteMembership(String userId, String roleId, String organizationId) throws StorageException;
+    public void deleteMemberships(String userId, String organizationId) throws StorageException;
+
 }

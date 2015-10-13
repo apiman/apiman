@@ -24,7 +24,7 @@ import io.apiman.manager.api.beans.idm.UserBean;
 import io.apiman.manager.api.beans.summary.ApplicationSummaryBean;
 import io.apiman.manager.api.beans.summary.OrganizationSummaryBean;
 import io.apiman.manager.api.beans.summary.ServiceSummaryBean;
-import io.apiman.manager.api.core.IIdmStorage;
+import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.core.logging.ApimanLogger;
@@ -50,7 +50,7 @@ import javax.inject.Inject;
 public class CurrentUserResourceImpl implements ICurrentUserResource {
 
     @Inject
-    private IIdmStorage idmStorage;
+    private IStorage storage;
     @Inject
     private IStorageQuery query;
     @Inject
@@ -71,9 +71,16 @@ public class CurrentUserResourceImpl implements ICurrentUserResource {
     @Override
     public CurrentUserBean getInfo() {
         String userId = securityContext.getCurrentUser();
+        
         try {
             CurrentUserBean rval = new CurrentUserBean();
-            UserBean user = idmStorage.getUser(userId);
+            UserBean user;
+            storage.beginTx();
+            try {
+                user = storage.getUser(userId);
+            } finally {
+                storage.rollbackTx();
+            }
             if (user == null) {
                 user = new UserBean();
                 user.setUsername(userId);
@@ -88,9 +95,12 @@ public class CurrentUserResourceImpl implements ICurrentUserResource {
                     user.setEmail(userId + "@example.org"); //$NON-NLS-1$
                 }
                 user.setJoinedOn(new Date());
+                storage.beginTx();
                 try {
-                    idmStorage.createUser(user);
+                    storage.createUser(user);
+                    storage.commitTx();
                 } catch (StorageException e1) {
+                    storage.rollbackTx();
                     throw new SystemErrorException(e1);
                 }
                 rval.initFromUser(user);
@@ -98,7 +108,7 @@ public class CurrentUserResourceImpl implements ICurrentUserResource {
                 rval.setPermissions(new HashSet<PermissionBean>());
             } else {
                 rval.initFromUser(user);
-                Set<PermissionBean> permissions = idmStorage.getPermissions(userId);
+                Set<PermissionBean> permissions = query.getPermissions(userId);
                 rval.setPermissions(permissions);
                 rval.setAdmin(securityContext.isAdmin());
             }
@@ -116,7 +126,8 @@ public class CurrentUserResourceImpl implements ICurrentUserResource {
     @Override
     public void updateInfo(UpdateUserBean info) {
         try {
-            UserBean user = idmStorage.getUser(securityContext.getCurrentUser());
+            storage.beginTx();
+            UserBean user = storage.getUser(securityContext.getCurrentUser());
             if (user == null) {
                 throw new StorageException("User not found: " + securityContext.getCurrentUser()); //$NON-NLS-1$
             }
@@ -126,10 +137,11 @@ public class CurrentUserResourceImpl implements ICurrentUserResource {
             if (info.getFullName() != null) {
                 user.setFullName(info.getFullName());
             }
-            idmStorage.updateUser(user);
-
+            storage.updateUser(user);
+            storage.commitTx();
             log.debug(String.format("Successfully updated user %s: %s", user.getUsername(), user)); //$NON-NLS-1$
         } catch (StorageException e) {
+            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
     }
@@ -200,20 +212,6 @@ public class CurrentUserResourceImpl implements ICurrentUserResource {
     }
 
     /**
-     * @return the idmStorage
-     */
-    public IIdmStorage getIdmStorage() {
-        return idmStorage;
-    }
-
-    /**
-     * @param idmStorage the idmStorage to set
-     */
-    public void setIdmStorage(IIdmStorage idmStorage) {
-        this.idmStorage = idmStorage;
-    }
-
-    /**
      * @return the query
      */
     public IStorageQuery getQuery() {
@@ -239,5 +237,19 @@ public class CurrentUserResourceImpl implements ICurrentUserResource {
      */
     public void setSecurityContext(ISecurityContext securityContext) {
         this.securityContext = securityContext;
+    }
+
+    /**
+     * @return the storage
+     */
+    public IStorage getStorage() {
+        return storage;
+    }
+
+    /**
+     * @param storage the storage to set
+     */
+    public void setStorage(IStorage storage) {
+        this.storage = storage;
     }
 }

@@ -17,7 +17,7 @@ package io.apiman.manager.api.security.impl;
 
 import io.apiman.manager.api.beans.idm.PermissionBean;
 import io.apiman.manager.api.beans.idm.PermissionType;
-import io.apiman.manager.api.core.IIdmStorage;
+import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.security.ISecurityContext;
 import io.apiman.manager.api.security.i18n.Messages;
@@ -42,7 +42,7 @@ public abstract class AbstractSecurityContext implements ISecurityContext {
     private static final ThreadLocal<IndexedPermissions> permissions = new ThreadLocal<>();
 
     @Inject
-    private IIdmStorage idmStorage;
+    private IStorageQuery query;
     
     /**
      * Constructor.
@@ -87,7 +87,7 @@ public abstract class AbstractSecurityContext implements ISecurityContext {
     private IndexedPermissions loadPermissions() {
         String userId = getCurrentUser();
         try {
-            return new IndexedPermissions(getIdmStorage().getPermissions(userId));
+            return new IndexedPermissions(getQuery().getPermissions(userId));
         } catch (StorageException e) {
             logger.error(Messages.getString("AbstractSecurityContext.ErrorLoadingPermissions") + userId, e); //$NON-NLS-1$
             return new IndexedPermissions(new HashSet<PermissionBean>());
@@ -102,17 +102,17 @@ public abstract class AbstractSecurityContext implements ISecurityContext {
     }
 
     /**
-     * @return the idmStorage
+     * @return the query
      */
-    public IIdmStorage getIdmStorage() {
-        return idmStorage;
+    public IStorageQuery getQuery() {
+        return query;
     }
 
     /**
-     * @param idmStorage the idmStorage to set
+     * @param query the query to set
      */
-    public void setIdmStorage(IIdmStorage idmStorage) {
-        this.idmStorage = idmStorage;
+    public void setQuery(IStorageQuery query) {
+        this.query = query;
     }
 
 }

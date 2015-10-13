@@ -28,7 +28,6 @@ import io.apiman.manager.api.beans.search.SearchResultsBean;
 import io.apiman.manager.api.beans.summary.ApplicationSummaryBean;
 import io.apiman.manager.api.beans.summary.OrganizationSummaryBean;
 import io.apiman.manager.api.beans.summary.ServiceSummaryBean;
-import io.apiman.manager.api.core.IIdmStorage;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.StorageException;
@@ -59,8 +58,6 @@ public class UserResourceImpl implements IUserResource {
     private
     IStorage storage;
     @Inject
-    IIdmStorage idmStorage;
-    @Inject
     ISecurityContext securityContext;
     @Inject
     IStorageQuery query;
@@ -77,13 +74,16 @@ public class UserResourceImpl implements IUserResource {
     @Override
     public UserBean get(String userId) throws UserNotFoundException {
         try {
-            UserBean user = idmStorage.getUser(userId);
+            storage.beginTx();
+            UserBean user = storage.getUser(userId);
             if (user == null) {
                 throw ExceptionFactory.userNotFoundException(userId);
             }
             return user;
         } catch (StorageException e) {
             throw new SystemErrorException(e);
+        } finally {
+            storage.rollbackTx();
         }
     }
     
@@ -95,7 +95,8 @@ public class UserResourceImpl implements IUserResource {
         if (!securityContext.isAdmin() && !securityContext.getCurrentUser().equals(userId))
             throw ExceptionFactory.notAuthorizedException();
         try {
-            UserBean updatedUser = idmStorage.getUser(userId);
+            storage.beginTx();
+            UserBean updatedUser = storage.getUser(userId);
             if (updatedUser == null) {
                 throw ExceptionFactory.userNotFoundException(userId);
             }
@@ -105,8 +106,10 @@ public class UserResourceImpl implements IUserResource {
             if (user.getFullName() != null) {
                 updatedUser.setFullName(user.getFullName());
             }
-            idmStorage.updateUser(updatedUser);
+            storage.updateUser(updatedUser);
+            storage.commitTx();
         } catch (StorageException e) {
+            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
     }
@@ -118,7 +121,7 @@ public class UserResourceImpl implements IUserResource {
     public SearchResultsBean<UserBean> search(SearchCriteriaBean criteria)
             throws InvalidSearchCriteriaException {
         try {
-            return idmStorage.findUsers(criteria);
+            return query.findUsers(criteria);
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }
@@ -131,7 +134,7 @@ public class UserResourceImpl implements IUserResource {
     public List<OrganizationSummaryBean> getOrganizations(String userId) {
         Set<String> permittedOrganizations = new HashSet<>();
         try {
-            Set<RoleMembershipBean> memberships = idmStorage.getUserMemberships(userId);
+            Set<RoleMembershipBean> memberships = query.getUserMemberships(userId);
             for (RoleMembershipBean membership : memberships) {
                 permittedOrganizations.add(membership.getOrganizationId());
             }
@@ -148,7 +151,7 @@ public class UserResourceImpl implements IUserResource {
     public List<ApplicationSummaryBean> getApplications(String userId) {
         Set<String> permittedOrganizations = new HashSet<>();
         try {
-            Set<PermissionBean> permissions = idmStorage.getPermissions(userId);
+            Set<PermissionBean> permissions = query.getPermissions(userId);
             for (PermissionBean permission : permissions) {
                 if (permission.getName() == PermissionType.appView) {
                     permittedOrganizations.add(permission.getOrganizationId());
@@ -167,7 +170,7 @@ public class UserResourceImpl implements IUserResource {
     public List<ServiceSummaryBean> getServices(String userId) {
         Set<String> permittedOrganizations = new HashSet<>();
         try {
-            Set<PermissionBean> permissions = idmStorage.getPermissions(userId);
+            Set<PermissionBean> permissions = query.getPermissions(userId);
             for (PermissionBean permission : permissions) {
                 if (permission.getName() == PermissionType.svcView) {
                     permittedOrganizations.add(permission.getOrganizationId());
@@ -201,20 +204,6 @@ public class UserResourceImpl implements IUserResource {
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }
-    }
-
-    /**
-     * @return the idmStorage
-     */
-    public IIdmStorage getIdmStorage() {
-        return idmStorage;
-    }
-
-    /**
-     * @param idmStorage the idmStorage to set
-     */
-    public void setIdmStorage(IIdmStorage idmStorage) {
-        this.idmStorage = idmStorage;
     }
 
     /**
