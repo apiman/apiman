@@ -1,8 +1,8 @@
-/// <reference path="../apimanPlugin.ts"/>
-/// <reference path="../services.ts"/>
+/// <reference path='../apimanPlugin.ts'/>
+/// <reference path='../services.ts'/>
 module Apiman {
 
- export var ServicePlansController = _module.controller("Apiman.ServicePlansController",
+ export var ServicePlansController = _module.controller('Apiman.ServicePlansController',
         ['$q', '$rootScope', '$scope', '$location', 'PageLifecycle', 'ServiceEntityLoader', 'OrgSvcs', 'ApimanSvcs', '$routeParams', 'EntityStatusService', 'Configuration',
         ($q, $rootScope, $scope, $location, PageLifecycle, ServiceEntityLoader, OrgSvcs, ApimanSvcs, $routeParams, EntityStatusService, Configuration) => {
             var params = $routeParams;
@@ -23,6 +23,7 @@ module Apiman {
 
                     if (plan.checked) {
                         var selectedPlan:any = {};
+                        
                         selectedPlan.planId = plan.id;
                         selectedPlan.version = plan.selectedVersion;
                         selectedPlans.push(selectedPlan);
@@ -46,22 +47,27 @@ module Apiman {
                         OrgSvcs.query({ organizationId: params.org, entityType: 'plans' }, function(plans) {
                             //for each plan find the versions that are locked
                             var promises = [];
+
                             angular.forEach(plans, function(plan) {
                                 promises.push($q(function(resolve, reject) {
                                     OrgSvcs.query({ organizationId: params.org, entityType: 'plans', entityId: plan.id, versionsOrActivity: 'versions' }, function(planVersions) {
                                         //for each plan find the versions that are locked
                                        var lockedVersions = [];
+
                                        for (var j = 0; j < planVersions.length; j++) {
                                            var planVersion = planVersions[j];
-                                           if (planVersion.status == "Locked") {
+
+                                           if (planVersion.status == 'Locked') {
                                                lockedVersions.push(planVersion.version);
                                            }
                                        }
+                                        
                                        // if we found locked plan versions then add them
                                        if (lockedVersions.length > 0) {
                                            plan.lockedVersions = lockedVersions;
                                            lockedPlans.push(plan);
                                        }
+                                        
                                        resolve(planVersions);
                                     }, reject);
                                 }))
@@ -86,25 +92,32 @@ module Apiman {
             }
 
             $scope.$watch('updatedService', function(newValue) {
-                var dirty = false;
+                $rootScope.isDirty = false;
 
                 if (newValue.publicService != $scope.version.publicService) {
-                    dirty = true;
+                    console.log('Public Service is not the same');
+                    $rootScope.isDirty = true;
                 }
 
                 if (newValue.plans && $scope.version.plans && newValue.plans.length != $scope.version.plans.length) {
-                    dirty = true;
+                    console.log('Plans are not the same');
+                    $rootScope.isDirty = true;
                 } else if (newValue.plans && $scope.version.plans) {
+                    newValue.plans = _.sortBy(newValue.plans, 'planId');
+                    $scope.version.plans = _.sortBy($scope.version.plans, 'planId');
+                    
                     for (var i = 0 ; i < newValue.plans.length; i++) {
                         var p1 = newValue.plans[i];
                         var p2 = $scope.version.plans[i];
+
                         if (p1.planId != p2.planId || p1.version != p2.version) {
-                            dirty = true;
+                            console.log('p1: ' + JSON.stringify(p1));
+                            console.log('p2: ' + JSON.stringify(p2));
+                            console.log('Versions are not the same');
+                            $rootScope.isDirty = true;
                         }
                     }
                 }
-
-                $rootScope.isDirty = dirty;
             }, true);
 
             $scope.$watch('plans', function(newValue) {
@@ -135,10 +148,11 @@ module Apiman {
 
                 OrgSvcs.update({ organizationId: params.org, entityType: 'services', entityId: params.service, versionsOrActivity: 'versions', version: params.version }, $scope.updatedService, function(reply) {
                     $scope.version.publicService = $scope.updatedService.publicService;
-                    $rootScope.isDirty = false;
                     $scope.saveButton.state = 'complete';
                     $scope.version = reply;
                     EntityStatusService.setEntityStatus(reply.status);
+
+                    $rootScope.isDirty = false;
                 }, PageLifecycle.handleError);
             };
 

@@ -1,5 +1,5 @@
-/// <reference path="../../includes.ts"/>
-/// <reference path="apimanGlobals.ts"/>
+/// <reference path='../../includes.ts'/>
+/// <reference path='apimanGlobals.ts'/>
 module Apiman {
 
     export var _module = angular.module(Apiman.pluginName, [
@@ -311,8 +311,8 @@ module Apiman {
             && Configuration.api.auth.type == 'bearerTokenFromHash') {
             var bearerToken = null;
             var backTo = null;
-            var tokenKey = "Apiman.BearerToken";
-            var backToKey = "Apiman.BackToConsole";
+            var tokenKey = 'Apiman.BearerToken';
+            var backToKey = 'Apiman.BackToConsole';
 
             var hash = $location.hash();
 
@@ -361,15 +361,15 @@ module Apiman {
     hawtioPluginLoader.registerPreBootstrapTask((next) => {
         // Load the configuration jsonp script
         $.getScript('apiman/config.js').done((script, textStatus) => {
-            log.info("Loaded the config.js config!");
+            log.info('Loaded the config.js config!');
         }).fail((response) => {
-            log.debug("Error fetching configuration: ", response);
+            log.debug('Error fetching configuration: ', response);
         }).always(() => {
             // Load the i18n jsonp script
             $.getScript('apiman/translations.js').done((script, textStatus) => {
-                log.info("Loaded the translations.js bundle!");
+                log.info('Loaded the translations.js bundle!');
             }).fail((response) => {
-                log.debug("Error fetching translations: ", response);
+                log.debug('Error fetching translations: ', response);
             }).always(() => {
                 next();
             });
