@@ -20,6 +20,7 @@ import io.apiman.gateway.api.rest.impl.GatewayApiApplication;
 import io.apiman.gateway.api.rest.impl.ServiceResourceImpl;
 import io.apiman.gateway.api.rest.impl.SystemResourceImpl;
 import io.apiman.gateway.api.rest.impl.mappers.RestExceptionMapper;
+import io.swagger.jaxrs.config.BeanConfig;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -38,10 +39,21 @@ public class GatewayMicroServiceApplication extends GatewayApiApplication {
      * Constructor.
      */
     public GatewayMicroServiceApplication() {
+        //add swagger 2.0 config
+        BeanConfig beanConfig = new BeanConfig();
+        beanConfig.setBasePath("/api");
+        beanConfig.setResourcePackage("io.apiman.gateway.api.rest.contract");
+        //TODO set more info in the beanConfig (title,description, version, etc)
+        beanConfig.setScan(true);
+        
         classes.add(SystemResourceImpl.class);
         classes.add(ServiceResourceImpl.class);
         classes.add(ApplicationResourceImpl.class);
 
+        //add swagger 2.0 resource
+        classes.add(io.swagger.jaxrs.listing.ApiListingResource.class);
+        classes.add(io.swagger.jaxrs.listing.SwaggerSerializers.class);
+        
         classes.add(RestExceptionMapper.class);
     }
 
