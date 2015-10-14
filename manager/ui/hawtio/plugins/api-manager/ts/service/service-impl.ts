@@ -6,6 +6,7 @@ module Apiman {
         ['$q', '$rootScope', '$scope', '$location', 'PageLifecycle', 'ServiceEntityLoader', 'OrgSvcs', 'ApimanSvcs', '$routeParams', 'EntityStatusService', 'Logger', 'Configuration',
         ($q, $rootScope, $scope, $location, PageLifecycle, ServiceEntityLoader, OrgSvcs, ApimanSvcs, $routeParams, EntityStatusService, Logger, Configuration) => {
             var params = $routeParams;
+
             $scope.organizationId = params.org;
             $scope.tab = 'impl';
             $scope.version = params.version;
@@ -15,6 +16,7 @@ module Apiman {
             $scope.showMetrics = Configuration.ui.metrics;
 
             var pageData = ServiceEntityLoader.getCommonData($scope, $location);
+
             if (params.version != null) {
                 pageData = angular.extend(pageData, {
                     gateways: $q(function(resolve, reject) {
@@ -22,6 +24,12 @@ module Apiman {
                     })
                 });
             }
+
+            $scope.isEntityDisabled = function() {
+                var status = EntityStatusService.getEntityStatus();
+
+                return (status !== 'Created' && status !== 'Ready');
+            };
             
             var epValue = function(endpointProperties, key) {
                 if (endpointProperties && endpointProperties[key]) {
@@ -176,6 +184,5 @@ module Apiman {
                     }
                 }
             });
-        }])
-
+        }]);
 }
