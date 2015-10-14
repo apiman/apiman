@@ -105,15 +105,12 @@ module Apiman {
                 } else if (newValue.plans && $scope.version.plans) {
                     newValue.plans = _.sortBy(newValue.plans, 'planId');
                     $scope.version.plans = _.sortBy($scope.version.plans, 'planId');
-                    
+
                     for (var i = 0 ; i < newValue.plans.length; i++) {
                         var p1 = newValue.plans[i];
                         var p2 = $scope.version.plans[i];
 
                         if (p1.planId != p2.planId || p1.version != p2.version) {
-                            console.log('p1: ' + JSON.stringify(p1));
-                            console.log('p2: ' + JSON.stringify(p2));
-                            console.log('Versions are not the same');
                             $rootScope.isDirty = true;
                         }
                     }
