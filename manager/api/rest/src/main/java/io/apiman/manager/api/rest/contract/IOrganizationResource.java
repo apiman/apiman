@@ -92,6 +92,7 @@ import io.apiman.manager.api.rest.contract.exceptions.ServiceNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.ServiceVersionAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.ServiceVersionNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.UserNotFoundException;
+import io.swagger.annotations.Api;
 
 import java.util.List;
 
@@ -113,6 +114,7 @@ import javax.ws.rs.core.Response;
  * @author eric.wittmann@redhat.com
  */
 @Path("organizations")
+@Api
 public interface IOrganizationResource {
 
     /**

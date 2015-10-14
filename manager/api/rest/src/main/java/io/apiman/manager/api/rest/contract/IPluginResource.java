@@ -25,6 +25,7 @@ import io.apiman.manager.api.rest.contract.exceptions.PluginAlreadyExistsExcepti
 import io.apiman.manager.api.rest.contract.exceptions.PluginNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.PluginResourceNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.PolicyDefinitionNotFoundException;
+import io.swagger.annotations.Api;
 
 import java.util.List;
 
@@ -43,6 +44,7 @@ import javax.ws.rs.core.MediaType;
  * @author eric.wittmann@redhat.com
  */
 @Path("plugins")
+@Api
 public interface IPluginResource {
 
     /**

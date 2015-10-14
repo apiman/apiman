@@ -21,6 +21,7 @@ import io.apiman.manager.api.beans.idm.UpdateUserBean;
 import io.apiman.manager.api.beans.summary.ApplicationSummaryBean;
 import io.apiman.manager.api.beans.summary.OrganizationSummaryBean;
 import io.apiman.manager.api.beans.summary.ServiceSummaryBean;
+import io.swagger.annotations.Api;
 
 import java.util.List;
 
@@ -38,6 +39,7 @@ import javax.ws.rs.core.MediaType;
  * @author eric.wittmann@redhat.com
  */
 @Path("currentuser")
+@Api
 public interface ICurrentUserResource {
 
     /**

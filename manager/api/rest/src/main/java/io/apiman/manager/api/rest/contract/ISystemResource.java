@@ -17,6 +17,7 @@
 package io.apiman.manager.api.rest.contract;
 
 import io.apiman.manager.api.beans.system.SystemStatusBean;
+import io.swagger.annotations.Api;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -29,6 +30,7 @@ import javax.ws.rs.core.MediaType;
  * @author eric.wittmann@redhat.com
  */
 @Path("system")
+@Api
 public interface ISystemResource {
 
     /**
