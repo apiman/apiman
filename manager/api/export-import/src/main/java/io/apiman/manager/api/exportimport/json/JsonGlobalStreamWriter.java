@@ -22,8 +22,8 @@ import io.apiman.manager.api.beans.idm.UserBean;
 import io.apiman.manager.api.beans.orgs.OrganizationBean;
 import io.apiman.manager.api.beans.plans.PlanBean;
 import io.apiman.manager.api.beans.plugins.PluginBean;
+import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
 import io.apiman.manager.api.beans.services.ServiceBean;
-import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.exportimport.GlobalElementsEnum;
 import io.apiman.manager.api.exportimport.beans.MetadataBean;
 import io.apiman.manager.api.exportimport.write.IGlobalStreamWriter;
@@ -69,12 +69,10 @@ public class JsonGlobalStreamWriter extends AbstractJsonWriter<GlobalElementsEnu
         om.getSerializationConfig().addMixInAnnotations(PlanBean.class, ExcludeOrganizationMixin.class);
     }
 
-    public JsonGlobalStreamWriter(OutputStream targetFile,
-            IStorage istorage) throws IOException {
+    public JsonGlobalStreamWriter(OutputStream targetFile) throws IOException {
         jg = jsonFactory.createJsonGenerator(targetFile, JsonEncoding.UTF8);
         jg.setCodec(om);
-        jg.writeStartObject(); // Set out the base array
-        orgWriter = new JsonOrgStreamWriter(jg, this);
+        jg.writeStartObject(); // Set out the base/root object
         setupIgnores();
     }
 
@@ -104,7 +102,7 @@ public class JsonGlobalStreamWriter extends AbstractJsonWriter<GlobalElementsEnu
     }
 
     @Override
-    public IGlobalStreamWriter writeGateways(GatewayBean gb) {
+    public IGlobalStreamWriter writeGateway(GatewayBean gb) {
         writeCheck(GlobalElementsEnum.Gateways);
         writePojo(gb);
         return this;
@@ -138,6 +136,38 @@ public class JsonGlobalStreamWriter extends AbstractJsonWriter<GlobalElementsEnu
         validityCheckEnd(GlobalElementsEnum.Plugins);
         writeEndArray(GlobalElementsEnum.Plugins);
         unlock(GlobalElementsEnum.Plugins);
+        return this;
+    }
+    
+    /**
+     * @see io.apiman.manager.api.exportimport.write.IGlobalStreamWriter#startPolicyDefs()
+     */
+    @Override
+    public IGlobalStreamWriter startPolicyDefs() {
+        validityCheckStart(GlobalElementsEnum.PolicyDefinitions);
+        lock(GlobalElementsEnum.PolicyDefinitions);
+        writeStartArray(GlobalElementsEnum.PolicyDefinitions);
+        return this;
+    }
+    
+    /**
+     * @see io.apiman.manager.api.exportimport.write.IGlobalStreamWriter#writePolicyDef(io.apiman.manager.api.beans.policies.PolicyDefinitionBean)
+     */
+    @Override
+    public IGlobalStreamWriter writePolicyDef(PolicyDefinitionBean policyDef) {
+        writeCheck(GlobalElementsEnum.PolicyDefinitions);
+        writePojo(policyDef);
+        return this;
+    }
+    
+    /**
+     * @see io.apiman.manager.api.exportimport.write.IGlobalStreamWriter#endPolicyDefs()
+     */
+    @Override
+    public IGlobalStreamWriter endPolicyDefs() {
+        validityCheckEnd(GlobalElementsEnum.PolicyDefinitions);
+        writeEndArray(GlobalElementsEnum.PolicyDefinitions);
+        unlock(GlobalElementsEnum.PolicyDefinitions);
         return this;
     }
 
@@ -196,20 +226,31 @@ public class JsonGlobalStreamWriter extends AbstractJsonWriter<GlobalElementsEnu
     }
 
     @Override
-    public IOrgStreamWriter writeOrg(OrganizationBean org) {
+    public IOrgStreamWriter startOrg(OrganizationBean org) {
         try {
             writeStartObject();
+            orgWriter = new JsonOrgStreamWriter(jg);
             return orgWriter.start(org);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
+    
+    /**
+     * @see io.apiman.manager.api.exportimport.write.IGlobalStreamWriter#endOrg()
+     */
+    @Override
+    public IGlobalStreamWriter endOrg() {
+        writeEndObject();
+        orgWriter.close();
+        orgWriter = null;
+        return this;
+    }
 
     @Override
     public IGlobalStreamWriter endOrgs() {
-        orgWriter.close();
         validityCheckEnd(GlobalElementsEnum.Orgs);
-        writeEndObject();
+        writeEndArray();
         unlock(GlobalElementsEnum.Orgs);
         return this;
     }
@@ -217,7 +258,6 @@ public class JsonGlobalStreamWriter extends AbstractJsonWriter<GlobalElementsEnu
     @Override
     public void close() {
         try {
-            writeEndArray();
             writeEndObject();
             jg.close();
         } catch (IOException e) {

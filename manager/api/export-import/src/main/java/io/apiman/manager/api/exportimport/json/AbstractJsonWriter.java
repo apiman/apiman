@@ -26,14 +26,26 @@ public abstract class AbstractJsonWriter<T extends Enum<T>> {
     protected Enum<T> lock;
     protected boolean ended = false;
 
+    
+    public static int depth = 0;
+
     public AbstractJsonWriter() {
         super();
     }
 
     protected abstract JsonGenerator jsonGenerator();
     protected abstract Map<Enum<T>, Boolean> finished();
+    
+    protected void debug(String msg) {
+        for (int i = 0 ; i < depth; i++) {
+            System.out.print('\t');
+        }
+        System.out.println(msg);
+    }
 
     protected void writeObjectFieldStart(Enum<T> globEnum) {
+        debug("Start object field: " + globEnum.name());
+        depth++;
         try {
             jsonGenerator().writeObjectFieldStart(globEnum.name());
         } catch (IOException e) {
@@ -42,6 +54,8 @@ public abstract class AbstractJsonWriter<T extends Enum<T>> {
     }
 
     protected void writeStartObject() {
+        debug("Start object.");
+        depth++;
         try {
             jsonGenerator().writeStartObject();
         } catch (IOException e) {
@@ -50,6 +64,8 @@ public abstract class AbstractJsonWriter<T extends Enum<T>> {
     }
 
     protected void writeStartObject(Enum<T> globEnum) {
+        debug("Start object: " + globEnum.name());
+        depth++;
         try {
             jsonGenerator().writeObjectFieldStart(globEnum.name());
         } catch (IOException e) {
@@ -58,6 +74,8 @@ public abstract class AbstractJsonWriter<T extends Enum<T>> {
     }
 
     protected void writeEndObject() {
+        depth--;
+        debug("End object.");
         try {
             jsonGenerator().writeEndObject();
         } catch (IOException e) {
@@ -65,15 +83,19 @@ public abstract class AbstractJsonWriter<T extends Enum<T>> {
         }
     }
 
-    protected void writeStartArray(Enum<T> plan) {
+    protected void writeStartArray(Enum<T> globEnum) {
+        debug("Start array: " + globEnum.name());
+        depth++;
         try {
-            jsonGenerator().writeArrayFieldStart(plan.name());
+            jsonGenerator().writeArrayFieldStart(globEnum.name());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     protected void writeEndArray(Enum<T> type) {
+        depth--;
+        debug("End array: " + type.name());
         try {
             jsonGenerator().writeEndArray();
         } catch (IOException e) {
@@ -82,6 +104,8 @@ public abstract class AbstractJsonWriter<T extends Enum<T>> {
     }
 
     protected void writeEndArray() {
+        depth--;
+        debug("End array.");
         try {
             jsonGenerator().writeEndArray();
         } catch (IOException e) {

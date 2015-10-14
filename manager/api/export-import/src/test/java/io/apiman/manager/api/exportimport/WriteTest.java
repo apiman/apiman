@@ -152,7 +152,7 @@ public class WriteTest {
         meta.setApimanVersion("9001");
         meta.setExportedOn(new DateTime());
 
-        JsonGlobalStreamWriter streamer = new JsonGlobalStreamWriter(os, new IStorageTest());
+        JsonGlobalStreamWriter streamer = new JsonGlobalStreamWriter(os);
 
         streamer.writeMetadata(meta);
 
@@ -165,7 +165,7 @@ public class WriteTest {
         .endRoles();
 
         streamer.startOrgs()
-        .writeOrg(orgBean)
+        .startOrg(orgBean)
 
         .startMemberships()
         .writeMembership(membership)

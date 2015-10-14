@@ -32,7 +32,7 @@ public class JsonExportImportFactory implements ExportImportFactory {
 
     @Override
     public IGlobalStreamWriter getWriter(ExportImportConfigParser config,
-            IStorage iStorage)  {
+            IStorage storage)  {
 
         if (config.getJsonFile() == null)
             throw new IllegalArgumentException("Must provide path to JSON file to write");
@@ -48,16 +48,14 @@ public class JsonExportImportFactory implements ExportImportFactory {
         try {
             outFile.createNewFile();
             OutputStream os = new FileOutputStream(outFile);
-            return new JsonGlobalStreamWriter(os, iStorage);
+            return new JsonGlobalStreamWriter(os);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public IStreamReader getReader(ExportImportConfigParser config,
-            IStorage iStorage) {
-
+    public IStreamReader getReader(ExportImportConfigParser config, IStorage storage) {
         if (config.getJsonFile() == null)
             throw new IllegalArgumentException("Must provide path to JSON file to read");
 
@@ -68,7 +66,7 @@ public class JsonExportImportFactory implements ExportImportFactory {
 
         try {
             InputStream is = new FileInputStream(inFile);
-            return new JsonGlobalStreamReader(is, iStorage);
+            return new JsonGlobalStreamReader(is, storage);
         } catch (IOException e){
             throw new RuntimeException(e);
         }

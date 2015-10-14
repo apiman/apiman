@@ -75,9 +75,12 @@ import io.searchbox.core.Index;
 import io.searchbox.core.Search;
 import io.searchbox.core.SearchResult;
 import io.searchbox.core.SearchResult.Hit;
+import io.searchbox.core.SearchScroll;
+import io.searchbox.core.SearchScroll.Builder;
 import io.searchbox.indices.CreateIndex;
 import io.searchbox.indices.IndicesExists;
 import io.searchbox.params.Parameters;
+import io.searchbox.params.SearchType;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -111,6 +114,8 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.TermsQueryBuilder;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.sort.SortOrder;
+
+import com.google.gson.Gson;
 
 /**
  * An implementation of the API Manager persistence layer that uses git to store
@@ -1977,56 +1982,72 @@ public class EsStorage implements IStorage, IStorageQuery {
         return organizationId + ':' + entityId + ':' + version;
     }
 
-    private static interface IUnmarshaller<T> {
-        /**
-         * Unmarshal the source map into an entity.
-         * @param source the source map
-         * @return the unmarshalled instance of <T>
-         */
-        public T unmarshal(Map<String, Object> source);
-    }
-
     @Override
     public Iterator<OrganizationBean> getAllOrganizations() throws StorageException {
-        // TODO Auto-generated method stub
-        return null;
+        return getAll("organization", new IUnmarshaller<OrganizationBean>() { //$NON-NLS-1$
+            @Override
+            public OrganizationBean unmarshal(Map<String, Object> source) {
+                return EsMarshalling.unmarshallOrganization(source);
+            }
+        });
     }
 
     @Override
     public Iterator<ApplicationVersionBean> getAllApplicationVersions(String organizationId)
             throws StorageException {
-        // TODO Auto-generated method stub
-        return null;
+        return getAll(organizationId, "applicationVersion", new IUnmarshaller<ApplicationVersionBean>() { //$NON-NLS-1$
+            @Override
+            public ApplicationVersionBean unmarshal(Map<String, Object> source) {
+                return EsMarshalling.unmarshallApplicationVersion(source);
+            }
+        });
     }
 
     @Override
-    public Iterator<ContractBean> getContracts(String organizationId) throws StorageException {
+    public Iterator<ContractBean> getAllContracts(String organizationId) throws StorageException {
+        return new ArrayList<ContractBean>().iterator();
         // TODO Auto-generated method stub
-        return null;
+//        return null;
     }
 
     @Override
     public Iterator<ServiceVersionBean> getAllServiceVersions(String organizationId) throws StorageException {
-        // TODO Auto-generated method stub
-        return null;
+        return getAll(organizationId, "serviceVersion", new IUnmarshaller<ServiceVersionBean>() { //$NON-NLS-1$
+            @Override
+            public ServiceVersionBean unmarshal(Map<String, Object> source) {
+                return EsMarshalling.unmarshallServiceVersion(source);
+            }
+        });
     }
 
     @Override
     public Iterator<PlanVersionBean> getAllPlanVersions(String organizationId) throws StorageException {
-        // TODO Auto-generated method stub
-        return null;
+        return getAll(organizationId, "planVersion", new IUnmarshaller<PlanVersionBean>() { //$NON-NLS-1$
+            @Override
+            public PlanVersionBean unmarshal(Map<String, Object> source) {
+                return EsMarshalling.unmarshallPlanVersion(source);
+            }
+        });
     }
 
     @Override
     public Iterator<GatewayBean> getAllGateways() throws StorageException {
-        // TODO Auto-generated method stub
-        return null;
+        return getAll("gateway", new IUnmarshaller<GatewayBean>() { //$NON-NLS-1$
+            @Override
+            public GatewayBean unmarshal(Map<String, Object> source) {
+                return EsMarshalling.unmarshallGateway(source);
+            }
+        });
     }
 
     @Override
     public Iterator<UserBean> getAllUsers() throws StorageException {
-        // TODO Auto-generated method stub
-        return null;
+        return getAll("user", new IUnmarshaller<UserBean>() { //$NON-NLS-1$
+            @Override
+            public UserBean unmarshal(Map<String, Object> source) {
+                return EsMarshalling.unmarshallUser(source);
+            }
+        });
     }
 
     @Override
@@ -2037,37 +2058,197 @@ public class EsStorage implements IStorage, IStorageQuery {
 
     @Override
     public Iterator<RoleBean> getAllRoles() throws StorageException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public Iterator<RoleBean> getAllRoles(String orgId) throws StorageException {
-        // TODO Auto-generated method stub
-        return null;
+        return getAll("role", new IUnmarshaller<RoleBean>() { //$NON-NLS-1$
+            @Override
+            public RoleBean unmarshal(Map<String, Object> source) {
+                return EsMarshalling.unmarshallRole(source);
+            }
+        });
     }
 
     @Override
     public Iterator<RoleMembershipBean> getAllMemberships(String orgId) throws StorageException {
-        // TODO Auto-generated method stub
-        return null;
+        return getAll(orgId, "roleMembership", new IUnmarshaller<RoleMembershipBean>() { //$NON-NLS-1$
+            @Override
+            public RoleMembershipBean unmarshal(Map<String, Object> source) {
+                return EsMarshalling.unmarshallRoleMembership(source);
+            }
+        });
     }
 
     @Override
     public Iterator<AuditEntryBean> getAllAuditEntries(String orgId) throws StorageException {
-        // TODO Auto-generated method stub
-        return null;
+        return getAll(orgId, "auditEntry", new IUnmarshaller<AuditEntryBean>() { //$NON-NLS-1$
+            @Override
+            public AuditEntryBean unmarshal(Map<String, Object> source) {
+                return EsMarshalling.unmarshallAuditEntry(source);
+            }
+        });
     }
 
     @Override
     public Iterator<PluginBean> getAllPlugins() throws StorageException {
-        // TODO Auto-generated method stub
-        return null;
+        return getAll("plugin", new IUnmarshaller<PluginBean>() { //$NON-NLS-1$
+            @Override
+            public PluginBean unmarshal(Map<String, Object> source) {
+                return EsMarshalling.unmarshallPlugin(source);
+            }
+        });
+    }
+    
+    /**
+     * @see io.apiman.manager.api.core.IStorage#getAllPolicyDefinitions()
+     */
+    @Override
+    public Iterator<PolicyDefinitionBean> getAllPolicyDefinitions() throws StorageException {
+        return getAll("policyDef", new IUnmarshaller<PolicyDefinitionBean>() { //$NON-NLS-1$
+            @Override
+            public PolicyDefinitionBean unmarshal(Map<String, Object> source) {
+                return EsMarshalling.unmarshallPolicyDefinition(source);
+            }
+        });
     }
 
     @Override
     public Iterator<PolicyBean> getAllPolicies(String id) throws StorageException {
+        return new ArrayList<PolicyBean>().iterator();
         // TODO Auto-generated method stub
-        return null;
+//        return null;
     }
+
+    /**
+     * Returns an iterator over all instances of the given entity type.
+     * @param entityType
+     * @param unmarshaller
+     * @throws StorageException
+     */
+    private <T> Iterator<T> getAll(String entityType, IUnmarshaller<T> unmarshaller) throws StorageException {
+        return getAll(null, entityType, unmarshaller);
+    }
+
+    /**
+     * Returns an iterator over all instances of the given entity type.
+     * @param organizationId
+     * @param entityType
+     * @param unmarshaller
+     * @throws StorageException
+     */
+    private <T> Iterator<T> getAll(String organizationId, String entityType, IUnmarshaller<T> unmarshaller) throws StorageException {
+        return new EntityIterator<T>(organizationId, entityType, unmarshaller);
+    }
+
+    /**
+     * A simple, internal unmarshaller interface.
+     * @author eric.wittmann@redhat.com
+     */
+    private static interface IUnmarshaller<T> {
+        /**
+         * Unmarshal the source map into an entity.
+         * @param source the source map
+         * @return the unmarshalled instance of <T>
+         */
+        public T unmarshal(Map<String, Object> source);
+    }
+
+    /**
+     * Allows iterating over all entities of a given type.
+     * @author eric.wittmann@redhat.com
+     */
+    @SuppressWarnings("nls")
+    private class EntityIterator<T> implements Iterator<T> {
+
+        private String organizationId;
+        private String entityType;
+        private IUnmarshaller<T> unmarshaller;
+        private String scrollId = null;
+        private List<Hit<Map<String, Object>, Void>> hits;
+        private int nextHitIdx;;
+
+        /**
+         * Constructor.
+         * @param organizationId
+         * @param entityType
+         * @param unmarshaller
+         * @throws StorageException
+         */
+        public EntityIterator(String organizationId, String entityType, IUnmarshaller<T> unmarshaller) throws StorageException {
+            this.organizationId = organizationId;
+            this.entityType = entityType;
+            this.unmarshaller = unmarshaller;
+            initScroll();
+            this.nextHitIdx = 0;
+        }
+
+        /**
+         * @see java.util.Iterator#hasNext()
+         */
+        @Override
+        public boolean hasNext() {
+            if (hits == null || this.nextHitIdx >= hits.size()) {
+                try {
+                    fetch();
+                } catch (StorageException e) {
+                    throw new RuntimeException(e);
+                }
+                this.nextHitIdx = 0;
+            }
+            return hits.size() > 0;
+        }
+
+        /**
+         * @see java.util.Iterator#next()
+         */
+        @Override
+        public T next() {
+            Hit<Map<String, Object>, Void> hit = hits.get(nextHitIdx++);
+            return unmarshaller.unmarshal(hit.source);
+        }
+
+        private void initScroll() throws StorageException {
+            try {
+                String query = "{\r\n" + 
+                        "  \"query\": {\r\n" + 
+                        "    \"match_all\": {}\r\n" + 
+                        "  }\r\n" + 
+                        "}";
+                if (organizationId != null) {
+                    query = "{\r\n" + 
+                            "  \"query\": {\r\n" + 
+                            "    \"filtered\": { \r\n" + 
+                            "      \"filter\": {\r\n" + 
+                            "        \"term\": { \"organizationId\": \"ORG_ID\" }\r\n" + 
+                            "      }\r\n" + 
+                            "    }\r\n" + 
+                            "  }\r\n" + 
+                            "}".replace("ORG_ID", organizationId);
+                }
+                Search search = new Search.Builder(query).addIndex(INDEX_NAME).addType(entityType)
+                        .setSearchType(SearchType.SCAN).setParameter(Parameters.SCROLL, "1m").build();
+                SearchResult response = esClient.execute(search);
+                scrollId = response.getJsonObject().get("_scroll_id").getAsString();
+            } catch (IOException e) {
+                throw new StorageException(e);
+            }
+        }
+
+        private void fetch() throws StorageException {
+            try {
+                Builder builder = new SearchScroll.Builder(scrollId, "1m")
+                        .setParameter(Parameters.SIZE, 1);
+                SearchScroll scroll = new SearchScroll(builder) {
+                    @Override
+                    public JestResult createNewElasticSearchResult(String responseBody, int statusCode,
+                            String reasonPhrase, Gson gson) {
+                        return createNewElasticSearchResult(new SearchResult(gson), responseBody, statusCode, reasonPhrase, gson);
+                    }
+                };
+                SearchResult response = (SearchResult) esClient.execute(scroll);
+                this.hits = (List) response.getHits(Map.class);
+            } catch (IOException e) {
+                throw new StorageException(e);
+            }
+        }
+
+    }
+
 }

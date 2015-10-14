@@ -15,12 +15,15 @@
  */
 package io.apiman.manager.api.exportimport.manager;
 
+import javax.enterprise.context.ApplicationScoped;
+
 import org.apache.commons.lang.BooleanUtils;
 
 /**
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 @SuppressWarnings("nls")
+@ApplicationScoped
 public class ExportImportConfigParser {
     public static final String APIMAN_ROOT = "apiman.migrate.";
 
@@ -30,7 +33,7 @@ public class ExportImportConfigParser {
 
     // apiman.migrate.provider=DEFAULT_PROVIDER
     public static final String PROVIDER = APIMAN_ROOT + "provider";
-    public static final ExportImportProviders DEFAULT_PROVIDER = ExportImportProviders.JSON;
+    public static final ExportImportProviderType DEFAULT_PROVIDER = ExportImportProviderType.JSON;
 
     // apiman.migrate.
     public static final String USER_STRATEGY = APIMAN_ROOT + "userStrategy";
@@ -50,9 +53,19 @@ public class ExportImportConfigParser {
     public static final String JSON_DIR = JSON_ROOT + "dir";
     public static final String JSON_USERS_PER_FILE = JSON_ROOT + "usersPerFile";
     public static final String DEFAULT_JSON_USERS_PER_FILE = "5000";
+    
+    /**
+     * Constructor.
+     */
+    public ExportImportConfigParser() {
+    }
 
-    public ExportImportProviders getProvider() {
-        return ExportImportProviders.valueOf(System.getProperty(PROVIDER, DEFAULT_PROVIDER.name()));
+    public boolean isImportExport() {
+        return getFunction() != ExportImportFunction.NONE;
+    }
+
+    public ExportImportProviderType getProvider() {
+        return ExportImportProviderType.valueOf(System.getProperty(PROVIDER, DEFAULT_PROVIDER.name()));
     }
 
     public ExportImportUserStrategy getUserStrategy() {
@@ -96,6 +109,10 @@ public class ExportImportConfigParser {
 
     // apiman.migrate.overwrite=
     public boolean isOverwrite() {
-        return BooleanUtils.toBooleanObject(System.getProperty(OVERWRITE));
+        Boolean booleanObject = BooleanUtils.toBooleanObject(System.getProperty(OVERWRITE));
+        if (booleanObject == null) {
+            booleanObject = Boolean.FALSE;
+        }
+        return booleanObject;
     }
 }

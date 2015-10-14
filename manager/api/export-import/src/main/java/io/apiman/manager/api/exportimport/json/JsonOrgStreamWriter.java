@@ -24,7 +24,6 @@ import io.apiman.manager.api.beans.plans.PlanVersionBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.services.ServiceVersionBean;
 import io.apiman.manager.api.exportimport.OrgElementsEnum;
-import io.apiman.manager.api.exportimport.write.IGlobalStreamWriter;
 import io.apiman.manager.api.exportimport.write.IOrgStreamWriter;
 
 import java.io.IOException;
@@ -44,7 +43,6 @@ public class JsonOrgStreamWriter extends AbstractJsonWriter<OrgElementsEnum> imp
     private JsonGenerator jg;
     private Map<Enum<OrgElementsEnum>, Boolean> finished = new HashMap<>();
     boolean ended = false;
-    private IGlobalStreamWriter rootWriter;
 
     {
         for (OrgElementsEnum v : OrgElementsEnum.values()) {
@@ -52,9 +50,7 @@ public class JsonOrgStreamWriter extends AbstractJsonWriter<OrgElementsEnum> imp
         }
     }
 
-    public JsonOrgStreamWriter(JsonGenerator jg,
-            IGlobalStreamWriter rootWriter) throws IOException {
-        this.rootWriter = rootWriter;
+    public JsonOrgStreamWriter(JsonGenerator jg) throws IOException {
         this.jg = jg;
     }
 
@@ -224,9 +220,8 @@ public class JsonOrgStreamWriter extends AbstractJsonWriter<OrgElementsEnum> imp
         return this;
     }
 
-    IGlobalStreamWriter close() {
+    void close() {
         ended = true;
-        return rootWriter;
     }
 
     @Override
