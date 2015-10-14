@@ -95,12 +95,10 @@ module Apiman {
                 $rootScope.isDirty = false;
 
                 if (newValue.publicService != $scope.version.publicService) {
-                    console.log('Public Service is not the same');
                     $rootScope.isDirty = true;
                 }
 
                 if (newValue.plans && $scope.version.plans && newValue.plans.length != $scope.version.plans.length) {
-                    console.log('Plans are not the same');
                     $rootScope.isDirty = true;
                 } else if (newValue.plans && $scope.version.plans) {
                     newValue.plans = _.sortBy(newValue.plans, 'planId');
