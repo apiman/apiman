@@ -641,101 +641,90 @@ public class TestEsStorageWrapper implements IStorage {
         this.delegate.deleteMemberships(userId, organizationId);
     }
 
+    @Override
+    public Iterator<OrganizationBean> getAllOrganizations() throws StorageException {
+        return this.delegate.getAllOrganizations();
+    }
+
+    @Override
+    public Iterator<ApplicationVersionBean> getAllApplicationVersions(String organizationId)
+            throws StorageException {
+        return this.delegate.getAllApplicationVersions(organizationId);
+    }
+
+    @Override
+    public Iterator<ContractBean> getAllContracts(String organizationId) throws StorageException {
+        return this.delegate.getAllContracts(organizationId);
+    }
+
+    @Override
+    public Iterator<ServiceVersionBean> getAllServiceVersions(String organizationId) throws StorageException {
+        return this.delegate.getAllServiceVersions(organizationId);
+    }
+
+    @Override
+    public Iterator<PlanVersionBean> getAllPlanVersions(String organizationId) throws StorageException {
+        return this.delegate.getAllPlanVersions(organizationId);
+    }
+
+    @Override
+    public Iterator<GatewayBean> getAllGateways() throws StorageException {
+        return this.delegate.getAllGateways();
+    }
+
+    @Override
+    public Iterator<AuditEntryBean> getAllAuditEntries(String orgId) throws StorageException {
+        return this.delegate.getAllAuditEntries(orgId);
+    }
+
+    @Override
+    public Iterator<PolicyBean> getAllPolicies(String id) throws StorageException {
+        return this.delegate.getAllPolicies(id);
+    }
+
+    @Override
+    public Iterator<PluginBean> getAllPlugins() throws StorageException {
+        return this.delegate.getAllPlugins();
+    }
+
+    @Override
+    public Iterator<RoleMembershipBean> getAllMemberships(String orgId) throws StorageException {
+        return this.delegate.getAllMemberships(orgId);
+    }
+
+    @Override
+    public Iterator<UserBean> getAllUsers(String orgId) throws StorageException {
+        return this.delegate.getAllUsers(orgId);
+    }
+
+    @Override
+    public Iterator<UserBean> getAllUsers() throws StorageException {
+        return this.delegate.getAllUsers();
+    }
+
+    @Override
+    public Iterator<RoleBean> getAllRoles() throws StorageException {
+        return this.delegate.getAllRoles();
+    }
+    
+    /**
+     * @see io.apiman.manager.api.core.IStorage#getAllPolicyDefinitions()
+     */
+    @Override
+    public Iterator<PolicyDefinitionBean> getAllPolicyDefinitions() throws StorageException {
+        return this.delegate.getAllPolicyDefinitions();
+    }
+
     /**
      * Force a refresh in elasticsearch so that the result of any indexing operations
      * up to this point will be visible to searches.
      */
     private void refresh() {
         try {
-        	esClient.execute(new Refresh.Builder().addIndex("apiman_manager").build()); //$NON-NLS-1$
+            esClient.execute(new Refresh.Builder().addIndex("apiman_manager").build()); //$NON-NLS-1$
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-    }
-
-    @Override
-    public Iterator<OrganizationBean> getAllOrganizations() throws StorageException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public Iterator<ApplicationVersionBean> getAllApplicationVersions(String organizationId)
-            throws StorageException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public Iterator<ContractBean> getContracts(String organizationId) throws StorageException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public Iterator<ServiceVersionBean> getAllServiceVersions(String organizationId) throws StorageException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public Iterator<PlanVersionBean> getAllPlanVersions(String organizationId) throws StorageException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public Iterator<GatewayBean> getAllGateways() throws StorageException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public Iterator<AuditEntryBean> getAllAuditEntries(String orgId) throws StorageException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public Iterator<PolicyBean> getAllPolicies(String id) throws StorageException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public Iterator<PluginBean> getAllPlugins() throws StorageException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public Iterator<RoleMembershipBean> getAllMemberships(String orgId) throws StorageException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public Iterator<UserBean> getAllUsers(String orgId) throws StorageException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public Iterator<UserBean> getAllUsers() throws StorageException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public Iterator<RoleBean> getAllRoles(String orgId) throws StorageException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public Iterator<RoleBean> getAllRoles() throws StorageException {
-        // TODO Auto-generated method stub
-        return null;
     }
 
 }

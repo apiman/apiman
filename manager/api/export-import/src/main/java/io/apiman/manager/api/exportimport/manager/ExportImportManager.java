@@ -26,9 +26,11 @@ import io.apiman.manager.api.beans.orgs.OrganizationBean;
 import io.apiman.manager.api.beans.plans.PlanVersionBean;
 import io.apiman.manager.api.beans.plugins.PluginBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
+import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
 import io.apiman.manager.api.beans.services.ServiceVersionBean;
 import io.apiman.manager.api.config.Version;
 import io.apiman.manager.api.core.IStorage;
+import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.exportimport.beans.MetadataBean;
 import io.apiman.manager.api.exportimport.json.ExportImportFactory;
 import io.apiman.manager.api.exportimport.json.JsonExportImportFactory;
@@ -40,6 +42,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.joda.time.DateTime;
@@ -47,28 +51,38 @@ import org.joda.time.DateTime;
 /**
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
+@ApplicationScoped
 public class ExportImportManager {
-    private static ExportImportConfigParser config = new ExportImportConfigParser();
+    
     @Inject
-    private IStorage iStorage;
+    private ExportImportConfigParser config;
+    @Inject
+    private IStorage storage;
 
     private Version version = new Version();
-    private Map<ExportImportProviders, ExportImportFactory> eiFactories = new HashMap<>();
-    private ExportImportProviders provider;
+    private Map<ExportImportProviderType, ExportImportFactory> eiFactories = new HashMap<>();
+    private ExportImportProviderType provider;
 
     // TODO We should have some kind of automated registration of these & factory pattern. This is interim.
     {
-        eiFactories.put(ExportImportProviders.JSON, new JsonExportImportFactory());
+        eiFactories.put(ExportImportProviderType.JSON, new JsonExportImportFactory());
     }
 
+    /**
+     * Constructor.
+     */
     public ExportImportManager() {
+    }
+    
+    @PostConstruct
+    protected void postConstruct() {
         provider = config.getProvider();
     }
 
-    public static boolean isExportImport() {
-        return config.getFunction() != ExportImportFunction.NONE;
+    public boolean isImportExport() {
+        return config.isImportExport();
     }
-
+    
     public void doImportExport() {
         if(config.getFunction() == ExportImportFunction.IMPORT) {
             doImport();
@@ -78,7 +92,7 @@ public class ExportImportManager {
     }
 
     private void doImport() {
-        IStreamReader reader = eiFactories.get(provider).getReader(config, iStorage);
+        IStreamReader reader = eiFactories.get(provider).getReader(config, storage);
 
         try {
             reader.parse();
@@ -88,44 +102,53 @@ public class ExportImportManager {
     }
 
     private void doExport() {
-        IGlobalStreamWriter writer = eiFactories.get(provider).getWriter(config, iStorage);
-        new ExportWriter(writer, iStorage, null).write();
+        IGlobalStreamWriter writer = eiFactories.get(provider).getWriter(config, storage);
+        new ExportWriter(writer, storage, null).write();
     }
 
     private class ExportWriter {
         private IGlobalStreamWriter writer;
-        private IStorage iStorage;
+        private IStorage storage;
         private String orgId;
 
         public ExportWriter(IGlobalStreamWriter writer,
-                IStorage iStorage,
+                IStorage storage,
                 String orgId) {
             this.writer = writer;
-            this.iStorage = iStorage;
+            this.storage = storage;
             this.orgId = orgId;
         }
 
         public void write() {
-            writeUsers();
-            writeMetadata();
-            writeGateways();
-            writePlugins();
-            writeRoles();
-
-            writeOrgs();
-
-            writer.close();
+            try {
+                storage.beginTx();
+                try {
+                    writeMetadata();
+                    writeUsers();
+                    writeGateways();
+                    writePlugins();
+                    writeRoles();
+                    writePolicyDefs();
+   
+                    writeOrgs();
+                } finally {
+                    storage.rollbackTx();
+                    writer.close();
+                }
+            } catch (StorageException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         private void writeOrgs() {
             try {
               writer.startOrgs();
 
-              Iterator<OrganizationBean> iter = iStorage.getAllOrganizations();
+              Iterator<OrganizationBean> iter = storage.getAllOrganizations();
 
               while (iter.hasNext()) {
                   OrganizationBean bean = iter.next();
-                  IOrgStreamWriter orgWriter = writer.writeOrg(bean);
+                  IOrgStreamWriter orgWriter = writer.startOrg(bean);
 
                   writeMemberships(orgWriter, bean.getId());
                   writeApplicationVersions(orgWriter, bean.getId());
@@ -134,6 +157,8 @@ public class ExportImportManager {
                   writeContracts(orgWriter, bean.getId());
                   writePolicies(orgWriter, bean.getId());
                   writeAudits(orgWriter, bean.getId());
+                  
+                  writer.endOrg();
               }
 
               writer.endOrgs();
@@ -145,7 +170,7 @@ public class ExportImportManager {
 
         private void writeAudits(IOrgStreamWriter orgWriter, String orgId) {
             try {
-                Iterator<AuditEntryBean> iter = iStorage.getAllAuditEntries(orgId);
+                Iterator<AuditEntryBean> iter = storage.getAllAuditEntries(orgId);
 
                 orgWriter.startAudits();
 
@@ -163,7 +188,7 @@ public class ExportImportManager {
 
         private void writePolicies(IOrgStreamWriter orgWriter, String orgId) {
             try {
-                Iterator<PolicyBean> iter = iStorage.getAllPolicies(orgId);
+                Iterator<PolicyBean> iter = storage.getAllPolicies(orgId);
 
                 orgWriter.startPolicies();
 
@@ -181,7 +206,7 @@ public class ExportImportManager {
 
         private void writeContracts(IOrgStreamWriter orgWriter, String orgId) {
             try {
-                Iterator<ContractBean> iter = iStorage.getContracts(orgId);
+                Iterator<ContractBean> iter = storage.getAllContracts(orgId);
 
                 orgWriter.startContracts();
 
@@ -199,7 +224,7 @@ public class ExportImportManager {
 
         private void writePlanVersions(IOrgStreamWriter orgWriter, String orgId) {
             try {
-                Iterator<PlanVersionBean> iter = iStorage.getAllPlanVersions(orgId);
+                Iterator<PlanVersionBean> iter = storage.getAllPlanVersions(orgId);
 
                 orgWriter.startPlanVersions();
 
@@ -217,7 +242,7 @@ public class ExportImportManager {
 
         private void writeServiceVersions(IOrgStreamWriter orgWriter, String orgId) {
             try {
-                Iterator<ServiceVersionBean> iter = iStorage.getAllServiceVersions(orgId);
+                Iterator<ServiceVersionBean> iter = storage.getAllServiceVersions(orgId);
 
                 orgWriter.startServiceVersions();
 
@@ -235,7 +260,7 @@ public class ExportImportManager {
 
         private void writeApplicationVersions(IOrgStreamWriter orgWriter, String orgId) {
             try {
-                Iterator<ApplicationVersionBean> iter = iStorage.getAllApplicationVersions(orgId);
+                Iterator<ApplicationVersionBean> iter = storage.getAllApplicationVersions(orgId);
 
                 orgWriter.startApplicationVersions();
 
@@ -253,7 +278,7 @@ public class ExportImportManager {
 
         private void writeMemberships(IOrgStreamWriter orgWriter, String orgId) {
             try {
-                Iterator<RoleMembershipBean> iter = iStorage.getAllMemberships(orgId);
+                Iterator<RoleMembershipBean> iter = storage.getAllMemberships(orgId);
 
                 orgWriter.startMemberships();
 
@@ -278,13 +303,13 @@ public class ExportImportManager {
 
         private void writeGateways() {
             try {
-                Iterator<GatewayBean> iter = iStorage.getAllGateways();
+                Iterator<GatewayBean> iter = storage.getAllGateways();
 
                 writer.startGateways();
 
                 while(iter.hasNext()) {
                     GatewayBean bean = iter.next();
-                    writer.writeGateways(bean);
+                    writer.writeGateway(bean);
                 }
 
                 writer.endGateways();
@@ -296,7 +321,7 @@ public class ExportImportManager {
 
         private void writePlugins() {
             try {
-                Iterator<PluginBean> iter = iStorage.getAllPlugins();
+                Iterator<PluginBean> iter = storage.getAllPlugins();
 
                 writer.startPlugins();
 
@@ -318,9 +343,9 @@ public class ExportImportManager {
                 Iterator<UserBean> iter;
 
                 if (orgId != null) {
-                    iter = iStorage.getAllUsers(orgId);
+                    iter = storage.getAllUsers(orgId);
                 } else {
-                    iter = iStorage.getAllUsers();
+                    iter = storage.getAllUsers();
                 }
 
                 writer.startUsers();
@@ -340,13 +365,9 @@ public class ExportImportManager {
         private void writeRoles() {
             try {
                 Iterator<RoleBean> iter;
-
-                if (orgId != null) {
-                    iter = iStorage.getAllRoles(orgId);
-                } else {
-                    iter = iStorage.getAllRoles();
-                }
-
+                
+                iter = storage.getAllRoles();
+                
                 writer.startRoles();
 
                 while(iter.hasNext()) {
@@ -355,6 +376,26 @@ public class ExportImportManager {
                 }
 
                 writer.endRoles();
+            }
+            catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        private void writePolicyDefs() {
+            try {
+                Iterator<PolicyDefinitionBean> iter;
+                
+                iter = storage.getAllPolicyDefinitions();
+                
+                writer.startPolicyDefs();
+
+                while(iter.hasNext()) {
+                    PolicyDefinitionBean bean = iter.next();
+                    writer.writePolicyDef(bean);
+                }
+
+                writer.endPolicyDefs();
             }
             catch (Exception e) {
                 throw new RuntimeException(e);

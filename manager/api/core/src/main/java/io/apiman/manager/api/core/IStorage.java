@@ -107,6 +107,7 @@ public interface IStorage {
     public void deleteGateway(GatewayBean gateway) throws StorageException;
     public void deletePlugin(PluginBean plugin) throws StorageException;
     public void deletePolicyDefinition(PolicyDefinitionBean policyDef) throws StorageException;
+    public Iterator<PolicyDefinitionBean> getAllPolicyDefinitions() throws StorageException;
 
     /*
      * Various get methods.  These are called by the REST layer to get stuff.
@@ -121,7 +122,7 @@ public interface IStorage {
 
 
     public ContractBean getContract(Long id) throws StorageException;
-    public Iterator<ContractBean> getContracts(String organizationId) throws StorageException;
+    public Iterator<ContractBean> getAllContracts(String organizationId) throws StorageException;
 
     public ServiceBean getService(String organizationId, String id) throws StorageException;
     public ServiceVersionBean getServiceVersion(String organizationId, String serviceId, String version) throws StorageException;
@@ -167,6 +168,5 @@ public interface IStorage {
     public Iterator<RoleMembershipBean> getAllMemberships(String orgId) throws StorageException;
     public Iterator<UserBean> getAllUsers(String orgId) throws StorageException;
     public Iterator<UserBean> getAllUsers() throws StorageException;
-    public Iterator<RoleBean> getAllRoles(String orgId) throws StorageException;
     public Iterator<RoleBean> getAllRoles() throws StorageException;
 }

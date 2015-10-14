@@ -1921,7 +1921,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     }
 
     @Override
-    public Iterator<ContractBean> getContracts(String organizationId) throws StorageException {
+    public Iterator<ContractBean> getAllContracts(String organizationId) throws StorageException {
         EntityManager entityManager = getActiveEntityManager();
 
         String jpql =
@@ -2017,6 +2017,21 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         Query query = entityManager.createQuery(jpql);
         return super.getAll(PluginBean.class, query);
     }
+    
+    /**
+     * @see io.apiman.manager.api.core.IStorage#getAllPolicyDefinitions()
+     */
+    @Override
+    public Iterator<PolicyDefinitionBean> getAllPolicyDefinitions() throws StorageException {
+        EntityManager entityManager = getActiveEntityManager();
+
+        String jpql =
+                "SELECT b "
+                + "FROM PolicyDefinitionBean b ";
+
+        Query query = entityManager.createQuery(jpql);
+        return super.getAll(PolicyDefinitionBean.class, query);
+    }
 
     @Override
     public Iterator<RoleMembershipBean> getAllMemberships(String orgId) throws StorageException {
@@ -2026,18 +2041,18 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
 
     @Override
     public Iterator<UserBean> getAllUsers(String orgId) throws StorageException {
-        // TODO Auto-generated method stub
-        return null;
+        EntityManager entityManager = getActiveEntityManager();
+
+        String jpql =
+                "SELECT b "
+                + "FROM UserBean b ";
+
+        Query query = entityManager.createQuery(jpql);
+        return super.getAll(UserBean.class, query);
     }
 
     @Override
     public Iterator<UserBean> getAllUsers() throws StorageException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public Iterator<RoleBean> getAllRoles(String orgId) throws StorageException {
         // TODO Auto-generated method stub
         return null;
     }

@@ -16,5 +16,5 @@
 package io.apiman.manager.api.exportimport;
 
 public enum GlobalElementsEnum {
-    Gateways, Plugins, Users, Roles, Orgs, Metadata;
+    Gateways, Plugins, PolicyDefinitions, Users, Roles, Orgs, Metadata;
 }

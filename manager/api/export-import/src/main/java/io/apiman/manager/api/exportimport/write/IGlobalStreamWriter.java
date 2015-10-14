@@ -20,6 +20,7 @@ import io.apiman.manager.api.beans.idm.RoleBean;
 import io.apiman.manager.api.beans.idm.UserBean;
 import io.apiman.manager.api.beans.orgs.OrganizationBean;
 import io.apiman.manager.api.beans.plugins.PluginBean;
+import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
 import io.apiman.manager.api.exportimport.beans.MetadataBean;
 
 /**
@@ -41,7 +42,8 @@ public interface IGlobalStreamWriter {
 
     // Orgs
     IGlobalStreamWriter startOrgs();
-    IOrgStreamWriter writeOrg(OrganizationBean org);
+    IOrgStreamWriter startOrg(OrganizationBean org);
+    IGlobalStreamWriter endOrg();
     IGlobalStreamWriter endOrgs();
 
     IGlobalStreamWriter startPlugins();
@@ -49,8 +51,12 @@ public interface IGlobalStreamWriter {
     IGlobalStreamWriter endPlugins();
 
     IGlobalStreamWriter startGateways();
-    IGlobalStreamWriter writeGateways(GatewayBean gb);
+    IGlobalStreamWriter writeGateway(GatewayBean gb);
     IGlobalStreamWriter endGateways();
+
+    IGlobalStreamWriter startPolicyDefs();
+    IGlobalStreamWriter writePolicyDef(PolicyDefinitionBean policyDef);
+    IGlobalStreamWriter endPolicyDefs();
 
     void close();
 }

@@ -15,6 +15,6 @@
  */
 package io.apiman.manager.api.exportimport.manager;
 
-public enum ExportImportProviders {
+public enum ExportImportProviderType {
     JSON, ZIP;
 }
