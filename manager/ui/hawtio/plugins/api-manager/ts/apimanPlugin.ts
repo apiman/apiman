@@ -362,10 +362,6 @@ module Apiman {
     $.getScript('apiman/config.js')
         .done((script, textStatus) => {
             log.info('Loaded the config.js config!');
-
-            angular.element(document).ready(function () {
-                angular.bootstrap(document, ['api-manager']);
-            });
         })
         .fail((response) => {
             log.debug('Error fetching configuration: ', response);

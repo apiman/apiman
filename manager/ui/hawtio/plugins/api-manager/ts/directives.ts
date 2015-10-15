@@ -119,7 +119,7 @@ module Apiman {
                     }, function(newValue, oldValue) {
                         var entityStatus = newValue;
                         var elem = element;
-                        
+
                         if (entityStatus) {
                             var validStatuses = attrs.apimanStatus.split(',');
                             var statusIsValid = false;
