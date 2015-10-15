@@ -118,8 +118,8 @@ module Apiman {
                         return EntityStatusService.getEntityStatus();
                     }, function(newValue, oldValue) {
                         var entityStatus = newValue;
-                        console.log('entityStatus: ' + entityStatus);
                         var elem = element;
+                        
                         if (entityStatus) {
                             var validStatuses = attrs.apimanStatus.split(',');
                             var statusIsValid = false;

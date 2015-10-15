@@ -374,6 +374,10 @@ module Apiman {
             // Load the i18n jsonp script
             $.getScript('apiman/translations.js').done((script, textStatus) => {
                 log.info('Loaded the translations.js bundle!');
+
+                angular.element(document).ready(function () {
+                    angular.bootstrap(document, ['api-manager']);
+                });
             }).fail((response) => {
                 log.debug('Error fetching translations: ', response);
             });
