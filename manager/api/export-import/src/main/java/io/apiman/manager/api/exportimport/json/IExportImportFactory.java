@@ -15,12 +15,25 @@
  */
 package io.apiman.manager.api.exportimport.json;
 
-import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.exportimport.manager.ExportImportConfigParser;
-import io.apiman.manager.api.exportimport.read.IStreamReader;
-import io.apiman.manager.api.exportimport.write.IGlobalStreamWriter;
+import io.apiman.manager.api.exportimport.read.IImportReader;
+import io.apiman.manager.api.exportimport.write.IExportWriter;
 
-public interface ExportImportFactory {
-    IStreamReader getReader(ExportImportConfigParser config, IStorage iStorage);
-    IGlobalStreamWriter getWriter(ExportImportConfigParser config, IStorage iStorage);
+/**
+ * Factory for creating readers and writers for apiman export files.
+ */
+public interface IExportImportFactory {
+    /**
+     * Creates a reader based on the given config.  This should return a 
+     * reader specific to the type of file being imported.
+     * @param config
+     */
+    IImportReader createReader(ExportImportConfigParser config);
+
+    /**
+     * Creates a writer based on the given config.  This should return a
+     * writer specific to the type of output file being exported to.
+     * @param config
+     */
+    IExportWriter createWriter(ExportImportConfigParser config);
 }

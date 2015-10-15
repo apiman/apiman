@@ -15,23 +15,17 @@
  */
 package io.apiman.manager.api.exportimport.json;
 
-import io.apiman.manager.api.beans.apps.ApplicationBean;
-import io.apiman.manager.api.beans.apps.ApplicationVersionBean;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
 import io.apiman.manager.api.beans.contracts.ContractBean;
 import io.apiman.manager.api.beans.idm.RoleMembershipBean;
 import io.apiman.manager.api.beans.orgs.OrganizationBean;
-import io.apiman.manager.api.beans.plans.PlanBean;
-import io.apiman.manager.api.beans.plans.PlanVersionBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
-import io.apiman.manager.api.beans.services.ServiceBean;
-import io.apiman.manager.api.beans.services.ServiceVersionBean;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.exportimport.EntityHandler;
 import io.apiman.manager.api.exportimport.OrgElementsEnum;
-import io.apiman.manager.api.exportimport.read.IStreamReader;
+import io.apiman.manager.api.exportimport.read.IImportReader;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -46,7 +40,7 @@ import org.codehaus.jackson.JsonToken;
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 @SuppressWarnings("nls")
-public class JsonOrgStreamReader extends AbstractJsonReader implements IStreamReader {
+public class JsonOrgStreamReader extends AbstractJsonReader implements IImportReader {
 
     private JsonParser jp;
     private JsonToken current;
@@ -90,54 +84,54 @@ public class JsonOrgStreamReader extends AbstractJsonReader implements IStreamRe
                             }
                         });
                         break;
-                    case ApplicationVersions:
-                        processEntities(ApplicationVersionBean.class, new EntityHandler<ApplicationVersionBean>() {
-                           ApplicationBean app = null;
-
-                           @Override
-                           public void handleEntity(ApplicationVersionBean version) throws StorageException {
-                               if (app == null) {
-                                 app = version.getApplication();
-                                 app.setOrganization(orgBean);
-                                 storage.createApplication(app);
-                               }
-                               storage.createApplicationVersion(version);
-                               System.out.println("ApplicationVersionBean is " + version);
-                           }
-                       });
-                       break;
-                    case ServiceVersions:
-                        processEntities(ServiceVersionBean.class, new EntityHandler<ServiceVersionBean>() {
-                            ServiceBean serviceBean = null;
-
-                            @Override
-                            public void handleEntity(ServiceVersionBean version) throws StorageException {
-                                if (serviceBean == null) {
-                                    serviceBean = version.getService();
-                                    serviceBean.setOrganization(orgBean);
-                                    storage.createService(serviceBean);
-                                }
-                                storage.createServiceVersion(version);
-                                System.out.println("ServiceVersionBean is " + version);
-                            }
-                        });
-                        break;
-                    case PlanVersions:
-                        processEntities(PlanVersionBean.class, new EntityHandler<PlanVersionBean>() {
-                            private PlanBean plan = null;
-
-                            @Override
-                            public void handleEntity(PlanVersionBean version) throws StorageException {
-                                if (plan == null) {
-                                    plan = version.getPlan();
-                                    plan.setOrganization(orgBean);
-                                    storage.createPlan(plan);
-                                }
-                                storage.createPlanVersion(version);
-                                System.out.println("PlanVersionBean " + plan);
-                            }
-                        });
-                        break;
+//                    case ApplicationVersions:
+//                        processEntities(ApplicationVersionBean.class, new EntityHandler<ApplicationVersionBean>() {
+//                           ApplicationBean app = null;
+//
+//                           @Override
+//                           public void handleEntity(ApplicationVersionBean version) throws StorageException {
+//                               if (app == null) {
+//                                 app = version.getApplication();
+//                                 app.setOrganization(orgBean);
+//                                 storage.createApplication(app);
+//                               }
+//                               storage.createApplicationVersion(version);
+//                               System.out.println("ApplicationVersionBean is " + version);
+//                           }
+//                       });
+//                       break;
+//                    case ServiceVersions:
+//                        processEntities(ServiceVersionBean.class, new EntityHandler<ServiceVersionBean>() {
+//                            ServiceBean serviceBean = null;
+//
+//                            @Override
+//                            public void handleEntity(ServiceVersionBean version) throws StorageException {
+//                                if (serviceBean == null) {
+//                                    serviceBean = version.getService();
+//                                    serviceBean.setOrganization(orgBean);
+//                                    storage.createService(serviceBean);
+//                                }
+//                                storage.createServiceVersion(version);
+//                                System.out.println("ServiceVersionBean is " + version);
+//                            }
+//                        });
+//                        break;
+//                    case PlanVersions:
+//                        processEntities(PlanVersionBean.class, new EntityHandler<PlanVersionBean>() {
+//                            private PlanBean plan = null;
+//
+//                            @Override
+//                            public void handleEntity(PlanVersionBean version) throws StorageException {
+//                                if (plan == null) {
+//                                    plan = version.getPlan();
+//                                    plan.setOrganization(orgBean);
+//                                    storage.createPlan(plan);
+//                                }
+//                                storage.createPlanVersion(version);
+//                                System.out.println("PlanVersionBean " + plan);
+//                            }
+//                        });
+//                        break;
                     case Contracts:
                         processEntities(ContractBean.class, new EntityHandler<ContractBean>() {
 

@@ -71,8 +71,6 @@ public interface IStorage {
     public void createPolicyDefinition(PolicyDefinitionBean policyDef) throws StorageException;
     public void createAuditEntry(AuditEntryBean entry) throws StorageException;
 
-    public Iterator<AuditEntryBean> getAllAuditEntries(String orgId) throws StorageException;
-
     /*
      * Various update methods.  These are called by the REST layer to update stuff.
      */
@@ -107,53 +105,37 @@ public interface IStorage {
     public void deleteGateway(GatewayBean gateway) throws StorageException;
     public void deletePlugin(PluginBean plugin) throws StorageException;
     public void deletePolicyDefinition(PolicyDefinitionBean policyDef) throws StorageException;
-    public Iterator<PolicyDefinitionBean> getAllPolicyDefinitions() throws StorageException;
 
     /*
      * Various get methods.  These are called by the REST layer to get stuff.
      */
 
-    public Iterator<OrganizationBean> getAllOrganizations() throws StorageException;
     public OrganizationBean getOrganization(String id) throws StorageException;
-
     public ApplicationBean getApplication(String organizationId, String id) throws StorageException;
     public ApplicationVersionBean getApplicationVersion(String organizationId, String applicationId, String version) throws StorageException;
-    public Iterator<ApplicationVersionBean> getAllApplicationVersions(String organizationId) throws StorageException;
-
-
     public ContractBean getContract(Long id) throws StorageException;
-    public Iterator<ContractBean> getAllContracts(String organizationId) throws StorageException;
-
     public ServiceBean getService(String organizationId, String id) throws StorageException;
     public ServiceVersionBean getServiceVersion(String organizationId, String serviceId, String version) throws StorageException;
-    public Iterator<ServiceVersionBean> getAllServiceVersions(String organizationId) throws StorageException;
-
     public InputStream getServiceDefinition(ServiceVersionBean serviceVersion) throws StorageException;
     public PlanBean getPlan(String organizationId, String id) throws StorageException;
     public PlanVersionBean getPlanVersion(String organizationId, String planId, String version) throws StorageException;
-    public Iterator<PlanVersionBean> getAllPlanVersions(String organizationId) throws StorageException;
-
     public PolicyBean getPolicy(PolicyType type, String organizationId, String entityId, String version, Long id) throws StorageException;
     public GatewayBean getGateway(String id) throws StorageException;
-    public Iterator<GatewayBean> getAllGateways() throws StorageException;
-
-
     public PluginBean getPlugin(long id) throws StorageException;
     public PluginBean getPlugin(String groupId, String artifactId) throws StorageException;
-    public Iterator<PluginBean> getAllPlugins() throws StorageException;
-
     public PolicyDefinitionBean getPolicyDefinition(String id) throws StorageException;
-    public Iterator<PolicyBean> getAllPolicies(String id) throws StorageException;
 
     /*
      * Anything that doesn't fall into the above categories!
      */
+    
     public void reorderPolicies(PolicyType type, String organizationId, String entityId,
             String entityVersion, List<Long> newOrder) throws StorageException;
 
     /*
      * Here are some IDM related storage methods.
      */
+    
     public void createUser(UserBean user) throws StorageException;
     public UserBean getUser(String userId) throws StorageException;
     public void updateUser(UserBean user) throws StorageException;
@@ -165,8 +147,26 @@ public interface IStorage {
     public RoleMembershipBean getMembership(String userId, String roleId, String organizationId) throws StorageException;
     public void deleteMembership(String userId, String roleId, String organizationId) throws StorageException;
     public void deleteMemberships(String userId, String organizationId) throws StorageException;
-    public Iterator<RoleMembershipBean> getAllMemberships(String orgId) throws StorageException;
-    public Iterator<UserBean> getAllUsers(String orgId) throws StorageException;
+    
+    /*
+     * Export related storage methods (get-all)
+     */
+    
+    public Iterator<GatewayBean> getAllGateways() throws StorageException;
+    public Iterator<PluginBean> getAllPlugins() throws StorageException;
+    public Iterator<PolicyDefinitionBean> getAllPolicyDefinitions() throws StorageException;
+    public Iterator<OrganizationBean> getAllOrganizations() throws StorageException;
+    public Iterator<RoleMembershipBean> getAllMemberships(String organizationId) throws StorageException;
+    public Iterator<PlanBean> getAllPlans(String organizationId) throws StorageException;
+    public Iterator<PlanVersionBean> getAllPlanVersions(String organizationId, String planId) throws StorageException;
+    public Iterator<ServiceBean> getAllServices(String organizationId) throws StorageException;
+    public Iterator<ServiceVersionBean> getAllServiceVersions(String organizationId, String serviceId) throws StorageException;
+    public Iterator<ApplicationBean> getAllApplications(String organizationId) throws StorageException;
+    public Iterator<ApplicationVersionBean> getAllApplicationVersions(String organizationId, String applicationId) throws StorageException;
+    public Iterator<ContractBean> getAllContracts(String organizationId, String applicationId, String version) throws StorageException;
+    public Iterator<AuditEntryBean> getAllAuditEntries(String organizationId) throws StorageException;
+    public Iterator<PolicyBean> getAllPolicies(String organizationId, String entityId, String version, PolicyType type) throws StorageException;
+    public Iterator<UserBean> getAllUsers(String organizationId) throws StorageException;
     public Iterator<UserBean> getAllUsers() throws StorageException;
     public Iterator<RoleBean> getAllRoles() throws StorageException;
 }

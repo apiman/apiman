@@ -15,6 +15,7 @@
  */
 package io.apiman.manager.api.exportimport.manager;
 
+import io.apiman.manager.api.beans.apps.ApplicationBean;
 import io.apiman.manager.api.beans.apps.ApplicationVersionBean;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
 import io.apiman.manager.api.beans.contracts.ContractBean;
@@ -23,20 +24,22 @@ import io.apiman.manager.api.beans.idm.RoleBean;
 import io.apiman.manager.api.beans.idm.RoleMembershipBean;
 import io.apiman.manager.api.beans.idm.UserBean;
 import io.apiman.manager.api.beans.orgs.OrganizationBean;
+import io.apiman.manager.api.beans.plans.PlanBean;
 import io.apiman.manager.api.beans.plans.PlanVersionBean;
 import io.apiman.manager.api.beans.plugins.PluginBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
+import io.apiman.manager.api.beans.policies.PolicyType;
+import io.apiman.manager.api.beans.services.ServiceBean;
 import io.apiman.manager.api.beans.services.ServiceVersionBean;
 import io.apiman.manager.api.config.Version;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.exportimport.beans.MetadataBean;
-import io.apiman.manager.api.exportimport.json.ExportImportFactory;
-import io.apiman.manager.api.exportimport.json.JsonExportImportFactory;
-import io.apiman.manager.api.exportimport.read.IStreamReader;
-import io.apiman.manager.api.exportimport.write.IGlobalStreamWriter;
-import io.apiman.manager.api.exportimport.write.IOrgStreamWriter;
+import io.apiman.manager.api.exportimport.json.IExportImportFactory;
+import io.apiman.manager.api.exportimport.json.JsonFileExportImportFactory;
+import io.apiman.manager.api.exportimport.read.IImportReader;
+import io.apiman.manager.api.exportimport.write.IExportWriter;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -60,12 +63,12 @@ public class ExportImportManager {
     private IStorage storage;
 
     private Version version = new Version();
-    private Map<ExportImportProviderType, ExportImportFactory> eiFactories = new HashMap<>();
+    private Map<ExportImportProviderType, IExportImportFactory> eiFactories = new HashMap<>();
     private ExportImportProviderType provider;
 
     // TODO We should have some kind of automated registration of these & factory pattern. This is interim.
     {
-        eiFactories.put(ExportImportProviderType.JSON, new JsonExportImportFactory());
+        eiFactories.put(ExportImportProviderType.JSON, new JsonFileExportImportFactory());
     }
 
     /**
@@ -92,7 +95,7 @@ public class ExportImportManager {
     }
 
     private void doImport() {
-        IStreamReader reader = eiFactories.get(provider).getReader(config, storage);
+        IImportReader reader = eiFactories.get(provider).createReader(config);
 
         try {
             reader.parse();
@@ -102,18 +105,16 @@ public class ExportImportManager {
     }
 
     private void doExport() {
-        IGlobalStreamWriter writer = eiFactories.get(provider).getWriter(config, storage);
-        new ExportWriter(writer, storage, null).write();
+        IExportWriter writer = eiFactories.get(provider).createWriter(config);
+        new StorageExporter(writer, storage, null).write();
     }
 
-    private class ExportWriter {
-        private IGlobalStreamWriter writer;
+    private class StorageExporter {
+        private IExportWriter writer;
         private IStorage storage;
         private String orgId;
 
-        public ExportWriter(IGlobalStreamWriter writer,
-                IStorage storage,
-                String orgId) {
+        public StorageExporter(IExportWriter writer, IStorage storage, String orgId) {
             this.writer = writer;
             this.storage = storage;
             this.orgId = orgId;
@@ -148,15 +149,13 @@ public class ExportImportManager {
 
               while (iter.hasNext()) {
                   OrganizationBean bean = iter.next();
-                  IOrgStreamWriter orgWriter = writer.startOrg(bean);
+                  writer.startOrg(bean);
 
-                  writeMemberships(orgWriter, bean.getId());
-                  writeApplicationVersions(orgWriter, bean.getId());
-                  writeServiceVersions(orgWriter, bean.getId());
-                  writePlanVersions(orgWriter, bean.getId());
-                  writeContracts(orgWriter, bean.getId());
-                  writePolicies(orgWriter, bean.getId());
-                  writeAudits(orgWriter, bean.getId());
+                  writeMemberships(bean.getId());
+                  writePlans(bean.getId());
+                  writeServices(bean.getId());
+                  writeApplications(bean.getId());
+                  writeAudits(bean.getId());
                   
                   writer.endOrg();
               }
@@ -168,126 +167,141 @@ public class ExportImportManager {
             }
         }
 
-        private void writeAudits(IOrgStreamWriter orgWriter, String orgId) {
+        private void writePlans(String orgId) {
             try {
-                Iterator<AuditEntryBean> iter = storage.getAllAuditEntries(orgId);
-
-                orgWriter.startAudits();
-
-                while(iter.hasNext()) {
-                    AuditEntryBean bean = iter.next();
-                    orgWriter.writeAudit(bean);
+                writer.startPlans();
+                Iterator<PlanBean> planIter = storage.getAllPlans(orgId);
+                while (planIter.hasNext()) {
+                    PlanBean planBean = planIter.next();
+                    writer.startPlan(planBean);
+                    writer.startPlanVersions();
+                    Iterator<PlanVersionBean> versionIter = storage.getAllPlanVersions(orgId, planBean.getId());
+                    while (versionIter.hasNext()) {
+                        PlanVersionBean versionBean = versionIter.next();
+                        writer.startPlanVersion(versionBean);
+                        writer.startPlanPolicies();
+                        Iterator<PolicyBean> policyIter = storage.getAllPolicies(orgId, planBean.getId(), versionBean.getVersion(), PolicyType.Plan);
+                        while (policyIter.hasNext()) {
+                            PolicyBean policyBean = policyIter.next();
+                            writer.writePlanPolicy(policyBean);
+                        }
+                        writer.endPlanPolicies();
+                        writer.endPlanVersion();
+                    }
+                    writer.endPlanVersions();
+                    writer.endPlan();
                 }
-
-                orgWriter.endAudits();
+                writer.endPlans();
             }
             catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }
 
-        private void writePolicies(IOrgStreamWriter orgWriter, String orgId) {
+        private void writeServices(String orgId) {
             try {
-                Iterator<PolicyBean> iter = storage.getAllPolicies(orgId);
-
-                orgWriter.startPolicies();
-
-                while(iter.hasNext()) {
-                    PolicyBean bean = iter.next();
-                    orgWriter.writePolicy(bean);
+                writer.startServices();
+                Iterator<ServiceBean> serviceIter = storage.getAllServices(orgId);
+                while (serviceIter.hasNext()) {
+                    ServiceBean serviceBean = serviceIter.next();
+                    writer.startService(serviceBean);
+                    writer.startServiceVersions();
+                    Iterator<ServiceVersionBean> versionIter = storage.getAllServiceVersions(orgId, serviceBean.getId());
+                    while (versionIter.hasNext()) {
+                        ServiceVersionBean versionBean = versionIter.next();
+                        writer.startServiceVersion(versionBean);
+                        writer.startServicePolicies();
+                        Iterator<PolicyBean> policyIter = storage.getAllPolicies(orgId, serviceBean.getId(), versionBean.getVersion(), PolicyType.Service);
+                        while (policyIter.hasNext()) {
+                            PolicyBean policyBean = policyIter.next();
+                            writer.writeServicePolicy(policyBean);
+                        }
+                        writer.endServicePolicies();
+                        writer.endServiceVersion();
+                    }
+                    writer.endServiceVersions();
+                    writer.endService();
                 }
-
-                orgWriter.endPolicies();
+                writer.endServices();
             }
             catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }
 
-        private void writeContracts(IOrgStreamWriter orgWriter, String orgId) {
+        private void writeApplications(String orgId) {
             try {
-                Iterator<ContractBean> iter = storage.getAllContracts(orgId);
-
-                orgWriter.startContracts();
-
-                while(iter.hasNext()) {
-                    ContractBean bean = iter.next();
-                    orgWriter.writeContract(bean);
+                writer.startApplications();
+                Iterator<ApplicationBean> applicationIter = storage.getAllApplications(orgId);
+                while (applicationIter.hasNext()) {
+                    ApplicationBean applicationBean = applicationIter.next();
+                    writer.startApplication(applicationBean);
+                    writer.startApplicationVersions();
+                    Iterator<ApplicationVersionBean> versionIter = storage.getAllApplicationVersions(orgId, applicationBean.getId());
+                    while (versionIter.hasNext()) {
+                        ApplicationVersionBean versionBean = versionIter.next();
+                        writer.startApplicationVersion(versionBean);
+                        
+                        // Policies
+                        writer.startApplicationPolicies();
+                        Iterator<PolicyBean> policyIter = storage.getAllPolicies(orgId, applicationBean.getId(), versionBean.getVersion(), PolicyType.Application);
+                        while (policyIter.hasNext()) {
+                            PolicyBean policyBean = policyIter.next();
+                            writer.writeApplicationPolicy(policyBean);
+                        }
+                        writer.endApplicationPolicies();
+                        
+                        // Contracts
+                        writer.startApplicationContracts();
+                        Iterator<ContractBean> contractIter = storage.getAllContracts(orgId, applicationBean.getId(), versionBean.getVersion());
+                        while (contractIter.hasNext()) {
+                            ContractBean contractBean = contractIter.next();
+                            writer.writeApplicationContract(contractBean);
+                        }
+                        writer.endApplicationContracts();
+                        
+                        writer.endApplicationVersion();
+                    }
+                    writer.endApplicationVersions();
+                    writer.endApplication();
                 }
-
-                orgWriter.endContracts();
+                writer.endApplications();
             }
             catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }
 
-        private void writePlanVersions(IOrgStreamWriter orgWriter, String orgId) {
-            try {
-                Iterator<PlanVersionBean> iter = storage.getAllPlanVersions(orgId);
-
-                orgWriter.startPlanVersions();
-
-                while(iter.hasNext()) {
-                    PlanVersionBean bean = iter.next();
-                    orgWriter.writePlanVersion(bean);
-                }
-
-                orgWriter.endPlanVersions();
-            }
-            catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        private void writeServiceVersions(IOrgStreamWriter orgWriter, String orgId) {
-            try {
-                Iterator<ServiceVersionBean> iter = storage.getAllServiceVersions(orgId);
-
-                orgWriter.startServiceVersions();
-
-                while(iter.hasNext()) {
-                    ServiceVersionBean bean = iter.next();
-                    orgWriter.writeServiceVersion(bean);
-                }
-
-                orgWriter.endServiceVersions();
-            }
-            catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        private void writeApplicationVersions(IOrgStreamWriter orgWriter, String orgId) {
-            try {
-                Iterator<ApplicationVersionBean> iter = storage.getAllApplicationVersions(orgId);
-
-                orgWriter.startApplicationVersions();
-
-                while(iter.hasNext()) {
-                    ApplicationVersionBean bean = iter.next();
-                    orgWriter.writeApplicationVersion(bean);
-                }
-
-                orgWriter.endApplicationVersions();
-            }
-            catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        private void writeMemberships(IOrgStreamWriter orgWriter, String orgId) {
+        private void writeMemberships(String orgId) {
             try {
                 Iterator<RoleMembershipBean> iter = storage.getAllMemberships(orgId);
 
-                orgWriter.startMemberships();
+                writer.startMemberships();
 
                 while(iter.hasNext()) {
                     RoleMembershipBean bean = iter.next();
-                    orgWriter.writeMembership(bean);
+                    writer.writeMembership(bean);
                 }
 
-                orgWriter.endMemberships();
+                writer.endMemberships();
+            }
+            catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        private void writeAudits(String orgId) {
+            try {
+                Iterator<AuditEntryBean> iter = storage.getAllAuditEntries(orgId);
+
+                writer.startAudits();
+
+                while(iter.hasNext()) {
+                    AuditEntryBean bean = iter.next();
+                    writer.writeAudit(bean);
+                }
+
+                writer.endAudits();
             }
             catch (Exception e) {
                 throw new RuntimeException(e);

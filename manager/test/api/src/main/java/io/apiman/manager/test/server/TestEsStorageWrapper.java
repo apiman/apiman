@@ -647,27 +647,6 @@ public class TestEsStorageWrapper implements IStorage {
     }
 
     @Override
-    public Iterator<ApplicationVersionBean> getAllApplicationVersions(String organizationId)
-            throws StorageException {
-        return this.delegate.getAllApplicationVersions(organizationId);
-    }
-
-    @Override
-    public Iterator<ContractBean> getAllContracts(String organizationId) throws StorageException {
-        return this.delegate.getAllContracts(organizationId);
-    }
-
-    @Override
-    public Iterator<ServiceVersionBean> getAllServiceVersions(String organizationId) throws StorageException {
-        return this.delegate.getAllServiceVersions(organizationId);
-    }
-
-    @Override
-    public Iterator<PlanVersionBean> getAllPlanVersions(String organizationId) throws StorageException {
-        return this.delegate.getAllPlanVersions(organizationId);
-    }
-
-    @Override
     public Iterator<GatewayBean> getAllGateways() throws StorageException {
         return this.delegate.getAllGateways();
     }
@@ -675,11 +654,6 @@ public class TestEsStorageWrapper implements IStorage {
     @Override
     public Iterator<AuditEntryBean> getAllAuditEntries(String orgId) throws StorageException {
         return this.delegate.getAllAuditEntries(orgId);
-    }
-
-    @Override
-    public Iterator<PolicyBean> getAllPolicies(String id) throws StorageException {
-        return this.delegate.getAllPolicies(id);
     }
 
     @Override
@@ -713,6 +687,75 @@ public class TestEsStorageWrapper implements IStorage {
     @Override
     public Iterator<PolicyDefinitionBean> getAllPolicyDefinitions() throws StorageException {
         return this.delegate.getAllPolicyDefinitions();
+    }
+
+    /**
+     * @see io.apiman.manager.api.core.IStorage#getAllPlans(java.lang.String)
+     */
+    @Override
+    public Iterator<PlanBean> getAllPlans(String organizationId) throws StorageException {
+        return delegate.getAllPlans(organizationId);
+    }
+
+    /**
+     * @see io.apiman.manager.api.core.IStorage#getAllPlanVersions(java.lang.String, java.lang.String)
+     */
+    @Override
+    public Iterator<PlanVersionBean> getAllPlanVersions(String organizationId, String planId)
+            throws StorageException {
+        return delegate.getAllPlanVersions(organizationId, planId);
+    }
+
+    /**
+     * @see io.apiman.manager.api.core.IStorage#getAllServices(java.lang.String)
+     */
+    @Override
+    public Iterator<ServiceBean> getAllServices(String organizationId) throws StorageException {
+        return delegate.getAllServices(organizationId);
+    }
+
+    /**
+     * @see io.apiman.manager.api.core.IStorage#getAllServiceVersions(java.lang.String, java.lang.String)
+     */
+    @Override
+    public Iterator<ServiceVersionBean> getAllServiceVersions(String organizationId, String serviceId)
+            throws StorageException {
+        return delegate.getAllServiceVersions(organizationId, serviceId);
+    }
+
+    /**
+     * @see io.apiman.manager.api.core.IStorage#getAllApplications(java.lang.String)
+     */
+    @Override
+    public Iterator<ApplicationBean> getAllApplications(String organizationId) throws StorageException {
+        return delegate.getAllApplications(organizationId);
+    }
+
+    /**
+     * @see io.apiman.manager.api.core.IStorage#getAllApplicationVersions(java.lang.String, java.lang.String)
+     */
+    @Override
+    public Iterator<ApplicationVersionBean> getAllApplicationVersions(String organizationId,
+            String applicationId) throws StorageException {
+        return delegate.getAllApplicationVersions(organizationId, applicationId);
+    }
+
+    /**
+     * @see io.apiman.manager.api.core.IStorage#getAllContracts(java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public Iterator<ContractBean> getAllContracts(String organizationId, String applicationId, String version)
+            throws StorageException {
+        return delegate.getAllContracts(organizationId, applicationId, version);
+    }
+
+    /**
+     * @see io.apiman.manager.api.core.IStorage#getAllPolicies(java.lang.String, java.lang.String, java.lang.String, io.apiman.manager.api.beans.policies.PolicyType)
+     */
+    @Override
+    public Iterator<PolicyBean> getAllPolicies(String organizationId, String entityId, String version,
+            PolicyType type) throws StorageException {
+        return delegate.getAllPolicies(organizationId, entityId, version, type);
     }
 
     /**

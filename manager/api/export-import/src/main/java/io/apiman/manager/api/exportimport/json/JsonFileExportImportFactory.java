@@ -15,10 +15,9 @@
  */
 package io.apiman.manager.api.exportimport.json;
 
-import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.exportimport.manager.ExportImportConfigParser;
-import io.apiman.manager.api.exportimport.read.IStreamReader;
-import io.apiman.manager.api.exportimport.write.IGlobalStreamWriter;
+import io.apiman.manager.api.exportimport.read.IImportReader;
+import io.apiman.manager.api.exportimport.write.IExportWriter;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -28,12 +27,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 @SuppressWarnings("nls")
-public class JsonExportImportFactory implements ExportImportFactory {
+public class JsonFileExportImportFactory implements IExportImportFactory {
 
+    /**
+     * @see io.apiman.manager.api.exportimport.json.IExportImportFactory#createWriter(io.apiman.manager.api.exportimport.manager.ExportImportConfigParser)
+     */
     @Override
-    public IGlobalStreamWriter getWriter(ExportImportConfigParser config,
-            IStorage storage)  {
-
+    public IExportWriter createWriter(ExportImportConfigParser config) {
         if (config.getJsonFile() == null)
             throw new IllegalArgumentException("Must provide path to JSON file to write");
 
@@ -48,14 +48,17 @@ public class JsonExportImportFactory implements ExportImportFactory {
         try {
             outFile.createNewFile();
             OutputStream os = new FileOutputStream(outFile);
-            return new JsonGlobalStreamWriter(os);
+            return new JsonFileExportWriter(os);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
-
+    
+    /**
+     * @see io.apiman.manager.api.exportimport.json.IExportImportFactory#createReader(io.apiman.manager.api.exportimport.manager.ExportImportConfigParser)
+     */
     @Override
-    public IStreamReader getReader(ExportImportConfigParser config, IStorage storage) {
+    public IImportReader createReader(ExportImportConfigParser config) {
         if (config.getJsonFile() == null)
             throw new IllegalArgumentException("Must provide path to JSON file to read");
 
@@ -66,7 +69,7 @@ public class JsonExportImportFactory implements ExportImportFactory {
 
         try {
             InputStream is = new FileInputStream(inFile);
-            return new JsonGlobalStreamReader(is, storage);
+            return new JsonFileImportReader(is);
         } catch (IOException e){
             throw new RuntimeException(e);
         }

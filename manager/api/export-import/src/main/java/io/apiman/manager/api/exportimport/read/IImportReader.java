@@ -15,6 +15,6 @@
  */
 package io.apiman.manager.api.exportimport.read;
 
-public interface IStreamReader {
+public interface IImportReader {
     void parse() throws Exception;
 }

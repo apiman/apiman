@@ -17,6 +17,12 @@ package io.apiman.manager.api.exportimport.beans;
 
 import org.joda.time.DateTime;
 
+/**
+ * A bean that holds basic information about a single export of 
+ * the apiman data.  This bean includes useful information about
+ * the export, including the version of apiman and the date the
+ * export was performed.
+ */
 public class MetadataBean {
     private DateTime exportedOn;
     private String apimanVersion;
