@@ -5,3 +5,5 @@ dist
 defs.d.ts
 d.ts/
 .externalToolBuilders/
+.idea/
+typings/

@@ -1,4 +1,5 @@
 /// <reference path="../../includes.ts"/>
+
 module Apiman {
 
     _module.directive('apimanActionBtn',
@@ -187,6 +188,7 @@ module Apiman {
         }]);
 
     export var sb_counter = 0;
+
     _module.directive('apimanSearchBox',
         ['Logger', 'TranslationService', 
         function(Logger, TranslationService) {
