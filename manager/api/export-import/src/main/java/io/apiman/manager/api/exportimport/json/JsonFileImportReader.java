@@ -19,11 +19,10 @@ import io.apiman.manager.api.beans.gateways.GatewayBean;
 import io.apiman.manager.api.beans.idm.RoleBean;
 import io.apiman.manager.api.beans.idm.UserBean;
 import io.apiman.manager.api.beans.plugins.PluginBean;
-import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.exportimport.EntityHandler;
 import io.apiman.manager.api.exportimport.GlobalElementsEnum;
 import io.apiman.manager.api.exportimport.beans.MetadataBean;
-import io.apiman.manager.api.exportimport.read.IStreamReader;
+import io.apiman.manager.api.exportimport.read.IImportReader;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,16 +39,19 @@ import org.codehaus.jackson.map.ObjectMapper;
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 @SuppressWarnings("nls")
-public class JsonGlobalStreamReader extends AbstractJsonReader implements IStreamReader {
+public class JsonFileImportReader extends AbstractJsonReader implements IImportReader {
 
     private JsonParser jp;
     private JsonToken current;
-    private IStorage storage;
     private InputStream in;
 
-    public JsonGlobalStreamReader(InputStream in,
-            IStorage storage) throws JsonParseException, IOException {
-        this.storage = storage;
+    /**
+     * Constructor.
+     * @param in
+     * @throws JsonParseException
+     * @throws IOException
+     */
+    public JsonFileImportReader(InputStream in) throws JsonParseException, IOException {
         this.in = in;
         jp = new JsonFactory().createJsonParser(in);
         jp.setCodec(new ObjectMapper());
@@ -81,7 +83,7 @@ public class JsonGlobalStreamReader extends AbstractJsonReader implements IStrea
                     @Override
                     public void handleEntity(GatewayBean gateway) throws Exception {
                         System.out.println("GatewayBean " + gateway);
-                        storage.createGateway(gateway);
+//                        storage.createGateway(gateway);
                     }
                 });
                 break;
@@ -90,7 +92,7 @@ public class JsonGlobalStreamReader extends AbstractJsonReader implements IStrea
                     @Override
                     public void handleEntity(PluginBean plugin) throws Exception {
                         System.out.println("PluginBean " + plugin);
-                        storage.createPlugin(plugin);
+//                        storage.createPlugin(plugin);
                     }
                 });
                 break;
@@ -99,7 +101,7 @@ public class JsonGlobalStreamReader extends AbstractJsonReader implements IStrea
                     @Override
                     public void handleEntity(RoleBean role) throws Exception {
                         System.out.println("RoleBean " + role);
-                        storage.createRole(role);
+//                        storage.createRole(role);
                     }
                 });
                 break;
@@ -108,12 +110,12 @@ public class JsonGlobalStreamReader extends AbstractJsonReader implements IStrea
                     @Override
                     public void handleEntity(UserBean user) throws Exception {
                         System.out.println("UserBean " + user);
-                        storage.createUser(user);
+//                        storage.createUser(user);
                     }
                 });
                 break;
             case Orgs:
-                new JsonOrgStreamReader(in, storage, jp).parse();
+//                new JsonOrgStreamReader(in, storage, jp).parse();
                 break;
             default:
                 throw new IllegalArgumentException("Unhandled field: " + fieldName);

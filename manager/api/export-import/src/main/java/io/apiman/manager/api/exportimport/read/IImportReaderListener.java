@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 JBoss Inc
+ * Copyright 2013 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apiman.manager.api.exportimport;
 
-public enum OrgElementsEnum {
-    Memberships, 
-    Apps, Plans, Services,
-    Versions, Contracts, Policies, 
-    Audits;
+package io.apiman.manager.api.exportimport.read;
+
+/**
+ * Used to listen to the reading of an apiman import file.  The import
+ * reader will parse the import file and then fire events for each
+ * entity it finds in the import.  This listener is the callback for 
+ * those events.
+ *
+ * @author eric.wittmann@redhat.com
+ */
+public interface IImportReaderListener {
+
 }

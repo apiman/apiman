@@ -43,7 +43,7 @@ public abstract class AbstractJsonWriter<T extends Enum<T>> {
         System.out.println(msg);
     }
 
-    protected void writeObjectFieldStart(Enum<T> globEnum) {
+    protected void writeObjectFieldStart(Enum<?> globEnum) {
         debug("Start object field: " + globEnum.name());
         depth++;
         try {
@@ -63,7 +63,7 @@ public abstract class AbstractJsonWriter<T extends Enum<T>> {
         }
     }
 
-    protected void writeStartObject(Enum<T> globEnum) {
+    protected void writeStartObject(Enum<?> globEnum) {
         debug("Start object: " + globEnum.name());
         depth++;
         try {
@@ -83,7 +83,7 @@ public abstract class AbstractJsonWriter<T extends Enum<T>> {
         }
     }
 
-    protected void writeStartArray(Enum<T> globEnum) {
+    protected void writeStartArray(Enum<?> globEnum) {
         debug("Start array: " + globEnum.name());
         depth++;
         try {
@@ -93,7 +93,7 @@ public abstract class AbstractJsonWriter<T extends Enum<T>> {
         }
     }
 
-    protected void writeEndArray(Enum<T> type) {
+    protected void writeEndArray(Enum<?> type) {
         depth--;
         debug("End array: " + type.name());
         try {

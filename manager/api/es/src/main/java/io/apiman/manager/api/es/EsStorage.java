@@ -1991,43 +1991,192 @@ public class EsStorage implements IStorage, IStorageQuery {
             }
         });
     }
-
+    
+    /**
+     * @see io.apiman.manager.api.core.IStorage#getAllPlans(java.lang.String)
+     */
     @Override
-    public Iterator<ApplicationVersionBean> getAllApplicationVersions(String organizationId)
+    public Iterator<PlanBean> getAllPlans(String organizationId) throws StorageException {
+        return getAll("plan", new IUnmarshaller<PlanBean>() { //$NON-NLS-1$
+            @Override
+            public PlanBean unmarshal(Map<String, Object> source) {
+                return EsMarshalling.unmarshallPlan(source);
+            }
+        }, matchOrgQuery(organizationId));
+    }
+    
+    /**
+     * @see io.apiman.manager.api.core.IStorage#getAllApplications(java.lang.String)
+     */
+    @Override
+    public Iterator<ApplicationBean> getAllApplications(String organizationId) throws StorageException {
+        return getAll("application", new IUnmarshaller<ApplicationBean>() { //$NON-NLS-1$
+            @Override
+            public ApplicationBean unmarshal(Map<String, Object> source) {
+                return EsMarshalling.unmarshallApplication(source);
+            }
+        }, matchOrgQuery(organizationId));
+    }
+    
+    /**
+     * @see io.apiman.manager.api.core.IStorage#getAllServices(java.lang.String)
+     */
+    @Override
+    public Iterator<ServiceBean> getAllServices(String organizationId) throws StorageException {
+        return getAll("service", new IUnmarshaller<ServiceBean>() { //$NON-NLS-1$
+            @Override
+            public ServiceBean unmarshal(Map<String, Object> source) {
+                return EsMarshalling.unmarshallService(source);
+            }
+        }, matchOrgQuery(organizationId));
+    }
+    
+    /**
+     * @see io.apiman.manager.api.core.IStorage#getAllPlanVersions(java.lang.String, java.lang.String)
+     */
+    @SuppressWarnings("nls")
+    @Override
+    public Iterator<PlanVersionBean> getAllPlanVersions(String organizationId, String planId)
             throws StorageException {
-        return getAll(organizationId, "applicationVersion", new IUnmarshaller<ApplicationVersionBean>() { //$NON-NLS-1$
-            @Override
-            public ApplicationVersionBean unmarshal(Map<String, Object> source) {
-                return EsMarshalling.unmarshallApplicationVersion(source);
-            }
-        });
-    }
-
-    @Override
-    public Iterator<ContractBean> getAllContracts(String organizationId) throws StorageException {
-        return new ArrayList<ContractBean>().iterator();
-        // TODO Auto-generated method stub
-//        return null;
-    }
-
-    @Override
-    public Iterator<ServiceVersionBean> getAllServiceVersions(String organizationId) throws StorageException {
-        return getAll(organizationId, "serviceVersion", new IUnmarshaller<ServiceVersionBean>() { //$NON-NLS-1$
-            @Override
-            public ServiceVersionBean unmarshal(Map<String, Object> source) {
-                return EsMarshalling.unmarshallServiceVersion(source);
-            }
-        });
-    }
-
-    @Override
-    public Iterator<PlanVersionBean> getAllPlanVersions(String organizationId) throws StorageException {
-        return getAll(organizationId, "planVersion", new IUnmarshaller<PlanVersionBean>() { //$NON-NLS-1$
+        String query = "{" + 
+                "  \"query\": {" + 
+                "    \"filtered\": { " + 
+                "      \"filter\": {" + 
+                "        \"and\" : [" + 
+                "          {" + 
+                "            \"term\": { \"organizationId\": \"" + organizationId + "\" }" + 
+                "          }," + 
+                "          {" + 
+                "            \"term\": { \"planId\": \"" + planId + "\" }" + 
+                "          }" + 
+                "      ]" + 
+                "      }" + 
+                "    }" + 
+                "  }" + 
+                "}";
+        return getAll("planVersion", new IUnmarshaller<PlanVersionBean>() { //$NON-NLS-1$
             @Override
             public PlanVersionBean unmarshal(Map<String, Object> source) {
                 return EsMarshalling.unmarshallPlanVersion(source);
             }
-        });
+        }, query);
+    }
+    
+    /**
+     * @see io.apiman.manager.api.core.IStorage#getAllServiceVersions(java.lang.String, java.lang.String)
+     */
+    @SuppressWarnings("nls")
+    @Override
+    public Iterator<ServiceVersionBean> getAllServiceVersions(String organizationId, String serviceId)
+            throws StorageException {
+        String query = "{" + 
+                "  \"query\": {" + 
+                "    \"filtered\": { " + 
+                "      \"filter\": {" + 
+                "        \"and\" : [" + 
+                "          {" + 
+                "            \"term\": { \"organizationId\": \"" + organizationId + "\" }" + 
+                "          }," + 
+                "          {" + 
+                "            \"term\": { \"serviceId\": \"" + serviceId + "\" }" + 
+                "          }" + 
+                "      ]" + 
+                "      }" + 
+                "    }" + 
+                "  }" + 
+                "}";
+        return getAll("serviceVersion", new IUnmarshaller<ServiceVersionBean>() { //$NON-NLS-1$
+            @Override
+            public ServiceVersionBean unmarshal(Map<String, Object> source) {
+                return EsMarshalling.unmarshallServiceVersion(source);
+            }
+        }, query);
+    }
+    
+    /**
+     * @see io.apiman.manager.api.core.IStorage#getAllApplicationVersions(java.lang.String, java.lang.String)
+     */
+    @SuppressWarnings("nls")
+    @Override
+    public Iterator<ApplicationVersionBean> getAllApplicationVersions(String organizationId,
+            String applicationId) throws StorageException {
+        String query = "{" + 
+                "  \"query\": {" + 
+                "    \"filtered\": { " + 
+                "      \"filter\": {" + 
+                "        \"and\" : [" + 
+                "          {" + 
+                "            \"term\": { \"organizationId\": \"" + organizationId + "\" }" + 
+                "          }," + 
+                "          {" + 
+                "            \"term\": { \"applicationId\": \"" + applicationId + "\" }" + 
+                "          }" + 
+                "      ]" + 
+                "      }" + 
+                "    }" + 
+                "  }" + 
+                "}";
+        return getAll("applicationVersion", new IUnmarshaller<ApplicationVersionBean>() { //$NON-NLS-1$
+            @Override
+            public ApplicationVersionBean unmarshal(Map<String, Object> source) {
+                return EsMarshalling.unmarshallApplicationVersion(source);
+            }
+        }, query);
+    }
+    
+    /**
+     * @see io.apiman.manager.api.core.IStorage#getAllContracts(java.lang.String, java.lang.String, java.lang.String)
+     */
+    @SuppressWarnings("nls")
+    @Override
+    public Iterator<ContractBean> getAllContracts(String organizationId, String applicationId, String version)
+            throws StorageException {
+        String query = "{" + 
+                "  \"query\": {" + 
+                "    \"filtered\": {" + 
+                "      \"filter\": {" + 
+                "        \"and\" : [" + 
+                "          {" + 
+                "            \"term\": { \"appOrganizationId\": \"" + organizationId + "\" }" + 
+                "          }," + 
+                "          {" + 
+                "            \"term\": { \"appId\": \"" + applicationId + "\" }" + 
+                "          }," + 
+                "          {" + 
+                "            \"term\": { \"appVersion\": \"" + version + "\" }" + 
+                "          }" + 
+                "      ]" + 
+                "      }" + 
+                "    }" + 
+                "  }" + 
+                "}";
+        return getAll("contract", new IUnmarshaller<ContractBean>() { //$NON-NLS-1$
+            @Override
+            public ContractBean unmarshal(Map<String, Object> source) {
+                return EsMarshalling.unmarshallContract(source);
+            }
+        }, query);
+    }
+    
+    /**
+     * @see io.apiman.manager.api.core.IStorage#getAllPolicies(java.lang.String, java.lang.String, java.lang.String, io.apiman.manager.api.beans.policies.PolicyType)
+     */
+    @Override
+    public Iterator<PolicyBean> getAllPolicies(String organizationId, String entityId, String version,
+            PolicyType type) throws StorageException {
+        try {
+            String docType = getPoliciesDocType(type);
+            String pid = id(organizationId, entityId, version);
+            Map<String, Object> source = getEntity(docType, pid);
+            PoliciesBean policies = EsMarshalling.unmarshallPolicies(source);
+            if (policies == null || policies.getPolicies() == null) {
+                return new ArrayList<PolicyBean>().iterator();
+            }
+            List<PolicyBean> policyBeans = policies.getPolicies();
+            return policyBeans.iterator();
+        } catch (Exception e) {
+            throw new StorageException(e);
+        }
     }
 
     @Override
@@ -2067,23 +2216,23 @@ public class EsStorage implements IStorage, IStorageQuery {
     }
 
     @Override
-    public Iterator<RoleMembershipBean> getAllMemberships(String orgId) throws StorageException {
-        return getAll(orgId, "roleMembership", new IUnmarshaller<RoleMembershipBean>() { //$NON-NLS-1$
+    public Iterator<RoleMembershipBean> getAllMemberships(String organizationId) throws StorageException {
+        return getAll("roleMembership", new IUnmarshaller<RoleMembershipBean>() { //$NON-NLS-1$
             @Override
             public RoleMembershipBean unmarshal(Map<String, Object> source) {
                 return EsMarshalling.unmarshallRoleMembership(source);
             }
-        });
+        }, matchOrgQuery(organizationId));
     }
 
     @Override
-    public Iterator<AuditEntryBean> getAllAuditEntries(String orgId) throws StorageException {
-        return getAll(orgId, "auditEntry", new IUnmarshaller<AuditEntryBean>() { //$NON-NLS-1$
+    public Iterator<AuditEntryBean> getAllAuditEntries(String organizationId) throws StorageException {
+        return getAll("auditEntry", new IUnmarshaller<AuditEntryBean>() { //$NON-NLS-1$
             @Override
             public AuditEntryBean unmarshal(Map<String, Object> source) {
                 return EsMarshalling.unmarshallAuditEntry(source);
             }
-        });
+        }, matchOrgQuery(organizationId));
     }
 
     @Override
@@ -2109,13 +2258,6 @@ public class EsStorage implements IStorage, IStorageQuery {
         });
     }
 
-    @Override
-    public Iterator<PolicyBean> getAllPolicies(String id) throws StorageException {
-        return new ArrayList<PolicyBean>().iterator();
-        // TODO Auto-generated method stub
-//        return null;
-    }
-
     /**
      * Returns an iterator over all instances of the given entity type.
      * @param entityType
@@ -2123,18 +2265,19 @@ public class EsStorage implements IStorage, IStorageQuery {
      * @throws StorageException
      */
     private <T> Iterator<T> getAll(String entityType, IUnmarshaller<T> unmarshaller) throws StorageException {
-        return getAll(null, entityType, unmarshaller);
+        String query = matchAllQuery();
+        return getAll(entityType, unmarshaller, query);
     }
 
     /**
      * Returns an iterator over all instances of the given entity type.
-     * @param organizationId
      * @param entityType
      * @param unmarshaller
+     * @param query
      * @throws StorageException
      */
-    private <T> Iterator<T> getAll(String organizationId, String entityType, IUnmarshaller<T> unmarshaller) throws StorageException {
-        return new EntityIterator<T>(organizationId, entityType, unmarshaller);
+    private <T> Iterator<T> getAll(String entityType, IUnmarshaller<T> unmarshaller, String query) throws StorageException {
+        return new EntityIterator<T>(entityType, unmarshaller, query);
     }
 
     /**
@@ -2157,7 +2300,7 @@ public class EsStorage implements IStorage, IStorageQuery {
     @SuppressWarnings("nls")
     private class EntityIterator<T> implements Iterator<T> {
 
-        private String organizationId;
+        private String query;
         private String entityType;
         private IUnmarshaller<T> unmarshaller;
         private String scrollId = null;
@@ -2166,15 +2309,15 @@ public class EsStorage implements IStorage, IStorageQuery {
 
         /**
          * Constructor.
-         * @param organizationId
          * @param entityType
          * @param unmarshaller
+         * @param query
          * @throws StorageException
          */
-        public EntityIterator(String organizationId, String entityType, IUnmarshaller<T> unmarshaller) throws StorageException {
-            this.organizationId = organizationId;
+        public EntityIterator(String entityType, IUnmarshaller<T> unmarshaller, String query) throws StorageException {
             this.entityType = entityType;
             this.unmarshaller = unmarshaller;
+            this.query = query;
             initScroll();
             this.nextHitIdx = 0;
         }
@@ -2203,25 +2346,17 @@ public class EsStorage implements IStorage, IStorageQuery {
             Hit<Map<String, Object>, Void> hit = hits.get(nextHitIdx++);
             return unmarshaller.unmarshal(hit.source);
         }
+        
+        /**
+         * @see java.util.Iterator#remove()
+         */
+        @Override
+        public void remove() {
+            // Not implemented.
+        }
 
         private void initScroll() throws StorageException {
             try {
-                String query = "{\r\n" + 
-                        "  \"query\": {\r\n" + 
-                        "    \"match_all\": {}\r\n" + 
-                        "  }\r\n" + 
-                        "}";
-                if (organizationId != null) {
-                    query = "{\r\n" + 
-                            "  \"query\": {\r\n" + 
-                            "    \"filtered\": { \r\n" + 
-                            "      \"filter\": {\r\n" + 
-                            "        \"term\": { \"organizationId\": \"ORG_ID\" }\r\n" + 
-                            "      }\r\n" + 
-                            "    }\r\n" + 
-                            "  }\r\n" + 
-                            "}".replace("ORG_ID", organizationId);
-                }
                 Search search = new Search.Builder(query).addIndex(INDEX_NAME).addType(entityType)
                         .setSearchType(SearchType.SCAN).setParameter(Parameters.SCROLL, "1m").build();
                 SearchResult response = esClient.execute(search);
@@ -2249,6 +2384,31 @@ public class EsStorage implements IStorage, IStorageQuery {
             }
         }
 
+    }
+
+    /**
+     * @return an ES query to match all documents
+     */
+    @SuppressWarnings("nls")
+    private String matchAllQuery() {
+        return "{" + 
+                "  \"query\": {" + 
+                "    \"match_all\": {}" + 
+                "  }" + 
+                "}";
+    }
+    
+    @SuppressWarnings("nls")
+    private String matchOrgQuery(String organizationId) {
+        return "{" + 
+                "  \"query\": {" + 
+                "    \"filtered\": { " + 
+                "      \"filter\": {" + 
+                "        \"term\": { \"organizationId\": \"" + organizationId + "\" }" + 
+                "      }" + 
+                "    }" + 
+                "  }" + 
+                "}";
     }
 
 }

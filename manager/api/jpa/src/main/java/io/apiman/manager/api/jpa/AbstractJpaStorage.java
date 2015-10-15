@@ -261,13 +261,12 @@ public abstract class AbstractJpaStorage {
 
             @Override
             public void remove() {
-                throw new UnsupportedOperationException("remove");
+                throw new UnsupportedOperationException("remove"); //$NON-NLS-1$
             }
         };
     }
 
     private <T> List<T> getAll(int offset, int max, Class<T> type, Query query) throws StorageException {
-        EntityManager entityManager = getActiveEntityManager();
         return query
                 .setFirstResult(offset)
                 .setMaxResults(max)
