@@ -8,7 +8,7 @@ To make the setup as painless as possible, we provide you with a convenience scr
  
  `npm run setup`
  
-This will install NPM dependencies and TS definitions. No need to install any dependencies globally!
+This will install NPM dependencies and TS definitions. You can also run these separately as: `npm install` and `tsd install`. No need to install any dependencies globally!
  
 #### Get Started
 
