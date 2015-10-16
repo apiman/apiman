@@ -9,4 +9,8 @@
   <artifactId>apiman-manager-ui</artifactId>
   <packaging>pom</packaging>
   <name>apiman-manager-ui</name>
+  <modules>
+    <module>hawtio</module>
+    <module>hawtio/wildfly8</module>
+  </modules>
 </project>
