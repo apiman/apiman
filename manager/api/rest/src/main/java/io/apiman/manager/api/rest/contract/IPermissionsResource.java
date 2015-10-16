@@ -19,6 +19,7 @@ package io.apiman.manager.api.rest.contract;
 import io.apiman.manager.api.beans.idm.UserPermissionsBean;
 import io.apiman.manager.api.rest.contract.exceptions.NotAuthorizedException;
 import io.apiman.manager.api.rest.contract.exceptions.UserNotFoundException;
+import io.swagger.annotations.Api;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -32,6 +33,7 @@ import javax.ws.rs.core.MediaType;
  * @author eric.wittmann@redhat.com
  */
 @Path("permissions")
+@Api
 public interface IPermissionsResource {
 
     /**

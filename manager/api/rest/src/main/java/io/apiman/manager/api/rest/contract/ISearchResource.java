@@ -30,6 +30,7 @@ import io.apiman.manager.api.beans.summary.OrganizationSummaryBean;
 import io.apiman.manager.api.beans.summary.ServiceSummaryBean;
 import io.apiman.manager.api.rest.contract.exceptions.InvalidSearchCriteriaException;
 import io.apiman.manager.api.rest.contract.exceptions.OrganizationNotFoundException;
+import io.swagger.annotations.Api;
 
 /**
  * The Search API.
@@ -37,6 +38,7 @@ import io.apiman.manager.api.rest.contract.exceptions.OrganizationNotFoundExcept
  * @author eric.wittmann@redhat.com
  */
 @Path("search")
+@Api
 public interface ISearchResource {
 
     /**

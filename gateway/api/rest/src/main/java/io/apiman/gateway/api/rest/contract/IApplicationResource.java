@@ -19,6 +19,7 @@ package io.apiman.gateway.api.rest.contract;
 import io.apiman.gateway.api.rest.contract.exceptions.NotAuthorizedException;
 import io.apiman.gateway.engine.beans.Application;
 import io.apiman.gateway.engine.beans.exceptions.RegistrationException;
+import io.swagger.annotations.Api;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -33,6 +34,7 @@ import javax.ws.rs.core.MediaType;
  * @author eric.wittmann@redhat.com
  */
 @Path("applications")
+@Api
 public interface IApplicationResource {
 
     @PUT

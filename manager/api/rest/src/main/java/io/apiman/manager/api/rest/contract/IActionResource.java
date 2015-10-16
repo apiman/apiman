@@ -18,6 +18,7 @@ package io.apiman.manager.api.rest.contract;
 
 import io.apiman.manager.api.beans.actions.ActionBean;
 import io.apiman.manager.api.rest.contract.exceptions.ActionException;
+import io.swagger.annotations.Api;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -31,6 +32,7 @@ import javax.ws.rs.core.MediaType;
  * @author eric.wittmann@redhat.com
  */
 @Path("actions")
+@Api
 public interface IActionResource {
 
     /**

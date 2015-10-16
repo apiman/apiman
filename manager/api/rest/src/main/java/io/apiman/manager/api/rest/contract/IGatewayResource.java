@@ -24,6 +24,7 @@ import io.apiman.manager.api.beans.summary.GatewayTestResultBean;
 import io.apiman.manager.api.rest.contract.exceptions.GatewayAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.GatewayNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.NotAuthorizedException;
+import io.swagger.annotations.Api;
 
 import java.util.List;
 
@@ -43,6 +44,7 @@ import javax.ws.rs.core.MediaType;
  * @author eric.wittmann@redhat.com
  */
 @Path("gateways")
+@Api
 public interface IGatewayResource {
     
     /**

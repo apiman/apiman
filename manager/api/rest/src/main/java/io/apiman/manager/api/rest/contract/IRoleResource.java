@@ -25,6 +25,7 @@ import io.apiman.manager.api.rest.contract.exceptions.InvalidSearchCriteriaExcep
 import io.apiman.manager.api.rest.contract.exceptions.NotAuthorizedException;
 import io.apiman.manager.api.rest.contract.exceptions.RoleAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.RoleNotFoundException;
+import io.swagger.annotations.Api;
 
 import java.util.List;
 
@@ -46,6 +47,7 @@ import javax.ws.rs.core.MediaType;
  * @author eric.wittmann@redhat.com
  */
 @Path("roles")
+@Api
 public interface IRoleResource {
 
     /**

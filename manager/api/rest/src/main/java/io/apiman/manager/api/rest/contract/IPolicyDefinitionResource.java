@@ -22,6 +22,7 @@ import io.apiman.manager.api.beans.summary.PolicyDefinitionSummaryBean;
 import io.apiman.manager.api.rest.contract.exceptions.NotAuthorizedException;
 import io.apiman.manager.api.rest.contract.exceptions.PolicyDefinitionAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.PolicyDefinitionNotFoundException;
+import io.swagger.annotations.Api;
 
 import java.util.List;
 
@@ -41,6 +42,7 @@ import javax.ws.rs.core.MediaType;
  * @author eric.wittmann@redhat.com
  */
 @Path("policyDefs")
+@Api
 public interface IPolicyDefinitionResource {
 
     /**

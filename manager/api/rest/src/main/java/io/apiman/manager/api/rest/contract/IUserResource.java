@@ -27,6 +27,7 @@ import io.apiman.manager.api.beans.summary.ServiceSummaryBean;
 import io.apiman.manager.api.rest.contract.exceptions.InvalidSearchCriteriaException;
 import io.apiman.manager.api.rest.contract.exceptions.NotAuthorizedException;
 import io.apiman.manager.api.rest.contract.exceptions.UserNotFoundException;
+import io.swagger.annotations.Api;
 
 import java.util.List;
 
@@ -46,6 +47,7 @@ import javax.ws.rs.core.MediaType;
  * @author eric.wittmann@redhat.com
  */
 @Path("users")
+@Api
 public interface IUserResource {
 
     /**

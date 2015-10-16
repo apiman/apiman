@@ -21,6 +21,7 @@ import io.apiman.gateway.engine.beans.Service;
 import io.apiman.gateway.engine.beans.ServiceEndpoint;
 import io.apiman.gateway.engine.beans.exceptions.PublishingException;
 import io.apiman.gateway.engine.beans.exceptions.RegistrationException;
+import io.swagger.annotations.Api;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -37,6 +38,7 @@ import javax.ws.rs.core.MediaType;
  * @author eric.wittmann@redhat.com
  */
 @Path("services")
+@Api
 public interface IServiceResource {
 
     @PUT
