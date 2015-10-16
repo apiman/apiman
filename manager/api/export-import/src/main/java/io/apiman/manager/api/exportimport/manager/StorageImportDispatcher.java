@@ -36,6 +36,7 @@ import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.core.logging.IApimanLogger;
 import io.apiman.manager.api.exportimport.beans.MetadataBean;
+import io.apiman.manager.api.exportimport.i18n.Messages;
 import io.apiman.manager.api.exportimport.read.IImportReaderDispatcher;
 
 import java.util.HashMap;
@@ -71,8 +72,8 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
         this.storage = storage;
         this.logger = logger;
         
-        logger.info("----------------------------");
-        logger.info("Starting apiman data import.");
+        logger.info("----------------------------"); //$NON-NLS-1$
+        logger.info(Messages.i18n.format("StorageImportDispatcher.StartingImport")); //$NON-NLS-1$
         
         try {
             this.storage.beginTx();
@@ -88,7 +89,7 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
     public void metadata(MetadataBean metadata) {
         // Nothing to do here at the moment.
         // TODO: at some point we need to compare the version in metadata against the current version of apiman
-        logger.info("Importing data from apiman version: " + metadata.getApimanVersion());
+        logger.info(Messages.i18n.format("StorageImportDispatcher.FromVersion") + metadata.getApimanVersion()); //$NON-NLS-1$
     }
 
     /**
@@ -97,7 +98,7 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
     @Override
     public void user(UserBean user) {
         try {
-            logger.info("Importing a user: " + user);
+            logger.info(Messages.i18n.format("StorageImportDispatcher.ImportingUser") + user); //$NON-NLS-1$
             storage.createUser(user);
         } catch (StorageException e) {
             rollback(e);
@@ -110,7 +111,7 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
     @Override
     public void role(RoleBean role) {
         try {
-            logger.info("Importing a role: " + role);
+            logger.info(Messages.i18n.format("StorageImportDispatcher.ImportingRole") + role); //$NON-NLS-1$
             storage.createRole(role);
         } catch (StorageException e) {
             rollback(e);
@@ -123,7 +124,7 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
     @Override
     public void plugin(PluginBean plugin) {
         try {
-            logger.info("Importing a plugin: " + plugin);
+            logger.info(Messages.i18n.format("StorageImportDispatcher.ImportingPlugin") + plugin); //$NON-NLS-1$
             plugin.setId(null);
             storage.createPlugin(plugin);
         } catch (StorageException e) {
@@ -137,7 +138,7 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
     @Override
     public void gateway(GatewayBean gateway) {
         try {
-            logger.info("Importing a gateway: " + gateway);
+            logger.info(Messages.i18n.format("StorageImportDispatcher.ImportingGateway") + gateway); //$NON-NLS-1$
             storage.createGateway(gateway);
         } catch (StorageException e) {
             rollback(e);
@@ -150,7 +151,7 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
     @Override
     public void policyDef(PolicyDefinitionBean policyDef) {
         try {
-            logger.info("Importing a policy definition: " + policyDef);
+            logger.info(Messages.i18n.format("StorageImportDispatcher.ImportingPolicyDef") + policyDef); //$NON-NLS-1$
             storage.createPolicyDefinition(policyDef);
             policyDefIndex.put(policyDef.getId(), policyDef);
         } catch (StorageException e) {
@@ -165,7 +166,7 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
     public void organization(OrganizationBean org) {
         currentOrg = org;
         try {
-            logger.info("Importing an organization: " + org);
+            logger.info(Messages.i18n.format("StorageImportDispatcher.ImportingOrg") + org); //$NON-NLS-1$
             storage.createOrganization(org);
         } catch (StorageException e) {
             rollback(e);
@@ -178,7 +179,7 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
     @Override
     public void membership(RoleMembershipBean membership) {
         try {
-            logger.info("  Importing a role membership: " + membership);
+            logger.info(Messages.i18n.format("StorageImportDispatcher.ImportingMembership") + membership); //$NON-NLS-1$
             membership.setId(null);
             storage.createMembership(membership);
         } catch (StorageException e) {
@@ -193,7 +194,7 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
     public void plan(PlanBean plan) {
         currentPlan = plan;
         try {
-            logger.info("  Importing a plan: " + plan);
+            logger.info(Messages.i18n.format("StorageImportDispatcher.ImportingPlan") + plan); //$NON-NLS-1$
             plan.setOrganization(currentOrg);
             storage.createPlan(plan);
         } catch (StorageException e) {
@@ -207,7 +208,7 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
     @Override
     public void planVersion(PlanVersionBean planVersion) {
         try {
-            logger.info("    Importing a plan version: " + planVersion);
+            logger.info(Messages.i18n.format("StorageImportDispatcher.ImportingPlanVersion") + planVersion); //$NON-NLS-1$
             planVersion.setPlan(currentPlan);
             planVersion.setId(null);
             storage.createPlanVersion(planVersion);
@@ -221,7 +222,7 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
      */
     @Override
     public void planPolicy(PolicyBean policy) {
-        logger.info("      Importing a plan policy: " + policy);
+        logger.info(Messages.i18n.format("StorageImportDispatcher.ImportingPlanPolicy") + policy); //$NON-NLS-1$
         policy(policy);
     }
 
@@ -232,7 +233,7 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
     public void service(ServiceBean service) {
         currentService = service;
         try {
-            logger.info("    Importing a service: " + service);
+            logger.info(Messages.i18n.format("StorageImportDispatcher.ImportingService") + service); //$NON-NLS-1$
             service.setOrganization(currentOrg);
             storage.createService(service);
         } catch (StorageException e) {
@@ -246,7 +247,7 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
     @Override
     public void serviceVersion(ServiceVersionBean serviceVersion) {
         try {
-            logger.info("    Importing a service version: " + serviceVersion);
+            logger.info(Messages.i18n.format("StorageImportDispatcher.ImportingServiceVersion") + serviceVersion); //$NON-NLS-1$
             serviceVersion.setService(currentService);
             serviceVersion.setId(null);
             storage.createServiceVersion(serviceVersion);
@@ -260,7 +261,7 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
      */
     @Override
     public void servicePolicy(PolicyBean policy) {
-        logger.info("      Importing a service policy: " + policy);
+        logger.info(Messages.i18n.format("StorageImportDispatcher.ImportingServicePolicy") + policy); //$NON-NLS-1$
         policy(policy);
     }
 
@@ -271,7 +272,7 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
     public void application(ApplicationBean application) {
         currentApp = application;
         try {
-            logger.info("  Importing an application: " + application);
+            logger.info(Messages.i18n.format("StorageImportDispatcher.ImportingApp") + application); //$NON-NLS-1$
             application.setOrganization(currentOrg);
             storage.createApplication(application);
         } catch (StorageException e) {
@@ -286,7 +287,7 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
     public void applicationVersion(ApplicationVersionBean appVersion) {
         currentAppVersion = appVersion;
         try {
-            logger.info("    Importing an application version: " + appVersion);
+            logger.info(Messages.i18n.format("StorageImportDispatcher.ImportingAppVersion") + appVersion); //$NON-NLS-1$
             appVersion.setApplication(currentApp);
             appVersion.setId(null);
             storage.createApplicationVersion(appVersion);
@@ -300,7 +301,7 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
      */
     @Override
     public void applicationPolicy(PolicyBean policy) {
-        logger.info("      Importing an application policy: " + policy);
+        logger.info(Messages.i18n.format("StorageImportDispatcher.ImportingAppPolicy") + policy); //$NON-NLS-1$
         policy(policy);
     }
 
@@ -325,7 +326,7 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
     @Override
     public void audit(AuditEntryBean entry) {
         try {
-            logger.info("  Importing an audit entry: " + entry);
+            logger.info(Messages.i18n.format("StorageImportDispatcher.ImportingAuditEntry") + entry); //$NON-NLS-1$
             entry.setId(null);
             storage.createAuditEntry(entry);
         } catch (StorageException e) {
@@ -343,8 +344,8 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
 //            publishServices();
 //            registerApplications();
             storage.commitTx();
-            logger.info("Data import completed successfully!");
-            logger.info("-----------------------------------");
+            logger.info(Messages.i18n.format("StorageImportDispatcher.ImportingImportComplete")); //$NON-NLS-1$
+            logger.info("-----------------------------------"); //$NON-NLS-1$
         } catch (StorageException e) {
             rollback(e);
         }
@@ -356,7 +357,7 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
      */
     private void importContracts() throws StorageException {
         for (ContractBean contract : contracts) {
-            logger.info("      Importing an application contract: " + contract);
+            logger.info(Messages.i18n.format("StorageImportDispatcher.ImportingAppContract") + contract); //$NON-NLS-1$
             String appId = contract.getApplication().getApplication().getId();
             String appOrganizationId = contract.getApplication().getApplication().getOrganization().getId();
             String appVersion = contract.getApplication().getVersion();
