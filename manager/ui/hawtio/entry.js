@@ -23,3 +23,6 @@ var ngSchemaForm = require('angular-schema-form');
 global.SwaggerUi = require('swagger-ui-browserify');
 global.SwaggerClient = require('swagger-client');
 global.SwaggerAuthorizations = require('swagger-ui-browserify/node_modules/swagger-ui/dist/lib/swagger-oauth.js');
+
+var sugar = require('sugar');
+var ngFileUpload = require('angular-file-upload');

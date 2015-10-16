@@ -37,7 +37,6 @@
               <includes>
                 <include>index.html</include>
                 <include>favicon.ico</include>
-                <include>hawtio-deps/**</include>
                 <include>dist/**</include>
                 <include>plugins/**</include>
               </includes>

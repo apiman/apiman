@@ -1,4 +1,5 @@
 /// <reference path="../../includes.ts"/>
+
 module Apiman {
 
     _module.directive('apimanActionBtn',
@@ -117,8 +118,8 @@ module Apiman {
                         return EntityStatusService.getEntityStatus();
                     }, function(newValue, oldValue) {
                         var entityStatus = newValue;
-                        console.log('entityStatus: ' + entityStatus);
                         var elem = element;
+
                         if (entityStatus) {
                             var validStatuses = attrs.apimanStatus.split(',');
                             var statusIsValid = false;
@@ -187,6 +188,7 @@ module Apiman {
         }]);
 
     export var sb_counter = 0;
+
     _module.directive('apimanSearchBox',
         ['Logger', 'TranslationService', 
         function(Logger, TranslationService) {

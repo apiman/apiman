@@ -22,6 +22,7 @@ var connect = require('gulp-connect');
 var notify = require('gulp-notify');
 var replace = require('gulp-replace');
 var runSequence = require('run-sequence');
+var tsd = require('gulp-tsd');
 var typescript = require('gulp-typescript');
 var watch = require('gulp-watch');
 
@@ -161,7 +162,7 @@ gulp.task('images', function() {
 // Adjusts all paths within files, if necessary
 gulp.task('path-adjust', function() {
     // All CSS
-    gulp.src(['deps.css'])
+    return gulp.src(['deps.css'])
         .pipe(replace('patternfly/components/bootstrap/dist/fonts/', './fonts/'))
         .pipe(replace('patternfly/components/font-awesome/fonts/', './fonts/'))
         .pipe(replace('patternfly/dist/fonts/', './fonts/'))
@@ -169,14 +170,6 @@ gulp.task('path-adjust', function() {
         .pipe(replace('swagger-ui-browserify/node_modules/swagger-ui/dist/images/', './images/'))
         .pipe(replace('swagger-ui-browserify/node_modules/swagger-ui/dist/fonts/', './fonts/'))
         .pipe(gulp.dest(config.dest));
-
-    // Adjust the reference path of any typescript-built plugins
-    return gulp.src('hawtio-deps/**/includes.d.ts')
-        .pipe(map(function(buf, filename) {
-            var textContent = buf.toString();
-            return textContent.replace(/"\.\.\/hawtio-deps/gm, '"../../../hawtio-deps');
-        }))
-        .pipe(gulp.dest('hawtio-deps'));
 });
 
 
@@ -187,6 +180,11 @@ gulp.task('reload', function() {
 });
 
 
+// Setup Task
+// This is the initial task that users run to install TS definitions.
+gulp.task('setup', ['tsd']);
+
+
 // Template Task
 // Creates the templates.js file in the project root (/manager/ui/hawtio)
 gulp.task('template', function() {
@@ -195,8 +193,7 @@ gulp.task('template', function() {
             filename: 'templates.js',
             root: 'plugins/',
             standalone: true,
-            module: config.templateModule,
-            templateFooter: '}]); hawtioPluginLoader.addModule("' + config.templateModule + '");'
+            module: config.templateModule
         }))
         .pipe(gulp.dest('.'));
 });
@@ -239,6 +236,15 @@ gulp.task('tsc', function() {
             fs.appendFileSync('defs.d.ts', '/// <reference path="' + relative + '"/>\n');
             return buf;
         }));
+});
+
+
+// TypeScript Definition Resolutions
+gulp.task('tsd', function(callback) {
+    tsd({
+        command: 'reinstall',
+        config: './tsd.json'
+    }, callback);
 });
 
 

@@ -3,6 +3,7 @@
 module Apiman {
 
     export var _module = angular.module(Apiman.pluginName, [
+        'ngRoute',
         'ui.sortable',
         'xeditable',
 
@@ -296,86 +297,85 @@ module Apiman {
                       Configuration,
                       $location) => {
 
-        $rootScope.isDirty = false;
+            $rootScope.isDirty = false;
 
-        $rootScope.$on('$locationChangeStart', function (event, newUrl, oldUrl) {
-            if ($rootScope.isDirty) {
-                if (confirm('You have unsaved changes. Are you sure you would like to navigate away from this page? You will lose these changes.') != true) {
-                    event.preventDefault();
+            $rootScope.$on('$locationChangeStart', function (event, newUrl, oldUrl) {
+                if ($rootScope.isDirty) {
+                    if (confirm('You have unsaved changes. Are you sure you would like to navigate away from this page? You will lose these changes.') != true) {
+                        event.preventDefault();
+                    }
+                }
+            });
+
+            if (Configuration.api
+                && Configuration.api.auth
+                && Configuration.api.auth.type == 'bearerTokenFromHash') {
+                var bearerToken = null;
+                var backTo = null;
+                var tokenKey = 'Apiman.BearerToken';
+                var backToKey = 'Apiman.BackToConsole';
+
+                var hash = $location.hash();
+
+                if (hash) {
+                    var settings = JSON.parse(hash);
+                    localStorage[tokenKey] = settings.token;
+                    localStorage[backToKey] = settings.backTo;
+                    $location.hash(null);
+                    bearerToken = settings.token;
+                    backTo = settings.backTo;
+                    console.log('*** Bearer token from hash: ' + bearerToken);
+                } else {
+                    try {
+                        bearerToken = localStorage[tokenKey];
+                        console.log('*** Bearer token from local storage: ' + bearerToken);
+                    } catch (e) {
+                        console.log('*** Bearer token from local storage was invalid!');
+                        localStorage.removeItem(tokenKey);
+                        bearerToken = null;
+                    }
+                    try {
+                        backTo = localStorage[backToKey];
+                        console.log('*** Back-to-console link: ' + backTo);
+                    } catch (e) {
+                        console.log('*** Back-to-console link from local storage was invalid!');
+                        localStorage.removeItem(backToKey);
+                        backTo = null;
+                    }
+                }
+
+                if (bearerToken) {
+                    Configuration.api.auth.bearerToken = {
+                        token: bearerToken
+                    };
+                }
+
+                if (backTo) {
+                    Configuration.ui.backToConsole = backTo;
                 }
             }
-        });
 
-        if (Configuration.api
-            && Configuration.api.auth
-            && Configuration.api.auth.type == 'bearerTokenFromHash') {
-            var bearerToken = null;
-            var backTo = null;
-            var tokenKey = 'Apiman.BearerToken';
-            var backToKey = 'Apiman.BackToConsole';
+            $rootScope.pluginName = Apiman.pluginName;
+        }]);
 
-            var hash = $location.hash();
-
-            if (hash) {
-                var settings = JSON.parse(hash);
-                localStorage[tokenKey] = settings.token;
-                localStorage[backToKey] = settings.backTo;
-                $location.hash(null);
-                bearerToken = settings.token;
-                backTo = settings.backTo;
-                console.log('*** Bearer token from hash: ' + bearerToken);
-            } else {
-                try {
-                    bearerToken = localStorage[tokenKey];
-                    console.log('*** Bearer token from local storage: ' + bearerToken);
-                } catch (e) {
-                    console.log('*** Bearer token from local storage was invalid!');
-                    localStorage.removeItem(tokenKey);
-                    bearerToken = null;
-                }
-                try {
-                    backTo = localStorage[backToKey];
-                    console.log('*** Back-to-console link: ' + backTo);
-                } catch (e) {
-                    console.log('*** Back-to-console link from local storage was invalid!');
-                    localStorage.removeItem(backToKey);
-                    backTo = null;
-                }
-            }
-
-            if (bearerToken) {
-                Configuration.api.auth.bearerToken = {
-                    token: bearerToken
-                };
-            }
-
-            if (backTo) {
-                Configuration.ui.backToConsole = backTo;
-            }
-        }
-
-        $rootScope.pluginName = Apiman.pluginName;
-    }]);
-
-
-    hawtioPluginLoader.registerPreBootstrapTask((next) => {
-        // Load the configuration jsonp script
-        $.getScript('apiman/config.js').done((script, textStatus) => {
+    // Load the configuration jsonp script
+    $.getScript('apiman/config.js')
+        .done((script, textStatus) => {
             log.info('Loaded the config.js config!');
-        }).fail((response) => {
+        })
+        .fail((response) => {
             log.debug('Error fetching configuration: ', response);
-        }).always(() => {
+        })
+        .always(() => {
             // Load the i18n jsonp script
             $.getScript('apiman/translations.js').done((script, textStatus) => {
                 log.info('Loaded the translations.js bundle!');
+
+                angular.element(document).ready(function () {
+                    angular.bootstrap(document, ['api-manager']);
+                });
             }).fail((response) => {
                 log.debug('Error fetching translations: ', response);
-            }).always(() => {
-                next();
             });
         });
-
-    }, true);
-
-    hawtioPluginLoader.addModule(Apiman.pluginName);
 }
