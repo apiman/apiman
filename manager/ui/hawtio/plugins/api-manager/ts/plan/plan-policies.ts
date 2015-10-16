@@ -3,8 +3,8 @@
 module Apiman {
 
     export var PlanPoliciesController = _module.controller("Apiman.PlanPoliciesController",
-        ['$q', '$scope', '$location', 'OrgSvcs', 'ApimanSvcs', 'Logger', 'PageLifecycle', 'PlanEntityLoader', 'Dialogs', '$routeParams', 'Logger',
-        ($q, $scope, $location, OrgSvcs, ApimanSvcs, Logger, PageLifecycle, PlanEntityLoader, Dialogs, $routeParams, Logger) => {
+        ['$q', '$scope', '$location', 'OrgSvcs', 'ApimanSvcs', 'Logger', 'PageLifecycle', 'PlanEntityLoader', 'Dialogs', '$routeParams', 
+        ($q, $scope, $location, OrgSvcs, ApimanSvcs, Logger, PageLifecycle, PlanEntityLoader, Dialogs, $routeParams) => {
             var params = $routeParams;
             $scope.organizationId = params.org;
             $scope.tab = 'policies';
