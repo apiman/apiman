@@ -26,6 +26,7 @@ import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.exportimport.EntityHandler;
 import io.apiman.manager.api.exportimport.OrgElementsEnum;
 import io.apiman.manager.api.exportimport.read.IImportReader;
+import io.apiman.manager.api.exportimport.read.IImportReaderDispatcher;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -57,7 +58,7 @@ public class JsonOrgStreamReader extends AbstractJsonReader implements IImportRe
     public static final String ORG_BEAN_NAME = OrganizationBean.class.getSimpleName();
 
     @Override
-    public void parse() throws Exception {
+    public void read() throws Exception {
         current = jp.nextToken();
 
         while (jp.nextToken() != JsonToken.END_ARRAY) {
@@ -177,5 +178,14 @@ public class JsonOrgStreamReader extends AbstractJsonReader implements IImportRe
     @Override
     protected JsonParser jsonParser() {
         return jp;
+    }
+
+    /**
+     * @see io.apiman.manager.api.exportimport.read.IImportReader#setDispatcher(io.apiman.manager.api.exportimport.read.IImportReaderDispatcher)
+     */
+    @Override
+    public void setDispatcher(IImportReaderDispatcher dispatcher) {
+        // TODO Auto-generated method stub
+        
     }
  }

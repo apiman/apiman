@@ -16,5 +16,9 @@
 package io.apiman.manager.api.exportimport.read;
 
 public interface IImportReader {
-    void parse() throws Exception;
+    
+    void setDispatcher(IImportReaderDispatcher dispatcher);
+    
+    void read() throws Exception;
+    
 }
