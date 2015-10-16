@@ -15,9 +15,9 @@
  */
 package io.apiman.manager.api.core;
 
-import java.util.List;
-
 import io.apiman.manager.api.beans.summary.AvailableServiceBean;
+
+import java.util.List;
 
 /**
  * Represents some sort of catalog of live services.  This is used to lookup
@@ -34,7 +34,8 @@ public interface IServiceCatalog {
      * should return all services that contain the partial keyword, thus returning things
      * like "echo" "public-echo" and "echo-location".
      *
-     * @param keyword
+     * @param keyword the search keyword
+     * @return the available services
      */
     public List<AvailableServiceBean> search(String keyword);
 

@@ -71,6 +71,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -1068,7 +1069,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
                     + "  JOIN s.organization o"
                     + " WHERE o.id = :orgId"
                     + "  AND s.id = :serviceId"
-                    + " ORDER BY v.id DESC";
+                    + " ORDER BY v.createdOn DESC";
             Query query = entityManager.createQuery(jpql);
             query.setMaxResults(500);
             query.setParameter("orgId", orgId); //$NON-NLS-1$
@@ -1238,7 +1239,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
                     + "  JOIN a.organization o"
                     + " WHERE o.id = :orgId"
                     + "   AND a.id = :applicationId"
-                    + " ORDER BY v.id DESC"; //$NON-NLS-1$
+                    + " ORDER BY v.createdOn DESC"; //$NON-NLS-1$
             Query query = entityManager.createQuery(jpql);
             query.setMaxResults(500);
             query.setParameter("orgId", orgId); //$NON-NLS-1$
@@ -1473,7 +1474,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
                           "  JOIN p.organization o" +
                           " WHERE o.id = :orgId" +
                           "   AND p.id = :planId" +
-                          " ORDER BY v.id DESC";
+                          " ORDER BY v.createdOn DESC";
             Query query = entityManager.createQuery(jpql);
             query.setMaxResults(500);
             query.setParameter("orgId", orgId); //$NON-NLS-1$
@@ -1617,7 +1618,6 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      */
     @Override
     public void createUser(UserBean user) throws StorageException {
-        user.setJoinedOn(new Date());
         super.create(user);
     }
 
@@ -1894,4 +1894,278 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         return super.get(roleId, RoleBean.class);
     }
 
+    @SuppressWarnings("nls")
+    @Override
+    public Iterator<OrganizationBean> getAllOrganizations() throws StorageException {
+        EntityManager entityManager = getActiveEntityManager();
+
+        String jqpl = "SELECT b FROM OrganizationBean";
+        Query query = entityManager.createQuery(jqpl);
+
+        return super.getAll(OrganizationBean.class, query);
+    }
+    
+    /**
+     * @see io.apiman.manager.api.core.IStorage#getAllPlans(java.lang.String)
+     */
+    @SuppressWarnings("nls")
+    @Override
+    public Iterator<PlanBean> getAllPlans(String organizationId) throws StorageException {
+        EntityManager entityManager = getActiveEntityManager();
+
+        String jpql =
+                "SELECT b "
+                + "FROM PlanBean b "
+                + "WHERE b.organization.id = :orgId "; //$NON-NLS-1$
+
+        Query query = entityManager.createQuery(jpql);
+        query.setParameter("orgId", organizationId);
+        return super.getAll(PlanBean.class, query);
+    }
+    
+    /**
+     * @see io.apiman.manager.api.core.IStorage#getAllServices(java.lang.String)
+     */
+    @SuppressWarnings("nls")
+    @Override
+    public Iterator<ServiceBean> getAllServices(String organizationId) throws StorageException {
+        EntityManager entityManager = getActiveEntityManager();
+
+        String jpql =
+                "SELECT b "
+                + "FROM ServiceBean b "
+                + "WHERE b.organization.id = :orgId "; //$NON-NLS-1$
+
+        Query query = entityManager.createQuery(jpql);
+        query.setParameter("orgId", organizationId);
+        return super.getAll(ServiceBean.class, query);
+    }
+    
+    /**
+     * @see io.apiman.manager.api.core.IStorage#getAllApplications(java.lang.String)
+     */
+    @SuppressWarnings("nls")
+    @Override
+    public Iterator<ApplicationBean> getAllApplications(String organizationId) throws StorageException {
+        EntityManager entityManager = getActiveEntityManager();
+
+        String jpql =
+                "SELECT b "
+                + "FROM ApplicationBean b "
+                + "WHERE b.organization.id = :orgId "; //$NON-NLS-1$
+
+        Query query = entityManager.createQuery(jpql);
+        query.setParameter("orgId", organizationId);
+        return super.getAll(ApplicationBean.class, query);
+    }
+
+    /**
+     * @see io.apiman.manager.api.core.IStorage#getAllApplicationVersions(java.lang.String, java.lang.String)
+     */
+    @SuppressWarnings("nls")
+    @Override
+    public Iterator<ApplicationVersionBean> getAllApplicationVersions(String organizationId,
+            String applicationId) throws StorageException {
+        EntityManager entityManager = getActiveEntityManager();
+
+        String jpql =
+                "SELECT v"
+              + " FROM ApplicationVersionBean v"
+              + " WHERE v.application.organization.id = :orgId"
+              + "   AND v.application.id = :appId";
+
+        Query query = entityManager.createQuery(jpql);
+        query.setParameter("orgId", organizationId);
+        query.setParameter("appId", applicationId);
+        return super.getAll(ApplicationVersionBean.class, query);
+    }
+    
+    /**
+     * @see io.apiman.manager.api.core.IStorage#getAllContracts(java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public Iterator<ContractBean> getAllContracts(String organizationId, String applicationId, String version)
+            throws StorageException {
+        try {
+            EntityManager entityManager = getActiveEntityManager();
+            @SuppressWarnings("nls")
+            String jpql =
+                    "SELECT c from ContractBean c " +
+                    "  JOIN c.application appv " +
+                    "  JOIN appv.application app " +
+                    "  JOIN app.organization aorg" +
+                    " WHERE app.id = :applicationId " +
+                    "   AND aorg.id = :orgId " +
+                    "   AND appv.version = :version " +
+                    " ORDER BY aorg.id, app.id ASC";
+            Query query = entityManager.createQuery(jpql);
+            query.setParameter("orgId", organizationId); //$NON-NLS-1$
+            query.setParameter("applicationId", applicationId); //$NON-NLS-1$
+            query.setParameter("version", version); //$NON-NLS-1$
+            List<ContractBean> contracts = query.getResultList();
+            return contracts.iterator();
+        } catch (Throwable t) {
+            logger.error(t.getMessage(), t);
+            throw new StorageException(t);
+        }
+    }
+    
+    /**
+     * @see io.apiman.manager.api.core.IStorage#getAllPolicies(java.lang.String, java.lang.String, java.lang.String, io.apiman.manager.api.beans.policies.PolicyType)
+     */
+    @SuppressWarnings("nls")
+    @Override
+    public Iterator<PolicyBean> getAllPolicies(String organizationId, String entityId, String version,
+            PolicyType type) throws StorageException {
+        try {
+            EntityManager entityManager = getActiveEntityManager();
+            String jpql =
+                      "SELECT p from PolicyBean p "
+                    + " WHERE p.organizationId = :orgId "
+                    + "   AND p.entityId = :entityId "
+                    + "   AND p.entityVersion = :entityVersion "
+                    + "   AND p.type = :type"
+                    + " ORDER BY p.orderIndex ASC";
+            Query query = entityManager.createQuery(jpql);
+            query.setParameter("orgId", organizationId);
+            query.setParameter("entityId", entityId);
+            query.setParameter("entityVersion", version);
+            query.setParameter("type", type);
+
+            List<PolicyBean> policyBeans = query.getResultList();
+            return policyBeans.iterator();
+        } catch (Throwable t) {
+            logger.error(t.getMessage(), t);
+            throw new StorageException(t);
+        }
+    }
+    
+    /**
+     * @see io.apiman.manager.api.core.IStorage#getAllPlanVersions(java.lang.String, java.lang.String)
+     */
+    @SuppressWarnings("nls")
+    @Override
+    public Iterator<PlanVersionBean> getAllPlanVersions(String organizationId, String planId)
+            throws StorageException {
+        EntityManager entityManager = getActiveEntityManager();
+
+        String jpql =
+                "SELECT v"
+              + " FROM PlanVersionBean v"
+              + " WHERE v.plan.organization.id = :orgId"
+              + "   AND v.plan.id = :planId";
+
+        Query query = entityManager.createQuery(jpql);
+        query.setParameter("orgId", organizationId);
+        query.setParameter("planId", planId);
+        return super.getAll(PlanVersionBean.class, query);
+    }
+    
+    /**
+     * @see io.apiman.manager.api.core.IStorage#getAllServiceVersions(java.lang.String, java.lang.String)
+     */
+    @SuppressWarnings("nls")
+    @Override
+    public Iterator<ServiceVersionBean> getAllServiceVersions(String organizationId, String serviceId)
+            throws StorageException {
+        EntityManager entityManager = getActiveEntityManager();
+
+        String jpql =
+                "SELECT v"
+              + " FROM ServiceVersionBean v"
+              + " WHERE v.service.organization.id = :orgId"
+              + "   AND v.service.id = :serviceId";
+
+        Query query = entityManager.createQuery(jpql);
+        query.setParameter("orgId", organizationId);
+        query.setParameter("serviceId", serviceId);
+        return super.getAll(ServiceVersionBean.class, query);
+    }
+
+    @SuppressWarnings("nls")
+    @Override
+    public Iterator<GatewayBean> getAllGateways() throws StorageException {
+        EntityManager entityManager = getActiveEntityManager();
+
+        String jpql =
+                "SELECT b FROM GatewayBean b";
+
+        Query query = entityManager.createQuery(jpql);
+        return super.getAll(GatewayBean.class, query);
+    }
+
+    @SuppressWarnings("nls")
+    @Override
+    public Iterator<AuditEntryBean> getAllAuditEntries(String orgId) throws StorageException {
+        EntityManager entityManager = getActiveEntityManager();
+
+        String jpql =
+                "SELECT b "
+                + "FROM AuditEntryBean b "
+                + "WHERE organization_id = :orgId "; //$NON-NLS-1$
+
+        Query query = entityManager.createQuery(jpql);
+        query.setParameter("orgId", orgId);
+        return super.getAll(AuditEntryBean.class, query);
+    }
+
+    @SuppressWarnings("nls")
+    @Override
+    public Iterator<PluginBean> getAllPlugins() throws StorageException {
+        EntityManager entityManager = getActiveEntityManager();
+
+        String jpql =
+                "SELECT b "
+                + "FROM PluginBean b ";
+
+        Query query = entityManager.createQuery(jpql);
+        return super.getAll(PluginBean.class, query);
+    }
+    
+    /**
+     * @see io.apiman.manager.api.core.IStorage#getAllPolicyDefinitions()
+     */
+    @SuppressWarnings("nls")
+    @Override
+    public Iterator<PolicyDefinitionBean> getAllPolicyDefinitions() throws StorageException {
+        EntityManager entityManager = getActiveEntityManager();
+
+        String jpql =
+                "SELECT b "
+                + "FROM PolicyDefinitionBean b ";
+
+        Query query = entityManager.createQuery(jpql);
+        return super.getAll(PolicyDefinitionBean.class, query);
+    }
+
+    @Override
+    public Iterator<RoleMembershipBean> getAllMemberships(String orgId) throws StorageException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @SuppressWarnings("nls")
+    @Override
+    public Iterator<UserBean> getAllUsers(String orgId) throws StorageException {
+        EntityManager entityManager = getActiveEntityManager();
+
+        String jpql =
+                "SELECT b "
+                + "FROM UserBean b ";
+
+        Query query = entityManager.createQuery(jpql);
+        return super.getAll(UserBean.class, query);
+    }
+
+    @Override
+    public Iterator<UserBean> getAllUsers() throws StorageException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Iterator<RoleBean> getAllRoles() throws StorageException {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

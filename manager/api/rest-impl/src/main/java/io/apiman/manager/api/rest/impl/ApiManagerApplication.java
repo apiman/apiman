@@ -16,6 +16,11 @@
 
 package io.apiman.manager.api.rest.impl;
 
+import io.apiman.manager.api.exportimport.manager.ExportImportManager;
+
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
@@ -26,6 +31,23 @@ import javax.ws.rs.core.Application;
  * @author eric.wittmann@redhat.com
  */
 @ApplicationPath("/")
+@ApplicationScoped
 public class ApiManagerApplication extends Application {
 
+    @Inject
+    ExportImportManager manager;
+
+    /**
+     * Constructor.
+     */
+    public ApiManagerApplication() {
+    }
+    
+    @PostConstruct
+    protected void postConstruct() {
+        if (manager.isImportExport()) {
+            manager.doImportExport();
+        }
+    }
+    
 }

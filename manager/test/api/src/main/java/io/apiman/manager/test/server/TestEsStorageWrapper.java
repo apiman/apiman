@@ -38,6 +38,7 @@ import io.searchbox.client.JestClient;
 import io.searchbox.indices.Refresh;
 
 import java.io.InputStream;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -640,13 +641,130 @@ public class TestEsStorageWrapper implements IStorage {
         this.delegate.deleteMemberships(userId, organizationId);
     }
 
+    @Override
+    public Iterator<OrganizationBean> getAllOrganizations() throws StorageException {
+        return this.delegate.getAllOrganizations();
+    }
+
+    @Override
+    public Iterator<GatewayBean> getAllGateways() throws StorageException {
+        return this.delegate.getAllGateways();
+    }
+
+    @Override
+    public Iterator<AuditEntryBean> getAllAuditEntries(String orgId) throws StorageException {
+        return this.delegate.getAllAuditEntries(orgId);
+    }
+
+    @Override
+    public Iterator<PluginBean> getAllPlugins() throws StorageException {
+        return this.delegate.getAllPlugins();
+    }
+
+    @Override
+    public Iterator<RoleMembershipBean> getAllMemberships(String orgId) throws StorageException {
+        return this.delegate.getAllMemberships(orgId);
+    }
+
+    @Override
+    public Iterator<UserBean> getAllUsers(String orgId) throws StorageException {
+        return this.delegate.getAllUsers(orgId);
+    }
+
+    @Override
+    public Iterator<UserBean> getAllUsers() throws StorageException {
+        return this.delegate.getAllUsers();
+    }
+
+    @Override
+    public Iterator<RoleBean> getAllRoles() throws StorageException {
+        return this.delegate.getAllRoles();
+    }
+    
+    /**
+     * @see io.apiman.manager.api.core.IStorage#getAllPolicyDefinitions()
+     */
+    @Override
+    public Iterator<PolicyDefinitionBean> getAllPolicyDefinitions() throws StorageException {
+        return this.delegate.getAllPolicyDefinitions();
+    }
+
+    /**
+     * @see io.apiman.manager.api.core.IStorage#getAllPlans(java.lang.String)
+     */
+    @Override
+    public Iterator<PlanBean> getAllPlans(String organizationId) throws StorageException {
+        return delegate.getAllPlans(organizationId);
+    }
+
+    /**
+     * @see io.apiman.manager.api.core.IStorage#getAllPlanVersions(java.lang.String, java.lang.String)
+     */
+    @Override
+    public Iterator<PlanVersionBean> getAllPlanVersions(String organizationId, String planId)
+            throws StorageException {
+        return delegate.getAllPlanVersions(organizationId, planId);
+    }
+
+    /**
+     * @see io.apiman.manager.api.core.IStorage#getAllServices(java.lang.String)
+     */
+    @Override
+    public Iterator<ServiceBean> getAllServices(String organizationId) throws StorageException {
+        return delegate.getAllServices(organizationId);
+    }
+
+    /**
+     * @see io.apiman.manager.api.core.IStorage#getAllServiceVersions(java.lang.String, java.lang.String)
+     */
+    @Override
+    public Iterator<ServiceVersionBean> getAllServiceVersions(String organizationId, String serviceId)
+            throws StorageException {
+        return delegate.getAllServiceVersions(organizationId, serviceId);
+    }
+
+    /**
+     * @see io.apiman.manager.api.core.IStorage#getAllApplications(java.lang.String)
+     */
+    @Override
+    public Iterator<ApplicationBean> getAllApplications(String organizationId) throws StorageException {
+        return delegate.getAllApplications(organizationId);
+    }
+
+    /**
+     * @see io.apiman.manager.api.core.IStorage#getAllApplicationVersions(java.lang.String, java.lang.String)
+     */
+    @Override
+    public Iterator<ApplicationVersionBean> getAllApplicationVersions(String organizationId,
+            String applicationId) throws StorageException {
+        return delegate.getAllApplicationVersions(organizationId, applicationId);
+    }
+
+    /**
+     * @see io.apiman.manager.api.core.IStorage#getAllContracts(java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public Iterator<ContractBean> getAllContracts(String organizationId, String applicationId, String version)
+            throws StorageException {
+        return delegate.getAllContracts(organizationId, applicationId, version);
+    }
+
+    /**
+     * @see io.apiman.manager.api.core.IStorage#getAllPolicies(java.lang.String, java.lang.String, java.lang.String, io.apiman.manager.api.beans.policies.PolicyType)
+     */
+    @Override
+    public Iterator<PolicyBean> getAllPolicies(String organizationId, String entityId, String version,
+            PolicyType type) throws StorageException {
+        return delegate.getAllPolicies(organizationId, entityId, version, type);
+    }
+
     /**
      * Force a refresh in elasticsearch so that the result of any indexing operations
      * up to this point will be visible to searches.
      */
     private void refresh() {
         try {
-        	esClient.execute(new Refresh.Builder().addIndex("apiman_manager").build()); //$NON-NLS-1$
+            esClient.execute(new Refresh.Builder().addIndex("apiman_manager").build()); //$NON-NLS-1$
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

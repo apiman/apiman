@@ -101,7 +101,7 @@ public class PolicyBean implements Serializable {
 
     @PostPersist @PostUpdate @PostLoad
     protected void decryptData() {
-        // Encrypt the endpoint properties.
+        // Decrypt the endpoint properties.
         configuration = AesEncrypter.decrypt(configuration);
     }
 

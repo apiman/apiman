@@ -216,6 +216,11 @@
         <version>${project.version}</version>
       </dependency>
       <dependency>
+	<groupId>${project.groupId}</groupId>
+	<artifactId>apiman-manager-api-export-import-api</artifactId>
+	<version>${project.version}</version>
+      </dependency>
+      <dependency>
         <groupId>${project.groupId}</groupId>
         <artifactId>apiman-manager-api-ispn</artifactId>
         <version>${project.version}</version>

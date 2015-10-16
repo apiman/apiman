@@ -44,7 +44,10 @@
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-gateway-engine-beans</artifactId>
     </dependency>
-
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-manager-api-export-import-api</artifactId>
+    </dependency>
     <!-- Third Party Dependencies -->
     <dependency>
       <groupId>commons-io</groupId>
