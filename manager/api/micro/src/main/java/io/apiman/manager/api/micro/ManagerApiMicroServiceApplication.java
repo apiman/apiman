@@ -52,8 +52,8 @@ public class ManagerApiMicroServiceApplication extends ApiManagerApplication {
         //add swagger 2.0 config
         BeanConfig beanConfig = new BeanConfig();
         beanConfig.setVersion(new Version().getVersionString());
-        beanConfig.setBasePath("/apiman");
-        beanConfig.setResourcePackage("io.apiman.manager.api.rest.contract");
+        beanConfig.setBasePath("/apiman"); //$NON-NLS-1$
+        beanConfig.setResourcePackage("io.apiman.manager.api.rest.contract"); //$NON-NLS-1$
         //TODO set more info in the beanConfig (title,description, host, port, etc)
         beanConfig.setScan(true);
         

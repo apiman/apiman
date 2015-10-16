@@ -15,6 +15,8 @@
  */
 package io.apiman.manager.api.exportimport.json;
 
+import io.apiman.manager.api.core.logging.IApimanLogger;
+
 import java.io.IOException;
 import java.util.Map;
 
@@ -26,21 +28,28 @@ public abstract class AbstractJsonWriter<T extends Enum<T>> {
     protected Enum<T> lock;
     protected boolean ended = false;
 
-    
-    public static int depth = 0;
-
-    public AbstractJsonWriter() {
-        super();
-    }
+    private IApimanLogger logger;
+    public int depth = 0;
 
     protected abstract JsonGenerator jsonGenerator();
     protected abstract Map<Enum<T>, Boolean> finished();
-    
+
+    /**
+     * Constructor.
+     */
+    public AbstractJsonWriter(IApimanLogger logger) {
+        this.logger = logger;
+    }
+
+    /**
+     * @param msg
+     */
     protected void debug(String msg) {
+        String prefix = "";
         for (int i = 0 ; i < depth; i++) {
-            System.out.print('\t');
+            prefix += "  ";
         }
-        System.out.println(msg);
+        logger.info(prefix + msg);
     }
 
     protected void writeObjectFieldStart(Enum<?> globEnum) {
@@ -114,6 +123,7 @@ public abstract class AbstractJsonWriter<T extends Enum<T>> {
     }
 
     protected void writePojo(Object pojo) {
+        debug("POJO: " + pojo.getClass().getSimpleName());
         try {
             jsonGenerator().writeObject(pojo);
         } catch (IOException e) {
@@ -122,6 +132,7 @@ public abstract class AbstractJsonWriter<T extends Enum<T>> {
     }
 
     protected void writePojo(Enum<T> type, Object pojo) {
+        debug("POJO: " + type.name());
         try {
             jsonGenerator().writeFieldName(type.name());
             jsonGenerator().writeObject(pojo);

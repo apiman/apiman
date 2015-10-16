@@ -78,7 +78,7 @@ public class ExportImportManager {
     }
 
     private void doImport() {
-        IImportReader reader = eiFactories.get(provider).createReader(config);
+        IImportReader reader = eiFactories.get(provider).createReader(config, logger);
         reader.setDispatcher(new StorageImportDispatcher(storage, logger));
         try {
             reader.read();
@@ -88,7 +88,7 @@ public class ExportImportManager {
     }
 
     private void doExport() {
-        IExportWriter writer = eiFactories.get(provider).createWriter(config);
-        new StorageExporter(version, writer, storage, null).export();
+        IExportWriter writer = eiFactories.get(provider).createWriter(config, logger);
+        new StorageExporter(logger, version, writer, storage).export();
     }
 }

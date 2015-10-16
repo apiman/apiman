@@ -41,8 +41,8 @@ public class GatewayMicroServiceApplication extends GatewayApiApplication {
     public GatewayMicroServiceApplication() {
         //add swagger 2.0 config
         BeanConfig beanConfig = new BeanConfig();
-        beanConfig.setBasePath("/api");
-        beanConfig.setResourcePackage("io.apiman.gateway.api.rest.contract");
+        beanConfig.setBasePath("/api"); //$NON-NLS-1$
+        beanConfig.setResourcePackage("io.apiman.gateway.api.rest.contract"); //$NON-NLS-1$
         //TODO set more info in the beanConfig (title,description, version, etc)
         beanConfig.setScan(true);
         

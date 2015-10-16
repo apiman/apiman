@@ -31,6 +31,7 @@ import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
 import io.apiman.manager.api.beans.services.ServiceBean;
 import io.apiman.manager.api.beans.services.ServiceVersionBean;
+import io.apiman.manager.api.core.logging.IApimanLogger;
 import io.apiman.manager.api.exportimport.GlobalElementsEnum;
 import io.apiman.manager.api.exportimport.OrgElementsEnum;
 import io.apiman.manager.api.exportimport.beans.MetadataBean;
@@ -44,7 +45,6 @@ import java.util.Map;
 import org.codehaus.jackson.JsonEncoding;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 
@@ -66,11 +66,14 @@ public class JsonFileExportWriter extends AbstractJsonWriter<GlobalElementsEnum>
         }
     }
 
-    abstract class ExcludeOrganizationMixin {
-        @JsonIgnore abstract OrganizationBean getOrganization();
-    }
-
-    public JsonFileExportWriter(OutputStream targetFile) throws IOException {
+    /**
+     * Constructor.
+     * @param targetFile
+     * @param logger
+     * @throws IOException
+     */
+    public JsonFileExportWriter(OutputStream targetFile, IApimanLogger logger) throws IOException {
+        super(logger);
         om.setSerializationInclusion(Inclusion.NON_NULL);
         jg = jsonFactory.createJsonGenerator(targetFile, JsonEncoding.UTF8);
         jg.useDefaultPrettyPrinter();

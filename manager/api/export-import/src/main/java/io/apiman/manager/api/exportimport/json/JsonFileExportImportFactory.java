@@ -15,6 +15,7 @@
  */
 package io.apiman.manager.api.exportimport.json;
 
+import io.apiman.manager.api.core.logging.IApimanLogger;
 import io.apiman.manager.api.exportimport.manager.ExportImportConfigParser;
 import io.apiman.manager.api.exportimport.read.IImportReader;
 import io.apiman.manager.api.exportimport.write.IExportWriter;
@@ -30,10 +31,10 @@ import java.io.OutputStream;
 public class JsonFileExportImportFactory implements IExportImportFactory {
 
     /**
-     * @see io.apiman.manager.api.exportimport.json.IExportImportFactory#createWriter(io.apiman.manager.api.exportimport.manager.ExportImportConfigParser)
+     * @see io.apiman.manager.api.exportimport.json.IExportImportFactory#createWriter(io.apiman.manager.api.exportimport.manager.ExportImportConfigParser, io.apiman.manager.api.core.logging.IApimanLogger)
      */
     @Override
-    public IExportWriter createWriter(ExportImportConfigParser config) {
+    public IExportWriter createWriter(ExportImportConfigParser config, IApimanLogger logger) {
         if (config.getJsonFile() == null)
             throw new IllegalArgumentException("Must provide path to JSON file to write");
 
@@ -48,17 +49,17 @@ public class JsonFileExportImportFactory implements IExportImportFactory {
         try {
             outFile.createNewFile();
             OutputStream os = new FileOutputStream(outFile);
-            return new JsonFileExportWriter(os);
+            return new JsonFileExportWriter(os, logger);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
     
     /**
-     * @see io.apiman.manager.api.exportimport.json.IExportImportFactory#createReader(io.apiman.manager.api.exportimport.manager.ExportImportConfigParser)
+     * @see io.apiman.manager.api.exportimport.json.IExportImportFactory#createReader(io.apiman.manager.api.exportimport.manager.ExportImportConfigParser, io.apiman.manager.api.core.logging.IApimanLogger)
      */
     @Override
-    public IImportReader createReader(ExportImportConfigParser config) {
+    public IImportReader createReader(ExportImportConfigParser config, IApimanLogger logger) {
         if (config.getJsonFile() == null)
             throw new IllegalArgumentException("Must provide path to JSON file to read");
 

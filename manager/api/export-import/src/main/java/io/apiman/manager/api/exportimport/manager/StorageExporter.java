@@ -36,7 +36,9 @@ import io.apiman.manager.api.beans.services.ServiceVersionBean;
 import io.apiman.manager.api.config.Version;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.exceptions.StorageException;
+import io.apiman.manager.api.core.logging.IApimanLogger;
 import io.apiman.manager.api.exportimport.beans.MetadataBean;
+import io.apiman.manager.api.exportimport.i18n.Messages;
 import io.apiman.manager.api.exportimport.write.IExportWriter;
 
 import java.util.Iterator;
@@ -44,28 +46,29 @@ import java.util.Iterator;
 import org.joda.time.DateTime;
 
 class StorageExporter {
+    private IApimanLogger logger;
     private Version version;
     private IExportWriter writer;
     private IStorage storage;
-    private String orgId;
 
     /**
      * Constructor.
      * @param writer
      * @param storage
-     * @param orgId
      */
-    public StorageExporter(Version version, IExportWriter writer, IStorage storage, String orgId) {
+    public StorageExporter(IApimanLogger logger, Version version, IExportWriter writer, IStorage storage) {
+        this.logger = logger;
         this.version = version;
         this.writer = writer;
         this.storage = storage;
-        this.orgId = orgId;
     }
 
     /**
      * Called begin the export process.
      */
     public void export() {
+        logger.info("----------------------------"); //$NON-NLS-1$
+        logger.info(Messages.i18n.format("StorageExporter.StartingExport")); //$NON-NLS-1$
         try {
             storage.beginTx();
             try {
@@ -81,6 +84,8 @@ class StorageExporter {
                 storage.rollbackTx();
                 writer.close();
             }
+            logger.info(Messages.i18n.format("StorageExporter.ExportComplete")); //$NON-NLS-1$
+            logger.info("------------------------------------------"); //$NON-NLS-1$
         } catch (StorageException e) {
             throw new RuntimeException(e);
         }
@@ -95,12 +100,13 @@ class StorageExporter {
           while (iter.hasNext()) {
               OrganizationBean bean = iter.next();
               writer.startOrg(bean);
+              logger.info(Messages.i18n.format("StorageExporter.ExportingOrgs") + bean); //$NON-NLS-1$
 
-              writeMemberships(bean.getId());
-              writePlans(bean.getId());
-              writeServices(bean.getId());
-              writeApplications(bean.getId());
-              writeAudits(bean.getId());
+              exportMemberships(bean.getId());
+              exportPlans(bean.getId());
+              exportServices(bean.getId());
+              exportApplications(bean.getId());
+              exportAudits(bean.getId());
               
               writer.endOrg();
           }
@@ -112,7 +118,7 @@ class StorageExporter {
         }
     }
 
-    private void writePlans(String orgId) {
+    private void exportPlans(String orgId) {
         try {
             writer.startPlans();
             Iterator<PlanBean> planIter = storage.getAllPlans(orgId);
@@ -123,11 +129,13 @@ class StorageExporter {
                 Iterator<PlanVersionBean> versionIter = storage.getAllPlanVersions(orgId, planBean.getId());
                 while (versionIter.hasNext()) {
                     PlanVersionBean versionBean = versionIter.next();
+                    logger.info(Messages.i18n.format("StorageExporter.ExportingPlanVersion") + versionBean); //$NON-NLS-1$
                     writer.startPlanVersion(versionBean);
                     writer.startPlanPolicies();
                     Iterator<PolicyBean> policyIter = storage.getAllPolicies(orgId, planBean.getId(), versionBean.getVersion(), PolicyType.Plan);
                     while (policyIter.hasNext()) {
                         PolicyBean policyBean = policyIter.next();
+                        logger.info(Messages.i18n.format("StorageExporter.ExportingPlanPolicy") + policyBean); //$NON-NLS-1$
                         writer.writePlanPolicy(policyBean);
                     }
                     writer.endPlanPolicies();
@@ -143,7 +151,7 @@ class StorageExporter {
         }
     }
 
-    private void writeServices(String orgId) {
+    private void exportServices(String orgId) {
         try {
             writer.startServices();
             Iterator<ServiceBean> serviceIter = storage.getAllServices(orgId);
@@ -154,11 +162,13 @@ class StorageExporter {
                 Iterator<ServiceVersionBean> versionIter = storage.getAllServiceVersions(orgId, serviceBean.getId());
                 while (versionIter.hasNext()) {
                     ServiceVersionBean versionBean = versionIter.next();
+                    logger.info(Messages.i18n.format("StorageExporter.ExportingServiceVersion") + versionBean); //$NON-NLS-1$
                     writer.startServiceVersion(versionBean);
                     writer.startServicePolicies();
                     Iterator<PolicyBean> policyIter = storage.getAllPolicies(orgId, serviceBean.getId(), versionBean.getVersion(), PolicyType.Service);
                     while (policyIter.hasNext()) {
                         PolicyBean policyBean = policyIter.next();
+                        logger.info(Messages.i18n.format("StorageExporter.ExportingServicePolicy") + policyBean); //$NON-NLS-1$
                         writer.writeServicePolicy(policyBean);
                     }
                     writer.endServicePolicies();
@@ -174,17 +184,19 @@ class StorageExporter {
         }
     }
 
-    private void writeApplications(String orgId) {
+    private void exportApplications(String orgId) {
         try {
             writer.startApplications();
             Iterator<ApplicationBean> applicationIter = storage.getAllApplications(orgId);
             while (applicationIter.hasNext()) {
                 ApplicationBean applicationBean = applicationIter.next();
+                logger.info(Messages.i18n.format("StorageExporter.ExportingApp") + applicationBean); //$NON-NLS-1$
                 writer.startApplication(applicationBean);
                 writer.startApplicationVersions();
                 Iterator<ApplicationVersionBean> versionIter = storage.getAllApplicationVersions(orgId, applicationBean.getId());
                 while (versionIter.hasNext()) {
                     ApplicationVersionBean versionBean = versionIter.next();
+                    logger.info(Messages.i18n.format("StorageExporter.ExportingAppVersion") + versionBean); //$NON-NLS-1$
                     writer.startApplicationVersion(versionBean);
                     
                     // Policies
@@ -192,6 +204,7 @@ class StorageExporter {
                     Iterator<PolicyBean> policyIter = storage.getAllPolicies(orgId, applicationBean.getId(), versionBean.getVersion(), PolicyType.Application);
                     while (policyIter.hasNext()) {
                         PolicyBean policyBean = policyIter.next();
+                        logger.info(Messages.i18n.format("StorageExporter.ExportingAppPolicy") + policyBean); //$NON-NLS-1$
                         writer.writeApplicationPolicy(policyBean);
                     }
                     writer.endApplicationPolicies();
@@ -201,6 +214,7 @@ class StorageExporter {
                     Iterator<ContractBean> contractIter = storage.getAllContracts(orgId, applicationBean.getId(), versionBean.getVersion());
                     while (contractIter.hasNext()) {
                         ContractBean contractBean = contractIter.next();
+                        logger.info(Messages.i18n.format("StorageExporter.ExportingAppContract") + contractBean); //$NON-NLS-1$
                         writer.writeApplicationContract(contractBean);
                     }
                     writer.endApplicationContracts();
@@ -217,7 +231,7 @@ class StorageExporter {
         }
     }
 
-    private void writeMemberships(String orgId) {
+    private void exportMemberships(String orgId) {
         try {
             Iterator<RoleMembershipBean> iter = storage.getAllMemberships(orgId);
 
@@ -225,6 +239,7 @@ class StorageExporter {
 
             while(iter.hasNext()) {
                 RoleMembershipBean bean = iter.next();
+                logger.info(Messages.i18n.format("StorageExporter.ExportingMembership") + bean); //$NON-NLS-1$
                 writer.writeMembership(bean);
             }
 
@@ -235,7 +250,7 @@ class StorageExporter {
         }
     }
 
-    private void writeAudits(String orgId) {
+    private void exportAudits(String orgId) {
         try {
             Iterator<AuditEntryBean> iter = storage.getAllAuditEntries(orgId);
 
@@ -243,6 +258,7 @@ class StorageExporter {
 
             while(iter.hasNext()) {
                 AuditEntryBean bean = iter.next();
+                logger.info(Messages.i18n.format("StorageExporter.ExportingAuditEntry") + bean); //$NON-NLS-1$
                 writer.writeAudit(bean);
             }
 
@@ -254,6 +270,7 @@ class StorageExporter {
     }
 
     private void exportMetadata() {
+        logger.info(Messages.i18n.format("StorageExporter.ExportingMetaData")); //$NON-NLS-1$
         MetadataBean metadata = new MetadataBean();
         metadata.setApimanVersion(version.getVersionString());
         metadata.setExportedOn(new DateTime());
@@ -268,6 +285,7 @@ class StorageExporter {
 
             while(iter.hasNext()) {
                 GatewayBean bean = iter.next();
+                logger.info(Messages.i18n.format("StorageExporter.ExportingGateway") + bean); //$NON-NLS-1$
                 writer.writeGateway(bean);
             }
 
@@ -286,6 +304,7 @@ class StorageExporter {
 
             while(iter.hasNext()) {
                 PluginBean bean = iter.next();
+                logger.info(Messages.i18n.format("StorageExporter.ExportingPlugin") + bean); //$NON-NLS-1$
                 writer.writePlugin(bean);
             }
 
@@ -301,16 +320,13 @@ class StorageExporter {
         try {
             Iterator<UserBean> iter;
 
-            if (orgId != null) {
-                iter = storage.getAllUsers(orgId);
-            } else {
-                iter = storage.getAllUsers();
-            }
+            iter = storage.getAllUsers();
 
             writer.startUsers();
 
             while (iter.hasNext()) {
                 UserBean bean = iter.next();
+                logger.info(Messages.i18n.format("StorageExporter.ExportingUser") + bean); //$NON-NLS-1$
                 writer.writeUser(bean);
             }
 
@@ -331,6 +347,7 @@ class StorageExporter {
 
             while(iter.hasNext()) {
                 RoleBean bean = iter.next();
+                logger.info(Messages.i18n.format("StorageExporter.ExportingRole") + bean); //$NON-NLS-1$
                 writer.writeRole(bean);
             }
 
@@ -351,6 +368,7 @@ class StorageExporter {
 
             while(iter.hasNext()) {
                 PolicyDefinitionBean bean = iter.next();
+                logger.info(Messages.i18n.format("StorageExporter.ExportingPolicyDefinition") + bean); //$NON-NLS-1$
                 writer.writePolicyDef(bean);
             }
 
