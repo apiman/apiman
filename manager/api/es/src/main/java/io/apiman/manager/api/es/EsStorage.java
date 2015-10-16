@@ -2153,7 +2153,30 @@ public class EsStorage implements IStorage, IStorageQuery {
         return getAll("contract", new IUnmarshaller<ContractBean>() { //$NON-NLS-1$
             @Override
             public ContractBean unmarshal(Map<String, Object> source) {
-                return EsMarshalling.unmarshallContract(source);
+                ContractBean contract = EsMarshalling.unmarshallContract(source);
+                String svcOrgId = (String) source.get("serviceOrganizationId");
+                String svcId = (String) source.get("serviceId");
+                String svcVersion = (String) source.get("serviceVersion");
+                String planId = (String) source.get("planId");
+                String planVersion = (String) source.get("planVersion");
+                
+                ServiceVersionBean svb = new ServiceVersionBean();
+                svb.setVersion(svcVersion);
+                svb.setService(new ServiceBean());
+                svb.getService().setOrganization(new OrganizationBean());
+                svb.getService().setId(svcId);
+                svb.getService().getOrganization().setId(svcOrgId);
+                
+                PlanVersionBean pvb = new PlanVersionBean();
+                pvb.setVersion(planVersion);
+                pvb.setPlan(new PlanBean());
+                pvb.getPlan().setOrganization(new OrganizationBean());
+                pvb.getPlan().setId(planId);
+                pvb.getPlan().getOrganization().setId(svcOrgId);
+
+                contract.setPlan(pvb);
+                contract.setService(svb);
+                return contract;
             }
         }, query);
     }

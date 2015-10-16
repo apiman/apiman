@@ -44,7 +44,6 @@ public class LoggingDispatcher implements IImportReaderDispatcher {
     @Override
     public void metadata(MetadataBean metadata) {
         System.out.println("metadata: " + metadata);
-        
     }
 
     /**
@@ -53,7 +52,6 @@ public class LoggingDispatcher implements IImportReaderDispatcher {
     @Override
     public void user(UserBean user) {
         System.out.println("user: " + user);
-        
     }
 
     /**
@@ -62,7 +60,6 @@ public class LoggingDispatcher implements IImportReaderDispatcher {
     @Override
     public void role(RoleBean role) {
         System.out.println("role: " + role);
-        
     }
 
     /**
@@ -71,7 +68,6 @@ public class LoggingDispatcher implements IImportReaderDispatcher {
     @Override
     public void plugin(PluginBean pb) {
         System.out.println("plugin: " + pb);
-        
     }
 
     /**
@@ -80,7 +76,6 @@ public class LoggingDispatcher implements IImportReaderDispatcher {
     @Override
     public void gateway(GatewayBean gb) {
         System.out.println("gateway: " + gb);
-        
     }
 
     /**
@@ -89,7 +84,6 @@ public class LoggingDispatcher implements IImportReaderDispatcher {
     @Override
     public void policyDef(PolicyDefinitionBean policyDef) {
         System.out.println("policyDef: " + policyDef);
-        
     }
 
     /**
@@ -98,7 +92,6 @@ public class LoggingDispatcher implements IImportReaderDispatcher {
     @Override
     public void organization(OrganizationBean org) {
         System.out.println("org: " + org);
-        
     }
 
     /**
@@ -107,7 +100,6 @@ public class LoggingDispatcher implements IImportReaderDispatcher {
     @Override
     public void membership(RoleMembershipBean membership) {
         System.out.println("\tmembership: " + membership);
-        
     }
 
     /**
@@ -116,7 +108,6 @@ public class LoggingDispatcher implements IImportReaderDispatcher {
     @Override
     public void plan(PlanBean plan) {
         System.out.println("\tplan: " + plan);
-        
     }
 
     /**
@@ -125,7 +116,6 @@ public class LoggingDispatcher implements IImportReaderDispatcher {
     @Override
     public void planVersion(PlanVersionBean pvb) {
         System.out.println("\t\tplanVersion: " + pvb);
-        
     }
 
     /**
@@ -134,7 +124,6 @@ public class LoggingDispatcher implements IImportReaderDispatcher {
     @Override
     public void planPolicy(PolicyBean policy) {
         System.out.println("\t\t\tpolicy: " + policy);
-        
     }
 
     /**
@@ -143,7 +132,6 @@ public class LoggingDispatcher implements IImportReaderDispatcher {
     @Override
     public void service(ServiceBean service) {
         System.out.println("\tservice: " + service);
-        
     }
 
     /**
@@ -152,7 +140,6 @@ public class LoggingDispatcher implements IImportReaderDispatcher {
     @Override
     public void serviceVersion(ServiceVersionBean svb) {
         System.out.println("\t\tserviceVersion: " + svb);
-        
     }
 
     /**
@@ -161,7 +148,6 @@ public class LoggingDispatcher implements IImportReaderDispatcher {
     @Override
     public void servicePolicy(PolicyBean policy) {
         System.out.println("\t\t\tpolicy: " + policy);
-        
     }
 
     /**
@@ -170,7 +156,6 @@ public class LoggingDispatcher implements IImportReaderDispatcher {
     @Override
     public void application(ApplicationBean application) {
         System.out.println("\tapp: " + application);
-        
     }
 
     /**
@@ -179,7 +164,6 @@ public class LoggingDispatcher implements IImportReaderDispatcher {
     @Override
     public void applicationVersion(ApplicationVersionBean avb) {
         System.out.println("\t\tappVersion: " + avb);
-        
     }
 
     /**
@@ -188,7 +172,6 @@ public class LoggingDispatcher implements IImportReaderDispatcher {
     @Override
     public void applicationPolicy(PolicyBean policy) {
         System.out.println("\t\t\tpolicy: " + policy);
-        
     }
 
     /**
@@ -197,7 +180,6 @@ public class LoggingDispatcher implements IImportReaderDispatcher {
     @Override
     public void applicationContract(ContractBean cb) {
         System.out.println("\t\t\tcontract: " + cb);
-        
     }
 
     /**
@@ -206,7 +188,14 @@ public class LoggingDispatcher implements IImportReaderDispatcher {
     @Override
     public void audit(AuditEntryBean ab) {
         System.out.println("\taudit: " + ab);
-        
+    }
+    
+    /**
+     * @see io.apiman.manager.api.exportimport.read.IImportReaderDispatcher#close()
+     */
+    @Override
+    public void close() {
+        System.out.println("close");
     }
 
 }

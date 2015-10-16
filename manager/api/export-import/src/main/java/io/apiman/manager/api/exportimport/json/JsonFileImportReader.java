@@ -151,6 +151,8 @@ public class JsonFileImportReader extends AbstractJsonReader implements IImportR
                     throw new IllegalArgumentException("Unhandled field: " + fieldName);
                 }
             }
+            
+            dispatcher.close();
         } finally {
             IOUtils.closeQuietly(in);
         }

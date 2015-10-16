@@ -44,7 +44,7 @@ import java.util.Iterator;
 import org.joda.time.DateTime;
 
 class StorageExporter {
-    private Version version = new Version();
+    private Version version;
     private IExportWriter writer;
     private IStorage storage;
     private String orgId;
@@ -55,7 +55,8 @@ class StorageExporter {
      * @param storage
      * @param orgId
      */
-    public StorageExporter(IExportWriter writer, IStorage storage, String orgId) {
+    public StorageExporter(Version version, IExportWriter writer, IStorage storage, String orgId) {
+        this.version = version;
         this.writer = writer;
         this.storage = storage;
         this.orgId = orgId;
