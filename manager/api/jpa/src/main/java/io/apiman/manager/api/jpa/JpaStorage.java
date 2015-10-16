@@ -1069,7 +1069,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
                     + "  JOIN s.organization o"
                     + " WHERE o.id = :orgId"
                     + "  AND s.id = :serviceId"
-                    + " ORDER BY v.id DESC";
+                    + " ORDER BY v.createdOn DESC";
             Query query = entityManager.createQuery(jpql);
             query.setMaxResults(500);
             query.setParameter("orgId", orgId); //$NON-NLS-1$
@@ -1239,7 +1239,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
                     + "  JOIN a.organization o"
                     + " WHERE o.id = :orgId"
                     + "   AND a.id = :applicationId"
-                    + " ORDER BY v.id DESC"; //$NON-NLS-1$
+                    + " ORDER BY v.createdOn DESC"; //$NON-NLS-1$
             Query query = entityManager.createQuery(jpql);
             query.setMaxResults(500);
             query.setParameter("orgId", orgId); //$NON-NLS-1$
@@ -1474,7 +1474,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
                           "  JOIN p.organization o" +
                           " WHERE o.id = :orgId" +
                           "   AND p.id = :planId" +
-                          " ORDER BY v.id DESC";
+                          " ORDER BY v.createdOn DESC";
             Query query = entityManager.createQuery(jpql);
             query.setMaxResults(500);
             query.setParameter("orgId", orgId); //$NON-NLS-1$
@@ -1618,7 +1618,6 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      */
     @Override
     public void createUser(UserBean user) throws StorageException {
-        user.setJoinedOn(new Date());
         super.create(user);
     }
 

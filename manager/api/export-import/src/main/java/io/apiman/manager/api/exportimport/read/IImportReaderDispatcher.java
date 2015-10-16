@@ -53,10 +53,10 @@ public interface IImportReaderDispatcher {
     void role(RoleBean role);
 
     // Plugins
-    void plugin(PluginBean pb);
+    void plugin(PluginBean plugin);
 
     // Gateways
-    void gateway(GatewayBean gb);
+    void gateway(GatewayBean gateway);
 
     // Policy Definitions
     void policyDef(PolicyDefinitionBean policyDef);
@@ -69,17 +69,20 @@ public interface IImportReaderDispatcher {
     void membership(RoleMembershipBean membership);
 
     void plan(PlanBean plan);
-    void planVersion(PlanVersionBean pvb);
+    void planVersion(PlanVersionBean planVersion);
     void planPolicy(PolicyBean policy);
 
     void service(ServiceBean service);
-    void serviceVersion(ServiceVersionBean svb);
+    void serviceVersion(ServiceVersionBean serviceVersion);
     void servicePolicy(PolicyBean policy);
 
     void application(ApplicationBean application);
-    void applicationVersion(ApplicationVersionBean avb);
+    void applicationVersion(ApplicationVersionBean appVersion);
     void applicationPolicy(PolicyBean policy);
-    void applicationContract(ContractBean cb);
+    void applicationContract(ContractBean contract);
 
-    void audit(AuditEntryBean ab);
+    void audit(AuditEntryBean auditEntry);
+    
+    // Called when the import is complete
+    void close();
 }
