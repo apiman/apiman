@@ -17,6 +17,9 @@ package io.apiman.manager.api.exportimport.json;
 
 import io.apiman.manager.api.exportimport.EntityHandler;
 
+import java.io.IOException;
+
+import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.JsonToken;
 
@@ -34,13 +37,18 @@ public abstract class AbstractJsonReader {
     protected abstract JsonParser jsonParser();
 
     protected <T> void processEntities(Class<T> klazz, EntityHandler<T> handler) throws Exception {
-        while (jsonParser().nextToken() != JsonToken.END_ARRAY) {
+        while (nextToken() != JsonToken.END_ARRAY) {
             processEntity(klazz, handler);
         }
     }
 
     protected <T> void processEntity(Class<T> klazz, EntityHandler<T> handler) throws Exception {
         handler.handleEntity(jsonParser().readValueAs(klazz));
+    }
+
+    protected JsonToken nextToken() throws JsonParseException, IOException {
+        JsonToken token = jsonParser().nextToken();
+        return token;
     }
 
 }

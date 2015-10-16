@@ -34,7 +34,7 @@ import io.apiman.manager.api.beans.services.ServiceVersionBean;
 import io.apiman.manager.api.exportimport.beans.MetadataBean;
 
 /**
- * Global stuff
+ * 
  * @author msavy
  */
 public interface IExportWriter {
