@@ -23,7 +23,7 @@ module Apiman {
 
                     if (plan.checked) {
                         var selectedPlan:any = {};
-                        
+
                         selectedPlan.planId = plan.id;
                         selectedPlan.version = plan.selectedVersion;
                         selectedPlans.push(selectedPlan);
@@ -61,13 +61,13 @@ module Apiman {
                                                lockedVersions.push(planVersion.version);
                                            }
                                        }
-                                        
+
                                        // if we found locked plan versions then add them
                                        if (lockedVersions.length > 0) {
                                            plan.lockedVersions = lockedVersions;
                                            lockedPlans.push(plan);
                                        }
-                                        
+
                                        resolve(planVersions);
                                     }, reject);
                                 }))
