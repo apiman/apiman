@@ -1899,7 +1899,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     public Iterator<OrganizationBean> getAllOrganizations() throws StorageException {
         EntityManager entityManager = getActiveEntityManager();
 
-        String jqpl = "SELECT b FROM OrganizationBean";
+        String jqpl = "SELECT b FROM OrganizationBean b";
         Query query = entityManager.createQuery(jqpl);
 
         return super.getAll(OrganizationBean.class, query);
@@ -1968,11 +1968,12 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             String applicationId) throws StorageException {
         EntityManager entityManager = getActiveEntityManager();
 
-        String jpql =
-                "SELECT v"
-              + " FROM ApplicationVersionBean v"
-              + " WHERE v.application.organization.id = :orgId"
-              + "   AND v.application.id = :appId";
+        String jpql = "SELECT v "
+                + "   FROM ApplicationVersionBean v "
+                + "   JOIN v.application a "
+                + "   JOIN a.organization o "
+                + "  WHERE o.id = :orgId "
+                + "    AND a.id = :appId";
 
         Query query = entityManager.createQuery(jpql);
         query.setParameter("orgId", organizationId);
@@ -2049,11 +2050,12 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             throws StorageException {
         EntityManager entityManager = getActiveEntityManager();
 
-        String jpql =
-                "SELECT v"
-              + " FROM PlanVersionBean v"
-              + " WHERE v.plan.organization.id = :orgId"
-              + "   AND v.plan.id = :planId";
+        String jpql = "SELECT v "
+                + "   FROM PlanVersionBean v "
+                + "   JOIN v.plan p "
+                + "   JOIN p.organization o "
+                + "  WHERE o.id = :orgId "
+                + "    AND p.id = :planId";
 
         Query query = entityManager.createQuery(jpql);
         query.setParameter("orgId", organizationId);
@@ -2070,11 +2072,12 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             throws StorageException {
         EntityManager entityManager = getActiveEntityManager();
 
-        String jpql =
-                "SELECT v"
-              + " FROM ServiceVersionBean v"
-              + " WHERE v.service.organization.id = :orgId"
-              + "   AND v.service.id = :serviceId";
+        String jpql = "SELECT v "
+                + "   FROM ServiceVersionBean v "
+                + "   JOIN v.service s "
+                + "   JOIN s.organization o "
+                + "  WHERE o.id = :orgId "
+                + "    AND s.id = :serviceId";
 
         Query query = entityManager.createQuery(jpql);
         query.setParameter("orgId", organizationId);
@@ -2138,15 +2141,24 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         return super.getAll(PolicyDefinitionBean.class, query);
     }
 
+    @SuppressWarnings("nls")
     @Override
     public Iterator<RoleMembershipBean> getAllMemberships(String orgId) throws StorageException {
-        // TODO Auto-generated method stub
-        return null;
+        EntityManager entityManager = getActiveEntityManager();
+
+        String jpql =
+                "SELECT b "
+                + "FROM RoleMembershipBean b "
+                + "WHERE organizationId = :orgId "; //$NON-NLS-1$
+
+        Query query = entityManager.createQuery(jpql);
+        query.setParameter("orgId", orgId);
+        return super.getAll(RoleMembershipBean.class, query);
     }
 
     @SuppressWarnings("nls")
     @Override
-    public Iterator<UserBean> getAllUsers(String orgId) throws StorageException {
+    public Iterator<UserBean> getAllUsers() throws StorageException {
         EntityManager entityManager = getActiveEntityManager();
 
         String jpql =
@@ -2157,15 +2169,16 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         return super.getAll(UserBean.class, query);
     }
 
-    @Override
-    public Iterator<UserBean> getAllUsers() throws StorageException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
+    @SuppressWarnings("nls")
     @Override
     public Iterator<RoleBean> getAllRoles() throws StorageException {
-        // TODO Auto-generated method stub
-        return null;
+        EntityManager entityManager = getActiveEntityManager();
+
+        String jpql =
+                "SELECT b "
+                + "FROM RoleBean b ";
+
+        Query query = entityManager.createQuery(jpql);
+        return super.getAll(RoleBean.class, query);
     }
 }

@@ -166,7 +166,6 @@ public interface IStorage {
     public Iterator<ContractBean> getAllContracts(String organizationId, String applicationId, String version) throws StorageException;
     public Iterator<AuditEntryBean> getAllAuditEntries(String organizationId) throws StorageException;
     public Iterator<PolicyBean> getAllPolicies(String organizationId, String entityId, String version, PolicyType type) throws StorageException;
-    public Iterator<UserBean> getAllUsers(String organizationId) throws StorageException;
     public Iterator<UserBean> getAllUsers() throws StorageException;
     public Iterator<RoleBean> getAllRoles() throws StorageException;
 }

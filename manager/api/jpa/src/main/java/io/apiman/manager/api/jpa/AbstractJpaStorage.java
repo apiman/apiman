@@ -218,59 +218,8 @@ public abstract class AbstractJpaStorage {
         return rval;
     }
 
-    int elemsAtOnce = 100;
-
-    protected <T> Iterator<T> getAll(final Class<T> type, final Query query) {
-        return new Iterator<T>() {
-            List<T> subsetList = null;
-
-            {
-                tryGet();
-            }
-
-            @Override
-            public boolean hasNext() {
-                if (!subsetList.isEmpty()) {
-                    return true;
-                } else {
-                    return tryGet();
-                }
-            }
-
-            @Override
-            public T next() {
-                if (!subsetList.isEmpty()) {
-                    return subsetList.remove(subsetList.size()-1);
-                } else {
-                    if (tryGet()) {
-                        return next();
-                    } else {
-                        return null;
-                    }
-                }
-            }
-
-            private boolean tryGet() {
-                try {
-                    subsetList = getAll(0, elemsAtOnce, type, query);
-                } catch (StorageException e) {
-                    throw new RuntimeException(e);
-                }
-                return !subsetList.isEmpty();
-            }
-
-            @Override
-            public void remove() {
-                throw new UnsupportedOperationException("remove"); //$NON-NLS-1$
-            }
-        };
-    }
-
-    private <T> List<T> getAll(int offset, int max, Class<T> type, Query query) throws StorageException {
-        return query
-                .setFirstResult(offset)
-                .setMaxResults(max)
-                .getResultList();
+    protected <T> Iterator<T> getAll(Class<T> type, Query query) throws StorageException {
+        return new EntityIterator(type, query);
     }
 
     /**
@@ -429,6 +378,86 @@ public abstract class AbstractJpaStorage {
      */
     public void setEmfAccessor(IEntityManagerFactoryAccessor emfAccessor) {
         this.emfAccessor = emfAccessor;
+    }
+
+    /**
+     * Allows iterating over all entities of a given type.
+     * @author eric.wittmann@redhat.com
+     */
+    private class EntityIterator<T> implements Iterator<T> {
+
+        private Query query;
+        private int pageIndex = 0;
+        private int pageSize = 100;
+        
+        private int resultIndex;
+        private List<T> results;
+
+        /**
+         * Constructor.
+         * @param query
+         * @throws StorageException
+         */
+        public EntityIterator(Class<T> type, Query query) throws StorageException {
+            this.query = query;
+            fetch();
+        }
+
+        /**
+         * Initialize the search.
+         */
+        private void fetch() {
+            if (results != null && results.size() < pageSize) {
+                results = new ArrayList<>();
+            } else {
+                query.setFirstResult(pageIndex);
+                query.setMaxResults(pageSize);
+                results = query.getResultList();
+            }
+            resultIndex = 0;
+            pageIndex += pageSize;
+        }
+
+        /**
+         * @see java.util.Iterator#hasNext()
+         */
+        @Override
+        public boolean hasNext() {
+            return resultIndex < results.size();
+        }
+
+        /**
+         * @see java.util.Iterator#next()
+         */
+        @Override
+        public T next() {
+            T rval = results.get(resultIndex++);
+            entityManager().detach(rval);
+            if (resultIndex >= results.size()) {
+                fetch();
+            }
+            return rval;
+        }
+
+        /**
+         * @throws StorageException
+         */
+        private EntityManager entityManager() {
+            try {
+                return getActiveEntityManager();
+            } catch (StorageException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        
+        /**
+         * @see java.util.Iterator#remove()
+         */
+        @Override
+        public void remove() {
+            // Not implemented.
+        }
+
     }
 
 }

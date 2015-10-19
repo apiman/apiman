@@ -2223,12 +2223,6 @@ public class EsStorage implements IStorage, IStorageQuery {
     }
 
     @Override
-    public Iterator<UserBean> getAllUsers(String orgId) throws StorageException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
     public Iterator<RoleBean> getAllRoles() throws StorageException {
         return getAll("role", new IUnmarshaller<RoleBean>() { //$NON-NLS-1$
             @Override

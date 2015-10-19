@@ -82,7 +82,7 @@ class StorageExporter {
                 exportOrgs();
             } finally {
                 storage.rollbackTx();
-                writer.close();
+                try { writer.close(); } catch (Exception e) { }
             }
             logger.info(Messages.i18n.format("StorageExporter.ExportComplete")); //$NON-NLS-1$
             logger.info("------------------------------------------"); //$NON-NLS-1$

@@ -667,11 +667,6 @@ public class TestEsStorageWrapper implements IStorage {
     }
 
     @Override
-    public Iterator<UserBean> getAllUsers(String orgId) throws StorageException {
-        return this.delegate.getAllUsers(orgId);
-    }
-
-    @Override
     public Iterator<UserBean> getAllUsers() throws StorageException {
         return this.delegate.getAllUsers();
     }
