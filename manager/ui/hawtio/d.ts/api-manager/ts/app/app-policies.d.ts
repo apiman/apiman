@@ -1,5 +1,5 @@
 /// <reference path="../apimanPlugin.d.ts" />
 /// <reference path="../services.d.ts" />
 declare module Apiman {
-    var AppPoliciesController: ng.IModule;
+    var AppPoliciesController: any;
 }

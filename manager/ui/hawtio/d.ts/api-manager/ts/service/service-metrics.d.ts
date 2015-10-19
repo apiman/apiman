@@ -6,5 +6,5 @@ declare module Apiman {
     var SEVEN_DAYS: number;
     var ONE_DAY: number;
     var ONE_HOUR: number;
-    var ServiceMetricsController: ng.IModule;
+    var ServiceMetricsController: any;
 }

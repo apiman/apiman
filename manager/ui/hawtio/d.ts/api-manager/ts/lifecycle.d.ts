@@ -64,6 +64,6 @@ declare module ApimanPageLifecycle {
         "page.title.user-services": string;
         "page.title.error": string;
     };
-    var _module: ng.IModule;
-    var PageLifecycle: ng.IModule;
+    var _module: any;
+    var PageLifecycle: any;
 }

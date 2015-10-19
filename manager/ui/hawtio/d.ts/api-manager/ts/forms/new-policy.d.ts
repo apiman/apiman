@@ -12,5 +12,5 @@ declare module Apiman {
         URLRewritingPolicy: string;
         CachingPolicy: string;
     };
-    var NewPolicyController: ng.IModule;
+    var NewPolicyController: any;
 }
