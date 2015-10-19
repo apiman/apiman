@@ -16,7 +16,13 @@
 
 package io.apiman.manager.api.exportimport.manager;
 
+import io.apiman.gateway.engine.beans.Application;
+import io.apiman.gateway.engine.beans.Contract;
+import io.apiman.gateway.engine.beans.Policy;
+import io.apiman.gateway.engine.beans.Service;
+import io.apiman.gateway.engine.beans.exceptions.PublishingException;
 import io.apiman.manager.api.beans.apps.ApplicationBean;
+import io.apiman.manager.api.beans.apps.ApplicationStatus;
 import io.apiman.manager.api.beans.apps.ApplicationVersionBean;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
 import io.apiman.manager.api.beans.contracts.ContractBean;
@@ -30,29 +36,47 @@ import io.apiman.manager.api.beans.plans.PlanVersionBean;
 import io.apiman.manager.api.beans.plugins.PluginBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
+import io.apiman.manager.api.beans.policies.PolicyType;
 import io.apiman.manager.api.beans.services.ServiceBean;
+import io.apiman.manager.api.beans.services.ServiceGatewayBean;
+import io.apiman.manager.api.beans.services.ServiceStatus;
 import io.apiman.manager.api.beans.services.ServiceVersionBean;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.exceptions.StorageException;
+import io.apiman.manager.api.core.logging.ApimanLogger;
 import io.apiman.manager.api.core.logging.IApimanLogger;
 import io.apiman.manager.api.exportimport.beans.MetadataBean;
 import io.apiman.manager.api.exportimport.i18n.Messages;
 import io.apiman.manager.api.exportimport.read.IImportReaderDispatcher;
+import io.apiman.manager.api.gateway.IGatewayLink;
+import io.apiman.manager.api.gateway.IGatewayLinkFactory;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 /**
  * Used to store imported entities into the {@link IStorage}.
  *
  * @author eric.wittmann@redhat.com
  */
+@ApplicationScoped
 public class StorageImportDispatcher implements IImportReaderDispatcher {
 
+    @Inject
     private IStorage storage;
+    @Inject @ApimanLogger(StorageImportDispatcher.class)
     private IApimanLogger logger;
+    @Inject
+    private IGatewayLinkFactory gatewayLinks;
     
     private Map<String, PolicyDefinitionBean> policyDefIndex = new HashMap<>();
 
@@ -64,16 +88,35 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
     
     private List<ContractBean> contracts = new LinkedList<>();
     
+    private List<EntityInfo> servicesToPublish = new LinkedList<>();
+    private List<EntityInfo> appsToRegister = new LinkedList<>();
+    
+    private Map<String, IGatewayLink> gatewayLinkCache = new HashMap<>();
+    
     /**
      * Constructor.
      * @param storage
      */
-    public StorageImportDispatcher(IStorage storage, IApimanLogger logger) {
-        this.storage = storage;
-        this.logger = logger;
-        
+    public StorageImportDispatcher() {
+    }
+    
+    /**
+     * Starts the import.
+     */
+    public void start() {
         logger.info("----------------------------"); //$NON-NLS-1$
         logger.info(Messages.i18n.format("StorageImportDispatcher.StartingImport")); //$NON-NLS-1$
+        
+        policyDefIndex.clear();
+        currentOrg = null;
+        currentPlan = null;
+        currentService = null;
+        currentApp = null;
+        currentAppVersion = null;
+        contracts.clear();
+        servicesToPublish.clear();
+        appsToRegister.clear();
+        gatewayLinkCache.clear();
         
         try {
             this.storage.beginTx();
@@ -251,6 +294,14 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
             serviceVersion.setService(currentService);
             serviceVersion.setId(null);
             storage.createServiceVersion(serviceVersion);
+            
+            if (serviceVersion.getStatus() == ServiceStatus.Published) {
+                servicesToPublish.add(new EntityInfo(
+                        serviceVersion.getService().getOrganization().getId(), 
+                        serviceVersion.getService().getId(),
+                        serviceVersion.getVersion()
+                ));
+            }
         } catch (StorageException e) {
             rollback(e);
         }
@@ -291,6 +342,14 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
             appVersion.setApplication(currentApp);
             appVersion.setId(null);
             storage.createApplicationVersion(appVersion);
+            
+            if (appVersion.getStatus() == ApplicationStatus.Registered) {
+                appsToRegister.add(new EntityInfo(
+                        appVersion.getApplication().getOrganization().getId(), 
+                        appVersion.getApplication().getId(),
+                        appVersion.getVersion()
+                ));
+            }
         } catch (StorageException e) {
             rollback(e);
         }
@@ -341,14 +400,175 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
     public void close() {
         try {
             importContracts();
-//            publishServices();
-//            registerApplications();
+            publishServices();
+            registerApplications();
+            
+            // Close the gateway links that we created during the publish/registration
+            for (IGatewayLink gwLink : gatewayLinkCache.values()) {
+                try { gwLink.close(); } catch (Exception e) { }
+            }
+
             storage.commitTx();
             logger.info(Messages.i18n.format("StorageImportDispatcher.ImportingImportComplete")); //$NON-NLS-1$
             logger.info("-----------------------------------"); //$NON-NLS-1$
         } catch (StorageException e) {
             rollback(e);
         }
+    }
+
+    /**
+     * Publishes any services that were imported in the "Published" state.
+     * @throws StorageException 
+     */
+    private void publishServices() throws StorageException {
+        logger.info(Messages.i18n.format("StorageExporter.PublishingServices")); //$NON-NLS-1$
+        
+        try {
+            for (EntityInfo info : servicesToPublish) {
+                logger.info(Messages.i18n.format("StorageExporter.PublishingService", info)); //$NON-NLS-1$
+                ServiceVersionBean versionBean = storage.getServiceVersion(info.organizationId, info.id, info.version);
+                
+                Service gatewaySvc = new Service();
+                gatewaySvc.setEndpoint(versionBean.getEndpoint());
+                gatewaySvc.setEndpointType(versionBean.getEndpointType().toString());
+                gatewaySvc.setEndpointProperties(versionBean.getEndpointProperties());
+                gatewaySvc.setOrganizationId(versionBean.getService().getOrganization().getId());
+                gatewaySvc.setServiceId(versionBean.getService().getId());
+                gatewaySvc.setVersion(versionBean.getVersion());
+                gatewaySvc.setPublicService(versionBean.isPublicService());
+                if (versionBean.isPublicService()) {
+                    List<Policy> policiesToPublish = new ArrayList<>();
+                    Iterator<PolicyBean> servicePolicies = storage.getAllPolicies(info.organizationId,
+                            info.id, info.version, PolicyType.Service);
+                    while (servicePolicies.hasNext()) {
+                        PolicyBean servicePolicy = servicePolicies.next();
+                        Policy policyToPublish = new Policy();
+                        policyToPublish.setPolicyJsonConfig(servicePolicy.getConfiguration());
+                        policyToPublish.setPolicyImpl(servicePolicy.getDefinition().getPolicyImpl());
+                        policiesToPublish.add(policyToPublish);
+                    }
+                    gatewaySvc.setServicePolicies(policiesToPublish);
+                }
+    
+                // Publish the service to all relevant gateways
+                Set<ServiceGatewayBean> gateways = versionBean.getGateways();
+                if (gateways == null) {
+                    throw new RuntimeException("No gateways specified for service!"); //$NON-NLS-1$
+                }
+                for (ServiceGatewayBean serviceGatewayBean : gateways) {
+                    IGatewayLink gatewayLink = createGatewayLink(serviceGatewayBean.getGatewayId());
+                    gatewayLink.publishService(gatewaySvc);
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Registers any applications that were imported in the "Registered" state.
+     * @throws StorageException 
+     */
+    private void registerApplications() throws StorageException {
+        logger.info(Messages.i18n.format("StorageExporter.RegisteringApps")); //$NON-NLS-1$
+
+        for (EntityInfo info : appsToRegister) {
+            logger.info(Messages.i18n.format("StorageExporter.RegisteringApp", info)); //$NON-NLS-1$
+            ApplicationVersionBean versionBean = storage.getApplicationVersion(info.organizationId, info.id, info.version);
+            Iterator<ContractBean> contractBeans = storage.getAllContracts(info.organizationId, info.id, info.version);
+
+            Application application = new Application();
+            application.setOrganizationId(versionBean.getApplication().getOrganization().getId());
+            application.setApplicationId(versionBean.getApplication().getId());
+            application.setVersion(versionBean.getVersion());
+
+            Set<Contract> contracts = new HashSet<>();
+            while (contractBeans.hasNext()) {
+                ContractBean contractBean = contractBeans.next();
+                Contract contract = new Contract();
+                contract.setApiKey(contractBean.getApikey());
+                contract.setPlan(contractBean.getPlan().getPlan().getId());
+                contract.setServiceId(contractBean.getService().getService().getId());
+                contract.setServiceOrgId(contractBean.getService().getService().getOrganization().getId());
+                contract.setServiceVersion(contractBean.getService().getVersion());
+                contract.getPolicies().addAll(aggregateContractPolicies(contractBean));
+                contracts.add(contract);
+            }
+            application.setContracts(contracts);
+
+            // Next, register the application with *all* relevant gateways.  This is done by
+            // looking up all referenced services and getting the gateway information for them.
+            // Each of those gateways must be told about the application.
+            Map<String, IGatewayLink> links = new HashMap<>();
+            for (Contract contract : application.getContracts()) {
+                ServiceVersionBean svb = storage.getServiceVersion(contract.getServiceOrgId(), contract.getServiceId(), contract.getServiceVersion());
+                Set<ServiceGatewayBean> gateways = svb.getGateways();
+                if (gateways == null) {
+                    throw new PublishingException("No gateways specified for service: " + svb.getService().getName()); //$NON-NLS-1$
+                }
+                for (ServiceGatewayBean serviceGatewayBean : gateways) {
+                    String gatewayId = serviceGatewayBean.getGatewayId();
+                    if (!links.containsKey(gatewayId)) {
+                        IGatewayLink gatewayLink = createGatewayLink(gatewayId);
+                        links.put(gatewayId, gatewayLink);
+                    }
+                }
+            }
+            for (IGatewayLink gatewayLink : links.values()) {
+                try {
+                    gatewayLink.registerApplication(application);
+                } catch (Exception e) {
+                    throw new StorageException(e);
+                }
+            }
+        }
+    }
+
+    /**
+     * Aggregates the service, app, and plan policies into a single ordered list.
+     * @param contractBean
+     */
+    private List<Policy> aggregateContractPolicies(ContractBean contractBean) throws StorageException {
+        List<Policy> policies = new ArrayList<>();
+        PolicyType [] types = new PolicyType[] {
+                PolicyType.Application, PolicyType.Plan, PolicyType.Service
+        };
+        for (PolicyType policyType : types) {
+            String org, id, ver;
+            switch (policyType) {
+              case Application: {
+                  org = contractBean.getApplication().getApplication().getOrganization().getId();
+                  id = contractBean.getApplication().getApplication().getId();
+                  ver = contractBean.getApplication().getVersion();
+                  break;
+              }
+              case Plan: {
+                  org = contractBean.getService().getService().getOrganization().getId();
+                  id = contractBean.getPlan().getPlan().getId();
+                  ver = contractBean.getPlan().getVersion();
+                  break;
+              }
+              case Service: {
+                  org = contractBean.getService().getService().getOrganization().getId();
+                  id = contractBean.getService().getService().getId();
+                  ver = contractBean.getService().getVersion();
+                  break;
+              }
+              default: {
+                  throw new RuntimeException("Missing case for switch!"); //$NON-NLS-1$
+              }
+            }
+            
+            Iterator<PolicyBean> appPolicies = storage.getAllPolicies(org, id, ver, policyType);
+            while (appPolicies.hasNext()) {
+                PolicyBean policyBean = appPolicies.next();
+                Policy policy = new Policy();
+                policy.setPolicyJsonConfig(policyBean.getConfiguration());
+                policy.setPolicyImpl(policyBean.getDefinition().getPolicyImpl());
+                policies.add(policy);
+            }
+        }
+        return policies;
     }
 
     /**
@@ -430,6 +650,27 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
     }
 
     /**
+     * Creates a gateway link given a gateway id.
+     * @param gatewayId
+     */
+    private IGatewayLink createGatewayLink(String gatewayId) throws StorageException {
+        if (gatewayLinkCache.containsKey(gatewayId)) {
+            return gatewayLinkCache.get(gatewayId);
+        }
+        try {
+            GatewayBean gateway = storage.getGateway(gatewayId);
+            if (gateway == null) {
+                throw new Exception("Gateway not found: " + gatewayId); //$NON-NLS-1$
+            }
+            IGatewayLink link = gatewayLinks.create(gateway);
+            gatewayLinkCache.put(gatewayId, link);
+            return link;
+        } catch (Exception e) {
+            throw new StorageException(e);
+        }
+    }
+
+    /**
      * @param error
      */
     private void rollback(StorageException error) {
@@ -437,4 +678,30 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
         throw new RuntimeException(error);
     }
     
+    private static class EntityInfo {
+        private String organizationId;
+        private String id;
+        private String version;
+        
+        /**
+         * Constructor.
+         * @param orgId
+         * @param id
+         * @param version
+         */
+        public EntityInfo(String orgId, String id, String version) {
+            this.organizationId = orgId;
+            this.id = id;
+            this.version = version;
+        }
+        
+        /**
+         * @see java.lang.Object#toString()
+         */
+        @SuppressWarnings("nls")
+        @Override
+        public String toString() {
+            return organizationId + " / " + id + " -> " + version;
+        }
+    }
 }

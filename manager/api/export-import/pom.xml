@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+  xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>io.apiman</groupId>
@@ -10,7 +10,8 @@
   <artifactId>apiman-manager-api-export-import-api</artifactId>
   <name>apiman-manager-api-export-import-api</name>
   <dependencies>
-      <dependency>
+    <!-- Project Dependencies -->
+    <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-common-util</artifactId>
     </dependency>
@@ -24,6 +25,10 @@
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-manager-api-gateway</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
       <artifactId>apiman-manager-api-core</artifactId>
     </dependency>
     <dependency>
@@ -34,6 +39,8 @@
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-manager-api-config</artifactId>
     </dependency>
+
+    <!-- Third Party -->
     <dependency>
       <groupId>org.codehaus.jackson</groupId>
       <artifactId>jackson-core-asl</artifactId>
@@ -46,11 +53,6 @@
       <groupId>javax.enterprise</groupId>
       <artifactId>cdi-api</artifactId>
       <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
     </dependency>
   </dependencies>
 </project>

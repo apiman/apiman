@@ -85,6 +85,7 @@ public class RestGatewayLink implements IGatewayLink {
         try {
             this.gateway = gateway;
             String cfg = gateway.getConfiguration();
+            cfg = AesEncrypter.decrypt(cfg);
             setConfig((RestGatewayConfigBean) mapper.reader(RestGatewayConfigBean.class).readValue(cfg));
             getConfig().setPassword(AesEncrypter.decrypt(getConfig().getPassword()));
             httpClient = HttpClientBuilder.create()

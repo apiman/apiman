@@ -15,8 +15,6 @@
  */
 package io.apiman.manager.api.exportimport.manager;
 
-import io.apiman.manager.api.config.Version;
-import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.logging.ApimanLogger;
 import io.apiman.manager.api.core.logging.IApimanLogger;
 import io.apiman.manager.api.exportimport.json.IExportImportFactory;
@@ -38,13 +36,15 @@ import javax.inject.Inject;
 public class ExportImportManager {
     
     @Inject
-    private Version version;
-    @Inject
     private ExportImportConfigParser config;
+    @Inject @ApimanLogger(IImportReader.class)
+    private IApimanLogger importLogger;
+    @Inject @ApimanLogger(IExportWriter.class)
+    private IApimanLogger exportLogger;
     @Inject
-    private IStorage storage;
-    @Inject @ApimanLogger(ExportImportManager.class)
-    IApimanLogger logger;
+    private StorageImportDispatcher importDispatcher;
+    @Inject
+    private StorageExporter exporter;
 
     private Map<ExportImportProviderType, IExportImportFactory> eiFactories = new HashMap<>();
     private ExportImportProviderType provider;
@@ -78,8 +78,9 @@ public class ExportImportManager {
     }
 
     private void doImport() {
-        IImportReader reader = eiFactories.get(provider).createReader(config, logger);
-        reader.setDispatcher(new StorageImportDispatcher(storage, logger));
+        IImportReader reader = eiFactories.get(provider).createReader(config, importLogger);
+        importDispatcher.start();
+        reader.setDispatcher(importDispatcher);
         try {
             reader.read();
         } catch (Exception e) {
@@ -88,7 +89,8 @@ public class ExportImportManager {
     }
 
     private void doExport() {
-        IExportWriter writer = eiFactories.get(provider).createWriter(config, logger);
-        new StorageExporter(logger, version, writer, storage).export();
+        IExportWriter writer = eiFactories.get(provider).createWriter(config, exportLogger);
+        exporter.init(writer);
+        exporter.export();
     }
 }

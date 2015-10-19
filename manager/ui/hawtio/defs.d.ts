@@ -19,10 +19,6 @@
 /// <reference path="d.ts\api-manager\ts\admin\admin-plugins.d.ts"/>
 /// <reference path="d.ts\api-manager\ts\admin\admin-policyDefs.d.ts"/>
 /// <reference path="d.ts\api-manager\ts\admin\admin-roles.d.ts"/>
-/// <reference path="d.ts\api-manager\ts\consumer\consumer-org.d.ts"/>
-/// <reference path="d.ts\api-manager\ts\consumer\consumer-orgs.d.ts"/>
-/// <reference path="d.ts\api-manager\ts\consumer\consumer-service.d.ts"/>
-/// <reference path="d.ts\api-manager\ts\consumer\consumer-services.d.ts"/>
 /// <reference path="d.ts\api-manager\ts\app\app-activity.d.ts"/>
 /// <reference path="d.ts\api-manager\ts\app\app-apis.d.ts"/>
 /// <reference path="d.ts\api-manager\ts\app\app-contracts.d.ts"/>
@@ -30,6 +26,10 @@
 /// <reference path="d.ts\api-manager\ts\app\app-overview.d.ts"/>
 /// <reference path="d.ts\api-manager\ts\app\app-policies.d.ts"/>
 /// <reference path="d.ts\api-manager\ts\app\app.d.ts"/>
+/// <reference path="d.ts\api-manager\ts\consumer\consumer-org.d.ts"/>
+/// <reference path="d.ts\api-manager\ts\consumer\consumer-orgs.d.ts"/>
+/// <reference path="d.ts\api-manager\ts\consumer\consumer-service.d.ts"/>
+/// <reference path="d.ts\api-manager\ts\consumer\consumer-services.d.ts"/>
 /// <reference path="d.ts\api-manager\ts\forms\edit-gateway.d.ts"/>
 /// <reference path="d.ts\api-manager\ts\forms\edit-plugin.d.ts"/>
 /// <reference path="d.ts\api-manager\ts\forms\edit-policy.d.ts"/>

@@ -376,10 +376,9 @@ public class ActionResourceImpl implements IActionResource {
     private List<Policy> aggregateContractPolicies(ContractSummaryBean contractBean) {
         try {
             List<Policy> policies = new ArrayList<>();
-            PolicyType [] types = new PolicyType[3];
-            types[0] = PolicyType.Application;
-            types[1] = PolicyType.Plan;
-            types[2] = PolicyType.Service;
+            PolicyType [] types = new PolicyType[] {
+                    PolicyType.Application, PolicyType.Plan, PolicyType.Service
+            };
             for (PolicyType policyType : types) {
                 String org, id, ver;
                 switch (policyType) {

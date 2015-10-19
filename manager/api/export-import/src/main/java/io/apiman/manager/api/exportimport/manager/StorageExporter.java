@@ -36,6 +36,7 @@ import io.apiman.manager.api.beans.services.ServiceVersionBean;
 import io.apiman.manager.api.config.Version;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.exceptions.StorageException;
+import io.apiman.manager.api.core.logging.ApimanLogger;
 import io.apiman.manager.api.core.logging.IApimanLogger;
 import io.apiman.manager.api.exportimport.beans.MetadataBean;
 import io.apiman.manager.api.exportimport.i18n.Messages;
@@ -43,24 +44,33 @@ import io.apiman.manager.api.exportimport.write.IExportWriter;
 
 import java.util.Iterator;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import org.joda.time.DateTime;
 
+@ApplicationScoped
 class StorageExporter {
+    @Inject @ApimanLogger(StorageExporter.class)
     private IApimanLogger logger;
+    @Inject
     private Version version;
-    private IExportWriter writer;
+    @Inject
     private IStorage storage;
+    
+    private IExportWriter writer;
 
     /**
      * Constructor.
-     * @param writer
-     * @param storage
      */
-    public StorageExporter(IApimanLogger logger, Version version, IExportWriter writer, IStorage storage) {
-        this.logger = logger;
-        this.version = version;
+    public StorageExporter() {
+    }
+    
+    /**
+     * @param writer
+     */
+    public void init(IExportWriter writer) {
         this.writer = writer;
-        this.storage = storage;
     }
 
     /**
