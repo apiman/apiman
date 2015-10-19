@@ -1,7 +1,10 @@
-node/
-node_modules/
-libs/
-dist
 .externalToolBuilders/
 .idea/
+defs.d.ts
+dist
+d.ts/api-manager/
+d.ts/includes.d.ts
+libs/
+node/
+node_modules/
 typings/

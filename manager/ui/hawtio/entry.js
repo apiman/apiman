@@ -3,7 +3,7 @@
 // installed server-side with npm. Browserify will check all requires(), subsequently
 // bundling them into a single file, which we can then use on the client.
 
-global.jQuery = global.$ = require('jquery');
+global.jQuery = global.$ = require('patternfly/components/jquery/dist/jquery.js');
 var bootstrap = require('patternfly/components/bootstrap/dist/js/bootstrap.js');
 var bootstrapSelect = require('patternfly/components/bootstrap-select/bootstrap-select.js');
 var jsonEditor = require('json-editor');

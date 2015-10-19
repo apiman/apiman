@@ -251,6 +251,7 @@ module Apiman {
                 transclude: true,
                 link: function(scope, element, attrs) {
                     scope.title = attrs.modalTitle;
+
                     $(element).on('hidden.bs.modal', function() {
                         $(element).remove();
                     });
