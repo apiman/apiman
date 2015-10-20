@@ -4,11 +4,12 @@ The APIMan frontend is built with TypeScript and AngularJS. NPM and TSD are used
 
 #### Installation
 
-To make the setup as painless as possible, we provide you with a convenience script through NPM. To get setup, simply run the following:
+To install dependencies on the front-end, run the following:
  
- `npm run setup`
+ `npm install`
  
-This will install NPM dependencies and TS definitions. You can also run these separately as: `npm install` and `tsd install`. No need to install any dependencies globally!
+This will install NPM dependencies and TS definitions (through an NPM `postinstall` script). No need to install any 
+dependencies globally!
  
 #### Get Started
 
