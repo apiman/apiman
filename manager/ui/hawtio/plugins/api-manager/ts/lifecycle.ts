@@ -163,6 +163,7 @@ module ApimanPageLifecycle {
                 loadPage: function(pageName, pageData, $scope, handler) {
                     Logger.log("|{0}| >> Loading page.", pageName);
                     $rootScope.pageState = 'loading';
+                    $rootScope.isDirty = false;
 
                     // Every page gets the current user.
                     var allData = undefined;

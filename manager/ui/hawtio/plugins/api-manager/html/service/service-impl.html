@@ -102,7 +102,7 @@
                              class="apiman-form-control form-control"
                              width="100%"
                              type="text"
-                             ng-disabled="getEntityStatus() != ('Ready' || 'Created')"></input>
+                             ng-disabled="isEntityDisabled()"></input>
                     </td>
                   </tr>
                   <tr>
@@ -118,7 +118,7 @@
                                class="apiman-form-control form-control"
                                width="100%"
                                type="password"
-                               ng-disabled="getEntityStatus() != ('Ready' || 'Created')"></input>
+                               ng-disabled="isEntityDisabled()"></input>
                     </td>
                   </tr>
                   <tr>
@@ -134,7 +134,7 @@
                                class="apiman-form-control form-control"
                                width="100%"
                                type="password"
-                               ng-disabled="getEntityStatus() != ('Ready' || 'Created')"></input>
+                               ng-disabled="isEntityDisabled()"></input>
                     </td>
                   </tr>
                   <tr>
@@ -145,7 +145,7 @@
                       <input ng-model="apiSecurity.basic.requireSSL"
                              type="checkbox"
                              id="require-ssl"
-                             ng-disabled="getEntityStatus() != ('Ready' || 'Created')"></input>
+                             ng-disabled="isEntityDisabled()"></input>
                       <label for="require-ssl"
                              apiman-i18n-key="endpoint-security.require-ssl"
                              style="padding-left: 3px">Require transport security (SSL)</label>
@@ -173,7 +173,7 @@
                         apiman-select-picker=""
                         class="selectpicker"
                         ng-options="gateway.name for gateway in gateways | orderBy: name"
-                        ng-disabled="getEntityStatus() != ('Ready' || 'Created')">
+                        ng-disabled="isEntityDisabled()">
                 </select>
               </div>
             </div>
