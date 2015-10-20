@@ -27,7 +27,7 @@ module Apiman {
                 $('body').append($compile('<apiman-api-modal></apiman-api-modal>')(modalScope));
                 $timeout(function() {
                     $('#apiModal')['modal']({'keyboard': true, 'backdrop': 'static'});
-                }, 1);
+                }, 50);
 
             };
             

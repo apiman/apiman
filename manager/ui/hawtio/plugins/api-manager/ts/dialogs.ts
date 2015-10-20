@@ -33,7 +33,7 @@ module ApimanDialogs {
                         });
                         
                         $('#confirmModal')['modal']({'keyboard': true, 'backdrop': 'static'});
-                    }, 500);
+                    }, 50);
                 },
                 
                 // A simple "Select a Service" dialog (allows selecting a single service + version
@@ -52,7 +52,7 @@ module ApimanDialogs {
                         $('#selectServiceModal').on('shown.bs.modal', function () {
                             $('#selectServiceModal .input-search').focus();
                         });
-                    }, 500);
+                    }, 50);
 
                     modalScope.search = function() {
                         modalScope.selectedService = undefined;
