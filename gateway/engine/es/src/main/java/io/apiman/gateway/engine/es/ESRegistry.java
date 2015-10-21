@@ -17,7 +17,6 @@ package io.apiman.gateway.engine.es;
 
 import io.apiman.gateway.engine.IRegistry;
 import io.apiman.gateway.engine.async.AsyncResultImpl;
-import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.Application;
 import io.apiman.gateway.engine.beans.Contract;
@@ -29,15 +28,14 @@ import io.apiman.gateway.engine.beans.exceptions.PublishingException;
 import io.apiman.gateway.engine.beans.exceptions.RegistrationException;
 import io.apiman.gateway.engine.es.i18n.Messages;
 import io.searchbox.client.JestResult;
-import io.searchbox.client.JestResultHandler;
 import io.searchbox.core.Delete;
 import io.searchbox.core.DeleteByQuery;
 import io.searchbox.core.Get;
 import io.searchbox.core.Index;
 import io.searchbox.params.Parameters;
 
+import java.io.IOException;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -68,28 +66,17 @@ public class ESRegistry extends AbstractESComponent implements IRegistry {
     public void publishService(final Service service, final IAsyncResultHandler<Void> handler) {
         try {
             String id = getServiceId(service);
-
             Index index = new Index.Builder(ESRegistryMarshalling.marshall(service).string()).refresh(false)
                     .index(getIndexName()).setParameter(Parameters.OP_TYPE, "create") //$NON-NLS-1$
                     .type("service").id(id).build(); //$NON-NLS-1$
-            getClient().executeAsync(index, new JestResultHandler<JestResult>() {
-                @Override
-                public void completed(JestResult result) {
-                    if (!result.isSucceeded()) {
-                        handler.handle(AsyncResultImpl.create(
-                                new PublishingException(Messages.i18n.format("ESRegistry.ServiceAlreadyPublished")),  //$NON-NLS-1$
-                                Void.class));
-                    } else {
-                        handler.handle(AsyncResultImpl.create((Void) null));
-                    }
-                }
-                @Override
-                public void failed(Exception e) {
-                    handler.handle(AsyncResultImpl.create(
-                            new PublishingException(Messages.i18n.format("ESRegistry.ErrorPublishingService"), e),  //$NON-NLS-1$
-                            Void.class));
-                }
-            });
+            JestResult result = getClient().execute(index);
+            if (!result.isSucceeded()) {
+                handler.handle(AsyncResultImpl.create(
+                        new PublishingException(Messages.i18n.format("ESRegistry.ServiceAlreadyPublished")),  //$NON-NLS-1$
+                        Void.class));
+            } else {
+                handler.handle(AsyncResultImpl.create((Void) null));
+            }
         } catch (Exception e) {
             handler.handle(AsyncResultImpl.create(
                     new PublishingException(Messages.i18n.format("ESRegistry.ErrorPublishingService"), e),  //$NON-NLS-1$
@@ -104,21 +91,17 @@ public class ESRegistry extends AbstractESComponent implements IRegistry {
     public void retireService(Service service, final IAsyncResultHandler<Void> handler) {
         final String id = getServiceId(service);
 
-        Delete delete = new Delete.Builder(id).index(getIndexName()).type("service").build(); //$NON-NLS-1$
-        getClient().executeAsync(delete, new JestResultHandler<JestResult>() {
-            @Override
-            public void completed(JestResult result) {
-                if (result.isSucceeded()) {
-                    handler.handle(AsyncResultImpl.create((Void) null));
-                } else {
-                    handler.handle(AsyncResultImpl.create(new PublishingException(Messages.i18n.format("ESRegistry.ServiceNotFound")), Void.class)); //$NON-NLS-1$
-                }
+        try {
+            Delete delete = new Delete.Builder(id).index(getIndexName()).type("service").build(); //$NON-NLS-1$
+            JestResult result = getClient().execute(delete);
+            if (result.isSucceeded()) {
+                handler.handle(AsyncResultImpl.create((Void) null));
+            } else {
+                handler.handle(AsyncResultImpl.create(new PublishingException(Messages.i18n.format("ESRegistry.ServiceNotFound")), Void.class)); //$NON-NLS-1$
             }
-            @Override
-            public void failed(Exception e) {
-                handler.handle(AsyncResultImpl.create(new PublishingException(Messages.i18n.format("ESRegistry.ErrorRetiringService"), e), Void.class)); //$NON-NLS-1$
-            }
-        });
+        } catch (IOException e) {
+            handler.handle(AsyncResultImpl.create(new PublishingException(Messages.i18n.format("ESRegistry.ErrorRetiringService"), e), Void.class)); //$NON-NLS-1$
+        }
     }
 
     /**
@@ -127,104 +110,76 @@ public class ESRegistry extends AbstractESComponent implements IRegistry {
     @Override
     public void registerApplication(final Application application, final IAsyncResultHandler<Void> handler) {
         final Map<String, Service> svcMap = new HashMap<>();
-        validateApplication(application, svcMap, new IAsyncResultHandler<Void>() {
-            @Override
-            public void handle(IAsyncResult<Void> result) {
-                if (result.isError()) {
-                    handler.handle(result);
-                } else {
-                    String id = getApplicationId(application);
-                    try {
-                        Index index = new Index.Builder(ESRegistryMarshalling.marshall(application).string())
-                                .refresh(false).index(getIndexName())
-                                .setParameter(Parameters.OP_TYPE, "create") //$NON-NLS-1$
-                                .type("application").id(id).build(); //$NON-NLS-1$
-                        getClient().executeAsync(index, new JestResultHandler<JestResult>() {
-                            @Override
-                            public void completed(JestResult result) {
-                                if (!result.isSucceeded()) {
-                                    handler.handle(AsyncResultImpl.create(
-                                            new RegistrationException(Messages.i18n.format("ESRegistry.AppAlreadyRegistered")),  //$NON-NLS-1$
-                                            Void.class));
-                                } else {
-                                    Iterator<Contract> iterator = application.getContracts().iterator();
-                                    application.setContracts(null);
-                                    registerContracts(application, iterator, svcMap, handler);
-                                }
-                            }
-                            @Override
-                            public void failed(Exception e) {
-                                handler.handle(AsyncResultImpl.create(
-                                        new RegistrationException(Messages.i18n.format("ESRegistry.ErrorRegisteringApplication"), e),  //$NON-NLS-1$
-                                        Void.class));
-                            }
-                        });
-                    } catch (Exception e) {
-                        handler.handle(AsyncResultImpl.create(
-                                new RegistrationException(Messages.i18n.format("ESRegistry.ErrorRegisteringApplication"), e),  //$NON-NLS-1$
-                                Void.class));
-                    }
+        
+        try {
+            // Validate the app and populate the service map with services found during validation.
+            validateApplication(application, svcMap);
+            String id = getApplicationId(application);
+            Index index = new Index.Builder(ESRegistryMarshalling.marshall(application).string())
+                    .refresh(false).index(getIndexName())
+                    .setParameter(Parameters.OP_TYPE, "create") //$NON-NLS-1$
+                    .type("application").id(id).build(); //$NON-NLS-1$
+            JestResult result = getClient().execute(index);
+            if (!result.isSucceeded()) {
+                throw new RegistrationException(Messages.i18n.format("ESRegistry.AppAlreadyRegistered")); //$NON-NLS-1$
+            } else {
+                Set<Contract> contracts = application.getContracts();
+                application.setContracts(null);
+                for (Contract contract : contracts) {
+                    registerContract(application, contract, svcMap);
                 }
+                handler.handle(AsyncResultImpl.create((Void) null));
             }
-        });
+        } catch (IOException e) {
+            handler.handle(AsyncResultImpl.create(
+                    new RegistrationException(Messages.i18n.format("ESRegistry.ErrorRegisteringApplication"), e),  //$NON-NLS-1$
+                    Void.class));
+        } catch (RegistrationException re) {
+            handler.handle(AsyncResultImpl.create(re, Void.class));
+        }
     }
 
     /**
      * Validate that the application should be registered.
      * @param application
      * @param serviceMap
-     * @param iAsyncResultHandler
      */
-    private void validateApplication(Application application, Map<String, Service> serviceMap, IAsyncResultHandler<Void> handler) {
+    private void validateApplication(Application application, Map<String, Service> serviceMap) throws RegistrationException {
         Set<Contract> contracts = application.getContracts();
         if (contracts.isEmpty()) {
-            handler.handle(AsyncResultImpl.create(
-                    new RegistrationException(Messages.i18n.format("ESRegistry.NoContracts")), Void.class)); //$NON-NLS-1$
-            return;
+            throw new RegistrationException(Messages.i18n.format("ESRegistry.NoContracts")); //$NON-NLS-1$
         }
-        final Iterator<Contract> iterator = contracts.iterator();
-        validateServiceExists(iterator, serviceMap, handler);
+        for (Contract contract : contracts) {
+            validateContract(contract, serviceMap);
+        }
     }
 
     /**
      * Ensures that the service referenced by the Contract at the head of
      * the iterator actually exists (is published).
-     * @param iterator
+     * @param contract
      * @param serviceMap
-     * @param handler
      */
-    private void validateServiceExists(final Iterator<Contract> iterator, final Map<String, Service> serviceMap,
-            final IAsyncResultHandler<Void> handler) {
-        if (!iterator.hasNext()) {
-            handler.handle(AsyncResultImpl.create((Void) null));
-        } else {
-            final Contract contract = iterator.next();
-            final String serviceId = getServiceId(contract);
-            getService(serviceId, new IAsyncResultHandler<Service>() {
-                @Override
-                public void handle(IAsyncResult<Service> result) {
-                    if (result.isError()) {
-                        handler.handle(AsyncResultImpl.create(
-                                new RegistrationException(
-                                        Messages.i18n.format("ESRegistry.ErrorValidatingApp"),  //$NON-NLS-1$
-                                        result.getError()),
-                                Void.class));
-                    } else {
-                        Service service = result.getResult();
-                        if (service == null) {
-                            String serviceId = contract.getServiceId();
-                            String orgId = contract.getServiceOrgId();
-                            handler.handle(AsyncResultImpl.create(
-                                    new RegistrationException(Messages.i18n.format("ESRegistry.ServiceNotFoundInOrg", serviceId, orgId)),  //$NON-NLS-1$
-                                    Void.class));
-                        } else {
-                            service.setServicePolicies(null);
-                            serviceMap.put(serviceId, service);
-                            validateServiceExists(iterator, serviceMap, handler);
-                        }
-                    }
-                }
-            });
+    private void validateContract(final Contract contract, final Map<String, Service> serviceMap)
+            throws RegistrationException {
+        
+        final String serviceId = getServiceId(contract);
+
+        try {
+            Get get = new Get.Builder(getIndexName(), serviceId).type("service").build(); //$NON-NLS-1$
+            JestResult result = getClient().execute(get);
+            if (result.isSucceeded()) {
+                Map<String, Object> source = result.getSourceAsObject(Map.class);
+                Service service = ESRegistryMarshalling.unmarshallService(source);
+                service.setServicePolicies(null);
+                serviceMap.put(serviceId, service);
+            } else {
+                String svcId = contract.getServiceId();
+                String orgId = contract.getServiceOrgId();
+                throw new RegistrationException(Messages.i18n.format("ESRegistry.ServiceNotFoundInOrg", svcId, orgId));  //$NON-NLS-1$
+            }
+        } catch (IOException e) {
+            throw new RegistrationException(Messages.i18n.format("ESRegistry.ErrorValidatingApp"), e); //$NON-NLS-1$
         }
     }
 
@@ -234,48 +189,25 @@ public class ESRegistry extends AbstractESComponent implements IRegistry {
      * @param application
      * @param contracts
      * @param serviceMap
-     * @param handler
      */
-    private void registerContracts(final Application application, final Iterator<Contract> contracts,
-            final Map<String, Service> serviceMap, final IAsyncResultHandler<Void> handler) {
+    private void registerContract(final Application application, final Contract contract,
+            final Map<String, Service> serviceMap) throws RegistrationException {
         try {
-            if (!contracts.hasNext()) {
-                handler.handle(AsyncResultImpl.create((Void) null));
-            } else {
-                Contract contract = contracts.next();
+            String svcId = getServiceId(contract);
+            Service service = serviceMap.get(svcId);
+            ServiceContract sc = new ServiceContract(contract.getApiKey(), service, application,
+                    contract.getPlan(), contract.getPolicies());
+            final String contractId = getContractId(contract);
 
-                String svcId = getServiceId(contract);
-                Service service = serviceMap.get(svcId);
-                ServiceContract sc = new ServiceContract(contract.getApiKey(), service, application,
-                        contract.getPlan(), contract.getPolicies());
-                final String contractId = getContractId(contract);
-
-                Index index = new Index.Builder(ESRegistryMarshalling.marshall(sc).string()).refresh(false)
-                        .setParameter(Parameters.OP_TYPE, "create") //$NON-NLS-1$
-                        .index(getIndexName()).type("serviceContract").id(contractId).build(); //$NON-NLS-1$
-                getClient().executeAsync(index, new JestResultHandler<JestResult>() {
-                    @Override
-                    public void completed(JestResult result) {
-                        if (!result.isSucceeded()) {
-                            handler.handle(AsyncResultImpl.create(
-                                    new RegistrationException(Messages.i18n.format("ESRegistry.ContractAlreadyPublished", contractId)),  //$NON-NLS-1$
-                                    Void.class));
-                        } else {
-                            registerContracts(application, contracts, serviceMap, handler);
-                        }
-                    }
-                    @Override
-                    public void failed(Exception e) {
-                        handler.handle(AsyncResultImpl.create(
-                                new RegistrationException(Messages.i18n.format("ESRegistry.ErrorRegisteringContract"), e),  //$NON-NLS-1$
-                                Void.class));
-                    }
-                });
+            Index index = new Index.Builder(ESRegistryMarshalling.marshall(sc).string()).refresh(false)
+                    .setParameter(Parameters.OP_TYPE, "create") //$NON-NLS-1$
+                    .index(getIndexName()).type("serviceContract").id(contractId).build(); //$NON-NLS-1$
+            JestResult result = getClient().execute(index);
+            if (!result.isSucceeded()) {
+                throw new RegistrationException(Messages.i18n.format("ESRegistry.ContractAlreadyPublished", contractId)); //$NON-NLS-1$
             }
         } catch (Exception e) {
-            handler.handle(AsyncResultImpl.create(
-                    new RegistrationException(Messages.i18n.format("ESRegistry.ErrorRegisteringContract"), e),  //$NON-NLS-1$
-                    Void.class));
+            throw new RegistrationException(Messages.i18n.format("ESRegistry.ErrorRegisteringContract"), e);  //$NON-NLS-1$
         }
     }
 
@@ -286,29 +218,26 @@ public class ESRegistry extends AbstractESComponent implements IRegistry {
     public void unregisterApplication(final Application application, final IAsyncResultHandler<Void> handler) {
         final String id = getApplicationId(application);
 
-        Delete delete = new Delete.Builder(id).index(getIndexName()).type("application").build(); //$NON-NLS-1$
-        getClient().executeAsync(delete, new JestResultHandler<JestResult>() {
-            @Override
-            public void completed(JestResult result) {
-                if (result.isSucceeded()) {
-                    unregisterServiceContracts(application, handler);
-                } else {
-                    handler.handle(AsyncResultImpl.create(new PublishingException(Messages.i18n.format("ESRegistry.AppNotFound")), Void.class)); //$NON-NLS-1$
-                }
+        try {
+            Delete delete = new Delete.Builder(id).index(getIndexName()).type("application").build(); //$NON-NLS-1$
+            JestResult result = getClient().execute(delete);
+            if (result.isSucceeded()) {
+                unregisterServiceContracts(application);
+                handler.handle(AsyncResultImpl.create((Void) null));
+            } else {
+                handler.handle(AsyncResultImpl.create(new PublishingException(Messages.i18n.format("ESRegistry.AppNotFound")), Void.class)); //$NON-NLS-1$
             }
-            @Override
-            public void failed(Exception e) {
-                handler.handle(AsyncResultImpl.create(new PublishingException(Messages.i18n.format("ESRegistry.ErrorUnregisteringApp"), e), Void.class)); //$NON-NLS-1$
-            }
-        });
+        } catch (IOException e) {
+            handler.handle(AsyncResultImpl.create(new PublishingException(Messages.i18n.format("ESRegistry.ErrorUnregisteringApp"), e), Void.class)); //$NON-NLS-1$
+        }
     }
 
     /**
      * Removes all of the service contracts from ES.
      * @param application
-     * @param handler
+     * @throws IOException 
      */
-    protected void unregisterServiceContracts(Application application, final IAsyncResultHandler<Void> handler) {
+    protected void unregisterServiceContracts(Application application) throws IOException {
         QueryBuilder qb = QueryBuilders.filteredQuery(
                 QueryBuilders.matchAllQuery(),
                 FilterBuilders.andFilter(
@@ -320,16 +249,7 @@ public class ESRegistry extends AbstractESComponent implements IRegistry {
         @SuppressWarnings("nls")
         String dquery = "{\"query\" : " + qb.toString() + "}";
         DeleteByQuery delete = new DeleteByQuery.Builder(dquery).addIndex(getIndexName()).addType("serviceContract").build(); //$NON-NLS-1$
-        getClient().executeAsync(delete, new JestResultHandler<JestResult>() {
-            @Override
-            public void completed(JestResult result) {
-                handler.handle(AsyncResultImpl.create((Void) null));
-            }
-            @Override
-            public void failed(Exception e) {
-                handler.handle(AsyncResultImpl.create(new PublishingException(Messages.i18n.format("ESRegistry.ErrorUnregisteringApp"), e), Void.class)); //$NON-NLS-1$
-            }
-        });
+        getClient().execute(delete);
     }
 
     /**
@@ -339,52 +259,39 @@ public class ESRegistry extends AbstractESComponent implements IRegistry {
     public void getContract(final ServiceRequest request, final IAsyncResultHandler<ServiceContract> handler) {
         final String id = getContractId(request);
 
-        Get get = new Get.Builder(getIndexName(), id).type("serviceContract").build(); //$NON-NLS-1$
-        getClient().executeAsync(get, new JestResultHandler<JestResult>() {
-            @Override
-            public void completed(JestResult result) {
-                if (!result.isSucceeded()) {
-                    Exception error = new InvalidContractException(Messages.i18n.format("ESRegistry.NoContractForAPIKey", id)); //$NON-NLS-1$
-                    handler.handle(AsyncResultImpl.create(error, ServiceContract.class));
-                } else {
-                    Map<String, Object> source = result.getSourceAsObject(Map.class);
-                    ServiceContract contract = ESRegistryMarshalling.unmarshallServiceContract(source);
-                    checkService(contract, handler);
-                }
+        try {
+            Get get = new Get.Builder(getIndexName(), id).type("serviceContract").build(); //$NON-NLS-1$
+            JestResult result = getClient().execute(get);
+            if (!result.isSucceeded()) {
+                Exception error = new InvalidContractException(Messages.i18n.format("ESRegistry.NoContractForAPIKey", id)); //$NON-NLS-1$
+                handler.handle(AsyncResultImpl.create(error, ServiceContract.class));
+            } else {
+                Map<String, Object> source = result.getSourceAsObject(Map.class);
+                ServiceContract contract = ESRegistryMarshalling.unmarshallServiceContract(source);
+                checkService(contract);
+                handler.handle(AsyncResultImpl.create(contract));
             }
-            @Override
-            public void failed(Exception e) {
-                handler.handle(AsyncResultImpl.create(e, ServiceContract.class));
-            }
-        });
+        } catch (IOException e) {
+            handler.handle(AsyncResultImpl.create(e, ServiceContract.class));
+        }
     }
 
     /**
      * Ensure that the service still exists.  If not, it was retired.
      * @param contract
-     * @param handler
+     * @throws InvalidContractException
+     * @throws IOException
      */
-    protected void checkService(final ServiceContract contract, final IAsyncResultHandler<ServiceContract> handler) {
+    protected void checkService(final ServiceContract contract) throws InvalidContractException, IOException {
         final Service service = contract.getService();
         String id = getServiceId(service);
 
         Get get = new Get.Builder(getIndexName(), id).type("service").build(); //$NON-NLS-1$
-        getClient().executeAsync(get, new JestResultHandler<JestResult>() {
-            @Override
-            public void completed(JestResult result) {
-                if (result.isSucceeded()) {
-                    handler.handle(AsyncResultImpl.create(contract));
-                } else {
-                    Exception error = new InvalidContractException(Messages.i18n.format("ESRegistry.ServiceWasRetired", //$NON-NLS-1$
-                            service.getServiceId(), service.getOrganizationId()));
-                    handler.handle(AsyncResultImpl.create(error, ServiceContract.class));
-                }
-            }
-            @Override
-            public void failed(Exception e) {
-                handler.handle(AsyncResultImpl.create(e, ServiceContract.class));
-            }
-        });
+        JestResult result = getClient().execute(get);
+        if (!result.isSucceeded()) {
+            throw new InvalidContractException(Messages.i18n.format("ESRegistry.ServiceWasRetired", //$NON-NLS-1$
+                    service.getServiceId(), service.getOrganizationId()));
+        }
     }
 
     /**
@@ -404,22 +311,18 @@ public class ESRegistry extends AbstractESComponent implements IRegistry {
      */
     protected void getService(String id, final IAsyncResultHandler<Service> handler) {
         Get get = new Get.Builder(getIndexName(), id).type("service").build(); //$NON-NLS-1$
-        getClient().executeAsync(get, new JestResultHandler<JestResult>() {
-            @Override
-            public void completed(JestResult result) {
-                if (result.isSucceeded()) {
-                    Map<String, Object> source = result.getSourceAsObject(Map.class);
-                    Service service = ESRegistryMarshalling.unmarshallService(source);
-                    handler.handle(AsyncResultImpl.create(service));
-                } else {
-                    handler.handle(AsyncResultImpl.create((Service) null));
-                }
+        try {
+            JestResult result = getClient().execute(get);
+            if (result.isSucceeded()) {
+                Map<String, Object> source = result.getSourceAsObject(Map.class);
+                Service service = ESRegistryMarshalling.unmarshallService(source);
+                handler.handle(AsyncResultImpl.create(service));
+            } else {
+                handler.handle(AsyncResultImpl.create((Service) null));
             }
-            @Override
-            public void failed(Exception e) {
-                handler.handle(AsyncResultImpl.create(e, Service.class));
-            }
-        });
+        } catch (IOException e) {
+            handler.handle(AsyncResultImpl.create(e, Service.class));
+        }
     }
 
     /**
