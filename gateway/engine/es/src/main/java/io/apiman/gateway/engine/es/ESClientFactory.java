@@ -136,8 +136,12 @@ public class ESClientFactory {
                 String connectionUrl = builder.toString();
 
                 JestClientFactory factory = new JestClientFactory();
-                Builder httpClientConfig = new HttpClientConfig.Builder(connectionUrl).connTimeout(timeout)
-                        .readTimeout(timeout).multiThreaded(true);
+                Builder httpClientConfig = new HttpClientConfig.Builder(connectionUrl)
+                        .connTimeout(timeout)
+                        .readTimeout(timeout)
+                        .maxTotalConnection(75)
+                        .defaultMaxTotalConnectionPerRoute(75)
+                        .multiThreaded(true);
                 if (!StringUtils.isBlank(username)) {
                     httpClientConfig.defaultCredentials(username, password);
                 }

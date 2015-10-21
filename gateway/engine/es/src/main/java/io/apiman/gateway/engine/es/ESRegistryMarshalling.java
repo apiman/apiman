@@ -123,9 +123,9 @@ public class ESRegistryMarshalling {
      * Marshals the given bean into the given map.
      * @param bean the application bean
      * @return the content builder
-     * @throws Exception when json marshalling fails
+     * @throws IOException when json marshalling fails
      */
-    public static XContentBuilder marshall(Application bean) throws Exception {
+    public static XContentBuilder marshall(Application bean) throws IOException {
         XContentBuilder builder = XContentFactory.jsonBuilder();
         marshallInto(bean, builder);
         return builder;
