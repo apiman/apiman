@@ -56,13 +56,6 @@
       <type>war</type>
     </dependency>
 
-    <!-- apiman quickstarts -->
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>apiman-quickstarts</artifactId>
-      <type>zip</type>
-    </dependency>
-
     <!-- KeyCloak -->
     <dependency>
       <groupId>org.keycloak</groupId>

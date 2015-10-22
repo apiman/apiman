@@ -148,20 +148,6 @@
         </excludes>
       </unpackOptions>
     </dependencySet>
-    <!-- The apiman quickstarts -->
-    <dependencySet>
-      <outputDirectory>apiman/quickstarts</outputDirectory>
-      <includes>
-        <include>io.apiman:apiman-quickstarts:zip</include>
-      </includes>
-      <useProjectArtifact>false</useProjectArtifact>
-      <useProjectAttachments>false</useProjectAttachments>
-      <useTransitiveDependencies>false</useTransitiveDependencies>
-      <useTransitiveFiltering>false</useTransitiveFiltering>
-      <directoryMode>0755</directoryMode>
-      <fileMode>0755</fileMode>
-      <unpack>true</unpack>
-    </dependencySet>
   </dependencySets>
   <fileSets>
     <fileSet>
