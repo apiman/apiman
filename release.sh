@@ -12,6 +12,7 @@ echo ""
 
 RELEASE_VERSION=$1
 DEV_VERSION=$2
+GPG_PASSPHRASE=$3
 
 if [ "x$RELEASE_VERSION" = "x" ]
 then
@@ -21,6 +22,11 @@ fi
 if [ "x$DEV_VERSION" = "x" ]
 then
   read -p "New Development Version: " DEV_VERSION
+fi
+
+if [ "x$GPG_PASSPHRASE" = "x" ]
+then
+  read -p "GPG Passphrase: " GPG_PASSPHRASE
 fi
 
 echo "######################################"
@@ -59,7 +65,7 @@ read -p "Do some smoke tests now!  Press Enter if everything is OK." CONFIRM
 git tag -a -m "Tagging release $RELEASE_VERSION" apiman-$RELEASE_VERSION
 git push origin apiman-$RELEASE_VERSION
 
-mvn deploy
+mvn clean deploy -Dgpg.passphrase=$GPG_PASSPHRASE
 
 mvn versions:set -DnewVersion=$DEV_VERSION
 find . -name '*.versionsBackup' -exec rm -f {} \;

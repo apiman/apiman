@@ -94,6 +94,8 @@
     <version.install.plugin>2.5.2</version.install.plugin>
     <version.jar.plugin>2.5</version.jar.plugin>
     <version.javadoc.plugin>2.10.1</version.javadoc.plugin>
+    <version.maven-gpg-plugin.plugin>1.5</version.maven-gpg-plugin.plugin>
+    <version.nexus-staging-maven-plugin.plugin>1.6.3</version.nexus-staging-maven-plugin.plugin>
     <version.resources.plugin>2.7</version.resources.plugin>
     <version.source.plugin>2.4</version.source.plugin>
     <version.surefire.plugin>2.17</version.surefire.plugin>
@@ -1119,7 +1121,6 @@
             </dependency>
           </dependencies>
         </plugin>
-
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
@@ -1145,6 +1146,16 @@
           <artifactId>miredot-plugin</artifactId>
           <version>${version.com.qmino.miredot-plugin}</version>
         </plugin>
+        <plugin>
+          <groupId>org.sonatype.plugins</groupId>
+          <artifactId>nexus-staging-maven-plugin</artifactId>
+          <version>${version.nexus-staging-maven-plugin.plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-gpg-plugin</artifactId>
+          <version>${version.maven-gpg-plugin.plugin}</version>
+        </plugin>        
       </plugins>
     </pluginManagement>
     <plugins>
@@ -1196,7 +1207,7 @@
               <value>${basedir}/target</value>
             </property>
           </systemProperties>
-          <argLine>-Xmx368m -XX:MaxPermSize=128m</argLine>
+          <argLine>-Xmx512m -XX:MaxPermSize=256m</argLine>
         </configuration>
       </plugin>
       <plugin>
@@ -1300,15 +1311,9 @@
   </pluginRepositories>
 
   <distributionManagement>
-    <repository>
-      <id>jboss-releases-repository</id>
-      <name>JBoss Releases Repository</name>
-      <url>${jboss.releases.repo.url}</url>
-    </repository>
     <snapshotRepository>
-      <id>jboss-snapshots-repository</id>
-      <name>JBoss Snapshots Repository</name>
-      <url>${jboss.snapshots.repo.url}</url>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
     </snapshotRepository>
   </distributionManagement>
 
@@ -1331,6 +1336,36 @@
           <url>http://nexus.qmino.com/content/repositories/miredot</url>
         </pluginRepository>
       </pluginRepositories>
+    </profile>
+    <profile>
+      <id>release</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.sonatype.plugins</groupId>
+            <artifactId>nexus-staging-maven-plugin</artifactId>
+            <extensions>true</extensions>
+            <configuration>
+              <serverId>ossrh</serverId>
+              <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+              <autoReleaseAfterClose>true</autoReleaseAfterClose>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>        
+        </plugins>
+      </build>
     </profile>
     <profile>
       <id>java8</id>
