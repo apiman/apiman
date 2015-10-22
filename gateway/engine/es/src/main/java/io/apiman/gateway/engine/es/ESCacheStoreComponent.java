@@ -25,7 +25,6 @@ import io.apiman.gateway.engine.io.IApimanBuffer;
 import io.apiman.gateway.engine.io.ISignalReadStream;
 import io.apiman.gateway.engine.io.ISignalWriteStream;
 import io.searchbox.client.JestResult;
-import io.searchbox.client.JestResultHandler;
 import io.searchbox.core.Get;
 import io.searchbox.core.Index;
 
@@ -77,17 +76,10 @@ public class ESCacheStoreComponent extends AbstractESComponent implements ICache
         entry.setHead(mapper.writeValueAsString(entry));
         Index index = new Index.Builder(entry).refresh(false).index(getIndexName())
                 .type("cacheEntry").id(cacheKey).build(); //$NON-NLS-1$
-        getClient().executeAsync(index, new JestResultHandler<JestResult>() {
-            @Override
-            public void completed(JestResult result) {
-                // If it worked, great!
-            }
-            @Override
-            public void failed(Exception e) {
-                // TODO report this error
-                // If it failed, too bad :(  But not a reason to kill the request
-            }
-        });
+        try {
+            getClient().execute(index);
+        } catch (Throwable e) {
+        }
     }
 
     /**
@@ -122,17 +114,10 @@ public class ESCacheStoreComponent extends AbstractESComponent implements ICache
                     entry.setData(Base64.encodeBase64String(data.getBytes()));
                     Index index = new Index.Builder(entry).refresh(false).index(getIndexName())
                             .type("cacheEntry").id(cacheKey).build(); //$NON-NLS-1$
-                    getClient().executeAsync(index, new JestResultHandler<JestResult>() {
-                        @Override
-                        public void completed(JestResult result) {
-                            // If it worked, great!
-                        }
-                        @Override
-                        public void failed(Exception e) {
-                            // TODO report this error
-                            // If it failed, too bad :(  But not a reason to kill the request
-                        }
-                    });
+                    try {
+                        getClient().execute(index);
+                    } catch (Throwable e) {
+                    }
                 }
                 finished = true;
             }
@@ -145,28 +130,23 @@ public class ESCacheStoreComponent extends AbstractESComponent implements ICache
     @Override
     public <T> void get(String cacheKey, final Class<T> type, final IAsyncResultHandler<T> handler) {
         Get get = new Get.Builder(getIndexName(), cacheKey).type("cacheEntry").build(); //$NON-NLS-1$
-        getClient().executeAsync(get, new JestResultHandler<JestResult>() {
-            @SuppressWarnings("unchecked")
-            @Override
-            public void completed(JestResult result) {
-                if (result.isSucceeded()) {
-                    ESCacheEntry cacheEntry = result.getSourceAsObject(ESCacheEntry.class);
-                    try {
-                        T rval = (T) mapper.reader(type).readValue(cacheEntry.getHead());
-                        handler.handle(AsyncResultImpl.create(rval));
-                    } catch (IOException e) {
-                        // TODO log this error.
-                        handler.handle(AsyncResultImpl.create((T) null));
-                    }
-                } else {
+        try {
+            JestResult result = getClient().execute(get);
+            if (result.isSucceeded()) {
+                ESCacheEntry cacheEntry = result.getSourceAsObject(ESCacheEntry.class);
+                try {
+                    T rval = (T) mapper.reader(type).readValue(cacheEntry.getHead());
+                    handler.handle(AsyncResultImpl.create(rval));
+                } catch (IOException e) {
+                    // TODO log this error.
                     handler.handle(AsyncResultImpl.create((T) null));
                 }
+            } else {
+                handler.handle(AsyncResultImpl.create((T) null));
             }
-            @Override
-            public void failed(Exception ex) {
-                handler.handle(AsyncResultImpl.create(ex, type));
-            }
-        });
+        } catch (Throwable e) {
+            handler.handle(AsyncResultImpl.create(e, type));
+        }
     }
 
     /**
@@ -175,79 +155,72 @@ public class ESCacheStoreComponent extends AbstractESComponent implements ICache
     @Override
     public <T> void getBinary(final String cacheKey, final Class<T> type,
             final IAsyncResultHandler<ISignalReadStream<T>> handler) {
-        Get get = new Get.Builder(getIndexName(), cacheKey).type("cacheEntry").build(); //$NON-NLS-1$
-        getClient().executeAsync(get, new JestResultHandler<JestResult>() {
-            @SuppressWarnings("unchecked")
-            @Override
-            public void completed(JestResult result) {
-                // Did the GET succeed?  If not, return null.
-                // TODO log the error
-                if (!result.isSucceeded()) {
-                    handler.handle(AsyncResultImpl.create((ISignalReadStream<T>) null));
-                    return;
-                }
-
-                // Is the cache entry expired?  If so return null.
-                ESCacheEntry cacheEntry = result.getSourceAsObject(ESCacheEntry.class);
-                if (System.currentTimeMillis() > cacheEntry.getExpiresOn() ) {
-                    // Cache item has expired.  Return null instead of the cached data.
-                    handler.handle(AsyncResultImpl.create((ISignalReadStream<T>) null));
-                    return;
-                }
-
-                try {
-                    final T head = (T) mapper.reader(type).readValue(cacheEntry.getHead());
-                    String b64Data = cacheEntry.getData();
-                    final IApimanBuffer data = bufferFactory.createBuffer(Base64.decodeBase64(b64Data));
-                    ISignalReadStream<T> rval = new ISignalReadStream<T>() {
-                        IAsyncHandler<IApimanBuffer> bodyHandler;
-                        IAsyncHandler<Void> endHandler;
-                        boolean finished = false;
-                        boolean aborted = false;
-
-                        @Override
-                        public void bodyHandler(IAsyncHandler<IApimanBuffer> bodyHandler) {
-                            this.bodyHandler = bodyHandler;
-                        }
-                        @Override
-                        public void endHandler(IAsyncHandler<Void> endHandler) {
-                            this.endHandler = endHandler;
-                        }
-                        @Override
-                        public T getHead() {
-                            return head;
-                        }
-                        @Override
-                        public boolean isFinished() {
-                            return finished;
-                        }
-                        @Override
-                        public void abort() {
-                            finished = true;
-                            aborted = true;
-                        }
-                        @Override
-                        public void transmit() {
-                            if (!aborted) {
-                                bodyHandler.handle(data);
-                                endHandler.handle(null);
-                            }
-                            finished = true;
-                        }
-                    };
-                    handler.handle(AsyncResultImpl.create(rval));
-                } catch (IOException e) {
-                    // TODO log this error
-                    handler.handle(AsyncResultImpl.create((ISignalReadStream<T>) null));
-                }
+        try {
+            Get get = new Get.Builder(getIndexName(), cacheKey).type("cacheEntry").build(); //$NON-NLS-1$
+            JestResult result = getClient().execute(get);
+            // Did the GET succeed?  If not, return null.
+            // TODO log the error
+            if (!result.isSucceeded()) {
+                handler.handle(AsyncResultImpl.create((ISignalReadStream<T>) null));
+                return;
             }
-            @Override
-            public void failed(Exception ex) {
-                // TODO log this exception
-                // If an error occurs, don't fail - just move on.
+
+            // Is the cache entry expired?  If so return null.
+            ESCacheEntry cacheEntry = result.getSourceAsObject(ESCacheEntry.class);
+            if (System.currentTimeMillis() > cacheEntry.getExpiresOn() ) {
+                // Cache item has expired.  Return null instead of the cached data.
+                handler.handle(AsyncResultImpl.create((ISignalReadStream<T>) null));
+                return;
+            }
+
+            try {
+                final T head = (T) mapper.reader(type).readValue(cacheEntry.getHead());
+                String b64Data = cacheEntry.getData();
+                final IApimanBuffer data = bufferFactory.createBuffer(Base64.decodeBase64(b64Data));
+                ISignalReadStream<T> rval = new ISignalReadStream<T>() {
+                    IAsyncHandler<IApimanBuffer> bodyHandler;
+                    IAsyncHandler<Void> endHandler;
+                    boolean finished = false;
+                    boolean aborted = false;
+
+                    @Override
+                    public void bodyHandler(IAsyncHandler<IApimanBuffer> bodyHandler) {
+                        this.bodyHandler = bodyHandler;
+                    }
+                    @Override
+                    public void endHandler(IAsyncHandler<Void> endHandler) {
+                        this.endHandler = endHandler;
+                    }
+                    @Override
+                    public T getHead() {
+                        return head;
+                    }
+                    @Override
+                    public boolean isFinished() {
+                        return finished;
+                    }
+                    @Override
+                    public void abort() {
+                        finished = true;
+                        aborted = true;
+                    }
+                    @Override
+                    public void transmit() {
+                        if (!aborted) {
+                            bodyHandler.handle(data);
+                            endHandler.handle(null);
+                        }
+                        finished = true;
+                    }
+                };
+                handler.handle(AsyncResultImpl.create(rval));
+            } catch (Throwable e) {
+                // TODO log this error
                 handler.handle(AsyncResultImpl.create((ISignalReadStream<T>) null));
             }
-        });
+        } catch (Throwable e) {
+            handler.handle(AsyncResultImpl.create((ISignalReadStream<T>) null));
+        }
     }
 
     /**

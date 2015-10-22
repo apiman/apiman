@@ -22,6 +22,7 @@ import io.apiman.gateway.engine.components.rate.RateLimitResponse;
 import io.apiman.gateway.engine.rates.RateBucketPeriod;
 import io.apiman.gateway.engine.rates.RateLimiterBucket;
 import io.searchbox.client.JestResult;
+import io.searchbox.client.JestResultHandler;
 import io.searchbox.core.Get;
 import io.searchbox.core.Index;
 import io.searchbox.params.Parameters;
@@ -37,13 +38,13 @@ import org.elasticsearch.index.engine.VersionConflictEngineException;
  *
  * @author eric.wittmann@redhat.com
  */
-public class ESRateLimiterComponent extends AbstractESComponent implements IRateLimiterComponent {
+public class AsyncESRateLimiterComponent extends AbstractESComponent implements IRateLimiterComponent {
 
     /**
      * Constructor.
      * @param config the configuration
      */
-    public ESRateLimiterComponent(Map<String, String> config) {
+    public AsyncESRateLimiterComponent(Map<String, String> config) {
         super(config);
     }
 
@@ -55,37 +56,41 @@ public class ESRateLimiterComponent extends AbstractESComponent implements IRate
             final long increment, final IAsyncResultHandler<RateLimitResponse> handler) {
         final String id = id(bucketId);
 
-        try {
-            Get get = new Get.Builder(getIndexName(), id).type("rateBucket").build(); //$NON-NLS-1$
-            JestResult result = getClient().execute(get);
-            RateLimiterBucket bucket = null;
-            long version;
-            if (result.isSucceeded()) {
-                // use the existing bucket
-                version = result.getJsonObject().get("_version").getAsLong(); //$NON-NLS-1$
-                bucket = result.getSourceAsObject(RateLimiterBucket.class);
-            } else {
-                // make a new bucket
-                version = 0;
-                bucket = new RateLimiterBucket();
-            }
-            bucket.resetIfNecessary(period);
+        Get get = new Get.Builder(getIndexName(), id).type("rateBucket").build(); //$NON-NLS-1$
+        getClient().executeAsync(get, new JestResultHandler<JestResult>() {
+            @Override
+            public void completed(JestResult result) {
+                RateLimiterBucket bucket = null;
+                long version;
+                if (result.isSucceeded()) {
+                    // use the existing bucket
+                    version = result.getJsonObject().get("_version").getAsLong(); //$NON-NLS-1$
+                    bucket = result.getSourceAsObject(RateLimiterBucket.class);
+                } else {
+                    // make a new bucket
+                    version = 0;
+                    bucket = new RateLimiterBucket();
+                }
+                bucket.resetIfNecessary(period);
 
-            final RateLimitResponse rlr = new RateLimitResponse();
-            if (bucket.getCount() > limit) {
-                rlr.setAccepted(false);
-            } else {
-                rlr.setAccepted(bucket.getCount() < limit);
-                bucket.setCount(bucket.getCount() + increment);
-                bucket.setLast(System.currentTimeMillis());
+                final RateLimitResponse rlr = new RateLimitResponse();
+                if (bucket.getCount() > limit) {
+                    rlr.setAccepted(false);
+                } else {
+                    rlr.setAccepted(bucket.getCount() < limit);
+                    bucket.setCount(bucket.getCount() + increment);
+                    bucket.setLast(System.currentTimeMillis());
+                }
+                int reset = (int) (bucket.getResetMillis(period) / 1000L);
+                rlr.setReset(reset);
+                rlr.setRemaining(limit - bucket.getCount());
+                updateBucketAndReturn(id, bucket, rlr, version, bucketId, period, limit, increment, handler);
             }
-            int reset = (int) (bucket.getResetMillis(period) / 1000L);
-            rlr.setReset(reset);
-            rlr.setRemaining(limit - bucket.getCount());
-            updateBucketAndReturn(id, bucket, rlr, version, bucketId, period, limit, increment, handler);
-        } catch (Throwable e) {
-            handler.handle(AsyncResultImpl.create(e, RateLimitResponse.class));
-        }
+            @Override
+            public void failed(Exception e) {
+                handler.handle(AsyncResultImpl.create(e, RateLimitResponse.class));
+            }
+        });
     }
 
     /**
@@ -124,21 +129,25 @@ public class ESRateLimiterComponent extends AbstractESComponent implements IRate
                 .setParameter(Parameters.OP_TYPE, "index") //$NON-NLS-1$
                 .setParameter(Parameters.VERSION, String.valueOf(version))
                 .type("rateBucket").id(id).build(); //$NON-NLS-1$
-        try {
-            getClient().execute(index);
-            handler.handle(AsyncResultImpl.create(rlr));
-        } catch (Throwable e) {
-            // TODO need to fix this now that we've switched to jest!
-            if (ESUtils.rootCause(e) instanceof VersionConflictEngineException) {
-                // If we got a version conflict, then it means some other request
-                // managed to update the ES document since we retrieved it.  Therefore
-                // everything we've done is out of date, so we should do it all
-                // over again.
-                accept(bucketId, period, limit, increment, handler);
-            } else {
-                handler.handle(AsyncResultImpl.<RateLimitResponse>create(e));
+        getClient().executeAsync(index, new JestResultHandler<JestResult>() {
+            @Override
+            public void completed(JestResult result) {
+                handler.handle(AsyncResultImpl.create(rlr));
             }
-        }
+            @Override
+            public void failed(Exception e) {
+                // TODO need to fix this now that we've switched to jest!
+                if (ESUtils.rootCause(e) instanceof VersionConflictEngineException) {
+                    // If we got a version conflict, then it means some other request
+                    // managed to update the ES document since we retrieved it.  Therefore
+                    // everything we've done is out of date, so we should do it all
+                    // over again.
+                    accept(bucketId, period, limit, increment, handler);
+                } else {
+                    handler.handle(AsyncResultImpl.<RateLimitResponse>create(e));
+                }
+            }
+        });
     }
 
     /**
