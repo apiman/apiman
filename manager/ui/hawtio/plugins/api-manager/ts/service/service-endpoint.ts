@@ -26,11 +26,11 @@ module Apiman {
             };
 
             $scope.success = function () {
-                console.log('Copied!');
+                //console.log('Copied!');
             };
 
             $scope.fail = function (err) {
-                console.error('Error!', err);
+                //console.error('Error!', err);
             };
 
             PageLifecycle.loadPage('ServiceEndpoint', pageData, $scope, function() {
