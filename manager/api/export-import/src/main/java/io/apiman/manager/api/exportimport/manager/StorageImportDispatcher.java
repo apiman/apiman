@@ -88,8 +88,8 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
     
     private List<ContractBean> contracts = new LinkedList<>();
     
-    private List<EntityInfo> servicesToPublish = new LinkedList<>();
-    private List<EntityInfo> appsToRegister = new LinkedList<>();
+    private Set<EntityInfo> servicesToPublish = new HashSet<>();
+    private Set<EntityInfo> appsToRegister = new HashSet<>();
     
     private Map<String, IGatewayLink> gatewayLinkCache = new HashMap<>();
     
@@ -485,14 +485,20 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
             Set<Contract> contracts = new HashSet<>();
             while (contractBeans.hasNext()) {
                 ContractBean contractBean = contractBeans.next();
-                Contract contract = new Contract();
-                contract.setApiKey(contractBean.getApikey());
-                contract.setPlan(contractBean.getPlan().getPlan().getId());
-                contract.setServiceId(contractBean.getService().getService().getId());
-                contract.setServiceOrgId(contractBean.getService().getService().getOrganization().getId());
-                contract.setServiceVersion(contractBean.getService().getVersion());
-                contract.getPolicies().addAll(aggregateContractPolicies(contractBean));
-                contracts.add(contract);
+                EntityInfo svcInfo = new EntityInfo(
+                        contractBean.getService().getService().getOrganization().getId(),
+                        contractBean.getService().getService().getId(),
+                        contractBean.getService().getVersion());
+                if (servicesToPublish.contains(svcInfo)) {
+                    Contract contract = new Contract();
+                    contract.setApiKey(contractBean.getApikey());
+                    contract.setPlan(contractBean.getPlan().getPlan().getId());
+                    contract.setServiceId(contractBean.getService().getService().getId());
+                    contract.setServiceOrgId(contractBean.getService().getService().getOrganization().getId());
+                    contract.setServiceVersion(contractBean.getService().getVersion());
+                    contract.getPolicies().addAll(aggregateContractPolicies(contractBean));
+                    contracts.add(contract);
+                }
             }
             application.setContracts(contracts);
 
@@ -586,7 +592,7 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
             String serviceVersion = contract.getService().getVersion();
             String planId = contract.getPlan().getPlan().getId();
             String planVersion = contract.getPlan().getVersion();
-            
+
             contract.setService(lookupService(serviceOrganizationId, serviceId, serviceVersion));
             contract.setPlan(lookupPlan(serviceOrganizationId, planId, planVersion));
             contract.setApplication(lookupApplication(appOrganizationId, appId, appVersion));
@@ -703,5 +709,50 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
         public String toString() {
             return organizationId + " / " + id + " -> " + version;
         }
+
+        /**
+         * @see java.lang.Object#hashCode()
+         */
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((id == null) ? 0 : id.hashCode());
+            result = prime * result + ((organizationId == null) ? 0 : organizationId.hashCode());
+            result = prime * result + ((version == null) ? 0 : version.hashCode());
+            return result;
+        }
+
+        /**
+         * @see java.lang.Object#equals(java.lang.Object)
+         */
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            EntityInfo other = (EntityInfo) obj;
+            if (id == null) {
+                if (other.id != null)
+                    return false;
+            } else if (!id.equals(other.id))
+                return false;
+            if (organizationId == null) {
+                if (other.organizationId != null)
+                    return false;
+            } else if (!organizationId.equals(other.organizationId))
+                return false;
+            if (version == null) {
+                if (other.version != null)
+                    return false;
+            } else if (!version.equals(other.version))
+                return false;
+            return true;
+        }
+        
+        
     }
 }
