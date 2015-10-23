@@ -39,11 +39,23 @@
             </div>
             <hr />
             <div class="apiman-form-label"
-                 apiman-i18n-key="managed-endpoint">Managed Endpoint</div>
+                 apiman-i18n-key="managed-endpoint"><p>Managed Endpoint</p>
+            </div>
             <textarea class="apiman-endpoint form-control"
                       style="width:100%; background-color: white; color: black"
                       readonly="readonly"
                       data-field="mangedEndpoint">{{ managedEndpoint.managedEndpoint }}</textarea>
+            <br>
+            <button clipboard
+                    text="managedEndpoint.managedEndpoint"
+                    on-copied="success()"
+                    on-error="fail(err)"
+                    ng-click="toggle = !toggle">
+                <span ng-hide="toggle"
+                      apiman-i18n-key="copy">Copy</span>
+                <span ng-show="toggle"
+                      apiman-i18n-key="copied">Copied!</span>
+            </button>
           </div>
           <!-- /Content Summary -->
         </div>

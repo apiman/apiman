@@ -3,6 +3,7 @@
 module Apiman {
 
     export var _module = angular.module(Apiman.pluginName, [
+        'angular-clipboard',
         'ngRoute',
         'ui.sortable',
         'xeditable',

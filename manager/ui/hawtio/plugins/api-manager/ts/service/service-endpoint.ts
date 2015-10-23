@@ -25,6 +25,14 @@ module Apiman {
                 return (status !== 'Created' && status !== 'Ready');
             };
 
+            $scope.success = function () {
+                //console.log('Copied!');
+            };
+
+            $scope.fail = function (err) {
+                //console.error('Error!', err);
+            };
+
             PageLifecycle.loadPage('ServiceEndpoint', pageData, $scope, function() {
                 PageLifecycle.setPageTitle('service-endpoint', [ $scope.service.name ]);
             });
