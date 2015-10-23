@@ -10,6 +10,8 @@ import java.util.Map;
 public class HttpHeaders {
 
     private static final String CONTENT_TYPE = "Content-Type"; //$NON-NLS-1$
+    private static final String CONTENT_LENGTH = "Content-Length"; //$NON-NLS-1$
+
     private final Map<String, String> headers;
 
     /**
@@ -49,6 +51,17 @@ public class HttpHeaders {
             headers.put(CONTENT_TYPE, contentType.toString());
         } else {
             headers.put(CONTENT_TYPE, typeSubtype);
+        }
+    }
+
+    /**
+     * @param additionalContentLength
+     */
+    public void incrementContentLength(int additionalContentLength) {
+        String cl = headers.get(CONTENT_LENGTH);
+        if (cl != null && cl.length() > 0) {
+            int clength = new Integer(cl).intValue();
+            headers.put(CONTENT_LENGTH, String.valueOf(clength + additionalContentLength));
         }
     }
 

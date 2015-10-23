@@ -67,9 +67,14 @@ public class JsonpPolicy extends AbstractMappedPolicy<JsonpConfigBean> implement
         if (callbackFunctionName != null) {
             HttpHeaders httpHeaders = new HttpHeaders(response.getHeaders());
             final String encoding = httpHeaders.getCharsetFromContentType(StandardCharsets.UTF_8.name());
+            final int additionalContentLength = callbackFunctionName.length()
+                    + OPEN_PARENTHESES.length() + CLOSE_PARENTHESES.length();
 
             // JSONP responses should have the Content-Type header set to "application/javascript"
             httpHeaders.setContentType(APPLICATION_JAVASCRIPT);
+            
+            // the Content-Length will need to be longer
+            httpHeaders.incrementContentLength(additionalContentLength);
 
             final IBufferFactoryComponent bufferFactory = context.getComponent(IBufferFactoryComponent.class);
 
