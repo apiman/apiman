@@ -9,6 +9,7 @@ var bootstrapSelect = require('patternfly/components/bootstrap-select/bootstrap-
 var jsonEditor = require('json-editor');
 var patternfly = require('patternfly/dist/js/patternfly.js');
 var angular = require('angular');
+var ngClipboard = require('angular-clipboard');
 var ngResource = require('angular-resource');
 var ngSortable = require('ng-sortable/dist/ng-sortable.js');
 var d3 = require('d3');
