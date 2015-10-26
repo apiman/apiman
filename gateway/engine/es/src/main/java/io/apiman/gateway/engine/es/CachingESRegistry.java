@@ -235,7 +235,7 @@ public class CachingESRegistry extends ESRegistry {
      * @param application
      */
     protected void loadAndCacheApp(Application application) {
-        String id = getApplicationKey(application);
+        String id = getApplicationId(application);
         Get get = new Get.Builder(getIndexName(), id).type("application").build(); //$NON-NLS-1$
         getClient().executeAsync(get, new JestResultHandler<JestResult>() {
             @Override

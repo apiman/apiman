@@ -359,7 +359,7 @@ public class ESRegistry extends AbstractESComponent implements IRegistry {
      * @param app an application
      * @return an application key
      */
-    private String getApplicationId(Application app) {
+    protected String getApplicationId(Application app) {
         return app.getOrganizationId() + ":" + app.getApplicationId() + ":" + app.getVersion(); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
