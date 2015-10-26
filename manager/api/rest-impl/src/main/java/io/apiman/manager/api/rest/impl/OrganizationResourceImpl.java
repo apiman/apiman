@@ -662,7 +662,6 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             InvalidMetricCriteriaException {
         if (!securityContext.hasPermission(PermissionType.appView, organizationId))
             throw ExceptionFactory.notAuthorizedException();
-
         
         if (fromDate == null) {
             throw ExceptionFactory.invalidMetricCriteriaException(String.format("Missing or invalid 'fromDate'."));
@@ -676,23 +675,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         DateTime to = parseToDate(toDate);
         validateMetricRange(from, to);
         
-        try {
-            return metrics.getAppUsagePerService(organizationId, applicationId, version, from, to);
-        } catch (Exception e) {
-            if (organizationId == null) {
-                throw ExceptionFactory.invalidMetricCriteriaException("Missing or invalid 'organizationId'.");
-            }
-            
-            if (applicationId == null) {
-                throw ExceptionFactory.invalidMetricCriteriaException("Missing or invalid 'applicationId'.");
-            }
-            
-            if (version == null) {
-                throw ExceptionFactory.invalidMetricCriteriaException("Missing or invalid 'version'.");
-            }
-            
-            throw new SystemErrorException(e);
-        }
+        return metrics.getAppUsagePerService(organizationId, applicationId, version, from, to);
     }
 
     /**
@@ -2167,8 +2150,17 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         if (!securityContext.hasPermission(PermissionType.svcView, organizationId))
             throw ExceptionFactory.notAuthorizedException();
 
+        if (fromDate == null) {
+            throw ExceptionFactory.invalidMetricCriteriaException(String.format("Missing or invalid 'fromDate'."));
+        }
+        
+        if (toDate == null) {
+            throw ExceptionFactory.invalidMetricCriteriaException(String.format("Missing or invalid 'toDate'."));
+        }
+        
         DateTime from = parseFromDate(fromDate);
         DateTime to = parseToDate(toDate);
+        
         if (interval == null) {
             interval = HistogramIntervalType.day;
         }
@@ -2185,6 +2177,14 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             String fromDate, String toDate) throws NotAuthorizedException, InvalidMetricCriteriaException {
         if (!securityContext.hasPermission(PermissionType.svcView, organizationId))
             throw ExceptionFactory.notAuthorizedException();
+        
+        if (fromDate == null) {
+            throw ExceptionFactory.invalidMetricCriteriaException(String.format("Missing or invalid 'fromDate'."));
+        }
+        
+        if (toDate == null) {
+            throw ExceptionFactory.invalidMetricCriteriaException(String.format("Missing or invalid 'toDate'."));
+        }
 
         DateTime from = parseFromDate(fromDate);
         DateTime to = parseToDate(toDate);
@@ -2200,6 +2200,14 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             String fromDate, String toDate) throws NotAuthorizedException, InvalidMetricCriteriaException {
         if (!securityContext.hasPermission(PermissionType.svcView, organizationId))
             throw ExceptionFactory.notAuthorizedException();
+        
+        if (fromDate == null) {
+            throw ExceptionFactory.invalidMetricCriteriaException(String.format("Missing or invalid 'fromDate'."));
+        }
+        
+        if (toDate == null) {
+            throw ExceptionFactory.invalidMetricCriteriaException(String.format("Missing or invalid 'toDate'."));
+        }
 
         DateTime from = parseFromDate(fromDate);
         DateTime to = parseToDate(toDate);
@@ -2216,6 +2224,14 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throws NotAuthorizedException, InvalidMetricCriteriaException {
         if (!securityContext.hasPermission(PermissionType.svcView, organizationId))
             throw ExceptionFactory.notAuthorizedException();
+        
+        if (fromDate == null) {
+            throw ExceptionFactory.invalidMetricCriteriaException(String.format("Missing or invalid 'fromDate'."));
+        }
+        
+        if (toDate == null) {
+            throw ExceptionFactory.invalidMetricCriteriaException(String.format("Missing or invalid 'toDate'."));
+        }
 
         DateTime from = parseFromDate(fromDate);
         DateTime to = parseToDate(toDate);
@@ -2236,6 +2252,14 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             InvalidMetricCriteriaException {
         if (!securityContext.hasPermission(PermissionType.svcView, organizationId))
             throw ExceptionFactory.notAuthorizedException();
+        
+        if (fromDate == null) {
+            throw ExceptionFactory.invalidMetricCriteriaException(String.format("Missing or invalid 'fromDate'."));
+        }
+        
+        if (toDate == null) {
+            throw ExceptionFactory.invalidMetricCriteriaException(String.format("Missing or invalid 'toDate'."));
+        }
 
         DateTime from = parseFromDate(fromDate);
         DateTime to = parseToDate(toDate);
@@ -2252,6 +2276,14 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             InvalidMetricCriteriaException {
         if (!securityContext.hasPermission(PermissionType.svcView, organizationId))
             throw ExceptionFactory.notAuthorizedException();
+        
+        if (fromDate == null) {
+            throw ExceptionFactory.invalidMetricCriteriaException(String.format("Missing or invalid 'fromDate'."));
+        }
+        
+        if (toDate == null) {
+            throw ExceptionFactory.invalidMetricCriteriaException(String.format("Missing or invalid 'toDate'."));
+        }
 
         DateTime from = parseFromDate(fromDate);
         DateTime to = parseToDate(toDate);
@@ -2268,6 +2300,14 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             InvalidMetricCriteriaException {
         if (!securityContext.hasPermission(PermissionType.svcView, organizationId))
             throw ExceptionFactory.notAuthorizedException();
+        
+        if (fromDate == null) {
+            throw ExceptionFactory.invalidMetricCriteriaException(String.format("Missing or invalid 'fromDate'."));
+        }
+        
+        if (toDate == null) {
+            throw ExceptionFactory.invalidMetricCriteriaException(String.format("Missing or invalid 'toDate'."));
+        }
 
         DateTime from = parseFromDate(fromDate);
         DateTime to = parseToDate(toDate);
