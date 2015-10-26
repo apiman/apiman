@@ -309,7 +309,7 @@ module Apiman {
                 var valid = true;
                 $scope.setValid(valid);
             };
-
+            
             $scope.$watch('config', validate, true);
             
             if (!$scope.config.ipList) {
@@ -317,7 +317,7 @@ module Apiman {
             }
 
             if (!$scope.config.responseCode) {
-                $scope.config.responseCode = 500;
+                $scope.config.responseCode = '500';
             }
             
             $scope.add = function(ip) {
