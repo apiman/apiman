@@ -177,6 +177,10 @@ textarea.apiman-form-data {
   background-color: black;
 }
 
+.alert {
+  padding-left: 10px;
+}
+
 .alert-warning {
   background-color: rgb(255,213,185)
 }

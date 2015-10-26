@@ -14,6 +14,13 @@ module Apiman {
             };
             PageLifecycle.loadPage('ConsumerServiceRedirect', pageData, $scope, function() {
                 var version = $scope.versions[0].version;
+                for (var i = 0; i < $scope.versions.length; i++) {
+                	var v = $scope.versions[i];
+                	if (v.status == 'Published') {
+                		version = v;
+                		break;
+                	}
+                }
                 PageLifecycle.forwardTo('/browse/orgs/{0}/{1}/{2}', orgId, serviceId, version);
             });
         }]);
@@ -48,12 +55,16 @@ module Apiman {
                 }),
                 versions: $q(function(resolve, reject) {
                     OrgSvcs.query({ organizationId: $routeParams.org, entityType: 'services', entityId: $routeParams.service, versionsOrActivity: 'versions' }, function(versions) {
+                    	var publishedVersions = [];
                         angular.forEach(versions, function(version) {
                             if (version.version == $routeParams.version) {
                                 $scope.selectedServiceVersion = version;
                             }
+                            if (version.status == 'Published') {
+                            	publishedVersions.push(version);
+                            }
                         });
-                        resolve(versions);
+                        resolve(publishedVersions);
                     }, reject);
                 }),
                 publicEndpoint: $q(function(resolve, reject) {
