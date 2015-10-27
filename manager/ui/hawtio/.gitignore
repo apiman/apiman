@@ -10,3 +10,4 @@ libs/
 node/
 node_modules/
 typings/
+/compiled.js
