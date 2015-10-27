@@ -554,4 +554,30 @@ module Apiman {
             };
         }]);
 
+    _module.directive('apimanTooltip', function() {
+        return {
+            restrict: 'A',
+            link: function(scope, element, attrs) {
+                // Initialize tooltip; necessary for performance reasons
+                (<any>$(element)).hover(function() {
+                    (<any>$(element)).tooltip('show');
+                }, function() {
+                    (<any>$(element)).tooltip('hide');
+                });
+
+                // On clicking the copy button, change tooltip text to 'Copied!'
+                (<any>$(element)).click(function() {
+                    // This works, but the first time it is clicked,
+                    // the 'Copied!' text disappears after just a few seconds
+                    (<any>$(element)).attr('data-original-title', 'Copied!');
+                    (<any>$(element)).tooltip('show');
+                });
+
+                // On mouseexit, reset the tooltip text
+                (<any>$(element)).mouseleave(function() {
+                    (<any>$(element)).attr('data-original-title', 'Copy to clipboard');
+                });
+            }
+        };
+    });
 }

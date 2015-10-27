@@ -1,0 +1,4 @@
+interface JQuery{
+    tooltip():void;
+}
+
