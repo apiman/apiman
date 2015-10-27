@@ -183,6 +183,8 @@ public class ManagerApiMicroServiceCdiFactory {
         if (username != null) {
             httpConfig.defaultCredentials(username, password);
         }
+        httpConfig.connTimeout(config.getStorageESTimeout());
+        httpConfig.readTimeout(config.getStorageESTimeout());
         factory.setHttpClientConfig(httpConfig.build());
         return factory.getObject();
     }
@@ -206,6 +208,8 @@ public class ManagerApiMicroServiceCdiFactory {
         if (username != null) {
             httpConfig.defaultCredentials(username, password);
         }
+        httpConfig.connTimeout(config.getMetricsESTimeout());
+        httpConfig.readTimeout(config.getMetricsESTimeout());
         factory.setHttpClientConfig(httpConfig.build());
         return factory.getObject();
     }

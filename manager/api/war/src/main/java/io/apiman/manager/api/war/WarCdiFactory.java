@@ -62,10 +62,9 @@ import org.apache.commons.lang.StringUtils;
  */
 @ApplicationScoped
 public class WarCdiFactory {
-
+    
     private static JestClient sStorageESClient;
     private static JestClient sMetricsESClient;
-    private static final int JEST_TIMEOUT = 6000;
     private static EsStorage sESStorage;
 
     @Produces @ApimanLogger
@@ -209,13 +208,14 @@ public class WarCdiFactory {
         builder.append(config.getStorageESPort());
         String connectionUrl = builder.toString();
         JestClientFactory factory = new JestClientFactory();
-        Builder httpConfig = new HttpClientConfig.Builder(connectionUrl).connTimeout(JEST_TIMEOUT).readTimeout(JEST_TIMEOUT)
-                .multiThreaded(true);
+        Builder httpConfig = new HttpClientConfig.Builder(connectionUrl).multiThreaded(true);
         String username = config.getStorageESUsername();
         String password = config.getStorageESPassword();
         if (username != null) {
             httpConfig.defaultCredentials(username, password);
         }
+        httpConfig.connTimeout(config.getStorageESTimeout());
+        httpConfig.readTimeout(config.getStorageESTimeout());
         factory.setHttpClientConfig(httpConfig.build());
         return factory.getObject();
     }
@@ -233,13 +233,14 @@ public class WarCdiFactory {
         builder.append(config.getMetricsESPort());
         String connectionUrl = builder.toString();
         JestClientFactory factory = new JestClientFactory();
-        Builder httpConfig = new HttpClientConfig.Builder(connectionUrl).connTimeout(JEST_TIMEOUT).readTimeout(JEST_TIMEOUT)
-                .multiThreaded(true);
+        Builder httpConfig = new HttpClientConfig.Builder(connectionUrl).multiThreaded(true);
         String username = config.getMetricsESUsername();
         String password = config.getMetricsESPassword();
         if (username != null) {
             httpConfig.defaultCredentials(username, password);
         }
+        httpConfig.connTimeout(config.getMetricsESTimeout());
+        httpConfig.readTimeout(config.getMetricsESTimeout());
         factory.setHttpClientConfig(httpConfig.build());
         return factory.getObject();
     }
