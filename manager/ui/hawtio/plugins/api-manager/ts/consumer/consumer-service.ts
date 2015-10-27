@@ -17,7 +17,7 @@ module Apiman {
                 for (var i = 0; i < $scope.versions.length; i++) {
                 	var v = $scope.versions[i];
                 	if (v.status == 'Published') {
-                		version = v;
+                		version = v.version;
                 		break;
                 	}
                 }

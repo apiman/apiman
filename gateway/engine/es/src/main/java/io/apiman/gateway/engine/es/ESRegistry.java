@@ -310,18 +310,28 @@ public class ESRegistry extends AbstractESComponent implements IRegistry {
      * @param handler
      */
     protected void getService(String id, final IAsyncResultHandler<Service> handler) {
-        Get get = new Get.Builder(getIndexName(), id).type("service").build(); //$NON-NLS-1$
         try {
-            JestResult result = getClient().execute(get);
-            if (result.isSucceeded()) {
-                Map<String, Object> source = result.getSourceAsObject(Map.class);
-                Service service = ESRegistryMarshalling.unmarshallService(source);
-                handler.handle(AsyncResultImpl.create(service));
-            } else {
-                handler.handle(AsyncResultImpl.create((Service) null));
-            }
+            Service service = getService(id);
+            handler.handle(AsyncResultImpl.create(service));
         } catch (IOException e) {
             handler.handle(AsyncResultImpl.create(e, Service.class));
+        }
+    }
+    
+    /**
+     * Gets the service synchronously.
+     * @param id
+     * @throws IOException
+     */
+    protected Service getService(String id) throws IOException {
+        Get get = new Get.Builder(getIndexName(), id).type("service").build(); //$NON-NLS-1$
+        JestResult result = getClient().execute(get);
+        if (result.isSucceeded()) {
+            Map<String, Object> source = result.getSourceAsObject(Map.class);
+            Service service = ESRegistryMarshalling.unmarshallService(source);
+            return service;
+        } else {
+            return null;
         }
     }
 
@@ -350,7 +360,7 @@ public class ESRegistry extends AbstractESComponent implements IRegistry {
      * @param version
      * @return a service key
      */
-    private String getServiceId(String orgId, String serviceId, String version) {
+    protected String getServiceId(String orgId, String serviceId, String version) {
         return orgId + ":" + serviceId + ":" + version; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
