@@ -664,11 +664,11 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw ExceptionFactory.notAuthorizedException();
         
         if (fromDate == null) {
-            throw ExceptionFactory.invalidMetricCriteriaException(String.format("Missing or invalid 'fromDate'."));
+            throw ExceptionFactory.invalidMetricCriteriaException(Messages.i18n.format("MissingOrInvalidParam", "fromDate")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         
         if (toDate == null) {
-            throw ExceptionFactory.invalidMetricCriteriaException(String.format("Missing or invalid 'toDate'."));
+            throw ExceptionFactory.invalidMetricCriteriaException(Messages.i18n.format("MissingOrInvalidParam", "toDate")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         
         DateTime from = parseFromDate(fromDate);
@@ -2151,11 +2151,11 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw ExceptionFactory.notAuthorizedException();
 
         if (fromDate == null) {
-            throw ExceptionFactory.invalidMetricCriteriaException(String.format("Missing or invalid 'fromDate'."));
+            throw ExceptionFactory.invalidMetricCriteriaException(Messages.i18n.format("MissingOrInvalidParam", "fromDate")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         
         if (toDate == null) {
-            throw ExceptionFactory.invalidMetricCriteriaException(String.format("Missing or invalid 'toDate'."));
+            throw ExceptionFactory.invalidMetricCriteriaException(Messages.i18n.format("MissingOrInvalidParam", "toDate")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         
         DateTime from = parseFromDate(fromDate);
@@ -2179,11 +2179,11 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw ExceptionFactory.notAuthorizedException();
         
         if (fromDate == null) {
-            throw ExceptionFactory.invalidMetricCriteriaException(String.format("Missing or invalid 'fromDate'."));
+            throw ExceptionFactory.invalidMetricCriteriaException(Messages.i18n.format("MissingOrInvalidParam", "fromDate")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         
         if (toDate == null) {
-            throw ExceptionFactory.invalidMetricCriteriaException(String.format("Missing or invalid 'toDate'."));
+            throw ExceptionFactory.invalidMetricCriteriaException(Messages.i18n.format("MissingOrInvalidParam", "toDate")); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
         DateTime from = parseFromDate(fromDate);
@@ -2202,11 +2202,11 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw ExceptionFactory.notAuthorizedException();
         
         if (fromDate == null) {
-            throw ExceptionFactory.invalidMetricCriteriaException(String.format("Missing or invalid 'fromDate'."));
+            throw ExceptionFactory.invalidMetricCriteriaException(Messages.i18n.format("MissingOrInvalidParam", "fromDate")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         
         if (toDate == null) {
-            throw ExceptionFactory.invalidMetricCriteriaException(String.format("Missing or invalid 'toDate'."));
+            throw ExceptionFactory.invalidMetricCriteriaException(Messages.i18n.format("MissingOrInvalidParam", "toDate")); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
         DateTime from = parseFromDate(fromDate);
@@ -2226,11 +2226,11 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw ExceptionFactory.notAuthorizedException();
         
         if (fromDate == null) {
-            throw ExceptionFactory.invalidMetricCriteriaException(String.format("Missing or invalid 'fromDate'."));
+            throw ExceptionFactory.invalidMetricCriteriaException(Messages.i18n.format("MissingOrInvalidParam", "fromDate")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         
         if (toDate == null) {
-            throw ExceptionFactory.invalidMetricCriteriaException(String.format("Missing or invalid 'toDate'."));
+            throw ExceptionFactory.invalidMetricCriteriaException(Messages.i18n.format("MissingOrInvalidParam", "toDate")); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
         DateTime from = parseFromDate(fromDate);
@@ -2254,11 +2254,11 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw ExceptionFactory.notAuthorizedException();
         
         if (fromDate == null) {
-            throw ExceptionFactory.invalidMetricCriteriaException(String.format("Missing or invalid 'fromDate'."));
+            throw ExceptionFactory.invalidMetricCriteriaException(Messages.i18n.format("MissingOrInvalidParam", "fromDate")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         
         if (toDate == null) {
-            throw ExceptionFactory.invalidMetricCriteriaException(String.format("Missing or invalid 'toDate'."));
+            throw ExceptionFactory.invalidMetricCriteriaException(Messages.i18n.format("MissingOrInvalidParam", "toDate")); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
         DateTime from = parseFromDate(fromDate);
@@ -2278,11 +2278,11 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw ExceptionFactory.notAuthorizedException();
         
         if (fromDate == null) {
-            throw ExceptionFactory.invalidMetricCriteriaException(String.format("Missing or invalid 'fromDate'."));
+            throw ExceptionFactory.invalidMetricCriteriaException(Messages.i18n.format("MissingOrInvalidParam", "fromDate")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         
         if (toDate == null) {
-            throw ExceptionFactory.invalidMetricCriteriaException(String.format("Missing or invalid 'toDate'."));
+            throw ExceptionFactory.invalidMetricCriteriaException(Messages.i18n.format("MissingOrInvalidParam", "toDate")); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
         DateTime from = parseFromDate(fromDate);
@@ -2302,11 +2302,11 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw ExceptionFactory.notAuthorizedException();
         
         if (fromDate == null) {
-            throw ExceptionFactory.invalidMetricCriteriaException(String.format("Missing or invalid 'fromDate'."));
+            throw ExceptionFactory.invalidMetricCriteriaException(Messages.i18n.format("MissingOrInvalidParam", "fromDate")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         
         if (toDate == null) {
-            throw ExceptionFactory.invalidMetricCriteriaException(String.format("Missing or invalid 'toDate'."));
+            throw ExceptionFactory.invalidMetricCriteriaException(Messages.i18n.format("MissingOrInvalidParam", "toDate")); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
         DateTime from = parseFromDate(fromDate);
