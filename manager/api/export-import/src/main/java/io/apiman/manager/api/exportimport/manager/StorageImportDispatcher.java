@@ -60,7 +60,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
 /**
@@ -68,7 +68,7 @@ import javax.inject.Inject;
  *
  * @author eric.wittmann@redhat.com
  */
-@ApplicationScoped
+@RequestScoped
 public class StorageImportDispatcher implements IImportReaderDispatcher {
 
     @Inject
@@ -98,6 +98,13 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
      * @param storage
      */
     public StorageImportDispatcher() {
+    }
+    
+    /**
+     * @param logger
+     */
+    public void setLogger(IApimanLogger logger) {
+        this.logger = logger;
     }
     
     /**
@@ -144,7 +151,7 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
             logger.info(Messages.i18n.format("StorageImportDispatcher.ImportingUser") + user); //$NON-NLS-1$
             storage.createUser(user);
         } catch (StorageException e) {
-            rollback(e);
+            error(e);
         }
     }
 
@@ -157,7 +164,7 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
             logger.info(Messages.i18n.format("StorageImportDispatcher.ImportingRole") + role); //$NON-NLS-1$
             storage.createRole(role);
         } catch (StorageException e) {
-            rollback(e);
+            error(e);
         }
     }
 
@@ -171,7 +178,7 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
             plugin.setId(null);
             storage.createPlugin(plugin);
         } catch (StorageException e) {
-            rollback(e);
+            error(e);
         }
     }
 
@@ -184,7 +191,7 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
             logger.info(Messages.i18n.format("StorageImportDispatcher.ImportingGateway") + gateway); //$NON-NLS-1$
             storage.createGateway(gateway);
         } catch (StorageException e) {
-            rollback(e);
+            error(e);
         }
     }
 
@@ -198,7 +205,7 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
             storage.createPolicyDefinition(policyDef);
             policyDefIndex.put(policyDef.getId(), policyDef);
         } catch (StorageException e) {
-            rollback(e);
+            error(e);
         }
     }
 
@@ -212,7 +219,7 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
             logger.info(Messages.i18n.format("StorageImportDispatcher.ImportingOrg") + org); //$NON-NLS-1$
             storage.createOrganization(org);
         } catch (StorageException e) {
-            rollback(e);
+            error(e);
         }
     }
 
@@ -226,7 +233,7 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
             membership.setId(null);
             storage.createMembership(membership);
         } catch (StorageException e) {
-            rollback(e);
+            error(e);
         }
     }
 
@@ -241,7 +248,7 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
             plan.setOrganization(currentOrg);
             storage.createPlan(plan);
         } catch (StorageException e) {
-            rollback(e);
+            error(e);
         }
     }
 
@@ -256,7 +263,7 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
             planVersion.setId(null);
             storage.createPlanVersion(planVersion);
         } catch (StorageException e) {
-            rollback(e);
+            error(e);
         }
     }
 
@@ -280,7 +287,7 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
             service.setOrganization(currentOrg);
             storage.createService(service);
         } catch (StorageException e) {
-            rollback(e);
+            error(e);
         }
     }
 
@@ -303,7 +310,7 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
                 ));
             }
         } catch (StorageException e) {
-            rollback(e);
+            error(e);
         }
     }
 
@@ -327,7 +334,7 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
             application.setOrganization(currentOrg);
             storage.createApplication(application);
         } catch (StorageException e) {
-            rollback(e);
+            error(e);
         }
     }
 
@@ -351,7 +358,7 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
                 ));
             }
         } catch (StorageException e) {
-            rollback(e);
+            error(e);
         }
     }
 
@@ -389,7 +396,7 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
             entry.setId(null);
             storage.createAuditEntry(entry);
         } catch (StorageException e) {
-            rollback(e);
+            error(e);
         }
     }
     
@@ -412,8 +419,16 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
             logger.info(Messages.i18n.format("StorageImportDispatcher.ImportingImportComplete")); //$NON-NLS-1$
             logger.info("-----------------------------------"); //$NON-NLS-1$
         } catch (StorageException e) {
-            rollback(e);
+            error(e);
         }
+    }
+    
+    /**
+     * @see io.apiman.manager.api.exportimport.read.IImportReaderDispatcher#cancel()
+     */
+    @Override
+    public void cancel() {
+        this.storage.rollbackTx();
     }
 
     /**
@@ -606,40 +621,31 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
      * @param serviceOrganizationId
      * @param serviceId
      * @param serviceVersion
+     * @throws StorageException 
      */
     private ServiceVersionBean lookupService(String serviceOrganizationId, String serviceId,
-            String serviceVersion) {
-        try {
-            return storage.getServiceVersion(serviceOrganizationId, serviceId, serviceVersion);
-        } catch (StorageException e) {
-            throw new RuntimeException(e);
-        }
+            String serviceVersion) throws StorageException {
+        return storage.getServiceVersion(serviceOrganizationId, serviceId, serviceVersion);
     }
 
     /**
      * @param planOrganizationId
      * @param planId
      * @param planVersion
+     * @throws StorageException 
      */
-    private PlanVersionBean lookupPlan(String planOrganizationId, String planId, String planVersion) {
-        try {
-            return storage.getPlanVersion(planOrganizationId, planId, planVersion);
-        } catch (StorageException e) {
-            throw new RuntimeException(e);
-        }
+    private PlanVersionBean lookupPlan(String planOrganizationId, String planId, String planVersion) throws StorageException {
+        return storage.getPlanVersion(planOrganizationId, planId, planVersion);
     }
 
     /**
      * @param applicationOrganizationId
      * @param applicationId
      * @param applicationVersion
+     * @throws StorageException 
      */
-    private ApplicationVersionBean lookupApplication(String applicationOrganizationId, String applicationId, String applicationVersion) {
-        try {
-            return storage.getApplicationVersion(applicationOrganizationId, applicationId, applicationVersion);
-        } catch (StorageException e) {
-            throw new RuntimeException(e);
-        }
+    private ApplicationVersionBean lookupApplication(String applicationOrganizationId, String applicationId, String applicationVersion) throws StorageException {
+        return storage.getApplicationVersion(applicationOrganizationId, applicationId, applicationVersion);
     }
 
     /**
@@ -651,7 +657,7 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
             policy.setDefinition(policyDefIndex.get(policy.getDefinition().getId()));
             storage.createPolicy(policy);
         } catch (StorageException e) {
-            rollback(e);
+            error(e);
         }
     }
 
@@ -679,8 +685,8 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
     /**
      * @param error
      */
-    private void rollback(StorageException error) {
-        this.storage.rollbackTx();
+    private void error(StorageException error) {
+        logger.error(error);
         throw new RuntimeException(error);
     }
     

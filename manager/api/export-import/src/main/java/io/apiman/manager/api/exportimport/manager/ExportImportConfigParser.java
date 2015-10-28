@@ -97,16 +97,6 @@ public class ExportImportConfigParser {
         return System.getProperty(JSON_FILE);
     }
 
-    // apiman.migrate.json.dir=
-    public String getJsonDir() {
-        return System.getProperty(JSON_DIR);
-    }
-
-    // apiman.migrate.json.usersPerFile=
-    public Integer getJsonUsersPerFile() {
-        return Integer.parseInt(System.getProperty(JSON_USERS_PER_FILE, DEFAULT_JSON_USERS_PER_FILE));
-    }
-
     // apiman.migrate.overwrite=
     public boolean isOverwrite() {
         Boolean booleanObject = BooleanUtils.toBooleanObject(System.getProperty(OVERWRITE));

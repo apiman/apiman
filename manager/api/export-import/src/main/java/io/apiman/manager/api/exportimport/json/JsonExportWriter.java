@@ -53,7 +53,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
  *
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
-public class JsonFileExportWriter extends AbstractJsonWriter<GlobalElementsEnum> implements IExportWriter {
+public class JsonExportWriter extends AbstractJsonWriter<GlobalElementsEnum> implements IExportWriter {
 
     private JsonFactory jsonFactory = new JsonFactory();
     private JsonGenerator jg;
@@ -68,14 +68,14 @@ public class JsonFileExportWriter extends AbstractJsonWriter<GlobalElementsEnum>
 
     /**
      * Constructor.
-     * @param targetFile
+     * @param targetStream
      * @param logger
      * @throws IOException
      */
-    public JsonFileExportWriter(OutputStream targetFile, IApimanLogger logger) throws IOException {
+    public JsonExportWriter(OutputStream targetStream, IApimanLogger logger) throws IOException {
         super(logger);
         om.setSerializationInclusion(Inclusion.NON_NULL);
-        jg = jsonFactory.createJsonGenerator(targetFile, JsonEncoding.UTF8);
+        jg = jsonFactory.createJsonGenerator(targetStream, JsonEncoding.UTF8);
         jg.useDefaultPrettyPrinter();
         jg.setCodec(om);
         jg.writeStartObject(); // Set out the base/root object
@@ -676,6 +676,7 @@ public class JsonFileExportWriter extends AbstractJsonWriter<GlobalElementsEnum>
     public void close() {
         try {
             writeEndObject();
+            jg.flush();
             jg.close();
         } catch (IOException e) {
             throw new RuntimeException(e);

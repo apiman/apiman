@@ -50,7 +50,7 @@ import javax.inject.Inject;
 import org.joda.time.DateTime;
 
 @ApplicationScoped
-class StorageExporter {
+public class StorageExporter {
     @Inject @ApimanLogger(StorageExporter.class)
     private IApimanLogger logger;
     @Inject

@@ -19,10 +19,36 @@ package io.apiman.manager.api.rest.impl;
 import io.apiman.manager.api.beans.system.SystemStatusBean;
 import io.apiman.manager.api.config.Version;
 import io.apiman.manager.api.core.IStorage;
+import io.apiman.manager.api.core.logging.ApimanLogger;
+import io.apiman.manager.api.core.logging.IApimanLogger;
+import io.apiman.manager.api.exportimport.json.JsonExportWriter;
+import io.apiman.manager.api.exportimport.json.JsonImportReader;
+import io.apiman.manager.api.exportimport.manager.StorageExporter;
+import io.apiman.manager.api.exportimport.manager.StorageImportDispatcher;
+import io.apiman.manager.api.exportimport.read.IImportReader;
+import io.apiman.manager.api.exportimport.write.IExportWriter;
 import io.apiman.manager.api.rest.contract.ISystemResource;
+import io.apiman.manager.api.rest.contract.exceptions.SystemErrorException;
+import io.apiman.manager.api.rest.impl.util.ExceptionFactory;
+import io.apiman.manager.api.security.ISecurityContext;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.StreamingOutput;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 
 /**
  * Implementation of the System API.
@@ -34,8 +60,21 @@ public class SystemResourceImpl implements ISystemResource {
 
     @Inject
     private IStorage storage;
+    @Inject 
+    private ISecurityContext securityContext;
     @Inject
     private Version version;
+    @Inject @ApimanLogger(IImportReader.class)
+    private IApimanLogger importLogger;
+    @Inject @ApimanLogger(IExportWriter.class)
+    private IApimanLogger exportLogger;
+    @Inject
+    private StorageExporter exporter;
+    @Inject
+    private StorageImportDispatcher importer;
+
+    @Context
+    private HttpServletRequest request;
 
     /**
      * Constructor.
@@ -60,7 +99,127 @@ public class SystemResourceImpl implements ISystemResource {
         }
         return rval;
     }
+    
+    /**
+     * @see io.apiman.manager.api.rest.contract.ISystemResource#export()
+     */
+    @Override
+    public Response exportData() {
+        if (!securityContext.isAdmin())
+            throw ExceptionFactory.notAuthorizedException();
 
+        StreamingOutput stream = new StreamingOutput() {
+            @Override
+            public void write(OutputStream os) throws IOException, WebApplicationException {
+                IExportWriter writer = new JsonExportWriter(os, exportLogger);
+                getExporter().init(writer);
+                getExporter().export();
+                os.flush();
+            }
+        };
+
+        return Response.ok(stream).build();
+    }
+    
+    /**
+     * @see io.apiman.manager.api.rest.contract.ISystemResource#importData()
+     */
+    @Override
+    public Response importData() {
+        if (!securityContext.isAdmin())
+            throw ExceptionFactory.notAuthorizedException();
+        
+        // First, stream the import data to a temporary file.  We do this so
+        // that we can stream the import logging statements back to the HTTP
+        // response.  We can't stream the inbound data into the importer 
+        // *and* stream the importer's logging output back to the HTTP 
+        // response at the same time due to the nature of HTTP.
+        File tempFile;
+        InputStream data;
+        try {
+            tempFile = File.createTempFile("apiman_import", ".json"); //$NON-NLS-1$ //$NON-NLS-2$
+            tempFile.deleteOnExit();
+            data = request.getInputStream();
+            FileUtils.copyInputStreamToFile(data, tempFile);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        
+        final File importFile = tempFile;
+        
+        // Next, do the import and stream the import logging output back to
+        // the HTTP response output stream.
+        StreamingOutput stream = new StreamingOutput() {
+            @Override
+            public void write(final OutputStream output) throws IOException, WebApplicationException {
+                InputStream importData;
+                IImportReader reader;
+                try {
+                    importData = new FileInputStream(importFile);
+                    reader = new JsonImportReader(importData);
+                } catch (IOException e) {
+                    throw new SystemErrorException(e);
+                } finally {
+                    IOUtils.closeQuietly(data);
+                }
+                
+                final PrintWriter writer = new PrintWriter(output);
+                IApimanLogger logger = new IApimanLogger() {
+                    @Override
+                    public void warn(String message) {
+                        writer.println("WARN: " + message); //$NON-NLS-1$
+                        writer.flush();
+                    }
+                    
+                    @Override
+                    public void trace(String message) {
+                        writer.println("TRACE: " + message); //$NON-NLS-1$
+                        writer.flush();
+                    }
+                    
+                    @Override
+                    public void info(String message) {
+                        writer.println("INFO: " + message); //$NON-NLS-1$
+                        writer.flush();
+                    }
+                    
+                    @Override
+                    public void error(String message, Throwable error) {
+                        writer.println("ERROR: " + message); //$NON-NLS-1$
+                        error.printStackTrace(writer);
+                        writer.flush();
+                    }
+                    
+                    @Override
+                    public void error(Throwable error) {
+                        writer.println("ERROR: " + error.getMessage()); //$NON-NLS-1$
+                        error.printStackTrace(writer);
+                        writer.flush();
+                    }
+                    
+                    @Override
+                    public void debug(String message) {
+                        writer.println("DEBUG: " + message); //$NON-NLS-1$
+                        writer.flush();
+                    }
+                };
+                try {
+                    importer.setLogger(logger);
+                    importer.start();
+                    reader.setDispatcher(importer);
+                    reader.read();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                } finally {
+                    IOUtils.closeQuietly(importData);
+                    FileUtils.deleteQuietly(importFile);
+                }
+            }
+        };
+
+        return Response.ok(stream).build();
+    }
+    
     /**
      * @return the storage
      */
@@ -87,5 +246,33 @@ public class SystemResourceImpl implements ISystemResource {
      */
     public void setVersion(Version version) {
         this.version = version;
+    }
+
+    /**
+     * @return the exporter
+     */
+    public StorageExporter getExporter() {
+        return exporter;
+    }
+
+    /**
+     * @param exporter the exporter to set
+     */
+    public void setExporter(StorageExporter exporter) {
+        this.exporter = exporter;
+    }
+
+    /**
+     * @return the securityContext
+     */
+    public ISecurityContext getSecurityContext() {
+        return securityContext;
+    }
+
+    /**
+     * @param securityContext the securityContext to set
+     */
+    public void setSecurityContext(ISecurityContext securityContext) {
+        this.securityContext = securityContext;
     }
 }

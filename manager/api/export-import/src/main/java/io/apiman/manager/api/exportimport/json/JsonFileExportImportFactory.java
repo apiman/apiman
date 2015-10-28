@@ -49,7 +49,7 @@ public class JsonFileExportImportFactory implements IExportImportFactory {
         try {
             outFile.createNewFile();
             OutputStream os = new FileOutputStream(outFile);
-            return new JsonFileExportWriter(os, logger);
+            return new JsonExportWriter(os, logger);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -70,7 +70,7 @@ public class JsonFileExportImportFactory implements IExportImportFactory {
 
         try {
             InputStream is = new FileInputStream(inFile);
-            return new JsonFileImportReader(is);
+            return new JsonImportReader(is);
         } catch (IOException e){
             throw new RuntimeException(e);
         }

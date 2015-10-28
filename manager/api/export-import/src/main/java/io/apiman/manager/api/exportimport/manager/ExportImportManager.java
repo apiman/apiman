@@ -25,7 +25,6 @@ import io.apiman.manager.api.exportimport.write.IExportWriter;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -47,7 +46,6 @@ public class ExportImportManager {
     private StorageExporter exporter;
 
     private Map<ExportImportProviderType, IExportImportFactory> eiFactories = new HashMap<>();
-    private ExportImportProviderType provider;
 
     // TODO We should have some kind of automated registration of these & factory pattern. This is interim.
     {
@@ -60,11 +58,6 @@ public class ExportImportManager {
     public ExportImportManager() {
     }
     
-    @PostConstruct
-    protected void postConstruct() {
-        provider = config.getProvider();
-    }
-
     public boolean isImportExport() {
         return config.isImportExport();
     }
@@ -78,7 +71,7 @@ public class ExportImportManager {
     }
 
     private void doImport() {
-        IImportReader reader = eiFactories.get(provider).createReader(config, importLogger);
+        IImportReader reader = eiFactories.get(config.getProvider()).createReader(config, importLogger);
         importDispatcher.start();
         reader.setDispatcher(importDispatcher);
         try {
@@ -89,7 +82,7 @@ public class ExportImportManager {
     }
 
     private void doExport() {
-        IExportWriter writer = eiFactories.get(provider).createWriter(config, exportLogger);
+        IExportWriter writer = eiFactories.get(config.getProvider()).createWriter(config, exportLogger);
         exporter.init(writer);
         exporter.export();
     }
