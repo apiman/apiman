@@ -20,6 +20,7 @@ import io.apiman.manager.api.beans.download.DownloadBean;
 import io.apiman.manager.api.core.IDownloadManager;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.rest.contract.IDownloadResource;
+import io.apiman.manager.api.rest.contract.IOrganizationResource;
 import io.apiman.manager.api.rest.contract.ISystemResource;
 import io.apiman.manager.api.rest.contract.exceptions.DownloadNotFoundException;
 
@@ -42,6 +43,8 @@ public class DownloadResourceImpl implements IDownloadResource {
     
     @Inject
     private ISystemResource system;
+    @Inject
+    private IOrganizationResource orgs;
 
     @Context
     private HttpServletRequest request;
@@ -66,16 +69,33 @@ public class DownloadResourceImpl implements IDownloadResource {
         } catch (StorageException e) {
             throw new DownloadNotFoundException(e);
         }
+        String path = download.getPath();
+        ApiRegistryInfo info;
         switch (download.getType()) {
             case apiRegistryJson:
-                return null;
+                info = parseApiRegistryPath(path);
+                return orgs.getApiRegistryJSON(info.organizationId, info.applicationId, info.version, info.hasPermission);
             case apiRegistryXml:
-                return null;
+                info = parseApiRegistryPath(path);
+                return orgs.getApiRegistryXML(info.organizationId, info.applicationId, info.version, info.hasPermission);
             case exportJson:
                 return system.exportData();
             default:
                 throw new DownloadNotFoundException();
         }
+    }
+
+    /**
+     * @param path
+     */
+    private ApiRegistryInfo parseApiRegistryPath(String path) {
+        String[] split = path.split("/"); //$NON-NLS-1$
+        ApiRegistryInfo info = new ApiRegistryInfo();
+        info.organizationId = split[0];
+        info.applicationId = split[1];
+        info.version = split[2];
+        info.hasPermission = "+".equals(split[3]); //$NON-NLS-1$
+        return info;
     }
 
     /**
@@ -90,5 +110,12 @@ public class DownloadResourceImpl implements IDownloadResource {
      */
     public void setDownloadManager(IDownloadManager downloadManager) {
         this.downloadManager = downloadManager;
+    }
+    
+    private static class ApiRegistryInfo {
+        public String organizationId;
+        public String applicationId;
+        public String version;
+        public boolean hasPermission;
     }
 }
