@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <body>
+  <div>
+    <div ng-include="headerInclude"></div>   
+    <div ng-controller="Apiman.AdminExportImportController" class="page container admin-page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
+      <div class="row">
+        <div class="col-md-12">
+          <div ng-include="'plugins/api-manager/html/admin/admin_bc.include'"></div>
+        </div>
+      </div>
+      <div class="row">
+        <!-- Side Navigation -->
+        <div class="col-md-3">
+          <div ng-include="'plugins/api-manager/html/admin/admin_tabs.include'"></div>
+        </div>
+        <!-- Admin Content -->
+        <div class="col-md-9 admin-content">
+          <div class="container-fluid">
+            <div class="row">
+              <h2 class="title" data-field="heading" apiman-i18n-key="export-import-data">Export/Import Data</h2>
+            </div>
+            <!-- Helpful hint -->
+            <div class="row">
+              <div class="col-md-12">
+                <p class="apiman-label-faded" apiman-i18n-key="export-import-data-help-text" class="apiman-label-faded">Export all data from the API Manager into an output file, or else use such a file to import data into this installation of the apiman API Manager.</p>
+              </div>
+              <div class="col-md-12">
+                <div class="alert alert-info">
+                  <span class="pficon pficon-info"></span>
+                  <span apiman-i18n-key="admin-export.warning">Note: when exporting or importing data, it is important that no other changes are made in the API Manager.  If possible, disable user access to the API Manager during this process.</span>
+                </div>
+              </div>
+            </div>
+            <!-- HR -->
+            <div class="row hr-row">
+              <hr/>
+            </div>
+            
+            <div class="row">
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                  <h3 class="panel-title" apiman-i18n-key="export-data">Export Data</h3>
+                </div>
+                <div class="panel-body" style="margin-top: 20px">
+                  <button ng-click="doExport()" apiman-action-btn="" data-field="exportButton" class="btn btn-primary" apiman-i18n-key="export-all" placeholder="Exporting..." data-icon="fa-cog">Export All</button>
+                  <div ng-show="exportButton.state == 'in-progress'">
+                    <div class="alert alert-info">
+                      <span class="pficon pficon-info"></span>
+                      <span apiman-i18n-key="admin-export.exporting-info">Once the export has begun, your browser should prompt you to download the exported data file.  Once complete, you will need to refresh this page if you wish to export again.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                  <h3 class="panel-title" apiman-i18n-key="import-data">Import Data</h3>
+                </div>
+                <div class="panel-body">
+                  This is some other panel that will have some sort of Import controls.
+                </div>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </body>
+</html>

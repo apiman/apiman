@@ -15,10 +15,13 @@
     <test name="Publish Service">test-plan-data/export/publish/001_publish-service-1.resttest</test>
     <test name="Create Contract">test-plan-data/export/creates/008_create-contract1.resttest</test>
     <test name="Register Application">test-plan-data/export/publish/002_register-app-1.resttest</test>
+    <test name="Wait" delay="2000" />
   </testGroup>
 
   <testGroup name="Exporting">
     <test name="Export (1)">test-plan-data/export/export/001_export-1.resttest</test>
+    <test name="Export (2) Prep">test-plan-data/export/export/002_export-2-prepare.resttest</test>
+    <test name="Export (2) Download">test-plan-data/export/export/003_export-2-download.resttest</test>
   </testGroup>
 
 </testPlan>

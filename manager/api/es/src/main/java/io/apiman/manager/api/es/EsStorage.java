@@ -20,6 +20,7 @@ import io.apiman.manager.api.beans.apps.ApplicationVersionBean;
 import io.apiman.manager.api.beans.audit.AuditEntityType;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
 import io.apiman.manager.api.beans.contracts.ContractBean;
+import io.apiman.manager.api.beans.download.DownloadBean;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
 import io.apiman.manager.api.beans.idm.PermissionBean;
 import io.apiman.manager.api.beans.idm.PermissionType;
@@ -368,6 +369,14 @@ public class EsStorage implements IStorage, IStorageQuery {
     }
 
     /**
+     * @see io.apiman.manager.api.core.IStorage#createDownload(io.apiman.manager.api.beans.download.DownloadBean)
+     */
+    @Override
+    public void createDownload(DownloadBean download) throws StorageException {
+        indexEntity("download", download.getId(), EsMarshalling.marshall(download)); //$NON-NLS-1$
+    }
+
+    /**
      * @see io.apiman.manager.api.core.IStorage#createPolicyDefinition(io.apiman.manager.api.beans.policies.PolicyDefinitionBean)
      */
     @Override
@@ -670,6 +679,14 @@ public class EsStorage implements IStorage, IStorageQuery {
     public void deletePlugin(PluginBean plugin) throws StorageException {
         deleteEntity("plugin", String.valueOf(plugin.getId())); //$NON-NLS-1$
     }
+    
+    /**
+     * @see io.apiman.manager.api.core.IStorage#deleteDownload(io.apiman.manager.api.beans.download.DownloadBean)
+     */
+    @Override
+    public void deleteDownload(DownloadBean download) throws StorageException {
+        deleteEntity("download", download.getId()); //$NON-NLS-1$
+    }
 
     /**
      * @see io.apiman.manager.api.core.IStorage#deletePolicyDefinition(io.apiman.manager.api.beans.policies.PolicyDefinitionBean)
@@ -862,6 +879,15 @@ public class EsStorage implements IStorage, IStorageQuery {
     public GatewayBean getGateway(String id) throws StorageException {
         Map<String, Object> source = getEntity("gateway", id); //$NON-NLS-1$
         return EsMarshalling.unmarshallGateway(source);
+    }
+    
+    /**
+     * @see io.apiman.manager.api.core.IStorage#getDownload(java.lang.String)
+     */
+    @Override
+    public DownloadBean getDownload(String id) throws StorageException {
+        Map<String, Object> source = getEntity("download", id); //$NON-NLS-1$
+        return EsMarshalling.unmarshallDownload(source);
     }
 
     /**

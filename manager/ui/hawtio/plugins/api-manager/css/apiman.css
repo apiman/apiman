@@ -177,7 +177,7 @@ textarea.apiman-form-data {
   background-color: black;
 }
 
-.alert {
+.alert.no-icon {
   padding-left: 10px;
 }
 

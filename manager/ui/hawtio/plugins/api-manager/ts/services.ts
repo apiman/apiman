@@ -200,6 +200,22 @@ module ApimanServices {
                 getStatus: function(handler, errorHandler) {
                     var endpoint = formatEndpoint(Configuration.api.endpoint + '/system/status', {});
                     $resource(endpoint).get({}, handler, errorHandler);
+                },
+                exportAsJson: function(handler, errorHandler) {
+                    var endpoint = formatEndpoint(Configuration.api.endpoint + '/system/export?download=true', {});
+                    $resource(endpoint).get({}, handler, errorHandler);
+                }
+            }
+        }]);
+
+    export var DownloadServices = _module.factory('DownloadSvcs', ['$resource', 'Configuration',
+        function($resource, Configuration) {
+            return {
+                getDownloadLink: function(downloadId) {
+                    var endpoint = formatEndpoint(Configuration.api.endpoint + '/downloads/:downloadId', {
+                    	"downloadId" : downloadId
+                    });
+                    return endpoint;
                 }
             }
         }]);

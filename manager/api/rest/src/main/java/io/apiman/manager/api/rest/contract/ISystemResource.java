@@ -24,6 +24,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -62,6 +63,8 @@ public interface ISystemResource {
     @GET
     @Path("export")
     @Produces(MediaType.APPLICATION_JSON)
+    public Response exportData(@QueryParam("download") String download);
+    // "Internal" method - called by the download resource.
     public Response exportData();
     
     @POST

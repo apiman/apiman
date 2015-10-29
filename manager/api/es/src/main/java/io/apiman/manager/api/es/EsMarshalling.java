@@ -22,6 +22,8 @@ import io.apiman.manager.api.beans.audit.AuditEntityType;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
 import io.apiman.manager.api.beans.audit.AuditEntryType;
 import io.apiman.manager.api.beans.contracts.ContractBean;
+import io.apiman.manager.api.beans.download.DownloadBean;
+import io.apiman.manager.api.beans.download.DownloadType;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
 import io.apiman.manager.api.beans.gateways.GatewayType;
 import io.apiman.manager.api.beans.idm.PermissionType;
@@ -624,6 +626,29 @@ public class EsMarshalling {
     }
 
     /**
+     * Marshals the given bean into the given map.
+     * @param bean the bean
+     * @return the content builder
+     * @throws StorageException when a storage problem occurs while storing a bean
+     */
+    public static XContentBuilder marshall(DownloadBean bean) throws StorageException {
+        try {
+            preMarshall(bean);
+            XContentBuilder builder = XContentFactory.jsonBuilder()
+                .startObject()
+                    .field("id", bean.getId())
+                    .field("type", bean.getType().name())
+                    .field("path", bean.getPath())
+                    .field("expires", bean.getExpires().getTime())
+                .endObject();
+            postMarshall(bean);
+            return builder;
+        } catch (IOException e) {
+            throw new StorageException(e);
+        }
+    }
+
+    /**
      * Unmarshals the given map source into a bean.
      * @param source the source
      * @return the policy beans
@@ -684,6 +709,24 @@ public class EsMarshalling {
         bean.setCreatedOn(asDate(source.get("createdOn")));
         bean.setModifiedBy(asString(source.get("modifiedBy")));
         bean.setModifiedOn(asDate(source.get("modifiedOn")));
+        postMarshall(bean);
+        return bean;
+    }
+
+    /**
+     * Unmarshals the given map source into a bean.
+     * @param source the source
+     * @return the gateway bean
+     */
+    public static DownloadBean unmarshallDownload(Map<String, Object> source) {
+        if (source == null) {
+            return null;
+        }
+        DownloadBean bean = new DownloadBean();
+        bean.setId(asString(source.get("id")));
+        bean.setPath(asString(source.get("path")));
+        bean.setType(asEnum(source.get("type"), DownloadType.class));
+        bean.setExpires(asDate(source.get("expires")));
         postMarshall(bean);
         return bean;
     }

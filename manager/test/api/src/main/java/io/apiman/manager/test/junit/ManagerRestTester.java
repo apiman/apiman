@@ -290,21 +290,29 @@ public class ManagerRestTester extends ParentRunner<TestInfo> {
             runLeaf(new Statement() {
                 @Override
                 public void evaluate() throws Throwable {
-                    RestTest restTest = TestUtil.loadRestTest(testInfo.test.getValue(), getTestClass().getJavaClass().getClassLoader());
-                    String endpoint = testInfo.plan.endpoint;
-                    if (StringUtils.isEmpty(endpoint)) {
-                        endpoint = TestUtil.doPropertyReplacement(testInfo.test.getEndpoint());
+                    String rtPath = testInfo.test.getValue();
+                    Integer delay = testInfo.test.getDelay();
+
+                    if (delay != null) {
+                        try { Thread.sleep(delay); } catch (InterruptedException e) { }
                     }
-                    if (StringUtils.isEmpty(endpoint)) {
-                        endpoint = TestUtil.doPropertyReplacement(testInfo.group.getEndpoint());
+                    if (rtPath != null && !rtPath.trim().isEmpty()) {
+                        RestTest restTest = TestUtil.loadRestTest(rtPath, getTestClass().getJavaClass().getClassLoader());
+                        String endpoint = testInfo.plan.endpoint;
+                        if (StringUtils.isEmpty(endpoint)) {
+                            endpoint = TestUtil.doPropertyReplacement(testInfo.test.getEndpoint());
+                        }
+                        if (StringUtils.isEmpty(endpoint)) {
+                            endpoint = TestUtil.doPropertyReplacement(testInfo.group.getEndpoint());
+                        }
+                        if (StringUtils.isEmpty(endpoint)) {
+                            endpoint = TestUtil.doPropertyReplacement(testInfo.plan.plan.getEndpoint());
+                        }
+                        if (StringUtils.isEmpty(endpoint)) {
+                            endpoint = "http://localhost:" + getTestServerPort() + getBaseApiContext();
+                        }
+                        testInfo.plan.runner.runTest(restTest, endpoint);
                     }
-                    if (StringUtils.isEmpty(endpoint)) {
-                        endpoint = TestUtil.doPropertyReplacement(testInfo.plan.plan.getEndpoint());
-                    }
-                    if (StringUtils.isEmpty(endpoint)) {
-                        endpoint = "http://localhost:" + getTestServerPort() + getBaseApiContext();
-                    }
-                    testInfo.plan.runner.runTest(restTest, endpoint);
                 }
             }, description, notifier);
         }

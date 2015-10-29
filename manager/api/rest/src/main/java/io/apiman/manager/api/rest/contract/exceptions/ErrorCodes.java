@@ -192,5 +192,14 @@ public final class ErrorCodes {
     public static final String SEARCH_CRITERIA_INVALID_INFO = null;
     public static final String NAME_INVALID_INFO            = null;
     public static final String VERSION_INVALID_INFO         = null;
+    
+
+    //
+    // Download related
+    //
+    public static final int DOWNLOAD_NOT_FOUND                   = 15001;
+
+    public static final String DOWNLOAD_NOT_FOUND_INFO           = null;
+
 
 }

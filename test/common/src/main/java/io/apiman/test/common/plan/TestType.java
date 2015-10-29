@@ -45,6 +45,8 @@ public class TestType {
     protected String name;
     @XmlAttribute(name = "endpoint")
     protected String endpoint;
+    @XmlAttribute(name = "delay")
+    private Integer delay;
 
     /**
      * Gets the value of the value property.
@@ -116,6 +118,20 @@ public class TestType {
      */
     public void setEndpoint(String value) {
         this.endpoint = value;
+    }
+
+    /**
+     * @return the delay
+     */
+    public Integer getDelay() {
+        return delay;
+    }
+
+    /**
+     * @param delay the delay to set
+     */
+    public void setDelay(Integer delay) {
+        this.delay = delay;
     }
 
 }

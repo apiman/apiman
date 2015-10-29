@@ -16,9 +16,14 @@
 
 package io.apiman.manager.api.rest.impl;
 
+import io.apiman.common.util.MediaType;
+import io.apiman.manager.api.beans.download.DownloadBean;
+import io.apiman.manager.api.beans.download.DownloadType;
 import io.apiman.manager.api.beans.system.SystemStatusBean;
 import io.apiman.manager.api.config.Version;
+import io.apiman.manager.api.core.IDownloadManager;
 import io.apiman.manager.api.core.IStorage;
+import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.core.logging.ApimanLogger;
 import io.apiman.manager.api.core.logging.IApimanLogger;
 import io.apiman.manager.api.exportimport.json.JsonExportWriter;
@@ -49,6 +54,7 @@ import javax.ws.rs.core.StreamingOutput;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.BooleanUtils;
 
 /**
  * Implementation of the System API.
@@ -72,6 +78,8 @@ public class SystemResourceImpl implements ISystemResource {
     private StorageExporter exporter;
     @Inject
     private StorageImportDispatcher importer;
+    @Inject
+    private IDownloadManager downloadManager;
 
     @Context
     private HttpServletRequest request;
@@ -99,15 +107,31 @@ public class SystemResourceImpl implements ISystemResource {
         }
         return rval;
     }
+
+    /**
+     * @see io.apiman.manager.api.rest.contract.ISystemResource#exportData(java.lang.String)
+     */
+    @Override
+    public Response exportData(String download) {
+        if (BooleanUtils.toBoolean(download)) {
+            try {
+                DownloadBean dbean = downloadManager.createDownload(DownloadType.exportJson, "/system/export"); //$NON-NLS-1$
+                return Response.ok(dbean, MediaType.APPLICATION_JSON).build();
+            } catch (StorageException e) {
+                throw new SystemErrorException(e);
+            }
+        } else {
+            if (!securityContext.isAdmin())
+                throw ExceptionFactory.notAuthorizedException();
+            return exportData();
+        }
+    }
     
     /**
-     * @see io.apiman.manager.api.rest.contract.ISystemResource#export()
+     * @see io.apiman.manager.api.rest.contract.ISystemResource#exportData()
      */
     @Override
     public Response exportData() {
-        if (!securityContext.isAdmin())
-            throw ExceptionFactory.notAuthorizedException();
-
         StreamingOutput stream = new StreamingOutput() {
             @Override
             public void write(OutputStream os) throws IOException, WebApplicationException {
@@ -117,8 +141,10 @@ public class SystemResourceImpl implements ISystemResource {
                 os.flush();
             }
         };
-
-        return Response.ok(stream).build();
+        return Response
+                .ok(stream, MediaType.APPLICATION_JSON)
+                .header("Content-Disposition", "attachment; filename=api-manager-export.json") //$NON-NLS-1$ //$NON-NLS-2$
+                .build();
     }
     
     /**

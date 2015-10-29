@@ -1,0 +1,10 @@
+GET /system/export?download=true admin/admin
+----
+200
+Content-Type: application/json
+X-RestTest-BindTo-download-id: id
+
+{
+  "type" : "exportJson",
+  "path" : "/system/export"
+}

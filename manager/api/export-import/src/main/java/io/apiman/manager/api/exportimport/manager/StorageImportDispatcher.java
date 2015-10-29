@@ -511,7 +511,7 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
                     contract.setServiceId(contractBean.getService().getService().getId());
                     contract.setServiceOrgId(contractBean.getService().getService().getOrganization().getId());
                     contract.setServiceVersion(contractBean.getService().getVersion());
-                    contract.getPolicies().addAll(aggregateContractPolicies(contractBean));
+                    contract.getPolicies().addAll(aggregateContractPolicies(contractBean, info));
                     contracts.add(contract);
                 }
             }
@@ -548,8 +548,9 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
     /**
      * Aggregates the service, app, and plan policies into a single ordered list.
      * @param contractBean
+     * @param appInfo 
      */
-    private List<Policy> aggregateContractPolicies(ContractBean contractBean) throws StorageException {
+    private List<Policy> aggregateContractPolicies(ContractBean contractBean, EntityInfo appInfo) throws StorageException {
         List<Policy> policies = new ArrayList<>();
         PolicyType [] types = new PolicyType[] {
                 PolicyType.Application, PolicyType.Plan, PolicyType.Service
@@ -558,9 +559,9 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
             String org, id, ver;
             switch (policyType) {
               case Application: {
-                  org = contractBean.getApplication().getApplication().getOrganization().getId();
-                  id = contractBean.getApplication().getApplication().getId();
-                  ver = contractBean.getApplication().getVersion();
+                  org = appInfo.organizationId;
+                  id = appInfo.id;
+                  ver = appInfo.version;
                   break;
               }
               case Plan: {

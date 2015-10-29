@@ -1,7 +1,8 @@
-GET /system/export admin/admin
+GET /downloads/${download-id}
 ----
 200
 Content-Type: application/json
+Content-Disposition: attachment; filename=api-manager-export.json
 
 {
   "Metadata": {

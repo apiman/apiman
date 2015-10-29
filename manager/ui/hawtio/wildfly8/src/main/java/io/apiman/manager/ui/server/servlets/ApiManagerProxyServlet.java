@@ -141,6 +141,9 @@ public class ApiManagerProxyServlet extends AbstractUIServlet {
                     }
                     resp.setHeader("Content-Disposition", "attachment; filename=api-registry." + type); //$NON-NLS-1$ //$NON-NLS-2$
                 }
+                if (url.toString().endsWith("/export")) { //$NON-NLS-1$
+                    resp.setHeader("Content-Disposition", "attachment; filename=api-manager-export.json"); //$NON-NLS-1$ //$NON-NLS-2$
+                }
             }
             resp.setHeader("Cache-control", "no-cache, no-store, must-revalidate"); //$NON-NLS-1$ //$NON-NLS-2$
             remoteIS = remoteConn.getInputStream();
