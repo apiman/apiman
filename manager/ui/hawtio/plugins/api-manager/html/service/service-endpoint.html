@@ -41,21 +41,30 @@
             <div class="apiman-form-label">
               <p apiman-i18n-key="managed-endpoint">Managed Endpoint</p>
             </div>
-            <textarea class="apiman-endpoint form-control"
-                      style="width:100%; background-color: white; color: black"
-                      readonly="readonly"
-                      data-field="mangedEndpoint">{{ managedEndpoint.managedEndpoint }}</textarea>
-            <br>
-            <button clipboard
-                    text="managedEndpoint.managedEndpoint"
-                    on-copied="success()"
-                    on-error="fail(err)"
-                    ng-click="toggle = !toggle">
-                <span ng-hide="toggle"
-                      apiman-i18n-key="copy">Copy</span>
-                <span ng-show="toggle"
-                      apiman-i18n-key="copied">Copied!</span>
-            </button>
+              <div class="input-group">
+                  <input type="text"
+                         style="width:100%; background-color: white; color: black"
+                         class="apiman-endpoint form-control"
+                         readonly="readonly"
+                         data-field="mangedEndpoint"
+                         value="{{ managedEndpoint.managedEndpoint }}">
+                  <span class="input-group-btn">
+                      <button clipboard
+                              text="managedEndpoint.managedEndpoint"
+                              class="btn btn-default"
+                              type="button"
+                              on-copied="copySuccess()"
+                              on-error="copyFail(err)"
+                              data-toggle="tooltip"
+                              data-placement="bottom"
+                              data-original-title="Copy to clipboard"
+                              ng-mouseleave="tooltipReset()"
+                              ng-click="tooltipChange()">
+                        <span apiman-i18n-key="copy"
+                              class="glyphicon glyphicon-copy"></span>
+                      </button>
+                  </span>
+              </div>
           </div>
           <!-- /Content Summary -->
         </div>

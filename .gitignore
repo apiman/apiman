@@ -11,3 +11,4 @@ gwt-unitCache
 *~
 *.iml
 .idea
+npm-debug.log

@@ -5,7 +5,7 @@
 
 global.jQuery = global.$ = require('patternfly/components/jquery/dist/jquery.js');
 var bootstrap = require('patternfly/components/bootstrap/dist/js/bootstrap.js');
-var bootstrapSelect = require('patternfly/components/bootstrap-select/bootstrap-select.js');
+var bootstrapSelect = require('patternfly/components/bootstrap-select/dist/js/bootstrap-select.js');
 var jsonEditor = require('json-editor');
 var patternfly = require('patternfly/dist/js/patternfly.js');
 var angular = require('angular');

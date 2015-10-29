@@ -6,6 +6,7 @@ module Apiman {
         ['$q', '$scope', '$location', 'PageLifecycle', 'AppEntityLoader', 'Logger', 'OrgSvcs', '$rootScope', '$compile', '$timeout', '$routeParams', 'Configuration',
         ($q, $scope, $location, PageLifecycle, AppEntityLoader, Logger, OrgSvcs, $rootScope, $compile, $timeout, $routeParams, Configuration) => {
             var params = $routeParams;
+
             $scope.organizationId = params.org;
             $scope.tab = 'apis';
             $scope.version = params.version;
@@ -19,29 +20,69 @@ module Apiman {
 
             $scope.howToInvoke = function(api) {
                 var modalScope = $rootScope.$new(true);
+
                 modalScope.asQueryParam = api.httpEndpoint + '?apikey=' + api.apiKey;
+
                 if (api.httpEndpoint.indexOf('?') > -1) {
                     modalScope.asQueryParam = api.httpEndpoint + '&apikey=' + api.apiKey;
                 }
+
                 modalScope.asRequestHeader = 'X-API-Key: ' + api.apiKey;
                 $('body').append($compile('<apiman-api-modal></apiman-api-modal>')(modalScope));
+
                 $timeout(function() {
                     $('#apiModal')['modal']({'keyboard': true, 'backdrop': 'static'});
                 }, 50);
-
             };
             
             var pageData = AppEntityLoader.getCommonData($scope, $location);
+
             pageData = angular.extend(pageData, {
                 apiRegistry: $q(function(resolve, reject) {
                     OrgSvcs.get({ organizationId: params.org, entityType: 'applications', entityId: params.app, versionsOrActivity: 'versions', version: params.version, policiesOrActivity: 'apiregistry', policyId: 'json' }, resolve, reject);
                 })
             });
+
+
+            // Tooltip
+
+            // Initiates the tooltip (this is required for performance reasons)
+            /*
+            $(function () {
+                $('[data-toggle="tooltip"]').hover(function() {
+                    (<any>$('[data-toggle="tooltip"]')).tooltip('show');
+                });
+            });
+            */
+
+            // Called if copy-to-clipboard functionality was successful
+            $scope.copySuccess = function () {
+                //console.log('Copied!');
+            };
+
+            // Called if copy-to-clipboard functionality was unsuccessful
+            $scope.copyFail = function (err) {
+                //console.error('Error!', err);
+            };
+
+            // Called on clicking the button the tooltip is attached to
+            $scope.tooltipChange = function(id) {
+                $('[data-toggle="tooltip"][id=' + id + ']').attr('data-original-title', 'Copied!');
+
+                // This is a workaround for jQuery + TS not playing well together
+                (<any>$('[data-toggle="tooltip"][id=' + id + ']')).tooltip('show');
+            };
+
+            // Call when the mouse leaves the button the tooltip is attached to
+            $scope.tooltipReset = function(id) {
+                $('[data-toggle="tooltip"][id=' + id + ']').attr('data-original-title', 'Copy to clipboard');
+            };
+
             PageLifecycle.loadPage('AppApis', pageData, $scope, function() {
                 Logger.info("API Registry: {0}", $scope.apiRegistry);
                 PageLifecycle.setPageTitle('app-apis', [ $scope.app.name ]);
             });
-        }])
+        }]);
 
     
     _module.directive('apimanApiModal',
@@ -54,6 +95,16 @@ module Apiman {
                     $(element).on('hidden.bs.modal', function() {
                         $(element).remove();
                     });
+
+                    // Called if copy-to-clipboard functionality was successful
+                    scope.copySuccess = function () {
+                        console.log('Copied!');
+                    };
+
+                    // Called if copy-to-clipboard functionality was unsuccessful
+                    scope.copyFail = function (err) {
+                        //console.error('Error!', err);
+                    };
                 }
             };
         }]);

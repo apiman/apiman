@@ -13,10 +13,54 @@
         <p class="explanation" apiman-i18n-key="api-dialog-explanation">To successfully invoke the managed service for this service contract, you must provide the appropriate API Key with each request. The API Key can be provided either by sending it as an HTTP Request Header named X-API-Key, or you can send it as a URL query parameter.</p>
         <hr style="margin-left: -25px; margin-right: -25px">
         <div class="apiman-form-label" apiman-i18n-key="as-query-param">As Query Parameter</div>
-        <textarea readonly style="width: 100%">{{ asQueryParam }}</textarea>
+        <div class="input-group"
+             style="width:100%">
+          <input readonly
+                 type="text"
+                 class="apiman-form-control form-control readonly apiman-readonly"
+                 value="{{ asQueryParam }}">
+            <!--
+          <span class="input-group-btn">
+            <button clipboard
+                    class="btn btn-default"
+                    type="button"
+                    on-copied="copySuccess()"
+                    on-error="copyFail(err)"
+                    data-toggle="tooltip"
+                    data-placement="bottom"
+                    data-original-title="Copy to clipboard"
+                    apiman-tooltip>
+              <span apiman-i18n-key="copy"
+                    class="glyphicon glyphicon-copy"></span>
+            </button>
+          </span>
+          -->
+        </div>
         <p apiman-i18n-skip>&nbsp;</p>
         <div class="apiman-form-label" apiman-i18n-key="as-request-header">As HTTP Request Header</div>
-        <textarea readonly style="width: 100%">{{ asRequestHeader }}</textarea>
+          <div class="input-group"
+               style="width:100%">
+              <input readonly
+                     type="text"
+                     class="apiman-form-control form-control readonly apiman-readonly"
+                     value="{{ asRequestHeader }}">
+              <!--
+              <span class="input-group-btn">
+                <button clipboard
+                        class="btn btn-default"
+                        type="button"
+                        on-copied="copySuccess()"
+                        on-error="copyFail(err)"
+                        data-toggle="tooltip"
+                        data-placement="bottom"
+                        data-original-title="Copy to clipboard"
+                        apiman-tooltip>
+                  <span apiman-i18n-key="copy"
+                        class="glyphicon glyphicon-copy"></span>
+                </button>
+              </span>
+              -->
+          </div>
       </div>
       <div class="modal-footer">
         <button data-dismiss="modal" apiman-i18n-key="done" class="btn btn-default" type="button">Done</button>
