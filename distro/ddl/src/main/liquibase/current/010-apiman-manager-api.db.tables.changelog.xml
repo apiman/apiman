@@ -436,4 +436,14 @@
             <column name="joined_on" type="TIMESTAMP"/>
         </createTable>
     </changeSet>
+    <changeSet author="apiman (generated)" id="1436469846462-23">
+        <createTable tableName="downloads">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type" type="VARCHAR(255)"/>
+            <column name="path" type="VARCHAR(255)"/>
+            <column name="expires" type="TIMESTAMP"/>
+        </createTable>
+    </changeSet>
 </databaseChangeLog>
