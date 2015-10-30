@@ -41,15 +41,21 @@
     <test name="List Contracts for App 1 [1]">test-plan-data/contracts/contracts/004_get-contracts.resttest</test>
     <test name="Create Contract to Service 2">test-plan-data/contracts/contracts/005_create-contract2.resttest</test>
     <test name="List Contracts for App 1 [2]">test-plan-data/contracts/contracts/006_get-contracts.resttest</test>
+    
     <test name="List ApiRegistry for App 1 (JSON)">test-plan-data/contracts/contracts/007_get-apiregistry_json.resttest</test>
-    <test name="List ApiRegistry for App 1 (XML)">test-plan-data/contracts/contracts/007_get-apiregistry_xml.resttest</test>
-    <test name="Create Duplicate Contract (failure)">test-plan-data/contracts/contracts/007.5_create-duplicate-contract.resttest</test>
-    <test name="Break Contract 1">test-plan-data/contracts/contracts/008_delete-contract1.resttest</test>
-    <test name="List Contracts for App 1 (after delete)">test-plan-data/contracts/contracts/009_get-contracts.resttest</test>
+    <test name="List ApiRegistry for App 1 (XML)">test-plan-data/contracts/contracts/008_get-apiregistry_xml.resttest</test>
+
+    <test name="Download ApiRegistry for App 1 (JSON) (prep)">test-plan-data/contracts/contracts/009_get-apiregistry_json_prep.resttest</test>
+    <test name="Download ApiRegistry for App 1 (JSON) (download)">test-plan-data/contracts/contracts/010_get-apiregistry_json_download.resttest</test>
+    <test name="Download ApiRegistry for App 1 (XML) (prep)">test-plan-data/contracts/contracts/011_get-apiregistry_xml_prep.resttest</test>
+    <test name="Download ApiRegistry for App 1 (XML) (download)">test-plan-data/contracts/contracts/012_get-apiregistry_xml_download.resttest</test>
     
-    <test name="Register App 1">test-plan-data/contracts/publish/010_register-app-1.resttest</test>
-    <test name="Break Contract 2 (fail)">test-plan-data/contracts/contracts/011_delete-contract-2.resttest</test>
+    <test name="Create Duplicate Contract (failure)">test-plan-data/contracts/contracts/013_create-duplicate-contract.resttest</test>
+    <test name="Break Contract 1">test-plan-data/contracts/contracts/014_delete-contract1.resttest</test>
+    <test name="List Contracts for App 1 (after delete)">test-plan-data/contracts/contracts/015_get-contracts.resttest</test>
     
+    <test name="Register App 1">test-plan-data/contracts/publish/016_register-app-1.resttest</test>
+    <test name="Break Contract 2 (fail)">test-plan-data/contracts/contracts/017_delete-contract-2.resttest</test>
   </testGroup>
 
   <!-- Auditing -->

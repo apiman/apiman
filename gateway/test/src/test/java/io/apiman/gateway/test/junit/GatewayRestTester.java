@@ -15,6 +15,16 @@
  */
 package io.apiman.gateway.test.junit;
 
+import io.apiman.gateway.test.junit.GatewayRestTester.TestInfo;
+import io.apiman.test.common.plan.TestGroupType;
+import io.apiman.test.common.plan.TestPlan;
+import io.apiman.test.common.plan.TestType;
+import io.apiman.test.common.resttest.IGatewayTestServer;
+import io.apiman.test.common.resttest.IGatewayTestServerFactory;
+import io.apiman.test.common.resttest.RestTest;
+import io.apiman.test.common.util.TestPlanRunner;
+import io.apiman.test.common.util.TestUtil;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -33,16 +43,6 @@ import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import io.apiman.gateway.test.junit.GatewayRestTester.TestInfo;
-import io.apiman.test.common.plan.TestGroupType;
-import io.apiman.test.common.plan.TestPlan;
-import io.apiman.test.common.plan.TestType;
-import io.apiman.test.common.resttest.IGatewayTestServer;
-import io.apiman.test.common.resttest.IGatewayTestServerFactory;
-import io.apiman.test.common.resttest.RestTest;
-import io.apiman.test.common.util.TestPlanRunner;
-import io.apiman.test.common.util.TestUtil;
 
 /**
  * A junit test runner that fires up an API Gateway and makes it ready for use
@@ -230,25 +230,33 @@ public class GatewayRestTester extends ParentRunner<TestInfo> {
         runLeaf(new Statement() {
             @Override
             public void evaluate() throws Throwable {
-                RestTest restTest = TestUtil.loadRestTest(testInfo.test.getValue(), getTestClass().getJavaClass().getClassLoader());
-                String endpoint = null;
-                if (endpoint == null) {
-                    endpoint = testInfo.test.getEndpoint();
-                }
-                if (endpoint == null) {
-                    endpoint = testInfo.group.getEndpoint();
-                }
-                if (endpoint == null) {
-                    endpoint = testInfo.plan.plan.getEndpoint();
-                }
-                if (endpoint != null) {
-                    endpoint = resolveEndpoint(endpoint);
-                }
-                if (endpoint == null) {
-                    endpoint = gatewayServer.getGatewayEndpoint();
-                }
+                String rtPath = testInfo.test.getValue();
+                Integer delay = testInfo.test.getDelay();
 
-                testInfo.plan.runner.runTest(restTest, endpoint);
+                if (delay != null) {
+                    try { Thread.sleep(delay); } catch (InterruptedException e) { }
+                }
+                if (rtPath != null && !rtPath.trim().isEmpty()) {
+                    RestTest restTest = TestUtil.loadRestTest(testInfo.test.getValue(), getTestClass().getJavaClass().getClassLoader());
+                    String endpoint = null;
+                    if (endpoint == null) {
+                        endpoint = testInfo.test.getEndpoint();
+                    }
+                    if (endpoint == null) {
+                        endpoint = testInfo.group.getEndpoint();
+                    }
+                    if (endpoint == null) {
+                        endpoint = testInfo.plan.plan.getEndpoint();
+                    }
+                    if (endpoint != null) {
+                        endpoint = resolveEndpoint(endpoint);
+                    }
+                    if (endpoint == null) {
+                        endpoint = gatewayServer.getGatewayEndpoint();
+                    }
+    
+                    testInfo.plan.runner.runTest(restTest, endpoint);
+                }
             }
         }, description, notifier);
     }

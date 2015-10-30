@@ -15,11 +15,6 @@
  */
 package io.apiman.gateway.test.junit.servlet;
 
-import java.io.File;
-import java.util.Iterator;
-
-import org.codehaus.jackson.JsonNode;
-
 import io.apiman.gateway.engine.components.IBufferFactoryComponent;
 import io.apiman.gateway.engine.components.ICacheStoreComponent;
 import io.apiman.gateway.engine.components.IHttpClientComponent;
@@ -47,6 +42,11 @@ import io.apiman.gateway.test.server.TestMetrics;
 import io.apiman.test.common.echo.EchoServer;
 import io.apiman.test.common.resttest.IGatewayTestServer;
 
+import java.io.File;
+import java.util.Iterator;
+
+import org.codehaus.jackson.JsonNode;
+
 /**
  * A servlet version of the gateway test server.
  *
@@ -56,8 +56,8 @@ import io.apiman.test.common.resttest.IGatewayTestServer;
 public class ServletGatewayTestServer implements IGatewayTestServer {
 
     protected static final int ECHO_PORT = 7654;
-    protected static final int GATEWAY_PORT = 8080;
-    protected static final int GATEWAY_PROXY_PORT = 8081;
+    protected static final int GATEWAY_PORT = 6060;
+    protected static final int GATEWAY_PROXY_PORT = 6061;
     protected static final boolean USE_PROXY = false; // if you set this to true you must start a tcp proxy on 8081
 
     private EchoServer echoServer = new EchoServer(ECHO_PORT);

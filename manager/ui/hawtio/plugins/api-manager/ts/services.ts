@@ -9,7 +9,7 @@ module ApimanServices {
         });
     };
 
-    export var ApimanServices = _module.factory('ApimanSvcs', ['$resource', 'Configuration',
+    export var ApimanSvcs = _module.factory('ApimanSvcs', ['$resource', 'Configuration',
         function($resource, Configuration) {
             var endpoint = Configuration.api.endpoint + '/:entityType/:secondaryType';
             return $resource(endpoint,
@@ -19,14 +19,14 @@ module ApimanServices {
                 }});
         }]);
 
-    export var UserServices = _module.factory('UserSvcs', ['$resource', 'Configuration',
+    export var UserSvcs = _module.factory('UserSvcs', ['$resource', 'Configuration',
         function($resource, Configuration) {
             var endpoint = Configuration.api.endpoint + '/users/:user/:entityType';
             return $resource(endpoint,
                 { user: '@user', entityType: '@entityType' });
         }]);
 
-    export var OrganizationServices = _module.factory('OrgSvcs', ['$resource', 'Configuration',
+    export var OrganizationSvcs = _module.factory('OrgSvcs', ['$resource', 'Configuration',
         function($resource, Configuration) {
             var endpoint = Configuration.api.endpoint + '/organizations/:organizationId/:entityType/:entityId/:versionsOrActivity/:version/:policiesOrActivity/:policyId/:policyChain';
             return $resource(endpoint,
@@ -48,7 +48,7 @@ module ApimanServices {
                 }});
         }]);
 
-    export var CurrentUserServices = _module.factory('CurrentUserSvcs', ['$resource', 'Configuration',
+    export var CurrentUserSvcs = _module.factory('CurrentUserSvcs', ['$resource', 'Configuration',
         function($resource, Configuration) {
             var endpoint = Configuration.api.endpoint + '/currentuser/:what';
             return $resource(endpoint,
@@ -58,13 +58,13 @@ module ApimanServices {
                 }});
         }]);
 
-    export var ActionServices = _module.factory('ActionSvcs', ['$resource', 'Configuration',
+    export var ActionSvcs = _module.factory('ActionSvcs', ['$resource', 'Configuration',
         function($resource, Configuration) {
             var endpoint = Configuration.api.endpoint + '/actions';
             return $resource(endpoint);
         }]);
 
-    export var AuditServices = _module.factory('AuditSvcs', ['$resource', 'Configuration',
+    export var AuditSvcs = _module.factory('AuditSvcs', ['$resource', 'Configuration',
         function($resource, Configuration) {
             var endpoint = Configuration.api.endpoint + '/organizations/:organizationId/:entityType/:entityId/activity';
             return $resource(endpoint,
@@ -78,7 +78,7 @@ module ApimanServices {
                 });
         }]);
 
-    export var UserAuditServices = _module.factory('UserAuditSvcs', ['$resource', 'Configuration',
+    export var UserAuditSvcs = _module.factory('UserAuditSvcs', ['$resource', 'Configuration',
         function($resource, Configuration) {
             var endpoint = Configuration.api.endpoint + '/users/:user/activity';
             return $resource(endpoint,
@@ -91,7 +91,7 @@ module ApimanServices {
         }]);
 
     
-    export var PluginServices = _module.factory('PluginSvcs', ['$resource', 'Configuration',
+    export var PluginSvcs = _module.factory('PluginSvcs', ['$resource', 'Configuration',
         function($resource, Configuration) {
             return {
                 getPolicyForm: function(pluginId, policyDefId, handler, errorHandler) {
@@ -103,7 +103,7 @@ module ApimanServices {
             }
         }]);
 
-    export var ServiceDefinitionServices = _module.factory('ServiceDefinitionSvcs', ['$resource', '$http', 'Configuration',
+    export var ServiceDefinitionSvcs = _module.factory('ServiceDefinitionSvcs', ['$resource', '$http', 'Configuration',
         function($resource, $http, Configuration) {
             return {
                 getServiceDefinitionUrl: function(orgId, serviceId, version) {
@@ -140,7 +140,7 @@ module ApimanServices {
             }
         }]);
 
-    export var MetricsServices = _module.factory('MetricsSvcs', ['$resource', 'Configuration',
+    export var MetricsSvcs = _module.factory('MetricsSvcs', ['$resource', 'Configuration',
         function($resource, Configuration) {
             return {
                 getUsage: function(orgId, serviceId, version, interval, from, to, handler, errorHandler) {
@@ -194,11 +194,62 @@ module ApimanServices {
             }
         }]);
 
-    export var SystemServices = _module.factory('SystemSvcs', ['$resource', 'Configuration',
-        function($resource, Configuration) {
+    export var SystemSvcs = _module.factory('SystemSvcs', ['$resource', 'Configuration', 'Logger', 'Upload',
+        function($resource, Configuration, Logger, Upload) {
             return {
                 getStatus: function(handler, errorHandler) {
                     var endpoint = formatEndpoint(Configuration.api.endpoint + '/system/status', {});
+                    $resource(endpoint).get({}, handler, errorHandler);
+                },
+                exportAsJson: function(handler, errorHandler) {
+                    var endpoint = formatEndpoint(Configuration.api.endpoint + '/system/export?download=true', {});
+                    $resource(endpoint).get({}, handler, errorHandler);
+                },
+                importJson: function(file, progressHandler, handler, errorHandler) {
+	                var endpoint = formatEndpoint(Configuration.api.endpoint + '/system/import', {});
+	                file.upload = Upload.http({
+	                    url: endpoint,
+	                    method: 'POST',
+	                    headers: {
+	                      'Content-Type': 'application/json',
+	                    },
+	                    data: file
+	                  });
+                  file.upload.then(handler, errorHandler);
+                  file.upload.progress(progressHandler);
+                }
+            }
+        }]);
+
+    export var DownloadSvcs = _module.factory('DownloadSvcs', ['$resource', 'Configuration',
+        function($resource, Configuration) {
+            return {
+                getDownloadLink: function(downloadId) {
+                    var endpoint = formatEndpoint(Configuration.api.endpoint + '/downloads/:downloadId', {
+                    	"downloadId" : downloadId
+                    });
+                    return endpoint;
+                }
+            }
+        }]);
+
+    export var ApiRegistrySvcs = _module.factory('ApiRegistrySvcs', ['$resource', 'Configuration',
+        function($resource, Configuration) {
+            return {
+                exportApiRegistryAsJson: function(orgId, appId, version, handler, errorHandler) {
+                    var endpoint = formatEndpoint(Configuration.api.endpoint + '/organizations/:organizationId/applications/:applicationId/versions/:version/apiregistry/json?download=true', {
+                    	"organizationId" : orgId,
+                    	"applicationId" : appId,
+                    	"version" : version
+                    });
+                    $resource(endpoint).get({}, handler, errorHandler);
+                },
+                exportApiRegistryAsXml: function(orgId, appId, version, handler, errorHandler) {
+                    var endpoint = formatEndpoint(Configuration.api.endpoint + '/organizations/:organizationId/applications/:applicationId/versions/:version/apiregistry/xml?download=true', {
+                    	"organizationId" : orgId,
+                    	"applicationId" : appId,
+                    	"version" : version
+                    });
                     $resource(endpoint).get({}, handler, errorHandler);
                 }
             }

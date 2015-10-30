@@ -18,6 +18,7 @@ package io.apiman.manager.test.server;
 import io.apiman.manager.api.rest.impl.ActionResourceImpl;
 import io.apiman.manager.api.rest.impl.ApiManagerApplication;
 import io.apiman.manager.api.rest.impl.CurrentUserResourceImpl;
+import io.apiman.manager.api.rest.impl.DownloadResourceImpl;
 import io.apiman.manager.api.rest.impl.GatewayResourceImpl;
 import io.apiman.manager.api.rest.impl.OrganizationResourceImpl;
 import io.apiman.manager.api.rest.impl.PermissionsResourceImpl;
@@ -57,6 +58,7 @@ public class TestManagerApiApplication extends ApiManagerApplication {
         classes.add(GatewayResourceImpl.class);
         classes.add(PluginResourceImpl.class);
         classes.add(ActionResourceImpl.class);
+        classes.add(DownloadResourceImpl.class);
 
         classes.add(RestExceptionMapper.class);
     }

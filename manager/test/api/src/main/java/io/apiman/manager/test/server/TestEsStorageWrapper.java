@@ -19,6 +19,7 @@ import io.apiman.manager.api.beans.apps.ApplicationBean;
 import io.apiman.manager.api.beans.apps.ApplicationVersionBean;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
 import io.apiman.manager.api.beans.contracts.ContractBean;
+import io.apiman.manager.api.beans.download.DownloadBean;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
 import io.apiman.manager.api.beans.idm.RoleBean;
 import io.apiman.manager.api.beans.idm.RoleMembershipBean;
@@ -751,6 +752,30 @@ public class TestEsStorageWrapper implements IStorage {
     public Iterator<PolicyBean> getAllPolicies(String organizationId, String entityId, String version,
             PolicyType type) throws StorageException {
         return delegate.getAllPolicies(organizationId, entityId, version, type);
+    }
+    
+    /**
+     * @see io.apiman.manager.api.core.IStorage#createDownload(io.apiman.manager.api.beans.download.DownloadBean)
+     */
+    @Override
+    public void createDownload(DownloadBean download) throws StorageException {
+        delegate.createDownload(download);
+    }
+    
+    /**
+     * @see io.apiman.manager.api.core.IStorage#deleteDownload(io.apiman.manager.api.beans.download.DownloadBean)
+     */
+    @Override
+    public void deleteDownload(DownloadBean download) throws StorageException {
+        delegate.deleteDownload(download);
+    }
+    
+    /**
+     * @see io.apiman.manager.api.core.IStorage#getDownload(java.lang.String)
+     */
+    @Override
+    public DownloadBean getDownload(String id) throws StorageException {
+        return delegate.getDownload(id);
     }
 
     /**

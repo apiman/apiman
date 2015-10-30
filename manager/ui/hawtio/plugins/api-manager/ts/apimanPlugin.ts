@@ -7,6 +7,7 @@ module Apiman {
         'ngRoute',
         'ui.sortable',
         'xeditable',
+        'ngFileUpload',
 
         'ApimanServices',
         'ApimanLogger',
@@ -47,6 +48,9 @@ module Apiman {
                 })
                 .when(prefix + '/admin/roles', {
                     templateUrl: path + 'admin/admin-roles.html'
+                })
+                .when(prefix + '/admin/export', {
+                    templateUrl: path + 'admin/admin-export.html'
                 })
                 .when(prefix + '/admin/gateways/:gateway', {
                     templateUrl: path + 'forms/edit-gateway.html'

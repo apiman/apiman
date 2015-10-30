@@ -38,7 +38,7 @@
   
   <!-- Static Identity Source - Form Fields -->
   <div id="static-form-fields" class="sub-form-fields" style="clear:both" ng-show="identitySourceType == 'static'">
-    <div class="alert alert-warning" role="alert">
+    <div class="alert alert-warning" role="alert no-icon">
       <p apiman-i18n-key="basic-auth.static-type-warning">The "static" identity source is typically only useful for testing - you probably don't want to use it in production!</p>
     </div>
     <div>

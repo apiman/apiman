@@ -1,0 +1,11 @@
+GET /organizations/Organization1/applications/Application1/versions/1.0/apiregistry/xml?download=true admin/admin
+
+----
+200
+Content-Type: application/json
+X-RestTest-BindTo-download-id: id
+
+{
+  "type" : "apiRegistryXml",
+  "path" : "Organization1/Application1/1.0/+"
+}

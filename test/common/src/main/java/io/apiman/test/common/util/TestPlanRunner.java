@@ -102,7 +102,14 @@ public class TestPlanRunner {
 
             for (TestType test : group.getTest()) {
                 String rtPath = test.getValue();
+                Integer delay = test.getDelay();
                 log("Executing REST Test [{0}] - {1}", test.getName(), rtPath);
+                if (delay != null) {
+                    try { Thread.sleep(delay); } catch (InterruptedException e) { }
+                }
+                if (rtPath == null || rtPath.trim().isEmpty()) {
+                    continue;
+                }
                 RestTest restTest = TestUtil.loadRestTest(rtPath, cl);
                 runTest(restTest, baseApiUrl);
                 log("REST Test Completed");

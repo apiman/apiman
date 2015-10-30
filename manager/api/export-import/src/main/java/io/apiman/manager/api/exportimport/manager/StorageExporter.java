@@ -50,7 +50,7 @@ import javax.inject.Inject;
 import org.joda.time.DateTime;
 
 @ApplicationScoped
-class StorageExporter {
+public class StorageExporter {
     @Inject @ApimanLogger(StorageExporter.class)
     private IApimanLogger logger;
     @Inject
@@ -224,6 +224,9 @@ class StorageExporter {
                     Iterator<ContractBean> contractIter = storage.getAllContracts(orgId, applicationBean.getId(), versionBean.getVersion());
                     while (contractIter.hasNext()) {
                         ContractBean contractBean = contractIter.next();
+                        contractBean.setApplication(null);
+                        contractBean.setService(minifyService(contractBean.getService()));
+                        contractBean.setPlan(minifyPlan(contractBean.getPlan()));
                         logger.info(Messages.i18n.format("StorageExporter.ExportingAppContract") + contractBean); //$NON-NLS-1$
                         writer.writeApplicationContract(contractBean);
                     }
@@ -387,6 +390,32 @@ class StorageExporter {
         catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * @param plan
+     */
+    private PlanVersionBean minifyPlan(PlanVersionBean plan) {
+        PlanVersionBean rval = new PlanVersionBean();
+        rval.setVersion(plan.getVersion());
+        rval.setPlan(new PlanBean());
+        rval.getPlan().setId(plan.getPlan().getId());
+        rval.getPlan().setOrganization(new OrganizationBean());
+        rval.getPlan().getOrganization().setId(plan.getPlan().getOrganization().getId());
+        return rval;
+    }
+
+    /**
+     * @param service
+     */
+    private ServiceVersionBean minifyService(ServiceVersionBean service) {
+        ServiceVersionBean rval = new ServiceVersionBean();
+        rval.setVersion(service.getVersion());
+        rval.setService(new ServiceBean());
+        rval.getService().setId(service.getService().getId());
+        rval.getService().setOrganization(new OrganizationBean());
+        rval.getService().getOrganization().setId(service.getService().getOrganization().getId());
+        return rval;
     }
 
 }

@@ -20,6 +20,7 @@ import io.apiman.manager.api.beans.apps.ApplicationVersionBean;
 import io.apiman.manager.api.beans.audit.AuditEntityType;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
 import io.apiman.manager.api.beans.contracts.ContractBean;
+import io.apiman.manager.api.beans.download.DownloadBean;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
 import io.apiman.manager.api.beans.gateways.GatewayType;
 import io.apiman.manager.api.beans.idm.PermissionBean;
@@ -159,6 +160,14 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     @Override
     public void createGateway(GatewayBean gateway) throws StorageException {
         super.create(gateway);
+    }
+    
+    /**
+     * @see io.apiman.manager.api.core.IStorage#createDownload(io.apiman.manager.api.beans.download.DownloadBean)
+     */
+    @Override
+    public void createDownload(DownloadBean download) throws StorageException {
+        super.create(download);
     }
 
     /**
@@ -431,6 +440,14 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     public void deleteGateway(GatewayBean gateway) throws StorageException {
         super.delete(gateway);
     }
+    
+    /**
+     * @see io.apiman.manager.api.core.IStorage#deleteDownload(io.apiman.manager.api.beans.download.DownloadBean)
+     */
+    @Override
+    public void deleteDownload(DownloadBean download) throws StorageException {
+        super.delete(download);
+    }
 
     /**
      * @see io.apiman.manager.api.core.IStorage#deletePlugin(io.apiman.manager.api.beans.plugins.PluginBean)
@@ -516,6 +533,14 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     @Override
     public GatewayBean getGateway(String id) throws StorageException {
         return super.get(id, GatewayBean.class);
+    }
+    
+    /**
+     * @see io.apiman.manager.api.core.IStorage#getDownload(java.lang.String)
+     */
+    @Override
+    public DownloadBean getDownload(String id) throws StorageException {
+        return super.get(id, DownloadBean.class);
     }
 
     /**

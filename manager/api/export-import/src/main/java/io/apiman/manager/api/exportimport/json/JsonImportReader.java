@@ -55,7 +55,7 @@ import org.codehaus.jackson.map.ObjectMapper;
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 @SuppressWarnings("nls")
-public class JsonFileImportReader extends AbstractJsonReader implements IImportReader {
+public class JsonImportReader extends AbstractJsonReader implements IImportReader {
     
     private IImportReaderDispatcher dispatcher;
     private JsonParser jp;
@@ -68,7 +68,7 @@ public class JsonFileImportReader extends AbstractJsonReader implements IImportR
      * @throws JsonParseException
      * @throws IOException
      */
-    public JsonFileImportReader(InputStream in) throws JsonParseException, IOException {
+    public JsonImportReader(InputStream in) throws JsonParseException, IOException {
         this.in = in;
         jp = new JsonFactory().createJsonParser(in);
         jp.setCodec(new ObjectMapper());
@@ -153,6 +153,8 @@ public class JsonFileImportReader extends AbstractJsonReader implements IImportR
             }
             
             dispatcher.close();
+        } catch (Throwable t) {
+            dispatcher.cancel();
         } finally {
             IOUtils.closeQuietly(in);
         }

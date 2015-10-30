@@ -30,6 +30,8 @@ import io.apiman.manager.api.beans.audit.data.EntityUpdatedData;
 import io.apiman.manager.api.beans.audit.data.MembershipData;
 import io.apiman.manager.api.beans.contracts.ContractBean;
 import io.apiman.manager.api.beans.contracts.NewContractBean;
+import io.apiman.manager.api.beans.download.DownloadBean;
+import io.apiman.manager.api.beans.download.DownloadType;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
 import io.apiman.manager.api.beans.idm.GrantRolesBean;
 import io.apiman.manager.api.beans.idm.PermissionType;
@@ -92,6 +94,7 @@ import io.apiman.manager.api.beans.summary.ServiceVersionEndpointSummaryBean;
 import io.apiman.manager.api.beans.summary.ServiceVersionSummaryBean;
 import io.apiman.manager.api.core.IApiKeyGenerator;
 import io.apiman.manager.api.core.IApplicationValidator;
+import io.apiman.manager.api.core.IDownloadManager;
 import io.apiman.manager.api.core.IMetricsAccessor;
 import io.apiman.manager.api.core.IServiceValidator;
 import io.apiman.manager.api.core.IStorage;
@@ -202,6 +205,8 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     @Inject IApplicationValidator applicationValidator;
     @Inject IServiceValidator serviceValidator;
     @Inject IApiKeyGenerator apiKeyGenerator;
+    
+    @Inject IDownloadManager downloadManager;
 
     @Inject IUserResource users;
     @Inject IRoleResource roles;
@@ -944,36 +949,82 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw new SystemErrorException(e);
         }
     }
-
+    
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getApiRegistryJSON(java.lang.String, java.lang.String, java.lang.String)
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getApiRegistryJSON(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
-    public ApiRegistryBean getApiRegistryJSON(String organizationId, String applicationId, String version)
-            throws ApplicationNotFoundException, NotAuthorizedException {
-        return getApiRegistry(organizationId, applicationId, version);
+    public Response getApiRegistryJSON(String organizationId, String applicationId, String version,
+            String download) throws ApplicationNotFoundException, NotAuthorizedException {
+        boolean hasPermission = securityContext.hasPermission(PermissionType.appView, organizationId);
+        if ("true".equals(download)) { //$NON-NLS-1$
+            try {
+                String path = String.format("%s/%s/%s/%s", organizationId, applicationId, version, (hasPermission ? '+' : '-' )); //$NON-NLS-1$
+                DownloadBean dbean = downloadManager.createDownload(DownloadType.apiRegistryJson, path);
+                return Response.ok(dbean, MediaType.APPLICATION_JSON).build();
+            } catch (StorageException e) {
+                throw new SystemErrorException(e);
+            }
+        } else {
+            return getApiRegistryJSON(organizationId, applicationId, version, hasPermission);
+        }
     }
-
+    
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getApiRegistryXML(java.lang.String, java.lang.String, java.lang.String)
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getApiRegistryJSON(java.lang.String, java.lang.String, java.lang.String, boolean)
      */
     @Override
-    public ApiRegistryBean getApiRegistryXML(String organizationId, String applicationId, String version)
-            throws ApplicationNotFoundException, NotAuthorizedException {
-        return getApiRegistry(organizationId, applicationId, version);
+    public Response getApiRegistryJSON(String organizationId, String applicationId, String version,
+            boolean hasPermission) throws ApplicationNotFoundException, NotAuthorizedException {
+        ApiRegistryBean apiRegistry = getApiRegistry(organizationId, applicationId, version, hasPermission);
+        return Response.ok(apiRegistry, MediaType.APPLICATION_JSON)
+                .header("Content-Disposition", "attachment; filename=api-registry.json") //$NON-NLS-1$ //$NON-NLS-2$
+                .build();
     }
-
+    
+    /**
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getApiRegistryXML(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public Response getApiRegistryXML(String organizationId, String applicationId, String version,
+            String download) throws ApplicationNotFoundException, NotAuthorizedException {
+        boolean hasPermission = securityContext.hasPermission(PermissionType.appView, organizationId);
+        if ("true".equals(download)) { //$NON-NLS-1$
+            try {
+                String path = String.format("%s/%s/%s/%s", organizationId, applicationId, version, (hasPermission ? '+' : '-' )); //$NON-NLS-1$
+                DownloadBean dbean = downloadManager.createDownload(DownloadType.apiRegistryXml, path);
+                return Response.ok(dbean, MediaType.APPLICATION_JSON).build();
+            } catch (StorageException e) {
+                throw new SystemErrorException(e);
+            }
+        } else {
+            return getApiRegistryXML(organizationId, applicationId, version, hasPermission);
+        }
+    }
+    
+    /**
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getApiRegistryXML(java.lang.String, java.lang.String, java.lang.String, boolean)
+     */
+    @Override
+    public Response getApiRegistryXML(String organizationId, String applicationId, String version,
+            boolean hasPermission) throws ApplicationNotFoundException, NotAuthorizedException {
+        ApiRegistryBean apiRegistry = getApiRegistry(organizationId, applicationId, version, hasPermission);
+        return Response.ok(apiRegistry, MediaType.APPLICATION_XML)
+                .header("Content-Disposition", "attachment; filename=api-registry.xml") //$NON-NLS-1$ //$NON-NLS-2$
+                .build();
+    }
+    
     /**
      * Gets the API registry.
      * @param organizationId
      * @param applicationId
      * @param version
+     * @param hasPermission
      * @throws ApplicationNotFoundException
      * @throws NotAuthorizedException
      */
-    protected ApiRegistryBean getApiRegistry(String organizationId, String applicationId, String version)
-            throws ApplicationNotFoundException, NotAuthorizedException {
-        boolean hasPermission = securityContext.hasPermission(PermissionType.appView, organizationId);
+    protected ApiRegistryBean getApiRegistry(String organizationId, String applicationId, String version,
+            boolean hasPermission) throws ApplicationNotFoundException, NotAuthorizedException {
         // Try to get the application first - will throw a ApplicationNotFoundException if not found.
         getAppVersion(organizationId, applicationId, version);
 

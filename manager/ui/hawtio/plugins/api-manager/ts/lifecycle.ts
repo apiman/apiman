@@ -6,6 +6,7 @@ module ApimanPageLifecycle {
         "page.title.admin-plugins": "apiman - Admin - Plugins",
         "page.title.admin-roles": "apiman - Admin - Roles",
         "page.title.admin-policyDefs": "apiman - Admin - Policy Definitions",
+        "page.title.admin-export": "apiman - Admin - Export/Import",
         "page.title.app-activity": "apiman - {0} (Activity)",
         "page.title.app-apis": "apiman - {0} (APIs)",
         "page.title.app-contracts": "apiman - {0} (Contracts)",

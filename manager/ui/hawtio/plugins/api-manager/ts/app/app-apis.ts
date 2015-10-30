@@ -3,16 +3,14 @@
 module Apiman {
 
     export var AppApisController = _module.controller("Apiman.AppApisController",
-        ['$q', '$scope', '$location', 'PageLifecycle', 'AppEntityLoader', 'Logger', 'OrgSvcs', '$rootScope', '$compile', '$timeout', '$routeParams', 'Configuration',
-        ($q, $scope, $location, PageLifecycle, AppEntityLoader, Logger, OrgSvcs, $rootScope, $compile, $timeout, $routeParams, Configuration) => {
+        ['$q', '$scope', '$location', 'PageLifecycle', 'AppEntityLoader', 'Logger', 'OrgSvcs', '$rootScope', '$compile', '$timeout', '$routeParams', 'Configuration', 'ApiRegistrySvcs', 'DownloadSvcs', '$window',
+        ($q, $scope, $location, PageLifecycle, AppEntityLoader, Logger, OrgSvcs, $rootScope, $compile, $timeout, $routeParams, Configuration, ApiRegistrySvcs, DownloadSvcs, $window) => {
             var params = $routeParams;
 
             $scope.organizationId = params.org;
             $scope.tab = 'apis';
             $scope.version = params.version;
             $scope.showMetrics = Configuration.ui.metrics;
-            $scope.downloadAsJson = 'proxies/apiman/organizations/' + params.org + '/applications/' + params.app + '/versions/' + params.version + '/apiregistry/json';
-            $scope.downloadAsXml = 'proxies/apiman/organizations/' + params.org + '/applications/' + params.app + '/versions/' + params.version + '/apiregistry/xml';
 
             $scope.toggle = function(api) {
                 api.expanded = !api.expanded;
@@ -33,6 +31,30 @@ module Apiman {
                 $timeout(function() {
                     $('#apiModal')['modal']({'keyboard': true, 'backdrop': 'static'});
                 }, 50);
+            };
+
+            $scope.doExportAsJson = function() {
+                $scope.exportAsJsonButton.state = 'in-progress';
+            	Logger.info('Starting download of api registry (json).');
+            	ApiRegistrySvcs.exportApiRegistryAsJson(params.org, params.app, params.version, function(download) {
+            		Logger.info('Download: {0}', download);
+            		var downloadLink = DownloadSvcs.getDownloadLink(download.id);
+            		Logger.info('Downloading api registry from: {0}', downloadLink);
+            		$window.open(downloadLink, "_self");
+                    $scope.exportAsJsonButton.state = 'complete';
+            	}, PageLifecycle.handleError);
+            };
+
+            $scope.doExportAsXml = function() {
+                $scope.exportAsXmlButton.state = 'in-progress';
+            	Logger.info('Starting download of api registry (xml).');
+            	ApiRegistrySvcs.exportApiRegistryAsXml(params.org, params.app, params.version, function(download) {
+            		Logger.info('Download: {0}', download);
+            		var downloadLink = DownloadSvcs.getDownloadLink(download.id);
+            		Logger.info('Downloading api registry from: {0}', downloadLink);
+            		$window.open(downloadLink, "_self");
+                    $scope.exportAsXmlButton.state = 'complete';
+            	}, PageLifecycle.handleError);
             };
             
             var pageData = AppEntityLoader.getCommonData($scope, $location);
