@@ -7,6 +7,7 @@ module Apiman {
         'ngRoute',
         'ui.sortable',
         'xeditable',
+        'ngFileUpload',
 
         'ApimanServices',
         'ApimanLogger',

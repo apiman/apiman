@@ -12,11 +12,6 @@
       "from": "angular-clipboard@1.1.1",
       "resolved": "https://registry.npmjs.org/angular-clipboard/-/angular-clipboard-1.1.1.tgz"
     },
-    "angular-file-upload": {
-      "version": "2.1.4",
-      "from": "angular-file-upload@2.1.4",
-      "resolved": "https://registry.npmjs.org/angular-file-upload/-/angular-file-upload-2.1.4.tgz"
-    },
     "angular-resource": {
       "version": "1.3.0",
       "from": "angular-resource@1.3.0",
@@ -1127,6 +1122,11 @@
       "version": "3.10.1",
       "from": "lodash@3.10.1",
       "resolved": "https://registry.npmjs.org/lodash/-/lodash-3.10.1.tgz"
+    },
+    "ng-file-upload": {
+      "version": "9.1.1",
+      "from": "ng-file-upload@9.1.1",
+      "resolved": "https://registry.npmjs.org/ng-file-upload/-/ng-file-upload-9.1.1.tgz"
     },
     "ng-sortable": {
       "version": "1.2.2",

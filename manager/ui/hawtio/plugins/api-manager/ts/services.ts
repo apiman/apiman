@@ -194,8 +194,8 @@ module ApimanServices {
             }
         }]);
 
-    export var SystemSvcs = _module.factory('SystemSvcs', ['$resource', 'Configuration',
-        function($resource, Configuration) {
+    export var SystemSvcs = _module.factory('SystemSvcs', ['$resource', 'Configuration', 'Logger', 'Upload',
+        function($resource, Configuration, Logger, Upload) {
             return {
                 getStatus: function(handler, errorHandler) {
                     var endpoint = formatEndpoint(Configuration.api.endpoint + '/system/status', {});
@@ -204,6 +204,19 @@ module ApimanServices {
                 exportAsJson: function(handler, errorHandler) {
                     var endpoint = formatEndpoint(Configuration.api.endpoint + '/system/export?download=true', {});
                     $resource(endpoint).get({}, handler, errorHandler);
+                },
+                importJson: function(file, progressHandler, handler, errorHandler) {
+	                var endpoint = formatEndpoint(Configuration.api.endpoint + '/system/import', {});
+	                file.upload = Upload.http({
+	                    url: endpoint,
+	                    method: 'POST',
+	                    headers: {
+	                      'Content-Type': 'application/json',
+	                    },
+	                    data: file
+	                  });
+                  file.upload.then(handler, errorHandler);
+                  file.upload.progress(progressHandler);
                 }
             }
         }]);

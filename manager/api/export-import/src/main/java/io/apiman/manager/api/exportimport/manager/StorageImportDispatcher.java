@@ -149,7 +149,12 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
     public void user(UserBean user) {
         try {
             logger.info(Messages.i18n.format("StorageImportDispatcher.ImportingUser") + user); //$NON-NLS-1$
-            storage.createUser(user);
+            UserBean userBean = storage.getUser(user.getUsername());
+            if (userBean == null) {
+                storage.createUser(user);
+            } else {
+                storage.updateUser(user);
+            }
         } catch (StorageException e) {
             error(e);
         }
