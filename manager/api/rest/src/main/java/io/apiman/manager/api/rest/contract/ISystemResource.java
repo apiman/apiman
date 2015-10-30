@@ -19,10 +19,14 @@ package io.apiman.manager.api.rest.contract;
 import io.apiman.manager.api.beans.system.SystemStatusBean;
 import io.swagger.annotations.Api;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  * A simple System API.
@@ -45,5 +49,28 @@ public interface ISystemResource {
     @Path("status")
     @Produces(MediaType.APPLICATION_JSON)
     public SystemStatusBean getStatus();
-
+    
+    /**
+     * Use this endpoint to export data from the API Manager to a file.  All data
+     * in the API Manager, including global/admin information, will be exported.
+     * The resulting file should be suitable for importing into some other instance
+     * of the apiman API Manager.  This is useful for upgrades, migrations between
+     * environments, and backups.
+     * @summary Export Data
+     * @statuscode 200 On successful export
+     * @return A full export of all API Manager data
+     */
+    @GET
+    @Path("export")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response exportData(@QueryParam("download") String download);
+    // "Internal" method - called by the download resource.
+    public Response exportData();
+    
+    @POST
+    @Path("import")
+    @Produces(MediaType.TEXT_PLAIN)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response importData();
+    
 }

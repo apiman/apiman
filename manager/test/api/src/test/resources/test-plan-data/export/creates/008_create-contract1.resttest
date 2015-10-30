@@ -1,0 +1,65 @@
+POST /organizations/Organization1/applications/Application1/versions/1.0/contracts admin/admin
+Content-Type: application/json
+
+{
+  "serviceOrgId" : "Organization1",
+  "serviceId" : "Service1",
+  "serviceVersion" : "1.0",
+  "planId" : "Plan1"
+}
+----
+200
+Content-Type: application/json
+
+{
+  "application" : {
+    "application" : {
+      "organization" : {
+        "id" : "Organization1",
+        "name" : "Organization 1"
+      },
+      "id" : "Application1",
+      "name" : "Application 1",
+      "description" : "This is the description of Application 1.",
+      "createdBy" : "admin"
+    },
+    "status" : "Ready",
+    "version" : "1.0",
+    "createdBy" : "admin"
+  },
+  
+  "service":{
+    "service" : {
+      "organization" : {
+        "id" : "Organization1",
+        "name" : "Organization 1"
+      },
+      "id" : "Service1",
+      "name" : "Service 1",
+      "description" : "This is the description of Service 1.",
+      "createdBy" : "admin"
+    },
+    "status" : "Published",
+    "endpoint" : "http://localhost:8080/ping",
+    "endpointType" : "rest",
+    "plans" : [{"planId" : "Plan1","version" : "1.0"}],
+    "version" : "1.0",
+    "createdBy" : "admin"
+  },
+  
+  "plan" : {
+    "plan" : {
+      "organization" : {
+        "id" : "Organization1",
+        "name" : "Organization 1"
+      },
+      "id" : "Plan1",
+      "name" : "Plan 1",
+      "description" : "This is the description of Plan 1.",
+      "createdBy" : "admin"
+    },
+    "status" : "Locked",
+    "version" : "1.0",
+    "createdBy" : "admin"
+  }
+}

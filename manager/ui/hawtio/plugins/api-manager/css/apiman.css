@@ -177,7 +177,7 @@ textarea.apiman-form-data {
   background-color: black;
 }
 
-.alert {
+.alert.no-icon {
   padding-left: 10px;
 }
 
@@ -1597,4 +1597,13 @@ table tr.apiman_deleting {
 }
 .apiman-import-wizard-services tr.error {
   color: #C00;
+}
+
+.progress-description {
+  margin-bottom: 0px;
+}
+
+.progress-label-top-right .progress-bar span {
+  top: -20px;
+  font-size: 13px;
 }

@@ -3,4 +3,5 @@
            <li ng-class="{ true: 'active' } [tab == 'policyDefs']"><a data-field="toPolicyDefs" apiman-i18n-key="admin-nav.policy-definitions" href="{{ pluginName }}/admin/policyDefs">Policy Definitions</a></li>
            <li ng-class="{ true: 'active' } [tab == 'gateways']"><a data-field="toGateways" apiman-i18n-key="admin-nav.gateways" href="{{ pluginName }}/admin/gateways">Gateways</a></li>
            <li ng-class="{ true: 'active' } [tab == 'plugins']"><a data-field="toPlugins" apiman-i18n-key="admin-nav.plugins" href="{{ pluginName }}/admin/plugins">Plugins</a></li>
+           <li ng-class="{ true: 'active' } [tab == 'export']"><a apiman-i18n-key="admin-nav.export" href="{{ pluginName }}/admin/export">Export/Import</a></li>
          </ul>

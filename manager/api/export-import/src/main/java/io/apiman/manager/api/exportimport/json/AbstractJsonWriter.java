@@ -126,6 +126,7 @@ public abstract class AbstractJsonWriter<T extends Enum<T>> {
         debug("POJO: " + pojo.getClass().getSimpleName());
         try {
             jsonGenerator().writeObject(pojo);
+            jsonGenerator().flush();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -136,6 +137,7 @@ public abstract class AbstractJsonWriter<T extends Enum<T>> {
         try {
             jsonGenerator().writeFieldName(type.name());
             jsonGenerator().writeObject(pojo);
+            jsonGenerator().flush();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

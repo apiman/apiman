@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testPlan xmlns="urn:io.apiman.test:2014:02:testPlan">
+
+  <testGroup name="Importing">
+    <test name="Import Data">test-plan-data/import/001_import.resttest</test>
+  </testGroup>
+
+</testPlan>

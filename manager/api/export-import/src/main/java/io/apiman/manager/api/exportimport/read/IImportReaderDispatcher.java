@@ -85,4 +85,7 @@ public interface IImportReaderDispatcher {
     
     // Called when the import is complete
     void close();
+    
+    // Called to cancel the import
+    void cancel();
 }

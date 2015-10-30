@@ -19,6 +19,7 @@ import io.apiman.manager.api.beans.apps.ApplicationBean;
 import io.apiman.manager.api.beans.apps.ApplicationVersionBean;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
 import io.apiman.manager.api.beans.contracts.ContractBean;
+import io.apiman.manager.api.beans.download.DownloadBean;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
 import io.apiman.manager.api.beans.idm.RoleBean;
 import io.apiman.manager.api.beans.idm.RoleMembershipBean;
@@ -70,6 +71,7 @@ public interface IStorage {
     public void createPlugin(PluginBean plugin) throws StorageException;
     public void createPolicyDefinition(PolicyDefinitionBean policyDef) throws StorageException;
     public void createAuditEntry(AuditEntryBean entry) throws StorageException;
+    public void createDownload(DownloadBean download) throws StorageException;
 
     /*
      * Various update methods.  These are called by the REST layer to update stuff.
@@ -105,6 +107,7 @@ public interface IStorage {
     public void deleteGateway(GatewayBean gateway) throws StorageException;
     public void deletePlugin(PluginBean plugin) throws StorageException;
     public void deletePolicyDefinition(PolicyDefinitionBean policyDef) throws StorageException;
+    public void deleteDownload(DownloadBean download) throws StorageException;
 
     /*
      * Various get methods.  These are called by the REST layer to get stuff.
@@ -124,6 +127,7 @@ public interface IStorage {
     public PluginBean getPlugin(long id) throws StorageException;
     public PluginBean getPlugin(String groupId, String artifactId) throws StorageException;
     public PolicyDefinitionBean getPolicyDefinition(String id) throws StorageException;
+    public DownloadBean getDownload(String id) throws StorageException;
 
     /*
      * Anything that doesn't fall into the above categories!

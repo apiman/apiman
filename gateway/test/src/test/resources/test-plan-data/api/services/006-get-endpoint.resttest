@@ -4,5 +4,5 @@ GET /services/GatewayApiTest/echo/2.0/endpoint admin/admin
 Content-Type: application/json
 
 {
-  "endpoint":"http://localhost:8080/gateway/GatewayApiTest/echo/2.0"
+  "endpoint":"http://localhost:6060/gateway/GatewayApiTest/echo/2.0"
 }
