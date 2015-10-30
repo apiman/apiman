@@ -2012,28 +2012,23 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     @Override
     public Iterator<ContractBean> getAllContracts(String organizationId, String applicationId, String version)
             throws StorageException {
-        try {
-            EntityManager entityManager = getActiveEntityManager();
-            @SuppressWarnings("nls")
-            String jpql =
-                    "SELECT c from ContractBean c " +
-                    "  JOIN c.application appv " +
-                    "  JOIN appv.application app " +
-                    "  JOIN app.organization aorg" +
-                    " WHERE app.id = :applicationId " +
-                    "   AND aorg.id = :orgId " +
-                    "   AND appv.version = :version " +
-                    " ORDER BY aorg.id, app.id ASC";
-            Query query = entityManager.createQuery(jpql);
-            query.setParameter("orgId", organizationId); //$NON-NLS-1$
-            query.setParameter("applicationId", applicationId); //$NON-NLS-1$
-            query.setParameter("version", version); //$NON-NLS-1$
-            List<ContractBean> contracts = query.getResultList();
-            return contracts.iterator();
-        } catch (Throwable t) {
-            logger.error(t.getMessage(), t);
-            throw new StorageException(t);
-        }
+        EntityManager entityManager = getActiveEntityManager();
+        @SuppressWarnings("nls")
+        String jpql =
+                "SELECT c from ContractBean c " +
+                "  JOIN c.application appv " +
+                "  JOIN appv.application app " +
+                "  JOIN app.organization aorg" +
+                " WHERE app.id = :applicationId " +
+                "   AND aorg.id = :orgId " +
+                "   AND appv.version = :version " +
+                " ORDER BY aorg.id, app.id ASC";
+        Query query = entityManager.createQuery(jpql);
+        query.setParameter("orgId", organizationId); //$NON-NLS-1$
+        query.setParameter("applicationId", applicationId); //$NON-NLS-1$
+        query.setParameter("version", version); //$NON-NLS-1$
+        
+        return getAll(ContractBean.class, query);
     }
     
     /**
@@ -2043,27 +2038,20 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     @Override
     public Iterator<PolicyBean> getAllPolicies(String organizationId, String entityId, String version,
             PolicyType type) throws StorageException {
-        try {
-            EntityManager entityManager = getActiveEntityManager();
-            String jpql =
-                      "SELECT p from PolicyBean p "
-                    + " WHERE p.organizationId = :orgId "
-                    + "   AND p.entityId = :entityId "
-                    + "   AND p.entityVersion = :entityVersion "
-                    + "   AND p.type = :type"
-                    + " ORDER BY p.orderIndex ASC";
-            Query query = entityManager.createQuery(jpql);
-            query.setParameter("orgId", organizationId);
-            query.setParameter("entityId", entityId);
-            query.setParameter("entityVersion", version);
-            query.setParameter("type", type);
-
-            List<PolicyBean> policyBeans = query.getResultList();
-            return policyBeans.iterator();
-        } catch (Throwable t) {
-            logger.error(t.getMessage(), t);
-            throw new StorageException(t);
-        }
+        EntityManager entityManager = getActiveEntityManager();
+        String jpql =
+                  "SELECT p from PolicyBean p "
+                + " WHERE p.organizationId = :orgId "
+                + "   AND p.entityId = :entityId "
+                + "   AND p.entityVersion = :entityVersion "
+                + "   AND p.type = :type"
+                + " ORDER BY p.orderIndex ASC";
+        Query query = entityManager.createQuery(jpql);
+        query.setParameter("orgId", organizationId);
+        query.setParameter("entityId", entityId);
+        query.setParameter("entityVersion", version);
+        query.setParameter("type", type);
+        return getAll(PolicyBean.class, query);
     }
     
     /**

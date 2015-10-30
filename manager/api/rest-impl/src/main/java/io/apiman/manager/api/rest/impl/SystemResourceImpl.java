@@ -178,15 +178,14 @@ public class SystemResourceImpl implements ISystemResource {
         StreamingOutput stream = new StreamingOutput() {
             @Override
             public void write(final OutputStream output) throws IOException, WebApplicationException {
-                InputStream importData;
+                InputStream importData = null;
                 IImportReader reader;
                 try {
                     importData = new FileInputStream(importFile);
-                    reader = new JsonImportReader(importData);
+                    reader = new JsonImportReader(importLogger, importData);
                 } catch (IOException e) {
+                    IOUtils.closeQuietly(importData);
                     throw new SystemErrorException(e);
-                } finally {
-                    IOUtils.closeQuietly(data);
                 }
                 
                 final PrintWriter writer = new PrintWriter(output);

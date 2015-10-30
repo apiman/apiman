@@ -32,6 +32,7 @@ import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
 import io.apiman.manager.api.beans.services.ServiceBean;
 import io.apiman.manager.api.beans.services.ServiceVersionBean;
 import io.apiman.manager.api.core.exceptions.StorageException;
+import io.apiman.manager.api.core.logging.IApimanLogger;
 import io.apiman.manager.api.exportimport.EntityHandler;
 import io.apiman.manager.api.exportimport.GlobalElementsEnum;
 import io.apiman.manager.api.exportimport.OrgElementsEnum;
@@ -57,6 +58,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 @SuppressWarnings("nls")
 public class JsonImportReader extends AbstractJsonReader implements IImportReader {
     
+    private IApimanLogger logger;
     private IImportReaderDispatcher dispatcher;
     private JsonParser jp;
     private JsonToken current;
@@ -64,11 +66,13 @@ public class JsonImportReader extends AbstractJsonReader implements IImportReade
     
     /**
      * Constructor.
+     * @param logger 
      * @param in
      * @throws JsonParseException
      * @throws IOException
      */
-    public JsonImportReader(InputStream in) throws JsonParseException, IOException {
+    public JsonImportReader(IApimanLogger logger, InputStream in) throws JsonParseException, IOException {
+        this.logger = logger;
         this.in = in;
         jp = new JsonFactory().createJsonParser(in);
         jp.setCodec(new ObjectMapper());
@@ -154,6 +158,7 @@ public class JsonImportReader extends AbstractJsonReader implements IImportReade
             
             dispatcher.close();
         } catch (Throwable t) {
+            logger.error(t);
             dispatcher.cancel();
         } finally {
             IOUtils.closeQuietly(in);

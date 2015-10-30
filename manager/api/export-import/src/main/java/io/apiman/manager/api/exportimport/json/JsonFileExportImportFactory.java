@@ -70,7 +70,7 @@ public class JsonFileExportImportFactory implements IExportImportFactory {
 
         try {
             InputStream is = new FileInputStream(inFile);
-            return new JsonImportReader(is);
+            return new JsonImportReader(logger, is);
         } catch (IOException e){
             throw new RuntimeException(e);
         }
