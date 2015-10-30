@@ -605,7 +605,7 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
      */
     private void importContracts() throws StorageException {
         for (ContractBean contract : contracts) {
-            logger.info(Messages.i18n.format("StorageImportDispatcher.ImportingAppContract") + contract); //$NON-NLS-1$
+            logger.info(Messages.i18n.format("StorageImportDispatcher.ImportingAppContract") + contract.getApikey()); //$NON-NLS-1$
             String appId = contract.getApplication().getApplication().getId();
             String appOrganizationId = contract.getApplication().getApplication().getOrganization().getId();
             String appVersion = contract.getApplication().getVersion();
