@@ -372,32 +372,33 @@ Content-Type: text/plain
 INFO: ----------------------------
 INFO: Starting apiman data import.
 INFO: Importing data from apiman version: 1.2.0-SNAPSHOT
-INFO: Importing a user: UserBean [username=importeduser, fullName=Imported User, email=iuser@example.org, joinedOn=null, admin=false]
-INFO: Importing a gateway: GatewayBean [id=TheGateway, name=The Gateway, description=This is the gateway., createdBy=admin, createdOn=Tue Oct 27 15:13:25 EDT 2015, modifiedBy=admin, modifiedOn=Tue Oct 27 15:13:25 EDT 2015, type=REST, configuration=***]
-INFO: Importing an organization: OrganizationBean [id=Organization1, name=Organization 1, description=null, createdBy=admin, createdOn=Tue Oct 27 15:13:26 EDT 2015, modifiedBy=admin, modifiedOn=Tue Oct 27 15:13:26 EDT 2015]
-INFO:   Importing a plan: PlanBean [organization=null, id=Plan1, name=Plan 1, description=This is the description of Plan 1., createdBy=admin, createdOn=Tue Oct 27 15:13:26 EDT 2015]
-INFO:     Importing a plan version: PlanVersionBean [id=3, plan=null, status=Locked, version=1.0, createdBy=admin, createdOn=Tue Oct 27 15:13:26 EDT 2015, modifiedBy=admin, modifiedOn=Tue Oct 27 15:13:26 EDT 2015, lockedOn=Tue Oct 27 15:13:26 EDT 2015]
-INFO:     Importing a service: ServiceBean [organization=null, id=Service1, name=Service 1, description=This is the description of Service 1., createdBy=admin, createdOn=Tue Oct 27 15:13:26 EDT 2015]
-INFO:     Importing a service version: ServiceVersionBean [id=10, service=null, status=Published, endpoint=http://localhost:8080/ping, endpointType=rest, gateways=[ServiceGatewayBean [gatewayId=TheGateway]], publicService=false, plans=[Plan1(1.0)], version=1.0, createdBy=admin, createdOn=Tue Oct 27 15:13:27 EDT 2015, modifiedBy=admin, modifiedOn=Tue Oct 27 15:13:27 EDT 2015, publishedOn=Tue Oct 27 15:13:27 EDT 2015, retiredOn=null, definitionType=null]
-INFO:   Importing an application: ApplicationBean [organization=null, id=Application1, name=Application 1, description=This is the description of Application 1., createdBy=admin, createdOn=Tue Oct 27 15:13:26 EDT 2015]
-INFO:     Importing an application version: ApplicationVersionBean [id=7, application=null, status=Registered, version=1.0, createdBy=admin, createdOn=Tue Oct 27 15:13:26 EDT 2015, modifiedBy=admin, modifiedOn=Tue Oct 27 15:13:27 EDT 2015, publishedOn=Tue Oct 27 15:13:27 EDT 2015, retiredOn=null]
-INFO:   Importing an audit entry: AuditEntryBean [id=1, who=admin, organizationId=Organization1, entityType=Organization, entityId=null, entityVersion=null, createdOn=Tue Oct 27 15:13:26 EDT 2015, what=Create, data=null]
-INFO:   Importing an audit entry: AuditEntryBean [id=2, who=admin, organizationId=Organization1, entityType=Plan, entityId=Plan1, entityVersion=null, createdOn=Tue Oct 27 15:13:26 EDT 2015, what=Create, data=null]
-INFO:   Importing an audit entry: AuditEntryBean [id=4, who=admin, organizationId=Organization1, entityType=Plan, entityId=Plan1, entityVersion=1.0, createdOn=Tue Oct 27 15:13:26 EDT 2015, what=Create, data=null]
-INFO:   Importing an audit entry: AuditEntryBean [id=5, who=admin, organizationId=Organization1, entityType=Plan, entityId=Plan1, entityVersion=1.0, createdOn=Tue Oct 27 15:13:26 EDT 2015, what=Lock, data=null]
-INFO:   Importing an audit entry: AuditEntryBean [id=6, who=admin, organizationId=Organization1, entityType=Application, entityId=Application1, entityVersion=null, createdOn=Tue Oct 27 15:13:26 EDT 2015, what=Create, data=null]
-INFO:   Importing an audit entry: AuditEntryBean [id=8, who=admin, organizationId=Organization1, entityType=Application, entityId=Application1, entityVersion=1.0, createdOn=Tue Oct 27 15:13:26 EDT 2015, what=Create, data=null]
-INFO:   Importing an audit entry: AuditEntryBean [id=9, who=admin, organizationId=Organization1, entityType=Service, entityId=Service1, entityVersion=null, createdOn=Tue Oct 27 15:13:27 EDT 2015, what=Create, data=null]
-INFO:   Importing an audit entry: AuditEntryBean [id=11, who=admin, organizationId=Organization1, entityType=Service, entityId=Service1, entityVersion=1.0, createdOn=Tue Oct 27 15:13:27 EDT 2015, what=Create, data=null]
-INFO:   Importing an audit entry: AuditEntryBean [id=12, who=admin, organizationId=Organization1, entityType=Service, entityId=Service1, entityVersion=1.0, createdOn=Tue Oct 27 15:13:27 EDT 2015, what=Update, data={"changes":[{"name":"plans","before":"","after":"Plan1:1.0"},{"name":"endpoint","before":null,"after":"http://localhost:8080/ping"},{"name":"endpointType","before":null,"after":"rest"}]}]
-INFO:   Importing an audit entry: AuditEntryBean [id=13, who=admin, organizationId=Organization1, entityType=Service, entityId=Service1, entityVersion=1.0, createdOn=Tue Oct 27 15:13:27 EDT 2015, what=Publish, data=null]
-INFO:   Importing an audit entry: AuditEntryBean [id=15, who=admin, organizationId=Organization1, entityType=Application, entityId=Application1, entityVersion=1.0, createdOn=Tue Oct 27 15:13:27 EDT 2015, what=CreateContract, data={"appOrgId":"Organization1","appId":"Application1","appVersion":"1.0","serviceOrgId":"Organization1","serviceId":"Service1","serviceVersion":"1.0","planId":"Plan1","planVersion":"1.0"}]
-INFO:   Importing an audit entry: AuditEntryBean [id=16, who=admin, organizationId=Organization1, entityType=Service, entityId=Service1, entityVersion=1.0, createdOn=Tue Oct 27 15:13:27 EDT 2015, what=CreateContract, data={"appOrgId":"Organization1","appId":"Application1","appVersion":"1.0","serviceOrgId":"Organization1","serviceId":"Service1","serviceVersion":"1.0","planId":"Plan1","planVersion":"1.0"}]
-INFO:   Importing an audit entry: AuditEntryBean [id=17, who=admin, organizationId=Organization1, entityType=Application, entityId=Application1, entityVersion=1.0, createdOn=Tue Oct 27 15:13:27 EDT 2015, what=Register, data=null]
-INFO:       Importing an application contract: ContractBean [id=14, application=ApplicationVersionBean [id=null, application=ApplicationBean [organization=OrganizationBean [id=Organization1, name=null, description=null, createdBy=null, createdOn=null, modifiedBy=null, modifiedOn=null], id=Application1, name=null, description=null, createdBy=null, createdOn=null], status=null, version=1.0, createdBy=null, createdOn=null, modifiedBy=null, modifiedOn=null, publishedOn=null, retiredOn=null], service=ServiceVersionBean [id=10, service=ServiceBean [organization=OrganizationBean [id=Organization1, name=Organization 1, description=null, createdBy=admin, createdOn=Tue Oct 27 15:13:26 EDT 2015, modifiedBy=admin, modifiedOn=Tue Oct 27 15:13:26 EDT 2015], id=Service1, name=Service 1, description=This is the description of Service 1., createdBy=admin, createdOn=Tue Oct 27 15:13:26 EDT 2015], status=Published, endpoint=http://localhost:8080/ping, endpointType=rest, gateways=[ServiceGatewayBean [gatewayId=TheGateway]], publicService=false, plans=[Plan1(1.0)], version=1.0, createdBy=admin, createdOn=Tue Oct 27 15:13:27 EDT 2015, modifiedBy=admin, modifiedOn=Tue Oct 27 15:13:27 EDT 2015, publishedOn=Tue Oct 27 15:13:27 EDT 2015, retiredOn=null, definitionType=null], plan=PlanVersionBean [id=3, plan=PlanBean [organization=OrganizationBean [id=Organization1, name=Organization 1, description=null, createdBy=admin, createdOn=Tue Oct 27 15:13:26 EDT 2015, modifiedBy=admin, modifiedOn=Tue Oct 27 15:13:26 EDT 2015], id=Plan1, name=Plan 1, description=This is the description of Plan 1., createdBy=admin, createdOn=Tue Oct 27 15:13:26 EDT 2015], status=Locked, version=1.0, createdBy=admin, createdOn=Tue Oct 27 15:13:26 EDT 2015, modifiedBy=admin, modifiedOn=Tue Oct 27 15:13:26 EDT 2015, lockedOn=Tue Oct 27 15:13:26 EDT 2015], createdBy=admin, createdOn=Tue Oct 27 15:13:27 EDT 2015, apikey=6ec478ca-8ccd-48d0-973e-479f42c68a6c]
-INFO: ** Publishing services to the gateway **
-INFO: Publishing service: Organization1 / Service1 -> 1.0
-INFO: ** Registering applications in the gateway **
-INFO: Registering app: Organization1 / Application1 -> 1.0
+INFO: Importing a user: importeduser
+INFO: Importing a gateway: The Gateway
+INFO: Importing an organization: Organization 1
+INFO:   Importing a plan: Plan 1
+INFO:     Importing a plan version: 1.0
+INFO:     Importing a service: Service 1
+INFO:     Importing a service version: 1.0
+INFO:   Importing an application: Application 1
+INFO:     Importing an application version: 1.0
+INFO:   Importing an audit entry: 1
+INFO:   Importing an audit entry: 2
+INFO:   Importing an audit entry: 4
+INFO:   Importing an audit entry: 5
+INFO:   Importing an audit entry: 6
+INFO:   Importing an audit entry: 8
+INFO:   Importing an audit entry: 9
+INFO:   Importing an audit entry: 11
+INFO:   Importing an audit entry: 12
+INFO:   Importing an audit entry: 13
+INFO:   Importing an audit entry: 15
+INFO:   Importing an audit entry: 16
+INFO:   Importing an audit entry: 17
+INFO: +Importing an application contract: ContractBean [id=14, application=ApplicationVersionBean [id=null, application=ApplicationBean [organization=OrganizationBean [id=Organization1, name=null, description=null, createdBy=null, createdOn=null, modifiedBy=null, modifiedOn=null], id=Application1, name=null, description=null, createdBy=null, createdOn=null], status=null, version=1.0, createdBy=null, createdOn=null, modifiedBy=null, modifiedOn=null, publishedOn=null, retiredOn=null], service=ServiceVersionBean [id=10, service=ServiceBean [organization=OrganizationBean [id=Organization1, name=Organization 1, description=null, createdBy=admin, createdOn=Tue Oct 27 15:13:26 EDT 2015, modifiedBy=admin, modifiedOn=Tue Oct 27 15:13:26 EDT 2015], id=Service1, name=Service 1, description=This is the description of Service 1., createdBy=admin, createdOn=Tue Oct 27 15:13:26 EDT 2015], status=Published, endpoint=http://localhost:8080/ping, endpointType=rest, gateways=[ServiceGatewayBean [gatewayId=TheGateway]], publicService=false, plans=[Plan1(1.0)], version=1.0, createdBy=admin, createdOn=Tue Oct 27 15:13:27 EDT 2015, modifiedBy=admin, modifiedOn=Tue Oct 27 15:13:27 EDT 2015, publishedOn=Tue Oct 27 15:13:27 EDT 2015, retiredOn=null, definitionType=null], plan=PlanVersionBean [id=3, plan=PlanBean [organization=OrganizationBean [id=Organization1, name=Organization 1, description=null, createdBy=admin, createdOn=Tue Oct 27 15:13:26 EDT 2015, modifiedBy=admin, modifiedOn=Tue Oct 27 15:13:26 EDT 2015], id=Plan1, name=Plan 1, description=This is the description of Plan 1., createdBy=admin, createdOn=Tue Oct 27 15:13:26 EDT 2015], status=Locked, version=1.0, createdBy=admin, createdOn=Tue Oct 27 15:13:26 EDT 2015, modifiedBy=admin, modifiedOn=Tue Oct 27 15:13:26 EDT 2015, lockedOn=Tue Oct 27 15:13:26 EDT 2015], createdBy=admin, createdOn=Tue Oct 27 15:13:27 EDT 2015, apikey=6ec478ca-8ccd-48d0-973e-479f42c68a6c]
+INFO: Publishing services to the gateway.
+INFO:  Publishing service: Organization1 / Service1 -> 1.0
+INFO: Registering applications in the gateway.
+INFO:  Registering app: Organization1 / Application1 -> 1.0
+INFO: -----------------------------------
 INFO: Data import completed successfully!
 INFO: -----------------------------------
