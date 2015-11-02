@@ -2222,6 +2222,13 @@ public class EsStorage implements IStorage, IStorageQuery {
                 return new ArrayList<PolicyBean>().iterator();
             }
             List<PolicyBean> policyBeans = policies.getPolicies();
+            // TODO resolve the policy def, since we know we'll only have the definition ID here
+            for (PolicyBean policyBean : policyBeans) {
+                PolicyDefinitionBean def = getPolicyDefinition(policyBean.getDefinition().getId());
+                if (def != null) {
+                    policyBean.setDefinition(def);
+                }
+            }
             return policyBeans.iterator();
         } catch (Exception e) {
             throw new StorageException(e);
