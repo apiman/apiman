@@ -144,6 +144,9 @@ module Apiman {
             });
 
             $scope.reset = function() {
+                if (!$scope.version.endpointType) {
+                  $scope.version.endpointType = 'rest';
+                }
                 $scope.apiSecurity = toApiSecurity($scope.version);
                 $scope.updatedService.endpoint = $scope.version.endpoint;
                 $scope.updatedService.endpointType = $scope.version.endpointType;
