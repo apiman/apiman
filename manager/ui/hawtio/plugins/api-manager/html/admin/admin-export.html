@@ -43,8 +43,8 @@
                   <h3 class="panel-title" apiman-i18n-key="export-data">Export Data</h3>
                 </div>
                 <div class="panel-body">
-                  <button ng-click="doExport()" apiman-action-btn="" data-field="exportButton" class="btn btn-primary" apiman-i18n-key="export-all" placeholder="Exporting..." data-icon="fa-cog">Export All</button>
-                  <div ng-show="exportButton.state == 'in-progress'" style="margin-top: 20px">
+                  <button ng-show="exportStatus != 'downloading'" ng-click="doExport()" apiman-action-btn="" data-field="exportButton" class="btn btn-primary" apiman-i18n-key="export-all" placeholder="Exporting..." data-icon="fa-cog">Export All</button>
+                  <div ng-show="exportButton.state == 'in-progress'" style="margin-top: 20px" ng-show="exportStatus == 'downloading'">
                     <div class="alert alert-info">
                       <span class="pficon pficon-info"></span>
                       <span apiman-i18n-key="admin-export.exporting-info">Once the export has begun, your browser should prompt you to download the exported data file.  Once complete, you will need to refresh this page if you wish to export again.</span>

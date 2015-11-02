@@ -10,6 +10,7 @@ module Apiman {
             };
             
             $scope.importStatus = 'none';
+            $scope.exportStatus = 'none';
             
             $scope.doExport = function() {
               $scope.exportButton.state = 'in-progress';
@@ -18,6 +19,7 @@ module Apiman {
             		Logger.info('Download: {0}', download);
             		var downloadLink = DownloadSvcs.getDownloadLink(download.id);
             		Logger.info('Downloading export data from: {0}', downloadLink);
+                $scope.exportStatus = 'downloading';
             		$window.open(downloadLink, "_self");
             	}, PageLifecycle.handleError);
             };
