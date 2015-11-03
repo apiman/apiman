@@ -1,0 +1,25 @@
+      <div class="modal fade" id="valueModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                <span class="pficon pficon-close"></span>
+              </button>
+              <h4 class="modal-title"><span>{{ title }}</span></h4>
+            </div>
+            <div class="modal-body">
+              <div class="" style="margin-bottom: 15px">{{ message }}</div>
+              <dl>
+                <dt>{{ label }}</dt>
+                <dd>
+                  <input ng-model="value" id="uservalue" class="apiman-form-control form-control entityname" type="text"></input>
+                </dd>
+              </dl>
+            </div>
+            <div class="modal-footer">
+              <button ng-click="onCancel()" data-dismiss="modal" type="button" class="btn btn-default" apiman-i18n-key="cancel">Cancel</button>
+              <button ng-click="onOK()" data-dismiss="modal" type="button" class="btn btn-primary"  apiman-i18n-key="ok">OK</button>
+            </div>
+          </div>
+        </div>
+      </div>

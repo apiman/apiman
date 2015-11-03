@@ -70,14 +70,49 @@ module Apiman {
                 });
             };
             
+            $scope.upgradePlugin = function(plugin) {
+                var initialVersion = plugin.latestVersion;
+                Dialogs.getValue('Confirm Upgrade Plugin', 
+                        'Do you really want to upgrade this plugin?  Any published services already using the plugin will continue to use the old version.  All new policies will use the newly upgraded version.', 
+                        'New Plugin Version',
+                        initialVersion, function(value) 
+                {
+                    var uplugin = {
+                        groupId: plugin.groupId,
+                        artifactId: plugin.artifactId,
+                        classifier: plugin.classifier,
+                        type: plugin.type,
+                        version: value,
+                        upgrade: true
+                    };
+                    
+                    plugin.upgrading = true;
+                    ApimanSvcs.save({ entityType: 'plugins' }, uplugin, function(reply) {
+                        delete plugin.upgrading;
+                        plugin.version = value;
+                        refreshPlugins();
+                    }, PageLifecycle.handleError);
+                }, function() {
+                });
+            }
+            
             var refreshPlugins = function() {
+                angular.forEach($scope.plugins, function(ip) {
+                  delete ip.latestVersion;
+                  ip.hasAvailableVersion = false;
+                  ip.canUpgrade = true;
+                });
                 angular.forEach($scope.availablePlugins, function(plugin) {
                     var ip = getInstalledPlugin(plugin);
                     if (ip) {
                         plugin.isInstalled = true;
                         plugin.installedVersion = ip.version;
                         ip.latestVersion = plugin.version;
-                        ip.needsUpgrade = plugin.version != ip.version;
+                        ip.canUpgrade = plugin.version != ip.version;
+                        ip.hasAvailableVersion = true;
+                    } else {
+                        plugin.isInstalled = false;
+                        delete plugin.installedVersion;
                     }
                 });
             };

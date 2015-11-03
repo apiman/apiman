@@ -72,8 +72,14 @@
                           <td><a href="{{ pluginName }}/admin/plugins/{{ plugin.id }}">{{ plugin.name }}</a></td>
                           <td><span>{{plugin.description}}</span></td>
                           <td nowrap="nowrap"><span>{{plugin.version}}</span></td>
-                          <td nowrap="nowrap">
-                            <a href="#" ng-click="uninstallPlugin(plugin)" apiman-i18n-key="uninstall">Uninstall</a>
+                          <td nowrap="nowrap" valign="middle">
+                            <div ng-show="!plugin.upgrading">
+                              <button class="btn btn-default" ng-click="uninstallPlugin(plugin)" apiman-i18n-key="uninstall" title="Uninstall this plugin."><i class="fa fa-remove fa-fw"></i></button>
+                              <button class="btn btn-default" ng-click="upgradePlugin(plugin)" ng-show="!plugin.hasAvailableVersion || plugin.canUpgrade" apiman-i18n-key="upgrade" title="Upgrade plugin to a newer version."><i class="fa fa-arrow-up fa-fw"></i></button>
+                            </div>
+                            <div ng-show="plugin.upgrading">
+                              <p><span class="spinner spinner-xs spinner-inline"></span><span font-size="12px" apiman-i18n-key="upgrading">Upgrading...</span></p>
+                            </div>
                           </td>
                         </tr>
                       </tbody>

@@ -7,6 +7,38 @@ module ApimanDialogs {
         ['Logger', '$compile', '$rootScope', '$timeout', 'ApimanSvcs', 'OrgSvcs',
         function(Logger, $compile, $rootScope, $timeout, ApimanSvcs, OrgSvcs) {
             return {
+                // Simple data entry dialog
+                ///////////////////////////
+                getValue: function(title, message, label, initialValue, okCallback, cancelCallback) {
+                  var modalScope = $rootScope.$new(true);
+                  
+                  modalScope.onOK = function() {
+                      if (okCallback) { okCallback(modalScope.value); }
+                      cancelCallback = null;
+                  };
+                  
+                  modalScope.onCancel = function() {
+                      if (cancelCallback) { cancelCallback(); }
+                      cancelCallback = null;
+                  };
+                  
+                  modalScope.title = title;
+                  modalScope.message = message;
+                  modalScope.label = label;
+                  modalScope.value = initialValue;
+                  
+                  $('body').append($compile('<apiman-getvalue-modal modal-title="{{ title }}" />')(modalScope));
+
+                  $timeout(function() {
+                      $('#valueModal').on('hidden.bs.modal', function () {
+                          if (cancelCallback) { $rootScope.$apply(cancelCallback); }
+                          cancelCallback = null;
+                      });
+                      
+                      $('#valueModal')['modal']({'keyboard': true, 'backdrop': 'static'});
+                  }, 50);
+
+                },
                 // A standard confirmation dialog
                 /////////////////////////////////
                 confirm: function(title, message, yesCallback, noCallback) {
