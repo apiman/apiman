@@ -60,10 +60,21 @@
                   <h3 class="panel-title" apiman-i18n-key="import-data">Import Data</h3>
                 </div>
                 <div class="panel-body">
+                  <form class="form-inline">
+                    <div ng-show="importStatus == 'none'" class="form-group" style="width: 75%;">
+                      <input style="width: 100%; border: 1px solid #ccc;" ng-model="importFile.name" class="form-control" name="file" required>
+                    </div>
+                    <button ngf-select accept="application/json" class="btn btn-default" ngf-change="selectFile($files)" ngf-multiple="false">Select</button>
+                  </form>
+                  <button ng-disabled="!importFile" ng-click="doImport(importFile)" class="btn btn-primary" apiman-i18n-key="upload-file" style="margin-top: 10px;">Upload File</button>
+
+
+                  <!--
                   <div ng-show="importStatus == 'none'">
                     <input style="width: 75%; border: 1px solid #ccc; float: left" type="file" ngf-select ng-model="importFile" name="file" accept="application/json" required>
                     <button style="float: left; margin-left: 5px" ng-disabled="!importFile" ng-click="doImport(importFile)" class="btn btn-primary" apiman-i18n-key="upload-file">Upload File</button>
                   </div>
+                  -->
 
                   <div style="float: left; width: 100%;" ng-show="importStatus == 'uploading'">
                     <div class="progress-description">
@@ -83,7 +94,7 @@
                       <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
                         <span class="sr-only"></span>
                       </div>
-                    </div>                    
+                    </div>
                   </div>
 
                   <div style="float: left; width: 100%;" ng-show="importStatus == 'imported'">

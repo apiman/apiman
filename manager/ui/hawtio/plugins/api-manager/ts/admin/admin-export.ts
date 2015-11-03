@@ -46,6 +46,12 @@ module Apiman {
                 $scope.importStatus = 'error';
               });
             };
+
+            $scope.selectFile = function(files) {
+                if(files && files.length) {
+                    $scope.importFile = files[0];
+                }
+            };
             
             PageLifecycle.loadPage('AdminExport', pageData, $scope, function() {
                 PageLifecycle.setPageTitle('admin-export');
