@@ -1,5 +1,12 @@
 language: java
 
+cache:
+  - "$HOME/build/apiman/apiman/manager/ui/hawtio/node_modules"
+  - "$HOME/.m2"
+
+before_cache:
+  - "rm -rf $HOME/.m2/repository/io/apiman"
+
 services:
   - elasticsearch
 
