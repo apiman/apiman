@@ -16,6 +16,10 @@
 package io.apiman.manager.api.core;
 
 import io.apiman.manager.api.beans.services.ServiceVersionBean;
+import io.apiman.manager.api.beans.services.ServiceVersionStatusBean;
+import io.apiman.manager.api.beans.summary.PolicySummaryBean;
+
+import java.util.List;
 
 /**
  * Validates the state of services and service versions.
@@ -41,5 +45,14 @@ public interface IServiceValidator {
      * @throws Exception
      */
     boolean isReady(ServiceVersionBean service) throws Exception;
+
+    /**
+     * Returns detailed status information about a service, including precisely
+     * why the service is in the status it's currently in.  For example, this will
+     * answer the question "why can't the service be published?".
+     * @param service
+     * @param policies
+     */
+    ServiceVersionStatusBean getStatus(ServiceVersionBean service, List<PolicySummaryBean> policies);
 
 }

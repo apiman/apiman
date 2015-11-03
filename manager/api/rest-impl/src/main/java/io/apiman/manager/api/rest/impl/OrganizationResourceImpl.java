@@ -77,6 +77,7 @@ import io.apiman.manager.api.beans.services.ServiceGatewayBean;
 import io.apiman.manager.api.beans.services.ServicePlanBean;
 import io.apiman.manager.api.beans.services.ServiceStatus;
 import io.apiman.manager.api.beans.services.ServiceVersionBean;
+import io.apiman.manager.api.beans.services.ServiceVersionStatusBean;
 import io.apiman.manager.api.beans.services.UpdateServiceBean;
 import io.apiman.manager.api.beans.services.UpdateServiceVersionBean;
 import io.apiman.manager.api.beans.summary.ApiEntryBean;
@@ -1592,6 +1593,20 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             storage.rollbackTx();
             throw new SystemErrorException(e);
         }
+    }
+    
+    /**
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getServiceVersionStatus(java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public ServiceVersionStatusBean getServiceVersionStatus(String organizationId, String serviceId,
+            String version) throws ServiceVersionNotFoundException, NotAuthorizedException {
+        if (!securityContext.hasPermission(PermissionType.svcView, organizationId))
+            throw ExceptionFactory.notAuthorizedException();
+
+        ServiceVersionBean versionBean = getServiceVersion(organizationId, serviceId, version);
+        List<PolicySummaryBean> policies = listServicePolicies(organizationId, serviceId, version);
+        return serviceValidator.getStatus(versionBean, policies);
     }
 
     /**

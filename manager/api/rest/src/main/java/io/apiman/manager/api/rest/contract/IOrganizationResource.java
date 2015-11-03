@@ -53,6 +53,7 @@ import io.apiman.manager.api.beans.services.NewServiceDefinitionBean;
 import io.apiman.manager.api.beans.services.NewServiceVersionBean;
 import io.apiman.manager.api.beans.services.ServiceBean;
 import io.apiman.manager.api.beans.services.ServiceVersionBean;
+import io.apiman.manager.api.beans.services.ServiceVersionStatusBean;
 import io.apiman.manager.api.beans.services.UpdateServiceBean;
 import io.apiman.manager.api.beans.services.UpdateServiceVersionBean;
 import io.apiman.manager.api.beans.summary.ApplicationSummaryBean;
@@ -884,6 +885,28 @@ public interface IOrganizationResource {
     @Path("{organizationId}/services/{serviceId}/versions/{version}")
     @Produces(MediaType.APPLICATION_JSON)
     public ServiceVersionBean getServiceVersion(@PathParam("organizationId") String organizationId,
+            @PathParam("serviceId") String serviceId, @PathParam("version") String version)
+            throws ServiceVersionNotFoundException, NotAuthorizedException;
+    
+    /**
+     * Use this endpoint to get detailed status information for a single version of a 
+     * service.  This is useful to figure out why a service is not yet in the 'Ready'
+     * state (which is required before it can be published to a Gateway).
+     * 
+     * @summary Get Service Version Status
+     * @param organizationId The Organization ID.
+     * @param serviceId The Service ID.
+     * @param version The Service version.
+     * @statuscode 200 If the status information is successfully returned.
+     * @statuscode 404 If the Service version does not exist.
+     * @return Status information about a service version.
+     * @throws ServiceVersionNotFoundException when trying to get, update, or delete a service version that does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
+     */
+    @GET
+    @Path("{organizationId}/services/{serviceId}/versions/{version}/status")
+    @Produces(MediaType.APPLICATION_JSON)
+    public ServiceVersionStatusBean getServiceVersionStatus(@PathParam("organizationId") String organizationId,
             @PathParam("serviceId") String serviceId, @PathParam("version") String version)
             throws ServiceVersionNotFoundException, NotAuthorizedException;
 

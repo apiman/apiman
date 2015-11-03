@@ -108,4 +108,15 @@
     <test name="Clone 1.0 --> 2.1 (with fields)">test-plan-data/services/cloning/006_clone-version-2.1-with-fields.resttest</test>
   </testGroup>
 
+  <!-- Service Status -->
+  <testGroup name="Service Status">
+    <test name="Create Service Foo">test-plan-data/services/status/001_create-service-foo.resttest</test>
+    <test name="Create Service Foo, Version 1.0">test-plan-data/services/status/002_create-version-1.0.resttest</test>
+    <test name="Service Status (Created) [1]">test-plan-data/services/status/003_get-foo-status.resttest</test>
+    <test name="Update Service Foo Endpoint">test-plan-data/services/status/004_update-version-1.0.resttest</test>
+    <test name="Service Status (Created) [2]">test-plan-data/services/status/005_get-foo-status-2.resttest</test>
+    <test name="Update Service Foo (Public)">test-plan-data/services/status/006_update-version-1.0-public.resttest</test>
+    <test name="Service Status (Ready) [3]">test-plan-data/services/status/007_get-foo-status-3.resttest</test>
+  </testGroup>
+
 </testPlan>

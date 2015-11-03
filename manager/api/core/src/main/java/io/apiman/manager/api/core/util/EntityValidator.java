@@ -16,8 +16,12 @@
 package io.apiman.manager.api.core.util;
 
 import io.apiman.manager.api.beans.apps.ApplicationVersionBean;
+import io.apiman.manager.api.beans.services.ServiceStatus;
 import io.apiman.manager.api.beans.services.ServiceVersionBean;
+import io.apiman.manager.api.beans.services.ServiceVersionStatusBean;
+import io.apiman.manager.api.beans.services.StatusItemBean;
 import io.apiman.manager.api.beans.summary.ContractSummaryBean;
+import io.apiman.manager.api.beans.summary.PolicySummaryBean;
 import io.apiman.manager.api.core.IApplicationValidator;
 import io.apiman.manager.api.core.IServiceValidator;
 import io.apiman.manager.api.core.IStorageQuery;
@@ -88,6 +92,70 @@ public class EntityValidator implements IServiceValidator, IApplicationValidator
             ready = false;
         }
         return ready;
+    }
+    
+    /**
+     * @see io.apiman.manager.api.core.IServiceValidator#getStatus(io.apiman.manager.api.beans.services.ServiceVersionBean, java.util.List)
+     */
+    @Override
+    public ServiceVersionStatusBean getStatus(ServiceVersionBean service, List<PolicySummaryBean> policies) {
+        ServiceVersionStatusBean status = new ServiceVersionStatusBean();
+        status.setStatus(service.getStatus());
+        
+        // Why are we not yet "Ready"?
+        if (service.getStatus() == ServiceStatus.Created || service.getStatus() == ServiceStatus.Ready) {
+            // 1. Implementation endpoint + endpoint type
+            /////////////////////////////////////////////
+            StatusItemBean item = new StatusItemBean();
+            item.setId("endpoint"); //$NON-NLS-1$
+            item.setName("Configure the API Endpoint");
+            item.setDone(true);
+            if (service.getEndpoint() == null || service.getEndpoint().trim().isEmpty() || service.getEndpointType() == null) {
+                item.setDone(false);
+                item.setRemediation("Update the service version and provide valid values for the [endpoint] and [endpointType] properties.");
+            }
+            status.getItems().add(item);
+
+            // 2. Public or at least one plan
+            /////////////////////////////////
+            item = new StatusItemBean();
+            item.setId("plans"); //$NON-NLS-1$
+            item.setName("Set up at least one Plan, or make the service public");
+            item.setDone(true);
+            if (!service.isPublicService()) {
+                if (service.getPlans() == null || service.getPlans().isEmpty()) {
+                    item.setDone(false);
+                    item.setRemediation("Update the service version and either set the [publicService] property to true, or set the [plans] property to a valid list of plans configured in the same Organization (or both).");
+                }
+            }
+            status.getItems().add(item);
+
+            // 3. Gateway selected
+            item = new StatusItemBean();
+            item.setId("gateways"); //$NON-NLS-1$
+            item.setName("Select at least one gateway");
+            item.setDone(true);
+            if (service.getGateways() == null || service.getGateways().isEmpty()) {
+                item.setDone(false);
+                item.setRemediation("Update the service version and set the [gateways] property to a valid list of one or more references to configured gateways.");
+            }
+            status.getItems().add(item);
+            
+            // 4. At least one Policy (optional)
+            ////////////////////////////////////
+            item = new StatusItemBean();
+            item.setId("policies"); //$NON-NLS-1$
+            item.setName("Configure at least one policy");
+            item.setDone(true);
+            item.setOptional(true);
+            if (policies.isEmpty()) {
+                item.setDone(false);
+                item.setRemediation("Use the REST API to create at least one policy for the service.  This is optional, as it is perfectly fine if you wish to manage a service without assigning it any policies.");
+            }
+            status.getItems().add(item);
+        }
+        
+        return status;
     }
 
     /**

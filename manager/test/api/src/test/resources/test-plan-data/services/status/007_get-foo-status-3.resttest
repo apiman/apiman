@@ -1,0 +1,35 @@
+GET /organizations/Organization1/services/Foo/versions/1.0/status admin/admin
+----
+200
+Content-Type: application/json
+
+{
+  "status": "Ready",
+  "items": [
+    {
+      "id": "endpoint",
+      "name": "Configure the API Endpoint",
+      "done": true,
+      "optional": false
+    },
+    {
+      "id": "plans",
+      "name": "Set up at least one Plan, or make the service public",
+      "done": true,
+      "optional": false
+    },
+    {
+      "id": "gateways",
+      "name": "Select at least one gateway",
+      "done": true,
+      "optional": false
+    },
+    {
+      "id": "policies",
+      "name": "Configure at least one policy",
+      "done": false,
+      "optional": true,
+      "remediation": "Use the REST API to create at least one policy for the service.  This is optional, as it is perfectly fine if you wish to manage a service without assigning it any policies."
+    }
+  ]
+}
