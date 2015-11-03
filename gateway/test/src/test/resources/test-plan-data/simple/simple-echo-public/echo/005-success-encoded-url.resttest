@@ -1,4 +1,4 @@
-PUT /SimpleEchoPublicTest/echo/2.0/persons/%2325:12/knows/a-b_c+d=e/foo admin/admin
+PUT /SimpleEchoPublicTest/echo/2.0/persons/%2325:12/knows/foo+bar admin/admin
 Content-Type: application/json; charset=UTF-8
 
 {
@@ -11,8 +11,8 @@ Content-Type: application/json
 
 {
   "method" : "PUT",
-  "resource" : "/persons/%2325%3A12/knows/a-b_c%2Bd%3De/foo",
-  "uri" : "/persons/%2325%3A12/knows/a-b_c%2Bd%3De/foo",
+  "resource" : "/persons/%2325:12/knows/foo+bar",
+  "uri" : "/persons/%2325:12/knows/foo+bar",
   "headers" : {
     "Content-Type":"application/json; charset=UTF-8"
   },

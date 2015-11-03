@@ -15,9 +15,6 @@
  */
 package io.apiman.common.util;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-
 public class ApimanPathUtils {
 
     public static final String X_API_VERSION_HEADER = "X-API-Version"; //$NON-NLS-1$
@@ -71,12 +68,9 @@ public class ApimanPathUtils {
     /**
      * @param string
      */
+    @SuppressWarnings("nls")
     public static String urlEncode(String string) {
-        try {
-            return URLEncoder.encode(string, "UTF-8"); //$NON-NLS-1$
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
+        return string.replace("#", "%23");
     }
 
     /**
