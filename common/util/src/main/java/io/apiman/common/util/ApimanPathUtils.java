@@ -15,6 +15,8 @@
  */
 package io.apiman.common.util;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 public class ApimanPathUtils {
 
@@ -54,7 +56,7 @@ public class ApimanPathUtils {
                     StringBuilder resource = new StringBuilder();
                     for (int idx = minParts; idx < split.length; idx++) {
                         resource.append('/');
-                        resource.append(split[idx]);
+                        resource.append(urlEncode(split[idx]));
                     }
                     if (pathInfo.endsWith("/")) { //$NON-NLS-1$
                         resource.append('/');
@@ -64,6 +66,17 @@ public class ApimanPathUtils {
             }
         }
         return info;
+    }
+
+    /**
+     * @param string
+     */
+    public static String urlEncode(String string) {
+        try {
+            return URLEncoder.encode(string, "UTF-8"); //$NON-NLS-1$
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**

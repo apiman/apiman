@@ -1,0 +1,21 @@
+PUT /SimpleEchoPublicTest/echo/2.0/persons/%2325:12/knows/a-b_c+d=e/foo admin/admin
+Content-Type: application/json; charset=UTF-8
+
+{
+  "key" : "value",
+  "key" : "value"
+}
+----
+200
+Content-Type: application/json
+
+{
+  "method" : "PUT",
+  "resource" : "/persons/%2325%3A12/knows/a-b_c%2Bd%3De/foo",
+  "uri" : "/persons/%2325%3A12/knows/a-b_c%2Bd%3De/foo",
+  "headers" : {
+    "Content-Type":"application/json; charset=UTF-8"
+  },
+  "bodyLength" : 41,
+  "bodySha1" : "9a09002951d1e09e8268b5f0cb4fb89f7f9deb3f"
+}

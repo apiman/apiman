@@ -4,11 +4,11 @@
   <testGroup name="Test Policy">
     <test name="Publish Service" endpoint="api">test-plan-data/policies/rate-limiting/001-publish-service.resttest</test>
     <test name="Register Application" endpoint="api">test-plan-data/policies/rate-limiting/002-register-app.resttest</test>
-    <test name="Success">test-plan-data/policies/rate-limiting/003-success.resttest</test>
-    <test name="Success">test-plan-data/policies/rate-limiting/003-success.resttest</test>
-    <test name="Success">test-plan-data/policies/rate-limiting/003-success.resttest</test>
-    <test name="Success">test-plan-data/policies/rate-limiting/003-success.resttest</test>
-    <test name="Success">test-plan-data/policies/rate-limiting/003-success.resttest</test>
+    <test name="Success 1">test-plan-data/policies/rate-limiting/003-success.resttest</test>
+    <test name="Success 2">test-plan-data/policies/rate-limiting/003-success.resttest</test>
+    <test name="Success 3">test-plan-data/policies/rate-limiting/003-success.resttest</test>
+    <test name="Success 4">test-plan-data/policies/rate-limiting/003-success.resttest</test>
+    <test name="Success 5">test-plan-data/policies/rate-limiting/003-success.resttest</test>
     <test name="Failure">test-plan-data/policies/rate-limiting/004-failure.resttest</test>
   </testGroup>
 

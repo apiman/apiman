@@ -4,12 +4,12 @@
   <testGroup name="Test Policy">
     <test name="Publish Service" endpoint="api">test-plan-data/policies/ignored-resources/001-publish-service.resttest</test>
     <test name="Register Application" endpoint="api">test-plan-data/policies/ignored-resources/002-register-app.resttest</test>
-    <test name="Success">test-plan-data/policies/ignored-resources/003-success.resttest</test>
-    <test name="Success">test-plan-data/policies/ignored-resources/004-success.resttest</test>
-    <test name="Success">test-plan-data/policies/ignored-resources/005-success.resttest</test>
-    <test name="Failure">test-plan-data/policies/ignored-resources/006-success.resttest</test>
-    <test name="Failure">test-plan-data/policies/ignored-resources/007-failure.resttest</test>
-    <test name="Failure">test-plan-data/policies/ignored-resources/008-failure.resttest</test>
+    <test name="Success 1">test-plan-data/policies/ignored-resources/003-success.resttest</test>
+    <test name="Success 2">test-plan-data/policies/ignored-resources/004-success.resttest</test>
+    <test name="Success 3">test-plan-data/policies/ignored-resources/005-success.resttest</test>
+    <test name="Failure 1">test-plan-data/policies/ignored-resources/006-success.resttest</test>
+    <test name="Failure 2">test-plan-data/policies/ignored-resources/007-failure.resttest</test>
+    <test name="Failure 3">test-plan-data/policies/ignored-resources/008-failure.resttest</test>
   </testGroup>
 
 </testPlan>
