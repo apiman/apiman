@@ -55,6 +55,11 @@ module Apiman {
             var params = $routeParams;
             $scope.params = params;
 
+            // Initiates the tooltip (this is required for performance reasons)
+            $(function () {
+                $('[data-toggle="popover"]').popover();
+            });
+
             $scope.setEntityStatus = function(status) {
                 EntityStatusService.setEntityStatus(status);
             };
