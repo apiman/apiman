@@ -21,7 +21,7 @@ import io.apiman.manager.ui.server.beans.BearerTokenCredentialsBean;
 import javax.servlet.http.HttpServletRequest;
 
 import org.keycloak.KeycloakSecurityContext;
-import org.keycloak.util.Time;
+import org.keycloak.common.util.Time;
 
 /**
  * A token generator when using KeyCloak as the authentication provider for apiman.
