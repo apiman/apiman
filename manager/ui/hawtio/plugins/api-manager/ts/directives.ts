@@ -598,20 +598,4 @@ module Apiman {
             }
         };
     });
-
-
-    _module.directive('apimanPopover', function() {
-        return {
-            restrict: 'A',
-            link: function(scope, element, attrs) {
-                if ((<any>$(attrs)).toggle=='tooltip') {
-                    (<any>$(element)).tooltip('show');
-                }
-
-                if ((<any>$(attrs)).toggle=='popover') {
-                    (<any>$(element)).popover('hide');
-                }
-            }
-        };
-    });
 }

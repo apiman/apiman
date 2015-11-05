@@ -1607,3 +1607,65 @@ table tr.apiman_deleting {
   top: -20px;
   font-size: 13px;
 }
+
+.apiman-dropdown-checklist-popover .popover-content {
+  padding: 0;
+}
+
+tr.active.complete td, tr.active.incomplete td, tr.inactive.complete td, tr.inactive.incomplete td {
+  border-top: 1px solid #FFFFFF;
+}
+
+tr.active.complete, tr.active.complete td, tr.active.complete .title {
+  background-color: #FFFFFF !important;
+  color: #31A794 !important;
+}
+
+tr.active.incomplete, tr.active.incomplete td, tr.active.incomplete .title {
+  background-color: #FFFFFF !important;
+  color: rgb(207, 97, 0) !important;
+}
+
+tr.inactive.complete, tr.inactive.complete td, tr.inactive.complete .title {
+  background-color: #F2F2FA;
+  color: #31A794 !important;
+}
+
+tr.inactive.incomplete, tr.inactive.incomplete td, tr.inactive.incomplete .title {
+  background-color: #F2F2FA;
+  color: #999 !important;
+}
+
+.checklist td > a:hover {
+  text-decoration: none !important;
+}
+
+.checklist .title {
+  font-size: 12px !important;
+  font-weight: bold;
+}
+
+.checklist td.context {
+  border-color: #FFFFFF;
+  padding: 0;
+}
+
+.disabled-icon a, .disabled-icon a:hover, .disabled-icon i {
+  color: #999;
+}
+
+tr.collapse.in, tr.collapsing {
+  display: table-row !important;
+}
+
+td.collapse.in, td.collapsing {
+  display: table-cell !important;
+}
+
+.table-bordered > tbody > tr.collapse-row td {
+  padding: 0;
+}
+
+.collapse-row td > div > .collapse-cell {
+  padding: 8px;
+}

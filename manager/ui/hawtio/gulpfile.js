@@ -125,6 +125,7 @@ gulp.task('css', function() {
             'node_modules/ng-sortable/dist/ng-sortable.css',
             'node_modules/patternfly/components/cs/c3.css',
             'node_modules/angular-xeditable/dist/css/xeditable.css',
+            'node_modules/angular-ui-bootstrap/ui-bootstrap-csp.css',
             SwaggerUIPath + '/dist/css/screen.css',
             SwaggerUIPath + '/dist/css/typography.css'
         ], {base: 'node_modules/'})
@@ -252,7 +253,7 @@ gulp.task('tsd', function(callback) {
 // Watch Task
 // Builds, then watches for changes
 gulp.task('watch', function() {
-    watch(['entry.js', config.ts, config.templates, config.templateIncludes], function() {
+    watch(['entry.js', config.ts, config.templates, config.templateIncludes, 'plugins/api-manager/css/apiman.css'], function() {
         return runSequence(['browserify', 'css', 'fonts', 'images'], 'path-adjust', 'clean-defs', 'tsc', 'template', 'concat', 'clean');
     });
 });
