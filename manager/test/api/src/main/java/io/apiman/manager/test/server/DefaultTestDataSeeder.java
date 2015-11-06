@@ -19,6 +19,8 @@ import io.apiman.manager.api.beans.idm.UserBean;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.exceptions.StorageException;
 
+import java.util.Date;
+
 /**
  * Default seeder used by tests.
  *
@@ -37,6 +39,7 @@ public class DefaultTestDataSeeder implements ISeeder {
             userBean.setUsername(userInfo[0]);
             userBean.setFullName(userInfo[2]);
             userBean.setEmail(userInfo[3]);
+            userBean.setJoinedOn(new Date());
             if ("true".equals(System.getProperty("apiman.test.admin-user-only", "false")) && !userBean.getUsername().equals("admin")) {
                 continue;
             }

@@ -64,8 +64,8 @@ public class CachingPolicyTest extends ApimanPolicyTest {
         Assert.assertNotNull(counterValue3);
         Assert.assertEquals(counterValue, counterValue3);
 
-        // Now wait for 2s and make sure the cache entry expired
-        Thread.sleep(2000);
+        // Now wait for 3s and make sure the cache entry expired
+        Thread.sleep(3000);
         response = send(request);
         echo = response.entity(EchoResponse.class);
         Assert.assertNotNull(echo);

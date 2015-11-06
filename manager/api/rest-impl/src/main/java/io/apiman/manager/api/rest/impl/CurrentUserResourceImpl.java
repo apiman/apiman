@@ -97,7 +97,6 @@ public class CurrentUserResourceImpl implements ICurrentUserResource {
                 user.setJoinedOn(new Date());
                 storage.beginTx();
                 try {
-                    user.setJoinedOn(new Date());
                     storage.createUser(user);
                     storage.commitTx();
                 } catch (StorageException e1) {
