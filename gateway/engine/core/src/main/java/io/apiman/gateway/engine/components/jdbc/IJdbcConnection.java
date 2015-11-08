@@ -27,24 +27,24 @@ import java.sql.Connection;
  *
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
-public interface JdbcConnection extends AutoCloseable {
+public interface IJdbcConnection extends AutoCloseable {
 
     // TODO: there are no begintx/endtx statements seemingly?
-    /**
-     * Run a query, but don't need a result-set. For instance, DROP, CREATE.
-     *
-     * @param query the query
-     * @param result the result
-     */
-    void query(String query, IAsyncResultHandler<Void> result);
-
     /**
      * Run a query, get the results back to iterate through.
      *
      * @param query the query
+     * @param result the result
+     */
+    void query(String query, IAsyncResultHandler<IJdbcResultSet> result);
+
+    /**
+     * Run a query, but don't need a result-set. For instance, DROP, CREATE.
+     *
+     * @param query the query
      * @param result the result set
      */
-    void execute(String query, IAsyncResultHandler<IJdbcResultSet> result);
+    void execute(String query, IAsyncResultHandler<Void> result);
 
     /**
      * Set auto-commit status (probably best to explicitly set this?). TODO Should we have a default?

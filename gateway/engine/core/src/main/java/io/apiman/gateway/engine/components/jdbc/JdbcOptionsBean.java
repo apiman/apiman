@@ -35,10 +35,10 @@ public class JdbcOptionsBean {
     private Long minimumIdle;
     private Long maximumPoolSize;
 
-    String poolName;
+    private String poolName;
 
     // Set any uncommon properties using the map
-    private Map<String, String> dsProperties = new LinkedHashMap<>();
+    private Map<String, Object> dsProperties = new LinkedHashMap<>();
 
     /**
      * @return the jdbcUrl
@@ -171,7 +171,7 @@ public class JdbcOptionsBean {
      *
      * @return the dsProperties
      */
-    public Map<String, String> getDsProperties() {
+    public Map<String, Object> getDsProperties() {
         return dsProperties;
     }
 
@@ -180,8 +180,22 @@ public class JdbcOptionsBean {
      *
      * @param dsProperties the dsProperties to set
      */
-    public void setDsProperties(Map<String, String> dsProperties) {
+    public void setDsProperties(Map<String, Object> dsProperties) {
         this.dsProperties = dsProperties;
+    }
+
+    /**
+     * @return the poolName
+     */
+    public String getPoolName() {
+        return poolName;
+    }
+
+    /**
+     * @param poolName the poolName to set
+     */
+    public void setPoolName(String poolName) {
+        this.poolName = poolName;
     }
 
 }

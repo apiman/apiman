@@ -959,7 +959,7 @@
       </dependency>
       <dependency>
         <groupId>io.vertx</groupId>
-        <artifactId>vertx-auth-shiro</artifactId>
+        <artifactId>vertx-jdbc-client</artifactId>
         <version>${version.io.vertx}</version>
       </dependency>
 
@@ -1146,7 +1146,7 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-gpg-plugin</artifactId>
           <version>${version.maven-gpg-plugin.plugin}</version>
-        </plugin>        
+        </plugin>
       </plugins>
     </pluginManagement>
     <plugins>
@@ -1354,7 +1354,7 @@
                 </goals>
               </execution>
             </executions>
-          </plugin>        
+          </plugin>
         </plugins>
       </build>
     </profile>

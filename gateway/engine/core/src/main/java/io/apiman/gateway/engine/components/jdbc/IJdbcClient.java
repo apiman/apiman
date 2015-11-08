@@ -29,5 +29,5 @@ public interface IJdbcClient {
      *
      * @param handler the async result
      */
-    void connect(IAsyncResultHandler<JdbcConnection> handler);
+    void connect(IAsyncResultHandler<IJdbcConnection> handler);
 }

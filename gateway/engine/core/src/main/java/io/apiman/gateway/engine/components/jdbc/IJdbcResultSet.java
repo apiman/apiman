@@ -16,10 +16,9 @@
 package io.apiman.gateway.engine.components.jdbc;
 
 import java.math.BigDecimal;
-import java.sql.Date;
-import java.sql.Time;
-import java.sql.Timestamp;
 import java.util.List;
+
+import org.joda.time.DateTime;
 
 /**
  * Simple result set, akin to {@link java.sql.ResultSet}
@@ -67,6 +66,20 @@ public interface IJdbcResultSet {
      * @return true when another result row present, else false
      */
     boolean hasNext();
+
+    /**
+     * Move to the first row of the result set
+     *
+     * @return whether any row exists
+     */
+    boolean first();
+
+    /**
+     * Move to final row of the result set
+     *
+     * @return whether any rows exist
+     */
+    boolean last();
 
     /**
      * Get result as string
@@ -147,25 +160,7 @@ public interface IJdbcResultSet {
      * @return the result as a Date
      * @throws IndexOutOfBoundsException when index is invalid
      */
-    Date getDate(int index);
-
-    /**
-     * Get result as a Time
-     *
-     * @param index column offset
-     * @return the result as a Time
-     * @throws IndexOutOfBoundsException when index is invalid
-     */
-    Time getTime(int index);
-
-    /**
-     * Get result as a Timestamp
-     *
-     * @param index column offset
-     * @return the result as a Timestamp
-     * @throws IndexOutOfBoundsException when index is invalid
-     */
-    Timestamp getTimestamp(int index);
+    DateTime getDateTime(int index);
 
     // These might be problematic, i.e. not implemented in Vert.x etc
     //Object getObject(int index);
