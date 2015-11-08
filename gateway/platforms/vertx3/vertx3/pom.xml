@@ -42,7 +42,7 @@
     </dependency>
     <dependency>
       <groupId>io.vertx</groupId>
-      <artifactId>vertx-auth-shiro</artifactId>
+      <artifactId>vertx-jdbc-client</artifactId>
     </dependency>
 
     <!-- apiman dependencies -->
