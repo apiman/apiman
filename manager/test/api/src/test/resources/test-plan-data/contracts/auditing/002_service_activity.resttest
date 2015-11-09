@@ -3,54 +3,80 @@ GET /organizations/Organization2/services/Service2/activity admin/admin
 200
 Content-Type: application/json
 
-{ "beans" : [ { "data" : "{\"appOrgId\":\"Organization1\",\"appId\":\"Application1\",\"appVersion\":\"1.0\",\"serviceOrgId\":\"Organization2\",\"serviceId\":\"Service2\",\"serviceVersion\":\"1.5\",\"planId\":\"PlanA\",\"planVersion\":\"2.0\"}",
-        "entityId" : "Service2",
-        "entityType" : "Service",
-        "entityVersion" : "1.5",
-        "organizationId" : "Organization2",
-        "what" : "CreateContract",
-        "who" : "admin"
-      },
-      { "data" : null,
-        "entityId" : "Service2",
-        "entityType" : "Service",
-        "entityVersion" : "1.5",
-        "organizationId" : "Organization2",
-        "what" : "Publish",
-        "who" : "admin"
-      },
-      { "data" : "{\"changes\":[{\"name\":\"plans\",\"before\":\"\",\"after\":\"PlanA:2.0, PlanB:1.0\"},{\"name\":\"endpoint\",\"before\":null,\"after\":\"http://localhost:8080/ping\"},{\"name\":\"endpointType\",\"before\":null,\"after\":\"rest\"}]}",
-        "entityId" : "Service2",
-        "entityType" : "Service",
-        "entityVersion" : "1.5",
-        "organizationId" : "Organization2",
-        "what" : "Update",
-        "who" : "admin"
-      },
-      { "data" : null,
-        "entityId" : "Service2",
-        "entityType" : "Service",
-        "entityVersion" : "1.5",
-        "organizationId" : "Organization2",
-        "what" : "Create",
-        "who" : "admin"
-      },
-      { "data" : null,
-        "entityId" : "Service2",
-        "entityType" : "Service",
-        "entityVersion" : "1.0",
-        "organizationId" : "Organization2",
-        "what" : "Create",
-        "who" : "admin"
-      },
-      { "data" : null,
-        "entityId" : "Service2",
-        "entityType" : "Service",
-        "entityVersion" : null,
-        "organizationId" : "Organization2",
-        "what" : "Create",
-        "who" : "admin"
-      }
-    ],
-  "totalSize" : 6
+{
+  "beans": [
+    {
+      "who": "admin",
+      "organizationId": "Organization2",
+      "entityType": "Service",
+      "entityId": "Service2",
+      "entityVersion": "1.5",
+      "what": "CreateContract",
+      "data": "{\"appOrgId\":\"Organization1\",\"appId\":\"Application1\",\"appVersion\":\"1.0\",\"serviceOrgId\":\"Organization2\",\"serviceId\":\"Service2\",\"serviceVersion\":\"1.5\",\"planId\":\"PlanA\",\"planVersion\":\"2.0\"}"
+    },
+    {
+      "who": "admin",
+      "organizationId": "Organization2",
+      "entityType": "Service",
+      "entityId": "Service2",
+      "entityVersion": "1.5",
+      "what": "Publish",
+      "data": null
+    },
+    {
+      "who": "admin",
+      "organizationId": "Organization2",
+      "entityType": "Service",
+      "entityId": "Service2",
+      "entityVersion": "2.0",
+      "what": "Update",
+      "data": "{\"changes\":[{\"name\":\"plans\",\"before\":\"\",\"after\":\"PlanA:2.0, PlanB:1.0\"},{\"name\":\"endpoint\",\"before\":null,\"after\":\"http://localhost:8080/ping\"},{\"name\":\"endpointType\",\"before\":null,\"after\":\"rest\"}]}"
+    },
+    {
+      "who": "admin",
+      "organizationId": "Organization2",
+      "entityType": "Service",
+      "entityId": "Service2",
+      "entityVersion": "2.0",
+      "what": "Create",
+      "data": null
+    },
+    {
+      "who": "admin",
+      "organizationId": "Organization2",
+      "entityType": "Service",
+      "entityId": "Service2",
+      "entityVersion": "1.5",
+      "what": "Update",
+      "data": "{\"changes\":[{\"name\":\"plans\",\"before\":\"\",\"after\":\"PlanA:2.0, PlanB:1.0\"},{\"name\":\"endpoint\",\"before\":null,\"after\":\"http://localhost:8080/ping\"},{\"name\":\"endpointType\",\"before\":null,\"after\":\"rest\"}]}"
+    },
+    {
+      "who": "admin",
+      "organizationId": "Organization2",
+      "entityType": "Service",
+      "entityId": "Service2",
+      "entityVersion": "1.5",
+      "what": "Create",
+      "data": null
+    },
+    {
+      "who": "admin",
+      "organizationId": "Organization2",
+      "entityType": "Service",
+      "entityId": "Service2",
+      "entityVersion": "1.0",
+      "what": "Create",
+      "data": null
+    },
+    {
+      "who": "admin",
+      "organizationId": "Organization2",
+      "entityType": "Service",
+      "entityId": "Service2",
+      "entityVersion": null,
+      "what": "Create",
+      "data": null
+    }
+  ],
+  "totalSize": 8
 }

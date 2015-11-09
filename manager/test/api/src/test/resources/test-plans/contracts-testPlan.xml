@@ -30,6 +30,7 @@
     <test name="Lock Plan B / Version 1.0">test-plan-data/contracts/publish/006_lock-plan-b-version-1.0.resttest</test>
 
     <test name="Update Service 2 Plans">test-plan-data/contracts/create/017_update-svc2-version-1.5-plans.resttest</test>
+    <test name="Create Service 2 / Version 2.0">test-plan-data/contracts/create/018_create-service-2-version-2.0.resttest</test>
   </testGroup>
 
   <!-- Test Contract management -->
@@ -53,9 +54,14 @@
     <test name="Create Duplicate Contract (failure)">test-plan-data/contracts/contracts/013_create-duplicate-contract.resttest</test>
     <test name="Break Contract 1">test-plan-data/contracts/contracts/014_delete-contract1.resttest</test>
     <test name="List Contracts for App 1 (after delete)">test-plan-data/contracts/contracts/015_get-contracts.resttest</test>
+
+    <test name="Create Contract to Unknown Service">test-plan-data/contracts/contracts/016_create-contract-unknown.resttest</test>
+    <test name="Create Contract to Unpublished Service">test-plan-data/contracts/contracts/017_create-contract-svc-not-published.resttest</test>
     
-    <test name="Register App 1">test-plan-data/contracts/publish/016_register-app-1.resttest</test>
-    <test name="Break Contract 2 (fail)">test-plan-data/contracts/contracts/017_delete-contract-2.resttest</test>
+    <test name="Register App 1">test-plan-data/contracts/publish/017_register-app-1.resttest</test>
+
+    <test name="Break Contract 2 (fail)">test-plan-data/contracts/contracts/018_delete-contract-2.resttest</test>
+    <test name="Create Contract (wrong status)">test-plan-data/contracts/contracts/019_create-contract-wrong-status.resttest</test>
   </testGroup>
 
   <!-- Auditing -->

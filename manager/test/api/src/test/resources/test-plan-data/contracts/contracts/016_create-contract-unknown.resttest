@@ -1,0 +1,18 @@
+POST /organizations/Organization1/applications/Application1/versions/1.0/contracts admin/admin
+Content-Type: application/json
+
+{
+  "serviceOrgId" : "Organization1",
+  "serviceId" : "Service-Unknown",
+  "serviceVersion" : "1.0",
+  "planId" : "Plan1"
+}
+----
+404
+Content-Type: application/json
+
+{
+  "type": "ServiceNotFoundException",
+  "errorCode": 5002,
+  "message": "Service does not exist: Service-Unknown"
+}
