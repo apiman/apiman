@@ -23,6 +23,7 @@ import io.apiman.gateway.engine.components.jdbc.JdbcOptionsBean;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.jdbc.JDBCClient;
+import io.vertx.ext.jdbc.spi.impl.HikariCPDataSourceProvider;
 
 import java.util.Map.Entry;
 
@@ -65,18 +66,19 @@ public class VertxJdbcClientImpl implements IJdbcClient {
      * We are assuming that the user is using HikariCP.
      */
     @SuppressWarnings("nls")
-    protected static JsonObject parseConfig(JdbcOptionsBean config) {
-        JsonObject jsonConfig = new JsonObject()
-                .put("jdbcUrl", config.getJdbcUrl())
-                .put("username", config.getUsername())
-                .put("password", config.getPassword())
-                .put("autoCommit", config.isAutoCommit())
-                .put("connectionTimeout", config.getConnectionTimeout())
-                .put("idleTimeout", config.getIdleTimeout())
-                .put("maxLifetime", config.getMaxLifetime())
-                .put("minimumIdle", config.getMinimumIdle())
-                .put("maximumPoolSize", config.getMaximumPoolSize())
-                .put("poolName", config.getPoolName());
+    protected JsonObject parseConfig(JdbcOptionsBean config) {
+        JsonObject jsonConfig = new JsonObject();
+        nullSafePut(jsonConfig, "provider_class", HikariCPDataSourceProvider.class.getCanonicalName()); // Vert.x thing
+        nullSafePut(jsonConfig, "jdbcUrl", config.getJdbcUrl());
+        nullSafePut(jsonConfig, "username", config.getUsername());
+        nullSafePut(jsonConfig, "password", config.getPassword());
+        nullSafePut(jsonConfig, "autoCommit", config.isAutoCommit());
+        nullSafePut(jsonConfig, "connectionTimeout", config.getConnectionTimeout());
+        nullSafePut(jsonConfig, "idleTimeout", config.getIdleTimeout());
+        nullSafePut(jsonConfig, "maxLifetime", config.getMaxLifetime());
+        nullSafePut(jsonConfig, "minimumIdle", config.getMinimumIdle());
+        nullSafePut(jsonConfig, "maximumPoolSize", config.getMaximumPoolSize());
+        nullSafePut(jsonConfig, "poolName", config.getPoolName());
 
         JsonObject dsProperties = new JsonObject();
 
@@ -86,5 +88,11 @@ public class VertxJdbcClientImpl implements IJdbcClient {
 
         jsonConfig.put("properties", dsProperties);
         return jsonConfig;
+    }
+
+    private <T> void nullSafePut(JsonObject jsonObject, String key, T value) {
+        if (value == null)
+            return;
+        jsonObject.put(key, value);
     }
 }

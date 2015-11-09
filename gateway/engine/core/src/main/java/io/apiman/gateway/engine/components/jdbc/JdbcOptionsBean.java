@@ -24,6 +24,7 @@ import java.util.Map;
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 public class JdbcOptionsBean {
+
     private String jdbcUrl;
     private String username;
     private String password;
@@ -39,6 +40,40 @@ public class JdbcOptionsBean {
 
     // Set any uncommon properties using the map
     private Map<String, Object> dsProperties = new LinkedHashMap<>();
+
+    /**
+     * Default empty constructor
+     */
+    public JdbcOptionsBean() {}
+
+    /**
+     * @param jdbcUrl the jdbc database url
+     * @param username the url
+     * @param password the password
+     * @param autoCommit the autocommit status
+     * @param connectionTimeout the connection timeout
+     * @param idleTimeout the idle timeout
+     * @param maxLifetime the max lifetime
+     * @param minimumIdle the minimum idle time
+     * @param maximumPoolSize the maximum pool size
+     * @param poolName the pool name (if not provided, will be generated)
+     * @param dsProperties other datasource properties
+     */
+    public JdbcOptionsBean(String jdbcUrl, String username, String password, Boolean autoCommit,
+            Long connectionTimeout, Long idleTimeout, Long maxLifetime, Long minimumIdle,
+            Long maximumPoolSize, String poolName, Map<String, Object> dsProperties) {
+        this.jdbcUrl = jdbcUrl;
+        this.username = username;
+        this.password = password;
+        this.autoCommit = autoCommit;
+        this.connectionTimeout = connectionTimeout;
+        this.idleTimeout = idleTimeout;
+        this.maxLifetime = maxLifetime;
+        this.minimumIdle = minimumIdle;
+        this.maximumPoolSize = maximumPoolSize;
+        this.poolName = poolName;
+        this.dsProperties = dsProperties;
+    }
 
     /**
      * @return the jdbcUrl
@@ -85,84 +120,84 @@ public class JdbcOptionsBean {
     /**
      * @return the autoCommit
      */
-    public boolean isAutoCommit() {
+    public Boolean isAutoCommit() {
         return autoCommit;
     }
 
     /**
      * @param autoCommit the autoCommit to set
      */
-    public void setAutoCommit(boolean autoCommit) {
+    public void setAutoCommit(Boolean autoCommit) {
         this.autoCommit = autoCommit;
     }
 
     /**
      * @return the connectionTimeout
      */
-    public long getConnectionTimeout() {
+    public Long getConnectionTimeout() {
         return connectionTimeout;
     }
 
     /**
      * @param connectionTimeout the connectionTimeout to set
      */
-    public void setConnectionTimeout(long connectionTimeout) {
+    public void setConnectionTimeout(Long connectionTimeout) {
         this.connectionTimeout = connectionTimeout;
     }
 
     /**
      * @return the idleTimeout
      */
-    public long getIdleTimeout() {
+    public Long getIdleTimeout() {
         return idleTimeout;
     }
 
     /**
      * @param idleTimeout the idleTimeout to set
      */
-    public void setIdleTimeout(long idleTimeout) {
+    public void setIdleTimeout(Long idleTimeout) {
         this.idleTimeout = idleTimeout;
     }
 
     /**
      * @return the maxLifetime
      */
-    public long getMaxLifetime() {
+    public Long getMaxLifetime() {
         return maxLifetime;
     }
 
     /**
      * @param maxLifetime the maxLifetime to set
      */
-    public void setMaxLifetime(long maxLifetime) {
+    public void setMaxLifetime(Long maxLifetime) {
         this.maxLifetime = maxLifetime;
     }
 
     /**
      * @return the minimumIdle
      */
-    public long getMinimumIdle() {
+    public Long getMinimumIdle() {
         return minimumIdle;
     }
 
     /**
      * @param minimumIdle the minimumIdle to set
      */
-    public void setMinimumIdle(long minimumIdle) {
+    public void setMinimumIdle(Long minimumIdle) {
         this.minimumIdle = minimumIdle;
     }
 
     /**
      * @return the maximumPoolSize
      */
-    public long getMaximumPoolSize() {
+    public Long getMaximumPoolSize() {
         return maximumPoolSize;
     }
 
     /**
      * @param maximumPoolSize the maximumPoolSize to set
      */
-    public void setMaximumPoolSize(long maximumPoolSize) {
+    public void setMaximumPoolSize(Long maximumPoolSize) {
         this.maximumPoolSize = maximumPoolSize;
     }
 
