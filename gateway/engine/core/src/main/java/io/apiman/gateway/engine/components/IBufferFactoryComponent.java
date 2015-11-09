@@ -24,7 +24,7 @@ import io.apiman.gateway.engine.policy.IPolicy;
  * legitimately wish to construct a new buffer (e.g. caching), and therefore needs a mechanism to efficiently
  * get a new {@link IApimanBuffer} buffer with a native implementation.
  *
- * @author Marc Savy <msavy@redhat.com>
+ * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 public interface IBufferFactoryComponent extends IComponent {
 

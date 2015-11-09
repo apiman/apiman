@@ -42,7 +42,7 @@
     </dependency>
     <dependency>
       <groupId>io.vertx</groupId>
-      <artifactId>vertx-auth-shiro</artifactId>
+      <artifactId>vertx-jdbc-client</artifactId>
     </dependency>
 
     <!-- apiman dependencies -->
@@ -112,6 +112,16 @@
       <groupId>commons-codec</groupId>
       <artifactId>commons-codec</artifactId>
     </dependency>
+
+    <!--  Spec -->
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-unit</artifactId>
+    </dependency>
   </dependencies>
 
   <build>
@@ -139,7 +149,7 @@
 
     <!-- This ensures the codegen-ed sources make it into compilation phase
     Should be removed when upstream is fixed. -->
-    <plugins>
+    <plugins>      
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
@@ -201,6 +211,22 @@
           </execution>
         </executions>
       </plugin>
+      
+    <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+        <includes>
+            <include>**/*TestSuite.java</include>
+            <include>**/*Test.java</include>
+        </includes>
+        <!-- anything under **/suitetests/ is assumed to be part of a suite and should *not* be run independently  -->
+        <excludes>
+            <exclude>**/suitetests/**/*.java</exclude>
+        </excludes>
+        </configuration>
+     </plugin>
+  
       <!-- Export test jar -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
