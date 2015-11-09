@@ -29,12 +29,11 @@ import java.util.Map.Entry;
 import javax.sql.DataSource;
 
 /**
-* @author Marc Savy {@literal <msavy@redhat.com>}
-*/
+ * @author Marc Savy {@literal <msavy@redhat.com>}
+ */
 public class VertxJdbcClientImpl implements IJdbcClient {
     //TODO cache jdbcClients && json configs? LinkedHashMap + removeEldestEntry?
     //private static Map<>
-
     private JDBCClient jdbcClient;
 
     public VertxJdbcClientImpl(Vertx vertx, String dsName, JdbcOptionsBean config) {

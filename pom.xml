@@ -962,6 +962,11 @@
         <artifactId>vertx-jdbc-client</artifactId>
         <version>${version.io.vertx}</version>
       </dependency>
+      <dependency>
+        <groupId>io.vertx</groupId>
+        <artifactId>vertx-unit</artifactId>
+        <version>${version.io.vertx}</version>
+      </dependency>
 
       <!-- Swagger 2.0 -->
       <dependency>
