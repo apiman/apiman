@@ -3,11 +3,15 @@
 module Apiman {
 
     export var OrgAppsController = _module.controller("Apiman.OrgAppsController",
-        ['$q', '$scope', '$location', 'OrgSvcs', 'PageLifecycle', '$rootScope', '$routeParams',
-        ($q, $scope, $location, OrgSvcs, PageLifecycle, $rootScope, $routeParams) => {
+        ['$q', '$scope', '$location', 'OrgSvcs', 'PageLifecycle', '$rootScope', '$routeParams', 'CurrentUser',
+        ($q, $scope, $location, OrgSvcs, PageLifecycle, $rootScope, $routeParams, CurrentUser) => {
             $scope.tab = 'applications';
             var params = $routeParams;
             $scope.organizationId = params.org;
+            
+            if (!CurrentUser.hasPermission(params.org, 'appView')) {
+              delete $rootScope['currentUser'];
+            }
             
             $scope.filterApps = function(value) {
                 if (!value) {

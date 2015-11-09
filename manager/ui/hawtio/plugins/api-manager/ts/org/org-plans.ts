@@ -3,12 +3,16 @@
 module Apiman {
 
     export var OrgPlansController = _module.controller("Apiman.OrgPlansController",
-        ['$q', '$scope', '$location', 'OrgSvcs', 'PageLifecycle', '$rootScope', '$routeParams',
-        ($q, $scope, $location, OrgSvcs, PageLifecycle, $rootScope, $routeParams) => {
+        ['$q', '$scope', '$location', 'OrgSvcs', 'PageLifecycle', '$rootScope', '$routeParams', 'CurrentUser',
+        ($q, $scope, $location, OrgSvcs, PageLifecycle, $rootScope, $routeParams, CurrentUser) => {
             $scope.tab = 'plans';
             var params = $routeParams;
             $scope.organizationId = params.org;
-            
+
+            if (!CurrentUser.hasPermission(params.org, 'planView')) {
+              delete $rootScope['currentUser'];
+            }
+
             $scope.filterPlans = function(value) {
                 if (!value) {
                     $scope.filteredPlans = $scope.plans;
