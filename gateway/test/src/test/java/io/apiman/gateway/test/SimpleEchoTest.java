@@ -38,6 +38,12 @@ public class SimpleEchoTest {
 
     @AfterClass
     public static void after() {
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            throw new Error(e);
+        }
+        
         List<RequestMetric> metrics = TestMetrics.getMetrics();
         Assert.assertNotNull(metrics);
         Assert.assertEquals(9, metrics.size());
