@@ -38,6 +38,15 @@ public class AsyncResultImpl<T> implements IAsyncResult<T> {
     
     /**
      * Convenience method for creating an async result.
+     * @param result the result
+     * @return result of type T
+     */
+    public static final <T> AsyncResultImpl<T> create(T result, Class<T> type) {
+        return new AsyncResultImpl<>(result);
+    }
+    
+    /**
+     * Convenience method for creating an async result.
      * @param t the throwable
      * @return result of type T
      */

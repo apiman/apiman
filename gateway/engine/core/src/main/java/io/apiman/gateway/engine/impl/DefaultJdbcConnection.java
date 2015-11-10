@@ -92,7 +92,7 @@ public class DefaultJdbcConnection implements IJdbcConnection {
                 statement.setObject(idx++, param);
             }
             statement.execute();
-            handler.handle(AsyncResultImpl.create((Void) null));
+            handler.handle(AsyncResultImpl.create((Void) null, Void.class));
         } catch (Exception e) {
             handler.handle(AsyncResultImpl.create(e, Void.class));
         }
@@ -105,7 +105,7 @@ public class DefaultJdbcConnection implements IJdbcConnection {
     public void setAutoCommit(boolean autoCommit, IAsyncResultHandler<Void> handler) {
         try {
             connection.setAutoCommit(autoCommit);
-            handler.handle(AsyncResultImpl.create((Void) null));
+            handler.handle(AsyncResultImpl.create((Void) null, Void.class));
         } catch (SQLException e) {
             handler.handle(AsyncResultImpl.create(e, Void.class));
         }
@@ -118,7 +118,7 @@ public class DefaultJdbcConnection implements IJdbcConnection {
     public void commit(IAsyncResultHandler<Void> handler) {
         try {
             connection.commit();
-            handler.handle(AsyncResultImpl.create((Void) null));
+            handler.handle(AsyncResultImpl.create((Void) null, Void.class));
         } catch (SQLException e) {
             handler.handle(AsyncResultImpl.create(e, Void.class));
         }
@@ -131,7 +131,7 @@ public class DefaultJdbcConnection implements IJdbcConnection {
     public void rollback(IAsyncResultHandler<Void> handler) {
         try {
             connection.rollback();
-            handler.handle(AsyncResultImpl.create((Void) null));
+            handler.handle(AsyncResultImpl.create((Void) null, Void.class));
         } catch (SQLException e) {
             handler.handle(AsyncResultImpl.create(e, Void.class));
         }
@@ -144,7 +144,7 @@ public class DefaultJdbcConnection implements IJdbcConnection {
     public void close(IAsyncResultHandler<Void> handler) {
         try {
             connection.close();
-            handler.handle(AsyncResultImpl.create((Void) null));
+            handler.handle(AsyncResultImpl.create((Void) null, Void.class));
         } catch (SQLException e) {
             handler.handle(AsyncResultImpl.create(e, Void.class));
         }
