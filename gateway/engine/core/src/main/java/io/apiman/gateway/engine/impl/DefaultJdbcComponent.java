@@ -143,7 +143,7 @@ public class DefaultJdbcComponent implements IJdbcComponent {
                 jdbcConnection = new DefaultJdbcConnection(connection);
                 handler.handle(AsyncResultImpl.create(jdbcConnection));
             } catch (Exception e) {
-                handler.handle(AsyncResultImpl.create(e));
+                handler.handle(AsyncResultImpl.create(e, IJdbcConnection.class));
             } finally {
                 try {
                     if (!jdbcConnection.isClosed()) {
