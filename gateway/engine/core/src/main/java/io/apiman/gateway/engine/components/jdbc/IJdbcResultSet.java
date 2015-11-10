@@ -39,7 +39,7 @@ public interface IJdbcResultSet {
      *
      * @return the number of columns
      */
-    int getColumnSize();
+    int getNumColumns();
 
     /**
      * Indicates which row presently pointed at
@@ -47,13 +47,6 @@ public interface IJdbcResultSet {
      * @return the row number
      */
     int getRow();
-
-    /**
-     * Get number of rows in set
-     *
-     * @return the number of rows
-     */
-    int getRowSize();
 
     /**
      * Point at next row in result set
@@ -66,20 +59,6 @@ public interface IJdbcResultSet {
      * @return true when another result row present, else false
      */
     boolean hasNext();
-
-    /**
-     * Move to the first row of the result set
-     *
-     * @return whether any row exists
-     */
-    boolean first();
-
-    /**
-     * Move to final row of the result set
-     *
-     * @return whether any rows exist
-     */
-    boolean last();
 
     /**
      * Get result as string
@@ -161,6 +140,8 @@ public interface IJdbcResultSet {
      * @throws IndexOutOfBoundsException when index is invalid
      */
     DateTime getDateTime(int index);
+    
+    void close();
 
     // These might be problematic, i.e. not implemented in Vert.x etc
     //Object getObject(int index);

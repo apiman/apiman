@@ -21,10 +21,12 @@ import io.apiman.gateway.engine.components.IHttpClientComponent;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.components.IRateLimiterComponent;
 import io.apiman.gateway.engine.components.ISharedStateComponent;
+import io.apiman.gateway.engine.components.jdbc.IJdbcComponent;
 import io.apiman.gateway.engine.es.ESRateLimiterComponent;
 import io.apiman.gateway.engine.es.ESRegistry;
 import io.apiman.gateway.engine.es.ESSharedStateComponent;
 import io.apiman.gateway.engine.impl.ByteBufferFactoryComponent;
+import io.apiman.gateway.engine.impl.DefaultJdbcComponent;
 import io.apiman.gateway.engine.impl.DefaultPluginRegistry;
 import io.apiman.gateway.engine.impl.InMemoryCacheStoreComponent;
 import io.apiman.gateway.engine.impl.InMemoryRateLimiterComponent;
@@ -114,6 +116,8 @@ public class ServletGatewayTestServer implements IGatewayTestServer {
                     InMemoryRateLimiterComponent.class.getName());
             System.setProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + ICacheStoreComponent.class.getSimpleName(),
                     InMemoryCacheStoreComponent.class.getName());
+            System.setProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + IJdbcComponent.class.getSimpleName(),
+                    DefaultJdbcComponent.class.getName());
         } else if (GatewayTestUtils.getTestType() == GatewayTestType.es) {
             // Configure to run with elasticsearch components
             /////////////////////////////////////////////////

@@ -67,7 +67,7 @@ public class QueryTest {
         client.connect(explodeOnFailure(context, async, connectionResult -> {
                 System.out.println("Successfully connected!");
                 IJdbcConnection connection = connectionResult;
-                connection.execute("create table APIMAN\n" +
+                String createSql = "create table APIMAN\n" +
                         "    (ID integer NOT NULL,\n" +
                         "    STRING varchar(40) NOT NULL,\n" +
                         "    SHORT smallint NOT NULL,\n" +
@@ -77,12 +77,16 @@ public class QueryTest {
                         "    BOOLEAN boolean NOT NULL,\n" +
                         "    DATETIME datetime NOT NULL,\n" +
                         "    BYTEARRAY varbinary(100) NOT NULL,\n" +
-                        "    PRIMARY KEY (ID));", explodeOnFailure(context, async, onSuccess1 -> {
-                                connection.execute("insert into APIMAN (ID, STRING, SHORT, INTEGER, LONG, DOUBLE, BOOLEAN, DATETIME, BYTEARRAY)\n" +
-                                    "     VALUES  (1, 'Voltigeur', 11, 9001009, 101010101, 3.14159, true, '1976-06-29 00:00:00', 31), ",
-                                    explodeOnFailure(context, async, onSuccess2 -> { async.complete(); }));
-                            })
-                        );
+                        "    PRIMARY KEY (ID));";
+                String insertSql = "insert into APIMAN (ID, STRING, SHORT, INTEGER, LONG, DOUBLE, BOOLEAN, DATETIME, BYTEARRAY)\n" +
+                        "     VALUES  (1, 'Voltigeur', 11, 9001009, 101010101, 3.14159, true, '1976-06-29 00:00:00', 31), ";
+                connection.execute(
+                        explodeOnFailure(context, async, onSuccess1 -> {
+                            connection.execute(
+                                    explodeOnFailure(context, async, onSuccess2 -> { async.complete(); }),
+                                    insertSql);
+                        }),
+                        createSql);
         }));
     }
 
@@ -94,12 +98,12 @@ public class QueryTest {
         client.connect(explodeOnFailure(context, async, connectionResult -> {
                 System.out.println("Successfully connected!");
                 IJdbcConnection connection = connectionResult;
-                connection.query("SELECT * FROM APIMAN;",
+                String selectSql = "SELECT * FROM APIMAN;";
+                connection.query(
                         explodeOnFailure(context, async, queryResult -> {
-                                context.assertEquals(1, queryResult.getRowSize());
-                                context.assertEquals(9, queryResult.getColumnSize());
+                                context.assertEquals(9, queryResult.getNumColumns());
 
-                                queryResult.first();
+                                queryResult.next();
                                 // Assert results
                                 context.assertEquals(1, queryResult.getInteger(0));
                                 context.assertEquals("Voltigeur", queryResult.getString(1));
@@ -112,7 +116,8 @@ public class QueryTest {
                                 context.assertEquals(((byte) 31), queryResult.getBytes(8)[3]);
 
                                 async.complete();
-                            }));
+                            }),
+                        selectSql);
         }));
     }
 

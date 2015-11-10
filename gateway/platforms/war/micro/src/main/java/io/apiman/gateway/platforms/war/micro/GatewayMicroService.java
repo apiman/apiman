@@ -31,6 +31,7 @@ import io.apiman.gateway.engine.es.ESMetrics;
 import io.apiman.gateway.engine.es.ESRateLimiterComponent;
 import io.apiman.gateway.engine.es.ESSharedStateComponent;
 import io.apiman.gateway.engine.impl.ByteBufferFactoryComponent;
+import io.apiman.gateway.engine.impl.DefaultJdbcComponent;
 import io.apiman.gateway.engine.impl.DefaultPluginRegistry;
 import io.apiman.gateway.engine.policy.PolicyFactoryImpl;
 import io.apiman.gateway.platforms.servlet.PolicyFailureFactoryComponent;
@@ -111,6 +112,7 @@ public class GatewayMicroService {
         registerRateLimiterComponent();
         registerPolicyFailureFactoryComponent();
         registerCacheStoreComponent();
+        registerJdbcComponent();
     }
 
     /**
@@ -170,6 +172,13 @@ public class GatewayMicroService {
         setConfigProperty("apiman-gateway.components.ICacheStoreComponent.client.index", "apiman_cache");
         setConfigProperty("apiman-gateway.components.ICacheStoreComponent.client.username", "${apiman.es.username}");
         setConfigProperty("apiman-gateway.components.ICacheStoreComponent.client.password", "${apiman.es.password}");
+    }
+    
+    /**
+     * The jdbc component.
+     */
+    protected void registerJdbcComponent() {
+        setConfigProperty("apiman-gateway.components.IJdbcComponent", DefaultJdbcComponent.class.getName());
     }
 
     /**

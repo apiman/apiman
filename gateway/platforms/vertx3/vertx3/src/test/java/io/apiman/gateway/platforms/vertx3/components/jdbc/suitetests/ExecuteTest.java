@@ -72,11 +72,13 @@ public class ExecuteTest {
         client.connect(explodeOnFailure(context, async, connectionResult -> {
                 System.out.println("Successfully connected here!");
                 IJdbcConnection connection = connectionResult;
-                connection.execute("insert into APIMAN (PLACE_ID, COUNTRY, CITY, FOUNDING)\n" +
+                String insertSql = "insert into APIMAN (PLACE_ID, COUNTRY, CITY, FOUNDING)\n" +
                         "     VALUES  (1, 'Seychelles', 'Victoria', '1976-06-29 00:00:00'), " + // June 29, 1976
                         "             (2, 'United States', 'Newtown', '1788-01-09 00:00:00')," + // January 9, 1788
-                        "             (3, 'United States', 'Miami', '1896-07-28 00:00:00');", // July 28, 1896
-                        explodeOnFailure(context, async, onSuccess -> { async.complete(); }));
+                        "             (3, 'United States', 'Miami', '1896-07-28 00:00:00');";
+                connection.execute(
+                        explodeOnFailure(context, async, onSuccess -> { async.complete(); }),
+                        insertSql);
         }));
     }
 
@@ -90,14 +92,20 @@ public class ExecuteTest {
         client.connect(explodeOnFailure(context, async, connectionResult -> {
                 System.out.println("Successfully connected here!");
                 IJdbcConnection connection = connectionResult;
-                connection.execute("DROP TABLE APIMAN;", explodeOnFailure(context, async, onSuccess -> {
-                    async.complete();
-                }));
+                String dropSql = "DROP TABLE APIMAN;";
+                connection.execute(
+                        explodeOnFailure(context, async, onSuccess -> {
+                            async.complete();
+                        }),
+                        dropSql);
 
-                connection.query("SHOW TABLES", explodeOnFailure(context, async, result -> {
-                    context.assertEquals(0, result.getRowSize());
-                    async2.complete();
-                }));
+                String showTablesSql = "SHOW TABLES";
+                connection.query(
+                        explodeOnFailure(context, async, result -> {
+                            context.assertFalse(result.hasNext());
+                            async2.complete();
+                        }), 
+                        showTablesSql);
         }));
     }
 }

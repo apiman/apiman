@@ -9,5 +9,6 @@ X-Policy-Failure-Code: 10001
 
 {
     "type" : "Authorization",
-    "failureCode" : 10001
+    "failureCode" : 10001,
+    "responseCode" : 403
 }

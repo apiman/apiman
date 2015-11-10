@@ -64,11 +64,12 @@ public interface SpecHelpers {
         client.connect(explodeOnFailure(context, async, connectionResult -> {
             System.out.println("Successfully connected!");
             IJdbcConnection connection = connectionResult;
-            connection.execute("DROP ALL OBJECTS DELETE FILES", explodeOnFailure(context, async,
+            connection.execute(explodeOnFailure(context, async,
                     onSuccess -> {
                         System.out.println("Successfully reset DB!");
                         async.complete();
-                    }));
+                    }),
+                    "DROP ALL OBJECTS DELETE FILES");
         }));
     }
 
@@ -79,13 +80,15 @@ public interface SpecHelpers {
         client.connect(explodeOnFailure(context, async, connectionResult -> {
                 System.out.println("Successfully connected!");
                 IJdbcConnection connection = connectionResult;
-                connection.execute("create table APIMAN\n" +
+                String createTableSql = "create table APIMAN\n" +
                         "    (PLACE_ID integer NOT NULL,\n" +
                         "    COUNTRY varchar(40) NOT NULL,\n" +
                         "    CITY varchar(20) NOT NULL,\n" +
                         "    FOUNDING datetime NOT NULL,\n" +
-                        "    PRIMARY KEY (PLACE_ID));", explodeOnFailure(context, async, onSuccess -> { async.complete(); })
-                        );
+                        "    PRIMARY KEY (PLACE_ID));";
+                connection.execute(
+                        explodeOnFailure(context, async, onSuccess -> { async.complete(); }),
+                        createTableSql);
         }));
     }
 
@@ -94,21 +97,26 @@ public interface SpecHelpers {
         IJdbcComponent component = new JdbcClientComponentImpl(vertx, null, null); // Other two params aren't used.
         IJdbcClient client = component.createStandalone(options);
         client.connect(explodeOnFailure(context, async, connectionResult -> {
-                System.out.println("Successfully connected!");
-                IJdbcConnection connection = connectionResult;
-                connection.execute("create table APIMAN\n" +
-                        "    (PLACE_ID integer NOT NULL,\n" +
-                        "    COUNTRY varchar(40) NOT NULL,\n" +
-                        "    CITY varchar(20) NOT NULL,\n" +
-                        "    FOUNDING datetime NOT NULL,\n" +
-                        "    PRIMARY KEY (PLACE_ID));", explodeOnFailure(context, async, onSuccess1 -> {
-                                connection.execute("insert into APIMAN (PLACE_ID, COUNTRY, CITY, FOUNDING)\n" +
-                                    "     VALUES  (1, 'Seychelles', 'Victoria', '1976-06-29 00:00:00'), " + // June 29, 1976
-                                    "             (2, 'United States', 'Newtown', '1788-01-09 00:00:00')," + // January 9, 1788
-                                    "             (3, 'United States', 'Miami', '1896-07-28 00:00:00');", // July 28, 1896
-                                    explodeOnFailure(context, async, onSuccess2 -> { async.complete(); }));
-                            })
-                        );
+            System.out.println("Successfully connected!");
+            IJdbcConnection connection = connectionResult;
+            String createTableSql = "create table APIMAN\n" +
+                    "    (PLACE_ID integer NOT NULL,\n" +
+                    "    COUNTRY varchar(40) NOT NULL,\n" +
+                    "    CITY varchar(20) NOT NULL,\n" +
+                    "    FOUNDING datetime NOT NULL,\n" +
+                    "    PRIMARY KEY (PLACE_ID));";
+            String insertSql = "insert into APIMAN (PLACE_ID, COUNTRY, CITY, FOUNDING)\n" +
+                    "     VALUES  (1, 'Seychelles', 'Victoria', '1976-06-29 00:00:00'), " + // June 29, 1976
+                    "             (2, 'United States', 'Newtown', '1788-01-09 00:00:00')," + // January 9, 1788
+                    "             (3, 'United States', 'Miami', '1896-07-28 00:00:00');"; // July 28, 1896
+            connection.execute(
+                    explodeOnFailure(context, async, onSuccess1 -> {
+                        connection.execute(
+                                explodeOnFailure(context, async, onSuccess2 -> { async.complete(); }),
+                                insertSql);
+                    }),
+                    createTableSql
+                    );
         }));
     }
 }

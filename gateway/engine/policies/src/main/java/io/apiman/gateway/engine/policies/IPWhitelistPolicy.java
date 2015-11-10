@@ -59,14 +59,13 @@ public class IPWhitelistPolicy extends AbstractIPListPolicy<IPListConfig> {
             IPolicyFailureFactoryComponent ffactory = context.getComponent(IPolicyFailureFactoryComponent.class);
             String msg = Messages.i18n.format("IPWhitelistPolicy.NotWhitelisted", remoteAddr); //$NON-NLS-1$
             PolicyFailure failure = ffactory.createFailure(PolicyFailureType.Other, PolicyFailureCodes.IP_NOT_WHITELISTED, msg);
-            if (config.getResponseCode() >= 400) {
-                failure.setResponseCode(config.getResponseCode());
-            }
+            failure.setResponseCode(config.getResponseCode());
             if (config.getResponseCode() == 404) {
                 failure.setType(PolicyFailureType.NotFound);
-            }
-            if (config.getResponseCode() == 403) {
+            } else if (config.getResponseCode() == 403) {
                 failure.setType(PolicyFailureType.Authorization);
+            } else if (config.getResponseCode() == 0) {
+                failure.setResponseCode(500);
             }
             chain.doFailure(failure);
         }

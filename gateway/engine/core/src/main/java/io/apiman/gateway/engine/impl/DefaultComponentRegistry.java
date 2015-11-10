@@ -22,6 +22,7 @@ import io.apiman.gateway.engine.components.ICacheStoreComponent;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.components.IRateLimiterComponent;
 import io.apiman.gateway.engine.components.ISharedStateComponent;
+import io.apiman.gateway.engine.components.jdbc.IJdbcComponent;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -79,6 +80,10 @@ public class DefaultComponentRegistry implements IComponentRegistry {
 
     protected void registerCacheStoreComponent() {
         addComponent(ICacheStoreComponent.class, new InMemoryCacheStoreComponent());
+    }
+
+    protected void registerJdbcComponent() {
+        addComponent(IJdbcComponent.class, new DefaultJdbcComponent());
     }
 
     /**

@@ -66,13 +66,15 @@ public class CreateTableTest {
         client.connect(explodeOnFailure(context, async, connectionResult -> {
                 System.out.println("Successfully connected!");
                 IJdbcConnection connection = connectionResult;
-                connection.execute("create table APIMAN\n" +
+                String createTableSql = "create table APIMAN\n" +
                         "    (PLACE_ID integer NOT NULL,\n" +
                         "    COUNTRY varchar(40) NOT NULL,\n" +
                         "    CITY varchar(20) NOT NULL,\n" +
                         "    FOUNDING datetime NOT NULL,\n" +
-                        "    PRIMARY KEY (PLACE_ID));", explodeOnFailure(context, async, onSuccess -> { async.complete(); })
-                        );
+                        "    PRIMARY KEY (PLACE_ID));";
+                connection.execute(
+                        explodeOnFailure(context, async, onSuccess -> { async.complete(); }),
+                        createTableSql);
         }));
     }
 }

@@ -29,22 +29,23 @@ import java.sql.Connection;
  */
 public interface IJdbcConnection extends AutoCloseable {
 
-    // TODO: there are no begintx/endtx statements seemingly?
     /**
      * Run a query, get the results back to iterate through.
      *
-     * @param query the query
-     * @param result the result
+     * @param handler the result handler
+     * @param sql the sql query (with ?'s for params)
+     * @param params the parameter values
      */
-    void query(String query, IAsyncResultHandler<IJdbcResultSet> result);
+    void query(IAsyncResultHandler<IJdbcResultSet> handler, String sql, Object ... params);
 
     /**
      * Run a query, but don't need a result-set. For instance, DROP, CREATE.
      *
-     * @param query the query
-     * @param result the result set
+     * @param handler the handler
+     * @param sql the sql statement (with ?'s for params)
+     * @param params the parameter values
      */
-    void execute(String query, IAsyncResultHandler<Void> result);
+    void execute(IAsyncResultHandler<Void> handler, String sql, Object ... params);
 
     /**
      * Set auto-commit status (probably best to explicitly set this?). TODO Should we have a default?
@@ -52,27 +53,32 @@ public interface IJdbcConnection extends AutoCloseable {
      * @param autoCommit the auto-commit status
      * @param result the result
      */
-    void setAutoCommit(boolean autoCommit, IAsyncResultHandler<Void> result);
+    void setAutoCommit(boolean autoCommit, IAsyncResultHandler<Void> handler);
 
     /**
      * Commit transaction
      *
-     * @param result the result
+     * @param handler the handler
      */
-    void commit(IAsyncResultHandler<Void> result);
+    void commit(IAsyncResultHandler<Void> handler);
 
     /**
      * Abort transaction
      *
-     * @param result the result
+     * @param handler the handler
      */
-    void rollback(IAsyncResultHandler<Void> result);
+    void rollback(IAsyncResultHandler<Void> handler);
 
     /**
-     * In addition to AutoCloseable we can have a version that provides a result.
+     * In addition to AutoCloseable we can have a version that provides a handler.
      * Closes any associated connection(s).
      *
-     * @param result the result
+     * @param handler the handler
      */
-    void close(IAsyncResultHandler<Void> result);
+    void close(IAsyncResultHandler<Void> handler);
+    
+    /**
+     * Returns true iff the connection has been closed.
+     */
+    boolean isClosed() throws Exception;
 }

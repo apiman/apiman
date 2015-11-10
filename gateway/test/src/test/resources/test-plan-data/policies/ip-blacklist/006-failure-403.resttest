@@ -1,14 +1,14 @@
 GET /Policy_IPBlacklistTest/echo/1.0.0/path/to/app/resource admin/admin
-X-API-Key: 54321_404
+X-API-Key: 54321_403
 
 ----
-404
+403
 Content-Type: application/json
-X-Policy-Failure-Type: NotFound
+X-Policy-Failure-Type: Authorization
 X-Policy-Failure-Code: 10002
 
 {
-    "type" : "NotFound",
+    "type" : "Authorization",
     "failureCode" : 10002,
-    "responseCode" : 404
+    "responseCode" : 403
 }

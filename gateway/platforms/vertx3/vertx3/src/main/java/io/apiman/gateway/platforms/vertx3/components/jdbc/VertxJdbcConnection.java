@@ -29,13 +29,23 @@ import io.vertx.ext.sql.SQLConnection;
 public class VertxJdbcConnection implements IJdbcConnection {
 
     private SQLConnection connection;
+    private boolean closed;
 
+    /**
+     * Constructor.
+     * @param connection
+     */
     public VertxJdbcConnection(SQLConnection connection) {
         this.connection = connection;
+        this.closed = false;
     }
-
+    
+    /**
+     * @see io.apiman.gateway.engine.components.jdbc.IJdbcConnection#query(io.apiman.gateway.engine.async.IAsyncResultHandler, java.lang.String, java.lang.Object[])
+     */
     @Override
-    public void query(String query, IAsyncResultHandler<IJdbcResultSet> handler) {
+    public void query(IAsyncResultHandler<IJdbcResultSet> handler, String sql, Object... params) {
+        String query = format(sql, params);
         connection.query(query, result -> {
             if (result.succeeded()) {
                 VertxJdbcResultSet jdbcResultSet = new VertxJdbcResultSet(result.result());
@@ -45,35 +55,51 @@ public class VertxJdbcConnection implements IJdbcConnection {
             }
         });
     }
-
+    
+    /**
+     * @see io.apiman.gateway.engine.components.jdbc.IJdbcConnection#execute(io.apiman.gateway.engine.async.IAsyncResultHandler, java.lang.String, java.lang.Object[])
+     */
     @Override
-    public void execute(String query, IAsyncResultHandler<Void> handler) {
-        connection.execute(query, translateVoidHandlers(handler));
+    public void execute(IAsyncResultHandler<Void> handler, String sql, Object... params) {
+        String statement = format(sql, params);
+        connection.execute(statement, translateVoidHandlers(handler));
     }
 
     @Override
-    public void setAutoCommit(boolean autoCommit, IAsyncResultHandler<Void> result) {
-        connection.setAutoCommit(autoCommit, translateVoidHandlers(result));
+    public void setAutoCommit(boolean autoCommit, IAsyncResultHandler<Void> handler) {
+        connection.setAutoCommit(autoCommit, translateVoidHandlers(handler));
     }
 
     @Override
-    public void commit(IAsyncResultHandler<Void> result) {
-        connection.commit(translateVoidHandlers(result));
+    public void commit(IAsyncResultHandler<Void> handler) {
+        connection.commit(translateVoidHandlers(handler));
     }
 
     @Override
-    public void rollback(IAsyncResultHandler<Void> result) {
-        connection.rollback(translateVoidHandlers(result));
+    public void rollback(IAsyncResultHandler<Void> handler) {
+        connection.rollback(translateVoidHandlers(handler));
     }
 
     @Override
-    public void close(IAsyncResultHandler<Void> result) {
-        connection.close(translateVoidHandlers(result));
+    public void close(IAsyncResultHandler<Void> handler) {
+        connection.close(translateVoidHandlers(handler));
+        closed = true;
     }
 
     @Override
     public void close() throws Exception {
         connection.close();
+        closed = true;
+    }
+    
+    @Override
+    public boolean isClosed() throws Exception {
+        return closed;
+    }
+
+    private String format(String sql, Object[] params) {
+        // TODO format the sql - replace all ?'s with appropriate param values
+        return sql;
     }
 
     private Handler<AsyncResult<Void>> translateVoidHandlers(IAsyncResultHandler<Void> apimanResult) {

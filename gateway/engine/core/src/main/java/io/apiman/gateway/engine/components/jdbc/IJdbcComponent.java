@@ -15,6 +15,8 @@
  */
 package io.apiman.gateway.engine.components.jdbc;
 
+import io.apiman.gateway.engine.IComponent;
+
 import javax.sql.DataSource;
 
 /**
@@ -22,7 +24,7 @@ import javax.sql.DataSource;
  *
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
-public interface IJdbcComponent {
+public interface IJdbcComponent extends IComponent {
 
     /**
      * Create a shared data source.

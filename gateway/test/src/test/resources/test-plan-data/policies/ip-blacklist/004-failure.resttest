@@ -9,5 +9,6 @@ X-Policy-Failure-Code: 10002
 
 {
     "type" : "Other",
-    "failureCode" : 10002
+    "failureCode" : 10002,
+    "responseCode" : 500
 }

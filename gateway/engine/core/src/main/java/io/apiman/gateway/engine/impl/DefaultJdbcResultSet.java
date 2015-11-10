@@ -13,31 +13,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apiman.gateway.platforms.vertx3.components.jdbc;
+
+package io.apiman.gateway.engine.impl;
 
 import io.apiman.gateway.engine.components.jdbc.IJdbcResultSet;
-import io.vertx.core.json.JsonArray;
-import io.vertx.ext.jdbc.impl.actions.AbstractJDBCStatement;
-import io.vertx.ext.sql.ResultSet;
 
 import java.math.BigDecimal;
-import java.util.Base64;
+import java.sql.Date;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.joda.time.DateTime;
 
 /**
-* @author Marc Savy {@literal <msavy@redhat.com>}
-*/
-public class VertxJdbcResultSet implements IJdbcResultSet {
-
+ * A simple/default implementation of a {@link IJdbcResultSet}.
+ *
+ * @author eric.wittmann@redhat.com
+ */
+public class DefaultJdbcResultSet implements IJdbcResultSet {
+    
     private ResultSet resultSet;
-    private int row = -1;
-    private List<JsonArray> rows;
+    private List<String> columnNames;
 
-    public VertxJdbcResultSet(ResultSet resultSet) {
+    /**
+     * Constructor.
+     * @param resultSet
+     */
+    public DefaultJdbcResultSet(ResultSet resultSet) throws Exception {
         this.resultSet = resultSet;
-        rows = resultSet.getResults();
+        columnNames = new ArrayList<>();
+        ResultSetMetaData metaData = resultSet.getMetaData();
+        int cols = metaData.getColumnCount();
+        for (int i = 1; i <= cols; i++) {
+          columnNames.add(metaData.getColumnLabel(i));
+        }
     }
     
     /**
@@ -45,136 +57,160 @@ public class VertxJdbcResultSet implements IJdbcResultSet {
      */
     @Override
     public List<String> getColumnNames() {
-        return resultSet.getColumnNames();
+        return columnNames;
     }
-
-    /* (non-Javadoc)
-     * @see io.apiman.gateway.engine.components.jdbc.IJdbcResultSet#getColumnSize()
+    
+    /**
+     * @see io.apiman.gateway.engine.components.jdbc.IJdbcResultSet#getNumColumns()
      */
     @Override
     public int getNumColumns() {
-        return resultSet.getNumColumns();
+        return columnNames.size();
     }
 
-    /* (non-Javadoc)
+    /**
      * @see io.apiman.gateway.engine.components.jdbc.IJdbcResultSet#getRow()
      */
     @Override
     public int getRow() {
-        return row;
+        try {
+            return resultSet.getRow();
+        } catch (SQLException e) {
+            return -1;
+        }
     }
 
-    protected int getNumRows() {
-        return resultSet.getNumRows();
-    }
-
-    /* (non-Javadoc)
+    /**
      * @see io.apiman.gateway.engine.components.jdbc.IJdbcResultSet#next()
      */
     @Override
     public void next() {
-        row += 1;
+        try {
+            resultSet.next();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
-    /* (non-Javadoc)
+    /**
      * @see io.apiman.gateway.engine.components.jdbc.IJdbcResultSet#hasNext()
      */
     @Override
     public boolean hasNext() {
-        return (row + 1) < getNumRows();
-    }
-
-    private void indexCheck() {
-        if (row > (getNumRows()-1)) {
-            throw new ArrayIndexOutOfBoundsException(
-                    String.format("Row size: %d. Attempted invalid index: %d", getNumRows(), row + 1)); //$NON-NLS-1$
+        try {
+            return !resultSet.isLast();
+        } catch (SQLException e) {
+            return true;
         }
     }
 
-    /* (non-Javadoc)
+    /**
      * @see io.apiman.gateway.engine.components.jdbc.IJdbcResultSet#getString(int)
      */
     @Override
     public String getString(int index) throws IndexOutOfBoundsException {
-        indexCheck();
-        return rows.get(row).getString(index);
+        try {
+            return resultSet.getString(index);
+        } catch (SQLException e) {
+            return null;
+        }
     }
 
-    /* (non-Javadoc)
+    /**
      * @see io.apiman.gateway.engine.components.jdbc.IJdbcResultSet#getShort(int)
      */
     @Override
     public Short getShort(int index) throws IndexOutOfBoundsException {
-        indexCheck();
-        return (short) rows.get(row).getInteger(index).intValue();
+        try {
+            return resultSet.getShort(index);
+        } catch (SQLException e) {
+            return null;
+        }
     }
 
-    /* (non-Javadoc)
+    /**
      * @see io.apiman.gateway.engine.components.jdbc.IJdbcResultSet#getInteger(int)
      */
     @Override
     public Integer getInteger(int index) {
-        indexCheck();
-        return rows.get(row).getInteger(index);
+        try {
+            return resultSet.getInt(index);
+        } catch (SQLException e) {
+            return null;
+        }
     }
 
-    /* (non-Javadoc)
+    /**
      * @see io.apiman.gateway.engine.components.jdbc.IJdbcResultSet#getLong(int)
      */
     @Override
     public Long getLong(int index) {
-        indexCheck();
-        return rows.get(row).getLong(index);
+        try {
+            return resultSet.getLong(index);
+        } catch (SQLException e) {
+            return null;
+        }
     }
 
-    /* (non-Javadoc)
+    /**
      * @see io.apiman.gateway.engine.components.jdbc.IJdbcResultSet#getDouble(int)
      */
     @Override
     public Double getDouble(int index) {
-        indexCheck();
-        return rows.get(row).getDouble(index);
+        try {
+            return resultSet.getDouble(index);
+        } catch (SQLException e) {
+            return null;
+        }
     }
 
     /**
-     * Looking at Vert.x source code this /should/ work. See: {@link AbstractJDBCStatement#convertSqlValue}
-     *
      * @see io.apiman.gateway.engine.components.jdbc.IJdbcResultSet#getBigDecimal(int)
      */
     @Override
     public BigDecimal getBigDecimal(int index) {
-        indexCheck();
-        return (BigDecimal) rows.get(row).getValue(index);
+        try {
+            return resultSet.getBigDecimal(index);
+        } catch (SQLException e) {
+            return null;
+        }
     }
 
-    /* (non-Javadoc)
+    /**
      * @see io.apiman.gateway.engine.components.jdbc.IJdbcResultSet#getBoolean(int)
      */
     @Override
     public Boolean getBoolean(int index) {
-        return rows.get(row).getBoolean(index);
+        try {
+            return resultSet.getBoolean(index);
+        } catch (SQLException e) {
+            return null;
+        }
     }
 
     /**
-     * Vert.x turns byte[] into a B64 encoded string. Reverse it.
-     *
      * @see io.apiman.gateway.engine.components.jdbc.IJdbcResultSet#getBytes(int)
      */
     @Override
     public byte[] getBytes(int index) {
-        String b64String = rows.get(row).getString(index);
-        return Base64.getDecoder().decode(b64String);
+        try {
+            return resultSet.getBytes(index);
+        } catch (SQLException e) {
+            return null;
+        }
     }
 
-    /** (non-Javadoc)
-     *
-     * Should be OK as Vert.x uses ISO to turn timestamp, date, time, etc into a string.s
-     *
+    /**
      * @see io.apiman.gateway.engine.components.jdbc.IJdbcResultSet#getDateTime(int)
      */
     @Override
     public DateTime getDateTime(int index) {
-        return new DateTime(rows.get(row).getString(index));
+        try {
+            Date date = resultSet.getDate(index);
+            return new DateTime(date);
+        } catch (SQLException e) {
+            return null;
+        }
     }
 
     /**
@@ -182,7 +218,11 @@ public class VertxJdbcResultSet implements IJdbcResultSet {
      */
     @Override
     public void close() {
-        // Nothing to do for vert.x
+        try {
+            resultSet.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
 }

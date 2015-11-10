@@ -1,14 +1,14 @@
 GET /Policy_IPWhitelistTest/echo/1.0.0/path/to/app/resource admin/admin
-X-API-Key: 12345
+X-API-Key: 12345_404
 
 ----
-500
+404
 Content-Type: application/json
-X-Policy-Failure-Type: Other
+X-Policy-Failure-Type: NotFound
 X-Policy-Failure-Code: 10001
 
 {
-    "type" : "Other",
+    "type" : "NotFound",
     "failureCode" : 10001,
-    "responseCode" : 500
+    "responseCode" : 404
 }

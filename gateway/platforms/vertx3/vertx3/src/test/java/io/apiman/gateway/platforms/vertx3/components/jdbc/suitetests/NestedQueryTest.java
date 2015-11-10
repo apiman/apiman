@@ -73,16 +73,16 @@ public class NestedQueryTest {
         client.connect(explodeOnFailure(context, async, connectionResult -> {
                 System.out.println("Successfully connected!");
                 IJdbcConnection connection = connectionResult;
-                connection.execute("DELETE FROM APIMAN\n" +
-                        "     WHERE CITY='Newtown'",
+                String sql = "DELETE FROM APIMAN\n" +
+                        "     WHERE CITY='Newtown'";
+                connection.execute(
                         explodeOnFailure(context, async, onSuccess -> {
-
-                            connection.query("SELECT * FROM APIMAN;",
+                            connection.query(
                                     explodeOnFailure(context, async, queryResult -> {
-                                            context.assertEquals(2, queryResult.getRowSize());
-                                            context.assertEquals(4, queryResult.getColumnSize());
+                                            context.assertEquals(4, queryResult.getNumColumns());
 
-                                            queryResult.first();
+                                            queryResult.next();
+
                                             // Assert Seychelles
                                             context.assertEquals(1, queryResult.getInteger(0));
                                             context.assertEquals("Seychelles", queryResult.getString(1));
@@ -97,8 +97,8 @@ public class NestedQueryTest {
                                             context.assertEquals(new DateTime("1896-07-28T00:00:00.000"), queryResult.getDateTime(3));
 
                                             async.complete();
-                                    }));
-                        }));
+                                    }), "SELECT * FROM APIMAN;");
+                        }), sql);
         }));
     }
 
