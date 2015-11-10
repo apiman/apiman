@@ -76,7 +76,7 @@ public class DefaultJdbcConnection implements IJdbcConnection {
             IJdbcResultSet rval = new DefaultJdbcResultSet(resultSet);
             handler.handle(AsyncResultImpl.create(rval));
         } catch (Exception e) {
-            handler.handle(AsyncResultImpl.create(e));
+            handler.handle(AsyncResultImpl.create(e, IJdbcResultSet.class));
         }
     }
     
@@ -94,7 +94,7 @@ public class DefaultJdbcConnection implements IJdbcConnection {
             statement.execute();
             handler.handle(AsyncResultImpl.create(null));
         } catch (Exception e) {
-            handler.handle(AsyncResultImpl.create(e));
+            handler.handle(AsyncResultImpl.create(e, Void.class));
         }
     }
 
@@ -107,7 +107,7 @@ public class DefaultJdbcConnection implements IJdbcConnection {
             connection.setAutoCommit(autoCommit);
             handler.handle(AsyncResultImpl.create(null));
         } catch (SQLException e) {
-            handler.handle(AsyncResultImpl.create(e));
+            handler.handle(AsyncResultImpl.create(e, Void.class));
         }
     }
 
@@ -120,7 +120,7 @@ public class DefaultJdbcConnection implements IJdbcConnection {
             connection.commit();
             handler.handle(AsyncResultImpl.create(null));
         } catch (SQLException e) {
-            handler.handle(AsyncResultImpl.create(e));
+            handler.handle(AsyncResultImpl.create(e, Void.class));
         }
     }
 
@@ -133,7 +133,7 @@ public class DefaultJdbcConnection implements IJdbcConnection {
             connection.rollback();
             handler.handle(AsyncResultImpl.create(null));
         } catch (SQLException e) {
-            handler.handle(AsyncResultImpl.create(e));
+            handler.handle(AsyncResultImpl.create(e, Void.class));
         }
     }
 
@@ -146,7 +146,7 @@ public class DefaultJdbcConnection implements IJdbcConnection {
             connection.close();
             handler.handle(AsyncResultImpl.create(null));
         } catch (SQLException e) {
-            handler.handle(AsyncResultImpl.create(e));
+            handler.handle(AsyncResultImpl.create(e, Void.class));
         }
     }
 
