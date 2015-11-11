@@ -84,11 +84,12 @@ public class DefaultJdbcResultSet implements IJdbcResultSet {
      * @see io.apiman.gateway.engine.components.jdbc.IJdbcResultSet#next()
      */
     @Override
-    public void next() {
+    public boolean next() {
         try {
-            resultSet.next();
+            return resultSet.next();
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
     }
 

@@ -19,6 +19,8 @@ import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.beans.PolicyFailureType;
 import io.apiman.gateway.engine.beans.ServiceRequest;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
+import io.apiman.gateway.engine.components.jdbc.IJdbcComponent;
+import io.apiman.gateway.engine.impl.DefaultJdbcComponent;
 import io.apiman.gateway.engine.policies.config.BasicAuthenticationConfig;
 import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
@@ -94,6 +96,7 @@ public class BasicAuthJDBCTest {
                 return failure;
             }
         });
+        Mockito.when(context.getComponent(IJdbcComponent.class)).thenReturn(new DefaultJdbcComponent());
         IPolicyChain<ServiceRequest> chain = Mockito.mock(IPolicyChain.class);
 
         // Failure
@@ -139,6 +142,7 @@ public class BasicAuthJDBCTest {
         request.setRemoteAddr("1.2.3.4");
         request.setDestination("/");
         IPolicyContext context = Mockito.mock(IPolicyContext.class);
+        Mockito.when(context.getComponent(IJdbcComponent.class)).thenReturn(new DefaultJdbcComponent());
         IPolicyChain<ServiceRequest> chain = Mockito.mock(IPolicyChain.class);
 
         // Success

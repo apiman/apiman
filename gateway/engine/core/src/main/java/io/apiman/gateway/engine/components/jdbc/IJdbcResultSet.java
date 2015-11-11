@@ -51,7 +51,7 @@ public interface IJdbcResultSet {
     /**
      * Point at next row in result set
      */
-    void next();
+    boolean next();
 
     /**
      * Indicates whether there is another row in the results

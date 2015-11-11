@@ -68,12 +68,14 @@ public class VertxJdbcResultSet implements IJdbcResultSet {
         return resultSet.getNumRows();
     }
 
-    /* (non-Javadoc)
+    /**
      * @see io.apiman.gateway.engine.components.jdbc.IJdbcResultSet#next()
      */
     @Override
-    public void next() {
+    public boolean next() {
+        boolean isok = hasNext();
         row += 1;
+        return isok;
     }
 
     /* (non-Javadoc)
