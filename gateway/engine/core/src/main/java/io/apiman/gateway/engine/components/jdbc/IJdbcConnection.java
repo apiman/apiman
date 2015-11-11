@@ -51,7 +51,7 @@ public interface IJdbcConnection extends AutoCloseable {
      * Set auto-commit status (probably best to explicitly set this?). TODO Should we have a default?
      *
      * @param autoCommit the auto-commit status
-     * @param result the result
+     * @param handler the result handler
      */
     void setAutoCommit(boolean autoCommit, IAsyncResultHandler<Void> handler);
 
@@ -76,9 +76,12 @@ public interface IJdbcConnection extends AutoCloseable {
      * @param handler the handler
      */
     void close(IAsyncResultHandler<Void> handler);
-    
+
     /**
-     * Returns true iff the connection has been closed.
+     * Indicates if the connection is closed.
+     *
+     * @return true iff the connection has been closed, else false.
+     * @throws Exception the exception
      */
     boolean isClosed() throws Exception;
 }
