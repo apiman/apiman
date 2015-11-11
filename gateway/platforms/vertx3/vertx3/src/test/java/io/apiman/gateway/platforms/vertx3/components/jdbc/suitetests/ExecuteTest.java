@@ -83,6 +83,40 @@ public class ExecuteTest {
     }
 
     @Test
+    public void shouldInsertRecordsWithParams(TestContext context) {
+        Async async = context.async();
+        Async async2 = context.async();
+
+        IJdbcComponent component = new JdbcClientComponentImpl(rule.vertx(), null, null); // Other two params aren't used.
+        IJdbcClient client = component.createStandalone(options);
+        client.connect(explodeOnFailure(context, async, connectionResult -> {
+                IJdbcConnection connection = connectionResult;
+                String insertSql = "insert into APIMAN (PLACE_ID, COUNTRY, CITY, FOUNDING)\n" +
+                        "     VALUES  (?, 'Seychelles', 'Victoria', '1976-06-29 00:00:00'), " + // June 29, 1976
+                        "             (?, 'United States', 'Newtown', '1788-01-09 00:00:00')," + // January 9, 1788
+                        "             (?, 'United States', 'Miami', '1896-07-28 00:00:00');";
+                connection.execute(
+                        explodeOnFailure(context, async, onSuccess -> { async.complete(); }),
+                        insertSql,
+                        33, 22, 11);
+
+                connection.query(explodeOnFailure(context, async, result -> {
+                        result.next();
+                        context.assertEquals(11, result.getInteger(0));
+
+                        result.next();
+                        context.assertEquals(22, result.getInteger(0));
+
+                        result.next();
+                        context.assertEquals(33, result.getInteger(0));
+
+                        async2.complete();
+                    }),
+                    "SELECT * FROM APIMAN;");
+        }));
+    }
+
+    @Test
     public void shouldDeleteTable(TestContext context) {
         Async async = context.async();
         Async async2 = context.async();
@@ -104,7 +138,7 @@ public class ExecuteTest {
                         explodeOnFailure(context, async, result -> {
                             context.assertFalse(result.hasNext());
                             async2.complete();
-                        }), 
+                        }),
                         showTablesSql);
         }));
     }
