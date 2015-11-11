@@ -69,9 +69,7 @@ public class BasicAuthJDBCTest {
      * Test method for {@link io.apiman.gateway.engine.policies.BasicAuthenticationPolicy#apply(ServiceRequest, IPolicyContext, Object, IPolicyChain)}.
      */
     @Test
-    public void testApplyJdbcNoRoles() throws Exception {
-        // A live LDAP server is required to run this test!
-        BasicAuthenticationPolicy policy = new BasicAuthenticationPolicy();
+    public void testApplyJdbcNoRoles_DS() throws Exception {
         String json =
                 "{\r\n" +
                 "    \"realm\" : \"TestRealm\",\r\n" +
@@ -82,6 +80,80 @@ public class BasicAuthJDBCTest {
                 "        \"hashAlgorithm\" : \"SHA1\"\r\n" +
                 "    }\r\n" +
                 "}";
+        testApplyJdbcNoRoles(json);
+    }
+
+    /**
+     * Test method for {@link io.apiman.gateway.engine.policies.BasicAuthenticationPolicy#apply(ServiceRequest, IPolicyContext, Object, IPolicyChain)}.
+     */
+    @Test
+    public void testApplyJdbcWithRoles_DS() throws Exception {
+        String json =
+                "{\r\n" +
+                "    \"realm\" : \"TestRealm\",\r\n" +
+                "    \"forwardIdentityHttpHeader\" : \"X-Authenticated-Identity\",\r\n" +
+                "    \"jdbcIdentity\" : {\r\n" +
+                "        \"datasourcePath\" : \"jdbc/BasicAuthJDBCTest\",\r\n" +
+                "        \"query\" : \"SELECT * FROM users WHERE username = ? AND password = ?\",\r\n" +
+                "        \"hashAlgorithm\" : \"SHA1\",\r\n" +
+                "        \"extractRoles\" : true,\r\n" +
+                "        \"roleQuery\" : \"SELECT r.rolename FROM roles r WHERE r.username = ?\"\r\n" +
+                "    }\r\n" +
+                "}";
+        testApplyJdbcWithRoles(json);
+    }
+
+    /**
+     * Test method for {@link io.apiman.gateway.engine.policies.BasicAuthenticationPolicy#apply(ServiceRequest, IPolicyContext, Object, IPolicyChain)}.
+     */
+    @Test
+    public void testApplyJdbcNoRoles_URL() throws Exception {
+        String json =
+                "{\r\n" +
+                "    \"realm\" : \"TestRealm\",\r\n" +
+                "    \"forwardIdentityHttpHeader\" : \"X-Authenticated-Identity\",\r\n" +
+                "    \"jdbcIdentity\" : {\r\n" +
+                "        \"type\" : \"url\",\r\n" +
+                "        \"jdbcUrl\" : \"jdbc:h2:mem:BasicAuthJDBCTest;DB_CLOSE_DELAY=-1\",\r\n" +
+                "        \"username\" : \"sa\",\r\n" +
+                "        \"password\" : \"\",\r\n" +
+                "        \"query\" : \"SELECT * FROM users WHERE username = ? AND password = ?\",\r\n" +
+                "        \"hashAlgorithm\" : \"SHA1\"\r\n" +
+                "    }\r\n" +
+                "}";
+        testApplyJdbcNoRoles(json);
+    }
+
+    /**
+     * Test method for {@link io.apiman.gateway.engine.policies.BasicAuthenticationPolicy#apply(ServiceRequest, IPolicyContext, Object, IPolicyChain)}.
+     */
+    @Test
+    public void testApplyJdbcWithRoles_URL() throws Exception {
+        String json =
+                "{\r\n" +
+                "    \"realm\" : \"TestRealm\",\r\n" +
+                "    \"forwardIdentityHttpHeader\" : \"X-Authenticated-Identity\",\r\n" +
+                "    \"jdbcIdentity\" : {\r\n" +
+                "        \"type\" : \"url\",\r\n" +
+                "        \"jdbcUrl\" : \"jdbc:h2:mem:BasicAuthJDBCTest;DB_CLOSE_DELAY=-1\",\r\n" +
+                "        \"username\" : \"sa\",\r\n" +
+                "        \"password\" : \"\",\r\n" +
+                "        \"query\" : \"SELECT * FROM users WHERE username = ? AND password = ?\",\r\n" +
+                "        \"hashAlgorithm\" : \"SHA1\",\r\n" +
+                "        \"extractRoles\" : true,\r\n" +
+                "        \"roleQuery\" : \"SELECT r.rolename FROM roles r WHERE r.username = ?\"\r\n" +
+                "    }\r\n" +
+                "}";
+        testApplyJdbcWithRoles(json);
+    }
+
+    /**
+     * @param json
+     * @throws Exception
+     */
+    public void testApplyJdbcNoRoles(String json) throws Exception {
+        // A live LDAP server is required to run this test!
+        BasicAuthenticationPolicy policy = new BasicAuthenticationPolicy();
         BasicAuthenticationConfig config = policy.parseConfiguration(json);
         ServiceRequest request = new ServiceRequest();
         request.setType("GET");
@@ -115,26 +187,10 @@ public class BasicAuthJDBCTest {
         policy.apply(request, context, config, chain);
         Mockito.verify(chain).doApply(request);
     }
-
-    /**
-     * Test method for {@link io.apiman.gateway.engine.policies.BasicAuthenticationPolicy#apply(ServiceRequest, IPolicyContext, Object, IPolicyChain)}.
-     */
-    @Test
-    public void testApplyJdbcWithRoles() throws Exception {
+    
+    public void testApplyJdbcWithRoles(String json) throws Exception {
         // A live LDAP server is required to run this test!
         BasicAuthenticationPolicy policy = new BasicAuthenticationPolicy();
-        String json =
-                "{\r\n" +
-                "    \"realm\" : \"TestRealm\",\r\n" +
-                "    \"forwardIdentityHttpHeader\" : \"X-Authenticated-Identity\",\r\n" +
-                "    \"jdbcIdentity\" : {\r\n" +
-                "        \"datasourcePath\" : \"jdbc/BasicAuthJDBCTest\",\r\n" +
-                "        \"query\" : \"SELECT * FROM users WHERE username = ? AND password = ?\",\r\n" +
-                "        \"hashAlgorithm\" : \"SHA1\",\r\n" +
-                "        \"extractRoles\" : true,\r\n" +
-                "        \"roleQuery\" : \"SELECT r.rolename FROM roles r WHERE r.username = ?\"\r\n" +
-                "    }\r\n" +
-                "}";
         BasicAuthenticationConfig config = policy.parseConfiguration(json);
         ServiceRequest request = new ServiceRequest();
         request.setType("GET");
@@ -155,7 +211,7 @@ public class BasicAuthJDBCTest {
         expectedRoles.add("user");
         Mockito.verify(context).setAttribute(AuthorizationPolicy.AUTHENTICATED_USER_ROLES, expectedRoles);
     }
-
+    
     /**
      * Creates the http Authorization string for the given credentials.
      * @param username
@@ -178,7 +234,7 @@ public class BasicAuthJDBCTest {
         ds.setDriverClassName(Driver.class.getName());
         ds.setUsername("sa"); //$NON-NLS-1$
         ds.setPassword(""); //$NON-NLS-1$
-        ds.setUrl("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1"); //$NON-NLS-1$
+        ds.setUrl("jdbc:h2:mem:BasicAuthJDBCTest;DB_CLOSE_DELAY=-1"); //$NON-NLS-1$
         Connection connection = ds.getConnection();
         connection.prepareStatement("CREATE TABLE users ( username varchar(255) NOT NULL, password varchar(255) NOT NULL, PRIMARY KEY (username))").executeUpdate();
         connection.prepareStatement("INSERT INTO users (username, password) VALUES ('bwayne', 'ae2efd698aefdf366736a4eda1bc5241f9fbfec7')").executeUpdate();

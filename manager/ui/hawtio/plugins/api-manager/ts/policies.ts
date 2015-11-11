@@ -472,8 +472,24 @@ module Apiman {
                 }
 
                 if (config.jdbcIdentity) {
-                    if (!config.jdbcIdentity.datasourcePath) {
-                        valid = false;
+                    if (config.jdbcIdentity.type == 'datasource' || !config.jdbcIdentity.type) {
+                        if (!config.jdbcIdentity.datasourcePath) {
+                            valid = false;
+                        }
+                    }
+
+                    if (config.jdbcIdentity.type == 'url') {
+                        if (!config.jdbcIdentity.jdbcUrl) {
+                            valid = false;
+                        }
+                        if (!config.jdbcIdentity.username) {
+                            valid = false;
+                        }
+                        if (config.jdbcIdentity.password) {
+                            if (config.jdbcIdentity.password != $scope.jdbcPasswordVerify) {
+                                valid = false;
+                            }
+                        }
                     }
 
                     if (!config.jdbcIdentity.query) {
@@ -487,9 +503,15 @@ module Apiman {
 
                 $scope.setValid(valid);
             };
+            
+            if ($scope.config && $scope.config.jdbcIdentity && !$scope.config.jdbcIdentity.type) {
+                $scope.config.jdbcIdentity.type = 'datasource';
+            }
 
             $scope.$watch('config', validate, true);
-
+            $scope.$watch('jdbcPasswordVerify', function() {
+                validate($scope.config);
+            });
             $scope.$watch('repeatPassword', function() {
                 validate($scope.config);
             });
@@ -502,6 +524,7 @@ module Apiman {
                     $scope.repeatPassword = $scope.config.ldapIdentity.credentials.password;
                 } else if ($scope.config.jdbcIdentity) {
                     $scope.identitySourceType = 'jdbc';
+                    $scope.jdbcPasswordVerify = $scope.config.jdbcIdentity.password;
                 }
             }
             
@@ -513,6 +536,7 @@ module Apiman {
                         delete $scope.config.jdbcIdentity;
                     } else if (newValue == 'jdbc' && !$scope.config.jdbcIdentity) {
                         $scope.config.jdbcIdentity = new Object();
+                        $scope.config.jdbcIdentity.type = 'datasource';
                         $scope.config.jdbcIdentity.hashAlgorithm = 'SHA1';
                         delete $scope.config.staticIdentity;
                         delete $scope.config.ldapIdentity;
@@ -523,6 +547,7 @@ module Apiman {
                         delete $scope.config.jdbcIdentity;
                     }
                 }
+                Logger.info('Config: {0}', $scope.config);
             });
 
             $scope.add = function(username, password) {

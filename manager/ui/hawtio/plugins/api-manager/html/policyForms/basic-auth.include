@@ -64,12 +64,41 @@
   <!-- JDBC Identity Source - Form Fields -->
   <div id="jdbc-form-fields" class="sub-form-fields" style="clear:both" ng-show="identitySourceType == 'jdbc'">
     <div>
-      <dl>
-        <dt apiman-i18n-key="jdbc-datasource">JDBC Datasource (JNDI Location)</dt>
+      <dl style="padding-top:15px">
+        <dt apiman-i18n-key="jdbc-type">JDBC Type</dt>
         <dd>
+          <select id="jdbc-type" ng-model="config.jdbcIdentity.type" apiman-select-picker="" class="selectpicker" data-live-search="false" ng-disabled="isEntityDisabled()">
+            <option value="datasource" apiman-i18n-key="basic-auth.jdbc.data-source" data-content="<span>Data Source</span>">Data Source</option>
+            <option value="url" apiman-i18n-key="url" data-content="<span>URL</span>">URL</option>
+          </select>
+        </dd>
+        
+        <!-- DataSource Input Fields -->
+        <dt ng-show="config.jdbcIdentity.type == 'datasource' || !config.jdbcIdentity.type" apiman-i18n-key="jdbc-datasource">JDBC Datasource (JNDI Location)</dt>
+        <dd ng-show="config.jdbcIdentity.type == 'datasource' || !config.jdbcIdentity.type">
           <input id="jdbc-datasource" ng-model="config.jdbcIdentity.datasourcePath" class="apiman-form-control form-control" type="text" apiman-i18n-key="basic-auth.ds.enter-jndi-loc" placeholder="JNDI Datasource location (example: jdbc/ExampleDS)" ng-disabled="isEntityDisabled()"></input>
         </dd>
-        <dt apiman-i18n-key="jdbc-query">SQL Query</dt>
+
+        <!-- JDBC URL Fields -->
+        <dt ng-show="config.jdbcIdentity.type == 'url'" apiman-i18n-key="jdbc-url">JDBC URL</dt>
+        <dd ng-show="config.jdbcIdentity.type == 'url'">
+          <input id="jdbc-url" ng-model="config.jdbcIdentity.jdbcUrl" class="apiman-form-control form-control" type="text" apiman-i18n-key="basic-auth.jdbc.enter-url" placeholder="JDBC URL (example: jdbc:h2:mem:UserDB)" ng-disabled="isEntityDisabled()"></input>
+        </dd>
+        <dt ng-show="config.jdbcIdentity.type == 'url'" apiman-i18n-key="jdbc-username">JDBC Username</dt>
+        <dd ng-show="config.jdbcIdentity.type == 'url'">
+          <input id="jdbc-username" ng-model="config.jdbcIdentity.username" class="apiman-form-control form-control" type="text" apiman-i18n-key="basic-auth.jdbc.enter-username" placeholder="Enter JDBC Username" ng-disabled="isEntityDisabled()"></input>
+        </dd>
+        <dt ng-show="config.jdbcIdentity.type == 'url'" apiman-i18n-key="jdbc-password">JDBC Password</dt>
+        <dd ng-show="config.jdbcIdentity.type == 'url'">
+          <input id="jdbc-password" ng-model="config.jdbcIdentity.password" class="apiman-form-control form-control" type="password" apiman-i18n-key="basic-auth.jdbc.enter-password" placeholder="Enter JDBC Password" ng-disabled="isEntityDisabled()"></input>
+        </dd>
+        <dt ng-show="config.jdbcIdentity.type == 'url'" apiman-i18n-key="jdbc-password-verify">JDBC Password (verify)</dt>
+        <dd ng-show="config.jdbcIdentity.type == 'url'">
+          <input id="jdbc-password-verify" ng-model="jdbcPasswordVerify" class="apiman-form-control form-control" type="password" apiman-i18n-key="basic-auth.jdbc.enter-password-verify" placeholder="Verify JDBC Password" ng-disabled="isEntityDisabled()"></input>
+        </dd>
+        
+        <!-- Common Fields -->
+        <dt style="margin-top: 35px" apiman-i18n-key="jdbc-query">SQL Query</dt>
         <dd>
           <textarea id="jdbc-query" ng-model="config.jdbcIdentity.query" class="apiman-form-control form-control" type="text" apiman-i18n-key="basic-auth.ds.enter-sql-query" placeholder="SQL Query (example: SELECT * FROM users WHERE u=? AND p=?)" ng-disabled="isEntityDisabled()"></textarea>
         </dd>

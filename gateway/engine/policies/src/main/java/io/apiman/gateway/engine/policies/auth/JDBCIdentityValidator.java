@@ -23,8 +23,10 @@ import io.apiman.gateway.engine.components.jdbc.IJdbcClient;
 import io.apiman.gateway.engine.components.jdbc.IJdbcComponent;
 import io.apiman.gateway.engine.components.jdbc.IJdbcConnection;
 import io.apiman.gateway.engine.components.jdbc.IJdbcResultSet;
+import io.apiman.gateway.engine.components.jdbc.JdbcOptionsBean;
 import io.apiman.gateway.engine.policies.AuthorizationPolicy;
 import io.apiman.gateway.engine.policies.config.basicauth.JDBCIdentitySource;
+import io.apiman.gateway.engine.policies.config.basicauth.JDBCType;
 import io.apiman.gateway.engine.policy.IPolicyContext;
 
 import java.util.HashSet;
@@ -54,17 +56,10 @@ public class JDBCIdentityValidator implements IIdentityValidator<JDBCIdentitySou
      * @see io.apiman.gateway.engine.policies.auth.IIdentityValidator#validate(String, String, ServiceRequest, IPolicyContext, Object, IAsyncResultHandler)
      */
     @Override
-    public void validate(String username, String password, ServiceRequest request, IPolicyContext context,
-            JDBCIdentitySource config, final IAsyncResultHandler<Boolean> handler) {
-        IJdbcComponent jdbcComponent = context.getComponent(IJdbcComponent.class);
+    public void validate(final String username, final String password, final ServiceRequest request,
+            final IPolicyContext context, final JDBCIdentitySource config,
+            final IAsyncResultHandler<Boolean> handler) {
         
-        DataSource ds = null;
-        try {
-            ds = lookupDatasource(config);
-        } catch (Throwable t) {
-            handler.handle(AsyncResultImpl.create(t, Boolean.class));
-            return;
-        }
         String sqlPwd = password;
         switch (config.getHashAlgorithm()) {
         case MD5:
@@ -90,7 +85,14 @@ public class JDBCIdentityValidator implements IIdentityValidator<JDBCIdentitySou
         final String queryUsername = username;
         final String queryPassword = sqlPwd;
         
-        IJdbcClient client = jdbcComponent.create(ds);
+        IJdbcClient client = null;
+        try {
+            client = createClient(context, config);
+        } catch (Throwable e) {
+            handler.handle(AsyncResultImpl.create(e, Boolean.class));
+            return;
+        }
+        
         client.connect(new IAsyncResultHandler<IJdbcConnection>() {
             @Override
             public void handle(IAsyncResult<IJdbcConnection> result) {
@@ -101,6 +103,30 @@ public class JDBCIdentityValidator implements IIdentityValidator<JDBCIdentitySou
                 }
             }
         });
+    }
+
+    /**
+     * Creates the appropriate jdbc client.
+     * @param context 
+     * @param config
+     */
+    private IJdbcClient createClient(IPolicyContext context, JDBCIdentitySource config) throws Throwable {
+        IJdbcComponent jdbcComponent = context.getComponent(IJdbcComponent.class);
+
+        if (config.getType() == JDBCType.datasource || config.getType() == null) {
+            DataSource ds = lookupDatasource(config);
+            return jdbcComponent.create(ds);
+        }
+        if (config.getType() == JDBCType.url) {
+            config.getJdbcUrl();
+            JdbcOptionsBean options = new JdbcOptionsBean();
+            options.setJdbcUrl(config.getJdbcUrl());
+            options.setUsername(config.getUsername());
+            options.setPassword(config.getPassword());
+            options.setAutoCommit(true);
+            return jdbcComponent.createStandalone(options);
+        }
+        throw new Exception("Unknown JDBC options."); //$NON-NLS-1$
     }
 
     /**

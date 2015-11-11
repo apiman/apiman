@@ -30,7 +30,20 @@ package io.apiman.gateway.engine.policies.config.basicauth;
  */
 public class JDBCIdentitySource {
 
+    private JDBCType type = JDBCType.datasource;
+    
+    /*
+     * If using a datasource connection.
+     */
     private String datasourcePath;
+    
+    /*
+     * If using a URL connection
+     */
+    private String jdbcUrl;
+    private String username;
+    private String password;
+    
     private String query;
     private PasswordHashAlgorithmType hashAlgorithm;
     private boolean extractRoles;
@@ -110,6 +123,62 @@ public class JDBCIdentitySource {
      */
     public void setRoleQuery(String roleQuery) {
         this.roleQuery = roleQuery;
+    }
+
+    /**
+     * @return the type
+     */
+    public JDBCType getType() {
+        return type;
+    }
+
+    /**
+     * @param type the type to set
+     */
+    public void setType(JDBCType type) {
+        this.type = type;
+    }
+
+    /**
+     * @return the jdbcUrl
+     */
+    public String getJdbcUrl() {
+        return jdbcUrl;
+    }
+
+    /**
+     * @param jdbcUrl the jdbcUrl to set
+     */
+    public void setJdbcUrl(String jdbcUrl) {
+        this.jdbcUrl = jdbcUrl;
+    }
+
+    /**
+     * @return the username
+     */
+    public String getUsername() {
+        return username;
+    }
+
+    /**
+     * @param username the username to set
+     */
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    /**
+     * @return the password
+     */
+    public String getPassword() {
+        return password;
+    }
+
+    /**
+     * @param password the password to set
+     */
+    public void setPassword(String password) {
+        this.password = password;
     }
 
 }
