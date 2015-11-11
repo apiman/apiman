@@ -51,8 +51,8 @@ module Apiman {
         }]);
 
     export var ServiceEntityController = _module.controller("Apiman.ServiceEntityController",
-        ['$q', '$scope', '$location', '$timeout', 'ActionSvcs', 'Logger', 'Dialogs', 'PageLifecycle', '$routeParams', 'OrgSvcs', 'EntityStatusService', 'Configuration',
-        ($q, $scope, $location, $timeout, ActionSvcs, Logger, Dialogs, PageLifecycle, $routeParams, OrgSvcs, EntityStatusService, Configuration) => {
+        ['$q', '$scope', 'ActionSvcs', 'Logger', 'Dialogs', 'PageLifecycle', '$routeParams', 'OrgSvcs', 'EntityStatusService', 'Configuration',
+        ($q, $scope, ActionSvcs, Logger, Dialogs, PageLifecycle, $routeParams, OrgSvcs, EntityStatusService, Configuration) => {
             var params = $routeParams;
             $scope.params = params;
 
