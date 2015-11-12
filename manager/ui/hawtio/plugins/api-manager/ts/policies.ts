@@ -547,7 +547,6 @@ module Apiman {
                         delete $scope.config.jdbcIdentity;
                     }
                 }
-                Logger.info('Config: {0}', $scope.config);
             });
 
             $scope.add = function(username, password) {

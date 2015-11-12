@@ -80,7 +80,6 @@ module Apiman {
                 $('[data-toggle="popover"]').popover();
             });
 
-
             // Set initial popover value to be closed
             $scope.isOpen = false;
 
@@ -90,7 +89,7 @@ module Apiman {
             // Popover options
             $scope.checklistPopover = {
                 templateUrl: 'checklistTemplate.html',
-                title: 'Checklist'
+                title: 'Publish Checklist'
             };
 
             // Called when user clicks 'Why can't I publish?' & opens modal

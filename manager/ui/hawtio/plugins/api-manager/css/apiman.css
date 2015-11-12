@@ -1608,8 +1608,20 @@ table tr.apiman_deleting {
   font-size: 13px;
 }
 
+.apiman-dropdown-checklist-popover a.btn:hover {
+  text-decoration: underline;
+}
+
 .apiman-dropdown-checklist-popover .popover-content {
   padding: 0;
+}
+
+.apiman-dropdown-checklist-popover .popover-title {
+  border-bottom: 1px solid #EEE;
+  margin-bottom: 2px;
+  min-height: inherit;
+  color: #777;
+  font-size: 14px;
 }
 
 tr.active.complete td, tr.active.incomplete td, tr.inactive.complete td, tr.inactive.incomplete td {
@@ -1652,6 +1664,10 @@ tr.inactive.incomplete, tr.inactive.incomplete td, tr.inactive.incomplete .title
 
 .disabled-icon a, .disabled-icon a:hover, .disabled-icon i {
   color: #999;
+}
+
+.invisible-icon a, .invisible-icon a:hover, .invisible-icon i {
+  visibility: hidden;
 }
 
 tr.collapse.in, tr.collapsing {

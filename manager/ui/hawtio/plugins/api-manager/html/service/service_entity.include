@@ -76,7 +76,7 @@
                popover-toggle="isOpen"
                popover-placement="right"
                ng-click="getStatusDetails()">
-              <span class="fa fa-info"></span>&nbsp;&nbsp;Why can't I publish?
+              <span class="fa fa-info"></span><span style="margin-left: 6px" apiman-i18n-key="why-cannot-publish">Why can't I publish?</span>
             </a>
               </div>
             </div>
@@ -94,8 +94,8 @@
                 <span class="title">{{ item.name }}</span>
               </td>
               <td>
-                <a ng-click="item.done ? return : isCollapsed = !isCollapsed"
-                   ng-class="{'disabled-icon': item.done === true}"
+                <a href="#" ng-click="item.done ? return : isCollapsed = !isCollapsed"
+                   ng-class="{'invisible-icon': item.done === true}"
                    title="What is this?">
                   <i class="fa fa-info-circle"></i>
                 </a>&nbsp;
@@ -111,9 +111,7 @@
                 <div class="well"
                      uib-collapse="isCollapsed"
                      style="margin-bottom: 0;">
-                  <div class="collapse-cell">
-                    {{ item.remediation || item.name }}
-                  </div>
+                  <div class="">{{ item.remediation || item.name }}</div>
                 </div>
               </td>
             </tr>
