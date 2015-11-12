@@ -141,11 +141,8 @@ public class ManagerApiMicroService {
             public Resource getResource(String path) throws MalformedURLException {
                 Resource resource = null;
 
-                if (path == null) {
-                    return null;
-                }
-                if (!path.startsWith("/apimanui")) {
-                    return null;
+                if (path == null || path.equals("/") || path.equals("/index.html")) {
+                    path = "/index.html";
                 }
                 if (path.startsWith("/apimanui/api-manager") || path.equals("/apimanui") || path.equals("/apimanui/")) {
                     path = "/apimanui/index.html";

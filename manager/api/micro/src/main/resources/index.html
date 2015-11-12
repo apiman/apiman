@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>API Management Micro-Service(s)</title>
+
+    <link rel="stylesheet" href="/apimanui/dist/deps.css" />
+    <link rel="stylesheet" href="/apimanui/plugins/api-manager/css/apiman.css" />
+    <link rel="stylesheet" href="/apimanui/plugins/api-manager/css/apiman-responsive.css" />
+  </head>
+
+  <body>
+
+    <div class="ng-scope loaded" id="apiman-progress-indicator" ng-class="pageState"></div>
+    <div class="ng-scope" id="apiman-header">
+      <div class="main-header container ng-scope" ng-controller="Apiman.NavbarController">
+        <div class="row">
+          <div class="col-md-12">
+            <a href="api-manager/">
+              <div class="logo"></div>
+            </a>
+            <ul class="user-menu pull-right">
+              <li class="dropdown">
+                <a id="navbar-dropdown" href="#" class="dropdown-toggle" data-toggle="dropdown">
+                  <span class="ng-binding">&nbsp;</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="header clearfix">
+        <h3 class="text-muted">&nbsp;</h3>
+      </div>
+
+      <div class="jumbotron">
+        <h1>Welcome to API Management</h1>
+        <p class="lead">
+          Welcome to the landing page for API Management.  You are seeing this because you
+          are using the micro-service edition of apiman's API Manager.  See below for 
+          details about where you can go from here.
+        </p>
+      </div>
+
+      <div class="row marketing">
+        <div class="col-lg-6">
+          <h1>API Manager REST Services</h1>
+          <p>If you would like to programmatically access the API Manager, you can use the provided
+          set of REST services.  Everything the UI does is possible via the REST interface!</p>
+          <ul>
+            <li><a href="/apiman">Access the REST interface</a></li>
+            <li><a href="http://www.apiman.io/latest/api-manager-restdocs.html">Documentation for the REST interface</a></li>
+          </ul>
+        </div>
+
+        <div class="col-lg-6">
+          <h1>API Manager UI</h1>
+          <p>
+            Most users will probably want to access the API Manager by utilizing the provided 
+            user interface.
+          </p>
+          <ul>
+            <li><a href="/apimanui/">Access the User Interface!</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <footer class="footer">
+        <hr />
+        <p>&copy; JBoss apiman 2015</p>
+      </footer>
+
+    </div> <!-- /container -->
+  </body>
+</html>
