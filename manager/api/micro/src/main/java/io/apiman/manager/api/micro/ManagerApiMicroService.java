@@ -187,8 +187,9 @@ public class ManagerApiMicroService {
 
     /**
      * @param apiManServer
+     * @throws Exception 
      */
-    protected void addSecurityHandler(ServletContextHandler apiManServer) {
+    protected void addSecurityHandler(ServletContextHandler apiManServer) throws Exception {
         apiManServer.setSecurityHandler(createSecurityHandler());
     }
 
@@ -211,8 +212,9 @@ public class ManagerApiMicroService {
 
     /**
      * Creates a basic auth security handler.
+     * @throws Exception 
      */
-    protected SecurityHandler createSecurityHandler() {
+    protected SecurityHandler createSecurityHandler() throws Exception {
         HashLoginService l = new HashLoginService();
         for (User user : Users.getUsers()) {
             l.putUser(user.getId(), Credential.getCredential(user.getPassword()), user.getRolesAsArray());

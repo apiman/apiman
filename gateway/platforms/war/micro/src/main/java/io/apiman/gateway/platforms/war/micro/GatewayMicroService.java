@@ -318,8 +318,9 @@ public class GatewayMicroService {
 
     /**
      * @param apiManServer
+     * @throws Exception 
      */
-    protected void addSecurityHandler(ServletContextHandler apiManServer) {
+    protected void addSecurityHandler(ServletContextHandler apiManServer) throws Exception {
         apiManServer.setSecurityHandler(createSecurityHandler());
     }
 
@@ -333,7 +334,7 @@ public class GatewayMicroService {
     /**
      * Creates a basic auth security handler.
      */
-    protected SecurityHandler createSecurityHandler() {
+    protected SecurityHandler createSecurityHandler() throws Exception {
         HashLoginService l = new HashLoginService();
         for (User user : Users.getUsers()) {
             l.putUser(user.getId(), Credential.getCredential(user.getPassword()), user.getRolesAsArray());

@@ -17,9 +17,9 @@ package io.apiman.manager.api.micro;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,20 +35,17 @@ public final class Users {
 
     public static final String USERS_FILE_PROP = "apiman.micro.manager.users-file";
 
-    public static final List<User> getUsers() {
+    public static final List<User> getUsers() throws Exception {
         List<User> rval = new ArrayList<>();
 
-        String usersFileLoc = System.getProperty(USERS_FILE_PROP);
-        if (usersFileLoc == null) {
-            usersFileLoc = "";
-        }
-        File usersFile = new File(usersFileLoc);
-        if (usersFile.isFile()) {
-            System.out.println("Loading users from: " + usersFileLoc);
+        URL usersUrl = getUsersUrl();
+        
+        if (usersUrl != null) {
+            System.out.println("Loading users from: " + usersUrl);
             InputStream in = null;
             BufferedReader reader = null;
             try {
-                in = new FileInputStream(usersFile);
+                in = usersUrl.openStream();
                 reader = new BufferedReader(new InputStreamReader(in));
                 String line = reader.readLine();
                 while (line != null) {
@@ -86,6 +83,26 @@ public final class Users {
         }
 
         return rval;
+    }
+
+    /**
+     * @throws Exception 
+     */
+    private static URL getUsersUrl() throws Exception {
+        String usersLoc = System.getProperty(USERS_FILE_PROP);
+        if (usersLoc == null) {
+            return null;
+        }
+        // Try a file first.
+        try {
+            File usersFile = new File(usersLoc);
+            if (usersFile.isFile()) {
+                return usersFile.toURI().toURL();
+            }
+        } catch (Exception e) {}
+        // Try it as a URL.
+        URL url = new URL(usersLoc);
+        return url;
     }
 
 }
