@@ -2,6 +2,7 @@ language: java
 
 cache:
   directories:
+    - "$HOME/.tsd-cache"
     - "manager/ui/hawtio/node_modules"
     - "$HOME/.m2"
 
