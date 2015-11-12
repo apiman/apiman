@@ -1,5 +1,5 @@
 # Use latest jboss/base-jdk:7 image as the base
-FROM jboss/wildfly
+FROM jboss/wildfly:8.2.1.Final
 
 MAINTAINER Eric Wittmann <eric.wittmann@redhat.com>
 
