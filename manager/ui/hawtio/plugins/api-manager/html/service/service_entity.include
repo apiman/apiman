@@ -59,6 +59,64 @@
               <button ng-disabled="getEntityStatus() == 'Created'" apiman-action-btn="" apiman-status="Created,Ready" class="btn btn-primary" data-field="publishButton" apiman-i18n-key="publish" placeholder="Publishing..." data-icon="fa-cog" ng-click="publishService()">Publish</button>
               <button apiman-action-btn="" apiman-status="Published" class="btn btn-warning" data-field="retireButton" apiman-i18n-key="retire" placeholder="Retiring..." data-icon="fa-cog" ng-click="retireService()">Retire</button>
             </div>
+
+            <!-- Why Can't I Publish? Popover Checklist -->
+            <div ng-show="getEntityStatus() == 'Created'"
+                 class="apiman-dropdown-checklist"
+                 style="margin-top: 10px; color: #0099D3;">
+            <div style="font-size: 14px; margin: -5px 0 -4px 10px;">
+            	<span class="fa fa-arrow-up"></span>
+            </div>
+              <div class="apiman-dropdown-checklist-popover">
+            <a type="button"
+               class="btn btn-default"
+               style="background-color: #FFFFFF; background-image: none; border-color: #0099D3; color: #0099D3;"
+               uib-popover-template="checklistPopover.templateUrl"
+               popover-title="{{ checklistPopover.title }}"
+               popover-toggle="isOpen"
+               popover-placement="right"
+               ng-click="getStatusDetails()">
+              <span class="fa fa-info"></span>&nbsp;&nbsp;Why can't I publish?
+            </a>
+              </div>
+            </div>
           </div>
         </div>
+
+        <!-- Checklist Template -->
+        <script type="text/ng-template"
+                id="checklistTemplate.html">
+          <table class='table checklist' x-accordion-table="">
+            <tr ng-repeat-start="item in checklist | checklist"
+                class="{{ item.rowClass }}">
+              <td><i class="{{ item.iconClass }}"></i></td>
+              <td>
+                <span class="title">{{ item.name }}</span>
+              </td>
+              <td>
+                <a ng-click="item.done ? return : isCollapsed = !isCollapsed"
+                   ng-class="{'disabled-icon': item.done === true}"
+                   title="What is this?">
+                  <i class="fa fa-info-circle"></i>
+                </a>&nbsp;
+                <a href="{{ pluginName }}/orgs/{{ service.organization.id }}/services/{{ service.id }}/{{ version.version }}/{{ item.path }}"
+                   title="Go There">
+                  <i class="fa fa-chevron-circle-right"></i>
+                </a>
+              </td>
+            </tr>
+            <tr ng-repeat-end class="collapse-row">
+              <td colspan="3" 
+                  class="context">
+                <div class="well"
+                     uib-collapse="isCollapsed"
+                     style="margin-bottom: 0;">
+                  <div class="collapse-cell">
+                    {{ item.remediation || item.name }}
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </table>
+        </script>
       </div>

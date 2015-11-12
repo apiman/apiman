@@ -37,6 +37,7 @@ module Apiman {
                                 $scope.org = version.service.organization;
                                 $scope.service = version.service;
                                 $rootScope.mruService = version;
+                                console.log('version.status: ' + version.status);
                                 EntityStatusService.setEntityStatus(version.status);
                                 resolve(version);
                             }, reject);
@@ -50,8 +51,8 @@ module Apiman {
         }]);
 
     export var ServiceEntityController = _module.controller("Apiman.ServiceEntityController",
-        ['$q', '$scope', '$location', 'ActionSvcs', 'Logger', 'Dialogs', 'PageLifecycle', '$routeParams', 'OrgSvcs', 'EntityStatusService', 'Configuration',
-        ($q, $scope, $location, ActionSvcs, Logger, Dialogs, PageLifecycle, $routeParams, OrgSvcs, EntityStatusService, Configuration) => {
+        ['$q', '$scope', 'ActionSvcs', 'Logger', 'Dialogs', 'PageLifecycle', '$routeParams', 'OrgSvcs', 'EntityStatusService', 'Configuration',
+        ($q, $scope, ActionSvcs, Logger, Dialogs, PageLifecycle, $routeParams, OrgSvcs, EntityStatusService, Configuration) => {
             var params = $routeParams;
             $scope.params = params;
 
@@ -68,6 +69,48 @@ module Apiman {
 
                 return (status !== 'Created' && status !== 'Ready');
             };
+
+
+            // ----- Status Checklist Popover --------------------->>>>
+
+            $scope.checklist = [];
+
+            // Initiates the tooltip (this is required for performance reasons)
+            $(function () {
+                $('[data-toggle="popover"]').popover();
+            });
+
+
+            // Set initial popover value to be closed
+            $scope.isOpen = false;
+
+            // Set initial collapse (for context information in checklist) to be closed
+            $scope.isCollapsed = true;
+
+            // Popover options
+            $scope.checklistPopover = {
+                templateUrl: 'checklistTemplate.html',
+                title: 'Checklist'
+            };
+
+            // Called when user clicks 'Why can't I publish?' & opens modal
+            $scope.getStatusDetails = function() {
+                return OrgSvcs.get({
+                    organizationId: params.org,
+                    entityType: 'services',
+                    entityId: params.service,
+                    versionsOrActivity: 'versions',
+                    version: params.version,
+                    policiesOrActivity: 'status'
+                }, function(response) {
+                    $scope.checklist = response.items;
+
+                    $scope.isOpen = true;
+                });
+            };
+
+
+            // ----- Service Update Methods --------------------->>>>
 
             $scope.setVersion = function(service) {
                 PageLifecycle.redirectTo('/orgs/{0}/services/{1}/{2}', params.org, params.service, service.version);
