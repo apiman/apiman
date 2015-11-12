@@ -20,19 +20,7 @@ module ApimanFilters {
             var filtered = [];
 
             angular.forEach(input, function(item: ChecklistConfig) {
-                var state = 'inactive';
-
                 if(item && item.id) {
-                    // Capitalize the first letter of the ID
-                    item.name = item.id[0].toUpperCase() + item.id.slice(1);
-
-                    // Check if on active tab
-                    var path = window.location.href.substr(window.location.href.lastIndexOf('/') + 1);
-
-                    if(path === tabMapping[item.id]) {
-                        state = 'active';
-                    }
-
                     // Add path for tabs with more than one path (ie: endpoint and gateways)
                     item.path = tabMapping[item.id];
 
@@ -43,7 +31,7 @@ module ApimanFilters {
                     item.iconClass = (item.done === true) ? 'fa fa-check-circle-o' : 'fa fa-circle-o';
 
                     // Determine table row class (ie: active complete, inactive incomplete)
-                    item.rowClass = state + ' ' + status;
+                    item.rowClass = status;
 
                     filtered.push(item);
                 }

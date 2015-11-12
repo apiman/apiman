@@ -598,4 +598,28 @@ module Apiman {
             }
         };
     });
+
+    _module.directive('clickOutside', function ($parse, $timeout) {
+        return {
+            link: function (scope, element, attrs: any) {
+                function handler(event) {
+                    if(!$(event.target).closest(element).length) {
+                        scope.$apply(function () {
+                            $parse(attrs.clickOutside)(scope);
+                        });
+                    }
+                }
+
+                $timeout(function () {
+                    // Timeout is to prevent the click handler from immediately
+                    // firing upon opening the popover.
+                    $(document).on('click', handler);
+                });
+
+                scope.$on('$destroy', function () {
+                    $(document).off('click', handler);
+                });
+            }
+        }
+    });
 }

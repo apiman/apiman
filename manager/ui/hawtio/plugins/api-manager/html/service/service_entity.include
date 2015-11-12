@@ -86,35 +86,84 @@
         <!-- Checklist Template -->
         <script type="text/ng-template"
                 id="checklistTemplate.html">
-          <table class='table checklist' x-accordion-table="">
-            <tr ng-repeat-start="item in checklist | checklist"
-                class="{{ item.rowClass }}">
-              <td><i class="{{ item.iconClass }}"></i></td>
-              <td>
-                <span class="title">{{ item.name }}</span>
-              </td>
-              <td>
-                <a href="#" ng-click="item.done ? return : isCollapsed = !isCollapsed"
-                   ng-class="{'invisible-icon': item.done === true}"
-                   title="What is this?">
-                  <i class="fa fa-info-circle"></i>
-                </a>&nbsp;
-                <a href="{{ pluginName }}/orgs/{{ service.organization.id }}/services/{{ service.id }}/{{ version.version }}/{{ item.path }}"
-                   title="Go There">
-                  <i class="fa fa-chevron-circle-right"></i>
-                </a>
-              </td>
-            </tr>
-            <tr ng-repeat-end class="collapse-row">
-              <td colspan="3" 
-                  class="context">
-                <div class="well"
-                     uib-collapse="isCollapsed"
-                     style="margin-bottom: 0;">
-                  <div class="">{{ item.remediation || item.name }}</div>
+          <uib-accordion close-others="oneAtATime">
+            <uib-accordion-group ng-repeat="item in checklist | checklist"
+                                 panel-class="checklist-panel"
+                                 is-disabled="item.done === true">
+              <uib-accordion-heading>
+                <div class="row {{ item.rowClass }}"
+                     ng-class="{ 'optional': item.optional === true }"
+                     style="margin-left: -10px; margin-right: -10px;">
+                  <div class="col-xs-1"
+                       style="padding: 0;">
+                    <i class="{{ item.iconClass }}"></i>
+                  </div>
+                  <div class="col-xs-8 title"
+                       style="padding: 0;">
+                    {{item.name}}<span ng-show="item.optional === true">&nbsp;*</span>
+                  </div>
+                  <div class="col-xs-3"
+                       style="padding: 0;">
+                    <a href="#"
+                       ng-click="item.done ? return : isCollapsed = !isCollapsed"
+                       ng-class="{'invisible-icon': item.done === true}"
+                       title="What is this?">
+                      <i class="fa fa-info-circle"></i>
+                    </a>&nbsp;
+                    <a href="{{ pluginName }}/orgs/{{ service.organization.id }}/services/{{ service.id }}/{{ version.version }}/{{ item.path }}"
+                       title="Go There">
+                      <i class="fa fa-chevron-circle-right"></i>
+                    </a>
+                  </div>
                 </div>
-              </td>
-            </tr>
-          </table>
+              </uib-accordion-heading>
+              {{item.remediation}}
+            </uib-accordion-group>
+          </uib-accordion>
+          <div class="optional"
+               style="margin: -5px 0 10px 15px;">
+            * optional
+          </div>
         </script>
+
+        <!--
+        <table class='table checklist' x-accordion-table>
+          <tr ng-repeat-start="item in checklist | checklist"
+              class="{{ item.rowClass }}">
+            <td><i class="{{ item.iconClass }}"></i></td>
+            <td>
+                <span class="title"
+                      ng-class="{ 'optional': item.optional === true }">{{ item.name }}</span>
+            </td>
+            <td>
+              <a href="#"
+                 ng-click="item.done ? return : isCollapsed = !isCollapsed"
+                 ng-class="{'invisible-icon': item.done === true}"
+                 title="What is this?">
+                <i class="fa fa-info-circle"></i>
+              </a>&nbsp;
+              <a href="{{ pluginName }}/orgs/{{ service.organization.id }}/services/{{ service.id }}/{{ version.version }}/{{ item.path }}"
+                 title="Go There">
+                <i class="fa fa-chevron-circle-right"></i>
+              </a>
+            </td>
+          </tr>
+          <tr ng-repeat-end class="collapse-row">
+            <td colspan="3"
+                class="context">
+              <div class="well"
+                   uib-collapse="isCollapsed-{{ item.id }}"
+                   style="margin-bottom: 0;">
+                <div class="">{{ item.remediation || item.name }}</div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="3"
+                class="optional">
+              * optional
+            </td>
+          </tr>
+        </table>
+        -->
       </div>
