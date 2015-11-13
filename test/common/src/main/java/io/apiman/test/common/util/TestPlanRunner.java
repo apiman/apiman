@@ -445,12 +445,27 @@ public class TestPlanRunner {
                     TextNode tn = (TextNode) expectedValue;
                     String expected = tn.getTextValue();
                     JsonNode actualValue = actualJson.get(expectedFieldName);
+                    
+                    if (isAssertionIgnoreCase(restTest)) {
+                        expected = expected.toLowerCase();
+                        if (actualValue == null) {
+                            actualValue = actualJson.get(expectedFieldName.toLowerCase());
+                        }
+                    }
+                    
                     Assert.assertNotNull("Expected JSON text field '" + expectedFieldName + "' with value '"
                             + expected + "' but was not found.", actualValue);
                     Assert.assertEquals("Expected JSON text field '" + expectedFieldName + "' with value '"
                             + expected + "' but found non-text [" + actualValue.getClass().getSimpleName()
                             + "] field with that name instead.", TextNode.class, actualValue.getClass());
                     String actual = ((TextNode) actualValue).getTextValue();
+
+                    if (isAssertionIgnoreCase(restTest)) {
+                        if (actual != null) {
+                            actual = actual.toLowerCase();
+                        }
+                    }
+
                     Assert.assertEquals("Value mismatch for text field '" + expectedFieldName + "'.", expected,
                             actual);
                 } else if (expectedValue instanceof NumericNode) {
@@ -509,6 +524,13 @@ public class TestPlanRunner {
                 }
             }
         }
+    }
+
+    /**
+     * @param restTest
+     */
+    private boolean isAssertionIgnoreCase(RestTest restTest) {
+        return "true".equals(restTest.getExpectedResponseHeaders().get("X-RestTest-Assert-IgnoreCase"));
     }
 
     /**
