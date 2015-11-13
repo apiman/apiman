@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testPlan xmlns="urn:io.apiman.test:2014:02:testPlan">
 
+  <testGroup name="Test Pre-Publishing">
+    <test name="Not yet published">test-plan-data/simple/simple-echo/errors/000-not-published.resttest</test>
+  </testGroup>
+
   <testGroup name="Configure the Gateway" endpoint="api">
     <test name="Publish Service">test-plan-data/simple/simple-echo/setup/001-publish-service.resttest</test>
     <test name="Register Application">test-plan-data/simple/simple-echo/setup/002-register-app.resttest</test>

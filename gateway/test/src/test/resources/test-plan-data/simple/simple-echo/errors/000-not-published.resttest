@@ -1,0 +1,9 @@
+GET /SimpleEchoTest/echo/1.0.0/path/to/app/resource admin/admin
+X-Custom-Header: MyValue
+X-API-Key: 12345
+
+----
+500
+Content-Type: application/json
+
+{"responseCode":500,"message":"No contract found for API Key 12345 "}

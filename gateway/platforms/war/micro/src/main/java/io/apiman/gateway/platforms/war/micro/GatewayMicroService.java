@@ -25,11 +25,11 @@ import io.apiman.gateway.engine.components.ICacheStoreComponent;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.components.IRateLimiterComponent;
 import io.apiman.gateway.engine.components.ISharedStateComponent;
-import io.apiman.gateway.engine.es.CachingESRegistry;
 import io.apiman.gateway.engine.es.ESCacheStoreComponent;
 import io.apiman.gateway.engine.es.ESMetrics;
 import io.apiman.gateway.engine.es.ESRateLimiterComponent;
 import io.apiman.gateway.engine.es.ESSharedStateComponent;
+import io.apiman.gateway.engine.es.PollCachingESRegistry;
 import io.apiman.gateway.engine.impl.ByteBufferFactoryComponent;
 import io.apiman.gateway.engine.impl.DefaultJdbcComponent;
 import io.apiman.gateway.engine.impl.DefaultPluginRegistry;
@@ -206,7 +206,7 @@ public class GatewayMicroService {
      * The registry.
      */
     protected void configureRegistry() {
-        setConfigProperty(WarEngineConfig.APIMAN_GATEWAY_REGISTRY_CLASS, CachingESRegistry.class.getName());
+        setConfigProperty(WarEngineConfig.APIMAN_GATEWAY_REGISTRY_CLASS, PollCachingESRegistry.class.getName());
         setConfigProperty("apiman-gateway.registry.client.type", "jest");
         setConfigProperty("apiman-gateway.registry.client.protocol", "${apiman.es.protocol}");
         setConfigProperty("apiman-gateway.registry.client.host", "${apiman.es.host}");

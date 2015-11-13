@@ -31,9 +31,7 @@ import io.searchbox.core.Get;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -44,12 +42,11 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author eric.wittmann@redhat.com
  */
-public class CachingESRegistry extends ESRegistry {
+public abstract class CachingESRegistry extends ESRegistry {
 
     private Map<String, ServiceContract> contractCache = new ConcurrentHashMap<>();
     private Map<String, Service> serviceCache = new HashMap<>();
     private Map<String, Application> applicationCache = new HashMap<>();
-    private Set<String> nullServiceCache = new HashSet<>();
     private Object mutex = new Object();
 
     /**
@@ -67,75 +64,8 @@ public class CachingESRegistry extends ESRegistry {
         synchronized (mutex) {
             contractCache.clear();
             serviceCache.clear();
-            nullServiceCache.clear();
             applicationCache.clear();
         }
-    }
-
-    /**
-     * @see io.apiman.gateway.engine.es.ESRegistry#publishService(io.apiman.gateway.engine.beans.Service, io.apiman.gateway.engine.async.IAsyncResultHandler)
-     */
-    @Override
-    public void publishService(final Service service, final IAsyncResultHandler<Void> handler) {
-        super.publishService(service, new IAsyncResultHandler<Void>() {
-            @Override
-            public void handle(IAsyncResult<Void> result) {
-                if (result.isSuccess()) {
-                    cacheService(service);
-                }
-                handler.handle(result);
-            }
-        });
-    }
-
-    /**
-     * @see io.apiman.gateway.engine.es.ESRegistry#registerApplication(io.apiman.gateway.engine.beans.Application, io.apiman.gateway.engine.async.IAsyncResultHandler)
-     */
-    @Override
-    public void registerApplication(final Application application, final IAsyncResultHandler<Void> handler) {
-        final Set<Contract> contracts = application.getContracts();
-        super.registerApplication(application, new IAsyncResultHandler<Void>() {
-            @Override
-            public void handle(IAsyncResult<Void> result) {
-                if (result.isSuccess()) {
-                    application.setContracts(contracts);
-                    cacheApplication(application);
-                }
-                handler.handle(result);
-            }
-        });
-    }
-
-    /**
-     * @see io.apiman.gateway.engine.es.ESRegistry#retireService(io.apiman.gateway.engine.beans.Service, io.apiman.gateway.engine.async.IAsyncResultHandler)
-     */
-    @Override
-    public void retireService(final Service service, final IAsyncResultHandler<Void> handler) {
-        super.retireService(service, new IAsyncResultHandler<Void>() {
-            @Override
-            public void handle(IAsyncResult<Void> result) {
-                if (result.isSuccess()) {
-                    decacheService(service);
-                }
-                handler.handle(result);
-            }
-        });
-    }
-
-    /**
-     * @see io.apiman.gateway.engine.es.ESRegistry#unregisterApplication(io.apiman.gateway.engine.beans.Application, io.apiman.gateway.engine.async.IAsyncResultHandler)
-     */
-    @Override
-    public void unregisterApplication(final Application application, final IAsyncResultHandler<Void> handler) {
-        super.unregisterApplication(application, new IAsyncResultHandler<Void>() {
-            @Override
-            public void handle(IAsyncResult<Void> result) {
-                if (result.isSuccess()) {
-                    decacheApplication(application);
-                }
-                handler.handle(result);
-            }
-        });
     }
 
     /**
@@ -200,19 +130,12 @@ public class CachingESRegistry extends ESRegistry {
         Service service = null;
         synchronized (mutex) {
             service = serviceCache.get(serviceKey);
-            if (service == null) {
-                if (nullServiceCache.contains(serviceKey)) {
-                    return null;
-                }
-            }
         }
         
         if (service == null) {
             service = super.getService(getServiceId(orgId, serviceId, version));
             synchronized (mutex) {
-                if (service == null) {
-                    nullServiceCache.add(serviceKey);
-                } else {
+                if (service != null) {
                     serviceCache.put(serviceKey, service);
                 }
             }
@@ -232,20 +155,6 @@ public class CachingESRegistry extends ESRegistry {
         if (service == null) {
             throw new InvalidContractException(Messages.i18n.format("ESRegistry.ServiceWasRetired", //$NON-NLS-1$
                     contract.getService().getServiceId(), contract.getService().getOrganizationId()));
-        }
-    }
-
-    /**
-     * Called to cache the service for fast lookup later.
-     * @param service
-     */
-    protected void cacheService(Service service) {
-        if (service != null) {
-            String serviceKey = getServiceKey(service);
-            synchronized (mutex) {
-                serviceCache.put(serviceKey, service);
-                nullServiceCache.remove(serviceKey);
-            }
         }
     }
 
@@ -285,47 +194,6 @@ public class CachingESRegistry extends ESRegistry {
             public void failed(Exception e) {
             }
         });
-    }
-
-    /**
-     * @param service
-     */
-    protected void decacheService(Service service) {
-        String serviceKey = getServiceKey(service);
-        synchronized (mutex) {
-            if (serviceCache.containsKey(serviceKey)) {
-                serviceCache.remove(serviceKey);
-            }
-            nullServiceCache.add(serviceKey);
-        }
-    }
-
-    /**
-     * @param application
-     */
-    protected void decacheApplication(Application application) {
-        String applicationKey = getApplicationKey(application);
-        synchronized (mutex) {
-            if (applicationCache.containsKey(applicationKey)) {
-                Application app = applicationCache.remove(applicationKey);
-                for (Contract contract : app.getContracts()) {
-                    String contractKey = getContractKey(contract);
-                    if (contractCache.containsKey(contractKey)) {
-                        contractCache.remove(contractKey);
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * Generates an in-memory key for an service, used to index the app for later quick
-     * retrieval.
-     * @param service an service
-     * @return a service key
-     */
-    private String getServiceKey(Service service) {
-        return getServiceKey(service.getOrganizationId(), service.getServiceId(), service.getVersion());
     }
 
     /**
