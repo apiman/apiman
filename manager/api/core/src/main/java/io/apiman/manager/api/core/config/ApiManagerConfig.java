@@ -38,6 +38,8 @@ public abstract class ApiManagerConfig {
     public static final String APIMAN_MANAGER_CONFIG_LOGGER = "apiman-manager.config.logger"; //$NON-NLS-1$
 
     public static final String APIMAN_API_KEY_GENERATOR_TYPE = "apiman-manager.api-keys.generator.type"; //$NON-NLS-1$
+    
+    public static final String APIMAN_MANAGER_NEW_USER_BOOTSTRAPPER_TYPE = "apiman-manager.user-bootstrapper.type"; //$NON-NLS-1$
 
     /* -------------------------------------------------------
      * Storage
@@ -132,6 +134,20 @@ public abstract class ApiManagerConfig {
 
     public String getSecurityContextType() {
         return config.getString(APIMAN_MANAGER_SECURITY_CONTEXT_TYPE, "default"); //$NON-NLS-1$
+    }
+
+    /**
+     * @return the configured user bootstrapper type
+     */
+    public String getNewUserBootstrapperType() {
+        return config.getString(APIMAN_MANAGER_NEW_USER_BOOTSTRAPPER_TYPE, null);
+    }
+
+    /**
+     * @return any custom properties associated with the user bootstrapper (useful for custom impls)
+     */
+    public Map<String, String> getNewUserBootstrapperProperties() {
+        return getPrefixedProperties("apiman-manager.user-bootstrapper."); //$NON-NLS-1$
     }
 
     /**

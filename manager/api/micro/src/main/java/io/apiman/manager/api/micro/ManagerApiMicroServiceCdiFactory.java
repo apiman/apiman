@@ -19,13 +19,16 @@ import io.apiman.common.plugin.Plugin;
 import io.apiman.common.plugin.PluginClassLoader;
 import io.apiman.common.plugin.PluginCoordinates;
 import io.apiman.common.util.ReflectionUtils;
+import io.apiman.manager.api.beans.idm.UserBean;
 import io.apiman.manager.api.core.IApiKeyGenerator;
 import io.apiman.manager.api.core.IMetricsAccessor;
+import io.apiman.manager.api.core.INewUserBootstrapper;
 import io.apiman.manager.api.core.IPluginRegistry;
 import io.apiman.manager.api.core.IServiceCatalog;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.UuidApiKeyGenerator;
+import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.core.logging.ApimanLogger;
 import io.apiman.manager.api.core.logging.IApimanLogger;
 import io.apiman.manager.api.core.logging.JsonLoggerImpl;
@@ -68,6 +71,26 @@ public class ManagerApiMicroServiceCdiFactory {
         return new JsonLoggerImpl().createLogger(requestorKlazz);
     }
 
+    @Produces @ApplicationScoped
+    public static INewUserBootstrapper provideNewUserBootstrapper(ManagerApiMicroServiceConfig config, IPluginRegistry pluginRegistry) {
+        String type = config.getNewUserBootstrapperType();
+        if (type == null) {
+            return new INewUserBootstrapper() {
+                @Override
+                public void bootstrapUser(UserBean user, IStorage storage) throws StorageException {
+                    // Do nothing special.
+                }
+            };
+        } else {
+            try {
+                return createCustomComponent(INewUserBootstrapper.class, config.getNewUserBootstrapperType(),
+                        config.getNewUserBootstrapperProperties(), pluginRegistry);
+            } catch (Throwable t) {
+                throw new RuntimeException("Error or unknown user bootstrapper type: " + config.getNewUserBootstrapperType(), t); //$NON-NLS-1$
+            }
+        }
+    }
+
     @Produces
     @ApplicationScoped
     public static IStorage provideStorage(ManagerApiMicroServiceConfig config, @New JpaStorage jpaStorage,
@@ -97,9 +120,9 @@ public class ManagerApiMicroServiceCdiFactory {
     @Produces @ApplicationScoped
     public static IStorageQuery provideStorageQuery(ManagerApiMicroServiceConfig config, @New JpaStorage jpaStorage,
             @New EsStorage esStorage, IPluginRegistry pluginRegistry) {
-        if ("jpa".equals(config.getStorageType())) { //$NON-NLS-1$
+        if ("jpa".equals(config.getStorageQueryType())) { //$NON-NLS-1$
             return jpaStorage;
-        } else if ("es".equals(config.getStorageType())) { //$NON-NLS-1$
+        } else if ("es".equals(config.getStorageQueryType())) { //$NON-NLS-1$
             return initES(config, esStorage);
         } else {
             try {

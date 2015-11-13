@@ -16,15 +16,18 @@
 package io.apiman.manager.test.server;
 
 import io.apiman.common.config.SystemPropertiesConfiguration;
+import io.apiman.manager.api.beans.idm.UserBean;
 import io.apiman.manager.api.beans.services.EndpointType;
 import io.apiman.manager.api.beans.summary.AvailableServiceBean;
 import io.apiman.manager.api.core.IApiKeyGenerator;
 import io.apiman.manager.api.core.IMetricsAccessor;
+import io.apiman.manager.api.core.INewUserBootstrapper;
 import io.apiman.manager.api.core.IPluginRegistry;
 import io.apiman.manager.api.core.IServiceCatalog;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.UuidApiKeyGenerator;
+import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.core.logging.ApimanLogger;
 import io.apiman.manager.api.core.logging.IApimanLogger;
 import io.apiman.manager.api.core.logging.StandardLoggerImpl;
@@ -76,6 +79,15 @@ public class TestCdiFactory {
         return new StandardLoggerImpl().createLogger(klazz);
     }
 
+    @Produces @ApplicationScoped
+    public static INewUserBootstrapper provideNewUserBootstrapper() {
+        return new INewUserBootstrapper() {
+            @Override
+            public void bootstrapUser(UserBean user, IStorage storage) throws StorageException {
+                // Do nothing special.
+            }
+        };
+    }
 
     @Produces @ApplicationScoped
     public static IJpaProperties provideJpaProperties() {

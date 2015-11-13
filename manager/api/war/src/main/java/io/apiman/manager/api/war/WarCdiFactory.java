@@ -19,13 +19,16 @@ import io.apiman.common.plugin.Plugin;
 import io.apiman.common.plugin.PluginClassLoader;
 import io.apiman.common.plugin.PluginCoordinates;
 import io.apiman.common.util.ReflectionUtils;
+import io.apiman.manager.api.beans.idm.UserBean;
 import io.apiman.manager.api.core.IApiKeyGenerator;
 import io.apiman.manager.api.core.IMetricsAccessor;
+import io.apiman.manager.api.core.INewUserBootstrapper;
 import io.apiman.manager.api.core.IPluginRegistry;
 import io.apiman.manager.api.core.IServiceCatalog;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.UuidApiKeyGenerator;
+import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.core.i18n.Messages;
 import io.apiman.manager.api.core.logging.ApimanLogger;
 import io.apiman.manager.api.core.logging.IApimanDelegateLogger;
@@ -76,6 +79,26 @@ public class WarCdiFactory {
         } catch (InstantiationException | IllegalAccessException e) {
             throw new RuntimeException(String.format(
                     Messages.i18n.format("LoggerFactory.InstantiationFailed")), e); //$NON-NLS-1$
+        }
+    }
+
+    @Produces @ApplicationScoped
+    public static INewUserBootstrapper provideNewUserBootstrapper(WarApiManagerConfig config, IPluginRegistry pluginRegistry) {
+        String type = config.getNewUserBootstrapperType();
+        if (type == null) {
+            return new INewUserBootstrapper() {
+                @Override
+                public void bootstrapUser(UserBean user, IStorage storage) throws StorageException {
+                    // Do nothing special.
+                }
+            };
+        } else {
+            try {
+                return createCustomComponent(INewUserBootstrapper.class, config.getNewUserBootstrapperType(),
+                        config.getNewUserBootstrapperProperties(), pluginRegistry);
+            } catch (Throwable t) {
+                throw new RuntimeException("Error or unknown user bootstrapper type: " + config.getNewUserBootstrapperType(), t); //$NON-NLS-1$
+            }
         }
     }
 

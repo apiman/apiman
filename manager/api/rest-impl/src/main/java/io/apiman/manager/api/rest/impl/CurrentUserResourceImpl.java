@@ -24,6 +24,7 @@ import io.apiman.manager.api.beans.idm.UserBean;
 import io.apiman.manager.api.beans.summary.ApplicationSummaryBean;
 import io.apiman.manager.api.beans.summary.OrganizationSummaryBean;
 import io.apiman.manager.api.beans.summary.ServiceSummaryBean;
+import io.apiman.manager.api.core.INewUserBootstrapper;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.StorageException;
@@ -57,6 +58,8 @@ public class CurrentUserResourceImpl implements ICurrentUserResource {
     private ISecurityContext securityContext;
     @Inject @ApimanLogger(CurrentUserResourceImpl.class)
     private IApimanLogger log;
+    @Inject
+    private INewUserBootstrapper userBootstrapper;
 
 
     /**
@@ -92,12 +95,13 @@ public class CurrentUserResourceImpl implements ICurrentUserResource {
                 if (securityContext.getEmail() != null) {
                     user.setEmail(securityContext.getEmail());
                 } else {
-                    user.setEmail(userId + "@example.org"); //$NON-NLS-1$
+                    user.setEmail(""); //$NON-NLS-1$
                 }
                 user.setJoinedOn(new Date());
                 storage.beginTx();
                 try {
                     storage.createUser(user);
+                    userBootstrapper.bootstrapUser(user, storage);
                     storage.commitTx();
                 } catch (StorageException e1) {
                     storage.rollbackTx();
