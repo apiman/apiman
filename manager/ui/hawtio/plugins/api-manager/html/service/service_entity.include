@@ -110,7 +110,7 @@
                        title="What is this?">
                       <i class="fa fa-info-circle"></i>
                     </a>&nbsp;
-                    <a href="{{ pluginName }}/orgs/{{ service.organization.id }}/services/{{ service.id }}/{{ version.version }}/{{ item.path }}"
+                    <a ng-click="goTo($index, item, $event)"
                        title="Go There">
                       <i class="fa fa-chevron-circle-right"></i>
                     </a>
@@ -125,45 +125,4 @@
             * optional
           </div>
         </script>
-
-        <!--
-        <table class='table checklist' x-accordion-table>
-          <tr ng-repeat-start="item in checklist | checklist"
-              class="{{ item.rowClass }}">
-            <td><i class="{{ item.iconClass }}"></i></td>
-            <td>
-                <span class="title"
-                      ng-class="{ 'optional': item.optional === true }">{{ item.name }}</span>
-            </td>
-            <td>
-              <a href="#"
-                 ng-click="item.done ? return : isCollapsed = !isCollapsed"
-                 ng-class="{'invisible-icon': item.done === true}"
-                 title="What is this?">
-                <i class="fa fa-info-circle"></i>
-              </a>&nbsp;
-              <a href="{{ pluginName }}/orgs/{{ service.organization.id }}/services/{{ service.id }}/{{ version.version }}/{{ item.path }}"
-                 title="Go There">
-                <i class="fa fa-chevron-circle-right"></i>
-              </a>
-            </td>
-          </tr>
-          <tr ng-repeat-end class="collapse-row">
-            <td colspan="3"
-                class="context">
-              <div class="well"
-                   uib-collapse="isCollapsed-{{ item.id }}"
-                   style="margin-bottom: 0;">
-                <div class="">{{ item.remediation || item.name }}</div>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td colspan="3"
-                class="optional">
-              * optional
-            </td>
-          </tr>
-        </table>
-        -->
       </div>
