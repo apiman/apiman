@@ -1600,13 +1600,24 @@ table tr.apiman_deleting {
 }
 
 .progress-description {
-  margin-bottom: 0px;
+  margin-bottom: 0;
 }
 
 .progress-label-top-right .progress-bar span {
   top: -20px;
   font-size: 13px;
 }
+
+.holder {
+  color: #999 !important;
+  color: #777;
+  color: #0099d3;
+  color: #31A794 !important;
+  color: rgb(207, 97, 0) !important;
+}
+
+html, body {height: 100%;}
+
 
 .apiman-dropdown-checklist-popover a.btn:hover {
   text-decoration: underline;
@@ -1618,48 +1629,49 @@ table tr.apiman_deleting {
 
 .apiman-dropdown-checklist-popover .popover-title {
   border-bottom: 1px solid #EEE;
-  margin-bottom: 2px;
-  min-height: inherit;
   color: #777;
   font-size: 14px;
+  margin-bottom: 0;
+  min-height: inherit;
 }
 
-tr.active.complete td, tr.active.incomplete td, tr.inactive.complete td, tr.inactive.incomplete td {
-  border-top: 1px solid #FFFFFF;
+.checklist-panel {}
+
+.checklist-panel .panel {}
+
+.checklist-panel .panel-heading {
+  background: none;
 }
 
-tr.active.complete, tr.active.complete td, tr.active.complete .title {
-  background-color: #FFFFFF !important;
+.checklist-panel .panel-body {}
+
+.checklist-panel .panel-title {}
+
+.checklist-panel .panel-title > a:before {
+  display: none;
+}
+
+.checklist-panel .panel-title a:hover, .checklist-panel .panel-title a:focus, .checklist-panel .panel-title a:visited {
+  text-decoration: none;
+}
+
+.checklist-panel .complete {
   color: #31A794 !important;
 }
 
-tr.active.incomplete, tr.active.incomplete td, tr.active.incomplete .title {
-  background-color: #FFFFFF !important;
-  color: rgb(207, 97, 0) !important;
+.checklist-panel .incomplete {
+  color: rgb(207, 97, 0);
 }
 
-tr.inactive.complete, tr.inactive.complete td, tr.inactive.complete .title {
-  background-color: #F2F2FA;
-  color: #31A794 !important;
-}
-
-tr.inactive.incomplete, tr.inactive.incomplete td, tr.inactive.incomplete .title {
-  background-color: #F2F2FA;
-  color: #999 !important;
-}
-
-.checklist td > a:hover {
-  text-decoration: none !important;
-}
-
-.checklist .title {
+.checklist-panel .title {
+  color: inherit !important;
   font-size: 12px !important;
   font-weight: bold;
 }
 
-.checklist td.context {
-  border-color: #FFFFFF;
-  padding: 0;
+.checklist-panel .optional, .optional {
+  color: #999;
+  font-style: italic;
 }
 
 .disabled-icon a, .disabled-icon a:hover, .disabled-icon i {
@@ -1667,21 +1679,8 @@ tr.inactive.incomplete, tr.inactive.incomplete td, tr.inactive.incomplete .title
 }
 
 .invisible-icon a, .invisible-icon a:hover, .invisible-icon i {
+  cursor: default;
+  text-decoration: none;
   visibility: hidden;
 }
 
-tr.collapse.in, tr.collapsing {
-  display: table-row !important;
-}
-
-td.collapse.in, td.collapsing {
-  display: table-cell !important;
-}
-
-.table-bordered > tbody > tr.collapse-row td {
-  padding: 0;
-}
-
-.collapse-row td > div > .collapse-cell {
-  padding: 8px;
-}

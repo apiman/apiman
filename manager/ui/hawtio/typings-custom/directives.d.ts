@@ -6,3 +6,8 @@ interface ChecklistConfig {
     path?: string;
     rowClass?: string;
 }
+
+interface PopoverConfig extends ng.IScope {
+    etarget?: any;
+}
+
