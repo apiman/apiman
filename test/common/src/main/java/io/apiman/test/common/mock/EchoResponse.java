@@ -18,11 +18,14 @@ package io.apiman.test.common.mock;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * A simple echo response POJO.
  *
  * @author eric.wittmann@redhat.com
  */
+@XmlRootElement
 public class EchoResponse {
 
     private String method;

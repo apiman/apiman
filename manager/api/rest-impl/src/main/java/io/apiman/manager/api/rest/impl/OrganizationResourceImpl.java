@@ -1437,6 +1437,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                 if (bean.getEndpointType() == null) {
                     updatedService.setEndpointType(cloneSource.getEndpointType());
                 }
+                if (bean.getEndpointContentType() == null) {
+                    updatedService.setEndpointContentType(cloneSource.getEndpointContentType());
+                }
                 updatedService.setEndpointProperties(cloneSource.getEndpointProperties());
                 updatedService.setGateways(cloneSource.getGateways());
                 if (bean.getPlans() == null) {
@@ -1509,6 +1512,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         newVersion.setService(service);
         newVersion.setEndpoint(bean.getEndpoint());
         newVersion.setEndpointType(bean.getEndpointType());
+        newVersion.setEndpointContentType(bean.getEndpointContentType());
         if (bean.getPublicService() != null) {
             newVersion.setPublicService(bean.getPublicService());
         }
@@ -1757,6 +1761,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         if (AuditUtils.valueChanged(svb.getEndpointType(), bean.getEndpointType())) {
             data.addChange("endpointType", svb.getEndpointType(), bean.getEndpointType()); //$NON-NLS-1$
             svb.setEndpointType(bean.getEndpointType());
+        }
+        if (AuditUtils.valueChanged(svb.getEndpointContentType(), bean.getEndpointContentType())) {
+            data.addChange("endpointContentType", svb.getEndpointContentType(), bean.getEndpointContentType()); //$NON-NLS-1$
+            svb.setEndpointContentType(bean.getEndpointContentType());
         }
         if (AuditUtils.valueChanged(svb.getEndpointProperties(), bean.getEndpointProperties())) {
             if (svb.getEndpointProperties() == null) {

@@ -44,6 +44,7 @@ public class ESRegistryMarshallingTest {
         Service service = new Service();
         service.setEndpoint("http://host/path/to/svc");
         service.setEndpointType("REST");
+        service.setEndpointContentType("xml");
         service.setOrganizationId("test-org");
         service.setPublicService(true);
         service.setServiceId("service-id");
@@ -52,6 +53,7 @@ public class ESRegistryMarshallingTest {
         Assert.assertEquals("{"
                     + "\"endpoint\":\"http://host/path/to/svc\","
                     + "\"endpointType\":\"REST\","
+                    + "\"endpointContentType\":\"xml\","
                     + "\"publicService\":true,"
                     + "\"organizationId\":\"test-org\","
                     + "\"serviceId\":\"service-id\","
@@ -67,6 +69,7 @@ public class ESRegistryMarshallingTest {
         Assert.assertEquals("{"
                 + "\"endpoint\":\"http://host/path/to/svc\","
                 + "\"endpointType\":\"REST\","
+                + "\"endpointContentType\":\"xml\","
                 + "\"publicService\":true,"
                 + "\"organizationId\":\"test-org\","
                 + "\"serviceId\":\"service-id\","
@@ -88,6 +91,7 @@ public class ESRegistryMarshallingTest {
         Assert.assertEquals("{"
                 + "\"endpoint\":\"http://host/path/to/svc\","
                 + "\"endpointType\":\"REST\","
+                + "\"endpointContentType\":\"xml\","
                 + "\"publicService\":true,"
                 + "\"organizationId\":\"test-org\","
                 + "\"serviceId\":\"service-id\","
@@ -197,6 +201,7 @@ public class ESRegistryMarshallingTest {
         service.setServicePolicies(null);
         service.setEndpoint("http://host/path/to/svc");
         service.setEndpointType("REST");
+        service.setEndpointContentType("json");
         service.setOrganizationId("test-org");
         service.setPublicService(true);
         service.setServiceId("service-id");
@@ -231,6 +236,7 @@ public class ESRegistryMarshallingTest {
                 + "\"service\":{"
                     + "\"endpoint\":\"http://host/path/to/svc\","
                     + "\"endpointType\":\"REST\","
+                    + "\"endpointContentType\":\"json\","
                     + "\"publicService\":true,"
                     + "\"organizationId\":\"test-org\","
                     + "\"serviceId\":\"service-id\","
@@ -258,6 +264,7 @@ public class ESRegistryMarshallingTest {
         Map<String, Object> data = new HashMap<>();
         data.put("endpoint", "http://host:port/blah");
         data.put("endpointType", "REST");
+        data.put("endpointContentType", "xml");
         data.put("organizationId", "test-org");
         data.put("publicService", Boolean.TRUE);
         data.put("serviceId", "test-service");
@@ -266,6 +273,7 @@ public class ESRegistryMarshallingTest {
 
         Assert.assertEquals("http://host:port/blah", service.getEndpoint());
         Assert.assertEquals("REST", service.getEndpointType());
+        Assert.assertEquals("xml", service.getEndpointContentType());
         Assert.assertEquals("test-org", service.getOrganizationId());
         Assert.assertEquals("test-service", service.getServiceId());
         Assert.assertEquals("1.2", service.getVersion());

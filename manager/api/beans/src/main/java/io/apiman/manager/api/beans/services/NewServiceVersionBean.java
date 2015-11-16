@@ -36,6 +36,7 @@ public class NewServiceVersionBean implements Serializable {
 
     private String endpoint;
     private EndpointType endpointType;
+    private EndpointContentType endpointContentType;
     private Boolean publicService;
     private Set<ServicePlanBean> plans;
     private String definitionUrl;
@@ -171,6 +172,20 @@ public class NewServiceVersionBean implements Serializable {
      */
     public void setDefinitionType(ServiceDefinitionType definitionType) {
         this.definitionType = definitionType;
+    }
+
+    /**
+     * @return the endpointContentType
+     */
+    public EndpointContentType getEndpointContentType() {
+        return endpointContentType;
+    }
+
+    /**
+     * @param endpointContentType the endpointContentType to set
+     */
+    public void setEndpointContentType(EndpointContentType endpointContentType) {
+        this.endpointContentType = endpointContentType;
     }
 
 }

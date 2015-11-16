@@ -1,0 +1,41 @@
+GET /Policy_IgnoredResourcesXmlTest/echo/1.0.0/invoices admin/admin
+X-API-Key: 12345
+Accept: application/xml
+
+----
+200
+Content-Type: application/xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<echoResponse>
+  <counter>1</counter>
+  <headers>
+    <entry>
+      <key>Authorization</key>
+      <value>Basic YWRtaW46YWRtaW4=</value>
+    </entry>
+    <entry>
+      <key>Accept</key>
+      <value>application/xml</value>
+    </entry>
+    <entry>
+      <key>Connection</key>
+      <value>*</value>
+    </entry>
+    <entry>
+      <key>User-Agent</key>
+      <value>*</value>
+    </entry>
+    <entry>
+      <key>Host</key>
+      <value>*</value>
+    </entry>
+    <entry>
+      <key>Accept-Encoding</key>
+      <value>*</value>
+    </entry>
+  </headers>
+  <method>GET</method>
+  <resource>/invoices</resource>
+  <uri>/invoices</uri>
+</echoResponse>

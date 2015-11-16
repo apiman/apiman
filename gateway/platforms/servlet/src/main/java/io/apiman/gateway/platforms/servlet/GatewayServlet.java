@@ -48,6 +48,9 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 
 import org.apache.commons.io.IOUtils;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -65,6 +68,14 @@ public abstract class GatewayServlet extends HttpServlet {
 
     private static final long serialVersionUID = 958726685958622333L;
     private static final ObjectMapper mapper = new ObjectMapper();
+    private static JAXBContext jaxbContext;
+    static {
+        try {
+            jaxbContext = JAXBContext.newInstance(EngineErrorResponse.class, PolicyFailure.class);
+        } catch (JAXBException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     /**
      * Constructor.
@@ -149,11 +160,12 @@ public abstract class GatewayServlet extends HttpServlet {
             srequest = readRequest(req);
             srequest.setType(action);
         } catch (Exception e) {
-            writeError(resp, e);
+            writeError(null, resp, e);
             return;
         }
 
         final CountDownLatch latch = new CountDownLatch(1);
+        final ServiceRequest finalRequest = srequest;
 
         // Now execute the request via the apiman engine
         IServiceRequestExecutor executor = getEngine().executor(srequest, new IAsyncResultHandler<IEngineResult>() {
@@ -205,11 +217,11 @@ public abstract class GatewayServlet extends HttpServlet {
                             throw new RuntimeException(e);
                         }
                     } else {
-                        writeFailure(resp, engineResult.getPolicyFailure());
+                        writeFailure(finalRequest, resp, engineResult.getPolicyFailure());
                         latch.countDown();
                     }
                 } else {
-                    writeError(resp, asyncResult.getError());
+                    writeError(finalRequest, resp, asyncResult.getError());
                     latch.countDown();
                 }
             }
@@ -331,11 +343,12 @@ public abstract class GatewayServlet extends HttpServlet {
 
     /**
      * Writes a policy failure to the http response.
+     * @param request
      * @param resp
      * @param policyFailure
      */
-    private void writeFailure(HttpServletResponse resp, PolicyFailure policyFailure) {
-        resp.setContentType("application/json"); //$NON-NLS-1$
+    protected void writeFailure(ServiceRequest request, HttpServletResponse resp, PolicyFailure policyFailure) {
+        String rtype = request.getService().getEndpointContentType();
         resp.setHeader("X-Policy-Failure-Type", String.valueOf(policyFailure.getType())); //$NON-NLS-1$
         resp.setHeader("X-Policy-Failure-Message", policyFailure.getMessage()); //$NON-NLS-1$
         resp.setHeader("X-Policy-Failure-Code", String.valueOf(policyFailure.getFailureCode())); //$NON-NLS-1$
@@ -357,23 +370,39 @@ public abstract class GatewayServlet extends HttpServlet {
         
         resp.setStatus(errorCode);
 
-        try {
-            mapper.writer().writeValue(resp.getOutputStream(), policyFailure);
-            IOUtils.closeQuietly(resp.getOutputStream());
-        } catch (Exception e) {
-            writeError(resp, e);
-        } finally {
+        if ("xml".equals(rtype)) { //$NON-NLS-1$
+            resp.setContentType("application/xml"); //$NON-NLS-1$
+            try {
+                Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+                jaxbMarshaller.marshal(policyFailure, resp.getOutputStream());
+                IOUtils.closeQuietly(resp.getOutputStream());
+            } catch (Exception e) {
+                writeError(request, resp, e);
+            }
+        } else {
+            resp.setContentType("application/json"); //$NON-NLS-1$
+            try {
+                mapper.writer().writeValue(resp.getOutputStream(), policyFailure);
+                IOUtils.closeQuietly(resp.getOutputStream());
+            } catch (Exception e) {
+                writeError(request, resp, e);
+            }
         }
     }
 
     /**
      * Writes an error to the servlet response object.
+     * @param request
      * @param resp
      * @param error
      */
-    protected void writeError(HttpServletResponse resp, Throwable error) {
+    protected void writeError(ServiceRequest request, HttpServletResponse resp, Throwable error) {
+        boolean isXml = false;
+        if (request.getService() != null && "xml".equals(request.getService().getEndpointContentType())) { //$NON-NLS-1$
+            isXml = true;
+        }
+        
         resp.setHeader("X-Gateway-Error", error.getMessage()); //$NON-NLS-1$
-        resp.setContentType("application/json"); //$NON-NLS-1$
         resp.setStatus(500);
 
         EngineErrorResponse response = new EngineErrorResponse();
@@ -381,11 +410,24 @@ public abstract class GatewayServlet extends HttpServlet {
         response.setMessage(error.getMessage());
         response.setTrace(error);
 
-        try {
-            mapper.writer().writeValue(resp.getOutputStream(), response);
-            IOUtils.closeQuietly(resp.getOutputStream());
-        } catch (Exception e) {
-            e.printStackTrace();
+
+        if (isXml) {
+            resp.setContentType("application/xml"); //$NON-NLS-1$
+            try {
+                Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+                jaxbMarshaller.marshal(response, resp.getOutputStream());
+                IOUtils.closeQuietly(resp.getOutputStream());
+            } catch (Exception e) {
+                writeError(request, resp, e);
+            }
+        } else {
+            resp.setContentType("application/json"); //$NON-NLS-1$
+            try {
+                mapper.writer().writeValue(resp.getOutputStream(), response);
+                IOUtils.closeQuietly(resp.getOutputStream());
+            } catch (Exception e) {
+                writeError(request, resp, e);
+            }
         }
     }
 

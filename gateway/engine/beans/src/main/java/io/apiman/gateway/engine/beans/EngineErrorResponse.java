@@ -19,11 +19,14 @@ import java.io.PrintWriter;
 import java.io.Serializable;
 import java.io.StringWriter;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * Models an error from the engine.
  *
  * @author Marc Savy <msavy@redhat.com>
  */
+@XmlRootElement
 public class EngineErrorResponse implements Serializable {
 
     private static final long serialVersionUID = 8881390951647532958L;

@@ -19,11 +19,14 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * Models a policy failure.
  *
  * @author Marc Savy <msavy@redhat.com>
  */
+@XmlRootElement
 public class PolicyFailure implements Serializable {
 
     private static final long serialVersionUID = -4698896399383125062L;

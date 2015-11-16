@@ -35,6 +35,7 @@ public class UpdateServiceVersionBean implements Serializable {
 
     private String endpoint;
     private EndpointType endpointType;
+    private EndpointContentType endpointContentType;
     private Map<String, String> endpointProperties;
     private Set<ServiceGatewayBean> gateways;
     private Boolean publicService;
@@ -128,6 +129,20 @@ public class UpdateServiceVersionBean implements Serializable {
      */
     public void setEndpointProperties(Map<String, String> endpointProperties) {
         this.endpointProperties = endpointProperties;
+    }
+
+    /**
+     * @return the endpointContentType
+     */
+    public EndpointContentType getEndpointContentType() {
+        return endpointContentType;
+    }
+
+    /**
+     * @param endpointContentType the endpointContentType to set
+     */
+    public void setEndpointContentType(EndpointContentType endpointContentType) {
+        this.endpointContentType = endpointContentType;
     }
 
     /* (non-Javadoc)

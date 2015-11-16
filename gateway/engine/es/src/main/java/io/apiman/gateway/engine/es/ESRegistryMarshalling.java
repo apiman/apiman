@@ -60,6 +60,7 @@ public class ESRegistryMarshalling {
         builder.startObject()
             .field("endpoint", bean.getEndpoint())
             .field("endpointType", bean.getEndpointType())
+            .field("endpointContentType", bean.getEndpointContentType())
             .field("publicService", bean.isPublicService())
             .field("organizationId", bean.getOrganizationId())
             .field("serviceId", bean.getServiceId())
@@ -102,6 +103,7 @@ public class ESRegistryMarshalling {
         bean.setEndpoint(asString(source.get("endpoint")));
         bean.setEndpointProperties(asStringMap(source.get("endpointProperties")));
         bean.setEndpointType(asString(source.get("endpointType")));
+        bean.setEndpointContentType(asString(source.get("endpointContentType")));
         bean.setOrganizationId(asString(source.get("organizationId")));
         bean.setPublicService(asBoolean(source.get("publicService")));
         bean.setServiceId(asString(source.get("serviceId")));

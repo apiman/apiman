@@ -13,19 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apiman.gateway.test;
-
-import io.apiman.gateway.test.junit.GatewayRestTestPlan;
-import io.apiman.gateway.test.junit.GatewayRestTester;
-
-import org.junit.runner.RunWith;
+package io.apiman.manager.api.beans.services;
 
 /**
- * Make sure the Ignored Resources policy works when the endpoint content-type
- * is set to XML.
+ * The supported endpoint content types.
+ *
+ * @author eric.wittmann@redhat.com
  */
-@RunWith(GatewayRestTester.class)
-@GatewayRestTestPlan("test-plans/policies/ignored-resources-xml-testPlan.xml")
-public class Policy_IgnoredResourcesTest {
-
+public enum EndpointContentType {
+    json, xml
 }

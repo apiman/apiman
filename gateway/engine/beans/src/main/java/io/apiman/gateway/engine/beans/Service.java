@@ -36,8 +36,9 @@ public class Service implements Serializable {
     private String organizationId;
     private String serviceId;
     private String version;
-    private String endpointType;
     private String endpoint;
+    private String endpointType;
+    private String endpointContentType;
     private Map<String, String> endpointProperties = new HashMap<>();
     private List<Policy> servicePolicies = new ArrayList<>();
 
@@ -87,6 +88,20 @@ public class Service implements Serializable {
      */
     public void setEndpointType(String endpointType) {
         this.endpointType = endpointType;
+    }
+
+    /**
+     * @return the endpointContentType
+     */
+    public String getEndpointContentType() {
+        return endpointContentType;
+    }
+
+    /**
+     * @param endpointContentType the endpointContentType to set
+     */
+    public void setEndpointContentType(String endpointContentType) {
+        this.endpointContentType = endpointContentType;
     }
 
     /**

@@ -71,6 +71,9 @@ public class ServiceVersionBean implements Serializable {
     @Column(name = "endpoint_type")
     @Enumerated(EnumType.STRING)
     private EndpointType endpointType;
+    @Column(name = "endpoint_ct")
+    @Enumerated(EnumType.STRING)
+    private EndpointContentType endpointContentType;
     @ElementCollection(fetch=FetchType.EAGER)
     @MapKeyColumn(name="name")
     @Column(name="value")
@@ -218,6 +221,20 @@ public class ServiceVersionBean implements Serializable {
      */
     public void setEndpointType(EndpointType endpointType) {
         this.endpointType = endpointType;
+    }
+
+    /**
+     * @return the endpointContentType
+     */
+    public EndpointContentType getEndpointContentType() {
+        return endpointContentType;
+    }
+
+    /**
+     * @param endpointContentType the endpointContentType to set
+     */
+    public void setEndpointContentType(EndpointContentType endpointContentType) {
+        this.endpointContentType = endpointContentType;
     }
 
     /**

@@ -1,0 +1,13 @@
+PUT /services admin/admin
+Content-Type: application/json
+
+{
+  "organizationId" : "Policy_IgnoredResourcesXmlTest",
+  "serviceId" : "echo",
+  "version" : "1.0.0",
+  "endpointType" : "rest",
+  "endpointContentType" : "xml",
+  "endpoint" : "${apiman-gateway-test.endpoints.echo}/"
+}
+----
+204

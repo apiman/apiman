@@ -16,6 +16,7 @@
 package io.apiman.test.common.mock;
 
 import io.apiman.common.util.SimpleStringUtils;
+import io.apiman.gateway.engine.beans.EngineErrorResponse;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,6 +28,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 
 import org.apache.commons.io.IOUtils;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -44,6 +48,14 @@ public class EchoServlet extends HttpServlet {
     private static ObjectMapper mapper = new ObjectMapper();
     static {
         mapper.enable(SerializationConfig.Feature.INDENT_OUTPUT);
+    }
+    private static JAXBContext jaxbContext;
+    static {
+        try {
+            jaxbContext = JAXBContext.newInstance(EngineErrorResponse.class, EchoResponse.class);
+        } catch (JAXBException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private long servletCounter = 0L;
@@ -154,6 +166,7 @@ public class EchoServlet extends HttpServlet {
      * @param withBody
      */
     protected void doEchoResponse(HttpServletRequest req, HttpServletResponse resp, boolean withBody) throws IOException {
+        String acceptHeader = req.getHeader("Accept");
         String errorCode = req.getHeader("X-Echo-ErrorCode");
         if (errorCode != null) {
             int ec = new Integer(errorCode);
@@ -162,14 +175,28 @@ public class EchoServlet extends HttpServlet {
             return;
         }
 
+        boolean isXml = acceptHeader != null && acceptHeader.contains("application/xml");
+        
         EchoResponse response = response(req, withBody);
         response.setCounter(++servletCounter);
-        resp.setContentType("application/json");
         resp.setHeader("Response-Counter", response.getCounter().toString());
-        try {
-            mapper.writeValue(resp.getOutputStream(), response);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        
+        if (isXml) {
+            resp.setContentType("application/xml");
+            try {
+                Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+                jaxbMarshaller.marshal(response, resp.getOutputStream());
+                IOUtils.closeQuietly(resp.getOutputStream());
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            resp.setContentType("application/json");
+            try {
+                mapper.writeValue(resp.getOutputStream(), response);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 

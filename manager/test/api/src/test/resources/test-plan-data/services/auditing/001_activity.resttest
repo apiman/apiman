@@ -84,7 +84,7 @@ Content-Type: application/json
       "entityId":"Service1",
       "entityVersion":"1.0",
       "what":"Update",
-      "data":"{\"changes\":[{\"name\":\"endpoint\",\"before\":null,\"after\":\"http://localhost:8080/ping\"},{\"name\":\"endpointType\",\"before\":null,\"after\":\"rest\"}]}"
+      "data":"{\"changes\":[{\"name\":\"endpoint\",\"before\":null,\"after\":\"http://localhost:8080/ping\"},{\"name\":\"endpointType\",\"before\":null,\"after\":\"rest\"},{\"name\":\"endpointContentType\",\"before\":null,\"after\":\"xml\"}]}"
     },
     {
       "who":"admin",

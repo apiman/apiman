@@ -364,6 +364,7 @@
             <column name="definition_type" type="VARCHAR(255)"/>
             <column name="endpoint" type="VARCHAR(255)"/>
             <column name="endpoint_type" type="VARCHAR(255)"/>
+            <column name="endpoint_ct" type="VARCHAR(255)"/>
             <column name="modified_by" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>

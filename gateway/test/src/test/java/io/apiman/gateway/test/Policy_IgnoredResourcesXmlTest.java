@@ -21,11 +21,12 @@ import io.apiman.gateway.test.junit.GatewayRestTester;
 import org.junit.runner.RunWith;
 
 /**
- * Make sure the Ignored Resources policy works when the endpoint content-type
- * is set to XML.
+ * Make sure the Ignored Resources policy works.
+ *
+ * @author rubenrm1@gmail.com
  */
 @RunWith(GatewayRestTester.class)
 @GatewayRestTestPlan("test-plans/policies/ignored-resources-xml-testPlan.xml")
-public class Policy_IgnoredResourcesTest {
+public class Policy_IgnoredResourcesXmlTest {
 
 }

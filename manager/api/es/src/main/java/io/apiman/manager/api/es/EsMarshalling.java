@@ -39,6 +39,7 @@ import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
 import io.apiman.manager.api.beans.policies.PolicyDefinitionTemplateBean;
 import io.apiman.manager.api.beans.policies.PolicyType;
+import io.apiman.manager.api.beans.services.EndpointContentType;
 import io.apiman.manager.api.beans.services.EndpointType;
 import io.apiman.manager.api.beans.services.ServiceBean;
 import io.apiman.manager.api.beans.services.ServiceDefinitionType;
@@ -327,6 +328,7 @@ public class EsMarshalling {
                     .field("publicService", bean.isPublicService())
                     .field("endpoint", bean.getEndpoint())
                     .field("endpointType", bean.getEndpointType())
+                    .field("endpointContentType", bean.getEndpointContentType())
                     .field("definitionType", bean.getDefinitionType());
             Set<ServiceGatewayBean> gateways = bean.getGateways();
             if (gateways != null) {
@@ -960,6 +962,7 @@ public class EsMarshalling {
         bean.setRetiredOn(asDate(source.get("retiredOn")));
         bean.setEndpoint(asString(source.get("endpoint")));
         bean.setEndpointType(asEnum(source.get("endpointType"), EndpointType.class));
+        bean.setEndpointContentType(asEnum(source.get("endpointContentType"), EndpointContentType.class));
         bean.setPublicService(asBoolean(source.get("publicService")));
         bean.setDefinitionType(asEnum(source.get("definitionType"), ServiceDefinitionType.class));
         bean.setGateways(new HashSet<ServiceGatewayBean>());

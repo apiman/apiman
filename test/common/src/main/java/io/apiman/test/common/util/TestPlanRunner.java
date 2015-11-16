@@ -316,6 +316,7 @@ public class TestPlanRunner {
                 XMLUnit.setIgnoreAttributeOrder(true);
                 XMLUnit.setIgnoreWhitespace(true);
                 XMLUnit.setIgnoreDiffBetweenTextAndCDATA(true);
+                XMLUnit.setCompareUnmatched(false);
                 Diff diff = new Diff(expectedPayload, xmlPayload);
                 diff.overrideDifferenceListener(new DifferenceListener() {
                     @Override
@@ -324,7 +325,11 @@ public class TestPlanRunner {
                     @Override
                     public int differenceFound(Difference difference) {
                         String value = difference.getControlNodeDetail().getValue();
-                        if ("*".equals(value)) {
+                        String tvalue = null;
+                        if (difference.getControlNodeDetail().getNode() != null) {
+                            tvalue = difference.getControlNodeDetail().getNode().getTextContent();
+                        }
+                        if ("*".equals(value) || "*".equals(tvalue)) {
                             return RETURN_IGNORE_DIFFERENCE_NODES_IDENTICAL;
                         } else {
                             return RETURN_ACCEPT_DIFFERENCE;

@@ -16,6 +16,7 @@ Content-Type: application/json
   "status" : "Created",
   "endpoint" : "http://localhost:8080/ping",
   "endpointType" : "rest",
+  "endpointContentType" : "xml",
   "endpointProperties" : {
     "foo" : "foo-value",
     "bar" : "bar-value"

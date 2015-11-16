@@ -1,0 +1,18 @@
+GET /Policy_IgnoredResourcesXmlTest/echo/1.0.0/invoices/12/items/34 admin/admin
+X-API-Key: 12345
+Accept: application/xml
+
+----
+404
+Content-Type: application/xml
+X-Policy-Failure-Type: NotFound
+X-Policy-Failure-Code: 10007
+
+<?xml version="1.0" encoding="UTF-8"?>
+<policyFailure>
+  <failureCode>10007</failureCode>
+  <headers />
+  <message>Requested path "/invoices/12/items/34" has been ignored.</message>
+  <responseCode>0</responseCode>
+  <type>NotFound</type>
+</policyFailure>
