@@ -143,6 +143,7 @@ public class ActionResourceImpl implements IActionResource {
         Service gatewaySvc = new Service();
         gatewaySvc.setEndpoint(versionBean.getEndpoint());
         gatewaySvc.setEndpointType(versionBean.getEndpointType().toString());
+        gatewaySvc.setEndpointContentType(versionBean.getEndpointContentType().toString());
         gatewaySvc.setEndpointProperties(versionBean.getEndpointProperties());
         gatewaySvc.setOrganizationId(versionBean.getService().getOrganization().getId());
         gatewaySvc.setServiceId(versionBean.getService().getId());

@@ -11,6 +11,7 @@ module Apiman {
             $scope.tab = 'impl';
             $scope.version = params.version;
             $scope.typeOptions = ["rest", "soap"];
+            $scope.contentTypeOptions = ["json", "xml"];
             $scope.updatedService = new Object();
             $scope.apiSecurity = new Object();
             $scope.showMetrics = Configuration.ui.metrics;
@@ -99,7 +100,13 @@ module Apiman {
                 if ($scope.version) {
                     var dirty = false;
                     
-                    if (newValue.endpoint != $scope.version.endpoint || newValue.endpointType != $scope.version.endpointType) {
+                    if (newValue.endpoint != $scope.version.endpoint) {
+                        dirty = true;
+                    }
+                    if (newValue.endpointType != $scope.version.endpointType) {
+                        dirty = true;
+                    }
+                    if (newValue.endpointContentType != $scope.version.endpointContentType) {
                         dirty = true;
                     }
                     
@@ -147,9 +154,13 @@ module Apiman {
                 if (!$scope.version.endpointType) {
                   $scope.version.endpointType = 'rest';
                 }
+                if (!$scope.version.endpointContentType) {
+                    $scope.version.endpointContentType = 'json';
+                  }
                 $scope.apiSecurity = toApiSecurity($scope.version);
                 $scope.updatedService.endpoint = $scope.version.endpoint;
                 $scope.updatedService.endpointType = $scope.version.endpointType;
+                $scope.updatedService.endpointContentType = $scope.version.endpointContentType;
                 $scope.updatedService.endpointProperties = angular.copy($scope.version.endpointProperties);
                 delete $scope.updatedService.gateways;
                 if ($scope.version.gateways && $scope.version.gateways.length > 0) {

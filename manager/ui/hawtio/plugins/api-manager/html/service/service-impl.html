@@ -58,6 +58,18 @@
                       ng-disabled="isEntityDisabled()">
               </select>
             </div>
+            <div style="margin-top: 10px">
+              <span class="clearfix"
+                    apiman-i18n-key="api-content-type-label">API Content Type:</span>
+              <select apiman-i18n-key="service-impl.choose-content-type"
+                      title="Choose a content type..."
+                      apiman-select-picker=""
+                      ng-model="updatedService.endpointContentType"
+                      class="selectpicker"
+                      ng-options="ct.toUpperCase() for ct in contentTypeOptions"
+                      ng-disabled="isEntityDisabled()">
+              </select>
+            </div>
             
             <div class="" style="margin-top:10px;">
               <span class="clearfix"

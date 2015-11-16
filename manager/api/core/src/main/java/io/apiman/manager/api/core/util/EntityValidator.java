@@ -117,7 +117,18 @@ public class EntityValidator implements IServiceValidator, IApplicationValidator
             }
             status.getItems().add(item);
 
-            // 2. Public or at least one plan
+            // 2. Gateway selected
+            item = new StatusItemBean();
+            item.setId("gateways"); //$NON-NLS-1$
+            item.setName(Messages.i18n.format("EntityValidator.gateways.name")); //$NON-NLS-1$
+            item.setDone(true);
+            if (service.getGateways() == null || service.getGateways().isEmpty()) {
+                item.setDone(false);
+                item.setRemediation(Messages.i18n.format("EntityValidator.gateways.description")); //$NON-NLS-1$
+            }
+            status.getItems().add(item);
+
+            // 3. Public or at least one plan
             /////////////////////////////////
             item = new StatusItemBean();
             item.setId("plans"); //$NON-NLS-1$
@@ -131,17 +142,6 @@ public class EntityValidator implements IServiceValidator, IApplicationValidator
             }
             status.getItems().add(item);
 
-            // 3. Gateway selected
-            item = new StatusItemBean();
-            item.setId("gateways"); //$NON-NLS-1$
-            item.setName(Messages.i18n.format("EntityValidator.gateways.name")); //$NON-NLS-1$
-            item.setDone(true);
-            if (service.getGateways() == null || service.getGateways().isEmpty()) {
-                item.setDone(false);
-                item.setRemediation(Messages.i18n.format("EntityValidator.gateways.description")); //$NON-NLS-1$
-            }
-            status.getItems().add(item);
-            
             // 4. At least one Policy (optional)
             ////////////////////////////////////
             item = new StatusItemBean();
