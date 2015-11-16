@@ -161,7 +161,7 @@ public abstract class ApiManagerConfig {
      * @return the configured storage query type
      */
     public String getStorageQueryType() {
-        return config.getString(APIMAN_MANAGER_STORAGE_QUERY_TYPE, "jpa"); //$NON-NLS-1$
+        return config.getString(APIMAN_MANAGER_STORAGE_QUERY_TYPE, getStorageType());
     }
 
     /**

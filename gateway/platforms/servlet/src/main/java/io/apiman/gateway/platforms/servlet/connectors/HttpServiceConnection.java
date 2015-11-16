@@ -35,9 +35,7 @@ import io.apiman.gateway.platforms.servlet.connectors.ssl.SSLSessionStrategy;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.CookieHandler;
 import java.net.HttpURLConnection;
-import java.net.ProxySelector;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.HashSet;
@@ -45,24 +43,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
-import javax.net.SocketFactory;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSocketFactory;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 
-import com.squareup.okhttp.CertificatePinner;
-import com.squareup.okhttp.ConnectionPool;
-import com.squareup.okhttp.ConnectionSpec;
 import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Protocol;
-import com.squareup.okhttp.internal.Internal;
-import com.squareup.okhttp.internal.Network;
-import com.squareup.okhttp.internal.Util;
-import com.squareup.okhttp.internal.http.AuthenticatorAdapter;
 
 /**
  * Models a live connection to a back end service.
@@ -86,25 +74,6 @@ public class HttpServiceConnection implements IServiceConnection, IServiceConnec
         SUPPRESSED_RESPONSE_HEADERS.add("OkHttp-Sent-Millis"); //$NON-NLS-1$
     }
 
-    private static final OkHttpClient okClient;
-    private static final List<ConnectionSpec> DEFAULT_CONNECTION_SPECS = Util.immutableList(
-            ConnectionSpec.MODERN_TLS, ConnectionSpec.COMPATIBLE_TLS, ConnectionSpec.CLEARTEXT);
-    static {
-        okClient = new OkHttpClient();
-        okClient.setReadTimeout(15, TimeUnit.SECONDS);
-        okClient.setWriteTimeout(15, TimeUnit.SECONDS);
-        okClient.setConnectTimeout(10, TimeUnit.SECONDS);
-        okClient.setProxySelector(ProxySelector.getDefault());
-        okClient.setCookieHandler(CookieHandler.getDefault());
-        okClient.setCertificatePinner(CertificatePinner.DEFAULT);
-        okClient.setAuthenticator(AuthenticatorAdapter.INSTANCE);
-        okClient.setConnectionPool(ConnectionPool.getDefault());
-        okClient.setProtocols(Util.immutableList(Protocol.HTTP_1_1));
-        okClient.setConnectionSpecs(DEFAULT_CONNECTION_SPECS);
-        okClient.setSocketFactory(SocketFactory.getDefault());
-        Internal.instance.setNetwork(okClient, Network.DEFAULT);
-    }
-
     private ServiceRequest request;
     private Service service;
     private RequiredAuthType requiredAuthType;
@@ -119,10 +88,12 @@ public class HttpServiceConnection implements IServiceConnection, IServiceConnec
     private IAsyncHandler<Void> endHandler;
 
     private ServiceResponse response;
+    final private OkHttpClient client;
 
     /**
      * Constructor.
      *
+     * @param client the http client to use
      * @param sslStrategy the SSL strategy
      * @param request the request
      * @param service the service
@@ -130,9 +101,10 @@ public class HttpServiceConnection implements IServiceConnection, IServiceConnec
      * @param handler the result handler
      * @throws ConnectorException when unable to connect
      */
-    public HttpServiceConnection(ServiceRequest request, Service service, RequiredAuthType requiredAuthType,
-            SSLSessionStrategy sslStrategy, IAsyncResultHandler<IServiceConnectionResponse> handler)
-            throws ConnectorException {
+    public HttpServiceConnection(OkHttpClient client, ServiceRequest request, Service service,
+            RequiredAuthType requiredAuthType, SSLSessionStrategy sslStrategy,
+            IAsyncResultHandler<IServiceConnectionResponse> handler) throws ConnectorException {
+        this.client = client;
         this.request = request;
         this.service = service;
         this.requiredAuthType = requiredAuthType;
@@ -145,6 +117,7 @@ public class HttpServiceConnection implements IServiceConnection, IServiceConnec
             handler.handle(AsyncResultImpl.<IServiceConnectionResponse> create(e));
         }
     }
+    
     /**
      * Connects to the back end system.
      */
@@ -170,7 +143,7 @@ public class HttpServiceConnection implements IServiceConnection, IServiceConnec
                 }
             }
             URL url = new URL(endpoint);
-            OkUrlFactory factory = new OkUrlFactory(okClient);
+            OkUrlFactory factory = new OkUrlFactory(client);
             connection = factory.open(url);
 
             boolean isSsl = connection instanceof HttpsURLConnection;

@@ -131,6 +131,7 @@ module ApimanPageLifecycle {
                     Logger.info('Detected an error {0}, redirecting to CORS error page.', error.status);
                     $location.url(Apiman.pluginName + '/errors/invalid_server').replace();
                 } else {
+                    // TODO: if the error data starts with <html> then redirect to a more generic html-into-div based error page
                     Logger.info('Detected an error {0}, redirecting to 500.', error.status);
                     $location.url(Apiman.pluginName + '/errors/500').replace();
                 }

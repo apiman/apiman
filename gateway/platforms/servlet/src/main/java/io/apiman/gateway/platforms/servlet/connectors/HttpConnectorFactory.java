@@ -15,6 +15,7 @@
  */
 package io.apiman.gateway.platforms.servlet.connectors;
 
+import io.apiman.common.config.options.HttpConnectorOptions;
 import io.apiman.common.config.options.TLSOptions;
 import io.apiman.gateway.engine.IConnectorFactory;
 import io.apiman.gateway.engine.IServiceConnection;
@@ -28,7 +29,23 @@ import io.apiman.gateway.engine.beans.exceptions.ConnectorException;
 import io.apiman.gateway.platforms.servlet.connectors.ssl.SSLSessionStrategy;
 import io.apiman.gateway.platforms.servlet.connectors.ssl.SSLSessionStrategyFactory;
 
+import java.net.CookieHandler;
+import java.net.ProxySelector;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import javax.net.SocketFactory;
+
+import com.squareup.okhttp.CertificatePinner;
+import com.squareup.okhttp.ConnectionPool;
+import com.squareup.okhttp.ConnectionSpec;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Protocol;
+import com.squareup.okhttp.internal.Internal;
+import com.squareup.okhttp.internal.Network;
+import com.squareup.okhttp.internal.Util;
+import com.squareup.okhttp.internal.http.AuthenticatorAdapter;
 
 /**
  * Connector factory that uses HTTP to invoke back end systems.
@@ -37,11 +54,17 @@ import java.util.Map;
  */
 public class HttpConnectorFactory implements IConnectorFactory {
 
+    private static final List<ConnectionSpec> DEFAULT_CONNECTION_SPECS = Util.immutableList(
+            ConnectionSpec.MODERN_TLS, ConnectionSpec.COMPATIBLE_TLS, ConnectionSpec.CLEARTEXT);
+
+    private OkHttpClient okClient;
+
     // Standard auth
     private SSLSessionStrategy standardSslStrategy;
     // 2WAY auth (i.e. mutual auth)
     private SSLSessionStrategy mutualAuthSslStrategy;
     private TLSOptions tlsOptions;
+    private HttpConnectorOptions connectorOptions;
 
     /**
      * Constructor.
@@ -49,9 +72,32 @@ public class HttpConnectorFactory implements IConnectorFactory {
      */
     public HttpConnectorFactory(Map<String, String> config) {
         this.tlsOptions = new TLSOptions(config);
+        this.connectorOptions = new HttpConnectorOptions(config);
+        this.okClient = createHttpClient();
     }
 
-    /* (non-Javadoc)
+    /**
+     * @return a new http client
+     */
+    private OkHttpClient createHttpClient() {
+        OkHttpClient client = new OkHttpClient();
+        client.setReadTimeout(connectorOptions.getReadTimeout(), TimeUnit.SECONDS);
+        client.setWriteTimeout(connectorOptions.getWriteTimeout(), TimeUnit.SECONDS);
+        client.setConnectTimeout(connectorOptions.getConnectTimeout(), TimeUnit.SECONDS);
+        client.setProxySelector(ProxySelector.getDefault());
+        client.setCookieHandler(CookieHandler.getDefault());
+        client.setCertificatePinner(CertificatePinner.DEFAULT);
+        client.setAuthenticator(AuthenticatorAdapter.INSTANCE);
+        client.setConnectionPool(ConnectionPool.getDefault());
+        client.setProtocols(Util.immutableList(Protocol.HTTP_1_1));
+        client.setConnectionSpecs(DEFAULT_CONNECTION_SPECS);
+        client.setSocketFactory(SocketFactory.getDefault());
+        Internal.instance.setNetwork(client, Network.DEFAULT);
+
+        return client;
+    }
+
+    /**
      * @see io.apiman.gateway.engine.IConnectorFactory#createConnector(io.apiman.gateway.engine.beans.ServiceRequest, io.apiman.gateway.engine.beans.Service, io.apiman.gateway.engine.auth.RequiredAuthType)
      */
     @Override
@@ -65,13 +111,18 @@ public class HttpConnectorFactory implements IConnectorFactory {
             public IServiceConnection connect(ServiceRequest request,
                     IAsyncResultHandler<IServiceConnectionResponse> handler) throws ConnectorException {
 
-                HttpServiceConnection connection = new HttpServiceConnection(request, service, requiredAuthType,
-                        getSslStrategy(requiredAuthType), handler);
+                HttpServiceConnection connection = new HttpServiceConnection(okClient, request, service,
+                        requiredAuthType, getSslStrategy(requiredAuthType), handler);
                 return connection;
             }
         };
     }
 
+    /**
+     * Creates the SSL strategy based on configured TLS options.
+     * @param authType
+     * @return an appropriate SSL strategy
+     */
     protected SSLSessionStrategy getSslStrategy(RequiredAuthType authType) {
         try {
             if (authType == RequiredAuthType.MTLS) {
