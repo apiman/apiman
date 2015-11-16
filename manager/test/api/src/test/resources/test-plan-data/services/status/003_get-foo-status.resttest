@@ -14,17 +14,17 @@ Content-Type: application/json
       "remediation": "Update the service version and provide valid values for the [endpoint] and [endpointType] properties."
     },
     {
+      "id": "gateways",
+      "name": "Select at least one gateway",
+      "done": true,
+      "optional": false
+    },
+    {
       "id": "plans",
       "name": "Set up at least one Plan, or make the service public",
       "done": false,
       "optional": false,
       "remediation": "Update the service version and either set the [publicService] property to true, or set the [plans] property to a valid list of plans configured in the same Organization (or both)."
-    },
-    {
-      "id": "gateways",
-      "name": "Select at least one gateway",
-      "done": true,
-      "optional": false
     },
     {
       "id": "policies",
