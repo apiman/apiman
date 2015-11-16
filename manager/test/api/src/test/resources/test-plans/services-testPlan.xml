@@ -74,6 +74,7 @@
   <!-- Publishing -->
   <testGroup name="Publish Services">
     <test name="Publish Service 1">test-plan-data/services/publish/001_publish-service-1.resttest</test>
+    <test name="Get Service 1 [published]">test-plan-data/services/publish/002_get-service-1.resttest</test>
   </testGroup>
 
   <!-- Auditing -->

@@ -401,6 +401,7 @@
             <column name="organization_id" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
+            <column name="num_published" type="INTEGER" />
         </createTable>
     </changeSet>
     <changeSet author="apiman (generated)" id="1436469846462-20">

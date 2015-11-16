@@ -62,6 +62,9 @@ public class ServiceBean implements Serializable {
     private String createdBy;
     @Column(name = "created_on", updatable=false, nullable=false)
     private Date createdOn;
+    @Column(name = "num_published", updatable=true, nullable=true)
+    private Integer numPublished;
+    
 
     /**
      * Constructor.
@@ -151,6 +154,20 @@ public class ServiceBean implements Serializable {
      */
     public void setOrganization(OrganizationBean organization) {
         this.organization = organization;
+    }
+
+    /**
+     * @return the numPublished
+     */
+    public Integer getNumPublished() {
+        return numPublished;
+    }
+
+    /**
+     * @param numPublished the numPublished to set
+     */
+    public void setNumPublished(Integer numPublished) {
+        this.numPublished = numPublished;
     }
 
     /* (non-Javadoc)

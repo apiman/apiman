@@ -30,6 +30,7 @@ import io.apiman.manager.api.beans.plans.PlanStatus;
 import io.apiman.manager.api.beans.plans.PlanVersionBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyType;
+import io.apiman.manager.api.beans.services.ServiceBean;
 import io.apiman.manager.api.beans.services.ServiceGatewayBean;
 import io.apiman.manager.api.beans.services.ServiceStatus;
 import io.apiman.manager.api.beans.services.ServiceVersionBean;
@@ -188,7 +189,18 @@ public class ActionResourceImpl implements IActionResource {
 
             versionBean.setStatus(ServiceStatus.Published);
             versionBean.setPublishedOn(new Date());
+            
+            ServiceBean service = storage.getService(action.getOrganizationId(), action.getEntityId());
+            if (service == null) {
+                throw new PublishingException("Error: could not find service - " + action.getOrganizationId() + "=>" + action.getEntityId()); //$NON-NLS-1$ //$NON-NLS-2$
+            }
+            if (service.getNumPublished() == null) {
+                service.setNumPublished(1);
+            } else {
+                service.setNumPublished(service.getNumPublished() + 1);
+            }
 
+            storage.updateService(service);
             storage.updateServiceVersion(versionBean);
             storage.createAuditEntry(AuditUtils.servicePublished(versionBean, securityContext));
             storage.commitTx();
@@ -264,6 +276,17 @@ public class ActionResourceImpl implements IActionResource {
             versionBean.setStatus(ServiceStatus.Retired);
             versionBean.setRetiredOn(new Date());
 
+            ServiceBean service = storage.getService(action.getOrganizationId(), action.getEntityId());
+            if (service == null) {
+                throw new PublishingException("Error: could not find service - " + action.getOrganizationId() + "=>" + action.getEntityId()); //$NON-NLS-1$ //$NON-NLS-2$
+            }
+            if (service.getNumPublished() == null || service.getNumPublished() == 0) {
+                service.setNumPublished(0);
+            } else {
+                service.setNumPublished(service.getNumPublished() - 1);
+            }
+
+            storage.updateService(service);
             storage.updateServiceVersion(versionBean);
             storage.createAuditEntry(AuditUtils.serviceRetired(versionBean, securityContext));
             storage.commitTx();

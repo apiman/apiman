@@ -289,6 +289,7 @@ public class EsMarshalling {
                     .field("description", bean.getDescription())
                     .field("createdBy", bean.getCreatedBy())
                     .field("createdOn", bean.getCreatedOn().getTime())
+                    .field("numPublished", bean.getNumPublished())
                 .endObject();
             postMarshall(bean);
             return builder;
@@ -913,6 +914,7 @@ public class EsMarshalling {
         bean.setDescription(asString(source.get("description")));
         bean.setCreatedBy(asString(source.get("createdBy")));
         bean.setCreatedOn(asDate(source.get("createdOn")));
+        bean.setNumPublished(asInt(source.get("numPublished")));
         postMarshall(bean);
         return bean;
     }
