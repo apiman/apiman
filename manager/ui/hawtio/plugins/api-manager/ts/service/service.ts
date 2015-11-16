@@ -37,7 +37,6 @@ module Apiman {
                                 $scope.org = version.service.organization;
                                 $scope.service = version.service;
                                 $rootScope.mruService = version;
-                                console.log('version.status: ' + version.status);
                                 EntityStatusService.setEntityStatus(version.status);
                                 resolve(version);
                             }, reject);
@@ -51,8 +50,8 @@ module Apiman {
         }]);
 
     export var ServiceEntityController = _module.controller("Apiman.ServiceEntityController",
-        ['$q', '$scope', 'ActionSvcs', 'Logger', 'Dialogs', 'PageLifecycle', '$routeParams', 'OrgSvcs', 'EntityStatusService', 'Configuration',
-        ($q, $scope, ActionSvcs, Logger, Dialogs, PageLifecycle, $routeParams, OrgSvcs, EntityStatusService, Configuration) => {
+        ['$rootScope', '$q', '$location', '$scope', 'ActionSvcs', 'Logger', 'Dialogs', 'PageLifecycle', '$routeParams', 'OrgSvcs', 'EntityStatusService', 'Configuration',
+        ($rootScope, $q, $location, $scope, ActionSvcs, Logger, Dialogs, PageLifecycle, $routeParams, OrgSvcs, EntityStatusService, Configuration) => {
             var params = $routeParams;
             $scope.params = params;
 
@@ -110,39 +109,13 @@ module Apiman {
 
             $scope.oneAtATime = true;
 
-            $scope.groups = [
-                {
-                    title: 'Dynamic Group Header - 1',
-                    content: 'Dynamic Group Body - 1'
-                },
-                {
-                    title: 'Dynamic Group Header - 2',
-                    content: 'Dynamic Group Body - 2'
+            $scope.goTo = function(idx, item, e) {
+                if (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
                 }
-            ];
 
-            $scope.items = ['Item 1', 'Item 2', 'Item 3'];
-
-            $scope.addItem = function() {
-                var newItemNo = $scope.items.length + 1;
-                $scope.items.push('Item ' + newItemNo);
-            };
-
-            $scope.status = {
-                isFirstOpen: true,
-                isFirstDisabled: false
-            };
-
-            $scope.togglePopover = false;
-
-            $scope.closePopover = function () {
-                $scope.togglePopover = false;
-            };
-
-            $scope.dynamicPopover = {
-                content: 'Hello, World!',
-                templateUrl: 'myPopoverTemplate.html',
-                title: 'Title'
+                $location.path( $rootScope.pluginName + '/orgs/' + params.org + '/services/' + params.service + '/' + params.version + '/' + item.path);
             };
 
 
