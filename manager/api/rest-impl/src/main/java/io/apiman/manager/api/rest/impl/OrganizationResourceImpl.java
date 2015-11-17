@@ -121,6 +121,7 @@ import io.apiman.manager.api.rest.contract.exceptions.GatewayNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.InvalidApplicationStatusException;
 import io.apiman.manager.api.rest.contract.exceptions.InvalidMetricCriteriaException;
 import io.apiman.manager.api.rest.contract.exceptions.InvalidNameException;
+import io.apiman.manager.api.rest.contract.exceptions.InvalidParameterException;
 import io.apiman.manager.api.rest.contract.exceptions.InvalidServiceStatusException;
 import io.apiman.manager.api.rest.contract.exceptions.InvalidVersionException;
 import io.apiman.manager.api.rest.contract.exceptions.NotAuthorizedException;
@@ -148,6 +149,7 @@ import io.apiman.manager.api.security.ISecurityContext;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
@@ -1755,6 +1757,8 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             svb.getGateways().addAll(bean.getGateways());
         }
         if (AuditUtils.valueChanged(svb.getEndpoint(), bean.getEndpoint())) {
+            // validate the endpoint is a URL
+            validateEndpoint(bean.getEndpoint());
             data.addChange("endpoint", svb.getEndpoint(), bean.getEndpoint()); //$NON-NLS-1$
             svb.setEndpoint(bean.getEndpoint());
         }
@@ -3360,6 +3364,18 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         long totalDataPoints = millis / divBy;
         if (totalDataPoints > 5000) {
             throw ExceptionFactory.invalidMetricCriteriaException(Messages.i18n.format("OrganizationResourceImpl.MetricDataSetTooLarge")); //$NON-NLS-1$
+        }
+    }
+
+    /**
+     * Make sure we've got a valid URL.
+     * @param endpoint
+     */
+    private void validateEndpoint(String endpoint) {
+        try {
+            new URL(endpoint);
+        } catch (MalformedURLException e) {
+            throw new InvalidParameterException(Messages.i18n.format("OrganizationResourceImpl.InvalidEndpointURL")); //$NON-NLS-1$
         }
     }
 

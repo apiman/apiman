@@ -46,6 +46,7 @@ import org.codehaus.jackson.node.TextNode;
 import org.custommonkey.xmlunit.Diff;
 import org.custommonkey.xmlunit.Difference;
 import org.custommonkey.xmlunit.DifferenceListener;
+import org.custommonkey.xmlunit.ElementNameQualifier;
 import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.Assert;
@@ -318,6 +319,7 @@ public class TestPlanRunner {
                 XMLUnit.setIgnoreDiffBetweenTextAndCDATA(true);
                 XMLUnit.setCompareUnmatched(false);
                 Diff diff = new Diff(expectedPayload, xmlPayload);
+                diff.overrideElementQualifier(new ElementNameQualifier());
                 diff.overrideDifferenceListener(new DifferenceListener() {
                     @Override
                     public void skippedComparison(Node control, Node test) {

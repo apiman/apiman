@@ -188,11 +188,12 @@ public final class ErrorCodes {
     public static final int SEARCH_CRITERIA_INVALID         = 14001;
     public static final int NAME_INVALID                    = 14002;
     public static final int VERSION_INVALID                 = 14003;
+    public static final int PARAM_INVALID                   = 14004;
 
     public static final String SEARCH_CRITERIA_INVALID_INFO = null;
     public static final String NAME_INVALID_INFO            = null;
     public static final String VERSION_INVALID_INFO         = null;
-    
+    public static final String PARAM_INVALID_INFO           = null;
 
     //
     // Download related

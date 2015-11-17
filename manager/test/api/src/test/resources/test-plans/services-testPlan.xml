@@ -37,6 +37,7 @@
     <test name="Create Service Version (duplicate)">test-plan-data/services/versions/009_create-version-duplicate.resttest</test>
     <test name="Create Service 5">test-plan-data/services/versions/010_create-service-5-with-init.resttest</test>
     <test name="Verify Service 5">test-plan-data/services/versions/011_get-svc-5-version-7.0.resttest</test>
+    <test name="Update Version 1.0 (Invalid Endpoint)">test-plan-data/services/versions/012_update-version-1.0-invalid.resttest</test>
   </testGroup>
 
   <!-- Test service plans -->
