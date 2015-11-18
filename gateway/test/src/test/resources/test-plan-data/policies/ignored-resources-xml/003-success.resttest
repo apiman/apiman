@@ -15,8 +15,8 @@ Content-Type: application/xml
       <value>Basic YWRtaW46YWRtaW4=</value>
     </entry>
     <entry>
-      <key>Accept</key>
-      <value>application/xml</value>
+      <key>Host</key>
+      <value>*</value>
     </entry>
     <entry>
       <key>Connection</key>
@@ -27,8 +27,8 @@ Content-Type: application/xml
       <value>*</value>
     </entry>
     <entry>
-      <key>Host</key>
-      <value>*</value>
+      <key>Accept</key>
+      <value>application/xml</value>
     </entry>
     <entry>
       <key>Accept-Encoding</key>

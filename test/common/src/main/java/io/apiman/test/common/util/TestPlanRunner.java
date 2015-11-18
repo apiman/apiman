@@ -56,6 +56,7 @@ import org.mvel2.integration.PropertyHandlerFactory;
 import org.mvel2.integration.VariableResolverFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import com.squareup.okhttp.MediaType;
@@ -319,7 +320,29 @@ public class TestPlanRunner {
                 XMLUnit.setIgnoreDiffBetweenTextAndCDATA(true);
                 XMLUnit.setCompareUnmatched(false);
                 Diff diff = new Diff(expectedPayload, xmlPayload);
-                diff.overrideElementQualifier(new ElementNameQualifier());
+                // A custom element qualifier allows us to customize how the diff engine
+                // compares the XML nodes.  In this case, we're specially handling any
+                // elements named "entry" so that we can compare the standard XML format
+                // of the Echo service we use for most of our tests.  The format of an
+                // entry looks like:
+                //    <entry>
+                //      <key>Name</key>
+                //      <value>Value</value>
+                //    </entry>
+                diff.overrideElementQualifier(new ElementNameQualifier() {
+                    @Override
+                    public boolean qualifyForComparison(Element control, Element test) {
+                        if (control == null || test == null) {
+                            return super.qualifyForComparison(control, test);
+                        }
+                        if (control.getNodeName().equals("entry") && test.getNodeName().equals("entry")) {
+                            String controlKeyName = control.getElementsByTagName("key").item(0).getTextContent();
+                            String testKeyName = test.getElementsByTagName("key").item(0).getTextContent();
+                            return controlKeyName.equals(testKeyName);
+                        }
+                        return super.qualifyForComparison(control, test);
+                    }
+                });
                 diff.overrideDifferenceListener(new DifferenceListener() {
                     @Override
                     public void skippedComparison(Node control, Node test) {

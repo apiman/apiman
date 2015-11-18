@@ -25,7 +25,7 @@ import org.junit.runner.RunWith;
  * is set to XML.
  */
 @RunWith(GatewayRestTester.class)
-@GatewayRestTestPlan("test-plans/policies/ignored-resources-xml-testPlan.xml")
+@GatewayRestTestPlan("test-plans/policies/ignored-resources-testPlan.xml")
 public class Policy_IgnoredResourcesTest {
 
 }
