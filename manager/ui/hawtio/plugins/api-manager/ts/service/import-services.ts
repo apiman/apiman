@@ -11,6 +11,7 @@ module Apiman {
         ($q, $scope, $location, OrgSvcs, PageLifecycle, $rootScope, CurrentUser, $routeParams, Logger, ApimanSvcs) => {
             var params = $routeParams;
             $scope.params = params;
+            $scope.organizationId = params.org;
             
             $scope.importInfo = {
                 services: [],
@@ -233,7 +234,7 @@ module Apiman {
                 });
             }
             
-            PageLifecycle.loadPage('ImportServices', pageData, $scope, function() {
+            PageLifecycle.loadPage('ImportServices', 'svcEdit', pageData, $scope, function() {
                 PageLifecycle.setPageTitle('import-services');
             });
         }]);

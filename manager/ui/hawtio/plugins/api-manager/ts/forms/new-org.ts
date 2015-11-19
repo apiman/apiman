@@ -12,7 +12,7 @@ module Apiman {
                 }, PageLifecycle.handleError);
             };
             
-            PageLifecycle.loadPage('NewOrg', undefined, $scope, function() {
+            PageLifecycle.loadPage('NewOrg', undefined, undefined, $scope, function() {
                 PageLifecycle.setPageTitle('new-org');
                 $scope.$applyAsync(function() {
                     $('#apiman-entityname').focus();

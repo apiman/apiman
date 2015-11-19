@@ -12,7 +12,7 @@ module Apiman {
                     }, reject);
                 })
             };
-            PageLifecycle.loadPage('AdminGateways', pageData, $scope, function() {
+            PageLifecycle.loadPage('AdminGateways', 'admin', pageData, $scope, function() {
                 PageLifecycle.setPageTitle('admin-gateways');
             });
     }])

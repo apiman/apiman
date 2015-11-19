@@ -28,7 +28,7 @@ module Apiman {
                     }, reject);
                 })
             };
-            PageLifecycle.loadPage('AdminRoles', pageData, $scope, function() {
+            PageLifecycle.loadPage('AdminRoles', 'admin', pageData, $scope, function() {
                 PageLifecycle.setPageTitle('admin-roles');
             });
     }])

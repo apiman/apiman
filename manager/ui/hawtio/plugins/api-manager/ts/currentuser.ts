@@ -24,6 +24,10 @@ module ApimanCurrentUser {
                     return rval;
                 },
                 hasPermission: function(organizationId, permission) {
+                    Logger.debug('Checking for permission {0}||{1} in {2}', organizationId, permission, $rootScope.permissions);
+                    if ($rootScope.currentUser && $rootScope.currentUser.admin) {
+                        return true;
+                    }
                     if (organizationId && $rootScope.permissions) {
                         var permid = organizationId + '||' + permission;
                         return $rootScope.permissions[permid];

@@ -104,13 +104,14 @@ module Apiman {
                 }, PageLifecycle.handleError);
             };
             
-            PageLifecycle.loadPage('EditPolicy', pageData, $scope, function() {
+            var requiredPermission = requiredPermissionMap[etype];
+            PageLifecycle.loadPage('EditPolicy', requiredPermission, pageData, $scope, function() {
                 EntityStatusService.setEntityStatus($scope.version.status);
 
                 // Note: not using the apiman-permission directive in the template for this page because
                 // we cannot hard-code the required permission.  The required permission changes depending
                 // on the entity type of the parent of the policy.  Instead we figure it out and set it here.
-                $scope.hasPermission = CurrentUser.hasPermission(params.org, requiredPermissionMap[etype]);
+                $scope.hasPermission = CurrentUser.hasPermission(params.org, requiredPermission);
 
                 PageLifecycle.setPageTitle('edit-policy');
 

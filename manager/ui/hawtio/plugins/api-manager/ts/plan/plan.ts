@@ -12,8 +12,9 @@ module Apiman {
                     OrgSvcs.query({ organizationId: orgId, entityType: 'plans', entityId: planId, versionsOrActivity: 'versions' }, resolve, reject);
                 })
             };
+            $scope.organizationId = orgId;
 
-            PageLifecycle.loadPage('PlanRedirect', pageData, $scope, function() {
+            PageLifecycle.loadPage('PlanRedirect', 'planView', pageData, $scope, function() {
                 var version = $scope.versions[0].version;
                 if (!version) {
                     PageLifecycle.handleError({ status: 404 });

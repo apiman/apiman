@@ -11,7 +11,7 @@ module Apiman {
             $scope.version = params.version;
             $scope.showMetrics = Configuration.ui.metrics;
             var pageData = AppEntityLoader.getCommonData($scope, $location);
-            PageLifecycle.loadPage('AppOverview', pageData, $scope, function() {
+            PageLifecycle.loadPage('AppOverview', 'appView', pageData, $scope, function() {
                 PageLifecycle.setPageTitle('app-overview', [ $scope.app.name ]);
             });
         }])

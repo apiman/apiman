@@ -4,7 +4,7 @@ module Apiman {
     export var DashController = _module.controller("Apiman.DashController",
         ['$scope', 'PageLifecycle', 'CurrentUser', 
         ($scope, PageLifecycle, CurrentUser) => {
-            PageLifecycle.loadPage('Dash', undefined, $scope, function() {
+            PageLifecycle.loadPage('Dash', undefined, undefined, $scope, function() {
                 $scope.isAdmin = CurrentUser.getCurrentUser().admin;
                 $scope.currentUser = CurrentUser.getCurrentUser();
                 PageLifecycle.setPageTitle('dashboard');

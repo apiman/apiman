@@ -71,7 +71,7 @@ module Apiman {
             };
             
             $scope.testGateway = testGateway;
-            PageLifecycle.loadPage('NewGateway', undefined, $scope, function() {
+            PageLifecycle.loadPage('NewGateway', 'admin', undefined, $scope, function() {
                 PageLifecycle.setPageTitle('new-gateway');
                 $('#apiman-gateway-name').focus();
             });

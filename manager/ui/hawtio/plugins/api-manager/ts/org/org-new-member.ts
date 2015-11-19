@@ -96,7 +96,7 @@ module Apiman {
                 })
             };
 
-            PageLifecycle.loadPage('OrgNewMember', pageData, $scope, function() {
+            PageLifecycle.loadPage('OrgNewMember', 'orgAdmin', pageData, $scope, function() {
                 PageLifecycle.setPageTitle('new-member');
             });
         }])

@@ -100,7 +100,7 @@ module Apiman {
                 $('[data-toggle="tooltip"][id=' + id + ']').attr('data-original-title', 'Copy to clipboard');
             };
 
-            PageLifecycle.loadPage('AppApis', pageData, $scope, function() {
+            PageLifecycle.loadPage('AppApis', 'appView', pageData, $scope, function() {
                 Logger.info("API Registry: {0}", $scope.apiRegistry);
                 PageLifecycle.setPageTitle('app-apis', [ $scope.app.name ]);
             });

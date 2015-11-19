@@ -30,7 +30,7 @@ module Apiman {
                 })
             };
 
-            PageLifecycle.loadPage('ConsumerSvcs', pageData, $scope, function() {
+            PageLifecycle.loadPage('ConsumerSvcs', undefined, pageData, $scope, function() {
                 PageLifecycle.setPageTitle('consumer-services');
                 $scope.$applyAsync(function() {
                     $('#apiman-search').focus();

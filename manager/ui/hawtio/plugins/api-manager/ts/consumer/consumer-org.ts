@@ -32,7 +32,7 @@ module Apiman {
                 })
             };
             
-            PageLifecycle.loadPage('ConsumerOrg', pageData, $scope, function() {
+            PageLifecycle.loadPage('ConsumerOrg', undefined, pageData, $scope, function() {
                 $scope.org.isMember = CurrentUser.isMember($scope.org.id);
                 $scope.filteredServices = $scope.services;
                 PageLifecycle.setPageTitle('consumer-org', [ $scope.org.name ]);

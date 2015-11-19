@@ -35,7 +35,7 @@ module Apiman {
                 })
             };
             $scope.getNextPage = getNextPage;
-            PageLifecycle.loadPage('OrgActivity', pageData, $scope, function() {
+            PageLifecycle.loadPage('OrgActivity', 'orgView', pageData, $scope, function() {
                 PageLifecycle.setPageTitle('org-activity', [ $scope.org.name ]);
             });
         }])

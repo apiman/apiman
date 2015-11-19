@@ -53,7 +53,7 @@ module Apiman {
                 }
             };
             
-            PageLifecycle.loadPage('AdminExport', pageData, $scope, function() {
+            PageLifecycle.loadPage('AdminExport', 'admin', pageData, $scope, function() {
                 PageLifecycle.setPageTitle('admin-export');
             });
     }])

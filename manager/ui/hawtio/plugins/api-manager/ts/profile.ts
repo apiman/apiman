@@ -49,7 +49,7 @@ module Apiman {
                 }, PageLifecycle.handleError);
             }
             
-            PageLifecycle.loadPage('UserProfile', pageData, $scope, function() {
+            PageLifecycle.loadPage('UserProfile', undefined, pageData, $scope, function() {
                 $scope.updatedUser.fullName = $scope.user.fullName;
                 $scope.updatedUser.email = $scope.user.email;
                 PageLifecycle.setPageTitle('user-profile');

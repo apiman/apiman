@@ -117,7 +117,7 @@ module Apiman {
                 });
             };
             
-            PageLifecycle.loadPage('AdminPlugins', pageData, $scope, function() {
+            PageLifecycle.loadPage('AdminPlugins', 'admin', pageData, $scope, function() {
                 PageLifecycle.setPageTitle('admin-plugins');
                 refreshPlugins();
             });

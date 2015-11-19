@@ -36,7 +36,7 @@ module Apiman {
             
             $scope.getNextPage = getNextPage;
 
-            PageLifecycle.loadPage('ServiceContracts', pageData, $scope, function() {
+            PageLifecycle.loadPage('ServiceContracts', 'svcView', pageData, $scope, function() {
                 Logger.debug("::: is public: {0}", $scope.version.publicService);
 
                 if ($scope.version.publicService) {

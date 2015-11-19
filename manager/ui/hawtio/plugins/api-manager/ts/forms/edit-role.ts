@@ -70,7 +70,7 @@ module Apiman {
                 });
             }
             
-            PageLifecycle.loadPage('EditRole', pageData, $scope, function() {
+            PageLifecycle.loadPage('EditRole', 'admin', pageData, $scope, function() {
                 PageLifecycle.setPageTitle('edit-role');
                 $('#apiman-description').focus();
             });

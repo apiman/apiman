@@ -37,7 +37,7 @@ module Apiman {
                     }, reject);
                 })
             };
-            PageLifecycle.loadPage('UserOrgs', pageData, $scope, function() {
+            PageLifecycle.loadPage('UserOrgs', undefined, pageData, $scope, function() {
                 PageLifecycle.setPageTitle('user-orgs', [ $scope.user.fullName ]);
             });
     }])

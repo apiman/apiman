@@ -83,7 +83,7 @@ module Apiman {
                 }, PageLifecycle.handleError);
             };
             
-            PageLifecycle.loadPage('NewPolicy', pageData, $scope, function() {
+            PageLifecycle.loadPage('NewPolicy', undefined, pageData, $scope, function() {
                 PageLifecycle.setPageTitle('new-policy');
             });
         }]);

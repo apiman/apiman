@@ -429,7 +429,7 @@ module Apiman {
             
             var pageData = ServiceEntityLoader.getCommonData($scope, $location);
 
-            PageLifecycle.loadPage('ServiceMetrics', pageData, $scope, function() {
+            PageLifecycle.loadPage('ServiceMetrics', 'svcView', pageData, $scope, function() {
                 PageLifecycle.setPageTitle('service-metrics', [ $scope.service.name ]);
                 refreshCharts();
             });

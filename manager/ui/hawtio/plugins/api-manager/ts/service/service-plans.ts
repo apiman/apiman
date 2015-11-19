@@ -151,7 +151,7 @@ module Apiman {
                 }, PageLifecycle.handleError);
             };
 
-            PageLifecycle.loadPage('ServicePlans', pageData, $scope, function() {
+            PageLifecycle.loadPage('ServicePlans', 'svcView', pageData, $scope, function() {
                 $scope.reset();
                 PageLifecycle.setPageTitle('service-plans', [ $scope.service.name ]);
             });

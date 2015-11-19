@@ -133,7 +133,7 @@ module Apiman {
                     });
             };
 
-            PageLifecycle.loadPage('ServiceDef', pageData, $scope, function() {
+            PageLifecycle.loadPage('ServiceDef', 'svcView', pageData, $scope, function() {
                 $scope.definitionType = $scope.version.definitionType;
 
                 if (!$scope.definitionType) {

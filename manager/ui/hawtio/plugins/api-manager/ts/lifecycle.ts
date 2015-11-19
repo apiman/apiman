@@ -81,8 +81,8 @@ module ApimanPageLifecycle {
     export var _module = angular.module("ApimanPageLifecycle", []);
 
     export var PageLifecycle = _module.factory('PageLifecycle', 
-        ['$q', 'Logger', '$rootScope', '$location', 'CurrentUserSvcs', 'Configuration', 'TranslationService', '$window',
-        ($q, Logger, $rootScope, $location, CurrentUserSvcs, Configuration, TranslationService, $window) => {
+        ['$q', 'Logger', '$rootScope', '$location', 'CurrentUserSvcs', 'Configuration', 'TranslationService', '$window', 'CurrentUser',
+        ($q, Logger, $rootScope, $location, CurrentUserSvcs, Configuration, TranslationService, $window, CurrentUser) => {
             var header = 'community';
             if (Configuration.ui && Configuration.ui.header) {
                 header = Configuration.ui.header;
@@ -162,7 +162,7 @@ module ApimanPageLifecycle {
                     Logger.info('Redirecting to page {0}', path);
                     $location.url(path);
                 },
-                loadPage: function(pageName, pageData, $scope, handler) {
+                loadPage: function(pageName, requiredPermission, pageData, $scope, handler) {
                     Logger.log("|{0}| >> Loading page.", pageName);
                     $rootScope.pageState = 'loading';
                     $rootScope.isDirty = false;
@@ -172,7 +172,7 @@ module ApimanPageLifecycle {
                     var commonData = {
                         currentUser: $q(function(resolve, reject) {
                             if ($rootScope.currentUser) {
-                                Logger.log("|{0}| >> Using cached current user from $rootScope.");
+                                Logger.log("|{0}| >> Using cached current user from $rootScope.", pageName);
                                 resolve($rootScope.currentUser);
                             } else {
                                 CurrentUserSvcs.get({ what: 'info' }, function(currentUser) {
@@ -193,6 +193,13 @@ module ApimanPageLifecycle {
                     // Now resolve the data as a promise (wait for all data packets to be fetched)
                     var promise = $q.all(allData);
                     promise.then(function(data) {
+                        // Make sure the user has permission to view this page.
+                        if ( requiredPermission && !CurrentUser.hasPermission($scope.organizationId, requiredPermission)) {
+                            Logger.info('Detected a 404 error.');
+                            $location.url(Apiman.pluginName + '/errors/404').replace();
+                            return;
+                        }
+                        // Now process all the data packets and bind them to the $scope.
                         var count = 0;
                         angular.forEach(data, function(value, key) {
                             Logger.debug("|{0}| >> Binding {1} to $scope.", pageName, key);

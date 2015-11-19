@@ -33,7 +33,7 @@ module Apiman {
                 initialVersion: '1.0'
             };
             
-            PageLifecycle.loadPage('NewApp', pageData, $scope, function() {
+            PageLifecycle.loadPage('NewApp', undefined, pageData, $scope, function() {
                 PageLifecycle.setPageTitle('new-app');
                 $scope.$applyAsync(function() {
                     $('#apiman-entityname').focus();
