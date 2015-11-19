@@ -31,7 +31,7 @@ module Apiman {
             
             $scope.getNextPage = getNextPage;
 
-            PageLifecycle.loadPage('ServiceActivity', pageData, $scope, function() {
+            PageLifecycle.loadPage('ServiceActivity', 'svcView', pageData, $scope, function() {
                 PageLifecycle.setPageTitle('service-activity', [ $scope.service.name ]);
             });
         }])

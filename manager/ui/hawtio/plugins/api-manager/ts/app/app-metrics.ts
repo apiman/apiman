@@ -143,7 +143,7 @@ module Apiman {
             });
             
             var pageData = AppEntityLoader.getCommonData($scope, $location);
-            PageLifecycle.loadPage('AppMetrics', pageData, $scope, function() {
+            PageLifecycle.loadPage('AppMetrics', 'appView', pageData, $scope, function() {
                 PageLifecycle.setPageTitle('app-metrics', [ $scope.app.name ]);
                 refreshCharts();
             });

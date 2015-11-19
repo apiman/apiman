@@ -12,7 +12,7 @@ module Apiman {
             $scope.showMetrics = Configuration.ui.metrics;
             var pageData = ServiceEntityLoader.getCommonData($scope, $location);
             
-            PageLifecycle.loadPage('ServiceOverview', pageData, $scope, function() {
+            PageLifecycle.loadPage('ServiceOverview', 'svcView', pageData, $scope, function() {
                 PageLifecycle.setPageTitle('service-overview', [ $scope.service.name ]);
             });
         }])

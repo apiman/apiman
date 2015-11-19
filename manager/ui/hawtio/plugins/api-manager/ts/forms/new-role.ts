@@ -50,7 +50,7 @@ module Apiman {
                 }, PageLifecycle.handleError);
             }
             
-            PageLifecycle.loadPage('NewRole', undefined, $scope, function() {
+            PageLifecycle.loadPage('NewRole', 'admin', undefined, $scope, function() {
                 PageLifecycle.setPageTitle('new-role');
                 $('#apiman-entityname').focus();
             });

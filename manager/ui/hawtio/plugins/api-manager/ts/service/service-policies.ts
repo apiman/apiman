@@ -57,7 +57,7 @@ module Apiman {
             });
 
 
-            PageLifecycle.loadPage('ServicePolicies', pageData, $scope, function() {
+            PageLifecycle.loadPage('ServicePolicies', 'svcView', pageData, $scope, function() {
                 PageLifecycle.setPageTitle('service-policies', [ $scope.service.name ]);
             });
         }]);

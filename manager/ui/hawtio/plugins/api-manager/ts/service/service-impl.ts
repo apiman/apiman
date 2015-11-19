@@ -185,7 +185,7 @@ module Apiman {
                 }, PageLifecycle.handleError);
             };
             
-            PageLifecycle.loadPage('ServiceImpl', pageData, $scope, function() {
+            PageLifecycle.loadPage('ServiceImpl', 'svcView', pageData, $scope, function() {
                 $scope.reset();
                 PageLifecycle.setPageTitle('service-impl', [ $scope.service.name ]);
                 

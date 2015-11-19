@@ -5,6 +5,7 @@ module Apiman {
         ['$q', '$location', '$scope', 'OrgSvcs', 'PageLifecycle', '$routeParams',
         ($q, $location, $scope, OrgSvcs, PageLifecycle, $routeParams) => {
             var params = $routeParams;
+            $scope.organizationId = params.org;
             $scope.planversion = {
                 clone: true,
                 cloneVersion: params.version
@@ -16,7 +17,7 @@ module Apiman {
                 }, PageLifecycle.handleError);
             };
             
-            PageLifecycle.loadPage('NewPlanVersion', undefined, $scope, function() {
+            PageLifecycle.loadPage('NewPlanVersion', 'planEdit', undefined, $scope, function() {
                 PageLifecycle.setPageTitle('new-plan-version');
                 $scope.$applyAsync(function() {
                     $('#apiman-version').focus();

@@ -46,7 +46,7 @@ module Apiman {
                 }, PageLifecycle.handleError);
             }
             
-            PageLifecycle.loadPage('NewPlugin', undefined, $scope, function() {
+            PageLifecycle.loadPage('NewPlugin', 'admin', undefined, $scope, function() {
                 PageLifecycle.setPageTitle('new-plugin');
                 $('#apiman-group-id').focus();
             });

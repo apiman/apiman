@@ -30,7 +30,7 @@ module Apiman {
                 })
             };
             $scope.getNextPage = getNextPage;
-            PageLifecycle.loadPage('UserActivity', pageData, $scope, function() {
+            PageLifecycle.loadPage('UserActivity', undefined, pageData, $scope, function() {
                 PageLifecycle.setPageTitle('user-activity', [ $scope.user.fullName ]);
             });
             

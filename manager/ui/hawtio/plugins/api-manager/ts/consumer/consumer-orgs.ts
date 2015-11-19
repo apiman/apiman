@@ -29,7 +29,7 @@ module Apiman {
                 })
             };
             
-            PageLifecycle.loadPage('ConsumerOrgs', pageData, $scope, function() {
+            PageLifecycle.loadPage('ConsumerOrgs', undefined, pageData, $scope, function() {
                 PageLifecycle.setPageTitle('consumer-orgs');
                 $scope.$applyAsync(function() {
                     angular.forEach($scope.orgs, function(org) {

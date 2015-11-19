@@ -5,10 +5,12 @@ module Apiman {
     export var OrgRedirectController = _module.controller("Apiman.OrgRedirectController",
         ['$q', '$scope', '$location', 'OrgSvcs', 'PageLifecycle', '$rootScope', 'CurrentUser', '$routeParams',
         ($q, $scope, $location, OrgSvcs, PageLifecycle, $rootScope, CurrentUser, $routeParams) => {
-            if (!CurrentUser.isMember($routeParams.org)) {
+            var params = $routeParams;
+            $scope.organizationId = params.org;
+            if (!CurrentUser.isMember(params.org)) {
               delete $rootScope['currentUser'];
             }
-            PageLifecycle.loadPage('OrgRedirect', undefined, $scope, function() {
+            PageLifecycle.loadPage('OrgRedirect', 'orgView', undefined, $scope, function() {
                 var orgId = $routeParams.org;
                 var tab = 'members';
                 if (CurrentUser.hasPermission(orgId, 'planEdit')) {

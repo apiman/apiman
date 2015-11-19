@@ -13,8 +13,9 @@ module Apiman {
                     OrgSvcs.query({ organizationId: orgId, entityType: 'services', entityId: serviceId, versionsOrActivity: 'versions' }, resolve, reject);
                 })
             };
+            $scope.organizationId = orgId;
 
-            PageLifecycle.loadPage('ServiceRedirect', pageData, $scope, function() {
+            PageLifecycle.loadPage('ServiceRedirect', 'svcView', pageData, $scope, function() {
                 var version = $scope.versions[0].version;
                 if (!version) {
                     PageLifecycle.handleError({ status: 404 });

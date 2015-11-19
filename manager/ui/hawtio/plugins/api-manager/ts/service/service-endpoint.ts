@@ -57,7 +57,7 @@ module Apiman {
             };
 
 
-            PageLifecycle.loadPage('ServiceEndpoint', pageData, $scope, function() {
+            PageLifecycle.loadPage('ServiceEndpoint', 'svcView', pageData, $scope, function() {
                 PageLifecycle.setPageTitle('service-endpoint', [ $scope.service.name ]);
             });
         }]);

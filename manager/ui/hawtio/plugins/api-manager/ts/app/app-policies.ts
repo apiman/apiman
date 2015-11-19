@@ -50,7 +50,7 @@ module Apiman {
                 })
             });
 
-            PageLifecycle.loadPage('AppPolicies', pageData, $scope, function() {
+            PageLifecycle.loadPage('AppPolicies', 'appView', pageData, $scope, function() {
                 PageLifecycle.setPageTitle('app-policies', [ $scope.app.name ]);
             });
         }])

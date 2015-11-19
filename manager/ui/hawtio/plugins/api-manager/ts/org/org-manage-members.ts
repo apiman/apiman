@@ -74,7 +74,7 @@ module Apiman {
         }, reject);
       })
     };
-    PageLifecycle.loadPage('OrgManageMembers', pageData, $scope, function() {
+    PageLifecycle.loadPage('OrgManageMembers', 'orgAdmin', pageData, $scope, function() {
       PageLifecycle.setPageTitle('org-manage-members', [ $scope.org.name ]);
     });
   }])

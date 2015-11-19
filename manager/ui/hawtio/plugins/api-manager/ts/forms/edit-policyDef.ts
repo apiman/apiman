@@ -28,7 +28,7 @@ module Apiman {
                 }, PageLifecycle.handleError);
             }
             
-            PageLifecycle.loadPage('EditPolicyDef', pageData, $scope, function() {
+            PageLifecycle.loadPage('EditPolicyDef', 'admin', pageData, $scope, function() {
                 PageLifecycle.setPageTitle('edit-policyDef');
             });
     }])

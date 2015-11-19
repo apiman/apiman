@@ -350,6 +350,8 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     @Override
     public SearchResultsBean<AuditEntryBean> activity(String organizationId, int page, int pageSize)
             throws OrganizationNotFoundException, NotAuthorizedException {
+        if (!securityContext.hasPermission(PermissionType.orgView, organizationId))
+            throw ExceptionFactory.notAuthorizedException();
         if (page <= 1) {
             page = 1;
         }
@@ -453,6 +455,8 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     @Override
     public SearchResultsBean<AuditEntryBean> getAppActivity(String organizationId, String applicationId,
             int page, int pageSize) throws ApplicationNotFoundException, NotAuthorizedException {
+        if (!securityContext.hasPermission(PermissionType.appView, organizationId))
+            throw ExceptionFactory.notAuthorizedException();
         if (page <= 1) {
             page = 1;
         }
@@ -640,6 +644,8 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     public SearchResultsBean<AuditEntryBean> getAppVersionActivity(String organizationId,
             String applicationId, String version, int page, int pageSize)
             throws ApplicationVersionNotFoundException, NotAuthorizedException {
+        if (!securityContext.hasPermission(PermissionType.appView, organizationId))
+            throw ExceptionFactory.notAuthorizedException();
         if (page <= 1) {
             page = 1;
         }
@@ -1324,6 +1330,8 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     @Override
     public SearchResultsBean<AuditEntryBean> getServiceActivity(String organizationId, String serviceId,
             int page, int pageSize) throws ServiceNotFoundException, NotAuthorizedException {
+        if (!securityContext.hasPermission(PermissionType.svcView, organizationId))
+            throw ExceptionFactory.notAuthorizedException();
         if (page <= 1) {
             page = 1;
         }
@@ -1703,6 +1711,8 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     public SearchResultsBean<AuditEntryBean> getServiceVersionActivity(String organizationId,
             String serviceId, String version, int page, int pageSize) throws ServiceVersionNotFoundException,
             NotAuthorizedException {
+        if (!securityContext.hasPermission(PermissionType.svcView, organizationId))
+            throw ExceptionFactory.notAuthorizedException();
         if (page <= 1) {
             page = 1;
         }
@@ -2472,6 +2482,8 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     @Override
     public SearchResultsBean<AuditEntryBean> getPlanActivity(String organizationId, String planId, int page, int pageSize)
             throws PlanNotFoundException, NotAuthorizedException {
+        if (!securityContext.hasPermission(PermissionType.planView, organizationId))
+            throw ExceptionFactory.notAuthorizedException();
         if (page <= 1) {
             page = 1;
         }
@@ -2647,6 +2659,8 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     public SearchResultsBean<AuditEntryBean> getPlanVersionActivity(String organizationId, String planId,
             String version, int page, int pageSize) throws PlanVersionNotFoundException,
             NotAuthorizedException {
+        if (!securityContext.hasPermission(PermissionType.planView, organizationId))
+            throw ExceptionFactory.notAuthorizedException();
         if (page <= 1) {
             page = 1;
         }

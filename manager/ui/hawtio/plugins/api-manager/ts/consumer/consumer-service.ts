@@ -12,7 +12,7 @@ module Apiman {
                     OrgSvcs.query({ organizationId: orgId, entityType: 'services', entityId: serviceId, versionsOrActivity: 'versions' }, resolve, reject);
                 })
             };
-            PageLifecycle.loadPage('ConsumerServiceRedirect', pageData, $scope, function() {
+            PageLifecycle.loadPage('ConsumerServiceRedirect', undefined, pageData, $scope, function() {
                 var version = $scope.versions[0].version;
                 for (var i = 0; i < $scope.versions.length; i++) {
                 	var v = $scope.versions[i];
@@ -83,7 +83,7 @@ module Apiman {
                 PageLifecycle.redirectTo('/browse/orgs/{0}/{1}/{2}', $routeParams.org, $routeParams.service, serviceVersion.version);
             };
 
-            PageLifecycle.loadPage('ConsumerService', pageData, $scope, function() {
+            PageLifecycle.loadPage('ConsumerService', undefined, pageData, $scope, function() {
                 $scope.service = $scope.version.service;
                 $scope.org = $scope.service.organization;
                 PageLifecycle.setPageTitle('consumer-service', [ $scope.service.name ]);
@@ -102,7 +102,7 @@ module Apiman {
                 })
             };
             
-            PageLifecycle.loadPage('ConsumerServiceDef', pageData, $scope, function() {
+            PageLifecycle.loadPage('ConsumerServiceDef', undefined, pageData, $scope, function() {
                 $scope.service = $scope.version.service;
                 $scope.org = $scope.service.organization;
                 $scope.hasError = false;

@@ -140,7 +140,7 @@ module Apiman {
                 }, PageLifecycle.handleError);
             };
             
-            PageLifecycle.loadPage('NewContract', pageData, $scope, function() {
+            PageLifecycle.loadPage('NewContract', undefined, pageData, $scope, function() {
                 PageLifecycle.setPageTitle('new-contract');
             });
         }]);

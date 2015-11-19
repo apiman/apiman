@@ -4,7 +4,7 @@ module Apiman {
     export var DashController = _module.controller("Apiman.AboutController",
         ['$scope', 'PageLifecycle', 'CurrentUser', 'Configuration',
         ($scope, PageLifecycle, CurrentUser, Configuration) => {
-            PageLifecycle.loadPage('About', undefined, $scope, function() {
+            PageLifecycle.loadPage('About', undefined, undefined, $scope, function() {
                 $scope.github = "http://github.com/apiman/apiman";
                 $scope.site = "http://apiman.io/";
                 $scope.userGuide = "http://www.apiman.io/latest/user-guide.html";
