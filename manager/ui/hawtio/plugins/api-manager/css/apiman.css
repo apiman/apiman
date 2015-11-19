@@ -1684,3 +1684,6 @@ html, body {height: 100%;}
   visibility: hidden;
 }
 
+.clipboard {
+  padding: 2px 6px 4px;
+}
