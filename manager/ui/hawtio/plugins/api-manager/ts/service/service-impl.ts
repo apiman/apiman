@@ -184,7 +184,31 @@ module Apiman {
                     EntityStatusService.setEntityStatus(reply.status);
                 }, PageLifecycle.handleError);
             };
-            
+
+
+            // Endpoint Validation
+            $scope.invalidEndpoint = false;
+
+            $scope.validateEndpoint = function() {
+                var first7 = $scope.updatedService.endpoint.substring(0, 7);
+                var first8 = $scope.updatedService.endpoint.substring(0, 8);
+
+                var re = new RegExp('^(http|https):\/\/', 'i');
+
+                // Test first 7 letters for http:// first
+                if(re.test(first7) === true) {
+                    $scope.saveService();
+                } else {
+                    // If it fails, test first 8 letters for https:// next
+                    if(re.test(first8) === true) {
+                        $scope.saveService();
+                    } else {
+                        console.log('Invalid input.');
+                        $scope.invalidEndpoint = true;
+                    }
+                }
+            };
+
             PageLifecycle.loadPage('ServiceImpl', 'svcView', pageData, $scope, function() {
                 $scope.reset();
                 PageLifecycle.setPageTitle('service-impl', [ $scope.service.name ]);
