@@ -30,6 +30,29 @@ module Apiman {
             };
         }]);
 
+    _module.directive('apimanApiModal',
+        ['Logger', function(Logger) {
+            return {
+                templateUrl: 'plugins/api-manager/html/app/apiModal.html',
+                replace: true,
+                restrict: 'E',
+                link: function(scope, element, attrs) {
+                    $(element).on('hidden.bs.modal', function() {
+                        $(element).remove();
+                    });
+
+                    // Called if copy-to-clipboard functionality was successful
+                    scope.copySuccess = function () {
+                        console.log('Copied!');
+                    };
+
+                    // Called if copy-to-clipboard functionality was unsuccessful
+                    scope.copyFail = function (err) {
+                        //console.error('Error!', err);
+                    };
+                }
+            };
+        }]);
 
     _module.directive('apimanSelectPicker',
         ['Logger', '$timeout', '$parse', 'TranslationService',

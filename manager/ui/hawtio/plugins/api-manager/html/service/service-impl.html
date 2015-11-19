@@ -46,6 +46,9 @@
                      type="text"
                      ng-disabled="isEntityDisabled()"></input>
             </div>
+            <div style="color: #ff0000" ng-show="invalidEndpoint === true">
+              <p>Please enter a valid endpoint that begins with http:// or https://.</p>
+            </div>
             <div style="margin-top: 10px">
               <span class="clearfix"
                     apiman-i18n-key="api-type-label">API Type:</span>
@@ -222,7 +225,7 @@
                  style="margin-top: 20px">
               <button ng-disabled="!isDirty || !isValid"
                       apiman-action-btn=""
-                      ng-click="saveService()"
+                      ng-click="validateEndpoint()"
                       class="btn btn-primary"
                       data-field="saveButton"
                       apiman-i18n-key="save"
