@@ -2,9 +2,9 @@
 /// <reference path="../services.ts"/>
 module Apiman {
 
-    export var AppApisController = _module.controller("Apiman.AppApisController",
-        ['$q', '$scope', '$location', 'PageLifecycle', 'AppEntityLoader', 'Logger', 'OrgSvcs', '$rootScope', '$compile', '$timeout', '$routeParams', 'Configuration', 'ApiRegistrySvcs', 'DownloadSvcs', '$window',
-        ($q, $scope, $location, PageLifecycle, AppEntityLoader, Logger, OrgSvcs, $rootScope, $compile, $timeout, $routeParams, Configuration, ApiRegistrySvcs, DownloadSvcs, $window) => {
+    export var AppApisController = _module.controller('Apiman.AppApisController',
+        ['$q', '$scope', '$location', 'PageLifecycle', 'AppEntityLoader', 'Logger', 'OrgSvcs', '$rootScope', '$compile', '$timeout', '$routeParams', 'Configuration', 'ApiRegistrySvcs', 'DownloadSvcs', '$window', '$uibModal', '$log',
+        ($q, $scope, $location, PageLifecycle, AppEntityLoader, Logger, OrgSvcs, $rootScope, $compile, $timeout, $routeParams, Configuration, ApiRegistrySvcs, DownloadSvcs, $window, $uibModal, $log) => {
             var params = $routeParams;
 
             $scope.organizationId = params.org;
@@ -16,22 +16,33 @@ module Apiman {
                 api.expanded = !api.expanded;
             };
 
-            $scope.howToInvoke = function(api) {
-                var modalScope = $rootScope.$new(true);
+            $scope.animationsEnabled = true;
 
-                modalScope.asQueryParam = api.httpEndpoint + '?apikey=' + api.apiKey;
+            $scope.howToInvoke = function (size, api) {
+                var modalInstance = $uibModal.open({
+                    animation: $scope.animationsEnabled,
+                    templateUrl: 'invokeModal.html',
+                    controller: 'AppApisModalCtrl',
+                    size: size,
+                    resolve: {
+                        api: function() {
+                            return api;
+                        }
+                    }
+                });
 
-                if (api.httpEndpoint.indexOf('?') > -1) {
-                    modalScope.asQueryParam = api.httpEndpoint + '&apikey=' + api.apiKey;
-                }
-
-                modalScope.asRequestHeader = 'X-API-Key: ' + api.apiKey;
-                $('body').append($compile('<apiman-api-modal></apiman-api-modal>')(modalScope));
-
-                $timeout(function() {
-                    $('#apiModal')['modal']({'keyboard': true, 'backdrop': 'static'});
-                }, 50);
+                modalInstance.result.then(function (selectedItem) {
+                    $scope.selected = selectedItem;
+                }, function () {
+                    $log.info('Modal dismissed at: ' + new Date());
+                });
             };
+
+            $scope.toggleAnimation = function () {
+                $scope.animationsEnabled = !$scope.animationsEnabled;
+            };
+
+
 
             $scope.doExportAsJson = function() {
                 $scope.exportAsJsonButton.state = 'in-progress';
@@ -66,16 +77,7 @@ module Apiman {
             });
 
 
-            // Tooltip
-
-            // Initiates the tooltip (this is required for performance reasons)
-            /*
-            $(function () {
-                $('[data-toggle="tooltip"]').hover(function() {
-                    (<any>$('[data-toggle="tooltip"]')).tooltip('show');
-                });
-            });
-            */
+            // Copy-to-Clipboard
 
             // Called if copy-to-clipboard functionality was successful
             $scope.copySuccess = function () {
@@ -87,17 +89,21 @@ module Apiman {
                 //console.error('Error!', err);
             };
 
-            // Called on clicking the button the tooltip is attached to
-            $scope.tooltipChange = function(id) {
-                $('[data-toggle="tooltip"][id=' + id + ']').attr('data-original-title', 'Copied!');
 
-                // This is a workaround for jQuery + TS not playing well together
-                (<any>$('[data-toggle="tooltip"][id=' + id + ']')).tooltip('show');
+            // Tooltip
+
+            $scope.tooltipTxt = 'Copy to clipboard';
+
+            // Called on clicking the button the tooltip is attached to
+            $scope.tooltipChange = function() {
+                $scope.tooltipTxt = 'Copied!';
             };
 
             // Call when the mouse leaves the button the tooltip is attached to
-            $scope.tooltipReset = function(id) {
-                $('[data-toggle="tooltip"][id=' + id + ']').attr('data-original-title', 'Copy to clipboard');
+            $scope.tooltipReset = function() {
+                setTimeout(function() {
+                    $scope.tooltipTxt = 'Copy to clipboard';
+                }, 100);
             };
 
             PageLifecycle.loadPage('AppApis', 'appView', pageData, $scope, function() {
@@ -106,7 +112,56 @@ module Apiman {
             });
         }]);
 
-    
+
+    export var AppApisModalCtrl = _module.controller('AppApisModalCtrl', function ($scope,
+                                                                                   $uibModalInstance,
+                                                                                   api) {
+
+        $scope.api = api;
+
+        $scope.asQueryParam = api.httpEndpoint + '?apikey=' + api.apiKey;
+
+        if (api.httpEndpoint.indexOf('?') > -1) {
+            $scope.asQueryParam = api.httpEndpoint + '&apikey=' + api.apiKey;
+        }
+
+        $scope.asRequestHeader = 'X-API-Key: ' + api.apiKey;
+
+
+        $scope.ok = function () {
+            $uibModalInstance.close();
+        };
+
+
+        // Tooltip
+
+        $scope.tooltipTxt = 'Copy to clipboard';
+
+        // Called on clicking the button the tooltip is attached to
+        $scope.tooltipChange = function() {
+            $scope.tooltipTxt = 'Copied!';
+        };
+
+        // Call when the mouse leaves the button the tooltip is attached to
+        $scope.tooltipReset = function() {
+            setTimeout(function() {
+                $scope.tooltipTxt = 'Copy to clipboard';
+            }, 100);
+        };
+
+
+        // Copy-to-Clipboard
+
+        // Called if copy-to-clipboard functionality was successful
+        $scope.copySuccess = function () {
+            //console.log('Copied!');
+        };
+
+        // Called if copy-to-clipboard functionality was unsuccessful
+        $scope.copyFail = function (err) {
+            //console.error('Error!', err);
+        };
+    });
 
 
 }
