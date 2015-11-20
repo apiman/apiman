@@ -41,7 +41,7 @@
             <div class="description" data-field="description" style="margin-bottom: 10px;">{{ service.description }}</div>
             <span class="apiman-form-label" apiman-i18n-key="choose-version">Choose Version:</span>
             <div class="btn-group apiman-entity-action" ng-show="versions.length > 0">
-              <select id="version" apiman-select-picker="" ng-model="selectedServiceVersion" ng-change="setVersion( selectedServiceVersion )" 
+              <select id="version" apiman-select-picker="" ng-model="selectedServiceVersion" ng-change="setVersion( selectedServiceVersion )"
                 title="" class="selectpicker" data-live-search="false" apiman-i18n-skip
                 data-field="versionSelector" data-ng-options="version as version.version for version in versions">
               </select>
@@ -75,8 +75,26 @@
                 the need for a Service Contract with an Application.  To directly invoke the
                 Service, send requests to the API Gateway endpoint below.
               </p>
-              <div style="margin-bottom: 20px;">
-                <textarea readonly="readonly" class="apiman-endpoint" style="width:100%">{{ publicEndpoint.managedEndpoint }}</textarea>
+              <div class="input-group" style="width: 100%; margin: 25px 0 45px 0;">
+                <input readonly
+                       type="text"
+                       class="apiman-form-control form-control readonly apiman-readonly"
+                       value="{{ publicEndpoint.managedEndpoint }}"
+                       style="background-color: white; color: black">
+                <span class="input-group-btn">
+                  <button clipboard
+                          text="publicEndpoint.managedEndpoint"
+                          class="btn btn-default clipboard"
+                          type="button"
+                          on-copied="copySuccess()"
+                          on-error="copyFail(err)"
+                          ng-mouseleave="tooltipReset()"
+                          ng-click="tooltipChange()"
+                          style="padding: 2px 6px 4px;"
+                          uib-tooltip="{{ tooltipTxt }}">
+                    <span class="glyphicon glyphicon-copy"></span>
+                  </button>
+                </span>
               </div>
             </div>
 

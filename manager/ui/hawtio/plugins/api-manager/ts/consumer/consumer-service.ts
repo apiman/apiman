@@ -88,6 +88,36 @@ module Apiman {
                 $scope.org = $scope.service.organization;
                 PageLifecycle.setPageTitle('consumer-service', [ $scope.service.name ]);
             });
+
+
+            // Tooltip
+
+            $scope.tooltipTxt = 'Copy to clipboard';
+
+            // Called on clicking the button the tooltip is attached to
+            $scope.tooltipChange = function() {
+                $scope.tooltipTxt = 'Copied!';
+            };
+
+            // Call when the mouse leaves the button the tooltip is attached to
+            $scope.tooltipReset = function() {
+                setTimeout(function() {
+                    $scope.tooltipTxt = 'Copy to clipboard';
+                }, 100);
+            };
+
+
+            // Copy-to-Clipboard
+
+            // Called if copy-to-clipboard functionality was successful
+            $scope.copySuccess = function () {
+                //console.log('Copied!');
+            };
+
+            // Called if copy-to-clipboard functionality was unsuccessful
+            $scope.copyFail = function (err) {
+                //console.error('Error!', err);
+            };
         }]);
 
     export var ConsumerSvcDefController = _module.controller("Apiman.ConsumerSvcDefController",
