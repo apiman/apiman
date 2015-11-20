@@ -40,9 +40,9 @@ import org.junit.Test;
  */
 @SuppressWarnings("nls")
 public class DefaultJdbcComponentTest {
-    
-    List<Throwable> errors = new ArrayList<Throwable>();
-    
+
+    List<Throwable> errors = new ArrayList<>();
+
     @Before
     public void before() {
         System.out.println("Before!");
@@ -60,7 +60,7 @@ public class DefaultJdbcComponentTest {
         IJdbcClient client = component.createStandalone(config);
         doAllTests(client);
     }
-    
+
     @Test
     public void testShared() throws Throwable {
         DefaultJdbcComponent component = new DefaultJdbcComponent();
@@ -72,17 +72,17 @@ public class DefaultJdbcComponentTest {
         IJdbcClient client = component.createShared("sharedDS", config);
         doAllTests(client);
     }
-    
+
     @Test
     public void testDataSource() throws Throwable {
         DefaultJdbcComponent component = new DefaultJdbcComponent();
-        
+
         BasicDataSource ds = new BasicDataSource();
         ds.setDriverClassName(Driver.class.getName());
         ds.setUsername("sa");
         ds.setPassword("");
         ds.setUrl("jdbc:h2:mem:testDataSource;DB_CLOSE_DELAY=-1");
-        
+
         try {
             IJdbcClient client = component.create(ds);
             doAllTests(client);
@@ -169,7 +169,7 @@ public class DefaultJdbcComponentTest {
         connection.execute(dfltHandler, insertSql, "ewittman", "Eric Wittmann", 17, Boolean.TRUE);
         connection.execute(dfltHandler, insertSql, "msavy", "Marc Savy", 50, Boolean.FALSE);
         connection.execute(dfltHandler, insertSql, "ryordan", "Rachel Yordan", 92, Boolean.FALSE);
-        
+
         doQueries(connection);
     }
 
