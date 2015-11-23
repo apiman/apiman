@@ -94,11 +94,32 @@ public class LDAPIdentityValidator implements IIdentityValidator<LDAPIdentitySou
                 }
                 handler.handle(AsyncResultImpl.create(Boolean.TRUE));
             }
-        } catch (AuthenticationException e) {
-            handler.handle(AsyncResultImpl.create(Boolean.FALSE));
-        } catch (NamingException e) {
-            handler.handle(AsyncResultImpl.create(e, Boolean.class));
+        } catch (Exception e) {
+            if (isAuthenticationNamingException(e)) {
+                handler.handle(AsyncResultImpl.create(Boolean.FALSE));
+            } else {
+                handler.handle(AsyncResultImpl.create(e, Boolean.class));
+            }
         }
+    }
+
+    /**
+     * @param error
+     * @return true iff the error is an ldap authentication exception
+     */
+    private boolean isAuthenticationNamingException(Exception error) {
+        boolean done = false;
+        Throwable e = error;
+        while (!done) {
+            if (e instanceof AuthenticationException) {
+                return true;
+            }
+            if (e.getCause() == e) {
+                done = true;
+            }
+            e = e.getCause();
+        }
+        return false;
     }
 
     /**

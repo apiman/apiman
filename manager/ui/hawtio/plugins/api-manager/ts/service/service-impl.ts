@@ -175,7 +175,9 @@ module Apiman {
             };
 
             $scope.saveService = function() {
+                $scope.invalidEndpoint = false;
                 $scope.saveButton.state = 'in-progress';
+                
                 OrgSvcs.update({ organizationId: params.org, entityType: 'services', entityId:params.service, versionsOrActivity: 'versions', version: params.version }, $scope.updatedService, function(reply) {
                     $rootScope.isDirty = false;
                     $scope.autoGateway = false;
