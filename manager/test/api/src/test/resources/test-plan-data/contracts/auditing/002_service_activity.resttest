@@ -42,7 +42,6 @@ Content-Type: application/json
       "data": "{\"changes\":[{\"name\":\"plans\",\"before\":\"\",\"after\":\"PlanA:2.0, PlanB:1.0\"},{\"name\":\"endpoint\",\"before\":null,\"after\":\"http://localhost:8080/ping\"},{\"name\":\"endpointType\",\"before\":null,\"after\":\"rest\"}]}"
     },
     {
-      "id": 32,
       "who": "admin",
       "organizationId": "Organization2",
       "entityType": "Service",
