@@ -36,6 +36,7 @@ import io.searchbox.core.Get;
 import io.searchbox.core.Index;
 import io.searchbox.params.Parameters;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -137,19 +138,28 @@ public class AsyncESRegistry extends AbstractESComponent implements IRegistry {
                     try {
                         Index index = new Index.Builder(ESRegistryMarshalling.marshall(application).string())
                                 .refresh(false).index(getIndexName())
-                                .setParameter(Parameters.OP_TYPE, "create") //$NON-NLS-1$
+                                .setParameter(Parameters.OP_TYPE, "index") //$NON-NLS-1$
                                 .type("application").id(id).build(); //$NON-NLS-1$
                         getClient().executeAsync(index, new JestResultHandler<JestResult>() {
                             @Override
                             public void completed(JestResult result) {
                                 if (!result.isSucceeded()) {
                                     handler.handle(AsyncResultImpl.create(
-                                            new RegistrationException(Messages.i18n.format("ESRegistry.AppAlreadyRegistered")),  //$NON-NLS-1$
+                                            new IOException(result.getErrorMessage()),
                                             Void.class));
                                 } else {
-                                    Iterator<Contract> iterator = application.getContracts().iterator();
-                                    application.setContracts(null);
-                                    registerContracts(application, iterator, svcMap, handler);
+                                    unregisterServiceContracts(application, new IAsyncResultHandler<Void>() {
+                                        @Override
+                                        public void handle(IAsyncResult<Void> result) {
+                                            if (result.isError()) {
+                                                handler.handle(result);
+                                            } else {
+                                                Iterator<Contract> iterator = application.getContracts().iterator();
+                                                application.setContracts(null);
+                                                registerContracts(application, iterator, svcMap, handler);
+                                            }
+                                        }
+                                    });
                                 }
                             }
                             @Override

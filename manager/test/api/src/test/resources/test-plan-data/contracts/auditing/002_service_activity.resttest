@@ -11,6 +11,15 @@ Content-Type: application/json
       "entityType": "Service",
       "entityId": "Service2",
       "entityVersion": "1.5",
+      "what": "BreakContract",
+      "data": "{\"appOrgId\":\"Organization1\",\"appId\":\"Application1\",\"appVersion\":\"1.0\",\"serviceOrgId\":\"Organization2\",\"serviceId\":\"Service2\",\"serviceVersion\":\"1.5\",\"planId\":\"PlanA\",\"planVersion\":\"2.0\"}"
+    },
+    {
+      "who": "admin",
+      "organizationId": "Organization2",
+      "entityType": "Service",
+      "entityId": "Service2",
+      "entityVersion": "1.5",
       "what": "CreateContract",
       "data": "{\"appOrgId\":\"Organization1\",\"appId\":\"Application1\",\"appVersion\":\"1.0\",\"serviceOrgId\":\"Organization2\",\"serviceId\":\"Service2\",\"serviceVersion\":\"1.5\",\"planId\":\"PlanA\",\"planVersion\":\"2.0\"}"
     },
@@ -33,6 +42,7 @@ Content-Type: application/json
       "data": "{\"changes\":[{\"name\":\"plans\",\"before\":\"\",\"after\":\"PlanA:2.0, PlanB:1.0\"},{\"name\":\"endpoint\",\"before\":null,\"after\":\"http://localhost:8080/ping\"},{\"name\":\"endpointType\",\"before\":null,\"after\":\"rest\"}]}"
     },
     {
+      "id": 32,
       "who": "admin",
       "organizationId": "Organization2",
       "entityType": "Service",
@@ -78,5 +88,5 @@ Content-Type: application/json
       "data": null
     }
   ],
-  "totalSize": 8
+  "totalSize": 9
 }

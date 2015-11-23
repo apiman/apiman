@@ -1,0 +1,13 @@
+GET /AppReregisterTest/echo-2/1.0/path/to/app/resource admin/admin
+X-API-Key: service-2
+Accept: application/json
+
+----
+200
+Content-Type: application/json
+
+{
+  "method" : "GET",
+  "resource" : "/echo-2/path/to/app/resource",
+  "uri" : "/echo-2/path/to/app/resource"
+}

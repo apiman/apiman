@@ -37,6 +37,7 @@ module Apiman {
                                 $scope.app = version.application;
                                 $rootScope.mruApp = version;
                                 EntityStatusService.setEntityStatus(version.status);
+                                Logger.debug("app version: {0}", version);
                                 resolve(version);
                             }, reject);
                         }),
@@ -67,6 +68,7 @@ module Apiman {
 
             $scope.registerApp = function() {
                 $scope.registerButton.state = 'in-progress';
+                $scope.reregisterButton.state = 'in-progress';
                 var registerAction = {
                     type: 'registerApplication',
                     entityId: params.app,
@@ -75,7 +77,9 @@ module Apiman {
                 };
                 ActionSvcs.save(registerAction, function(reply) {
                     $scope.version.status = 'Registered';
+                    $scope.version.publishedOn = Date.now();
                     $scope.registerButton.state = 'complete';
+                    $scope.reregisterButton.state = 'complete';
                     $scope.setEntityStatus($scope.version.status);
                 }, PageLifecycle.handleError);
             };

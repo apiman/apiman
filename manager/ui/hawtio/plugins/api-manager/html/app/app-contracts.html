@@ -3,12 +3,10 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
-    
   </head>
 
   <body>
   <div>
-    
     <div ng-include="headerInclude"></div>
     <div ng-controller="Apiman.AppContractsController" class="container page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
       <div ng-include="'plugins/api-manager/html/app/app_bc.include'"></div>
@@ -34,8 +32,8 @@
                 <div>
                   <apiman-search-box id="contracts-filter" apiman-i18n-key="filter-app-contracts" function="filterContracts" placeholder="Filter by org or service name..." />
                 </div>
-                <a apiman-permission="appEdit" apiman-status="Created,Ready" data-field="toNewContract" apiman-i18n-key="new-contract" href="{{ pluginName }}/new-contract" class="btn btn-primary pull-right">New Contract</a>
-                <button ng-click="breakAll()" apiman-action-btn="" ng-disabled="!contracts.length" apiman-permission="appEdit" apiman-status="Created,Ready" data-field="breakAllContracts" apiman-i18n-key="break-all-contracts" placeholder="Breaking..." data-icon="fa-cog" class="btn btn-default pull-right">Break All</button>
+                <a apiman-permission="appEdit" apiman-status="Created,Ready,Registered" data-field="toNewContract" apiman-i18n-key="new-contract" href="{{ pluginName }}/new-contract" class="btn btn-primary pull-right">New Contract</a>
+                <button ng-click="breakAll()" apiman-action-btn="" ng-disabled="!contracts.length" apiman-permission="appEdit" apiman-status="Created,Ready,Registered" data-field="breakAllContracts" apiman-i18n-key="break-all-contracts" placeholder="Breaking..." data-icon="fa-cog" class="btn btn-default pull-right">Break All</button>
               </div>
               <div class="clearfix"></div>
               <!-- The list of contracts -->
@@ -58,7 +56,7 @@
                       </div>
                     </div>
                     <div class="col-md-2 col-no-padding">
-                      <span class="actions"><button apiman-i18n-key="break-contract" apiman-status="Created,Ready" apiman-permission="appEdit" ng-click="break(contract)" class="btn btn-default">Break Contract</button></span>
+                      <span class="actions"><button apiman-i18n-key="break-contract" apiman-status="Created,Ready,Registered" apiman-permission="appEdit" ng-click="break(contract)" class="btn btn-default">Break Contract</button></span>
                     </div>
                   </div>
                   <hr />

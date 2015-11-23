@@ -760,7 +760,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         if (avb == null) {
             throw ExceptionFactory.applicationNotFoundException(applicationId);
         }
-        if (avb.getStatus() == ApplicationStatus.Registered || avb.getStatus() == ApplicationStatus.Retired) {
+        if (avb.getStatus() == ApplicationStatus.Retired) {
             throw ExceptionFactory.invalidApplicationStatusException();
         }
         ServiceVersionBean svb = storage.getServiceVersion(bean.getServiceOrgId(), bean.getServiceId(), bean.getServiceVersion());
@@ -798,8 +798,8 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         contract.setCreatedOn(new Date());
         contract.setApikey(apiKeyGenerator.generate());
 
-        // Validate the state of the application.
-        if (applicationValidator.isReady(avb, true)) {
+        // Move the app to the "Ready" state if necessary.
+        if (avb.getStatus() == ApplicationStatus.Created && applicationValidator.isReady(avb, true)) {
             avb.setStatus(ApplicationStatus.Ready);
         }
 
@@ -911,12 +911,18 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             if (!contract.getApplication().getVersion().equals(version)) {
                 throw ExceptionFactory.contractNotFoundException(contractId);
             }
-            if (contract.getApplication().getStatus() == ApplicationStatus.Registered || contract.getApplication().getStatus() == ApplicationStatus.Retired) {
+            if (contract.getApplication().getStatus() == ApplicationStatus.Retired) {
                 throw ExceptionFactory.invalidApplicationStatusException();
             }
             storage.deleteContract(contract);
             storage.createAuditEntry(AuditUtils.contractBrokenFromApp(contract, securityContext));
             storage.createAuditEntry(AuditUtils.contractBrokenToService(contract, securityContext));
+
+            // Update the version with new meta-data (e.g. modified-by)
+            ApplicationVersionBean appV = storage.getApplicationVersion(organizationId, applicationId, version);
+            appV.setModifiedBy(securityContext.getCurrentUser());
+            appV.setModifiedOn(new Date());
+            storage.updateApplicationVersion(appV);
 
             storage.commitTx();
             log.debug(String.format("Deleted contract: %s", contract)); //$NON-NLS-1$

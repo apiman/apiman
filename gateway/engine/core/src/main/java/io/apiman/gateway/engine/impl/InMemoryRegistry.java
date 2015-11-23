@@ -17,6 +17,7 @@ package io.apiman.gateway.engine.impl;
 
 import io.apiman.gateway.engine.IRegistry;
 import io.apiman.gateway.engine.async.AsyncResultImpl;
+import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.Application;
 import io.apiman.gateway.engine.beans.Contract;
@@ -98,12 +99,6 @@ public class InMemoryRegistry implements IRegistry {
         synchronized (mutex) {
             // Validate the application first - we need to be able to resolve all the contracts.
             for (Contract contract : application.getContracts()) {
-                String contractKey = getContractKey(contract);
-                if (getMap().containsKey(contractKey)) {
-                    error = new RegistrationException(Messages.i18n.format("InMemoryRegistry.ContractAlreadyPublished", //$NON-NLS-1$
-                            contract.getApiKey()));
-                    break;
-                }
                 String svcKey = getServiceKey(contract.getServiceOrgId(), contract.getServiceId(), contract.getServiceVersion());
                 if (!getMap().containsKey(svcKey)) {
                     error = new RegistrationException(Messages.i18n.format("InMemoryRegistry.ServiceNotFoundInOrg", //$NON-NLS-1$
@@ -111,18 +106,24 @@ public class InMemoryRegistry implements IRegistry {
                     break;
                 }
             }
-            String applicationKey = getApplicationKey(application);
-            if (getMap().containsKey(applicationKey)) {
-                error = new RegistrationException(Messages.i18n.format("InMemoryRegistry.AppAlreadyRegistered")); //$NON-NLS-1$
-            } else {
-                getMap().put(applicationKey, application);
-                for (Contract contract : application.getContracts()) {
-                    String svcKey = getServiceKey(contract.getServiceOrgId(), contract.getServiceId(), contract.getServiceVersion());
-                    Service service = (Service) getMap().get(svcKey);
-                    ServiceContract sc = new ServiceContract(contract.getApiKey(), service, application, contract.getPlan(), contract.getPolicies());
-                    String contractKey = getContractKey(contract);
-                    getMap().put(contractKey, sc);
+
+            // Unregister the app (if it exists)
+            IAsyncResultHandler<Void> unregisterHandler = new IAsyncResultHandler<Void>() {
+                @Override
+                public void handle(IAsyncResult<Void> result) {
                 }
+            };
+            unregisterApplication(application, unregisterHandler);
+
+            // Now, register the app.
+            String applicationKey = getApplicationKey(application);
+            getMap().put(applicationKey, application);
+            for (Contract contract : application.getContracts()) {
+                String svcKey = getServiceKey(contract.getServiceOrgId(), contract.getServiceId(), contract.getServiceVersion());
+                Service service = (Service) getMap().get(svcKey);
+                ServiceContract sc = new ServiceContract(contract.getApiKey(), service, application, contract.getPlan(), contract.getPolicies());
+                String contractKey = getContractKey(contract);
+                getMap().put(contractKey, sc);
             }
         }
         if (error == null) {

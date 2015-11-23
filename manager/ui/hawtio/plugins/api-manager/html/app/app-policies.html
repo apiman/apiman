@@ -28,7 +28,7 @@
             <div class="description" apiman-i18n-key="app-policies-help">Here is a list of all Policies defined for this Application.  These Policies will be applied to all Service invocations made by the Application, in addition to whatever Policies are defined by the Service itself.</div>
             <hr />
             <!-- The list of policies -->
-            <div apiman-permission="appEdit" apiman-status="Created,Ready" class="apiman-filters apiman-policies-filters">
+            <div apiman-permission="appEdit" apiman-status="Created,Ready,Registered" class="apiman-filters apiman-policies-filters">
               <a apiman-i18n-key="add-policy" href="{{ pluginName }}/orgs/{{ org.id }}/apps/{{ app.id }}/{{ version.version }}/new-policy" class="btn btn-primary pull-right">Add Policy</a>
             </div>
             <div class="clearfix"></div>
@@ -39,7 +39,7 @@
                   <div class="col-md-9">
                     <p class="apiman-no-entities-description" apiman-i18n-key="no-policies-for-app">It looks like there aren't any policies defined! That may be exactly what you want (of course) but if not, you may try defining one using the Add Policy button above...</p>
                   </div>
-                  <div apiman-permission="svcEdit" apiman-status="Created,Ready" class="col-md-3">
+                  <div apiman-permission="svcEdit" apiman-status="Created,Ready,Registered" class="col-md-3">
                     <div class="apiman-no-entities-arrow"></div>
                   </div>
                 </div>

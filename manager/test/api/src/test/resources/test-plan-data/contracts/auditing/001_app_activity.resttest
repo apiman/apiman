@@ -3,7 +3,8 @@ GET /organizations/Organization1/applications/Application1/activity admin/admin
 200
 Content-Type: application/json
 
-{ "beans" : [
+{
+  "beans": [
     {
       "who": "admin",
       "organizationId": "Organization1",
@@ -13,46 +14,69 @@ Content-Type: application/json
       "what": "Register",
       "data": null
     },
-      { "data" : "{\"appOrgId\":\"Organization1\",\"appId\":\"Application1\",\"appVersion\":\"1.0\",\"serviceOrgId\":\"Organization1\",\"serviceId\":\"Service1\",\"serviceVersion\":\"1.0\",\"planId\":\"Plan1\",\"planVersion\":\"1.0\"}",
-        "entityId" : "Application1",
-        "entityType" : "Application",
-        "entityVersion" : "1.0",
-        "organizationId" : "Organization1",
-        "what" : "BreakContract",
-        "who" : "admin"
-      },
-      { "data" : "{\"appOrgId\":\"Organization1\",\"appId\":\"Application1\",\"appVersion\":\"1.0\",\"serviceOrgId\":\"Organization2\",\"serviceId\":\"Service2\",\"serviceVersion\":\"1.5\",\"planId\":\"PlanA\",\"planVersion\":\"2.0\"}",
-        "entityId" : "Application1",
-        "entityType" : "Application",
-        "entityVersion" : "1.0",
-        "organizationId" : "Organization1",
-        "what" : "CreateContract",
-        "who" : "admin"
-      },
-      { "data" : "{\"appOrgId\":\"Organization1\",\"appId\":\"Application1\",\"appVersion\":\"1.0\",\"serviceOrgId\":\"Organization1\",\"serviceId\":\"Service1\",\"serviceVersion\":\"1.0\",\"planId\":\"Plan1\",\"planVersion\":\"1.0\"}",
-        "entityId" : "Application1",
-        "entityType" : "Application",
-        "entityVersion" : "1.0",
-        "organizationId" : "Organization1",
-        "what" : "CreateContract",
-        "who" : "admin"
-      },
-      { "data" : null,
-        "entityId" : "Application1",
-        "entityType" : "Application",
-        "entityVersion" : "1.0",
-        "organizationId" : "Organization1",
-        "what" : "Create",
-        "who" : "admin"
-      },
-      { "data" : null,
-        "entityId" : "Application1",
-        "entityType" : "Application",
-        "entityVersion" : null,
-        "organizationId" : "Organization1",
-        "what" : "Create",
-        "who" : "admin"
-      }
-    ],
-  "totalSize" : 6
+    {
+      "who": "admin",
+      "organizationId": "Organization1",
+      "entityType": "Application",
+      "entityId": "Application1",
+      "entityVersion": "1.0",
+      "what": "BreakContract",
+      "data": "{\"appOrgId\":\"Organization1\",\"appId\":\"Application1\",\"appVersion\":\"1.0\",\"serviceOrgId\":\"Organization2\",\"serviceId\":\"Service2\",\"serviceVersion\":\"1.5\",\"planId\":\"PlanA\",\"planVersion\":\"2.0\"}"
+    },
+    {
+      "who": "admin",
+      "organizationId": "Organization1",
+      "entityType": "Application",
+      "entityId": "Application1",
+      "entityVersion": "1.0",
+      "what": "Register",
+      "data": null
+    },
+    {
+      "who": "admin",
+      "organizationId": "Organization1",
+      "entityType": "Application",
+      "entityId": "Application1",
+      "entityVersion": "1.0",
+      "what": "BreakContract",
+      "data": "{\"appOrgId\":\"Organization1\",\"appId\":\"Application1\",\"appVersion\":\"1.0\",\"serviceOrgId\":\"Organization1\",\"serviceId\":\"Service1\",\"serviceVersion\":\"1.0\",\"planId\":\"Plan1\",\"planVersion\":\"1.0\"}"
+    },
+    {
+      "who": "admin",
+      "organizationId": "Organization1",
+      "entityType": "Application",
+      "entityId": "Application1",
+      "entityVersion": "1.0",
+      "what": "CreateContract",
+      "data": "{\"appOrgId\":\"Organization1\",\"appId\":\"Application1\",\"appVersion\":\"1.0\",\"serviceOrgId\":\"Organization2\",\"serviceId\":\"Service2\",\"serviceVersion\":\"1.5\",\"planId\":\"PlanA\",\"planVersion\":\"2.0\"}"
+    },
+    {
+      "who": "admin",
+      "organizationId": "Organization1",
+      "entityType": "Application",
+      "entityId": "Application1",
+      "entityVersion": "1.0",
+      "what": "CreateContract",
+      "data": "{\"appOrgId\":\"Organization1\",\"appId\":\"Application1\",\"appVersion\":\"1.0\",\"serviceOrgId\":\"Organization1\",\"serviceId\":\"Service1\",\"serviceVersion\":\"1.0\",\"planId\":\"Plan1\",\"planVersion\":\"1.0\"}"
+    },
+    {
+      "who": "admin",
+      "organizationId": "Organization1",
+      "entityType": "Application",
+      "entityId": "Application1",
+      "entityVersion": "1.0",
+      "what": "Create",
+      "data": null
+    },
+    {
+      "who": "admin",
+      "organizationId": "Organization1",
+      "entityType": "Application",
+      "entityId": "Application1",
+      "entityVersion": null,
+      "what": "Create",
+      "data": null
+    }
+  ],
+  "totalSize": 8
 }

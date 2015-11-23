@@ -15,7 +15,7 @@ module Apiman {
                     var plainVersions = [];
 
                     angular.forEach(versions, function(version) {
-                        if (version.status == 'Created' || version.status == 'Ready') {
+                        if (version.status == 'Created' || version.status == 'Ready' || version.status == 'Registered') {
                             plainVersions.push(version.version);
                         }
                     });
@@ -31,14 +31,16 @@ module Apiman {
             var pageData = {
                 apps: $q(function(resolve, reject) {
                     CurrentUserSvcs.query({ what: 'applications' }, function(apps) {
+                        Logger.info("apps: {0}", apps);
                         if ($rootScope.mruApp) {
                             for (var i = 0; i < apps.length; i++) {
                                 var app = apps[i];
-
                                 if (app.organizationId == $rootScope.mruApp.application.organization.id && app.id == $rootScope.mruApp.application.id) {
                                     $scope.selectedApp = app;
                                 }
                             }
+                        } else if (apps) {
+                            $scope.selectedApp = apps[0];
                         } else {
                             $scope.selectedApp = undefined;
                         }
