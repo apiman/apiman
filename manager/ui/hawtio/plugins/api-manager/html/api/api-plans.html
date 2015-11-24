@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="utf-8">
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0"></meta>
-  </head>
+</head>
 
-  <body>
-  <div>
-    
+<body>
+<div>
+
     <div ng-include="headerInclude"></div>
     <div ng-controller="Apiman.ApiPlansController"
          id="page-content"
@@ -16,91 +16,108 @@
          data-field="page"
          ng-cloak=""
          ng-show="pageState == 'loaded'">
-      <div ng-include="'plugins/api-manager/html/api/api_bc.include'"></div>
-      <!-- Entity Summary Row -->
-      <div ng-include="'plugins/api-manager/html/api/api_entity.include'"></div>
+        <div ng-include="'plugins/api-manager/html/api/api_bc.include'"></div>
+        <!-- Entity Summary Row -->
+        <div ng-include="'plugins/api-manager/html/api/api_entity.include'"></div>
 
-      <!-- Navigation + Content Row -->
-      <div class="row">
-        <!-- Left hand nav -->
-        <div ng-include="'plugins/api-manager/html/api/api_tabs.include'"></div>
-        <!-- /Left hand nav -->
+        <!-- Navigation + Content Row -->
+        <div class="row">
+            <!-- Left hand nav -->
+            <div ng-include="'plugins/api-manager/html/api/api_tabs.include'"></div>
+            <!-- /Left hand nav -->
 
-        <!-- Content -->
-        <div class="col-md-10 apiman-entity-content">
-          <div class="col-md-10">
-            <div class="title"
-                 apiman-i18n-key="public-api">Public API</div>
-            <div>
-              <span apiman-i18n-key="public-api-help">Select this option if you wish this API to be accessible directly, without an API Contract.  Typically (but not always) this option is used instead of selecting plan(s).</span>
-            </div>
-            <div style="padding: 8px; margin-bottom: 10px">
-              <input ng-model="updatedApi.publicAPI"
-                     type="checkbox"
-                     id="public-api"
-                     ng-disabled="isEntityDisabled()"></input>
-              <label for="public-api"
-                     apiman-i18n-key="make-api-public"
-                     style="padding-left: 3px">Make this API public</label>
-            </div>
-            <div class="title"
-                 apiman-i18n-key="available-plans">Available Plans</div>
-            <div>
-              <span apiman-i18n-key="available-plans-help">Choose which plans should be presented when Client Apps create a link (Contract) to this API. Note that only plans in a 'Locked' state show up in this list.</span>
-            </div>
-            <div class="apiman-divider-40"
-                 ng-show="plans.length == 0">
-              <div class="alert alert-warning">
-                <span class="pficon pficon-info"></span>
-                <span apiman-i18n-key="api-plans.no-locked-plans-found">No locked plans were found in the Organization.  Please create and lock at least one plan before attempting to configure them here.  Or simply make your APIs "public" using the checkbox above!</span>
-              </div>            
-            </div>
-            <!-- The plans to choose from -->
-            <div class="apiman-plan-selector apiman-divider-40">
-              <div class="container-fluid apiman-summaryrow"
-                   ng-repeat="plan in plans">
-                <div class="row">
-                  <input ng-model="plan.checked"
-                         data-field="checkbox"
-                         type="checkbox"
-                         ng-disabled="isEntityDisabled()"></input>
+            <!-- Content -->
+            <div class="col-md-10 apiman-entity-content">
+                <div class="col-md-10">
+                    <div class="title"
+                         apiman-i18n-key="public-api">Public API
+                    </div>
+                    <div>
+                        <span apiman-i18n-key="public-api-help">Select this option if you wish this API to be accessible directly, without an API Contract.  Typically (but not always) this option is used instead of selecting plan(s).</span>
+                    </div>
+                    <div style="padding: 8px; margin-bottom: 10px">
+                        <input ng-model="updatedApi.publicAPI"
+                               type="checkbox"
+                               id="public-api"
+                               data-field="publicService"
+                               ng-disabled="isEntityDisabled()"></input>
+                        <label for="public-api"
+                               apiman-i18n-key="make-api-public"
+                               style="padding-left: 3px">Make this API public</label>
+                    </div>
+                    <div class="title"
+                         apiman-i18n-key="available-plans">Available Plans
+                    </div>
+                    <div>
+                        <span apiman-i18n-key="available-plans-help">Choose which plans should be presented when Client Apps create a link (Contract) to this API. Note that only plans in a 'Locked' state show up in this list.</span>
+                    </div>
+                    <div class="apiman-divider-40"
+                         ng-show="plans.length == 0">
+                        <div class="alert alert-warning">
+                            <span class="pficon pficon-info"></span>
+                            <span apiman-i18n-key="api-plans.no-locked-plans-found">No locked plans were found in the Organization.  Please create and lock at least one plan before attempting to configure them here.  Or simply make your APIs "public" using the checkbox above!</span>
+                        </div>
+                    </div>
+                    <!-- The plans to choose from -->
+                    <div class="apiman-plan-selector apiman-divider-40">
+                        <div class="container-fluid apiman-summaryrow"
+                             ng-repeat="plan in plans">
+                            <div class="row">
+                                <div class="col-sm-6"
+                                     style="padding: 4px 0;">
+                                    <input ng-model="plan.checked"
+                                           data-field="checkbox"
+                                           type="checkbox"
+                                           ng-disabled="isEntityDisabled()"></input>
                   <span class="title">
-                    <a href="{{ pluginName }}/orgs/{{ plan.organizationId }}/plans/{{ plan.id }}" data-field="name" title="{{ plan.description }}">{{ plan.name }}</a>
+                    <a href="{{ pluginName }}/orgs/{{ plan.organizationId }}/plans/{{ plan.id }}" data-field="name"
+                       title="{{ plan.description }}">{{ plan.name }}</a>
                   </span>
-                  <select apiman-select-picker=""
-                          ng-model="plan.selectedVersion"
-                          ng-options="version for version in plan.lockedVersions"
-                          class="selectpicker pull-right"
-                          ng-disabled="isEntityDisabled()">
-                  </select>
+                                </div>
+                                <div class="col-sm-6"
+                                     style="padding-right: 0;">
+                                    <ui-select ng-model="plan.selectedVersion"
+                                               on-select="changedVersion($item)"
+                                               ng-disabled="isEntityDisabled()"
+                                               class="pull-right"
+                                               style="width: 25%; max-width: 250px;">
+                                        <ui-select-match>
+                                            <span ng-bind="$select.selected"></span>
+                                        </ui-select-match>
+                                        <ui-select-choices
+                                                repeat="version in (plan.lockedVersions | filter: $select.search)">
+                                            <span ng-bind="version"></span>
+                                        </ui-select-choices>
+                                    </ui-select>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                    </div>
+
+                    <div apiman-permission="apiEdit"
+                         apiman-status="Created,Ready"
+                         class="actions">
+                        <button ng-disabled="!isDirty"
+                                ng-click="saveApi()"
+                                class="btn btn-primary"
+                                data-field="saveButton"
+                                apiman-i18n-key="save"
+                                placeholder="Saving..."
+                                data-icon="fa-cog">Save
+                        </button>
+                        <button ng-disabled="!isDirty"
+                                class="btn btn-default"
+                                ng-click="reset()"
+                                data-field="cancelButton"
+                                apiman-i18n-key="cancel">Cancel
+                        </button>
+                    </div>
                 </div>
-                <hr>
-              </div>
             </div>
-            
-            <div apiman-permission="apiEdit"
-                 apiman-status="Created,Ready"
-                 class="actions">
-              <button ng-disabled="!isDirty"
-                      apiman-action-btn=""
-                      ng-click="saveApi()"
-                      class="btn btn-primary"
-                      data-field="saveButton"
-                      apiman-i18n-key="save"
-                      placeholder="Saving..."
-                      data-icon="fa-cog">Save</button>
-              <button ng-disabled="!isDirty"
-                      class="btn btn-default"
-                      ng-click="reset()"
-                      data-field="cancelButton"
-                      apiman-i18n-key="cancel">Cancel</button>
-            </div>
-            
-          </div>
         </div>
         <!-- /Content -->
-      </div>
-    </div> <!-- /container -->
-  </div>
-  </body>
+    </div>
+</div> <!-- /container -->
+</body>
 </html>

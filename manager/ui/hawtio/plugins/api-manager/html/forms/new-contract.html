@@ -21,7 +21,7 @@
         <hr/>
       </div>
 
-      <div id="new-contract-form" class="row">
+      <div id="new-contract-form" class="new-contract-form row">
         <div class="col-md-6">
           <div class="client" ng-class="{ selected : selectedClientVersion }">
             <div class="title"><i class="fa fa-gears fa-fw"></i> <span apiman-i18n-key="from-client">From Client App</span></div>
@@ -31,10 +31,26 @@
                 of your available Client Apps below, and then choose a Client App version.
               </p>
               <div class="center-content" ng-show="clients.length > 0">
-                <select id="client" ng-model="selectedClient" apiman-select-picker="" class="selectpicker" data-live-search="true" apiman-i18n-key="select-client" title="Select a Client App" ng-options="(client.organizationName + ' / ' + client.name) for client in clients"></select>
+                <ui-select ng-model="selectedClient"
+                           on-select="changedClient($item)"
+                           search-enabled="true">
+                  <ui-select-match placeholder="Select a Client App" apiman-i18n-key="select-client">
+                    <span ng-bind="$select.selected.organizationName + ' / ' + $select.selected.name"></span>
+                  </ui-select-match>
+                  <ui-select-choices repeat="client in (clients | filter: $select.search) track by client.id">
+                    <span ng-bind="client.organizationName + ' / ' + client.name"></span>
+                  </ui-select-choices>
+                </ui-select>&nbsp;
                 <span class="slash" apiman-i18n-skip>&#8680;</span>
-                <select id="client-version" ng-model="selectedClientVersion" apiman-select-picker="clientVersions" class="selectpicker" apiman-i18n-key="select-client-version" title="Select a Version" ng-options="version for version in clientVersions">
-                </select>
+                <ui-select ng-model="selectedClientVersion"
+                           search-enabled="true">
+                  <ui-select-match placeholder="Select a Version" apiman-i18n-key="select-client-version">
+                    <span ng-bind="$select.selected"></span>
+                  </ui-select-match>
+                  <ui-select-choices repeat="version in (clientVersions | filter: $select.search) track by version">
+                    <span ng-bind="version"></span>
+                  </ui-select-choices>
+                </ui-select>
               </div>
               <div class="alert alert-warning" ng-show="clients.length > 0 && selectedClient && clientVersions.length == 0" style="margin-top: 10px">
                  <span class="pficon pficon-info"></span>
@@ -75,8 +91,15 @@
                 Use the drop-down below to choose one of the Plans made available by the selected API.
               </p>
               <div class="center-content" ng-show="plans">
-                <select id="plan" ng-model="selectedPlan" apiman-select-picker="" class="selectpicker" apiman-i18n-key="select-plan" title="Select a Plan" ng-options="plan.planName for plan in plans">
-                </select>
+                <ui-select ng-model="selectedPlan">
+                  <ui-select-match placeholder="Select a Plan"
+                                   apiman-i18n-key="select-plan">
+                    <span ng-bind="$select.selected.planName"></span>
+                  </ui-select-match>
+                  <ui-select-choices repeat="plan in (plans | filter: $select.search) track by plan.planName">
+                    <span ng-bind="plan.planName"></span>
+                  </ui-select-choices>
+                </ui-select>
               </div>
             </div>
           </div>

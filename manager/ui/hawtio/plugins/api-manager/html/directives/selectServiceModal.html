@@ -1,0 +1,67 @@
+      <div class="modal fade" id="selectServiceModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                <span class="pficon pficon-close"></span>
+              </button>
+              <h4 class="modal-title"><span>{{ title }}</span></h4>
+            </div>
+            <div class="modal-body modal-select-service">
+              <p apiman-i18n-key="select-service-help">
+                Select a service by searching for a service by name (or part of a name) and choosing one of the
+                matches.
+              </p>
+              <form ng-submit="search()">
+                <input apiman-i18n-key="search-service-name" ng-model="searchText" type="text" class="apiman-form-control form-control input-search" placeholder="Search by service name..."></input>
+                <button type="submit" apiman-action-btn="" class="btn btn-default btn-search" data-field="searchButton" apiman-i18n-key="search" data-icon="fa-cog" placeholder="Searching">Search</button>
+              </form>
+              <div class="clearfix"></div>
+              <div class="panel panel-default input-search-results">
+                <div class="panel-body container-fluid" data-field="services">
+                  <a ng-click="onServiceSelected(service)" href="#" class="item" ng-repeat="service in services" ng-class="{ selected : service.selected }">
+                    <i class="fa fa-puzzle-piece fa-fw"></i>
+                    <span class="">{{ service.organizationName }}</span>
+                    <span apiman-i18n-skip> / </span>
+                    <span class="emphasis">{{ service.name }}</span>
+                  </a>
+                  <div class="alert alert-info" ng-show="!services && criteria">
+                     <span class="pficon pficon-info"></span>
+                     <span apiman-i18n-key="no-services-matched">No services found matching your search.  Please try a different search.</span>
+                  </div>
+                  <div class="alert alert-info" ng-show="!services && !criteria">
+                     <span class="pficon pficon-info"></span>
+                     <span apiman-i18n-key="no-service-search-criteria">Enter some search criteria above and click Search to find a Service.</span>
+                  </div>
+                </div>
+              </div>
+              <div class="clearfix"></div>
+              <table ng-show="serviceVersions">
+                <tr>
+                  <td><span apiman-i18n-key="choose-svc-version" class="apiman-form-label">Choose Service Version:</span></td>
+                  <td style="width: 50%;">
+                    <ui-select ng-model="selectedServiceVersion"
+                               search-enabled="true">
+                      <ui-select-match placeholder="Select a Version" apiman-i18n-key="choose-svc-version-select">
+                        <span ng-bind="$select.selected.version"></span>
+                      </ui-select-match>
+                      <ui-select-choices repeat="svcVersion in (serviceVersions | filter: $select.search) track by svcVersion.version">
+                        <span ng-bind="svcVersion.version"></span>
+                      </ui-select-choices>
+                    </ui-select>
+                  </td>
+                </tr>
+              </table>
+              <div class="alert alert-warning" ng-show="serviceVersions && serviceVersions.length == 0" style="margin-top: 15px">
+                 <span class="pficon pficon-info"></span>
+                 <span apiman-i18n-key="no-valid-service-versions">No valid versions of the selected Service were found.</span>
+              </div>
+              
+            </div>
+            <div class="modal-footer">
+              <button data-dismiss="modal" type="button" class="btn btn-default" apiman-i18n-key="cancel">Cancel</button>
+              <button ng-disabled="!selectedServiceVersion" ng-click="onOK()" data-dismiss="modal" type="button" class="btn btn-primary" apiman-i18n-key="ok">OK</button>
+            </div>
+          </div>
+        </div>
+      </div>
