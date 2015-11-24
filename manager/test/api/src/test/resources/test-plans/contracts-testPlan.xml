@@ -59,9 +59,12 @@
     <test name="Create Contract to Unpublished Service">test-plan-data/contracts/contracts/017_create-contract-svc-not-published.resttest</test>
     
     <test name="Register App 1">test-plan-data/contracts/publish/017_register-app-1.resttest</test>
+    <test name="Re-Register App 1 (fail)">test-plan-data/contracts/publish/018_re-register-app-1-fail.resttest</test>
 
-    <test name="Break Contract 2 (fail)">test-plan-data/contracts/contracts/018_delete-contract-2.resttest</test>
-    <test name="Create Contract (wrong status)">test-plan-data/contracts/contracts/019_create-contract-wrong-status.resttest</test>
+    <test name="Break Contract 2">test-plan-data/contracts/contracts/019_delete-contract-2.resttest</test>
+    <test name="Create Contract">test-plan-data/contracts/contracts/020_create-contract.resttest</test>
+
+    <test name="Re-Register App 1 (success)">test-plan-data/contracts/publish/021_re-register-app-1.resttest</test>
   </testGroup>
 
   <!-- Auditing -->

@@ -36,11 +36,11 @@
                 <select id="app-version" ng-model="selectedAppVersion" apiman-select-picker="appVersions" class="selectpicker" apiman-i18n-key="select-app-version" title="Select a Version" ng-options="version for version in appVersions">
                 </select>
               </div>
-              <div class="alert alert-warning" ng-show="apps.length > 0 && selectedApp && appVersions.length == 0">
+              <div class="alert alert-warning" ng-show="apps.length > 0 && selectedApp && appVersions.length == 0" style="margin-top: 10px">
                  <span class="pficon pficon-info"></span>
-                 <span apiman-i18n-key="new-contract.no-unregistered-app-versions">
-                   There are no (unregistered) versions of the selected application.  Note: you may only create
-                   Contracts in Applications that have not yet been registered.
+                 <span apiman-i18n-key="new-contract.no-app-versions">
+                   There are no versions of the selected application that can be registered.  For example, if an 
+                   application is Retired you will not be able to create a Contract for it.
                  </span>
               </div>
               <div class="alert alert-warning" ng-show="apps.length == 0">

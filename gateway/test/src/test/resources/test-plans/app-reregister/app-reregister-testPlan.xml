@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testPlan xmlns="urn:io.apiman.test:2014:02:testPlan">
+
+  <testGroup name="Publish the Services" endpoint="api">
+    <test name="Publish Service 1">test-plan-data/app-reregister/setup/001-publish-service-1.resttest</test>
+    <test name="Publish Service 2">test-plan-data/app-reregister/setup/002-publish-service-2.resttest</test>
+  </testGroup>
+
+  <testGroup name="Register the App" endpoint="api">
+    <test name="Register Application">test-plan-data/app-reregister/setup/003-register-app.resttest</test>
+    <test name="Update Application">test-plan-data/app-reregister/setup/004-reregister-app.resttest</test>
+  </testGroup>
+
+  <testGroup name="Test the updated App">
+    <test name="Echo Service 1 (GET)">test-plan-data/app-reregister/echo/001-service-1.resttest</test>
+    <test name="Echo Service 2 (GET)">test-plan-data/app-reregister/echo/002-service-2.resttest</test>
+  </testGroup>
+
+</testPlan>

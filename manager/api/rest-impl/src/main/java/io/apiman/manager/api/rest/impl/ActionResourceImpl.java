@@ -326,8 +326,15 @@ public class ActionResourceImpl implements IActionResource {
             throw ExceptionFactory.actionException(Messages.i18n.format("ApplicationNotFound"), e); //$NON-NLS-1$
         }
 
-        // Validate that it's ok to perform this action - application must be Ready.
-        if (versionBean.getStatus() != ApplicationStatus.Ready) {
+        // Validate that it's ok to perform this action - application must be Ready or Registered.
+        if (versionBean.getStatus() == ApplicationStatus.Registered) {
+            Date modOn = versionBean.getModifiedOn();
+            Date publishedOn = versionBean.getPublishedOn();
+            int c = modOn.compareTo(publishedOn);
+            if (c <= 0) {
+                throw ExceptionFactory.actionException(Messages.i18n.format("ApplicationReRegisterNotRequired")); //$NON-NLS-1$
+            }
+        } else if (versionBean.getStatus() != ApplicationStatus.Ready) {
             throw ExceptionFactory.actionException(Messages.i18n.format("InvalidApplicationStatus")); //$NON-NLS-1$
         }
 

@@ -253,7 +253,14 @@ gulp.task('tsd', function(callback) {
 // Watch Task
 // Builds, then watches for changes
 gulp.task('watch', function() {
-    watch(['entry.js', config.ts, config.templates, config.templateIncludes, 'plugins/api-manager/css/apiman.css'], function() {
+    watch([
+        'entry.js',
+        config.ts,
+        config.templates,
+        config.templateIncludes,
+        'plugins/api-manager/css/apiman.css',
+        'apiman/translations.js'
+    ], function() {
         return runSequence(['browserify', 'css', 'fonts', 'images'], 'path-adjust', 'clean-defs', 'tsc', 'template', 'concat', 'clean');
     });
 });

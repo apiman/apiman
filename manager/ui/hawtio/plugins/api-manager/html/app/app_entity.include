@@ -42,18 +42,20 @@
             <div class="entity-info-with-icon">
               <span apiman-i18n-key="status-label">Status:</span>
               <span apiman-entity-status />
+              <span title="App has been modified since it was last registered!" apiman-i18n-key="modified" ng-show="version.status == 'Registered' && version.modifiedOn > version.publishedOn" class="apiman-label apiman-label-default">Modified</span>
             </div>
           </div>
           <div class="col-md-5" apiman-permission="appAdmin">
             <div>
-              <div apiman-status="Created,Ready"><a apiman-i18n-key="ttdo-consume-services" data-field="ttd_toConsumeServices" href="{{ pluginName }}/browse/services">Search for Services to consume</a></div>
-              <div apiman-status="Created,Ready"><a apiman-i18n-key="ttdo-new-contract" data-field="ttd_toNewContract" href="{{ pluginName }}/new-contract">Create a new Service Contract for this Application</a></div>
+              <div apiman-status="Created,Ready,Registered"><a apiman-i18n-key="ttdo-consume-services" data-field="ttd_toConsumeServices" href="{{ pluginName }}/browse/services">Search for Services to consume</a></div>
+              <div apiman-status="Created,Ready,Registered"><a apiman-i18n-key="ttdo-new-contract" data-field="ttd_toNewContract" href="{{ pluginName }}/new-contract">Create a new Service Contract for this Application</a></div>
               <div><a apiman-i18n-key="ttdo-new-version" data-field="ttd_toNewVersion" href="{{ pluginName }}/orgs/{{ org.id }}/apps/{{ app.id}}/{{ version.version }}/new-version">Create a new version of this Application (New Version)</a></div>
             </div>
             <!-- The Register Action -->
             <div class="apiman-divider-40"></div>
             <div class="">
               <button ng-disabled="getEntityStatus() == 'Created'" apiman-action-btn="" apiman-status="Created,Ready" class="btn btn-primary" data-field="registerButton" apiman-i18n-key="register" placeholder="Registering..." data-icon="fa-cog" ng-click="registerApp()">Register</button>
+              <button ng-disabled="version.modifiedOn <= version.publishedOn" apiman-action-btn="" apiman-status="Registered" class="btn btn-primary" data-field="reregisterButton" apiman-i18n-key="reregister" placeholder="Re-Registering..." data-icon="fa-cog" ng-click="registerApp()">Re-Register</button>
               <button apiman-action-btn="" apiman-status="Registered" class="btn btn-warning" data-field="unregisterButton" apiman-i18n-key="unregister" placeholder="Unregistering..." data-icon="fa-cog" ng-click="unregisterApp()">Unregister</button>
             </div>
           </div>

@@ -117,12 +117,16 @@ public class ESRegistry extends AbstractESComponent implements IRegistry {
             String id = getApplicationId(application);
             Index index = new Index.Builder(ESRegistryMarshalling.marshall(application).string())
                     .refresh(false).index(getIndexName())
-                    .setParameter(Parameters.OP_TYPE, "create") //$NON-NLS-1$
+                    .setParameter(Parameters.OP_TYPE, "index") //$NON-NLS-1$
                     .type("application").id(id).build(); //$NON-NLS-1$
             JestResult result = getClient().execute(index);
             if (!result.isSucceeded()) {
-                throw new RegistrationException(Messages.i18n.format("ESRegistry.AppAlreadyRegistered")); //$NON-NLS-1$
+                throw new IOException(result.getErrorMessage());
             } else {
+                // Remove all the service contracts, then re-add them
+                unregisterServiceContracts(application);
+                
+                // Register all the service contracts.
                 Set<Contract> contracts = application.getContracts();
                 application.setContracts(null);
                 for (Contract contract : contracts) {

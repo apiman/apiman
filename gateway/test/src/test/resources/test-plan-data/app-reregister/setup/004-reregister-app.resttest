@@ -1,0 +1,24 @@
+PUT /applications admin/admin
+Content-Type: application/json
+
+{
+  "organizationId" : "AppReregisterTest",
+  "applicationId" : "test",
+  "version" : "1.0",
+  "contracts" : [
+    {
+      "apiKey" : "service-1",
+      "serviceOrgId" : "AppReregisterTest",
+      "serviceId" : "echo-1",
+      "serviceVersion" : "1.0"
+    },
+    {
+      "apiKey" : "service-2",
+      "serviceOrgId" : "AppReregisterTest",
+      "serviceId" : "echo-2",
+      "serviceVersion" : "1.0"
+    }
+  ]
+}
+----
+204
