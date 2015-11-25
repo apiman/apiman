@@ -37,7 +37,7 @@
     <dependency>
       <groupId>com.zaxxer</groupId>
       <artifactId>HikariCP</artifactId>
-    </dependency>
+    </dependency>    
 
     <!-- Test Only Dependencies -->
     <dependency>
