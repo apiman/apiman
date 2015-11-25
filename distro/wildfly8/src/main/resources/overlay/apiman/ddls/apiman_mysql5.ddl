@@ -64,10 +64,10 @@ CREATE TABLE roles (id VARCHAR(255) NOT NULL, auto_grant BIT(1) NULL, created_by
 CREATE TABLE service_defs (id BIGINT NOT NULL, data LONGBLOB NULL, service_version_id BIGINT NULL);
 
 --  Changeset c:/Users/ewittman/git/apiman/apiman/distro/ddl/src/main/liquibase/current/010-apiman-manager-api.db.tables.changelog.xml::1436469846462-18::apiman (generated)
-CREATE TABLE service_versions (id BIGINT NOT NULL, created_by VARCHAR(255) NOT NULL, created_on timestamp NOT NULL, definition_type VARCHAR(255) NULL, endpoint VARCHAR(255) NULL, endpoint_type VARCHAR(255) NULL, endpoint_ct VARCHAR(255) NULL, modified_by VARCHAR(255) NOT NULL, modified_on timestamp NOT NULL, public_service BIT(1) NOT NULL, published_on timestamp NULL, retired_on timestamp NULL, status VARCHAR(255) NOT NULL, version VARCHAR(255) NULL, service_id VARCHAR(255) NULL, service_org_id VARCHAR(255) NULL);
+CREATE TABLE service_versions (id BIGINT NOT NULL, created_by VARCHAR(255) NOT NULL, created_on datetime NOT NULL, definition_type VARCHAR(255) NULL, endpoint VARCHAR(255) NULL, endpoint_type VARCHAR(255) NULL, endpoint_ct VARCHAR(255) NULL, modified_by VARCHAR(255) NOT NULL, modified_on datetime NOT NULL, public_service BIT(1) NOT NULL, published_on datetime NULL, retired_on datetime NULL, status VARCHAR(255) NOT NULL, version VARCHAR(255) NULL, service_id VARCHAR(255) NULL, service_org_id VARCHAR(255) NULL);
 
 --  Changeset c:/Users/ewittman/git/apiman/apiman/distro/ddl/src/main/liquibase/current/010-apiman-manager-api.db.tables.changelog.xml::1436469846462-19::apiman (generated)
-CREATE TABLE services (id VARCHAR(255) NOT NULL, created_by VARCHAR(255) NOT NULL, created_on timestamp NOT NULL, description VARCHAR(512) NULL, name VARCHAR(255) NOT NULL, organization_id VARCHAR(255) NOT NULL, num_published INT NULL);
+CREATE TABLE services (id VARCHAR(255) NOT NULL, created_by VARCHAR(255) NOT NULL, created_on datetime NOT NULL, description VARCHAR(512) NULL, name VARCHAR(255) NOT NULL, organization_id VARCHAR(255) NOT NULL, num_published INT NULL);
 
 --  Changeset c:/Users/ewittman/git/apiman/apiman/distro/ddl/src/main/liquibase/current/010-apiman-manager-api.db.tables.changelog.xml::1436469846462-20::apiman (generated)
 CREATE TABLE svc_gateways (service_version_id BIGINT NOT NULL, gateway_id VARCHAR(255) NOT NULL);
@@ -79,7 +79,7 @@ CREATE TABLE svc_plans (service_version_id BIGINT NOT NULL, plan_id VARCHAR(255)
 CREATE TABLE users (username VARCHAR(255) NOT NULL, email VARCHAR(255) NULL, full_name VARCHAR(255) NULL, joined_on datetime NULL);
 
 --  Changeset c:/Users/ewittman/git/apiman/apiman/distro/ddl/src/main/liquibase/current/010-apiman-manager-api.db.tables.changelog.xml::1436469846462-23::apiman (generated)
-CREATE TABLE downloads (id VARCHAR(255) NOT NULL, type VARCHAR(255) NULL, path VARCHAR(255) NULL, expires timestamp NULL);
+CREATE TABLE downloads (id VARCHAR(255) NOT NULL, type VARCHAR(255) NULL, path VARCHAR(255) NULL, expires datetime NULL);
 
 --  Changeset c:/Users/ewittman/git/apiman/apiman/distro/ddl/src/main/liquibase/current/050-apiman-manager-api.db.data.changelog.xml::1434686531709-1::apiman
 INSERT INTO gateways (id, configuration, created_by, created_on, description, modified_by, modified_on, name, type) VALUES ('TheGateway', '$CRYPT::PmrNC1m25oGSO8fC3XnxKSepmQsbxEZCldn+hYi9bQ10m8m4tEOHYU7gz5w2hcY2cMRPB3Rw+4FZYoeX0n3qEvyk+2Yf+ym3nKw3UtmtHViHLibBzWPY+8OTtJlZVb8dA8yd0TMkiwqk1WGHLSbyjmQujZ07RBK9wkwDahYwQEw=', 'admin', '2015-06-18 17:56:58.083', 'This is the gateway.', 'admin', '2015-06-18 17:56:58.083', 'The Gateway', 'REST');

@@ -360,3 +360,35 @@ CREATE INDEX "IDX_FK_contracts_s" ON contracts(svcv_id);
 -- Changeset c:/Users/ewittman/git/apiman/apiman/distro/ddl/src/main/liquibase/current/200-apiman-manager-api.db.indexes.changelog.xml::createIndex-18::apiman
 CREATE INDEX "IDX_FK_contracts_a" ON contracts(appv_id);
 
+CREATE OR REPLACE FUNCTION inttobool(num int, val bool) RETURNS bool AS '
+    BEGIN
+        IF num=0 AND NOT val THEN
+            RETURN true;
+        ELSIF num<>0 AND val THEN
+            RETURN true;
+        ELSE
+            RETURN false;
+        END IF;
+    END;
+' LANGUAGE 'plpgsql';
+
+CREATE OR REPLACE FUNCTION inttobool(val bool, num int) RETURNS bool AS '
+    BEGIN
+        RETURN inttobool(num,val);
+    END;
+' LANGUAGE 'plpgsql';
+
+CREATE OPERATOR = (
+     leftarg = integer,
+     rightarg = boolean,
+     procedure = inttobool,
+     commutator = =,
+     negator = !=
+);
+CREATE OPERATOR = (
+     leftarg = boolean,
+     rightarg = integer,
+     procedure = inttobool,
+     commutator = =,
+     negator = !=
+);

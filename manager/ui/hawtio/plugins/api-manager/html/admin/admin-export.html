@@ -64,17 +64,9 @@
                     <div ng-show="importStatus == 'none'" class="form-group" style="width: 75%;">
                       <input style="width: 100%; border: 1px solid #ccc;" ng-model="importFile.name" class="form-control" name="file" required>
                     </div>
-                    <button ngf-select accept="application/json" class="btn btn-default" ngf-change="selectFile($files)" ngf-multiple="false" apiman-i18n-key="select">Select</button>
+                    <button ng-show="importStatus == 'none'" ngf-select accept="application/json" class="btn btn-default" ngf-change="selectFile($files)" ngf-multiple="false" apiman-i18n-key="select">Select</button>
                   </form>
-                  <button ng-disabled="!importFile" ng-click="doImport(importFile)" class="btn btn-primary" apiman-i18n-key="upload-file" style="margin-top: 10px;">Upload File</button>
-
-
-                  <!--
-                  <div ng-show="importStatus == 'none'">
-                    <input style="width: 75%; border: 1px solid #ccc; float: left" type="file" ngf-select ng-model="importFile" name="file" accept="application/json" required>
-                    <button style="float: left; margin-left: 5px" ng-disabled="!importFile" ng-click="doImport(importFile)" class="btn btn-primary" apiman-i18n-key="upload-file">Upload File</button>
-                  </div>
-                  -->
+                  <button ng-show="importStatus == 'none'" ng-disabled="!importFile" ng-click="doImport(importFile)" class="btn btn-primary" apiman-i18n-key="upload-file" style="margin-top: 10px;">Upload File</button>
 
                   <div style="float: left; width: 100%;" ng-show="importStatus == 'uploading'">
                     <div class="progress-description">

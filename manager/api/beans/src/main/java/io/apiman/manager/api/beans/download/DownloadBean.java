@@ -20,17 +20,19 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
 /**
  * Models a temporary download link.  A single download link is active
- * and available for a limited amount of time.  The /download REST 
+ * and available for a limited amount of time.  The /download REST
  * endpoint is used to fetch the data from one of these links.  Each
  * link has a type and a URL/path.  The download itself will be handled
  * by whatever REST resource originally created it.  For example, if
  * the /system/export REST endpoint created a temporary download link,
- * then when the link is hit, the download resource will ask the 
+ * then when the link is hit, the download resource will ask the
  * system resource to satisfy the request.
  *
  * @author eric.wittmann@redhat.com
@@ -38,17 +40,18 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "downloads")
 public class DownloadBean {
-    
+
     @Id
     @Column(updatable=false, nullable=false)
     private String id;
     @Column
+    @Enumerated(EnumType.STRING)
     private DownloadType type;
     @Column
     private String path;
     @Column(updatable=false)
     private Date expires;
-    
+
     /**
      * Constructor.
      */

@@ -318,9 +318,13 @@ public class GatewayClient /*implements ISystemResource, IServiceResource, IAppl
                     String className = classAndMethod.substring(0, classAndMethod.lastIndexOf('.'));
                     String methodName = classAndMethod.substring(classAndMethod.lastIndexOf('.') + 1);
                     String [] split = fileAndLineNum.split(":"); //$NON-NLS-1$
-                    String fileName = split[0];
-                    String lineNum = split[1];
-                    elements.add(new StackTraceElement(className, methodName, fileName, new Integer(lineNum)));
+                    if (split.length == 1) {
+                        elements.add(new StackTraceElement(className, methodName, fileAndLineNum, -1));
+                    } else {
+                        String fileName = split[0];
+                        String lineNum = split[1];
+                        elements.add(new StackTraceElement(className, methodName, fileName, new Integer(lineNum)));
+                    }
                 }
             }
             return elements.toArray(new StackTraceElement[elements.size()]);
