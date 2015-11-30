@@ -12,7 +12,7 @@
     <div ng-include="headerInclude"></div>   
     <div ng-controller="Apiman.EditRoleController" id="form-page" class="container apiman-edit-role apiman-entity-new page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
       <div class="row">
-        <h2 class="title" apiman-i18n-key="edit-role">Edit Role</h2>
+        <h2 class="title"><span apiman-i18n-key="edit-role">Edit Role</span></h2>
       </div>
       <!-- Helpful hint -->
       <div class="row">
@@ -21,6 +21,15 @@
       <!-- HR -->
       <div class="row hr-row">
         <hr/>
+      </div>
+      <!-- Role name -->
+      <div class="row">
+        <dl>
+          <dt apiman-i18n-key="role">Role</dt>
+          <dd>
+            <input id="apiman-role-name" ng-model="role.name" type="text" class="apiman-form-control form-control name entityname" disabled="disabled"></input>
+          </dd>
+        </dl>
       </div>
       <!-- Description of role -->
       <div class="row">
