@@ -7,6 +7,7 @@
     <version>1.2.0-SNAPSHOT</version>
   </parent>
   <artifactId>apiman-manager-api-micro</artifactId>
+  <packaging>bundle</packaging>
   <name>apiman-manager-api-micro</name>
 
   <properties>
@@ -238,5 +239,31 @@
         <filtering>true</filtering>
       </resource>
     </resources>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+          <Import-Package>
+            javax.servlet;version="[2.6,4)",
+            javax.servlet.http;version="[2.6,4)",
+            org.eclipse.jetty.*;version="[8.0,10)",
+            io.swagger.jaxrs.config;version="[0.0,2.0)",
+            io.swagger.jaxrs.listing;version="[0.0,2.0)",
+            io.apiman.manager.api.core.exceptions,
+            org.jboss.weld.interceptor.proxy,
+            *
+          </Import-Package>
+            <Require-Capability>
+                org.ops4j.pax.cdi.extension;filter:="(&amp;(extension=pax-cdi-extension)(version>=0.11)(!(version>=0.12)))",
+                osgi.extender;filter:="(osgi.extender=pax.cdi)",
+                osgi.ee;filter:="(&amp;(osgi.ee=JavaSE)(version=1.6))"
+            </Require-Capability>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
   </build>
 </project>
