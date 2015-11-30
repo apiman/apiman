@@ -55,6 +55,9 @@ module Apiman {
                 .when(prefix + '/admin/export', {
                     templateUrl: path + 'admin/admin-export.html'
                 })
+                .when(prefix + '/admin/catalog', {
+                    templateUrl: path + 'admin/admin-catalog.html'
+                })
                 .when(prefix + '/admin/gateways/:gateway', {
                     templateUrl: path + 'forms/edit-gateway.html'
                 })
