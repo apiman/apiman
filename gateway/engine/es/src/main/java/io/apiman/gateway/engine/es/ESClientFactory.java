@@ -225,7 +225,7 @@ public class ESClientFactory {
         request.source(source);
         JestResult response = client.execute(new CreateIndex.Builder(indexName).settings(source).build());
         if (!response.isSucceeded()) {
-            throw new Exception("Failed to create index: " + indexName); //$NON-NLS-1$
+            throw new Exception("Failed to create index: '" + indexName + "' Reason: " + response.getErrorMessage()); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
 
