@@ -4,7 +4,7 @@
   <parent>
     <groupId>io.apiman</groupId>
     <artifactId>apiman-manager</artifactId>
-    <version>1.2.0.Beta3</version>
+    <version>1.2.0-SNAPSHOT</version>
   </parent>
   <artifactId>apiman-manager-ui</artifactId>
   <packaging>pom</packaging>
