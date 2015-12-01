@@ -20,6 +20,8 @@
     <test name="Register App">test-plan-data/reregister-app/110_register-application.resttest</test>
     <test name="Create App Policy">test-plan-data/reregister-app/111_create-app-policy.resttest</test>
     <test name="Re-Register App">test-plan-data/reregister-app/112_reregister-application.resttest</test>
+    <test name="Retire App">test-plan-data/reregister-app/113_unregister-application.resttest</test>
+    <test name="Re-Register App [2]">test-plan-data/reregister-app/114_reregister-application.resttest</test>
   </testGroup>
 
 </testPlan>

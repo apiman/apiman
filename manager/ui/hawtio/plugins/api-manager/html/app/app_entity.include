@@ -55,7 +55,7 @@
             <div class="apiman-divider-40"></div>
             <div class="">
               <button ng-disabled="getEntityStatus() == 'Created'" apiman-action-btn="" apiman-status="Created,Ready" class="btn btn-primary" data-field="registerButton" apiman-i18n-key="register" placeholder="Registering..." data-icon="fa-cog" ng-click="registerApp()">Register</button>
-              <button ng-disabled="version.modifiedOn <= version.publishedOn" apiman-action-btn="" apiman-status="Registered" class="btn btn-primary" data-field="reregisterButton" apiman-i18n-key="reregister" placeholder="Re-Registering..." data-icon="fa-cog" ng-click="registerApp()">Re-Register</button>
+              <button ng-disabled="getEntityStatus() != 'Retired' && version.modifiedOn <= version.publishedOn" apiman-action-btn="" apiman-status="Registered,Retired" class="btn btn-primary" data-field="reregisterButton" apiman-i18n-key="reregister" placeholder="Re-Registering..." data-icon="fa-cog" ng-click="registerApp()">Re-Register</button>
               <button apiman-action-btn="" apiman-status="Registered" class="btn btn-warning" data-field="unregisterButton" apiman-i18n-key="unregister" placeholder="Unregistering..." data-icon="fa-cog" ng-click="unregisterApp()">Unregister</button>
             </div>
           </div>

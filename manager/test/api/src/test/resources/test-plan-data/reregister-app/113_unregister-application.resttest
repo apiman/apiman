@@ -1,0 +1,11 @@
+POST /actions admin/admin
+Content-Type: application/json
+
+{
+  "type" : "unregisterApplication",
+  "organizationId" : "Organization",
+  "entityId" : "Application",
+  "entityVersion" : "1.0"
+}
+----
+204

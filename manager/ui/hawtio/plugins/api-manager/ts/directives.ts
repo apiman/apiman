@@ -188,8 +188,7 @@ module Apiman {
                 },
                 isEntityDisabled: function() {
                     if (entityType == 'application' || entityType == 'applications') {
-                        // apps are never disabled - feel free to make any changes you like whenever you like!
-                        return false;
+                        return entity.status == 'Retired';
                     } else if (entityType == 'service' || entityType == 'services') {
                         return (entity.status !== 'Created' && entity.status !== 'Ready');
                     } else {

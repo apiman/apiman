@@ -192,7 +192,7 @@ public class ActionResourceImpl implements IActionResource {
 
             versionBean.setStatus(ServiceStatus.Published);
             versionBean.setPublishedOn(new Date());
-            
+
             ServiceBean service = storage.getService(action.getOrganizationId(), action.getEntityId());
             if (service == null) {
                 throw new PublishingException("Error: could not find service - " + action.getOrganizationId() + "=>" + action.getEntityId()); //$NON-NLS-1$ //$NON-NLS-2$
@@ -334,8 +334,6 @@ public class ActionResourceImpl implements IActionResource {
             if (c <= 0) {
                 throw ExceptionFactory.actionException(Messages.i18n.format("ApplicationReRegisterNotRequired")); //$NON-NLS-1$
             }
-        } else if (versionBean.getStatus() != ApplicationStatus.Ready) {
-            throw ExceptionFactory.actionException(Messages.i18n.format("InvalidApplicationStatus")); //$NON-NLS-1$
         }
 
         Application application = new Application();

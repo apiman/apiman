@@ -36,6 +36,10 @@ import org.junit.runner.RunWith;
         "PUT:/mock-gateway/applications\n" +
         "GET:/mock-gateway/system/status\n" +
         "PUT:/mock-gateway/applications\n" +
+        "GET:/mock-gateway/system/status\n" +
+        "DELETE:/mock-gateway/applications/Organization/Application/1.0\n" +
+        "GET:/mock-gateway/system/status\n" +
+        "PUT:/mock-gateway/applications\n" +
         ""
 )
 @ManagerRestTestPublishPayload({
