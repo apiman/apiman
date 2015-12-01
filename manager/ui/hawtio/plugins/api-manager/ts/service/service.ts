@@ -38,7 +38,7 @@ module Apiman {
                                 $scope.org = version.service.organization;
                                 $scope.service = version.service;
                                 $rootScope.mruService = version;
-                                EntityStatusService.setEntityStatus(version.status);
+                                EntityStatusService.setEntity(version, 'service');
                                 resolve(version);
                             }, reject);
                         }),
@@ -56,20 +56,10 @@ module Apiman {
             var params = $routeParams;
             $scope.params = params;
 
-            $scope.setEntityStatus = function(status) {
-                EntityStatusService.setEntityStatus(status);
-            };
+            $scope.setEntityStatus = EntityStatusService.setEntityStatus;
+            $scope.getEntityStatus = EntityStatusService.getEntityStatus;
 
-            $scope.getEntityStatus = function() {
-                return EntityStatusService.getEntityStatus();
-            };
-
-            $scope.isEntityDisabled = function() {
-                var status = EntityStatusService.getEntityStatus();
-
-                return (status !== 'Created' && status !== 'Ready');
-            };
-
+            $scope.isEntityDisabled = EntityStatusService.isEntityDisabled;
 
             // ----- Status Checklist Popover --------------------->>>>
 

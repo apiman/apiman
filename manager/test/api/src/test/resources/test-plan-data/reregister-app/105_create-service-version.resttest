@@ -1,0 +1,29 @@
+POST /organizations/Organization/services/Service/versions admin/admin
+Content-Type: application/json
+
+{
+  "version" : "1.0",
+  "endpoint" : "http://localhost:9999/echo",
+  "endpointType" : "rest",
+  "endpointContentType" : "json",
+  "publicService" : false,
+  "plans" : [
+    {
+      "planId" : "Plan",
+      "version" : "1.0"
+    }
+  ]
+}
+----
+200
+Content-Type: application/json
+
+{
+  "service" : {
+    "organization" : {
+      "id" : "Organization"
+    },
+    "id" : "Service"
+  },
+  "status" : "Ready"
+}

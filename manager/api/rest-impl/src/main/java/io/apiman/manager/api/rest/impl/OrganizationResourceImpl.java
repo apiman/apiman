@@ -208,7 +208,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     @Inject IApplicationValidator applicationValidator;
     @Inject IServiceValidator serviceValidator;
     @Inject IApiKeyGenerator apiKeyGenerator;
-    
+
     @Inject IDownloadManager downloadManager;
 
     @Inject IUserResource users;
@@ -676,19 +676,19 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             InvalidMetricCriteriaException {
         if (!securityContext.hasPermission(PermissionType.appView, organizationId))
             throw ExceptionFactory.notAuthorizedException();
-        
+
         if (fromDate == null) {
             throw ExceptionFactory.invalidMetricCriteriaException(Messages.i18n.format("MissingOrInvalidParam", "fromDate")); //$NON-NLS-1$ //$NON-NLS-2$
         }
-        
+
         if (toDate == null) {
             throw ExceptionFactory.invalidMetricCriteriaException(Messages.i18n.format("MissingOrInvalidParam", "toDate")); //$NON-NLS-1$ //$NON-NLS-2$
         }
-        
+
         DateTime from = parseFromDate(fromDate);
         DateTime to = parseToDate(toDate);
         validateMetricRange(from, to);
-        
+
         return metrics.getAppUsagePerService(organizationId, applicationId, version, from, to);
     }
 
@@ -964,7 +964,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw new SystemErrorException(e);
         }
     }
-    
+
     /**
      * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getApiRegistryJSON(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
      */
@@ -984,7 +984,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             return getApiRegistryJSON(organizationId, applicationId, version, hasPermission);
         }
     }
-    
+
     /**
      * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getApiRegistryJSON(java.lang.String, java.lang.String, java.lang.String, boolean)
      */
@@ -996,7 +996,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                 .header("Content-Disposition", "attachment; filename=api-registry.json") //$NON-NLS-1$ //$NON-NLS-2$
                 .build();
     }
-    
+
     /**
      * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getApiRegistryXML(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
      */
@@ -1016,7 +1016,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             return getApiRegistryXML(organizationId, applicationId, version, hasPermission);
         }
     }
-    
+
     /**
      * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getApiRegistryXML(java.lang.String, java.lang.String, java.lang.String, boolean)
      */
@@ -1028,7 +1028,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                 .header("Content-Disposition", "attachment; filename=api-registry.xml") //$NON-NLS-1$ //$NON-NLS-2$
                 .build();
     }
-    
+
     /**
      * Gets the API registry.
      * @param organizationId
@@ -1104,12 +1104,6 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         if (!securityContext.hasPermission(PermissionType.appEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
 
-        // Make sure the app version exists and is in the right state.
-        ApplicationVersionBean avb = getAppVersion(organizationId, applicationId, version);
-        if (avb.getStatus() == ApplicationStatus.Registered || avb.getStatus() == ApplicationStatus.Retired) {
-            throw ExceptionFactory.invalidApplicationStatusException();
-        }
-
         return doCreatePolicy(organizationId, applicationId, version, bean, PolicyType.Application);
     }
 
@@ -1144,7 +1138,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw ExceptionFactory.notAuthorizedException();
 
         // Make sure the app version exists.
-        getAppVersion(organizationId, applicationId, version);
+        ApplicationVersionBean avb = getAppVersion(organizationId, applicationId, version);
 
         try {
             storage.beginTx();
@@ -1154,12 +1148,15 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             }
             if (AuditUtils.valueChanged(policy.getConfiguration(), bean.getConfiguration())) {
                 policy.setConfiguration(bean.getConfiguration());
-                // TODO figure out what changed an include that in the audit entry
+                // TODO figure out what changed and include that in the audit entry
             }
             policy.setModifiedOn(new Date());
             policy.setModifiedBy(this.securityContext.getCurrentUser());
             storage.updatePolicy(policy);
             storage.createAuditEntry(AuditUtils.policyUpdated(policy, PolicyType.Application, securityContext));
+            avb.setModifiedBy(securityContext.getCurrentUser());
+            avb.setModifiedOn(new Date());
+            storage.updateApplicationVersion(avb);
             storage.commitTx();
         } catch (AbstractRestException e) {
             storage.rollbackTx();
@@ -1181,10 +1178,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw ExceptionFactory.notAuthorizedException();
 
         // Make sure the app version exists;
-        ApplicationVersionBean app = getAppVersion(organizationId, applicationId, version);
-        if (app.getStatus() == ApplicationStatus.Registered || app.getStatus() == ApplicationStatus.Retired) {
-            throw ExceptionFactory.invalidApplicationStatusException();
-        }
+        ApplicationVersionBean avb = getAppVersion(organizationId, applicationId, version);
 
         try {
             storage.beginTx();
@@ -1194,6 +1188,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             }
             storage.deletePolicy(policy);
             storage.createAuditEntry(AuditUtils.policyRemoved(policy, PolicyType.Application, securityContext));
+            avb.setModifiedBy(securityContext.getCurrentUser());
+            avb.setModifiedOn(new Date());
+            storage.updateApplicationVersion(avb);
             storage.commitTx();
         } catch (AbstractRestException e) {
             storage.rollbackTx();
@@ -1614,7 +1611,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw new SystemErrorException(e);
         }
     }
-    
+
     /**
      * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getServiceVersionStatus(java.lang.String, java.lang.String, java.lang.String)
      */
@@ -2247,14 +2244,14 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         if (fromDate == null) {
             throw ExceptionFactory.invalidMetricCriteriaException(Messages.i18n.format("MissingOrInvalidParam", "fromDate")); //$NON-NLS-1$ //$NON-NLS-2$
         }
-        
+
         if (toDate == null) {
             throw ExceptionFactory.invalidMetricCriteriaException(Messages.i18n.format("MissingOrInvalidParam", "toDate")); //$NON-NLS-1$ //$NON-NLS-2$
         }
-        
+
         DateTime from = parseFromDate(fromDate);
         DateTime to = parseToDate(toDate);
-        
+
         if (interval == null) {
             interval = HistogramIntervalType.day;
         }
@@ -2271,11 +2268,11 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             String fromDate, String toDate) throws NotAuthorizedException, InvalidMetricCriteriaException {
         if (!securityContext.hasPermission(PermissionType.svcView, organizationId))
             throw ExceptionFactory.notAuthorizedException();
-        
+
         if (fromDate == null) {
             throw ExceptionFactory.invalidMetricCriteriaException(Messages.i18n.format("MissingOrInvalidParam", "fromDate")); //$NON-NLS-1$ //$NON-NLS-2$
         }
-        
+
         if (toDate == null) {
             throw ExceptionFactory.invalidMetricCriteriaException(Messages.i18n.format("MissingOrInvalidParam", "toDate")); //$NON-NLS-1$ //$NON-NLS-2$
         }
@@ -2294,11 +2291,11 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             String fromDate, String toDate) throws NotAuthorizedException, InvalidMetricCriteriaException {
         if (!securityContext.hasPermission(PermissionType.svcView, organizationId))
             throw ExceptionFactory.notAuthorizedException();
-        
+
         if (fromDate == null) {
             throw ExceptionFactory.invalidMetricCriteriaException(Messages.i18n.format("MissingOrInvalidParam", "fromDate")); //$NON-NLS-1$ //$NON-NLS-2$
         }
-        
+
         if (toDate == null) {
             throw ExceptionFactory.invalidMetricCriteriaException(Messages.i18n.format("MissingOrInvalidParam", "toDate")); //$NON-NLS-1$ //$NON-NLS-2$
         }
@@ -2318,11 +2315,11 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throws NotAuthorizedException, InvalidMetricCriteriaException {
         if (!securityContext.hasPermission(PermissionType.svcView, organizationId))
             throw ExceptionFactory.notAuthorizedException();
-        
+
         if (fromDate == null) {
             throw ExceptionFactory.invalidMetricCriteriaException(Messages.i18n.format("MissingOrInvalidParam", "fromDate")); //$NON-NLS-1$ //$NON-NLS-2$
         }
-        
+
         if (toDate == null) {
             throw ExceptionFactory.invalidMetricCriteriaException(Messages.i18n.format("MissingOrInvalidParam", "toDate")); //$NON-NLS-1$ //$NON-NLS-2$
         }
@@ -2346,11 +2343,11 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             InvalidMetricCriteriaException {
         if (!securityContext.hasPermission(PermissionType.svcView, organizationId))
             throw ExceptionFactory.notAuthorizedException();
-        
+
         if (fromDate == null) {
             throw ExceptionFactory.invalidMetricCriteriaException(Messages.i18n.format("MissingOrInvalidParam", "fromDate")); //$NON-NLS-1$ //$NON-NLS-2$
         }
-        
+
         if (toDate == null) {
             throw ExceptionFactory.invalidMetricCriteriaException(Messages.i18n.format("MissingOrInvalidParam", "toDate")); //$NON-NLS-1$ //$NON-NLS-2$
         }
@@ -2370,11 +2367,11 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             InvalidMetricCriteriaException {
         if (!securityContext.hasPermission(PermissionType.svcView, organizationId))
             throw ExceptionFactory.notAuthorizedException();
-        
+
         if (fromDate == null) {
             throw ExceptionFactory.invalidMetricCriteriaException(Messages.i18n.format("MissingOrInvalidParam", "fromDate")); //$NON-NLS-1$ //$NON-NLS-2$
         }
-        
+
         if (toDate == null) {
             throw ExceptionFactory.invalidMetricCriteriaException(Messages.i18n.format("MissingOrInvalidParam", "toDate")); //$NON-NLS-1$ //$NON-NLS-2$
         }
@@ -2394,11 +2391,11 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             InvalidMetricCriteriaException {
         if (!securityContext.hasPermission(PermissionType.svcView, organizationId))
             throw ExceptionFactory.notAuthorizedException();
-        
+
         if (fromDate == null) {
             throw ExceptionFactory.invalidMetricCriteriaException(Messages.i18n.format("MissingOrInvalidParam", "fromDate")); //$NON-NLS-1$ //$NON-NLS-2$
         }
-        
+
         if (toDate == null) {
             throw ExceptionFactory.invalidMetricCriteriaException(Messages.i18n.format("MissingOrInvalidParam", "toDate")); //$NON-NLS-1$ //$NON-NLS-2$
         }
@@ -2889,12 +2886,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             if (def == null) {
                 throw ExceptionFactory.policyDefNotFoundException(bean.getDefinitionId());
             }
-            storage.commitTx();
-        } catch (AbstractRestException e) {
             storage.rollbackTx();
+        } catch (AbstractRestException e) {
             throw e;
         } catch (Exception e) {
-            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
 
@@ -2922,6 +2917,24 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             policy.setOrderIndex(newIdx);
 
             storage.beginTx();
+
+            if (type == PolicyType.Application) {
+                ApplicationVersionBean avb = storage.getApplicationVersion(organizationId, entityId, entityVersion);
+                avb.setModifiedBy(securityContext.getCurrentUser());
+                avb.setModifiedOn(new Date());
+                storage.updateApplicationVersion(avb);
+            } else if (type == PolicyType.Service) {
+                ServiceVersionBean svb = storage.getServiceVersion(organizationId, entityId, entityVersion);
+                svb.setModifiedBy(securityContext.getCurrentUser());
+                svb.setModifiedOn(new Date());
+                storage.updateServiceVersion(svb);
+            } else if (type == PolicyType.Plan) {
+                PlanVersionBean pvb = storage.getPlanVersion(organizationId, entityId, entityVersion);
+                pvb.setModifiedBy(securityContext.getCurrentUser());
+                pvb.setModifiedOn(new Date());
+                storage.updatePlanVersion(pvb);
+            }
+
             storage.createPolicy(policy);
             storage.createAuditEntry(AuditUtils.policyAdded(policy, type, securityContext));
             storage.commitTx();
@@ -2993,7 +3006,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
 
         MembershipData auditData = new MembershipData();
         auditData.setUserId(userId);
-        
+
         try {
             storage.beginTx();
             storage.deleteMembership(userId, roleId, organizationId);

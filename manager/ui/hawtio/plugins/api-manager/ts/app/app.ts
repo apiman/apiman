@@ -36,7 +36,7 @@ module Apiman {
                                 $scope.org = version.application.organization;
                                 $scope.app = version.application;
                                 $rootScope.mruApp = version;
-                                EntityStatusService.setEntityStatus(version.status);
+                                EntityStatusService.setEntity(version, 'application');
                                 Logger.debug("app version: {0}", version);
                                 resolve(version);
                             }, reject);
@@ -54,12 +54,8 @@ module Apiman {
         ($q, $scope, $location, ActionSvcs, Logger, Dialogs, PageLifecycle, $routeParams, OrgSvcs, EntityStatusService, Configuration) => {
             var params = $routeParams;
 
-            $scope.setEntityStatus = function(status) {
-                EntityStatusService.setEntityStatus(status);
-            };
-            $scope.getEntityStatus = function(){
-                return EntityStatusService.getEntityStatus();
-            };
+            $scope.setEntityStatus = EntityStatusService.setEntityStatus;
+            $scope.getEntityStatus = EntityStatusService.getEntityStatus;
             $scope.showMetrics = Configuration.ui.metrics;
 
             $scope.setVersion = function(app) {

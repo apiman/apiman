@@ -49,8 +49,7 @@
       <!-- Update Button -->
       <div class="row">
         <button id="update-policy"
-                apiman-status="Created,Ready"
-                ng-show="hasPermission"
+                ng-show="hasPermission && !isEntityDisabled()"
                 apiman-action-btn=""
                 ng-click="updatePolicy()"
                 ng-disabled="!isValid"

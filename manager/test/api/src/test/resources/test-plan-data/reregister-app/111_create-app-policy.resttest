@@ -1,0 +1,35 @@
+POST /organizations/Organization/applications/Application/versions/1.0/policies admin/admin
+Content-Type: application/json
+
+{
+  "definitionId" : "PolicyDef",
+  "configuration" : "{\"foo\" : \"bar\"}"
+}
+----
+200
+Content-Type: application/json
+
+{
+  "type" : "Application",
+  "organizationId" : "Organization",
+  "entityId" : "Application",
+  "entityVersion" : "1.0",
+  "name" : "Policy Def",
+  "description" : "This is a policy that does nothing but test.",
+  "definition" : {
+    "id" : "PolicyDef",
+    "name" : "Policy Def",
+    "description" : "This is the test policy def.",
+    "policyImpl" : "org.example.policies.PolicyDef",
+    "icon" : "policy-def",
+    "templates" : [
+      {
+        "language" : null,
+        "template" : "This is a policy that does nothing but test."
+      }
+    ]
+  },
+  "configuration" : "{\"foo\" : \"bar\"}",
+  "createdBy" : "admin",
+  "modifiedBy" : "admin"
+}

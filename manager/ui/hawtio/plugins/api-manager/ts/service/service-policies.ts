@@ -20,11 +20,7 @@ module Apiman {
                 });
             };
 
-            $scope.isEntityDisabled = function() {
-                var status = EntityStatusService.getEntityStatus();
-
-                return (status !== 'Created' && status !== 'Ready');
-            };
+            $scope.isEntityDisabled = EntityStatusService.isEntityDisabled;
 
             $scope.removePolicy = function(policy) {
                 Dialogs.confirm('Confirm Remove Policy', 'Do you really want to remove this policy from the service?', function() {

@@ -169,15 +169,32 @@ module Apiman {
     _module.factory('EntityStatusService', 
         ['$rootScope',
         function($rootScope) {
-            var entityStatus = null;
+            var entity = null;
+            var entityType = null;
 
             return {
-                setEntityStatus: function(status) {
-                    entityStatus = status;
+                setEntity: function(theEntity, type) {
+                    entity = theEntity;
+                    entityType = type;
                 },
-
                 getEntityStatus: function() {
-                    return entityStatus;
+                    return entity.status;
+                },
+                getEntityType: function() {
+                    return entityType;
+                },
+                setEntityStatus: function(status) {
+                    entity.status = status;
+                },
+                isEntityDisabled: function() {
+                    if (entityType == 'application' || entityType == 'applications') {
+                        // apps are never disabled - feel free to make any changes you like whenever you like!
+                        return false;
+                    } else if (entityType == 'service' || entityType == 'services') {
+                        return (entity.status !== 'Created' && entity.status !== 'Ready');
+                    } else {
+                        return (entity.status !== 'Created' && entity.status !== 'Ready');
+                    }
                 }
             };
         }]);

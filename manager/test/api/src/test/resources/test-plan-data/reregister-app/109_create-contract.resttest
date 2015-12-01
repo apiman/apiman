@@ -1,0 +1,46 @@
+POST /organizations/Organization/applications/Application/versions/1.0/contracts admin/admin
+Content-Type: application/json
+
+{
+  "serviceOrgId" : "Organization",
+  "serviceId" : "Service",
+  "serviceVersion" : "1.0",
+  "planId" : "Plan"
+}
+----
+200
+Content-Type: application/json
+
+{
+  "application" : {
+    "application" : {
+      "organization" : {
+        "id" : "Organization"
+      },
+      "id" : "Application"
+    },
+    "status" : "Ready",
+    "version" : "1.0",
+    "createdBy" : "admin"
+  },
+  
+  "service":{
+    "service" : {
+      "organization" : {
+        "id" : "Organization"
+      },
+      "id" : "Service"
+    },
+    "version" : "1.0"
+  },
+  
+  "plan" : {
+    "plan" : {
+      "organization" : {
+        "id" : "Organization"
+      },
+      "id" : "Plan"
+    },
+    "version" : "1.0"
+  }
+}

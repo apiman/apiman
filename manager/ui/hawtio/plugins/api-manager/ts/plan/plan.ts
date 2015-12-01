@@ -35,7 +35,7 @@ module Apiman {
                             OrgSvcs.get({ organizationId: params.org, entityType: 'plans', entityId: params.plan, versionsOrActivity: 'versions', version: params.version }, function(version) {
                                 $scope.org = version.plan.organization;
                                 $scope.plan = version.plan;
-                                EntityStatusService.setEntityStatus(version.status);
+                                EntityStatusService.setEntity(version, 'plan');
                                 resolve(version);
                             }, reject);
                         }),
@@ -52,12 +52,8 @@ module Apiman {
         ($q, $scope, $location, ActionSvcs, Logger, PageLifecycle, $routeParams, OrgSvcs, EntityStatusService) => {
             var params = $routeParams;
 
-            $scope.setEntityStatus = function(status) {
-                EntityStatusService.setEntityStatus(status);
-            };
-            $scope.getEntityStatus = function(){
-                return EntityStatusService.getEntityStatus();
-            };
+            $scope.setEntityStatus = EntityStatusService.setEntityStatus;
+            $scope.getEntityStatus = EntityStatusService.getEntityStatus;
 
             $scope.setVersion = function(plan) {
                 PageLifecycle.redirectTo('/orgs/{0}/plans/{1}/{2}', params.org, params.plan, plan.version);

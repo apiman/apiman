@@ -1,0 +1,20 @@
+POST /organizations/Organization/plans admin/admin
+Content-Type: application/json
+
+{
+  "name" : "Plan",
+  "description" : "This is the description of the Plan."
+}
+----
+200
+Content-Type: application/json
+
+{
+  "organization" : {
+    "id" : "Organization"
+  },
+  "id" : "Plan",
+  "name" : "Plan",
+  "description" : "This is the description of the Plan.",
+  "createdBy" : "admin"
+}

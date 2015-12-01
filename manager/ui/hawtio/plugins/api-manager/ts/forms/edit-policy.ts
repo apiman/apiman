@@ -20,9 +20,7 @@ module Apiman {
                 etype = 'applications';
             }
 
-            $scope.getEntityStatus = function() {
-                return EntityStatusService.getEntityStatus();
-            };
+            $scope.isEntityDisabled = EntityStatusService.isEntityDisabled;
             
             var pageData = {
                 version: $q(function(resolve, reject) {
@@ -106,7 +104,7 @@ module Apiman {
             
             var requiredPermission = requiredPermissionMap[etype];
             PageLifecycle.loadPage('EditPolicy', requiredPermission, pageData, $scope, function() {
-                EntityStatusService.setEntityStatus($scope.version.status);
+                EntityStatusService.setEntity($scope.version, etype);
 
                 // Note: not using the apiman-permission directive in the template for this page because
                 // we cannot hard-code the required permission.  The required permission changes depending

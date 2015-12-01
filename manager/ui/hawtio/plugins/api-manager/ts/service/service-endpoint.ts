@@ -19,12 +19,7 @@ module Apiman {
                 })
             });
 
-            $scope.isEntityDisabled = function() {
-                var status = EntityStatusService.getEntityStatus();
-
-                return (status !== 'Created' && status !== 'Ready');
-            };
-
+            $scope.isEntityDisabled = EntityStatusService.isEntityDisabled;
 
             // Tooltip
 

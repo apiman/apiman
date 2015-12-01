@@ -33,11 +33,7 @@ module Apiman {
                 return selectedPlans;
             };
 
-            $scope.isEntityDisabled = function() {
-                var status = EntityStatusService.getEntityStatus();
-
-                return (status !== 'Created' && status !== 'Ready');
-            };
+            $scope.isEntityDisabled = EntityStatusService.isEntityDisabled;
 
             var pageData = ServiceEntityLoader.getCommonData($scope, $location);
 

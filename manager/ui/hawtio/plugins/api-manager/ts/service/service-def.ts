@@ -28,11 +28,7 @@ module Apiman {
 
             selectType('None');
 
-            $scope.isEntityDisabled = function() {
-                var status = EntityStatusService.getEntityStatus();
-
-                return (status !== 'Created' && status !== 'Ready');
-            };
+            $scope.isEntityDisabled = EntityStatusService.isEntityDisabled;
 
             jQuery('#service-definition').height(100);
 
