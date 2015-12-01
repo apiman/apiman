@@ -1,5 +1,6 @@
 package io.apiman.gateway.engine.components;
 
+import io.apiman.gateway.engine.IComponent;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.components.ldap.ILdapClientConnection;
 import io.apiman.gateway.engine.components.ldap.LdapConfigBean;
@@ -7,7 +8,7 @@ import io.apiman.gateway.engine.components.ldap.LdapConfigBean;
 /**
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
-public interface ILdapComponent {
+public interface ILdapComponent extends IComponent {
 
     /**
      * Open an LDAP connection to allow queries.

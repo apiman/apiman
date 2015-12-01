@@ -95,4 +95,9 @@ public class DefaultLdapAttribute implements ILdapAttribute {
         return attribute.getValueByteArrays();
     }
 
+//    @Override
+//    public String getDn() {
+//        return attribute.get
+//    }
+
 }

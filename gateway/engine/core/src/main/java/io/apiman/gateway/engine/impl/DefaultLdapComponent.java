@@ -23,8 +23,6 @@ import io.apiman.gateway.engine.components.ILdapComponent;
 import io.apiman.gateway.engine.components.ldap.ILdapClientConnection;
 import io.apiman.gateway.engine.components.ldap.LdapConfigBean;
 
-import java.util.Map;
-
 import com.unboundid.ldap.sdk.BindResult;
 import com.unboundid.ldap.sdk.LDAPConnection;
 import com.unboundid.ldap.sdk.LDAPException;
@@ -32,7 +30,7 @@ import com.unboundid.ldap.sdk.ResultCode;
 
 public class DefaultLdapComponent implements ILdapComponent {
 
-    public DefaultLdapComponent(Map<String, String> componentConfig) {
+    public DefaultLdapComponent() {
     }
 
     @Override

@@ -37,6 +37,8 @@ public interface ILdapAttribute {
      */
     String getBaseName();
 
+    //String getDn();
+
     /**
      * Are there options attached?
      * @return true if has options, else false
