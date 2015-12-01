@@ -5,7 +5,6 @@ Content-Type: application/json
 
 {
   "Metadata": {
-    "apimanVersion": "1.2.0-SNAPSHOT"
   },
   "Users": [
     {
