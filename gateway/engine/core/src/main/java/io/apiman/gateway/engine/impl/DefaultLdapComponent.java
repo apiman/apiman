@@ -35,15 +35,15 @@ public class DefaultLdapComponent implements ILdapComponent {
 
     @Override
     public void connect(LdapConfigBean config, final IAsyncResultHandler<ILdapClientConnection> handler) {
-        DefaultLdapClientConnection connection = new DefaultLdapClientConnection(config);
+        final DefaultLdapClientConnection connection = new DefaultLdapClientConnection(config);
         connection.connect(new IAsyncResultHandler<Void>() {
 
             @Override
             public void handle(IAsyncResult<Void> result) {
                 if (result.isSuccess()) {
-                    handler.handle(AsyncResultImpl.create(connection));
+                    handler.handle(AsyncResultImpl.<ILdapClientConnection>create(connection));
                 } else {
-                    handler.handle(AsyncResultImpl.create(result.getError()));
+                    handler.handle(AsyncResultImpl.<ILdapClientConnection>create(result.getError()));
                 }
             }
         });
@@ -56,7 +56,7 @@ public class DefaultLdapComponent implements ILdapComponent {
             handler.handle(AsyncResultImpl.create(Boolean.FALSE));
         } else {
             RuntimeException re = new RuntimeException(String.format("LDAP failure: %s %s", resultCode, message)); //$NON-NLS-1$
-            handler.handle(AsyncResultImpl.create(re));
+            handler.handle(AsyncResultImpl.<Boolean>create(re));
         }
     }
 

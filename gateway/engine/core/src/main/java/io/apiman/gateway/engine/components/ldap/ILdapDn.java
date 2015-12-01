@@ -13,30 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package io.apiman.gateway.engine.components.ldap;
 
 import java.util.List;
 
 /**
+ * A DN is a whole distinguished name, which comprises of RDN pairs
+ * concatenated together with comma delimiters
+ *
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
-public interface ILdapSearchEntry {
-
+public interface ILdapDn {
     /**
-     * Get a named attribute
-     *
-     * @param key attribute key
-     * @return the attribute
+     * @return get the distinguished name (DN) as a string
      */
-    ILdapAttribute getAttribute(String key);
-
-    /**
-     * Get all attributes
-     *
-     * @return the attributes
-     */
-    List<ILdapAttribute> getAttributes();
-
     String getDn();
 
+    /**
+     * @return get a list of all RDNS (entries in DN).
+     */
+    List<ILdapRdn> getRdns();
 }

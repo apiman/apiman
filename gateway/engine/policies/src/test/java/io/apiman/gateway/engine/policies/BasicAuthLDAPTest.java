@@ -76,8 +76,6 @@ public class BasicAuthLDAPTest extends AbstractLdapTestUnit {
 
     private static JdbmPartition partition;
 
-    //private static ILdapComponent ldapComponent = new DefaultLdapComponent();
-
     @Before
     public void setUp() throws Exception {
 
@@ -146,18 +144,18 @@ public class BasicAuthLDAPTest extends AbstractLdapTestUnit {
     public void testApply() throws Exception {
         // Test using a direct bind to the user account
         //////////////////////////////////////////////////
-        String json = "";
-//        String json = "{\r\n" +
-//                "    \"realm\" : \"TestRealm\",\r\n" +
-//                "    \"forwardIdentityHttpHeader\" : \"X-Authenticated-Identity\",\r\n" +
-//                "    \"ldapIdentity\" : {\r\n" +
-//                "        \"url\" : \"ldap://" + LDAP_SERVER + ":" + ldapServer.getPort() + "\",\r\n" +
-//                "        \"dnPattern\" : \"uid=${username},ou=system\"\r\n" +
-//                "    }\r\n" +
-//                "}";
-//        doTest(json, null, null, PolicyFailureCodes.BASIC_AUTH_REQUIRED);
-//        doTest(json, "admin", "invalid_password", PolicyFailureCodes.BASIC_AUTH_FAILED);
-//        doTest(json, "admin", "secret", null);
+        String json = "{\r\n" +
+                "    \"realm\" : \"TestRealm\",\r\n" +
+                "    \"forwardIdentityHttpHeader\" : \"X-Authenticated-Identity\",\r\n" +
+                "    \"ldapIdentity\" : {\r\n" +
+                "        \"url\" : \"ldap://" + LDAP_SERVER + ":" + ldapServer.getPort() + "\",\r\n" +
+                "        \"dnPattern\" : \"uid=${username},ou=system\"\r\n" +
+                "    }\r\n" +
+                "}";
+
+        doTest(json, null, null, PolicyFailureCodes.BASIC_AUTH_REQUIRED);
+        doTest(json, "admin", "invalid_password", PolicyFailureCodes.BASIC_AUTH_FAILED);
+        doTest(json, "admin", "secret", null);
 
         // Test using a service account with user search
         //////////////////////////////////////////////////
@@ -177,16 +175,10 @@ public class BasicAuthLDAPTest extends AbstractLdapTestUnit {
                 "    }\r\n" +
                 "  }\r\n" +
                 "}";
-//        System.out.println("doTest(json, null, null, PolicyFailureCodes.BASIC_AUTH_REQUIRED);");
-//        doTest(json, null, null, PolicyFailureCodes.BASIC_AUTH_REQUIRED);
 
-        System.out.println("doTest(json, \"ewittman\", \"invalid_password\", PolicyFailureCodes.BASIC_AUTH_FAILED);");
+        doTest(json, null, null, PolicyFailureCodes.BASIC_AUTH_REQUIRED);
         doTest(json, "ewittman", "invalid_password", PolicyFailureCodes.BASIC_AUTH_FAILED);
-
-        System.out.println("doTest(json, \"unknown_user\", \"password\", PolicyFailureCodes.BASIC_AUTH_FAILED)");
         doTest(json, "unknown_user", "password", PolicyFailureCodes.BASIC_AUTH_FAILED);
-
-        System.out.println("doTest(json, \"ewittman\", \"ewittman\", null);");
         doTest(json, "ewittman", "ewittman", null);
 
         // Test using a service account with user search
@@ -281,9 +273,10 @@ public class BasicAuthLDAPTest extends AbstractLdapTestUnit {
             policy.apply(request, context, config, chain);
             Mockito.verify(chain).doFailure(failure);
             Assert.assertEquals(expectedFailureCode.intValue(), failure.getFailureCode());
-            if (expectedRoles != null) {
-                Mockito.verify(context).setAttribute(AuthorizationPolicy.AUTHENTICATED_USER_ROLES, expectedRoles);
-            }
+        }
+
+        if (expectedRoles != null) {
+            Mockito.verify(context).setAttribute(AuthorizationPolicy.AUTHENTICATED_USER_ROLES, expectedRoles);
         }
     }
 
