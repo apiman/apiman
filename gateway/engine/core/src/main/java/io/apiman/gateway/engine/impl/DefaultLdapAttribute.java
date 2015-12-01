@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.apiman.gateway.platforms.vertx3.components.ldap;
+package io.apiman.gateway.engine.impl;
 
 import io.apiman.gateway.engine.components.ldap.ILdapAttribute;
 
@@ -27,11 +27,11 @@ import com.unboundid.ldap.sdk.Attribute;
 /**
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
-public class LdapAttributeImpl implements ILdapAttribute {
+public class DefaultLdapAttribute implements ILdapAttribute {
 
     private Attribute attribute;
 
-    public LdapAttributeImpl(Attribute attribute) {
+    public DefaultLdapAttribute(Attribute attribute) {
         this.attribute = attribute;
     }
 

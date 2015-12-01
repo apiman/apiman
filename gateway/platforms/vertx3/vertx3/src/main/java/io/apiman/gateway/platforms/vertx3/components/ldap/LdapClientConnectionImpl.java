@@ -24,6 +24,7 @@ import io.apiman.gateway.engine.components.ldap.ILdapClientConnection;
 import io.apiman.gateway.engine.components.ldap.ILdapSearchEntry;
 import io.apiman.gateway.engine.components.ldap.LdapConfigBean;
 import io.apiman.gateway.engine.components.ldap.LdapSearchScope;
+import io.apiman.gateway.engine.impl.DefaultLdapSearchEntry;
 import io.vertx.core.Vertx;
 
 import java.util.List;
@@ -91,7 +92,7 @@ public class LdapClientConnectionImpl implements ILdapClientConnection {
     }
 
     private List<ILdapSearchEntry> toSearchEntry(List<SearchResultEntry> result) {
-        return result.stream().map(elem -> { return new LdapSearchEntryImpl(elem); }).collect(Collectors.toList());
+        return result.stream().map(elem -> { return new DefaultLdapSearchEntry(elem); }).collect(Collectors.toList());
     }
 
     @Override
