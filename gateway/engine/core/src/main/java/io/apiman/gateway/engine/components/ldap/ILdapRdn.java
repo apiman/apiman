@@ -13,30 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package io.apiman.gateway.engine.components.ldap;
 
 import java.util.List;
 
 /**
+ * An RDN is a key(s) value(s) entry in a RN
+ *
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
-public interface ILdapSearchEntry {
+public interface ILdapRdn {
+    /**
+     * @return the attribute names from the RDN.
+     */
+    List<String> getAttributeNames();
 
     /**
-     * Get a named attribute
-     *
-     * @param key attribute key
-     * @return the attribute
+     * @return the attribute value(s) from the RDN
      */
-    ILdapAttribute getAttribute(String key);
+    List<String> getAttributeValues();
 
     /**
-     * Get all attributes
+     * If RDN has attribute
      *
-     * @return the attributes
+     * @param name the attribute name
+     * @return true if has attribute; else, false.
      */
-    List<ILdapAttribute> getAttributes();
-
-    String getDn();
-
+    boolean hasAttribute(String name);
 }

@@ -52,4 +52,9 @@ public class DefaultLdapSearchEntry implements ILdapSearchEntry {
         }
         return attributes;
     }
+
+    @Override
+    public String getDn() {
+        return elem.getDN();
+    }
 }

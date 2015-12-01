@@ -15,6 +15,7 @@
  */
 package io.apiman.gateway.engine.components.ldap;
 
+import java.util.List;
 import java.util.Set;
 
 import org.joda.time.DateTime;
@@ -37,7 +38,11 @@ public interface ILdapAttribute {
      */
     String getBaseName();
 
-    //String getDn();
+    /**
+     * Treat the value as a DN (and in turn access RDNs)
+     * @return the value as DN
+     */
+    ILdapDn getValueAsDn();
 
     /**
      * Are there options attached?
@@ -90,4 +95,9 @@ public interface ILdapAttribute {
      * @return as byte[][] representation
      */
     byte[][] getValuesAsByteArrays();
+
+    /**
+     * @return as list of DN when multiple entries
+     */
+    List<ILdapDn> getValuesAsDn();
 }

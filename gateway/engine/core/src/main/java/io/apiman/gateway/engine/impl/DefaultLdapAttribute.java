@@ -17,12 +17,16 @@
 package io.apiman.gateway.engine.impl;
 
 import io.apiman.gateway.engine.components.ldap.ILdapAttribute;
+import io.apiman.gateway.engine.components.ldap.ILdapDn;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import org.joda.time.DateTime;
 
 import com.unboundid.ldap.sdk.Attribute;
+import com.unboundid.ldap.sdk.LDAPException;
 
 /**
  * @author Marc Savy {@literal <msavy@redhat.com>}
@@ -30,6 +34,7 @@ import com.unboundid.ldap.sdk.Attribute;
 public class DefaultLdapAttribute implements ILdapAttribute {
 
     private Attribute attribute;
+    private List<ILdapDn> dnListCache;
 
     public DefaultLdapAttribute(Attribute attribute) {
         this.attribute = attribute;
@@ -95,9 +100,24 @@ public class DefaultLdapAttribute implements ILdapAttribute {
         return attribute.getValueByteArrays();
     }
 
-//    @Override
-//    public String getDn() {
-//        return attribute.get
-//    }
+    @Override
+    public ILdapDn getValueAsDn() {
+        return new DefaultLdapDn(attribute.getValueAsDN());
+    }
+
+    @Override // often there are multiple attributes with the same name - perfectly valid!
+    public List<ILdapDn> getValuesAsDn() {
+        if (dnListCache == null) {
+            dnListCache = new ArrayList<>(attribute.getValues().length);
+            for (String value : attribute.getValues()) {
+                try {
+                    dnListCache.add(new DefaultLdapDn(value));
+                } catch (LDAPException e) {
+                    throw new IllegalArgumentException(e);
+                }
+            }
+        }
+        return dnListCache;
+    }
 
 }
