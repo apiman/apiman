@@ -19,6 +19,7 @@ package io.apiman.gateway.engine.impl;
 import io.apiman.gateway.engine.components.ldap.ILdapAttribute;
 import io.apiman.gateway.engine.components.ldap.ILdapSearchEntry;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.unboundid.ldap.sdk.Attribute;
@@ -44,6 +45,7 @@ public class DefaultLdapSearchEntry implements ILdapSearchEntry {
     @Override
     public List<ILdapAttribute> getAttributes() {
         if (attributes == null) {
+            attributes = new ArrayList<>(elem.getAttributes().size());
             for (Attribute e : elem.getAttributes()) {
                 attributes.add(new DefaultLdapAttribute(e));
             }

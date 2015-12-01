@@ -18,7 +18,9 @@ package io.apiman.gateway.engine.policies;
 import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.beans.PolicyFailureType;
 import io.apiman.gateway.engine.beans.ServiceRequest;
+import io.apiman.gateway.engine.components.ILdapComponent;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
+import io.apiman.gateway.engine.impl.DefaultLdapComponent;
 import io.apiman.gateway.engine.policies.config.BasicAuthenticationConfig;
 import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
@@ -74,8 +76,11 @@ public class BasicAuthLDAPTest extends AbstractLdapTestUnit {
 
     private static JdbmPartition partition;
 
+    //private static ILdapComponent ldapComponent = new DefaultLdapComponent();
+
     @Before
     public void setUp() throws Exception {
+
         if (partition != null) {
             return;
         }
@@ -141,17 +146,18 @@ public class BasicAuthLDAPTest extends AbstractLdapTestUnit {
     public void testApply() throws Exception {
         // Test using a direct bind to the user account
         //////////////////////////////////////////////////
-        String json = "{\r\n" +
-                "    \"realm\" : \"TestRealm\",\r\n" +
-                "    \"forwardIdentityHttpHeader\" : \"X-Authenticated-Identity\",\r\n" +
-                "    \"ldapIdentity\" : {\r\n" +
-                "        \"url\" : \"ldap://" + LDAP_SERVER + ":" + ldapServer.getPort() + "\",\r\n" +
-                "        \"dnPattern\" : \"uid=${username},ou=system\"\r\n" +
-                "    }\r\n" +
-                "}";
-        doTest(json, null, null, PolicyFailureCodes.BASIC_AUTH_REQUIRED);
-        doTest(json, "admin", "invalid_password", PolicyFailureCodes.BASIC_AUTH_FAILED);
-        doTest(json, "admin", "secret", null);
+        String json = "";
+//        String json = "{\r\n" +
+//                "    \"realm\" : \"TestRealm\",\r\n" +
+//                "    \"forwardIdentityHttpHeader\" : \"X-Authenticated-Identity\",\r\n" +
+//                "    \"ldapIdentity\" : {\r\n" +
+//                "        \"url\" : \"ldap://" + LDAP_SERVER + ":" + ldapServer.getPort() + "\",\r\n" +
+//                "        \"dnPattern\" : \"uid=${username},ou=system\"\r\n" +
+//                "    }\r\n" +
+//                "}";
+//        doTest(json, null, null, PolicyFailureCodes.BASIC_AUTH_REQUIRED);
+//        doTest(json, "admin", "invalid_password", PolicyFailureCodes.BASIC_AUTH_FAILED);
+//        doTest(json, "admin", "secret", null);
 
         // Test using a service account with user search
         //////////////////////////////////////////////////
@@ -171,9 +177,16 @@ public class BasicAuthLDAPTest extends AbstractLdapTestUnit {
                 "    }\r\n" +
                 "  }\r\n" +
                 "}";
-        doTest(json, null, null, PolicyFailureCodes.BASIC_AUTH_REQUIRED);
+//        System.out.println("doTest(json, null, null, PolicyFailureCodes.BASIC_AUTH_REQUIRED);");
+//        doTest(json, null, null, PolicyFailureCodes.BASIC_AUTH_REQUIRED);
+
+        System.out.println("doTest(json, \"ewittman\", \"invalid_password\", PolicyFailureCodes.BASIC_AUTH_FAILED);");
         doTest(json, "ewittman", "invalid_password", PolicyFailureCodes.BASIC_AUTH_FAILED);
+
+        System.out.println("doTest(json, \"unknown_user\", \"password\", PolicyFailureCodes.BASIC_AUTH_FAILED)");
         doTest(json, "unknown_user", "password", PolicyFailureCodes.BASIC_AUTH_FAILED);
+
+        System.out.println("doTest(json, \"ewittman\", \"ewittman\", null);");
         doTest(json, "ewittman", "ewittman", null);
 
         // Test using a service account with user search
@@ -251,6 +264,10 @@ public class BasicAuthLDAPTest extends AbstractLdapTestUnit {
                 return failure;
             }
         });
+
+        // The LDAP stuff we're testing!
+        Mockito.when(context.getComponent(ILdapComponent.class)).thenReturn(new DefaultLdapComponent());
+
         IPolicyChain<ServiceRequest> chain = Mockito.mock(IPolicyChain.class);
 
         if (username != null) {
