@@ -53,9 +53,28 @@
         <filter-name>locale</filter-name>
         <filter-class>io.apiman.common.servlet.LocaleFilter</filter-class>
     </filter>
-
     <filter-mapping>
         <filter-name>locale</filter-name>
+        <url-pattern>/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+    </filter-mapping>
+
+    <filter>
+        <filter-name>cors</filter-name>
+        <filter-class>io.apiman.common.servlet.ApimanCorsFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>cors</filter-name>
+        <url-pattern>/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+    </filter-mapping>
+
+    <filter>
+        <filter-name>disablecaching</filter-name>
+        <filter-class>io.apiman.common.servlet.DisableCachingFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>disablecaching</filter-name>
         <url-pattern>/*</url-pattern>
         <dispatcher>REQUEST</dispatcher>
     </filter-mapping>
