@@ -89,6 +89,7 @@ public class LDAPIdentityValidator implements IIdentityValidator<LDAPIdentitySou
             ldapConfigBean.setBindPassword(bindDnPwd);
             ldapConfigBean.setHost(config.getUri().getHost());
             ldapConfigBean.setPort(config.getUri().getPort());
+            ldapConfigBean.setScheme(config.getUri().getScheme());
 
             // Bind as one account, search for other.
             if (config.getBindAs() == LDAPBindAsType.ServiceAccount) {

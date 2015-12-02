@@ -37,6 +37,9 @@ public interface ILdapSearchEntry {
      */
     List<ILdapAttribute> getAttributes();
 
+    /**
+     * @return DN formatted as string
+     */
     String getDn();
 
 }

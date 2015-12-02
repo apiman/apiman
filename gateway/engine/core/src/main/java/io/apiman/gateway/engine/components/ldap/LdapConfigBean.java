@@ -31,6 +31,8 @@ public class LdapConfigBean {
     // Port of LDAP server
     private int port = 389;
 
+    private String scheme = "ldap"; //$NON-NLS-1$
+
     public LdapConfigBean() {}
     /**
      * @return the password
@@ -86,5 +88,17 @@ public class LdapConfigBean {
      */
     public void setPort(int port) {
         this.port = port;
+    }
+    /**
+     * @return the scheme
+     */
+    public String getScheme() {
+        return scheme;
+    }
+    /**
+     * @param scheme the scheme to set
+     */
+    public void setScheme(String scheme) {
+        this.scheme = scheme;
     }
 }

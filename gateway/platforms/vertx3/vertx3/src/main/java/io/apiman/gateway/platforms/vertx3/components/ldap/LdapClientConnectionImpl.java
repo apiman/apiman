@@ -25,10 +25,13 @@ import io.apiman.gateway.engine.components.ldap.ILdapSearchEntry;
 import io.apiman.gateway.engine.components.ldap.LdapConfigBean;
 import io.apiman.gateway.engine.components.ldap.LdapSearchScope;
 import io.apiman.gateway.engine.impl.DefaultLdapSearchEntry;
+import io.apiman.gateway.engine.impl.LDAPConnectionFactory;
 import io.vertx.core.Vertx;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import javax.net.ssl.SSLSocketFactory;
 
 import com.unboundid.ldap.sdk.LDAPConnection;
 import com.unboundid.ldap.sdk.LDAPException;
@@ -44,16 +47,19 @@ public class LdapClientConnectionImpl implements ILdapClientConnection {
     private LdapConfigBean config;
     private LDAPConnection connection;
     private boolean closed;
+    private SSLSocketFactory socketFactory;
 
-    public LdapClientConnectionImpl(Vertx vertx, LdapConfigBean config) {
+    public LdapClientConnectionImpl(Vertx vertx, LdapConfigBean config, SSLSocketFactory socketFactory) {
         this.vertx = vertx;
         this.config = config;
+        this.socketFactory = socketFactory;
     }
 
     public void connect(IAsyncResultHandler<Void> resultHandler) {
         vertx.executeBlocking(future -> {
             try {
-                this.connection = new LDAPConnection(config.getHost(), config.getPort(), config.getBindDn(), config.getBindPassword());
+                this.connection = LDAPConnectionFactory.build(socketFactory, config.getScheme(), config.getHost(),
+                        config.getPort(), config.getBindDn(), config.getBindPassword());
                 future.succeeded();
                 resultHandler.handle(AsyncResultImpl.create((Void) null));
             } catch (LDAPException e) {
