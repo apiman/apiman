@@ -17,6 +17,7 @@
 package io.apiman.gateway.engine.impl;
 
 import io.apiman.gateway.engine.async.AsyncResultImpl;
+import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.components.ldap.ILdapClientConnection;
 import io.apiman.gateway.engine.components.ldap.ILdapSearchEntry;
@@ -40,23 +41,23 @@ public class DefaultLdapClientConnection implements ILdapClientConnection {
             this.config = config;
         }
 
-        public void connect(IAsyncResultHandler<Void> resultHandler) {
+        public void connect(final IAsyncResultHandler<Void> resultHandler) {
             try {
                 this.connection = new LDAPConnection(config.getHost(), config.getPort(), config.getBindDn(), config.getBindPassword());
                 resultHandler.handle(AsyncResultImpl.create((Void) null));
             } catch (LDAPException e) {
-                resultHandler.handle(AsyncResultImpl.create(e));
+                resultHandler.handle(AsyncResultImpl.<Void>create(e));
             }
         }
 
-        private void getResults(String searchDn, String filter, LdapSearchScope scope, IAsyncResultHandler<List<SearchResultEntry>> result) {
+        private void getResults(String searchDn, String filter, LdapSearchScope scope, final IAsyncResultHandler<List<SearchResultEntry>> result) {
             if (connection.isConnected()) {
                 try {
                     SearchScope searchScope = (scope == LdapSearchScope.ONE) ? SearchScope.ONE : SearchScope.SUB;
                     List<SearchResultEntry> searchResults = connection.search(searchDn, searchScope, filter).getSearchEntries();
                     result.handle(AsyncResultImpl.create(searchResults));
                 } catch (Exception e) {
-                    result.handle(AsyncResultImpl.create(e));
+                    result.handle(AsyncResultImpl.<List<SearchResultEntry>>create(e));
                 }
             } else {
                 throw new IllegalStateException("Not connected to LDAP server"); //$NON-NLS-1$
@@ -64,13 +65,17 @@ public class DefaultLdapClientConnection implements ILdapClientConnection {
         }
 
         @Override
-        public void search(String searchDn, String filter, LdapSearchScope scope, IAsyncResultHandler<List<ILdapSearchEntry>> resultHandler) {
-            getResults(searchDn, filter, scope, results -> {
-                if (results.isSuccess()) {
-                    List<ILdapSearchEntry> searchResults = toSearchEntry(results.getResult());
-                    resultHandler.handle(AsyncResultImpl.create(searchResults));
-                } else {
-                    resultHandler.handle(AsyncResultImpl.create(results.getError()));
+        public void search(String searchDn, String filter, LdapSearchScope scope, final IAsyncResultHandler<List<ILdapSearchEntry>> resultHandler) {
+            getResults(searchDn, filter, scope, new IAsyncResultHandler<List<SearchResultEntry>>() {
+
+                @Override
+                public void handle(IAsyncResult<List<SearchResultEntry>> results) {
+                    if (results.isSuccess()) {
+                        List<ILdapSearchEntry> searchResults = toSearchEntry(results.getResult());
+                        resultHandler.handle(AsyncResultImpl.create(searchResults));
+                    } else {
+                        resultHandler.handle(AsyncResultImpl.<List<ILdapSearchEntry>>create(results.getError()));
+                    }
                 }
             });
         }
