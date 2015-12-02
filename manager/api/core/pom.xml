@@ -82,7 +82,7 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Import-Package>!javax.inject,*</Import-Package>
+            <Import-Package>!javax.inject,org.apache.logging.log4j;resolution:=optional,*</Import-Package>
           </instructions>
         </configuration>
       </plugin>
