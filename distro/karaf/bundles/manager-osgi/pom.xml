@@ -50,6 +50,9 @@
                             org.jboss.resteasy.plugins.providers,
                             org.jboss.resteasy.plugins.providers.jackson,
                             org.jboss.resteasy.plugins.server.servlet,
+                            io.apiman.manager.api.rest.contract,
+                            io.apiman.manager.api.rest.impl,
+                            io.apiman.common.servlet,
                             *
                         </Import-Package>
                         <Require-Capability>
