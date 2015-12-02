@@ -15,6 +15,8 @@
  */
 package io.apiman.gateway.engine.impl;
 
+import io.apiman.common.util.crypt.CurrentDataEncrypter;
+import io.apiman.common.util.crypt.IDataEncrypter;
 import io.apiman.gateway.engine.IComponentRegistry;
 import io.apiman.gateway.engine.IConnectorFactory;
 import io.apiman.gateway.engine.IEngine;
@@ -44,7 +46,9 @@ public abstract class AbstractEngineFactory implements IEngineFactory {
     @Override
     public final IEngine createEngine() {
         IPluginRegistry pluginRegistry = createPluginRegistry();
-        IRegistry registry = createRegistry(pluginRegistry);
+        IDataEncrypter encrypter = createDataEncrypter(pluginRegistry);
+        CurrentDataEncrypter.instance = encrypter;
+        IRegistry registry = createRegistry(pluginRegistry, encrypter);
         IComponentRegistry componentRegistry = createComponentRegistry(pluginRegistry);
         IConnectorFactory cfactory = createConnectorFactory(pluginRegistry);
         IPolicyFactory pfactory = createPolicyFactory(pluginRegistry);
@@ -61,31 +65,44 @@ public abstract class AbstractEngineFactory implements IEngineFactory {
     protected abstract IPluginRegistry createPluginRegistry();
 
     /**
+     * Creates a data encrypter.
+     * @param pluginRegistry the plugin registry
+     * @return a new data encrypter
+     */
+    protected abstract IDataEncrypter createDataEncrypter(IPluginRegistry pluginRegistry);
+
+    /**
      * Creates a registry.
+     * @param pluginRegistry the plugin registry
+     * @param encrypter the data encrypter
      * @return a new registry instance
      */
-    protected abstract IRegistry createRegistry(IPluginRegistry pluginRegistry);
+    protected abstract IRegistry createRegistry(IPluginRegistry pluginRegistry, IDataEncrypter encrypter);
 
     /**
      * Creates a component registry.
+     * @param pluginRegistry the plugin registry
      * @return a new registry instance
      */
     protected abstract IComponentRegistry createComponentRegistry(IPluginRegistry pluginRegistry);
 
     /**
      * Creates a connector factory.
+     * @param pluginRegistry the plugin registry
      * @return a new connection factory
      */
     protected abstract IConnectorFactory createConnectorFactory(IPluginRegistry pluginRegistry);
 
     /**
      * Creates a policy factory.
+     * @param pluginRegistry the plugin registry
      * @return a new policy factory
      */
     protected abstract IPolicyFactory createPolicyFactory(IPluginRegistry pluginRegistry);
 
     /**
      * Creates the metrics system.
+     * @param pluginRegistry the plugin registry
      * @return the metrics object
      */
     protected abstract IMetrics createMetrics(IPluginRegistry pluginRegistry);

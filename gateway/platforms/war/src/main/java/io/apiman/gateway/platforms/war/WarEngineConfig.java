@@ -20,6 +20,7 @@ import io.apiman.common.plugin.Plugin;
 import io.apiman.common.plugin.PluginClassLoader;
 import io.apiman.common.plugin.PluginCoordinates;
 import io.apiman.common.util.ReflectionUtils;
+import io.apiman.common.util.crypt.IDataEncrypter;
 import io.apiman.gateway.engine.IComponent;
 import io.apiman.gateway.engine.IConnectorFactory;
 import io.apiman.gateway.engine.IEngineConfig;
@@ -49,6 +50,8 @@ public class WarEngineConfig implements IEngineConfig {
     public static final String APIMAN_GATEWAY_CONNECTOR_FACTORY_CLASS = "apiman-gateway.connector-factory"; //$NON-NLS-1$
     public static final String APIMAN_GATEWAY_POLICY_FACTORY_CLASS = "apiman-gateway.policy-factory"; //$NON-NLS-1$
     public static final String APIMAN_GATEWAY_METRICS_CLASS = "apiman-gateway.metrics"; //$NON-NLS-1$
+
+    public static final String APIMAN_DATA_ENCRYPTER_TYPE = "apiman.encrypter.type"; //$NON-NLS-1$
 
     public static final String APIMAN_GATEWAY_COMPONENT_PREFIX = "apiman-gateway.components."; //$NON-NLS-1$
 
@@ -181,6 +184,22 @@ public class WarEngineConfig implements IEngineConfig {
     @Override
     public <T extends IComponent> Map<String, String> getComponentConfig(Class<T> componentType) {
         return getConfigMap(APIMAN_GATEWAY_COMPONENT_PREFIX + componentType.getSimpleName());
+    }
+
+    /**
+     * @see io.apiman.gateway.engine.IEngineConfig#getDataEncrypterClass(io.apiman.gateway.engine.IPluginRegistry)
+     */
+    @Override
+    public Class<? extends IDataEncrypter> getDataEncrypterClass(IPluginRegistry pluginRegistry) {
+        return loadConfigClass(APIMAN_DATA_ENCRYPTER_TYPE, IDataEncrypter.class, pluginRegistry);
+    }
+
+    /**
+     * @see io.apiman.gateway.engine.IEngineConfig#getDataEncrypterConfig()
+     */
+    @Override
+    public Map<String, String> getDataEncrypterConfig() {
+        return getConfigMap(APIMAN_DATA_ENCRYPTER_TYPE);
     }
 
     /**

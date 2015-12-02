@@ -16,6 +16,7 @@
 package io.apiman.manager.api.gateway.rest;
 
 import io.apiman.common.util.AesEncrypter;
+import io.apiman.common.util.crypt.CurrentDataEncrypter;
 import io.apiman.gateway.engine.beans.Application;
 import io.apiman.gateway.engine.beans.Service;
 import io.apiman.gateway.engine.beans.ServiceEndpoint;
@@ -85,7 +86,7 @@ public class RestGatewayLink implements IGatewayLink {
         try {
             this.gateway = gateway;
             String cfg = gateway.getConfiguration();
-            cfg = AesEncrypter.decrypt(cfg);
+            cfg = CurrentDataEncrypter.instance.decrypt(cfg);
             setConfig((RestGatewayConfigBean) mapper.reader(RestGatewayConfigBean.class).readValue(cfg));
             getConfig().setPassword(AesEncrypter.decrypt(getConfig().getPassword()));
             httpClient = HttpClientBuilder.create()

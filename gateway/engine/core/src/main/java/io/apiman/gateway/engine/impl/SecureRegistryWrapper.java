@@ -15,7 +15,7 @@
  */
 package io.apiman.gateway.engine.impl;
 
-import io.apiman.common.util.AesEncrypter;
+import io.apiman.common.util.crypt.IDataEncrypter;
 import io.apiman.gateway.engine.IRegistry;
 import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
@@ -27,6 +27,8 @@ import io.apiman.gateway.engine.beans.ServiceContract;
 import io.apiman.gateway.engine.beans.ServiceRequest;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 /**
@@ -38,13 +40,16 @@ import java.util.Set;
 public class SecureRegistryWrapper implements IRegistry {
 
     private final IRegistry delegate;
+    private final IDataEncrypter encrypter;
 
     /**
      * Constructor.
      * @param delegate the delegated Registry
+     * @param encrypter the data encrypter to use
      */
-    public SecureRegistryWrapper(IRegistry delegate) {
+    public SecureRegistryWrapper(IRegistry delegate, IDataEncrypter encrypter) {
         this.delegate = delegate;
+        this.encrypter = encrypter;
     }
 
     /**
@@ -54,6 +59,7 @@ public class SecureRegistryWrapper implements IRegistry {
     public void publishService(Service service, IAsyncResultHandler<Void> handler) {
         List<Policy> policies = service.getServicePolicies();
         encryptPolicies(policies);
+        encryptEndpointProperties(service.getEndpointProperties());
         delegate.publishService(service, handler);
     }
 
@@ -102,6 +108,7 @@ public class SecureRegistryWrapper implements IRegistry {
                     if (service != null) {
                         List<Policy> policies = service.getServicePolicies();
                         decryptPolicies(policies);
+                        decryptEndpointProperties(service.getEndpointProperties());
                     }
                 }
                 handler.handle(result);
@@ -134,8 +141,17 @@ public class SecureRegistryWrapper implements IRegistry {
         if (policies != null) {
             for (Policy policy : policies) {
                 String jsonConfig = policy.getPolicyJsonConfig();
-                policy.setPolicyJsonConfig(AesEncrypter.encrypt(jsonConfig));
+                policy.setPolicyJsonConfig(encrypter.encrypt(jsonConfig));
             }
+        }
+    }
+
+    /**
+     * @param endpointProperties
+     */
+    protected void encryptEndpointProperties(Map<String, String> endpointProperties) {
+        for (Entry<String, String> entry : endpointProperties.entrySet()) {
+            entry.setValue(encrypter.encrypt(entry.getValue()));
         }
     }
 
@@ -146,8 +162,17 @@ public class SecureRegistryWrapper implements IRegistry {
         if (policies != null) {
             for (Policy policy : policies) {
                 String encryptedConfig = policy.getPolicyJsonConfig();
-                policy.setPolicyJsonConfig(AesEncrypter.decrypt(encryptedConfig));
+                policy.setPolicyJsonConfig(encrypter.decrypt(encryptedConfig));
             }
+        }
+    }
+
+    /**
+     * @param endpointProperties
+     */
+    protected void decryptEndpointProperties(Map<String, String> endpointProperties) {
+        for (Entry<String, String> entry : endpointProperties.entrySet()) {
+            entry.setValue(encrypter.decrypt(entry.getValue()));
         }
     }
 

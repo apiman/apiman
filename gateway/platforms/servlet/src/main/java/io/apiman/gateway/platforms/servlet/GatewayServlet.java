@@ -363,11 +363,11 @@ public abstract class GatewayServlet extends HttpServlet {
         } else if (policyFailure.getType() == PolicyFailureType.NotFound) {
             errorCode = 404;
         }
-        
+
         if (policyFailure.getResponseCode() >= 300) {
             errorCode = policyFailure.getResponseCode();
         }
-        
+
         resp.setStatus(errorCode);
 
         if ("xml".equals(rtype)) { //$NON-NLS-1$
@@ -401,7 +401,7 @@ public abstract class GatewayServlet extends HttpServlet {
         if (request.getService() != null && "xml".equals(request.getService().getEndpointContentType())) { //$NON-NLS-1$
             isXml = true;
         }
-        
+
         resp.setHeader("X-Gateway-Error", error.getMessage()); //$NON-NLS-1$
         resp.setStatus(500);
 
@@ -416,17 +416,19 @@ public abstract class GatewayServlet extends HttpServlet {
             try {
                 Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
                 jaxbMarshaller.marshal(response, resp.getOutputStream());
-                IOUtils.closeQuietly(resp.getOutputStream());
             } catch (Exception e) {
-                writeError(request, resp, e);
+                e.printStackTrace();
+            } finally {
+                try { IOUtils.closeQuietly(resp.getOutputStream()); } catch (IOException e) {}
             }
         } else {
             resp.setContentType("application/json"); //$NON-NLS-1$
             try {
                 mapper.writer().writeValue(resp.getOutputStream(), response);
-                IOUtils.closeQuietly(resp.getOutputStream());
             } catch (Exception e) {
-                writeError(request, resp, e);
+                e.printStackTrace();
+            } finally {
+                try { IOUtils.closeQuietly(resp.getOutputStream()); } catch (IOException e) {}
             }
         }
     }

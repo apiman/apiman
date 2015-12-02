@@ -16,7 +16,7 @@
 
 package io.apiman.manager.api.rest.impl;
 
-import io.apiman.common.util.AesEncrypter;
+import io.apiman.common.util.crypt.IDataEncrypter;
 import io.apiman.gateway.engine.beans.ServiceEndpoint;
 import io.apiman.manager.api.beans.BeanUtils;
 import io.apiman.manager.api.beans.apps.ApplicationBean;
@@ -208,6 +208,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     @Inject IApplicationValidator applicationValidator;
     @Inject IServiceValidator serviceValidator;
     @Inject IApiKeyGenerator apiKeyGenerator;
+    @Inject IDataEncrypter encrypter;
 
     @Inject IDownloadManager downloadManager;
 
@@ -3162,7 +3163,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         Map<String, String> endpointProperties = svb.getEndpointProperties();
         if (endpointProperties != null) {
             for (Entry<String, String> entry : endpointProperties.entrySet()) {
-                entry.setValue(AesEncrypter.decrypt(entry.getValue()));
+                entry.setValue(encrypter.decrypt(entry.getValue()));
             }
         }
     }
@@ -3174,7 +3175,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         Map<String, String> endpointProperties = svb.getEndpointProperties();
         if (endpointProperties != null) {
             for (Entry<String, String> entry : endpointProperties.entrySet()) {
-                entry.setValue(AesEncrypter.encrypt(entry.getValue()));
+                entry.setValue(encrypter.encrypt(entry.getValue()));
             }
         }
     }

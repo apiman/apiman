@@ -16,6 +16,7 @@
 package io.apiman.gateway.platforms.vertx3.common.config;
 
 import io.apiman.common.util.SimpleStringUtils;
+import io.apiman.common.util.crypt.IDataEncrypter;
 import io.apiman.gateway.engine.IComponent;
 import io.apiman.gateway.engine.IConnectorFactory;
 import io.apiman.gateway.engine.IEngineConfig;
@@ -58,6 +59,7 @@ public class VertxEngineConfig implements IEngineConfig {
     private static final String API_REALM = "realm";
 
     private static final String GATEWAY_REGISTRY_PREFIX = "registry";
+    private static final String GATEWAY_ENCRYPTER_PREFIX = "encrypter";
     private static final String GATEWAY_PLUGIN_REGISTRY_PREFIX = "plugin-registry";
     private static final String GATEWAY_CONNECTOR_FACTORY_PREFIX = "connector-factory";
     private static final String GATEWAY_POLICY_FACTORY_PREFIX = "policy-factory";
@@ -90,8 +92,18 @@ public class VertxEngineConfig implements IEngineConfig {
     }
 
     @Override
+    public Class<? extends IDataEncrypter> getDataEncrypterClass(IPluginRegistry pluginRegistry) {
+        return loadConfigClass(getClassname(config, GATEWAY_ENCRYPTER_PREFIX), IDataEncrypter.class);
+    }
+
+    @Override
     public Map<String, String> getRegistryConfig() {
         return toFlatStringMap(getConfig(config, GATEWAY_REGISTRY_PREFIX));
+    }
+
+    @Override
+    public Map<String, String> getDataEncrypterConfig() {
+        return toFlatStringMap(getConfig(config, GATEWAY_ENCRYPTER_PREFIX));
     }
 
     @Override

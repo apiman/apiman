@@ -16,6 +16,8 @@
 package io.apiman.manager.test.server;
 
 import io.apiman.common.config.SystemPropertiesConfiguration;
+import io.apiman.common.util.crypt.CurrentDataEncrypter;
+import io.apiman.common.util.crypt.IDataEncrypter;
 import io.apiman.manager.api.beans.idm.UserBean;
 import io.apiman.manager.api.beans.services.EndpointType;
 import io.apiman.manager.api.beans.summary.AvailableServiceBean;
@@ -27,6 +29,7 @@ import io.apiman.manager.api.core.IServiceCatalog;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.UuidApiKeyGenerator;
+import io.apiman.manager.api.core.crypt.DefaultDataEncrypter;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.core.logging.ApimanLogger;
 import io.apiman.manager.api.core.logging.IApimanLogger;
@@ -139,6 +142,12 @@ public class TestCdiFactory {
     @Produces @ApplicationScoped
     public static IApiKeyGenerator provideApiKeyGenerator(@New UuidApiKeyGenerator uuidApiKeyGen) {
         return uuidApiKeyGen;
+    }
+
+    @Produces @ApplicationScoped
+    public static IDataEncrypter provideDataEncrypter(@New DefaultDataEncrypter defaultEncrypter) {
+        CurrentDataEncrypter.instance = defaultEncrypter;
+        return defaultEncrypter;
     }
 
     @Produces @ApplicationScoped

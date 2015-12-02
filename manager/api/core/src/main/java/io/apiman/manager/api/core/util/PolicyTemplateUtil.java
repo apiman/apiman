@@ -15,7 +15,7 @@
  */
 package io.apiman.manager.api.core.util;
 
-import io.apiman.common.util.AesEncrypter;
+import io.apiman.common.util.crypt.CurrentDataEncrypter;
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
 import io.apiman.manager.api.beans.policies.PolicyDefinitionTemplateBean;
@@ -73,13 +73,17 @@ public class PolicyTemplateUtil {
         }
         try {
             // TODO hack to fix broken descriptions - this util should probably not know about encrypted data
-            String jsonConfig = AesEncrypter.decrypt(policy.getConfiguration());
+            String jsonConfig = policy.getConfiguration();
+            if (CurrentDataEncrypter.instance != null) {
+                jsonConfig = CurrentDataEncrypter.instance.decrypt(jsonConfig);
+            }
             Map<String, Object> configMap = mapper.readValue(jsonConfig, Map.class);
             configMap = new PolicyConfigMap(configMap);
             String desc = (String) TemplateRuntime.execute(template, configMap);
             policy.setDescription(desc);
         } catch (Exception e) {
-            // TODO log the error
+            e.printStackTrace();
+            // TODO properly log the error
             policy.setDescription(templateBean.getTemplate());
         }
     }

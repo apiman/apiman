@@ -15,6 +15,7 @@
  */
 package io.apiman.gateway.engine;
 
+import io.apiman.common.util.crypt.IDataEncrypter;
 import io.apiman.gateway.engine.policy.IPolicyFactory;
 
 import java.util.Map;
@@ -35,6 +36,16 @@ public interface IEngineConfig {
      * @return all properties to be passed to the registry
      */
     public Map<String, String> getRegistryConfig();
+
+    /**
+     * @return the class to use as the {@link IDataEncrypter}
+     */
+    public Class<? extends IDataEncrypter> getDataEncrypterClass(IPluginRegistry pluginRegistry);
+
+    /**
+     * @return all properties to be passed to the registry
+     */
+    public Map<String, String> getDataEncrypterConfig();
 
     /**
      * @return the class to use as the {@link IPluginRegistry}

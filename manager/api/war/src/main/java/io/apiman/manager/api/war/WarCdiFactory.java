@@ -19,6 +19,8 @@ import io.apiman.common.plugin.Plugin;
 import io.apiman.common.plugin.PluginClassLoader;
 import io.apiman.common.plugin.PluginCoordinates;
 import io.apiman.common.util.ReflectionUtils;
+import io.apiman.common.util.crypt.CurrentDataEncrypter;
+import io.apiman.common.util.crypt.IDataEncrypter;
 import io.apiman.manager.api.beans.idm.UserBean;
 import io.apiman.manager.api.core.IApiKeyGenerator;
 import io.apiman.manager.api.core.IMetricsAccessor;
@@ -28,6 +30,7 @@ import io.apiman.manager.api.core.IServiceCatalog;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.UuidApiKeyGenerator;
+import io.apiman.manager.api.core.crypt.DefaultDataEncrypter;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.core.i18n.Messages;
 import io.apiman.manager.api.core.logging.ApimanLogger;
@@ -65,7 +68,7 @@ import org.apache.commons.lang.StringUtils;
  */
 @ApplicationScoped
 public class WarCdiFactory {
-    
+
     private static JestClient sStorageESClient;
     private static JestClient sMetricsESClient;
     private static EsStorage sESStorage;
@@ -189,6 +192,19 @@ public class WarCdiFactory {
     }
 
     @Produces @ApplicationScoped
+    public static IDataEncrypter provideDataEncrypter(@New DefaultDataEncrypter defaultEncrypter,
+            WarApiManagerConfig config, IPluginRegistry pluginRegistry) {
+        try {
+            IDataEncrypter encrypter = createCustomComponent(IDataEncrypter.class, config.getDataEncrypterType(),
+                    config.getDataEncrypterProperties(), pluginRegistry, defaultEncrypter);
+            CurrentDataEncrypter.instance = encrypter;
+            return encrypter;
+        } catch (Throwable t) {
+            throw new RuntimeException("Error or unknown data encrypter type: " + config.getDataEncrypterType(), t); //$NON-NLS-1$
+        }
+    }
+
+    @Produces @ApplicationScoped
     public static IServiceCatalog provideServiceCatalog(WarApiManagerConfig config, IPluginRegistry pluginRegistry) {
         try {
             return createCustomComponent(IServiceCatalog.class, config.getServiceCatalogType(),
@@ -289,11 +305,27 @@ public class WarCdiFactory {
      * @param componentSpec
      * @param configProperties
      * @param pluginRegistry
+     * @throws Exception
      */
     private static <T> T createCustomComponent(Class<T> componentType, String componentSpec,
             Map<String, String> configProperties, IPluginRegistry pluginRegistry) throws Exception {
-        if (componentSpec == null) {
+        return createCustomComponent(componentType, componentSpec, configProperties, pluginRegistry, null);
+    }
+
+    /**
+     * Creates a custom component from information found in the properties file.
+     * @param componentType
+     * @param componentSpec
+     * @param configProperties
+     * @param pluginRegistry
+     */
+    private static <T> T createCustomComponent(Class<T> componentType, String componentSpec,
+            Map<String, String> configProperties, IPluginRegistry pluginRegistry, T defaultComponent) throws Exception {
+        if (componentSpec == null && defaultComponent == null) {
             throw new IllegalArgumentException("Null component type."); //$NON-NLS-1$
+        }
+        if (componentSpec == null && defaultComponent != null) {
+            return defaultComponent;
         }
 
         if (componentSpec.startsWith("class:")) { //$NON-NLS-1$

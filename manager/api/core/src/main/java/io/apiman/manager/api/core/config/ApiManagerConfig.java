@@ -38,7 +38,9 @@ public abstract class ApiManagerConfig {
     public static final String APIMAN_MANAGER_CONFIG_LOGGER = "apiman-manager.config.logger"; //$NON-NLS-1$
 
     public static final String APIMAN_API_KEY_GENERATOR_TYPE = "apiman-manager.api-keys.generator.type"; //$NON-NLS-1$
-    
+
+    public static final String APIMAN_DATA_ENCRYPTER_TYPE = "apiman.encrypter.type"; //$NON-NLS-1$
+
     public static final String APIMAN_MANAGER_NEW_USER_BOOTSTRAPPER_TYPE = "apiman-manager.user-bootstrapper.type"; //$NON-NLS-1$
 
     /* -------------------------------------------------------
@@ -212,7 +214,7 @@ public abstract class ApiManagerConfig {
     public String getStorageESPassword() {
         return config.getString(APIMAN_MANAGER_STORAGE_ES_PASSWORD, null);
     }
-    
+
     public int getStorageESTimeout() {
         return config.getInt(APIMAN_MANAGER_STORAGE_ES_TIMEOUT, DEFAULT_JEST_TIMEOUT);
     }
@@ -279,7 +281,7 @@ public abstract class ApiManagerConfig {
     public String getMetricsESPassword() {
         return config.getString(APIMAN_MANAGER_METRICS_ES_PASSWORD, null);
     }
-    
+
     public int getMetricsESTimeout() {
         return config.getInt(APIMAN_MANAGER_METRICS_ES_TIMEOUT, DEFAULT_JEST_TIMEOUT);
     }
@@ -324,6 +326,20 @@ public abstract class ApiManagerConfig {
      */
     public Map<String, String> getServiceCatalogProperties() {
         return getPrefixedProperties("apiman-manager.service-catalog."); //$NON-NLS-1$
+    }
+
+    /**
+     * @return the configured data encrypter
+     */
+    public String getDataEncrypterType() {
+        return config.getString(APIMAN_DATA_ENCRYPTER_TYPE, "uuid"); //$NON-NLS-1$
+    }
+
+    /**
+     * @return any custom properties associated with the data encrypter
+     */
+    public Map<String, String> getDataEncrypterProperties() {
+        return getPrefixedProperties("apiman.encrypter.type."); //$NON-NLS-1$
     }
 
     /**

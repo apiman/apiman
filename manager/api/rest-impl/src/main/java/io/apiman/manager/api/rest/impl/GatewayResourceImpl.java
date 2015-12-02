@@ -16,7 +16,7 @@
 
 package io.apiman.manager.api.rest.impl;
 
-import io.apiman.common.util.AesEncrypter;
+import io.apiman.common.util.crypt.IDataEncrypter;
 import io.apiman.gateway.engine.beans.SystemStatus;
 import io.apiman.manager.api.beans.BeanUtils;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
@@ -65,6 +65,7 @@ public class GatewayResourceImpl implements IGatewayResource {
     @Inject ISecurityContext securityContext;
     @Inject IGatewayLinkFactory gatewayLinkFactory;
     @Inject @ApimanLogger(GatewayResourceImpl.class) IApimanLogger log;
+    @Inject IDataEncrypter encrypter;
 
     private static final ObjectMapper mapper = new ObjectMapper();
 
@@ -262,7 +263,7 @@ public class GatewayResourceImpl implements IGatewayResource {
         try {
             if (bean.getType() == GatewayType.REST) {
                 RestGatewayConfigBean configBean = mapper.readValue(bean.getConfiguration(), RestGatewayConfigBean.class);
-                configBean.setPassword(AesEncrypter.encrypt(configBean.getPassword()));
+                configBean.setPassword(encrypter.encrypt(configBean.getPassword()));
                 bean.setConfiguration(mapper.writeValueAsString(configBean));
             }
         } catch (Exception e) {
@@ -280,7 +281,7 @@ public class GatewayResourceImpl implements IGatewayResource {
         try {
             if (bean.getType() == GatewayType.REST) {
                 RestGatewayConfigBean configBean = mapper.readValue(bean.getConfiguration(), RestGatewayConfigBean.class);
-                configBean.setPassword(AesEncrypter.decrypt(configBean.getPassword()));
+                configBean.setPassword(encrypter.decrypt(configBean.getPassword()));
                 bean.setConfiguration(mapper.writeValueAsString(configBean));
             }
         } catch (Exception e) {

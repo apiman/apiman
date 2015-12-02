@@ -15,7 +15,7 @@
  */
 package io.apiman.manager.api.beans.policies;
 
-import io.apiman.common.util.AesEncrypter;
+import io.apiman.common.util.crypt.CurrentDataEncrypter;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -96,13 +96,13 @@ public class PolicyBean implements Serializable {
     @PrePersist @PreUpdate
     protected void encryptData() {
         // Encrypt the endpoint properties.
-        configuration = AesEncrypter.encrypt(configuration);
+        configuration = CurrentDataEncrypter.instance.encrypt(configuration);
     }
 
     @PostPersist @PostUpdate @PostLoad
     protected void decryptData() {
         // Decrypt the endpoint properties.
-        configuration = AesEncrypter.decrypt(configuration);
+        configuration = CurrentDataEncrypter.instance.decrypt(configuration);
     }
 
     /**

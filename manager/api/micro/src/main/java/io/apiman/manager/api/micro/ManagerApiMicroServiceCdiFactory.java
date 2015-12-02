@@ -19,6 +19,8 @@ import io.apiman.common.plugin.Plugin;
 import io.apiman.common.plugin.PluginClassLoader;
 import io.apiman.common.plugin.PluginCoordinates;
 import io.apiman.common.util.ReflectionUtils;
+import io.apiman.common.util.crypt.CurrentDataEncrypter;
+import io.apiman.common.util.crypt.IDataEncrypter;
 import io.apiman.manager.api.beans.idm.UserBean;
 import io.apiman.manager.api.core.IApiKeyGenerator;
 import io.apiman.manager.api.core.IMetricsAccessor;
@@ -28,6 +30,7 @@ import io.apiman.manager.api.core.IServiceCatalog;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.UuidApiKeyGenerator;
+import io.apiman.manager.api.core.crypt.DefaultDataEncrypter;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.core.logging.ApimanLogger;
 import io.apiman.manager.api.core.logging.IApimanLogger;
@@ -153,8 +156,36 @@ public class ManagerApiMicroServiceCdiFactory {
     }
 
     @Produces @ApplicationScoped
-    public static IApiKeyGenerator provideApiKeyGenerator(@New UuidApiKeyGenerator uuidApiKeyGen) {
-        return uuidApiKeyGen;
+    public static IApiKeyGenerator provideApiKeyGenerator(ManagerApiMicroServiceConfig config,
+            IPluginRegistry pluginRegistry, @New UuidApiKeyGenerator uuidApiKeyGen) {
+        IApiKeyGenerator apiKeyGenerator;
+        String type = config.getApiKeyGeneratorType();
+        if ("uuid".equals(type)) { //$NON-NLS-1$
+            apiKeyGenerator = uuidApiKeyGen;
+        } else {
+            try {
+                apiKeyGenerator = createCustomComponent(IApiKeyGenerator.class, type,
+                        config.getApiKeyGeneratorProperties(), pluginRegistry);
+            } catch (Exception e) {
+                System.err.println("Unknown apiman API key generator type: " + type); //$NON-NLS-1$
+                System.err.println("Automatically falling back to UUID style API Keys."); //$NON-NLS-1$
+                apiKeyGenerator = uuidApiKeyGen;
+            }
+        }
+        return apiKeyGenerator;
+    }
+
+    @Produces @ApplicationScoped
+    public static IDataEncrypter provideDataEncrypter(ManagerApiMicroServiceConfig config,
+            IPluginRegistry pluginRegistry, @New DefaultDataEncrypter defaultEncrypter) {
+        try {
+            IDataEncrypter encrypter = createCustomComponent(IDataEncrypter.class, config.getDataEncrypterType(),
+                    config.getDataEncrypterProperties(), pluginRegistry, defaultEncrypter);
+            CurrentDataEncrypter.instance = encrypter;
+            return encrypter;
+        } catch (Throwable t) {
+            throw new RuntimeException("Error or unknown data encrypter type: " + config.getDataEncrypterType(), t); //$NON-NLS-1$
+        }
     }
 
     @Produces @ApplicationScoped
@@ -258,11 +289,29 @@ public class ManagerApiMicroServiceCdiFactory {
      * @param componentSpec
      * @param configProperties
      * @param pluginRegistry
+     * @throws Exception
      */
     private static <T> T createCustomComponent(Class<T> componentType, String componentSpec,
             Map<String, String> configProperties, IPluginRegistry pluginRegistry) throws Exception {
-        if (componentSpec == null) {
+        return createCustomComponent(componentType, componentSpec, configProperties, pluginRegistry, null);
+    }
+
+    /**
+     * Creates a custom component from information found in the properties file.
+     * @param componentType
+     * @param componentSpec
+     * @param configProperties
+     * @param pluginRegistry
+     * @param defaultComponent
+     * @throws Exception
+     */
+    private static <T> T createCustomComponent(Class<T> componentType, String componentSpec,
+            Map<String, String> configProperties, IPluginRegistry pluginRegistry, T defaultComponent) throws Exception {
+        if (componentSpec == null && defaultComponent == null) {
             throw new IllegalArgumentException("Null component type."); //$NON-NLS-1$
+        }
+        if (componentSpec == null && defaultComponent != null) {
+            return defaultComponent;
         }
 
         if (componentSpec.startsWith("class:")) { //$NON-NLS-1$

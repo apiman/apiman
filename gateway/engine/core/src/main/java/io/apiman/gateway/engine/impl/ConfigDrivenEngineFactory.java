@@ -15,6 +15,7 @@
  */
 package io.apiman.gateway.engine.impl;
 
+import io.apiman.common.util.crypt.IDataEncrypter;
 import io.apiman.gateway.engine.IComponentRegistry;
 import io.apiman.gateway.engine.IConnectorFactory;
 import io.apiman.gateway.engine.IEngineConfig;
@@ -55,14 +56,34 @@ public class ConfigDrivenEngineFactory extends AbstractEngineFactory {
     }
 
     /**
-     * @see io.apiman.gateway.engine.impl.AbstractEngineFactory#createRegistry(io.apiman.gateway.engine.IPluginRegistry)
+     * @see io.apiman.gateway.engine.impl.AbstractEngineFactory#createDataEncrypter(io.apiman.gateway.engine.IPluginRegistry)
      */
     @Override
-    protected IRegistry createRegistry(IPluginRegistry pluginRegistry) {
+    protected IDataEncrypter createDataEncrypter(IPluginRegistry pluginRegistry) {
+        try {
+            Class<? extends IDataEncrypter> c = engineConfig.getDataEncrypterClass(pluginRegistry);
+            Map<String, String> config = engineConfig.getDataEncrypterConfig();
+            IDataEncrypter encrypter = create(c, config);
+            return encrypter;
+        } catch (RuntimeException e) {
+            if (e.getMessage().equals("No IDataEncrypter class configured.")) { //$NON-NLS-1$
+                System.out.println("NOTE: No explicit Data Encrypter found.  Falling back to the Default. [" + e.getMessage() + "]"); //$NON-NLS-1$ //$NON-NLS-2$
+                return new DefaultDataEncrypter();
+            } else {
+                throw e;
+            }
+        }
+    }
+
+    /**
+     * @see io.apiman.gateway.engine.impl.AbstractEngineFactory#createRegistry(io.apiman.gateway.engine.IPluginRegistry, io.apiman.common.util.crypt.IDataEncrypter)
+     */
+    @Override
+    protected IRegistry createRegistry(IPluginRegistry pluginRegistry, IDataEncrypter encrypter) {
         Class<? extends IRegistry> c = engineConfig.getRegistryClass(pluginRegistry);
         Map<String, String> config = engineConfig.getRegistryConfig();
         IRegistry registry = create(c, config);
-        return new SecureRegistryWrapper(registry);
+        return new SecureRegistryWrapper(registry, encrypter);
     }
 
     /**

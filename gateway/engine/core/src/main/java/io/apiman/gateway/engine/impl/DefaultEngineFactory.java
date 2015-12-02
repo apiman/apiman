@@ -15,6 +15,7 @@
  */
 package io.apiman.gateway.engine.impl;
 
+import io.apiman.common.util.crypt.IDataEncrypter;
 import io.apiman.gateway.engine.IComponentRegistry;
 import io.apiman.gateway.engine.IMetrics;
 import io.apiman.gateway.engine.IPluginRegistry;
@@ -39,11 +40,11 @@ public abstract class DefaultEngineFactory extends AbstractEngineFactory {
     }
 
     /**
-     * @see io.apiman.gateway.engine.impl.AbstractEngineFactory#createRegistry(io.apiman.gateway.engine.IPluginRegistry)
+     * @see io.apiman.gateway.engine.impl.AbstractEngineFactory#createRegistry(io.apiman.gateway.engine.IPluginRegistry, io.apiman.common.util.crypt.IDataEncrypter)
      */
     @Override
-    protected IRegistry createRegistry(IPluginRegistry pluginRegistry) {
-        return new SecureRegistryWrapper(createRegistryInternal(pluginRegistry));
+    protected IRegistry createRegistry(IPluginRegistry pluginRegistry, IDataEncrypter encrypter) {
+        return new SecureRegistryWrapper(createRegistryInternal(pluginRegistry), encrypter);
     }
 
     /**
@@ -52,6 +53,14 @@ public abstract class DefaultEngineFactory extends AbstractEngineFactory {
      */
     protected IRegistry createRegistryInternal(IPluginRegistry pluginRegistry) {
         return new InMemoryRegistry();
+    }
+
+    /**
+     * @see io.apiman.gateway.engine.impl.AbstractEngineFactory#createDataEncrypter(io.apiman.gateway.engine.IPluginRegistry)
+     */
+    @Override
+    protected IDataEncrypter createDataEncrypter(IPluginRegistry pluginRegistry) {
+        return new DefaultDataEncrypter();
     }
 
     /**
