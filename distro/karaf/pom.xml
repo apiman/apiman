@@ -2,22 +2,14 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>io.apiman</groupId>
-    <artifactId>apiman</artifactId>
+    <artifactId>apiman-distro</artifactId>
     <version>1.2.0-SNAPSHOT</version>
-    <relativePath>../pom.xml</relativePath>
   </parent>
-  <artifactId>apiman-distro</artifactId>
+  <artifactId>apiman-distro-karaf</artifactId>
+  <name>apiman-distro-karaf</name>
   <packaging>pom</packaging>
-  <name>apiman-distro</name>
-
   <modules>
-    <module>data</module>
-    <module>db</module>
-    <module>ddl</module>
-    <module>db-es</module>
-    <module>eap64</module>
-    <module>es</module>
-    <module>wildfly8</module>
-    <module>karaf</module>
+    <module>features</module>
+    <module>bundles</module>
   </modules>
 </project>
