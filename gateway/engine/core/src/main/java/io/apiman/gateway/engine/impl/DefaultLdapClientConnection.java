@@ -27,6 +27,8 @@ import io.apiman.gateway.engine.components.ldap.LdapSearchScope;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.net.ssl.SSLSocketFactory;
+
 import com.unboundid.ldap.sdk.LDAPConnection;
 import com.unboundid.ldap.sdk.LDAPException;
 import com.unboundid.ldap.sdk.SearchResultEntry;
@@ -36,14 +38,17 @@ public class DefaultLdapClientConnection implements ILdapClientConnection {
         private LdapConfigBean config;
         private LDAPConnection connection;
         private boolean closed;
+        private SSLSocketFactory socketFactory;
 
-        public DefaultLdapClientConnection(LdapConfigBean config) {
+        public DefaultLdapClientConnection(LdapConfigBean config, SSLSocketFactory socketFactory) {
             this.config = config;
+            this.socketFactory = socketFactory;
         }
 
         public void connect(final IAsyncResultHandler<Void> resultHandler) {
             try {
-                this.connection = new LDAPConnection(config.getHost(), config.getPort(), config.getBindDn(), config.getBindPassword());
+                this.connection = LDAPConnectionFactory.build(socketFactory, config.getScheme(), config.getHost(),
+                        config.getPort(), config.getBindDn(), config.getBindPassword());
                 resultHandler.handle(AsyncResultImpl.create((Void) null));
             } catch (LDAPException e) {
                 resultHandler.handle(AsyncResultImpl.<Void>create(e));
