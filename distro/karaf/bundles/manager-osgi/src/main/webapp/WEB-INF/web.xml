@@ -15,7 +15,10 @@
     </context-param>
     <context-param>
         <param-name>resteasy.resources</param-name>
-        <param-value>io.apiman.manager.MessageRestService</param-value>
+        <param-value>
+            io.apiman.manager.MessageRestService,
+            io.apiman.manager.api.rest.impl.SystemResourceImpl
+        </param-value>
     </context-param>
     <context-param>
         <param-name>resteasy.servlet.mapping.prefix</param-name>
