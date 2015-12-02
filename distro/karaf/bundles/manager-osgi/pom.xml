@@ -41,7 +41,7 @@
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Bundle-Name>${project.name}</Bundle-Name>
                         <_wab>src/main/webapp/</_wab>
-                        <Web-ContextPath>/manager</Web-ContextPath>
+                        <Web-ContextPath>/apiman</Web-ContextPath>
                         <Import-Package>
                             javax.enterprise.inject.spi,
                             org.jboss.resteasy.cdi.osgi,
@@ -50,6 +50,9 @@
                             org.jboss.resteasy.plugins.providers,
                             org.jboss.resteasy.plugins.providers.jackson,
                             org.jboss.resteasy.plugins.server.servlet,
+                            io.apiman.manager.api.rest.contract,
+                            io.apiman.manager.api.rest.impl,
+                            io.apiman.common.servlet,
                             *
                         </Import-Package>
                         <Require-Capability>
