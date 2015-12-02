@@ -35,14 +35,14 @@ web:list
 [ 259] [Active     ] [Deployed   ]  [   80] [/rhaccess-web           ] Tooling for support (1.2.0.redhat-621071)
 [ 260] [Active     ] [Deployed   ]  [   80] [/rhaccess-plugin        ] hawtio :: project (1.4.0.redhat-621071)
 [ 262] [Active     ] [Deployed   ]  [   80] [/redhat-branding        ] hawtio :: Red Hat Fuse Branding (1.4.0.redhat-621071)
-[ 334] [Active     ] [Deployed   ]  [   80] [/manager                ] manager-osgi (1.2.0.SNAPSHOT)
+[ 334] [Active     ] [Deployed   ]  [   80] [/apiman                ] manager-osgi (1.2.0.SNAPSHOT)
 
 ```
 
 - Test it using curl or [httpie](httpie.org) tool
 
 ```
-http get http://localhost:8181/manager/rest/message/user
+http get http://localhost:8181/apiman/rest/message/user
 HTTP/1.1 200 OK
 Content-Length: 25
 Content-Type: application/json
@@ -54,7 +54,7 @@ Restful example : user
 - Test Apiman System Satus
 
 ```
-http -v GET http://localhost:8181/manager/rest/system/status
+http -v GET http://localhost:8181/apiman/rest/system/status
 GET /manager/rest/system/status HTTP/1.1
 Accept: */*
 Accept-Encoding: gzip, deflate
