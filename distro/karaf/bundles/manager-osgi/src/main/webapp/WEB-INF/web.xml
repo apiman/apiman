@@ -49,6 +49,17 @@
         <listener-class>org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap</listener-class>
     </listener>
 
+    <filter>
+        <filter-name>locale</filter-name>
+        <filter-class>io.apiman.common.servlet.LocaleFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>locale</filter-name>
+        <url-pattern>/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+    </filter-mapping>
+
     <servlet>
         <servlet-name>resteasy</servlet-name>
         <servlet-class>org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher</servlet-class>
