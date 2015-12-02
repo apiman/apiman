@@ -41,7 +41,7 @@
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Bundle-Name>${project.name}</Bundle-Name>
                         <_wab>src/main/webapp/</_wab>
-                        <Web-ContextPath>/manager</Web-ContextPath>
+                        <Web-ContextPath>/apiman</Web-ContextPath>
                         <Import-Package>
                             javax.enterprise.inject.spi,
                             org.jboss.resteasy.cdi.osgi,
