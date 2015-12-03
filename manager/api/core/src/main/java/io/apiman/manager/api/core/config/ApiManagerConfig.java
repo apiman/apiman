@@ -332,7 +332,7 @@ public abstract class ApiManagerConfig {
      * @return the configured data encrypter
      */
     public String getDataEncrypterType() {
-        return config.getString(APIMAN_DATA_ENCRYPTER_TYPE, "uuid"); //$NON-NLS-1$
+        return config.getString(APIMAN_DATA_ENCRYPTER_TYPE, null); //$NON-NLS-1$
     }
 
     /**
