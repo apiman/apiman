@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>apiman-osgi-bundles</artifactId>
+        <groupId>io.apiman</groupId>
+        <version>1.2.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>manager-osgi-rest</artifactId>
+    <name>Apiman :: Manager :: REST Module</name>
+    <packaging>bundle</packaging>
+
+    <!-- minimal set of dependencies -->
+    <dependencies>
+        <dependency>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>javax.ws.rs-api</artifactId>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <executions>
+                    <execution>
+                        <id>bundle-manifest</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>manifest</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <instructions>
+                        <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+                        <Bundle-Name>${project.name}</Bundle-Name>
+                        <_wab>src/main/webapp/</_wab>
+                        <Web-ContextPath>/apiman</Web-ContextPath>
+                        <Import-Package>
+                            javax.enterprise.inject.spi,
+                            org.jboss.resteasy.cdi.osgi,
+                            org.jboss.resteasy.plugins.interceptors.encoding,
+                            org.jboss.resteasy.plugins.interceptors,
+                            org.jboss.resteasy.plugins.providers,
+                            org.jboss.resteasy.plugins.providers.jackson,
+                            org.jboss.resteasy.plugins.server.servlet,
+                            io.apiman.manager.api.rest.contract,
+                            io.apiman.manager.api.rest.impl,
+                            io.apiman.common.servlet,
+                            *
+                        </Import-Package>
+                        <Require-Capability>
+                            org.ops4j.pax.cdi.extension;filter:="(&amp;(extension=pax-cdi-extension)(version>=0.11)(!(version>=0.12)))",
+                            osgi.extender;filter:="(osgi.extender=pax.cdi)",
+                            osgi.ee;filter:="(&amp;(osgi.ee=JavaSE)(version=1.6))"
+                        </Require-Capability>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

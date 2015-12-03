@@ -32,7 +32,8 @@
     <feature name="manager-osgi" version="${project.version}">
         <feature>pax-cdi-1.1-web-weld</feature>
         <feature>apiman-lib</feature>
-        <bundle>mvn:io.apiman/manager-osgi/${project.version}</bundle>
+        <bundle>mvn:io.apiman/manager-osgi-rest/${project.version}</bundle>
+        <bundle>mvn:io.apiman/manager-osgi-ui/${project.version}</bundle>
     </feature>
 
     <feature name="swagger" version="1.5.3">

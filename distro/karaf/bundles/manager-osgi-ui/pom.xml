@@ -8,15 +8,17 @@
         <groupId>io.apiman</groupId>
         <version>1.2.0-SNAPSHOT</version>
     </parent>
-    <artifactId>manager-osgi</artifactId>
-    <name>Apiman :: Manager :: Web Module</name>
+    <artifactId>manager-osgi-ui</artifactId>
+    <name>Apiman :: Manager :: UI Module</name>
     <packaging>bundle</packaging>
 
     <!-- minimal set of dependencies -->
     <dependencies>
+        <!-- Dep included to add the WAR content within the bundle -->
         <dependency>
-            <groupId>javax.ws.rs</groupId>
-            <artifactId>javax.ws.rs-api</artifactId>
+            <groupId>io.apiman</groupId>
+            <artifactId>apiman-manager-ui-hawtio</artifactId>
+            <type>war</type>
         </dependency>
     </dependencies>
 
@@ -25,7 +27,6 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
-<!--                <version>2.3.7</version>-->
                 <extensions>true</extensions>
                 <executions>
                     <execution>
@@ -41,27 +42,26 @@
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Bundle-Name>${project.name}</Bundle-Name>
                         <_wab>src/main/webapp/</_wab>
-                        <Web-ContextPath>/apiman</Web-ContextPath>
+                        <Web-ContextPath>/apimanui</Web-ContextPath>
                         <Import-Package>
-                            javax.enterprise.inject.spi,
-                            org.jboss.resteasy.cdi.osgi,
-                            org.jboss.resteasy.plugins.interceptors.encoding,
-                            org.jboss.resteasy.plugins.interceptors,
-                            org.jboss.resteasy.plugins.providers,
-                            org.jboss.resteasy.plugins.providers.jackson,
-                            org.jboss.resteasy.plugins.server.servlet,
-                            io.apiman.manager.api.rest.contract,
-                            io.apiman.manager.api.rest.impl,
-                            io.apiman.common.servlet,
                             *
                         </Import-Package>
-                        <Require-Capability>
-                            org.ops4j.pax.cdi.extension;filter:="(&amp;(extension=pax-cdi-extension)(version>=0.11)(!(version>=0.12)))",
-                            osgi.extender;filter:="(osgi.extender=pax.cdi)",
-                            osgi.ee;filter:="(&amp;(osgi.ee=JavaSE)(version=1.6))"
-                        </Require-Capability>
+
                     </instructions>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>2.4.2</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

@@ -13,7 +13,8 @@
     <packaging>pom</packaging>
     <modules>
         <module>resteasy</module>
-        <module>manager-osgi</module>
+        <module>manager-osgi-rest</module>
+        <module>manager-osgi-ui</module>
     </modules>
 
 </project>
