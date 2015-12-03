@@ -15,6 +15,7 @@
  */
 package io.apiman.manager.api.es;
 
+import io.apiman.common.util.crypt.IDataEncrypter;
 import io.apiman.manager.api.beans.apps.ApplicationBean;
 import io.apiman.manager.api.beans.apps.ApplicationVersionBean;
 import io.apiman.manager.api.beans.audit.AuditEntityType;
@@ -96,6 +97,7 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
@@ -133,6 +135,12 @@ public class EsStorage implements IStorage, IStorageQuery {
 
     @Inject @Named("storage")
     JestClient esClient;
+    @Inject IDataEncrypter encrypter;
+    @PostConstruct
+    public void postConstruct() {
+        // Kick the encrypter, causing it to be loaded/resolved in CDI
+        encrypter.encrypt(""); //$NON-NLS-1$
+    }
 
     /**
      * Constructor.
