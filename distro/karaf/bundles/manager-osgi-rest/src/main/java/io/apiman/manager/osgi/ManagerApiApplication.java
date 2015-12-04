@@ -17,6 +17,8 @@ import io.apiman.manager.api.rest.impl.UserResourceImpl;
 import io.apiman.manager.api.rest.impl.mappers.RestExceptionMapper;
 import io.swagger.jaxrs.config.BeanConfig;
 
+import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.core.Application;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -24,7 +26,8 @@ import java.util.Set;
  * Useful if jax-rs is not supported by the runtime platform.
  *
  */
-public class ManagerApiApplication extends ApiManagerApplication {
+@ApplicationPath("/")
+public class ManagerApiApplication extends Application {
 
     private Set<Object> singletons = new HashSet<>();
     private Set<Class<?>> classes = new HashSet<>();
@@ -43,7 +46,7 @@ public class ManagerApiApplication extends ApiManagerApplication {
         beanConfig.setScan(true);
 
         classes.add(SystemResourceImpl.class);
-        classes.add(SearchResourceImpl.class);
+/*        classes.add(SearchResourceImpl.class);
         classes.add(RoleResourceImpl.class);
         classes.add(UserResourceImpl.class);
         classes.add(CurrentUserResourceImpl.class);
@@ -59,7 +62,7 @@ public class ManagerApiApplication extends ApiManagerApplication {
         classes.add(io.swagger.jaxrs.listing.ApiListingResource.class);
         classes.add(io.swagger.jaxrs.listing.SwaggerSerializers.class);
 
-        classes.add(RestExceptionMapper.class);
+        classes.add(RestExceptionMapper.class);*/
     }
 
     @Override
