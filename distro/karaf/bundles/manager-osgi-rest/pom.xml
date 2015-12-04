@@ -99,6 +99,9 @@
                             io.swagger.jaxrs,
                             *
                         </Import-Package>
+                        <Export-Package>
+                            io.apiman.manager.osgi
+                        </Export-Package>
                         <Require-Capability>
                             org.ops4j.pax.cdi.extension;filter:="(&amp;(extension=pax-cdi-extension)(version>=0.11)(!(version>=0.12)))",
                             osgi.extender;filter:="(osgi.extender=pax.cdi)",
