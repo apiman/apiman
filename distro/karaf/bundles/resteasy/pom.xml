@@ -11,7 +11,7 @@
 
     <artifactId>resteasy-all</artifactId>
     <version>2.3.10.Final_1</version>
-    <name>apiman-resteasy-bundle</name>
+    <name>Apiman :: OSGI :: Resteasy Bundle</name>
     <packaging>bundle</packaging>
 
     <properties>
@@ -148,6 +148,9 @@
                             org.scannotation,
                             org.slf4j,
                             org.w3c.dom,
+                            io.apiman.manager.osgi;resolution:=optional,
+                            io.apiman.manager.api.rest.impl;resolution:=optional,
+                            io.apiman.manager.api.rest.contract;resolution:=optional,
                             *
                         </Import-Package>
                         <Export-Package>
@@ -186,13 +189,12 @@
                         </Export-Package>
                         <Require-Capability>
                             org.ops4j.pax.cdi.extension;filter:="(&amp;(extension=pax-cdi-extension)(version>=0.11)(!(version>=0.12)))",
-                            org.ops4j.pax.cdi.extension;filter:="(extension=resteasy)",
                             osgi.extender;filter:="(osgi.extender=pax.cdi)",
                             osgi.ee;filter:="(&amp;(osgi.ee=JavaSE)(version=1.6))"
                         </Require-Capability>
-                        <Provide-Capability>
+                        <!--<Provide-Capability>
                             org.ops4j.pax.cdi.extension;extension="resteasy"
-                        </Provide-Capability>
+                        </Provide-Capability>-->
                         <Embed-Dependency>*;scope=compile</Embed-Dependency>
                         <Embed-Transitive>false</Embed-Transitive>
                         <Bundle-ClassPath>.</Bundle-ClassPath>
