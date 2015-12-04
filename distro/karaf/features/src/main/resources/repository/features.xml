@@ -2,30 +2,46 @@
 
     <repository>mvn:org.keycloak/keycloak-osgi-features/1.6.1.Final/xml/features</repository>
 
-    <feature name="apiman-lib" version="${project.version}">
-        <feature>hibernate</feature>
-        <feature>pax-cdi-1.1-weld</feature>
-        <feature>keycloak</feature>
-        <feature version="1.5.3">swagger</feature>
-        <feature version="1.7.2">elasticsearch</feature>
+    <feature name="hibernate" description="Hibernate 4.2.x JPA persistence engine support" version="4.2.20">
+        <details>Enable Hibernate 4.2.x as persistence engine.</details>
+        <feature>transaction</feature>
+        <feature>http</feature>
+        <bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.antlr/2.7.7_5</bundle>
+        <bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.ant/1.7.0_6</bundle>
+        <bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.dom4j/1.6.1_5</bundle>
+        <bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.serp/1.14.1_1</bundle>
+        <bundle dependency="true">mvn:com.fasterxml/classmate/1.0.0</bundle>
+        <bundle dependency="true">mvn:org.javassist/javassist/3.18.1-GA</bundle>
+        <bundle dependency="true">mvn:org.jboss.spec.javax.security.jacc/jboss-jacc-api_1.4_spec/1.0.2.Final</bundle>
+        <bundle dependency="true">wrap:mvn:org.jboss/jandex/1.1.0.Final</bundle>
+        <bundle dependency="true">mvn:org.jboss.logging/jboss-logging/3.3.0.Final</bundle>
+        <bundle dependency="true">mvn:org.hibernate.common/hibernate-commons-annotations/4.0.4.Final</bundle>
+        <bundle start-level="100">mvn:org.hibernate/hibernate-core/4.2.20.Final-redhat-1</bundle>
+        <bundle start-level="100">mvn:org.hibernate/hibernate-entitymanager/4.2.20.Final-redhat-1</bundle>
+        <bundle start-level="100">mvn:org.hibernate/hibernate-osgi/4.2.20.Final-redhat-1</bundle>
         <bundle>mvn:org.eclipse.persistence/javax.persistence/2.1.0</bundle>
+    </feature>
+
+    <feature name="apiman-lib" version="${project.version}">
+        <bundle>mvn:org.codehaus.woodstox/stax2-api/3.1.4</bundle>
+        <bundle>mvn:javax.ws.rs/javax.ws.rs-api/2.0</bundle>
+        <bundle>mvn:javax.validation/validation-api/1.1.0.Final</bundle>
         <bundle>wrap:mvn:org.jboss.weld.environment/weld-environment-common/2.3.0.Final</bundle>
         <bundle>wrap:mvn:org.jboss.weld.servlet/weld-servlet-core/2.3.0.Final</bundle>
         <bundle>wrap:mvn:org.jboss/jandex/1.2.0.Final</bundle>
-        <!-- The Apache Logging Log4J2 must be registered when Karaf boots -->
-        <!--        <bundle>wrap:mvn:org.apache.logging.log4j/log4j-api/2.3</bundle>
-        <bundle>wrap:mvn:org.apache.logging.log4j/log4j-core/2.3</bundle>-->
+        <!--<bundle>mvn:org.ops4j.pax.logging/pax-logging-log4j2/1.8.4</bundle>-->
         <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.commons-configuration/1.9_2</bundle>
         <bundle>mvn:joda-time/joda-time/1.6.2</bundle>
         <bundle>wrap:mvn:org.picketbox/jboss-security-spi/4.1.1.Final</bundle>
         <bundle>wrap:mvn:org.scannotation/scannotation/1.0.3</bundle>
+        <bundle>mvn:org.apache.commons/commons-lang3/3.3.2</bundle>
         <bundle>mvn:org.apache.httpcomponents/httpcore-osgi/4.2.5</bundle>
         <bundle>mvn:org.apache.httpcomponents/httpclient-osgi/4.2.6</bundle>
         <bundle>mvn:org.codehaus.jackson/jackson-core-asl/1.9.9</bundle>
         <bundle>mvn:org.codehaus.jackson/jackson-mapper-asl/1.9.9</bundle>
         <bundle>mvn:org.codehaus.jackson/jackson-jaxrs/1.9.9</bundle>
         <bundle>wrap:mvn:org.jboss.classfilewriter/jboss-classfilewriter/1.1.2.Final</bundle>
-        <bundle>mvn:org.jboss.weld/weld-osgi-bundle/2.3.0.Final</bundle>
+<!--        <bundle>mvn:org.jboss.weld/weld-osgi-bundle/2.3.0.Final</bundle>-->
         <bundle>mvn:io.apiman/resteasy-all/2.3.10.Final_1</bundle>
     </feature>
 
@@ -49,17 +65,32 @@
         <bundle>mvn:com.fasterxml.jackson.datatype/jackson-datatype-joda/2.4.5</bundle>
         <bundle>wrap:mvn:org.reflections/reflections/0.9.9</bundle>
         <bundle>mvn:com.google.code.findbugs/annotations/2.0.1</bundle>
-        <bundle>mvn:io.swagger/swagger-annotations/1.5.3</bundle>
-        <bundle>wrap:mvn:io.swagger/swagger-core/1.5.3</bundle>
-        <bundle>wrap:mvn:io.swagger/swagger-models/1.5.3</bundle>
-        <bundle>wrap:mvn:io.swagger/swagger-jaxrs/1.5.3</bundle>
+    </feature>
+
+    <feature name="swagger" version="1.5.4">
+        <bundle>mvn:com.fasterxml.jackson.core/jackson-databind/2.4.5</bundle>
+        <bundle>mvn:com.fasterxml.jackson.core/jackson-core/2.4.5</bundle>
+        <bundle>mvn:com.fasterxml.jackson.module/jackson-module-jaxb-annotations/2.4.5</bundle>
+        <bundle>mvn:com.fasterxml.jackson.dataformat/jackson-dataformat-xml/2.4.5</bundle>
+        <bundle>mvn:com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/2.4.5</bundle>
+        <bundle>mvn:com.fasterxml.jackson.jaxrs/jackson-jaxrs-json-provider/2.4.5</bundle>
+        <bundle>mvn:com.fasterxml.jackson.jaxrs/jackson-jaxrs-base/2.4.5</bundle>
+        <bundle>mvn:com.fasterxml.jackson.core/jackson-annotations/2.4.5</bundle>
+        <bundle>mvn:com.fasterxml.jackson.datatype/jackson-datatype-joda/2.4.5</bundle>
+        <!-- A SMX Bundle is also deployed for reflection - TODO -->
+        <bundle>wrap:mvn:org.reflections/reflections/0.9.10</bundle>
+        <bundle>mvn:com.google.guava/guava/18.0</bundle>
+        <bundle>mvn:com.google.code.findbugs/annotations/2.0.1</bundle>
+        <bundle>mvn:io.swagger/swagger-annotations/1.5.4</bundle>
+        <bundle>mvn:io.swagger/swagger-models/1.5.4</bundle>
+        <bundle>mvn:io.swagger/swagger-core/1.5.4</bundle>
+        <bundle>mvn:io.swagger/swagger-jaxrs/1.5.4</bundle>
     </feature>
 
     <feature name="elasticsearch" version="1.7.2">
         <bundle>mvn:com.google.code.gson/gson/2.3.1</bundle>
         <bundle>wrap:mvn:io.searchbox/jest-common/0.1.6</bundle>
         <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.elasticsearch/1.7.2_1</bundle>
-        <bundle>mvn:org.apache.commons/commons-lang3/3.3.2</bundle>
         <bundle>wrap:mvn:org.scannotation/scannotation/1.0.3</bundle>
     </feature>
 
@@ -79,15 +110,22 @@
     <feature name="apiman-manager-api" version="${project.version}">
         <bundle>mvn:io.apiman/apiman-manager-api-beans/${project.version}</bundle>
         <bundle>mvn:io.apiman/apiman-manager-api-core/${project.version}</bundle>
-        <bundle>mvn:io.apiman/apiman-manager-api-es/${project.version}</bundle>
         <bundle>mvn:io.apiman/apiman-manager-api-config/${project.version}</bundle>
         <bundle>mvn:io.apiman/apiman-manager-api-security/${project.version}</bundle>
-        <bundle>mvn:io.apiman/apiman-manager-api-micro/${project.version}</bundle>
-        <bundle>mvn:io.apiman/apiman-manager-api-jpa/${project.version}</bundle>
+<!--        <bundle>mvn:io.apiman/apiman-manager-api-micro/${project.version}</bundle>-->
         <bundle>mvn:io.apiman/apiman-manager-api-export-import-api/${project.version}</bundle>
         <bundle>mvn:io.apiman/apiman-manager-api-gateway/${project.version}</bundle>
         <bundle>mvn:io.apiman/apiman-manager-api-rest/${project.version}</bundle>
         <bundle>mvn:io.apiman/apiman-manager-api-rest-impl/${project.version}</bundle>
+    </feature>
+
+    <feature name="apiman-manager-api-es" version="${project.version}">
+        <feature>apiman-manager-api</feature>
+        <bundle>mvn:io.apiman/apiman-manager-api-es/${project.version}</bundle>
+    </feature>
+
+    <feature name="apiman-manager-api-jpa" version="${project.version}">
+        <bundle>mvn:io.apiman/apiman-manager-api-jpa/${project.version}</bundle>
     </feature>
 
     <feature name="apiman-server-manager" version="${project.version}">
