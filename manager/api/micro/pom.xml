@@ -256,11 +256,13 @@
             org.jboss.weld.interceptor.proxy;resolution:=optional,
             *
           </Import-Package>
+            <!-- WE DON' T NEED THAT PAX CDI SCANS IT
           <Require-Capability>
-              org.ops4j.pax.cdi.extension;filter:="(&amp;(extension=pax-cdi-extension)(version>=0.11)(!(version>=0.12)))",
-              osgi.extender;filter:="(osgi.extender=pax.cdi)",
-              osgi.ee;filter:="(&amp;(osgi.ee=JavaSE)(version=1.6))"
+            org.ops4j.pax.cdi.extension;filter:="(&amp;(extension=pax-cdi-extension)(version>=0.11)(!(version>=0.12)))",
+            osgi.extender;filter:="(osgi.extender=pax.cdi)",
+            osgi.ee;filter:="(&amp;(osgi.ee=JavaSE)(version=1.6))"
           </Require-Capability>
+          -->
           </instructions>
         </configuration>
       </plugin>
