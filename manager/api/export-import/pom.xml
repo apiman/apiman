@@ -5,7 +5,7 @@
   <parent>
     <groupId>io.apiman</groupId>
     <artifactId>apiman-manager-api</artifactId>
-    <version>1.2.0-SNAPSHOT</version>
+    <version>1.2.0.redhat-073</version>
   </parent>
   <artifactId>apiman-manager-api-export-import-api</artifactId>
   <name>apiman-manager-api-export-import-api</name>
