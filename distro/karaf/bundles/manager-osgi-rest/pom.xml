@@ -30,9 +30,35 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
+            <groupId>io.apiman</groupId>
+            <artifactId>apiman-manager-api-es</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.apiman</groupId>
+            <artifactId>apiman-manager-api-jpa</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>javax.enterprise</groupId>
             <artifactId>cdi-api</artifactId>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.searchbox</groupId>
+            <artifactId>jest-common</artifactId>
+            <version>0.1.6</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.elasticsearch</groupId>
+            <artifactId>elasticsearch</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-osgi-bundle</artifactId>
+            <version>2.3.0.Final</version>
         </dependency>
     </dependencies>
 
@@ -65,6 +91,7 @@
                             org.jboss.resteasy.plugins.providers,
                             org.jboss.resteasy.plugins.providers.jackson,
                             org.jboss.resteasy.plugins.server.servlet,
+                            io.apiman.manager.api.es,
                             io.apiman.manager.api.rest.contract,
                             io.apiman.manager.api.rest.impl,
                             io.apiman.manager.api.exportimport,
