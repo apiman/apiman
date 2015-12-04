@@ -17,7 +17,8 @@
         <param-name>resteasy.resources</param-name>
         <param-value>
             io.apiman.manager.osgi.MessageRestService
-            <!--,
+            <!--
+            io.apiman.manager.osgi.api.SystemResourceImpl
             io.apiman.manager.api.rest.impl.SystemResourceImpl,
             io.apiman.manager.api.rest.impl.UserResourceImpl
             -->
@@ -88,10 +89,10 @@
     <servlet>
         <servlet-name>resteasy</servlet-name>
         <servlet-class>org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher</servlet-class>
-<!--        <init-param>
+        <init-param>
             <param-name>javax.ws.rs.Application</param-name>
             <param-value>io.apiman.manager.osgi.ManagerApiApplication</param-value>
-        </init-param>-->
+        </init-param>
     </servlet>
 
     <servlet-mapping>
