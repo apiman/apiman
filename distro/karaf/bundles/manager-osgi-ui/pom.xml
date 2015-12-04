@@ -9,7 +9,7 @@
         <version>1.2.0-SNAPSHOT</version>
     </parent>
     <artifactId>manager-osgi-ui</artifactId>
-    <name>Apiman :: Manager :: UI Module</name>
+    <name>Apiman :: OSGI :: Manager UI Module</name>
     <packaging>bundle</packaging>
 
     <!-- minimal set of dependencies -->
