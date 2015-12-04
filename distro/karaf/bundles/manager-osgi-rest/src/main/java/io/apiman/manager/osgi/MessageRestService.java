@@ -1,11 +1,13 @@
-package io.apiman.manager;
+package io.apiman.manager.osgi;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 
 @Path("/message")
 @Consumes( { "application/json", "text/json" } )
 @Produces( { "application/json", "text/json" } )
+@ApplicationScoped
 public class MessageRestService {
 
     @GET

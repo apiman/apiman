@@ -16,13 +16,17 @@
     <context-param>
         <param-name>resteasy.resources</param-name>
         <param-value>
-            io.apiman.manager.MessageRestService,
-            io.apiman.manager.api.rest.impl.SystemResourceImpl
+            io.apiman.manager.osgi.MessageRestService
+            <!--
+            io.apiman.manager.osgi.api.SystemResourceImpl
+            io.apiman.manager.api.rest.impl.SystemResourceImpl,
+            io.apiman.manager.api.rest.impl.UserResourceImpl
+            -->
         </param-value>
     </context-param>
     <context-param>
         <param-name>resteasy.servlet.mapping.prefix</param-name>
-        <param-value>/rest</param-value>
+        <param-value></param-value>
     </context-param>
     <context-param>
         <param-name>resteasy.providers</param-name>
@@ -85,11 +89,15 @@
     <servlet>
         <servlet-name>resteasy</servlet-name>
         <servlet-class>org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher</servlet-class>
+        <init-param>
+            <param-name>javax.ws.rs.Application</param-name>
+            <param-value>io.apiman.manager.osgi.ManagerApiApplication</param-value>
+        </init-param>
     </servlet>
 
     <servlet-mapping>
         <servlet-name>resteasy</servlet-name>
-        <url-pattern>/rest/*</url-pattern>
+        <url-pattern>/*</url-pattern>
     </servlet-mapping>
 
 </web-app>

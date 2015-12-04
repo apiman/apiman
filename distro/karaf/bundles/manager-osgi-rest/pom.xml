@@ -9,7 +9,7 @@
         <version>1.2.0-SNAPSHOT</version>
     </parent>
     <artifactId>manager-osgi-rest</artifactId>
-    <name>Apiman :: Manager :: REST Module</name>
+    <name>Apiman :: OSGI :: Manager REST Module</name>
     <packaging>bundle</packaging>
 
     <!-- minimal set of dependencies -->
@@ -18,6 +18,47 @@
             <groupId>javax.ws.rs</groupId>
             <artifactId>javax.ws.rs-api</artifactId>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.apiman</groupId>
+            <artifactId>apiman-manager-api-rest-impl</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.apiman</groupId>
+            <artifactId>apiman-manager-api-config</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.apiman</groupId>
+            <artifactId>apiman-manager-api-es</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.apiman</groupId>
+            <artifactId>apiman-manager-api-jpa</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.enterprise</groupId>
+            <artifactId>cdi-api</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.searchbox</groupId>
+            <artifactId>jest-common</artifactId>
+            <version>0.1.6</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.elasticsearch</groupId>
+            <artifactId>elasticsearch</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-osgi-bundle</artifactId>
+            <version>2.3.0.Final</version>
         </dependency>
     </dependencies>
 
@@ -50,11 +91,17 @@
                             org.jboss.resteasy.plugins.providers,
                             org.jboss.resteasy.plugins.providers.jackson,
                             org.jboss.resteasy.plugins.server.servlet,
+                            io.apiman.manager.api.es,
                             io.apiman.manager.api.rest.contract,
                             io.apiman.manager.api.rest.impl,
+                            io.apiman.manager.api.exportimport,
                             io.apiman.common.servlet,
+                            io.swagger.jaxrs,
                             *
                         </Import-Package>
+                        <Export-Package>
+                            io.apiman.manager.osgi
+                        </Export-Package>
                         <Require-Capability>
                             org.ops4j.pax.cdi.extension;filter:="(&amp;(extension=pax-cdi-extension)(version>=0.11)(!(version>=0.12)))",
                             osgi.extender;filter:="(osgi.extender=pax.cdi)",

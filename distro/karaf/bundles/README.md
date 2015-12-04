@@ -1,6 +1,75 @@
 # Install
 
 - Download and unzip [JBoss Fuse](https://repository.jboss.org/nexus/content/groups/ea/org/jboss/fuse/jboss-fuse-full/6.2.1.redhat-084/)
+- Configure JBoss Fuse to use Apache Logging (Log4j2). Edit the file etc/stratup.properties file and add this line after `org/ops4j/pax/logging/pax-logging-service/1.8.4/pax-logging-service-1.8.4.jar=8`
+
+```
+org/ops4j/pax/logging/pax-logging-log4j2/1.8.4/pax-logging-log4j2-1.8.4.jar=8
+```
+- Configure `org.ops4j.pax.logging.cfg` file 
+
+```
+org.ops4j.pax.logging.log4j2.config.file=${karaf.etc}/log4j2.xml
+log4j.rootLogger=INFO
+```
+
+- Add this file within the etc directory
+
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO">
+    <Appenders>
+        <Console name="console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{ABSOLUTE} | %-5.5p | %-16.16t | %-32.32c{1} | %X{bundle.id} - %X{bundle.name} - %X{bundle.version} | %m%n"/>
+        </Console>
+        <RollingFile name="out" fileName="${karaf.data}/log/fuse.log" 
+              append="true" filePattern="${karaf.data}/log/$${date:yyyy-MM}/fuse-%d{MM-dd-yyyy}-%i.log.gz">
+           <PatternLayout>
+             <Pattern>%d{ABSOLUTE} | %-5.5p | %-16.16t | %-32.32c{1} | %X{bundle.id} - %X{bundle.name} - %X{bundle.version} | %m%n</Pattern>
+           </PatternLayout>
+           <Policies>
+                <TimeBasedTriggeringPolicy />
+                <SizeBasedTriggeringPolicy size="250 MB"/>
+            </Policies>
+        </RollingFile>
+        <PaxOsgi name="paxosgi" filter="VmLogAppender"/>
+    </Appenders>
+    <Loggers>
+        <Root level="INFO">
+            <AppenderRef ref="console"/>
+            <AppenderRef ref="out"/>
+            <AppenderRef ref="paxosgi"/>
+        </Root>
+    </Loggers>
+</Configuration>
+```
+
+- Disable some features by editing the file `org.apache.karaf.features.cfg`
+
+```
+featuresBoot=\
+        jasypt-encryption,\
+        pax-url-classpath,\
+        deployer,\
+        config,\
+        management,\
+        fabric-cxf,\
+        fabric,\
+        fabric-maven-proxy,\
+        patch,\
+        transaction,\
+        mq-fabric,\
+        swagger,\
+        camel,\
+        camel-cxf,\
+        war,\
+        fabric-redirect,\
+        hawtio-offline,\
+        support,\
+        hawtio-redhat-fuse-branding,\
+        jsr-311
+```
+
 - Open a terminal and launch the console
 
 ```
@@ -12,17 +81,23 @@
 features:addurl mvn:io.apiman/apiman-karaf/1.2.0-SNAPSHOT/xml/features
 ```
 
-- Deploy the simple Web Apiman Manager project
+- Deploy the simple Web Apiman Manager project using ES backend
 
 ```
 features:addurl mvn:io.apiman/apiman-karaf/1.2.0-SNAPSHOT/xml/features
-features:install -c apiman-lib
-features:install -c apiman-common
-features:install -c apiman-manager-api
-features:install -c apiman-gateway
-features:install -c manager-osgi
-#Remove this bundle due to a dep chaining - org.apache.geronimo.specs.geronimo-jpa_2.0_spec [265.0]
-uninstall 265
+install -s mvn:com.google.guava/guava/18.0
+features:install hibernate/4.2.20
+features:install pax-cdi-1.1-web-weld
+features:install keycloak
+features:install apiman-lib
+features:install swagger/1.5.4
+features:install elasticsearch/1.7.2
+features:install apiman-common
+features:install apiman-gateway
+features:install apiman-manager-api-es
+features:install manager-osgi
+install -s mvn:org.jboss.weld/weld-osgi-bundle/2.3.0.Final
+osgi:shutdown
 ```
 
 - Verify that the WebContext is well registered
