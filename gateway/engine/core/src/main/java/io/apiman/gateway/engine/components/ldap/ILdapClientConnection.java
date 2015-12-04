@@ -36,15 +36,13 @@ public interface ILdapClientConnection extends AutoCloseable {
      */
     void search(String searchDn, String filter, LdapSearchScope scope, IAsyncResultHandler<List<ILdapSearchEntry>> result);
 
-    // getAttributes get all attributes for given dn
-
-    @Override
-    void close();
-
     /**
      * Indicates whether connection was successfully closed.
      *
      * @param result the result
      */
     void close(IAsyncResultHandler<Void> result);
+
+    @Override
+    void close();
 }

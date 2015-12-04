@@ -158,7 +158,6 @@ public class LDAPIdentityValidator implements IIdentityValidator<LDAPIdentitySou
                 }
             }));
         }
-        return false;
     }
 
     private void extractRoles(final ILdapClientConnection connection, final String userDn, final LDAPIdentitySource config,
