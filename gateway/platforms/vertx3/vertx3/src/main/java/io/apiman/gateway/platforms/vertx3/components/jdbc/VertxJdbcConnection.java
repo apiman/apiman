@@ -15,12 +15,12 @@
  */
 package io.apiman.gateway.platforms.vertx3.components.jdbc;
 
+import static io.apiman.gateway.platforms.vertx3.helpers.HandlerHelpers.translateVoidHandlers;
+
 import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.components.jdbc.IJdbcConnection;
 import io.apiman.gateway.engine.components.jdbc.IJdbcResultSet;
-import io.vertx.core.AsyncResult;
-import io.vertx.core.Handler;
 import io.vertx.core.json.JsonArray;
 import io.vertx.ext.sql.SQLConnection;
 
@@ -94,20 +94,6 @@ public class VertxJdbcConnection implements IJdbcConnection {
     @Override
     public boolean isClosed() throws Exception {
         return closed;
-    }
-
-    private <T> Handler<AsyncResult<T>> translateVoidHandlers(IAsyncResultHandler<Void> apimanResult) {
-        return new Handler<AsyncResult<T>>() {
-
-            @Override
-            public void handle(AsyncResult<T> vertxResult) {
-                if (vertxResult.succeeded()) {
-                    apimanResult.handle(AsyncResultImpl.create((Void) null));
-                } else {
-                    apimanResult.handle(AsyncResultImpl.create(vertxResult.cause()));
-                }
-            }
-        };
     }
 
     private JsonArray toJsonArray(Object[] params) {
