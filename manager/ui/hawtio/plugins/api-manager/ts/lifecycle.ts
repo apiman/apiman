@@ -2,6 +2,7 @@
 module ApimanPageLifecycle {
 
     export var pageTitles = {
+        "page.title.admin-catalog": "apiman - Admin - Service Catalog",
         "page.title.admin-gateways": "apiman - Admin - Gateways",
         "page.title.admin-plugins": "apiman - Admin - Plugins",
         "page.title.admin-roles": "apiman - Admin - Roles",
