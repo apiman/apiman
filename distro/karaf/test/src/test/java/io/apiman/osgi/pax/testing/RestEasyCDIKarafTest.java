@@ -1,6 +1,7 @@
 package io.apiman.osgi.pax.testing;
 
 import io.apiman.manager.api.core.IStorage;
+import io.apiman.manager.api.core.logging.IApimanLogger;
 import org.apache.karaf.features.FeaturesService;
 import org.junit.After;
 import org.junit.Before;
@@ -22,6 +23,7 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
@@ -80,9 +82,10 @@ public class RestEasyCDIKarafTest {
                 logLevel(LogLevelOption.LogLevel.INFO),
                 // Load the features
                 //loadApimanFeatures("keycloak","apiman-lib","swagger/1.5.4","elasticsearch/1.7.2","apiman-common","apiman-gateway","apiman-manager-api-es","manager-osgi")
-                loadApimanFeatures("apiman-all"),
+                loadApimanFeatures("apiman-all")
+                ,
                 // Enable debugging
-                debugConfiguration("5005",true)
+                //debugConfiguration("5005",true)
         };
     }
 
@@ -95,14 +98,19 @@ public class RestEasyCDIKarafTest {
     public void EstoreInjected() throws Exception {
         //this is needed since the test is a bit to fast :) to debug it
         Thread.sleep(2000);
-        Bundle bundle = getBundle(context,"io.apiman.manager-api-rest-impl");
+        //Bundle bundle = getBundle(context,"io.apiman.manager-api-rest-impl");
+        Bundle bundle = getBundle(context,"manager-osgi-rest");
         assertNotNull(bundle);
         CdiContainer container = factory.getContainer(bundle);
         assertNotNull(container);
         BeanManager bm = container.getBeanManager();
         assertNotNull(bm);
-        //IStorage storage = (IStorage) bm.getBeans(IStorage.class);
+        Bean bean = (Bean<IApimanLogger>) bm.getBeans(IApimanLogger.class).iterator().next();
+        CreationalContext ctx = bm.createCreationalContext(bean);
+        IApimanLogger logger = (IApimanLogger) bm.getReference(bean, bean.getClass(), ctx);
+        // IStorage storage = (IStorage) bm.getBeans(IStorage.class);
         //assertNotNull(storage);
+        assertNotNull(logger);
     }
 
 
