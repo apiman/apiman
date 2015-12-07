@@ -1,0 +1,14 @@
+GET /organizations/Organization1/apis/API1/versions/2.1/policies admin/admin
+----
+200
+Content-Type: application/json
+
+[
+  { 
+    "createdBy" : "admin",
+    "description" : "This is a test policy for ApisTest.",
+    "icon" : "policy-def",
+    "name" : "Policy Def",
+    "policyDefinitionId" : "PolicyDef"
+  }
+]

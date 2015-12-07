@@ -1,0 +1,16 @@
+POST /roles admin/admin
+Content-Type: application/json
+
+{
+  "name" : "API Developer",
+  "permissions" : [ "apiView", "apiEdit", "apiAdmin" ]
+}
+----
+200
+Content-Type: application/json
+
+{
+  "id" : "APIDeveloper",
+  "name" : "API Developer",
+  "permissions" : [ "apiView", "apiEdit", "apiAdmin" ]
+}

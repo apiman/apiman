@@ -16,9 +16,9 @@
 
 package io.apiman.gateway.platforms.servlet;
 
+import io.apiman.gateway.engine.beans.ApiRequest;
+import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.engine.beans.PolicyFailure;
-import io.apiman.gateway.engine.beans.ServiceRequest;
-import io.apiman.gateway.engine.beans.ServiceResponse;
 
 /**
  * Thread context for the WAR implementation of the gateway.
@@ -26,18 +26,18 @@ import io.apiman.gateway.engine.beans.ServiceResponse;
  * @author eric.wittmann@redhat.com
  */
 public class GatewayThreadContext {
-    private static final ThreadLocal<ServiceRequest> serviceRequest = new ThreadLocal<>();
-    private static final ThreadLocal<ServiceResponse> serviceResponse = new ThreadLocal<>();
+    private static final ThreadLocal<ApiRequest> apiRequest = new ThreadLocal<>();
+    private static final ThreadLocal<ApiResponse> apiResponse = new ThreadLocal<>();
     private static final ThreadLocal<PolicyFailure> policyFailure = new ThreadLocal<>();
 
     /**
-     * @return the thread-local service request
+     * @return the thread-local api request
      */
-    public static final ServiceRequest getServiceRequest() {
-        ServiceRequest request = serviceRequest.get();
+    public static final ApiRequest getApiRequest() {
+        ApiRequest request = apiRequest.get();
         if (request == null) {
-            request = new ServiceRequest();
-            serviceRequest.set(request);
+            request = new ApiRequest();
+            apiRequest.set(request);
         }
         request.setApiKey(null);
         request.setUrl(null);
@@ -51,13 +51,13 @@ public class GatewayThreadContext {
     }
 
     /**
-     * @return the thread-local service response
+     * @return the thread-local api response
      */
-    public static final ServiceResponse getServiceResponse() {
-        ServiceResponse response = serviceResponse.get();
+    public static final ApiResponse getApiResponse() {
+        ApiResponse response = apiResponse.get();
         if (response == null) {
-            response = new ServiceResponse();
-            serviceResponse.set(response);
+            response = new ApiResponse();
+            apiResponse.set(response);
         }
         response.setCode(0);
         response.getHeaders().clear();

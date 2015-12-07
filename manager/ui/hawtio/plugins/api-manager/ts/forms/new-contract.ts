@@ -5,9 +5,9 @@ module Apiman {
         ['$q', '$location', '$scope', 'OrgSvcs', 'CurrentUserSvcs', 'PageLifecycle', 'Logger', '$rootScope', 'Dialogs',
         ($q, $location, $scope, OrgSvcs, CurrentUserSvcs, PageLifecycle, Logger, $rootScope, Dialogs) => {
             var params = $location.search();
-            var svcId = params.svc;
-            var svcOrgId = params.svcorg;
-            var svcVer = params.svcv;
+            var apiId = params.api;
+            var apiOrgId = params.apiorg;
+            var apiVer = params.apiv;
             var planId = params.planid;
             
             $scope.refreshAppVersions = function(organizationId, appId, onSuccess, onError) {
@@ -47,16 +47,16 @@ module Apiman {
                         resolve(apps);
                     }, reject);
                 }),
-                selectedService: $q(function(resolve, reject) {
-                    if (svcId && svcOrgId && svcVer) {
-                        Logger.debug('Loading service {0}/{1} version {2}.', svcOrgId, svcId, svcVer);
+                selectedApi: $q(function(resolve, reject) {
+                    if (apiId && apiOrgId && apiVer) {
+                        Logger.debug('Loading api {0}/{1} version {2}.', apiOrgId, apiId, apiVer);
 
-                        OrgSvcs.get({ organizationId: svcOrgId, entityType: 'services', entityId: svcId, versionsOrActivity: 'versions', version: svcVer }, function(serviceVersion) {
-                            serviceVersion.organizationName = serviceVersion.service.organization.name;
-                            serviceVersion.organizationId = serviceVersion.service.organization.id;
-                            serviceVersion.name = serviceVersion.service.name;
-                            serviceVersion.id = serviceVersion.service.id;
-                            resolve(serviceVersion);
+                        OrgSvcs.get({ organizationId: apiOrgId, entityType: 'apis', entityId: apiId, versionsOrActivity: 'versions', version: apiVer }, function(apiVersion) {
+                            apiVersion.organizationName = apiVersion.api.organization.name;
+                            apiVersion.organizationId = apiVersion.api.organization.id;
+                            apiVersion.name = apiVersion.api.name;
+                            apiVersion.id = apiVersion.api.id;
+                            resolve(apiVersion);
                         }, reject);
                     } else {
                         resolve(undefined);
@@ -86,13 +86,13 @@ module Apiman {
                 }
             });
             
-            $scope.selectService = function() {
-                Dialogs.selectService('Select a Service', function(serviceVersion) {
-                    $scope.selectedService = serviceVersion;
+            $scope.selectApi = function() {
+                Dialogs.selectApi('Select an API', function(apiVersion) {
+                    $scope.selectedApi = apiVersion;
                 }, true);
             };
 
-            $scope.$watch('selectedService', function(newValue) {
+            $scope.$watch('selectedApi', function(newValue) {
                 if (!newValue) {
                     $scope.plans = undefined;
                     $scope.selectedPlan = undefined;
@@ -100,9 +100,9 @@ module Apiman {
                     return;
                 }
 
-                Logger.debug('Service selection made, fetching plans.');
+                Logger.debug('Api selection made, fetching plans.');
 
-                OrgSvcs.query({ organizationId: newValue.organizationId, entityType: 'services', entityId: newValue.id, versionsOrActivity: 'versions', version: newValue.version, policiesOrActivity: 'plans' }, function(plans) {
+                OrgSvcs.query({ organizationId: newValue.organizationId, entityType: 'apis', entityId: newValue.id, versionsOrActivity: 'versions', version: newValue.version, policiesOrActivity: 'plans' }, function(plans) {
                     $scope.plans = plans;
                     Logger.debug("Found {0} plans: {1}.", plans.length, plans);
 
@@ -125,15 +125,15 @@ module Apiman {
             $scope.createContract = function() {
                 Logger.log("Creating new contract from {0}/{1} ({2}) to {3}/{4} ({5}) through the {6} plan!", 
                         $scope.selectedApp.organizationName, $scope.selectedApp.name, $scope.selectedAppVersion,
-                        $scope.selectedService.organizationName, $scope.selectedService.name, $scope.selectedService.version,
+                        $scope.selectedApi.organizationName, $scope.selectedApi.name, $scope.selectedApi.version,
                         $scope.selectedPlan.planName);
 
                 $scope.createButton.state = 'in-progress';
 
                 var newContract = {
-                    serviceOrgId : $scope.selectedService.organizationId,
-                    serviceId : $scope.selectedService.id,
-                    serviceVersion : $scope.selectedService.version,
+                    apiOrgId : $scope.selectedApi.organizationId,
+                    apiId : $scope.selectedApi.id,
+                    apiVersion : $scope.selectedApi.version,
                     planId : $scope.selectedPlan.planId
                 };
 

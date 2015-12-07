@@ -1,0 +1,19 @@
+POST /organizations/Test/apis ${apiman.suite.api-username}/${apiman.suite.api-password}
+Content-Type: application/json
+
+{
+  "name" : "echo",
+  "description" : "A simple echo REST API."
+}
+----
+200
+Content-Type: application/json
+
+{
+  "organization" : {
+    "id" : "Test"
+  },
+  "id" : "echo",
+  "name" : "echo",
+  "description" : "A simple echo REST API."
+}

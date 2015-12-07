@@ -16,14 +16,14 @@
 package io.apiman.gateway.platforms.servlet.auth.tls;
 
 import io.apiman.common.config.options.TLSOptions;
-import io.apiman.gateway.engine.IServiceConnection;
-import io.apiman.gateway.engine.IServiceConnectionResponse;
-import io.apiman.gateway.engine.IServiceConnector;
+import io.apiman.gateway.engine.IApiConnection;
+import io.apiman.gateway.engine.IApiConnectionResponse;
+import io.apiman.gateway.engine.IApiConnector;
 import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.auth.RequiredAuthType;
-import io.apiman.gateway.engine.beans.Service;
-import io.apiman.gateway.engine.beans.ServiceRequest;
+import io.apiman.gateway.engine.beans.Api;
+import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.exceptions.ConnectorException;
 import io.apiman.gateway.platforms.servlet.connectors.HttpConnectorFactory;
 
@@ -147,8 +147,8 @@ public class BasicMutualAuthTest {
         config.clear();
     }
 
-    ServiceRequest request = new ServiceRequest();
-    Service service = new Service();
+    ApiRequest request = new ApiRequest();
+    Api api = new Api();
     {
         request.setApiKey("12345");
         request.setDestination("/");
@@ -157,15 +157,15 @@ public class BasicMutualAuthTest {
         request.setRemoteAddr("https://localhost:8008/");
         request.setType("GET");
 
-        service.setEndpoint("https://localhost:8008/");
-        service.getEndpointProperties().put(RequiredAuthType.ENDPOINT_AUTHORIZATION_TYPE, "mtls");
+        api.setEndpoint("https://localhost:8008/");
+        api.getEndpointProperties().put(RequiredAuthType.ENDPOINT_AUTHORIZATION_TYPE, "mtls");
     }
 
     /**
      * Scenario:
      *   - no CA inherited trust
-     *   - gateway trusts service certificate directly
-     *   - service trusts gateway certificate directly
+     *   - gateway trusts API certificate directly
+     *   - API trusts gateway certificate directly
      */
     @Test
     public void shouldSucceedWithValidMTLS() {
@@ -178,12 +178,12 @@ public class BasicMutualAuthTest {
         config.put(TLSOptions.TLS_ALLOWSELFSIGNED, "false");
 
        HttpConnectorFactory factory = new HttpConnectorFactory(config);
-       IServiceConnector connector = factory.createConnector(request, service, RequiredAuthType.MTLS);
-       IServiceConnection connection = connector.connect(request,
-               new IAsyncResultHandler<IServiceConnectionResponse>() {
+       IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.MTLS);
+       IApiConnection connection = connector.connect(request,
+               new IAsyncResultHandler<IApiConnectionResponse>() {
 
         @Override
-        public void handle(IAsyncResult<IServiceConnectionResponse> result) {
+        public void handle(IAsyncResult<IApiConnectionResponse> result) {
             if (result.isError())
                 throw new RuntimeException(result.getError());
 
@@ -197,11 +197,11 @@ public class BasicMutualAuthTest {
     /**
      * Scenario:
      *   - no CA inherited trust
-     *   - gateway does <em>not</em> trust the service
-     *   - service trusts gateway certificate
+     *   - gateway does <em>not</em> trust the API
+     *   - API trusts gateway certificate
      */
     @Test
-    public void shouldFailWhenGatewayDoesNotTrustService() {
+    public void shouldFailWhenGatewayDoesNotTrustApi() {
         config.put(TLSOptions.TLS_TRUSTSTORE, getResourcePath("2waytest/basic_mutual_auth/gateway_ts.jks"));
         config.put(TLSOptions.TLS_TRUSTSTOREPASSWORD, "password");
         config.put(TLSOptions.TLS_KEYSTORE, getResourcePath("2waytest/basic_mutual_auth/gateway_ks.jks"));
@@ -211,12 +211,12 @@ public class BasicMutualAuthTest {
         config.put(TLSOptions.TLS_ALLOWSELFSIGNED, "false");
 
        HttpConnectorFactory factory = new HttpConnectorFactory(config);
-       IServiceConnector connector = factory.createConnector(request, service, RequiredAuthType.MTLS);
-       IServiceConnection connection = connector.connect(request,
-               new IAsyncResultHandler<IServiceConnectionResponse>() {
+       IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.MTLS);
+       IApiConnection connection = connector.connect(request,
+               new IAsyncResultHandler<IApiConnectionResponse>() {
 
         @Override
-        public void handle(IAsyncResult<IServiceConnectionResponse> result) {
+        public void handle(IAsyncResult<IApiConnectionResponse> result) {
             Assert.assertTrue(result.isError());
 
             System.out.println(result.getError());
@@ -233,11 +233,11 @@ public class BasicMutualAuthTest {
     /**
      * Scenario:
      *   - no CA inherited trust
-     *   - gateway does trust the service
-     *   - service does <em>not</em> trust gateway
+     *   - gateway does trust the API
+     *   - API does <em>not</em> trust gateway
      */
     @Test
-    public void shouldFailWhenServiceDoesNotTrustGateway() {
+    public void shouldFailWhenApiDoesNotTrustGateway() {
         config.put(TLSOptions.TLS_TRUSTSTORE, getResourcePath("2waytest/service_not_trust_gw/gateway_ts.jks"));
         config.put(TLSOptions.TLS_TRUSTSTOREPASSWORD, "password");
         config.put(TLSOptions.TLS_KEYSTORE, getResourcePath("2waytest/service_not_trust_gw/gateway_ks.jks"));
@@ -247,12 +247,12 @@ public class BasicMutualAuthTest {
         config.put(TLSOptions.TLS_ALLOWSELFSIGNED, "false");
 
         HttpConnectorFactory factory = new HttpConnectorFactory(config);
-        IServiceConnector connector = factory.createConnector(request, service, RequiredAuthType.MTLS);
-        IServiceConnection connection = connector.connect(request,
-                new IAsyncResultHandler<IServiceConnectionResponse>() {
+        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.MTLS);
+        IApiConnection connection = connector.connect(request,
+                new IAsyncResultHandler<IApiConnectionResponse>() {
 
          @Override
-         public void handle(IAsyncResult<IServiceConnectionResponse> result) {
+         public void handle(IAsyncResult<IApiConnectionResponse> result) {
              Assert.assertTrue(result.isError());
 
              System.out.println(result.getError());
@@ -269,8 +269,8 @@ public class BasicMutualAuthTest {
     /**
      * Scenario:
      *   - no CA inherited trust
-     *   - gateway does not explicitly trust the service, but automatically validates against self-signed
-     *   - service trusts gateway certificate
+     *   - gateway does not explicitly trust the API, but automatically validates against self-signed
+     *   - API trusts gateway certificate
      */
     @Test
     public void shouldSucceedWhenAllowedSelfSigned() {
@@ -283,12 +283,12 @@ public class BasicMutualAuthTest {
         config.put(TLSOptions.TLS_ALLOWSELFSIGNED, "true");
 
        HttpConnectorFactory factory = new HttpConnectorFactory(config);
-       IServiceConnector connector = factory.createConnector(request, service, RequiredAuthType.MTLS);
-       IServiceConnection connection = connector.connect(request,
-               new IAsyncResultHandler<IServiceConnectionResponse>() {
+       IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.MTLS);
+       IApiConnection connection = connector.connect(request,
+               new IAsyncResultHandler<IApiConnectionResponse>() {
 
         @Override
-        public void handle(IAsyncResult<IServiceConnectionResponse> result) {
+        public void handle(IAsyncResult<IApiConnectionResponse> result) {
             Assert.assertTrue(result.isSuccess());
         }
        });
@@ -299,7 +299,7 @@ public class BasicMutualAuthTest {
     /**
      * Scenario:
      *   - Select client key alias `gateway2`.
-     *   - Mutual trust exists between gateway and service
+     *   - Mutual trust exists between gateway and API
      *   - We must use the `gateway2` cert NOT `gateway`.
      * @throws CertificateException the certificate exception
      * @throws IOException the IO exception
@@ -321,12 +321,12 @@ public class BasicMutualAuthTest {
         inStream.close();
 
         HttpConnectorFactory factory = new HttpConnectorFactory(config);
-        IServiceConnector connector = factory.createConnector(request, service, RequiredAuthType.MTLS);
-        IServiceConnection connection = connector.connect(request,
-                new IAsyncResultHandler<IServiceConnectionResponse>() {
+        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.MTLS);
+        IApiConnection connection = connector.connect(request,
+                new IAsyncResultHandler<IApiConnectionResponse>() {
 
                     @Override
-                    public void handle(IAsyncResult<IServiceConnectionResponse> result) {
+                    public void handle(IAsyncResult<IApiConnectionResponse> result) {
                         if (result.isError())
                             throw new RuntimeException(result.getError());
 
@@ -343,7 +343,7 @@ public class BasicMutualAuthTest {
     /**
      * Scenario:
      *   - First alias invalid, second valid.
-     *   - Mutual trust exists between gateway and service.
+     *   - Mutual trust exists between gateway and API.
      *   - We must fall back to the valid alias.
      * @throws CertificateException the certificate exception
      * @throws IOException the IO exception
@@ -357,7 +357,7 @@ public class BasicMutualAuthTest {
         config.put(TLSOptions.TLS_KEYPASSWORD, "password");
         config.put(TLSOptions.TLS_ALLOWANYHOST, "true");
         config.put(TLSOptions.TLS_ALLOWSELFSIGNED, "false");
-        // Only gateway2 is valid. `unrelated` is real but not trusted by service. others don't exist.
+        // Only gateway2 is valid. `unrelated` is real but not trusted by API. others don't exist.
         config.put(TLSOptions.TLS_KEYALIASES, "unrelated, owt, or, nowt, gateway2, sonorous, unrelated");
 
         InputStream inStream = new FileInputStream(getResourcePath("2waytest/basic_mutual_auth_2/gateway2.cer"));
@@ -365,12 +365,12 @@ public class BasicMutualAuthTest {
         inStream.close();
 
         HttpConnectorFactory factory = new HttpConnectorFactory(config);
-        IServiceConnector connector = factory.createConnector(request, service, RequiredAuthType.MTLS);
-        IServiceConnection connection = connector.connect(request,
-                new IAsyncResultHandler<IServiceConnectionResponse>() {
+        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.MTLS);
+        IApiConnection connection = connector.connect(request,
+                new IAsyncResultHandler<IApiConnectionResponse>() {
 
                     @Override
-                    public void handle(IAsyncResult<IServiceConnectionResponse> result) {
+                    public void handle(IAsyncResult<IApiConnectionResponse> result) {
                         if (result.isError())
                             throw new RuntimeException(result.getError());
 
@@ -404,12 +404,12 @@ public class BasicMutualAuthTest {
         config.put(TLSOptions.TLS_KEYALIASES, "xxx");
 
         HttpConnectorFactory factory = new HttpConnectorFactory(config);
-        IServiceConnector connector = factory.createConnector(request, service, RequiredAuthType.MTLS);
-        IServiceConnection connection = connector.connect(request,
-                new IAsyncResultHandler<IServiceConnectionResponse>() {
+        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.MTLS);
+        IApiConnection connection = connector.connect(request,
+                new IAsyncResultHandler<IApiConnectionResponse>() {
 
                     @Override
-                    public void handle(IAsyncResult<IServiceConnectionResponse> result) {
+                    public void handle(IAsyncResult<IApiConnectionResponse> result) {
                         Assert.assertTrue(result.isError());
                     }
                 });
@@ -428,12 +428,12 @@ public class BasicMutualAuthTest {
         config.put(TLSOptions.TLS_DEVMODE, "true");
 
         HttpConnectorFactory factory = new HttpConnectorFactory(config);
-        IServiceConnector connector = factory.createConnector(request, service, RequiredAuthType.DEFAULT);
-        IServiceConnection connection = connector.connect(request,
-                new IAsyncResultHandler<IServiceConnectionResponse>() {
+        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.DEFAULT);
+        IApiConnection connection = connector.connect(request,
+                new IAsyncResultHandler<IApiConnectionResponse>() {
 
          @Override
-         public void handle(IAsyncResult<IServiceConnectionResponse> result) {
+         public void handle(IAsyncResult<IApiConnectionResponse> result) {
                  Assert.assertTrue(result.isError());
                  System.out.println(result.getError());
              }

@@ -18,11 +18,11 @@ package io.apiman.gateway.engine.es;
 import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
+import io.apiman.gateway.engine.beans.Api;
+import io.apiman.gateway.engine.beans.ApiContract;
+import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.Application;
 import io.apiman.gateway.engine.beans.Contract;
-import io.apiman.gateway.engine.beans.Service;
-import io.apiman.gateway.engine.beans.ServiceContract;
-import io.apiman.gateway.engine.beans.ServiceRequest;
 import io.apiman.gateway.engine.beans.exceptions.InvalidContractException;
 import io.apiman.gateway.engine.es.i18n.Messages;
 import io.searchbox.client.JestResult;
@@ -44,8 +44,8 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public abstract class CachingESRegistry extends ESRegistry {
 
-    private Map<String, ServiceContract> contractCache = new ConcurrentHashMap<>();
-    private Map<String, Service> serviceCache = new HashMap<>();
+    private Map<String, ApiContract> contractCache = new ConcurrentHashMap<>();
+    private Map<String, Api> apiCache = new HashMap<>();
     private Map<String, Application> applicationCache = new HashMap<>();
     private Object mutex = new Object();
 
@@ -57,34 +57,34 @@ public abstract class CachingESRegistry extends ESRegistry {
     }
 
     /**
-     * Called to invalidate the cache - clearing it so that subsequent calls to getService()
+     * Called to invalidate the cache - clearing it so that subsequent calls to getApi()
      * or getContract() will trigger a new fetch from the ES store.
      */
     protected void invalidateCache() {
         synchronized (mutex) {
             contractCache.clear();
-            serviceCache.clear();
+            apiCache.clear();
             applicationCache.clear();
         }
     }
 
     /**
-     * @see io.apiman.gateway.engine.es.ESRegistry#getContract(io.apiman.gateway.engine.beans.ServiceRequest, io.apiman.gateway.engine.async.IAsyncResultHandler)
+     * @see io.apiman.gateway.engine.es.ESRegistry#getContract(io.apiman.gateway.engine.beans.ApiRequest, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
     @Override
-    public void getContract(final ServiceRequest request, final IAsyncResultHandler<ServiceContract> handler) {
-        ServiceContract contract = null;
-        
+    public void getContract(final ApiRequest request, final IAsyncResultHandler<ApiContract> handler) {
+        ApiContract contract = null;
+
         String contractKey = getContractKey(request);
         synchronized (mutex) {
             contract = contractCache.get(contractKey);
         }
-        
+
         try {
             if (contract == null) {
-                super.getContract(request, new IAsyncResultHandler<ServiceContract>() {
+                super.getContract(request, new IAsyncResultHandler<ApiContract>() {
                     @Override
-                    public void handle(IAsyncResult<ServiceContract> result) {
+                    public void handle(IAsyncResult<ApiContract> result) {
                         if (result.isSuccess()) {
                             loadAndCacheApp(result.getResult().getApplication());
                         }
@@ -92,69 +92,69 @@ public abstract class CachingESRegistry extends ESRegistry {
                     }
                 });
             } else {
-                Service service = getService(request.getServiceOrgId(), request.getServiceId(), request.getServiceVersion());
-                if (service == null) {
-                    throw new InvalidContractException(Messages.i18n.format("ESRegistry.ServiceWasRetired", //$NON-NLS-1$
-                            request.getServiceId(), request.getServiceOrgId()));
+                Api api = getApi(request.getApiOrgId(), request.getApiId(), request.getApiVersion());
+                if (api == null) {
+                    throw new InvalidContractException(Messages.i18n.format("ESRegistry.ApiWasRetired", //$NON-NLS-1$
+                            request.getApiId(), request.getApiOrgId()));
                 }
-                contract.setService(service);
+                contract.setApi(api);
                 handler.handle(AsyncResultImpl.create(contract));
             }
         } catch (Throwable e) {
-            handler.handle(AsyncResultImpl.create(e, ServiceContract.class));
+            handler.handle(AsyncResultImpl.create(e, ApiContract.class));
         }
     }
 
     /**
-     * @see io.apiman.gateway.engine.es.ESRegistry#getService(java.lang.String, java.lang.String, java.lang.String, io.apiman.gateway.engine.async.IAsyncResultHandler)
+     * @see io.apiman.gateway.engine.es.ESRegistry#getApi(java.lang.String, java.lang.String, java.lang.String, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
     @Override
-    public void getService(final String organizationId, final String serviceId, final String serviceVersion,
-            final IAsyncResultHandler<Service> handler) {
+    public void getApi(final String organizationId, final String apiId, final String apiVersion,
+            final IAsyncResultHandler<Api> handler) {
         try {
-            Service service = getService(organizationId, serviceId, serviceVersion);
-            handler.handle(AsyncResultImpl.create(service));
+            Api api = getApi(organizationId, apiId, apiVersion);
+            handler.handle(AsyncResultImpl.create(api));
         } catch (IOException e) {
-            handler.handle(AsyncResultImpl.create(e, Service.class));
+            handler.handle(AsyncResultImpl.create(e, Api.class));
         }
     }
-    
+
     /**
-     * Gets the service either from the cache or from ES.
+     * Gets the api either from the cache or from ES.
      * @param orgId
-     * @param serviceId
+     * @param apiId
      * @param version
      */
-    protected Service getService(String orgId, String serviceId, String version) throws IOException {
-        String serviceKey = getServiceKey(orgId, serviceId, version);
-        Service service = null;
+    protected Api getApi(String orgId, String apiId, String version) throws IOException {
+        String apiKey = getApiKey(orgId, apiId, version);
+        Api api = null;
         synchronized (mutex) {
-            service = serviceCache.get(serviceKey);
+            api = apiCache.get(apiKey);
         }
-        
-        if (service == null) {
-            service = super.getService(getServiceId(orgId, serviceId, version));
+
+        if (api == null) {
+            api = super.getApi(getApiId(orgId, apiId, version));
             synchronized (mutex) {
-                if (service != null) {
-                    serviceCache.put(serviceKey, service);
+                if (api != null) {
+                    apiCache.put(apiKey, api);
                 }
             }
         }
-        
-        return service;
+
+        return api;
     }
-    
+
     /**
-     * @see io.apiman.gateway.engine.es.ESRegistry#checkService(io.apiman.gateway.engine.beans.ServiceContract)
+     * @see io.apiman.gateway.engine.es.ESRegistry#checkApi(io.apiman.gateway.engine.beans.ApiContract)
      */
     @Override
-    protected void checkService(ServiceContract contract) throws InvalidContractException, IOException {
-        Service service = getService(contract.getService().getOrganizationId(), 
-                contract.getService().getServiceId(),
-                contract.getService().getVersion());
-        if (service == null) {
-            throw new InvalidContractException(Messages.i18n.format("ESRegistry.ServiceWasRetired", //$NON-NLS-1$
-                    contract.getService().getServiceId(), contract.getService().getOrganizationId()));
+    protected void checkApi(ApiContract contract) throws InvalidContractException, IOException {
+        Api api = getApi(contract.getApi().getOrganizationId(),
+                contract.getApi().getApiId(),
+                contract.getApi().getVersion());
+        if (api == null) {
+            throw new InvalidContractException(Messages.i18n.format("ESRegistry.ApiWasRetired", //$NON-NLS-1$
+                    contract.getApi().getApiId(), contract.getApi().getOrganizationId()));
         }
     }
 
@@ -167,7 +167,7 @@ public abstract class CachingESRegistry extends ESRegistry {
             applicationCache.put(applicationKey, application);
             if (application.getContracts() != null) {
                 for (Contract contract : application.getContracts()) {
-                    ServiceContract sc = new ServiceContract(contract.getApiKey(), null, application, contract.getPlan(), contract.getPolicies());
+                    ApiContract sc = new ApiContract(contract.getApiKey(), null, application, contract.getPlan(), contract.getPolicies());
                     String contractKey = getContractKey(contract);
                     contractCache.put(contractKey, sc);
                 }
@@ -197,15 +197,15 @@ public abstract class CachingESRegistry extends ESRegistry {
     }
 
     /**
-     * Generates an in-memory key for an service, used to index the app for later quick
+     * Generates an in-memory key for an API, used to index the app for later quick
      * retrieval.
      * @param orgId
-     * @param serviceId
+     * @param apiId
      * @param version
-     * @return a service key
+     * @return a API key
      */
-    private String getServiceKey(String orgId, String serviceId, String version) {
-        return "SVC::" + orgId + "|" + serviceId + "|" + version; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    private String getApiKey(String orgId, String apiId, String version) {
+        return "API::" + orgId + "|" + apiId + "|" + version; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
     /**
@@ -222,12 +222,12 @@ public abstract class CachingESRegistry extends ESRegistry {
      * Generates an in-memory key for a contract.
      * @param request
      */
-    private String getContractKey(ServiceRequest request) {
+    private String getContractKey(ApiRequest request) {
         return "CONTRACT::" + request.getApiKey(); //$NON-NLS-1$
     }
 
     /**
-     * Generates an in-memory key for a service contract, used to index the app for later quick
+     * Generates an in-memory key for a API contract, used to index the app for later quick
      * retrieval.
      * @param contract
      */

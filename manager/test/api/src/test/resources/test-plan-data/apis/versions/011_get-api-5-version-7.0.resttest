@@ -1,0 +1,22 @@
+GET /organizations/Organization1/apis/API5/versions/7.0 admin/admin
+----
+200
+Content-Type: application/json
+
+{
+  "api" : {
+    "organization" : {
+      "id" : "Organization1"
+    },
+    "id" : "API5",
+    "name" : "API 5",
+    "description" : "This is the description of API 5.",
+    "createdBy":"admin"
+  },
+  "status" : "Ready",
+  "version" : "7.0",
+  "createdBy" : "admin",
+  "endpoint" : "http://localhost:9000/api-5",
+  "endpointType" : "rest",
+  "publicAPI" : true
+}

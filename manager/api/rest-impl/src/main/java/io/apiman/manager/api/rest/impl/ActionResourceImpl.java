@@ -16,12 +16,16 @@
 
 package io.apiman.manager.api.rest.impl;
 
+import io.apiman.gateway.engine.beans.Api;
 import io.apiman.gateway.engine.beans.Application;
 import io.apiman.gateway.engine.beans.Contract;
 import io.apiman.gateway.engine.beans.Policy;
-import io.apiman.gateway.engine.beans.Service;
 import io.apiman.gateway.engine.beans.exceptions.PublishingException;
 import io.apiman.manager.api.beans.actions.ActionBean;
+import io.apiman.manager.api.beans.apis.ApiGatewayBean;
+import io.apiman.manager.api.beans.apis.ApiStatus;
+import io.apiman.manager.api.beans.apis.ApiBean;
+import io.apiman.manager.api.beans.apis.ApiVersionBean;
 import io.apiman.manager.api.beans.apps.ApplicationStatus;
 import io.apiman.manager.api.beans.apps.ApplicationVersionBean;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
@@ -30,14 +34,10 @@ import io.apiman.manager.api.beans.plans.PlanStatus;
 import io.apiman.manager.api.beans.plans.PlanVersionBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyType;
-import io.apiman.manager.api.beans.services.ServiceBean;
-import io.apiman.manager.api.beans.services.ServiceGatewayBean;
-import io.apiman.manager.api.beans.services.ServiceStatus;
-import io.apiman.manager.api.beans.services.ServiceVersionBean;
 import io.apiman.manager.api.beans.summary.ContractSummaryBean;
 import io.apiman.manager.api.beans.summary.PolicySummaryBean;
+import io.apiman.manager.api.core.IApiValidator;
 import io.apiman.manager.api.core.IApplicationValidator;
-import io.apiman.manager.api.core.IServiceValidator;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.StorageException;
@@ -48,10 +48,10 @@ import io.apiman.manager.api.gateway.IGatewayLinkFactory;
 import io.apiman.manager.api.rest.contract.IActionResource;
 import io.apiman.manager.api.rest.contract.IOrganizationResource;
 import io.apiman.manager.api.rest.contract.exceptions.ActionException;
+import io.apiman.manager.api.rest.contract.exceptions.ApiVersionNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.ApplicationVersionNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.GatewayNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.PlanVersionNotFoundException;
-import io.apiman.manager.api.rest.contract.exceptions.ServiceVersionNotFoundException;
 import io.apiman.manager.api.rest.impl.audit.AuditUtils;
 import io.apiman.manager.api.rest.impl.i18n.Messages;
 import io.apiman.manager.api.rest.impl.util.ExceptionFactory;
@@ -81,7 +81,7 @@ public class ActionResourceImpl implements IActionResource {
     @Inject IGatewayLinkFactory gatewayLinkFactory;
     @Inject IOrganizationResource orgs;
 
-    @Inject IServiceValidator serviceValidator;
+    @Inject IApiValidator apiValidator;
     @Inject IApplicationValidator applicationValidator;
 
     @Inject ISecurityContext securityContext;
@@ -100,11 +100,11 @@ public class ActionResourceImpl implements IActionResource {
     @Override
     public void performAction(ActionBean action) throws ActionException {
         switch (action.getType()) {
-            case publishService:
-                publishService(action);
+            case publishAPI:
+                publishApi(action);
                 return;
-            case retireService:
-                retireService(action);
+            case retireAPI:
+                retireApi(action);
                 return;
             case registerApplication:
                 registerApplication(action);
@@ -121,53 +121,53 @@ public class ActionResourceImpl implements IActionResource {
     }
 
     /**
-     * Publishes a service to the gateway.
+     * Publishes an API to the gateway.
      * @param action
      */
-    private void publishService(ActionBean action) throws ActionException {
-        if (!securityContext.hasPermission(PermissionType.svcAdmin, action.getOrganizationId()))
+    private void publishApi(ActionBean action) throws ActionException {
+        if (!securityContext.hasPermission(PermissionType.apiAdmin, action.getOrganizationId()))
             throw ExceptionFactory.notAuthorizedException();
 
-        ServiceVersionBean versionBean = null;
+        ApiVersionBean versionBean = null;
         try {
-            versionBean = orgs.getServiceVersion(action.getOrganizationId(), action.getEntityId(), action.getEntityVersion());
-        } catch (ServiceVersionNotFoundException e) {
-            throw ExceptionFactory.actionException(Messages.i18n.format("ServiceNotFound")); //$NON-NLS-1$
+            versionBean = orgs.getApiVersion(action.getOrganizationId(), action.getEntityId(), action.getEntityVersion());
+        } catch (ApiVersionNotFoundException e) {
+            throw ExceptionFactory.actionException(Messages.i18n.format("ApiNotFound")); //$NON-NLS-1$
         }
 
-        // Validate that it's ok to perform this action - service must be Ready.
-        if (versionBean.getStatus() != ServiceStatus.Ready) {
-            throw ExceptionFactory.actionException(Messages.i18n.format("InvalidServiceStatus")); //$NON-NLS-1$
+        // Validate that it's ok to perform this action - API must be Ready.
+        if (versionBean.getStatus() != ApiStatus.Ready) {
+            throw ExceptionFactory.actionException(Messages.i18n.format("InvalidApiStatus")); //$NON-NLS-1$
         }
 
-        Service gatewaySvc = new Service();
-        gatewaySvc.setEndpoint(versionBean.getEndpoint());
-        gatewaySvc.setEndpointType(versionBean.getEndpointType().toString());
+        Api gatewayApi = new Api();
+        gatewayApi.setEndpoint(versionBean.getEndpoint());
+        gatewayApi.setEndpointType(versionBean.getEndpointType().toString());
         if (versionBean.getEndpointContentType() != null) {
-            gatewaySvc.setEndpointContentType(versionBean.getEndpointContentType().toString());
+            gatewayApi.setEndpointContentType(versionBean.getEndpointContentType().toString());
         }
-        gatewaySvc.setEndpointProperties(versionBean.getEndpointProperties());
-        gatewaySvc.setOrganizationId(versionBean.getService().getOrganization().getId());
-        gatewaySvc.setServiceId(versionBean.getService().getId());
-        gatewaySvc.setVersion(versionBean.getVersion());
-        gatewaySvc.setPublicService(versionBean.isPublicService());
+        gatewayApi.setEndpointProperties(versionBean.getEndpointProperties());
+        gatewayApi.setOrganizationId(versionBean.getApi().getOrganization().getId());
+        gatewayApi.setApiId(versionBean.getApi().getId());
+        gatewayApi.setVersion(versionBean.getVersion());
+        gatewayApi.setPublicAPI(versionBean.isPublicAPI());
         boolean hasTx = false;
         try {
-            if (versionBean.isPublicService()) {
+            if (versionBean.isPublicAPI()) {
                 List<Policy> policiesToPublish = new ArrayList<>();
-                List<PolicySummaryBean> servicePolicies = query.getPolicies(action.getOrganizationId(),
-                        action.getEntityId(), action.getEntityVersion(), PolicyType.Service);
+                List<PolicySummaryBean> apiPolicies = query.getPolicies(action.getOrganizationId(),
+                        action.getEntityId(), action.getEntityVersion(), PolicyType.Api);
                 storage.beginTx();
                 hasTx = true;
-                for (PolicySummaryBean policySummaryBean : servicePolicies) {
-                    PolicyBean servicePolicy = storage.getPolicy(PolicyType.Service, action.getOrganizationId(),
+                for (PolicySummaryBean policySummaryBean : apiPolicies) {
+                    PolicyBean apiPolicy = storage.getPolicy(PolicyType.Api, action.getOrganizationId(),
                             action.getEntityId(), action.getEntityVersion(), policySummaryBean.getId());
                     Policy policyToPublish = new Policy();
-                    policyToPublish.setPolicyJsonConfig(servicePolicy.getConfiguration());
-                    policyToPublish.setPolicyImpl(servicePolicy.getDefinition().getPolicyImpl());
+                    policyToPublish.setPolicyJsonConfig(apiPolicy.getConfiguration());
+                    policyToPublish.setPolicyImpl(apiPolicy.getDefinition().getPolicyImpl());
                     policiesToPublish.add(policyToPublish);
                 }
-                gatewaySvc.setServicePolicies(policiesToPublish);
+                gatewayApi.setApiPolicies(policiesToPublish);
             }
         } catch (StorageException e) {
             throw ExceptionFactory.actionException(Messages.i18n.format("PublishError"), e); //$NON-NLS-1$
@@ -177,35 +177,35 @@ public class ActionResourceImpl implements IActionResource {
             }
         }
 
-        // Publish the service to all relevant gateways
+        // Publish the API to all relevant gateways
         try {
             storage.beginTx();
-            Set<ServiceGatewayBean> gateways = versionBean.getGateways();
+            Set<ApiGatewayBean> gateways = versionBean.getGateways();
             if (gateways == null) {
-                throw new PublishingException("No gateways specified for service!"); //$NON-NLS-1$
+                throw new PublishingException("No gateways specified for API!"); //$NON-NLS-1$
             }
-            for (ServiceGatewayBean serviceGatewayBean : gateways) {
-                IGatewayLink gatewayLink = createGatewayLink(serviceGatewayBean.getGatewayId());
-                gatewayLink.publishService(gatewaySvc);
+            for (ApiGatewayBean apiGatewayBean : gateways) {
+                IGatewayLink gatewayLink = createGatewayLink(apiGatewayBean.getGatewayId());
+                gatewayLink.publishApi(gatewayApi);
                 gatewayLink.close();
             }
 
-            versionBean.setStatus(ServiceStatus.Published);
+            versionBean.setStatus(ApiStatus.Published);
             versionBean.setPublishedOn(new Date());
 
-            ServiceBean service = storage.getService(action.getOrganizationId(), action.getEntityId());
-            if (service == null) {
-                throw new PublishingException("Error: could not find service - " + action.getOrganizationId() + "=>" + action.getEntityId()); //$NON-NLS-1$ //$NON-NLS-2$
+            ApiBean api = storage.getApi(action.getOrganizationId(), action.getEntityId());
+            if (api == null) {
+                throw new PublishingException("Error: could not find API - " + action.getOrganizationId() + "=>" + action.getEntityId()); //$NON-NLS-1$ //$NON-NLS-2$
             }
-            if (service.getNumPublished() == null) {
-                service.setNumPublished(1);
+            if (api.getNumPublished() == null) {
+                api.setNumPublished(1);
             } else {
-                service.setNumPublished(service.getNumPublished() + 1);
+                api.setNumPublished(api.getNumPublished() + 1);
             }
 
-            storage.updateService(service);
-            storage.updateServiceVersion(versionBean);
-            storage.createAuditEntry(AuditUtils.servicePublished(versionBean, securityContext));
+            storage.updateApi(api);
+            storage.updateApiVersion(versionBean);
+            storage.createAuditEntry(AuditUtils.apiPublished(versionBean, securityContext));
             storage.commitTx();
         } catch (PublishingException e) {
             storage.rollbackTx();
@@ -215,8 +215,8 @@ public class ActionResourceImpl implements IActionResource {
             throw ExceptionFactory.actionException(Messages.i18n.format("PublishError"), e); //$NON-NLS-1$
         }
 
-        log.debug(String.format("Successfully published Service %s on specified gateways: %s", //$NON-NLS-1$
-                versionBean.getService().getName(), versionBean.getService()));
+        log.debug(String.format("Successfully published API %s on specified gateways: %s", //$NON-NLS-1$
+                versionBean.getApi().getName(), versionBean.getApi()));
     }
 
     /**
@@ -239,59 +239,59 @@ public class ActionResourceImpl implements IActionResource {
     }
 
     /**
-     * Retires a service that is currently published to the Gateway.
+     * Retires an API that is currently published to the Gateway.
      * @param action
      */
-    private void retireService(ActionBean action) throws ActionException {
-        if (!securityContext.hasPermission(PermissionType.svcAdmin, action.getOrganizationId()))
+    private void retireApi(ActionBean action) throws ActionException {
+        if (!securityContext.hasPermission(PermissionType.apiAdmin, action.getOrganizationId()))
             throw ExceptionFactory.notAuthorizedException();
 
-        ServiceVersionBean versionBean = null;
+        ApiVersionBean versionBean = null;
         try {
-            versionBean = orgs.getServiceVersion(action.getOrganizationId(), action.getEntityId(), action.getEntityVersion());
-        } catch (ServiceVersionNotFoundException e) {
-            throw ExceptionFactory.actionException(Messages.i18n.format("ServiceNotFound")); //$NON-NLS-1$
+            versionBean = orgs.getApiVersion(action.getOrganizationId(), action.getEntityId(), action.getEntityVersion());
+        } catch (ApiVersionNotFoundException e) {
+            throw ExceptionFactory.actionException(Messages.i18n.format("ApiNotFound")); //$NON-NLS-1$
         }
 
-        // Validate that it's ok to perform this action - service must be Published.
-        if (versionBean.getStatus() != ServiceStatus.Published) {
-            throw ExceptionFactory.actionException(Messages.i18n.format("InvalidServiceStatus")); //$NON-NLS-1$
+        // Validate that it's ok to perform this action - API must be Published.
+        if (versionBean.getStatus() != ApiStatus.Published) {
+            throw ExceptionFactory.actionException(Messages.i18n.format("InvalidApiStatus")); //$NON-NLS-1$
         }
 
-        Service gatewaySvc = new Service();
-        gatewaySvc.setOrganizationId(versionBean.getService().getOrganization().getId());
-        gatewaySvc.setServiceId(versionBean.getService().getId());
-        gatewaySvc.setVersion(versionBean.getVersion());
+        Api gatewayApi = new Api();
+        gatewayApi.setOrganizationId(versionBean.getApi().getOrganization().getId());
+        gatewayApi.setApiId(versionBean.getApi().getId());
+        gatewayApi.setVersion(versionBean.getVersion());
 
-        // Retire the service from all relevant gateways
+        // Retire the API from all relevant gateways
         try {
             storage.beginTx();
-            Set<ServiceGatewayBean> gateways = versionBean.getGateways();
+            Set<ApiGatewayBean> gateways = versionBean.getGateways();
             if (gateways == null) {
-                throw new PublishingException("No gateways specified for service!"); //$NON-NLS-1$
+                throw new PublishingException("No gateways specified for API!"); //$NON-NLS-1$
             }
-            for (ServiceGatewayBean serviceGatewayBean : gateways) {
-                IGatewayLink gatewayLink = createGatewayLink(serviceGatewayBean.getGatewayId());
-                gatewayLink.retireService(gatewaySvc);
+            for (ApiGatewayBean apiGatewayBean : gateways) {
+                IGatewayLink gatewayLink = createGatewayLink(apiGatewayBean.getGatewayId());
+                gatewayLink.retireApi(gatewayApi);
                 gatewayLink.close();
             }
 
-            versionBean.setStatus(ServiceStatus.Retired);
+            versionBean.setStatus(ApiStatus.Retired);
             versionBean.setRetiredOn(new Date());
 
-            ServiceBean service = storage.getService(action.getOrganizationId(), action.getEntityId());
-            if (service == null) {
-                throw new PublishingException("Error: could not find service - " + action.getOrganizationId() + "=>" + action.getEntityId()); //$NON-NLS-1$ //$NON-NLS-2$
+            ApiBean api = storage.getApi(action.getOrganizationId(), action.getEntityId());
+            if (api == null) {
+                throw new PublishingException("Error: could not find API - " + action.getOrganizationId() + "=>" + action.getEntityId()); //$NON-NLS-1$ //$NON-NLS-2$
             }
-            if (service.getNumPublished() == null || service.getNumPublished() == 0) {
-                service.setNumPublished(0);
+            if (api.getNumPublished() == null || api.getNumPublished() == 0) {
+                api.setNumPublished(0);
             } else {
-                service.setNumPublished(service.getNumPublished() - 1);
+                api.setNumPublished(api.getNumPublished() - 1);
             }
 
-            storage.updateService(service);
-            storage.updateServiceVersion(versionBean);
-            storage.createAuditEntry(AuditUtils.serviceRetired(versionBean, securityContext));
+            storage.updateApi(api);
+            storage.updateApiVersion(versionBean);
+            storage.createAuditEntry(AuditUtils.apiRetired(versionBean, securityContext));
             storage.commitTx();
         } catch (PublishingException e) {
             storage.rollbackTx();
@@ -301,8 +301,8 @@ public class ActionResourceImpl implements IActionResource {
             throw ExceptionFactory.actionException(Messages.i18n.format("RetireError"), e); //$NON-NLS-1$
         }
 
-        log.debug(String.format("Successfully retired Service %s on specified gateways: %s", //$NON-NLS-1$
-                versionBean.getService().getName(), versionBean.getService()));
+        log.debug(String.format("Successfully retired API %s on specified gateways: %s", //$NON-NLS-1$
+                versionBean.getApi().getName(), versionBean.getApi()));
     }
 
     /**
@@ -346,30 +346,30 @@ public class ActionResourceImpl implements IActionResource {
             Contract contract = new Contract();
             contract.setApiKey(contractBean.getApikey());
             contract.setPlan(contractBean.getPlanId());
-            contract.setServiceId(contractBean.getServiceId());
-            contract.setServiceOrgId(contractBean.getServiceOrganizationId());
-            contract.setServiceVersion(contractBean.getServiceVersion());
+            contract.setApiId(contractBean.getApiId());
+            contract.setApiOrgId(contractBean.getApiOrganizationId());
+            contract.setApiVersion(contractBean.getApiVersion());
             contract.getPolicies().addAll(aggregateContractPolicies(contractBean));
             contracts.add(contract);
         }
         application.setContracts(contracts);
 
         // Next, register the application with *all* relevant gateways.  This is done by
-        // looking up all referenced services and getting the gateway information for them.
+        // looking up all referenced APIs and getting the gateway information for them.
         // Each of those gateways must be told about the application.
         try {
             storage.beginTx();
             Map<String, IGatewayLink> links = new HashMap<>();
             for (Contract contract : application.getContracts()) {
-                ServiceVersionBean svb = storage.getServiceVersion(contract.getServiceOrgId(), contract.getServiceId(), contract.getServiceVersion());
-                Set<ServiceGatewayBean> gateways = svb.getGateways();
+                ApiVersionBean svb = storage.getApiVersion(contract.getApiOrgId(), contract.getApiId(), contract.getApiVersion());
+                Set<ApiGatewayBean> gateways = svb.getGateways();
                 if (gateways == null) {
-                    throw new PublishingException("No gateways specified for service: " + svb.getService().getName()); //$NON-NLS-1$
+                    throw new PublishingException("No gateways specified for API: " + svb.getApi().getName()); //$NON-NLS-1$
                 }
-                for (ServiceGatewayBean serviceGatewayBean : gateways) {
-                    if (!links.containsKey(serviceGatewayBean.getGatewayId())) {
-                        IGatewayLink gatewayLink = createGatewayLink(serviceGatewayBean.getGatewayId());
-                        links.put(serviceGatewayBean.getGatewayId(), gatewayLink);
+                for (ApiGatewayBean apiGatewayBean : gateways) {
+                    if (!links.containsKey(apiGatewayBean.getGatewayId())) {
+                        IGatewayLink gatewayLink = createGatewayLink(apiGatewayBean.getGatewayId());
+                        links.put(apiGatewayBean.getGatewayId(), gatewayLink);
                     }
                 }
             }
@@ -401,14 +401,14 @@ public class ActionResourceImpl implements IActionResource {
     }
 
     /**
-     * Aggregates the service, app, and plan policies into a single ordered list.
+     * Aggregates the API, app, and plan policies into a single ordered list.
      * @param contractBean
      */
     private List<Policy> aggregateContractPolicies(ContractSummaryBean contractBean) {
         try {
             List<Policy> policies = new ArrayList<>();
             PolicyType [] types = new PolicyType[] {
-                    PolicyType.Application, PolicyType.Plan, PolicyType.Service
+                    PolicyType.Application, PolicyType.Plan, PolicyType.Api
             };
             for (PolicyType policyType : types) {
                 String org, id, ver;
@@ -420,15 +420,15 @@ public class ActionResourceImpl implements IActionResource {
                       break;
                   }
                   case Plan: {
-                      org = contractBean.getServiceOrganizationId();
+                      org = contractBean.getApiOrganizationId();
                       id = contractBean.getPlanId();
                       ver = contractBean.getPlanVersion();
                       break;
                   }
-                  case Service: {
-                      org = contractBean.getServiceOrganizationId();
-                      id = contractBean.getServiceId();
-                      ver = contractBean.getServiceVersion();
+                  case Api: {
+                      org = contractBean.getApiOrganizationId();
+                      id = contractBean.getApiId();
+                      ver = contractBean.getApiVersion();
                       break;
                   }
                   default: {
@@ -487,22 +487,22 @@ public class ActionResourceImpl implements IActionResource {
         application.setVersion(versionBean.getVersion());
 
         // Next, unregister the application from *all* relevant gateways.  This is done by
-        // looking up all referenced services and getting the gateway information for them.
+        // looking up all referenced APIs and getting the gateway information for them.
         // Each of those gateways must be told about the application.
         try {
             storage.beginTx();
             Map<String, IGatewayLink> links = new HashMap<>();
             for (ContractSummaryBean contractBean : contractBeans) {
-                ServiceVersionBean svb = storage.getServiceVersion(contractBean.getServiceOrganizationId(),
-                        contractBean.getServiceId(), contractBean.getServiceVersion());
-                Set<ServiceGatewayBean> gateways = svb.getGateways();
+                ApiVersionBean svb = storage.getApiVersion(contractBean.getApiOrganizationId(),
+                        contractBean.getApiId(), contractBean.getApiVersion());
+                Set<ApiGatewayBean> gateways = svb.getGateways();
                 if (gateways == null) {
-                    throw new PublishingException("No gateways specified for service: " + svb.getService().getName()); //$NON-NLS-1$
+                    throw new PublishingException("No gateways specified for API: " + svb.getApi().getName()); //$NON-NLS-1$
                 }
-                for (ServiceGatewayBean serviceGatewayBean : gateways) {
-                    if (!links.containsKey(serviceGatewayBean.getGatewayId())) {
-                        IGatewayLink gatewayLink = createGatewayLink(serviceGatewayBean.getGatewayId());
-                        links.put(serviceGatewayBean.getGatewayId(), gatewayLink);
+                for (ApiGatewayBean apiGatewayBean : gateways) {
+                    if (!links.containsKey(apiGatewayBean.getGatewayId())) {
+                        IGatewayLink gatewayLink = createGatewayLink(apiGatewayBean.getGatewayId());
+                        links.put(apiGatewayBean.getGatewayId(), gatewayLink);
                     }
                 }
             }
@@ -599,17 +599,17 @@ public class ActionResourceImpl implements IActionResource {
     }
 
     /**
-     * @return the serviceValidator
+     * @return the apiValidator
      */
-    public IServiceValidator getServiceValidator() {
-        return serviceValidator;
+    public IApiValidator getApiValidator() {
+        return apiValidator;
     }
 
     /**
-     * @param serviceValidator the serviceValidator to set
+     * @param apiValidator the apiValidator to set
      */
-    public void setServiceValidator(IServiceValidator serviceValidator) {
-        this.serviceValidator = serviceValidator;
+    public void setApiValidator(IApiValidator apiValidator) {
+        this.apiValidator = apiValidator;
     }
 
     /**

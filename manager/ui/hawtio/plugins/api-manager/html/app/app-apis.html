@@ -25,7 +25,7 @@
           <div class="col-md-11">
             <!-- Title and help text -->
             <div class="title" apiman-i18n-key="application-apis">Application APIs</div>
-            <div class="description" apiman-i18n-key="apis-help">Below is a list of all the APIs this application consumes.  This information is derived from the set of Service Contracts the Application has entered into.  Manage these Contracts by switching to the "Contracts" tab.</div>
+            <div class="description" apiman-i18n-key="apis-help">Below is a list of all the APIs this application consumes.  This information is derived from the set of API Contracts the Application has entered into.  Manage these Contracts by switching to the "Contracts" tab.</div>
             <hr />
             <!-- The list of apis (filterable) -->
             <div>
@@ -41,7 +41,7 @@
                   <thead>
                     <tr>
                       <th nowrap="nowrap" width="1%"></th>
-                      <th apiman-i18n-key="service" nowrap="nowrap">Service</th>
+                      <th apiman-i18n-key="api" nowrap="nowrap">API</th>
                       <th apiman-i18n-key="version" width="1%" nowrap="nowrap">Version</th>
                       <th apiman-i18n-key="plan" nowrap="nowrap">Plan</th>
                     </tr>
@@ -50,11 +50,11 @@
                     <tr ng-repeat-start="api in apiRegistry.apis">
                       <td><a ng-click="toggle(api)" href="javascript:;"><i class="fa fa-fw {{ api.expanded ? 'fa-chevron-down' : 'fa-chevron-right' }}"></i></a></td>
                       <td>
-                        <span><a href="{{ pluginName }}/browse/orgs/{{ api.serviceOrgId }}">{{ api.serviceOrgName }}</a>
+                        <span><a href="{{ pluginName }}/browse/orgs/{{ api.apiOrgId }}">{{ api.apiOrgName }}</a>
                         <span apiman-i18n-skip>/</span>
-                        <a href="{{ pluginName }}/browse/orgs/{{ api.serviceOrgId }}/{{ api.serviceId }}/{{ api.serviceVersion }}"><span class="emphasis">{{ api.serviceName }}</span></a></span>
+                        <a href="{{ pluginName }}/browse/orgs/{{ api.apiOrgId }}/{{ api.apiId }}/{{ api.apiVersion }}"><span class="emphasis">{{ api.apiName }}</span></a></span>
                       </td>
-                      <td><span>{{ api.serviceVersion }}</span></td>
+                      <td><span>{{ api.apiVersion }}</span></td>
                       <td>{{ api.planName }}</td>
                     </tr>
                     <tr ng-repeat-end ng-show="api.expanded">
@@ -102,7 +102,7 @@
                                 <div class="modal-body">
                                   <p class="explanation"
                                      apiman-i18n-key="api-dialog-explanation">
-                                    To successfully invoke the managed service for this service contract, you must provide the appropriate API Key with each request. The API Key can be provided either by sending it as an HTTP Request Header named X-API-Key, or you can send it as a URL query parameter.
+                                    To successfully invoke the managed API for this API contract, you must provide the appropriate API Key with each request. The API Key can be provided either by sending it as an HTTP Request Header named X-API-Key, or you can send it as a URL query parameter.
                                   </p>
                                   <hr style="margin-left: -25px; margin-right: -25px">
                                   <div class="apiman-form-label"
@@ -163,7 +163,7 @@
                                 </div>
                               </script>
                               <button type="button"
-                                      title="Click for details on how to invoke this managed service."
+                                      title="Click for details on how to invoke this managed API."
                                       apiman-i18n-key="how-to-invoke"
                                       class="btn btn-default"
                                       ng-click="howToInvoke(null, api)">

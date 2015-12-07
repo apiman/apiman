@@ -16,9 +16,9 @@
 package io.apiman.gateway.engine.beans.exceptions;
 
 /**
- * Thrown when a Service Connection Interceptor has already been registered in
+ * Thrown when an API Connection Interceptor has already been registered in
  * the IPolicyContext
- * 
+ *
  * @author rromero
  *
  */
@@ -34,5 +34,5 @@ public class InterceptorAlreadyRegisteredException extends AbstractEngineExcepti
     public InterceptorAlreadyRegisteredException(Class<?> interceptorClass) {
         super("An Interceptor of type " + interceptorClass + " was already registered in the context");
     }
-    
+
 }

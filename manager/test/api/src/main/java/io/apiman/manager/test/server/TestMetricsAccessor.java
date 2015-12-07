@@ -15,7 +15,7 @@
  */
 package io.apiman.manager.test.server;
 
-import io.apiman.manager.api.beans.metrics.AppUsagePerServiceBean;
+import io.apiman.manager.api.beans.metrics.AppUsagePerApiBean;
 import io.apiman.manager.api.beans.metrics.HistogramIntervalType;
 import io.apiman.manager.api.beans.metrics.ResponseStatsHistogramBean;
 import io.apiman.manager.api.beans.metrics.ResponseStatsPerAppBean;
@@ -51,7 +51,7 @@ public class TestMetricsAccessor implements IMetricsAccessor {
      * @see io.apiman.manager.api.core.IMetricsAccessor#getUsage(java.lang.String, java.lang.String, java.lang.String, io.apiman.manager.api.beans.metrics.HistogramIntervalType, java.util.Date, java.util.Date)
      */
     @Override
-    public UsageHistogramBean getUsage(String organizationId, String serviceId, String version,
+    public UsageHistogramBean getUsage(String organizationId, String apiId, String version,
             HistogramIntervalType interval, DateTime from, DateTime to) {
         UsageHistogramBean rval = new UsageHistogramBean();
         rval.getData().add(new UsageDataPoint("2015-06-01T00:00:00.000Z", 17));
@@ -80,7 +80,7 @@ public class TestMetricsAccessor implements IMetricsAccessor {
      * @see io.apiman.manager.api.core.IMetricsAccessor#getUsagePerApp(java.lang.String, java.lang.String, java.lang.String, java.util.Date, java.util.Date)
      */
     @Override
-    public UsagePerAppBean getUsagePerApp(String organizationId, String serviceId, String version,
+    public UsagePerAppBean getUsagePerApp(String organizationId, String apiId, String version,
             DateTime from, DateTime to) {
         UsagePerAppBean rval = new UsagePerAppBean();
         rval.getData().put("my-app", 120384L);
@@ -93,7 +93,7 @@ public class TestMetricsAccessor implements IMetricsAccessor {
      * @see io.apiman.manager.api.core.IMetricsAccessor#getUsagePerPlan(java.lang.String, java.lang.String, java.lang.String, java.util.Date, java.util.Date)
      */
     @Override
-    public UsagePerPlanBean getUsagePerPlan(String organizationId, String serviceId, String version,
+    public UsagePerPlanBean getUsagePerPlan(String organizationId, String apiId, String version,
             DateTime from, DateTime to) {
         UsagePerPlanBean rval = new UsagePerPlanBean();
         rval.getData().put("Gold", 120384L);
@@ -106,7 +106,7 @@ public class TestMetricsAccessor implements IMetricsAccessor {
      * @see io.apiman.manager.api.core.IMetricsAccessor#getResponseStats(java.lang.String, java.lang.String, java.lang.String, io.apiman.manager.api.beans.metrics.HistogramIntervalType, org.joda.time.DateTime, org.joda.time.DateTime)
      */
     @Override
-    public ResponseStatsHistogramBean getResponseStats(String organizationId, String serviceId,
+    public ResponseStatsHistogramBean getResponseStats(String organizationId, String apiId,
             String version, HistogramIntervalType interval, DateTime from, DateTime to) {
         ResponseStatsHistogramBean rval = new ResponseStatsHistogramBean();
         return rval;
@@ -116,7 +116,7 @@ public class TestMetricsAccessor implements IMetricsAccessor {
      * @see io.apiman.manager.api.core.IMetricsAccessor#getResponseStatsSummary(java.lang.String, java.lang.String, java.lang.String, org.joda.time.DateTime, org.joda.time.DateTime)
      */
     @Override
-    public ResponseStatsSummaryBean getResponseStatsSummary(String organizationId, String serviceId,
+    public ResponseStatsSummaryBean getResponseStatsSummary(String organizationId, String apiId,
             String version, DateTime from, DateTime to) {
         ResponseStatsSummaryBean rval = new ResponseStatsSummaryBean();
         return rval;
@@ -126,7 +126,7 @@ public class TestMetricsAccessor implements IMetricsAccessor {
      * @see io.apiman.manager.api.core.IMetricsAccessor#getResponseStatsPerApp(java.lang.String, java.lang.String, java.lang.String, org.joda.time.DateTime, org.joda.time.DateTime)
      */
     @Override
-    public ResponseStatsPerAppBean getResponseStatsPerApp(String organizationId, String serviceId,
+    public ResponseStatsPerAppBean getResponseStatsPerApp(String organizationId, String apiId,
             String version, DateTime from, DateTime to) {
         ResponseStatsPerAppBean rval = new ResponseStatsPerAppBean();
         return rval;
@@ -136,19 +136,19 @@ public class TestMetricsAccessor implements IMetricsAccessor {
      * @see io.apiman.manager.api.core.IMetricsAccessor#getResponseStatsPerPlan(java.lang.String, java.lang.String, java.lang.String, org.joda.time.DateTime, org.joda.time.DateTime)
      */
     @Override
-    public ResponseStatsPerPlanBean getResponseStatsPerPlan(String organizationId, String serviceId,
+    public ResponseStatsPerPlanBean getResponseStatsPerPlan(String organizationId, String apiId,
             String version, DateTime from, DateTime to) {
         ResponseStatsPerPlanBean rval = new ResponseStatsPerPlanBean();
         return rval;
     }
 
     /**
-     * @see io.apiman.manager.api.core.IMetricsAccessor#getAppUsagePerService(java.lang.String, java.lang.String, java.lang.String, org.joda.time.DateTime, org.joda.time.DateTime)
+     * @see io.apiman.manager.api.core.IMetricsAccessor#getAppUsagePerApi(java.lang.String, java.lang.String, java.lang.String, org.joda.time.DateTime, org.joda.time.DateTime)
      */
     @Override
-    public AppUsagePerServiceBean getAppUsagePerService(String organizationId, String applicationId,
+    public AppUsagePerApiBean getAppUsagePerApi(String organizationId, String applicationId,
             String version, DateTime from, DateTime to) {
-        AppUsagePerServiceBean rval = new AppUsagePerServiceBean();
+        AppUsagePerApiBean rval = new AppUsagePerApiBean();
         return rval;
     }
 

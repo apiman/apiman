@@ -23,7 +23,7 @@ import io.apiman.manager.api.beans.idm.UpdateUserBean;
 import io.apiman.manager.api.beans.idm.UserBean;
 import io.apiman.manager.api.beans.summary.ApplicationSummaryBean;
 import io.apiman.manager.api.beans.summary.OrganizationSummaryBean;
-import io.apiman.manager.api.beans.summary.ServiceSummaryBean;
+import io.apiman.manager.api.beans.summary.ApiSummaryBean;
 import io.apiman.manager.api.core.INewUserBootstrapper;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
@@ -177,11 +177,11 @@ public class CurrentUserResourceImpl implements ICurrentUserResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.ICurrentUserResource#getServiceOrganizations()
+     * @see io.apiman.manager.api.rest.contract.ICurrentUserResource#getApiOrganizations()
      */
     @Override
-    public List<OrganizationSummaryBean> getServiceOrganizations() {
-        Set<String> permittedOrganizations = securityContext.getPermittedOrganizations(PermissionType.svcEdit);
+    public List<OrganizationSummaryBean> getApiOrganizations() {
+        Set<String> permittedOrganizations = securityContext.getPermittedOrganizations(PermissionType.apiEdit);
         try {
             return query.getOrgs(permittedOrganizations);
         } catch (StorageException e) {
@@ -203,13 +203,13 @@ public class CurrentUserResourceImpl implements ICurrentUserResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.ICurrentUserResource#getServices()
+     * @see io.apiman.manager.api.rest.contract.ICurrentUserResource#getApis()
      */
     @Override
-    public List<ServiceSummaryBean> getServices() {
-        Set<String> permittedOrganizations = securityContext.getPermittedOrganizations(PermissionType.svcView);
+    public List<ApiSummaryBean> getApis() {
+        Set<String> permittedOrganizations = securityContext.getPermittedOrganizations(PermissionType.apiView);
         try {
-            return query.getServicesInOrgs(permittedOrganizations);
+            return query.getApisInOrgs(permittedOrganizations);
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }

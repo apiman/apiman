@@ -11,7 +11,7 @@ module Apiman {
         'ngFileUpload',
         'ngAnimate',
 
-        'ApimanServices',
+        'ApimanRPC',
         'ApimanFilters',
         'ApimanLogger',
         'ApimanConfiguration',
@@ -112,59 +112,59 @@ module Apiman {
                 .when(prefix + '/orgs/:org/plans/:plan/:version/new-version', {
                     templateUrl: path + 'forms/new-planversion.html'
                 })
-                .when(prefix + '/orgs/:org/services/:service', {
-                    templateUrl: path + 'service/service.html'
+                .when(prefix + '/orgs/:org/apis/:api', {
+                    templateUrl: path + 'api/api.html'
                 })
-                .when(prefix + '/orgs/:org/services/:service/:version', {
-                    templateUrl: path + 'service/service-overview.html'
+                .when(prefix + '/orgs/:org/apis/:api/:version', {
+                    templateUrl: path + 'api/api-overview.html'
                 })
-                .when(prefix + '/orgs/:org/services/:service/:version/impl', {
-                    templateUrl: path + 'service/service-impl.html'
+                .when(prefix + '/orgs/:org/apis/:api/:version/impl', {
+                    templateUrl: path + 'api/api-impl.html'
                 })
-                .when(prefix + '/orgs/:org/services/:service/:version/def', {
-                    templateUrl: path + 'service/service-def.html'
+                .when(prefix + '/orgs/:org/apis/:api/:version/def', {
+                    templateUrl: path + 'api/api-def.html'
                 })
-                .when(prefix + '/orgs/:org/services/:service/:version/plans', {
-                    templateUrl: path + 'service/service-plans.html'
+                .when(prefix + '/orgs/:org/apis/:api/:version/plans', {
+                    templateUrl: path + 'api/api-plans.html'
                 })
-                .when(prefix + '/orgs/:org/services/:service/:version/policies', {
-                    templateUrl: path + 'service/service-policies.html'
+                .when(prefix + '/orgs/:org/apis/:api/:version/policies', {
+                    templateUrl: path + 'api/api-policies.html'
                 })
-                .when(prefix + '/orgs/:org/services/:service/:version/endpoint', {
-                    templateUrl: path + 'service/service-endpoint.html'
+                .when(prefix + '/orgs/:org/apis/:api/:version/endpoint', {
+                    templateUrl: path + 'api/api-endpoint.html'
                 })
-                .when(prefix + '/orgs/:org/services/:service/:version/contracts', {
-                    templateUrl: path + 'service/service-contracts.html'
+                .when(prefix + '/orgs/:org/apis/:api/:version/contracts', {
+                    templateUrl: path + 'api/api-contracts.html'
                 })
-                .when(prefix + '/orgs/:org/services/:service/:version/metrics', {
-                    templateUrl: path + 'service/service-metrics.html'
+                .when(prefix + '/orgs/:org/apis/:api/:version/metrics', {
+                    templateUrl: path + 'api/api-metrics.html'
                 })
-                .when(prefix + '/orgs/:org/services/:service/:version/activity', {
-                    templateUrl: path + 'service/service-activity.html'
+                .when(prefix + '/orgs/:org/apis/:api/:version/activity', {
+                    templateUrl: path + 'api/api-activity.html'
                 })
-                .when(prefix + '/orgs/:org/services/:service/:version/new-version', {
-                    templateUrl: path + 'forms/new-serviceversion.html'
+                .when(prefix + '/orgs/:org/apis/:api/:version/new-version', {
+                    templateUrl: path + 'forms/new-apiversion.html'
                 })
-                .when(prefix + '/orgs/:org/import/services', {
-                    templateUrl: path + 'service/import-services.html'
+                .when(prefix + '/orgs/:org/import/apis', {
+                    templateUrl: path + 'api/import-apis.html'
                 })
                 .when(prefix + '/browse/orgs', {
                     templateUrl: path + 'consumer/consumer-orgs.html'
                 })
-                .when(prefix + '/browse/services', {
-                    templateUrl: path + 'consumer/consumer-services.html'
+                .when(prefix + '/browse/apis', {
+                    templateUrl: path + 'consumer/consumer-apis.html'
                 })
                 .when(prefix + '/browse/orgs/:org', {
                     templateUrl: path + 'consumer/consumer-org.html'
                 })
-                .when(prefix + '/browse/orgs/:org/:service', {
-                    templateUrl: path + 'consumer/consumer-service-redirect.html'
+                .when(prefix + '/browse/orgs/:org/:api', {
+                    templateUrl: path + 'consumer/consumer-api-redirect.html'
                 })
-                .when(prefix + '/browse/orgs/:org/:service/:version', {
-                    templateUrl: path + 'consumer/consumer-service.html'
+                .when(prefix + '/browse/orgs/:org/:api/:version', {
+                    templateUrl: path + 'consumer/consumer-api.html'
                 })
-                .when(prefix + '/browse/orgs/:org/:service/:version/def', {
-                    templateUrl: path + 'consumer/consumer-service-def.html'
+                .when(prefix + '/browse/orgs/:org/:api/:version/def', {
+                    templateUrl: path + 'consumer/consumer-api-def.html'
                 })
                 .when(prefix + '/new-app', {
                     templateUrl: path + 'forms/new-app.html'
@@ -187,8 +187,8 @@ module Apiman {
                 .when(prefix + '/new-role', {
                     templateUrl: path + 'forms/new-role.html'
                 })
-                .when(prefix + '/new-service', {
-                    templateUrl: path + 'forms/new-service.html'
+                .when(prefix + '/new-api', {
+                    templateUrl: path + 'forms/new-api.html'
                 })
                 .when(prefix + '/import-policyDefs', {
                     templateUrl: path + 'forms/import-policyDefs.html'
@@ -199,8 +199,8 @@ module Apiman {
                 .when(prefix + '/orgs/:org/plans', {
                     templateUrl: path + 'org/org-plans.html'
                 })
-                .when(prefix + '/orgs/:org/services', {
-                    templateUrl: path + 'org/org-services.html'
+                .when(prefix + '/orgs/:org/apis', {
+                    templateUrl: path + 'org/org-apis.html'
                 })
                 .when(prefix + '/orgs/:org/apps', {
                     templateUrl: path + 'org/org-apps.html'
@@ -229,8 +229,8 @@ module Apiman {
                 .when(prefix + '/users/:user/orgs', {
                     templateUrl: path + 'user/user-orgs.html'
                 })
-                .when(prefix + '/users/:user/services', {
-                    templateUrl: path + 'user/user-services.html'
+                .when(prefix + '/users/:user/apis', {
+                    templateUrl: path + 'user/user-apis.html'
                 })
                 .when(prefix + '/errors/invalid_server', {
                     templateUrl: path + 'errors/invalid_server.html'

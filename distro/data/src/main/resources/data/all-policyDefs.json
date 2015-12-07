@@ -2,13 +2,13 @@
     {
       "id" : "BASICAuthenticationPolicy",
       "name" : "BASIC Authentication Policy",
-      "description" : "Enables HTTP BASIC Authentication on a service.  Some configuration required.",
+      "description" : "Enables HTTP BASIC Authentication on an API.  Some configuration required.",
       "policyImpl" : "class:io.apiman.gateway.engine.policies.BasicAuthenticationPolicy",
       "icon" : "lock",
       "templates" : [
         {
           "language" : null,
-          "template" : "Access to the service is protected by BASIC Authentication through the '@{realm}' authentication realm.  @if{forwardIdentityHttpHeader != null}Successfully authenticated requests will forward the authenticated identity to the back end service via the '@{forwardIdentityHttpHeader}' custom HTTP header.@end{}"
+          "template" : "Access to the API is protected by BASIC Authentication through the '@{realm}' authentication realm.  @if{forwardIdentityHttpHeader != null}Successfully authenticated requests will forward the authenticated identity to the back end API via the '@{forwardIdentityHttpHeader}' custom HTTP header.@end{}"
         }
       ]
     },
@@ -34,7 +34,7 @@
       "templates" : [
         {
           "language" : null,
-          "template" : "Only requests that originate from the set of @{ipList.size()} configured IP address(es) will be allowed to invoke the managed service."
+          "template" : "Only requests that originate from the set of @{ipList.size()} configured IP address(es) will be allowed to invoke the managed API."
         }
       ]
     },
@@ -47,14 +47,14 @@
       "templates" : [
         {
           "language" : null,
-          "template" : "Requests that originate from the set of @{ipList.size()} configured IP address(es) will be denied access to the managed service."
+          "template" : "Requests that originate from the set of @{ipList.size()} configured IP address(es) will be denied access to the managed API."
         }
       ]
     },
     {
       "id" : "RateLimitingPolicy",
       "name" : "Rate Limiting Policy",
-      "description" : "Enforces rate configurable request rate limits on a service.  This ensures that consumers can't overload a service with too many requests.",
+      "description" : "Enforces rate configurable request rate limits on an API.  This ensures that consumers can't overload an API with too many requests.",
       "policyImpl" : "class:io.apiman.gateway.engine.policies.RateLimitingPolicy",
       "icon" : "tachometer",
       "templates" : [

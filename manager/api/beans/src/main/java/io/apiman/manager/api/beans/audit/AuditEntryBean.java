@@ -32,7 +32,7 @@ import org.hibernate.annotations.Type;
 /**
  * A single audit entry - these are created whenever something interesting
  * happens to an entity in the management layer.  For example, when the
- * implementation of a Service is changed, an AuditEntry would be created
+ * implementation of an API is changed, an AuditEntry would be created
  * to indicate:
  *
  * 1) who made the change

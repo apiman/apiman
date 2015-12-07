@@ -17,7 +17,7 @@ package io.apiman.gateway.test.server;
 
 import io.apiman.gateway.api.rest.impl.IPlatform;
 import io.apiman.gateway.api.rest.impl.IPlatformAccessor;
-import io.apiman.gateway.engine.beans.ServiceEndpoint;
+import io.apiman.gateway.engine.beans.ApiEndpoint;
 
 /**
  * The test platform accessor.
@@ -29,16 +29,16 @@ public class PlatformAccessor implements IPlatformAccessor {
     private static final IPlatform platform = new IPlatform() {
         @SuppressWarnings("nls")
         @Override
-        public ServiceEndpoint getServiceEndpoint(String organizationId, String serviceId, String version) {
+        public ApiEndpoint getApiEndpoint(String organizationId, String apiId, String version) {
             StringBuilder builder = new StringBuilder();
             builder.append("http://localhost:").append(GatewayServer.gatewayServer.getPort()).append("/gateway/");
             builder.append(organizationId);
             builder.append("/"); //$NON-NLS-1$
-            builder.append(serviceId);
+            builder.append(apiId);
             builder.append("/"); //$NON-NLS-1$
             builder.append(version);
 
-            ServiceEndpoint rval = new ServiceEndpoint();
+            ApiEndpoint rval = new ApiEndpoint();
             rval.setEndpoint(builder.toString());
             return rval;
         }

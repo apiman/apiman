@@ -16,12 +16,12 @@
 package io.apiman.gateway.engine.policies.auth;
 
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
-import io.apiman.gateway.engine.beans.ServiceRequest;
+import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.policy.IPolicyContext;
 
 /**
  * Interface used to validate an inbound user.
- * 
+ *
  * @author eric.wittmann@redhat.com
  * @param <C> the config type
  */
@@ -31,12 +31,12 @@ public interface IIdentityValidator<C> {
      * Asynchronously validates a user.
      * @param username the username
      * @param password the password
-     * @param request the service request
+     * @param request the API request
      * @param context the policy context
      * @param config the config
      * @param handler the result handler
      */
-    public void validate(String username, String password, ServiceRequest request, IPolicyContext context,
+    public void validate(String username, String password, ApiRequest request, IPolicyContext context,
             C config, IAsyncResultHandler<Boolean> handler);
 
 }

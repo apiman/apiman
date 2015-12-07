@@ -32,11 +32,11 @@ public class ApiEntryBean implements Serializable {
 
     private static final long serialVersionUID = -7578173174922025902L;
 
-    private String serviceOrgId;
-    private String serviceOrgName;
-    private String serviceId;
-    private String serviceName;
-    private String serviceVersion;
+    private String apiOrgId;
+    private String apiOrgName;
+    private String apiId;
+    private String apiName;
+    private String apiVersion;
 
     private String planId;
     private String planName;
@@ -54,73 +54,73 @@ public class ApiEntryBean implements Serializable {
     }
 
     /**
-     * @return the serviceOrgId
+     * @return the apiOrgId
      */
-    public String getServiceOrgId() {
-        return serviceOrgId;
+    public String getApiOrgId() {
+        return apiOrgId;
     }
 
     /**
-     * @param serviceOrgId the serviceOrgId to set
+     * @param apiOrgId the apiOrgId to set
      */
-    public void setServiceOrgId(String serviceOrgId) {
-        this.serviceOrgId = serviceOrgId;
+    public void setApiOrgId(String apiOrgId) {
+        this.apiOrgId = apiOrgId;
     }
 
     /**
-     * @return the serviceOrgName
+     * @return the apiOrgName
      */
-    public String getServiceOrgName() {
-        return serviceOrgName;
+    public String getApiOrgName() {
+        return apiOrgName;
     }
 
     /**
-     * @param serviceOrgName the serviceOrgName to set
+     * @param apiOrgName the apiOrgName to set
      */
-    public void setServiceOrgName(String serviceOrgName) {
-        this.serviceOrgName = serviceOrgName;
+    public void setApiOrgName(String apiOrgName) {
+        this.apiOrgName = apiOrgName;
     }
 
     /**
-     * @return the serviceId
+     * @return the apiId
      */
-    public String getServiceId() {
-        return serviceId;
+    public String getApiId() {
+        return apiId;
     }
 
     /**
-     * @param serviceId the serviceId to set
+     * @param apiId the apiId to set
      */
-    public void setServiceId(String serviceId) {
-        this.serviceId = serviceId;
+    public void setApiId(String apiId) {
+        this.apiId = apiId;
     }
 
     /**
-     * @return the serviceName
+     * @return the apiName
      */
-    public String getServiceName() {
-        return serviceName;
+    public String getApiName() {
+        return apiName;
     }
 
     /**
-     * @param serviceName the serviceName to set
+     * @param apiName the apiName to set
      */
-    public void setServiceName(String serviceName) {
-        this.serviceName = serviceName;
+    public void setApiName(String apiName) {
+        this.apiName = apiName;
     }
 
     /**
-     * @return the serviceVersion
+     * @return the apiVersion
      */
-    public String getServiceVersion() {
-        return serviceVersion;
+    public String getApiVersion() {
+        return apiVersion;
     }
 
     /**
-     * @param serviceVersion the serviceVersion to set
+     * @param apiVersion the apiVersion to set
      */
-    public void setServiceVersion(String serviceVersion) {
-        this.serviceVersion = serviceVersion;
+    public void setApiVersion(String apiVersion) {
+        this.apiVersion = apiVersion;
     }
 
     /**
@@ -213,9 +213,9 @@ public class ApiEntryBean implements Serializable {
     @Override
     @SuppressWarnings("nls")
     public String toString() {
-        return "ApiEntryBean [serviceOrgId=" + serviceOrgId + ", serviceOrgName=" + serviceOrgName
-                + ", serviceId=" + serviceId + ", serviceName=" + serviceName + ", serviceVersion="
-                + serviceVersion + ", planId=" + planId + ", planName=" + planName + ", planVersion="
+        return "ApiEntryBean [apiOrgId=" + apiOrgId + ", apiOrgName=" + apiOrgName
+                + ", apiId=" + apiId + ", apiName=" + apiName + ", apiVersion="
+                + apiVersion + ", planId=" + planId + ", planName=" + planName + ", planVersion="
                 + planVersion + ", httpEndpoint=" + httpEndpoint + ", apiKey=" + apiKey + ", gatewayId="
                 + gatewayId + "]";
     }

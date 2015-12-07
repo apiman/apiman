@@ -1,0 +1,19 @@
+PUT /apis admin/admin
+Content-Type: application/json
+
+{
+  "organizationId" : "PluginTestPolicyTest",
+  "apiId" : "echo",
+  "version" : "1.0",
+  "publicAPI" : true,
+  "endpointType" : "REST",
+  "endpoint" : "${apiman-gateway-test.endpoints.echo}/",
+  "apiPolicies" : [
+    {
+      "policyImpl" : "plugin:io.apiman:apiman-plugins-test-policy:1.2.0-SNAPSHOT:war/io.apiman.plugins.test_policy.TestPolicy",
+      "policyJsonConfig" : ""
+    }
+  ]
+}
+----
+204

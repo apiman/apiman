@@ -15,8 +15,8 @@
  */
 package io.apiman.gateway.platforms.vertx3.services.impl;
 
+import io.apiman.gateway.platforms.vertx3.io.VertxApiRequest;
 import io.apiman.gateway.platforms.vertx3.io.VertxApimanBuffer;
-import io.apiman.gateway.platforms.vertx3.io.VertxServiceRequest;
 import io.apiman.gateway.platforms.vertx3.services.IngestorToPolicyService;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
@@ -35,7 +35,7 @@ import java.util.UUID;
 @SuppressWarnings("nls")
 public class IngestorToPolicyImpl implements IngestorToPolicyService {
 
-    private Handler<VertxServiceRequest> headHandler;
+    private Handler<VertxApiRequest> headHandler;
     private Handler<VertxApimanBuffer> bodyHandler;
     private Handler<Void> endHandler;
     private Handler<AsyncResult<Boolean>> readyHandler;
@@ -48,11 +48,11 @@ public class IngestorToPolicyImpl implements IngestorToPolicyService {
     }
 
     @Override
-    public void head(VertxServiceRequest serviceRequest,
+    public void head(VertxApiRequest apiRequest,
             Handler<AsyncResult<Boolean>> readyHandler) {
-        log.debug(String.format("%s received ServiceRequest %s", uuid, serviceRequest));
+        log.debug(String.format("%s received ApiRequest %s", uuid, apiRequest));
         this.readyHandler = readyHandler;
-        headHandler.handle(serviceRequest);
+        headHandler.handle(apiRequest);
     }
 
     @Override
@@ -70,7 +70,7 @@ public class IngestorToPolicyImpl implements IngestorToPolicyService {
             endHandler.handle((Void) null);
     }
 
-    public void headHandler(Handler<VertxServiceRequest> handler) {
+    public void headHandler(Handler<VertxApiRequest> handler) {
         this.headHandler = handler;
     }
 

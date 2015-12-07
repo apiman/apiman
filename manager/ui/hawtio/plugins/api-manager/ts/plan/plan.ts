@@ -1,5 +1,5 @@
 /// <reference path="../apimanPlugin.ts"/>
-/// <reference path="../services.ts"/>
+/// <reference path="../rpc.ts"/>
 module Apiman {
 
     export var PlanRedirectController = _module.controller("Apiman.PlanRedirectController",
@@ -25,8 +25,8 @@ module Apiman {
         }]);
 
     export var PlanEntityLoader = _module.factory('PlanEntityLoader',
-        ['$q', 'OrgSvcs', 'Logger', '$rootScope', '$routeParams', 'EntityStatusService',
-        ($q, OrgSvcs, Logger, $rootScope, $routeParams, EntityStatusService) => {
+        ['$q', 'OrgSvcs', 'Logger', '$rootScope', '$routeParams', 'EntityStatusSvc',
+        ($q, OrgSvcs, Logger, $rootScope, $routeParams, EntityStatusSvc) => {
             return {
                 getCommonData: function($scope, $location) {
                     var params = $routeParams;
@@ -35,7 +35,7 @@ module Apiman {
                             OrgSvcs.get({ organizationId: params.org, entityType: 'plans', entityId: params.plan, versionsOrActivity: 'versions', version: params.version }, function(version) {
                                 $scope.org = version.plan.organization;
                                 $scope.plan = version.plan;
-                                EntityStatusService.setEntity(version, 'plan');
+                                EntityStatusSvc.setEntity(version, 'plan');
                                 resolve(version);
                             }, reject);
                         }),
@@ -48,12 +48,12 @@ module Apiman {
         }]);
 
     export var PlanEntityController = _module.controller("Apiman.PlanEntityController",
-        ['$q', '$scope', '$location', 'ActionSvcs', 'Logger', 'PageLifecycle', '$routeParams', 'OrgSvcs', 'EntityStatusService',
-        ($q, $scope, $location, ActionSvcs, Logger, PageLifecycle, $routeParams, OrgSvcs, EntityStatusService) => {
+        ['$q', '$scope', '$location', 'ActionSvcs', 'Logger', 'PageLifecycle', '$routeParams', 'OrgSvcs', 'EntityStatusSvc',
+        ($q, $scope, $location, ActionSvcs, Logger, PageLifecycle, $routeParams, OrgSvcs, EntityStatusSvc) => {
             var params = $routeParams;
 
-            $scope.setEntityStatus = EntityStatusService.setEntityStatus;
-            $scope.getEntityStatus = EntityStatusService.getEntityStatus;
+            $scope.setEntityStatus = EntityStatusSvc.setEntityStatus;
+            $scope.getEntityStatus = EntityStatusSvc.getEntityStatus;
 
             $scope.setVersion = function(plan) {
                 PageLifecycle.redirectTo('/orgs/{0}/plans/{1}/{2}', params.org, params.plan, plan.version);

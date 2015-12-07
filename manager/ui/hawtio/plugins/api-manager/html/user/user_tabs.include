@@ -1,6 +1,6 @@
             <ul id="entitytabs" class="nav nav-tabs">
               <li ng-class="{ true: 'active' } [tab == 'organizations']"><a id="tab-orgs" href="{{ pluginName }}/users/{{ user.username }}/orgs" apiman-i18n-key="organizations">Organizations</a></li>
               <li ng-class="{ true: 'active' } [tab == 'applications']"><a id="tab-apps" href="{{ pluginName }}/users/{{ user.username }}/apps" apiman-i18n-key="applications">Applications</a></li>
-              <li ng-class="{ true: 'active' } [tab == 'services']"><a id="tab-services" href="{{ pluginName }}/users/{{ user.username }}/services" apiman-i18n-key="services">Services</a></li>
+              <li ng-class="{ true: 'active' } [tab == 'apis']"><a id="tab-apis" href="{{ pluginName }}/users/{{ user.username }}/apis" apiman-i18n-key="apis">APIs</a></li>
               <li ng-class="{ true: 'active' } [tab == 'activity']" class="pull-right"><a id="tab-activity" href="{{ pluginName }}/users/{{ user.username }}/activity" apiman-i18n-key="activity">Activity</a></li>
             </ul>

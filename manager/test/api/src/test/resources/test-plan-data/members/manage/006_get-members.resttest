@@ -22,7 +22,7 @@ Content-Type: application/json
     "userName" : "User 2",
     "email" : "user2@example.org",
     "roles" : [
-      {"roleId":"ServiceDeveloper", "roleName":"Service Developer"}
+      {"roleId":"APIDeveloper", "roleName":"API Developer"}
     ]
   }
 ]

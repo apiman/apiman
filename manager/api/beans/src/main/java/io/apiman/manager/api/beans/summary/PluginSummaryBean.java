@@ -21,7 +21,7 @@ import java.util.Date;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
- * Models a single gateway configured by an admin.  When publishing services,
+ * Models a single gateway configured by an admin.  When publishing APIs,
  * the user must specific which Plugin to publish to.
  *
  * @author eric.wittmann@redhat.com

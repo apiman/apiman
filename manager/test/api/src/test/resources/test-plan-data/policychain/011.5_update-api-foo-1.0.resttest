@@ -1,0 +1,23 @@
+PUT /organizations/TestOrganization/apis/foo/versions/1.0 admin/admin
+Content-Type: application/json
+
+{
+  "plans" : [
+    {
+      "planId" : "Gold",
+      "version" : "1.0"
+    }
+  ]
+}
+----
+200
+Content-Type: application/json
+
+{
+  "plans" : [
+    {
+      "planId" : "Gold",
+      "version" : "1.0"
+    }
+  ]
+}

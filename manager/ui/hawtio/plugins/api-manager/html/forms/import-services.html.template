@@ -13,7 +13,7 @@
         <div class="row">
           <div class="col-md-12">
             <div class="logo"></div>
-            <input class="search no-phone" type="text" placeholder="Quick service search..."></input>
+            <input class="search no-phone" type="text" placeholder="Quick API search..."></input>
             <ul class="user-menu pull-right">
               <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -42,14 +42,14 @@
     
     <div id="form-page" class="container apiman-entity-new page" data-field="page">
       <div class="row">
-        <h2 class="title" apiman-i18n-key="import-services">Import Service(s)</h2>
+        <h2 class="title" apiman-i18n-key="import-apis">Import API(s)</h2>
       </div>
       
       <!-- === Import Type === -->
       <div id="importTypePage">
         <!-- Helpful hint -->
         <div class="row">
-          <p apiman-i18n-key="import-services-help-text" class="col-md-6 apiman-label-faded">Use this wizard to import one or more services into the Organization.  First please choose a source of data to use for the import.</p>
+          <p apiman-i18n-key="import-apis-help-text" class="col-md-6 apiman-label-faded">Use this wizard to import one or more APIs into the Organization.  First please choose a source of data to use for the import.</p>
         </div>
         <!-- HR -->
         <div class="row hr-row">
@@ -82,7 +82,7 @@
       <div id="wadlPage" style="margin-left: 2000px; display:none">
         <!-- Helpful hint -->
         <div class="row">
-          <p apiman-i18n-key="import-services-wadl-help-text" class="col-md-6 apiman-label-faded">Tell us where your WADL file is located so we can load it up!  We only need you to fill out *one* of the sections below.</p>
+          <p apiman-i18n-key="import-apis-wadl-help-text" class="col-md-6 apiman-label-faded">Tell us where your WADL file is located so we can load it up!  We only need you to fill out *one* of the sections below.</p>
         </div>
         <!-- HR -->
         <div class="row hr-row">
@@ -123,22 +123,22 @@
         </div>
       </div>
       
-      <!-- === Confirmation Page (lists all the services that will be imported) === -->
+      <!-- === Confirmation Page (lists all the APIs that will be imported) === -->
       <div id="selectPage" style="margin-left: 2000px; display:none">
         <!-- Helpful hint -->
         <div class="row">
-          <p apiman-i18n-key="import-services-confirm-help-text" class="col-md-6 apiman-label-faded">Let us know which of the services we should import.  It might also be a good idea to modify any of the services names we may have gotten wrong!</p>
+          <p apiman-i18n-key="import-apis-confirm-help-text" class="col-md-6 apiman-label-faded">Let us know which of the APIs we should import.  It might also be a good idea to modify any of the APIs names we may have gotten wrong!</p>
         </div>
         <!-- HR -->
         <div class="row hr-row">
           <hr/>
         </div>
         <div class="row">
-          <table class="table table-responsive" data-field="services">
+          <table class="table table-responsive" data-field="apis">
             <thead>
               <tr>
-                <th width="1%"><input type="checkbox" data-field="servicesSelectAll"></input></th>
-                <th width="1%" apiman-i18n-key="service-name" nowrap="nowrap">Service Name</th>
+                <th width="1%"><input type="checkbox" data-field="apisSelectAll"></input></th>
+                <th width="1%" apiman-i18n-key="api-name" nowrap="nowrap">API Name</th>
                 <th width="1%" apiman-i18n-key="initial-version" nowrap="nowrap">Initial Version</th>
                 <th apiman-i18n-key="endpoint">Endpoint</th>
               </tr>
@@ -146,27 +146,27 @@
             <tbody>
               <tr>
                 <td><input type="checkbox"></td>
-                <td><input type="text" value="my-service-1" style="width: 175px"></input></td>
+                <td><input type="text" value="my-api-1" style="width: 175px"></input></td>
                 <td><input type="text" value="1.0" style="width: 75px"></input></td>
-                <td>http://services.example.org/rest/my-service-1</td>
+                <td>http://apis.example.org/rest/my-api-1</td>
               </tr>
               <tr>
                 <td><input type="checkbox"></td>
-                <td><input type="text" value="another-service" style="width: 175px"></input></td>
+                <td><input type="text" value="another-api" style="width: 175px"></input></td>
                 <td><input type="text" value="1.0" style="width: 75px"></input></td>
-                <td>http://services.example.org/rest/another-service</td>
+                <td>http://apis.example.org/rest/another-api</td>
               </tr>
               <tr>
                 <td><input type="checkbox"></td>
-                <td><input type="text" value="her-service-2" style="width: 175px"></input></td>
+                <td><input type="text" value="her-api-2" style="width: 175px"></input></td>
                 <td><input type="text" value="1.0" style="width: 75px"></input></td>
-                <td>http://services.example.org/rest/her-service-2</td>
+                <td>http://apis.example.org/rest/her-api-2</td>
               </tr>
             </tbody>
           </table>
         </div>
         <div class="row">
-          <p apiman-i18n-key="choose-services">Choose which services you want to create from the list above.</p>
+          <p apiman-i18n-key="choose-apis">Choose which APIs you want to create from the list above.</p>
         </div>
         <!-- Next Button -->
         <div class="row">
@@ -179,7 +179,7 @@
       <div id="plansPage" style="margin-left: 2000px; display:none">
         <!-- Helpful hint -->
         <div class="row">
-          <p apiman-i18n-key="import-services-plans-help-text" class="col-md-6 apiman-label-faded">Choose which plans will be available when Applications wish to create Service Contracts for the imported Service(s).  Alternatively you can make the services "Public".  Or else leave everything blank and then configure each imported Service later.</p>
+          <p apiman-i18n-key="import-apis-plans-help-text" class="col-md-6 apiman-label-faded">Choose which plans will be available when Applications wish to create API Contracts for the imported API(s).  Alternatively you can make the APIs "Public".  Or else leave everything blank and then configure each imported API later.</p>
         </div>
         <!-- HR -->
         <div class="row hr-row">
@@ -187,10 +187,10 @@
         </div>
         <div class="row">
           <div class="col-md-8">
-            <div class="title" apiman-i18n-key="public-service">Public Service</div>
+            <div class="title" apiman-i18n-key="public-api">Public API</div>
             <div style="padding: 8px; padding-top: 0px; margin-bottom: 10px">
-              <input type="checkbox" id="public-service" data-field="publicService"></input>
-              <label for="public-service" apiman-i18n-key="make-public" style="padding-left: 3px">Make service(s) public</label>
+              <input type="checkbox" id="public-api" data-field="publicAPI"></input>
+              <label for="public-api" apiman-i18n-key="make-public" style="padding-left: 3px">Make API(s) public</label>
             </div>
             <div class="title" apiman-i18n-key="available-plans">Available Plans</div>
             <!-- The plans to choose from -->
@@ -244,7 +244,7 @@
       <!-- === Confirmation === -->
       <div id="confirmPage" style="margin-left: 2000px; display:none">
         <div class="row" style="margin-bottom: 20px">
-          <div data-field="confirmMessage" class="col-md-6">You have chosen to import {0} services through {1} plans.  Does that sound about right?</div>
+          <div data-field="confirmMessage" class="col-md-6">You have chosen to import {0} APIs through {1} plans.  Does that sound about right?</div>
         </div>
         <!-- Confirm Button -->
         <div class="row">

@@ -15,38 +15,38 @@
  */
 package io.apiman.test.policies;
 
-import io.apiman.gateway.engine.IServiceConnection;
-import io.apiman.gateway.engine.IServiceConnectionResponse;
-import io.apiman.gateway.engine.IServiceConnector;
+import io.apiman.gateway.engine.IApiConnection;
+import io.apiman.gateway.engine.IApiConnectionResponse;
+import io.apiman.gateway.engine.IApiConnector;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
-import io.apiman.gateway.engine.beans.Service;
-import io.apiman.gateway.engine.beans.ServiceRequest;
+import io.apiman.gateway.engine.beans.Api;
+import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.exceptions.ConnectorException;
 
 /**
- * Creates a connection to the back end service.
+ * Creates a connection to the back end API.
  *
  * @author eric.wittmann@redhat.com
  */
-public class PolicyTesterConnector implements IServiceConnector {
+public class PolicyTesterConnector implements IApiConnector {
 
-    private final Service service;
+    private final Api api;
 
     /**
      * Constructor.
-     * @param service
+     * @param api
      */
-    public PolicyTesterConnector(Service service) {
-        this.service = service;
+    public PolicyTesterConnector(Api api) {
+        this.api = api;
     }
 
     /**
-     * @see io.apiman.gateway.engine.IServiceConnector#connect(io.apiman.gateway.engine.beans.ServiceRequest, io.apiman.gateway.engine.async.IAsyncResultHandler)
+     * @see io.apiman.gateway.engine.IApiConnector#connect(io.apiman.gateway.engine.beans.ApiRequest, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
     @Override
-    public IServiceConnection connect(ServiceRequest request,
-            IAsyncResultHandler<IServiceConnectionResponse> handler) throws ConnectorException {
-        return new PolicyTesterServiceConnection(service, request, handler);
+    public IApiConnection connect(ApiRequest request,
+            IAsyncResultHandler<IApiConnectionResponse> handler) throws ConnectorException {
+        return new PolicyTesterApiConnection(api, request, handler);
     }
 
 }

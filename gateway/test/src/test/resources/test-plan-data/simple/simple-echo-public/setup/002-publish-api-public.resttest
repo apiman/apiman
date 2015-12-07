@@ -1,0 +1,14 @@
+PUT /apis admin/admin
+Content-Type: application/json
+
+{
+  "organizationId" : "SimpleEchoPublicTest",
+  "apiId" : "echo",
+  "version" : "2.0",
+  "publicAPI" : true,
+  "endpointType" : "REST",
+  "endpoint" : "${apiman-gateway-test.endpoints.echo}/",
+  "apiPolicies" : [ ]
+}
+----
+204

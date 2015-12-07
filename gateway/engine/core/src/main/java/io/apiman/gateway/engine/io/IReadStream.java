@@ -16,7 +16,7 @@
 package io.apiman.gateway.engine.io;
 
 import io.apiman.gateway.engine.async.IAsyncHandler;
-import io.apiman.gateway.engine.beans.ServiceRequest;
+import io.apiman.gateway.engine.beans.ApiRequest;
 
 /**
  * Read a chunked stream by setting handlers.
@@ -43,7 +43,7 @@ public interface IReadStream<H> extends IStream {
     public void endHandler(IAsyncHandler<Void> endHandler);
 
     /**
-     * Return the head object's handler (e.g. {@link ServiceRequest}).
+     * Return the head object's handler (e.g. {@link ApiRequest}).
      * 
      * @return the head object
      */

@@ -15,9 +15,9 @@
  */
 package io.apiman.gateway.platforms.vertx3.services.impl;
 
+import io.apiman.gateway.platforms.vertx3.io.VertxApiResponse;
 import io.apiman.gateway.platforms.vertx3.io.VertxApimanBuffer;
 import io.apiman.gateway.platforms.vertx3.io.VertxPolicyFailure;
-import io.apiman.gateway.platforms.vertx3.io.VertxServiceResponse;
 import io.apiman.gateway.platforms.vertx3.services.PolicyToIngestorService;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
@@ -36,7 +36,7 @@ import java.util.UUID;
 public class PolicyToIngestorServiceImpl implements PolicyToIngestorService {
 
     private String uuid = UUID.randomUUID().toString();
-    private Handler<VertxServiceResponse> headHandler;
+    private Handler<VertxApiResponse> headHandler;
     private Handler<VertxApimanBuffer> bodyHandler;
     private Handler<Void> endHandler;
     private Handler<VertxPolicyFailure> policyFailureHandler;
@@ -47,9 +47,9 @@ public class PolicyToIngestorServiceImpl implements PolicyToIngestorService {
     }
 
     @Override
-    public void head(VertxServiceResponse serviceResponse, Handler<AsyncResult<Void>> readyHandler) {
-        log.debug(String.format("%s received ServiceResponse %s", uuid, serviceResponse));
-        headHandler.handle(serviceResponse);
+    public void head(VertxApiResponse apiResponse, Handler<AsyncResult<Void>> readyHandler) {
+        log.debug(String.format("%s received ApiResponse %s", uuid, apiResponse));
+        headHandler.handle(apiResponse);
         // Fire the ready handler immediately
         readyHandler.handle(Future.succeededFuture((Void) null));
     }
@@ -76,7 +76,7 @@ public class PolicyToIngestorServiceImpl implements PolicyToIngestorService {
         this.policyFailureHandler = policyFailureHandler;
     }
 
-    public void headHandler(Handler<VertxServiceResponse> handler) {
+    public void headHandler(Handler<VertxApiResponse> handler) {
         this.headHandler = handler;
     }
 

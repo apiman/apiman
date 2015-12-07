@@ -1,0 +1,35 @@
+POST /organizations/Organization1/apis/API1/versions admin/admin
+Content-Type: application/json
+
+{
+  "version" : "2.1-fields",
+  "clone" : true,
+  "cloneVersion" : "1.0",
+  "endpoint" : "http://localhost:8080/not-cloned",
+  "endpointType" : "soap",
+  "publicAPI" : true,
+  "plans" : [
+    { "planId" : "Plan1", "version" : "1.0" }
+  ]
+}
+----
+200
+Content-Type: application/json
+
+{
+  "api" : {
+    "organization" : {
+      "id" : "Organization1"
+    },
+    "id" : "API1"
+  },
+  "status" : "Ready",
+  "version" : "2.1-fields",
+  "createdBy" : "admin",
+  "endpoint" : "http://localhost:8080/not-cloned",
+  "endpointType" : "soap",
+  "publicAPI" : true,
+  "plans" : [
+    { "planId" : "Plan1", "version" : "1.0" }
+  ]
+}

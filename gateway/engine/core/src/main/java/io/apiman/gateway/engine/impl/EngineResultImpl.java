@@ -16,36 +16,36 @@
 package io.apiman.gateway.engine.impl;
 
 import io.apiman.gateway.engine.IEngineResult;
+import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.engine.beans.PolicyFailure;
-import io.apiman.gateway.engine.beans.ServiceResponse;
 import io.apiman.gateway.engine.io.AbstractStream;
 import io.apiman.gateway.engine.io.ISignalReadStream;
 
 /**
  * The result of a call through the policy engine. Encapsulates either a
  * response or a failure.
- * 
+ *
  * @author eric.wittmann@redhat.com
  */
-public class EngineResultImpl extends AbstractStream<ServiceResponse> implements IEngineResult {
-    
-    private ServiceResponse serviceResponse = null;
+public class EngineResultImpl extends AbstractStream<ApiResponse> implements IEngineResult {
+
+    private ApiResponse apiResponse = null;
     private PolicyFailure policyFailure = null;
-    private transient ISignalReadStream<ServiceResponse> connectorResponseStream;
-    
+    private transient ISignalReadStream<ApiResponse> connectorResponseStream;
+
     /**
      * Constructor.
      */
     public EngineResultImpl() {
     }
-    
+
     /**
      * Construct a successful EngineResult.
-     * 
-     * @param serviceResponse the service response
+     *
+     * @param apiResponse the API response
      */
-    public EngineResultImpl(ServiceResponse serviceResponse) {
-        this.serviceResponse = serviceResponse;
+    public EngineResultImpl(ApiResponse apiResponse) {
+        this.apiResponse = apiResponse;
     }
 
     /**
@@ -63,7 +63,7 @@ public class EngineResultImpl extends AbstractStream<ServiceResponse> implements
     public boolean isResponse() {
         return policyFailure == null;
     }
-    
+
     /**
      * @see io.apiman.gateway.engine.IEngineResult#isFailure()
      */
@@ -73,18 +73,18 @@ public class EngineResultImpl extends AbstractStream<ServiceResponse> implements
     }
 
     /**
-     * @see io.apiman.gateway.engine.IEngineResult#getServiceResponse()
+     * @see io.apiman.gateway.engine.IEngineResult#getApiResponse()
      */
     @Override
-    public ServiceResponse getServiceResponse() {
-        return serviceResponse;
+    public ApiResponse getApiResponse() {
+        return apiResponse;
     }
 
     /**
-     * @param serviceResponse the serviceResponse to set
+     * @param apiResponse the apiResponse to set
      */
-    public void setServiceResponse(ServiceResponse serviceResponse) {
-        this.serviceResponse = serviceResponse;
+    public void setApiResponse(ApiResponse apiResponse) {
+        this.apiResponse = apiResponse;
     }
 
     /**
@@ -103,13 +103,13 @@ public class EngineResultImpl extends AbstractStream<ServiceResponse> implements
     }
 
     @Override
-    protected void handleHead(ServiceResponse head) {
-        return; // ServiceResponse?
+    protected void handleHead(ApiResponse head) {
+        return; // ApiResponse?
     }
 
     @Override
-    public ServiceResponse getHead() {
-        return serviceResponse;
+    public ApiResponse getHead() {
+        return apiResponse;
     }
 
     /**
@@ -123,7 +123,7 @@ public class EngineResultImpl extends AbstractStream<ServiceResponse> implements
     /**
      * @param connectorResponseStream the connectorResponseStream to set
      */
-    public void setConnectorResponseStream(ISignalReadStream<ServiceResponse> connectorResponseStream) {
+    public void setConnectorResponseStream(ISignalReadStream<ApiResponse> connectorResponseStream) {
         this.connectorResponseStream = connectorResponseStream;
     }
 }

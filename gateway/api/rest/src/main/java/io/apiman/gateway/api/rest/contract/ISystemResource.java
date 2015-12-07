@@ -25,8 +25,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 /**
- * The Service API.
- * 
+ * The System API.
+ *
  * @author eric.wittmann@redhat.com
  */
 @Path("system")

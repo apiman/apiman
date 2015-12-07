@@ -21,8 +21,8 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import io.apiman.gateway.engine.async.IAsyncHandler;
-import io.apiman.gateway.engine.beans.ServiceRequest;
-import io.apiman.gateway.engine.beans.ServiceResponse;
+import io.apiman.gateway.engine.beans.ApiRequest;
+import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.engine.io.IApimanBuffer;
 import io.apiman.gateway.engine.io.IReadWriteStream;
 import io.apiman.gateway.engine.policy.IPolicyContext;
@@ -50,8 +50,8 @@ public class DataPolicyChainTest {
     private RequestChain requestChain;
     private ResponseChain responseChain;
 
-    private ServiceRequest mockRequest;
-    private ServiceResponse mockResponse;
+    private ApiRequest mockRequest;
+    private ApiResponse mockResponse;
 
     private IApimanBuffer mockBuffer;
     private IAsyncHandler<IApimanBuffer> mockBodyHandler;
@@ -63,8 +63,8 @@ public class DataPolicyChainTest {
     Object configuration = new Object();
 
 
-    @Mock private IReadWriteStream<ServiceRequest> mockRequestHandler;
-    @Mock private IReadWriteStream<ServiceResponse> mockResponseHandler;
+    @Mock private IReadWriteStream<ApiRequest> mockRequestHandler;
+    @Mock private IReadWriteStream<ApiResponse> mockResponseHandler;
 
     @Before
     public void setup() {
@@ -77,12 +77,12 @@ public class DataPolicyChainTest {
 
         mockContext = mock(IPolicyContext.class);
 
-        mockRequest = mock(ServiceRequest.class);
+        mockRequest = mock(ApiRequest.class);
         given(mockRequest.getApiKey()).willReturn("bacon");
         given(mockRequest.getDestination()).willReturn("mars");
         given(mockRequest.getType()).willReturn("request");
 
-        mockResponse = mock(ServiceResponse.class);
+        mockResponse = mock(ApiResponse.class);
         given(mockRequest.getApiKey()).willReturn("bacon");
         given(mockRequest.getDestination()).willReturn("mars");
         given(mockRequest.getType()).willReturn("response");

@@ -18,7 +18,7 @@ package io.apiman.gateway.engine.policies.auth;
 import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
-import io.apiman.gateway.engine.beans.ServiceRequest;
+import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.components.jdbc.IJdbcClient;
 import io.apiman.gateway.engine.components.jdbc.IJdbcComponent;
 import io.apiman.gateway.engine.components.jdbc.IJdbcConnection;
@@ -53,10 +53,10 @@ public class JDBCIdentityValidator implements IIdentityValidator<JDBCIdentitySou
     }
 
     /**
-     * @see io.apiman.gateway.engine.policies.auth.IIdentityValidator#validate(String, String, ServiceRequest, IPolicyContext, Object, IAsyncResultHandler)
+     * @see io.apiman.gateway.engine.policies.auth.IIdentityValidator#validate(String, String, ApiRequest, IPolicyContext, Object, IAsyncResultHandler)
      */
     @Override
-    public void validate(final String username, final String password, final ServiceRequest request,
+    public void validate(final String username, final String password, final ApiRequest request,
             final IPolicyContext context, final JDBCIdentitySource config,
             final IAsyncResultHandler<Boolean> handler) {
         

@@ -15,8 +15,8 @@
  */
 package io.apiman.gateway.engine.policies;
 
-import io.apiman.gateway.engine.beans.ServiceRequest;
-import io.apiman.gateway.engine.beans.ServiceResponse;
+import io.apiman.gateway.engine.beans.ApiRequest;
+import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.engine.beans.exceptions.ConfigurationParseException;
 import io.apiman.gateway.engine.policy.IPolicy;
 import io.apiman.gateway.engine.policy.IPolicyChain;
@@ -62,12 +62,12 @@ public abstract class AbstractMappedPolicy<C> implements IPolicy {
     protected abstract Class<C> getConfigurationClass();
 
     /**
-     * @see io.apiman.gateway.engine.policy.IPolicy#apply(io.apiman.gateway.engine.beans.ServiceRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
+     * @see io.apiman.gateway.engine.policy.IPolicy#apply(io.apiman.gateway.engine.beans.ApiRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
      */
     @SuppressWarnings("unchecked")
     @Override
-    public final void apply(ServiceRequest request, IPolicyContext context, Object config,
-            IPolicyChain<ServiceRequest> chain) {
+    public final void apply(ApiRequest request, IPolicyContext context, Object config,
+            IPolicyChain<ApiRequest> chain) {
         doApply(request, context, (C) config, chain);
     }
 
@@ -75,17 +75,17 @@ public abstract class AbstractMappedPolicy<C> implements IPolicy {
      * @param request
      * @param chain
      */
-    protected void doApply(ServiceRequest request, IPolicyContext context, C config, IPolicyChain<ServiceRequest> chain) {
+    protected void doApply(ApiRequest request, IPolicyContext context, C config, IPolicyChain<ApiRequest> chain) {
         chain.doApply(request);
     }
 
     /**
-     * @see io.apiman.gateway.engine.policy.IPolicy#apply(io.apiman.gateway.engine.beans.ServiceResponse, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
+     * @see io.apiman.gateway.engine.policy.IPolicy#apply(io.apiman.gateway.engine.beans.ApiResponse, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
      */
     @SuppressWarnings("unchecked")
     @Override
-    public final void apply(ServiceResponse response, IPolicyContext context, Object config,
-            IPolicyChain<ServiceResponse> chain) {
+    public final void apply(ApiResponse response, IPolicyContext context, Object config,
+            IPolicyChain<ApiResponse> chain) {
         doApply(response, context, (C) config, chain);
     }
 
@@ -96,7 +96,7 @@ public abstract class AbstractMappedPolicy<C> implements IPolicy {
      * @param config
      * @param chain
      */
-    protected void doApply(ServiceResponse response, IPolicyContext context, C config, IPolicyChain<ServiceResponse> chain) {
+    protected void doApply(ApiResponse response, IPolicyContext context, C config, IPolicyChain<ApiResponse> chain) {
         chain.doApply(response);
     }
 

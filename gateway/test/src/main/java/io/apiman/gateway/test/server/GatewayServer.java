@@ -16,7 +16,7 @@
 package io.apiman.gateway.test.server;
 
 import io.apiman.gateway.api.rest.impl.ApplicationResourceImpl;
-import io.apiman.gateway.api.rest.impl.ServiceResourceImpl;
+import io.apiman.gateway.api.rest.impl.ApiResourceImpl;
 import io.apiman.gateway.api.rest.impl.SystemResourceImpl;
 import io.apiman.gateway.api.rest.impl.mappers.RestExceptionMapper;
 import io.apiman.gateway.engine.es.ESClientFactory;
@@ -211,7 +211,7 @@ public class GatewayServer {
         public Set<Class<?>> getClasses() {
             HashSet<Class<?>> classes = new HashSet<>();
             classes.add(SystemResourceImpl.class);
-            classes.add(ServiceResourceImpl.class);
+            classes.add(ApiResourceImpl.class);
             classes.add(ApplicationResourceImpl.class);
             classes.add(RestExceptionMapper.class);
             return classes;

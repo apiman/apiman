@@ -1,7 +1,7 @@
 /// <reference path="../../includes.ts"/>
 module ApimanDialogs {
 
-    export var _module = angular.module("ApimanDialogs", ["ApimanLogger", "ApimanServices"]);
+    export var _module = angular.module("ApimanDialogs", ["ApimanLogger", "ApimanRPC"]);
 
     export var Dialogs = _module.factory('Dialogs', 
         ['Logger', '$compile', '$rootScope', '$timeout', 'ApimanSvcs', 'OrgSvcs',
@@ -68,30 +68,30 @@ module ApimanDialogs {
                     }, 50);
                 },
                 
-                // A simple "Select a Service" dialog (allows selecting a single service + version
+                // A simple "Select an API" dialog (allows selecting a single api + version
                 //////////////////////////////////////////////////////////////////////////////////
-                selectService: function(title, handler, publishedOnly) {
+                selectApi: function(title, handler, publishedOnly) {
                     var modalScope = $rootScope.$new(true);
 
-                    modalScope.selectedService = undefined;
-                    modalScope.selectedServiceVersion = undefined;
+                    modalScope.selectedApi = undefined;
+                    modalScope.selectedApiVersion = undefined;
                     modalScope.title = title;
 
-                    $('body').append($compile('<apiman-select-service-modal modal-title="{{ title }}"></apiman-select-service-modal>')(modalScope));
+                    $('body').append($compile('<apiman-select-api-modal modal-title="{{ title }}"></apiman-select-api-modal>')(modalScope));
 
                     $timeout(function() {
-                        $('#selectServiceModal')['modal']({'keyboard': true, 'backdrop': 'static'});
-                        $('#selectServiceModal').on('shown.bs.modal', function () {
-                            $('#selectServiceModal .input-search').focus();
+                        $('#selectApiModal')['modal']({'keyboard': true, 'backdrop': 'static'});
+                        $('#selectApiModal').on('shown.bs.modal', function () {
+                            $('#selectApiModal .input-search').focus();
                         });
                     }, 50);
 
                     modalScope.search = function() {
-                        modalScope.selectedService = undefined;
+                        modalScope.selectedApi = undefined;
 
                         if (!modalScope.searchText) {
                             modalScope.criteria = undefined;
-                            modalScope.services = undefined;
+                            modalScope.apis = undefined;
                         } else {
                             modalScope.searchButton.state = 'in-progress';
                             
@@ -106,41 +106,41 @@ module ApimanDialogs {
 
                             var searchStr = angular.toJson(body);
 
-                            Logger.log('Searching for services: {0}', modalScope.searchText);
+                            Logger.log('Searching for apis: {0}', modalScope.searchText);
 
-                            ApimanSvcs.save({ entityType: 'search', secondaryType: 'services' }, searchStr, function(reply) {
+                            ApimanSvcs.save({ entityType: 'search', secondaryType: 'apis' }, searchStr, function(reply) {
                                 if (reply.beans.length > 0) {
-                                    modalScope.services = reply.beans;
+                                    modalScope.apis = reply.beans;
                                 } else {
-                                    modalScope.services = undefined;
+                                    modalScope.apis = undefined;
                                 }
 
                                 modalScope.criteria = modalScope.searchText;
 
-                                Logger.log('Found {0} services.', reply.beans.length);
+                                Logger.log('Found {0} apis.', reply.beans.length);
 
                                 modalScope.searchButton.state = 'complete';
                             }, function(error) {
                                 Logger.error(error);
                                 
                                 // TODO do something interesting with the error
-                                modalScope.services = undefined;
+                                modalScope.apis = undefined;
                                 modalScope.criteria = modalScope.searchText;
                                 modalScope.searchButton.state = 'error';
                             });
                         }
                     };
 
-                    modalScope.onServiceSelected = function(service) {
-                        if (modalScope.selectedService) {
-                            modalScope.selectedService.selected = false;
+                    modalScope.onApiSelected = function(api) {
+                        if (modalScope.selectedApi) {
+                            modalScope.selectedApi.selected = false;
                         }
 
-                        modalScope.selectedService = service;
-                        service.selected = true;
-                        modalScope.selectedServiceVersion = undefined;
+                        modalScope.selectedApi = api;
+                        api.selected = true;
+                        modalScope.selectedApiVersion = undefined;
 
-                        OrgSvcs.query({ organizationId: service.organizationId, entityType: 'services', entityId: service.id, versionsOrActivity: 'versions' }, function(versions) {
+                        OrgSvcs.query({ organizationId: api.organizationId, entityType: 'apis', entityId: api.id, versionsOrActivity: 'versions' }, function(versions) {
                             if (publishedOnly) {
                                 var validVersions = [];
 
@@ -150,23 +150,23 @@ module ApimanDialogs {
                                     }
                                 });
 
-                                modalScope.serviceVersions = validVersions;
+                                modalScope.apiVersions = validVersions;
                             } else {
-                                modalScope.serviceVersions = versions;
+                                modalScope.apiVersions = versions;
                             }
 
-                            if (modalScope.serviceVersions.length > 0) {
-                                modalScope.selectedServiceVersion = modalScope.serviceVersions[0];
+                            if (modalScope.apiVersions.length > 0) {
+                                modalScope.selectedApiVersion = modalScope.apiVersions[0];
                             }
                         }, function(error) {
-                            modalScope.serviceVersions = [];
-                            modalScope.selectedServiceVersion = undefined;
+                            modalScope.apiVersions = [];
+                            modalScope.selectedApiVersion = undefined;
                         });
                     };
                     
                     modalScope.onOK = function() {
                         if (handler) {
-                            handler(modalScope.selectedServiceVersion);
+                            handler(modalScope.selectedApiVersion);
                         }
                     };
                 }

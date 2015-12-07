@@ -1,0 +1,24 @@
+POST /organizations/Organization1/apis/API1/versions admin/admin
+Content-Type: application/json
+
+{
+  "version" : "2.0"
+}
+----
+200
+Content-Type: application/json
+
+{
+  "api" : {
+    "organization" : {
+      "id" : "Organization1"
+    },
+    "id" : "API1",
+    "name" : "API 1",
+    "description" : "[UPDATED] This is the description of API 1!",
+    "createdBy":"admin"
+  },
+  "status" : "Created",
+  "version" : "2.0",
+  "createdBy" : "admin"
+}

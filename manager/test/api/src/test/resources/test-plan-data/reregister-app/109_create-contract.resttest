@@ -2,9 +2,9 @@ POST /organizations/Organization/applications/Application/versions/1.0/contracts
 Content-Type: application/json
 
 {
-  "serviceOrgId" : "Organization",
-  "serviceId" : "Service",
-  "serviceVersion" : "1.0",
+  "apiOrgId" : "Organization",
+  "apiId" : "API",
+  "apiVersion" : "1.0",
   "planId" : "Plan"
 }
 ----
@@ -24,12 +24,12 @@ Content-Type: application/json
     "createdBy" : "admin"
   },
   
-  "service":{
-    "service" : {
+  "api":{
+    "api" : {
       "organization" : {
         "id" : "Organization"
       },
-      "id" : "Service"
+      "id" : "API"
     },
     "version" : "1.0"
   },

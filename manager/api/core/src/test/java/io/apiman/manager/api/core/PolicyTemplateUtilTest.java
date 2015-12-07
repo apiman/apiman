@@ -151,12 +151,12 @@ public class PolicyTemplateUtilTest {
         PolicyDefinitionBean def = new PolicyDefinitionBean();
         def.setId("blacklist"); //$NON-NLS-1$
         PolicyDefinitionTemplateBean template = new PolicyDefinitionTemplateBean();
-        template.setTemplate("Requests that originate from the set of @{ipList.size()} configured IP address(es) will be denied access to the managed service."); //$NON-NLS-1$
+        template.setTemplate("Requests that originate from the set of @{ipList.size()} configured IP address(es) will be denied access to the managed API."); //$NON-NLS-1$
         def.getTemplates().add(template);
         policy.setDefinition(def);
         policy.setConfiguration("{ \"ipList\" : [ \"127.0.0.1\", \"192.168.1.10\" ] }"); //$NON-NLS-1$
         PolicyTemplateUtil.generatePolicyDescription(policy);
-        Assert.assertEquals("Requests that originate from the set of 2 configured IP address(es) will be denied access to the managed service.", policy.getDescription()); //$NON-NLS-1$
+        Assert.assertEquals("Requests that originate from the set of 2 configured IP address(es) will be denied access to the managed API.", policy.getDescription()); //$NON-NLS-1$
     }
 
     /**
@@ -169,12 +169,12 @@ public class PolicyTemplateUtilTest {
         PolicyDefinitionBean def = new PolicyDefinitionBean();
         def.setId("basicauth"); //$NON-NLS-1$
         PolicyDefinitionTemplateBean template = new PolicyDefinitionTemplateBean();
-        template.setTemplate("Access to the service is protected by BASIC Authentication through the @{realm} authentication realm.  @if{forwardIdentityHttpHeader != null}Successfully authenticated requests will include '@{forwardIdentityHttpHeader}' as a custom HTTP header to the back end service.@end{}"); //$NON-NLS-1$
+        template.setTemplate("Access to the API is protected by BASIC Authentication through the @{realm} authentication realm.  @if{forwardIdentityHttpHeader != null}Successfully authenticated requests will include '@{forwardIdentityHttpHeader}' as a custom HTTP header to the back end API.@end{}"); //$NON-NLS-1$
         def.getTemplates().add(template);
         policy.setDefinition(def);
         policy.setConfiguration("{ \"realm\" : \"Example\", \"forwardIdentityHttpHeader\" : \"X-Authenticated-Identity\" }"); //$NON-NLS-1$
         PolicyTemplateUtil.generatePolicyDescription(policy);
-        Assert.assertEquals("Access to the service is protected by BASIC Authentication through the Example authentication realm.  Successfully authenticated requests will include 'X-Authenticated-Identity' as a custom HTTP header to the back end service.", policy.getDescription()); //$NON-NLS-1$
+        Assert.assertEquals("Access to the API is protected by BASIC Authentication through the Example authentication realm.  Successfully authenticated requests will include 'X-Authenticated-Identity' as a custom HTTP header to the back end API.", policy.getDescription()); //$NON-NLS-1$
     }
 
     /**
@@ -186,7 +186,7 @@ public class PolicyTemplateUtilTest {
         PolicyBean policy = new PolicyBean();
         PolicyDefinitionBean def = new PolicyDefinitionBean();
         def.setId("i18n"); //$NON-NLS-1$
-        
+
         PolicyDefinitionTemplateBean template = new PolicyDefinitionTemplateBean();
         template.setLanguage(null);
         template.setTemplate("Default language message."); //$NON-NLS-1$
@@ -202,12 +202,12 @@ public class PolicyTemplateUtilTest {
 
         policy.setDefinition(def);
         policy.setConfiguration("{}"); //$NON-NLS-1$
-        
+
         try {
             AbstractMessages.setLocale(Locale.ENGLISH);
             PolicyTemplateUtil.generatePolicyDescription(policy);
             Assert.assertEquals("English language message.", policy.getDescription()); //$NON-NLS-1$
-            
+
             AbstractMessages.setLocale(Locale.US);
             PolicyTemplateUtil.generatePolicyDescription(policy);
             Assert.assertEquals("English (US) language message.", policy.getDescription()); //$NON-NLS-1$

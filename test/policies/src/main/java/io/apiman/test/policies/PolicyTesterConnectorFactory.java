@@ -16,10 +16,10 @@
 package io.apiman.test.policies;
 
 import io.apiman.gateway.engine.IConnectorFactory;
-import io.apiman.gateway.engine.IServiceConnector;
+import io.apiman.gateway.engine.IApiConnector;
 import io.apiman.gateway.engine.auth.RequiredAuthType;
-import io.apiman.gateway.engine.beans.Service;
-import io.apiman.gateway.engine.beans.ServiceRequest;
+import io.apiman.gateway.engine.beans.Api;
+import io.apiman.gateway.engine.beans.ApiRequest;
 
 /**
  * The {@link IConnectorFactory} used by the policy testing framework.
@@ -29,11 +29,11 @@ import io.apiman.gateway.engine.beans.ServiceRequest;
 public class PolicyTesterConnectorFactory implements IConnectorFactory {
 
     /**
-     * @see io.apiman.gateway.engine.IConnectorFactory#createConnector(io.apiman.gateway.engine.beans.ServiceRequest, io.apiman.gateway.engine.beans.Service)
+     * @see io.apiman.gateway.engine.IConnectorFactory#createConnector(io.apiman.gateway.engine.beans.ApiRequest, io.apiman.gateway.engine.beans.Api)
      */
     @Override
-    public IServiceConnector createConnector(ServiceRequest request, Service service, RequiredAuthType authType) {
-        return new PolicyTesterConnector(service);
+    public IApiConnector createConnector(ApiRequest request, Api api, RequiredAuthType authType) {
+        return new PolicyTesterConnector(api);
     }
 
 }

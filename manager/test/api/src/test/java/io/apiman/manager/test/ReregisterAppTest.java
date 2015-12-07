@@ -31,7 +31,7 @@ import org.junit.runner.RunWith;
 @ManagerRestTestPlan("test-plans/reregister-app-testPlan.xml")
 @ManagerRestTestGatewayLog(
         "GET:/mock-gateway/system/status\n" +
-        "PUT:/mock-gateway/services\n" +
+        "PUT:/mock-gateway/apis\n" +
         "GET:/mock-gateway/system/status\n" +
         "PUT:/mock-gateway/applications\n" +
         "GET:/mock-gateway/system/status\n" +
@@ -44,7 +44,7 @@ import org.junit.runner.RunWith;
 )
 @ManagerRestTestPublishPayload({
     "",
-    "{\"publicService\":false,\"organizationId\":\"Organization\",\"serviceId\":\"Service\",\"version\":\"1.0\",\"endpointType\":\"rest\",\"endpoint\":\"http://localhost:9999/echo\",\"endpointProperties\":{},\"servicePolicies\":[]}"
+    "{\"publicAPI\":false,\"organizationId\":\"Organization\",\"apiId\":\"API\",\"version\":\"1.0\",\"endpointType\":\"rest\",\"endpoint\":\"http://localhost:9999/echo\",\"endpointProperties\":{},\"apiPolicies\":[]}"
 })
 public class ReregisterAppTest {
 }

@@ -23,9 +23,9 @@ import io.apiman.gateway.engine.IEngine;
 import io.apiman.gateway.engine.IPluginRegistry;
 import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
+import io.apiman.gateway.engine.beans.Api;
+import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.Policy;
-import io.apiman.gateway.engine.beans.Service;
-import io.apiman.gateway.engine.beans.ServiceRequest;
 import io.apiman.gateway.engine.components.IBufferFactoryComponent;
 import io.apiman.gateway.engine.impl.ByteBufferFactoryComponent;
 import io.apiman.gateway.engine.impl.DefaultComponentRegistry;
@@ -54,7 +54,7 @@ public class PolicyTester extends BlockJUnit4ClassRunner {
 
     private IEngine engine;
     private String orgId = "PolicyTester";
-    private String serviceId = "TestService";
+    private String apiId = "TestApi";
     private int version = 0;
 
     /**
@@ -73,9 +73,9 @@ public class PolicyTester extends BlockJUnit4ClassRunner {
      */
     @Override
     protected void runChild(FrameworkMethod method, RunNotifier notifier) {
-        publishService(method);
+        publishApi(method);
         super.runChild(method, notifier);
-        retireService();
+        retireApi();
     }
 
     /**
@@ -104,11 +104,11 @@ public class PolicyTester extends BlockJUnit4ClassRunner {
     }
 
     /**
-     * Publish a service configured with the correct policy and policy config.
+     * Publish a API configured with the correct policy and policy config.
      * @param method
      * @throws Throwable
      */
-    protected void publishService(FrameworkMethod method) {
+    protected void publishApi(FrameworkMethod method) {
         version++;
 
         try {
@@ -131,16 +131,16 @@ public class PolicyTester extends BlockJUnit4ClassRunner {
                 throw new Exception("Missing test annotation @Configuration.");
             }
 
-            // Get the back end service simulator to use
-            BackEndService backEnd = method.getMethod().getAnnotation(BackEndService.class);
+            // Get the back end API simulator to use
+            BackEndApi backEnd = method.getMethod().getAnnotation(BackEndApi.class);
             if (backEnd == null) {
-                backEnd = getTestClass().getJavaClass().getAnnotation(BackEndService.class);
+                backEnd = getTestClass().getJavaClass().getAnnotation(BackEndApi.class);
             }
-            Class<? extends IPolicyTestBackEndService> backEndService = null;
+            Class<? extends IPolicyTestBackEndApi> backEndApi = null;
             if (backEnd == null) {
-                backEndService = EchoBackEndService.class;
+                backEndApi = EchoBackEndApi.class;
             } else {
-                backEndService = backEnd.value();
+                backEndApi = backEnd.value();
             }
 
 
@@ -150,16 +150,16 @@ public class PolicyTester extends BlockJUnit4ClassRunner {
             policy.setPolicyImpl("class:" + policyUnderTest.getName());
             policy.setPolicyJsonConfig(config.value());
 
-            Service service = new Service();
-            service.setEndpoint(backEndService.getName());
-            service.setEndpointType("TEST");
-            service.setOrganizationId(orgId);
-            service.setServiceId(serviceId);
-            service.setVersion(String.valueOf(version));
-            service.setPublicService(true);
-            service.setServicePolicies(Collections.singletonList(policy));
+            Api api = new Api();
+            api.setEndpoint(backEndApi.getName());
+            api.setEndpointType("TEST");
+            api.setOrganizationId(orgId);
+            api.setApiId(apiId);
+            api.setVersion(String.valueOf(version));
+            api.setPublicAPI(true);
+            api.setApiPolicies(Collections.singletonList(policy));
 
-            getEngine().getRegistry().publishService(service, new IAsyncResultHandler<Void>() {
+            getEngine().getRegistry().publishApi(api, new IAsyncResultHandler<Void>() {
                 @Override
                 public void handle(IAsyncResult<Void> result) {
                     if (result.isError()) {
@@ -177,14 +177,14 @@ public class PolicyTester extends BlockJUnit4ClassRunner {
     }
 
     /**
-     * Retires the service, removing it from the engine.
+     * Retires the API, removing it from the engine.
      */
-    protected void retireService() {
-        Service service = new Service();
-        service.setOrganizationId(orgId);
-        service.setServiceId(serviceId);
-        service.setVersion(String.valueOf(version));
-        getEngine().getRegistry().retireService(service, new IAsyncResultHandler<Void>() {
+    protected void retireApi() {
+        Api api = new Api();
+        api.setOrganizationId(orgId);
+        api.setApiId(apiId);
+        api.setVersion(String.valueOf(version));
+        getEngine().getRegistry().retireApi(api, new IAsyncResultHandler<Void>() {
             @Override
             public void handle(IAsyncResult<Void> result) {
                 // This is a good faith effort - we don't really care if it can't be retired.
@@ -242,13 +242,13 @@ public class PolicyTester extends BlockJUnit4ClassRunner {
     }
 
     /**
-     * @return a service request
+     * @return an API request
      */
-    public ServiceRequest createServiceRequest() {
-        ServiceRequest request = new ServiceRequest();
-        request.setServiceOrgId(orgId);
-        request.setServiceId(serviceId);
-        request.setServiceVersion(String.valueOf(version));
+    public ApiRequest createApiRequest() {
+        ApiRequest request = new ApiRequest();
+        request.setApiOrgId(orgId);
+        request.setApiId(apiId);
+        request.setApiVersion(String.valueOf(version));
         request.setTransportSecure(true);
         return request;
     }

@@ -15,7 +15,7 @@
  */
 package io.apiman.test.policies;
 
-import io.apiman.gateway.engine.beans.ServiceResponse;
+import io.apiman.gateway.engine.beans.ApiResponse;
 
 import java.util.Map;
 
@@ -23,7 +23,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 /**
  * The data returned by a call to the "send" method of {@link ApimanPolicyTest}.  This
- * represents a successful call to a back end service.
+ * represents a successful call to a back end API.
  *
  * @author eric.wittmann@redhat.com
  */
@@ -31,14 +31,14 @@ public class PolicyTestResponse {
 
     private static final ObjectMapper mapper = new ObjectMapper();
 
-    private final ServiceResponse response;
+    private final ApiResponse response;
     private final String body;
 
     /**
      * Constructor.
      * @param response
      */
-    public PolicyTestResponse(ServiceResponse response) {
+    public PolicyTestResponse(ApiResponse response) {
         this.response = response;
         this.body = null;
     }
@@ -48,7 +48,7 @@ public class PolicyTestResponse {
      * @param response
      * @param body
      */
-    public PolicyTestResponse(ServiceResponse response, String body) {
+    public PolicyTestResponse(ApiResponse response, String body) {
         this.response = response;
         this.body = body;
     }

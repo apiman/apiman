@@ -34,16 +34,16 @@ var IngestorToPolicyService = function(j_val) {
   var that = this;
 
   /**
-   Write a serviceRequest (head)
+   Write a apiRequest (head)
 
    @public
-   @param serviceRequest {Object} the service request 
+   @param apiRequest {Object} the API request 
    @param readyHandler {function} when ready to transmit body 
    */
-  this.head = function(serviceRequest, readyHandler) {
+  this.head = function(apiRequest, readyHandler) {
     var __args = arguments;
     if (__args.length === 2 && typeof __args[0] === 'object' && typeof __args[1] === 'function') {
-      j_ingestorToPolicyService["head(io.apiman.gateway.platforms.vertx3.io.VertxServiceRequest,io.vertx.core.Handler)"](serviceRequest != null ? new VertxServiceRequest(new JsonObject(JSON.stringify(serviceRequest))) : null, function(ar) {
+      j_ingestorToPolicyService["head(io.apiman.gateway.platforms.vertx3.io.VertxServiceRequest,io.vertx.core.Handler)"](apiRequest != null ? new VertxServiceRequest(new JsonObject(JSON.stringify(apiRequest))) : null, function(ar) {
       if (ar.succeeded()) {
         readyHandler(ar.result(), null);
       } else {

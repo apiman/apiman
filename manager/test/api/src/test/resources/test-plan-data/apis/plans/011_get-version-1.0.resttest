@@ -1,0 +1,25 @@
+GET /organizations/Organization1/apis/API1/versions/1.0 admin/admin
+----
+200
+Content-Type: application/json
+X-RestTest-ArrayOrdering: any
+
+{
+  "api" : {
+    "organization" : {
+      "id" : "Organization1"
+    },
+    "id" : "API1",
+    "name" : "API 1",
+    "description" : "[UPDATED] This is the description of API 1!",
+    "createdBy":"admin"
+  },
+  "status" : "Ready",
+  "endpoint" : "http://localhost:8080/ping",
+  "endpointType" : "rest",
+  "plans" : [
+    { "planId" : "Plan2", "version" : "1.1" }
+  ],
+  "version" : "1.0",
+  "createdBy" : "admin"
+}

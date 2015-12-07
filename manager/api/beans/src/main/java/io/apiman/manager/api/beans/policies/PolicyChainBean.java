@@ -24,7 +24,7 @@ import java.util.List;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
- * Models the list of policies that would get applied if a service were invoked
+ * Models the list of policies that would get applied if an API were invoked
  * via a particular plan.
  *
  * @author eric.wittmann@redhat.com

@@ -15,9 +15,9 @@
  */
 package io.apiman.gateway.platforms.vertx3.verticles;
 
+import io.apiman.gateway.platforms.vertx3.api.ApiResourceImpl;
 import io.apiman.gateway.platforms.vertx3.api.ApplicationResourceImpl;
 import io.apiman.gateway.platforms.vertx3.api.IRouteBuilder;
-import io.apiman.gateway.platforms.vertx3.api.ServiceResourceImpl;
 import io.apiman.gateway.platforms.vertx3.api.SystemResourceImpl;
 import io.apiman.gateway.platforms.vertx3.common.verticles.VerticleType;
 import io.vertx.core.AsyncResult;
@@ -34,7 +34,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 
 /**
- * API verticle provides the Gateway API RESTful service. Config is validated and pushed into the registry
+ * API verticle provides the Gateway API RESTful API. Config is validated and pushed into the registry
  * component; hence, if a distributed component such as ElasticSearch is used, this is shared across all nodes
  * extending {@link ApimanVerticleWithEngine}.
  *
@@ -48,7 +48,7 @@ public class ApiVerticle extends ApimanVerticleWithEngine {
     public void start() {
         super.start();
         IRouteBuilder applicationResource = new ApplicationResourceImpl(apimanConfig, engine);
-        IRouteBuilder serviceResource = new ServiceResourceImpl(apimanConfig, engine);
+        IRouteBuilder apiResource = new ApiResourceImpl(apimanConfig, engine);
         IRouteBuilder systemResource = new SystemResourceImpl(apimanConfig, engine);
 
         Router router = Router.router(vertx);
@@ -59,7 +59,7 @@ public class ApiVerticle extends ApimanVerticleWithEngine {
         }
 
         applicationResource.buildRoutes(router);
-        serviceResource.buildRoutes(router);
+        apiResource.buildRoutes(router);
         systemResource.buildRoutes(router);
 
         vertx.createHttpServer()

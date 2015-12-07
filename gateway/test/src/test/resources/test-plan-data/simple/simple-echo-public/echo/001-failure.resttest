@@ -6,5 +6,5 @@ X-Custom-Header: MyValue
 
 {
   "responseCode": 500,
-  "message": "Service not public."
+  "message": "API not public."
 }

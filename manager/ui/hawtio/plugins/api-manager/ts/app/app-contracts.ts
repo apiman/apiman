@@ -1,5 +1,5 @@
 /// <reference path="../apimanPlugin.ts"/>
-/// <reference path="../services.ts"/>
+/// <reference path="../rpc.ts"/>
 module Apiman {
     
     export var AppContractsController = _module.controller("Apiman.AppContractsController",
@@ -40,7 +40,7 @@ module Apiman {
                 } else {
                     var fc = [];
                     angular.forEach($scope.contracts, function(contract) {
-                        if (contract.serviceOrganizationName.toLowerCase().indexOf(value.toLowerCase()) > -1 || contract.serviceName.toLowerCase().indexOf(value.toLowerCase()) > -1) {
+                        if (contract.apiOrganizationName.toLowerCase().indexOf(value.toLowerCase()) > -1 || contract.apiName.toLowerCase().indexOf(value.toLowerCase()) > -1) {
                             fc.push(contract);
                         }
                     });
@@ -49,7 +49,7 @@ module Apiman {
             };
             
             $scope.breakAll = function() {
-                Dialogs.confirm('Break All Contracts?', 'Do you really want to break all contracts with all services?', function() {
+                Dialogs.confirm('Break All Contracts?', 'Do you really want to break all contracts with all APIs?', function() {
                     OrgSvcs.delete({ organizationId: params.org, entityType: 'applications', entityId: params.app, versionsOrActivity: 'versions', version: params.version, policiesOrActivity: 'contracts' }, function() {
                         $scope.contracts = [];
                         $scope.filteredContracts = [];

@@ -26,9 +26,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
 
 /**
- * The Action API.  This API allows callers to perform actions on various 
+ * The Action API.  This API allows callers to perform actions on various
  * entities - actions other than the standard REST "crud" actions.
- * 
+ *
  * @author eric.wittmann@redhat.com
  */
 @Path("actions")
@@ -37,7 +37,7 @@ public interface IActionResource {
 
     /**
      * Call this endpoint in order to execute actions for apiman entities such
-     * as Plans, Services, or Applications.  The type of the action must be 
+     * as Plans, APIs, or Applications.  The type of the action must be
      * included in the request payload.
      * @summary Execute an Entity Action
      * @param action The details about what action to execute.

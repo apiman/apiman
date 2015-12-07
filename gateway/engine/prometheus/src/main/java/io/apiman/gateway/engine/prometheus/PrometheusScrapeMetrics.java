@@ -49,8 +49,8 @@ public class PrometheusScrapeMetrics implements IMetrics {
 
     private static final String APIMAN = "apiman";
     private static final String APPLICATION = "application";
-    private static final String SERVICE_VERSION = "serviceVersion";
-    private static final String SERVICE = "service";
+    private static final String API_VERSION = "apiVersion";
+    private static final String API = "api";
     private static final String METHOD = "method";
     private static final String RESPONSE_CODE = "responseCode";
     private static final String FAILURE_CODE = "failureCode";
@@ -61,14 +61,14 @@ public class PrometheusScrapeMetrics implements IMetrics {
 
     final CollectorRegistry collectorRegistry = new CollectorRegistry();
 
-    // Service
+    // API
     final Counter requestsCtr = Counter.build()
             .name("requests_total").help("Total requests.")
             .namespace(APIMAN)
             .labelNames(METHOD,
                     RESPONSE_CODE,
-                    SERVICE,
-                    SERVICE_VERSION,
+                    API,
+                    API_VERSION,
                     APPLICATION)
             .register(collectorRegistry);
 
@@ -77,8 +77,8 @@ public class PrometheusScrapeMetrics implements IMetrics {
             .namespace(APIMAN)
             .labelNames(METHOD,
                     RESPONSE_CODE,
-                    SERVICE,
-                    SERVICE_VERSION,
+                    API,
+                    API_VERSION,
                     APPLICATION)
             .register(collectorRegistry);
 
@@ -88,8 +88,8 @@ public class PrometheusScrapeMetrics implements IMetrics {
             .labelNames(METHOD,
                     RESPONSE_CODE,
                     FAILURE_CODE,
-                    SERVICE,
-                    SERVICE_VERSION,
+                    API,
+                    API_VERSION,
                     APPLICATION)
             .register(collectorRegistry);
 
@@ -98,8 +98,8 @@ public class PrometheusScrapeMetrics implements IMetrics {
             .namespace(APIMAN)
             .labelNames(METHOD,
                     RESPONSE_CODE,
-                    SERVICE,
-                    SERVICE_VERSION,
+                    API,
+                    API_VERSION,
                     APPLICATION)
             .register(collectorRegistry);
 
@@ -158,24 +158,24 @@ public class PrometheusScrapeMetrics implements IMetrics {
         failureCtr.labels(metric.getMethod(),
                 Integer.toString(metric.getResponseCode()),
                 Integer.toString(metric.getFailureCode()),
-                metric.getServiceId(),
-                metric.getServiceVersion(),
+                metric.getApiId(),
+                metric.getApiVersion(),
                 metric.getApplicationId()).inc();
     }
 
     protected void doRequestsCtr(Counter ctr, RequestMetric metric) {
         ctr.labels(metric.getMethod(),
                 Integer.toString(metric.getResponseCode()),
-                metric.getServiceId(),
-                metric.getServiceVersion(),
+                metric.getApiId(),
+                metric.getApiVersion(),
                 metric.getApplicationId()).inc();
     }
 
     protected void doRequestDuration(RequestMetric metric) {
         requestDuration.labels(metric.getMethod(),
                 Integer.toString(metric.getResponseCode()),
-                metric.getServiceId(),
-                metric.getServiceVersion(),
+                metric.getApiId(),
+                metric.getApiVersion(),
                 metric.getApplicationId()).observe(metric.getRequestDuration());
     }
 

@@ -15,8 +15,8 @@
  */
 package io.apiman.gateway.platforms.undertow;
 
-import io.apiman.gateway.engine.beans.ServiceRequest;
-import io.apiman.gateway.engine.beans.ServiceResponse;
+import io.apiman.gateway.engine.beans.ApiRequest;
+import io.apiman.gateway.engine.beans.ApiResponse;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.HeaderMap;
 import io.undertow.util.HttpString;
@@ -43,21 +43,6 @@ public class UndertowGateway {
      * Starts the gateway.
      */
     public void start() {
-//        engine = EngineFactory.createEngine();
-//        server = new UndertowGatewayServer(EngineConfig.getServerPort()) {
-//            @Override
-//            protected void doGateway(final HttpServerExchange exchange) {
-//                ServiceRequest request = readRequest(exchange);
-//                try {
-                    // TODO recent engine interface changes broke this - fix!
-//                    ServiceResponse response = engine.execute(request);
-//                    writeResponse(exchange, response);
-//                } catch (Exception e) {
-//                    writeError(exchange, e);
-//                }
-//            }
-//        };
-//        server.start();
     }
 
     /**
@@ -65,19 +50,18 @@ public class UndertowGateway {
      */
     public void stop() {
         server.stop();
-//        engine = null;
         server = null;
     }
 
     /**
-     * Reads a {@link ServiceRequest} from information found in the inbound
+     * Reads a {@link ApiRequest} from information found in the inbound
      * portion of the http exchange.
      * @param exchange the undertow http server exchange
-     * @return a valid {@link ServiceRequest}
+     * @return a valid {@link ApiRequest}
      */
-    protected ServiceRequest readRequest(HttpServerExchange exchange) {
-        // TODO get the service request from a pool (re-use these objects)
-        ServiceRequest request = new ServiceRequest();
+    protected ApiRequest readRequest(HttpServerExchange exchange) {
+        // TODO get the API request from a pool (re-use these objects)
+        ApiRequest request = new ApiRequest();
         request.setApiKey(getApiKey(exchange));
         request.setType(exchange.getRequestMethod().toString());
         request.setUrl(exchange.getRequestURL());
@@ -100,7 +84,7 @@ public class UndertowGateway {
      * @param exchange
      * @return
      */
-    protected String getService(HttpServerExchange exchange) {
+    protected String getApi(HttpServerExchange exchange) {
         String path = exchange.getRequestPath();
         return path.split("/")[2]; //$NON-NLS-1$
     }
@@ -153,7 +137,7 @@ public class UndertowGateway {
      * @return
      */
     protected String getDestination(HttpServerExchange exchange) {
-        // Format:  /org/svc/version/dest/in/a/tion
+        // Format:  /org/api/version/dest/in/a/tion
         String path = exchange.getRequestPath();
         int idx = -1;
         for (int i=0; i<4; i++) {
@@ -164,11 +148,11 @@ public class UndertowGateway {
 
     /**
      * Reads the inbound request headers from the exchange and sets them on
-     * the {@link ServiceRequest}.
+     * the {@link ApiRequest}.
      * @param request
      * @param exchange
      */
-    protected void readHeaders(ServiceRequest request, HttpServerExchange exchange) {
+    protected void readHeaders(ApiRequest request, HttpServerExchange exchange) {
         HeaderMap headers = exchange.getRequestHeaders();
         Collection<HttpString> names = headers.getHeaderNames();
         for (HttpString headerName : names) {
@@ -181,7 +165,7 @@ public class UndertowGateway {
      * @param exchange
      * @param response
      */
-    protected void writeResponse(HttpServerExchange exchange, ServiceResponse response) {
+    protected void writeResponse(HttpServerExchange exchange, ApiResponse response) {
         // TODO Auto-generated method stub
 
     }

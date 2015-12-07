@@ -24,12 +24,12 @@ import java.util.List;
 /**
  * Bundles up a bunch of policies into a single bean.  A policies bean
  * represents all of the policies configured for a particular entity (plan,
- * service, app).
+ * API, app).
  *
  * @author eric.wittmann@redhat.com
  */
 public class PoliciesBean {
-    
+
     private PolicyType type;
     private String organizationId;
     private String entityId;
@@ -41,7 +41,7 @@ public class PoliciesBean {
      */
     public PoliciesBean() {
     }
-    
+
     /**
      * Create a new Policies object from the given policy bean instance.
      * @param policy the policy
@@ -56,7 +56,7 @@ public class PoliciesBean {
         rval.getPolicies().add(policy);
         return rval;
     }
-    
+
     /**
      * Creates a new, empty {@link PoliciesBean} from some basic information.
      * @param type the policy type

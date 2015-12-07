@@ -2,12 +2,12 @@
 <testPlan xmlns="urn:io.apiman.test:2014:02:testPlan">
 
   <testGroup name="Test a simple plugin-provided policy">
-    <test name="Publish Service" endpoint="api">test-plan-data/plugins/test-policy/001-publish-service.resttest</test>
+    <test name="Publish Api" endpoint="api">test-plan-data/plugins/test-policy/001-publish-api.resttest</test>
     <test name="Success">test-plan-data/plugins/test-policy/002-success.resttest</test>
   </testGroup>
 
   <testGroup name="Test snapshot plugins (auto-reload)">
-    <test name="Publish Fields Service" endpoint="api">test-plan-data/plugins/reload/001-publish-service.resttest</test>
+    <test name="Publish Fields API" endpoint="api">test-plan-data/plugins/reload/001-publish-api.resttest</test>
     <test name="Success (v1)">test-plan-data/plugins/reload/002-success-v1.resttest</test>
     <test name="Success (v2)">test-plan-data/plugins/reload/003-success-v2.resttest</test>
   </testGroup>

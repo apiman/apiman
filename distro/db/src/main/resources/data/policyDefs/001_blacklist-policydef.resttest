@@ -9,7 +9,7 @@ Content-Type: application/json
   "templates" : [
     {
       "language" : null,
-      "template" : "Requests that originate from the set of @{ipList.size()} configured IP address(es) will be denied access to the managed service."
+      "template" : "Requests that originate from the set of @{ipList.size()} configured IP address(es) will be denied access to the managed API."
     }
   ]
 }

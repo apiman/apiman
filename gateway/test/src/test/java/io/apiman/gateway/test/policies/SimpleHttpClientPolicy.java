@@ -17,8 +17,8 @@ package io.apiman.gateway.test.policies;
 
 import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
-import io.apiman.gateway.engine.beans.ServiceRequest;
-import io.apiman.gateway.engine.beans.ServiceResponse;
+import io.apiman.gateway.engine.beans.ApiRequest;
+import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.engine.components.IHttpClientComponent;
 import io.apiman.gateway.engine.components.http.HttpMethod;
 import io.apiman.gateway.engine.components.http.IHttpClientRequest;
@@ -49,11 +49,11 @@ public class SimpleHttpClientPolicy implements IPolicy {
     }
     
     /**
-     * @see io.apiman.gateway.engine.policy.IPolicy#apply(io.apiman.gateway.engine.beans.ServiceRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
+     * @see io.apiman.gateway.engine.policy.IPolicy#apply(io.apiman.gateway.engine.beans.ApiRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
      */
     @Override
-    public void apply(final ServiceRequest request, final IPolicyContext context, final Object config,
-            final IPolicyChain<ServiceRequest> chain) {
+    public void apply(final ApiRequest request, final IPolicyContext context, final Object config,
+            final IPolicyChain<ApiRequest> chain) {
         final IHttpClientComponent httpClientComponent = context.getComponent(IHttpClientComponent.class);
         String endpoint = System.getProperty("apiman-gateway-test.endpoints.echo"); //$NON-NLS-1$
         IHttpClientRequest clientRequest = httpClientComponent.request(endpoint, HttpMethod.GET, new IAsyncResultHandler<IHttpClientResponse>() {
@@ -77,11 +77,11 @@ public class SimpleHttpClientPolicy implements IPolicy {
     }
 
     /**
-     * @see io.apiman.gateway.engine.policy.IPolicy#apply(io.apiman.gateway.engine.beans.ServiceResponse, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
+     * @see io.apiman.gateway.engine.policy.IPolicy#apply(io.apiman.gateway.engine.beans.ApiResponse, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
      */
     @Override
-    public void apply(ServiceResponse response, IPolicyContext context, Object config,
-            IPolicyChain<ServiceResponse> chain) {
+    public void apply(ApiResponse response, IPolicyContext context, Object config,
+            IPolicyChain<ApiResponse> chain) {
         chain.doApply(response);
     }
 

@@ -1,0 +1,23 @@
+GET /organizations/Organization1/apis/API1/versions/1.0/policies/${policy-id} admin/admin
+----
+200
+Content-Type: application/json
+
+{
+  "type" : "Api",
+  "organizationId" : "Organization1",
+  "entityId" : "API1",
+  "entityVersion" : "1.0",
+  "name" : "Policy Def",
+  "description" : "This is a test policy for ApisTest.",
+  "definition" : {
+    "id" : "PolicyDef",
+    "name" : "Policy Def",
+    "description" : "This is the test policy def.",
+    "policyImpl" : "org.example.policies.PolicyDef",
+    "icon" : "policy-def"
+  },
+  "configuration" : "{\"testName\" : \"ApisTest\"}",
+  "createdBy" : "admin",
+  "modifiedBy" : "admin"
+}

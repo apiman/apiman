@@ -2,9 +2,9 @@ POST /organizations/Test/applications/app1/versions/1.0/contracts ${apiman.suite
 Content-Type: application/json
 
 {
-  "serviceOrgId" : "Test",
-  "serviceId" : "echo",
-  "serviceVersion" : "1.0",
+  "apiOrgId" : "Test",
+  "apiId" : "echo",
+  "apiVersion" : "1.0",
   "planId" : "Gold"
 }
 ----
@@ -24,8 +24,8 @@ X-RestTest-BindTo-gold-contractId: id
     "version" : "1.0"
   },
   
-  "service":{
-    "service" : {
+  "api":{
+    "api" : {
       "organization" : {
         "id" : "Test"
       },

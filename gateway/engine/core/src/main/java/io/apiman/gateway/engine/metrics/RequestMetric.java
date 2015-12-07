@@ -33,15 +33,15 @@ public class RequestMetric implements Serializable {
     private Date requestStart;
     private Date requestEnd;
     private long requestDuration = -1;
-    private Date serviceStart;
-    private Date serviceEnd;
-    private long serviceDuration = 1;
+    private Date apiStart;
+    private Date apiEnd;
+    private long apiDuration = 1;
     private String url;
     private String resource;
     private String method;
-    private String serviceOrgId;
-    private String serviceId;
-    private String serviceVersion;
+    private String apiOrgId;
+    private String apiId;
+    private String apiVersion;
     private String planId;
     private String applicationOrgId;
     private String applicationId;
@@ -65,17 +65,17 @@ public class RequestMetric implements Serializable {
     }
 
     /**
-     * @return the serviceDuration
+     * @return the apiDuration
      */
-    public long getServiceDuration() {
-        return serviceDuration;
+    public long getApiDuration() {
+        return apiDuration;
     }
 
     /**
-     * @param serviceDuration the serviceDuration to set
+     * @param apiDuration the apiDuration to set
      */
-    public void setServiceDuration(long serviceDuration) {
-        this.serviceDuration = serviceDuration;
+    public void setApiDuration(long apiDuration) {
+        this.apiDuration = apiDuration;
     }
 
     /**
@@ -107,45 +107,45 @@ public class RequestMetric implements Serializable {
     }
 
     /**
-     * @return the serviceOrgId
+     * @return the apiOrgId
      */
-    public String getServiceOrgId() {
-        return serviceOrgId;
+    public String getApiOrgId() {
+        return apiOrgId;
     }
 
     /**
-     * @param serviceOrgId the serviceOrgId to set
+     * @param apiOrgId the apiOrgId to set
      */
-    public void setServiceOrgId(String serviceOrgId) {
-        this.serviceOrgId = serviceOrgId;
+    public void setApiOrgId(String apiOrgId) {
+        this.apiOrgId = apiOrgId;
     }
 
     /**
-     * @return the serviceId
+     * @return the apiId
      */
-    public String getServiceId() {
-        return serviceId;
+    public String getApiId() {
+        return apiId;
     }
 
     /**
-     * @param serviceId the serviceId to set
+     * @param apiId the apiId to set
      */
-    public void setServiceId(String serviceId) {
-        this.serviceId = serviceId;
+    public void setApiId(String apiId) {
+        this.apiId = apiId;
     }
 
     /**
-     * @return the serviceVersion
+     * @return the apiVersion
      */
-    public String getServiceVersion() {
-        return serviceVersion;
+    public String getApiVersion() {
+        return apiVersion;
     }
 
     /**
-     * @param serviceVersion the serviceVersion to set
+     * @param apiVersion the apiVersion to set
      */
-    public void setServiceVersion(String serviceVersion) {
-        this.serviceVersion = serviceVersion;
+    public void setApiVersion(String apiVersion) {
+        this.apiVersion = apiVersion;
     }
 
     /**
@@ -304,32 +304,32 @@ public class RequestMetric implements Serializable {
     }
 
     /**
-     * @return the serviceStart
+     * @return the apiStart
      */
-    public Date getServiceStart() {
-        return serviceStart;
+    public Date getApiStart() {
+        return apiStart;
     }
 
     /**
-     * @param serviceStart the serviceStart to set
+     * @param apiStart the apiStart to set
      */
-    public void setServiceStart(Date serviceStart) {
-        this.serviceStart = serviceStart;
+    public void setApiStart(Date apiStart) {
+        this.apiStart = apiStart;
     }
 
     /**
-     * @return the serviceEnd
+     * @return the apiEnd
      */
-    public Date getServiceEnd() {
-        return serviceEnd;
+    public Date getApiEnd() {
+        return apiEnd;
     }
 
     /**
-     * @param serviceEnd the serviceEnd to set
+     * @param apiEnd the apiEnd to set
      */
-    public void setServiceEnd(Date serviceEnd) {
-        this.serviceEnd = serviceEnd;
-        this.serviceDuration = serviceEnd.getTime() - serviceStart.getTime();
+    public void setApiEnd(Date apiEnd) {
+        this.apiEnd = apiEnd;
+        this.apiDuration = apiEnd.getTime() - apiStart.getTime();
     }
 
     /**

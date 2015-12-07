@@ -22,12 +22,12 @@ import io.apiman.gateway.engine.IRegistry;
 import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.Application;
-import io.apiman.gateway.engine.beans.Service;
-import io.apiman.gateway.engine.beans.ServiceContract;
-import io.apiman.gateway.engine.beans.ServiceRequest;
+import io.apiman.gateway.engine.beans.Api;
+import io.apiman.gateway.engine.beans.ApiContract;
+import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.impl.InMemoryRegistry;
-import io.apiman.gateway.engine.vertxebinmemory.services.EBRegistryProxy;
-import io.apiman.gateway.engine.vertxebinmemory.services.EBRegistryProxyHandler;
+import io.apiman.gateway.engine.vertxebinmemory.apis.EBRegistryProxy;
+import io.apiman.gateway.engine.vertxebinmemory.apis.EBRegistryProxyHandler;
 import io.apiman.gateway.platforms.vertx3.common.config.VertxEngineConfig;
 import io.vertx.core.Vertx;
 
@@ -59,20 +59,20 @@ public class EBInMemoryRegistry extends InMemoryRegistry implements EBRegistryPr
     }
 
     @Override
-    public void getContract(ServiceRequest request, IAsyncResultHandler<ServiceContract> handler) {
+    public void getContract(ApiRequest request, IAsyncResultHandler<ApiContract> handler) {
         super.getContract(request, handler);
     }
 
     @Override
-    public void publishService(Service service, IAsyncResultHandler<Void> handler) {
-        super.publishService(service, handler);
+    public void publishApi(Api service, IAsyncResultHandler<Void> handler) {
+        super.publishApi(service, handler);
         proxy.publishService(service);
         System.out.println("Published a service");
     }
 
     @Override
-    public void retireService(Service service, IAsyncResultHandler<Void> handler) {
-        super.retireService(service, handler);
+    public void retireApi(Api service, IAsyncResultHandler<Void> handler) {
+        super.retireApi(service, handler);
         proxy.retireService(service);
     }
 
@@ -89,9 +89,9 @@ public class EBInMemoryRegistry extends InMemoryRegistry implements EBRegistryPr
     }
 
     @Override
-    public void getService(String organizationId, String serviceId, String serviceVersion,
-            IAsyncResultHandler<Service> handler) {
-        super.getService(organizationId, serviceId, serviceVersion, handler);
+    public void getApi(String organizationId, String serviceId, String serviceVersion,
+            IAsyncResultHandler<Api> handler) {
+        super.getApi(organizationId, serviceId, serviceVersion, handler);
     }
 
     @Override
@@ -112,15 +112,15 @@ public class EBInMemoryRegistry extends InMemoryRegistry implements EBRegistryPr
     // These are called back by the listener
 
     @Override
-    public void publishService(Service service) {
+    public void publishService(Api service) {
         System.out.println("Publish service");
-        super.publishService(service, emptyHandler);
+        super.publishApi(service, emptyHandler);
     }
 
     @Override
-    public void retireService(Service service) {
+    public void retireService(Api service) {
         System.out.println("Retire service");
-        super.retireService(service, emptyHandler);
+        super.retireApi(service, emptyHandler);
     }
 
     @Override

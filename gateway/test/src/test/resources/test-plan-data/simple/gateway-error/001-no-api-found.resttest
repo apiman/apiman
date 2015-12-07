@@ -1,0 +1,10 @@
+GET /GatewayErrorTest/unknown/1.0/foo admin/admin
+
+----
+500
+Content-Type: application/json
+
+{
+  "responseCode" : 500,
+  "message" : "API not found."
+}

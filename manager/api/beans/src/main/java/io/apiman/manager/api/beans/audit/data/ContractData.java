@@ -31,9 +31,9 @@ public class ContractData implements Serializable {
     private String appOrgId;
     private String appId;
     private String appVersion;
-    private String serviceOrgId;
-    private String serviceId;
-    private String serviceVersion;
+    private String apiOrgId;
+    private String apiId;
+    private String apiVersion;
     private String planId;
     private String planVersion;
 
@@ -51,9 +51,9 @@ public class ContractData implements Serializable {
         setAppOrgId(bean.getApplication().getApplication().getOrganization().getId());
         setAppId(bean.getApplication().getApplication().getId());
         setAppVersion(bean.getApplication().getVersion());
-        setServiceOrgId(bean.getService().getService().getOrganization().getId());
-        setServiceId(bean.getService().getService().getId());
-        setServiceVersion(bean.getService().getVersion());
+        setApiOrgId(bean.getApi().getApi().getOrganization().getId());
+        setApiId(bean.getApi().getApi().getId());
+        setApiVersion(bean.getApi().getVersion());
         setPlanId(bean.getPlan().getPlan().getId());
         setPlanVersion(bean.getPlan().getVersion());
     }
@@ -101,45 +101,45 @@ public class ContractData implements Serializable {
     }
 
     /**
-     * @return the serviceOrgId
+     * @return the apiOrgId
      */
-    public String getServiceOrgId() {
-        return serviceOrgId;
+    public String getApiOrgId() {
+        return apiOrgId;
     }
 
     /**
-     * @param serviceOrgId the serviceOrgId to set
+     * @param apiOrgId the apiOrgId to set
      */
-    public void setServiceOrgId(String serviceOrgId) {
-        this.serviceOrgId = serviceOrgId;
+    public void setApiOrgId(String apiOrgId) {
+        this.apiOrgId = apiOrgId;
     }
 
     /**
-     * @return the serviceId
+     * @return the apiId
      */
-    public String getServiceId() {
-        return serviceId;
+    public String getApiId() {
+        return apiId;
     }
 
     /**
-     * @param serviceId the serviceId to set
+     * @param apiId the apiId to set
      */
-    public void setServiceId(String serviceId) {
-        this.serviceId = serviceId;
+    public void setApiId(String apiId) {
+        this.apiId = apiId;
     }
 
     /**
-     * @return the serviceVersion
+     * @return the apiVersion
      */
-    public String getServiceVersion() {
-        return serviceVersion;
+    public String getApiVersion() {
+        return apiVersion;
     }
 
     /**
-     * @param serviceVersion the serviceVersion to set
+     * @param apiVersion the apiVersion to set
      */
-    public void setServiceVersion(String serviceVersion) {
-        this.serviceVersion = serviceVersion;
+    public void setApiVersion(String apiVersion) {
+        this.apiVersion = apiVersion;
     }
 
     /**
@@ -177,8 +177,8 @@ public class ContractData implements Serializable {
     @SuppressWarnings("nls")
     public String toString() {
         return "ContractData [appOrgId=" + appOrgId + ", appId=" + appId + ", appVersion=" + appVersion
-                + ", serviceOrgId=" + serviceOrgId + ", serviceId=" + serviceId + ", serviceVersion="
-                + serviceVersion + ", planId=" + planId + ", planVersion=" + planVersion + "]";
+                + ", apiOrgId=" + apiOrgId + ", apiId=" + apiId + ", apiVersion="
+                + apiVersion + ", planId=" + planId + ", planVersion=" + planVersion + "]";
     }
 
 }

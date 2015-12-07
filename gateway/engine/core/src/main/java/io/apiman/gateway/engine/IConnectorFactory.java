@@ -16,13 +16,13 @@
 package io.apiman.gateway.engine;
 
 import io.apiman.gateway.engine.auth.RequiredAuthType;
-import io.apiman.gateway.engine.beans.Service;
-import io.apiman.gateway.engine.beans.ServiceRequest;
+import io.apiman.gateway.engine.beans.Api;
+import io.apiman.gateway.engine.beans.ApiRequest;
 
 /**
  * Factory used to create connectors to back-end systems.  An implementation of
  * this interface must be available to the Engine so that it can invoke back-end
- * systems on behalf of a managed service.
+ * systems on behalf of a managed API.
  *
  * @author eric.wittmann@redhat.com
  */
@@ -30,12 +30,12 @@ public interface IConnectorFactory {
 
     /**
      * Creates a connector to a back-end system.
-     * @param request the inbound service request
-     * @param service the managed service being invoked
+     * @param request the inbound API request
+     * @param api the managed API being invoked
      * @param requiredAuthType the required authorization type
-     * @return a connector to the back-end service
+     * @return a connector to the back-end API
      */
-    public IServiceConnector createConnector(ServiceRequest request, Service service,
+    public IApiConnector createConnector(ApiRequest request, Api api,
             RequiredAuthType requiredAuthType);
 
 }

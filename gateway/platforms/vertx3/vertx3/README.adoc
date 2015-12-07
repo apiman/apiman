@@ -90,7 +90,7 @@ Plaintext HTTP entry-point, with no transport security. Turn off by reducing cou
 Encrypted HTTPS entry-point, with TLS. Turn off by reducing count to zero.
 
 ==== API
-Hosts the apiman gateway API, which is typically used by the apiman manager to drive the gateway. For instance, publishing and retiring Services, Contracts.
+Hosts the apiman gateway API, which is typically used by the apiman manager to drive the gateway. For instance, publishing and retiring APIs, Contracts.
 
 ==== Policy
 Handles execution of apiman's engine, policies and pipes data to and from the backend, before returning it to the sender.

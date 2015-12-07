@@ -2,15 +2,15 @@ POST /roles admin/admin
 Content-Type: application/json
 
 {
-  "name" : "Service Roles",
-  "permissions" : [ "svcView", "svcEdit", "svcAdmin" ]
+  "name" : "API Roles",
+  "permissions" : [ "apiView", "apiEdit", "apiAdmin" ]
 }
 ----
 200
 Content-Type: application/json
 
 {
-  "id" : "ServiceRoles",
-  "name" : "Service Roles",
-  "permissions" : [ "svcView", "svcEdit", "svcAdmin" ]
+  "id" : "APIRoles",
+  "name" : "API Roles",
+  "permissions" : [ "apiView", "apiEdit", "apiAdmin" ]
 }

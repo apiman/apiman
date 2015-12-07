@@ -15,7 +15,7 @@
  */
 package io.apiman.manager.api.es;
 
-import io.apiman.manager.api.beans.metrics.AppUsagePerServiceBean;
+import io.apiman.manager.api.beans.metrics.AppUsagePerApiBean;
 import io.apiman.manager.api.beans.metrics.HistogramBean;
 import io.apiman.manager.api.beans.metrics.HistogramDataPoint;
 import io.apiman.manager.api.beans.metrics.HistogramIntervalType;
@@ -84,7 +84,7 @@ public class ESMetricsAccessor implements IMetricsAccessor {
      */
     @SuppressWarnings("nls")
     @Override
-    public UsageHistogramBean getUsage(String organizationId, String serviceId, String version,
+    public UsageHistogramBean getUsage(String organizationId, String apiId, String version,
             HistogramIntervalType interval, DateTime from, DateTime to) {
         UsageHistogramBean rval = new UsageHistogramBean();
         Map<String, UsageDataPoint> index = generateHistogramSkeleton(rval, from, to, interval, UsageDataPoint.class);
@@ -104,9 +104,9 @@ public class ESMetricsAccessor implements IMetricsAccessor {
                     "      }," +
                     "      \"filter\": {" +
                     "        \"and\" : [" +
-                    "          { \"term\" : { \"serviceOrgId\" : \"${serviceOrgId}\" } }," +
-                    "          { \"term\" : { \"serviceId\" : \"${serviceId}\" } }," +
-                    "          { \"term\" : { \"serviceVersion\" : \"${serviceVersion}\" } }" +
+                    "          { \"term\" : { \"apiOrgId\" : \"${apiOrgId}\" } }," +
+                    "          { \"term\" : { \"apiId\" : \"${apiId}\" } }," +
+                    "          { \"term\" : { \"apiVersion\" : \"${apiVersion}\" } }" +
                     "        ]" +
                     "      }" +
                     "    }" +
@@ -124,9 +124,9 @@ public class ESMetricsAccessor implements IMetricsAccessor {
             Map<String, String> params = new HashMap<>();
             params.put("from", formatDate(from));
             params.put("to", formatDate(to));
-            params.put("serviceOrgId", organizationId.replace('"', '_'));
-            params.put("serviceId", serviceId.replace('"', '_'));
-            params.put("serviceVersion", version.replace('"', '_'));
+            params.put("apiOrgId", organizationId.replace('"', '_'));
+            params.put("apiId", apiId.replace('"', '_'));
+            params.put("apiVersion", version.replace('"', '_'));
             params.put("interval", interval.name());
             StrSubstitutor ss = new StrSubstitutor(params);
             query = ss.replace(query);
@@ -241,7 +241,7 @@ public class ESMetricsAccessor implements IMetricsAccessor {
      */
     @SuppressWarnings("nls")
     @Override
-    public UsagePerAppBean getUsagePerApp(String organizationId, String serviceId, String version,
+    public UsagePerAppBean getUsagePerApp(String organizationId, String apiId, String version,
             DateTime from, DateTime to) {
         UsagePerAppBean rval = new UsagePerAppBean();
 
@@ -260,9 +260,9 @@ public class ESMetricsAccessor implements IMetricsAccessor {
                     "      }," +
                     "      \"filter\": {" +
                     "        \"and\" : [" +
-                    "          { \"term\" : { \"serviceOrgId\" : \"${serviceOrgId}\" } }," +
-                    "          { \"term\" : { \"serviceId\" : \"${serviceId}\" } }," +
-                    "          { \"term\" : { \"serviceVersion\" : \"${serviceVersion}\" } }" +
+                    "          { \"term\" : { \"apiOrgId\" : \"${apiOrgId}\" } }," +
+                    "          { \"term\" : { \"apiId\" : \"${apiId}\" } }," +
+                    "          { \"term\" : { \"apiVersion\" : \"${apiVersion}\" } }" +
                     "        ]" +
                     "      }" +
                     "    }" +
@@ -279,9 +279,9 @@ public class ESMetricsAccessor implements IMetricsAccessor {
             Map<String, String> params = new HashMap<>();
             params.put("from", formatDate(from));
             params.put("to", formatDate(to));
-            params.put("serviceOrgId", organizationId.replace('"', '_'));
-            params.put("serviceId", serviceId.replace('"', '_'));
-            params.put("serviceVersion", version.replace('"', '_'));
+            params.put("apiOrgId", organizationId.replace('"', '_'));
+            params.put("apiId", apiId.replace('"', '_'));
+            params.put("apiVersion", version.replace('"', '_'));
             StrSubstitutor ss = new StrSubstitutor(params);
             query = ss.replace(query);
 
@@ -312,7 +312,7 @@ public class ESMetricsAccessor implements IMetricsAccessor {
      */
     @SuppressWarnings("nls")
     @Override
-    public UsagePerPlanBean getUsagePerPlan(String organizationId, String serviceId, String version,
+    public UsagePerPlanBean getUsagePerPlan(String organizationId, String apiId, String version,
             DateTime from, DateTime to) {
         UsagePerPlanBean rval = new UsagePerPlanBean();
 
@@ -331,9 +331,9 @@ public class ESMetricsAccessor implements IMetricsAccessor {
                     "      }," +
                     "      \"filter\": {" +
                     "        \"and\" : [" +
-                    "          { \"term\" : { \"serviceOrgId\" : \"${serviceOrgId}\" } }," +
-                    "          { \"term\" : { \"serviceId\" : \"${serviceId}\" } }," +
-                    "          { \"term\" : { \"serviceVersion\" : \"${serviceVersion}\" } }" +
+                    "          { \"term\" : { \"apiOrgId\" : \"${apiOrgId}\" } }," +
+                    "          { \"term\" : { \"apiId\" : \"${apiId}\" } }," +
+                    "          { \"term\" : { \"apiVersion\" : \"${apiVersion}\" } }" +
                     "        ]" +
                     "      }" +
                     "    }" +
@@ -350,9 +350,9 @@ public class ESMetricsAccessor implements IMetricsAccessor {
             Map<String, String> params = new HashMap<>();
             params.put("from", formatDate(from));
             params.put("to", formatDate(to));
-            params.put("serviceOrgId", organizationId.replace('"', '_'));
-            params.put("serviceId", serviceId.replace('"', '_'));
-            params.put("serviceVersion", version.replace('"', '_'));
+            params.put("apiOrgId", organizationId.replace('"', '_'));
+            params.put("apiId", apiId.replace('"', '_'));
+            params.put("apiVersion", version.replace('"', '_'));
             StrSubstitutor ss = new StrSubstitutor(params);
             query = ss.replace(query);
 
@@ -378,7 +378,7 @@ public class ESMetricsAccessor implements IMetricsAccessor {
      */
     @SuppressWarnings("nls")
     @Override
-    public ResponseStatsHistogramBean getResponseStats(String organizationId, String serviceId,
+    public ResponseStatsHistogramBean getResponseStats(String organizationId, String apiId,
             String version, HistogramIntervalType interval, DateTime from, DateTime to) {
         ResponseStatsHistogramBean rval = new ResponseStatsHistogramBean();
         Map<String, ResponseStatsDataPoint> index = generateHistogramSkeleton(rval, from, to, interval, ResponseStatsDataPoint.class);
@@ -398,9 +398,9 @@ public class ESMetricsAccessor implements IMetricsAccessor {
                     "      }," +
                     "      \"filter\": {" +
                     "        \"and\" : [" +
-                    "          { \"term\" : { \"serviceOrgId\" : \"${serviceOrgId}\" } }," +
-                    "          { \"term\" : { \"serviceId\" : \"${serviceId}\" } }," +
-                    "          { \"term\" : { \"serviceVersion\" : \"${serviceVersion}\" } }" +
+                    "          { \"term\" : { \"apiOrgId\" : \"${apiOrgId}\" } }," +
+                    "          { \"term\" : { \"apiId\" : \"${apiId}\" } }," +
+                    "          { \"term\" : { \"apiVersion\" : \"${apiVersion}\" } }" +
                     "        ]" +
                     "      }" +
                     "    }" +
@@ -426,9 +426,9 @@ public class ESMetricsAccessor implements IMetricsAccessor {
             Map<String, String> params = new HashMap<>();
             params.put("from", formatDate(from));
             params.put("to", formatDate(to));
-            params.put("serviceOrgId", organizationId.replace('"', '_'));
-            params.put("serviceId", serviceId.replace('"', '_'));
-            params.put("serviceVersion", version.replace('"', '_'));
+            params.put("apiOrgId", organizationId.replace('"', '_'));
+            params.put("apiId", apiId.replace('"', '_'));
+            params.put("apiVersion", version.replace('"', '_'));
             params.put("interval", interval.name());
             StrSubstitutor ss = new StrSubstitutor(params);
             query = ss.replace(query);
@@ -465,7 +465,7 @@ public class ESMetricsAccessor implements IMetricsAccessor {
      */
     @Override
     @SuppressWarnings("nls")
-    public ResponseStatsSummaryBean getResponseStatsSummary(String organizationId, String serviceId,
+    public ResponseStatsSummaryBean getResponseStatsSummary(String organizationId, String apiId,
             String version, DateTime from, DateTime to) {
         ResponseStatsSummaryBean rval = new ResponseStatsSummaryBean();
 
@@ -484,9 +484,9 @@ public class ESMetricsAccessor implements IMetricsAccessor {
                     "      }," +
                     "      \"filter\": {" +
                     "        \"and\" : [" +
-                    "          { \"term\" : { \"serviceOrgId\" : \"${serviceOrgId}\" } }," +
-                    "          { \"term\" : { \"serviceId\" : \"${serviceId}\" } }," +
-                    "          { \"term\" : { \"serviceVersion\" : \"${serviceVersion}\" } }" +
+                    "          { \"term\" : { \"apiOrgId\" : \"${apiOrgId}\" } }," +
+                    "          { \"term\" : { \"apiId\" : \"${apiId}\" } }," +
+                    "          { \"term\" : { \"apiVersion\" : \"${apiVersion}\" } }" +
                     "        ]" +
                     "      }" +
                     "    }" +
@@ -504,9 +504,9 @@ public class ESMetricsAccessor implements IMetricsAccessor {
             Map<String, String> params = new HashMap<>();
             params.put("from", formatDate(from));
             params.put("to", formatDate(to));
-            params.put("serviceOrgId", organizationId.replace('"', '_'));
-            params.put("serviceId", serviceId.replace('"', '_'));
-            params.put("serviceVersion", version.replace('"', '_'));
+            params.put("apiOrgId", organizationId.replace('"', '_'));
+            params.put("apiId", apiId.replace('"', '_'));
+            params.put("apiVersion", version.replace('"', '_'));
             StrSubstitutor ss = new StrSubstitutor(params);
             query = ss.replace(query);
 
@@ -528,7 +528,7 @@ public class ESMetricsAccessor implements IMetricsAccessor {
      */
     @Override
     @SuppressWarnings("nls")
-    public ResponseStatsPerAppBean getResponseStatsPerApp(String organizationId, String serviceId,
+    public ResponseStatsPerAppBean getResponseStatsPerApp(String organizationId, String apiId,
             String version, DateTime from, DateTime to) {
         ResponseStatsPerAppBean rval = new ResponseStatsPerAppBean();
 
@@ -547,9 +547,9 @@ public class ESMetricsAccessor implements IMetricsAccessor {
                     "      }," +
                     "      \"filter\": {" +
                     "        \"and\" : [" +
-                    "          { \"term\" : { \"serviceOrgId\" : \"${serviceOrgId}\" } }," +
-                    "          { \"term\" : { \"serviceId\" : \"${serviceId}\" } }," +
-                    "          { \"term\" : { \"serviceVersion\" : \"${serviceVersion}\" } }" +
+                    "          { \"term\" : { \"apiOrgId\" : \"${apiOrgId}\" } }," +
+                    "          { \"term\" : { \"apiId\" : \"${apiId}\" } }," +
+                    "          { \"term\" : { \"apiVersion\" : \"${apiVersion}\" } }" +
                     "        ]" +
                     "      }" +
                     "    }" +
@@ -574,9 +574,9 @@ public class ESMetricsAccessor implements IMetricsAccessor {
             Map<String, String> params = new HashMap<>();
             params.put("from", formatDate(from));
             params.put("to", formatDate(to));
-            params.put("serviceOrgId", organizationId.replace('"', '_'));
-            params.put("serviceId", serviceId.replace('"', '_'));
-            params.put("serviceVersion", version.replace('"', '_'));
+            params.put("apiOrgId", organizationId.replace('"', '_'));
+            params.put("apiId", apiId.replace('"', '_'));
+            params.put("apiVersion", version.replace('"', '_'));
             StrSubstitutor ss = new StrSubstitutor(params);
             query = ss.replace(query);
 
@@ -610,7 +610,7 @@ public class ESMetricsAccessor implements IMetricsAccessor {
      */
     @Override
     @SuppressWarnings("nls")
-    public ResponseStatsPerPlanBean getResponseStatsPerPlan(String organizationId, String serviceId,
+    public ResponseStatsPerPlanBean getResponseStatsPerPlan(String organizationId, String apiId,
             String version, DateTime from, DateTime to) {
         ResponseStatsPerPlanBean rval = new ResponseStatsPerPlanBean();
 
@@ -629,9 +629,9 @@ public class ESMetricsAccessor implements IMetricsAccessor {
                     "      }," +
                     "      \"filter\": {" +
                     "        \"and\" : [" +
-                    "          { \"term\" : { \"serviceOrgId\" : \"${serviceOrgId}\" } }," +
-                    "          { \"term\" : { \"serviceId\" : \"${serviceId}\" } }," +
-                    "          { \"term\" : { \"serviceVersion\" : \"${serviceVersion}\" } }" +
+                    "          { \"term\" : { \"apiOrgId\" : \"${apiOrgId}\" } }," +
+                    "          { \"term\" : { \"apiId\" : \"${apiId}\" } }," +
+                    "          { \"term\" : { \"apiVersion\" : \"${apiVersion}\" } }" +
                     "        ]" +
                     "      }" +
                     "    }" +
@@ -656,9 +656,9 @@ public class ESMetricsAccessor implements IMetricsAccessor {
             Map<String, String> params = new HashMap<>();
             params.put("from", formatDate(from));
             params.put("to", formatDate(to));
-            params.put("serviceOrgId", organizationId.replace('"', '_'));
-            params.put("serviceId", serviceId.replace('"', '_'));
-            params.put("serviceVersion", version.replace('"', '_'));
+            params.put("apiOrgId", organizationId.replace('"', '_'));
+            params.put("apiId", apiId.replace('"', '_'));
+            params.put("apiVersion", version.replace('"', '_'));
             StrSubstitutor ss = new StrSubstitutor(params);
             query = ss.replace(query);
 
@@ -688,13 +688,13 @@ public class ESMetricsAccessor implements IMetricsAccessor {
     }
 
     /**
-     * @see io.apiman.manager.api.core.IMetricsAccessor#getAppUsagePerService(java.lang.String, java.lang.String, java.lang.String, org.joda.time.DateTime, org.joda.time.DateTime)
+     * @see io.apiman.manager.api.core.IMetricsAccessor#getAppUsagePerApi(java.lang.String, java.lang.String, java.lang.String, org.joda.time.DateTime, org.joda.time.DateTime)
      */
     @Override
     @SuppressWarnings("nls")
-    public AppUsagePerServiceBean getAppUsagePerService(String organizationId, String applicationId,
+    public AppUsagePerApiBean getAppUsagePerApi(String organizationId, String applicationId,
             String version, DateTime from, DateTime to) {
-        AppUsagePerServiceBean rval = new AppUsagePerServiceBean();
+        AppUsagePerApiBean rval = new AppUsagePerApiBean();
 
         try {
             String query =
@@ -720,9 +720,9 @@ public class ESMetricsAccessor implements IMetricsAccessor {
                     "  },\n" +
                     "  \"size\": 0, \n" +
                     "  \"aggs\" : {\n" +
-                    "      \"usage_by_service\" : {\n" +
+                    "      \"usage_by_api\" : {\n" +
                     "        \"terms\" : {\n" +
-                    "          \"field\" : \"serviceId\"\n" +
+                    "          \"field\" : \"apiId\"\n" +
                     "        }\n" +
                     "      }\n" +
                     "  }\n" +
@@ -739,7 +739,7 @@ public class ESMetricsAccessor implements IMetricsAccessor {
             Search search = new Search.Builder(query).addIndex(INDEX_NAME).addType("request").build();
             SearchResult response = getEsClient().execute(search);
             MetricAggregation aggregations = response.getAggregations();
-            ApimanTermsAggregation aggregation = aggregations.getAggregation("usage_by_service", ApimanTermsAggregation.class); //$NON-NLS-1$
+            ApimanTermsAggregation aggregation = aggregations.getAggregation("usage_by_api", ApimanTermsAggregation.class); //$NON-NLS-1$
             if (aggregation != null) {
                 List<ApimanTermsAggregation.Entry> buckets = aggregation.getBuckets();
                 for (ApimanTermsAggregation.Entry entry : buckets) {

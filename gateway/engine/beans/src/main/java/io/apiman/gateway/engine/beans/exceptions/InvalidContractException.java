@@ -17,12 +17,12 @@ package io.apiman.gateway.engine.beans.exceptions;
 
 /**
  * Exception thrown when attempting to use a Contract in some invalid way.  For example
- * when trying to use a Contract for one Service when accessing a different Service.
+ * when trying to use a Contract for one API when accessing a different API.
  *
  * @author eric.wittmann@redhat.com
  */
 public class InvalidContractException extends AbstractEngineException {
-    
+
     private static final long serialVersionUID = -378275941461121749L;
 
     /**

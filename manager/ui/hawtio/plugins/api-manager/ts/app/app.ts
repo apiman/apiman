@@ -1,5 +1,5 @@
 /// <reference path="../apimanPlugin.ts"/>
-/// <reference path="../services.ts"/>
+/// <reference path="../rpc.ts"/>
 module Apiman {
 
     export var AppRedirectController = _module.controller("Apiman.AppRedirectController",
@@ -25,8 +25,8 @@ module Apiman {
         }]);
 
     export var AppEntityLoader = _module.factory('AppEntityLoader',
-        ['$q', 'OrgSvcs', 'Logger', '$rootScope', '$routeParams', 'EntityStatusService',
-        ($q, OrgSvcs, Logger, $rootScope, $routeParams, EntityStatusService) => {
+        ['$q', 'OrgSvcs', 'Logger', '$rootScope', '$routeParams', 'EntityStatusSvc',
+        ($q, OrgSvcs, Logger, $rootScope, $routeParams, EntityStatusSvc) => {
             return {
                 getCommonData: function($scope, $location) {
                     var params = $routeParams;
@@ -36,7 +36,7 @@ module Apiman {
                                 $scope.org = version.application.organization;
                                 $scope.app = version.application;
                                 $rootScope.mruApp = version;
-                                EntityStatusService.setEntity(version, 'application');
+                                EntityStatusSvc.setEntity(version, 'application');
                                 Logger.debug("app version: {0}", version);
                                 resolve(version);
                             }, reject);
@@ -50,12 +50,12 @@ module Apiman {
         }]);
 
     export var AppEntityController = _module.controller("Apiman.AppEntityController",
-        ['$q', '$scope', '$location', 'ActionSvcs', 'Logger', 'Dialogs', 'PageLifecycle', '$routeParams', 'OrgSvcs', 'EntityStatusService', 'Configuration',
-        ($q, $scope, $location, ActionSvcs, Logger, Dialogs, PageLifecycle, $routeParams, OrgSvcs, EntityStatusService, Configuration) => {
+        ['$q', '$scope', '$location', 'ActionSvcs', 'Logger', 'Dialogs', 'PageLifecycle', '$routeParams', 'OrgSvcs', 'EntityStatusSvc', 'Configuration',
+        ($q, $scope, $location, ActionSvcs, Logger, Dialogs, PageLifecycle, $routeParams, OrgSvcs, EntityStatusSvc, Configuration) => {
             var params = $routeParams;
 
-            $scope.setEntityStatus = EntityStatusService.setEntityStatus;
-            $scope.getEntityStatus = EntityStatusService.getEntityStatus;
+            $scope.setEntityStatus = EntityStatusSvc.setEntityStatus;
+            $scope.getEntityStatus = EntityStatusSvc.getEntityStatus;
             $scope.showMetrics = Configuration.ui.metrics;
 
             $scope.setVersion = function(app) {

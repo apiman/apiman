@@ -15,8 +15,8 @@
  */
 package io.apiman.gateway.engine.policy;
 
-import io.apiman.gateway.engine.beans.ServiceRequest;
-import io.apiman.gateway.engine.beans.ServiceResponse;
+import io.apiman.gateway.engine.beans.ApiRequest;
+import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.engine.beans.exceptions.ConfigurationParseException;
 
 /**
@@ -37,7 +37,7 @@ public interface IPolicy {
     public Object parseConfiguration(String jsonConfiguration) throws ConfigurationParseException;
     
     /**
-     * Applies a policy upon a {@link ServiceRequest} based on information
+     * Applies a policy upon a {@link ApiRequest} based on information
      * included in the request itself in addition to its context and configuration.
      * 
      * @param request an inbound request to apply to the policy to
@@ -45,10 +45,10 @@ public interface IPolicy {
      * @param config the policy's configuration information
      * @param chain the policy chain being invoked
      */
-    public void apply(ServiceRequest request, IPolicyContext context, Object config, IPolicyChain<ServiceRequest> chain);
+    public void apply(ApiRequest request, IPolicyContext context, Object config, IPolicyChain<ApiRequest> chain);
     
     /**
-     * Applies a policy upon a {@link ServiceResponse} based on information
+     * Applies a policy upon a {@link ApiResponse} based on information
      * included in the response itself in addition to its context and configuration.
      * 
      * @param response an outbound response to apply the policy to
@@ -56,6 +56,6 @@ public interface IPolicy {
      * @param config the policy's configuration information
      * @param chain chain the policy chain being invoked
      */
-    public void apply(ServiceResponse response, IPolicyContext context, Object config, IPolicyChain<ServiceResponse> chain);
+    public void apply(ApiResponse response, IPolicyContext context, Object config, IPolicyChain<ApiResponse> chain);
     
 }

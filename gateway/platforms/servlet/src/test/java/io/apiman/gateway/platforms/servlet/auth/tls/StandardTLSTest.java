@@ -16,14 +16,14 @@
 package io.apiman.gateway.platforms.servlet.auth.tls;
 
 import io.apiman.common.config.options.TLSOptions;
-import io.apiman.gateway.engine.IServiceConnection;
-import io.apiman.gateway.engine.IServiceConnectionResponse;
-import io.apiman.gateway.engine.IServiceConnector;
+import io.apiman.gateway.engine.IApiConnection;
+import io.apiman.gateway.engine.IApiConnectionResponse;
+import io.apiman.gateway.engine.IApiConnector;
 import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.auth.RequiredAuthType;
-import io.apiman.gateway.engine.beans.Service;
-import io.apiman.gateway.engine.beans.ServiceRequest;
+import io.apiman.gateway.engine.beans.Api;
+import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.exceptions.ConnectorException;
 import io.apiman.gateway.platforms.servlet.connectors.HttpConnectorFactory;
 
@@ -128,8 +128,8 @@ public class StandardTLSTest {
         config.clear();
     }
 
-    ServiceRequest request = new ServiceRequest();
-    Service service = new Service();
+    ApiRequest request = new ApiRequest();
+    Api api = new Api();
     {
         request.setApiKey("12345");
         request.setDestination("/");
@@ -138,15 +138,15 @@ public class StandardTLSTest {
         request.setRemoteAddr("https://localhost:8008/");
         request.setType("GET");
 
-        service.setEndpoint("https://localhost:8008/");
-        service.getEndpointProperties().put(RequiredAuthType.ENDPOINT_AUTHORIZATION_TYPE, "mtls");
+        api.setEndpoint("https://localhost:8008/");
+        api.getEndpointProperties().put(RequiredAuthType.ENDPOINT_AUTHORIZATION_TYPE, "mtls");
     }
 
     /**
      * Scenario:
      *   - CA inherited trust
-     *   - gateway trusts service via CA
-     *   - service does not evaluate trust
+     *   - gateway trusts API via CA
+     *   - API does not evaluate trust
      */
     @Test
     public void shouldSucceedWithValidTLS() {
@@ -156,12 +156,12 @@ public class StandardTLSTest {
         config.put(TLSOptions.TLS_ALLOWSELFSIGNED, "false");
 
         HttpConnectorFactory factory = new HttpConnectorFactory(config);
-        IServiceConnector connector = factory.createConnector(request, service, RequiredAuthType.DEFAULT);
-        IServiceConnection connection = connector.connect(request,
-                new IAsyncResultHandler<IServiceConnectionResponse>() {
+        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.DEFAULT);
+        IApiConnection connection = connector.connect(request,
+                new IAsyncResultHandler<IApiConnectionResponse>() {
 
             @Override
-            public void handle(IAsyncResult<IServiceConnectionResponse> result) {
+            public void handle(IAsyncResult<IApiConnectionResponse> result) {
                 if (result.isError())
                     throw new RuntimeException(result.getError());
 
@@ -174,25 +174,25 @@ public class StandardTLSTest {
 
     /**
      * Scenario:
-     *   - CA is only in service trust store, missing from gateway trust store
-     *   - Gateway does not trust service, as it does not trust CA
-     *   - Service trusts gateway via CA
+     *   - CA is only in API trust store, missing from gateway trust store
+     *   - Gateway does not trust API, as it does not trust CA
+     *   - API trusts gateway via CA
      */
     @Test
     public void shouldFailWhenCANotTrusted() {
-        // Keystore does not trust the root CA service is signed with.
+        // Keystore does not trust the root CA API is signed with.
         config.put(TLSOptions.TLS_TRUSTSTORE, getResourcePath("2waytest/basic_mutual_auth/gateway_ts.jks"));
         config.put(TLSOptions.TLS_TRUSTSTOREPASSWORD, "password");
         config.put(TLSOptions.TLS_ALLOWANYHOST, "true");
         config.put(TLSOptions.TLS_ALLOWSELFSIGNED, "false");
 
         HttpConnectorFactory factory = new HttpConnectorFactory(config);
-        IServiceConnector connector = factory.createConnector(request, service, RequiredAuthType.DEFAULT);
-        IServiceConnection connection = connector.connect(request,
-                new IAsyncResultHandler<IServiceConnectionResponse>() {
+        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.DEFAULT);
+        IApiConnection connection = connector.connect(request,
+                new IAsyncResultHandler<IApiConnectionResponse>() {
 
          @Override
-         public void handle(IAsyncResult<IServiceConnectionResponse> result) {
+         public void handle(IAsyncResult<IApiConnectionResponse> result) {
              Assert.assertTrue(result.isError());
              System.out.println(result.getError());
              Assert.assertTrue(result.getError() instanceof ConnectorException);
@@ -212,12 +212,12 @@ public class StandardTLSTest {
         config.put(TLSOptions.TLS_DEVMODE, "true");
 
         HttpConnectorFactory factory = new HttpConnectorFactory(config);
-        IServiceConnector connector = factory.createConnector(request, service, RequiredAuthType.DEFAULT);
-        IServiceConnection connection = connector.connect(request,
-                new IAsyncResultHandler<IServiceConnectionResponse>() {
+        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.DEFAULT);
+        IApiConnection connection = connector.connect(request,
+                new IAsyncResultHandler<IApiConnectionResponse>() {
 
          @Override
-         public void handle(IAsyncResult<IServiceConnectionResponse> result) {
+         public void handle(IAsyncResult<IApiConnectionResponse> result) {
              Assert.assertTrue(result.isSuccess());
          }
         });
@@ -229,17 +229,17 @@ public class StandardTLSTest {
      * Scenario:
      *   - No settings whatsoever.
      *   - Will fail, as defaults are relatively safe,
-     *     and service certificate will not be recognised.
+     *     and API certificate will not be recognised.
      */
     @Test
     public void shouldFailWithNoSettings() {
         HttpConnectorFactory factory = new HttpConnectorFactory(config);
-        IServiceConnector connector = factory.createConnector(request, service, RequiredAuthType.DEFAULT);
-        IServiceConnection connection = connector.connect(request,
-                new IAsyncResultHandler<IServiceConnectionResponse>() {
+        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.DEFAULT);
+        IApiConnection connection = connector.connect(request,
+                new IAsyncResultHandler<IApiConnectionResponse>() {
 
          @Override
-         public void handle(IAsyncResult<IServiceConnectionResponse> result) {
+         public void handle(IAsyncResult<IApiConnectionResponse> result) {
                  Assert.assertTrue(result.isError());
                  System.out.println(result.getError());
              }

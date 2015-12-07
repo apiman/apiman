@@ -24,7 +24,10 @@ import io.apiman.manager.api.beans.policies.PolicyType;
 import io.apiman.manager.api.beans.search.PagingBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaBean;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
+import io.apiman.manager.api.beans.summary.ApiPlanSummaryBean;
 import io.apiman.manager.api.beans.summary.ApiRegistryBean;
+import io.apiman.manager.api.beans.summary.ApiSummaryBean;
+import io.apiman.manager.api.beans.summary.ApiVersionSummaryBean;
 import io.apiman.manager.api.beans.summary.ApplicationSummaryBean;
 import io.apiman.manager.api.beans.summary.ApplicationVersionSummaryBean;
 import io.apiman.manager.api.beans.summary.ContractSummaryBean;
@@ -35,9 +38,6 @@ import io.apiman.manager.api.beans.summary.PlanVersionSummaryBean;
 import io.apiman.manager.api.beans.summary.PluginSummaryBean;
 import io.apiman.manager.api.beans.summary.PolicyDefinitionSummaryBean;
 import io.apiman.manager.api.beans.summary.PolicySummaryBean;
-import io.apiman.manager.api.beans.summary.ServicePlanSummaryBean;
-import io.apiman.manager.api.beans.summary.ServiceSummaryBean;
-import io.apiman.manager.api.beans.summary.ServiceVersionSummaryBean;
 import io.apiman.manager.api.core.exceptions.StorageException;
 
 import java.util.List;
@@ -72,7 +72,7 @@ public interface IStorageQuery {
      * @throws StorageException if a storage problem occurs while storing a bean.
      */
     public SearchResultsBean<OrganizationSummaryBean> findOrganizations(SearchCriteriaBean criteria) throws StorageException;
-    
+
     /**
      * Finds applications by the provided criteria.
      * @param criteria search criteria
@@ -82,22 +82,22 @@ public interface IStorageQuery {
     public SearchResultsBean<ApplicationSummaryBean> findApplications(SearchCriteriaBean criteria) throws StorageException;
 
     /**
-     * Finds services by the provided criteria.
+     * Finds APIs by the provided criteria.
      * @param criteria search criteria
-     * @return found services
+     * @return found APIs
      * @throws StorageException if a storage problem occurs while storing a bean.
      */
-    public SearchResultsBean<ServiceSummaryBean> findServices(SearchCriteriaBean criteria) throws StorageException;
-    
+    public SearchResultsBean<ApiSummaryBean> findApis(SearchCriteriaBean criteria) throws StorageException;
+
     /**
      * Finds plans (within an organization) with the given criteria.
      * @param organizationId the organization id
      * @param criteria search criteria
-     * @return found plans 
+     * @return found plans
      * @throws StorageException if a storage problem occurs while storing a bean.
      */
     public SearchResultsBean<PlanSummaryBean> findPlans(String organizationId, SearchCriteriaBean criteria) throws StorageException;
-    
+
     /**
      * Gets the audit log for an entity.
      * @param organizationId the organization id
@@ -119,7 +119,7 @@ public interface IStorageQuery {
      * @throws StorageException if a storage problem occurs while storing a bean.
      */
     public <T> SearchResultsBean<AuditEntryBean> auditUser(String userId, PagingBean paging) throws StorageException;
-    
+
     /**
      * Returns summary info for all organizations in the given set.
      * @param organizationIds the organization ids
@@ -149,7 +149,7 @@ public interface IStorageQuery {
      * @param organizationId the organization id
      * @param applicationId the application id
      * @return list of application versions
-     * @throws StorageException if a storage problem occurs while storing a bean. 
+     * @throws StorageException if a storage problem occurs while storing a bean.
      */
     public List<ApplicationVersionSummaryBean> getApplicationVersions(String organizationId, String applicationId)
             throws StorageException;
@@ -160,7 +160,7 @@ public interface IStorageQuery {
      * @param applicationId the application id
      * @param version the version
      * @return list of application contracts
-     * @throws StorageException if a storage problem occurs while storing a bean. 
+     * @throws StorageException if a storage problem occurs while storing a bean.
      */
     public List<ContractSummaryBean> getApplicationContracts(String organizationId, String applicationId, String version)
             throws StorageException;
@@ -172,45 +172,45 @@ public interface IStorageQuery {
      * @param applicationId the application id
      * @param version the version
      * @return the registry bean
-     * @throws StorageException if a storage problem occurs while storing a bean. 
+     * @throws StorageException if a storage problem occurs while storing a bean.
      */
     public ApiRegistryBean getApiRegistry(String organizationId, String applicationId, String version)
             throws StorageException;
 
     /**
-     * Returns summary info for all services in all organizations in the given set.
+     * Returns summary info for all APIs in all organizations in the given set.
      * @param organizationIds the organization ids
-     * @return services in orgs
+     * @return APIs in orgs
      * @throws StorageException if a storage problem occurs while storing a bean.
      */
-    public List<ServiceSummaryBean> getServicesInOrgs(Set<String> organizationIds) throws StorageException;
+    public List<ApiSummaryBean> getApisInOrgs(Set<String> organizationIds) throws StorageException;
 
     /**
-     * Returns summary info for all services in the given organization.
+     * Returns summary info for all APIs in the given organization.
      * @param organizationId the organization id
-     * @return list of services in org
+     * @return list of APIs in org
      * @throws StorageException if a storage problem occurs while storing a bean.
      */
-    public List<ServiceSummaryBean> getServicesInOrg(String organizationId) throws StorageException;
-    
-    /**
-     * Returns all service versions for a given service.
-     * @param organizationId the organization id
-     * @param serviceId the service id
-     * @return list of service versions
-     * @throws StorageException if a storage problem occurs while storing a bean.
-     */
-    public List<ServiceVersionSummaryBean> getServiceVersions(String organizationId, String serviceId) throws StorageException;
+    public List<ApiSummaryBean> getApisInOrg(String organizationId) throws StorageException;
 
     /**
-     * Returns the service plans configured for the given service version.
+     * Returns all API versions for a given API.
      * @param organizationId the organization id
-     * @param serviceId the service id
+     * @param apiId the API id
+     * @return list of API versions
+     * @throws StorageException if a storage problem occurs while storing a bean.
+     */
+    public List<ApiVersionSummaryBean> getApiVersions(String organizationId, String apiId) throws StorageException;
+
+    /**
+     * Returns the API plans configured for the given API version.
+     * @param organizationId the organization id
+     * @param apiId the API id
      * @param version the version
-     * @return list of service plans
-     * @throws StorageException if a storage problem occurs while storing a bean. 
+     * @return list of API plans
+     * @throws StorageException if a storage problem occurs while storing a bean.
      */
-    public List<ServicePlanSummaryBean> getServiceVersionPlans(String organizationId, String serviceId,
+    public List<ApiPlanSummaryBean> getApiVersionPlans(String organizationId, String apiId,
             String version) throws StorageException;
 
     /**
@@ -241,13 +241,13 @@ public interface IStorageQuery {
 
     /**
      * Returns all policies of the given type for the given entity/version.  This could be
-     * any of Application, Plan, Service.
+     * any of Application, Plan, API.
      * @param organizationId the organization id
      * @param entityId the entity id
      * @param version the version
      * @param type the type
      * @return list of policies
-     * @throws StorageException if a storage problem occurs while storing a bean. 
+     * @throws StorageException if a storage problem occurs while storing a bean.
      */
     public List<PolicySummaryBean> getPolicies(String organizationId, String entityId, String version,
             PolicyType type) throws StorageException;
@@ -258,19 +258,19 @@ public interface IStorageQuery {
      * @throws StorageException if a storage problem occurs while storing a bean.
      */
     public List<PolicyDefinitionSummaryBean> listPolicyDefinitions() throws StorageException;
-    
+
     /**
-     * Gets a list of contracts for the given service.  This is paged.
+     * Gets a list of contracts for the given API.  This is paged.
      * @param organizationId the organization id
-     * @param serviceId the service id
+     * @param apiId the API id
      * @param version the version
      * @param page the page
      * @param pageSize the paging size
-     * @return list of service contracts
-     * @throws StorageException if a storage problem occurs while storing a bean. 
+     * @return list of API contracts
+     * @throws StorageException if a storage problem occurs while storing a bean.
      */
-    public List<ContractSummaryBean> getServiceContracts(String organizationId,
-            String serviceId, String version, int page, int pageSize) throws StorageException;
+    public List<ContractSummaryBean> getContracts(String organizationId,
+            String apiId, String version, int page, int pageSize) throws StorageException;
 
     /**
      * Returns the largest order index value for the policies assigned to the
@@ -280,7 +280,7 @@ public interface IStorageQuery {
      * @param entityVersion the entity version
      * @param type the type
      * @return largest order index
-     * @throws StorageException if a storage problem occurs while storing a bean. 
+     * @throws StorageException if a storage problem occurs while storing a bean.
      */
     public int getMaxPolicyOrderIndex(String organizationId, String entityId, String entityVersion,
             PolicyType type) throws StorageException;
@@ -289,7 +289,7 @@ public interface IStorageQuery {
      * Lists all of the policy definitions contributed via a particular plugin.
      * @param pluginId the plugin id
      * @return list of plugin policy defs
-     * @throws StorageException if a storage problem occurs while storing a bean. 
+     * @throws StorageException if a storage problem occurs while storing a bean.
      */
     public List<PolicyDefinitionSummaryBean> listPluginPolicyDefs(Long pluginId) throws StorageException;
 

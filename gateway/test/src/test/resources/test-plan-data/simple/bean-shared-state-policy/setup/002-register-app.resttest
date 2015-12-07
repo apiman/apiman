@@ -8,9 +8,9 @@ Content-Type: application/json
   "contracts" : [
     {
       "apiKey" : "12345",
-      "serviceOrgId" : "BeanSharedStatePolicyTest",
-      "serviceId" : "echo",
-      "serviceVersion" : "1.0.0",
+      "apiOrgId" : "BeanSharedStatePolicyTest",
+      "apiId" : "echo",
+      "apiVersion" : "1.0.0",
       "policies" : [
         {
           "policyImpl" : "class:io.apiman.gateway.test.policies.BeanSharedStatePolicy",

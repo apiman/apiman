@@ -14,7 +14,7 @@
       </div>
       <!-- Helpful hint -->
       <div class="row">
-        <p class="col-md-6 apiman-label-faded" apiman-i18n-key="new-contract-help-text" class="apiman-label-faded">Creating a Contract allows you to connect an Application to a Service via a particular Plan offered by the Service.  You would want to do this so that your Application can invoke the Service successfully.  Note that this is not necessary if the Service is public.</p>
+        <p class="col-md-6 apiman-label-faded" apiman-i18n-key="new-contract-help-text" class="apiman-label-faded">Creating a Contract allows you to connect an Application to an API via a particular Plan offered by the API.  You would want to do this so that your Application can invoke the API successfully.  Note that this is not necessary if the API is public.</p>
       </div>
       <!-- HR -->
       <div class="row hr-row">
@@ -27,7 +27,7 @@
             <div class="title"><i class="fa fa-gears fa-fw"></i> <span apiman-i18n-key="from-app">From Application</span></div>
             <div class="body">
               <p apiman-i18n-key="new-contract.app-description">
-                The Application that will be used as the source of the new Service Contract.  Choose one 
+                The Application that will be used as the source of the new API Contract.  Choose one 
                 of your available Applications below, and then choose an application version.
               </p>
               <div class="center-content" ng-show="apps.length > 0">
@@ -66,13 +66,13 @@
           <div class="plan" ng-class="{ selected : selectedPlan }">
             <div class="title"><i class="fa fa-bar-chart-o fa-fw"></i> <span apiman-i18n-key="using-plan">Using Plan</span></div>
             <div class="body">
-              <p ng-show="!plans" apiman-i18n-key="new-contract.choose-valid-service-msg">
-                 Please choose a valid Service below before selecting the Plan you wish to use for
-                 this Contract (either you have not selected a Service or the Service has no 
+              <p ng-show="!plans" apiman-i18n-key="new-contract.choose-valid-api-msg">
+                 Please choose a valid API below before selecting the Plan you wish to use for
+                 this Contract (either you have not selected an API or the API has no 
                  available plans).
               </p>
               <p apiman-i18n-key="new-contract.plan-description" ng-show="plans" apiman-i18n-key="new-contract.choose-plan-msg">
-                Use the drop-down below to choose one of the Plans made available by the selected Service.
+                Use the drop-down below to choose one of the Plans made available by the selected API.
               </p>
               <div class="center-content" ng-show="plans">
                 <select id="plan" ng-model="selectedPlan" apiman-select-picker="" class="selectpicker" apiman-i18n-key="select-plan" title="Select a Plan" ng-options="plan.planName for plan in plans">
@@ -85,32 +85,32 @@
         <div class="clearfix"></div>
 
         <div class="col-md-6">
-          <div class="arrow to-service-arrow" apiman-i18n-skip>&nbsp;</div>
+          <div class="arrow to-api-arrow" apiman-i18n-skip>&nbsp;</div>
         </div>
 
         <div class="clearfix"></div>
 
         <div class="col-md-6">
-          <div class="service" ng-class="{ selected : selectedService }">
-            <div class="title"><i class="fa fa-puzzle-piece fa-fw"></i> <span apiman-i18n-key="to-service">To Service</span></div>
+          <div class="api" ng-class="{ selected : selectedApi }">
+            <div class="title"><i class="fa fa-puzzle-piece fa-fw"></i> <span apiman-i18n-key="to-api">To API</span></div>
             <div class="body">
-              <p apiman-i18n-key="new-contract.service-description">
-                Use this section to choose what Service the Application will be consuming (aka the
-                "target" of this Service Contract).
+              <p apiman-i18n-key="new-contract.api-description">
+                Use this section to choose what API the Application will be consuming (aka the
+                "target" of this API Contract).
               </p>
               <div class="center-content">
-                <button ng-click="selectService()" class="btn btn-default btn-svc" ng-show="selectedService">
-                  <span>{{ selectedService.organizationName }}</span>
+                <button ng-click="selectApi()" class="btn btn-default btn-api" ng-show="selectedApi">
+                  <span>{{ selectedApi.organizationName }}</span>
                   <span apiman-i18n-skip> / </span>
-                  <span class="emphasis">{{ selectedService.name }}</span>
+                  <span class="emphasis">{{ selectedApi.name }}</span>
                   <span apiman-i18n-skip>&#8680;</span>
-                  <span>{{ selectedService.version }}</span>
+                  <span>{{ selectedApi.version }}</span>
                 </button>
-                <button id="service" ng-click="selectService()" class="btn btn-default btn-svc btn-primary" ng-show="!selectedService">
-                  <span apiman-i18n-key="select-service">Select a Service</span>
+                <button id="api" ng-click="selectApi()" class="btn btn-default btn-api btn-primary" ng-show="!selectedApi">
+                  <span apiman-i18n-key="select-api">Select an API</span>
                 </button>
                 <div class="clearfix" />
-                <span style="font-size: 10px" ng-show="selectedService" apiman-i18n-key="new-contract.click-to-change">(click to change)</span>
+                <span style="font-size: 10px" ng-show="selectedApi" apiman-i18n-key="new-contract.click-to-change">(click to change)</span>
               </div>
             </div>
           </div>
@@ -122,7 +122,7 @@
       </div>
 
       <div class="row">
-        <button id="create-contract" ng-click="createContract()" apiman-action-btn="" ng-disabled="!selectedApp || !selectedAppVersion || !selectedPlan || !selectedService" class="btn btn-primary" data-field="createButton" apiman-i18n-key="create-contract" placeholder="Creating..." data-icon="fa-cog">Create Contract</button>
+        <button id="create-contract" ng-click="createContract()" apiman-action-btn="" ng-disabled="!selectedApp || !selectedAppVersion || !selectedPlan || !selectedApi" class="btn btn-primary" data-field="createButton" apiman-i18n-key="create-contract" placeholder="Creating..." data-icon="fa-cog">Create Contract</button>
         <a id="cancel" href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" apiman-i18n-key="cancel">Cancel</a>
       </div>
 

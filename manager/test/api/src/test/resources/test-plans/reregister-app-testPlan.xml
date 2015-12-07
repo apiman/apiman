@@ -11,9 +11,9 @@
     <test name="Create Plan">test-plan-data/reregister-app/101_create-plan.resttest</test>
     <test name="Create Plan Version">test-plan-data/reregister-app/102_create-plan-version.resttest</test>
     <test name="Lock Plan">test-plan-data/reregister-app/103_lock-plan.resttest</test>
-    <test name="Create Service">test-plan-data/reregister-app/104_create-service.resttest</test>
-    <test name="Create Service Version">test-plan-data/reregister-app/105_create-service-version.resttest</test>
-    <test name="Publish Service">test-plan-data/reregister-app/106_publish-service.resttest</test>
+    <test name="Create API">test-plan-data/reregister-app/104_create-api.resttest</test>
+    <test name="Create API Version">test-plan-data/reregister-app/105_create-api-version.resttest</test>
+    <test name="Publish API">test-plan-data/reregister-app/106_publish-api.resttest</test>
     <test name="Create App">test-plan-data/reregister-app/107_create-app.resttest</test>
     <test name="Create App Version">test-plan-data/reregister-app/108_create-app-version-1.0.resttest</test>
     <test name="Create Contract">test-plan-data/reregister-app/109_create-contract.resttest</test>

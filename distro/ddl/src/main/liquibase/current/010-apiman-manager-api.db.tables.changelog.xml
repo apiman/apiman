@@ -90,12 +90,12 @@
             </column>
             <column name="appv_id" type="BIGINT"/>
             <column name="planv_id" type="BIGINT"/>
-            <column name="svcv_id" type="BIGINT"/>
+            <column name="apiv_id" type="BIGINT"/>
         </createTable>
     </changeSet>
     <changeSet author="apiman (generated)" id="1436469846462-5">
         <createTable tableName="endpoint_properties">
-            <column name="service_version_id" type="BIGINT">
+            <column name="api_version_id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
             <column name="value" type="VARCHAR(255)"/>
@@ -342,16 +342,16 @@
         </createTable>
     </changeSet>
     <changeSet author="apiman (generated)" id="1436469846462-17">
-        <createTable tableName="service_defs">
+        <createTable tableName="api_defs">
             <column name="id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
             <column name="data" type="LONGBLOB"/>
-            <column name="service_version_id" type="BIGINT"/>
+            <column name="api_version_id" type="BIGINT"/>
         </createTable>
     </changeSet>
     <changeSet author="apiman (generated)" id="1436469846462-18">
-        <createTable tableName="service_versions">
+        <createTable tableName="api_versions">
             <column name="id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
@@ -371,7 +371,7 @@
             <column name="modified_on" type="TIMESTAMP">
                 <constraints nullable="false"/>
             </column>
-            <column name="public_service" type="BOOLEAN">
+            <column name="public_api" type="BOOLEAN">
                 <constraints nullable="false"/>
             </column>
             <column name="published_on" type="TIMESTAMP"/>
@@ -380,12 +380,12 @@
                 <constraints nullable="false"/>
             </column>
             <column name="version" type="VARCHAR(255)"/>
-            <column name="service_id" type="VARCHAR(255)"/>
-            <column name="service_org_id" type="VARCHAR(255)"/>
+            <column name="api_id" type="VARCHAR(255)"/>
+            <column name="api_org_id" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
     <changeSet author="apiman (generated)" id="1436469846462-19">
-        <createTable tableName="services">
+        <createTable tableName="apis">
             <column name="id" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
@@ -406,8 +406,8 @@
         </createTable>
     </changeSet>
     <changeSet author="apiman (generated)" id="1436469846462-20">
-        <createTable tableName="svc_gateways">
-            <column name="service_version_id" type="BIGINT">
+        <createTable tableName="api_gateways">
+            <column name="api_version_id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
             <column name="gateway_id" type="VARCHAR(255)">
@@ -416,8 +416,8 @@
         </createTable>
     </changeSet>
     <changeSet author="apiman (generated)" id="1436469846462-21">
-        <createTable tableName="svc_plans">
-            <column name="service_version_id" type="BIGINT">
+        <createTable tableName="api_plans">
+            <column name="api_version_id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
             <column name="plan_id" type="VARCHAR(255)">

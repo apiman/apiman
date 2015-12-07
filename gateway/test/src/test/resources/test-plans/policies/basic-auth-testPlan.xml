@@ -2,7 +2,7 @@
 <testPlan xmlns="urn:io.apiman.test:2014:02:testPlan">
 
   <testGroup name="Test BASIC Auth (Static)">
-    <test name="Publish Service" endpoint="api">test-plan-data/policies/basic-auth-static/001-publish-service.resttest</test>
+    <test name="Publish Api" endpoint="api">test-plan-data/policies/basic-auth-static/001-publish-api.resttest</test>
     <test name="Register Application" endpoint="api">test-plan-data/policies/basic-auth-static/002-register-app.resttest</test>
     <test name="Success">test-plan-data/policies/basic-auth-static/003-success.resttest</test>
     <test name="Failure">test-plan-data/policies/basic-auth-static/004-failure.resttest</test>

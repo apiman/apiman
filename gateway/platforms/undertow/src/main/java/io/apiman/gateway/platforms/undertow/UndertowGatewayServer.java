@@ -22,8 +22,8 @@ import io.undertow.server.HttpServerExchange;
 
 
 /**
- * A very simple echo server used during testing as the back-end service
- * for all published managed services.
+ * A very simple echo server used during testing as the back-end API
+ * for all published managed APIs.
  *
  * @author eric.wittmann@redhat.com
  */
@@ -33,7 +33,7 @@ public abstract class UndertowGatewayServer {
 
     /**
      * Constructor.
-     * 
+     *
      * @param port the port
      */
     public UndertowGatewayServer(int port) {
@@ -65,5 +65,5 @@ public abstract class UndertowGatewayServer {
     public void stop() {
         server.stop();
     }
-    
+
 }

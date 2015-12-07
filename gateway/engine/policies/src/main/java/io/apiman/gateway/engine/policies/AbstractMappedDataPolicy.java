@@ -15,8 +15,8 @@
  */
 package io.apiman.gateway.engine.policies;
 
-import io.apiman.gateway.engine.beans.ServiceRequest;
-import io.apiman.gateway.engine.beans.ServiceResponse;
+import io.apiman.gateway.engine.beans.ApiRequest;
+import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.engine.io.IReadWriteStream;
 import io.apiman.gateway.engine.policy.IDataPolicy;
 import io.apiman.gateway.engine.policy.IPolicyContext;
@@ -35,11 +35,11 @@ public abstract class AbstractMappedDataPolicy<C> extends AbstractMappedPolicy<C
     }
 
     /**
-     * @see io.apiman.gateway.engine.policy.IDataPolicy#getRequestDataHandler(io.apiman.gateway.engine.beans.ServiceRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object)
+     * @see io.apiman.gateway.engine.policy.IDataPolicy#getRequestDataHandler(io.apiman.gateway.engine.beans.ApiRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object)
      */
     @SuppressWarnings("unchecked")
     @Override
-    public final IReadWriteStream<ServiceRequest> getRequestDataHandler(ServiceRequest request,
+    public final IReadWriteStream<ApiRequest> getRequestDataHandler(ApiRequest request,
             IPolicyContext context, Object policyConfiguration) {
         return requestDataHandler(request, context, (C) policyConfiguration);
     }
@@ -50,15 +50,15 @@ public abstract class AbstractMappedDataPolicy<C> extends AbstractMappedPolicy<C
      * @param context
      * @param policyConfiguration
      */
-    protected abstract IReadWriteStream<ServiceRequest> requestDataHandler(ServiceRequest request,
+    protected abstract IReadWriteStream<ApiRequest> requestDataHandler(ApiRequest request,
             IPolicyContext context, C policyConfiguration);
 
     /**
-     * @see io.apiman.gateway.engine.policy.IDataPolicy#getResponseDataHandler(io.apiman.gateway.engine.beans.ServiceResponse, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object)
+     * @see io.apiman.gateway.engine.policy.IDataPolicy#getResponseDataHandler(io.apiman.gateway.engine.beans.ApiResponse, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object)
      */
     @SuppressWarnings("unchecked")
     @Override
-    public final IReadWriteStream<ServiceResponse> getResponseDataHandler(ServiceResponse response,
+    public final IReadWriteStream<ApiResponse> getResponseDataHandler(ApiResponse response,
             IPolicyContext context, Object policyConfiguration) {
         return responseDataHandler(response, context, (C) policyConfiguration);
     }
@@ -69,7 +69,7 @@ public abstract class AbstractMappedDataPolicy<C> extends AbstractMappedPolicy<C
      * @param context
      * @param policyConfiguration
      */
-    protected abstract IReadWriteStream<ServiceResponse> responseDataHandler(ServiceResponse response,
+    protected abstract IReadWriteStream<ApiResponse> responseDataHandler(ApiResponse response,
             IPolicyContext context, C policyConfiguration);
 
 }

@@ -15,8 +15,8 @@
  */
 package io.apiman.gateway.test.policies;
 
-import io.apiman.gateway.engine.beans.ServiceRequest;
-import io.apiman.gateway.engine.beans.ServiceResponse;
+import io.apiman.gateway.engine.beans.ApiRequest;
+import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.engine.policy.IPolicy;
 import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
@@ -44,21 +44,21 @@ public class SimpleConversationPolicy implements IPolicy {
     }
 
     /**
-     * @see io.apiman.gateway.engine.policy.IPolicy#apply(io.apiman.gateway.engine.beans.ServiceRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
+     * @see io.apiman.gateway.engine.policy.IPolicy#apply(io.apiman.gateway.engine.beans.ApiRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
      */
     @Override
-    public void apply(final ServiceRequest request, final IPolicyContext context, final Object config,
-            final IPolicyChain<ServiceRequest> chain) {
+    public void apply(final ApiRequest request, final IPolicyContext context, final Object config,
+            final IPolicyChain<ApiRequest> chain) {
         context.setAttribute("X-Conversation-Success", "true");
         chain.doApply(request);
     }
     
     /**
-     * @see io.apiman.gateway.engine.policy.IPolicy#apply(io.apiman.gateway.engine.beans.ServiceResponse, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
+     * @see io.apiman.gateway.engine.policy.IPolicy#apply(io.apiman.gateway.engine.beans.ApiResponse, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
      */
     @Override
-    public void apply(ServiceResponse response, IPolicyContext context, Object config,
-            IPolicyChain<ServiceResponse> chain) {
+    public void apply(ApiResponse response, IPolicyContext context, Object config,
+            IPolicyChain<ApiResponse> chain) {
         response.getHeaders().put("X-Conversation-Success", (String) context.getAttribute("X-Conversation-Success", "NOT-FOUND"));
         chain.doApply(response);
     }

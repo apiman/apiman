@@ -16,7 +16,7 @@
 package io.apiman.gateway.engine;
 
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
-import io.apiman.gateway.engine.beans.ServiceRequest;
+import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.impl.EngineResultImpl;
 
 /**
@@ -33,20 +33,20 @@ public interface IEngine {
     String getVersion();
 
     /**
-     * Executes an asynchronous request for a managed service, with the provided
+     * Executes an asynchronous request for a managed API, with the provided
      * handler being passed an {@link EngineResultImpl} with the status and result
      * of the policy chain invocation.
      *
-     * @param request a request for a managed service
-     * @param resultHandler 
+     * @param request a request for a managed API
+     * @param resultHandler
      * @param handler an async handler called when a response is returned or an
      *            exception is captured.
-     * @return a service request executor
+     * @return a API request executor
      */
-    IServiceRequestExecutor executor(ServiceRequest request, IAsyncResultHandler<IEngineResult> resultHandler);
-    
+    IApiRequestExecutor executor(ApiRequest request, IAsyncResultHandler<IEngineResult> resultHandler);
+
     /**
-     * Returns the registry that can be used to publish/retire services and
+     * Returns the registry that can be used to publish/retire APIs and
      * register/unregister applications.
      * @return the registry
      */

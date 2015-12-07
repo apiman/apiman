@@ -18,15 +18,15 @@
     <test name="Lock Silver">data/publish/004_lock-silver.resttest</test>
   </testGroup>
 
-  <!-- Services -->
-  <testGroup name="Services">
-    <test name="Create echo">data/services/001_create-echo.resttest</test>
-    <test name="Create echo 1.0">data/services/002_create-echo-version-1.0.resttest</test>
-    <test name="Update echo 1.0">data/services/003_update-echo-version-1.0.resttest</test>
+  <!-- APIs -->
+  <testGroup name="APIs">
+    <test name="Create echo">data/apis/001_create-echo.resttest</test>
+    <test name="Create echo 1.0">data/apis/002_create-echo-version-1.0.resttest</test>
+    <test name="Update echo 1.0">data/apis/003_update-echo-version-1.0.resttest</test>
     <test name="Publish echo">data/publish/001_publish-echo.resttest</test>
-    <test name="Create echo">data/services/004_create-public-echo.resttest</test>
-    <test name="Create echo 1.0">data/services/005_create-public-echo-version-1.0.resttest</test>
-    <test name="Update echo 1.0">data/services/006_update-public-echo-version-1.0.resttest</test>
+    <test name="Create echo">data/apis/004_create-public-echo.resttest</test>
+    <test name="Create echo 1.0">data/apis/005_create-public-echo-version-1.0.resttest</test>
+    <test name="Update echo 1.0">data/apis/006_update-public-echo-version-1.0.resttest</test>
     <test name="Publish echo">data/publish/005_publish-public-echo.resttest</test>
   </testGroup>
 

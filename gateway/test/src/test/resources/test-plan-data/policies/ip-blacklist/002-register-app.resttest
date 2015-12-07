@@ -8,9 +8,9 @@ Content-Type: application/json
   "contracts" : [
     {
       "apiKey" : "12345",
-      "serviceOrgId" : "Policy_IPBlacklistTest",
-      "serviceId" : "echo",
-      "serviceVersion" : "1.0.0",
+      "apiOrgId" : "Policy_IPBlacklistTest",
+      "apiId" : "echo",
+      "apiVersion" : "1.0.0",
       "policies" : [
         {
           "policyImpl" : "class:io.apiman.gateway.engine.policies.IPBlacklistPolicy",
@@ -20,9 +20,9 @@ Content-Type: application/json
     },
     {
       "apiKey" : "54321",
-      "serviceOrgId" : "Policy_IPBlacklistTest",
-      "serviceId" : "echo",
-      "serviceVersion" : "1.0.0",
+      "apiOrgId" : "Policy_IPBlacklistTest",
+      "apiId" : "echo",
+      "apiVersion" : "1.0.0",
       "policies" : [
         {
           "policyImpl" : "class:io.apiman.gateway.engine.policies.IPBlacklistPolicy",
@@ -32,9 +32,9 @@ Content-Type: application/json
     },
     {
       "apiKey" : "54321_404",
-      "serviceOrgId" : "Policy_IPBlacklistTest",
-      "serviceId" : "echo",
-      "serviceVersion" : "1.0.0",
+      "apiOrgId" : "Policy_IPBlacklistTest",
+      "apiId" : "echo",
+      "apiVersion" : "1.0.0",
       "policies" : [
         {
           "policyImpl" : "class:io.apiman.gateway.engine.policies.IPBlacklistPolicy",
@@ -44,9 +44,9 @@ Content-Type: application/json
     },
     {
       "apiKey" : "54321_403",
-      "serviceOrgId" : "Policy_IPBlacklistTest",
-      "serviceId" : "echo",
-      "serviceVersion" : "1.0.0",
+      "apiOrgId" : "Policy_IPBlacklistTest",
+      "apiId" : "echo",
+      "apiVersion" : "1.0.0",
       "policies" : [
         {
           "policyImpl" : "class:io.apiman.gateway.engine.policies.IPBlacklistPolicy",

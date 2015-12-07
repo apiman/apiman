@@ -15,6 +15,8 @@
  */
 package io.apiman.manager.api.exportimport.json;
 
+import io.apiman.manager.api.beans.apis.ApiBean;
+import io.apiman.manager.api.beans.apis.ApiVersionBean;
 import io.apiman.manager.api.beans.apps.ApplicationBean;
 import io.apiman.manager.api.beans.apps.ApplicationVersionBean;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
@@ -29,8 +31,6 @@ import io.apiman.manager.api.beans.plans.PlanVersionBean;
 import io.apiman.manager.api.beans.plugins.PluginBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
-import io.apiman.manager.api.beans.services.ServiceBean;
-import io.apiman.manager.api.beans.services.ServiceVersionBean;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.core.logging.IApimanLogger;
 import io.apiman.manager.api.exportimport.EntityHandler;
@@ -57,16 +57,16 @@ import org.codehaus.jackson.map.ObjectMapper;
  */
 @SuppressWarnings("nls")
 public class JsonImportReader extends AbstractJsonReader implements IImportReader {
-    
+
     private IApimanLogger logger;
     private IImportReaderDispatcher dispatcher;
     private JsonParser jp;
     private JsonToken current;
     private InputStream in;
-    
+
     /**
      * Constructor.
-     * @param logger 
+     * @param logger
      * @param in
      * @throws JsonParseException
      * @throws IOException
@@ -77,7 +77,7 @@ public class JsonImportReader extends AbstractJsonReader implements IImportReade
         jp = new JsonFactory().createJsonParser(in);
         jp.setCodec(new ObjectMapper());
     }
-    
+
     /**
      * @see io.apiman.manager.api.exportimport.read.IImportReader#setDispatcher(io.apiman.manager.api.exportimport.read.IImportReaderDispatcher)
      */
@@ -90,15 +90,15 @@ public class JsonImportReader extends AbstractJsonReader implements IImportReade
     public void read() throws Exception {
         try {
             current = nextToken();
-    
+
             if (current != JsonToken.START_OBJECT) {
                 throw new IllegalStateException("Expected start object at root");
             }
-    
+
             while (nextToken() != JsonToken.END_OBJECT) {
                 GlobalElementsEnum fieldName = GlobalElementsEnum.valueOf(jp.getCurrentName());
                 current = nextToken();
-    
+
                 switch(fieldName) {
                 case Metadata:
                     processEntity(MetadataBean.class, new EntityHandler<MetadataBean>() {
@@ -155,7 +155,7 @@ public class JsonImportReader extends AbstractJsonReader implements IImportReade
                     throw new IllegalArgumentException("Unhandled field: " + fieldName);
                 }
             }
-            
+
             dispatcher.close();
         } catch (Throwable t) {
             logger.error(t);
@@ -164,8 +164,8 @@ public class JsonImportReader extends AbstractJsonReader implements IImportReade
             IOUtils.closeQuietly(in);
         }
     }
-    
-    
+
+
     public void readOrgs() throws Exception {
         current = nextToken();
         if (current == JsonToken.END_ARRAY) {
@@ -194,8 +194,8 @@ public class JsonImportReader extends AbstractJsonReader implements IImportReade
                     case Plans:
                         readPlans();
                         break;
-                    case Services:
-                        readServices();
+                    case Apis:
+                        readApis();
                         break;
                     case Apps:
                         readApps();
@@ -215,7 +215,7 @@ public class JsonImportReader extends AbstractJsonReader implements IImportReade
             }
         }
     }
-    
+
     public void readPlans() throws Exception {
         current = nextToken();
         if (current == JsonToken.END_ARRAY) {
@@ -243,24 +243,24 @@ public class JsonImportReader extends AbstractJsonReader implements IImportReade
         }
     }
 
-    public void readServices() throws Exception {
+    public void readApis() throws Exception {
         current = nextToken();
         if (current == JsonToken.END_ARRAY) {
             return;
         }
         while (nextToken() != JsonToken.END_ARRAY) {
-            // Traverse each service definition
+            // Traverse each api definition
             while(nextToken() != JsonToken.END_OBJECT) {
-                if (jp.getCurrentName().equals(ServiceBean.class.getSimpleName())) {
+                if (jp.getCurrentName().equals(ApiBean.class.getSimpleName())) {
                     current = nextToken();
-                    ServiceBean serviceBean = jp.readValueAs(ServiceBean.class);
-                    dispatcher.service(serviceBean);
+                    ApiBean apiBean = jp.readValueAs(ApiBean.class);
+                    dispatcher.api(apiBean);
                 } else {
                     OrgElementsEnum fieldName = OrgElementsEnum.valueOf(jp.getCurrentName());
                     current = nextToken();
                     switch (fieldName) {
                     case Versions:
-                        readServiceVersions();
+                        readApiVersions();
                         break;
                     default:
                         throw new RuntimeException("Unhandled entity " + fieldName + " with token " + current);
@@ -276,12 +276,12 @@ public class JsonImportReader extends AbstractJsonReader implements IImportReade
             return;
         }
         while (nextToken() != JsonToken.END_ARRAY) {
-            // Traverse each service definition
+            // Traverse each api definition
             while(nextToken() != JsonToken.END_OBJECT) {
                 if (jp.getCurrentName().equals(ApplicationBean.class.getSimpleName())) {
                     current = nextToken();
-                    ApplicationBean serviceBean = jp.readValueAs(ApplicationBean.class);
-                    dispatcher.application(serviceBean);
+                    ApplicationBean apiBean = jp.readValueAs(ApplicationBean.class);
+                    dispatcher.application(apiBean);
                 } else {
                     OrgElementsEnum fieldName = OrgElementsEnum.valueOf(jp.getCurrentName());
                     current = nextToken();
@@ -328,19 +328,19 @@ public class JsonImportReader extends AbstractJsonReader implements IImportReade
             }
         }
     }
-    
-    public void readServiceVersions() throws Exception {
+
+    public void readApiVersions() throws Exception {
         current = nextToken();
         if (current == JsonToken.END_ARRAY) {
             return;
         }
         while (nextToken() != JsonToken.END_ARRAY) {
-            // Traverse each service definition
+            // Traverse each api definition
             while(nextToken() != JsonToken.END_OBJECT) {
-                if (jp.getCurrentName().equals(ServiceVersionBean.class.getSimpleName())) {
+                if (jp.getCurrentName().equals(ApiVersionBean.class.getSimpleName())) {
                     current = nextToken();
-                    ServiceVersionBean serviceBean = jp.readValueAs(ServiceVersionBean.class);
-                    dispatcher.serviceVersion(serviceBean);
+                    ApiVersionBean apiBean = jp.readValueAs(ApiVersionBean.class);
+                    dispatcher.apiVersion(apiBean);
                 } else {
                     OrgElementsEnum fieldName = OrgElementsEnum.valueOf(jp.getCurrentName());
                     current = nextToken();
@@ -349,7 +349,7 @@ public class JsonImportReader extends AbstractJsonReader implements IImportReade
                         processEntities(PolicyBean.class, new EntityHandler<PolicyBean>() {
                             @Override
                             public void handleEntity(PolicyBean policy) throws Exception {
-                                dispatcher.servicePolicy(policy);
+                                dispatcher.apiPolicy(policy);
                             }
                         });
                         break;
@@ -400,7 +400,7 @@ public class JsonImportReader extends AbstractJsonReader implements IImportReade
             }
         }
     }
-    
+
     @Override
     protected JsonParser jsonParser() {
         return jp;

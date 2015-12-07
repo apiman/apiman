@@ -18,13 +18,13 @@ package io.apiman.gateway.platforms.servlet.connectors;
 import io.apiman.common.config.options.HttpConnectorOptions;
 import io.apiman.common.config.options.TLSOptions;
 import io.apiman.gateway.engine.IConnectorFactory;
-import io.apiman.gateway.engine.IServiceConnection;
-import io.apiman.gateway.engine.IServiceConnectionResponse;
-import io.apiman.gateway.engine.IServiceConnector;
+import io.apiman.gateway.engine.IApiConnection;
+import io.apiman.gateway.engine.IApiConnectionResponse;
+import io.apiman.gateway.engine.IApiConnector;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.auth.RequiredAuthType;
-import io.apiman.gateway.engine.beans.Service;
-import io.apiman.gateway.engine.beans.ServiceRequest;
+import io.apiman.gateway.engine.beans.Api;
+import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.exceptions.ConnectorException;
 import io.apiman.gateway.platforms.servlet.connectors.ssl.SSLSessionStrategy;
 import io.apiman.gateway.platforms.servlet.connectors.ssl.SSLSessionStrategyFactory;
@@ -98,20 +98,20 @@ public class HttpConnectorFactory implements IConnectorFactory {
     }
 
     /**
-     * @see io.apiman.gateway.engine.IConnectorFactory#createConnector(io.apiman.gateway.engine.beans.ServiceRequest, io.apiman.gateway.engine.beans.Service, io.apiman.gateway.engine.auth.RequiredAuthType)
+     * @see io.apiman.gateway.engine.IConnectorFactory#createConnector(io.apiman.gateway.engine.beans.ApiRequest, io.apiman.gateway.engine.beans.Api, io.apiman.gateway.engine.auth.RequiredAuthType)
      */
     @Override
-    public IServiceConnector createConnector(ServiceRequest request, final Service service,
+    public IApiConnector createConnector(ApiRequest request, final Api api,
             final RequiredAuthType requiredAuthType) {
-        return new IServiceConnector() {
+        return new IApiConnector() {
             /**
-             * @see io.apiman.gateway.engine.IServiceConnector#connect(io.apiman.gateway.engine.beans.ServiceRequest, io.apiman.gateway.engine.async.IAsyncResultHandler)
+             * @see io.apiman.gateway.engine.IApiConnector#connect(io.apiman.gateway.engine.beans.ApiRequest, io.apiman.gateway.engine.async.IAsyncResultHandler)
              */
             @Override
-            public IServiceConnection connect(ServiceRequest request,
-                    IAsyncResultHandler<IServiceConnectionResponse> handler) throws ConnectorException {
+            public IApiConnection connect(ApiRequest request,
+                    IAsyncResultHandler<IApiConnectionResponse> handler) throws ConnectorException {
 
-                HttpServiceConnection connection = new HttpServiceConnection(okClient, request, service,
+                HttpApiConnection connection = new HttpApiConnection(okClient, request, api,
                         requiredAuthType, getSslStrategy(requiredAuthType), handler);
                 return connection;
             }

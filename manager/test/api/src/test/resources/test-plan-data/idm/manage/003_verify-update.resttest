@@ -8,5 +8,5 @@ Content-Type: application/json
   "name" : "Test Role 1",
   "autoGrant" : false,
   "description" : "This is the description of Test Role 1 (updated).",
-  "permissions" : [ "orgAdmin", "orgView", "orgEdit", "svcAdmin", "appAdmin" ]
+  "permissions" : [ "orgAdmin", "orgView", "orgEdit", "apiAdmin", "appAdmin" ]
 }

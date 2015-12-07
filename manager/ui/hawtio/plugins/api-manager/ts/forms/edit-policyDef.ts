@@ -1,5 +1,5 @@
 /// <reference path="../apimanPlugin.ts"/>
-/// <reference path="../services.ts"/>
+/// <reference path="../rpc.ts"/>
 module Apiman {
 
     export var EditPolicyDefController = _module.controller("Apiman.EditPolicyDefController",

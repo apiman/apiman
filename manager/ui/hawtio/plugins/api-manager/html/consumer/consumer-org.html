@@ -60,28 +60,28 @@
         <!-- Right column -->
         <div class="col-md-8">
           <div class="consumer-section">
-            <h3 apiman-i18n-key="services-offered" class="consumer-header">Services Offered</h3>
-            <div class="apiman-filters apiman-services-filters">
-              <apiman-search-box id="service-filter" apiman-i18n-key="filter-consumer-services" function="filterServices" placeholder="Filter by service name..." />
+            <h3 apiman-i18n-key="apis-offered" class="consumer-header">APIs Offered</h3>
+            <div class="apiman-filters apiman-apis-filters">
+              <apiman-search-box id="api-filter" apiman-i18n-key="filter-consumer-apis" function="filterApis" placeholder="Filter by API name..." />
             </div>
-            <div class="apiman-services consumer-section" data-field="services">
+            <div class="apiman-apis consumer-section">
 
-              <div class="apiman-no-content" ng-hide="services.length > 0">
-                <p class="apiman-no-entities-description" apiman-i18n-key="consumer-no-services-found-for-org">No services are currently offered by this organization.</p>
+              <div class="apiman-no-content" ng-hide="apis.length > 0">
+                <p class="apiman-no-entities-description" apiman-i18n-key="consumer-no-apis-found-for-org">No APIs are currently offered by this organization.</p>
               </div>
 
-              <div class="apiman-no-content" ng-show="services.length > 0 && filteredServices.length == 0">
-                <p class="apiman-no-entities-description" apiman-i18n-key="consumer-no-services-found-for-filter">No services matched the current filter criteria.</p>
+              <div class="apiman-no-content" ng-show="apis.length > 0 && filteredApis.length == 0">
+                <p class="apiman-no-entities-description" apiman-i18n-key="consumer-no-apis-found-for-filter">No APIs matched the current filter criteria.</p>
               </div>
 
-              <div class="container-fluid apiman-summaryrow" ng-repeat="service in filteredServices">
+              <div class="container-fluid apiman-summaryrow" ng-repeat="api in filteredApis">
                 <div class="row">
                   <i class="fa fa-fw fa-puzzle-piece icon"></i>
-                  <span class="title"><a href="{{ pluginName }}/browse/orgs/{{ org.id }}/{{ service.id }}">{{ service.name }}</a></span>
+                  <span class="title"><a href="{{ pluginName }}/browse/orgs/{{ org.id }}/{{ api.id }}">{{ api.name }}</a></span>
                 </div>
                 <div class="row">
                   <span class="description">
-                    {{ service.description }}
+                    {{ api.description }}
                   </span>
                 </div>
                 <hr/>

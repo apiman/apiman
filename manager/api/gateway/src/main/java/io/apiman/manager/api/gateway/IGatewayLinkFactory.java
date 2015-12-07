@@ -23,10 +23,10 @@ import io.apiman.manager.api.beans.gateways.GatewayBean;
  * @author eric.wittmann@redhat.com
  */
 public interface IGatewayLinkFactory {
-    
+
     /**
-     * Creates an appropriate gateway link for the given gateway bean.  Allows 
-     * publishing of services to the given gateway.
+     * Creates an appropriate gateway link for the given gateway bean.  Allows
+     * publishing of APIs to the given gateway.
      * @param gateway the gateway
      * @return the gateway link
      */

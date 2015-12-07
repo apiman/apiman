@@ -15,15 +15,15 @@
  */
 package io.apiman.manager.api.core.util;
 
+import io.apiman.manager.api.beans.apis.ApiStatus;
+import io.apiman.manager.api.beans.apis.ApiVersionBean;
+import io.apiman.manager.api.beans.apis.ApiVersionStatusBean;
+import io.apiman.manager.api.beans.apis.StatusItemBean;
 import io.apiman.manager.api.beans.apps.ApplicationVersionBean;
-import io.apiman.manager.api.beans.services.ServiceStatus;
-import io.apiman.manager.api.beans.services.ServiceVersionBean;
-import io.apiman.manager.api.beans.services.ServiceVersionStatusBean;
-import io.apiman.manager.api.beans.services.StatusItemBean;
 import io.apiman.manager.api.beans.summary.ContractSummaryBean;
 import io.apiman.manager.api.beans.summary.PolicySummaryBean;
+import io.apiman.manager.api.core.IApiValidator;
 import io.apiman.manager.api.core.IApplicationValidator;
-import io.apiman.manager.api.core.IServiceValidator;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.i18n.Messages;
 
@@ -32,11 +32,11 @@ import java.util.List;
 import javax.inject.Inject;
 
 /**
- * Validates the state of various entities, including services and applications.
+ * Validates the state of various entities, including APIs and applications.
  *
  * @author eric.wittmann@redhat.com
  */
-public class EntityValidator implements IServiceValidator, IApplicationValidator {
+public class EntityValidator implements IApiValidator, IApplicationValidator {
 
     @Inject
     private IStorageQuery storageQuery;
@@ -73,45 +73,45 @@ public class EntityValidator implements IServiceValidator, IApplicationValidator
     }
 
     /**
-     * @see io.apiman.manager.api.core.IServiceValidator#isReady(io.apiman.manager.api.beans.services.ServiceVersionBean)
+     * @see io.apiman.manager.api.core.IApiValidator#isReady(io.apiman.manager.api.beans.apis.ApiVersionBean)
      */
     @Override
-    public boolean isReady(ServiceVersionBean service) {
+    public boolean isReady(ApiVersionBean api) {
         boolean ready = true;
-        if (service.getEndpoint() == null || service.getEndpoint().trim().length() == 0) {
+        if (api.getEndpoint() == null || api.getEndpoint().trim().length() == 0) {
             ready = false;
         }
-        if (service.getEndpointType() == null) {
+        if (api.getEndpointType() == null) {
             ready = false;
         }
-        if (!service.isPublicService()) {
-            if (service.getPlans() == null || service.getPlans().isEmpty()) {
+        if (!api.isPublicAPI()) {
+            if (api.getPlans() == null || api.getPlans().isEmpty()) {
                 ready = false;
             }
         }
-        if (service.getGateways() == null || service.getGateways().isEmpty()) {
+        if (api.getGateways() == null || api.getGateways().isEmpty()) {
             ready = false;
         }
         return ready;
     }
-    
+
     /**
-     * @see io.apiman.manager.api.core.IServiceValidator#getStatus(io.apiman.manager.api.beans.services.ServiceVersionBean, java.util.List)
+     * @see io.apiman.manager.api.core.IApiValidator#getStatus(io.apiman.manager.api.beans.apis.ApiVersionBean, java.util.List)
      */
     @Override
-    public ServiceVersionStatusBean getStatus(ServiceVersionBean service, List<PolicySummaryBean> policies) {
-        ServiceVersionStatusBean status = new ServiceVersionStatusBean();
-        status.setStatus(service.getStatus());
-        
+    public ApiVersionStatusBean getStatus(ApiVersionBean api, List<PolicySummaryBean> policies) {
+        ApiVersionStatusBean status = new ApiVersionStatusBean();
+        status.setStatus(api.getStatus());
+
         // Why are we not yet "Ready"?
-        if (service.getStatus() == ServiceStatus.Created || service.getStatus() == ServiceStatus.Ready) {
+        if (api.getStatus() == ApiStatus.Created || api.getStatus() == ApiStatus.Ready) {
             // 1. Implementation endpoint + endpoint type
             /////////////////////////////////////////////
             StatusItemBean item = new StatusItemBean();
             item.setId("endpoint"); //$NON-NLS-1$
             item.setName(Messages.i18n.format("EntityValidator.endpoint.name")); //$NON-NLS-1$
             item.setDone(true);
-            if (service.getEndpoint() == null || service.getEndpoint().trim().isEmpty() || service.getEndpointType() == null) {
+            if (api.getEndpoint() == null || api.getEndpoint().trim().isEmpty() || api.getEndpointType() == null) {
                 item.setDone(false);
                 item.setRemediation(Messages.i18n.format("EntityValidator.endpoint.description")); //$NON-NLS-1$
             }
@@ -122,7 +122,7 @@ public class EntityValidator implements IServiceValidator, IApplicationValidator
             item.setId("gateways"); //$NON-NLS-1$
             item.setName(Messages.i18n.format("EntityValidator.gateways.name")); //$NON-NLS-1$
             item.setDone(true);
-            if (service.getGateways() == null || service.getGateways().isEmpty()) {
+            if (api.getGateways() == null || api.getGateways().isEmpty()) {
                 item.setDone(false);
                 item.setRemediation(Messages.i18n.format("EntityValidator.gateways.description")); //$NON-NLS-1$
             }
@@ -134,8 +134,8 @@ public class EntityValidator implements IServiceValidator, IApplicationValidator
             item.setId("plans"); //$NON-NLS-1$
             item.setName(Messages.i18n.format("EntityValidator.plans.name")); //$NON-NLS-1$
             item.setDone(true);
-            if (!service.isPublicService()) {
-                if (service.getPlans() == null || service.getPlans().isEmpty()) {
+            if (!api.isPublicAPI()) {
+                if (api.getPlans() == null || api.getPlans().isEmpty()) {
                     item.setDone(false);
                     item.setRemediation(Messages.i18n.format("EntityValidator.plans.description")); //$NON-NLS-1$
                 }
@@ -155,7 +155,7 @@ public class EntityValidator implements IServiceValidator, IApplicationValidator
             }
             status.getItems().add(item);
         }
-        
+
         return status;
     }
 

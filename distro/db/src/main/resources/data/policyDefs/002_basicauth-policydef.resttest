@@ -3,13 +3,13 @@ Content-Type: application/json
 
 {
   "name" : "BASIC Authentication Policy",
-  "description" : "Enables HTTP BASIC Authentication on a service.  Some configuration required.",
+  "description" : "Enables HTTP BASIC Authentication on an API.  Some configuration required.",
   "policyImpl" : "class:io.apiman.gateway.engine.policies.BasicAuthenticationPolicy",
   "icon" : "lock",
   "templates" : [
     {
       "language" : null,
-      "template" : "Access to the service is protected by BASIC Authentication through the '@{realm}' authentication realm.  @if{forwardIdentityHttpHeader != null}Successfully authenticated requests will forward the authenticated identity to the back end service via the '@{forwardIdentityHttpHeader}' custom HTTP header.@end{}"
+      "template" : "Access to the API is protected by BASIC Authentication through the '@{realm}' authentication realm.  @if{forwardIdentityHttpHeader != null}Successfully authenticated requests will forward the authenticated identity to the back end API via the '@{forwardIdentityHttpHeader}' custom HTTP header.@end{}"
     }
   ]
 }

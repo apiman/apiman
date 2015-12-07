@@ -16,9 +16,9 @@
 package io.apiman.manager.api.gateway.rest;
 
 import io.apiman.gateway.api.rest.contract.exceptions.GatewayApiErrorBean;
+import io.apiman.gateway.engine.beans.Api;
+import io.apiman.gateway.engine.beans.ApiEndpoint;
 import io.apiman.gateway.engine.beans.Application;
-import io.apiman.gateway.engine.beans.Service;
-import io.apiman.gateway.engine.beans.ServiceEndpoint;
 import io.apiman.gateway.engine.beans.SystemStatus;
 import io.apiman.gateway.engine.beans.exceptions.PublishingException;
 import io.apiman.gateway.engine.beans.exceptions.RegistrationException;
@@ -49,10 +49,10 @@ import org.codehaus.jackson.map.ObjectMapper;
  * @author eric.wittmann@redhat.com
  */
 @SuppressWarnings("javadoc") // class is temporarily delinked from its interfaces
-public class GatewayClient /*implements ISystemResource, IServiceResource, IApplicationResource*/ {
+public class GatewayClient /*implements ISystemResource, IApiResource, IApplicationResource*/ {
 
     private static final String SYSTEM_STATUS = "/system/status"; //$NON-NLS-1$
-    private static final String SERVICES = "/services"; //$NON-NLS-1$
+    private static final String APIs = "/apis"; //$NON-NLS-1$
     private static final String APPLICATIONS = "/applications"; //$NON-NLS-1$
 
     private static final ObjectMapper mapper = new ObjectMapper();
@@ -102,14 +102,14 @@ public class GatewayClient /*implements ISystemResource, IServiceResource, IAppl
     }
 
     /**
-     * @see io.apiman.gateway.api.rest.contract.IServiceResource#getServiceEndpoint(java.lang.String, java.lang.String, java.lang.String)
+     * @see io.apiman.gateway.api.rest.contract.IApiResource#getApiEndpoint(java.lang.String, java.lang.String, java.lang.String)
      */
-    public ServiceEndpoint getServiceEndpoint(String organizationId, String serviceId, String version)
+    public ApiEndpoint getApiEndpoint(String organizationId, String apiId, String version)
             throws GatewayAuthenticationException {
         InputStream is = null;
         try {
             @SuppressWarnings("nls")
-            URI uri = new URI(this.endpoint + SERVICES + "/" + organizationId + "/" + serviceId + "/" + version + "/endpoint");
+            URI uri = new URI(this.endpoint + APIs + "/" + organizationId + "/" + apiId + "/" + version + "/endpoint");
             HttpGet get = new HttpGet(uri);
             HttpResponse response = httpClient.execute(get);
             int actualStatusCode = response.getStatusLine().getStatusCode();
@@ -117,10 +117,10 @@ public class GatewayClient /*implements ISystemResource, IServiceResource, IAppl
                 throw new GatewayAuthenticationException();
             }
             if (actualStatusCode != 200) {
-                throw new Exception("Failed to get the service endpoint: " + actualStatusCode); //$NON-NLS-1$
+                throw new Exception("Failed to get the API endpoint: " + actualStatusCode); //$NON-NLS-1$
             }
             is = response.getEntity().getContent();
-            return mapper.reader(ServiceEndpoint.class).readValue(is);
+            return mapper.reader(ApiEndpoint.class).readValue(is);
         } catch (GatewayAuthenticationException e) {
             throw e;
         } catch (Exception e) {
@@ -195,14 +195,14 @@ public class GatewayClient /*implements ISystemResource, IServiceResource, IAppl
     }
 
     /**
-     * @see io.apiman.gateway.api.rest.contract.IServiceResource#publish(io.apiman.gateway.engine.beans.Service)
+     * @see io.apiman.gateway.api.rest.contract.IApiResource#publish(io.apiman.gateway.engine.beans.Api)
      */
-    public void publish(Service service) throws PublishingException, GatewayAuthenticationException {
+    public void publish(Api api) throws PublishingException, GatewayAuthenticationException {
         try {
-            URI uri = new URI(this.endpoint + SERVICES);
+            URI uri = new URI(this.endpoint + APIs);
             HttpPut put = new HttpPut(uri);
             put.setHeader("Content-Type", "application/json; charset=utf-8"); //$NON-NLS-1$ //$NON-NLS-2$
-            String jsonPayload = mapper.writer().writeValueAsString(service);
+            String jsonPayload = mapper.writer().writeValueAsString(api);
             HttpEntity entity = new StringEntity(jsonPayload);
             put.setEntity(entity);
             HttpResponse response = httpClient.execute(put);
@@ -218,7 +218,7 @@ public class GatewayClient /*implements ISystemResource, IServiceResource, IAppl
                 }
             }
             if (actualStatusCode >= 300) {
-                throw new Exception(Messages.i18n.format("GatewayClient.ServicePublishingFailed", actualStatusCode)); //$NON-NLS-1$
+                throw new Exception(Messages.i18n.format("GatewayClient.ApiPublishingFailed", actualStatusCode)); //$NON-NLS-1$
             }
         } catch (PublishingException|GatewayAuthenticationException e) {
             throw e;
@@ -228,12 +228,12 @@ public class GatewayClient /*implements ISystemResource, IServiceResource, IAppl
     }
 
     /**
-     * @see io.apiman.gateway.api.rest.contract.IServiceResource#retire(java.lang.String, java.lang.String, java.lang.String)
+     * @see io.apiman.gateway.api.rest.contract.IApiResource#retire(java.lang.String, java.lang.String, java.lang.String)
      */
-    public void retire(String organizationId, String serviceId, String version) throws RegistrationException, GatewayAuthenticationException {
+    public void retire(String organizationId, String apiId, String version) throws RegistrationException, GatewayAuthenticationException {
         try {
             @SuppressWarnings("nls")
-            URI uri = new URI(this.endpoint + SERVICES + "/" + organizationId + "/" + serviceId + "/" + version);
+            URI uri = new URI(this.endpoint + APIs + "/" + organizationId + "/" + apiId + "/" + version);
             HttpDelete put = new HttpDelete(uri);
             HttpResponse response = httpClient.execute(put);
             int actualStatusCode = response.getStatusLine().getStatusCode();
@@ -248,7 +248,7 @@ public class GatewayClient /*implements ISystemResource, IServiceResource, IAppl
                 }
             }
             if (actualStatusCode >= 300) {
-                throw new Exception(Messages.i18n.format("GatewayClient.ServiceRetiringFailed", actualStatusCode)); //$NON-NLS-1$
+                throw new Exception(Messages.i18n.format("GatewayClient.ApiRetiringFailed", actualStatusCode)); //$NON-NLS-1$
             }
         } catch (PublishingException|GatewayAuthenticationException e) {
             throw e;

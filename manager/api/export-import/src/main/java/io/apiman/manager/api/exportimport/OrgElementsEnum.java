@@ -16,8 +16,8 @@
 package io.apiman.manager.api.exportimport;
 
 public enum OrgElementsEnum {
-    Memberships, 
-    Apps, Plans, Services,
-    Versions, Contracts, Policies, 
+    Memberships,
+    Apps, Plans, Apis,
+    Versions, Contracts, Policies,
     Audits;
 }

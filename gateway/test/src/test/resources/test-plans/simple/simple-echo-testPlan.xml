@@ -6,7 +6,7 @@
   </testGroup>
 
   <testGroup name="Configure the Gateway" endpoint="api">
-    <test name="Publish Service">test-plan-data/simple/simple-echo/setup/001-publish-service.resttest</test>
+    <test name="Publish Api">test-plan-data/simple/simple-echo/setup/001-publish-api.resttest</test>
     <test name="Register Application">test-plan-data/simple/simple-echo/setup/002-register-app.resttest</test>
   </testGroup>
 

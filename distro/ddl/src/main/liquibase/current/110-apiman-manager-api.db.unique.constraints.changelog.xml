@@ -17,15 +17,15 @@
                              constraintName="UK_app_versions_1" initiallyDeferred="false" tableName="application_versions"/>
     </changeSet>
     <changeSet author="apiman" id="addUniqueConstraint-5">
-        <addUniqueConstraint columnNames="service_id, service_org_id, version" deferrable="false" disabled="false"
-                             constraintName="UK_service_versions_1" initiallyDeferred="false" tableName="service_versions"/>
+        <addUniqueConstraint columnNames="api_id, api_org_id, version" deferrable="false" disabled="false"
+                             constraintName="UK_api_versions_1" initiallyDeferred="false" tableName="api_versions"/>
     </changeSet>
     <changeSet author="apiman" id="addUniqueConstraint-6">
-        <addUniqueConstraint columnNames="service_version_id" deferrable="false" disabled="false"
-                             constraintName="UK_service_defs_1" initiallyDeferred="false" tableName="service_defs"/>
+        <addUniqueConstraint columnNames="api_version_id" deferrable="false" disabled="false"
+                             constraintName="UK_api_defs_1" initiallyDeferred="false" tableName="api_defs"/>
     </changeSet>
     <changeSet author="apiman" id="addUniqueConstraint-7">
-        <addUniqueConstraint columnNames="appv_id, svcv_id, planv_id" deferrable="false" disabled="false"
+        <addUniqueConstraint columnNames="appv_id, apiv_id, planv_id" deferrable="false" disabled="false"
                              constraintName="UK_contracts_1" initiallyDeferred="false" tableName="contracts"/>
     </changeSet>
 </databaseChangeLog>

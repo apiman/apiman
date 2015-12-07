@@ -26,7 +26,7 @@ import io.vertx.serviceproxy.ProxyHelper;
  *
  * Gateway Verticle <-> Policy Verticle <-> Backend
  *
- * The policy verticle receives ServiceRequests over the eventbus, which it passes into the apiman core for
+ * The policy verticle receives ApiRequests over the eventbus, which it passes into the apiman core for
  * evaluation. Upon success, a connection is opened up to the backend, and the requester is signalled to begin
  * streaming data (which is also passed through apiman). Failures, either by exception or policy failure are
  * passed back to the requester. As all requests and responses between the policy verticle and any gateway are

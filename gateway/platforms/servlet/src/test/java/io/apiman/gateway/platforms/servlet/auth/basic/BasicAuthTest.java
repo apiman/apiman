@@ -18,14 +18,14 @@ package io.apiman.gateway.platforms.servlet.auth.basic;
 import io.apiman.common.config.options.BasicAuthOptions;
 import io.apiman.common.config.options.TLSOptions;
 import io.apiman.common.servlet.AuthenticationFilter;
-import io.apiman.gateway.engine.IServiceConnection;
-import io.apiman.gateway.engine.IServiceConnectionResponse;
-import io.apiman.gateway.engine.IServiceConnector;
+import io.apiman.gateway.engine.IApiConnection;
+import io.apiman.gateway.engine.IApiConnectionResponse;
+import io.apiman.gateway.engine.IApiConnector;
 import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.auth.RequiredAuthType;
-import io.apiman.gateway.engine.beans.Service;
-import io.apiman.gateway.engine.beans.ServiceRequest;
+import io.apiman.gateway.engine.beans.Api;
+import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.exceptions.ConnectorException;
 import io.apiman.gateway.platforms.servlet.connectors.HttpConnectorFactory;
 import io.apiman.test.common.mock.EchoServlet;
@@ -61,7 +61,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 /**
- * Basic auth test for the service connector (tests connecting to a back-end service
+ * Basic auth test for the API connector (tests connecting to a back-end API
  * that is protected by basic auth).
  */
 @SuppressWarnings("nls")
@@ -145,8 +145,8 @@ public class BasicAuthTest {
         endpointProperties.clear();
     }
 
-    ServiceRequest request = new ServiceRequest();
-    Service service = new Service();
+    ApiRequest request = new ApiRequest();
+    Api api = new Api();
     {
         request.setApiKey("12345");
         request.setDestination("/");
@@ -155,29 +155,29 @@ public class BasicAuthTest {
         request.setRemoteAddr("http://localhost:8008/echo");
         request.setType("GET");
 
-        service.setEndpoint("http://localhost:8008/echo");
-        service.getEndpointProperties().put(RequiredAuthType.ENDPOINT_AUTHORIZATION_TYPE, RequiredAuthType.BASIC.name());
+        api.setEndpoint("http://localhost:8008/echo");
+        api.getEndpointProperties().put(RequiredAuthType.ENDPOINT_AUTHORIZATION_TYPE, RequiredAuthType.BASIC.name());
     }
 
     /**
-     * Scenario successful connection to the back end service via basic auth.
+     * Scenario successful connection to the back end API via basic auth.
      */
     @Test
     public void shouldSucceedWithBasicAuth() {
         endpointProperties.put(BasicAuthOptions.BASIC_USERNAME, "user");
         endpointProperties.put(BasicAuthOptions.BASIC_PASSWORD, "user123!");
         endpointProperties.put(BasicAuthOptions.BASIC_REQUIRE_SSL, "false");
-        service.setEndpointProperties(endpointProperties);
-        service.setEndpoint("http://localhost:8008/echo");
+        api.setEndpointProperties(endpointProperties);
+        api.setEndpoint("http://localhost:8008/echo");
 
         HttpConnectorFactory factory = new HttpConnectorFactory(globalConfig);
-        IServiceConnector connector = factory.createConnector(request, service, RequiredAuthType.BASIC);
-        IServiceConnection connection = connector.connect(request,
-                new IAsyncResultHandler<IServiceConnectionResponse>() {
+        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.BASIC);
+        IApiConnection connection = connector.connect(request,
+                new IAsyncResultHandler<IApiConnectionResponse>() {
                     @Override
-                    public void handle(IAsyncResult<IServiceConnectionResponse> result) {
+                    public void handle(IAsyncResult<IApiConnectionResponse> result) {
                         Assert.assertTrue("Expected a successful connection response.", result.isSuccess());
-                        IServiceConnectionResponse scr = result.getResult();
+                        IApiConnectionResponse scr = result.getResult();
                         Assert.assertEquals("Expected a 200 response from the echo server (valid creds).", 200, scr.getHead().getCode());
                     }
                 });
@@ -188,24 +188,24 @@ public class BasicAuthTest {
     }
 
     /**
-     * Scenario successful connection to the back end service via basic auth.
+     * Scenario successful connection to the back end API via basic auth.
      */
     @Test
     public void shouldSucceedWithBasicAuthAndSSL() {
         endpointProperties.put(BasicAuthOptions.BASIC_USERNAME, "user");
         endpointProperties.put(BasicAuthOptions.BASIC_PASSWORD, "user123!");
         endpointProperties.put(BasicAuthOptions.BASIC_REQUIRE_SSL, "true");
-        service.setEndpointProperties(endpointProperties);
-        service.setEndpoint("https://localhost:8009/echo");
+        api.setEndpointProperties(endpointProperties);
+        api.setEndpoint("https://localhost:8009/echo");
 
         HttpConnectorFactory factory = new HttpConnectorFactory(globalConfig);
-        IServiceConnector connector = factory.createConnector(request, service, RequiredAuthType.BASIC);
-        IServiceConnection connection = connector.connect(request,
-                new IAsyncResultHandler<IServiceConnectionResponse>() {
+        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.BASIC);
+        IApiConnection connection = connector.connect(request,
+                new IAsyncResultHandler<IApiConnectionResponse>() {
                     @Override
-                    public void handle(IAsyncResult<IServiceConnectionResponse> result) {
+                    public void handle(IAsyncResult<IApiConnectionResponse> result) {
                         Assert.assertTrue("Expected a successful connection response.", result.isSuccess());
-                        IServiceConnectionResponse scr = result.getResult();
+                        IApiConnectionResponse scr = result.getResult();
                         Assert.assertEquals("Expected a 200 response from the echo server (valid creds).", 200, scr.getHead().getCode());
                     }
                 });
@@ -216,22 +216,22 @@ public class BasicAuthTest {
     }
 
     /**
-     * Scenario successful connection to the back end service via basic auth.
+     * Scenario successful connection to the back end API via basic auth.
      */
     @Test
     public void shouldFailWithNoSSL() {
         endpointProperties.put(BasicAuthOptions.BASIC_USERNAME, "user");
         endpointProperties.put(BasicAuthOptions.BASIC_PASSWORD, "user123!");
         endpointProperties.put(BasicAuthOptions.BASIC_REQUIRE_SSL, "true");
-        service.setEndpointProperties(endpointProperties);
-        service.setEndpoint("http://localhost:8008/echo");
+        api.setEndpointProperties(endpointProperties);
+        api.setEndpoint("http://localhost:8008/echo");
 
         HttpConnectorFactory factory = new HttpConnectorFactory(globalConfig);
-        IServiceConnector connector = factory.createConnector(request, service, RequiredAuthType.BASIC);
-        IServiceConnection connection = connector.connect(request,
-                new IAsyncResultHandler<IServiceConnectionResponse>() {
+        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.BASIC);
+        IApiConnection connection = connector.connect(request,
+                new IAsyncResultHandler<IApiConnectionResponse>() {
                     @Override
-                    public void handle(IAsyncResult<IServiceConnectionResponse> result) {
+                    public void handle(IAsyncResult<IApiConnectionResponse> result) {
                         Assert.assertTrue("Expected an error due to not using SSL.", result.isError());
                         Assert.assertTrue("Expected a ConnectorException due to not using SSL.", result.getError() instanceof ConnectorException);
                         Assert.assertEquals("Endpoint security requested (BASIC auth) but endpoint is not secure (SSL).", result.getError().getMessage());
@@ -251,17 +251,17 @@ public class BasicAuthTest {
         endpointProperties.put(BasicAuthOptions.BASIC_USERNAME, "user");
         endpointProperties.put(BasicAuthOptions.BASIC_PASSWORD, "bad-password");
         endpointProperties.put(BasicAuthOptions.BASIC_REQUIRE_SSL, "false");
-        service.setEndpointProperties(endpointProperties);
-        service.setEndpoint("http://localhost:8008/echo");
+        api.setEndpointProperties(endpointProperties);
+        api.setEndpoint("http://localhost:8008/echo");
 
         HttpConnectorFactory factory = new HttpConnectorFactory(globalConfig);
-        IServiceConnector connector = factory.createConnector(request, service, RequiredAuthType.BASIC);
-        IServiceConnection connection = connector.connect(request,
-                new IAsyncResultHandler<IServiceConnectionResponse>() {
+        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.BASIC);
+        IApiConnection connection = connector.connect(request,
+                new IAsyncResultHandler<IApiConnectionResponse>() {
                     @Override
-                    public void handle(IAsyncResult<IServiceConnectionResponse> result) {
+                    public void handle(IAsyncResult<IApiConnectionResponse> result) {
                         Assert.assertTrue("Expected a successful connection response.", result.isSuccess());
-                        IServiceConnectionResponse scr = result.getResult();
+                        IApiConnectionResponse scr = result.getResult();
                         Assert.assertEquals("Expected a 401 response from the echo server (invalid creds).", 401, scr.getHead().getCode());
                     }
                 });
@@ -279,17 +279,17 @@ public class BasicAuthTest {
         endpointProperties.remove(BasicAuthOptions.BASIC_USERNAME);
         endpointProperties.remove(BasicAuthOptions.BASIC_PASSWORD);
         endpointProperties.put(BasicAuthOptions.BASIC_REQUIRE_SSL, "false");
-        service.setEndpointProperties(endpointProperties);
-        service.setEndpoint("http://localhost:8008/echo");
+        api.setEndpointProperties(endpointProperties);
+        api.setEndpoint("http://localhost:8008/echo");
 
         HttpConnectorFactory factory = new HttpConnectorFactory(globalConfig);
-        IServiceConnector connector = factory.createConnector(request, service, RequiredAuthType.BASIC);
-        IServiceConnection connection = connector.connect(request,
-                new IAsyncResultHandler<IServiceConnectionResponse>() {
+        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.BASIC);
+        IApiConnection connection = connector.connect(request,
+                new IAsyncResultHandler<IApiConnectionResponse>() {
                     @Override
-                    public void handle(IAsyncResult<IServiceConnectionResponse> result) {
+                    public void handle(IAsyncResult<IApiConnectionResponse> result) {
                         Assert.assertTrue("Expected a successful connection response.", result.isSuccess());
-                        IServiceConnectionResponse scr = result.getResult();
+                        IApiConnectionResponse scr = result.getResult();
                         Assert.assertEquals("Expected a 401 response from the echo server (invalid creds).", 401, scr.getHead().getCode());
                     }
                 });

@@ -1,0 +1,7 @@
+PUT /organizations/Organization1/apis/API1/versions/1.0/policies/${policy-id} admin/admin
+Content-Type: application/json
+
+{
+}
+----
+204

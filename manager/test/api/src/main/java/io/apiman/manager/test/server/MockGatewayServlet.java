@@ -73,7 +73,7 @@ public class MockGatewayServlet extends HttpServlet {
             printWriter.println("{ \"up\" : true, \"version\" : \"1.0.Mock\", \"id\" : \"apiman-gateway-api\", \"name\" : \"API Gateway REST API\", \"description\" : \"\" }"); //$NON-NLS-1$
             printWriter.flush();
             printWriter.close();
-        } else if (req.getRequestURI().contains("/services") && req.getRequestURI().endsWith("/endpoint")) { //$NON-NLS-1$ //$NON-NLS-2$
+        } else if (req.getRequestURI().contains("/apis") && req.getRequestURI().endsWith("/endpoint")) { //$NON-NLS-1$ //$NON-NLS-2$
             resp.setStatus(200);
             resp.setContentType("application/json"); //$NON-NLS-1$
             PrintWriter printWriter = new PrintWriter(resp.getOutputStream());

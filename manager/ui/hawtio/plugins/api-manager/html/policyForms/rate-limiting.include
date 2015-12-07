@@ -7,7 +7,7 @@
       <option value="" data-content="<span class='apiman-label-faded'>Granularity</span>" apiman-i18n-key="granularity">Granularity</option>
       <option value="Application" apiman-i18n-key="rate-limiting.application">Application</option>
       <option value="User" apiman-i18n-key="rate-limiting.user">User</option>
-      <option value="Service" apiman-i18n-key="rate-limiting.service">Service</option>
+      <option value="Api" apiman-i18n-key="rate-limiting.api">API</option>
     </select>
     <span apiman-i18n-key="per">per</span>
     <select id="period" ng-model="config.period" apiman-select-picker="" data-field="period" class="selectpicker inline-line apiman-inline-form-dropdown" data-style="btn-default apiman-inline-form-dropdown" style="width: 100px" ng-disabled="isEntityDisabled()">

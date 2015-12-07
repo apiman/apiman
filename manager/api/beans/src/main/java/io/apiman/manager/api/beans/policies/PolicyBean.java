@@ -43,7 +43,7 @@ import org.hibernate.annotations.Type;
 /**
  * A Policy is the primary unit of work for the runtime engine, which is
  * essentially a chain of policies that are applied to the Request and
- * Response of a service.
+ * Response of an API.
  *
  * @author eric.wittmann@redhat.com
  */

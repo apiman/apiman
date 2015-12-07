@@ -2,7 +2,7 @@
 <testPlan xmlns="urn:io.apiman.test:2014:02:testPlan">
 
   <testGroup name="Test some error handling">
-    <test name="No Service Found">test-plan-data/simple/gateway-error/001-no-service-found.resttest</test>
+    <test name="No Api Found">test-plan-data/simple/gateway-error/001-no-api-found.resttest</test>
   </testGroup>
 
 </testPlan>

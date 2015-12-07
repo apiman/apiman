@@ -15,12 +15,12 @@
  */
 package io.apiman.gateway.engine.policies;
 
+import io.apiman.gateway.engine.beans.Api;
+import io.apiman.gateway.engine.beans.ApiContract;
+import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.Application;
 import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.beans.PolicyFailureType;
-import io.apiman.gateway.engine.beans.Service;
-import io.apiman.gateway.engine.beans.ServiceContract;
-import io.apiman.gateway.engine.beans.ServiceRequest;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.components.IRateLimiterComponent;
 import io.apiman.gateway.engine.impl.InMemoryRateLimiterComponent;
@@ -100,7 +100,7 @@ public class RateLimitingPolicyTest {
                 "  \"userHeader\" : \"X-Identity\"\r\n" +
                 "}";
         Object config = policy.parseConfiguration(json);
-        ServiceRequest request = new ServiceRequest();
+        ApiRequest request = new ApiRequest();
         request.setContract(createTestContract());
         request.setType("GET");
         request.setApiKey("12345");
@@ -116,7 +116,7 @@ public class RateLimitingPolicyTest {
             }
         });
         Mockito.when(context.getComponent(IRateLimiterComponent.class)).thenReturn(new InMemoryRateLimiterComponent());
-        IPolicyChain<ServiceRequest> chain = null;
+        IPolicyChain<ApiRequest> chain = null;
 
         for (int count = 0; count < 10; count++) {
             chain = Mockito.mock(IPolicyChain.class);
@@ -131,18 +131,18 @@ public class RateLimitingPolicyTest {
     }
 
     /**
-     * @return a test service contract
+     * @return a test contract
      */
-    private ServiceContract createTestContract() {
-        Service service = new Service();
-        service.setOrganizationId("ServiceOrg");
-        service.setServiceId("Service");
-        service.setVersion("1.0");
+    private ApiContract createTestContract() {
+        Api api = new Api();
+        api.setOrganizationId("ApiOrg");
+        api.setApiId("Api");
+        api.setVersion("1.0");
         Application app = new Application();
         app.setOrganizationId("AppOrg");
         app.setApplicationId("App");
         app.setVersion("1.0");
-        return new ServiceContract("12345", service, app, "Gold", null);
+        return new ApiContract("12345", api, app, "Gold", null);
     }
 
 }

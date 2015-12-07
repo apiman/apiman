@@ -9,19 +9,19 @@
   <body>
     
     <div ng-include="headerInclude"></div>
-    <div ng-controller="Apiman.NewServiceController" class="container apiman-entity-new page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
+    <div ng-controller="Apiman.NewApiController" class="container apiman-entity-new page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
       <div class="row">
-        <h2 class="title" apiman-i18n-key="new-service">New Service</h2>
+        <h2 class="title" apiman-i18n-key="new-api">New API</h2>
       </div>
       <!-- Helpful hint -->
       <div class="row">
-        <p apiman-i18n-key="new-service-help-text" class="col-md-6 apiman-label-faded">Create a new Service within the specified Organization, allowing Applications to begin consuming it.</p>
+        <p apiman-i18n-key="new-api-help-text" class="col-md-6 apiman-label-faded">Create a new API within the specified Organization, allowing Applications to begin consuming it.</p>
       </div>
       <!-- HR -->
       <div class="row hr-row">
         <hr/>
       </div>
-      <!-- Choose org and service name -->
+      <!-- Choose org and api name -->
       <div ng-show="organizations.length > 0">
         <div class="row">
           <dl class="org">
@@ -44,27 +44,27 @@
             </dd>
           </dl>
           <dl class="name">
-            <dt apiman-i18n-key="service-name">Service Name</dt>
+            <dt apiman-i18n-key="api-name">API Name</dt>
             <dd>
-              <input ng-model="service.name" data-field="name" type="text" class="apiman-form-control form-control entityname" id="apiman-entityname" apiman-i18n-key="enter-service-name" placeholder="Enter service name..."></input>
+              <input ng-model="api.name" data-field="name" type="text" class="apiman-form-control form-control entityname" id="apiman-entityname" apiman-i18n-key="enter-api-name" placeholder="Enter API name..."></input>
             </dd>
           </dl>
         </div>
-        <!-- Initial Service Version -->
+        <!-- Initial API Version -->
         <div class="row">
           <dl>
             <dt apiman-i18n-key="initial-version">Initial Version</dt>
             <dd>
-              <input ng-model="service.initialVersion" data-field="version" type="text" class="apiman-form-control form-control version" id="apiman-version" value="1.0"></input>
+              <input ng-model="api.initialVersion" data-field="version" type="text" class="apiman-form-control form-control version" id="apiman-version" value="1.0"></input>
             </dd>
           </dl>
         </div>
-        <!-- Description of service -->
+        <!-- Description of api -->
         <div class="row">
           <dl>
             <dt apiman-i18n-key="description">Description</dt>
             <dd>
-              <textarea ng-model="service.description" class="apiman-form-control form-control description" id="apiman-description" apiman-i18n-key="enter-service-description" placeholder="Enter service description (optional)..."></textarea>
+              <textarea ng-model="api.description" class="apiman-form-control form-control description" id="apiman-description" apiman-i18n-key="enter-api-description" placeholder="Enter API description (optional)..."></textarea>
             </dd>
           </dl>
         </div>
@@ -72,7 +72,7 @@
       <div ng-hide="organizations.length > 0" class="apiman-no-content container-fluid">
         <div class="row">
           <div class="col-md-12">
-            <p class="apiman-no-entities-description" apiman-i18n-key="missing-create-service-permission">You don't have permission to create a Service in any of your Organizations (or you aren't in any orgs)!  Please become a member of an existing Organization or create a new one before trying to create a Service.</p>
+            <p class="apiman-no-entities-description" apiman-i18n-key="missing-create-api-permission">You don't have permission to create an API in any of your Organizations (or you aren't in any orgs)!  Please become a member of an existing Organization or create a new one before trying to create an API.</p>
           </div>
         </div>
       </div>
@@ -82,7 +82,7 @@
       </div>
       <!-- Create Button -->
       <div class="row">
-        <button id="create-service" ng-disabled="!service.name || !service.initialVersion || !selectedOrg" apiman-action-btn="" class="btn btn-primary" data-field="createButton" apiman-i18n-key="create-service" placeholder="Creating..." data-icon="fa-cog" ng-click="saveNewService()">Create Service</button>
+        <button id="create-api" ng-disabled="!api.name || !api.initialVersion || !selectedOrg" apiman-action-btn="" class="btn btn-primary" data-field="createButton" apiman-i18n-key="create-api" placeholder="Creating..." data-icon="fa-cog" ng-click="saveNewApi()">Create API</button>
         <a id="cancel" href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" apiman-i18n-key="cancel">Cancel</a>
       </div>
     </div> <!-- /container -->

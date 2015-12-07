@@ -21,25 +21,25 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import io.apiman.gateway.engine.IApiConnection;
+import io.apiman.gateway.engine.IApiConnectionResponse;
+import io.apiman.gateway.engine.IApiConnector;
+import io.apiman.gateway.engine.IApiRequestExecutor;
 import io.apiman.gateway.engine.IComponentRegistry;
 import io.apiman.gateway.engine.IConnectorFactory;
 import io.apiman.gateway.engine.IEngine;
 import io.apiman.gateway.engine.IEngineResult;
 import io.apiman.gateway.engine.IPluginRegistry;
-import io.apiman.gateway.engine.IServiceConnection;
-import io.apiman.gateway.engine.IServiceConnectionResponse;
-import io.apiman.gateway.engine.IServiceConnector;
-import io.apiman.gateway.engine.IServiceRequestExecutor;
 import io.apiman.gateway.engine.async.IAsyncHandler;
 import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.auth.RequiredAuthType;
+import io.apiman.gateway.engine.beans.Api;
+import io.apiman.gateway.engine.beans.ApiRequest;
+import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.engine.beans.Application;
 import io.apiman.gateway.engine.beans.Contract;
 import io.apiman.gateway.engine.beans.Policy;
-import io.apiman.gateway.engine.beans.Service;
-import io.apiman.gateway.engine.beans.ServiceRequest;
-import io.apiman.gateway.engine.beans.ServiceResponse;
 import io.apiman.gateway.engine.beans.exceptions.ConnectorException;
 import io.apiman.gateway.engine.components.IBufferFactoryComponent;
 import io.apiman.gateway.engine.io.IApimanBuffer;
@@ -68,8 +68,8 @@ public class DefaultEngineFactoryTest {
     private IAsyncHandler<Void> mockEndHandler;
     private IAsyncHandler<Void> transmitHandler;
 
-    private MockServiceConnection mockServiceConnection;
-    private MockServiceConnectionResponse mockServiceConnectionResponse;
+    private MockApiConnection mockApiConnection;
+    private MockApiConnectionResponse mockApiConnectionResponse;
 
     @Before
     public void setup() {
@@ -112,23 +112,23 @@ public class DefaultEngineFactoryTest {
             protected IConnectorFactory createConnectorFactory(IPluginRegistry pluginRegistry) {
                 return new IConnectorFactory() {
                     @Override
-                    public IServiceConnector createConnector(ServiceRequest request, Service service, RequiredAuthType requiredAuthType) {
-                        Assert.assertEquals("test", service.getEndpointType());
-                        Assert.assertEquals("test:endpoint", service.getEndpoint());
-                        IServiceConnector connector = new IServiceConnector() {
+                    public IApiConnector createConnector(ApiRequest request, Api api, RequiredAuthType requiredAuthType) {
+                        Assert.assertEquals("test", api.getEndpointType());
+                        Assert.assertEquals("test:endpoint", api.getEndpoint());
+                        IApiConnector connector = new IApiConnector() {
 
                             /**
-                             * @see io.apiman.gateway.engine.IServiceConnector#connect(io.apiman.gateway.engine.beans.ServiceRequest, io.apiman.gateway.engine.async.IAsyncResultHandler)
+                             * @see io.apiman.gateway.engine.IApiConnector#connect(io.apiman.gateway.engine.beans.ApiRequest, io.apiman.gateway.engine.async.IAsyncResultHandler)
                              */
                             @Override
-                            public IServiceConnection connect(ServiceRequest request,
-                                    IAsyncResultHandler<IServiceConnectionResponse> handler)
+                            public IApiConnection connect(ApiRequest request,
+                                    IAsyncResultHandler<IApiConnectionResponse> handler)
                                     throws ConnectorException {
-                                final ServiceResponse response = new ServiceResponse();
+                                final ApiResponse response = new ApiResponse();
                                 response.setCode(200);
                                 response.setMessage("OK"); //$NON-NLS-1$
 
-                                mockServiceConnectionResponse = new MockServiceConnectionResponse() {
+                                mockApiConnectionResponse = new MockApiConnectionResponse() {
 
                                     @Override
                                     public void write(IApimanBuffer chunk) {
@@ -136,12 +136,12 @@ public class DefaultEngineFactoryTest {
                                     }
 
                                     @Override
-                                    protected void handleHead(ServiceResponse head) {
+                                    protected void handleHead(ApiResponse head) {
                                         return;
                                     }
 
                                     @Override
-                                    public ServiceResponse getHead() {
+                                    public ApiResponse getHead() {
                                         return response;
                                     }
 
@@ -160,18 +160,18 @@ public class DefaultEngineFactoryTest {
                                     }
                                 };
 
-                                IAsyncResult<IServiceConnectionResponse> mockResponseResultHandler = mock(IAsyncResult.class);
+                                IAsyncResult<IApiConnectionResponse> mockResponseResultHandler = mock(IAsyncResult.class);
                                 given(mockResponseResultHandler.isSuccess()).willReturn(true);
                                 given(mockResponseResultHandler.isError()).willReturn(false);
-                                given(mockResponseResultHandler.getResult()).willReturn(mockServiceConnectionResponse);
+                                given(mockResponseResultHandler.getResult()).willReturn(mockApiConnectionResponse);
 
-                                mockServiceConnection = mock(MockServiceConnection.class);
-                                given(mockServiceConnection.getHead()).willReturn(request);
+                                mockApiConnection = mock(MockApiConnection.class);
+                                given(mockApiConnection.getHead()).willReturn(request);
 
                                 // Handle head
                                 handler.handle(mockResponseResultHandler);
 
-                                return mockServiceConnection;
+                                return mockApiConnection;
                             }
 
                         };
@@ -184,13 +184,13 @@ public class DefaultEngineFactoryTest {
         IEngine engine = factory.createEngine();
         Assert.assertNotNull(engine);
 
-        // create a service
-        Service service = new Service();
-        service.setEndpointType("test");
-        service.setEndpoint("test:endpoint");
-        service.setOrganizationId("TestOrg");
-        service.setServiceId("TestService");
-        service.setVersion("1.0");
+        // create a api
+        Api api = new Api();
+        api.setEndpointType("test");
+        api.setEndpoint("test:endpoint");
+        api.setOrganizationId("TestOrg");
+        api.setApiId("TestApi");
+        api.setVersion("1.0");
         // create an app
         Application app = new Application();
         app.setApplicationId("TestApp");
@@ -199,15 +199,15 @@ public class DefaultEngineFactoryTest {
         Contract contract = new Contract();
         contract.setApiKey("12345");
         contract.setPlan("Gold");
-        contract.setServiceId("TestService");
-        contract.setServiceOrgId("TestOrg");
-        contract.setServiceVersion("1.0");
+        contract.setApiId("TestApi");
+        contract.setApiOrgId("TestOrg");
+        contract.setApiVersion("1.0");
         contract.setPolicies(policyList);
 
         app.addContract(contract);
 
-        // simple service/app config
-        engine.getRegistry().publishService(service, new IAsyncResultHandler<Void>() {
+        // simple api/app config
+        engine.getRegistry().publishApi(api, new IAsyncResultHandler<Void>() {
             @Override
             public void handle(IAsyncResult<Void> result) {
             }
@@ -218,13 +218,13 @@ public class DefaultEngineFactoryTest {
             }
         });
 
-        ServiceRequest request = new ServiceRequest();
+        ApiRequest request = new ApiRequest();
         request.setApiKey("12345");
         request.setDestination("/");
         request.setUrl("http://localhost:9999/");
         request.setType("TEST");
 
-        IServiceRequestExecutor prExecutor = engine.executor(request, new IAsyncResultHandler<IEngineResult>() {
+        IApiRequestExecutor prExecutor = engine.executor(request, new IAsyncResultHandler<IEngineResult>() {
 
             @Override //At this point, we are either saying *fail* or *response connection is ready*
             public void handle(IAsyncResult<IEngineResult> result) {
@@ -236,8 +236,8 @@ public class DefaultEngineFactoryTest {
                 // The chain evaluation succeeded
                 Assert.assertNotNull(er);
                 Assert.assertTrue(!er.isFailure());
-                Assert.assertNotNull(er.getServiceResponse());
-                Assert.assertEquals("OK", er.getServiceResponse().getMessage()); //$NON-NLS-1$
+                Assert.assertNotNull(er.getApiResponse());
+                Assert.assertEquals("OK", er.getApiResponse().getMessage()); //$NON-NLS-1$
 
                 er.bodyHandler(mockBodyHandler);
                 er.endHandler(mockEndHandler);
@@ -259,15 +259,15 @@ public class DefaultEngineFactoryTest {
             public void handle(Void result) {
                 // NB: This is cheating slightly for testing purposes, we don't have real async here.
                 // Only now start writing stuff, so user has had opportunity to set handlers
-                mockServiceConnectionResponse.write(mockBufferOutbound);
-                mockServiceConnectionResponse.end();
+                mockApiConnectionResponse.write(mockBufferOutbound);
+                mockApiConnectionResponse.end();
             }
         };
 
         prExecutor.execute();
 
         // Request handler should receive the mock inbound buffer once only
-        verify(mockServiceConnection, times(1)).write(mockBufferInbound);
+        verify(mockApiConnection, times(1)).write(mockBufferInbound);
 
         // Ultimately user should receive the contrived response and end in order.
         InOrder order = inOrder(mockBodyHandler, mockEndHandler);

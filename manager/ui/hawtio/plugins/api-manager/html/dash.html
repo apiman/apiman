@@ -18,9 +18,9 @@
         <div class="col-md-12 no-phone">
           <span class="description" apiman-i18n-key="dash.page-description">
             Welcome to apiman, open source API management.  Use this software to provide
-            various APIs (Services) to your users (Applications) through a secure, scalable,
-            and governed Gateway layer.  API Management allows Service Developers to centralize
-            control and analysis of their Services.  It also provides a central location for
+            various APIs (APIs) to your users (Applications) through a secure, scalable,
+            and governed Gateway layer.  API Management allows API Developers to centralize
+            control and analysis of their APIs.  It also provides a central location for
             Application Developers to find and consume available APIs.
           </span>
           <hr />
@@ -35,10 +35,10 @@
               <span apiman-i18n-key="organizations">Organizations</span>
             </div>
             <div class="description" apiman-i18n-key="dash.orgs-description">
-              All services and applications must be managed within the context of an 
+              All APIs and applications must be managed within the context of an 
               Organization.  You can be a member of multiple Organizations at the same
               time, with different roles in each:  you can be an Application
-              Developer in one organization and a Service Developer in another.
+              Developer in one organization and an API Developer in another.
             </div>
             <div class="actions">
               <ul>
@@ -52,19 +52,19 @@
           <div class="dash-group pull-right">
             <div class="title">
               <i class="fa fa-puzzle-piece"></i>
-              <span apiman-i18n-key="services">Services</span>
+              <span apiman-i18n-key="apis">APIs</span>
             </div>
-            <div class="description" apiman-i18n-key="dash.services-description">
-              Create, find, or manage Services.  A Service is also known as an API - anything
+            <div class="description" apiman-i18n-key="dash.apis-description">
+              Create, find, or manage APIs.  A API is also known as an API - anything
               that can be invoked remotely by some sort of client (Application).  This platform
-              simply provides a way to expose existing APIs by defining them as Services and
+              simply provides a way to expose existing APIs by defining them as APIs and
               attaching value-added policies to them.
             </div>
             <div class="actions">
               <ul>
-                <li><a id="services-consume" href="{{ pluginName }}/browse/services" apiman-i18n-key="actions.find-service" data-field="browseServices">Find/Consume a Service</a></li>
-                <li><a id="services-manage" href="{{ pluginName }}/users/{{ currentUser.username }}/services" apiman-i18n-key="actions.my-services" data-field="myServices">Manage My Services</a></li>
-                <li><a id="service-new" href="{{ pluginName }}/new-service" apiman-i18n-key="actions.create-service" data-field="createService">Create a New Service</a></li>
+                <li><a id="apis-consume" href="{{ pluginName }}/browse/apis" apiman-i18n-key="actions.find-api">Find/Consume an API</a></li>
+                <li><a id="apis-manage" href="{{ pluginName }}/users/{{ currentUser.username }}/apis" apiman-i18n-key="actions.my-apis">Manage My APIs</a></li>
+                <li><a id="api-new" href="{{ pluginName }}/new-api" apiman-i18n-key="actions.create-api">Create a New API</a></li>
               </ul>
             </div>
           </div>
@@ -76,8 +76,8 @@
             </div>
             <div class="description" apiman-i18n-key="dash.applications-description">
               Create and manage your Applications.  An Application is the thing that consumes
-              APIs (Services).  These consumers must be defined in this platform so that 
-              contracts can be created between them and the Services they wish to consume.
+              APIs (APIs).  These consumers must be defined in this platform so that 
+              contracts can be created between them and the APIs they wish to consume.
             </div>
             <div class="actions">
               <ul>

@@ -15,12 +15,9 @@
  */
 package io.apiman.gateway.engine.policies;
 
-import java.util.HashSet;
-import java.util.Set;
-
+import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.beans.PolicyFailureType;
-import io.apiman.gateway.engine.beans.ServiceRequest;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.policies.config.AuthorizationConfig;
 import io.apiman.gateway.engine.policies.config.AuthorizationRule;
@@ -30,10 +27,13 @@ import io.apiman.gateway.engine.policies.i18n.Messages;
 import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Adds authorization capabilities to apiman. This policy allows users to
  * specify what roles the authenticated user must have in order to be allowed to
- * call the service.
+ * call the API.
  *
  * This policy works in conjunction with a compatible Authentication policy,
  * such as the Basic authentication policy.  The assumption is that such a
@@ -63,11 +63,11 @@ public class AuthorizationPolicy extends AbstractMappedPolicy<AuthorizationConfi
     }
 
     /**
-     * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#doApply(io.apiman.gateway.engine.beans.ServiceRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
+     * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#doApply(io.apiman.gateway.engine.beans.ApiRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
      */
     @Override
-    protected void doApply(ServiceRequest request, IPolicyContext context, AuthorizationConfig config,
-            IPolicyChain<ServiceRequest> chain) {
+    protected void doApply(ApiRequest request, IPolicyContext context, AuthorizationConfig config,
+            IPolicyChain<ApiRequest> chain) {
         Set<String> userRoles = context.getAttribute(AUTHENTICATED_USER_ROLES, (HashSet<String>) null);
         String verb = request.getType();
         String resource = request.getDestination();

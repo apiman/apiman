@@ -8,9 +8,9 @@ Content-Type: application/json
   "contracts" : [
     {
       "apiKey" : "12345",
-      "serviceOrgId" : "SimpleEchoTest",
-      "serviceId" : "echo",
-      "serviceVersion" : "1.0.0"
+      "apiOrgId" : "SimpleEchoTest",
+      "apiId" : "echo",
+      "apiVersion" : "1.0.0"
     }
   ]
 }

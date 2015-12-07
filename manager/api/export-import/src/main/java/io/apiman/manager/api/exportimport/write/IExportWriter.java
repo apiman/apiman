@@ -15,6 +15,8 @@
  */
 package io.apiman.manager.api.exportimport.write;
 
+import io.apiman.manager.api.beans.apis.ApiBean;
+import io.apiman.manager.api.beans.apis.ApiVersionBean;
 import io.apiman.manager.api.beans.apps.ApplicationBean;
 import io.apiman.manager.api.beans.apps.ApplicationVersionBean;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
@@ -29,12 +31,10 @@ import io.apiman.manager.api.beans.plans.PlanVersionBean;
 import io.apiman.manager.api.beans.plugins.PluginBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
-import io.apiman.manager.api.beans.services.ServiceBean;
-import io.apiman.manager.api.beans.services.ServiceVersionBean;
 import io.apiman.manager.api.exportimport.beans.MetadataBean;
 
 /**
- * 
+ *
  * @author msavy
  */
 public interface IExportWriter {
@@ -67,7 +67,7 @@ public interface IExportWriter {
     IExportWriter endPolicyDefs();
 
     // -----------------------------------
-    // Orgs, apps, plans, services, etc...
+    // Orgs, apps, plans, APIs, etc...
     // -----------------------------------
     IExportWriter startOrgs();
     IExportWriter startOrg(OrganizationBean org);
@@ -88,17 +88,17 @@ public interface IExportWriter {
     IExportWriter endPlan();
     IExportWriter endPlans();
 
-    IExportWriter startServices();
-    IExportWriter startService(ServiceBean service);
-    IExportWriter startServiceVersions();
-    IExportWriter startServiceVersion(ServiceVersionBean svb);
-    IExportWriter startServicePolicies();
-    IExportWriter writeServicePolicy(PolicyBean policy);
-    IExportWriter endServicePolicies();
-    IExportWriter endServiceVersion();
-    IExportWriter endServiceVersions();
-    IExportWriter endService();
-    IExportWriter endServices();
+    IExportWriter startApis();
+    IExportWriter startApi(ApiBean api);
+    IExportWriter startApiVersions();
+    IExportWriter startApiVersion(ApiVersionBean svb);
+    IExportWriter startApiPolicies();
+    IExportWriter writeApiPolicy(PolicyBean policy);
+    IExportWriter endApiPolicies();
+    IExportWriter endApiVersion();
+    IExportWriter endApiVersions();
+    IExportWriter endApi();
+    IExportWriter endApis();
 
     IExportWriter startApplications();
     IExportWriter startApplication(ApplicationBean application);

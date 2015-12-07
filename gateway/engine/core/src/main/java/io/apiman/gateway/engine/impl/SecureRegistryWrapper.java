@@ -22,9 +22,9 @@ import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.Application;
 import io.apiman.gateway.engine.beans.Contract;
 import io.apiman.gateway.engine.beans.Policy;
-import io.apiman.gateway.engine.beans.Service;
-import io.apiman.gateway.engine.beans.ServiceContract;
-import io.apiman.gateway.engine.beans.ServiceRequest;
+import io.apiman.gateway.engine.beans.Api;
+import io.apiman.gateway.engine.beans.ApiContract;
+import io.apiman.gateway.engine.beans.ApiRequest;
 
 import java.util.List;
 import java.util.Map;
@@ -53,14 +53,14 @@ public class SecureRegistryWrapper implements IRegistry {
     }
 
     /**
-     * @see io.apiman.gateway.engine.IRegistry#publishService(io.apiman.gateway.engine.beans.Service, io.apiman.gateway.engine.async.IAsyncResultHandler)
+     * @see io.apiman.gateway.engine.IRegistry#publishApi(io.apiman.gateway.engine.beans.Api, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
     @Override
-    public void publishService(Service service, IAsyncResultHandler<Void> handler) {
-        List<Policy> policies = service.getServicePolicies();
+    public void publishApi(Api api, IAsyncResultHandler<Void> handler) {
+        List<Policy> policies = api.getApiPolicies();
         encryptPolicies(policies);
-        encryptEndpointProperties(service.getEndpointProperties());
-        delegate.publishService(service, handler);
+        encryptEndpointProperties(api.getEndpointProperties());
+        delegate.publishApi(api, handler);
     }
 
     /**
@@ -79,11 +79,11 @@ public class SecureRegistryWrapper implements IRegistry {
     }
 
     /**
-     * @see io.apiman.gateway.engine.IRegistry#retireService(io.apiman.gateway.engine.beans.Service, io.apiman.gateway.engine.async.IAsyncResultHandler)
+     * @see io.apiman.gateway.engine.IRegistry#retireApi(io.apiman.gateway.engine.beans.Api, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
     @Override
-    public void retireService(Service service, IAsyncResultHandler<Void> handler) {
-        delegate.retireService(service, handler);
+    public void retireApi(Api api, IAsyncResultHandler<Void> handler) {
+        delegate.retireApi(api, handler);
     }
 
     /**
@@ -95,20 +95,20 @@ public class SecureRegistryWrapper implements IRegistry {
     }
 
     /**
-     * @see io.apiman.gateway.engine.IRegistry#getService(java.lang.String, java.lang.String, java.lang.String, io.apiman.gateway.engine.async.IAsyncResultHandler)
+     * @see io.apiman.gateway.engine.IRegistry#getApi(java.lang.String, java.lang.String, java.lang.String, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
     @Override
-    public void getService(String organizationId, String serviceId, String serviceVersion,
-            final IAsyncResultHandler<Service> handler) {
-        delegate.getService(organizationId, serviceId, serviceVersion, new IAsyncResultHandler<Service>() {
+    public void getApi(String organizationId, String apiId, String apiVersion,
+            final IAsyncResultHandler<Api> handler) {
+        delegate.getApi(organizationId, apiId, apiVersion, new IAsyncResultHandler<Api>() {
             @Override
-            public void handle(IAsyncResult<Service> result) {
+            public void handle(IAsyncResult<Api> result) {
                 if (result.isSuccess()) {
-                    Service service = result.getResult();
-                    if (service != null) {
-                        List<Policy> policies = service.getServicePolicies();
+                    Api api = result.getResult();
+                    if (api != null) {
+                        List<Policy> policies = api.getApiPolicies();
                         decryptPolicies(policies);
-                        decryptEndpointProperties(service.getEndpointProperties());
+                        decryptEndpointProperties(api.getEndpointProperties());
                     }
                 }
                 handler.handle(result);
@@ -117,15 +117,15 @@ public class SecureRegistryWrapper implements IRegistry {
     }
 
     /**
-     * @see io.apiman.gateway.engine.IRegistry#getContract(io.apiman.gateway.engine.beans.ServiceRequest, io.apiman.gateway.engine.async.IAsyncResultHandler)
+     * @see io.apiman.gateway.engine.IRegistry#getContract(io.apiman.gateway.engine.beans.ApiRequest, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
     @Override
-    public void getContract(ServiceRequest request, final IAsyncResultHandler<ServiceContract> handler) {
-        delegate.getContract(request, new IAsyncResultHandler<ServiceContract>() {
+    public void getContract(ApiRequest request, final IAsyncResultHandler<ApiContract> handler) {
+        delegate.getContract(request, new IAsyncResultHandler<ApiContract>() {
             @Override
-            public void handle(IAsyncResult<ServiceContract> result) {
+            public void handle(IAsyncResult<ApiContract> result) {
                 if (result.isSuccess()) {
-                    ServiceContract contract = result.getResult();
+                    ApiContract contract = result.getResult();
                     List<Policy> policies = contract.getPolicies();
                     decryptPolicies(policies);
                 }

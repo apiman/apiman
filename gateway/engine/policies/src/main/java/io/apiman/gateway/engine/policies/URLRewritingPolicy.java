@@ -16,8 +16,8 @@
 package io.apiman.gateway.engine.policies;
 
 import io.apiman.gateway.engine.DependsOnComponents;
-import io.apiman.gateway.engine.beans.ServiceRequest;
-import io.apiman.gateway.engine.beans.ServiceResponse;
+import io.apiman.gateway.engine.beans.ApiRequest;
+import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.engine.components.IBufferFactoryComponent;
 import io.apiman.gateway.engine.io.IReadWriteStream;
 import io.apiman.gateway.engine.policies.config.URLRewritingConfig;
@@ -30,7 +30,7 @@ import java.util.Map.Entry;
 
 /**
  * A policy that implements URL rewriting in the body and headers of the
- * response from a back-end service.
+ * response from a back-end API.
  *
  * @author eric.wittmann@redhat.com
  */
@@ -52,11 +52,11 @@ public class URLRewritingPolicy extends AbstractMappedDataPolicy<URLRewritingCon
     }
 
     /**
-     * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#doApply(io.apiman.gateway.engine.beans.ServiceResponse, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
+     * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#doApply(io.apiman.gateway.engine.beans.ApiResponse, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
      */
     @Override
-    protected void doApply(ServiceResponse response, IPolicyContext context, URLRewritingConfig config,
-            IPolicyChain<ServiceResponse> chain) {
+    protected void doApply(ApiResponse response, IPolicyContext context, URLRewritingConfig config,
+            IPolicyChain<ApiResponse> chain) {
         if (config.isProcessHeaders()) {
             Map<String, String> headers = response.getHeaders();
             for (Entry<String, String> entry : headers.entrySet()) {
@@ -89,20 +89,20 @@ public class URLRewritingPolicy extends AbstractMappedDataPolicy<URLRewritingCon
     }
 
     /**
-     * @see io.apiman.gateway.engine.policies.AbstractMappedDataPolicy#requestDataHandler(io.apiman.gateway.engine.beans.ServiceRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object)
+     * @see io.apiman.gateway.engine.policies.AbstractMappedDataPolicy#requestDataHandler(io.apiman.gateway.engine.beans.ApiRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object)
      */
     @Override
-    protected IReadWriteStream<ServiceRequest> requestDataHandler(ServiceRequest request,
+    protected IReadWriteStream<ApiRequest> requestDataHandler(ApiRequest request,
             IPolicyContext context, URLRewritingConfig policyConfiguration) {
         // No need to process the inbound stream.
         return null;
     }
 
     /**
-     * @see io.apiman.gateway.engine.policies.AbstractMappedDataPolicy#responseDataHandler(io.apiman.gateway.engine.beans.ServiceResponse, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object)
+     * @see io.apiman.gateway.engine.policies.AbstractMappedDataPolicy#responseDataHandler(io.apiman.gateway.engine.beans.ApiResponse, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object)
      */
     @Override
-    protected IReadWriteStream<ServiceResponse> responseDataHandler(ServiceResponse response,
+    protected IReadWriteStream<ApiResponse> responseDataHandler(ApiResponse response,
             IPolicyContext context, URLRewritingConfig policyConfiguration) {
         if (policyConfiguration.isProcessBody()) {
             return new URLRewritingStream(context.getComponent(IBufferFactoryComponent.class), response,

@@ -1,4 +1,4 @@
-== VertxServiceRequest
+== VertxApiRequest
 
 ++++
  Wrapped  with Vertx specific converters
@@ -25,13 +25,13 @@
 |[[remoteAddr]]`remoteAddr`
 |`String`
 |-
-|[[serviceId]]`serviceId`
+|[[apiId]]`apiId`
 |`String`
 |-
-|[[serviceOrgId]]`serviceOrgId`
+|[[apiOrgId]]`apiOrgId`
 |`String`
 |-
-|[[serviceVersion]]`serviceVersion`
+|[[apiVersion]]`apiVersion`
 |`String`
 |-
 |[[transportSecure]]`transportSecure`

@@ -1,4 +1,4 @@
-GET /organizations/TestOrganization/services/foo/versions/1.0/plans/Gold/policyChain admin/admin
+GET /organizations/TestOrganization/apis/foo/versions/1.0/plans/Gold/policyChain admin/admin
 
 ----
 200
@@ -25,7 +25,7 @@ X-RestTest-BindTo-policy-3-id: policies[2].id
       },
       {
         "createdBy" : "admin",
-        "description" : "Policy Def Three: Service Policy 1",
+        "description" : "Policy Def Three: API Policy 1",
         "icon" : "one",
         "name" : "Policy Def Three",
         "policyDefinitionId" : "PolicyDefThree"

@@ -15,7 +15,7 @@
  */
 package io.apiman.gateway.engine.policies.rewrite;
 
-import io.apiman.gateway.engine.beans.ServiceResponse;
+import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.engine.components.IBufferFactoryComponent;
 import io.apiman.gateway.engine.io.AbstractStream;
 import io.apiman.gateway.engine.io.IApimanBuffer;
@@ -28,9 +28,9 @@ import java.io.UnsupportedEncodingException;
  *
  * @author eric.wittmann@redhat.com
  */
-public class URLRewritingStream extends AbstractStream<ServiceResponse> {
+public class URLRewritingStream extends AbstractStream<ApiResponse> {
 
-    private ServiceResponse response;
+    private ApiResponse response;
     private String fromRegularExpression;
     private String toReplacement;
     private IBufferFactoryComponent bufferFactory;
@@ -46,7 +46,7 @@ public class URLRewritingStream extends AbstractStream<ServiceResponse> {
      * @param response
      * @param config
      */
-    public URLRewritingStream(IBufferFactoryComponent bufferFactory, ServiceResponse response,
+    public URLRewritingStream(IBufferFactoryComponent bufferFactory, ApiResponse response,
             String fromRegularExpression, String toReplacement) {
         this.bufferFactory = bufferFactory;
         this.response = response;
@@ -58,7 +58,7 @@ public class URLRewritingStream extends AbstractStream<ServiceResponse> {
      * @see io.apiman.gateway.engine.io.IReadStream#getHead()
      */
     @Override
-    public ServiceResponse getHead() {
+    public ApiResponse getHead() {
         return response;
     }
 
@@ -66,7 +66,7 @@ public class URLRewritingStream extends AbstractStream<ServiceResponse> {
      * @see io.apiman.gateway.engine.io.AbstractStream#handleHead(java.lang.Object)
      */
     @Override
-    protected void handleHead(ServiceResponse head) {
+    protected void handleHead(ApiResponse head) {
         // Nothing to do with the head.
     }
 

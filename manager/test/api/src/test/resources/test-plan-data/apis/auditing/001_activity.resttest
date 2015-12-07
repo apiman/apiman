@@ -1,0 +1,127 @@
+GET /organizations/Organization1/apis/API1/activity admin/admin
+----
+200
+Content-Type: application/json
+
+{
+  "beans" : [
+    {
+      "data" : null,
+      "entityId" : "API1",
+      "entityType" : "Api",
+      "entityVersion" : "1.0",
+      "organizationId" : "Organization1",
+      "what" : "Publish",
+      "who" : "admin"
+    },
+    {
+      "data" : "{\"policyDefId\":\"PolicyDef\"}",
+      "entityId" : "API1",
+      "entityType" : "Api",
+      "entityVersion" : "1.0",
+      "organizationId" : "Organization1",
+      "what" : "RemovePolicy",
+      "who" : "admin"
+    },
+    {
+      "data" : "{\"policyDefId\":\"PolicyDef\"}",
+      "entityId" : "API1",
+      "entityType" : "Api",
+      "entityVersion" : "1.0",
+      "organizationId" : "Organization1",
+      "what" : "UpdatePolicy",
+      "who" : "admin"
+    },
+    {
+      "data" : "{\"policyDefId\":\"PolicyDef\"}",
+      "entityId" : "API1",
+      "entityType" : "Api",
+      "entityVersion" : "1.0",
+      "organizationId" : "Organization1",
+      "what" : "AddPolicy",
+      "who" : "admin"
+    },
+    {
+      "data" : "{\"policyDefId\":\"PolicyDef\"}",
+      "entityId" : "API1",
+      "entityType" : "Api",
+      "entityVersion" : "1.0",
+      "organizationId" : "Organization1",
+      "what" : "AddPolicy",
+      "who" : "admin"
+    },
+    {
+      "who":"admin",
+      "organizationId":"Organization1",
+      "entityType":"Api",
+      "entityId":"API1",
+      "entityVersion":"1.0",
+      "what":"Update",
+      "data":"{\"changes\":[{\"name\":\"plans\",\"before\":\"Plan1:1.0, Plan2:1.1\",\"after\":\"Plan2:1.1\"}]}"
+    },
+    {
+      "who":"admin",
+      "organizationId":"Organization1",
+      "entityType":"Api",
+      "entityId":"API1",
+      "entityVersion":"1.0",
+      "what":"Update",
+      "data":"{\"changes\":[{\"name\":\"plans\",\"before\":\"Plan1:1.0\",\"after\":\"Plan1:1.0, Plan2:1.1\"}]}"
+    },
+    {
+      "who":"admin",
+      "organizationId":"Organization1",
+      "entityType":"Api",
+      "entityId":"API1",
+      "entityVersion":"1.0",
+      "what":"Update",
+      "data":"{\"changes\":[{\"name\":\"plans\",\"before\":\"\",\"after\":\"Plan1:1.0\"}]}"
+    },
+    {
+      "who":"admin",
+      "organizationId":"Organization1",
+      "entityType":"Api",
+      "entityId":"API1",
+      "entityVersion":"1.0",
+      "what":"Update",
+      "data":"{\"changes\":[{\"name\":\"endpoint\",\"before\":null,\"after\":\"http://localhost:8080/ping\"},{\"name\":\"endpointType\",\"before\":null,\"after\":\"rest\"},{\"name\":\"endpointContentType\",\"before\":null,\"after\":\"xml\"}]}"
+    },
+    {
+      "who":"admin",
+      "organizationId":"Organization1",
+      "entityType":"Api",
+      "entityId":"API1",
+      "entityVersion":"2.0",
+      "what":"Create",
+      "data":null
+    },
+    {
+      "who":"admin",
+      "organizationId":"Organization1",
+      "entityType":"Api",
+      "entityId":"API1",
+      "entityVersion":"1.0",
+      "what":"Create",
+      "data":null
+    },
+    { 
+      "who":"admin2",
+      "organizationId":"Organization1",
+      "entityType":"Api",
+      "entityId":"API1",
+      "entityVersion":null,
+      "what":"Update",
+      "data":"{\"changes\":[{\"name\":\"description\",\"before\":\"This is the description of API 1.\",\"after\":\"[UPDATED] This is the description of API 1!\"}]}"
+    },
+    {
+      "who":"admin",
+      "organizationId":"Organization1",
+      "entityType":"Api",
+      "entityId":"API1",
+      "entityVersion":null,
+      "what":"Create",
+      "data":null
+    }
+  ],
+  "totalSize":13
+}

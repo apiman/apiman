@@ -16,6 +16,8 @@
 
 package io.apiman.manager.api.exportimport.read;
 
+import io.apiman.manager.api.beans.apis.ApiBean;
+import io.apiman.manager.api.beans.apis.ApiVersionBean;
 import io.apiman.manager.api.beans.apps.ApplicationBean;
 import io.apiman.manager.api.beans.apps.ApplicationVersionBean;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
@@ -30,14 +32,12 @@ import io.apiman.manager.api.beans.plans.PlanVersionBean;
 import io.apiman.manager.api.beans.plugins.PluginBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
-import io.apiman.manager.api.beans.services.ServiceBean;
-import io.apiman.manager.api.beans.services.ServiceVersionBean;
 import io.apiman.manager.api.exportimport.beans.MetadataBean;
 
 /**
  * Used to listen to the reading of an apiman import file.  The import
  * reader will parse the import file and then fire events for each
- * entity it finds in the import.  This dispatcher is the callback for 
+ * entity it finds in the import.  This dispatcher is the callback for
  * those events.
  *
  * @author eric.wittmann@redhat.com
@@ -62,7 +62,7 @@ public interface IImportReaderDispatcher {
     void policyDef(PolicyDefinitionBean policyDef);
 
     // -----------------------------------
-    // Orgs, apps, plans, services, etc...
+    // Orgs, apps, plans, apis, etc...
     // -----------------------------------
     void organization(OrganizationBean org);
 
@@ -72,9 +72,9 @@ public interface IImportReaderDispatcher {
     void planVersion(PlanVersionBean planVersion);
     void planPolicy(PolicyBean policy);
 
-    void service(ServiceBean service);
-    void serviceVersion(ServiceVersionBean serviceVersion);
-    void servicePolicy(PolicyBean policy);
+    void api(ApiBean api);
+    void apiVersion(ApiVersionBean apiVersion);
+    void apiPolicy(PolicyBean policy);
 
     void application(ApplicationBean application);
     void applicationVersion(ApplicationVersionBean appVersion);
@@ -82,10 +82,10 @@ public interface IImportReaderDispatcher {
     void applicationContract(ContractBean contract);
 
     void audit(AuditEntryBean auditEntry);
-    
+
     // Called when the import is complete
     void close();
-    
+
     // Called to cancel the import
     void cancel();
 }

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testPlan xmlns="urn:io.apiman.test:2014:02:testPlan">
+
+  <!-- Create Organizations -->
+  <testGroup name="Initial Creates">
+    <test name="Create Gateway">test-plan-data/apis/create/000_create-gateway.resttest</test>
+    <test name="Create Organization 1">test-plan-data/apis/create/001_create-org1.resttest</test>
+    <test name="Create Organization 2">test-plan-data/apis/create/002_create-org2.resttest</test>
+  </testGroup>
+
+  <!-- Test API management -->
+  <testGroup name="API Management">
+    <test name="Create API 1">test-plan-data/apis/apis/001_create-api1.resttest</test>
+    <test name="Get API 1 [1]">test-plan-data/apis/apis/002_get-api1.resttest</test>
+    <test name="Get Missing API">test-plan-data/apis/apis/003_get-missing-api.resttest</test>
+    <test name="Create API 2">test-plan-data/apis/apis/004_create-api2.resttest</test>
+    <test name="Search APIs">test-plan-data/apis/apis/005_search-apis.resttest</test>
+    <test name="Update API 1">test-plan-data/apis/apis/006_update-api1.resttest</test>
+    <test name="Get API 1 [2]">test-plan-data/apis/apis/007_get-api1.resttest</test>
+    <test name="Create API 1 (Org 2)">test-plan-data/apis/apis/008_create-api1-org2.resttest</test>
+    <test name="Get API 1 [3]">test-plan-data/apis/apis/009_get-api1.resttest</test>
+    <test name="Get API 1 (Org 2)">test-plan-data/apis/apis/010_get-api1-org2.resttest</test>
+    <test name="List APIs">test-plan-data/apis/apis/011_list-apis.resttest</test>
+    <test name="Create API (invalid name)">test-plan-data/apis/apis/012_create-invalid-name.resttest</test>
+  </testGroup>
+
+  <!-- Test API Version management -->
+  <testGroup name="API Version Management">
+    <test name="Create API Version 1.0">test-plan-data/apis/versions/001_create-version-1.0.resttest</test>
+    <test name="Get API Version 1.0">test-plan-data/apis/versions/002_get-version-1.0.resttest</test>
+    <test name="Get Missing API Version">test-plan-data/apis/versions/003_get-version-missing.resttest</test>
+    <test name="Create API Version 2.0">test-plan-data/apis/versions/004_create-version-2.0.resttest</test>
+    <test name="List All Versions [1]">test-plan-data/apis/versions/005_list-versions.resttest</test>
+    <test name="Update Version 1.0">test-plan-data/apis/versions/006_update-version-1.0.resttest</test>
+    <test name="Get Version 1.0 (updated)">test-plan-data/apis/versions/007_get-version-1.0.resttest</test>
+    <test name="Create API Version (invalid)">test-plan-data/apis/versions/008_create-version-invalid.resttest</test>
+    <test name="Create API Version (duplicate)">test-plan-data/apis/versions/009_create-version-duplicate.resttest</test>
+    <test name="Create API 5">test-plan-data/apis/versions/010_create-api-5-with-init.resttest</test>
+    <test name="Verify API 5">test-plan-data/apis/versions/011_get-api-5-version-7.0.resttest</test>
+    <test name="Update Version 1.0 (Invalid Endpoint)">test-plan-data/apis/versions/012_update-version-1.0-invalid.resttest</test>
+  </testGroup>
+
+  <!-- Test api plans -->
+  <testGroup name="API Plans">
+    <test name="Create Plan 1">test-plan-data/apis/plans/001_create-plan1.resttest</test>
+    <test name="Create Plan 2">test-plan-data/apis/plans/002_create-plan2.resttest</test>
+    <test name="Create Plan 1, v1.0">test-plan-data/apis/plans/003_create-plan1-version-1.0.resttest</test>
+    <test name="Create Plan 1, v2.0">test-plan-data/apis/plans/004_create-plan1-version-2.0.resttest</test>
+    <test name="Create Plan 2, v1.1">test-plan-data/apis/plans/005_create-plan2-version-1.1.resttest</test>
+    <test name="Lock Plan 1, v1.0">test-plan-data/apis/publish/002_lock-plan-1-v1.resttest</test>
+    <test name="Lock Plan 1, v2.0">test-plan-data/apis/publish/003_lock-plan-1-v2.resttest</test>
+    <test name="Lock Plan 2, v1.1">test-plan-data/apis/publish/004_lock-plan-2-v1.1.resttest</test>
+    <test name="Update API Plans">test-plan-data/apis/plans/006_update-version-1.0-plans.resttest</test>
+    <test name="Get Version 1.0 (with 1 plan)">test-plan-data/apis/plans/007_get-version-1.0.resttest</test>
+    <test name="Update API Plans 2">test-plan-data/apis/plans/008_update-version-1.0-plans.resttest</test>
+    <test name="Get Version 1.0 (with 2 plans)">test-plan-data/apis/plans/009_get-version-1.0.resttest</test>
+    <test name="Update API Plans 3">test-plan-data/apis/plans/010_update-version-1.0-plans.resttest</test>
+    <test name="Get Version 1.0 (back to 1 plan)">test-plan-data/apis/plans/011_get-version-1.0.resttest</test>
+    <test name="Update API Plans (error 500)">test-plan-data/apis/plans/012_update-version-1.0-plans-500.resttest</test>
+    <test name="Get API Plans">test-plan-data/apis/plans/013_get-api-plans.resttest</test>
+  </testGroup>
+  
+  <!-- Test API Policy management -->
+  <testGroup name="API Policy Management">
+    <test name="Create Policy Def">test-plan-data/apis/policies/000_create-policy-def.resttest</test>
+    <test name="Create Policy 1">test-plan-data/apis/policies/001_create-policy1.resttest</test>
+    <test name="Get Policy 1">test-plan-data/apis/policies/002_get-policy1.resttest</test>
+    <test name="Create Policy 2">test-plan-data/apis/policies/003_create-policy2.resttest</test>
+    <test name="List Policies [1]">test-plan-data/apis/policies/004_list-policies.resttest</test>
+    <test name="Update Policy 1">test-plan-data/apis/policies/005_update-policy1.resttest</test>
+    <test name="Delete Policy 2">test-plan-data/apis/policies/006_delete-policy2.resttest</test>
+    <test name="List Policies [2]">test-plan-data/apis/policies/007_list-policies.resttest</test>
+  </testGroup>
+
+  <!-- Publishing -->
+  <testGroup name="Publish APIs">
+    <test name="Publish API 1">test-plan-data/apis/publish/001_publish-api-1.resttest</test>
+    <test name="Get API 1 [published]">test-plan-data/apis/publish/002_get-api-1.resttest</test>
+  </testGroup>
+
+  <!-- Auditing -->
+  <testGroup name="Ensure Auditing">
+    <test name="API Activity">test-plan-data/apis/auditing/001_activity.resttest</test>
+    <test name="API Version Activity">test-plan-data/apis/auditing/002_version_activity.resttest</test>
+  </testGroup>
+
+  <!-- API Definitions -->
+  <testGroup name="API Definitions">
+    <test name="Add API Definition">test-plan-data/apis/definitions/001_add-api-definition.resttest</test>
+    <test name="Get Version 2.0 (def)">test-plan-data/apis/definitions/002_get-version-2.0.resttest</test>
+    <test name="Get API Definition">test-plan-data/apis/definitions/003_get-api-definition.resttest</test>
+    <test name="Delete API Definition">test-plan-data/apis/definitions/004_delete-api-definition.resttest</test>
+    <test name="Get API Definition 2.0 (404)">test-plan-data/apis/definitions/005_get-api-definition-2.0-404.resttest</test>
+    <test name="Get API Definition 1.0 (404)">test-plan-data/apis/definitions/006_get-api-definition-1.0-404.resttest</test>
+    <test name="Add API Definition (WSDL)">test-plan-data/apis/definitions/007_add-api-definition-wsdl.resttest</test>
+    <test name="Get Version 2.0 (def) (WSDL)">test-plan-data/apis/definitions/008_get-version-2.0-wsdl.resttest</test>
+    <test name="Get API Definition (WSDL)">test-plan-data/apis/definitions/009_get-api-definition-wsdl.resttest</test>
+    <test name="Update API Definition (From URL)">test-plan-data/apis/definitions/010_update-api-definition-fromurl.resttest</test>
+    <test name="Get Version 2.0 (def) (Swagger)">test-plan-data/apis/definitions/011_get-version-2.0-swagger.resttest</test>
+  </testGroup>
+
+  <!-- Cloning -->
+  <testGroup name="Test Cloning">
+    <test name="Add API Definition to 1.0">test-plan-data/apis/cloning/000_add-api-definition-1.0.resttest</test>
+    <test name="Clone 1.0 --> 2.1">test-plan-data/apis/cloning/001_clone-version-2.1.resttest</test>
+    <test name="List All Versions [2]">test-plan-data/apis/cloning/002_list-versions.resttest</test>
+    <test name="Get Version 2.1">test-plan-data/apis/cloning/003_get-version-2.1.resttest</test>
+    <test name="List Policies [3]">test-plan-data/apis/cloning/004_list-policies.resttest</test>
+    <test name="List Policies [4]">test-plan-data/apis/cloning/005_get-cloned-api-definition.resttest</test>
+    <test name="Clone 1.0 --> 2.1 (with fields)">test-plan-data/apis/cloning/006_clone-version-2.1-with-fields.resttest</test>
+  </testGroup>
+
+  <!-- API Status -->
+  <testGroup name="API Status">
+    <test name="Create API Foo">test-plan-data/apis/status/001_create-api-foo.resttest</test>
+    <test name="Create API Foo, Version 1.0">test-plan-data/apis/status/002_create-version-1.0.resttest</test>
+    <test name="API Status (Created) [1]">test-plan-data/apis/status/003_get-foo-status.resttest</test>
+    <test name="Update API Foo Endpoint">test-plan-data/apis/status/004_update-version-1.0.resttest</test>
+    <test name="API Status (Created) [2]">test-plan-data/apis/status/005_get-foo-status-2.resttest</test>
+    <test name="Update API Foo (Public)">test-plan-data/apis/status/006_update-version-1.0-public.resttest</test>
+    <test name="API Status (Ready) [3]">test-plan-data/apis/status/007_get-foo-status-3.resttest</test>
+  </testGroup>
+
+</testPlan>

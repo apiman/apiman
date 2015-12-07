@@ -1,0 +1,31 @@
+GET /organizations/Organization1/apis/API1/versions admin/admin
+----
+200
+Content-Type: application/json
+
+[
+  {
+    "organizationId" : "Organization1",
+    "organizationName" : "Organization 1",
+    "id" : "API1",
+    "name" : "API 1",
+    "status" : "Ready",
+    "version" : "2.1"
+  },
+  {
+    "organizationId" : "Organization1",
+    "organizationName" : "Organization 1",
+    "id" : "API1",
+    "name" : "API 1",
+    "status" : "Created",
+    "version" : "2.0"
+  },
+  {
+    "organizationId" : "Organization1",
+    "organizationName" : "Organization 1",
+    "id" : "API1",
+    "name" : "API 1",
+    "status" : "Published",
+    "version" : "1.0"
+  }
+]

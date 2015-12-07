@@ -1,4 +1,4 @@
-== VertxServiceResponse
+== VertxApiResponse
 
 ++++
  Wrapped  with Vertx specific converters

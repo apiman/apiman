@@ -1,0 +1,28 @@
+<div class="row">
+  <a href="{{ pluginName }}/users/{{ entry.who }}">{{ entry.who }}</a>
+  <span apiman-i18n-key="audit.broke-contract-with-api">broke a contract with API</span>
+  <a href="{{ pluginName }}/orgs/{{ entry.organizationId }}/apis">{{ entry.organizationId }}</a>
+  <span apiman-i18n-skip>/</span>
+  <a class="emphasis" href="{{ pluginName }}/orgs/{{ entry.organizationId }}/apis/{{ entry.entityId }}">{{ entry.entityId }}</a>
+  <span apiman-i18n-key="audit.version">version</span>
+  <a class="emphasis" href="{{ pluginName }}/orgs/{{ entry.organizationId }}/apis/{{ entry.entityId }}/{{ entry.entityVersion }}">{{ entry.entityVersion }}</a><span apiman-i18n-skip>.</span>
+</div>
+<div class="row boxed-row">
+  <span apiman-i18n-key="audit.contract-broken-between-app">A contract was broken between application</span>
+  <a href="{{ pluginName }}/orgs/{{ data.appOrgId }}/apps">{{ data.appOrgId }}</a>
+  <span apiman-i18n-skip>/</span>
+  <a href="{{ pluginName }}/orgs/{{ data.appOrgId }}/apps/{{ data.appId }}">{{ data.appId }}</a>
+  <span apiman-i18n-skip>:</span>
+  <a href="{{ pluginName }}/orgs/{{ data.appOrgId }}/apps/{{ data.appId }}/{{ data.appVersion }}">{{ data.appVersion }}</a>
+  <span apiman-i18n-key="audit.and-api">and API</span>
+  <a href="{{ pluginName }}/orgs/{{ data.apiOrgId }}/apis">{{ data.apiOrgId }}</a>
+  <span apiman-i18n-skip>/</span>
+  <a href="{{ pluginName }}/orgs/{{ data.apiOrgId }}/apis/{{ data.apiId }}">{{ data.apiId }}</a>
+  <span apiman-i18n-skip>:</span>
+  <a href="{{ pluginName }}/orgs/{{ data.apiOrgId }}/apis/{{ data.apiId }}/{{ data.apiVersion }}">{{ data.apiVersion }}</a>
+  <span apiman-i18n-key="audit.through-version">through version</span>
+  <a href="{{ pluginName }}/orgs/{{ data.planOrgId }}/plans/{{ data.planId }}/{{ data.planVersion }}">{{ data.planVersion }}</a>
+  <span apiman-i18n-key="audit.of-plan">of plan</span>
+  <a href="{{ pluginName }}/orgs/{{ data.planOrgId }}/plans/{{ data.planId }}">{{ data.planId }}</a>
+  <span apiman-i18n-skip>.</span>
+</div>

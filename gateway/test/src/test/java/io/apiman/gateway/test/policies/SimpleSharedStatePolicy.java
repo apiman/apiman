@@ -17,8 +17,8 @@ package io.apiman.gateway.test.policies;
 
 import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
-import io.apiman.gateway.engine.beans.ServiceRequest;
-import io.apiman.gateway.engine.beans.ServiceResponse;
+import io.apiman.gateway.engine.beans.ApiRequest;
+import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.engine.components.ISharedStateComponent;
 import io.apiman.gateway.engine.policy.IPolicy;
 import io.apiman.gateway.engine.policy.IPolicyChain;
@@ -47,11 +47,11 @@ public class SimpleSharedStatePolicy implements IPolicy {
     }
     
     /**
-     * @see io.apiman.gateway.engine.policy.IPolicy#apply(io.apiman.gateway.engine.beans.ServiceRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
+     * @see io.apiman.gateway.engine.policy.IPolicy#apply(io.apiman.gateway.engine.beans.ApiRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
      */
     @Override
-    public void apply(final ServiceRequest request, final IPolicyContext context, final Object config,
-            final IPolicyChain<ServiceRequest> chain) {
+    public void apply(final ApiRequest request, final IPolicyContext context, final Object config,
+            final IPolicyChain<ApiRequest> chain) {
         final ISharedStateComponent sharedState = context.getComponent(ISharedStateComponent.class);
         final String namespace = "urn:" + getClass().getName();
         final String propName = "test-property";
@@ -71,11 +71,11 @@ public class SimpleSharedStatePolicy implements IPolicy {
     }
 
     /**
-     * @see io.apiman.gateway.engine.policy.IPolicy#apply(io.apiman.gateway.engine.beans.ServiceResponse, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
+     * @see io.apiman.gateway.engine.policy.IPolicy#apply(io.apiman.gateway.engine.beans.ApiResponse, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
      */
     @Override
-    public void apply(final ServiceResponse response, IPolicyContext context, Object config,
-            final IPolicyChain<ServiceResponse> chain) {
+    public void apply(final ApiResponse response, IPolicyContext context, Object config,
+            final IPolicyChain<ApiResponse> chain) {
         final ISharedStateComponent sharedState = context.getComponent(ISharedStateComponent.class);
         final String namespace = "urn:" + getClass().getName();
         final String propName = "test-property";

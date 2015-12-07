@@ -1,0 +1,6 @@
+GET /organizations/Organization1/apis/API1/versions/missing admin/admin
+----
+404
+Content-Type: application/json
+
+{"type":"ApiVersionNotFoundException","errorCode":5003,"message":"API Version does not exist: API1/missing","moreInfoUrl":null}

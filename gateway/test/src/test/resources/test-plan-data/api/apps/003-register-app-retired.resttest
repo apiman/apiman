@@ -8,9 +8,9 @@ Content-Type: application/json
   "contracts" : [
     {
       "apiKey" : "12345_003",
-      "serviceOrgId" : "GatewayApiTest",
-      "serviceId" : "echo",
-      "serviceVersion" : "3.0"
+      "apiOrgId" : "GatewayApiTest",
+      "apiId" : "echo",
+      "apiVersion" : "3.0"
     }
   ]
 }
@@ -21,5 +21,5 @@ X-API-Gateway-Error: true
 
 {
   "errorType" : "RegistrationException",
-  "message" : "Service echo not found in Organization GatewayApiTest."
+  "message" : "API echo not found in Organization GatewayApiTest."
 }

@@ -17,7 +17,7 @@ package io.apiman.gateway.engine.policies.auth;
 
 import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
-import io.apiman.gateway.engine.beans.ServiceRequest;
+import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.policies.AuthorizationPolicy;
 import io.apiman.gateway.engine.policies.config.basicauth.LDAPBindAsType;
 import io.apiman.gateway.engine.policies.config.basicauth.LDAPIdentitySource;
@@ -57,10 +57,10 @@ public class LDAPIdentityValidator implements IIdentityValidator<LDAPIdentitySou
     }
 
     /**
-     * @see io.apiman.gateway.engine.policies.auth.IIdentityValidator#validate(java.lang.String, java.lang.String, io.apiman.gateway.engine.beans.ServiceRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.async.IAsyncResultHandler)
+     * @see io.apiman.gateway.engine.policies.auth.IIdentityValidator#validate(java.lang.String, java.lang.String, io.apiman.gateway.engine.beans.ApiRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
     @Override
-    public void validate(String username, String password, ServiceRequest request, IPolicyContext context,
+    public void validate(String username, String password, ApiRequest request, IPolicyContext context,
             LDAPIdentitySource config, IAsyncResultHandler<Boolean> handler) {
         String url = config.getUrl();
         String bindDN = formatDn(config.getDnPattern(), username, request);
@@ -134,7 +134,7 @@ public class LDAPIdentityValidator implements IIdentityValidator<LDAPIdentitySou
      * @param dirContext
      * @throws NamingException
      */
-    private void validateAsServiceAccount(String username, String password, ServiceRequest request,
+    private void validateAsServiceAccount(String username, String password, ApiRequest request,
             IPolicyContext context, LDAPIdentitySource config, IAsyncResultHandler<Boolean> handler,
             DirContext dirContext) throws NamingException {
 
@@ -212,7 +212,7 @@ public class LDAPIdentityValidator implements IIdentityValidator<LDAPIdentitySou
      * @param username
      * @param request
      */
-    private String formatDn(String dnPattern, String username, ServiceRequest request) {
+    private String formatDn(String dnPattern, String username, ApiRequest request) {
         Map<String, String> valuesMap = new HashMap<>();
         valuesMap.putAll(request.getHeaders());
         valuesMap.put("username", username); //$NON-NLS-1$

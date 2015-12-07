@@ -22,25 +22,25 @@ import io.apiman.gateway.engine.beans.PolicyFailure;
  * signal when events occur.
  *
  * @author eric.wittmann@redhat.com
- * @param <T> Service object type
+ * @param <T> Api object type
  */
 public interface IPolicyChain<T> {
 
     /**
      * Called by a policy when it has successfully completed applying itself.  This
      * triggers the next policy in the chain.
-     * @param serviceObject the service object
+     * @param apiObject the api object
      */
-    public void doApply(T serviceObject);
+    public void doApply(T apiObject);
 
     /**
      * Immediately trigger a successful response, rather than waiting for the entire
      * policy chain to complete. This is useful for special cases where subsequent
      * policies might block a response that should always succeed (e.g. CORS).
      * <em>Use extremely judiciously</em>.
-     * @param serviceObject the service object
+     * @param apiObject the api object
      */
-    public void doSkip(T serviceObject);
+    public void doSkip(T apiObject);
 
     /**
      * Called by a policy when it has detected a violation or failure in the policy.  This

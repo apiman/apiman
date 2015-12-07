@@ -31,60 +31,19 @@ import org.junit.runner.RunWith;
 @ManagerRestTestPlan("test-plans/publishing-testPlan.xml")
 @ManagerRestTestGatewayLog(
         "GET:/mock-gateway/system/status\n" +
-        "PUT:/mock-gateway/services\n" +
+        "PUT:/mock-gateway/apis\n" +
         "GET:/mock-gateway/system/status\n" +
         "PUT:/mock-gateway/applications\n" +
         "GET:/mock-gateway/system/status\n" +
         "DELETE:/mock-gateway/applications/Organization1/Application1/1.0\n" +
         "GET:/mock-gateway/system/status\n" +
-        "DELETE:/mock-gateway/services/Organization1/Service1/1.0\n"
+        "DELETE:/mock-gateway/apis/Organization1/API1/1.0\n"
   )
 @ManagerRestTestPublishPayload({
     "",
-    "{\"publicService\":false,\"organizationId\":\"Organization1\",\"serviceId\":\"Service1\",\"version\":\"1.0\",\"endpointType\":\"rest\",\"endpoint\":\"http://localhost:8080/ping\",\"endpointProperties\":{},\"servicePolicies\":[]}",
+    "{\"publicAPI\":false,\"organizationId\":\"Organization1\",\"apiId\":\"API1\",\"version\":\"1.0\",\"endpointType\":\"rest\",\"endpoint\":\"http://localhost:8080/ping\",\"endpointProperties\":{},\"apiPolicies\":[]}",
     "",
-    "{\"organizationId\":\"Organization1\",\"applicationId\":\"Application1\",\"version\":\"1.0\",\"contracts\":[{\"serviceOrgId\":\"Organization1\",\"serviceId\":\"Service1\",\"serviceVersion\":\"1.0\",\"plan\":\"Plan1\",\"policies\":[{\"policyJsonConfig\":\"{ 'foo' : 'bar' }\",\"policyImpl\":\"org.example.PolicyDefTwo\"},{\"policyJsonConfig\":\"{ 'kung' : 'foo' }\",\"policyImpl\":\"org.example.PolicyDefOne\"}]}]}"
+    "{\"organizationId\":\"Organization1\",\"applicationId\":\"Application1\",\"version\":\"1.0\",\"contracts\":[{\"apiOrgId\":\"Organization1\",\"apiId\":\"API1\",\"apiVersion\":\"1.0\",\"plan\":\"Plan1\",\"policies\":[{\"policyJsonConfig\":\"{ 'foo' : 'bar' }\",\"policyImpl\":\"org.example.PolicyDefTwo\"},{\"policyJsonConfig\":\"{ 'kung' : 'foo' }\",\"policyImpl\":\"org.example.PolicyDefOne\"}]}]}"
 })
 public class PublishingTest {
-//
-//    @Test
-//    public void test() throws JsonParseException, JsonMappingException, UnsupportedEncodingException, IOException {
-//        runTestPlan("test-plans/publishing-testPlan.xml", PublishingTest.class.getClassLoader());
-//
-//        // This test includes publishing of a service to the gateway REST API.  The
-//        // test framework incldues a mock gateway API to test that the REST calls were
-//        // properly make.  Here is where we assert the result.
-//        String actualGatewayLog = MockGatewayServlet.getRequestLog();
-//        Assert.assertEquals(EXPECTED_GATEWAY_LOG, actualGatewayLog);
-//
-//        String publishServicePayload = MockGatewayServlet.getPayloads().get(1);
-//        Assert.assertEquals(EXPECTED_PUBLISH_PAYLOAD, publishServicePayload.trim());
-//        String registerAppPayload = MockGatewayServlet.getPayloads().get(3);
-//
-//        ObjectMapper mapper = new ObjectMapper();
-//        Application app = mapper.readValue(registerAppPayload.getBytes("UTF-8"), Application.class);
-//        Assert.assertNotNull(app);
-//        Assert.assertEquals(app.getOrganizationId(), "Organization1");
-//        Assert.assertEquals(app.getApplicationId(), "Application1");
-//        Assert.assertEquals(app.getVersion(), "1.0");
-//        Assert.assertEquals(app.getContracts().size(), 1);
-//        Contract contract = app.getContracts().iterator().next();
-//        Assert.assertNotNull(contract);
-//        Assert.assertEquals(contract.getServiceOrgId(), "Organization1");
-//        Assert.assertEquals(contract.getServiceId(), "Service1");
-//        Assert.assertEquals(contract.getServiceVersion(), "1.0");
-//        List<Policy> policies = contract.getPolicies();
-//        Assert.assertEquals(policies.size(), 2);
-//
-//        Policy policy2 = policies.get(0);
-//        Assert.assertNotNull(policy2);
-//        Assert.assertEquals(policy2.getPolicyImpl(), "org.example.PolicyDefTwo");
-//        Assert.assertEquals(policy2.getPolicyJsonConfig(), "{ 'foo' : 'bar' }");
-//
-//        Policy policy1 = policies.get(1);
-//        Assert.assertNotNull(policy1);
-//        Assert.assertEquals(policy1.getPolicyImpl(), "org.example.PolicyDefOne");
-//        Assert.assertEquals(policy1.getPolicyJsonConfig(), "{ 'kung' : 'foo' }");
-//    }
-
 }

@@ -21,7 +21,7 @@ import io.apiman.gateway.engine.beans.SystemStatus;
 
 /**
  * Implementation of the System API.
- * 
+ *
  * @author eric.wittmann@redhat.com
  */
 public class SystemResourceImpl extends AbstractResourceImpl implements ISystemResource {
@@ -31,7 +31,7 @@ public class SystemResourceImpl extends AbstractResourceImpl implements ISystemR
      */
     public SystemResourceImpl() {
     }
-    
+
     /**
      * @see io.apiman.gateway.api.rest.contract.ISystemResource#getStatus()
      */
@@ -40,10 +40,10 @@ public class SystemResourceImpl extends AbstractResourceImpl implements ISystemR
         SystemStatus status = new SystemStatus();
         status.setId("apiman-gateway-api"); //$NON-NLS-1$
         status.setName("API Gateway REST API"); //$NON-NLS-1$
-        status.setDescription("The API Gateway REST API is used by the API Manager to publish services and register applications.  You can use it directly if you wish, but if you are utilizing the API Manager then it's probably best to avoid invoking this API directly."); //$NON-NLS-1$
+        status.setDescription("The API Gateway REST API is used by the API Manager to publish APIs and register applications.  You can use it directly if you wish, but if you are utilizing the API Manager then it's probably best to avoid invoking this API directly."); //$NON-NLS-1$
         status.setUp(true);
         status.setVersion(getEngine().getVersion());
         return status;
     }
-    
+
 }

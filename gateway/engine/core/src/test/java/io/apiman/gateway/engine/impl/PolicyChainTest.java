@@ -32,8 +32,8 @@ import org.mockito.InOrder;
 
 import io.apiman.gateway.engine.async.IAsyncHandler;
 import io.apiman.gateway.engine.beans.PolicyFailure;
-import io.apiman.gateway.engine.beans.ServiceRequest;
-import io.apiman.gateway.engine.beans.ServiceResponse;
+import io.apiman.gateway.engine.beans.ApiRequest;
+import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.engine.beans.exceptions.ConfigurationParseException;
 import io.apiman.gateway.engine.io.IApimanBuffer;
 import io.apiman.gateway.engine.policy.IPolicy;
@@ -55,8 +55,8 @@ public class PolicyChainTest {
     private RequestChain requestChain;
     private ResponseChain responseChain;
 
-    private ServiceRequest mockRequest;
-    private ServiceResponse mockResponse;
+    private ApiRequest mockRequest;
+    private ApiResponse mockResponse;
 
     private IApimanBuffer mockBuffer;
     private IAsyncHandler<IApimanBuffer> mockBodyHandler;
@@ -79,12 +79,12 @@ public class PolicyChainTest {
         //mockChain = mock(IPolicyChain.class);
         mockContext = mock(IPolicyContext.class);
 
-        mockRequest = mock(ServiceRequest.class);
+        mockRequest = mock(ApiRequest.class);
         given(mockRequest.getApiKey()).willReturn("bacon");
         given(mockRequest.getDestination()).willReturn("mars");
         given(mockRequest.getType()).willReturn("request");
 
-        mockResponse = mock(ServiceResponse.class);
+        mockResponse = mock(ApiResponse.class);
         given(mockRequest.getApiKey()).willReturn("bacon");
         given(mockRequest.getDestination()).willReturn("mars");
         given(mockRequest.getType()).willReturn("response");
@@ -228,14 +228,14 @@ public class PolicyChainTest {
             }
 
             @Override
-            public void apply(ServiceRequest request, IPolicyContext context, Object config,
-                    IPolicyChain<ServiceRequest> chain) {
+            public void apply(ApiRequest request, IPolicyContext context, Object config,
+                    IPolicyChain<ApiRequest> chain) {
                 chain.doSkip(request);
             }
 
             @Override
-            public void apply(ServiceResponse response, IPolicyContext context, Object config,
-                    IPolicyChain<ServiceResponse> chain) {
+            public void apply(ApiResponse response, IPolicyContext context, Object config,
+                    IPolicyChain<ApiResponse> chain) {
                chain.doSkip(response);
             }
         });

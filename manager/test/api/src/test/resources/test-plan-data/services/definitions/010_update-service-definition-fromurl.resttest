@@ -1,9 +1,0 @@
-POST /organizations/Organization1/services/Service1/versions/2.0/definition admin/admin
-Content-Type: application/json
-
-{
-  "definitionUrl" : "${apiman.test.service-definition-url}",
-  "definitionType" : "SwaggerJSON"
-}
-----
-204

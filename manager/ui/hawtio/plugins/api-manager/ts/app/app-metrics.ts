@@ -1,5 +1,5 @@
 /// <reference path="../apimanPlugin.ts"/>
-/// <reference path="../services.ts"/>
+/// <reference path="../rpc.ts"/>
 module Apiman {
 
     export var AppMetricsController = _module.controller("Apiman.AppMetricsController",
@@ -13,22 +13,22 @@ module Apiman {
             $scope.metricsRange = '7days';
             $scope.metricsType = 'usage';
 
-            var usageByServiceChart;
+            var usageByApiChart;
             
-            var renderServiceUsageChart = function(data) {
+            var renderApiUsageChart = function(data) {
                 var columns = [];
                 var x = ['x'];
                 var dataPoints = ['data'];
-                angular.forEach(data.data, function(numRequests, serviceName) {
-                    x.push(serviceName);
+                angular.forEach(data.data, function(numRequests, apiName) {
+                    x.push(apiName);
                     dataPoints.push(numRequests);
                 });
                 if (data.data.length == 0) {
-                    $scope.serviceUsageChartNoData = true;
+                    $scope.apiUsageChartNoData = true;
                 } else {
                     columns.push(x);
                     columns.push(dataPoints);
-                    usageByServiceChart = c3.generate({
+                    usageByApiChart = c3.generate({
                         size: {
                             height: 250
                         },
@@ -50,7 +50,7 @@ module Apiman {
                         legend: {
                             hide: true
                         },
-                        bindto: '#service-usage-chart'
+                        bindto: '#api-usage-chart'
                     });
                 }
             };
@@ -96,7 +96,7 @@ module Apiman {
             // Refresh the usage charts
             // *******************************************************
             var refreshUsageCharts = function() {
-                $scope.serviceUsageChartLoading = true;
+                $scope.apiUsageChartLoading = true;
                 
                 var range = getChartDateRange();
                 var from = range.from;
@@ -110,13 +110,13 @@ module Apiman {
                 }
                 
                 // Refresh the usage chart
-                if (usageByServiceChart) {
-                    usageByServiceChart.destroy();
-                    usageByServiceChart = null;
+                if (usageByApiChart) {
+                    usageByApiChart.destroy();
+                    usageByApiChart = null;
                 }
-                MetricsSvcs.getAppUsagePerService(params.org, params.app, params.version, from, to, function(data) {
-                    $scope.serviceUsageChartLoading = false;
-                    renderServiceUsageChart(data);
+                MetricsSvcs.getAppUsagePerApi(params.org, params.app, params.version, from, to, function(data) {
+                    $scope.apiUsageChartLoading = false;
+                    renderApiUsageChart(data);
                 }, function(error) {
                     Logger.error('Error loading usage chart data: {0}', JSON.stringify(error));
                     $scope.usageChartLoading = false;

@@ -1,0 +1,18 @@
+POST /organizations/Organization1/applications/Application1/versions/1.0/contracts admin/admin
+Content-Type: application/json
+
+{
+  "apiOrgId" : "Organization2",
+  "apiId" : "API2",
+  "apiVersion" : "2.0",
+  "planId" : "Plan1"
+}
+----
+409
+Content-Type: application/json
+
+{
+  "type": "InvalidApiStatusException",
+  "errorCode": 5004,
+  "message": "Could not complete action: API was in the wrong status."
+}

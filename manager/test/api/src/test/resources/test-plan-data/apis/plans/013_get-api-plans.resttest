@@ -1,0 +1,12 @@
+GET /organizations/Organization1/apis/API1/versions/1.0/plans admin/admin
+----
+200
+Content-Type: application/json
+
+[
+  { 
+    "planId" : "Plan2",
+    "planName" : "Plan 2",
+    "version" : "1.1"
+  }
+]

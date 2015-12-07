@@ -2,9 +2,9 @@ POST /organizations/Organization1/applications/Application1/versions/1.0/contrac
 Content-Type: application/json
 
 {
-  "serviceOrgId" : "Organization2",
-  "serviceId" : "Service2",
-  "serviceVersion" : "1.5",
+  "apiOrgId" : "Organization2",
+  "apiId" : "API2",
+  "apiVersion" : "1.5",
   "planId" : "PlanA"
 }
 ----
@@ -28,14 +28,14 @@ X-RestTest-BindTo-contract2Id: id
     "createdBy" : "admin"
   },
   
-  "service" : {
-    "service" : {
+  "api" : {
+    "api" : {
       "organization" : {
         "id" : "Organization2"
       },
-      "id" : "Service2",
-      "name" : "Service 2",
-      "description" : "This is the description of Service 2.",
+      "id" : "API2",
+      "name" : "API 2",
+      "description" : "This is the description of API 2.",
       "createdBy" : "admin"
     },
     "status" : "Published",

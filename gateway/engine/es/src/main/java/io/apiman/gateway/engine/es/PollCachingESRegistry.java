@@ -21,7 +21,7 @@ import java.util.Map;
 import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.Application;
-import io.apiman.gateway.engine.beans.Service;
+import io.apiman.gateway.engine.beans.Api;
 import io.apiman.gateway.engine.es.beans.DataVersionBean;
 import io.searchbox.client.JestResult;
 import io.searchbox.client.JestResultHandler;
@@ -62,11 +62,11 @@ public class PollCachingESRegistry extends CachingESRegistry {
     }
 
     /**
-     * @see io.apiman.gateway.engine.es.CachingESRegistry#publishService(io.apiman.gateway.engine.beans.Service, io.apiman.gateway.engine.async.IAsyncResultHandler)
+     * @see io.apiman.gateway.engine.es.CachingESRegistry#publishApi(io.apiman.gateway.engine.beans.Api, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
     @Override
-    public void publishService(Service service, final IAsyncResultHandler<Void> handler) {
-        super.publishService(service, new IAsyncResultHandler<Void>() {
+    public void publishApi(Api api, final IAsyncResultHandler<Void> handler) {
+        super.publishApi(api, new IAsyncResultHandler<Void>() {
             @Override
             public void handle(IAsyncResult<Void> result) {
                 if (result.isSuccess()) {
@@ -78,11 +78,11 @@ public class PollCachingESRegistry extends CachingESRegistry {
     }
 
     /**
-     * @see io.apiman.gateway.engine.es.CachingESRegistry#retireService(io.apiman.gateway.engine.beans.Service, io.apiman.gateway.engine.async.IAsyncResultHandler)
+     * @see io.apiman.gateway.engine.es.CachingESRegistry#retireApi(io.apiman.gateway.engine.beans.Api, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
     @Override
-    public void retireService(Service service, final IAsyncResultHandler<Void> handler) {
-        super.retireService(service, new IAsyncResultHandler<Void>() {
+    public void retireApi(Api api, final IAsyncResultHandler<Void> handler) {
+        super.retireApi(api, new IAsyncResultHandler<Void>() {
             @Override
             public void handle(IAsyncResult<Void> result) {
                 if (result.isSuccess()) {

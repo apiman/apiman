@@ -35,12 +35,12 @@ public class ContractSummaryBean implements Serializable {
     private String appId;
     private String appName;
     private String appVersion;
-    private String serviceOrganizationId;
-    private String serviceOrganizationName;
-    private String serviceId;
-    private String serviceName;
-    private String serviceVersion;
-    private String serviceDescription;
+    private String apiOrganizationId;
+    private String apiOrganizationName;
+    private String apiId;
+    private String apiName;
+    private String apiVersion;
+    private String apiDescription;
     private String planName;
     private String planId;
     private String planVersion;
@@ -109,59 +109,59 @@ public class ContractSummaryBean implements Serializable {
     }
 
     /**
-     * @return the serviceOrganizationId
+     * @return the apiOrganizationId
      */
-    public String getServiceOrganizationId() {
-        return serviceOrganizationId;
+    public String getApiOrganizationId() {
+        return apiOrganizationId;
     }
 
     /**
-     * @param serviceOrganizationId the serviceOrganizationId to set
+     * @param apiOrganizationId the apiOrganizationId to set
      */
-    public void setServiceOrganizationId(String serviceOrganizationId) {
-        this.serviceOrganizationId = serviceOrganizationId;
+    public void setApiOrganizationId(String apiOrganizationId) {
+        this.apiOrganizationId = apiOrganizationId;
     }
 
     /**
-     * @return the serviceOrganizationName
+     * @return the apiOrganizationName
      */
-    public String getServiceOrganizationName() {
-        return serviceOrganizationName;
+    public String getApiOrganizationName() {
+        return apiOrganizationName;
     }
 
     /**
-     * @param serviceOrganizationName the serviceOrganizationName to set
+     * @param apiOrganizationName the apiOrganizationName to set
      */
-    public void setServiceOrganizationName(String serviceOrganizationName) {
-        this.serviceOrganizationName = serviceOrganizationName;
+    public void setApiOrganizationName(String apiOrganizationName) {
+        this.apiOrganizationName = apiOrganizationName;
     }
 
     /**
-     * @return the serviceVersion
+     * @return the apiVersion
      */
-    public String getServiceVersion() {
-        return serviceVersion;
+    public String getApiVersion() {
+        return apiVersion;
     }
 
     /**
-     * @param serviceVersion the serviceVersion to set
+     * @param apiVersion the apiVersion to set
      */
-    public void setServiceVersion(String serviceVersion) {
-        this.serviceVersion = serviceVersion;
+    public void setApiVersion(String apiVersion) {
+        this.apiVersion = apiVersion;
     }
 
     /**
-     * @return the serviceDescription
+     * @return the apiDescription
      */
-    public String getServiceDescription() {
-        return serviceDescription;
+    public String getApiDescription() {
+        return apiDescription;
     }
 
     /**
-     * @param serviceDescription the serviceDescription to set
+     * @param apiDescription the apiDescription to set
      */
-    public void setServiceDescription(String serviceDescription) {
-        this.serviceDescription = serviceDescription;
+    public void setApiDescription(String apiDescription) {
+        this.apiDescription = apiDescription;
     }
 
     /**
@@ -249,31 +249,31 @@ public class ContractSummaryBean implements Serializable {
     }
 
     /**
-     * @return the serviceId
+     * @return the apiId
      */
-    public String getServiceId() {
-        return serviceId;
+    public String getApiId() {
+        return apiId;
     }
 
     /**
-     * @param serviceId the serviceId to set
+     * @param apiId the apiId to set
      */
-    public void setServiceId(String serviceId) {
-        this.serviceId = serviceId;
+    public void setApiId(String apiId) {
+        this.apiId = apiId;
     }
 
     /**
-     * @return the serviceName
+     * @return the apiName
      */
-    public String getServiceName() {
-        return serviceName;
+    public String getApiName() {
+        return apiName;
     }
 
     /**
-     * @param serviceName the serviceName to set
+     * @param apiName the apiName to set
      */
-    public void setServiceName(String serviceName) {
-        this.serviceName = serviceName;
+    public void setApiName(String apiName) {
+        this.apiName = apiName;
     }
 
     /**
@@ -330,9 +330,9 @@ public class ContractSummaryBean implements Serializable {
         return "ContractSummaryBean [contractId=" + contractId + ", apikey=" + apikey
                 + ", appOrganizationId=" + appOrganizationId + ", appOrganizationName=" + appOrganizationName
                 + ", appId=" + appId + ", appName=" + appName + ", appVersion=" + appVersion
-                + ", serviceOrganizationId=" + serviceOrganizationId + ", serviceOrganizationName="
-                + serviceOrganizationName + ", serviceId=" + serviceId + ", serviceName=" + serviceName
-                + ", serviceVersion=" + serviceVersion + ", serviceDescription=" + serviceDescription
+                + ", apiOrganizationId=" + apiOrganizationId + ", apiOrganizationName="
+                + apiOrganizationName + ", apiId=" + apiId + ", apiName=" + apiName
+                + ", apiVersion=" + apiVersion + ", apiDescription=" + apiDescription
                 + ", planName=" + planName + ", planId=" + planId + ", planVersion=" + planVersion
                 + ", createdOn=" + createdOn + "]";
     }

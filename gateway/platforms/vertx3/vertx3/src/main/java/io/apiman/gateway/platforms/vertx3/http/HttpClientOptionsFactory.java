@@ -41,19 +41,19 @@ public class HttpClientOptionsFactory {
     private static Map<TLSOptions, HttpClientOptions> configCache = new HashMap<>();
     private static Logger log = LoggerFactory.getLogger(HttpClientOptionsFactory.class);
 
-    public static HttpClientOptions parseOptions(TLSOptions tlsOptions, URL serviceEndpoint) {
+    public static HttpClientOptions parseOptions(TLSOptions tlsOptions, URL apiEndpoint) {
         if (configCache.containsKey(tlsOptions))
             return configCache.get(tlsOptions);
 
-        HttpClientOptions clientOptions = doParse(tlsOptions, serviceEndpoint);
+        HttpClientOptions clientOptions = doParse(tlsOptions, apiEndpoint);
         configCache.put(tlsOptions, clientOptions);
         return clientOptions;
     }
 
-    private static HttpClientOptions doParse(TLSOptions tlsOptions, URL serviceEndpoint) {
+    private static HttpClientOptions doParse(TLSOptions tlsOptions, URL apiEndpoint) {
         HttpClientOptions clientOptions = new HttpClientOptions();
 
-        if (serviceEndpoint.getProtocol().equals("http")) { //$NON-NLS-1$
+        if (apiEndpoint.getProtocol().equals("http")) { //$NON-NLS-1$
             return clientOptions.setSsl(false);
         } else {
             clientOptions.setSsl(true);

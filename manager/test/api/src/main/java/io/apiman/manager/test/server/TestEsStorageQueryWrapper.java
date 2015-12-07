@@ -24,7 +24,10 @@ import io.apiman.manager.api.beans.policies.PolicyType;
 import io.apiman.manager.api.beans.search.PagingBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaBean;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
+import io.apiman.manager.api.beans.summary.ApiPlanSummaryBean;
 import io.apiman.manager.api.beans.summary.ApiRegistryBean;
+import io.apiman.manager.api.beans.summary.ApiSummaryBean;
+import io.apiman.manager.api.beans.summary.ApiVersionSummaryBean;
 import io.apiman.manager.api.beans.summary.ApplicationSummaryBean;
 import io.apiman.manager.api.beans.summary.ApplicationVersionSummaryBean;
 import io.apiman.manager.api.beans.summary.ContractSummaryBean;
@@ -35,9 +38,6 @@ import io.apiman.manager.api.beans.summary.PlanVersionSummaryBean;
 import io.apiman.manager.api.beans.summary.PluginSummaryBean;
 import io.apiman.manager.api.beans.summary.PolicyDefinitionSummaryBean;
 import io.apiman.manager.api.beans.summary.PolicySummaryBean;
-import io.apiman.manager.api.beans.summary.ServicePlanSummaryBean;
-import io.apiman.manager.api.beans.summary.ServiceSummaryBean;
-import io.apiman.manager.api.beans.summary.ServiceVersionSummaryBean;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.searchbox.client.JestClient;
@@ -104,13 +104,13 @@ public class TestEsStorageQueryWrapper implements IStorageQuery {
     }
 
     /**
-     * @see io.apiman.manager.api.core.IStorageQuery#findServices(io.apiman.manager.api.beans.search.SearchCriteriaBean)
+     * @see io.apiman.manager.api.core.IStorageQuery#findApis(io.apiman.manager.api.beans.search.SearchCriteriaBean)
      */
     @Override
-    public SearchResultsBean<ServiceSummaryBean> findServices(SearchCriteriaBean criteria)
+    public SearchResultsBean<ApiSummaryBean> findApis(SearchCriteriaBean criteria)
             throws StorageException {
         refresh();
-        return this.delegate.findServices(criteria);
+        return this.delegate.findApis(criteria);
     }
 
     /**
@@ -201,41 +201,41 @@ public class TestEsStorageQueryWrapper implements IStorageQuery {
     }
 
     /**
-     * @see io.apiman.manager.api.core.IStorageQuery#getServicesInOrgs(java.util.Set)
+     * @see io.apiman.manager.api.core.IStorageQuery#getApisInOrgs(java.util.Set)
      */
     @Override
-    public List<ServiceSummaryBean> getServicesInOrgs(Set<String> orgIds) throws StorageException {
+    public List<ApiSummaryBean> getApisInOrgs(Set<String> orgIds) throws StorageException {
         refresh();
-        return this.delegate.getServicesInOrgs(orgIds);
+        return this.delegate.getApisInOrgs(orgIds);
     }
 
     /**
-     * @see io.apiman.manager.api.core.IStorageQuery#getServicesInOrg(java.lang.String)
+     * @see io.apiman.manager.api.core.IStorageQuery#getApisInOrg(java.lang.String)
      */
     @Override
-    public List<ServiceSummaryBean> getServicesInOrg(String orgId) throws StorageException {
+    public List<ApiSummaryBean> getApisInOrg(String orgId) throws StorageException {
         refresh();
-        return this.delegate.getServicesInOrg(orgId);
+        return this.delegate.getApisInOrg(orgId);
     }
 
     /**
-     * @see io.apiman.manager.api.core.IStorageQuery#getServiceVersions(java.lang.String, java.lang.String)
+     * @see io.apiman.manager.api.core.IStorageQuery#getApiVersions(java.lang.String, java.lang.String)
      */
     @Override
-    public List<ServiceVersionSummaryBean> getServiceVersions(String orgId, String serviceId)
+    public List<ApiVersionSummaryBean> getApiVersions(String orgId, String apiId)
             throws StorageException {
         refresh();
-        return this.delegate.getServiceVersions(orgId, serviceId);
+        return this.delegate.getApiVersions(orgId, apiId);
     }
 
     /**
-     * @see io.apiman.manager.api.core.IStorageQuery#getServiceVersionPlans(java.lang.String, java.lang.String, java.lang.String)
+     * @see io.apiman.manager.api.core.IStorageQuery#getApiVersionPlans(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
-    public List<ServicePlanSummaryBean> getServiceVersionPlans(String organizationId, String serviceId,
+    public List<ApiPlanSummaryBean> getApiVersionPlans(String organizationId, String apiId,
             String version) throws StorageException {
         refresh();
-        return this.delegate.getServiceVersionPlans(organizationId, serviceId, version);
+        return this.delegate.getApiVersionPlans(organizationId, apiId, version);
     }
 
     /**
@@ -286,13 +286,13 @@ public class TestEsStorageQueryWrapper implements IStorageQuery {
     }
 
     /**
-     * @see io.apiman.manager.api.core.IStorageQuery#getServiceContracts(java.lang.String, java.lang.String, java.lang.String, int, int)
+     * @see io.apiman.manager.api.core.IStorageQuery#getContracts(java.lang.String, java.lang.String, java.lang.String, int, int)
      */
     @Override
-    public List<ContractSummaryBean> getServiceContracts(String organizationId, String serviceId,
+    public List<ContractSummaryBean> getContracts(String organizationId, String apiId,
             String version, int page, int pageSize) throws StorageException {
         refresh();
-        return this.delegate.getServiceContracts(organizationId, serviceId, version, page, pageSize);
+        return this.delegate.getContracts(organizationId, apiId, version, page, pageSize);
     }
 
     /**

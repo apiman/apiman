@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+  </head>
+
+  <body>
+  <div>
+    
+    <div ng-include="headerInclude"></div>
+    <div ng-controller="Apiman.ApiActivityController" class="page container" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
+      <div ng-include="'plugins/api-manager/html/api/api_bc.include'"></div>
+      <!-- Entity Summary Row -->
+      <div ng-include="'plugins/api-manager/html/api/api_entity.include'"></div>
+
+      <!-- Navigation + Content Row -->
+      <div class="row">
+        <!-- Left hand nav -->
+        <div ng-include="'plugins/api-manager/html/api/api_tabs.include'"></div>
+        <!-- /Left hand nav -->
+
+        <!-- Content -->
+        <div class="col-md-10 apiman-entity-content">
+          <!-- Title and help text -->
+          <div class="title" apiman-i18n-key="api-activity">API Activity</div>
+          <div class="description" apiman-i18n-key="api-activity-help">The list below is all of the activity (configuration changes made by apiman users) associated with this API.</div>
+          <hr />
+          <apiman-activity model="auditEntries" next="getNextPage"/> 
+        </div>
+        <!-- /Content -->
+      </div>
+    </div> <!-- /container -->
+  </div>
+  </body>
+</html>

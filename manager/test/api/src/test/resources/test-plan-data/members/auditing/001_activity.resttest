@@ -11,7 +11,7 @@ Content-Type: application/json
         "what" : "Revoke",
         "who" : "admin"
       },
-      { "data" : "{\"userId\":\"user2\",\"roles\":[\"ServiceDeveloper\"]}",
+      { "data" : "{\"userId\":\"user2\",\"roles\":[\"APIDeveloper\"]}",
         "entityId" : null,
         "entityType" : "Organization",
         "entityVersion" : null,
@@ -19,7 +19,7 @@ Content-Type: application/json
         "what" : "Revoke",
         "who" : "admin"
       },
-      { "data" : "{\"userId\":\"user2\",\"roles\":[\"ServiceDeveloper\"]}",
+      { "data" : "{\"userId\":\"user2\",\"roles\":[\"APIDeveloper\"]}",
         "entityId" : null,
         "entityType" : "Organization",
         "entityVersion" : null,
@@ -27,7 +27,7 @@ Content-Type: application/json
         "what" : "Grant",
         "who" : "admin"
       },
-      { "data" : "{\"userId\":\"user1\",\"roles\":[\"ServiceDeveloper\"]}",
+      { "data" : "{\"userId\":\"user1\",\"roles\":[\"APIDeveloper\"]}",
         "entityId" : null,
         "entityType" : "Organization",
         "entityVersion" : null,

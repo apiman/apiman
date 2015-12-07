@@ -15,14 +15,14 @@
  */
 package io.apiman.gateway.engine.policies.caching;
 
-import io.apiman.gateway.engine.IServiceConnection;
-import io.apiman.gateway.engine.IServiceConnectionResponse;
-import io.apiman.gateway.engine.IServiceConnector;
+import io.apiman.gateway.engine.IApiConnection;
+import io.apiman.gateway.engine.IApiConnectionResponse;
+import io.apiman.gateway.engine.IApiConnector;
 import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncHandler;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
-import io.apiman.gateway.engine.beans.ServiceRequest;
-import io.apiman.gateway.engine.beans.ServiceResponse;
+import io.apiman.gateway.engine.beans.ApiRequest;
+import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.engine.beans.exceptions.ConnectorException;
 import io.apiman.gateway.engine.io.IApimanBuffer;
 import io.apiman.gateway.engine.io.ISignalReadStream;
@@ -35,11 +35,11 @@ import io.apiman.gateway.engine.policy.IConnectorInterceptor;
  *
  * @author eric.wittmann@redhat.com
  */
-public class CacheConnectorInterceptor implements IConnectorInterceptor, IServiceConnector,
-        IServiceConnection, IServiceConnectionResponse {
+public class CacheConnectorInterceptor implements IConnectorInterceptor, IApiConnector,
+        IApiConnection, IApiConnectionResponse {
 
-    private ISignalReadStream<ServiceResponse> cacheEntry;
-    private IAsyncResultHandler<IServiceConnectionResponse> handler;
+    private ISignalReadStream<ApiResponse> cacheEntry;
+    private IAsyncResultHandler<IApiConnectionResponse> handler;
     private boolean finished = false;
     private boolean connected = false;
 
@@ -47,7 +47,7 @@ public class CacheConnectorInterceptor implements IConnectorInterceptor, IServic
      * Constructor.
      * @param cacheEntry
      */
-    public CacheConnectorInterceptor(ISignalReadStream<ServiceResponse> cacheEntry) {
+    public CacheConnectorInterceptor(ISignalReadStream<ApiResponse> cacheEntry) {
         this.cacheEntry = cacheEntry;
     }
 
@@ -55,16 +55,16 @@ public class CacheConnectorInterceptor implements IConnectorInterceptor, IServic
      * @see io.apiman.gateway.engine.policy.IConnectorInterceptor#createConnector()
      */
     @Override
-    public IServiceConnector createConnector() {
+    public IApiConnector createConnector() {
         return this;
     }
 
     /**
-     * @see io.apiman.gateway.engine.IServiceConnector#connect(io.apiman.gateway.engine.beans.ServiceRequest, io.apiman.gateway.engine.async.IAsyncResultHandler)
+     * @see io.apiman.gateway.engine.IApiConnector#connect(io.apiman.gateway.engine.beans.ApiRequest, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
     @Override
-    public IServiceConnection connect(ServiceRequest request,
-            IAsyncResultHandler<IServiceConnectionResponse> handler) throws ConnectorException {
+    public IApiConnection connect(ApiRequest request,
+            IAsyncResultHandler<IApiConnectionResponse> handler) throws ConnectorException {
         this.handler = handler;
         this.connected = true;
         return this;
@@ -83,9 +83,9 @@ public class CacheConnectorInterceptor implements IConnectorInterceptor, IServic
      */
     @Override
     public void end() {
-        // Called when the upload to the 'service' is complete.  This is when we
+        // Called when the upload to the 'API' is complete.  This is when we
         // need to response with the connection response.
-        handler.handle(AsyncResultImpl.<IServiceConnectionResponse>create(this));
+        handler.handle(AsyncResultImpl.<IApiConnectionResponse>create(this));
     }
 
     /**
@@ -109,7 +109,7 @@ public class CacheConnectorInterceptor implements IConnectorInterceptor, IServic
     }
 
     /**
-     * @see io.apiman.gateway.engine.IServiceConnection#isConnected()
+     * @see io.apiman.gateway.engine.IApiConnection#isConnected()
      */
     @Override
     public boolean isConnected() {
@@ -151,7 +151,7 @@ public class CacheConnectorInterceptor implements IConnectorInterceptor, IServic
      * @see io.apiman.gateway.engine.io.IReadStream#getHead()
      */
     @Override
-    public ServiceResponse getHead() {
+    public ApiResponse getHead() {
         return cacheEntry.getHead();
     }
 

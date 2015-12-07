@@ -27,7 +27,7 @@ import io.apiman.manager.api.beans.search.SearchCriteriaBean;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
 import io.apiman.manager.api.beans.summary.ApplicationSummaryBean;
 import io.apiman.manager.api.beans.summary.OrganizationSummaryBean;
-import io.apiman.manager.api.beans.summary.ServiceSummaryBean;
+import io.apiman.manager.api.beans.summary.ApiSummaryBean;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.StorageException;
@@ -164,19 +164,19 @@ public class UserResourceImpl implements IUserResource {
     }
     
     /**
-     * @see io.apiman.manager.api.rest.contract.IUserResource#getServices(java.lang.String)
+     * @see io.apiman.manager.api.rest.contract.IUserResource#getApis(java.lang.String)
      */
     @Override
-    public List<ServiceSummaryBean> getServices(String userId) {
+    public List<ApiSummaryBean> getApis(String userId) {
         Set<String> permittedOrganizations = new HashSet<>();
         try {
             Set<PermissionBean> permissions = query.getPermissions(userId);
             for (PermissionBean permission : permissions) {
-                if (permission.getName() == PermissionType.svcView) {
+                if (permission.getName() == PermissionType.apiView) {
                     permittedOrganizations.add(permission.getOrganizationId());
                 }
             }
-            return query.getServicesInOrgs(permittedOrganizations);
+            return query.getApisInOrgs(permittedOrganizations);
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }

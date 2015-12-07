@@ -1,5 +1,5 @@
 /// <reference path="../apimanPlugin.ts"/>
-/// <reference path="../services.ts"/>
+/// <reference path="../rpc.ts"/>
 module Apiman {
 
     export var EditGatewayController = _module.controller("Apiman.EditGatewayController",
@@ -96,7 +96,7 @@ module Apiman {
             
             $scope.deleteGateway  = function() {
                 $scope.deleteButton.state = 'in-progress';
-                Dialogs.confirm('Confirm Delete Gateway', 'Do you really want to permanently delete this gateway?  This can be very destructive to any Service published to it.', function() {
+                Dialogs.confirm('Confirm Delete Gateway', 'Do you really want to permanently delete this gateway?  This can be very destructive to any API published to it.', function() {
                     ApimanSvcs.delete({ entityType: 'gateways', secondaryType: $scope.gateway.id }, function(reply) {
                         PageLifecycle.redirectTo('/admin/gateways');
                     }, PageLifecycle.handleError);

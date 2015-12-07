@@ -15,6 +15,8 @@
  */
 package io.apiman.manager.test.server;
 
+import io.apiman.manager.api.beans.apis.ApiBean;
+import io.apiman.manager.api.beans.apis.ApiVersionBean;
 import io.apiman.manager.api.beans.apps.ApplicationBean;
 import io.apiman.manager.api.beans.apps.ApplicationVersionBean;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
@@ -31,8 +33,6 @@ import io.apiman.manager.api.beans.plugins.PluginBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
 import io.apiman.manager.api.beans.policies.PolicyType;
-import io.apiman.manager.api.beans.services.ServiceBean;
-import io.apiman.manager.api.beans.services.ServiceVersionBean;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.searchbox.client.JestClient;
@@ -124,20 +124,20 @@ public class TestEsStorageWrapper implements IStorage {
     }
 
     /**
-     * @see io.apiman.manager.api.core.IStorage#createService(io.apiman.manager.api.beans.services.ServiceBean)
+     * @see io.apiman.manager.api.core.IStorage#createApi(io.apiman.manager.api.beans.apis.ApiBean)
      */
     @Override
-    public void createService(ServiceBean service) throws StorageException {
-        this.delegate.createService(service);
+    public void createApi(ApiBean api) throws StorageException {
+        this.delegate.createApi(api);
 
     }
 
     /**
-     * @see io.apiman.manager.api.core.IStorage#createServiceVersion(io.apiman.manager.api.beans.services.ServiceVersionBean)
+     * @see io.apiman.manager.api.core.IStorage#createApiVersion(io.apiman.manager.api.beans.apis.ApiVersionBean)
      */
     @Override
-    public void createServiceVersion(ServiceVersionBean version) throws StorageException {
-        this.delegate.createServiceVersion(version);
+    public void createApiVersion(ApiVersionBean version) throws StorageException {
+        this.delegate.createApiVersion(version);
 
     }
 
@@ -232,20 +232,20 @@ public class TestEsStorageWrapper implements IStorage {
     }
 
     /**
-     * @see io.apiman.manager.api.core.IStorage#updateService(io.apiman.manager.api.beans.services.ServiceBean)
+     * @see io.apiman.manager.api.core.IStorage#updateApi(io.apiman.manager.api.beans.apis.ApiBean)
      */
     @Override
-    public void updateService(ServiceBean service) throws StorageException {
-        this.delegate.updateService(service);
+    public void updateApi(ApiBean api) throws StorageException {
+        this.delegate.updateApi(api);
 
     }
 
     /**
-     * @see io.apiman.manager.api.core.IStorage#updateServiceVersion(io.apiman.manager.api.beans.services.ServiceVersionBean)
+     * @see io.apiman.manager.api.core.IStorage#updateApiVersion(io.apiman.manager.api.beans.apis.ApiVersionBean)
      */
     @Override
-    public void updateServiceVersion(ServiceVersionBean version) throws StorageException {
-        this.delegate.updateServiceVersion(version);
+    public void updateApiVersion(ApiVersionBean version) throws StorageException {
+        this.delegate.updateApiVersion(version);
 
     }
 
@@ -331,20 +331,20 @@ public class TestEsStorageWrapper implements IStorage {
     }
 
     /**
-     * @see io.apiman.manager.api.core.IStorage#deleteService(io.apiman.manager.api.beans.services.ServiceBean)
+     * @see io.apiman.manager.api.core.IStorage#deleteApi(io.apiman.manager.api.beans.apis.ApiBean)
      */
     @Override
-    public void deleteService(ServiceBean service) throws StorageException {
-        this.delegate.deleteService(service);
+    public void deleteApi(ApiBean api) throws StorageException {
+        this.delegate.deleteApi(api);
 
     }
 
     /**
-     * @see io.apiman.manager.api.core.IStorage#deleteServiceVersion(io.apiman.manager.api.beans.services.ServiceVersionBean)
+     * @see io.apiman.manager.api.core.IStorage#deleteApiVersion(io.apiman.manager.api.beans.apis.ApiVersionBean)
      */
     @Override
-    public void deleteServiceVersion(ServiceVersionBean version) throws StorageException {
-        this.delegate.deleteServiceVersion(version);
+    public void deleteApiVersion(ApiVersionBean version) throws StorageException {
+        this.delegate.deleteApiVersion(version);
 
     }
 
@@ -436,20 +436,20 @@ public class TestEsStorageWrapper implements IStorage {
     }
 
     /**
-     * @see io.apiman.manager.api.core.IStorage#getService(java.lang.String, java.lang.String)
+     * @see io.apiman.manager.api.core.IStorage#getApi(java.lang.String, java.lang.String)
      */
     @Override
-    public ServiceBean getService(String organizationId, String id) throws StorageException {
-        return this.delegate.getService(organizationId, id);
+    public ApiBean getApi(String organizationId, String id) throws StorageException {
+        return this.delegate.getApi(organizationId, id);
     }
 
     /**
-     * @see io.apiman.manager.api.core.IStorage#getServiceVersion(java.lang.String, java.lang.String, java.lang.String)
+     * @see io.apiman.manager.api.core.IStorage#getApiVersion(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
-    public ServiceVersionBean getServiceVersion(String organizationId, String serviceId, String version)
+    public ApiVersionBean getApiVersion(String organizationId, String apiId, String version)
             throws StorageException {
-        return this.delegate.getServiceVersion(organizationId, serviceId, version);
+        return this.delegate.getApiVersion(organizationId, apiId, version);
     }
 
     /**
@@ -521,28 +521,28 @@ public class TestEsStorageWrapper implements IStorage {
     }
 
     /**
-     * @see io.apiman.manager.api.core.IStorage#deleteServiceDefinition(io.apiman.manager.api.beans.services.ServiceVersionBean)
+     * @see io.apiman.manager.api.core.IStorage#deleteApiDefinition(io.apiman.manager.api.beans.apis.ApiVersionBean)
      */
     @Override
-    public void deleteServiceDefinition(ServiceVersionBean version) throws StorageException {
-        delegate.deleteServiceDefinition(version);
+    public void deleteApiDefinition(ApiVersionBean version) throws StorageException {
+        delegate.deleteApiDefinition(version);
     }
 
     /**
-     * @see io.apiman.manager.api.core.IStorage#getServiceDefinition(io.apiman.manager.api.beans.services.ServiceVersionBean)
+     * @see io.apiman.manager.api.core.IStorage#getApiDefinition(io.apiman.manager.api.beans.apis.ApiVersionBean)
      */
     @Override
-    public InputStream getServiceDefinition(ServiceVersionBean serviceVersion) throws StorageException {
-        return delegate.getServiceDefinition(serviceVersion);
+    public InputStream getApiDefinition(ApiVersionBean apiVersion) throws StorageException {
+        return delegate.getApiDefinition(apiVersion);
     }
 
     /**
-     * @see io.apiman.manager.api.core.IStorage#updateServiceDefinition(io.apiman.manager.api.beans.services.ServiceVersionBean, java.io.InputStream)
+     * @see io.apiman.manager.api.core.IStorage#updateApiDefinition(io.apiman.manager.api.beans.apis.ApiVersionBean, java.io.InputStream)
      */
     @Override
-    public void updateServiceDefinition(ServiceVersionBean version, InputStream definitionStream)
+    public void updateApiDefinition(ApiVersionBean version, InputStream definitionStream)
             throws StorageException {
-        delegate.updateServiceDefinition(version, definitionStream);
+        delegate.updateApiDefinition(version, definitionStream);
     }
 
     /**
@@ -676,7 +676,7 @@ public class TestEsStorageWrapper implements IStorage {
     public Iterator<RoleBean> getAllRoles() throws StorageException {
         return this.delegate.getAllRoles();
     }
-    
+
     /**
      * @see io.apiman.manager.api.core.IStorage#getAllPolicyDefinitions()
      */
@@ -703,20 +703,20 @@ public class TestEsStorageWrapper implements IStorage {
     }
 
     /**
-     * @see io.apiman.manager.api.core.IStorage#getAllServices(java.lang.String)
+     * @see io.apiman.manager.api.core.IStorage#getAllApis(java.lang.String)
      */
     @Override
-    public Iterator<ServiceBean> getAllServices(String organizationId) throws StorageException {
-        return delegate.getAllServices(organizationId);
+    public Iterator<ApiBean> getAllApis(String organizationId) throws StorageException {
+        return delegate.getAllApis(organizationId);
     }
 
     /**
-     * @see io.apiman.manager.api.core.IStorage#getAllServiceVersions(java.lang.String, java.lang.String)
+     * @see io.apiman.manager.api.core.IStorage#getAllApiVersions(java.lang.String, java.lang.String)
      */
     @Override
-    public Iterator<ServiceVersionBean> getAllServiceVersions(String organizationId, String serviceId)
+    public Iterator<ApiVersionBean> getAllApiVersions(String organizationId, String apiId)
             throws StorageException {
-        return delegate.getAllServiceVersions(organizationId, serviceId);
+        return delegate.getAllApiVersions(organizationId, apiId);
     }
 
     /**
@@ -753,7 +753,7 @@ public class TestEsStorageWrapper implements IStorage {
             PolicyType type) throws StorageException {
         return delegate.getAllPolicies(organizationId, entityId, version, type);
     }
-    
+
     /**
      * @see io.apiman.manager.api.core.IStorage#createDownload(io.apiman.manager.api.beans.download.DownloadBean)
      */
@@ -761,7 +761,7 @@ public class TestEsStorageWrapper implements IStorage {
     public void createDownload(DownloadBean download) throws StorageException {
         delegate.createDownload(download);
     }
-    
+
     /**
      * @see io.apiman.manager.api.core.IStorage#deleteDownload(io.apiman.manager.api.beans.download.DownloadBean)
      */
@@ -769,7 +769,7 @@ public class TestEsStorageWrapper implements IStorage {
     public void deleteDownload(DownloadBean download) throws StorageException {
         delegate.deleteDownload(download);
     }
-    
+
     /**
      * @see io.apiman.manager.api.core.IStorage#getDownload(java.lang.String)
      */

@@ -1,0 +1,224 @@
+/// <reference path="../apimanPlugin.ts"/>
+/// <reference path="../rpc.ts"/>
+module Apiman {
+
+ export var ApiImplController = _module.controller("Apiman.ApiImplController",
+        ['$q', '$rootScope', '$scope', '$location', 'PageLifecycle', 'ApiEntityLoader', 'OrgSvcs', 'ApimanSvcs', '$routeParams', 'EntityStatusSvc', 'Logger', 'Configuration',
+        ($q, $rootScope, $scope, $location, PageLifecycle, ApiEntityLoader, OrgSvcs, ApimanSvcs, $routeParams, EntityStatusSvc, Logger, Configuration) => {
+            var params = $routeParams;
+
+            $scope.organizationId = params.org;
+            $scope.tab = 'impl';
+            $scope.version = params.version;
+            $scope.typeOptions = ["rest", "soap"];
+            $scope.contentTypeOptions = ["json", "xml"];
+            $scope.updatedApi = new Object();
+            $scope.apiSecurity = new Object();
+            $scope.showMetrics = Configuration.ui.metrics;
+
+            var pageData = ApiEntityLoader.getCommonData($scope, $location);
+
+            if (params.version != null) {
+                pageData = angular.extend(pageData, {
+                    gateways: $q(function(resolve, reject) {
+                        ApimanSvcs.query({ entityType: 'gateways' }, resolve, reject);
+                    })
+                });
+            }
+
+            $scope.isEntityDisabled = EntityStatusSvc.isEntityDisabled;
+            
+            var epValue = function(endpointProperties, key) {
+                if (endpointProperties && endpointProperties[key]) {
+                    return endpointProperties[key];
+                } else {
+                    return null;
+                }
+            };
+            
+            var toApiSecurity = function(version) {
+                var rval:any = {};
+                rval.type = version.endpointProperties['authorization.type'];
+                if (!rval.type) {
+                    rval.type = 'none';
+                }
+                if (rval.type == 'mssl') {
+                    rval.type = 'mtls';
+                }
+                if (rval.type == 'basic') {
+                    rval.basic = {
+                        username: epValue(version.endpointProperties, 'basic-auth.username'),
+                        password: epValue(version.endpointProperties, 'basic-auth.password'),
+                        confirmPassword: epValue(version.endpointProperties, 'basic-auth.password'),
+                        requireSSL: 'true' === epValue(version.endpointProperties, 'basic-auth.requireSSL')
+                    };
+                }
+                return rval;
+            };
+            
+            var toEndpointProperties = function(apiSecurity) {
+                var rval:any = {};
+                if (apiSecurity.type == 'none') {
+                    return rval;
+                }
+                rval['authorization.type'] = apiSecurity.type;
+                if (apiSecurity.type == 'basic' && apiSecurity.basic) {
+                    rval['basic-auth.username'] = apiSecurity.basic.username;
+                    rval['basic-auth.password'] = apiSecurity.basic.password;
+                    if (apiSecurity.basic.requireSSL) {
+                        rval['basic-auth.requireSSL'] = 'true';
+                    } else {
+                        rval['basic-auth.requireSSL'] = 'false';
+                    }
+                }
+                return rval;
+            };
+            
+            var checkValid = function() {
+                var valid = true;
+                if (!$scope.updatedApi.endpointType) {
+                    valid = false;
+                }
+                if ($scope.apiSecurity.type == 'basic' && $scope.apiSecurity.basic) {
+                    if (!$scope.apiSecurity.basic.password) {
+                        valid = false;
+                    }
+                    if ($scope.apiSecurity.basic.password != $scope.apiSecurity.basic.confirmPassword) {
+                        valid = false;
+                    }
+                } else if ($scope.apiSecurity.type == 'basic' && !$scope.apiSecurity.basic) {
+                    valid = false;
+                }
+                $scope.isValid = valid;
+            };
+
+            $scope.$watch('updatedApi', function(newValue) {
+                if ($scope.version) {
+                    var dirty = false;
+                    
+                    if (newValue.endpoint != $scope.version.endpoint) {
+                        dirty = true;
+                    }
+                    if (newValue.endpointType != $scope.version.endpointType) {
+                        dirty = true;
+                    }
+                    if (newValue.endpointContentType != $scope.version.endpointContentType) {
+                        dirty = true;
+                    }
+                    
+                    if (newValue.gateways && newValue.gateways.length > 0) {
+                        dirty = true;
+                    }
+                    if ($scope.version.endpointProperties && newValue.endpointProperties) {
+                        if (!angular.equals($scope.version.endpointProperties, newValue.endpointProperties)) {
+                            Logger.debug('Dirty due to EP:');
+                            Logger.debug('    $scope.version:    {0}', $scope.version);
+                            Logger.debug('    $scope.version.EP: {0}', $scope.version.endpointProperties);
+                            Logger.debug('    newValue.EP:       {0}', newValue.endpointProperties);
+                            dirty = true;
+                        }
+                    }
+                    
+                    checkValid();
+                    
+                    $rootScope.isDirty = dirty;
+                }
+            }, true);
+            
+            $scope.$watch('apiSecurity', function(newValue) {
+                if (newValue) {
+                    $scope.updatedApi.endpointProperties = toEndpointProperties(newValue);
+                    checkValid();
+                }
+            }, true);
+
+            $scope.$watch('selectedGateway', function(newValue) {
+                if (newValue) {
+                    var alreadySet = false;
+                    if ($scope.version.gateways && $scope.version.gateways.length > 0 && $scope.version.gateways[0].gatewayId == newValue.id) {
+                        alreadySet = true;
+                    }
+                    if (!alreadySet) {
+                        $scope.updatedApi.gateways = [ { gatewayId: newValue.id } ];
+                    } else {
+                        delete $scope.updatedApi.gateways;
+                    }
+                }
+            });
+
+            $scope.reset = function() {
+                if (!$scope.version.endpointType) {
+                  $scope.version.endpointType = 'rest';
+                }
+                if (!$scope.version.endpointContentType) {
+                    $scope.version.endpointContentType = 'json';
+                  }
+                $scope.apiSecurity = toApiSecurity($scope.version);
+                $scope.updatedApi.endpoint = $scope.version.endpoint;
+                $scope.updatedApi.endpointType = $scope.version.endpointType;
+                $scope.updatedApi.endpointContentType = $scope.version.endpointContentType;
+                $scope.updatedApi.endpointProperties = angular.copy($scope.version.endpointProperties);
+                delete $scope.updatedApi.gateways;
+                if ($scope.version.gateways && $scope.version.gateways.length > 0) {
+                    angular.forEach($scope.gateways, function(gateway) {
+                        // TODO support multiple gateway assignments here
+                        if (gateway.id == $scope.version.gateways[0].gatewayId) {
+                            $scope.selectedGateway = gateway;
+                        }
+                    });
+                }
+                $rootScope.isDirty = false;
+            };
+
+            $scope.saveApi = function() {
+                $scope.invalidEndpoint = false;
+                $scope.saveButton.state = 'in-progress';
+                
+                OrgSvcs.update({ organizationId: params.org, entityType: 'apis', entityId:params.api, versionsOrActivity: 'versions', version: params.version }, $scope.updatedApi, function(reply) {
+                    $rootScope.isDirty = false;
+                    $scope.autoGateway = false;
+                    $scope.saveButton.state = 'complete';
+                    $scope.version = reply;
+                    EntityStatusSvc.setEntityStatus(reply.status);
+                }, PageLifecycle.handleError);
+            };
+
+
+            // Endpoint Validation
+            $scope.invalidEndpoint = false;
+
+            $scope.validateEndpoint = function() {
+                var first7 = $scope.updatedApi.endpoint.substring(0, 7);
+                var first8 = $scope.updatedApi.endpoint.substring(0, 8);
+
+                var re = new RegExp('^(http|https):\/\/', 'i');
+
+                // Test first 7 letters for http:// first
+                if(re.test(first7) === true) {
+                    $scope.saveApi();
+                } else {
+                    // If it fails, test first 8 letters for https:// next
+                    if(re.test(first8) === true) {
+                        $scope.saveApi();
+                    } else {
+                        console.log('Invalid input.');
+                        $scope.invalidEndpoint = true;
+                    }
+                }
+            };
+
+            PageLifecycle.loadPage('ApiImpl', 'apiView', pageData, $scope, function() {
+                $scope.reset();
+                PageLifecycle.setPageTitle('api-impl', [ $scope.api.name ]);
+                
+                // Automatically set the selected gateway if there's only one and the 
+                // gateway is not already set.
+                if (!$scope.version.gateways || $scope.version.gateways.length == 0) {
+                    if ($scope.gateways && $scope.gateways.length == 1) {
+                        $scope.selectedGateway = $scope.gateways[0];
+                        $scope.autoGateway = true;
+                    }
+                }
+            });
+        }]);
+}

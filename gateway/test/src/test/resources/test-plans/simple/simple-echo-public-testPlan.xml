@@ -2,8 +2,8 @@
 <testPlan xmlns="urn:io.apiman.test:2014:02:testPlan">
 
   <testGroup name="Configure the Gateway" endpoint="api">
-    <test name="Publish Service">test-plan-data/simple/simple-echo-public/setup/001-publish-service.resttest</test>
-    <test name="Publish Service (public)">test-plan-data/simple/simple-echo-public/setup/002-publish-service-public.resttest</test>
+    <test name="Publish Api">test-plan-data/simple/simple-echo-public/setup/001-publish-api.resttest</test>
+    <test name="Publish Api (public)">test-plan-data/simple/simple-echo-public/setup/002-publish-api-public.resttest</test>
   </testGroup>
 
   <testGroup name="Test the Echo Server through the Gateway">

@@ -3,7 +3,7 @@ Content-Type: application/json
 
 {
   "name" : "Gold",
-  "description" : "The Gold plan allows users the highest level of service."
+  "description" : "The Gold plan allows users the highest level of API."
 }
 ----
 200
@@ -15,5 +15,5 @@ Content-Type: application/json
   },
   "name" : "Gold",
   "id" : "Gold",
-  "description" : "The Gold plan allows users the highest level of service."
+  "description" : "The Gold plan allows users the highest level of API."
 }

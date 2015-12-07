@@ -15,6 +15,8 @@
  */
 package io.apiman.manager.api.core;
 
+import io.apiman.manager.api.beans.apis.ApiBean;
+import io.apiman.manager.api.beans.apis.ApiVersionBean;
 import io.apiman.manager.api.beans.apps.ApplicationBean;
 import io.apiman.manager.api.beans.apps.ApplicationVersionBean;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
@@ -31,8 +33,6 @@ import io.apiman.manager.api.beans.plugins.PluginBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
 import io.apiman.manager.api.beans.policies.PolicyType;
-import io.apiman.manager.api.beans.services.ServiceBean;
-import io.apiman.manager.api.beans.services.ServiceVersionBean;
 import io.apiman.manager.api.core.exceptions.StorageException;
 
 import java.io.InputStream;
@@ -62,8 +62,8 @@ public interface IStorage {
     public void createApplication(ApplicationBean application) throws StorageException;
     public void createApplicationVersion(ApplicationVersionBean version) throws StorageException;
     public void createContract(ContractBean contract) throws StorageException;
-    public void createService(ServiceBean service) throws StorageException;
-    public void createServiceVersion(ServiceVersionBean version) throws StorageException;
+    public void createApi(ApiBean api) throws StorageException;
+    public void createApiVersion(ApiVersionBean version) throws StorageException;
     public void createPlan(PlanBean plan) throws StorageException;
     public void createPlanVersion(PlanVersionBean version) throws StorageException;
     public void createPolicy(PolicyBean policy) throws StorageException;
@@ -80,9 +80,9 @@ public interface IStorage {
     public void updateOrganization(OrganizationBean organization) throws StorageException;
     public void updateApplication(ApplicationBean application) throws StorageException;
     public void updateApplicationVersion(ApplicationVersionBean version) throws StorageException;
-    public void updateService(ServiceBean service) throws StorageException;
-    public void updateServiceVersion(ServiceVersionBean version) throws StorageException;
-    public void updateServiceDefinition(ServiceVersionBean version, InputStream definitionStream) throws StorageException;
+    public void updateApi(ApiBean api) throws StorageException;
+    public void updateApiVersion(ApiVersionBean version) throws StorageException;
+    public void updateApiDefinition(ApiVersionBean version, InputStream definitionStream) throws StorageException;
     public void updatePlan(PlanBean plan) throws StorageException;
     public void updatePlanVersion(PlanVersionBean version) throws StorageException;
     public void updatePolicy(PolicyBean policy) throws StorageException;
@@ -98,9 +98,9 @@ public interface IStorage {
     public void deleteApplication(ApplicationBean application) throws StorageException;
     public void deleteApplicationVersion(ApplicationVersionBean version) throws StorageException;
     public void deleteContract(ContractBean contract) throws StorageException;
-    public void deleteService(ServiceBean service) throws StorageException;
-    public void deleteServiceVersion(ServiceVersionBean version) throws StorageException;
-    public void deleteServiceDefinition(ServiceVersionBean version) throws StorageException;
+    public void deleteApi(ApiBean api) throws StorageException;
+    public void deleteApiVersion(ApiVersionBean version) throws StorageException;
+    public void deleteApiDefinition(ApiVersionBean version) throws StorageException;
     public void deletePlan(PlanBean plan) throws StorageException;
     public void deletePlanVersion(PlanVersionBean version) throws StorageException;
     public void deletePolicy(PolicyBean policy) throws StorageException;
@@ -117,9 +117,9 @@ public interface IStorage {
     public ApplicationBean getApplication(String organizationId, String id) throws StorageException;
     public ApplicationVersionBean getApplicationVersion(String organizationId, String applicationId, String version) throws StorageException;
     public ContractBean getContract(Long id) throws StorageException;
-    public ServiceBean getService(String organizationId, String id) throws StorageException;
-    public ServiceVersionBean getServiceVersion(String organizationId, String serviceId, String version) throws StorageException;
-    public InputStream getServiceDefinition(ServiceVersionBean serviceVersion) throws StorageException;
+    public ApiBean getApi(String organizationId, String id) throws StorageException;
+    public ApiVersionBean getApiVersion(String organizationId, String apiId, String version) throws StorageException;
+    public InputStream getApiDefinition(ApiVersionBean apiVersion) throws StorageException;
     public PlanBean getPlan(String organizationId, String id) throws StorageException;
     public PlanVersionBean getPlanVersion(String organizationId, String planId, String version) throws StorageException;
     public PolicyBean getPolicy(PolicyType type, String organizationId, String entityId, String version, Long id) throws StorageException;
@@ -132,14 +132,14 @@ public interface IStorage {
     /*
      * Anything that doesn't fall into the above categories!
      */
-    
+
     public void reorderPolicies(PolicyType type, String organizationId, String entityId,
             String entityVersion, List<Long> newOrder) throws StorageException;
 
     /*
      * Here are some IDM related storage methods.
      */
-    
+
     public void createUser(UserBean user) throws StorageException;
     public UserBean getUser(String userId) throws StorageException;
     public void updateUser(UserBean user) throws StorageException;
@@ -151,11 +151,11 @@ public interface IStorage {
     public RoleMembershipBean getMembership(String userId, String roleId, String organizationId) throws StorageException;
     public void deleteMembership(String userId, String roleId, String organizationId) throws StorageException;
     public void deleteMemberships(String userId, String organizationId) throws StorageException;
-    
+
     /*
      * Export related storage methods (get-all)
      */
-    
+
     public Iterator<GatewayBean> getAllGateways() throws StorageException;
     public Iterator<PluginBean> getAllPlugins() throws StorageException;
     public Iterator<PolicyDefinitionBean> getAllPolicyDefinitions() throws StorageException;
@@ -163,8 +163,8 @@ public interface IStorage {
     public Iterator<RoleMembershipBean> getAllMemberships(String organizationId) throws StorageException;
     public Iterator<PlanBean> getAllPlans(String organizationId) throws StorageException;
     public Iterator<PlanVersionBean> getAllPlanVersions(String organizationId, String planId) throws StorageException;
-    public Iterator<ServiceBean> getAllServices(String organizationId) throws StorageException;
-    public Iterator<ServiceVersionBean> getAllServiceVersions(String organizationId, String serviceId) throws StorageException;
+    public Iterator<ApiBean> getAllApis(String organizationId) throws StorageException;
+    public Iterator<ApiVersionBean> getAllApiVersions(String organizationId, String apiId) throws StorageException;
     public Iterator<ApplicationBean> getAllApplications(String organizationId) throws StorageException;
     public Iterator<ApplicationVersionBean> getAllApplicationVersions(String organizationId, String applicationId) throws StorageException;
     public Iterator<ContractBean> getAllContracts(String organizationId, String applicationId, String version) throws StorageException;

@@ -66,7 +66,7 @@ public class SystemResourceImpl implements ISystemResource {
 
     @Inject
     private IStorage storage;
-    @Inject 
+    @Inject
     private ISecurityContext securityContext;
     @Inject
     private Version version;
@@ -98,7 +98,7 @@ public class SystemResourceImpl implements ISystemResource {
         SystemStatusBean rval = new SystemStatusBean();
         rval.setId("apiman-manager-api"); //$NON-NLS-1$
         rval.setName("API Manager REST API"); //$NON-NLS-1$
-        rval.setDescription("The API Manager REST API is used by the API Manager UI to get stuff done.  You can use it to automate any apiman task you wish.  For example, create new Organizations, Plans, Applications, and Services."); //$NON-NLS-1$
+        rval.setDescription("The API Manager REST API is used by the API Manager UI to get stuff done.  You can use it to automate any apiman task you wish.  For example, create new Organizations, Plans, Applications, and APIs."); //$NON-NLS-1$
         rval.setMoreInfo("http://www.apiman.io/latest/api-manager-restdocs.html"); //$NON-NLS-1$
         rval.setUp(getStorage() != null);
         if (getVersion() != null) {
@@ -126,7 +126,7 @@ public class SystemResourceImpl implements ISystemResource {
             return exportData();
         }
     }
-    
+
     /**
      * @see io.apiman.manager.api.rest.contract.ISystemResource#exportData()
      */
@@ -146,7 +146,7 @@ public class SystemResourceImpl implements ISystemResource {
                 .header("Content-Disposition", "attachment; filename=api-manager-export.json") //$NON-NLS-1$ //$NON-NLS-2$
                 .build();
     }
-    
+
     /**
      * @see io.apiman.manager.api.rest.contract.ISystemResource#importData()
      */
@@ -154,11 +154,11 @@ public class SystemResourceImpl implements ISystemResource {
     public Response importData() {
         if (!securityContext.isAdmin())
             throw ExceptionFactory.notAuthorizedException();
-        
+
         // First, stream the import data to a temporary file.  We do this so
         // that we can stream the import logging statements back to the HTTP
-        // response.  We can't stream the inbound data into the importer 
-        // *and* stream the importer's logging output back to the HTTP 
+        // response.  We can't stream the inbound data into the importer
+        // *and* stream the importer's logging output back to the HTTP
         // response at the same time due to the nature of HTTP.
         File tempFile;
         InputStream data;
@@ -170,9 +170,9 @@ public class SystemResourceImpl implements ISystemResource {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        
+
         final File importFile = tempFile;
-        
+
         // Next, do the import and stream the import logging output back to
         // the HTTP response output stream.
         StreamingOutput stream = new StreamingOutput() {
@@ -187,7 +187,7 @@ public class SystemResourceImpl implements ISystemResource {
                     IOUtils.closeQuietly(importData);
                     throw new SystemErrorException(e);
                 }
-                
+
                 final PrintWriter writer = new PrintWriter(output);
                 IApimanLogger logger = new IApimanLogger() {
                     @Override
@@ -195,33 +195,33 @@ public class SystemResourceImpl implements ISystemResource {
                         writer.println("WARN: " + message); //$NON-NLS-1$
                         writer.flush();
                     }
-                    
+
                     @Override
                     public void trace(String message) {
                         writer.println("TRACE: " + message); //$NON-NLS-1$
                         writer.flush();
                     }
-                    
+
                     @Override
                     public void info(String message) {
                         writer.println("INFO: " + message); //$NON-NLS-1$
                         writer.flush();
                     }
-                    
+
                     @Override
                     public void error(String message, Throwable error) {
                         writer.println("ERROR: " + message); //$NON-NLS-1$
                         error.printStackTrace(writer);
                         writer.flush();
                     }
-                    
+
                     @Override
                     public void error(Throwable error) {
                         writer.println("ERROR: " + error.getMessage()); //$NON-NLS-1$
                         error.printStackTrace(writer);
                         writer.flush();
                     }
-                    
+
                     @Override
                     public void debug(String message) {
                         writer.println("DEBUG: " + message); //$NON-NLS-1$
@@ -244,7 +244,7 @@ public class SystemResourceImpl implements ISystemResource {
 
         return Response.ok(stream).build();
     }
-    
+
     /**
      * @return the storage
      */

@@ -17,7 +17,7 @@ package io.apiman.gateway.engine.policies;
 
 import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.beans.PolicyFailureType;
-import io.apiman.gateway.engine.beans.ServiceRequest;
+import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.policies.config.IPListConfig;
 import io.apiman.gateway.engine.policy.IPolicyChain;
@@ -97,13 +97,13 @@ public class IPWhitelistPolicyTest {
                 "  ]" +
                 "}";
         Object config = policy.parseConfiguration(json);
-        ServiceRequest request = new ServiceRequest();
+        ApiRequest request = new ApiRequest();
         request.setType("GET");
         request.setApiKey("12345");
         request.setRemoteAddr("1.2.3.4");
         request.setDestination("/");
         IPolicyContext context = Mockito.mock(IPolicyContext.class);
-        IPolicyChain<ServiceRequest> chain = Mockito.mock(IPolicyChain.class);
+        IPolicyChain<ApiRequest> chain = Mockito.mock(IPolicyChain.class);
 
         // Success
         policy.apply(request, context, config, chain);
@@ -135,12 +135,12 @@ public class IPWhitelistPolicyTest {
                 "  ]" +
                 "}";
         Object config = policy.parseConfiguration(json);
-        ServiceRequest request = new ServiceRequest();
+        ApiRequest request = new ApiRequest();
         request.setType("GET");
         request.setApiKey("12345");
         request.setDestination("/");
         IPolicyContext context = Mockito.mock(IPolicyContext.class);
-        IPolicyChain<ServiceRequest> chain = Mockito.mock(IPolicyChain.class);
+        IPolicyChain<ApiRequest> chain = Mockito.mock(IPolicyChain.class);
 
         // Success
         request.setRemoteAddr("10.0.87.33");

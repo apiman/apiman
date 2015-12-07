@@ -1,0 +1,91 @@
+GET /organizations/Organization2/apis/API2/activity admin/admin
+----
+200
+Content-Type: application/json
+
+{
+  "beans": [
+    {
+      "who": "admin",
+      "organizationId": "Organization2",
+      "entityType": "Api",
+      "entityId": "API2",
+      "entityVersion": "1.5",
+      "what": "BreakContract",
+      "data": "{\"appOrgId\":\"Organization1\",\"appId\":\"Application1\",\"appVersion\":\"1.0\",\"apiOrgId\":\"Organization2\",\"apiId\":\"API2\",\"apiVersion\":\"1.5\",\"planId\":\"PlanA\",\"planVersion\":\"2.0\"}"
+    },
+    {
+      "who": "admin",
+      "organizationId": "Organization2",
+      "entityType": "Api",
+      "entityId": "API2",
+      "entityVersion": "1.5",
+      "what": "CreateContract",
+      "data": "{\"appOrgId\":\"Organization1\",\"appId\":\"Application1\",\"appVersion\":\"1.0\",\"apiOrgId\":\"Organization2\",\"apiId\":\"API2\",\"apiVersion\":\"1.5\",\"planId\":\"PlanA\",\"planVersion\":\"2.0\"}"
+    },
+    {
+      "who": "admin",
+      "organizationId": "Organization2",
+      "entityType": "Api",
+      "entityId": "API2",
+      "entityVersion": "1.5",
+      "what": "Publish",
+      "data": null
+    },
+    {
+      "who": "admin",
+      "organizationId": "Organization2",
+      "entityType": "Api",
+      "entityId": "API2",
+      "entityVersion": "2.0",
+      "what": "Update",
+      "data": "{\"changes\":[{\"name\":\"plans\",\"before\":\"\",\"after\":\"PlanA:2.0, PlanB:1.0\"},{\"name\":\"endpoint\",\"before\":null,\"after\":\"http://localhost:8080/ping\"},{\"name\":\"endpointType\",\"before\":null,\"after\":\"rest\"}]}"
+    },
+    {
+      "who": "admin",
+      "organizationId": "Organization2",
+      "entityType": "Api",
+      "entityId": "API2",
+      "entityVersion": "2.0",
+      "what": "Create",
+      "data": null
+    },
+    {
+      "who": "admin",
+      "organizationId": "Organization2",
+      "entityType": "Api",
+      "entityId": "API2",
+      "entityVersion": "1.5",
+      "what": "Update",
+      "data": "{\"changes\":[{\"name\":\"plans\",\"before\":\"\",\"after\":\"PlanA:2.0, PlanB:1.0\"},{\"name\":\"endpoint\",\"before\":null,\"after\":\"http://localhost:8080/ping\"},{\"name\":\"endpointType\",\"before\":null,\"after\":\"rest\"}]}"
+    },
+    {
+      "who": "admin",
+      "organizationId": "Organization2",
+      "entityType": "Api",
+      "entityId": "API2",
+      "entityVersion": "1.5",
+      "what": "Create",
+      "data": null
+    },
+    {
+      "who": "admin",
+      "organizationId": "Organization2",
+      "entityType": "Api",
+      "entityId": "API2",
+      "entityVersion": "1.0",
+      "what": "Create",
+      "data": null
+    },
+    {
+      "who": "admin",
+      "organizationId": "Organization2",
+      "entityType": "Api",
+      "entityId": "API2",
+      "entityVersion": null,
+      "what": "Create",
+      "data": null
+    }
+  ],
+  "totalSize": 9
+}

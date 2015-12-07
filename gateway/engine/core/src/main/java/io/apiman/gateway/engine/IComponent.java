@@ -21,13 +21,10 @@ package io.apiman.gateway.engine;
  * component in APIMan is anything provided by the APIMan system/platform that can be used by
  * a policy implementation at runtime.  Examples of components include the Shared State Component
  * and the HTTP Client Component.
- * 
+ *
  * Components are provided for ease of use and consistency amongst policy implementations.  In
  * addition, the components provided to the policies should be async when appropriate and should
  * be superior in function or performance.
- * 
- * Normally this would be called a "service" but this name is not used to avoid confusion with
- * the APIMan concept of the same name.
  *
  * @author eric.wittmann@redhat.com
  */

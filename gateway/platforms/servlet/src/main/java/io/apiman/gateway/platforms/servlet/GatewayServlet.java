@@ -16,18 +16,18 @@
 package io.apiman.gateway.platforms.servlet;
 
 import io.apiman.common.util.ApimanPathUtils;
-import io.apiman.common.util.ApimanPathUtils.ServiceRequestPathInfo;
+import io.apiman.common.util.ApimanPathUtils.ApiRequestPathInfo;
+import io.apiman.gateway.engine.IApiRequestExecutor;
 import io.apiman.gateway.engine.IEngine;
 import io.apiman.gateway.engine.IEngineResult;
-import io.apiman.gateway.engine.IServiceRequestExecutor;
 import io.apiman.gateway.engine.async.IAsyncHandler;
 import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
+import io.apiman.gateway.engine.beans.ApiRequest;
+import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.engine.beans.EngineErrorResponse;
 import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.beans.PolicyFailureType;
-import io.apiman.gateway.engine.beans.ServiceRequest;
-import io.apiman.gateway.engine.beans.ServiceResponse;
 import io.apiman.gateway.engine.io.ByteBuffer;
 import io.apiman.gateway.engine.io.IApimanBuffer;
 import io.apiman.gateway.engine.io.ISignalWriteStream;
@@ -57,9 +57,9 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 /**
  * The API Management gateway servlet.  This servlet is responsible for converting inbound
- * http servlet requests into {@link ServiceRequest}s so that they can be fed into the
+ * http servlet requests into {@link ApiRequest}s so that they can be fed into the
  * API Management machinery.  It also is responsible for converting the resulting
- * {@link ServiceResponse} into an HTTP Servlet Response that is suitable for returning
+ * {@link ApiResponse} into an HTTP Servlet Response that is suitable for returning
  * to the caller.
  *
  * @author eric.wittmann@redhat.com
@@ -155,7 +155,7 @@ public abstract class GatewayServlet extends HttpServlet {
      */
     protected void doAction(final HttpServletRequest req, final HttpServletResponse resp, String action) {
         // Read the request.
-        ServiceRequest srequest = null;
+        ApiRequest srequest = null;
         try {
             srequest = readRequest(req);
             srequest.setType(action);
@@ -165,17 +165,17 @@ public abstract class GatewayServlet extends HttpServlet {
         }
 
         final CountDownLatch latch = new CountDownLatch(1);
-        final ServiceRequest finalRequest = srequest;
+        final ApiRequest finalRequest = srequest;
 
         // Now execute the request via the apiman engine
-        IServiceRequestExecutor executor = getEngine().executor(srequest, new IAsyncResultHandler<IEngineResult>() {
+        IApiRequestExecutor executor = getEngine().executor(srequest, new IAsyncResultHandler<IEngineResult>() {
             @Override
             public void handle(IAsyncResult<IEngineResult> asyncResult) {
                 if (asyncResult.isSuccess()) {
                     IEngineResult engineResult = asyncResult.getResult();
                     if (engineResult.isResponse()) {
                         try {
-                            writeResponse(resp, engineResult.getServiceResponse());
+                            writeResponse(resp, engineResult.getApiResponse());
                             final ServletOutputStream outputStream = resp.getOutputStream();
                             engineResult.bodyHandler(new IAsyncHandler<IApimanBuffer>() {
                                 @Override
@@ -188,8 +188,8 @@ public abstract class GatewayServlet extends HttpServlet {
                                             outputStream.write(chunk.getBytes());
                                         }
                                     } catch (IOException e) {
-                                        // This will get caught by the service connector, which will abort the
-                                        // connection to the back-end service.
+                                        // This will get caught by the API connector, which will abort the
+                                        // connection to the back-end API.
                                         throw new RuntimeException(e);
                                     }
                                 }
@@ -200,8 +200,8 @@ public abstract class GatewayServlet extends HttpServlet {
                                     try {
                                         resp.flushBuffer();
                                     } catch (IOException e) {
-                                        // This will get caught by the service connector, which will abort the
-                                        // connection to the back-end service.
+                                        // This will get caught by the API connector, which will abort the
+                                        // connection to the back-end API.
                                         throw new RuntimeException(e);
                                     } finally {
                                         latch.countDown();
@@ -255,26 +255,26 @@ public abstract class GatewayServlet extends HttpServlet {
     protected abstract IEngine getEngine();
 
     /**
-     * Reads a {@link ServiceRequest} from information found in the inbound
+     * Reads a {@link ApiRequest} from information found in the inbound
      * portion of the http request.
      * @param request the undertow http server request
-     * @return a valid {@link ServiceRequest}
+     * @return a valid {@link ApiRequest}
      * @throws IOException
      */
-    protected ServiceRequest readRequest(HttpServletRequest request) throws Exception {
-        ServiceRequestPathInfo pathInfo = parseServiceRequestPath(request);
+    protected ApiRequest readRequest(HttpServletRequest request) throws Exception {
+        ApiRequestPathInfo pathInfo = parseApiRequestPath(request);
         if (pathInfo.orgId == null) {
-            throw new Exception(Messages.i18n.format("GatewayServlet.InvalidServiceEndpoint")); //$NON-NLS-1$
+            throw new Exception(Messages.i18n.format("GatewayServlet.InvalidApiEndpoint")); //$NON-NLS-1$
         }
-        Map<String, String> queryParams = parseServiceRequestQueryParams(request.getQueryString());
+        Map<String, String> queryParams = parseApiRequestQueryParams(request.getQueryString());
 
         String apiKey = getApiKey(request, queryParams);
 
-        ServiceRequest srequest = GatewayThreadContext.getServiceRequest();
+        ApiRequest srequest = GatewayThreadContext.getApiRequest();
         srequest.setApiKey(apiKey);
-        srequest.setServiceOrgId(pathInfo.orgId);
-        srequest.setServiceId(pathInfo.serviceId);
-        srequest.setServiceVersion(pathInfo.serviceVersion);
+        srequest.setApiOrgId(pathInfo.orgId);
+        srequest.setApiId(pathInfo.apiId);
+        srequest.setApiVersion(pathInfo.apiVersion);
         srequest.setUrl(request.getRequestURL().toString());
         srequest.setDestination(pathInfo.resource);
         srequest.setQueryParams(queryParams);
@@ -303,11 +303,11 @@ public abstract class GatewayServlet extends HttpServlet {
 
     /**
      * Reads the inbound request headers from the request and sets them on
-     * the {@link ServiceRequest}.
+     * the {@link ApiRequest}.
      * @param request
      * @param request
      */
-    protected void readHeaders(ServiceRequest srequest, HttpServletRequest request) {
+    protected void readHeaders(ApiRequest srequest, HttpServletRequest request) {
         Enumeration<String> headerNames = request.getHeaderNames();
         while (headerNames.hasMoreElements()) {
             String hname = headerNames.nextElement();
@@ -327,11 +327,11 @@ public abstract class GatewayServlet extends HttpServlet {
     }
 
     /**
-     * Writes the service response to the HTTP servlet response object.
+     * Writes the API response to the HTTP servlet response object.
      * @param response
      * @param sresponse
      */
-    protected void writeResponse(HttpServletResponse response, ServiceResponse sresponse) {
+    protected void writeResponse(HttpServletResponse response, ApiResponse sresponse) {
         response.setStatus(sresponse.getCode());
         Map<String, String> headers = sresponse.getHeaders();
         for (Map.Entry<String, String> entry : headers.entrySet()) {
@@ -347,8 +347,8 @@ public abstract class GatewayServlet extends HttpServlet {
      * @param resp
      * @param policyFailure
      */
-    protected void writeFailure(ServiceRequest request, HttpServletResponse resp, PolicyFailure policyFailure) {
-        String rtype = request.getService().getEndpointContentType();
+    protected void writeFailure(ApiRequest request, HttpServletResponse resp, PolicyFailure policyFailure) {
+        String rtype = request.getApi().getEndpointContentType();
         resp.setHeader("X-Policy-Failure-Type", String.valueOf(policyFailure.getType())); //$NON-NLS-1$
         resp.setHeader("X-Policy-Failure-Message", policyFailure.getMessage()); //$NON-NLS-1$
         resp.setHeader("X-Policy-Failure-Code", String.valueOf(policyFailure.getFailureCode())); //$NON-NLS-1$
@@ -396,9 +396,9 @@ public abstract class GatewayServlet extends HttpServlet {
      * @param resp
      * @param error
      */
-    protected void writeError(ServiceRequest request, HttpServletResponse resp, Throwable error) {
+    protected void writeError(ApiRequest request, HttpServletResponse resp, Throwable error) {
         boolean isXml = false;
-        if (request.getService() != null && "xml".equals(request.getService().getEndpointContentType())) { //$NON-NLS-1$
+        if (request.getApi() != null && "xml".equals(request.getApi().getEndpointContentType())) { //$NON-NLS-1$
             isXml = true;
         }
 
@@ -434,12 +434,12 @@ public abstract class GatewayServlet extends HttpServlet {
     }
 
     /**
-     * Parse a service request path from servlet path info.
+     * Parse a API request path from servlet path info.
      * @param pathInfo
      * @return the path info parsed into its component parts
      */
-    protected static final ServiceRequestPathInfo parseServiceRequestPath(HttpServletRequest request) {
-        return ApimanPathUtils.parseServiceRequestPath(request.getHeader(ApimanPathUtils.X_API_VERSION_HEADER),
+    protected static final ApiRequestPathInfo parseApiRequestPath(HttpServletRequest request) {
+        return ApimanPathUtils.parseApiRequestPath(request.getHeader(ApimanPathUtils.X_API_VERSION_HEADER),
                 request.getHeader(ApimanPathUtils.ACCEPT_HEADER),
                 request.getPathInfo());
     }
@@ -448,7 +448,7 @@ public abstract class GatewayServlet extends HttpServlet {
      * Parses the query string into a map.
      * @param queryString
      */
-    protected static final Map<String, String> parseServiceRequestQueryParams(String queryString) {
+    protected static final Map<String, String> parseApiRequestQueryParams(String queryString) {
         Map<String, String> rval = new LinkedHashMap<>();
         if (queryString != null) {
             try {

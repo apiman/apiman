@@ -1,5 +1,5 @@
 /// <reference path="../apimanPlugin.ts"/>
-/// <reference path="../services.ts"/>
+/// <reference path="../rpc.ts"/>
 module Apiman {
 
     export var AdminPluginsController = _module.controller("Apiman.AdminPluginsController",
@@ -73,7 +73,7 @@ module Apiman {
             $scope.upgradePlugin = function(plugin) {
                 var initialVersion = plugin.latestVersion;
                 Dialogs.getValue('Confirm Upgrade Plugin', 
-                        'Do you really want to upgrade this plugin?  Any published services already using the plugin will continue to use the old version.  All new policies will use the newly upgraded version.', 
+                        'Do you really want to upgrade this plugin?  Any published APIs already using the plugin will continue to use the old version.  All new policies will use the newly upgraded version.', 
                         'New Plugin Version',
                         initialVersion, function(value) 
                 {

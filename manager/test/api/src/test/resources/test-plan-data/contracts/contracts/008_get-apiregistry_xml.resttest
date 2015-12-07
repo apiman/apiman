@@ -12,11 +12,11 @@ Content-Type: application/xml
     <planId>Plan1</planId>
     <planName>Plan 1</planName>
     <planVersion>1.0</planVersion>
-    <serviceId>Service1</serviceId>
-    <serviceName>Service 1</serviceName>
-    <serviceOrgId>Organization1</serviceOrgId>
-    <serviceOrgName>Organization 1</serviceOrgName>
-    <serviceVersion>1.0</serviceVersion>
+    <apiId>API1</apiId>
+    <apiName>API 1</apiName>
+    <apiOrgId>Organization1</apiOrgId>
+    <apiOrgName>Organization 1</apiOrgName>
+    <apiVersion>1.0</apiVersion>
   </apis>
   <apis>
     <apiKey>*</apiKey>
@@ -24,10 +24,10 @@ Content-Type: application/xml
     <planId>PlanA</planId>
     <planName>Plan A</planName>
     <planVersion>2.0</planVersion>
-    <serviceId>Service2</serviceId>
-    <serviceName>Service 2</serviceName>
-    <serviceOrgId>Organization2</serviceOrgId>
-    <serviceOrgName>Organization 2</serviceOrgName>
-    <serviceVersion>1.5</serviceVersion>
+    <apiId>API2</apiId>
+    <apiName>API 2</apiName>
+    <apiOrgId>Organization2</apiOrgId>
+    <apiOrgName>Organization 2</apiOrgName>
+    <apiVersion>1.5</apiVersion>
   </apis>
 </apiRegistry>

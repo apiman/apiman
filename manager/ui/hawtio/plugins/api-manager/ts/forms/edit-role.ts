@@ -1,5 +1,5 @@
 /// <reference path="../apimanPlugin.ts"/>
-/// <reference path="../services.ts"/>
+/// <reference path="../rpc.ts"/>
 module Apiman {
 
     export var EditRoleController = _module.controller("Apiman.EditRoleController",
@@ -8,7 +8,7 @@ module Apiman {
             var params = $routeParams;
             var allPermissions     = ['orgView', 'orgEdit', 'orgAdmin',
                                       'planView','planEdit','planAdmin',
-                                      'svcView', 'svcEdit', 'svcAdmin',
+                                      'apiView', 'apiEdit', 'apiAdmin',
                                       'appView', 'appEdit', 'appAdmin'];
             $scope.isValid = true;
             $scope.rolePermissions = {};

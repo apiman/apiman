@@ -15,15 +15,15 @@
  */
 package io.apiman.gateway.engine.policy;
 
-import io.apiman.gateway.engine.beans.ServiceRequest;
-import io.apiman.gateway.engine.beans.ServiceResponse;
+import io.apiman.gateway.engine.beans.ApiRequest;
+import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.engine.io.IReadWriteStream;
 
 /**
  * Policies that wish to be applied to the data handling phase of apiman
  * must implement this interface.  Normal policies (which implement
- * {@link IPolicy}) are only given a crack at the {@link ServiceRequest}
- * and {@link ServiceResponse}.  If this interface is implemented, then
+ * {@link IPolicy}) are only given a crack at the {@link ApiRequest}
+ * and {@link ApiResponse}.  If this interface is implemented, then
  * the policy also gets a crack at the request body stream and response
  * body stream.  This is useful for things like URL rewriting policies.
  *
@@ -33,24 +33,24 @@ public interface IDataPolicy extends IPolicy {
 
     /**
      * This method should return a stream that will be used when piping the request data
-     * from the client to the back-end service.
+     * from the client to the back-end API.
      * @param request the request
      * @param context the context
      * @param policyConfiguration the policy's configuration
      * @return Request handler to stream request data through the policy.
      */
-    public IReadWriteStream<ServiceRequest> getRequestDataHandler(ServiceRequest request,
+    public IReadWriteStream<ApiRequest> getRequestDataHandler(ApiRequest request,
             IPolicyContext context, Object policyConfiguration);
 
     /**
      * This method should return a stream that will be used when piping the response data
-     * from the back-end service to the client.
+     * from the back-end API to the client.
      * @param response the response
      * @param context the context
      * @param policyConfiguration the policy's configuration
      * @return Response handler to stream request data through the policy.
      */
-    public IReadWriteStream<ServiceResponse> getResponseDataHandler(ServiceResponse response,
+    public IReadWriteStream<ApiResponse> getResponseDataHandler(ApiResponse response,
             IPolicyContext context, Object policyConfiguration);
 
 }

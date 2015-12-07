@@ -17,7 +17,7 @@ package io.apiman.gateway.engine.policies;
 
 import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.beans.PolicyFailureType;
-import io.apiman.gateway.engine.beans.ServiceRequest;
+import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.components.jdbc.IJdbcComponent;
 import io.apiman.gateway.engine.impl.DefaultJdbcComponent;
@@ -66,7 +66,7 @@ public class BasicAuthJDBCTest {
     }
 
     /**
-     * Test method for {@link io.apiman.gateway.engine.policies.BasicAuthenticationPolicy#apply(ServiceRequest, IPolicyContext, Object, IPolicyChain)}.
+     * Test method for {@link io.apiman.gateway.engine.policies.BasicAuthenticationPolicy#apply(ApiRequest, IPolicyContext, Object, IPolicyChain)}.
      */
     @Test
     public void testApplyJdbcNoRoles_DS() throws Exception {
@@ -84,7 +84,7 @@ public class BasicAuthJDBCTest {
     }
 
     /**
-     * Test method for {@link io.apiman.gateway.engine.policies.BasicAuthenticationPolicy#apply(ServiceRequest, IPolicyContext, Object, IPolicyChain)}.
+     * Test method for {@link io.apiman.gateway.engine.policies.BasicAuthenticationPolicy#apply(ApiRequest, IPolicyContext, Object, IPolicyChain)}.
      */
     @Test
     public void testApplyJdbcWithRoles_DS() throws Exception {
@@ -104,7 +104,7 @@ public class BasicAuthJDBCTest {
     }
 
     /**
-     * Test method for {@link io.apiman.gateway.engine.policies.BasicAuthenticationPolicy#apply(ServiceRequest, IPolicyContext, Object, IPolicyChain)}.
+     * Test method for {@link io.apiman.gateway.engine.policies.BasicAuthenticationPolicy#apply(ApiRequest, IPolicyContext, Object, IPolicyChain)}.
      */
     @Test
     public void testApplyJdbcNoRoles_URL() throws Exception {
@@ -125,7 +125,7 @@ public class BasicAuthJDBCTest {
     }
 
     /**
-     * Test method for {@link io.apiman.gateway.engine.policies.BasicAuthenticationPolicy#apply(ServiceRequest, IPolicyContext, Object, IPolicyChain)}.
+     * Test method for {@link io.apiman.gateway.engine.policies.BasicAuthenticationPolicy#apply(ApiRequest, IPolicyContext, Object, IPolicyChain)}.
      */
     @Test
     public void testApplyJdbcWithRoles_URL() throws Exception {
@@ -155,7 +155,7 @@ public class BasicAuthJDBCTest {
         // A live LDAP server is required to run this test!
         BasicAuthenticationPolicy policy = new BasicAuthenticationPolicy();
         BasicAuthenticationConfig config = policy.parseConfiguration(json);
-        ServiceRequest request = new ServiceRequest();
+        ApiRequest request = new ApiRequest();
         request.setType("GET");
         request.setApiKey("12345");
         request.setRemoteAddr("1.2.3.4");
@@ -169,7 +169,7 @@ public class BasicAuthJDBCTest {
             }
         });
         Mockito.when(context.getComponent(IJdbcComponent.class)).thenReturn(new DefaultJdbcComponent());
-        IPolicyChain<ServiceRequest> chain = Mockito.mock(IPolicyChain.class);
+        IPolicyChain<ApiRequest> chain = Mockito.mock(IPolicyChain.class);
 
         // Failure
         policy.apply(request, context, config, chain);
@@ -192,14 +192,14 @@ public class BasicAuthJDBCTest {
         // A live LDAP server is required to run this test!
         BasicAuthenticationPolicy policy = new BasicAuthenticationPolicy();
         BasicAuthenticationConfig config = policy.parseConfiguration(json);
-        ServiceRequest request = new ServiceRequest();
+        ApiRequest request = new ApiRequest();
         request.setType("GET");
         request.setApiKey("12345");
         request.setRemoteAddr("1.2.3.4");
         request.setDestination("/");
         IPolicyContext context = Mockito.mock(IPolicyContext.class);
         Mockito.when(context.getComponent(IJdbcComponent.class)).thenReturn(new DefaultJdbcComponent());
-        IPolicyChain<ServiceRequest> chain = Mockito.mock(IPolicyChain.class);
+        IPolicyChain<ApiRequest> chain = Mockito.mock(IPolicyChain.class);
 
         // Success
         request.getHeaders().put("Authorization", createBasicAuthorization(JDBC_USER, JDBC_PASSWORD));

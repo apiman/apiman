@@ -8,9 +8,9 @@ Content-Type: application/json
   "contracts" : [
     {
       "apiKey" : "12345",
-      "serviceOrgId" : "Policy_BasicAuthStatic",
-      "serviceId" : "echo",
-      "serviceVersion" : "1.0.0",
+      "apiOrgId" : "Policy_BasicAuthStatic",
+      "apiId" : "echo",
+      "apiVersion" : "1.0.0",
       "policies" : [
         {
           "policyImpl" : "class:io.apiman.gateway.engine.policies.BasicAuthenticationPolicy",

@@ -2,15 +2,15 @@
 module Apiman {
     
     export var EditPolicyController = _module.controller("Apiman.EditPolicyController",
-        ['$q', '$location', '$scope', 'OrgSvcs', 'ApimanSvcs', 'PageLifecycle', 'Logger', '$routeParams', 'EntityStatusService', 'CurrentUser',
-        ($q, $location, $scope, OrgSvcs, ApimanSvcs, PageLifecycle, Logger, $routeParams, EntityStatusService, CurrentUser) => {
+        ['$q', '$location', '$scope', 'OrgSvcs', 'ApimanSvcs', 'PageLifecycle', 'Logger', '$routeParams', 'EntityStatusSvc', 'CurrentUser',
+        ($q, $location, $scope, OrgSvcs, ApimanSvcs, PageLifecycle, Logger, $routeParams, EntityStatusSvc, CurrentUser) => {
             var params = $routeParams;
 
             $scope.organizationId = params.org;
 
             var requiredPermissionMap = {
                 applications: 'appEdit',
-                services: 'svcEdit',
+                apis: 'apiEdit',
                 plans: 'planEdit'
             };
 
@@ -20,7 +20,7 @@ module Apiman {
                 etype = 'applications';
             }
 
-            $scope.isEntityDisabled = EntityStatusService.isEntityDisabled;
+            $scope.isEntityDisabled = EntityStatusSvc.isEntityDisabled;
             
             var pageData = {
                 version: $q(function(resolve, reject) {
@@ -104,7 +104,7 @@ module Apiman {
             
             var requiredPermission = requiredPermissionMap[etype];
             PageLifecycle.loadPage('EditPolicy', requiredPermission, pageData, $scope, function() {
-                EntityStatusService.setEntity($scope.version, etype);
+                EntityStatusSvc.setEntity($scope.version, etype);
 
                 // Note: not using the apiman-permission directive in the template for this page because
                 // we cannot hard-code the required permission.  The required permission changes depending

@@ -15,16 +15,16 @@
  */
 package io.apiman.gateway.engine.policies;
 
+import io.apiman.gateway.engine.beans.ApiRequest;
+import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.engine.beans.PolicyFailure;
-import io.apiman.gateway.engine.beans.ServiceRequest;
-import io.apiman.gateway.engine.beans.ServiceResponse;
 import io.apiman.test.common.mock.EchoResponse;
 import io.apiman.test.policies.ApimanPolicyTest;
-import io.apiman.test.policies.BackEndService;
+import io.apiman.test.policies.BackEndApi;
 import io.apiman.test.policies.Configuration;
-import io.apiman.test.policies.IPolicyTestBackEndService;
+import io.apiman.test.policies.IPolicyTestBackEndApi;
 import io.apiman.test.policies.PolicyFailureError;
-import io.apiman.test.policies.PolicyTestBackEndServiceResponse;
+import io.apiman.test.policies.PolicyTestBackEndApiResponse;
 import io.apiman.test.policies.PolicyTestRequest;
 import io.apiman.test.policies.PolicyTestRequestType;
 import io.apiman.test.policies.PolicyTestResponse;
@@ -49,7 +49,7 @@ public class TransferQuotaPolicyTest extends ApimanPolicyTest {
     @Configuration("{" +
             "  \"limit\" : 100," +
             "  \"direction\" : \"upload\"," +
-            "  \"granularity\" : \"Service\"," +
+            "  \"granularity\" : \"Api\"," +
             "  \"period\" : \"Day\"," +
             "  \"headerRemaining\" : \"X-Bytes-Remaining\"," +
             "  \"headerLimit\" : \"X-Bytes-Limit\"," +
@@ -90,7 +90,7 @@ public class TransferQuotaPolicyTest extends ApimanPolicyTest {
     @Configuration("{" +
             "  \"limit\" : 10485760," +
             "  \"direction\" : \"upload\"," +
-            "  \"granularity\" : \"Service\"," +
+            "  \"granularity\" : \"Api\"," +
             "  \"period\" : \"Day\"," +
             "  \"headerRemaining\" : \"X-Data-Remaining\"," +
             "  \"headerLimit\" : \"X-Data-Limit\"," +
@@ -131,13 +131,13 @@ public class TransferQuotaPolicyTest extends ApimanPolicyTest {
     @Configuration("{" +
             "  \"limit\" : 1000," +
             "  \"direction\" : \"download\"," +
-            "  \"granularity\" : \"Service\"," +
+            "  \"granularity\" : \"Api\"," +
             "  \"period\" : \"Day\"," +
             "  \"headerRemaining\" : \"X-DBytes-Remaining\"," +
             "  \"headerLimit\" : \"X-DBytes-Limit\"," +
             "  \"headerReset\" : \"X-DBytes-Reset\"" +
             "}")
-    @BackEndService(DownloadTestBackEndService.class)
+    @BackEndApi(DownloadTestBackEndApi.class)
     public void testDownloadLimit() throws Throwable {
         PolicyTestRequest request = PolicyTestRequest.build(PolicyTestRequestType.GET, "/some/resource");
         request.header("X-Payload-Size", "389");
@@ -167,13 +167,13 @@ public class TransferQuotaPolicyTest extends ApimanPolicyTest {
     @Configuration("{" +
             "  \"limit\" : 500," +
             "  \"direction\" : \"both\"," +
-            "  \"granularity\" : \"Service\"," +
+            "  \"granularity\" : \"Api\"," +
             "  \"period\" : \"Day\"," +
             "  \"headerRemaining\" : \"X-Bytes-Remaining\"," +
             "  \"headerLimit\" : \"X-Bytes-Limit\"," +
             "  \"headerReset\" : \"X-Bytes-Reset\"" +
             "}")
-    @BackEndService(DownloadTestBackEndService.class)
+    @BackEndApi(DownloadTestBackEndApi.class)
     public void testBothLimit() throws Throwable {
         PolicyTestRequest request = PolicyTestRequest.build(PolicyTestRequestType.PUT, "/some/resource");
         request.header("X-Payload-Size", "50");
@@ -203,19 +203,19 @@ public class TransferQuotaPolicyTest extends ApimanPolicyTest {
         }
     }
 
-    public static final class DownloadTestBackEndService implements IPolicyTestBackEndService {
+    public static final class DownloadTestBackEndApi implements IPolicyTestBackEndApi {
 
         /**
-         * @see io.apiman.test.policies.IPolicyTestBackEndService#invoke(io.apiman.gateway.engine.beans.ServiceRequest, byte[])
+         * @see io.apiman.test.policies.IPolicyTestBackEndApi#invoke(io.apiman.gateway.engine.beans.ApiRequest, byte[])
          */
         @Override
-        public PolicyTestBackEndServiceResponse invoke(ServiceRequest request, byte[] requestBody) {
-            ServiceResponse serviceResponse = new ServiceResponse();
-            serviceResponse.setCode(200);
-            serviceResponse.setMessage("OK"); //$NON-NLS-1$
-            serviceResponse.getHeaders().put("Date", new Date().toString()); //$NON-NLS-1$
-            serviceResponse.getHeaders().put("Server", "apiman.policy-test"); //$NON-NLS-1$ //$NON-NLS-2$
-            serviceResponse.getHeaders().put("Content-Type", "text/plain"); //$NON-NLS-1$ //$NON-NLS-2$
+        public PolicyTestBackEndApiResponse invoke(ApiRequest request, byte[] requestBody) {
+            ApiResponse apiResponse = new ApiResponse();
+            apiResponse.setCode(200);
+            apiResponse.setMessage("OK"); //$NON-NLS-1$
+            apiResponse.getHeaders().put("Date", new Date().toString()); //$NON-NLS-1$
+            apiResponse.getHeaders().put("Server", "apiman.policy-test"); //$NON-NLS-1$ //$NON-NLS-2$
+            apiResponse.getHeaders().put("Content-Type", "text/plain"); //$NON-NLS-1$ //$NON-NLS-2$
 
             int payloadSize = 20;
             String payloadSizeHeader = request.getHeaders().get("X-Payload-Size");
@@ -226,7 +226,7 @@ public class TransferQuotaPolicyTest extends ApimanPolicyTest {
             byte [] payloadData = new byte[payloadSize];
             Arrays.fill(payloadData, (byte) 80);
             String payload = new String(payloadData);
-            PolicyTestBackEndServiceResponse response = new PolicyTestBackEndServiceResponse(serviceResponse, payload);
+            PolicyTestBackEndApiResponse response = new PolicyTestBackEndApiResponse(apiResponse, payload);
             return response;
         }
 

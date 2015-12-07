@@ -20,6 +20,6 @@ Content-Type: application/json
   "beans" : [
     {"id":"TestRole2","name":"Test Role 2","autoGrant":true,"description":"This is the description of Test Role 2.","permissions" : [ "appAdmin", "appView" ]},
     {"id":"TestRole3","name":"Test Role 3","permissions":[ "planView", "planAdmin", "planEdit" ]},
-    {"id":"TestRole4","name":"Test Role 4","permissions":[ "appAdmin", "appView", "svcEdit" ]}  ],
+    {"id":"TestRole4","name":"Test Role 4","permissions":[ "appAdmin", "appView", "apiEdit" ]}  ],
   "totalSize" : 3
 }

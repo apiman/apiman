@@ -1,0 +1,21 @@
+POST /organizations/Test/apis/echo/versions ${apiman.suite.api-username}/${apiman.suite.api-password}
+Content-Type: application/json
+
+{
+  "version" : "1.0"
+}
+----
+200
+Content-Type: application/json
+
+{
+  "api" : {
+    "organization" : {
+      "id" : "Test"
+    },
+    "id" : "echo",
+    "name" : "echo"
+  },
+  "status" : "Created",
+  "version" : "1.0"
+}

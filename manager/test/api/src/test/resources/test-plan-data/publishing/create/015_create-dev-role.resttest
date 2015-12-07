@@ -3,7 +3,7 @@ Content-Type: application/json
 
 {
   "name" : "Dev Role",
-  "permissions" : [ "appView", "appEdit", "svcView", "svcEdit", "planView", "planEdit" ]
+  "permissions" : [ "appView", "appEdit", "apiView", "apiEdit", "planView", "planEdit" ]
 }
 ----
 200
@@ -12,5 +12,5 @@ Content-Type: application/json
 {
   "id" : "DevRole",
   "name" : "Dev Role",
-  "permissions" : [ "appView", "appEdit", "svcView", "svcEdit", "planView", "planEdit" ]
+  "permissions" : [ "appView", "appEdit", "apiView", "apiEdit", "planView", "planEdit" ]
 }

@@ -9,25 +9,25 @@
   <div>
     
     <div ng-include="headerInclude"></div>   
-    <div ng-controller="Apiman.ConsumerSvcsController" class="page container" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
+    <div ng-controller="Apiman.ConsumerApisController" class="page container" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
       <div class="row">
         <div class="col-md-12">
           <ol class="breadcrumb" data-field="breadcrumb">
             <li><a id="bc-home" href="{{ pluginName }}/"><i class="fa fa-home fa-fw"></i><span apiman-i18n-key="home">Home</span></a></li>
-            <li class="active"><i class="fa fa-search fa-fw"></i><span apiman-i18n-key="services">Services</span></li>
+            <li class="active"><i class="fa fa-search fa-fw"></i><span apiman-i18n-key="apis">APIs</span></li>
           </ol>
         </div>
       </div>
       <div class="row">
         <div class="col-md-12">
-          <h1 class="consumer-top-header" apiman-i18n-key="find-service">Find a Service</h1>
+          <h1 class="consumer-top-header" apiman-i18n-key="find-api">Find an API</h1>
         </div>
         <div class="col-md-6 no-phone">
-          <p class="description" apiman-i18n-key="find-service-description">Use this page to find Services you wish to consume.  Use the various search options to find Services, then review them and eventually create Contracts to them.</p>
+          <p class="description" apiman-i18n-key="find-api-description">Use this page to find APIs you wish to consume.  Use the various search options to find APIs, then review them and eventually create Contracts to them.</p>
         </div>
         <div class="col-md-6">
-          <form ng-submit="searchSvcs(serviceName)">
-            <input id="apiman-search" ng-model="serviceName" type="text" class="apiman-form-control form-control input-search" apiman-i18n-key="searchfor-svcs" placeholder="Search by service name or keyword..."></input>
+          <form ng-submit="searchSvcs(apiName)">
+            <input id="apiman-search" ng-model="apiName" type="text" class="apiman-form-control form-control input-search" apiman-i18n-key="searchfor-apis" placeholder="Search by API name or keyword..."></input>
             <button id="search-btn" type="submit" class="btn btn-default btn-search" apiman-i18n-key="search" data-field="searchButton">Search</input>
           </form>
         </div>
@@ -38,29 +38,29 @@
       
       <!-- Search results -->
       <div class="row browse-items">
-        <div class="col-md-12" data-field="services">
+        <div class="col-md-12">
 
-          <div class="apiman-no-content container-fluid" ng-hide="services.length > 0">
+          <div class="apiman-no-content container-fluid" ng-hide="apis.length > 0">
             <div class="row">
               <div class="col-md-9">
-                <p apiman-i18n-key="consumer-no-services-found" class="apiman-no-entities-description">No services found. Either no services matched the query or you haven't queried yet!</p>
+                <p apiman-i18n-key="consumer-no-apis-found" class="apiman-no-entities-description">No APIs found. Either no APIs matched the query or you haven't queried yet!</p>
               </div>
               <div class="col-md-3"></div>
             </div>
           </div>
 
-          <div ng-show="services.length > 0">
+          <div ng-show="apis.length > 0">
             <div class="count">
-              Found {{ services.length}} matching services.
+              Found {{ apis.length}} matching APIs.
             </div>
 
-            <div class="item card" ng-repeat="service in services">
+            <div class="item card" ng-repeat="api in apis">
               <div class="title">
-                <i class="fa fa-puzzle-piece icon"></i><a href="{{ pluginName }}/browse/orgs/{{service.organizationId}}">{{ service.organizationName }}</a>
+                <i class="fa fa-puzzle-piece icon"></i><a href="{{ pluginName }}/browse/orgs/{{api.organizationId}}">{{ api.organizationName }}</a>
                 <span apiman-i18n-skip> / </span>
-                <b><a href="{{ pluginName }}/browse/orgs/{{service.organizationId}}/{{service.id}}">{{ service.name }}</a></b>
+                <b><a href="{{ pluginName }}/browse/orgs/{{api.organizationId}}/{{api.id}}">{{ api.name }}</a></b>
               </div>
-              <div class="description" title="{{ service.description }}">{{ service.description }}</div>
+              <div class="description" title="{{ api.description }}">{{ api.description }}</div>
             </div>
           </div>
 

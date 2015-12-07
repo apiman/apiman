@@ -1,4 +1,4 @@
-PUT /organizations/Organization1/services/Service1/versions/1.0 admin/admin
+PUT /organizations/Organization1/apis/API1/versions/1.0 admin/admin
 Content-Type: application/json
 
 {

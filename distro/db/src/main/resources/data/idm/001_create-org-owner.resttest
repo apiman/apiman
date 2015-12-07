@@ -8,7 +8,7 @@ Content-Type: application/json
   "permissions" : [ 
      "orgView", "orgEdit", "orgAdmin",
      "appView", "appEdit", "appAdmin",
-     "svcView", "svcEdit", "svcAdmin",
+     "apiView", "apiEdit", "apiAdmin",
      "planView", "planEdit", "planAdmin"
   ]
 }
@@ -22,6 +22,6 @@ Content-Type: application/json
   "permissions" : [
      "orgView", "orgEdit", "orgAdmin",
      "appView", "appEdit", "appAdmin",
-     "svcView", "svcEdit", "svcAdmin",
+     "apiView", "apiEdit", "apiAdmin",
      "planView", "planEdit", "planAdmin" ]
 }

@@ -14,8 +14,8 @@
 
     <test name="Create App 1">test-plan-data/publishing/create/002_create-app1.resttest</test>
     <test name="Create App Version 1.0">test-plan-data/publishing/create/003_create-app-version-1.0.resttest</test>
-    <test name="Create Service 1">test-plan-data/publishing/create/004_create-service1.resttest</test>
-    <test name="Create Service Version 1.0">test-plan-data/publishing/create/005_create-service-version-1.0.resttest</test>
+    <test name="Create API 1">test-plan-data/publishing/create/004_create-api1.resttest</test>
+    <test name="Create API Version 1.0">test-plan-data/publishing/create/005_create-api-version-1.0.resttest</test>
     <test name="Create Plan 1">test-plan-data/publishing/create/006_create-plan1.resttest</test>
     <test name="Create Plan Version 1.0">test-plan-data/publishing/create/007_create-plan-version-1.0.resttest</test>
 
@@ -27,10 +27,10 @@
 
     <test name="User2 Lock Plan Version 1.0">test-plan-data/publishing/publish/006_dev-user2-lock-plan-version-1.0.resttest</test>
     <test name="Lock Plan Version 1.0">test-plan-data/publishing/publish/003_lock-plan-version-1.0.resttest</test>
-    <test name="Update Service 1 (add plans)">test-plan-data/publishing/create/012_update-version-1.0-plans.resttest</test>
-    <test name="User2 Publish Service 1">test-plan-data/publishing/publish/004_dev-user2-publish-service-1.resttest</test>
-    <test name="Publish Service 1">test-plan-data/publishing/publish/001_publish-service-1.resttest</test>
-    <test name="Create Contract to Service 1">test-plan-data/publishing/create/013_create-contract1.resttest</test>
+    <test name="Update API 1 (add plans)">test-plan-data/publishing/create/012_update-version-1.0-plans.resttest</test>
+    <test name="User2 Publish API 1">test-plan-data/publishing/publish/004_dev-user2-publish-api-1.resttest</test>
+    <test name="Publish API 1">test-plan-data/publishing/publish/001_publish-api-1.resttest</test>
+    <test name="Create Contract to API 1">test-plan-data/publishing/create/013_create-contract1.resttest</test>
     <test name="User2 Register Application 1">test-plan-data/publishing/publish/005_dev-user2-register-application-1.resttest</test>
     <test name="Register Application 1">test-plan-data/publishing/publish/002_register-application-1.resttest</test>
   </testGroup>
@@ -38,8 +38,8 @@
   <testGroup name="Test Retiring">
     <test name="User2 Unregister Application 1">test-plan-data/publishing/retire/003_dev-user2-unregister-application-1.resttest</test>
     <test name="Unregister Application 1">test-plan-data/publishing/retire/001_unregister-application-1.resttest</test>
-    <test name="User2 Retire Service 1">test-plan-data/publishing/retire/004_dev-user2-retire-service-1.resttest</test>
-    <test name="Retire Service 1">test-plan-data/publishing/retire/002_retire-service-1.resttest</test>
+    <test name="User2 Retire API 1">test-plan-data/publishing/retire/004_dev-user2-retire-api-1.resttest</test>
+    <test name="Retire API 1">test-plan-data/publishing/retire/002_retire-api-1.resttest</test>
   </testGroup>
 
 </testPlan>

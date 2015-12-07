@@ -15,9 +15,9 @@
  */
 package io.apiman.manager.api.beans.contracts;
 
+import io.apiman.manager.api.beans.apis.ApiVersionBean;
 import io.apiman.manager.api.beans.apps.ApplicationVersionBean;
 import io.apiman.manager.api.beans.plans.PlanVersionBean;
-import io.apiman.manager.api.beans.services.ServiceVersionBean;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -33,17 +33,17 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 /**
- * A Contract links an application version to a service version through
+ * A Contract links an application version to a API version through
  * a plan version.  :)
  *
  * This is how application owners/developers configure their application
- * to allow it to invoke managed services.
+ * to allow it to invoke managed APIs.
  *
  * @author eric.wittmann@redhat.com
  */
 @Entity
 @Table(name = "contracts",
-       uniqueConstraints = { @UniqueConstraint(columnNames = { "appv_id", "svcv_id", "planv_id" }) })
+       uniqueConstraints = { @UniqueConstraint(columnNames = { "appv_id", "apiv_id", "planv_id" }) })
 public class ContractBean implements Serializable {
 
     private static final long serialVersionUID = -8534463608508756791L;
@@ -57,9 +57,9 @@ public class ContractBean implements Serializable {
     private ApplicationVersionBean application;
     @ManyToOne
     @JoinColumns({
-        @JoinColumn(name="svcv_id", referencedColumnName="id")
+        @JoinColumn(name="apiv_id", referencedColumnName="id")
     })
-    private ServiceVersionBean service;
+    private ApiVersionBean api;
     @ManyToOne
     @JoinColumns({
         @JoinColumn(name="planv_id", referencedColumnName="id")
@@ -93,17 +93,17 @@ public class ContractBean implements Serializable {
     }
 
     /**
-     * @return the service
+     * @return the api
      */
-    public ServiceVersionBean getService() {
-        return service;
+    public ApiVersionBean getApi() {
+        return api;
     }
 
     /**
-     * @param service the service to set
+     * @param api the api to set
      */
-    public void setService(ServiceVersionBean service) {
-        this.service = service;
+    public void setApi(ApiVersionBean api) {
+        this.api = api;
     }
 
     /**
@@ -182,7 +182,7 @@ public class ContractBean implements Serializable {
     @Override
     @SuppressWarnings("nls")
     public String toString() {
-        return "ContractBean [id=" + id + ", application=" + application + ", service=" + service + ", plan="
+        return "ContractBean [id=" + id + ", application=" + application + ", api=" + api + ", plan="
                 + plan + ", createdBy=" + createdBy + ", createdOn=" + createdOn + ", apikey=" + apikey + "]";
     }
 

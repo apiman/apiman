@@ -15,6 +15,14 @@
  */
 package io.apiman.manager.api.es;
 
+import io.apiman.manager.api.beans.apis.ApiDefinitionType;
+import io.apiman.manager.api.beans.apis.ApiGatewayBean;
+import io.apiman.manager.api.beans.apis.ApiPlanBean;
+import io.apiman.manager.api.beans.apis.ApiStatus;
+import io.apiman.manager.api.beans.apis.ApiBean;
+import io.apiman.manager.api.beans.apis.ApiVersionBean;
+import io.apiman.manager.api.beans.apis.EndpointContentType;
+import io.apiman.manager.api.beans.apis.EndpointType;
 import io.apiman.manager.api.beans.apps.ApplicationBean;
 import io.apiman.manager.api.beans.apps.ApplicationStatus;
 import io.apiman.manager.api.beans.apps.ApplicationVersionBean;
@@ -39,15 +47,9 @@ import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
 import io.apiman.manager.api.beans.policies.PolicyDefinitionTemplateBean;
 import io.apiman.manager.api.beans.policies.PolicyType;
-import io.apiman.manager.api.beans.services.EndpointContentType;
-import io.apiman.manager.api.beans.services.EndpointType;
-import io.apiman.manager.api.beans.services.ServiceBean;
-import io.apiman.manager.api.beans.services.ServiceDefinitionType;
-import io.apiman.manager.api.beans.services.ServiceGatewayBean;
-import io.apiman.manager.api.beans.services.ServicePlanBean;
-import io.apiman.manager.api.beans.services.ServiceStatus;
-import io.apiman.manager.api.beans.services.ServiceVersionBean;
 import io.apiman.manager.api.beans.summary.ApiEntryBean;
+import io.apiman.manager.api.beans.summary.ApiSummaryBean;
+import io.apiman.manager.api.beans.summary.ApiVersionSummaryBean;
 import io.apiman.manager.api.beans.summary.ApplicationSummaryBean;
 import io.apiman.manager.api.beans.summary.ApplicationVersionSummaryBean;
 import io.apiman.manager.api.beans.summary.ContractSummaryBean;
@@ -58,11 +60,9 @@ import io.apiman.manager.api.beans.summary.PlanVersionSummaryBean;
 import io.apiman.manager.api.beans.summary.PluginSummaryBean;
 import io.apiman.manager.api.beans.summary.PolicyDefinitionSummaryBean;
 import io.apiman.manager.api.beans.summary.PolicyFormType;
-import io.apiman.manager.api.beans.summary.ServiceSummaryBean;
-import io.apiman.manager.api.beans.summary.ServiceVersionSummaryBean;
 import io.apiman.manager.api.core.exceptions.StorageException;
+import io.apiman.manager.api.es.beans.ApiDefinitionBean;
 import io.apiman.manager.api.es.beans.PoliciesBean;
-import io.apiman.manager.api.es.beans.ServiceDefinitionBean;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -162,7 +162,7 @@ public class EsMarshalling {
      * @return the content builder
      * @throws StorageException when a storage problem occurs while storing a bean
      */
-    public static XContentBuilder marshall(ServiceDefinitionBean bean) throws StorageException {
+    public static XContentBuilder marshall(ApiDefinitionBean bean) throws StorageException {
         try {
             preMarshall(bean);
             XContentBuilder builder = XContentFactory.jsonBuilder()
@@ -194,12 +194,12 @@ public class EsMarshalling {
                     .field("appId", bean.getApplication().getApplication().getId())
                     .field("appName", bean.getApplication().getApplication().getName())
                     .field("appVersion", bean.getApplication().getVersion())
-                    .field("serviceOrganizationId", bean.getService().getService().getOrganization().getId())
-                    .field("serviceOrganizationName", bean.getService().getService().getOrganization().getName())
-                    .field("serviceId", bean.getService().getService().getId())
-                    .field("serviceName", bean.getService().getService().getName())
-                    .field("serviceVersion", bean.getService().getVersion())
-                    .field("serviceDescription", bean.getService().getService().getDescription())
+                    .field("apiOrganizationId", bean.getApi().getApi().getOrganization().getId())
+                    .field("apiOrganizationName", bean.getApi().getApi().getOrganization().getName())
+                    .field("apiId", bean.getApi().getApi().getId())
+                    .field("apiName", bean.getApi().getApi().getName())
+                    .field("apiVersion", bean.getApi().getVersion())
+                    .field("apiDescription", bean.getApi().getApi().getDescription())
                     .field("planName", bean.getPlan().getPlan().getName())
                     .field("planId", bean.getPlan().getPlan().getId())
                     .field("planVersion", bean.getPlan().getVersion())
@@ -278,7 +278,7 @@ public class EsMarshalling {
      * @return the content builder
      * @throws StorageException when a storage problem occurs while storing a bean
      */
-    public static XContentBuilder marshall(ServiceBean bean) throws StorageException {
+    public static XContentBuilder marshall(ApiBean bean) throws StorageException {
         try {
             preMarshall(bean);
             XContentBuilder builder = XContentFactory.jsonBuilder()
@@ -305,18 +305,18 @@ public class EsMarshalling {
      * @return the content builder
      * @throws StorageException when a storage problem occurs while storing a bean
      */
-    public static XContentBuilder marshall(ServiceVersionBean bean) throws StorageException {
+    public static XContentBuilder marshall(ApiVersionBean bean) throws StorageException {
         try {
-            ServiceBean service = bean.getService();
-            OrganizationBean org = service.getOrganization();
+            ApiBean api = bean.getApi();
+            OrganizationBean org = api.getOrganization();
             preMarshall(bean);
             XContentBuilder builder = XContentFactory.jsonBuilder()
                 .startObject()
                     .field("organizationId", org.getId())
                     .field("organizationName", org.getName())
-                    .field("serviceId", service.getId())
-                    .field("serviceName", service.getName())
-                    .field("serviceDescription", service.getDescription())
+                    .field("apiId", api.getId())
+                    .field("apiName", api.getName())
+                    .field("apiDescription", api.getDescription())
                     .field("version", bean.getVersion())
                     .field("status", bean.getStatus())
                     .field("createdBy", bean.getCreatedBy())
@@ -325,25 +325,25 @@ public class EsMarshalling {
                     .field("modifiedOn", bean.getModifiedOn().getTime())
                     .field("publishedOn", bean.getPublishedOn() != null ? bean.getPublishedOn().getTime() : null)
                     .field("retiredOn", bean.getRetiredOn() != null ? bean.getRetiredOn().getTime() : null)
-                    .field("publicService", bean.isPublicService())
+                    .field("publicAPI", bean.isPublicAPI())
                     .field("endpoint", bean.getEndpoint())
                     .field("endpointType", bean.getEndpointType())
                     .field("endpointContentType", bean.getEndpointContentType())
                     .field("definitionType", bean.getDefinitionType());
-            Set<ServiceGatewayBean> gateways = bean.getGateways();
+            Set<ApiGatewayBean> gateways = bean.getGateways();
             if (gateways != null) {
                 builder.startArray("gateways");
-                for (ServiceGatewayBean gateway : gateways) {
+                for (ApiGatewayBean gateway : gateways) {
                     builder.startObject()
                         .field("gatewayId", gateway.getGatewayId())
                     .endObject();
                 }
                 builder.endArray();
             }
-            Set<ServicePlanBean> plans = bean.getPlans();
+            Set<ApiPlanBean> plans = bean.getPlans();
             if (plans != null) {
                 builder.startArray("plans");
-                for (ServicePlanBean plan : plans) {
+                for (ApiPlanBean plan : plans) {
                     builder.startObject()
                         .field("planId", plan.getPlanId())
                         .field("version", plan.getVersion())
@@ -737,13 +737,13 @@ public class EsMarshalling {
     /**
      * Unmarshals the given map source into a bean.
      * @param source the source
-     * @return the service definition
+     * @return the API definition
      */
-    public static ServiceDefinitionBean unmarshallServiceDefinition(Map<String, Object> source) {
+    public static ApiDefinitionBean unmarshallApiDefinition(Map<String, Object> source) {
         if (source == null) {
             return null;
         }
-        ServiceDefinitionBean bean = new ServiceDefinitionBean();
+        ApiDefinitionBean bean = new ApiDefinitionBean();
         bean.setData(asString(source.get("data")));
         postMarshall(bean);
         return bean;
@@ -785,12 +785,12 @@ public class EsMarshalling {
         bean.setAppId(asString(source.get("appId")));
         bean.setAppName(asString(source.get("appName")));
         bean.setAppVersion(asString(source.get("appVersion")));
-        bean.setServiceOrganizationId(asString(source.get("serviceOrganizationId")));
-        bean.setServiceOrganizationName(asString(source.get("serviceOrganizationName")));
-        bean.setServiceId(asString(source.get("serviceId")));
-        bean.setServiceName(asString(source.get("serviceName")));
-        bean.setServiceVersion(asString(source.get("serviceVersion")));
-        bean.setServiceDescription(asString(source.get("serviceDescription")));
+        bean.setApiOrganizationId(asString(source.get("apiOrganizationId")));
+        bean.setApiOrganizationName(asString(source.get("apiOrganizationName")));
+        bean.setApiId(asString(source.get("apiId")));
+        bean.setApiName(asString(source.get("apiName")));
+        bean.setApiVersion(asString(source.get("apiVersion")));
+        bean.setApiDescription(asString(source.get("apiDescription")));
         bean.setPlanName(asString(source.get("planName")));
         bean.setPlanId(asString(source.get("planId")));
         bean.setPlanVersion(asString(source.get("planVersion")));
@@ -809,11 +809,11 @@ public class EsMarshalling {
         }
         ApiEntryBean bean = new ApiEntryBean();
         bean.setApiKey(asString(source.get("apiKey")));
-        bean.setServiceOrgId(asString(source.get("serviceOrganizationId")));
-        bean.setServiceOrgName(asString(source.get("serviceOrganizationName")));
-        bean.setServiceId(asString(source.get("serviceId")));
-        bean.setServiceName(asString(source.get("serviceName")));
-        bean.setServiceVersion(asString(source.get("serviceVersion")));
+        bean.setApiOrgId(asString(source.get("apiOrganizationId")));
+        bean.setApiOrgName(asString(source.get("apiOrganizationName")));
+        bean.setApiId(asString(source.get("apiId")));
+        bean.setApiName(asString(source.get("apiName")));
+        bean.setApiVersion(asString(source.get("apiVersion")));
         bean.setPlanName(asString(source.get("planName")));
         bean.setPlanId(asString(source.get("planId")));
         bean.setPlanVersion(asString(source.get("planVersion")));
@@ -904,13 +904,13 @@ public class EsMarshalling {
     /**
      * Unmarshals the given map source into a bean.
      * @param source the source
-     * @return the service
+     * @return the API
      */
-    public static ServiceBean unmarshallService(Map<String, Object> source) {
+    public static ApiBean unmarshallApi(Map<String, Object> source) {
         if (source == null) {
             return null;
         }
-        ServiceBean bean = new ServiceBean();
+        ApiBean bean = new ApiBean();
         bean.setId(asString(source.get("id")));
         bean.setName(asString(source.get("name")));
         bean.setDescription(asString(source.get("description")));
@@ -924,13 +924,13 @@ public class EsMarshalling {
     /**
      * Unmarshals the given map source into a bean.
      * @param source the source
-     * @return the service summary
+     * @return the API summary
      */
-    public static ServiceSummaryBean unmarshallServiceSummary(Map<String, Object> source) {
+    public static ApiSummaryBean unmarshallApiSummary(Map<String, Object> source) {
         if (source == null) {
             return null;
         }
-        ServiceSummaryBean bean = new ServiceSummaryBean();
+        ApiSummaryBean bean = new ApiSummaryBean();
         bean.setOrganizationId(asString(source.get("organizationId")));
         bean.setOrganizationName(asString(source.get("organizationName")));
         bean.setId(asString(source.get("id")));
@@ -944,16 +944,16 @@ public class EsMarshalling {
     /**
      * Unmarshals the given map source into a bean.
      * @param source the source
-     * @return the service version
+     * @return the API version
      */
     @SuppressWarnings("unchecked")
-    public static ServiceVersionBean unmarshallServiceVersion(Map<String, Object> source) {
+    public static ApiVersionBean unmarshallApiVersion(Map<String, Object> source) {
         if (source == null) {
             return null;
         }
-        ServiceVersionBean bean = new ServiceVersionBean();
+        ApiVersionBean bean = new ApiVersionBean();
         bean.setVersion(asString(source.get("version")));
-        bean.setStatus(asEnum(source.get("status"), ServiceStatus.class));
+        bean.setStatus(asEnum(source.get("status"), ApiStatus.class));
         bean.setCreatedBy(asString(source.get("createdBy")));
         bean.setCreatedOn(asDate(source.get("createdOn")));
         bean.setModifiedBy(asString(source.get("modifiedBy")));
@@ -963,22 +963,22 @@ public class EsMarshalling {
         bean.setEndpoint(asString(source.get("endpoint")));
         bean.setEndpointType(asEnum(source.get("endpointType"), EndpointType.class));
         bean.setEndpointContentType(asEnum(source.get("endpointContentType"), EndpointContentType.class));
-        bean.setPublicService(asBoolean(source.get("publicService")));
-        bean.setDefinitionType(asEnum(source.get("definitionType"), ServiceDefinitionType.class));
-        bean.setGateways(new HashSet<ServiceGatewayBean>());
+        bean.setPublicAPI(asBoolean(source.get("publicAPI")));
+        bean.setDefinitionType(asEnum(source.get("definitionType"), ApiDefinitionType.class));
+        bean.setGateways(new HashSet<ApiGatewayBean>());
         List<Map<String, Object>> gateways = (List<Map<String, Object>>) source.get("gateways");
         if (gateways != null) {
             for (Map<String, Object> gatewayMap : gateways) {
-                ServiceGatewayBean gatewayBean = new ServiceGatewayBean();
+                ApiGatewayBean gatewayBean = new ApiGatewayBean();
                 gatewayBean.setGatewayId(asString(gatewayMap.get("gatewayId")));
                 bean.getGateways().add(gatewayBean);
             }
         }
-        bean.setPlans(new HashSet<ServicePlanBean>());
+        bean.setPlans(new HashSet<ApiPlanBean>());
         List<Map<String, Object>> plans = (List<Map<String, Object>>) source.get("plans");
         if (plans != null) {
             for (Map<String, Object> planMap : plans) {
-                ServicePlanBean planBean = new ServicePlanBean();
+                ApiPlanBean planBean = new ApiPlanBean();
                 planBean.setPlanId(asString(planMap.get("planId")));
                 planBean.setVersion(asString(planMap.get("version")));
                 bean.getPlans().add(planBean);
@@ -998,21 +998,21 @@ public class EsMarshalling {
     /**
      * Unmarshals the given map source into a bean.
      * @param source the source
-     * @return the service veresion summary
+     * @return the API version summary
      */
-    public static ServiceVersionSummaryBean unmarshallServiceVersionSummary(Map<String, Object> source) {
+    public static ApiVersionSummaryBean unmarshallApiVersionSummary(Map<String, Object> source) {
         if (source == null) {
             return null;
         }
-        ServiceVersionSummaryBean bean = new ServiceVersionSummaryBean();
-        bean.setDescription(asString(source.get("serviceDescription")));
-        bean.setId(asString(source.get("serviceId")));
-        bean.setName(asString(source.get("serviceName")));
+        ApiVersionSummaryBean bean = new ApiVersionSummaryBean();
+        bean.setDescription(asString(source.get("apiDescription")));
+        bean.setId(asString(source.get("apiId")));
+        bean.setName(asString(source.get("apiName")));
         bean.setOrganizationId(asString(source.get("organizationId")));
         bean.setOrganizationName(asString(source.get("organizationName")));
-        bean.setStatus(asEnum(source.get("status"), ServiceStatus.class));
+        bean.setStatus(asEnum(source.get("status"), ApiStatus.class));
         bean.setVersion(asString(source.get("version")));
-        bean.setPublicService(asBoolean(source.get("publicService")));
+        bean.setPublicAPI(asBoolean(source.get("publicAPI")));
         postMarshall(bean);
         return bean;
     }

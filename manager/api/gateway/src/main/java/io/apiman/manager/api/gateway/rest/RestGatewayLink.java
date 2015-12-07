@@ -17,9 +17,9 @@ package io.apiman.manager.api.gateway.rest;
 
 import io.apiman.common.util.AesEncrypter;
 import io.apiman.common.util.crypt.CurrentDataEncrypter;
+import io.apiman.gateway.engine.beans.Api;
+import io.apiman.gateway.engine.beans.ApiEndpoint;
 import io.apiman.gateway.engine.beans.Application;
-import io.apiman.gateway.engine.beans.Service;
-import io.apiman.gateway.engine.beans.ServiceEndpoint;
 import io.apiman.gateway.engine.beans.SystemStatus;
 import io.apiman.gateway.engine.beans.exceptions.PublishingException;
 import io.apiman.gateway.engine.beans.exceptions.RegistrationException;
@@ -49,7 +49,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 /**
  * An implementation of a Gateway Link that uses the Gateway's simple REST
- * API to publish Services.
+ * API to publish APIs.
  *
  * @author eric.wittmann@redhat.com
  */
@@ -135,34 +135,34 @@ public class RestGatewayLink implements IGatewayLink {
     }
 
     /**
-     * @see io.apiman.manager.api.gateway.IGatewayLink#getServiceEndpoint(java.lang.String, java.lang.String, java.lang.String)
+     * @see io.apiman.manager.api.gateway.IGatewayLink#getApiEndpoint(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
-    public ServiceEndpoint getServiceEndpoint(String organizationId, String serviceId, String version)
+    public ApiEndpoint getApiEndpoint(String organizationId, String apiId, String version)
             throws GatewayAuthenticationException {
-        return getClient().getServiceEndpoint(organizationId, serviceId, version);
+        return getClient().getApiEndpoint(organizationId, apiId, version);
     }
 
     /**
-     * @see io.apiman.manager.api.gateway.IGatewayLink#publishService(io.apiman.gateway.engine.beans.Service)
+     * @see io.apiman.manager.api.gateway.IGatewayLink#publishApi(io.apiman.gateway.engine.beans.Api)
      */
     @Override
-    public void publishService(Service service) throws PublishingException, GatewayAuthenticationException {
+    public void publishApi(Api api) throws PublishingException, GatewayAuthenticationException {
         if (!isGatewayUp()) {
             throw new PublishingException(Messages.i18n.format("RestGatewayLink.GatewayNotRunning")); //$NON-NLS-1$
         }
-        getClient().publish(service);
+        getClient().publish(api);
     }
 
     /**
-     * @see io.apiman.manager.api.gateway.IGatewayLink#retireService(io.apiman.gateway.engine.beans.Service)
+     * @see io.apiman.manager.api.gateway.IGatewayLink#retireApi(io.apiman.gateway.engine.beans.Api)
      */
     @Override
-    public void retireService(Service service) throws PublishingException, GatewayAuthenticationException {
+    public void retireApi(Api api) throws PublishingException, GatewayAuthenticationException {
         if (!isGatewayUp()) {
             throw new PublishingException(Messages.i18n.format("RestGatewayLink.GatewayNotRunning")); //$NON-NLS-1$
         }
-        getClient().retire(service.getOrganizationId(), service.getServiceId(), service.getVersion());
+        getClient().retire(api.getOrganizationId(), api.getApiId(), api.getVersion());
     }
 
     /**

@@ -9,7 +9,7 @@ Content-Type: application/json
   "templates" : [
     {
       "language" : null,
-      "template" : "Only requests that originate from the set of @{ipList.size()} configured IP address(es) will be allowed to invoke the managed service."
+      "template" : "Only requests that originate from the set of @{ipList.size()} configured IP address(es) will be allowed to invoke the managed API."
     }
   ]
 }

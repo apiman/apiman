@@ -1,0 +1,36 @@
+POST /organizations/Organization1/apis/API1/versions/1.0/policies admin/admin
+Content-Type: application/json
+
+{
+  "definitionId" : "PolicyDef",
+  "configuration" : "{\"testName\" : \"ApisTest\"}"
+}
+----
+200
+Content-Type: application/json
+X-RestTest-BindTo-policy-id: id
+
+{
+  "type" : "Api",
+  "organizationId" : "Organization1",
+  "entityId" : "API1",
+  "entityVersion" : "1.0",
+  "name" : "Policy Def",
+  "description" : "This is a test policy for ApisTest.",
+  "definition" : {
+    "id" : "PolicyDef",
+    "name" : "Policy Def",
+    "description" : "This is the test policy def.",
+    "policyImpl" : "org.example.policies.PolicyDef",
+    "icon" : "policy-def",
+    "templates" : [
+      {
+        "language" : null,
+        "template" : "This is a test policy for @{testName}."
+      }
+    ]
+  },
+  "configuration" : "{\"testName\" : \"ApisTest\"}",
+  "createdBy" : "admin",
+  "modifiedBy" : "admin"
+}

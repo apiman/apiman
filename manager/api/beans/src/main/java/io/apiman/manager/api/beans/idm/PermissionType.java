@@ -23,7 +23,7 @@ package io.apiman.manager.api.beans.idm;
 public enum PermissionType {
     
     orgView,  orgEdit,  orgAdmin,
-    svcView,  svcEdit,  svcAdmin,
+    apiView,  apiEdit,  apiAdmin,
     appView,  appEdit,  appAdmin,
     planView, planEdit, planAdmin
     

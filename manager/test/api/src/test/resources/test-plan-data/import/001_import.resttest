@@ -67,18 +67,18 @@ Content-Type: application/json
           ]
         }
       ],
-      "Services": [
+      "Apis": [
         {
-          "ServiceBean": {
-            "id": "Service1",
-            "name": "Service 1",
-            "description": "This is the description of Service 1.",
+          "ApiBean": {
+            "id": "API1",
+            "name": "API 1",
+            "description": "This is the description of API 1.",
             "createdBy": "admin",
             "createdOn": 1445973206991
           },
           "Versions": [
             {
-              "ServiceVersionBean": {
+              "ApiVersionBean": {
                 "id": 10,
                 "status": "Published",
                 "endpoint": "http://localhost:8080/ping",
@@ -89,7 +89,7 @@ Content-Type: application/json
                     "gatewayId": "TheGateway"
                   }
                 ],
-                "publicService": false,
+                "publicAPI": false,
                 "plans": [
                   {
                     "planId": "Plan1",
@@ -158,9 +158,9 @@ Content-Type: application/json
                     "modifiedOn": 1445973207627,
                     "publishedOn": 1445973207765
                   },
-                  "service": {
+                  "api": {
                     "id": 10,
-                    "service": {
+                    "api": {
                       "organization": {
                         "id": "Organization1",
                         "name": "Organization 1",
@@ -169,9 +169,9 @@ Content-Type: application/json
                         "modifiedBy": "admin",
                         "modifiedOn": 1445973206713
                       },
-                      "id": "Service1",
-                      "name": "Service 1",
-                      "description": "This is the description of Service 1.",
+                      "id": "API1",
+                      "name": "API 1",
+                      "description": "This is the description of API 1.",
                       "createdBy": "admin",
                       "createdOn": 1445973206991
                     },
@@ -184,7 +184,7 @@ Content-Type: application/json
                         "gatewayId": "TheGateway"
                       }
                     ],
-                    "publicService": false,
+                    "publicAPI": false,
                     "plans": [
                       {
                         "planId": "Plan1",
@@ -293,8 +293,8 @@ Content-Type: application/json
           "id": 9,
           "who": "admin",
           "organizationId": "Organization1",
-          "entityType": "Service",
-          "entityId": "Service1",
+          "entityType": "Api",
+          "entityId": "API1",
           "createdOn": 1445973207033,
           "what": "Create"
         },
@@ -302,8 +302,8 @@ Content-Type: application/json
           "id": 11,
           "who": "admin",
           "organizationId": "Organization1",
-          "entityType": "Service",
-          "entityId": "Service1",
+          "entityType": "Api",
+          "entityId": "API1",
           "entityVersion": "1.0",
           "createdOn": 1445973207101,
           "what": "Create"
@@ -312,8 +312,8 @@ Content-Type: application/json
           "id": 12,
           "who": "admin",
           "organizationId": "Organization1",
-          "entityType": "Service",
-          "entityId": "Service1",
+          "entityType": "Api",
+          "entityId": "API1",
           "entityVersion": "1.0",
           "createdOn": 1445973207198,
           "what": "Update",
@@ -323,8 +323,8 @@ Content-Type: application/json
           "id": 13,
           "who": "admin",
           "organizationId": "Organization1",
-          "entityType": "Service",
-          "entityId": "Service1",
+          "entityType": "Api",
+          "entityId": "API1",
           "entityVersion": "1.0",
           "createdOn": 1445973207594,
           "what": "Publish"
@@ -338,18 +338,18 @@ Content-Type: application/json
           "entityVersion": "1.0",
           "createdOn": 1445973207623,
           "what": "CreateContract",
-          "data": "{\"appOrgId\":\"Organization1\",\"appId\":\"Application1\",\"appVersion\":\"1.0\",\"serviceOrgId\":\"Organization1\",\"serviceId\":\"Service1\",\"serviceVersion\":\"1.0\",\"planId\":\"Plan1\",\"planVersion\":\"1.0\"}"
+          "data": "{\"appOrgId\":\"Organization1\",\"appId\":\"Application1\",\"appVersion\":\"1.0\",\"apiOrgId\":\"Organization1\",\"apiId\":\"API1\",\"apiVersion\":\"1.0\",\"planId\":\"Plan1\",\"planVersion\":\"1.0\"}"
         },
         {
           "id": 16,
           "who": "admin",
           "organizationId": "Organization1",
-          "entityType": "Service",
-          "entityId": "Service1",
+          "entityType": "Api",
+          "entityId": "API1",
           "entityVersion": "1.0",
           "createdOn": 1445973207628,
           "what": "CreateContract",
-          "data": "{\"appOrgId\":\"Organization1\",\"appId\":\"Application1\",\"appVersion\":\"1.0\",\"serviceOrgId\":\"Organization1\",\"serviceId\":\"Service1\",\"serviceVersion\":\"1.0\",\"planId\":\"Plan1\",\"planVersion\":\"1.0\"}"
+          "data": "{\"appOrgId\":\"Organization1\",\"appId\":\"Application1\",\"appVersion\":\"1.0\",\"apiOrgId\":\"Organization1\",\"apiId\":\"API1\",\"apiVersion\":\"1.0\",\"planId\":\"Plan1\",\"planVersion\":\"1.0\"}"
         },
         {
           "id": 17,
@@ -377,8 +377,8 @@ INFO: Importing a gateway: The Gateway
 INFO: Importing an organization: Organization 1
 INFO:   Importing a plan: Plan 1
 INFO:     Importing a plan version: 1.0
-INFO:     Importing a service: Service 1
-INFO:     Importing a service version: 1.0
+INFO:     Importing an API: API 1
+INFO:     Importing an API version: 1.0
 INFO:   Importing an application: Application 1
 INFO:     Importing an application version: 1.0
 INFO:   Importing an audit entry: 1
@@ -395,8 +395,8 @@ INFO:   Importing an audit entry: 15
 INFO:   Importing an audit entry: 16
 INFO:   Importing an audit entry: 17
 INFO: +Importing an application contract: 6ec478ca-8ccd-48d0-973e-479f42c68a6c
-INFO: Publishing services to the gateway.
-INFO:  Publishing service: Organization1 / Service1 -> 1.0
+INFO: Publishing APIs to the gateway.
+INFO:  Publishing API: Organization1 / API1 -> 1.0
 INFO: Registering applications in the gateway.
 INFO:  Registering app: Organization1 / Application1 -> 1.0
 INFO: -----------------------------------

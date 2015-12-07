@@ -18,14 +18,14 @@ package io.apiman.manager.test.server;
 import io.apiman.common.config.SystemPropertiesConfiguration;
 import io.apiman.common.util.crypt.CurrentDataEncrypter;
 import io.apiman.common.util.crypt.IDataEncrypter;
+import io.apiman.manager.api.beans.apis.EndpointType;
 import io.apiman.manager.api.beans.idm.UserBean;
-import io.apiman.manager.api.beans.services.EndpointType;
-import io.apiman.manager.api.beans.summary.AvailableServiceBean;
+import io.apiman.manager.api.beans.summary.AvailableApiBean;
+import io.apiman.manager.api.core.IApiCatalog;
 import io.apiman.manager.api.core.IApiKeyGenerator;
 import io.apiman.manager.api.core.IMetricsAccessor;
 import io.apiman.manager.api.core.INewUserBootstrapper;
 import io.apiman.manager.api.core.IPluginRegistry;
-import io.apiman.manager.api.core.IServiceCatalog;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.UuidApiKeyGenerator;
@@ -151,22 +151,22 @@ public class TestCdiFactory {
     }
 
     @Produces @ApplicationScoped
-    public static IServiceCatalog provideServiceCatalog(IPluginRegistry pluginRegistry) {
-        return new IServiceCatalog() {
+    public static IApiCatalog provideApiCatalog(IPluginRegistry pluginRegistry) {
+        return new IApiCatalog() {
             @Override
-            public List<AvailableServiceBean> search(String keyword) {
-                List<AvailableServiceBean> rval = new ArrayList<>();
-                AvailableServiceBean asb = new AvailableServiceBean();
-                asb.setName("Test Service 1");
-                asb.setDescription("The first test service.");
-                asb.setEndpoint("http://service1.example.org/api");
+            public List<AvailableApiBean> search(String keyword) {
+                List<AvailableApiBean> rval = new ArrayList<>();
+                AvailableApiBean asb = new AvailableApiBean();
+                asb.setName("Test API 1");
+                asb.setDescription("The first test API.");
+                asb.setEndpoint("http://api1.example.org/api");
                 asb.setEndpointType(EndpointType.rest);
                 rval.add(asb);
 
-                asb = new AvailableServiceBean();
-                asb.setName("Test Service 2");
-                asb.setDescription("The second test service.");
-                asb.setEndpoint("http://service2.example.org/api");
+                asb = new AvailableApiBean();
+                asb.setName("Test API 2");
+                asb.setDescription("The second test API.");
+                asb.setEndpoint("http://api2.example.org/api");
                 asb.setEndpointType(EndpointType.rest);
                 rval.add(asb);
 

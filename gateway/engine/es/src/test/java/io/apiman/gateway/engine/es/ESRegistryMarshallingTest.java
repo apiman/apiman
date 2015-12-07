@@ -15,11 +15,11 @@
  */
 package io.apiman.gateway.engine.es;
 
+import io.apiman.gateway.engine.beans.Api;
+import io.apiman.gateway.engine.beans.ApiContract;
 import io.apiman.gateway.engine.beans.Application;
 import io.apiman.gateway.engine.beans.Contract;
 import io.apiman.gateway.engine.beans.Policy;
-import io.apiman.gateway.engine.beans.Service;
-import io.apiman.gateway.engine.beans.ServiceContract;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,64 +37,64 @@ import org.junit.Test;
 public class ESRegistryMarshallingTest {
 
     /**
-     * Test method for {@link io.apiman.gateway.engine.es.ESRegistryMarshalling#marshall(io.apiman.gateway.engine.beans.Service)}.
+     * Test method for {@link io.apiman.gateway.engine.es.ESRegistryMarshalling#marshall(io.apiman.gateway.engine.beans.Api)}.
      */
     @Test
-    public void testMarshall_Service() throws Exception {
-        Service service = new Service();
-        service.setEndpoint("http://host/path/to/svc");
-        service.setEndpointType("REST");
-        service.setEndpointContentType("xml");
-        service.setOrganizationId("test-org");
-        service.setPublicService(true);
-        service.setServiceId("service-id");
-        service.setVersion("1.0");
+    public void testMarshall_Api() throws Exception {
+        Api api = new Api();
+        api.setEndpoint("http://host/path/to/api");
+        api.setEndpointType("REST");
+        api.setEndpointContentType("xml");
+        api.setOrganizationId("test-org");
+        api.setPublicAPI(true);
+        api.setApiId("api-id");
+        api.setVersion("1.0");
 
         Assert.assertEquals("{"
-                    + "\"endpoint\":\"http://host/path/to/svc\","
+                    + "\"endpoint\":\"http://host/path/to/api\","
                     + "\"endpointType\":\"REST\","
                     + "\"endpointContentType\":\"xml\","
-                    + "\"publicService\":true,"
+                    + "\"publicAPI\":true,"
                     + "\"organizationId\":\"test-org\","
-                    + "\"serviceId\":\"service-id\","
+                    + "\"apiId\":\"api-id\","
                     + "\"version\":\"1.0\","
                     + "\"endpointProperties\":[],"
                     + "\"policies\":[]"
-                + "}", ESRegistryMarshalling.marshall(service).string());
+                + "}", ESRegistryMarshalling.marshall(api).string());
 
         // Set to a tree map so we can guarantee ordering.
-        service.setEndpointProperties(new TreeMap<String, String>());
-        service.getEndpointProperties().put("property-1", "prop-1-value");
-        service.getEndpointProperties().put("property-2", "prop-2-value");
+        api.setEndpointProperties(new TreeMap<String, String>());
+        api.getEndpointProperties().put("property-1", "prop-1-value");
+        api.getEndpointProperties().put("property-2", "prop-2-value");
         Assert.assertEquals("{"
-                + "\"endpoint\":\"http://host/path/to/svc\","
+                + "\"endpoint\":\"http://host/path/to/api\","
                 + "\"endpointType\":\"REST\","
                 + "\"endpointContentType\":\"xml\","
-                + "\"publicService\":true,"
+                + "\"publicAPI\":true,"
                 + "\"organizationId\":\"test-org\","
-                + "\"serviceId\":\"service-id\","
+                + "\"apiId\":\"api-id\","
                 + "\"version\":\"1.0\","
                 + "\"endpointProperties\":[{\"property-1\":\"prop-1-value\"},{\"property-2\":\"prop-2-value\"}],"
                 + "\"policies\":[]"
-            + "}", ESRegistryMarshalling.marshall(service).string());
+            + "}", ESRegistryMarshalling.marshall(api).string());
 
         Policy policy = new Policy();
         policy.setPolicyImpl("policy-1-impl");
         policy.setPolicyJsonConfig("POLICY-1-JSON-CONFIG");
-        service.getServicePolicies().add(policy);
+        api.getApiPolicies().add(policy);
 
         Policy policy2 = new Policy();
         policy2.setPolicyImpl("policy-2-impl");
         policy2.setPolicyJsonConfig("POLICY-2-JSON-CONFIG");
-        service.getServicePolicies().add(policy2);
+        api.getApiPolicies().add(policy2);
 
         Assert.assertEquals("{"
-                + "\"endpoint\":\"http://host/path/to/svc\","
+                + "\"endpoint\":\"http://host/path/to/api\","
                 + "\"endpointType\":\"REST\","
                 + "\"endpointContentType\":\"xml\","
-                + "\"publicService\":true,"
+                + "\"publicAPI\":true,"
                 + "\"organizationId\":\"test-org\","
-                + "\"serviceId\":\"service-id\","
+                + "\"apiId\":\"api-id\","
                 + "\"version\":\"1.0\","
                 + "\"endpointProperties\":[{\"property-1\":\"prop-1-value\"},{\"property-2\":\"prop-2-value\"}],"
                 + "\"policies\":["
@@ -107,7 +107,7 @@ public class ESRegistryMarshallingTest {
                         + "\"policyJsonConfig\":\"POLICY-2-JSON-CONFIG\""
                     + "}"
                 + "]"
-            + "}", ESRegistryMarshalling.marshall(service).string());
+            + "}", ESRegistryMarshalling.marshall(api).string());
     }
 
     /**
@@ -130,9 +130,9 @@ public class ESRegistryMarshallingTest {
         Contract contract = new Contract();
         contract.setApiKey("12345");
         contract.setPlan("Silver");
-        contract.setServiceId("service-id");
-        contract.setServiceOrgId("service-test-org");
-        contract.setServiceVersion("1.7");
+        contract.setApiId("api-id");
+        contract.setApiOrgId("api-test-org");
+        contract.setApiVersion("1.7");
         app.getContracts().add(contract);
 
         Assert.assertEquals("{"
@@ -143,9 +143,9 @@ public class ESRegistryMarshallingTest {
                     + "{"
                         + "\"apiKey\":\"12345\","
                         + "\"plan\":\"Silver\","
-                        + "\"serviceOrgId\":\"service-test-org\","
-                        + "\"serviceId\":\"service-id\","
-                        + "\"serviceVersion\":\"1.7\","
+                        + "\"apiOrgId\":\"api-test-org\","
+                        + "\"apiId\":\"api-id\","
+                        + "\"apiVersion\":\"1.7\","
                         + "\"policies\":[]"
                     + "}"
                 + "]"
@@ -169,9 +169,9 @@ public class ESRegistryMarshallingTest {
                     + "{"
                         + "\"apiKey\":\"12345\","
                         + "\"plan\":\"Silver\","
-                        + "\"serviceOrgId\":\"service-test-org\","
-                        + "\"serviceId\":\"service-id\","
-                        + "\"serviceVersion\":\"1.7\","
+                        + "\"apiOrgId\":\"api-test-org\","
+                        + "\"apiId\":\"api-id\","
+                        + "\"apiVersion\":\"1.7\","
                         + "\"policies\":["
                             + "{"
                                 + "\"policyImpl\":\"policy-1-impl\","
@@ -188,25 +188,25 @@ public class ESRegistryMarshallingTest {
     }
 
     /**
-     * Test method for {@link io.apiman.gateway.engine.es.ESRegistryMarshalling#marshall(ServiceContract)}
+     * Test method for {@link io.apiman.gateway.engine.es.ESRegistryMarshalling#marshall(ApiContract)}
      */
     @Test
-    public void testMarshall_ServiceContract() throws Exception {
-        ServiceContract sc = new ServiceContract();
+    public void testMarshall_ApiContract() throws Exception {
+        ApiContract sc = new ApiContract();
         sc.setApikey("12345");
         sc.setPlan("Gold");
         sc.setPolicies(new ArrayList<Policy>());
 
-        Service service = new Service();
-        service.setServicePolicies(null);
-        service.setEndpoint("http://host/path/to/svc");
-        service.setEndpointType("REST");
-        service.setEndpointContentType("json");
-        service.setOrganizationId("test-org");
-        service.setPublicService(true);
-        service.setServiceId("service-id");
-        service.setVersion("1.0");
-        sc.setService(service);
+        Api api = new Api();
+        api.setApiPolicies(null);
+        api.setEndpoint("http://host/path/to/api");
+        api.setEndpointType("REST");
+        api.setEndpointContentType("json");
+        api.setOrganizationId("test-org");
+        api.setPublicAPI(true);
+        api.setApiId("api-id");
+        api.setVersion("1.0");
+        sc.setApi(api);
 
         Application app = new Application();
         app.setApplicationId("app-id");
@@ -233,13 +233,13 @@ public class ESRegistryMarshallingTest {
                     + "\"version\":\"1.0\","
                     + "\"contracts\":[]"
                 + "},"
-                + "\"service\":{"
-                    + "\"endpoint\":\"http://host/path/to/svc\","
+                + "\"api\":{"
+                    + "\"endpoint\":\"http://host/path/to/api\","
                     + "\"endpointType\":\"REST\","
                     + "\"endpointContentType\":\"json\","
-                    + "\"publicService\":true,"
+                    + "\"publicAPI\":true,"
                     + "\"organizationId\":\"test-org\","
-                    + "\"serviceId\":\"service-id\","
+                    + "\"apiId\":\"api-id\","
                     + "\"version\":\"1.0\","
                     + "\"endpointProperties\":[]"
                 + "},"
@@ -257,27 +257,27 @@ public class ESRegistryMarshallingTest {
     }
 
     /**
-     * Test method for {@link io.apiman.gateway.engine.es.ESRegistryMarshalling#unmarshallService(java.util.Map)}.
+     * Test method for {@link io.apiman.gateway.engine.es.ESRegistryMarshalling#unmarshallApi(java.util.Map)}.
      */
     @Test
-    public void testUnmarshall_Service() throws Exception {
+    public void testUnmarshall_Api() throws Exception {
         Map<String, Object> data = new HashMap<>();
         data.put("endpoint", "http://host:port/blah");
         data.put("endpointType", "REST");
         data.put("endpointContentType", "xml");
         data.put("organizationId", "test-org");
-        data.put("publicService", Boolean.TRUE);
-        data.put("serviceId", "test-service");
+        data.put("publicAPI", Boolean.TRUE);
+        data.put("apiId", "test-api");
         data.put("version", "1.2");
-        Service service = ESRegistryMarshalling.unmarshallService(data);
+        Api api = ESRegistryMarshalling.unmarshallApi(data);
 
-        Assert.assertEquals("http://host:port/blah", service.getEndpoint());
-        Assert.assertEquals("REST", service.getEndpointType());
-        Assert.assertEquals("xml", service.getEndpointContentType());
-        Assert.assertEquals("test-org", service.getOrganizationId());
-        Assert.assertEquals("test-service", service.getServiceId());
-        Assert.assertEquals("1.2", service.getVersion());
-        Assert.assertEquals(Boolean.TRUE, service.isPublicService());
+        Assert.assertEquals("http://host:port/blah", api.getEndpoint());
+        Assert.assertEquals("REST", api.getEndpointType());
+        Assert.assertEquals("xml", api.getEndpointContentType());
+        Assert.assertEquals("test-org", api.getOrganizationId());
+        Assert.assertEquals("test-api", api.getApiId());
+        Assert.assertEquals("1.2", api.getVersion());
+        Assert.assertEquals(Boolean.TRUE, api.isPublicAPI());
 
         List<Map<String, Object>> policiesData = new ArrayList<>();
         data.put("policies", policiesData);
@@ -287,15 +287,15 @@ public class ESRegistryMarshallingTest {
         policyData.put("policyJsonConfig", "json-config-1");
         policiesData.add(policyData);
 
-        service = ESRegistryMarshalling.unmarshallService(data);
-        Assert.assertEquals("http://host:port/blah", service.getEndpoint());
-        Assert.assertEquals("REST", service.getEndpointType());
-        Assert.assertEquals("test-org", service.getOrganizationId());
-        Assert.assertEquals("test-service", service.getServiceId());
-        Assert.assertEquals("1.2", service.getVersion());
-        Assert.assertEquals(Boolean.TRUE, service.isPublicService());
-        Assert.assertEquals(1, service.getServicePolicies().size());
-        Policy policy = service.getServicePolicies().iterator().next();
+        api = ESRegistryMarshalling.unmarshallApi(data);
+        Assert.assertEquals("http://host:port/blah", api.getEndpoint());
+        Assert.assertEquals("REST", api.getEndpointType());
+        Assert.assertEquals("test-org", api.getOrganizationId());
+        Assert.assertEquals("test-api", api.getApiId());
+        Assert.assertEquals("1.2", api.getVersion());
+        Assert.assertEquals(Boolean.TRUE, api.isPublicAPI());
+        Assert.assertEquals(1, api.getApiPolicies().size());
+        Policy policy = api.getApiPolicies().iterator().next();
         Assert.assertEquals("impl-1", policy.getPolicyImpl());
         Assert.assertEquals("json-config-1", policy.getPolicyJsonConfig());
     }
@@ -319,9 +319,9 @@ public class ESRegistryMarshallingTest {
         data.put("contracts", contractsData);
         Map<String, Object> contractData = new HashMap<>();
         contractData.put("apiKey", "12345");
-        contractData.put("serviceOrgId", "svc-org");
-        contractData.put("serviceId", "svc-id");
-        contractData.put("serviceVersion", "19");
+        contractData.put("apiOrgId", "api-org");
+        contractData.put("apiId", "api-id");
+        contractData.put("apiVersion", "19");
         contractsData.add(contractData);
 
         List<Map<String, Object>> policiesData = new ArrayList<>();
@@ -339,9 +339,9 @@ public class ESRegistryMarshallingTest {
         Assert.assertEquals(1, app.getContracts().size());
         Contract contract = app.getContracts().iterator().next();
         Assert.assertEquals("12345", contract.getApiKey());
-        Assert.assertEquals("svc-id", contract.getServiceId());
-        Assert.assertEquals("svc-org", contract.getServiceOrgId());
-        Assert.assertEquals("19", contract.getServiceVersion());
+        Assert.assertEquals("api-id", contract.getApiId());
+        Assert.assertEquals("api-org", contract.getApiOrgId());
+        Assert.assertEquals("19", contract.getApiVersion());
 
         Assert.assertEquals(1, contract.getPolicies().size());
         Policy policy = contract.getPolicies().iterator().next();

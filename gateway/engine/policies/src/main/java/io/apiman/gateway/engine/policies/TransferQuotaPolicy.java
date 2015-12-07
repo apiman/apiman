@@ -19,8 +19,8 @@ import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.beans.PolicyFailureType;
-import io.apiman.gateway.engine.beans.ServiceRequest;
-import io.apiman.gateway.engine.beans.ServiceResponse;
+import io.apiman.gateway.engine.beans.ApiRequest;
+import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.components.IRateLimiterComponent;
 import io.apiman.gateway.engine.components.rate.RateLimitResponse;
@@ -67,11 +67,11 @@ public class TransferQuotaPolicy extends AbstractMappedDataPolicy<TransferQuotaC
     }
 
     /**
-     * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#doApply(io.apiman.gateway.engine.beans.ServiceRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
+     * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#doApply(io.apiman.gateway.engine.beans.ApiRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
      */
     @Override
-    protected void doApply(final ServiceRequest request, final IPolicyContext context, final TransferQuotaConfig config,
-            final IPolicyChain<ServiceRequest> chain) {
+    protected void doApply(final ApiRequest request, final IPolicyContext context, final TransferQuotaConfig config,
+            final IPolicyChain<ApiRequest> chain) {
         // *************************************************************
         // Step 1:  check to see if we're already in violation of this
         //          policy.  If so, fail fast.
@@ -115,24 +115,24 @@ public class TransferQuotaPolicy extends AbstractMappedDataPolicy<TransferQuotaC
     }
 
     /**
-     * @see io.apiman.gateway.engine.policies.AbstractMappedDataPolicy#requestDataHandler(io.apiman.gateway.engine.beans.ServiceRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object)
+     * @see io.apiman.gateway.engine.policies.AbstractMappedDataPolicy#requestDataHandler(io.apiman.gateway.engine.beans.ApiRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object)
      */
     @Override
-    protected IReadWriteStream<ServiceRequest> requestDataHandler(final ServiceRequest request,
+    protected IReadWriteStream<ApiRequest> requestDataHandler(final ApiRequest request,
             final IPolicyContext context, final TransferQuotaConfig config) {
         // *************************************************************
         // Step 2:  if upload quotas are enabled, then count all bytes
         //          uploaded to the back-end API
         // *************************************************************
         if (config.getDirection() == TransferDirectionType.upload || config.getDirection() == TransferDirectionType.both) {
-            return new AbstractStream<ServiceRequest>() {
+            return new AbstractStream<ApiRequest>() {
                 private long total = 0;
                 @Override
-                public ServiceRequest getHead() {
+                public ApiRequest getHead() {
                     return request;
                 }
                 @Override
-                protected void handleHead(ServiceRequest head) {
+                protected void handleHead(ApiRequest head) {
                 }
                 @Override
                 public void write(IApimanBuffer chunk) {
@@ -151,11 +151,11 @@ public class TransferQuotaPolicy extends AbstractMappedDataPolicy<TransferQuotaC
     }
 
     /**
-     * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#doApply(io.apiman.gateway.engine.beans.ServiceResponse, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
+     * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#doApply(io.apiman.gateway.engine.beans.ApiResponse, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
      */
     @Override
-    protected void doApply(final ServiceResponse response, final IPolicyContext context, final TransferQuotaConfig config,
-            final IPolicyChain<ServiceResponse> chain) {
+    protected void doApply(final ApiResponse response, final IPolicyContext context, final TransferQuotaConfig config,
+            final IPolicyChain<ApiResponse> chain) {
         // *************************************************************
         // Step 3:  store the upload count (if appropriate) and fail if
         //          the transfer limit was exceeded
@@ -196,10 +196,10 @@ public class TransferQuotaPolicy extends AbstractMappedDataPolicy<TransferQuotaC
     }
 
     /**
-     * @see io.apiman.gateway.engine.policies.AbstractMappedDataPolicy#responseDataHandler(io.apiman.gateway.engine.beans.ServiceResponse, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object)
+     * @see io.apiman.gateway.engine.policies.AbstractMappedDataPolicy#responseDataHandler(io.apiman.gateway.engine.beans.ApiResponse, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object)
      */
     @Override
-    protected IReadWriteStream<ServiceResponse> responseDataHandler(final ServiceResponse response,
+    protected IReadWriteStream<ApiResponse> responseDataHandler(final ApiResponse response,
             final IPolicyContext context, final TransferQuotaConfig config) {
         // *************************************************************
         // Step 4:  if download quotas are enabled, then count all bytes
@@ -210,14 +210,14 @@ public class TransferQuotaPolicy extends AbstractMappedDataPolicy<TransferQuotaC
         //       next request (see Step 1)
         // *************************************************************
         if (config.getDirection() == TransferDirectionType.download || config.getDirection() == TransferDirectionType.both) {
-            return new AbstractStream<ServiceResponse>() {
+            return new AbstractStream<ApiResponse>() {
                 private long total = 0;
                 @Override
-                public ServiceResponse getHead() {
+                public ApiResponse getHead() {
                     return response;
                 }
                 @Override
-                protected void handleHead(ServiceResponse head) {
+                protected void handleHead(ApiResponse head) {
                 }
                 @Override
                 public void write(IApimanBuffer chunk) {

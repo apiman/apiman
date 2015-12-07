@@ -7,16 +7,16 @@ Content-Type: application/json
   "version" : "1.0",
   "contracts" : [
     {
-      "apiKey" : "service-1",
-      "serviceOrgId" : "AppReregisterTest",
-      "serviceId" : "echo-1",
-      "serviceVersion" : "1.0"
+      "apiKey" : "api-1",
+      "apiOrgId" : "AppReregisterTest",
+      "apiId" : "echo-1",
+      "apiVersion" : "1.0"
     },
     {
-      "apiKey" : "service-2",
-      "serviceOrgId" : "AppReregisterTest",
-      "serviceId" : "echo-2",
-      "serviceVersion" : "1.0"
+      "apiKey" : "api-2",
+      "apiOrgId" : "AppReregisterTest",
+      "apiId" : "echo-2",
+      "apiVersion" : "1.0"
     }
   ]
 }

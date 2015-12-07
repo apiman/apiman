@@ -21,9 +21,9 @@ import io.apiman.manager.api.beans.idm.UpdateUserBean;
 import io.apiman.manager.api.beans.idm.UserBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaBean;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
+import io.apiman.manager.api.beans.summary.ApiSummaryBean;
 import io.apiman.manager.api.beans.summary.ApplicationSummaryBean;
 import io.apiman.manager.api.beans.summary.OrganizationSummaryBean;
-import io.apiman.manager.api.beans.summary.ServiceSummaryBean;
 import io.apiman.manager.api.rest.contract.exceptions.InvalidSearchCriteriaException;
 import io.apiman.manager.api.rest.contract.exceptions.NotAuthorizedException;
 import io.apiman.manager.api.rest.contract.exceptions.UserNotFoundException;
@@ -43,7 +43,7 @@ import javax.ws.rs.core.MediaType;
 
 /**
  * The User API.
- * 
+ *
  * @author eric.wittmann@redhat.com
  */
 @Path("users")
@@ -121,16 +121,16 @@ public interface IUserResource {
     public List<ApplicationSummaryBean> getApplications(@PathParam("userId") String userId);
 
     /**
-     * This endpoint returns all services that the user has permission to edit.
-     * @summary List User Services
+     * This endpoint returns all APIs that the user has permission to edit.
+     * @summary List User APIs
      * @param userId The user ID.
-     * @statuscode 200 If the service list is successfully returned.
-     * @return List of services.
+     * @statuscode 200 If the API list is successfully returned.
+     * @return List of APIs.
      */
     @GET
-    @Path("{userId}/services")
+    @Path("{userId}/apis")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<ServiceSummaryBean> getServices(@PathParam("userId") String userId);
+    public List<ApiSummaryBean> getApis(@PathParam("userId") String userId);
 
     /**
      * Use this endpoint to get information about the user's audit history.  This
@@ -149,5 +149,5 @@ public interface IUserResource {
     @Produces(MediaType.APPLICATION_JSON)
     public SearchResultsBean<AuditEntryBean> getActivity(@PathParam("userId") String userId,
             @QueryParam("page") int page, @QueryParam("count") int pageSize);
-    
+
 }

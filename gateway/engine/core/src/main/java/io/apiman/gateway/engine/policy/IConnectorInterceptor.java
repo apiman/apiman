@@ -15,10 +15,10 @@
  */
 package io.apiman.gateway.engine.policy;
 
-import io.apiman.gateway.engine.IServiceConnector;
+import io.apiman.gateway.engine.IApiConnector;
 
 /**
- * Connector interceptor to be used for create the {@link IServiceConnector} which will be used
+ * Connector interceptor to be used for create the {@link IApiConnector} which will be used
  * instead of the real connector configured in the gateway
  * 
  * @author rromero
@@ -26,6 +26,6 @@ import io.apiman.gateway.engine.IServiceConnector;
  */
 public interface IConnectorInterceptor {
 
-    IServiceConnector createConnector();
+    IApiConnector createConnector();
 
 }

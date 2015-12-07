@@ -37,16 +37,16 @@ var PolicyToIngestorService = function(j_val) {
   var that = this;
 
   /**
-   Write a serviceRequest (head)
+   Write a apiRequest (head)
 
    @public
-   @param serviceResponse {Object} the service request 
+   @param apiResponse {Object} the service request 
    @param readyHandler {function} when ready to transmit body 
    */
-  this.head = function(serviceResponse, readyHandler) {
+  this.head = function(apiResponse, readyHandler) {
     var __args = arguments;
     if (__args.length === 2 && typeof __args[0] === 'object' && typeof __args[1] === 'function') {
-      j_policyToIngestorService["head(io.apiman.gateway.platforms.vertx3.io.VertxServiceResponse,io.vertx.core.Handler)"](serviceResponse != null ? new VertxServiceResponse(new JsonObject(JSON.stringify(serviceResponse))) : null, function(ar) {
+      j_policyToIngestorService["head(io.apiman.gateway.platforms.vertx3.io.VertxServiceResponse,io.vertx.core.Handler)"](apiResponse != null ? new VertxServiceResponse(new JsonObject(JSON.stringify(apiResponse))) : null, function(ar) {
       if (ar.succeeded()) {
         readyHandler(null, null);
       } else {

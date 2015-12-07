@@ -2,9 +2,9 @@ POST /organizations/Organization1/applications/Application1/versions/1.0/contrac
 Content-Type: application/json
 
 {
-  "serviceOrgId" : "Organization1",
-  "serviceId" : "Service1",
-  "serviceVersion" : "1.0",
+  "apiOrgId" : "Organization1",
+  "apiId" : "API1",
+  "apiVersion" : "1.0",
   "planId" : "Plan1"
 }
 ----

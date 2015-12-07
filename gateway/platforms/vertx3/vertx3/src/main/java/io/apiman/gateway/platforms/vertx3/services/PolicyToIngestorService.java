@@ -15,8 +15,8 @@
  */
 package io.apiman.gateway.platforms.vertx3.services;
 
+import io.apiman.gateway.platforms.vertx3.io.VertxApiResponse;
 import io.apiman.gateway.platforms.vertx3.io.VertxPolicyFailure;
-import io.apiman.gateway.platforms.vertx3.io.VertxServiceResponse;
 import io.apiman.gateway.platforms.vertx3.services.impl.PolicyToIngestorServiceImpl;
 import io.vertx.codegen.annotations.ProxyClose;
 import io.vertx.codegen.annotations.ProxyGen;
@@ -46,12 +46,12 @@ public interface PolicyToIngestorService {
     }
 
     /**
-     * Write a serviceRequest (head)
+     * Write a apiRequest (head)
      *
-     * @param serviceResponse the service request
+     * @param apiResponse the service request
      * @param readyHandler when ready to transmit body
      */
-    void head(VertxServiceResponse serviceResponse, Handler<AsyncResult<Void>> readyHandler);
+    void head(VertxApiResponse apiResponse, Handler<AsyncResult<Void>> readyHandler);
 
     /**
      * Write a body chunks

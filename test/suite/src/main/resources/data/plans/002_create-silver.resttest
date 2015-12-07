@@ -3,7 +3,7 @@ Content-Type: application/json
 
 {
   "name" : "Silver",
-  "description" : "The Silver plan allows users a lower level of service."
+  "description" : "The Silver plan allows users a lower level of API."
 }
 ----
 200
@@ -15,5 +15,5 @@ Content-Type: application/json
   },
   "name" : "Silver",
   "id" : "Silver",
-  "description" : "The Silver plan allows users a lower level of service."
+  "description" : "The Silver plan allows users a lower level of API."
 }

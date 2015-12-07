@@ -1,0 +1,21 @@
+GET /organizations/Organization1/apis admin/admin
+----
+200
+Content-Type: application/json
+
+[
+  {
+    "organizationId" : "Organization1",
+    "organizationName" : "Organization 1",
+    "id" : "API1",
+    "name" : "API 1",
+    "description" : "[UPDATED] This is the description of API 1!"
+  },
+  {
+    "organizationId" : "Organization1",
+    "organizationName" : "Organization 1",
+    "id" : "API2",
+    "name" : "API 2",
+    "description" : "This is the description of API 2."
+  }
+]

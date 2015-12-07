@@ -1,0 +1,15 @@
+PUT /organizations/Organization1/apis/API1/versions/1.0 admin/admin
+Content-Type: application/json
+
+{
+  "endpoint" : "localhost:8080/ping"
+}
+----
+400
+Content-Type: application/json
+
+{
+  "type": "InvalidParameterException",
+  "errorCode": 14004,
+  "message": "Endpoint is not a valid URL."
+}

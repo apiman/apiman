@@ -17,7 +17,7 @@ package io.apiman.gateway.api.rest.impl;
 
 
 /**
- * An interface used by the REST services when getting information that must
+ * An interface used by the REST layer when getting information that must
  * be provided by the platform.  For example, when the gateway is running
  * within a WAR (e.g. running on wildfly) then that particular implementation
  * must provide certain information.  This interface allows the REST impl

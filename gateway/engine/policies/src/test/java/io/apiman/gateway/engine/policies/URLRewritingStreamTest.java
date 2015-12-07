@@ -16,7 +16,7 @@
 package io.apiman.gateway.engine.policies;
 
 import io.apiman.gateway.engine.async.IAsyncHandler;
-import io.apiman.gateway.engine.beans.ServiceResponse;
+import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.engine.components.IBufferFactoryComponent;
 import io.apiman.gateway.engine.impl.ByteBufferFactoryComponent;
 import io.apiman.gateway.engine.io.IApimanBuffer;
@@ -153,7 +153,7 @@ public class URLRewritingStreamTest {
      */
     private void doTest(String fromRegexp, String toReplacement, String[] chunks, String expectedResult) {
         IBufferFactoryComponent bufferFactory = new ByteBufferFactoryComponent();
-        URLRewritingStream stream = new URLRewritingStream(bufferFactory, (ServiceResponse) null, fromRegexp, toReplacement);
+        URLRewritingStream stream = new URLRewritingStream(bufferFactory, (ApiResponse) null, fromRegexp, toReplacement);
         RecordingHandler handler = new RecordingHandler(bufferFactory.createBuffer());
         stream.bodyHandler(handler);
         stream.endHandler(new IAsyncHandler<Void>() {

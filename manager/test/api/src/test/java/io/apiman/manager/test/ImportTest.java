@@ -30,7 +30,7 @@ import org.junit.runner.RunWith;
 @ManagerRestTestPlan("test-plans/import-testPlan.xml")
 @ManagerRestTestGatewayLog(
         "GET:/mock-gateway/system/status\n" +
-        "PUT:/mock-gateway/services\n" +
+        "PUT:/mock-gateway/apis\n" +
         "GET:/mock-gateway/system/status\n" +
         "PUT:/mock-gateway/applications\n"
   )

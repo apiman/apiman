@@ -17,7 +17,7 @@ package io.apiman.gateway.engine.policies.auth;
 
 import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
-import io.apiman.gateway.engine.beans.ServiceRequest;
+import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.policies.config.basicauth.StaticIdentity;
 import io.apiman.gateway.engine.policies.config.basicauth.StaticIdentitySource;
 import io.apiman.gateway.engine.policy.IPolicyContext;
@@ -39,10 +39,10 @@ public class StaticIdentityValidator implements IIdentityValidator<StaticIdentit
     }
 
     /**
-     * @see io.apiman.gateway.engine.policies.auth.IIdentityValidator#validate(java.lang.String, java.lang.String, io.apiman.gateway.engine.beans.ServiceRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.async.IAsyncResultHandler)
+     * @see io.apiman.gateway.engine.policies.auth.IIdentityValidator#validate(java.lang.String, java.lang.String, io.apiman.gateway.engine.beans.ApiRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
     @Override
-    public void validate(String username, String password, ServiceRequest request, IPolicyContext context,
+    public void validate(String username, String password, ApiRequest request, IPolicyContext context,
             StaticIdentitySource config, IAsyncResultHandler<Boolean> handler) {
         List<StaticIdentity> identities = config.getIdentities();
         for (StaticIdentity identity : identities) {

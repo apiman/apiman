@@ -26,10 +26,10 @@ import io.apiman.gateway.engine.IMetrics;
 import io.apiman.gateway.engine.IPluginRegistry;
 import io.apiman.gateway.engine.IRegistry;
 import io.apiman.gateway.engine.IRequiresInitialization;
-import io.apiman.gateway.engine.IServiceRequestExecutor;
+import io.apiman.gateway.engine.IApiRequestExecutor;
 import io.apiman.gateway.engine.Version;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
-import io.apiman.gateway.engine.beans.ServiceRequest;
+import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.policy.IPolicyFactory;
 import io.apiman.gateway.engine.policy.PolicyContextImpl;
 
@@ -85,11 +85,11 @@ public class EngineImpl implements IEngine {
     }
 
     /**
-     * @see io.apiman.gateway.engine.IEngine#executor(ServiceRequest, IAsyncResultHandler)
+     * @see io.apiman.gateway.engine.IEngine#executor(ApiRequest, IAsyncResultHandler)
      */
     @Override
-    public IServiceRequestExecutor executor(ServiceRequest request, final IAsyncResultHandler<IEngineResult> resultHandler) {
-        return new ServiceRequestExecutorImpl(request,
+    public IApiRequestExecutor executor(ApiRequest request, final IAsyncResultHandler<IEngineResult> resultHandler) {
+        return new ApiRequestExecutorImpl(request,
                 resultHandler,
                 registry,
                 new PolicyContextImpl(getComponentRegistry()),

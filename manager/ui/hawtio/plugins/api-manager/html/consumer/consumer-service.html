@@ -9,20 +9,20 @@
   <div>
     
     <div ng-include="headerInclude"></div>   
-    <div ng-controller="Apiman.ConsumerSvcController" class="page container" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
+    <div ng-controller="Apiman.ConsumerApiController" class="page container" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
       <div class="row">
         <div class="col-md-12">
           <ol class="breadcrumb" data-field="breadcrumb">
             <li><a id="bc-home" href="{{ pluginName }}/"><i class="fa fa-home fa-fw"></i><span apiman-i18n-key="home">Home</span></a></li>
             <li><a id="bc-orgs" href="{{ pluginName }}/browse/orgs"><i class="fa fa-search fa-fw"></i><span apiman-i18n-key="organizations">Organizations</span></a></li>
             <li><a id="bc-org" href="{{ pluginName }}/browse/orgs/{{params.org}}"><i class="fa fa-shield fa-fw"></i><span>{{ org.name }}</span></a></li>
-            <li class="active"><i class="fa fa-puzzle-piece fa-fw"></i><span>{{ service.name }}</span></li>
+            <li class="active"><i class="fa fa-puzzle-piece fa-fw"></i><span>{{ api.name }}</span></li>
           </ol>
         </div>
       </div>
       <div class="row">
         <div class="col-md-12">
-          <h1 class="consumer-top-header" apiman-i18n-key="service-details">Service Details</h1>
+          <h1 class="consumer-top-header" apiman-i18n-key="api-details">API Details</h1>
         </div>
         <div class="col-md-12">
           <div class="vspacer-10" />
@@ -32,29 +32,29 @@
 
         <!-- Left column -->
         <div class="col-md-4 browse-items">
-          <div class="item" style="width: 100%; margin-bottom: 20px;" data-field="serviceCard">
+          <div class="item" style="width: 100%; margin-bottom: 20px;" data-field="apiCard">
             <div class="title">
-              <i class="fa fa-puzzle-piece icon"></i><a href="{{ pluginName }}/browse/orgs/{{ service.organization.id }}" data-field="titleOrg">{{ service.organization.name }}</a>
+              <i class="fa fa-puzzle-piece icon"></i><a href="{{ pluginName }}/browse/orgs/{{ api.organization.id }}" data-field="titleOrg">{{ api.organization.name }}</a>
               <span apiman-i18n-skip> / </span>
-              <span class="emphasis" data-field="titleService">{{ service.name }}</span>
+              <span class="emphasis">{{ api.name }}</span>
             </div>
-            <div class="description" data-field="description" style="margin-bottom: 10px;">{{ service.description }}</div>
+            <div class="description" style="margin-bottom: 10px;">{{ api.description }}</div>
             <span class="apiman-form-label" apiman-i18n-key="choose-version">Choose Version:</span>
             <div class="btn-group apiman-entity-action" ng-show="versions.length > 0">
-              <select id="version" apiman-select-picker="" ng-model="selectedServiceVersion" ng-change="setVersion( selectedServiceVersion )"
+              <select id="version" apiman-select-picker="" ng-model="selectedApiVersion" ng-change="setVersion( selectedApiVersion )"
                 title="" class="selectpicker" data-live-search="false" apiman-i18n-skip
                 data-field="versionSelector" data-ng-options="version as version.version for version in versions">
               </select>
             </div>
-            <div apiman-i18n-key="no-published-service-versions-found" class="alert alert-warning no-icon" ng-hide="versions.length > 0">
-              No versions of this service have been published.  You will not be able to
-              consume this service until it has been published by its owner!
+            <div apiman-i18n-key="no-published-api-versions-found" class="alert alert-warning no-icon" ng-hide="versions.length > 0">
+              No versions of this API have been published.  You will not be able to
+              consume this API until it has been published by its owner!
             </div>
             <div ng-show="version.definitionType == 'SwaggerJSON' && hasSwagger">
               <div class="vspacer-10" />
-              <a href="{{ pluginName }}/browse/orgs/{{params.org}}/{{params.service}}/{{params.version}}/def">
+              <a href="{{ pluginName }}/browse/orgs/{{params.org}}/{{params.api}}/{{params.version}}/def">
                 <i class="fa fa-fw fa-sitemap"></i>
-                <span apiman-i18n-key="view-service-def">View Service Definition</span>
+                <span apiman-i18n-key="view-api-def">View API Definition</span>
               </a>
             </div>
           </div>
@@ -65,15 +65,15 @@
           <div class="consumer-section">
           
             <div ng-show="version.status != 'Published'">
-              <p class="apiman-no-entities-description" apiman-i18n-key="version-not-published">This version of the selected service is not yet published.  You cannot create a contract until the service provider published this version of the service!</p>
+              <p class="apiman-no-entities-description" apiman-i18n-key="version-not-published">This version of the selected API is not yet published.  You cannot create a contract until the API provider published this version of the API!</p>
             </div>
           
-            <div id="managed-endpoint-wrap" ng-show="version.publicService && version.status == 'Published'">
+            <div id="managed-endpoint-wrap" ng-show="version.publicAPI && version.status == 'Published'">
               <h3 apiman-i18n-key="public-endpoint" class="consumer-header">Public Endpoint</h3>
-              <p class="apiman-label-faded" apiman-i18n-key="consumer-service.public-service-warning">
-                Because this is a Public Service, it is possible to invoke it directly, without
-                the need for a Service Contract with an Application.  To directly invoke the
-                Service, send requests to the API Gateway endpoint below.
+              <p class="apiman-label-faded" apiman-i18n-key="consumer-api.public-api-warning">
+                Because this is a Public API, it is possible to invoke it directly, without
+                the need for an API Contract with an Application.  To directly invoke the
+                API, send requests to the API Gateway endpoint below.
               </p>
               <div class="input-group" style="width: 100%; margin: 25px 0 45px 0;">
                 <input readonly
@@ -103,7 +103,7 @@
               <div class="apiman-plans consumer-section" data-field="plans">
 
                 <div class="apiman-no-content" ng-hide="plans.length > 0">
-                  <p class="apiman-no-entities-description" apiman-i18n-key="no-plans-offered-by-service">No plans are currently offered by this service.</p>
+                  <p class="apiman-no-entities-description" apiman-i18n-key="no-plans-offered-by-api">No plans are currently offered by this API.</p>
                 </div>
 
                 <div class="container-fluid apiman-summaryrow" ng-repeat="plan in plans">
@@ -116,7 +116,7 @@
                       </div>
                     </div>
                     <div class="col-md-2 col-no-padding">
-                      <span class="actions"><a apiman-i18n-key="create-contract" href="{{ pluginName }}/new-contract?svc={{ params.service }}&amp;svcorg={{ params.org }}&amp;svcv={{ params.version }}&amp;planid={{ plan.planId }}" class="btn btn-default">Create Contract</a></span>
+                      <span class="actions"><a apiman-i18n-key="create-contract" href="{{ pluginName }}/new-contract?api={{ params.api }}&amp;apiorg={{ params.org }}&amp;apiv={{ params.version }}&amp;planid={{ plan.planId }}" class="btn btn-default">Create Contract</a></span>
                     </div>
                   </div>
                   <!-- Sub-section - policy chain -->

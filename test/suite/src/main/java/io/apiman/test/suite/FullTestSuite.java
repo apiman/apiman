@@ -31,11 +31,11 @@ import java.io.InputStreamReader;
  *     c) Create a Gateway
  * 2) Create a Test organization
  * 3) Add two Plans (Gold, Silver)
- * 4) Add an "Echo" service
+ * 4) Add an "Echo" API
  * 5) Create an application
- * 6) Create a contract from the app to the service via the Gold plan
- * 7) Create a contract from the app to the service via the Silver plan
- * 8) Publish and Register the service and app
+ * 6) Create a contract from the app to the API via the Gold plan
+ * 7) Create a contract from the app to the API via the Silver plan
+ * 8) Publish and Register the API and app
  * 9) Send requests to the gateway
  * </pre>
  *
@@ -45,7 +45,7 @@ import java.io.InputStreamReader;
  * 1) apiman must be running :)
  * 2) a valid user must exist with admin privs (role = apiadmin)
  * 3) no data exists yet in apiman (empty database)
- * 4) the echo REST service must be running somewhere (can be found in apiman-quickstarts)
+ * 4) the echo REST API must be running somewhere (can be found in apiman-quickstarts)
  * </pre>
  *
  * @author eric.wittmann@redhat.com
@@ -66,7 +66,7 @@ public class FullTestSuite {
         param("apiman.suite.gateway-config-username", "  Username", "admin");
         param("apiman.suite.gateway-config-password", "  Password", "admin123!");
         String gatewayEndpoint = param("apiman.suite.gateway-endpoint", "Gateway HTTP Endpoint", "http://localhost:8080/apiman-gateway");
-        param("apiman.suite.echo-endpoint", "Echo Service Endpoint", "http://localhost:8080/services/echo");
+        param("apiman.suite.echo-endpoint", "Echo API Endpoint", "http://localhost:8080/services/echo");
 
         TestPlanRunner runner = new TestPlanRunner();
         runner.runTestPlan("scripts/api-manager-testPlan.xml", FullTestSuite.class.getClassLoader(), apiEndpoint);

@@ -37,7 +37,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.hibernate.annotations.Type;
 
 /**
- * Models a single gateway configured by an admin.  When publishing services,
+ * Models a single gateway configured by an admin.  When publishing APIs,
  * the user must specific which Gateway to publish to.
  *
  * @author eric.wittmann@redhat.com

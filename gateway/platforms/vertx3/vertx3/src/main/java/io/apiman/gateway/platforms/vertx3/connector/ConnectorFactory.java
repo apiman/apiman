@@ -16,14 +16,14 @@
 package io.apiman.gateway.platforms.vertx3.connector;
 
 import io.apiman.common.config.options.TLSOptions;
+import io.apiman.gateway.engine.IApiConnection;
+import io.apiman.gateway.engine.IApiConnectionResponse;
+import io.apiman.gateway.engine.IApiConnector;
 import io.apiman.gateway.engine.IConnectorFactory;
-import io.apiman.gateway.engine.IServiceConnection;
-import io.apiman.gateway.engine.IServiceConnectionResponse;
-import io.apiman.gateway.engine.IServiceConnector;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.auth.RequiredAuthType;
-import io.apiman.gateway.engine.beans.Service;
-import io.apiman.gateway.engine.beans.ServiceRequest;
+import io.apiman.gateway.engine.beans.Api;
+import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.exceptions.ConnectorException;
 import io.vertx.core.Vertx;
 
@@ -32,7 +32,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Create Vert.x connectors to the enable apiman to connect to a backend service.
+ * Create Vert.x connectors to the enable apiman to connect to a backend API.
  *
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
@@ -59,15 +59,15 @@ public class ConnectorFactory implements IConnectorFactory {
     }
 
     @Override
-    public IServiceConnector createConnector(ServiceRequest request, final Service service, RequiredAuthType authType) {
-        return new IServiceConnector() {
+    public IApiConnector createConnector(ApiRequest request, final Api api, RequiredAuthType authType) {
+        return new IApiConnector() {
 
             @Override
-            public IServiceConnection connect(ServiceRequest request,
-                    IAsyncResultHandler<IServiceConnectionResponse> resultHandler)
+            public IApiConnection connect(ApiRequest request,
+                    IAsyncResultHandler<IApiConnectionResponse> resultHandler)
                     throws ConnectorException {
                 // In the future we can switch to different back-end implementations here!
-                return new HttpConnector(vertx, service, request, authType, tlsOptions, resultHandler);
+                return new HttpConnector(vertx, api, request, authType, tlsOptions, resultHandler);
             }
         };
     }

@@ -19,11 +19,11 @@ import io.apiman.gateway.engine.IRegistry;
 import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
+import io.apiman.gateway.engine.beans.Api;
+import io.apiman.gateway.engine.beans.ApiContract;
+import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.Application;
 import io.apiman.gateway.engine.beans.Contract;
-import io.apiman.gateway.engine.beans.Service;
-import io.apiman.gateway.engine.beans.ServiceContract;
-import io.apiman.gateway.engine.beans.ServiceRequest;
 import io.apiman.gateway.engine.beans.exceptions.InvalidContractException;
 import io.apiman.gateway.engine.beans.exceptions.PublishingException;
 import io.apiman.gateway.engine.beans.exceptions.RegistrationException;
@@ -49,17 +49,17 @@ public class InMemoryRegistry implements IRegistry {
     }
 
     /**
-     * @see io.apiman.gateway.engine.IRegistry#publishService(io.apiman.gateway.engine.beans.Service, io.apiman.gateway.engine.async.IAsyncResultHandler)
+     * @see io.apiman.gateway.engine.IRegistry#publishApi(io.apiman.gateway.engine.beans.Api, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
     @Override
-    public void publishService(Service service, IAsyncResultHandler<Void> handler) {
+    public void publishApi(Api api, IAsyncResultHandler<Void> handler) {
         Exception error = null;
         synchronized (mutex) {
-            String serviceKey = getServiceKey(service);
-            if (getMap().containsKey(serviceKey)) {
-                error = new PublishingException(Messages.i18n.format("InMemoryRegistry.ServiceAlreadyPublished")); //$NON-NLS-1$
+            String apiKey = getApiKey(api);
+            if (getMap().containsKey(apiKey)) {
+                error = new PublishingException(Messages.i18n.format("InMemoryRegistry.ApiAlreadyPublished")); //$NON-NLS-1$
             } else {
-                getMap().put(serviceKey, service);
+                getMap().put(apiKey, api);
             }
         }
         if (error == null) {
@@ -70,17 +70,17 @@ public class InMemoryRegistry implements IRegistry {
     }
 
     /**
-     * @see io.apiman.gateway.engine.IRegistry#retireService(io.apiman.gateway.engine.beans.Service, io.apiman.gateway.engine.async.IAsyncResultHandler)
+     * @see io.apiman.gateway.engine.IRegistry#retireApi(io.apiman.gateway.engine.beans.Api, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
     @Override
-    public void retireService(Service service, IAsyncResultHandler<Void> handler) {
+    public void retireApi(Api api, IAsyncResultHandler<Void> handler) {
         Exception error = null;
         synchronized (mutex) {
-            String serviceKey = getServiceKey(service);
-            if (getMap().containsKey(serviceKey)) {
-                getMap().remove(serviceKey);
+            String apiKey = getApiKey(api);
+            if (getMap().containsKey(apiKey)) {
+                getMap().remove(apiKey);
             } else {
-                error = new PublishingException(Messages.i18n.format("InMemoryRegistry.ServiceNotFound")); //$NON-NLS-1$
+                error = new PublishingException(Messages.i18n.format("InMemoryRegistry.ApiNotFound")); //$NON-NLS-1$
             }
         }
         if (error == null) {
@@ -99,10 +99,10 @@ public class InMemoryRegistry implements IRegistry {
         synchronized (mutex) {
             // Validate the application first - we need to be able to resolve all the contracts.
             for (Contract contract : application.getContracts()) {
-                String svcKey = getServiceKey(contract.getServiceOrgId(), contract.getServiceId(), contract.getServiceVersion());
-                if (!getMap().containsKey(svcKey)) {
-                    error = new RegistrationException(Messages.i18n.format("InMemoryRegistry.ServiceNotFoundInOrg", //$NON-NLS-1$
-                            contract.getServiceId(), contract.getServiceOrgId()));
+                String apiKey = getApiKey(contract.getApiOrgId(), contract.getApiId(), contract.getApiVersion());
+                if (!getMap().containsKey(apiKey)) {
+                    error = new RegistrationException(Messages.i18n.format("InMemoryRegistry.ApiNotFoundInOrg", //$NON-NLS-1$
+                            contract.getApiId(), contract.getApiOrgId()));
                     break;
                 }
             }
@@ -119,9 +119,9 @@ public class InMemoryRegistry implements IRegistry {
             String applicationKey = getApplicationKey(application);
             getMap().put(applicationKey, application);
             for (Contract contract : application.getContracts()) {
-                String svcKey = getServiceKey(contract.getServiceOrgId(), contract.getServiceId(), contract.getServiceVersion());
-                Service service = (Service) getMap().get(svcKey);
-                ServiceContract sc = new ServiceContract(contract.getApiKey(), service, application, contract.getPlan(), contract.getPolicies());
+                String apiKey = getApiKey(contract.getApiOrgId(), contract.getApiId(), contract.getApiVersion());
+                Api api = (Api) getMap().get(apiKey);
+                ApiContract sc = new ApiContract(contract.getApiKey(), api, application, contract.getPlan(), contract.getPolicies());
                 String contractKey = getContractKey(contract);
                 getMap().put(contractKey, sc);
             }
@@ -161,25 +161,25 @@ public class InMemoryRegistry implements IRegistry {
     }
 
     /**
-     * @see io.apiman.gateway.engine.IRegistry#getContract(io.apiman.gateway.engine.beans.ServiceRequest, io.apiman.gateway.engine.async.IAsyncResultHandler)
+     * @see io.apiman.gateway.engine.IRegistry#getContract(io.apiman.gateway.engine.beans.ApiRequest, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
     @Override
-    public void getContract(ServiceRequest request, IAsyncResultHandler<ServiceContract> handler) {
+    public void getContract(ApiRequest request, IAsyncResultHandler<ApiContract> handler) {
         String contractKey = getContractKey(request);
-        ServiceContract contract = (ServiceContract) getMap().get(contractKey);
+        ApiContract contract = (ApiContract) getMap().get(contractKey);
 
         if (contract == null) {
             Exception error = new InvalidContractException(Messages.i18n.format("InMemoryRegistry.NoContractForAPIKey", request.getApiKey())); //$NON-NLS-1$
-            handler.handle(AsyncResultImpl.create(error, ServiceContract.class));
+            handler.handle(AsyncResultImpl.create(error, ApiContract.class));
             return;
         }
-        // Has the service been retired?
-        Service service = contract.getService();
-        String serviceKey = getServiceKey(service);
-        if (getMap().get(serviceKey) == null) {
-            Exception error = new InvalidContractException(Messages.i18n.format("InMemoryRegistry.ServiceWasRetired", //$NON-NLS-1$
-                    service.getServiceId(), service.getOrganizationId()));
-            handler.handle(AsyncResultImpl.create(error, ServiceContract.class));
+        // Has the api been retired?
+        Api api = contract.getApi();
+        String apiKey = getApiKey(api);
+        if (getMap().get(apiKey) == null) {
+            Exception error = new InvalidContractException(Messages.i18n.format("InMemoryRegistry.ApiWasRetired", //$NON-NLS-1$
+                    api.getApiId(), api.getOrganizationId()));
+            handler.handle(AsyncResultImpl.create(error, ApiContract.class));
             return;
         }
 
@@ -187,36 +187,36 @@ public class InMemoryRegistry implements IRegistry {
     }
 
     /**
-     * @see io.apiman.gateway.engine.IRegistry#getService(java.lang.String, java.lang.String, java.lang.String, io.apiman.gateway.engine.async.IAsyncResultHandler)
+     * @see io.apiman.gateway.engine.IRegistry#getApi(java.lang.String, java.lang.String, java.lang.String, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
     @Override
-    public void getService(String organizationId, String serviceId, String serviceVersion,
-            IAsyncResultHandler<Service> handler) {
-        String key = getServiceKey(organizationId, serviceId, serviceVersion);
-        Service service = (Service) getMap().get(key);
-        handler.handle(AsyncResultImpl.create(service));
+    public void getApi(String organizationId, String apiId, String apiVersion,
+            IAsyncResultHandler<Api> handler) {
+        String key = getApiKey(organizationId, apiId, apiVersion);
+        Api api = (Api) getMap().get(key);
+        handler.handle(AsyncResultImpl.create(api));
     }
 
     /**
-     * Generates an in-memory key for an service, used to index the app for later quick
+     * Generates an in-memory key for an api, used to index the app for later quick
      * retrieval.
-     * @param service an service
-     * @return a service key
+     * @param api an api
+     * @return a api key
      */
-    private String getServiceKey(Service service) {
-        return getServiceKey(service.getOrganizationId(), service.getServiceId(), service.getVersion());
+    private String getApiKey(Api api) {
+        return getApiKey(api.getOrganizationId(), api.getApiId(), api.getVersion());
     }
 
     /**
-     * Generates an in-memory key for an service, used to index the app for later quick
+     * Generates an in-memory key for an api, used to index the app for later quick
      * retrieval.
      * @param orgId
-     * @param serviceId
+     * @param apiId
      * @param version
-     * @return a service key
+     * @return a api key
      */
-    private String getServiceKey(String orgId, String serviceId, String version) {
-        return "SVC::" + orgId + "|" + serviceId + "|" + version; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    private String getApiKey(String orgId, String apiId, String version) {
+        return "API::" + orgId + "|" + apiId + "|" + version; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
     /**
@@ -233,12 +233,12 @@ public class InMemoryRegistry implements IRegistry {
      * Generates an in-memory key for a contract.
      * @param request
      */
-    private String getContractKey(ServiceRequest request) {
+    private String getContractKey(ApiRequest request) {
         return "CONTRACT::" + request.getApiKey(); //$NON-NLS-1$
     }
 
     /**
-     * Generates an in-memory key for a service contract, used to index the app for later quick
+     * Generates an in-memory key for a api contract, used to index the app for later quick
      * retrieval.
      * @param contract
      */

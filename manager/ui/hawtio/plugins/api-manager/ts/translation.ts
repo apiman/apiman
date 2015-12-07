@@ -3,7 +3,7 @@ module ApimanTranslation {
 
     export var _module = angular.module("ApimanTranslation", []);
 
-    export var Translation = _module.factory('TranslationService', ['$window',
+    export var Translation = _module.factory('TranslationSvc', ['$window',
         function($window) {
             return {
                 translate: function(key, defaultValue) {

@@ -22,7 +22,7 @@ import org.mockito.Mockito;
 
 import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.beans.PolicyFailureType;
-import io.apiman.gateway.engine.beans.ServiceRequest;
+import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
@@ -181,11 +181,11 @@ public class AuthorizationPolicyTest {
         AuthorizationPolicy policy = new AuthorizationPolicy();
         Object config = policy.parseConfiguration(json);
 
-        ServiceRequest request = new ServiceRequest();
+        ApiRequest request = new ApiRequest();
         request.setType(verb);
         request.setDestination(path);
         IPolicyContext context = Mockito.mock(IPolicyContext.class);
-        IPolicyChain<ServiceRequest> chain = Mockito.mock(IPolicyChain.class);
+        IPolicyChain<ApiRequest> chain = Mockito.mock(IPolicyChain.class);
 
         Mockito.when(context.getAttribute(AuthorizationPolicy.AUTHENTICATED_USER_ROLES, (HashSet<String>) null)).thenReturn(userRoles);
         final PolicyFailure failure = new PolicyFailure();

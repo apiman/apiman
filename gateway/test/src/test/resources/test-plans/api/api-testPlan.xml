@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testPlan xmlns="urn:io.apiman.test:2014:02:testPlan" endpoint="api">
 
-  <testGroup name="Test Services">
-    <test name="Publish Service">test-plan-data/api/services/001-publish-service.resttest</test>
-    <test name="Publish Duplicate Service">test-plan-data/api/services/002-publish-duplicate.resttest</test>
-    <test name="Publish Service 2.0">test-plan-data/api/services/003-publish-service-2.0.resttest</test>
-    <test name="Publish Service 3.0">test-plan-data/api/services/004-publish-service-3.0.resttest</test>
-    <test name="Retire Service 3.0">test-plan-data/api/services/005-retire-service-3.0.resttest</test>
+  <testGroup name="Test Apis">
+    <test name="Publish Api">test-plan-data/api/apis/001-publish-api.resttest</test>
+    <test name="Publish Duplicate Api">test-plan-data/api/apis/002-publish-duplicate.resttest</test>
+    <test name="Publish Api 2.0">test-plan-data/api/apis/003-publish-api-2.0.resttest</test>
+    <test name="Publish Api 3.0">test-plan-data/api/apis/004-publish-api-3.0.resttest</test>
+    <test name="Retire Api 3.0">test-plan-data/api/apis/005-retire-api-3.0.resttest</test>
 <!-- This test is commented out because vert.x and servlet impls return different values. -->
-<!--     <test name="Get Service Endpoint">test-plan-data/api/services/006-get-endpoint.resttest</test> -->
+<!--     <test name="Get Api Endpoint">test-plan-data/api/apis/006-get-endpoint.resttest</test> -->
   </testGroup>
 
   <testGroup name="Test Apps">

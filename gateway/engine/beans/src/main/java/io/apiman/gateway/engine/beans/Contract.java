@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Models a service contract published to the API Management runtime.
+ * Models an API contract published to the API Management runtime.
  *
  * @author eric.wittmann@redhat.com
  */
@@ -29,9 +29,9 @@ public class Contract implements Serializable {
     private static final long serialVersionUID = 8344360785926823601L;
 
     private String apiKey;
-    private String serviceOrgId;
-    private String serviceId;
-    private String serviceVersion;
+    private String apiOrgId;
+    private String apiId;
+    private String apiVersion;
     private String plan;
     private List<Policy> policies = new ArrayList<>();
 
@@ -56,45 +56,45 @@ public class Contract implements Serializable {
     }
 
     /**
-     * @return the serviceOrgId
+     * @return the apiOrgId
      */
-    public String getServiceOrgId() {
-        return serviceOrgId;
+    public String getApiOrgId() {
+        return apiOrgId;
     }
 
     /**
-     * @param serviceOrgId the serviceOrgId to set
+     * @param apiOrgId the apiOrgId to set
      */
-    public void setServiceOrgId(String serviceOrgId) {
-        this.serviceOrgId = serviceOrgId;
+    public void setApiOrgId(String apiOrgId) {
+        this.apiOrgId = apiOrgId;
     }
 
     /**
-     * @return the serviceId
+     * @return the apiId
      */
-    public String getServiceId() {
-        return serviceId;
+    public String getApiId() {
+        return apiId;
     }
 
     /**
-     * @param serviceId the serviceId to set
+     * @param apiId the apiId to set
      */
-    public void setServiceId(String serviceId) {
-        this.serviceId = serviceId;
+    public void setApiId(String apiId) {
+        this.apiId = apiId;
     }
 
     /**
-     * @return the serviceVersion
+     * @return the apiVersion
      */
-    public String getServiceVersion() {
-        return serviceVersion;
+    public String getApiVersion() {
+        return apiVersion;
     }
 
     /**
-     * @param serviceVersion the serviceVersion to set
+     * @param apiVersion the apiVersion to set
      */
-    public void setServiceVersion(String serviceVersion) {
-        this.serviceVersion = serviceVersion;
+    public void setApiVersion(String apiVersion) {
+        this.apiVersion = apiVersion;
     }
 
     /**

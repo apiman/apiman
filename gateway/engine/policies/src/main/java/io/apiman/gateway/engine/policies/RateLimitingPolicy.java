@@ -19,8 +19,8 @@ import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.beans.PolicyFailureType;
-import io.apiman.gateway.engine.beans.ServiceRequest;
-import io.apiman.gateway.engine.beans.ServiceResponse;
+import io.apiman.gateway.engine.beans.ApiRequest;
+import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.components.IRateLimiterComponent;
 import io.apiman.gateway.engine.components.rate.RateLimitResponse;
@@ -64,11 +64,11 @@ public class RateLimitingPolicy extends AbstractMappedPolicy<RateLimitingConfig>
     }
 
     /**
-     * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#doApply(io.apiman.gateway.engine.beans.ServiceRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
+     * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#doApply(io.apiman.gateway.engine.beans.ApiRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
      */
     @Override
-    protected void doApply(final ServiceRequest request, final IPolicyContext context, final RateLimitingConfig config,
-            final IPolicyChain<ServiceRequest> chain) {
+    protected void doApply(final ApiRequest request, final IPolicyContext context, final RateLimitingConfig config,
+            final IPolicyChain<ApiRequest> chain) {
         String bucketId = createBucketId(request, config);
         final RateBucketPeriod period = getPeriod(config);
 
@@ -115,16 +115,16 @@ public class RateLimitingPolicy extends AbstractMappedPolicy<RateLimitingConfig>
      * @param request
      * @param config
      */
-    protected String createBucketId(ServiceRequest request, RateLimitingConfig config) {
+    protected String createBucketId(ApiRequest request, RateLimitingConfig config) {
         return bucketId(request, config);
     }
 
     /**
-     * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#doApply(io.apiman.gateway.engine.beans.ServiceResponse, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
+     * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#doApply(io.apiman.gateway.engine.beans.ApiResponse, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
      */
     @Override
-    protected void doApply(ServiceResponse response, IPolicyContext context, RateLimitingConfig config,
-            IPolicyChain<ServiceResponse> chain) {
+    protected void doApply(ApiResponse response, IPolicyContext context, RateLimitingConfig config,
+            IPolicyChain<ApiResponse> chain) {
         Map<String, String> headers = context.getAttribute("rate-limit-response-headers", null); //$NON-NLS-1$
         if (headers != null) {
             response.getHeaders().putAll(headers);
@@ -139,16 +139,16 @@ public class RateLimitingPolicy extends AbstractMappedPolicy<RateLimitingConfig>
      * @param request
      * @param config
      */
-    protected static String bucketId(ServiceRequest request, RateLimitingConfig config) {
+    protected static String bucketId(ApiRequest request, RateLimitingConfig config) {
         StringBuilder builder = new StringBuilder();
         if (request.getContract() == null) {
             builder.append("PUBLIC||"); //$NON-NLS-1$
             builder.append("||"); //$NON-NLS-1$
-            builder.append(request.getServiceOrgId());
+            builder.append(request.getApiOrgId());
             builder.append("||"); //$NON-NLS-1$
-            builder.append(request.getServiceId());
+            builder.append(request.getApiId());
             builder.append("||"); //$NON-NLS-1$
-            builder.append(request.getServiceVersion());
+            builder.append(request.getApiVersion());
             if (config.getGranularity() == RateLimitingGranularity.User) {
                 String header = config.getUserHeader();
                 if (!request.getHeaders().containsKey(header)) {
@@ -157,7 +157,7 @@ public class RateLimitingPolicy extends AbstractMappedPolicy<RateLimitingConfig>
                 String user = request.getHeaders().get(header);
                 builder.append("||"); //$NON-NLS-1$
                 builder.append(user);
-            } else if (config.getGranularity() == RateLimitingGranularity.Service) {
+            } else if (config.getGranularity() == RateLimitingGranularity.Api) {
             } else {
                 return NO_APPLICATION_AVAILABLE;
             }
@@ -185,9 +185,9 @@ public class RateLimitingPolicy extends AbstractMappedPolicy<RateLimitingConfig>
             } else {
                 builder.append(request.getApiKey());
                 builder.append("||SERVICE||"); //$NON-NLS-1$
-                builder.append(request.getContract().getService().getOrganizationId());
+                builder.append(request.getContract().getApi().getOrganizationId());
                 builder.append("||"); //$NON-NLS-1$
-                builder.append(request.getContract().getService().getServiceId());
+                builder.append(request.getContract().getApi().getApiId());
             }
         }
         return builder.toString();

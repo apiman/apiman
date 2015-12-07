@@ -98,6 +98,6 @@
     }
   },
 
-  // When reporting a service's endpoint, prefer secure (i.e. https)
+  // When reporting a API's endpoint, prefer secure (i.e. https)
   "preferSecure": true
 }

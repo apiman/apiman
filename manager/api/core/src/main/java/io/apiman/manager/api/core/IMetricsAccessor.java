@@ -15,7 +15,7 @@
  */
 package io.apiman.manager.api.core;
 
-import io.apiman.manager.api.beans.metrics.AppUsagePerServiceBean;
+import io.apiman.manager.api.beans.metrics.AppUsagePerApiBean;
 import io.apiman.manager.api.beans.metrics.HistogramIntervalType;
 import io.apiman.manager.api.beans.metrics.ResponseStatsHistogramBean;
 import io.apiman.manager.api.beans.metrics.ResponseStatsPerAppBean;
@@ -41,7 +41,7 @@ import org.joda.time.DateTime;
 public interface IMetricsAccessor {
 
     /**
-     * Query the metrics store for the total # of requests made to the service
+     * Query the metrics store for the total # of requests made to the API
      * per time period within the date range.  This will return an array with one
      * entry per bucket in the requested interval, even if the bucket has zero
      * results.  So, for example, if the request is for the last 90 days with an
@@ -49,93 +49,93 @@ public interface IMetricsAccessor {
      * with a label and a value >= 0.
      *
      * @param organizationId
-     * @param serviceId
+     * @param apiId
      * @param version
      * @param interval
      * @param from
      * @param to
      */
-    UsageHistogramBean getUsage(String organizationId, String serviceId, String version,
+    UsageHistogramBean getUsage(String organizationId, String apiId, String version,
             HistogramIntervalType interval, DateTime from, DateTime to);
 
     /**
-     * Query the metrics store for # of requests made to a service broken
+     * Query the metrics store for # of requests made to an API broken
      * down by Application.
      *
      * @param organizationId
-     * @param serviceId
+     * @param apiId
      * @param version
      * @param from
      * @param to
      */
-    UsagePerAppBean getUsagePerApp(String organizationId, String serviceId, String version,
+    UsagePerAppBean getUsagePerApp(String organizationId, String apiId, String version,
             DateTime from, DateTime to);
 
     /**
-     * Query the metrics store for # of requests made to a service broken
-     * down by plan.  For exclusively public services this will return no data.
+     * Query the metrics store for # of requests made to an API broken
+     * down by plan.  For exclusively public APIs this will return no data.
      *
      * @param organizationId
-     * @param serviceId
+     * @param apiId
      * @param version
      * @param from
      * @param to
      */
-    UsagePerPlanBean getUsagePerPlan(String organizationId, String serviceId, String version,
+    UsagePerPlanBean getUsagePerPlan(String organizationId, String apiId, String version,
             DateTime from, DateTime to);
 
     /**
      * Query the metrics store for a histogram of response statistics, including total
      * number of responses, # of error responses,
      * @param organizationId
-     * @param serviceId
+     * @param apiId
      * @param version
      * @param interval
      * @param from
      * @param to
      */
-    ResponseStatsHistogramBean getResponseStats(String organizationId, String serviceId, String version,
+    ResponseStatsHistogramBean getResponseStats(String organizationId, String apiId, String version,
             HistogramIntervalType interval, DateTime from, DateTime to);
 
     /**
      * Query the metrics store for response type stats (total, errors, failures) for a given
-     * service over a specified time range.  Returns a total summary of stats.
+     * API over a specified time range.  Returns a total summary of stats.
      * @param organizationId
-     * @param serviceId
+     * @param apiId
      * @param version
      * @param from
      * @param to
      */
-    ResponseStatsSummaryBean getResponseStatsSummary(String organizationId, String serviceId, String version,
+    ResponseStatsSummaryBean getResponseStatsSummary(String organizationId, String apiId, String version,
             DateTime from, DateTime to);
 
     /**
      * Query the metrics store for response type stats (total, errors, failures) for a given
-     * service over a specified time range per application.
+     * API over a specified time range per application.
      * @param organizationId
-     * @param serviceId
+     * @param apiId
      * @param version
      * @param from
      * @param to
      */
-    ResponseStatsPerAppBean getResponseStatsPerApp(String organizationId, String serviceId, String version,
+    ResponseStatsPerAppBean getResponseStatsPerApp(String organizationId, String apiId, String version,
             DateTime from, DateTime to);
 
     /**
      * Query the metrics store for response type stats (total, errors, failures) for a given
-     * service over a specified time range per plan.
+     * API over a specified time range per plan.
      * @param organizationId
-     * @param serviceId
+     * @param apiId
      * @param version
      * @param from
      * @param to
      */
-    ResponseStatsPerPlanBean getResponseStatsPerPlan(String organizationId, String serviceId, String version,
+    ResponseStatsPerPlanBean getResponseStatsPerPlan(String organizationId, String apiId, String version,
             DateTime from, DateTime to);
 
     /**
-     * Query the metrics store for # of requests made to a service broken
-     * down by plan.  For exclusively public services this will return no data.
+     * Query the metrics store for # of requests made to an API broken
+     * down by plan.  For exclusively public APIs this will return no data.
      *
      * @param organizationId
      * @param applicationId
@@ -143,7 +143,7 @@ public interface IMetricsAccessor {
      * @param from
      * @param to
      */
-    AppUsagePerServiceBean getAppUsagePerService(String organizationId, String applicationId, String version,
+    AppUsagePerApiBean getAppUsagePerApi(String organizationId, String applicationId, String version,
             DateTime from, DateTime to);
 
 }

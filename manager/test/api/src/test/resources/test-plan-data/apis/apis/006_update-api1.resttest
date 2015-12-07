@@ -1,0 +1,8 @@
+PUT /organizations/Organization1/apis/API1 admin2/admin2
+Content-Type: application/json
+
+{
+  "description" : "[UPDATED] This is the description of API 1!"
+}
+----
+204

@@ -17,14 +17,14 @@ package io.apiman.gateway.engine.beans.exceptions;
 
 /**
  * Exception thrown when an error happens during publishing (either publishing
- * a Contract or publishing a Service).
+ * a Contract or publishing a API).
  *
  * @author eric.wittmann@redhat.com
  */
 public class PublishingException extends AbstractEngineException {
 
     private static final long serialVersionUID = 3675917769736754387L;
-    
+
     /**
      * Constructor.
      * @param message an error message
@@ -32,7 +32,7 @@ public class PublishingException extends AbstractEngineException {
     public PublishingException(String message) {
         super(message);
     }
-    
+
     /**
      * Constructor.
      * @param message an error message

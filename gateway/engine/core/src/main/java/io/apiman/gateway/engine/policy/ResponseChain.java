@@ -15,7 +15,7 @@
  */
 package io.apiman.gateway.engine.policy;
 
-import io.apiman.gateway.engine.beans.ServiceResponse;
+import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.engine.io.IReadWriteStream;
 
 import java.util.Iterator;
@@ -26,7 +26,7 @@ import java.util.List;
  *
  * @author Marc Savy <msavy@redhat.com>
  */
-public class ResponseChain extends Chain<ServiceResponse> {
+public class ResponseChain extends Chain<ApiResponse> {
 
     /**
      * Constructor.
@@ -46,10 +46,10 @@ public class ResponseChain extends Chain<ServiceResponse> {
     }
 
     /**
-     * @see io.apiman.gateway.engine.policy.Chain#getServiceHandler(io.apiman.gateway.engine.policy.IPolicy, java.lang.Object)
+     * @see io.apiman.gateway.engine.policy.Chain#getApiHandler(io.apiman.gateway.engine.policy.IPolicy, java.lang.Object)
      */
     @Override
-    protected IReadWriteStream<ServiceResponse> getServiceHandler(IPolicy policy, Object config) {
+    protected IReadWriteStream<ApiResponse> getApiHandler(IPolicy policy, Object config) {
         if (policy instanceof IDataPolicy) {
             return ((IDataPolicy) policy).getResponseDataHandler(getHead(), getContext(), config);
         } else {

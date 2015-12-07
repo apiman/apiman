@@ -11,22 +11,22 @@ Content-Type: application/json
         "planId" : "Plan1",
         "planName" : "Plan 1",
         "planVersion" : "1.0",
-        "serviceId" : "Service1",
-        "serviceName" : "Service 1",
-        "serviceOrgId" : "Organization1",
-        "serviceOrgName" : "Organization 1",
-        "serviceVersion" : "1.0"
+        "apiId" : "API1",
+        "apiName" : "API 1",
+        "apiOrgId" : "Organization1",
+        "apiOrgName" : "Organization 1",
+        "apiVersion" : "1.0"
     },
     {
         "httpEndpoint" : "http://example.org/endpoint",
         "planId" : "PlanA",
         "planName" : "Plan A",
         "planVersion" : "2.0",
-        "serviceId" : "Service2",
-        "serviceName" : "Service 2",
-        "serviceOrgId" : "Organization2",
-        "serviceOrgName" : "Organization 2",
-        "serviceVersion" : "1.5"
+        "apiId" : "API2",
+        "apiName" : "API 2",
+        "apiOrgId" : "Organization2",
+        "apiOrgName" : "Organization 2",
+        "apiVersion" : "1.5"
     }
   ]
 }

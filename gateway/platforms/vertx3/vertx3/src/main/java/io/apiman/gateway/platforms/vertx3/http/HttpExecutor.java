@@ -20,8 +20,8 @@ import io.apiman.gateway.engine.beans.EngineErrorResponse;
 import io.apiman.gateway.platforms.vertx3.common.config.VertxEngineConfig;
 import io.apiman.gateway.platforms.vertx3.io.VertxApimanBuffer;
 import io.apiman.gateway.platforms.vertx3.io.VertxPolicyFailure;
-import io.apiman.gateway.platforms.vertx3.io.VertxServiceRequest;
-import io.apiman.gateway.platforms.vertx3.io.VertxServiceResponse;
+import io.apiman.gateway.platforms.vertx3.io.VertxApiRequest;
+import io.apiman.gateway.platforms.vertx3.io.VertxApiResponse;
 import io.apiman.gateway.platforms.vertx3.services.IngestorToPolicyService;
 import io.apiman.gateway.platforms.vertx3.services.InitializeIngestorService;
 import io.apiman.gateway.platforms.vertx3.services.PolicyToIngestorService;
@@ -98,9 +98,9 @@ public class HttpExecutor implements Handler<HttpServerRequest> {
         IngestorToPolicyService send = result.result();
 
         if (result.succeeded()) {
-            VertxServiceRequest serviceRequest = HttpServiceFactory.buildRequest(request, transportSecure);
+            VertxApiRequest apiRequest = HttpApiFactory.buildRequest(request, transportSecure);
 
-            send.head(serviceRequest, (Handler<AsyncResult<Boolean>>) ready -> {
+            send.head(apiRequest, (Handler<AsyncResult<Boolean>>) ready -> {
                 if (ready.succeeded()) {
                     // Signalled that we can send the body.
                     if (ready.result()) {
@@ -140,8 +140,8 @@ public class HttpExecutor implements Handler<HttpServerRequest> {
         ProxyHelper.registerService(PolicyToIngestorService.class, vertx, receive,
                 httpSessionUuid + VertxEngineConfig.GATEWAY_ENDPOINT_RESPONSE);
 
-        receive.headHandler((Handler<VertxServiceResponse>) apimanResponse -> {
-            HttpServiceFactory.buildResponse(response, apimanResponse);
+        receive.headHandler((Handler<VertxApiResponse>) apimanResponse -> {
+            HttpApiFactory.buildResponse(response, apimanResponse);
         });
 
         receive.bodyHandler((Handler<VertxApimanBuffer>) buff -> {

@@ -16,6 +16,14 @@
 
 package io.apiman.manager.api.rest.contract;
 
+import io.apiman.manager.api.beans.apis.ApiBean;
+import io.apiman.manager.api.beans.apis.ApiVersionBean;
+import io.apiman.manager.api.beans.apis.ApiVersionStatusBean;
+import io.apiman.manager.api.beans.apis.NewApiBean;
+import io.apiman.manager.api.beans.apis.NewApiDefinitionBean;
+import io.apiman.manager.api.beans.apis.NewApiVersionBean;
+import io.apiman.manager.api.beans.apis.UpdateApiBean;
+import io.apiman.manager.api.beans.apis.UpdateApiVersionBean;
 import io.apiman.manager.api.beans.apps.ApplicationBean;
 import io.apiman.manager.api.beans.apps.ApplicationVersionBean;
 import io.apiman.manager.api.beans.apps.NewApplicationBean;
@@ -26,7 +34,7 @@ import io.apiman.manager.api.beans.contracts.ContractBean;
 import io.apiman.manager.api.beans.contracts.NewContractBean;
 import io.apiman.manager.api.beans.idm.GrantRolesBean;
 import io.apiman.manager.api.beans.members.MemberBean;
-import io.apiman.manager.api.beans.metrics.AppUsagePerServiceBean;
+import io.apiman.manager.api.beans.metrics.AppUsagePerApiBean;
 import io.apiman.manager.api.beans.metrics.HistogramIntervalType;
 import io.apiman.manager.api.beans.metrics.ResponseStatsHistogramBean;
 import io.apiman.manager.api.beans.metrics.ResponseStatsPerAppBean;
@@ -48,24 +56,20 @@ import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyChainBean;
 import io.apiman.manager.api.beans.policies.UpdatePolicyBean;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
-import io.apiman.manager.api.beans.services.NewServiceBean;
-import io.apiman.manager.api.beans.services.NewServiceDefinitionBean;
-import io.apiman.manager.api.beans.services.NewServiceVersionBean;
-import io.apiman.manager.api.beans.services.ServiceBean;
-import io.apiman.manager.api.beans.services.ServiceVersionBean;
-import io.apiman.manager.api.beans.services.ServiceVersionStatusBean;
-import io.apiman.manager.api.beans.services.UpdateServiceBean;
-import io.apiman.manager.api.beans.services.UpdateServiceVersionBean;
+import io.apiman.manager.api.beans.summary.ApiPlanSummaryBean;
+import io.apiman.manager.api.beans.summary.ApiSummaryBean;
+import io.apiman.manager.api.beans.summary.ApiVersionEndpointSummaryBean;
+import io.apiman.manager.api.beans.summary.ApiVersionSummaryBean;
 import io.apiman.manager.api.beans.summary.ApplicationSummaryBean;
 import io.apiman.manager.api.beans.summary.ApplicationVersionSummaryBean;
 import io.apiman.manager.api.beans.summary.ContractSummaryBean;
 import io.apiman.manager.api.beans.summary.PlanSummaryBean;
 import io.apiman.manager.api.beans.summary.PlanVersionSummaryBean;
 import io.apiman.manager.api.beans.summary.PolicySummaryBean;
-import io.apiman.manager.api.beans.summary.ServicePlanSummaryBean;
-import io.apiman.manager.api.beans.summary.ServiceSummaryBean;
-import io.apiman.manager.api.beans.summary.ServiceVersionEndpointSummaryBean;
-import io.apiman.manager.api.beans.summary.ServiceVersionSummaryBean;
+import io.apiman.manager.api.rest.contract.exceptions.ApiAlreadyExistsException;
+import io.apiman.manager.api.rest.contract.exceptions.ApiNotFoundException;
+import io.apiman.manager.api.rest.contract.exceptions.ApiVersionAlreadyExistsException;
+import io.apiman.manager.api.rest.contract.exceptions.ApiVersionNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.ApplicationAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.ApplicationNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.ApplicationVersionAlreadyExistsException;
@@ -73,10 +77,10 @@ import io.apiman.manager.api.rest.contract.exceptions.ApplicationVersionNotFound
 import io.apiman.manager.api.rest.contract.exceptions.ContractAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.ContractNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.GatewayNotFoundException;
+import io.apiman.manager.api.rest.contract.exceptions.InvalidApiStatusException;
 import io.apiman.manager.api.rest.contract.exceptions.InvalidApplicationStatusException;
 import io.apiman.manager.api.rest.contract.exceptions.InvalidMetricCriteriaException;
 import io.apiman.manager.api.rest.contract.exceptions.InvalidNameException;
-import io.apiman.manager.api.rest.contract.exceptions.InvalidServiceStatusException;
 import io.apiman.manager.api.rest.contract.exceptions.InvalidVersionException;
 import io.apiman.manager.api.rest.contract.exceptions.NotAuthorizedException;
 import io.apiman.manager.api.rest.contract.exceptions.OrganizationAlreadyExistsException;
@@ -87,10 +91,6 @@ import io.apiman.manager.api.rest.contract.exceptions.PlanVersionAlreadyExistsEx
 import io.apiman.manager.api.rest.contract.exceptions.PlanVersionNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.PolicyNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.RoleNotFoundException;
-import io.apiman.manager.api.rest.contract.exceptions.ServiceAlreadyExistsException;
-import io.apiman.manager.api.rest.contract.exceptions.ServiceNotFoundException;
-import io.apiman.manager.api.rest.contract.exceptions.ServiceVersionAlreadyExistsException;
-import io.apiman.manager.api.rest.contract.exceptions.ServiceVersionNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.UserNotFoundException;
 import io.swagger.annotations.Api;
 
@@ -377,10 +377,10 @@ public interface IOrganizationResource {
 
     /**
      * Retrieves metrics/analytics information for a specific application.  This will
-     * return request count data broken down by service.  It basically answers
-     * the question "which services is my app really using?".
+     * return request count data broken down by API.  It basically answers
+     * the question "which APIs is my app really using?".
      *
-     * @summary Get App Usage Metrics (per Service)
+     * @summary Get App Usage Metrics (per API)
      * @param organizationId The organization ID.
      * @param applicationId The application ID.
      * @param version The application version.
@@ -391,20 +391,20 @@ public interface IOrganizationResource {
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
-    @Path("{organizationId}/applications/{applicationId}/versions/{version}/metrics/serviceUsage")
+    @Path("{organizationId}/applications/{applicationId}/versions/{version}/metrics/apiUsage")
     @Produces(MediaType.APPLICATION_JSON)
-    public AppUsagePerServiceBean getAppUsagePerService(
+    public AppUsagePerApiBean getAppUsagePerApi(
             @PathParam("organizationId") String organizationId, @PathParam("applicationId") String applicationId,
             @PathParam("version") String version, @QueryParam("from") String fromDate,
             @QueryParam("to") String toDate) throws NotAuthorizedException, InvalidMetricCriteriaException;
 
 
     /**
-     * Use this endpoint to create a Contract between the Application and a Service.  In order
+     * Use this endpoint to create a Contract between the Application and an API.  In order
      * to create a Contract, the caller must specify the Organization, ID, and Version of the
-     * Service.  Additionally the caller must specify the ID of the Plan it wished to use for
-     * the Contract with the Service.
-     * @summary Create a Service Contract
+     * API.  Additionally the caller must specify the ID of the Plan it wished to use for
+     * the Contract with the API.
+     * @summary Create an API Contract
      * @param organizationId The Organization ID.
      * @param applicationId The Application ID.
      * @param version The Application version.
@@ -414,7 +414,7 @@ public interface IOrganizationResource {
      * @return Full details about the newly created Contract.
      * @throws OrganizationNotFoundException when trying to get, update, or delete an organization that does not exist
      * @throws ApplicationNotFoundException when trying to get, update, or delete an application that does not exist
-     * @throws ServiceNotFoundException when trying to get, update, or delete an service that does not exist
+     * @throws ApiNotFoundException when trying to get, update, or delete an API that does not exist
      * when trying to get, update, or delete an plan that does not exist
      * @throws PlanNotFoundException when trying to get, update, or delete an plan that does not exist
      * @throws ContractAlreadyExistsException when trying to create an Contract that already exists
@@ -427,13 +427,13 @@ public interface IOrganizationResource {
     public ContractBean createContract(@PathParam("organizationId") String organizationId,
             @PathParam("applicationId") String applicationId, @PathParam("version") String version,
             NewContractBean bean) throws OrganizationNotFoundException, ApplicationNotFoundException,
-            ServiceNotFoundException, PlanNotFoundException, ContractAlreadyExistsException,
+            ApiNotFoundException, PlanNotFoundException, ContractAlreadyExistsException,
             NotAuthorizedException;
 
     /**
-     * Use this endpoint to retrieve detailed information about a single Service Contract
+     * Use this endpoint to retrieve detailed information about a single API Contract
      * for an Application.
-     * @summary Get Service Contract
+     * @summary Get API Contract
      * @param organizationId The Organization ID.
      * @param applicationId The Application ID.
      * @param version The Application version.
@@ -474,19 +474,19 @@ public interface IOrganizationResource {
             throws ApplicationNotFoundException, NotAuthorizedException;
 
     /**
-     * Use this endpoint to get registry style information about all Services that this
+     * Use this endpoint to get registry style information about all APIs that this
      * Application consumes.  This is a useful endpoint to invoke in order to retrieve
-     * a summary of every Service consumed by the application.  The information returned
+     * a summary of every API consumed by the application.  The information returned
      * by this endpoint could potentially be included directly in a client application
      * as a way to lookup endpoint information for the APIs it wishes to consume.  This
      * variant of the API Registry is formatted as JSON data.
-     * 
-     * Note that, optionally, you can generate a temporary download link instead of 
-     * getting the registry file directly.  To do this, simply pass download=true as 
+     *
+     * Note that, optionally, you can generate a temporary download link instead of
+     * getting the registry file directly.  To do this, simply pass download=true as
      * a query parameter.  The result will then be a JSON object with information about
      * the temporary download link.  The ID of the download can then be used when making
      * a call to the /downloads/{downloadId} endpoint to fetch the actual content.
-     * 
+     *
      * @summary Get API Registry (JSON)
      * @param organizationId The Organization ID.
      * @param applicationId The Application ID.
@@ -509,19 +509,19 @@ public interface IOrganizationResource {
             boolean hasPermission) throws ApplicationNotFoundException, NotAuthorizedException;
 
     /**
-     * Use this endpoint to get registry style information about all Services that this
+     * Use this endpoint to get registry style information about all APIs that this
      * Application consumes.  This is a useful endpoint to invoke in order to retrieve
-     * a summary of every Service consumed by the application.  The information returned
+     * a summary of every API consumed by the application.  The information returned
      * by this endpoint could potentially be included directly in a client application
      * as a way to lookup endpoint information for the APIs it wishes to consume.  This
      * variant of the API Registry is formatted as XML data.
-     * 
-     * Note that, optionally, you can generate a temporary download link instead of 
-     * getting the registry file directly.  To do this, simply pass download=true as 
+     *
+     * Note that, optionally, you can generate a temporary download link instead of
+     * getting the registry file directly.  To do this, simply pass download=true as
      * a query parameter.  The result will then be a JSON object with information about
      * the temporary download link.  The ID of the download can then be used when making
      * a call to the /downloads/{downloadId} endpoint to fetch the actual content.
-     * 
+     *
      * @summary Get API Registry (XML)
      * @param organizationId The Organization ID.
      * @param applicationId The Application ID.
@@ -544,7 +544,7 @@ public interface IOrganizationResource {
             boolean hasPermission) throws ApplicationNotFoundException, NotAuthorizedException;
 
     /**
-     * Use this endpoint to break all contracts between this application and its services.
+     * Use this endpoint to break all contracts between this application and its APIs.
      * @summary Break All Contracts
      * @param organizationId The Organization ID.
      * @param applicationId The Application ID.
@@ -561,7 +561,7 @@ public interface IOrganizationResource {
             throws ApplicationNotFoundException, NotAuthorizedException;
 
     /**
-     * Use this endpoint to break a Contract with a Service.
+     * Use this endpoint to break a Contract with an API.
      * @summary Break Contract
      * @param organizationId The Organization ID.
      * @param applicationId The Application ID.
@@ -723,277 +723,277 @@ public interface IOrganizationResource {
             ApplicationVersionNotFoundException, NotAuthorizedException;
 
     /*
-     * SERVICES
+     * APIS
      */
 
     /**
-     * Use this endpoint to create a new Service.  Note that it is important to also
-     * create an initial version of the Service (e.g. 1.0).  This can either be done
+     * Use this endpoint to create a new API.  Note that it is important to also
+     * create an initial version of the API (e.g. 1.0).  This can either be done
      * by including the 'initialVersion' property in the request, or by immediately following
-     * up with a call to "Create Service Version".  If the former is done, then a first
-     * Service version will be created automatically by this endpoint.
-     * @summary Create Service
+     * up with a call to "Create API Version".  If the former is done, then a first
+     * API version will be created automatically by this endpoint.
+     * @summary Create API
      * @param organizationId The Organization ID.
-     * @param bean Information about the new Service.
-     * @statuscode 200 If the Service is successfully created.
+     * @param bean Information about the new API.
+     * @statuscode 200 If the API is successfully created.
      * @statuscode 404 If the Organization does not exist.
-     * @return Full details about the newly created Service.
+     * @return Full details about the newly created API.
      * @throws OrganizationNotFoundException when trying to get, update, or delete an organization that does not exist
-     * @throws ServiceAlreadyExistsException when trying to create an Service that already exists
+     * @throws ApiAlreadyExistsException when trying to create an API that already exists
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      * @throws InvalidNameException when the user attempts the create with an invalid name
      */
     @POST
-    @Path("{organizationId}/services")
+    @Path("{organizationId}/apis")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public ServiceBean createService(@PathParam("organizationId") String organizationId, NewServiceBean bean)
-            throws OrganizationNotFoundException, ServiceAlreadyExistsException, NotAuthorizedException,
+    public ApiBean createApi(@PathParam("organizationId") String organizationId, NewApiBean bean)
+            throws OrganizationNotFoundException, ApiAlreadyExistsException, NotAuthorizedException,
             InvalidNameException;
 
     /**
-     * Use this endpoint to retrieve information about a single Service by ID.  Note
-     * that this only returns information about the Service, not about any particular
-     * *version* of the Service.
-     * @summary Get Service By ID
+     * Use this endpoint to retrieve information about a single API by ID.  Note
+     * that this only returns information about the API, not about any particular
+     * *version* of the API.
+     * @summary Get API By ID
      * @param organizationId The Organization ID.
-     * @param serviceId The Service ID.
-     * @statuscode 200 If the Service is successfully returned.
+     * @param apiId The API ID.
+     * @statuscode 200 If the API is successfully returned.
      * @statuscode 404 If the Organization does not exist.
-     * @statuscode 404 If the Service does not exist.
-     * @return A Service.
-     * @throws ServiceNotFoundException when trying to get, update, or delete an service that does not exist when trying to get, update, or delete an service that does not exist
+     * @statuscode 404 If the API does not exist.
+     * @return A API.
+     * @throws ApiNotFoundException when trying to get, update, or delete an API that does not exist when trying to get, update, or delete an API that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
-    @Path("{organizationId}/services/{serviceId}")
+    @Path("{organizationId}/apis/{apiId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public ServiceBean getService(@PathParam("organizationId") String organizationId,
-            @PathParam("serviceId") String serviceId) throws ServiceNotFoundException,
+    public ApiBean getApi(@PathParam("organizationId") String organizationId,
+            @PathParam("apiId") String apiId) throws ApiNotFoundException,
             NotAuthorizedException;
 
     /**
-     * Use this endpoint to get a list of all Services in the Organization.
-     * @summary List Services
+     * Use this endpoint to get a list of all APIs in the Organization.
+     * @summary List APIs
      * @param organizationId The Organization ID.
-     * @statuscode 200 If the list of Services is successfully returned.
+     * @statuscode 200 If the list of APIs is successfully returned.
      * @statuscode 404 If the Organization does not exist.
-     * @return A list of Services.
+     * @return A list of APIs.
      * @throws OrganizationNotFoundException when trying to get, update, or delete an organization that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
-    @Path("{organizationId}/services")
+    @Path("{organizationId}/apis")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<ServiceSummaryBean> listServices(@PathParam("organizationId") String organizationId)
+    public List<ApiSummaryBean> listApi(@PathParam("organizationId") String organizationId)
             throws OrganizationNotFoundException, NotAuthorizedException;
 
     /**
-     * Use this endpoint to update information about a Service.
-     * @summary Update Service
+     * Use this endpoint to update information about an API.
+     * @summary Update API
      * @param organizationId The Organization ID.
-     * @param serviceId The Service ID.
-     * @param bean Updated Service information.
-     * @statuscode 204 If the Service is updated successfully.
-     * @statuscode 404 If the Service does not exist.
-     * @throws ServiceNotFoundException when trying to get, update, or delete an service that does not exist
+     * @param apiId The API ID.
+     * @param bean Updated API information.
+     * @statuscode 204 If the API is updated successfully.
+     * @statuscode 404 If the API does not exist.
+     * @throws ApiNotFoundException when trying to get, update, or delete an API that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @PUT
-    @Path("{organizationId}/services/{serviceId}")
+    @Path("{organizationId}/apis/{apiId}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public void updateService(@PathParam("organizationId") String organizationId,
-            @PathParam("serviceId") String serviceId, UpdateServiceBean bean)
-            throws ServiceNotFoundException, NotAuthorizedException;
+    public void updateApi(@PathParam("organizationId") String organizationId,
+            @PathParam("apiId") String apiId, UpdateApiBean bean)
+            throws ApiNotFoundException, NotAuthorizedException;
 
     /**
-     * This endpoint returns audit activity information about the Service.
-     * @summary Get Service Activity
+     * This endpoint returns audit activity information about the API.
+     * @summary Get API Activity
      * @param organizationId The Organization ID.
-     * @param serviceId The Service ID.
+     * @param apiId The API ID.
      * @param page Which page of activity should be returned.
      * @param pageSize The number of entries per page to return.
      * @statuscode 200 If the audit information is successfully returned.
      * @statuscode 404 If the Organization does not exist.
-     * @statuscode 404 If the Service does not exist.
+     * @statuscode 404 If the API does not exist.
      * @return A list of audit activity entries.
-     * @throws ServiceNotFoundException when trying to get, update, or delete an service that does not exist
+     * @throws ApiNotFoundException when trying to get, update, or delete an API that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
-    @Path("{organizationId}/services/{serviceId}/activity")
+    @Path("{organizationId}/apis/{apiId}/activity")
     @Produces(MediaType.APPLICATION_JSON)
-    public SearchResultsBean<AuditEntryBean> getServiceActivity(
-            @PathParam("organizationId") String organizationId, @PathParam("serviceId") String serviceId,
-            @QueryParam("page") int page, @QueryParam("count") int pageSize) throws ServiceNotFoundException,
+    public SearchResultsBean<AuditEntryBean> getApiActivity(
+            @PathParam("organizationId") String organizationId, @PathParam("apiId") String apiId,
+            @QueryParam("page") int page, @QueryParam("count") int pageSize) throws ApiNotFoundException,
             NotAuthorizedException;
 
     /**
-     * Use this endpoint to create a new version of the Service.
-     * @summary Create Service Version
+     * Use this endpoint to create a new version of the API.
+     * @summary Create API Version
      * @param organizationId The Organization ID.
-     * @param serviceId The Service ID.
-     * @param bean Initial information about the new Service version.
-     * @statuscode 200 If the Service version is created successfully.
-     * @statuscode 404 If the Service does not exist.
-     * @statuscode 409 If the Service version already exists.
-     * @return Full details about the newly created Service version.
-     * @throws ServiceNotFoundException when trying to get, update, or delete an service that does not exist
+     * @param apiId The API ID.
+     * @param bean Initial information about the new API version.
+     * @statuscode 200 If the API version is created successfully.
+     * @statuscode 404 If the API does not exist.
+     * @statuscode 409 If the API version already exists.
+     * @return Full details about the newly created API version.
+     * @throws ApiNotFoundException when trying to get, update, or delete an API that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      * @throws InvalidVersionException when the user attempts to use an invalid version value
      */
     @POST
-    @Path("{organizationId}/services/{serviceId}/versions")
+    @Path("{organizationId}/apis/{apiId}/versions")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public ServiceVersionBean createServiceVersion(@PathParam("organizationId") String organizationId,
-            @PathParam("serviceId") String serviceId, NewServiceVersionBean bean)
-            throws ServiceNotFoundException, NotAuthorizedException, InvalidVersionException,
-            ServiceVersionAlreadyExistsException;
+    public ApiVersionBean createApiVersion(@PathParam("organizationId") String organizationId,
+            @PathParam("apiId") String apiId, NewApiVersionBean bean)
+            throws ApiNotFoundException, NotAuthorizedException, InvalidVersionException,
+            ApiVersionAlreadyExistsException;
 
     /**
-     * Use this endpoint to list all of the versions of a Service.
-     * @summary List Service Versions
+     * Use this endpoint to list all of the versions of an API.
+     * @summary List API Versions
      * @param organizationId The Organization ID.
-     * @param serviceId The Service ID.
-     * @statuscode 200 If the list of Service versions is successfully returned.
-     * @return A list of Services.
-     * @throws ServiceNotFoundException when trying to get, update, or delete an service that does not exist
+     * @param apiId The API ID.
+     * @statuscode 200 If the list of API versions is successfully returned.
+     * @return A list of APIs.
+     * @throws ApiNotFoundException when trying to get, update, or delete an API that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
-    @Path("{organizationId}/services/{serviceId}/versions")
+    @Path("{organizationId}/apis/{apiId}/versions")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<ServiceVersionSummaryBean> listServiceVersions(@PathParam("organizationId") String organizationId,
-            @PathParam("serviceId") String serviceId) throws ServiceNotFoundException, NotAuthorizedException;
+    public List<ApiVersionSummaryBean> listApiVersions(@PathParam("organizationId") String organizationId,
+            @PathParam("apiId") String apiId) throws ApiNotFoundException, NotAuthorizedException;
 
     /**
      * Use this endpoint to get detailed information about a single version of
-     * a Service.
-     * @summary Get Service Version
+     * an API.
+     * @summary Get API Version
      * @param organizationId The Organization ID.
-     * @param serviceId The Service ID.
-     * @param version The Service version.
-     * @statuscode 200 If the Service version is successfully returned.
-     * @statuscode 404 If the Service version does not exist.
-     * @return A Service version.
-     * @throws ServiceVersionNotFoundException when trying to get, update, or delete a service version that does not exist
+     * @param apiId The API ID.
+     * @param version The API version.
+     * @statuscode 200 If the API version is successfully returned.
+     * @statuscode 404 If the API version does not exist.
+     * @return A API version.
+     * @throws ApiVersionNotFoundException when trying to get, update, or delete an API version that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
-    @Path("{organizationId}/services/{serviceId}/versions/{version}")
+    @Path("{organizationId}/apis/{apiId}/versions/{version}")
     @Produces(MediaType.APPLICATION_JSON)
-    public ServiceVersionBean getServiceVersion(@PathParam("organizationId") String organizationId,
-            @PathParam("serviceId") String serviceId, @PathParam("version") String version)
-            throws ServiceVersionNotFoundException, NotAuthorizedException;
-    
+    public ApiVersionBean getApiVersion(@PathParam("organizationId") String organizationId,
+            @PathParam("apiId") String apiId, @PathParam("version") String version)
+            throws ApiVersionNotFoundException, NotAuthorizedException;
+
     /**
-     * Use this endpoint to get detailed status information for a single version of a 
-     * service.  This is useful to figure out why a service is not yet in the 'Ready'
+     * Use this endpoint to get detailed status information for a single version of an
+     * API.  This is useful to figure out why an API is not yet in the 'Ready'
      * state (which is required before it can be published to a Gateway).
-     * 
-     * @summary Get Service Version Status
+     *
+     * @summary Get API Version Status
      * @param organizationId The Organization ID.
-     * @param serviceId The Service ID.
-     * @param version The Service version.
+     * @param apiId The API ID.
+     * @param version The API version.
      * @statuscode 200 If the status information is successfully returned.
-     * @statuscode 404 If the Service version does not exist.
-     * @return Status information about a service version.
-     * @throws ServiceVersionNotFoundException when trying to get, update, or delete a service version that does not exist
+     * @statuscode 404 If the API version does not exist.
+     * @return Status information about an API version.
+     * @throws ApiVersionNotFoundException when trying to get, update, or delete an API version that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
-    @Path("{organizationId}/services/{serviceId}/versions/{version}/status")
+    @Path("{organizationId}/apis/{apiId}/versions/{version}/status")
     @Produces(MediaType.APPLICATION_JSON)
-    public ServiceVersionStatusBean getServiceVersionStatus(@PathParam("organizationId") String organizationId,
-            @PathParam("serviceId") String serviceId, @PathParam("version") String version)
-            throws ServiceVersionNotFoundException, NotAuthorizedException;
+    public ApiVersionStatusBean getApiVersionStatus(@PathParam("organizationId") String organizationId,
+            @PathParam("apiId") String apiId, @PathParam("version") String version)
+            throws ApiVersionNotFoundException, NotAuthorizedException;
 
     /**
-     * Use this endpoint to retrieve the Service's definition document.  A service
-     * definition document can be several different types, depending on the Service
-     * type and technology used to define the service.  For example, this endpoint
+     * Use this endpoint to retrieve the API's definition document.  An API
+     * definition document can be several different types, depending on the API
+     * type and technology used to define the API.  For example, this endpoint
      * might return a WSDL document, or a Swagger JSON document.
-     * @summary Get Service Definition
+     * @summary Get API Definition
      * @param organizationId The Organization ID.
-     * @param serviceId The Service ID.
-     * @param version The Service version.
-     * @statuscode 200 If the Service definition is successfully returned.
-     * @statuscode 404 If the Service version does not exist.
-     * @return The Service Definition document (e.g. a Swagger JSON file).
-     * @throws ServiceVersionNotFoundException when trying to get, update, or delete a service version that does not exist
+     * @param apiId The API ID.
+     * @param version The API version.
+     * @statuscode 200 If the API definition is successfully returned.
+     * @statuscode 404 If the API version does not exist.
+     * @return The API Definition document (e.g. a Swagger JSON file).
+     * @throws ApiVersionNotFoundException when trying to get, update, or delete an API version that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
-    @Path("{organizationId}/services/{serviceId}/versions/{version}/definition")
+    @Path("{organizationId}/apis/{apiId}/versions/{version}/definition")
     @Produces({ MediaType.APPLICATION_JSON, "application/wsdl+xml", "application/x-yaml" })
-    public Response getServiceDefinition(@PathParam("organizationId") String organizationId,
-            @PathParam("serviceId") String serviceId, @PathParam("version") String version)
-            throws ServiceVersionNotFoundException, NotAuthorizedException;
+    public Response getApiDefinition(@PathParam("organizationId") String organizationId,
+            @PathParam("apiId") String apiId, @PathParam("version") String version)
+            throws ApiVersionNotFoundException, NotAuthorizedException;
 
     /**
-     * Use this endpoint to get information about the Managed Service's gateway
+     * Use this endpoint to get information about the Managed API's gateway
      * endpoint.  In other words, this returns the actual live endpoint on the
-     * API Gateway - the endpoint that a client should use when invoking the Service.
-     * @summary Get Service Endpoint
+     * API Gateway - the endpoint that a client should use when invoking the API.
+     * @summary Get API Endpoint
      * @param organizationId The Organization ID.
-     * @param serviceId The Service ID.
-     * @param version The Service version.
+     * @param apiId The API ID.
+     * @param version The API version.
      * @statuscode 200 If the endpoint information is successfully returned.
-     * @statuscode 404 If the Service does not exist.
-     * @return The live Service endpoint information.
-     * @throws ServiceVersionNotFoundException when trying to get, update, or delete a service version that does not exist
-     * @throws InvalidServiceStatusException when the user attempts some action on the service when it is not in an appropriate state/status
+     * @statuscode 404 If the API does not exist.
+     * @return The live API endpoint information.
+     * @throws ApiVersionNotFoundException when trying to get, update, or delete an API version that does not exist
+     * @throws InvalidApiStatusException when the user attempts some action on the API when it is not in an appropriate state/status
      * @throws GatewayNotFoundException when trying to get, update, or delete a gateay that does not exist
      */
     @GET
-    @Path("{organizationId}/services/{serviceId}/versions/{version}/endpoint")
+    @Path("{organizationId}/apis/{apiId}/versions/{version}/endpoint")
     @Produces(MediaType.APPLICATION_JSON)
-    public ServiceVersionEndpointSummaryBean getServiceVersionEndpointInfo(@PathParam("organizationId") String organizationId,
-            @PathParam("serviceId") String serviceId, @PathParam("version") String version)
-            throws ServiceVersionNotFoundException, InvalidServiceStatusException, GatewayNotFoundException;
+    public ApiVersionEndpointSummaryBean getApiVersionEndpointInfo(@PathParam("organizationId") String organizationId,
+            @PathParam("apiId") String apiId, @PathParam("version") String version)
+            throws ApiVersionNotFoundException, InvalidApiStatusException, GatewayNotFoundException;
 
     /**
-     * Use this endpoint to update information about a single version of a Service.
-     * @summary Update Service Version
+     * Use this endpoint to update information about a single version of an API.
+     * @summary Update API Version
      * @param organizationId The Organization ID.
-     * @param serviceId The Service ID.
-     * @param version The Service version.
-     * @param bean Updated information about the Service version.
-     * @return The updated Service Version.
-     * @statuscode 204 If the Service version information was successfully updated.
-     * @statuscode 404 If the Service does not exist.
-     * @throws ServiceVersionNotFoundException when trying to get, update, or delete a service version that does not exist
+     * @param apiId The API ID.
+     * @param version The API version.
+     * @param bean Updated information about the API version.
+     * @return The updated API Version.
+     * @statuscode 204 If the API version information was successfully updated.
+     * @statuscode 404 If the API does not exist.
+     * @throws ApiVersionNotFoundException when trying to get, update, or delete an API version that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
-     * @throws InvalidServiceStatusException when the user attempts some action on the service when it is not in an appropriate state/status
+     * @throws InvalidApiStatusException when the user attempts some action on the API when it is not in an appropriate state/status
      */
     @PUT
-    @Path("{organizationId}/services/{serviceId}/versions/{version}")
+    @Path("{organizationId}/apis/{apiId}/versions/{version}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public ServiceVersionBean updateServiceVersion(@PathParam("organizationId") String organizationId,
-            @PathParam("serviceId") String serviceId, @PathParam("version") String version,
-            UpdateServiceVersionBean bean) throws ServiceVersionNotFoundException, NotAuthorizedException,
-            InvalidServiceStatusException;
+    public ApiVersionBean updateApiVersion(@PathParam("organizationId") String organizationId,
+            @PathParam("apiId") String apiId, @PathParam("version") String version,
+            UpdateApiVersionBean bean) throws ApiVersionNotFoundException, NotAuthorizedException,
+            InvalidApiStatusException;
 
     /**
-     * Use this endpoint to update the Service's definition document.  A service
-     * definition will vary depending on the type of service, and the type of
+     * Use this endpoint to update the API's definition document.  An API
+     * definition will vary depending on the type of API, and the type of
      * definition used.  For example, it might be a Swagger document or a WSDL file.
-     * To use this endpoint, simply PUT the updated Service Definition document
+     * To use this endpoint, simply PUT the updated API Definition document
      * in its entirety, making sure to set the Content-Type appropriately for the
-     * type of definition document.  The content will be stored and the Service's
+     * type of definition document.  The content will be stored and the API's
      * "Definition Type" field will be updated.
      * <br />
-     * Whenever a service's definition is updated, the "definitionType" property of
-     * that service is automatically set based on the request Content-Type.  There
-     * is no other way to set the service's definition type property.  The following
-     * is a map of Content-Type to service definition type.
+     * Whenever an API's definition is updated, the "definitionType" property of
+     * that API is automatically set based on the request Content-Type.  There
+     * is no other way to set the API's definition type property.  The following
+     * is a map of Content-Type to API definition type.
      *
      * <table>
      *   <thead>
-     *     <tr><th>Content Type</th><th>Service Definition Type</th></tr>
+     *     <tr><th>Content Type</th><th>API Definition Type</th></tr>
      *   </thead>
      *   <tbody>
      *     <tr><td>application/json</td><td>SwaggerJSON</td></tr>
@@ -1001,302 +1001,302 @@ public interface IOrganizationResource {
      *     <tr><td>application/wsdl+xml</td><td>WSDL</td></tr>
      *   </tbody>
      * </table>
-     * @summary Update Service Definition
+     * @summary Update API Definition
      * @param organizationId The Organization ID.
-     * @param serviceId The Service ID.
-     * @param version The Service version.
-     * @statuscode 204 If the Service definition was successfully updated.
-     * @statuscode 404 If the Service does not exist.
-     * @throws ServiceVersionNotFoundException when trying to get, update, or delete a service version that does not exist
+     * @param apiId The API ID.
+     * @param version The API version.
+     * @statuscode 204 If the API definition was successfully updated.
+     * @statuscode 404 If the API does not exist.
+     * @throws ApiVersionNotFoundException when trying to get, update, or delete an API version that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
-     * @throws InvalidServiceStatusException when the user attempts some action on the service when it is not in an appropriate state/status
+     * @throws InvalidApiStatusException when the user attempts some action on the API when it is not in an appropriate state/status
      */
     @PUT
-    @Path("{organizationId}/services/{serviceId}/versions/{version}/definition")
+    @Path("{organizationId}/apis/{apiId}/versions/{version}/definition")
     @Consumes({ MediaType.APPLICATION_JSON, "application/wsdl+xml", "application/x-yaml" })
-    public void updateServiceDefinition(@PathParam("organizationId") String organizationId,
-            @PathParam("serviceId") String serviceId, @PathParam("version") String version)
-            throws ServiceVersionNotFoundException, NotAuthorizedException, InvalidServiceStatusException;
+    public void updateApiDefinition(@PathParam("organizationId") String organizationId,
+            @PathParam("apiId") String apiId, @PathParam("version") String version)
+            throws ApiVersionNotFoundException, NotAuthorizedException, InvalidApiStatusException;
 
 
     /**
-     * Use this endpoint to update the Service's definition document by providing
+     * Use this endpoint to update the API's definition document by providing
      * a URL (reference) to the definition.  This is an alternative to providing the
-     * full service definition document via a PUT to the same endpoint.  This endpoint
+     * full API definition document via a PUT to the same endpoint.  This endpoint
      * can be used to either add a definition if one does not already exist, as well
      * as update/replace an existing definition.
      *
      * Note that apiman will not store the definition reference, but instead will
-     * download the service definition document and store it.  Additionally, the
-     * the Service's "Definition Type" field will be updated.
-     * @summary Update Service Definition from URL
+     * download the API definition document and store it.  Additionally, the
+     * the API's "Definition Type" field will be updated.
+     * @summary Update API Definition from URL
      * @param organizationId The Organization ID.
-     * @param serviceId The Service ID.
-     * @param version The Service version.
-     * @param bean The service definition reference information.
-     * @statuscode 204 If the Service definition was successfully updated.
-     * @statuscode 404 If the Service does not exist.
-     * @throws ServiceVersionNotFoundException when trying to get, update, or delete a service version that does not exist
+     * @param apiId The API ID.
+     * @param version The API version.
+     * @param bean The API definition reference information.
+     * @statuscode 204 If the API definition was successfully updated.
+     * @statuscode 404 If the API does not exist.
+     * @throws ApiVersionNotFoundException when trying to get, update, or delete an API version that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
-     * @throws InvalidServiceStatusException when the user attempts some action on the service when it is not in an appropriate state/status
+     * @throws InvalidApiStatusException when the user attempts some action on the API when it is not in an appropriate state/status
      */
     @POST
-    @Path("{organizationId}/services/{serviceId}/versions/{version}/definition")
+    @Path("{organizationId}/apis/{apiId}/versions/{version}/definition")
     @Consumes(MediaType.APPLICATION_JSON)
-    public void updateServiceDefinitionFromURL(@PathParam("organizationId") String organizationId,
-            @PathParam("serviceId") String serviceId, @PathParam("version") String version, NewServiceDefinitionBean bean)
-            throws ServiceVersionNotFoundException, NotAuthorizedException, InvalidServiceStatusException;
+    public void updateApiDefinitionFromURL(@PathParam("organizationId") String organizationId,
+            @PathParam("apiId") String apiId, @PathParam("version") String version, NewApiDefinitionBean bean)
+            throws ApiVersionNotFoundException, NotAuthorizedException, InvalidApiStatusException;
 
     /**
      * Use this endpoint to get audit activity information for a single version of the
-     * Service.
-     * @summary Get Service Version Activity
+     * API.
+     * @summary Get API Version Activity
      * @param organizationId The Organization ID.
-     * @param serviceId The Service ID.
-     * @param version The Service version.
+     * @param apiId The API ID.
+     * @param version The API version.
      * @param page Which page of activity data to return.
      * @param pageSize The number of entries per page to return.
      * @statuscode 200 If the audit activity entries are successfully returned.
-     * @statuscode 404 If the Service version does not exist.
+     * @statuscode 404 If the API version does not exist.
      * @return A list of audit entries.
-     * @throws ServiceVersionNotFoundException when trying to get, update, or delete a service version that does not exist
+     * @throws ApiVersionNotFoundException when trying to get, update, or delete an API version that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
-    @Path("{organizationId}/services/{serviceId}/versions/{version}/activity")
+    @Path("{organizationId}/apis/{apiId}/versions/{version}/activity")
     @Produces(MediaType.APPLICATION_JSON)
-    public SearchResultsBean<AuditEntryBean> getServiceVersionActivity(
-            @PathParam("organizationId") String organizationId, @PathParam("serviceId") String serviceId,
+    public SearchResultsBean<AuditEntryBean> getApiVersionActivity(
+            @PathParam("organizationId") String organizationId, @PathParam("apiId") String apiId,
             @PathParam("version") String version, @QueryParam("page") int page,
-            @QueryParam("count") int pageSize) throws ServiceVersionNotFoundException, NotAuthorizedException;
+            @QueryParam("count") int pageSize) throws ApiVersionNotFoundException, NotAuthorizedException;
 
     /**
-     * Use this endpoint to list the Plans configured for the given Service version.
-     * @summary List Service Plans
+     * Use this endpoint to list the Plans configured for the given API version.
+     * @summary List API Plans
      * @param organizationId The Organization ID.
-     * @param serviceId The Service ID.
-     * @param version The Service version.
-     * @statuscode 200 If the Service plans are successfully returned.
-     * @statuscode 404 If the Service cannot be found.
-     * @return A list of Service plans.
-     * @throws ServiceVersionNotFoundException when trying to get, update, or delete a service version that does not exist
+     * @param apiId The API ID.
+     * @param version The API version.
+     * @statuscode 200 If the API plans are successfully returned.
+     * @statuscode 404 If the API cannot be found.
+     * @return A list of API plans.
+     * @throws ApiVersionNotFoundException when trying to get, update, or delete an API version that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
-    @Path("{organizationId}/services/{serviceId}/versions/{version}/plans")
+    @Path("{organizationId}/apis/{apiId}/versions/{version}/plans")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<ServicePlanSummaryBean> getServiceVersionPlans(@PathParam("organizationId") String organizationId,
-            @PathParam("serviceId") String serviceId, @PathParam("version") String version)
-            throws ServiceVersionNotFoundException, NotAuthorizedException;
+    public List<ApiPlanSummaryBean> getApiVersionPlans(@PathParam("organizationId") String organizationId,
+            @PathParam("apiId") String apiId, @PathParam("version") String version)
+            throws ApiVersionNotFoundException, NotAuthorizedException;
 
     /**
-     * Use this endpoint to add a new Policy to the Service version.
-     * @summary Add Service Policy
+     * Use this endpoint to add a new Policy to the API version.
+     * @summary Add API Policy
      * @param organizationId The Organization ID.
-     * @param serviceId The Service ID.
-     * @param version The Service version.
+     * @param apiId The API ID.
+     * @param version The API version.
      * @param bean Information about the new Policy.
      * @statuscode 200 If the Policy is successfully added.
-     * @statuscode 404 If the Service does not exist.
+     * @statuscode 404 If the API does not exist.
      * @return Full details about the newly added Policy.
      * @throws OrganizationNotFoundException when trying to get, update, or delete an organization that does not exist
-     * @throws ServiceVersionNotFoundException when trying to get, update, or delete a service version that does not exist
+     * @throws ApiVersionNotFoundException when trying to get, update, or delete an API version that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @POST
-    @Path("{organizationId}/services/{serviceId}/versions/{version}/policies")
+    @Path("{organizationId}/apis/{apiId}/versions/{version}/policies")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public PolicyBean createServicePolicy(@PathParam("organizationId") String organizationId,
-            @PathParam("serviceId") String serviceId, @PathParam("version") String version,
-            NewPolicyBean bean) throws OrganizationNotFoundException, ServiceVersionNotFoundException,
+    public PolicyBean createApiPolicy(@PathParam("organizationId") String organizationId,
+            @PathParam("apiId") String apiId, @PathParam("version") String version,
+            NewPolicyBean bean) throws OrganizationNotFoundException, ApiVersionNotFoundException,
             NotAuthorizedException;
 
     /**
-     * Use this endpoint to get information about a single Policy in the Service version.
-     * @summary Get Service Policy
+     * Use this endpoint to get information about a single Policy in the API version.
+     * @summary Get API Policy
      * @param organizationId The Organization ID.
-     * @param serviceId The Service ID.
-     * @param version The Service version.
+     * @param apiId The API ID.
+     * @param version The API version.
      * @param policyId The Policy ID.
      * @statuscode 200 If the Policy is successfully returned.
-     * @statuscode 404 If the Service does not exist.
+     * @statuscode 404 If the API does not exist.
      * @return Full information about the Policy.
      * @throws OrganizationNotFoundException when trying to get, update, or delete an organization that does not exist
-     * @throws ServiceVersionNotFoundException when trying to get, update, or delete a service version that does not exist
+     * @throws ApiVersionNotFoundException when trying to get, update, or delete an API version that does not exist
      * @throws PolicyNotFoundException when trying to get, update, or delete a policy that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
-    @Path("{organizationId}/services/{serviceId}/versions/{version}/policies/{policyId}")
+    @Path("{organizationId}/apis/{apiId}/versions/{version}/policies/{policyId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public PolicyBean getServicePolicy(@PathParam("organizationId") String organizationId,
-            @PathParam("serviceId") String serviceId, @PathParam("version") String version,
-            @PathParam("policyId") long policyId) throws OrganizationNotFoundException, ServiceVersionNotFoundException,
+    public PolicyBean getApiPolicy(@PathParam("organizationId") String organizationId,
+            @PathParam("apiId") String apiId, @PathParam("version") String version,
+            @PathParam("policyId") long policyId) throws OrganizationNotFoundException, ApiVersionNotFoundException,
             PolicyNotFoundException, NotAuthorizedException;
 
     /**
-     * Use this endpoint to update the meta-data or configuration of a single Service Policy.
-     * @summary Update Service Policy
+     * Use this endpoint to update the meta-data or configuration of a single API Policy.
+     * @summary Update API Policy
      * @param organizationId The Organization ID.
-     * @param serviceId The Service ID.
-     * @param version The Service version.
+     * @param apiId The API ID.
+     * @param version The API version.
      * @param policyId The Policy ID.
      * @param bean New meta-data and/or configuration for the Policy.
      * @statuscode 204 If the Policy was successfully updated.
-     * @statuscode 404 If the Service does not exist.
+     * @statuscode 404 If the API does not exist.
      * @statuscode 404 If the Policy does not exist.
      * @throws OrganizationNotFoundException when trying to get, update, or delete an organization that does not exist
-     * @throws ServiceVersionNotFoundException when trying to get, update, or delete a service version that does not exist
+     * @throws ApiVersionNotFoundException when trying to get, update, or delete an API version that does not exist
      * @throws PolicyNotFoundException when trying to get, update, or delete a policy that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @PUT
-    @Path("{organizationId}/services/{serviceId}/versions/{version}/policies/{policyId}")
+    @Path("{organizationId}/apis/{apiId}/versions/{version}/policies/{policyId}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public void updateServicePolicy(@PathParam("organizationId") String organizationId,
-            @PathParam("serviceId") String serviceId, @PathParam("version") String version,
+    public void updateApiPolicy(@PathParam("organizationId") String organizationId,
+            @PathParam("apiId") String apiId, @PathParam("version") String version,
             @PathParam("policyId") long policyId, UpdatePolicyBean bean) throws OrganizationNotFoundException,
-            ServiceVersionNotFoundException, PolicyNotFoundException, NotAuthorizedException;
+            ApiVersionNotFoundException, PolicyNotFoundException, NotAuthorizedException;
 
     /**
-     * Use this endpoint to remove a Policy from the Service.
-     * @summary Remove Service Policy
+     * Use this endpoint to remove a Policy from the API.
+     * @summary Remove API Policy
      * @param organizationId The Organization ID.
-     * @param serviceId The Service ID.
-     * @param version The Service version.
+     * @param apiId The API ID.
+     * @param version The API version.
      * @param policyId The Policy ID.
      * @statuscode 204 If the Policy was successfully deleted.
-     * @statuscode 404 If the Service does not exist.
+     * @statuscode 404 If the API does not exist.
      * @statuscode 404 If the Policy does not exist.
      * @throws OrganizationNotFoundException when trying to get, update, or delete an organization that does not exist
-     * @throws ServiceVersionNotFoundException when trying to get, update, or delete a service version that does not exist
+     * @throws ApiVersionNotFoundException when trying to get, update, or delete an API version that does not exist
      * @throws PolicyNotFoundException when trying to get, update, or delete a policy that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @DELETE
-    @Path("{organizationId}/services/{serviceId}/versions/{version}/policies/{policyId}")
-    public void deleteServicePolicy(@PathParam("organizationId") String organizationId,
-            @PathParam("serviceId") String serviceId, @PathParam("version") String version,
-            @PathParam("policyId") long policyId) throws OrganizationNotFoundException, ServiceVersionNotFoundException,
+    @Path("{organizationId}/apis/{apiId}/versions/{version}/policies/{policyId}")
+    public void deleteApiPolicy(@PathParam("organizationId") String organizationId,
+            @PathParam("apiId") String apiId, @PathParam("version") String version,
+            @PathParam("policyId") long policyId) throws OrganizationNotFoundException, ApiVersionNotFoundException,
             PolicyNotFoundException, NotAuthorizedException;
 
     /**
-     * Use this endpoint to delete a Service's definition document.  When this
-     * is done, the "definitionType" field on the Service will be set to None.
-     * @summary Remove Service Definition
+     * Use this endpoint to delete an API's definition document.  When this
+     * is done, the "definitionType" field on the API will be set to None.
+     * @summary Remove API Definition
      * @param organizationId The Organization ID.
-     * @param serviceId The Service ID.
-     * @param version The Service version.
-     * @statuscode 204 If the Service definition was successfully deleted.
-     * @statuscode 404 If the Service does not exist.
+     * @param apiId The API ID.
+     * @param version The API version.
+     * @statuscode 204 If the API definition was successfully deleted.
+     * @statuscode 404 If the API does not exist.
      * @throws OrganizationNotFoundException when trying to get, update, or delete an organization that does not exist
-     * @throws ServiceVersionNotFoundException when trying to get, update, or delete a service version that does not exist
+     * @throws ApiVersionNotFoundException when trying to get, update, or delete an API version that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @DELETE
-    @Path("{organizationId}/services/{serviceId}/versions/{version}/definition")
-    public void deleteServiceDefinition(@PathParam("organizationId") String organizationId,
-            @PathParam("serviceId") String serviceId, @PathParam("version") String version)
-            throws OrganizationNotFoundException, ServiceVersionNotFoundException,
+    @Path("{organizationId}/apis/{apiId}/versions/{version}/definition")
+    public void deleteApiDefinition(@PathParam("organizationId") String organizationId,
+            @PathParam("apiId") String apiId, @PathParam("version") String version)
+            throws OrganizationNotFoundException, ApiVersionNotFoundException,
             NotAuthorizedException;
 
     /**
-     * Use this endpoint to list all of the Policies configured for the Service.
-     * @summary List All Service Policies
+     * Use this endpoint to list all of the Policies configured for the API.
+     * @summary List All API Policies
      * @param organizationId The Organization ID.
-     * @param serviceId The Service ID.
-     * @param version The Service version.
+     * @param apiId The API ID.
+     * @param version The API version.
      * @statuscode 200 If the list of Policies is successfully returned.
-     * @statuscode 404 If the Service does not exist.
+     * @statuscode 404 If the API does not exist.
      * @return A List of Policies.
      * @throws OrganizationNotFoundException when trying to get, update, or delete an organization that does not exist
-     * @throws ServiceVersionNotFoundException when trying to get, update, or delete a service version that does not exist
+     * @throws ApiVersionNotFoundException when trying to get, update, or delete an API version that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
-    @Path("{organizationId}/services/{serviceId}/versions/{version}/policies")
+    @Path("{organizationId}/apis/{apiId}/versions/{version}/policies")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<PolicySummaryBean> listServicePolicies(@PathParam("organizationId") String organizationId,
-            @PathParam("serviceId") String serviceId, @PathParam("version") String version)
-            throws OrganizationNotFoundException, ServiceVersionNotFoundException,
+    public List<PolicySummaryBean> listApiPolicies(@PathParam("organizationId") String organizationId,
+            @PathParam("apiId") String apiId, @PathParam("version") String version)
+            throws OrganizationNotFoundException, ApiVersionNotFoundException,
             NotAuthorizedException;
 
     /**
-     * Use this endpoint to change the order of Policies for a Service.  When a
-     * Policy is added to the Service, it is added as the last Policy in the list
-     * of Service Policies.  Sometimes the order of Policies is important, so it
+     * Use this endpoint to change the order of Policies for an API.  When a
+     * Policy is added to the API, it is added as the last Policy in the list
+     * of API Policies.  Sometimes the order of Policies is important, so it
      * is often useful to re-order the Policies by invoking this endpoint.  The body
-     * of the request should include all of the Policies for the Service, in the
+     * of the request should include all of the Policies for the API, in the
      * new desired order.  Note that only the IDs of each of the Policies is actually
      * required in the request, at a minimum.
-     * @summary Re-Order Service Policies
+     * @summary Re-Order API Policies
      * @param organizationId The Organization ID.
-     * @param serviceId The Service ID.
-     * @param version The Service version.
+     * @param apiId The API ID.
+     * @param version The API version.
      * @param policyChain The Policies in the desired order.
      * @statuscode 204 If the re-ordering of Policies was successful.
-     * @statuscode 404 If the Service does not exist.
+     * @statuscode 404 If the API does not exist.
      * @throws OrganizationNotFoundException when trying to get, update, or delete an organization that does not exist
-     * @throws ServiceVersionNotFoundException when trying to get, update, or delete a service version that does not exist
+     * @throws ApiVersionNotFoundException when trying to get, update, or delete an API version that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @POST
-    @Path("{organizationId}/services/{serviceId}/versions/{version}/reorderPolicies")
+    @Path("{organizationId}/apis/{apiId}/versions/{version}/reorderPolicies")
     @Consumes(MediaType.APPLICATION_JSON)
-    public void reorderServicePolicies(@PathParam("organizationId") String organizationId,
-            @PathParam("serviceId") String serviceId, @PathParam("version") String version,
+    public void reorderApiPolicies(@PathParam("organizationId") String organizationId,
+            @PathParam("apiId") String apiId, @PathParam("version") String version,
             PolicyChainBean policyChain) throws OrganizationNotFoundException,
-            ServiceVersionNotFoundException, NotAuthorizedException;
+            ApiVersionNotFoundException, NotAuthorizedException;
 
     /**
-     * Use this endpoint to get a Policy Chain for the specific Service version.  A
+     * Use this endpoint to get a Policy Chain for the specific API version.  A
      * Policy Chain is a useful summary to better understand which Policies would be
-     * executed for a request to this Service through a particular Plan offered by the
-     * Service.  Often this information is interesting prior to create a Contract with
-     * the Service.
-     * @summary Get Service Policy Chain
+     * executed for a request to this API through a particular Plan offered by the
+     * API.  Often this information is interesting prior to create a Contract with
+     * the API.
+     * @summary Get API Policy Chain
      * @param organizationId The Organization ID.
-     * @param serviceId The Service ID.
-     * @param version The Service version.
+     * @param apiId The API ID.
+     * @param version The API version.
      * @param planId The Plan ID.
      * @statuscode 200 If the Policy Chain is successfully returned.
-     * @statuscode 404 If the Service does not exist.
+     * @statuscode 404 If the API does not exist.
      * @return A Policy Chain.
-     * @throws ServiceVersionNotFoundException when trying to get, update, or delete a service version that does not exist
+     * @throws ApiVersionNotFoundException when trying to get, update, or delete an API version that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
-    @Path("{organizationId}/services/{serviceId}/versions/{version}/plans/{planId}/policyChain")
+    @Path("{organizationId}/apis/{apiId}/versions/{version}/plans/{planId}/policyChain")
     @Produces(MediaType.APPLICATION_JSON)
-    public PolicyChainBean getServicePolicyChain(@PathParam("organizationId") String organizationId,
-            @PathParam("serviceId") String serviceId, @PathParam("version") String version,
-            @PathParam("planId") String planId) throws ServiceVersionNotFoundException,
+    public PolicyChainBean getApiPolicyChain(@PathParam("organizationId") String organizationId,
+            @PathParam("apiId") String apiId, @PathParam("version") String version,
+            @PathParam("planId") String planId) throws ApiVersionNotFoundException,
             NotAuthorizedException;
 
     /**
-     * Use this endpoint to get a list of all Contracts created with this Service.  This
+     * Use this endpoint to get a list of all Contracts created with this API.  This
      * will return Contracts created by between any Application and through any Plan.
-     * @summary List Service Contracts
+     * @summary List API Contracts
      * @param organizationId The Organization ID.
-     * @param serviceId The Service ID.
-     * @param version The Service version.
+     * @param apiId The API ID.
+     * @param version The API version.
      * @param page Which page of Contracts to return.
      * @param pageSize The number of Contracts per page to return.
      * @statuscode 200 If the list of Contracts is successfully returned.
-     * @statuscode 404 If the Service does not exist.
+     * @statuscode 404 If the API does not exist.
      * @return A list of Contracts.
-     * @throws ServiceVersionNotFoundException when trying to get, update, or delete a service version that does not exist
+     * @throws ApiVersionNotFoundException when trying to get, update, or delete an API version that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
-    @Path("{organizationId}/services/{serviceId}/versions/{version}/contracts")
+    @Path("{organizationId}/apis/{apiId}/versions/{version}/contracts")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<ContractSummaryBean> getServiceVersionContracts(
-            @PathParam("organizationId") String organizationId, @PathParam("serviceId") String serviceId,
+    public List<ContractSummaryBean> getApiVersionContracts(
+            @PathParam("organizationId") String organizationId, @PathParam("apiId") String apiId,
             @PathParam("version") String version, @QueryParam("page") int page,
-            @QueryParam("count") int pageSize) throws ServiceVersionNotFoundException, NotAuthorizedException;
+            @QueryParam("count") int pageSize) throws ApiVersionNotFoundException, NotAuthorizedException;
 
     /*
      * PLANS
@@ -1710,14 +1710,14 @@ public interface IOrganizationResource {
      * ----------------------------------------------------------------- */
 
     /**
-     * Retrieves metrics/analytics information for a specific service.  This will
+     * Retrieves metrics/analytics information for a specific API.  This will
      * return a full histogram of request count data based on the provided date range
      * and interval.  Valid intervals are:  month, week, day, hour, minute
      *
-     * @summary Get Service Usage Metrics
+     * @summary Get API Usage Metrics
      * @param organizationId The organization ID.
-     * @param serviceId The service ID.
-     * @param version The service version.
+     * @param apiId The API ID.
+     * @param version The API version.
      * @param interval A valid interval (month, week, day, hour, minute)
      * @param fromDate The start of a valid date range.
      * @param toDate The end of a valid date range.
@@ -1726,22 +1726,22 @@ public interface IOrganizationResource {
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
-    @Path("{organizationId}/services/{serviceId}/versions/{version}/metrics/usage")
+    @Path("{organizationId}/apis/{apiId}/versions/{version}/metrics/usage")
     @Produces(MediaType.APPLICATION_JSON)
     public UsageHistogramBean getUsage(@PathParam("organizationId") String organizationId,
-            @PathParam("serviceId") String serviceId, @PathParam("version") String version,
+            @PathParam("apiId") String apiId, @PathParam("version") String version,
             @QueryParam("interval") HistogramIntervalType interval, @QueryParam("from") String fromDate,
             @QueryParam("to") String toDate) throws NotAuthorizedException, InvalidMetricCriteriaException;
 
     /**
-     * Retrieves metrics/analytics information for a specific service.  This will
+     * Retrieves metrics/analytics information for a specific API.  This will
      * return request count data broken down by application.  It basically answers
-     * the question "who is calling my service?".
+     * the question "who is calling my API?".
      *
-     * @summary Get Service Usage Metrics (per App)
+     * @summary Get API Usage Metrics (per App)
      * @param organizationId The organization ID.
-     * @param serviceId The service ID.
-     * @param version The service version.
+     * @param apiId The API ID.
+     * @param version The API version.
      * @param fromDate The start of a valid date range.
      * @param toDate The end of a valid date range.
      * @statuscode 200 If the metrics data is successfully returned.
@@ -1749,23 +1749,23 @@ public interface IOrganizationResource {
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
-    @Path("{organizationId}/services/{serviceId}/versions/{version}/metrics/appUsage")
+    @Path("{organizationId}/apis/{apiId}/versions/{version}/metrics/appUsage")
     @Produces(MediaType.APPLICATION_JSON)
     public UsagePerAppBean getUsagePerApp(
-            @PathParam("organizationId") String organizationId, @PathParam("serviceId") String serviceId,
+            @PathParam("organizationId") String organizationId, @PathParam("apiId") String apiId,
             @PathParam("version") String version, @QueryParam("from") String fromDate,
             @QueryParam("to") String toDate) throws NotAuthorizedException, InvalidMetricCriteriaException;
 
 
     /**
-     * Retrieves metrics/analytics information for a specific service.  This will
+     * Retrieves metrics/analytics information for a specific API.  This will
      * return request count data broken down by plan.  It basically answers
-     * the question "which service plans are most used?".
+     * the question "which API plans are most used?".
      *
-     * @summary Get Service Usage Metrics (per Plan)
+     * @summary Get API Usage Metrics (per Plan)
      * @param organizationId The organization ID.
-     * @param serviceId The service ID.
-     * @param version The service version.
+     * @param apiId The API ID.
+     * @param version The API version.
      * @param fromDate The start of a valid date range.
      * @param toDate The end of a valid date range.
      * @statuscode 200 If the metrics data is successfully returned.
@@ -1773,26 +1773,26 @@ public interface IOrganizationResource {
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
-    @Path("{organizationId}/services/{serviceId}/versions/{version}/metrics/planUsage")
+    @Path("{organizationId}/apis/{apiId}/versions/{version}/metrics/planUsage")
     @Produces(MediaType.APPLICATION_JSON)
     public UsagePerPlanBean getUsagePerPlan(
-            @PathParam("organizationId") String organizationId, @PathParam("serviceId") String serviceId,
+            @PathParam("organizationId") String organizationId, @PathParam("apiId") String apiId,
             @PathParam("version") String version, @QueryParam("from") String fromDate,
             @QueryParam("to") String toDate) throws NotAuthorizedException, InvalidMetricCriteriaException;
 
 
     /**
-     * Retrieves metrics/analytics information for a specific service.  This will
+     * Retrieves metrics/analytics information for a specific API.  This will
      * return a full histogram of response statistics data based on the provided date range
      * and interval.  Valid intervals are:  month, week, day, hour, minute
      *
      * The data returned includes total request counts, failure counts, and error counts
      * for each data point in the histogram.
      *
-     * @summary Get Service Response Statistics (Histogram)
+     * @summary Get API Response Statistics (Histogram)
      * @param organizationId The organization ID.
-     * @param serviceId The service ID.
-     * @param version The service version.
+     * @param apiId The API ID.
+     * @param version The API version.
      * @param interval A valid interval (month, week, day, hour, minute)
      * @param fromDate The start of a valid date range.
      * @param toDate The end of a valid date range.
@@ -1801,23 +1801,23 @@ public interface IOrganizationResource {
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
-    @Path("{organizationId}/services/{serviceId}/versions/{version}/metrics/responseStats")
+    @Path("{organizationId}/apis/{apiId}/versions/{version}/metrics/responseStats")
     @Produces(MediaType.APPLICATION_JSON)
     public ResponseStatsHistogramBean getResponseStats(@PathParam("organizationId") String organizationId,
-            @PathParam("serviceId") String serviceId, @PathParam("version") String version,
+            @PathParam("apiId") String apiId, @PathParam("version") String version,
             @QueryParam("interval") HistogramIntervalType interval, @QueryParam("from") String fromDate,
             @QueryParam("to") String toDate) throws NotAuthorizedException, InvalidMetricCriteriaException;
 
     /**
-     * Retrieves metrics/analytics information for a specific service.  This will
+     * Retrieves metrics/analytics information for a specific API.  This will
      * return total response type statistics over the given date range.  Basically
      * this will return three numbers: total request, # failed responses, # error
      * responses.
      *
-     * @summary Get Service Response Statistics (Summary)
+     * @summary Get API Response Statistics (Summary)
      * @param organizationId The organization ID.
-     * @param serviceId The service ID.
-     * @param version The service version.
+     * @param apiId The API ID.
+     * @param version The API version.
      * @param fromDate The start of a valid date range.
      * @param toDate The end of a valid date range.
      * @statuscode 200 If the metrics data is successfully returned.
@@ -1825,21 +1825,21 @@ public interface IOrganizationResource {
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
-    @Path("{organizationId}/services/{serviceId}/versions/{version}/metrics/summaryResponseStats")
+    @Path("{organizationId}/apis/{apiId}/versions/{version}/metrics/summaryResponseStats")
     @Produces(MediaType.APPLICATION_JSON)
     public ResponseStatsSummaryBean getResponseStatsSummary(
-            @PathParam("organizationId") String organizationId, @PathParam("serviceId") String serviceId,
+            @PathParam("organizationId") String organizationId, @PathParam("apiId") String apiId,
             @PathParam("version") String version, @QueryParam("from") String fromDate,
             @QueryParam("to") String toDate) throws NotAuthorizedException, InvalidMetricCriteriaException;
 
     /**
-     * Retrieves metrics/analytics information for a specific service.  This will
+     * Retrieves metrics/analytics information for a specific API.  This will
      * return response type statistics broken down by application.
      *
-     * @summary Get Service Response Statistics (per App)
+     * @summary Get API Response Statistics (per App)
      * @param organizationId The organization ID.
-     * @param serviceId The service ID.
-     * @param version The service version.
+     * @param apiId The API ID.
+     * @param version The API version.
      * @param fromDate The start of a valid date range.
      * @param toDate The end of a valid date range.
      * @statuscode 200 If the metrics data is successfully returned.
@@ -1847,22 +1847,22 @@ public interface IOrganizationResource {
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
-    @Path("{organizationId}/services/{serviceId}/versions/{version}/metrics/appResponseStats")
+    @Path("{organizationId}/apis/{apiId}/versions/{version}/metrics/appResponseStats")
     @Produces(MediaType.APPLICATION_JSON)
     public ResponseStatsPerAppBean getResponseStatsPerApp(
-            @PathParam("organizationId") String organizationId, @PathParam("serviceId") String serviceId,
+            @PathParam("organizationId") String organizationId, @PathParam("apiId") String apiId,
             @PathParam("version") String version, @QueryParam("from") String fromDate,
             @QueryParam("to") String toDate) throws NotAuthorizedException, InvalidMetricCriteriaException;
 
 
     /**
-     * Retrieves metrics/analytics information for a specific service.  This will
+     * Retrieves metrics/analytics information for a specific API.  This will
      * return response type statistics broken down by plan.
      *
-     * @summary Get Service Response Statistics (per Plan)
+     * @summary Get API Response Statistics (per Plan)
      * @param organizationId The organization ID.
-     * @param serviceId The service ID.
-     * @param version The service version.
+     * @param apiId The API ID.
+     * @param version The API version.
      * @param fromDate The start of a valid date range.
      * @param toDate The end of a valid date range.
      * @statuscode 200 If the metrics data is successfully returned.
@@ -1870,10 +1870,10 @@ public interface IOrganizationResource {
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
-    @Path("{organizationId}/services/{serviceId}/versions/{version}/metrics/planResponseStats")
+    @Path("{organizationId}/apis/{apiId}/versions/{version}/metrics/planResponseStats")
     @Produces(MediaType.APPLICATION_JSON)
     public ResponseStatsPerPlanBean getResponseStatsPerPlan(
-            @PathParam("organizationId") String organizationId, @PathParam("serviceId") String serviceId,
+            @PathParam("organizationId") String organizationId, @PathParam("apiId") String apiId,
             @PathParam("version") String version, @QueryParam("from") String fromDate,
             @QueryParam("to") String toDate) throws NotAuthorizedException, InvalidMetricCriteriaException;
 

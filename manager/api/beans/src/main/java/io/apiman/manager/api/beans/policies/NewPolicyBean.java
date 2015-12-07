@@ -18,7 +18,7 @@ package io.apiman.manager.api.beans.policies;
 import java.io.Serializable;
 
 /**
- * Bean used when creating a new policy for a plan, service, or app.
+ * Bean used when creating a new policy for a plan, API, or app.
  *
  * @author eric.wittmann@redhat.com
  */

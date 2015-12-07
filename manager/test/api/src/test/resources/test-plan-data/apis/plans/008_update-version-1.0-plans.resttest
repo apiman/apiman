@@ -1,0 +1,19 @@
+PUT /organizations/Organization1/apis/API1/versions/1.0 admin/admin
+Content-Type: application/json
+
+{
+  "endpoint" : "http://localhost:8080/ping",
+  "endpointType" : "rest",
+  "plans" : [
+    { "planId" : "Plan1", "version" : "1.0" },
+    { "planId" : "Plan2", "version" : "1.1" }
+  ]
+}
+----
+200
+Content-Type: application/json
+
+{
+  "endpoint" : "http://localhost:8080/ping",
+  "endpointType" : "rest"
+}

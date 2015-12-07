@@ -15,7 +15,7 @@
  */
 package io.apiman.gateway.engine.policies;
 
-import io.apiman.gateway.engine.beans.ServiceRequest;
+import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.policies.config.IPListConfig;
 
 
@@ -32,7 +32,7 @@ public abstract class AbstractIPListPolicy<C> extends AbstractMappedPolicy<C> {
      * @param request the request
      * @param config the config
      */
-    protected String getRemoteAddr(ServiceRequest request, IPListConfig config) {
+    protected String getRemoteAddr(ApiRequest request, IPListConfig config) {
         String httpHeader = config.getHttpHeader();
         if (httpHeader != null && httpHeader.trim().length() > 0) {
             String value = (String) request.getHeaders().get(httpHeader);

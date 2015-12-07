@@ -15,6 +15,12 @@
  */
 package io.apiman.tools.devsvr.manager.api;
 
+import io.apiman.manager.api.beans.apis.ApiBean;
+import io.apiman.manager.api.beans.apis.ApiGatewayBean;
+import io.apiman.manager.api.beans.apis.ApiPlanBean;
+import io.apiman.manager.api.beans.apis.ApiStatus;
+import io.apiman.manager.api.beans.apis.ApiVersionBean;
+import io.apiman.manager.api.beans.apis.EndpointType;
 import io.apiman.manager.api.beans.apps.ApplicationBean;
 import io.apiman.manager.api.beans.apps.ApplicationStatus;
 import io.apiman.manager.api.beans.apps.ApplicationVersionBean;
@@ -29,12 +35,6 @@ import io.apiman.manager.api.beans.plans.PlanStatus;
 import io.apiman.manager.api.beans.plans.PlanVersionBean;
 import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
 import io.apiman.manager.api.beans.policies.PolicyDefinitionTemplateBean;
-import io.apiman.manager.api.beans.services.EndpointType;
-import io.apiman.manager.api.beans.services.ServiceBean;
-import io.apiman.manager.api.beans.services.ServiceGatewayBean;
-import io.apiman.manager.api.beans.services.ServicePlanBean;
-import io.apiman.manager.api.beans.services.ServiceStatus;
-import io.apiman.manager.api.beans.services.ServiceVersionBean;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.test.server.DefaultTestDataSeeder;
@@ -73,9 +73,9 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         gateway.setCreatedOn(new Date());
         gateway.setModifiedBy("admin");
         gateway.setModifiedOn(new Date());
-        
+
         storage.createGateway(gateway);
-        
+
 
         // Create Organization Owner role
         RoleBean role = new RoleBean();
@@ -95,16 +95,16 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         role.getPermissions().add(PermissionType.planView);
         role.getPermissions().add(PermissionType.planEdit);
         role.getPermissions().add(PermissionType.planAdmin);
-        role.getPermissions().add(PermissionType.svcView);
-        role.getPermissions().add(PermissionType.svcEdit);
-        role.getPermissions().add(PermissionType.svcAdmin);
+        role.getPermissions().add(PermissionType.apiView);
+        role.getPermissions().add(PermissionType.apiEdit);
+        role.getPermissions().add(PermissionType.apiAdmin);
         storage.createRole(role);
 
         // Create Application Developer role
         role = new RoleBean();
         role.setId("ApplicationDeveloper");
         role.setName("Application Developer");
-        role.setDescription("This role allows users to perform standard application development tasks (manage applications but not services or plans).");
+        role.setDescription("This role allows users to perform standard application development tasks (manage applications but not APIs or plans).");
         role.setCreatedBy("admin");
         role.setCreatedOn(new Date());
         role.setPermissions(new HashSet<PermissionType>());
@@ -114,24 +114,24 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         role.getPermissions().add(PermissionType.appAdmin);
         storage.createRole(role);
 
-        // Create Service Developer role
+        // Create API Developer role
         role = new RoleBean();
-        role.setId("ServiceDeveloper");
-        role.setName("Service Developer");
-        role.setDescription("This role allows users to perform standard service development tasks such as managing services and plans.");
+        role.setId("APIDeveloper");
+        role.setName("API Developer");
+        role.setDescription("This role allows users to perform standard API development tasks such as managing APIs and plans.");
         role.setCreatedBy("admin");
         role.setCreatedOn(new Date());
         role.setPermissions(new HashSet<PermissionType>());
         role.getPermissions().add(PermissionType.orgView);
-        role.getPermissions().add(PermissionType.svcView);
-        role.getPermissions().add(PermissionType.svcEdit);
-        role.getPermissions().add(PermissionType.svcAdmin);
+        role.getPermissions().add(PermissionType.apiView);
+        role.getPermissions().add(PermissionType.apiEdit);
+        role.getPermissions().add(PermissionType.apiAdmin);
         role.getPermissions().add(PermissionType.planView);
         role.getPermissions().add(PermissionType.planEdit);
         role.getPermissions().add(PermissionType.planAdmin);
         storage.createRole(role);
 
-        
+
 
         // Create JBoss Overlord org
         OrganizationBean org = new OrganizationBean();
@@ -155,7 +155,7 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         org.setModifiedBy("admin");
         storage.createOrganization(org);
 
-        
+
 
         // Make admin the owner of both orgs
         RoleMembershipBean membership = RoleMembershipBean.create("admin", "OrganizationOwner", "JBossOverlord");
@@ -166,13 +166,13 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         membership.setCreatedOn(new Date());
         storage.createMembership(membership);
 
-        
+
 
         // Create some plans
         PlanBean plan = new PlanBean();
         plan.setId("Platinum");
         plan.setName("Platinum");
-        plan.setDescription("Provides subscribing applications with full access to the Services in this Organization.");
+        plan.setDescription("Provides subscribing applications with full access to the APIs in this Organization.");
         plan.setOrganization(storage.getOrganization("JBossOverlord"));
         plan.setCreatedBy("admin");
         plan.setCreatedOn(new Date());
@@ -190,7 +190,7 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         plan = new PlanBean();
         plan.setId("Gold");
         plan.setName("Gold");
-        plan.setDescription("Provides subscribing applications with full access to a subset of Services. Also allows partial (rate limited) access to the rest.");
+        plan.setDescription("Provides subscribing applications with full access to a subset of APIs. Also allows partial (rate limited) access to the rest.");
         plan.setOrganization(storage.getOrganization("JBossOverlord"));
         plan.setCreatedBy("admin");
         plan.setCreatedOn(new Date());
@@ -214,8 +214,8 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         pvb.setModifiedOn(new Date());
         storage.createPlanVersion(pvb);
 
-        
-        
+
+
 
         // Create some applications
         ApplicationBean app = new ApplicationBean();
@@ -239,7 +239,7 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         app = new ApplicationBean();
         app.setId("rtgov");
         app.setName("rtgov");
-        app.setDescription("This component provides the infrastructure to capture service activity information and then correlate...");
+        app.setDescription("This component provides the infrastructure to capture API activity information and then correlate...");
         app.setOrganization(storage.getOrganization("JBossOverlord"));
         app.setCreatedBy("admin");
         app.setCreatedOn(new Date());
@@ -272,38 +272,34 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         avb.setModifiedOn(new Date());
         storage.createApplicationVersion(avb);
 
-        
-        
 
-        // Create some services
-        ServiceBean service = new ServiceBean();
-        service.setId("s-ramp-api");
-        service.setName("s-ramp-api");
-        service.setDescription("Allows S-RAMP repository users to communicate with the repository via an Atom based API.");
-        service.setOrganization(storage.getOrganization("JBossOverlord"));
-        service.setCreatedOn(new Date());
-        service.setCreatedBy("admin");
-        storage.createService(service);
-        ServiceVersionBean svb = new ServiceVersionBean();
-        svb.setGateways(new HashSet<ServiceGatewayBean>());
-        svb.setPlans(new HashSet<ServicePlanBean>());
+        // Create some APIs
+        ApiBean api = new ApiBean();
+        api.setId("s-ramp-api");
+        api.setName("s-ramp-api");
+        api.setDescription("Allows S-RAMP repository users to communicate with the repository via an Atom based API.");
+        api.setOrganization(storage.getOrganization("JBossOverlord"));
+        api.setCreatedOn(new Date());
+        api.setCreatedBy("admin");
+        storage.createApi(api);
+        ApiVersionBean svb = new ApiVersionBean();
+        svb.setGateways(new HashSet<ApiGatewayBean>());
+        svb.setPlans(new HashSet<ApiPlanBean>());
         svb.setVersion("1.0");
-        svb.setStatus(ServiceStatus.Ready);
-        svb.setService(service);
+        svb.setStatus(ApiStatus.Ready);
+        svb.setApi(api);
         svb.setCreatedBy("admin");
         svb.setCreatedOn(new Date());
         svb.setModifiedBy("admin");
         svb.setModifiedOn(new Date());
         svb.setEndpoint("http://localhost:9001/echo/s-ramp-server/");
         svb.setEndpointType(EndpointType.rest);
-        svb.setGateways(new HashSet<ServiceGatewayBean>());
-        ServiceGatewayBean sgb = new ServiceGatewayBean();
+        svb.setGateways(new HashSet<ApiGatewayBean>());
+        ApiGatewayBean sgb = new ApiGatewayBean();
         sgb.setGatewayId("TheGateway");
         svb.getGateways().add(sgb);
-        storage.createServiceVersion(svb);
+        storage.createApiVersion(svb);
 
-        
-        
 
         // Create some policy definitions
         PolicyDefinitionBean whitelistPolicyDef = new PolicyDefinitionBean();
@@ -314,7 +310,7 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         whitelistPolicyDef.setPolicyImpl("class:io.apiman.gateway.engine.policies.IPWhitelistPolicy");
         PolicyDefinitionTemplateBean templateBean = new PolicyDefinitionTemplateBean();
         templateBean.setLanguage(null);
-        templateBean.setTemplate("Only requests that originate from the set of @{ipList.size()} configured IP address(es) will be allowed to invoke the managed service.");
+        templateBean.setTemplate("Only requests that originate from the set of @{ipList.size()} configured IP address(es) will be allowed to invoke the managed API.");
         whitelistPolicyDef.getTemplates().add(templateBean);
         storage.createPolicyDefinition(whitelistPolicyDef);
 
@@ -326,26 +322,26 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         blacklistPolicyDef.setPolicyImpl("class:io.apiman.gateway.engine.policies.IPBlacklistPolicy");
         templateBean = new PolicyDefinitionTemplateBean();
         templateBean.setLanguage(null);
-        templateBean.setTemplate("Requests that originate from the set of @{ipList.size()} configured IP address(es) will be denied access to the managed service.");
+        templateBean.setTemplate("Requests that originate from the set of @{ipList.size()} configured IP address(es) will be denied access to the managed API.");
         blacklistPolicyDef.getTemplates().add(templateBean);
         storage.createPolicyDefinition(blacklistPolicyDef);
 
         PolicyDefinitionBean basicAuthPolicyDef = new PolicyDefinitionBean();
         basicAuthPolicyDef.setId("BASICAuthenticationPolicy");
         basicAuthPolicyDef.setName("BASIC Authentication Policy");
-        basicAuthPolicyDef.setDescription("Enables HTTP BASIC Authentication on a service.  Some configuration required.");
+        basicAuthPolicyDef.setDescription("Enables HTTP BASIC Authentication on an API.  Some configuration required.");
         basicAuthPolicyDef.setIcon("lock");
         basicAuthPolicyDef.setPolicyImpl("class:io.apiman.gateway.engine.policies.BasicAuthenticationPolicy");
         templateBean = new PolicyDefinitionTemplateBean();
         templateBean.setLanguage(null);
-        templateBean.setTemplate("Access to the service is protected by BASIC Authentication through the '@{realm}' authentication realm.  @if{forwardIdentityHttpHeader != null}Successfully authenticated requests will forward the authenticated identity to the back end service via the '@{forwardIdentityHttpHeader}' custom HTTP header.@end{}");
+        templateBean.setTemplate("Access to the API is protected by BASIC Authentication through the '@{realm}' authentication realm.  @if{forwardIdentityHttpHeader != null}Successfully authenticated requests will forward the authenticated identity to the back end API via the '@{forwardIdentityHttpHeader}' custom HTTP header.@end{}");
         basicAuthPolicyDef.getTemplates().add(templateBean);
         storage.createPolicyDefinition(basicAuthPolicyDef);
 
         PolicyDefinitionBean rateLimitPolicyDef = new PolicyDefinitionBean();
         rateLimitPolicyDef.setId("RateLimitingPolicy");
         rateLimitPolicyDef.setName("Rate Limiting Policy");
-        rateLimitPolicyDef.setDescription("Enforces rate configurable request rate limits on a service.  This ensures that consumers can't overload a service with too many requests.");
+        rateLimitPolicyDef.setDescription("Enforces rate configurable request rate limits on an API.  This ensures that consumers can't overload an API with too many requests.");
         rateLimitPolicyDef.setIcon("sliders");
         rateLimitPolicyDef.setPolicyImpl("class:io.apiman.gateway.engine.policies.RateLimitingPolicy");
         templateBean = new PolicyDefinitionTemplateBean();
@@ -378,7 +374,7 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         authorizationPolicyDef.getTemplates().add(templateBean);
         storage.createPolicyDefinition(authorizationPolicyDef);
 
-        
+
     }
 
 }

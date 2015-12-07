@@ -291,7 +291,7 @@ public class ManagerApiTestServer {
         handlers.addHandler(apiManServer);
 
         /* *************
-         * Mock Gateway (to test publishing of Services from dt to rt)
+         * Mock Gateway (to test publishing of APIs from dt to rt)
          * ************* */
         ServletContextHandler mockGatewayServer = new ServletContextHandler(ServletContextHandler.SESSIONS);
         mockGatewayServer.setSecurityHandler(createSecurityHandler());

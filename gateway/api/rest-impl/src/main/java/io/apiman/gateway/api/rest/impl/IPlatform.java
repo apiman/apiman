@@ -15,10 +15,10 @@
  */
 package io.apiman.gateway.api.rest.impl;
 
-import io.apiman.gateway.engine.beans.ServiceEndpoint;
+import io.apiman.gateway.engine.beans.ApiEndpoint;
 
 /**
- * An interface used by the REST services when getting information that must
+ * An interface used by the REST layer when getting information that must
  * be provided by the platform.  For example, when the gateway is running
  * within a WAR (e.g. running on wildfly) then that particular implementation
  * must provide certain information.  This interface allows the REST impl
@@ -29,13 +29,13 @@ import io.apiman.gateway.engine.beans.ServiceEndpoint;
 public interface IPlatform {
 
     /**
-     * Gets the endpoint for the given service.  It is up to the platform to determine
+     * Gets the endpoint for the given API.  It is up to the platform to determine
      * this endpoint.
      * @param organizationId the org id
-     * @param serviceId the service id
+     * @param apiId the API id
      * @param version the version id
-     * @return the service endpoint
+     * @return the API endpoint
      */
-    public ServiceEndpoint getServiceEndpoint(String organizationId, String serviceId, String version);
+    public ApiEndpoint getApiEndpoint(String organizationId, String apiId, String version);
 
 }

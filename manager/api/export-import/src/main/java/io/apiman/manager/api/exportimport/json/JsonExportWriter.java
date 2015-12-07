@@ -15,6 +15,8 @@
  */
 package io.apiman.manager.api.exportimport.json;
 
+import io.apiman.manager.api.beans.apis.ApiBean;
+import io.apiman.manager.api.beans.apis.ApiVersionBean;
 import io.apiman.manager.api.beans.apps.ApplicationBean;
 import io.apiman.manager.api.beans.apps.ApplicationVersionBean;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
@@ -29,8 +31,6 @@ import io.apiman.manager.api.beans.plans.PlanVersionBean;
 import io.apiman.manager.api.beans.plugins.PluginBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
-import io.apiman.manager.api.beans.services.ServiceBean;
-import io.apiman.manager.api.beans.services.ServiceVersionBean;
 import io.apiman.manager.api.core.logging.IApimanLogger;
 import io.apiman.manager.api.exportimport.GlobalElementsEnum;
 import io.apiman.manager.api.exportimport.OrgElementsEnum;
@@ -143,7 +143,7 @@ public class JsonExportWriter extends AbstractJsonWriter<GlobalElementsEnum> imp
         unlock(GlobalElementsEnum.Plugins);
         return this;
     }
-    
+
     /**
      * @see io.apiman.manager.api.exportimport.write.IExportWriter#startPolicyDefs()
      */
@@ -154,7 +154,7 @@ public class JsonExportWriter extends AbstractJsonWriter<GlobalElementsEnum> imp
         writeStartArray(GlobalElementsEnum.PolicyDefinitions);
         return this;
     }
-    
+
     /**
      * @see io.apiman.manager.api.exportimport.write.IExportWriter#writePolicyDef(io.apiman.manager.api.beans.policies.PolicyDefinitionBean)
      */
@@ -164,7 +164,7 @@ public class JsonExportWriter extends AbstractJsonWriter<GlobalElementsEnum> imp
         writePojo(policyDef);
         return this;
     }
-    
+
     /**
      * @see io.apiman.manager.api.exportimport.write.IExportWriter#endPolicyDefs()
      */
@@ -229,7 +229,7 @@ public class JsonExportWriter extends AbstractJsonWriter<GlobalElementsEnum> imp
         writeStartArray(GlobalElementsEnum.Orgs);
         return this;
     }
-    
+
     @Override
     public IExportWriter startOrg(OrganizationBean org) {
         writeStartObject();
@@ -258,7 +258,7 @@ public class JsonExportWriter extends AbstractJsonWriter<GlobalElementsEnum> imp
         writeEndArray(OrgElementsEnum.Memberships);
         return this;
     }
-    
+
     /**
      * @see io.apiman.manager.api.exportimport.write.IExportWriter#startPlans()
      */
@@ -267,7 +267,7 @@ public class JsonExportWriter extends AbstractJsonWriter<GlobalElementsEnum> imp
         writeStartArray(OrgElementsEnum.Plans);
         return this;
     }
-    
+
     /**
      * @see io.apiman.manager.api.exportimport.write.IExportWriter#startPlan(io.apiman.manager.api.beans.plans.PlanBean)
      */
@@ -282,7 +282,7 @@ public class JsonExportWriter extends AbstractJsonWriter<GlobalElementsEnum> imp
         }
         return this;
     }
-    
+
     /**
      * @see io.apiman.manager.api.exportimport.write.IExportWriter#startPlanVersions()
      */
@@ -291,7 +291,7 @@ public class JsonExportWriter extends AbstractJsonWriter<GlobalElementsEnum> imp
         writeStartArray(OrgElementsEnum.Versions);
         return this;
     }
-    
+
     /**
      * @see io.apiman.manager.api.exportimport.write.IExportWriter#startPlanVersion(io.apiman.manager.api.beans.plans.PlanVersionBean)
      */
@@ -306,7 +306,7 @@ public class JsonExportWriter extends AbstractJsonWriter<GlobalElementsEnum> imp
         }
         return this;
     }
-    
+
     /**
      * @see io.apiman.manager.api.exportimport.write.IExportWriter#startPlanPolicies()
      */
@@ -315,7 +315,7 @@ public class JsonExportWriter extends AbstractJsonWriter<GlobalElementsEnum> imp
         writeStartArray(OrgElementsEnum.Policies);
         return this;
     }
-    
+
     /**
      * @see io.apiman.manager.api.exportimport.write.IExportWriter#writePlanPolicy(io.apiman.manager.api.beans.policies.PolicyBean)
      */
@@ -323,7 +323,7 @@ public class JsonExportWriter extends AbstractJsonWriter<GlobalElementsEnum> imp
     public IExportWriter writePlanPolicy(PolicyBean policy) {
         return writePolicy(policy);
     }
-    
+
     /**
      * @param policy
      * @return
@@ -344,7 +344,7 @@ public class JsonExportWriter extends AbstractJsonWriter<GlobalElementsEnum> imp
         writeEndArray(OrgElementsEnum.Policies);
         return this;
     }
-    
+
     /**
      * @see io.apiman.manager.api.exportimport.write.IExportWriter#endPlanVersion()
      */
@@ -362,7 +362,7 @@ public class JsonExportWriter extends AbstractJsonWriter<GlobalElementsEnum> imp
         writeEndArray();
         return this;
     }
-    
+
     /**
      * @see io.apiman.manager.api.exportimport.write.IExportWriter#endPlan()
      */
@@ -382,112 +382,112 @@ public class JsonExportWriter extends AbstractJsonWriter<GlobalElementsEnum> imp
     }
 
     /**
-     * @see io.apiman.manager.api.exportimport.write.IExportWriter#startServices()
+     * @see io.apiman.manager.api.exportimport.write.IExportWriter#startApis()
      */
     @Override
-    public IExportWriter startServices() {
-        writeStartArray(OrgElementsEnum.Services);
+    public IExportWriter startApis() {
+        writeStartArray(OrgElementsEnum.Apis);
         return this;
     }
-    
+
     /**
-     * @see io.apiman.manager.api.exportimport.write.IExportWriter#startService(io.apiman.manager.api.beans.services.ServiceBean)
+     * @see io.apiman.manager.api.exportimport.write.IExportWriter#startApi(io.apiman.manager.api.beans.apis.ApiBean)
      */
     @Override
-    public IExportWriter startService(ServiceBean service) {
+    public IExportWriter startApi(ApiBean api) {
         writeStartObject();
         try {
-            service.setOrganization(null);
-            jg.writeObjectField(ServiceBean.class.getSimpleName(), service);
+            api.setOrganization(null);
+            jg.writeObjectField(ApiBean.class.getSimpleName(), api);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
         return this;
     }
-    
+
     /**
-     * @see io.apiman.manager.api.exportimport.write.IExportWriter#startServiceVersions()
+     * @see io.apiman.manager.api.exportimport.write.IExportWriter#startApiVersions()
      */
     @Override
-    public IExportWriter startServiceVersions() {
+    public IExportWriter startApiVersions() {
         writeStartArray(OrgElementsEnum.Versions);
         return this;
     }
-    
+
     /**
-     * @see io.apiman.manager.api.exportimport.write.IExportWriter#startServiceVersion(io.apiman.manager.api.beans.services.ServiceVersionBean)
+     * @see io.apiman.manager.api.exportimport.write.IExportWriter#startApiVersion(io.apiman.manager.api.beans.apis.ApiVersionBean)
      */
     @Override
-    public IExportWriter startServiceVersion(ServiceVersionBean pvb) {
+    public IExportWriter startApiVersion(ApiVersionBean pvb) {
         writeStartObject();
         try {
-            pvb.setService(null);
-            jg.writeObjectField(ServiceVersionBean.class.getSimpleName(), pvb);
+            pvb.setApi(null);
+            jg.writeObjectField(ApiVersionBean.class.getSimpleName(), pvb);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
         return this;
     }
-    
+
     /**
-     * @see io.apiman.manager.api.exportimport.write.IExportWriter#startServicePolicies()
+     * @see io.apiman.manager.api.exportimport.write.IExportWriter#startApiPolicies()
      */
     @Override
-    public IExportWriter startServicePolicies() {
+    public IExportWriter startApiPolicies() {
         writeStartArray(OrgElementsEnum.Policies);
         return this;
     }
-    
+
     /**
-     * @see io.apiman.manager.api.exportimport.write.IExportWriter#writeServicePolicy(io.apiman.manager.api.beans.policies.PolicyBean)
+     * @see io.apiman.manager.api.exportimport.write.IExportWriter#writeApiPolicy(io.apiman.manager.api.beans.policies.PolicyBean)
      */
     @Override
-    public IExportWriter writeServicePolicy(PolicyBean policy) {
+    public IExportWriter writeApiPolicy(PolicyBean policy) {
         return writePolicy(policy);
     }
-    
+
     /**
-     * @see io.apiman.manager.api.exportimport.write.IExportWriter#endServicePolicies()
+     * @see io.apiman.manager.api.exportimport.write.IExportWriter#endApiPolicies()
      */
     @Override
-    public IExportWriter endServicePolicies() {
+    public IExportWriter endApiPolicies() {
         writeEndArray(OrgElementsEnum.Policies);
         return this;
     }
-    
+
     /**
-     * @see io.apiman.manager.api.exportimport.write.IExportWriter#endServiceVersion()
+     * @see io.apiman.manager.api.exportimport.write.IExportWriter#endApiVersion()
      */
     @Override
-    public IExportWriter endServiceVersion() {
+    public IExportWriter endApiVersion() {
         writeEndObject();
         return this;
     }
 
     /**
-     * @see io.apiman.manager.api.exportimport.write.IExportWriter#endServiceVersions()
+     * @see io.apiman.manager.api.exportimport.write.IExportWriter#endApiVersions()
      */
     @Override
-    public IExportWriter endServiceVersions() {
+    public IExportWriter endApiVersions() {
         writeEndArray();
         return this;
     }
-    
+
     /**
-     * @see io.apiman.manager.api.exportimport.write.IExportWriter#endService()
+     * @see io.apiman.manager.api.exportimport.write.IExportWriter#endApi()
      */
     @Override
-    public IExportWriter endService() {
+    public IExportWriter endApi() {
         writeEndObject();
         return this;
     }
 
     /**
-     * @see io.apiman.manager.api.exportimport.write.IExportWriter#endServices()
+     * @see io.apiman.manager.api.exportimport.write.IExportWriter#endApis()
      */
     @Override
-    public IExportWriter endServices() {
-        writeEndArray(OrgElementsEnum.Services);
+    public IExportWriter endApis() {
+        writeEndArray(OrgElementsEnum.Apis);
         return this;
     }
 
@@ -499,7 +499,7 @@ public class JsonExportWriter extends AbstractJsonWriter<GlobalElementsEnum> imp
         writeStartArray(OrgElementsEnum.Apps);
         return this;
     }
-    
+
     /**
      * @see io.apiman.manager.api.exportimport.write.IExportWriter#startApplication(io.apiman.manager.api.beans.applications.ApplicationBean)
      */
@@ -514,7 +514,7 @@ public class JsonExportWriter extends AbstractJsonWriter<GlobalElementsEnum> imp
         }
         return this;
     }
-    
+
     /**
      * @see io.apiman.manager.api.exportimport.write.IExportWriter#startApplicationVersions()
      */
@@ -523,7 +523,7 @@ public class JsonExportWriter extends AbstractJsonWriter<GlobalElementsEnum> imp
         writeStartArray(OrgElementsEnum.Versions);
         return this;
     }
-    
+
     /**
      * @see io.apiman.manager.api.exportimport.write.IExportWriter#startApplicationVersion(io.apiman.manager.api.beans.applications.ApplicationVersionBean)
      */
@@ -538,7 +538,7 @@ public class JsonExportWriter extends AbstractJsonWriter<GlobalElementsEnum> imp
         }
         return this;
     }
-    
+
     /**
      * @see io.apiman.manager.api.exportimport.write.IExportWriter#startApplicationPolicies()
      */
@@ -547,7 +547,7 @@ public class JsonExportWriter extends AbstractJsonWriter<GlobalElementsEnum> imp
         writeStartArray(OrgElementsEnum.Policies);
         return this;
     }
-    
+
     /**
      * @see io.apiman.manager.api.exportimport.write.IExportWriter#writeApplicationPolicy(io.apiman.manager.api.beans.policies.PolicyBean)
      */
@@ -555,7 +555,7 @@ public class JsonExportWriter extends AbstractJsonWriter<GlobalElementsEnum> imp
     public IExportWriter writeApplicationPolicy(PolicyBean policy) {
         return writePolicy(policy);
     }
-    
+
     /**
      * @see io.apiman.manager.api.exportimport.write.IExportWriter#endApplicationPolicies()
      */
@@ -564,7 +564,7 @@ public class JsonExportWriter extends AbstractJsonWriter<GlobalElementsEnum> imp
         writeEndArray(OrgElementsEnum.Policies);
         return this;
     }
-    
+
     /**
      * @see io.apiman.manager.api.exportimport.write.IExportWriter#startApplicationContracts()
      */
@@ -573,7 +573,7 @@ public class JsonExportWriter extends AbstractJsonWriter<GlobalElementsEnum> imp
         writeStartArray(OrgElementsEnum.Contracts);
         return this;
     }
-    
+
     /**
      * @see io.apiman.manager.api.exportimport.write.IExportWriter#writeApplicationContract(io.apiman.manager.api.beans.contracts.ContractBean)
      */
@@ -582,7 +582,7 @@ public class JsonExportWriter extends AbstractJsonWriter<GlobalElementsEnum> imp
         writePojo(cb);
         return this;
     }
-    
+
     /**
      * @see io.apiman.manager.api.exportimport.write.IExportWriter#endApplicationContracts()
      */
@@ -609,7 +609,7 @@ public class JsonExportWriter extends AbstractJsonWriter<GlobalElementsEnum> imp
         writeEndArray();
         return this;
     }
-    
+
     /**
      * @see io.apiman.manager.api.exportimport.write.IExportWriter#endApplication()
      */

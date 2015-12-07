@@ -24,7 +24,7 @@ package io.apiman.gateway.engine.policies.config.basicauth;
  *
  * Supported properties for interpolation/replacement in the pattern
  * include the BASIC authentication "username" and any header found
- * in the inbound service request.
+ * in the inbound API request.
  *
  * @author eric.wittmann@redhat.com
  */

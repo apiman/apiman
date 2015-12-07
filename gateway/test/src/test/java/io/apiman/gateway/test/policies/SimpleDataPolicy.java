@@ -15,8 +15,8 @@
  */
 package io.apiman.gateway.test.policies;
 
-import io.apiman.gateway.engine.beans.ServiceRequest;
-import io.apiman.gateway.engine.beans.ServiceResponse;
+import io.apiman.gateway.engine.beans.ApiRequest;
+import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.engine.components.IBufferFactoryComponent;
 import io.apiman.gateway.engine.io.AbstractStream;
 import io.apiman.gateway.engine.io.IApimanBuffer;
@@ -51,37 +51,37 @@ public class SimpleDataPolicy implements IPolicy, IDataPolicy {
     }
 
     /**
-     * @see io.apiman.gateway.engine.policy.IPolicy#apply(io.apiman.gateway.engine.beans.ServiceRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
+     * @see io.apiman.gateway.engine.policy.IPolicy#apply(io.apiman.gateway.engine.beans.ApiRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
      */
     @Override
-    public void apply(final ServiceRequest request, final IPolicyContext context, final Object config,
-            final IPolicyChain<ServiceRequest> chain) {
+    public void apply(final ApiRequest request, final IPolicyContext context, final Object config,
+            final IPolicyChain<ApiRequest> chain) {
         chain.doApply(request);
     }
 
     /**
-     * @see io.apiman.gateway.engine.policy.IPolicy#apply(io.apiman.gateway.engine.beans.ServiceResponse, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
+     * @see io.apiman.gateway.engine.policy.IPolicy#apply(io.apiman.gateway.engine.beans.ApiResponse, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
      */
     @Override
-    public void apply(ServiceResponse response, IPolicyContext context, Object config,
-            IPolicyChain<ServiceResponse> chain) {
+    public void apply(ApiResponse response, IPolicyContext context, Object config,
+            IPolicyChain<ApiResponse> chain) {
         chain.doApply(response);
     }
 
     /**
-     * @see io.apiman.gateway.engine.policy.IDataPolicy#getRequestDataHandler(io.apiman.gateway.engine.beans.ServiceRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object)
+     * @see io.apiman.gateway.engine.policy.IDataPolicy#getRequestDataHandler(io.apiman.gateway.engine.beans.ApiRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object)
      */
     @Override
-    public IReadWriteStream<ServiceRequest> getRequestDataHandler(final ServiceRequest request,
+    public IReadWriteStream<ApiRequest> getRequestDataHandler(final ApiRequest request,
             final IPolicyContext context, final Object policyConfiguration) {
-        return new AbstractStream<ServiceRequest>() {
+        return new AbstractStream<ApiRequest>() {
             @Override
-            public ServiceRequest getHead() {
+            public ApiRequest getHead() {
                 return request;
             }
 
             @Override
-            protected void handleHead(ServiceRequest head) {
+            protected void handleHead(ApiRequest head) {
             }
 
             @Override
@@ -104,10 +104,10 @@ public class SimpleDataPolicy implements IPolicy, IDataPolicy {
     }
 
     /**
-     * @see io.apiman.gateway.engine.policy.IDataPolicy#getResponseDataHandler(io.apiman.gateway.engine.beans.ServiceResponse, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object)
+     * @see io.apiman.gateway.engine.policy.IDataPolicy#getResponseDataHandler(io.apiman.gateway.engine.beans.ApiResponse, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object)
      */
     @Override
-    public IReadWriteStream<ServiceResponse> getResponseDataHandler(ServiceResponse response,
+    public IReadWriteStream<ApiResponse> getResponseDataHandler(ApiResponse response,
             IPolicyContext context, Object policyConfiguration) {
         return null;
     }

@@ -11,10 +11,10 @@
     <class>io.apiman.manager.api.beans.orgs.OrganizationBean</class>
     <class>io.apiman.manager.api.beans.apps.ApplicationBean</class>
     <class>io.apiman.manager.api.beans.apps.ApplicationVersionBean</class>
-    <class>io.apiman.manager.api.beans.services.ServiceBean</class>
-    <class>io.apiman.manager.api.beans.services.ServiceVersionBean</class>
-    <class>io.apiman.manager.api.beans.services.ServiceDefinitionBean</class>
-    <class>io.apiman.manager.api.beans.services.ServicePlanBean</class>
+    <class>io.apiman.manager.api.beans.apis.ApiBean</class>
+    <class>io.apiman.manager.api.beans.apis.ApiVersionBean</class>
+    <class>io.apiman.manager.api.beans.apis.ApiDefinitionBean</class>
+    <class>io.apiman.manager.api.beans.apis.ApiPlanBean</class>
     <class>io.apiman.manager.api.beans.plans.PlanBean</class>
     <class>io.apiman.manager.api.beans.plans.PlanVersionBean</class>
     <class>io.apiman.manager.api.beans.contracts.ContractBean</class>

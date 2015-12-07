@@ -136,9 +136,9 @@ public class InfluxDb09Metrics implements IMetrics, IRequiresInitialization {
         }
 
         // Metric tags, comma delimited, space at end.
-        write("serviceOrgId", quote(metric.getServiceOrgId()), sb);
-        write("serviceId", quote(metric.getServiceId()), sb);
-        write("serviceVersion", quote(metric.getServiceVersion()), sb);
+        write("apiOrgId", quote(metric.getApiOrgId()), sb);
+        write("apiId", quote(metric.getApiId()), sb);
+        write("apiVersion", quote(metric.getApiVersion()), sb);
         write("planId", quote(metric.getPlanId()), sb);
         write("applicationOrgId", quote(metric.getApplicationOrgId()), sb);
         write("applicationId", quote(metric.getApplicationId()), sb);
@@ -152,8 +152,8 @@ public class InfluxDb09Metrics implements IMetrics, IRequiresInitialization {
         // Data, comma delimited, space at end.
         write("requestStart", dateToLong(metric.getRequestStart()), sb);
         write("requestEnd", dateToLong(metric.getRequestEnd()), sb);
-        write("serviceStart", dateToLong(metric.getServiceStart()), sb);
-        write("serviceEnd", dateToLong(metric.getServiceEnd()), sb);
+        write("apiStart", dateToLong(metric.getApiStart()), sb);
+        write("apiEnd", dateToLong(metric.getApiEnd()), sb);
         write("url", quote(metric.getUrl()), sb);
         write("resource", quote(metric.getResource()), sb);
         write("method", quote(metric.getMethod()), sb);

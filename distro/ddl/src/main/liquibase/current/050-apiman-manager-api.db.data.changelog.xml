@@ -19,19 +19,19 @@
             <column name="policydef_id" value="IPWhitelistPolicy"/>
             <column name="language"/>
             <column name="template"
-                    value="Only requests that originate from the set of @{ipList.size()} configured IP address(es) will be allowed to invoke the managed service."/>
+                    value="Only requests that originate from the set of @{ipList.size()} configured IP address(es) will be allowed to invoke the managed api."/>
         </insert>
         <insert tableName="pd_templates">
             <column name="policydef_id" value="IPBlacklistPolicy"/>
             <column name="language"/>
             <column name="template"
-                    value="Requests that originate from the set of @{ipList.size()} configured IP address(es) will be denied access to the managed service."/>
+                    value="Requests that originate from the set of @{ipList.size()} configured IP address(es) will be denied access to the managed api."/>
         </insert>
         <insert tableName="pd_templates">
             <column name="policydef_id" value="BASICAuthenticationPolicy"/>
             <column name="language"/>
             <column name="template"
-                    value="Access to the service is protected by BASIC Authentication through the '@{realm}' authentication realm.  @if{forwardIdentityHttpHeader != null}Successfully authenticated requests will forward the authenticated identity to the back end service via the '@{forwardIdentityHttpHeader}' custom HTTP header.@end{}"/>
+                    value="Access to the api is protected by BASIC Authentication through the '@{realm}' authentication realm.  @if{forwardIdentityHttpHeader != null}Successfully authenticated requests will forward the authenticated identity to the back end api via the '@{forwardIdentityHttpHeader}' custom HTTP header.@end{}"/>
         </insert>
         <insert tableName="pd_templates">
             <column name="policydef_id" value="RateLimitingPolicy"/>
@@ -138,27 +138,27 @@
             <column name="permissions" valueNumeric="7"/>
         </insert>
         <insert tableName="permissions">
-            <column name="role_id" value="ServiceDeveloper"/>
+            <column name="role_id" value="APIDeveloper"/>
             <column name="permissions" valueNumeric="3"/>
         </insert>
         <insert tableName="permissions">
-            <column name="role_id" value="ServiceDeveloper"/>
+            <column name="role_id" value="APIDeveloper"/>
             <column name="permissions" valueNumeric="5"/>
         </insert>
         <insert tableName="permissions">
-            <column name="role_id" value="ServiceDeveloper"/>
+            <column name="role_id" value="APIDeveloper"/>
             <column name="permissions" valueNumeric="9"/>
         </insert>
         <insert tableName="permissions">
-            <column name="role_id" value="ServiceDeveloper"/>
+            <column name="role_id" value="APIDeveloper"/>
             <column name="permissions" valueNumeric="11"/>
         </insert>
         <insert tableName="permissions">
-            <column name="role_id" value="ServiceDeveloper"/>
+            <column name="role_id" value="APIDeveloper"/>
             <column name="permissions" valueNumeric="4"/>
         </insert>
         <insert tableName="permissions">
-            <column name="role_id" value="ServiceDeveloper"/>
+            <column name="role_id" value="APIDeveloper"/>
             <column name="permissions" valueNumeric="10"/>
         </insert>
     </changeSet>
@@ -188,7 +188,7 @@
         <insert tableName="policydefs">
             <column name="id" value="BASICAuthenticationPolicy"/>
             <column name="description"
-                    value="Enables HTTP BASIC Authentication on a service.  Some configuration required."/>
+                    value="Enables HTTP BASIC Authentication on an API.  Some configuration required."/>
             <column name="form"/>
             <column name="form_type" value="Default"/>
             <column name="icon" value="lock"/>
@@ -199,7 +199,7 @@
         <insert tableName="policydefs">
             <column name="id" value="RateLimitingPolicy"/>
             <column name="description"
-                    value="Enforces rate configurable request rate limits on a service.  This ensures that consumers can't overload a service with too many requests."/>
+                    value="Enforces rate configurable request rate limits on an API.  This ensures that consumers can't overload an API with too many requests."/>
             <column name="form"/>
             <column name="form_type" value="Default"/>
             <column name="icon" value="sliders"/>
@@ -291,13 +291,13 @@
             <column name="name" value="Application Developer"/>
         </insert>
         <insert tableName="roles">
-            <column name="id" value="ServiceDeveloper"/>
+            <column name="id" value="APIDeveloper"/>
             <column name="auto_grant"/>
             <column name="created_by" value="admin"/>
             <column name="created_on" valueDate="2015-06-18 17:56:57.641"/>
             <column name="description"
-                    value="Users responsible for creating and managing services should be granted this role within an Organization."/>
-            <column name="name" value="Service Developer"/>
+                    value="Users responsible for creating and managing APIs should be granted this role within an Organization."/>
+            <column name="name" value="API Developer"/>
         </insert>
     </changeSet>
     <changeSet author="apiman" id="1434686531709-6">

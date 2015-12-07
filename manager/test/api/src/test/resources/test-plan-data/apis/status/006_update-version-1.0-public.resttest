@@ -1,0 +1,12 @@
+PUT /organizations/Organization1/apis/Foo/versions/1.0 admin/admin
+Content-Type: application/json
+
+{
+  "publicAPI" : true
+}
+----
+200
+Content-Type: application/json
+
+{
+}

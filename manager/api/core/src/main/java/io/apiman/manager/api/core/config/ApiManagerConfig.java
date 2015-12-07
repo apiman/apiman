@@ -58,7 +58,7 @@ public abstract class ApiManagerConfig {
 
     public static final String APIMAN_MANAGER_STORAGE_QUERY_TYPE = "apiman-manager.storage-query.type"; //$NON-NLS-1$
 
-    public static final String APIMAN_MANAGER_SERVICE_CATALOG_TYPE = "apiman-manager.service-catalog.type"; //$NON-NLS-1$
+    public static final String APIMAN_MANAGER_API_CATALOG_TYPE = "apiman-manager.api-catalog.type"; //$NON-NLS-1$
 
     /* -------------------------------------------------------
      * Metrics
@@ -167,10 +167,10 @@ public abstract class ApiManagerConfig {
     }
 
     /**
-     * @return the configured service catalog query type
+     * @return the configured API catalog query type
      */
-    public String getServiceCatalogType() {
-        return config.getString(APIMAN_MANAGER_SERVICE_CATALOG_TYPE, null);
+    public String getApiCatalogType() {
+        return config.getString(APIMAN_MANAGER_API_CATALOG_TYPE, null);
     }
 
     /**
@@ -322,10 +322,10 @@ public abstract class ApiManagerConfig {
     }
 
     /**
-     * @return any custom properties associated with the Service Catalog impl
+     * @return any custom properties associated with the API Catalog impl
      */
-    public Map<String, String> getServiceCatalogProperties() {
-        return getPrefixedProperties("apiman-manager.service-catalog."); //$NON-NLS-1$
+    public Map<String, String> getApiCatalogProperties() {
+        return getPrefixedProperties("apiman-manager.api-catalog."); //$NON-NLS-1$
     }
 
     /**

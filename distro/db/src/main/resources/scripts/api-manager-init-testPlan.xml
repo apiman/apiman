@@ -5,7 +5,7 @@
   <testGroup name="IDM">
     <test name="Create Org Owner">data/idm/001_create-org-owner.resttest</test>
     <test name="Create App Developer">data/idm/002_create-app-dev.resttest</test>
-    <test name="Create Service Developer">data/idm/003_create-service-dev.resttest</test>
+    <test name="Create API Developer">data/idm/003_create-api-dev.resttest</test>
     <test name="Create Admin">data/idm/004_create-admin.resttest</test>
   </testGroup>
 

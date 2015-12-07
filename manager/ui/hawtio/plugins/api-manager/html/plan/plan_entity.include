@@ -23,7 +23,7 @@
         </div>
         <div class="row apiman-entity-metadata">
           <div class="col-md-7" style="margin-bottom: 8px">
-            <!-- Service Summary -->
+            <!-- Plan Summary -->
             <div style="padding: 8px">
               <apiman-editable-description description="plan.description" callback="updatePlanDescription"
                 default-value="no description"></apiman-editable-description>

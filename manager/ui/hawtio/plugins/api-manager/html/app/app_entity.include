@@ -24,7 +24,7 @@
         </div>
         <div class="row apiman-entity-metadata">
           <div class="col-md-7" style="margin-bottom: 8px">
-            <!-- Service Summary -->
+            <!-- API Summary -->
             <apiman-editable-description description="app.description" callback="updateAppDescription"
                 default-value="no description"></apiman-editable-description>
             <div style="padding: 8px">
@@ -47,8 +47,8 @@
           </div>
           <div class="col-md-5" apiman-permission="appAdmin">
             <div>
-              <div apiman-status="Created,Ready,Registered"><a apiman-i18n-key="ttdo-consume-services" data-field="ttd_toConsumeServices" href="{{ pluginName }}/browse/services">Search for Services to consume</a></div>
-              <div apiman-status="Created,Ready,Registered"><a apiman-i18n-key="ttdo-new-contract" data-field="ttd_toNewContract" href="{{ pluginName }}/new-contract">Create a new Service Contract for this Application</a></div>
+              <div apiman-status="Created,Ready,Registered"><a apiman-i18n-key="ttdo-consume-apis" data-field="ttd_toConsumeApis" href="{{ pluginName }}/browse/apis">Search for APIs to consume</a></div>
+              <div apiman-status="Created,Ready,Registered"><a apiman-i18n-key="ttdo-new-contract" data-field="ttd_toNewContract" href="{{ pluginName }}/new-contract">Create a new API Contract for this Application</a></div>
               <div><a apiman-i18n-key="ttdo-new-version" data-field="ttd_toNewVersion" href="{{ pluginName }}/orgs/{{ org.id }}/apps/{{ app.id}}/{{ version.version }}/new-version">Create a new version of this Application (New Version)</a></div>
             </div>
             <!-- The Register Action -->

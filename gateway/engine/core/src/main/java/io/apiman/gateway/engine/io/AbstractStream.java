@@ -16,13 +16,13 @@
 package io.apiman.gateway.engine.io;
 
 import io.apiman.gateway.engine.async.IAsyncHandler;
-import io.apiman.gateway.engine.beans.ServiceRequest;
+import io.apiman.gateway.engine.beans.ApiRequest;
 
 /**
  * Generic representation of a three part stream: head, body and end, with
  * handlers and operators for each.
  *
- * For example: The head might represent a {@link ServiceRequest}; the body is a
+ * For example: The head might represent a {@link ApiRequest}; the body is a
  * stream of {@link IApimanBuffer} chunks; {@link #end()} is used indicate that
  * transmission of the body has completed.
  *

@@ -16,6 +16,8 @@
 
 package io.apiman.manager.api.exportimport.manager;
 
+import io.apiman.manager.api.beans.apis.ApiBean;
+import io.apiman.manager.api.beans.apis.ApiVersionBean;
 import io.apiman.manager.api.beans.apps.ApplicationBean;
 import io.apiman.manager.api.beans.apps.ApplicationVersionBean;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
@@ -30,8 +32,6 @@ import io.apiman.manager.api.beans.plans.PlanVersionBean;
 import io.apiman.manager.api.beans.plugins.PluginBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
-import io.apiman.manager.api.beans.services.ServiceBean;
-import io.apiman.manager.api.beans.services.ServiceVersionBean;
 import io.apiman.manager.api.exportimport.beans.MetadataBean;
 import io.apiman.manager.api.exportimport.read.IImportReaderDispatcher;
 
@@ -127,26 +127,26 @@ public class LoggingDispatcher implements IImportReaderDispatcher {
     }
 
     /**
-     * @see io.apiman.manager.api.exportimport.read.IImportReaderDispatcher#service(io.apiman.manager.api.beans.services.ServiceBean)
+     * @see io.apiman.manager.api.exportimport.read.IImportReaderDispatcher#api(io.apiman.manager.api.beans.apis.ApiBean)
      */
     @Override
-    public void service(ServiceBean service) {
-        System.out.println("\tservice: " + service);
+    public void api(ApiBean api) {
+        System.out.println("\tapi: " + api);
     }
 
     /**
-     * @see io.apiman.manager.api.exportimport.read.IImportReaderDispatcher#serviceVersion(io.apiman.manager.api.beans.services.ServiceVersionBean)
+     * @see io.apiman.manager.api.exportimport.read.IImportReaderDispatcher#apiVersion(io.apiman.manager.api.beans.apis.ApiVersionBean)
      */
     @Override
-    public void serviceVersion(ServiceVersionBean svb) {
-        System.out.println("\t\tserviceVersion: " + svb);
+    public void apiVersion(ApiVersionBean svb) {
+        System.out.println("\t\tapiVersion: " + svb);
     }
 
     /**
-     * @see io.apiman.manager.api.exportimport.read.IImportReaderDispatcher#servicePolicy(io.apiman.manager.api.beans.policies.PolicyBean)
+     * @see io.apiman.manager.api.exportimport.read.IImportReaderDispatcher#apiPolicy(io.apiman.manager.api.beans.policies.PolicyBean)
      */
     @Override
-    public void servicePolicy(PolicyBean policy) {
+    public void apiPolicy(PolicyBean policy) {
         System.out.println("\t\t\tpolicy: " + policy);
     }
 
@@ -189,7 +189,7 @@ public class LoggingDispatcher implements IImportReaderDispatcher {
     public void audit(AuditEntryBean ab) {
         System.out.println("\taudit: " + ab);
     }
-    
+
     /**
      * @see io.apiman.manager.api.exportimport.read.IImportReaderDispatcher#close()
      */
@@ -197,7 +197,7 @@ public class LoggingDispatcher implements IImportReaderDispatcher {
     public void close() {
         System.out.println("close");
     }
-    
+
     /**
      * @see io.apiman.manager.api.exportimport.read.IImportReaderDispatcher#cancel()
      */

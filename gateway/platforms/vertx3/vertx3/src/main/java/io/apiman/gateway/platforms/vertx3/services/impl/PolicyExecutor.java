@@ -17,15 +17,15 @@ package io.apiman.gateway.platforms.vertx3.services.impl;
 
 import io.apiman.gateway.engine.IEngine;
 import io.apiman.gateway.engine.IEngineResult;
-import io.apiman.gateway.engine.IServiceRequestExecutor;
+import io.apiman.gateway.engine.IApiRequestExecutor;
 import io.apiman.gateway.engine.async.IAsyncHandler;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.io.IApimanBuffer;
 import io.apiman.gateway.engine.io.ISignalWriteStream;
 import io.apiman.gateway.platforms.vertx3.io.VertxApimanBuffer;
 import io.apiman.gateway.platforms.vertx3.io.VertxPolicyFailure;
-import io.apiman.gateway.platforms.vertx3.io.VertxServiceRequest;
-import io.apiman.gateway.platforms.vertx3.io.VertxServiceResponse;
+import io.apiman.gateway.platforms.vertx3.io.VertxApiRequest;
+import io.apiman.gateway.platforms.vertx3.io.VertxApiResponse;
 import io.apiman.gateway.platforms.vertx3.services.PolicyToIngestorService;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
@@ -53,9 +53,9 @@ public class PolicyExecutor {
     }
 
     public void execute() {
-        requestService.headHandler((Handler<VertxServiceRequest>) serviceRequest -> {
+        requestService.headHandler((Handler<VertxApiRequest>) serviceRequest -> {
 
-            final IServiceRequestExecutor requestExecutor = engine.executor(serviceRequest, (IAsyncResultHandler<IEngineResult>) result -> {
+            final IApiRequestExecutor requestExecutor = engine.executor(serviceRequest, (IAsyncResultHandler<IEngineResult>) result -> {
                 log.debug(String.format("Received result from apiman engine in PolicyVerticle. Request: %d Result Success?: %b",
                         serviceRequest.hashCode(), result.isSuccess()));
 
@@ -108,7 +108,7 @@ public class PolicyExecutor {
     }
 
     private void doResponse(IEngineResult engineResult, PolicyToIngestorService replyProxy) {
-        VertxServiceResponse serviceResponse = new VertxServiceResponse(engineResult.getHead());
+        VertxApiResponse serviceResponse = new VertxApiResponse(engineResult.getHead());
 
         replyProxy.head(serviceResponse, (Handler<AsyncResult<Void>>) result -> {
             if (result.failed())

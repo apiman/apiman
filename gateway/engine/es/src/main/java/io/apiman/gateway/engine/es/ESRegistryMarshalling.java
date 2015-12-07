@@ -15,11 +15,11 @@
  */
 package io.apiman.gateway.engine.es;
 
+import io.apiman.gateway.engine.beans.Api;
+import io.apiman.gateway.engine.beans.ApiContract;
 import io.apiman.gateway.engine.beans.Application;
 import io.apiman.gateway.engine.beans.Contract;
 import io.apiman.gateway.engine.beans.Policy;
-import io.apiman.gateway.engine.beans.Service;
-import io.apiman.gateway.engine.beans.ServiceContract;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -40,11 +40,11 @@ public class ESRegistryMarshalling {
 
     /**
      * Marshals the given bean into the given map.
-     * @param bean the service bean
+     * @param bean the api bean
      * @return the content builder
      * @throws Exception when json marshalling fails
      */
-    public static XContentBuilder marshall(Service bean) throws Exception {
+    public static XContentBuilder marshall(Api bean) throws Exception {
         XContentBuilder builder = XContentFactory.jsonBuilder();
         marshallInto(bean, builder);
         return builder;
@@ -56,14 +56,14 @@ public class ESRegistryMarshalling {
      * @throws IOException
      */
     @SuppressWarnings("nls")
-    protected static void marshallInto(Service bean, XContentBuilder builder) throws IOException {
+    protected static void marshallInto(Api bean, XContentBuilder builder) throws IOException {
         builder.startObject()
             .field("endpoint", bean.getEndpoint())
             .field("endpointType", bean.getEndpointType())
             .field("endpointContentType", bean.getEndpointContentType())
-            .field("publicService", bean.isPublicService())
+            .field("publicAPI", bean.isPublicAPI())
             .field("organizationId", bean.getOrganizationId())
-            .field("serviceId", bean.getServiceId())
+            .field("apiId", bean.getApiId())
             .field("version", bean.getVersion());
         Map<String, String> endpointProperties = bean.getEndpointProperties();
         if (endpointProperties != null) {
@@ -75,7 +75,7 @@ public class ESRegistryMarshalling {
             }
             builder.endArray();
         }
-        List<Policy> policies = bean.getServicePolicies();
+        List<Policy> policies = bean.getApiPolicies();
         if (policies != null) {
             builder.startArray("policies");
             for (Policy policy : policies) {
@@ -92,21 +92,21 @@ public class ESRegistryMarshalling {
     /**
      * Unmarshals the given map source into a bean.
      * @param source the source mappings
-     * @return the service
+     * @return the api
      */
     @SuppressWarnings("nls")
-    public static Service unmarshallService(Map<String, Object> source) {
+    public static Api unmarshallApi(Map<String, Object> source) {
         if (source == null) {
             return null;
         }
-        Service bean = new Service();
+        Api bean = new Api();
         bean.setEndpoint(asString(source.get("endpoint")));
         bean.setEndpointProperties(asStringMap(source.get("endpointProperties")));
         bean.setEndpointType(asString(source.get("endpointType")));
         bean.setEndpointContentType(asString(source.get("endpointContentType")));
         bean.setOrganizationId(asString(source.get("organizationId")));
-        bean.setPublicService(asBoolean(source.get("publicService")));
-        bean.setServiceId(asString(source.get("serviceId")));
+        bean.setPublicAPI(asBoolean(source.get("publicAPI")));
+        bean.setApiId(asString(source.get("apiId")));
         bean.setVersion(asString(source.get("version")));
         @SuppressWarnings("unchecked")
         List<Map<String,Object>> policies = (List<Map<String,Object>>) source.get("policies");
@@ -115,7 +115,7 @@ public class ESRegistryMarshalling {
                 Policy policy = new Policy();
                 policy.setPolicyImpl(asString(policySource.get("policyImpl")));
                 policy.setPolicyJsonConfig(asString(policySource.get("policyJsonConfig")));
-                bean.getServicePolicies().add(policy);
+                bean.getApiPolicies().add(policy);
             }
         }
         return bean;
@@ -150,9 +150,9 @@ public class ESRegistryMarshalling {
                 builder.startObject()
                     .field("apiKey", contract.getApiKey())
                     .field("plan", contract.getPlan())
-                    .field("serviceOrgId", contract.getServiceOrgId())
-                    .field("serviceId", contract.getServiceId())
-                    .field("serviceVersion", contract.getServiceVersion());
+                    .field("apiOrgId", contract.getApiOrgId())
+                    .field("apiId", contract.getApiId())
+                    .field("apiVersion", contract.getApiVersion());
                 List<Policy> policies = contract.getPolicies();
                 if (policies != null) {
                     builder.startArray("policies");
@@ -191,9 +191,9 @@ public class ESRegistryMarshalling {
                 Contract contract = new Contract();
                 contract.setApiKey(asString(contractSource.get("apiKey")));
                 contract.setPlan(asString(contractSource.get("plan")));
-                contract.setServiceOrgId(asString(contractSource.get("serviceOrgId")));
-                contract.setServiceId(asString(contractSource.get("serviceId")));
-                contract.setServiceVersion(asString(contractSource.get("serviceVersion")));
+                contract.setApiOrgId(asString(contractSource.get("apiOrgId")));
+                contract.setApiId(asString(contractSource.get("apiId")));
+                contract.setApiVersion(asString(contractSource.get("apiVersion")));
                 List<Map<String,Object>> policies = (List<Map<String,Object>>) contractSource.get("policies");
                 if (policies != null) {
                     for (Map<String, Object> policySource : policies) {
@@ -212,19 +212,19 @@ public class ESRegistryMarshalling {
 
     /**
      * Marshals the given bean into the given map.
-     * @param bean the service contract
+     * @param bean the api contract
      * @throws Exception when json marshalling fails
      * @return the content builder
      */
     @SuppressWarnings("nls")
-    public static XContentBuilder marshall(ServiceContract bean) throws Exception {
+    public static XContentBuilder marshall(ApiContract bean) throws Exception {
         XContentBuilder builder = XContentFactory.jsonBuilder().startObject();
         builder.field("apiKey", bean.getApikey());
         builder.field("plan", bean.getPlan());
         builder.field("application");
         marshallInto(bean.getApplication(), builder);
-        builder.field("service");
-        marshallInto(bean.getService(), builder);
+        builder.field("api");
+        marshallInto(bean.getApi(), builder);
         List<Policy> policies = bean.getPolicies();
         if (policies != null) {
             builder.startArray("policies");
@@ -243,17 +243,17 @@ public class ESRegistryMarshalling {
     /**
      * Unmarshals the given map source into a bean.
      * @param source the source mappings
-     * @return the service contract
+     * @return the api contract
      */
     @SuppressWarnings({ "nls", "unchecked" })
-    public static ServiceContract unmarshallServiceContract(Map<String, Object> source) {
+    public static ApiContract unmarshallApiContract(Map<String, Object> source) {
         if (source == null) {
             return null;
         }
-        ServiceContract contract = new ServiceContract();
+        ApiContract contract = new ApiContract();
         contract.setApikey(asString(source.get("apiKey")));
         contract.setApplication(unmarshallApplication((Map<String, Object>) source.get("application")));
-        contract.setService(unmarshallService((Map<String, Object>) source.get("service")));
+        contract.setApi(unmarshallApi((Map<String, Object>) source.get("api")));
         contract.setPlan(asString(source.get("plan")));
         List<Map<String,Object>> policies = (List<Map<String,Object>>) source.get("policies");
         if (policies != null) {

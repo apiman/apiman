@@ -38,7 +38,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
  * A Policy Definition describes a type of policy that can be added to
- * an application, service, or plan.  A policy cannot be added unless a
+ * an application, API, or plan.  A policy cannot be added unless a
  * definition is first created for it.
  *
  * @author eric.wittmann@redhat.com

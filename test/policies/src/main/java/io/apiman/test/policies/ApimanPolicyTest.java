@@ -17,13 +17,13 @@ package io.apiman.test.policies;
 
 import io.apiman.gateway.engine.IEngine;
 import io.apiman.gateway.engine.IEngineResult;
-import io.apiman.gateway.engine.IServiceRequestExecutor;
+import io.apiman.gateway.engine.IApiRequestExecutor;
 import io.apiman.gateway.engine.async.IAsyncHandler;
 import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.PolicyFailure;
-import io.apiman.gateway.engine.beans.ServiceRequest;
-import io.apiman.gateway.engine.beans.ServiceResponse;
+import io.apiman.gateway.engine.beans.ApiRequest;
+import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.engine.io.ByteBuffer;
 import io.apiman.gateway.engine.io.IApimanBuffer;
 import io.apiman.gateway.engine.io.ISignalWriteStream;
@@ -46,17 +46,17 @@ public abstract class ApimanPolicyTest {
     public PolicyTestResponse send(final PolicyTestRequest ptRequest) throws PolicyFailureError, Throwable {
         final Set<Throwable> errorHolder = new HashSet<>();
         final Set<PolicyFailure> failureHolder = new HashSet<>();
-        final Set<ServiceResponse> responseHolder = new HashSet<>();
+        final Set<ApiResponse> responseHolder = new HashSet<>();
         final StringBuilder responseBody = new StringBuilder();
 
         IEngine engine = tester.getEngine();
-        ServiceRequest srequest = tester.createServiceRequest();
+        ApiRequest srequest = tester.createApiRequest();
         srequest.setUrl("http://localhost:8080" + ptRequest.resource()); //$NON-NLS-1$
         srequest.setDestination(ptRequest.resource());
         srequest.setType(ptRequest.method().name());
         srequest.getHeaders().putAll(ptRequest.headers());
 
-        IServiceRequestExecutor executor = engine.executor(srequest, new IAsyncResultHandler<IEngineResult>() {
+        IApiRequestExecutor executor = engine.executor(srequest, new IAsyncResultHandler<IEngineResult>() {
             @Override
             public void handle(IAsyncResult<IEngineResult> result) {
                 if (result.isError()) {
@@ -66,7 +66,7 @@ public abstract class ApimanPolicyTest {
                     if (engineResult.isFailure()) {
                         failureHolder.add(engineResult.getPolicyFailure());
                     } else {
-                        responseHolder.add(engineResult.getServiceResponse());
+                        responseHolder.add(engineResult.getApiResponse());
                         engineResult.bodyHandler(new IAsyncHandler<IApimanBuffer>() {
                             @Override
                             public void handle(IApimanBuffer result) {
@@ -101,7 +101,7 @@ public abstract class ApimanPolicyTest {
             throw new PolicyFailureError(failureHolder.iterator().next());
         }
         if (!responseHolder.isEmpty()) {
-            ServiceResponse response = responseHolder.iterator().next();
+            ApiResponse response = responseHolder.iterator().next();
             return new PolicyTestResponse(response, responseBody.toString());
         }
         throw new Exception("No response found from request!"); //$NON-NLS-1$

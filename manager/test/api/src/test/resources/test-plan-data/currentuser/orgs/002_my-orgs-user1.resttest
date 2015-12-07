@@ -4,5 +4,5 @@ GET /currentuser/apporgs user1/user1
 Content-Type: application/json
 
 [
- {"id":"TestOrganization1","name":"Test Organization 1","description":"This is TO 1.","numApps":0,"numServices":0,"numMembers":0}
+ {"id":"TestOrganization1","name":"Test Organization 1","description":"This is TO 1.","numApps":0,"numApis":0,"numMembers":0}
 ]

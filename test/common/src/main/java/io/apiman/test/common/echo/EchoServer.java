@@ -24,20 +24,20 @@ import org.eclipse.jetty.servlet.ServletHolder;
 
 
 /**
- * A very simple echo server used during testing as the back-end service
- * for all published managed services.
+ * A very simple echo server used during testing as the back-end API
+ * for all published managed APIs.
  *
  * @author eric.wittmann@redhat.com
  */
 @SuppressWarnings("javadoc")
 public class EchoServer {
-    
+
     private Server server;
     private int port;
-    
+
     /**
      * Constructor.
-     * 
+     *
      * @param port the port to listen on
      */
     public EchoServer(int port) {
@@ -62,7 +62,7 @@ public class EchoServer {
         long endTime = System.currentTimeMillis();
         System.out.println("******* Started in " + (endTime - startTime) + "ms"); //$NON-NLS-1$ //$NON-NLS-2$
     }
-    
+
     /**
      * Does some configuration before starting the server.
      */
@@ -98,7 +98,7 @@ public class EchoServer {
         // Add the web contexts to jetty
         handlers.addHandler(server);
     }
-    
+
     public static void main(String [] args) throws Exception {
         new EchoServer(9999).start();
         while (Boolean.TRUE) {

@@ -113,17 +113,17 @@ Content-Disposition: attachment; filename=api-manager-export.json
           ]
         }
       ],
-      "Services": [
+      "Apis": [
         {
-          "ServiceBean": {
-            "id": "Service1",
-            "name": "Service 1",
-            "description": "This is the description of Service 1.",
+          "ApiBean": {
+            "id": "API1",
+            "name": "API 1",
+            "description": "This is the description of API 1.",
             "createdBy": "admin"
           },
           "Versions": [
             {
-              "ServiceVersionBean": {
+              "ApiVersionBean": {
                 "status": "Published",
                 "endpoint": "http://localhost:8080/ping",
                 "endpointType": "rest",
@@ -133,7 +133,7 @@ Content-Disposition: attachment; filename=api-manager-export.json
                     "gatewayId": "TheGateway"
                   }
                 ],
-                "publicService": false,
+                "publicAPI": false,
                 "plans": [
                   {
                     "planId": "Plan1",
@@ -168,15 +168,15 @@ Content-Disposition: attachment; filename=api-manager-export.json
               "Policies": [],
               "Contracts": [
                 {
-                  "service": {
-                    "service": {
+                  "api": {
+                    "api": {
                       "organization": {
                         "id": "Organization1"
                       },
-                      "id": "Service1"
+                      "id": "API1"
                     },
                     "endpointProperties": {},
-                    "publicService": false,
+                    "publicAPI": false,
                     "version": "1.0"
                   },
                   "plan": {
@@ -243,23 +243,23 @@ Content-Disposition: attachment; filename=api-manager-export.json
         {
           "who": "admin",
           "organizationId": "Organization1",
-          "entityType": "Service",
-          "entityId": "Service1",
+          "entityType": "Api",
+          "entityId": "API1",
           "what": "Create"
         },
         {
           "who": "admin",
           "organizationId": "Organization1",
-          "entityType": "Service",
-          "entityId": "Service1",
+          "entityType": "Api",
+          "entityId": "API1",
           "entityVersion": "1.0",
           "what": "Create"
         },
         {
           "who": "admin",
           "organizationId": "Organization1",
-          "entityType": "Service",
-          "entityId": "Service1",
+          "entityType": "Api",
+          "entityId": "API1",
           "entityVersion": "1.0",
           "what": "Update",
           "data": "{\"changes\":[{\"name\":\"plans\",\"before\":\"\",\"after\":\"Plan1:1.0\"},{\"name\":\"endpoint\",\"before\":null,\"after\":\"http://localhost:8080/ping\"},{\"name\":\"endpointType\",\"before\":null,\"after\":\"rest\"}]}"
@@ -267,8 +267,8 @@ Content-Disposition: attachment; filename=api-manager-export.json
         {
           "who": "admin",
           "organizationId": "Organization1",
-          "entityType": "Service",
-          "entityId": "Service1",
+          "entityType": "Api",
+          "entityId": "API1",
           "entityVersion": "1.0",
           "what": "Publish"
         },
@@ -279,16 +279,16 @@ Content-Disposition: attachment; filename=api-manager-export.json
           "entityId": "Application1",
           "entityVersion": "1.0",
           "what": "CreateContract",
-          "data": "{\"appOrgId\":\"Organization1\",\"appId\":\"Application1\",\"appVersion\":\"1.0\",\"serviceOrgId\":\"Organization1\",\"serviceId\":\"Service1\",\"serviceVersion\":\"1.0\",\"planId\":\"Plan1\",\"planVersion\":\"1.0\"}"
+          "data": "{\"appOrgId\":\"Organization1\",\"appId\":\"Application1\",\"appVersion\":\"1.0\",\"apiOrgId\":\"Organization1\",\"apiId\":\"API1\",\"apiVersion\":\"1.0\",\"planId\":\"Plan1\",\"planVersion\":\"1.0\"}"
         },
         {
           "who": "admin",
           "organizationId": "Organization1",
-          "entityType": "Service",
-          "entityId": "Service1",
+          "entityType": "Api",
+          "entityId": "API1",
           "entityVersion": "1.0",
           "what": "CreateContract",
-          "data": "{\"appOrgId\":\"Organization1\",\"appId\":\"Application1\",\"appVersion\":\"1.0\",\"serviceOrgId\":\"Organization1\",\"serviceId\":\"Service1\",\"serviceVersion\":\"1.0\",\"planId\":\"Plan1\",\"planVersion\":\"1.0\"}"
+          "data": "{\"appOrgId\":\"Organization1\",\"appId\":\"Application1\",\"appVersion\":\"1.0\",\"apiOrgId\":\"Organization1\",\"apiId\":\"API1\",\"apiVersion\":\"1.0\",\"planId\":\"Plan1\",\"planVersion\":\"1.0\"}"
         },
         {
           "who": "admin",

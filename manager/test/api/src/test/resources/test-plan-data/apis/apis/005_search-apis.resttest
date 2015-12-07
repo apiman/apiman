@@ -1,0 +1,21 @@
+POST /search/apis admin/admin
+Content-Type: application/json
+
+{
+  "filters" : [],
+  "orderBy" : {
+    "name" : "id",
+    "ascending" : true
+  }
+}
+----
+200
+Content-Type: application/json
+
+{
+  "beans" : [
+        {"organizationId":"Organization1","organizationName":"Organization 1","id":"API1","name":"API 1","description":"This is the description of API 1."},
+        {"organizationId":"Organization1","organizationName":"Organization 1","id":"API2","name":"API 2","description":"This is the description of API 2."}
+      ],
+  "totalSize" : 2
+}

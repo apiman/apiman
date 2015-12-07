@@ -17,6 +17,11 @@ package io.apiman.manager.api.rest.impl.util;
 
 import io.apiman.common.plugin.PluginCoordinates;
 import io.apiman.manager.api.rest.contract.exceptions.ActionException;
+import io.apiman.manager.api.rest.contract.exceptions.ApiAlreadyExistsException;
+import io.apiman.manager.api.rest.contract.exceptions.ApiDefinitionNotFoundException;
+import io.apiman.manager.api.rest.contract.exceptions.ApiNotFoundException;
+import io.apiman.manager.api.rest.contract.exceptions.ApiVersionAlreadyExistsException;
+import io.apiman.manager.api.rest.contract.exceptions.ApiVersionNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.ApplicationAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.ApplicationNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.ApplicationVersionAlreadyExistsException;
@@ -25,10 +30,10 @@ import io.apiman.manager.api.rest.contract.exceptions.ContractAlreadyExistsExcep
 import io.apiman.manager.api.rest.contract.exceptions.ContractNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.GatewayAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.GatewayNotFoundException;
+import io.apiman.manager.api.rest.contract.exceptions.InvalidApiStatusException;
 import io.apiman.manager.api.rest.contract.exceptions.InvalidApplicationStatusException;
 import io.apiman.manager.api.rest.contract.exceptions.InvalidMetricCriteriaException;
 import io.apiman.manager.api.rest.contract.exceptions.InvalidNameException;
-import io.apiman.manager.api.rest.contract.exceptions.InvalidServiceStatusException;
 import io.apiman.manager.api.rest.contract.exceptions.InvalidVersionException;
 import io.apiman.manager.api.rest.contract.exceptions.MemberNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.NotAuthorizedException;
@@ -47,11 +52,6 @@ import io.apiman.manager.api.rest.contract.exceptions.PolicyDefinitionNotFoundEx
 import io.apiman.manager.api.rest.contract.exceptions.PolicyNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.RoleAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.RoleNotFoundException;
-import io.apiman.manager.api.rest.contract.exceptions.ServiceAlreadyExistsException;
-import io.apiman.manager.api.rest.contract.exceptions.ServiceDefinitionNotFoundException;
-import io.apiman.manager.api.rest.contract.exceptions.ServiceNotFoundException;
-import io.apiman.manager.api.rest.contract.exceptions.ServiceVersionAlreadyExistsException;
-import io.apiman.manager.api.rest.contract.exceptions.ServiceVersionNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.UserNotFoundException;
 import io.apiman.manager.api.rest.impl.i18n.Messages;
 
@@ -171,7 +171,7 @@ public final class ExceptionFactory {
     }
 
     /**
-     * Creates an invalid service status exception.
+     * Creates an invalid app status exception.
      * @return the exception
      */
     public static final InvalidApplicationStatusException invalidApplicationStatusException() {
@@ -179,67 +179,67 @@ public final class ExceptionFactory {
     }
 
     /**
-     * Creates an exception from an service name.
-     * @param serviceName the service name
+     * Creates an exception from an API name.
+     * @param apiName the API name
      * @return the exception
      */
-    public static final ServiceAlreadyExistsException serviceAlreadyExistsException(String serviceName) {
-        return new ServiceAlreadyExistsException(Messages.i18n.format("ServiceAlreadyExists", serviceName)); //$NON-NLS-1$
+    public static final ApiAlreadyExistsException apiAlreadyExistsException(String apiName) {
+        return new ApiAlreadyExistsException(Messages.i18n.format("ApiAlreadyExists", apiName)); //$NON-NLS-1$
     }
 
     /**
-     * Creates an exception from an service name.
-     * @param serviceName the service name
+     * Creates an exception from an API name.
+     * @param apiName the API name
      * @param version the version
      * @return the exception
      */
-    public static final ServiceVersionAlreadyExistsException serviceVersionAlreadyExistsException(String serviceName, String version) {
-        return new ServiceVersionAlreadyExistsException(Messages.i18n.format("ServiceVersionAlreadyExists", serviceName, version)); //$NON-NLS-1$
+    public static final ApiVersionAlreadyExistsException apiVersionAlreadyExistsException(String apiName, String version) {
+        return new ApiVersionAlreadyExistsException(Messages.i18n.format("ApiVersionAlreadyExists", apiName, version)); //$NON-NLS-1$
     }
 
     /**
-     * Creates an exception from an service id.
-     * @param serviceId the service id
+     * Creates an exception from an API id.
+     * @param apiId the API id
      * @return the exception
      */
-    public static final ServiceNotFoundException serviceNotFoundException(String serviceId) {
-        return new ServiceNotFoundException(Messages.i18n.format("ServiceDoesNotExist", serviceId)); //$NON-NLS-1$
+    public static final ApiNotFoundException apiNotFoundException(String apiId) {
+        return new ApiNotFoundException(Messages.i18n.format("ApiDoesNotExist", apiId)); //$NON-NLS-1$
     }
 
     /**
-     * Creates an exception from an service id and version.
-     * @param serviceId the service id
-     * @param version the service version
+     * Creates an exception from an API id and version.
+     * @param apiId the API id
+     * @param version the API version
      * @return the exception
      */
-    public static final ServiceVersionNotFoundException serviceVersionNotFoundException(String serviceId, String version) {
-        return new ServiceVersionNotFoundException(Messages.i18n.format("ServiceVersionDoesNotExist", serviceId, version)); //$NON-NLS-1$
+    public static final ApiVersionNotFoundException apiVersionNotFoundException(String apiId, String version) {
+        return new ApiVersionNotFoundException(Messages.i18n.format("ApiVersionDoesNotExist", apiId, version)); //$NON-NLS-1$
     }
 
     /**
-     * Creates an exception from an service id and version.
-     * @param serviceId the service id
-     * @param version the service version
+     * Creates an exception from an API id and version.
+     * @param apiId the API id
+     * @param version the API version
      * @return the exception
      */
-    public static final ServiceDefinitionNotFoundException serviceDefinitionNotFoundException(String serviceId, String version) {
-        return new ServiceDefinitionNotFoundException(Messages.i18n.format("ServiceDefinitionDoesNotExist", serviceId, version)); //$NON-NLS-1$
+    public static final ApiDefinitionNotFoundException apiDefinitionNotFoundException(String apiId, String version) {
+        return new ApiDefinitionNotFoundException(Messages.i18n.format("ApiDefinitionDoesNotExist", apiId, version)); //$NON-NLS-1$
     }
 
     /**
-     * Creates an invalid service status exception.
+     * Creates an invalid API status exception.
      * @return the exception
      */
-    public static final InvalidServiceStatusException invalidServiceStatusException() {
-        return new InvalidServiceStatusException(Messages.i18n.format("InvalidServiceStatus")); //$NON-NLS-1$
+    public static final InvalidApiStatusException invalidApiStatusException() {
+        return new InvalidApiStatusException(Messages.i18n.format("InvalidApiStatus")); //$NON-NLS-1$
     }
 
     /**
      * Creates an invalid plan status exception.
      * @return the exception
      */
-    public static final InvalidServiceStatusException invalidPlanStatusException() {
-        return new InvalidServiceStatusException(Messages.i18n.format("InvalidPlanStatus")); //$NON-NLS-1$
+    public static final InvalidApiStatusException invalidPlanStatusException() {
+        return new InvalidApiStatusException(Messages.i18n.format("InvalidPlanStatus")); //$NON-NLS-1$
     }
 
     /**

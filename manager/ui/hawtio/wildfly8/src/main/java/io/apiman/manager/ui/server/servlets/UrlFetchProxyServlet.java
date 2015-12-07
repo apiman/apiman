@@ -35,14 +35,14 @@ import org.apache.commons.io.IOUtils;
 /**
  * A proxy servlet used to get around cross-origin problems when pulling
  * down content from remote sites (e.g. when pulling down a remote
- * WADL file to use in Service Import).
+ * WADL file to use in API Import).
  *
  * @author eric.wittmann@redhat.com
  */
 public class UrlFetchProxyServlet extends HttpServlet {
-    
+
     private static final long serialVersionUID = -4704803997251798191L;
-    
+
     private static Set<String> EXCLUDE_HEADERS = new HashSet<>();
     static {
         EXCLUDE_HEADERS.add("ETag"); //$NON-NLS-1$
@@ -50,7 +50,7 @@ public class UrlFetchProxyServlet extends HttpServlet {
         EXCLUDE_HEADERS.add("Date"); //$NON-NLS-1$
         EXCLUDE_HEADERS.add("Cache-control"); //$NON-NLS-1$
     }
-    
+
     /**
      * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
@@ -62,7 +62,7 @@ public class UrlFetchProxyServlet extends HttpServlet {
             resp.sendError(500, "No URL specified in X-Apiman-Url"); //$NON-NLS-1$
             return;
         }
-        
+
         URL remoteUrl = new URL(url);
         HttpURLConnection remoteConn = (HttpURLConnection) remoteUrl.openConnection();
         InputStream remoteIS = null;

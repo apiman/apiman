@@ -540,7 +540,7 @@ div.page {
   line-height: 14px;
 }
 
-.apiman-organizations hr, .apiman-services hr, .apiman-applications hr, .apiman-plans hr, .apiman-members hr, .apiman-contracts hr, .apiman-policies hr, .apiman-roles hr {
+.apiman-organizations hr, .apiman-apis hr, .apiman-applications hr, .apiman-plans hr, .apiman-members hr, .apiman-contracts hr, .apiman-policies hr, .apiman-roles hr {
   margin: 8px;
 }
 
@@ -1308,18 +1308,18 @@ textarea.apiman-endpoint {
   padding: 10px;
 }
 
-#new-contract-form .application, #new-contract-form .plan, #new-contract-form .service {
+#new-contract-form .application, #new-contract-form .plan, #new-contract-form .api {
   border: 1px solid #999;
   border-radius: 5px;
 }
-#new-contract-form .application.selected, #new-contract-form .plan.selected, #new-contract-form .service.selected {
+#new-contract-form .application.selected, #new-contract-form .plan.selected, #new-contract-form .api.selected {
   border: 1px solid #3776ab;
   border-radius: 5px;
 }
-#new-contract-form .application.selected .title, #new-contract-form .plan.selected .title, #new-contract-form .service.selected .title {
+#new-contract-form .application.selected .title, #new-contract-form .plan.selected .title, #new-contract-form .api.selected .title {
   background-color: #3776ab;
 }
-#new-contract-form .application:hover, #new-contract-form .plan:hover, #new-contract-form .service:hover {
+#new-contract-form .application:hover, #new-contract-form .plan:hover, #new-contract-form .api:hover {
   box-shadow: 3px 3px 5px #ccc;
 }
 #new-contract-form .plan {
@@ -1334,7 +1334,7 @@ textarea.apiman-endpoint {
   background-position: center;
 }
 
-#new-contract-form .to-service-arrow {
+#new-contract-form .to-api-arrow {
   height: 60px;
   background-image: url(../img/new-contract-arrow-bottom.png);
   background-repeat: no-repeat;
@@ -1348,19 +1348,19 @@ textarea.apiman-endpoint {
   text-align: left;
 }
 
-.modal-select-service .panel {
+.modal-select-api .panel {
   margin-top: 10px;
 }
-.modal-select-service .input-search-results {
+.modal-select-api .input-search-results {
   width: 100%;
 }
-.modal-select-service .input-search-results .panel-body {
+.modal-select-api .input-search-results .panel-body {
   padding: 10px;
   overflow-y: auto;
   overflow-x: hidden;
   height: 175px;
 }
-.modal-select-service .input-search-results .item {
+.modal-select-api .input-search-results .item {
   width: 100%;
   float: left;
   line-height: 22px;
@@ -1369,27 +1369,27 @@ textarea.apiman-endpoint {
   border-bottom: 1px solid;
   border-color: transparent;
 }
-.modal-select-service .input-search-results .item:hover {
+.modal-select-api .input-search-results .item:hover {
   border-color: rgb(179, 211, 231);
   background-color: rgb(212, 237, 250);
   text-decoration: none;
 }
-.modal-select-service .input-search-results .item:focus {
+.modal-select-api .input-search-results .item:focus {
   text-decoration: none;
 }
-.modal-select-service .input-search-results .item.selected {
+.modal-select-api .input-search-results .item.selected {
   color: white;
   border-color: rgb(0, 118, 183);
   background-color: rgb(0, 153, 211);
 }
-.modal-select-service .btn-search {
+.modal-select-api .btn-search {
   float: left;
 }
 .apiman-entity-new h3 hr {
   margin: 5px 0px 20px 0px;
   padding: 0px;
 }
-.modal-select-service .apiman-box {
+.modal-select-api .apiman-box {
   border: 1px solid rgb(222, 222, 222);
   border-radius: 5px;
   padding-top: 10px;
@@ -1402,7 +1402,7 @@ textarea.apiman-endpoint {
   display: block;
 }
 
-#selectServiceModal .version {
+#selectApiModal .version {
   display: block;
   width: auto;
 }
@@ -1450,7 +1450,7 @@ textarea.apiman-endpoint {
   text-decoration: underline;
 }
 
-#apiman-svc-metrics-selector .bootstrap-select, #apiman-app-metrics-selector .bootstrap-select {
+#apiman-api-metrics-selector .bootstrap-select, #apiman-app-metrics-selector .bootstrap-select {
   width: auto;
 }
 
@@ -1585,17 +1585,17 @@ table tr.apiman_deleting {
   min-width: 100px;
 }
 
-.apiman-import-wizard-services tr.pending {
+.apiman-import-wizard-apis tr.pending {
   color: #666;
 }
-.apiman-import-wizard-services tr.active {
+.apiman-import-wizard-apis tr.active {
   color: #00A8E1;
   font-style: italic;
 }
-.apiman-import-wizard-services tr.complete {
+.apiman-import-wizard-apis tr.complete {
   color: #3F9C35;
 }
-.apiman-import-wizard-services tr.error {
+.apiman-import-wizard-apis tr.error {
   color: #C00;
 }
 

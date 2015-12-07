@@ -142,7 +142,7 @@
                 "entityVersion" : { "type" : "string", "index" : "not_analyzed" }
             }
         },
-        "service" : {
+        "api" : {
             "properties" : {
                 "name" : {
                     "type" : "string",
@@ -157,15 +157,15 @@
                 "createdBy" : { "type" : "string", "index" : "not_analyzed" }
             }
         },
-        "serviceVersion" : {
+        "apiVersion" : {
             "properties" : {
                 "organizationId" : { "type" : "string", "index" : "not_analyzed" },
                 "organizationName" : {
                     "type" : "string",
                     "fields" : { "raw" : { "type" : "string", "index" : "not_analyzed" } }
                 },
-                "serviceId" : { "type" : "string", "index" : "not_analyzed" },
-                "serviceName" : {
+                "apiId" : { "type" : "string", "index" : "not_analyzed" },
+                "apiName" : {
                     "type" : "string",
                     "fields" : { "raw" : { "type" : "string", "index" : "not_analyzed" } }
                 },
@@ -175,7 +175,7 @@
                 "modifiedBy" : { "type" : "string", "index" : "not_analyzed" }
             }
         },
-        "servicePolicies" : {
+        "apiPolicies" : {
             "properties" : {
                 "policies" : {
                     "properties" : {
@@ -249,9 +249,9 @@
                 "appOrganizationId" : { "type" : "string", "index" : "not_analyzed" },
                 "appId" : { "type" : "string", "index" : "not_analyzed" },
                 "appVersion" : { "type" : "string", "index" : "not_analyzed" },
-                "serviceOrganizationId" : { "type" : "string", "index" : "not_analyzed" },
-                "serviceId" : { "type" : "string", "index" : "not_analyzed" },
-                "serviceVersion" : { "type" : "string", "index" : "not_analyzed" },
+                "apiOrganizationId" : { "type" : "string", "index" : "not_analyzed" },
+                "apiId" : { "type" : "string", "index" : "not_analyzed" },
+                "apiVersion" : { "type" : "string", "index" : "not_analyzed" },
                 "planId" : { "type" : "string", "index" : "not_analyzed" },
                 "planVersion" : { "type" : "string", "index" : "not_analyzed" },
                 "createdBy" : { "type" : "string", "index" : "not_analyzed" }

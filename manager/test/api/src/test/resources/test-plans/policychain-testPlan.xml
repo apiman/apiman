@@ -12,10 +12,10 @@
     <test name="Create plan policy 2">test-plan-data/policychain/008_create-planpolicy-2.resttest</test>
     <test name="Lock Gold Plan 1.0">test-plan-data/policychain/009_lock-plan-1.resttest</test>
 
-    <test name="Create foo Service">test-plan-data/policychain/010_create-service-foo.resttest</test>
-    <test name="Create foo Service 1.0">test-plan-data/policychain/011_create-service-foo-1.0.resttest</test>
-    <test name="Update foo Service 1.0">test-plan-data/policychain/011.5_update-service-foo-1.0.resttest</test>
-    <test name="Create service policy 1">test-plan-data/policychain/012_create-servicepolicy-1.resttest</test>
+    <test name="Create foo API">test-plan-data/policychain/010_create-api-foo.resttest</test>
+    <test name="Create foo API 1.0">test-plan-data/policychain/011_create-api-foo-1.0.resttest</test>
+    <test name="Update foo API 1.0">test-plan-data/policychain/011.5_update-api-foo-1.0.resttest</test>
+    <test name="Create API policy 1">test-plan-data/policychain/012_create-apipolicy-1.resttest</test>
   </testGroup>
 
   <!-- Policy Chain -->

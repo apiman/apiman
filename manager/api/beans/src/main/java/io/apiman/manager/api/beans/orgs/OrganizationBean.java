@@ -27,7 +27,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
  * An APIMan Organization.  This is an important top level entity in the APIMan
- * data model.  It contains the Services, Plans, etc.
+ * data model.  It contains the APIs, Plans, etc.
  *
  * @author eric.wittmann@redhat.com
  */

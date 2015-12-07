@@ -78,9 +78,9 @@ public class BasicMetricsTest {
     public void validMetrics() throws IOException {
         @SuppressWarnings("serial")
         Set<String> expected = new LinkedHashSet<String>(){{
-            add("apiman_request_duration_milliseconds_count{method=\"GET\",responseCode=\"200\",service=\"serviceId\",serviceVersion=\"serviceVersion\",application=\"applicationId\",} 1.0");
-            add("apiman_request_duration_milliseconds_sum{method=\"GET\",responseCode=\"200\",service=\"serviceId\",serviceVersion=\"serviceVersion\",application=\"applicationId\",} 644.0");
-            add("apiman_requests_total{method=\"GET\",responseCode=\"200\",service=\"serviceId\",serviceVersion=\"serviceVersion\",application=\"applicationId\",} 1.0");
+            add("apiman_request_duration_milliseconds_count{method=\"GET\",responseCode=\"200\",api=\"apiId\",apiVersion=\"apiVersion\",application=\"applicationId\",} 1.0");
+            add("apiman_request_duration_milliseconds_sum{method=\"GET\",responseCode=\"200\",api=\"apiId\",apiVersion=\"apiVersion\",application=\"applicationId\",} 644.0");
+            add("apiman_requests_total{method=\"GET\",responseCode=\"200\",api=\"apiId\",apiVersion=\"apiVersion\",application=\"applicationId\",} 1.0");
         }};
 
         RequestMetric requestMetric = new RequestMetric();
@@ -98,12 +98,12 @@ public class BasicMetricsTest {
         requestMetric.setResource("/wibble");
         requestMetric.setResponseCode(200);
         requestMetric.setResponseMessage("hamsters are cool");
-        requestMetric.setServiceDuration(1000);
-        requestMetric.setServiceStart(new Date(1440770233));
-        requestMetric.setServiceEnd(new Date(1440770822));
-        requestMetric.setServiceId("serviceId");
-        requestMetric.setServiceOrgId("serviceOrgId");
-        requestMetric.setServiceVersion("serviceVersion");
+        requestMetric.setApiDuration(1000);
+        requestMetric.setApiStart(new Date(1440770233));
+        requestMetric.setApiEnd(new Date(1440770822));
+        requestMetric.setApiId("apiId");
+        requestMetric.setApiOrgId("apiOrgId");
+        requestMetric.setApiVersion("apiVersion");
         requestMetric.setUser("user");
         //Record it
         prometheusMetrics.record(requestMetric);
@@ -118,10 +118,10 @@ public class BasicMetricsTest {
     public void errorMetrics() throws IOException {
         @SuppressWarnings("serial")
         Set<String> expected = new LinkedHashSet<String>(){{
-            add("apiman_request_duration_milliseconds_count{method=\"GET\",responseCode=\"404\",service=\"serviceId\",serviceVersion=\"serviceVersion\",application=\"applicationId\",} 1.0");
-            add("apiman_request_duration_milliseconds_sum{method=\"GET\",responseCode=\"404\",service=\"serviceId\",serviceVersion=\"serviceVersion\",application=\"applicationId\",} 644.0");
-            add("apiman_requests_total{method=\"GET\",responseCode=\"404\",service=\"serviceId\",serviceVersion=\"serviceVersion\",application=\"applicationId\",} 1.0");
-            add("apiman_errors_total{method=\"GET\",responseCode=\"404\",service=\"serviceId\",serviceVersion=\"serviceVersion\",application=\"applicationId\",} 1.0");
+            add("apiman_request_duration_milliseconds_count{method=\"GET\",responseCode=\"404\",api=\"apiId\",apiVersion=\"apiVersion\",application=\"applicationId\",} 1.0");
+            add("apiman_request_duration_milliseconds_sum{method=\"GET\",responseCode=\"404\",api=\"apiId\",apiVersion=\"apiVersion\",application=\"applicationId\",} 644.0");
+            add("apiman_requests_total{method=\"GET\",responseCode=\"404\",api=\"apiId\",apiVersion=\"apiVersion\",application=\"applicationId\",} 1.0");
+            add("apiman_errors_total{method=\"GET\",responseCode=\"404\",api=\"apiId\",apiVersion=\"apiVersion\",application=\"applicationId\",} 1.0");
         }};
 
         RequestMetric requestMetric = new RequestMetric();
@@ -139,12 +139,12 @@ public class BasicMetricsTest {
         requestMetric.setResource("/wibble");
         requestMetric.setResponseCode(404);
         requestMetric.setResponseMessage("could not find hamsters");
-        requestMetric.setServiceDuration(1000);
-        requestMetric.setServiceStart(new Date(1440770233));
-        requestMetric.setServiceEnd(new Date(1440770822));
-        requestMetric.setServiceId("serviceId");
-        requestMetric.setServiceOrgId("serviceOrgId");
-        requestMetric.setServiceVersion("serviceVersion");
+        requestMetric.setApiDuration(1000);
+        requestMetric.setApiStart(new Date(1440770233));
+        requestMetric.setApiEnd(new Date(1440770822));
+        requestMetric.setApiId("apiId");
+        requestMetric.setApiOrgId("apiOrgId");
+        requestMetric.setApiVersion("apiVersion");
         requestMetric.setUser("user");
         //Record it
         prometheusMetrics.record(requestMetric);

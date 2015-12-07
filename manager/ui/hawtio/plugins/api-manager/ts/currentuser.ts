@@ -1,7 +1,7 @@
 /// <reference path='../../includes.ts'/>
 module ApimanCurrentUser {
 
-    export var _module = angular.module('ApimanCurrentUser', ['ApimanServices']);
+    export var _module = angular.module('ApimanCurrentUser', ['ApimanRPC']);
 
     export var CurrentUser = _module.factory('CurrentUser', 
         ['$q', '$rootScope', 'CurrentUserSvcs', 'Logger',

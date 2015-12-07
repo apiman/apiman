@@ -15,7 +15,7 @@
  */
 package io.apiman.gateway.engine.auth;
 
-import io.apiman.gateway.engine.beans.Service;
+import io.apiman.gateway.engine.beans.Api;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -77,13 +77,13 @@ public enum RequiredAuthType {
     }
 
     /**
-     * Parse service endpoint properties to retrieve enum value (if any)
+     * Parse API endpoint properties to retrieve enum value (if any)
      *
-     * @param service the service
+     * @param api the API
      * @return the required auth type
      */
-    public static RequiredAuthType parseType(Service service) {
-        return RequiredAuthType.fromValue(service.getEndpointProperties().get(
+    public static RequiredAuthType parseType(Api api) {
+        return RequiredAuthType.fromValue(api.getEndpointProperties().get(
                 RequiredAuthType.ENDPOINT_AUTHORIZATION_TYPE));
     }
 }

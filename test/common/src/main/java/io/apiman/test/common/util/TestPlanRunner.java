@@ -323,7 +323,7 @@ public class TestPlanRunner {
                 // A custom element qualifier allows us to customize how the diff engine
                 // compares the XML nodes.  In this case, we're specially handling any
                 // elements named "entry" so that we can compare the standard XML format
-                // of the Echo service we use for most of our tests.  The format of an
+                // of the Echo API we use for most of our tests.  The format of an
                 // entry looks like:
                 //    <entry>
                 //      <key>Name</key>
@@ -475,14 +475,14 @@ public class TestPlanRunner {
                     TextNode tn = (TextNode) expectedValue;
                     String expected = tn.getTextValue();
                     JsonNode actualValue = actualJson.get(expectedFieldName);
-                    
+
                     if (isAssertionIgnoreCase(restTest)) {
                         expected = expected.toLowerCase();
                         if (actualValue == null) {
                             actualValue = actualJson.get(expectedFieldName.toLowerCase());
                         }
                     }
-                    
+
                     Assert.assertNotNull("Expected JSON text field '" + expectedFieldName + "' with value '"
                             + expected + "' but was not found.", actualValue);
                     Assert.assertEquals("Expected JSON text field '" + expectedFieldName + "' with value '"
@@ -592,7 +592,7 @@ public class TestPlanRunner {
     }
 
     /**
-     * Gets the absolute URL to use to invoke a rest service at a given path.
+     * Gets the absolute URL to use to invoke a rest API at a given path.
      * @param path
      * @throws URISyntaxException
      */

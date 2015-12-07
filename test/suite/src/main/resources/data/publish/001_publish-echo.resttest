@@ -2,7 +2,7 @@ POST /actions ${apiman.suite.api-username}/${apiman.suite.api-password}
 Content-Type: application/json
 
 {
-  "type" : "publishService",
+  "type" : "publishAPI",
   "organizationId" : "Test",
   "entityId" : "echo",
   "entityVersion" : "1.0"

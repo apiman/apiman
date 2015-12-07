@@ -18,9 +18,9 @@ package io.apiman.gateway.engine.policies;
 import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
+import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.beans.PolicyFailureType;
-import io.apiman.gateway.engine.beans.ServiceRequest;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.metrics.RequestMetric;
 import io.apiman.gateway.engine.policies.auth.JDBCIdentityValidator;
@@ -37,7 +37,7 @@ import org.apache.commons.codec.binary.Base64;
 /**
  * An implementation of an apiman policy that supports multiple styles of authentication.
  * Specifically this policy is responsible for authenticating the inbound request prior
- * to proxying the request to the back end service.  If the authentication fails then
+ * to proxying the request to the back end API.  If the authentication fails then
  * the back end system is never invoked.
  *
  * @author eric.wittmann@redhat.com
@@ -63,11 +63,11 @@ public class BasicAuthenticationPolicy extends AbstractMappedPolicy<BasicAuthent
     }
 
     /**
-     * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#doApply(io.apiman.gateway.engine.beans.ServiceRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
+     * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#doApply(io.apiman.gateway.engine.beans.ApiRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
      */
     @Override
-    protected void doApply(final ServiceRequest request, final IPolicyContext context, final BasicAuthenticationConfig config,
-            final IPolicyChain<ServiceRequest> chain) {
+    protected void doApply(final ApiRequest request, final IPolicyContext context, final BasicAuthenticationConfig config,
+            final IPolicyChain<ApiRequest> chain) {
         String authHeader = request.getHeaders().get("Authorization"); //$NON-NLS-1$
         boolean requireBasic = config.getRequireBasicAuth() == null ? Boolean.TRUE : config.getRequireBasicAuth();
 
@@ -136,7 +136,7 @@ public class BasicAuthenticationPolicy extends AbstractMappedPolicy<BasicAuthent
                         if (metric != null) {
                             metric.setUser(forwardedUsername);
                         }
-                        // Remove the authorization header so that it doesn't get passed through to the backend service
+                        // Remove the authorization header so that it doesn't get passed through to the backend API
                         // TODO: make this optional - perhaps they *want* the auth header passed through?
                         request.getHeaders().remove("Authorization"); //$NON-NLS-1$
                         chain.doApply(request);
@@ -157,7 +157,7 @@ public class BasicAuthenticationPolicy extends AbstractMappedPolicy<BasicAuthent
      * @param config
      * @param handler
      */
-    private void validateCredentials(String username, String password, ServiceRequest request, IPolicyContext context,
+    private void validateCredentials(String username, String password, ApiRequest request, IPolicyContext context,
             BasicAuthenticationConfig config, IAsyncResultHandler<Boolean> handler) {
         if (config.getStaticIdentity() != null) {
             staticIdentityValidator.validate(username, password, request, context, config.getStaticIdentity(), handler);
@@ -182,7 +182,7 @@ public class BasicAuthenticationPolicy extends AbstractMappedPolicy<BasicAuthent
         PolicyFailure failure = pff.createFailure(PolicyFailureType.Authentication, reason, Messages.i18n.format("BasicAuthenticationPolicy.AuthenticationFailed")); //$NON-NLS-1$
         String realm = config.getRealm();
         if (realm == null || realm.trim().isEmpty()) {
-            realm = "Service"; //$NON-NLS-1$
+            realm = "Apiman"; //$NON-NLS-1$
         }
         failure.getHeaders().put("WWW-Authenticate", String.format("BASIC realm=\"%1$s\"", realm)); //$NON-NLS-1$ //$NON-NLS-2$
         chain.doFailure(failure);

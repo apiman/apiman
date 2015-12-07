@@ -43,14 +43,14 @@ public class SimpleEchoTest {
         } catch (InterruptedException e) {
             throw new Error(e);
         }
-        
+
         List<RequestMetric> metrics = TestMetrics.getMetrics();
         Assert.assertNotNull(metrics);
         Assert.assertEquals(10, metrics.size());
         RequestMetric metric = metrics.get(1);
-        Assert.assertEquals("SimpleEchoTest", metric.getServiceOrgId());
-        Assert.assertEquals("echo", metric.getServiceId());
-        Assert.assertEquals("1.0.0", metric.getServiceVersion());
+        Assert.assertEquals("SimpleEchoTest", metric.getApiOrgId());
+        Assert.assertEquals("echo", metric.getApiId());
+        Assert.assertEquals("1.0.0", metric.getApiVersion());
 
         Assert.assertEquals("SimpleEchoTest", metric.getApplicationOrgId());
         Assert.assertEquals("test", metric.getApplicationId());
@@ -60,8 +60,8 @@ public class SimpleEchoTest {
 
         Assert.assertTrue("Expected the request duration to be at least 0 ms but was " + metric.getRequestDuration(),
                 metric.getRequestDuration() >= 0);
-        Assert.assertTrue("Expected the service duration to be at least 0 ms but was " + metric.getServiceDuration(),
-                metric.getServiceDuration() >= 0);
+        Assert.assertTrue("Expected the API duration to be at least 0 ms but was " + metric.getApiDuration(),
+                metric.getApiDuration() >= 0);
 
         Assert.assertEquals(200, metric.getResponseCode());
         Assert.assertEquals("OK", metric.getResponseMessage());

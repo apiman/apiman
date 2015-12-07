@@ -64,14 +64,14 @@
         </createIndex>
     </changeSet>
     <changeSet author="apiman" id="createIndex-11">
-        <createIndex indexName="IDX_services_1"
-                     tableName="services">
+        <createIndex indexName="IDX_apis_1"
+                     tableName="apis">
             <column name="name"/>
         </createIndex>
     </changeSet>
     <changeSet author="apiman" id="createIndex-12">
-        <createIndex indexName="IDX_FK_services_1"
-                     tableName="services">
+        <createIndex indexName="IDX_FK_apis_1"
+                     tableName="apis">
             <column name="organization_id"/>
         </createIndex>
     </changeSet>
@@ -104,7 +104,7 @@
     <changeSet author="apiman" id="createIndex-17">
         <createIndex indexName="IDX_FK_contracts_s"
                      tableName="contracts">
-            <column name="svcv_id"/>
+            <column name="apiv_id"/>
         </createIndex>
     </changeSet>
     <changeSet author="apiman" id="createIndex-18">

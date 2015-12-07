@@ -17,7 +17,7 @@ package io.apiman.gateway.engine.policies;
 
 import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.beans.PolicyFailureType;
-import io.apiman.gateway.engine.beans.ServiceRequest;
+import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.policies.config.IgnoredResourcesConfig;
 import io.apiman.gateway.engine.policies.i18n.Messages;
@@ -47,11 +47,11 @@ public class IgnoredResourcesPolicy extends AbstractMappedPolicy<IgnoredResource
     }
     
     /**
-     * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#doApply(io.apiman.gateway.engine.beans.ServiceRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
+     * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#doApply(io.apiman.gateway.engine.beans.ApiRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
      */
     @Override
-    protected void doApply(ServiceRequest request, IPolicyContext context, IgnoredResourcesConfig config,
-            IPolicyChain<ServiceRequest> chain) {
+    protected void doApply(ApiRequest request, IPolicyContext context, IgnoredResourcesConfig config,
+            IPolicyChain<ApiRequest> chain) {
         if (!satisfiesAnyPath(config, request.getDestination())) {
             super.doApply(request, context, config, chain);
         } else {

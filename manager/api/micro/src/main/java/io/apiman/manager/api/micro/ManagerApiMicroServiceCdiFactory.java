@@ -22,11 +22,11 @@ import io.apiman.common.util.ReflectionUtils;
 import io.apiman.common.util.crypt.CurrentDataEncrypter;
 import io.apiman.common.util.crypt.IDataEncrypter;
 import io.apiman.manager.api.beans.idm.UserBean;
+import io.apiman.manager.api.core.IApiCatalog;
 import io.apiman.manager.api.core.IApiKeyGenerator;
 import io.apiman.manager.api.core.IMetricsAccessor;
 import io.apiman.manager.api.core.INewUserBootstrapper;
 import io.apiman.manager.api.core.IPluginRegistry;
-import io.apiman.manager.api.core.IServiceCatalog;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.UuidApiKeyGenerator;
@@ -189,12 +189,12 @@ public class ManagerApiMicroServiceCdiFactory {
     }
 
     @Produces @ApplicationScoped
-    public static IServiceCatalog provideServiceCatalog(ManagerApiMicroServiceConfig config, IPluginRegistry pluginRegistry) {
+    public static IApiCatalog provideServiceCatalog(ManagerApiMicroServiceConfig config, IPluginRegistry pluginRegistry) {
         try {
-            return createCustomComponent(IServiceCatalog.class, config.getServiceCatalogType(),
-                    config.getServiceCatalogProperties(), pluginRegistry);
+            return createCustomComponent(IApiCatalog.class, config.getApiCatalogType(),
+                    config.getApiCatalogProperties(), pluginRegistry);
         } catch (Throwable t) {
-            throw new RuntimeException("Error or unknown service catalog type: " + config.getServiceCatalogType(), t); //$NON-NLS-1$
+            throw new RuntimeException("Error or unknown API catalog type: " + config.getApiCatalogType(), t); //$NON-NLS-1$
         }
     }
 

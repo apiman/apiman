@@ -15,15 +15,15 @@
  */
 package io.apiman.gateway.engine.policy;
 
-import java.util.Iterator;
-import java.util.List;
-
 import io.apiman.gateway.engine.async.IAsyncHandler;
 import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.io.AbstractStream;
 import io.apiman.gateway.engine.io.IAbortable;
 import io.apiman.gateway.engine.io.IApimanBuffer;
 import io.apiman.gateway.engine.io.IReadWriteStream;
+
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Traverses and executes a series of policies according to implementor's
@@ -55,7 +55,7 @@ public abstract class Chain<H> extends AbstractStream<H> implements IAbortable, 
 
     private Iterator<PolicyWithConfiguration> policyIterator;
 
-    private H serviceObject;
+    private H apiObject;
     private boolean firstElem = true;
 
     /**
@@ -79,7 +79,7 @@ public abstract class Chain<H> extends AbstractStream<H> implements IAbortable, 
         while (iterator.hasNext()) {
             final PolicyWithConfiguration pwc = iterator.next();
             final IPolicy policy = pwc.getPolicy();
-            final IReadWriteStream<H> handler = getServiceHandler(policy, pwc.getConfiguration());
+            final IReadWriteStream<H> handler = getApiHandler(policy, pwc.getConfiguration());
             if (handler == null) {
                 continue;
             }
@@ -135,9 +135,9 @@ public abstract class Chain<H> extends AbstractStream<H> implements IAbortable, 
      * @see io.apiman.gateway.engine.policy.IPolicyChain#doApply(java.lang.Object)
      */
     @Override
-    public void doApply(H serviceObject) {
+    public void doApply(H apiObject) {
         try {
-            this.serviceObject = serviceObject;
+            this.apiObject = apiObject;
 
             if(firstElem) {
                 chainPolicyHandlers();
@@ -158,7 +158,7 @@ public abstract class Chain<H> extends AbstractStream<H> implements IAbortable, 
      * @see io.apiman.gateway.engine.policy.IPolicyChain#doSkip(java.lang.Object)
      */
     @Override
-    public void doSkip(H serviceObject) {
+    public void doSkip(H apiObject) {
         try {
             handleHead(getHead());
         } catch (Throwable error) {
@@ -199,16 +199,16 @@ public abstract class Chain<H> extends AbstractStream<H> implements IAbortable, 
      */
     @Override
     public H getHead() {
-        return serviceObject;
+        return apiObject;
     }
 
     /**
      * @see io.apiman.gateway.engine.io.AbstractStream#handleHead(java.lang.Object)
      */
     @Override
-    protected void handleHead(H service) {
+    protected void handleHead(H api) {
         if (headHandler != null)
-            headHandler.handle(service);
+            headHandler.handle(api);
     }
 
     /**
@@ -260,14 +260,14 @@ public abstract class Chain<H> extends AbstractStream<H> implements IAbortable, 
     }
 
     /**
-     * Gets the service handler for the policy.
+     * Gets the API handler for the policy.
      * @param policy
      * @param config
      */
-    protected abstract IReadWriteStream<H> getServiceHandler(IPolicy policy, Object config);
+    protected abstract IReadWriteStream<H> getApiHandler(IPolicy policy, Object config);
 
     /**
-     * Called to apply the given policy to the service object (request or response).
+     * Called to apply the given policy to the API object (request or response).
      * @param policy
      * @param context
      */

@@ -12,13 +12,13 @@
     
     <test name="Lock Plan Version 1.0">test-plan-data/contracts/publish/003_lock-plan-version-1.0.resttest</test>
     
-    <test name="Create Service 1">test-plan-data/contracts/create/006_create-service1.resttest</test>
-    <test name="Create Service Version 1.0">test-plan-data/contracts/create/007_create-service-version-1.0.resttest</test>
-    <test name="Update Service Version 1.0">test-plan-data/contracts/create/007.5_update-service1-version-1.0.resttest</test>
+    <test name="Create API 1">test-plan-data/contracts/create/006_create-api1.resttest</test>
+    <test name="Create API Version 1.0">test-plan-data/contracts/create/007_create-api-version-1.0.resttest</test>
+    <test name="Update API Version 1.0">test-plan-data/contracts/create/007.5_update-api1-version-1.0.resttest</test>
     <test name="Create Org 2">test-plan-data/contracts/create/008_create-org2.resttest</test>
-    <test name="Create Org 2 / Service 2">test-plan-data/contracts/create/009_create-service2.resttest</test>
-    <test name="Create Service 2 / Version 1.0">test-plan-data/contracts/create/010_create-service-2-version-1.0.resttest</test>
-    <test name="Create Service 2 / Version 1.5">test-plan-data/contracts/create/011_create-service-2-version-1.5.resttest</test>
+    <test name="Create Org 2 / API 2">test-plan-data/contracts/create/009_create-api2.resttest</test>
+    <test name="Create API 2 / Version 1.0">test-plan-data/contracts/create/010_create-api-2-version-1.0.resttest</test>
+    <test name="Create API 2 / Version 1.5">test-plan-data/contracts/create/011_create-api-2-version-1.5.resttest</test>
     <test name="Create Org 2 / Plan A">test-plan-data/contracts/create/012_create-planA.resttest</test>
     <test name="Create Org 2 / Plan B">test-plan-data/contracts/create/013_create-planB.resttest</test>
     <test name="Create Plan A / Version 1.0">test-plan-data/contracts/create/014_create-plan-A-version-1.0.resttest</test>
@@ -29,18 +29,18 @@
     <test name="Lock Plan A / Version 2.0">test-plan-data/contracts/publish/005_lock-plan-a-version-2.0.resttest</test>
     <test name="Lock Plan B / Version 1.0">test-plan-data/contracts/publish/006_lock-plan-b-version-1.0.resttest</test>
 
-    <test name="Update Service 2 Plans">test-plan-data/contracts/create/017_update-svc2-version-1.5-plans.resttest</test>
-    <test name="Create Service 2 / Version 2.0">test-plan-data/contracts/create/018_create-service-2-version-2.0.resttest</test>
+    <test name="Update API 2 Plans">test-plan-data/contracts/create/017_update-api2-version-1.5-plans.resttest</test>
+    <test name="Create API 2 / Version 2.0">test-plan-data/contracts/create/018_create-api-2-version-2.0.resttest</test>
   </testGroup>
 
   <!-- Test Contract management -->
   <testGroup name="Contract Management">
-    <test name="Publish Service 1">test-plan-data/contracts/publish/001_publish-service-1.resttest</test>
-    <test name="Publish Service 2">test-plan-data/contracts/publish/002_publish-service-2.resttest</test>
+    <test name="Publish API 1">test-plan-data/contracts/publish/001_publish-api-1.resttest</test>
+    <test name="Publish API 2">test-plan-data/contracts/publish/002_publish-api-2.resttest</test>
 
-    <test name="Create Contract to Service 1">test-plan-data/contracts/contracts/003_create-contract1.resttest</test>
+    <test name="Create Contract to API 1">test-plan-data/contracts/contracts/003_create-contract1.resttest</test>
     <test name="List Contracts for App 1 [1]">test-plan-data/contracts/contracts/004_get-contracts.resttest</test>
-    <test name="Create Contract to Service 2">test-plan-data/contracts/contracts/005_create-contract2.resttest</test>
+    <test name="Create Contract to API 2">test-plan-data/contracts/contracts/005_create-contract2.resttest</test>
     <test name="List Contracts for App 1 [2]">test-plan-data/contracts/contracts/006_get-contracts.resttest</test>
     
     <test name="List ApiRegistry for App 1 (JSON)">test-plan-data/contracts/contracts/007_get-apiregistry_json.resttest</test>
@@ -55,8 +55,8 @@
     <test name="Break Contract 1">test-plan-data/contracts/contracts/014_delete-contract1.resttest</test>
     <test name="List Contracts for App 1 (after delete)">test-plan-data/contracts/contracts/015_get-contracts.resttest</test>
 
-    <test name="Create Contract to Unknown Service">test-plan-data/contracts/contracts/016_create-contract-unknown.resttest</test>
-    <test name="Create Contract to Unpublished Service">test-plan-data/contracts/contracts/017_create-contract-svc-not-published.resttest</test>
+    <test name="Create Contract to Unknown API">test-plan-data/contracts/contracts/016_create-contract-unknown.resttest</test>
+    <test name="Create Contract to Unpublished API">test-plan-data/contracts/contracts/017_create-contract-api-not-published.resttest</test>
     
     <test name="Register App 1">test-plan-data/contracts/publish/017_register-app-1.resttest</test>
     <test name="Re-Register App 1 (fail)">test-plan-data/contracts/publish/018_re-register-app-1-fail.resttest</test>
@@ -70,7 +70,7 @@
   <!-- Auditing -->
   <testGroup name="Ensure Auditing">
     <test name="Application Activity">test-plan-data/contracts/auditing/001_app_activity.resttest</test>
-    <test name="Service Activity">test-plan-data/contracts/auditing/002_service_activity.resttest</test>
+    <test name="API Activity">test-plan-data/contracts/auditing/002_api_activity.resttest</test>
   </testGroup>
 
 </testPlan>

@@ -26,9 +26,9 @@ public class NewContractBean implements Serializable {
 
     private static final long serialVersionUID = -2326957716478467884L;
 
-    private String serviceOrgId;
-    private String serviceId;
-    private String serviceVersion;
+    private String apiOrgId;
+    private String apiId;
+    private String apiVersion;
 
     private String planId;
 
@@ -39,45 +39,45 @@ public class NewContractBean implements Serializable {
     }
 
     /**
-     * @return the serviceOrgId
+     * @return the apiOrgId
      */
-    public String getServiceOrgId() {
-        return serviceOrgId;
+    public String getApiOrgId() {
+        return apiOrgId;
     }
 
     /**
-     * @param serviceOrgId the serviceOrgId to set
+     * @param apiOrgId the apiOrgId to set
      */
-    public void setServiceOrgId(String serviceOrgId) {
-        this.serviceOrgId = serviceOrgId;
+    public void setApiOrgId(String apiOrgId) {
+        this.apiOrgId = apiOrgId;
     }
 
     /**
-     * @return the serviceId
+     * @return the apiId
      */
-    public String getServiceId() {
-        return serviceId;
+    public String getApiId() {
+        return apiId;
     }
 
     /**
-     * @param serviceId the serviceId to set
+     * @param apiId the apiId to set
      */
-    public void setServiceId(String serviceId) {
-        this.serviceId = serviceId;
+    public void setApiId(String apiId) {
+        this.apiId = apiId;
     }
 
     /**
-     * @return the serviceVersion
+     * @return the apiVersion
      */
-    public String getServiceVersion() {
-        return serviceVersion;
+    public String getApiVersion() {
+        return apiVersion;
     }
 
     /**
-     * @param serviceVersion the serviceVersion to set
+     * @param apiVersion the apiVersion to set
      */
-    public void setServiceVersion(String serviceVersion) {
-        this.serviceVersion = serviceVersion;
+    public void setApiVersion(String apiVersion) {
+        this.apiVersion = apiVersion;
     }
 
     /**
@@ -102,9 +102,9 @@ public class NewContractBean implements Serializable {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((planId == null) ? 0 : planId.hashCode());
-        result = prime * result + ((serviceId == null) ? 0 : serviceId.hashCode());
-        result = prime * result + ((serviceOrgId == null) ? 0 : serviceOrgId.hashCode());
-        result = prime * result + ((serviceVersion == null) ? 0 : serviceVersion.hashCode());
+        result = prime * result + ((apiId == null) ? 0 : apiId.hashCode());
+        result = prime * result + ((apiOrgId == null) ? 0 : apiOrgId.hashCode());
+        result = prime * result + ((apiVersion == null) ? 0 : apiVersion.hashCode());
         return result;
     }
 
@@ -125,20 +125,20 @@ public class NewContractBean implements Serializable {
                 return false;
         } else if (!planId.equals(other.planId))
             return false;
-        if (serviceId == null) {
-            if (other.serviceId != null)
+        if (apiId == null) {
+            if (other.apiId != null)
                 return false;
-        } else if (!serviceId.equals(other.serviceId))
+        } else if (!apiId.equals(other.apiId))
             return false;
-        if (serviceOrgId == null) {
-            if (other.serviceOrgId != null)
+        if (apiOrgId == null) {
+            if (other.apiOrgId != null)
                 return false;
-        } else if (!serviceOrgId.equals(other.serviceOrgId))
+        } else if (!apiOrgId.equals(other.apiOrgId))
             return false;
-        if (serviceVersion == null) {
-            if (other.serviceVersion != null)
+        if (apiVersion == null) {
+            if (other.apiVersion != null)
                 return false;
-        } else if (!serviceVersion.equals(other.serviceVersion))
+        } else if (!apiVersion.equals(other.apiVersion))
             return false;
         return true;
     }
@@ -149,8 +149,8 @@ public class NewContractBean implements Serializable {
     @Override
     @SuppressWarnings("nls")
     public String toString() {
-        return "NewContractBean [serviceOrgId=" + serviceOrgId + ", serviceId=" + serviceId
-                + ", serviceVersion=" + serviceVersion + ", planId=" + planId + "]";
+        return "NewContractBean [apiOrgId=" + apiOrgId + ", apiId=" + apiId
+                + ", apiVersion=" + apiVersion + ", planId=" + planId + "]";
     }
 
 }

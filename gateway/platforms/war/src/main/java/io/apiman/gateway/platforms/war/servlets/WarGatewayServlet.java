@@ -16,16 +16,16 @@
 package io.apiman.gateway.platforms.war.servlets;
 
 import io.apiman.gateway.engine.IEngine;
-import io.apiman.gateway.engine.beans.ServiceRequest;
-import io.apiman.gateway.engine.beans.ServiceResponse;
+import io.apiman.gateway.engine.beans.ApiRequest;
+import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.platforms.servlet.GatewayServlet;
 import io.apiman.gateway.platforms.war.WarGateway;
 
 /**
  * The API Management gateway servlet.  This servlet is responsible for converting inbound
- * http servlet requests into {@link ServiceRequest}s so that they can be fed into the 
+ * http servlet requests into {@link ApiRequest}s so that they can be fed into the 
  * API Management machinery.  It also is responsible for converting the resulting 
- * {@link ServiceResponse} into an HTTP Servlet Response that is suitable for returning
+ * {@link ApiResponse} into an HTTP Servlet Response that is suitable for returning
  * to the caller.
  *
  * @author eric.wittmann@redhat.com

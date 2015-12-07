@@ -15,13 +15,13 @@
  */
 package io.apiman.gateway.engine.policies;
 
-import io.apiman.gateway.engine.beans.ServiceRequest;
-import io.apiman.gateway.engine.beans.ServiceResponse;
+import io.apiman.gateway.engine.beans.ApiRequest;
+import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.test.policies.ApimanPolicyTest;
-import io.apiman.test.policies.BackEndService;
+import io.apiman.test.policies.BackEndApi;
 import io.apiman.test.policies.Configuration;
-import io.apiman.test.policies.IPolicyTestBackEndService;
-import io.apiman.test.policies.PolicyTestBackEndServiceResponse;
+import io.apiman.test.policies.IPolicyTestBackEndApi;
+import io.apiman.test.policies.PolicyTestBackEndApiResponse;
 import io.apiman.test.policies.PolicyTestRequest;
 import io.apiman.test.policies.PolicyTestRequestType;
 import io.apiman.test.policies.PolicyTestResponse;
@@ -46,7 +46,7 @@ public class URLRewritingPolicyTest extends ApimanPolicyTest {
             "  \"processBody\" : true,\n" +
             "  \"processHeaders\" : true\n" +
             "}")
-    @BackEndService(URLRewritingTestBackend.class)
+    @BackEndApi(URLRewritingTestBackend.class)
     public void testFullRewriting() throws Throwable {
         PolicyTestRequest request = PolicyTestRequest.build(PolicyTestRequestType.GET, "/some/path/to/resource");
 
@@ -69,14 +69,14 @@ public class URLRewritingPolicyTest extends ApimanPolicyTest {
                 "}", responseBody);
     }
 
-    public static final class URLRewritingTestBackend implements IPolicyTestBackEndService {
+    public static final class URLRewritingTestBackend implements IPolicyTestBackEndApi {
 
         /**
-         * @see io.apiman.test.policies.IPolicyTestBackEndService#invoke(io.apiman.gateway.engine.beans.ServiceRequest, byte[])
+         * @see io.apiman.test.policies.IPolicyTestBackEndApi#invoke(io.apiman.gateway.engine.beans.ApiRequest, byte[])
          */
         @Override
-        public PolicyTestBackEndServiceResponse invoke(ServiceRequest request, byte[] requestBody) {
-            ServiceResponse sresponse = new ServiceResponse();
+        public PolicyTestBackEndApiResponse invoke(ApiRequest request, byte[] requestBody) {
+            ApiResponse sresponse = new ApiResponse();
             sresponse.setMessage("OK");
             sresponse.setCode(200);
             sresponse.getHeaders().put("Location", "http://localhost:8080/path/to/api/specific-resource/action");
@@ -95,7 +95,7 @@ public class URLRewritingPolicyTest extends ApimanPolicyTest {
                     "  \"api-alt\" : \"http://localhost:8080/path/to/api/alt-action/there\"\r\n" +
                     "}";
 
-            return new PolicyTestBackEndServiceResponse(sresponse, body);
+            return new PolicyTestBackEndApiResponse(sresponse, body);
         }
 
     }

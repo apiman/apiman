@@ -55,8 +55,8 @@ module Apiman {
         }]);
 
     _module.directive('apimanSelectPicker',
-        ['Logger', '$timeout', '$parse', 'TranslationService',
-        function(Logger, $timeout, $parse, TranslationService) {
+        ['Logger', '$timeout', '$parse', 'TranslationSvc',
+        function(Logger, $timeout, $parse, TranslationSvc) {
             return {
                 restrict: 'A',
                 link: function(scope, element, attrs) {
@@ -132,13 +132,13 @@ module Apiman {
 
 
     _module.directive('apimanStatus',
-        ['Logger', 'EntityStatusService', 
-        function(Logger, EntityStatusService) {
+        ['Logger', 'EntityStatusSvc', 
+        function(Logger, EntityStatusSvc) {
             return {
                 restrict: 'A',
                 link: function(scope, element, attrs) {
                     scope.$watch(function($scope) {
-                        return EntityStatusService.getEntityStatus();
+                        return EntityStatusSvc.getEntityStatus();
                     }, function(newValue, oldValue) {
                         var entityStatus = newValue;
                         var elem = element;
@@ -166,7 +166,7 @@ module Apiman {
             };
         }]);
 
-    _module.factory('EntityStatusService', 
+    _module.factory('EntityStatusSvc', 
         ['$rootScope',
         function($rootScope) {
             var entity = null;
@@ -189,7 +189,7 @@ module Apiman {
                 isEntityDisabled: function() {
                     if (entityType == 'application' || entityType == 'applications') {
                         return entity.status == 'Retired';
-                    } else if (entityType == 'service' || entityType == 'services') {
+                    } else if (entityType == 'api' || entityType == 'apis') {
                         return (entity.status !== 'Created' && entity.status !== 'Ready');
                     } else {
                         return (entity.status !== 'Created' && entity.status !== 'Ready');
@@ -199,13 +199,13 @@ module Apiman {
         }]);
 
     _module.directive('apimanEntityStatus',
-        ['Logger', 'EntityStatusService',
-        function(Logger, EntityStatusService) {
+        ['Logger', 'EntityStatusSvc',
+        function(Logger, EntityStatusSvc) {
             return {
                 restrict: 'A',
                 link: function(scope, element, attrs) {
                     scope.$watch(function($scope) {
-                        return EntityStatusService.getEntityStatus();
+                        return EntityStatusSvc.getEntityStatus();
                     }, function(newValue, oldValue) {
                         var entityStatus = newValue;
                         if (entityStatus) {
@@ -229,8 +229,8 @@ module Apiman {
     export var sb_counter = 0;
 
     _module.directive('apimanSearchBox',
-        ['Logger', 'TranslationService', 
-        function(Logger, TranslationService) {
+        ['Logger', 'TranslationSvc', 
+        function(Logger, TranslationSvc) {
             return {
                 restrict: 'E',
                 replace: true,
@@ -253,7 +253,7 @@ module Apiman {
                     if (attrs.apimanI18nKey) {
                         var translationKey = attrs.apimanI18nKey + ".placeholder";
                         var defaultValue = scope.placeholder;
-                        var translatedValue = TranslationService.translate(translationKey, defaultValue);
+                        var translatedValue = TranslationSvc.translate(translationKey, defaultValue);
                         scope.placeholder = translatedValue;
                     }
 
@@ -316,11 +316,11 @@ module Apiman {
             };
         }]);
 
-    _module.directive('apimanSelectServiceModal',
+    _module.directive('apimanSelectApiModal',
         ['Logger', 
         function(Logger) {
             return {
-                templateUrl: 'plugins/api-manager/html/directives/selectServiceModal.html',
+                templateUrl: 'plugins/api-manager/html/directives/selectApiModal.html',
                 replace: true,
                 restrict: 'E',
                 link: function(scope, element, attrs) {
@@ -336,7 +336,7 @@ module Apiman {
         Organization : 'fa-shield',
         Application : 'fa-gears',
         Plan : 'fa-bar-chart-o',
-        Service : 'fa-puzzle-piece'
+        Api : 'fa-puzzle-piece'
     };
 
     _module.directive('apimanActivity',
@@ -569,8 +569,8 @@ module Apiman {
     }]);
 
     _module.directive('apimanI18nKey',
-        ['Logger', 'TranslationService',
-        function(Logger, TranslationService) {
+        ['Logger', 'TranslationSvc',
+        function(Logger, TranslationSvc) {
             return {
                 restrict: 'A',
                 link: function(scope, element, attrs) {
@@ -584,7 +584,7 @@ module Apiman {
                     if ($(element).children().length == 0) {
                         translationKey = attrs.apimanI18nKey;
                         defaultValue = $(element).text();
-                        translatedValue = TranslationService.translate(translationKey, defaultValue);
+                        translatedValue = TranslationSvc.translate(translationKey, defaultValue);
                         $(element).text(translatedValue);
                     }
 
@@ -592,7 +592,7 @@ module Apiman {
                     if ($(element).attr('placeholder')) {
                         translationKey = attrs.apimanI18nKey + '.placeholder';
                         defaultValue = $(element).attr('placeholder');
-                        translatedValue = TranslationService.translate(translationKey, defaultValue);
+                        translatedValue = TranslationSvc.translate(translationKey, defaultValue);
                         Logger.debug('Translating placeholder attr.  Key: {2}  default value: {0}  translated: {1}', defaultValue, translatedValue, translationKey);
                         $(element).prop('placeholder', translatedValue);
                         $(element).attr('placeholder', translatedValue);
@@ -602,7 +602,7 @@ module Apiman {
                     if ($(element).attr('title')) {
                         translationKey = attrs.apimanI18nKey + '.title';
                         defaultValue = $(element).attr('title');
-                        translatedValue = TranslationService.translate(translationKey, defaultValue);
+                        translatedValue = TranslationSvc.translate(translationKey, defaultValue);
                         Logger.debug('Translating title attr.  Key: {2}  default value: {0}  translated: {1}', defaultValue, translatedValue, translationKey);
                         $(element).prop('title', translatedValue);
                         $(element).attr('title', translatedValue);

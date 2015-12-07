@@ -1,0 +1,29 @@
+PUT /organizations/Test/apis/echo/versions/1.0 ${apiman.suite.api-username}/${apiman.suite.api-password}
+Content-Type: application/json
+
+{
+  "endpoint" : "${apiman.suite.echo-endpoint}/echo",
+  "endpointType" : "rest",
+  "plans" : [
+    { "planId" : "Gold", "version" : "1.0" },
+    { "planId" : "Silver", "version" : "1.0" }
+  ],
+  "gateways" : [
+    { "gatewayId" : "TheGateway" }
+  ]
+}
+----
+200
+Content-Type: application/json
+
+{
+  "api" : {
+    "organization" : {
+      "id" : "Test"
+    },
+    "id" : "echo",
+    "name" : "echo"
+  },
+  "status" : "Ready",
+  "version" : "1.0"
+}
