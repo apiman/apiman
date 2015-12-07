@@ -85,7 +85,7 @@ public class RestEasyCDIKarafTest {
                 loadApimanFeatures("apiman-all")
                 ,
                 // Enable debugging
-                //debugConfiguration("5005",true)
+                debugConfiguration("5005",true)
         };
     }
 
@@ -107,7 +107,7 @@ public class RestEasyCDIKarafTest {
         assertNotNull(bm);
         Bean bean = (Bean<IApimanLogger>) bm.getBeans(IApimanLogger.class).iterator().next();
         CreationalContext ctx = bm.createCreationalContext(bean);
-        IApimanLogger logger = (IApimanLogger) bm.getReference(bean, bean.getBeanClass(), ctx);
+        IApimanLogger logger = (IApimanLogger) bm.getReference(bean,IApimanLogger.class,ctx);
         // IStorage storage = (IStorage) bm.getBeans(IStorage.class);
         //assertNotNull(storage);
         assertNotNull(logger);
