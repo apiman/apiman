@@ -1,7 +1,9 @@
 package io.apiman.osgi.pax.testing;
 
 import io.apiman.manager.api.core.IStorage;
+import io.apiman.manager.api.core.logging.ApimanLogger;
 import io.apiman.manager.api.core.logging.IApimanLogger;
+import io.apiman.manager.api.es.EsStorage;
 import org.apache.karaf.features.FeaturesService;
 import org.junit.After;
 import org.junit.Before;
@@ -46,6 +48,8 @@ public class RestEasyCDIKarafTest {
 
     @Inject
     private CdiContainerFactory factory;
+
+    // @Inject @ApimanLogger(RestEasyCDIKarafTest.class) IApimanLogger log;
 
     /* JBoss fuse 6.2.1 */
     public static final String GROUP_ID = "org.jboss.fuse";
@@ -101,16 +105,24 @@ public class RestEasyCDIKarafTest {
         //Bundle bundle = getBundle(context,"io.apiman.manager-api-rest-impl");
         Bundle bundle = getBundle(context,"manager-osgi-rest");
         assertNotNull(bundle);
+
         CdiContainer container = factory.getContainer(bundle);
         assertNotNull(container);
+
         BeanManager bm = container.getBeanManager();
         assertNotNull(bm);
-        Bean bean = (Bean<IApimanLogger>) bm.getBeans(IApimanLogger.class).iterator().next();
+
+        /* TODO - Check how to get the Service of the Logger
+        Bean bean = getBean(bm,IApimanLogger.class);
         CreationalContext ctx = bm.createCreationalContext(bean);
         IApimanLogger logger = (IApimanLogger) bm.getReference(bean,IApimanLogger.class,ctx);
-        // IStorage storage = (IStorage) bm.getBeans(IStorage.class);
-        //assertNotNull(storage);
         assertNotNull(logger);
+        */
+
+        Bean bean = bm.getBeans(IStorage.class).iterator().next();
+        CreationalContext ctx = bm.createCreationalContext(bean);
+        IStorage storage = (IStorage) bm.getReference(bean,IStorage.class,ctx);
+        assertNotNull(storage);
     }
 
 
@@ -150,6 +162,11 @@ public class RestEasyCDIKarafTest {
         }
         return result;
     }
+
+/*    Bean getBean(BeanManager bm, Class<?> clazz) {
+        Bean bean = bm.getBeans(clazz).iterator().next();
+        return bean;
+    }*/
 
 }
 
