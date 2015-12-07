@@ -15,10 +15,11 @@
  */
 package io.apiman.manager.api.jpa;
 
-import io.apiman.manager.api.beans.apis.ApiGatewayBean;
-import io.apiman.manager.api.beans.apis.ApiPlanBean;
+import io.apiman.common.util.crypt.IDataEncrypter;
 import io.apiman.manager.api.beans.apis.ApiBean;
 import io.apiman.manager.api.beans.apis.ApiDefinitionBean;
+import io.apiman.manager.api.beans.apis.ApiGatewayBean;
+import io.apiman.manager.api.beans.apis.ApiPlanBean;
 import io.apiman.manager.api.beans.apis.ApiVersionBean;
 import io.apiman.manager.api.beans.apps.ApplicationBean;
 import io.apiman.manager.api.beans.apps.ApplicationVersionBean;
@@ -76,8 +77,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Alternative;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
@@ -99,6 +102,13 @@ import org.slf4j.LoggerFactory;
 public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorageQuery {
 
     private static Logger logger = LoggerFactory.getLogger(JpaStorage.class);
+
+    @Inject IDataEncrypter encrypter;
+    @PostConstruct
+    public void postConstruct() {
+        // Kick the encrypter, causing it to be loaded/resolved in CDI
+        encrypter.encrypt(""); //$NON-NLS-1$
+    }
 
     /**
      * Constructor.
