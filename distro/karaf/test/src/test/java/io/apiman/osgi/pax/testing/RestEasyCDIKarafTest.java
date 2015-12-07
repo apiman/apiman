@@ -107,7 +107,7 @@ public class RestEasyCDIKarafTest {
         assertNotNull(bm);
         Bean bean = (Bean<IApimanLogger>) bm.getBeans(IApimanLogger.class).iterator().next();
         CreationalContext ctx = bm.createCreationalContext(bean);
-        IApimanLogger logger = (IApimanLogger) bm.getReference(bean, bean.getClass(), ctx);
+        IApimanLogger logger = (IApimanLogger) bm.getReference(bean, bean.getBeanClass(), ctx);
         // IStorage storage = (IStorage) bm.getBeans(IStorage.class);
         //assertNotNull(storage);
         assertNotNull(logger);
