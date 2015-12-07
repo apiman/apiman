@@ -1,5 +1,6 @@
 package io.apiman.osgi.pax.testing;
 
+import io.apiman.manager.api.core.IStorage;
 import org.apache.karaf.features.FeaturesService;
 import org.junit.After;
 import org.junit.Before;
@@ -21,6 +22,7 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 import java.io.File;
@@ -28,8 +30,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.ops4j.pax.exam.CoreOptions.maven;
-import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
+import static org.ops4j.pax.exam.CoreOptions.*;
 import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.*;
 
 @RunWith(PaxExam.class)
@@ -79,7 +80,9 @@ public class RestEasyCDIKarafTest {
                 logLevel(LogLevelOption.LogLevel.INFO),
                 // Load the features
                 //loadApimanFeatures("keycloak","apiman-lib","swagger/1.5.4","elasticsearch/1.7.2","apiman-common","apiman-gateway","apiman-manager-api-es","manager-osgi")
-                loadApimanFeatures("apiman-all")
+                loadApimanFeatures("apiman-all"),
+                // Enable debugging
+                debugConfiguration("5005",true)
         };
     }
 
@@ -90,12 +93,16 @@ public class RestEasyCDIKarafTest {
 
     @Test
     public void EstoreInjected() throws Exception {
-        Bundle bundle = getBundle(context,"io.apiman.manager-api-es");
+        //this is needed since the test is a bit to fast :) to debug it
+        Thread.sleep(2000);
+        Bundle bundle = getBundle(context,"io.apiman.manager-api-rest-impl");
         assertNotNull(bundle);
         CdiContainer container = factory.getContainer(bundle);
         assertNotNull(container);
         BeanManager bm = container.getBeanManager();
         assertNotNull(bm);
+        //IStorage storage = (IStorage) bm.getBeans(IStorage.class);
+        //assertNotNull(storage);
     }
 
 
