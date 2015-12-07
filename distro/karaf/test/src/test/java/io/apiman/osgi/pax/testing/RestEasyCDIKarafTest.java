@@ -6,6 +6,8 @@ import org.junit.Before;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.ops4j.pax.cdi.spi.CdiContainer;
+import org.ops4j.pax.cdi.spi.CdiContainerFactory;
 import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.PaxExam;
@@ -14,14 +16,17 @@ import org.ops4j.pax.exam.options.MavenArtifactProvisionOption;
 import org.ops4j.pax.exam.options.MavenArtifactUrlReference;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 import java.io.File;
 import java.util.List;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.ops4j.pax.exam.CoreOptions.maven;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
@@ -35,6 +40,9 @@ public class RestEasyCDIKarafTest {
 
     @Inject
     BundleContext context;
+
+    @Inject
+    private CdiContainerFactory factory;
 
     /* JBoss fuse 6.2.1 */
     public static final String GROUP_ID = "org.jboss.fuse";
@@ -81,8 +89,13 @@ public class RestEasyCDIKarafTest {
     }
 
     @Test
-    public void EstoreInjected() {
-
+    public void EstoreInjected() throws Exception {
+        Bundle bundle = getBundle(context,"io.apiman.manager-api-es");
+        assertNotNull(bundle);
+        CdiContainer container = factory.getContainer(bundle);
+        assertNotNull(container);
+        BeanManager bm = container.getBeanManager();
+        assertNotNull(bm);
     }
 
 
@@ -109,6 +122,18 @@ public class RestEasyCDIKarafTest {
 
     public static Option loadApimanFeatures(List<String> features) {
         return loadApimanFeatures(features.toArray(new String[features.size()]));
+    }
+
+    Bundle getBundle(BundleContext bundleContext, String symbolicName) {
+        Bundle result = null;
+        for (Bundle candidate : bundleContext.getBundles()) {
+            if (candidate.getSymbolicName().equals(symbolicName)) {
+                if (result == null || result.getVersion().compareTo(candidate.getVersion()) < 0) {
+                    result = candidate;
+                }
+            }
+        }
+        return result;
     }
 
 }

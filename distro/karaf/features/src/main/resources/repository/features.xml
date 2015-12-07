@@ -45,14 +45,14 @@
         <bundle>mvn:io.apiman/resteasy-all/2.3.10.Final_1</bundle>
     </feature>
 
-    <feature name="apiman-all">
+    <feature name="apiman-all" version="${project.version}">
         <bundle>mvn:com.google.guava/guava/18.0</bundle>
         <feature version="4.2.20">hibernate</feature>
         <feature>pax-cdi-1.1-web-weld</feature>
         <feature>keycloak</feature>
         <feature>apiman-lib</feature>
         <feature version="1.5.4">swagger</feature>
-        <feature version="1.7.2">elasticsearch/</feature>
+        <feature version="1.7.2">elasticsearch</feature>
         <feature>apiman-common</feature>
         <feature>apiman-gateway</feature>
         <feature>apiman-manager-api-es</feature>
