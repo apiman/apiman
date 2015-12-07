@@ -34,29 +34,33 @@ import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.New;
 import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.InjectionPoint;
+import javax.inject.Inject;
 import javax.inject.Named;
 
 /**
  * Create producer methods for CDI beans.
- *
  */
-@ApplicationScoped
-public class CdiFactory {
+@ApplicationScoped public class CdiFactory {
 
     private static JestClient sStorageESClient;
-    private static JestClient sMetricsESClient;
     private static EsStorage sESStorage;
 
-    @Produces @ApplicationScoped
-    public static IStorage provideStorage(@New EsStorage esStorage) {
+    @Produces @ApplicationScoped public static IStorage provideStorage(@New EsStorage esStorage) {
         IStorage storage = null;
         storage = initES(esStorage);
         return storage;
     }
 
-    @Produces @ApimanLogger
-    public static IApimanLogger provideLogger(InjectionPoint injectionPoint) {
+    @Produces @ApplicationScoped @Named("storage") public static JestClient provideStorageESClient() {
+        if (sStorageESClient == null) {
+            sStorageESClient = createStorageJestClient();
+        }
+        return sStorageESClient;
+    }
+
+    @Produces @ApimanLogger public static IApimanLogger provideLogger(InjectionPoint injectionPoint) {
         ApimanLogger logger = injectionPoint.getAnnotated().getAnnotation(ApimanLogger.class);
         Class<?> requestorKlazz = logger.value();
         return new JsonLoggerImpl().createLogger(requestorKlazz);
@@ -64,6 +68,7 @@ public class CdiFactory {
 
     /**
      * Initializes the ES storage (if required).
+     *
      * @param esStorage
      */
     private static EsStorage initES(EsStorage esStorage) {
@@ -74,71 +79,39 @@ public class CdiFactory {
         return sESStorage;
     }
 
-    @Produces @ApplicationScoped
-    public static ISecurityContext provideSecurityContext(@New DefaultSecurityContext defaultSC) {
+    @Produces @ApplicationScoped public static ISecurityContext provideSecurityContext(
+            @New DefaultSecurityContext defaultSC) {
         return defaultSC;
     }
 
-
-    @Produces @ApplicationScoped
-    public static IApiKeyGenerator provideApiKeyGenerator(@New UuidApiKeyGenerator uuidApiKeyGen) {
+    @Produces @ApplicationScoped public static IApiKeyGenerator provideApiKeyGenerator(
+            @New UuidApiKeyGenerator uuidApiKeyGen) {
         return uuidApiKeyGen;
     }
 
-    /**
-     * Creates a custom component from information found in the properties file.
-     * @param componentType
-     * @param componentSpec
-     * @param configProperties
-     * @param pluginRegistry
-     */
-    private static <T> T createCustomComponent(Class<T> componentType, String componentSpec,
-            Map<String, String> configProperties, IPluginRegistry pluginRegistry) throws Exception {
-        if (componentSpec == null) {
-            throw new IllegalArgumentException("Null component type."); //$NON-NLS-1$
-        }
-
-        if (componentSpec.startsWith("class:")) { //$NON-NLS-1$
-            Class<?> c = ReflectionUtils.loadClass(componentSpec.substring("class:".length())); //$NON-NLS-1$
-            return createCustomComponent(componentType, c, configProperties);
-        } else if (componentSpec.startsWith("plugin:")) { //$NON-NLS-1$
-            PluginCoordinates coordinates = PluginCoordinates.fromPolicySpec(componentSpec);
-            if (coordinates == null) {
-                throw new IllegalArgumentException("Invalid plugin component spec: " + componentSpec); //$NON-NLS-1$
-            }
-            int ssidx = componentSpec.indexOf('/');
-            if (ssidx == -1) {
-                throw new IllegalArgumentException("Invalid plugin component spec: " + componentSpec); //$NON-NLS-1$
-            }
-            String classname = componentSpec.substring(ssidx + 1);
-            Plugin plugin = pluginRegistry.loadPlugin(coordinates);
-            PluginClassLoader classLoader = plugin.getLoader();
-            Class<?> class1 = classLoader.loadClass(classname);
-            return createCustomComponent(componentType, class1, configProperties);
-        } else {
-            Class<?> c = ReflectionUtils.loadClass(componentSpec);
-            return createCustomComponent(componentType, c, configProperties);
-        }
-    }
 
     /**
-     * Creates a custom component from a loaded class.
-     * @param componentType
-     * @param componentClass
-     * @param configProperties
+     * @return create a new test ES client
      */
-    @SuppressWarnings("unchecked")
-    private static <T> T createCustomComponent(Class<T> componentType, Class<?> componentClass,
-            Map<String, String> configProperties) throws Exception {
-        if (componentClass == null) {
-            throw new IllegalArgumentException("Invalid component spec (class not found)."); //$NON-NLS-1$
+    private static JestClient createStorageJestClient() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("http");
+        builder.append("://"); //$NON-NLS-1$
+        builder.append("localhost");
+        builder.append(":"); //$NON-NLS-1$
+        builder.append("19200");
+        String connectionUrl = builder.toString();
+        JestClientFactory factory = new JestClientFactory();
+        Builder httpConfig = new HttpClientConfig.Builder(connectionUrl).multiThreaded(true);
+        String username = null;
+        String password = null;
+        if (username != null) {
+            httpConfig.defaultCredentials(username, password);
         }
-        try {
-            Constructor<?> constructor = componentClass.getConstructor(Map.class);
-            return (T) constructor.newInstance(configProperties);
-        } catch (Exception e) {
-        }
-        return (T) componentClass.getConstructor().newInstance();
+        httpConfig.connTimeout(6000);
+        httpConfig.readTimeout(6000);
+        factory.setHttpClientConfig(httpConfig.build());
+        return factory.getObject();
     }
 
 }
