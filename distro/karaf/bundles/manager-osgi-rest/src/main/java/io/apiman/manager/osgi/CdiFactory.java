@@ -55,6 +55,13 @@ public class CdiFactory {
         return storage;
     }
 
+    @Produces @ApimanLogger
+    public static IApimanLogger provideLogger(InjectionPoint injectionPoint) {
+        ApimanLogger logger = injectionPoint.getAnnotated().getAnnotation(ApimanLogger.class);
+        Class<?> requestorKlazz = logger.value();
+        return new JsonLoggerImpl().createLogger(requestorKlazz);
+    }
+
     /**
      * Initializes the ES storage (if required).
      * @param esStorage
