@@ -42,6 +42,16 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- Apiman -->
+        <dependency>
+            <groupId>io.apiman</groupId>
+            <artifactId>apiman-manager-api-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.apiman</groupId>
+            <artifactId>apiman-manager-api-rest-impl</artifactId>
+        </dependency>
+
         <!-- Karaf distribution -->
         <dependency>
             <groupId>org.apache.karaf</groupId>
