@@ -167,20 +167,29 @@ module Apiman {
         }]);
 
     _module.factory('EntityStatusSvc', 
-        ['$rootScope',
-        function($rootScope) {
+        ['$rootScope', 'Logger',
+        function($rootScope, Logger) {
             var entity = null;
             var entityType = null;
 
             return {
                 setEntity: function(theEntity, type) {
+                    Logger.debug('Setting the entity: {0} type={1}', theEntity, type);
                     entity = theEntity;
                     entityType = type;
                 },
                 getEntityStatus: function() {
+                    if (!entity) {
+                        Logger.debug('Entity is null!');
+                        return 'Unknown';
+                    }
                     return entity.status;
                 },
                 getEntityType: function() {
+                    if (!entity) {
+                        Logger.debug('Entity is null!');
+                        return 'n/a';
+                    }
                     return entityType;
                 },
                 setEntityStatus: function(status) {
