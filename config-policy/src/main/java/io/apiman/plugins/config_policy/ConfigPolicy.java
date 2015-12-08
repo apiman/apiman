@@ -15,8 +15,8 @@
  */
 package io.apiman.plugins.config_policy;
 
-import io.apiman.gateway.engine.beans.ServiceRequest;
-import io.apiman.gateway.engine.beans.ServiceResponse;
+import io.apiman.gateway.engine.beans.ApiRequest;
+import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.engine.policies.AbstractMappedPolicy;
 import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
@@ -41,23 +41,23 @@ public class ConfigPolicy extends AbstractMappedPolicy<ConfigBean> {
     protected Class<ConfigBean> getConfigurationClass() {
         return ConfigBean.class;
     }
-    
+
     /**
-     * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#doApply(io.apiman.gateway.engine.beans.ServiceRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
+     * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#doApply(io.apiman.gateway.engine.beans.ApiRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
      */
     @Override
-    protected void doApply(ServiceRequest request, IPolicyContext context, ConfigBean config,
-            IPolicyChain<ServiceRequest> chain) {
+    protected void doApply(ApiRequest request, IPolicyContext context, ConfigBean config,
+            IPolicyChain<ApiRequest> chain) {
         request.getHeaders().put(config.getRequestHeader(), "true"); //$NON-NLS-1$
         super.doApply(request, context, config, chain);
     }
-    
+
     /**
-     * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#doApply(io.apiman.gateway.engine.beans.ServiceResponse, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
+     * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#doApply(io.apiman.gateway.engine.beans.ApiResponse, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
      */
     @Override
-    protected void doApply(ServiceResponse response, IPolicyContext context, ConfigBean config,
-            IPolicyChain<ServiceResponse> chain) {
+    protected void doApply(ApiResponse response, IPolicyContext context, ConfigBean config,
+            IPolicyChain<ApiResponse> chain) {
         response.getHeaders().put(config.getResponseHeader(), "true"); //$NON-NLS-1$
         super.doApply(response, context, config, chain);
     }

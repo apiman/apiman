@@ -23,7 +23,7 @@
     },
     "stripTokens": {
       "title": "Strip Tokens",
-      "description": "Remove any Authorization header or token query parameter before forwarding traffic to the Service.",
+      "description": "Remove any Authorization header or token query parameter before forwarding traffic to the API.",
       "type": "boolean",
       "default": false
     },
@@ -68,7 +68,7 @@
     },
     "delegateKerberosTicket": {
       "title": "Delegate Kerberos Ticket",
-      "description": "Delegate any Kerberos Ticket embedded in the Keycloak token to the Service (via the Authorization header).",
+      "description": "Delegate any Kerberos Ticket embedded in the Keycloak token to the API (via the Authorization header).",
       "type": "boolean",
       "default": false,
       "links": [
@@ -80,7 +80,7 @@
     },
     "forwardAuthInfo": {
       "title": "Forward Keycloak Token Information",
-      "description": "Fields from the token can be set as headers and forwarded to the Service. Access_token corresponds to the full token.",
+      "description": "Fields from the token can be set as headers and forwarded to the API. Access_token corresponds to the full token.",
       "type": "array",
       "format": "table",
       "items": {

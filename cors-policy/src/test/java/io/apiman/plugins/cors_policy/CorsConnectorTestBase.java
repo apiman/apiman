@@ -23,7 +23,7 @@ import java.util.Set;
 import io.apiman.gateway.engine.beans.HeaderHashMap;
 import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.beans.PolicyFailureType;
-import io.apiman.gateway.engine.beans.ServiceRequest;
+import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 
 import org.apache.commons.lang.StringUtils;
@@ -48,7 +48,7 @@ public class CorsConnectorTestBase {
     };
     
     @Mock
-    protected ServiceRequest request;
+    protected ApiRequest request;
     protected CorsConfigBean config;
     protected CorsConnector connector;
     

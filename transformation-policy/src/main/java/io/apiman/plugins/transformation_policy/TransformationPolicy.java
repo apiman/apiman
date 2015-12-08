@@ -1,7 +1,7 @@
 package io.apiman.plugins.transformation_policy;
 
-import io.apiman.gateway.engine.beans.ServiceRequest;
-import io.apiman.gateway.engine.beans.ServiceResponse;
+import io.apiman.gateway.engine.beans.ApiRequest;
+import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.engine.components.IBufferFactoryComponent;
 import io.apiman.gateway.engine.io.AbstractStream;
 import io.apiman.gateway.engine.io.IApimanBuffer;
@@ -33,8 +33,8 @@ public class TransformationPolicy extends AbstractMappedPolicy<TransformationCon
     }
 
     @Override
-    protected void doApply(ServiceRequest request, IPolicyContext context, TransformationConfigBean config,
-            IPolicyChain<ServiceRequest> chain) {
+    protected void doApply(ApiRequest request, IPolicyContext context, TransformationConfigBean config,
+            IPolicyChain<ApiRequest> chain) {
         DataFormat clientFormat = config.getClientFormat();
         DataFormat serverFormat = config.getServerFormat();
 
@@ -50,10 +50,10 @@ public class TransformationPolicy extends AbstractMappedPolicy<TransformationCon
     }
 
     /**
-     * @see io.apiman.gateway.engine.policy.IDataPolicy#getRequestDataHandler(io.apiman.gateway.engine.beans.ServiceRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object)
+     * @see io.apiman.gateway.engine.policy.IDataPolicy#getRequestDataHandler(io.apiman.gateway.engine.beans.ApiRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object)
      */
     @Override
-    public IReadWriteStream<ServiceRequest> getRequestDataHandler(final ServiceRequest request,
+    public IReadWriteStream<ApiRequest> getRequestDataHandler(final ApiRequest request,
             IPolicyContext context, Object policyConfiguration) {
         final DataFormat clientFormat = (DataFormat) context.getAttribute(CLIENT_FORMAT, null);
         final DataFormat serverFormat = (DataFormat) context.getAttribute(SERVER_FORMAT, null);
@@ -64,17 +64,17 @@ public class TransformationPolicy extends AbstractMappedPolicy<TransformationCon
                     ? Integer.parseInt(request.getHeaders().get(CONTENT_LENGTH))
                     : 0;
 
-            return new AbstractStream<ServiceRequest>() {
+            return new AbstractStream<ApiRequest>() {
 
                 private IApimanBuffer readBuffer = bufferFactory.createBuffer(contentLength);
 
                 @Override
-                public ServiceRequest getHead() {
+                public ApiRequest getHead() {
                     return request;
                 }
 
                 @Override
-                protected void handleHead(ServiceRequest head) {
+                protected void handleHead(ApiRequest head) {
                 }
 
                 @Override
@@ -102,8 +102,8 @@ public class TransformationPolicy extends AbstractMappedPolicy<TransformationCon
     }
 
     @Override
-    protected void doApply(ServiceResponse response, IPolicyContext context, TransformationConfigBean config,
-            IPolicyChain<ServiceResponse> chain) {
+    protected void doApply(ApiResponse response, IPolicyContext context, TransformationConfigBean config,
+            IPolicyChain<ApiResponse> chain) {
         final DataFormat clientFormat = (DataFormat) context.getAttribute(CLIENT_FORMAT, null);
         final DataFormat serverFormat = (DataFormat) context.getAttribute(SERVER_FORMAT, null);
 
@@ -116,10 +116,10 @@ public class TransformationPolicy extends AbstractMappedPolicy<TransformationCon
     }
 
     /**
-     * @see io.apiman.gateway.engine.policy.IDataPolicy#getResponseDataHandler(io.apiman.gateway.engine.beans.ServiceResponse, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object)
+     * @see io.apiman.gateway.engine.policy.IDataPolicy#getResponseDataHandler(io.apiman.gateway.engine.beans.ApiResponse, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object)
      */
     @Override
-    public IReadWriteStream<ServiceResponse> getResponseDataHandler(final ServiceResponse response,
+    public IReadWriteStream<ApiResponse> getResponseDataHandler(final ApiResponse response,
             IPolicyContext context, Object policyConfiguration) {
         final DataFormat clientFormat = (DataFormat) context.getAttribute(CLIENT_FORMAT, null);
         final DataFormat serverFormat = (DataFormat) context.getAttribute(SERVER_FORMAT, null);
@@ -130,17 +130,17 @@ public class TransformationPolicy extends AbstractMappedPolicy<TransformationCon
                     ? Integer.parseInt(response.getHeaders().get(CONTENT_LENGTH))
                     : 0;
 
-            return new AbstractStream<ServiceResponse>() {
+            return new AbstractStream<ApiResponse>() {
 
                 private IApimanBuffer readBuffer = bufferFactory.createBuffer(contentLength);
 
                 @Override
-                public ServiceResponse getHead() {
+                public ApiResponse getHead() {
                     return response;
                 }
 
                 @Override
-                protected void handleHead(ServiceResponse head) {
+                protected void handleHead(ApiResponse head) {
                 }
 
                 @Override

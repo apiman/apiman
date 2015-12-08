@@ -1,12 +1,13 @@
 package io.apiman.plugins.transformation_policy;
 
 import static org.junit.Assert.*;
-import io.apiman.plugins.transformation_policy.backendservice.ConsumeJsonBackEndService;
-import io.apiman.plugins.transformation_policy.backendservice.ConsumeXmlBackEndService;
-import io.apiman.plugins.transformation_policy.backendservice.ProduceJsonBackEndService;
-import io.apiman.plugins.transformation_policy.backendservice.ProduceXmlBackEndService;
+
+import io.apiman.plugins.transformation_policy.backend.ConsumeJsonBackEndApi;
+import io.apiman.plugins.transformation_policy.backend.ConsumeXmlBackEndApi;
+import io.apiman.plugins.transformation_policy.backend.ProduceJsonBackEndApi;
+import io.apiman.plugins.transformation_policy.backend.ProduceXmlBackEndApi;
 import io.apiman.test.policies.ApimanPolicyTest;
-import io.apiman.test.policies.BackEndService;
+import io.apiman.test.policies.BackEndApi;
 import io.apiman.test.policies.Configuration;
 import io.apiman.test.policies.PolicyTestRequest;
 import io.apiman.test.policies.PolicyTestRequestType;
@@ -21,7 +22,7 @@ public class TransformationPolicyTest extends ApimanPolicyTest {
 
     @Test
     @Configuration("{\"clientFormat\": \"XML\", \"serverFormat\": \"JSON\"}")
-    @BackEndService(ProduceJsonBackEndService.class)
+    @BackEndApi(ProduceJsonBackEndApi.class)
     public void transformServerJsonResponseToXml() throws Throwable {
         PolicyTestRequest request = PolicyTestRequest.build(PolicyTestRequestType.GET, "/some/resource");
         
@@ -35,7 +36,7 @@ public class TransformationPolicyTest extends ApimanPolicyTest {
 
     @Test
     @Configuration("{\"clientFormat\": \"XML\", \"serverFormat\": \"JSON\"}")
-    @BackEndService(ConsumeJsonBackEndService.class)
+    @BackEndApi(ConsumeJsonBackEndApi.class)
     public void transformClientXmlRequesttToJson() throws Throwable {
         String xml = "<a><b>test</b></a>";
         PolicyTestRequest request = PolicyTestRequest.build(PolicyTestRequestType.POST, "/some/resource");
@@ -48,7 +49,7 @@ public class TransformationPolicyTest extends ApimanPolicyTest {
 
     @Test
     @Configuration("{\"clientFormat\": \"JSON\", \"serverFormat\": \"XML\"}")
-    @BackEndService(ProduceXmlBackEndService.class)
+    @BackEndApi(ProduceXmlBackEndApi.class)
     public void transformServerXmlResponseToJson() throws Throwable {
         PolicyTestRequest request = PolicyTestRequest.build(PolicyTestRequestType.GET, "/some/resource");
         
@@ -62,7 +63,7 @@ public class TransformationPolicyTest extends ApimanPolicyTest {
 
     @Test
     @Configuration("{\"clientFormat\": \"JSON\", \"serverFormat\": \"XML\"}")
-    @BackEndService(ConsumeXmlBackEndService.class)
+    @BackEndApi(ConsumeXmlBackEndApi.class)
     public void transformClientJsonRequestToXml() throws Throwable {
         String json = "{\"name\":\"apiman\"}";
         PolicyTestRequest request = PolicyTestRequest.build(PolicyTestRequestType.POST, "/some/resource");
@@ -75,7 +76,7 @@ public class TransformationPolicyTest extends ApimanPolicyTest {
 
     @Test
     @Configuration("{\"clientFormat\": \"JSON\", \"serverFormat\": \"JSON\"}")
-    @BackEndService(ProduceJsonBackEndService.class)
+    @BackEndApi(ProduceJsonBackEndApi.class)
     public void keepServerJsonResponseAsJson() throws Throwable {
         PolicyTestRequest request = PolicyTestRequest.build(PolicyTestRequestType.GET, "/some/resource");
         
@@ -89,7 +90,7 @@ public class TransformationPolicyTest extends ApimanPolicyTest {
 
     @Test
     @Configuration("{\"clientFormat\": \"XML\", \"serverFormat\": \"XML\"}")
-    @BackEndService(ProduceXmlBackEndService.class)
+    @BackEndApi(ProduceXmlBackEndApi.class)
     public void keepServerXmlResponseAsXml() throws Throwable {
         PolicyTestRequest request = PolicyTestRequest.build(PolicyTestRequestType.GET, "/some/resource");
         

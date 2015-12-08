@@ -7,8 +7,8 @@ import static org.mockito.Matchers.refEq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import io.apiman.gateway.engine.async.IAsyncHandler;
-import io.apiman.gateway.engine.beans.ServiceRequest;
-import io.apiman.gateway.engine.beans.ServiceResponse;
+import io.apiman.gateway.engine.beans.ApiRequest;
+import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.engine.components.IBufferFactoryComponent;
 import io.apiman.gateway.engine.io.ByteBuffer;
 import io.apiman.gateway.engine.io.IApimanBuffer;
@@ -70,10 +70,10 @@ public class JsonpPolicyTest {
         JsonpConfigBean config = new JsonpConfigBean();
         config.setCallbackParamName("testParam");
         Map<String, String> queryParams = new HashMap<>();
-        ServiceRequest request = new ServiceRequest();
+        ApiRequest request = new ApiRequest();
         request.setQueryParams(queryParams);
 
-        IPolicyChain<ServiceRequest> chain = mock(IPolicyChain.class);
+        IPolicyChain<ApiRequest> chain = mock(IPolicyChain.class);
         // when
         jsonpPolicy.doApply(request, sContext, config, chain);
         // then
@@ -88,10 +88,10 @@ public class JsonpPolicyTest {
         config.setCallbackParamName("testParam");
         Map<String, String> queryParams = new HashMap<>();
         queryParams.put("testParam", "testFunction");
-        ServiceRequest request = new ServiceRequest();
+        ApiRequest request = new ApiRequest();
         request.setQueryParams(queryParams);
 
-        IPolicyChain<ServiceRequest> chain = mock(IPolicyChain.class);
+        IPolicyChain<ApiRequest> chain = mock(IPolicyChain.class);
         // when
         jsonpPolicy.doApply(request, sContext, config, chain);
         // then
@@ -106,10 +106,10 @@ public class JsonpPolicyTest {
         config.setCallbackParamName("testParam");
         Map<String, String> queryParams = new HashMap<>();
         queryParams.put("testParam", "testFunction");
-        ServiceRequest request = new ServiceRequest();
+        ApiRequest request = new ApiRequest();
         request.setQueryParams(queryParams);
 
-        IPolicyChain<ServiceRequest> chain = mock(IPolicyChain.class);
+        IPolicyChain<ApiRequest> chain = mock(IPolicyChain.class);
         // when
         jsonpPolicy.doApply(request, sContext, config, chain);
         // then
@@ -124,14 +124,14 @@ public class JsonpPolicyTest {
         // given
         String functionName = "testFunction";
         sContext.setAttribute(JsonpPolicy.CALLBACK_FUNCTION_NAME, functionName);
-        ServiceResponse response = new ServiceResponse();
+        ApiResponse response = new ApiResponse();
         String json = "{\"name\": \"test\"}";
         IApimanBuffer chunk = new ByteBuffer(json.getBytes().length);
         chunk.append(json);
         IAsyncHandler<IApimanBuffer> bodyHandler = mock(IAsyncHandler.class);
         // when
-        IReadWriteStream<ServiceResponse> responseDataHandler = jsonpPolicy.getResponseDataHandler(response, sContext, config);
-        ServiceResponse head = responseDataHandler.getHead();
+        IReadWriteStream<ApiResponse> responseDataHandler = jsonpPolicy.getResponseDataHandler(response, sContext, config);
+        ApiResponse head = responseDataHandler.getHead();
         responseDataHandler.bodyHandler(bodyHandler);
         responseDataHandler.write(chunk);
         responseDataHandler.end();
@@ -148,9 +148,9 @@ public class JsonpPolicyTest {
         JsonpConfigBean config = new JsonpConfigBean();
 
         // given
-        ServiceResponse response = new ServiceResponse();
+        ApiResponse response = new ApiResponse();
         // when
-        IReadWriteStream<ServiceResponse> responseDataHandler = jsonpPolicy.getResponseDataHandler(response, sContext, config);
+        IReadWriteStream<ApiResponse> responseDataHandler = jsonpPolicy.getResponseDataHandler(response, sContext, config);
         // then
         assertNull(responseDataHandler);
     }

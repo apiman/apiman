@@ -27,7 +27,7 @@ import org.keycloak.representations.AccessToken.Access;
 import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.PolicyFailure;
-import io.apiman.gateway.engine.beans.ServiceRequest;
+import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.components.ISharedStateComponent;
 import io.apiman.gateway.engine.metrics.RequestMetric;
 import io.apiman.gateway.engine.policies.AbstractMappedPolicy;
@@ -62,13 +62,13 @@ public class KeycloakOauthPolicy extends AbstractMappedPolicy<KeycloakOauthConfi
     }
 
     /**
-     * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#doApply(io.apiman.gateway.engine.beans.ServiceRequest,
+     * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#doApply(io.apiman.gateway.engine.beans.ApiRequest,
      *      io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object,
      *      io.apiman.gateway.engine.policy.IPolicyChain)
      */
     @Override
-    protected void doApply(final ServiceRequest request, final IPolicyContext context,
-            final KeycloakOauthConfigBean config, final IPolicyChain<ServiceRequest> chain) {
+    protected void doApply(final ApiRequest request, final IPolicyContext context,
+            final KeycloakOauthConfigBean config, final IPolicyChain<ApiRequest> chain) {
 
         final String rawToken = getRawAuthToken(request);
         final Holder<Boolean> successStatus = new Holder<>(true);
@@ -131,8 +131,8 @@ public class KeycloakOauthPolicy extends AbstractMappedPolicy<KeycloakOauthConfi
         successStatus.setValue(false);
     }
 
-    private Holder<Boolean> doTokenAuth(Holder<Boolean> successStatus, ServiceRequest request,
-            IPolicyContext context, KeycloakOauthConfigBean config, IPolicyChain<ServiceRequest> chain,
+    private Holder<Boolean> doTokenAuth(Holder<Boolean> successStatus, ApiRequest request,
+            IPolicyContext context, KeycloakOauthConfigBean config, IPolicyChain<ApiRequest> chain,
             String rawToken) {
         try {
             AccessToken parsedToken = RSATokenVerifier.verifyToken(rawToken, config.getRealmCertificate()
@@ -176,7 +176,7 @@ public class KeycloakOauthPolicy extends AbstractMappedPolicy<KeycloakOauthConfi
         }
     }
 
-    private void delegateKerberosTicket(ServiceRequest request, KeycloakOauthConfigBean config,
+    private void delegateKerberosTicket(ApiRequest request, KeycloakOauthConfigBean config,
             AccessToken parsedToken) {
         String serializedGssCredential = (String) parsedToken.getOtherClaims().get(
                 KerberosConstants.GSS_DELEGATION_CREDENTIAL);
@@ -186,7 +186,7 @@ public class KeycloakOauthPolicy extends AbstractMappedPolicy<KeycloakOauthConfi
         }
     }
 
-    private String getRawAuthToken(ServiceRequest request) {
+    private String getRawAuthToken(ApiRequest request) {
         String rawToken = StringUtils.strip(request.getHeaders().get(AUTHORIZATION_KEY));
 
         if (rawToken != null && StringUtils.startsWithIgnoreCase(rawToken, BEARER)) {
@@ -198,14 +198,14 @@ public class KeycloakOauthPolicy extends AbstractMappedPolicy<KeycloakOauthConfi
         return rawToken;
     }
 
-    private void stripAuthTokens(ServiceRequest request, KeycloakOauthConfigBean config) {
+    private void stripAuthTokens(ApiRequest request, KeycloakOauthConfigBean config) {
         if (config.getStripTokens()) {
             request.getHeaders().remove(AUTHORIZATION_KEY);
             request.getQueryParams().remove(ACCESS_TOKEN_QUERY_KEY);
         }
     }
 
-    private void forwardHeaders(ServiceRequest request, KeycloakOauthConfigBean config, String rawToken,
+    private void forwardHeaders(ApiRequest request, KeycloakOauthConfigBean config, String rawToken,
             AccessToken parsedToken) {
         if (config.getForwardAuthInfo().size() == 0) {
             return;

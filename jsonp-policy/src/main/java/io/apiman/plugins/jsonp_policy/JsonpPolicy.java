@@ -1,7 +1,7 @@
 package io.apiman.plugins.jsonp_policy;
 
-import io.apiman.gateway.engine.beans.ServiceRequest;
-import io.apiman.gateway.engine.beans.ServiceResponse;
+import io.apiman.gateway.engine.beans.ApiRequest;
+import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.engine.components.IBufferFactoryComponent;
 import io.apiman.gateway.engine.io.AbstractStream;
 import io.apiman.gateway.engine.io.IApimanBuffer;
@@ -37,8 +37,8 @@ public class JsonpPolicy extends AbstractMappedPolicy<JsonpConfigBean> implement
     }
 
     @Override
-    protected void doApply(ServiceRequest request, IPolicyContext context, JsonpConfigBean config,
-            IPolicyChain<ServiceRequest> chain) {
+    protected void doApply(ApiRequest request, IPolicyContext context, JsonpConfigBean config,
+            IPolicyChain<ApiRequest> chain) {
         String callbackParamName = config.getCallbackParamName();
         String callbackFunctionName = request.getQueryParams().remove(callbackParamName);
         if (callbackFunctionName != null) {
@@ -48,19 +48,19 @@ public class JsonpPolicy extends AbstractMappedPolicy<JsonpConfigBean> implement
     }
 
     /**
-     * @see io.apiman.gateway.engine.policy.IDataPolicy#getRequestDataHandler(io.apiman.gateway.engine.beans.ServiceRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object)
+     * @see io.apiman.gateway.engine.policy.IDataPolicy#getRequestDataHandler(io.apiman.gateway.engine.beans.ApiRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object)
      */
     @Override
-    public IReadWriteStream<ServiceRequest> getRequestDataHandler(ServiceRequest request,
+    public IReadWriteStream<ApiRequest> getRequestDataHandler(ApiRequest request,
             IPolicyContext context, Object policyConfiguration) {
         return null;
     }
 
     /**
-     * @see io.apiman.gateway.engine.policy.IDataPolicy#getResponseDataHandler(io.apiman.gateway.engine.beans.ServiceResponse, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object)
+     * @see io.apiman.gateway.engine.policy.IDataPolicy#getResponseDataHandler(io.apiman.gateway.engine.beans.ApiResponse, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object)
      */
     @Override
-    public IReadWriteStream<ServiceResponse> getResponseDataHandler(final ServiceResponse response,
+    public IReadWriteStream<ApiResponse> getResponseDataHandler(final ApiResponse response,
             IPolicyContext context, Object policyConfiguration) {
         final String callbackFunctionName = (String) context.getAttribute(CALLBACK_FUNCTION_NAME, null);
 
@@ -78,16 +78,16 @@ public class JsonpPolicy extends AbstractMappedPolicy<JsonpConfigBean> implement
 
             final IBufferFactoryComponent bufferFactory = context.getComponent(IBufferFactoryComponent.class);
 
-            return new AbstractStream<ServiceResponse>() {
+            return new AbstractStream<ApiResponse>() {
                 private boolean firstChunk = true;
 
                 @Override
-                public ServiceResponse getHead() {
+                public ApiResponse getHead() {
                     return response;
                 }
 
                 @Override
-                protected void handleHead(ServiceResponse head) {
+                protected void handleHead(ApiResponse head) {
                 }
 
                 @Override

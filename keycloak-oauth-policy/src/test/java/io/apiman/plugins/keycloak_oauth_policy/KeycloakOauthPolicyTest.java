@@ -7,6 +7,20 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import io.apiman.gateway.engine.beans.ApiRequest;
+import io.apiman.gateway.engine.beans.PolicyFailure;
+import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
+import io.apiman.gateway.engine.components.ISharedStateComponent;
+import io.apiman.gateway.engine.impl.DefaultPolicyFailureFactoryComponent;
+import io.apiman.gateway.engine.impl.InMemorySharedStateComponent;
+import io.apiman.gateway.engine.policies.AuthorizationPolicy;
+import io.apiman.gateway.engine.policy.IPolicyChain;
+import io.apiman.gateway.engine.policy.IPolicyContext;
+import io.apiman.plugins.keycloak_oauth_policy.beans.ForwardAuthInfo;
+import io.apiman.plugins.keycloak_oauth_policy.beans.ForwardAuthInfo.Field;
+import io.apiman.plugins.keycloak_oauth_policy.beans.ForwardRoles;
+import io.apiman.plugins.keycloak_oauth_policy.beans.KeycloakOauthConfigBean;
+
 import java.io.IOException;
 import java.io.StringWriter;
 import java.math.BigInteger;
@@ -40,20 +54,6 @@ import org.keycloak.util.Time;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import io.apiman.gateway.engine.beans.PolicyFailure;
-import io.apiman.gateway.engine.beans.ServiceRequest;
-import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
-import io.apiman.gateway.engine.components.ISharedStateComponent;
-import io.apiman.gateway.engine.impl.DefaultPolicyFailureFactoryComponent;
-import io.apiman.gateway.engine.impl.InMemorySharedStateComponent;
-import io.apiman.gateway.engine.policies.AuthorizationPolicy;
-import io.apiman.gateway.engine.policy.IPolicyChain;
-import io.apiman.gateway.engine.policy.IPolicyContext;
-import io.apiman.plugins.keycloak_oauth_policy.beans.ForwardAuthInfo;
-import io.apiman.plugins.keycloak_oauth_policy.beans.ForwardAuthInfo.Field;
-import io.apiman.plugins.keycloak_oauth_policy.beans.ForwardRoles;
-import io.apiman.plugins.keycloak_oauth_policy.beans.KeycloakOauthConfigBean;
-
 /**
  * Test the {@link KeycloakOauthPolicy}.
  *
@@ -70,10 +70,10 @@ public class KeycloakOauthPolicyTest {
     private AccessToken token;
     private KeycloakOauthPolicy keycloakOauthPolicy;
     private KeycloakOauthConfigBean config;
-    private ServiceRequest serviceRequest;
+    private ApiRequest apiRequest;
 
     @Mock
-    private IPolicyChain<ServiceRequest> mChain;
+    private IPolicyChain<ApiRequest> mChain;
     @Mock
     private IPolicyContext mContext;
     private ForwardRoles forwardRoles;
@@ -113,7 +113,7 @@ public class KeycloakOauthPolicyTest {
 
         AccessToken realm = token.subject("CN=Client").issuer("apiman-realm"); // KC seems to use issuer for realm?
 
-        realm.addAccess("apiman-service").addRole("apiman-gateway-user-role").addRole("a-nother-role");
+        realm.addAccess("apiman-api").addRole("apiman-gateway-user-role").addRole("a-nother-role");
         realm.setRealmAccess(new Access().addRole("lets-use-a-realm-role"));
 
         keycloakOauthPolicy = new KeycloakOauthPolicy();
@@ -126,7 +126,7 @@ public class KeycloakOauthPolicyTest {
         forwardRoles = new ForwardRoles();
         config.setForwardRoles(forwardRoles);
 
-        serviceRequest = new ServiceRequest();
+        apiRequest = new ApiRequest();
 
         // Set up components.
         // Failure factory
@@ -150,10 +150,10 @@ public class KeycloakOauthPolicyTest {
     public void shouldSucceedWithValidQueryAuthToken() throws CertificateEncodingException, IOException {
         String token = generateAndSerializeToken();
 
-        serviceRequest.getQueryParams().put("access_token", token);
-        keycloakOauthPolicy.apply(serviceRequest, mContext, config, mChain);
+        apiRequest.getQueryParams().put("access_token", token);
+        keycloakOauthPolicy.apply(apiRequest, mContext, config, mChain);
 
-        verify(mChain, times(1)).doApply(serviceRequest);
+        verify(mChain, times(1)).doApply(apiRequest);
         verify(mChain, never()).doFailure(any(PolicyFailure.class));
     }
 
@@ -161,18 +161,18 @@ public class KeycloakOauthPolicyTest {
     public void shouldSucceedWithValidHeaderAuthToken() throws CertificateEncodingException, IOException {
         String token = generateAndSerializeToken();
 
-        serviceRequest.getHeaders().put("Authorization", "Bearer " + token);
-        keycloakOauthPolicy.apply(serviceRequest, mContext, config, mChain);
+        apiRequest.getHeaders().put("Authorization", "Bearer " + token);
+        keycloakOauthPolicy.apply(apiRequest, mContext, config, mChain);
 
-        verify(mChain, times(1)).doApply(serviceRequest);
+        verify(mChain, times(1)).doApply(apiRequest);
         verify(mChain, never()).doFailure(any(PolicyFailure.class));
     }
 
     @Test
     public void shouldPassthroughOnNullTokenIfOAuthNotRequired() {
         config.setRequireOauth(false);
-        keycloakOauthPolicy.apply(serviceRequest, mContext, config, mChain);
-        verify(mChain).doApply(any(ServiceRequest.class));
+        keycloakOauthPolicy.apply(apiRequest, mContext, config, mChain);
+        verify(mChain).doApply(any(ApiRequest.class));
     }
 
     @Test
@@ -180,10 +180,10 @@ public class KeycloakOauthPolicyTest {
         config.setRealm("apiman-realm");
         config.setRealmCertificateString(certificateAsPem(idpCertificates[0]));
 
-        keycloakOauthPolicy.apply(serviceRequest, mContext, config, mChain);
+        keycloakOauthPolicy.apply(apiRequest, mContext, config, mChain);
 
         verify(mChain, times(1)).doFailure(any(PolicyFailure.class));
-        verify(mChain, never()).doApply(any(ServiceRequest.class));
+        verify(mChain, never()).doApply(any(ApiRequest.class));
     }
 
     @Test
@@ -192,15 +192,15 @@ public class KeycloakOauthPolicyTest {
 
         String encoded = new JWSBuilder().jsonContent(token).rsa256(idpPair.getPrivate());
 
-        serviceRequest.getQueryParams().put("access_token", encoded);
+        apiRequest.getQueryParams().put("access_token", encoded);
 
         config.setRealm("apiman-realm");
         config.setRealmCertificateString(certificateAsPem(idpCertificates[0]));
 
-        keycloakOauthPolicy.apply(serviceRequest, mContext, config, mChain);
+        keycloakOauthPolicy.apply(apiRequest, mContext, config, mChain);
 
         verify(mChain, times(1)).doFailure(any(PolicyFailure.class));
-        verify(mChain, never()).doApply(any(ServiceRequest.class));
+        verify(mChain, never()).doApply(any(ApiRequest.class));
     }
 
     @Test
@@ -208,15 +208,15 @@ public class KeycloakOauthPolicyTest {
         // Require transport security
         config.setRequireTransportSecurity(true);
         // But set the connection as insecure
-        serviceRequest.setTransportSecure(false);
+        apiRequest.setTransportSecure(false);
 
         String encoded = generateAndSerializeToken();
-        serviceRequest.getHeaders().put("Authorization", "Bearer " + encoded);
+        apiRequest.getHeaders().put("Authorization", "Bearer " + encoded);
 
-        keycloakOauthPolicy.apply(serviceRequest, mContext, config, mChain);
+        keycloakOauthPolicy.apply(apiRequest, mContext, config, mChain);
 
         verify(mChain, times(1)).doFailure(any(PolicyFailure.class));
-        verify(mChain, never()).doApply(any(ServiceRequest.class));
+        verify(mChain, never()).doApply(any(ApiRequest.class));
     }
 
     @Test
@@ -226,47 +226,47 @@ public class KeycloakOauthPolicyTest {
         // Blacklist invalidly used tokens
         config.setBlacklistUnsafeTokens(true);
         // But set the connection as insecure
-        serviceRequest.setTransportSecure(false);
+        apiRequest.setTransportSecure(false);
 
         String encoded = generateAndSerializeToken();
-        serviceRequest.getHeaders().put("Authorization", "Bearer " + encoded);
+        apiRequest.getHeaders().put("Authorization", "Bearer " + encoded);
 
-        keycloakOauthPolicy.apply(serviceRequest, mContext, config, mChain);
+        keycloakOauthPolicy.apply(apiRequest, mContext, config, mChain);
 
         verify(mChain, times(1)).doFailure(any(PolicyFailure.class));
-        verify(mChain, never()).doApply(any(ServiceRequest.class));
+        verify(mChain, never()).doApply(any(ApiRequest.class));
     }
 
     @Test
     public void shouldTerminateOnBlacklistedToken() throws CertificateEncodingException, IOException {
         config.setRequireTransportSecurity(true);
         config.setBlacklistUnsafeTokens(true);
-        serviceRequest.setTransportSecure(false);
+        apiRequest.setTransportSecure(false);
 
         // First, do a request that causes the token to be blacklisted.
         String encoded = generateAndSerializeToken();
-        serviceRequest.getHeaders().put("Authorization", "Bearer " + encoded);
-        keycloakOauthPolicy.apply(serviceRequest, mContext, config, mChain);
+        apiRequest.getHeaders().put("Authorization", "Bearer " + encoded);
+        keycloakOauthPolicy.apply(apiRequest, mContext, config, mChain);
 
         // Second, do the request again with the blacklisted token *with secure*.
         // It *must* still be blocked.
-        serviceRequest.setTransportSecure(true);
-        keycloakOauthPolicy.apply(serviceRequest, mContext, config, mChain);
+        apiRequest.setTransportSecure(true);
+        keycloakOauthPolicy.apply(apiRequest, mContext, config, mChain);
 
         verify(mChain, times(2)).doFailure(any(PolicyFailure.class));
-        verify(mChain, never()).doApply(any(ServiceRequest.class));
+        verify(mChain, never()).doApply(any(ApiRequest.class));
     }
 
     @SuppressWarnings("serial")
     @Test
     public void shouldForwardAppRoles() throws CertificateEncodingException, IOException {
         forwardRoles.setActive(true);
-        forwardRoles.setApplicationName("apiman-service");
+        forwardRoles.setApplicationName("apiman-api");
 
         String encoded = generateAndSerializeToken();
-        serviceRequest.getHeaders().put("Authorization", "Bearer " + encoded);
+        apiRequest.getHeaders().put("Authorization", "Bearer " + encoded);
 
-        keycloakOauthPolicy.apply(serviceRequest, mContext, config, mChain);
+        keycloakOauthPolicy.apply(apiRequest, mContext, config, mChain);
 
         Set<String> roles = new HashSet<String>() {
             {
@@ -276,7 +276,7 @@ public class KeycloakOauthPolicyTest {
          };
 
         verify(mContext).setAttribute(eq(AuthorizationPolicy.AUTHENTICATED_USER_ROLES), eq(roles));
-        verify(mChain).doApply(any(ServiceRequest.class));
+        verify(mChain).doApply(any(ApiRequest.class));
     }
 
     @Test
@@ -284,9 +284,9 @@ public class KeycloakOauthPolicyTest {
         forwardRoles.setActive(true);
 
         String encoded = generateAndSerializeToken();
-        serviceRequest.getHeaders().put("Authorization", "Bearer " + encoded);
+        apiRequest.getHeaders().put("Authorization", "Bearer " + encoded);
 
-        keycloakOauthPolicy.apply(serviceRequest, mContext, config, mChain);
+        keycloakOauthPolicy.apply(apiRequest, mContext, config, mChain);
 
         @SuppressWarnings("serial")
         Set<String> roles = new HashSet<String>() {
@@ -296,7 +296,7 @@ public class KeycloakOauthPolicyTest {
          };
 
         verify(mContext).setAttribute(eq(AuthorizationPolicy.AUTHENTICATED_USER_ROLES), eq(roles));
-        verify(mChain).doApply(any(ServiceRequest.class));
+        verify(mChain).doApply(any(ApiRequest.class));
     }
 
     @Test
@@ -308,12 +308,12 @@ public class KeycloakOauthPolicyTest {
 
         token.setPreferredUsername("ABC");
         String encoded = generateAndSerializeToken();
-        serviceRequest.getHeaders().put("Authorization", "Bearer " + encoded);
-        keycloakOauthPolicy.apply(serviceRequest, mContext, config, mChain);
+        apiRequest.getHeaders().put("Authorization", "Bearer " + encoded);
+        keycloakOauthPolicy.apply(apiRequest, mContext, config, mChain);
 
-        verify(mChain).doApply(serviceRequest);
+        verify(mChain).doApply(apiRequest);
 
-        Assert.assertEquals("ABC", serviceRequest.getHeaders().get("X-TEST"));
+        Assert.assertEquals("ABC", apiRequest.getHeaders().get("X-TEST"));
     }
 
     @Test
@@ -325,12 +325,12 @@ public class KeycloakOauthPolicyTest {
 
         token.setEmail("apiman@apiman.io");
         String encoded = generateAndSerializeToken();
-        serviceRequest.getHeaders().put("Authorization", "Bearer " + encoded);
-        keycloakOauthPolicy.apply(serviceRequest, mContext, config, mChain);
+        apiRequest.getHeaders().put("Authorization", "Bearer " + encoded);
+        keycloakOauthPolicy.apply(apiRequest, mContext, config, mChain);
 
-        verify(mChain).doApply(serviceRequest);
+        verify(mChain).doApply(apiRequest);
 
-        Assert.assertEquals("apiman@apiman.io", serviceRequest.getHeaders().get("X-TEST"));
+        Assert.assertEquals("apiman@apiman.io", apiRequest.getHeaders().get("X-TEST"));
     }
 
     private String certificateAsPem(X509Certificate x509) throws CertificateEncodingException, IOException {

@@ -16,8 +16,8 @@
 package io.apiman.plugins.simpleheaderpolicy;
 
 import static org.junit.Assert.*;
-import io.apiman.gateway.engine.beans.ServiceRequest;
-import io.apiman.gateway.engine.beans.ServiceResponse;
+import io.apiman.gateway.engine.beans.ApiRequest;
+import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
 import io.apiman.plugins.simpleheaderpolicy.beans.AddHeaderBean;
@@ -42,16 +42,16 @@ import org.mockito.MockitoAnnotations;
 @SuppressWarnings("nls")
 public class SimpleHeaderPolicyTest {
     @Mock
-    private IPolicyChain<ServiceRequest> mRequestChain;
+    private IPolicyChain<ApiRequest> mRequestChain;
     @Mock
-    private IPolicyChain<ServiceResponse> mResponseChain;
+    private IPolicyChain<ApiResponse> mResponseChain;
 
     @Mock
     private IPolicyContext mContext;
     private SimpleHeaderPolicy policy;
     private SimpleHeaderPolicyDefBean config;
-    private ServiceRequest request;
-    private ServiceResponse response;
+    private ApiRequest request;
+    private ApiResponse response;
 
     @Before
     public void setup() {
@@ -59,8 +59,8 @@ public class SimpleHeaderPolicyTest {
 
         policy = new SimpleHeaderPolicy();
         config = new SimpleHeaderPolicyDefBean();
-        request = new ServiceRequest();
-        response = new ServiceResponse();
+        request = new ApiRequest();
+        response = new ApiResponse();
     }
 
     @Test

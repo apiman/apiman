@@ -36,11 +36,11 @@ import org.junit.Test;
 public class TestPolicyTest extends ApimanPolicyTest {
 
     /**
-     * Test method for {@link io.apiman.plugins.test_policy.TestPolicy#apply(io.apiman.gateway.engine.beans.ServiceRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)}.
+     * Test method for {@link io.apiman.plugins.test_policy.TestPolicy#apply(io.apiman.gateway.engine.beans.ApiRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)}.
      */
     @Test
     @Configuration("{}")
-    public void testApplyServiceRequestIPolicyContextObjectIPolicyChainOfServiceRequest() throws Throwable {
+    public void testApplyApiRequestIPolicyContextObjectIPolicyChainOfApiRequest() throws Throwable {
         PolicyTestResponse response = send(PolicyTestRequest.build(PolicyTestRequestType.GET, "/some/resource"));
         Assert.assertEquals(200, response.code());
         EchoResponse entity = response.entity(EchoResponse.class);

@@ -15,17 +15,17 @@
  */
 package io.apiman.plugins.cors_policy;
 
-import java.util.Collections;
-import java.util.Map;
-
-import io.apiman.gateway.engine.IServiceConnector;
-import io.apiman.gateway.engine.beans.ServiceRequest;
-import io.apiman.gateway.engine.beans.ServiceResponse;
+import io.apiman.gateway.engine.IApiConnector;
+import io.apiman.gateway.engine.beans.ApiRequest;
+import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.policies.AbstractMappedPolicy;
 import io.apiman.gateway.engine.policy.IConnectorInterceptor;
 import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
+
+import java.util.Collections;
+import java.util.Map;
 
 /**
  * A policy implementing CORS (Cross-origin resource sharing): a method of defining access to resources
@@ -55,11 +55,11 @@ public class CorsPolicy extends AbstractMappedPolicy<CorsConfigBean> {
 
 
     /* (non-Javadoc)
-     * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#doApply(ServiceRequest, IPolicyContext, C, IPolicyChain)
+     * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#doApply(ApiRequest, IPolicyContext, C, IPolicyChain)
      */
     @Override
-    protected void doApply(final ServiceRequest request, final IPolicyContext context,
-            final CorsConfigBean config, final IPolicyChain<ServiceRequest> chain) {
+    protected void doApply(final ApiRequest request, final IPolicyContext context,
+            final CorsConfigBean config, final IPolicyChain<ApiRequest> chain) {
         // Is this request CORS enabled? If not, skip.
         if (CorsConnector.candidateCorsRequest(request)) {
             final CorsConnector corsConnector = new CorsConnector(request, config,
@@ -70,7 +70,7 @@ public class CorsPolicy extends AbstractMappedPolicy<CorsConfigBean> {
                 context.setConnectorInterceptor(new IConnectorInterceptor() {
 
                     @Override
-                    public IServiceConnector createConnector() {
+                    public IApiConnector createConnector() {
                         return corsConnector;
                     }
                 });
@@ -91,11 +91,11 @@ public class CorsPolicy extends AbstractMappedPolicy<CorsConfigBean> {
 
 
     /* (non-Javadoc)
-     * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#doApply(ServiceResponse, IPolicyContext, C, IPolicyChain)
+     * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#doApply(ApiResponse, IPolicyContext, C, IPolicyChain)
      */
     @Override
-    protected void doApply(ServiceResponse response, IPolicyContext context, CorsConfigBean config,
-            IPolicyChain<ServiceResponse> chain) {
+    protected void doApply(ApiResponse response, IPolicyContext context, CorsConfigBean config,
+            IPolicyChain<ApiResponse> chain) {
 
         Map<String, String> corsHeaders = getResponseHeaders(context);
 

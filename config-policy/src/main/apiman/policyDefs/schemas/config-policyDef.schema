@@ -1,6 +1,6 @@
 {
   "title" : "Configure HTTP Headers",
-  "description" : "Set the HTTP request header to populate with the value 'true' when the request is made.  Also set the HTTP response header to populate with the value 'true' after the response is received from the back-end service.",
+  "description" : "Set the HTTP request header to populate with the value 'true' when the request is made.  Also set the HTTP response header to populate with the value 'true' after the response is received from the back-end API.",
   "type" : "object",
   "properties": {
     "requestHeader": {

@@ -15,6 +15,9 @@
  */
 package io.apiman.plugins.cors_policy;
 
+import io.apiman.plugins.cors_policy.util.HttpHelper;
+import io.apiman.plugins.cors_policy.util.InsensitiveLinkedHashSet;
+
 import java.io.Serializable;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -25,9 +28,6 @@ import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.map.annotate.JsonDeserialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
-
-import io.apiman.plugins.cors_policy.util.HttpHelper;
-import io.apiman.plugins.cors_policy.util.InsensitiveLinkedHashSet;
 
 /**
  * CORS Policy Configuration
@@ -45,7 +45,7 @@ public class CorsConfigBean implements Serializable {
      * Terminate on CORS error
      * <p>
      * When true, any request that fails CORS validation will be terminated with an appropriate error. When
-     * false, the request will still be sent to the backend service, but the browser will be left to enforce
+     * false, the request will still be sent to the backend API, but the browser will be left to enforce
      * the CORS failure. In both cases valid CORS headers will be set.
      *
      */
@@ -110,7 +110,7 @@ public class CorsConfigBean implements Serializable {
      * Terminate on CORS error
      * <p>
      * When true, any request that fails CORS validation will be terminated with an appropriate error. When
-     * false, the request will still be sent to the backend service, but the browser will be left to enforce
+     * false, the request will still be sent to the backend API, but the browser will be left to enforce
      * the CORS failure. In both cases valid CORS headers will be set.
      *
      * @return The errorOnCorsFailure
@@ -124,7 +124,7 @@ public class CorsConfigBean implements Serializable {
      * Terminate on CORS error
      * <p>
      * When true, any request that fails CORS validation will be terminated with an appropriate error. When
-     * false, the request will still be sent to the backend service, but the browser will be left to enforce
+     * false, the request will still be sent to the backend API, but the browser will be left to enforce
      * the CORS failure. In both cases valid CORS headers will be set.
      *
      * @param errorOnCorsFailure The errorOnCorsFailure

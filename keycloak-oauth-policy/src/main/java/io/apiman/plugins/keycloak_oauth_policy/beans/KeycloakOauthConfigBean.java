@@ -67,7 +67,7 @@ public class KeycloakOauthConfigBean {
     /**
      * Strip tokens
      * <p>
-     * Remove any Authorization header or token query parameter before forwarding traffic to the Service.
+     * Remove any Authorization header or token query parameter before forwarding traffic to the Api.
      *
      */
     @JsonProperty("stripTokens")
@@ -106,7 +106,7 @@ public class KeycloakOauthConfigBean {
     /**
      * Forward Keycloak token information
      * <p>
-     * Fields from the token can be set as headers and forwarded to the Service. Access_token corresponds to
+     * Fields from the token can be set as headers and forwarded to the Api. Access_token corresponds to
      * the full token.
      */
     @JsonProperty("forwardAuthInfo")
@@ -190,7 +190,7 @@ public class KeycloakOauthConfigBean {
     /**
      * Strip tokens
      * <p>
-     * Remove any Authorization header or token query parameter before forwarding traffic to the Service.
+     * Remove any Authorization header or token query parameter before forwarding traffic to the Api.
      *
      * @return The stripTokens
      */
@@ -202,7 +202,7 @@ public class KeycloakOauthConfigBean {
     /**
      * Strip tokens
      * <p>
-     * Remove any Authorization header or token query parameter before forwarding traffic to the Service.
+     * Remove any Authorization header or token query parameter before forwarding traffic to the Api.
      *
      * @param stripTokens The stripTokens
      */
@@ -289,7 +289,7 @@ public class KeycloakOauthConfigBean {
     /**
      * Delegate Kerberos Ticket
      * <p>
-     * Delegate the embedded Kerberos Ticket to the Service (via the Authorization header).
+     * Delegate the embedded Kerberos Ticket to the Api (via the Authorization header).
      *
      * @return true if should delegate token; else false
      */
@@ -301,7 +301,7 @@ public class KeycloakOauthConfigBean {
     /**
      * Delegate Kerberos Ticket
      * <p>
-     * Delegate the embedded Kerberos Ticket to the Service (via the Authorization header).
+     * Delegate the embedded Kerberos Ticket to the Api (via the Authorization header).
      *
      * @param delegateKerberosTicket true if should delegate token; else false
      */
@@ -313,7 +313,7 @@ public class KeycloakOauthConfigBean {
     /**
      * Forward Keycloak token information
      * <p>
-     * Fields from the token can be set as headers and forwarded to the Service. Access_token corresponds to
+     * Fields from the token can be set as headers and forwarded to the Api. Access_token corresponds to
      * the full token.
      *
      * @return The forwardAuthInfo
@@ -326,7 +326,7 @@ public class KeycloakOauthConfigBean {
     /**
      * Forward Keycloak token information
      * <p>
-     * Fields from the token can be set as headers and forwarded to the Service. Access_token corresponds to
+     * Fields from the token can be set as headers and forwarded to the Api. Access_token corresponds to
      * the full token.
      *
      * @param forwardAuthInfo The forwardAuthInfo

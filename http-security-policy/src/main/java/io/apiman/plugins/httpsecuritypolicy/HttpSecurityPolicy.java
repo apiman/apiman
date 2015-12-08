@@ -17,8 +17,8 @@ package io.apiman.plugins.httpsecuritypolicy;
 
 import java.util.Map;
 
-import io.apiman.gateway.engine.beans.ServiceRequest;
-import io.apiman.gateway.engine.beans.ServiceResponse;
+import io.apiman.gateway.engine.beans.ApiRequest;
+import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.engine.policies.AbstractMappedPolicy;
 import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
@@ -40,14 +40,14 @@ public class HttpSecurityPolicy extends AbstractMappedPolicy<HttpSecurityBean> {
     }
 
     @Override
-    protected void doApply(ServiceRequest request, IPolicyContext context, HttpSecurityBean config,
-            IPolicyChain<ServiceRequest> chain) {
+    protected void doApply(ApiRequest request, IPolicyContext context, HttpSecurityBean config,
+            IPolicyChain<ApiRequest> chain) {
         chain.doApply(request);
     }
 
     @Override
-    protected void doApply(ServiceResponse response, IPolicyContext context, HttpSecurityBean config,
-            IPolicyChain<ServiceResponse> chain) {
+    protected void doApply(ApiResponse response, IPolicyContext context, HttpSecurityBean config,
+            IPolicyChain<ApiResponse> chain) {
 
         setSecurityHeaders(config, response.getHeaders());
 

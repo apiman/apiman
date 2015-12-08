@@ -15,17 +15,17 @@
  */
 package io.apiman.plugins.cors_policy;
 
-import io.apiman.gateway.engine.IServiceConnection;
-import io.apiman.gateway.engine.IServiceConnectionResponse;
-import io.apiman.gateway.engine.IServiceConnector;
+import io.apiman.gateway.engine.IApiConnection;
+import io.apiman.gateway.engine.IApiConnectionResponse;
+import io.apiman.gateway.engine.IApiConnector;
 import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncHandler;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
+import io.apiman.gateway.engine.beans.ApiRequest;
+import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.engine.beans.HeaderHashMap;
 import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.beans.PolicyFailureType;
-import io.apiman.gateway.engine.beans.ServiceRequest;
-import io.apiman.gateway.engine.beans.ServiceResponse;
 import io.apiman.gateway.engine.beans.exceptions.ConnectorException;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.io.IApimanBuffer;
@@ -41,7 +41,7 @@ import org.apache.commons.lang.StringUtils;
  *
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
-public class CorsConnector implements IServiceConnector {
+public class CorsConnector implements IApiConnector {
 
     // Request related headers
     public static final String ORIGIN_KEY = "Origin"; //$NON-NLS-1$
@@ -61,7 +61,7 @@ public class CorsConnector implements IServiceConnector {
 
     // CORS conversation related fields
     private CorsConfigBean config;
-    private ServiceRequest request;
+    private ApiRequest request;
     private Map<String, String> requestHeaders;
     private Map<String, String> responseHeaders = new HeaderHashMap();
     private boolean shortCircuit = false;
@@ -73,7 +73,7 @@ public class CorsConnector implements IServiceConnector {
      * @param config the provided configuration
      * @param failureFactory the failure factory
      */
-    public CorsConnector(ServiceRequest request, CorsConfigBean config, IPolicyFailureFactoryComponent failureFactory) {
+    public CorsConnector(ApiRequest request, CorsConfigBean config, IPolicyFailureFactoryComponent failureFactory) {
         this.request = request;
         this.config = config;
         this.failureFactory = failureFactory;
@@ -84,10 +84,10 @@ public class CorsConnector implements IServiceConnector {
     }
 
     @Override
-    public IServiceConnection connect(ServiceRequest request,
-            IAsyncResultHandler<IServiceConnectionResponse> handler) throws ConnectorException {
+    public IApiConnection connect(ApiRequest request,
+            IAsyncResultHandler<IApiConnectionResponse> handler) throws ConnectorException {
 
-        return new ShortcircuitServiceConnection(handler);
+        return new ShortcircuitApiConnection(handler);
     }
 
     /**
@@ -124,7 +124,7 @@ public class CorsConnector implements IServiceConnector {
      * @param request the request
      * @return true if CORS is a request
      */
-    public static boolean candidateCorsRequest(ServiceRequest request) {
+    public static boolean candidateCorsRequest(ApiRequest request) {
         return request.getHeaders().get(ORIGIN_KEY) != null;
     }
 
@@ -241,20 +241,20 @@ public class CorsConnector implements IServiceConnector {
     }
 
     /**
-     * A connection consisting predominantly dummy methods as we're not contacting a real service.
+     * A connection consisting predominantly dummy methods as we're not contacting a real API.
      *
      * @author Marc Savy {@literal <msavy@redhat.com>}
      */
-    class ShortcircuitServiceConnection implements IServiceConnection, IServiceConnectionResponse {
+    class ShortcircuitApiConnection implements IApiConnection, IApiConnectionResponse {
         private boolean finished = false;
         private IAsyncHandler<Void> endHandler;
-        private IAsyncResultHandler<IServiceConnectionResponse> responseHandler;
-        private ServiceResponse response;
+        private IAsyncResultHandler<IApiConnectionResponse> responseHandler;
+        private ApiResponse response;
 
-        public ShortcircuitServiceConnection(IAsyncResultHandler<IServiceConnectionResponse> handler) {
+        public ShortcircuitApiConnection(IAsyncResultHandler<IApiConnectionResponse> handler) {
             responseHandler = handler;
 
-            response = new ServiceResponse();
+            response = new ApiResponse();
             response.setCode(200);
             response.setHeaders(responseHeaders);
         }
@@ -269,7 +269,7 @@ public class CorsConnector implements IServiceConnector {
         }
 
         /**
-         * @see io.apiman.gateway.engine.IServiceConnection#isConnected()
+         * @see io.apiman.gateway.engine.IApiConnection#isConnected()
          */
         @Override
         public boolean isConnected() {
@@ -282,7 +282,7 @@ public class CorsConnector implements IServiceConnector {
 
         @Override
         public void end() {
-            responseHandler.handle(AsyncResultImpl.<IServiceConnectionResponse> create(this));
+            responseHandler.handle(AsyncResultImpl.<IApiConnectionResponse> create(this));
         }
 
         // We're now okay to do our baked response.
@@ -302,7 +302,7 @@ public class CorsConnector implements IServiceConnector {
         }
 
         @Override
-        public ServiceResponse getHead() {
+        public ApiResponse getHead() {
             return response;
         }
     }
