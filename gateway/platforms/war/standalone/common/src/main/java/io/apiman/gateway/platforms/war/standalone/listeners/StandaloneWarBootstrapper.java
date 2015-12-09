@@ -1,6 +1,4 @@
-package io.apiman.gateway.platforms.war.listeners; /**
- * @author pete
- */
+package io.apiman.gateway.platforms.war.standalone.listeners;
 
 import io.apiman.gateway.engine.components.*;
 import io.apiman.gateway.engine.es.*;
@@ -13,15 +11,14 @@ import io.apiman.gateway.platforms.war.WarEngineConfig;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
-import javax.servlet.http.HttpSessionAttributeListener;
-import javax.servlet.http.HttpSessionEvent;
-import javax.servlet.http.HttpSessionListener;
-import javax.servlet.http.HttpSessionBindingEvent;
 
-public class StandaloneWarGatewayBootstrapper extends WarGatewayBootstrapper {
+/**
+ * @author pcornish
+ */
+public class StandaloneWarBootstrapper implements ServletContextListener {
 
     // Public constructor is required by servlet spec
-    public StandaloneWarGatewayBootstrapper() {
+    public StandaloneWarBootstrapper() {
     }
 
     // -------------------------------------------------------
@@ -29,7 +26,6 @@ public class StandaloneWarGatewayBootstrapper extends WarGatewayBootstrapper {
     // -------------------------------------------------------
     public void contextInitialized(ServletContextEvent sce) {
         configure();
-        super.contextInitialized(sce);
     }
 
     public void contextDestroyed(ServletContextEvent sce) {

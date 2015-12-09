@@ -16,6 +16,7 @@
     <module>war</module>
     <module>war/micro</module>
     <module>war/wildfly8</module>
+    <module>war/standalone</module>
   </modules>
 
   <profiles>

@@ -62,11 +62,6 @@
     </dependency>
   </dependencies>
 
-  <modules>
-    <module>api-standalone</module>
-    <module>gateway-standalone</module>
-  </modules>
-
   <build>
     <plugins>
       <plugin>
