@@ -1,4 +1,4 @@
-package org.jboss.resteasy.spi;
+package org.jboss.resteasy.osgi;
 
 import org.jboss.resteasy.core.*;
 import org.jboss.resteasy.plugins.interceptors.SecurityInterceptor;
