@@ -90,8 +90,20 @@
         </dependency>
         <dependency>
             <groupId>io.apiman</groupId>
-            <artifactId>resteasy-all</artifactId>
+            <artifactId>resteasy</artifactId>
             <version>2.3.10.Final_1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jaxrs</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-cdi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jackson-provider</artifactId>
         </dependency>
         <dependency>
             <groupId>org.jboss.weld</groupId>
@@ -125,7 +137,8 @@
                             apiman-manager-api-core,apiman-manager-api-config,apiman-manager-api-beans,
                             apiman-manager-api-security,apiman-manager-api-export-import-api,
                             apiman-manager-api-rest,apiman-manager-api-rest-impl,apiman-manager-api-core,
-                            apiman-manager-api-gateway,apiman-manager-api-es,log4j-api,log4j-core;inline=true,
+                            apiman-manager-api-gateway,apiman-manager-api-es,log4j-api,log4j-core
+                            resteasy-jaxrs,resteasy-cdi,resteasy;inline=true,
                         </Embed-Dependency>
                         <Embed-Transitive>true</Embed-Transitive>
                         <Embed-Directory>WEB-INF/lib</Embed-Directory>
@@ -144,19 +157,6 @@
                             io.swagger.annotations*;resolution:=optional,
                             *
                         </Import-Package>
-                        <!--
-                            org.jboss.resteasy.cdi.osgi,
-                            org.jboss.resteasy.plugins.interceptors.encoding,
-                            org.jboss.resteasy.plugins.interceptors,
-                            org.jboss.resteasy.plugins.providers,
-                            org.jboss.resteasy.plugins.providers.jackson,
-                            org.jboss.resteasy.plugins.server.servlet,
-                            io.apiman.manager.api.es,
-                            io.apiman.manager.api.rest.contract,
-                            io.apiman.manager.api.rest.impl,
-                            io.apiman.manager.api.exportimport,
-                            io.apiman.common.servlet,
-                            -->
                         <Require-Capability>
                             org.ops4j.pax.cdi.extension;filter:="(&amp;(extension=pax-cdi-extension)(version>=0.11)(!(version>=0.12)))",
                             osgi.extender;filter:="(osgi.extender=pax.cdi)",
