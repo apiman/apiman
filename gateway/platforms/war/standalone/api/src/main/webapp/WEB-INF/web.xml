@@ -4,7 +4,10 @@
          version="2.5">
 
     <listener>
-        <listener-class>io.apiman.gateway.platforms.war.listeners.StandaloneWarGatewayBootstrapper</listener-class>
+        <listener-class>io.apiman.gateway.platforms.war.standalone.listeners.StandaloneWarBootstrapper</listener-class>
+    </listener>
+    <listener>
+        <listener-class>io.apiman.gateway.platforms.war.listeners.WarGatewayBootstrapper</listener-class>
     </listener>
     <listener>
         <listener-class>org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap</listener-class>
