@@ -66,6 +66,12 @@ import javax.inject.Named;
         return new JsonLoggerImpl().createLogger(requestorKlazz);
     }
 
+    @Produces @ApplicationScoped
+    public static IStorageQuery provideStorageQuery(@New EsStorage esStorage) {
+        return initES(esStorage);
+    }
+
+
     /**
      * Initializes the ES storage (if required).
      *
