@@ -47,8 +47,12 @@
         <bundle>mvn:io.apiman/resteasy-all/2.3.10.Final_1</bundle>
     </feature>
 
+    <feature name="manager-osgi" version="${project.version}">
+        <bundle>mvn:io.apiman/manager-osgi-rest/${project.version}</bundle>
+        <bundle>mvn:io.apiman/manager-osgi-ui/${project.version}</bundle>
+    </feature>
+
     <feature name="apiman-all" version="${project.version}">
-        <bundle>mvn:com.google.guava/guava/18.0</bundle>
         <feature version="4.2.20">hibernate</feature>
         <feature>pax-cdi-1.1-weld</feature>
         <feature>keycloak</feature>
@@ -63,13 +67,7 @@
         <bundle>mvn:org.jboss.weld/weld-osgi-bundle/2.3.0.Final</bundle>
     </feature>
 
-    <feature name="manager-osgi" version="${project.version}">
-        <feature>apiman-lib</feature>
-        <bundle>mvn:io.apiman/manager-osgi-rest/${project.version}</bundle>
-        <bundle>mvn:io.apiman/manager-osgi-ui/${project.version}</bundle>
-    </feature>
-
-    <feature name="apiman-min" version="${project.version}">
+    <feature name="apiman-embed" version="${project.version}">
         <feature version="4.2.20">hibernate</feature>
         <feature>war</feature>
         <feature>pax-cdi-1.1-weld</feature>
@@ -80,9 +78,9 @@
         <bundle>mvn:org.jboss.weld/weld-osgi-bundle/2.3.0.Final</bundle>
     </feature>
 
-    <feature name="manager-min-osgi" version="${project.version}">
-        <feature>apiman-min</feature>
-        <bundle>mvn:io.apiman/manager-osgi-rest/${project.version}</bundle>
+    <feature name="manager-osgi-embed" version="${project.version}">
+        <feature>apiman-embed</feature>
+        <bundle>mvn:io.apiman/manager-osgi-rest-all/${project.version}</bundle>
         <bundle>mvn:io.apiman/manager-osgi-ui/${project.version}</bundle>
     </feature>
 
