@@ -41,16 +41,19 @@
         <bundle>mvn:org.codehaus.jackson/jackson-mapper-asl/1.9.9</bundle>
         <bundle>mvn:org.codehaus.jackson/jackson-jaxrs/1.9.9</bundle>
         <bundle>wrap:mvn:org.jboss.classfilewriter/jboss-classfilewriter/1.1.2.Final</bundle>
-<!--        <bundle>mvn:org.jboss.weld/weld-osgi-bundle/2.3.0.Final</bundle>-->
+    </feature>
+
+    <feature name="resteasy-osgi" version="2.3.10.Final">
         <bundle>mvn:io.apiman/resteasy-all/2.3.10.Final_1</bundle>
     </feature>
 
     <feature name="apiman-all" version="${project.version}">
         <bundle>mvn:com.google.guava/guava/18.0</bundle>
         <feature version="4.2.20">hibernate</feature>
-        <feature>pax-cdi-1.1-web-weld</feature>
+        <feature>pax-cdi-1.1-weld</feature>
         <feature>keycloak</feature>
         <feature>apiman-lib</feature>
+        <feature>resteasy-osgi</feature>
         <feature version="1.5.4">swagger</feature>
         <feature version="1.7.2">elasticsearch</feature>
         <feature>apiman-common</feature>
@@ -61,8 +64,24 @@
     </feature>
 
     <feature name="manager-osgi" version="${project.version}">
-        <feature>pax-cdi-1.1-web-weld</feature>
         <feature>apiman-lib</feature>
+        <bundle>mvn:io.apiman/manager-osgi-rest/${project.version}</bundle>
+        <bundle>mvn:io.apiman/manager-osgi-ui/${project.version}</bundle>
+    </feature>
+
+    <feature name="apiman-min" version="${project.version}">
+        <feature version="4.2.20">hibernate</feature>
+        <feature>war</feature>
+        <feature>pax-cdi-1.1-weld</feature>
+        <feature>keycloak</feature>
+        <feature>apiman-lib</feature>
+<!--        <feature version="1.5.4">swagger</feature>-->
+        <feature version="1.7.2">elasticsearch</feature>
+        <bundle>mvn:org.jboss.weld/weld-osgi-bundle/2.3.0.Final</bundle>
+    </feature>
+
+    <feature name="manager-min-osgi" version="${project.version}">
+        <feature>apiman-min</feature>
         <bundle>mvn:io.apiman/manager-osgi-rest/${project.version}</bundle>
         <bundle>mvn:io.apiman/manager-osgi-ui/${project.version}</bundle>
     </feature>
