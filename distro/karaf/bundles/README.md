@@ -100,6 +100,20 @@ install -s mvn:org.jboss.weld/weld-osgi-bundle/2.3.0.Final
 osgi:shutdown
 ```
 
+or
+
+```
+features:addurl mvn:io.apiman/apiman-karaf/1.2.0-SNAPSHOT/xml/features
+features:install apiman-all
+```
+
+or with embedded dependencies
+
+```
+features:addurl mvn:io.apiman/apiman-karaf/1.2.0-SNAPSHOT/xml/features
+features:install manager-osgi-embed
+```
+
 - Verify that the WebContext is well registered
 
 ```

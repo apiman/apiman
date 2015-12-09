@@ -13,7 +13,9 @@
     <packaging>pom</packaging>
     <modules>
         <module>resteasy</module>
+        <module>resteasy-all</module>
         <module>manager-osgi-rest</module>
+        <module>manager-osgi-rest-all</module>
         <module>manager-osgi-ui</module>
     </modules>
 
