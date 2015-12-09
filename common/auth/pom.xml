@@ -4,7 +4,7 @@
   <parent>
     <groupId>io.apiman</groupId>
     <artifactId>apiman-common</artifactId>
-    <version>1.2.0-SNAPSHOT</version>
+    <version>1.2.0.redhat-079</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>apiman-common-auth</artifactId>
