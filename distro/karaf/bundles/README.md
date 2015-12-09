@@ -104,14 +104,14 @@ or
 
 ```
 features:addurl mvn:io.apiman/apiman-karaf/1.2.0-SNAPSHOT/xml/features
-features:install manager-osgi
+features:install apiman-all
 ```
 
 or with embedded dependencies
 
 ```
 features:addurl mvn:io.apiman/apiman-karaf/1.2.0-SNAPSHOT/xml/features
-features:install manager-min-osgi
+features:install manager-osgi-embed
 ```
 
 - Verify that the WebContext is well registered
