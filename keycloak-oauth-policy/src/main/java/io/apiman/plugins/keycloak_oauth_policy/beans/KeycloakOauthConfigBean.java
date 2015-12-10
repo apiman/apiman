@@ -71,7 +71,7 @@ public class KeycloakOauthConfigBean {
      *
      */
     @JsonProperty("stripTokens")
-    private Boolean stripTokens;
+    private Boolean stripTokens = false;
     /**
      * Realm
      * <p>
@@ -101,7 +101,7 @@ public class KeycloakOauthConfigBean {
      * Delegate Kerberos Ticket
      */
     @JsonProperty("delegateKerberosTicket")
-    private boolean delegateKerberosTicket;
+    private boolean delegateKerberosTicket = false;
 
     /**
      * Forward Keycloak token information
