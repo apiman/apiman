@@ -26,6 +26,6 @@
     </dependencies>
 
     <build>
-        <finalName>api</finalName>
+        <finalName>apiman-gateway-api</finalName>
     </build>
 </project>

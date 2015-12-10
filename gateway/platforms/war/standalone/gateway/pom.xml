@@ -20,6 +20,6 @@
     </dependencies>
 
     <build>
-        <finalName>gateway</finalName>
+        <finalName>apiman-gateway</finalName>
     </build>
 </project>

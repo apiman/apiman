@@ -8,9 +8,15 @@ Presuming you have completed the normal _apiman_ build process (`mvn clean insta
 
     standalone
     |--api
-       |--target/api.war
+       |--target/apiman-gateway-api.war
     |--gateway
-       |--target/gateway.war
+       |--target/apiman-gateway.war
+    |--es
+       |--target/apiman-es.war
+       
+If you want to build them again, install from the _standalone_ directory:
+
+    mvn clean install
 
 ## Deployment
 
@@ -27,15 +33,13 @@ Example user and role config:
     <!-- user can be anything you want -->
     <user username="admin" password="admin123!" roles="apipublisher"/>
 
-Once you have deployed the WAR files and configured security, start Tomcat. You should see both the `api.war` and `gateway.war` get deployed successfully (see the Tomcat logs).
+Once you have deployed the WAR files and configured security, start Tomcat. You should see the WARs get deployed successfully (see the Tomcat logs).
 
 You can access them at:
 
-  http://localhost:8080/api
-
-and:
-
-  http://localhost:8080/gateway
+  * http://localhost:8080/apiman-gateway-api
+  * http://localhost:8080/apiman-gateway
+  * http://localhost:8080/apiman-es
 
 ## Dependencies
 
@@ -46,4 +50,3 @@ The standalone WARs depend on the _apiman micro war_ JAR. Since Tomcat (<=8) doe
   * Refactor common dependencies out of _micro war_ into a separate module.
   * Remove dependency on Jetty and other unneeded artifacts from the _micro war_ module.
   * Externalise configuration used in bootstrap process to allow, for example, use of the Infinispan component implementations instead of the ES ones.
-

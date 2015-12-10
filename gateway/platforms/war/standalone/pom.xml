@@ -14,6 +14,7 @@
     <module>common</module>
     <module>api</module>
     <module>gateway</module>
+    <module>es</module>
   </modules>
 
 </project>
