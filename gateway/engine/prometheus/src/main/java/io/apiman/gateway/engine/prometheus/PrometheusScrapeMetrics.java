@@ -48,7 +48,7 @@ import java.util.Objects;
 public class PrometheusScrapeMetrics implements IMetrics {
 
     private static final String APIMAN = "apiman";
-    private static final String APPLICATION = "application";
+    private static final String CLIENT = "client";
     private static final String API_VERSION = "apiVersion";
     private static final String API = "api";
     private static final String METHOD = "method";
@@ -69,7 +69,7 @@ public class PrometheusScrapeMetrics implements IMetrics {
                     RESPONSE_CODE,
                     API,
                     API_VERSION,
-                    APPLICATION)
+                    CLIENT)
             .register(collectorRegistry);
 
     final Counter errorsCtr = Counter.build()
@@ -79,7 +79,7 @@ public class PrometheusScrapeMetrics implements IMetrics {
                     RESPONSE_CODE,
                     API,
                     API_VERSION,
-                    APPLICATION)
+                    CLIENT)
             .register(collectorRegistry);
 
     final Counter failureCtr = Counter.build()
@@ -90,7 +90,7 @@ public class PrometheusScrapeMetrics implements IMetrics {
                     FAILURE_CODE,
                     API,
                     API_VERSION,
-                    APPLICATION)
+                    CLIENT)
             .register(collectorRegistry);
 
     final Summary requestDuration = Summary.build()
@@ -100,7 +100,7 @@ public class PrometheusScrapeMetrics implements IMetrics {
                     RESPONSE_CODE,
                     API,
                     API_VERSION,
-                    APPLICATION)
+                    CLIENT)
             .register(collectorRegistry);
 
     public PrometheusScrapeMetrics(Map<String, String> componentConfig,
@@ -160,7 +160,7 @@ public class PrometheusScrapeMetrics implements IMetrics {
                 Integer.toString(metric.getFailureCode()),
                 metric.getApiId(),
                 metric.getApiVersion(),
-                metric.getApplicationId()).inc();
+                metric.getClientId()).inc();
     }
 
     protected void doRequestsCtr(Counter ctr, RequestMetric metric) {
@@ -168,7 +168,7 @@ public class PrometheusScrapeMetrics implements IMetrics {
                 Integer.toString(metric.getResponseCode()),
                 metric.getApiId(),
                 metric.getApiVersion(),
-                metric.getApplicationId()).inc();
+                metric.getClientId()).inc();
     }
 
     protected void doRequestDuration(RequestMetric metric) {
@@ -176,7 +176,7 @@ public class PrometheusScrapeMetrics implements IMetrics {
                 Integer.toString(metric.getResponseCode()),
                 metric.getApiId(),
                 metric.getApiVersion(),
-                metric.getApplicationId()).observe(metric.getRequestDuration());
+                metric.getClientId()).observe(metric.getRequestDuration());
     }
 
     public void close(Handler<AsyncResult<Void>> completionHandler) {

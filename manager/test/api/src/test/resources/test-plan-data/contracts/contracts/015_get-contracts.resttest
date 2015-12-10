@@ -1,4 +1,4 @@
-GET /organizations/Organization1/applications/Application1/versions/1.0/contracts admin/admin
+GET /organizations/Organization1/clients/Client1/versions/1.0/contracts admin/admin
 
 ----
 200
@@ -6,11 +6,11 @@ Content-Type: application/json
 
 [
   {
-    "appOrganizationId" : "Organization1",
-    "appOrganizationName" : "Organization 1",
-    "appId" : "Application1",
-    "appName" : "Application 1",
-    "appVersion" : "1.0",
+    "clientOrganizationId" : "Organization1",
+    "clientOrganizationName" : "Organization 1",
+    "clientId" : "Client1",
+    "clientName" : "Client 1",
+    "clientVersion" : "1.0",
     "apiOrganizationId" : "Organization2",
     "apiOrganizationName" : "Organization 2",
     "apiId" : "API2",

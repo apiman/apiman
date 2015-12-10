@@ -15,20 +15,20 @@
  */
 package io.apiman.manager.api.es;
 
+import io.apiman.manager.api.beans.apis.ApiBean;
 import io.apiman.manager.api.beans.apis.ApiDefinitionType;
 import io.apiman.manager.api.beans.apis.ApiGatewayBean;
 import io.apiman.manager.api.beans.apis.ApiPlanBean;
 import io.apiman.manager.api.beans.apis.ApiStatus;
-import io.apiman.manager.api.beans.apis.ApiBean;
 import io.apiman.manager.api.beans.apis.ApiVersionBean;
 import io.apiman.manager.api.beans.apis.EndpointContentType;
 import io.apiman.manager.api.beans.apis.EndpointType;
-import io.apiman.manager.api.beans.apps.ApplicationBean;
-import io.apiman.manager.api.beans.apps.ApplicationStatus;
-import io.apiman.manager.api.beans.apps.ApplicationVersionBean;
 import io.apiman.manager.api.beans.audit.AuditEntityType;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
 import io.apiman.manager.api.beans.audit.AuditEntryType;
+import io.apiman.manager.api.beans.clients.ClientBean;
+import io.apiman.manager.api.beans.clients.ClientStatus;
+import io.apiman.manager.api.beans.clients.ClientVersionBean;
 import io.apiman.manager.api.beans.contracts.ContractBean;
 import io.apiman.manager.api.beans.download.DownloadBean;
 import io.apiman.manager.api.beans.download.DownloadType;
@@ -50,8 +50,8 @@ import io.apiman.manager.api.beans.policies.PolicyType;
 import io.apiman.manager.api.beans.summary.ApiEntryBean;
 import io.apiman.manager.api.beans.summary.ApiSummaryBean;
 import io.apiman.manager.api.beans.summary.ApiVersionSummaryBean;
-import io.apiman.manager.api.beans.summary.ApplicationSummaryBean;
-import io.apiman.manager.api.beans.summary.ApplicationVersionSummaryBean;
+import io.apiman.manager.api.beans.summary.ClientSummaryBean;
+import io.apiman.manager.api.beans.summary.ClientVersionSummaryBean;
 import io.apiman.manager.api.beans.summary.ContractSummaryBean;
 import io.apiman.manager.api.beans.summary.GatewaySummaryBean;
 import io.apiman.manager.api.beans.summary.OrganizationSummaryBean;
@@ -189,11 +189,11 @@ public class EsMarshalling {
                 .startObject()
                     .field("id", bean.getId())
                     .field("apiKey", bean.getApikey())
-                    .field("appOrganizationId", bean.getApplication().getApplication().getOrganization().getId())
-                    .field("appOrganizationName", bean.getApplication().getApplication().getOrganization().getName())
-                    .field("appId", bean.getApplication().getApplication().getId())
-                    .field("appName", bean.getApplication().getApplication().getName())
-                    .field("appVersion", bean.getApplication().getVersion())
+                    .field("clientOrganizationId", bean.getClient().getClient().getOrganization().getId())
+                    .field("clientOrganizationName", bean.getClient().getClient().getOrganization().getName())
+                    .field("clientId", bean.getClient().getClient().getId())
+                    .field("clientName", bean.getClient().getClient().getName())
+                    .field("clientVersion", bean.getClient().getVersion())
                     .field("apiOrganizationId", bean.getApi().getApi().getOrganization().getId())
                     .field("apiOrganizationName", bean.getApi().getApi().getOrganization().getName())
                     .field("apiId", bean.getApi().getApi().getId())
@@ -373,7 +373,7 @@ public class EsMarshalling {
      * @return the content builder
      * @throws StorageException when a storage problem occurs while storing a bean
      */
-    public static XContentBuilder marshall(ApplicationBean bean) throws StorageException {
+    public static XContentBuilder marshall(ClientBean bean) throws StorageException {
         try {
             preMarshall(bean);
             XContentBuilder builder = XContentFactory.jsonBuilder()
@@ -399,18 +399,18 @@ public class EsMarshalling {
      * @return the content builder
      * @throws StorageException when a storage problem occurs while storing a bean
      */
-    public static XContentBuilder marshall(ApplicationVersionBean bean) throws StorageException {
+    public static XContentBuilder marshall(ClientVersionBean bean) throws StorageException {
         try {
-            ApplicationBean app = bean.getApplication();
-            OrganizationBean org = app.getOrganization();
+            ClientBean client = bean.getClient();
+            OrganizationBean org = client.getOrganization();
             preMarshall(bean);
             XContentBuilder builder = XContentFactory.jsonBuilder()
                 .startObject()
                     .field("organizationId", org.getId())
                     .field("organizationName", org.getName())
-                    .field("applicationId", app.getId())
-                    .field("applicationName", app.getName())
-                    .field("applicationDescription", app.getDescription())
+                    .field("clientId", client.getId())
+                    .field("clientName", client.getName())
+                    .field("clientDescription", client.getDescription())
                     .field("version", bean.getVersion())
                     .field("status", bean.getStatus())
                     .field("createdBy", bean.getCreatedBy())
@@ -780,11 +780,11 @@ public class EsMarshalling {
         bean.setContractId(asLong(source.get("id")));
         bean.setApikey(asString(source.get("apiKey")));
         bean.setCreatedOn(asDate(source.get("createdOn")));
-        bean.setAppOrganizationId(asString(source.get("appOrganizationId")));
-        bean.setAppOrganizationName(asString(source.get("appOrganizationName")));
-        bean.setAppId(asString(source.get("appId")));
-        bean.setAppName(asString(source.get("appName")));
-        bean.setAppVersion(asString(source.get("appVersion")));
+        bean.setClientOrganizationId(asString(source.get("clientOrganizationId")));
+        bean.setClientOrganizationName(asString(source.get("clientOrganizationName")));
+        bean.setClientId(asString(source.get("clientId")));
+        bean.setClientName(asString(source.get("clientName")));
+        bean.setClientVersion(asString(source.get("clientVersion")));
         bean.setApiOrganizationId(asString(source.get("apiOrganizationId")));
         bean.setApiOrganizationName(asString(source.get("apiOrganizationName")));
         bean.setApiId(asString(source.get("apiId")));
@@ -1020,13 +1020,13 @@ public class EsMarshalling {
     /**
      * Unmarshals the given map source into a bean.
      * @param source the source
-     * @return the application
+     * @return the client
      */
-    public static ApplicationBean unmarshallApplication(Map<String, Object> source) {
+    public static ClientBean unmarshallClient(Map<String, Object> source) {
         if (source == null) {
             return null;
         }
-        ApplicationBean bean = new ApplicationBean();
+        ClientBean bean = new ClientBean();
         bean.setId(asString(source.get("id")));
         bean.setName(asString(source.get("name")));
         bean.setDescription(asString(source.get("description")));
@@ -1039,13 +1039,13 @@ public class EsMarshalling {
     /**
      * Unmarshals the given map source into a bean.
      * @param source the source
-     * @return the application summary
+     * @return the client summary
      */
-    public static ApplicationSummaryBean unmarshallApplicationSummary(Map<String, Object> source) {
+    public static ClientSummaryBean unmarshallClientSummary(Map<String, Object> source) {
         if (source == null) {
             return null;
         }
-        ApplicationSummaryBean bean = new ApplicationSummaryBean();
+        ClientSummaryBean bean = new ClientSummaryBean();
         bean.setOrganizationId(asString(source.get("organizationId")));
         bean.setOrganizationName(asString(source.get("organizationName")));
         bean.setId(asString(source.get("id")));
@@ -1058,15 +1058,15 @@ public class EsMarshalling {
     /**
      * Unmarshals the given map source into a bean.
      * @param source the source
-     * @return the application version
+     * @return the client version
      */
-    public static ApplicationVersionBean unmarshallApplicationVersion(Map<String, Object> source) {
+    public static ClientVersionBean unmarshallClientVersion(Map<String, Object> source) {
         if (source == null) {
             return null;
         }
-        ApplicationVersionBean bean = new ApplicationVersionBean();
+        ClientVersionBean bean = new ClientVersionBean();
         bean.setVersion(asString(source.get("version")));
-        bean.setStatus(asEnum(source.get("status"), ApplicationStatus.class));
+        bean.setStatus(asEnum(source.get("status"), ClientStatus.class));
         bean.setCreatedBy(asString(source.get("createdBy")));
         bean.setCreatedOn(asDate(source.get("createdOn")));
         bean.setModifiedBy(asString(source.get("modifiedBy")));
@@ -1080,19 +1080,19 @@ public class EsMarshalling {
     /**
      * Unmarshals the given map source into a bean.
      * @param source the source
-     * @return the application version summary
+     * @return the client version summary
      */
-    public static ApplicationVersionSummaryBean unmarshallApplicationVersionSummary(Map<String, Object> source) {
+    public static ClientVersionSummaryBean unmarshallClientVersionSummary(Map<String, Object> source) {
         if (source == null) {
             return null;
         }
-        ApplicationVersionSummaryBean bean = new ApplicationVersionSummaryBean();
-        bean.setDescription(asString(source.get("applicationDescription")));
-        bean.setId(asString(source.get("applicationId")));
-        bean.setName(asString(source.get("applicationName")));
+        ClientVersionSummaryBean bean = new ClientVersionSummaryBean();
+        bean.setDescription(asString(source.get("clientDescription")));
+        bean.setId(asString(source.get("clientId")));
+        bean.setName(asString(source.get("clientName")));
         bean.setOrganizationId(asString(source.get("organizationId")));
         bean.setOrganizationName(asString(source.get("organizationName")));
-        bean.setStatus(asEnum(source.get("status"), ApplicationStatus.class));
+        bean.setStatus(asEnum(source.get("status"), ClientStatus.class));
         bean.setVersion(asString(source.get("version")));
         postMarshall(bean);
         return bean;

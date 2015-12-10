@@ -35,7 +35,7 @@ Content-Type: application/json
         "what" : "Grant",
         "who" : "admin"
       },
-      { "data" : "{\"userId\":\"user1\",\"roles\":[\"ApplicationDeveloper\"]}",
+      { "data" : "{\"userId\":\"user1\",\"roles\":[\"ClientDeveloper\"]}",
         "entityId" : null,
         "entityType" : "Organization",
         "entityVersion" : null,

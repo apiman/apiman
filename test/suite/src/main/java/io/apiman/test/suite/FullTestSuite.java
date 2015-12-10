@@ -32,10 +32,10 @@ import java.io.InputStreamReader;
  * 2) Create a Test organization
  * 3) Add two Plans (Gold, Silver)
  * 4) Add an "Echo" API
- * 5) Create an application
- * 6) Create a contract from the app to the API via the Gold plan
- * 7) Create a contract from the app to the API via the Silver plan
- * 8) Publish and Register the API and app
+ * 5) Create a client
+ * 6) Create a contract from the client to the API via the Gold plan
+ * 7) Create a contract from the client to the API via the Silver plan
+ * 8) Publish and Register the API and client
  * 9) Send requests to the gateway
  * </pre>
  *

@@ -10,8 +10,8 @@ module Apiman {
             var apiVer = params.apiv;
             var planId = params.planid;
             
-            $scope.refreshAppVersions = function(organizationId, appId, onSuccess, onError) {
-                OrgSvcs.query({ organizationId: organizationId, entityType: 'applications', entityId: appId, versionsOrActivity: 'versions' }, function(versions) {
+            $scope.refreshClientVersions = function(organizationId, clientId, onSuccess, onError) {
+                OrgSvcs.query({ organizationId: organizationId, entityType: 'clients', entityId: clientId, versionsOrActivity: 'versions' }, function(versions) {
                     var plainVersions = [];
 
                     angular.forEach(versions, function(version) {
@@ -20,7 +20,7 @@ module Apiman {
                         }
                     });
 
-                    $scope.appVersions = plainVersions;
+                    $scope.clientVersions = plainVersions;
 
                     if (onSuccess) {
                         onSuccess(plainVersions);
@@ -29,22 +29,22 @@ module Apiman {
             };
             
             var pageData = {
-                apps: $q(function(resolve, reject) {
-                    CurrentUserSvcs.query({ what: 'applications' }, function(apps) {
-                        Logger.info("apps: {0}", apps);
-                        if ($rootScope.mruApp) {
-                            for (var i = 0; i < apps.length; i++) {
-                                var app = apps[i];
-                                if (app.organizationId == $rootScope.mruApp.application.organization.id && app.id == $rootScope.mruApp.application.id) {
-                                    $scope.selectedApp = app;
+                clients: $q(function(resolve, reject) {
+                    CurrentUserSvcs.query({ what: 'clients' }, function(clients) {
+                        Logger.info("clients: {0}", clients);
+                        if ($rootScope.mruClient) {
+                            for (var i = 0; i < clients.length; i++) {
+                                var client = clients[i];
+                                if (client.organizationId == $rootScope.mruClient.client.organization.id && client.id == $rootScope.mruClient.client.id) {
+                                    $scope.selectedClient = client;
                                 }
                             }
-                        } else if (apps) {
-                            $scope.selectedApp = apps[0];
+                        } else if (clients) {
+                            $scope.selectedClient = clients[0];
                         } else {
-                            $scope.selectedApp = undefined;
+                            $scope.selectedClient = undefined;
                         }
-                        resolve(apps);
+                        resolve(clients);
                     }, reject);
                 }),
                 selectedApi: $q(function(resolve, reject) {
@@ -64,22 +64,22 @@ module Apiman {
                 })
             };
 
-            $scope.$watch('selectedApp', function(newValue) {
-                Logger.debug("App selected: {0}", newValue);
-                $scope.selectedAppVersion = undefined;
-                $scope.appVersions = [];
+            $scope.$watch('selectedClient', function(newValue) {
+                Logger.debug("Client App selected: {0}", newValue);
+                $scope.selectedClientVersion = undefined;
+                $scope.clientVersions = [];
 
                 if (newValue) {
-                    $scope.refreshAppVersions(newValue.organizationId, newValue.id, function(versions) {
+                    $scope.refreshClientVersions(newValue.organizationId, newValue.id, function(versions) {
                         Logger.debug("Versions: {0}", versions);
 
-                        if ($rootScope.mruApp) {
-                            if ($rootScope.mruApp.application.organization.id == newValue.organizationId && $rootScope.mruApp.application.id == newValue.id) {
-                                $scope.selectedAppVersion = $rootScope.mruApp.version;
+                        if ($rootScope.mruClient) {
+                            if ($rootScope.mruClient.client.organization.id == newValue.organizationId && $rootScope.mruClient.client.id == newValue.id) {
+                                $scope.selectedClientVersion = $rootScope.mruClient.version;
                             }
                         } else {
                             if (versions.length > 0) {
-                                $scope.selectedAppVersion = versions[0];
+                                $scope.selectedClientVersion = versions[0];
                             }
                         }
                     });
@@ -124,7 +124,7 @@ module Apiman {
 
             $scope.createContract = function() {
                 Logger.log("Creating new contract from {0}/{1} ({2}) to {3}/{4} ({5}) through the {6} plan!", 
-                        $scope.selectedApp.organizationName, $scope.selectedApp.name, $scope.selectedAppVersion,
+                        $scope.selectedClient.organizationName, $scope.selectedClient.name, $scope.selectedClientVersion,
                         $scope.selectedApi.organizationName, $scope.selectedApi.name, $scope.selectedApi.version,
                         $scope.selectedPlan.planName);
 
@@ -137,8 +137,8 @@ module Apiman {
                     planId : $scope.selectedPlan.planId
                 };
 
-                OrgSvcs.save({ organizationId: $scope.selectedApp.organizationId, entityType: 'applications', entityId: $scope.selectedApp.id, versionsOrActivity: 'versions', version: $scope.selectedAppVersion, policiesOrActivity: 'contracts' }, newContract, function(reply) {
-                    PageLifecycle.redirectTo('/orgs/{0}/apps/{1}/{2}/contracts', $scope.selectedApp.organizationId, $scope.selectedApp.id, $scope.selectedAppVersion);
+                OrgSvcs.save({ organizationId: $scope.selectedClient.organizationId, entityType: 'clients', entityId: $scope.selectedClient.id, versionsOrActivity: 'versions', version: $scope.selectedClientVersion, policiesOrActivity: 'contracts' }, newContract, function(reply) {
+                    PageLifecycle.redirectTo('/orgs/{0}/clients/{1}/{2}/contracts', $scope.selectedClient.organizationId, $scope.selectedClient.id, $scope.selectedClientVersion);
                 }, PageLifecycle.handleError);
             };
             

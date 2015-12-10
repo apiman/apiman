@@ -126,15 +126,15 @@
             <column name="permissions" valueNumeric="0"/>
         </insert>
         <insert tableName="permissions">
-            <column name="role_id" value="ApplicationDeveloper"/>
+            <column name="role_id" value="ClientAppDeveloper"/>
             <column name="permissions" valueNumeric="6"/>
         </insert>
         <insert tableName="permissions">
-            <column name="role_id" value="ApplicationDeveloper"/>
+            <column name="role_id" value="ClientAppDeveloper"/>
             <column name="permissions" valueNumeric="8"/>
         </insert>
         <insert tableName="permissions">
-            <column name="role_id" value="ApplicationDeveloper"/>
+            <column name="role_id" value="ClientAppDeveloper"/>
             <column name="permissions" valueNumeric="7"/>
         </insert>
         <insert tableName="permissions">
@@ -282,13 +282,13 @@
             <column name="name" value="Organization Owner"/>
         </insert>
         <insert tableName="roles">
-            <column name="id" value="ApplicationDeveloper"/>
+            <column name="id" value="ClientAppDeveloper"/>
             <column name="auto_grant"/>
             <column name="created_by" value="admin"/>
             <column name="created_on" valueDate="2015-06-18 17:56:57.632"/>
             <column name="description"
-                    value="Users responsible for creating and managing applications should be granted this role within an Organization."/>
-            <column name="name" value="Application Developer"/>
+                    value="Users responsible for creating and managing client apps should be granted this role within an Organization."/>
+            <column name="name" value="ClientApp Developer"/>
         </insert>
         <insert tableName="roles">
             <column name="id" value="APIDeveloper"/>

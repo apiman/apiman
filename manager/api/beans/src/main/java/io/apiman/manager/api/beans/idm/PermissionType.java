@@ -24,7 +24,7 @@ public enum PermissionType {
     
     orgView,  orgEdit,  orgAdmin,
     apiView,  apiEdit,  apiAdmin,
-    appView,  appEdit,  appAdmin,
+    clientView,  clientEdit,  clientAdmin,
     planView, planEdit, planAdmin
     
 }

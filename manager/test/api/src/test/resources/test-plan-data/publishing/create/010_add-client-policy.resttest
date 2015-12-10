@@ -1,0 +1,28 @@
+POST /organizations/Organization1/clients/Client1/versions/1.0/policies admin/admin
+Content-Type: application/json
+
+{
+  "configuration" : "{ 'foo' : 'bar' }",
+  "definitionId" : "PolicyDefTwo"
+}
+----
+200
+Content-Type: application/json
+
+{  
+  "type" : "Client",
+  "organizationId" : "Organization1",
+  "entityId" : "Client1",
+  "entityVersion" : "1.0",
+  "name" : "Policy Def Two",
+  "configuration" : "{ 'foo' : 'bar' }",
+  "createdBy" : "admin",
+  "modifiedBy" : "admin",
+  "definition" : {  
+    "id" : "PolicyDefTwo",
+    "policyImpl" : "org.example.PolicyDefTwo",
+    "name" : "Policy Def Two",
+    "description" : "This is the second policy def.",
+    "icon" : "two"
+  }
+}

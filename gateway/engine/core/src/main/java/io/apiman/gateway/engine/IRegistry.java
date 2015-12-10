@@ -19,7 +19,7 @@ import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.Api;
 import io.apiman.gateway.engine.beans.ApiContract;
 import io.apiman.gateway.engine.beans.ApiRequest;
-import io.apiman.gateway.engine.beans.Application;
+import io.apiman.gateway.engine.beans.Client;
 import io.apiman.gateway.engine.beans.Contract;
 import io.apiman.gateway.engine.beans.exceptions.InvalidContractException;
 import io.apiman.gateway.engine.beans.exceptions.PublishingException;
@@ -62,20 +62,20 @@ public interface IRegistry {
     public void retireApi(Api api, IAsyncResultHandler<Void> handler);
 
     /**
-     * Registers a new {@link Application} with the registry.
-     * @param application the application being registered
+     * Registers a new {@link Client} with the registry.
+     * @param client the client being registered
      * @param handler the result handler
      * @throws RegistrationException when unable to register entity
      */
-    public void registerApplication(Application application, IAsyncResultHandler<Void> handler);
+    public void registerClient(Client client, IAsyncResultHandler<Void> handler);
 
     /**
-     * Removes an {@link Application} from the registry.
-     * @param application the application to remove
+     * Removes an {@link Client} from the registry.
+     * @param client the client to remove
      * @param handler the result handler
      * @throws RegistrationException when unable to register entity
      */
-    public void unregisterApplication(Application application, IAsyncResultHandler<Void> handler);
+    public void unregisterClient(Client client, IAsyncResultHandler<Void> handler);
 
     /**
      * Gets an API by its coordinates.

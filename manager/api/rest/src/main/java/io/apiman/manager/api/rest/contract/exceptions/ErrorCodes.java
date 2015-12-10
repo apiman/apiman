@@ -18,7 +18,7 @@ package io.apiman.manager.api.rest.contract.exceptions;
 
 
 /**
- * A set of error codes used by the application when returning errors via
+ * A set of error codes used by the Client when returning errors via
  * the DT REST API.
  *
  * @author eric.wittmann@redhat.com
@@ -65,23 +65,23 @@ public final class ErrorCodes {
 
 
     //
-    // Application API related
+    // Client API related
     //
-    public static final int APP_ALREADY_EXISTS              = 4001;
-    public static final int APP_NOT_FOUND                   = 4002;
-    public static final int APP_VERSION_NOT_FOUND           = 4003;
+    public static final int CLIENT_ALREADY_EXISTS              = 4001;
+    public static final int CLIENT_NOT_FOUND                   = 4002;
+    public static final int CLIENT_VERSION_NOT_FOUND           = 4003;
     public static final int CONTRACT_NOT_FOUND              = 4004;
     public static final int CONTRACT_ALREADY_EXISTS         = 4005;
-    public static final int APP_STATUS_ERROR                = 4006;
-    public static final int APP_VERSION_ALREADY_EXISTS      = 4007;
+    public static final int CLIENT_STATUS_ERROR                = 4006;
+    public static final int CLIENT_VERSION_ALREADY_EXISTS      = 4007;
 
-    public static final String APP_ALREADY_EXISTS_INFO      = null;
-    public static final String APP_NOT_FOUND_INFO           = null;
-    public static final String APP_VERSION_NOT_FOUND_INFO   = null;
+    public static final String CLIENT_ALREADY_EXISTS_INFO      = null;
+    public static final String CLIENT_NOT_FOUND_INFO           = null;
+    public static final String CLIENT_VERSION_NOT_FOUND_INFO   = null;
     public static final String CONTRACT_NOT_FOUND_INFO      = null;
     public static final String CONTRACT_ALREADY_EXISTS_INFO = null;
-    public static final String APP_STATUS_ERROR_INFO        = null;
-    public static final String APP_VERSION_ALREADY_EXISTS_INFO = null;
+    public static final String CLIENT_STATUS_ERROR_INFO        = null;
+    public static final String CLIENT_VERSION_ALREADY_EXISTS_INFO = null;
 
 
     //

@@ -17,9 +17,9 @@ package io.apiman.manager.api.core;
 
 import io.apiman.manager.api.beans.apis.ApiBean;
 import io.apiman.manager.api.beans.apis.ApiVersionBean;
-import io.apiman.manager.api.beans.apps.ApplicationBean;
-import io.apiman.manager.api.beans.apps.ApplicationVersionBean;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
+import io.apiman.manager.api.beans.clients.ClientBean;
+import io.apiman.manager.api.beans.clients.ClientVersionBean;
 import io.apiman.manager.api.beans.contracts.ContractBean;
 import io.apiman.manager.api.beans.download.DownloadBean;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
@@ -59,8 +59,8 @@ public interface IStorage {
      */
 
     public void createOrganization(OrganizationBean organization) throws StorageException;
-    public void createApplication(ApplicationBean application) throws StorageException;
-    public void createApplicationVersion(ApplicationVersionBean version) throws StorageException;
+    public void createClient(ClientBean client) throws StorageException;
+    public void createClientVersion(ClientVersionBean version) throws StorageException;
     public void createContract(ContractBean contract) throws StorageException;
     public void createApi(ApiBean api) throws StorageException;
     public void createApiVersion(ApiVersionBean version) throws StorageException;
@@ -78,8 +78,8 @@ public interface IStorage {
      */
 
     public void updateOrganization(OrganizationBean organization) throws StorageException;
-    public void updateApplication(ApplicationBean application) throws StorageException;
-    public void updateApplicationVersion(ApplicationVersionBean version) throws StorageException;
+    public void updateClient(ClientBean client) throws StorageException;
+    public void updateClientVersion(ClientVersionBean version) throws StorageException;
     public void updateApi(ApiBean api) throws StorageException;
     public void updateApiVersion(ApiVersionBean version) throws StorageException;
     public void updateApiDefinition(ApiVersionBean version, InputStream definitionStream) throws StorageException;
@@ -95,8 +95,8 @@ public interface IStorage {
      */
 
     public void deleteOrganization(OrganizationBean organization) throws StorageException;
-    public void deleteApplication(ApplicationBean application) throws StorageException;
-    public void deleteApplicationVersion(ApplicationVersionBean version) throws StorageException;
+    public void deleteClient(ClientBean client) throws StorageException;
+    public void deleteClientVersion(ClientVersionBean version) throws StorageException;
     public void deleteContract(ContractBean contract) throws StorageException;
     public void deleteApi(ApiBean api) throws StorageException;
     public void deleteApiVersion(ApiVersionBean version) throws StorageException;
@@ -114,8 +114,8 @@ public interface IStorage {
      */
 
     public OrganizationBean getOrganization(String id) throws StorageException;
-    public ApplicationBean getApplication(String organizationId, String id) throws StorageException;
-    public ApplicationVersionBean getApplicationVersion(String organizationId, String applicationId, String version) throws StorageException;
+    public ClientBean getClient(String organizationId, String id) throws StorageException;
+    public ClientVersionBean getClientVersion(String organizationId, String clientId, String version) throws StorageException;
     public ContractBean getContract(Long id) throws StorageException;
     public ApiBean getApi(String organizationId, String id) throws StorageException;
     public ApiVersionBean getApiVersion(String organizationId, String apiId, String version) throws StorageException;
@@ -165,9 +165,9 @@ public interface IStorage {
     public Iterator<PlanVersionBean> getAllPlanVersions(String organizationId, String planId) throws StorageException;
     public Iterator<ApiBean> getAllApis(String organizationId) throws StorageException;
     public Iterator<ApiVersionBean> getAllApiVersions(String organizationId, String apiId) throws StorageException;
-    public Iterator<ApplicationBean> getAllApplications(String organizationId) throws StorageException;
-    public Iterator<ApplicationVersionBean> getAllApplicationVersions(String organizationId, String applicationId) throws StorageException;
-    public Iterator<ContractBean> getAllContracts(String organizationId, String applicationId, String version) throws StorageException;
+    public Iterator<ClientBean> getAllClients(String organizationId) throws StorageException;
+    public Iterator<ClientVersionBean> getAllClientVersions(String organizationId, String clientId) throws StorageException;
+    public Iterator<ContractBean> getAllContracts(String organizationId, String clientId, String version) throws StorageException;
     public Iterator<AuditEntryBean> getAllAuditEntries(String organizationId) throws StorageException;
     public Iterator<PolicyBean> getAllPolicies(String organizationId, String entityId, String version, PolicyType type) throws StorageException;
     public Iterator<UserBean> getAllUsers() throws StorageException;

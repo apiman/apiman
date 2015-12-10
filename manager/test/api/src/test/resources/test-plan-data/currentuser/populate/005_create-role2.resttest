@@ -2,15 +2,15 @@ POST /roles admin/admin
 Content-Type: application/json
 
 {
-  "name" : "Application Roles",
-  "permissions" : [ "appEdit", "appAdmin", "appView" ]
+  "name" : "Client Roles",
+  "permissions" : [ "clientEdit", "clientAdmin", "clientView" ]
 }
 ----
 200
 Content-Type: application/json
 
 {
-  "id" : "ApplicationRoles",
-  "name" : "Application Roles",
-  "permissions" : [ "appEdit", "appAdmin", "appView" ]
+  "id" : "ClientRoles",
+  "name" : "Client Roles",
+  "permissions" : [ "clientEdit", "clientAdmin", "clientView" ]
 }

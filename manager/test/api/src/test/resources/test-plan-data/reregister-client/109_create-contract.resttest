@@ -1,0 +1,46 @@
+POST /organizations/Organization/clients/Client/versions/1.0/contracts admin/admin
+Content-Type: application/json
+
+{
+  "apiOrgId" : "Organization",
+  "apiId" : "API",
+  "apiVersion" : "1.0",
+  "planId" : "Plan"
+}
+----
+200
+Content-Type: application/json
+
+{
+  "client" : {
+    "client" : {
+      "organization" : {
+        "id" : "Organization"
+      },
+      "id" : "Client"
+    },
+    "status" : "Ready",
+    "version" : "1.0",
+    "createdBy" : "admin"
+  },
+  
+  "api":{
+    "api" : {
+      "organization" : {
+        "id" : "Organization"
+      },
+      "id" : "API"
+    },
+    "version" : "1.0"
+  },
+  
+  "plan" : {
+    "plan" : {
+      "organization" : {
+        "id" : "Organization"
+      },
+      "id" : "Plan"
+    },
+    "version" : "1.0"
+  }
+}

@@ -17,9 +17,9 @@ package io.apiman.manager.api.exportimport.json;
 
 import io.apiman.manager.api.beans.apis.ApiBean;
 import io.apiman.manager.api.beans.apis.ApiVersionBean;
-import io.apiman.manager.api.beans.apps.ApplicationBean;
-import io.apiman.manager.api.beans.apps.ApplicationVersionBean;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
+import io.apiman.manager.api.beans.clients.ClientBean;
+import io.apiman.manager.api.beans.clients.ClientVersionBean;
 import io.apiman.manager.api.beans.contracts.ContractBean;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
 import io.apiman.manager.api.beans.idm.RoleBean;
@@ -197,8 +197,8 @@ public class JsonImportReader extends AbstractJsonReader implements IImportReade
                     case Apis:
                         readApis();
                         break;
-                    case Apps:
-                        readApps();
+                    case Clients:
+                        readClients();
                         break;
                     case Audits:
                         processEntities(AuditEntryBean.class, new EntityHandler<AuditEntryBean>() {
@@ -270,7 +270,7 @@ public class JsonImportReader extends AbstractJsonReader implements IImportReade
         }
     }
 
-    public void readApps() throws Exception {
+    public void readClients() throws Exception {
         current = nextToken();
         if (current == JsonToken.END_ARRAY) {
             return;
@@ -278,16 +278,16 @@ public class JsonImportReader extends AbstractJsonReader implements IImportReade
         while (nextToken() != JsonToken.END_ARRAY) {
             // Traverse each api definition
             while(nextToken() != JsonToken.END_OBJECT) {
-                if (jp.getCurrentName().equals(ApplicationBean.class.getSimpleName())) {
+                if (jp.getCurrentName().equals(ClientBean.class.getSimpleName())) {
                     current = nextToken();
-                    ApplicationBean apiBean = jp.readValueAs(ApplicationBean.class);
-                    dispatcher.application(apiBean);
+                    ClientBean apiBean = jp.readValueAs(ClientBean.class);
+                    dispatcher.client(apiBean);
                 } else {
                     OrgElementsEnum fieldName = OrgElementsEnum.valueOf(jp.getCurrentName());
                     current = nextToken();
                     switch (fieldName) {
                     case Versions:
-                        readApplicationVersions();
+                        readClientVersions();
                         break;
                     default:
                         throw new RuntimeException("Unhandled entity " + fieldName + " with token " + current);
@@ -361,18 +361,18 @@ public class JsonImportReader extends AbstractJsonReader implements IImportReade
         }
     }
 
-    public void readApplicationVersions() throws Exception {
+    public void readClientVersions() throws Exception {
         current = nextToken();
         if (current == JsonToken.END_ARRAY) {
             return;
         }
         while (nextToken() != JsonToken.END_ARRAY) {
-            // Traverse each application definition
+            // Traverse each client definition
             while(nextToken() != JsonToken.END_OBJECT) {
-                if (jp.getCurrentName().equals(ApplicationVersionBean.class.getSimpleName())) {
+                if (jp.getCurrentName().equals(ClientVersionBean.class.getSimpleName())) {
                     current = nextToken();
-                    ApplicationVersionBean applicationBean = jp.readValueAs(ApplicationVersionBean.class);
-                    dispatcher.applicationVersion(applicationBean);
+                    ClientVersionBean clientBean = jp.readValueAs(ClientVersionBean.class);
+                    dispatcher.clientVersion(clientBean);
                 } else {
                     OrgElementsEnum fieldName = OrgElementsEnum.valueOf(jp.getCurrentName());
                     current = nextToken();
@@ -381,7 +381,7 @@ public class JsonImportReader extends AbstractJsonReader implements IImportReade
                         processEntities(PolicyBean.class, new EntityHandler<PolicyBean>() {
                             @Override
                             public void handleEntity(PolicyBean policy) throws Exception {
-                                dispatcher.applicationPolicy(policy);
+                                dispatcher.clientPolicy(policy);
                             }
                         });
                         break;
@@ -389,7 +389,7 @@ public class JsonImportReader extends AbstractJsonReader implements IImportReade
                         processEntities(ContractBean.class, new EntityHandler<ContractBean>() {
                             @Override
                             public void handleEntity(ContractBean contract) throws Exception {
-                                dispatcher.applicationContract(contract);
+                                dispatcher.clientContract(contract);
                             }
                         });
                         break;

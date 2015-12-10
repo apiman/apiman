@@ -30,11 +30,11 @@ public class ContractSummaryBean implements Serializable {
 
     private Long contractId;
     private String apikey;
-    private String appOrganizationId;
-    private String appOrganizationName;
-    private String appId;
-    private String appName;
-    private String appVersion;
+    private String clientOrganizationId;
+    private String clientOrganizationName;
+    private String clientId;
+    private String clientName;
+    private String clientVersion;
     private String apiOrganizationId;
     private String apiOrganizationName;
     private String apiId;
@@ -53,59 +53,59 @@ public class ContractSummaryBean implements Serializable {
     }
 
     /**
-     * @return the appOrganizationId
+     * @return the clientOrganizationId
      */
-    public String getAppOrganizationId() {
-        return appOrganizationId;
+    public String getClientOrganizationId() {
+        return clientOrganizationId;
     }
 
     /**
-     * @param appOrganizationId the appOrganizationId to set
+     * @param clientOrganizationId the clientOrganizationId to set
      */
-    public void setAppOrganizationId(String appOrganizationId) {
-        this.appOrganizationId = appOrganizationId;
+    public void setClientOrganizationId(String clientOrganizationId) {
+        this.clientOrganizationId = clientOrganizationId;
     }
 
     /**
-     * @return the appOrganizationName
+     * @return the clientOrganizationName
      */
-    public String getAppOrganizationName() {
-        return appOrganizationName;
+    public String getClientOrganizationName() {
+        return clientOrganizationName;
     }
 
     /**
-     * @param appOrganizationName the appOrganizationName to set
+     * @param clientOrganizationName the clientOrganizationName to set
      */
-    public void setAppOrganizationName(String appOrganizationName) {
-        this.appOrganizationName = appOrganizationName;
+    public void setClientOrganizationName(String clientOrganizationName) {
+        this.clientOrganizationName = clientOrganizationName;
     }
 
     /**
-     * @return the appId
+     * @return the clientId
      */
-    public String getAppId() {
-        return appId;
+    public String getClientId() {
+        return clientId;
     }
 
     /**
-     * @param appId the appId to set
+     * @param clientId the clientId to set
      */
-    public void setAppId(String appId) {
-        this.appId = appId;
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
     }
 
     /**
-     * @return the appVersion
+     * @return the clientVersion
      */
-    public String getAppVersion() {
-        return appVersion;
+    public String getClientVersion() {
+        return clientVersion;
     }
 
     /**
-     * @param appVersion the appVersion to set
+     * @param clientVersion the clientVersion to set
      */
-    public void setAppVersion(String appVersion) {
-        this.appVersion = appVersion;
+    public void setClientVersion(String clientVersion) {
+        this.clientVersion = clientVersion;
     }
 
     /**
@@ -235,17 +235,17 @@ public class ContractSummaryBean implements Serializable {
     }
 
     /**
-     * @return the appName
+     * @return the clientName
      */
-    public String getAppName() {
-        return appName;
+    public String getClientName() {
+        return clientName;
     }
 
     /**
-     * @param appName the appName to set
+     * @param clientName the clientName to set
      */
-    public void setAppName(String appName) {
-        this.appName = appName;
+    public void setClientName(String clientName) {
+        this.clientName = clientName;
     }
 
     /**
@@ -328,8 +328,8 @@ public class ContractSummaryBean implements Serializable {
     @SuppressWarnings("nls")
     public String toString() {
         return "ContractSummaryBean [contractId=" + contractId + ", apikey=" + apikey
-                + ", appOrganizationId=" + appOrganizationId + ", appOrganizationName=" + appOrganizationName
-                + ", appId=" + appId + ", appName=" + appName + ", appVersion=" + appVersion
+                + ", clientOrganizationId=" + clientOrganizationId + ", clientOrganizationName=" + clientOrganizationName
+                + ", clientId=" + clientId + ", clientName=" + clientName + ", clientVersion=" + clientVersion
                 + ", apiOrganizationId=" + apiOrganizationId + ", apiOrganizationName="
                 + apiOrganizationName + ", apiId=" + apiId + ", apiName=" + apiName
                 + ", apiVersion=" + apiVersion + ", apiDescription=" + apiDescription

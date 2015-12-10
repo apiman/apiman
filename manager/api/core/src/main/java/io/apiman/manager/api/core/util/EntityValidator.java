@@ -19,11 +19,11 @@ import io.apiman.manager.api.beans.apis.ApiStatus;
 import io.apiman.manager.api.beans.apis.ApiVersionBean;
 import io.apiman.manager.api.beans.apis.ApiVersionStatusBean;
 import io.apiman.manager.api.beans.apis.StatusItemBean;
-import io.apiman.manager.api.beans.apps.ApplicationVersionBean;
+import io.apiman.manager.api.beans.clients.ClientVersionBean;
 import io.apiman.manager.api.beans.summary.ContractSummaryBean;
 import io.apiman.manager.api.beans.summary.PolicySummaryBean;
 import io.apiman.manager.api.core.IApiValidator;
-import io.apiman.manager.api.core.IApplicationValidator;
+import io.apiman.manager.api.core.IClientValidator;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.i18n.Messages;
 
@@ -32,11 +32,11 @@ import java.util.List;
 import javax.inject.Inject;
 
 /**
- * Validates the state of various entities, including APIs and applications.
+ * Validates the state of various entities, including APIs and clients.
  *
  * @author eric.wittmann@redhat.com
  */
-public class EntityValidator implements IApiValidator, IApplicationValidator {
+public class EntityValidator implements IApiValidator, IClientValidator {
 
     @Inject
     private IStorageQuery storageQuery;
@@ -48,26 +48,26 @@ public class EntityValidator implements IApiValidator, IApplicationValidator {
     }
 
     /**
-     * @see io.apiman.manager.api.core.IApplicationValidator#isReady(io.apiman.manager.api.beans.apps.ApplicationVersionBean)
+     * @see io.apiman.manager.api.core.IClientValidator#isReady(io.apiman.manager.api.beans.clients.ClientVersionBean)
      */
     @Override
-    public boolean isReady(ApplicationVersionBean application) throws Exception {
+    public boolean isReady(ClientVersionBean client) throws Exception {
         boolean hasContracts = true;
 
-        List<ContractSummaryBean> contracts = storageQuery.getApplicationContracts(application.getApplication().getOrganization().getId(), application
-                .getApplication().getId(), application.getVersion());
+        List<ContractSummaryBean> contracts = storageQuery.getClientContracts(client.getClient().getOrganization().getId(), client
+                .getClient().getId(), client.getVersion());
         if (contracts.isEmpty()) {
             hasContracts = false;
         }
 
-        return isReady(application, hasContracts);
+        return isReady(client, hasContracts);
     }
 
     /**
-     * @see io.apiman.manager.api.core.IApplicationValidator#isReady(io.apiman.manager.api.beans.apps.ApplicationVersionBean, boolean)
+     * @see io.apiman.manager.api.core.IClientValidator#isReady(io.apiman.manager.api.beans.clients.ClientVersionBean, boolean)
      */
     @Override
-    public boolean isReady(ApplicationVersionBean application, boolean hasContracts) throws Exception {
+    public boolean isReady(ClientVersionBean client, boolean hasContracts) throws Exception {
         boolean ready = hasContracts;
         return ready;
     }

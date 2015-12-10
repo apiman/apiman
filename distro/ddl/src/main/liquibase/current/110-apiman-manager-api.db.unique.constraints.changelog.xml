@@ -14,7 +14,7 @@
     </changeSet>
     <changeSet author="apiman" id="addUniqueConstraint-4">
         <addUniqueConstraint columnNames="app_id, app_org_id, version" deferrable="false" disabled="false"
-                             constraintName="UK_app_versions_1" initiallyDeferred="false" tableName="application_versions"/>
+                             constraintName="UK_app_versions_1" initiallyDeferred="false" tableName="client_versions"/>
     </changeSet>
     <changeSet author="apiman" id="addUniqueConstraint-5">
         <addUniqueConstraint columnNames="api_id, api_org_id, version" deferrable="false" disabled="false"

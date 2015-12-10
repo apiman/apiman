@@ -17,10 +17,10 @@ package io.apiman.gateway.engine.policies;
 
 import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
-import io.apiman.gateway.engine.beans.PolicyFailure;
-import io.apiman.gateway.engine.beans.PolicyFailureType;
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.ApiResponse;
+import io.apiman.gateway.engine.beans.PolicyFailure;
+import io.apiman.gateway.engine.beans.PolicyFailureType;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.components.IRateLimiterComponent;
 import io.apiman.gateway.engine.components.rate.RateLimitResponse;
@@ -43,7 +43,7 @@ import java.util.Map;
 public class RateLimitingPolicy extends AbstractMappedPolicy<RateLimitingConfig> {
 
     protected static final String NO_USER_AVAILABLE = new String();
-    protected static final String NO_APPLICATION_AVAILABLE = new String();
+    protected static final String NO_CLIENT_AVAILABLE = new String();
 
     private static final String DEFAULT_LIMIT_HEADER = "X-RateLimit-Limit"; //$NON-NLS-1$
     private static final String DEFAULT_REMAINING_HEADER = "X-RateLimit-Remaining"; //$NON-NLS-1$
@@ -78,7 +78,7 @@ public class RateLimitingPolicy extends AbstractMappedPolicy<RateLimitingConfig>
             chain.doFailure(failure);
             return;
         }
-        if (bucketId == NO_APPLICATION_AVAILABLE) {
+        if (bucketId == NO_CLIENT_AVAILABLE) {
             IPolicyFailureFactoryComponent failureFactory = context.getComponent(IPolicyFailureFactoryComponent.class);
             PolicyFailure failure = failureFactory.createFailure(PolicyFailureType.Other, PolicyFailureCodes.NO_APP_FOR_RATE_LIMITING, Messages.i18n.format("RateLimitingPolicy.NoApp")); //$NON-NLS-1$
             chain.doFailure(failure);
@@ -159,7 +159,7 @@ public class RateLimitingPolicy extends AbstractMappedPolicy<RateLimitingConfig>
                 builder.append(user);
             } else if (config.getGranularity() == RateLimitingGranularity.Api) {
             } else {
-                return NO_APPLICATION_AVAILABLE;
+                return NO_CLIENT_AVAILABLE;
             }
         } else {
             builder.append(request.getApiKey());
@@ -170,18 +170,18 @@ public class RateLimitingPolicy extends AbstractMappedPolicy<RateLimitingConfig>
                     return NO_USER_AVAILABLE;
                 } else {
                     builder.append("||USER||"); //$NON-NLS-1$
-                    builder.append(request.getContract().getApplication().getOrganizationId());
+                    builder.append(request.getContract().getClient().getOrganizationId());
                     builder.append("||"); //$NON-NLS-1$
-                    builder.append(request.getContract().getApplication().getApplicationId());
+                    builder.append(request.getContract().getClient().getClientId());
                     builder.append("||"); //$NON-NLS-1$
                     builder.append(user);
                 }
-            } else if (config.getGranularity() == RateLimitingGranularity.Application) {
+            } else if (config.getGranularity() == RateLimitingGranularity.Client) {
                 builder.append(request.getApiKey());
                 builder.append("||APP||"); //$NON-NLS-1$
-                builder.append(request.getContract().getApplication().getOrganizationId());
+                builder.append(request.getContract().getClient().getOrganizationId());
                 builder.append("||"); //$NON-NLS-1$
-                builder.append(request.getContract().getApplication().getApplicationId());
+                builder.append(request.getContract().getClient().getClientId());
             } else {
                 builder.append(request.getApiKey());
                 builder.append("||SERVICE||"); //$NON-NLS-1$

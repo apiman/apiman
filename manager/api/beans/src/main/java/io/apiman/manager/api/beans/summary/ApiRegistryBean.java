@@ -24,10 +24,10 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * Models the entire API registry for a single application version.  This is typically
+ * Models the entire API registry for a single client version.  This is typically
  * used to get a list of all APIs that can be consumed by a single version of a single
- * application.  Most importantly it includes the live endpoint information and API
- * keys for all of the app's contracts/APIs.
+ * client.  Most importantly it includes the live endpoint information and API
+ * keys for all of the client's contracts/APIs.
  *
  * @author eric.wittmann@redhat.com
  */

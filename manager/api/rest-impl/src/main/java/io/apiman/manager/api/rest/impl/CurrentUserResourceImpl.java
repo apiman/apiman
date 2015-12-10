@@ -21,7 +21,7 @@ import io.apiman.manager.api.beans.idm.PermissionBean;
 import io.apiman.manager.api.beans.idm.PermissionType;
 import io.apiman.manager.api.beans.idm.UpdateUserBean;
 import io.apiman.manager.api.beans.idm.UserBean;
-import io.apiman.manager.api.beans.summary.ApplicationSummaryBean;
+import io.apiman.manager.api.beans.summary.ClientSummaryBean;
 import io.apiman.manager.api.beans.summary.OrganizationSummaryBean;
 import io.apiman.manager.api.beans.summary.ApiSummaryBean;
 import io.apiman.manager.api.core.INewUserBootstrapper;
@@ -151,11 +151,11 @@ public class CurrentUserResourceImpl implements ICurrentUserResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.ICurrentUserResource#getAppOrganizations()
+     * @see io.apiman.manager.api.rest.contract.ICurrentUserResource#getClientOrganizations()
      */
     @Override
-    public List<OrganizationSummaryBean> getAppOrganizations() {
-        Set<String> permittedOrganizations = securityContext.getPermittedOrganizations(PermissionType.appEdit);
+    public List<OrganizationSummaryBean> getClientOrganizations() {
+        Set<String> permittedOrganizations = securityContext.getPermittedOrganizations(PermissionType.clientEdit);
         try {
             return query.getOrgs(permittedOrganizations);
         } catch (StorageException e) {
@@ -190,13 +190,13 @@ public class CurrentUserResourceImpl implements ICurrentUserResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.ICurrentUserResource#getApplications()
+     * @see io.apiman.manager.api.rest.contract.ICurrentUserResource#getClients()
      */
     @Override
-    public List<ApplicationSummaryBean> getApplications() {
-        Set<String> permittedOrganizations = securityContext.getPermittedOrganizations(PermissionType.appView);
+    public List<ClientSummaryBean> getClients() {
+        Set<String> permittedOrganizations = securityContext.getPermittedOrganizations(PermissionType.clientView);
         try {
-            return query.getApplicationsInOrgs(permittedOrganizations);
+            return query.getClientsInOrgs(permittedOrganizations);
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }

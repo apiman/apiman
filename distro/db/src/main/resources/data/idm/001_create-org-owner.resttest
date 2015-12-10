@@ -7,7 +7,7 @@ Content-Type: application/json
   "autoGrant" : true,
   "permissions" : [ 
      "orgView", "orgEdit", "orgAdmin",
-     "appView", "appEdit", "appAdmin",
+     "clientView", "clientEdit", "clientAdmin",
      "apiView", "apiEdit", "apiAdmin",
      "planView", "planEdit", "planAdmin"
   ]
@@ -21,7 +21,7 @@ Content-Type: application/json
   "name" : "Organization Owner",
   "permissions" : [
      "orgView", "orgEdit", "orgAdmin",
-     "appView", "appEdit", "appAdmin",
+     "clientView", "clientEdit", "clientAdmin",
      "apiView", "apiEdit", "apiAdmin",
      "planView", "planEdit", "planAdmin" ]
 }

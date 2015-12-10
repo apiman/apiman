@@ -15,8 +15,8 @@
  */
 package io.apiman.gateway.engine.vertxebinmemory.apis;
 
-import io.apiman.gateway.engine.beans.Application;
 import io.apiman.gateway.engine.beans.Api;
+import io.apiman.gateway.engine.beans.Client;
 import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.Message;
 import io.vertx.core.json.Json;
@@ -25,7 +25,7 @@ import io.vertx.core.json.JsonObject;
 /**
  * Listens for registry events on the event bus. Ignores self-generated events. These arrive as a simple JSON
  * payload, with a header containing the operation type, action and then a marshalled object containing the
- * corresponding object (e.g. Application, Service, etc).
+ * corresponding object (e.g. Client, Api, etc).
  *
  * Requests are then routed to the appropriate registry method.
  *
@@ -50,23 +50,23 @@ public interface EBRegistryProxyHandler {
             String body = message.body().getString("body");
 
             switch (type) {
-                case "application":
-                    Application app = Json.decodeValue(body, Application.class);
+                case "client":
+                    Client app = Json.decodeValue(body, Client.class);
 
                     if (action == "register") {
-                        registerApplication(app);
+                        registerClient(app);
                     } else if (action == "unregister") {
-                        unregisterApplication(app);
+                        unregisterClient(app);
                     }
 
                     break;
-                case "service":
+                case "api":
                     Api api = Json.decodeValue(body, Api.class);
 
                     if (action == "publish") { //$NON-NLS-1$
-                        publishService(api);
+                        publishApi(api);
                     } else if (action == "retire") {
-                        retireService(api);
+                        retireApi(api);
                     }
 
                     break;
@@ -83,10 +83,10 @@ public interface EBRegistryProxyHandler {
     // UUID of registry
     String uuid();
     Vertx vertx();
-    void publishService(Api api);
-    void retireService(Api api);
-    void registerApplication(Application app);
-    void unregisterApplication(Application app);
+    void publishApi(Api api);
+    void retireApi(Api api);
+    void registerClient(Client app);
+    void unregisterClient(Client app);
 
     // If *we* sent the message, we shouldn't also digest it, else we'll end in a cycle.
     default boolean shouldIgnore(String uuid) {

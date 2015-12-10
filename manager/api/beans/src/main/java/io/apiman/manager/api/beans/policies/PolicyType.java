@@ -22,6 +22,6 @@ package io.apiman.manager.api.beans.policies;
  */
 public enum PolicyType {
 
-    Application, Plan, Api
+    Client, Plan, Api
     
 }

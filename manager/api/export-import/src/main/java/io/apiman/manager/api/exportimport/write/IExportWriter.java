@@ -17,9 +17,9 @@ package io.apiman.manager.api.exportimport.write;
 
 import io.apiman.manager.api.beans.apis.ApiBean;
 import io.apiman.manager.api.beans.apis.ApiVersionBean;
-import io.apiman.manager.api.beans.apps.ApplicationBean;
-import io.apiman.manager.api.beans.apps.ApplicationVersionBean;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
+import io.apiman.manager.api.beans.clients.ClientBean;
+import io.apiman.manager.api.beans.clients.ClientVersionBean;
 import io.apiman.manager.api.beans.contracts.ContractBean;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
 import io.apiman.manager.api.beans.idm.RoleBean;
@@ -100,20 +100,20 @@ public interface IExportWriter {
     IExportWriter endApi();
     IExportWriter endApis();
 
-    IExportWriter startApplications();
-    IExportWriter startApplication(ApplicationBean application);
-    IExportWriter startApplicationVersions();
-    IExportWriter startApplicationVersion(ApplicationVersionBean avb);
-    IExportWriter startApplicationPolicies();
-    IExportWriter writeApplicationPolicy(PolicyBean policy);
-    IExportWriter endApplicationPolicies();
-    IExportWriter startApplicationContracts();
-    IExportWriter writeApplicationContract(ContractBean cb);
-    IExportWriter endApplicationContracts();
-    IExportWriter endApplicationVersion();
-    IExportWriter endApplicationVersions();
-    IExportWriter endApplication();
-    IExportWriter endApplications();
+    IExportWriter startClients();
+    IExportWriter startClient(ClientBean client);
+    IExportWriter startClientVersions();
+    IExportWriter startClientVersion(ClientVersionBean avb);
+    IExportWriter startClientPolicies();
+    IExportWriter writeClientPolicy(PolicyBean policy);
+    IExportWriter endClientPolicies();
+    IExportWriter startClientContracts();
+    IExportWriter writeClientContract(ContractBean cb);
+    IExportWriter endClientContracts();
+    IExportWriter endClientVersion();
+    IExportWriter endClientVersions();
+    IExportWriter endClient();
+    IExportWriter endClients();
 
     IExportWriter startAudits();
     IExportWriter writeAudit(AuditEntryBean ab);

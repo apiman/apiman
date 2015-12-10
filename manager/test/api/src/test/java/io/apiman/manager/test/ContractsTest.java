@@ -21,7 +21,7 @@ import io.apiman.manager.test.junit.ManagerRestTester;
 import org.junit.runner.RunWith;
 
 /**
- * Runs the "applications" test plan.
+ * Runs the "contracts" test plan.
  *
  * @author eric.wittmann@redhat.com
  */

@@ -33,7 +33,7 @@ module Apiman {
     _module.directive('apimanApiModal',
         ['Logger', function(Logger) {
             return {
-                templateUrl: 'plugins/api-manager/html/app/apiModal.html',
+                templateUrl: 'plugins/api-manager/html/client/apiModal.html',
                 replace: true,
                 restrict: 'E',
                 link: function(scope, element, attrs) {
@@ -196,7 +196,7 @@ module Apiman {
                     entity.status = status;
                 },
                 isEntityDisabled: function() {
-                    if (entityType == 'application' || entityType == 'applications') {
+                    if (entityType == 'client' || entityType == 'clients') {
                         return entity.status == 'Retired';
                     } else if (entityType == 'api' || entityType == 'apis') {
                         return (entity.status !== 'Created' && entity.status !== 'Ready');
@@ -343,7 +343,7 @@ module Apiman {
 
     var entryTypeClasses = {
         Organization : 'fa-shield',
-        Application : 'fa-gears',
+        Client : 'fa-gears',
         Plan : 'fa-bar-chart-o',
         Api : 'fa-puzzle-piece'
     };

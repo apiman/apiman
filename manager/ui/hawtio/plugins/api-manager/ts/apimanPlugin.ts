@@ -73,29 +73,29 @@ module Apiman {
                 .when(prefix + '/orgs/:org/:type/:id/:ver/new-policy', {
                     templateUrl: path + 'forms/new-policy.html'
                 })
-                .when(prefix + '/orgs/:org/apps/:app', {
-                    templateUrl: path + 'app/app.html'
+                .when(prefix + '/orgs/:org/clients/:client', {
+                    templateUrl: path + 'client/client.html'
                 })
-                .when(prefix + '/orgs/:org/apps/:app/:version', {
-                    templateUrl: path + 'app/app-overview.html'
+                .when(prefix + '/orgs/:org/clients/:client/:version', {
+                    templateUrl: path + 'client/client-overview.html'
                 })
-                .when(prefix + '/orgs/:org/apps/:app/:version/contracts', {
-                    templateUrl: path + 'app/app-contracts.html'
+                .when(prefix + '/orgs/:org/clients/:client/:version/contracts', {
+                    templateUrl: path + 'client/client-contracts.html'
                 })
-                .when(prefix + '/orgs/:org/apps/:app/:version/apis', {
-                    templateUrl: path + 'app/app-apis.html'
+                .when(prefix + '/orgs/:org/clients/:client/:version/apis', {
+                    templateUrl: path + 'client/client-apis.html'
                 })
-                .when(prefix + '/orgs/:org/apps/:app/:version/metrics', {
-                    templateUrl: path + 'app/app-metrics.html'
+                .when(prefix + '/orgs/:org/clients/:client/:version/metrics', {
+                    templateUrl: path + 'client/client-metrics.html'
                 })
-                .when(prefix + '/orgs/:org/apps/:app/:version/policies', {
-                    templateUrl: path + 'app/app-policies.html'
+                .when(prefix + '/orgs/:org/clients/:client/:version/policies', {
+                    templateUrl: path + 'client/client-policies.html'
                 })
-                .when(prefix + '/orgs/:org/apps/:app/:version/activity', {
-                    templateUrl: path + 'app/app-activity.html'
+                .when(prefix + '/orgs/:org/clients/:client/:version/activity', {
+                    templateUrl: path + 'client/client-activity.html'
                 })
-                .when(prefix + '/orgs/:org/apps/:app/:version/new-version', {
-                    templateUrl: path + 'forms/new-appversion.html'
+                .when(prefix + '/orgs/:org/clients/:client/:version/new-version', {
+                    templateUrl: path + 'forms/new-clientversion.html'
                 })
                 .when(prefix + '/orgs/:org/plans/:plan', {
                     templateUrl: path + 'plan/plan.html'
@@ -166,8 +166,8 @@ module Apiman {
                 .when(prefix + '/browse/orgs/:org/:api/:version/def', {
                     templateUrl: path + 'consumer/consumer-api-def.html'
                 })
-                .when(prefix + '/new-app', {
-                    templateUrl: path + 'forms/new-app.html'
+                .when(prefix + '/new-client', {
+                    templateUrl: path + 'forms/new-client.html'
                 })
                 .when(prefix + '/new-contract', {
                     templateUrl: path + 'forms/new-contract.html'
@@ -202,8 +202,8 @@ module Apiman {
                 .when(prefix + '/orgs/:org/apis', {
                     templateUrl: path + 'org/org-apis.html'
                 })
-                .when(prefix + '/orgs/:org/apps', {
-                    templateUrl: path + 'org/org-apps.html'
+                .when(prefix + '/orgs/:org/clients', {
+                    templateUrl: path + 'org/org-clients.html'
                 })
                 .when(prefix + '/orgs/:org/members', {
                     templateUrl: path + 'org/org-members.html'
@@ -223,8 +223,8 @@ module Apiman {
                 .when(prefix + '/users/:user/activity', {
                     templateUrl: path + 'user/user-activity.html'
                 })
-                .when(prefix + '/users/:user/apps', {
-                    templateUrl: path + 'user/user-apps.html'
+                .when(prefix + '/users/:user/clients', {
+                    templateUrl: path + 'user/user-clients.html'
                 })
                 .when(prefix + '/users/:user/orgs', {
                     templateUrl: path + 'user/user-orgs.html'

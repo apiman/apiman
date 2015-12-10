@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    
+  </head>
+
+  <body>
+  <div>
+    
+    <div ng-include="headerInclude"></div>   
+    <div ng-controller="Apiman.UserClientsController" class="page container" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
+      <div ng-include="'plugins/api-manager/html/user/user_bc.include'"></div>
+      <div class="row">
+        <!-- Left Hand Side -->
+        <div ng-include="'plugins/api-manager/html/user/user_entity.include'"></div>
+        <!-- /Left Hand Side -->
+
+        <!-- Center Content -->
+        <div class="col-md-8">
+          <div class="apiman-entitytabs">
+            <div ng-include="'plugins/api-manager/html/user/user_tabs.include'"></div>
+            <div id="entitytabsContent" class="tab-content">
+
+              <!-- Client Apps Tab Content -->
+              <div class="tab-pane active" id="tab-clients">
+                <div class="apiman-filters apiman-clients-filters">
+                  <div>
+                    <apiman-search-box id="clients-filter" apiman-i18n-key="filter-user-clients" function="filterClients" placeholder="Filter by org or client name..." />
+                  </div>
+                  <a id="new-client" apiman-i18n-key="new-client" data-field="toNewClient" href="{{ pluginName }}/new-client" class="btn btn-primary pull-right">New Client App</a>
+                </div>
+                <div class="clearfix"></div>
+                <!-- The list of clients the user has access to -->
+                <div class="apiman-clients" data-field="clients">
+                  
+                  <div class="apiman-no-content container-fluid" ng-hide="clients.length > 0">
+                    <div class="row">
+                      <div class="col-md-9">
+                        <p class="apiman-no-entities-description" apiman-i18n-key="no-clients-found-for-user">User is not managing any Client Apps. Perhaps that's just not her thing. But if it is, she can create a new Client App using the New Client App button above.</p>
+                      </div>
+                      <div class="col-md-3">
+                        <div class="apiman-no-entities-arrow"></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="apiman-no-content container-fluid" ng-show="clients.length > 0 && filteredClients.length == 0">
+                    <div class="row">
+                      <div class="col-md-12">
+                        <p class="apiman-no-entities-description" apiman-i18n-key="no-clients-found-for-filter">No Client Apps found matching your filter criteria - please try searching for something different.</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="container-fluid apiman-summaryrow" ng-repeat="client in filteredClients">
+                    <div class="row">
+                      <a href="{{ pluginName}}/orgs/{{ client.organizationId }}/clients">{{ client.organizationName }}</a>
+                      <span apiman-i18n-skip>/</span>
+                      <span class="title"><a href="{{ pluginName }}/orgs/{{ client.organizationId }}/clients/{{ client.id}}">{{ client.name }}</a></span>
+                    </div>
+                    <div class="row">
+                      <span class="description">
+                        {{ client.description }}
+                      </span>
+                    </div>
+                    <hr/>
+                  </div>
+                </div>
+              </div>
+              <!-- End Client Apps Tab Content -->
+              
+            </div>
+          </div>
+        </div>
+        <!-- /Center Content -->
+        
+      </div>
+    </div> <!-- /container -->
+  </div>
+  </body>
+</html>

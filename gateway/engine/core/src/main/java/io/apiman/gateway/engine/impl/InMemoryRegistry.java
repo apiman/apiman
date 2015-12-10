@@ -22,7 +22,7 @@ import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.Api;
 import io.apiman.gateway.engine.beans.ApiContract;
 import io.apiman.gateway.engine.beans.ApiRequest;
-import io.apiman.gateway.engine.beans.Application;
+import io.apiman.gateway.engine.beans.Client;
 import io.apiman.gateway.engine.beans.Contract;
 import io.apiman.gateway.engine.beans.exceptions.InvalidContractException;
 import io.apiman.gateway.engine.beans.exceptions.PublishingException;
@@ -91,14 +91,14 @@ public class InMemoryRegistry implements IRegistry {
     }
 
     /**
-     * @see io.apiman.gateway.engine.IRegistry#registerApplication(io.apiman.gateway.engine.beans.Application, io.apiman.gateway.engine.async.IAsyncResultHandler)
+     * @see io.apiman.gateway.engine.IRegistry#registerClient(io.apiman.gateway.engine.beans.Client, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
     @Override
-    public void registerApplication(Application application, IAsyncResultHandler<Void> handler) {
+    public void registerClient(Client client, IAsyncResultHandler<Void> handler) {
         Exception error = null;
         synchronized (mutex) {
-            // Validate the application first - we need to be able to resolve all the contracts.
-            for (Contract contract : application.getContracts()) {
+            // Validate the client first - we need to be able to resolve all the contracts.
+            for (Contract contract : client.getContracts()) {
                 String apiKey = getApiKey(contract.getApiOrgId(), contract.getApiId(), contract.getApiVersion());
                 if (!getMap().containsKey(apiKey)) {
                     error = new RegistrationException(Messages.i18n.format("InMemoryRegistry.ApiNotFoundInOrg", //$NON-NLS-1$
@@ -113,15 +113,15 @@ public class InMemoryRegistry implements IRegistry {
                 public void handle(IAsyncResult<Void> result) {
                 }
             };
-            unregisterApplication(application, unregisterHandler);
+            unregisterClient(client, unregisterHandler);
 
             // Now, register the app.
-            String applicationKey = getApplicationKey(application);
-            getMap().put(applicationKey, application);
-            for (Contract contract : application.getContracts()) {
+            String clientKey = getClientKey(client);
+            getMap().put(clientKey, client);
+            for (Contract contract : client.getContracts()) {
                 String apiKey = getApiKey(contract.getApiOrgId(), contract.getApiId(), contract.getApiVersion());
                 Api api = (Api) getMap().get(apiKey);
-                ApiContract sc = new ApiContract(contract.getApiKey(), api, application, contract.getPlan(), contract.getPolicies());
+                ApiContract sc = new ApiContract(contract.getApiKey(), api, client, contract.getPlan(), contract.getPolicies());
                 String contractKey = getContractKey(contract);
                 getMap().put(contractKey, sc);
             }
@@ -134,15 +134,15 @@ public class InMemoryRegistry implements IRegistry {
     }
 
     /**
-     * @see io.apiman.gateway.engine.IRegistry#unregisterApplication(io.apiman.gateway.engine.beans.Application, io.apiman.gateway.engine.async.IAsyncResultHandler)
+     * @see io.apiman.gateway.engine.IRegistry#unregisterClient(io.apiman.gateway.engine.beans.Client, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
     @Override
-    public void unregisterApplication(Application application, IAsyncResultHandler<Void> handler) {
+    public void unregisterClient(Client client, IAsyncResultHandler<Void> handler) {
         Exception error = null;
         synchronized (mutex) {
-            String applicationKey = getApplicationKey(application);
-            if (getMap().containsKey(applicationKey)) {
-                Application removed = (Application) getMap().remove(applicationKey);
+            String clientKey = getClientKey(client);
+            if (getMap().containsKey(clientKey)) {
+                Client removed = (Client) getMap().remove(clientKey);
                 for (Contract contract : removed.getContracts()) {
                     String contractKey = getContractKey(contract);
                     if (getMap().containsKey(contractKey)) {
@@ -150,7 +150,7 @@ public class InMemoryRegistry implements IRegistry {
                     }
                 }
             } else {
-                error = new RegistrationException(Messages.i18n.format("InMemoryRegistry.AppNotFound")); //$NON-NLS-1$
+                error = new RegistrationException(Messages.i18n.format("InMemoryRegistry.ClientNotFound")); //$NON-NLS-1$
             }
         }
         if (error == null) {
@@ -220,13 +220,13 @@ public class InMemoryRegistry implements IRegistry {
     }
 
     /**
-     * Generates an in-memory key for an application, used to index the app for later quick
+     * Generates an in-memory key for an client, used to index the app for later quick
      * retrieval.
-     * @param app an application
-     * @return an application key
+     * @param app an client
+     * @return an client key
      */
-    private String getApplicationKey(Application app) {
-        return "APP::" + app.getOrganizationId() + "|" + app.getApplicationId() + "|" + app.getVersion(); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    private String getClientKey(Client app) {
+        return "CLIENT::" + app.getOrganizationId() + "|" + app.getClientId() + "|" + app.getVersion(); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
     /**

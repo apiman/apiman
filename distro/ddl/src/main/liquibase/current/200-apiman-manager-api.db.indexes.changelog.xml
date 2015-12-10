@@ -58,8 +58,8 @@
         </createIndex>
     </changeSet>
     <changeSet author="apiman" id="createIndex-10">
-        <createIndex indexName="IDX_FK_applications_1"
-                     tableName="applications">
+        <createIndex indexName="IDX_FK_clients_1"
+                     tableName="clients">
             <column name="organization_id"/>
         </createIndex>
     </changeSet>

@@ -18,8 +18,8 @@ Content-Type: application/json
 
 {
   "beans" : [
-    {"id":"TestRole2","name":"Test Role 2","autoGrant":true,"description":"This is the description of Test Role 2.","permissions" : [ "appAdmin", "appView" ]},
+    {"id":"TestRole2","name":"Test Role 2","autoGrant":true,"description":"This is the description of Test Role 2.","permissions" : [ "clientAdmin", "clientView" ]},
     {"id":"TestRole3","name":"Test Role 3","permissions":[ "planView", "planAdmin", "planEdit" ]},
-    {"id":"TestRole4","name":"Test Role 4","permissions":[ "appAdmin", "appView", "apiEdit" ]}  ],
+    {"id":"TestRole4","name":"Test Role 4","permissions":[ "clientAdmin", "clientView", "apiEdit" ]}  ],
   "totalSize" : 3
 }

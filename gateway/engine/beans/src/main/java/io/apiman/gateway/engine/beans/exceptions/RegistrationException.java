@@ -16,12 +16,12 @@
 package io.apiman.gateway.engine.beans.exceptions;
 
 /**
- * Exception thrown when an error happens during registration of an application.
+ * Exception thrown when an error happens during registration of a client.
  *
  * @author eric.wittmann@redhat.com
  */
 public class RegistrationException extends AbstractEngineException {
-    
+
     private static final long serialVersionUID = -8704997957184049457L;
 
     /**
@@ -31,7 +31,7 @@ public class RegistrationException extends AbstractEngineException {
     public RegistrationException(String message) {
         super(message);
     }
-    
+
     /**
      * Constructor.
      * @param message an error message

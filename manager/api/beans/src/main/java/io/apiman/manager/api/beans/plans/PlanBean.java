@@ -33,7 +33,7 @@ import javax.persistence.Table;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
- * Models an application.
+ * Models a plan.
  *
  * @author eric.wittmann@redhat.com
  */

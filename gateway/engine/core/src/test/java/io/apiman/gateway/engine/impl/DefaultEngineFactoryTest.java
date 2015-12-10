@@ -37,7 +37,7 @@ import io.apiman.gateway.engine.auth.RequiredAuthType;
 import io.apiman.gateway.engine.beans.Api;
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.ApiResponse;
-import io.apiman.gateway.engine.beans.Application;
+import io.apiman.gateway.engine.beans.Client;
 import io.apiman.gateway.engine.beans.Contract;
 import io.apiman.gateway.engine.beans.Policy;
 import io.apiman.gateway.engine.beans.exceptions.ConnectorException;
@@ -192,8 +192,8 @@ public class DefaultEngineFactoryTest {
         api.setApiId("TestApi");
         api.setVersion("1.0");
         // create an app
-        Application app = new Application();
-        app.setApplicationId("TestApp");
+        Client app = new Client();
+        app.setClientId("TestApp");
         app.setOrganizationId("TestOrg");
         app.setVersion("1.0");
         Contract contract = new Contract();
@@ -212,7 +212,7 @@ public class DefaultEngineFactoryTest {
             public void handle(IAsyncResult<Void> result) {
             }
         });
-        engine.getRegistry().registerApplication(app, new IAsyncResultHandler<Void>() {
+        engine.getRegistry().registerClient(app, new IAsyncResultHandler<Void>() {
             @Override
             public void handle(IAsyncResult<Void> result) {
             }

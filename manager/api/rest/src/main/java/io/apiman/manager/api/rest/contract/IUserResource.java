@@ -22,7 +22,7 @@ import io.apiman.manager.api.beans.idm.UserBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaBean;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
 import io.apiman.manager.api.beans.summary.ApiSummaryBean;
-import io.apiman.manager.api.beans.summary.ApplicationSummaryBean;
+import io.apiman.manager.api.beans.summary.ClientSummaryBean;
 import io.apiman.manager.api.beans.summary.OrganizationSummaryBean;
 import io.apiman.manager.api.rest.contract.exceptions.InvalidSearchCriteriaException;
 import io.apiman.manager.api.rest.contract.exceptions.NotAuthorizedException;
@@ -109,16 +109,16 @@ public interface IUserResource {
     public List<OrganizationSummaryBean> getOrganizations(@PathParam("userId") String userId);
 
     /**
-     * This endpoint returns all applications that the user has permission to edit.
-     * @summary List User Applications
+     * This endpoint returns all clients that the user has permission to edit.
+     * @summary List User Clients
      * @param userId The user ID.
-     * @statuscode 200 If the application list is successfully returned.
-     * @return List of applications.
+     * @statuscode 200 If the client list is successfully returned.
+     * @return List of clients.
      */
     @GET
-    @Path("{userId}/applications")
+    @Path("{userId}/clients")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<ApplicationSummaryBean> getApplications(@PathParam("userId") String userId);
+    public List<ClientSummaryBean> getClients(@PathParam("userId") String userId);
 
     /**
      * This endpoint returns all APIs that the user has permission to edit.

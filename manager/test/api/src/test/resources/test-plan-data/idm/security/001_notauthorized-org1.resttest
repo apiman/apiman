@@ -1,9 +1,9 @@
-POST /organizations/TestOrganization1/applications user1/user1
+POST /organizations/TestOrganization1/clients user1/user1
 Content-Type: application/json
 
 {
-  "name" : "Application 1",
-  "description" : "This is the description of Application 1."
+  "name" : "Client 1",
+  "description" : "This is the description of Client 1."
 }
 ----
 403

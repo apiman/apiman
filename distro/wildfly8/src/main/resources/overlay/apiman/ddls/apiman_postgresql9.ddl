@@ -11,16 +11,16 @@
 CREATE SEQUENCE hibernate_sequence START WITH 999;
 
 -- Changeset c:/Users/ewittman/git/apiman/apiman/distro/ddl/src/main/liquibase/current/010-apiman-manager-api.db.tables.changelog.xml::1436469846462-1::apiman (generated)
-CREATE TABLE application_versions (id BIGINT NOT NULL, created_by VARCHAR(255) NOT NULL, created_on TIMESTAMP WITHOUT TIME ZONE NOT NULL, modified_by VARCHAR(255) NOT NULL, modified_on TIMESTAMP WITHOUT TIME ZONE NOT NULL, published_on TIMESTAMP WITHOUT TIME ZONE, retired_on TIMESTAMP WITHOUT TIME ZONE, status VARCHAR(255) NOT NULL, version VARCHAR(255) NOT NULL, app_id VARCHAR(255), app_org_id VARCHAR(255));
+CREATE TABLE client_versions (id BIGINT NOT NULL, created_by VARCHAR(255) NOT NULL, created_on TIMESTAMP WITHOUT TIME ZONE NOT NULL, modified_by VARCHAR(255) NOT NULL, modified_on TIMESTAMP WITHOUT TIME ZONE NOT NULL, published_on TIMESTAMP WITHOUT TIME ZONE, retired_on TIMESTAMP WITHOUT TIME ZONE, status VARCHAR(255) NOT NULL, version VARCHAR(255) NOT NULL, client_id VARCHAR(255), client_org_id VARCHAR(255));
 
 -- Changeset c:/Users/ewittman/git/apiman/apiman/distro/ddl/src/main/liquibase/current/010-apiman-manager-api.db.tables.changelog.xml::1436469846462-2::apiman (generated)
-CREATE TABLE applications (id VARCHAR(255) NOT NULL, created_by VARCHAR(255) NOT NULL, created_on TIMESTAMP WITHOUT TIME ZONE NOT NULL, description VARCHAR(512), name VARCHAR(255) NOT NULL, organization_id VARCHAR(255) NOT NULL);
+CREATE TABLE clients (id VARCHAR(255) NOT NULL, created_by VARCHAR(255) NOT NULL, created_on TIMESTAMP WITHOUT TIME ZONE NOT NULL, description VARCHAR(512), name VARCHAR(255) NOT NULL, organization_id VARCHAR(255) NOT NULL);
 
 -- Changeset c:/Users/ewittman/git/apiman/apiman/distro/ddl/src/main/liquibase/current/010-apiman-manager-api.db.tables.changelog.xml::1436469846462-3::apiman (generated)
 CREATE TABLE auditlog (id BIGINT NOT NULL, created_on TIMESTAMP WITHOUT TIME ZONE NOT NULL, data TEXT, entity_id VARCHAR(255), entity_type VARCHAR(255) NOT NULL, entity_version VARCHAR(255), organization_id VARCHAR(255) NOT NULL, what VARCHAR(255) NOT NULL, who VARCHAR(255) NOT NULL);
 
 -- Changeset c:/Users/ewittman/git/apiman/apiman/distro/ddl/src/main/liquibase/current/010-apiman-manager-api.db.tables.changelog.xml::1436469846462-4::apiman (generated)
-CREATE TABLE contracts (id BIGINT NOT NULL, apikey VARCHAR(255) NOT NULL, created_by VARCHAR(255) NOT NULL, created_on TIMESTAMP WITHOUT TIME ZONE NOT NULL, appv_id BIGINT, planv_id BIGINT, apiv_id BIGINT);
+CREATE TABLE contracts (id BIGINT NOT NULL, apikey VARCHAR(255) NOT NULL, created_by VARCHAR(255) NOT NULL, created_on TIMESTAMP WITHOUT TIME ZONE NOT NULL, clientv_id BIGINT, planv_id BIGINT, apiv_id BIGINT);
 
 -- Changeset c:/Users/ewittman/git/apiman/apiman/distro/ddl/src/main/liquibase/current/010-apiman-manager-api.db.tables.changelog.xml::1436469846462-5::apiman (generated)
 CREATE TABLE endpoint_properties (api_version_id BIGINT NOT NULL, value VARCHAR(255), name VARCHAR(255) NOT NULL);
@@ -128,11 +128,11 @@ INSERT INTO permissions (role_id, permissions) VALUES ('OrganizationOwner', 10);
 
 INSERT INTO permissions (role_id, permissions) VALUES ('OrganizationOwner', 0);
 
-INSERT INTO permissions (role_id, permissions) VALUES ('ApplicationDeveloper', 6);
+INSERT INTO permissions (role_id, permissions) VALUES ('ClientAppDeveloper', 6);
 
-INSERT INTO permissions (role_id, permissions) VALUES ('ApplicationDeveloper', 8);
+INSERT INTO permissions (role_id, permissions) VALUES ('ClientAppDeveloper', 8);
 
-INSERT INTO permissions (role_id, permissions) VALUES ('ApplicationDeveloper', 7);
+INSERT INTO permissions (role_id, permissions) VALUES ('ClientAppDeveloper', 7);
 
 INSERT INTO permissions (role_id, permissions) VALUES ('APIDeveloper', 3);
 
@@ -170,7 +170,7 @@ INSERT INTO policydefs (id, description, form, form_type, icon, name, plugin_id,
 -- Changeset c:/Users/ewittman/git/apiman/apiman/distro/ddl/src/main/liquibase/current/050-apiman-manager-api.db.data.changelog.xml::1434686531709-5::apiman
 INSERT INTO roles (id, auto_grant, created_by, created_on, description, name) VALUES ('OrganizationOwner', TRUE, 'admin', '2015-06-18 17:56:57.496', 'Automatically granted to the user who creates an Organization.  Grants all privileges.', 'Organization Owner');
 
-INSERT INTO roles (id, auto_grant, created_by, created_on, description, name) VALUES ('ApplicationDeveloper', NULL, 'admin', '2015-06-18 17:56:57.632', 'Users responsible for creating and managing applications should be granted this role within an Organization.', 'Application Developer');
+INSERT INTO roles (id, auto_grant, created_by, created_on, description, name) VALUES ('ClientAppDeveloper', NULL, 'admin', '2015-06-18 17:56:57.632', 'Users responsible for creating and managing client apps should be granted this role within an Organization.', 'Client App Developer');
 
 INSERT INTO roles (id, auto_grant, created_by, created_on, description, name) VALUES ('APIDeveloper', NULL, 'admin', '2015-06-18 17:56:57.641', 'Users responsible for creating and managing APIs should be granted this role within an Organization.', 'API Developer');
 
@@ -187,10 +187,10 @@ ALTER TABLE api_gateways ADD PRIMARY KEY (api_version_id, gateway_id);
 ALTER TABLE api_plans ADD PRIMARY KEY (api_version_id, plan_id, version);
 
 -- Changeset c:/Users/ewittman/git/apiman/apiman/distro/ddl/src/main/liquibase/current/100-apiman-manager-api.db.constraints.changelog.xml::1436469846462-26::apiman (generated)
-ALTER TABLE application_versions ADD CONSTRAINT "application_versionsPK" PRIMARY KEY (id);
+ALTER TABLE client_versions ADD CONSTRAINT "client_versionsPK" PRIMARY KEY (id);
 
 -- Changeset c:/Users/ewittman/git/apiman/apiman/distro/ddl/src/main/liquibase/current/100-apiman-manager-api.db.constraints.changelog.xml::1436469846462-27::apiman (generated)
-ALTER TABLE applications ADD CONSTRAINT "applicationsPK" PRIMARY KEY (id, organization_id);
+ALTER TABLE clients ADD CONSTRAINT "clientsPK" PRIMARY KEY (id, organization_id);
 
 -- Changeset c:/Users/ewittman/git/apiman/apiman/distro/ddl/src/main/liquibase/current/100-apiman-manager-api.db.constraints.changelog.xml::1436469846462-28::apiman (generated)
 ALTER TABLE auditlog ADD CONSTRAINT "auditlogPK" PRIMARY KEY (id);
@@ -241,13 +241,13 @@ ALTER TABLE users ADD CONSTRAINT "usersPK" PRIMARY KEY (username);
 ALTER TABLE apis ADD CONSTRAINT "FK_31hj3xmhp1wedxjh5bklnlg15" FOREIGN KEY (organization_id) REFERENCES organizations (id);
 
 -- Changeset c:/Users/ewittman/git/apiman/apiman/distro/ddl/src/main/liquibase/current/100-apiman-manager-api.db.constraints.changelog.xml::1436469846462-44::apiman (generated)
-ALTER TABLE contracts ADD CONSTRAINT "FK_6h06sgs4dudh1wehmk0us973g" FOREIGN KEY (appv_id) REFERENCES application_versions (id);
+ALTER TABLE contracts ADD CONSTRAINT "FK_6h06sgs4dudh1wehmk0us973g" FOREIGN KEY (clientv_id) REFERENCES client_versions (id);
 
 -- Changeset c:/Users/ewittman/git/apiman/apiman/distro/ddl/src/main/liquibase/current/100-apiman-manager-api.db.constraints.changelog.xml::1436469846462-45::apiman (generated)
 ALTER TABLE api_defs ADD CONSTRAINT "FK_81fuw1n8afmvpw4buk7l4tyxk" FOREIGN KEY (api_version_id) REFERENCES api_versions (id);
 
 -- Changeset c:/Users/ewittman/git/apiman/apiman/distro/ddl/src/main/liquibase/current/100-apiman-manager-api.db.constraints.changelog.xml::1436469846462-46::apiman (generated)
-ALTER TABLE application_versions ADD CONSTRAINT "FK_8epnoby31bt7xakegakigpikp" FOREIGN KEY (app_id, app_org_id) REFERENCES applications (id, organization_id);
+ALTER TABLE client_versions ADD CONSTRAINT "FK_8epnoby31bt7xakegakigpikp" FOREIGN KEY (client_id, client_org_id) REFERENCES clients (id, organization_id);
 
 -- Changeset c:/Users/ewittman/git/apiman/apiman/distro/ddl/src/main/liquibase/current/100-apiman-manager-api.db.constraints.changelog.xml::1436469846462-47::apiman (generated)
 ALTER TABLE contracts ADD CONSTRAINT "FK_8o6t1f3kg96rxy5uv51f6k9fy" FOREIGN KEY (apiv_id) REFERENCES api_versions (id);
@@ -259,7 +259,7 @@ ALTER TABLE api_versions ADD CONSTRAINT "FK_92erjg9k1lni97gd87nt6tq37" FOREIGN K
 ALTER TABLE endpoint_properties ADD CONSTRAINT "FK_gn0ydqur10sxuvpyw2jvv4xxb" FOREIGN KEY (api_version_id) REFERENCES api_versions (id);
 
 -- Changeset c:/Users/ewittman/git/apiman/apiman/distro/ddl/src/main/liquibase/current/100-apiman-manager-api.db.constraints.changelog.xml::1436469846462-50::apiman (generated)
-ALTER TABLE applications ADD CONSTRAINT "FK_jenpu34rtuncsgvtw0sfo8qq9" FOREIGN KEY (organization_id) REFERENCES organizations (id);
+ALTER TABLE clients ADD CONSTRAINT "FK_jenpu34rtuncsgvtw0sfo8qq9" FOREIGN KEY (organization_id) REFERENCES organizations (id);
 
 -- Changeset c:/Users/ewittman/git/apiman/apiman/distro/ddl/src/main/liquibase/current/100-apiman-manager-api.db.constraints.changelog.xml::1436469846462-51::apiman (generated)
 ALTER TABLE policies ADD CONSTRAINT "FK_l4q6we1bos1yl9unmogei6aja" FOREIGN KEY (definition_id) REFERENCES policydefs (id);
@@ -295,7 +295,7 @@ ALTER TABLE memberships ADD CONSTRAINT "UK_memberships_1" UNIQUE (user_id, role_
 ALTER TABLE plan_versions ADD CONSTRAINT "UK_plan_versions_1" UNIQUE (plan_id, plan_org_id, version);
 
 -- Changeset c:/Users/ewittman/git/apiman/apiman/distro/ddl/src/main/liquibase/current/110-apiman-manager-api.db.unique.constraints.changelog.xml::addUniqueConstraint-4::apiman
-ALTER TABLE application_versions ADD CONSTRAINT "UK_app_versions_1" UNIQUE (app_id, app_org_id, version);
+ALTER TABLE client_versions ADD CONSTRAINT "UK_client_versions_1" UNIQUE (client_id, client_org_id, version);
 
 -- Changeset c:/Users/ewittman/git/apiman/apiman/distro/ddl/src/main/liquibase/current/110-apiman-manager-api.db.unique.constraints.changelog.xml::addUniqueConstraint-5::apiman
 ALTER TABLE api_versions ADD CONSTRAINT "UK_api_versions_1" UNIQUE (api_id, api_org_id, version);
@@ -304,7 +304,7 @@ ALTER TABLE api_versions ADD CONSTRAINT "UK_api_versions_1" UNIQUE (api_id, api_
 ALTER TABLE api_defs ADD CONSTRAINT "UK_api_defs_1" UNIQUE (api_version_id);
 
 -- Changeset c:/Users/ewittman/git/apiman/apiman/distro/ddl/src/main/liquibase/current/110-apiman-manager-api.db.unique.constraints.changelog.xml::addUniqueConstraint-7::apiman
-ALTER TABLE contracts ADD CONSTRAINT "UK_contracts_1" UNIQUE (appv_id, apiv_id, planv_id);
+ALTER TABLE contracts ADD CONSTRAINT "UK_contracts_1" UNIQUE (clientv_id, apiv_id, planv_id);
 
 -- Changeset c:/Users/ewittman/git/apiman/apiman/distro/ddl/src/main/liquibase/current/200-apiman-manager-api.db.indexes.changelog.xml::createIndex-1::apiman
 CREATE INDEX "IDX_auditlog_1" ON auditlog(who);
@@ -334,7 +334,7 @@ CREATE INDEX "IDX_organizations_1" ON organizations(name);
 CREATE INDEX "IDX_FK_plans_1" ON plans(organization_id);
 
 -- Changeset c:/Users/ewittman/git/apiman/apiman/distro/ddl/src/main/liquibase/current/200-apiman-manager-api.db.indexes.changelog.xml::createIndex-10::apiman
-CREATE INDEX "IDX_FK_applications_1" ON applications(organization_id);
+CREATE INDEX "IDX_FK_clients_1" ON clients(organization_id);
 
 -- Changeset c:/Users/ewittman/git/apiman/apiman/distro/ddl/src/main/liquibase/current/200-apiman-manager-api.db.indexes.changelog.xml::createIndex-11::apiman
 CREATE INDEX "IDX_apis_1" ON apis(name);
@@ -358,7 +358,7 @@ CREATE INDEX "IDX_FK_contracts_p" ON contracts(planv_id);
 CREATE INDEX "IDX_FK_contracts_s" ON contracts(apiv_id);
 
 -- Changeset c:/Users/ewittman/git/apiman/apiman/distro/ddl/src/main/liquibase/current/200-apiman-manager-api.db.indexes.changelog.xml::createIndex-18::apiman
-CREATE INDEX "IDX_FK_contracts_a" ON contracts(appv_id);
+CREATE INDEX "IDX_FK_contracts_a" ON contracts(clientv_id);
 
 CREATE OR REPLACE FUNCTION inttobool(num int, val bool) RETURNS bool AS '
     BEGIN

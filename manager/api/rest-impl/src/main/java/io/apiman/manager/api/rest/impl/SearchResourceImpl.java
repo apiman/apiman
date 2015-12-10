@@ -16,19 +16,14 @@
 
 package io.apiman.manager.api.rest.impl;
 
-import java.util.List;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 import io.apiman.manager.api.beans.search.PagingBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaFilterBean;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
-import io.apiman.manager.api.beans.summary.ApplicationSummaryBean;
-import io.apiman.manager.api.beans.summary.AvailableApiBean;
-import io.apiman.manager.api.beans.summary.OrganizationSummaryBean;
 import io.apiman.manager.api.beans.summary.ApiSummaryBean;
+import io.apiman.manager.api.beans.summary.AvailableApiBean;
+import io.apiman.manager.api.beans.summary.ClientSummaryBean;
+import io.apiman.manager.api.beans.summary.OrganizationSummaryBean;
 import io.apiman.manager.api.core.IApiCatalog;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
@@ -38,6 +33,11 @@ import io.apiman.manager.api.rest.contract.exceptions.InvalidSearchCriteriaExcep
 import io.apiman.manager.api.rest.contract.exceptions.OrganizationNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.SystemErrorException;
 import io.apiman.manager.api.rest.impl.util.SearchCriteriaUtil;
+
+import java.util.List;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 /**
  * Implementation of the Search API.
@@ -72,15 +72,15 @@ public class SearchResourceImpl implements ISearchResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.ISearchResource#searchApps(io.apiman.manager.api.beans.search.SearchCriteriaBean)
+     * @see io.apiman.manager.api.rest.contract.ISearchResource#searchClients(io.apiman.manager.api.beans.search.SearchCriteriaBean)
      */
     @Override
-    public SearchResultsBean<ApplicationSummaryBean> searchApps(SearchCriteriaBean criteria)
+    public SearchResultsBean<ClientSummaryBean> searchClients(SearchCriteriaBean criteria)
             throws OrganizationNotFoundException, InvalidSearchCriteriaException {
-        // TODO only return applications that the user is permitted to see?
+        // TODO only return clients that the user is permitted to see?
         SearchCriteriaUtil.validateSearchCriteria(criteria);
         try {
-            return query.findApplications(criteria);
+            return query.findClients(criteria);
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }

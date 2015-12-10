@@ -17,7 +17,7 @@ package io.apiman.manager.api.beans.metrics;
 
 
 /**
- * Bean returned for the "Response Stats per App" metric.
+ * Bean returned for the "Response Stats per Client" metric.
  *
  * @author eric.wittmann@redhat.com
  */

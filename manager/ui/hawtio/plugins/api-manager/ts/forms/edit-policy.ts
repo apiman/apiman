@@ -9,16 +9,12 @@ module Apiman {
             $scope.organizationId = params.org;
 
             var requiredPermissionMap = {
-                applications: 'appEdit',
+                clients: 'clientEdit',
                 apis: 'apiEdit',
                 plans: 'planEdit'
             };
 
             var etype = params.type;
-
-            if (etype == 'apps') {
-                etype = 'applications';
-            }
 
             $scope.isEntityDisabled = EntityStatusSvc.isEntityDisabled;
             
@@ -84,10 +80,6 @@ module Apiman {
                 };
 
                 var etype = params.type;
-
-                if (etype == 'apps') {
-                    etype = 'applications';
-                }
 
                 OrgSvcs.update({
                     organizationId: params.org,

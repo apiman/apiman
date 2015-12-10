@@ -2,7 +2,7 @@
 <testPlan xmlns="urn:io.apiman.test:2014:02:testPlan">
 
   <testGroup name="Configure the Gateway" endpoint="api">
-    <test name="Register Public Application">test-plan-data/simple/simple-connector-interceptor-policy/setup/001-publish-api.resttest</test>
+    <test name="Publish Api">test-plan-data/simple/simple-connector-interceptor-policy/setup/001-publish-api.resttest</test>
   </testGroup>
 
   <testGroup name="Test the Connector Interceptor Policy through the Gateway">

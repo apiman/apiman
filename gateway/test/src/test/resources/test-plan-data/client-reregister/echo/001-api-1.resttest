@@ -1,0 +1,13 @@
+GET /ClientReregisterTest/echo-1/1.0/path/to/app/resource admin/admin
+X-API-Key: api-1
+Accept: application/json
+
+----
+200
+Content-Type: application/json
+
+{
+  "method" : "GET",
+  "resource" : "/echo-1/path/to/app/resource",
+  "uri" : "/echo-1/path/to/app/resource"
+}

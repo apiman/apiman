@@ -18,7 +18,7 @@ package io.apiman.gateway.engine.policies;
 import io.apiman.gateway.engine.beans.Api;
 import io.apiman.gateway.engine.beans.ApiContract;
 import io.apiman.gateway.engine.beans.ApiRequest;
-import io.apiman.gateway.engine.beans.Application;
+import io.apiman.gateway.engine.beans.Client;
 import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.beans.PolicyFailureType;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
@@ -138,9 +138,9 @@ public class RateLimitingPolicyTest {
         api.setOrganizationId("ApiOrg");
         api.setApiId("Api");
         api.setVersion("1.0");
-        Application app = new Application();
+        Client app = new Client();
         app.setOrganizationId("AppOrg");
-        app.setApplicationId("App");
+        app.setClientId("App");
         app.setVersion("1.0");
         return new ApiContract("12345", api, app, "Gold", null);
     }

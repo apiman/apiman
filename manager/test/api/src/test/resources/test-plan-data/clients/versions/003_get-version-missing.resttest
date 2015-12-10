@@ -1,0 +1,6 @@
+GET /organizations/Organization1/clients/Client1/versions/missing admin/admin
+----
+404
+Content-Type: application/json
+
+{"type":"ClientVersionNotFoundException","errorCode":4003,"message":"Client Version does not exist: Client1/missing","moreInfoUrl":null}

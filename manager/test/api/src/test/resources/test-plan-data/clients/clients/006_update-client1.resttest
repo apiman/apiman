@@ -1,0 +1,8 @@
+PUT /organizations/Organization1/clients/Client1 admin2/admin2
+Content-Type: application/json
+
+{
+  "description" : "[UPDATED] This is the description of Client 1!"
+}
+----
+204

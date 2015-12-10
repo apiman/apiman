@@ -22,7 +22,7 @@ import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.Api;
 import io.apiman.gateway.engine.beans.ApiContract;
 import io.apiman.gateway.engine.beans.ApiRequest;
-import io.apiman.gateway.engine.beans.Application;
+import io.apiman.gateway.engine.beans.Client;
 import io.apiman.gateway.engine.beans.Contract;
 import io.apiman.gateway.engine.beans.exceptions.InvalidContractException;
 import io.apiman.gateway.engine.beans.exceptions.PublishingException;
@@ -123,23 +123,23 @@ public class AsyncESRegistry extends AbstractESComponent implements IRegistry {
     }
 
     /**
-     * @see io.apiman.gateway.engine.IRegistry#registerApplication(io.apiman.gateway.engine.beans.Application, io.apiman.gateway.engine.async.IAsyncResultHandler)
+     * @see io.apiman.gateway.engine.IRegistry#registerClient(io.apiman.gateway.engine.beans.Client, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
     @Override
-    public void registerApplication(final Application application, final IAsyncResultHandler<Void> handler) {
+    public void registerClient(final Client client, final IAsyncResultHandler<Void> handler) {
         final Map<String, Api> apiMap = new HashMap<>();
-        validateApplication(application, apiMap, new IAsyncResultHandler<Void>() {
+        validateClient(client, apiMap, new IAsyncResultHandler<Void>() {
             @Override
             public void handle(IAsyncResult<Void> result) {
                 if (result.isError()) {
                     handler.handle(result);
                 } else {
-                    String id = getApplicationId(application);
+                    String id = getClientId(client);
                     try {
-                        Index index = new Index.Builder(ESRegistryMarshalling.marshall(application).string())
+                        Index index = new Index.Builder(ESRegistryMarshalling.marshall(client).string())
                                 .refresh(false).index(getIndexName())
                                 .setParameter(Parameters.OP_TYPE, "index") //$NON-NLS-1$
-                                .type("application").id(id).build(); //$NON-NLS-1$
+                                .type("client").id(id).build(); //$NON-NLS-1$
                         getClient().executeAsync(index, new JestResultHandler<JestResult>() {
                             @Override
                             public void completed(JestResult result) {
@@ -148,15 +148,15 @@ public class AsyncESRegistry extends AbstractESComponent implements IRegistry {
                                             new IOException(result.getErrorMessage()),
                                             Void.class));
                                 } else {
-                                    unregisterApiContracts(application, new IAsyncResultHandler<Void>() {
+                                    unregisterApiContracts(client, new IAsyncResultHandler<Void>() {
                                         @Override
                                         public void handle(IAsyncResult<Void> result) {
                                             if (result.isError()) {
                                                 handler.handle(result);
                                             } else {
-                                                Iterator<Contract> iterator = application.getContracts().iterator();
-                                                application.setContracts(null);
-                                                registerContracts(application, iterator, apiMap, handler);
+                                                Iterator<Contract> iterator = client.getContracts().iterator();
+                                                client.setContracts(null);
+                                                registerContracts(client, iterator, apiMap, handler);
                                             }
                                         }
                                     });
@@ -165,13 +165,13 @@ public class AsyncESRegistry extends AbstractESComponent implements IRegistry {
                             @Override
                             public void failed(Exception e) {
                                 handler.handle(AsyncResultImpl.create(
-                                        new RegistrationException(Messages.i18n.format("ESRegistry.ErrorRegisteringApplication"), e),  //$NON-NLS-1$
+                                        new RegistrationException(Messages.i18n.format("ESRegistry.ErrorRegisteringClient"), e),  //$NON-NLS-1$
                                         Void.class));
                             }
                         });
                     } catch (Exception e) {
                         handler.handle(AsyncResultImpl.create(
-                                new RegistrationException(Messages.i18n.format("ESRegistry.ErrorRegisteringApplication"), e),  //$NON-NLS-1$
+                                new RegistrationException(Messages.i18n.format("ESRegistry.ErrorRegisteringClient"), e),  //$NON-NLS-1$
                                 Void.class));
                     }
                 }
@@ -180,13 +180,13 @@ public class AsyncESRegistry extends AbstractESComponent implements IRegistry {
     }
 
     /**
-     * Validate that the application should be registered.
-     * @param application
+     * Validate that the client should be registered.
+     * @param client
      * @param apiMap
      * @param iAsyncResultHandler
      */
-    private void validateApplication(Application application, Map<String, Api> apiMap, IAsyncResultHandler<Void> handler) {
-        Set<Contract> contracts = application.getContracts();
+    private void validateClient(Client client, Map<String, Api> apiMap, IAsyncResultHandler<Void> handler) {
+        Set<Contract> contracts = client.getContracts();
         if (contracts.isEmpty()) {
             handler.handle(AsyncResultImpl.create(
                     new RegistrationException(Messages.i18n.format("ESRegistry.NoContracts")), Void.class)); //$NON-NLS-1$
@@ -216,7 +216,7 @@ public class AsyncESRegistry extends AbstractESComponent implements IRegistry {
                     if (result.isError()) {
                         handler.handle(AsyncResultImpl.create(
                                 new RegistrationException(
-                                        Messages.i18n.format("ESRegistry.ErrorValidatingApp"),  //$NON-NLS-1$
+                                        Messages.i18n.format("ESRegistry.ErrorValidatingClient"),  //$NON-NLS-1$
                                         result.getError()),
                                 Void.class));
                     } else {
@@ -241,12 +241,12 @@ public class AsyncESRegistry extends AbstractESComponent implements IRegistry {
     /**
      * Register all the contracts in ES so they can be looked up quickly by
      * their ID by all nodes in the cluster.
-     * @param application
+     * @param client
      * @param contracts
      * @param apiMap
      * @param handler
      */
-    private void registerContracts(final Application application, final Iterator<Contract> contracts,
+    private void registerContracts(final Client client, final Iterator<Contract> contracts,
             final Map<String, Api> apiMap, final IAsyncResultHandler<Void> handler) {
         try {
             if (!contracts.hasNext()) {
@@ -256,7 +256,7 @@ public class AsyncESRegistry extends AbstractESComponent implements IRegistry {
 
                 String apiId = getApiId(contract);
                 Api api = apiMap.get(apiId);
-                ApiContract sc = new ApiContract(contract.getApiKey(), api, application,
+                ApiContract sc = new ApiContract(contract.getApiKey(), api, client,
                         contract.getPlan(), contract.getPolicies());
                 final String contractId = getContractId(contract);
 
@@ -271,7 +271,7 @@ public class AsyncESRegistry extends AbstractESComponent implements IRegistry {
                                     new RegistrationException(Messages.i18n.format("ESRegistry.ContractAlreadyPublished", contractId)),  //$NON-NLS-1$
                                     Void.class));
                         } else {
-                            registerContracts(application, contracts, apiMap, handler);
+                            registerContracts(client, contracts, apiMap, handler);
                         }
                     }
                     @Override
@@ -290,41 +290,41 @@ public class AsyncESRegistry extends AbstractESComponent implements IRegistry {
     }
 
     /**
-     * @see io.apiman.gateway.engine.IRegistry#unregisterApplication(io.apiman.gateway.engine.beans.Application, io.apiman.gateway.engine.async.IAsyncResultHandler)
+     * @see io.apiman.gateway.engine.IRegistry#unregisterClient(io.apiman.gateway.engine.beans.Client, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
     @Override
-    public void unregisterApplication(final Application application, final IAsyncResultHandler<Void> handler) {
-        final String id = getApplicationId(application);
+    public void unregisterClient(final Client client, final IAsyncResultHandler<Void> handler) {
+        final String id = getClientId(client);
 
-        Delete delete = new Delete.Builder(id).index(getIndexName()).type("application").build(); //$NON-NLS-1$
+        Delete delete = new Delete.Builder(id).index(getIndexName()).type("client").build(); //$NON-NLS-1$
         getClient().executeAsync(delete, new JestResultHandler<JestResult>() {
             @Override
             public void completed(JestResult result) {
                 if (result.isSucceeded()) {
-                    unregisterApiContracts(application, handler);
+                    unregisterApiContracts(client, handler);
                 } else {
-                    handler.handle(AsyncResultImpl.create(new PublishingException(Messages.i18n.format("ESRegistry.AppNotFound")), Void.class)); //$NON-NLS-1$
+                    handler.handle(AsyncResultImpl.create(new PublishingException(Messages.i18n.format("ESRegistry.ClientNotFound")), Void.class)); //$NON-NLS-1$
                 }
             }
             @Override
             public void failed(Exception e) {
-                handler.handle(AsyncResultImpl.create(new PublishingException(Messages.i18n.format("ESRegistry.ErrorUnregisteringApp"), e), Void.class)); //$NON-NLS-1$
+                handler.handle(AsyncResultImpl.create(new PublishingException(Messages.i18n.format("ESRegistry.ErrorUnregisteringClient"), e), Void.class)); //$NON-NLS-1$
             }
         });
     }
 
     /**
      * Removes all of the api contracts from ES.
-     * @param application
+     * @param client
      * @param handler
      */
-    protected void unregisterApiContracts(Application application, final IAsyncResultHandler<Void> handler) {
+    protected void unregisterApiContracts(Client client, final IAsyncResultHandler<Void> handler) {
         QueryBuilder qb = QueryBuilders.filteredQuery(
                 QueryBuilders.matchAllQuery(),
                 FilterBuilders.andFilter(
-                        FilterBuilders.termFilter("application.organizationId", application.getOrganizationId()), //$NON-NLS-1$
-                        FilterBuilders.termFilter("application.applicationId", application.getApplicationId()), //$NON-NLS-1$
-                        FilterBuilders.termFilter("application.version", application.getVersion()) //$NON-NLS-1$
+                        FilterBuilders.termFilter("client.organizationId", client.getOrganizationId()), //$NON-NLS-1$
+                        FilterBuilders.termFilter("client.clientId", client.getClientId()), //$NON-NLS-1$
+                        FilterBuilders.termFilter("client.version", client.getVersion()) //$NON-NLS-1$
                 )
             );
         @SuppressWarnings("nls")
@@ -337,7 +337,7 @@ public class AsyncESRegistry extends AbstractESComponent implements IRegistry {
             }
             @Override
             public void failed(Exception e) {
-                handler.handle(AsyncResultImpl.create(new PublishingException(Messages.i18n.format("ESRegistry.ErrorUnregisteringApp"), e), Void.class)); //$NON-NLS-1$
+                handler.handle(AsyncResultImpl.create(new PublishingException(Messages.i18n.format("ESRegistry.ErrorUnregisteringClient"), e), Void.class)); //$NON-NLS-1$
             }
         });
     }
@@ -462,12 +462,12 @@ public class AsyncESRegistry extends AbstractESComponent implements IRegistry {
     }
 
     /**
-     * Generates a valid document ID for an application, used to index the app in ES.
-     * @param app an application
-     * @return an application key
+     * Generates a valid document ID for an client, used to index the app in ES.
+     * @param client an client
+     * @return an client key
      */
-    private String getApplicationId(Application app) {
-        return app.getOrganizationId() + ":" + app.getApplicationId() + ":" + app.getVersion(); //$NON-NLS-1$ //$NON-NLS-2$
+    private String getClientId(Client client) {
+        return client.getOrganizationId() + ":" + client.getClientId() + ":" + client.getVersion(); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**

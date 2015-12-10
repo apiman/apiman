@@ -14,7 +14,7 @@
       </div>
       <!-- Helpful hint -->
       <div class="row">
-        <p class="col-md-6 apiman-label-faded" apiman-i18n-key="new-contract-help-text" class="apiman-label-faded">Creating a Contract allows you to connect an Application to an API via a particular Plan offered by the API.  You would want to do this so that your Application can invoke the API successfully.  Note that this is not necessary if the API is public.</p>
+        <p class="col-md-6 apiman-label-faded" apiman-i18n-key="new-contract-help-text" class="apiman-label-faded">Creating a Contract allows you to connect a Client App to an API via a particular Plan offered by the API.  You would want to do this so that your Client App can invoke the API successfully.  Note that this is not necessary if the API is public.</p>
       </div>
       <!-- HR -->
       <div class="row hr-row">
@@ -23,31 +23,31 @@
 
       <div id="new-contract-form" class="row">
         <div class="col-md-6">
-          <div class="application" ng-class="{ selected : selectedAppVersion }">
-            <div class="title"><i class="fa fa-gears fa-fw"></i> <span apiman-i18n-key="from-app">From Application</span></div>
+          <div class="client" ng-class="{ selected : selectedClientVersion }">
+            <div class="title"><i class="fa fa-gears fa-fw"></i> <span apiman-i18n-key="from-client">From Client App</span></div>
             <div class="body">
-              <p apiman-i18n-key="new-contract.app-description">
-                The Application that will be used as the source of the new API Contract.  Choose one 
-                of your available Applications below, and then choose an application version.
+              <p apiman-i18n-key="new-contract.client-description">
+                The Client App that will be used as the source of the new API Contract.  Choose one 
+                of your available Client Apps below, and then choose a Client App version.
               </p>
-              <div class="center-content" ng-show="apps.length > 0">
-                <select id="app" ng-model="selectedApp" apiman-select-picker="" class="selectpicker" data-live-search="true" apiman-i18n-key="select-app" title="Select an Application" ng-options="(app.organizationName + ' / ' + app.name) for app in apps"></select>
+              <div class="center-content" ng-show="clients.length > 0">
+                <select id="client" ng-model="selectedClient" apiman-select-picker="" class="selectpicker" data-live-search="true" apiman-i18n-key="select-client" title="Select a Client App" ng-options="(client.organizationName + ' / ' + client.name) for client in clients"></select>
                 <span class="slash" apiman-i18n-skip>&#8680;</span>
-                <select id="app-version" ng-model="selectedAppVersion" apiman-select-picker="appVersions" class="selectpicker" apiman-i18n-key="select-app-version" title="Select a Version" ng-options="version for version in appVersions">
+                <select id="client-version" ng-model="selectedClientVersion" apiman-select-picker="clientVersions" class="selectpicker" apiman-i18n-key="select-client-version" title="Select a Version" ng-options="version for version in clientVersions">
                 </select>
               </div>
-              <div class="alert alert-warning" ng-show="apps.length > 0 && selectedApp && appVersions.length == 0" style="margin-top: 10px">
+              <div class="alert alert-warning" ng-show="clients.length > 0 && selectedClient && clientVersions.length == 0" style="margin-top: 10px">
                  <span class="pficon pficon-info"></span>
-                 <span apiman-i18n-key="new-contract.no-app-versions">
-                   There are no versions of the selected application that can be registered.  For example, if an 
-                   application is Retired you will not be able to create a Contract for it.
+                 <span apiman-i18n-key="new-contract.no-client-versions">
+                   There are no versions of the selected Client App that can be registered.  For example, if a
+                   Client App is Retired you will not be able to create a Contract for it.
                  </span>
               </div>
-              <div class="alert alert-warning" ng-show="apps.length == 0">
+              <div class="alert alert-warning" ng-show="clients.length == 0">
                  <span class="pficon pficon-info"></span>
-                 <span apiman-i18n-key="new-contract.no-apps-found">
-                   We couldn't find any Applications for you - you must have at least one (not yet registered)
-                   Application in order to create a Contract.
+                 <span apiman-i18n-key="new-contract.no-clients-found">
+                   We couldn't find any Client Apps for you - you must have at least one (not yet registered)
+                   Client App in order to create a Contract.
                  </span>
               </div>
             </div>
@@ -95,7 +95,7 @@
             <div class="title"><i class="fa fa-puzzle-piece fa-fw"></i> <span apiman-i18n-key="to-api">To API</span></div>
             <div class="body">
               <p apiman-i18n-key="new-contract.api-description">
-                Use this section to choose what API the Application will be consuming (aka the
+                Use this section to choose what API the Client App will be consuming (aka the
                 "target" of this API Contract).
               </p>
               <div class="center-content">
@@ -122,7 +122,7 @@
       </div>
 
       <div class="row">
-        <button id="create-contract" ng-click="createContract()" apiman-action-btn="" ng-disabled="!selectedApp || !selectedAppVersion || !selectedPlan || !selectedApi" class="btn btn-primary" data-field="createButton" apiman-i18n-key="create-contract" placeholder="Creating..." data-icon="fa-cog">Create Contract</button>
+        <button id="create-contract" ng-click="createContract()" apiman-action-btn="" ng-disabled="!selectedClient || !selectedClientVersion || !selectedPlan || !selectedApi" class="btn btn-primary" data-field="createButton" apiman-i18n-key="create-contract" placeholder="Creating..." data-icon="fa-cog">Create Contract</button>
         <a id="cancel" href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" apiman-i18n-key="cancel">Cancel</a>
       </div>
 

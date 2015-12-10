@@ -25,7 +25,7 @@ import io.apiman.manager.api.beans.idm.UserBean;
 import io.apiman.manager.api.beans.search.PagingBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaBean;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
-import io.apiman.manager.api.beans.summary.ApplicationSummaryBean;
+import io.apiman.manager.api.beans.summary.ClientSummaryBean;
 import io.apiman.manager.api.beans.summary.OrganizationSummaryBean;
 import io.apiman.manager.api.beans.summary.ApiSummaryBean;
 import io.apiman.manager.api.core.IStorage;
@@ -145,19 +145,19 @@ public class UserResourceImpl implements IUserResource {
     }
     
     /**
-     * @see io.apiman.manager.api.rest.contract.IUserResource#getApplications(java.lang.String)
+     * @see io.apiman.manager.api.rest.contract.IUserResource#getClients(java.lang.String)
      */
     @Override
-    public List<ApplicationSummaryBean> getApplications(String userId) {
+    public List<ClientSummaryBean> getClients(String userId) {
         Set<String> permittedOrganizations = new HashSet<>();
         try {
             Set<PermissionBean> permissions = query.getPermissions(userId);
             for (PermissionBean permission : permissions) {
-                if (permission.getName() == PermissionType.appView) {
+                if (permission.getName() == PermissionType.clientView) {
                     permittedOrganizations.add(permission.getOrganizationId());
                 }
             }
-            return query.getApplicationsInOrgs(permittedOrganizations);
+            return query.getClientsInOrgs(permittedOrganizations);
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }

@@ -19,7 +19,7 @@ module Apiman {
             $scope.metricsRange = '7days';
             $scope.metricsType = 'usage';
             
-            var usageChart, usageByAppChart, usageByPlanChart;
+            var usageChart, usageByClientChart, usageByPlanChart;
             var responseTypeChart, responseTypeSuccessChart, responseTypeFailuresChart, responseTypeErrorsChart;
             
             var getTimeSeriesFormat = function() {
@@ -77,15 +77,15 @@ module Apiman {
                 }
             };
             
-            var renderAppUsageChart = function(data) {
+            var renderClientUsageChart = function(data) {
                 var columns = [];
-                angular.forEach(data.data, function(numRequests, appName) {
-                    columns.push([appName, numRequests]);
+                angular.forEach(data.data, function(numRequests, clientName) {
+                    columns.push([clientName, numRequests]);
                 });
                 if (columns.length == 0) {
-                    $scope.appUsageChartNoData = true;
+                    $scope.clientUsageChartNoData = true;
                 } else {
-                    usageByAppChart = c3.generate({
+                    usageByClientChart = c3.generate({
                         size: {
                             height: 250
                         },
@@ -93,7 +93,7 @@ module Apiman {
                             columns: columns,
                             type : 'pie'
                         },
-                        bindto: '#app-usage-chart'
+                        bindto: '#client-usage-chart'
                     });
                 }
             };
@@ -285,7 +285,7 @@ module Apiman {
             // *******************************************************
             var refreshUsageCharts = function() {
                 $scope.usageChartLoading = true;
-                $scope.appUsageChartLoading = true;
+                $scope.clientUsageChartLoading = true;
                 $scope.planUsageChartLoading = true;
                 
                 var range = getChartDateRange();
@@ -313,18 +313,18 @@ module Apiman {
                     $scope.usageChartNoData = true;
                 });
                 
-                // Refresh the app usage chart
-                if (usageByAppChart) {
-                    usageByAppChart.destroy();
-                    usageByAppChart = null;
+                // Refresh the client usage chart
+                if (usageByClientChart) {
+                    usageByClientChart.destroy();
+                    usageByClientChart = null;
                 }
-                MetricsSvcs.getUsagePerApp(params.org, params.api, params.version, from, to, function(data) {
-                    $scope.appUsageChartLoading = false;
-                    renderAppUsageChart(data);
+                MetricsSvcs.getUsagePerClient(params.org, params.api, params.version, from, to, function(data) {
+                    $scope.clientUsageChartLoading = false;
+                    renderClientUsageChart(data);
                 }, function(error) {
-                    Logger.error('Error loading app usage chart data: {0}', JSON.stringify(error));
-                    $scope.appUsageChartLoading = false;
-                    $scope.appUsageChartNoData = true;
+                    Logger.error('Error loading client usage chart data: {0}', JSON.stringify(error));
+                    $scope.clientUsageChartLoading = false;
+                    $scope.clientUsageChartNoData = true;
                 });
                 
                 // Refresh the plan usage chart

@@ -47,7 +47,7 @@ public interface IEngine {
 
     /**
      * Returns the registry that can be used to publish/retire APIs and
-     * register/unregister applications.
+     * register/unregister clients.
      * @return the registry
      */
     IRegistry getRegistry();

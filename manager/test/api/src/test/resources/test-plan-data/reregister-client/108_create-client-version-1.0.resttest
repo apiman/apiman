@@ -1,0 +1,21 @@
+POST /organizations/Organization/clients/Client/versions admin/admin
+Content-Type: application/json
+
+{
+  "version" : "1.0"
+}
+----
+200
+Content-Type: application/json
+
+{
+  "client" : {
+    "organization" : {
+      "id" : "Organization"
+    },
+    "id" : "Client"
+  },
+  "status" : "Created",
+  "version" : "1.0",
+  "createdBy" : "admin"
+}

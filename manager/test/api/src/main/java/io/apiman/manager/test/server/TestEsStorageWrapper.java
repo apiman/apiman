@@ -17,9 +17,9 @@ package io.apiman.manager.test.server;
 
 import io.apiman.manager.api.beans.apis.ApiBean;
 import io.apiman.manager.api.beans.apis.ApiVersionBean;
-import io.apiman.manager.api.beans.apps.ApplicationBean;
-import io.apiman.manager.api.beans.apps.ApplicationVersionBean;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
+import io.apiman.manager.api.beans.clients.ClientBean;
+import io.apiman.manager.api.beans.clients.ClientVersionBean;
 import io.apiman.manager.api.beans.contracts.ContractBean;
 import io.apiman.manager.api.beans.download.DownloadBean;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
@@ -97,20 +97,20 @@ public class TestEsStorageWrapper implements IStorage {
     }
 
     /**
-     * @see io.apiman.manager.api.core.IStorage#createApplication(io.apiman.manager.api.beans.apps.ApplicationBean)
+     * @see io.apiman.manager.api.core.IStorage#createClient(io.apiman.manager.api.beans.clients.ClientBean)
      */
     @Override
-    public void createApplication(ApplicationBean application) throws StorageException {
-        this.delegate.createApplication(application);
+    public void createClient(ClientBean client) throws StorageException {
+        this.delegate.createClient(client);
 
     }
 
     /**
-     * @see io.apiman.manager.api.core.IStorage#createApplicationVersion(io.apiman.manager.api.beans.apps.ApplicationVersionBean)
+     * @see io.apiman.manager.api.core.IStorage#createClientVersion(io.apiman.manager.api.beans.clients.ClientVersionBean)
      */
     @Override
-    public void createApplicationVersion(ApplicationVersionBean version) throws StorageException {
-        this.delegate.createApplicationVersion(version);
+    public void createClientVersion(ClientVersionBean version) throws StorageException {
+        this.delegate.createClientVersion(version);
 
     }
 
@@ -214,20 +214,20 @@ public class TestEsStorageWrapper implements IStorage {
     }
 
     /**
-     * @see io.apiman.manager.api.core.IStorage#updateApplication(io.apiman.manager.api.beans.apps.ApplicationBean)
+     * @see io.apiman.manager.api.core.IStorage#updateClient(io.apiman.manager.api.beans.clients.ClientBean)
      */
     @Override
-    public void updateApplication(ApplicationBean application) throws StorageException {
-        this.delegate.updateApplication(application);
+    public void updateClient(ClientBean client) throws StorageException {
+        this.delegate.updateClient(client);
 
     }
 
     /**
-     * @see io.apiman.manager.api.core.IStorage#updateApplicationVersion(io.apiman.manager.api.beans.apps.ApplicationVersionBean)
+     * @see io.apiman.manager.api.core.IStorage#updateClientVersion(io.apiman.manager.api.beans.clients.ClientVersionBean)
      */
     @Override
-    public void updateApplicationVersion(ApplicationVersionBean version) throws StorageException {
-        this.delegate.updateApplicationVersion(version);
+    public void updateClientVersion(ClientVersionBean version) throws StorageException {
+        this.delegate.updateClientVersion(version);
 
     }
 
@@ -304,20 +304,20 @@ public class TestEsStorageWrapper implements IStorage {
     }
 
     /**
-     * @see io.apiman.manager.api.core.IStorage#deleteApplication(io.apiman.manager.api.beans.apps.ApplicationBean)
+     * @see io.apiman.manager.api.core.IStorage#deleteClient(io.apiman.manager.api.beans.clients.ClientBean)
      */
     @Override
-    public void deleteApplication(ApplicationBean application) throws StorageException {
-        this.delegate.deleteApplication(application);
+    public void deleteClient(ClientBean client) throws StorageException {
+        this.delegate.deleteClient(client);
 
     }
 
     /**
-     * @see io.apiman.manager.api.core.IStorage#deleteApplicationVersion(io.apiman.manager.api.beans.apps.ApplicationVersionBean)
+     * @see io.apiman.manager.api.core.IStorage#deleteClientVersion(io.apiman.manager.api.beans.clients.ClientVersionBean)
      */
     @Override
-    public void deleteApplicationVersion(ApplicationVersionBean version) throws StorageException {
-        this.delegate.deleteApplicationVersion(version);
+    public void deleteClientVersion(ClientVersionBean version) throws StorageException {
+        this.delegate.deleteClientVersion(version);
 
     }
 
@@ -411,20 +411,20 @@ public class TestEsStorageWrapper implements IStorage {
     }
 
     /**
-     * @see io.apiman.manager.api.core.IStorage#getApplication(java.lang.String, java.lang.String)
+     * @see io.apiman.manager.api.core.IStorage#getClient(java.lang.String, java.lang.String)
      */
     @Override
-    public ApplicationBean getApplication(String organizationId, String id) throws StorageException {
-        return this.delegate.getApplication(organizationId, id);
+    public ClientBean getClient(String organizationId, String id) throws StorageException {
+        return this.delegate.getClient(organizationId, id);
     }
 
     /**
-     * @see io.apiman.manager.api.core.IStorage#getApplicationVersion(java.lang.String, java.lang.String, java.lang.String)
+     * @see io.apiman.manager.api.core.IStorage#getClientVersion(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
-    public ApplicationVersionBean getApplicationVersion(String organizationId, String applicationId,
+    public ClientVersionBean getClientVersion(String organizationId, String clientId,
             String version) throws StorageException {
-        return this.delegate.getApplicationVersion(organizationId, applicationId, version);
+        return this.delegate.getClientVersion(organizationId, clientId, version);
     }
 
     /**
@@ -720,29 +720,29 @@ public class TestEsStorageWrapper implements IStorage {
     }
 
     /**
-     * @see io.apiman.manager.api.core.IStorage#getAllApplications(java.lang.String)
+     * @see io.apiman.manager.api.core.IStorage#getAllClients(java.lang.String)
      */
     @Override
-    public Iterator<ApplicationBean> getAllApplications(String organizationId) throws StorageException {
-        return delegate.getAllApplications(organizationId);
+    public Iterator<ClientBean> getAllClients(String organizationId) throws StorageException {
+        return delegate.getAllClients(organizationId);
     }
 
     /**
-     * @see io.apiman.manager.api.core.IStorage#getAllApplicationVersions(java.lang.String, java.lang.String)
+     * @see io.apiman.manager.api.core.IStorage#getAllClientVersions(java.lang.String, java.lang.String)
      */
     @Override
-    public Iterator<ApplicationVersionBean> getAllApplicationVersions(String organizationId,
-            String applicationId) throws StorageException {
-        return delegate.getAllApplicationVersions(organizationId, applicationId);
+    public Iterator<ClientVersionBean> getAllClientVersions(String organizationId,
+            String clientId) throws StorageException {
+        return delegate.getAllClientVersions(organizationId, clientId);
     }
 
     /**
      * @see io.apiman.manager.api.core.IStorage#getAllContracts(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
-    public Iterator<ContractBean> getAllContracts(String organizationId, String applicationId, String version)
+    public Iterator<ContractBean> getAllContracts(String organizationId, String clientId, String version)
             throws StorageException {
-        return delegate.getAllContracts(organizationId, applicationId, version);
+        return delegate.getAllContracts(organizationId, clientId, version);
     }
 
     /**

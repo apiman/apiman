@@ -4,7 +4,7 @@
   <!-- Create Organizations -->
   <testGroup name="Initial Creates">
     <test name="Create Org Owner Role">test-plan-data/members/create/001_create-org-owner.resttest</test>
-    <test name="Create App Dev Role">test-plan-data/members/create/002_create-app-dev.resttest</test>
+    <test name="Create Client Dev Role">test-plan-data/members/create/002_create-client-dev.resttest</test>
     <test name="Create API Dev Role">test-plan-data/members/create/003_create-api-dev.resttest</test>
     <test name="Create Organization 1">test-plan-data/members/create/004_create-org1.resttest</test>
     <test name="Create Organization 2">test-plan-data/members/create/005_create-org2.resttest</test>
@@ -13,7 +13,7 @@
   <!-- Test Memberships -->
   <testGroup name="Member Management">
     <test name="Get Org 1 Members [1]">test-plan-data/members/manage/001_get-members.resttest</test>
-    <test name="Grant user1 app dev role">test-plan-data/members/manage/002_grant-user1-app.resttest</test>
+    <test name="Grant user1 app dev role">test-plan-data/members/manage/002_grant-user1-client.resttest</test>
     <test name="Get Org 1 Members [2]">test-plan-data/members/manage/003_get-members.resttest</test>
     <test name="Grant user1 api dev role">test-plan-data/members/manage/004_grant-user1-api.resttest</test>
     <test name="Grant user2 api dev role">test-plan-data/members/manage/005_grant-user2-api.resttest</test>

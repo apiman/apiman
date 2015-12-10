@@ -1,0 +1,12 @@
+        <div class="col-md-2 apiman-entity-nav">
+          <ul class="nav nav-pills nav-stacked">
+            <li class="first"><a apiman-i18n-skip>&nbsp;</a></li>
+            <li ng-class="{ true: 'active' } [tab == 'overview']"><a id="tab-overview" data-field="toClientOverview" href="{{ pluginName }}/orgs/{{ org.id }}/clients/{{ client.id }}/{{version.version}}" apiman-i18n-key="overview">Overview</a></li>
+            <li ng-class="{ true: 'active' } [tab == 'contracts']"><a id="tab-contracts" data-field="toClientContracts" href="{{ pluginName }}/orgs/{{ org.id }}/clients/{{ client.id }}/{{version.version}}/contracts" apiman-i18n-key="contracts">Contracts</a></li>
+            <li ng-class="{ true: 'active' } [tab == 'policies']"><a id="tab-policies" data-field="toClientPolicies" href="{{ pluginName }}/orgs/{{ org.id }}/clients/{{ client.id }}/{{version.version}}/policies" apiman-i18n-key="policies">Policies</a></li>
+            <li ng-class="{ true: 'active' } [tab == 'apis']" apiman-status="Registered"><a id="tab-apis" data-field="toClientApis" href="{{ pluginName }}/orgs/{{ org.id }}/clients/{{ client.id }}/{{version.version}}/apis" apiman-i18n-key="apis">APIs</a></li>
+            <li ng-class="{ true: 'active' } [tab == 'metrics']" ng-show="showMetrics" apiman-status="Registered"><a id="tab-metrics" data-field="toClientMetrics" href="{{ pluginName }}/orgs/{{ org.id }}/clients/{{ client.id }}/{{version.version}}/metrics" apiman-i18n-key="metrics">Metrics</a></li>
+            <li ng-class="{ true: 'active' } [tab == 'activity']"><a id="tab-activity" data-field="toClientActivity" href="{{ pluginName }}/orgs/{{ org.id }}/clients/{{ client.id }}/{{version.version}}/activity" apiman-i18n-key="activity">Activity</a></li>
+            <li class="last"><a apiman-i18n-skip>&nbsp;</a></li>
+          </ul>
+        </div>

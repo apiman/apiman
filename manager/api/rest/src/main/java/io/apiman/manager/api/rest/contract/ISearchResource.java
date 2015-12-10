@@ -19,8 +19,8 @@ package io.apiman.manager.api.rest.contract;
 import io.apiman.manager.api.beans.search.SearchCriteriaBean;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
 import io.apiman.manager.api.beans.summary.ApiSummaryBean;
-import io.apiman.manager.api.beans.summary.ApplicationSummaryBean;
 import io.apiman.manager.api.beans.summary.AvailableApiBean;
+import io.apiman.manager.api.beans.summary.ClientSummaryBean;
 import io.apiman.manager.api.beans.summary.OrganizationSummaryBean;
 import io.apiman.manager.api.rest.contract.exceptions.InvalidSearchCriteriaException;
 import io.apiman.manager.api.rest.contract.exceptions.OrganizationNotFoundException;
@@ -59,21 +59,21 @@ public interface ISearchResource {
             throws InvalidSearchCriteriaException;
 
     /**
-     * Use this endpoint to search for applications.  The search criteria is
+     * Use this endpoint to search for clients.  The search criteria is
      * provided in the body of the request, including filters, order-by, and paging
      * information.
-     * @summary Search for Applications
+     * @summary Search for Clients
      * @param criteria The search criteria.
      * @statuscode 200 If the search is successful.
-     * @return The search results (a page of applications).
+     * @return The search results (a page of clients).
      * @throws OrganizationNotFoundException when provided organization is not found
      * @throws InvalidSearchCriteriaException when provided criteria are invalid
      */
     @POST
-    @Path("applications")
+    @Path("clients")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public SearchResultsBean<ApplicationSummaryBean> searchApps(SearchCriteriaBean criteria)
+    public SearchResultsBean<ClientSummaryBean> searchClients(SearchCriteriaBean criteria)
             throws OrganizationNotFoundException, InvalidSearchCriteriaException;
 
     /**

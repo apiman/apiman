@@ -19,7 +19,7 @@ import io.apiman.common.util.AesEncrypter;
 import io.apiman.common.util.crypt.CurrentDataEncrypter;
 import io.apiman.gateway.engine.beans.Api;
 import io.apiman.gateway.engine.beans.ApiEndpoint;
-import io.apiman.gateway.engine.beans.Application;
+import io.apiman.gateway.engine.beans.Client;
 import io.apiman.gateway.engine.beans.SystemStatus;
 import io.apiman.gateway.engine.beans.exceptions.PublishingException;
 import io.apiman.gateway.engine.beans.exceptions.RegistrationException;
@@ -166,25 +166,25 @@ public class RestGatewayLink implements IGatewayLink {
     }
 
     /**
-     * @see io.apiman.manager.api.gateway.IGatewayLink#registerApplication(io.apiman.gateway.engine.beans.Application)
+     * @see io.apiman.manager.api.gateway.IGatewayLink#registerClient(io.apiman.gateway.engine.beans.Client)
      */
     @Override
-    public void registerApplication(Application application) throws RegistrationException, GatewayAuthenticationException {
+    public void registerClient(Client client) throws RegistrationException, GatewayAuthenticationException {
         if (!isGatewayUp()) {
             throw new RegistrationException(Messages.i18n.format("RestGatewayLink.GatewayNotRunning")); //$NON-NLS-1$
         }
-        getClient().register(application);
+        getClient().register(client);
     }
 
     /**
-     * @see io.apiman.manager.api.gateway.IGatewayLink#unregisterApplication(io.apiman.gateway.engine.beans.Application)
+     * @see io.apiman.manager.api.gateway.IGatewayLink#unregisterClient(io.apiman.gateway.engine.beans.Client)
      */
     @Override
-    public void unregisterApplication(Application application) throws RegistrationException, GatewayAuthenticationException {
+    public void unregisterClient(Client client) throws RegistrationException, GatewayAuthenticationException {
         if (!isGatewayUp()) {
             throw new RegistrationException(Messages.i18n.format("RestGatewayLink.GatewayNotRunning")); //$NON-NLS-1$
         }
-        getClient().unregister(application.getOrganizationId(), application.getApplicationId(), application.getVersion());
+        getClient().unregister(client.getOrganizationId(), client.getClientId(), client.getVersion());
     }
 
     /**

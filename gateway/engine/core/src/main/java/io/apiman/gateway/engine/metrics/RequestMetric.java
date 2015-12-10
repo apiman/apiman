@@ -43,9 +43,9 @@ public class RequestMetric implements Serializable {
     private String apiId;
     private String apiVersion;
     private String planId;
-    private String applicationOrgId;
-    private String applicationId;
-    private String applicationVersion;
+    private String clientOrgId;
+    private String clientId;
+    private String clientVersion;
     private String contractId;
     private String user;
     private int responseCode;
@@ -149,45 +149,45 @@ public class RequestMetric implements Serializable {
     }
 
     /**
-     * @return the applicationOrgId
+     * @return the clientOrgId
      */
-    public String getApplicationOrgId() {
-        return applicationOrgId;
+    public String getClientOrgId() {
+        return clientOrgId;
     }
 
     /**
-     * @param applicationOrgId the applicationOrgId to set
+     * @param clientOrgId the clientOrgId to set
      */
-    public void setApplicationOrgId(String applicationOrgId) {
-        this.applicationOrgId = applicationOrgId;
+    public void setClientOrgId(String clientOrgId) {
+        this.clientOrgId = clientOrgId;
     }
 
     /**
-     * @return the applicationId
+     * @return the clientId
      */
-    public String getApplicationId() {
-        return applicationId;
+    public String getClientId() {
+        return clientId;
     }
 
     /**
-     * @param applicationId the applicationId to set
+     * @param clientId the clientId to set
      */
-    public void setApplicationId(String applicationId) {
-        this.applicationId = applicationId;
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
     }
 
     /**
-     * @return the applicationVersion
+     * @return the clientVersion
      */
-    public String getApplicationVersion() {
-        return applicationVersion;
+    public String getClientVersion() {
+        return clientVersion;
     }
 
     /**
-     * @param applicationVersion the applicationVersion to set
+     * @param clientVersion the clientVersion to set
      */
-    public void setApplicationVersion(String applicationVersion) {
-        this.applicationVersion = applicationVersion;
+    public void setClientVersion(String clientVersion) {
+        this.clientVersion = clientVersion;
     }
 
     /**

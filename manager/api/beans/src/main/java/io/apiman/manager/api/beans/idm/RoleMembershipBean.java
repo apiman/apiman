@@ -27,10 +27,10 @@ import javax.persistence.UniqueConstraint;
 
 /**
  * A single, qualified, role granted to the user.  Roles in the system
- * might include things like "Organization Owner", "Application Developer", etc.
+ * might include things like "Organization Owner", "Client Developer", etc.
  * A role is qualified by an Organization ID.  The purpose of a role is
- * to grant permissions to a user.  A role might grant CREATE-APPLICATION
- * and VIEW-API permissions for a particular Organization.
+ * to grant permissions to a user.  A role might grant editClient
+ * and viewApi permissions for a particular Organization.
  *
  * @author eric.wittmann@redhat.com
  */

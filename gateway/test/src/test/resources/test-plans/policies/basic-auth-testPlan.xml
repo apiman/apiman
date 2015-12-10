@@ -3,11 +3,11 @@
 
   <testGroup name="Test BASIC Auth (Static)">
     <test name="Publish Api" endpoint="api">test-plan-data/policies/basic-auth-static/001-publish-api.resttest</test>
-    <test name="Register Application" endpoint="api">test-plan-data/policies/basic-auth-static/002-register-app.resttest</test>
+    <test name="Register Client" endpoint="api">test-plan-data/policies/basic-auth-static/002-register-client.resttest</test>
     <test name="Success">test-plan-data/policies/basic-auth-static/003-success.resttest</test>
     <test name="Failure">test-plan-data/policies/basic-auth-static/004-failure.resttest</test>
     <test name="Failure (no creds)">test-plan-data/policies/basic-auth-static/005-failure.resttest</test>
-    <test name="Register Application 2 (require-basic)" endpoint="api">test-plan-data/policies/basic-auth-static/006-register-app-2.resttest</test>
+    <test name="Register Client 2 (require-basic)" endpoint="api">test-plan-data/policies/basic-auth-static/006-register-client-2.resttest</test>
     <test name="Success (no creds)">test-plan-data/policies/basic-auth-static/007-success.resttest</test>
   </testGroup>
 

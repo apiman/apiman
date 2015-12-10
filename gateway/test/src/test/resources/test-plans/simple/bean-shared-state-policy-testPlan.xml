@@ -3,7 +3,7 @@
 
   <testGroup name="Configure the Gateway" endpoint="api">
     <test name="Publish Api">test-plan-data/simple/bean-shared-state-policy/setup/001-publish-api.resttest</test>
-    <test name="Register Application">test-plan-data/simple/bean-shared-state-policy/setup/002-register-app.resttest</test>
+    <test name="Register Client">test-plan-data/simple/bean-shared-state-policy/setup/002-register-client.resttest</test>
   </testGroup>
 
   <testGroup name="Test the Echo Server through the Gateway">

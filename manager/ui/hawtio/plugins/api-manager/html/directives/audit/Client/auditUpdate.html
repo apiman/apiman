@@ -1,0 +1,22 @@
+<div class="row">
+  <a href="{{ pluginName }}/users/{{ entry.who }}">{{ entry.who }}</a>
+  <span apiman-i18n-key="audit.updated-client-client">updated client app</span>
+  <a href="{{ pluginName }}/orgs/{{ entry.organizationId }}/plans">{{ entry.organizationId }}</a>
+  <span apiman-i18n-skip>/</span>
+  <a class="emphasis" href="{{ pluginName }}/orgs/{{ entry.organizationId }}/clients/{{ entry.entityId }}">{{ entry.entityId }}</a>
+  <span ng-show="entry.entityVersion">
+    <span apiman-i18n-key="audit.version">version</span>
+    <a class="emphasis" href="{{ pluginName }}/orgs/{{ entry.organizationId }}/clients/{{ entry.entityId }}/{{ entry.entityVersion }}">{{ entry.entityVersion }}</a>
+  </span>
+  <span apiman-i18n-skip>.</span>
+</div>
+<div class="row boxed-row">
+  <div ng-repeat="item in data.changes">
+    <div>
+      <span class="capitalized emphasis">{{ item.name }}</span>
+    </div>
+    <div class="activity-value">
+      <span>{{ item.after }}</span>
+    </div>
+  </div>
+</div>

@@ -17,17 +17,17 @@
 package io.apiman.manager.api.rest.impl;
 
 import io.apiman.gateway.engine.beans.Api;
-import io.apiman.gateway.engine.beans.Application;
+import io.apiman.gateway.engine.beans.Client;
 import io.apiman.gateway.engine.beans.Contract;
 import io.apiman.gateway.engine.beans.Policy;
 import io.apiman.gateway.engine.beans.exceptions.PublishingException;
 import io.apiman.manager.api.beans.actions.ActionBean;
+import io.apiman.manager.api.beans.apis.ApiBean;
 import io.apiman.manager.api.beans.apis.ApiGatewayBean;
 import io.apiman.manager.api.beans.apis.ApiStatus;
-import io.apiman.manager.api.beans.apis.ApiBean;
 import io.apiman.manager.api.beans.apis.ApiVersionBean;
-import io.apiman.manager.api.beans.apps.ApplicationStatus;
-import io.apiman.manager.api.beans.apps.ApplicationVersionBean;
+import io.apiman.manager.api.beans.clients.ClientStatus;
+import io.apiman.manager.api.beans.clients.ClientVersionBean;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
 import io.apiman.manager.api.beans.idm.PermissionType;
 import io.apiman.manager.api.beans.plans.PlanStatus;
@@ -37,7 +37,7 @@ import io.apiman.manager.api.beans.policies.PolicyType;
 import io.apiman.manager.api.beans.summary.ContractSummaryBean;
 import io.apiman.manager.api.beans.summary.PolicySummaryBean;
 import io.apiman.manager.api.core.IApiValidator;
-import io.apiman.manager.api.core.IApplicationValidator;
+import io.apiman.manager.api.core.IClientValidator;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.StorageException;
@@ -49,7 +49,7 @@ import io.apiman.manager.api.rest.contract.IActionResource;
 import io.apiman.manager.api.rest.contract.IOrganizationResource;
 import io.apiman.manager.api.rest.contract.exceptions.ActionException;
 import io.apiman.manager.api.rest.contract.exceptions.ApiVersionNotFoundException;
-import io.apiman.manager.api.rest.contract.exceptions.ApplicationVersionNotFoundException;
+import io.apiman.manager.api.rest.contract.exceptions.ClientVersionNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.GatewayNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.PlanVersionNotFoundException;
 import io.apiman.manager.api.rest.impl.audit.AuditUtils;
@@ -82,7 +82,7 @@ public class ActionResourceImpl implements IActionResource {
     @Inject IOrganizationResource orgs;
 
     @Inject IApiValidator apiValidator;
-    @Inject IApplicationValidator applicationValidator;
+    @Inject IClientValidator clientValidator;
 
     @Inject ISecurityContext securityContext;
 
@@ -106,11 +106,11 @@ public class ActionResourceImpl implements IActionResource {
             case retireAPI:
                 retireApi(action);
                 return;
-            case registerApplication:
-                registerApplication(action);
+            case registerClient:
+                registerClient(action);
                 return;
-            case unregisterApplication:
-                unregisterApplication(action);
+            case unregisterClient:
+                unregisterClient(action);
                 return;
             case lockPlan:
                 lockPlan(action);
@@ -306,40 +306,40 @@ public class ActionResourceImpl implements IActionResource {
     }
 
     /**
-     * Registers an application (along with all of its contracts) to the gateway.
+     * Registers an client (along with all of its contracts) to the gateway.
      * @param action
      */
-    private void registerApplication(ActionBean action) throws ActionException {
-        if (!securityContext.hasPermission(PermissionType.appAdmin, action.getOrganizationId()))
+    private void registerClient(ActionBean action) throws ActionException {
+        if (!securityContext.hasPermission(PermissionType.clientAdmin, action.getOrganizationId()))
             throw ExceptionFactory.notAuthorizedException();
 
-        ApplicationVersionBean versionBean = null;
+        ClientVersionBean versionBean = null;
         List<ContractSummaryBean> contractBeans = null;
         try {
-            versionBean = orgs.getAppVersion(action.getOrganizationId(), action.getEntityId(), action.getEntityVersion());
-        } catch (ApplicationVersionNotFoundException e) {
-            throw ExceptionFactory.actionException(Messages.i18n.format("ApplicationNotFound")); //$NON-NLS-1$
+            versionBean = orgs.getClientVersion(action.getOrganizationId(), action.getEntityId(), action.getEntityVersion());
+        } catch (ClientVersionNotFoundException e) {
+            throw ExceptionFactory.actionException(Messages.i18n.format("ClientNotFound")); //$NON-NLS-1$
         }
         try {
-            contractBeans = query.getApplicationContracts(action.getOrganizationId(), action.getEntityId(), action.getEntityVersion());
+            contractBeans = query.getClientContracts(action.getOrganizationId(), action.getEntityId(), action.getEntityVersion());
         } catch (StorageException e) {
-            throw ExceptionFactory.actionException(Messages.i18n.format("ApplicationNotFound"), e); //$NON-NLS-1$
+            throw ExceptionFactory.actionException(Messages.i18n.format("ClientNotFound"), e); //$NON-NLS-1$
         }
 
-        // Validate that it's ok to perform this action - application must be Ready or Registered.
-        if (versionBean.getStatus() == ApplicationStatus.Registered) {
+        // Validate that it's ok to perform this action - client must be Ready or Registered.
+        if (versionBean.getStatus() == ClientStatus.Registered) {
             Date modOn = versionBean.getModifiedOn();
             Date publishedOn = versionBean.getPublishedOn();
             int c = modOn.compareTo(publishedOn);
             if (c <= 0) {
-                throw ExceptionFactory.actionException(Messages.i18n.format("ApplicationReRegisterNotRequired")); //$NON-NLS-1$
+                throw ExceptionFactory.actionException(Messages.i18n.format("ClientReRegisterNotRequired")); //$NON-NLS-1$
             }
         }
 
-        Application application = new Application();
-        application.setOrganizationId(versionBean.getApplication().getOrganization().getId());
-        application.setApplicationId(versionBean.getApplication().getId());
-        application.setVersion(versionBean.getVersion());
+        Client client = new Client();
+        client.setOrganizationId(versionBean.getClient().getOrganization().getId());
+        client.setClientId(versionBean.getClient().getId());
+        client.setVersion(versionBean.getVersion());
 
         Set<Contract> contracts = new HashSet<>();
         for (ContractSummaryBean contractBean : contractBeans) {
@@ -352,15 +352,15 @@ public class ActionResourceImpl implements IActionResource {
             contract.getPolicies().addAll(aggregateContractPolicies(contractBean));
             contracts.add(contract);
         }
-        application.setContracts(contracts);
+        client.setContracts(contracts);
 
-        // Next, register the application with *all* relevant gateways.  This is done by
+        // Next, register the client with *all* relevant gateways.  This is done by
         // looking up all referenced APIs and getting the gateway information for them.
-        // Each of those gateways must be told about the application.
+        // Each of those gateways must be told about the client.
         try {
             storage.beginTx();
             Map<String, IGatewayLink> links = new HashMap<>();
-            for (Contract contract : application.getContracts()) {
+            for (Contract contract : client.getContracts()) {
                 ApiVersionBean svb = storage.getApiVersion(contract.getApiOrgId(), contract.getApiId(), contract.getApiVersion());
                 Set<ApiGatewayBean> gateways = svb.getGateways();
                 if (gateways == null) {
@@ -374,7 +374,7 @@ public class ActionResourceImpl implements IActionResource {
                 }
             }
             for (IGatewayLink gatewayLink : links.values()) {
-                gatewayLink.registerApplication(application);
+                gatewayLink.registerClient(client);
                 gatewayLink.close();
             }
             storage.commitTx();
@@ -383,40 +383,40 @@ public class ActionResourceImpl implements IActionResource {
             throw ExceptionFactory.actionException(Messages.i18n.format("RegisterError"), e); //$NON-NLS-1$
         }
 
-        versionBean.setStatus(ApplicationStatus.Registered);
+        versionBean.setStatus(ClientStatus.Registered);
         versionBean.setPublishedOn(new Date());
 
         try {
             storage.beginTx();
-            storage.updateApplicationVersion(versionBean);
-            storage.createAuditEntry(AuditUtils.applicationRegistered(versionBean, securityContext));
+            storage.updateClientVersion(versionBean);
+            storage.createAuditEntry(AuditUtils.clientRegistered(versionBean, securityContext));
             storage.commitTx();
         } catch (Exception e) {
             storage.rollbackTx();
             throw ExceptionFactory.actionException(Messages.i18n.format("RegisterError"), e); //$NON-NLS-1$
         }
 
-        log.debug(String.format("Successfully registered Application %s on specified gateways: %s", //$NON-NLS-1$
-                versionBean.getApplication().getName(), versionBean.getApplication()));
+        log.debug(String.format("Successfully registered Client %s on specified gateways: %s", //$NON-NLS-1$
+                versionBean.getClient().getName(), versionBean.getClient()));
     }
 
     /**
-     * Aggregates the API, app, and plan policies into a single ordered list.
+     * Aggregates the API, client, and plan policies into a single ordered list.
      * @param contractBean
      */
     private List<Policy> aggregateContractPolicies(ContractSummaryBean contractBean) {
         try {
             List<Policy> policies = new ArrayList<>();
             PolicyType [] types = new PolicyType[] {
-                    PolicyType.Application, PolicyType.Plan, PolicyType.Api
+                    PolicyType.Client, PolicyType.Plan, PolicyType.Api
             };
             for (PolicyType policyType : types) {
                 String org, id, ver;
                 switch (policyType) {
-                  case Application: {
-                      org = contractBean.getAppOrganizationId();
-                      id = contractBean.getAppId();
-                      ver = contractBean.getAppVersion();
+                  case Client: {
+                      org = contractBean.getClientOrganizationId();
+                      id = contractBean.getClientId();
+                      ver = contractBean.getClientVersion();
                       break;
                   }
                   case Plan: {
@@ -435,10 +435,10 @@ public class ActionResourceImpl implements IActionResource {
                       throw new RuntimeException("Missing case for switch!"); //$NON-NLS-1$
                   }
                 }
-                List<PolicySummaryBean> appPolicies = query.getPolicies(org, id, ver, policyType);
+                List<PolicySummaryBean> clientPolicies = query.getPolicies(org, id, ver, policyType);
                 storage.beginTx();
                 try {
-                    for (PolicySummaryBean policySummaryBean : appPolicies) {
+                    for (PolicySummaryBean policySummaryBean : clientPolicies) {
                         PolicyBean policyBean = storage.getPolicy(policyType, org, id, ver, policySummaryBean.getId());
                         Policy policy = new Policy();
                         policy.setPolicyJsonConfig(policyBean.getConfiguration());
@@ -456,39 +456,39 @@ public class ActionResourceImpl implements IActionResource {
     }
 
     /**
-     * De-registers an application that is currently registered with the gateway.
+     * De-registers an client that is currently registered with the gateway.
      * @param action
      */
-    private void unregisterApplication(ActionBean action) throws ActionException {
-        if (!securityContext.hasPermission(PermissionType.appAdmin, action.getOrganizationId()))
+    private void unregisterClient(ActionBean action) throws ActionException {
+        if (!securityContext.hasPermission(PermissionType.clientAdmin, action.getOrganizationId()))
             throw ExceptionFactory.notAuthorizedException();
 
-        ApplicationVersionBean versionBean = null;
+        ClientVersionBean versionBean = null;
         List<ContractSummaryBean> contractBeans = null;
         try {
-            versionBean = orgs.getAppVersion(action.getOrganizationId(), action.getEntityId(), action.getEntityVersion());
-        } catch (ApplicationVersionNotFoundException e) {
-            throw ExceptionFactory.actionException(Messages.i18n.format("ApplicationNotFound")); //$NON-NLS-1$
+            versionBean = orgs.getClientVersion(action.getOrganizationId(), action.getEntityId(), action.getEntityVersion());
+        } catch (ClientVersionNotFoundException e) {
+            throw ExceptionFactory.actionException(Messages.i18n.format("ClientNotFound")); //$NON-NLS-1$
         }
         try {
-            contractBeans = query.getApplicationContracts(action.getOrganizationId(), action.getEntityId(), action.getEntityVersion());
+            contractBeans = query.getClientContracts(action.getOrganizationId(), action.getEntityId(), action.getEntityVersion());
         } catch (StorageException e) {
-            throw ExceptionFactory.actionException(Messages.i18n.format("ApplicationNotFound"), e); //$NON-NLS-1$
+            throw ExceptionFactory.actionException(Messages.i18n.format("ClientNotFound"), e); //$NON-NLS-1$
         }
 
-        // Validate that it's ok to perform this action - application must be Ready.
-        if (versionBean.getStatus() != ApplicationStatus.Registered) {
-            throw ExceptionFactory.actionException(Messages.i18n.format("InvalidApplicationStatus")); //$NON-NLS-1$
+        // Validate that it's ok to perform this action - client must be Ready.
+        if (versionBean.getStatus() != ClientStatus.Registered) {
+            throw ExceptionFactory.actionException(Messages.i18n.format("InvalidClientStatus")); //$NON-NLS-1$
         }
 
-        Application application = new Application();
-        application.setOrganizationId(versionBean.getApplication().getOrganization().getId());
-        application.setApplicationId(versionBean.getApplication().getId());
-        application.setVersion(versionBean.getVersion());
+        Client client = new Client();
+        client.setOrganizationId(versionBean.getClient().getOrganization().getId());
+        client.setClientId(versionBean.getClient().getId());
+        client.setVersion(versionBean.getVersion());
 
-        // Next, unregister the application from *all* relevant gateways.  This is done by
+        // Next, unregister the client from *all* relevant gateways.  This is done by
         // looking up all referenced APIs and getting the gateway information for them.
-        // Each of those gateways must be told about the application.
+        // Each of those gateways must be told about the client.
         try {
             storage.beginTx();
             Map<String, IGatewayLink> links = new HashMap<>();
@@ -508,7 +508,7 @@ public class ActionResourceImpl implements IActionResource {
             }
             storage.commitTx();
             for (IGatewayLink gatewayLink : links.values()) {
-                gatewayLink.unregisterApplication(application);
+                gatewayLink.unregisterClient(client);
                 gatewayLink.close();
             }
         } catch (Exception e) {
@@ -516,21 +516,21 @@ public class ActionResourceImpl implements IActionResource {
             throw ExceptionFactory.actionException(Messages.i18n.format("UnregisterError"), e); //$NON-NLS-1$
         }
 
-        versionBean.setStatus(ApplicationStatus.Retired);
+        versionBean.setStatus(ClientStatus.Retired);
         versionBean.setRetiredOn(new Date());
 
         try {
             storage.beginTx();
-            storage.updateApplicationVersion(versionBean);
-            storage.createAuditEntry(AuditUtils.applicationUnregistered(versionBean, securityContext));
+            storage.updateClientVersion(versionBean);
+            storage.createAuditEntry(AuditUtils.clientUnregistered(versionBean, securityContext));
             storage.commitTx();
         } catch (Exception e) {
             storage.rollbackTx();
             throw ExceptionFactory.actionException(Messages.i18n.format("UnregisterError"), e); //$NON-NLS-1$
         }
 
-        log.debug(String.format("Successfully registered Application %s on specified gateways: %s", //$NON-NLS-1$
-                versionBean.getApplication().getName(), versionBean.getApplication()));
+        log.debug(String.format("Successfully registered Client %s on specified gateways: %s", //$NON-NLS-1$
+                versionBean.getClient().getName(), versionBean.getClient()));
     }
 
     /**
@@ -613,17 +613,17 @@ public class ActionResourceImpl implements IActionResource {
     }
 
     /**
-     * @return the applicationValidator
+     * @return the clientValidator
      */
-    public IApplicationValidator getApplicationValidator() {
-        return applicationValidator;
+    public IClientValidator getClientValidator() {
+        return clientValidator;
     }
 
     /**
-     * @param applicationValidator the applicationValidator to set
+     * @param clientValidator the clientValidator to set
      */
-    public void setApplicationValidator(IApplicationValidator applicationValidator) {
-        this.applicationValidator = applicationValidator;
+    public void setClientValidator(IClientValidator clientValidator) {
+        this.clientValidator = clientValidator;
     }
 
     /**

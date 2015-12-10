@@ -17,16 +17,16 @@
 package io.apiman.manager.test.es;
 
 import io.apiman.gateway.engine.es.ESClientFactory;
-import io.apiman.manager.api.beans.metrics.AppUsagePerApiBean;
+import io.apiman.manager.api.beans.metrics.ClientUsagePerApiBean;
 import io.apiman.manager.api.beans.metrics.HistogramIntervalType;
 import io.apiman.manager.api.beans.metrics.ResponseStatsDataPoint;
 import io.apiman.manager.api.beans.metrics.ResponseStatsHistogramBean;
-import io.apiman.manager.api.beans.metrics.ResponseStatsPerAppBean;
+import io.apiman.manager.api.beans.metrics.ResponseStatsPerClientBean;
 import io.apiman.manager.api.beans.metrics.ResponseStatsPerPlanBean;
 import io.apiman.manager.api.beans.metrics.ResponseStatsSummaryBean;
 import io.apiman.manager.api.beans.metrics.UsageDataPoint;
 import io.apiman.manager.api.beans.metrics.UsageHistogramBean;
-import io.apiman.manager.api.beans.metrics.UsagePerAppBean;
+import io.apiman.manager.api.beans.metrics.UsagePerClientBean;
 import io.apiman.manager.api.beans.metrics.UsagePerPlanBean;
 import io.apiman.manager.api.es.ESMetricsAccessor;
 import io.searchbox.client.JestClient;
@@ -162,53 +162,53 @@ public class ESMetricsAccessorTest {
     }
 
     /**
-     * Test method for {@link io.apiman.manager.api.es.ESMetricsAccessor#getUsagePerApp(java.lang.String, java.lang.String, java.lang.String, java.util.Date, java.util.Date)}.
+     * Test method for {@link io.apiman.manager.api.es.ESMetricsAccessor#getUsagePerClient(java.lang.String, java.lang.String, java.lang.String, java.util.Date, java.util.Date)}.
      */
     @Test
-    public void testGetUsagePerApp() throws Exception {
+    public void testGetUsagePerClient() throws Exception {
         ESMetricsAccessor metrics = new ESMetricsAccessor();
         metrics.setEsClient(client);
 
         // data exists - all data for JBossOverlord/s-ramp-api:1.0
-        UsagePerAppBean usagePerApp = metrics.getUsagePerApp("JBossOverlord", "s-ramp-api", "1.0",
+        UsagePerClientBean usagePerClient = metrics.getUsagePerClient("JBossOverlord", "s-ramp-api", "1.0",
                 parseDate("2015-01-01"), new DateTime().withZone(DateTimeZone.UTC));
-        Assert.assertNotNull(usagePerApp);
+        Assert.assertNotNull(usagePerClient);
         Map<String, Long> expectedData = new HashMap<>();
         expectedData.put("dtgov", 29L);
         expectedData.put("rtgov", 14L);
-        Assert.assertEquals(expectedData, usagePerApp.getData());
+        Assert.assertEquals(expectedData, usagePerClient.getData());
 
         // data exists - all data for Test/echo:1.0
-        usagePerApp = metrics.getUsagePerApp("Test", "echo", "1.0",
+        usagePerClient = metrics.getUsagePerClient("Test", "echo", "1.0",
                 parseDate("2015-01-01"), new DateTime().withZone(DateTimeZone.UTC));
-        Assert.assertNotNull(usagePerApp);
+        Assert.assertNotNull(usagePerClient);
         expectedData.clear();
-        expectedData.put("my-app", 136L);
-        expectedData.put("app1", 78L);
-        Assert.assertEquals(expectedData, usagePerApp.getData());
+        expectedData.put("my-client", 136L);
+        expectedData.put("client1", 78L);
+        Assert.assertEquals(expectedData, usagePerClient.getData());
 
         // Test/echo:1.0 bounded by a different date range
-        usagePerApp = metrics.getUsagePerApp("Test", "echo", "1.0",
+        usagePerClient = metrics.getUsagePerClient("Test", "echo", "1.0",
                 parseDate("2015-06-18"), new DateTime().withZone(DateTimeZone.UTC));
-        Assert.assertNotNull(usagePerApp);
+        Assert.assertNotNull(usagePerClient);
         expectedData.clear();
-        Assert.assertEquals(expectedData, usagePerApp.getData());
+        Assert.assertEquals(expectedData, usagePerClient.getData());
 
         // data exists - all data for Test/echo:1.0
-        usagePerApp = metrics.getUsagePerApp("Test", "echo", "1.0",
+        usagePerClient = metrics.getUsagePerClient("Test", "echo", "1.0",
                 parseDate("2015-06-01"),
                 parseDate("2015-06-17"));
-        Assert.assertNotNull(usagePerApp);
+        Assert.assertNotNull(usagePerClient);
         expectedData.clear();
-        expectedData.put("my-app", 136L);
-        expectedData.put("app1", 78L);
-        Assert.assertEquals(expectedData, usagePerApp.getData());
+        expectedData.put("my-client", 136L);
+        expectedData.put("client1", 78L);
+        Assert.assertEquals(expectedData, usagePerClient.getData());
 
         // No data for API
-        usagePerApp = metrics.getUsagePerApp("NA", "NA", "NA", parseDate("2015-01-01"), new DateTime().withZone(DateTimeZone.UTC));
-        Assert.assertNotNull(usagePerApp);
+        usagePerClient = metrics.getUsagePerClient("NA", "NA", "NA", parseDate("2015-01-01"), new DateTime().withZone(DateTimeZone.UTC));
+        Assert.assertNotNull(usagePerClient);
         expectedData.clear();
-        Assert.assertEquals(expectedData, usagePerApp.getData());
+        Assert.assertEquals(expectedData, usagePerClient.getData());
     }
 
     /**
@@ -397,15 +397,15 @@ public class ESMetricsAccessorTest {
     }
 
     /**
-     * Test method for {@link io.apiman.manager.api.es.ESMetricsAccessor#getResponseStatsPerApp(String, String, String, DateTime, DateTime)
+     * Test method for {@link io.apiman.manager.api.es.ESMetricsAccessor#getResponseStatsPerClient(String, String, String, DateTime, DateTime)
      */
     @Test
-    public void testGetResponseStatsPerApp() throws Exception {
+    public void testGetResponseStatsPerClient() throws Exception {
         ESMetricsAccessor metrics = new ESMetricsAccessor();
         metrics.setEsClient(client);
 
         // s-ramp-api data
-        ResponseStatsPerAppBean stats = metrics.getResponseStatsPerApp("JBossOverlord", "s-ramp-api", "1.0",
+        ResponseStatsPerClientBean stats = metrics.getResponseStatsPerClient("JBossOverlord", "s-ramp-api", "1.0",
                 parseDate("2015-06-01"), new DateTime().withZone(DateTimeZone.UTC));
         Map<String, ResponseStatsDataPoint> data = stats.getData();
         Assert.assertEquals(2, data.size());
@@ -421,16 +421,16 @@ public class ESMetricsAccessorTest {
         Assert.assertEquals(3L, point.getErrors());
 
         // test/echo data
-        stats = metrics.getResponseStatsPerApp("Test", "echo", "1.0",
+        stats = metrics.getResponseStatsPerClient("Test", "echo", "1.0",
                 parseDate("2015-06-01"), new DateTime().withZone(DateTimeZone.UTC));
         data = stats.getData();
         Assert.assertEquals(2, data.size());
-        point = data.get("app1");
+        point = data.get("client1");
         Assert.assertNotNull(point);
         Assert.assertEquals(78L, point.getTotal());
         Assert.assertEquals(19L, point.getFailures());
         Assert.assertEquals(1L, point.getErrors());
-        point = data.get("my-app");
+        point = data.get("my-client");
         Assert.assertNotNull(point);
         Assert.assertEquals(136L, point.getTotal());
         Assert.assertEquals(22L, point.getFailures());
@@ -479,22 +479,22 @@ public class ESMetricsAccessorTest {
     }
 
     /**
-     * Test method for {@link io.apiman.manager.api.es.ESMetricsAccessor#getAppUsagePerApi(String, String, String, DateTime, DateTime)
+     * Test method for {@link io.apiman.manager.api.es.ESMetricsAccessor#getClientUsagePerApi(String, String, String, DateTime, DateTime)
      */
     @Test
-    public void testGetAppUsagePerApi() throws Exception {
+    public void testGetClientUsagePerApi() throws Exception {
         ESMetricsAccessor metrics = new ESMetricsAccessor();
         metrics.setEsClient(client);
 
         // data exists - all data for JBossOverlord/s-ramp-api:1.0
-        AppUsagePerApiBean usagePerApi = metrics.getAppUsagePerApi("JBossOverlord", "dtgov", "1.0",
+        ClientUsagePerApiBean usagePerApi = metrics.getClientUsagePerApi("JBossOverlord", "dtgov", "1.0",
                 parseDate("2015-01-01"), new DateTime().withZone(DateTimeZone.UTC));
         Assert.assertNotNull(usagePerApi);
         Map<String, Long> expectedData = new HashMap<>();
         expectedData.put("s-ramp-api", 29L);
         Assert.assertEquals(expectedData, usagePerApi.getData());
 
-        usagePerApi = metrics.getAppUsagePerApi("JBossOverlord", "rtgov", "1.0",
+        usagePerApi = metrics.getClientUsagePerApi("JBossOverlord", "rtgov", "1.0",
                 parseDate("2015-01-01"), new DateTime().withZone(DateTimeZone.UTC));
         Assert.assertNotNull(usagePerApi);
         expectedData = new HashMap<>();

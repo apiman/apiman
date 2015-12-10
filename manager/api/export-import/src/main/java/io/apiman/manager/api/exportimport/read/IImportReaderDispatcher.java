@@ -18,9 +18,9 @@ package io.apiman.manager.api.exportimport.read;
 
 import io.apiman.manager.api.beans.apis.ApiBean;
 import io.apiman.manager.api.beans.apis.ApiVersionBean;
-import io.apiman.manager.api.beans.apps.ApplicationBean;
-import io.apiman.manager.api.beans.apps.ApplicationVersionBean;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
+import io.apiman.manager.api.beans.clients.ClientBean;
+import io.apiman.manager.api.beans.clients.ClientVersionBean;
 import io.apiman.manager.api.beans.contracts.ContractBean;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
 import io.apiman.manager.api.beans.idm.RoleBean;
@@ -62,7 +62,7 @@ public interface IImportReaderDispatcher {
     void policyDef(PolicyDefinitionBean policyDef);
 
     // -----------------------------------
-    // Orgs, apps, plans, apis, etc...
+    // Orgs, clients, plans, apis, etc...
     // -----------------------------------
     void organization(OrganizationBean org);
 
@@ -76,10 +76,10 @@ public interface IImportReaderDispatcher {
     void apiVersion(ApiVersionBean apiVersion);
     void apiPolicy(PolicyBean policy);
 
-    void application(ApplicationBean application);
-    void applicationVersion(ApplicationVersionBean appVersion);
-    void applicationPolicy(PolicyBean policy);
-    void applicationContract(ContractBean contract);
+    void client(ClientBean client);
+    void clientVersion(ClientVersionBean clientVersion);
+    void clientPolicy(PolicyBean policy);
+    void clientContract(ContractBean contract);
 
     void audit(AuditEntryBean auditEntry);
 

@@ -540,7 +540,7 @@ div.page {
   line-height: 14px;
 }
 
-.apiman-organizations hr, .apiman-apis hr, .apiman-applications hr, .apiman-plans hr, .apiman-members hr, .apiman-contracts hr, .apiman-policies hr, .apiman-roles hr {
+.apiman-organizations hr, .apiman-apis hr, .apiman-clients hr, .apiman-plans hr, .apiman-members hr, .apiman-contracts hr, .apiman-policies hr, .apiman-roles hr {
   margin: 8px;
 }
 
@@ -1308,18 +1308,18 @@ textarea.apiman-endpoint {
   padding: 10px;
 }
 
-#new-contract-form .application, #new-contract-form .plan, #new-contract-form .api {
+#new-contract-form .client, #new-contract-form .plan, #new-contract-form .api {
   border: 1px solid #999;
   border-radius: 5px;
 }
-#new-contract-form .application.selected, #new-contract-form .plan.selected, #new-contract-form .api.selected {
+#new-contract-form .client.selected, #new-contract-form .plan.selected, #new-contract-form .api.selected {
   border: 1px solid #3776ab;
   border-radius: 5px;
 }
-#new-contract-form .application.selected .title, #new-contract-form .plan.selected .title, #new-contract-form .api.selected .title {
+#new-contract-form .client.selected .title, #new-contract-form .plan.selected .title, #new-contract-form .api.selected .title {
   background-color: #3776ab;
 }
-#new-contract-form .application:hover, #new-contract-form .plan:hover, #new-contract-form .api:hover {
+#new-contract-form .client:hover, #new-contract-form .plan:hover, #new-contract-form .api:hover {
   box-shadow: 3px 3px 5px #ccc;
 }
 #new-contract-form .plan {
@@ -1450,7 +1450,7 @@ textarea.apiman-endpoint {
   text-decoration: underline;
 }
 
-#apiman-api-metrics-selector .bootstrap-select, #apiman-app-metrics-selector .bootstrap-select {
+#apiman-api-metrics-selector .bootstrap-select, #apiman-client-metrics-selector .bootstrap-select {
   width: auto;
 }
 

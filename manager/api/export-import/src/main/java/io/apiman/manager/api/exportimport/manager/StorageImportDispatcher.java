@@ -17,18 +17,18 @@
 package io.apiman.manager.api.exportimport.manager;
 
 import io.apiman.gateway.engine.beans.Api;
-import io.apiman.gateway.engine.beans.Application;
+import io.apiman.gateway.engine.beans.Client;
 import io.apiman.gateway.engine.beans.Contract;
 import io.apiman.gateway.engine.beans.Policy;
 import io.apiman.gateway.engine.beans.exceptions.PublishingException;
+import io.apiman.manager.api.beans.apis.ApiBean;
 import io.apiman.manager.api.beans.apis.ApiGatewayBean;
 import io.apiman.manager.api.beans.apis.ApiStatus;
-import io.apiman.manager.api.beans.apis.ApiBean;
 import io.apiman.manager.api.beans.apis.ApiVersionBean;
-import io.apiman.manager.api.beans.apps.ApplicationBean;
-import io.apiman.manager.api.beans.apps.ApplicationStatus;
-import io.apiman.manager.api.beans.apps.ApplicationVersionBean;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
+import io.apiman.manager.api.beans.clients.ClientBean;
+import io.apiman.manager.api.beans.clients.ClientStatus;
+import io.apiman.manager.api.beans.clients.ClientVersionBean;
 import io.apiman.manager.api.beans.contracts.ContractBean;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
 import io.apiman.manager.api.beans.idm.RoleBean;
@@ -83,13 +83,13 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
     private OrganizationBean currentOrg;
     private PlanBean currentPlan;
     private ApiBean currentApi;
-    private ApplicationBean currentApp;
-    private ApplicationVersionBean currentAppVersion;
+    private ClientBean currentClient;
+    private ClientVersionBean currentClientVersion;
 
     private List<ContractBean> contracts = new LinkedList<>();
 
     private Set<EntityInfo> apisToPublish = new HashSet<>();
-    private Set<EntityInfo> appsToRegister = new HashSet<>();
+    private Set<EntityInfo> clientsToRegister = new HashSet<>();
 
     private Map<String, IGatewayLink> gatewayLinkCache = new HashMap<>();
 
@@ -118,11 +118,11 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
         currentOrg = null;
         currentPlan = null;
         currentApi = null;
-        currentApp = null;
-        currentAppVersion = null;
+        currentClient = null;
+        currentClientVersion = null;
         contracts.clear();
         apisToPublish.clear();
-        appsToRegister.clear();
+        clientsToRegister.clear();
         gatewayLinkCache.clear();
 
         try {
@@ -329,37 +329,37 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
     }
 
     /**
-     * @see io.apiman.manager.api.exportimport.read.IImportReaderDispatcher#application(io.apiman.manager.api.beans.apps.ApplicationBean)
+     * @see io.apiman.manager.api.exportimport.read.IImportReaderDispatcher#client(io.apiman.manager.api.beans.clients.ClientBean)
      */
     @Override
-    public void application(ApplicationBean application) {
-        currentApp = application;
+    public void client(ClientBean client) {
+        currentClient = client;
         try {
-            logger.info(Messages.i18n.format("StorageImportDispatcher.ImportingApp") + application.getName()); //$NON-NLS-1$
-            application.setOrganization(currentOrg);
-            storage.createApplication(application);
+            logger.info(Messages.i18n.format("StorageImportDispatcher.ImportingClient") + client.getName()); //$NON-NLS-1$
+            client.setOrganization(currentOrg);
+            storage.createClient(client);
         } catch (StorageException e) {
             error(e);
         }
     }
 
     /**
-     * @see io.apiman.manager.api.exportimport.read.IImportReaderDispatcher#applicationVersion(io.apiman.manager.api.beans.apps.ApplicationVersionBean)
+     * @see io.apiman.manager.api.exportimport.read.IImportReaderDispatcher#clientVersion(io.apiman.manager.api.beans.clients.ClientVersionBean)
      */
     @Override
-    public void applicationVersion(ApplicationVersionBean appVersion) {
-        currentAppVersion = appVersion;
+    public void clientVersion(ClientVersionBean clientVersion) {
+        currentClientVersion = clientVersion;
         try {
-            logger.info(Messages.i18n.format("StorageImportDispatcher.ImportingAppVersion") + appVersion.getVersion()); //$NON-NLS-1$
-            appVersion.setApplication(currentApp);
-            appVersion.setId(null);
-            storage.createApplicationVersion(appVersion);
+            logger.info(Messages.i18n.format("StorageImportDispatcher.ImportingClientVersion") + clientVersion.getVersion()); //$NON-NLS-1$
+            clientVersion.setClient(currentClient);
+            clientVersion.setId(null);
+            storage.createClientVersion(clientVersion);
 
-            if (appVersion.getStatus() == ApplicationStatus.Registered) {
-                appsToRegister.add(new EntityInfo(
-                        appVersion.getApplication().getOrganization().getId(),
-                        appVersion.getApplication().getId(),
-                        appVersion.getVersion()
+            if (clientVersion.getStatus() == ClientStatus.Registered) {
+                clientsToRegister.add(new EntityInfo(
+                        clientVersion.getClient().getOrganization().getId(),
+                        clientVersion.getClient().getId(),
+                        clientVersion.getVersion()
                 ));
             }
         } catch (StorageException e) {
@@ -368,26 +368,26 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
     }
 
     /**
-     * @see io.apiman.manager.api.exportimport.read.IImportReaderDispatcher#applicationPolicy(io.apiman.manager.api.beans.policies.PolicyBean)
+     * @see io.apiman.manager.api.exportimport.read.IImportReaderDispatcher#clientPolicy(io.apiman.manager.api.beans.policies.PolicyBean)
      */
     @Override
-    public void applicationPolicy(PolicyBean policy) {
-        logger.info(Messages.i18n.format("StorageImportDispatcher.ImportingAppPolicy") + policy.getName()); //$NON-NLS-1$
+    public void clientPolicy(PolicyBean policy) {
+        logger.info(Messages.i18n.format("StorageImportDispatcher.ImportingClientPolicy") + policy.getName()); //$NON-NLS-1$
         policy(policy);
     }
 
     /**
-     * @see io.apiman.manager.api.exportimport.read.IImportReaderDispatcher#applicationContract(io.apiman.manager.api.beans.contracts.ContractBean)
+     * @see io.apiman.manager.api.exportimport.read.IImportReaderDispatcher#clientContract(io.apiman.manager.api.beans.contracts.ContractBean)
      */
     @Override
-    public void applicationContract(ContractBean contract) {
-        ApplicationVersionBean avb = new ApplicationVersionBean();
-        avb.setApplication(new ApplicationBean());
-        avb.getApplication().setOrganization(new OrganizationBean());
-        avb.getApplication().setId(currentApp.getId());
-        avb.getApplication().getOrganization().setId(currentOrg.getId());
-        avb.setVersion(currentAppVersion.getVersion());
-        contract.setApplication(avb);
+    public void clientContract(ContractBean contract) {
+        ClientVersionBean avb = new ClientVersionBean();
+        avb.setClient(new ClientBean());
+        avb.getClient().setOrganization(new OrganizationBean());
+        avb.getClient().setId(currentClient.getId());
+        avb.getClient().getOrganization().setId(currentOrg.getId());
+        avb.setVersion(currentClientVersion.getVersion());
+        contract.setClient(avb);
         contracts.add(contract);
     }
 
@@ -413,7 +413,7 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
         try {
             importContracts();
             publishApis();
-            registerApplications();
+            registerClients();
 
             // Close the gateway links that we created during the publish/registration
             for (IGatewayLink gwLink : gatewayLinkCache.values()) {
@@ -487,21 +487,21 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
     }
 
     /**
-     * Registers any applications that were imported in the "Registered" state.
+     * Registers any clients that were imported in the "Registered" state.
      * @throws StorageException
      */
-    private void registerApplications() throws StorageException {
-        logger.info(Messages.i18n.format("StorageExporter.RegisteringApps")); //$NON-NLS-1$
+    private void registerClients() throws StorageException {
+        logger.info(Messages.i18n.format("StorageExporter.RegisteringClients")); //$NON-NLS-1$
 
-        for (EntityInfo info : appsToRegister) {
-            logger.info(Messages.i18n.format("StorageExporter.RegisteringApp", info)); //$NON-NLS-1$
-            ApplicationVersionBean versionBean = storage.getApplicationVersion(info.organizationId, info.id, info.version);
+        for (EntityInfo info : clientsToRegister) {
+            logger.info(Messages.i18n.format("StorageExporter.RegisteringClient", info)); //$NON-NLS-1$
+            ClientVersionBean versionBean = storage.getClientVersion(info.organizationId, info.id, info.version);
             Iterator<ContractBean> contractBeans = storage.getAllContracts(info.organizationId, info.id, info.version);
 
-            Application application = new Application();
-            application.setOrganizationId(versionBean.getApplication().getOrganization().getId());
-            application.setApplicationId(versionBean.getApplication().getId());
-            application.setVersion(versionBean.getVersion());
+            Client client = new Client();
+            client.setOrganizationId(versionBean.getClient().getOrganization().getId());
+            client.setClientId(versionBean.getClient().getId());
+            client.setVersion(versionBean.getVersion());
 
             Set<Contract> contracts = new HashSet<>();
             while (contractBeans.hasNext()) {
@@ -521,13 +521,13 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
                     contracts.add(contract);
                 }
             }
-            application.setContracts(contracts);
+            client.setContracts(contracts);
 
-            // Next, register the application with *all* relevant gateways.  This is done by
+            // Next, register the client with *all* relevant gateways.  This is done by
             // looking up all referenced apis and getting the gateway information for them.
-            // Each of those gateways must be told about the application.
+            // Each of those gateways must be told about the client.
             Map<String, IGatewayLink> links = new HashMap<>();
-            for (Contract contract : application.getContracts()) {
+            for (Contract contract : client.getContracts()) {
                 ApiVersionBean svb = storage.getApiVersion(contract.getApiOrgId(), contract.getApiId(), contract.getApiVersion());
                 Set<ApiGatewayBean> gateways = svb.getGateways();
                 if (gateways == null) {
@@ -543,7 +543,7 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
             }
             for (IGatewayLink gatewayLink : links.values()) {
                 try {
-                    gatewayLink.registerApplication(application);
+                    gatewayLink.registerClient(client);
                 } catch (Exception e) {
                     throw new StorageException(e);
                 }
@@ -552,22 +552,22 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
     }
 
     /**
-     * Aggregates the api, app, and plan policies into a single ordered list.
+     * Aggregates the api, client, and plan policies into a single ordered list.
      * @param contractBean
-     * @param appInfo
+     * @param clientInfo
      */
-    private List<Policy> aggregateContractPolicies(ContractBean contractBean, EntityInfo appInfo) throws StorageException {
+    private List<Policy> aggregateContractPolicies(ContractBean contractBean, EntityInfo clientInfo) throws StorageException {
         List<Policy> policies = new ArrayList<>();
         PolicyType [] types = new PolicyType[] {
-                PolicyType.Application, PolicyType.Plan, PolicyType.Api
+                PolicyType.Client, PolicyType.Plan, PolicyType.Api
         };
         for (PolicyType policyType : types) {
             String org, id, ver;
             switch (policyType) {
-              case Application: {
-                  org = appInfo.organizationId;
-                  id = appInfo.id;
-                  ver = appInfo.version;
+              case Client: {
+                  org = clientInfo.organizationId;
+                  id = clientInfo.id;
+                  ver = clientInfo.version;
                   break;
               }
               case Plan: {
@@ -587,9 +587,9 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
               }
             }
 
-            Iterator<PolicyBean> appPolicies = storage.getAllPolicies(org, id, ver, policyType);
-            while (appPolicies.hasNext()) {
-                PolicyBean policyBean = appPolicies.next();
+            Iterator<PolicyBean> clientPolicies = storage.getAllPolicies(org, id, ver, policyType);
+            while (clientPolicies.hasNext()) {
+                PolicyBean policyBean = clientPolicies.next();
                 Policy policy = new Policy();
                 policy.setPolicyJsonConfig(policyBean.getConfiguration());
                 policy.setPolicyImpl(policyBean.getDefinition().getPolicyImpl());
@@ -605,10 +605,10 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
      */
     private void importContracts() throws StorageException {
         for (ContractBean contract : contracts) {
-            logger.info(Messages.i18n.format("StorageImportDispatcher.ImportingAppContract") + contract.getApikey()); //$NON-NLS-1$
-            String appId = contract.getApplication().getApplication().getId();
-            String appOrganizationId = contract.getApplication().getApplication().getOrganization().getId();
-            String appVersion = contract.getApplication().getVersion();
+            logger.info(Messages.i18n.format("StorageImportDispatcher.ImportingClientContract") + contract.getApikey()); //$NON-NLS-1$
+            String clientId = contract.getClient().getClient().getId();
+            String clientOrganizationId = contract.getClient().getClient().getOrganization().getId();
+            String clientVersion = contract.getClient().getVersion();
             String apiId = contract.getApi().getApi().getId();
             String apiOrganizationId = contract.getApi().getApi().getOrganization().getId();
             String apiVersion = contract.getApi().getVersion();
@@ -617,7 +617,7 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
 
             contract.setApi(lookupApi(apiOrganizationId, apiId, apiVersion));
             contract.setPlan(lookupPlan(apiOrganizationId, planId, planVersion));
-            contract.setApplication(lookupApplication(appOrganizationId, appId, appVersion));
+            contract.setClient(lookupClient(clientOrganizationId, clientId, clientVersion));
             contract.setId(null);
 
             storage.createContract(contract);
@@ -646,13 +646,13 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
     }
 
     /**
-     * @param applicationOrganizationId
-     * @param applicationId
-     * @param applicationVersion
+     * @param clientOrganizationId
+     * @param clientId
+     * @param clientVersion
      * @throws StorageException
      */
-    private ApplicationVersionBean lookupApplication(String applicationOrganizationId, String applicationId, String applicationVersion) throws StorageException {
-        return storage.getApplicationVersion(applicationOrganizationId, applicationId, applicationVersion);
+    private ClientVersionBean lookupClient(String clientOrganizationId, String clientId, String clientVersion) throws StorageException {
+        return storage.getClientVersion(clientOrganizationId, clientId, clientVersion);
     }
 
     /**

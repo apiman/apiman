@@ -21,7 +21,7 @@ import java.util.List;
 
 /**
  * Internal representation of a API contract.  Ties together a API and
- * an application by its contract (api key).
+ * a client by its contract (api key).
  *
  * @author eric.wittmann@redhat.com
  */
@@ -31,7 +31,7 @@ public class ApiContract implements Serializable {
 
     private String apikey;
     private Api api;
-    private Application application;
+    private Client client;
     private String plan;
     private List<Policy> policies = new ArrayList<>();
 
@@ -45,13 +45,13 @@ public class ApiContract implements Serializable {
      * Constructor.
      * @param apikey the api key
      * @param api the api
-     * @param application the application
+     * @param client the client
      * @param policies the list of policies
      */
-    public ApiContract(String apikey, Api api, Application application, String plan, List<Policy> policies) {
+    public ApiContract(String apikey, Api api, Client client, String plan, List<Policy> policies) {
         setApikey(apikey);
         setApi(api);
-        setApplication(application);
+        setClient(client);
         setPlan(plan);
         setPolicies(policies);
     }
@@ -85,17 +85,17 @@ public class ApiContract implements Serializable {
     }
 
     /**
-     * @return the application
+     * @return the client
      */
-    public Application getApplication() {
-        return application;
+    public Client getClient() {
+        return client;
     }
 
     /**
-     * @param application the application to set
+     * @param client the client to set
      */
-    public void setApplication(Application application) {
-        this.application = application;
+    public void setClient(Client client) {
+        this.client = client;
     }
 
     /**

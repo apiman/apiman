@@ -28,8 +28,8 @@ import io.apiman.manager.api.beans.summary.ApiPlanSummaryBean;
 import io.apiman.manager.api.beans.summary.ApiRegistryBean;
 import io.apiman.manager.api.beans.summary.ApiSummaryBean;
 import io.apiman.manager.api.beans.summary.ApiVersionSummaryBean;
-import io.apiman.manager.api.beans.summary.ApplicationSummaryBean;
-import io.apiman.manager.api.beans.summary.ApplicationVersionSummaryBean;
+import io.apiman.manager.api.beans.summary.ClientSummaryBean;
+import io.apiman.manager.api.beans.summary.ClientVersionSummaryBean;
 import io.apiman.manager.api.beans.summary.ContractSummaryBean;
 import io.apiman.manager.api.beans.summary.GatewaySummaryBean;
 import io.apiman.manager.api.beans.summary.OrganizationSummaryBean;
@@ -94,13 +94,13 @@ public class TestEsStorageQueryWrapper implements IStorageQuery {
     }
 
     /**
-     * @see io.apiman.manager.api.core.IStorageQuery#findApplications(io.apiman.manager.api.beans.search.SearchCriteriaBean)
+     * @see io.apiman.manager.api.core.IStorageQuery#findClients(io.apiman.manager.api.beans.search.SearchCriteriaBean)
      */
     @Override
-    public SearchResultsBean<ApplicationSummaryBean> findApplications(SearchCriteriaBean criteria)
+    public SearchResultsBean<ClientSummaryBean> findClients(SearchCriteriaBean criteria)
             throws StorageException {
         refresh();
-        return this.delegate.findApplications(criteria);
+        return this.delegate.findClients(criteria);
     }
 
     /**
@@ -153,51 +153,51 @@ public class TestEsStorageQueryWrapper implements IStorageQuery {
     }
 
     /**
-     * @see io.apiman.manager.api.core.IStorageQuery#getApplicationsInOrgs(java.util.Set)
+     * @see io.apiman.manager.api.core.IStorageQuery#getClientsInOrgs(java.util.Set)
      */
     @Override
-    public List<ApplicationSummaryBean> getApplicationsInOrgs(Set<String> orgIds) throws StorageException {
+    public List<ClientSummaryBean> getClientsInOrgs(Set<String> orgIds) throws StorageException {
         refresh();
-        return this.delegate.getApplicationsInOrgs(orgIds);
+        return this.delegate.getClientsInOrgs(orgIds);
     }
 
     /**
-     * @see io.apiman.manager.api.core.IStorageQuery#getApplicationsInOrg(java.lang.String)
+     * @see io.apiman.manager.api.core.IStorageQuery#getClientsInOrg(java.lang.String)
      */
     @Override
-    public List<ApplicationSummaryBean> getApplicationsInOrg(String orgId) throws StorageException {
+    public List<ClientSummaryBean> getClientsInOrg(String orgId) throws StorageException {
         refresh();
-        return this.delegate.getApplicationsInOrg(orgId);
+        return this.delegate.getClientsInOrg(orgId);
     }
 
     /**
-     * @see io.apiman.manager.api.core.IStorageQuery#getApplicationVersions(java.lang.String, java.lang.String)
+     * @see io.apiman.manager.api.core.IStorageQuery#getClientVersions(java.lang.String, java.lang.String)
      */
     @Override
-    public List<ApplicationVersionSummaryBean> getApplicationVersions(String organizationId,
-            String applicationId) throws StorageException {
+    public List<ClientVersionSummaryBean> getClientVersions(String organizationId,
+            String clientId) throws StorageException {
         refresh();
-        return this.delegate.getApplicationVersions(organizationId, applicationId);
+        return this.delegate.getClientVersions(organizationId, clientId);
     }
 
     /**
-     * @see io.apiman.manager.api.core.IStorageQuery#getApplicationContracts(java.lang.String, java.lang.String, java.lang.String)
+     * @see io.apiman.manager.api.core.IStorageQuery#getClientContracts(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
-    public List<ContractSummaryBean> getApplicationContracts(String organizationId, String applicationId,
+    public List<ContractSummaryBean> getClientContracts(String organizationId, String clientId,
             String version) throws StorageException {
         refresh();
-        return this.delegate.getApplicationContracts(organizationId, applicationId, version);
+        return this.delegate.getClientContracts(organizationId, clientId, version);
     }
 
     /**
      * @see io.apiman.manager.api.core.IStorageQuery#getApiRegistry(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
-    public ApiRegistryBean getApiRegistry(String organizationId, String applicationId, String version)
+    public ApiRegistryBean getApiRegistry(String organizationId, String clientId, String version)
             throws StorageException {
         refresh();
-        return this.delegate.getApiRegistry(organizationId, applicationId, version);
+        return this.delegate.getApiRegistry(organizationId, clientId, version);
     }
 
     /**

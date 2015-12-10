@@ -149,9 +149,9 @@ module ApimanRPC {
                         { organizationId: orgId, apiId: apiId, version: version });
                     $resource(endpoint, {interval: interval, from: from, to: to}).get({}, handler, errorHandler);
                 },
-                getUsagePerApp: function(orgId, apiId, version, from, to, handler, errorHandler) {
+                getUsagePerClient: function(orgId, apiId, version, from, to, handler, errorHandler) {
                     var endpoint = formatEndpoint(
-                        Configuration.api.endpoint + '/organizations/:organizationId/apis/:apiId/versions/:version/metrics/appUsage',
+                        Configuration.api.endpoint + '/organizations/:organizationId/apis/:apiId/versions/:version/metrics/clientUsage',
                         { organizationId: orgId, apiId: apiId, version: version });
                     $resource(endpoint, {from: from, to: to}).get({}, handler, errorHandler);
                 },
@@ -173,9 +173,9 @@ module ApimanRPC {
                         { organizationId: orgId, apiId: apiId, version: version });
                     $resource(endpoint, {from: from, to: to}).get({}, handler, errorHandler);
                 },
-                getResponseStatsPerApp: function(orgId, apiId, version, from, to, handler, errorHandler) {
+                getResponseStatsPerClient: function(orgId, apiId, version, from, to, handler, errorHandler) {
                     var endpoint = formatEndpoint(
-                        Configuration.api.endpoint + '/organizations/:organizationId/apis/:apiId/versions/:version/metrics/appResponseStats',
+                        Configuration.api.endpoint + '/organizations/:organizationId/apis/:apiId/versions/:version/metrics/clientResponseStats',
                         { organizationId: orgId, apiId: apiId, version: version });
                     $resource(endpoint, {from: from, to: to}).get({}, handler, errorHandler);
                 },
@@ -185,10 +185,10 @@ module ApimanRPC {
                         { organizationId: orgId, apiId: apiId, version: version });
                     $resource(endpoint, {from: from, to: to}).get({}, handler, errorHandler);
                 },
-                getAppUsagePerApi: function(orgId, applicationId, version, from, to, handler, errorHandler) {
+                getClientUsagePerApi: function(orgId, clientId, version, from, to, handler, errorHandler) {
                     var endpoint = formatEndpoint(
-                        Configuration.api.endpoint + '/organizations/:organizationId/applications/:applicationId/versions/:version/metrics/apiUsage',
-                        { organizationId: orgId, applicationId: applicationId, version: version });
+                        Configuration.api.endpoint + '/organizations/:organizationId/clients/:clientId/versions/:version/metrics/apiUsage',
+                        { organizationId: orgId, clientId: clientId, version: version });
                     $resource(endpoint, {from: from, to: to}).get({}, handler, errorHandler);
                 },
             }
@@ -236,18 +236,18 @@ module ApimanRPC {
     export var ApiRegistrySvcs = _module.factory('ApiRegistrySvcs', ['$resource', 'Configuration',
         function($resource, Configuration) {
             return {
-                exportApiRegistryAsJson: function(orgId, appId, version, handler, errorHandler) {
-                    var endpoint = formatEndpoint(Configuration.api.endpoint + '/organizations/:organizationId/applications/:applicationId/versions/:version/apiregistry/json?download=true', {
+                exportApiRegistryAsJson: function(orgId, clientId, version, handler, errorHandler) {
+                    var endpoint = formatEndpoint(Configuration.api.endpoint + '/organizations/:organizationId/clients/:clientId/versions/:version/apiregistry/json?download=true', {
                     	"organizationId" : orgId,
-                    	"applicationId" : appId,
+                    	"clientId" : clientId,
                     	"version" : version
                     });
                     $resource(endpoint).get({}, handler, errorHandler);
                 },
-                exportApiRegistryAsXml: function(orgId, appId, version, handler, errorHandler) {
-                    var endpoint = formatEndpoint(Configuration.api.endpoint + '/organizations/:organizationId/applications/:applicationId/versions/:version/apiregistry/xml?download=true', {
+                exportApiRegistryAsXml: function(orgId, clientId, version, handler, errorHandler) {
+                    var endpoint = formatEndpoint(Configuration.api.endpoint + '/organizations/:organizationId/clients/:clientId/versions/:version/apiregistry/xml?download=true', {
                     	"organizationId" : orgId,
-                    	"applicationId" : appId,
+                    	"clientId" : clientId,
                     	"version" : version
                     });
                     $resource(endpoint).get({}, handler, errorHandler);

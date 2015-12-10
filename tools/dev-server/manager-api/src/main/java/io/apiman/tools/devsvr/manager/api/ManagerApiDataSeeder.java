@@ -21,9 +21,9 @@ import io.apiman.manager.api.beans.apis.ApiPlanBean;
 import io.apiman.manager.api.beans.apis.ApiStatus;
 import io.apiman.manager.api.beans.apis.ApiVersionBean;
 import io.apiman.manager.api.beans.apis.EndpointType;
-import io.apiman.manager.api.beans.apps.ApplicationBean;
-import io.apiman.manager.api.beans.apps.ApplicationStatus;
-import io.apiman.manager.api.beans.apps.ApplicationVersionBean;
+import io.apiman.manager.api.beans.clients.ClientStatus;
+import io.apiman.manager.api.beans.clients.ClientVersionBean;
+import io.apiman.manager.api.beans.clients.ClientBean;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
 import io.apiman.manager.api.beans.gateways.GatewayType;
 import io.apiman.manager.api.beans.idm.PermissionType;
@@ -89,9 +89,9 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         role.getPermissions().add(PermissionType.orgView);
         role.getPermissions().add(PermissionType.orgEdit);
         role.getPermissions().add(PermissionType.orgAdmin);
-        role.getPermissions().add(PermissionType.appView);
-        role.getPermissions().add(PermissionType.appEdit);
-        role.getPermissions().add(PermissionType.appAdmin);
+        role.getPermissions().add(PermissionType.clientView);
+        role.getPermissions().add(PermissionType.clientEdit);
+        role.getPermissions().add(PermissionType.clientAdmin);
         role.getPermissions().add(PermissionType.planView);
         role.getPermissions().add(PermissionType.planEdit);
         role.getPermissions().add(PermissionType.planAdmin);
@@ -109,9 +109,9 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         role.setCreatedOn(new Date());
         role.setPermissions(new HashSet<PermissionType>());
         role.getPermissions().add(PermissionType.orgView);
-        role.getPermissions().add(PermissionType.appView);
-        role.getPermissions().add(PermissionType.appEdit);
-        role.getPermissions().add(PermissionType.appAdmin);
+        role.getPermissions().add(PermissionType.clientView);
+        role.getPermissions().add(PermissionType.clientEdit);
+        role.getPermissions().add(PermissionType.clientAdmin);
         storage.createRole(role);
 
         // Create API Developer role
@@ -218,59 +218,59 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
 
 
         // Create some applications
-        ApplicationBean app = new ApplicationBean();
+        ClientBean app = new ClientBean();
         app.setId("dtgov");
         app.setName("dtgov");
         app.setDescription("This is the official Git repository for the Governance DTGov project, which is intended to be a part of the JBoss Overlord.");
         app.setOrganization(storage.getOrganization("JBossOverlord"));
         app.setCreatedBy("admin");
         app.setCreatedOn(new Date());
-        storage.createApplication(app);
-        ApplicationVersionBean avb = new ApplicationVersionBean();
+        storage.createClient(app);
+        ClientVersionBean avb = new ClientVersionBean();
         avb.setVersion("1.0");
-        avb.setStatus(ApplicationStatus.Created);
-        avb.setApplication(app);
+        avb.setStatus(ClientStatus.Created);
+        avb.setClient(app);
         avb.setCreatedBy("admin");
         avb.setCreatedOn(new Date());
         avb.setModifiedBy("admin");
         avb.setModifiedOn(new Date());
-        storage.createApplicationVersion(avb);
+        storage.createClientVersion(avb);
 
-        app = new ApplicationBean();
+        app = new ClientBean();
         app.setId("rtgov");
         app.setName("rtgov");
         app.setDescription("This component provides the infrastructure to capture API activity information and then correlate...");
         app.setOrganization(storage.getOrganization("JBossOverlord"));
         app.setCreatedBy("admin");
         app.setCreatedOn(new Date());
-        storage.createApplication(app);
-        avb = new ApplicationVersionBean();
+        storage.createClient(app);
+        avb = new ClientVersionBean();
         avb.setVersion("1.0");
-        avb.setStatus(ApplicationStatus.Created);
-        avb.setApplication(app);
+        avb.setStatus(ClientStatus.Created);
+        avb.setClient(app);
         avb.setCreatedBy("admin");
         avb.setCreatedOn(new Date());
         avb.setModifiedBy("admin");
         avb.setModifiedOn(new Date());
-        storage.createApplicationVersion(avb);
+        storage.createClientVersion(avb);
 
-        app = new ApplicationBean();
+        app = new ClientBean();
         app.setId("gadget-server");
         app.setName("gadget-server");
         app.setDescription("This is a project that builds on the Apache Shindig as the open social gadget containers.");
         app.setOrganization(storage.getOrganization("JBossOverlord"));
         app.setCreatedBy("admin");
         app.setCreatedOn(new Date());
-        storage.createApplication(app);
-        avb = new ApplicationVersionBean();
+        storage.createClient(app);
+        avb = new ClientVersionBean();
         avb.setVersion("1.0");
-        avb.setStatus(ApplicationStatus.Created);
-        avb.setApplication(app);
+        avb.setStatus(ClientStatus.Created);
+        avb.setClient(app);
         avb.setCreatedBy("admin");
         avb.setCreatedOn(new Date());
         avb.setModifiedBy("admin");
         avb.setModifiedOn(new Date());
-        storage.createApplicationVersion(avb);
+        storage.createClientVersion(avb);
 
 
         // Create some APIs

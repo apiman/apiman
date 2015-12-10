@@ -22,6 +22,6 @@ package io.apiman.manager.api.beans.audit;
  */
 public enum AuditEntityType {
 
-    Organization, Application, Plan, Api
+    Organization, Client, Plan, Api
     
 }

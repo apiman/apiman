@@ -9,8 +9,8 @@
     <class>io.apiman.manager.api.beans.idm.RoleBean</class>
     <class>io.apiman.manager.api.beans.idm.RoleMembershipBean</class>
     <class>io.apiman.manager.api.beans.orgs.OrganizationBean</class>
-    <class>io.apiman.manager.api.beans.apps.ApplicationBean</class>
-    <class>io.apiman.manager.api.beans.apps.ApplicationVersionBean</class>
+    <class>io.apiman.manager.api.beans.clients.ClientBean</class>
+    <class>io.apiman.manager.api.beans.clients.ClientVersionBean</class>
     <class>io.apiman.manager.api.beans.apis.ApiBean</class>
     <class>io.apiman.manager.api.beans.apis.ApiVersionBean</class>
     <class>io.apiman.manager.api.beans.apis.ApiDefinitionBean</class>

@@ -22,7 +22,7 @@ import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.Api;
 import io.apiman.gateway.engine.beans.ApiContract;
 import io.apiman.gateway.engine.beans.ApiRequest;
-import io.apiman.gateway.engine.beans.Application;
+import io.apiman.gateway.engine.beans.Client;
 import io.apiman.gateway.engine.beans.Contract;
 import io.apiman.gateway.engine.beans.Policy;
 
@@ -66,18 +66,18 @@ public class SecureRegistryWrapper implements IRegistry {
     }
 
     /**
-     * @see io.apiman.gateway.engine.IRegistry#registerApplication(io.apiman.gateway.engine.beans.Application, io.apiman.gateway.engine.async.IAsyncResultHandler)
+     * @see io.apiman.gateway.engine.IRegistry#registerClient(io.apiman.gateway.engine.beans.Client, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
     @Override
-    public void registerApplication(Application application, IAsyncResultHandler<Void> handler) {
-        Set<Contract> contracts = application.getContracts();
+    public void registerClient(Client client, IAsyncResultHandler<Void> handler) {
+        Set<Contract> contracts = client.getContracts();
         if (contracts != null) {
             for (Contract contract : contracts) {
                 List<Policy> policies = contract.getPolicies();
                 encryptPolicies(policies);
             }
         }
-        delegate.registerApplication(application, handler);
+        delegate.registerClient(client, handler);
         if (contracts != null) {
             for (Contract contract : contracts) {
                 List<Policy> policies = contract.getPolicies();
@@ -95,11 +95,11 @@ public class SecureRegistryWrapper implements IRegistry {
     }
 
     /**
-     * @see io.apiman.gateway.engine.IRegistry#unregisterApplication(io.apiman.gateway.engine.beans.Application, io.apiman.gateway.engine.async.IAsyncResultHandler)
+     * @see io.apiman.gateway.engine.IRegistry#unregisterClient(io.apiman.gateway.engine.beans.Client, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
     @Override
-    public void unregisterApplication(Application application, IAsyncResultHandler<Void> handler) {
-        delegate.unregisterApplication(application, handler);
+    public void unregisterClient(Client client, IAsyncResultHandler<Void> handler) {
+        delegate.unregisterClient(client, handler);
     }
 
     /**

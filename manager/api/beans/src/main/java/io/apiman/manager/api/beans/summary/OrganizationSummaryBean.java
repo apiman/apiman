@@ -30,7 +30,7 @@ public class OrganizationSummaryBean implements Serializable {
     private String id;
     private String name;
     private String description;
-    private int numApps;
+    private int numClients;
     private int numApis;
     private int numMembers;
 
@@ -83,17 +83,17 @@ public class OrganizationSummaryBean implements Serializable {
     }
 
     /**
-     * @return the numApps
+     * @return the numClients
      */
-    public int getNumApps() {
-        return numApps;
+    public int getNumClients() {
+        return numClients;
     }
 
     /**
-     * @param numApps the numApps to set
+     * @param numClients the numClients to set
      */
-    public void setNumApps(int numApps) {
-        this.numApps = numApps;
+    public void setNumClients(int numClients) {
+        this.numClients = numClients;
     }
 
     /**
@@ -162,7 +162,7 @@ public class OrganizationSummaryBean implements Serializable {
     @SuppressWarnings("nls")
     public String toString() {
         return "OrganizationSummaryBean [id=" + id + ", name=" + name + ", description=" + description
-                + ", numApps=" + numApps + ", numApis=" + numApis + ", numMembers=" + numMembers
+                + ", numClients=" + numClients + ", numApis=" + numApis + ", numMembers=" + numMembers
                 + "]";
     }
 

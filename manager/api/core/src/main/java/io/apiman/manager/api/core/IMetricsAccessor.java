@@ -15,14 +15,14 @@
  */
 package io.apiman.manager.api.core;
 
-import io.apiman.manager.api.beans.metrics.AppUsagePerApiBean;
+import io.apiman.manager.api.beans.metrics.ClientUsagePerApiBean;
 import io.apiman.manager.api.beans.metrics.HistogramIntervalType;
 import io.apiman.manager.api.beans.metrics.ResponseStatsHistogramBean;
-import io.apiman.manager.api.beans.metrics.ResponseStatsPerAppBean;
+import io.apiman.manager.api.beans.metrics.ResponseStatsPerClientBean;
 import io.apiman.manager.api.beans.metrics.ResponseStatsPerPlanBean;
 import io.apiman.manager.api.beans.metrics.ResponseStatsSummaryBean;
 import io.apiman.manager.api.beans.metrics.UsageHistogramBean;
-import io.apiman.manager.api.beans.metrics.UsagePerAppBean;
+import io.apiman.manager.api.beans.metrics.UsagePerClientBean;
 import io.apiman.manager.api.beans.metrics.UsagePerPlanBean;
 
 import org.joda.time.DateTime;
@@ -60,7 +60,7 @@ public interface IMetricsAccessor {
 
     /**
      * Query the metrics store for # of requests made to an API broken
-     * down by Application.
+     * down by Client.
      *
      * @param organizationId
      * @param apiId
@@ -68,7 +68,7 @@ public interface IMetricsAccessor {
      * @param from
      * @param to
      */
-    UsagePerAppBean getUsagePerApp(String organizationId, String apiId, String version,
+    UsagePerClientBean getUsagePerClient(String organizationId, String apiId, String version,
             DateTime from, DateTime to);
 
     /**
@@ -111,14 +111,14 @@ public interface IMetricsAccessor {
 
     /**
      * Query the metrics store for response type stats (total, errors, failures) for a given
-     * API over a specified time range per application.
+     * API over a specified time range per client.
      * @param organizationId
      * @param apiId
      * @param version
      * @param from
      * @param to
      */
-    ResponseStatsPerAppBean getResponseStatsPerApp(String organizationId, String apiId, String version,
+    ResponseStatsPerClientBean getResponseStatsPerClient(String organizationId, String apiId, String version,
             DateTime from, DateTime to);
 
     /**
@@ -138,12 +138,12 @@ public interface IMetricsAccessor {
      * down by plan.  For exclusively public APIs this will return no data.
      *
      * @param organizationId
-     * @param applicationId
+     * @param clientId
      * @param version
      * @param from
      * @param to
      */
-    AppUsagePerApiBean getAppUsagePerApi(String organizationId, String applicationId, String version,
+    ClientUsagePerApiBean getClientUsagePerApi(String organizationId, String clientId, String version,
             DateTime from, DateTime to);
 
 }

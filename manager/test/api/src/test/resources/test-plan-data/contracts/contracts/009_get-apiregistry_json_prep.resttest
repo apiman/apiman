@@ -1,4 +1,4 @@
-GET /organizations/Organization1/applications/Application1/versions/1.0/apiregistry/json?download=true admin/admin
+GET /organizations/Organization1/clients/Client1/versions/1.0/apiregistry/json?download=true admin/admin
 
 ----
 200
@@ -7,5 +7,5 @@ X-RestTest-BindTo-download-id: id
 
 {
   "type" : "apiRegistryJson",
-  "path" : "Organization1/Application1/1.0/+"
+  "path" : "Organization1/Client1/1.0/+"
 }

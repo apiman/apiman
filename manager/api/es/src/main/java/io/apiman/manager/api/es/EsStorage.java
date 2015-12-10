@@ -20,10 +20,10 @@ import io.apiman.manager.api.beans.apis.ApiBean;
 import io.apiman.manager.api.beans.apis.ApiGatewayBean;
 import io.apiman.manager.api.beans.apis.ApiPlanBean;
 import io.apiman.manager.api.beans.apis.ApiVersionBean;
-import io.apiman.manager.api.beans.apps.ApplicationBean;
-import io.apiman.manager.api.beans.apps.ApplicationVersionBean;
 import io.apiman.manager.api.beans.audit.AuditEntityType;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
+import io.apiman.manager.api.beans.clients.ClientBean;
+import io.apiman.manager.api.beans.clients.ClientVersionBean;
 import io.apiman.manager.api.beans.contracts.ContractBean;
 import io.apiman.manager.api.beans.download.DownloadBean;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
@@ -50,8 +50,8 @@ import io.apiman.manager.api.beans.summary.ApiPlanSummaryBean;
 import io.apiman.manager.api.beans.summary.ApiRegistryBean;
 import io.apiman.manager.api.beans.summary.ApiSummaryBean;
 import io.apiman.manager.api.beans.summary.ApiVersionSummaryBean;
-import io.apiman.manager.api.beans.summary.ApplicationSummaryBean;
-import io.apiman.manager.api.beans.summary.ApplicationVersionSummaryBean;
+import io.apiman.manager.api.beans.summary.ClientSummaryBean;
+import io.apiman.manager.api.beans.summary.ClientVersionSummaryBean;
 import io.apiman.manager.api.beans.summary.ContractSummaryBean;
 import io.apiman.manager.api.beans.summary.GatewaySummaryBean;
 import io.apiman.manager.api.beans.summary.OrganizationSummaryBean;
@@ -213,24 +213,24 @@ public class EsStorage implements IStorage, IStorageQuery {
     }
 
     /**
-     * @see io.apiman.manager.api.core.IStorage#createApplication(io.apiman.manager.api.beans.apps.ApplicationBean)
+     * @see io.apiman.manager.api.core.IStorage#createClient(io.apiman.manager.api.beans.clients.ClientBean)
      */
     @Override
-    public void createApplication(ApplicationBean application) throws StorageException {
-        indexEntity("application", id(application.getOrganization().getId(), application.getId()), EsMarshalling.marshall(application)); //$NON-NLS-1$
+    public void createClient(ClientBean client) throws StorageException {
+        indexEntity("client", id(client.getOrganization().getId(), client.getId()), EsMarshalling.marshall(client)); //$NON-NLS-1$
     }
 
     /**
-     * @see io.apiman.manager.api.core.IStorage#createApplicationVersion(io.apiman.manager.api.beans.apps.ApplicationVersionBean)
+     * @see io.apiman.manager.api.core.IStorage#createClientVersion(io.apiman.manager.api.beans.clients.ClientVersionBean)
      */
     @Override
-    public void createApplicationVersion(ApplicationVersionBean version) throws StorageException {
-        ApplicationBean application = version.getApplication();
-        String id = id(application.getOrganization().getId(), application.getId(), version.getVersion());
-        indexEntity("applicationVersion", id, EsMarshalling.marshall(version)); //$NON-NLS-1$
-        PoliciesBean policies = PoliciesBean.from(PolicyType.Application, application.getOrganization().getId(),
-                application.getId(), version.getVersion());
-        indexEntity("applicationPolicies", id, EsMarshalling.marshall(policies)); //$NON-NLS-1$
+    public void createClientVersion(ClientVersionBean version) throws StorageException {
+        ClientBean client = version.getClient();
+        String id = id(client.getOrganization().getId(), client.getId(), version.getVersion());
+        indexEntity("clientVersion", id, EsMarshalling.marshall(version)); //$NON-NLS-1$
+        PoliciesBean policies = PoliciesBean.from(PolicyType.Client, client.getOrganization().getId(),
+                client.getId(), version.getVersion());
+        indexEntity("clientPolicies", id, EsMarshalling.marshall(policies)); //$NON-NLS-1$
     }
 
     /**
@@ -238,8 +238,8 @@ public class EsStorage implements IStorage, IStorageQuery {
      */
     @Override
     public void createContract(ContractBean contract) throws StorageException {
-        List<ContractSummaryBean> contracts = getApplicationContracts(contract.getApplication().getApplication().getOrganization().getId(),
-                contract.getApplication().getApplication().getId(), contract.getApplication().getVersion());
+        List<ContractSummaryBean> contracts = getClientContracts(contract.getClient().getClient().getOrganization().getId(),
+                contract.getClient().getClient().getId(), contract.getClient().getVersion());
         for (ContractSummaryBean csb : contracts) {
             if (csb.getApiOrganizationId().equals(contract.getApi().getApi().getOrganization().getId()) &&
                     csb.getApiId().equals(contract.getApi().getApi().getId()) &&
@@ -421,20 +421,20 @@ public class EsStorage implements IStorage, IStorageQuery {
     }
 
     /**
-     * @see io.apiman.manager.api.core.IStorage#updateApplication(io.apiman.manager.api.beans.apps.ApplicationBean)
+     * @see io.apiman.manager.api.core.IStorage#updateClient(io.apiman.manager.api.beans.clients.ClientBean)
      */
     @Override
-    public void updateApplication(ApplicationBean application) throws StorageException {
-        updateEntity("application", id(application.getOrganization().getId(), application.getId()), EsMarshalling.marshall(application)); //$NON-NLS-1$
+    public void updateClient(ClientBean client) throws StorageException {
+        updateEntity("client", id(client.getOrganization().getId(), client.getId()), EsMarshalling.marshall(client)); //$NON-NLS-1$
     }
 
     /**
-     * @see io.apiman.manager.api.core.IStorage#updateApplicationVersion(io.apiman.manager.api.beans.apps.ApplicationVersionBean)
+     * @see io.apiman.manager.api.core.IStorage#updateClientVersion(io.apiman.manager.api.beans.clients.ClientVersionBean)
      */
     @Override
-    public void updateApplicationVersion(ApplicationVersionBean version) throws StorageException {
-        ApplicationBean application = version.getApplication();
-        updateEntity("applicationVersion", id(application.getOrganization().getId(), application.getId(), version.getVersion()),  //$NON-NLS-1$
+    public void updateClientVersion(ClientVersionBean version) throws StorageException {
+        ClientBean client = version.getClient();
+        updateEntity("clientVersion", id(client.getOrganization().getId(), client.getId(), version.getVersion()),  //$NON-NLS-1$
                 EsMarshalling.marshall(version));
     }
 
@@ -574,20 +574,20 @@ public class EsStorage implements IStorage, IStorageQuery {
     }
 
     /**
-     * @see io.apiman.manager.api.core.IStorage#deleteApplication(io.apiman.manager.api.beans.apps.ApplicationBean)
+     * @see io.apiman.manager.api.core.IStorage#deleteClient(io.apiman.manager.api.beans.clients.ClientBean)
      */
     @Override
-    public void deleteApplication(ApplicationBean application) throws StorageException {
-        deleteEntity("application", id(application.getOrganization().getId(), application.getId())); //$NON-NLS-1$
+    public void deleteClient(ClientBean client) throws StorageException {
+        deleteEntity("client", id(client.getOrganization().getId(), client.getId())); //$NON-NLS-1$
     }
 
     /**
-     * @see io.apiman.manager.api.core.IStorage#deleteApplicationVersion(io.apiman.manager.api.beans.apps.ApplicationVersionBean)
+     * @see io.apiman.manager.api.core.IStorage#deleteClientVersion(io.apiman.manager.api.beans.clients.ClientVersionBean)
      */
     @Override
-    public void deleteApplicationVersion(ApplicationVersionBean version) throws StorageException {
-        ApplicationBean application = version.getApplication();
-        deleteEntity("applicationVersion", id(application.getOrganization().getId(), application.getId(), version.getVersion())); //$NON-NLS-1$
+    public void deleteClientVersion(ClientVersionBean version) throws StorageException {
+        ClientBean client = version.getClient();
+        deleteEntity("clientVersion", id(client.getOrganization().getId(), client.getId(), version.getVersion())); //$NON-NLS-1$
     }
 
     /**
@@ -722,31 +722,31 @@ public class EsStorage implements IStorage, IStorageQuery {
     }
 
     /**
-     * @see io.apiman.manager.api.core.IStorage#getApplication(java.lang.String, java.lang.String)
+     * @see io.apiman.manager.api.core.IStorage#getClient(java.lang.String, java.lang.String)
      */
     @Override
-    public ApplicationBean getApplication(String organizationId, String id) throws StorageException {
-        Map<String, Object> source = getEntity("application", id(organizationId, id)); //$NON-NLS-1$
+    public ClientBean getClient(String organizationId, String id) throws StorageException {
+        Map<String, Object> source = getEntity("client", id(organizationId, id)); //$NON-NLS-1$
         if (source == null) {
             return null;
         }
-        ApplicationBean bean = EsMarshalling.unmarshallApplication(source);
+        ClientBean bean = EsMarshalling.unmarshallClient(source);
         bean.setOrganization(getOrganization(organizationId));
         return bean;
     }
 
     /**
-     * @see io.apiman.manager.api.core.IStorage#getApplicationVersion(java.lang.String, java.lang.String, java.lang.String)
+     * @see io.apiman.manager.api.core.IStorage#getClientVersion(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
-    public ApplicationVersionBean getApplicationVersion(String organizationId, String applicationId,
+    public ClientVersionBean getClientVersion(String organizationId, String clientId,
             String version) throws StorageException {
-        Map<String, Object> source = getEntity("applicationVersion", id(organizationId, applicationId, version)); //$NON-NLS-1$
+        Map<String, Object> source = getEntity("clientVersion", id(organizationId, clientId, version)); //$NON-NLS-1$
         if (source == null) {
             return null;
         }
-        ApplicationVersionBean bean = EsMarshalling.unmarshallApplicationVersion(source);
-        bean.setApplication(getApplication(organizationId, applicationId));
+        ClientVersionBean bean = EsMarshalling.unmarshallClientVersion(source);
+        bean.setClient(getClient(organizationId, clientId));
         return bean;
     }
 
@@ -758,18 +758,18 @@ public class EsStorage implements IStorage, IStorageQuery {
     public ContractBean getContract(Long id) throws StorageException {
         Map<String, Object> source = getEntity("contract", String.valueOf(id)); //$NON-NLS-1$
         ContractBean contract = EsMarshalling.unmarshallContract(source);
-        String appOrgId = (String) source.get("appOrganizationId");
-        String appId = (String) source.get("appId");
-        String appVersion = (String) source.get("appVersion");
+        String clientOrgId = (String) source.get("clientOrganizationId");
+        String clientId = (String) source.get("clientId");
+        String clientVersion = (String) source.get("clientVersion");
         String apiOrgId = (String) source.get("apiOrganizationId");
         String apiId = (String) source.get("apiId");
         String apiVersion = (String) source.get("apiVersion");
         String planId = (String) source.get("planId");
         String planVersion = (String) source.get("planVersion");
-        ApplicationVersionBean avb = getApplicationVersion(appOrgId, appId, appVersion);
+        ClientVersionBean avb = getClientVersion(clientOrgId, clientId, clientVersion);
         ApiVersionBean svb = getApiVersion(apiOrgId, apiId, apiVersion);
         PlanVersionBean pvb = getPlanVersion(apiOrgId, planId, planVersion);
-        contract.setApplication(avb);
+        contract.setClient(avb);
         contract.setPlan(pvb);
         contract.setApi(svb);
         return contract;
@@ -1015,15 +1015,15 @@ public class EsStorage implements IStorage, IStorageQuery {
     }
 
     /**
-     * @see io.apiman.manager.api.core.IStorageQuery#findApplications(io.apiman.manager.api.beans.search.SearchCriteriaBean)
+     * @see io.apiman.manager.api.core.IStorageQuery#findClients(io.apiman.manager.api.beans.search.SearchCriteriaBean)
      */
     @Override
-    public SearchResultsBean<ApplicationSummaryBean> findApplications(SearchCriteriaBean criteria)
+    public SearchResultsBean<ClientSummaryBean> findClients(SearchCriteriaBean criteria)
             throws StorageException {
-        return find(criteria, "application", new IUnmarshaller<ApplicationSummaryBean>() { //$NON-NLS-1$
+        return find(criteria, "client", new IUnmarshaller<ClientSummaryBean>() { //$NON-NLS-1$
             @Override
-            public ApplicationSummaryBean unmarshal(Map<String, Object> source) {
-                return EsMarshalling.unmarshallApplicationSummary(source);
+            public ClientSummaryBean unmarshal(Map<String, Object> source) {
+                return EsMarshalling.unmarshallClientSummary(source);
             }
         });
     }
@@ -1084,8 +1084,8 @@ public class EsStorage implements IStorage, IStorageQuery {
             AuditEntityType entityType = null;
             if (type == OrganizationBean.class) {
                 entityType = AuditEntityType.Organization;
-            } else if (type == ApplicationBean.class) {
-                entityType = AuditEntityType.Application;
+            } else if (type == ClientBean.class) {
+                entityType = AuditEntityType.Client;
             } else if (type == ApiBean.class) {
                 entityType = AuditEntityType.Api;
             } else if (type == PlanBean.class) {
@@ -1159,10 +1159,10 @@ public class EsStorage implements IStorage, IStorageQuery {
     }
 
     /**
-     * @see io.apiman.manager.api.core.IStorageQuery#getApplicationsInOrgs(java.util.Set)
+     * @see io.apiman.manager.api.core.IStorageQuery#getClientsInOrgs(java.util.Set)
      */
     @Override
-    public List<ApplicationSummaryBean> getApplicationsInOrgs(Set<String> organizationIds) throws StorageException {
+    public List<ClientSummaryBean> getClientsInOrgs(Set<String> organizationIds) throws StorageException {
         @SuppressWarnings("nls")
         SearchSourceBuilder builder = new SearchSourceBuilder()
                 .sort("organizationName.raw", SortOrder.ASC)
@@ -1170,65 +1170,65 @@ public class EsStorage implements IStorage, IStorageQuery {
                 .size(500);
         TermsQueryBuilder query = QueryBuilders.termsQuery("organizationId", organizationIds.toArray(new String[organizationIds.size()])); //$NON-NLS-1$
         builder.query(query);
-        List<Hit<Map<String,Object>,Void>> hits = listEntities("application", builder); //$NON-NLS-1$
-        List<ApplicationSummaryBean> rval = new ArrayList<>(hits.size());
+        List<Hit<Map<String,Object>,Void>> hits = listEntities("client", builder); //$NON-NLS-1$
+        List<ClientSummaryBean> rval = new ArrayList<>(hits.size());
         for (Hit<Map<String,Object>,Void> hit : hits) {
-            ApplicationSummaryBean bean = EsMarshalling.unmarshallApplicationSummary(hit.source);
+            ClientSummaryBean bean = EsMarshalling.unmarshallClientSummary(hit.source);
             rval.add(bean);
         }
         return rval;
     }
 
     /**
-     * @see io.apiman.manager.api.core.IStorageQuery#getApplicationsInOrg(java.lang.String)
+     * @see io.apiman.manager.api.core.IStorageQuery#getClientsInOrg(java.lang.String)
      */
     @Override
-    public List<ApplicationSummaryBean> getApplicationsInOrg(String organizationId) throws StorageException {
+    public List<ClientSummaryBean> getClientsInOrg(String organizationId) throws StorageException {
         Set<String> orgs = new HashSet<>();
         orgs.add(organizationId);
-        return getApplicationsInOrgs(orgs);
+        return getClientsInOrgs(orgs);
     }
 
     /**
-     * @see io.apiman.manager.api.core.IStorageQuery#getApplicationVersions(java.lang.String, java.lang.String)
+     * @see io.apiman.manager.api.core.IStorageQuery#getClientVersions(java.lang.String, java.lang.String)
      */
     @Override
-    public List<ApplicationVersionSummaryBean> getApplicationVersions(String organizationId,
-            String applicationId) throws StorageException {
+    public List<ClientVersionSummaryBean> getClientVersions(String organizationId,
+            String clientId) throws StorageException {
         @SuppressWarnings("nls")
         QueryBuilder query = QueryBuilders.filteredQuery(
             QueryBuilders.matchAllQuery(),
             FilterBuilders.andFilter(
                     FilterBuilders.termFilter("organizationId", organizationId),
-                    FilterBuilders.termFilter("applicationId", applicationId))
+                    FilterBuilders.termFilter("clientId", clientId))
         );
         @SuppressWarnings("nls")
         SearchSourceBuilder builder = new SearchSourceBuilder()
                 .sort("createdOn", SortOrder.DESC)
                 .query(query)
                 .size(500);
-        List<Hit<Map<String,Object>,Void>> hits = listEntities("applicationVersion", builder); //$NON-NLS-1$
-        List<ApplicationVersionSummaryBean> rval = new ArrayList<>(hits.size());
+        List<Hit<Map<String,Object>,Void>> hits = listEntities("clientVersion", builder); //$NON-NLS-1$
+        List<ClientVersionSummaryBean> rval = new ArrayList<>(hits.size());
         for (Hit<Map<String,Object>,Void> hit : hits) {
-            ApplicationVersionSummaryBean bean = EsMarshalling.unmarshallApplicationVersionSummary(hit.source);
+            ClientVersionSummaryBean bean = EsMarshalling.unmarshallClientVersionSummary(hit.source);
             rval.add(bean);
         }
         return rval;
     }
 
     /**
-     * @see io.apiman.manager.api.core.IStorageQuery#getApplicationContracts(java.lang.String, java.lang.String, java.lang.String)
+     * @see io.apiman.manager.api.core.IStorageQuery#getClientContracts(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
-    public List<ContractSummaryBean> getApplicationContracts(String organizationId, String applicationId,
+    public List<ContractSummaryBean> getClientContracts(String organizationId, String clientId,
             String version) throws StorageException {
         @SuppressWarnings("nls")
         QueryBuilder query = QueryBuilders.filteredQuery(
             QueryBuilders.matchAllQuery(),
             FilterBuilders.andFilter(
-                FilterBuilders.termFilter("appOrganizationId", organizationId),
-                FilterBuilders.termFilter("appId", applicationId),
-                FilterBuilders.termFilter("appVersion", version)
+                FilterBuilders.termFilter("clientOrganizationId", organizationId),
+                FilterBuilders.termFilter("clientId", clientId),
+                FilterBuilders.termFilter("clientVersion", version)
             )
         );
         @SuppressWarnings("nls")
@@ -1247,15 +1247,15 @@ public class EsStorage implements IStorage, IStorageQuery {
      * @see io.apiman.manager.api.core.IStorageQuery#getApiRegistry(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
-    public ApiRegistryBean getApiRegistry(String organizationId, String applicationId, String version)
+    public ApiRegistryBean getApiRegistry(String organizationId, String clientId, String version)
             throws StorageException {
         @SuppressWarnings("nls")
         QueryBuilder query = QueryBuilders.filteredQuery(
             QueryBuilders.matchAllQuery(),
             FilterBuilders.andFilter(
-                FilterBuilders.termFilter("appOrganizationId", organizationId),
-                FilterBuilders.termFilter("appId", applicationId),
-                FilterBuilders.termFilter("appVersion", version)
+                FilterBuilders.termFilter("clientOrganizationId", organizationId),
+                FilterBuilders.termFilter("clientId", clientId),
+                FilterBuilders.termFilter("clientVersion", version)
             )
         );
         @SuppressWarnings("nls")
@@ -1500,8 +1500,8 @@ public class EsStorage implements IStorage, IStorageQuery {
             )
         );
         @SuppressWarnings("nls")
-        SearchSourceBuilder builder = new SearchSourceBuilder().sort("appOrganizationId", SortOrder.ASC)
-                .sort("appId", SortOrder.ASC).query(query).size(500);
+        SearchSourceBuilder builder = new SearchSourceBuilder().sort("clientOrganizationId", SortOrder.ASC)
+                .sort("clientId", SortOrder.ASC).query(query).size(500);
         List<Hit<Map<String,Object>,Void>> hits = listEntities("contract", builder); //$NON-NLS-1$
         List<ContractSummaryBean> rval = new ArrayList<>(hits.size());
         for (Hit<Map<String,Object>,Void> hit : hits) {
@@ -1991,8 +1991,8 @@ public class EsStorage implements IStorage, IStorageQuery {
         String docType = "planPolicies"; //$NON-NLS-1$
         if (type == PolicyType.Api) {
             docType = "apiPolicies"; //$NON-NLS-1$
-        } else if (type == PolicyType.Application) {
-            docType = "applicationPolicies"; //$NON-NLS-1$
+        } else if (type == PolicyType.Client) {
+            docType = "clientPolicies"; //$NON-NLS-1$
         }
         return docType;
     }
@@ -2040,14 +2040,14 @@ public class EsStorage implements IStorage, IStorageQuery {
     }
 
     /**
-     * @see io.apiman.manager.api.core.IStorage#getAllApplications(java.lang.String)
+     * @see io.apiman.manager.api.core.IStorage#getAllClients(java.lang.String)
      */
     @Override
-    public Iterator<ApplicationBean> getAllApplications(String organizationId) throws StorageException {
-        return getAll("application", new IUnmarshaller<ApplicationBean>() { //$NON-NLS-1$
+    public Iterator<ClientBean> getAllClients(String organizationId) throws StorageException {
+        return getAll("client", new IUnmarshaller<ClientBean>() { //$NON-NLS-1$
             @Override
-            public ApplicationBean unmarshal(Map<String, Object> source) {
-                return EsMarshalling.unmarshallApplication(source);
+            public ClientBean unmarshal(Map<String, Object> source) {
+                return EsMarshalling.unmarshallClient(source);
             }
         }, matchOrgQuery(organizationId));
     }
@@ -2128,12 +2128,12 @@ public class EsStorage implements IStorage, IStorageQuery {
     }
 
     /**
-     * @see io.apiman.manager.api.core.IStorage#getAllApplicationVersions(java.lang.String, java.lang.String)
+     * @see io.apiman.manager.api.core.IStorage#getAllClientVersions(java.lang.String, java.lang.String)
      */
     @SuppressWarnings("nls")
     @Override
-    public Iterator<ApplicationVersionBean> getAllApplicationVersions(String organizationId,
-            String applicationId) throws StorageException {
+    public Iterator<ClientVersionBean> getAllClientVersions(String organizationId,
+            String clientId) throws StorageException {
         String query = "{" +
                 "  \"query\": {" +
                 "    \"filtered\": { " +
@@ -2143,17 +2143,17 @@ public class EsStorage implements IStorage, IStorageQuery {
                 "            \"term\": { \"organizationId\": \"" + organizationId + "\" }" +
                 "          }," +
                 "          {" +
-                "            \"term\": { \"applicationId\": \"" + applicationId + "\" }" +
+                "            \"term\": { \"clientId\": \"" + clientId + "\" }" +
                 "          }" +
                 "      ]" +
                 "      }" +
                 "    }" +
                 "  }" +
                 "}";
-        return getAll("applicationVersion", new IUnmarshaller<ApplicationVersionBean>() { //$NON-NLS-1$
+        return getAll("clientVersion", new IUnmarshaller<ClientVersionBean>() { //$NON-NLS-1$
             @Override
-            public ApplicationVersionBean unmarshal(Map<String, Object> source) {
-                return EsMarshalling.unmarshallApplicationVersion(source);
+            public ClientVersionBean unmarshal(Map<String, Object> source) {
+                return EsMarshalling.unmarshallClientVersion(source);
             }
         }, query);
     }
@@ -2163,7 +2163,7 @@ public class EsStorage implements IStorage, IStorageQuery {
      */
     @SuppressWarnings("nls")
     @Override
-    public Iterator<ContractBean> getAllContracts(String organizationId, String applicationId, String version)
+    public Iterator<ContractBean> getAllContracts(String organizationId, String clientId, String version)
             throws StorageException {
         String query = "{" +
                 "  \"query\": {" +
@@ -2171,13 +2171,13 @@ public class EsStorage implements IStorage, IStorageQuery {
                 "      \"filter\": {" +
                 "        \"and\" : [" +
                 "          {" +
-                "            \"term\": { \"appOrganizationId\": \"" + organizationId + "\" }" +
+                "            \"term\": { \"clientOrganizationId\": \"" + organizationId + "\" }" +
                 "          }," +
                 "          {" +
-                "            \"term\": { \"appId\": \"" + applicationId + "\" }" +
+                "            \"term\": { \"clientId\": \"" + clientId + "\" }" +
                 "          }," +
                 "          {" +
-                "            \"term\": { \"appVersion\": \"" + version + "\" }" +
+                "            \"term\": { \"clientVersion\": \"" + version + "\" }" +
                 "          }" +
                 "      ]" +
                 "      }" +

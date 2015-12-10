@@ -108,18 +108,18 @@ Content-Type: application/json
           ]
         }
       ],
-      "Apps": [
+      "Clients": [
         {
-          "ApplicationBean": {
-            "id": "Application1",
-            "name": "Application 1",
-            "description": "This is the description of Application 1.",
+          "ClientBean": {
+            "id": "Client1",
+            "name": "Client 1",
+            "description": "This is the description of Client 1.",
             "createdBy": "admin",
             "createdOn": 1445973206926
           },
           "Versions": [
             {
-              "ApplicationVersionBean": {
+              "ClientVersionBean": {
                 "id": 7,
                 "status": "Registered",
                 "version": "1.0",
@@ -133,9 +133,9 @@ Content-Type: application/json
               "Contracts": [
                 {
                   "id": 14,
-                  "application": {
+                  "client": {
                     "id": 7,
-                    "application": {
+                    "client": {
                       "organization": {
                         "id": "Organization1",
                         "name": "Organization 1",
@@ -144,9 +144,9 @@ Content-Type: application/json
                         "modifiedBy": "admin",
                         "modifiedOn": 1445973206713
                       },
-                      "id": "Application1",
-                      "name": "Application 1",
-                      "description": "This is the description of Application 1.",
+                      "id": "Client1",
+                      "name": "Client 1",
+                      "description": "This is the description of Client 1.",
                       "createdBy": "admin",
                       "createdOn": 1445973206926
                     },
@@ -274,8 +274,8 @@ Content-Type: application/json
           "id": 6,
           "who": "admin",
           "organizationId": "Organization1",
-          "entityType": "Application",
-          "entityId": "Application1",
+          "entityType": "Client",
+          "entityId": "Client1",
           "createdOn": 1445973206930,
           "what": "Create"
         },
@@ -283,8 +283,8 @@ Content-Type: application/json
           "id": 8,
           "who": "admin",
           "organizationId": "Organization1",
-          "entityType": "Application",
-          "entityId": "Application1",
+          "entityType": "Client",
+          "entityId": "Client1",
           "entityVersion": "1.0",
           "createdOn": 1445973206961,
           "what": "Create"
@@ -333,12 +333,12 @@ Content-Type: application/json
           "id": 15,
           "who": "admin",
           "organizationId": "Organization1",
-          "entityType": "Application",
-          "entityId": "Application1",
+          "entityType": "Client",
+          "entityId": "Client1",
           "entityVersion": "1.0",
           "createdOn": 1445973207623,
           "what": "CreateContract",
-          "data": "{\"appOrgId\":\"Organization1\",\"appId\":\"Application1\",\"appVersion\":\"1.0\",\"apiOrgId\":\"Organization1\",\"apiId\":\"API1\",\"apiVersion\":\"1.0\",\"planId\":\"Plan1\",\"planVersion\":\"1.0\"}"
+          "data": "{\"clientOrgId\":\"Organization1\",\"clientId\":\"Client1\",\"clientVersion\":\"1.0\",\"apiOrgId\":\"Organization1\",\"apiId\":\"API1\",\"apiVersion\":\"1.0\",\"planId\":\"Plan1\",\"planVersion\":\"1.0\"}"
         },
         {
           "id": 16,
@@ -349,14 +349,14 @@ Content-Type: application/json
           "entityVersion": "1.0",
           "createdOn": 1445973207628,
           "what": "CreateContract",
-          "data": "{\"appOrgId\":\"Organization1\",\"appId\":\"Application1\",\"appVersion\":\"1.0\",\"apiOrgId\":\"Organization1\",\"apiId\":\"API1\",\"apiVersion\":\"1.0\",\"planId\":\"Plan1\",\"planVersion\":\"1.0\"}"
+          "data": "{\"clientOrgId\":\"Organization1\",\"clientId\":\"Client1\",\"clientVersion\":\"1.0\",\"apiOrgId\":\"Organization1\",\"apiId\":\"API1\",\"apiVersion\":\"1.0\",\"planId\":\"Plan1\",\"planVersion\":\"1.0\"}"
         },
         {
           "id": 17,
           "who": "admin",
           "organizationId": "Organization1",
-          "entityType": "Application",
-          "entityId": "Application1",
+          "entityType": "Client",
+          "entityId": "Client1",
           "entityVersion": "1.0",
           "createdOn": 1445973207770,
           "what": "Register"
@@ -379,8 +379,8 @@ INFO:   Importing a plan: Plan 1
 INFO:     Importing a plan version: 1.0
 INFO:     Importing an API: API 1
 INFO:     Importing an API version: 1.0
-INFO:   Importing an application: Application 1
-INFO:     Importing an application version: 1.0
+INFO:   Importing a client: Client 1
+INFO:     Importing a client version: 1.0
 INFO:   Importing an audit entry: 1
 INFO:   Importing an audit entry: 2
 INFO:   Importing an audit entry: 4
@@ -394,11 +394,11 @@ INFO:   Importing an audit entry: 13
 INFO:   Importing an audit entry: 15
 INFO:   Importing an audit entry: 16
 INFO:   Importing an audit entry: 17
-INFO: +Importing an application contract: 6ec478ca-8ccd-48d0-973e-479f42c68a6c
+INFO: +Importing a client contract: 6ec478ca-8ccd-48d0-973e-479f42c68a6c
 INFO: Publishing APIs to the gateway.
 INFO:  Publishing API: Organization1 / API1 -> 1.0
-INFO: Registering applications in the gateway.
-INFO:  Registering app: Organization1 / Application1 -> 1.0
+INFO: Registering clients in the gateway.
+INFO:  Registering app: Organization1 / Client1 -> 1.0
 INFO: -----------------------------------
 INFO: Data import completed successfully!
 INFO: -----------------------------------

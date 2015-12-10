@@ -23,7 +23,7 @@ package io.apiman.manager.api.beans.actions;
 public enum ActionType {
     
     publishAPI, retireAPI, 
-    registerApplication, unregisterApplication,
+    registerClient, unregisterClient,
     lockPlan;
 
 }

@@ -42,7 +42,7 @@ public class VxApi implements Head {
 
     @Override
     public String type() {
-        return "service";
+        return "api";
     }
 
     @Override

@@ -85,7 +85,7 @@ public class TransferQuotaPolicy extends AbstractMappedDataPolicy<TransferQuotaC
             chain.doFailure(failure);
             return;
         }
-        if (bucketId == RateLimitingPolicy.NO_APPLICATION_AVAILABLE) {
+        if (bucketId == RateLimitingPolicy.NO_CLIENT_AVAILABLE) {
             IPolicyFailureFactoryComponent failureFactory = context.getComponent(IPolicyFailureFactoryComponent.class);
             PolicyFailure failure = failureFactory.createFailure(PolicyFailureType.Other, PolicyFailureCodes.NO_APP_FOR_RATE_LIMITING, Messages.i18n.format("TransferQuotaPolicy.NoApp")); //$NON-NLS-1$
             chain.doFailure(failure);

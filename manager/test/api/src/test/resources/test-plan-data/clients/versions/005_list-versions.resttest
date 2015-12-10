@@ -1,0 +1,23 @@
+GET /organizations/Organization1/clients/Client1/versions admin/admin
+----
+200
+Content-Type: application/json
+
+[
+  {
+    "organizationId" : "Organization1",
+    "organizationName" : "Organization 1",
+    "id" : "Client1",
+    "name" : "Client 1",
+    "status":"Created",
+    "version":"2.0"
+  },
+  {
+    "organizationId" : "Organization1",
+    "organizationName" : "Organization 1",
+    "id" : "Client1",
+    "name" : "Client 1",
+    "status":"Created",
+    "version":"1.0"
+  }
+]

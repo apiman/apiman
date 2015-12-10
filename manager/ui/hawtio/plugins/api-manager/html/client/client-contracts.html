@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+  </head>
+
+  <body>
+  <div>
+    <div ng-include="headerInclude"></div>
+    <div ng-controller="Apiman.ClientContractsController" class="container page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
+      <div ng-include="'plugins/api-manager/html/client/client_bc.include'"></div>
+      <!-- Entity Summary Row -->
+      <div ng-include="'plugins/api-manager/html/client/client_entity.include'"></div>
+
+      <!-- Navigation + Content Row -->
+      <div class="row">
+        <!-- Left hand nav -->
+        <div ng-include="'plugins/api-manager/html/client/client_tabs.include'"></div>
+        <!-- /Left hand nav -->
+
+        <!-- Content -->
+        <div class="col-md-10 apiman-entity-content apiman-entity-overview">
+          <div class="col-md-9">
+            <!-- Title and help text -->
+            <div class="title" apiman-i18n-key="api-contracts">API Contracts</div>
+            <div class="description" apiman-i18n-key="contracts-help">Here is a list of all APIs that this Client App is currently contracted to utilize.  This provides a list of all APIs that Client App can potentially invoke.</div>
+            <hr />
+            <!-- The list of contracts (filterable) -->
+            <div>
+              <div class="apiman-filters apiman-contracts-filters">
+                <div>
+                  <apiman-search-box id="contracts-filter" apiman-i18n-key="filter-client-contracts" function="filterContracts" placeholder="Filter by org or API name..." />
+                </div>
+                <a apiman-permission="clientEdit" apiman-status="Created,Ready,Registered" data-field="toNewContract" apiman-i18n-key="new-contract" href="{{ pluginName }}/new-contract" class="btn btn-primary pull-right">New Contract</a>
+                <button ng-click="breakAll()" apiman-action-btn="" ng-disabled="!contracts.length" apiman-permission="clientEdit" apiman-status="Created,Ready,Registered" data-field="breakAllContracts" apiman-i18n-key="break-all-contracts" placeholder="Breaking..." data-icon="fa-cog" class="btn btn-default pull-right">Break All</button>
+              </div>
+              <div class="clearfix"></div>
+              <!-- The list of contracts -->
+              <div class="apiman-contracts" data-field="contracts" ng-repeat="contract in filteredContracts">
+                <div class="container-fluid apiman-summaryrow">
+                  <div class="row">
+                    <div class="col-md-10 col-no-padding">
+                      <a href="{{ pluginName }}/browse/orgs/{{ contract.apiOrganizationId }}">{{ contract.apiOrganizationName }}</a> / <span class="title"><a href="{{ pluginName }}/browse/orgs/{{ contract.apiOrganizationId }}/{{ contract.apiId }}/{{ contract.apiVersion }}">{{ contract.apiName }}</a></span>
+                      <div class="versionAndPlan">
+                        <span apiman-i18n-key="client-contract.detail.api-version">API version</span>
+                        <span><a href="{{ pluginName }}/browse/orgs/{{ contract.apiOrganizationId }}/{{ contract.apiId }}/{{ contract.apiVersion }}">{{ contract.apiVersion }}</a></span>
+                        <span apiman-i18n-key="client-contract.detail.via-plan">via plan</span>
+                        <span><a>{{ contract.planName }}</a></span>
+                        <span apiman-i18n-key="client-contract.detail.entered-into">entered into on</span>
+                        <i class="fa fa-clock-o fa-fw fa-inline"></i>
+                        <span>{{ contract.createdOn | date: 'yyyy-MM-dd' }}</span>
+                      </div>
+                      <div class="description apiman-label-faded">
+                        {{ contract.apiDescription }}
+                      </div>
+                    </div>
+                    <div class="col-md-2 col-no-padding">
+                      <span class="actions"><button apiman-i18n-key="break-contract" apiman-status="Created,Ready,Registered" apiman-permission="clientEdit" ng-click="break(contract)" class="btn btn-default">Break Contract</button></span>
+                    </div>
+                  </div>
+                  <hr />
+                </div>
+              </div>
+              
+              <div class="apiman-no-content container-fluid" ng-show="filteredContracts.length == 0">
+                <p class="apiman-no-entities-description" apiman-i18n-key="no-client-api-contracts.message">This Client App doesn't appear to have any API contracts (or perhaps none that match your filter above).  Try creating a new Contract to an API - if you do it will get listed here!</p>
+              </div>              
+              
+            </div>
+          </div>
+        </div>
+        <!-- /Content -->
+      </div>
+    </div> <!-- /container -->
+  </div>
+  </body>
+</html>

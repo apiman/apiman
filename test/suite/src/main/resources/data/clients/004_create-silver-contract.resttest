@@ -1,0 +1,46 @@
+POST /organizations/Test/clients/client1/versions/1.0/contracts ${apiman.suite.api-username}/${apiman.suite.api-password}
+Content-Type: application/json
+
+{
+  "apiOrgId" : "Test",
+  "apiId" : "echo",
+  "apiVersion" : "1.0",
+  "planId" : "Silver"
+}
+----
+200
+Content-Type: application/json
+X-RestTest-BindTo-silver-api-key: apikey
+X-RestTest-BindTo-silver-contractId: id
+
+{
+  "client" : {
+    "client" : {
+      "organization" : {
+        "id" : "Test"
+      },
+      "id" : "client1"
+    },
+    "version" : "1.0"
+  },
+  
+  "api":{
+    "api" : {
+      "organization" : {
+        "id" : "Test"
+      },
+      "id" : "echo"
+    },
+    "version" : "1.0"
+  },
+  
+  "plan" : {
+    "plan" : {
+      "organization" : {
+        "id" : "Test"
+      },
+      "id" : "Silver"
+    },
+    "version" : "1.0"
+  }
+}

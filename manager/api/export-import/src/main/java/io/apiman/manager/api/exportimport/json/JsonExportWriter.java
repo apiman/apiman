@@ -17,9 +17,9 @@ package io.apiman.manager.api.exportimport.json;
 
 import io.apiman.manager.api.beans.apis.ApiBean;
 import io.apiman.manager.api.beans.apis.ApiVersionBean;
-import io.apiman.manager.api.beans.apps.ApplicationBean;
-import io.apiman.manager.api.beans.apps.ApplicationVersionBean;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
+import io.apiman.manager.api.beans.clients.ClientBean;
+import io.apiman.manager.api.beans.clients.ClientVersionBean;
 import io.apiman.manager.api.beans.contracts.ContractBean;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
 import io.apiman.manager.api.beans.idm.RoleBean;
@@ -492,23 +492,23 @@ public class JsonExportWriter extends AbstractJsonWriter<GlobalElementsEnum> imp
     }
 
     /**
-     * @see io.apiman.manager.api.exportimport.write.IExportWriter#startApplications()
+     * @see io.apiman.manager.api.exportimport.write.IExportWriter#startClients()
      */
     @Override
-    public IExportWriter startApplications() {
-        writeStartArray(OrgElementsEnum.Apps);
+    public IExportWriter startClients() {
+        writeStartArray(OrgElementsEnum.Clients);
         return this;
     }
 
     /**
-     * @see io.apiman.manager.api.exportimport.write.IExportWriter#startApplication(io.apiman.manager.api.beans.applications.ApplicationBean)
+     * @see io.apiman.manager.api.exportimport.write.IExportWriter#startClient(io.apiman.manager.api.beans.ClientBean.ClientBean)
      */
     @Override
-    public IExportWriter startApplication(ApplicationBean application) {
+    public IExportWriter startClient(ClientBean client) {
         writeStartObject();
         try {
-            application.setOrganization(null);
-            jg.writeObjectField(ApplicationBean.class.getSimpleName(), application);
+            client.setOrganization(null);
+            jg.writeObjectField(ClientBean.class.getSimpleName(), client);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -516,23 +516,23 @@ public class JsonExportWriter extends AbstractJsonWriter<GlobalElementsEnum> imp
     }
 
     /**
-     * @see io.apiman.manager.api.exportimport.write.IExportWriter#startApplicationVersions()
+     * @see io.apiman.manager.api.exportimport.write.IExportWriter#startClientVersions()
      */
     @Override
-    public IExportWriter startApplicationVersions() {
+    public IExportWriter startClientVersions() {
         writeStartArray(OrgElementsEnum.Versions);
         return this;
     }
 
     /**
-     * @see io.apiman.manager.api.exportimport.write.IExportWriter#startApplicationVersion(io.apiman.manager.api.beans.applications.ApplicationVersionBean)
+     * @see io.apiman.manager.api.exportimport.write.IExportWriter#startClientVersion(io.apiman.manager.api.beans.ClientVersionBean.ClientVersionBean)
      */
     @Override
-    public IExportWriter startApplicationVersion(ApplicationVersionBean pvb) {
+    public IExportWriter startClientVersion(ClientVersionBean pvb) {
         writeStartObject();
         try {
-            pvb.setApplication(null);
-            jg.writeObjectField(ApplicationVersionBean.class.getSimpleName(), pvb);
+            pvb.setClient(null);
+            jg.writeObjectField(ClientVersionBean.class.getSimpleName(), pvb);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -540,91 +540,91 @@ public class JsonExportWriter extends AbstractJsonWriter<GlobalElementsEnum> imp
     }
 
     /**
-     * @see io.apiman.manager.api.exportimport.write.IExportWriter#startApplicationPolicies()
+     * @see io.apiman.manager.api.exportimport.write.IExportWriter#startClientPolicies()
      */
     @Override
-    public IExportWriter startApplicationPolicies() {
+    public IExportWriter startClientPolicies() {
         writeStartArray(OrgElementsEnum.Policies);
         return this;
     }
 
     /**
-     * @see io.apiman.manager.api.exportimport.write.IExportWriter#writeApplicationPolicy(io.apiman.manager.api.beans.policies.PolicyBean)
+     * @see io.apiman.manager.api.exportimport.write.IExportWriter#writeClientPolicy(io.apiman.manager.api.beans.policies.PolicyBean)
      */
     @Override
-    public IExportWriter writeApplicationPolicy(PolicyBean policy) {
+    public IExportWriter writeClientPolicy(PolicyBean policy) {
         return writePolicy(policy);
     }
 
     /**
-     * @see io.apiman.manager.api.exportimport.write.IExportWriter#endApplicationPolicies()
+     * @see io.apiman.manager.api.exportimport.write.IExportWriter#endClientPolicies()
      */
     @Override
-    public IExportWriter endApplicationPolicies() {
+    public IExportWriter endClientPolicies() {
         writeEndArray(OrgElementsEnum.Policies);
         return this;
     }
 
     /**
-     * @see io.apiman.manager.api.exportimport.write.IExportWriter#startApplicationContracts()
+     * @see io.apiman.manager.api.exportimport.write.IExportWriter#startClientContracts()
      */
     @Override
-    public IExportWriter startApplicationContracts() {
+    public IExportWriter startClientContracts() {
         writeStartArray(OrgElementsEnum.Contracts);
         return this;
     }
 
     /**
-     * @see io.apiman.manager.api.exportimport.write.IExportWriter#writeApplicationContract(io.apiman.manager.api.beans.contracts.ContractBean)
+     * @see io.apiman.manager.api.exportimport.write.IExportWriter#writeClientContract(io.apiman.manager.api.beans.contracts.ContractBean)
      */
     @Override
-    public IExportWriter writeApplicationContract(ContractBean cb) {
+    public IExportWriter writeClientContract(ContractBean cb) {
         writePojo(cb);
         return this;
     }
 
     /**
-     * @see io.apiman.manager.api.exportimport.write.IExportWriter#endApplicationContracts()
+     * @see io.apiman.manager.api.exportimport.write.IExportWriter#endClientContracts()
      */
     @Override
-    public IExportWriter endApplicationContracts() {
+    public IExportWriter endClientContracts() {
         writeEndArray();
         return this;
     }
 
     /**
-     * @see io.apiman.manager.api.exportimport.write.IExportWriter#endApplicationVersion()
+     * @see io.apiman.manager.api.exportimport.write.IExportWriter#endClientVersion()
      */
     @Override
-    public IExportWriter endApplicationVersion() {
+    public IExportWriter endClientVersion() {
         writeEndObject();
         return this;
     }
 
     /**
-     * @see io.apiman.manager.api.exportimport.write.IExportWriter#endApplicationVersions()
+     * @see io.apiman.manager.api.exportimport.write.IExportWriter#endClientVersions()
      */
     @Override
-    public IExportWriter endApplicationVersions() {
+    public IExportWriter endClientVersions() {
         writeEndArray();
         return this;
     }
 
     /**
-     * @see io.apiman.manager.api.exportimport.write.IExportWriter#endApplication()
+     * @see io.apiman.manager.api.exportimport.write.IExportWriter#endClient()
      */
     @Override
-    public IExportWriter endApplication() {
+    public IExportWriter endClient() {
         writeEndObject();
         return this;
     }
 
     /**
-     * @see io.apiman.manager.api.exportimport.write.IExportWriter#endApplications()
+     * @see io.apiman.manager.api.exportimport.write.IExportWriter#endClients()
      */
     @Override
-    public IExportWriter endApplications() {
-        writeEndArray(OrgElementsEnum.Apps);
+    public IExportWriter endClients() {
+        writeEndArray(OrgElementsEnum.Clients);
         return this;
     }
 

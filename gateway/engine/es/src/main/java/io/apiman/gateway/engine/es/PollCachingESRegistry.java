@@ -20,7 +20,7 @@ import java.util.Map;
 
 import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
-import io.apiman.gateway.engine.beans.Application;
+import io.apiman.gateway.engine.beans.Client;
 import io.apiman.gateway.engine.beans.Api;
 import io.apiman.gateway.engine.es.beans.DataVersionBean;
 import io.searchbox.client.JestResult;
@@ -94,11 +94,11 @@ public class PollCachingESRegistry extends CachingESRegistry {
     }
 
     /**
-     * @see io.apiman.gateway.engine.es.CachingESRegistry#registerApplication(io.apiman.gateway.engine.beans.Application, io.apiman.gateway.engine.async.IAsyncResultHandler)
+     * @see io.apiman.gateway.engine.es.CachingESRegistry#registerClient(io.apiman.gateway.engine.beans.Client, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
     @Override
-    public void registerApplication(Application application, final IAsyncResultHandler<Void> handler) {
-        super.registerApplication(application, new IAsyncResultHandler<Void>() {
+    public void registerClient(Client client, final IAsyncResultHandler<Void> handler) {
+        super.registerClient(client, new IAsyncResultHandler<Void>() {
             /**
              * @see io.apiman.gateway.engine.async.IAsyncHandler#handle(java.lang.Object)
              */
@@ -113,11 +113,11 @@ public class PollCachingESRegistry extends CachingESRegistry {
     }
 
     /**
-     * @see io.apiman.gateway.engine.es.CachingESRegistry#unregisterApplication(io.apiman.gateway.engine.beans.Application, io.apiman.gateway.engine.async.IAsyncResultHandler)
+     * @see io.apiman.gateway.engine.es.CachingESRegistry#unregisterClient(io.apiman.gateway.engine.beans.Client, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
     @Override
-    public void unregisterApplication(Application application, final IAsyncResultHandler<Void> handler) {
-        super.unregisterApplication(application, new IAsyncResultHandler<Void>() {
+    public void unregisterClient(Client client, final IAsyncResultHandler<Void> handler) {
+        super.unregisterClient(client, new IAsyncResultHandler<Void>() {
             @Override
             public void handle(IAsyncResult<Void> result) {
                 if (result.isSuccess()) {

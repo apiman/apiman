@@ -21,7 +21,7 @@ import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.Api;
 import io.apiman.gateway.engine.beans.ApiContract;
 import io.apiman.gateway.engine.beans.ApiRequest;
-import io.apiman.gateway.engine.beans.Application;
+import io.apiman.gateway.engine.beans.Client;
 import io.apiman.gateway.engine.beans.Contract;
 import io.apiman.gateway.engine.beans.exceptions.InvalidContractException;
 import io.apiman.gateway.engine.es.i18n.Messages;
@@ -46,7 +46,7 @@ public abstract class CachingESRegistry extends ESRegistry {
 
     private Map<String, ApiContract> contractCache = new ConcurrentHashMap<>();
     private Map<String, Api> apiCache = new HashMap<>();
-    private Map<String, Application> applicationCache = new HashMap<>();
+    private Map<String, Client> clientCache = new HashMap<>();
     private Object mutex = new Object();
 
     /**
@@ -64,7 +64,7 @@ public abstract class CachingESRegistry extends ESRegistry {
         synchronized (mutex) {
             contractCache.clear();
             apiCache.clear();
-            applicationCache.clear();
+            clientCache.clear();
         }
     }
 
@@ -86,7 +86,7 @@ public abstract class CachingESRegistry extends ESRegistry {
                     @Override
                     public void handle(IAsyncResult<ApiContract> result) {
                         if (result.isSuccess()) {
-                            loadAndCacheApp(result.getResult().getApplication());
+                            loadAndCacheClient(result.getResult().getClient());
                         }
                         handler.handle(result);
                     }
@@ -159,15 +159,15 @@ public abstract class CachingESRegistry extends ESRegistry {
     }
 
     /**
-     * @param application
+     * @param client
      */
-    protected void cacheApplication(Application application) {
-        String applicationKey = getApplicationKey(application);
+    protected void cacheClient(Client client) {
+        String clientKey = getClientKey(client);
         synchronized (mutex) {
-            applicationCache.put(applicationKey, application);
-            if (application.getContracts() != null) {
-                for (Contract contract : application.getContracts()) {
-                    ApiContract sc = new ApiContract(contract.getApiKey(), null, application, contract.getPlan(), contract.getPolicies());
+            clientCache.put(clientKey, client);
+            if (client.getContracts() != null) {
+                for (Contract contract : client.getContracts()) {
+                    ApiContract sc = new ApiContract(contract.getApiKey(), null, client, contract.getPlan(), contract.getPolicies());
                     String contractKey = getContractKey(contract);
                     contractCache.put(contractKey, sc);
                 }
@@ -176,18 +176,18 @@ public abstract class CachingESRegistry extends ESRegistry {
     }
 
     /**
-     * @param application
+     * @param client
      */
-    protected void loadAndCacheApp(Application application) {
-        String id = getApplicationId(application);
-        Get get = new Get.Builder(getIndexName(), id).type("application").build(); //$NON-NLS-1$
+    protected void loadAndCacheClient(Client client) {
+        String id = getClientId(client);
+        Get get = new Get.Builder(getIndexName(), id).type("client").build(); //$NON-NLS-1$
         getClient().executeAsync(get, new JestResultHandler<JestResult>() {
             @Override
             public void completed(JestResult result) {
                 if (result.isSucceeded()) {
                     Map<String, Object> source = result.getSourceAsObject(Map.class);
-                    Application app = ESRegistryMarshalling.unmarshallApplication(source);
-                    cacheApplication(app);
+                    Client app = ESRegistryMarshalling.unmarshallClient(source);
+                    cacheClient(app);
                 }
             }
             @Override
@@ -209,13 +209,13 @@ public abstract class CachingESRegistry extends ESRegistry {
     }
 
     /**
-     * Generates an in-memory key for an application, used to index the app for later quick
+     * Generates an in-memory key for an client, used to index the app for later quick
      * retrieval.
-     * @param app an application
-     * @return an application key
+     * @param client an client
+     * @return an client key
      */
-    private String getApplicationKey(Application app) {
-        return "APP::" + app.getOrganizationId() + "|" + app.getApplicationId() + "|" + app.getVersion(); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    private String getClientKey(Client client) {
+        return "CLIENT::" + client.getOrganizationId() + "|" + client.getClientId() + "|" + client.getVersion(); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
     /**

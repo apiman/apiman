@@ -21,7 +21,7 @@ import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.Api;
 import io.apiman.gateway.engine.beans.ApiContract;
 import io.apiman.gateway.engine.beans.ApiRequest;
-import io.apiman.gateway.engine.beans.Application;
+import io.apiman.gateway.engine.beans.Client;
 import io.apiman.gateway.engine.beans.Contract;
 import io.apiman.gateway.engine.beans.exceptions.InvalidContractException;
 import io.apiman.gateway.engine.beans.exceptions.PublishingException;
@@ -105,38 +105,38 @@ public class ESRegistry extends AbstractESComponent implements IRegistry {
     }
 
     /**
-     * @see io.apiman.gateway.engine.IRegistry#registerApplication(io.apiman.gateway.engine.beans.Application, io.apiman.gateway.engine.async.IAsyncResultHandler)
+     * @see io.apiman.gateway.engine.IRegistry#registerClient(io.apiman.gateway.engine.beans.Client, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
     @Override
-    public void registerApplication(final Application application, final IAsyncResultHandler<Void> handler) {
+    public void registerClient(final Client client, final IAsyncResultHandler<Void> handler) {
         final Map<String, Api> apiMap = new HashMap<>();
 
         try {
-            // Validate the app and populate the api map with apis found during validation.
-            validateApplication(application, apiMap);
-            String id = getApplicationId(application);
-            Index index = new Index.Builder(ESRegistryMarshalling.marshall(application).string())
+            // Validate the client and populate the api map with apis found during validation.
+            validateClient(client, apiMap);
+            String id = getClientId(client);
+            Index index = new Index.Builder(ESRegistryMarshalling.marshall(client).string())
                     .refresh(false).index(getIndexName())
                     .setParameter(Parameters.OP_TYPE, "index") //$NON-NLS-1$
-                    .type("application").id(id).build(); //$NON-NLS-1$
+                    .type("client").id(id).build(); //$NON-NLS-1$
             JestResult result = getClient().execute(index);
             if (!result.isSucceeded()) {
                 throw new IOException(result.getErrorMessage());
             } else {
                 // Remove all the api contracts, then re-add them
-                unregisterApiContracts(application);
+                unregisterApiContracts(client);
 
                 // Register all the api contracts.
-                Set<Contract> contracts = application.getContracts();
-                application.setContracts(null);
+                Set<Contract> contracts = client.getContracts();
+                client.setContracts(null);
                 for (Contract contract : contracts) {
-                    registerContract(application, contract, apiMap);
+                    registerContract(client, contract, apiMap);
                 }
                 handler.handle(AsyncResultImpl.create((Void) null));
             }
         } catch (IOException e) {
             handler.handle(AsyncResultImpl.create(
-                    new RegistrationException(Messages.i18n.format("ESRegistry.ErrorRegisteringApplication"), e),  //$NON-NLS-1$
+                    new RegistrationException(Messages.i18n.format("ESRegistry.ErrorRegisteringClient"), e),  //$NON-NLS-1$
                     Void.class));
         } catch (RegistrationException re) {
             handler.handle(AsyncResultImpl.create(re, Void.class));
@@ -144,12 +144,12 @@ public class ESRegistry extends AbstractESComponent implements IRegistry {
     }
 
     /**
-     * Validate that the application should be registered.
-     * @param application
+     * Validate that the client should be registered.
+     * @param client
      * @param apiMap
      */
-    private void validateApplication(Application application, Map<String, Api> apiMap) throws RegistrationException {
-        Set<Contract> contracts = application.getContracts();
+    private void validateClient(Client client, Map<String, Api> apiMap) throws RegistrationException {
+        Set<Contract> contracts = client.getContracts();
         if (contracts.isEmpty()) {
             throw new RegistrationException(Messages.i18n.format("ESRegistry.NoContracts")); //$NON-NLS-1$
         }
@@ -190,16 +190,16 @@ public class ESRegistry extends AbstractESComponent implements IRegistry {
     /**
      * Register all the contracts in ES so they can be looked up quickly by
      * their ID by all nodes in the cluster.
-     * @param application
+     * @param client
      * @param contracts
      * @param apiMap
      */
-    private void registerContract(final Application application, final Contract contract,
+    private void registerContract(final Client client, final Contract contract,
             final Map<String, Api> apiMap) throws RegistrationException {
         try {
             String apiId = getApiId(contract);
             Api api = apiMap.get(apiId);
-            ApiContract sc = new ApiContract(contract.getApiKey(), api, application,
+            ApiContract sc = new ApiContract(contract.getApiKey(), api, client,
                     contract.getPlan(), contract.getPolicies());
             final String contractId = getContractId(contract);
 
@@ -216,17 +216,17 @@ public class ESRegistry extends AbstractESComponent implements IRegistry {
     }
 
     /**
-     * @see io.apiman.gateway.engine.IRegistry#unregisterApplication(io.apiman.gateway.engine.beans.Application, io.apiman.gateway.engine.async.IAsyncResultHandler)
+     * @see io.apiman.gateway.engine.IRegistry#unregisterClient(io.apiman.gateway.engine.beans.Client, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
     @Override
-    public void unregisterApplication(final Application application, final IAsyncResultHandler<Void> handler) {
-        final String id = getApplicationId(application);
+    public void unregisterClient(final Client client, final IAsyncResultHandler<Void> handler) {
+        final String id = getClientId(client);
 
         try {
-            Delete delete = new Delete.Builder(id).index(getIndexName()).type("application").build(); //$NON-NLS-1$
+            Delete delete = new Delete.Builder(id).index(getIndexName()).type("client").build(); //$NON-NLS-1$
             JestResult result = getClient().execute(delete);
             if (result.isSucceeded()) {
-                unregisterApiContracts(application);
+                unregisterApiContracts(client);
                 handler.handle(AsyncResultImpl.create((Void) null));
             } else {
                 handler.handle(AsyncResultImpl.create(new PublishingException(Messages.i18n.format("ESRegistry.AppNotFound")), Void.class)); //$NON-NLS-1$
@@ -238,16 +238,16 @@ public class ESRegistry extends AbstractESComponent implements IRegistry {
 
     /**
      * Removes all of the api contracts from ES.
-     * @param application
+     * @param client
      * @throws IOException
      */
-    protected void unregisterApiContracts(Application application) throws IOException {
+    protected void unregisterApiContracts(Client client) throws IOException {
         QueryBuilder qb = QueryBuilders.filteredQuery(
                 QueryBuilders.matchAllQuery(),
                 FilterBuilders.andFilter(
-                        FilterBuilders.termFilter("application.organizationId", application.getOrganizationId()), //$NON-NLS-1$
-                        FilterBuilders.termFilter("application.applicationId", application.getApplicationId()), //$NON-NLS-1$
-                        FilterBuilders.termFilter("application.version", application.getVersion()) //$NON-NLS-1$
+                        FilterBuilders.termFilter("client.organizationId", client.getOrganizationId()), //$NON-NLS-1$
+                        FilterBuilders.termFilter("client.clientId", client.getClientId()), //$NON-NLS-1$
+                        FilterBuilders.termFilter("client.version", client.getVersion()) //$NON-NLS-1$
                 )
             );
         @SuppressWarnings("nls")
@@ -369,12 +369,12 @@ public class ESRegistry extends AbstractESComponent implements IRegistry {
     }
 
     /**
-     * Generates a valid document ID for an application, used to index the app in ES.
-     * @param app an application
-     * @return an application key
+     * Generates a valid document ID for an client, used to index the client in ES.
+     * @param client an client
+     * @return an client key
      */
-    protected String getApplicationId(Application app) {
-        return app.getOrganizationId() + ":" + app.getApplicationId() + ":" + app.getVersion(); //$NON-NLS-1$ //$NON-NLS-2$
+    protected String getClientId(Client client) {
+        return client.getOrganizationId() + ":" + client.getClientId() + ":" + client.getVersion(); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**

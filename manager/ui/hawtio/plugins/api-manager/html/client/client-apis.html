@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+  </head>
+
+  <body>
+  <div>
+    
+    <div ng-include="headerInclude"></div>
+    <div ng-controller="Apiman.ClientApisController" class="container page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
+      <div ng-include="'plugins/api-manager/html/client/client_bc.include'"></div>
+      <!-- Entity Summary Row -->
+      <div ng-include="'plugins/api-manager/html/client/client_entity.include'"></div>
+
+      <!-- Navigation + Content Row -->
+      <div class="row">
+        <!-- Left hand nav -->
+        <div ng-include="'plugins/api-manager/html/client/client_tabs.include'"></div>
+        <!-- /Left hand nav -->
+
+        <!-- Content -->
+        <div class="col-md-10 apiman-entity-content apiman-entity-overview">
+          <div class="col-md-11">
+            <!-- Title and help text -->
+            <div class="title" apiman-i18n-key="client-client-apis">Client App APIs</div>
+            <div class="description" apiman-i18n-key="apis-help">Below is a list of all the APIs this Client App consumes.  This information is derived from the set of API Contracts the Client App has entered into.  Manage these Contracts by switching to the "Contracts" tab.</div>
+            <hr />
+            <!-- The list of apis (filterable) -->
+            <div>
+              <div class="clearfix"></div>
+              <div class="actions">
+                <button ng-click="doExportAsJson()" apiman-action-btn="" data-field="exportAsJsonButton" class="btn btn-default" apiman-i18n-key="download-as-json" placeholder="Downloading..." data-icon="fa-cog">Download as JSON</button>
+                <button ng-click="doExportAsXml()" apiman-action-btn="" data-field="exportAsXmlButton" class="btn btn-default" apiman-i18n-key="download-as-xml" placeholder="Downloading..." data-icon="fa-cog">Download as XML</button>
+              </div>
+              <div class="clearfix"></div>
+              <!-- The list of apis -->
+              <div class="table-responsive">
+                <table class="table table-striped table-bordered table-hover table-with-details" data-field="apis">
+                  <thead>
+                    <tr>
+                      <th nowrap="nowrap" width="1%"></th>
+                      <th apiman-i18n-key="api" nowrap="nowrap">API</th>
+                      <th apiman-i18n-key="version" width="1%" nowrap="nowrap">Version</th>
+                      <th apiman-i18n-key="plan" nowrap="nowrap">Plan</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr ng-repeat-start="api in apiRegistry.apis">
+                      <td><a ng-click="toggle(api)" href="javascript:;"><i class="fa fa-fw {{ api.expanded ? 'fa-chevron-down' : 'fa-chevron-right' }}"></i></a></td>
+                      <td>
+                        <span><a href="{{ pluginName }}/browse/orgs/{{ api.apiOrgId }}">{{ api.apiOrgName }}</a>
+                        <span apiman-i18n-skip>/</span>
+                        <a href="{{ pluginName }}/browse/orgs/{{ api.apiOrgId }}/{{ api.apiId }}/{{ api.apiVersion }}"><span class="emphasis">{{ api.apiName }}</span></a></span>
+                      </td>
+                      <td><span>{{ api.apiVersion }}</span></td>
+                      <td>{{ api.planName }}</td>
+                    </tr>
+                    <tr ng-repeat-end ng-show="api.expanded">
+                      <td colspan="4">
+                        <form role="form">
+                          <div class="form-group">
+                            <label apiman-i18n-key="api-key">API Key</label>
+                            <div class="input-group" style="width: 75%">
+                              <input readonly
+                                     type="text"
+                                     class="apiman-form-control form-control readonly apiman-readonly"
+                                     value="{{ api.apiKey }}"
+                                     style="background-color: white; color: black">
+                              <span class="input-group-btn">
+                                <button clipboard
+                                        text="api.apiKey"
+                                        class="btn btn-default clipboard"
+                                        type="button"
+                                        on-copied="copySuccess()"
+                                        on-error="copyFail(err)"
+                                        ng-mouseleave="tooltipReset()"
+                                        ng-click="tooltipChange()"
+                                        style="padding: 2px 6px 4px;"
+                                        uib-tooltip="{{ tooltipTxt }}">
+                                  <span class="glyphicon glyphicon-copy"></span>
+                                </button>
+                              </span>
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <div>
+                              <script type="text/ng-template"
+                                      id="invokeModal.html">
+                                <div class="modal-header">
+                                  <button class="close"
+                                          type="button"
+                                          ng-click="cancel()">
+                                    <span class="pficon pficon-close"></span>
+                                  </button>
+                                  <h3 class="modal-title"
+                                      id="apiCopyModalLabel">
+                                    <span apiman-i18n-key="modal-title">Copy API Endpoint</span>
+                                  </h3>
+                                </div>
+                                <div class="modal-body">
+                                  <p class="explanation"
+                                     apiman-i18n-key="api-dialog-explanation">
+                                    To successfully invoke the managed API for this API contract, you must provide the appropriate API Key with each request. The API Key can be provided either by sending it as an HTTP Request Header named X-API-Key, or you can send it as a URL query parameter.
+                                  </p>
+                                  <hr style="margin-left: -25px; margin-right: -25px">
+                                  <div class="apiman-form-label"
+                                       apiman-i18n-key="as-query-param">As Query Parameter</div>
+                                  <div class="input-group"
+                                       style="width:100%">
+                                    <input readonly
+                                           type="text"
+                                           class="apiman-form-control form-control readonly apiman-readonly"
+                                           style="background-color: white; color: black;"
+                                           value="{{ asQueryParam }}">
+                                    <span class="input-group-btn">
+                                      <button clipboard
+                                              class="btn btn-default clipboard"
+                                              type="button"
+                                              text="asQueryParam"
+                                              on-copied="copySuccess()"
+                                              on-error="copyFail(err)"
+                                              ng-mouseleave="tooltipReset()"
+                                              ng-click="tooltipChange()"
+                                              uib-tooltip="{{ tooltipTxt }}">
+                                        <span apiman-i18n-key="copy"
+                                              class="glyphicon glyphicon-copy"></span>
+                                      </button>
+                                    </span>
+                                  </div>
+                                  <p apiman-i18n-skip>&nbsp;</p>
+                                  <div class="apiman-form-label"
+                                       apiman-i18n-key="as-request-header">As HTTP Request Header</div>
+                                  <div class="input-group"
+                                       style="width:100%">
+                                    <input readonly
+                                           type="text"
+                                           class="apiman-form-control form-control readonly apiman-readonly"
+                                           style="background-color: white; color: black;"
+                                           value="{{ asRequestHeader }}">
+                                      <span class="input-group-btn">
+                                        <button clipboard
+                                                class="btn btn-default clipboard"
+                                                type="button"
+                                                text="asRequestHeader"
+                                                on-copied="copySuccess()"
+                                                on-error="copyFail(err)"
+                                                ng-mouseleave="tooltipReset()"
+                                                ng-click="tooltipChange()"
+                                                uib-tooltip="{{ tooltipTxt }}">
+                                          <span apiman-i18n-key="copy"
+                                                class="glyphicon glyphicon-copy"></span>
+                                        </button>
+                                      </span>
+                                  </div>
+                                </div>
+                                <div class="modal-footer">
+                                  <button class="btn btn-default"
+                                          type="button"
+                                          apiman-i18n-key="done"
+                                          ng-click="ok()">Done</button>
+                                </div>
+                              </script>
+                              <button type="button"
+                                      title="Click for details on how to invoke this managed API."
+                                      apiman-i18n-key="how-to-invoke"
+                                      class="btn btn-default"
+                                      ng-click="howToInvoke(null, api)">
+                                How to Invoke
+                              </button>
+                            </div>
+                          </div>
+                        </form>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <!-- /Contract List -->
+        </div>
+        <!-- /Content -->
+      </div>
+    </div> <!-- /container -->
+  </div>
+  </div>
+  </body>
+</html>

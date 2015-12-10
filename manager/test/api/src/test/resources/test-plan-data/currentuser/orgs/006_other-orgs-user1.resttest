@@ -4,6 +4,6 @@ GET /users/user1/organizations admin/admin
 Content-Type: application/json
 
 [
- {"id":"TestOrganization1","name":"Test Organization 1","description":"This is TO 1.","numApps":0,"numApis":0,"numMembers":0},
- {"id":"TestOrganization2","name":"Test Organization 2","description":null,"numApps":0,"numApis":0,"numMembers":0}
+ {"id":"TestOrganization1","name":"Test Organization 1","description":"This is TO 1.","numClients":0,"numApis":0,"numMembers":0},
+ {"id":"TestOrganization2","name":"Test Organization 2","description":null,"numClients":0,"numApis":0,"numMembers":0}
 ]

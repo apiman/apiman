@@ -5,8 +5,8 @@
   <testGroup name="Initial Creates">
     <test name="Create Gateway">test-plan-data/contracts/create/000_create-gateway.resttest</test>
     <test name="Create Organization 1">test-plan-data/contracts/create/001_create-org1.resttest</test>
-    <test name="Create App 1">test-plan-data/contracts/create/002_create-app1.resttest</test>
-    <test name="Create App Version 1.0">test-plan-data/contracts/create/003_create-app-version-1.0.resttest</test>
+    <test name="Create Client 1">test-plan-data/contracts/create/002_create-client1.resttest</test>
+    <test name="Create Client Version 1.0">test-plan-data/contracts/create/003_create-client-version-1.0.resttest</test>
     <test name="Create Plan 1">test-plan-data/contracts/create/004_create-plan1.resttest</test>
     <test name="Create Plan Version 1.0">test-plan-data/contracts/create/005_create-plan-version-1.0.resttest</test>
     
@@ -39,37 +39,37 @@
     <test name="Publish API 2">test-plan-data/contracts/publish/002_publish-api-2.resttest</test>
 
     <test name="Create Contract to API 1">test-plan-data/contracts/contracts/003_create-contract1.resttest</test>
-    <test name="List Contracts for App 1 [1]">test-plan-data/contracts/contracts/004_get-contracts.resttest</test>
+    <test name="List Contracts for Client 1 [1]">test-plan-data/contracts/contracts/004_get-contracts.resttest</test>
     <test name="Create Contract to API 2">test-plan-data/contracts/contracts/005_create-contract2.resttest</test>
-    <test name="List Contracts for App 1 [2]">test-plan-data/contracts/contracts/006_get-contracts.resttest</test>
+    <test name="List Contracts for Client 1 [2]">test-plan-data/contracts/contracts/006_get-contracts.resttest</test>
     
-    <test name="List ApiRegistry for App 1 (JSON)">test-plan-data/contracts/contracts/007_get-apiregistry_json.resttest</test>
-    <test name="List ApiRegistry for App 1 (XML)">test-plan-data/contracts/contracts/008_get-apiregistry_xml.resttest</test>
+    <test name="List ApiRegistry for Client 1 (JSON)">test-plan-data/contracts/contracts/007_get-apiregistry_json.resttest</test>
+    <test name="List ApiRegistry for Client 1 (XML)">test-plan-data/contracts/contracts/008_get-apiregistry_xml.resttest</test>
 
-    <test name="Download ApiRegistry for App 1 (JSON) (prep)">test-plan-data/contracts/contracts/009_get-apiregistry_json_prep.resttest</test>
-    <test name="Download ApiRegistry for App 1 (JSON) (download)">test-plan-data/contracts/contracts/010_get-apiregistry_json_download.resttest</test>
-    <test name="Download ApiRegistry for App 1 (XML) (prep)">test-plan-data/contracts/contracts/011_get-apiregistry_xml_prep.resttest</test>
-    <test name="Download ApiRegistry for App 1 (XML) (download)">test-plan-data/contracts/contracts/012_get-apiregistry_xml_download.resttest</test>
+    <test name="Download ApiRegistry for Client 1 (JSON) (prep)">test-plan-data/contracts/contracts/009_get-apiregistry_json_prep.resttest</test>
+    <test name="Download ApiRegistry for Client 1 (JSON) (download)">test-plan-data/contracts/contracts/010_get-apiregistry_json_download.resttest</test>
+    <test name="Download ApiRegistry for Client 1 (XML) (prep)">test-plan-data/contracts/contracts/011_get-apiregistry_xml_prep.resttest</test>
+    <test name="Download ApiRegistry for Client 1 (XML) (download)">test-plan-data/contracts/contracts/012_get-apiregistry_xml_download.resttest</test>
     
     <test name="Create Duplicate Contract (failure)">test-plan-data/contracts/contracts/013_create-duplicate-contract.resttest</test>
     <test name="Break Contract 1">test-plan-data/contracts/contracts/014_delete-contract1.resttest</test>
-    <test name="List Contracts for App 1 (after delete)">test-plan-data/contracts/contracts/015_get-contracts.resttest</test>
+    <test name="List Contracts for Client 1 (after delete)">test-plan-data/contracts/contracts/015_get-contracts.resttest</test>
 
     <test name="Create Contract to Unknown API">test-plan-data/contracts/contracts/016_create-contract-unknown.resttest</test>
     <test name="Create Contract to Unpublished API">test-plan-data/contracts/contracts/017_create-contract-api-not-published.resttest</test>
     
-    <test name="Register App 1">test-plan-data/contracts/publish/017_register-app-1.resttest</test>
-    <test name="Re-Register App 1 (fail)">test-plan-data/contracts/publish/018_re-register-app-1-fail.resttest</test>
+    <test name="Register Client 1">test-plan-data/contracts/publish/017_register-client-1.resttest</test>
+    <test name="Re-Register Client 1 (fail)">test-plan-data/contracts/publish/018_re-register-client-1-fail.resttest</test>
 
     <test name="Break Contract 2">test-plan-data/contracts/contracts/019_delete-contract-2.resttest</test>
     <test name="Create Contract">test-plan-data/contracts/contracts/020_create-contract.resttest</test>
 
-    <test name="Re-Register App 1 (success)">test-plan-data/contracts/publish/021_re-register-app-1.resttest</test>
+    <test name="Re-Register Client 1 (success)">test-plan-data/contracts/publish/021_re-register-client-1.resttest</test>
   </testGroup>
 
   <!-- Auditing -->
   <testGroup name="Ensure Auditing">
-    <test name="Application Activity">test-plan-data/contracts/auditing/001_app_activity.resttest</test>
+    <test name="Client Activity">test-plan-data/contracts/auditing/001_client_activity.resttest</test>
     <test name="API Activity">test-plan-data/contracts/auditing/002_api_activity.resttest</test>
   </testGroup>
 

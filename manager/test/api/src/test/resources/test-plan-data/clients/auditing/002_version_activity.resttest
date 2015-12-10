@@ -1,0 +1,48 @@
+GET /organizations/Organization1/clients/Client1/versions/1.0/activity admin/admin
+----
+200
+Content-Type: application/json
+
+{ "beans" : [ { "data" : "{\"policyDefId\":\"PolicyDef\"}",
+        "entityId" : "Client1",
+        "entityType" : "Client",
+        "entityVersion" : "1.0",
+        "organizationId" : "Organization1",
+        "what" : "RemovePolicy",
+        "who" : "admin"
+      },
+      { "data" : "{\"policyDefId\":\"PolicyDef\"}",
+        "entityId" : "Client1",
+        "entityType" : "Client",
+        "entityVersion" : "1.0",
+        "organizationId" : "Organization1",
+        "what" : "UpdatePolicy",
+        "who" : "admin"
+      },
+      { "data" : "{\"policyDefId\":\"PolicyDef\"}",
+        "entityId" : "Client1",
+        "entityType" : "Client",
+        "entityVersion" : "1.0",
+        "organizationId" : "Organization1",
+        "what" : "AddPolicy",
+        "who" : "admin"
+      },
+      { "data" : "{\"policyDefId\":\"PolicyDef\"}",
+        "entityId" : "Client1",
+        "entityType" : "Client",
+        "entityVersion" : "1.0",
+        "organizationId" : "Organization1",
+        "what" : "AddPolicy",
+        "who" : "admin"
+      },
+      { "data" : null,
+        "entityId" : "Client1",
+        "entityType" : "Client",
+        "entityVersion" : "1.0",
+        "organizationId" : "Organization1",
+        "what" : "Create",
+        "who" : "admin"
+      }
+    ],
+  "totalSize" : 5
+}

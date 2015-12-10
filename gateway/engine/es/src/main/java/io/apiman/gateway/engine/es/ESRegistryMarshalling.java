@@ -17,7 +17,7 @@ package io.apiman.gateway.engine.es;
 
 import io.apiman.gateway.engine.beans.Api;
 import io.apiman.gateway.engine.beans.ApiContract;
-import io.apiman.gateway.engine.beans.Application;
+import io.apiman.gateway.engine.beans.Client;
 import io.apiman.gateway.engine.beans.Contract;
 import io.apiman.gateway.engine.beans.Policy;
 
@@ -123,11 +123,11 @@ public class ESRegistryMarshalling {
 
     /**
      * Marshals the given bean into the given map.
-     * @param bean the application bean
+     * @param bean the client bean
      * @return the content builder
      * @throws IOException when json marshalling fails
      */
-    public static XContentBuilder marshall(Application bean) throws IOException {
+    public static XContentBuilder marshall(Client bean) throws IOException {
         XContentBuilder builder = XContentFactory.jsonBuilder();
         marshallInto(bean, builder);
         return builder;
@@ -138,10 +138,10 @@ public class ESRegistryMarshalling {
      * @param builder the content builder
      */
     @SuppressWarnings("nls")
-    private static void marshallInto(Application bean, XContentBuilder builder) throws IOException {
+    private static void marshallInto(Client bean, XContentBuilder builder) throws IOException {
         builder.startObject()
             .field("organizationId", bean.getOrganizationId())
-            .field("applicationId", bean.getApplicationId())
+            .field("clientId", bean.getClientId())
             .field("version", bean.getVersion());
         Set<Contract> contracts = bean.getContracts();
         if (contracts != null) {
@@ -174,16 +174,16 @@ public class ESRegistryMarshalling {
     /**
      * Unmarshals the given map source into a bean.
      * @param source the source mappings
-     * @return the application
+     * @return the client
      */
     @SuppressWarnings({ "nls", "unchecked" })
-    public static Application unmarshallApplication(Map<String, Object> source) {
+    public static Client unmarshallClient(Map<String, Object> source) {
         if (source == null) {
             return null;
         }
-        Application bean = new Application();
+        Client bean = new Client();
         bean.setOrganizationId(asString(source.get("organizationId")));
-        bean.setApplicationId(asString(source.get("applicationId")));
+        bean.setClientId(asString(source.get("clientId")));
         bean.setVersion(asString(source.get("version")));
         List<Map<String,Object>> contracts = (List<Map<String,Object>>) source.get("contracts");
         if (contracts != null) {
@@ -221,8 +221,8 @@ public class ESRegistryMarshalling {
         XContentBuilder builder = XContentFactory.jsonBuilder().startObject();
         builder.field("apiKey", bean.getApikey());
         builder.field("plan", bean.getPlan());
-        builder.field("application");
-        marshallInto(bean.getApplication(), builder);
+        builder.field("client");
+        marshallInto(bean.getClient(), builder);
         builder.field("api");
         marshallInto(bean.getApi(), builder);
         List<Policy> policies = bean.getPolicies();
@@ -252,7 +252,7 @@ public class ESRegistryMarshalling {
         }
         ApiContract contract = new ApiContract();
         contract.setApikey(asString(source.get("apiKey")));
-        contract.setApplication(unmarshallApplication((Map<String, Object>) source.get("application")));
+        contract.setClient(unmarshallClient((Map<String, Object>) source.get("client")));
         contract.setApi(unmarshallApi((Map<String, Object>) source.get("api")));
         contract.setPlan(asString(source.get("plan")));
         List<Map<String,Object>> policies = (List<Map<String,Object>>) source.get("policies");

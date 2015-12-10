@@ -19,7 +19,7 @@ import io.vertx.core.json.JsonObject;
 
 /**
  * A standard head object containing the UUID (given registry's unique identity), the action (e.g. register,
- * retire), the type (e.g. application, service), and the body (real object).
+ * retire), the type (e.g. client, api), and the body (real object).
  *
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */

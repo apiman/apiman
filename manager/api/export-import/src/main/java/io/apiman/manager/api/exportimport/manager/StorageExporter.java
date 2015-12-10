@@ -18,9 +18,9 @@ package io.apiman.manager.api.exportimport.manager;
 
 import io.apiman.manager.api.beans.apis.ApiBean;
 import io.apiman.manager.api.beans.apis.ApiVersionBean;
-import io.apiman.manager.api.beans.apps.ApplicationBean;
-import io.apiman.manager.api.beans.apps.ApplicationVersionBean;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
+import io.apiman.manager.api.beans.clients.ClientBean;
+import io.apiman.manager.api.beans.clients.ClientVersionBean;
 import io.apiman.manager.api.beans.contracts.ContractBean;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
 import io.apiman.manager.api.beans.idm.RoleBean;
@@ -115,7 +115,7 @@ public class StorageExporter {
               exportMemberships(bean.getId());
               exportPlans(bean.getId());
               exportApis(bean.getId());
-              exportApplications(bean.getId());
+              exportClients(bean.getId());
               exportAudits(bean.getId());
 
               writer.endOrg();
@@ -194,50 +194,50 @@ public class StorageExporter {
         }
     }
 
-    private void exportApplications(String orgId) {
+    private void exportClients(String orgId) {
         try {
-            writer.startApplications();
-            Iterator<ApplicationBean> applicationIter = storage.getAllApplications(orgId);
-            while (applicationIter.hasNext()) {
-                ApplicationBean applicationBean = applicationIter.next();
-                logger.info(Messages.i18n.format("StorageExporter.ExportingApp") + applicationBean); //$NON-NLS-1$
-                writer.startApplication(applicationBean);
-                writer.startApplicationVersions();
-                Iterator<ApplicationVersionBean> versionIter = storage.getAllApplicationVersions(orgId, applicationBean.getId());
+            writer.startClients();
+            Iterator<ClientBean> clientIter = storage.getAllClients(orgId);
+            while (clientIter.hasNext()) {
+                ClientBean clientBean = clientIter.next();
+                logger.info(Messages.i18n.format("StorageExporter.ExportingClient") + clientBean); //$NON-NLS-1$
+                writer.startClient(clientBean);
+                writer.startClientVersions();
+                Iterator<ClientVersionBean> versionIter = storage.getAllClientVersions(orgId, clientBean.getId());
                 while (versionIter.hasNext()) {
-                    ApplicationVersionBean versionBean = versionIter.next();
-                    logger.info(Messages.i18n.format("StorageExporter.ExportingAppVersion") + versionBean); //$NON-NLS-1$
-                    writer.startApplicationVersion(versionBean);
+                    ClientVersionBean versionBean = versionIter.next();
+                    logger.info(Messages.i18n.format("StorageExporter.ExportingClientVersion") + versionBean); //$NON-NLS-1$
+                    writer.startClientVersion(versionBean);
 
                     // Policies
-                    writer.startApplicationPolicies();
-                    Iterator<PolicyBean> policyIter = storage.getAllPolicies(orgId, applicationBean.getId(), versionBean.getVersion(), PolicyType.Application);
+                    writer.startClientPolicies();
+                    Iterator<PolicyBean> policyIter = storage.getAllPolicies(orgId, clientBean.getId(), versionBean.getVersion(), PolicyType.Client);
                     while (policyIter.hasNext()) {
                         PolicyBean policyBean = policyIter.next();
-                        logger.info(Messages.i18n.format("StorageExporter.ExportingAppPolicy") + policyBean); //$NON-NLS-1$
-                        writer.writeApplicationPolicy(policyBean);
+                        logger.info(Messages.i18n.format("StorageExporter.ExportingClientPolicy") + policyBean); //$NON-NLS-1$
+                        writer.writeClientPolicy(policyBean);
                     }
-                    writer.endApplicationPolicies();
+                    writer.endClientPolicies();
 
                     // Contracts
-                    writer.startApplicationContracts();
-                    Iterator<ContractBean> contractIter = storage.getAllContracts(orgId, applicationBean.getId(), versionBean.getVersion());
+                    writer.startClientContracts();
+                    Iterator<ContractBean> contractIter = storage.getAllContracts(orgId, clientBean.getId(), versionBean.getVersion());
                     while (contractIter.hasNext()) {
                         ContractBean contractBean = contractIter.next();
-                        contractBean.setApplication(null);
+                        contractBean.setClient(null);
                         contractBean.setApi(minifyApi(contractBean.getApi()));
                         contractBean.setPlan(minifyPlan(contractBean.getPlan()));
-                        logger.info(Messages.i18n.format("StorageExporter.ExportingAppContract") + contractBean); //$NON-NLS-1$
-                        writer.writeApplicationContract(contractBean);
+                        logger.info(Messages.i18n.format("StorageExporter.ExportingClientContract") + contractBean); //$NON-NLS-1$
+                        writer.writeClientContract(contractBean);
                     }
-                    writer.endApplicationContracts();
+                    writer.endClientContracts();
 
-                    writer.endApplicationVersion();
+                    writer.endClientVersion();
                 }
-                writer.endApplicationVersions();
-                writer.endApplication();
+                writer.endClientVersions();
+                writer.endClient();
             }
-            writer.endApplications();
+            writer.endClients();
         }
         catch (Exception e) {
             throw new RuntimeException(e);

@@ -33,15 +33,15 @@ import javax.servlet.ServletResponse;
  * @author eric.wittmann@redhat.com
  */
 public class DatabaseSeedFilter implements Filter {
-    
+
     @Inject IStorage storage;
-    
+
     /**
      * Constructor.
      */
     public DatabaseSeedFilter() {
     }
-    
+
     /**
      * @see javax.servlet.Filter#init(javax.servlet.FilterConfig)
      */
@@ -54,11 +54,12 @@ public class DatabaseSeedFilter implements Filter {
             seeder.seed(storage);
             storage.commitTx();
         } catch (Exception e) {
+            e.printStackTrace();
             storage.rollbackTx();
             throw new ServletException(e);
         }
     }
-    
+
     /**
      * @see javax.servlet.Filter#doFilter(javax.servlet.ServletRequest, javax.servlet.ServletResponse, javax.servlet.FilterChain)
      */
@@ -67,7 +68,7 @@ public class DatabaseSeedFilter implements Filter {
             throws IOException, ServletException {
         chain.doFilter(request, response);
     }
-    
+
     /**
      * @see javax.servlet.Filter#destroy()
      */

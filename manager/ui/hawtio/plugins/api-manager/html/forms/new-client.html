@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    
+  </head>
+
+  <body>
+  <div>
+    
+    <div ng-include="headerInclude"></div>
+    <div ng-controller="Apiman.NewClientController" id="form-page" class="container apiman-entity-new page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
+      <div class="row">
+        <h2 class="title" apiman-i18n-key="new-client-client">New Client App</h2>
+      </div>
+      <!-- Helpful hint -->
+      <div class="row">
+        <p apiman-i18n-key="new-client-help-text" class="col-md-6 apiman-label-faded">Create a new Client App within the specified Organization, allowing you to begin connecting provided APIs with your Client App.</p>
+      </div>
+      <!-- HR -->
+      <div class="row hr-row">
+        <hr/>
+      </div>
+      <!-- Choose org and client name -->
+      <div ng-show="organizations.length > 0">
+        <div class="row">
+          <dl class="org">
+            <dt apiman-i18n-key="organization">Organization</dt>
+            <dd>
+              <div class="btn-group" data-field="orgSelector">
+                <button type="button" id="selector-org" class="btn btn-default dropdown-toggle" data-toggle="dropdown" data-field="button">
+                  <span id="selector-org-value">{{selectedOrg.name}}</span> &nbsp;&nbsp;<span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" data-field="organizations">
+                   <li ng-repeat="org in organizations"><a href="#" ng-click="setOrg( org )">{{ org.name }}</a></li>
+                </ul>
+              </div>
+            </dd>
+          </dl>
+          <dl class="slash">
+            <dt apiman-i18n-skip>&nbsp;</dt>
+            <dd>
+              <span class="divider" apiman-i18n-skip>/</span>
+            </dd>
+          </dl>
+          <dl class="name">
+            <dt apiman-i18n-key="client-client-name">Client App Name</dt>
+            <dd>
+              <input ng-model="client.name" data-field="name" type="text" class="apiman-form-control form-control entityname" id="apiman-entityname" apiman-i18n-key="enter-client-name" placeholder="Enter client app name..."></input>
+            </dd>
+          </dl>
+        </div>
+        <!-- Initial Client App Version -->
+        <div class="row">
+          <dl>
+            <dt apiman-i18n-key="initial-version">Initial Version</dt>
+            <dd>
+              <input ng-model="client.initialVersion" data-field="version" type="text" class="apiman-form-control form-control version" id="apiman-version"></input>
+            </dd>
+          </dl>
+        </div>
+        <!-- Description of client -->
+        <div class="row">
+          <dl>
+            <dt apiman-i18n-key="description">Description</dt>
+            <dd>
+              <textarea ng-model="client.description" class="apiman-form-control form-control description" id="apiman-description" apiman-i18n-key="enter-client-description" placeholder="Enter client app description (optional)..."></textarea>
+            </dd>
+          </dl>
+        </div>
+      </div>
+      <div ng-hide="organizations.length > 0" class="apiman-no-content container-fluid">
+        <div class="row">
+          <div class="col-md-12">
+            <p class="apiman-no-entities-description" apiman-i18n-key="missing-create-client-permission">You don't have permission to create a Client App in any of your Organizations (or you aren't in any orgs)!  Please become a member of an existing Organization or create a new one before trying to create a Client App.</p>
+          </div>
+        </div>
+      </div>
+      <!-- HR -->
+      <div class="row hr-row">
+        <hr/>
+      </div>
+      <!-- Create Button -->
+      <div class="row">
+        <button id="create-client" ng-disabled="!client.name || !client.initialVersion || !selectedOrg" apiman-action-btn="" class="btn btn-primary" data-field="createButton" apiman-i18n-key="create-client-client" placeholder="Creating..." data-icon="fa-cog" ng-click="saveNewClient()">Create Client App</button>
+        <a id="cancel" href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" apiman-i18n-key="cancel">Cancel</a>
+      </div>
+    </div> <!-- /container -->
+  </div>
+  </body>
+</html>

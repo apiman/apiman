@@ -1,0 +1,14 @@
+GET /organizations/Organization1/clients/Client1 admin/admin
+----
+200
+Content-Type: application/json
+
+{
+  "organization" : {
+    "id" : "Organization1"
+  },
+  "id" : "Client1",
+  "name" : "Client 1",
+  "description" : "[UPDATED] This is the description of Client 1!",
+  "createdBy" : "admin"
+}

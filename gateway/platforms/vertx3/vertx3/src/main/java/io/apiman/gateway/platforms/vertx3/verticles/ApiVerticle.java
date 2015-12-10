@@ -16,7 +16,7 @@
 package io.apiman.gateway.platforms.vertx3.verticles;
 
 import io.apiman.gateway.platforms.vertx3.api.ApiResourceImpl;
-import io.apiman.gateway.platforms.vertx3.api.ApplicationResourceImpl;
+import io.apiman.gateway.platforms.vertx3.api.ClientResourceImpl;
 import io.apiman.gateway.platforms.vertx3.api.IRouteBuilder;
 import io.apiman.gateway.platforms.vertx3.api.SystemResourceImpl;
 import io.apiman.gateway.platforms.vertx3.common.verticles.VerticleType;
@@ -47,7 +47,7 @@ public class ApiVerticle extends ApimanVerticleWithEngine {
     @Override
     public void start() {
         super.start();
-        IRouteBuilder applicationResource = new ApplicationResourceImpl(apimanConfig, engine);
+        IRouteBuilder clientResource = new ClientResourceImpl(apimanConfig, engine);
         IRouteBuilder apiResource = new ApiResourceImpl(apimanConfig, engine);
         IRouteBuilder systemResource = new SystemResourceImpl(apimanConfig, engine);
 
@@ -58,7 +58,7 @@ public class ApiVerticle extends ApimanVerticleWithEngine {
             router.route("/*").handler(basicAuthHandler);
         }
 
-        applicationResource.buildRoutes(router);
+        clientResource.buildRoutes(router);
         apiResource.buildRoutes(router);
         systemResource.buildRoutes(router);
 

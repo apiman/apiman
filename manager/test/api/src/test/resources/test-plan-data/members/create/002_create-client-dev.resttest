@@ -1,0 +1,16 @@
+POST /roles admin/admin
+Content-Type: application/json
+
+{
+  "name" : "Client Developer",
+  "permissions" : [ "clientView", "clientEdit", "clientAdmin" ]
+}
+----
+200
+Content-Type: application/json
+
+{
+  "id" : "ClientDeveloper",
+  "name" : "Client Developer",
+  "permissions" : [ "clientView", "clientEdit", "clientAdmin" ]
+}

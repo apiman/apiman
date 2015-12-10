@@ -18,9 +18,9 @@ package io.apiman.manager.api.exportimport.manager;
 
 import io.apiman.manager.api.beans.apis.ApiBean;
 import io.apiman.manager.api.beans.apis.ApiVersionBean;
-import io.apiman.manager.api.beans.apps.ApplicationBean;
-import io.apiman.manager.api.beans.apps.ApplicationVersionBean;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
+import io.apiman.manager.api.beans.clients.ClientVersionBean;
+import io.apiman.manager.api.beans.clients.ClientBean;
 import io.apiman.manager.api.beans.contracts.ContractBean;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
 import io.apiman.manager.api.beans.idm.RoleBean;
@@ -151,34 +151,34 @@ public class LoggingDispatcher implements IImportReaderDispatcher {
     }
 
     /**
-     * @see io.apiman.manager.api.exportimport.read.IImportReaderDispatcher#application(io.apiman.manager.api.beans.apps.ApplicationBean)
+     * @see io.apiman.manager.api.exportimport.read.IImportReaderDispatcher#client(io.apiman.manager.api.beans.clients.ClientBean)
      */
     @Override
-    public void application(ApplicationBean application) {
-        System.out.println("\tapp: " + application);
+    public void client(ClientBean client) {
+        System.out.println("\tapp: " + client);
     }
 
     /**
-     * @see io.apiman.manager.api.exportimport.read.IImportReaderDispatcher#applicationVersion(io.apiman.manager.api.beans.apps.ApplicationVersionBean)
+     * @see io.apiman.manager.api.exportimport.read.IImportReaderDispatcher#clientVersion(io.apiman.manager.api.beans.clients.ClientVersionBean)
      */
     @Override
-    public void applicationVersion(ApplicationVersionBean avb) {
+    public void clientVersion(ClientVersionBean avb) {
         System.out.println("\t\tappVersion: " + avb);
     }
 
     /**
-     * @see io.apiman.manager.api.exportimport.read.IImportReaderDispatcher#applicationPolicy(io.apiman.manager.api.beans.policies.PolicyBean)
+     * @see io.apiman.manager.api.exportimport.read.IImportReaderDispatcher#clientPolicy(io.apiman.manager.api.beans.policies.PolicyBean)
      */
     @Override
-    public void applicationPolicy(PolicyBean policy) {
+    public void clientPolicy(PolicyBean policy) {
         System.out.println("\t\t\tpolicy: " + policy);
     }
 
     /**
-     * @see io.apiman.manager.api.exportimport.read.IImportReaderDispatcher#applicationContract(io.apiman.manager.api.beans.contracts.ContractBean)
+     * @see io.apiman.manager.api.exportimport.read.IImportReaderDispatcher#clientContract(io.apiman.manager.api.beans.contracts.ContractBean)
      */
     @Override
-    public void applicationContract(ContractBean cb) {
+    public void clientContract(ContractBean cb) {
         System.out.println("\t\t\tcontract: " + cb);
     }
 

@@ -18,7 +18,7 @@ package io.apiman.manager.api.gateway;
 import io.apiman.gateway.api.rest.contract.exceptions.NotAuthorizedException;
 import io.apiman.gateway.engine.beans.Api;
 import io.apiman.gateway.engine.beans.ApiEndpoint;
-import io.apiman.gateway.engine.beans.Application;
+import io.apiman.gateway.engine.beans.Client;
 import io.apiman.gateway.engine.beans.SystemStatus;
 import io.apiman.gateway.engine.beans.exceptions.PublishingException;
 import io.apiman.gateway.engine.beans.exceptions.RegistrationException;
@@ -56,22 +56,22 @@ public interface IGatewayLink {
     public void retireApi(Api api) throws PublishingException, GatewayAuthenticationException;
 
     /**
-     * Registers a new {@link Application}.  An application is ultimately a collection of
+     * Registers a new {@link Client}.  An client is ultimately a collection of
      * contracts to managed apis.
-     * @param application the application being registered
-     * @throws RegistrationException when unable to register application
+     * @param client the client being registered
+     * @throws RegistrationException when unable to register client
      * @throws GatewayAuthenticationException when unable to authenticate with gateway
-     * @throws PublishingException when unable to publish application
+     * @throws PublishingException when unable to publish client
      */
-    public void registerApplication(Application application) throws RegistrationException, GatewayAuthenticationException;
+    public void registerClient(Client client) throws RegistrationException, GatewayAuthenticationException;
 
     /**
-     * Removes an {@link Application} from the registry.
-     * @param application the application to remove
+     * Removes an {@link Client} from the registry.
+     * @param client the client to remove
      * @throws RegistrationException when unable to register
      * @throws GatewayAuthenticationException when unable to authenticate with gateway
      */
-    public void unregisterApplication(Application application) throws RegistrationException, GatewayAuthenticationException;
+    public void unregisterClient(Client client) throws RegistrationException, GatewayAuthenticationException;
 
     /**
      * Gets the api endpoint from the gateway.

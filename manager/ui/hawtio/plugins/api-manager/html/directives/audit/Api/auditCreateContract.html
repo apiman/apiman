@@ -8,14 +8,14 @@
   <a class="emphasis" href="{{ pluginName }}/orgs/{{ entry.organizationId }}/apis/{{ entry.entityId }}/{{ entry.entityVersion }}">{{ entry.entityVersion }}</a><span apiman-i18n-skip>.</span>
 </div>
 <div class="row boxed-row">
-  <span apiman-i18n-key="audit.contract-created-between-app">A contract was created between application</span>
-  <a href="{{ pluginName }}/orgs/{{ data.appOrgId }}/apps">{{ data.appOrgId }}</a>
+  <span apiman-i18n-key="audit.contract-created-between-client">A contract was created between client app</span>
+  <a href="{{ pluginName }}/orgs/{{ data.clientOrgId }}/clients">{{ data.clientOrgId }}</a>
   <span apiman-i18n-skip>/</span>
-  <a href="{{ pluginName }}/orgs/{{ data.appOrgId }}/apps/{{ data.appId }}">{{ data.appId }}</a>
+  <a href="{{ pluginName }}/orgs/{{ data.clientOrgId }}/clients/{{ data.clientId }}">{{ data.clientId }}</a>
   <span apiman-i18n-skip>:</span>
-  <a href="{{ pluginName }}/orgs/{{ data.appOrgId }}/apps/{{ data.appId }}/{{ data.appVersion }}">{{ data.appVersion }}</a>
+  <a href="{{ pluginName }}/orgs/{{ data.clientOrgId }}/clients/{{ data.clientId }}/{{ data.clientVersion }}">{{ data.clientVersion }}</a>
   <span apiman-i18n-key="audit.and-api">and API</span>
-  <a href="{{ pluginName }}/orgs/{{ data.apiOrgId }}/apps">{{ data.apiOrgId }}</a>
+  <a href="{{ pluginName }}/orgs/{{ data.apiOrgId }}/clients">{{ data.apiOrgId }}</a>
   <span apiman-i18n-skip>/</span>
   <a href="{{ pluginName }}/orgs/{{ data.apiOrgId }}/apis/{{ data.apiId }}">{{ data.apiId }}</a>
   <span apiman-i18n-skip>:</span>

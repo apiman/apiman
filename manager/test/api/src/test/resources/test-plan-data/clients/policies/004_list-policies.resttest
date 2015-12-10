@@ -1,0 +1,21 @@
+GET /organizations/Organization1/clients/Client1/versions/1.0/policies admin/admin
+----
+200
+Content-Type: application/json
+
+[
+  {
+    "createdBy" : "admin",
+    "description" : "This is a policy that does nothing but test.",
+    "icon" : "policy-def",
+    "name" : "Policy Def",
+    "policyDefinitionId" : "PolicyDef"
+  },
+  { 
+    "createdBy" : "admin",
+    "description" : "This is a policy that does nothing but test.",
+    "icon" : "policy-def",
+    "name" : "Policy Def",
+    "policyDefinitionId" : "PolicyDef"
+  }
+]

@@ -1,0 +1,14 @@
+POST /actions user2/user2
+Content-Type: application/json
+
+{
+  "type" : "registerClient",
+  "organizationId" : "Organization1",
+  "entityId" : "Client1",
+  "entityVersion" : "1.0"
+}
+----
+403
+Content-Type: application/json
+
+{"type":"NotAuthorizedException","errorCode":-1,"message":"Access denied.","moreInfoUrl":null}

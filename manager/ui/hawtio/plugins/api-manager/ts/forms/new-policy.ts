@@ -75,9 +75,6 @@ module Apiman {
                     configuration: angular.toJson($scope.config)
                 };
                 var etype = params.type;
-                if (etype == 'apps') {
-                    etype = 'applications';
-                }
                 OrgSvcs.save({ organizationId: params.org, entityType: etype, entityId: params.id, versionsOrActivity: 'versions', version: params.ver, policiesOrActivity: 'policies' }, newPolicy, function(reply) {
                     PageLifecycle.redirectTo('/orgs/{0}/{1}/{2}/{3}/policies', params.org, params.type, params.id, params.ver);
                 }, PageLifecycle.handleError);

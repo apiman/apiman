@@ -78,15 +78,15 @@ public class BasicMetricsTest {
     public void validMetrics() throws IOException {
         @SuppressWarnings("serial")
         Set<String> expected = new LinkedHashSet<String>(){{
-            add("apiman_request_duration_milliseconds_count{method=\"GET\",responseCode=\"200\",api=\"apiId\",apiVersion=\"apiVersion\",application=\"applicationId\",} 1.0");
-            add("apiman_request_duration_milliseconds_sum{method=\"GET\",responseCode=\"200\",api=\"apiId\",apiVersion=\"apiVersion\",application=\"applicationId\",} 644.0");
-            add("apiman_requests_total{method=\"GET\",responseCode=\"200\",api=\"apiId\",apiVersion=\"apiVersion\",application=\"applicationId\",} 1.0");
+            add("apiman_request_duration_milliseconds_count{method=\"GET\",responseCode=\"200\",api=\"apiId\",apiVersion=\"apiVersion\",client=\"clientId\",} 1.0");
+            add("apiman_request_duration_milliseconds_sum{method=\"GET\",responseCode=\"200\",api=\"apiId\",apiVersion=\"apiVersion\",client=\"clientId\",} 644.0");
+            add("apiman_requests_total{method=\"GET\",responseCode=\"200\",api=\"apiId\",apiVersion=\"apiVersion\",client=\"clientId\",} 1.0");
         }};
 
         RequestMetric requestMetric = new RequestMetric();
-        requestMetric.setApplicationId("applicationId");
-        requestMetric.setApplicationOrgId("applicationOrgId");
-        requestMetric.setApplicationVersion("applicationVersion");
+        requestMetric.setClientId("clientId");
+        requestMetric.setClientOrgId("clientOrgId");
+        requestMetric.setClientVersion("clientVersion");
         requestMetric.setContractId("contractId");
         requestMetric.setError(false);
         requestMetric.setFailure(false);
@@ -118,16 +118,16 @@ public class BasicMetricsTest {
     public void errorMetrics() throws IOException {
         @SuppressWarnings("serial")
         Set<String> expected = new LinkedHashSet<String>(){{
-            add("apiman_request_duration_milliseconds_count{method=\"GET\",responseCode=\"404\",api=\"apiId\",apiVersion=\"apiVersion\",application=\"applicationId\",} 1.0");
-            add("apiman_request_duration_milliseconds_sum{method=\"GET\",responseCode=\"404\",api=\"apiId\",apiVersion=\"apiVersion\",application=\"applicationId\",} 644.0");
-            add("apiman_requests_total{method=\"GET\",responseCode=\"404\",api=\"apiId\",apiVersion=\"apiVersion\",application=\"applicationId\",} 1.0");
-            add("apiman_errors_total{method=\"GET\",responseCode=\"404\",api=\"apiId\",apiVersion=\"apiVersion\",application=\"applicationId\",} 1.0");
+            add("apiman_request_duration_milliseconds_count{method=\"GET\",responseCode=\"404\",api=\"apiId\",apiVersion=\"apiVersion\",client=\"clientId\",} 1.0");
+            add("apiman_request_duration_milliseconds_sum{method=\"GET\",responseCode=\"404\",api=\"apiId\",apiVersion=\"apiVersion\",client=\"clientId\",} 644.0");
+            add("apiman_requests_total{method=\"GET\",responseCode=\"404\",api=\"apiId\",apiVersion=\"apiVersion\",client=\"clientId\",} 1.0");
+            add("apiman_errors_total{method=\"GET\",responseCode=\"404\",api=\"apiId\",apiVersion=\"apiVersion\",client=\"clientId\",} 1.0");
         }};
 
         RequestMetric requestMetric = new RequestMetric();
-        requestMetric.setApplicationId("applicationId");
-        requestMetric.setApplicationOrgId("applicationOrgId");
-        requestMetric.setApplicationVersion("applicationVersion");
+        requestMetric.setClientId("clientId");
+        requestMetric.setClientOrgId("clientOrgId");
+        requestMetric.setClientVersion("clientVersion");
         requestMetric.setContractId("contractId");
         requestMetric.setError(true);
         requestMetric.setFailure(false);

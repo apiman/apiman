@@ -9,7 +9,7 @@ module Apiman {
             var allPermissions     = ['orgView', 'orgEdit', 'orgAdmin',
                                       'planView','planEdit','planAdmin',
                                       'apiView', 'apiEdit', 'apiAdmin',
-                                      'appView', 'appEdit', 'appAdmin'];
+                                      'clientView', 'clientEdit', 'clientAdmin'];
             $scope.isValid = true;
             $scope.rolePermissions = {};
             angular.forEach(allPermissions, function(value) {

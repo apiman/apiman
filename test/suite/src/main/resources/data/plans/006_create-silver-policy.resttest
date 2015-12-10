@@ -3,7 +3,7 @@ Content-Type: application/json
 
 {
   "definitionId" : "RateLimitingPolicy",
-  "configuration" : "{ \"limit\" : 5, \"granularity\" : \"Application\", \"period\" : \"Minute\" }"
+  "configuration" : "{ \"limit\" : 5, \"granularity\" : \"Client\", \"period\" : \"Minute\" }"
 }
 ----
 200

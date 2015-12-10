@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testPlan xmlns="urn:io.apiman.test:2014:02:testPlan">
+
+  <testGroup name="Setup">
+    <test name="Create Org">test-plan-data/reregister-client/001_create-org.resttest</test>
+    <test name="Create Policy Def">test-plan-data/reregister-client/002_create-policy-def.resttest</test>
+    <test name="Create Gateway">test-plan-data/reregister-client/003_create-gateway.resttest</test>
+  </testGroup>
+
+  <testGroup name="Test">
+    <test name="Create Plan">test-plan-data/reregister-client/101_create-plan.resttest</test>
+    <test name="Create Plan Version">test-plan-data/reregister-client/102_create-plan-version.resttest</test>
+    <test name="Lock Plan">test-plan-data/reregister-client/103_lock-plan.resttest</test>
+    <test name="Create API">test-plan-data/reregister-client/104_create-api.resttest</test>
+    <test name="Create API Version">test-plan-data/reregister-client/105_create-api-version.resttest</test>
+    <test name="Publish API">test-plan-data/reregister-client/106_publish-api.resttest</test>
+    <test name="Create Client">test-plan-data/reregister-client/107_create-client.resttest</test>
+    <test name="Create Client Version">test-plan-data/reregister-client/108_create-client-version-1.0.resttest</test>
+    <test name="Create Contract">test-plan-data/reregister-client/109_create-contract.resttest</test>
+    <test name="Register Client">test-plan-data/reregister-client/110_register-client.resttest</test>
+    <test name="Create Client Policy">test-plan-data/reregister-client/111_create-client-policy.resttest</test>
+    <test name="Re-Register Client">test-plan-data/reregister-client/112_reregister-client.resttest</test>
+    <test name="Retire Client">test-plan-data/reregister-client/113_unregister-client.resttest</test>
+    <test name="Re-Register Client [2]">test-plan-data/reregister-client/114_reregister-client.resttest</test>
+  </testGroup>
+
+</testPlan>

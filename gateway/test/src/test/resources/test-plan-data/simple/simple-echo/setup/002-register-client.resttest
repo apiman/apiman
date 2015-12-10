@@ -1,0 +1,18 @@
+PUT /clients admin/admin
+Content-Type: application/json
+
+{
+  "organizationId" : "SimpleEchoTest",
+  "clientId" : "test",
+  "version" : "1.0.0",
+  "contracts" : [
+    {
+      "apiKey" : "12345",
+      "apiOrgId" : "SimpleEchoTest",
+      "apiId" : "echo",
+      "apiVersion" : "1.0.0"
+    }
+  ]
+}
+----
+204

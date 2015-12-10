@@ -15,18 +15,18 @@
  */
 package io.apiman.manager.api.es;
 
-import io.apiman.manager.api.beans.metrics.AppUsagePerApiBean;
+import io.apiman.manager.api.beans.metrics.ClientUsagePerApiBean;
 import io.apiman.manager.api.beans.metrics.HistogramBean;
 import io.apiman.manager.api.beans.metrics.HistogramDataPoint;
 import io.apiman.manager.api.beans.metrics.HistogramIntervalType;
 import io.apiman.manager.api.beans.metrics.ResponseStatsDataPoint;
 import io.apiman.manager.api.beans.metrics.ResponseStatsHistogramBean;
-import io.apiman.manager.api.beans.metrics.ResponseStatsPerAppBean;
+import io.apiman.manager.api.beans.metrics.ResponseStatsPerClientBean;
 import io.apiman.manager.api.beans.metrics.ResponseStatsPerPlanBean;
 import io.apiman.manager.api.beans.metrics.ResponseStatsSummaryBean;
 import io.apiman.manager.api.beans.metrics.UsageDataPoint;
 import io.apiman.manager.api.beans.metrics.UsageHistogramBean;
-import io.apiman.manager.api.beans.metrics.UsagePerAppBean;
+import io.apiman.manager.api.beans.metrics.UsagePerClientBean;
 import io.apiman.manager.api.beans.metrics.UsagePerPlanBean;
 import io.apiman.manager.api.core.IMetricsAccessor;
 import io.apiman.manager.api.core.logging.ApimanLogger;
@@ -237,13 +237,13 @@ public class ESMetricsAccessor implements IMetricsAccessor {
     }
 
     /**
-     * @see io.apiman.manager.api.core.IMetricsAccessor#getUsagePerApp(java.lang.String, java.lang.String, java.lang.String, org.joda.time.DateTime, org.joda.time.DateTime)
+     * @see io.apiman.manager.api.core.IMetricsAccessor#getUsagePerClient(java.lang.String, java.lang.String, java.lang.String, org.joda.time.DateTime, org.joda.time.DateTime)
      */
     @SuppressWarnings("nls")
     @Override
-    public UsagePerAppBean getUsagePerApp(String organizationId, String apiId, String version,
+    public UsagePerClientBean getUsagePerClient(String organizationId, String apiId, String version,
             DateTime from, DateTime to) {
-        UsagePerAppBean rval = new UsagePerAppBean();
+        UsagePerClientBean rval = new UsagePerClientBean();
 
         try {
             String query =
@@ -269,9 +269,9 @@ public class ESMetricsAccessor implements IMetricsAccessor {
                     "  }," +
                     "  \"size\": 0, " +
                     "  \"aggs\" : {" +
-                    "      \"usage_by_app\" : {" +
+                    "      \"usage_by_client\" : {" +
                     "        \"terms\" : {" +
-                    "          \"field\" : \"applicationId\"" +
+                    "          \"field\" : \"clientId\"" +
                     "        }" +
                     "      }" +
                     "  }" +
@@ -288,7 +288,7 @@ public class ESMetricsAccessor implements IMetricsAccessor {
             Search search = new Search.Builder(query).addIndex(INDEX_NAME).addType("request").build();
             SearchResult response = getEsClient().execute(search);
             MetricAggregation aggregations = response.getAggregations();
-            ApimanTermsAggregation aggregation = aggregations.getAggregation("usage_by_app", ApimanTermsAggregation.class); //$NON-NLS-1$
+            ApimanTermsAggregation aggregation = aggregations.getAggregation("usage_by_client", ApimanTermsAggregation.class); //$NON-NLS-1$
             if (aggregation != null) {
                 List<ApimanTermsAggregation.Entry> buckets = aggregation.getBuckets();
                 int counter = 0;
@@ -524,13 +524,13 @@ public class ESMetricsAccessor implements IMetricsAccessor {
     }
 
     /**
-     * @see io.apiman.manager.api.core.IMetricsAccessor#getResponseStatsPerApp(java.lang.String, java.lang.String, java.lang.String, org.joda.time.DateTime, org.joda.time.DateTime)
+     * @see io.apiman.manager.api.core.IMetricsAccessor#getResponseStatsPerClient(java.lang.String, java.lang.String, java.lang.String, org.joda.time.DateTime, org.joda.time.DateTime)
      */
     @Override
     @SuppressWarnings("nls")
-    public ResponseStatsPerAppBean getResponseStatsPerApp(String organizationId, String apiId,
+    public ResponseStatsPerClientBean getResponseStatsPerClient(String organizationId, String apiId,
             String version, DateTime from, DateTime to) {
-        ResponseStatsPerAppBean rval = new ResponseStatsPerAppBean();
+        ResponseStatsPerClientBean rval = new ResponseStatsPerClientBean();
 
         try {
             String query =
@@ -556,9 +556,9 @@ public class ESMetricsAccessor implements IMetricsAccessor {
                     "  }," +
                     "  \"size\": 0, " +
                     "  \"aggs\" : {" +
-                    "      \"by_app\" : {" +
+                    "      \"by_client\" : {" +
                     "        \"terms\" : {" +
-                    "          \"field\" : \"applicationId\"" +
+                    "          \"field\" : \"clientId\"" +
                     "        }," +
                     "        \"aggs\" : {" +
                     "          \"total_failures\" : {" +
@@ -583,7 +583,7 @@ public class ESMetricsAccessor implements IMetricsAccessor {
             Search search = new Search.Builder(query).addIndex(INDEX_NAME).addType("request").build();
             SearchResult response = getEsClient().execute(search);
             MetricAggregation aggregations = response.getAggregations();
-            ApimanTermsAggregation aggregation = aggregations.getAggregation("by_app", ApimanTermsAggregation.class); //$NON-NLS-1$
+            ApimanTermsAggregation aggregation = aggregations.getAggregation("by_client", ApimanTermsAggregation.class); //$NON-NLS-1$
             if (aggregation != null) {
                 List<ApimanTermsAggregation.Entry> buckets = aggregation.getBuckets();
                 int counter = 0;
@@ -688,13 +688,13 @@ public class ESMetricsAccessor implements IMetricsAccessor {
     }
 
     /**
-     * @see io.apiman.manager.api.core.IMetricsAccessor#getAppUsagePerApi(java.lang.String, java.lang.String, java.lang.String, org.joda.time.DateTime, org.joda.time.DateTime)
+     * @see io.apiman.manager.api.core.IMetricsAccessor#getClientUsagePerApi(java.lang.String, java.lang.String, java.lang.String, org.joda.time.DateTime, org.joda.time.DateTime)
      */
     @Override
     @SuppressWarnings("nls")
-    public AppUsagePerApiBean getAppUsagePerApi(String organizationId, String applicationId,
+    public ClientUsagePerApiBean getClientUsagePerApi(String organizationId, String clientId,
             String version, DateTime from, DateTime to) {
-        AppUsagePerApiBean rval = new AppUsagePerApiBean();
+        ClientUsagePerApiBean rval = new ClientUsagePerApiBean();
 
         try {
             String query =
@@ -711,9 +711,9 @@ public class ESMetricsAccessor implements IMetricsAccessor {
                     "      },\n" +
                     "      \"filter\": {\n" +
                     "        \"and\" : [\n" +
-                    "          { \"term\" : { \"applicationOrgId\" : \"${applicationOrgId}\" } },\n" +
-                    "          { \"term\" : { \"applicationId\" : \"${applicationId}\" } },\n" +
-                    "          { \"term\" : { \"applicationVersion\" : \"${applicationVersion}\" } }\n" +
+                    "          { \"term\" : { \"clientOrgId\" : \"${clientOrgId}\" } },\n" +
+                    "          { \"term\" : { \"clientId\" : \"${clientId}\" } },\n" +
+                    "          { \"term\" : { \"clientVersion\" : \"${clientVersion}\" } }\n" +
                     "        ]\n" +
                     "      }\n" +
                     "    }\n" +
@@ -730,9 +730,9 @@ public class ESMetricsAccessor implements IMetricsAccessor {
             Map<String, String> params = new HashMap<>();
             params.put("from", formatDate(from));
             params.put("to", formatDate(to));
-            params.put("applicationOrgId", organizationId.replace('"', '_'));
-            params.put("applicationId", applicationId.replace('"', '_'));
-            params.put("applicationVersion", version.replace('"', '_'));
+            params.put("clientOrgId", organizationId.replace('"', '_'));
+            params.put("clientId", clientId.replace('"', '_'));
+            params.put("clientVersion", version.replace('"', '_'));
             StrSubstitutor ss = new StrSubstitutor(params);
             query = ss.replace(query);
 

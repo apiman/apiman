@@ -1,0 +1,25 @@
+PUT /clients admin/admin
+Content-Type: application/json
+
+{
+  "organizationId" : "GatewayApiTest",
+  "clientId" : "invalid-test-client",
+  "version" : "1.0",
+  "contracts" : [
+    {
+      "apiKey" : "12345_002",
+      "apiOrgId" : "GatewayApiTest",
+      "apiId" : "invalid-api",
+      "apiVersion" : "1.0"
+    }
+  ]
+}
+----
+500
+Content-Type: application/json
+X-API-Gateway-Error: true
+
+{
+  "errorType" : "RegistrationException",
+  "message" : "API invalid-api not found in Organization GatewayApiTest."
+}

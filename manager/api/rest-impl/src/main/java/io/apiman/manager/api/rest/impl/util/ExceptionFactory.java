@@ -22,16 +22,16 @@ import io.apiman.manager.api.rest.contract.exceptions.ApiDefinitionNotFoundExcep
 import io.apiman.manager.api.rest.contract.exceptions.ApiNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.ApiVersionAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.ApiVersionNotFoundException;
-import io.apiman.manager.api.rest.contract.exceptions.ApplicationAlreadyExistsException;
-import io.apiman.manager.api.rest.contract.exceptions.ApplicationNotFoundException;
-import io.apiman.manager.api.rest.contract.exceptions.ApplicationVersionAlreadyExistsException;
-import io.apiman.manager.api.rest.contract.exceptions.ApplicationVersionNotFoundException;
+import io.apiman.manager.api.rest.contract.exceptions.ClientAlreadyExistsException;
+import io.apiman.manager.api.rest.contract.exceptions.ClientNotFoundException;
+import io.apiman.manager.api.rest.contract.exceptions.ClientVersionAlreadyExistsException;
+import io.apiman.manager.api.rest.contract.exceptions.ClientVersionNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.ContractAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.ContractNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.GatewayAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.GatewayNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.InvalidApiStatusException;
-import io.apiman.manager.api.rest.contract.exceptions.InvalidApplicationStatusException;
+import io.apiman.manager.api.rest.contract.exceptions.InvalidClientStatusException;
 import io.apiman.manager.api.rest.contract.exceptions.InvalidMetricCriteriaException;
 import io.apiman.manager.api.rest.contract.exceptions.InvalidNameException;
 import io.apiman.manager.api.rest.contract.exceptions.InvalidVersionException;
@@ -116,22 +116,22 @@ public final class ExceptionFactory {
     }
 
     /**
-     * Creates an exception from an application name.
-     * @param applicationName the application name
+     * Creates an exception from an client name.
+     * @param clientName the client name
      * @return the exception
      */
-    public static final ApplicationAlreadyExistsException applicationAlreadyExistsException(String applicationName) {
-        return new ApplicationAlreadyExistsException(Messages.i18n.format("ApplicationAlreadyExists", applicationName)); //$NON-NLS-1$
+    public static final ClientAlreadyExistsException clientAlreadyExistsException(String clientName) {
+        return new ClientAlreadyExistsException(Messages.i18n.format("ClientAlreadyExists", clientName)); //$NON-NLS-1$
     }
 
     /**
-     * Creates an exception from an application name.
-     * @param applicationName the application name
+     * Creates an exception from an client name.
+     * @param clientName the client name
      * @param version the version
      * @return the exception
      */
-    public static final ApplicationVersionAlreadyExistsException applicationVersionAlreadyExistsException(String applicationName, String version) {
-        return new ApplicationVersionAlreadyExistsException(Messages.i18n.format("ApplicationVersionAlreadyExists", applicationName, version)); //$NON-NLS-1$
+    public static final ClientVersionAlreadyExistsException clientVersionAlreadyExistsException(String clientName, String version) {
+        return new ClientVersionAlreadyExistsException(Messages.i18n.format("clientVersionAlreadyExists", clientName, version)); //$NON-NLS-1$
     }
 
     /**
@@ -143,12 +143,12 @@ public final class ExceptionFactory {
     }
 
     /**
-     * Creates an exception from an application id.
-     * @param applicationId the application id
+     * Creates an exception from an client id.
+     * @param clientId the client id
      * @return the exception
      */
-    public static final ApplicationNotFoundException applicationNotFoundException(String applicationId) {
-        return new ApplicationNotFoundException(Messages.i18n.format("ApplicationDoesNotExist", applicationId)); //$NON-NLS-1$
+    public static final ClientNotFoundException clientNotFoundException(String clientId) {
+        return new ClientNotFoundException(Messages.i18n.format("ClientDoesNotExist", clientId)); //$NON-NLS-1$
     }
 
     /**
@@ -161,21 +161,21 @@ public final class ExceptionFactory {
     }
 
     /**
-     * Creates an exception from an application id and version.
-     * @param applicationId the application id
-     * @param version the application version
+     * Creates an exception from an client id and version.
+     * @param clientId the client id
+     * @param version the client version
      * @return the exception
      */
-    public static final ApplicationVersionNotFoundException applicationVersionNotFoundException(String applicationId, String version) {
-        return new ApplicationVersionNotFoundException(Messages.i18n.format("ApplicationVersionDoesNotExist", applicationId, version)); //$NON-NLS-1$
+    public static final ClientVersionNotFoundException clientVersionNotFoundException(String clientId, String version) {
+        return new ClientVersionNotFoundException(Messages.i18n.format("clientVersionDoesNotExist", clientId, version)); //$NON-NLS-1$
     }
 
     /**
-     * Creates an invalid app status exception.
+     * Creates an invalid client status exception.
      * @return the exception
      */
-    public static final InvalidApplicationStatusException invalidApplicationStatusException() {
-        return new InvalidApplicationStatusException(Messages.i18n.format("InvalidApplicationStatus")); //$NON-NLS-1$
+    public static final InvalidClientStatusException invalidClientStatusException() {
+        return new InvalidClientStatusException(Messages.i18n.format("InvalidClientStatus")); //$NON-NLS-1$
     }
 
     /**

@@ -7,14 +7,14 @@
     <test name="Create Plan">test-plan-data/export/creates/002_create-plan1.resttest</test>
     <test name="Create Plan Version">test-plan-data/export/creates/003_create-plan1-version-1.0.resttest</test>
     <test name="Lock Plan">test-plan-data/export/publish/003_lock-plan-1.resttest</test>
-    <test name="Create App">test-plan-data/export/creates/004_create-app1.resttest</test>
-    <test name="Create App Version">test-plan-data/export/creates/005_create-app1-version-1.0.resttest</test>
+    <test name="Create Client">test-plan-data/export/creates/004_create-client1.resttest</test>
+    <test name="Create Client Version">test-plan-data/export/creates/005_create-client1-version-1.0.resttest</test>
     <test name="Create API">test-plan-data/export/creates/006_create-api1.resttest</test>
     <test name="Create API Version">test-plan-data/export/creates/007_create-api1-version-1.0.resttest</test>
     <test name="Update API Version">test-plan-data/export/creates/007.5_update-api1-version-1.0.resttest</test>
     <test name="Publish API">test-plan-data/export/publish/001_publish-api-1.resttest</test>
     <test name="Create Contract">test-plan-data/export/creates/008_create-contract1.resttest</test>
-    <test name="Register Application">test-plan-data/export/publish/002_register-app-1.resttest</test>
+    <test name="Register Client">test-plan-data/export/publish/002_register-client-1.resttest</test>
     <test name="Wait" delay="2000" />
   </testGroup>
 

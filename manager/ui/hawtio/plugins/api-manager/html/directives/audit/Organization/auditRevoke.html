@@ -10,13 +10,13 @@
         <span apiman-i18n-key="audit.role">Role</span>
         <span class="emphasis">{{ role }}</span>
         <span apiman-i18n-key="audit.was-taken-away-from">was taken away from</span>
-        <a href="{{ pluginName }}/users/{{ data.userId }}/apps">{{ data.userId }}</a><span apiman-i18n-skip>.</span>
+        <a href="{{ pluginName }}/users/{{ data.userId }}/clients">{{ data.userId }}</a><span apiman-i18n-skip>.</span>
       </span>
     </li>
   </ul>
   <span ng-show="data.roles[0] == '*'">
     <span class="emphasis" apiman-i18n-key="audit.all-roles">All roles</span>
     <span apiman-i18n-key="audit.were-taken-away-from">were taken away from</span>
-    <a href="{{ pluginName }}/users/{{ data.userId }}/apps">{{ data.userId }}</a><span apiman-i18n-skip>.</span>
+    <a href="{{ pluginName }}/users/{{ data.userId }}/clients">{{ data.userId }}</a><span apiman-i18n-skip>.</span>
   </span>
 </div>

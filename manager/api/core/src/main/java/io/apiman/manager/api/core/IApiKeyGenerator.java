@@ -17,7 +17,7 @@ package io.apiman.manager.api.core;
 
 /**
  * Interface responsible for generating unique API keys whenever a contract
- * is created between an Application and an API it wishes to invoke via
+ * is created between an Client and an API it wishes to invoke via
  * a specific plan.
  *
  * @author eric.wittmann@redhat.com

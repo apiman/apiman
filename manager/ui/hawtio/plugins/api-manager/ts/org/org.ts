@@ -17,8 +17,8 @@ module Apiman {
                     tab = 'plans';
                 } else if (CurrentUser.hasPermission(orgId, 'apiEdit')) {
                     tab = 'apis';
-                } else if (CurrentUser.hasPermission(orgId, 'appEdit')) {
-                    tab = 'apps';
+                } else if (CurrentUser.hasPermission(orgId, 'clientEdit')) {
+                    tab = 'clients';
                 }
                 PageLifecycle.forwardTo('/orgs/{0}/{1}', orgId, tab);
             });

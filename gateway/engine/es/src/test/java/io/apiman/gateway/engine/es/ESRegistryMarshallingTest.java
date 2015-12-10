@@ -17,7 +17,7 @@ package io.apiman.gateway.engine.es;
 
 import io.apiman.gateway.engine.beans.Api;
 import io.apiman.gateway.engine.beans.ApiContract;
-import io.apiman.gateway.engine.beans.Application;
+import io.apiman.gateway.engine.beans.Client;
 import io.apiman.gateway.engine.beans.Contract;
 import io.apiman.gateway.engine.beans.Policy;
 
@@ -111,21 +111,21 @@ public class ESRegistryMarshallingTest {
     }
 
     /**
-     * Test method for {@link io.apiman.gateway.engine.es.ESRegistryMarshalling#marshall(io.apiman.gateway.engine.beans.Application)}.
+     * Test method for {@link io.apiman.gateway.engine.es.ESRegistryMarshalling#marshall(io.apiman.gateway.engine.beans.Client)}.
      */
     @Test
-    public void testMarshall_Application() throws Exception {
-        Application app = new Application();
-        app.setApplicationId("app-id");
-        app.setOrganizationId("test-org");
-        app.setVersion("1.0");
+    public void testMarshall_Client() throws Exception {
+        Client client = new Client();
+        client.setClientId("client-id");
+        client.setOrganizationId("test-org");
+        client.setVersion("1.0");
 
         Assert.assertEquals("{"
                 + "\"organizationId\":\"test-org\","
-                + "\"applicationId\":\"app-id\","
+                + "\"clientId\":\"client-id\","
                 + "\"version\":\"1.0\","
                 + "\"contracts\":[]"
-            + "}", ESRegistryMarshalling.marshall(app).string());
+            + "}", ESRegistryMarshalling.marshall(client).string());
 
         Contract contract = new Contract();
         contract.setApiKey("12345");
@@ -133,11 +133,11 @@ public class ESRegistryMarshallingTest {
         contract.setApiId("api-id");
         contract.setApiOrgId("api-test-org");
         contract.setApiVersion("1.7");
-        app.getContracts().add(contract);
+        client.getContracts().add(contract);
 
         Assert.assertEquals("{"
                 + "\"organizationId\":\"test-org\","
-                + "\"applicationId\":\"app-id\","
+                + "\"clientId\":\"client-id\","
                 + "\"version\":\"1.0\","
                 + "\"contracts\":["
                     + "{"
@@ -149,7 +149,7 @@ public class ESRegistryMarshallingTest {
                         + "\"policies\":[]"
                     + "}"
                 + "]"
-            + "}", ESRegistryMarshalling.marshall(app).string());
+            + "}", ESRegistryMarshalling.marshall(client).string());
 
         Policy policy = new Policy();
         policy.setPolicyImpl("policy-1-impl");
@@ -163,7 +163,7 @@ public class ESRegistryMarshallingTest {
 
         Assert.assertEquals("{"
                 + "\"organizationId\":\"test-org\","
-                + "\"applicationId\":\"app-id\","
+                + "\"clientId\":\"client-id\","
                 + "\"version\":\"1.0\","
                 + "\"contracts\":["
                     + "{"
@@ -184,7 +184,7 @@ public class ESRegistryMarshallingTest {
                         + "]"
                     + "}"
                 + "]"
-            + "}", ESRegistryMarshalling.marshall(app).string());
+            + "}", ESRegistryMarshalling.marshall(client).string());
     }
 
     /**
@@ -208,11 +208,11 @@ public class ESRegistryMarshallingTest {
         api.setVersion("1.0");
         sc.setApi(api);
 
-        Application app = new Application();
-        app.setApplicationId("app-id");
-        app.setOrganizationId("test-org");
-        app.setVersion("1.0");
-        sc.setApplication(app);
+        Client client = new Client();
+        client.setClientId("client-id");
+        client.setOrganizationId("test-org");
+        client.setVersion("1.0");
+        sc.setClient(client);
 
         Policy policy = new Policy();
         policy.setPolicyImpl("policy-1-impl");
@@ -227,9 +227,9 @@ public class ESRegistryMarshallingTest {
         Assert.assertEquals("{"
                 + "\"apiKey\":\"12345\","
                 + "\"plan\":\"Gold\","
-                + "\"application\":{"
+                + "\"client\":{"
                     + "\"organizationId\":\"test-org\","
-                    + "\"applicationId\":\"app-id\","
+                    + "\"clientId\":\"client-id\","
                     + "\"version\":\"1.0\","
                     + "\"contracts\":[]"
                 + "},"
@@ -301,19 +301,19 @@ public class ESRegistryMarshallingTest {
     }
 
     /**
-     * Test method for {@link io.apiman.gateway.engine.es.ESRegistryMarshalling#unmarshallApplication(Map)}.
+     * Test method for {@link io.apiman.gateway.engine.es.ESRegistryMarshalling#unmarshallClient(Map)}.
      */
     @Test
-    public void testUnmarshall_App() throws Exception {
+    public void testUnmarshall_Client() throws Exception {
         Map<String, Object> data = new HashMap<>();
         data.put("organizationId", "test-org");
-        data.put("applicationId", "test-app");
+        data.put("clientId", "test-client");
         data.put("version", "3.1");
 
-        Application app = ESRegistryMarshalling.unmarshallApplication(data);
-        Assert.assertEquals("test-org", app.getOrganizationId());
-        Assert.assertEquals("test-app", app.getApplicationId());
-        Assert.assertEquals("3.1", app.getVersion());
+        Client client = ESRegistryMarshalling.unmarshallClient(data);
+        Assert.assertEquals("test-org", client.getOrganizationId());
+        Assert.assertEquals("test-client", client.getClientId());
+        Assert.assertEquals("3.1", client.getVersion());
 
         List<Map<String, Object>> contractsData = new ArrayList<>();
         data.put("contracts", contractsData);
@@ -332,12 +332,12 @@ public class ESRegistryMarshallingTest {
         policyData.put("policyJsonConfig", "json-config-1");
         policiesData.add(policyData);
 
-        app = ESRegistryMarshalling.unmarshallApplication(data);
-        Assert.assertEquals("test-org", app.getOrganizationId());
-        Assert.assertEquals("test-app", app.getApplicationId());
-        Assert.assertEquals("3.1", app.getVersion());
-        Assert.assertEquals(1, app.getContracts().size());
-        Contract contract = app.getContracts().iterator().next();
+        client = ESRegistryMarshalling.unmarshallClient(data);
+        Assert.assertEquals("test-org", client.getOrganizationId());
+        Assert.assertEquals("test-client", client.getClientId());
+        Assert.assertEquals("3.1", client.getVersion());
+        Assert.assertEquals(1, client.getContracts().size());
+        Contract contract = client.getContracts().iterator().next();
         Assert.assertEquals("12345", contract.getApiKey());
         Assert.assertEquals("api-id", contract.getApiId());
         Assert.assertEquals("api-org", contract.getApiOrgId());

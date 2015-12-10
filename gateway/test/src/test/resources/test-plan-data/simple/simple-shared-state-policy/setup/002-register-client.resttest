@@ -1,0 +1,24 @@
+PUT /clients admin/admin
+Content-Type: application/json
+
+{
+  "organizationId" : "SimpleSharedStatePolicyTest",
+  "clientId" : "test",
+  "version" : "1.0.0",
+  "contracts" : [
+    {
+      "apiKey" : "12345",
+      "apiOrgId" : "SimpleSharedStatePolicyTest",
+      "apiId" : "echo",
+      "apiVersion" : "1.0.0",
+      "policies" : [
+        {
+          "policyImpl" : "class:io.apiman.gateway.test.policies.SimpleSharedStatePolicy",
+          "policyJsonConfig" : ""
+        }
+      ]
+    }
+  ]
+}
+----
+204

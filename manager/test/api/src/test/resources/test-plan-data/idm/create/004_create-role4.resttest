@@ -3,7 +3,7 @@ Content-Type: application/json
 
 {
   "name" : "Test Role 4",
-  "permissions" : [ "appAdmin", "appView", "apiEdit" ]
+  "permissions" : [ "clientAdmin", "clientView", "apiEdit" ]
 }
 ----
 200
@@ -12,5 +12,5 @@ Content-Type: application/json
 {
   "id" : "TestRole4",
   "name" : "Test Role 4",
-  "permissions" : [ "appAdmin", "appView", "apiEdit" ]
+  "permissions" : [ "clientAdmin", "clientView", "apiEdit" ]
 }

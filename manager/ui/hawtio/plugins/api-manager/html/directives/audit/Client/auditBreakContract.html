@@ -1,0 +1,28 @@
+<div class="row">
+  <a href="{{ pluginName }}/users/{{ entry.who }}">{{ entry.who }}</a>
+  <span apiman-i18n-key="audit.broke-contract-from-client">broke a contract from client app</span>
+  <a href="{{ pluginName }}/orgs/{{ entry.organizationId }}/clients">{{ entry.organizationId }}</a>
+  <span apiman-i18n-skip>/</span>
+  <a class="emphasis" href="{{ pluginName }}/orgs/{{ entry.organizationId }}/clients/{{ entry.entityId }}">{{ entry.entityId }}</a>
+  <span apiman-i18n-key="audit.version">version</span>
+  <a class="emphasis" href="{{ pluginName }}/orgs/{{ entry.organizationId }}/clients/{{ entry.entityId }}/{{ entry.entityVersion }}">{{ entry.entityVersion }}</a><span apiman-i18n-skip>.</span>
+</div>
+<div class="row boxed-row">
+  <span apiman-i18n-key="audit.contract-broken-between-client">A contract was broken between client app</span>
+  <a href="{{ pluginName }}/orgs/{{ data.clientOrgId }}/clients">{{ data.clientOrgId }}</a>
+  <span apiman-i18n-skip>/</span>
+  <a href="{{ pluginName }}/orgs/{{ data.clientOrgId }}/clients/{{ data.clientId }}">{{ data.clientId }}</a>
+  <span apiman-i18n-skip>:</span>
+  <a href="{{ pluginName }}/orgs/{{ data.clientOrgId }}/clients/{{ data.clientId }}/{{ data.clientVersion }}">{{ data.clientVersion }}</a>
+  <span apiman-i18n-key="audit.and-api">and API</span>
+  <a href="{{ pluginName }}/orgs/{{ data.apiOrgId }}/apis">{{ data.apiOrgId }}</a>
+  <span apiman-i18n-skip>/</span>
+  <a href="{{ pluginName }}/orgs/{{ data.apiOrgId }}/apis/{{ data.apiId }}">{{ data.apiId }}</a>
+  <span apiman-i18n-skip>:</span>
+  <a href="{{ pluginName }}/orgs/{{ data.apiOrgId }}/apis/{{ data.apiId }}/{{ data.apiVersion }}">{{ data.apiVersion }}</a>
+  <span apiman-i18n-key="audit.through-version">through version</span>
+  <a href="{{ pluginName }}/orgs/{{ data.planOrgId }}/plans/{{ data.planId }}/{{ data.planVersion }}">{{ data.planVersion }}</a>
+  <span apiman-i18n-key="audit.of-plan">of plan</span>
+  <a href="{{ pluginName }}/orgs/{{ data.planOrgId }}/plans/{{ data.planId }}">{{ data.planId }}</a>
+  <span apiman-i18n-skip>.</span>
+</div>

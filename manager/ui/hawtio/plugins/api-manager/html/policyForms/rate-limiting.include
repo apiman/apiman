@@ -5,7 +5,7 @@
     <span apiman-i18n-key="requests-per">requests per</span>
     <select id="granularity" ng-model="config.granularity" apiman-select-picker="" data-field="granularity" class="selectpicker inline-line apiman-inline-form-dropdown" data-style="btn-default apiman-inline-form-dropdown" style="width: 100px" ng-disabled="isEntityDisabled()">
       <option value="" data-content="<span class='apiman-label-faded'>Granularity</span>" apiman-i18n-key="granularity">Granularity</option>
-      <option value="Application" apiman-i18n-key="rate-limiting.application">Application</option>
+      <option value="Client" apiman-i18n-key="rate-limiting.client-client">Client App</option>
       <option value="User" apiman-i18n-key="rate-limiting.user">User</option>
       <option value="Api" apiman-i18n-key="rate-limiting.api">API</option>
     </select>

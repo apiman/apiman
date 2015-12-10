@@ -15,21 +15,21 @@
  */
 package io.apiman.gateway.engine.vertxebinmemory;
 
-import java.util.Map;
-import java.util.UUID;
-
 import io.apiman.gateway.engine.IRegistry;
 import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
-import io.apiman.gateway.engine.beans.Application;
 import io.apiman.gateway.engine.beans.Api;
 import io.apiman.gateway.engine.beans.ApiContract;
 import io.apiman.gateway.engine.beans.ApiRequest;
+import io.apiman.gateway.engine.beans.Client;
 import io.apiman.gateway.engine.impl.InMemoryRegistry;
 import io.apiman.gateway.engine.vertxebinmemory.apis.EBRegistryProxy;
 import io.apiman.gateway.engine.vertxebinmemory.apis.EBRegistryProxyHandler;
 import io.apiman.gateway.platforms.vertx3.common.config.VertxEngineConfig;
 import io.vertx.core.Vertx;
+
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * In-memory implementation of the {@link IRegistry} using Vert.x 3's event bus to distribute the events to
@@ -64,34 +64,34 @@ public class EBInMemoryRegistry extends InMemoryRegistry implements EBRegistryPr
     }
 
     @Override
-    public void publishApi(Api service, IAsyncResultHandler<Void> handler) {
-        super.publishApi(service, handler);
-        proxy.publishService(service);
-        System.out.println("Published a service");
+    public void publishApi(Api api, IAsyncResultHandler<Void> handler) {
+        super.publishApi(api, handler);
+        proxy.publishApi(api);
+        System.out.println("Published a api");
     }
 
     @Override
-    public void retireApi(Api service, IAsyncResultHandler<Void> handler) {
-        super.retireApi(service, handler);
-        proxy.retireService(service);
+    public void retireApi(Api api, IAsyncResultHandler<Void> handler) {
+        super.retireApi(api, handler);
+        proxy.retireApi(api);
     }
 
     @Override
-    public void registerApplication(Application application, IAsyncResultHandler<Void> handler) {
-        super.registerApplication(application, handler);
-        proxy.registerApplication(application);
+    public void registerClient(Client client, IAsyncResultHandler<Void> handler) {
+        super.registerClient(client, handler);
+        proxy.registerClient(client);
     }
 
     @Override
-    public void unregisterApplication(Application application, IAsyncResultHandler<Void> handler) {
-        super.unregisterApplication(application, handler);
-        proxy.unregisterApplication(application);
+    public void unregisterClient(Client client, IAsyncResultHandler<Void> handler) {
+        super.unregisterClient(client, handler);
+        proxy.unregisterClient(client);
     }
 
     @Override
-    public void getApi(String organizationId, String serviceId, String serviceVersion,
+    public void getApi(String organizationId, String apiId, String apiVersion,
             IAsyncResultHandler<Api> handler) {
-        super.getApi(organizationId, serviceId, serviceVersion, handler);
+        super.getApi(organizationId, apiId, apiVersion, handler);
     }
 
     @Override
@@ -112,27 +112,27 @@ public class EBInMemoryRegistry extends InMemoryRegistry implements EBRegistryPr
     // These are called back by the listener
 
     @Override
-    public void publishService(Api service) {
-        System.out.println("Publish service");
-        super.publishApi(service, emptyHandler);
+    public void publishApi(Api api) {
+        System.out.println("Publish api");
+        super.publishApi(api, emptyHandler);
     }
 
     @Override
-    public void retireService(Api service) {
-        System.out.println("Retire service");
-        super.retireApi(service, emptyHandler);
+    public void retireApi(Api api) {
+        System.out.println("Retire api");
+        super.retireApi(api, emptyHandler);
     }
 
     @Override
-    public void registerApplication(Application application) {
-        System.out.println("Register application");
-        super.registerApplication(application, emptyHandler);
+    public void registerClient(Client client) {
+        System.out.println("Register client");
+        super.registerClient(client, emptyHandler);
     }
 
     @Override
-    public void unregisterApplication(Application application) {
-        System.out.println("Unregister application");
-        super.unregisterApplication(application, emptyHandler);
+    public void unregisterClient(Client client) {
+        System.out.println("Unregister client");
+        super.unregisterClient(client, emptyHandler);
     }
 
     private EmptyHandler emptyHandler = new EmptyHandler();

@@ -28,8 +28,8 @@ import io.apiman.manager.api.beans.summary.ApiPlanSummaryBean;
 import io.apiman.manager.api.beans.summary.ApiRegistryBean;
 import io.apiman.manager.api.beans.summary.ApiSummaryBean;
 import io.apiman.manager.api.beans.summary.ApiVersionSummaryBean;
-import io.apiman.manager.api.beans.summary.ApplicationSummaryBean;
-import io.apiman.manager.api.beans.summary.ApplicationVersionSummaryBean;
+import io.apiman.manager.api.beans.summary.ClientSummaryBean;
+import io.apiman.manager.api.beans.summary.ClientVersionSummaryBean;
 import io.apiman.manager.api.beans.summary.ContractSummaryBean;
 import io.apiman.manager.api.beans.summary.GatewaySummaryBean;
 import io.apiman.manager.api.beans.summary.OrganizationSummaryBean;
@@ -74,12 +74,12 @@ public interface IStorageQuery {
     public SearchResultsBean<OrganizationSummaryBean> findOrganizations(SearchCriteriaBean criteria) throws StorageException;
 
     /**
-     * Finds applications by the provided criteria.
+     * Finds clients by the provided criteria.
      * @param criteria search criteria
-     * @return found applications
+     * @return found clients
      * @throws StorageException if a storage problem occurs while storing a bean.
      */
-    public SearchResultsBean<ApplicationSummaryBean> findApplications(SearchCriteriaBean criteria) throws StorageException;
+    public SearchResultsBean<ClientSummaryBean> findClients(SearchCriteriaBean criteria) throws StorageException;
 
     /**
      * Finds APIs by the provided criteria.
@@ -129,52 +129,52 @@ public interface IStorageQuery {
     public List<OrganizationSummaryBean> getOrgs(Set<String> organizationIds) throws StorageException;
 
     /**
-     * Returns summary info for all applications in all organizations in the given set.
+     * Returns summary info for all clients in all organizations in the given set.
      * @param organizationIds the organization ids
-     * @return list of applications in orgs
+     * @return list of clients in orgs
      * @throws StorageException if a storage problem occurs while storing a bean.
      */
-    public List<ApplicationSummaryBean> getApplicationsInOrgs(Set<String> organizationIds) throws StorageException;
+    public List<ClientSummaryBean> getClientsInOrgs(Set<String> organizationIds) throws StorageException;
 
     /**
-     * Returns summary info for all applications in the given organization.
+     * Returns summary info for all clients in the given organization.
      * @param organizationId the organization id
-     * @return list of applications
+     * @return list of clients
      * @throws StorageException if a storage problem occurs while storing a bean.
      */
-    public List<ApplicationSummaryBean> getApplicationsInOrg(String organizationId) throws StorageException;
+    public List<ClientSummaryBean> getClientsInOrg(String organizationId) throws StorageException;
 
     /**
-     * Returns all application versions for a given app.
+     * Returns all client versions for a given client.
      * @param organizationId the organization id
-     * @param applicationId the application id
-     * @return list of application versions
+     * @param clientId the client id
+     * @return list of client versions
      * @throws StorageException if a storage problem occurs while storing a bean.
      */
-    public List<ApplicationVersionSummaryBean> getApplicationVersions(String organizationId, String applicationId)
+    public List<ClientVersionSummaryBean> getClientVersions(String organizationId, String clientId)
             throws StorageException;
 
     /**
-     * Returns all Contracts for the application.
+     * Returns all Contracts for the client.
      * @param organizationId the organization id
-     * @param applicationId the application id
+     * @param clientId the client id
      * @param version the version
-     * @return list of application contracts
+     * @return list of client contracts
      * @throws StorageException if a storage problem occurs while storing a bean.
      */
-    public List<ContractSummaryBean> getApplicationContracts(String organizationId, String applicationId, String version)
+    public List<ContractSummaryBean> getClientContracts(String organizationId, String clientId, String version)
             throws StorageException;
 
 
     /**
-     * Returns the api registry for the given application.
+     * Returns the api registry for the given client.
      * @param organizationId the organization id
-     * @param applicationId the application id
+     * @param clientId the client id
      * @param version the version
      * @return the registry bean
      * @throws StorageException if a storage problem occurs while storing a bean.
      */
-    public ApiRegistryBean getApiRegistry(String organizationId, String applicationId, String version)
+    public ApiRegistryBean getApiRegistry(String organizationId, String clientId, String version)
             throws StorageException;
 
     /**
@@ -241,7 +241,7 @@ public interface IStorageQuery {
 
     /**
      * Returns all policies of the given type for the given entity/version.  This could be
-     * any of Application, Plan, API.
+     * any of Client, Plan, API.
      * @param organizationId the organization id
      * @param entityId the entity id
      * @param version the version

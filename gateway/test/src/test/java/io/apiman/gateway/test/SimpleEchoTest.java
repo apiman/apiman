@@ -52,9 +52,9 @@ public class SimpleEchoTest {
         Assert.assertEquals("echo", metric.getApiId());
         Assert.assertEquals("1.0.0", metric.getApiVersion());
 
-        Assert.assertEquals("SimpleEchoTest", metric.getApplicationOrgId());
-        Assert.assertEquals("test", metric.getApplicationId());
-        Assert.assertEquals("1.0.0", metric.getApplicationVersion());
+        Assert.assertEquals("SimpleEchoTest", metric.getClientOrgId());
+        Assert.assertEquals("test", metric.getClientId());
+        Assert.assertEquals("1.0.0", metric.getClientVersion());
 
         Assert.assertEquals("12345", metric.getContractId());
 

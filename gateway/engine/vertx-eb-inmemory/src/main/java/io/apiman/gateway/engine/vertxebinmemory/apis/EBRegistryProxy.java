@@ -15,8 +15,8 @@
  */
 package io.apiman.gateway.engine.vertxebinmemory.apis;
 
-import io.apiman.gateway.engine.beans.Application;
 import io.apiman.gateway.engine.beans.Api;
+import io.apiman.gateway.engine.beans.Client;
 import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.DeliveryOptions;
 
@@ -43,20 +43,20 @@ public class EBRegistryProxy {
         this.uuid = uuid;
     }
 
-    public void registerApplication(Application application) {
-        vertx.eventBus().publish(address, new VxApplication(application, REGISTER, uuid).asJson());
+    public void registerClient(Client client) {
+        vertx.eventBus().publish(address, new VxClient(client, REGISTER, uuid).asJson());
     }
 
-    public void unregisterApplication(Application application) {
-        vertx.eventBus().publish(address, new VxApplication(application, UNREGISTER, uuid).asJson());
+    public void unregisterClient(Client client) {
+        vertx.eventBus().publish(address, new VxClient(client, UNREGISTER, uuid).asJson());
     }
 
-    public void publishService(Api service) {
-        System.out.println("publishing service on " + address); //$NON-NLS-1$
-        vertx.eventBus().publish(address, new VxApi(service, PUBLISH, uuid).asJson());
+    public void publishApi(Api api) {
+        System.out.println("publishing api on " + address); //$NON-NLS-1$
+        vertx.eventBus().publish(address, new VxApi(api, PUBLISH, uuid).asJson());
     }
 
-    public void retireService(Api service) {
-        vertx.eventBus().publish(address, new VxApi(service, RETIRE, uuid).asJson());
+    public void retireApi(Api api) {
+        vertx.eventBus().publish(address, new VxApi(api, RETIRE, uuid).asJson());
     }
 }

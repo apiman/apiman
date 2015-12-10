@@ -284,9 +284,9 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
                 public void handle(IAsyncResult<ApiContract> result) {
                     if (result.isSuccess()) {
                         ApiContract apiContract = result.getResult();
-                        requestMetric.setApplicationOrgId(apiContract.getApplication().getOrganizationId());
-                        requestMetric.setApplicationId(apiContract.getApplication().getApplicationId());
-                        requestMetric.setApplicationVersion(apiContract.getApplication().getVersion());
+                        requestMetric.setClientOrgId(apiContract.getClient().getOrganizationId());
+                        requestMetric.setClientId(apiContract.getClient().getClientId());
+                        requestMetric.setClientVersion(apiContract.getClient().getVersion());
                         requestMetric.setPlanId(apiContract.getPlan());
                         requestMetric.setContractId(request.getApiKey());
 

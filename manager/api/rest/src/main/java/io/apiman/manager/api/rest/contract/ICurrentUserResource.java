@@ -19,7 +19,7 @@ package io.apiman.manager.api.rest.contract;
 import io.apiman.manager.api.beans.idm.CurrentUserBean;
 import io.apiman.manager.api.beans.idm.UpdateUserBean;
 import io.apiman.manager.api.beans.summary.ApiSummaryBean;
-import io.apiman.manager.api.beans.summary.ApplicationSummaryBean;
+import io.apiman.manager.api.beans.summary.ClientSummaryBean;
 import io.apiman.manager.api.beans.summary.OrganizationSummaryBean;
 import io.swagger.annotations.Api;
 
@@ -66,7 +66,7 @@ public interface ICurrentUserResource {
 
     /**
      * This endpoint returns a list of all the organizations for which the current user
-     * has permission to edit applications.  For example, when creating a new Application,
+     * has permission to edit clients.  For example, when creating a new Client,
      * the user interface must ask the user to choose within which Organization to create
      * it.  This endpoint lists the valid choices for the current user.
      * @summary Get Organizations (app-edit)
@@ -74,9 +74,9 @@ public interface ICurrentUserResource {
      * @return A list of organizations.
      */
     @GET
-    @Path("apporgs")
+    @Path("clientorgs")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<OrganizationSummaryBean> getAppOrganizations();
+    public List<OrganizationSummaryBean> getClientOrganizations();
 
     /**
      * This endpoint returns a list of all the organizations for which the
@@ -108,17 +108,17 @@ public interface ICurrentUserResource {
     public List<OrganizationSummaryBean> getPlanOrganizations();
 
     /**
-     * Use this endpoint to list all of the Applications the current user has permission
-     * to edit.  This includes all Applications from all Organizations the user has
-     * application edit privileges for.
-     * @summary Get Current User's Applications
-     * @statuscode 200 If the applications are successfully returned.
-     * @return A list of Applications.
+     * Use this endpoint to list all of the Clients the current user has permission
+     * to edit.  This includes all Clients from all Organizations the user has
+     * client edit privileges for.
+     * @summary Get Current User's Clients
+     * @statuscode 200 If the clients are successfully returned.
+     * @return A list of Clients.
      */
     @GET
-    @Path("applications")
+    @Path("clients")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<ApplicationSummaryBean> getApplications();
+    public List<ClientSummaryBean> getClients();
 
     /**
      * Use this endpoint to list all of the APIs the current user has permission

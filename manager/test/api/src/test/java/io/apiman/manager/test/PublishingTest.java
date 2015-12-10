@@ -33,9 +33,9 @@ import org.junit.runner.RunWith;
         "GET:/mock-gateway/system/status\n" +
         "PUT:/mock-gateway/apis\n" +
         "GET:/mock-gateway/system/status\n" +
-        "PUT:/mock-gateway/applications\n" +
+        "PUT:/mock-gateway/clients\n" +
         "GET:/mock-gateway/system/status\n" +
-        "DELETE:/mock-gateway/applications/Organization1/Application1/1.0\n" +
+        "DELETE:/mock-gateway/clients/Organization1/Client1/1.0\n" +
         "GET:/mock-gateway/system/status\n" +
         "DELETE:/mock-gateway/apis/Organization1/API1/1.0\n"
   )
@@ -43,7 +43,7 @@ import org.junit.runner.RunWith;
     "",
     "{\"publicAPI\":false,\"organizationId\":\"Organization1\",\"apiId\":\"API1\",\"version\":\"1.0\",\"endpointType\":\"rest\",\"endpoint\":\"http://localhost:8080/ping\",\"endpointProperties\":{},\"apiPolicies\":[]}",
     "",
-    "{\"organizationId\":\"Organization1\",\"applicationId\":\"Application1\",\"version\":\"1.0\",\"contracts\":[{\"apiOrgId\":\"Organization1\",\"apiId\":\"API1\",\"apiVersion\":\"1.0\",\"plan\":\"Plan1\",\"policies\":[{\"policyJsonConfig\":\"{ 'foo' : 'bar' }\",\"policyImpl\":\"org.example.PolicyDefTwo\"},{\"policyJsonConfig\":\"{ 'kung' : 'foo' }\",\"policyImpl\":\"org.example.PolicyDefOne\"}]}]}"
+    "{\"organizationId\":\"Organization1\",\"clientId\":\"Client1\",\"version\":\"1.0\",\"contracts\":[{\"apiOrgId\":\"Organization1\",\"apiId\":\"API1\",\"apiVersion\":\"1.0\",\"plan\":\"Plan1\",\"policies\":[{\"policyJsonConfig\":\"{ 'foo' : 'bar' }\",\"policyImpl\":\"org.example.PolicyDefTwo\"},{\"policyJsonConfig\":\"{ 'kung' : 'foo' }\",\"policyImpl\":\"org.example.PolicyDefOne\"}]}]}"
 })
 public class PublishingTest {
 }

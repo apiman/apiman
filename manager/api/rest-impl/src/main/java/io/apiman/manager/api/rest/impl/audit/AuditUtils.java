@@ -15,12 +15,10 @@
  */
 package io.apiman.manager.api.rest.impl.audit;
 
+import io.apiman.manager.api.beans.apis.ApiBean;
 import io.apiman.manager.api.beans.apis.ApiGatewayBean;
 import io.apiman.manager.api.beans.apis.ApiPlanBean;
-import io.apiman.manager.api.beans.apis.ApiBean;
 import io.apiman.manager.api.beans.apis.ApiVersionBean;
-import io.apiman.manager.api.beans.apps.ApplicationBean;
-import io.apiman.manager.api.beans.apps.ApplicationVersionBean;
 import io.apiman.manager.api.beans.audit.AuditEntityType;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
 import io.apiman.manager.api.beans.audit.AuditEntryType;
@@ -28,6 +26,8 @@ import io.apiman.manager.api.beans.audit.data.ContractData;
 import io.apiman.manager.api.beans.audit.data.EntityUpdatedData;
 import io.apiman.manager.api.beans.audit.data.MembershipData;
 import io.apiman.manager.api.beans.audit.data.PolicyData;
+import io.apiman.manager.api.beans.clients.ClientBean;
+import io.apiman.manager.api.beans.clients.ClientVersionBean;
 import io.apiman.manager.api.beans.contracts.ContractBean;
 import io.apiman.manager.api.beans.orgs.OrganizationBean;
 import io.apiman.manager.api.beans.plans.PlanBean;
@@ -343,13 +343,13 @@ public class AuditUtils {
     }
 
     /**
-     * Creates an audit entry for the 'application created' event.
+     * Creates an audit entry for the 'client created' event.
      * @param bean the bean
      * @param securityContext the security context
      * @return the audit entry
      */
-    public static AuditEntryBean applicationCreated(ApplicationBean bean, ISecurityContext securityContext) {
-        AuditEntryBean entry = newEntry(bean.getOrganization().getId(), AuditEntityType.Application, securityContext);
+    public static AuditEntryBean clientCreated(ClientBean bean, ISecurityContext securityContext) {
+        AuditEntryBean entry = newEntry(bean.getOrganization().getId(), AuditEntityType.Client, securityContext);
         entry.setEntityId(bean.getId());
         entry.setEntityVersion(null);
         entry.setData(null);
@@ -358,18 +358,18 @@ public class AuditUtils {
     }
 
     /**
-     * Creates an audit entry for the 'application updated' event.
+     * Creates an audit entry for the 'client updated' event.
      * @param bean the bean
      * @param data the updated data
      * @param securityContext the security context
      * @return the audit entry
      */
-    public static AuditEntryBean applicationUpdated(ApplicationBean bean, EntityUpdatedData data,
+    public static AuditEntryBean clientUpdated(ClientBean bean, EntityUpdatedData data,
             ISecurityContext securityContext) {
         if (data.getChanges().isEmpty()) {
             return null;
         }
-        AuditEntryBean entry = newEntry(bean.getOrganization().getId(), AuditEntityType.Application, securityContext);
+        AuditEntryBean entry = newEntry(bean.getOrganization().getId(), AuditEntityType.Client, securityContext);
         entry.setEntityId(bean.getId());
         entry.setEntityVersion(null);
         entry.setWhat(AuditEntryType.Update);
@@ -378,34 +378,34 @@ public class AuditUtils {
     }
 
     /**
-     * Creates an audit entry for the 'application version created' event.
+     * Creates an audit entry for the 'client version created' event.
      * @param bean the bean
      * @param securityContext the security context
      * @return the audit entry
      */
-    public static AuditEntryBean applicationVersionCreated(ApplicationVersionBean bean,
+    public static AuditEntryBean clientVersionCreated(ClientVersionBean bean,
             ISecurityContext securityContext) {
-        AuditEntryBean entry = newEntry(bean.getApplication().getOrganization().getId(), AuditEntityType.Application, securityContext);
-        entry.setEntityId(bean.getApplication().getId());
+        AuditEntryBean entry = newEntry(bean.getClient().getOrganization().getId(), AuditEntityType.Client, securityContext);
+        entry.setEntityId(bean.getClient().getId());
         entry.setEntityVersion(bean.getVersion());
         entry.setWhat(AuditEntryType.Create);
         return entry;
     }
 
     /**
-     * Creates an audit entry for the 'application version updated' event.
+     * Creates an audit entry for the 'client version updated' event.
      * @param bean the bean
      * @param data the updated data
      * @param securityContext the security context
      * @return the audit entry
      */
-    public static AuditEntryBean applicationVersionUpdated(ApplicationVersionBean bean, EntityUpdatedData data,
+    public static AuditEntryBean clientVersionUpdated(ClientVersionBean bean, EntityUpdatedData data,
             ISecurityContext securityContext) {
         if (data.getChanges().isEmpty()) {
             return null;
         }
-        AuditEntryBean entry = newEntry(bean.getApplication().getOrganization().getId(), AuditEntityType.Application, securityContext);
-        entry.setEntityId(bean.getApplication().getId());
+        AuditEntryBean entry = newEntry(bean.getClient().getOrganization().getId(), AuditEntityType.Client, securityContext);
+        entry.setEntityId(bean.getClient().getId());
         entry.setEntityVersion(bean.getVersion());
         entry.setWhat(AuditEntryType.Update);
         entry.setData(toJSON(data));
@@ -418,11 +418,11 @@ public class AuditUtils {
      * @param securityContext the security context
      * @return the audit entry
      */
-    public static AuditEntryBean contractCreatedFromApp(ContractBean bean, ISecurityContext securityContext) {
-        AuditEntryBean entry = newEntry(bean.getApplication().getApplication().getOrganization().getId(), AuditEntityType.Application, securityContext);
+    public static AuditEntryBean contractCreatedFromClient(ContractBean bean, ISecurityContext securityContext) {
+        AuditEntryBean entry = newEntry(bean.getClient().getClient().getOrganization().getId(), AuditEntityType.Client, securityContext);
         entry.setWhat(AuditEntryType.CreateContract);
-        entry.setEntityId(bean.getApplication().getApplication().getId());
-        entry.setEntityVersion(bean.getApplication().getVersion());
+        entry.setEntityId(bean.getClient().getClient().getId());
+        entry.setEntityVersion(bean.getClient().getVersion());
         ContractData data = new ContractData(bean);
         entry.setData(toJSON(data));
         return entry;
@@ -452,11 +452,11 @@ public class AuditUtils {
      * @param securityContext the security context
      * @return the audit entry
      */
-    public static AuditEntryBean contractBrokenFromApp(ContractBean bean, ISecurityContext securityContext) {
-        AuditEntryBean entry = newEntry(bean.getApplication().getApplication().getOrganization().getId(), AuditEntityType.Application, securityContext);
+    public static AuditEntryBean contractBrokenFromClient(ContractBean bean, ISecurityContext securityContext) {
+        AuditEntryBean entry = newEntry(bean.getClient().getClient().getOrganization().getId(), AuditEntityType.Client, securityContext);
         entry.setWhat(AuditEntryType.BreakContract);
-        entry.setEntityId(bean.getApplication().getApplication().getId());
-        entry.setEntityVersion(bean.getApplication().getVersion());
+        entry.setEntityId(bean.getClient().getClient().getId());
+        entry.setEntityVersion(bean.getClient().getVersion());
         ContractData data = new ContractData(bean);
         entry.setData(toJSON(data));
         return entry;
@@ -493,8 +493,8 @@ public class AuditUtils {
         entry.setEntityId(bean.getEntityId());
         entry.setEntityVersion(bean.getEntityVersion());
         switch (type) {
-        case Application:
-            entry.setEntityType(AuditEntityType.Application);
+        case Client:
+            entry.setEntityType(AuditEntityType.Client);
             break;
         case Plan:
             entry.setEntityType(AuditEntityType.Plan);
@@ -524,8 +524,8 @@ public class AuditUtils {
         entry.setEntityId(bean.getEntityId());
         entry.setEntityVersion(bean.getEntityVersion());
         switch (type) {
-        case Application:
-            entry.setEntityType(AuditEntityType.Application);
+        case Client:
+            entry.setEntityType(AuditEntityType.Client);
             break;
         case Plan:
             entry.setEntityType(AuditEntityType.Plan);
@@ -555,8 +555,8 @@ public class AuditUtils {
         entry.setEntityId(bean.getEntityId());
         entry.setEntityVersion(bean.getEntityVersion());
         switch (type) {
-        case Application:
-            entry.setEntityType(AuditEntityType.Application);
+        case Client:
+            entry.setEntityType(AuditEntityType.Client);
             break;
         case Plan:
             entry.setEntityType(AuditEntityType.Plan);
@@ -684,30 +684,30 @@ public class AuditUtils {
     }
 
     /**
-     * Creates an audit entry for the 'application registered' event.
+     * Creates an audit entry for the 'client registered' event.
      * @param bean the bean
      * @param securityContext the security context
      * @return the audit entry
      */
-    public static AuditEntryBean applicationRegistered(ApplicationVersionBean bean,
+    public static AuditEntryBean clientRegistered(ClientVersionBean bean,
             ISecurityContext securityContext) {
-        AuditEntryBean entry = newEntry(bean.getApplication().getOrganization().getId(), AuditEntityType.Application, securityContext);
-        entry.setEntityId(bean.getApplication().getId());
+        AuditEntryBean entry = newEntry(bean.getClient().getOrganization().getId(), AuditEntityType.Client, securityContext);
+        entry.setEntityId(bean.getClient().getId());
         entry.setEntityVersion(bean.getVersion());
         entry.setWhat(AuditEntryType.Register);
         return entry;
     }
 
     /**
-     * Creates an audit entry for the 'application unregistered' event.
+     * Creates an audit entry for the 'client unregistered' event.
      * @param bean the bean
      * @param securityContext the security context
      * @return the audit entry
      */
-    public static AuditEntryBean applicationUnregistered(ApplicationVersionBean bean,
+    public static AuditEntryBean clientUnregistered(ClientVersionBean bean,
             ISecurityContext securityContext) {
-        AuditEntryBean entry = newEntry(bean.getApplication().getOrganization().getId(), AuditEntityType.Application, securityContext);
-        entry.setEntityId(bean.getApplication().getId());
+        AuditEntryBean entry = newEntry(bean.getClient().getOrganization().getId(), AuditEntityType.Client, securityContext);
+        entry.setEntityId(bean.getClient().getId());
         entry.setEntityVersion(bean.getVersion());
         entry.setWhat(AuditEntryType.Unregister);
         return entry;
@@ -744,17 +744,17 @@ public class AuditUtils {
     }
 
     /**
-     * Called when the user reorders the policies in an application.
-     * @param avb the application and version
+     * Called when the user reorders the policies in an client.
+     * @param cvb the client and version
      * @param policyType the policy type
      * @param securityContext the security context
      * @return the audit entry
      */
-    public static AuditEntryBean policiesReordered(ApplicationVersionBean avb, PolicyType policyType,
+    public static AuditEntryBean policiesReordered(ClientVersionBean cvb, PolicyType policyType,
             ISecurityContext securityContext) {
-        AuditEntryBean entry = newEntry(avb.getApplication().getOrganization().getId(), AuditEntityType.Application, securityContext);
-        entry.setEntityId(avb.getApplication().getId());
-        entry.setEntityVersion(avb.getVersion());
+        AuditEntryBean entry = newEntry(cvb.getClient().getOrganization().getId(), AuditEntityType.Client, securityContext);
+        entry.setEntityId(cvb.getClient().getId());
+        entry.setEntityVersion(cvb.getVersion());
         entry.setWhat(AuditEntryType.ReorderPolicies);
         return entry;
     }

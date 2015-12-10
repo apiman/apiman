@@ -47,7 +47,7 @@
           <div class="col-md-5" apiman-permission="apiAdmin">
             <div>
               <div apiman-status="Published">
-                <a apiman-i18n-key="ttdo-new-api-contract" data-field="ttd_toNewContract" href="{{ pluginName }}/new-contract?api={{ params.api }}&amp;apiorg={{ params.org }}&amp;apiv={{ params.version }}">Link my Application to this API (New Contract)</a>
+                <a apiman-i18n-key="ttdo-new-api-contract" data-field="ttd_toNewContract" href="{{ pluginName }}/new-contract?api={{ params.api }}&amp;apiorg={{ params.org }}&amp;apiv={{ params.version }}">Link my Client App to this API (New Contract)</a>
               </div>
               <div>
                 <a apiman-i18n-key="ttdo-new-api-version" data-field="ttd_toNewApiVersion" href="{{ pluginName }}/orgs/{{ org.id }}/apis/{{ api.id}}/{{ version.version }}/new-version">Create a new version of this API (New Version)</a>

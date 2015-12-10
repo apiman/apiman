@@ -28,9 +28,9 @@ public class ContractData implements Serializable {
 
     private static final long serialVersionUID = -937575521565548994L;
 
-    private String appOrgId;
-    private String appId;
-    private String appVersion;
+    private String clientOrgId;
+    private String clientId;
+    private String clientVersion;
     private String apiOrgId;
     private String apiId;
     private String apiVersion;
@@ -48,9 +48,9 @@ public class ContractData implements Serializable {
      * @param bean the contract
      */
     public ContractData(ContractBean bean) {
-        setAppOrgId(bean.getApplication().getApplication().getOrganization().getId());
-        setAppId(bean.getApplication().getApplication().getId());
-        setAppVersion(bean.getApplication().getVersion());
+        setClientOrgId(bean.getClient().getClient().getOrganization().getId());
+        setClientId(bean.getClient().getClient().getId());
+        setClientVersion(bean.getClient().getVersion());
         setApiOrgId(bean.getApi().getApi().getOrganization().getId());
         setApiId(bean.getApi().getApi().getId());
         setApiVersion(bean.getApi().getVersion());
@@ -59,45 +59,45 @@ public class ContractData implements Serializable {
     }
 
     /**
-     * @return the appOrgId
+     * @return the clientOrgId
      */
-    public String getAppOrgId() {
-        return appOrgId;
+    public String getClientOrgId() {
+        return clientOrgId;
     }
 
     /**
-     * @param appOrgId the appOrgId to set
+     * @param clientOrgId the clientOrgId to set
      */
-    public void setAppOrgId(String appOrgId) {
-        this.appOrgId = appOrgId;
+    public void setClientOrgId(String clientOrgId) {
+        this.clientOrgId = clientOrgId;
     }
 
     /**
-     * @return the appId
+     * @return the clientId
      */
-    public String getAppId() {
-        return appId;
+    public String getClientId() {
+        return clientId;
     }
 
     /**
-     * @param appId the appId to set
+     * @param clientId the clientId to set
      */
-    public void setAppId(String appId) {
-        this.appId = appId;
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
     }
 
     /**
-     * @return the appVersion
+     * @return the clientVersion
      */
-    public String getAppVersion() {
-        return appVersion;
+    public String getClientVersion() {
+        return clientVersion;
     }
 
     /**
-     * @param appVersion the appVersion to set
+     * @param clientVersion the clientVersion to set
      */
-    public void setAppVersion(String appVersion) {
-        this.appVersion = appVersion;
+    public void setClientVersion(String clientVersion) {
+        this.clientVersion = clientVersion;
     }
 
     /**
@@ -176,7 +176,7 @@ public class ContractData implements Serializable {
     @Override
     @SuppressWarnings("nls")
     public String toString() {
-        return "ContractData [appOrgId=" + appOrgId + ", appId=" + appId + ", appVersion=" + appVersion
+        return "ContractData [clientOrgId=" + clientOrgId + ", clientId=" + clientId + ", clientVersion=" + clientVersion
                 + ", apiOrgId=" + apiOrgId + ", apiId=" + apiId + ", apiVersion="
                 + apiVersion + ", planId=" + planId + ", planVersion=" + planVersion + "]";
     }

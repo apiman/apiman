@@ -32,7 +32,7 @@ import org.junit.runner.RunWith;
       "GET:/mock-gateway/system/status\n" +
       "PUT:/mock-gateway/apis\n" +
       "GET:/mock-gateway/system/status\n" +
-      "PUT:/mock-gateway/applications\n"
+      "PUT:/mock-gateway/clients\n"
 )
 public class AllTest {
 }

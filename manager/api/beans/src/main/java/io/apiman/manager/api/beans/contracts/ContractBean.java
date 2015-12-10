@@ -16,7 +16,7 @@
 package io.apiman.manager.api.beans.contracts;
 
 import io.apiman.manager.api.beans.apis.ApiVersionBean;
-import io.apiman.manager.api.beans.apps.ApplicationVersionBean;
+import io.apiman.manager.api.beans.clients.ClientVersionBean;
 import io.apiman.manager.api.beans.plans.PlanVersionBean;
 
 import java.io.Serializable;
@@ -33,17 +33,17 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 /**
- * A Contract links an application version to a API version through
+ * A Contract links a client version to a API version through
  * a plan version.  :)
  *
- * This is how application owners/developers configure their application
+ * This is how client owners/developers configure their client
  * to allow it to invoke managed APIs.
  *
  * @author eric.wittmann@redhat.com
  */
 @Entity
 @Table(name = "contracts",
-       uniqueConstraints = { @UniqueConstraint(columnNames = { "appv_id", "apiv_id", "planv_id" }) })
+       uniqueConstraints = { @UniqueConstraint(columnNames = { "clientv_id", "apiv_id", "planv_id" }) })
 public class ContractBean implements Serializable {
 
     private static final long serialVersionUID = -8534463608508756791L;
@@ -52,9 +52,9 @@ public class ContractBean implements Serializable {
     private Long id;
     @ManyToOne
     @JoinColumns({
-        @JoinColumn(name="appv_id", referencedColumnName="id")
+        @JoinColumn(name="clientv_id", referencedColumnName="id")
     })
-    private ApplicationVersionBean application;
+    private ClientVersionBean client;
     @ManyToOne
     @JoinColumns({
         @JoinColumn(name="apiv_id", referencedColumnName="id")
@@ -79,17 +79,17 @@ public class ContractBean implements Serializable {
     }
 
     /**
-     * @return the application
+     * @return the client
      */
-    public ApplicationVersionBean getApplication() {
-        return application;
+    public ClientVersionBean getClient() {
+        return client;
     }
 
     /**
-     * @param application the application to set
+     * @param client the client to set
      */
-    public void setApplication(ApplicationVersionBean application) {
-        this.application = application;
+    public void setClient(ClientVersionBean client) {
+        this.client = client;
     }
 
     /**
@@ -182,7 +182,7 @@ public class ContractBean implements Serializable {
     @Override
     @SuppressWarnings("nls")
     public String toString() {
-        return "ContractBean [id=" + id + ", application=" + application + ", api=" + api + ", plan="
+        return "ContractBean [id=" + id + ", client=" + client + ", api=" + api + ", plan="
                 + plan + ", createdBy=" + createdBy + ", createdOn=" + createdOn + ", apikey=" + apikey + "]";
     }
 

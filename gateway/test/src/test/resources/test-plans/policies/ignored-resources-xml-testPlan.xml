@@ -3,7 +3,7 @@
 
   <testGroup name="Test Policy">
     <test name="Publish Api" endpoint="api">test-plan-data/policies/ignored-resources-xml/001-publish-api.resttest</test>
-    <test name="Register Application" endpoint="api">test-plan-data/policies/ignored-resources-xml/002-register-app.resttest</test>
+    <test name="Register Client" endpoint="api">test-plan-data/policies/ignored-resources-xml/002-register-client.resttest</test>
     <test name="Success 1">test-plan-data/policies/ignored-resources-xml/003-success.resttest</test>
     <test name="Failure 1">test-plan-data/policies/ignored-resources-xml/004-failure.resttest</test>
     <test name="Failure 2">test-plan-data/policies/ignored-resources-xml/005-failure.resttest</test>

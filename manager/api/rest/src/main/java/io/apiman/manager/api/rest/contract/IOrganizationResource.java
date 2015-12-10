@@ -24,24 +24,24 @@ import io.apiman.manager.api.beans.apis.NewApiDefinitionBean;
 import io.apiman.manager.api.beans.apis.NewApiVersionBean;
 import io.apiman.manager.api.beans.apis.UpdateApiBean;
 import io.apiman.manager.api.beans.apis.UpdateApiVersionBean;
-import io.apiman.manager.api.beans.apps.ApplicationBean;
-import io.apiman.manager.api.beans.apps.ApplicationVersionBean;
-import io.apiman.manager.api.beans.apps.NewApplicationBean;
-import io.apiman.manager.api.beans.apps.NewApplicationVersionBean;
-import io.apiman.manager.api.beans.apps.UpdateApplicationBean;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
+import io.apiman.manager.api.beans.clients.ClientBean;
+import io.apiman.manager.api.beans.clients.ClientVersionBean;
+import io.apiman.manager.api.beans.clients.NewClientBean;
+import io.apiman.manager.api.beans.clients.NewClientVersionBean;
+import io.apiman.manager.api.beans.clients.UpdateClientBean;
 import io.apiman.manager.api.beans.contracts.ContractBean;
 import io.apiman.manager.api.beans.contracts.NewContractBean;
 import io.apiman.manager.api.beans.idm.GrantRolesBean;
 import io.apiman.manager.api.beans.members.MemberBean;
-import io.apiman.manager.api.beans.metrics.AppUsagePerApiBean;
+import io.apiman.manager.api.beans.metrics.ClientUsagePerApiBean;
 import io.apiman.manager.api.beans.metrics.HistogramIntervalType;
 import io.apiman.manager.api.beans.metrics.ResponseStatsHistogramBean;
-import io.apiman.manager.api.beans.metrics.ResponseStatsPerAppBean;
+import io.apiman.manager.api.beans.metrics.ResponseStatsPerClientBean;
 import io.apiman.manager.api.beans.metrics.ResponseStatsPerPlanBean;
 import io.apiman.manager.api.beans.metrics.ResponseStatsSummaryBean;
 import io.apiman.manager.api.beans.metrics.UsageHistogramBean;
-import io.apiman.manager.api.beans.metrics.UsagePerAppBean;
+import io.apiman.manager.api.beans.metrics.UsagePerClientBean;
 import io.apiman.manager.api.beans.metrics.UsagePerPlanBean;
 import io.apiman.manager.api.beans.orgs.NewOrganizationBean;
 import io.apiman.manager.api.beans.orgs.OrganizationBean;
@@ -60,8 +60,8 @@ import io.apiman.manager.api.beans.summary.ApiPlanSummaryBean;
 import io.apiman.manager.api.beans.summary.ApiSummaryBean;
 import io.apiman.manager.api.beans.summary.ApiVersionEndpointSummaryBean;
 import io.apiman.manager.api.beans.summary.ApiVersionSummaryBean;
-import io.apiman.manager.api.beans.summary.ApplicationSummaryBean;
-import io.apiman.manager.api.beans.summary.ApplicationVersionSummaryBean;
+import io.apiman.manager.api.beans.summary.ClientSummaryBean;
+import io.apiman.manager.api.beans.summary.ClientVersionSummaryBean;
 import io.apiman.manager.api.beans.summary.ContractSummaryBean;
 import io.apiman.manager.api.beans.summary.PlanSummaryBean;
 import io.apiman.manager.api.beans.summary.PlanVersionSummaryBean;
@@ -70,15 +70,15 @@ import io.apiman.manager.api.rest.contract.exceptions.ApiAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.ApiNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.ApiVersionAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.ApiVersionNotFoundException;
-import io.apiman.manager.api.rest.contract.exceptions.ApplicationAlreadyExistsException;
-import io.apiman.manager.api.rest.contract.exceptions.ApplicationNotFoundException;
-import io.apiman.manager.api.rest.contract.exceptions.ApplicationVersionAlreadyExistsException;
-import io.apiman.manager.api.rest.contract.exceptions.ApplicationVersionNotFoundException;
+import io.apiman.manager.api.rest.contract.exceptions.ClientAlreadyExistsException;
+import io.apiman.manager.api.rest.contract.exceptions.ClientNotFoundException;
+import io.apiman.manager.api.rest.contract.exceptions.ClientVersionAlreadyExistsException;
+import io.apiman.manager.api.rest.contract.exceptions.ClientVersionNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.ContractAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.ContractNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.GatewayNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.InvalidApiStatusException;
-import io.apiman.manager.api.rest.contract.exceptions.InvalidApplicationStatusException;
+import io.apiman.manager.api.rest.contract.exceptions.InvalidClientStatusException;
 import io.apiman.manager.api.rest.contract.exceptions.InvalidMetricCriteriaException;
 import io.apiman.manager.api.rest.contract.exceptions.InvalidNameException;
 import io.apiman.manager.api.rest.contract.exceptions.InvalidVersionException;
@@ -191,199 +191,199 @@ public interface IOrganizationResource {
      */
 
     /**
-     * Use this endpoint to create a new Application.  Note that it is important to also
-     * create an initial version of the Application (e.g. 1.0).  This can either be done
+     * Use this endpoint to create a new Client.  Note that it is important to also
+     * create an initial version of the Client (e.g. 1.0).  This can either be done
      * by including the 'initialVersion' property in the request, or by immediately following
-     * up with a call to "Create Application Version".  If the former is done, then a first
-     * Application version will be created automatically by this endpoint.
-     * @summary Create Application
+     * up with a call to "Create Client Version".  If the former is done, then a first
+     * Client version will be created automatically by this endpoint.
+     * @summary Create Client
      * @param organizationId The Organization ID.
-     * @param bean Information about the new Application.
-     * @statuscode 200 If the Application is successfully created.
+     * @param bean Information about the new Client.
+     * @statuscode 200 If the Client is successfully created.
      * @statuscode 404 If the Organization does not exist.
-     * @return Full details about the newly created Application.
+     * @return Full details about the newly created Client.
      * @throws OrganizationNotFoundException when trying to get, update, or delete an organization that does not exist
-     * @throws ApplicationAlreadyExistsException when trying to create an Application that already exists
+     * @throws ClientAlreadyExistsException when trying to create an Client that already exists
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      * @throws InvalidNameException when the user attempts the create with an invalid name
      */
     @POST
-    @Path("{organizationId}/applications")
+    @Path("{organizationId}/clients")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public ApplicationBean createApp(@PathParam("organizationId") String organizationId,
-            NewApplicationBean bean) throws OrganizationNotFoundException, ApplicationAlreadyExistsException,
+    public ClientBean createClient(@PathParam("organizationId") String organizationId,
+            NewClientBean bean) throws OrganizationNotFoundException, ClientAlreadyExistsException,
             NotAuthorizedException, InvalidNameException;
 
     /**
-     * Use this endpoint to retrieve information about a single Application by ID.  Note
-     * that this only returns information about the Application, not about any particular
-     * *version* of the Application.
-     * @summary Get Application By ID
+     * Use this endpoint to retrieve information about a single Client by ID.  Note
+     * that this only returns information about the Client, not about any particular
+     * *version* of the Client.
+     * @summary Get Client By ID
      * @param organizationId The Organization ID.
-     * @param applicationId The Application ID.
-     * @statuscode 200 If the Application is successfully returned.
+     * @param clientId The Client ID.
+     * @statuscode 200 If the Client is successfully returned.
      * @statuscode 404 If the Organization does not exist.
-     * @statuscode 404 If the Application does not exist.
-     * @return An Application.
-     * @throws ApplicationNotFoundException when trying to get, update, or delete an application that does not exist when trying to get, update, or delete an application that does not exist.
+     * @statuscode 404 If the Client does not exist.
+     * @return An Client.
+     * @throws ClientNotFoundException when trying to get, update, or delete a client that does not exist when trying to get, update, or delete a client that does not exist.
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
-    @Path("{organizationId}/applications/{applicationId}")
+    @Path("{organizationId}/clients/{clientId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public ApplicationBean getApp(@PathParam("organizationId") String organizationId,
-            @PathParam("applicationId") String applicationId) throws ApplicationNotFoundException,
+    public ClientBean getClient(@PathParam("organizationId") String organizationId,
+            @PathParam("clientId") String clientId) throws ClientNotFoundException,
             NotAuthorizedException;
 
     /**
-     * This endpoint returns audit activity information about the Application.
-     * @summary Get Application Activity
+     * This endpoint returns audit activity information about the Client.
+     * @summary Get Client Activity
      * @param organizationId The Organization ID.
-     * @param applicationId The Application ID.
+     * @param clientId The Client ID.
      * @param page Which page of activity should be returned.
      * @param pageSize The number of entries per page to return.
      * @statuscode 200 If the audit information is successfully returned.
      * @statuscode 404 If the Organization does not exist.
-     * @statuscode 404 If the Application does not exist.
+     * @statuscode 404 If the Client does not exist.
      * @return A list of audit activity entries.
-     * @throws ApplicationNotFoundException when trying to get, update, or delete an application that does not exist
+     * @throws ClientNotFoundException when trying to get, update, or delete a client that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
-    @Path("{organizationId}/applications/{applicationId}/activity")
+    @Path("{organizationId}/clients/{clientId}/activity")
     @Produces(MediaType.APPLICATION_JSON)
-    public SearchResultsBean<AuditEntryBean> getAppActivity(
-            @PathParam("organizationId") String organizationId, @PathParam("applicationId") String applicationId,
-            @QueryParam("page") int page, @QueryParam("count") int pageSize) throws ApplicationNotFoundException,
+    public SearchResultsBean<AuditEntryBean> getClientActivity(
+            @PathParam("organizationId") String organizationId, @PathParam("clientId") String clientId,
+            @QueryParam("page") int page, @QueryParam("count") int pageSize) throws ClientNotFoundException,
             NotAuthorizedException;
 
     /**
-     * Use this endpoint to get a list of all Applications in the Organization.
-     * @summary List Applications
+     * Use this endpoint to get a list of all Clients in the Organization.
+     * @summary List Clients
      * @param organizationId The Organization ID.
-     * @statuscode 200 If the list of Applications is successfully returned.
+     * @statuscode 200 If the list of Clients is successfully returned.
      * @statuscode 404 If the Organization does not exist.
-     * @return A list of Applications.
+     * @return A list of Clients.
      * @throws OrganizationNotFoundException when trying to get, update, or delete an organization that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
-    @Path("{organizationId}/applications")
+    @Path("{organizationId}/clients")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<ApplicationSummaryBean> listApps(@PathParam("organizationId") String organizationId)
+    public List<ClientSummaryBean> listClients(@PathParam("organizationId") String organizationId)
             throws OrganizationNotFoundException, NotAuthorizedException;
 
     /**
-     * Use this endpoint to update information about an Application.
-     * @summary Update Application
+     * Use this endpoint to update information about an Client.
+     * @summary Update Client
      * @param organizationId The Organization ID.
-     * @param applicationId The Application ID.
-     * @param bean Updated Application information.
-     * @statuscode 204 If the Application is updated successfully.
-     * @statuscode 404 If the Application does not exist.
-     * @throws ApplicationNotFoundException when trying to get, update, or delete an application that does not exist
+     * @param clientId The Client ID.
+     * @param bean Updated Client information.
+     * @statuscode 204 If the Client is updated successfully.
+     * @statuscode 404 If the Client does not exist.
+     * @throws ClientNotFoundException when trying to get, update, or delete a client that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @PUT
-    @Path("{organizationId}/applications/{applicationId}")
+    @Path("{organizationId}/clients/{clientId}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public void updateApp(@PathParam("organizationId") String organizationId,
-            @PathParam("applicationId") String applicationId, UpdateApplicationBean bean)
-            throws ApplicationNotFoundException, NotAuthorizedException;
+    public void updateClient(@PathParam("organizationId") String organizationId,
+            @PathParam("clientId") String clientId, UpdateClientBean bean)
+            throws ClientNotFoundException, NotAuthorizedException;
 
     /**
-     * Use this endpoint to create a new version of the Application.
-     * @summary Create Application Version
+     * Use this endpoint to create a new version of the Client.
+     * @summary Create Client Version
      * @param organizationId The Organization ID.
-     * @param applicationId The Application ID.
-     * @param bean Initial information about the new Application version.
-     * @statuscode 200 If the Application version is created successfully.
-     * @statuscode 404 If the Application does not exist.
-     * @statuscode 409 If the Application version already exists.
-     * @return Full details about the newly created Application version.
-     * @throws ApplicationNotFoundException when trying to get, update, or delete an application that does not exist
+     * @param clientId The Client ID.
+     * @param bean Initial information about the new Client version.
+     * @statuscode 200 If the Client version is created successfully.
+     * @statuscode 404 If the Client does not exist.
+     * @statuscode 409 If the Client version already exists.
+     * @return Full details about the newly created Client version.
+     * @throws ClientNotFoundException when trying to get, update, or delete a client that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      * @throws InvalidVersionException when the user attempts to use an invalid version value
      */
     @POST
-    @Path("{organizationId}/applications/{applicationId}/versions")
+    @Path("{organizationId}/clients/{clientId}/versions")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public ApplicationVersionBean createAppVersion(@PathParam("organizationId") String organizationId,
-            @PathParam("applicationId") String applicationId, NewApplicationVersionBean bean)
-            throws ApplicationNotFoundException, NotAuthorizedException, InvalidVersionException,
-            ApplicationVersionAlreadyExistsException;
+    public ClientVersionBean createClientVersion(@PathParam("organizationId") String organizationId,
+            @PathParam("clientId") String clientId, NewClientVersionBean bean)
+            throws ClientNotFoundException, NotAuthorizedException, InvalidVersionException,
+            ClientVersionAlreadyExistsException;
 
     /**
-     * Use this endpoint to list all of the versions of an Application.
-     * @summary List Application Versions
+     * Use this endpoint to list all of the versions of an Client.
+     * @summary List Client Versions
      * @param organizationId The Organization ID.
-     * @param applicationId The Application ID.
-     * @statuscode 200 If the list of Application versions is successfully returned.
-     * @return A list of Applications.
-     * @throws ApplicationNotFoundException when trying to get, update, or delete an application that does not exist
+     * @param clientId The Client ID.
+     * @statuscode 200 If the list of Client versions is successfully returned.
+     * @return A list of Clients.
+     * @throws ClientNotFoundException when trying to get, update, or delete a client that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
-    @Path("{organizationId}/applications/{applicationId}/versions")
+    @Path("{organizationId}/clients/{clientId}/versions")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<ApplicationVersionSummaryBean> listAppVersions(@PathParam("organizationId") String organizationId,
-            @PathParam("applicationId") String applicationId) throws ApplicationNotFoundException, NotAuthorizedException;
+    public List<ClientVersionSummaryBean> listClientVersions(@PathParam("organizationId") String organizationId,
+            @PathParam("clientId") String clientId) throws ClientNotFoundException, NotAuthorizedException;
 
     /**
      * Use this endpoint to get detailed information about a single version of
-     * an Application.
-     * @summary Get Application Version
+     * an Client.
+     * @summary Get Client Version
      * @param organizationId The Organization ID.
-     * @param applicationId The Application ID.
-     * @param version The Application version.
-     * @statuscode 200 If the Application version is successfully returned.
-     * @statuscode 404 If the Application version does not exist.
-     * @return An Application version.
-     * @throws ApplicationVersionNotFoundException when trying to get, update, or delete a application version that does not exist
+     * @param clientId The Client ID.
+     * @param version The Client version.
+     * @statuscode 200 If the Client version is successfully returned.
+     * @statuscode 404 If the Client version does not exist.
+     * @return An Client version.
+     * @throws ClientVersionNotFoundException when trying to get, update, or delete a client version that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
-    @Path("{organizationId}/applications/{applicationId}/versions/{version}")
+    @Path("{organizationId}/clients/{clientId}/versions/{version}")
     @Produces(MediaType.APPLICATION_JSON)
-    public ApplicationVersionBean getAppVersion(@PathParam("organizationId") String organizationId,
-            @PathParam("applicationId") String applicationId, @PathParam("version") String version)
-            throws ApplicationVersionNotFoundException, NotAuthorizedException;
+    public ClientVersionBean getClientVersion(@PathParam("organizationId") String organizationId,
+            @PathParam("clientId") String clientId, @PathParam("version") String version)
+            throws ClientVersionNotFoundException, NotAuthorizedException;
 
     /**
      * Use this endpoint to get audit activity information for a single version of the
-     * Application.
-     * @summary Get Application Version Activity
+     * Client.
+     * @summary Get Client Version Activity
      * @param organizationId The Organization ID.
-     * @param applicationId The Application ID.
-     * @param version The Application version.
+     * @param clientId The Client ID.
+     * @param version The Client version.
      * @param page Which page of activity data to return.
      * @param pageSize The number of entries per page to return.
      * @statuscode 200 If the audit activity entries are successfully returned.
-     * @statuscode 404 If the Application version does not exist.
+     * @statuscode 404 If the Client version does not exist.
      * @return A list of audit entries.
-     * @throws ApplicationVersionNotFoundException when trying to get, update, or delete a application version that does not exist
+     * @throws ClientVersionNotFoundException when trying to get, update, or delete a client version that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
-    @Path("{organizationId}/applications/{applicationId}/versions/{version}/activity")
+    @Path("{organizationId}/clients/{clientId}/versions/{version}/activity")
     @Produces(MediaType.APPLICATION_JSON)
-    public SearchResultsBean<AuditEntryBean> getAppVersionActivity(
-            @PathParam("organizationId") String organizationId, @PathParam("applicationId") String applicationId,
+    public SearchResultsBean<AuditEntryBean> getClientVersionActivity(
+            @PathParam("organizationId") String organizationId, @PathParam("clientId") String clientId,
             @PathParam("version") String version, @QueryParam("page") int page,
-            @QueryParam("count") int pageSize) throws ApplicationVersionNotFoundException, NotAuthorizedException;
+            @QueryParam("count") int pageSize) throws ClientVersionNotFoundException, NotAuthorizedException;
 
     /**
-     * Retrieves metrics/analytics information for a specific application.  This will
+     * Retrieves metrics/analytics information for a specific client.  This will
      * return request count data broken down by API.  It basically answers
-     * the question "which APIs is my app really using?".
+     * the question "which APIs is my client really using?".
      *
-     * @summary Get App Usage Metrics (per API)
+     * @summary Get Client Usage Metrics (per API)
      * @param organizationId The organization ID.
-     * @param applicationId The application ID.
-     * @param version The application version.
+     * @param clientId The client ID.
+     * @param version The client version.
      * @param fromDate The start of a valid date range.
      * @param toDate The end of a valid date range.
      * @statuscode 200 If the metrics data is successfully returned.
@@ -391,29 +391,29 @@ public interface IOrganizationResource {
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
-    @Path("{organizationId}/applications/{applicationId}/versions/{version}/metrics/apiUsage")
+    @Path("{organizationId}/clients/{clientId}/versions/{version}/metrics/apiUsage")
     @Produces(MediaType.APPLICATION_JSON)
-    public AppUsagePerApiBean getAppUsagePerApi(
-            @PathParam("organizationId") String organizationId, @PathParam("applicationId") String applicationId,
+    public ClientUsagePerApiBean getClientUsagePerApi(
+            @PathParam("organizationId") String organizationId, @PathParam("clientId") String clientId,
             @PathParam("version") String version, @QueryParam("from") String fromDate,
             @QueryParam("to") String toDate) throws NotAuthorizedException, InvalidMetricCriteriaException;
 
 
     /**
-     * Use this endpoint to create a Contract between the Application and an API.  In order
+     * Use this endpoint to create a Contract between the Client and an API.  In order
      * to create a Contract, the caller must specify the Organization, ID, and Version of the
      * API.  Additionally the caller must specify the ID of the Plan it wished to use for
      * the Contract with the API.
      * @summary Create an API Contract
      * @param organizationId The Organization ID.
-     * @param applicationId The Application ID.
-     * @param version The Application version.
+     * @param clientId The Client ID.
+     * @param version The Client version.
      * @param bean Required information about the new Contract.
      * @statuscode 200 If the Contract is successfully created.
-     * @statuscode 404 If the Application version does not exist.
+     * @statuscode 404 If the Client version does not exist.
      * @return Full details about the newly created Contract.
      * @throws OrganizationNotFoundException when trying to get, update, or delete an organization that does not exist
-     * @throws ApplicationNotFoundException when trying to get, update, or delete an application that does not exist
+     * @throws ClientNotFoundException when trying to get, update, or delete a client that does not exist
      * @throws ApiNotFoundException when trying to get, update, or delete an API that does not exist
      * when trying to get, update, or delete an plan that does not exist
      * @throws PlanNotFoundException when trying to get, update, or delete an plan that does not exist
@@ -421,63 +421,63 @@ public interface IOrganizationResource {
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @POST
-    @Path("{organizationId}/applications/{applicationId}/versions/{version}/contracts")
+    @Path("{organizationId}/clients/{clientId}/versions/{version}/contracts")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public ContractBean createContract(@PathParam("organizationId") String organizationId,
-            @PathParam("applicationId") String applicationId, @PathParam("version") String version,
-            NewContractBean bean) throws OrganizationNotFoundException, ApplicationNotFoundException,
+            @PathParam("clientId") String clientId, @PathParam("version") String version,
+            NewContractBean bean) throws OrganizationNotFoundException, ClientNotFoundException,
             ApiNotFoundException, PlanNotFoundException, ContractAlreadyExistsException,
             NotAuthorizedException;
 
     /**
      * Use this endpoint to retrieve detailed information about a single API Contract
-     * for an Application.
+     * for an Client.
      * @summary Get API Contract
      * @param organizationId The Organization ID.
-     * @param applicationId The Application ID.
-     * @param version The Application version.
+     * @param clientId The Client ID.
+     * @param version The Client version.
      * @param contractId The ID of the Contract.
      * @statuscode 200 If the Contract is successfully returned.
-     * @statuscode 404 If the Application version does not exist.
+     * @statuscode 404 If the Client version does not exist.
      * @statuscode 404 If the Contract is not found.
      * @return Details about a single Contract.
-     * @throws ApplicationNotFoundException when trying to get, update, or delete an application that does not exist
+     * @throws ClientNotFoundException when trying to get, update, or delete a client that does not exist
      * @throws ContractNotFoundException when trying to get, update, or delete a contract that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
-    @Path("{organizationId}/applications/{applicationId}/versions/{version}/contracts/{contractId}")
+    @Path("{organizationId}/clients/{clientId}/versions/{version}/contracts/{contractId}")
     @Produces(MediaType.APPLICATION_JSON)
     public ContractBean getContract(@PathParam("organizationId") String organizationId,
-            @PathParam("applicationId") String applicationId, @PathParam("version") String version,
-            @PathParam("contractId") Long contractId) throws ApplicationNotFoundException,
+            @PathParam("clientId") String clientId, @PathParam("version") String version,
+            @PathParam("contractId") Long contractId) throws ClientNotFoundException,
             ContractNotFoundException, NotAuthorizedException;
 
     /**
-     * Use this endpoint to get a list of all Contracts for an Application.
-     * @summary List All Contracts for an Application
+     * Use this endpoint to get a list of all Contracts for an Client.
+     * @summary List All Contracts for an Client
      * @param organizationId The Organization ID.
-     * @param applicationId The Application ID.
-     * @param version The Application version.
+     * @param clientId The Client ID.
+     * @param version The Client version.
      * @statuscode 200 If the list of Contracts is successfully returned.
-     * @statuscode 404 If the Application is not found.
+     * @statuscode 404 If the Client is not found.
      * @return A list of Contracts.
-     * @throws ApplicationNotFoundException when trying to get, update, or delete an application that does not exist
+     * @throws ClientNotFoundException when trying to get, update, or delete a client that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
-    @Path("{organizationId}/applications/{applicationId}/versions/{version}/contracts")
+    @Path("{organizationId}/clients/{clientId}/versions/{version}/contracts")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<ContractSummaryBean> getApplicationVersionContracts(@PathParam("organizationId") String organizationId,
-            @PathParam("applicationId") String applicationId, @PathParam("version") String version)
-            throws ApplicationNotFoundException, NotAuthorizedException;
+    public List<ContractSummaryBean> getclientVersionContracts(@PathParam("organizationId") String organizationId,
+            @PathParam("clientId") String clientId, @PathParam("version") String version)
+            throws ClientNotFoundException, NotAuthorizedException;
 
     /**
      * Use this endpoint to get registry style information about all APIs that this
-     * Application consumes.  This is a useful endpoint to invoke in order to retrieve
-     * a summary of every API consumed by the application.  The information returned
-     * by this endpoint could potentially be included directly in a client application
+     * Client consumes.  This is a useful endpoint to invoke in order to retrieve
+     * a summary of every API consumed by the client.  The information returned
+     * by this endpoint could potentially be included directly in a client
      * as a way to lookup endpoint information for the APIs it wishes to consume.  This
      * variant of the API Registry is formatted as JSON data.
      *
@@ -489,30 +489,30 @@ public interface IOrganizationResource {
      *
      * @summary Get API Registry (JSON)
      * @param organizationId The Organization ID.
-     * @param applicationId The Application ID.
-     * @param version The Application version.
+     * @param clientId The Client ID.
+     * @param version The Client version.
      * @param download Query parameter set to true in order to generate a download link.
      * @statuscode 200 If the API Registry information is successfully returned.
-     * @statuscode 404 If the Application does not exist.
+     * @statuscode 404 If the Client does not exist.
      * @return API Registry information or temporary download information.
-     * @throws ApplicationNotFoundException when trying to get, update, or delete an application that does not exist
+     * @throws ClientNotFoundException when trying to get, update, or delete a client that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
-    @Path("{organizationId}/applications/{applicationId}/versions/{version}/apiregistry/json")
+    @Path("{organizationId}/clients/{clientId}/versions/{version}/apiregistry/json")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getApiRegistryJSON(@PathParam("organizationId") String organizationId,
-            @PathParam("applicationId") String applicationId, @PathParam("version") String version,
+            @PathParam("clientId") String clientId, @PathParam("version") String version,
             @QueryParam("download") String download)
-                    throws ApplicationNotFoundException, NotAuthorizedException;
-    public Response getApiRegistryJSON(String organizationId, String applicationId, String version,
-            boolean hasPermission) throws ApplicationNotFoundException, NotAuthorizedException;
+                    throws ClientNotFoundException, NotAuthorizedException;
+    public Response getApiRegistryJSON(String organizationId, String clientId, String version,
+            boolean hasPermission) throws ClientNotFoundException, NotAuthorizedException;
 
     /**
      * Use this endpoint to get registry style information about all APIs that this
-     * Application consumes.  This is a useful endpoint to invoke in order to retrieve
-     * a summary of every API consumed by the application.  The information returned
-     * by this endpoint could potentially be included directly in a client application
+     * Client consumes.  This is a useful endpoint to invoke in order to retrieve
+     * a summary of every API consumed by the client.  The information returned
+     * by this endpoint could potentially be included directly in a client
      * as a way to lookup endpoint information for the APIs it wishes to consume.  This
      * variant of the API Registry is formatted as XML data.
      *
@@ -524,203 +524,203 @@ public interface IOrganizationResource {
      *
      * @summary Get API Registry (XML)
      * @param organizationId The Organization ID.
-     * @param applicationId The Application ID.
-     * @param version The Application version.
+     * @param clientId The Client ID.
+     * @param version The Client version.
      * @param download Query parameter set to true in order to generate a download link.
      * @statuscode 200 If the API Registry information is successfully returned.
-     * @statuscode 404 If the Application does not exist.
+     * @statuscode 404 If the Client does not exist.
      * @return API Registry information.
-     * @throws ApplicationNotFoundException when trying to get, update, or delete an application that does not exist
+     * @throws ClientNotFoundException when trying to get, update, or delete a client that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
-    @Path("{organizationId}/applications/{applicationId}/versions/{version}/apiregistry/xml")
+    @Path("{organizationId}/clients/{clientId}/versions/{version}/apiregistry/xml")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     public Response getApiRegistryXML(@PathParam("organizationId") String organizationId,
-            @PathParam("applicationId") String applicationId, @PathParam("version") String version,
+            @PathParam("clientId") String clientId, @PathParam("version") String version,
             @QueryParam("download") String download)
-                    throws ApplicationNotFoundException, NotAuthorizedException;
-    public Response getApiRegistryXML(String organizationId, String applicationId, String version,
-            boolean hasPermission) throws ApplicationNotFoundException, NotAuthorizedException;
+                    throws ClientNotFoundException, NotAuthorizedException;
+    public Response getApiRegistryXML(String organizationId, String clientId, String version,
+            boolean hasPermission) throws ClientNotFoundException, NotAuthorizedException;
 
     /**
-     * Use this endpoint to break all contracts between this application and its APIs.
+     * Use this endpoint to break all contracts between this client and its APIs.
      * @summary Break All Contracts
      * @param organizationId The Organization ID.
-     * @param applicationId The Application ID.
-     * @param version The Application version.
+     * @param clientId The Client ID.
+     * @param version The Client version.
      * @statuscode 200 If the operation is successful.
-     * @statuscode 404 If the Application does not exist.
-     * @throws ApplicationNotFoundException when trying to get, update, or delete an application that does not exist
+     * @statuscode 404 If the Client does not exist.
+     * @throws ClientNotFoundException when trying to get, update, or delete a client that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @DELETE
-    @Path("{organizationId}/applications/{applicationId}/versions/{version}/contracts")
+    @Path("{organizationId}/clients/{clientId}/versions/{version}/contracts")
     public void deleteAllContracts(@PathParam("organizationId") String organizationId,
-            @PathParam("applicationId") String applicationId, @PathParam("version") String version)
-            throws ApplicationNotFoundException, NotAuthorizedException;
+            @PathParam("clientId") String clientId, @PathParam("version") String version)
+            throws ClientNotFoundException, NotAuthorizedException;
 
     /**
      * Use this endpoint to break a Contract with an API.
      * @summary Break Contract
      * @param organizationId The Organization ID.
-     * @param applicationId The Application ID.
-     * @param version The Application version.
+     * @param clientId The Client ID.
+     * @param version The Client version.
      * @param contractId The Contract ID.
      * @statuscode 204 If the Contract is successfully broken.
-     * @statuscode 404 If the Application does not exist.
+     * @statuscode 404 If the Client does not exist.
      * @statuscode 404 If the Contract does not exist.
-     * @throws ApplicationNotFoundException when trying to get, update, or delete an application that does not exist
+     * @throws ClientNotFoundException when trying to get, update, or delete a client that does not exist
      * @throws ContractNotFoundException when trying to get, update, or delete a contract that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @DELETE
-    @Path("{organizationId}/applications/{applicationId}/versions/{version}/contracts/{contractId}")
+    @Path("{organizationId}/clients/{clientId}/versions/{version}/contracts/{contractId}")
     public void deleteContract(@PathParam("organizationId") String organizationId,
-            @PathParam("applicationId") String applicationId, @PathParam("version") String version,
-            @PathParam("contractId") Long contractId) throws ApplicationNotFoundException,
-            ContractNotFoundException, NotAuthorizedException, InvalidApplicationStatusException;
+            @PathParam("clientId") String clientId, @PathParam("version") String version,
+            @PathParam("contractId") Long contractId) throws ClientNotFoundException,
+            ContractNotFoundException, NotAuthorizedException, InvalidClientStatusException;
 
     /**
-     * Use this endpoint to add a new Policy to the Application version.
-     * @summary Add Application Policy
+     * Use this endpoint to add a new Policy to the Client version.
+     * @summary Add Client Policy
      * @param organizationId The Organization ID.
-     * @param applicationId The Application ID.
-     * @param version The Application version.
+     * @param clientId The Client ID.
+     * @param version The Client version.
      * @param bean Information about the new Policy.
      * @statuscode 200 If the Policy is successfully added.
-     * @statuscode 404 If the Application does not exist.
+     * @statuscode 404 If the Client does not exist.
      * @return Full details about the newly added Policy.
      * @throws OrganizationNotFoundException when trying to get, update, or delete an organization that does not exist
-     * @throws ApplicationVersionNotFoundException when trying to get, update, or delete a application version that does not exist
+     * @throws ClientVersionNotFoundException when trying to get, update, or delete a client version that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @POST
-    @Path("{organizationId}/applications/{applicationId}/versions/{version}/policies")
+    @Path("{organizationId}/clients/{clientId}/versions/{version}/policies")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public PolicyBean createAppPolicy(@PathParam("organizationId") String organizationId,
-            @PathParam("applicationId") String applicationId, @PathParam("version") String version,
-            NewPolicyBean bean) throws OrganizationNotFoundException, ApplicationVersionNotFoundException,
+    public PolicyBean createClientPolicy(@PathParam("organizationId") String organizationId,
+            @PathParam("clientId") String clientId, @PathParam("version") String version,
+            NewPolicyBean bean) throws OrganizationNotFoundException, ClientVersionNotFoundException,
             NotAuthorizedException;
 
     /**
-     * Use this endpoint to get information about a single Policy in the Application version.
-     * @summary Get Application Policy
+     * Use this endpoint to get information about a single Policy in the Client version.
+     * @summary Get Client Policy
      * @param organizationId The Organization ID.
-     * @param applicationId The Application ID.
-     * @param version The Application version.
+     * @param clientId The Client ID.
+     * @param version The Client version.
      * @param policyId The Policy ID.
      * @statuscode 200 If the Policy is successfully returned.
-     * @statuscode 404 If the Application does not exist.
+     * @statuscode 404 If the Client does not exist.
      * @return Full information about the Policy.
      * @throws OrganizationNotFoundException when trying to get, update, or delete an organization that does not exist
-     * @throws ApplicationVersionNotFoundException when trying to get, update, or delete a application version that does not exist
+     * @throws ClientVersionNotFoundException when trying to get, update, or delete a client version that does not exist
      * @throws PolicyNotFoundException when trying to get, update, or delete a policy that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
-    @Path("{organizationId}/applications/{applicationId}/versions/{version}/policies/{policyId}")
+    @Path("{organizationId}/clients/{clientId}/versions/{version}/policies/{policyId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public PolicyBean getAppPolicy(@PathParam("organizationId") String organizationId,
-            @PathParam("applicationId") String applicationId, @PathParam("version") String version,
-            @PathParam("policyId") long policyId) throws OrganizationNotFoundException, ApplicationVersionNotFoundException,
+    public PolicyBean getClientPolicy(@PathParam("organizationId") String organizationId,
+            @PathParam("clientId") String clientId, @PathParam("version") String version,
+            @PathParam("policyId") long policyId) throws OrganizationNotFoundException, ClientVersionNotFoundException,
             PolicyNotFoundException, NotAuthorizedException;
 
     /**
-     * Use this endpoint to update the meta-data or configuration of a single Application Policy.
-     * @summary Update Application Policy
+     * Use this endpoint to update the meta-data or configuration of a single Client Policy.
+     * @summary Update Client Policy
      * @param organizationId The Organization ID.
-     * @param applicationId The Application ID.
-     * @param version The Application version.
+     * @param clientId The Client ID.
+     * @param version The Client version.
      * @param policyId The Policy ID.
      * @param bean New meta-data and/or configuration for the Policy.
      * @statuscode 204 If the Policy was successfully updated.
-     * @statuscode 404 If the Application does not exist.
+     * @statuscode 404 If the Client does not exist.
      * @statuscode 404 If the Policy does not exist.
      * @throws OrganizationNotFoundException when trying to get, update, or delete an organization that does not exist
-     * @throws ApplicationVersionNotFoundException when trying to get, update, or delete a application version that does not exist
+     * @throws ClientVersionNotFoundException when trying to get, update, or delete a client version that does not exist
      * @throws PolicyNotFoundException when trying to get, update, or delete a policy that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @PUT
-    @Path("{organizationId}/applications/{applicationId}/versions/{version}/policies/{policyId}")
+    @Path("{organizationId}/clients/{clientId}/versions/{version}/policies/{policyId}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public void updateAppPolicy(@PathParam("organizationId") String organizationId,
-            @PathParam("applicationId") String applicationId, @PathParam("version") String version,
+    public void updateClientPolicy(@PathParam("organizationId") String organizationId,
+            @PathParam("clientId") String clientId, @PathParam("version") String version,
             @PathParam("policyId") long policyId, UpdatePolicyBean bean) throws OrganizationNotFoundException,
-            ApplicationVersionNotFoundException, PolicyNotFoundException, NotAuthorizedException;
+            ClientVersionNotFoundException, PolicyNotFoundException, NotAuthorizedException;
 
     /**
-     * Use this endpoint to remove a Policy from the Application.
-     * @summary Remove Application Policy
+     * Use this endpoint to remove a Policy from the Client.
+     * @summary Remove Client Policy
      * @param organizationId The Organization ID.
-     * @param applicationId The Application ID.
-     * @param version The Application version.
+     * @param clientId The Client ID.
+     * @param version The Client version.
      * @param policyId The Policy ID.
      * @statuscode 204 If the Policy was successfully deleted.
-     * @statuscode 404 If the Application does not exist.
+     * @statuscode 404 If the Client does not exist.
      * @statuscode 404 If the Policy does not exist.
      * @throws OrganizationNotFoundException when trying to get, update, or delete an organization that does not exist
-     * @throws ApplicationVersionNotFoundException when trying to get, update, or delete a application version that does not exist
+     * @throws ClientVersionNotFoundException when trying to get, update, or delete a client version that does not exist
      * @throws PolicyNotFoundException when trying to get, update, or delete a policy that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @DELETE
-    @Path("{organizationId}/applications/{applicationId}/versions/{version}/policies/{policyId}")
-    public void deleteAppPolicy(@PathParam("organizationId") String organizationId,
-            @PathParam("applicationId") String applicationId, @PathParam("version") String version,
-            @PathParam("policyId") long policyId) throws OrganizationNotFoundException, ApplicationVersionNotFoundException,
+    @Path("{organizationId}/clients/{clientId}/versions/{version}/policies/{policyId}")
+    public void deleteClientPolicy(@PathParam("organizationId") String organizationId,
+            @PathParam("clientId") String clientId, @PathParam("version") String version,
+            @PathParam("policyId") long policyId) throws OrganizationNotFoundException, ClientVersionNotFoundException,
             PolicyNotFoundException, NotAuthorizedException;
 
     /**
-     * Use this endpoint to list all of the Policies configured for the Application.
-     * @summary List All Application Policies
+     * Use this endpoint to list all of the Policies configured for the Client.
+     * @summary List All Client Policies
      * @param organizationId The Organization ID.
-     * @param applicationId The Application ID.
-     * @param version The Application version.
+     * @param clientId The Client ID.
+     * @param version The Client version.
      * @statuscode 200 If the list of Policies is successfully returned.
-     * @statuscode 404 If the Application does not exist.
+     * @statuscode 404 If the Client does not exist.
      * @return A List of Policies.
      * @throws OrganizationNotFoundException when trying to get, update, or delete an organization that does not exist
-     * @throws ApplicationVersionNotFoundException when trying to get, update, or delete a application version that does not exist
+     * @throws ClientVersionNotFoundException when trying to get, update, or delete a client version that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
-    @Path("{organizationId}/applications/{applicationId}/versions/{version}/policies")
+    @Path("{organizationId}/clients/{clientId}/versions/{version}/policies")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<PolicySummaryBean> listAppPolicies(@PathParam("organizationId") String organizationId,
-            @PathParam("applicationId") String applicationId, @PathParam("version") String version)
-            throws OrganizationNotFoundException, ApplicationVersionNotFoundException,
+    public List<PolicySummaryBean> listClientPolicies(@PathParam("organizationId") String organizationId,
+            @PathParam("clientId") String clientId, @PathParam("version") String version)
+            throws OrganizationNotFoundException, ClientVersionNotFoundException,
             NotAuthorizedException;
 
     /**
-     * Use this endpoint to change the order of Policies for an Application.  When a
-     * Policy is added to the Application, it is added as the last Policy in the list
-     * of Application Policies.  Sometimes the order of Policies is important, so it
+     * Use this endpoint to change the order of Policies for an Client.  When a
+     * Policy is added to the Client, it is added as the last Policy in the list
+     * of Client Policies.  Sometimes the order of Policies is important, so it
      * is often useful to re-order the Policies by invoking this endpoint.  The body
-     * of the request should include all of the Policies for the Application, in the
+     * of the request should include all of the Policies for the Client, in the
      * new desired order.  Note that only the IDs of each of the Policies is actually
      * required in the request, at a minimum.
-     * @summary Re-Order Application Policies
+     * @summary Re-Order Client Policies
      * @param organizationId The Organization ID.
-     * @param applicationId The Application ID.
-     * @param version The Application version.
+     * @param clientId The Client ID.
+     * @param version The Client version.
      * @param policyChain The Policies in the desired order.
      * @statuscode 204 If the re-ordering of Policies was successful.
-     * @statuscode 404 If the Application does not exist.
+     * @statuscode 404 If the Client does not exist.
      * @throws OrganizationNotFoundException when trying to get, update, or delete an organization that does not exist
-     * @throws ApplicationVersionNotFoundException when trying to get, update, or delete a application version that does not exist
+     * @throws ClientVersionNotFoundException when trying to get, update, or delete a client version that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @POST
-    @Path("{organizationId}/applications/{applicationId}/versions/{version}/reorderPolicies")
+    @Path("{organizationId}/clients/{clientId}/versions/{version}/reorderPolicies")
     @Consumes(MediaType.APPLICATION_JSON)
-    public void reorderApplicationPolicies(@PathParam("organizationId") String organizationId,
-            @PathParam("applicationId") String applicationId, @PathParam("version") String version,
+    public void reorderClientPolicies(@PathParam("organizationId") String organizationId,
+            @PathParam("clientId") String clientId, @PathParam("version") String version,
             PolicyChainBean policyChain) throws OrganizationNotFoundException,
-            ApplicationVersionNotFoundException, NotAuthorizedException;
+            ClientVersionNotFoundException, NotAuthorizedException;
 
     /*
      * APIS
@@ -1277,7 +1277,7 @@ public interface IOrganizationResource {
 
     /**
      * Use this endpoint to get a list of all Contracts created with this API.  This
-     * will return Contracts created by between any Application and through any Plan.
+     * will return Contracts created by between any Client and through any Plan.
      * @summary List API Contracts
      * @param organizationId The Organization ID.
      * @param apiId The API ID.
@@ -1735,10 +1735,10 @@ public interface IOrganizationResource {
 
     /**
      * Retrieves metrics/analytics information for a specific API.  This will
-     * return request count data broken down by application.  It basically answers
+     * return request count data broken down by client.  It basically answers
      * the question "who is calling my API?".
      *
-     * @summary Get API Usage Metrics (per App)
+     * @summary Get API Usage Metrics (per Client)
      * @param organizationId The organization ID.
      * @param apiId The API ID.
      * @param version The API version.
@@ -1749,9 +1749,9 @@ public interface IOrganizationResource {
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
-    @Path("{organizationId}/apis/{apiId}/versions/{version}/metrics/appUsage")
+    @Path("{organizationId}/apis/{apiId}/versions/{version}/metrics/clientUsage")
     @Produces(MediaType.APPLICATION_JSON)
-    public UsagePerAppBean getUsagePerApp(
+    public UsagePerClientBean getUsagePerClient(
             @PathParam("organizationId") String organizationId, @PathParam("apiId") String apiId,
             @PathParam("version") String version, @QueryParam("from") String fromDate,
             @QueryParam("to") String toDate) throws NotAuthorizedException, InvalidMetricCriteriaException;
@@ -1834,9 +1834,9 @@ public interface IOrganizationResource {
 
     /**
      * Retrieves metrics/analytics information for a specific API.  This will
-     * return response type statistics broken down by application.
+     * return response type statistics broken down by client.
      *
-     * @summary Get API Response Statistics (per App)
+     * @summary Get API Response Statistics (per Client)
      * @param organizationId The organization ID.
      * @param apiId The API ID.
      * @param version The API version.
@@ -1847,9 +1847,9 @@ public interface IOrganizationResource {
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
-    @Path("{organizationId}/apis/{apiId}/versions/{version}/metrics/appResponseStats")
+    @Path("{organizationId}/apis/{apiId}/versions/{version}/metrics/clientResponseStats")
     @Produces(MediaType.APPLICATION_JSON)
-    public ResponseStatsPerAppBean getResponseStatsPerApp(
+    public ResponseStatsPerClientBean getResponseStatsPerClient(
             @PathParam("organizationId") String organizationId, @PathParam("apiId") String apiId,
             @PathParam("version") String version, @QueryParam("from") String fromDate,
             @QueryParam("to") String toDate) throws NotAuthorizedException, InvalidMetricCriteriaException;

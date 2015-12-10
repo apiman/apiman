@@ -18,7 +18,7 @@ package io.apiman.manager.api.gateway.rest;
 import io.apiman.gateway.api.rest.contract.exceptions.GatewayApiErrorBean;
 import io.apiman.gateway.engine.beans.Api;
 import io.apiman.gateway.engine.beans.ApiEndpoint;
-import io.apiman.gateway.engine.beans.Application;
+import io.apiman.gateway.engine.beans.Client;
 import io.apiman.gateway.engine.beans.SystemStatus;
 import io.apiman.gateway.engine.beans.exceptions.PublishingException;
 import io.apiman.gateway.engine.beans.exceptions.RegistrationException;
@@ -49,11 +49,11 @@ import org.codehaus.jackson.map.ObjectMapper;
  * @author eric.wittmann@redhat.com
  */
 @SuppressWarnings("javadoc") // class is temporarily delinked from its interfaces
-public class GatewayClient /*implements ISystemResource, IApiResource, IApplicationResource*/ {
+public class GatewayClient /*implements ISystemResource, IApiResource, IClientResource*/ {
 
     private static final String SYSTEM_STATUS = "/system/status"; //$NON-NLS-1$
     private static final String APIs = "/apis"; //$NON-NLS-1$
-    private static final String APPLICATIONS = "/applications"; //$NON-NLS-1$
+    private static final String CLIENTS = "/clients"; //$NON-NLS-1$
 
     private static final ObjectMapper mapper = new ObjectMapper();
 
@@ -131,14 +131,14 @@ public class GatewayClient /*implements ISystemResource, IApiResource, IApplicat
     }
 
     /**
-     * @see io.apiman.gateway.api.rest.contract.IApplicationResource#register(io.apiman.gateway.engine.beans.Application)
+     * @see io.apiman.gateway.api.rest.contract.IClientResource#register(io.apiman.gateway.engine.beans.Client)
      */
-    public void register(Application application) throws RegistrationException, GatewayAuthenticationException {
+    public void register(Client client) throws RegistrationException, GatewayAuthenticationException {
         try {
-            URI uri = new URI(this.endpoint + APPLICATIONS);
+            URI uri = new URI(this.endpoint + CLIENTS);
             HttpPut put = new HttpPut(uri);
             put.setHeader("Content-Type", "application/json; charset=utf-8"); //$NON-NLS-1$ //$NON-NLS-2$
-            String jsonPayload = mapper.writer().writeValueAsString(application);
+            String jsonPayload = mapper.writer().writeValueAsString(client);
             HttpEntity entity = new StringEntity(jsonPayload);
             put.setEntity(entity);
             HttpResponse response = httpClient.execute(put);
@@ -154,7 +154,7 @@ public class GatewayClient /*implements ISystemResource, IApiResource, IApplicat
                 }
             }
             if (actualStatusCode >= 300) {
-                throw new Exception(Messages.i18n.format("GatewayClient.AppRegistrationFailed", actualStatusCode)); //$NON-NLS-1$
+                throw new Exception(Messages.i18n.format("GatewayClient.ClientRegistrationFailed", actualStatusCode)); //$NON-NLS-1$
             }
         } catch (RegistrationException|GatewayAuthenticationException e) {
             throw e;
@@ -164,13 +164,13 @@ public class GatewayClient /*implements ISystemResource, IApiResource, IApplicat
     }
 
     /**
-     * @see io.apiman.gateway.api.rest.contract.IApplicationResource#unregister(java.lang.String, java.lang.String, java.lang.String)
+     * @see io.apiman.gateway.api.rest.contract.IClientResource#unregister(java.lang.String, java.lang.String, java.lang.String)
      */
-    public void unregister(String organizationId, String applicationId, String version)
+    public void unregister(String organizationId, String clientId, String version)
             throws RegistrationException, GatewayAuthenticationException {
         try {
             @SuppressWarnings("nls")
-            URI uri = new URI(this.endpoint + APPLICATIONS + "/" + organizationId + "/" + applicationId + "/" + version);
+            URI uri = new URI(this.endpoint + CLIENTS + "/" + organizationId + "/" + clientId + "/" + version);
             HttpDelete put = new HttpDelete(uri);
             HttpResponse response = httpClient.execute(put);
             int actualStatusCode = response.getStatusLine().getStatusCode();
@@ -185,7 +185,7 @@ public class GatewayClient /*implements ISystemResource, IApiResource, IApplicat
                 }
             }
             if (actualStatusCode >= 300) {
-                throw new Exception(Messages.i18n.format("GatewayClient.AppUnregistrationFailed", actualStatusCode)); //$NON-NLS-1$
+                throw new Exception(Messages.i18n.format("GatewayClient.ClientUnregistrationFailed", actualStatusCode)); //$NON-NLS-1$
             }
         } catch (RegistrationException|GatewayAuthenticationException e) {
             throw e;
