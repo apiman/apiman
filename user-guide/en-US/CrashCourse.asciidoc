@@ -9,88 +9,88 @@ Everything in apiman starts with the Organization.  First you should create one 
 Organization is where everything else will be managed.  It also allows you to grant specific
 roles to other users you wish to collaborate with.
 
-=== Providing Services
+=== Providing APIs
 
-If you want to know how to provide managed services via apiman, this is a fast and dirty quickstart.
+If you want to know how to provide managed APIs vian APIman, this is a fast and dirty quickstart.
 
 ==== Plans
 
 You should already have created an Organization.  Navigate to your Organization and switch to the
 Plans tab.  From there you can create new Plans.  A Plan is basically a collection of policies
-that will be applied to requests made to Services being access through it.  Plans will be assigned
-to Services during Service configuration.  Plans give you the opportunity to offer access to the
-same Service with different SLAs (e.g. different quotas).
+that will be applied to requests made to APIs being access through it.  Plans will be assigned
+to APIs during API configuration.  Plans give you the opportunity to offer access to the
+same API with different SLAs (e.g. different quotas).
 
 Use the Policies tab to add zero or more Policies to the Plan.  Each Policy has its own unique
 configuration.
 
 Once you have created all appropriate Policies, you need to *Lock* the Plan so that it can be
-used by your Services.  This can be done from the Plan's Overview UI tab.  Note that a Policy
-must be locked for use so that service consumers can have confidence that the details of the
+used by your APIs.  This can be done from the Plan's Overview UI tab.  Note that a Policy
+must be locked for use so that API consumers can have confidence that the details of the
 Plan will not change after they have agreed to them.
 
-==== Services
+==== APIs
 
 After you have created at least one Plan, you can go back to the Organization page and switch to
-the Services tab.  From there you can create a new Service.  In apiman a Service is a
+the APIs tab.  From there you can create a new API.  In apiman an API is a
 representation of your back-end API, but managed with policies and discoverable within the apiman
 system.
 
-Once you have created a Service, you will need to provide some basic configuration, including:
+Once you have created an API, you will need to provide some basic configuration, including:
 
-* Service Implementation
-* One or more Plans (*or* mark the service as "Public")
+* API Implementation
+* One or more Plans (*or* mark the API as "Public")
 
-The Service Implementation is just the REST endpoint location of your back end service (the one
+The API Implementation is just the REST endpoint location of your back end API (the one
 that will be managed and proxied by the API Gateway).
 
-The Plans are chosen from those available within the Organization.  A Service can be made
-available through any or all of the Organization's plans.  When an application consumes the
-Service it will do so through one of the available plans.  See the "Consuming Services" section
+The Plans are chosen from those available within the Organization.  an API can be made
+available through any or all of the Organization's plans.  When a client app consumes the
+API it will do so through one of the available plans.  See the "Consuming APIs" section
 for details.
 
-Once you have configured all necessary aspects of the Service, you need to *Publish* the Service
-to the API Gateway.  This can be done from the Service's Overview UI tab.
+Once you have configured all necessary aspects of the API, you need to *Publish* the API
+to the API Gateway.  This can be done from the API's Overview UI tab.
 
-TIP: A Service can be marked as "Public" if you want to get going even faster.  A "Public" Service
-can be invoked by any client without first creating a Service Contract.  This means you can
-skip all the Plan and Application configuration if you don't need that complexity.
+TIP: an API can be marked as "Public" if you want to get going even faster.  A "Public" API
+can be invoked by any client without first creating an API Contract.  This means you can
+skip all the Plan and Client App configuration if you don't need that complexity.
 
-=== Consuming Services
+=== Consuming APIs
 
-If you're interested in consuming services that someone else is providing via apiman, this section
+If you're interested in consuming APIs that someone else is providing vian APIman, this section
 should give you a good start.
 
-==== Applications
+==== Client Apps
 
-In order to consume a Service, you will first need to create an Application in your Organization.
-The Application *can* (but usually does not) exist in the same Organization as the Services it
-consumes.  To create an Application, navigate to the Applications tab for your Organization.
+In order to consume an API, you will first need to create a Client App in your Organization.
+The Client App *can* (but usually does not) exist in the same Organization as the APIs it
+consumes.  To create a Client App, navigate to the Client Apps tab for your Organization.
 
-Once you have create an Application, you can search for Services to consume.  There are a number
-of ways to search for Services.  Once you have located a Service, you must create a Contract
-between your Application and the Service.  A Contract is always created through one of the Plans
-provided by the Service.
+Once you have create a Client App, you can search for APIs to consume.  There are a number
+of ways to search for APIs.  Once you have located an API, you must create a Contract
+between your Client App and the API.  A Contract is always created through one of the Plans
+provided by the API.
 
-After you have created all appropriate Service Contracts, you must register the Application with
-the API Gateway.  This can be done on the Application's Overview tab.
+After you have created all appropriate API Contracts, you must register the Client App with
+the API Gateway.  This can be done on the Client App's Overview tab.
 
 ==== Sending Requests
 
-After the Application is Registered, navigate to the APIs tab to see a list of all the Service
+After the Client App is Registered, navigate to the APIs tab to see a list of all the API
 Contracts and to get details (by clicking the Expand Details arrow on the left) about each one.
-This tab is important because it allows you to find out the API Key assigned to each Service
+This tab is important because it allows you to find out the API Key assigned to each API
 Contract.  The API Key is necessary when making managing calls to the API Gateway for a particular
-Service.  Additionally, this tab shows the actual API Gateway endpoint that your client must
-invoke in order to call the managed Service.
+API.  Additionally, this tab shows the actual API Gateway endpoint that your client must
+invoke in order to call the managed API.
 
 The actual managed endpoint may vary depending on the Gateway, but typically the endpoint is
 something like this:
 
-* http://gatewayhost:port/apiman-gateway/{organizationId}/{serviceId}/{version}/
+* http://gatewayhost:port/apiman-gateway/{organizationId}/{apiId}/{version}/
 
 Requests to managed endpoints must include the API Key so that the Gateway knows which Contract
-is being used to invoke the Service.  The API Key can be sent in one of the following ways:
+is being used to invoke the API.  The API Key can be sent in one of the following ways:
 
 * As an HTTP Header named *X-API-Key*
 * As a URL query parameter named *apikey*

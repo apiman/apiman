@@ -1,7 +1,7 @@
 == Introduction
 
 === What is API Management?
-A popular trend in enterprise software development these days is to design applications to be very decoupled 
+A popular trend in enterprise software development these days is to design client apps to be very decoupled 
 and use APIs to connect them.  This approach provides an excellent way to reuse functionality across various 
 applications and business units. Another great benefit of API usage in enterprises is the ability to create 
 those APIs using a variety of disparate technologies.

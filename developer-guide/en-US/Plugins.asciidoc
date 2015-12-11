@@ -131,7 +131,7 @@ plugin will need to be available from a remote maven repository.
 === Contributing a Policy
 Now that you know how to create an apiman plugin, you might be wondering what you can
 actually do with it!  The most important purpose of a plugin is to provide additional
-*Policies* that can be used when configuring Plans, Services, and Applications in
+*Policies* that can be used when configuring Plans, APIs, and Client Apps in
 apiman.  Although apiman comes with a set of useful built-in policies, it is often
 necessary for users to provide their own custom policies.  The best way to do that is
 to create a plugin that provides such policies.
@@ -147,24 +147,24 @@ all included in the apiman plugin WAR.
 
 ==== Policy Implementation
 A policy implementation is the java code that is executed by the API Gateway when
-a managed service request is made.  This is the bread and butter of the API Gateway; its
+a managed API request is made.  This is the bread and butter of the API Gateway; its
 primary purpose.  For each request, the API Gateway creates a chain of policies that
-must be executed before proxying the request to the back-end service implementation.
+must be executed before proxying the request to the back-end API implementation.
 Each of the policies in that chain is an implementation of the 'IPolicy' interface.
 
 ===== Standard IPolicy
 All policies must implement the `IPolicy` interface, consisting of several methods.
 
-The `apply` method with `ServiceRequest` is called during the request phase, and
-the `apply` with `ServiceResponse` during the response phase:
+The `apply` method with `ApiRequest` is called during the request phase, and
+the `apply` with `ApiResponse` during the response phase:
 
 ```java
-void apply(ServiceRequest request, IPolicyContext context, Object config, IPolicyChain<ServiceRequest> chain);
+void apply(ApiRequest request, IPolicyContext context, Object config, IPolicyChain<ApiRequest> chain);
 
-void apply(ServiceResponse response, IPolicyContext context, Object config, IPolicyChain<ServiceResponse> chain);
+void apply(ApiResponse response, IPolicyContext context, Object config, IPolicyChain<ApiResponse> chain);
 ```
 
-The service objects, respectively, provide abstracted representations of the head
+The API objects, respectively, provide abstracted representations of the head
 of a request and response for a given conversation. These can be modified in any
 manner the implementor sees fit.
 
@@ -219,9 +219,9 @@ apiman uses to write data chunks into policies, and the policies write data to
 subsequent policies:
 
 ```java
-IReadWriteStream<ServiceRequest> getRequestDataHandler(ServiceRequest request, IPolicyContext context);
+IReadWriteStream<ApiRequest> getRequestDataHandler(ApiRequest request, IPolicyContext context);
 
-IReadWriteStream<ServiceResponse> getResponseDataHandler(ServiceResponse response, IPolicyContext context);
+IReadWriteStream<ApiResponse> getResponseDataHandler(ApiResponse response, IPolicyContext context);
 ```
 
 IMPORTANT: Do not return an `IApimanBuffer` with a different native type than you
@@ -232,8 +232,8 @@ interacting with it. A convenient way to achieve this is via `AbstractStream<H>`
 
 ```java
 @Override
-public IReadWriteStream<ServiceRequest> getRequestDataHandler(final ServiceRequest request, final IPolicyContext context) {
-  return new AbstractStream<ServiceRequest>() {
+public IReadWriteStream<ApiRequest> getRequestDataHandler(final ApiRequest request, final IPolicyContext context) {
+  return new AbstractStream<ApiRequest>() {
     @Override
     public void write(IApimanBuffer chunk) {
       // Mutate chunk by appending a string.
@@ -306,7 +306,7 @@ TIP: For more information about each component, see its javadoc.
 ==== Policy Definition
 The policy implementation is what allows the API Gateway to execute the policy at runtime.
 But how does the API Manager know about the policy so that users can add it to a Plan,
-Service, or Application from within the User Interface?  The answer is that the plugin
+API, or Client App from within the User Interface?  The answer is that the plugin
 must also include a Policy Definition JSON file for each policy it is providing.
 
 A plugin definition is a JSON file that must be located within the plugin archive
@@ -363,14 +363,14 @@ plugin:${project.groupId}:${project.artifactId}:${project.version}:${project.pac
 ```
 
 ==== Policy Configuration Form
-You may be wondering how configuration information specific to a Plan, Service, or
-Application is managed.  Since the same policy implementation instance is used for all
+You may be wondering how configuration information specific to a Plan, API, or
+Client App is managed.  Since the same policy implementation instance is used for all
 requests, unique configuration appropriate to a particular request must be passed to
 the policy implementation when it is executed.  This configuration is created in the
-API Manager user interface when adding the policy to a Plan, Service, or Application.
+API Manager user interface when adding the policy to a Plan, API, or Client App.
 
 Policy configuration takes the form of string data that is ultimately included when
-publishing a service to the API Gateway.  That string data is parsed into a Java object
+publishing an API to the API Gateway.  That string data is parsed into a Java object
 via the 'parseConfiguration' on the *IPolicy* interface and then passed to the policy
 during execution.
 
@@ -528,13 +528,13 @@ public class MyPolicy extends AbstractMappedPolicy<MyConfigBean> {
   }
 
   @Override
-  protected void doApply(ServiceRequest request, IPolicyContext context, MyConfigBean config, IPolicyChain<ServiceRequest> chain) {
+  protected void doApply(ApiRequest request, IPolicyContext context, MyConfigBean config, IPolicyChain<ApiRequest> chain) {
     // Do something with MyConfigBean here?  It has all the configuration data!
     super.doApply(request, context, My, chain);
   }
 
   @Override
-  protected void doApply(ServiceResponse response, IPolicyContext context, MyConfigBean config, IPolicyChain<ServiceResponse> chain) {
+  protected void doApply(ApiResponse response, IPolicyContext context, MyConfigBean config, IPolicyChain<ApiResponse> chain) {
     // Do something with MyConfigBean here?  It has all the configuration data!
     super.doApply(response, context, config, chain);
   }
@@ -602,9 +602,9 @@ either be global or specified at the test method level.
 
 These annotations tell the apiman Policy Testing framework *what* policy you want to test and the
 policy configuration you want to use when testsing, but you still need to actually send requests to a
-"service".  This is done using the "send(PolicyTestReqest)" method defined by the base class.  The
-send() method allows you to send a request (that you build) to the mock back-end service governed by
-your policy.  By default the mock back-end service is a simple "echo" service that responds to all
+"API".  This is done using the "send(PolicyTestReqest)" method defined by the base class.  The
+send() method allows you to send a request (that you build) to the mock back-end API governed by
+your policy.  By default the mock back-end API is a simple "echo" API that responds to all
 requests with a JSON payload describing the request it received (more on how to override this default
 functionality later).
 
@@ -623,7 +623,7 @@ public class CustomPolicyTest extends ApimanPolicyTest {
     @Test
     @Configuration("{}")
     public void testGet() throws Throwable {
-        // Send a test HTTP request to the service (resulting in executing the policy).
+        // Send a test HTTP request to the API (resulting in executing the policy).
         PolicyTestResponse response = send(PolicyTestRequest.build(PolicyTestRequestType.GET, "/some/resource")
                 .header("X-Test-Name", "testGet"));
 
@@ -642,12 +642,12 @@ public class CustomPolicyTest extends ApimanPolicyTest {
 }
 ```
 
-==== Providing a Custom Back-End Service Mock
-Sometimes the echo service is not sufficient when testing your custom policy.  Perhaps the custom policy
-is more tightly coupled to the service it is protecting.  In this case you may want to provide your own
-custom back-end service mock implementation.  This can be done by simply annotating either the class or
-an individual test method with @BackEndService.  If you do this then you must supply the annotation with
-a class that implements the IPolicyTestBackEndService interface.  Here is an example of what this might
+==== Providing a Custom Back-End API Mock
+Sometimes the echo API is not sufficient when testing your custom policy.  Perhaps the custom policy
+is more tightly coupled to the API it is protecting.  In this case you may want to provide your own
+custom back-end API mock implementation.  This can be done by simply annotating either the class or
+an individual test method with @BackEndApi.  If you do this then you must supply the annotation with
+a class that implements the IPolicyTestBackEndApi interface.  Here is an example of what this might
 look like in a test:
 
 
@@ -657,14 +657,14 @@ public class CustomPolicyTest extends ApimanPolicyTest {
 
     @Test
     @Configuration("{}")
-    @BackEndService(MyCustomBackEndServiceImpl.class)
+    @BackEndApi(MyCustomBackEndApiImpl.class)
     public void testGetWithCustomBackEndSvc() throws Throwable {
-        // Send a test HTTP request to the service (resulting in executing the policy).
+        // Send a test HTTP request to the API (resulting in executing the policy).
         PolicyTestResponse response = send(PolicyTestRequest.build(PolicyTestRequestType.GET, "/some/resource")
                 .header("X-Test-Name", "testGet"));
 
         // Now do some assertions on the result!
-        MyCustomBackEndServiceResponseBean entity = response.entity(MyCustomBackEndServiceResponseBean.class);
+        MyCustomBackEndApiResponseBean entity = response.entity(MyCustomBackEndApiResponseBean.class);
     }
 
 }
@@ -672,7 +672,7 @@ public class CustomPolicyTest extends ApimanPolicyTest {
 
 In this example everything works as it did before, but instead of responding with an Echo Response
 the send() method will return with a custom response (as created and returned by the provided custom
-back-end service implementation).
+back-end API implementation).
 
 
 === Contributing a Core Component
@@ -722,17 +722,17 @@ package io.apiman.gateway.engine;
 
 public interface IRegistry {
 
-    public void getContract(ServiceRequest request, IAsyncResultHandler<ServiceContract> handler);
+    public void getContract(ApiRequest request, IAsyncResultHandler<ApiContract> handler);
 
-    public void publishService(Service service, IAsyncResultHandler<Void> handler);
+    public void publishApi(Api api, IAsyncResultHandler<Void> handler);
     
-    public void retireService(Service service, IAsyncResultHandler<Void> handler);
+    public void retireApi(Api api, IAsyncResultHandler<Void> handler);
     
-    public void registerApplication(Application application, IAsyncResultHandler<Void> handler);
+    public void registerClient(Client client, IAsyncResultHandler<Void> handler);
 
-    public void unregisterApplication(Application application, IAsyncResultHandler<Void> handler);
+    public void unregisterClient(Client client, IAsyncResultHandler<Void> handler);
 
-    public void getService(String organizationId, String serviceId, String serviceVersion, IAsyncResultHandler<Service> handler);
+    public void getApi(String organizationId, String apiId, String apiVersion, IAsyncResultHandler<Api> handler);
 
 }
 ```
@@ -751,27 +751,27 @@ public class MongoDbRegistry implements IRegistry {
         // TODO consume any config params - these come from apiman.properties
     }
 
-    public void getContract(ServiceRequest request, IAsyncResultHandler<ServiceContract> handler) {
+    public void getContract(ApiRequest request, IAsyncResultHandler<ApiContract> handler) {
         // TODO implement mongodb specific logic here
     }
 
-    public void publishService(Service service, IAsyncResultHandler<Void> handler) {
+    public void publishApi(Api api, IAsyncResultHandler<Void> handler) {
         // TODO implement mongodb specific logic here
     }
     
-    public void retireService(Service service, IAsyncResultHandler<Void> handler) {
+    public void retireApi(Api api, IAsyncResultHandler<Void> handler) {
         // TODO implement mongodb specific logic here
     }
     
-    public void registerApplication(Application application, IAsyncResultHandler<Void> handler) {
+    public void registerClient(Client client, IAsyncResultHandler<Void> handler) {
         // TODO implement mongodb specific logic here
     }
 
-    public void unregisterApplication(Application application, IAsyncResultHandler<Void> handler) {
+    public void unregisterClient(Client client, IAsyncResultHandler<Void> handler) {
         // TODO implement mongodb specific logic here
     }
 
-    public void getService(String organizationId, String serviceId, String serviceVersion, IAsyncResultHandler<Service> handler) {
+    public void getApi(String organizationId, String apiId, String apiVersion, IAsyncResultHandler<Api> handler) {
         // TODO implement mongodb specific logic here
     }
 

@@ -35,12 +35,12 @@ API Manager back-end WAR.
 
 The API Gateway Config exposes the standard apiman Gateway REST API so that the API
 Gateway can be remotely configured.  This is the REST API that the API Manager uses
-whenever a user publishes a Service or registers an Application.  It is responsible
+whenever a user publishes an API or registers a Client App.  It is responsible
 for configuring the API Gateway's embedded Policy Engine.
 
 The API Gateway is the primary runtime component of apiman and is implemented as a
 servlet that embeds the apiman Policy Engine.  All requests to the API Gateway WAR are
-assumed to be intended for managed Services previously published to it.
+assumed to be intended for managed APIs previously published to it.
 
 
 == Plugins

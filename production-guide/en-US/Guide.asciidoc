@@ -142,7 +142,7 @@ the *standalone-apiman.xml* file:
 
 ==== Setting the API Gateway Public Endpoint
 An important step is to let the API Gateway know what its public endpoint is.  This is important because 
-the API Manager will sometimes ask the Gateway to report on the Managed Endpoint for a published service.
+the API Manager will sometimes ask the Gateway to report on the Managed Endpoint for a published API.
 
 To set the public URL/endpoint of the API Gateway, add the following to apiman.properties:
 
@@ -151,7 +151,7 @@ To set the public URL/endpoint of the API Gateway, add the following to apiman.p
 WARNING: Please make sure to use your appropriate values for the host and port.
 
 ==== Configuring Keycloak Authentication for the Gateway API
-The API Gateway has a REST based configuration API which the API Manager uses when publishing services to 
+The API Gateway has a REST based configuration API which the API Manager uses when publishing APIs to 
 it.  This API is protected by Keycloak authentication.  The apiman quickstart assumes that the keycloak 
 server is local, so you'll need to modify the *standalone-apiman.xml* file to point to the remote Keycloak 
 instance.

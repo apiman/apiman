@@ -134,8 +134,8 @@ database structure when it starts up.  Alternatively, the MySQL and PostgreSQL D
 *apiman/ddls/*.
 
 === API Gateway Registry
-The API Gateway includes a registry that stores the published service and application information.
-This registry is updated whenever a user publishes a service (or registers an application) from
+The API Gateway includes a registry that stores the published API and Client App information.
+This registry is updated whenever a user publishes an API (or registers a Client App) from
 within the API Manager UI.  The registry contains just the configuration information necessary for
 the API Gateway to properly apply the appropriate policies to all inbound requests.
 
@@ -191,7 +191,7 @@ detailed here:
 ```
 
 === Gateway API Authentication
-The Gateway's REST API is what the API Manager invokes when publishing services and applications
+The Gateway's REST API is what the API Manager invokes when publishing APIs and Client Apps
 to the Gateway.  This REST API should be protected, often using BASIC authentication.  By default,
 the Gateway REST API requires BASIC authentication credentials, as well as a role of *apipublisher*.
 In other words, the Gateway REST API can only be invoked by a valid user, and that user must have
@@ -261,7 +261,7 @@ new settings in apiman.properties and attempt to use Elasticsearch instead of th
 Note that the apiman quickstart comes pre-configured with a number of settings, including:
 
 * Installed policy definitions
-* Default configured roles (Organization Owner, Service Developer, Appliation Developer)
+* Default configured roles (Organization Owner, API Developer, Appliation Developer)
 * A default configured Gateway
 
 This built-in configuration will be lost when you switch from JPA to Elasticsearch.  You will
@@ -359,13 +359,13 @@ new settings in apiman.properties and attempt to use Elasticsearch instead of In
 
 === How To:  Enable MTLS (Mutual SSL) Support for Endpoint Security
 If you wish to use mutual SSL to ensure endpoint security between the apiman API Gateway and
-your back-end service(s), you must update some settings in the apiman.properties file.
+your back-end API(s), you must update some settings in the apiman.properties file.
 
 ==== High Level Overview
 1. Create Trust and Key Stores
 2. Make changes to "apiman.properties" to switch from JPA to Elasticsearch
 3. (Re)start apiman!
-4. Configure one or more Service to use MTLS
+4. Configure one or more API to use MTLS
 
 ==== Create Trust and Key Stores
 Please refer to https://docs.oracle.com/javase/7/docs/technotes/tools/solaris/keytool.html[official JDK documentation]
@@ -374,7 +374,7 @@ is required in order to successfully utilise MTLS, and in many cases also a Trus
 
 A *keystore* contains a given node's private key material, and must be kept safe.
 Each node should have a unique key entry. For instance, a gateway should have its
-own keystore, and each service likewise. In a production system, these keys should
+own keystore, and each API likewise. In a production system, these keys should
 be issued by a trusted certificate authority.
 
 A *truststore* typically contains a set of certificate authorities which are trusted issuers.
@@ -391,7 +391,7 @@ to a given private key pair into a truststore, which works well at small scales 
 quickly cause the accumulation of a huge number of certificates in larger systems as
 it requires a 1:1 mapping of certificates and private keys (rather than 1:N by using a trusted authority).
 
-Your back-end services must be SSL enabled and *require authenticated client SSL connections*.
+Your back-end APIs must be SSL enabled and *require authenticated client SSL connections*.
 This means you must have server SSL certificates generated (and appropriate certificates and/or
 CAs stored in your Trust Store).
 
@@ -402,7 +402,7 @@ get you started.
 
 ===== Development Setup
 
-In our hypothetical development setup, let's imagine we have two services and a single gateway.
+In our hypothetical development setup, let's imagine we have two APIs and a single gateway.
 
 [cols="1,1,2", options="header"]
 .Simple Development MTLS Setup
@@ -413,14 +413,14 @@ In our hypothetical development setup, let's imagine we have two services and a 
 
 |Apiman Gateway
 |gateway
-|service_a.cer, service_b.cer
+|api_a.cer, api_b.cer
 
-|Service A
-|service_a
+|API A
+|api_a
 |gateway.cer
 
-|Service B
-|service_b
+|API B
+|api_b
 |gateway.cer
 
 |===
@@ -433,42 +433,42 @@ In our hypothetical development setup, let's imagine we have two services and a 
       keytool -genkey -keyalg RSA -keystore gateway_ks.jks -alias gateway
       keytool -export -alias gateway -file gateway.cer -keystore gateway_ks.jks
 
-    ** Service A:
+    ** API A:
 
-      keytool -genkey -keyalg RSA -keystore service_a_ks.jks -alias service_a
-      keytool -export -alias service_a -file service_a.cer -keystore service_a_ks.jks
+      keytool -genkey -keyalg RSA -keystore api_a_ks.jks -alias api_a
+      keytool -export -alias api_a -file api_a.cer -keystore api_a_ks.jks
 
-    ** Service B:
+    ** API B:
 
-      keytool -genkey -keyalg RSA -keystore service_b_ks.jks -alias service_b
-      keytool -export -alias service_b -file service_b.cer -keystore service_b_ks.jks
+      keytool -genkey -keyalg RSA -keystore api_b_ks.jks -alias api_b
+      keytool -export -alias api_b -file api_b.cer -keystore api_b_ks.jks
 
 * Import certificates into appropriate trust stores:
 
   ** Gateway:
 
-    keytool -import -file service_a.cer -alias service_a -keystore gateway_ts.jks
-    keytool -import -file service_b.cer -alias service_b -keystore gateway_ts.jks
+    keytool -import -file api_a.cer -alias api_a -keystore gateway_ts.jks
+    keytool -import -file api_b.cer -alias api_b -keystore gateway_ts.jks
 
-  ** Service A:
+  ** API A:
 
-    keytool -import -file gateway.cer -alias gateway -keystore service_a_ts.jks
+    keytool -import -file gateway.cer -alias gateway -keystore api_a_ts.jks
 
-  ** Service B:
+  ** API B:
 
-    keytool -import -file gateway.cer -alias gateway -keystore service_b_ts.jks
+    keytool -import -file gateway.cer -alias gateway -keystore api_b_ts.jks
 
 Now simply set the appropriate paths to the keystore and truststore in
-`apiman.properties` for the gateway, and set up your services with their respective
+`apiman.properties` for the gateway, and set up your APIs with their respective
 truststores and keystores (the specifics of how to do this will depend on your
-service's implementation).
+API's implementation).
 
 We will also set the following in `apiman.properties` to make our development
 easier:
 
   apiman-gateway.connector-factory.tls.allowAnyHost=true
 
-When you add your MTLS protected services into apiman, you should set the
+When you add your MTLS protected APIs into apiman, you should set the
 `API Security` field to `MTLS/Two-Way-SSL`.
 
 ===== MTLS via Custom Certificate Authority
@@ -476,7 +476,7 @@ When you add your MTLS protected services into apiman, you should set the
 The previous approach works for development, but doesn't scale well, is harder to manage
 and doesn't gracefully handle revocations, expiry, expansion, etc. Instead, let's
 summarise a scenario where an organisation has an internal CA which they use to
-sign services' certificates. The process for generating a CA and signing
+sign APIs' certificates. The process for generating a CA and signing
 certificates is out of scope for this guide, but is trivial to accomplish using
 OpenSSL, LibreSSL, or similar.
 
@@ -494,12 +494,12 @@ for each node.
 |gateway (signed by apimanCA)
 |apimanCA.cer
 
-|Service A
-|service_a (signed by apimanCA)
+|API A
+|api_a (signed by apimanCA)
 |apimanCA.cer
 
-|Service N
-|service_n (signed by apimanCA)
+|API N
+|api_n (signed by apimanCA)
 |apimanCA.cer
 
 |===
@@ -552,9 +552,9 @@ guides are https://www.owasp.org/[available at OWASP].
 If apiman was running, you should stop it now.  Once everything is shutdown, and the changes
 to apiman.properties have been made, go ahead and start apiman up again.
 
-==== Configure one or more Service to use MTLS
+==== Configure one or more API to use MTLS
 Now that the apiman MTLS feature has been configured, use the Manager UI to enable MTLS in
-one or more Service.  This can be done on the "Implementation" tab when you are configuring
+one or more API.  This can be done on the "Implementation" tab when you are configuring
 the details of your back-end endpoint (URL, type, and endpoint security).
 
 
