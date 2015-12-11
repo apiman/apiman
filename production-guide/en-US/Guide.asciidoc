@@ -1,4 +1,4 @@
-= Guide - Deploying for Production: apiman 1.1.8.Final
+= Guide - Deploying for Production: apiman 1.1.9.Final
 :homepage: http://apiman.io/
 :doctype: book
 
@@ -15,7 +15,7 @@ following components:
 
 You can find the apiman production deployer here:
 
-https://github.com/apiman/apiman-deployer/tree/apiman-1.1.8.Final
+https://github.com/apiman/apiman-deployer/tree/apiman-1.1.9.Final
 
 Simply download that script and run it on each of the machines you wish to install the various apiman
 components!
@@ -146,7 +146,7 @@ the API Manager will sometimes ask the Gateway to report on the Managed Endpoint
 
 To set the public URL/endpoint of the API Gateway, add the following to apiman.properties:
 
-    apiman-gateway.public-endpoint=https://api-gateway-host.org:8443/api-gateway/
+    apiman-gateway.public-endpoint=https://api-gateway-host.org:8443/apiman-gateway/
 
 WARNING: Please make sure to use your appropriate values for the host and port.
 
