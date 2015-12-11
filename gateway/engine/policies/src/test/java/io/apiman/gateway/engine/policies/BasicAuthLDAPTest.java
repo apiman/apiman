@@ -15,9 +15,9 @@
  */
 package io.apiman.gateway.engine.policies;
 
+import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.beans.PolicyFailureType;
-import io.apiman.gateway.engine.beans.ServiceRequest;
 import io.apiman.gateway.engine.components.ILdapComponent;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.impl.DefaultLdapComponent;
@@ -240,7 +240,7 @@ public class BasicAuthLDAPTest extends AbstractLdapTestUnit {
             Set<String> expectedRoles) throws Exception {
         BasicAuthenticationPolicy policy = new BasicAuthenticationPolicy();
         BasicAuthenticationConfig config = policy.parseConfiguration(json);
-        ServiceRequest request = new ServiceRequest();
+        ApiRequest request = new ApiRequest();
         request.setType("GET");
         request.setApiKey("12345");
         request.setRemoteAddr("1.2.3.4");
@@ -260,7 +260,7 @@ public class BasicAuthLDAPTest extends AbstractLdapTestUnit {
         // The LDAP stuff we're testing!
         Mockito.when(context.getComponent(ILdapComponent.class)).thenReturn(new DefaultLdapComponent());
 
-        IPolicyChain<ServiceRequest> chain = Mockito.mock(IPolicyChain.class);
+        IPolicyChain<ApiRequest> chain = Mockito.mock(IPolicyChain.class);
 
         if (username != null) {
             request.getHeaders().put("Authorization", createBasicAuthorization(username, password));

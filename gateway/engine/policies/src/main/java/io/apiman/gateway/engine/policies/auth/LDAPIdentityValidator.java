@@ -19,7 +19,7 @@ import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncHandler;
 import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
-import io.apiman.gateway.engine.beans.ServiceRequest;
+import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.components.ILdapComponent;
 import io.apiman.gateway.engine.components.ldap.ILdapAttribute;
 import io.apiman.gateway.engine.components.ldap.ILdapClientConnection;
@@ -47,7 +47,10 @@ import org.apache.commons.lang.text.StrSubstitutor;
  * An identity validator that uses the static information in the config
  * to validate the user.
  *
+ * Uses the {@link ILdapComponent}.
+ *
  * @author eric.wittmann@redhat.com
+ * @author msavy
  */
 public class LDAPIdentityValidator implements IIdentityValidator<LDAPIdentitySource> {
 
@@ -73,10 +76,10 @@ public class LDAPIdentityValidator implements IIdentityValidator<LDAPIdentitySou
     }
 
     /**
-     * @see io.apiman.gateway.engine.policies.auth.IIdentityValidator#validate(java.lang.String, java.lang.String, io.apiman.gateway.engine.beans.ServiceRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.async.IAsyncResultHandler)
+     * @see io.apiman.gateway.engine.policies.auth.IIdentityValidator#validate(java.lang.String, java.lang.String, io.apiman.gateway.engine.beans.ApiRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
     @Override
-    public void validate(final String username, final String password, final ServiceRequest request, final IPolicyContext context,
+    public void validate(final String username, final String password, final ApiRequest request, final IPolicyContext context,
             final LDAPIdentitySource config, final IAsyncResultHandler<Boolean> handler) {
         try {
             final ILdapComponent ldapComponent = context.getComponent(ILdapComponent.class);
@@ -163,7 +166,7 @@ public class LDAPIdentityValidator implements IIdentityValidator<LDAPIdentitySou
     private void extractRoles(final ILdapClientConnection connection, final String userDn, final LDAPIdentitySource config,
             final IPolicyContext context, final IAsyncResultHandler<Void> resultHandler) {
         final Set<String> roles = new HashSet<>();
-        // TODO test whether this is indeed the default filter that java uses.
+
         connection.search(userDn, "(objectClass=*)", LdapSearchScope.SUBTREE, successHandler(resultHandler, //$NON-NLS-1$
                 new IAsyncHandler<List<ILdapSearchEntry>>() {
 
@@ -210,7 +213,7 @@ public class LDAPIdentityValidator implements IIdentityValidator<LDAPIdentitySou
      * @param username
      * @param request
      */
-    private String formatDn(String dnPattern, String username, ServiceRequest request) {
+    private String formatDn(String dnPattern, String username, ApiRequest request) {
         Map<String, String> valuesMap = new HashMap<>();
         valuesMap.putAll(request.getHeaders());
         valuesMap.put("username", username); //$NON-NLS-1$

@@ -21,7 +21,7 @@ var Vertx = require('vertx-js/vertx');
 var io = Packages.io;
 var JsonObject = io.vertx.core.json.JsonObject;
 var JIngestorToPolicyService = io.apiman.gateway.platforms.vertx3.services.IngestorToPolicyService;
-var VertxServiceRequest = io.apiman.gateway.platforms.vertx3.io.VertxServiceRequest;
+var VertxApiRequest = io.apiman.gateway.platforms.vertx3.io.VertxApiRequest;
 
 /**
  From gateway to a policy verticle
@@ -37,13 +37,13 @@ var IngestorToPolicyService = function(j_val) {
    Write a apiRequest (head)
 
    @public
-   @param apiRequest {Object} the API request 
+   @param apiRequest {Object} the api request 
    @param readyHandler {function} when ready to transmit body 
    */
   this.head = function(apiRequest, readyHandler) {
     var __args = arguments;
     if (__args.length === 2 && typeof __args[0] === 'object' && typeof __args[1] === 'function') {
-      j_ingestorToPolicyService["head(io.apiman.gateway.platforms.vertx3.io.VertxServiceRequest,io.vertx.core.Handler)"](apiRequest != null ? new VertxServiceRequest(new JsonObject(JSON.stringify(apiRequest))) : null, function(ar) {
+      j_ingestorToPolicyService["head(io.apiman.gateway.platforms.vertx3.io.VertxApiRequest,io.vertx.core.Handler)"](apiRequest != null ? new VertxApiRequest(new JsonObject(JSON.stringify(apiRequest))) : null, function(ar) {
       if (ar.succeeded()) {
         readyHandler(ar.result(), null);
       } else {

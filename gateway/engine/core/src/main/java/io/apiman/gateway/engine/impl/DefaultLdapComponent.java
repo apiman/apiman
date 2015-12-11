@@ -45,7 +45,7 @@ public class DefaultLdapComponent implements ILdapComponent {
     public DefaultLdapComponent() {
     }
 
-    private static SSLSocketFactory DEFAULT_SOCKET_FACTORY;
+    protected static SSLSocketFactory DEFAULT_SOCKET_FACTORY;
 
     static {
         try {
@@ -94,12 +94,16 @@ public class DefaultLdapComponent implements ILdapComponent {
 
     @Override
     public void bind(LdapConfigBean config, IAsyncResultHandler<Boolean> handler) {
+        LDAPConnection connection = null;
         try {
-            LDAPConnection connection = LDAPConnectionFactory.build(DEFAULT_SOCKET_FACTORY, config.getScheme(), config.getHost(), config.getPort());
+            connection = LDAPConnectionFactory.build(DEFAULT_SOCKET_FACTORY, config);
             BindResult bindResponse = connection.bind(config.getBindDn(), config.getBindPassword());
             handleBindReturn(bindResponse.getResultCode(), bindResponse.getDiagnosticMessage(), handler);
         } catch (LDAPException e) { // generally errors as an exception, also potentially normal return(!).
             handleBindReturn(e.getResultCode(), e.getDiagnosticMessage(), handler);
+        } finally {
+            if (connection != null)
+                LDAPConnectionFactory.releaseConnection(connection);
         }
     }
 

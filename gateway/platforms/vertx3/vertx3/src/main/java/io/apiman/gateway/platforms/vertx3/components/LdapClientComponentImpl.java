@@ -105,7 +105,8 @@ public class LdapClientComponentImpl implements ILdapComponent {
     public void bind(LdapConfigBean config, IAsyncResultHandler<Boolean> handler) {
         vertx.executeBlocking(future -> {
             try {
-                LDAPConnection connection = LDAPConnectionFactory.build(DEFAULT_SOCKET_FACTORY, config.getScheme(), config.getHost(), config.getPort());
+                //LDAPConnection connection = LDAPConnectionFactory.build(DEFAULT_SOCKET_FACTORY, config.getScheme(), config.getHost(), config.getPort());
+                LDAPConnection connection = LDAPConnectionFactory.build(DEFAULT_SOCKET_FACTORY, config);
                 BindResult bindResponse = connection.bind(config.getBindDn(), config.getBindPassword());
                 handleBindReturn(future, bindResponse.getResultCode(), bindResponse.getDiagnosticMessage(), handler);
             } catch (LDAPException e) {

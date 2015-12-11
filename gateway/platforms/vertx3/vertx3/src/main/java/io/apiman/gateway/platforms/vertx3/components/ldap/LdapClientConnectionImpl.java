@@ -58,8 +58,8 @@ public class LdapClientConnectionImpl implements ILdapClientConnection {
     public void connect(IAsyncResultHandler<Void> resultHandler) {
         vertx.executeBlocking(future -> {
             try {
-                this.connection = LDAPConnectionFactory.build(socketFactory, config.getScheme(), config.getHost(),
-                        config.getPort(), config.getBindDn(), config.getBindPassword());
+                this.connection = LDAPConnectionFactory.build(socketFactory, config);
+                connection.bind(config.getBindDn(), config.getBindPassword());
                 future.succeeded();
                 resultHandler.handle(AsyncResultImpl.create((Void) null));
             } catch (LDAPException e) {
@@ -104,17 +104,13 @@ public class LdapClientConnectionImpl implements ILdapClientConnection {
     @Override
     public void close() {
         if (!closed)
-            vertx.executeBlocking(blocking -> { connection.close(); blocking.complete(); }, null);
+            LDAPConnectionFactory.releaseConnection(connection);
         closed = true;
     }
 
     @Override
     public void close(IAsyncResultHandler<Void> closeResultHandler) {
-        if (!closed) {
-            vertx.executeBlocking(blocking -> { connection.close(); blocking.complete(); }, translateFailureHandler(closeResultHandler));
-        } else { // Already closed, should be harmless to repeat
-          closeResultHandler.handle(AsyncResultImpl.create((Void) null));
-        }
-        closed = true;
+        close();
+        closeResultHandler.handle(AsyncResultImpl.create((Void) null));
     }
 }
