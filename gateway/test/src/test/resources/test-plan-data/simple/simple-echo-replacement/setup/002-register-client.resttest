@@ -1,0 +1,24 @@
+PUT /clients admin/admin
+Content-Type: application/json
+
+{
+  "organizationId" : "SimpleEchoReplacementTest",
+  "clientId" : "test",
+  "version" : "1.0.0",
+  "contracts" : [
+    {
+      "apiKey" : "12345",
+      "apiOrgId" : "SimpleEchoReplacementTest",
+      "apiId" : "echo",
+      "apiVersion" : "1.0.0",
+      "policies" : [
+        {
+          "policyImpl" : "class:io.apiman.gateway.test.policies.SimpleReplacementPolicy",
+          "policyJsonConfig" : "{\"field1\" : \"@{SimpleEchoReplacementTest-field-1}\", \"field2\" : \"@{SimpleEchoReplacementTest-field-2}\", \"field3\" : \"@{SimpleEchoReplacementTest-field-3}\"}"
+        }
+      ]
+    }
+  ]
+}
+----
+204

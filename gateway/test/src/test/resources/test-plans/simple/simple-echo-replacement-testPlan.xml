@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testPlan xmlns="urn:io.apiman.test:2014:02:testPlan">
+
+  <testGroup name="Configure the Gateway" endpoint="api">
+    <test name="Publish Api">test-plan-data/simple/simple-echo-replacement/setup/001-publish-api.resttest</test>
+    <test name="Register Client">test-plan-data/simple/simple-echo-replacement/setup/002-register-client.resttest</test>
+  </testGroup>
+
+  <testGroup name="Test the Echo API">
+    <test name="Echo 1 (GET)">test-plan-data/simple/simple-echo-replacement/echo/001.resttest</test>
+  </testGroup>
+
+</testPlan>

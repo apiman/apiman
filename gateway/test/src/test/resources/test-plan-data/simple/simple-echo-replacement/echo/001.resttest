@@ -1,0 +1,17 @@
+GET /SimpleEchoReplacementTest/echo/1.0.0/path/to/app/resource admin/admin
+X-API-Key: 12345
+
+----
+200
+Content-Type: application/json
+
+{
+  "method" : "GET",
+  "resource" : "/echo-replacement/path/to/app/resource",
+  "uri" : "/echo-replacement/path/to/app/resource",
+  "headers" : {
+    "X-Field-1" : "FIELD-1-VALUE",
+    "X-Field-2" : "FIELD-2-VALUE",
+    "X-Field-3" : "@{SimpleEchoReplacementTest-field-3}"
+  }
+}

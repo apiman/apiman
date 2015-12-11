@@ -73,7 +73,9 @@ module Apiman {
                 };
                 ActionSvcs.save(registerAction, function(reply) {
                     $scope.version.status = 'Registered';
+                    Logger.info("OLD PUBLISHED-ON VALUE: {0}", $scope.version.publishedOn);
                     $scope.version.publishedOn = Date.now();
+                    Logger.info("NEW PUBLISHED-ON VALUE: {0}", $scope.version.publishedOn);
                     $scope.registerButton.state = 'complete';
                     $scope.reregisterButton.state = 'complete';
                     $scope.setEntityStatus($scope.version.status);

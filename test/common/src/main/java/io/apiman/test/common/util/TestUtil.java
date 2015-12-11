@@ -210,7 +210,7 @@ public class TestUtil {
             String propVal = System.getProperty(propName, defaultValue);
             rval = rval.replace("${" + substring + "}", propVal);
         }
-        return rval;
+        return rval.replace("@{", "${");
     }
 
 

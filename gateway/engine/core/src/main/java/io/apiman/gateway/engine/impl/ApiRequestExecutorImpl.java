@@ -50,13 +50,19 @@ import io.apiman.gateway.engine.policy.PolicyContextKeys;
 import io.apiman.gateway.engine.policy.PolicyWithConfiguration;
 import io.apiman.gateway.engine.policy.RequestChain;
 import io.apiman.gateway.engine.policy.ResponseChain;
+import io.apiman.gateway.engine.util.ApimanStrLookup;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
+
+import org.apache.commons.lang.text.StrLookup;
+import org.apache.commons.lang.text.StrSubstitutor;
 
 /**
  * Manages a single request-response sequence. It is executed in the following
@@ -75,6 +81,10 @@ import java.util.TreeSet;
  * @author Marc Savy <msavy@redhat.com>
  */
 public class ApiRequestExecutorImpl implements IApiRequestExecutor {
+
+    private static StrLookup LOOKUP = new ApimanStrLookup();
+    private static StrSubstitutor PROPERTY_SUBSTITUTOR = new StrSubstitutor(LOOKUP);
+
 
     private IRegistry registry;
     private ApiRequest request;
@@ -261,6 +271,7 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
                     public void handle(IAsyncResult<Api> result) {
                         if (result.isSuccess()) {
                             api = result.getResult();
+
                             if (api == null) {
                                 Exception error = new InvalidApiException(Messages.i18n.format("EngineImpl.ApiNotFound")); //$NON-NLS-1$
                                 resultHandler.handle(AsyncResultImpl.create(error, IEngineResult.class));
@@ -268,6 +279,8 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
                                 Exception error = new InvalidApiException(Messages.i18n.format("EngineImpl.ApiNotPublic")); //$NON-NLS-1$
                                 resultHandler.handle(AsyncResultImpl.create(error, IEngineResult.class));
                             } else {
+                                resolvePropertyReplacements(api);
+
                                 request.setApi(api);
                                 policies = api.getApiPolicies();
                                 policyImpls = new ArrayList<>(policies.size());
@@ -284,6 +297,9 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
                 public void handle(IAsyncResult<ApiContract> result) {
                     if (result.isSuccess()) {
                         ApiContract apiContract = result.getResult();
+
+                        resolvePropertyReplacements(apiContract);
+
                         requestMetric.setClientOrgId(apiContract.getClient().getOrganizationId());
                         requestMetric.setClientId(apiContract.getClient().getClientId());
                         requestMetric.setClientVersion(apiContract.getClient().getVersion());
@@ -309,6 +325,63 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
                     }
                 }
             });
+        }
+    }
+
+    /**
+     * @param api
+     */
+    protected void resolvePropertyReplacements(Api api) {
+        if (api == null) {
+            return;
+        }
+        String endpoint = api.getEndpoint();
+        endpoint = resolveProperties(endpoint);
+        api.setEndpoint(endpoint);
+
+        Map<String, String> properties = api.getEndpointProperties();
+        for (Entry<String, String> entry : properties.entrySet()) {
+            String value = entry.getValue();
+            value = resolveProperties(value);
+            entry.setValue(value);
+        }
+
+        resolvePropertyReplacements(api.getApiPolicies());
+    }
+
+    /**
+     * @param apiContract
+     */
+    protected void resolvePropertyReplacements(ApiContract apiContract) {
+        if (apiContract == null) {
+            return;
+        }
+        Api api = apiContract.getApi();
+        if (api != null) {
+            resolvePropertyReplacements(api);
+        }
+        resolvePropertyReplacements(apiContract.getPolicies());
+    }
+
+    /**
+     * @param apiPolicies
+     */
+    private void resolvePropertyReplacements(List<Policy> apiPolicies) {
+        for (Policy policy : apiPolicies) {
+            String config = policy.getPolicyJsonConfig();
+            config = resolveProperties(config);
+            policy.setPolicyJsonConfig(config);
+        }
+    }
+
+    /**
+     * @param endpoint
+     */
+    private String resolveProperties(String value) {
+        if (value.contains("${")) { //$NON-NLS-1$
+            return PROPERTY_SUBSTITUTOR.replace(value);
+        } else {
+            return value;
         }
     }
 
