@@ -38,9 +38,9 @@ APIs will very often have a security requirement such that clients connecting to
 some fashion. Authentication can vary greatly both in the protocols used to authenticate and the identity 
 source used for validation.
 
-It can often be convenient to provide authentication at the API management layer to free up the back end service 
+It can often be convenient to provide authentication at the API management layer to free up the back end API 
 from having to do this work. This approach also has the side benefit of centralizing configuration of 
-authentication for a wide array of disparate services.
+authentication for a wide array of disparate APIs.
 
 Therefore the API management layer must provide authentication capabilities using a wide range of protocols 
 including BASIC, digest, OAuth, etc.  
