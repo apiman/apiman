@@ -1,6 +1,6 @@
 {
-  "name" : "Official apiman Service Catalog",
-  "services" : [
+  "name" : "Official apiman API Catalog",
+  "apis" : [
     {
       "endpoint" : "https://maps.googleapis.com/maps/api/js",
       "endpointType" : "rest",
