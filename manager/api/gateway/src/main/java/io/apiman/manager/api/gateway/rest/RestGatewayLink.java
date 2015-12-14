@@ -16,6 +16,7 @@
 package io.apiman.manager.api.gateway.rest;
 
 import io.apiman.common.util.AesEncrypter;
+import io.apiman.common.util.ApimanStrLookup;
 import io.apiman.common.util.crypt.CurrentDataEncrypter;
 import io.apiman.gateway.engine.beans.Api;
 import io.apiman.gateway.engine.beans.ApiEndpoint;
@@ -35,6 +36,8 @@ import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang.text.StrLookup;
+import org.apache.commons.lang.text.StrSubstitutor;
 import org.apache.http.HttpException;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpRequestInterceptor;
@@ -54,6 +57,9 @@ import org.codehaus.jackson.map.ObjectMapper;
  * @author eric.wittmann@redhat.com
  */
 public class RestGatewayLink implements IGatewayLink {
+
+    private static StrLookup LOOKUP = new ApimanStrLookup();
+    private static StrSubstitutor PROPERTY_SUBSTITUTOR = new StrSubstitutor(LOOKUP);
 
     private static final ObjectMapper mapper = new ObjectMapper();
     private static SSLConnectionSocketFactory sslConnectionFactory;
@@ -87,6 +93,7 @@ public class RestGatewayLink implements IGatewayLink {
             this.gateway = gateway;
             String cfg = gateway.getConfiguration();
             cfg = CurrentDataEncrypter.instance.decrypt(cfg);
+            cfg = PROPERTY_SUBSTITUTOR.replace(cfg);
             setConfig((RestGatewayConfigBean) mapper.reader(RestGatewayConfigBean.class).readValue(cfg));
             getConfig().setPassword(AesEncrypter.decrypt(getConfig().getPassword()));
             httpClient = HttpClientBuilder.create()

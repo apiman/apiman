@@ -15,6 +15,7 @@
  */
 package io.apiman.gateway.engine.impl;
 
+import io.apiman.common.util.ApimanStrLookup;
 import io.apiman.gateway.engine.IApiConnection;
 import io.apiman.gateway.engine.IApiConnectionResponse;
 import io.apiman.gateway.engine.IApiConnector;
@@ -50,7 +51,6 @@ import io.apiman.gateway.engine.policy.PolicyContextKeys;
 import io.apiman.gateway.engine.policy.PolicyWithConfiguration;
 import io.apiman.gateway.engine.policy.RequestChain;
 import io.apiman.gateway.engine.policy.ResponseChain;
-import io.apiman.gateway.engine.util.ApimanStrLookup;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -84,7 +84,6 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
 
     private static StrLookup LOOKUP = new ApimanStrLookup();
     private static StrSubstitutor PROPERTY_SUBSTITUTOR = new StrSubstitutor(LOOKUP);
-
 
     private IRegistry registry;
     private ApiRequest request;
