@@ -978,6 +978,9 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     @Override
     public List<ClientSummaryBean> getClientsInOrgs(Set<String> orgIds) throws StorageException {
         List<ClientSummaryBean> rval = new ArrayList<>();
+        if (orgIds == null || orgIds.isEmpty()) {
+            return rval;
+        }
         beginTx();
         try {
             EntityManager entityManager = getActiveEntityManager();
@@ -1023,10 +1026,13 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     @Override
     public List<ApiSummaryBean> getApisInOrgs(Set<String> orgIds) throws StorageException {
         List<ApiSummaryBean> rval = new ArrayList<>();
+        if (orgIds == null || orgIds.isEmpty()) {
+            return rval;
+        }
         beginTx();
         try {
             EntityManager entityManager = getActiveEntityManager();
-            String jpql = "SELECT s FROM ApiBean s JOIN s.organization o WHERE o.id IN :orgs ORDER BY s.id ASC"; //$NON-NLS-1$
+            String jpql = "SELECT a FROM ApiBean a JOIN a.organization o WHERE o.id IN :orgs ORDER BY a.id ASC"; //$NON-NLS-1$
             Query query = entityManager.createQuery(jpql);
             query.setParameter("orgs", orgIds); //$NON-NLS-1$
 
@@ -1443,6 +1449,9 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     @Override
     public List<PlanSummaryBean> getPlansInOrgs(Set<String> orgIds) throws StorageException {
         List<PlanSummaryBean> rval = new ArrayList<>();
+        if (orgIds == null || orgIds.isEmpty()) {
+            return rval;
+        }
         beginTx();
         try {
             EntityManager entityManager = getActiveEntityManager();
