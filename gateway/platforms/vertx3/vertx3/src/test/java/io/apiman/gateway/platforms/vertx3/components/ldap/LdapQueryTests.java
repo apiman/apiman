@@ -19,6 +19,7 @@ package io.apiman.gateway.platforms.vertx3.components.ldap;
 import io.apiman.gateway.engine.components.ldap.ILdapClientConnection;
 import io.apiman.gateway.engine.components.ldap.ILdapSearchEntry;
 import io.apiman.gateway.engine.components.ldap.LdapSearchScope;
+import io.apiman.gateway.engine.components.ldap.result.LdapResultCode;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestCompletion;
 import io.vertx.ext.unit.TestContext;
@@ -69,9 +70,9 @@ public class LdapQueryTests extends LdapTestParent  {
 
         connect((connection, context) -> {
             Async async = context.async();
-            connection.search("ou=people,o=apiman", "(uid=msavy)", LdapSearchScope.SUBTREE, searchResult -> {
+            connection.search("ou=people,o=apiman", "(uid=msavy)", LdapSearchScope.SUBTREE)
+            .search(searchResult -> {
                 context.assertTrue(searchResult.isSuccess());
-
                 List<ILdapSearchEntry> result = searchResult.getResult();
                 context.assertEquals(1, result.size());
                 async.complete();
@@ -87,7 +88,8 @@ public class LdapQueryTests extends LdapTestParent  {
         connect((connection, context) -> {
             Async async = context.async();
             Async async2 = context.async();
-            connection.search("ou=people,o=apiman", "(uid=msavy)", LdapSearchScope.SUBTREE, searchResult -> {
+            connection.search("ou=people,o=apiman", "(uid=msavy)", LdapSearchScope.SUBTREE)
+            .search(searchResult -> {
                 context.assertTrue(searchResult.isSuccess());
 
                 List<ILdapSearchEntry> result = searchResult.getResult();
@@ -95,7 +97,8 @@ public class LdapQueryTests extends LdapTestParent  {
                 async.complete();
             });
 
-            connection.search("ou=people,o=apiman", "(uid=ewittman)", LdapSearchScope.SUBTREE, searchResult -> {
+            connection.search("ou=people,o=apiman", "(uid=ewittman)", LdapSearchScope.SUBTREE).
+            search(searchResult -> {
                 context.assertTrue(searchResult.isSuccess());
 
                 List<ILdapSearchEntry> result = searchResult.getResult();
@@ -112,7 +115,8 @@ public class LdapQueryTests extends LdapTestParent  {
 
         connect((connection, context) -> {
             Async async = context.async();
-            connection.search("ou=people,o=apiman", "(uid=sushi)", LdapSearchScope.SUBTREE, searchResult -> {
+            connection.search("ou=people,o=apiman", "(uid=sushi)", LdapSearchScope.SUBTREE)
+            .search(searchResult -> {
                 context.assertTrue(searchResult.isSuccess());
 
                 List<ILdapSearchEntry> result = searchResult.getResult();
@@ -129,10 +133,14 @@ public class LdapQueryTests extends LdapTestParent  {
 
         connect((connection, context) -> {
             Async async = context.async();
-            connection.search("invalid", "(uid=msavy)", LdapSearchScope.SUBTREE, searchResult -> {
-                context.assertTrue(searchResult.isError());
-                context.assertEquals("Invalid root DN given : invalid (0x69 0x6E 0x76 0x61 0x6C 0x69 0x64 ) is invalid", searchResult.getError().getMessage());
+            connection.search("invalid", "(uid=msavy)", LdapSearchScope.SUBTREE)
+            .setLdapErrorHandler(error -> {
+                System.err.println(error.getResultCode());
+                context.assertTrue(error.getResultCode().equals(LdapResultCode.INVALID_DN_SYNTAX));
                 async.complete();
+            })
+            .search(searchResult -> {
+                context.assertFalse(true); // Should not be executed
             });
         });
     }
@@ -144,10 +152,13 @@ public class LdapQueryTests extends LdapTestParent  {
 
         connect((connection, context) -> {
             Async async = context.async();
-            connection.search("ou=people,o=apiman", "!!!!", LdapSearchScope.SUBTREE, searchResult -> {
-                context.assertTrue(searchResult.isError());
-                context.assertEquals("Expected parentheses around the filter component '!!!'.", searchResult.getError().getMessage());
+            connection.search("ou=people,o=apiman", "!!!!", LdapSearchScope.SUBTREE)
+            .setLdapErrorHandler(error -> {
+                context.assertTrue(error.getResultCode().equals(LdapResultCode.FILTER_ERROR));
                 async.complete();
+            })
+            .search(searchResult -> {
+                context.assertFalse(true); // Should not be executed
             });
         });
     }

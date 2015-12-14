@@ -14,13 +14,21 @@
  * limitations under the License.
  */
 
-package io.apiman.gateway.engine.components.ldap;
+package io.apiman.gateway.engine.components.ldap.result;
 
 /**
- * LDAP search scope (see LDAP spec).
- *
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
-public enum LdapSearchScope {
-    SUBTREE, ONE
+public class LdapException extends Exception {
+    private static final long serialVersionUID = 7864217780903440819L;
+    private LdapResultCode resultCode;
+
+    public LdapException(LdapResultCode resultCode, String message, Throwable e) {
+        super(message, e);
+        this.resultCode = resultCode;
+    }
+
+    public LdapResultCode getResultCode() {
+        return resultCode;
+    }
 }

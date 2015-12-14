@@ -16,11 +16,21 @@
 
 package io.apiman.gateway.engine.components.ldap;
 
+import io.apiman.gateway.engine.components.ldap.result.LdapResultCode;
+
 /**
- * LDAP search scope (see LDAP spec).
+ * An LDAP result (status).
  *
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
-public enum LdapSearchScope {
-    SUBTREE, ONE
+public interface ILdapResult {
+    /**
+     * @return the LDAP result code
+     */
+    LdapResultCode getResultCode();
+
+    /**
+     * @return get the result message
+     */
+    String getMessage();
 }

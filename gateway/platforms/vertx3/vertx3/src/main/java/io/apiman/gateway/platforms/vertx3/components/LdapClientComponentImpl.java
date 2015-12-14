@@ -16,103 +16,47 @@
 
 package io.apiman.gateway.platforms.vertx3.components;
 
-import static io.apiman.gateway.platforms.vertx3.helpers.HandlerHelpers.translateFailureHandler;
-
 import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
-import io.apiman.gateway.engine.components.ILdapComponent;
 import io.apiman.gateway.engine.components.ldap.ILdapClientConnection;
+import io.apiman.gateway.engine.components.ldap.ILdapResult;
 import io.apiman.gateway.engine.components.ldap.LdapConfigBean;
-import io.apiman.gateway.engine.impl.LDAPConnectionFactory;
+import io.apiman.gateway.engine.impl.DefaultLdapClientConnection;
+import io.apiman.gateway.engine.impl.DefaultLdapComponent;
 import io.apiman.gateway.platforms.vertx3.common.config.VertxEngineConfig;
 import io.apiman.gateway.platforms.vertx3.components.ldap.LdapClientConnectionImpl;
-import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 
-import java.security.GeneralSecurityException;
-import java.security.KeyStore;
 import java.util.Map;
-
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.TrustManagerFactory;
-import javax.net.ssl.X509TrustManager;
-
-import com.unboundid.ldap.sdk.BindResult;
-import com.unboundid.ldap.sdk.LDAPConnection;
-import com.unboundid.ldap.sdk.LDAPException;
-import com.unboundid.ldap.sdk.ResultCode;
-import com.unboundid.util.ssl.SSLUtil;
 
 /**
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
-public class LdapClientComponentImpl implements ILdapComponent {
+public class LdapClientComponentImpl extends DefaultLdapComponent {
 
     private Vertx vertx;
-
-    // This is likely a temporary measure
-    private static SSLSocketFactory DEFAULT_SOCKET_FACTORY;
-
-    static {
-        try {
-            TrustManagerFactory tmFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-            tmFactory.init((KeyStore) null);
-
-            X509TrustManager trustManager = null;
-            for (TrustManager tm : tmFactory.getTrustManagers()) {
-                if (tm instanceof X509TrustManager) {
-                    trustManager = (X509TrustManager) tm;
-                    break;
-                }
-            }
-            DEFAULT_SOCKET_FACTORY = new SSLUtil(trustManager).createSSLSocketFactory();
-            } catch (GeneralSecurityException e) {
-                throw new RuntimeException(e);
-            }
-    }
 
     public LdapClientComponentImpl(Vertx vertx, VertxEngineConfig engineConfig, Map<String, String> componentConfig) {
         this.vertx = vertx;
     }
 
     @Override
-    public void connect(LdapConfigBean config, IAsyncResultHandler<ILdapClientConnection> handler) {
-        LdapClientConnectionImpl connection = new LdapClientConnectionImpl(vertx, config, DEFAULT_SOCKET_FACTORY);
-
+    public void connect(LdapConfigBean config, final IAsyncResultHandler<ILdapClientConnection> handler) {
+        final LdapClientConnectionImpl connection = new LdapClientConnectionImpl(vertx, config, DEFAULT_SOCKET_FACTORY);
         connection.connect(result -> {
-            if (result.isSuccess()) {
-                handler.handle(AsyncResultImpl.create(connection));
-            } else {
-                handler.handle(AsyncResultImpl.create(result.getError()));
-            }
-        });
-     }
-
-    private <T> void handleBindReturn(Future<T> future, ResultCode resultCode, String message, IAsyncResultHandler<Boolean> handler) {
-        if (resultCode.equals(ResultCode.SUCCESS)) {
-            handler.handle(AsyncResultImpl.create(Boolean.TRUE));
-            future.succeeded();
-        } else if  (resultCode.equals(ResultCode.AUTHORIZATION_DENIED) || resultCode.equals(ResultCode.INVALID_CREDENTIALS)) {
-            handler.handle(AsyncResultImpl.create(Boolean.FALSE));
-            future.succeeded();
-        } else {
-            future.fail(String.format("LDAP failure: %s %s", resultCode, message)); //$NON-NLS-1$
-        }
+                if (result.isSuccess()) {
+                    handler.handle(AsyncResultImpl.create(connection));
+                } else {
+                    handler.handle(AsyncResultImpl.create(result.getError()));
+                }
+            });
     }
 
     @Override
-    public void bind(LdapConfigBean config, IAsyncResultHandler<Boolean> handler) {
-        vertx.executeBlocking(future -> {
-            try {
-                //LDAPConnection connection = LDAPConnectionFactory.build(DEFAULT_SOCKET_FACTORY, config.getScheme(), config.getHost(), config.getPort());
-                LDAPConnection connection = LDAPConnectionFactory.build(DEFAULT_SOCKET_FACTORY, config);
-                BindResult bindResponse = connection.bind(config.getBindDn(), config.getBindPassword());
-                handleBindReturn(future, bindResponse.getResultCode(), bindResponse.getDiagnosticMessage(), handler);
-            } catch (LDAPException e) {
-                handleBindReturn(future, e.getResultCode(), e.getDiagnosticMessage(), handler);
-            }
-        }, translateFailureHandler(handler));
+    public void bind(LdapConfigBean config, IAsyncResultHandler<ILdapResult> handler) {
+        vertx.executeBlocking(blocking -> {
+            DefaultLdapClientConnection.bind(DEFAULT_SOCKET_FACTORY, config, handler);
+            blocking.succeeded();
+        }, res -> {});
     }
-
 }

@@ -62,6 +62,11 @@ public class LDAPConnectionFactory {
             connection.getConnectionPool().releaseDefunctConnection(connection);
     }
 
+    public static void releaseConnectionAfterException(LDAPConnection connection, LDAPException e) {
+        if (connection.getConnectionPool() != null)
+            connection.getConnectionPool().releaseConnectionAfterException(connection, e);
+    }
+
     private static LDAPConnection getConnection(Map<LdapConfigBean, LDAPConnectionPool> map,
             SSLSocketFactory socketFactory, LdapConfigBean config) throws LDAPException {
         if (!map.containsKey(config)) {
@@ -76,4 +81,6 @@ public class LDAPConnectionFactory {
     private static boolean isLdaps(String scheme) {
         return scheme.toLowerCase().startsWith("ldaps"); //$NON-NLS-1$
     }
+
+
 }

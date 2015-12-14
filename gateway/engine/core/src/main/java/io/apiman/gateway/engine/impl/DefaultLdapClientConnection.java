@@ -17,27 +17,32 @@
 package io.apiman.gateway.engine.impl;
 
 import io.apiman.gateway.engine.async.AsyncResultImpl;
-import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.components.ldap.ILdapClientConnection;
-import io.apiman.gateway.engine.components.ldap.ILdapSearchEntry;
+import io.apiman.gateway.engine.components.ldap.ILdapResult;
+import io.apiman.gateway.engine.components.ldap.ILdapSearch;
 import io.apiman.gateway.engine.components.ldap.LdapConfigBean;
 import io.apiman.gateway.engine.components.ldap.LdapSearchScope;
-
-import java.util.ArrayList;
-import java.util.List;
+import io.apiman.gateway.engine.components.ldap.result.DefaultExceptionFactory;
+import io.apiman.gateway.engine.components.ldap.result.DefaultLdapResultCodeFactory;
+import io.apiman.gateway.engine.components.ldap.result.LdapException;
+import io.apiman.gateway.engine.components.ldap.result.LdapResult;
+import io.apiman.gateway.engine.components.ldap.result.LdapResultCode;
 
 import javax.net.ssl.SSLSocketFactory;
 
+import com.unboundid.ldap.sdk.BindResult;
 import com.unboundid.ldap.sdk.LDAPConnection;
 import com.unboundid.ldap.sdk.LDAPException;
-import com.unboundid.ldap.sdk.SearchResultEntry;
-import com.unboundid.ldap.sdk.SearchScope;
+import com.unboundid.ldap.sdk.ResultCode;
 
+/**
+ * @author Marc Savy {@literal <msavy@redhat.com>}
+ */
 public class DefaultLdapClientConnection implements ILdapClientConnection {
-        private LdapConfigBean config;
-        private LDAPConnection connection;
-        private boolean closed;
+        protected LdapConfigBean config;
+        protected LDAPConnection connection;
+        protected boolean closed;
         private SSLSocketFactory socketFactory;
 
         public DefaultLdapClientConnection(
@@ -47,53 +52,54 @@ public class DefaultLdapClientConnection implements ILdapClientConnection {
             this.socketFactory = socketFactory;
         }
 
-        public void connect(final IAsyncResultHandler<Void> resultHandler) {
-            try {
-                connection = LDAPConnectionFactory.build(socketFactory, config);
-                connection.bind(config.getBindDn(), config.getBindPassword());
-                resultHandler.handle(AsyncResultImpl.create((Void) null));
-            } catch (LDAPException e) {
-                resultHandler.handle(AsyncResultImpl.<Void>create(e));
+        public static void evalBindReturn(ResultCode resultCode, String message, LDAPException e,
+                IAsyncResultHandler<ILdapResult> handler) {
+            LdapResultCode ldapResultCode = DefaultLdapResultCodeFactory.convertResultCode(resultCode);
+
+            if (ldapResultCode == LdapResultCode.OTHER_FAILURE) {
+                if (e != null) {
+                    handler.handle(AsyncResultImpl.<ILdapResult>create(DefaultExceptionFactory.create(e)));
+                } else {
+                    handler.handle(AsyncResultImpl.<ILdapResult>create(DefaultExceptionFactory.create(resultCode, message)));
+                }
+            } else {
+                handler.handle(AsyncResultImpl.<ILdapResult>create(new LdapResult(resultCode, message)));
             }
         }
 
-        private void getResults(String searchDn, String filter, LdapSearchScope scope, final IAsyncResultHandler<List<SearchResultEntry>> result) {
-            if (connection.isConnected()) {
-                try {
-                    SearchScope searchScope = (scope == LdapSearchScope.ONE) ? SearchScope.ONE : SearchScope.SUB;
-                    List<SearchResultEntry> searchResults = connection.search(searchDn, searchScope, filter).getSearchEntries();
-                    result.handle(AsyncResultImpl.create(searchResults));
-                } catch (Exception e) {
-                    result.handle(AsyncResultImpl.<List<SearchResultEntry>>create(e));
-                }
-            } else {
-                throw new IllegalStateException("Not connected to LDAP server"); //$NON-NLS-1$
+        public static void bind(SSLSocketFactory socketFactory, LdapConfigBean config,
+                IAsyncResultHandler<ILdapResult> handler) {
+            LDAPConnection connection = null;
+            try {
+                connection = LDAPConnectionFactory.build(socketFactory, config);
+                BindResult bindResponse = connection.bind(config.getBindDn(), config.getBindPassword());
+                evalBindReturn(bindResponse.getResultCode(), bindResponse.getDiagnosticMessage(), null, handler);
+                LDAPConnectionFactory.releaseConnection(connection);
+            } catch (LDAPException e) { // generally errors as an exception, also potentially normal return(!).
+                evalBindReturn(e.getResultCode(), e.getDiagnosticMessage(), e, handler);
+                LDAPConnectionFactory.releaseConnectionAfterException(connection, e);
+            } catch (Exception e) {
+                LDAPConnectionFactory.releaseDefunct(connection);
+                handler.handle(AsyncResultImpl.<ILdapResult>create(e));
+            }
+        }
+
+        public void connect(final IAsyncResultHandler<ILdapResult> handler) {
+            try {
+                connection = LDAPConnectionFactory.build(socketFactory, config);
+                BindResult bindResponse = connection.bind(config.getBindDn(), config.getBindPassword());
+                evalBindReturn(bindResponse.getResultCode(), bindResponse.getDiagnosticMessage(), null, handler);
+            } catch (LDAPException e) {
+                evalBindReturn(e.getResultCode(), e.getDiagnosticMessage(), e, handler);
+            } catch (Exception e) {
+                LDAPConnectionFactory.releaseDefunct(connection);
+                handler.handle(AsyncResultImpl.<ILdapResult>create(e));
             }
         }
 
         @Override
-        public void search(String searchDn, String filter, LdapSearchScope scope, final IAsyncResultHandler<List<ILdapSearchEntry>> resultHandler) {
-            getResults(searchDn, filter, scope, new IAsyncResultHandler<List<SearchResultEntry>>() {
-
-                @Override
-                public void handle(IAsyncResult<List<SearchResultEntry>> results) {
-                    if (results.isSuccess()) {
-                        List<ILdapSearchEntry> searchResults = toSearchEntry(results.getResult());
-                        resultHandler.handle(AsyncResultImpl.create(searchResults));
-                    } else {
-                        resultHandler.handle(AsyncResultImpl.<List<ILdapSearchEntry>>create(results.getError()));
-                    }
-                }
-            });
-        }
-
-        private List<ILdapSearchEntry> toSearchEntry(List<SearchResultEntry> result) {
-            List<ILdapSearchEntry> ldapSearchEntries = new ArrayList<>(result.size());
-
-            for (SearchResultEntry e : result) {
-                ldapSearchEntries.add(new DefaultLdapSearchEntry(e));
-            }
-            return ldapSearchEntries;
+        public ILdapSearch search(String searchDn, String filter, LdapSearchScope scope) {
+            return new DefaultLdapSearchImpl(searchDn, filter, scope, connection);
         }
 
         @Override
@@ -107,5 +113,11 @@ public class DefaultLdapClientConnection implements ILdapClientConnection {
         public void close(IAsyncResultHandler<Void> closeResultHandler) {
             close();
             closeResultHandler.handle(AsyncResultImpl.create((Void) null));
+        }
+
+        @Override
+        public void close(LdapException e) {
+            // Map backwards and close
+            close();
         }
     }

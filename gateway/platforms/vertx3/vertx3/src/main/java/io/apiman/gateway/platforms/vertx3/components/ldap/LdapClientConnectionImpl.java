@@ -16,101 +16,59 @@
 
 package io.apiman.gateway.platforms.vertx3.components.ldap;
 
-import static io.apiman.gateway.platforms.vertx3.helpers.HandlerHelpers.translateFailureHandler;
-
 import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
-import io.apiman.gateway.engine.components.ldap.ILdapClientConnection;
-import io.apiman.gateway.engine.components.ldap.ILdapSearchEntry;
+import io.apiman.gateway.engine.components.ldap.ILdapSearch;
 import io.apiman.gateway.engine.components.ldap.LdapConfigBean;
 import io.apiman.gateway.engine.components.ldap.LdapSearchScope;
-import io.apiman.gateway.engine.impl.DefaultLdapSearchEntry;
-import io.apiman.gateway.engine.impl.LDAPConnectionFactory;
+import io.apiman.gateway.engine.components.ldap.result.LdapException;
+import io.apiman.gateway.engine.impl.DefaultLdapClientConnection;
 import io.vertx.core.Vertx;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import javax.net.ssl.SSLSocketFactory;
-
-import com.unboundid.ldap.sdk.LDAPConnection;
-import com.unboundid.ldap.sdk.LDAPException;
-import com.unboundid.ldap.sdk.SearchResultEntry;
-import com.unboundid.ldap.sdk.SearchScope;
 
 /**
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
-public class LdapClientConnectionImpl implements ILdapClientConnection {
-    // TODO optimisation - lazy cache list
+public class LdapClientConnectionImpl extends DefaultLdapClientConnection {
     private Vertx vertx;
-    private LdapConfigBean config;
-    private LDAPConnection connection;
-    private boolean closed;
-    private SSLSocketFactory socketFactory;
 
     public LdapClientConnectionImpl(Vertx vertx, LdapConfigBean config, SSLSocketFactory socketFactory) {
+        super(config, socketFactory);
         this.vertx = vertx;
-        this.config = config;
-        this.socketFactory = socketFactory;
-    }
-
-    public void connect(IAsyncResultHandler<Void> resultHandler) {
-        vertx.executeBlocking(future -> {
-            try {
-                this.connection = LDAPConnectionFactory.build(socketFactory, config);
-                connection.bind(config.getBindDn(), config.getBindPassword());
-                future.succeeded();
-                resultHandler.handle(AsyncResultImpl.create((Void) null));
-            } catch (LDAPException e) {
-                future.fail(e);
-            }
-        }, translateFailureHandler(resultHandler));
-    }
-
-    private void getResults(String searchDn, String filter, LdapSearchScope scope, IAsyncResultHandler<List<SearchResultEntry>> result) {
-        if (connection.isConnected()) {
-            vertx.executeBlocking(future -> {
-                try {
-                    SearchScope searchScope = (scope == LdapSearchScope.ONE) ? SearchScope.ONE : SearchScope.SUB;
-                    List<SearchResultEntry> searchResults = connection.search(searchDn, searchScope, filter).getSearchEntries();
-                    future.succeeded(); // In this instance, safe to call handler immediately I think - no need for success handler
-                    result.handle(AsyncResultImpl.create(searchResults));
-                } catch (Exception e) {
-                    future.fail(e);
-                }
-            }, translateFailureHandler(result));
-        } else {
-            throw new IllegalStateException("Not connected to LDAP server"); //$NON-NLS-1$
-        }
     }
 
     @Override
-    public void search(String searchDn, String filter, LdapSearchScope scope, IAsyncResultHandler<List<ILdapSearchEntry>> resultHandler) {
-        getResults(searchDn, filter, scope, results -> {
-            if (results.isSuccess()) {
-                List<ILdapSearchEntry> searchResults = toSearchEntry(results.getResult());
-                resultHandler.handle(AsyncResultImpl.create(searchResults));
-            } else {
-                resultHandler.handle(AsyncResultImpl.create(results.getError()));
-            }
-        });
+    public ILdapSearch search(String searchDn, String filter, LdapSearchScope scope) {
+        return new LdapSearchImpl(vertx, searchDn, filter, scope, connection);
     }
 
-    private List<ILdapSearchEntry> toSearchEntry(List<SearchResultEntry> result) {
-        return result.stream().map(elem -> { return new DefaultLdapSearchEntry(elem); }).collect(Collectors.toList());
+    /**
+     * Indicates whether connection was successfully closed.
+     *
+     * @param result the result
+     */
+    @Override
+    public void close(IAsyncResultHandler<Void> result) {
+        vertx.executeBlocking(blocking -> {
+            super.close(result);
+        }, res -> {
+            if (res.failed())
+                result.handle(AsyncResultImpl.create(res.cause()));
+        });
     }
 
     @Override
     public void close() {
-        if (!closed)
-            LDAPConnectionFactory.releaseConnection(connection);
-        closed = true;
+        vertx.executeBlocking(blocking -> {
+            super.close();
+        }, res -> {});
     }
 
     @Override
-    public void close(IAsyncResultHandler<Void> closeResultHandler) {
-        close();
-        closeResultHandler.handle(AsyncResultImpl.create((Void) null));
+    public void close(LdapException e) {
+        vertx.executeBlocking(blocking -> {
+            super.close(e);
+        }, res -> {});
     }
 }

@@ -21,6 +21,7 @@ import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.components.ILdapComponent;
 import io.apiman.gateway.engine.components.ldap.ILdapClientConnection;
+import io.apiman.gateway.engine.components.ldap.ILdapResult;
 import io.apiman.gateway.engine.components.ldap.LdapConfigBean;
 
 import java.security.GeneralSecurityException;
@@ -31,10 +32,6 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 
-import com.unboundid.ldap.sdk.BindResult;
-import com.unboundid.ldap.sdk.LDAPConnection;
-import com.unboundid.ldap.sdk.LDAPException;
-import com.unboundid.ldap.sdk.ResultCode;
 import com.unboundid.util.ssl.SSLUtil;
 
 /**
@@ -68,10 +65,10 @@ public class DefaultLdapComponent implements ILdapComponent {
     @Override
     public void connect(LdapConfigBean config, final IAsyncResultHandler<ILdapClientConnection> handler) {
         final DefaultLdapClientConnection connection = new DefaultLdapClientConnection(config, DEFAULT_SOCKET_FACTORY);
-        connection.connect(new IAsyncResultHandler<Void>() {
+        connection.connect(new IAsyncResultHandler<ILdapResult>() {
 
             @Override
-            public void handle(IAsyncResult<Void> result) {
+            public void handle(IAsyncResult<ILdapResult> result) {
                 if (result.isSuccess()) {
                     handler.handle(AsyncResultImpl.<ILdapClientConnection>create(connection));
                 } else {
@@ -81,30 +78,8 @@ public class DefaultLdapComponent implements ILdapComponent {
         });
     }
 
-    private <T> void handleBindReturn(ResultCode resultCode, String message, IAsyncResultHandler<Boolean> handler) {
-        if (resultCode.equals(ResultCode.SUCCESS)) {
-            handler.handle(AsyncResultImpl.create(Boolean.TRUE));
-        } else if  (resultCode.equals(ResultCode.AUTHORIZATION_DENIED) || resultCode.equals(ResultCode.INVALID_CREDENTIALS)) {
-            handler.handle(AsyncResultImpl.create(Boolean.FALSE));
-        } else {
-            RuntimeException re = new RuntimeException(String.format("LDAP failure: %s %s", resultCode, message)); //$NON-NLS-1$
-            handler.handle(AsyncResultImpl.<Boolean>create(re));
-        }
-    }
-
     @Override
-    public void bind(LdapConfigBean config, IAsyncResultHandler<Boolean> handler) {
-        LDAPConnection connection = null;
-        try {
-            connection = LDAPConnectionFactory.build(DEFAULT_SOCKET_FACTORY, config);
-            BindResult bindResponse = connection.bind(config.getBindDn(), config.getBindPassword());
-            handleBindReturn(bindResponse.getResultCode(), bindResponse.getDiagnosticMessage(), handler);
-        } catch (LDAPException e) { // generally errors as an exception, also potentially normal return(!).
-            handleBindReturn(e.getResultCode(), e.getDiagnosticMessage(), handler);
-        } finally {
-            if (connection != null)
-                LDAPConnectionFactory.releaseConnection(connection);
-        }
+    public void bind(LdapConfigBean config, IAsyncResultHandler<ILdapResult> handler) {
+        DefaultLdapClientConnection.bind(DEFAULT_SOCKET_FACTORY, config, handler);
     }
-
 }

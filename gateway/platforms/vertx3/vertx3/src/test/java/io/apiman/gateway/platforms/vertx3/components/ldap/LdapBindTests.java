@@ -16,6 +16,7 @@
 
 package io.apiman.gateway.platforms.vertx3.components.ldap;
 
+import io.apiman.gateway.engine.components.ldap.result.LdapResultCode;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestCompletion;
 import io.vertx.ext.unit.TestSuite;
@@ -41,7 +42,7 @@ public class LdapBindTests extends LdapTestParent {
                      result.getError().printStackTrace(System.out);
 
                  context.assertTrue(result.isSuccess());
-                 context.assertTrue(result.getResult());
+                 context.assertTrue(result.getResult().getResultCode().equals(LdapResultCode.SUCCESS));
                  async.complete();
              });
 
@@ -64,7 +65,7 @@ public class LdapBindTests extends LdapTestParent {
                      result.getError().printStackTrace(System.out);
 
                  context.assertTrue(result.isSuccess());
-                 context.assertFalse(result.getResult());
+                 context.assertTrue(result.getResult().getResultCode().equals(LdapResultCode.INVALID_CREDENTIALS));
                  async.complete();
              });
 
@@ -87,7 +88,7 @@ public class LdapBindTests extends LdapTestParent {
                      result.getError().printStackTrace(System.out);
 
                  context.assertTrue(result.isSuccess());
-                 context.assertFalse(result.getResult());
+                 context.assertTrue(result.getResult().getResultCode().equals(LdapResultCode.INVALID_CREDENTIALS));
                  async.complete();
              });
 
@@ -106,11 +107,8 @@ public class LdapBindTests extends LdapTestParent {
              Async async = context.async();
 
              ldapClientComponent.bind(config, result -> {
-                 if (result.isError())
-                     result.getError().printStackTrace(System.out);
-
                  context.assertTrue(result.isSuccess());
-                 context.assertFalse(result.getResult());
+                 context.assertTrue(result.getResult().getResultCode().equals(LdapResultCode.INVALID_CREDENTIALS));
                  async.complete();
              });
 
@@ -120,19 +118,20 @@ public class LdapBindTests extends LdapTestParent {
         completion.awaitSuccess();
     }
 
+    boolean runTwice = false;
+
     @Test
     public void shouldErrorWhenFieldsInvalid() throws InterruptedException {
         config.setBindDn("x");
         config.setBindPassword("x");
 
-         TestCompletion completion = TestSuite.create("").test("",  context -> {
+        TestCompletion completion = TestSuite.create("").test("",  context -> {
              Async async = context.async();
 
              ldapClientComponent.bind(config, result -> {
-                 context.assertTrue(result.isError());
-                 context.assertEquals("LDAP failure: 34 (invalid DN syntax) Incorrect DN given : x (0x78 ) is invalid",
-                         result.getError().getMessage());
-
+                 context.assertTrue(result.isSuccess());
+                 context.assertTrue(result.getResult().getResultCode().equals(LdapResultCode.INVALID_DN_SYNTAX));
+                 context.assertTrue(result.getResult().getMessage().equals("Incorrect DN given : x (0x78 ) is invalid"));
                  async.complete();
              });
 
