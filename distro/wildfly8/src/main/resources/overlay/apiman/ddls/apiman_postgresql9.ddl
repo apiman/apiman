@@ -378,6 +378,8 @@ CREATE OR REPLACE FUNCTION inttobool(val bool, num int) RETURNS bool AS '
     END;
 ' LANGUAGE 'plpgsql';
 
+
+DROP OPERATOR IF EXISTS = (integer, boolean);
 CREATE OPERATOR = (
      leftarg = integer,
      rightarg = boolean,
@@ -385,6 +387,7 @@ CREATE OPERATOR = (
      commutator = =,
      negator = !=
 );
+DROP OPERATOR IF EXISTS = (boolean, integer);
 CREATE OPERATOR = (
      leftarg = boolean,
      rightarg = integer,
