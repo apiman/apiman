@@ -81,8 +81,8 @@ module ApimanPageLifecycle {
     export var _module = angular.module("ApimanPageLifecycle", []);
 
     export var PageLifecycle = _module.factory('PageLifecycle', 
-        ['$q', 'Logger', '$rootScope', '$location', 'CurrentUserSvcs', 'Configuration', 'TranslationSvc', '$window', 'CurrentUser',
-        ($q, Logger, $rootScope, $location, CurrentUserSvcs, Configuration, TranslationSvc, $window, CurrentUser) => {
+        ['$q', '$timeout', 'Logger', '$rootScope', '$location', 'CurrentUserSvcs', 'Configuration', 'TranslationSvc', '$window', 'CurrentUser',
+        ($q, $timeout, Logger, $rootScope, $location, CurrentUserSvcs, Configuration, TranslationSvc, $window, CurrentUser) => {
             var header = 'community';
             if (Configuration.ui && Configuration.ui.header) {
                 header = Configuration.ui.header;
@@ -209,8 +209,11 @@ module ApimanPageLifecycle {
                         if (handler) {
                             handler();
                         }
-                        $rootScope.pageState = 'loaded';
-                        Logger.log("|{0}| >> Page successfully loaded: {1} data packets loaded", pageName, count);
+                        
+                        $timeout(function() {
+                            $rootScope.pageState = 'loaded'; 
+                            Logger.log("|{0}| >> Page successfully loaded: {1} data packets loaded", pageName, count);
+                        }, 50);
                     }, function(reason) {
                         Logger.error("|{0}| >> Page load failed: {1}", pageName, reason);
                         handleError(reason);
