@@ -17,7 +17,9 @@ package io.apiman.plugins.keycloak_oauth_policy.beans;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.annotation.Generated;
+
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -114,12 +116,29 @@ public class ForwardAuthInfo {
 
     @Generated("org.jsonschema2pojo")
     public static enum Field {
-
-        SUBJECT("subject"), //$NON-NLS-1$
-        USERNAME("username"), //$NON-NLS-1$
-        EMAIL("email"), //$NON-NLS-1$
-        NAME("name"), //$NON-NLS-1$
-        ACCESS_TOKEN("access_token"); //$NON-NLS-1$
+        ACCESS_TOKEN("token"),
+        NONCE("nonce"),
+        SESSION_STATE("session_state"),
+        NAME("name"),
+        GIVEN_NAME("given_name"),
+        FAMILY_NAME("family_name"),
+        MIDDLE_NAME("middle_name"),
+        NICKNAME("nickname"),
+        PREFERRED_USERNAME("preferred_username"),
+        PROFILE("profile"),
+        PICTURE("picture"),
+        WEBSITE("website"),
+        EMAIL("email"),
+        EMAIL_VERIFIED("email_verified"),
+        GENDER("gender"),
+        BIRTHDATE("birthdate"),
+        ZONEINFO("zoneinfo"),
+        LOCALE("locale"),
+        PHONE_NUMBER("phone_number"),
+        PHONE_NUMBER_VERIFIED("phone_number_verified"),
+        ADDRESS("address"),
+        UPDATED_AT("updated_at"),
+        CLAIMS_LOCALES("claims_locales");
         private final String value;
         private static Map<String, ForwardAuthInfo.Field> constants = new HashMap<>();
 
