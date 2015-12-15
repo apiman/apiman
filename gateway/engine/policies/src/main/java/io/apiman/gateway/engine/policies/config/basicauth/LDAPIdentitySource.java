@@ -15,6 +15,8 @@
  */
 package io.apiman.gateway.engine.policies.config.basicauth;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 
 /**
  * Information about the LDAP server to use to authenticate an inbound
@@ -38,6 +40,7 @@ public class LDAPIdentitySource {
     private boolean extractRoles;
     private String membershipAttribute;
     private String rolenameAttribute;
+    private URI uri;
 
     /**
      * Constructor.
@@ -64,6 +67,20 @@ public class LDAPIdentitySource {
      */
     public String getUrl() {
         return url;
+    }
+
+    /**
+     * @return the url
+     */
+    public URI getUri() {
+        if (uri == null) {
+            try {
+                uri = new URI(url);
+            } catch (URISyntaxException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return uri;
     }
 
     /**

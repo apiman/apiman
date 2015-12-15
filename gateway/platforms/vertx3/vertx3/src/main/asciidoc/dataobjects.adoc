@@ -1,5 +1,30 @@
 = Cheatsheets
 
+[[VertxApiRequest]]
+== VertxApiRequest
+
+++++
+ Wrapped  with Vertx specific converters
+++++
+'''
+
+[cols=">25%,^25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[apiId]]`apiId`|`String`|-
+|[[apiKey]]`apiKey`|`String`|-
+|[[apiOrgId]]`apiOrgId`|`String`|-
+|[[apiVersion]]`apiVersion`|`String`|-
+|[[destination]]`destination`|`String`|-
+|[[headers]]`headers`|`String`|-
+|[[queryParams]]`queryParams`|`String`|-
+|[[remoteAddr]]`remoteAddr`|`String`|-
+|[[transportSecure]]`transportSecure`|`Boolean`|-
+|[[type]]`type`|`String`|-
+|[[url]]`url`|`String`|-
+|===
+
 [[VertxApiResponse]]
 == VertxApiResponse
 
@@ -15,31 +40,6 @@
 |[[code]]`code`|`Number (int)`|-
 |[[headers]]`headers`|`String`|-
 |[[message]]`message`|`String`|-
-|===
-
-[[VertxApiRequest]]
-== VertxApiRequest
-
-++++
- Wrapped  with Vertx specific converters
-++++
-'''
-
-[cols=">25%,^25%,50%"]
-[frame="topbot"]
-|===
-^|Name | Type ^| Description
-|[[apiKey]]`apiKey`|`String`|-
-|[[destination]]`destination`|`String`|-
-|[[headers]]`headers`|`String`|-
-|[[queryParams]]`queryParams`|`String`|-
-|[[remoteAddr]]`remoteAddr`|`String`|-
-|[[apiId]]`apiId`|`String`|-
-|[[apiOrgId]]`apiOrgId`|`String`|-
-|[[apiVersion]]`apiVersion`|`String`|-
-|[[transportSecure]]`transportSecure`|`Boolean`|-
-|[[type]]`type`|`String`|-
-|[[url]]`url`|`String`|-
 |===
 
 [[VertxPolicyFailure]]

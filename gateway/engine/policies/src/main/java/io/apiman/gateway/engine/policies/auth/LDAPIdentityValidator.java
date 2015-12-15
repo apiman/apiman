@@ -16,8 +16,22 @@
 package io.apiman.gateway.engine.policies.auth;
 
 import io.apiman.gateway.engine.async.AsyncResultImpl;
+import io.apiman.gateway.engine.async.IAsyncHandler;
+import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.ApiRequest;
+import io.apiman.gateway.engine.components.ILdapComponent;
+import io.apiman.gateway.engine.components.ldap.ILdapAttribute;
+import io.apiman.gateway.engine.components.ldap.ILdapClientConnection;
+import io.apiman.gateway.engine.components.ldap.ILdapDn;
+import io.apiman.gateway.engine.components.ldap.ILdapRdn;
+import io.apiman.gateway.engine.components.ldap.ILdapResult;
+import io.apiman.gateway.engine.components.ldap.ILdapSearchEntry;
+import io.apiman.gateway.engine.components.ldap.LdapConfigBean;
+import io.apiman.gateway.engine.components.ldap.LdapSearchScope;
+import io.apiman.gateway.engine.components.ldap.result.LdapException;
+import io.apiman.gateway.engine.components.ldap.result.LdapResult;
+import io.apiman.gateway.engine.components.ldap.result.LdapResultCode;
 import io.apiman.gateway.engine.policies.AuthorizationPolicy;
 import io.apiman.gateway.engine.policies.config.basicauth.LDAPBindAsType;
 import io.apiman.gateway.engine.policies.config.basicauth.LDAPIdentitySource;
@@ -25,28 +39,20 @@ import io.apiman.gateway.engine.policy.IPolicyContext;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.naming.AuthenticationException;
-import javax.naming.Context;
-import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
-import javax.naming.directory.Attribute;
-import javax.naming.directory.Attributes;
-import javax.naming.directory.DirContext;
-import javax.naming.directory.InitialDirContext;
-import javax.naming.directory.SearchControls;
-import javax.naming.directory.SearchResult;
 
 import org.apache.commons.lang.text.StrSubstitutor;
 
 /**
  * An identity validator that uses the static information in the config
- * to validate the user.
+ * to validate the user via {@link ILdapComponent}.
  *
  * @author eric.wittmann@redhat.com
+ * @author marc.savy@redhat.com
  */
 public class LDAPIdentityValidator implements IIdentityValidator<LDAPIdentitySource> {
 
@@ -60,150 +66,177 @@ public class LDAPIdentityValidator implements IIdentityValidator<LDAPIdentitySou
      * @see io.apiman.gateway.engine.policies.auth.IIdentityValidator#validate(java.lang.String, java.lang.String, io.apiman.gateway.engine.beans.ApiRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
     @Override
-    public void validate(String username, String password, ApiRequest request, IPolicyContext context,
-            LDAPIdentitySource config, IAsyncResultHandler<Boolean> handler) {
-        String url = config.getUrl();
-        String bindDN = formatDn(config.getDnPattern(), username, request);
-        String bindDNPwd = password;
-
-        if (config.getBindAs() == LDAPBindAsType.ServiceAccount) {
-            bindDN = formatDn(config.getDnPattern(), config.getCredentials().getUsername(), request);
-            bindDNPwd = config.getCredentials().getPassword();
-        }
-
-        Hashtable<String, String> env = new Hashtable<>();
-        env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory"); //$NON-NLS-1$
-        env.put(Context.PROVIDER_URL, url);
-        env.put(Context.REFERRAL, "follow"); //$NON-NLS-1$
-        if (url.startsWith("ldaps")) { //$NON-NLS-1$
-            // TODO handle connections to ldaps with self-sign certs?
-        }
-        env.put(Context.SECURITY_AUTHENTICATION, "simple"); //$NON-NLS-1$
-        env.put(Context.SECURITY_PRINCIPAL, bindDN);
-        env.put(Context.SECURITY_CREDENTIALS, bindDNPwd);
+    public void validate(final String username, final String password, final ApiRequest request, final IPolicyContext context,
+            final LDAPIdentitySource config, final IAsyncResultHandler<Boolean> handler) {
         try {
-            InitialDirContext dirContext = new InitialDirContext(env);
+            doValidate(username, password, request, context, config, handler);
+        } catch (Throwable e) {
+            handler.handle(AsyncResultImpl.<Boolean>create(e));
+        }
+    }
 
-            // If we're using a service account to search for the actual UserDN,
-            // then do the search and, if found, rebind.  Otherwise just return true.
-            if (config.getBindAs() == LDAPBindAsType.ServiceAccount) {
-                validateAsServiceAccount(username, password, request, context, config, handler, dirContext);
-            } else {
-                if (config.isExtractRoles()) {
-                    extractRoles(dirContext, bindDN, config, context);
+    private void doValidate(final String username, final String password, final ApiRequest request, final IPolicyContext context,
+            final LDAPIdentitySource config, final IAsyncResultHandler<Boolean> handler) {
+        final ILdapComponent ldapComponent = context.getComponent(ILdapComponent.class);
+
+        String bindDn = formatDn(config.getDnPattern(), username, request);
+        String bindDnPwd = password;
+
+        final LdapConfigBean ldapConfigBean = new LdapConfigBean();
+        ldapConfigBean.setBindDn(bindDn);
+        ldapConfigBean.setBindPassword(bindDnPwd);
+        ldapConfigBean.setHost(config.getUri().getHost());
+        ldapConfigBean.setPort(config.getUri().getPort());
+        ldapConfigBean.setScheme(config.getUri().getScheme());
+
+        // Bind as one account, search for other.
+        if (config.getBindAs() == LDAPBindAsType.ServiceAccount) {
+            ldapConfigBean.setBindDn(formatDn(config.getDnPattern(), config.getCredentials().getUsername(), request));
+            ldapConfigBean.setBindPassword(config.getCredentials().getPassword());
+
+            ldapComponent.connect(ldapConfigBean, successHandler(handler, new IAsyncHandler<ILdapClientConnection>() {
+
+                @Override
+                public void handle(final ILdapClientConnection connection) {
+                    String searchBaseDN = formatDn(config.getUserSearch().getBaseDn(), username, request);
+                    String searchExpr = formatDn(config.getUserSearch().getExpression(), username, request);
+
+                    connection.search(searchBaseDN, searchExpr, LdapSearchScope.SUBTREE)
+                            .setLdapErrorHandler(new IAsyncHandler<LdapException>() {
+                                // At the moment it's just generic, but in future we can make better use of it.
+                                @Override
+                                public void handle(LdapException exception) {
+                                    handler.handle(AsyncResultImpl.<Boolean>create(exception));
+                                }
+                            }).search(successHandler(handler, new IAsyncHandler<List<ILdapSearchEntry>>() {
+
+                                @Override
+                                public void handle(List<ILdapSearchEntry> searchEntries) {
+                                    handleLdapSearch(connection, searchEntries, config, ldapConfigBean,
+                                            ldapComponent, context, username, password, handler);
+                                }
+                            }));
                 }
-                handler.handle(AsyncResultImpl.create(Boolean.TRUE));
-            }
-        } catch (Exception e) {
-            if (isAuthenticationNamingException(e)) {
-                handler.handle(AsyncResultImpl.create(Boolean.FALSE));
-            } else {
-                handler.handle(AsyncResultImpl.create(e, Boolean.class));
-            }
-        }
-    }
-
-    /**
-     * @param error
-     * @return true iff the error is an ldap authentication exception
-     */
-    private boolean isAuthenticationNamingException(Exception error) {
-        boolean done = false;
-        Throwable e = error;
-        while (!done) {
-            if (e instanceof AuthenticationException) {
-                return true;
-            }
-            if (e.getCause() == e) {
-                done = true;
-            }
-            e = e.getCause();
-        }
-        return false;
-    }
-
-    /**
-     * Validate by searching for the user node in LDAP, then (if found) rebinding
-     * using the provided password.
-     * @param username
-     * @param password
-     * @param request
-     * @param context
-     * @param config
-     * @param handler
-     * @param dirContext
-     * @throws NamingException
-     */
-    private void validateAsServiceAccount(String username, String password, ApiRequest request,
-            IPolicyContext context, LDAPIdentitySource config, IAsyncResultHandler<Boolean> handler,
-            DirContext dirContext) throws NamingException {
-
-        SearchControls controls = new SearchControls();
-        controls.setSearchScope(SearchControls.SUBTREE_SCOPE);
-        String searchBaseDN = formatDn(config.getUserSearch().getBaseDn(), username, request);
-        String searchExpr = formatDn(config.getUserSearch().getExpression(), username, request);
-        NamingEnumeration<SearchResult> result = dirContext.search(searchBaseDN, searchExpr, controls);
-        if (result == null || !result.hasMore()) {
-            handler.handle(AsyncResultImpl.create(Boolean.FALSE));
+            }));
         } else {
-            SearchResult element = result.nextElement();
-            String userDN = element.getNameInNamespace();
-            // Multiple results?
-            if (result.hasMore()) {
-                throw new NamingException("Found multiple entries for the same username: " + username); //$NON-NLS-1$
-            }
+            bind(config, ldapConfigBean, ldapComponent, context, new IAsyncResultHandler<ILdapResult>() {
 
-            // We have the userDN and the password - rebind now
-            String url = config.getUrl();
-            Hashtable<String, String> env = new Hashtable<>();
-            env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory"); //$NON-NLS-1$
-            env.put(Context.PROVIDER_URL, url);
-            env.put(Context.SECURITY_AUTHENTICATION, "simple"); //$NON-NLS-1$
-            env.put(Context.SECURITY_PRINCIPAL, userDN);
-            env.put(Context.SECURITY_CREDENTIALS, password);
-            new InitialDirContext(env);
-            if (config.isExtractRoles()) {
-                extractRoles(dirContext, userDN, config, context);
-            }
-            handler.handle(AsyncResultImpl.create(Boolean.TRUE));
+                @Override
+                public void handle(IAsyncResult<ILdapResult> result) {
+                    if (result.isSuccess()) {
+                        if (LdapResultCode.isSuccess(result.getResult().getResultCode())) {
+                            handler.handle(AsyncResultImpl.create(Boolean.TRUE));
+                        } else { // An auth failure
+                            handler.handle(AsyncResultImpl.create(Boolean.FALSE));
+                        }
+                    } else { // Unexpected exception
+                        handler.handle(AsyncResultImpl.<Boolean>create(result.getError()));
+                    }
+                }
+            });
         }
     }
 
-    /**
-     * Extracts the roles from the LDAP directory.  This is done by getting the
-     * LDAP user node located at 'userDN' and then extracting all of its LDAP
-     * group memberships.  Typically this is done by going through all of the
-     * "memberof" attributes for the User Node.
-     * @param dirContext
-     * @param userDN
-     * @param config
-     * @param context
-     * @throws NamingException
-     */
-    private void extractRoles(DirContext dirContext, String userDN, LDAPIdentitySource config,
-            IPolicyContext context) throws NamingException {
-        Set<String> roles = new HashSet<>();
-
-        Attributes attributes = dirContext.getAttributes(userDN);
-        if (attributes == null) {
-            return;
+    private void bind(final LDAPIdentitySource config, final LdapConfigBean ldapConfigBean, final ILdapComponent ldapComponent,
+            final IPolicyContext context, final IAsyncResultHandler<ILdapResult> handler) {
+        // If no role extraction is needed, just do a fast and simple BIND & exit
+        if (!config.isExtractRoles()) {
+            ldapComponent.bind(ldapConfigBean, handler);
+        } else { // Otherwise open up longer-lived connection and query role info.
+            ldapComponent.connect(ldapConfigBean, successHandler(handler, new IAsyncHandler<ILdapClientConnection>() {
+                @Override // Extract the roles.
+                public void handle(final ILdapClientConnection connection) {
+                    extractRoles(connection, ldapConfigBean.getBindDn(), config, context, handler);
+                }
+            }));
         }
-        Attribute attribute = attributes.get(config.getMembershipAttribute());
-        if (attribute != null) {
-            NamingEnumeration<?> all = attribute.getAll();
-            while (all.hasMoreElements()) {
-                String groupDN = (String) all.nextElement();
-                try {
-                    Attributes groupAttrs = dirContext.getAttributes(groupDN);
-                    String roleName = (String) groupAttrs.get(config.getRolenameAttribute()).get();
-                    roles.add(roleName);
-                } catch (NamingException ne) {
-                    // skip and move on to the next one
+    }
+
+    private void extractRoles(final ILdapClientConnection connection, final String userDn, final LDAPIdentitySource config,
+            final IPolicyContext context, final IAsyncResultHandler<ILdapResult> resultHandler) {
+        final Set<String> roles = new HashSet<>();
+
+        connection.search(userDn, "(objectClass=*)", LdapSearchScope.SUBTREE) //$NON-NLS-1$
+        .setLdapErrorHandler(new IAsyncHandler<LdapException>() {
+            // At the moment it's just generic, but in future we can make better use of it.
+            @Override
+            public void handle(LdapException exception) {
+                resultHandler.handle(AsyncResultImpl.<ILdapResult>create(exception));
+            }
+        }).search(successHandler(resultHandler, new IAsyncHandler<List<ILdapSearchEntry>>() {
+
+            @Override
+            public void handle(List<ILdapSearchEntry> result) {
+                // Look through all results (usually should only be 1)
+                for (ILdapSearchEntry searchResult : result) {
+                    // Get membership attribute (if any)
+                    List<ILdapAttribute> attrs = searchResult.getAttributes();
+
+                    try { // Look through all attrs - grab relevant RDNS, for each attribute (e.g. cn)
+                        for (ILdapAttribute attr : attrs) {
+                            if (attr.getBaseName().equals(config.getMembershipAttribute())) {
+                                addRoles(attr);
+                            }
+                        }
+                    resultHandler.handle(AsyncResultImpl.create(LdapResult.SUCCESS));
+                    } catch (Exception e) { // Potentially invalid RDN format
+                        resultHandler.handle(AsyncResultImpl.<ILdapResult>create(e));
+                    }
                 }
             }
-        }
+
+            private void addRoles(ILdapAttribute attr) {
+                // Treat value as an RDN
+                for (ILdapDn dn : attr.getValuesAsDn()) {
+                    for (ILdapRdn rdns : dn.getRdns()) {
+                        if (rdns.hasAttribute(config.getRolenameAttribute())) {
+                            for (String value : rdns.getAttributeValues()) {
+                                roles.add(value);
+                            }
+                        }
+                    }
+                }
+            }
+        }));
 
         context.setAttribute(AuthorizationPolicy.AUTHENTICATED_USER_ROLES, roles);
+    }
+
+    private void handleLdapSearch(final ILdapClientConnection connection, List<ILdapSearchEntry> searchEntries, LDAPIdentitySource config,
+            LdapConfigBean ldapConfigBean, ILdapComponent ldapComponent, IPolicyContext context, String username,
+            String password, final IAsyncResultHandler<Boolean> handler) {
+
+        if (searchEntries.size() > 1) {
+            NamingException ex = new NamingException("Found multiple entries for the same username: " + username); //$NON-NLS-1$
+            handler.handle(AsyncResultImpl.<Boolean>create(ex));
+        } else if (searchEntries.isEmpty()) {
+            handler.handle(AsyncResultImpl.create(Boolean.FALSE));
+        } else { // Just one result
+            String userDn = searchEntries.get(0).getDn(); // First entry
+            if (userDn != null) {
+                ldapConfigBean.setBindDn(userDn);
+                ldapConfigBean.setBindPassword(password);
+                bind(config, ldapConfigBean, ldapComponent, context, new IAsyncResultHandler<ILdapResult>() {
+
+                    @Override
+                    public void handle(IAsyncResult<ILdapResult> result) {
+                        if (result.isError()) {
+                            connection.close((LdapException) result.getError());
+                        } else {
+                            LdapResultCode resultCode = result.getResult().getResultCode();
+                            if (LdapResultCode.isSuccess(resultCode)) {
+                                handler.handle(AsyncResultImpl.create(Boolean.TRUE));
+                            } else {
+                                handler.handle(AsyncResultImpl.create(Boolean.FALSE));// TODO handle errors better?
+                            }
+                            connection.close(); // TODO modify to use pool.
+                        }
+                    }
+                });
+            } else {
+                handler.handle(AsyncResultImpl.create(Boolean.FALSE));
+            }
+        }
     }
 
     /**
@@ -220,4 +253,18 @@ public class LDAPIdentityValidator implements IIdentityValidator<LDAPIdentitySou
         return sub.replace(dnPattern);
     }
 
+    private <T, Q> IAsyncResultHandler<T> successHandler(final IAsyncResultHandler<Q> errorHandler,
+            final IAsyncHandler<T> successHandler) {
+        return new IAsyncResultHandler<T>() {
+
+            @Override
+            public void handle(IAsyncResult<T> result) {
+                if (result.isError()) {
+                    errorHandler.handle(AsyncResultImpl.<Q>create(result.getError()));
+                } else {
+                    successHandler.handle(result.getResult());
+                }
+            }
+        };
+    }
 }

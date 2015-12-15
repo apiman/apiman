@@ -15,10 +15,12 @@
  */
 package io.apiman.gateway.engine.policies;
 
+import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.beans.PolicyFailureType;
-import io.apiman.gateway.engine.beans.ApiRequest;
+import io.apiman.gateway.engine.components.ILdapComponent;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
+import io.apiman.gateway.engine.impl.DefaultLdapComponent;
 import io.apiman.gateway.engine.policies.config.BasicAuthenticationConfig;
 import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
@@ -76,6 +78,7 @@ public class BasicAuthLDAPTest extends AbstractLdapTestUnit {
 
     @Before
     public void setUp() throws Exception {
+
         if (partition != null) {
             return;
         }
@@ -135,7 +138,7 @@ public class BasicAuthLDAPTest extends AbstractLdapTestUnit {
     }
 
     /**
-     * Test method for {@link io.apiman.gateway.engine.policies.BasicAuthenticationPolicy#apply(ApiRequest, IPolicyContext, Object, IPolicyChain)}.
+     * Test method for {@link io.apiman.gateway.engine.policies.BasicAuthenticationPolicy#apply(ServiceRequest, IPolicyContext, Object, IPolicyChain)}.
      */
     @Test
     public void testApply() throws Exception {
@@ -149,6 +152,7 @@ public class BasicAuthLDAPTest extends AbstractLdapTestUnit {
                 "        \"dnPattern\" : \"uid=${username},ou=system\"\r\n" +
                 "    }\r\n" +
                 "}";
+
         doTest(json, null, null, PolicyFailureCodes.BASIC_AUTH_REQUIRED);
         doTest(json, "admin", "invalid_password", PolicyFailureCodes.BASIC_AUTH_FAILED);
         doTest(json, "admin", "secret", null);
@@ -171,6 +175,7 @@ public class BasicAuthLDAPTest extends AbstractLdapTestUnit {
                 "    }\r\n" +
                 "  }\r\n" +
                 "}";
+
         doTest(json, null, null, PolicyFailureCodes.BASIC_AUTH_REQUIRED);
         doTest(json, "ewittman", "invalid_password", PolicyFailureCodes.BASIC_AUTH_FAILED);
         doTest(json, "unknown_user", "password", PolicyFailureCodes.BASIC_AUTH_FAILED);
@@ -251,6 +256,10 @@ public class BasicAuthLDAPTest extends AbstractLdapTestUnit {
                 return failure;
             }
         });
+
+        // The LDAP stuff we're testing!
+        Mockito.when(context.getComponent(ILdapComponent.class)).thenReturn(new DefaultLdapComponent());
+
         IPolicyChain<ApiRequest> chain = Mockito.mock(IPolicyChain.class);
 
         if (username != null) {
@@ -264,9 +273,10 @@ public class BasicAuthLDAPTest extends AbstractLdapTestUnit {
             policy.apply(request, context, config, chain);
             Mockito.verify(chain).doFailure(failure);
             Assert.assertEquals(expectedFailureCode.intValue(), failure.getFailureCode());
-            if (expectedRoles != null) {
-                Mockito.verify(context).setAttribute(AuthorizationPolicy.AUTHENTICATED_USER_ROLES, expectedRoles);
-            }
+        }
+
+        if (expectedRoles != null) {
+            Mockito.verify(context).setAttribute(AuthorizationPolicy.AUTHENTICATED_USER_ROLES, expectedRoles);
         }
     }
 

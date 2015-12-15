@@ -163,6 +163,7 @@
     <version.io.swagger>1.5.3</version.io.swagger>
     <version.xmlunit>1.6</version.xmlunit>
     <version.io.vertx>3.1.0</version.io.vertx>
+    <version.com.unboundid.unboundid-ldapsdk>3.0.0</version.com.unboundid.unboundid-ldapsdk>
   </properties>
 
   <dependencyManagement>
@@ -878,6 +879,11 @@
         <artifactId>joda-time</artifactId>
         <version>${version.joda-time}</version>
       </dependency>
+    <dependency>
+      <groupId>com.unboundid</groupId>
+      <artifactId>unboundid-ldapsdk</artifactId>
+      <version>${version.com.unboundid.unboundid-ldapsdk}</version>
+    </dependency>
 
       <!-- Spec Libraries -->
       <dependency>

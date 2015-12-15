@@ -37,7 +37,11 @@
     <dependency>
       <groupId>com.zaxxer</groupId>
       <artifactId>HikariCP</artifactId>
-    </dependency>
+    </dependency>  
+    <dependency>
+      <groupId>com.unboundid</groupId>
+      <artifactId>unboundid-ldapsdk</artifactId>
+    </dependency>  
 
     <!-- Test Only Dependencies -->
     <dependency>

@@ -21,7 +21,7 @@ var Vertx = require('vertx-js/vertx');
 var io = Packages.io;
 var JsonObject = io.vertx.core.json.JsonObject;
 var JPolicyToIngestorService = io.apiman.gateway.platforms.vertx3.services.PolicyToIngestorService;
-var VertxServiceResponse = io.apiman.gateway.platforms.vertx3.io.VertxServiceResponse;
+var VertxApiResponse = io.apiman.gateway.platforms.vertx3.io.VertxApiResponse;
 var VertxPolicyFailure = io.apiman.gateway.platforms.vertx3.io.VertxPolicyFailure;
 
 /**
@@ -46,7 +46,7 @@ var PolicyToIngestorService = function(j_val) {
   this.head = function(apiResponse, readyHandler) {
     var __args = arguments;
     if (__args.length === 2 && typeof __args[0] === 'object' && typeof __args[1] === 'function') {
-      j_policyToIngestorService["head(io.apiman.gateway.platforms.vertx3.io.VertxServiceResponse,io.vertx.core.Handler)"](apiResponse != null ? new VertxServiceResponse(new JsonObject(JSON.stringify(apiResponse))) : null, function(ar) {
+      j_policyToIngestorService["head(io.apiman.gateway.platforms.vertx3.io.VertxApiResponse,io.vertx.core.Handler)"](apiResponse != null ? new VertxApiResponse(new JsonObject(JSON.stringify(apiResponse))) : null, function(ar) {
       if (ar.succeeded()) {
         readyHandler(null, null);
       } else {
