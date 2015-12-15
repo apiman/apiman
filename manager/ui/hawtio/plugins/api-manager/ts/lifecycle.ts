@@ -206,13 +206,16 @@ module ApimanPageLifecycle {
                             this[key] = value;
                             count++;
                         }, $scope);
-                        if (handler) {
-                            handler();
-                        }
                         
                         $timeout(function() {
                             $rootScope.pageState = 'loaded'; 
                             Logger.log("|{0}| >> Page successfully loaded: {1} data packets loaded", pageName, count);
+                            if (handler) {
+                                $timeout(function() {
+                                    Logger.log("|{0}| >> Calling Page onLoaded handler", pageName);
+                                    handler();
+                                }, 20);
+                            }
                         }, 50);
                     }, function(reason) {
                         Logger.error("|{0}| >> Page load failed: {1}", pageName, reason);

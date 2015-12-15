@@ -202,6 +202,7 @@ public class PluginResourceImpl implements IPluginResource {
                     storage.createPolicyDefinition(policyDef);
                     createdPolicyDefCounter++;
                 } else if (isUpdatePolicyDefs) {
+                    existingPolicyDef.setName(policyDef.getName());
                     existingPolicyDef.setDescription(policyDef.getDescription());
                     existingPolicyDef.setIcon(policyDef.getIcon());
                     existingPolicyDef.getTemplates().clear();
