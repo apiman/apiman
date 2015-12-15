@@ -52,4 +52,10 @@ public interface IEngine {
      */
     IRegistry getRegistry();
 
+    /**
+     * Returns the plugin registry configured for the engine.
+     * @return the plugin registry
+     */
+    IPluginRegistry getPluginRegistry();
+
 }

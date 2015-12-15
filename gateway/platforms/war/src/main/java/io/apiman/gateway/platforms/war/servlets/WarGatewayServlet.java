@@ -16,6 +16,8 @@
 package io.apiman.gateway.platforms.war.servlets;
 
 import io.apiman.gateway.engine.IEngine;
+import io.apiman.gateway.engine.IPolicyErrorWriter;
+import io.apiman.gateway.engine.IPolicyFailureWriter;
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.platforms.servlet.GatewayServlet;
@@ -23,8 +25,8 @@ import io.apiman.gateway.platforms.war.WarGateway;
 
 /**
  * The API Management gateway servlet.  This servlet is responsible for converting inbound
- * http servlet requests into {@link ApiRequest}s so that they can be fed into the 
- * API Management machinery.  It also is responsible for converting the resulting 
+ * http servlet requests into {@link ApiRequest}s so that they can be fed into the
+ * API Management machinery.  It also is responsible for converting the resulting
  * {@link ApiResponse} into an HTTP Servlet Response that is suitable for returning
  * to the caller.
  *
@@ -33,19 +35,35 @@ import io.apiman.gateway.platforms.war.WarGateway;
 public class WarGatewayServlet extends GatewayServlet {
 
     private static final long serialVersionUID = 958726685958622333L;
-    
+
     /**
      * Constructor.
      */
     public WarGatewayServlet() {
     }
-    
+
     /**
      * @see io.apiman.gateway.platforms.servlet.GatewayServlet#getEngine()
      */
     @Override
     protected IEngine getEngine() {
         return WarGateway.engine;
+    }
+
+    /**
+     * @see io.apiman.gateway.platforms.servlet.GatewayServlet#getErrorWriter()
+     */
+    @Override
+    protected IPolicyErrorWriter getErrorWriter() {
+        return WarGateway.errorFormatter;
+    }
+
+    /**
+     * @see io.apiman.gateway.platforms.servlet.GatewayServlet#getFailureWriter()
+     */
+    @Override
+    protected IPolicyFailureWriter getFailureWriter() {
+        return WarGateway.failureFormatter;
     }
 
 }

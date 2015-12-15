@@ -17,6 +17,7 @@ package io.apiman.gateway.engine.impl;
 
 import io.apiman.common.util.ReflectionUtils;
 import io.apiman.gateway.engine.DependsOnComponents;
+import io.apiman.gateway.engine.IApiRequestExecutor;
 import io.apiman.gateway.engine.IComponent;
 import io.apiman.gateway.engine.IComponentRegistry;
 import io.apiman.gateway.engine.IConnectorFactory;
@@ -26,7 +27,6 @@ import io.apiman.gateway.engine.IMetrics;
 import io.apiman.gateway.engine.IPluginRegistry;
 import io.apiman.gateway.engine.IRegistry;
 import io.apiman.gateway.engine.IRequiresInitialization;
-import io.apiman.gateway.engine.IApiRequestExecutor;
 import io.apiman.gateway.engine.Version;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.ApiRequest;
@@ -156,8 +156,9 @@ public class EngineImpl implements IEngine {
     }
 
     /**
-     * @return the pluginRegistry
+     * @see io.apiman.gateway.engine.IEngine#getPluginRegistry()
      */
+    @Override
     public IPluginRegistry getPluginRegistry() {
         return pluginRegistry;
     }

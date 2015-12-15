@@ -132,6 +132,17 @@ public class ConfigDrivenEngineFactory extends AbstractEngineFactory {
      * @return a new instance of 'type'
      */
     protected <T> T create(Class<T> type, Map<String, String> config) {
+        return instantiate(type, config);
+    }
+
+    /**
+     * Creates a new instance of the given type, passing the given config
+     * map if possible (if the class has a Map constructor).
+     * @param type the type to create
+     * @param config config to pass
+     * @return a new instance of 'type'
+     */
+    public static final <T> T instantiate(Class<T> type, Map<String, String> config) {
         try {
             Constructor<T> constructor = type.getConstructor(Map.class);
             return constructor.newInstance(config);

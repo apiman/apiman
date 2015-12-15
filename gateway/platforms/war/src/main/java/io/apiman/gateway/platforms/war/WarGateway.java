@@ -16,7 +16,13 @@
 package io.apiman.gateway.platforms.war;
 
 import io.apiman.gateway.engine.IEngine;
+import io.apiman.gateway.engine.IPolicyErrorWriter;
+import io.apiman.gateway.engine.IPolicyFailureWriter;
 import io.apiman.gateway.engine.impl.ConfigDrivenEngineFactory;
+import io.apiman.gateway.engine.impl.DefaultPolicyErrorWriter;
+import io.apiman.gateway.engine.impl.DefaultPolicyFailureWriter;
+
+import java.util.Map;
 
 /**
  * Top level gateway.  Used when the API Management Runtime Engine is being used
@@ -25,9 +31,11 @@ import io.apiman.gateway.engine.impl.ConfigDrivenEngineFactory;
  * @author eric.wittmann@redhat.com
  */
 public class WarGateway {
-    
+
     public static WarEngineConfig config;
     public static IEngine engine;
+    public static IPolicyFailureWriter failureFormatter;
+    public static IPolicyErrorWriter errorFormatter;
 
     /**
      * Initialize the gateway.
@@ -36,6 +44,28 @@ public class WarGateway {
         config = new WarEngineConfig();
         ConfigDrivenEngineFactory factory = new ConfigDrivenEngineFactory(config);
         engine = factory.createEngine();
+        failureFormatter = loadFailureFormatter();
+        errorFormatter = loadErrorFormatter();
+    }
+
+    private static IPolicyErrorWriter loadErrorFormatter() {
+        Class<? extends IPolicyErrorWriter> clazz = config.getPolicyErrorWriterClass(engine.getPluginRegistry());
+        if (clazz == null) {
+            clazz = DefaultPolicyErrorWriter.class;
+        }
+        Map<String, String> conf = config.getPolicyErrorWriterConfig();
+        IPolicyErrorWriter formatter = ConfigDrivenEngineFactory.instantiate(clazz, conf);
+        return formatter;
+    }
+
+    private static IPolicyFailureWriter loadFailureFormatter() {
+        Class<? extends IPolicyFailureWriter> clazz = config.getPolicyFailureWriterClass(engine.getPluginRegistry());
+        if (clazz == null) {
+            clazz = DefaultPolicyFailureWriter.class;
+        }
+        Map<String, String> conf = config.getPolicyFailureWriterConfig();
+        IPolicyFailureWriter formatter = ConfigDrivenEngineFactory.instantiate(clazz, conf);
+        return formatter;
     }
 
     /**

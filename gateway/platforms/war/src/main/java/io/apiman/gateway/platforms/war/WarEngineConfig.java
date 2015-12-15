@@ -26,8 +26,12 @@ import io.apiman.gateway.engine.IConnectorFactory;
 import io.apiman.gateway.engine.IEngineConfig;
 import io.apiman.gateway.engine.IMetrics;
 import io.apiman.gateway.engine.IPluginRegistry;
+import io.apiman.gateway.engine.IPolicyErrorWriter;
+import io.apiman.gateway.engine.IPolicyFailureWriter;
 import io.apiman.gateway.engine.IRegistry;
 import io.apiman.gateway.engine.async.IAsyncResult;
+import io.apiman.gateway.engine.impl.DefaultPolicyErrorWriter;
+import io.apiman.gateway.engine.impl.DefaultPolicyFailureWriter;
 import io.apiman.gateway.engine.policy.IPolicyFactory;
 
 import java.util.HashMap;
@@ -54,6 +58,9 @@ public class WarEngineConfig implements IEngineConfig {
     public static final String APIMAN_DATA_ENCRYPTER_TYPE = "apiman.encrypter.type"; //$NON-NLS-1$
 
     public static final String APIMAN_GATEWAY_COMPONENT_PREFIX = "apiman-gateway.components."; //$NON-NLS-1$
+
+    public static final String APIMAN_GATEWAY_WRITER_FORMATTER_CLASS = "apiman-gateway.writers.policy-failure"; //$NON-NLS-1$
+    public static final String APIMAN_GATEWAY_ERROR_WRITER_CLASS = "apiman-gateway.writers.error"; //$NON-NLS-1$
 
     public static Configuration config;
     static {
@@ -105,7 +112,7 @@ public class WarEngineConfig implements IEngineConfig {
      */
     @Override
     public Class<IPluginRegistry> getPluginRegistryClass() {
-        return loadConfigClass(APIMAN_GATEWAY_PLUGIN_REGISTRY_CLASS, IPluginRegistry.class, null);
+        return (Class<IPluginRegistry>) loadConfigClass(APIMAN_GATEWAY_PLUGIN_REGISTRY_CLASS, IPluginRegistry.class, null);
     }
 
     /**
@@ -175,7 +182,7 @@ public class WarEngineConfig implements IEngineConfig {
     @Override
     public <T extends IComponent> Class<T> getComponentClass(Class<T> componentType,
             IPluginRegistry pluginRegistry) {
-        return loadConfigClass(APIMAN_GATEWAY_COMPONENT_PREFIX + componentType.getSimpleName(), componentType, pluginRegistry);
+        return (Class<T>) loadConfigClass(APIMAN_GATEWAY_COMPONENT_PREFIX + componentType.getSimpleName(), componentType, pluginRegistry);
     }
 
     /**
@@ -203,13 +210,55 @@ public class WarEngineConfig implements IEngineConfig {
     }
 
     /**
+     * @return the class to use as the {@link IPolicyFailureWriter}
+     */
+    public Class<IPolicyFailureWriter> getPolicyFailureWriterClass(IPluginRegistry pluginRegistry) {
+        return (Class<IPolicyFailureWriter>) loadConfigClass(APIMAN_GATEWAY_WRITER_FORMATTER_CLASS,
+                IPolicyFailureWriter.class, pluginRegistry, DefaultPolicyFailureWriter.class);
+    }
+
+    /**
+     * @return all properties to be passed to the failure formatter
+     */
+    public Map<String, String> getPolicyFailureWriterConfig() {
+        return getConfigMap(APIMAN_GATEWAY_WRITER_FORMATTER_CLASS);
+    }
+
+    /**
+     * @return the class to use as the {@link IPolicyErrorWriter}
+     */
+    public Class<IPolicyErrorWriter> getPolicyErrorWriterClass(IPluginRegistry pluginRegistry) {
+        return (Class<IPolicyErrorWriter>) loadConfigClass(APIMAN_GATEWAY_ERROR_WRITER_CLASS,
+                IPolicyErrorWriter.class, pluginRegistry, DefaultPolicyErrorWriter.class);
+    }
+
+    /**
+     * @return all properties to be passed to the error formatter
+     */
+    public Map<String, String> getPolicyErrorWriterConfig() {
+        return getConfigMap(APIMAN_GATEWAY_ERROR_WRITER_CLASS);
+    }
+
+    /**
      * @return a loaded class
      */
     @SuppressWarnings("unchecked")
-    private <T> Class<T> loadConfigClass(String property, Class<T> type, IPluginRegistry pluginRegistry) {
+    private <T> Class<? extends T> loadConfigClass(String property, Class<T> type, IPluginRegistry pluginRegistry) {
+        Class<? extends T> rval = loadConfigClass(property, type, pluginRegistry, null);
+        if (rval == null) {
+            throw new RuntimeException("No " + type.getSimpleName() + " class configured."); //$NON-NLS-1$ //$NON-NLS-2$
+        }
+        return rval;
+    }
+
+    /**
+     * @return a loaded class
+     */
+    @SuppressWarnings("unchecked")
+    private <T> Class<? extends T> loadConfigClass(String property, Class<T> type, IPluginRegistry pluginRegistry, Class<? extends T> defaultClass) {
         String componentSpec = getConfig().getString(property);
         if (componentSpec == null) {
-            throw new RuntimeException("No " + type.getSimpleName() + " class configured."); //$NON-NLS-1$ //$NON-NLS-2$
+            return defaultClass;
         }
 
         try {

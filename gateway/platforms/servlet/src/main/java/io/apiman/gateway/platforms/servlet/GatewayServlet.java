@@ -17,17 +17,18 @@ package io.apiman.gateway.platforms.servlet;
 
 import io.apiman.common.util.ApimanPathUtils;
 import io.apiman.common.util.ApimanPathUtils.ApiRequestPathInfo;
+import io.apiman.gateway.engine.IApiClientResponse;
 import io.apiman.gateway.engine.IApiRequestExecutor;
 import io.apiman.gateway.engine.IEngine;
 import io.apiman.gateway.engine.IEngineResult;
+import io.apiman.gateway.engine.IPolicyErrorWriter;
+import io.apiman.gateway.engine.IPolicyFailureWriter;
 import io.apiman.gateway.engine.async.IAsyncHandler;
 import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.ApiResponse;
-import io.apiman.gateway.engine.beans.EngineErrorResponse;
 import io.apiman.gateway.engine.beans.PolicyFailure;
-import io.apiman.gateway.engine.beans.PolicyFailureType;
 import io.apiman.gateway.engine.io.ByteBuffer;
 import io.apiman.gateway.engine.io.IApimanBuffer;
 import io.apiman.gateway.engine.io.ISignalWriteStream;
@@ -40,7 +41,6 @@ import java.net.URLDecoder;
 import java.util.Enumeration;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.concurrent.CountDownLatch;
 
 import javax.servlet.ServletException;
@@ -48,12 +48,6 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-
-import org.apache.commons.io.IOUtils;
-import org.codehaus.jackson.map.ObjectMapper;
 
 /**
  * The API Management gateway servlet.  This servlet is responsible for converting inbound
@@ -67,15 +61,6 @@ import org.codehaus.jackson.map.ObjectMapper;
 public abstract class GatewayServlet extends HttpServlet {
 
     private static final long serialVersionUID = 958726685958622333L;
-    private static final ObjectMapper mapper = new ObjectMapper();
-    private static JAXBContext jaxbContext;
-    static {
-        try {
-            jaxbContext = JAXBContext.newInstance(EngineErrorResponse.class, PolicyFailure.class);
-        } catch (JAXBException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     /**
      * Constructor.
@@ -255,6 +240,18 @@ public abstract class GatewayServlet extends HttpServlet {
     protected abstract IEngine getEngine();
 
     /**
+     * Gets the failure formatter to use when a policy failure is detected and
+     * needs to be sent back to the calling client.
+     */
+    protected abstract IPolicyErrorWriter getErrorWriter();
+
+    /**
+     * Gets the failure formatter to use when a policy failure is detected and
+     * needs to be sent back to the calling client.
+     */
+    protected abstract IPolicyFailureWriter getFailureWriter();
+
+    /**
      * Reads a {@link ApiRequest} from information found in the inbound
      * portion of the http request.
      * @param request the undertow http server request
@@ -347,47 +344,41 @@ public abstract class GatewayServlet extends HttpServlet {
      * @param resp
      * @param policyFailure
      */
-    protected void writeFailure(ApiRequest request, HttpServletResponse resp, PolicyFailure policyFailure) {
-        String rtype = request.getApi().getEndpointContentType();
-        resp.setHeader("X-Policy-Failure-Type", String.valueOf(policyFailure.getType())); //$NON-NLS-1$
-        resp.setHeader("X-Policy-Failure-Message", policyFailure.getMessage()); //$NON-NLS-1$
-        resp.setHeader("X-Policy-Failure-Code", String.valueOf(policyFailure.getFailureCode())); //$NON-NLS-1$
-        for (Entry<String, String> entry : policyFailure.getHeaders().entrySet()) {
-            resp.setHeader(entry.getKey(), entry.getValue());
-        }
-        int errorCode = 500;
-        if (policyFailure.getType() == PolicyFailureType.Authentication) {
-            errorCode = 401;
-        } else if (policyFailure.getType() == PolicyFailureType.Authorization) {
-            errorCode = 403;
-        } else if (policyFailure.getType() == PolicyFailureType.NotFound) {
-            errorCode = 404;
-        }
-
-        if (policyFailure.getResponseCode() >= 300) {
-            errorCode = policyFailure.getResponseCode();
-        }
-
-        resp.setStatus(errorCode);
-
-        if ("xml".equals(rtype)) { //$NON-NLS-1$
-            resp.setContentType("application/xml"); //$NON-NLS-1$
-            try {
-                Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
-                jaxbMarshaller.marshal(policyFailure, resp.getOutputStream());
-                IOUtils.closeQuietly(resp.getOutputStream());
-            } catch (Exception e) {
-                writeError(request, resp, e);
+    protected void writeFailure(final ApiRequest request, final HttpServletResponse resp, final PolicyFailure policyFailure) {
+        getFailureWriter().write(request, policyFailure, new IApiClientResponse() {
+            @Override
+            public void write(StringBuffer buffer) {
+                write(buffer.toString());
             }
-        } else {
-            resp.setContentType("application/json"); //$NON-NLS-1$
-            try {
-                mapper.writer().writeValue(resp.getOutputStream(), policyFailure);
-                IOUtils.closeQuietly(resp.getOutputStream());
-            } catch (Exception e) {
-                writeError(request, resp, e);
+
+            @Override
+            public void write(StringBuilder builder) {
+                write(builder.toString());
             }
-        }
+
+            @Override
+            public void write(String body) {
+                try {
+                    resp.getOutputStream().write(body.getBytes("UTF-8")); //$NON-NLS-1$
+                    resp.getOutputStream().flush();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                };
+            }
+
+            /**
+             * @see io.apiman.gateway.engine.IApiClientResponse#setStatusCode(int)
+             */
+            @Override
+            public void setStatusCode(int code) {
+                resp.setStatus(code);
+            }
+
+            @Override
+            public void setHeader(String headerName, String headerValue) {
+                resp.setHeader(headerName, headerValue);
+            }
+        });
     }
 
     /**
@@ -396,41 +387,41 @@ public abstract class GatewayServlet extends HttpServlet {
      * @param resp
      * @param error
      */
-    protected void writeError(ApiRequest request, HttpServletResponse resp, Throwable error) {
-        boolean isXml = false;
-        if (request.getApi() != null && "xml".equals(request.getApi().getEndpointContentType())) { //$NON-NLS-1$
-            isXml = true;
-        }
-
-        resp.setHeader("X-Gateway-Error", error.getMessage()); //$NON-NLS-1$
-        resp.setStatus(500);
-
-        EngineErrorResponse response = new EngineErrorResponse();
-        response.setResponseCode(500);
-        response.setMessage(error.getMessage());
-        response.setTrace(error);
-
-
-        if (isXml) {
-            resp.setContentType("application/xml"); //$NON-NLS-1$
-            try {
-                Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
-                jaxbMarshaller.marshal(response, resp.getOutputStream());
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                try { IOUtils.closeQuietly(resp.getOutputStream()); } catch (IOException e) {}
+    protected void writeError(final ApiRequest request, final HttpServletResponse resp, final Throwable error) {
+        getErrorWriter().write(request, error, new IApiClientResponse() {
+            @Override
+            public void write(StringBuffer buffer) {
+                write(buffer.toString());
             }
-        } else {
-            resp.setContentType("application/json"); //$NON-NLS-1$
-            try {
-                mapper.writer().writeValue(resp.getOutputStream(), response);
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                try { IOUtils.closeQuietly(resp.getOutputStream()); } catch (IOException e) {}
+
+            @Override
+            public void write(StringBuilder builder) {
+                write(builder.toString());
             }
-        }
+
+            @Override
+            public void write(String body) {
+                try {
+                    resp.getOutputStream().write(body.getBytes("UTF-8")); //$NON-NLS-1$
+                    resp.getOutputStream().flush();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                };
+            }
+
+            /**
+             * @see io.apiman.gateway.engine.IApiClientResponse#setStatusCode(int)
+             */
+            @Override
+            public void setStatusCode(int code) {
+                resp.setStatus(code);
+            }
+
+            @Override
+            public void setHeader(String headerName, String headerValue) {
+                resp.setHeader(headerName, headerValue);
+            }
+        });
     }
 
     /**
