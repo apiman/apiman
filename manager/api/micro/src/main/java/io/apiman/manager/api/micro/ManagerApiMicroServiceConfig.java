@@ -16,8 +16,6 @@
 package io.apiman.manager.api.micro;
 
 import io.apiman.manager.api.core.config.ApiManagerConfig;
-import io.apiman.manager.api.core.logging.ApimanLogger;
-import io.apiman.manager.api.core.logging.IApimanLogger;
 import io.apiman.manager.api.jpa.IJpaProperties;
 
 import java.io.File;
@@ -28,7 +26,6 @@ import java.util.Iterator;
 import java.util.Map;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 
 import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.Configuration;
@@ -45,10 +42,6 @@ public class ManagerApiMicroServiceConfig extends ApiManagerConfig implements IJ
     public static final String APIMAN_PROPERTIES_URL = "apiman.micro.manager.properties-url"; //$NON-NLS-1$
 
     public static final String APIMAN_PLUGIN_DIRECTORY = "apiman.plugins.plugin-directory"; //$NON-NLS-1$
-
-    @Inject
-    @ApimanLogger(ManagerApiMicroService.class)
-    private IApimanLogger log;
 
     /**
      * Constructor.
