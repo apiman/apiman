@@ -3,6 +3,10 @@ module ApimanFilters {
 
     export var _module = angular.module('ApimanFilters', ['ApimanConfiguration']);
 
+    export var checklist = _module.filter('urlEncode', function() {
+        return encodeURIComponent;
+    });
+
     // Checklist Filter:
     // This filter processes and formats data returned by the /status endpoint.
     export var checklist = _module.filter('checklist', function() {

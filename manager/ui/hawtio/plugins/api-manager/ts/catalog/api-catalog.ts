@@ -3,11 +3,18 @@
 module Apiman {
 
     export var ApiCatalogController = _module.controller("Apiman.ApiCatalogController",
-        ['$q', '$scope', 'ApimanSvcs', 'PageLifecycle', ($q, $scope, ApimanSvcs, PageLifecycle) => {
+        ['$q', 'Logger', '$scope', 'ApimanSvcs', 'PageLifecycle', ($q, Logger, $scope, ApimanSvcs, PageLifecycle) => {
             var body:any = {};
             body.filters = [];
             body.filters.push({ "name" : "name", "value" : "*", "operator" : "like" });
             var searchStr = angular.toJson(body);
+            
+            $scope.reverse = false;
+            $scope.filterApis = function(searchText) {
+                $scope.criteria = {
+                    name: searchText
+                };
+            };
             
             var pageData = {
                 apis: $q(function(resolve, reject) {
