@@ -216,6 +216,7 @@ public class KeycloakOauthPolicy extends AbstractMappedPolicy<KeycloakOauthConfi
             } catch (IllegalArgumentException | IllegalAccessException e) {
                 // TODO log error. This shouldn't occur, but if it somehow does we need to know.
                 System.err.println("Unexpected error looking up token field: " + e); //$NON-NLS-1$
+                e.printStackTrace(System.err);
             }
         }
     }

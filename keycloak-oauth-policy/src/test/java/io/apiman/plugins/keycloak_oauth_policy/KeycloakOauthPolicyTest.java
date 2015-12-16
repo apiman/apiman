@@ -49,6 +49,7 @@ import org.junit.Test;
 import org.keycloak.jose.jws.JWSBuilder;
 import org.keycloak.representations.AccessToken;
 import org.keycloak.representations.AccessToken.Access;
+import org.keycloak.representations.AddressClaimSet;
 import org.keycloak.util.Time;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -329,6 +330,43 @@ public class KeycloakOauthPolicyTest {
         verify(mChain).doApply(apiRequest);
 
         Assert.assertEquals(encoded, apiRequest.getHeaders().get("X-TEST"));
+    }
+
+    @Test
+    public void shouldAccessSubClaim() throws CertificateEncodingException, IOException {
+        ForwardAuthInfo authInfo = new ForwardAuthInfo();
+        authInfo.setHeaders("X-TEST");
+        authInfo.setField("address.street_address");
+        config.getForwardAuthInfo().add(authInfo);
+
+        AddressClaimSet addressClaim = new AddressClaimSet();
+        addressClaim.setStreetAddress("123 newcastle street, miami");
+        token.setAddress(addressClaim);
+
+        String encoded = generateAndSerializeToken();
+        apiRequest.getHeaders().put("Authorization", "Bearer " + encoded);
+        keycloakOauthPolicy.apply(apiRequest, mContext, config, mChain);
+
+        verify(mChain).doApply(apiRequest);
+
+        Assert.assertEquals("123 newcastle street, miami", apiRequest.getHeaders().get("X-TEST"));
+    }
+
+    @Test
+    public void shouldBeNullForInvalidFieldLookup()  throws CertificateEncodingException, IOException {
+        ForwardAuthInfo authInfo = new ForwardAuthInfo();
+        authInfo.setHeaders("X-TEST");
+        authInfo.setField("address.street_address");
+        config.getForwardAuthInfo().add(authInfo);
+        // Do *not* set street address
+
+        String encoded = generateAndSerializeToken();
+        apiRequest.getHeaders().put("Authorization", "Bearer " + encoded);
+        keycloakOauthPolicy.apply(apiRequest, mContext, config, mChain);
+
+        verify(mChain).doApply(apiRequest);
+
+        Assert.assertEquals(null, apiRequest.getHeaders().get("X-TEST"));
     }
 
     @Test

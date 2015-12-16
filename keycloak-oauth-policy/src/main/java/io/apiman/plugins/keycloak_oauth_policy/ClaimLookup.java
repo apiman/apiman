@@ -17,7 +17,12 @@
 package io.apiman.plugins.keycloak_oauth_policy;
 
 import java.lang.reflect.Field;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Deque;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.codehaus.jackson.annotate.JsonProperty;
@@ -29,25 +34,29 @@ import org.keycloak.representations.JsonWebToken;
 */
 @SuppressWarnings("nls")
 public class ClaimLookup {
-    private static final Map<String, Field> STANDARD_CLAIMS_FIELD_MAP = new LinkedHashMap<>();
+    private static final Map<String, List<Field>> STANDARD_CLAIMS_FIELD_MAP = new LinkedHashMap<>();
 
     static {
         Class<?> clazz = IDToken.class;
         do {
-            getProperties(clazz, "");
+            getProperties(clazz, "", new ArrayDeque<Field>());
         } while ((clazz = clazz.getSuperclass()) != null);
     }
 
-    private static void getProperties(Class<?> klazz, String path) {
+    private static void getProperties(Class<?> klazz, String path, Deque<Field> fieldChain) {
         for (Field f: klazz.getDeclaredFields()) {
             f.setAccessible(true);
             JsonProperty jsonProperty = f.getAnnotation(JsonProperty.class);
             if (jsonProperty != null) {
+                fieldChain.push(f);
                 // If the inspected type has nested @JsonProperty annotations, we need to inspect it
                 if (hasJsonPropertyAnnotation(f)) {
-                    getProperties(f.getType(), f.getName() + "."); // Add "." when traversing into new object.
+                    getProperties(f.getType(), f.getName() + ".", fieldChain); // Add "." when traversing into new object.
                 } else { // Otherwise, just assume it's simple as the best we can do is #toString
-                    STANDARD_CLAIMS_FIELD_MAP.put(path + jsonProperty.value(), f);
+                    List<Field> lz = new ArrayList<>(fieldChain);
+                    Collections.reverse(lz);
+                    STANDARD_CLAIMS_FIELD_MAP.put(path + jsonProperty.value(), lz);
+                    fieldChain.pop(); // Pop, as we have now reached end of this chain.
                 }
             }
         }
@@ -67,11 +76,24 @@ public class ClaimLookup {
           return null;
       // Get the standard claim field, if available
       if (STANDARD_CLAIMS_FIELD_MAP.containsKey(claim)) {
-          return (String) STANDARD_CLAIMS_FIELD_MAP.get(claim).get(token);
-      } else { // Otherwise look up 'other claims' and #toString it TODO caveat - won't nicely display maps, unlikely to need, but could use JSON?
+          return callClaimChain(token, STANDARD_CLAIMS_FIELD_MAP.get(claim));
+      } else { // Otherwise look up 'other claims'
           Object otherClaim = getOtherClaimValue(token, claim);
           return otherClaim == null ? "" : (String) otherClaim;
       }
+    }
+
+    private static String callClaimChain(Object rootObject, List<Field> list) throws IllegalArgumentException, IllegalAccessException {
+        if (list.size() == 1)
+            return list.get(0).get(rootObject).toString();
+
+        Object candidate = rootObject;
+        for (Field f : list) {
+            if ((candidate = f.get(candidate)) == null)
+                break;
+        }
+
+        return (candidate == null) ? null : candidate.toString();
     }
 
     @SuppressWarnings("unchecked") // KC code - thanks.
