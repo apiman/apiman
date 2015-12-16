@@ -1687,3 +1687,54 @@ html, body {height: 100%;}
 .clipboard {
   padding: 2px 6px 4px;
 }
+
+.apiman-card-table {
+  margin-top: 10px;
+  background-color: #f5f5f5;
+  padding-top: 20px;
+}
+
+.apiman-card-table .card {
+  position: relative;
+  width: 260px;
+  padding: 15px 5px 15px 5px;
+  float: left;
+  margin-right: 15px;
+  margin-bottom: 15px;
+  background-color: white;
+  border-top: 2px solid transparent;
+  border-left: 2px solid #eee;
+  border-right: 2px solid #eee;
+  border-bottom: 2px solid #eee;
+  text-align: center;
+}
+.apiman-card-table .card:hover {
+  border-color: #59b1d3;
+  border-top: 2px solid #59b1d3;
+}
+.apiman-card-table .card .info {
+  position: absolute;
+  top: 0px;
+  left: 5px;
+  font-size: 18px;
+  visibility: hidden;
+}
+.apiman-card-table .card:hover .info {
+  visibility: visible;
+}
+.apiman-card-table .card .icon {
+  font-size: 32px;
+  margin-bottom: 5px;
+}
+.apiman-card-table .card .name {
+  font-size: 16px;
+  height: 46px;
+}
+.apiman-card-table .card .actions {
+  height: 24px;
+}
+
+.apiman-action-divider {
+  color: #ccc;
+  font-size: 16px;
+}

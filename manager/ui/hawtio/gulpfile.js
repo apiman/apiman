@@ -261,7 +261,7 @@ gulp.task('watch', function() {
         'plugins/api-manager/css/apiman.css',
         'apiman/translations.js'
     ], function() {
-        return runSequence(['browserify', 'css', 'fonts', 'images'], 'path-adjust', 'clean-defs', 'tsc', 'template', 'concat', 'clean');
+        return runSequence('clean-defs', 'tsc', 'template', 'concat', 'clean');
     });
 });
 

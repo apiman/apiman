@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+  </head>
+
+  <body>
+  <div>
+    
+    <div ng-include="headerInclude"></div>   
+    <div ng-controller="Apiman.ApiCatalogController" class="page container" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
+      <div class="row">
+        <div class="col-md-12">
+          <ol class="breadcrumb" data-field="breadcrumb">
+            <li><a id="bc-home" href="{{ pluginName }}/"><i class="fa fa-home fa-fw"></i><span apiman-i18n-key="home">Home</span></a></li>
+            <li class="active"><i class="fa fa-book fa-fw"></i><span apiman-i18n-key="api-catalog">API Catalog</span></li>
+          </ol>
+        </div>
+      </div>
+      <div class="row">
+        
+        <!-- Catalog Content -->
+        <div class="col-md-12">
+          <div class="container-fluid">
+            <div class="row">
+              <h2 class="title" data-field="heading" apiman-i18n-key="catalog">API Catalog</h2>
+            </div>
+            <!-- Helpful hint -->
+            <div class="row">
+              <p class="col-md-10 apiman-label-faded" apiman-i18n-key="catalog-help-text" class="apiman-label-faded">List of APIs available to be imported.  These APIs were retrieved from the configured API Catalog.</p>
+            </div>
+            <!-- HR -->
+            <div class="row">
+              <hr/>
+            </div>
+            <!-- Filter and Actions -->
+            <div class="row">
+              <apiman-search-box id="apis-filter" apiman-i18n-key="filter-catalog-apis" function="filterApis" placeholder="Filter by API name or type..." />
+            </div>
+            <!-- Table of APIs -->
+            <div class="row apiman-card-table">
+              <div class="container-fluid cards">
+                <div ng-repeat="api in apis" class="card">
+                  <a href="#" class="info" title="More information about this API..." apiman-i18n-key="api.more-info"><i class="fa fa-info-circle"></i></a>
+                  <div class="icon"><i class="fa fa-{{ api.icon }}"></i></div>
+                  <div class="name"><span>{{ api.name}}</span></div>
+                  <div><hr /></div>
+                  <div class="actions">
+                     <a href="#"><i class="fa fa-cart-arrow-down"></i><span style="margin-left: 5px" apiman-i18n-key="import">Import</span></a>
+                     <span ng-show="api.definitionType == 'SwaggerJSON' || api.definitionType == 'External'" 
+                           class="apiman-action-divider" apiman-i18n-skip="">|</span>
+                     <a ng-show="api.definitionType == 'SwaggerJSON'" href="{{ pluginName }}/browse/api-catalog/{{ api.name }}/def"><i class="fa fa-sitemap"></i><span style="margin-left: 5px" apiman-i18n-key="definition">Definition</span></a>
+                     <a ng-show="api.definitionType == 'External'" href="{{ api.definitionUrl }}"><i class="fa fa-external-link"></i><span style="margin-left: 5px" apiman-i18n-key="definition">Definition</span></a>
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="table-responsive" ng-show="donot">
+                <table class="table table-striped table-bordered table-hover">
+                  <thead>
+                    <tr>
+                      <th apiman-i18n-key="name">Name</th>
+                      <th apiman-i18n-key="endpoint-type">Endpoint Type</th>
+                      <th apiman-i18n-key="definition">Definition</th>
+                      <th apiman-i18n-key="view">View</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr ng-hide="apis.length > 0">
+                      <td colspan="4">
+                        <div class="apiman-no-content">
+                          <p class="apiman-no-entities-description" apiman-i18n-key="no-apis-found">No APIs were found in the API Catalog.</p>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr ng-repeat="api in apis">
+                      <td><a href="{{ api.endpoint }}"><span>{{ api.name}}</span></a></td>
+                      <td>{{ api.endpointType}}</td>
+                      <td><a href="{{ api.definitionUrl }}">
+                          <span>{{ api.definitionType}}</span></a>
+                      </td>
+                      <td><div ng-show="api.definitionType == 'SwaggerJSON'">
+                          <a href="{{ pluginName }}/browse/api-catalog/{{ api.name }}/def">
+                          <i class="fa fa-fw fa-sitemap"></i></a></div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </body>
+</html>

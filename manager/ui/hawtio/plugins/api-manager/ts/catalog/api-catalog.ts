@@ -4,15 +4,13 @@ module Apiman {
 
     export var ApiCatalogController = _module.controller("Apiman.ApiCatalogController",
         ['$q', '$scope', 'ApimanSvcs', 'PageLifecycle', ($q, $scope, ApimanSvcs, PageLifecycle) => {
-            $scope.tab = 'catalog';
-            
             var body:any = {};
             body.filters = [];
             body.filters.push({ "name" : "name", "value" : "*", "operator" : "like" });
             var searchStr = angular.toJson(body);
             
             var pageData = {
-                services: $q(function(resolve, reject) {
+                apis: $q(function(resolve, reject) {
                     ApimanSvcs.save({ entityType: 'search', secondaryType: 'apiCatalogs' }, searchStr, function(reply) {
                         resolve(reply.beans);
                     }, reject);
@@ -20,25 +18,30 @@ module Apiman {
             };
             
             PageLifecycle.loadPage('ApiCatalog', 'apiView', pageData, $scope, function() {
+                angular.forEach($scope.apis, function(api) {
+                    if (!api.icon) {
+                        api.icon = 'puzzle-piece';
+                    }
+                });
                 PageLifecycle.setPageTitle('api-catalog');
             });
-    }])
-    
-       export var ApiCatalogDefController = _module.controller("Apiman.ApiCatalogDefController",
+    }]);
+
+    export var ApiCatalogDefController = _module.controller("Apiman.ApiCatalogDefController",
         ['$q', '$scope', 'ApimanSvcs', 'PageLifecycle', '$routeParams', '$window', 'Logger', 'ApiDefinitionSvcs', 'Configuration',
         ($q, $scope, ApimanSvcs, PageLifecycle, $routeParams, $window, Logger, ApiDefinitionSvcs, Configuration) => {
             $scope.params = $routeParams;
             $scope.chains = {};
             
             var name = $scope.params.name;
-
+    
             var body:any = {};
             body.filters = [];
             body.filters.push({ "name" : "name", "value" : $scope.params.name, "operator" : "like" });
             var searchStr = angular.toJson(body);
             
             var pageData = {
-                services: $q(function(resolve, reject) {
+                apis: $q(function(resolve, reject) {
                     ApimanSvcs.save({ entityType: 'search', secondaryType: 'apiCatalogs' }, searchStr, function(reply) {
                         resolve(reply.beans);
                         $scope.api = reply.beans[0];
@@ -49,7 +52,7 @@ module Apiman {
             PageLifecycle.loadPage('ApiCatalogDef', undefined, pageData, $scope, function() {
                 
                 $scope.hasError = false;
-
+    
                 PageLifecycle.setPageTitle('api-catalog-def', [ $scope.params.name ]);
                 
                 var hasSwagger = false;
@@ -60,11 +63,11 @@ module Apiman {
                 
                 var definitionUrl = $scope.api.definitionUrl;
                 var definitionType = $scope.api.definitionType;
-
+    
                 if (definitionType == 'SwaggerJSON' && hasSwagger) {
                     
                     Logger.debug("!!!!! Using definition URL: {0}", definitionUrl);
-
+    
                     var authHeader = Configuration.getAuthorizationHeader();
                     
                     $scope.definitionStatus = 'loading';
@@ -109,6 +112,6 @@ module Apiman {
                     $scope.hasDefinition = false;
                 }
             });
-        }]);
+    }]);
 
 }

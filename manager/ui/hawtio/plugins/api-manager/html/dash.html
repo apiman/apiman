@@ -43,8 +43,8 @@
             <div class="actions">
               <ul>
                 <li><a id="org-new" href="{{ pluginName }}/new-org" apiman-i18n-key="actions.create-new-org" data-field="createOrg">Create a New Organization</a></li>
-                <li><a id="org-browse" href="{{ pluginName }}/browse/orgs" apiman-i18n-key="actions.browse-orgs" data-field="browseOrgs">Browse/Find an Organization</a></li>
                 <li><a id="org-my-orgs" href="{{ pluginName }}/users/{{ currentUser.username }}/orgs" apiman-i18n-key="actions.my-orgs" data-field="myOrgs">Go to My Organizations</a></li>
+                <li><a id="org-browse" href="{{ pluginName }}/browse/orgs" apiman-i18n-key="actions.browse-orgs" data-field="browseOrgs">Browse/Find an Organization</a></li>
               </ul>
             </div>
           </div>
@@ -55,17 +55,16 @@
               <span apiman-i18n-key="apis">APIs</span>
             </div>
             <div class="description" apiman-i18n-key="dash.apis-description">
-              Create, find, or manage APIs.  A API is also known as an API - anything
+              Create, find, or manage APIs.  An API is also known as a "Service" - anything
               that can be invoked remotely by some sort of client application.  This platform
-              simply provides a way to expose existing APIs by defining them as APIs and
-              attaching value-added policies to them.
+              simply provides a way to turn unmanaged (raw) back-end APIs into "managed" APIs
+              by attaching policies to them.
             </div>
             <div class="actions">
               <ul>
-                <li><a id="api-catalog" href="{{ pluginName }}/browse/api-catalog" apiman-i18n-key="actions.find-api">Browse the API Catalog</a></li>
-                <li><a id="apis-consume" href="{{ pluginName }}/browse/apis" apiman-i18n-key="actions.find-api">Find/Consume an API</a></li>
                 <li><a id="apis-manage" href="{{ pluginName }}/users/{{ currentUser.username }}/apis" apiman-i18n-key="actions.my-apis">Manage My APIs</a></li>
                 <li><a id="api-new" href="{{ pluginName }}/new-api" apiman-i18n-key="actions.create-api">Create a New API</a></li>
+                <li><a id="api-catalog" href="{{ pluginName }}/catalog/api-catalog" apiman-i18n-key="actions.browse-importable-apis">Browse available/importable APIs</a></li>
               </ul>
             </div>
           </div>
@@ -77,13 +76,14 @@
             </div>
             <div class="description" apiman-i18n-key="dash.clients-description">
               Create and manage your Client Apps.  A Client App is the thing that consumes
-              APIs (APIs).  These consumers must be defined in this platform so that 
+              APIs.  These consumers must be defined in this platform so that 
               contracts can be created between them and the APIs they wish to consume.
             </div>
             <div class="actions">
               <ul>
                 <li><a id="clients-manage" href="{{ pluginName }}/users/{{ currentUser.username }}/clients" apiman-i18n-key="actions.my-clients" data-field="myClients">Manage My Client Apps</a></li>
                 <li><a id="clients-new" href="{{ pluginName }}/new-client" apiman-i18n-key="actions.new-client" data-field="createClient">Create a New Client App</a></li>
+                <li><a id="apis-consume" href="{{ pluginName }}/browse/apis" apiman-i18n-key="actions.find-api">Find/Consume an API</a></li>
               </ul>
             </div>
           </div>

@@ -148,11 +148,11 @@ module Apiman {
                 .when(prefix + '/orgs/:org/import/apis', {
                     templateUrl: path + 'api/import-apis.html'
                 })
-                .when(prefix + '/browse/api-catalog', {
-                    templateUrl: path + 'api/api-catalog.html'
+                .when(prefix + '/catalog/api-catalog', {
+                    templateUrl: path + 'catalog/api-catalog.html'
                 })
-                .when(prefix + '/browse/api-catalog/:name/def', {
-                    templateUrl: path + 'api/api-catalog-def.html'
+                .when(prefix + '/catalog/api-catalog/:name/def', {
+                    templateUrl: path + 'catalog/api-catalog-def.html'
                 })
                 .when(prefix + '/browse/orgs', {
                     templateUrl: path + 'consumer/consumer-orgs.html'
