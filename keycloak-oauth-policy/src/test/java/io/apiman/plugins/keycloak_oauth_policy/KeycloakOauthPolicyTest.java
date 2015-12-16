@@ -353,10 +353,44 @@ public class KeycloakOauthPolicyTest {
     }
 
     @Test
-    public void shouldBeNullForInvalidFieldLookup()  throws CertificateEncodingException, IOException {
+    public void shouldBeNullForInvalidNestedClaimLookup()  throws CertificateEncodingException, IOException {
         ForwardAuthInfo authInfo = new ForwardAuthInfo();
         authInfo.setHeaders("X-TEST");
         authInfo.setField("address.street_address");
+        config.getForwardAuthInfo().add(authInfo);
+        // Do *not* set street address
+
+        String encoded = generateAndSerializeToken();
+        apiRequest.getHeaders().put("Authorization", "Bearer " + encoded);
+        keycloakOauthPolicy.apply(apiRequest, mContext, config, mChain);
+
+        verify(mChain).doApply(apiRequest);
+
+        Assert.assertEquals(null, apiRequest.getHeaders().get("X-TEST"));
+    }
+
+    @Test
+    public void shouldBeNullForInvalidOtherClaimLookup()  throws CertificateEncodingException, IOException {
+        ForwardAuthInfo authInfo = new ForwardAuthInfo();
+        authInfo.setHeaders("X-TEST");
+        authInfo.setField("xxx");
+        config.getForwardAuthInfo().add(authInfo);
+        // Do *not* set street address
+
+        String encoded = generateAndSerializeToken();
+        apiRequest.getHeaders().put("Authorization", "Bearer " + encoded);
+        keycloakOauthPolicy.apply(apiRequest, mContext, config, mChain);
+
+        verify(mChain).doApply(apiRequest);
+
+        Assert.assertEquals(null, apiRequest.getHeaders().get("X-TEST"));
+    }
+
+    @Test
+    public void shouldBeNullForUnsetStandardClaimLookup()  throws CertificateEncodingException, IOException {
+        ForwardAuthInfo authInfo = new ForwardAuthInfo();
+        authInfo.setHeaders("X-TEST");
+        authInfo.setField("email");
         config.getForwardAuthInfo().add(authInfo);
         // Do *not* set street address
 

@@ -53,9 +53,9 @@ public class ClaimLookup {
                 if (hasJsonPropertyAnnotation(f)) {
                     getProperties(f.getType(), f.getName() + ".", fieldChain); // Add "." when traversing into new object.
                 } else { // Otherwise, just assume it's simple as the best we can do is #toString
-                    List<Field> lz = new ArrayList<>(fieldChain);
-                    Collections.reverse(lz);
-                    STANDARD_CLAIMS_FIELD_MAP.put(path + jsonProperty.value(), lz);
+                    List<Field> fieldList = new ArrayList<>(fieldChain);
+                    Collections.reverse(fieldList);
+                    STANDARD_CLAIMS_FIELD_MAP.put(path + jsonProperty.value(), fieldList);
                     fieldChain.pop(); // Pop, as we have now reached end of this chain.
                 }
             }
@@ -71,7 +71,13 @@ public class ClaimLookup {
         return false;
     }
 
-    public static String getClaim(IDToken token, String claim) throws IllegalArgumentException, IllegalAccessException {
+    /**
+     *
+     * @param token token to retrieve claim from
+     * @param claim the claim (field key)
+     * @return string representaion of claim
+     */
+    public static String getClaim(IDToken token, String claim) {
       if (claim == null || token == null)
           return null;
       // Get the standard claim field, if available
@@ -79,21 +85,24 @@ public class ClaimLookup {
           return callClaimChain(token, STANDARD_CLAIMS_FIELD_MAP.get(claim));
       } else { // Otherwise look up 'other claims'
           Object otherClaim = getOtherClaimValue(token, claim);
-          return otherClaim == null ? "" : (String) otherClaim;
+          return otherClaim == null ? null : otherClaim.toString();
       }
     }
 
-    private static String callClaimChain(Object rootObject, List<Field> list) throws IllegalArgumentException, IllegalAccessException {
-        if (list.size() == 1)
-            return list.get(0).get(rootObject).toString();
-
-        Object candidate = rootObject;
-        for (Field f : list) {
-            if ((candidate = f.get(candidate)) == null)
-                break;
+    private static String callClaimChain(Object rootObject, List<Field> list) {
+        try {
+            Object candidate = rootObject;
+            for (Field f : list) {
+                if ((candidate = f.get(candidate)) == null)
+                    break;
+            }
+            return (candidate == null) ? null : candidate.toString();
+        } catch (IllegalArgumentException | IllegalAccessException e) {
+            // TODO Use logger. These exceptions shouldn't occur, but if it somehow does happen we need to know.
+            System.err.println("Unexpected error looking up token field: " + e); //$NON-NLS-1$
+            e.printStackTrace();
         }
-
-        return (candidate == null) ? null : candidate.toString();
+        return null;
     }
 
     @SuppressWarnings("unchecked") // KC code - thanks.
