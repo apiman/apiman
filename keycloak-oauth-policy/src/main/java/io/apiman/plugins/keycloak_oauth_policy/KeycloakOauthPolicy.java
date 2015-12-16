@@ -15,19 +15,10 @@
  */
 package io.apiman.plugins.keycloak_oauth_policy;
 
-import java.util.Collections;
-
-import org.apache.commons.lang.StringUtils;
-import org.keycloak.RSATokenVerifier;
-import org.keycloak.VerificationException;
-import org.keycloak.constants.KerberosConstants;
-import org.keycloak.representations.AccessToken;
-import org.keycloak.representations.AccessToken.Access;
-
 import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
-import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.beans.ApiRequest;
+import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.components.ISharedStateComponent;
 import io.apiman.gateway.engine.metrics.RequestMetric;
 import io.apiman.gateway.engine.policies.AbstractMappedPolicy;
@@ -39,6 +30,15 @@ import io.apiman.plugins.keycloak_oauth_policy.beans.ForwardAuthInfo;
 import io.apiman.plugins.keycloak_oauth_policy.beans.KeycloakOauthConfigBean;
 import io.apiman.plugins.keycloak_oauth_policy.failures.PolicyFailureFactory;
 import io.apiman.plugins.keycloak_oauth_policy.util.Holder;
+
+import java.util.Collections;
+
+import org.apache.commons.lang.StringUtils;
+import org.keycloak.RSATokenVerifier;
+import org.keycloak.VerificationException;
+import org.keycloak.constants.KerberosConstants;
+import org.keycloak.representations.AccessToken;
+import org.keycloak.representations.AccessToken.Access;
 
 /**
  * A Keycloak OAuth policy.
@@ -207,31 +207,17 @@ public class KeycloakOauthPolicy extends AbstractMappedPolicy<KeycloakOauthConfi
 
     private void forwardHeaders(ApiRequest request, KeycloakOauthConfigBean config, String rawToken,
             AccessToken parsedToken) {
-        if (config.getForwardAuthInfo().size() == 0) {
-            return;
-        }
-
         for (ForwardAuthInfo entry : config.getForwardAuthInfo()) {
-            String fieldValue = null;
-
-            switch (entry.getField()) {
-            case ACCESS_TOKEN:
-                fieldValue = rawToken;
-                break;
-            case EMAIL:
-                fieldValue = parsedToken.getEmail();
-                break;
-            case NAME:
-                fieldValue = parsedToken.getName();
-                break;
-            case SUBJECT:
-                fieldValue = parsedToken.getSubject();
-                break;
-            case USERNAME:
-                fieldValue = parsedToken.getPreferredUsername();
-            }
-            request.getHeaders().put(entry.getHeader(), fieldValue);
+            String headerValue = isToken(entry.getField()) ? rawToken :
+                ClaimLookup.getClaim(parsedToken, entry.getField());
+            // Add the header if we've been able to look it up, else it'll just be empty.
+            request.getHeaders().put(entry.getHeader(), headerValue);
         }
+    }
+
+    @SuppressWarnings("nls")
+    private boolean isToken(String field) {
+        return field.toLowerCase().equals("access_token");
     }
 
     private void isBlacklistedToken(IPolicyContext context, String rawToken,

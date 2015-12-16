@@ -17,7 +17,6 @@ import io.apiman.gateway.engine.policies.AuthorizationPolicy;
 import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
 import io.apiman.plugins.keycloak_oauth_policy.beans.ForwardAuthInfo;
-import io.apiman.plugins.keycloak_oauth_policy.beans.ForwardAuthInfo.Field;
 import io.apiman.plugins.keycloak_oauth_policy.beans.ForwardRoles;
 import io.apiman.plugins.keycloak_oauth_policy.beans.KeycloakOauthConfigBean;
 
@@ -50,6 +49,7 @@ import org.junit.Test;
 import org.keycloak.jose.jws.JWSBuilder;
 import org.keycloak.representations.AccessToken;
 import org.keycloak.representations.AccessToken.Access;
+import org.keycloak.representations.AddressClaimSet;
 import org.keycloak.util.Time;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -303,7 +303,7 @@ public class KeycloakOauthPolicyTest {
     public void shouldForwardAuthInfoName() throws CertificateEncodingException, IOException {
         ForwardAuthInfo authInfo = new ForwardAuthInfo();
         authInfo.setHeaders("X-TEST");
-        authInfo.setField(Field.USERNAME);
+        authInfo.setField("preferred_username");
         config.getForwardAuthInfo().add(authInfo);
 
         token.setPreferredUsername("ABC");
@@ -317,10 +317,97 @@ public class KeycloakOauthPolicyTest {
     }
 
     @Test
+    public void shouldForwardToken() throws CertificateEncodingException, IOException {
+        ForwardAuthInfo authInfo = new ForwardAuthInfo();
+        authInfo.setHeaders("X-TEST");
+        authInfo.setField("access_token");
+        config.getForwardAuthInfo().add(authInfo);
+
+        String encoded = generateAndSerializeToken();
+        apiRequest.getHeaders().put("Authorization", "Bearer " + encoded);
+        keycloakOauthPolicy.apply(apiRequest, mContext, config, mChain);
+
+        verify(mChain).doApply(apiRequest);
+
+        Assert.assertEquals(encoded, apiRequest.getHeaders().get("X-TEST"));
+    }
+
+    @Test
+    public void shouldAccessSubClaim() throws CertificateEncodingException, IOException {
+        ForwardAuthInfo authInfo = new ForwardAuthInfo();
+        authInfo.setHeaders("X-TEST");
+        authInfo.setField("address.street_address");
+        config.getForwardAuthInfo().add(authInfo);
+
+        AddressClaimSet addressClaim = new AddressClaimSet();
+        addressClaim.setStreetAddress("123 newcastle street, miami");
+        token.setAddress(addressClaim);
+
+        String encoded = generateAndSerializeToken();
+        apiRequest.getHeaders().put("Authorization", "Bearer " + encoded);
+        keycloakOauthPolicy.apply(apiRequest, mContext, config, mChain);
+
+        verify(mChain).doApply(apiRequest);
+
+        Assert.assertEquals("123 newcastle street, miami", apiRequest.getHeaders().get("X-TEST"));
+    }
+
+    @Test
+    public void shouldBeNullForInvalidNestedClaimLookup()  throws CertificateEncodingException, IOException {
+        ForwardAuthInfo authInfo = new ForwardAuthInfo();
+        authInfo.setHeaders("X-TEST");
+        authInfo.setField("address.street_address");
+        config.getForwardAuthInfo().add(authInfo);
+        // Do *not* set street address
+
+        String encoded = generateAndSerializeToken();
+        apiRequest.getHeaders().put("Authorization", "Bearer " + encoded);
+        keycloakOauthPolicy.apply(apiRequest, mContext, config, mChain);
+
+        verify(mChain).doApply(apiRequest);
+
+        Assert.assertEquals(null, apiRequest.getHeaders().get("X-TEST"));
+    }
+
+    @Test
+    public void shouldBeNullForInvalidOtherClaimLookup()  throws CertificateEncodingException, IOException {
+        ForwardAuthInfo authInfo = new ForwardAuthInfo();
+        authInfo.setHeaders("X-TEST");
+        authInfo.setField("xxx");
+        config.getForwardAuthInfo().add(authInfo);
+        // Do *not* set street address
+
+        String encoded = generateAndSerializeToken();
+        apiRequest.getHeaders().put("Authorization", "Bearer " + encoded);
+        keycloakOauthPolicy.apply(apiRequest, mContext, config, mChain);
+
+        verify(mChain).doApply(apiRequest);
+
+        Assert.assertEquals(null, apiRequest.getHeaders().get("X-TEST"));
+    }
+
+    @Test
+    public void shouldBeNullForUnsetStandardClaimLookup()  throws CertificateEncodingException, IOException {
+        ForwardAuthInfo authInfo = new ForwardAuthInfo();
+        authInfo.setHeaders("X-TEST");
+        authInfo.setField("email");
+        config.getForwardAuthInfo().add(authInfo);
+        // Do *not* set street address
+
+        String encoded = generateAndSerializeToken();
+        apiRequest.getHeaders().put("Authorization", "Bearer " + encoded);
+        keycloakOauthPolicy.apply(apiRequest, mContext, config, mChain);
+
+        verify(mChain).doApply(apiRequest);
+
+        Assert.assertEquals(null, apiRequest.getHeaders().get("X-TEST"));
+    }
+
+    @Test
     public void shouldForwardAuthInfoSubject() throws CertificateEncodingException, IOException {
         ForwardAuthInfo authInfo = new ForwardAuthInfo();
         authInfo.setHeaders("X-TEST");
-        authInfo.setField(Field.EMAIL);
+        authInfo.setField("email");
         config.getForwardAuthInfo().add(authInfo);
 
         token.setEmail("apiman@apiman.io");

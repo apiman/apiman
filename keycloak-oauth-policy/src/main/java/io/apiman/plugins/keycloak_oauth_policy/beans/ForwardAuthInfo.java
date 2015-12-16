@@ -17,17 +17,15 @@ package io.apiman.plugins.keycloak_oauth_policy.beans;
 
 import java.util.HashMap;
 import java.util.Map;
-import javax.annotation.Generated;
+
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.codehaus.jackson.annotate.JsonAnyGetter;
 import org.codehaus.jackson.annotate.JsonAnySetter;
-import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
-import org.codehaus.jackson.annotate.JsonValue;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
@@ -43,7 +41,7 @@ public class ForwardAuthInfo {
     private String headers;
 
     @JsonProperty("field")
-    private ForwardAuthInfo.Field field;
+    private String field;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -67,7 +65,7 @@ public class ForwardAuthInfo {
      * @return The field
      */
     @JsonProperty("field")
-    public ForwardAuthInfo.Field getField() {
+    public String getField() {
         return field;
     }
 
@@ -75,7 +73,7 @@ public class ForwardAuthInfo {
      * @param field The field
      */
     @JsonProperty("field")
-    public void setField(ForwardAuthInfo.Field field) {
+    public void setField(String field) {
         this.field = field;
     }
 
@@ -110,45 +108,6 @@ public class ForwardAuthInfo {
         ForwardAuthInfo rhs = ((ForwardAuthInfo) other);
         return new EqualsBuilder().append(headers, rhs.headers).append(field, rhs.field)
                 .append(additionalProperties, rhs.additionalProperties).isEquals();
-    }
-
-    @Generated("org.jsonschema2pojo")
-    public static enum Field {
-
-        SUBJECT("subject"), //$NON-NLS-1$
-        USERNAME("username"), //$NON-NLS-1$
-        EMAIL("email"), //$NON-NLS-1$
-        NAME("name"), //$NON-NLS-1$
-        ACCESS_TOKEN("access_token"); //$NON-NLS-1$
-        private final String value;
-        private static Map<String, ForwardAuthInfo.Field> constants = new HashMap<>();
-
-        static {
-            for (ForwardAuthInfo.Field c : values()) {
-                constants.put(c.value, c);
-            }
-        }
-
-        private Field(String value) {
-            this.value = value;
-        }
-
-        @JsonValue
-        @Override
-        public String toString() {
-            return this.value;
-        }
-
-        @JsonCreator
-        public static ForwardAuthInfo.Field fromValue(String value) {
-            ForwardAuthInfo.Field constant = constants.get(value);
-            if (constant == null) {
-                throw new IllegalArgumentException(value);
-            } else {
-                return constant;
-            }
-        }
-
     }
 
 }
