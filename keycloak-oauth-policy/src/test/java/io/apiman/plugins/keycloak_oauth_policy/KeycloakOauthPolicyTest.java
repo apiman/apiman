@@ -320,7 +320,7 @@ public class KeycloakOauthPolicyTest {
     public void shouldForwardToken() throws CertificateEncodingException, IOException {
         ForwardAuthInfo authInfo = new ForwardAuthInfo();
         authInfo.setHeaders("X-TEST");
-        authInfo.setField("token");
+        authInfo.setField("access_token");
         config.getForwardAuthInfo().add(authInfo);
 
         String encoded = generateAndSerializeToken();

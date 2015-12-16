@@ -208,11 +208,16 @@ public class KeycloakOauthPolicy extends AbstractMappedPolicy<KeycloakOauthConfi
     private void forwardHeaders(ApiRequest request, KeycloakOauthConfigBean config, String rawToken,
             AccessToken parsedToken) {
         for (ForwardAuthInfo entry : config.getForwardAuthInfo()) {
-            String headerValue = entry.getField().toLowerCase().equals("token") ? rawToken : //$NON-NLS-1$
+            String headerValue = isToken(entry.getField()) ? rawToken :
                 ClaimLookup.getClaim(parsedToken, entry.getField());
             // Add the header if we've been able to look it up, else it'll just be empty.
             request.getHeaders().put(entry.getHeader(), headerValue);
         }
+    }
+
+    @SuppressWarnings("nls")
+    private boolean isToken(String field) {
+        return field.toLowerCase().equals("access_token");
     }
 
     private void isBlacklistedToken(IPolicyContext context, String rawToken,

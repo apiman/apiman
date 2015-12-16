@@ -41,6 +41,9 @@ public class ClaimLookup {
         do {
             getProperties(clazz, "", new ArrayDeque<Field>());
         } while ((clazz = clazz.getSuperclass()) != null);
+        // Legacy mappings, to ensure old configs keep working
+        STANDARD_CLAIMS_FIELD_MAP.put("username", STANDARD_CLAIMS_FIELD_MAP.get(IDToken.PREFERRED_USERNAME));
+        STANDARD_CLAIMS_FIELD_MAP.put("subject", STANDARD_CLAIMS_FIELD_MAP.get("sub"));
     }
 
     private static void getProperties(Class<?> klazz, String path, Deque<Field> fieldChain) {
