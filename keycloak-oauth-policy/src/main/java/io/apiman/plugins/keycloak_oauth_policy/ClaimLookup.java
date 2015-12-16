@@ -16,9 +16,11 @@
 
 package io.apiman.plugins.keycloak_oauth_policy;
 
+import java.lang.reflect.Field;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.keycloak.representations.AddressClaimSet;
+import org.codehaus.jackson.annotate.JsonProperty;
 import org.keycloak.representations.IDToken;
 import org.keycloak.representations.JsonWebToken;
 
@@ -27,71 +29,49 @@ import org.keycloak.representations.JsonWebToken;
 */
 @SuppressWarnings("nls")
 public class ClaimLookup {
+    private static final Map<String, Field> STANDARD_CLAIMS_FIELD_MAP = new LinkedHashMap<>();
 
-    public static String lookupClaim(IDToken token, String key) {
-        if (key == null || token == null)
-            return null;
+    static {
+        Class<?> clazz = IDToken.class;
+        do {
+            getProperties(clazz, "");
+        } while ((clazz = clazz.getSuperclass()) != null);
+    }
 
-        switch(key) {
-        case IDToken.NONCE:
-            return token.getNonce();
-        case IDToken.SESSION_STATE:
-            return token.getSessionState();
-        case IDToken.NAME:
-            return token.getName();
-        case IDToken.GIVEN_NAME:
-            return token.getGivenName();
-        case IDToken.FAMILY_NAME:
-            return token.getFamilyName();
-        case IDToken.MIDDLE_NAME:
-            return token.getMiddleName();
-        case IDToken.NICKNAME: //Not consistent, so we can't reliably look up with introspection.
-            return token.getNickName();
-        case IDToken.PREFERRED_USERNAME:
-            return token.getPreferredUsername();
-        case IDToken.PROFILE:
-            return token.getProfile();
-        case IDToken.PICTURE:
-            return token.getPicture();
-        case IDToken.WEBSITE:
-            return token.getWebsite();
-        case IDToken.EMAIL:
-            return token.getEmail();
-        case IDToken.EMAIL_VERIFIED:
-            return token.getEmailVerified().toString();
-        case IDToken.GENDER:
-            return token.getGender();
-        case IDToken.BIRTHDATE:
-            return token.getBirthdate();
-        case IDToken.ZONEINFO:
-            return token.getZoneinfo();
-        case IDToken.LOCALE:
-            return token.getLocale();
-        case IDToken.PHONE_NUMBER:
-            return token.getPhoneNumber();
-        case IDToken.PHONE_NUMBER_VERIFIED:
-            return token.getPhoneNumber();
-        case IDToken.ADDRESS: // Would be useless otherwise, i think
-            return token.getAddress().getFormattedAddress().toString();
-        case IDToken.ADDRESS + "." + AddressClaimSet.COUNTRY:
-            return token.getAddress().getCountry();
-        case IDToken.ADDRESS + "." + AddressClaimSet.FORMATTED:
-            return token.getAddress().getFormattedAddress();
-        case IDToken.ADDRESS + "." + AddressClaimSet.LOCALITY:
-            return token.getAddress().getLocality();
-        case IDToken.ADDRESS + "." + AddressClaimSet.POSTAL_CODE:
-            return token.getAddress().getPostalCode();
-        case IDToken.ADDRESS + "." + AddressClaimSet.REGION:
-            return token.getAddress().getRegion();
-        case IDToken.ADDRESS + "." + AddressClaimSet.STREET_ADDRESS:
-            return token.getAddress().getStreetAddress();
-        case IDToken.UPDATED_AT:
-            return token.getUpdatedAt().toString();
-        case IDToken.CLAIMS_LOCALES:
-            return token.getClaimsLocales();
-        default:
-            return getOtherClaimValue(token, key).toString();
+    private static void getProperties(Class<?> klazz, String path) {
+        for (Field f: klazz.getDeclaredFields()) {
+            f.setAccessible(true);
+            JsonProperty jsonProperty = f.getAnnotation(JsonProperty.class);
+            if (jsonProperty != null) {
+                // If the inspected type has nested @JsonProperty annotations, we need to inspect it
+                if (hasJsonPropertyAnnotation(f)) {
+                    getProperties(f.getType(), f.getName() + "."); // Add "." when traversing into new object.
+                } else { // Otherwise, just assume it's simple as the best we can do is #toString
+                    STANDARD_CLAIMS_FIELD_MAP.put(path + jsonProperty.value(), f);
+                }
+            }
         }
+    }
+
+    private static boolean hasJsonPropertyAnnotation(Field f) {
+        for (Field g : f.getType().getDeclaredFields()) {
+            g.setAccessible(true);
+            if (g.getAnnotation(JsonProperty.class) != null)
+                return true;
+        }
+        return false;
+    }
+
+    public static String getClaim(IDToken token, String claim) throws IllegalArgumentException, IllegalAccessException {
+      if (claim == null || token == null)
+          return null;
+      // Get the standard claim field, if available
+      if (STANDARD_CLAIMS_FIELD_MAP.containsKey(claim)) {
+          return (String) STANDARD_CLAIMS_FIELD_MAP.get(claim).get(token);
+      } else { // Otherwise look up 'other claims' and #toString it TODO caveat - won't nicely display maps, unlikely to need, but could use JSON?
+          Object otherClaim = getOtherClaimValue(token, claim);
+          return otherClaim == null ? "" : (String) otherClaim;
+      }
     }
 
     @SuppressWarnings("unchecked") // KC code - thanks.

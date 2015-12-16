@@ -17,7 +17,6 @@ import io.apiman.gateway.engine.policies.AuthorizationPolicy;
 import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
 import io.apiman.plugins.keycloak_oauth_policy.beans.ForwardAuthInfo;
-import io.apiman.plugins.keycloak_oauth_policy.beans.ForwardAuthInfo.Field;
 import io.apiman.plugins.keycloak_oauth_policy.beans.ForwardRoles;
 import io.apiman.plugins.keycloak_oauth_policy.beans.KeycloakOauthConfigBean;
 
@@ -303,7 +302,7 @@ public class KeycloakOauthPolicyTest {
     public void shouldForwardAuthInfoName() throws CertificateEncodingException, IOException {
         ForwardAuthInfo authInfo = new ForwardAuthInfo();
         authInfo.setHeaders("X-TEST");
-        authInfo.setField(Field.USERNAME);
+        authInfo.setField("preferred_username");
         config.getForwardAuthInfo().add(authInfo);
 
         token.setPreferredUsername("ABC");
@@ -317,10 +316,26 @@ public class KeycloakOauthPolicyTest {
     }
 
     @Test
+    public void shouldForwardToken() throws CertificateEncodingException, IOException {
+        ForwardAuthInfo authInfo = new ForwardAuthInfo();
+        authInfo.setHeaders("X-TEST");
+        authInfo.setField("token");
+        config.getForwardAuthInfo().add(authInfo);
+
+        String encoded = generateAndSerializeToken();
+        apiRequest.getHeaders().put("Authorization", "Bearer " + encoded);
+        keycloakOauthPolicy.apply(apiRequest, mContext, config, mChain);
+
+        verify(mChain).doApply(apiRequest);
+
+        Assert.assertEquals(encoded, apiRequest.getHeaders().get("X-TEST"));
+    }
+
+    @Test
     public void shouldForwardAuthInfoSubject() throws CertificateEncodingException, IOException {
         ForwardAuthInfo authInfo = new ForwardAuthInfo();
         authInfo.setHeaders("X-TEST");
-        authInfo.setField(Field.EMAIL);
+        authInfo.setField("email");
         config.getForwardAuthInfo().add(authInfo);
 
         token.setEmail("apiman@apiman.io");

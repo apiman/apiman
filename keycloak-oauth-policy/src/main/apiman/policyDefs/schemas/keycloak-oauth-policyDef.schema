@@ -80,7 +80,7 @@
     },
     "forwardAuthInfo": {
       "title": "Forward Keycloak Token Information",
-      "description": "Fields from the token can be set as headers and forwarded to the API. Access_token corresponds to the full token.",
+      "description": "Fields from the token can be set as headers and forwarded to the API. All <a href=\"https://openid.net/specs/openid-connect-basic-1_0.html#StandardClaims\" target=\"_blank\">standard claims</a>, custom claims and <a href=\"https://openid.net/specs/openid-connect-basic-1_0.html#IDToken\" target=\"_blank\">ID token fields</a> are available (case sensitive). A special value of <strong><tt>token</tt></strong> will forward the entire encoded token. Nested claims can be accessed by using javascript dot syntax (e.g: <tt>address.country</tt>, <tt>address.formatted</tt>)",
       "type": "array",
       "format": "table",
       "items": {
@@ -95,17 +95,20 @@
           },
           "field": {
             "title": "Field",
-            "type": "string",
-            "enum": [
-              "subject",
-              "username",
-              "email",
-              "name",
-              "access_token"
-            ]
+            "type": "string"
           }
         }
-      }
+      },
+      "links": [
+      	{
+          "href": "https://openid.net/specs/openid-connect-basic-1_0.html#StandardClaims",
+          "rel": "Specification: All standard claims and their descriptions. This includes name, preferred_username, email, etc."
+      	},
+      	{
+          "href": "https://openid.net/specs/openid-connect-basic-1_0.html#IDToken",
+          "rel": "Specification: Standard ID token fields"
+      	}
+      ]
     }
   }
 }

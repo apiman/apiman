@@ -207,30 +207,16 @@ public class KeycloakOauthPolicy extends AbstractMappedPolicy<KeycloakOauthConfi
 
     private void forwardHeaders(ApiRequest request, KeycloakOauthConfigBean config, String rawToken,
             AccessToken parsedToken) {
-        if (config.getForwardAuthInfo().size() == 0) {
-            return;
-        }
-
         for (ForwardAuthInfo entry : config.getForwardAuthInfo()) {
-            String fieldValue = null;
-
-            switch (entry.getField()) {
-            case ACCESS_TOKEN:
-                fieldValue = rawToken;
-                break;
-            case EMAIL:
-                fieldValue = parsedToken.getEmail();
-                break;
-            case NAME:
-                fieldValue = parsedToken.getName();
-                break;
-            case SUBJECT:
-                fieldValue = parsedToken.getSubject();
-                break;
-            case USERNAME:
-                fieldValue = parsedToken.getPreferredUsername();
+            try {
+                String headerValue = entry.getField().toLowerCase().equals("token") ? rawToken : //$NON-NLS-1$
+                    ClaimLookup.getClaim(parsedToken, entry.getField());
+                // Add the header if we've been able to look it up, else it'll just be empty.
+                request.getHeaders().put(entry.getHeader(), headerValue);
+            } catch (IllegalArgumentException | IllegalAccessException e) {
+                // TODO log error. This shouldn't occur, but if it somehow does we need to know.
+                System.err.println("Unexpected error looking up token field: " + e); //$NON-NLS-1$
             }
-            request.getHeaders().put(entry.getHeader(), fieldValue);
         }
     }
 
