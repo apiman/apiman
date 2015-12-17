@@ -9,10 +9,10 @@
   <div>
     
     <div ng-include="headerInclude"></div>   
-    <div ng-controller="Apiman.ApiCatalogController" class="page container" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
+    <div ng-controller="Apiman.ApiCatalogController" class="page container" ng-cloak="" ng-show="pageState == 'loaded'">
       <div class="row">
         <div class="col-md-12">
-          <ol class="breadcrumb" data-field="breadcrumb">
+          <ol class="breadcrumb">
             <li><a id="bc-home" href="{{ pluginName }}/"><i class="fa fa-home fa-fw"></i><span apiman-i18n-key="home">Home</span></a></li>
             <li class="active"><i class="fa fa-book fa-fw"></i><span apiman-i18n-key="api-catalog">API Catalog</span></li>
           </ol>
@@ -24,7 +24,7 @@
         <div class="col-md-12">
           <div class="container-fluid">
             <div class="row">
-              <h2 class="title" data-field="heading" apiman-i18n-key="catalog">API Catalog</h2>
+              <h2 class="title" apiman-i18n-key="catalog">API Catalog</h2>
             </div>
             <!-- Helpful hint -->
             <div class="row">
@@ -43,12 +43,16 @@
               <div class="container-fluid cards">
                 <div ng-repeat="api in filteredApis=(apis | filter: criteria | orderBy: 'name':reverse)" class="card">
                   <a ng-show="api.description" uib-tooltip="{{ api.description }}" tooltip-trigger="mouseenter" tooltip-placement="top" href="#" class="info"><i class="fa fa-info-circle"></i></a>
-                  <div class="icon"><i class="fa fa-{{ api.icon }}"></i></div>
+                  <a ng-show="api.endpointType" uib-tooltip="Endpoint&nbsp;Type:&nbsp;{{ api.endpointType }}" tooltip-trigger="mouseenter" tooltip-placement="top" href="#" class="endpointType"><i class="fa {{ api.ticon }}"></i></a>
+                  <div class="icon">
+                    <i ng-show="!api.iconIsUrl" class="fa fa-{{ api.icon }}"></i>
+                    <img ng-show="api.iconIsUrl" src="{{ api.icon }}"></img>
+                  </div>
                   <div class="name"><span>{{ api.name}}</span></div>
                   <div><hr /></div>
                   <div class="actions">
                      <span class="apiman-action-divider" apiman-i18n-skip="">&nbsp;</span>
-                     <a href="#"><i class="fa fa-cart-arrow-down"></i><span style="margin-left: 5px" apiman-i18n-key="import">Import</span></a>
+                     <a href="#" ng-click="importApi(api)"><i class="fa fa-cart-arrow-down"></i><span style="margin-left: 5px" apiman-i18n-key="import">Import</span></a>
                      <span ng-show="api.definitionType == 'SwaggerJSON' || api.definitionType == 'External'" 
                            class="apiman-action-divider" apiman-i18n-skip="">|</span>
                      <a ng-show="api.definitionType == 'SwaggerJSON'" href="{{ pluginName }}/catalog/api-catalog/{{ api.name | urlEncode }}/def"><i class="fa fa-sitemap"></i><span style="margin-left: 5px" apiman-i18n-key="definition">Definition</span></a>
@@ -67,6 +71,83 @@
           </div>
         </div>
       </div>
+      
+      <script type="text/ng-template" id="importApiModal.html">
+        <div class="modal-header">
+            <h3 class="modal-title">
+              <span apiman-i18n-key="import-api">Import API</span>
+            </h3>
+        </div>
+        <div class="modal-body">
+            <div class="apiman-entity-new">
+
+
+      <!-- Choose org and api name -->
+      <div ng-show="orgs.length > 0">
+        <div class="row">
+          <dl class="org">
+            <dt apiman-i18n-key="organization">Organization</dt>
+            <dd>
+              <div class="btn-group">
+                <button type="button" id="selector-org" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                  <span id="selector-org-value">{{selectedOrg.name}}</span> &nbsp;&nbsp;<span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                   <li ng-repeat="org in orgs"><a href="#" ng-click="setOrg( org )">{{ org.name }}</a></li>
+                </ul>
+              </div>
+            </dd>
+          </dl>
+          <dl class="slash">
+            <dt apiman-i18n-skip>&nbsp;</dt>
+            <dd>
+              <span class="divider" apiman-i18n-skip>/</span>
+            </dd>
+          </dl>
+          <dl class="name">
+            <dt apiman-i18n-key="api-name">API Name</dt>
+            <dd>
+              <input ng-model="api.name" type="text" class="apiman-form-control form-control entityname" id="apiman-entityname" apiman-i18n-key="enter-api-name" placeholder="Enter API name..."></input>
+            </dd>
+          </dl>
+        </div>
+        <!-- Initial API Version -->
+        <div class="row">
+          <dl>
+            <dt apiman-i18n-key="initial-version">Initial Version</dt>
+            <dd>
+              <input ng-model="api.initialVersion" type="text" class="apiman-form-control form-control version" id="apiman-version" value="1.0"></input>
+            </dd>
+          </dl>
+        </div>
+        <!-- Description of api -->
+        <div class="row">
+          <dl style="width: 100%">
+            <dt apiman-i18n-key="description">Description</dt>
+            <dd>
+              <textarea style="width: 90%" ng-model="api.description" class="apiman-form-control form-control description" id="apiman-description" apiman-i18n-key="enter-api-description" placeholder="Enter API description (optional)..."></textarea>
+            </dd>
+          </dl>
+        </div>
+      </div>
+      <div ng-hide="orgs.length > 0" class="apiman-no-content container-fluid">
+        <div class="row">
+          <div class="col-md-12">
+            <p class="apiman-no-entities-description" apiman-i18n-key="missing-create-api-permission">You don't have permission to create an API in any of your Organizations (or you aren't in any orgs)!  Please become a member of an existing Organization or create a new one before trying to create an API.</p>
+          </div>
+        </div>
+      </div>
+
+
+
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" ng-disabled="!api.name || !api.initialVersion || !selectedOrg" data-field="importButton" type="button" apiman-action-btn="" ng-click="import()" apiman-i18n-key="import" placeholder="Importing..." data-icon="fa-cog">Import</button>
+            <button class="btn btn-default btn-cancel" type="button" ng-click="cancel()">Cancel</button>
+        </div>
+      </script>
+      
     </div>
   </div>
   </body>

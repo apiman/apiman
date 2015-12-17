@@ -16,7 +16,7 @@ module Apiman {
                         }
                         resolve(orgs);
                     }, reject);
-                }),
+                })
             };
 
             $scope.setOrg = function(org) {

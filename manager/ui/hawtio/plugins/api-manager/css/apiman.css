@@ -1725,12 +1725,22 @@ html, body {height: 100%;}
   font-size: 18px;
   visibility: hidden;
 }
-.apiman-card-table .card:hover .info {
+.apiman-card-table .card .endpointType {
+  position: absolute;
+  top: 0px;
+  right: 5px;
+  font-size: 16px;
+  visibility: hidden;
+}
+.apiman-card-table .card:hover .info, .apiman-card-table .card:hover .endpointType {
   visibility: visible;
 }
 .apiman-card-table .card .icon {
   font-size: 32px;
   margin-bottom: 5px;
+}
+.apiman-card-table .card .icon img {
+  height: 32px;
 }
 .apiman-card-table .card .name {
   font-size: 16px;
@@ -1743,4 +1753,13 @@ html, body {height: 100%;}
 .apiman-action-divider {
   color: #ccc;
   font-size: 16px;
+}
+
+.modal-body .apiman-entity-new {
+  margin: 0px;
+  padding: 0px;
+}
+
+.modal-body .apiman-entity-new .row {
+  margin: 0px;
 }
