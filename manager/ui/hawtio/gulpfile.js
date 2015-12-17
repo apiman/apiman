@@ -126,6 +126,8 @@ gulp.task('css', function() {
             'node_modules/patternfly/components/cs/c3.css',
             'node_modules/angular-xeditable/dist/css/xeditable.css',
             'node_modules/angular-ui-bootstrap/ui-bootstrap-csp.css',
+            'node_modules/ui-select/dist/select.css',
+            'node_modules/select2/select2.css',
             SwaggerUIPath + '/dist/css/screen.css',
             SwaggerUIPath + '/dist/css/typography.css'
         ], {base: 'node_modules/'})

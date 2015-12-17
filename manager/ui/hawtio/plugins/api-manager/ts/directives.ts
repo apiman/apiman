@@ -196,12 +196,14 @@ module Apiman {
                     entity.status = status;
                 },
                 isEntityDisabled: function() {
-                    if (entityType == 'client' || entityType == 'clients') {
-                        return entity.status == 'Retired';
-                    } else if (entityType == 'api' || entityType == 'apis') {
-                        return (entity.status !== 'Created' && entity.status !== 'Ready');
-                    } else {
-                        return (entity.status !== 'Created' && entity.status !== 'Ready');
+                    if(entity) {
+                        if (entityType == 'client' || entityType == 'clients') {
+                            return entity.status == 'Retired';
+                        } else if (entityType == 'api' || entityType == 'apis') {
+                            return (entity.status !== 'Created' && entity.status !== 'Ready');
+                        } else {
+                            return (entity.status !== 'Created' && entity.status !== 'Ready');
+                        }
                     }
                 }
             };

@@ -23,13 +23,22 @@
       </div>
       <!-- Policy Type -->
       <div class="row policy-type-row">
-        <dl>
+        <dl style="width: 100%;">
           <dt apiman-i18n-key="policy-type">Policy Type</dt>
           <dd>
-            <select id="policy-type" ng-model="selectedDefId" apiman-select-picker="" class="selectpicker" data-live-search="true" apiman-i18n-key="new-policy.choose-policy-type" title="Choose a policy type...">
-              <option value="__null__" data-content="<i class='fa fa-inline fa-fw'></i> <span class='apiman-label-faded'>Choose a policy type...</span>" apiman-i18n-key="new-policy.choose-policy-type">Choose a policy type...</option>
-              <option value="{{ def.id }}" ng-repeat="def in policyDefs | orderBy : 'name.toLowerCase()'" data-content="<i class='fa fa-inline fa-fw fa-{{ def.icon }}'></i> <span>{{ def.name }}</span>">{{ def.name }}</option>
-            </select>
+            <ui-select ng-model="selectedDefId"
+                       ng-disabled="isEntityDisabled()"
+                       on-select="changeSelectedDefId($item)"
+                       apiman-i18n-key="new-policy.choose-policy-type"
+                       style="width: 25%; max-width: 250px;">
+              <ui-select-match placeholder="Choose a policy type...">
+                <i class='fa fa-inline fa-fw fa-{{ $select.selected.icon }}'></i> <span ng-bind="$select.selected.name"></span>
+              </ui-select-match>
+              <ui-select-choices
+                      repeat="def in (policyDefs | filter: $select.search | orderBy: 'name.toLowerCase()')">
+                <i class='fa fa-inline fa-fw fa-{{ def.icon }}'></i> <span ng-bind="def.name"></span>
+              </ui-select-choices>
+            </ui-select>
           </dd>
         </dl>
       </div>
@@ -56,3 +65,4 @@
     </div>
   </body>
 </html>
+

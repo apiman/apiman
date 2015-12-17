@@ -44,6 +44,9 @@ module Apiman {
                         } else {
                             $scope.selectedClient = undefined;
                         }
+
+                        $scope.changedClient($scope.selectedClient);
+
                         resolve(clients);
                     }, reject);
                 }),
@@ -64,15 +67,19 @@ module Apiman {
                 })
             };
 
-            $scope.$watch('selectedClient', function(newValue) {
-                Logger.debug("Client App selected: {0}", newValue);
+            $scope.changedClient = function(newValue) {
+                console.log('change on selectedClient');
+
+                Logger.debug("Client selected: {0}", newValue);
                 $scope.selectedClientVersion = undefined;
                 $scope.clientVersions = [];
+
+                console.log('change on selectedClient');
 
                 if (newValue) {
                     $scope.refreshClientVersions(newValue.organizationId, newValue.id, function(versions) {
                         Logger.debug("Versions: {0}", versions);
-
+                        
                         if ($rootScope.mruClient) {
                             if ($rootScope.mruClient.client.organization.id == newValue.organizationId && $rootScope.mruClient.client.id == newValue.id) {
                                 $scope.selectedClientVersion = $rootScope.mruClient.version;
@@ -84,7 +91,7 @@ module Apiman {
                         }
                     });
                 }
-            });
+            };
             
             $scope.selectApi = function() {
                 Dialogs.selectApi('Select an API', function(apiVersion) {

@@ -638,9 +638,8 @@ module Apiman {
                 if (config.ttl) {
                     config.ttl = Number(config.ttl);
 
-                    if (config.ttl && config.ttl > 0) {
-                        valid = true;
-                    }
+                    // Check that TTL & Policy Definition ID are set
+                    valid = ((config.ttl && config.ttl > 0) && ($scope.selectedDef && $scope.selectedDef.id != null));
                 }
 
                 $scope.setValid(valid);

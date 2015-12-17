@@ -6,6 +6,7 @@ module Apiman {
         'angular-clipboard',
         'ngRoute',
         'ui.bootstrap',
+        'ui.select',
         'ui.sortable',
         'xeditable',
         'ngFileUpload',
@@ -23,10 +24,15 @@ module Apiman {
 
     _module.config([
         '$locationProvider',
-        '$routeProvider', ($locationProvider,
-                           $routeProvider) => {
+        '$routeProvider',
+        'uiSelectConfig', ($locationProvider,
+                           $routeProvider,
+                           uiSelectConfig) => {
             var path = 'plugins/api-manager/html/';
             var prefix = '/api-manager';
+
+            uiSelectConfig.theme = 'select2';
+            uiSelectConfig.searchEnabled = false;
 
             // Define Routes
 
