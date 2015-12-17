@@ -41,12 +41,13 @@
             <!-- Table of APIs -->
             <div class="row apiman-card-table">
               <div class="container-fluid cards">
-                <div ng-repeat="api in apis | filter: criteria | orderBy: 'name':reverse" class="card">
-                  <a uib-tooltip="{{ api.description }}" tooltip-trigger="mouseenter" tooltip-placement="top" href="#" class="info"><i class="fa fa-info-circle"></i></a>
+                <div ng-repeat="api in filteredApis=(apis | filter: criteria | orderBy: 'name':reverse)" class="card">
+                  <a ng-show="api.description" uib-tooltip="{{ api.description }}" tooltip-trigger="mouseenter" tooltip-placement="top" href="#" class="info"><i class="fa fa-info-circle"></i></a>
                   <div class="icon"><i class="fa fa-{{ api.icon }}"></i></div>
                   <div class="name"><span>{{ api.name}}</span></div>
                   <div><hr /></div>
                   <div class="actions">
+                     <span class="apiman-action-divider" apiman-i18n-skip="">&nbsp;</span>
                      <a href="#"><i class="fa fa-cart-arrow-down"></i><span style="margin-left: 5px" apiman-i18n-key="import">Import</span></a>
                      <span ng-show="api.definitionType == 'SwaggerJSON' || api.definitionType == 'External'" 
                            class="apiman-action-divider" apiman-i18n-skip="">|</span>
@@ -54,6 +55,13 @@
                      <a ng-show="api.definitionType == 'External'" href="{{ api.definitionUrl }}"><i class="fa fa-external-link"></i><span style="margin-left: 5px" apiman-i18n-key="definition">Definition</span></a>
                   </div>
                 </div>
+              </div>
+              <div class="alert alert-info" ng-show="filteredApis.length == 0">
+                <span class="pficon pficon-info"></span>
+                <strong apiman-i18n-key="no-apis-warning.summary">No APIs found.</strong>
+                <p apiman-i18n-key="no-apis-warning.detail">
+                  No APIs matching the above filter criteria were found in the API catalog.  Perhaps try different criteria?
+                </p>
               </div>
             </div>
           </div>

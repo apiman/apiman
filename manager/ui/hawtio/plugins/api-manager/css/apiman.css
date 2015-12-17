@@ -1693,7 +1693,13 @@ html, body {height: 100%;}
   background-color: #f5f5f5;
   padding-top: 20px;
 }
-
+.apiman-card-table .alert {
+  margin-left: 20px;
+  margin-right: 20px;
+  margin-bottom: 20px;
+  background-color: white;
+  width: 75%;
+}
 .apiman-card-table .card {
   position: relative;
   width: 260px;
