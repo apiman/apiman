@@ -29,6 +29,26 @@ module Apiman {
                     if (!api.icon) {
                         api.icon = 'puzzle-piece';
                     }
+                    apimanapis: $q(function(resolve, reject) {
+                        if (api.name) {
+                            var name = api.name;
+                            //HACK TO MAKE IT MATCH
+                            if ("cdi-cxf"==name) name = "*cdi*";
+                            if ("quickstart-java-cxf-cdi"==name) name = "*cdi*";
+                            var body:any = {};
+                            body.filters = [];
+                            //DON'T USE like but eq.
+                            body.filters.push( {"name": "name", "value": name, "operator": "like"});
+                            var searchStr = angular.toJson(body);
+                            
+                            ApimanSvcs.save({ entityType: 'search', secondaryType: 'apis' }, searchStr, function(reply) {
+                                api.apimanapis = reply.beans;
+                                resolve(reply.beans);
+                            }, reject);
+                        } else {
+                            resolve([]);
+                        }
+                    })
                 });
                 PageLifecycle.setPageTitle('api-catalog');
             });
@@ -44,7 +64,7 @@ module Apiman {
     
             var body:any = {};
             body.filters = [];
-            body.filters.push({ "name" : "name", "value" : $scope.params.name, "operator" : "like" });
+            body.filters.push({ "name" : "name", "value" : $scope.params.name, "operator" : "eq" });
             var searchStr = angular.toJson(body);
             
             var pageData = {

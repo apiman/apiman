@@ -53,6 +53,11 @@
                            class="apiman-action-divider" apiman-i18n-skip="">|</span>
                      <a ng-show="api.definitionType == 'SwaggerJSON'" href="{{ pluginName }}/catalog/api-catalog/{{ api.name | urlEncode }}/def"><i class="fa fa-sitemap"></i><span style="margin-left: 5px" apiman-i18n-key="definition">Definition</span></a>
                      <a ng-show="api.definitionType == 'External'" href="{{ api.definitionUrl }}"><i class="fa fa-external-link"></i><span style="margin-left: 5px" apiman-i18n-key="definition">Definition</span></a>
+                     <ul>
+                        <li ng-repeat="apimanapi in api.apimanapis">
+                        <a href="{{ pluginName }}/orgs/{{ apimanapi.organizationName }}/apis/{{ apimanapi.name }}">{{ apimanapi.organizationName }}/{{ apimanapi.name }}</a>
+                        </li>
+                     </ul>
                   </div>
                 </div>
               </div>
