@@ -1929,13 +1929,17 @@ public class EsStorage implements IStorage, IStorageQuery {
                 AndFilterBuilder andFilter = FilterBuilders.andFilter();
                 int filterCount = 0;
                 for (SearchCriteriaFilterBean filter : filters) {
+                    String propertyName = filter.getName();
+                    if (propertyName.equals("name")) { //$NON-NLS-1$
+                        propertyName = "name.raw"; //$NON-NLS-1$
+                    }
                     if (filter.getOperator() == SearchCriteriaFilterOperator.eq) {
-                        andFilter.add(FilterBuilders.termFilter(filter.getName(), filter.getValue()));
+                        andFilter.add(FilterBuilders.termFilter(propertyName, filter.getValue()));
                         filterCount++;
                     } else if (filter.getOperator() == SearchCriteriaFilterOperator.like) {
-                        q = QueryBuilders.wildcardQuery(filter.getName(), filter.getValue().toLowerCase().replace('%', '*'));
+                        q = QueryBuilders.wildcardQuery(propertyName, filter.getValue().toLowerCase().replace('%', '*'));
                     } else if (filter.getOperator() == SearchCriteriaFilterOperator.bool_eq) {
-                        andFilter.add(FilterBuilders.termFilter(filter.getName(), "true".equals(filter.getValue()))); //$NON-NLS-1$
+                        andFilter.add(FilterBuilders.termFilter(propertyName, "true".equals(filter.getValue()))); //$NON-NLS-1$
                         filterCount++;
                     }
                     // TODO implement the other filter operators here!
