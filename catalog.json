@@ -2,52 +2,64 @@
   "name" : "Official apiman API Catalog",
   "apis" : [
     {
+      "id" : "google-maps-api",
+      "icon" : "globe",
       "endpoint" : "https://maps.googleapis.com/maps/api/js",
       "endpointType" : "rest",
       "name" : "Google Maps API ",
       "description" : "The Google Maps API allow for the embedding of Google Maps onto web pages of outside developers.",
-      "definitionUrl" : null,
-      "definitionType" : null
+      "definitionUrl" : "https://developers.google.com/maps/",
+      "definitionType" : "External"
     },
     {
+      "id" : "twitter-api",
+      "icon" : "twitter",
       "endpoint" : "http://twitter.com/statuses/",
       "endpointType" : "rest",
       "name" : "Twitter API",
       "description" : "The Twitter micro-blogging service includes two RESTful APIs.",
-      "definitionUrl" : null,
-      "definitionType" : null
+      "definitionUrl" : "https://dev.twitter.com/rest/public",
+      "definitionType" : "External"
     },
     {
+      "id" : "youtube-api",
+      "icon" : "youtube",
       "endpoint" : "http://gdata.youtube.com/feeds/",
       "endpointType" : "rest",
       "name" : "YouTube API",
       "description" : "The Data API allows users to integrate their program with YouTube and allow it to perform many of the operations available on the website.",
-      "definitionUrl" : null,
-      "definitionType" : null
+      "definitionUrl" : "https://developers.google.com/youtube/",
+      "definitionType" : "External"
     },
     {
+      "id" : "flickr-api",
+      "icon" : "flickr",
       "endpoint" : "http://api.flickr.com/services/rest/",
       "endpointType" : "rest",
       "name" : "Flickr API",
       "description" : "The Flickr API can be used to retrieve photos from the Flickr photo sharing service using a variety of feeds.",
       "definitionUrl" : null,
-      "definitionType" : null
+      "definitionType" : "None"
     },
     {
+      "id" : "facebook-api",
+      "icon" : "facebook-official",
       "endpoint" : "http://api.facebook.com/restserver.php",
       "endpointType" : "rest",
       "name" : "Facebook API",
       "description" : "The Facebook API is a platform for building applications that are available to the members of the social network of Facebook.",
-      "definitionUrl" : null,
-      "definitionType" : null
+      "definitionUrl" : "https://developers.facebook.com/",
+      "definitionType" : "External"
     },
     {
+      "id" : "amazon-s3-api",
+      "icon" : "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/AWS_Simple_Icons_Storage_Amazon_S3_Bucket_with_Objects.svg/200px-AWS_Simple_Icons_Storage_Amazon_S3_Bucket_with_Objects.svg.png",
       "endpoint" : "http://s3.amazonaws.com/",
       "endpointType" : "rest",
       "name" : "Amazon S3 API",
       "description" : "Since 2006 Amazon Web Services has been offering web services commonly known as cloud computing.",
-      "definitionUrl" : null,
-      "definitionType" : null
+      "definitionUrl" : "http://petstore.swagger.io/v2/swagger.json",
+      "definitionType" : "SwaggerJSON"
     }
   ]
 }
