@@ -145,7 +145,15 @@
       </div>
 
       <div class="row">
-        <button id="create-contract" ng-click="createContract()" apiman-action-btn="" ng-disabled="!selectedClient || !selectedClientVersion || !selectedPlan || !selectedApi" class="btn btn-primary" data-field="createButton" apiman-i18n-key="create-contract" placeholder="Creating..." data-icon="fa-cog">Create Contract</button>
+        <button id="create-contract"
+                ng-click="createContract()"
+                ng-disabled="isDisabled()"
+                class="btn btn-primary"
+                apiman-i18n-key="create-contract"
+                data-icon="fa-cog">
+          <span ng-hide="saving">Create Contract</span>
+          <span ng-show="saving">Saving</span>
+        </button>
         <a id="cancel" href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" apiman-i18n-key="cancel">Cancel</a>
       </div>
 
