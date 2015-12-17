@@ -32,6 +32,8 @@ public class AvailableApiBean implements Serializable {
 
     private static final long serialVersionUID = 8809181555186141741L;
 
+    private String id;
+    private String icon;
     private String endpoint;
     private EndpointType endpointType = EndpointType.rest;
     private String name;
@@ -127,6 +129,34 @@ public class AvailableApiBean implements Serializable {
      */
     public void setEndpointType(EndpointType endpointType) {
         this.endpointType = endpointType;
+    }
+
+    /**
+     * @return the id
+     */
+    public String getId() {
+        return id;
+    }
+
+    /**
+     * @param id the id to set
+     */
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    /**
+     * @return the icon
+     */
+    public String getIcon() {
+        return icon;
+    }
+
+    /**
+     * @param icon the icon to set
+     */
+    public void setIcon(String icon) {
+        this.icon = icon;
     }
 
 }

@@ -64,7 +64,7 @@ public class JsonApiCatalog implements IApiCatalog {
         ArrayList<AvailableApiBean> rval = new ArrayList<>();
 
         for (AvailableApiBean api : apis) {
-            if (api.getName().toLowerCase().contains(keyword.toLowerCase())) {
+            if ("*".equals(keyword) || api.getName().toLowerCase().contains(keyword.toLowerCase())) { //$NON-NLS-1$
                 rval.add(api);
             }
         }

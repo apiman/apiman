@@ -199,7 +199,7 @@ public class ManagerApiMicroServiceCdiFactory {
     }
 
     @Produces @ApplicationScoped
-    public static IApiCatalog provideServiceCatalog(ManagerApiMicroServiceConfig config, IPluginRegistry pluginRegistry) {
+    public static IApiCatalog provideApiCatalog(ManagerApiMicroServiceConfig config, IPluginRegistry pluginRegistry) {
         try {
             return createCustomComponent(IApiCatalog.class, config.getApiCatalogType(),
                     config.getApiCatalogProperties(), pluginRegistry);

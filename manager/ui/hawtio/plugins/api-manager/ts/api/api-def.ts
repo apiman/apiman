@@ -136,7 +136,7 @@ module Apiman {
                     $scope.definitionType = 'None';
                 }
 
-                if ($scope.version.definitionType && $scope.version.definitionType != 'None') {
+                if ($scope.version.definitionType && $scope.version.definitionType != 'None' && $scope.version.definitionType != 'External') {
                     loadDefinition();
                 } else {
                     Logger.debug("Skipped loading api definition - None defined.");

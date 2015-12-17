@@ -22,6 +22,6 @@ package io.apiman.manager.api.beans.apis;
  */
 public enum ApiDefinitionType {
 
-    None, SwaggerJSON, SwaggerYAML, WSDL, WADL, RAML
+    None, SwaggerJSON, SwaggerYAML, WSDL, WADL, RAML, External
 
 }
