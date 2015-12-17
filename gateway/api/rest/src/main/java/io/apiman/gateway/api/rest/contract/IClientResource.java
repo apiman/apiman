@@ -29,7 +29,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
 
 /**
- * The lient API.
+ * The client API.
  *
  * @author eric.wittmann@redhat.com
  */
