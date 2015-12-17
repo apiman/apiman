@@ -179,11 +179,9 @@ module Apiman {
                     entityType = type;
                 },
                 getEntityStatus: function() {
-                    if (!entity) {
-                        Logger.debug('Entity is null!');
-                        return 'Unknown';
+                    if(entity) {
+                        return entity.status;
                     }
-                    return entity.status;
                 },
                 getEntityType: function() {
                     if (!entity) {
@@ -193,15 +191,19 @@ module Apiman {
                     return entityType;
                 },
                 setEntityStatus: function(status) {
-                    entity.status = status;
+                    if(entity) {
+                        entity.status = status;
+                    }
                 },
                 isEntityDisabled: function() {
-                    if (entityType == 'client' || entityType == 'clients') {
-                        return entity.status == 'Retired';
-                    } else if (entityType == 'api' || entityType == 'apis') {
-                        return (entity.status !== 'Created' && entity.status !== 'Ready');
-                    } else {
-                        return (entity.status !== 'Created' && entity.status !== 'Ready');
+                    if(entity) {
+                        if (entityType == 'client' || entityType == 'clients') {
+                            return entity.status == 'Retired';
+                        } else if (entityType == 'api' || entityType == 'apis') {
+                            return (entity.status !== 'Created' && entity.status !== 'Ready');
+                        } else {
+                            return (entity.status !== 'Created' && entity.status !== 'Ready');
+                        }
                     }
                 }
             };

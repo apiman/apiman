@@ -15,6 +15,10 @@ module Apiman {
             $scope.updatedApi = new Object();
             $scope.apiSecurity = new Object();
             $scope.showMetrics = Configuration.ui.metrics;
+            $scope.selectedGateway = {val: null};
+
+            $scope.saved = false;
+            $scope.saving = false;
 
             var pageData = ApiEntityLoader.getCommonData($scope, $location);
 
@@ -27,6 +31,25 @@ module Apiman {
             }
 
             $scope.isEntityDisabled = EntityStatusSvc.isEntityDisabled;
+
+            // API Security Type Options
+            $scope.apiSecurityTypeOptions = [
+                {
+                    label: 'None',
+                    i18nKey: 'none',
+                    type: 'none'
+                },
+                {
+                    label: 'MTLS/Two-Way-SSL',
+                    i18nKey: 'mtls',
+                    type: 'mtls'
+                },
+                {
+                    label: 'BASIC Authentication',
+                    i18nKey: 'basic-auth',
+                    type: 'basic'
+                }
+            ];
             
             var epValue = function(endpointProperties, key) {
                 if (endpointProperties && endpointProperties[key]) {
@@ -73,25 +96,34 @@ module Apiman {
                 }
                 return rval;
             };
-            
-            var checkValid = function() {
+
+            // Validates depending on the endpoint type selected
+            $scope.checkValid = function() {
                 var valid = true;
                 if (!$scope.updatedApi.endpointType) {
                     valid = false;
                 }
+
                 if ($scope.apiSecurity.type == 'basic' && $scope.apiSecurity.basic) {
                     if (!$scope.apiSecurity.basic.password) {
                         valid = false;
                     }
+
                     if ($scope.apiSecurity.basic.password != $scope.apiSecurity.basic.confirmPassword) {
                         valid = false;
                     }
                 } else if ($scope.apiSecurity.type == 'basic' && !$scope.apiSecurity.basic) {
                     valid = false;
                 }
+
                 $scope.isValid = valid;
+
+                return valid;
             };
 
+            // This function checks for changes to the updateApi model
+            // and compares the new value to the original value. If they are all the same,
+            // the Save button will remain disabled.
             $scope.$watch('updatedApi', function(newValue) {
                 if ($scope.version) {
                     var dirty = false;
@@ -118,21 +150,15 @@ module Apiman {
                             dirty = true;
                         }
                     }
-                    
-                    checkValid();
+
+                    $scope.checkValid();
                     
                     $rootScope.isDirty = dirty;
                 }
             }, true);
-            
-            $scope.$watch('apiSecurity', function(newValue) {
-                if (newValue) {
-                    $scope.updatedApi.endpointProperties = toEndpointProperties(newValue);
-                    checkValid();
-                }
-            }, true);
 
-            $scope.$watch('selectedGateway', function(newValue) {
+
+            $scope.$watch('selectedGateway.val', function(newValue) {
                 if (newValue) {
                     var alreadySet = false;
                     if ($scope.version.gateways && $scope.version.gateways.length > 0 && $scope.version.gateways[0].gatewayId == newValue.id) {
@@ -146,39 +172,59 @@ module Apiman {
                 }
             });
 
+            $scope.setEndpointProperties = function(newValue) {
+                if (newValue) {
+                    $scope.updatedService.endpointProperties = toEndpointProperties(newValue);
+                    $scope.checkValid();
+                }
+            };
+
+            $scope.setGateways = function(newValue) {
+                if($scope.version.gateways && $scope.version.gateways.length > 0) {
+                    $rootScope.isDirty = (newValue.id != $scope.version.gateways[0].gatewayId);
+                }
+            };
+
             $scope.reset = function() {
                 if (!$scope.version.endpointType) {
                   $scope.version.endpointType = 'rest';
                 }
+
                 if (!$scope.version.endpointContentType) {
                     $scope.version.endpointContentType = 'json';
-                  }
+                }
+
                 $scope.apiSecurity = toApiSecurity($scope.version);
                 $scope.updatedApi.endpoint = $scope.version.endpoint;
                 $scope.updatedApi.endpointType = $scope.version.endpointType;
                 $scope.updatedApi.endpointContentType = $scope.version.endpointContentType;
                 $scope.updatedApi.endpointProperties = angular.copy($scope.version.endpointProperties);
+
                 delete $scope.updatedApi.gateways;
+
                 if ($scope.version.gateways && $scope.version.gateways.length > 0) {
                     angular.forEach($scope.gateways, function(gateway) {
                         // TODO support multiple gateway assignments here
                         if (gateway.id == $scope.version.gateways[0].gatewayId) {
-                            $scope.selectedGateway = gateway;
+                            $scope.selectedGateway.val = gateway;
                         }
                     });
                 }
+
                 $rootScope.isDirty = false;
             };
 
             $scope.saveApi = function() {
                 $scope.invalidEndpoint = false;
-                $scope.saveButton.state = 'in-progress';
+                $scope.saving = true;
                 
                 OrgSvcs.update({ organizationId: params.org, entityType: 'apis', entityId:params.api, versionsOrActivity: 'versions', version: params.version }, $scope.updatedApi, function(reply) {
                     $rootScope.isDirty = false;
                     $scope.autoGateway = false;
-                    $scope.saveButton.state = 'complete';
+                    $scope.saved = true;
+                    $scope.saving = false;
                     $scope.version = reply;
+
                     EntityStatusSvc.setEntityStatus(reply.status);
                 }, PageLifecycle.handleError);
             };
@@ -214,10 +260,8 @@ module Apiman {
                 // Automatically set the selected gateway if there's only one and the 
                 // gateway is not already set.
                 if (!$scope.version.gateways || $scope.version.gateways.length == 0) {
-                    if ($scope.gateways && $scope.gateways.length == 1) {
-                        $scope.selectedGateway = $scope.gateways[0];
-                        $scope.autoGateway = true;
-                    }
+                    $scope.selectedGateway.val = $scope.gateways[0];
+                    $scope.autoGateway = true;
                 }
             });
         }]);

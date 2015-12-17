@@ -40,17 +40,22 @@
               </p>
             </div>
             <div>
-              <span class="clearfix" style="margin-top:10px; margin-bottom: 10px"
+              <span class="clearfix"
+                    style="margin-top:10px; margin-bottom: 10px"
                     apiman-i18n-key="api-definition-label">API Definition:</span>
-              <select apiman-i18n-key="api-def.choose-type"
-                      title="Choose a type..."
-                      apiman-select-picker=""
-                      ng-model="selectedDefinitionType"
-                      class="selectpicker"
-                      ng-options="type.label for type in typeOptions track by type.value"
-                      ng-disabled="isEntityDisabled()">
-              </select>
-              <textarea style="margin-top:10px" apiman-i18n-key="enter-api-definition"
+              <ui-select ng-model="selectedDefinitionType"
+                         ng-disabled="isEntityDisabled()"
+                         style="width: 30%; max-width: 300px;">
+                <ui-select-match placeholder="Choose a type..."
+                                 apiman-i18n-key="api-def.choose-type">
+                  <span ng-bind="$select.selected.label"></span>
+                </ui-select-match>
+                <ui-select-choices repeat="type in (typeOptions | filter: $select.search) track by type.value">
+                  <span ng-bind="type.label"></span>
+                </ui-select-choices>
+              </ui-select>
+              <textarea style="margin-top:10px"
+                        apiman-i18n-key="enter-api-definition"
                         id="api-definition"
                         placeholder="Copy/paste or drag and drop your API Definition in here!"
                         style="width: 100%;"

@@ -44,6 +44,9 @@ module Apiman {
                         } else {
                             $scope.selectedClient = undefined;
                         }
+
+                        $scope.changedClient($scope.selectedClient);
+
                         resolve(clients);
                     }, reject);
                 }),
@@ -64,7 +67,7 @@ module Apiman {
                 })
             };
 
-            $scope.$watch('selectedClient', function(newValue) {
+            $scope.changedClient = function(newValue) {
                 Logger.debug("Client App selected: {0}", newValue);
                 $scope.selectedClientVersion = undefined;
                 $scope.clientVersions = [];
@@ -84,7 +87,7 @@ module Apiman {
                         }
                     });
                 }
-            });
+            };
             
             $scope.selectApi = function() {
                 Dialogs.selectApi('Select an API', function(apiVersion) {
