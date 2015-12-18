@@ -4,6 +4,14 @@ This module, and its children, build a set of WAR files that can be deployed in 
 
 ## Building the WARs
 
+You must disable the `java8` profile to avoid a compilation failure in building the _vert.x_ modules:
+
+    mvn clean install -Dmaven.test.skip=true -P \!java8
+
+You might also wish to build skipping the regular _api-man_ project tests:
+
+    mvn clean install -Dmaven.test.skip=true -Dmaven.javadoc.skip=true -P \!java8
+
 Presuming you have completed the normal _apiman_ build process (`mvn clean install`) then you should have the following WAR files already built:
 
     standalone
