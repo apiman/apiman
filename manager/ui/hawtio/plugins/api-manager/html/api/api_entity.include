@@ -73,7 +73,7 @@
                style="background-color: #FFFFFF; background-image: none; border-color: #0099D3; color: #0099D3;"
                uib-popover-template="checklistPopover.templateUrl"
                popover-title="{{ checklistPopover.title }}"
-               popover-toggle="isOpen"
+               popover-is-open="isOpen"
                popover-placement="right"
                ng-click="getStatusDetails()">
               <span class="fa fa-info"></span><span style="margin-left: 6px" apiman-i18n-key="why-cannot-publish">Why can't I publish?</span>
@@ -86,6 +86,9 @@
         <!-- Checklist Template -->
         <script type="text/ng-template"
                 id="checklistTemplate.html">
+          <span style="cursor: default; position: absolute; top: 9px; right: 10px; color: #777;"
+                ng-click="closePopover()"
+                class="fa fa-close"></span>
           <uib-accordion close-others="oneAtATime">
             <uib-accordion-group ng-repeat="item in checklist | checklist"
                                  panel-class="checklist-panel"
