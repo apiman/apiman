@@ -18,7 +18,7 @@ package io.apiman.manager.api.beans.actions;
 import java.io.Serializable;
 
 /**
- * The bean used to peform an action on an entity.
+ * The bean used to perform an action on an entity.
  *
  * @author eric.wittmann@redhat.com
  */
