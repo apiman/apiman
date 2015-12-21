@@ -60,19 +60,31 @@
               <div class="container-fluid apiman-summaryrow"
                    ng-repeat="plan in plans">
                 <div class="row">
-                  <input ng-model="plan.checked"
-                         data-field="checkbox"
-                         type="checkbox"
-                         ng-disabled="isEntityDisabled()"></input>
+                  <div class="col-sm-6"
+                       style="padding: 4px 0;">
+                    <input ng-model="plan.checked"
+                           data-field="checkbox"
+                           type="checkbox"
+                           ng-disabled="isEntityDisabled()"></input>
                   <span class="title">
                     <a href="{{ pluginName }}/orgs/{{ plan.organizationId }}/plans/{{ plan.id }}" data-field="name" title="{{ plan.description }}">{{ plan.name }}</a>
                   </span>
-                  <select apiman-select-picker=""
-                          ng-model="plan.selectedVersion"
-                          ng-options="version for version in plan.lockedVersions"
-                          class="selectpicker pull-right"
-                          ng-disabled="isEntityDisabled()">
-                  </select>
+                  </div>
+                  <div class="col-sm-6"
+                       style="padding-right: 0;">
+                    <ui-select ng-model="plan.selectedVersion"
+                               on-select="changedVersion($item)"
+                               ng-disabled="isEntityDisabled()"
+                               class="pull-right"
+                               style="width: 25%; max-width: 250px;">
+                      <ui-select-match>
+                        <span ng-bind="$select.selected"></span>
+                      </ui-select-match>
+                      <ui-select-choices repeat="version in (plan.lockedVersions | filter: $select.search)">
+                        <span ng-bind="version"></span>
+                      </ui-select-choices>
+                    </ui-select>
+                  </div>
                 </div>
                 <hr>
               </div>

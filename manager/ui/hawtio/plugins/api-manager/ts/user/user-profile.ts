@@ -1,5 +1,5 @@
-/// <reference path="apimanPlugin.ts"/>
-/// <reference path="rpc.ts"/>
+/// <reference path="../apimanPlugin.ts"/>
+/// <reference path="../rpc.ts"/>
 module Apiman {
     
     export var UserProfileController = _module.controller("Apiman.UserProfileController",

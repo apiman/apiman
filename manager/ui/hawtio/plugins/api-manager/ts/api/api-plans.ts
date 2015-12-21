@@ -115,6 +115,10 @@ module Apiman {
                 $scope.updatedApi.plans = getSelectedPlans();
             }, true);
 
+            $scope.changedVersion = function(item) {
+                //console.log('changedVersion: ' + JSON.stringify(item));
+            };
+
             $scope.reset = function() {
                 $scope.updatedApi.publicAPI = $scope.version.publicAPI;
 

@@ -11,6 +11,7 @@ var patternfly = require('patternfly/dist/js/patternfly.js');
 var angular = require('angular');
 var uiBootstrap = require('angular-ui-bootstrap/ui-bootstrap.js');
 var uiBootstrapTpls = require('angular-ui-bootstrap/ui-bootstrap-tpls.js');
+var uiSelect = require('ui-select/dist/select.js');
 var ngClipboard = require('angular-clipboard');
 var ngResource = require('angular-resource');
 var ngSortable = require('ng-sortable/dist/ng-sortable.js');

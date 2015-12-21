@@ -22,23 +22,46 @@ module Apiman {
             var pageData = {
                 policyDefs: $q(function(resolve, reject) {
                     ApimanSvcs.query({ entityType: 'policyDefs' }, function(policyDefs) {
-                        $scope.selectedDefId = '__null__';
+                        $scope.selectedDefId = null;
                         resolve(policyDefs);
                     }, reject);
                 })
             };
-            
-            $scope.$watch('selectedDefId', function(newValue) {
-                if (newValue) {
+
+            function loadTemplate(newValue) {
+                if (!newValue) {
+                    $scope.include = undefined;
+                } else {
+                    $scope.config = new Object();
+                    if ($scope.selectedDef.formType == 'JsonSchema') {
+                        $scope.include = 'plugins/api-manager/html/policyForms/JsonSchema.include';
+                    } else {
+                        var inc = ConfigForms[$scope.selectedDef.id];
+
+                        if (!inc) {
+                            inc = 'Default.include';
+                        }
+
+                        $scope.include = 'plugins/api-manager/html/policyForms/' + inc;
+                    }
+                }
+            }
+
+            $scope.changeSelectedDefId = function(newValue) {
+                if (newValue.id) {
                     var newDef = undefined;
+
                     angular.forEach($scope.policyDefs, function(def) {
-                        if (def.id == newValue) {
+                        if (def.id == newValue.id) {
                             newDef = def;
                         }
                     });
+
                     $scope.selectedDef = newDef;
+
+                    loadTemplate(newValue);
                 }
-            });
+            };
             
             $scope.$watch('selectedDef', function(newValue) {
                 if (!newValue) {
@@ -64,6 +87,7 @@ module Apiman {
             $scope.setConfig = function(config) {
                 $scope.config = config;
             };
+
             $scope.getConfig = function() {
                 return $scope.config;
             };
@@ -71,7 +95,7 @@ module Apiman {
             $scope.addPolicy = function() {
                 $scope.createButton.state = 'in-progress';
                 var newPolicy = {
-                    definitionId: $scope.selectedDefId,
+                    definitionId: $scope.selectedDef.id,
                     configuration: angular.toJson($scope.config)
                 };
                 var etype = params.type;
