@@ -759,7 +759,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         ClientVersionBean avb;
         avb = storage.getClientVersion(organizationId, clientId, version);
         if (avb == null) {
-            throw ExceptionFactory.clientNotFoundException(clientId);
+            throw ExceptionFactory.clientVersionNotFoundException(clientId, version);
         }
         if (avb.getStatus() == ClientStatus.Retired) {
             throw ExceptionFactory.invalidClientStatusException();
