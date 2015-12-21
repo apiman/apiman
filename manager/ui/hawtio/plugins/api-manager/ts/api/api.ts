@@ -82,20 +82,30 @@ module Apiman {
                 title: 'Publish Checklist'
             };
 
+            // Programmatically close popover
+            $scope.closePopover = function() {
+                $scope.isOpen = false;
+            };
+
+
             // Called when user clicks 'Why can't I publish?' & opens modal
             $scope.getStatusDetails = function() {
-                return OrgSvcs.get({
-                    organizationId: params.org,
-                    entityType: 'apis',
-                    entityId: params.api,
-                    versionsOrActivity: 'versions',
-                    version: params.version,
-                    policiesOrActivity: 'status'
-                }, function(response) {
-                    $scope.checklist = response.items;
+                if($scope.isOpen === false) {
+                    return OrgSvcs.get({
+                        organizationId: params.org,
+                        entityType: 'apis',
+                        entityId: params.api,
+                        versionsOrActivity: 'versions',
+                        version: params.version,
+                        policiesOrActivity: 'status'
+                    }, function(response) {
+                        $scope.checklist = response.items;
 
-                    $scope.isOpen = true;
-                });
+                        $scope.isOpen = true;
+                    });
+                } else if($scope.isOpen === true) {
+                    $scope.isOpen = false;
+                }
             };
 
             $scope.oneAtATime = true;
