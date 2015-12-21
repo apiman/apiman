@@ -30,6 +30,7 @@ module Apiman {
             return {
                 getCommonData: function($scope, $location) {
                     var params = $routeParams;
+                    console.log('params provided to ClientEntityLoader: ' + JSON.stringify(params));
                     return {
                         version: $q(function(resolve, reject) {
                             OrgSvcs.get({ organizationId: params.org, entityType: 'clients', entityId: params.client, versionsOrActivity: 'versions', version: params.version }, function(version) {

@@ -10,6 +10,7 @@ module Apiman {
             var apiVer = params.apiv;
             var planId = params.planid;
             $scope.saving = false;
+            $scope.selectedClientVersion = null;
             
             $scope.refreshClientVersions = function(organizationId, clientId, onSuccess, onError) {
                 OrgSvcs.query({ organizationId: organizationId, entityType: 'clients', entityId: clientId, versionsOrActivity: 'versions' }, function(versions) {
@@ -70,24 +71,24 @@ module Apiman {
 
             $scope.changedClient = function(newValue) {
                 Logger.debug("Client App selected: {0}", newValue);
-                $scope.selectedClientVersion = undefined;
+
                 $scope.clientVersions = [];
 
-                if (newValue) {
-                    $scope.refreshClientVersions(newValue.organizationId, newValue.id, function(versions) {
-                        Logger.debug("Versions: {0}", versions);
+                $scope.selectedClient = newValue;
 
-                        if ($rootScope.mruClient) {
-                            if ($rootScope.mruClient.client.organization.id == newValue.organizationId && $rootScope.mruClient.client.id == newValue.id) {
-                                $scope.selectedClientVersion = $rootScope.mruClient.version;
-                            }
-                        } else {
-                            if (versions.length > 0) {
-                                $scope.selectedClientVersion = versions[0];
-                            }
+                $scope.refreshClientVersions(newValue.organizationId, newValue.id, function(versions) {
+                    Logger.debug("Versions: {0}", versions);
+
+                    if ($rootScope.mruClient) {
+                        if ($rootScope.mruClient.client.organization.id == newValue.organizationId && $rootScope.mruClient.client.id == newValue.id) {
+                            $scope.selectedClientVersion = $rootScope.mruClient.version;
                         }
-                    });
-                }
+                    } else {
+                        if (versions.length > 0) {
+                            $scope.selectedClientVersion = versions[0];
+                        }
+                    }
+                });
             };
             
             $scope.selectApi = function() {
