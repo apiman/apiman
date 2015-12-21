@@ -318,7 +318,7 @@ public class ActionResourceImpl implements IActionResource {
         try {
             versionBean = orgs.getClientVersion(action.getOrganizationId(), action.getEntityId(), action.getEntityVersion());
         } catch (ClientVersionNotFoundException e) {
-            throw ExceptionFactory.actionException(Messages.i18n.format("ClientNotFound")); //$NON-NLS-1$
+            throw ExceptionFactory.actionException(Messages.i18n.format("clientVersionDoesNotExist", action.getEntityId(), action.getEntityVersion())); //$NON-NLS-1$
         }
         try {
             contractBeans = query.getClientContracts(action.getOrganizationId(), action.getEntityId(), action.getEntityVersion());
