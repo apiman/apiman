@@ -108,7 +108,11 @@
       <!-- Update Button -->
       <div class="row">
         <button id="update-gateway" ng-disabled="!isValid || !isDirty" apiman-action-btn="" class="btn btn-primary" data-field="updateButton" apiman-i18n-key="update-gateway" placeholder="Updating..." data-icon="fa-cog" ng-click="updateGateway()">Update Gateway</button>
-        <a id="cancel" href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" apiman-i18n-key="cancel">Cancel</a>
+        <a id="cancel"
+           ng-click="cancel();"
+           class="btn btn-default btn-cancel cancel"
+           apiman-i18n-key="cancel">Cancel
+        </a>
         <button id="delete-gateway" apiman-action-btn="" class="btn btn-danger" style="margin-left: 100px;" data-field="deleteButton" apiman-i18n-key="delete-gateway" placeholder="Deleting..." data-icon="fa-cog" ng-click="deleteGateway()">Delete Gateway</button>
       </div>
   	  </fieldset>

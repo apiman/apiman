@@ -83,7 +83,12 @@ module Apiman {
                     $scope.testResult = 'error';
                     $scope.testErrorMessage = error;
                 });
-            }
+            };
+
+            $scope.cancel = function() {
+                $rootScope.isDirty = false;
+                $location.path( $rootScope.pluginName + '/admin/gateways');
+            };
             
             $scope.updateGateway  = function() {
                 $scope.updateButton.state = 'in-progress';
@@ -92,7 +97,7 @@ module Apiman {
                     $rootScope.isDirty = false;
                     PageLifecycle.redirectTo('/admin/gateways');
                 }, PageLifecycle.handleError);
-            }
+            };
             
             $scope.deleteGateway  = function() {
                 $scope.deleteButton.state = 'in-progress';
@@ -103,8 +108,10 @@ module Apiman {
                 }, function() {
                     $scope.deleteButton.state = 'complete';
                 });
-            }
+            };
+
             $scope.testGateway = testGateway;
+
             PageLifecycle.loadPage('EditGateway', 'admin', pageData, $scope, function() {
                 PageLifecycle.setPageTitle('edit-gateway');
                 $scope.$watch('gateway', validate, true);

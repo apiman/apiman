@@ -32,7 +32,10 @@
                 <input ng-model="updatedUser.email" type="email" class="apiman-form-control form-control" id="apiman-email" apiman-i18n-key="profile.enter-email" placeholder="Email address...">
               </div>
               <button id="update-profile" ng-disabled="!isDirty || !isValid" apiman-action-btn="" class="btn btn-primary" data-field="updateButton" apiman-i18n-key="update-profile" placeholder="Updating..." data-icon="fa-cog" ng-click="save()">Update Profile</button>
-              <a id="cancel" href="javascript:window.history.back()" class="btn btn-default btn-cancel" apiman-i18n-key="cancel">Cancel</a>
+              <a id="cancel"
+                 class="btn btn-default btn-cancel cancel"
+                 ng-click="cancel();"
+                 apiman-i18n-key="cancel">Cancel</a>
             </form>
           </div>
         </div>

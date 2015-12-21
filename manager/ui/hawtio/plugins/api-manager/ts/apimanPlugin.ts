@@ -44,7 +44,7 @@ module Apiman {
                     templateUrl: path + 'about.html'
                 })
                 .when(prefix + '/profile', {
-                    templateUrl: path + 'profile.html'
+                    templateUrl: path + 'user/user-profile.html'
                 })
                 .when(prefix + '/admin/gateways', {
                     templateUrl: path + 'admin/admin-gateways.html'

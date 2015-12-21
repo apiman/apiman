@@ -21,22 +21,35 @@ module Apiman {
             $scope.$watch('updatedUser', function(newValue) {
                 var dirty = false;
                 var valid = true;
+
                 if (!newValue.fullName) {
                     valid = false;
                 }
+
                 if (!newValue.email) {
                     valid = false;
                 }
-                if (newValue.fullName != $scope.user.fullName) {
+
+                if ($scope.user
+                    && $scope.user.fullName
+                    && newValue.fullName != $scope.user.fullName) {
                     dirty = true;
                 }
-                if (newValue.email != $scope.user.email) {
+
+                if ($scope.user
+                    && $scope.user.email
+                    && newValue.email != $scope.user.email) {
                     dirty = true;
                 }
                 
                 $rootScope.isDirty = dirty;
                 $scope.isValid = valid;
             }, true);
+
+            $scope.cancel = function() {
+                $rootScope.isDirty = false;
+                $location.path($rootScope.pluginName);
+            };
             
             $scope.save = function() {
                 $scope.updateButton.state = 'in-progress';
@@ -47,7 +60,7 @@ module Apiman {
                     $scope.isValid = true;
                     $rootScope.isDirty = false;
                 }, PageLifecycle.handleError);
-            }
+            };
             
             PageLifecycle.loadPage('UserProfile', undefined, pageData, $scope, function() {
                 $scope.updatedUser.fullName = $scope.user.fullName;
