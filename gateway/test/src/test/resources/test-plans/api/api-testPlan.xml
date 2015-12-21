@@ -9,6 +9,8 @@
     <test name="Retire Api 3.0">test-plan-data/api/apis/005-retire-api-3.0.resttest</test>
 <!-- This test is commented out because vert.x and servlet impls return different values. -->
 <!--     <test name="Get Api Endpoint">test-plan-data/api/apis/006-get-endpoint.resttest</test> -->
+    <test name="Republish Api 3.0">test-plan-data/api/apis/007-republish-api-3.0.resttest</test>
+    <test name="Retire Api 3.0 (again)">test-plan-data/api/apis/005-retire-api-3.0.resttest</test>
   </testGroup>
 
   <testGroup name="Test Clients">

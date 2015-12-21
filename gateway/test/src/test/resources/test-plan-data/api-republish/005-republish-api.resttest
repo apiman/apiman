@@ -1,0 +1,14 @@
+PUT /apis admin/admin
+Content-Type: application/json
+
+{
+  "organizationId" : "ApiRepublishTest",
+  "apiId" : "public-echo",
+  "version" : "1.0",
+  "publicAPI" : true,
+  "endpointType" : "rest",
+  "endpointContentType" : "json",
+  "endpoint" : "${apiman-gateway-test.endpoints.echo}/public-echo-republish"
+}
+----
+204
