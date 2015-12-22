@@ -1,66 +1,48 @@
 package io.apiman.gateway.platforms.war.standalone.listeners;
 
-import io.apiman.gateway.engine.components.*;
-import io.apiman.gateway.engine.es.*;
-import io.apiman.gateway.engine.impl.ByteBufferFactoryComponent;
-import io.apiman.gateway.engine.impl.DefaultPluginRegistry;
-import io.apiman.gateway.engine.policy.PolicyFactoryImpl;
-import io.apiman.gateway.platforms.servlet.PolicyFailureFactoryComponent;
-import io.apiman.gateway.platforms.servlet.connectors.HttpConnectorFactory;
 import io.apiman.gateway.platforms.war.WarEngineConfig;
+import io.apiman.gateway.platforms.war.listeners.WarGatewayBootstrapper;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
 /**
+ * Work-around for JBoss/Wildfly specific code in {@link WarGatewayBootstrapper} that prevents use of
+ * 'apiman.properties' file to configure the engine.
+ * <p>
+ * More specifically, the standard WAR bootstrapper calls
+ * {@link io.apiman.common.config.ConfigFileConfiguration#create(String)} via
+ * {@link io.apiman.common.config.ConfigFactory#createConfig()}, which defaults to using 'empty.properties'
+ * if the System property 'jboss.server.config.dir' is not defined.
+ * </p>
+ *
  * @author pcornish
  */
-public class StandaloneWarBootstrapper implements ServletContextListener {
+public class StandaloneWarBootstrapper extends WarGatewayBootstrapper {
     private static final Logger LOGGER = LoggerFactory.getLogger(StandaloneWarBootstrapper.class);
     private static final String APIMAN_CONFIG_FILE_PATH = "apiman.config-file-path";
     private static final String APIMAN_CONFIG_FILE_NAME = "/apiman.properties";
 
-    // Public constructor is required by servlet spec
+    /**
+     * Constructor.
+     */
     public StandaloneWarBootstrapper() {
     }
 
-    // -------------------------------------------------------
-    // ServletContextListener implementation
-    // -------------------------------------------------------
-    public void contextInitialized(ServletContextEvent sce) {
-        configure();
-    }
-
-    public void contextDestroyed(ServletContextEvent sce) {
-      /* This method is invoked when the Servlet Context 
-         (the Web application) is undeployed or 
-         Application Server shuts down.
-      */
-    }
-
     /**
-     * Configure the gateway options.
+     * @see javax.servlet.ServletContextListener#contextInitialized(javax.servlet.ServletContextEvent)
      */
-    protected void configure() {
+    public void contextInitialized(ServletContextEvent sce) {
         loadConfigurationIntoSystemProperties();
 
-        configurePluginRegistry();
-        configureRegistry();
-        configureConnectorFactory();
-        configurePolicyFactory();
-
-        configureMetrics();
-
-        // Register test components
-        registerComponents();
+        super.contextInitialized(sce);
     }
 
     /**
@@ -102,91 +84,5 @@ public class StandaloneWarBootstrapper implements ServletContextListener {
 
         // push into system properties
         configFile.forEach((key, value) -> System.setProperty((String) key, (String) value));
-    }
-
-    /**
-     * Register the components.
-     */
-    protected void registerComponents() {
-        registerBufferFactoryComponent();
-        registerSharedStateComponent();
-        registerRateLimiterComponent();
-        registerPolicyFailureFactoryComponent();
-        registerCacheStoreComponent();
-    }
-
-    /**
-     * The buffer factory component.
-     */
-    private void registerBufferFactoryComponent() {
-        System.setProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + IBufferFactoryComponent.class.getSimpleName(),
-                ByteBufferFactoryComponent.class.getName());
-    }
-
-    /**
-     * The policy failure factory component.
-     */
-    protected void registerPolicyFailureFactoryComponent() {
-        System.setProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + IPolicyFailureFactoryComponent.class.getSimpleName(),
-                PolicyFailureFactoryComponent.class.getName());
-    }
-
-    /**
-     * The rate limiter component.
-     */
-    protected void registerRateLimiterComponent() {
-        System.setProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + IRateLimiterComponent.class.getSimpleName(),
-                ESRateLimiterComponent.class.getName());
-    }
-
-    /**
-     * The shared state component.
-     */
-    protected void registerSharedStateComponent() {
-        System.setProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + ISharedStateComponent.class.getSimpleName(),
-                ESSharedStateComponent.class.getName());
-    }
-
-    /**
-     * The cache store component.
-     */
-    protected void registerCacheStoreComponent() {
-        System.setProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + ICacheStoreComponent.class.getSimpleName(),
-                ESCacheStoreComponent.class.getName());
-    }
-
-    /**
-     * The policy factory component.
-     */
-    protected void configurePolicyFactory() {
-        System.setProperty(WarEngineConfig.APIMAN_GATEWAY_POLICY_FACTORY_CLASS, PolicyFactoryImpl.class.getName());
-    }
-
-    /**
-     * The connector factory.
-     */
-    protected void configureConnectorFactory() {
-        System.setProperty(WarEngineConfig.APIMAN_GATEWAY_CONNECTOR_FACTORY_CLASS, HttpConnectorFactory.class.getName());
-    }
-
-    /**
-     * The plugin registry.
-     */
-    protected void configurePluginRegistry() {
-        System.setProperty(WarEngineConfig.APIMAN_GATEWAY_PLUGIN_REGISTRY_CLASS, DefaultPluginRegistry.class.getName());
-    }
-
-    /**
-     * The registry.
-     */
-    protected void configureRegistry() {
-        System.setProperty(WarEngineConfig.APIMAN_GATEWAY_REGISTRY_CLASS, ESRegistry.class.getName());
-    }
-
-    /**
-     * Configure the metrics system.
-     */
-    protected void configureMetrics() {
-        System.setProperty(WarEngineConfig.APIMAN_GATEWAY_METRICS_CLASS, ESMetrics.class.getName());
     }
 }
