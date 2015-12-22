@@ -237,7 +237,7 @@
                  apiman-status="Created,Ready"
                  class="actions"
                  style="margin-top: 20px">
-              <button ng-disabled="checkValid() != true || !isDirty || saved"
+              <button ng-disabled="checkValid() != true || isDirty === false || saving === true"
                       ng-click="validateEndpoint()"
                       class="btn btn-primary"
                       apiman-i18n-key="save"
