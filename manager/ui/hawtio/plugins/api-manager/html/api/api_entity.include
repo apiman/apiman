@@ -42,6 +42,7 @@
             <div class="entity-info-with-icon">
               <span apiman-i18n-key="status-label">Status:</span>
               <span apiman-entity-status />
+              <span title="The API has been modified since it was last published!" apiman-i18n-key="api-modified" ng-show="version.status == 'Published' && version.modifiedOn > version.publishedOn" class="apiman-label apiman-label-default">Modified</span>
             </div>
           </div>
           <div class="col-md-5" apiman-permission="apiAdmin">
@@ -57,6 +58,7 @@
             <div class="apiman-divider-40"></div>
             <div class="">
               <button ng-disabled="getEntityStatus() == 'Created'" apiman-action-btn="" apiman-status="Created,Ready" class="btn btn-primary" data-field="publishButton" apiman-i18n-key="publish" placeholder="Publishing..." data-icon="fa-cog" ng-click="publishApi()">Publish</button>
+              <button ng-show="version.publicAPI" ng-disabled="version.modifiedOn <= version.publishedOn" apiman-action-btn="" apiman-status="Published" class="btn btn-primary" data-field="republishButton" apiman-i18n-key="republish" placeholder="Publishing..." data-icon="fa-cog" ng-click="publishApi()">Re-Publish</button>
               <button apiman-action-btn="" apiman-status="Published" class="btn btn-warning" data-field="retireButton" apiman-i18n-key="retire" placeholder="Retiring..." data-icon="fa-cog" ng-click="retireApi()">Retire</button>
             </div>
 
@@ -64,20 +66,20 @@
             <div ng-show="getEntityStatus() == 'Created'"
                  class="apiman-dropdown-checklist"
                  style="margin-top: 10px; color: #0099D3;">
-            <div style="font-size: 14px; margin: -5px 0 -4px 10px;">
-            	<span class="fa fa-arrow-up"></span>
-            </div>
+              <div style="font-size: 14px; margin: -5px 0 -4px 10px;">
+                <span class="fa fa-arrow-up"></span>
+              </div>
               <div class="apiman-dropdown-checklist-popover">
-            <a type="button"
-               class="btn btn-default"
-               style="background-color: #FFFFFF; background-image: none; border-color: #0099D3; color: #0099D3;"
-               uib-popover-template="checklistPopover.templateUrl"
-               popover-title="{{ checklistPopover.title }}"
-               popover-is-open="isOpen"
-               popover-placement="right"
-               ng-click="getStatusDetails()">
-              <span class="fa fa-info"></span><span style="margin-left: 6px" apiman-i18n-key="why-cannot-publish">Why can't I publish?</span>
-            </a>
+                <a type="button"
+                   class="btn btn-default"
+                   style="background-color: #FFFFFF; background-image: none; border-color: #0099D3; color: #0099D3;"
+                   uib-popover-template="checklistPopover.templateUrl"
+                   popover-title="{{ checklistPopover.title }}"
+                   popover-is-open="isOpen"
+                   popover-placement="right"
+                   ng-click="getStatusDetails()">
+                  <span class="fa fa-info"></span><span style="margin-left: 6px" apiman-i18n-key="why-cannot-publish">Why can't I publish?</span>
+                </a>
               </div>
             </div>
           </div>

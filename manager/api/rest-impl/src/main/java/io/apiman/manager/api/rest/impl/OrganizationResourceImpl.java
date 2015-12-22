@@ -1112,6 +1112,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
 
         try {
             storage.beginTx();
+            cvb.setModifiedBy(securityContext.getCurrentUser());
             cvb.setModifiedOn(new Date());
             storage.commitTx();
         } catch (Exception e) {
@@ -1169,9 +1170,11 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             policy.setModifiedBy(this.securityContext.getCurrentUser());
             storage.updatePolicy(policy);
             storage.createAuditEntry(AuditUtils.policyUpdated(policy, PolicyType.Client, securityContext));
-            cvb.setModifiedBy(securityContext.getCurrentUser());
+
             cvb.setModifiedOn(new Date());
+            cvb.setModifiedBy(securityContext.getCurrentUser());
             storage.updateClientVersion(cvb);
+
             storage.commitTx();
         } catch (AbstractRestException e) {
             storage.rollbackTx();
@@ -1203,9 +1206,11 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             }
             storage.deletePolicy(policy);
             storage.createAuditEntry(AuditUtils.policyRemoved(policy, PolicyType.Client, securityContext));
+
             cvb.setModifiedBy(securityContext.getCurrentUser());
             cvb.setModifiedOn(new Date());
             storage.updateClientVersion(cvb);
+
             storage.commitTx();
         } catch (AbstractRestException e) {
             storage.rollbackTx();
@@ -1253,6 +1258,11 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             }
             storage.reorderPolicies(PolicyType.Client, organizationId, clientId, version, newOrder);
             storage.createAuditEntry(AuditUtils.policiesReordered(cvb, PolicyType.Client, securityContext));
+
+            cvb.setModifiedBy(securityContext.getCurrentUser());
+            cvb.setModifiedOn(new Date());
+            storage.updateClientVersion(cvb);
+
             storage.commitTx();
         } catch (AbstractRestException e) {
             storage.rollbackTx();
@@ -1832,10 +1842,16 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                 }
             }
 
-            if (apiValidator.isReady(avb)) {
-                avb.setStatus(ApiStatus.Ready);
+            if (avb.getStatus() != ApiStatus.Published) {
+                if (apiValidator.isReady(avb)) {
+                    avb.setStatus(ApiStatus.Ready);
+                } else {
+                    avb.setStatus(ApiStatus.Created);
+                }
             } else {
-                avb.setStatus(ApiStatus.Created);
+                if (!apiValidator.isReady(avb)) {
+                    throw ExceptionFactory.invalidApiStatusException();
+                }
             }
         } catch (Exception e) {
             throw new SystemErrorException(e);
@@ -1952,6 +1968,11 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             }
             storage.createAuditEntry(AuditUtils.apiDefinitionUpdated(apiVersion, securityContext));
             storage.updateApiDefinition(apiVersion, data);
+
+            apiVersion.setModifiedOn(new Date());
+            apiVersion.setModifiedBy(securityContext.getCurrentUser());
+            storage.updateApiVersion(apiVersion);
+
             storage.commitTx();
             log.debug(String.format("Stored API definition %s: %s", apiId, apiVersion)); //$NON-NLS-1$
         } catch (AbstractRestException e) {
@@ -2023,6 +2044,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         try {
             storage.beginTx();
             avb.setModifiedOn(new Date());
+            avb.setModifiedBy(securityContext.getCurrentUser());
             storage.commitTx();
         } catch (Exception e) {
             storage.rollbackTx();
@@ -2064,7 +2086,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw ExceptionFactory.notAuthorizedException();
 
         // Make sure the API exists
-        getApiVersion(organizationId, apiId, version);
+        ApiVersionBean avb = getApiVersion(organizationId, apiId, version);
 
         try {
             storage.beginTx();
@@ -2080,6 +2102,11 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             policy.setModifiedBy(securityContext.getCurrentUser());
             storage.updatePolicy(policy);
             storage.createAuditEntry(AuditUtils.policyUpdated(policy, PolicyType.Api, securityContext));
+
+            avb.setModifiedBy(securityContext.getCurrentUser());
+            avb.setModifiedOn(new Date());
+            storage.updateApiVersion(avb);
+
             storage.commitTx();
             log.debug(String.format("Updated API policy %s", policy)); //$NON-NLS-1$
         } catch (AbstractRestException e) {
@@ -2101,10 +2128,16 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         if (!securityContext.hasPermission(PermissionType.apiEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
 
-        // Make sure the API exists
-        ApiVersionBean api = getApiVersion(organizationId, apiId, version);
-        if (api.getStatus() == ApiStatus.Published || api.getStatus() == ApiStatus.Retired) {
-            throw ExceptionFactory.invalidApiStatusException();
+        // Make sure the API exists and is in the right status.
+        ApiVersionBean avb = getApiVersion(organizationId, apiId, version);
+        if (avb.isPublicAPI()) {
+            if (avb.getStatus() == ApiStatus.Retired) {
+                throw ExceptionFactory.invalidApiStatusException();
+            }
+        } else {
+            if (avb.getStatus() == ApiStatus.Published || avb.getStatus() == ApiStatus.Retired) {
+                throw ExceptionFactory.invalidApiStatusException();
+            }
         }
 
         try {
@@ -2115,6 +2148,11 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             }
             storage.deletePolicy(policy);
             storage.createAuditEntry(AuditUtils.policyRemoved(policy, PolicyType.Api, securityContext));
+
+            avb.setModifiedBy(securityContext.getCurrentUser());
+            avb.setModifiedOn(new Date());
+            storage.updateApiVersion(avb);
+
             storage.commitTx();
             log.debug(String.format("Deleted API %s policy: %s", apiId, policy)); //$NON-NLS-1$
         } catch (AbstractRestException e) {
@@ -2141,6 +2179,8 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                 throw ExceptionFactory.apiVersionNotFoundException(apiId, version);
             }
             apiVersion.setDefinitionType(ApiDefinitionType.None);
+            apiVersion.setModifiedBy(securityContext.getCurrentUser());
+            apiVersion.setModifiedOn(new Date());
             storage.createAuditEntry(AuditUtils.apiDefinitionDeleted(apiVersion, securityContext));
             storage.deleteApiDefinition(apiVersion);
             storage.updateApiVersion(apiVersion);
@@ -2192,6 +2232,11 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             }
             storage.reorderPolicies(PolicyType.Api, organizationId, apiId, version, newOrder);
             storage.createAuditEntry(AuditUtils.policiesReordered(avb, PolicyType.Api, securityContext));
+
+            avb.setModifiedBy(securityContext.getCurrentUser());
+            avb.setModifiedOn(new Date());
+            storage.updateApiVersion(avb);
+
             storage.commitTx();
         } catch (AbstractRestException e) {
             storage.rollbackTx();
@@ -2759,6 +2804,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         try {
             storage.beginTx();
             pvb.setModifiedOn(new Date());
+            pvb.setModifiedBy(securityContext.getCurrentUser());
             storage.commitTx();
         } catch (Exception e) {
             storage.rollbackTx();
@@ -2802,7 +2848,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw ExceptionFactory.notAuthorizedException();
 
         // Make sure the plan version exists
-        getPlanVersion(organizationId, planId, version);
+        PlanVersionBean pvb = getPlanVersion(organizationId, planId, version);
 
         try {
             storage.beginTx();
@@ -2818,6 +2864,11 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             policy.setModifiedBy(this.securityContext.getCurrentUser());
             storage.updatePolicy(policy);
             storage.createAuditEntry(AuditUtils.policyUpdated(policy, PolicyType.Plan, securityContext));
+
+            pvb.setModifiedBy(securityContext.getCurrentUser());
+            pvb.setModifiedOn(new Date());
+            storage.updatePlanVersion(pvb);
+
             storage.commitTx();
             log.debug(String.format("Updated plan policy %s", policy)); //$NON-NLS-1$
         } catch (AbstractRestException e) {
@@ -2840,8 +2891,8 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw ExceptionFactory.notAuthorizedException();
 
         // Make sure the plan version exists
-        PlanVersionBean plan = getPlanVersion(organizationId, planId, version);
-        if (plan.getStatus() == PlanStatus.Locked) {
+        PlanVersionBean pvb = getPlanVersion(organizationId, planId, version);
+        if (pvb.getStatus() == PlanStatus.Locked) {
             throw ExceptionFactory.invalidPlanStatusException();
         }
 
@@ -2853,6 +2904,11 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             }
             storage.deletePolicy(policy);
             storage.createAuditEntry(AuditUtils.policyRemoved(policy, PolicyType.Plan, securityContext));
+
+            pvb.setModifiedBy(securityContext.getCurrentUser());
+            pvb.setModifiedOn(new Date());
+            storage.updatePlanVersion(pvb);
+
             storage.commitTx();
             log.debug(String.format("Deleted plan policy %s", policy)); //$NON-NLS-1$
         } catch (AbstractRestException e) {
@@ -2901,6 +2957,11 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             }
             storage.reorderPolicies(PolicyType.Plan, organizationId, planId, version, newOrder);
             storage.createAuditEntry(AuditUtils.policiesReordered(pvb, PolicyType.Plan, securityContext));
+
+            pvb.setModifiedBy(securityContext.getCurrentUser());
+            pvb.setModifiedOn(new Date());
+            storage.updatePlanVersion(pvb);
+
             storage.commitTx();
         } catch (AbstractRestException e) {
             storage.rollbackTx();

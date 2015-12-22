@@ -3,8 +3,8 @@
 module Apiman {
 
  export var ApiPoliciesController = _module.controller('Apiman.ApiPoliciesController',
-        ['$q', '$scope', '$location', 'PageLifecycle', 'ApiEntityLoader', 'OrgSvcs', 'Dialogs', '$routeParams', 'Configuration', 'EntityStatusSvc',
-        ($q, $scope, $location, PageLifecycle, ApiEntityLoader, OrgSvcs, Dialogs, $routeParams, Configuration, EntityStatusSvc) => {
+        ['$q', '$scope', '$location', 'PageLifecycle', 'ApiEntityLoader', 'OrgSvcs', 'Dialogs', '$routeParams', 'Configuration', 'EntityStatusSvc', 'CurrentUser',
+        ($q, $scope, $location, PageLifecycle, ApiEntityLoader, OrgSvcs, Dialogs, $routeParams, Configuration, EntityStatusSvc, CurrentUser) => {
             var params = $routeParams;
 
             $scope.organizationId = params.org;
@@ -26,6 +26,8 @@ module Apiman {
                 Dialogs.confirm('Confirm Remove Policy', 'Do you really want to remove this policy from the API?', function() {
                     OrgSvcs.delete({ organizationId: params.org, entityType: 'apis', entityId:params.api, versionsOrActivity: 'versions', version: params.version, policiesOrActivity: 'policies', policyId: policy.id }, function(reply) {
                         removePolicy(policy);
+                        EntityStatusSvc.getEntity().modifiedOn = Date.now();
+                        EntityStatusSvc.getEntity().modifiedBy = CurrentUser.getCurrentUser();
                     }, PageLifecycle.handleError);
                 });
             };
@@ -39,6 +41,8 @@ module Apiman {
                     policyChainBean,
                     function() {
                         Logger.debug("Reordering POSTed successfully");
+                        EntityStatusSvc.getEntity().modifiedOn = Date.now();
+                        EntityStatusSvc.getEntity().modifiedBy = CurrentUser.getCurrentUser();
                     }, function() {
                         Logger.debug("Reordering POST failed.")
                     });

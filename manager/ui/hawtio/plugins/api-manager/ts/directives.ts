@@ -178,8 +178,11 @@ module Apiman {
                     entity = theEntity;
                     entityType = type;
                 },
+                getEntity: function() {
+                    return entity;
+                },
                 getEntityStatus: function() {
-                    if(entity) {
+                    if (entity) {
                         return entity.status;
                     }
                 },
@@ -191,16 +194,20 @@ module Apiman {
                     return entityType;
                 },
                 setEntityStatus: function(status) {
-                    if(entity) {
+                    if (entity) {
                         entity.status = status;
                     }
                 },
                 isEntityDisabled: function() {
-                    if(entity) {
+                    if (entity) {
                         if (entityType == 'client' || entityType == 'clients') {
                             return entity.status == 'Retired';
                         } else if (entityType == 'api' || entityType == 'apis') {
-                            return (entity.status !== 'Created' && entity.status !== 'Ready');
+                            if (entity.publicAPI) {
+                                return entity.status == 'Retired';
+                            } else {
+                                return (entity.status !== 'Created' && entity.status !== 'Ready');
+                            }
                         } else {
                             return (entity.status !== 'Created' && entity.status !== 'Ready');
                         }
