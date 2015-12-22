@@ -125,7 +125,4 @@ public class PolicyFailure implements Serializable {
         this.responseCode = responseCode;
     }
 
-    public static void main(String[] args) {
-        System.out.println(new PolicyFailure().getClass().getAnnotations());
-    }
 }
