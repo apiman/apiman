@@ -174,7 +174,7 @@ module Apiman {
 
             $scope.setEndpointProperties = function(newValue) {
                 if (newValue) {
-                    $scope.updatedService.endpointProperties = toEndpointProperties(newValue);
+                    $scope.updatedApi.endpointProperties = toEndpointProperties(newValue);
                     $scope.checkValid();
                 }
             };
