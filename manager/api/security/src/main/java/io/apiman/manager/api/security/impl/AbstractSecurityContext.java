@@ -66,6 +66,9 @@ public abstract class AbstractSecurityContext implements ISecurityContext {
      */
     @Override
     public boolean isMemberOf(String organizationId) {
+        if (isAdmin()) {
+            return true;
+        }
         return getPermissions().isMemberOf(organizationId);
     }
 
