@@ -196,7 +196,9 @@ module ApimanPageLifecycle {
                     var promise = $q.all(allData);
                     promise.then(function(data) {
                         // Make sure the user has permission to view this page.
-                        if ( requiredPermission && !CurrentUser.hasPermission($scope.organizationId, requiredPermission)) {
+                        if ( (requiredPermission && requiredPermission == 'orgView' && !CurrentUser.isMember($scope.organizationId)) ||
+                             ( requiredPermission && requiredPermission != 'orgView' && !CurrentUser.hasPermission($scope.organizationId, requiredPermission)) )
+                        {
                             Logger.info('Detected a 404 error.');
                             $location.url(Apiman.pluginName + '/errors/404').replace();
                             return;

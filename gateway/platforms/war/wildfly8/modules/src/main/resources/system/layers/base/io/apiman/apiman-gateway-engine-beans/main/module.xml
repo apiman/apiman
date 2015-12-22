@@ -3,4 +3,7 @@
   <resources>
     <resource-root path="apiman-gateway-engine-beans-${project.version}.jar" />
   </resources>
+  <dependencies>
+    <module name="javax.xml.bind.api" />
+  </dependencies>
 </module>

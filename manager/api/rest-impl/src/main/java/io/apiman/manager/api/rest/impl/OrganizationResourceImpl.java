@@ -351,7 +351,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     @Override
     public SearchResultsBean<AuditEntryBean> activity(String organizationId, int page, int pageSize)
             throws OrganizationNotFoundException, NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.orgView, organizationId))
+        if (!securityContext.isMemberOf(organizationId))
             throw ExceptionFactory.notAuthorizedException();
         if (page <= 1) {
             page = 1;

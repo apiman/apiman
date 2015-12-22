@@ -31,9 +31,10 @@ import java.util.Set;
  * @author eric.wittmann@redhat.com
  */
 public class IndexedPermissions implements Serializable {
-    
+
     private static final long serialVersionUID = -474966481686691421L;
-    
+
+    private Set<String> organizations = new HashSet<>();
     private Set<String> qualifiedPermissions = new HashSet<>();
     private Map<PermissionType, Set<String>> permissionToOrgsMap = new HashMap<>();
 
@@ -55,7 +56,15 @@ public class IndexedPermissions implements Serializable {
         String key = createQualifiedPermissionKey(permissionName, orgQualifier);
         return qualifiedPermissions.contains(key);
     }
-    
+
+    /**
+     * @param organizationId
+     * @return true if the current user is a member of the given org
+     */
+    public boolean isMemberOf(String organizationId) {
+        return organizations.contains(organizationId);
+    }
+
     /**
      * Given a permission name, returns all organization qualifiers.
      * @param permissionName the permission type
@@ -77,6 +86,7 @@ public class IndexedPermissions implements Serializable {
             PermissionType permissionName = permissionBean.getName();
             String orgQualifier = permissionBean.getOrganizationId();
             String qualifiedPermission = createQualifiedPermissionKey(permissionName, orgQualifier);
+            organizations.add(orgQualifier);
             qualifiedPermissions.add(qualifiedPermission);
             Set<String> orgs = permissionToOrgsMap.get(permissionName);
             if (orgs == null) {
@@ -95,5 +105,5 @@ public class IndexedPermissions implements Serializable {
     protected String createQualifiedPermissionKey(PermissionType permissionName, String orgQualifier) {
         return permissionName.name() + "||" + orgQualifier; //$NON-NLS-1$
     }
-    
+
 }

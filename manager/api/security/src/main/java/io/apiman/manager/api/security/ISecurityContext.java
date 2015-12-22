@@ -59,6 +59,11 @@ public interface ISecurityContext {
     public boolean hasPermission(PermissionType permission, String organizationId);
 
     /**
+     * @param organizationId
+     */
+    public boolean isMemberOf(String organizationId);
+
+    /**
      * Returns the set of organizations for which the current user is allowed
      * to perform a given action.
      * @param permission the permission type

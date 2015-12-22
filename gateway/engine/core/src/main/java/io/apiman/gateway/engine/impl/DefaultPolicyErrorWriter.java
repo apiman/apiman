@@ -75,7 +75,7 @@ public class DefaultPolicyErrorWriter implements IPolicyErrorWriter {
             try {
                 Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
                 StringWriter sw = new StringWriter();
-                jaxbMarshaller.marshal(response, sw);
+                jaxbMarshaller.marshal(eer, sw);
                 response.write(sw.getBuffer());
             } catch (Exception e) {
                 e.printStackTrace();

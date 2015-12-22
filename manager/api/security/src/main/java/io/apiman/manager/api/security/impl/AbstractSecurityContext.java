@@ -38,12 +38,12 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractSecurityContext implements ISecurityContext {
 
     private static Logger logger = LoggerFactory.getLogger(AbstractSecurityContext.class);
-    
+
     private static final ThreadLocal<IndexedPermissions> permissions = new ThreadLocal<>();
 
     @Inject
     private IStorageQuery query;
-    
+
     /**
      * Constructor.
      */
@@ -62,13 +62,21 @@ public abstract class AbstractSecurityContext implements ISecurityContext {
     }
 
     /**
+     * @see io.apiman.manager.api.security.ISecurityContext#isMemberOf(java.lang.String)
+     */
+    @Override
+    public boolean isMemberOf(String organizationId) {
+        return getPermissions().isMemberOf(organizationId);
+    }
+
+    /**
      * @see io.apiman.manager.api.security.ISecurityContext#getPermittedOrganizations(io.apiman.manager.api.beans.idm.PermissionType)
      */
     @Override
     public Set<String> getPermittedOrganizations(PermissionType permission) {
         return getPermissions().getOrgQualifiers(permission);
     }
-    
+
     /**
      * @return the user permissions for the current user
      */
@@ -93,7 +101,7 @@ public abstract class AbstractSecurityContext implements ISecurityContext {
             return new IndexedPermissions(new HashSet<PermissionBean>());
         }
     }
-    
+
     /**
      * Called to clear the current thread local permissions bean.
      */
