@@ -1882,6 +1882,10 @@ html, body {height: 100%;}
   padding-top: 4px;
 }
 
+.ng-dirty.ng-invalid > a.select2-choice {
+  border: 1px solid #b7b7b7;
+}
+
 
 
 

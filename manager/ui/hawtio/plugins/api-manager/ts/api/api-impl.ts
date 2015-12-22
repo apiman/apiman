@@ -15,7 +15,6 @@ module Apiman {
             $scope.updatedApi = new Object();
             $scope.apiSecurity = new Object();
             $scope.showMetrics = Configuration.ui.metrics;
-            $scope.selectedGateway = {val: null};
 
             $scope.saved = false;
             $scope.saving = false;
@@ -100,6 +99,11 @@ module Apiman {
             // Validates depending on the endpoint type selected
             $scope.checkValid = function() {
                 var valid = true;
+
+                if (!$scope.updatedApi.endpoint) {
+                    valid = false;
+                }
+
                 if (!$scope.updatedApi.endpointType) {
                     valid = false;
                 }
@@ -157,15 +161,42 @@ module Apiman {
                 }
             }, true);
 
+            $scope.$watch('apiSecurity', function(newValue) {
+                if (newValue) {
+                    $scope.updatedApi.endpointProperties = toEndpointProperties(newValue);
+                    $scope.checkValid();
+                }
+            }, true);
 
-            $scope.$watch('selectedGateway.val', function(newValue) {
+
+            // Used, as you'd guess, to compare originally selected values to new values
+            function arraysAreEqual(one,two) {
+                return (one.join('') == two.join(''));
+            }
+
+            $scope.$watch('selectedGateways', function(newValue) {
                 if (newValue) {
                     var alreadySet = false;
-                    if ($scope.version.gateways && $scope.version.gateways.length > 0 && $scope.version.gateways[0].gatewayId == newValue.id) {
+                    var newSelectedArray = [];
+
+                    // Iterate over each selected value, push into an empty array with proper formatting
+                    for(var i = 0; i < newValue.length; i++) {
+                        newSelectedArray.push({gatewayId: newValue[i].id});
+                    }
+
+                    // Will need to compare newly selected gateways to available gateways again
+                    // by plucking gatewayId values, inserting into an array, and comparing them
+                    var pluckedAfter = _.pluck(newSelectedArray, 'gatewayId');
+                    var pluckedBefore = _.pluck($scope.version.gateways, 'gatewayId');
+
+                    var compare = arraysAreEqual(pluckedAfter, pluckedBefore);
+
+                    if(compare === true) {
                         alreadySet = true;
                     }
+
                     if (!alreadySet) {
-                        $scope.updatedApi.gateways = [ { gatewayId: newValue.id } ];
+                        $scope.updatedApi.gateways = newSelectedArray;
                     } else {
                         delete $scope.updatedApi.gateways;
                     }
@@ -176,12 +207,6 @@ module Apiman {
                 if (newValue) {
                     $scope.updatedApi.endpointProperties = toEndpointProperties(newValue);
                     $scope.checkValid();
-                }
-            };
-
-            $scope.setGateways = function(newValue) {
-                if($scope.version.gateways && $scope.version.gateways.length > 0) {
-                    $rootScope.isDirty = (newValue.id != $scope.version.gateways[0].gatewayId);
                 }
             };
 
@@ -200,24 +225,42 @@ module Apiman {
                 $scope.updatedApi.endpointContentType = $scope.version.endpointContentType;
                 $scope.updatedApi.endpointProperties = angular.copy($scope.version.endpointProperties);
 
+
+                // Gateway Handling
+
                 delete $scope.updatedApi.gateways;
+                $scope.selectedGateways = [];
+
+                // Match up currently associated gateways for this API with available gateways
+                // to provide additional information, other than just the ID, about each gateway
 
                 if ($scope.version.gateways && $scope.version.gateways.length > 0) {
-                    angular.forEach($scope.gateways, function(gateway) {
-                        // TODO support multiple gateway assignments here
-                        if (gateway.id == $scope.version.gateways[0].gatewayId) {
-                            $scope.selectedGateway.val = gateway;
+                    for(var i = 0; i < $scope.gateways.length; i++) {
+                        for(var j = 0; j < $scope.version.gateways.length; j++) {
+                            // Check if IDs match
+                            if($scope.gateways[i].id === $scope.version.gateways[j].gatewayId) {
+                                // Add gateway to selected gateway array
+                                $scope.selectedGateways.push($scope.gateways[i]);
+                            }
                         }
-                    });
+                    }
                 }
 
                 $rootScope.isDirty = false;
+
+                // Automatically set the selected gateway if there's only one and the
+                // gateway is not already set.
+                if ((!$scope.version.gateways || $scope.version.gateways.length == 0)
+                    && ($scope.gateways && $scope.gateways.length === 1)) {
+                    $scope.autoGateway = true;
+                    $scope.selectedGateways[0] = $scope.gateways[0];
+                }
             };
 
             $scope.saveApi = function() {
                 $scope.invalidEndpoint = false;
                 $scope.saving = true;
-                
+
                 OrgSvcs.update({ organizationId: params.org, entityType: 'apis', entityId:params.api, versionsOrActivity: 'versions', version: params.version }, $scope.updatedApi, function(reply) {
                     $rootScope.isDirty = false;
                     $scope.autoGateway = false;
@@ -256,13 +299,11 @@ module Apiman {
             PageLifecycle.loadPage('ApiImpl', 'apiView', pageData, $scope, function() {
                 $scope.reset();
                 PageLifecycle.setPageTitle('api-impl', [ $scope.api.name ]);
-                
-                // Automatically set the selected gateway if there's only one and the 
-                // gateway is not already set.
-                if (!$scope.version.gateways || $scope.version.gateways.length == 0) {
-                    $scope.selectedGateway.val = $scope.gateways[0];
-                    $scope.autoGateway = true;
-                }
+
+                // $scope.gateways - list of available gateways
+                // $scope.version.gateways - list of gateways for this specific version
+                // $scope.selectedGateway - list of currently selected gateways (with `name`, `ID`, etc.)
+                // $scope.updatedApi.gateways - what we submit to the API, with only the `gatewayId`
             });
         }]);
 }
