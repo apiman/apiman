@@ -756,22 +756,22 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     protected ContractBean createContractInternal(String organizationId, String clientId,
             String version, NewContractBean bean) throws StorageException, Exception {
         ContractBean contract;
-        ClientVersionBean avb;
-        avb = storage.getClientVersion(organizationId, clientId, version);
-        if (avb == null) {
+        ClientVersionBean cvb;
+        cvb = storage.getClientVersion(organizationId, clientId, version);
+        if (cvb == null) {
             throw ExceptionFactory.clientVersionNotFoundException(clientId, version);
         }
-        if (avb.getStatus() == ClientStatus.Retired) {
+        if (cvb.getStatus() == ClientStatus.Retired) {
             throw ExceptionFactory.invalidClientStatusException();
         }
-        ApiVersionBean svb = storage.getApiVersion(bean.getApiOrgId(), bean.getApiId(), bean.getApiVersion());
-        if (svb == null) {
+        ApiVersionBean avb = storage.getApiVersion(bean.getApiOrgId(), bean.getApiId(), bean.getApiVersion());
+        if (avb == null) {
             throw ExceptionFactory.apiNotFoundException(bean.getApiId());
         }
-        if (svb.getStatus() != ApiStatus.Published) {
+        if (avb.getStatus() != ApiStatus.Published) {
             throw ExceptionFactory.invalidApiStatusException();
         }
-        Set<ApiPlanBean> plans = svb.getPlans();
+        Set<ApiPlanBean> plans = avb.getPlans();
         String planVersion = null;
         if (plans != null) {
             for (ApiPlanBean apiPlanBean : plans) {
@@ -792,16 +792,16 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         }
 
         contract = new ContractBean();
-        contract.setClient(avb);
-        contract.setApi(svb);
+        contract.setClient(cvb);
+        contract.setApi(avb);
         contract.setPlan(pvb);
         contract.setCreatedBy(securityContext.getCurrentUser());
         contract.setCreatedOn(new Date());
         contract.setApikey(apiKeyGenerator.generate());
 
         // Move the client to the "Ready" state if necessary.
-        if (avb.getStatus() == ClientStatus.Created && clientValidator.isReady(avb, true)) {
-            avb.setStatus(ClientStatus.Ready);
+        if (cvb.getStatus() == ClientStatus.Created && clientValidator.isReady(cvb, true)) {
+            cvb.setStatus(ClientStatus.Ready);
         }
 
         storage.createContract(contract);
@@ -809,9 +809,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         storage.createAuditEntry(AuditUtils.contractCreatedToApi(contract, securityContext));
 
         // Update the version with new meta-data (e.g. modified-by)
-        avb.setModifiedBy(securityContext.getCurrentUser());
-        avb.setModifiedOn(new Date());
-        storage.updateClientVersion(avb);
+        cvb.setModifiedBy(securityContext.getCurrentUser());
+        cvb.setModifiedOn(new Date());
+        storage.updateClientVersion(cvb);
 
         return contract;
     }
@@ -1105,7 +1105,21 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         if (!securityContext.hasPermission(PermissionType.clientEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
 
-        return doCreatePolicy(organizationId, clientId, version, bean, PolicyType.Client);
+        // Make sure the Client exists
+        ClientVersionBean cvb = getClientVersion(organizationId, clientId, version);
+
+        PolicyBean policy = doCreatePolicy(organizationId, clientId, version, bean, PolicyType.Client);
+
+        try {
+            storage.beginTx();
+            cvb.setModifiedOn(new Date());
+            storage.commitTx();
+        } catch (Exception e) {
+            storage.rollbackTx();
+            log.error(e);
+        }
+
+        return policy;
     }
 
     /**
@@ -1139,7 +1153,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw ExceptionFactory.notAuthorizedException();
 
         // Make sure the client version exists.
-        ClientVersionBean avb = getClientVersion(organizationId, clientId, version);
+        ClientVersionBean cvb = getClientVersion(organizationId, clientId, version);
 
         try {
             storage.beginTx();
@@ -1155,9 +1169,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             policy.setModifiedBy(this.securityContext.getCurrentUser());
             storage.updatePolicy(policy);
             storage.createAuditEntry(AuditUtils.policyUpdated(policy, PolicyType.Client, securityContext));
-            avb.setModifiedBy(securityContext.getCurrentUser());
-            avb.setModifiedOn(new Date());
-            storage.updateClientVersion(avb);
+            cvb.setModifiedBy(securityContext.getCurrentUser());
+            cvb.setModifiedOn(new Date());
+            storage.updateClientVersion(cvb);
             storage.commitTx();
         } catch (AbstractRestException e) {
             storage.rollbackTx();
@@ -1179,7 +1193,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw ExceptionFactory.notAuthorizedException();
 
         // Make sure the client version exists;
-        ClientVersionBean avb = getClientVersion(organizationId, clientId, version);
+        ClientVersionBean cvb = getClientVersion(organizationId, clientId, version);
 
         try {
             storage.beginTx();
@@ -1189,9 +1203,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             }
             storage.deletePolicy(policy);
             storage.createAuditEntry(AuditUtils.policyRemoved(policy, PolicyType.Client, securityContext));
-            avb.setModifiedBy(securityContext.getCurrentUser());
-            avb.setModifiedOn(new Date());
-            storage.updateClientVersion(avb);
+            cvb.setModifiedBy(securityContext.getCurrentUser());
+            cvb.setModifiedOn(new Date());
+            storage.updateClientVersion(cvb);
             storage.commitTx();
         } catch (AbstractRestException e) {
             storage.rollbackTx();
@@ -1229,7 +1243,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw ExceptionFactory.notAuthorizedException();
 
         // Make sure the client version exists.
-        ClientVersionBean avb = getClientVersion(organizationId, clientId, version);
+        ClientVersionBean cvb = getClientVersion(organizationId, clientId, version);
 
         try {
             storage.beginTx();
@@ -1238,7 +1252,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                 newOrder.add(psb.getId());
             }
             storage.reorderPolicies(PolicyType.Client, organizationId, clientId, version, newOrder);
-            storage.createAuditEntry(AuditUtils.policiesReordered(avb, PolicyType.Client, securityContext));
+            storage.createAuditEntry(AuditUtils.policiesReordered(cvb, PolicyType.Client, securityContext));
             storage.commitTx();
         } catch (AbstractRestException e) {
             storage.rollbackTx();
@@ -1744,92 +1758,98 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         if (!securityContext.hasPermission(PermissionType.apiEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
 
-        ApiVersionBean svb = getApiVersion(organizationId, apiId, version);
-        if (svb.getStatus() == ApiStatus.Published || svb.getStatus() == ApiStatus.Retired) {
-            throw ExceptionFactory.invalidApiStatusException();
+        ApiVersionBean avb = getApiVersion(organizationId, apiId, version);
+        if (avb.isPublicAPI()) {
+            if (avb.getStatus() == ApiStatus.Retired) {
+                throw ExceptionFactory.invalidApiStatusException();
+            }
+        } else {
+            if (avb.getStatus() == ApiStatus.Published || avb.getStatus() == ApiStatus.Retired) {
+                throw ExceptionFactory.invalidApiStatusException();
+            }
         }
 
-        svb.setModifiedBy(securityContext.getCurrentUser());
-        svb.setModifiedOn(new Date());
+        avb.setModifiedBy(securityContext.getCurrentUser());
+        avb.setModifiedOn(new Date());
         EntityUpdatedData data = new EntityUpdatedData();
-        if (AuditUtils.valueChanged(svb.getPlans(), bean.getPlans())) {
-            data.addChange("plans", AuditUtils.asString_ApiPlanBeans(svb.getPlans()), AuditUtils.asString_ApiPlanBeans(bean.getPlans())); //$NON-NLS-1$
-            if (svb.getPlans() == null) {
-                svb.setPlans(new HashSet<ApiPlanBean>());
+        if (AuditUtils.valueChanged(avb.getPlans(), bean.getPlans())) {
+            data.addChange("plans", AuditUtils.asString_ApiPlanBeans(avb.getPlans()), AuditUtils.asString_ApiPlanBeans(bean.getPlans())); //$NON-NLS-1$
+            if (avb.getPlans() == null) {
+                avb.setPlans(new HashSet<ApiPlanBean>());
             }
-            svb.getPlans().clear();
+            avb.getPlans().clear();
             if (bean.getPlans() != null) {
-                svb.getPlans().addAll(bean.getPlans());
+                avb.getPlans().addAll(bean.getPlans());
             }
         }
-        if (AuditUtils.valueChanged(svb.getGateways(), bean.getGateways())) {
-            data.addChange("gateways", AuditUtils.asString_ApiGatewayBeans(svb.getGateways()), AuditUtils.asString_ApiGatewayBeans(bean.getGateways())); //$NON-NLS-1$
-            if (svb.getGateways() == null) {
-                svb.setGateways(new HashSet<ApiGatewayBean>());
+        if (AuditUtils.valueChanged(avb.getGateways(), bean.getGateways())) {
+            data.addChange("gateways", AuditUtils.asString_ApiGatewayBeans(avb.getGateways()), AuditUtils.asString_ApiGatewayBeans(bean.getGateways())); //$NON-NLS-1$
+            if (avb.getGateways() == null) {
+                avb.setGateways(new HashSet<ApiGatewayBean>());
             }
-            svb.getGateways().clear();
-            svb.getGateways().addAll(bean.getGateways());
+            avb.getGateways().clear();
+            avb.getGateways().addAll(bean.getGateways());
         }
-        if (AuditUtils.valueChanged(svb.getEndpoint(), bean.getEndpoint())) {
+        if (AuditUtils.valueChanged(avb.getEndpoint(), bean.getEndpoint())) {
             // validate the endpoint is a URL
             validateEndpoint(bean.getEndpoint());
-            data.addChange("endpoint", svb.getEndpoint(), bean.getEndpoint()); //$NON-NLS-1$
-            svb.setEndpoint(bean.getEndpoint());
+            data.addChange("endpoint", avb.getEndpoint(), bean.getEndpoint()); //$NON-NLS-1$
+            avb.setEndpoint(bean.getEndpoint());
         }
-        if (AuditUtils.valueChanged(svb.getEndpointType(), bean.getEndpointType())) {
-            data.addChange("endpointType", svb.getEndpointType(), bean.getEndpointType()); //$NON-NLS-1$
-            svb.setEndpointType(bean.getEndpointType());
+        if (AuditUtils.valueChanged(avb.getEndpointType(), bean.getEndpointType())) {
+            data.addChange("endpointType", avb.getEndpointType(), bean.getEndpointType()); //$NON-NLS-1$
+            avb.setEndpointType(bean.getEndpointType());
         }
-        if (AuditUtils.valueChanged(svb.getEndpointContentType(), bean.getEndpointContentType())) {
-            data.addChange("endpointContentType", svb.getEndpointContentType(), bean.getEndpointContentType()); //$NON-NLS-1$
-            svb.setEndpointContentType(bean.getEndpointContentType());
+        if (AuditUtils.valueChanged(avb.getEndpointContentType(), bean.getEndpointContentType())) {
+            data.addChange("endpointContentType", avb.getEndpointContentType(), bean.getEndpointContentType()); //$NON-NLS-1$
+            avb.setEndpointContentType(bean.getEndpointContentType());
         }
-        if (AuditUtils.valueChanged(svb.getEndpointProperties(), bean.getEndpointProperties())) {
-            if (svb.getEndpointProperties() == null) {
-                svb.setEndpointProperties(new HashMap<String, String>());
+        if (AuditUtils.valueChanged(avb.getEndpointProperties(), bean.getEndpointProperties())) {
+            if (avb.getEndpointProperties() == null) {
+                avb.setEndpointProperties(new HashMap<String, String>());
             } else {
-                svb.getEndpointProperties().clear();
+                avb.getEndpointProperties().clear();
             }
             if (bean.getEndpointProperties() != null) {
-                svb.getEndpointProperties().putAll(bean.getEndpointProperties());
+                avb.getEndpointProperties().putAll(bean.getEndpointProperties());
             }
         }
-        if (AuditUtils.valueChanged(svb.isPublicAPI(), bean.getPublicAPI())) {
-            data.addChange("publicAPI", String.valueOf(svb.isPublicAPI()), String.valueOf(bean.getPublicAPI())); //$NON-NLS-1$
-            svb.setPublicAPI(bean.getPublicAPI());
+        if (AuditUtils.valueChanged(avb.isPublicAPI(), bean.getPublicAPI())) {
+            data.addChange("publicAPI", String.valueOf(avb.isPublicAPI()), String.valueOf(bean.getPublicAPI())); //$NON-NLS-1$
+            avb.setPublicAPI(bean.getPublicAPI());
         }
 
         try {
-            if (svb.getGateways() == null || svb.getGateways().isEmpty()) {
+            if (avb.getGateways() == null || avb.getGateways().isEmpty()) {
                 GatewaySummaryBean gateway = getSingularGateway();
                 if (gateway != null) {
-                    if (svb.getGateways() == null) {
-                        svb.setGateways(new HashSet<ApiGatewayBean>());
+                    if (avb.getGateways() == null) {
+                        avb.setGateways(new HashSet<ApiGatewayBean>());
                         ApiGatewayBean sgb = new ApiGatewayBean();
                         sgb.setGatewayId(gateway.getId());
-                        svb.getGateways().add(sgb);
+                        avb.getGateways().add(sgb);
                     }
                 }
             }
 
-            if (apiValidator.isReady(svb)) {
-                svb.setStatus(ApiStatus.Ready);
+            if (apiValidator.isReady(avb)) {
+                avb.setStatus(ApiStatus.Ready);
             } else {
-                svb.setStatus(ApiStatus.Created);
+                avb.setStatus(ApiStatus.Created);
             }
         } catch (Exception e) {
             throw new SystemErrorException(e);
         }
 
         try {
-            encryptEndpointProperties(svb);
+            encryptEndpointProperties(avb);
             storage.beginTx();
 
             // Ensure all of the plans are in the right status (locked)
-            Set<ApiPlanBean> plans = svb.getPlans();
+            Set<ApiPlanBean> plans = avb.getPlans();
             if (plans != null) {
                 for (ApiPlanBean splanBean : plans) {
-                    String orgId = svb.getApi().getOrganization().getId();
+                    String orgId = avb.getApi().getOrganization().getId();
                     PlanVersionBean pvb = storage.getPlanVersion(orgId, splanBean.getPlanId(), splanBean.getVersion());
                     if (pvb == null) {
                         throw new StorageException(Messages.i18n.format("PlanVersionDoesNotExist", splanBean.getPlanId(), splanBean.getVersion())); //$NON-NLS-1$
@@ -1840,12 +1860,12 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                 }
             }
 
-            storage.updateApiVersion(svb);
-            storage.createAuditEntry(AuditUtils.apiVersionUpdated(svb, data, securityContext));
+            storage.updateApiVersion(avb);
+            storage.createAuditEntry(AuditUtils.apiVersionUpdated(avb, data, securityContext));
             storage.commitTx();
-            log.debug(String.format("Successfully updated API Version: %s", svb)); //$NON-NLS-1$
-            decryptEndpointProperties(svb);
-            return svb;
+            log.debug(String.format("Successfully updated API Version: %s", avb)); //$NON-NLS-1$
+            decryptEndpointProperties(avb);
+            return avb;
         } catch (AbstractRestException e) {
             storage.rollbackTx();
             throw e;
@@ -1986,13 +2006,30 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw ExceptionFactory.notAuthorizedException();
 
         // Make sure the API exists
-        ApiVersionBean svb = getApiVersion(organizationId, apiId, version);
-        if (svb.getStatus() == ApiStatus.Published || svb.getStatus() == ApiStatus.Retired) {
-            throw ExceptionFactory.invalidApiStatusException();
+        ApiVersionBean avb = getApiVersion(organizationId, apiId, version);
+        if (avb.isPublicAPI()) {
+            if (avb.getStatus() == ApiStatus.Retired) {
+                throw ExceptionFactory.invalidApiStatusException();
+            }
+        } else {
+            if (avb.getStatus() == ApiStatus.Published || avb.getStatus() == ApiStatus.Retired) {
+                throw ExceptionFactory.invalidApiStatusException();
+            }
         }
 
-        log.debug(String.format("Created API policy %s", svb)); //$NON-NLS-1$
-        return doCreatePolicy(organizationId, apiId, version, bean, PolicyType.Api);
+        PolicyBean policy = doCreatePolicy(organizationId, apiId, version, bean, PolicyType.Api);
+        log.debug(String.format("Created API policy %s", avb)); //$NON-NLS-1$
+
+        try {
+            storage.beginTx();
+            avb.setModifiedOn(new Date());
+            storage.commitTx();
+        } catch (Exception e) {
+            storage.rollbackTx();
+            log.error(e);
+        }
+
+        return policy;
     }
 
     /**
@@ -2145,7 +2182,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw ExceptionFactory.notAuthorizedException();
 
         // Make sure the API exists
-        ApiVersionBean svb = getApiVersion(organizationId, apiId, version);
+        ApiVersionBean avb = getApiVersion(organizationId, apiId, version);
 
         try {
             storage.beginTx();
@@ -2154,7 +2191,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                 newOrder.add(psb.getId());
             }
             storage.reorderPolicies(PolicyType.Api, organizationId, apiId, version, newOrder);
-            storage.createAuditEntry(AuditUtils.policiesReordered(svb, PolicyType.Api, securityContext));
+            storage.createAuditEntry(AuditUtils.policiesReordered(avb, PolicyType.Api, securityContext));
             storage.commitTx();
         } catch (AbstractRestException e) {
             storage.rollbackTx();
@@ -2172,11 +2209,11 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     public PolicyChainBean getApiPolicyChain(String organizationId, String apiId, String version,
             String planId) throws ApiVersionNotFoundException, PlanNotFoundException, NotAuthorizedException {
         // Try to get the API first - will throw an exception if not found.
-        ApiVersionBean svb = getApiVersion(organizationId, apiId, version);
+        ApiVersionBean avb = getApiVersion(organizationId, apiId, version);
 
         try {
             String planVersion = null;
-            Set<ApiPlanBean> plans = svb.getPlans();
+            Set<ApiPlanBean> plans = avb.getPlans();
             if (plans != null) {
                 for (ApiPlanBean apiPlanBean : plans) {
                     if (apiPlanBean.getPlanId().equals(planId)) {
@@ -2717,7 +2754,18 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         }
 
         log.debug(String.format("Creating plan %s policy %s", planId, pvb)); //$NON-NLS-1$
-        return doCreatePolicy(organizationId, planId, version, bean, PolicyType.Plan);
+        PolicyBean policy = doCreatePolicy(organizationId, planId, version, bean, PolicyType.Plan);
+
+        try {
+            storage.beginTx();
+            pvb.setModifiedOn(new Date());
+            storage.commitTx();
+        } catch (Exception e) {
+            storage.rollbackTx();
+            log.error(e);
+        }
+
+        return policy;
     }
 
     /**
@@ -2920,15 +2968,15 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             storage.beginTx();
 
             if (type == PolicyType.Client) {
-                ClientVersionBean avb = storage.getClientVersion(organizationId, entityId, entityVersion);
+                ClientVersionBean cvb = storage.getClientVersion(organizationId, entityId, entityVersion);
+                cvb.setModifiedBy(securityContext.getCurrentUser());
+                cvb.setModifiedOn(new Date());
+                storage.updateClientVersion(cvb);
+            } else if (type == PolicyType.Api) {
+                ApiVersionBean avb = storage.getApiVersion(organizationId, entityId, entityVersion);
                 avb.setModifiedBy(securityContext.getCurrentUser());
                 avb.setModifiedOn(new Date());
-                storage.updateClientVersion(avb);
-            } else if (type == PolicyType.Api) {
-                ApiVersionBean svb = storage.getApiVersion(organizationId, entityId, entityVersion);
-                svb.setModifiedBy(securityContext.getCurrentUser());
-                svb.setModifiedOn(new Date());
-                storage.updateApiVersion(svb);
+                storage.updateApiVersion(avb);
             } else if (type == PolicyType.Plan) {
                 PlanVersionBean pvb = storage.getPlanVersion(organizationId, entityId, entityVersion);
                 pvb.setModifiedBy(securityContext.getCurrentUser());
@@ -3157,10 +3205,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @param svb
+     * @param versionBean
      */
-    private void decryptEndpointProperties(ApiVersionBean svb) {
-        Map<String, String> endpointProperties = svb.getEndpointProperties();
+    private void decryptEndpointProperties(ApiVersionBean versionBean) {
+        Map<String, String> endpointProperties = versionBean.getEndpointProperties();
         if (endpointProperties != null) {
             for (Entry<String, String> entry : endpointProperties.entrySet()) {
                 entry.setValue(encrypter.decrypt(entry.getValue()));
@@ -3169,10 +3217,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @param svb
+     * @param versionBean
      */
-    private void encryptEndpointProperties(ApiVersionBean svb) {
-        Map<String, String> endpointProperties = svb.getEndpointProperties();
+    private void encryptEndpointProperties(ApiVersionBean versionBean) {
+        Map<String, String> endpointProperties = versionBean.getEndpointProperties();
         if (endpointProperties != null) {
             for (Entry<String, String> entry : endpointProperties.entrySet()) {
                 entry.setValue(encrypter.encrypt(entry.getValue()));

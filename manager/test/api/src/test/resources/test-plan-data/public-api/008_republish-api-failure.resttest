@@ -1,0 +1,18 @@
+POST /actions admin/admin
+Content-Type: application/json
+
+{
+  "type" : "publishAPI",
+  "organizationId" : "Organization1",
+  "entityId" : "API1",
+  "entityVersion" : "1.0"
+}
+----
+500
+Content-Type: application/json
+
+{
+  "type": "ActionException",
+  "errorCode": 8001,
+  "message": "The API has not changed since it was last published."
+}

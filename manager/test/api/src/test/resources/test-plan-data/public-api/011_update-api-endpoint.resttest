@@ -1,0 +1,25 @@
+PUT /organizations/Organization1/apis/API1/versions/1.0 admin/admin
+Content-Type: application/json
+
+{
+  "endpoint" : "http://localhost:8080/ping",
+  "endpointType" : "rest",
+  "endpointContentType" : "xml",
+  "endpointProperties" : {
+    "foo" : "foo-value",
+    "bar" : "bar-value"
+  }
+}
+----
+200
+Content-Type: application/json
+
+{
+  "endpoint" : "http://localhost:8080/ping",
+  "endpointType" : "rest",
+  "endpointContentType" : "xml",
+  "endpointProperties" : {
+    "foo" : "foo-value",
+    "bar" : "bar-value"
+  }
+}
