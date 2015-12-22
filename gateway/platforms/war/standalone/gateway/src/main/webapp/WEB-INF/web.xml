@@ -6,9 +6,6 @@
     <listener>
         <listener-class>io.apiman.gateway.platforms.war.standalone.listeners.StandaloneWarBootstrapper</listener-class>
     </listener>
-    <listener>
-        <listener-class>io.apiman.gateway.platforms.war.listeners.WarGatewayBootstrapper</listener-class>
-    </listener>
 
     <!-- Gateway Servlet -->
     <servlet>

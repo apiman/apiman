@@ -66,4 +66,5 @@ The standalone WARs are based on the _apiman_ micro WAR implementation.
 
 ## TODO
 
-  * Allow use of non-ES component implementations, such as the Infinispan ones.
+  * Consider refactoring `io.apiman.common.config.ConfigFileConfiguration.create(String)` to remove coupling to JBoss/Wildfly with dependency on `jboss.server.config.dir` System property.
+  * Tidy up standalone ES WAR project and externalise configuration.
