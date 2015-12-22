@@ -66,4 +66,4 @@ The standalone WARs are based on the _apiman_ micro WAR implementation.
 
 ## TODO
 
-  * Externalise configuration used in bootstrap process to allow, for example, use of the Infinispan component implementations instead of the ES ones.
+  * Allow use of non-ES component implementations, such as the Infinispan ones.

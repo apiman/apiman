@@ -8,14 +8,25 @@ import io.apiman.gateway.engine.policy.PolicyFactoryImpl;
 import io.apiman.gateway.platforms.servlet.PolicyFailureFactoryComponent;
 import io.apiman.gateway.platforms.servlet.connectors.HttpConnectorFactory;
 import io.apiman.gateway.platforms.war.WarEngineConfig;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 
 /**
  * @author pcornish
  */
 public class StandaloneWarBootstrapper implements ServletContextListener {
+    private static final Logger LOGGER = LoggerFactory.getLogger(StandaloneWarBootstrapper.class);
+    private static final String APIMAN_CONFIG_FILE_PATH = "apiman.config-file-path";
+    private static final String APIMAN_CONFIG_FILE_NAME = "/apiman.properties";
 
     // Public constructor is required by servlet spec
     public StandaloneWarBootstrapper() {
@@ -39,7 +50,8 @@ public class StandaloneWarBootstrapper implements ServletContextListener {
      * Configure the gateway options.
      */
     protected void configure() {
-        configureGlobalVars();
+        loadConfigurationIntoSystemProperties();
+
         configurePluginRegistry();
         configureRegistry();
         configureConnectorFactory();
@@ -52,13 +64,44 @@ public class StandaloneWarBootstrapper implements ServletContextListener {
     }
 
     /**
-     * Configure some global variables in the system properties.
+     * Load the configuration file into system properties so that they are resolved
+     * by {@link WarEngineConfig}.
      */
-    protected void configureGlobalVars() {
-        System.setProperty("apiman.es.protocol", "http");
-        System.setProperty("apiman.es.host", "localhost");
-        System.setProperty("apiman.es.port", "9200");
-        System.setProperty("apiman.es.cluster-name", "apiman");
+    private void loadConfigurationIntoSystemProperties() {
+        final Properties configFile = new Properties();
+
+        final String configFilePath = System.getProperty(APIMAN_CONFIG_FILE_PATH);
+        if (StringUtils.isNotEmpty(configFilePath)) {
+            // read from file
+            LOGGER.info("Loading configuration from file: {}", configFilePath);
+
+            try (InputStream configStream = FileUtils.openInputStream(new File(configFilePath))) {
+                configFile.load(configStream);
+
+            } catch (IOException e) {
+                throw new RuntimeException(String.format(
+                        "Error loading configuration from file: %s", configFilePath), e);
+            }
+
+        } else {
+            // search the classpath
+            LOGGER.info("Loading configuration from classpath file: {}", APIMAN_CONFIG_FILE_NAME);
+
+            try (InputStream configStream = StandaloneWarBootstrapper.class.getResourceAsStream(APIMAN_CONFIG_FILE_NAME)) {
+                if (null == configStream) {
+                    throw new IOException(String.format("Unable to load classpath file: %s", APIMAN_CONFIG_FILE_NAME));
+                }
+                configFile.load(configStream);
+
+            } catch (IOException e) {
+                throw new RuntimeException(String.format(
+                        "Error loading configuration from classpath file: '%s'. Set system property '%s'?",
+                        APIMAN_CONFIG_FILE_NAME, APIMAN_CONFIG_FILE_PATH), e);
+            }
+        }
+
+        // push into system properties
+        configFile.forEach((key, value) -> System.setProperty((String) key, (String) value));
     }
 
     /**
@@ -94,11 +137,6 @@ public class StandaloneWarBootstrapper implements ServletContextListener {
     protected void registerRateLimiterComponent() {
         System.setProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + IRateLimiterComponent.class.getSimpleName(),
                 ESRateLimiterComponent.class.getName());
-        System.setProperty("apiman-gateway.components.IRateLimiterComponent.client.type", "jest");
-        System.setProperty("apiman-gateway.components.IRateLimiterComponent.client.cluster-name", "${apiman.es.cluster-name}");
-        System.setProperty("apiman-gateway.components.IRateLimiterComponent.client.protocol", "${apiman.es.protocol}");
-        System.setProperty("apiman-gateway.components.IRateLimiterComponent.client.host", "${apiman.es.host}");
-        System.setProperty("apiman-gateway.components.IRateLimiterComponent.client.port", "${apiman.es.port}");
     }
 
     /**
@@ -107,11 +145,6 @@ public class StandaloneWarBootstrapper implements ServletContextListener {
     protected void registerSharedStateComponent() {
         System.setProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + ISharedStateComponent.class.getSimpleName(),
                 ESSharedStateComponent.class.getName());
-        System.setProperty("apiman-gateway.components.ISharedStateComponent.client.type", "jest");
-        System.setProperty("apiman-gateway.components.ISharedStateComponent.client.cluster-name", "${apiman.es.cluster-name}");
-        System.setProperty("apiman-gateway.components.ISharedStateComponent.client.protocol", "${apiman.es.protocol}");
-        System.setProperty("apiman-gateway.components.ISharedStateComponent.client.host", "${apiman.es.host}");
-        System.setProperty("apiman-gateway.components.ISharedStateComponent.client.port", "${apiman.es.port}");
     }
 
     /**
@@ -120,12 +153,6 @@ public class StandaloneWarBootstrapper implements ServletContextListener {
     protected void registerCacheStoreComponent() {
         System.setProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + ICacheStoreComponent.class.getSimpleName(),
                 ESCacheStoreComponent.class.getName());
-        System.setProperty("apiman-gateway.components.ICacheStoreComponent.client.type", "jest");
-        System.setProperty("apiman-gateway.components.ICacheStoreComponent.client.cluster-name", "${apiman.es.cluster-name}");
-        System.setProperty("apiman-gateway.components.ICacheStoreComponent.client.protocol", "${apiman.es.protocol}");
-        System.setProperty("apiman-gateway.components.ICacheStoreComponent.client.host", "${apiman.es.host}");
-        System.setProperty("apiman-gateway.components.ICacheStoreComponent.client.port", "${apiman.es.port}");
-        System.setProperty("apiman-gateway.components.ICacheStoreComponent.client.index", "apiman_cache");
     }
 
     /**
@@ -154,11 +181,6 @@ public class StandaloneWarBootstrapper implements ServletContextListener {
      */
     protected void configureRegistry() {
         System.setProperty(WarEngineConfig.APIMAN_GATEWAY_REGISTRY_CLASS, ESRegistry.class.getName());
-        System.setProperty("apiman-gateway.registry.client.type", "jest");
-        System.setProperty("apiman-gateway.registry.client.cluster-name", "${apiman.es.cluster-name}");
-        System.setProperty("apiman-gateway.registry.client.protocol", "${apiman.es.protocol}");
-        System.setProperty("apiman-gateway.registry.client.host", "${apiman.es.host}");
-        System.setProperty("apiman-gateway.registry.client.port", "${apiman.es.port}");
     }
 
     /**
@@ -166,11 +188,5 @@ public class StandaloneWarBootstrapper implements ServletContextListener {
      */
     protected void configureMetrics() {
         System.setProperty(WarEngineConfig.APIMAN_GATEWAY_METRICS_CLASS, ESMetrics.class.getName());
-        System.setProperty(WarEngineConfig.APIMAN_GATEWAY_METRICS_CLASS + ".client.type", "jest");
-        System.setProperty(WarEngineConfig.APIMAN_GATEWAY_METRICS_CLASS + ".client.cluster-name", System.getProperty("apiman-test.es-metrics.cluster-name", "${apiman.es.cluster-name}"));
-        System.setProperty(WarEngineConfig.APIMAN_GATEWAY_METRICS_CLASS + ".client.protocol", System.getProperty("apiman-test.es-metrics.host", "${apiman.es.protocol}"));
-        System.setProperty(WarEngineConfig.APIMAN_GATEWAY_METRICS_CLASS + ".client.host", System.getProperty("apiman-test.es-metrics.host", "${apiman.es.host}"));
-        System.setProperty(WarEngineConfig.APIMAN_GATEWAY_METRICS_CLASS + ".client.port", System.getProperty("apiman-test.es-metrics.port", "${apiman.es.port}"));
-        System.setProperty(WarEngineConfig.APIMAN_GATEWAY_METRICS_CLASS + ".client.index", System.getProperty("apiman-test.es-metrics.index", "apiman_metrics"));
     }
 }
