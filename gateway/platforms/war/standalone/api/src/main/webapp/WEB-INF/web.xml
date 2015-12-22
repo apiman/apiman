@@ -79,18 +79,13 @@
         <servlet-class>org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher</servlet-class>
         <init-param>
             <param-name>javax.ws.rs.Application</param-name>
-            <param-value>io.apiman.gateway.platforms.war.micro.GatewayMicroServiceApplication</param-value>
+            <param-value>io.apiman.gateway.platforms.war.standalone.GatewayStandaloneApplication</param-value>
         </init-param>
     </servlet>
     <servlet-mapping>
         <servlet-name>ResteasyServlet</servlet-name>
         <url-pattern>/*</url-pattern>
     </servlet-mapping>
-    
-    <!--<context-param>
-        <param-name>resteasy.servlet.mapping.prefix</param-name>
-        <param-value></param-value>
-    </context-param>-->
 
     <security-constraint>
         <web-resource-collection>

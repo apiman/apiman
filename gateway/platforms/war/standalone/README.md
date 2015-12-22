@@ -2,6 +2,12 @@
 
 This module, and its children, build a set of WAR files that can be deployed in a simple web app container such as Jetty or Tomcat.
 
+The following WARs are built:
+
+  * Gateway
+  * Gateway API
+  * Elasticsearch embedded
+
 ## Building the WARs
 
 You must disable the `java8` profile to avoid a compilation failure in building the _vert.x_ modules:
@@ -51,10 +57,13 @@ You can access them at:
 
 ## Dependencies
 
-The standalone WARs depend on the _apiman micro war_ JAR. Since Tomcat (<=8) doesn't provide a CDI implementation, we use JBoss Weld.
+  * Since Tomcat (<=8) doesn't provide a CDI implementation, we use JBoss Weld.
+  * Currently expects an Elasticsearch instance running on port `localhost:9200` with a cluster named _apiman_. In order to get up and running quickly, you can use the ES embedded WAR, but a proper Elasticsearch cluster is strongly recommended.
+
+## Implementation
+
+The standalone WARs are based on the _apiman_ micro WAR implementation.
 
 ## TODO
 
-  * Refactor common dependencies out of _micro war_ into a separate module.
-  * Remove dependency on Jetty and other unneeded artifacts from the _micro war_ module.
   * Externalise configuration used in bootstrap process to allow, for example, use of the Infinispan component implementations instead of the ES ones.
