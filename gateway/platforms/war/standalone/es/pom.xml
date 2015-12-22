@@ -4,7 +4,7 @@
   <parent>
     <artifactId>apiman-gateway-platforms-war-standalone</artifactId>
     <groupId>io.apiman</groupId>
-    <version>1.1.9.Final</version>
+    <version>1.1.10-SNAPSHOT</version>
   </parent>
   <packaging>war</packaging>
   <artifactId>apiman-gateway-platforms-war-standalone-es</artifactId>
