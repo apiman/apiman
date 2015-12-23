@@ -43,7 +43,7 @@
               <span class="clearfix"
                     style="margin-top:10px; margin-bottom: 10px"
                     apiman-i18n-key="api-definition-label">API Definition:</span>
-              <select apiman-i18n-key="api-def.choose-type" title="Choose a type..." apiman-select-picker="" ng-model="selectedDefinitionType" class="selectpicker" ng-options="type.label for type in typeOptions track by type.value">
+              <select apiman-i18n-key="api-def.choose-type" title="Choose a type..." apiman-select-picker="" ng-model="selectedDefinitionType" class="selectpicker" ng-disabled="isEntityDisabled()" ng-options="type.label for type in typeOptions track by type.value">
               </select>
               <textarea style="margin-top:10px"
                         apiman-i18n-key="enter-api-definition"
