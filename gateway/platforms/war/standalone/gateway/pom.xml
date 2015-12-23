@@ -1,0 +1,25 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <artifactId>apiman-gateway-platforms-war-standalone</artifactId>
+        <groupId>io.apiman</groupId>
+        <version>1.1.9.Final</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <packaging>war</packaging>
+    <artifactId>apiman-gateway-platforms-war-standalone-gateway</artifactId>
+    <name>apiman-gateway-platforms-war-standalone-gateway</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>io.apiman</groupId>
+            <version>1.1.9.Final</version>
+            <artifactId>apiman-gateway-platforms-war-standalone-common</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <finalName>apiman-gateway</finalName>
+    </build>
+</project>
