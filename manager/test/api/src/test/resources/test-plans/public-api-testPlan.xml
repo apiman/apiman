@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testPlan xmlns="urn:io.apiman.test:2014:02:testPlan">
+
+  <testGroup name="Test Republishing an API">
+    <test name="Create Gateway">test-plan-data/public-api/000_create-gateway.resttest</test>
+    <test name="Create Org">test-plan-data/public-api/001_create-org.resttest</test>
+    <test name="Create API">test-plan-data/public-api/002_create-api.resttest</test>
+    <test name="Create API Version">test-plan-data/public-api/003_create-api-version.resttest</test>
+    <test name="Create Policy Def #1">test-plan-data/public-api/004_create-policyDef-1.resttest</test>
+    <test name="Create Policy Def #2">test-plan-data/public-api/005_create-policyDef-2.resttest</test>
+    <test name="Add Policy #1 to API">test-plan-data/public-api/006_add-policy-1.resttest</test>
+    <test name="Publish API">test-plan-data/public-api/007_publish-api.resttest</test>
+    <test name="Try to re-publish (failure)">test-plan-data/public-api/008_republish-api-failure.resttest</test>
+    <test name="Add Policy #2 to API">test-plan-data/public-api/009_add-policy-2.resttest</test>
+    <test name="Re-Publish the API">test-plan-data/public-api/010_republish-api.resttest</test>
+    <test name="Update the Endpoint">test-plan-data/public-api/011_update-api-endpoint.resttest</test>
+    <test name="Re-Publish the API [2]">test-plan-data/public-api/012_republish-api.resttest</test>
+  </testGroup>
+
+</testPlan>

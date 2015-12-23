@@ -53,20 +53,11 @@ public class InMemoryRegistry implements IRegistry {
      */
     @Override
     public void publishApi(Api api, IAsyncResultHandler<Void> handler) {
-        Exception error = null;
         synchronized (mutex) {
             String apiKey = getApiKey(api);
-            if (getMap().containsKey(apiKey)) {
-                error = new PublishingException(Messages.i18n.format("InMemoryRegistry.ApiAlreadyPublished")); //$NON-NLS-1$
-            } else {
-                getMap().put(apiKey, api);
-            }
+            getMap().put(apiKey, api);
         }
-        if (error == null) {
-            handler.handle(AsyncResultImpl.create((Void) null));
-        } else {
-            handler.handle(AsyncResultImpl.create(error, Void.class));
-        }
+        handler.handle(AsyncResultImpl.create((Void) null));
     }
 
     /**

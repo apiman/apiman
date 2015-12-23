@@ -232,9 +232,8 @@
               </div>
             </div>
             
-            
             <div apiman-permission="apiEdit"
-                 apiman-status="Created,Ready"
+                 ng-show="!isEntityDisabled()"
                  class="actions"
                  style="margin-top: 20px">
               <button ng-disabled="checkValid() != true || isDirty === false || saving === true"

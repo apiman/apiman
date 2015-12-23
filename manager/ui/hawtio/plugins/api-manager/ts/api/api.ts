@@ -128,6 +128,7 @@ module Apiman {
 
             $scope.publishApi = function() {
                 $scope.publishButton.state = 'in-progress';
+                $scope.republishButton.state = 'in-progress';
 
                 var publishAction = {
                     type: 'publishAPI',
@@ -138,7 +139,9 @@ module Apiman {
                 
                 ActionSvcs.save(publishAction, function(reply) {
                     $scope.version.status = 'Published';
+                    $scope.version.publishedOn = Date.now();
                     $scope.publishButton.state = 'complete';
+                    $scope.republishButton.state = 'complete';
                     $scope.setEntityStatus($scope.version.status);
                 }, PageLifecycle.handleError);
             };
@@ -156,6 +159,7 @@ module Apiman {
 
                     ActionSvcs.save(retireAction, function(reply) {
                         $scope.version.status = 'Retired';
+                        $scope.version.retiredOn = Date.now();
                         $scope.retireButton.state = 'complete';
                         $scope.setEntityStatus($scope.version.status);
                     }, PageLifecycle.handleError);

@@ -136,8 +136,21 @@ public class ActionResourceImpl implements IActionResource {
         }
 
         // Validate that it's ok to perform this action - API must be Ready.
-        if (versionBean.getStatus() != ApiStatus.Ready) {
+        if (!versionBean.isPublicAPI() && versionBean.getStatus() != ApiStatus.Ready) {
             throw ExceptionFactory.actionException(Messages.i18n.format("InvalidApiStatus")); //$NON-NLS-1$
+        }
+        if (versionBean.isPublicAPI()) {
+            if (versionBean.getStatus() == ApiStatus.Retired || versionBean.getStatus() == ApiStatus.Created) {
+                throw ExceptionFactory.actionException(Messages.i18n.format("InvalidApiStatus")); //$NON-NLS-1$
+            }
+            if (versionBean.getStatus() == ApiStatus.Published) {
+                Date modOn = versionBean.getModifiedOn();
+                Date publishedOn = versionBean.getPublishedOn();
+                int c = modOn.compareTo(publishedOn);
+                if (c <= 0) {
+                    throw ExceptionFactory.actionException(Messages.i18n.format("ApiRePublishNotRequired")); //$NON-NLS-1$
+                }
+            }
         }
 
         Api gatewayApi = new Api();
@@ -326,7 +339,7 @@ public class ActionResourceImpl implements IActionResource {
             throw ExceptionFactory.actionException(Messages.i18n.format("ClientNotFound"), e); //$NON-NLS-1$
         }
 
-        // Validate that it's ok to perform this action - client must be Ready or Registered.
+        // Validate that it's ok to perform this action
         if (versionBean.getStatus() == ClientStatus.Registered) {
             Date modOn = versionBean.getModifiedOn();
             Date publishedOn = versionBean.getPublishedOn();

@@ -36,7 +36,7 @@
             <hr />
             <!-- The list of policies -->
             <div apiman-permission="apiEdit"
-                 apiman-status="Created,Ready"
+                 ng-show="!isEntityDisabled()"
                  class="apiman-filters apiman-policies-filters">
               <a apiman-i18n-key="add-policy"
                  href="{{ pluginName }}/orgs/{{ org.id }}/apis/{{ api.id }}/{{ version.version }}/new-policy" class="btn btn-primary pull-right">Add Policy</a>
@@ -48,12 +48,16 @@
               <div class="apiman-no-content container-fluid"
                    ng-hide="policies.length > 0">
                 <div class="row">
-                  <div class="col-md-9">
+                  <div class="col-md-9" ng-show="!isEntityDisabled()">
                     <p class="apiman-no-entities-description"
-                       apiman-i18n-key="no-policies-for-api">It looks like there aren't any policies defined! That may be exactly what you want (of course) but if not, you may try defining one using the Add Policy button above...</p>
+                       apiman-i18n-key="no-policies-for-api-enabled">It looks like there aren't any policies defined! That may be exactly what you want (of course) but if not, you may try defining one using the Add Policy button above...</p>
+                  </div>
+                  <div class="col-md-9" ng-show="isEntityDisabled()">
+                    <p class="apiman-no-entities-description"
+                       apiman-i18n-key="no-policies-for-api-disabled">It looks like there aren't any policies defined and the API is already published!  Hopefully that was your goal with this API...</p>
                   </div>
                   <div apiman-permission="apiEdit"
-                       apiman-status="Created,Ready"
+                       ng-show="!isEntityDisabled()"
                        class="col-md-3">
                     <div class="apiman-no-entities-arrow"></div>
                   </div>

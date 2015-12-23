@@ -1,7 +1,7 @@
 <div class="apiman-policies" id='draggable-ctr' as-sortable="policyListOptions" ng-model="ctrl.policies">
     <div class="container-fluid apiman-summaryrow" ng-repeat="policy in ctrl.policies" as-sortable-item>
         <div class="row" >
-            <div as-sortable-item-handle apiman-permission="apiEdit" apiman-status="Created,Ready" class="policy-grabber" style="height: 48px"></div>
+            <div as-sortable-item-handle apiman-permission="apiEdit" ng-show="!isEntityDisabled()" class="policy-grabber" style="height: 48px"></div>
             <div class="col-md-1 col-no-padding">
                 <i class="apiman-policy-icon fa fa-{{ policy.icon }} fa-fw"></i>
             </div>
@@ -21,7 +21,7 @@
                 </div>
             </div>
             <div class="col pull-right">
-                <button apiman-i18n-key="remove" class="btn btn-default" apiman-status="Created,Ready" ng-click="ctrl.remove( policy )">Remove</button>
+                <button apiman-i18n-key="remove" class="btn btn-default" ng-show="!isEntityDisabled()" ng-click="ctrl.remove( policy )">Remove</button>
             </div>
         </div>
         <hr />

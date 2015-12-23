@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testPlan xmlns="urn:io.apiman.test:2014:02:testPlan">
+
+  <testGroup name="Publish the Api" endpoint="api">
+    <test name="Publish Api">test-plan-data/api-republish/001-publish-api.resttest</test>
+  </testGroup>
+
+  <testGroup name="Successful Request">
+    <test name="Echo Api (Success)">test-plan-data/api-republish/002-api-success.resttest</test>
+  </testGroup>
+
+  <testGroup name="Retire the Api" endpoint="api">
+    <test name="Retire Api">test-plan-data/api-republish/003-retire-api.resttest</test>
+  </testGroup>
+
+  <testGroup name="Failed Request">
+    <test name="Echo Api (Failure)">test-plan-data/api-republish/004-api-failure.resttest</test>
+  </testGroup>
+
+  <testGroup name="Republish the Api" endpoint="api">
+    <test name="Republish Api">test-plan-data/api-republish/005-republish-api.resttest</test>
+  </testGroup>
+
+  <testGroup name="Successful Request after Republish">
+    <test name="Echo Api (Success #2)">test-plan-data/api-republish/006-api-success-republish.resttest</test>
+  </testGroup>
+
+</testPlan>

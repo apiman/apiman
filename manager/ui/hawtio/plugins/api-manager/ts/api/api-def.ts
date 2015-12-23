@@ -3,8 +3,8 @@
 module Apiman {
 
  export var ApiDefController = _module.controller('Apiman.ApiDefController',
-        ['$q', '$rootScope', '$scope', '$location', 'PageLifecycle', 'ApiEntityLoader', 'OrgSvcs', 'Logger', '$routeParams', 'ApiDefinitionSvcs', 'Configuration', 'EntityStatusSvc',
-        ($q, $rootScope, $scope, $location, PageLifecycle, ApiEntityLoader, OrgSvcs, Logger, $routeParams, ApiDefinitionSvcs, Configuration, EntityStatusSvc) => {
+        ['$q', '$rootScope', '$scope', '$location', 'PageLifecycle', 'ApiEntityLoader', 'OrgSvcs', 'Logger', '$routeParams', 'ApiDefinitionSvcs', 'Configuration', 'EntityStatusSvc', 'CurrentUser',
+        ($q, $rootScope, $scope, $location, PageLifecycle, ApiEntityLoader, OrgSvcs, Logger, $routeParams, ApiDefinitionSvcs, Configuration, EntityStatusSvc, CurrentUser) => {
             var params = $routeParams;
 
             $scope.organizationId = params.org;
@@ -13,7 +13,7 @@ module Apiman {
             $scope.showMetrics = Configuration.ui.metrics;
             
             $scope.typeOptions = [
-                { "label" : "No API Definition", "value" : "None" },
+                { "label" : "No API Definition",     "value" : "None" },
                 { "label" : "Swagger (JSON)",        "value" : "SwaggerJSON" },
                 { "label" : "Swagger (YAML)",        "value" : "SwaggerYAML" }
             ];
@@ -74,6 +74,8 @@ module Apiman {
             var checkDirty = function() {
                 if ($scope.version) {
                     var dirty = false;
+                    
+                    Logger.debug("Model def type: {1}   UI Def type: {0}", $scope.definitionType, $scope.selectedDefinitionType.value);
 
                     if ($scope.apiDefinition != $scope.updatedApiDefinition) {
                         Logger.debug("**** dirty because of api def");
@@ -92,7 +94,7 @@ module Apiman {
             $scope.$watch('updatedApi', checkDirty, true);
 
             $scope.$watch('updatedApiDefinition', function(newValue, oldValue) {
-                if (!newValue) {
+                if (!newValue && !oldValue) {
                     return;
                 }
 
@@ -122,6 +124,8 @@ module Apiman {
                         $scope.apiDefinition = $scope.updatedApiDefinition;
                         $rootScope.isDirty = false;
                         $scope.saveButton.state = 'complete';
+                        EntityStatusSvc.getEntity().modifiedOn = Date.now();
+                        EntityStatusSvc.getEntity().modifiedBy = CurrentUser.getCurrentUser();
                     },
                     function(error) {
                         Logger.error("Error updating definition: {0}", error);

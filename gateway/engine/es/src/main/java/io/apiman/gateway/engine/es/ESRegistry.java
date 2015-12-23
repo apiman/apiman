@@ -67,13 +67,11 @@ public class ESRegistry extends AbstractESComponent implements IRegistry {
         try {
             String id = getApiId(api);
             Index index = new Index.Builder(ESRegistryMarshalling.marshall(api).string()).refresh(false)
-                    .index(getIndexName()).setParameter(Parameters.OP_TYPE, "create") //$NON-NLS-1$
+                    .index(getIndexName()).setParameter(Parameters.OP_TYPE, "index") //$NON-NLS-1$
                     .type("api").id(id).build(); //$NON-NLS-1$
             JestResult result = getClient().execute(index);
             if (!result.isSucceeded()) {
-                handler.handle(AsyncResultImpl.create(
-                        new PublishingException(Messages.i18n.format("ESRegistry.ApiAlreadyPublished")),  //$NON-NLS-1$
-                        Void.class));
+                throw new IOException(result.getErrorMessage());
             } else {
                 handler.handle(AsyncResultImpl.create((Void) null));
             }
