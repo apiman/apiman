@@ -43,23 +43,25 @@ public class Bootstrapper implements ServletContextListener {
     public void contextInitialized(ServletContextEvent sce) {
         DistroESConfig config = new DistroESConfig();
 
-
-        System.out.println("------------------------------");
-        System.out.println("Starting apiman-es.");
-        System.out.println("   HTTP Ports: " + config.getHttpPortRange());
-        System.out.println("   Transport Ports: " + config.getTransportPortRange());
-        System.out.println("   Bind Host: " + config.getBindHost());
-        System.out.println("------------------------------");
-        String dataDir = System.getProperty("jboss.server.data.dir");
-        if (dataDir == null) {
-            System.err.println("\n\n-----Failed to find jboss.server.data.dir - are you trying to run apiman-es on an unsupported platform?\n-----\n\n");
+        File esHome = getDataDir();
+        if (esHome == null) {
+            System.out.println("--------------------------------------------------------------");
+            System.err.println("No apiman-es data directory found.  Embedded ES *not* started.");
+            System.out.println("--------------------------------------------------------------");
             return;
         }
-        File esHome = new File(dataDir, "es");
-        System.out.println("ES Home: " + esHome);
         if (!esHome.exists()) {
             esHome.mkdirs();
         }
+
+        System.out.println("------------------------------------------------------------");
+        System.out.println("Starting apiman-es.");
+        System.out.println("   HTTP Ports:      " + config.getHttpPortRange());
+        System.out.println("   Transport Ports: " + config.getTransportPortRange());
+        System.out.println("   Bind Host:       " + config.getBindHost());
+        System.out.println("   ES Data Dir:     " + esHome);
+        System.out.println("------------------------------------------------------------");
+
         Builder settings = NodeBuilder.nodeBuilder().settings();
         settings.put("path.home", esHome.getAbsolutePath());
         settings.put("http.port", config.getHttpPortRange());
@@ -78,14 +80,49 @@ public class Bootstrapper implements ServletContextListener {
     }
 
     /**
+     * @return the ES data directory
+     */
+    private static File getDataDir() {
+        File esHome = null;
+
+        // First check to see if a data directory has been explicitely configured via system property
+        String dataDir = System.getProperty("apiman.distro-es.data_dir");
+        if (dataDir != null) {
+            esHome = new File(dataDir, "es");
+        }
+
+        // If that wasn't set, then check to see if we're running in wildfly/eap
+        if (esHome == null) {
+            dataDir = System.getProperty("jboss.server.data.dir");
+            if (dataDir != null) {
+                esHome = new File(dataDir, "es");
+            }
+        }
+
+        // If that didn't work, try to locate a tomcat data directory
+        if (esHome == null) {
+            dataDir = System.getProperty("catalina.home");
+            if (dataDir != null) {
+                esHome = new File(dataDir, "data/es");
+            }
+        }
+
+        // If all else fails, just let it return null
+
+        return esHome;
+    }
+
+    /**
      * @see javax.servlet.ServletContextListener#contextDestroyed(javax.servlet.ServletContextEvent)
      */
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
-        node.stop();
-        System.out.println("-----------------------------");
-        System.out.println("apiman-es stopped!");
-        System.out.println("-----------------------------");
+        if (node != null) {
+            node.stop();
+            System.out.println("-----------------------------");
+            System.out.println("apiman-es stopped!");
+            System.out.println("-----------------------------");
+        }
     }
 
 }

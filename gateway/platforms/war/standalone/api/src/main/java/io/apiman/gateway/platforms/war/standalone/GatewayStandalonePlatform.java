@@ -16,7 +16,7 @@
 package io.apiman.gateway.platforms.war.standalone;
 
 import io.apiman.gateway.api.rest.impl.IPlatform;
-import io.apiman.gateway.engine.beans.ServiceEndpoint;
+import io.apiman.gateway.engine.beans.ApiEndpoint;
 import io.apiman.gateway.platforms.war.WarGateway;
 import io.apiman.gateway.platforms.war.filters.HttpRequestThreadLocalFilter;
 
@@ -29,7 +29,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author pcornish
  */
 public class GatewayStandalonePlatform implements IPlatform {
-    
+
     public static final String APIMAN_GATEWAY_ENDPOINT = "apiman.micro.gateway.public-endpoint"; //$NON-NLS-1$
 
     /**
@@ -39,10 +39,10 @@ public class GatewayStandalonePlatform implements IPlatform {
     }
 
     /**
-     * @see IPlatform#getServiceEndpoint(String, String, String)
+     * @see io.apiman.gateway.api.rest.impl.IPlatform#getApiEndpoint(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
-    public ServiceEndpoint getServiceEndpoint(String organizationId, String serviceId, String version) {
+    public ApiEndpoint getApiEndpoint(String organizationId, String apiId, String version) {
         String endpoint = WarGateway.config.getConfigProperty(APIMAN_GATEWAY_ENDPOINT, null);
         StringBuilder builder = new StringBuilder();
         if (endpoint == null) {
@@ -66,11 +66,11 @@ public class GatewayStandalonePlatform implements IPlatform {
         }
         builder.append(organizationId);
         builder.append("/"); //$NON-NLS-1$
-        builder.append(serviceId);
+        builder.append(apiId);
         builder.append("/"); //$NON-NLS-1$
         builder.append(version);
-        
-        ServiceEndpoint rval = new ServiceEndpoint();
+
+        ApiEndpoint rval = new ApiEndpoint();
         rval.setEndpoint(builder.toString());
         return rval;
     }

@@ -2,16 +2,20 @@ package io.apiman.gateway.platforms.war.standalone.listeners;
 
 import io.apiman.gateway.platforms.war.WarEngineConfig;
 import io.apiman.gateway.platforms.war.listeners.WarGatewayBootstrapper;
+import io.apiman.gateway.platforms.war.standalone.i18n.Messages;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Map.Entry;
+import java.util.Properties;
+
+import javax.servlet.ServletContextEvent;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.servlet.ServletContextEvent;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
 
 /**
  * Work-around for JBoss/Wildfly specific code in {@link WarGatewayBootstrapper} that prevents use of
@@ -26,9 +30,10 @@ import java.util.Properties;
  * @author pcornish
  */
 public class StandaloneWarBootstrapper extends WarGatewayBootstrapper {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(StandaloneWarBootstrapper.class);
-    private static final String APIMAN_CONFIG_FILE_PATH = "apiman.config-file-path";
-    private static final String APIMAN_CONFIG_FILE_NAME = "/apiman.properties";
+    private static final String APIMAN_CONFIG_FILE_PATH = "apiman.config-file-path"; //$NON-NLS-1$
+    private static final String APIMAN_CONFIG_FILE_NAME = "/apiman.properties"; //$NON-NLS-1$
 
     /**
      * Constructor.
@@ -39,6 +44,7 @@ public class StandaloneWarBootstrapper extends WarGatewayBootstrapper {
     /**
      * @see javax.servlet.ServletContextListener#contextInitialized(javax.servlet.ServletContextEvent)
      */
+    @Override
     public void contextInitialized(ServletContextEvent sce) {
         loadConfigurationIntoSystemProperties();
 
@@ -55,34 +61,35 @@ public class StandaloneWarBootstrapper extends WarGatewayBootstrapper {
         final String configFilePath = System.getProperty(APIMAN_CONFIG_FILE_PATH);
         if (StringUtils.isNotEmpty(configFilePath)) {
             // read from file
-            LOGGER.info("Loading configuration from file: {}", configFilePath);
+
+            LOGGER.info(Messages.i18n.format("StandaloneWarBootstrapper.LoadingConfigFromFile", configFilePath)); //$NON-NLS-1$
 
             try (InputStream configStream = FileUtils.openInputStream(new File(configFilePath))) {
                 configFile.load(configStream);
 
             } catch (IOException e) {
-                throw new RuntimeException(String.format(
-                        "Error loading configuration from file: %s", configFilePath), e);
+                throw new RuntimeException(Messages.i18n.format("StandaloneWarBootstrapper.ErrorLoadingConfigFromFile", configFilePath), e); //$NON-NLS-1$
             }
 
         } else {
             // search the classpath
-            LOGGER.info("Loading configuration from classpath file: {}", APIMAN_CONFIG_FILE_NAME);
+            LOGGER.info(Messages.i18n.format("StandaloneWarBootstrapper.LoadingConfigFromCP", APIMAN_CONFIG_FILE_NAME)); //$NON-NLS-1$
 
             try (InputStream configStream = StandaloneWarBootstrapper.class.getResourceAsStream(APIMAN_CONFIG_FILE_NAME)) {
                 if (null == configStream) {
-                    throw new IOException(String.format("Unable to load classpath file: %s", APIMAN_CONFIG_FILE_NAME));
+                    throw new IOException(Messages.i18n.format("StandaloneWarBootstrapper.ErrorLoadingConfigFromCP", APIMAN_CONFIG_FILE_NAME)); //$NON-NLS-1$
                 }
                 configFile.load(configStream);
-
             } catch (IOException e) {
-                throw new RuntimeException(String.format(
-                        "Error loading configuration from classpath file: '%s'. Set system property '%s'?",
-                        APIMAN_CONFIG_FILE_NAME, APIMAN_CONFIG_FILE_PATH), e);
+                throw new RuntimeException(
+                        Messages.i18n.format("StandaloneWarBootstrapper.ErrorLoadingConfigFromCP-2", //$NON-NLS-1$
+                                APIMAN_CONFIG_FILE_NAME, APIMAN_CONFIG_FILE_PATH),
+                        e);
             }
         }
 
-        // push into system properties
-        configFile.forEach((key, value) -> System.setProperty((String) key, (String) value));
+        for (Entry<Object, Object> entry : configFile.entrySet()) {
+            System.setProperty((String) entry.getKey(), (String) entry.getValue());
+        }
     }
 }

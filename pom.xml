@@ -118,6 +118,7 @@
     <version.commons-dbcp>1.4</version.commons-dbcp>
     <version.commons-io>2.1</version.commons-io>
     <version.commons-lang>2.6</version.commons-lang>
+    <version.commons-logging>1.2</version.commons-logging>
     <version.commons-pool>1.6</version.commons-pool>
     <version.com.zaxxer>2.4.0</version.com.zaxxer>
     <version.io.searchbox.jest>0.1.6</version.io.searchbox.jest>
@@ -634,6 +635,11 @@
         <groupId>commons-io</groupId>
         <artifactId>commons-io</artifactId>
         <version>${version.commons-io}</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-logging</groupId>
+        <artifactId>commons-logging</artifactId>
+        <version>${version.commons-logging}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.commons</groupId>
