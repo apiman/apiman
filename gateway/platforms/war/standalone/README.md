@@ -34,7 +34,7 @@ If you want to build them again, install from the _standalone_ directory:
 
 ## Deployment
 
-These instructions been tested on Tomcat 8 (apache-tomcat-8.0.30 to be precise).
+These instructions have been tested on Tomcat 7 and 8 (apache-tomcat-7.0.65 and apache-tomcat-8.0.30 to be precise).
 
   1. Copy the WAR files to your Tomcat `webapps` directory
   2. Add a role and users to `conf/tomcat-users.xml`
@@ -57,8 +57,8 @@ You can access them at:
 
 ## Dependencies
 
-  * Since Tomcat (<=8) doesn't provide a CDI implementation, we use JBoss Weld.
-  * Currently expects an Elasticsearch instance running on port `localhost:9200` with a cluster named _apiman_. In order to get up and running quickly, you can use the ES embedded WAR, but a proper Elasticsearch cluster is strongly recommended.
+  * Currently expects an Elasticsearch instance running on port `localhost:9200` with a cluster named _apiman_.
+    * In order to get up and running quickly, you can use the ES embedded WAR, but a proper Elasticsearch cluster is strongly recommended.
 
 ## Implementation
 
@@ -68,3 +68,6 @@ The standalone WARs are based on the _apiman_ micro WAR implementation.
 
   * Consider refactoring `io.apiman.common.config.ConfigFileConfiguration.create(String)` to remove coupling to JBoss/Wildfly with dependency on `jboss.server.config.dir` System property.
   * Tidy up standalone ES WAR project and externalise configuration.
+  * Port _manager_ WARs.
+    * (Re-)introduce _resteasy-cdi_ dependency
+    * Since Tomcat (<=8) doesn't provide a CDI implementation, consider using JBoss Weld.
