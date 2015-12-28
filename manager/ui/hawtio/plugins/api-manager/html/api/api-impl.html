@@ -192,17 +192,13 @@
               <div>
                 <span class="clearfix"
                       apiman-i18n-key="publish-to">Publish To:</span>
-                <ui-select ng-model="selectedGateway.val"
-                           ng-disabled="isEntityDisabled()"
-                           on-select="setGateways($item)"
-                           style="width: 30%; max-width: 300px;">
-                  <ui-select-match>
-                    <span ng-bind="$select.selected.name"></span>
-                  </ui-select-match>
-                  <ui-select-choices repeat="gatewayId as gateway in (gateways | filter: $select.search) track by gateway.id">
-                    <span ng-bind="gateway.name"></span>
-                  </ui-select-choices>
-                </ui-select>
+                <select ng-options="gateway.name for gateway in gateways | orderBy: name"
+                        ng-model="selectedGateways"
+                        ng-disabled="isEntityDisabled()"
+                        class="selectpicker"
+                        apiman-select-picker=""
+                        multiple>
+                </select>
               </div>
             </div>
             
@@ -236,7 +232,7 @@
                  ng-show="!isEntityDisabled()"
                  class="actions"
                  style="margin-top: 20px">
-              <button ng-disabled="checkValid() != true || isDirty === false || saving === true"
+              <button ng-disabled="checkValid() === false || isDirty === false || saving === true"
                       ng-click="validateEndpoint()"
                       class="btn btn-primary"
                       apiman-i18n-key="save"
