@@ -37,5 +37,5 @@ public @interface Configuration {
      *
      * @return the classpath file path
      */
-    String classpathConfigFile();
+    String classpathConfigFile() default "";
 }
