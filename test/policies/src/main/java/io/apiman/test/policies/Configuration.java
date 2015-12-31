@@ -32,4 +32,10 @@ public @interface Configuration {
 
     String value() default "";
 
+    /**
+     * The path to a policy configuration file on the classpath, such as: <code>/my-api-config.json</code>
+     *
+     * @return the classpath file path
+     */
+    String classpathConfigFile();
 }
