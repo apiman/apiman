@@ -268,7 +268,10 @@ public class GatewayClient /*implements ISystemResource, IApiResource, IClientRe
             is = response.getEntity().getContent();
             GatewayApiErrorBean error = mapper.reader(GatewayApiErrorBean.class).readValue(is);
             exception = new PublishingException(error.getMessage());
-            exception.setStackTrace(parseStackTrace(error.getStacktrace()));
+            StackTraceElement[] stack = parseStackTrace(error.getStacktrace());
+            if (stack != null) {
+                exception.setStackTrace(stack);
+            }
         } catch (Exception e) {
             exception = new PublishingException(e.getMessage(), e);
         } finally {
@@ -288,7 +291,10 @@ public class GatewayClient /*implements ISystemResource, IApiResource, IClientRe
             is = response.getEntity().getContent();
             GatewayApiErrorBean error = mapper.reader(GatewayApiErrorBean.class).readValue(is);
             exception = new RegistrationException(error.getMessage());
-            exception.setStackTrace(parseStackTrace(error.getStacktrace()));
+            StackTraceElement[] stack = parseStackTrace(error.getStacktrace());
+            if (stack != null) {
+                exception.setStackTrace(stack);
+            }
         } catch (Exception e) {
             exception = new RegistrationException(e.getMessage(), e);
         } finally {
@@ -329,6 +335,7 @@ public class GatewayClient /*implements ISystemResource, IApiResource, IClientRe
             }
             return elements.toArray(new StackTraceElement[elements.size()]);
         } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }
