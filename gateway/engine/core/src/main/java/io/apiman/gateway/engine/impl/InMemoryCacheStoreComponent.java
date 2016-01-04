@@ -140,7 +140,7 @@ public class InMemoryCacheStoreComponent implements ICacheStoreComponent {
             rval = objectCache.get(cacheKey);
             if (rval != null) {
                 Long expiresOn = expireOnMap.get(cacheKey);
-                if (expiresOn > System.currentTimeMillis()) {
+                if (System.currentTimeMillis() > expiresOn ) {
                     expired = true;
                 }
             }
