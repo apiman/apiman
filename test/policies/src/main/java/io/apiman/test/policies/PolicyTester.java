@@ -32,12 +32,16 @@ import io.apiman.gateway.engine.impl.DefaultComponentRegistry;
 import io.apiman.gateway.engine.impl.DefaultEngineFactory;
 import io.apiman.gateway.engine.policy.IPolicy;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.Future;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.FrameworkMethod;
@@ -148,7 +152,7 @@ public class PolicyTester extends BlockJUnit4ClassRunner {
 
             Policy policy = new Policy();
             policy.setPolicyImpl("class:" + policyUnderTest.getName());
-            policy.setPolicyJsonConfig(config.value());
+            policy.setPolicyJsonConfig(getPolicyConfiguration(config));
 
             Api api = new Api();
             api.setEndpoint(backEndApi.getName());
@@ -174,6 +178,27 @@ public class PolicyTester extends BlockJUnit4ClassRunner {
         } catch (Throwable e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * Returns the policy configuration as a String, based on the provided Configuration.
+     *
+     * @param config the Configuration test annotation
+     * @return the policy configuration
+     */
+    private String getPolicyConfiguration(Configuration config) {
+        if (StringUtils.isNotBlank(config.classpathConfigFile())) {
+            try (InputStream configStream = getTestClass().getJavaClass().getClassLoader().getResourceAsStream(config.classpathConfigFile())) {
+                return IOUtils.toString(configStream);
+
+            } catch (IOException e) {
+                throw new RuntimeException(String.format("Error loading policy configuration from file: %s",
+                        config.classpathConfigFile()), e);
+            }
+        }
+
+        // assume provided by the default annotation value
+        return config.value();
     }
 
     /**
