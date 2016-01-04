@@ -47,7 +47,7 @@ module Apiman {
                 })
             };
             
-            PageLifecycle.loadPage('ApiCatalog', 'apiView', pageData, $scope, function() {
+            PageLifecycle.loadPage('ApiCatalog', undefined, pageData, $scope, function() {
                 angular.forEach($scope.apis, function(api) {
                     api.iconIsUrl = false;
                     if (!api.icon) {
@@ -55,9 +55,6 @@ module Apiman {
                     }
                     if (api.icon.indexOf('http') == 0) {
                         api.iconIsUrl = true;
-                        Logger.debug("TOTALLY FOUND AN HTTP ICON!");
-                    } else {
-                        Logger.debug("NO WAY, JOSE!");
                     }
                     api.ticon = 'fa-file-text-o';
                     if (api.endpointType == 'soap') {

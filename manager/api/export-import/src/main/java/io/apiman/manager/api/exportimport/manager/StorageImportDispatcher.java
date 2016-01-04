@@ -167,7 +167,12 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
     public void role(RoleBean role) {
         try {
             logger.info(Messages.i18n.format("StorageImportDispatcher.ImportingRole") + role.getName()); //$NON-NLS-1$
-            storage.createRole(role);
+            RoleBean roleBean = storage.getRole(role.getId());
+            if (roleBean != null) {
+                storage.updateRole(role);
+            } else {
+                storage.createRole(role);
+            }
         } catch (StorageException e) {
             error(e);
         }
@@ -194,7 +199,12 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
     public void gateway(GatewayBean gateway) {
         try {
             logger.info(Messages.i18n.format("StorageImportDispatcher.ImportingGateway") + gateway.getName()); //$NON-NLS-1$
-            storage.createGateway(gateway);
+            GatewayBean gatewayBean = storage.getGateway(gateway.getId());
+            if (gatewayBean != null) {
+                storage.updateGateway(gateway);
+            } else {
+                storage.createGateway(gateway);
+            }
         } catch (StorageException e) {
             error(e);
         }
@@ -207,7 +217,13 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
     public void policyDef(PolicyDefinitionBean policyDef) {
         try {
             logger.info(Messages.i18n.format("StorageImportDispatcher.ImportingPolicyDef") + policyDef.getName()); //$NON-NLS-1$
-            storage.createPolicyDefinition(policyDef);
+
+            PolicyDefinitionBean policyDefBean = storage.getPolicyDefinition(policyDef.getId());
+            if (policyDefBean != null) {
+                storage.updatePolicyDefinition(policyDef);
+            } else {
+                storage.createPolicyDefinition(policyDef);
+            }
             policyDefIndex.put(policyDef.getId(), policyDef);
         } catch (StorageException e) {
             error(e);
