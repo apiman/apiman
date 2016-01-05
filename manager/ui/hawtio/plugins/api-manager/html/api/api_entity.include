@@ -58,7 +58,7 @@
             <div class="apiman-divider-40"></div>
             <div class="">
               <button ng-disabled="getEntityStatus() == 'Created'" apiman-action-btn="" apiman-status="Created,Ready" class="btn btn-primary" data-field="publishButton" apiman-i18n-key="publish" placeholder="Publishing..." data-icon="fa-cog" ng-click="publishApi()">Publish</button>
-              <button ng-show="version.publicAPI" ng-disabled="version.modifiedOn <= version.publishedOn" apiman-action-btn="" apiman-status="Published" class="btn btn-primary" data-field="republishButton" apiman-i18n-key="republish" placeholder="Publishing..." data-icon="fa-cog" ng-click="publishApi()">Re-Publish</button>
+              <button ng-show="version.publicAPI" ng-disabled="version.publishedOn > version.modifiedOn" apiman-action-btn="" apiman-status="Published" class="btn btn-primary" data-field="republishButton" apiman-i18n-key="republish" placeholder="Publishing..." data-icon="fa-cog" ng-click="publishApi()">Re-Publish</button>
               <button apiman-action-btn="" apiman-status="Published" class="btn btn-warning" data-field="retireButton" apiman-i18n-key="retire" placeholder="Retiring..." data-icon="fa-cog" ng-click="retireApi()">Retire</button>
             </div>
 
