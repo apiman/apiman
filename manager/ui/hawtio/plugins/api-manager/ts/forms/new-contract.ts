@@ -141,7 +141,7 @@ module Apiman {
                         $scope.selectedApi.organizationName, $scope.selectedApi.name, $scope.selectedApi.version,
                         $scope.selectedPlan.planName);
 
-                $scope.saving = true;
+                $scope.createButton.state = 'in-progress';
 
                 var newContract = {
                     apiOrgId : $scope.selectedApi.organizationId,
@@ -153,8 +153,6 @@ module Apiman {
                 OrgSvcs.save({ organizationId: $scope.selectedClient.organizationId, entityType: 'clients', entityId: $scope.selectedClient.id, versionsOrActivity: 'versions', version: $scope.selectedClientVersion, policiesOrActivity: 'contracts' }, newContract, function(reply) {
                     PageLifecycle.redirectTo('/orgs/{0}/clients/{1}/{2}/contracts', $scope.selectedClient.organizationId, $scope.selectedClient.id, $scope.selectedClientVersion);
                 }, PageLifecycle.handleError);
-
-                $scope.saving = false;
             };
             
             PageLifecycle.loadPage('NewContract', undefined, pageData, $scope, function() {
