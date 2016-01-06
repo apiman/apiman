@@ -32,6 +32,7 @@ import io.apiman.gateway.engine.es.ESSharedStateComponent;
 import io.apiman.gateway.engine.es.PollCachingESRegistry;
 import io.apiman.gateway.engine.impl.ByteBufferFactoryComponent;
 import io.apiman.gateway.engine.impl.DefaultJdbcComponent;
+import io.apiman.gateway.engine.impl.DefaultLdapComponent;
 import io.apiman.gateway.engine.impl.DefaultPluginRegistry;
 import io.apiman.gateway.engine.policy.PolicyFactoryImpl;
 import io.apiman.gateway.platforms.servlet.PolicyFailureFactoryComponent;
@@ -113,6 +114,7 @@ public class GatewayMicroService {
         registerPolicyFailureFactoryComponent();
         registerCacheStoreComponent();
         registerJdbcComponent();
+        registerLdapComponent();
     }
 
     /**
@@ -173,12 +175,19 @@ public class GatewayMicroService {
         setConfigProperty("apiman-gateway.components.ICacheStoreComponent.client.username", "${apiman.es.username}");
         setConfigProperty("apiman-gateway.components.ICacheStoreComponent.client.password", "${apiman.es.password}");
     }
-    
+
     /**
      * The jdbc component.
      */
     protected void registerJdbcComponent() {
         setConfigProperty("apiman-gateway.components.IJdbcComponent", DefaultJdbcComponent.class.getName());
+    }
+
+    /**
+     * The ldap component.
+     */
+    protected void registerLdapComponent() {
+        setConfigProperty("apiman-gateway.components.ILdapComponent", DefaultLdapComponent.class.getName());
     }
 
     /**
@@ -321,7 +330,7 @@ public class GatewayMicroService {
 
     /**
      * @param apiManServer
-     * @throws Exception 
+     * @throws Exception
      */
     protected void addSecurityHandler(ServletContextHandler apiManServer) throws Exception {
         apiManServer.setSecurityHandler(createSecurityHandler());

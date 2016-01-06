@@ -17,12 +17,14 @@
 package io.apiman.tools.devsvr.gateway;
 
 import io.apiman.gateway.engine.components.ICacheStoreComponent;
+import io.apiman.gateway.engine.components.ILdapComponent;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.components.IRateLimiterComponent;
 import io.apiman.gateway.engine.components.ISharedStateComponent;
 import io.apiman.gateway.engine.components.jdbc.IJdbcComponent;
 import io.apiman.gateway.engine.es.ESMetrics;
 import io.apiman.gateway.engine.impl.DefaultJdbcComponent;
+import io.apiman.gateway.engine.impl.DefaultLdapComponent;
 import io.apiman.gateway.engine.impl.DefaultPluginRegistry;
 import io.apiman.gateway.engine.impl.InMemoryCacheStoreComponent;
 import io.apiman.gateway.engine.impl.InMemoryMetrics;
@@ -95,6 +97,8 @@ public class GatewayDevServer {
                 InMemoryCacheStoreComponent.class.getName());
         System.setProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + IJdbcComponent.class.getSimpleName(),
                 DefaultJdbcComponent.class.getName());
+        System.setProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + ILdapComponent.class.getSimpleName(),
+                DefaultLdapComponent.class.getName());
 
         GatewayServer server = new GatewayServer(gatewayPort);
         server.start();

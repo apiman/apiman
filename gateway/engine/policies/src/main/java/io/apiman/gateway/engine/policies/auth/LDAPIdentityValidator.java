@@ -82,12 +82,24 @@ public class LDAPIdentityValidator implements IIdentityValidator<LDAPIdentitySou
         String bindDn = formatDn(config.getDnPattern(), username, request);
         String bindDnPwd = password;
 
+        int port = config.getUri().getPort();
+        String scheme = config.getUri().getScheme();
+
+        if (port == -1) {
+            if ("ldap".equalsIgnoreCase(scheme)) { //$NON-NLS-1$
+                port = 389;
+            }
+            if ("ldaps".equalsIgnoreCase(scheme)) { //$NON-NLS-1$
+                port = 636;
+            }
+        }
+
         final LdapConfigBean ldapConfigBean = new LdapConfigBean();
         ldapConfigBean.setBindDn(bindDn);
         ldapConfigBean.setBindPassword(bindDnPwd);
         ldapConfigBean.setHost(config.getUri().getHost());
-        ldapConfigBean.setPort(config.getUri().getPort());
-        ldapConfigBean.setScheme(config.getUri().getScheme());
+        ldapConfigBean.setPort(port);
+        ldapConfigBean.setScheme(scheme);
 
         // Bind as one account, search for other.
         if (config.getBindAs() == LDAPBindAsType.ServiceAccount) {
