@@ -39,8 +39,12 @@
     "class": "io.apiman.gateway.engine.impl.InMemoryMetrics",
     "config": {}
   },
-
   "components": {
+      "ILdapComponent": {
+        "class": "io.apiman.gateway.engine.impl.DefaultLdapComponent",
+        "config": {}
+      },
+
       "IHttpClientComponent": {
         "class": "io.apiman.gateway.platforms.vertx3.components.HttpClientComponentImpl",
         "config": {}

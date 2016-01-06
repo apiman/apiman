@@ -53,17 +53,17 @@ public class LDAPConnectionFactory {
     }
 
     public static void releaseConnection(LDAPConnection connection) {
-        if (connection.getConnectionPool() != null)
+        if (connection != null && connection.getConnectionPool() != null)
             connection.getConnectionPool().releaseConnection(connection);
     }
 
     public static void releaseDefunct(LDAPConnection connection) {
-        if (connection.getConnectionPool() != null)
+        if (connection != null && connection.getConnectionPool() != null)
             connection.getConnectionPool().releaseDefunctConnection(connection);
     }
 
     public static void releaseConnectionAfterException(LDAPConnection connection, LDAPException e) {
-        if (connection.getConnectionPool() != null)
+        if (connection != null && connection.getConnectionPool() != null)
             connection.getConnectionPool().releaseConnectionAfterException(connection, e);
     }
 
