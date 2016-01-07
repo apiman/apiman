@@ -491,9 +491,11 @@ module Apiman {
             if ($scope.config) {
                 if ($scope.config.staticIdentity) {
                     $scope.identitySourceType = 'static';
-                } else if ($scope.config.ldapIdentity && $scope.config.ldapIdentity.credentials) {
+                } else if ($scope.config.ldapIdentity && $scope.config.ldapIdentity.url) {
                     $scope.identitySourceType = 'ldap';
-                    $scope.repeatPassword = $scope.config.ldapIdentity.credentials.password;
+                    if ($scope.config.ldapIdentity.credentials) {
+                        $scope.repeatPassword = $scope.config.ldapIdentity.credentials.password;
+                    }
                 } else if ($scope.config.jdbcIdentity) {
                     $scope.identitySourceType = 'jdbc';
                     $scope.jdbcPasswordVerify = $scope.config.jdbcIdentity.password;

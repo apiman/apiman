@@ -22,6 +22,7 @@ import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.components.jdbc.IJdbcComponent;
 import io.apiman.gateway.engine.impl.DefaultJdbcComponent;
 import io.apiman.gateway.engine.policies.config.BasicAuthenticationConfig;
+import io.apiman.gateway.engine.policies.util.TestInitialContextFactory;
 import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
 
@@ -55,7 +56,7 @@ public class BasicAuthJDBCTest {
 
     @BeforeClass
     public static void setup() throws Exception {
-        System.setProperty(Context.INITIAL_CONTEXT_FACTORY, InitialContextFactoryForTest.class.getName());
+        System.setProperty(Context.INITIAL_CONTEXT_FACTORY, TestInitialContextFactory.class.getName());
 
         // Create a test datasource and bind it to JNDI
         BasicDataSource ds = createInMemoryDatasource();

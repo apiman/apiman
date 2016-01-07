@@ -127,11 +127,10 @@ public class ApimanLdapServer extends AbstractLdapTestUnit {
         System.out.println("  Node Count: " + count);
         System.out.println("  Direct Bind DN: ${username},ou=developers,ou=people,o=apiman");
         System.out.println("======================================================");
-
+        System.out.println("");
+        System.out.println("");
         System.out.println("Press Enter to stop the LDAP server.");
         new BufferedReader(new InputStreamReader(System.in)).readLine();
-
-        System.out.println("");
         System.out.println("Shutting down the LDAP server...");
     }
 

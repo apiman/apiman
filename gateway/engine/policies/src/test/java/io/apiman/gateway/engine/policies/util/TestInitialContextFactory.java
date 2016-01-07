@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apiman.gateway.engine.policies;
+package io.apiman.gateway.engine.policies.util;
 
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -29,7 +29,7 @@ import javax.naming.spi.InitialContextFactory;
  * 
  * @author eric.wittmann@redhat.com
  */
-public class InitialContextFactoryForTest implements InitialContextFactory {
+public class TestInitialContextFactory implements InitialContextFactory {
 
     private static Context context;
 

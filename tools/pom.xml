@@ -13,6 +13,7 @@
     <module>ddl</module>
     <module>dev-server</module>
     <module>i18n</module>
+    <module>jdbc</module>
     <module>ldap</module>
     <module>server-all</module>
     <module>services</module>

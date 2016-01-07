@@ -39,7 +39,7 @@ import com.zaxxer.hikari.HikariDataSource;
  * @author eric.wittmann@redhat.com
  */
 public class DefaultJdbcComponent implements IJdbcComponent {
-    
+
     private Map<String, IJdbcClient> clients = new HashMap<>();
 
     /**
@@ -68,8 +68,7 @@ public class DefaultJdbcComponent implements IJdbcComponent {
      */
     @Override
     public IJdbcClient createStandalone(JdbcOptionsBean config) {
-        DataSource ds = datasourceFromConfig(config);
-        return new DefaultJdbcClient(ds);
+        return createShared(dsNameFromConfig(config), config);
     }
 
     /**
@@ -99,7 +98,7 @@ public class DefaultJdbcComponent implements IJdbcComponent {
         setConfigProperty(props, "minIdle", config.getMinimumIdle());
         setConfigProperty(props, "poolName", config.getPoolName());
         setConfigProperty(props, "autoCommit", config.isAutoCommit());
-        
+
         HikariConfig hikariConfig = new HikariConfig(props);
         return new HikariDataSource(hikariConfig);
     }
@@ -117,11 +116,39 @@ public class DefaultJdbcComponent implements IJdbcComponent {
     }
 
     /**
+     * Creates a datasource name (for caching) from the config.
+     * @param config
+     */
+    private String dsNameFromConfig(JdbcOptionsBean config) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(config.getJdbcUrl())
+            .append("::") //$NON-NLS-1$
+            .append(config.getUsername())
+            .append("::") //$NON-NLS-1$
+            .append(config.getPassword())
+            .append("::") //$NON-NLS-1$
+            .append(config.getConnectionTimeout())
+            .append("::") //$NON-NLS-1$
+            .append(config.getIdleTimeout())
+            .append("::") //$NON-NLS-1$
+            .append(config.getMaximumPoolSize())
+            .append("::") //$NON-NLS-1$
+            .append(config.getMaxLifetime())
+            .append("::") //$NON-NLS-1$
+            .append(config.getMinimumIdle())
+            .append("::") //$NON-NLS-1$
+            .append(config.getPoolName())
+            .append("::") //$NON-NLS-1$
+            .append(config.isAutoCommit());
+        return builder.toString();
+    }
+
+    /**
      * JDBC client impl.
      * @author eric.wittmann@redhat.com
      */
     private static class DefaultJdbcClient implements IJdbcClient {
-        
+
         protected DataSource ds;
 
         /**
@@ -146,7 +173,10 @@ public class DefaultJdbcComponent implements IJdbcComponent {
                 handler.handle(AsyncResultImpl.create(e, IJdbcConnection.class));
             } finally {
                 try {
+                    // If not closed by now (since this is a synchronous implementation of the client
+                    // interface) then the consumer messed up.  We'll be nice and close it for them here.
                     if (!jdbcConnection.isClosed()) {
+                        System.err.print("NOTE: closing a JDBC connection that should have already been closed!"); //$NON-NLS-1$
                         jdbcConnection.close();
                     }
                 } catch (Exception e) {
@@ -154,7 +184,7 @@ public class DefaultJdbcComponent implements IJdbcComponent {
                 }
             }
         }
-        
+
     }
 
 }
