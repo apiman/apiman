@@ -37,6 +37,10 @@ public class DefaultExceptionFactory {
                 e.getDiagnosticMessage(), e);
     }
 
+    public static LdapException create(LdapResultCode resultCode, String message) {
+        return new LdapException(resultCode, message, null);
+    }
+
     public static LdapException create(ResultCode resultCode, String message) {
         return new LdapException(DefaultLdapResultCodeFactory.convertResultCode(resultCode), message, null);
     }

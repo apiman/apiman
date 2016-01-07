@@ -60,12 +60,10 @@ public class DefaultLdapClientConnection implements ILdapClientConnection {
                 if (e != null) {
                     handler.handle(AsyncResultImpl.<ILdapResult>create(DefaultExceptionFactory.create(e)));
                 } else {
-                    handler.handle(AsyncResultImpl.<ILdapResult>create(DefaultExceptionFactory.create(resultCode, message)));
+                    handler.handle(AsyncResultImpl.<ILdapResult>create(DefaultExceptionFactory.create(ldapResultCode, message)));
                 }
             } else {
-                System.out.println("ResultCode: " + resultCode);
-                System.out.println("LDAP Message: " + message);
-                handler.handle(AsyncResultImpl.<ILdapResult>create(new LdapResult(resultCode, message)));
+                handler.handle(AsyncResultImpl.<ILdapResult>create(new LdapResult(ldapResultCode, message)));
             }
         }
 
@@ -78,7 +76,7 @@ public class DefaultLdapClientConnection implements ILdapClientConnection {
                 evalBindReturn(bindResponse.getResultCode(), bindResponse.getDiagnosticMessage(), null, handler);
                 LDAPConnectionFactory.releaseConnection(connection);
             } catch (LDAPException e) { // generally errors as an exception, also potentially normal return(!).
-                evalBindReturn(e.getResultCode(), e.getDiagnosticMessage(), e, handler);
+                evalBindReturn(e.getResultCode(), e.getMessage(), e, handler);
                 LDAPConnectionFactory.releaseConnectionAfterException(connection, e);
             } catch (Exception e) {
                 LDAPConnectionFactory.releaseDefunct(connection);
@@ -92,7 +90,7 @@ public class DefaultLdapClientConnection implements ILdapClientConnection {
                 BindResult bindResponse = connection.bind(config.getBindDn(), config.getBindPassword());
                 evalBindReturn(bindResponse.getResultCode(), bindResponse.getDiagnosticMessage(), null, handler);
             } catch (LDAPException e) {
-                evalBindReturn(e.getResultCode(), e.getDiagnosticMessage(), e, handler);
+                evalBindReturn(e.getResultCode(), e.getMessage(), e, handler);
             } catch (Exception e) {
                 LDAPConnectionFactory.releaseDefunct(connection);
                 handler.handle(AsyncResultImpl.<ILdapResult>create(e));
