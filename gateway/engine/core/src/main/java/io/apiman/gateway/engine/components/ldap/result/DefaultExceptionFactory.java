@@ -16,6 +16,8 @@
 
 package io.apiman.gateway.engine.components.ldap.result;
 
+import io.apiman.gateway.engine.components.ldap.ILdapResult;
+
 import com.unboundid.ldap.sdk.LDAPException;
 import com.unboundid.ldap.sdk.ResultCode;
 
@@ -35,7 +37,15 @@ public class DefaultExceptionFactory {
                 e.getDiagnosticMessage(), e);
     }
 
+    public static LdapException create(LdapResultCode resultCode, String message) {
+        return new LdapException(resultCode, message, null);
+    }
+
     public static LdapException create(ResultCode resultCode, String message) {
         return new LdapException(DefaultLdapResultCodeFactory.convertResultCode(resultCode), message, null);
+    }
+
+    public static LdapException create(ILdapResult result) {
+        return new LdapException(result.getResultCode(), result.getMessage(), null);
     }
 }

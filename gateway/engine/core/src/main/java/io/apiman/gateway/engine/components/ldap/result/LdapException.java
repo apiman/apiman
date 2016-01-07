@@ -31,4 +31,9 @@ public class LdapException extends Exception {
     public LdapResultCode getResultCode() {
         return resultCode;
     }
+
+    @Override
+    public String toString() {
+        return resultCode + ": " + super.getMessage(); //$NON-NLS-1$
+    }
 }

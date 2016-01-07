@@ -23,6 +23,7 @@ import io.apiman.gateway.engine.components.ILdapComponent;
 import io.apiman.gateway.engine.components.ldap.ILdapClientConnection;
 import io.apiman.gateway.engine.components.ldap.ILdapResult;
 import io.apiman.gateway.engine.components.ldap.LdapConfigBean;
+import io.apiman.gateway.engine.components.ldap.result.DefaultExceptionFactory;
 
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
@@ -69,8 +70,13 @@ public class DefaultLdapComponent implements ILdapComponent {
 
             @Override
             public void handle(IAsyncResult<ILdapResult> result) {
-                if (result.isSuccess()) {
-                    handler.handle(AsyncResultImpl.<ILdapClientConnection>create(connection));
+                if (result.isSuccess()) { // Could still be a non-success return
+                    ILdapResult ldapResult = result.getResult();
+                    if (ldapResult.getResultCode().isSuccess()) {
+                        handler.handle(AsyncResultImpl.<ILdapClientConnection>create(connection));
+                    } else { // We don't have any fine-grained handling of exceptions, so bundle all into one.
+                        handler.handle(AsyncResultImpl.<ILdapClientConnection>create(DefaultExceptionFactory.create(ldapResult)));
+                    }
                 } else {
                     handler.handle(AsyncResultImpl.<ILdapClientConnection>create(result.getError()));
                 }
