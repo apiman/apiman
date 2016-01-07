@@ -63,6 +63,8 @@ public class DefaultLdapClientConnection implements ILdapClientConnection {
                     handler.handle(AsyncResultImpl.<ILdapResult>create(DefaultExceptionFactory.create(resultCode, message)));
                 }
             } else {
+                System.out.println("ResultCode: " + resultCode);
+                System.out.println("LDAP Message: " + message);
                 handler.handle(AsyncResultImpl.<ILdapResult>create(new LdapResult(resultCode, message)));
             }
         }
