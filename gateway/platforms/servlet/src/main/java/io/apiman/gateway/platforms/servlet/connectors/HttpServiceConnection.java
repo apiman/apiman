@@ -95,6 +95,11 @@ public class HttpServiceConnection implements IServiceConnection, IServiceConnec
         okClient.setProtocols(Util.immutableList(Protocol.HTTP_1_1));
         okClient.setConnectionSpecs(DEFAULT_CONNECTION_SPECS);
         okClient.setSocketFactory(SocketFactory.getDefault());
+
+        // don't automatically follow redirects
+        okClient.setFollowRedirects(false);
+        okClient.setFollowSslRedirects(false);
+
         Internal.instance.setNetwork(okClient, Network.DEFAULT);
     }
 
