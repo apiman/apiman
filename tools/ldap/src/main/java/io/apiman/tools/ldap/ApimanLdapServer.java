@@ -125,7 +125,7 @@ public class ApimanLdapServer extends AbstractLdapTestUnit {
         System.out.println("");
         System.out.println("  URL: " + url);
         System.out.println("  Node Count: " + count);
-        System.out.println("  Direct Bind DN: ${username},ou=developers,ou=people,o=apiman");
+        System.out.println("  Direct Bind DN: cn=${username},ou=developers,ou=people,o=apiman");
         System.out.println("======================================================");
         System.out.println("");
         System.out.println("");
