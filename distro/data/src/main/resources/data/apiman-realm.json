@@ -25,7 +25,7 @@
             "credentials" : [
                 {
                     "type" : "password",
-                    "value" : "admin123!" 
+                    "value" : "admin123!"
                 }
             ],
             "realmRoles" : [ "apiuser", "apiadmin" ],
@@ -97,6 +97,7 @@
                 "/apiman-gateway-api/*"
             ],
             "secret" : "password",
+            "directGrantsOnly" : true,
             "webOrigins" : [ "*" ]
         }
     ]
