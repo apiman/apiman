@@ -108,6 +108,14 @@ public enum LdapResultCode {
 
     OTHER_FAILURE;
 
+    public boolean isSuccess() {
+        return isSuccess(this);
+    }
+
+    public boolean isAuthFailure() {
+        return isAuthFailure(this);
+    }
+
     public static boolean isSuccess(LdapResultCode code) {
         return code.equals(SUCCESS);
     }
