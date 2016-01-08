@@ -229,7 +229,7 @@ public class ESClientFactory {
             // runtime Gateway itself.  They both create a registry and thus they both try to initialize
             // the ES index if it doesn't exist.  A race condition could result in both WARs trying to
             // create the index.  So a result of "IndexAlreadyExistsException" should be ignored.
-            if (!"IndexAlreadyExistsException".equals(response.getErrorMessage())) { //$NON-NLS-1$
+            if (!response.getErrorMessage().startsWith("IndexAlreadyExistsException")) { //$NON-NLS-1$
                 throw new Exception("Failed to create index: '" + indexName + "' Reason: " + response.getErrorMessage()); //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
