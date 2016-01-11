@@ -44,7 +44,7 @@ management.  Policies can be configured on an API, on a plan, or on a client app
 please see the sections below.
 
 ==== Plans
-A plan is a set of policies that define a level of API. Whenever an API is consumed it must be
+A plan is a set of policies that define a level of service for an API. When an API is consumed it may be
 consumed through a plan. Please see the section on 'API Contracts' for more information.
 
 An organization can have multiple plans associated with it. Typically each plan within an organization
@@ -58,53 +58,59 @@ it can be used by APIs.  This is done so that API providers can't change the det
 out from underneath the client app developers who are using it.
 
 ==== APIs
-an API represents an external API that is being governed by the API management system. an API consists
+An API represents an external API that is being governed by the API management system.  An API consists
 of a set of metadata including name and description as well as an external endpoint defining the API
-implementation. The external API implementation endpoint includes the type/protocol and the actual endpoint
-location so that the API can be properly proxied to at runtime.
+implementation. The external API implementation endpoint includes:
+
+* The type/protocol of the endpoint (e.g. REST or SOAP)
+* The endpoint content type (e.g. XML or JSON)
+* The endpoint location (URL) so that the API can be properly proxied to at runtime.
 
 In addition, policies can be configured on an API. Typically, the policies applied to APIs are things
-like authentication.  Any policies configured on API will be applied at runtime regardless of the
+like authentication, or caching.  Any policies configured on API will be applied at runtime regardless of the
 client app and API contract.  This is why authentication is a common policy to configure at the API
 level.
 
-APIs must be offered through a valid plan configured in the same organization. API consumers must
-consume the API through one of those plans. Please see the section on 'API Contracts' for more
-information.
-
-TIP: Note that, alternatively, APIs can be marked as "Public", which means they (once published) can be
-used by any client, without needing a Contract.  To use a public API, simply send requests to the
-appropriate managed endpoint (through the API Gateway) without providing an API Key.
+APIs may be offered through one or more plans configured in the same organization. When plans are used,
+API consumers (client apps) must consume the API through one of those plans. Please see the section on
+'API Contracts' for more information.  Alternatively, an API can simply be marked as "Public", in which
+case any client may access the API's managed endpoint without providing an API Key.
 
 Only once an API is fully configured, including its policies, implementation, and plans can it be
-published to the runtime gateway for consumption by client apps.  Once this is done, the API cannot be
-changed. If changes are required, a new version of the API must be created and configured.
+published to the Gateway for consumption by client apps.  Once an API has been published, it can only
+be changed if it is a "Public" API.  APIs that are offered via Plans are immutable - to change them
+you must create a new version.  The reason for this is that API consumers may have created Contracts
+with your API, through your Plan.  When they do this, they must agree to some terms and conditions.
+It is therefore understood that the terms to which they are agreeing will not change.  However, for
+Public APIs, there is no such agreement.  For this reason, you can make changes to Public APIs and
+re-publish them at any time.
 
 ==== Client Apps
 A client app represents a consumer of an API. Typical API consumers are things like mobile applications and
 B2B applications. Regardless of the actual implementation, a client app must be added to the
-API management system so that contracts can be created between it and the APIs it wishes to consume.
+API management system so that Contracts can be created between it and the APIs it wishes to consume.
 
 A client app consists of basic metadata such as name and description.  Policies can also be configured on
 a client app, but are optional.
 
-Finally, API contracts can be created between a client app and the API(s) it wishes to consume.
-Once the API contracts are created, the client app can be registered with the runtime gateway. Once this
-registration is complete, the client app can no longer be altered.  If changes are required, a new version
-of the client app must be created and configured.
+Finally, API Contracts can be created between a client app and the API(s) it wishes to consume.
+Once the API Contracts are created, the client app can be registered with the runtime gateway.  Policies
+and Contracts can be added/removed at any time.  However, after any changes are made, you must
+re-register the client app.
 
 ==== API Contracts
-an API contract is simply a link between a client app and an API through a plan offered by that
+An API contract is simply a link between a Client App and an API through a plan offered by that
 API. This is the only way that a client app can consume an API. If there are no client apps that
 have created API contracts with an API, that API cannot be accessed through the API management
-runtime gateway.
+runtime gateway (unless of course the API is "Public").
 
-When an API contract is created, the system generates a unique API key specific to that contract. All
-requests made to the API through the API Gateway must include this API key. The API key is used to create
-the runtime policy chain from the policies configured on the API, plan, and client app.
+When an API Contract is created, the system generates a unique API key specific to that contract. All
+requests made to the API by a Client App through the API Gateway must include this API key. The API
+key is used to create the runtime policy chain from the policies configured on the API, plan, and
+client app.
 
 API Contracts can only be created between Client Apps and published APIs which are offered through
-at least one Plan.  an API Contract cannot be created between a Client App and a public API.
+at least one Plan.  An API Contract cannot be created between a Client App and a Public API.
 
 ==== Policy Chain
 A policy chain is an ordered sequence of policies that are applied when a request is made for an API
@@ -129,14 +135,14 @@ an administrator, and each role provides the user with a set of permissions that
 user can take within an organization.
 
 ==== New Users
-End users must self register with the management UI in order to be given access to an organization or to
-create their own organization. In some configurations it is possible that end user self registration is
+Users must self register with the management UI in order to be given access to an organization or to
+create their own organization. In some configurations it is possible that user self registration is
 unavailable and instead user information is provided by a standard source of identity such as LDAP.  In
 either case, the actions a user can take are determined by that user's role memberships within the context
 of an organization.
 
 ==== Membership
-End users can be members of organizations. All memberships in an organization include the specific roles the
+Users can be members of organizations. All memberships in an organization include the specific roles the
 user is granted. It is typically up to the owner of an organization to grant role memberships to the members
 of that organization.
 
@@ -160,14 +166,14 @@ context of an organization.
 
 In order to create an organization click the 'Create a New Organization' link found on the dashboard page
 that appears when you first login. Simply provide an organization name and description and then click the
-'Create Organization' button.  If successful you will be taken to the organisation details page.
+'Create Organization' button.  If successful you will be taken to the organization details page.
 
 If you create multiple organizations, you can see the list of those organizations on your home page. For
 example, you may click the 'Go to My Organizations' link from the dashboard page.
 
 === Managing Plans
 Plans must be managed within the scope of an organization.  Once created, plans can be used for any API
-defined within that same organisation.  To see a list of existing plans for an organization, navigate to the
+defined within that same organization.  To see a list of existing plans for an organization, navigate to the
 'Plans' tab for that organization on its details page.
 
 ==== Creating a Plan
@@ -187,12 +193,12 @@ the 'Add Policy' button to add the policy to the plan.
 
 ==== Locking the Plan
 Once all your plan policies are added and configured the way you want them, you will need to Lock the
-plan.  This can be done from the Plan Overview UI page.  Locking the plan will prevent all future policy
+plan.  This can be done from any tab of the Plan UI page.  Locking the plan will prevent all future policy
 changes, and make the plan available for use by APIs.
 
 === Providing APIs
 A core capability of API management is for end users to create, manage, and configure APIs they wish to
-provide. This section explains the steps necessary for end users to provide those APIs.
+provide. This section explains the steps necessary for users to provide those APIs.
 
 ==== Creating an API
 First the user must create an API within an organization. If an organization does not yet exist one can
@@ -209,8 +215,15 @@ Every API must be configured with an API implementation. The implementation indi
 API that the API Gateway will proxy to if all the policies are successfully applied. Click the
 'Implementation' tab to configure the API endpoint and API type details on your API.
 
+The 'Implementation' tab is primarily used to configure the details of the back-end API that
+apiman will proxy to at runtime.  You must configure the following:
+
+* *Endpoint URL* - The URL that apiman will use to proxy a request made for this API.
+* *Endpoint Type* - Currently either REST or SOAP (not presently used, future information)
+* *Endpoint Content Type* - Choose between REST and XML, information primarily used to respond with a policy failure or error in the appropriate format.
+
 Additionally, the 'Implementation' tab allows you to configure any security options that might
-be required when proxying requests to the back end API.  For example, if you are using mutual/two-way
+be required when proxying requests to the back-end API.  For example, if you are using two-way
 SSL to ensure full security between the API Gateway and your back-end API, you may configure
 that here.  We also support simple BASIC authentication between the gateway and your back end
 API.  Please note that BASIC authentication is not ideal, and especially insecure if not
@@ -247,20 +260,27 @@ the 'Add Policy' button to add the policy to the API.
 
 ==== Publishing in the Gateway
 After all of the configuration is complete for an API, it is time to publish the API to the runtime
-gateway. This can be done from the 'Overview' tab of the API details page. Simply click the 'Publish'
-button on the 'Overview' tab to publish the API to the runtime gateway. If successful, the status of the
-API will change to "Published" and the 'Publish' button will disappear.
+gateway. This can be done from any tab on the API details page by clicking  the 'Publish' button in
+the top section of the UI.  If successful, the status of the API will change to "Published" and the
+'Publish' button will disappear.
 
-It is worth repeating that the 'Publish' button will be disabled until the API is fully configured (at
-which time it transitions to "Ready" status). This includes at least the implementation and one or more
-available plans. API policies are optional.
+TIP: If the API cannot yet be published (the 'Publish' button is disabled) then a notification will
+appear near the button and will read "Why Can't I publish?"  Clicking this notification will provide
+details about what information is still required before the API can be published to the Gateway.
+
+Once the API has been published, it may or may not be editable depending on whether it is a "Public"
+API or not.  For "Public" APIs, you will be able to continue making changes.  After at least one
+change is made, you will have the option to "Re-Publish" the API to the Gateway.  Doing so will
+update all information about the API in the Gateway.  However, if the API is *not* Public, then
+the API will be immutable - therefore in order to make any changes you will need to create a new
+version of the API.
 
 ==== API Metrics
 Once an API is published and is being consumed at runtime, metrics information about that usage is
 recorded in a metrics storage system.  See the Metrics section of the API Gateway documentation for
 more about how and when metrics data is recorded.
 
-If an API has been used by at least one client, then it will have metrics information available.
+If an API has been used by at least once, then it will have metrics information available.
 This information can be viewed in the 'Metrics' tab on the API's details page.  On this page
 you can choose the type of metric you wish to see (e.g. Usage metrics and Response Type
 metrics) as well as a pre-defined time range (e.g. Last 30 Days, Last Week, etc...).
@@ -270,7 +290,7 @@ ways.
 
 === Consuming APIs
 After the API providers have added a number of APIs to the API management system, those APIs
-can be consumed by client apps. This section explains how to consume APIs.
+can be consumed by Client Apps. This section explains how to consume APIs.
 
 ==== Consuming Public APIs
 If you have marked an API as "Public", then consuming it is a simple matter of sending a request to the
@@ -281,22 +301,28 @@ used, but it typically of the following form:
 
 Simply send requests to the managed API endpoint, and do not include an API Key.
 
-==== Creating a Client App
-In order to consume an API you must first create a client app. Client Apps must exist within the
-context of an organization. If an organization does not yet exist for this purpose, simply create a new
-organization. See the section above on 'Managing Organizations' for more information.
+TIP: The managed endpoint URL can be easily determined in the UI by navigating to the
+"Endpoint" tab on the API details UI page.
 
-To create a new client app click the 'Create a New Client App' link on the dashboard page. On the resulting
+==== Creating a Client App
+In order to consume an API that is not "Public" you must first create a client app. Client Apps must
+exist within the context of an organization. If an organization does not yet exist for this purpose,
+simply create a new organization. See the section above on 'Managing Organizations' for more information.
+
+To create a new Client App click the 'Create a New Client App' link on the dashboard page. On the resulting
 page provide a client app name, version, and description and then click the 'Create Client App' button. If
 the client app is successfully created, you will be taken to the client app details page.
 
+TIP: You can also create a Client App within an Organization by going to the Organization's "Client Apps"
+tab and clicking the "New Client App" button.
+
 ==== Creating API Contracts
-The primary action taken when configuring a client app is the creation of contracts to APIs. This is
+The primary action taken when configuring a client app is the creation of Contracts to APIs. This is
 what we mean when we say "consuming an API". There are a number of ways to create API contracts. This
 section will describe the most useful of these options.
 
-From the client app details page select the 'Overview' tab. Click on the 'Search for APIs to consume'
-link in the 'Things To Do' section. You will be taken to a page that will help you search for and find the
+From the Client App details page, you can find an API to consume by clicking on the 'Search for APIs to consume'
+link in the top section of the page. You will be taken to a page that will help you search for and find the
 API you wish to consume.
 
 Use the controls on this page to search for an API. Once you have found the API you are interested in,
@@ -317,11 +343,11 @@ created for this client app. It is also possible to break API contracts from thi
 an appropriate 'Break Contract' button.
 
 ==== API Definition Information
-If an API provider has included an API Definition for the API they are providing, you will be
-presented with an additional link on the consumer-oriented API details page.  This link will take you
-to a page where you can browse the detailed documentation for the API.  The detailed documentation
-should be very helpful in learning what resources and operations are supported by the API, which will
-aid in figuring out how precisely to consume the API.
+If An API provider has included An API Definition for the API they are providing, you will be
+presented with an additional link on the consumer-oriented API details page labeled "API Definition".
+This link will take you to a page where you can browse the detailed documentation for the API.  The
+detailed documentation should be very helpful in learning what resources and operations are
+supported by the API, which will aid in figuring out how precisely to consume the API.
 
 ==== Managing Policies
 Just like plans and APIs, client apps can have configured policies. The 'Policies' tab will present a
@@ -330,26 +356,38 @@ list of all the policies configured for this client app. To add another policy t
 the details for that policy. Once you have configured the details click the 'Add Policy' button to add the
 policy to the client app.
 
+Of course, just like for Plans and APIs, you can manage the Client App policies from the 'Policies' tab.
+This allows you to not only add new policies but also edit, remove, and reorder them.
+
 ==== Registering in the Gateway
 After at least one API contract has been created for the client app, it is possible to register the
 client app with the runtime gateway. Until the client app is registered with the runtime gateway, it is
 not possible to make requests to back-end APIs on behalf of that client app.
 
-To register the client app with the gateway navigate to the 'Overview' tab on the client app details page.
-The status of the client app should be "Ready", and the 'Register' button should be enabled. Click the
-'Register' button to register the client app with the runtime gateway. If successful, the client app status
-will change to "Registered", and the 'Register' button will disappear.
+To register the client app with the gateway, simply click the "Register" button at the top of the Client
+App details UI page (any tab).  If the status of the client app is "Ready", then the 'Register' button
+should be enabled.  If successful, the client app status will change to "Registered", and the 'Register'
+button will disappear.
+
+Once the client app is registered, you can continue to make changes to it (such as modify its policies
+or create/break API Contracts).  If you do make any changes, then the 'Re-Register' button will become
+enabled.  Whenever you make changes to your Client App, you *must* Re-Register it before those changes
+will show up in the Gateway.
 
 ==== Live API Endpoints
 After a client app has been registered with the runtime gateway, it is possible to send requests to the
 back-end APIs on behalf of that client app (through the client app's API contracts). To do this
-you must know the URL of the managed API.  This URL includes the API Key generated for the API
+you must know the URL of the managed API.  This URL 'optionally' includes the API Key generated for the API
 Contract.
 
 To view a list of all of these managed endpoints, navigate to the 'APIs' tab on the API detail page. Each
 API contract is represented in the list of managed endpoints. You can expand an entry in the managed
 API endpoints table by clicking the '>' icon in the first column.  The resulting details will help you
 figure out the appropriate endpoint to use for a particular managed API.
+
+TIP: There are two ways to pass the API Key to the Gateway when you make a request for a Managed
+Endpoint.  You can either include the API Key in the URL as a query parameter, or you can pass it
+via the *X-API-Key* HTTP header.
 
 === Versioning
 Many of the entities in the API Manager support multiple simultaneous versions.  These include the
@@ -359,16 +397,19 @@ following:
 * APIs
 * Client Apps
 
-Typically once an entity is frozen (e.g. Locked, Published, or Registered) it can no longer be
+Typically once an entity is frozen (e.g. Locked or Published) it can no longer be
 modified.  But often as things change, modifications to the API Management configuration are necessary.
 For example, as an API implementation evolves, the policies associated with it in the API Manager
-may need to change.  Versioning allows this to happen, but providing a way for a user to create a new
+may need to change.  Versioning allows this to happen, by providing a way for a user to create a new
 version of a particular API (or Client App or Plan) and then making changes to it.
 
 To create a new version of an entity, view the details of the entity and click the "New Version" button
 in the UI.  This will allow you to make a new version of the entity.  You can either make a simple,
 empty new version or you can make a clone of an existing version.  The latter is typically more
 convenient when making incremental changes.
+
+TIP:  "Public" APIs and Client Apps can be modified and re-published (or re-registered) in the
+Gateway without the need to create a new version.
 
 === System Administration
 There are several "global" settings that must be configured/managed by an apiman administrator.  These
@@ -395,14 +436,23 @@ apiman admin.  Typically these are added once and rarely changed.  But as new ve
 released, additional policies will be made available.  For each policy, a policy definition must be
 configured in the *System Administration* UI.
 
+Additionally, it is possible for a plugin, when installed, to contribute one or more policy
+definitions to the list.  This is a very common way for new policy definitions to be added to
+apiman.
+
 ==== Gateways
-apiman allows multiple logical Gateways to be configured.  The Gateway is the server that actually applies
+Apiman allows multiple logical Gateways to be configured.  The Gateway is the server that actually applies
 the policies configured in the API Manager to live requests to managed APIs.  When using apiman, at
 least one Gateway must be running and configured in the API Manager.  However, there is no limit to the
 total number of Gateways that may be running.  The typical reason to have multiple Gateways is when
 some APIs are very high volume and others are not.  In this case, the high volume APIs could be
 published to a Gateway that can handle such load, while the low volume APIs could be published to
 another (perhaps cheaper) Gateway.
+
+Another reason you may want multiple Gateways if if you need some of your APIs to be provided in
+a particular physical region and others in a different one.  In this case, you may have a Gateway
+(perhaps clustered) running in a US data center, while another Gateway (different cluster) is
+running separately in a data center in Europe.
 
 In all cases, the apiman admin must configure these Gateways in the *System Administration* UI.  Each
 Gateway has a name, description, and configuration endpoint.  The configuration endpoint is what the
@@ -416,7 +466,7 @@ test button will turn green.  If unsuccessful, details about the failure will be
 test button will turn red.
 
 ==== Plugins
-apiman supports contributing additional functionality via a simple plugin mechanism.  Plugins can be
+Apiman supports contributing additional functionality via a powerful plugin mechanism.  Plugins can be
 managed by an administrator within the API Manager.  The plugin management administration page allows
 an admin to add and delete plugins.  A plugin is added by clicking on the 'Add Plugin' button and
 providing the "coordinates" of the plugin.  All plugins are actually maven artifacts, and as such
@@ -452,7 +502,7 @@ to configure it.  The API provides the following basic capabilities:
 
 Typically the API Manager is used to manage the configuration of various APIs and client apps
 within the scope of one or more Organizations.  At various times during the management of these
-entities, the user of the API Manager will Publish an API or Register a Client App.  When this
+entities, the user of the API Manager will 'Publish' an API or 'Register' a Client App.  When this
 action occurs, the API Manager invokes one of the relevant API Gateway configuration endpoints listed
 above.
 
@@ -461,7 +511,7 @@ Once appropriate configuration has been published/registered with the API Gatewa
 section above), the API Gateway can be used to make managed calls to the APIs it knows about.  A
 managed API can be invoked as though the back-end API were being invoked directly, with the
 exception that the endpoint is obviously different.  The specific endpoint to use in order to invoke
-a particular API can be different based on the Gateway implementation.  However by defaul the
+a particular API can be different based on the Gateway implementation.  However, typically the
 endpoint format is:
 
 * http://gatewayhost:port/apiman-gateway/{organizationId}/{apiId}/{version}/
@@ -479,6 +529,8 @@ is being used to invoke the API.  The API Key can be sent in one of the followin
 If the API being invoked is a "Public" API, then no API Key should be sent.  However,
 the request should still be sent to the same endpoint as described above.  The endpoint
 itself contains enough information to let the Gateway know what API is being invoked.
+
+If an API is not "Public" and you ommit the API Key, then the request will fail.
 
 === Recording Metrics
 The API Gateway is typically configured to record each request made to it into a metrics
