@@ -97,6 +97,10 @@ module Apiman {
                 }, true);
             };
 
+            $scope.changedPlan = function(newValue) {
+                $scope.selectedPlan = newValue;
+            };
+
             $scope.$watch('selectedApi', function(newValue) {
                 if (!newValue) {
                     $scope.plans = undefined;

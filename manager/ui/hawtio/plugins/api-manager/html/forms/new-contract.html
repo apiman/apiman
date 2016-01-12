@@ -91,7 +91,8 @@
                 Use the drop-down below to choose one of the Plans made available by the selected API.
               </p>
               <div class="center-content" ng-show="plans">
-                <ui-select ng-model="selectedPlan">
+                <ui-select ng-model="selectedPlan"
+                           on-select="changedPlan($item)">
                   <ui-select-match placeholder="Select a Plan"
                                    apiman-i18n-key="select-plan">
                     <span ng-bind="$select.selected.planName"></span>
