@@ -522,7 +522,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     public PolicyBean getPolicy(PolicyType type, String organizationId, String entityId, String version,
             Long id) throws StorageException {
         PolicyBean policyBean = super.get(id, PolicyBean.class);
-        if (policyBean.getType() != type) {
+        if (policyBean == null || policyBean.getType() != type) {
             return null;
         }
         if (!policyBean.getOrganizationId().equals(organizationId)) {
