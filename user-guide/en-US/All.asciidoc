@@ -229,6 +229,15 @@ that here.  We also support simple BASIC authentication between the gateway and 
 API.  Please note that BASIC authentication is not ideal, and especially insecure if not
 using SSL/HTTPS to connect to the back end API.
 
+If the apiman administrator has configured multiple Gateways (see the "System Administration / Gateways"
+section below), then the 'Implementation' tab will also include an option that will let
+you choose which Gateway(s) to use when publishing.  You may select one or more Gateway
+in this case.  If you choose multiple Gateways, then when you click the 'Publish' button,
+apiman will publish the API to *all* of the selected Gateways.
+
+TIP: If a single Gateway has been configured, then you don't have a choice, and so the UI
+will hide the Gateway selector entirely and simply pick the default Gateway for you.
+
 Do not forget to click the Save button when you are done making changes.
 
 ==== API Definition
@@ -287,6 +296,28 @@ metrics) as well as a pre-defined time range (e.g. Last 30 Days, Last Week, etc.
 
 The API Metrics page is a great way to figure out how often your API is used, and in what
 ways.
+
+==== Importing API(s)
+As an alternative to manually creating and configuring an API, apiman also supports importing
+an API from a globally configured API Catalog.
+
+TIP: The API Catalog is configured by the apiman system administrator/installer.  See the
+installation guide for more information about how to configure a custom API Catalog.
+
+An API can be imported into apiman in one of two ways.  First, from the Organization's "APIs"
+tab you can click the down-arrow next to the "New API" button and choose the "Import API(s)"
+option.  This results in a wizard that will guide you through importing one or more API
+from the catalog into the Organization.  This wizard will allow you to search for, find, and
+select multiple APIs.  It will then walk you through choosing your Plans or making the
+APIs "Public". Once all the wizard pages are completed, you can then import the API(s).
+
+TIP: The Import API(s) wizard above is the only way to import multiple APIs at the same time.
+
+Another option for importing an API from the catalog is to use the API Catalog Browser UI,
+which can be found by clicking the "Browse available/importable APIs" link on the API Manager
+Dashboard.  This link will open the catalog browser, allowing you to search for APIs to
+import.  The catalog browser is a friendlier interface, but only allows you to import a
+single API at a time.
 
 === Consuming APIs
 After the API providers have added a number of APIs to the API management system, those APIs
@@ -467,10 +498,21 @@ test button will turn red.
 
 ==== Plugins
 Apiman supports contributing additional functionality via a powerful plugin mechanism.  Plugins can be
-managed by an administrator within the API Manager.  The plugin management administration page allows
-an admin to add and delete plugins.  A plugin is added by clicking on the 'Add Plugin' button and
-providing the "coordinates" of the plugin.  All plugins are actually maven artifacts, and as such
-their coordinates consist of the following maven properties:
+managed by an administrator within the API Manager UI.  The plugin management administration page allows
+an admin to add and delete plugins.
+
+===== Adding Plugins
+The Plugin admin page has two tabs - one shows the list of plugins currently installed, and the
+other shows a list of "Available Plugins".  The list of available plugins comes from a plugin
+registry that is configured when apiman is installed (see the Installation Guide for details
+on how to configure a custom plugin registry).  By default, the "official" apiman plugins will
+show up in the list.
+
+A custom plugin is typically added by clicking on the 'Add Custom Plugin' button found on the
+"Available Plugins" tab.  This allows you to install a plugin that is not found in the configured
+plugin registry.  When installing a custom plugin, you must provide the "coordinates" of the plugin.
+All plugins are actually maven artifacts, and as such their coordinates consist of the following
+maven properties:
 
 * Group ID
 * Artifact ID
@@ -478,10 +520,53 @@ their coordinates consist of the following maven properties:
 * Classifier (optional)
 * Type (optional, defaults to 'war')
 
+When installing a plugin from the plugin registry, simply locate it in the list shown on the
+"Available Plugins" tab and then click the "Install" action.  This will again take you to the
+Add Plugin page, but with all of the appropriate information already filled in.  At this point
+you should only need to click the "Add Plugin" button.
+
 Plugins primarily are used to contribute custom policies to apiman.  These policies are automatically
 discovered (if they exist in the plugin) when a plugin is added to the API Manager.  Policies that
 have been contributed via a plugin will appear in the Policy Definitions admin page along with the
 built-in policies.
+
+===== Deleting Plugins
+At any time you may choose to delete a plugin.  Note that if the plugin was contributing one
+or more policies to apiman, then the policy will no longer be available for use when configuring
+your Plans, APIs, and Client Apps.  However, if the policy is already in use by one of these
+entities, it will continue to work.  In other words, deleting a plugin only removes the policy
+for use by new entities, it does *not* break existing usages.
+
+To delete a plugin, simply click the "Delete" action for the appropriate plugin on the "Installed Plugins"
+tab.  After confirming the delete, the plugin should disappear from the list.
+
+===== Upgrading Plugins
+If apiman determines that a plugin can be upgraded, then an "Upgrade Plugin" action button will
+show up for the plugin in the "Installed Plugins" tab.  This action will be represented as an
+up arrow icon button.  When clicked, you will be prompted for the version of the plugin you wish
+to upgrade *to*.  The result will be that a new version of the plugin will be downloaded and
+installed, replacing the older version you had before.  Note that any Plans, APIs, or Client
+Apps that were using the old version of the plugin's policies will *continue* to use the older
+version.  However, any new policies from the plugin added to entities will use the new version.
+In order to upgrade an existing entity to a newer policy, you will need to remove the old
+policy from that entity and re-add it.  We recommend that you only do this if there is a
+compelling reason (e.g. a bug is fixed or a new feature added).
+
+==== Export/Import Data
+Apiman has a feature that allows an admin user to Export and/or Import data.  You can access this
+feature by clicking the "Export/Import Data" link on the API Manager Dashboard page (admin only).
+This feature is useful for the following use-cases:
+
+* Backing up data
+* Migrating data between environments (e.g. Test->Production)
+* Upgrading between apiman versions
+
+From the Export/Import UI page, simply click the "Export All" button if you wish to export all
+of the data in the API Manager.  The result will be a downloaded JSON file containing all of
+your apiman data.  This file can then be optionally post-processed (perhaps you want to migrate only
+a single Organization from your Test environment to your Prod environment).  At some later time,
+you can import this file (typically into a different installation of apiman) by selecting it and
+choosing "Upload File".
 
 == API Gateway
 The runtime layer of apiman consists of a small, lightweight and embeddable API Gateway, which is responsible

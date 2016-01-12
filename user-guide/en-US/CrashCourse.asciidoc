@@ -4,17 +4,50 @@ This is the "tl;dr" section of the apiman User Guide.  Read this section to get 
 overview of the concepts you need to know to get going quickly.
 
 === Organizations
-
 Everything in apiman starts with the Organization.  First you should create one of these.  The
 Organization is where everything else will be managed.  It also allows you to grant specific
 roles to other users you wish to collaborate with.
 
-=== Providing APIs
+=== Providing Public APIs
+The simplest way to get started with apiman is to create a "Public" API.  This is simply an API
+that can be invoked by any client by sending HTTP requests to the appropriate Gateway endpoint.
+No contracts are required.
 
-If you want to know how to provide managed APIs vian APIman, this is a fast and dirty quickstart.
+==== Public API
+First, you must have an Organization created.  In apiman an API is a representation of your
+back-end API, but managed with policies and accessible via the API Gateway instead of
+directly to the URL of the back-end API.
+
+To create an API, simply navigate to the "APIs" tab for one of your Organizations and click
+the "New API" button.  You will need to provide a Name and Initial Version for your new
+API and then click "Create API" at the bottom of the form.
+
+Once you have created an API, you will need to provide some basic configuration, including:
+
+* *API Endpoint* - the URL to your back-end API
+* *API Type* - whether your API is rest or soap
+* *API Content-Type* - whether your API speaks JSON or XML
+
+Finally, on the "Plans" tab you need to check the "Make this API public" checkbox.
+
+Once you have configured all these aspects of the API, you need to *Publish* the API
+to the API Gateway.  This can be done by clicking the "Publish" button at the top of
+the page.
+
+==== Sending Requests to your Public API
+Once the API is published, you can get its URL by navigating to the "Endpoint" tab.
+From there you can copy the URL for this managed API.  Simply send HTTP requests
+to this URL as you would your back-end API!
+
+The actual managed endpoint may vary depending on the Gateway, but typically the endpoint is
+something like this:
+
+* http://gatewayhost:port/apiman-gateway/{organizationId}/{apiId}/{version}/
+
+=== Providing APIs`
+If you want to know how to provide managed APIs via apiman, this is a fast and dirty quickstart.
 
 ==== Plans
-
 You should already have created an Organization.  Navigate to your Organization and switch to the
 Plans tab.  From there you can create new Plans.  A Plan is basically a collection of policies
 that will be applied to requests made to APIs being access through it.  Plans will be assigned
@@ -25,46 +58,37 @@ Use the Policies tab to add zero or more Policies to the Plan.  Each Policy has 
 configuration.
 
 Once you have created all appropriate Policies, you need to *Lock* the Plan so that it can be
-used by your APIs.  This can be done from the Plan's Overview UI tab.  Note that a Policy
-must be locked for use so that API consumers can have confidence that the details of the
-Plan will not change after they have agreed to them.
+used by your APIs.  This can be done by clicking the 'Lock' button at the top of the page.  Note
+that a Policy must be locked for use so that API consumers can have confidence that the details
+of the Plan will not change after they have agreed to them.
 
 ==== APIs
-
 After you have created at least one Plan, you can go back to the Organization page and switch to
-the APIs tab.  From there you can create a new API.  In apiman an API is a
-representation of your back-end API, but managed with policies and discoverable within the apiman
-system.
+the APIs tab.  From there you can create a new API.  In apiman an API is a representation of your
+back-end API, but managed with policies and discoverable within the apiman system.
 
 Once you have created an API, you will need to provide some basic configuration, including:
 
-* API Implementation
-* One or more Plans (*or* mark the API as "Public")
+* *API Endpoint* - the URL to your back-end API
+* *API Type* - whether your API is rest or soap
+* *API Content-Type* - whether your API speaks JSON or XML
+* *Plans* - One or more Plans
 
-The API Implementation is just the REST endpoint location of your back end API (the one
-that will be managed and proxied by the API Gateway).
-
-The Plans are chosen from those available within the Organization.  an API can be made
+The Plans are chosen from those available within the Organization.  An API can be made
 available through any or all of the Organization's plans.  When a client app consumes the
 API it will do so through one of the available plans.  See the "Consuming APIs" section
 for details.
 
 Once you have configured all necessary aspects of the API, you need to *Publish* the API
-to the API Gateway.  This can be done from the API's Overview UI tab.
-
-TIP: an API can be marked as "Public" if you want to get going even faster.  A "Public" API
-can be invoked by any client without first creating an API Contract.  This means you can
-skip all the Plan and Client App configuration if you don't need that complexity.
+to the API Gateway.  This can be done by clicking the 'Publish' button at the top of the page.
 
 === Consuming APIs
-
-If you're interested in consuming APIs that someone else is providing vian APIman, this section
+If you're interested in consuming APIs that someone else is providing via apiman, this section
 should give you a good start.
 
 ==== Client Apps
-
 In order to consume an API, you will first need to create a Client App in your Organization.
-The Client App *can* (but usually does not) exist in the same Organization as the APIs it
+The Client App *can* (but often does not) exist in the same Organization as the APIs it
 consumes.  To create a Client App, navigate to the Client Apps tab for your Organization.
 
 Once you have create a Client App, you can search for APIs to consume.  There are a number
@@ -73,10 +97,9 @@ between your Client App and the API.  A Contract is always created through one o
 provided by the API.
 
 After you have created all appropriate API Contracts, you must register the Client App with
-the API Gateway.  This can be done on the Client App's Overview tab.
+the API Gateway.  This can be done by clicking the 'Register' button at the top of the page.
 
 ==== Sending Requests
-
 After the Client App is Registered, navigate to the APIs tab to see a list of all the API
 Contracts and to get details (by clicking the Expand Details arrow on the left) about each one.
 This tab is important because it allows you to find out the API Key assigned to each API
