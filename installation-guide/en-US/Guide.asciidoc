@@ -50,8 +50,8 @@ cd wildfly-8.2.0.Final
 
 === Installing in JBoss EAP 6.4
 If you prefer to run apiman on a Red Hat supported application server, you can install it
-into JBoss EAP 6.4.  In order to install apiman you will need to download both EAP and the apiman 
-overlay distribution.  Once both are downloaded, it's a simple matter of unpacking both into the 
+into JBoss EAP 6.4.  In order to install apiman you will need to download both EAP and the apiman
+overlay distribution.  Once both are downloaded, it's a simple matter of unpacking both into the
 same location.
 
 ==== Download
@@ -157,7 +157,7 @@ it to support whatever database you desire.
 ```
 
 The project comes with DDLs for MySQL and PostgreSQL, to hopefully make it easy to switch away from H2.  Note
-that switching databases also requires a change to the apiman.properties file.  The following should be 
+that switching databases also requires a change to the apiman.properties file.  The following should be
 changed to appropriate values for your database:
 
 ```
@@ -208,6 +208,62 @@ the Gateway REST API requires BASIC authentication credentials, as well as a rol
 In other words, the Gateway REST API can only be invoked by a valid user, and that user must have
 the *apipublisher* role.
 
+=== Data Export/Import
+Apiman has a feature that allows admin users to export all of the configuration data from
+the Manager into a single export file (JSON formatted).  This exported file can then be
+edited (if necessary) and then imported into another instance of apiman.  This feature
+attempts to address the following use-cases:
+
+* Data backups
+* Migrating between environments
+* Upgrading apiman to a new version
+
+Using the feature is simple - you must log into the apiman UI as an admin user, then
+navigate to the "Export/Import" UI page by clicking the "Export/Import Data" link on
+the API Manager Dashboard.  From there you can export or import data.
+
+==== Backing Up Your Data
+There are multiple strategies for backing up your apiman data, depending on the configuration
+you have chosen (e.g. whether you are using a Database or elasticserach to store your data).
+However, once approach to data backups that is consitent across all configurations is to
+use the Data Export feature of apiman to create a JSON file containing all of the apiman
+configuration data.
+
+This can be done via the UI or via the following API Manager REST endpoint:
+
+```
+https://HOST:PORT/apiman/system/export
+```
+
+==== Migrating Data Between Environments
+Often times you may have a Test version of apiman deployed, as well as a Production
+version.  Depending on your workflow, you may wish to configure your APIs in the Test
+environment and then migrate that configuration into Production (rather than having to
+re-create the same configuration in Production manually).  This can be accomplished
+by Exporting data from Test and then importing it into Production.
+
+When doing this, note that the Export feature will export the entire set of configuration
+from apiman.  This may be precisely what you want, but many times only a subset of the
+data is desired.  If this is the case, then you will need to edit the resulting JSON
+file to only include the data you wish to migrate.  In the future, we hope to build
+tools that will make this editing of the exported file easier.
+
+Once you have edited the exported file, you can simply log into your production apiman
+instance and use the Export/Import UI page to import the data.
+
+==== Upgrading to a New Apiman Version
+Whenever you wish to upgrade from an old to a newer version of apiman, you will likely want
+to preserve all of the Plan, API, and Client App configurations you have created.  To
+do this, you can follow these steps:
+
+1. Export all data from OLD VERSION of apiman
+2. Shut down OLD VERSION of apiman
+3. Install NEW VERSION of apiman
+4. Start up NEW VERSION of apiman
+5. Import data into NEW VERSION of apiman (data exported in step #1)
+
+Once these steps are complete, you should have a new version of apiman running
+with all of your existing data.
 
 == HowTos
 This section contains specific instructions for how to configure apiman for specific scenarios.
@@ -260,7 +316,7 @@ apiman-manager.storage.es.initialize=true
 Make sure you enter appropriate values for the apiman.es.protocol, apiman.es.host, and apiman.es.port
 properties.  These values should reflect the settings of your Elasticsearch instance.
 
-TIP: You can optionally also set the username and password - this is only useful if you are using 
+TIP: You can optionally also set the username and password - this is only useful if you are using
 something like Elasticsearch Shield to enable basic authentiation.
 
 ==== (Re)start apiman
@@ -311,7 +367,7 @@ apiman.es.username=
 apiman.es.password=
 ----
 
-Make sure you enter appropriate values for this properties - they should reflect the settings 
+Make sure you enter appropriate values for this properties - they should reflect the settings
 of your Elasticsearch installation.
 
 ==== (Re)start apiman
@@ -523,7 +579,7 @@ the details of your back-end endpoint (URL, type, and endpoint security).
 
 === How To:  Use an External Keycloak Authentication Server
 The apiman quickstart overlay comes with an embedded version of Keycloak that we use for
-authentication.  You may already have a Keycloak instance that you use.  This section 
+authentication.  You may already have a Keycloak instance that you use.  This section
 explains how to modify apiman to use yours instead of ours.
 
 ==== High Level Overview
@@ -533,14 +589,14 @@ explains how to modify apiman to use yours instead of ours.
 
 ==== Create the apiman Realm in Keycloak
 You'll need to make sure you create the *apiman* realm in your Keycloak server.  A
-quick way to do that is to use the Keycloak admin console to import the apiman 
+quick way to do that is to use the Keycloak admin console to import the apiman
 realm file located here:
 
 https://github.com/apiman/apiman/blob/master/distro/data/src/main/resources/data/apiman-realm.json
 
 ==== Configure the API Manager UI client in Keycloak
-Once the apiman realm has been created or imported, make sure to configure the 
-*Valid Redirect URIs* section of the *apimanui* client.  The default value of 
+Once the apiman realm has been created or imported, make sure to configure the
+*Valid Redirect URIs* section of the *apimanui* client.  The default value of
 "/apimanui/*" must be replaced with the full public URL of your API Manager UI.
 For example, the value may be something like:
 
@@ -563,7 +619,131 @@ your Keycloak server and add it to the following section of *standalone-apiman.x
 </kc:realm>
 ```
 
-TIP: If you manually created the apiman realm in Keycloak, you will also need to 
+TIP: If you manually created the apiman realm in Keycloak, you will also need to
 copy the realm's public key into <kc:realm-public-key> above.
+
+
+=== How To:  Configure a Custom API Catalog
+The API Manager has a feature where users can import APIs from a globally configured
+API Catalog.  By default, apiman comes with a community catalog that contains a set
+of common public APIs such as Flickr and Netflix.  When deploying apiman into an
+enterprise setting, it is often useful to replace the community API Catalog with
+something that lists out the internal APIs available within the enterprise.
+
+==== High Level Overview
+1. Describe your enterprise APIs as apiman API Catalog JSON
+2. Make your enterprise API Catalog available in URL form
+3. Point apiman at your enterprise API Catalog
+
+===== Create a Custom Enterprise API Catalog JSON
+The first thing you will need to do is express all of your enterprise APIs as a
+JSON file.  The format of the JSON file is specific to apiman.  You can find an
+example of the format here:
+
+https://github.com/apiman/apiman-api-catalog/blob/master/catalog.json
+
+===== Make Your Enterprise API Catalog Available
+Now that you have a custom JSON based API Catalog, you need to make it available
+at a URL accessible to the API Manager.  This can either be done by stashing it
+in some web server location so you have an http based URL, or you can store
+it locally on the API Manager server so as to have a valid file based URL.
+
+===== Point apiman at Your Enterprise API Catalog
+The last step is to make apiman aware of your custom API Catalog file.  The
+catalog is configured in the *apiman.properties* file via these properties:
+
+```
+apiman-manager.api-catalog.type=io.apiman.manager.api.core.catalog.JsonApiCatalog
+apiman-manager.api-catalog.catalog-url=http://cdn.rawgit.com/apiman/apiman-api-catalog/1.2.0.Final/catalog.json
+```
+
+Simply change the URL defined by the `apiman-manager.api-catalog.catalog-url` property
+and you're good to go!
+
+TIP: For even more customization, you can actually implement your own API Catalog
+java class.  This approach will allow you to find your APIs in whatever location they
+happen to be (e.g. a database, registry, etc).  Please see the Developer Guide
+for more information on how to create a truly custom API Catalog.
+
+
+=== How To:  Use a Custom Plugin Registry
+The API Manager uses a plugin registry to show admin users a list of available plugins
+that can be installed.  Apiman comes with an official plugin registry that shows a
+list of the standard apiman plugins.  If your enterprise implements a large number
+of custom policies, you may find it useful to replace the standard registry with one
+that includes your custom plugins in the list.
+
+==== High Level Overview
+1. Describe your enterprise plugins in a registry JSON file
+2. Make your enterprise plugin registry available in URL form
+3. Point apiman at your enterprise plugin registry
+
+===== Create a Custom Enterprise Plugin Registry JSON
+The first thing you will need to do is express all of your enterprise plugins as a
+JSON file.  The format of the JSON file is specific to apiman.  You can find an
+example of the format here:
+
+https://github.com/apiman/apiman-api-catalog/blob/master/catalog.json
+
+===== Make Your Enterprise Plugin Registry Available
+Now that you have a custom JSON based plugin registry, you need to make it available
+at a URL accessible to the API Manager.  This can either be done by stashing it
+in some web server location so you have an http based URL, or you can store
+it locally on the API Manager server so as to have a valid file based URL.
+
+===== Point apiman at Your Enterprise Plugin Registry
+The last step is to make apiman aware of your custom plugin registry file.  The
+registry is configured in the *apiman.properties* file via the following property:
+
+```
+apiman-manager.plugins.registries=http://cdn.rawgit.com/apiman/apiman-plugin-registry/1.2.0.Final/registry.json
+```
+
+The value of this property is a comma-separated list of URLs.  Each URL in the list
+should point to a valid plugin registry JSON file.  So to include your enterprise
+plugins in the list, simply add the URL to your plugin registry to the end of the
+existing list.
+
+
+=== How To:  Use Property Replacement in Policy Config
+It is often useful to externalize certain information that varies from one deployment
+environment to another.  For example, you may have an LDAP server for authentication,
+but you have one in the Test deployment environment and a different one in Production.
+Rather than configure your apiman policies differently in each environment (to match
+the actual LDAP connection info) you can externalize those settings into system
+properties or environment variables.  Once that is done, you can refer to those
+properties/variables in your apiman policy configuration.
+
+==== High Level Overview
+1. Externalize values into system properties or environment variables
+2. Reference a system property or environment variable in a policy
+
+===== Externalize Values
+Depending on your deployment strategy, how you do this may vary.  If you are using
+WildFly, for example, you can set system properties in the standalone.xml file or
+by passing them in via -D parameters on startup (not recommended).  For more
+information, see:
+
+https://docs.jboss.org/author/display/WFLY8/General+configuration+concepts
+
+Describing all approaches to setting system properties and environment variables
+is out of scope for this document.
+
+===== Reference a System Property or Environment Variable
+Once you have some values externalized into system properties or environment
+variables, you can reference them easily in your apiman policies.  All you need
+to do is use the Ant style syntax to refer to your externalized values, like
+this:
+
+```
+${MY_ENVIRONMENT_VARIABLE}
+```
+
+A variable of this style can be used in any apiman policy configuration field.
+The variables are resolved when the policy configuration is first loaded, and
+then cached.  To change a value, you must restart your server.
+
+TIP: When resolving variables, if there is an environment variable with the same
+name as a system property, the value of the *system property* will be used.
 
 :numbered!:
