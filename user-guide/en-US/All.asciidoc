@@ -220,7 +220,7 @@ apiman will proxy to at runtime.  You must configure the following:
 
 * *Endpoint URL* - The URL that apiman will use to proxy a request made for this API.
 * *Endpoint Type* - Currently either REST or SOAP (not presently used, future information)
-* *Endpoint Content Type* - Choose between REST and XML, information primarily used to respond with a policy failure or error in the appropriate format.
+* *Endpoint Content Type* - Choose between JSON and XML, information primarily used to respond with a policy failure or error in the appropriate format.
 
 Additionally, the 'Implementation' tab allows you to configure any security options that might
 be required when proxying requests to the back-end API.  For example, if you are using two-way
