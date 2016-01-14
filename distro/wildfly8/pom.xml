@@ -10,6 +10,21 @@
   <artifactId>apiman-distro-wildfly8</artifactId>
   <packaging>pom</packaging>
   <name>apiman-distro-wildfly8</name>
+  
+  <properties>
+    <version.org.keycloak>1.2.0.Final</version.org.keycloak>
+  </properties>
+  
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.keycloak</groupId>
+        <artifactId>keycloak-server-overlay</artifactId>
+        <type>zip</type>
+        <version>1.2.0.Final</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
   <dependencies>
     <!-- The WildFly 8 version of APIMan -->

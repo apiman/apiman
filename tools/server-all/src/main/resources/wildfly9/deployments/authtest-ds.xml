@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<datasources xmlns="http://www.jboss.org/ironjacamar/schema">
+  <datasource jndi-name="jdbc/TestAuthDS" pool-name="MySQLPool">
+    <connection-url>jdbc:mysql://titmouse:3306/authentication</connection-url>
+    <driver>mysql-connector-java-5.1.33-bin.jar_com.mysql.jdbc.Driver_5_1</driver>
+    <pool>
+      <max-pool-size>30</max-pool-size>
+    </pool>
+    <security>
+      <user-name>root</user-name>
+      <password>mysql_p123</password>
+    </security>
+  </datasource>
+</datasources>

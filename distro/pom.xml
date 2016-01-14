@@ -18,5 +18,6 @@
     <module>eap64</module>
     <module>es</module>
     <module>wildfly8</module>
+    <module>wildfly9</module>
   </modules>
 </project>

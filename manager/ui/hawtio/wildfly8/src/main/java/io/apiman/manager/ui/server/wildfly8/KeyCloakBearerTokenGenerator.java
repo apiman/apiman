@@ -18,10 +18,12 @@ package io.apiman.manager.ui.server.wildfly8;
 import io.apiman.manager.ui.server.auth.ITokenGenerator;
 import io.apiman.manager.ui.server.beans.BearerTokenCredentialsBean;
 
+import java.lang.reflect.Method;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.keycloak.KeycloakSecurityContext;
-import org.keycloak.util.Time;
+import org.keycloak.common.util.Time;
 
 /**
  * A token generator when using KeyCloak as the authentication provider for apiman.
@@ -42,13 +44,13 @@ public class KeyCloakBearerTokenGenerator implements ITokenGenerator {
     @Override
     public BearerTokenCredentialsBean generateToken(HttpServletRequest request) {
         BearerTokenCredentialsBean bean = new BearerTokenCredentialsBean();
-        
+
         KeycloakSecurityContext session = (KeycloakSecurityContext) request.getAttribute(KeycloakSecurityContext.class.getName());
         if (session != null) {
             bean.setToken(session.getTokenString());
-            int nowInSeconds = Time.currentTime();
+            int nowInSeconds = getCurrentTime();
             int expiresInSeconds = session.getToken().getExpiration();
-            
+
             if (expiresInSeconds <= nowInSeconds) {
                 bean.setRefreshPeriod(1);
             } else {
@@ -58,8 +60,30 @@ public class KeyCloakBearerTokenGenerator implements ITokenGenerator {
             bean.setToken("LOGGED_OUT"); //$NON-NLS-1$
             bean.setRefreshPeriod(30);
         }
-        
+
         return bean;
+    }
+
+    /**
+     * This method looks strange - it is designed to support both newer and older
+     * versions of keycloak.  The {@link Time} class was repackaged, so to support
+     * older versions of keycloak we will try to fall back to loading an older
+     * version of the {@link Time} class.
+     * @return the current time
+     */
+    protected int getCurrentTime() {
+        try {
+            return org.keycloak.common.util.Time.currentTime();
+        } catch (Throwable e) {
+            try {
+                Class<?> tc = Class.forName("org.keycloak.util.Time"); //$NON-NLS-1$
+                Method method = tc.getMethod("currentTime"); //$NON-NLS-1$
+                Object object = method.invoke(null);
+                return ((Integer) object);
+            } catch (Throwable e1) {
+                return ((int) (System.currentTimeMillis() / 1000));
+            }
+        }
     }
 
 }
