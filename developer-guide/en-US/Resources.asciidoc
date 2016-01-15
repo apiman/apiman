@@ -48,7 +48,7 @@ the result will not include a ready-to-run version of apiman.  For that, you
 may want to try the following:
 
 ....
-mvn clean install -Pinstall-all-wildfly8
+mvn clean install -Pinstall-all-wildfly9
 ....
 
 This command will do a full apiman build, but will also download WildFly

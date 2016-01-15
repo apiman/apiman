@@ -1,4 +1,4 @@
-= Guide - Deploying for Production: apiman 1.1.9.Final
+= Guide - Deploying for Production: apiman 1.2.1.Final
 :homepage: http://apiman.io/
 :doctype: book
 
@@ -8,14 +8,14 @@ simple shell script that can do much of the work for you.  It will likely always
 so many production deployers may not feel comfortable using it.  However, it can currently install the
 following components:
 
-* Elasticsearch
-* Keycloak
+* Elasticsearch (1.x)
+* Keycloak (1.7.0)
 * API Manager
 * API Gateway
 
 You can find the apiman production deployer here:
 
-https://github.com/apiman/apiman-deployer/tree/apiman-1.1.9.Final
+https://github.com/apiman/apiman-deployer/tree/apiman-1.2.1.Final
 
 Simply download that script and run it on each of the machines you wish to install the various apiman
 components!
@@ -55,7 +55,7 @@ After creating the ‘apiman' database, you can initialize it using the appropri
 selected.  We currently support mysql5/mariadb and postgresql.  The DDLs for these databases can be found in 
 the quickstart/overlay ZIP file, or you can grab them directly from github.  For example:
 
-https://github.com/apiman/apiman/tree/master/distro/wildfly8/src/main/resources/overlay/apiman/ddls
+https://github.com/apiman/apiman/tree/master/distro/data/src/main/resources/ddls
 
 Make sure you grab the right one for whichever version of apiman you are going to be installing (*hint*: use 
 the appropriate github tag).
@@ -252,7 +252,7 @@ The easiest way to deploy the driver is to simply download it and copy it into t
 Next, you must update or replace the *apiman-ds.xml* file to something that is configured for your
  particular database.  Examples of appropriate datasource files for mysql and postgresql can be found here:
 
-https://github.com/apiman/apiman/tree/master/distro/wildfly8/src/main/resources/overlay/apiman/sample-configs
+https://github.com/apiman/apiman/tree/master/distro/data/src/main/resources/sample-configs
 
 These examples are also included in the apiman quickstart/overlay ZIP download.
 
