@@ -46,7 +46,7 @@ public class SimpleEchoTest {
 
         List<RequestMetric> metrics = TestMetrics.getMetrics();
         Assert.assertNotNull(metrics);
-        Assert.assertEquals(10, metrics.size());
+        Assert.assertEquals(11, metrics.size());
         RequestMetric metric = metrics.get(1);
         Assert.assertEquals("SimpleEchoTest", metric.getApiOrgId());
         Assert.assertEquals("echo", metric.getApiId());

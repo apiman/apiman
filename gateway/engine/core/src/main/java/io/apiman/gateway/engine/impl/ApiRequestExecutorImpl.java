@@ -196,6 +196,9 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
      */
     @Override
     public void execute() {
+        // Strip apikey
+        stripApiKey();
+
         // Fill out some of the basic metrics structure.
         requestMetric.setRequestStart(new Date());
         requestMetric.setUrl(request.getUrl());
@@ -325,6 +328,11 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
                 }
             });
         }
+    }
+
+    private void stripApiKey() {
+        request.getHeaders().remove("X-API-Key"); //$NON-NLS-1$
+        request.getQueryParams().remove("apikey"); //$NON-NLS-1$
     }
 
     /**
