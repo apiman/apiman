@@ -92,6 +92,8 @@ create the apiman realm using this file:
 
 https://github.com/apiman/apiman/blob/master/distro/data/src/main/resources/data/apiman-realm.json
 
+TIP: The realm file contains some credentials/secrets that you may want to modify.  The defaults are obviously not secure.
+
 Once you have created the apiman realm, you must use the keycloak UI to add your API Manager UI as a valid 
 redirect URL for the ‘apimanui' client.  To do this, log into the keycloak admin console and choose the 
 *apiman* realm.  Next click "clients" in the left navigation, and choose *apimanui* in the resulting list.  
