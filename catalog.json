@@ -38,8 +38,8 @@
       "endpointType" : "rest",
       "name" : "Flickr API",
       "description" : "The Flickr API can be used to retrieve photos from the Flickr photo sharing service using a variety of feeds.",
-      "definitionUrl" : null,
-      "definitionType" : "None"
+      "definitionUrl" : "https://www.flickr.com/services/api/",
+      "definitionType" : "External"
     },
     {
       "id" : "facebook-api",
@@ -58,8 +58,8 @@
       "endpointType" : "rest",
       "name" : "Amazon S3 API",
       "description" : "Since 2006 Amazon Web Services has been offering web services commonly known as cloud computing.",
-      "definitionUrl" : "http://petstore.swagger.io/v2/swagger.json",
-      "definitionType" : "SwaggerJSON"
+      "definitionUrl" : "http://aws.amazon.com/documentation/s3/",
+      "definitionType" : "External"
     }
   ]
 }
