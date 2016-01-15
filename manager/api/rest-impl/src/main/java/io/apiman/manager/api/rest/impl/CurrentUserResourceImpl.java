@@ -21,9 +21,9 @@ import io.apiman.manager.api.beans.idm.PermissionBean;
 import io.apiman.manager.api.beans.idm.PermissionType;
 import io.apiman.manager.api.beans.idm.UpdateUserBean;
 import io.apiman.manager.api.beans.idm.UserBean;
+import io.apiman.manager.api.beans.summary.ApiSummaryBean;
 import io.apiman.manager.api.beans.summary.ClientSummaryBean;
 import io.apiman.manager.api.beans.summary.OrganizationSummaryBean;
-import io.apiman.manager.api.beans.summary.ApiSummaryBean;
 import io.apiman.manager.api.core.INewUserBootstrapper;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
@@ -74,7 +74,7 @@ public class CurrentUserResourceImpl implements ICurrentUserResource {
     @Override
     public CurrentUserBean getInfo() {
         String userId = securityContext.getCurrentUser();
-        
+
         try {
             CurrentUserBean rval = new CurrentUserBean();
             UserBean user;

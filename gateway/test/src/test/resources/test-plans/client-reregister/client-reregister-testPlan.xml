@@ -16,4 +16,22 @@
     <test name="Echo Api 2 (GET)">test-plan-data/client-reregister/echo/002-api-2.resttest</test>
   </testGroup>
 
+  <testGroup name="Break the Contract" endpoint="api">
+    <test name="Break Contract">test-plan-data/client-reregister/setup/005-break-contract.resttest</test>
+  </testGroup>
+
+  <testGroup name="Test the broken contract">
+    <test name="Echo Api 1 (Should Fail)">test-plan-data/client-reregister/echo/003-api-1-404.resttest</test>
+    <test name="Echo Api 2 (GET) [2]">test-plan-data/client-reregister/echo/002-api-2.resttest</test>
+  </testGroup>
+
+  <testGroup name="Re-create the Contract" endpoint="api">
+    <test name="Restore Contract (Api-1)">test-plan-data/client-reregister/setup/006-restore-contract-api-1.resttest</test>
+  </testGroup>
+
+  <testGroup name="Test the restored Contract">
+    <test name="Echo Api 1 (GET)">test-plan-data/client-reregister/echo/001-api-1.resttest</test>
+    <test name="Echo Api 2 (GET)">test-plan-data/client-reregister/echo/002-api-2.resttest</test>
+  </testGroup>
+
 </testPlan>
