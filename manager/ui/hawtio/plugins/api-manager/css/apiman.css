@@ -1840,6 +1840,6 @@ html, body {height: 100%;}
   border: 1px solid #b7b7b7;
 }
 
-
-
-
+#api-catalog-filters .api-type {
+  width: auto;
+}

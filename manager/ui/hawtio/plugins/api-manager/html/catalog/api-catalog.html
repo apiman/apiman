@@ -35,22 +35,29 @@
               <hr/>
             </div>
             <!-- Filter and Actions -->
-            <div class="row">
-              <apiman-search-box id="apis-filter" apiman-i18n-key="filter-catalog-apis" function="filterApis" placeholder="Filter by API name or type..." />
+            <div class="row" id="api-catalog-filters">
+              <span style="margin-right: 10px">
+                <apiman-search-box id="apis-filter" apiman-i18n-key="filter-catalog-apis" function="filterApis" placeholder="Filter by API name or type..." />
+              </span>
+              <select ng-model="epType" apiman-select-picker="" class="selectpicker api-type" data-style="btn-default">
+                <option value="" apiman-i18n-key="show-all-api-types">Show All API Types</option>
+                <option value="rest" apiman-i18n-key="show-only-rest">Show REST only</option>
+                <option value="soap" apiman-i18n-key="show-only-soap">Show SOAP only</option>
+              </select>
             </div>
             <!-- Table of APIs -->
             <div class="row apiman-card-table">
               <div class="container-fluid cards">
-                <div ng-repeat="api in filteredApis=(apis | filter: criteria | orderBy: 'name':reverse)" class="card">
+                <div ng-repeat="api in filteredApis=(apis | filter: criteria | filter: epType | orderBy: 'name':reverse)" class="card">
                   <a ng-show="api.description" uib-tooltip="{{ api.description }}" tooltip-trigger="mouseenter" tooltip-placement="top" href="#" class="info"><i class="fa fa-info-circle"></i></a>
-                  <a ng-show="api.endpointType" uib-tooltip="Endpoint&nbsp;Type:&nbsp;{{ api.endpointType }}" tooltip-trigger="mouseenter" tooltip-placement="top" href="#" class="endpointType"><i class="fa {{ api.ticon }}"></i></a>
+                  <a ng-show="api.endpointType" uib-tooltip="Endpoint&nbsp;Type:&nbsp;{{ api.endpointType }}" tooltip-trigger="mouseenter" tooltip-placement="top" href="{{ api.definitionUrl }}" class="endpointType"><i class="fa {{ api.ticon }}"></i></a>
                   <div class="icon">
                     <i ng-show="!api.iconIsUrl" class="fa fa-{{ api.icon }}"></i>
                     <img ng-show="api.iconIsUrl" src="{{ api.icon }}"></img>
                   </div>
-                  <div class="name"><span>{{ api.name}}</span></div>
+                  <div class="name"><a href="{{ api.endpoint }}"><span>{{ api.name}}</span></a></div>
                   <div><hr /></div>
-                  <div class="actions">
+                  <div class="actions"> 
                      <span class="apiman-action-divider" apiman-i18n-skip="">&nbsp;</span>
                      <a href="#" ng-click="importApi(api)"><i class="fa fa-cart-arrow-down"></i><span style="margin-left: 5px" apiman-i18n-key="import">Import</span></a>
                      <span ng-show="api.definitionType == 'SwaggerJSON' || api.definitionType == 'External'" 
