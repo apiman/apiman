@@ -3,5 +3,7 @@
   "name" : "Log Headers Policy",
   "description" : "A policy that logs the headers to std out.  Useful to analyse inbound HTTP traffic to the gateway when added as the first policy in the chain or to analyse outbound HTTP traffic from the gateway when added as the last policy in the chain.",
   "policyImpl" : "plugin:${project.groupId}:${project.artifactId}:${project.version}:${project.packaging}/io.apiman.plugins.log_policy.LogHeadersPolicy",
-  "icon" : "fire"
+  "icon" : "fire",
+  "formType" : "JsonSchema",
+  "form" : "schemas/log-policyDef.schema"
 }

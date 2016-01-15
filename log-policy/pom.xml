@@ -18,11 +18,16 @@
       <artifactId>apiman-gateway-engine-core</artifactId>
       <scope>provided</scope>
     </dependency>
-	<dependency>
-		<groupId>io.apiman</groupId>
-		<artifactId>apiman-test-policies</artifactId>
-		<scope>test</scope>
-	</dependency>
+    <dependency>
+      <groupId>io.apiman</groupId>
+      <artifactId>apiman-gateway-engine-policies</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.apiman</groupId>
+      <artifactId>apiman-test-policies</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>

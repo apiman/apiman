@@ -1,0 +1,13 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Log Policy Configuration",
+  "type": "object",
+  "properties": {
+    "direction": {
+      "type": "string",
+      "title": "Direction",
+      "description": "You may choose to log either the Request headers, Response headers, or both.",
+      "enum": [ "request", "response", "both" ]
+    }
+  }
+}

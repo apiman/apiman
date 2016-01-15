@@ -17,19 +17,21 @@ package io.apiman.plugins.log_policy;
 
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.ApiResponse;
-import io.apiman.gateway.engine.beans.exceptions.ConfigurationParseException;
-import io.apiman.gateway.engine.policy.IPolicy;
+import io.apiman.gateway.engine.policies.AbstractMappedPolicy;
 import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
+import io.apiman.plugins.log_policy.beans.LogHeadersConfigBean;
+import io.apiman.plugins.log_policy.beans.LogHeadersDirectionType;
 
 import java.util.Map;
+import java.util.TreeSet;
 
 /**
  * A policy that logs the headers of the HTTP request and HTTP response at the current position in the chain.
  *
  * @author ton.swieb@finalist.nl
  */
-public class LogHeadersPolicy implements IPolicy {
+public class LogHeadersPolicy extends AbstractMappedPolicy<LogHeadersConfigBean> {
 
 	private static enum HttpDirection {
 		REQUEST("HTTP Request"),  //$NON-NLS-1$
@@ -55,41 +57,50 @@ public class LogHeadersPolicy implements IPolicy {
     }
 
     /**
-     * @see io.apiman.gateway.engine.policy.IPolicy#parseConfiguration(java.lang.String)
+     * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#getConfigurationClass()
      */
     @Override
-    public Object parseConfiguration(String jsonConfiguration) throws ConfigurationParseException {
-        return null;
+    protected Class<LogHeadersConfigBean> getConfigurationClass() {
+        return LogHeadersConfigBean.class;
     }
 
     /**
-     * @see io.apiman.gateway.engine.policy.IPolicy#apply(io.apiman.gateway.engine.beans.ApiRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
+     * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#doApply(io.apiman.gateway.engine.beans.ApiRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
      */
     @Override
-    public void apply(ApiRequest request, IPolicyContext context, Object config,
+    protected void doApply(ApiRequest request, IPolicyContext context, LogHeadersConfigBean config,
             IPolicyChain<ApiRequest> chain) {
-
-    	String endpoint = request.getApi().getEndpoint();
-    	context.setAttribute(ENDPOINT_ATTRIBUTE, endpoint);
-    	logHeaders(request.getHeaders(),HttpDirection.REQUEST, endpoint);
+        String endpoint = request.getApi().getEndpoint();
+        context.setAttribute(ENDPOINT_ATTRIBUTE, endpoint);
+        if (config.getDirection() != LogHeadersDirectionType.response) {
+            logHeaders(request.getHeaders(),HttpDirection.REQUEST, endpoint);
+        }
         chain.doApply(request);
     }
 
     /**
-     * @see io.apiman.gateway.engine.policy.IPolicy#apply(io.apiman.gateway.engine.beans.ApiResponse, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
+     * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#doApply(io.apiman.gateway.engine.beans.ApiResponse, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
      */
     @Override
-    public void apply(ApiResponse response, IPolicyContext context, Object config,
+    protected void doApply(ApiResponse response, IPolicyContext context, LogHeadersConfigBean config,
             IPolicyChain<ApiResponse> chain) {
-
-    	String endpoint = context.getAttribute(ENDPOINT_ATTRIBUTE, ""); //$NON-NLS-1$
-    	logHeaders(response.getHeaders(),HttpDirection.RESPONSE,endpoint);
+        if (config.getDirection() != LogHeadersDirectionType.request) {
+            String endpoint = context.getAttribute(ENDPOINT_ATTRIBUTE, ""); //$NON-NLS-1$
+            logHeaders(response.getHeaders(),HttpDirection.RESPONSE, endpoint);
+        }
         chain.doApply(response);
     }
 
+	/**
+	 * Logs the given headers to standard output.
+	 * @param headers
+	 * @param direction
+	 * @param endpoint
+	 */
 	private void logHeaders(final Map<String, String> headers, final HttpDirection direction, final String endpoint) {
         System.out.println(String.format("Logging %d %s headers for %s", headers.size(), direction.getDescription(), endpoint)); //$NON-NLS-1$
-        for (String key : headers.keySet()) {
+        TreeSet<String> sortedKeys = new TreeSet<>(headers.keySet());
+        for (String key : sortedKeys) {
             System.out.println(String.format("Key : %s, Value : %s", key, headers.get(key))); //$NON-NLS-1$
         }
 	}
