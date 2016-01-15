@@ -49,6 +49,13 @@
       "version" : "1.2.1-SNAPSHOT",
       "name" : "XML<->JSON Transformation Policy Plugin",
       "description" : "This plugin provides a very simple policy which can transform the request and/or response payload between XML and JSON."
+    },
+    {
+      "groupId" : "io.apiman.plugins",
+      "artifactId" : "apiman-plugins-log-policy",
+      "version" : "1.2.1-SNAPSHOT",
+      "name" : "Log Headers Policy",
+      "description" : "A policy that logs the headers to std out.  Useful to analyse inbound HTTP traffic to the gateway when added as the first policy in the chain or to analyse outbound HTTP traffic from the gateway when added as the last policy in the chain."
     }
   ]
 }
