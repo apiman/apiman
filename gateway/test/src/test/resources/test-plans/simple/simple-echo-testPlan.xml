@@ -17,6 +17,7 @@
     <test name="Echo 4 (Query Params)">test-plan-data/simple/simple-echo/echo/004.resttest</test>
     <test name="Echo 5 (No Trailing Slash)">test-plan-data/simple/simple-echo/echo/005-no-trailing-slash.resttest</test>
     <test name="Echo 6 (Trailing Slash)">test-plan-data/simple/simple-echo/echo/006-trailing-slash.resttest</test>
+    <test name="Echo 7 (Strip 'apikey' Query Param)">test-plan-data/simple/simple-echo/echo/007-strip-query-param.resttest</test>
   </testGroup>
 
   <testGroup name="Test some error handling">
