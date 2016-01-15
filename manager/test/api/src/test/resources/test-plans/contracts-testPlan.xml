@@ -38,7 +38,7 @@
     <test name="Publish API 1">test-plan-data/contracts/publish/001_publish-api-1.resttest</test>
     <test name="Publish API 2">test-plan-data/contracts/publish/002_publish-api-2.resttest</test>
 
-    <test name="Create Contract to API 1">test-plan-data/contracts/contracts/003_create-contract1.resttest</test>
+    <test name="Create Contract to API 1 (with custom apiKey)">test-plan-data/contracts/contracts/003_create-contract1.resttest</test>
     <test name="List Contracts for Client 1 [1]">test-plan-data/contracts/contracts/004_get-contracts.resttest</test>
     <test name="Create Contract to API 2">test-plan-data/contracts/contracts/005_create-contract2.resttest</test>
     <test name="List Contracts for Client 1 [2]">test-plan-data/contracts/contracts/006_get-contracts.resttest</test>
