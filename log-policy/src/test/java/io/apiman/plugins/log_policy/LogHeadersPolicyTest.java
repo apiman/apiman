@@ -33,12 +33,13 @@ public class LogHeadersPolicyTest extends ApimanPolicyTest {
     		Assert.assertEquals(200, response.code());
     		String output = testOutput.toString("UTF-8");
     		output = redactDates(output);
-    		String expected = "Logging 0 HTTP Request headers for io.apiman.test.policies.EchoBackEndApi\r\n" +
-    		        "Logging 4 HTTP Response headers for io.apiman.test.policies.EchoBackEndApi\r\n" +
-    		        "Key : Content-Length, Value : 175\r\n" +
-    		        "Key : Content-Type, Value : application/json\r\n" +
-    		        "Key : Date, Value : XXX\r\n" +
-    		        "Key : Server, Value : apiman.policy-test\r\n" +
+    		output = normalize(output);
+    		String expected = "Logging 0 HTTP Request headers for io.apiman.test.policies.EchoBackEndApi\n" +
+    		        "Logging 4 HTTP Response headers for io.apiman.test.policies.EchoBackEndApi\n" +
+    		        "Key : Content-Length, Value : 175\n" +
+    		        "Key : Content-Type, Value : application/json\n" +
+    		        "Key : Date, Value : XXX\n" +
+    		        "Key : Server, Value : apiman.policy-test\n" +
     		        "";
     		Assert.assertEquals(expected, output);
         } finally {
@@ -63,13 +64,14 @@ public class LogHeadersPolicyTest extends ApimanPolicyTest {
     		Assert.assertEquals("testGet", entity.getHeaders().get("X-Test-Name"));
             String output = testOutput.toString("UTF-8");
             output = redactDates(output);
-            String expected = "Logging 1 HTTP Request headers for io.apiman.test.policies.EchoBackEndApi\r\n" +
-                    "Key : X-Test-Name, Value : testGet\r\n" +
-                    "Logging 4 HTTP Response headers for io.apiman.test.policies.EchoBackEndApi\r\n" +
-                    "Key : Content-Length, Value : 209\r\n" +
-                    "Key : Content-Type, Value : application/json\r\n" +
-                    "Key : Date, Value : XXX\r\n" +
-                    "Key : Server, Value : apiman.policy-test\r\n" +
+            output = normalize(output);
+            String expected = "Logging 1 HTTP Request headers for io.apiman.test.policies.EchoBackEndApi\n" +
+                    "Key : X-Test-Name, Value : testGet\n" +
+                    "Logging 4 HTTP Response headers for io.apiman.test.policies.EchoBackEndApi\n" +
+                    "Key : Content-Length, Value : 209\n" +
+                    "Key : Content-Type, Value : application/json\n" +
+                    "Key : Date, Value : XXX\n" +
+                    "Key : Server, Value : apiman.policy-test\n" +
                     "";
             Assert.assertEquals(expected, output);
         } finally {
@@ -94,8 +96,9 @@ public class LogHeadersPolicyTest extends ApimanPolicyTest {
             Assert.assertEquals("testGet", entity.getHeaders().get("X-Test-Name"));
             String output = testOutput.toString("UTF-8");
             output = redactDates(output);
-            String expected = "Logging 1 HTTP Request headers for io.apiman.test.policies.EchoBackEndApi\r\n" +
-                    "Key : X-Test-Name, Value : testGet\r\n" +
+            output = normalize(output);
+            String expected = "Logging 1 HTTP Request headers for io.apiman.test.policies.EchoBackEndApi\n" +
+                    "Key : X-Test-Name, Value : testGet\n" +
                     "";
             Assert.assertEquals(expected, output);
         } finally {
@@ -120,16 +123,25 @@ public class LogHeadersPolicyTest extends ApimanPolicyTest {
             Assert.assertEquals("testGet", entity.getHeaders().get("X-Test-Name"));
             String output = testOutput.toString("UTF-8");
             output = redactDates(output);
-            String expected = "Logging 4 HTTP Response headers for io.apiman.test.policies.EchoBackEndApi\r\n" +
-                    "Key : Content-Length, Value : 209\r\n" +
-                    "Key : Content-Type, Value : application/json\r\n" +
-                    "Key : Date, Value : XXX\r\n" +
-                    "Key : Server, Value : apiman.policy-test\r\n" +
+            output = normalize(output);
+            String expected = "Logging 4 HTTP Response headers for io.apiman.test.policies.EchoBackEndApi\n" +
+                    "Key : Content-Length, Value : 209\n" +
+                    "Key : Content-Type, Value : application/json\n" +
+                    "Key : Date, Value : XXX\n" +
+                    "Key : Server, Value : apiman.policy-test\n" +
                     "";
             Assert.assertEquals(expected, output);
         } finally {
             System.setOut(out);
         }
+    }
+
+    /**
+     * Normalize newlines across platforms.
+     * @param output
+     */
+    private static String normalize(String output) {
+        return output.replace("\r\n", "\n");
     }
 
     /**
