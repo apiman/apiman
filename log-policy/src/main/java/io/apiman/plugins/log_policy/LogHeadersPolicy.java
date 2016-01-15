@@ -15,14 +15,14 @@
  */
 package io.apiman.plugins.log_policy;
 
-import java.util.Map;
-
-import io.apiman.gateway.engine.beans.ServiceRequest;
-import io.apiman.gateway.engine.beans.ServiceResponse;
+import io.apiman.gateway.engine.beans.ApiRequest;
+import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.engine.beans.exceptions.ConfigurationParseException;
 import io.apiman.gateway.engine.policy.IPolicy;
 import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
+
+import java.util.Map;
 
 /**
  * A policy that logs the headers of the HTTP request and HTTP response at the current position in the chain.
@@ -32,22 +32,22 @@ import io.apiman.gateway.engine.policy.IPolicyContext;
 public class LogHeadersPolicy implements IPolicy {
 
 	private static enum HttpDirection {
-		REQUEST("HTTP Request"), 
-		RESPONSE("HTTP Response");
-		
+		REQUEST("HTTP Request"),  //$NON-NLS-1$
+		RESPONSE("HTTP Response"); //$NON-NLS-1$
+
 		private final String description;
-		
+
 		HttpDirection(String descr) {
 			this.description = descr;
 		}
-		
+
 		String getDescription() {
 			return description;
-		}		
+		}
 	};
-	
-	public static final String ENDPOINT_ATTRIBUTE="LogHeadersPolicy_EndpointAttribute";
-	
+
+	public static final String ENDPOINT_ATTRIBUTE = "LogHeadersPolicy_EndpointAttribute"; //$NON-NLS-1$
+
     /**
      * Constructor.
      */
@@ -63,36 +63,35 @@ public class LogHeadersPolicy implements IPolicy {
     }
 
     /**
-     * @see io.apiman.gateway.engine.policy.IPolicy#apply(io.apiman.gateway.engine.beans.ServiceRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
+     * @see io.apiman.gateway.engine.policy.IPolicy#apply(io.apiman.gateway.engine.beans.ApiRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
      */
     @Override
-    public void apply(ServiceRequest request, IPolicyContext context, Object config,
-            IPolicyChain<ServiceRequest> chain) {
-    	
-    	String endpoint = request.getService().getEndpoint();
+    public void apply(ApiRequest request, IPolicyContext context, Object config,
+            IPolicyChain<ApiRequest> chain) {
+
+    	String endpoint = request.getApi().getEndpoint();
     	context.setAttribute(ENDPOINT_ATTRIBUTE, endpoint);
     	logHeaders(request.getHeaders(),HttpDirection.REQUEST, endpoint);
         chain.doApply(request);
     }
 
     /**
-     * @see io.apiman.gateway.engine.policy.IPolicy#apply(io.apiman.gateway.engine.beans.ServiceResponse, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
+     * @see io.apiman.gateway.engine.policy.IPolicy#apply(io.apiman.gateway.engine.beans.ApiResponse, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
      */
     @Override
-    public void apply(ServiceResponse response, IPolicyContext context, Object config,
-            IPolicyChain<ServiceResponse> chain) {
-    	
-    	String endpoint = context.getAttribute(ENDPOINT_ATTRIBUTE,"");
+    public void apply(ApiResponse response, IPolicyContext context, Object config,
+            IPolicyChain<ApiResponse> chain) {
+
+    	String endpoint = context.getAttribute(ENDPOINT_ATTRIBUTE, ""); //$NON-NLS-1$
     	logHeaders(response.getHeaders(),HttpDirection.RESPONSE,endpoint);
         chain.doApply(response);
     }
 
 	private void logHeaders(final Map<String, String> headers, final HttpDirection direction, final String endpoint) {
-		
-		System.out.println(String.format("Logging %d %s headers for %s", headers.size(), direction.getDescription(), endpoint));
-    	for (String key : headers.keySet()) {
-    		System.out.println(String.format("Key : %s, Value : %s", key, headers.get(key)));
-    	}
+        System.out.println(String.format("Logging %d %s headers for %s", headers.size(), direction.getDescription(), endpoint)); //$NON-NLS-1$
+        for (String key : headers.keySet()) {
+            System.out.println(String.format("Key : %s, Value : %s", key, headers.get(key))); //$NON-NLS-1$
+        }
 	}
 
 }

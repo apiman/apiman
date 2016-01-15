@@ -1,8 +1,5 @@
 package io.apiman.plugins.log_policy;
 
-import org.junit.Assert;
-import org.junit.Test;
-
 import io.apiman.test.common.mock.EchoResponse;
 import io.apiman.test.policies.ApimanPolicyTest;
 import io.apiman.test.policies.Configuration;
@@ -12,7 +9,11 @@ import io.apiman.test.policies.PolicyTestRequestType;
 import io.apiman.test.policies.PolicyTestResponse;
 import io.apiman.test.policies.TestingPolicy;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 @TestingPolicy(LogHeadersPolicy.class)
+@SuppressWarnings("nls")
 public class LogHeadersPolicyTest extends ApimanPolicyTest {
 
 	/**
@@ -21,18 +22,16 @@ public class LogHeadersPolicyTest extends ApimanPolicyTest {
 	@Test
 	@Configuration("{}")
 	public void testLogHeadersWithoutAnyRequestHeaders() throws PolicyFailureError, Throwable {
-		
-		PolicyTestResponse response = send(PolicyTestRequest.build(PolicyTestRequestType.GET, "/some/resource"));
+        PolicyTestResponse response = send(PolicyTestRequest.build(PolicyTestRequestType.GET, "/some/resource"));
 		Assert.assertEquals(200, response.code());
 	}
-	
+
 	/**
 	 * A simple happy flow test to verify the policy does not blow up in our face.
 	 */
 	@Test
 	@Configuration("{}")
 	public void testLogHeadersHappyFlow() throws PolicyFailureError, Throwable {
-		
 		PolicyTestResponse response = send(PolicyTestRequest.build(PolicyTestRequestType.GET, "/some/resource")
 				.header("X-Test-Name", "testGet"));
 		Assert.assertEquals(200, response.code());
