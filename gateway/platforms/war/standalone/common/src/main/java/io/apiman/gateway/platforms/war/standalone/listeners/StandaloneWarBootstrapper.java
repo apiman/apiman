@@ -2,16 +2,19 @@ package io.apiman.gateway.platforms.war.standalone.listeners;
 
 import io.apiman.gateway.platforms.war.WarEngineConfig;
 import io.apiman.gateway.platforms.war.listeners.WarGatewayBootstrapper;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Map.Entry;
+import java.util.Properties;
+
+import javax.servlet.ServletContextEvent;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.servlet.ServletContextEvent;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
 
 /**
  * Work-around for JBoss/Wildfly specific code in {@link WarGatewayBootstrapper} that prevents use of
@@ -39,6 +42,7 @@ public class StandaloneWarBootstrapper extends WarGatewayBootstrapper {
     /**
      * @see javax.servlet.ServletContextListener#contextInitialized(javax.servlet.ServletContextEvent)
      */
+    @Override
     public void contextInitialized(ServletContextEvent sce) {
         loadConfigurationIntoSystemProperties();
 
@@ -83,6 +87,8 @@ public class StandaloneWarBootstrapper extends WarGatewayBootstrapper {
         }
 
         // push into system properties
-        configFile.forEach((key, value) -> System.setProperty((String) key, (String) value));
+        for (Entry<Object, Object> pair : configFile.entrySet()) {
+            System.setProperty((String) pair.getKey(), (String) pair.getValue());
+        }
     }
 }
