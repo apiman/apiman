@@ -77,6 +77,11 @@
 #kc-login {
     float: right;
     margin-left: 10px;
+}
+#kc-login:hover, #kc-login:focus, #kc-login:active {
+}
+
+#kc-form-buttons.submit input[type=submit] {
     background-color: #0085CF;
     background-image: linear-gradient(to bottom, #00A8E1 0%, #0085CF 100%);
     background-repeat: repeat-x;
@@ -84,7 +89,7 @@
     border-radius: 1px;
     border: 1px solid #006E9C;
 }
-#kc-login:hover, #kc-login:focus, #kc-login:active {
+#kc-form-buttons.submit input[type=submit]:focus, #kc-form-buttons.submit input[type=submit]:active {
     background-color: #0085CF;
     background-image: none;
     border-color: #006E9C;

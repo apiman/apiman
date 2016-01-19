@@ -62,6 +62,31 @@ module Apiman {
             $scope.setVersion = function(client) {
                 PageLifecycle.redirectTo('/orgs/{0}/clients/{1}/{2}', params.org, params.client, client.version);
             };
+            
+            $scope.isModified = function() {
+                if (!$scope.version.publishedOn) {
+                    return false;
+                }
+                var pub = new Date($scope.version.publishedOn);
+                var mod = new Date($scope.version.modifiedOn);
+                Logger.info('Checking if entity was modified.  pub={0}  mod={1}  mod > pub = {2}', pub, mod, mod > pub);
+                return mod > pub;
+            };
+            
+            $scope.isReregisterable = function() {
+                var rval = false;
+                Logger.info('Checking if entity can be re-registered.');
+                if ($scope.getEntityStatus() == 'Retired') {
+                    Logger.info('Entity is retired, so it **CAN** be re-registered.');
+                    rval = true;
+                }
+                if ($scope.getEntityStatus() == 'Registered') {
+                    var mod = $scope.isModified();
+                    rval = mod;
+                }
+                Logger.info('   isReregisterable rval={0}', rval);
+                return rval;
+            };
 
             $scope.registerClient = function() {
                 $scope.registerButton.state = 'in-progress';
@@ -73,11 +98,11 @@ module Apiman {
                     entityVersion: params.version
                 };
                 ActionSvcs.save(registerAction, function(reply) {
-                    $scope.version.status = 'Registered';
                     $scope.version.publishedOn = Date.now();
                     $scope.registerButton.state = 'complete';
                     $scope.reregisterButton.state = 'complete';
-                    $scope.setEntityStatus($scope.version.status);
+                    $scope.setEntityStatus('Registered');
+                    Logger.info('---');
                 }, PageLifecycle.handleError);
             };
 
