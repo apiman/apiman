@@ -56,6 +56,13 @@ module Apiman {
                         $scope.testErrorMessage = reply.detail;
                     }
                 }, function(error) {
+                    var charRegExp = /([\\]*)?"(pass|password)([\\]*)?":([\\]*)?"(.+?)([\\]*)?"/g;
+                    var regTest = charRegExp.test(JSON.stringify(error));
+
+                    if (regTest === true) {
+                        error = JSON.stringify(error).replace(charRegExp, '\\"password\\":\\"*****\\"');
+                    }
+
                     $scope.testButton.state = 'error';
                     $scope.testResult = 'error';
                     $scope.testErrorMessage = error;
