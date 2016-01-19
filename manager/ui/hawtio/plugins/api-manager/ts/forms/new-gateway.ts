@@ -60,7 +60,7 @@ module Apiman {
                     $scope.testResult = 'error';
                     $scope.testErrorMessage = error;
                 });
-            }
+            };
             
             $scope.createGateway = function() {
                 $scope.createButton.state = 'in-progress';
