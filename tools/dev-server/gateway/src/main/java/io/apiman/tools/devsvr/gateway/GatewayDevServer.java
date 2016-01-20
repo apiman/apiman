@@ -17,11 +17,11 @@
 package io.apiman.tools.devsvr.gateway;
 
 import io.apiman.gateway.engine.components.ICacheStoreComponent;
+import io.apiman.gateway.engine.components.IJdbcComponent;
 import io.apiman.gateway.engine.components.ILdapComponent;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.components.IRateLimiterComponent;
 import io.apiman.gateway.engine.components.ISharedStateComponent;
-import io.apiman.gateway.engine.components.jdbc.IJdbcComponent;
 import io.apiman.gateway.engine.es.ESMetrics;
 import io.apiman.gateway.engine.impl.DefaultJdbcComponent;
 import io.apiman.gateway.engine.impl.DefaultLdapComponent;

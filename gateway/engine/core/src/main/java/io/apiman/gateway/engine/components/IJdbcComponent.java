@@ -13,9 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apiman.gateway.engine.components.jdbc;
+package io.apiman.gateway.engine.components;
 
 import io.apiman.gateway.engine.IComponent;
+import io.apiman.gateway.engine.components.jdbc.IJdbcClient;
+import io.apiman.gateway.engine.components.jdbc.JdbcOptionsBean;
 
 import javax.sql.DataSource;
 

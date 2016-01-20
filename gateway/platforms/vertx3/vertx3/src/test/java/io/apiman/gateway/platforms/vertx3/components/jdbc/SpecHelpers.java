@@ -17,8 +17,8 @@ package io.apiman.gateway.platforms.vertx3.components.jdbc;
 
 import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
+import io.apiman.gateway.engine.components.IJdbcComponent;
 import io.apiman.gateway.engine.components.jdbc.IJdbcClient;
-import io.apiman.gateway.engine.components.jdbc.IJdbcComponent;
 import io.apiman.gateway.engine.components.jdbc.IJdbcConnection;
 import io.apiman.gateway.engine.components.jdbc.JdbcOptionsBean;
 import io.apiman.gateway.platforms.vertx3.components.JdbcClientComponentImpl;

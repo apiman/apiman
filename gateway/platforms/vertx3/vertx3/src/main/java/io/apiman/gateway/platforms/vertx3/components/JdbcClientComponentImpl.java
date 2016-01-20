@@ -15,8 +15,8 @@
  */
 package io.apiman.gateway.platforms.vertx3.components;
 
+import io.apiman.gateway.engine.components.IJdbcComponent;
 import io.apiman.gateway.engine.components.jdbc.IJdbcClient;
-import io.apiman.gateway.engine.components.jdbc.IJdbcComponent;
 import io.apiman.gateway.engine.components.jdbc.JdbcOptionsBean;
 import io.apiman.gateway.platforms.vertx3.common.config.VertxEngineConfig;
 import io.apiman.gateway.platforms.vertx3.components.jdbc.VertxJdbcClientImpl;

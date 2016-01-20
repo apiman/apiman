@@ -19,11 +19,11 @@ import io.apiman.gateway.engine.IComponent;
 import io.apiman.gateway.engine.IComponentRegistry;
 import io.apiman.gateway.engine.beans.exceptions.ComponentNotFoundException;
 import io.apiman.gateway.engine.components.ICacheStoreComponent;
+import io.apiman.gateway.engine.components.IJdbcComponent;
 import io.apiman.gateway.engine.components.ILdapComponent;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.components.IRateLimiterComponent;
 import io.apiman.gateway.engine.components.ISharedStateComponent;
-import io.apiman.gateway.engine.components.jdbc.IJdbcComponent;
 
 import java.util.Collection;
 import java.util.HashMap;

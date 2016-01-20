@@ -18,8 +18,8 @@ package io.apiman.gateway.engine.impl;
 
 import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
+import io.apiman.gateway.engine.components.IJdbcComponent;
 import io.apiman.gateway.engine.components.jdbc.IJdbcClient;
-import io.apiman.gateway.engine.components.jdbc.IJdbcComponent;
 import io.apiman.gateway.engine.components.jdbc.IJdbcConnection;
 import io.apiman.gateway.engine.components.jdbc.JdbcOptionsBean;
 
@@ -49,7 +49,7 @@ public class DefaultJdbcComponent implements IJdbcComponent {
     }
 
     /**
-     * @see io.apiman.gateway.engine.components.jdbc.IJdbcComponent#createShared(java.lang.String, io.apiman.gateway.engine.components.jdbc.JdbcOptionsBean)
+     * @see io.apiman.gateway.engine.components.IJdbcComponent#createShared(java.lang.String, io.apiman.gateway.engine.components.jdbc.JdbcOptionsBean)
      */
     @Override
     public synchronized IJdbcClient createShared(String dsName, JdbcOptionsBean config) {
@@ -64,7 +64,7 @@ public class DefaultJdbcComponent implements IJdbcComponent {
     }
 
     /**
-     * @see io.apiman.gateway.engine.components.jdbc.IJdbcComponent#createStandalone(io.apiman.gateway.engine.components.jdbc.JdbcOptionsBean)
+     * @see io.apiman.gateway.engine.components.IJdbcComponent#createStandalone(io.apiman.gateway.engine.components.jdbc.JdbcOptionsBean)
      */
     @Override
     public IJdbcClient createStandalone(JdbcOptionsBean config) {
@@ -72,7 +72,7 @@ public class DefaultJdbcComponent implements IJdbcComponent {
     }
 
     /**
-     * @see io.apiman.gateway.engine.components.jdbc.IJdbcComponent#create(javax.sql.DataSource)
+     * @see io.apiman.gateway.engine.components.IJdbcComponent#create(javax.sql.DataSource)
      */
     @Override
     public IJdbcClient create(DataSource ds) {

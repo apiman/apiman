@@ -18,8 +18,8 @@ package io.apiman.gateway.platforms.vertx3.components.jdbc.suitetests;
 import static io.apiman.gateway.platforms.vertx3.components.jdbc.SpecHelpers.explodeOnFailure;
 import static io.apiman.gateway.platforms.vertx3.components.jdbc.SpecHelpers.resetDB;
 
+import io.apiman.gateway.engine.components.IJdbcComponent;
 import io.apiman.gateway.engine.components.jdbc.IJdbcClient;
-import io.apiman.gateway.engine.components.jdbc.IJdbcComponent;
 import io.apiman.gateway.engine.components.jdbc.IJdbcConnection;
 import io.apiman.gateway.engine.components.jdbc.JdbcOptionsBean;
 import io.apiman.gateway.platforms.vertx3.components.JdbcClientComponentImpl;
