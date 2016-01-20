@@ -32,7 +32,7 @@ public class ApimanStrLookup extends StrLookup {
     public String lookup(String key) {
         String replacement = System.getProperty(key);
         if (replacement == null) {
-            System.getenv(key);
+            replacement = System.getenv(key);
         }
         return replacement;
     }

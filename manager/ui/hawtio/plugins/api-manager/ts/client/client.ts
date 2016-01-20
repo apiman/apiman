@@ -69,13 +69,11 @@ module Apiman {
                 }
                 var pub = new Date($scope.version.publishedOn);
                 var mod = new Date($scope.version.modifiedOn);
-                Logger.info('Checking if entity was modified.  pub={0}  mod={1}  mod > pub = {2}', pub, mod, mod > pub);
                 return mod > pub;
             };
             
             $scope.isReregisterable = function() {
                 var rval = false;
-                Logger.info('Checking if entity can be re-registered.');
                 if ($scope.getEntityStatus() == 'Retired') {
                     Logger.info('Entity is retired, so it **CAN** be re-registered.');
                     rval = true;
@@ -84,7 +82,6 @@ module Apiman {
                     var mod = $scope.isModified();
                     rval = mod;
                 }
-                Logger.info('   isReregisterable rval={0}', rval);
                 return rval;
             };
 

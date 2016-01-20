@@ -10,7 +10,11 @@ module Apiman {
                     var actionVar = attrs.field;
                     var actionText = attrs.placeholder;
                     var icon = attrs.icon;
-                    Logger.debug("Action button initializing state variable [{0}].", actionVar);
+                    var disabledExpr = attrs.ngDisabled;
+                    Logger.debug('===================================');
+                    Logger.debug("======> Action button initializing state variable [{0}].", actionVar);
+                    Logger.debug('======> Attributes: {0}', attrs);
+                    Logger.debug('======> DisabledExpr: ' + disabledExpr);
                     scope[actionVar] = {
                         state: 'ready',
                         html: $(element).html(),
@@ -22,7 +26,14 @@ module Apiman {
                             $(element).prop('disabled', true);
                             $(element).html(newVal.actionHtml);
                         } else {
-                            $(element).prop('disabled', false);
+                            var isDisabled = false;
+                            if (disabledExpr) {
+                                Logger.debug('======> Evaluating expr: ' + disabledExpr);
+                                var exprVal = scope.$eval(disabledExpr);
+                                Logger.debug('======> expr value: ' + exprVal);
+                                isDisabled = new Boolean(exprVal).valueOf();
+                            }
+                            $(element).prop('disabled', isDisabled);
                             $(element).html(newVal.html);
                         }
                     });
@@ -43,7 +54,7 @@ module Apiman {
 
                     // Called if copy-to-clipboard functionality was successful
                     scope.copySuccess = function () {
-                        console.log('Copied!');
+                        //console.log('Copied!');
                     };
 
                     // Called if copy-to-clipboard functionality was unsuccessful
@@ -146,8 +157,8 @@ module Apiman {
                         if (entityStatus) {
                             var validStatuses = attrs.apimanStatus.split(',');
                             var statusIsValid = false;
-                            Logger.debug('Checking status {0} against valid statuses {1}:  {2}', entityStatus, '' + validStatuses,
-                                    element[0].outerHTML);
+//                            Logger.debug('Checking status {0} against valid statuses {1}:  {2}', entityStatus, '' + validStatuses,
+//                                    element[0].outerHTML);
                             for (var i = 0; i < validStatuses.length; i++) {
                                 if (validStatuses[i] == entityStatus) {
                                     statusIsValid = true;
