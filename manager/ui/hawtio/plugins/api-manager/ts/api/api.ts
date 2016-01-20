@@ -126,6 +126,15 @@ module Apiman {
                 PageLifecycle.redirectTo('/orgs/{0}/apis/{1}/{2}', params.org, params.api, api.version);
             };
 
+            $scope.isModified = function() {
+                if (!$scope.version.publishedOn) {
+                    return false;
+                }
+                var pub = new Date($scope.version.publishedOn);
+                var mod = new Date($scope.version.modifiedOn);
+                return mod > pub;
+            };
+
             $scope.publishApi = function() {
                 $scope.publishButton.state = 'in-progress';
                 $scope.republishButton.state = 'in-progress';
@@ -138,11 +147,10 @@ module Apiman {
                 };
                 
                 ActionSvcs.save(publishAction, function(reply) {
-                    $scope.version.status = 'Published';
                     $scope.version.publishedOn = Date.now();
                     $scope.publishButton.state = 'complete';
                     $scope.republishButton.state = 'complete';
-                    $scope.setEntityStatus($scope.version.status);
+                    $scope.setEntityStatus('Published');
                 }, PageLifecycle.handleError);
             };
 

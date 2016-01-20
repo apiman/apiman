@@ -61,6 +61,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -339,6 +340,8 @@ public class ActionResourceImpl implements IActionResource {
             throw ExceptionFactory.actionException(Messages.i18n.format("ClientNotFound"), e); //$NON-NLS-1$
         }
 
+        boolean isReregister = false;
+
         // Validate that it's ok to perform this action
         if (versionBean.getStatus() == ClientStatus.Registered) {
             Date modOn = versionBean.getModifiedOn();
@@ -347,6 +350,7 @@ public class ActionResourceImpl implements IActionResource {
             if (c <= 0) {
                 throw ExceptionFactory.actionException(Messages.i18n.format("ClientReRegisterNotRequired")); //$NON-NLS-1$
             }
+            isReregister = true;
         }
 
         Client client = new Client();
@@ -383,6 +387,25 @@ public class ActionResourceImpl implements IActionResource {
                     if (!links.containsKey(apiGatewayBean.getGatewayId())) {
                         IGatewayLink gatewayLink = createGatewayLink(apiGatewayBean.getGatewayId());
                         links.put(apiGatewayBean.getGatewayId(), gatewayLink);
+                    }
+                }
+            }
+            if (isReregister) {
+                // Once we figure out which gateways to register with, make sure we also "unregister"
+                // the client app from all other gateways.  This is necessary because we may have broken
+                // contracts we previously had on APIs that are published to other gateways.  And thus
+                // it's possible we need to remove a contract from a Gateway that is not otherwise/currently
+                // referenced.
+                //
+                // This is a fix for:  https://issues.jboss.org/browse/APIMAN-895
+
+                Iterator<GatewayBean> gateways = storage.getAllGateways();
+                while (gateways.hasNext()) {
+                    GatewayBean gbean = gateways.next();
+                    if (!links.containsKey(gbean.getId())) {
+                        IGatewayLink gatewayLink = createGatewayLink(gbean.getId());
+                        gatewayLink.unregisterClient(client);
+                        gatewayLink.close();
                     }
                 }
             }

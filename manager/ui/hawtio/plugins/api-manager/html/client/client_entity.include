@@ -42,7 +42,7 @@
             <div class="entity-info-with-icon">
               <span apiman-i18n-key="status-label">Status:</span>
               <span apiman-entity-status />
-              <span title="Client App has been modified since it was last registered!" apiman-i18n-key="client-modified" ng-show="version.status == 'Registered' && version.modifiedOn > version.publishedOn" class="apiman-label apiman-label-default">Modified</span>
+              <span title="Client App has been modified since it was last registered!" apiman-i18n-key="client-modified" ng-show="version.status == 'Registered' && isModified()" class="apiman-label apiman-label-default">Modified</span>
             </div>
           </div>
           <div class="col-md-5" apiman-permission="clientAdmin">
@@ -55,7 +55,7 @@
             <div class="apiman-divider-40"></div>
             <div class="">
               <button ng-disabled="getEntityStatus() == 'Created'" apiman-action-btn="" apiman-status="Created,Ready" class="btn btn-primary" data-field="registerButton" apiman-i18n-key="register" placeholder="Registering..." data-icon="fa-cog" ng-click="registerClient()">Register</button>
-              <button ng-disabled="getEntityStatus() != 'Retired' && version.publishedOn > version.modifiedOn" apiman-action-btn="" apiman-status="Registered,Retired" class="btn btn-primary" data-field="reregisterButton" apiman-i18n-key="reregister" placeholder="Re-Registering..." data-icon="fa-cog" ng-click="registerClient()">Re-Register</button>
+              <button ng-disabled="isReregisterable() == false" apiman-action-btn="" apiman-status="Registered,Retired" class="btn btn-primary" data-field="reregisterButton" apiman-i18n-key="reregister" placeholder="Re-Registering..." data-icon="fa-cog" ng-click="registerClient()">Re-Register</button>
               <button apiman-action-btn="" apiman-status="Registered" class="btn btn-warning" data-field="unregisterButton" apiman-i18n-key="unregister" placeholder="Unregistering..." data-icon="fa-cog" ng-click="unregisterClient()">Unregister</button>
             </div>
           </div>
