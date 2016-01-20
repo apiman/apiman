@@ -12,10 +12,29 @@ module ApimanRPC {
     export var ApimanSvcs = _module.factory('ApimanSvcs', ['$resource', 'Configuration',
         function($resource, Configuration) {
             var endpoint = Configuration.api.endpoint + '/:entityType/:secondaryType';
+
+            /*
+            // Intercept Errors
+            function resourceErrorResponseHandler(response) {
+                var charRegExp = /([\\]*)?"(pass|password)([\\]*)?":([\\]*)?"(.+?)([\\]*)?"/g;
+                var regTest = charRegExp.test(JSON.stringify(response));
+
+                if (regTest === true) {
+                    var newResponse = JSON.stringify(response).replace(charRegExp, '\\"password\\":\\"*****\\"');
+                    console.log('Formatted response: ' + newResponse);
+
+                    return newResponse;
+                }
+
+                return response;
+            }
+            */
+
             return $resource(endpoint,
                 { entityType: '@entityType', secondaryType: '@secondaryType' }, {
                 update: {
-                  method: 'PUT' // this method issues a PUT request
+                  method: 'PUT'//, // this method issues a PUT request
+                    //interceptor : {responseError : resourceErrorResponseHandler }
                 }});
         }]);
 
