@@ -88,7 +88,7 @@
         <!-- Checklist Template -->
         <script type="text/ng-template"
                 id="checklistTemplate.html">
-          <span style="cursor: default; position: absolute; top: 9px; right: 10px; color: #777;"
+          <span style="cursor: pointer; position: absolute; top: 9px; right: 10px; color: #777;"
                 ng-click="closePopover()"
                 class="fa fa-close"></span>
           <uib-accordion close-others="oneAtATime">
