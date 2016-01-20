@@ -297,7 +297,7 @@ public abstract class ApiManagerConfig {
      * @return any custom properties associated with the storage query impl
      */
     public Map<String, String> getStorageQueryProperties() {
-        return getPrefixedProperties("apiman-manager.storage-query.type."); //$NON-NLS-1$
+        return getPrefixedProperties("apiman-manager.storage-query."); //$NON-NLS-1$
     }
 
     /**
@@ -339,7 +339,7 @@ public abstract class ApiManagerConfig {
      * @return any custom properties associated with the data encrypter
      */
     public Map<String, String> getDataEncrypterProperties() {
-        return getPrefixedProperties("apiman.encrypter.type."); //$NON-NLS-1$
+        return getPrefixedProperties("apiman.encrypter."); //$NON-NLS-1$
     }
 
     /**

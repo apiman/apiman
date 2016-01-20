@@ -138,11 +138,13 @@ public class WarCdiFactory {
 
     @Produces @ApplicationScoped
     public static IStorageQuery provideStorageQuery(WarApiManagerConfig config, @New JpaStorage jpaStorage,
-            @New EsStorage esStorage, IPluginRegistry pluginRegistry) {
+            @New EsStorage esStorage, IStorage storage, IPluginRegistry pluginRegistry) {
         if ("jpa".equals(config.getStorageType())) { //$NON-NLS-1$
             return jpaStorage;
         } else if ("es".equals(config.getStorageType())) { //$NON-NLS-1$
             return initES(config, esStorage);
+        } else if (storage != null && (storage instanceof IStorageQuery)) {
+            return (IStorageQuery) storage;
         } else {
             try {
                 return createCustomComponent(IStorageQuery.class, config.getStorageQueryType(),
