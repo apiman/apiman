@@ -11,10 +11,6 @@ module Apiman {
                     var actionText = attrs.placeholder;
                     var icon = attrs.icon;
                     var disabledExpr = attrs.ngDisabled;
-                    Logger.debug('===================================');
-                    Logger.debug("======> Action button initializing state variable [{0}].", actionVar);
-                    Logger.debug('======> Attributes: {0}', attrs);
-                    Logger.debug('======> DisabledExpr: ' + disabledExpr);
                     scope[actionVar] = {
                         state: 'ready',
                         html: $(element).html(),
@@ -28,9 +24,7 @@ module Apiman {
                         } else {
                             var isDisabled = false;
                             if (disabledExpr) {
-                                Logger.debug('======> Evaluating expr: ' + disabledExpr);
                                 var exprVal = scope.$eval(disabledExpr);
-                                Logger.debug('======> expr value: ' + exprVal);
                                 isDisabled = new Boolean(exprVal).valueOf();
                             }
                             $(element).prop('disabled', isDisabled);
