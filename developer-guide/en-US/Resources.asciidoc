@@ -4,13 +4,17 @@ The apiman source code is located in github here:
 
 https://github.com/apiman/apiman
 
+Source code for the apiman policies can be found here:
+
+https://github.com/apiman/apiman-plugins
+
 Source code for the apiman project web site is here:
 
 https://github.com/apiman/apiman.github.io
 
-The docker files are currently here:
+The official apiman docker files are currently here:
 
-https://github.com/apiman/apiman-docker
+https://github.com/jboss-dockerfiles/apiman
 
 
 === Issue Tracking
@@ -51,15 +55,15 @@ may want to try the following:
 mvn clean install -Pinstall-all-wildfly9
 ....
 
-This command will do a full apiman build, but will also download WildFly
+This command will do a full apiman build, but will also download WildFly 9
 and install apiman into it.  The result will be a fully configured install of
 apiman running in WildFly.  The location of this WildFly install will be here:
 
 ....
-apiman/tools/server-all/targe/wildfly-{wildfly.version}/
+apiman/tools/server-all/target/wildfly-{wildfly.version}/
 ....
 
-At this point you can test apiman by simply running WildFly from the above
+At this point you can test apiman by simply running WildFly 9 from the above
 location using a command something like this:
 
 ....

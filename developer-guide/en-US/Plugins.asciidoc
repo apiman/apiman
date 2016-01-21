@@ -567,7 +567,7 @@ TIP: Once you have the JSON Schema finalized, you could also use the online http
 tool to generate a good starting point for a Java Bean that can be used to marshal/unmarshal your policy's configuration
 data at runtime.  See the discussion about AbstractMappedPolicy above for additional information.
 
-=== Testing a Plugin Policy
+=== Unit Testing a Plugin Policy
 While it is quite simple to create a custom policy for apiman, you may be wondering the best way to
 unit test your implementation.  Fortunately we have made this extremely easy by including an easy-to-use
 Policy Testing junit framework.  Once you have followed the instructions above to create your custom
@@ -674,6 +674,55 @@ In this example everything works as it did before, but instead of responding wit
 the send() method will return with a custom response (as created and returned by the provided custom
 back-end API implementation).
 
+
+=== Using a Plugin Policy
+Once you have built and unit tested your plugin policy, you will most likely want to actually use the policy
+in apiman.  This can be done by adding the plugin to apiman via the Plugin Management UI in the API Manager
+user interface.  
+
+TIP: The Plugin Management UI is restricted to admin users of the API Manager.
+
+For more information about how to use the Plugin Management UI, please see the apiman User Guide.
+
+==== Iterating a Plugin Policy
+When developing a custom plugin policy, it can be cumbersome to have to uninstall and reinstall the plugin
+every time you make a change.  Hopefully, unit testing will help you quickly iterate your plugin policy
+implementation, but there are times when testing in a live environment is necessary.
+
+At runtime, the API Gateway installs plugins from the local `.m2` directory.  If the plugin is not found
+there, only then will apiman attempt to find and download the plugin from the configured remote maven
+repositories.  Typically, the API Gateway will load and cache the plugin the first time it is used.  However,
+if your plugin *version* ends with "-SNAPSHOT", then apiman will reload it every time it is used.
+
+As a result, you can quickly iterate changes to your plugin policy using a live apiman environment by doing
+the following:
+
+1. Ensure that you are testing a "-SNAPSHOT" version of your custom plugin policy
+2. Configure the policy on one or more API
+3. Publish the API(s) to the API Gateway
+4. Send an HTTP request to an API that uses your custom policy
+5. Make a change to your Policy implementation
+6. Rebuild your plugin and "install" it into your .m2 directory (do not change the version)
+7. Repeat starting at #4
+
+Because the version of your plugin ends with "-SNAPSHOT", the API Gateway will not cache it, but instead
+will reload it each time you do step #4.  This allows you to quickly make changes, rebuild, and re-test
+with a minimum of additional steps.
+
+TIP: Don't use -SNAPSHOT versions of plugins in production as the lack of policy caching will be a 
+significant performance problem.
+
+==== Uninstalling a Plugin
+Again, you can use the Plugin Management UI to uninstall a plugin.  Please note that when you do this,
+any API that is already configured to *use* the plugin will continue to work.  If you wish for an API
+to no longer use a plugin policy, you must remove the policy from the API as a separate step.
+
+==== Upgrading a Plugin
+Often times new versions of a plugin may become available.  When this happens you can use the Plugin
+Management UI to upgrade a plugin to a newer version.  Please note that this will *not* automatically
+upgrade any API using the older version of the plugin.  Instead, to upgrade an API to use the newer
+plugin policy, you will need to remove the old policy configuration and re-add it.  This will cause
+the API to pick up the newer version.  Of course, any *new* APIs will always use the new version.
 
 === Contributing a Core Component
 In addition to policies, the apiman plugin framework allows developers to provide custom implementations
@@ -827,4 +876,228 @@ mongo.port=27017
 mongo.username=sa
 mongo.password=sa123!
 mongo.database=apiman
+```
+
+==== Core Component Customization Points
+This section lists all/most of the available customization points available within apiman.  These represent
+all of the core apiman components that can be replaced by custom implementations provided via plugins.
+
+===== API Manager Components
+[width="100%",options="header"]
+|=======
+|Component Interface |Description
+|io.apiman.manager.api.core.INewUserBootstrapper |Allows customizing users upon first login (e.g. create an org for the user).
+|io.apiman.manager.api.core.IStorage |Primary storage of all API Manager data.
+|io.apiman.manager.api.core.IStorageQuery |Allows querying of the API Manager data.
+|io.apiman.manager.api.core.IMetricsAccessor |Used by the API Manager to query Metrics data collected by the API Gateway.
+|io.apiman.manager.api.core.IApiKeyGenerator |Used to create an API Key for each created API Contract.
+|io.apiman.common.util.crypt.IDataEncrypter |Used primarily by the storage layer to encrypt potentially sensitive data prior to storing it.
+|io.apiman.manager.api.core.IApiCatalog |Provides access to external APIs which users may wish to import.
+|=======
+
+====== io.apiman.manager.api.core.INewUserBootstrapper Example Configuration
+
+```
+apiman-manager.user-bootstrapper.type=plugin:com.example.groupId:artifactId:1.0.Final/com.example.apiman.FooUserBootstrapperImpl
+apiman-manager.user-bootstrapper.foo1=value-1
+apiman-manager.user-bootstrapper.foo2=value-2
+```
+
+====== io.apiman.manager.api.core.IStorage Example Configuration
+
+```
+apiman-manager.storage.type=plugin:com.example.groupId:artifactId:1.0.Final/com.example.apiman.FooStorageImpl
+apiman-manager.storage.foo1=value-1
+apiman-manager.storage.foo2=value-2
+```
+
+====== io.apiman.manager.api.core.IStorageQuery Example Configuration
+
+```
+apiman-manager.storage-query.type=plugin:com.example.groupId:artifactId:1.0.Final/com.example.apiman.FooStorageQueryImpl
+apiman-manager.storage-query.foo1=value-1
+apiman-manager.storage-query.foo2=value-2
+```
+
+TIP: If your custom IStorage implementation *also* implements IStorageQuery, then it will be used instead of 
+trying to create a separate instance of IStorageQuery.
+
+====== io.apiman.manager.api.core.IMetricsAccessor Example Configuration
+
+```
+apiman-manager.metrics.type=plugin:com.example.groupId:artifactId:1.0.Final/com.example.apiman.FooMetricsAccessorImpl
+apiman-manager.metrics.foo1=value-1
+apiman-manager.metrics.foo2=value-2
+```
+
+====== io.apiman.manager.api.core.IApiKeyGenerator Example Configuration
+
+```
+apiman-manager.api-keys.generator.type=plugin:com.example.groupId:artifactId:1.0.Final/com.example.apiman.FooApiKeyGeneratorImpl
+apiman-manager.api-keys.generator.foo1=value-1
+apiman-manager.api-keys.generator.foo2=value-2
+```
+
+====== io.apiman.common.util.crypt.IDataEncrypter Example Configuration
+
+```
+apiman.encrypter.type=plugin:com.example.groupId:artifactId:1.0.Final/com.example.apiman.FooDataEncrypter
+apiman.encrypter.foo1=value-1
+apiman.encrypter.foo2=value-2
+```
+
+====== io.apiman.manager.api.core.IApiCatalog Example Configuration
+
+```
+apiman-manager.api-catalog.type=plugin:com.example.groupId:artifactId:1.0.Final/com.example.apiman.FooApiCatalogImpl
+apiman-manager.api-catalog.foo1=value-1
+apiman-manager.api-catalog.foo2=value-2
+```
+
+
+===== API Gateway Components
+[width="100%",options="header"]
+|=======
+|Component Interface |Description
+|io.apiman.gateway.engine.IRegistry |Stores gateway configuration data (e.g. published APIs).
+|io.apiman.common.util.crypt.IDataEncrypter |Used to encrypt potentially sensitive data prior to storing in the registry.
+|io.apiman.gateway.engine.IConnectorFactory |Creates connectors to back-end APIs based on API meta-information.
+|io.apiman.gateway.engine.policy.IPolicyFactory |Loads policy implementations (from plugins or else internally).
+|io.apiman.gateway.engine.IPolicyFailureWriter |Writes a policy failure to the HTTP response.
+|io.apiman.gateway.engine.IPolicyErrorWriter |Writes a policy error to the HTTP response.
+|io.apiman.gateway.engine.components.IBufferFactoryComponent |Creates an ApimanBuffer (typically this is provided by the platform support).
+|io.apiman.gateway.engine.components.ICacheStoreComponent |Allows storing data into a cache store.
+|io.apiman.gateway.engine.components.IHttpClientComponent |Creates HTTP clients for use in policies.
+|io.apiman.gateway.engine.components.IJdbcComponent |Async component used to perform JDBC operations in policies.
+|io.apiman.gateway.engine.components.ILdapComponent |Async component used to perform LDAP operations in policies.
+|io.apiman.gateway.engine.components.IPeriodicComponent |Creates timers (for use by policies).
+|io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent |Creates policy failures (for use by policies).
+|io.apiman.gateway.engine.components.IRateLimiterComponent |Used by the rate limiting and quota policies.
+|io.apiman.gateway.engine.components.ISharedStateComponent |General purpose component to share state across policy invokations.
+|=======
+
+
+====== io.apiman.gateway.engine.IRegistry Example Configuration
+
+```
+apiman-gateway.registry=plugin:com.example.groupId:artifactId:1.0.Final/com.example.apiman.FooRegistryImpl
+apiman-gateway.registry.foo1=value-1
+```
+
+====== io.apiman.common.util.crypt.IDataEncrypter Example Configuration
+
+```
+apiman.encrypter.type=plugin:com.example.groupId:artifactId:1.0.Final/com.example.apiman.FooDataEncrypter
+apiman.encrypter.foo1=value-1
+apiman.encrypter.foo2=value-2
+```
+
+====== io.apiman.gateway.engine.IConnectorFactory Example Configuration
+
+```
+apiman-gateway.connector-factory=plugin:com.example.groupId:artifactId:1.0.Final/com.example.apiman.FooConnectorFactoryImpl
+apiman-gateway.connector-factory.foo1=value-1
+apiman-gateway.connector-factory.foo2=value-2
+```
+
+====== io.apiman.gateway.engine.policy.IPolicyFactory Example Configuration
+
+```
+apiman-gateway.policy-factory=plugin:com.example.groupId:artifactId:1.0.Final/com.example.apiman.FooPolicyFactoryImpl
+apiman-gateway.policy-factory.foo1=value-1
+apiman-gateway.policy-factory.foo2=value-2
+```
+
+*Note*: there is rarely a reason to provide a custom policy factory.
+
+====== io.apiman.gateway.engine.IPolicyFailureWriter Example Configuration
+
+```
+apiman-gateway.writers.policy-failure=plugin:com.example.groupId:artifactId:1.0.Final/com.example.apiman.FooPolicyFailureWriterImpl
+apiman-gateway.writers.policy-failure.foo1=value-1
+apiman-gateway.writers.policy-failure.foo2=value-2
+```
+
+====== io.apiman.gateway.engine.IPolicyErrorWriter Example Configuration
+
+```
+apiman-gateway.writers.policy-error=plugin:com.example.groupId:artifactId:1.0.Final/com.example.apiman.FooPolicyErrorWriterImpl
+apiman-gateway.writers.policy-error.foo1=value-1
+apiman-gateway.writers.policy-error.foo2=value-2
+```
+
+====== io.apiman.gateway.engine.components.IBufferFactoryComponent Example Configuration
+
+```
+apiman-gateway.components.IBufferFactoryComponent=plugin:com.example.groupId:artifactId:1.0.Final/com.example.apiman.FooBufferFactoryComponentImpl
+apiman-gateway.components.IBufferFactoryComponent.foo1=value-1
+apiman-gateway.components.IBufferFactoryComponent.foo2=value-2
+```
+
+*Note*: typically the buffer factory is specific to the platform.  For example, there is a buffer factory
+used when the API Gateway is running in EAP or WildFly.  There is a different buffer factory used when the
+API Gateway is running in vert.x.  There is typically not another reason to override this.
+
+====== io.apiman.gateway.engine.components.ICacheStoreComponent Example Configuration
+
+```
+apiman-gateway.components.ICacheStoreComponent=plugin:com.example.groupId:artifactId:1.0.Final/com.example.apiman.FooCacheStoreComponentImpl
+apiman-gateway.components.ICacheStoreComponent.foo1=value-1
+apiman-gateway.components.ICacheStoreComponent.foo2=value-2
+```
+
+====== io.apiman.gateway.engine.components.IHttpClientComponent Example Configuration
+
+```
+apiman-gateway.components.IHttpClientComponent=plugin:com.example.groupId:artifactId:1.0.Final/com.example.apiman.FooHttpClientComponentImpl
+apiman-gateway.components.IHttpClientComponent.foo1=value-1
+apiman-gateway.components.IHttpClientComponent.foo2=value-2
+```
+
+====== io.apiman.gateway.engine.components.IJdbcComponent Example Configuration
+
+```
+apiman-gateway.components.IJdbcComponent=plugin:com.example.groupId:artifactId:1.0.Final/com.example.apiman.FooJdbcComponentImpl
+apiman-gateway.components.IJdbcComponent.foo1=value-1
+apiman-gateway.components.IJdbcComponent.foo2=value-2
+```
+
+====== io.apiman.gateway.engine.components.ILdapComponent Example Configuration
+
+```
+apiman-gateway.components.ILdapComponent=plugin:com.example.groupId:artifactId:1.0.Final/com.example.apiman.FooLdapComponentImpl
+apiman-gateway.components.ILdapComponent.foo1=value-1
+apiman-gateway.components.ILdapComponent.foo2=value-2
+```
+
+====== io.apiman.gateway.engine.components.IPeriodicComponent Example Configuration
+
+```
+apiman-gateway.components.IPeriodicComponent=plugin:com.example.groupId:artifactId:1.0.Final/com.example.apiman.FooPeriodicComponentImpl
+apiman-gateway.components.IPeriodicComponent.foo1=value-1
+apiman-gateway.components.IPeriodicComponent.foo2=value-2
+```
+
+====== io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent Example Configuration
+
+```
+apiman-gateway.components.IPolicyFailureFactoryComponent=plugin:com.example.groupId:artifactId:1.0.Final/com.example.apiman.FooPolicyFailureFactoryComponentImpl
+apiman-gateway.components.IPolicyFailureFactoryComponent.foo1=value-1
+apiman-gateway.components.IPolicyFailureFactoryComponent.foo2=value-2
+```
+
+====== io.apiman.gateway.engine.components.IRateLimiterComponent Example Configuration
+
+```
+apiman-gateway.components.IRateLimiterComponent=plugin:com.example.groupId:artifactId:1.0.Final/com.example.apiman.FooRateLimiterComponentImpl
+apiman-gateway.components.IRateLimiterComponent.foo1=value-1
+apiman-gateway.components.IRateLimiterComponent.foo2=value-2
+```
+
+====== io.apiman.gateway.engine.components.ISharedStateComponent Example Configuration
+
+```
+apiman-gateway.components.ISharedStateComponent=plugin:com.example.groupId:artifactId:1.0.Final/com.example.apiman.FooSharedStateComponentImpl
+apiman-gateway.components.ISharedStateComponent.foo1=value-1
+apiman-gateway.components.ISharedStateComponent.foo2=value-2
 ```
