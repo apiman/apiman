@@ -30,6 +30,7 @@ import org.codehaus.jackson.map.ObjectMapper;
  *
  * @author eric.wittmann@redhat.com
  */
+@SuppressWarnings("nls")
 public class EchoBackEndApi implements IPolicyTestBackEndApi {
 
     private static final ObjectMapper mapper = new ObjectMapper();
@@ -51,23 +52,31 @@ public class EchoBackEndApi implements IPolicyTestBackEndApi {
             echoResponse.setHeaders(request.getHeaders());
             echoResponse.setMethod(request.getType());
             echoResponse.setResource(request.getDestination());
-            echoResponse.setUri("urn:" + request.getDestination()); //$NON-NLS-1$
+            echoResponse.setUri("urn:" + request.getDestination());
 
             ApiResponse apiResponse = new ApiResponse();
             apiResponse.setCode(200);
-            apiResponse.setMessage("OK"); //$NON-NLS-1$
-            apiResponse.getHeaders().put("Date", new Date().toString()); //$NON-NLS-1$
-            apiResponse.getHeaders().put("Server", "apiman.policy-test"); //$NON-NLS-1$ //$NON-NLS-2$
-            apiResponse.getHeaders().put("Content-Type", "application/json"); //$NON-NLS-1$ //$NON-NLS-2$
+            apiResponse.setMessage("OK");
+            apiResponse.getHeaders().put("Date", new Date().toString());
+            apiResponse.getHeaders().put("Server", "apiman.policy-test");
+            apiResponse.getHeaders().put("Content-Type", "application/json");
 
-            String responseBody = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(echoResponse);
-            apiResponse.getHeaders().put("Content-Length", String.valueOf(responseBody.length())); //$NON-NLS-1$
+            String responseBody = normalize(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(echoResponse));
+            apiResponse.getHeaders().put("Content-Length", String.valueOf(responseBody.length()));
 
             PolicyTestBackEndApiResponse response = new PolicyTestBackEndApiResponse(apiResponse, responseBody);
             return response;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * Normalize newlines across platforms.
+     * @param output
+     */
+    private static String normalize(String output) {
+        return output.replace("\r\n", "\n");
     }
 
 }
