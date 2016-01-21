@@ -293,10 +293,18 @@ useful.  To access a component, use the 'getComponent' method found on the polic
 context, passing it the interface of the component you wish to use.  The following
 components are available:
 
-* *IPolicyFailureFactoryComponent*: Used to create a policy failure that is needed to call 'doFailure' on the policy chain (indicating that the policy failed).
-* *ISharedStateComponent*: Used to share state information across the conversation boundary.
-* *IHttpClientComponent*: Allows HTTP requests to be made from within a policy.
-* *IRateLimiterComponent*: Supports standard quota/rate limiting behavior, maintaining the current number of requests.
+[cols="2,5", options="header"]
+|===
+
+| Component Name | Description
+| IPolicyFailureFactoryComponent | Used to create a policy failure that is needed to call 'doFailure' on the policy chain (indicating that the policy failed).
+| ISharedStateComponent | Used to share state information across the conversation boundary.
+| IHttpClientComponent | Allows HTTP requests to be made from within a policy.
+| IRateLimiterComponent | Supports standard quota/rate limiting behavior, maintaining the current number of requests.
+| ILdapComponent | Provides the ability to authenticate with an LDAP server and execute simple queries against it.
+| IJdbcComponent | Enables querying of JDBC-capable datasources.
+
+|===
 
 All of the components have asynchronous APIs in order to better support the runtime
 philosophy in the API Gateway.
@@ -435,7 +443,7 @@ data format that will be passed to the policy implementation at runtime.
 TIP: The templates 'language' field will support other languages in future, but
 for now is null (i.e. single-language only). The template field itself is
 https://github.com/mvel/mvel[MVEL] (Orb tag syntax), and displays in the UI
-after a plugin has been selected by a user. 
+after a plugin has been selected by a user.
 
 .META-INF/apiman/policyDefs/schemas/my-policy.schema
 ```json
