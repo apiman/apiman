@@ -36,7 +36,7 @@ public class LogHeadersPolicyTest extends ApimanPolicyTest {
     		output = normalize(output);
     		String expected = "Logging 0 HTTP Request headers for io.apiman.test.policies.EchoBackEndApi\n" +
     		        "Logging 4 HTTP Response headers for io.apiman.test.policies.EchoBackEndApi\n" +
-    		        "Key : Content-Length, Value : 175\n" +
+    		        "Key : Content-Length, Value : 167\n" +
     		        "Key : Content-Type, Value : application/json\n" +
     		        "Key : Date, Value : XXX\n" +
     		        "Key : Server, Value : apiman.policy-test\n" +
@@ -68,7 +68,7 @@ public class LogHeadersPolicyTest extends ApimanPolicyTest {
             String expected = "Logging 1 HTTP Request headers for io.apiman.test.policies.EchoBackEndApi\n" +
                     "Key : X-Test-Name, Value : testGet\n" +
                     "Logging 4 HTTP Response headers for io.apiman.test.policies.EchoBackEndApi\n" +
-                    "Key : Content-Length, Value : 209\n" +
+                    "Key : Content-Length, Value : 199\n" +
                     "Key : Content-Type, Value : application/json\n" +
                     "Key : Date, Value : XXX\n" +
                     "Key : Server, Value : apiman.policy-test\n" +
@@ -125,7 +125,7 @@ public class LogHeadersPolicyTest extends ApimanPolicyTest {
             output = redactDates(output);
             output = normalize(output);
             String expected = "Logging 4 HTTP Response headers for io.apiman.test.policies.EchoBackEndApi\n" +
-                    "Key : Content-Length, Value : 209\n" +
+                    "Key : Content-Length, Value : 199\n" +
                     "Key : Content-Type, Value : application/json\n" +
                     "Key : Date, Value : XXX\n" +
                     "Key : Server, Value : apiman.policy-test\n" +
