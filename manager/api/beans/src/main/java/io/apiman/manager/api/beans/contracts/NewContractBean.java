@@ -31,11 +31,16 @@ public class NewContractBean implements Serializable {
     private String apiVersion;
 
     private String planId;
+    private String apiKey;
 
     /**
      * Constructor.
      */
     public NewContractBean() {
+    }
+
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
     }
 
     /**
@@ -95,6 +100,20 @@ public class NewContractBean implements Serializable {
     }
 
     /**
+     * @return the contractKey
+     */
+    public String getApiKey() {
+        return apiKey;
+    }
+
+    /**
+     * @param apiKey to set
+     */
+    public void setApiKey(String apiKey) {
+        this.apiKey = apiKey;
+    }
+
+    /**
      * @see java.lang.Object#hashCode()
      */
     @Override
@@ -105,6 +124,7 @@ public class NewContractBean implements Serializable {
         result = prime * result + ((apiId == null) ? 0 : apiId.hashCode());
         result = prime * result + ((apiOrgId == null) ? 0 : apiOrgId.hashCode());
         result = prime * result + ((apiVersion == null) ? 0 : apiVersion.hashCode());
+        result = prime * result + ((apiKey == null) ? 0 : apiKey.hashCode());
         return result;
     }
 
@@ -140,6 +160,11 @@ public class NewContractBean implements Serializable {
                 return false;
         } else if (!apiVersion.equals(other.apiVersion))
             return false;
+        if (apiKey == null) {
+            if (other.apiKey != null)
+                return false;
+        } else if (!apiKey.equals(other.apiKey))
+            return false;
         return true;
     }
 
@@ -149,8 +174,8 @@ public class NewContractBean implements Serializable {
     @Override
     @SuppressWarnings("nls")
     public String toString() {
-        return "NewContractBean [apiOrgId=" + apiOrgId + ", apiId=" + apiId
-                + ", apiVersion=" + apiVersion + ", planId=" + planId + "]";
+        return "NewContractBean [apiOrgId=" + apiOrgId + ", apiId=" + apiId + ", apiVersion=" + apiVersion
+                + ", planId=" + planId + ", apiKey=" + apiKey + "]";
     }
 
 }
