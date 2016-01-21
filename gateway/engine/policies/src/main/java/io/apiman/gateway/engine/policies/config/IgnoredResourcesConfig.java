@@ -15,7 +15,6 @@
  */
 package io.apiman.gateway.engine.policies.config;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +25,7 @@ import java.util.List;
  */
 public class IgnoredResourcesConfig {
 
-    private List<String> pathsToIgnore = new ArrayList<>();
+    private List<IgnoredResource> rules = new ArrayList<>();
 
     /**
      * Constructor.
@@ -37,15 +36,16 @@ public class IgnoredResourcesConfig {
     /**
      * @return the pathsToIgnore
      */
-    public List<String> getPathsToIgnore() {
-        return pathsToIgnore;
+    public List<IgnoredResource> getRules() {
+        return rules;
     }
 
     /**
-     * @param pathsToIgnore the pathsToIgnore to set
+     * @param pathsToIgnore
+     *            the pathsToIgnore to set
      */
-    public void setPathsToIgnore(List<String> pathsToIgnore) {
-        this.pathsToIgnore = pathsToIgnore;
+    public void setRules(List<IgnoredResource> pathsToIgnore) {
+        this.rules = pathsToIgnore;
     }
 
 }

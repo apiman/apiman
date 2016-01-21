@@ -65,7 +65,6 @@ module Apiman {
                             $(element)['selectpicker']('refresh');
                         });
                     }
-
                     $timeout(function() {
                         $(element)['selectpicker']();
                         $(element)['selectpicker']('refresh');
@@ -97,10 +96,6 @@ module Apiman {
                             $(element)['selectpicker']('destroy');
                         });
                     });
-
-                    $timeout(function() {
-                        $(element)['selectpicker']('refresh');
-                    }, 200);
                 }
             };
         }]);
@@ -652,4 +647,20 @@ module Apiman {
             }
         }
     });
+    
+   _module.directive('httpVerbsSelect',
+        ['Logger', function(Logger) {
+            return {
+                templateUrl: 'plugins/api-manager/html/directives/requestMethod.html',
+                replace: true,
+                restrict: 'E',
+                link: function(scope, elem, attrs) {
+                 	// init model
+                 	scope.resetVerbsSelector = function(){
+                 		scope.verb="*";
+                 	}
+                 	scope.resetVerbsSelector();
+                }
+            };
+        }]);
 }

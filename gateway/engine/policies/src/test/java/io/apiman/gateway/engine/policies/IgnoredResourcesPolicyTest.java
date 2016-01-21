@@ -22,14 +22,20 @@ import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.beans.PolicyFailureType;
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
+import io.apiman.gateway.engine.policies.config.IgnoredResource;
 import io.apiman.gateway.engine.policies.config.IgnoredResourcesConfig;
 import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
 
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.map.DeserializationConfig.Feature;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -39,60 +45,53 @@ import org.mockito.Mockito;
  * @author rubenrm1@gmail.com
  *
  */
-@SuppressWarnings({ "nls" })
+@SuppressWarnings({ "unchecked","nls" })       
 public class IgnoredResourcesPolicyTest {
+	
+	private static ObjectMapper mapper;
+	private static String firstPath = "/invoices/.+/items/.+";
+	private static String secondPath = "/items/.+";
+
+	@Before
+	public void init() {
+		mapper = new ObjectMapper();
+		mapper.configure(Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+	}
 
     @Test
-    public void testParseConfiguration() {
+    public void testParseConfiguration() throws Exception {
         IgnoredResourcesPolicy policy = new IgnoredResourcesPolicy();
-
         String config = "{}";
         Object parsed = policy.parseConfiguration(config);
         assertNotNull(parsed);
         assertEquals(IgnoredResourcesConfig.class, parsed.getClass());
 
         IgnoredResourcesConfig parsedConfig = (IgnoredResourcesConfig) parsed;
-        assertNotNull(parsedConfig.getPathsToIgnore());
-        assertTrue(parsedConfig.getPathsToIgnore().isEmpty());
+        assertNotNull(parsedConfig.getRules());
+        assertTrue(parsedConfig.getRules().isEmpty());
+
+		IgnoredResourcesConfig configObj = new IgnoredResourcesConfig();
+		ArrayList<IgnoredResource> elements = new ArrayList<IgnoredResource>(2);
+		elements.add(createResource(IgnoredResource.VERB_MATCH_ALL,firstPath));
+		configObj.setRules(elements);
 
         // Single Path
-        config = "{" +
-                "  \"pathsToIgnore\" : [" +
-                "    \"/invoices/.+/items/.+\"" +
-                "  ]" +
-                " }";
-        parsed = policy.parseConfiguration(config);
-        parsedConfig = (IgnoredResourcesConfig) parsed;
-        assertNotNull(parsedConfig.getPathsToIgnore());
-        List<String> expectedConfiguration = Arrays.asList("/invoices/.+/items/.+");
-        assertEquals(expectedConfiguration, parsedConfig.getPathsToIgnore());
+        assertConfigurationParseResults(policy, configObj);
         
-        // Multiple Paths
-        config = "{" +
-                "  \"pathsToIgnore\" : [" +
-                "    \"/invoices/.+/items/.+\"," +
-                "    \"/items/.+\"" +
-                "  ]" +
-                " }";
-        parsed = policy.parseConfiguration(config);
-        parsedConfig = (IgnoredResourcesConfig) parsed;
-        assertNotNull(parsedConfig.getPathsToIgnore());
-        expectedConfiguration = new ArrayList<>();
-        expectedConfiguration.add("/invoices/.+/items/.+");
-        expectedConfiguration.add("/items/.+");
-        assertEquals(expectedConfiguration, parsedConfig.getPathsToIgnore());
+        elements.add(createResource(IgnoredResource.VERB_MATCH_ALL,secondPath));
+		configObj.setRules(elements);
+        assertConfigurationParseResults(policy, configObj);
     }
 
     @Test
-    public void testApply() {
+    public void testApply() throws Exception{
         IgnoredResourcesPolicy policy = new IgnoredResourcesPolicy();
-
-        String json = "{" +
-                    "  \"pathsToIgnore\" : [" +
-                    "    \"/invoices/.+/items/.+\"," +
-                    "    \"/items/.+\"" +
-                    "  ]" +
-                    " }";
+        IgnoredResourcesConfig configObj = new IgnoredResourcesConfig();
+		ArrayList<IgnoredResource> elements = new ArrayList<IgnoredResource>(2);
+		elements.add(createResource(IgnoredResource.VERB_MATCH_ALL,firstPath));
+		elements.add(createResource(IgnoredResource.VERB_MATCH_ALL,secondPath));
+		configObj.setRules(elements);
+		String json = mapper.writeValueAsString(configObj);
         Object config = policy.parseConfiguration(json);
 
         ApiRequest request = new ApiRequest();
@@ -101,7 +100,7 @@ public class IgnoredResourcesPolicyTest {
         request.setRemoteAddr("1.2.3.4");
         request.setDestination("/invoices/1");
         IPolicyContext context = Mockito.mock(IPolicyContext.class);
-        IPolicyChain<ApiRequest> chain = Mockito.mock(IPolicyChain.class);
+		IPolicyChain<ApiRequest> chain = Mockito.mock(IPolicyChain.class);
 
         // Success
         policy.apply(request, context, config, chain);
@@ -118,16 +117,9 @@ public class IgnoredResourcesPolicyTest {
         request.setDestination("/invoices/items/13");
         policy.apply(request, context, config, chain);
         Mockito.verify(chain, Mockito.times(4)).doApply(request);
-         
-        // Failure
-        final PolicyFailure failure = new PolicyFailure();
-        Mockito.when(context.getComponent(IPolicyFailureFactoryComponent.class)).thenReturn(
-                new IPolicyFailureFactoryComponent() {
-                    @Override
-                    public PolicyFailure createFailure(PolicyFailureType type, int failureCode, String message) {
-                        return failure;
-                    }
-                });
+        Mockito.verify(chain, Mockito.never()).doFailure(Mockito.<PolicyFailure>any());
+        
+        final PolicyFailure failure = createFailurePolicyObject(context);
         chain = Mockito.mock(IPolicyChain.class);
         request.setDestination("/invoices/23/items/43");
         policy.apply(request, context, config, chain);
@@ -137,5 +129,90 @@ public class IgnoredResourcesPolicyTest {
         policy.apply(request, context, config, chain);
         Mockito.verify(chain, Mockito.times(2)).doFailure(failure);
     }
+
+    @Test
+    public void testApplyWithType() throws Exception{
+		IPolicyChain<ApiRequest> chain = Mockito.mock(IPolicyChain.class);
+		String verb = "GET";
+    	ApiRequest request = requestWithVerb(chain, verb);
+      
+        Mockito.verify(chain, Mockito.times(1)).doApply(request);
+        Mockito.verify(chain, Mockito.times(2)).doFailure(Mockito.<PolicyFailure> any());
+    }
+    
+    @Test
+    public void testApplyWithDifferentType() throws Exception{
+		IPolicyChain<ApiRequest> chain = Mockito.mock(IPolicyChain.class);
+		String verb = "TRACE";
+    	ApiRequest request = requestWithVerb(chain, verb);
+      
+        Mockito.verify(chain, Mockito.times(3)).doApply(request);
+        Mockito.verify(chain, Mockito.never()).doFailure(Mockito.<PolicyFailure>any());
+    }
+
+	private ApiRequest requestWithVerb(IPolicyChain<ApiRequest> chain, String verb)
+			throws IOException, JsonGenerationException, JsonMappingException {
+		IgnoredResourcesPolicy policy = new IgnoredResourcesPolicy();
+		IgnoredResourcesConfig configObj = new IgnoredResourcesConfig();
+		ArrayList<IgnoredResource> elements = new ArrayList<IgnoredResource>(2);
+		
+
+		elements.add(createResource(verb, firstPath));
+		elements.add(createResource(verb, secondPath));
+		configObj.setRules(elements);
+		String json = mapper.writeValueAsString(configObj);
+		Object config = policy.parseConfiguration(json);
+
+		ApiRequest request = new ApiRequest();
+		request.setType("GET");
+		request.setApiKey("12345");
+		request.setRemoteAddr("1.2.3.4");
+		request.setDestination("/invoices/1");
+		IPolicyContext context = Mockito.mock(IPolicyContext.class);
+		createFailurePolicyObject(context);
+		
+		 // Success
+        policy.apply(request, context, config, chain);
+        
+        // Fail
+        request.setDestination("/invoices/23/items/43");
+        policy.apply(request, context, config, chain);
+        
+        // Fail
+        request.setDestination("/items/43");
+        policy.apply(request, context, config, chain);
+		return request;
+	}
+
+	private void assertConfigurationParseResults(IgnoredResourcesPolicy policy, IgnoredResourcesConfig configObj)
+			throws Exception{
+		IgnoredResourcesConfig parsedConfig;
+		List<IgnoredResource> expectedConfiguration;
+		String config = mapper.writeValueAsString(configObj);
+		parsedConfig  = policy.parseConfiguration(config);
+        assertNotNull(parsedConfig.getRules());
+        expectedConfiguration = configObj.getRules();
+        assertEquals(expectedConfiguration, parsedConfig.getRules());
+	}
+
+	private IgnoredResource createResource(String verb,String path) {
+		IgnoredResource resource = new IgnoredResource();
+		resource.setPathPattern(path);
+		resource.setVerb(verb);
+		return resource;
+	}
+	
+	private PolicyFailure createFailurePolicyObject(IPolicyContext context) {
+		// Failure
+        final PolicyFailure failure = new PolicyFailure();
+        Mockito.when(context.getComponent(IPolicyFailureFactoryComponent.class)).thenReturn(
+                new IPolicyFailureFactoryComponent() {
+                    @Override
+                    public PolicyFailure createFailure(PolicyFailureType type, int failureCode, String message) {
+                        return failure;
+                    }
+                });
+		return failure;
+	}
     
 }
