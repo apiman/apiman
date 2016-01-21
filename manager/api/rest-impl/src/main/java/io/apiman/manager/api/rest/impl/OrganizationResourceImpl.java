@@ -797,7 +797,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         contract.setPlan(pvb);
         contract.setCreatedBy(securityContext.getCurrentUser());
         contract.setCreatedOn(new Date());
-        contract.setApikey(apiKeyGenerator.generate());
+        contract.setApikey((bean.getApiKey() == null) ? apiKeyGenerator.generate() : bean.getApiKey());
 
         // Move the client to the "Ready" state if necessary.
         if (cvb.getStatus() == ClientStatus.Created && clientValidator.isReady(cvb, true)) {
