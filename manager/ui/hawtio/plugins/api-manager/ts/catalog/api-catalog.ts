@@ -60,6 +60,9 @@ module Apiman {
                     if (api.endpointType == 'soap') {
                         api.ticon = 'fa-file-code-o';
                     }
+                    if (api.routeDefinitionUrl != null) {
+                        api.definitionUrl = api.routeDefinitionUrl;
+                    }
                 });
                 PageLifecycle.setPageTitle('api-catalog');
             });
@@ -149,6 +152,7 @@ module Apiman {
                 } catch (e) {}
                 
                 var definitionUrl = $scope.api.definitionUrl;
+                if ($scope.api.routeDefinitionUrl != null ) definitionUrl = $scope.api.routeDefinitionUrl;
                 var definitionType = $scope.api.definitionType;
     
                 if (definitionType == 'SwaggerJSON' && hasSwagger) {
