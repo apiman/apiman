@@ -18,12 +18,14 @@ package io.apiman.gateway.engine.components.ldap;
 import java.util.List;
 
 /**
+ * Represents a single search result entry from an LDAP query.
+ *
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 public interface ILdapSearchEntry {
 
     /**
-     * Get a named attribute
+     * Get a named LDAP attribute
      *
      * @param key attribute key
      * @return the attribute
@@ -31,13 +33,15 @@ public interface ILdapSearchEntry {
     ILdapAttribute getAttribute(String key);
 
     /**
-     * Get all attributes
+     * Get all attributes in entry
      *
      * @return the attributes
      */
     List<ILdapAttribute> getAttributes();
 
     /**
+     * Get distinguished name
+     *
      * @return DN formatted as string
      */
     String getDn();

@@ -19,7 +19,7 @@ import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.components.ldap.result.LdapException;
 
 /**
- * Represents an ongoing LDAP connection
+ * Represents an ongoing LDAP connection.
  *
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
@@ -37,14 +37,22 @@ public interface ILdapClientConnection extends AutoCloseable {
     ILdapSearch search(String searchDn, String filter, LdapSearchScope scope);
 
     /**
-     * Indicates whether connection was successfully closed.
+     * Closes the connection, with a handler response indicating success.
      *
-     * @param result the result
+     * @param result the result indicating success
      */
     void close(IAsyncResultHandler<Void> result);
 
+    /**
+     * Close the connection.
+     */
     @Override
     void close();
 
+    /**
+     * Close a connection with the given exception, which may allow it to be reused.
+     *
+     * @param e the exception
+     */
     void close(LdapException e);
 }
