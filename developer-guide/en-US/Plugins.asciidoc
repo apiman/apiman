@@ -1109,3 +1109,257 @@ apiman-gateway.components.ISharedStateComponent=plugin:com.example.groupId:artif
 apiman-gateway.components.ISharedStateComponent.foo1=value-1
 apiman-gateway.components.ISharedStateComponent.foo2=value-2
 ```
+
+==== Providing a Custom API Catalog
+Apiman allows users to import one or more API (to be managed) from a globally configured API Catalog.  This
+feature makes it easier to manage APIs that are "known" by providing API catalog entries which include
+information such as the endpoint, endpoint type, etc.  Importing an API from the catalog brings those fields
+into apiman, so that users don't have to manually set them.
+
+When installing apiman, a custom API Catalog can be easily configured by creating a propertly formatted JSON
+file with all of the appropriate information included.  See the *Installation Guide* for more information
+about configuring a JSON based custom API Catalog.
+
+Additionally, it is possible to completely replace the API Catalog implementation, providing your own custom
+version which retrieves API information from wherever you like.  Like most components, a custom API Catalog
+implementation is simply a Java class which implements a specific interface and is enabled/configured in the
+_apiman.properties_ file.
+
+The interface you must implement is *io.apiman.manager.api.core.IApiCatalog* and looked like this at the 
+time of this writing:
+
+```java
+/**
+ * Represents some sort of catalog of live APIs.  This is used to lookup
+ * APIs to import into apiman.
+ */
+public interface IApiCatalog {
+
+    /**
+     * Called to find available APIs that match the given search keyword.  Note that
+     * the search keyword may be a partial word (for example "ech" instead of "echo").  It
+     * is up to the implementation to decide how to handle partial cases.  Typically this
+     * should return all APIs that contain the partial keyword, thus returning things
+     * like "echo" "public-echo" and "echo-location".
+     *
+     * @param keyword the search keyword
+     * @return the available APIs
+     */
+    public List<AvailableApiBean> search(String keyword);
+
+}
+
+```
+
+The catalog is simply one method which returns a list of *AvailableApiBean* objects.  That class
+looks something like this:
+
+```java
+
+/**
+ * A bean modeling an API available in one of the configured API catalogs.
+ */
+@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
+public class AvailableApiBean implements Serializable {
+
+    private String id;
+    private String icon;
+    private String endpoint;
+    private EndpointType endpointType = EndpointType.rest;
+    private String name;
+    private String description;
+    private String definitionUrl;
+    private ApiDefinitionType definitionType;
+
+    /**
+     * Constructor.
+     */
+    public AvailableApiBean() {
+    }
+
+    /** SNIPPED ALL GETTERS/SETTERS **/
+}
+
+```
+
+Create an implementation of this interface and include it in a valid apiman plugin.  
+
+TIP: See the "Creating a Plugin" section of this guide for more information.
+
+Once the plugin is created with your class inside, configure the catalog in _apiman.properties_ like this:
+
+```
+apiman-manager.api-catalog.type=plugin:com.example.groupId:artifactId:1.0.Final/com.example.apiman.ApiCatalogImpl
+apiman-manager.api-catalog.property1=value-1
+apiman-manager.api-catalog.property2=value-2
+```
+
+Remember, if your implementation class has a constructor that accepts a Map<String, String>, then apiman
+will pass the set of applicable configuration properties it finds in apiman.properties when the class is
+instantiated.
+
+
+
+==== Providing a Custom Data Encrypter
+Whenever apiman stores data, either in the API Manager or in the API Gateway, it uses a Data Encrypter
+to first encrypt potentially sensitive information.  Examples are:
+
+* Policy Configuration
+* Endpoint Properties
+
+By default, the apiman quickstart comes with a default encrypter that performs very simple synchronous
+encryption on this data.  However, because it is built-in, it is not secure (it uses a hard-coded 
+encryption key, for example).  Depending on your security needs, you may wish to implement a custom
+data encrypter - one that is more secure and perhaps uses externally configured keys.
+
+In order to provide a custom data encrypter, the interface you must implement is
+*io.apiman.common.util.crypt.IDataEncrypter*.  This same interface is used in both the API Manager and
+the API Gateway.  The IDataEncrypter interface looks something like this:
+
+```java
+
+/**
+ * Provides a way to encrypt and decrypt data. This is useful when encrypting sensitive
+ * data prior to storing it in the database.
+ */
+public interface IDataEncrypter {
+
+    public String encrypt(String plainText);
+
+    public String decrypt(String encryptedText);
+
+}
+
+```
+
+When creating a custom implementation, all you need to do is provide a Java class which implements
+the above interface inside a valid apiman plugin.
+
+TIP: See the "Creating a Plugin" section of this guide for more information.
+
+Once the plugin is created with your class inside, configure the data encrypter in _apiman.properties_ like 
+this (*note*: it only needs to be configured in a single place for both the Manager and Gateway):
+
+```
+apiman.encrypter.type=plugin:com.example.groupId:artifactId:1.0.Final/com.example.apiman.DataEncrypterImpl
+apiman.encrypter.property1=value-1
+apiman.encrypter.property2=value-2
+```
+
+Remember, if your implementation class has a constructor that accepts a Map<String, String>, then apiman
+will pass the set of applicable configuration properties it finds in apiman.properties when the class is
+instantiated.  In the example above, your DataEncrypterImpl class will be instantiated, with a Map 
+passed to its constructor containing the following:
+
+* property1=value-1
+* property2=value-2
+
+
+
+==== Providing a Custom Policy Failure/Error Writer
+When a policy fails (or an error occurs) in the API Gateway, the result of the failure must be sent
+back to the calling HTTP client.  By default, apiman has a particular format (either JSON or XML
+depending on the Content-Type of the API being called) it uses when responding to the client.  However,
+some installers may prefer a custom format for these.  This can be accomplished by providing a custom
+implementation of *io.apiman.gateway.engine.IPolicyFailureWriter* and/or a custom implementation of
+*io.apiman.gateway.engine.IPolicyErrorWriter*.
+
+```java
+public interface IPolicyFailureWriter {
+
+    public void write(ApiRequest request, PolicyFailure failure, IApiClientResponse response);
+
+}
+```
+
+```java
+public interface IPolicyErrorWriter {
+
+    public void write(ApiRequest request, Throwable error, IApiClientResponse response);
+
+}
+
+```
+
+
+When creating a custom implementation, all you need to do is provide a Java class which implements
+the above interface(s) inside a valid apiman plugin.
+
+TIP: See the "Creating a Plugin" section of this guide for more information.
+
+Once the plugin is created with your class inside, configure either the failure writer, the error
+writer, or both in _apiman.properties_ like this:
+
+```
+apiman-gateway.writers.policy-failure=plugin:com.example.groupId:artifactId:1.0.Final/com.example.apiman.PolicyFailureWriterImpl
+apiman-gateway.writers.policy-failure.property1=value-1
+apiman-gateway.writers.policy-failure.property2=value-2
+```
+
+```
+apiman-gateway.writers.policy-error=plugin:com.example.groupId:artifactId:1.0.Final/com.example.apiman.PolicyErrorWriterImpl
+apiman-gateway.writers.policy-error.property1=value-1
+apiman-gateway.writers.policy-error.property2=value-2
+```
+
+Remember, if your implementation class has a constructor that accepts a Map<String, String>, then apiman
+will pass the set of applicable configuration properties it finds in apiman.properties when the class is
+instantiated.  In the example above, your DataEncrypterImpl class will be instantiated, with a Map 
+passed to its constructor containing the following:
+
+* property1=value-1
+* property2=value-2
+
+
+
+==== Providing a Custom User Bootstrapper
+Whenever a new user is added to apiman, a record is added for her in the API Manager data store.  No
+additional steps are taken by default.  However, in some cases you may want to perform some specific
+bootstrapping tasks when a new user is created, for example:
+
+* Grant specific roles to the user
+* Auto-create an Organization for the user
+
+This can be done by providing your own custom implementation of *io.apiman.manager.api.core.INewUserBootstrapper*:
+
+```java
+/**
+ * This class is used to bootstrap new users.  This bootstrapper is used
+ * whenever a new user logs into the API Manager UI for the first time.
+ */
+public interface INewUserBootstrapper {
+    
+    /**
+     * Called to bootstrap a user.
+     */
+    public void bootstrapUser(UserBean user, IStorage storage) throws StorageException;
+
+}
+```
+
+When invoked, the boostrap method is given the *UserBean* of the user being created as well as the
+storage object.  The storage object can be used to create additional entities for the user, such as
+new organizations or new memberships in roles.
+
+When creating a custom implementation, all you need to do is provide a Java class which implements
+the above interface inside a valid apiman plugin.
+
+TIP: See the "Creating a Plugin" section of this guide for more information.
+
+Once the plugin is created with your class inside, configure the user bootstrapper in in _apiman.properties_ 
+like this:
+
+```
+apiman-manager.user-bootstrapper.type=plugin:com.example.groupId:artifactId:1.0.Final/com.example.apiman.UserBootstrapperImpl
+apiman-manager.user-bootstrapper.property1=value-1
+apiman-manager.user-bootstrapper.property2=value-2
+```
+
+Remember, if your implementation class has a constructor that accepts a Map<String, String>, then apiman
+will pass the set of applicable configuration properties it finds in apiman.properties when the class is
+instantiated.  In the example above, your DataEncrypterImpl class will be instantiated, with a Map 
+passed to its constructor containing the following:
+
+* property1=value-1
+* property2=value-2
+

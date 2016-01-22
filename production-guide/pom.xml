@@ -10,7 +10,7 @@
 
   <artifactId>apiman-guides-production-guide</artifactId>
   <packaging>jdocbook</packaging>
-  <name>Installation Guide</name>
+  <name>Production Guide</name>
 
   <build>
     <plugins>
