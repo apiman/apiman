@@ -21,7 +21,7 @@ import java.util.Set;
 import org.joda.time.DateTime;
 
 /**
- * Simple  model of an LDAP Attribute
+ * Simple model of an LDAP Attribute
  *
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */

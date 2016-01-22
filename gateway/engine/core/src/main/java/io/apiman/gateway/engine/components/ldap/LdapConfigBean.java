@@ -42,7 +42,7 @@ public class LdapConfigBean {
     }
 
     /**
-     * @param bindPassword the password to set
+     * @param bindPassword the BIND password to set
      */
     public void setBindPassword(String bindPassword) {
         this.bindPassword = bindPassword;
@@ -89,13 +89,17 @@ public class LdapConfigBean {
     public void setPort(int port) {
         this.port = port;
     }
+
     /**
      * @return the scheme
      */
     public String getScheme() {
         return scheme;
     }
+
     /**
+     * Set the LDAP scheme, for instance <tt>ldap</tt> or <tt>ldaps</tt>.
+     *
      * @param scheme the scheme to set
      */
     public void setScheme(String scheme) {

@@ -17,17 +17,29 @@
 package io.apiman.gateway.engine.components.ldap.result;
 
 /**
+ * An exception representing various unsuccessful {@link LdapResult} responses.
+ *
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 public class LdapException extends Exception {
     private static final long serialVersionUID = 7864217780903440819L;
     private LdapResultCode resultCode;
 
+    /**
+     * Construct an LdapException
+     *
+     * @param resultCode the result code
+     * @param message any diagnostic or respnose message
+     * @param e any cause for this exception
+     */
     public LdapException(LdapResultCode resultCode, String message, Throwable e) {
         super(message, e);
         this.resultCode = resultCode;
     }
 
+    /**
+     * @return the LDAP result code
+     */
     public LdapResultCode getResultCode() {
         return resultCode;
     }

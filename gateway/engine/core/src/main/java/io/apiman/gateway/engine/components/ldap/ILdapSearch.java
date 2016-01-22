@@ -29,17 +29,19 @@ import java.util.List;
  */
 public interface ILdapSearch {
     /**
-     * Handle LDAP Exceptions
+     * Handle LDAP Exceptions, for instance authorization and authentication.
      *
-     * @param handler the handler
+     * @param handler the exception handler
      * @return fluent
      */
     ILdapSearch setLdapErrorHandler(IAsyncHandler<LdapException> handler);
 
     /**
-     * Search LDAP
+     * Search LDAP, which will return a list of one or more entries. In the case of
+     * LDAP-related errors {@link #setLdapErrorHandler(IAsyncHandler)} will be invoked.
+     * Unexpected exceptions will funnel through this handler.
      *
-     * @param result the result
+     * @param result a handler receiving a list of search entries.
      */
     void search(IAsyncResultHandler<List<ILdapSearchEntry>> result);
 }
