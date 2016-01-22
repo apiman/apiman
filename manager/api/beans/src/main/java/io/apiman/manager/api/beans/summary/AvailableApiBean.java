@@ -35,10 +35,12 @@ public class AvailableApiBean implements Serializable {
     private String id;
     private String icon;
     private String endpoint;
+    private String routeEndpoint;
     private EndpointType endpointType = EndpointType.rest;
     private String name;
     private String description;
     private String definitionUrl;
+    private String routeDefinitionUrl;
     private ApiDefinitionType definitionType;
 
     /**
@@ -157,6 +159,22 @@ public class AvailableApiBean implements Serializable {
      */
     public void setIcon(String icon) {
         this.icon = icon;
+    }
+
+    public String getRouteEndpoint() {
+        return routeEndpoint;
+    }
+
+    public void setRouteEndpoint(String routeEndpoint) {
+        this.routeEndpoint = routeEndpoint;
+    }
+
+    public String getRouteDefinitionUrl() {
+        return routeDefinitionUrl;
+    }
+
+    public void setRouteDefinitionUrl(String routeDefinitionUrl) {
+        this.routeDefinitionUrl = routeDefinitionUrl;
     }
 
 }
