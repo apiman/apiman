@@ -139,6 +139,11 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     public void rollbackTx() {
         super.rollbackTx();
     }
+    
+    @Override
+    public void initialize() {
+        // No-Op for JPA
+    }
 
     /**
      * @see io.apiman.manager.api.core.IStorage#createClient(io.apiman.manager.api.beans.clients.ClientBean)
@@ -2212,4 +2217,5 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         Query query = entityManager.createQuery(jpql);
         return super.getAll(RoleBean.class, query);
     }
+
 }
