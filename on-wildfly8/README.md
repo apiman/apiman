@@ -15,7 +15,7 @@ You may want to map the port(s) so you can access the app
 
     docker build -t="apiman/on-wildfly8" --rm .
 
-## Image accesible on Docker hub
+## Image accessible on Docker hub
 
 This image is automatically built and published into [Docker Hub][apiman_dockerhub].
 

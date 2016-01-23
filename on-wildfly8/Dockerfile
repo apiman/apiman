@@ -1,9 +1,9 @@
-# Use latest jboss/base-jdk:7 image as the base
+# Use Wildfly 8 image as the base
 FROM jboss/wildfly:8.2.1.Final
 
 MAINTAINER Eric Wittmann <eric.wittmann@redhat.com>
 
-ENV APIMAN_VERSION 1.2.0.Beta2
+ENV APIMAN_VERSION 1.2.1.Final
 
 RUN cd $HOME/wildfly \
  && curl http://downloads.jboss.org/apiman/$APIMAN_VERSION/apiman-distro-wildfly8-$APIMAN_VERSION-overlay.zip | bsdtar -xvf-
