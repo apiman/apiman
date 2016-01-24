@@ -48,6 +48,7 @@ import com.squareup.okhttp.internal.Util;
 import com.squareup.okhttp.internal.http.AuthenticatorAdapter;
 
 import io.apiman.common.config.options.BasicAuthOptions;
+import io.apiman.common.config.options.ConnectionOptions;
 import io.apiman.gateway.engine.IServiceConnection;
 import io.apiman.gateway.engine.IServiceConnectionResponse;
 import io.apiman.gateway.engine.async.AsyncResultImpl;
@@ -96,10 +97,6 @@ public class HttpServiceConnection implements IServiceConnection, IServiceConnec
         okClient.setConnectionSpecs(DEFAULT_CONNECTION_SPECS);
         okClient.setSocketFactory(SocketFactory.getDefault());
 
-        // don't automatically follow redirects
-        okClient.setFollowRedirects(false);
-        okClient.setFollowSslRedirects(false);
-
         Internal.instance.setNetwork(okClient, Network.DEFAULT);
     }
 
@@ -107,6 +104,7 @@ public class HttpServiceConnection implements IServiceConnection, IServiceConnec
     private Service service;
     private RequiredAuthType requiredAuthType;
     private SSLSessionStrategy sslStrategy;
+    private ConnectionOptions connectionOptions;
     private IAsyncResultHandler<IServiceConnectionResponse> responseHandler;
 
     private boolean connected;
@@ -129,12 +127,13 @@ public class HttpServiceConnection implements IServiceConnection, IServiceConnec
      * @throws ConnectorException when unable to connect
      */
     public HttpServiceConnection(ServiceRequest request, Service service, RequiredAuthType requiredAuthType,
-            SSLSessionStrategy sslStrategy, IAsyncResultHandler<IServiceConnectionResponse> handler)
-            throws ConnectorException {
+                                 SSLSessionStrategy sslStrategy, ConnectionOptions connectionOptions,
+                                 IAsyncResultHandler<IServiceConnectionResponse> handler) throws ConnectorException {
         this.request = request;
         this.service = service;
         this.requiredAuthType = requiredAuthType;
         this.sslStrategy = sslStrategy;
+        this.connectionOptions = connectionOptions;
         this.responseHandler = handler;
 
         try {
@@ -169,6 +168,8 @@ public class HttpServiceConnection implements IServiceConnection, IServiceConnec
             }
             URL url = new URL(endpoint);
             OkUrlFactory factory = new OkUrlFactory(okClient);
+            factory.client().setFollowRedirects(connectionOptions.isFollowRedirects());
+            factory.client().setFollowSslRedirects(connectionOptions.isFollowRedirects());
             connection = factory.open(url);
 
             boolean isSsl = connection instanceof HttpsURLConnection;
@@ -200,8 +201,8 @@ public class HttpServiceConnection implements IServiceConnection, IServiceConnec
                 https.setHostnameVerifier(sslStrategy.getHostnameVerifier());
             }
 
-            connection.setReadTimeout(15000);
-            connection.setConnectTimeout(10000);
+            connection.setReadTimeout(connectionOptions.getReadTimeout());
+            connection.setConnectTimeout(connectionOptions.getConnectTimeout());
             if (request.getType().equalsIgnoreCase("PUT") || request.getType().equalsIgnoreCase("POST")) { //$NON-NLS-1$ //$NON-NLS-2$
                 connection.setDoOutput(true);
             } else {

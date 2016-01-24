@@ -19,6 +19,7 @@ import java.util.Map;
 
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.math.NumberUtils;
 
 /**
  * Base class for all options.
@@ -73,6 +74,15 @@ public abstract class AbstractOptions {
             return defaultValue;
         } else {
             return BooleanUtils.toBoolean(value);
+        }
+    }
+
+    protected static int parseInt(Map<String, String> optionsMap, String key, int defaultValue) {
+        String value = optionsMap.get(key);
+        if (value == null) {
+            return defaultValue;
+        } else {
+            return NumberUtils.toInt(value, defaultValue);
         }
     }
 }

@@ -15,6 +15,7 @@
  */
 package io.apiman.gateway.platforms.servlet.connectors;
 
+import io.apiman.common.config.options.ConnectionOptions;
 import io.apiman.common.config.options.TLSOptions;
 import io.apiman.gateway.engine.IConnectorFactory;
 import io.apiman.gateway.engine.IServiceConnection;
@@ -42,6 +43,7 @@ public class HttpConnectorFactory implements IConnectorFactory {
     // 2WAY auth (i.e. mutual auth)
     private SSLSessionStrategy mutualAuthSslStrategy;
     private TLSOptions tlsOptions;
+    private ConnectionOptions connectionOptions;
 
     /**
      * Constructor.
@@ -49,6 +51,7 @@ public class HttpConnectorFactory implements IConnectorFactory {
      */
     public HttpConnectorFactory(Map<String, String> config) {
         this.tlsOptions = new TLSOptions(config);
+        this.connectionOptions = new ConnectionOptions(config);
     }
 
     /* (non-Javadoc)
@@ -66,7 +69,7 @@ public class HttpConnectorFactory implements IConnectorFactory {
                     IAsyncResultHandler<IServiceConnectionResponse> handler) throws ConnectorException {
 
                 HttpServiceConnection connection = new HttpServiceConnection(request, service, requiredAuthType,
-                        getSslStrategy(requiredAuthType), handler);
+                        getSslStrategy(requiredAuthType), connectionOptions, handler);
                 return connection;
             }
         };
