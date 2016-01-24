@@ -87,6 +87,11 @@ public class TestEsStorageWrapper implements IStorage {
     public void rollbackTx() {
         this.delegate.rollbackTx();
     }
+    
+    @Override
+    public void initialize() {
+        this.delegate.initialize();
+    }
 
     /**
      * @see io.apiman.manager.api.core.IStorage#createOrganization(io.apiman.manager.api.beans.orgs.OrganizationBean)

@@ -151,6 +151,7 @@ public class EsStorage implements IStorage, IStorageQuery {
     /**
      * Called to initialize the storage.
      */
+    @Override
     public void initialize() {
         try {
             esClient.execute(new Health.Builder().build());
