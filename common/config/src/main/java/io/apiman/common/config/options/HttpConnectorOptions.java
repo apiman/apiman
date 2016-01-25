@@ -28,10 +28,12 @@ public class HttpConnectorOptions extends AbstractOptions {
     private static final int DEFAULT_READ_TIMEOUT = 30;
     private static final int DEFAULT_WRITE_TIMEOUT = 30;
     private static final int DEFAULT_CONNECT_TIMEOUT = 10;
-    
+    private static final boolean DEFAULT_FOLLOW_REDIRECTS = true;
+
     private int readTimeout;
     private int writeTimeout;
     private int connectTimeout;
+    private boolean followRedirects;
 
     /**
      * Constructor.
@@ -49,6 +51,7 @@ public class HttpConnectorOptions extends AbstractOptions {
         String read = options.get("http.timeouts.read"); //$NON-NLS-1$
         String write = options.get("http.timeouts.write"); //$NON-NLS-1$
         String connect = options.get("http.timeouts.connect"); //$NON-NLS-1$
+        String redirects = options.get("http.followRedirects"); //$NON-NLS-1$
         if (read != null) {
             setReadTimeout(Integer.parseInt(read));
         } else {
@@ -63,6 +66,11 @@ public class HttpConnectorOptions extends AbstractOptions {
             setConnectTimeout(Integer.parseInt(connect));
         } else {
             setConnectTimeout(DEFAULT_CONNECT_TIMEOUT);
+        }
+        if (redirects != null) {
+            setFollowRedirects(Boolean.parseBoolean(redirects));
+        } else {
+            setFollowRedirects(DEFAULT_FOLLOW_REDIRECTS);
         }
     }
 
@@ -108,4 +116,17 @@ public class HttpConnectorOptions extends AbstractOptions {
         this.connectTimeout = connectTimeout;
     }
 
+    /**
+     * @return the followRedirects
+     */
+    public boolean isFollowRedirects() {
+        return followRedirects;
+    }
+
+    /**
+     * @param followRedirects the followRedirects to set
+     */
+    public void setFollowRedirects(boolean followRedirects) {
+        this.followRedirects = followRedirects;
+    }
 }

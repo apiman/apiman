@@ -205,6 +205,7 @@ public class GatewayMicroService {
         setConfigProperty(WarEngineConfig.APIMAN_GATEWAY_CONNECTOR_FACTORY_CLASS + ".http.timeouts.read", "25");
         setConfigProperty(WarEngineConfig.APIMAN_GATEWAY_CONNECTOR_FACTORY_CLASS + ".http.timeouts.write", "25");
         setConfigProperty(WarEngineConfig.APIMAN_GATEWAY_CONNECTOR_FACTORY_CLASS + ".http.timeouts.connect", "10");
+        setConfigProperty(WarEngineConfig.APIMAN_GATEWAY_CONNECTOR_FACTORY_CLASS + ".http.followRedirects", "true");
     }
 
     /**
