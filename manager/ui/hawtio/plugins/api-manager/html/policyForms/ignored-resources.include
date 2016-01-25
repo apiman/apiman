@@ -1,26 +1,33 @@
 <div class="form policy-config ignored-resources" data-field="form" ng-controller="Apiman.IgnoredResourcesFormController">
   <div style="margin-bottom:10px;" apiman-i18n-key="ignored-resources-message">Manage the list of API routes that will be ignored.</div>
-   
- <div class="panel panel-default">
-   <div class="panel-heading">
-     <h3 class="panel-title" apiman-i18n-key="add-ignored-resources-rule">Ignore Resources Rule</h3>
-   </div>
-   <div class="panel-body">
-   	 <div style="display: inline-block;margin-right:10px">
-     	<label for="path" style="display: inline;" apiman-i18n-key="ignored-resources.to-access">Ignored URI</label>
-     	<input id="path" name="path" ng-model="pathPattern" class="apiman-form-control form-control" style="margin-top:5px;margin-bottom:5px;" type="text" apiman-i18n-key="ignored-resources.enter-path" placeholder="(/path/to/.*)" ng-disabled="isEntityDisabled()"></input>
-     </div>
-     <div style="display: inline-block;">
-    	<label apiman-i18n-key="ignored-resources.using-verb" style="display: block;margin-right:10px;">HTTP method</label>
-     	<http-verbs-select></http-verbs-select>
-     </div>
-     <div style="margin:10px"></div>
-     <div style="float:right;margin-top:10px">
-       <button id="add-rule" ng-disabled="currentItemInvalid()" ng-click="add(pathPattern, verb)" apiman-i18n-key="add" class="btn btn-default" style="min-width: 75px" ng-disabled="isEntityDisabled()">Add</button>
-     </div>
-   </div>
- </div>
-  
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title" apiman-i18n-key="add-ignored-resources-rule">Ignore Resources Rule</h3>
+    </div>
+    <div class="panel-body container-fluid">
+      <div class="row">
+        <div class="col-md-8">
+          <label for="path" apiman-i18n-key="ignored-uri">Ignored URI</label>
+        </div>
+        <div class="col-md-2">
+          <label apiman-i18n-key="http-method">HTTP method</label>
+        </div>
+        <div class="col-md-2"></div>
+      </div>
+      <div class="row">
+        <div class="col-md-8">
+          <input id="path" style="width:100%" name="path" ng-model="pathPattern" class="form-control" type="text" apiman-i18n-key="ignored-resources.enter-path" placeholder="(/path/to/.*)" ng-disabled="isEntityDisabled()"></input>
+        </div>
+        <div class="col-md-2">
+          <http-verbs-select></http-verbs-select>
+        </div>
+        <div class="col-md-2">
+          <button id="add-rule" ng-disabled="currentItemInvalid()" ng-click="add(pathPattern, verb)" apiman-i18n-key="add" class="btn btn-default" style="min-width: 75px" ng-disabled="isEntityDisabled()">Add</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div>
     <dl>
       <dt apiman-i18n-key="configured-ignored-resources-rules">Ignored Resources</dt>

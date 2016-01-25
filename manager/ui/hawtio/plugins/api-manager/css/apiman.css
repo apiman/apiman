@@ -260,6 +260,10 @@ textarea.apiman-form-data {
   width: 300px;
 }
 
+#form-page .inline-apiman-auto-width {
+  width: auto;
+}
+
 #form-page .inline-apiman-form-control {
   display: inline; 
   margin: 0px 5px;

@@ -112,7 +112,7 @@
       "templates" : [
         {
           "language" : null,
-          "template" : "Requests matching any of the @{pathsToIgnore.size()} regular expressions provided will receive a 404 error code."
+          "template" : "Requests matching any of the @{rules.size()} regular expressions provided will receive a 404 error code."
         }
       ]
     },

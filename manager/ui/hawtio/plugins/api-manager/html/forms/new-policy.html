@@ -30,7 +30,7 @@
                        ng-disabled="isEntityDisabled()"
                        on-select="changeSelectedDefId($item)"
                        apiman-i18n-key="new-policy.choose-policy-type"
-                       style="width: 25%; max-width: 250px;">
+                       style="width: 250px">
               <ui-select-match placeholder="Choose a policy type...">
                 <i class='fa fa-inline fa-fw fa-{{ $select.selected.icon }}'></i> <span ng-bind="$select.selected.name"></span>
               </ui-select-match>

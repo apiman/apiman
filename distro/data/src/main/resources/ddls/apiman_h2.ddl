@@ -91,7 +91,7 @@ INSERT INTO pd_templates (policydef_id, language, template) VALUES ('BASICAuthen
 
 INSERT INTO pd_templates (policydef_id, language, template) VALUES ('RateLimitingPolicy', NULL, 'Consumers are limited to @{limit} requests per @{granularity} per @{period}.');
 
-INSERT INTO pd_templates (policydef_id, language, template) VALUES ('IgnoredResourcesPolicy', NULL, 'Requests matching any of the @{pathsToIgnore.size()} regular expressions provided will receive a 404 error code.');
+INSERT INTO pd_templates (policydef_id, language, template) VALUES ('IgnoredResourcesPolicy', NULL, 'Requests matching any of the @{rules.size()} regular expressions provided will receive a 404 error code.');
 
 INSERT INTO pd_templates (policydef_id, language, template) VALUES ('URLRewritingPolicy', NULL, 'Responses will be modified by finding all text matching regular expression ''@{fromRegex}'' with ''@{toReplacement}''.');
 

@@ -662,7 +662,7 @@ module Apiman {
                 link: function(scope, elem, attrs) {
                  	// init model
                  	scope.resetVerbsSelector = function(){
-                 		scope.verb="*";
+                 		scope.verb = '*';
                  	}
                  	scope.resetVerbsSelector();
                 }

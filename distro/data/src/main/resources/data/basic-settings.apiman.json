@@ -64,7 +64,7 @@
     "description" : "Requests satisfying the provided regular expression will be ignored.",
     "icon" : "eye-slash",
     "templates" : [ {
-      "template" : "Requests matching any of the @{pathsToIgnore.size()} regular expressions provided will receive a 404 error code."
+      "template" : "Requests matching any of the @{rules.size()} regular expressions provided will receive a 404 error code."
     } ],
     "formType" : "Default",
     "deleted" : false

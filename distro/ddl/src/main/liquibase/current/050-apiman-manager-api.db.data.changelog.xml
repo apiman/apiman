@@ -43,7 +43,7 @@
             <column name="policydef_id" value="IgnoredResourcesPolicy"/>
             <column name="language"/>
             <column name="template"
-                    value="Requests matching any of the @{pathsToIgnore.size()} regular expressions provided will receive a 404 error code."/>
+                    value="Requests matching any of the @{rules.size()} regular expressions provided will receive a 404 error code."/>
         </insert>
         <insert tableName="pd_templates">
             <column name="policydef_id" value="URLRewritingPolicy"/>

@@ -29,7 +29,7 @@ public class IgnoredResource {
     /**
      * Used to match all possible http verbs.
      */
-    public final static String VERB_MATCH_ALL = "*";
+    public final static String VERB_MATCH_ALL = "*"; //$NON-NLS-1$
 
     /**
      * Constructor.

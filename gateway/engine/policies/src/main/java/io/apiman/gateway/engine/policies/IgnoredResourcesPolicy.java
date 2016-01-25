@@ -61,7 +61,7 @@ public class IgnoredResourcesPolicy extends AbstractMappedPolicy<IgnoredResource
         } else {
             IPolicyFailureFactoryComponent ffactory = context
                     .getComponent(IPolicyFailureFactoryComponent.class);
-            String msg = Messages.i18n.format("IgnoredResourcesPolicy.PathsToIgnore", //$NON-NLS-1$
+            String msg = Messages.i18n.format("IgnoredResourcesPolicy.PathIgnored", //$NON-NLS-1$
                     request.getDestination());
             PolicyFailure failure = ffactory.createFailure(PolicyFailureType.NotFound,
                     PolicyFailureCodes.PATHS_TO_IGNORE, msg);
@@ -71,11 +71,11 @@ public class IgnoredResourcesPolicy extends AbstractMappedPolicy<IgnoredResource
 
     /**
      * Evaluates whether the destination provided matches any of the configured
-     * pathsToIgnore
+     * rules
      * 
      * @param config
      *            The {@link IgnoredResourcesConfig} containing the
-     *            pathsToIgnore
+     *            rules
      * @param destination
      *            The destination to evaluate
      * @param verb

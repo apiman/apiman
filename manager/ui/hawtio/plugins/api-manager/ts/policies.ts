@@ -373,7 +373,7 @@ module Apiman {
             };
             
             $scope.clear = function() {
-                $scope.config.pathsToIgnore = [];
+                $scope.config.rules = [];
                 $scope.selectedPath = undefined;
             };
 

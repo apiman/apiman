@@ -34,18 +34,18 @@ public class IgnoredResourcesConfig {
     }
 
     /**
-     * @return the pathsToIgnore
+     * @return the rules
      */
     public List<IgnoredResource> getRules() {
         return rules;
     }
 
     /**
-     * @param pathsToIgnore
-     *            the pathsToIgnore to set
+     * @param rules
+     *            the rules to set
      */
-    public void setRules(List<IgnoredResource> pathsToIgnore) {
-        this.rules = pathsToIgnore;
+    public void setRules(List<IgnoredResource> rules) {
+        this.rules = rules;
     }
 
 }

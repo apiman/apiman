@@ -54,9 +54,9 @@
       </div>
     </div>
     <div style="width: 100%; float: left; margin-bottom: 10px; margin-top: 5px">
-      <input id="static-username" ng-model="username" class="apiman-form-control form-control" style="width: 85px; float: left; margin-right: 5px" type="text" apiman-i18n-key="basic-auth.enter-username" placeholder="Username..." ng-disabled="isEntityDisabled()"></input>
+      <input id="static-username" ng-model="username" class="form-control" style="width: 85px; float: left; margin-right: 5px" type="text" apiman-i18n-key="basic-auth.enter-username" placeholder="Username..." ng-disabled="isEntityDisabled()"></input>
       <div style="width: 8px; float: left; line-height: 28px" apiman-i18n-skip>:</div>
-      <input id="static-password" ng-model="password" class="apiman-form-control form-control" style="width: 102px; float: left; margin-right: 5px" type="password" apiman-i18n-key="basic-auth.enter-password" placeholder="Password..." ng-disabled="isEntityDisabled()"></input>
+      <input id="static-password" ng-model="password" class="form-control" style="width: 102px; float: left; margin-right: 5px" type="password" apiman-i18n-key="basic-auth.enter-password" placeholder="Password..." ng-disabled="isEntityDisabled()"></input>
       <button id="static-add" ng-disabled="!username || !password || isEntityDisabled()" ng-click="add(username, password)" apiman-i18n-key="add" class="btn btn-default" style="min-width: 75px">Add</button>
     </div>
   </div>
