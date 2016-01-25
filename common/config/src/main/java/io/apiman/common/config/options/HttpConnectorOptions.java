@@ -24,11 +24,11 @@ import java.util.Map;
  * @author eric.wittmann@redhat.com
  */
 public class HttpConnectorOptions extends AbstractOptions {
-    
+
     private static final int DEFAULT_READ_TIMEOUT = 30;
     private static final int DEFAULT_WRITE_TIMEOUT = 30;
     private static final int DEFAULT_CONNECT_TIMEOUT = 10;
-    private static final boolean DEFAULT_FOLLOW_REDIRECTS = true;
+    private static final boolean DEFAULT_FOLLOW_REDIRECTS = false;
 
     private int readTimeout;
     private int writeTimeout;
@@ -42,7 +42,7 @@ public class HttpConnectorOptions extends AbstractOptions {
     public HttpConnectorOptions(Map<String, String> options) {
         super(options);
     }
-    
+
     /**
      * @see io.apiman.common.config.options.AbstractOptions#parse(java.util.Map)
      */
