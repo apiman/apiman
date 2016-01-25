@@ -7,41 +7,29 @@
       width: 100%;
       margin-bottom: 10px;
     }
-    .authorization-form .panel {
-    }
-    .authorization-form .panel span {
-      padding-left: 3px;
-      padding-right: 3px;
-      margin-top: 4px;
-    }
     .authorization-form .panel button {
-      margin-top: 15px;
-    }
-    .authorization-form .panel input.apiman-form-control[type="text"] {
-      display: inline;
-      width: 120px;
-      margin-top: 4px;
-    }
-    #form-page .authorization-form dl dd .inline-form-select {
-      display: inline-table;
-      width: auto;
-      margin-top: 4px;
+      float:right;
     }
   </style>
   <div class="help" apiman-i18n-key="authorization-message">Manage the list of fine-grained authorization rules in the box below.  If you want a single required role to protect your entire API, simply add one item with a path of ".*" and a verb of "*".</div>
-  
   <div class="panel panel-default">
     <div class="panel-heading">
       <h3 class="panel-title" apiman-i18n-key="add-authorization-rule">Add Authorization Rule</h3>
     </div>
     <div class="panel-body">
-      <span apiman-i18n-key="authorization.to-access">To access resource</span>
-      <input id="path" ng-model="path" class="apiman-form-control form-control" style="" type="text" apiman-i18n-key="authorization.enter-path" placeholder="(/path/to/.*)" ng-disabled="isEntityDisabled()"></input>
-      <span apiman-i18n-key="authorization.using-verb">using verb/action</span>
-      <input id="verb" ng-model="verb" class="apiman-form-control form-control" style="" type="text" apiman-i18n-key="authorization.enter-verb" placeholder="(verb)" ng-disabled="isEntityDisabled()"></input>
-      <span apiman-i18n-key="authorization.must-have-role">the user must have role</span>
-      <input id="role" ng-model="role" class="apiman-form-control form-control" style="" type="text" apiman-i18n-key="authorization.enter-role" placeholder="(required role)" ng-disabled="isEntityDisabled()"></input>
-      <span apiman-i18n-key="authorization.period">.</span>
+      <div style="display:inline-block;margin-right:10px;margin-bottom:4px;">
+     	<label for="path" apiman-i18n-key="authorization.to-access">Ignored URI</label>
+     	<input id="path" name="path" ng-model="path" class="apiman-form-control form-control" style="margin-top:5px;margin-bottom:5px;" type="text" apiman-i18n-key="authorization.enter-path" placeholder="(/path/to/.*)" ng-disabled="isEntityDisabled()"></input>
+      </div>
+      <div style="display: inline-block;margin-right:10px;margin-bottom:4px;">
+     	<label style="display: block;" apiman-i18n-key="authorization.must-have-role">User Role</label>
+      	<input id="role" ng-model="role" class="apiman-form-control form-control" style="width:150px;" type="text" apiman-i18n-key="authorization.enter-role" placeholder="(required role)" ng-disabled="isEntityDisabled()"></input>
+      </div>
+      <div style="display: inline-block;margin-right:10px;margin-bottom:4px;">
+    	<label apiman-i18n-key="authorization.using-verb" style="display: block;">HTTP method</label>
+     	<http-verbs-select></http-verbs-select>
+      </div>
+      <div></div>
       <div>
         <button id="add-rule" ng-disabled="currentItemInvalid()" ng-click="add(path, verb, role)" apiman-i18n-key="add" class="btn btn-default" style="min-width: 75px" ng-disabled="isEntityDisabled()">Add</button>
       </div>
