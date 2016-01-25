@@ -14,7 +14,7 @@ Content-Type: application/json
       "policies" : [
         {
           "policyImpl" : "class:io.apiman.gateway.engine.policies.IgnoredResourcesPolicy",
-          "policyJsonConfig" : "{ \"pathsToIgnore\" : [\"/invoices/.+/items/.+\", \"/items/.+\"] }"
+          "policyJsonConfig" : "{\"rules\":[{\"verb\":\"*\",\"pathPattern\":\"/invoices/.+/items/.+\"},{\"verb\":\"*\",\"pathPattern\":\"/items/.+\"}]}"
         }
       ]
     }

@@ -7,43 +7,42 @@
       width: 100%;
       margin-bottom: 10px;
     }
-    .authorization-form .panel {
-    }
-    .authorization-form .panel span {
-      padding-left: 3px;
-      padding-right: 3px;
-      margin-top: 4px;
-    }
     .authorization-form .panel button {
-      margin-top: 15px;
-    }
-    .authorization-form .panel input.apiman-form-control[type="text"] {
-      display: inline;
-      width: 120px;
-      margin-top: 4px;
-    }
-    #form-page .authorization-form dl dd .inline-form-select {
-      display: inline-table;
-      width: auto;
-      margin-top: 4px;
+      float:right;
     }
   </style>
   <div class="help" apiman-i18n-key="authorization-message">Manage the list of fine-grained authorization rules in the box below.  If you want a single required role to protect your entire API, simply add one item with a path of ".*" and a verb of "*".</div>
-  
   <div class="panel panel-default">
     <div class="panel-heading">
       <h3 class="panel-title" apiman-i18n-key="add-authorization-rule">Add Authorization Rule</h3>
     </div>
-    <div class="panel-body">
-      <span apiman-i18n-key="authorization.to-access">To access resource</span>
-      <input id="path" ng-model="path" class="apiman-form-control form-control" style="" type="text" apiman-i18n-key="authorization.enter-path" placeholder="(/path/to/.*)" ng-disabled="isEntityDisabled()"></input>
-      <span apiman-i18n-key="authorization.using-verb">using verb/action</span>
-      <input id="verb" ng-model="verb" class="apiman-form-control form-control" style="" type="text" apiman-i18n-key="authorization.enter-verb" placeholder="(verb)" ng-disabled="isEntityDisabled()"></input>
-      <span apiman-i18n-key="authorization.must-have-role">the user must have role</span>
-      <input id="role" ng-model="role" class="apiman-form-control form-control" style="" type="text" apiman-i18n-key="authorization.enter-role" placeholder="(required role)" ng-disabled="isEntityDisabled()"></input>
-      <span apiman-i18n-key="authorization.period">.</span>
-      <div>
-        <button id="add-rule" ng-disabled="currentItemInvalid()" ng-click="add(path, verb, role)" apiman-i18n-key="add" class="btn btn-default" style="min-width: 75px" ng-disabled="isEntityDisabled()">Add</button>
+
+    <div class="panel-body container-fluid">
+      <div class="row">
+        <div class="col-md-5">
+          <label for="path" apiman-i18n-key="ignored-uri">Ignored URI</label>
+        </div>
+        <div class="col-md-3">
+          <label for="role" apiman-i18n-key="user-role">User Role</label>
+        </div>
+        <div class="col-md-2">
+          <label apiman-i18n-key="http-method">HTTP method</label>
+        </div>
+        <div class="col-md-2"></div>
+      </div>
+      <div class="row">
+        <div class="col-md-5">
+          <input id="path" style="width:100%" name="path" ng-model="path" class="form-control" type="text" apiman-i18n-key="authorization.enter-path" placeholder="(/path/to/.*)" ng-disabled="isEntityDisabled()"></input>
+        </div>
+        <div class="col-md-3">
+          <input id="role" style="width:100%" name="role" ng-model="role" class="form-control" type="text" apiman-i18n-key="authorization.required-role" placeholder="(required role)" ng-disabled="isEntityDisabled()"></input>
+        </div>
+        <div class="col-md-2">
+          <http-verbs-select></http-verbs-select>
+        </div>
+        <div class="col-md-2">
+          <button id="add-rule" ng-disabled="currentItemInvalid()" ng-click="add(path, verb, role)" apiman-i18n-key="add" class="btn btn-default" style="min-width: 75px" ng-disabled="isEntityDisabled()">Add</button>
+        </div>
       </div>
     </div>
   </div>
@@ -87,7 +86,7 @@
       <dt apiman-i18n-key="multiple-match-action">Multiple Match Action</dt>
       <dd>
         <span apiman-i18n-key="auth.multi-match-pre">I want the request to pass when</span>
-        <select id="multiple-match-action" ng-model="config.multiMatch" apiman-select-picker="" class="inline-form-select selectpicker" data-live-search="false" ng-disabled="isEntityDisabled()">
+        <select style="width:auto" id="multiple-match-action" ng-model="config.multiMatch" apiman-select-picker="" class="inline-apiman-auto-width selectpicker" data-live-search="false" ng-disabled="isEntityDisabled()">
           <option value="any" apiman-i18n-key="auth.any">at least one</option>
           <option value="all" apiman-i18n-key="auth.all">all</option>
         </select>
@@ -98,7 +97,7 @@
       <dt apiman-i18n-key="unmatched-request-action">Unmatched Request Action</dt>
       <dd>
         <span apiman-i18n-key="auth.if-request-unmatched-pre">I want the request to</span>
-        <select id="unmatched-request-action" ng-model="config.requestUnmatched" apiman-select-picker="" class="inline-form-select selectpicker" data-live-search="false" ng-disabled="isEntityDisabled()">
+        <select id="unmatched-request-action" ng-model="config.requestUnmatched" apiman-select-picker="" class="inline-apiman-auto-width selectpicker" data-live-search="false" ng-disabled="isEntityDisabled()">
           <option value="fail" apiman-i18n-key="auth.fail">fail</option>
           <option value="pass" apiman-i18n-key="auth.pass">pass</option>
         </select>

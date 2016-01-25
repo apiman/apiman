@@ -338,45 +338,42 @@ module Apiman {
         ['$scope', 'Logger', 'EntityStatusSvc',
         ($scope, Logger, EntityStatusSvc) => {
             var validate = function(config) {
-                var valid = true;
-
+              	var valid = config.rules && config.rules.length > 0;
                 $scope.setValid(valid);
             };
-
+			$scope.currentItemInvalid=function(){ return !$scope.pathPattern || !$scope.verb || !isRegexpValid($scope.path); };
             $scope.$watch('config', validate, true);
             
-            $scope.add = function(path) {
-                if (!$scope.config.pathsToIgnore) {
-                    $scope.config.pathsToIgnore = [];
+            $scope.add = function(path, verb) {
+                if (!$scope.config.rules) {
+                    $scope.config.rules = [];
                 }
-
-                $scope.remove(path);
-                $scope.config.pathsToIgnore.push(path);
-                $scope.selectedPath =  [ path ];
-                $scope.path = undefined;
+                var rule = {
+                    'verb' : verb,
+                    'pathPattern' : path
+                };
+                $scope.config.rules.push(rule);
+                
+                $scope.pathPattern = undefined;
+                $scope.resetVerbsSelector();
                 $('#path').focus();
             };
             
-            $scope.remove = function(paths) {
-                angular.forEach(paths, function(path) {
-                    var idx = -1;
-
-                    angular.forEach($scope.config.pathsToIgnore, function(item, index) {
-                        if (item == path) {
-                            idx = index;
-                        }
-                    });
-
-                    if (idx != -1) {
-                        $scope.config.pathsToIgnore.splice(idx, 1);
+            $scope.remove = function(selectedRule) {
+ 				var idx = -1;
+                angular.forEach($scope.config.rules, function (item, index) {
+                    if (item == selectedRule) {
+                        idx = index;
                     }
                 });
-
+                if (idx != -1) {
+                    $scope.config.rules.splice(idx, 1);
+                }
                 $scope.selectedPath = undefined;
             };
             
             $scope.clear = function() {
-                $scope.config.pathsToIgnore = [];
+                $scope.config.rules = [];
                 $scope.selectedPath = undefined;
             };
 
@@ -604,8 +601,8 @@ module Apiman {
 
                 $scope.config.rules.push(rule);
                 $scope.path = undefined;
-                $scope.verb = undefined;
                 $scope.role = undefined;
+                $scope.resetVerbsSelector();
 
                 $('#path').focus();
             };

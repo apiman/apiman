@@ -1,7 +1,7 @@
 <div class="form policy-config rates" data-field="form" ng-controller="Apiman.RateLimitingFormController" style="margin-top: 10px">
   <div>
     <span apiman-i18n-key="config-sentence-preamble">I want to limit request rates to</span>
-    <input id="num-requests" ng-model="config.limit" class="apiman-form-control form-control inline-apiman-form-control form-control" style="width: 100px" type="text" apiman-i18n-key="rate-limiting.enter-num-requests" placeholder="# of requests" ng-disabled="isEntityDisabled()"></input>
+    <input id="num-requests" ng-model="config.limit" class="form-control inline-apiman-form-control form-control" style="width: 100px" type="text" apiman-i18n-key="rate-limiting.enter-num-requests" placeholder="# of requests" ng-disabled="isEntityDisabled()"></input>
     <span apiman-i18n-key="requests-per">requests per</span>
     <select id="granularity" ng-model="config.granularity" apiman-select-picker="" data-field="granularity" class="selectpicker inline-line apiman-inline-form-dropdown" data-style="btn-default apiman-inline-form-dropdown" style="width: 100px" ng-disabled="isEntityDisabled()">
       <option value="" data-content="<span class='apiman-label-faded'>Granularity</span>" apiman-i18n-key="granularity">Granularity</option>
