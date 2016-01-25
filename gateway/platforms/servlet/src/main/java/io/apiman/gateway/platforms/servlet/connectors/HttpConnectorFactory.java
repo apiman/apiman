@@ -84,6 +84,8 @@ public class HttpConnectorFactory implements IConnectorFactory {
         client.setReadTimeout(connectorOptions.getReadTimeout(), TimeUnit.SECONDS);
         client.setWriteTimeout(connectorOptions.getWriteTimeout(), TimeUnit.SECONDS);
         client.setConnectTimeout(connectorOptions.getConnectTimeout(), TimeUnit.SECONDS);
+        client.setFollowRedirects(connectorOptions.isFollowRedirects());
+        client.setFollowSslRedirects(connectorOptions.isFollowRedirects());
         client.setProxySelector(ProxySelector.getDefault());
         client.setCookieHandler(CookieHandler.getDefault());
         client.setCertificatePinner(CertificatePinner.DEFAULT);
