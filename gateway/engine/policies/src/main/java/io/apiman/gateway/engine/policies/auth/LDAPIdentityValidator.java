@@ -190,6 +190,7 @@ public class LDAPIdentityValidator implements IIdentityValidator<LDAPIdentitySou
                                 addRoles(attr);
                             }
                         }
+                    context.setAttribute(AuthorizationPolicy.AUTHENTICATED_USER_ROLES, roles);
                     resultHandler.handle(AsyncResultImpl.create(LdapResult.SUCCESS));
                     } catch (Exception e) { // Potentially invalid RDN format
                         resultHandler.handle(AsyncResultImpl.<ILdapResult>create(e));
@@ -210,8 +211,6 @@ public class LDAPIdentityValidator implements IIdentityValidator<LDAPIdentitySou
                 }
             }
         }));
-
-        context.setAttribute(AuthorizationPolicy.AUTHENTICATED_USER_ROLES, roles);
     }
 
     private void handleLdapSearch(final ILdapClientConnection connection, List<ILdapSearchEntry> searchEntries, LDAPIdentitySource config,
