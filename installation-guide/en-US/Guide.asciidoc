@@ -5,6 +5,7 @@
 == Installation
 This guide provides detailed information about how to install and configure apiman.
 
+
 === Installing in WildFly 9
 The apiman project primarily targets WildFly 9 as a runtime environment.  In order to install
 apiman you will need to download both WildFly 9 and the apiman overlay distribution.  Once
@@ -46,6 +47,50 @@ WildFly using the apiman configuration file:
 cd wildfly-9.0.2.Final
 ./bin/standalone.sh -c standalone-apiman.xml
 ....
+
+
+=== Installing in WildFly 8
+The apiman project primarily targets WildFly 8 as a runtime environment.  In order to install
+apiman you will need to download both WildFly 8 and the apiman overlay distribution.  Once
+both are downloaded, it's a simple matter of unpacking both into the same location.
+
+==== Download
+First you will need to download both WildFly 8 and apiman:
+
+* http://download.jboss.org/wildfly/8.2.0.Final/wildfly-8.2.0.Final.zip[Download WildFly 8]
+* http://downloads.jboss.org/apiman/1.2.1.Final/apiman-distro-wildfly8-1.2.1.Final-overlay.zip[Download apiman 1.2.1.Final]
+
+....
+curl http://download.jboss.org/wildfly/8.2.0.Final/wildfly-8.2.0.Final.zip -o wildfly-8.2.0.Final.zip
+curl http://downloads.jboss.org/apiman/1.2.1.Final/apiman-distro-wildfly8-1.2.1.Final-overlay.zip -o apiman-distro-wildfly8-1.2.1.Final-overlay.zip
+....
+
+==== Unpack
+Once both files have been downloaded, simply unpack both in the same location.
+
+....
+unzip wildfly-8.2.0.Final.zip
+unzip -o apiman-distro-wildfly8-1.2.1.Final-overlay.zip -d wildfly-8.2.0.Final
+....
+
+==== Run WildFly 8
+The apiman overlay contains everything needed to run apiman, including:
+
+* apiman binaries (several WAR files)
+* apiman-specific WildFly 8 configuration (*standalone-apiman.xml*)
+* apiman rdbms datasource (h2)
+* pre-configured *admin* user with password *admin123!*
+* pre-configured h2 database for the API Manager (populated with default values)
+* embedded Elasticsearch instance for metrics and gateway storage
+
+For this reason, there is no additional configuration required to run apiman.  Simply start up
+WildFly using the apiman configuration file:
+
+....
+cd wildfly-8.2.0.Final
+./bin/standalone.sh -c standalone-apiman.xml
+....
+
 
 
 === Installing in JBoss EAP 6.4
@@ -271,10 +316,10 @@ For example, it is possible to use Elasticsearch instead of Infinispan for certa
 components.  This section details how to make these sorts of changes.
 
 === How To:  Use Elasticsearch instead of an RDBMS in the API Manager
-The apiman quickstart is configured (by default) to use JPA as the persistence technology for
+The API Manager is configured (by default) to use JPA as the persistence technology for
 storing all of its data.  But this isn't the only persistence technology supported.  Another
-option is to use Elasticsearch instead.  This section details how to set up apiman for this
-use-case.
+option is to use Elasticsearch.  This section details how to set up apiman to use Elasticsearch
+instead of an RDBMS to store your API Manager data.
 
 ==== High Level Overview
 1. Download and install https://www.elastic.co/downloads/elasticsearch[Elasticsearch]
@@ -325,7 +370,7 @@ to apiman.properties have been made, go ahead and start apiman up again.  It wil
 new settings in apiman.properties and attempt to use Elasticsearch instead of the database!
 
 .Perform standard admin configuration
-Note that the apiman quickstart comes pre-configured with a number of settings, including:
+Note that the apiman quickstart overlay ZIP comes pre-configured with a number of settings, including:
 
 * Installed policy definitions
 * Default configured roles (Organization Owner, API Developer, Appliation Developer)
@@ -337,8 +382,8 @@ section of the User Guide for more information on this.
 
 
 === How To:  Use a standalone Elasticsearch instance/cluster instead of the quickstart instance
-The apiman quickstart ships by default with an embedded instance of Elasticsearch.  This is
-suitable for getting up and running quickly, but is not a good long term solution.  Instead,
+The apiman quickstart overlay ZIP ships by default with an embedded instance of Elasticsearch.  
+This is suitable for getting up and running quickly, but is not a good long term solution.  Instead,
 users are encouraged to install a standalone instance of Elasticsearch and point apiman to it.
 
 ==== High Level Overview
@@ -578,7 +623,7 @@ the details of your back-end endpoint (URL, type, and endpoint security).
 
 
 === How To:  Use an External Keycloak Authentication Server
-The apiman quickstart overlay comes with an embedded version of Keycloak that we use for
+The apiman quickstart overlay ZIP comes with an embedded version of Keycloak that we use for
 authentication.  You may already have a Keycloak instance that you use.  This section
 explains how to modify apiman to use yours instead of ours.
 

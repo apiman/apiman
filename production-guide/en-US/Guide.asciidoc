@@ -20,6 +20,10 @@ https://github.com/apiman/apiman-deployer/tree/apiman-1.2.1.Final
 Simply download that script and run it on each of the machines you wish to install the various apiman
 components!
 
+TIP: The production guide assumes you are installing into WildFly 9.  The instructions are slightly 
+different if you are using EAP 6.4 or WildFly 8.  In particular, the KeyCloak settings in standalone.xml
+are a bit different (because for our EAP6.4 and WF8 support we use an older version of KC).
+
 == Architecture Summary
 Before we get started, it may be useful to know the overall architecture of apiman.  Let's start with a 
 picture!
@@ -53,7 +57,7 @@ and a "sa_keycloak" account).
 
 After creating the ‘apiman' database, you can initialize it using the appropriate DDL for the database you 
 selected.  We currently support mysql5/mariadb and postgresql.  The DDLs for these databases can be found in 
-the quickstart/overlay ZIP file, or you can grab them directly from github.  For example:
+the quickstart overlay ZIP file, or you can grab them directly from github.  For example:
 
 https://github.com/apiman/apiman/tree/master/distro/data/src/main/resources/ddls
 
@@ -109,15 +113,15 @@ application!
 == API Gateway
 
 === Installing the API Gateway
-The easiest way to install just the API Gateway is to download and install the apiman quickstart overlay
+The easiest way to install just the API Gateway is to download and install the apiman quickstart overlay ZIP
 and then remove the extraneous components.  Follow that up with some modification of the apiman.properties 
 configuration file and you'll be Gatewaying in no time!
 
 Here are the steps you should take to install a standalone API Gateway:
 
-1. Download and unpack WildFly
+1. Download and unpack WildFly 9
 2. Download apiman
-3. Unpack apiman into WildFly
+3. Unpack apiman into WildFly 9
 4. Remove unused apiman deployments from standalone/deployments
 
 Which apiman deployments should you delete?  These:
@@ -130,15 +134,12 @@ Which apiman deployments should you delete?  These:
 === Configuring the API Gateway
 ==== Disabling the Keycloak Server
 Because you will be using an external/standalone Keycloak server, it is useful to disable the Keycloak 
-components that are bundled with the apiman quickstart.  To do that, make the following modification to 
-the *standalone-apiman.xml* file:
+components that are bundled with the apiman quickstart overlay ZIP.  To do that, *remove* the following 
+subsystem from the *standalone-apiman.xml* file:
 
 ```xml
-<subsystem xmlns="urn:jboss:domain:keycloak:1.0">
-  <auth-server name="main-auth-server">
-    <enabled>false</enabled>
-    <web-context>auth</web-context>
-  </auth-server>
+<subsystem xmlns="urn:jboss:domain:keycloak-server:1.1">
+  <web-context>auth</web-context>
 </subsystem>
 ```
 
@@ -154,20 +155,21 @@ WARNING: Please make sure to use your appropriate values for the host and port.
 
 ==== Configuring Keycloak Authentication for the Gateway API
 The API Gateway has a REST based configuration API which the API Manager uses when publishing APIs to 
-it.  This API is protected by Keycloak authentication.  The apiman quickstart assumes that the keycloak 
-server is local, so you'll need to modify the *standalone-apiman.xml* file to point to the remote Keycloak 
+it.  This API is protected by Keycloak authentication.  The configuration included in the apiman quickstart 
+overlay ZIP assumes that the keycloak server is local, so you'll need to modify the *standalone-apiman.xml* 
+file to point to the remote Keycloak 
 instance.
 
 Here is the relevant portion of the *standalone-apiman.xml* file that you must change:
 
 ```xml
-<kc:realm xmlns:kc="urn:jboss:domain:keycloak:1.0" name="apiman">
-  <kc:realm-public-key>MIGf..snip..QAB</kc:realm-public-key>
-  <kc:auth-server-url>https://keycloak-host.org:8443/auth</kc:auth-server-url>
-  <kc:ssl-required>none</kc:ssl-required>
-  <kc:enable-cors>false</kc:enable-cors>
-  <kc:principal-attribute>preferred_username</kc:principal-attribute>
-</kc:realm>
+<realm name="apiman">
+  <realm-public-key>MIIB..snip..QAB</realm-public-key>
+  <auth-server-url>https://keycloak-host.org:8443/auth</auth-server-url>
+  <ssl-required>none</ssl-required>
+  <enable-cors>false</enable-cors>
+  <principal-attribute>preferred_username</principal-attribute>
+</realm>
 ```
 
 ==== Pointing the API Gateway to a Remote Elasticsearch
@@ -192,15 +194,15 @@ installation of elasticsearch.
 
 == API Manager
 === Installing the API Manager
-The easiest way to install just the API Manager is to download and install the apiman quickstart overlay
+The easiest way to install just the API Manager is to download and install the apiman quickstart overlay ZIP
 and then remove the extraneous components.  Follow that up with a few configuration modifications, and 
 you should have the Manager running in no time!
 
 Here are the steps you should take to install a standalone API Manager:
 
-1. Download and unpack WildFly
+1. Download and unpack WildFly 9
 2. Download apiman
-3. Unpack apiman into WildFly
+3. Unpack apiman into WildFly 9
 4. Remove unused apiman deployments from standalone/deployments
 
 Which apiman deployments should you delete?  These:
@@ -213,15 +215,12 @@ Which apiman deployments should you delete?  These:
 === Configuring the API Manager
 ==== Disabling the Keycloak Server
 Because you will be using an external/standalone Keycloak server, it is useful to disable the Keycloak 
-components that are bundled with the apiman quickstart.  To do that, make the following modification to 
-the *standalone-apiman.xml* file:
+components that are bundled with the apiman quickstart overlay ZIP.  To do that, make the following 
+modification to the *standalone-apiman.xml* file:
 
 ```xml
-<subsystem xmlns="urn:jboss:domain:keycloak:1.0">
-  <auth-server name="main-auth-server">
-    <enabled>false</enabled>
-    <web-context>auth</web-context>
-  </auth-server>
+<subsystem xmlns="urn:jboss:domain:keycloak-server:1.1">
+  <web-context>auth</web-context>
 </subsystem>
 ```
 
@@ -256,7 +255,7 @@ Next, you must update or replace the *apiman-ds.xml* file to something that is c
 
 https://github.com/apiman/apiman/tree/master/distro/data/src/main/resources/sample-configs
 
-These examples are also included in the apiman quickstart/overlay ZIP download.
+These examples are also included in the apiman quickstart overlay ZIP download.
 
 Finally you must update the *apiman.properties* file to configure the hibernate dialect for your database.  
 Popular dialects for mysql and postgresql are:
@@ -291,19 +290,19 @@ so, make sure you use those credentials.
 ==== Configuring Keycloak Authentication for the Manager API and UI
 The API Manager has a REST based API which the User Interface uses for all actions taken.  It can also be
 used directly for automation and/or integration purposes.  This API is protected by Keycloak authentication. 
-The apiman quickstart assumes that the keycloak server is local, so you'll need to modify the 
-*standalone-apiman.xml* file to point to the remote Keycloak instance.
+The configuration included in the apiman quickstart overlay ZIP assumes that the keycloak server is local, 
+so you will need to modify the *standalone-apiman.xml* file to point to the remote Keycloak instance.
 
 Here is the relevant portion of the *standalone-apiman.xml* file that you must change:
 
 ```xml
-<kc:realm xmlns:kc="urn:jboss:domain:keycloak:1.0" name="apiman">
-  <kc:realm-public-key>MIGf..snip..QAB</kc:realm-public-key>
-  <kc:auth-server-url>https://keycloak-host.org:8443/auth</kc:auth-server-url>
-  <kc:ssl-required>none</kc:ssl-required>
-  <kc:enable-cors>false</kc:enable-cors>
-  <kc:principal-attribute>preferred_username</kc:principal-attribute>
-</kc:realm>
+<realm name="apiman">
+  <realm-public-key>MIIB..snip..QAB</realm-public-key>
+  <auth-server-url>https://keycloak-host.org:8443/auth</auth-server-url>
+  <ssl-required>none</ssl-required>
+  <enable-cors>false</enable-cors>
+  <principal-attribute>preferred_username</principal-attribute>
+</realm>
 ```
 
 ==== Pointing the API Manager to a Remote Elasticsearch
