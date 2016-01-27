@@ -206,7 +206,7 @@ public class BasicAuthLDAPTest extends AbstractLdapTestUnit {
 
         // Test with the extraction of user roles
         //////////////////////////////////////////////////
-        json = "{\r\n" +
+         json = "{\r\n" +
                 "  \"realm\" : \"TestRealm\",\r\n" +
                 "  \"ldapIdentity\" : {\r\n" +
                 "    \"url\" : \"ldap://localhost:7654\",\r\n" +
@@ -229,6 +229,7 @@ public class BasicAuthLDAPTest extends AbstractLdapTestUnit {
         expectedRoles.add("user");
         expectedRoles.add("admin");
         doTest(json, "ewittman", "ewittman", null, expectedRoles);
+        doTest(json, "ewittman", "ewittmanx", PolicyFailureCodes.BASIC_AUTH_FAILED, expectedRoles);
     }
 
     private void doTest(String json, String username, String password, Integer expectedFailureCode) throws Exception {
@@ -275,7 +276,7 @@ public class BasicAuthLDAPTest extends AbstractLdapTestUnit {
             Assert.assertEquals(expectedFailureCode.intValue(), failure.getFailureCode());
         }
 
-        if (expectedRoles != null) {
+        if (expectedRoles != null && expectedFailureCode == null) {
             Mockito.verify(context).setAttribute(AuthorizationPolicy.AUTHENTICATED_USER_ROLES, expectedRoles);
         }
     }
