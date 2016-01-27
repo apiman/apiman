@@ -113,7 +113,7 @@
     <version.com.h2database>1.3.168</version.com.h2database>
     <version.com.squareup.okhttp>2.4.0</version.com.squareup.okhttp>
     <version.commons-codec>1.4</version.commons-codec>
-    <version.commons-collections>3.2.1</version.commons-collections>
+    <version.commons-collections>3.2.2</version.commons-collections>
     <version.commons-configuration>1.6</version.commons-configuration>
     <version.commons-dbcp>1.4</version.commons-dbcp>
     <version.commons-io>2.1</version.commons-io>
@@ -750,16 +750,6 @@
         <groupId>org.apache.felix</groupId>
         <artifactId>org.apache.felix.scr.annotations</artifactId>
         <version>${version.org.apache.felix.scr.annotations}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.cxf</groupId>
-        <artifactId>cxf-api</artifactId>
-        <version>${version.org.apache.cxf}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.cxf</groupId>
-        <artifactId>cxf-rt-core</artifactId>
-        <version>${version.org.apache.cxf}</version>
       </dependency>
       <dependency>
         <groupId>org.codehaus.jackson</groupId>
