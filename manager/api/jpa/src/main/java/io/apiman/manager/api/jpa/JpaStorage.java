@@ -480,6 +480,67 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         super.delete(policyDef);
     }
 
+
+    public void deleteApiVersionPlan(Long versionId, String planId) throws StorageException{
+        //For the given plan, delete associations between the API version and all versions of the plan (multiple versions of the plan can be associated with the API version).
+        try{
+            EntityManager entityManager = getActiveEntityManager();
+
+            String sql = "DELETE from api_plans WHERE api_version_id = :versionId AND plan_id = :planId";
+            Query query = entityManager.createNativeQuery(sql);
+            query.setParameter("versionId", versionId);
+            query.setParameter("planId", planId);
+            query.executeUpdate();
+        }
+        catch(Throwable t){
+            logger.error(t.getMessage(), t);
+            throw new StorageException(t);
+        }
+    }
+
+    public void deleteEndpointProperties(Long apiVersionId) throws StorageException{
+        //For the given plan, delete associations between the API version and all versions of the plan (multiple versions of the plan can be associated with the API version).
+        try{
+            EntityManager entityManager = getActiveEntityManager();
+
+            String sql = "DELETE from endpoint_properties WHERE api_version_id = :apiVersionId";
+            Query query = entityManager.createNativeQuery(sql);
+            query.setParameter("apiVersionId", apiVersionId);
+            query.executeUpdate();
+        }
+        catch(Throwable t){
+            logger.error(t.getMessage(), t);
+            throw new StorageException(t);
+        }
+    }
+
+    public void deleteEntityAudit(AuditEntityType type, String entityId, String orgId) throws StorageException{
+        try{
+            if(type == null){
+                throw new StorageException("Invalid Entity Type.");
+            }
+            else if(entityId == null){
+                throw new StorageException("Invalid Entity ID.");
+            }
+            else if(orgId == null){
+                throw new StorageException("Invalid Organization ID.");
+            }
+
+            EntityManager entityManager = getActiveEntityManager();
+
+            String sql = "DELETE from auditlog WHERE entity_id = :entityId AND entity_type = :type AND organization_id = :orgId";
+            Query query = entityManager.createNativeQuery(sql);
+            query.setParameter("type", type.name());
+            query.setParameter("entityId", entityId);
+            query.setParameter("orgId", orgId);
+            query.executeUpdate();
+        }
+        catch(Throwable t){
+            logger.error(t.getMessage(), t);
+            throw new StorageException(t);
+        }
+    }
+
     /**
      * @see io.apiman.manager.api.core.IStorage#getOrganization(java.lang.String)
      */

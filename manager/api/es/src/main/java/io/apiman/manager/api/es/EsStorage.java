@@ -713,6 +713,13 @@ public class EsStorage implements IStorage, IStorageQuery {
         deleteEntity("role", role.getId()); //$NON-NLS-1$
     }
 
+
+    public void deleteApiVersionPlan(Long versionId, String planId) throws StorageException{}
+
+    public void deleteEndpointProperties(Long apiVersionId) throws StorageException{}
+
+    public void deleteEntityAudit(AuditEntityType type, String entityId, String orgId) throws StorageException{}
+
     /**
      * @see io.apiman.manager.api.core.IStorage#getOrganization(java.lang.String)
      */
