@@ -22,6 +22,14 @@
           <artifactId>apiman-gateway-engine-beans</artifactId>
         </exclusion>
         <exclusion>
+          <groupId>${project.groupId}</groupId>
+          <artifactId>apiman-gateway-api-rest</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>${project.groupId}</groupId>
+          <artifactId>apiman-gateway-api-rest-impl</artifactId>
+        </exclusion>
+        <exclusion>
           <groupId>org.codehaus.jackson</groupId>
           <artifactId>jackson-core-asl</artifactId>
         </exclusion>

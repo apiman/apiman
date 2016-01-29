@@ -10,7 +10,8 @@
   <packaging>pom</packaging>
   <name>apiman-manager-ui</name>
   <modules>
-    <module>hawtio</module>
-    <module>hawtio/wildfly8</module>
+    <module>war</module>
+    <module>war/tomcat8</module>
+    <module>war/wildfly8</module>
   </modules>
 </project>

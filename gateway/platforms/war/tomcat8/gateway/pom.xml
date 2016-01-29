@@ -1,0 +1,24 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <artifactId>apiman-gateway-platforms-war-tomcat8</artifactId>
+    <groupId>io.apiman</groupId>
+    <version>1.2.2-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>apiman-gateway-platforms-war-tomcat8-gateway</artifactId>
+  <packaging>war</packaging>
+  <name>apiman-gateway-platforms-war-tomcat8-gateway</name>
+  
+  <dependencies>
+    <!-- Project Libs -->
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-gateway-platforms-war</artifactId>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <finalName>apiman-gateway</finalName>
+  </build>
+</project>

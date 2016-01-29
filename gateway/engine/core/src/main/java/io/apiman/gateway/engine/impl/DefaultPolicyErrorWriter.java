@@ -58,7 +58,7 @@ public class DefaultPolicyErrorWriter implements IPolicyErrorWriter {
     @Override
     public void write(ApiRequest request, Throwable error, IApiClientResponse response) {
         boolean isXml = false;
-        if (request.getApi() != null && "xml".equals(request.getApi().getEndpointContentType())) {
+        if (request != null && request.getApi() != null && "xml".equals(request.getApi().getEndpointContentType())) {
             isXml = true;
         }
 

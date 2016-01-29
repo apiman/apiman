@@ -8,7 +8,7 @@
     <relativePath>../../pom.xml</relativePath>
   </parent>
   <artifactId>apiman-gateway-platforms-war-micro</artifactId>
-  <name>apiman-gateway-platforms-war-`</name>
+  <name>apiman-gateway-platforms-war-micro</name>
   
   <dependencies>
     <!-- Project JARs -->

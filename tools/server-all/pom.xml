@@ -26,6 +26,14 @@
       <type>zip</type>
       <classifier>overlay</classifier>
     </dependency>
+    
+    <!-- The Tomcat 8 version of APIMan -->
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-distro-tomcat8</artifactId>
+      <type>zip</type>
+      <classifier>overlay</classifier>
+    </dependency>
 
     <!-- The EAP 6.4 version of APIMan -->
     <dependency>
@@ -306,5 +314,81 @@
         </plugins>
       </build>
     </profile>
+    <!-- Install on Tomcat 8 -->
+    <profile>
+      <id>install-all-tomcat8</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <version>1.7</version>
+            <dependencies>
+              <dependency>
+                <groupId>org.apache.ant</groupId>
+                <artifactId>ant</artifactId>
+                <version>1.8.2</version>
+              </dependency>
+            </dependencies>
+            <executions>
+              <execution>
+                <id>run-tomcat8</id>
+                <phase>install</phase>
+                <configuration>
+                  <tasks>
+                    <antversion property="antversion" />
+                    <echo>Ant Version: ${antversion}</echo>
+
+                    <property name="appserver.id" value="tomcat8" />
+                    <property name="apiman.tomcat.download.url"
+                      value="http://apache.cs.utah.edu/tomcat/tomcat-8/v8.0.30/bin/apache-tomcat-8.0.30.zip" />
+                    <property name="apiman.tempdir" value="${project.build.directory}/_tmp" />
+                    <property name="apiman.install.dir" value="${project.build.directory}" />
+                    <property name="apiman.appserver.dir" location="${apiman.install.dir}/apache-tomcat-8.0.30" />
+                    <property name="apiman.appserver.zip" location="${basedir}/apache-tomcat-8.0.30.zip" />
+                    <property name="apiman.apiman-distro-tomcat8.zip" value="${maven.dependency.io.apiman.apiman-distro-tomcat8.overlay.zip.path}" />
+                    <property name="apiman.apiman-tools-services.war" value="${maven.dependency.io.apiman.apiman-tools-services.war.path}" />
+                    <property name="apiman.tomcat.home" location="${apiman.appserver.dir}" />
+                    <property name="apiman.tomcat.webapps" location="${apiman.appserver.dir}/webapps" />
+                    <property name="apiman.resources.dir" location="${basedir}/src/main/resources" />
+
+                    <echo></echo>
+                    <echo>********************************************************************</echo>
+                    <echo>APIMan Dist: ${apiman.apiman-distro-tomcat8.zip}</echo>
+                    <echo>Dev Services: ${apiman.apiman-tools-services.war}</echo>
+                    <echo>-------</echo>
+                    <echo>Tomcat Home: ${apiman.tomcat.home}</echo>
+                    <echo>********************************************************************</echo>
+                    <echo></echo>
+
+                    <mkdir dir="${apiman.tempdir}" />
+
+                    <!-- Download and unpack Tomcat 8 -->
+                    <get src="${apiman.tomcat.download.url}" dest="${apiman.appserver.zip}" usetimestamp="true" skipexisting="true" />
+                    <unzip src="${apiman.appserver.zip}" dest="${apiman.install.dir}" overwrite="false" />
+
+                    <!-- Overlay APIMan on top of Tomcat 8 -->
+                    <unzip src="${apiman.apiman-distro-tomcat8.zip}" dest="${apiman.install.dir}/apache-tomcat-8.0.30" overwrite="true" />
+
+                    <!-- Make sure to chmod 755 the shell scripts -->
+                    <chmod perm="a+x" dir="${apiman.appserver.dir}/bin">
+                      <include name="*.sh" />
+                    </chmod>
+
+                    <!-- Deploy additional stuff -->
+                    <copy file="${apiman.apiman-tools-services.war}" tofile="${apiman.tomcat.webapps}/services.war"
+                      overwrite="true" />
+                  </tasks>
+                </configuration>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
   </profiles>
 </project>

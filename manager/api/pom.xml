@@ -13,8 +13,9 @@
     <module>beans</module>
     <module>config</module>
     <module>core</module>
-    <module>gateway</module>
     <module>es</module>
+    <module>export-import</module>
+    <module>gateway</module>
     <module>ispn</module>
     <module>jpa</module>
     <module>micro</module>
@@ -22,7 +23,7 @@
     <module>rest-impl</module>
     <module>security</module>
     <module>war</module>
+    <module>war/tomcat8</module>
     <module>war/wildfly8</module>
-    <module>export-import</module>
   </modules>
 </project>

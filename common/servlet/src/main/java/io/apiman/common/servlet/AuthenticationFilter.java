@@ -41,13 +41,13 @@ import org.apache.commons.codec.binary.StringUtils;
  * A simple implementation of an authentication filter - uses the APIMan
  * {@link AuthToken} concept to implement the equivalent of bearer token
  * authentication.  This filter supports both {@link AuthToken}'s as well
- * as standard BASIC authentication.  The latter is implemented by 
+ * as standard BASIC authentication.  The latter is implemented by
  * delegating to the container.
  *
  * @author eric.wittmann@redhat.com
  */
 public class AuthenticationFilter implements Filter {
-    
+
     private String realm;
     @SuppressWarnings("unused")
     private boolean signatureRequired;
@@ -200,6 +200,8 @@ public class AuthenticationFilter implements Filter {
             } else {
                 doTokenAuth(token, req, (HttpServletResponse) response, chain);
             }
+        } else {
+            sendAuthResponse((HttpServletResponse) response);
         }
     }
 
@@ -232,7 +234,7 @@ public class AuthenticationFilter implements Filter {
         } catch (Exception e) {
             // TODO log this error?
             e.printStackTrace();
-            sendAuthResponse((HttpServletResponse) response);
+            sendAuthResponse(response);
             return;
         }
         doFilterChain(request, response, chain, null);
@@ -278,7 +280,7 @@ public class AuthenticationFilter implements Filter {
     /**
      * Wrap the request to provide the principal.
      * @param request the request
-     * @param principal the principal 
+     * @param principal the principal
      */
     private HttpServletRequest wrapTheRequest(final ServletRequest request, final AuthPrincipal principal) {
         HttpServletRequestWrapper wrapper = new HttpServletRequestWrapper((HttpServletRequest) request) {
@@ -286,12 +288,12 @@ public class AuthenticationFilter implements Filter {
             public Principal getUserPrincipal() {
                 return principal;
             }
-            
+
             @Override
             public boolean isUserInRole(String role) {
                 return principal.getRoles().contains(role);
             }
-            
+
             @Override
             public String getRemoteUser() {
                 return principal.getName();
@@ -347,7 +349,7 @@ public class AuthenticationFilter implements Filter {
     @Override
     public void destroy() {
     }
-    
+
     /**
      * Models inbound basic auth credentials (user/password).
      * @author eric.wittmann@redhat.com
@@ -355,10 +357,10 @@ public class AuthenticationFilter implements Filter {
     protected static class Creds {
         public String username;
         public String password;
-        
+
         /**
          * Constructor.
-         * 
+         *
          * @param username the username
          * @param password the password
          */

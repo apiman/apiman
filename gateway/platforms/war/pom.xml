@@ -43,6 +43,14 @@
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-gateway-platforms-servlet</artifactId>
     </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-gateway-api-rest</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-gateway-api-rest-impl</artifactId>
+    </dependency>
 
     <!-- Third Party Dependencies -->
     <dependency>

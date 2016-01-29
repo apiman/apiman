@@ -20,7 +20,7 @@
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>apiman-manager-ui-hawtio-wildfly8</artifactId>
+      <artifactId>apiman-manager-ui-war-wildfly8</artifactId>
       <type>war</type>
     </dependency>
     <dependency>

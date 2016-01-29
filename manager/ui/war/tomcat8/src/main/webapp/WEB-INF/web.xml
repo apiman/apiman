@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+  version="3.0">
+
+  <filter>
+    <filter-name>ResourceCacheControl</filter-name>
+    <filter-class>io.apiman.common.servlet.ResourceCacheControlFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>ResourceCacheControl</filter-name>
+    <url-pattern>/libs/*</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>ResourceCacheControl</filter-name>
+    <url-pattern>/plugins/*</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>ResourceCacheControl</filter-name>
+    <url-pattern>/dist/*</url-pattern>
+  </filter-mapping>
+
+  <servlet>
+    <servlet-name>AngularServlet</servlet-name>
+    <servlet-class>io.apiman.manager.ui.server.servlets.AngularServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>AngularServlet</servlet-name>
+    <url-pattern>/api-manager/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>ConfigurationJS</servlet-name>
+    <servlet-class>io.apiman.manager.ui.server.servlets.ConfigurationServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ConfigurationJS</servlet-name>
+    <url-pattern>/apiman/config.js</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>TranslationJS</servlet-name>
+    <servlet-class>io.apiman.manager.ui.server.servlets.TranslationServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>TranslationJS</servlet-name>
+    <url-pattern>/apiman/translations.js</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>TokenRefresh</servlet-name>
+    <servlet-class>io.apiman.manager.ui.server.servlets.TokenRefreshServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>TokenRefresh</servlet-name>
+    <url-pattern>/rest/tokenRefresh</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>FetchProxy</servlet-name>
+    <servlet-class>io.apiman.manager.ui.server.servlets.UrlFetchProxyServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>FetchProxy</servlet-name>
+    <url-pattern>/proxies/fetch/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>LogoutServlet</servlet-name>
+    <servlet-class>io.apiman.manager.ui.server.servlets.LogoutServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>LogoutServlet</servlet-name>
+    <url-pattern>/logout</url-pattern>
+  </servlet-mapping>
+
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>apimanui-1</web-resource-name>
+      <url-pattern>/index.html</url-pattern>
+    </web-resource-collection>
+    <web-resource-collection>
+      <web-resource-name>apimanui-2</web-resource-name>
+      <url-pattern>/apiman/*</url-pattern>
+    </web-resource-collection>
+    <web-resource-collection>
+      <web-resource-name>apimanui-3</web-resource-name>
+      <url-pattern>/rest/*</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>apiuser</role-name>
+    </auth-constraint>
+  </security-constraint>
+  <login-config>
+    <auth-method>FORM</auth-method>
+    <form-login-config>
+      <form-login-page>/login.html</form-login-page>
+      <form-error-page>/login-error.html</form-error-page>
+    </form-login-config>
+  </login-config>
+  <security-role>
+    <role-name>apiuser</role-name>
+  </security-role>
+
+</web-app>

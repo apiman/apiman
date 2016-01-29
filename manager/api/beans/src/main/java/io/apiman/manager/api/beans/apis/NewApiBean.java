@@ -37,6 +37,7 @@ public class NewApiBean implements Serializable {
 
     private String endpoint;
     private EndpointType endpointType;
+    private EndpointContentType endpointContentType;
     private Boolean publicAPI;
     private Set<ApiPlanBean> plans;
     private String definitionUrl;
@@ -182,6 +183,20 @@ public class NewApiBean implements Serializable {
      */
     public void setDefinitionType(ApiDefinitionType definitionType) {
         this.definitionType = definitionType;
+    }
+
+    /**
+     * @return the endpointContentType
+     */
+    public EndpointContentType getEndpointContentType() {
+        return endpointContentType;
+    }
+
+    /**
+     * @param endpointContentType the endpointContentType to set
+     */
+    public void setEndpointContentType(EndpointContentType endpointContentType) {
+        this.endpointContentType = endpointContentType;
     }
 
 }

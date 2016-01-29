@@ -78,6 +78,17 @@ public class ConfigFileConfiguration extends PropertiesConfiguration {
             }
         }
 
+        // Next try tomcat
+        ///////////////////////
+        String tomcatHomeDir = System.getProperty("catalina.home"); //$NON-NLS-1$
+        if (tomcatHomeDir != null) {
+            File dirFile = new File(tomcatHomeDir, "conf"); //$NON-NLS-1$
+            rval = findConfigUrlInDirectory(dirFile, configFileName);
+            if (rval != null) {
+                return rval;
+            }
+        }
+
         // If not found, use an empty file.
         ////////////////////////////////////////
         return ConfigFileConfiguration.class.getResource("empty.properties"); //$NON-NLS-1$

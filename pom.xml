@@ -293,37 +293,61 @@
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-manager-test-api</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-manager-ui-hawtio</artifactId>
+        <artifactId>apiman-manager-api-war-tomcat8</artifactId>
         <version>${project.version}</version>
         <type>war</type>
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-manager-ui-hawtio</artifactId>
+        <artifactId>apiman-manager-api-war-tomcat8</artifactId>
+        <version>${project.version}</version>
+        <classifier>classes</classifier>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>apiman-manager-test-api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>apiman-manager-ui-war</artifactId>
+        <version>${project.version}</version>
+        <type>war</type>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>apiman-manager-ui-war</artifactId>
         <version>${project.version}</version>
         <classifier>ui</classifier>
         <type>jar</type>
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-manager-ui-hawtio</artifactId>
+        <artifactId>apiman-manager-ui-war</artifactId>
         <version>${project.version}</version>
         <classifier>classes</classifier>
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-manager-ui-hawtio-wildfly8</artifactId>
+        <artifactId>apiman-manager-ui-war-wildfly8</artifactId>
         <version>${project.version}</version>
         <type>war</type>
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-manager-ui-hawtio-wildfly8</artifactId>
+        <artifactId>apiman-manager-ui-war-wildfly8</artifactId>
+        <version>${project.version}</version>
+        <classifier>classes</classifier>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>apiman-manager-ui-war-tomcat8</artifactId>
+        <version>${project.version}</version>
+        <type>war</type>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>apiman-manager-ui-war-tomcat8</artifactId>
         <version>${project.version}</version>
         <classifier>classes</classifier>
       </dependency>
@@ -417,6 +441,18 @@
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
+        <artifactId>apiman-gateway-platforms-war-tomcat8-api</artifactId>
+        <version>${project.version}</version>
+        <type>war</type>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>apiman-gateway-platforms-war-tomcat8-gateway</artifactId>
+        <version>${project.version}</version>
+        <type>war</type>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
         <artifactId>apiman-gateway-platforms-vertx3</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -504,6 +540,13 @@
       <dependency>
         <groupId>${project.groupId}</groupId>
         <artifactId>apiman-distro-wildfly9</artifactId>
+        <version>${project.version}</version>
+        <type>zip</type>
+        <classifier>overlay</classifier>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>apiman-distro-tomcat8</artifactId>
         <version>${project.version}</version>
         <type>zip</type>
         <classifier>overlay</classifier>

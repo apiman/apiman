@@ -69,7 +69,7 @@
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>apiman-manager-ui-hawtio</artifactId>
+      <artifactId>apiman-manager-ui-war</artifactId>
       <classifier>ui</classifier>
       <type>jar</type>
     </dependency>

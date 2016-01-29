@@ -1310,6 +1310,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                 NewApiVersionBean newApiVersion = new NewApiVersionBean();
                 newApiVersion.setEndpoint(bean.getEndpoint());
                 newApiVersion.setEndpointType(bean.getEndpointType());
+                newApiVersion.setEndpointContentType(bean.getEndpointContentType());
                 newApiVersion.setPlans(bean.getPlans());
                 newApiVersion.setPublicAPI(bean.getPublicAPI());
                 newApiVersion.setVersion(bean.getInitialVersion());
