@@ -99,6 +99,12 @@
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-jackson-provider</artifactId>
     </dependency>
+    
+    <!-- Elasticsearch -->
+    <dependency>
+      <groupId>org.elasticsearch</groupId>
+      <artifactId>elasticsearch</artifactId>
+    </dependency>
 
     <!-- Jackson -->
     <dependency>
