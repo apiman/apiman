@@ -26,6 +26,14 @@
       <type>zip</type>
       <classifier>overlay</classifier>
     </dependency>
+
+    <!-- The WildFly 10 version of APIMan -->
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-distro-wildfly10</artifactId>
+      <type>zip</type>
+      <classifier>overlay</classifier>
+    </dependency>
     
     <!-- The Tomcat 8 version of APIMan -->
     <dependency>
@@ -128,11 +136,11 @@
                     </chmod>
 
                     <!-- Deploy additional stuff -->
-                    <copy file="${apiman.resources.dir}/wildfly8/deployments/authtest-ds.xml" todir="${apiman.wildfly.webapps}"
+                    <copy file="${apiman.resources.dir}/wildfly/deployments/authtest-ds.xml" todir="${apiman.wildfly.webapps}"
                       overwrite="true" />
-                    <copy file="${apiman.resources.dir}/wildfly8/deployments/mysql-connector-java-5.1.33-bin.jar"
+                    <copy file="${apiman.resources.dir}/wildfly/deployments/mysql-connector-java-5.1.33-bin.jar"
                       todir="${apiman.wildfly.webapps}" overwrite="true" />
-                    <copy file="${apiman.resources.dir}/wildfly8/deployments/postgresql-9.3-1102.jdbc41.jar"
+                    <copy file="${apiman.resources.dir}/wildfly/deployments/postgresql-9.3-1102.jdbc41.jar"
                       todir="${apiman.wildfly.webapps}" overwrite="true" />                      
                     <copy
                       file="../../distro/wildfly8/src/main/resources/overlay/standalone/configuration/standalone-apiman.xml"
@@ -212,14 +220,98 @@
                     </chmod>
 
                     <!-- Deploy additional stuff -->
-                    <copy file="${apiman.resources.dir}/wildfly9/deployments/authtest-ds.xml" todir="${apiman.wildfly.webapps}"
+                    <copy file="${apiman.resources.dir}/wildfly/deployments/authtest-ds.xml" todir="${apiman.wildfly.webapps}"
                       overwrite="true" />
-                    <copy file="${apiman.resources.dir}/wildfly9/deployments/mysql-connector-java-5.1.33-bin.jar"
+                    <copy file="${apiman.resources.dir}/wildfly/deployments/mysql-connector-java-5.1.33-bin.jar"
                       todir="${apiman.wildfly.webapps}" overwrite="true" />
-                    <copy file="${apiman.resources.dir}/wildfly9/deployments/postgresql-9.3-1102.jdbc41.jar"
+                    <copy file="${apiman.resources.dir}/wildfly/deployments/postgresql-9.3-1102.jdbc41.jar"
                       todir="${apiman.wildfly.webapps}" overwrite="true" />                      
                     <copy
                       file="../../distro/wildfly9/src/main/resources/overlay/standalone/configuration/standalone-apiman.xml"
+                      tofile="${apiman.wildfly.home}/standalone/configuration/standalone.xml" overwrite="true" />
+                    <copy file="${apiman.apiman-tools-services.war}" tofile="${apiman.wildfly.webapps}/services.war"
+                      overwrite="true" />
+                  </tasks>
+                </configuration>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <!-- Install on WildFly 10 -->
+    <profile>
+      <id>install-all-wildfly10</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <version>1.7</version>
+            <dependencies>
+              <dependency>
+                <groupId>org.apache.ant</groupId>
+                <artifactId>ant</artifactId>
+                <version>1.8.2</version>
+              </dependency>
+            </dependencies>
+            <executions>
+              <execution>
+                <id>run-wildfly10</id>
+                <phase>install</phase>
+                <configuration>
+                  <tasks>
+                    <antversion property="antversion" />
+                    <echo>Ant Version: ${antversion}</echo>
+
+                    <property name="appserver.id" value="wildfly10" />
+                    <property name="apiman.wildfly.download.url"
+                      value="http://download.jboss.org/wildfly/10.0.0.Final/wildfly-10.0.0.Final.zip" />
+                    <property name="apiman.tempdir" value="${project.build.directory}/_tmp" />
+                    <property name="apiman.install.dir" value="${project.build.directory}" />
+                    <property name="apiman.appserver.dir" location="${apiman.install.dir}/wildfly-10.0.0.Final" />
+                    <property name="apiman.appserver.zip" location="${basedir}/wildfly-10.0.0.Final.zip" />
+                    <property name="apiman.apiman-distro-wildfly10.zip" value="${maven.dependency.io.apiman.apiman-distro-wildfly10.overlay.zip.path}" />
+                    <property name="apiman.apiman-tools-services.war" value="${maven.dependency.io.apiman.apiman-tools-services.war.path}" />
+                    <property name="apiman.wildfly.home" location="${apiman.appserver.dir}" />
+                    <property name="apiman.wildfly.webapps" location="${apiman.appserver.dir}/standalone/deployments" />
+                    <property name="apiman.resources.dir" location="${basedir}/src/main/resources" />
+
+                    <echo></echo>
+                    <echo>********************************************************************</echo>
+                    <echo>APIMan Dist: ${apiman.apiman-distro-wildfly10.zip}</echo>
+                    <echo>Dev Services: ${apiman.apiman-tools-services.war}</echo>
+                    <echo>-------</echo>
+                    <echo>WildFly Home: ${apiman.wildfly.home}</echo>
+                    <echo>********************************************************************</echo>
+                    <echo></echo>
+
+                    <mkdir dir="${apiman.tempdir}" />
+
+                    <!-- Download and unpack WildFly 10 -->
+                    <get src="${apiman.wildfly.download.url}" dest="${apiman.appserver.zip}" usetimestamp="true" skipexisting="true" />
+                    <unzip src="${apiman.appserver.zip}" dest="${apiman.install.dir}" overwrite="false" />
+
+                    <!-- Overlay APIMan on top of WildFly 10 -->
+                    <unzip src="${apiman.apiman-distro-wildfly10.zip}" dest="${apiman.install.dir}/wildfly-10.0.0.Final" overwrite="true" />
+                    
+                    <!-- Make sure to chmod 755 the shell scripts -->
+                    <chmod perm="a+x" dir="${apiman.appserver.dir}/bin">
+                      <include name="*.sh" />
+                    </chmod>
+
+                    <!-- Deploy additional stuff -->
+                    <copy file="${apiman.resources.dir}/wildfly/deployments/authtest-ds.xml" todir="${apiman.wildfly.webapps}"
+                      overwrite="true" />
+                    <copy file="${apiman.resources.dir}/wildfly/deployments/mysql-connector-java-5.1.33-bin.jar"
+                      todir="${apiman.wildfly.webapps}" overwrite="true" />
+                    <copy file="${apiman.resources.dir}/wildfly/deployments/postgresql-9.3-1102.jdbc41.jar"
+                      todir="${apiman.wildfly.webapps}" overwrite="true" />                      
+                    <copy
+                      file="../../distro/wildfly10/src/main/resources/overlay/standalone/configuration/standalone-apiman.xml"
                       tofile="${apiman.wildfly.home}/standalone/configuration/standalone.xml" overwrite="true" />
                     <copy file="${apiman.apiman-tools-services.war}" tofile="${apiman.wildfly.webapps}/services.war"
                       overwrite="true" />
@@ -292,12 +384,6 @@
                     </chmod>
 
                     <!-- Deploy additional stuff -->
-<!--                     <copy file="${apiman.resources.dir}/wildfly8/deployments/authtest-ds.xml" todir="${apiman.eap.webapps}" -->
-<!--                       overwrite="true" /> -->
-<!--                     <copy file="${apiman.resources.dir}/wildfly8/deployments/mysql-connector-java-5.1.33-bin.jar" -->
-<!--                       todir="${apiman.eap.webapps}" overwrite="true" /> -->
-<!--                     <copy file="${apiman.resources.dir}/wildfly8/deployments/postgresql-9.3-1102.jdbc41.jar" -->
-<!--                       todir="${apiman.eap.webapps}" overwrite="true" />                       -->
                     <copy
                       file="../../distro/eap64/src/main/resources/overlay/standalone/configuration/standalone-apiman.xml"
                       tofile="${apiman.eap.home}/standalone/configuration/standalone.xml" overwrite="true" />

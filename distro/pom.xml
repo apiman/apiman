@@ -20,5 +20,6 @@
     <module>tomcat8</module>
     <module>wildfly8</module>
     <module>wildfly9</module>
+    <module>wildfly10</module>
   </modules>
 </project>
