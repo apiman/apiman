@@ -1,0 +1,4 @@
+GET /SimpleEchoRedirectTest/echo/1.0/echo?redirectTo=echo-redirected
+----
+302
+Location: http://localhost:7654/echo-redirected

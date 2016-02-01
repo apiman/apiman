@@ -175,12 +175,19 @@ public class EchoServlet extends HttpServlet {
             return;
         }
 
+        String queryString = req.getQueryString();
+        if (queryString != null && queryString.startsWith("redirectTo=")) {
+            String redirectTo = queryString.substring(11);
+            resp.sendRedirect(redirectTo);
+            return;
+        }
+
         boolean isXml = acceptHeader != null && acceptHeader.contains("application/xml");
-        
+
         EchoResponse response = response(req, withBody);
         response.setCounter(++servletCounter);
         resp.setHeader("Response-Counter", response.getCounter().toString());
-        
+
         if (isXml) {
             resp.setContentType("application/xml");
             try {

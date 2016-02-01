@@ -75,6 +75,10 @@ public class TestPlanRunner {
 
     private static Logger logger = LoggerFactory.getLogger(TestPlanRunner.class);
     private OkHttpClient client = new OkHttpClient();
+    {
+        client.setFollowRedirects(false);
+        client.setFollowSslRedirects(false);
+    }
 
     /**
      * Constructor.

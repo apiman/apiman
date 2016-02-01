@@ -1,0 +1,14 @@
+GET /SimpleEchoRedirectTest/echo/1.0/echo?redirectTo=echo-redirected
+----
+200
+Content-Type: application/json
+
+{
+  "method": "GET",
+  "resource": "/echo-redirected",
+  "uri": "/echo-redirected",
+  "headers": {
+  },
+  "bodyLength": null,
+  "bodySha1": null
+}
