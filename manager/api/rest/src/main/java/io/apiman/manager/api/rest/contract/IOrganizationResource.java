@@ -808,6 +808,27 @@ public interface IOrganizationResource {
             throws ApiNotFoundException, NotAuthorizedException;
 
     /**
+     * Use this endpoint to delete an API.  There are multiple restrictions on this capability.  Specifically,
+     * the API must not have any published versions.  If you try to delete an API with one or more published
+     * versions, it will fail with an 'invalid API status' error.
+     * @summary Delete API
+     * @param organizationId The Organization ID.
+     * @param apiId The API ID.
+     * @param bean Updated API information.
+     * @statuscode 204 If the API is updated successfully.
+     * @statuscode 404 If the API does not exist.
+     * @statuscode 409 If the API cannot be deleted.
+     * @throws ApiNotFoundException when trying to get, update, or delete an API that does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
+     * @throws InvalidApiStatusException when the API is in the wrong status and cannot be deleted
+     */
+    @DELETE
+    @Path("{organizationId}/apis/{apiId}")
+    public void deleteApi(@PathParam("organizationId") String organizationId,
+            @PathParam("apiId") String apiId)
+            throws ApiNotFoundException, NotAuthorizedException, InvalidApiStatusException;
+
+    /**
      * This endpoint returns audit activity information about the API.
      * @summary Get API Activity
      * @param organizationId The Organization ID.

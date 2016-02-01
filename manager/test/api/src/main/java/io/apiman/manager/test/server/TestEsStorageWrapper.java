@@ -87,7 +87,7 @@ public class TestEsStorageWrapper implements IStorage {
     public void rollbackTx() {
         this.delegate.rollbackTx();
     }
-    
+
     @Override
     public void initialize() {
         this.delegate.initialize();

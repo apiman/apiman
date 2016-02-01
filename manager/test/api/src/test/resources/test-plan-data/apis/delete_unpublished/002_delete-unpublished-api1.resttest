@@ -1,0 +1,3 @@
+DELETE /organizations/Organization1/apis/UnpubAPI1 admin/admin
+----
+204

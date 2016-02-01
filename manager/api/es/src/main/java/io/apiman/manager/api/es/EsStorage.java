@@ -612,8 +612,11 @@ public class EsStorage implements IStorage, IStorageQuery {
      */
     @Override
     public void deleteApiVersion(ApiVersionBean version) throws StorageException {
+        deleteApiDefinition(version);
         ApiBean api = version.getApi();
-        deleteEntity("apiVersion", id(api.getOrganization().getId(), api.getId(), version.getVersion())); //$NON-NLS-1$
+        String id = id(api.getOrganization().getId(), api.getId(), version.getVersion());
+        deleteEntity("apiVersion", id); //$NON-NLS-1$
+        deleteEntity("apiPolicies", id); //$NON-NLS-1$
     }
 
     /**

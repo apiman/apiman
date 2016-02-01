@@ -59,7 +59,7 @@
     <test name="Update API Plans (error 500)">test-plan-data/apis/plans/012_update-version-1.0-plans-500.resttest</test>
     <test name="Get API Plans">test-plan-data/apis/plans/013_get-api-plans.resttest</test>
   </testGroup>
-  
+
   <!-- Test API Policy management -->
   <testGroup name="API Policy Management">
     <test name="Create Policy Def">test-plan-data/apis/policies/000_create-policy-def.resttest</test>
@@ -76,6 +76,14 @@
   <testGroup name="Publish APIs">
     <test name="Publish API 1">test-plan-data/apis/publish/001_publish-api-1.resttest</test>
     <test name="Get API 1 [published]">test-plan-data/apis/publish/002_get-api-1.resttest</test>
+  </testGroup>
+
+  <!-- Test Deleting an API -->
+  <testGroup name="Delete APIs">
+    <test name="Create Unpublished API">test-plan-data/apis/delete_unpublished/000_create-unpublished-api1.resttest</test>
+    <test name="Get Unpublished API">test-plan-data/apis/delete_unpublished/001_get-unpublished-api1.resttest</test>
+    <test name="Delete Unpublished API">test-plan-data/apis/delete_unpublished/002_delete-unpublished-api1.resttest</test>
+    <test name="Get Unpublished API (404)">test-plan-data/apis/delete_unpublished/003_get-unpublished-api1-404.resttest</test>
   </testGroup>
 
   <!-- Auditing -->

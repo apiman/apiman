@@ -139,7 +139,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     public void rollbackTx() {
         super.rollbackTx();
     }
-    
+
     @Override
     public void initialize() {
         // No-Op for JPA
@@ -408,6 +408,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      */
     @Override
     public void deleteApiVersion(ApiVersionBean version) throws StorageException {
+        deleteApiDefinition(version);
         super.delete(version);
     }
 

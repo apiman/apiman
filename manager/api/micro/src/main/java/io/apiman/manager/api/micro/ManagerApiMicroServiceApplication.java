@@ -57,7 +57,7 @@ public class ManagerApiMicroServiceApplication extends ApiManagerApplication {
         beanConfig.setResourcePackage("io.apiman.manager.api.rest.contract"); //$NON-NLS-1$
         //TODO set more info in the beanConfig (title,description, host, port, etc)
         beanConfig.setScan(true);
-        
+
         classes.add(SystemResourceImpl.class);
         classes.add(SearchResourceImpl.class);
         classes.add(RoleResourceImpl.class);
@@ -70,11 +70,11 @@ public class ManagerApiMicroServiceApplication extends ApiManagerApplication {
         classes.add(PluginResourceImpl.class);
         classes.add(ActionResourceImpl.class);
         classes.add(DownloadResourceImpl.class);
-        
+
         //add swagger 2.0 resource
         classes.add(io.swagger.jaxrs.listing.ApiListingResource.class);
         classes.add(io.swagger.jaxrs.listing.SwaggerSerializers.class);
-        
+
         classes.add(RestExceptionMapper.class);
     }
 

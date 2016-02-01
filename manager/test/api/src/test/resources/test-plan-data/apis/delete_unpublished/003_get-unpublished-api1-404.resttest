@@ -1,0 +1,10 @@
+GET /organizations/Organization1/apis/UnpubAPI1 admin/admin
+----
+404
+Content-Type: application/json
+
+{
+  "type" : "ApiNotFoundException",
+  "errorCode" : 5002,
+  "message" : "API does not exist: UnpubAPI1"
+}
