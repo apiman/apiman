@@ -3,7 +3,7 @@
 :doctype: book
 
 == Deployment Tooling for apiman
-This guide should serve as a guide to manually deploy apiman into production.  However, we also offer a 
+This guide should serve as a guide to manually deploy apiman into production.  However, we also offer a
 simple shell script that can do much of the work for you.  It will likely always be a work in progress,
 so many production deployers may not feel comfortable using it.  However, it can currently install the
 following components:
@@ -15,17 +15,17 @@ following components:
 
 You can find the apiman production deployer here:
 
-https://github.com/apiman/apiman-deployer/tree/apiman-1.2.1.Final
+https://github.com/apiman/apiman-deployer/tree/1.2.1.Final
 
 Simply download that script and run it on each of the machines you wish to install the various apiman
 components!
 
-TIP: The production guide assumes you are installing into WildFly 9.  The instructions are slightly 
-different if you are using EAP 6.4 or WildFly 8.  In particular, the KeyCloak settings in standalone.xml
+TIP: The production guide assumes you are installing into WildFly 9.  The instructions are slightly
+different if you are using EAP 6.4 or WildFly 8.  In particular, the Keycloak settings in standalone.xml
 are a bit different (because for our EAP6.4 and WF8 support we use an older version of KC).
 
 == Architecture Summary
-Before we get started, it may be useful to know the overall architecture of apiman.  Let's start with a 
+Before we get started, it may be useful to know the overall architecture of apiman.  Let's start with a
 picture!
 
 .Architecture of apiman
@@ -42,71 +42,71 @@ The apiman solution is made up of a number of pieces, including:
 The image above should give you an idea of how they all fit together.
 
 == Database
-You have a number of persistence options in both Keycloak and apiman, but this guide will focus on using an 
+You have a number of persistence options in both Keycloak and apiman, but this guide will focus on using an
 RDBMS instead of other options (e.g. Elasticsearch for apiman or mongodb for KC).
 
-On a separate server, install a production ready database such as mysql, mariadb, or postresql.  You will 
+On a separate server, install a production ready database such as mysql, mariadb, or postresql.  You will
 want to create two schemas/databases:
 
 * keycloak
 * apiman
 
-Make sure your DB is accessible remotely and enable whatever security options you need (SSL, users/passwords).  
-We recommend using two different users and permissioning them appropriately (e.g. create a "sa_apiman" account 
+Make sure your DB is accessible remotely and enable whatever security options you need (SSL, users/passwords).
+We recommend using two different users and permissioning them appropriately (e.g. create a "sa_apiman" account
 and a "sa_keycloak" account).
 
-After creating the ‘apiman' database, you can initialize it using the appropriate DDL for the database you 
-selected.  We currently support mysql5/mariadb and postgresql.  The DDLs for these databases can be found in 
+After creating the ‘apiman' database, you can initialize it using the appropriate DDL for the database you
+selected.  We currently support mysql5/mariadb and postgresql.  The DDLs for these databases can be found in
 the quickstart overlay ZIP file, or you can grab them directly from github.  For example:
 
 https://github.com/apiman/apiman/tree/master/distro/data/src/main/resources/ddls
 
-Make sure you grab the right one for whichever version of apiman you are going to be installing (*hint*: use 
+Make sure you grab the right one for whichever version of apiman you are going to be installing (*hint*: use
 the appropriate github tag).
 
 
 == Elasticsearch
-If you wish to enable metrics in apiman (who doesn't?) you'll need to install Elasticsearch.  This is 
-because the API Gateway stores all metrics information in Elasticsearch (by default), and the API Manager 
+If you wish to enable metrics in apiman (who doesn't?) you'll need to install Elasticsearch.  This is
+because the API Gateway stores all metrics information in Elasticsearch (by default), and the API Manager
 queries that data to present analytics information in the UI.
 
-Please see the Elasticsearch documentation for how to install and configure it in production.  Ultimately you 
-will need Elasticsearch running in a well known and accessible location.  We also recommend you enable 
+Please see the Elasticsearch documentation for how to install and configure it in production.  Ultimately you
+will need Elasticsearch running in a well known and accessible location.  We also recommend you enable
 authentication (e.g. via Shield) and SSL.
 
-TIP: The data in Elasticsearch is not backed up or stored in some other location - Elasticsearch is being 
-used as the primary/canonical data store for the metrics information.  You may wish to configure backup 
-procedures 
+TIP: The data in Elasticsearch is not backed up or stored in some other location - Elasticsearch is being
+used as the primary/canonical data store for the metrics information.  You may wish to configure backup
+procedures
 
 
 == Keycloak
-In production, it is typically useful to deploy Keycloak server as a standalone solution.  For more 
-specific information about how to configure a standalone Keycloak server, see the Keycloak documentation:  
+In production, it is typically useful to deploy Keycloak server as a standalone solution.  For more
+specific information about how to configure a standalone Keycloak server, see the Keycloak documentation:
 
 http://keycloak.github.io/docs/userguide/html/server-installation.html
 
-Once Keycloak is installed as a standalone server, you must configure the ‘apiman' realm.  This realm will 
-be used for authentication into each of the apiman components (API Manager REST services, API Manager UI, 
+Once Keycloak is installed as a standalone server, you must configure the ‘apiman' realm.  This realm will
+be used for authentication into each of the apiman components (API Manager REST services, API Manager UI,
 API Gateway REST services, etc).
 
 TIP: You can configure additional Keycloak Realms for use when using the apiman "Keycloak OAuth2 Policy".
 
-Fortunately, apiman comes with a realm file you can import.  Simply log into your keycloak server and then 
+Fortunately, apiman comes with a realm file you can import.  Simply log into your Keycloak server and then
 create the apiman realm using this file:
 
 https://github.com/apiman/apiman/blob/master/distro/data/src/main/resources/data/apiman-realm.json
 
-TIP: The realm file contains some credentials/secrets that you may want to modify.  The defaults are obviously not secure.
+WARNING: The realm file contains some credentials/secrets that you will want to modify or regenerate.  The defaults are obviously *not* secure.
 
-Once you have created the apiman realm, you must use the keycloak UI to add your API Manager UI as a valid 
-redirect URL for the ‘apimanui' client.  To do this, log into the keycloak admin console and choose the 
-*apiman* realm.  Next click "clients" in the left navigation, and choose *apimanui* in the resulting list.  
-From there you can add public URL if your API Manager UI to the list of "*_Valid Redirect URIs_*".  It might 
+Once you have created the apiman realm, you must use the Keycloak UI to add your API Manager UI as a valid
+redirect URL for the ‘apimanui' client.  To do this, log into the Keycloak admin console and choose the
+*apiman* realm.  Next click "clients" in the left navigation, and choose *apimanui* in the resulting list.
+From there you can add public URL if your API Manager UI to the list of "*_Valid Redirect URIs_*".  It might
 be something like:
 
     https://apimanager.mycompany.org:8443/apimanui/*
 
-That will allow users of the API Manager UI to actually log in and be properly redirected back to the 
+That will allow users of the API Manager UI to actually log in and be properly redirected back to the
 application!
 
 
@@ -114,7 +114,7 @@ application!
 
 === Installing the API Gateway
 The easiest way to install just the API Gateway is to download and install the apiman quickstart overlay ZIP
-and then remove the extraneous components.  Follow that up with some modification of the apiman.properties 
+and then remove the extraneous components.  Follow that up with some modification of the apiman.properties
 configuration file and you'll be Gatewaying in no time!
 
 Here are the steps you should take to install a standalone API Gateway:
@@ -133,8 +133,8 @@ Which apiman deployments should you delete?  These:
 
 === Configuring the API Gateway
 ==== Disabling the Keycloak Server
-Because you will be using an external/standalone Keycloak server, it is useful to disable the Keycloak 
-components that are bundled with the apiman quickstart overlay ZIP.  To do that, *remove* the following 
+Because you will be using an external/standalone Keycloak server, it is useful to disable the Keycloak
+components that are bundled with the apiman quickstart overlay ZIP.  To do that, *remove* the following
 subsystem from the *standalone-apiman.xml* file:
 
 ```xml
@@ -144,7 +144,7 @@ subsystem from the *standalone-apiman.xml* file:
 ```
 
 ==== Setting the API Gateway Public Endpoint
-An important step is to let the API Gateway know what its public endpoint is.  This is important because 
+An important step is to let the API Gateway know what its public endpoint is.  This is important because
 the API Manager will sometimes ask the Gateway to report on the Managed Endpoint for a published API.
 
 To set the public URL/endpoint of the API Gateway, add the following to apiman.properties:
@@ -154,10 +154,10 @@ To set the public URL/endpoint of the API Gateway, add the following to apiman.p
 WARNING: Please make sure to use your appropriate values for the host and port.
 
 ==== Configuring Keycloak Authentication for the Gateway API
-The API Gateway has a REST based configuration API which the API Manager uses when publishing APIs to 
-it.  This API is protected by Keycloak authentication.  The configuration included in the apiman quickstart 
-overlay ZIP assumes that the keycloak server is local, so you'll need to modify the *standalone-apiman.xml* 
-file to point to the remote Keycloak 
+The API Gateway has a REST based configuration API which the API Manager uses when publishing APIs to
+it.  This API is protected by Keycloak authentication.  The configuration included in the apiman quickstart
+overlay ZIP assumes that the Keycloak server is local, so you'll need to modify the *standalone-apiman.xml*
+file to point to the remote Keycloak
 instance.
 
 Here is the relevant portion of the *standalone-apiman.xml* file that you must change:
@@ -179,7 +179,7 @@ The API Gateway uses Elasticsearch in a number of ways, including:
 * Managing shared state across a cluster
 * Storing metrics to share with the API Manager  (analytics)
 
-In order to configure the gateway properly, you will need to configure the location of the Elasticsearch 
+In order to configure the gateway properly, you will need to configure the location of the Elasticsearch
 instance.  To do this, modify these properties in the *apiman.properties* file:
 
     apiman.es.protocol=http
@@ -188,14 +188,14 @@ instance.  To do this, modify these properties in the *apiman.properties* file:
     apiman.es.username=es_admin
     apiman.es.password=es_admin_password
 
-Obviously you will need to replace the values in the properties above with those appropriate for your 
-installation of elasticsearch.
+Obviously you will need to replace the values in the properties above with those appropriate for your
+installation of Elasticsearch.
 
 
 == API Manager
 === Installing the API Manager
 The easiest way to install just the API Manager is to download and install the apiman quickstart overlay ZIP
-and then remove the extraneous components.  Follow that up with a few configuration modifications, and 
+and then remove the extraneous components.  Follow that up with a few configuration modifications, and
 you should have the Manager running in no time!
 
 Here are the steps you should take to install a standalone API Manager:
@@ -214,8 +214,8 @@ Which apiman deployments should you delete?  These:
 
 === Configuring the API Manager
 ==== Disabling the Keycloak Server
-Because you will be using an external/standalone Keycloak server, it is useful to disable the Keycloak 
-components that are bundled with the apiman quickstart overlay ZIP.  To do that, make the following 
+Because you will be using an external/standalone Keycloak server, it is useful to disable the Keycloak
+components that are bundled with the apiman quickstart overlay ZIP.  To do that, make the following
 modification to the *standalone-apiman.xml* file:
 
 ```xml
@@ -229,25 +229,25 @@ This guide assumes you are using a production ready RDBMS as the storage layer f
 that other options exist, but configuring them is out of scope for this guide.
 
 Hopefully you've already created and initialized the database in the earlier section labeled "_Installing a
-Database_".  So at this point you really only need to connect the API Manager up to the already existing 
+Database_".  So at this point you really only need to connect the API Manager up to the already existing
 database.  The following must be done in order to connect to your database:
 
 * Deploy a JDBC driver compatible with your database
 * Update the *apiman-ds.xml* datasource file (to point it at your database)
 * Update the hibernate dialect in *apiman.properties*
 
-First, you will need to deploy a JDBC driver that is compatible with whichever database you have chosen.  
+First, you will need to deploy a JDBC driver that is compatible with whichever database you have chosen.
 Here are two popular drivers:
 
-_*MySQL 5*_
+*_MySQL 5_*
 
 https://repo1.maven.org/maven2/mysql/mysql-connector-java/5.1.33/mysql-connector-java-5.1.33.jar
 
-_*Postgresql 9*_
+*_PostgreSQL 9_*
 
 https://repo1.maven.org/maven2/org/postgresql/postgresql/9.3-1102-jdbc41/postgresql-9.3-1102-jdbc41.jar
 
-The easiest way to deploy the driver is to simply download it and copy it into the 
+The easiest way to deploy the driver is to simply download it and copy it into the
 *wildfly/standalone/deployments* directory.
 
 Next, you must update or replace the *apiman-ds.xml* file to something that is configured for your
@@ -257,11 +257,11 @@ https://github.com/apiman/apiman/tree/master/distro/data/src/main/resources/samp
 
 These examples are also included in the apiman quickstart overlay ZIP download.
 
-Finally you must update the *apiman.properties* file to configure the hibernate dialect for your database.  
+Finally you must update the *apiman.properties* file to configure the hibernate dialect for your database.
 Popular dialects for mysql and postgresql are:
 
-* _*MySQL 5*_: org.hibernate.dialect.MySQL5Dialect
-* _*Postgresql 9*_: org.hibernate.dialect.PostgreSQLDialect
+* *_MySQL 5_*: org.hibernate.dialect.MySQL5Dialect
+* *_Postgresql 9_*: org.hibernate.dialect.PostgreSQLDialect
 
 Here is the line you should change in the *apiman.properties* file:
 
@@ -270,8 +270,8 @@ Here is the line you should change in the *apiman.properties* file:
 Change the value of that property to the appropriate dialect for your database.
 
 ==== Point the API Manager to the API Gateway
-Now that both your API Manager and API Gateway are running, you need to hook them up.  This just means 
-telling API Manager where the gateway lives.  There is an admin UI page in apiman that will let you do 
+Now that both your API Manager and API Gateway are running, you need to hook them up.  This just means
+telling API Manager where the gateway lives.  There is an admin UI page in apiman that will let you do
 this.  Simply navigate here:
 
 https://api-manager-host.org:8443/apimanui/api-manager/admin/gateways
@@ -284,13 +284,13 @@ correct.
 
 TIP: You will need to log into the UI.  The default credentials are:  admin/admin123!
 
-TIP: You may have changed the default user credentials when you installed and configured keycloak.  If 
+TIP: You may have changed the default user credentials when you installed and configured Keycloak.  If
 so, make sure you use those credentials.
 
 ==== Configuring Keycloak Authentication for the Manager API and UI
 The API Manager has a REST based API which the User Interface uses for all actions taken.  It can also be
-used directly for automation and/or integration purposes.  This API is protected by Keycloak authentication. 
-The configuration included in the apiman quickstart overlay ZIP assumes that the keycloak server is local, 
+used directly for automation and/or integration purposes.  This API is protected by Keycloak authentication.
+The configuration included in the apiman quickstart overlay ZIP assumes that the Keycloak server is local,
 so you will need to modify the *standalone-apiman.xml* file to point to the remote Keycloak instance.
 
 Here is the relevant portion of the *standalone-apiman.xml* file that you must change:
@@ -307,7 +307,7 @@ Here is the relevant portion of the *standalone-apiman.xml* file that you must c
 
 ==== Pointing the API Manager to a Remote Elasticsearch
 The API Manager uses Elasticsearch for analysis of metrics.  This metrics data is stored in Elasticsearch
-by the API Gateway whenever API requests are handled.  Therefore, the API Manager and API Gateway must 
+by the API Gateway whenever API requests are handled.  Therefore, the API Manager and API Gateway must
 talk to the same Elasticsearch instance/cluster.
 
 To configure Elasticsearch for the API Manager, modify these properties in the *apiman.properties* file:
@@ -318,8 +318,8 @@ To configure Elasticsearch for the API Manager, modify these properties in the *
     apiman.es.username=es_admin
     apiman.es.password=es_admin_password
 
-Obviously you will need to replace the values in the properties above with those appropriate for your 
-installation of elasticsearch.
+Obviously you will need to replace the values in the properties above with those appropriate for your
+installation of Elasticsearch.
 
 
 :numbered!:
