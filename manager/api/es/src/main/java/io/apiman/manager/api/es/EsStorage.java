@@ -612,8 +612,11 @@ public class EsStorage implements IStorage, IStorageQuery {
      */
     @Override
     public void deleteApiVersion(ApiVersionBean version) throws StorageException {
+        deleteApiDefinition(version);
         ApiBean api = version.getApi();
-        deleteEntity("apiVersion", id(api.getOrganization().getId(), api.getId(), version.getVersion())); //$NON-NLS-1$
+        String id = id(api.getOrganization().getId(), api.getId(), version.getVersion());
+        deleteEntity("apiVersion", id); //$NON-NLS-1$
+        deleteEntity("apiPolicies", id); //$NON-NLS-1$
     }
 
     /**
@@ -712,13 +715,6 @@ public class EsStorage implements IStorage, IStorageQuery {
     public void deleteRole(RoleBean role) throws StorageException {
         deleteEntity("role", role.getId()); //$NON-NLS-1$
     }
-
-
-    public void deleteApiVersionPlan(Long versionId, String planId) throws StorageException{}
-
-    public void deleteEndpointProperties(Long apiVersionId) throws StorageException{}
-
-    public void deleteEntityAudit(AuditEntityType type, String entityId, String orgId) throws StorageException{}
 
     /**
      * @see io.apiman.manager.api.core.IStorage#getOrganization(java.lang.String)

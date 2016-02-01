@@ -17,7 +17,6 @@ package io.apiman.manager.test.server;
 
 import io.apiman.manager.api.beans.apis.ApiBean;
 import io.apiman.manager.api.beans.apis.ApiVersionBean;
-import io.apiman.manager.api.beans.audit.AuditEntityType;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
 import io.apiman.manager.api.beans.clients.ClientBean;
 import io.apiman.manager.api.beans.clients.ClientVersionBean;
@@ -34,7 +33,6 @@ import io.apiman.manager.api.beans.plugins.PluginBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
 import io.apiman.manager.api.beans.policies.PolicyType;
-import io.apiman.manager.api.beans.summary.ApiVersionSummaryBean;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.searchbox.client.JestClient;
@@ -89,7 +87,7 @@ public class TestEsStorageWrapper implements IStorage {
     public void rollbackTx() {
         this.delegate.rollbackTx();
     }
-    
+
     @Override
     public void initialize() {
         this.delegate.initialize();
@@ -409,18 +407,6 @@ public class TestEsStorageWrapper implements IStorage {
 
     }
 
-    public void deleteApiVersionPlan(Long versionId, String planId) throws StorageException{
-        this.delegate.deleteApiVersionPlan(versionId, planId);
-    }
-
-    public void deleteEndpointProperties(Long apiVersionId) throws StorageException{
-        this.delegate.deleteEndpointProperties(apiVersionId);
-    }
-
-    public void deleteEntityAudit(AuditEntityType type, String entityId, String orgId) throws StorageException{
-        this.delegate.deleteEntityAudit(type, entityId, orgId);
-    }
-
     /**
      * @see io.apiman.manager.api.core.IStorage#getOrganization(java.lang.String)
      */
@@ -469,10 +455,6 @@ public class TestEsStorageWrapper implements IStorage {
     public ApiVersionBean getApiVersion(String organizationId, String apiId, String version)
             throws StorageException {
         return this.delegate.getApiVersion(organizationId, apiId, version);
-    }
-
-    public List<ApiVersionSummaryBean> getApiVersions(String orgId, String apiId) throws StorageException{
-        return this.delegate.getApiVersions(orgId, apiId);
     }
 
     /**
