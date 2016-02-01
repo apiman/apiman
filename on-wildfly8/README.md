@@ -9,7 +9,7 @@ To start up apiman
 
 You may want to map the port(s) so you can access the app
 
-    docker run -it -p 8080:8080 apiman/on-wildfly8
+    docker run -it -p 8080:8080 -p 8443:8443 apiman/on-wildfly8
 
 ## Building the image
 
@@ -17,7 +17,7 @@ You may want to map the port(s) so you can access the app
 
 ## Image accessible on Docker hub
 
-This image is automatically built and published into [Docker Hub][apiman_dockerhub].
+This image is automatically built and published into [Docker Hub](https://registry.hub.docker.com/u/apiman/on-wildfly8/).
 
 
 ## How to extend the image
@@ -37,5 +37,3 @@ And then run it like:
 
     docker run -it --rm -p 8080:8080 -p 9990:9990 -p 8787:8787 myname/apiman-on-wildfly8
     
-
-[apiman_dockerhub]:https://registry.hub.docker.com/u/apiman/on-wildfly8/
