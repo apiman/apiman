@@ -1,0 +1,14 @@
+GET /organizations/Organization1/apis/UnpubAPI1 admin/admin
+----
+200
+Content-Type: application/json
+
+{
+  "organization" : {
+    "id" : "Organization1"
+  },
+  "id" : "UnpubAPI1",
+  "name" : "Unpub API 1",
+  "description" : "Unpublished API 1.",
+  "createdBy" : "admin"
+}

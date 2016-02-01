@@ -78,6 +78,13 @@
     <test name="Get API 1 [published]">test-plan-data/apis/publish/002_get-api-1.resttest</test>
   </testGroup>
 
+    <testGroup name="Delete Unpublished APIs">
+        <!-- Test Deleting an unpublished API -->
+        <test name="Create Unpublished API">test-plan-data/apis/delete_unpublished/000_create-unpublished-api1.resttest</test>
+        <test name="Get Unpublished API">test-plan-data/apis/delete_unpublished/001_get-unpublished-api1.resttest</test>
+        <test name="Delete Unpublished API">test-plan-data/apis/delete_unpublished/002_delete-unpublished-api1.resttest</test>
+    </testGroup>
+
   <!-- Auditing -->
   <testGroup name="Ensure Auditing">
     <test name="API Activity">test-plan-data/apis/auditing/001_activity.resttest</test>

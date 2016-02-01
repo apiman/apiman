@@ -33,7 +33,10 @@ import io.apiman.manager.api.beans.plugins.PluginBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
 import io.apiman.manager.api.beans.policies.PolicyType;
+import io.apiman.manager.api.beans.summary.ApiVersionSummaryBean;
 import io.apiman.manager.api.core.exceptions.StorageException;
+import io.apiman.manager.api.beans.audit.AuditEntityType;
+
 
 import java.io.InputStream;
 import java.util.Iterator;
@@ -101,7 +104,9 @@ public interface IStorage {
     public void deleteContract(ContractBean contract) throws StorageException;
     public void deleteApi(ApiBean api) throws StorageException;
     public void deleteApiVersion(ApiVersionBean version) throws StorageException;
+    public void deleteApiVersionPlan(Long versionId, String planId) throws StorageException;
     public void deleteApiDefinition(ApiVersionBean version) throws StorageException;
+    public void deleteEndpointProperties(Long apiVersionId) throws StorageException;
     public void deletePlan(PlanBean plan) throws StorageException;
     public void deletePlanVersion(PlanVersionBean version) throws StorageException;
     public void deletePolicy(PolicyBean policy) throws StorageException;
@@ -109,6 +114,7 @@ public interface IStorage {
     public void deletePlugin(PluginBean plugin) throws StorageException;
     public void deletePolicyDefinition(PolicyDefinitionBean policyDef) throws StorageException;
     public void deleteDownload(DownloadBean download) throws StorageException;
+    public void deleteEntityAudit(AuditEntityType type, String entityId, String orgId) throws StorageException;
 
     /*
      * Various get methods.  These are called by the REST layer to get stuff.
@@ -120,6 +126,7 @@ public interface IStorage {
     public ContractBean getContract(Long id) throws StorageException;
     public ApiBean getApi(String organizationId, String id) throws StorageException;
     public ApiVersionBean getApiVersion(String organizationId, String apiId, String version) throws StorageException;
+    public List<ApiVersionSummaryBean> getApiVersions(String orgId, String apiId) throws StorageException;
     public InputStream getApiDefinition(ApiVersionBean apiVersion) throws StorageException;
     public PlanBean getPlan(String organizationId, String id) throws StorageException;
     public PlanVersionBean getPlanVersion(String organizationId, String planId, String version) throws StorageException;
