@@ -18,6 +18,13 @@ module Apiman {
                 };
             };
             
+            $scope.apiEndpoint = function(api) {
+                if (api.routeEndpoint) {
+                    return api.routeEndpoint;
+                }
+                return api.endpoint;
+            };
+            
             $scope.importApi = function(api) {
                 var modalInstance = $uibModal.open({
                     animation: true,

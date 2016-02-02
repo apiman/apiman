@@ -55,7 +55,7 @@
                     <i ng-show="!api.iconIsUrl" class="fa fa-{{ api.icon }}"></i>
                     <img ng-show="api.iconIsUrl" src="{{ api.icon }}"></img>
                   </div>
-                  <div class="name"><a href="{{ api.endpoint }}"><span>{{ api.name}}</span></a></div>
+                  <div class="name"><a href="{{ apiEndpoint(api) }}"><span>{{ api.name}}</span></a></div>
                   <div><hr /></div>
                   <div class="actions"> 
                      <span class="apiman-action-divider" apiman-i18n-skip="">&nbsp;</span>
