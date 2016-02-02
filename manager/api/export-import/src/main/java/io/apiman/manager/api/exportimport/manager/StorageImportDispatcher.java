@@ -60,7 +60,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 /**
@@ -68,7 +68,7 @@ import javax.inject.Inject;
  *
  * @author eric.wittmann@redhat.com
  */
-@RequestScoped
+@Dependent
 public class StorageImportDispatcher implements IImportReaderDispatcher {
 
     @Inject

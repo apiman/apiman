@@ -63,6 +63,13 @@
     <url-pattern>/*</url-pattern>
   </filter-mapping>
 
+  <!-- Bootstrapper -->
+  <servlet>
+    <servlet-name>BootstrapperServlet</servlet-name>
+    <servlet-class>io.apiman.manager.api.war.WarApiManagerBootstrapperServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+
   <security-constraint>
     <web-resource-collection>
       <web-resource-name>apiman</web-resource-name>
