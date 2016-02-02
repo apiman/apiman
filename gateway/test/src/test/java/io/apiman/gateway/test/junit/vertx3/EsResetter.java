@@ -13,9 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apiman.gateway.platforms.vertx3.junit.resttest;
-
-import java.util.concurrent.CountDownLatch;
+package io.apiman.gateway.test.junit.vertx3;
 
 import io.apiman.gateway.engine.es.AbstractESComponent;
 import io.apiman.gateway.engine.es.ESClientFactory;
@@ -24,6 +22,8 @@ import io.apiman.gateway.platforms.vertx3.common.config.VertxEngineConfig;
 import io.searchbox.client.JestResult;
 import io.searchbox.client.JestResultHandler;
 import io.searchbox.core.Delete;
+
+import java.util.concurrent.CountDownLatch;
 
 /**
  * Reset the ES index simply by deleting it. For testing purposes.

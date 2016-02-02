@@ -19,7 +19,6 @@ before_install:
   
 jdk:
   - oraclejdk8
-  - openjdk7
 
 notifications:
   irc:
@@ -34,8 +33,6 @@ matrix:
   include:
     - env: ACTION='-Dapiman-test.type=es -Dapiman.gateway-test.config=servlet-es'
       jdk: oraclejdk8
-    - env: ACTION='-Dapiman-test.type=es -Dapiman.gateway-test.config=servlet-es'
-      jdk: oraclejdk7
 
 install: travis_retry mvn clean install -Dinvoker.skip -Dmaven.javadoc.skip=true | egrep -v 'Download|\\[exec\\] [[:digit:]]+/[[:digit:]]+|^[[:space:]]*\\[exec\\][[:space:]]*$' ; [ ${PIPESTATUS[0]} == 0 ];
 

@@ -1,5 +1,5 @@
 {
-    "factory" : "io.apiman.gateway.platforms.vertx3.junit.resttest.Vertx3GatewayTestServerFactory",
+    "factory" : "io.apiman.gateway.test.junit.vertx3.Vertx3GatewayTestServerFactory",
     "config" : "vertx3/conf-mem.json",
-    "resetter" : "io.apiman.gateway.platforms.vertx3.junit.resttest.NoOpResetter"
+    "resetter" : "io.apiman.gateway.test.junit.vertx3.EsResetter"   
 }
