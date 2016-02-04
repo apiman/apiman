@@ -15,6 +15,7 @@
  */
 package io.apiman.test.policies;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.test.common.mock.EchoResponse;
@@ -23,7 +24,6 @@ import java.io.IOException;
 import java.util.Date;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.codehaus.jackson.map.ObjectMapper;
 
 /**
  * The default policy test backend API.

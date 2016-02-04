@@ -15,13 +15,14 @@
  */
 package io.apiman.common.plugin;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.codehaus.jackson.map.ObjectMapper;
 
 /**
  * Some generally useful static methods.

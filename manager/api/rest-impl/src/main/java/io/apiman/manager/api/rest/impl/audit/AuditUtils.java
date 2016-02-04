@@ -15,6 +15,7 @@
  */
 package io.apiman.manager.api.rest.impl.audit;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.apiman.manager.api.beans.apis.ApiBean;
 import io.apiman.manager.api.beans.apis.ApiGatewayBean;
 import io.apiman.manager.api.beans.apis.ApiPlanBean;
@@ -43,7 +44,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.codehaus.jackson.map.ObjectMapper;
 
 /**
  * Contains a number of methods useful to create and manage audit entries for

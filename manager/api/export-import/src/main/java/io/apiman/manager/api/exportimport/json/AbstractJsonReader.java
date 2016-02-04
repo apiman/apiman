@@ -15,13 +15,13 @@
  */
 package io.apiman.manager.api.exportimport.json;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
 import io.apiman.manager.api.exportimport.EntityHandler;
 
 import java.io.IOException;
 
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.JsonParser;
-import org.codehaus.jackson.JsonToken;
 
 /**
  * Common JSON reader functionality

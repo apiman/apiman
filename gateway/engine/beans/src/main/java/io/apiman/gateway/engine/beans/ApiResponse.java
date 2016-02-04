@@ -15,11 +15,11 @@
  */
 package io.apiman.gateway.engine.beans;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  * The response sent back to a caller when a managed API is

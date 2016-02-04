@@ -15,6 +15,8 @@
  */
 package io.apiman.test.common.mock;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import io.apiman.common.util.SimpleStringUtils;
 import io.apiman.gateway.engine.beans.EngineErrorResponse;
 
@@ -33,8 +35,6 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
 import org.apache.commons.io.IOUtils;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.SerializationConfig;
 
 /**
  * Simple echo servlet - for testing the gateway.
@@ -47,7 +47,7 @@ public class EchoServlet extends HttpServlet {
     private static final long serialVersionUID = 3185466526830586555L;
     private static ObjectMapper mapper = new ObjectMapper();
     static {
-        mapper.enable(SerializationConfig.Feature.INDENT_OUTPUT);
+        mapper.enable(SerializationFeature.INDENT_OUTPUT);
     }
     private static JAXBContext jaxbContext;
     static {

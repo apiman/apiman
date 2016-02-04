@@ -15,6 +15,7 @@
  */
 package io.apiman.manager.api.gateway.rest;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.apiman.gateway.api.rest.contract.exceptions.GatewayApiErrorBean;
 import io.apiman.gateway.engine.beans.Api;
 import io.apiman.gateway.engine.beans.ApiEndpoint;
@@ -41,7 +42,6 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.codehaus.jackson.map.ObjectMapper;
 
 /**
  * A REST client for accessing the Gateway API.

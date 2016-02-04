@@ -15,6 +15,8 @@
  */
 package io.apiman.manager.api.gateway.rest;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.apiman.common.util.AesEncrypter;
 import io.apiman.common.util.ApimanStrLookup;
 import io.apiman.common.util.crypt.CurrentDataEncrypter;
@@ -47,8 +49,6 @@ import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.protocol.HttpContext;
-import org.codehaus.jackson.JsonProcessingException;
-import org.codehaus.jackson.map.ObjectMapper;
 
 /**
  * An implementation of a Gateway Link that uses the Gateway's simple REST

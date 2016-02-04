@@ -15,6 +15,7 @@
  */
 package io.apiman.manager.api.beans.clients;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.apiman.manager.api.beans.orgs.OrganizationBasedCompositeId;
 import io.apiman.manager.api.beans.orgs.OrganizationBean;
 
@@ -29,8 +30,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
-import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
  * Models a client.

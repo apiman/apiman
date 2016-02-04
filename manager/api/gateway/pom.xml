@@ -9,7 +9,7 @@
   <artifactId>apiman-manager-api-gateway</artifactId>
   <packaging>bundle</packaging>
   <name>apiman-manager-api-gateway</name>
-  
+
   <dependencies>
     <!-- Project Dependencies -->
     <dependency>
@@ -47,12 +47,12 @@
       <artifactId>commons-io</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.codehaus.jackson</groupId>
-      <artifactId>jackson-core-asl</artifactId>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.codehaus.jackson</groupId>
-      <artifactId>jackson-mapper-asl</artifactId>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
     </dependency>
 
     <!-- Provided Dependencies -->

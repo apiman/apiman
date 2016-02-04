@@ -15,6 +15,11 @@
  */
 package io.apiman.manager.api.exportimport.json;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonEncoding;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.apiman.manager.api.beans.apis.ApiBean;
 import io.apiman.manager.api.beans.apis.ApiVersionBean;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
@@ -42,12 +47,6 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.codehaus.jackson.JsonEncoding;
-import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
-
 /**
  * Stream global elements
  *
@@ -74,7 +73,7 @@ public class JsonExportWriter extends AbstractJsonWriter<GlobalElementsEnum> imp
      */
     public JsonExportWriter(OutputStream targetStream, IApimanLogger logger) throws IOException {
         super(logger);
-        om.setSerializationInclusion(Inclusion.NON_NULL);
+        om.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         jg = jsonFactory.createJsonGenerator(targetStream, JsonEncoding.UTF8);
         jg.useDefaultPrettyPrinter();
         jg.setCodec(om);

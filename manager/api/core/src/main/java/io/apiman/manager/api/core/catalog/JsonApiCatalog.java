@@ -15,6 +15,7 @@
  */
 package io.apiman.manager.api.core.catalog;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.apiman.manager.api.beans.summary.ApiCatalogBean;
 import io.apiman.manager.api.beans.summary.AvailableApiBean;
 import io.apiman.manager.api.core.IApiCatalog;
@@ -25,8 +26,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import org.codehaus.jackson.map.ObjectMapper;
 
 /**
  * An API catalog that gets its data from a simple JSON file.

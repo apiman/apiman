@@ -15,6 +15,7 @@
  */
 package io.apiman.manager.api.beans.gateways;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.apiman.common.util.crypt.CurrentDataEncrypter;
 
 import java.io.Serializable;
@@ -33,7 +34,6 @@ import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
-import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.hibernate.annotations.Type;
 
 /**
