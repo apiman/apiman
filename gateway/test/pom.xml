@@ -51,6 +51,16 @@
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-gateway-platforms-war</artifactId>
     </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-gateway-platforms-vertx3</artifactId>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-gateway-engine-vertx-eb-inmemory</artifactId>
+      <type>jar</type>
+    </dependency>
 
     <!-- Weld -->
     <dependency>
@@ -99,7 +109,7 @@
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-jackson-provider</artifactId>
     </dependency>
-    
+
     <!-- Elasticsearch -->
     <dependency>
       <groupId>org.elasticsearch</groupId>
@@ -130,34 +140,4 @@
       <artifactId>jboss-logging</artifactId>
     </dependency>
   </dependencies>
-
-  <profiles>
-    <profile>
-      <id>java8</id>
-      <activation>
-        <jdk>[1.8,)</jdk>
-      </activation>
-      <dependencies>
-        <dependency>
-          <groupId>${project.groupId}</groupId>
-          <artifactId>apiman-gateway-platforms-vertx3</artifactId>
-          <version>${project.version}</version>
-          <type>test-jar</type>
-          <scope>test</scope>
-        </dependency>
-        <dependency>
-          <groupId>${project.groupId}</groupId>
-          <artifactId>apiman-gateway-platforms-vertx3</artifactId>
-          <version>${project.version}</version>
-          <type>jar</type>
-        </dependency>
-        <dependency>
-          <groupId>${project.groupId}</groupId>
-          <artifactId>apiman-gateway-engine-vertx-eb-inmemory</artifactId>
-          <version>${project.version}</version>
-          <type>jar</type>
-        </dependency>
-      </dependencies>
-    </profile>
-  </profiles>
 </project>

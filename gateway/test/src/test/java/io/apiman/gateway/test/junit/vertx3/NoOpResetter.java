@@ -13,18 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apiman.gateway.platforms.vertx3.junit.resttest;
+package io.apiman.gateway.test.junit.vertx3;
 
 /**
- * Reset a gateway datastore that is under testing to ensure clean environment
- * between test groups which may not be validly executed serially.
+ * For testing in-memory implementations that don't really need resetting.
  *
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
-public interface Resetter {
+public class NoOpResetter implements Resetter {
 
-    /**
-     * Reset the data store. Should block until the reset is completed.
-     */
-    void reset();
+    @Override
+    public void reset() {
+    }
 }

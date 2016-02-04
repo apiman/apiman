@@ -13,16 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apiman.gateway.platforms.vertx3.junit.resttest;
+package io.apiman.gateway.test.junit.vertx3;
+
+import io.apiman.test.common.resttest.IGatewayTestServer;
+import io.apiman.test.common.resttest.IGatewayTestServerFactory;
 
 /**
- * For testing in-memory implementations that don't really need resetting.
+ * Factory to produce Vertx3 gateway test servers.
  *
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
-public class NoOpResetter implements Resetter {
+public class Vertx3GatewayTestServerFactory implements IGatewayTestServerFactory {
+
+    /**
+     * Constructor.
+     */
+    public Vertx3GatewayTestServerFactory() {
+    }
 
     @Override
-    public void reset() {
+    public IGatewayTestServer createGatewayTestServer() {
+        return new Vertx3GatewayTestServer();
     }
+
 }

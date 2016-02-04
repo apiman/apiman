@@ -13,27 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apiman.gateway.platforms.vertx3.junit.resttest;
-
-import io.apiman.test.common.resttest.IGatewayTestServer;
-import io.apiman.test.common.resttest.IGatewayTestServerFactory;
+package io.apiman.gateway.test.junit.vertx3;
 
 /**
- * Factory to produce Vertx3 gateway test servers.
+ * Reset a gateway datastore that is under testing to ensure clean environment
+ * between test groups which may not be validly executed serially.
  *
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
-public class Vertx3GatewayTestServerFactory implements IGatewayTestServerFactory {
+public interface Resetter {
 
     /**
-     * Constructor.
+     * Reset the data store. Should block until the reset is completed.
      */
-    public Vertx3GatewayTestServerFactory() {
-    }
-
-    @Override
-    public IGatewayTestServer createGatewayTestServer() {
-        return new Vertx3GatewayTestServer();
-    }
-
+    void reset();
 }
