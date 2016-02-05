@@ -185,6 +185,7 @@
         <groupId>org.bouncycastle</groupId>
         <artifactId>bcprov-jdk15on</artifactId>
         <version>${version.org.bouncycastle}</version>
+	<scope>test</scope>
       </dependency>
       <dependency>
         <groupId>net.iharder</groupId>
@@ -239,7 +240,7 @@
                 </goals>
               </execution>
             </executions>
-          </plugin>        
+          </plugin>
         </plugins>
       </build>
     </profile>
@@ -282,7 +283,7 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-gpg-plugin</artifactId>
           <version>${version.maven-gpg-plugin.plugin}</version>
-        </plugin>        
+        </plugin>
       </plugins>
     </pluginManagement>
     <plugins>
@@ -324,4 +325,3 @@
   </build>
 
 </project>
-
