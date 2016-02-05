@@ -42,11 +42,11 @@ import javax.net.ssl.SSLParameters;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.X509TrustManager;
 
-import org.apache.http.conn.ssl.PrivateKeyDetails;
-import org.apache.http.conn.ssl.PrivateKeyStrategy;
+import org.apache.http.ssl.PrivateKeyDetails;
+import org.apache.http.ssl.PrivateKeyStrategy;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.conn.ssl.SSLContextBuilder;
-import org.apache.http.conn.ssl.SSLContexts;
+import org.apache.http.ssl.SSLContextBuilder;
+import org.apache.http.ssl.SSLContexts;
 import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.util.Args;
@@ -206,7 +206,7 @@ public class SSLSessionStrategyFactory {
 
         TrustStrategy trustStrategy = trustSelfSigned ?  SELF_SIGNED : null;
         HostnameVerifier hostnameVerifier = allowAnyHostname ? ALLOW_ANY :
-            SSLConnectionSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER;
+            SSLConnectionSocketFactory.getDefaultHostnameVerifier();
         PrivateKeyStrategy privateKeyStrategy = keyAliases == null ? null : new SelectByAlias(keyAliases);
         boolean clientAuth = keyStore == null ? false : true;
 

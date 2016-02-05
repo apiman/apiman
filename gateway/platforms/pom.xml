@@ -12,7 +12,6 @@
 
   <modules>
     <module>servlet</module>
-    <module>undertow</module>
     <module>war</module>
     <module>war/micro</module>
     <module>war/tomcat8</module>

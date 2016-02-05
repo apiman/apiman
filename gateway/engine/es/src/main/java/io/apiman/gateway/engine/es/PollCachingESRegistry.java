@@ -42,9 +42,8 @@ public class PollCachingESRegistry extends CachingESRegistry {
 
     private static final int DEFAULT_POLLING_INTERVAL = 10;
 
-    private int pollIntervalSeconds;
+    private int pollIntervalMillis;
     private boolean polling = false;
-    private Object poller = new Object();
     private String dataVersion = null;
 
     /**
@@ -54,9 +53,9 @@ public class PollCachingESRegistry extends CachingESRegistry {
         super(config);
         String intervalVal = config.get("cache-polling-interval"); //$NON-NLS-1$
         if (intervalVal != null) {
-            pollIntervalSeconds = new Integer(intervalVal) * 1000;
+            pollIntervalMillis = new Integer(intervalVal) * 1000;
         } else {
-            pollIntervalSeconds = DEFAULT_POLLING_INTERVAL * 1000;
+            pollIntervalMillis = DEFAULT_POLLING_INTERVAL * 1000;
         }
         startCacheInvalidator();
     }
@@ -159,12 +158,12 @@ public class PollCachingESRegistry extends CachingESRegistry {
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
+                // Wait for 30s on startup before starting to poll.
+                // TODO make this wait time configurable.
+                try { Thread.sleep(30000); } catch (InterruptedException e1) { e1.printStackTrace(); }
+
                 while (polling) {
-                    try {
-                        synchronized (poller) {
-                            poller.wait(pollIntervalSeconds);
-                        }
-                    } catch (Exception e) { e.printStackTrace(); }
+                    try { Thread.sleep(pollIntervalMillis); } catch (Exception e) { e.printStackTrace(); }
                     checkCacheVersion();
                 }
             }

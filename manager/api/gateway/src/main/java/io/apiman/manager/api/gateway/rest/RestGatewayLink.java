@@ -15,6 +15,27 @@
  */
 package io.apiman.manager.api.gateway.rest;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang.text.StrLookup;
+import org.apache.commons.lang.text.StrSubstitutor;
+import org.apache.http.HttpException;
+import org.apache.http.HttpRequest;
+import org.apache.http.HttpRequestInterceptor;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.TrustStrategy;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.protocol.HttpContext;
+import org.apache.http.ssl.SSLContextBuilder;
+import org.codehaus.jackson.JsonProcessingException;
+import org.codehaus.jackson.map.ObjectMapper;
+
 import io.apiman.common.util.AesEncrypter;
 import io.apiman.common.util.ApimanStrLookup;
 import io.apiman.common.util.crypt.CurrentDataEncrypter;
@@ -29,26 +50,6 @@ import io.apiman.manager.api.beans.gateways.RestGatewayConfigBean;
 import io.apiman.manager.api.gateway.GatewayAuthenticationException;
 import io.apiman.manager.api.gateway.IGatewayLink;
 import io.apiman.manager.api.gateway.i18n.Messages;
-
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
-
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang.text.StrLookup;
-import org.apache.commons.lang.text.StrSubstitutor;
-import org.apache.http.HttpException;
-import org.apache.http.HttpRequest;
-import org.apache.http.HttpRequestInterceptor;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.conn.ssl.SSLContextBuilder;
-import org.apache.http.conn.ssl.TrustStrategy;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.protocol.HttpContext;
-import org.codehaus.jackson.JsonProcessingException;
-import org.codehaus.jackson.map.ObjectMapper;
 
 /**
  * An implementation of a Gateway Link that uses the Gateway's simple REST
@@ -72,7 +73,7 @@ public class RestGatewayLink implements IGatewayLink {
                     return true;
                 }
             });
-            sslConnectionFactory = new SSLConnectionSocketFactory(builder.build(), SSLConnectionSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+            sslConnectionFactory = new SSLConnectionSocketFactory(builder.build(), NoopHostnameVerifier.INSTANCE);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -97,7 +98,7 @@ public class RestGatewayLink implements IGatewayLink {
             setConfig((RestGatewayConfigBean) mapper.reader(RestGatewayConfigBean.class).readValue(cfg));
             getConfig().setPassword(AesEncrypter.decrypt(getConfig().getPassword()));
             httpClient = HttpClientBuilder.create()
-                    .setHostnameVerifier(SSLConnectionSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER)
+                    .setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE)
                     .setSSLSocketFactory(sslConnectionFactory)
                     .addInterceptorFirst(new HttpRequestInterceptor() {
                         @Override
