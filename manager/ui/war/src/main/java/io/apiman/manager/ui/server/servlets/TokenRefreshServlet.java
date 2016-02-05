@@ -15,18 +15,19 @@
  */
 package io.apiman.manager.ui.server.servlets;
 
-import io.apiman.manager.ui.server.auth.ITokenGenerator;
-import io.apiman.manager.ui.server.beans.BearerTokenCredentialsBean;
-
 import java.io.IOException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.apiman.manager.ui.server.auth.ITokenGenerator;
+import io.apiman.manager.ui.server.beans.BearerTokenCredentialsBean;
 
 /**
  * The token refresh servlet - provides a JSON REST endpoint that the UI

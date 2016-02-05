@@ -15,8 +15,6 @@
  */
 package io.apiman.manager.ui.server.servlets;
 
-import io.apiman.manager.ui.server.i18n.Messages;
-
 import java.io.IOException;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -25,9 +23,11 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.codehaus.jackson.JsonEncoding;
-import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonGenerator;
+import com.fasterxml.jackson.core.JsonEncoding;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
+
+import io.apiman.manager.ui.server.i18n.Messages;
 
 /**
  * A servlet that returns a JSONP response containing all of the UI strings
@@ -57,7 +57,7 @@ public class TranslationServlet extends AbstractUIServlet {
 
             response.getOutputStream().write("window.APIMAN_TRANSLATION_DATA = ".getBytes("UTF-8")); //$NON-NLS-1$ //$NON-NLS-2$
             JsonFactory f = new JsonFactory();
-            JsonGenerator g = f.createJsonGenerator(response.getOutputStream(), JsonEncoding.UTF8);
+            JsonGenerator g = f.createGenerator(response.getOutputStream(), JsonEncoding.UTF8);
             g.useDefaultPrettyPrinter();
 
             // Write string data here.

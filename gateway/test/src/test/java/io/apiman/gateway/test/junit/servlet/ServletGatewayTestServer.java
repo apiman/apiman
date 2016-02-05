@@ -71,7 +71,7 @@ public class ServletGatewayTestServer implements IGatewayTestServer {
     }
 
     /**
-     * @see io.apiman.test.common.resttest.IGatewayTestServer#configure(org.codehaus.jackson.JsonNode)
+     * @see io.apiman.test.common.resttest.IGatewayTestServer#configure(JsonNode)
      */
     @Override
     public void configure(JsonNode config) {
