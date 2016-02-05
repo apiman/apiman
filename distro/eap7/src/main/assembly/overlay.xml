@@ -9,7 +9,7 @@
     <dependencySet>
       <outputDirectory></outputDirectory>
       <includes>
-        <include>io.apiman:apiman-distro-wildfly8:zip:overlay</include>
+        <include>io.apiman:apiman-distro-wildfly10:zip:overlay</include>
       </includes>
       <useProjectArtifact>false</useProjectArtifact>
       <useProjectAttachments>false</useProjectAttachments>

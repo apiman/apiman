@@ -15,7 +15,7 @@
     <!-- The WildFly 8 distro of APIMan -->
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>apiman-distro-wildfly8</artifactId>
+      <artifactId>apiman-distro-wildfly10</artifactId>
       <type>zip</type>
       <classifier>overlay</classifier>
     </dependency>
