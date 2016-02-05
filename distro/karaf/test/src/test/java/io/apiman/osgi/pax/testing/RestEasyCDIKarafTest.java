@@ -143,7 +143,7 @@ public class RestEasyCDIKarafTest {
     }
 
     public static Option loadApimanFeatures(String... features) {
-        MavenArtifactProvisionOption repo = getFeaturesUrl("io.apiman","apiman-karaf","1.2.0-SNAPSHOT");
+        MavenArtifactProvisionOption repo = getFeaturesUrl("io.apiman","apiman-karaf","1.2.2-SNAPSHOT");
         return features(repo, features);
     }
 
