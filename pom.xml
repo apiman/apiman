@@ -142,7 +142,7 @@
     <version.org.apache.servicemix.bundles.antlr>2.7.7_5</version.org.apache.servicemix.bundles.antlr>
     <version.org.apache.servicemix.bundles.cglib>3.0_1</version.org.apache.servicemix.bundles.cglib>
     <version.org.apache.servicemix.bundles.dom4j>1.6.1_5</version.org.apache.servicemix.bundles.dom4j>
-    <version.org.codehaus.jackson>1.9.9</version.org.codehaus.jackson>
+    <version.com.fasterxml.jackson>2.5.4</version.com.fasterxml.jackson>
     <version.org.eclipse.jetty>9.2.10.v20150310</version.org.eclipse.jetty>
     <version.org.elasticsearch>1.7.2</version.org.elasticsearch>
     <version.org.hibernate.commons.annotations>4.0.2.Final</version.org.hibernate.commons.annotations>
@@ -759,19 +759,24 @@
         <version>${version.org.apache.felix.scr.annotations}</version>
       </dependency>
       <dependency>
-        <groupId>org.codehaus.jackson</groupId>
-        <artifactId>jackson-core-asl</artifactId>
-        <version>${version.org.codehaus.jackson}</version>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-annotations</artifactId>
+        <version>${version.com.fasterxml.jackson}</version>
       </dependency>
       <dependency>
-        <groupId>org.codehaus.jackson</groupId>
-        <artifactId>jackson-mapper-asl</artifactId>
-        <version>${version.org.codehaus.jackson}</version>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-core</artifactId>
+        <version>${version.com.fasterxml.jackson}</version>
       </dependency>
       <dependency>
-        <groupId>org.codehaus.jackson</groupId>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>${version.com.fasterxml.jackson}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-jaxrs</artifactId>
-        <version>${version.org.codehaus.jackson}</version>
+        <version>${version.com.fasterxml.jackson}</version>
       </dependency>
       <dependency>
         <groupId>commons-codec</groupId>

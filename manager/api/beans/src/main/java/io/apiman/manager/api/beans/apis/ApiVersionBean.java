@@ -15,11 +15,7 @@
  */
 package io.apiman.manager.api.beans.apis;
 
-import java.io.Serializable;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
@@ -36,8 +32,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MapKeyColumn;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
-
-import org.codehaus.jackson.map.annotate.JsonSerialize;
+import java.io.Serializable;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Models a single version of an API. Every API in APIMan has basic meta-data

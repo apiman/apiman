@@ -15,16 +15,17 @@
  */
 package io.apiman.manager.api.beans.apis;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import java.io.Serializable;
 
-import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
  * Bean used when updating an API.
  *
  * @author eric.wittmann@redhat.com
  */
-@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
+@JsonSerialize(include= JsonSerialize.Inclusion.NON_NULL)
 public class UpdateApiBean implements Serializable {
 
     private static final long serialVersionUID = 8811488441452291116L;

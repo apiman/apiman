@@ -15,9 +15,10 @@
  */
 package io.apiman.manager.api.beans.orgs;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import java.io.Serializable;
 
-import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
  * Bean used when creating a new organization.

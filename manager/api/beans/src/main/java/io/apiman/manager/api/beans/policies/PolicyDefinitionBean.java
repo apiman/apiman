@@ -15,6 +15,7 @@
  */
 package io.apiman.manager.api.beans.policies;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.apiman.manager.api.beans.summary.PolicyFormType;
 
 import java.io.Serializable;
@@ -34,7 +35,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 
-import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
  * A Policy Definition describes a type of policy that can be added to

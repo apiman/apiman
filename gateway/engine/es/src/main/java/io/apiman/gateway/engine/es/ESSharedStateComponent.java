@@ -15,6 +15,8 @@
  */
 package io.apiman.gateway.engine.es;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.components.ISharedStateComponent;
@@ -28,8 +30,6 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
-import org.codehaus.jackson.map.DeserializationConfig.Feature;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.elasticsearch.common.Base64;
 
 /**
@@ -41,7 +41,7 @@ public class ESSharedStateComponent extends AbstractESComponent implements IShar
 
     private static final ObjectMapper mapper = new ObjectMapper();
     static {
-        mapper.configure(Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
     /**

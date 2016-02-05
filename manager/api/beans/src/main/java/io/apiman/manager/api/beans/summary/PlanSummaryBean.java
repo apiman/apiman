@@ -15,9 +15,9 @@
  */
 package io.apiman.manager.api.beans.summary;
 
-import java.io.Serializable;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-import org.codehaus.jackson.map.annotate.JsonSerialize;
+import java.io.Serializable;
 
 /**
  * A bean modeling a summary of a Plan.  Typically used when listing

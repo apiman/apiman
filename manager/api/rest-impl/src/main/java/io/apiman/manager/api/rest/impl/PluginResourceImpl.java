@@ -16,6 +16,7 @@
 
 package io.apiman.manager.api.rest.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.apiman.common.plugin.Plugin;
 import io.apiman.common.plugin.PluginClassLoader;
 import io.apiman.common.plugin.PluginCoordinates;
@@ -65,7 +66,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.apache.commons.io.IOUtils;
-import org.codehaus.jackson.map.ObjectMapper;
 
 /**
  * Implementation of the Plugin API.

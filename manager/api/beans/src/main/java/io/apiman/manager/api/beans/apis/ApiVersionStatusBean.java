@@ -16,10 +16,10 @@
 
 package io.apiman.manager.api.beans.apis;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
  * A simple status bean for a version of an API.  This bean includes

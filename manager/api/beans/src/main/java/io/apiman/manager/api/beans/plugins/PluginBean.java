@@ -15,6 +15,8 @@
  */
 package io.apiman.manager.api.beans.plugins;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -24,8 +26,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
-
-import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
  * Models a single plugin configured by an admin.

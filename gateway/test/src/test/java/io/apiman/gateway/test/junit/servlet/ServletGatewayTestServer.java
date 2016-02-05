@@ -15,6 +15,7 @@
  */
 package io.apiman.gateway.test.junit.servlet;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import io.apiman.gateway.engine.components.IBufferFactoryComponent;
 import io.apiman.gateway.engine.components.ICacheStoreComponent;
 import io.apiman.gateway.engine.components.IHttpClientComponent;
@@ -46,8 +47,6 @@ import io.apiman.test.common.resttest.IGatewayTestServer;
 
 import java.io.File;
 import java.util.Iterator;
-
-import org.codehaus.jackson.JsonNode;
 
 /**
  * A servlet version of the gateway test server.
@@ -81,7 +80,7 @@ public class ServletGatewayTestServer implements IGatewayTestServer {
         configureGateway();
         if (config.has("config-properties")) {
             JsonNode configNode = config.get("config-properties");
-            Iterator<String> fieldNames = configNode.getFieldNames();
+            Iterator<String> fieldNames = configNode.fieldNames();
             while (fieldNames.hasNext()) {
                 String fieldName = fieldNames.next();
                 String value = configNode.get(fieldName).asText();

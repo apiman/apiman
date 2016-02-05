@@ -15,7 +15,7 @@
  */
 package io.apiman.test.common.resttest;
 
-import org.codehaus.jackson.JsonNode;
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * Any gateway under test would need to implement this interface, along

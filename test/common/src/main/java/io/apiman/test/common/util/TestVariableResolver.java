@@ -18,7 +18,7 @@ package io.apiman.test.common.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.codehaus.jackson.JsonNode;
+import com.fasterxml.jackson.databind.JsonNode;
 import org.mvel2.integration.VariableResolver;
 
 /**
