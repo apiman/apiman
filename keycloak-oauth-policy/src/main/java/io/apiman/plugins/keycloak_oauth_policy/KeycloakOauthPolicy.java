@@ -15,6 +15,15 @@
  */
 package io.apiman.plugins.keycloak_oauth_policy;
 
+import java.util.Collections;
+
+import org.apache.commons.lang.StringUtils;
+import org.keycloak.RSATokenVerifier;
+import org.keycloak.common.VerificationException;
+import org.keycloak.common.constants.KerberosConstants;
+import org.keycloak.representations.AccessToken;
+import org.keycloak.representations.AccessToken.Access;
+
 import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.ApiRequest;
@@ -30,15 +39,6 @@ import io.apiman.plugins.keycloak_oauth_policy.beans.ForwardAuthInfo;
 import io.apiman.plugins.keycloak_oauth_policy.beans.KeycloakOauthConfigBean;
 import io.apiman.plugins.keycloak_oauth_policy.failures.PolicyFailureFactory;
 import io.apiman.plugins.keycloak_oauth_policy.util.Holder;
-
-import java.util.Collections;
-
-import org.apache.commons.lang.StringUtils;
-import org.keycloak.RSATokenVerifier;
-import org.keycloak.VerificationException;
-import org.keycloak.constants.KerberosConstants;
-import org.keycloak.representations.AccessToken;
-import org.keycloak.representations.AccessToken.Access;
 
 /**
  * A Keycloak OAuth policy.

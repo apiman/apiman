@@ -15,13 +15,13 @@
  */
 package io.apiman.plugins.keycloak_oauth_policy.failures;
 
+import org.keycloak.common.VerificationException;
+
 import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.beans.PolicyFailureType;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.policy.IPolicyContext;
 import io.apiman.plugins.keycloak_oauth_policy.Messages;
-
-import org.keycloak.VerificationException;
 
 /**
  * Policy failures

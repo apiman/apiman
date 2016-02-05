@@ -7,19 +7,6 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import io.apiman.gateway.engine.beans.ApiRequest;
-import io.apiman.gateway.engine.beans.PolicyFailure;
-import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
-import io.apiman.gateway.engine.components.ISharedStateComponent;
-import io.apiman.gateway.engine.impl.DefaultPolicyFailureFactoryComponent;
-import io.apiman.gateway.engine.impl.InMemorySharedStateComponent;
-import io.apiman.gateway.engine.policies.AuthorizationPolicy;
-import io.apiman.gateway.engine.policy.IPolicyChain;
-import io.apiman.gateway.engine.policy.IPolicyContext;
-import io.apiman.plugins.keycloak_oauth_policy.beans.ForwardAuthInfo;
-import io.apiman.plugins.keycloak_oauth_policy.beans.ForwardRoles;
-import io.apiman.plugins.keycloak_oauth_policy.beans.KeycloakOauthConfigBean;
-
 import java.io.IOException;
 import java.io.StringWriter;
 import java.math.BigInteger;
@@ -46,13 +33,26 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.keycloak.common.util.Time;
 import org.keycloak.jose.jws.JWSBuilder;
 import org.keycloak.representations.AccessToken;
 import org.keycloak.representations.AccessToken.Access;
 import org.keycloak.representations.AddressClaimSet;
-import org.keycloak.util.Time;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
+import io.apiman.gateway.engine.beans.ApiRequest;
+import io.apiman.gateway.engine.beans.PolicyFailure;
+import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
+import io.apiman.gateway.engine.components.ISharedStateComponent;
+import io.apiman.gateway.engine.impl.DefaultPolicyFailureFactoryComponent;
+import io.apiman.gateway.engine.impl.InMemorySharedStateComponent;
+import io.apiman.gateway.engine.policies.AuthorizationPolicy;
+import io.apiman.gateway.engine.policy.IPolicyChain;
+import io.apiman.gateway.engine.policy.IPolicyContext;
+import io.apiman.plugins.keycloak_oauth_policy.beans.ForwardAuthInfo;
+import io.apiman.plugins.keycloak_oauth_policy.beans.ForwardRoles;
+import io.apiman.plugins.keycloak_oauth_policy.beans.KeycloakOauthConfigBean;
 
 /**
  * Test the {@link KeycloakOauthPolicy}.

@@ -74,13 +74,13 @@
     <version.resources.plugin>2.7</version.resources.plugin>
     <version.war.plugin>2.5</version.war.plugin>
 
-    <maven.compiler.target>1.7</maven.compiler.target>
-    <maven.compiler.source>1.7</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
 
     <version.org.mockito>1.9.5</version.org.mockito>
     <version.junit>4.11</version.junit>
 
-    <version.org.keycloak>1.2.0.CR1</version.org.keycloak>
+    <version.org.keycloak>1.8.0.Final</version.org.keycloak>
     <version.org.bouncycastle>1.51</version.org.bouncycastle>
     <version.net.iharder>2.3.8</version.net.iharder>
     <version.org.json>20140107</version.org.json>
@@ -290,8 +290,8 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
-          <source>1.7</source>
-          <target>1.7</target>
+          <source>1.8</source>
+          <target>1.8</target>
           <showDeprecation>false</showDeprecation>
           <showWarnings>false</showWarnings>
         </configuration>

@@ -28,7 +28,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
-import org.keycloak.util.PemUtils;
+import org.keycloak.common.util.PemUtils;
 
 /**
  * Keycloak OAuth Policy Configuration
