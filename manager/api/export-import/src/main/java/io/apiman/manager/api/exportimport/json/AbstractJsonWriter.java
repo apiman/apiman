@@ -15,12 +15,11 @@
  */
 package io.apiman.manager.api.exportimport.json;
 
+import com.fasterxml.jackson.core.JsonGenerator;
 import io.apiman.manager.api.core.logging.IApimanLogger;
 
 import java.io.IOException;
 import java.util.Map;
-
-import org.codehaus.jackson.JsonGenerator;
 
 @SuppressWarnings("nls")
 public abstract class AbstractJsonWriter<T extends Enum<T>> {

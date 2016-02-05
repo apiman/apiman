@@ -18,8 +18,8 @@ package io.apiman.test.policies;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.codec.binary.Base64;
-import org.codehaus.jackson.map.ObjectMapper;
 
 /**
  * Send one of these to the "send" method found in the {@link ApimanPolicyTest} class

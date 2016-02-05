@@ -15,12 +15,12 @@
  */
 package io.apiman.manager.api.beans.summary;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.apiman.manager.api.beans.apis.ApiDefinitionType;
 import io.apiman.manager.api.beans.apis.EndpointType;
 
 import java.io.Serializable;
 
-import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
  * A bean modeling an API available in one of the configured API catalogs.

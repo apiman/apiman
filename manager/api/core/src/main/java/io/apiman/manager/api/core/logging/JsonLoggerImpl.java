@@ -18,10 +18,10 @@ package io.apiman.manager.api.core.logging;
 import java.io.IOException;
 import java.io.StringWriter;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.map.ObjectMapper;
 
 /**
  * Simple JSON logger, see {@link #jsonify(String, LogLevel, Throwable)}. Aims to provide

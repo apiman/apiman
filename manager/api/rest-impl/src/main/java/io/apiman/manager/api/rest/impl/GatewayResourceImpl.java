@@ -16,6 +16,7 @@
 
 package io.apiman.manager.api.rest.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.apiman.common.util.crypt.IDataEncrypter;
 import io.apiman.gateway.engine.beans.SystemStatus;
 import io.apiman.manager.api.beans.BeanUtils;
@@ -49,8 +50,6 @@ import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-
-import org.codehaus.jackson.map.ObjectMapper;
 
 /**
  * Implementation of the Gateway API.

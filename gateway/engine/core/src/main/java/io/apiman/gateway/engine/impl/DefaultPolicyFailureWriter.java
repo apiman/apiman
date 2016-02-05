@@ -15,6 +15,7 @@
  */
 package io.apiman.gateway.engine.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.apiman.gateway.engine.IApiClientResponse;
 import io.apiman.gateway.engine.IPolicyFailureWriter;
 import io.apiman.gateway.engine.beans.ApiRequest;
@@ -28,7 +29,6 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
-import org.codehaus.jackson.map.ObjectMapper;
 
 /**
  * A default impl of the {@link IPolicyFailureWriter} interface.

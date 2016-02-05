@@ -15,6 +15,7 @@
  */
 package io.apiman.gateway.test.junit.vertx3;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import io.apiman.common.util.ReflectionUtils;
 import io.apiman.gateway.platforms.vertx3.common.config.VertxEngineConfig;
 import io.apiman.gateway.platforms.vertx3.verticles.InitVerticle;
@@ -31,8 +32,6 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.util.concurrent.CountDownLatch;
-
-import org.codehaus.jackson.JsonNode;
 
 /**
  * A Vert.x 3 version of the gateway test server

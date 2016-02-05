@@ -15,13 +15,12 @@
  */
 package io.apiman.manager.api.beans.policies;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.apiman.manager.api.beans.summary.PolicySummaryBean;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
  * Models the list of policies that would get applied if an API were invoked
@@ -29,7 +28,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
  *
  * @author eric.wittmann@redhat.com
  */
-@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
+@JsonSerialize(include= JsonSerialize.Inclusion.NON_NULL)
 public class PolicyChainBean implements Serializable {
 
     private static final long serialVersionUID = -497197512733345793L;

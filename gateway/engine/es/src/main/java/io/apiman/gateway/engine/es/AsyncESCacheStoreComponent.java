@@ -15,6 +15,8 @@
  */
 package io.apiman.gateway.engine.es;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.apiman.gateway.engine.DependsOnComponents;
 import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncHandler;
@@ -33,8 +35,6 @@ import java.io.IOException;
 import java.util.Map;
 
 import org.apache.commons.codec.binary.Base64;
-import org.codehaus.jackson.map.DeserializationConfig.Feature;
-import org.codehaus.jackson.map.ObjectMapper;
 
 /**
  * An elasticsearch implementation of a cache store.
@@ -46,7 +46,7 @@ public class AsyncESCacheStoreComponent extends AbstractESComponent implements I
 
     private static final ObjectMapper mapper = new ObjectMapper();
     static {
-        mapper.configure(Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
     private IBufferFactoryComponent bufferFactory;

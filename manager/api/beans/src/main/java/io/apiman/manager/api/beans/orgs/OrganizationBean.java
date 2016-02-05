@@ -15,6 +15,8 @@
  */
 package io.apiman.manager.api.beans.orgs;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -22,8 +24,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
-import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
  * An APIMan Organization.  This is an important top level entity in the APIMan

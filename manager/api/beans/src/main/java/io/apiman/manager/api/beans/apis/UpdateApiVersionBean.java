@@ -15,13 +15,13 @@
  */
 package io.apiman.manager.api.beans.apis;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-
-import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
  * Bean used when updating a version of an API.

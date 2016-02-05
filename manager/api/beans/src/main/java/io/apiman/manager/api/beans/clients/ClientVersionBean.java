@@ -15,6 +15,8 @@
  */
 package io.apiman.manager.api.beans.clients;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -29,8 +31,6 @@ import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
-
-import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
  * Models a single version of a client "impl".  Every client in

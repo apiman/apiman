@@ -16,7 +16,7 @@
 
 package io.apiman.manager.api.beans.apis;
 
-import org.codehaus.jackson.map.annotate.JsonSerialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
  * A single item in the API status.

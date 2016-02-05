@@ -15,6 +15,14 @@
  */
 package io.apiman.test.common.util;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.BooleanNode;
+import com.fasterxml.jackson.databind.node.NullNode;
+import com.fasterxml.jackson.databind.node.NumericNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.TextNode;
 import io.apiman.test.common.plan.TestGroupType;
 import io.apiman.test.common.plan.TestPlan;
 import io.apiman.test.common.plan.TestType;
@@ -35,14 +43,6 @@ import java.util.Map.Entry;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.node.ArrayNode;
-import org.codehaus.jackson.node.BooleanNode;
-import org.codehaus.jackson.node.NullNode;
-import org.codehaus.jackson.node.NumericNode;
-import org.codehaus.jackson.node.ObjectNode;
-import org.codehaus.jackson.node.TextNode;
 import org.custommonkey.xmlunit.Diff;
 import org.custommonkey.xmlunit.Difference;
 import org.custommonkey.xmlunit.DifferenceListener;
@@ -470,14 +470,14 @@ public class TestPlanRunner {
                 assertJson(restTest, expected[idx], actual[idx]);
             }
         } else {
-            Iterator<Entry<String, JsonNode>> fields = expectedJson.getFields();
+            Iterator<Entry<String, JsonNode>> fields = expectedJson.fields();
             while (fields.hasNext()) {
                 Entry<String, JsonNode> entry = fields.next();
                 String expectedFieldName = entry.getKey();
                 JsonNode expectedValue = entry.getValue();
                 if (expectedValue instanceof TextNode) {
                     TextNode tn = (TextNode) expectedValue;
-                    String expected = tn.getTextValue();
+                    String expected = tn.textValue();
                     JsonNode actualValue = actualJson.get(expectedFieldName);
 
                     if (isAssertionIgnoreCase(restTest)) {
@@ -492,7 +492,7 @@ public class TestPlanRunner {
                     Assert.assertEquals("Expected JSON text field '" + expectedFieldName + "' with value '"
                             + expected + "' but found non-text [" + actualValue.getClass().getSimpleName()
                             + "] field with that name instead.", TextNode.class, actualValue.getClass());
-                    String actual = ((TextNode) actualValue).getTextValue();
+                    String actual = ((TextNode) actualValue).textValue();
 
                     if (isAssertionIgnoreCase(restTest)) {
                         if (actual != null) {
@@ -504,26 +504,26 @@ public class TestPlanRunner {
                             actual);
                 } else if (expectedValue instanceof NumericNode) {
                     NumericNode numeric = (NumericNode) expectedValue;
-                    Number expected = numeric.getNumberValue();
+                    Number expected = numeric.numberValue();
                     JsonNode actualValue = actualJson.get(expectedFieldName);
                     Assert.assertNotNull("Expected JSON numeric field '" + expectedFieldName + "' with value '"
                             + expected + "' but was not found.", actualValue);
                     Assert.assertEquals("Expected JSON numeric field '" + expectedFieldName + "' with value '"
                             + expected + "' but found non-numeric [" + actualValue.getClass().getSimpleName()
                             + "] field with that name instead.", expectedValue.getClass(), actualValue.getClass());
-                    Number actual = ((NumericNode) actualValue).getNumberValue();
+                    Number actual = ((NumericNode) actualValue).numberValue();
                     Assert.assertEquals("Value mismatch for numeric field '" + expectedFieldName + "'.", expected,
                             actual);
                 } else if (expectedValue instanceof BooleanNode) {
                     BooleanNode bool = (BooleanNode) expectedValue;
-                    Boolean expected = bool.getBooleanValue();
+                    Boolean expected = bool.booleanValue();
                     JsonNode actualValue = actualJson.get(expectedFieldName);
                     Assert.assertNotNull("Expected JSON boolean field '" + expectedFieldName + "' with value '"
                             + expected + "' but was not found.", actualValue);
                     Assert.assertEquals("Expected JSON boolean field '" + expectedFieldName + "' with value '"
                             + expected + "' but found non-boolean [" + actualValue.getClass().getSimpleName()
                             + "] field with that name instead.", expectedValue.getClass(), actualValue.getClass());
-                    Boolean actual = ((BooleanNode) actualValue).getBooleanValue();
+                    Boolean actual = ((BooleanNode) actualValue).booleanValue();
                     Assert.assertEquals("Value mismatch for boolean field '" + expectedFieldName + "'.", expected,
                             actual);
                 } else if (expectedValue instanceof ObjectNode) {

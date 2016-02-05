@@ -15,10 +15,10 @@
  */
 package io.apiman.manager.api.beans.summary;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import java.io.Serializable;
 import java.util.List;
-
-import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
  * Models an API catalog.

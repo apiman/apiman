@@ -19,6 +19,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.beans.PolicyFailureType;
@@ -32,10 +36,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.map.DeserializationConfig.Feature;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -56,7 +56,7 @@ public class IgnoredResourcesPolicyTest {
     @Before
     public void init() {
         mapper = new ObjectMapper();
-        mapper.configure(Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
     @Test
@@ -152,7 +152,8 @@ public class IgnoredResourcesPolicyTest {
     }
 
     private ApiRequest requestWithVerb(IPolicyChain<ApiRequest> chain, String verb)
-            throws IOException, JsonGenerationException, JsonMappingException {
+            throws IOException, JsonGenerationException, JsonMappingException
+    {
         IgnoredResourcesPolicy policy = new IgnoredResourcesPolicy();
         IgnoredResourcesConfig configObj = new IgnoredResourcesConfig();
         ArrayList<IgnoredResource> elements = new ArrayList<>(2);

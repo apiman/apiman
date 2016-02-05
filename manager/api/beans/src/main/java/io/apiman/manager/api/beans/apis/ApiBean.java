@@ -15,11 +15,9 @@
  */
 package io.apiman.manager.api.beans.apis;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.apiman.manager.api.beans.orgs.OrganizationBasedCompositeId;
 import io.apiman.manager.api.beans.orgs.OrganizationBean;
-
-import java.io.Serializable;
-import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -29,8 +27,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
-import org.codehaus.jackson.map.annotate.JsonSerialize;
+import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Models an API.

@@ -15,11 +15,11 @@
  */
 package io.apiman.manager.api.beans.summary;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import java.io.Serializable;
 
 import javax.xml.bind.annotation.XmlRootElement;
-
-import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
  * A single entry in the {@link ApiRegistryBean}.

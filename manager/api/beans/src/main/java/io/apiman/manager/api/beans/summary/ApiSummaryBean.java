@@ -15,10 +15,11 @@
  */
 package io.apiman.manager.api.beans.summary;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import java.io.Serializable;
 import java.util.Date;
 
-import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
  * A bean modeling a summary of an API.  Typically used when listing

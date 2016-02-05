@@ -15,9 +15,9 @@
  */
 package io.apiman.manager.api.beans.plugins;
 
-import java.io.Serializable;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-import org.codehaus.jackson.map.annotate.JsonSerialize;
+import java.io.Serializable;
 
 /**
  * Models a single plugin when creating.

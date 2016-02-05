@@ -22,9 +22,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
-
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncHandler;
 import io.apiman.gateway.engine.async.IAsyncResult;
@@ -131,8 +130,8 @@ public class InfluxDb09Driver {
 
                             // {"results":
                             JsonNode arrNode = objectMapper.readTree(result.getResult().getBody())
-                                    .path("results").getElements().next() // results: [ first-elem
-                                    .path("series").getElements().next(); // series: [ first-elem
+                                    .path("results").elements().next() // results: [ first-elem
+                                    .path("series").elements().next(); // series: [ first-elem
                             // values: [[db1], [db2], [...]] => db1, db2
                             flattenArrays(arrNode.get("values"), results);
 
@@ -164,7 +163,7 @@ public class InfluxDb09Driver {
                 flattenArrays(entry, results);
             }
         } else {
-            results.add(arrNode.getTextValue());
+            results.add(arrNode.textValue());
         }
     }
 

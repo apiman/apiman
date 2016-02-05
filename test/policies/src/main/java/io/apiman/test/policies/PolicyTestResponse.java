@@ -15,11 +15,11 @@
  */
 package io.apiman.test.policies;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.apiman.gateway.engine.beans.ApiResponse;
 
 import java.util.Map;
 
-import org.codehaus.jackson.map.ObjectMapper;
 
 /**
  * The data returned by a call to the "send" method of {@link ApimanPolicyTest}.  This

@@ -17,7 +17,7 @@ package io.apiman.test.common.util;
 
 import java.util.Set;
 
-import org.codehaus.jackson.JsonNode;
+import com.fasterxml.jackson.databind.JsonNode;
 import org.mvel2.integration.VariableResolver;
 import org.mvel2.integration.impl.BaseVariableResolverFactory;
 

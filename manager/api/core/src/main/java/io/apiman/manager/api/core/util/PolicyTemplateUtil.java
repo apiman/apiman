@@ -15,6 +15,7 @@
  */
 package io.apiman.manager.api.core.util;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.apiman.common.util.crypt.CurrentDataEncrypter;
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
@@ -25,7 +26,6 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import org.codehaus.jackson.map.ObjectMapper;
 import org.mvel2.templates.CompiledTemplate;
 import org.mvel2.templates.TemplateCompiler;
 import org.mvel2.templates.TemplateRuntime;
