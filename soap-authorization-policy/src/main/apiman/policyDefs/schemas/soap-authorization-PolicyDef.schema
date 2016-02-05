@@ -1,0 +1,51 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "SOAP Authorization Policy Configuration",
+  "type": "object",
+  "options": {
+    "disable_collapse": true
+  },
+  "properties": {
+    "rules": {
+      "title": "Add Authorization Rule",
+      "description": "Manage the list of fine-grained authorization rules in the box below. If you want a single required role to protect your entire API, simply add one item with a path of \".*\" and an action of \"*\".",
+      "type": "array",
+      "format": "table",
+      "items": {
+        "type": "object",
+        "title": "Rule",
+        "properties": {
+          "pathPattern": {
+            "title": "Path",
+            "type": "string"
+          },
+          "action": {
+            "title": "SOAPAction",
+            "type": "string"
+          },
+          "role": {
+            "title": "Role",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "multiMatch": {
+      "title": "Should the request pass when any or all of the authorization rules pass?",
+      "type": "string",
+      "id": "multiMatch",
+      "enum": [
+        "all",
+        "any"
+      ]
+    },
+    "requestUnmatched": {
+      "title": "If the request does not match any of the authorization rules, should it pass or fail?",
+      "type": "string",
+      "enum": [
+        "pass",
+        "fail"
+      ]
+    }
+  }
+}
