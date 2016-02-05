@@ -74,7 +74,7 @@ public class JsonExportWriter extends AbstractJsonWriter<GlobalElementsEnum> imp
     public JsonExportWriter(OutputStream targetStream, IApimanLogger logger) throws IOException {
         super(logger);
         om.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        jg = jsonFactory.createJsonGenerator(targetStream, JsonEncoding.UTF8);
+        jg = jsonFactory.createGenerator(targetStream, JsonEncoding.UTF8);
         jg.useDefaultPrettyPrinter();
         jg.setCodec(om);
         jg.writeStartObject(); // Set out the base/root object

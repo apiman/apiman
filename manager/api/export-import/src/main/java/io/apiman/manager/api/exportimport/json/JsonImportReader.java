@@ -74,7 +74,7 @@ public class JsonImportReader extends AbstractJsonReader implements IImportReade
     public JsonImportReader(IApimanLogger logger, InputStream in) throws JsonParseException, IOException {
         this.logger = logger;
         this.in = in;
-        jp = new JsonFactory().createJsonParser(in);
+        jp = new JsonFactory().createParser(in);
         jp.setCodec(new ObjectMapper());
     }
 

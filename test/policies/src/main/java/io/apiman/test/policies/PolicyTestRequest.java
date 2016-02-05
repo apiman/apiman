@@ -65,7 +65,7 @@ public class PolicyTestRequest {
 
     public PolicyTestRequest body(Object entity) {
         try {
-            String body = mapper.writerWithType(entity.getClass()).writeValueAsString(entity);
+            String body = mapper.writerFor(entity.getClass()).writeValueAsString(entity);
             return body(body);
         } catch (Exception e) {
             throw new RuntimeException(e);

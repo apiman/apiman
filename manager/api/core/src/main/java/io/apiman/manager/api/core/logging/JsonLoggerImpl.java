@@ -195,7 +195,7 @@ public class JsonLoggerImpl implements IApimanDelegateLogger {
             int traceLen = t == null ? 0 :  t.getStackTrace().length * 800;
 
             StringWriter sw = new StringWriter(100 + message.length() + traceLen);
-            JsonGenerator generator = mapper.getJsonFactory().createJsonGenerator(sw);
+            JsonGenerator generator = mapper.getFactory().createGenerator(sw);
 
             generator.writeStartObject();
             generator.writeStringField("@timestamp", time.currentTimeIso8601());
