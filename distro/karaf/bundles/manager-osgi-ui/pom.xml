@@ -6,7 +6,7 @@
     <parent>
         <artifactId>apiman-osgi-bundles</artifactId>
         <groupId>io.apiman</groupId>
-        <version>1.2.0-SNAPSHOT</version>
+        <version>1.2.2-SNAPSHOT</version>
     </parent>
     <artifactId>manager-osgi-ui</artifactId>
     <name>Apiman :: OSGI :: Manager UI Module</name>
@@ -18,6 +18,7 @@
         <dependency>
             <groupId>io.apiman</groupId>
             <artifactId>apiman-manager-ui-hawtio</artifactId>
+            <version>${project.version}</version>
             <type>war</type>
         </dependency>
     </dependencies>

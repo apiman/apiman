@@ -6,17 +6,20 @@
     <parent>
         <artifactId>apiman-distro-karaf</artifactId>
         <groupId>io.apiman</groupId>
-        <version>1.2.0-SNAPSHOT</version>
+        <version>1.2.2-SNAPSHOT</version>
     </parent>
     <artifactId>apiman-osgi-bundles</artifactId>
     <name>Apiman :: OSGI bundles</name>
     <packaging>pom</packaging>
     <modules>
+        <module>gateway-osgi</module>
         <module>resteasy</module>
         <module>resteasy-all</module>
         <module>manager-osgi-rest</module>
         <module>manager-osgi-rest-all</module>
         <module>manager-osgi-ui</module>
+        <module>gateway-api-osgi</module>
+        <module>gateway-osgi-servlet</module>
     </modules>
 
 </project>

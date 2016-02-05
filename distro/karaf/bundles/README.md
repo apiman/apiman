@@ -78,13 +78,13 @@ featuresBoot=\
 - Install the features file
 
 ```
-features:addurl mvn:io.apiman/apiman-karaf/1.2.0-SNAPSHOT/xml/features
+features:addurl mvn:io.apiman/apiman-karaf/1.2.2-SNAPSHOT/xml/features
 ```
 
 - Deploy the simple Web Apiman Manager project using ES backend
 
 ```
-features:addurl mvn:io.apiman/apiman-karaf/1.2.0-SNAPSHOT/xml/features
+features:addurl mvn:io.apiman/apiman-karaf/1.2.2-SNAPSHOT/xml/features
 install -s mvn:com.google.guava/guava/18.0
 features:install hibernate/4.2.20
 features:install pax-cdi-1.1-web-weld
@@ -103,14 +103,14 @@ osgi:shutdown
 or
 
 ```
-features:addurl mvn:io.apiman/apiman-karaf/1.2.0-SNAPSHOT/xml/features
+features:addurl mvn:io.apiman/apiman-karaf/1.2.2-SNAPSHOT/xml/features
 features:install apiman-all
 ```
 
 or with embedded dependencies
 
 ```
-features:addurl mvn:io.apiman/apiman-karaf/1.2.0-SNAPSHOT/xml/features
+features:addurl mvn:io.apiman/apiman-karaf/1.2.2-SNAPSHOT/xml/features
 features:install manager-osgi-embed
 ```
 
