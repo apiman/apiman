@@ -108,6 +108,7 @@
 
     <!-- Dependency Versions -->
     <version.com.fasterxml.classmate>1.1.0</version.com.fasterxml.classmate>
+    <version.com.fasterxml.jackson>2.5.4</version.com.fasterxml.jackson>
     <version.com.google.guava>18.0</version.com.google.guava>
     <version.com.google.gwt>2.5.1</version.com.google.gwt>
     <version.com.h2database>1.3.173</version.com.h2database>
@@ -143,7 +144,6 @@
     <version.org.apache.servicemix.bundles.dom4j>1.6.1_5</version.org.apache.servicemix.bundles.dom4j>
     <version.org.eclipse.jetty>9.2.10.v20150310</version.org.eclipse.jetty>
     <version.org.elasticsearch>1.7.2</version.org.elasticsearch>
-    <version.com.fasterxml.jackson>2.5.4</version.com.fasterxml.jackson>
     <version.org.hibernate.commons.annotations>5.0.1.Final</version.org.hibernate.commons.annotations>
     <version.org.hibernate.javax.persistence.hibernate-jpa-2.1-api>1.0.0.Final</version.org.hibernate.javax.persistence.hibernate-jpa-2.1-api>
     <version.org.hibernate>5.0.6.Final</version.org.hibernate>
@@ -759,6 +759,36 @@
       <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-jaxrs</artifactId>
+        <version>${version.com.fasterxml.jackson}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.dataformat</groupId>
+        <artifactId>jackson-dataformat-xml</artifactId>
+        <version>${version.com.fasterxml.jackson}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.dataformat</groupId>
+        <artifactId>jackson-dataformat-yaml</artifactId>
+        <version>${version.com.fasterxml.jackson}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.datatype</groupId>
+        <artifactId>jackson-datatype-joda</artifactId>
+        <version>${version.com.fasterxml.jackson}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.jaxrs</groupId>
+        <artifactId>jackson-jaxrs-base</artifactId>
+        <version>${version.com.fasterxml.jackson}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.jaxrs</groupId>
+        <artifactId>jackson-jaxrs-json-provider</artifactId>
+        <version>${version.com.fasterxml.jackson}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.module</groupId>
+        <artifactId>jackson-module-jaxb-annotations</artifactId>
         <version>${version.com.fasterxml.jackson}</version>
       </dependency>
       <dependency>
