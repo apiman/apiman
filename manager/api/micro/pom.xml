@@ -253,14 +253,16 @@
             io.swagger.jaxrs.config;version="[0.0,2.0)",
             io.swagger.jaxrs.listing;version="[0.0,2.0)",
             io.apiman.manager.api.core.exceptions,
-            org.jboss.weld.interceptor.proxy,
+            org.jboss.weld.interceptor.proxy;resolution:=optional,
             *
           </Import-Package>
-            <Require-Capability>
-                org.ops4j.pax.cdi.extension;filter:="(&amp;(extension=pax-cdi-extension)(version>=0.11)(!(version>=0.12)))",
-                osgi.extender;filter:="(osgi.extender=pax.cdi)",
-                osgi.ee;filter:="(&amp;(osgi.ee=JavaSE)(version=1.6))"
-            </Require-Capability>
+            <!-- WE DON' T NEED THAT PAX CDI SCANS IT
+          <Require-Capability>
+            org.ops4j.pax.cdi.extension;filter:="(&amp;(extension=pax-cdi-extension)(version>=0.11)(!(version>=0.12)))",
+            osgi.extender;filter:="(osgi.extender=pax.cdi)",
+            osgi.ee;filter:="(&amp;(osgi.ee=JavaSE)(version=1.6))"
+          </Require-Capability>
+          -->
           </instructions>
         </configuration>
       </plugin>

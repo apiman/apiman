@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>apiman</title>
+    <!-- The base href has been changed to support a deployment into a jetty/tomcat/jetty-osgi web container -->
+    <base href='/apimanui/'>
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="dist/deps.css" />
+    <link rel="stylesheet" href="plugins/api-manager/css/apiman.css" />
+    <link rel="stylesheet" href="plugins/api-manager/css/apiman-responsive.css" />
+
+    <!-- Scripts -->
+    <script src="dist/deps.js"></script>
+</head>
+
+<body>
+<div ng-view></div>
+<script src="dist/apiman-manager-ui.js"></script>
+</body>
+</html>

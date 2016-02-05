@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>apiman-distro-karaf</artifactId>
+        <groupId>io.apiman</groupId>
+        <version>1.2.2-SNAPSHOT</version>
+    </parent>
+    <artifactId>apiman-osgi-bundles</artifactId>
+    <name>Apiman :: OSGI bundles</name>
+    <packaging>pom</packaging>
+    <modules>
+        <module>gateway-osgi</module>
+        <module>resteasy</module>
+        <module>resteasy-all</module>
+        <module>manager-osgi-rest</module>
+        <module>manager-osgi-rest-all</module>
+        <module>manager-osgi-ui</module>
+        <module>gateway-api-osgi</module>
+        <module>gateway-osgi-servlet</module>
+    </modules>
+
+</project>

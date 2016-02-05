@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+         id="WebApp_ID" version="2.5" metadata-complete="true">
+    <display-name>Web Application</display-name>
+
+    <context-param>
+        <param-name>resteasy.injector.factory</param-name>
+        <param-value>org.jboss.resteasy.cdi.osgi.InjectorFactory</param-value>
+    </context-param>
+    <context-param>
+        <param-name>resteasy.scan</param-name>
+        <param-value>true</param-value>
+    </context-param>
+    <context-param>
+        <param-name>resteasy.resources</param-name>
+        <param-value>
+            io.apiman.manager.osgi.MessageRestService
+            <!--
+            io.apiman.manager.osgi.api.SystemResourceImpl
+            io.apiman.manager.api.rest.impl.SystemResourceImpl,
+            io.apiman.manager.api.rest.impl.UserResourceImpl
+            -->
+        </param-value>
+    </context-param>
+    <context-param>
+        <param-name>resteasy.servlet.mapping.prefix</param-name>
+        <param-value></param-value>
+    </context-param>
+    <context-param>
+        <param-name>resteasy.providers</param-name>
+        <param-value>
+            org.jboss.resteasy.plugins.providers.DataSourceProvider,
+            org.jboss.resteasy.plugins.providers.DocumentProvider,
+            org.jboss.resteasy.plugins.providers.DefaultTextPlain,
+            org.jboss.resteasy.plugins.providers.StringTextStar,
+            org.jboss.resteasy.plugins.providers.InputStreamProvider,
+            org.jboss.resteasy.plugins.providers.ByteArrayProvider,
+            org.jboss.resteasy.plugins.providers.FormUrlEncodedProvider,
+            org.jboss.resteasy.plugins.providers.FileProvider,
+            org.jboss.resteasy.plugins.providers.StreamingOutputProvider,
+            org.jboss.resteasy.plugins.providers.IIOImageProvider,
+            org.jboss.resteasy.plugins.providers.jackson.ResteasyJacksonProvider,
+            org.jboss.resteasy.plugins.providers.jackson.JacksonJsonpInterceptor,
+            org.jboss.resteasy.plugins.interceptors.CacheControlInterceptor,
+            org.jboss.resteasy.plugins.interceptors.encoding.AcceptEncodingGZIPInterceptor,
+            org.jboss.resteasy.plugins.interceptors.encoding.ClientContentEncodingHeaderInterceptor,
+            org.jboss.resteasy.plugins.interceptors.encoding.GZIPDecodingInterceptor,
+            org.jboss.resteasy.plugins.interceptors.encoding.GZIPEncodingInterceptor,
+            org.jboss.resteasy.plugins.interceptors.encoding.ServerContentEncodingHeaderInterceptor
+        </param-value>
+    </context-param>
+
+    <listener>
+        <listener-class>org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap</listener-class>
+    </listener>
+
+    <filter>
+        <filter-name>locale</filter-name>
+        <filter-class>io.apiman.common.servlet.LocaleFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>locale</filter-name>
+        <url-pattern>/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+    </filter-mapping>
+
+    <filter>
+        <filter-name>cors</filter-name>
+        <filter-class>io.apiman.common.servlet.ApimanCorsFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>cors</filter-name>
+        <url-pattern>/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+    </filter-mapping>
+
+    <filter>
+        <filter-name>disablecaching</filter-name>
+        <filter-class>io.apiman.common.servlet.DisableCachingFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>disablecaching</filter-name>
+        <url-pattern>/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+    </filter-mapping>
+
+    <servlet>
+        <servlet-name>resteasy</servlet-name>
+        <servlet-class>org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher</servlet-class>
+        <init-param>
+            <param-name>javax.ws.rs.Application</param-name>
+            <param-value>io.apiman.manager.osgi.ManagerApiApplication</param-value>
+        </init-param>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>resteasy</servlet-name>
+        <url-pattern>/*</url-pattern>
+    </servlet-mapping>
+
+</web-app>

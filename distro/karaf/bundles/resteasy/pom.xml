@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>io.apiman</groupId>
+        <artifactId>apiman-osgi-bundles</artifactId>
+        <version>1.2.2-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>resteasy</artifactId>
+    <version>2.3.10.Final_1</version>
+    <name>Apiman :: OSGI :: Resteasy Bundle</name>
+    <packaging>bundle</packaging>
+
+    <properties>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jaxrs</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>junit</groupId>
+                    <artifactId>junit</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jackson-provider</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-cdi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.enterprise</groupId>
+            <artifactId>cdi-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!--            <plugin>
+                            <artifactId>maven-shade-plugin</artifactId>
+                            <version>2.4.1</version>
+                            <executions>
+                                <execution>
+                                    <phase>package</phase>
+                                    <goals>
+                                        <goal>shade</goal>
+                                    </goals>
+                                    <configuration>
+                                        <artifactSet>
+                                            <excludes>
+                                                <exclude>junit:junit</exclude>
+                                                <exclude>javassist:javassist</exclude>
+                                                <exclude>javax.annotation:jsr250-api</exclude>
+                                                <exclude>javax.activation:activation</exclude>
+                                                <exclude>org.apache.httpcomponents:*</exclude>
+                                                <exclude>org.jboss.logging:jboss-logging</exclude>
+                                                <exclude>commons-codec:commons-codec</exclude>
+                                                <exclude>commons-io:commons-io</exclude>
+                                            </excludes>
+                                        </artifactSet>
+                                        <filters>
+                                            <filter>
+                                                <artifact>org.jboss.resteasy:resteasy-jaxrs</artifact>
+                                                <includes>
+                                                    <include>org/jboss/resteasy/spi/ResteasyDeployment</include>
+                                                    <include>META-INF/services/**</include>
+                                                </includes>
+                                            </filter>
+                                        </filters>
+                                       <promoteTransitiveDependencies>true</promoteTransitiveDependencies>
+                                        <createDependencyReducedPom>true</createDependencyReducedPom>
+                                        &lt;!&ndash;                            <transformers>
+                                                                        <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                                                            <mainClass>spi.org.jboss.resteasy.spi.ResteasyDeployment</mainClass>
+                                                                        </transformer>
+                                                                    </transformers>&ndash;&gt;
+                                        <transformers>
+                                            &lt;!&ndash;<transformer
+                                                    implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+
+                                            <transformer
+                                                    implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                                                <resource>META-INF/services/javax.ws.rs.ext.Providers</resource>
+                                            </transformer>
+                                            <transformer
+                                                    implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                                                <resource>META-INF/services/javax.ws.rs.ext.RuntimeDelegate</resource>
+                                            </transformer>
+                                          &ndash;&gt;
+                                        </transformers>
+
+                                    </configuration>
+                                </execution>
+                            </executions>
+                        </plugin>-->
+
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Import-Package>
+                            javax.imageio.plugins.jpeg,
+                            javax.decorator,
+                            javax.enterprise.context,
+                            javax.enterprise.context.spi,
+                            javax.enterprise.event,
+                            javax.enterprise.inject,
+                            javax.enterprise.inject.spi,
+                            javax.enterprise.util,
+                            javax.naming,
+                            javax.servlet,
+                            javax.servlet.http,
+                            javax.ws.rs,
+                            javax.ws.rs.core,
+                            javax.ws.rs.ext,
+                            javax.activation,
+                            javax.annotation.security,
+                            javax.imageio,
+                            javax.xml.parsers,
+                            javax.xml.transform,
+                            javax.xml.transform.dom,
+                            javax.xml.transform.stream,
+                            org.apache.http,
+                            org.apache.http.client,
+                            org.apache.http.client.methods,
+                            org.apache.commons.io.output,
+                            org.apache.commons.logging,
+                            org.codehaus.jackson,
+                            org.jboss.logging,
+                            org.jboss.resteasy.cdi,
+                            org.jboss.resteasy.cdi.osgi,
+                            org.scannotation,
+                            org.slf4j,
+                            org.w3c.dom,
+                            io.apiman.manager.osgi;resolution:=optional,
+                            io.apiman.manager.api.rest.impl;resolution:=optional,
+                            io.apiman.manager.api.rest.contract;resolution:=optional,
+                            *
+                        </Import-Package>
+                        <Export-Package>
+                            org.jboss.resteasy.osgi
+                        </Export-Package>
+                        <Require-Capability>
+                            org.ops4j.pax.cdi.extension;filter:="(&amp;(extension=pax-cdi-extension)(version>=0.11)(!(version>=0.12)))",
+                            osgi.extender;filter:="(osgi.extender=pax.cdi)",
+                            osgi.ee;filter:="(&amp;(osgi.ee=JavaSE)(version=1.6))"
+                        </Require-Capability>
+                    </instructions>
+                    <unpackBundle>true</unpackBundle>
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+
+</project>
