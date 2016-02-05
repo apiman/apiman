@@ -23,13 +23,19 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>apiman-common-config</artifactId>
         </dependency>
+        <!--
+                <dependency>
+                    <groupId>${project.groupId}</groupId>
+                    <artifactId>apiman-gateway-engine-beans</artifactId>
+                </dependency>
+                <dependency>
+                    <groupId>${project.groupId}</groupId>
+                    <artifactId>apiman-gateway-engine-core</artifactId>
+                </dependency>-->
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>apiman-gateway-engine-beans</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>apiman-gateway-engine-core</artifactId>
+            <artifactId>gateway-osgi-servlet</artifactId>
+            <version>1.2.2-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -63,10 +69,10 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>apiman-common-servlet</artifactId>
         </dependency>
-        <dependency>
+<!--        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>apiman-gateway-platforms-war</artifactId>
-        </dependency>
+        </dependency>-->
 
         <!-- Third Party Dependencies -->
         <dependency>
@@ -301,16 +307,31 @@
                             javax.servlet,
                             org.apache.lucene.analysis.standard;resolution:="optional",
                             org.apache.http.conn*;resolution:="optional",
-                            io.searchbox.action;resolution:="optional",
-                            io.searchbox.client;resolution:="optional",
                             com.sun.jdi.request;resolution:="optional",
                             com.sun.jdi*;resolution:="optional",
                             com.sun.jna*;resolution:="optional",
                             com.judoscript*;resolution:="optional",
+                            com.codahale.*;resolution:="optional",
+                            com.google.protobuf;resolution:="optional",
+                            com.spatial4j.core.*;resolution:="optional",
+                            com.vividsolutions.jts.geom;resolution:="optional",
                             sun.reflect;resolution:="optional",
                             bsh;resolution:="optional",
-                            org.slf4j.impl;resolution:="optional",
-                            sun.security*;resolution:="optional",
+                            io.apiman.gateway.engine*;version=1.2.2,
+                            io.apiman.gateway.engine.beans*;version=1.2.2,
+                            io.apiman.gateway.platforms.war,
+                            io.apiman.gateway.platforms.war.filters,
+                            io.apiman.gateway.platforms.war.i18n,
+                            io.apiman.gateway.platforms.war.listeners,
+                            io.apiman.gateway.platforms.war.servlets,
+                            io.searchbox.action;resolution:="optional",
+                            io.searchbox.client;resolution:="optional",
+                            org.apache.commons.digester*;resolution:="optional",
+                            org.apache.commons.jxpath*;resolution:="optional",
+                            org.apache.commons.vfs2;resolution:="optional",
+                            org.apache.log;resolution:="optional",
+                            org.apache.log4j.helpers;resolution:="optional",
+                            org.apache.lucene*;resolution:="optional",
                             org.infinispan*;resolution:="optional",
                             org.eclipse.jetty.npn;resolution:="optional",
                             org.apache.tomcat.jni;resolution:="optional",
@@ -320,22 +341,14 @@
                             org.bouncycastle.operator*;resolution:="optional",
                             org.hibernate*;resolution:="optional",
                             org.hyperic.sigar;resolution:="optional",
+                            org.slf4j.impl;resolution:="optional",
                             org.ietf.jgss,
                             org.jboss.*;resolution:="optional",
-                            com.codahale.*;resolution:="optional",
-                            com.google.protobuf;resolution:="optional",
-                            com.spatial4j.core.*;resolution:="optional",
-                            com.vividsolutions.jts.geom;resolution:="optional",
-                            org.apache.commons.digester*;resolution:="optional",
-                            org.apache.commons.jxpath*;resolution:="optional",
-                            org.apache.commons.vfs2;resolution:="optional",
-                            org.apache.log;resolution:="optional",
-                            org.apache.log4j.helpers;resolution:="optional",
-                            org.apache.lucene*;resolution:="optional",
+                            sun.security*;resolution:="optional",
                             *;resolution:="optional"
                         </Import-Package>
                         <Export-Package>
-                            io.apiman.gateway.platforms.war
+                            !io.apiman.gateway.platforms.war
                         </Export-Package>
                         <Embed-Dependency>
                             *;scope=compile;artifactId=!junit|mockito-all

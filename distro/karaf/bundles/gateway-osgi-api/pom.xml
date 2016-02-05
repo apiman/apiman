@@ -9,15 +9,17 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <packaging>bundle</packaging>
-    <artifactId>gateway-api-osgi</artifactId>
+    <artifactId>gateway-osgi-api</artifactId>
     <name>Apiman :: OSGI :: Gateway Api Module</name>
 
     <dependencies>
         <!-- Project Libs -->
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>apiman-gateway-platforms-war</artifactId>
-        </dependency>
+        <!--
+<dependency>
+    <groupId>${project.groupId}</groupId>
+    <artifactId>apiman-gateway-platforms-war</artifactId>
+</dependency>
+
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>apiman-gateway-engine-beans</artifactId>
@@ -25,7 +27,7 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>apiman-gateway-engine-core</artifactId>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>apiman-gateway-api-rest</artifactId>
@@ -75,7 +77,15 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- Servlvet -->
+        <!-- Temp dep -->
+        <dependency>
+            <groupId>io.apiman</groupId>
+            <artifactId>gateway-osgi</artifactId>
+            <version>1.2.2-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Servlet -->
         <dependency>
             <groupId>org.jboss.spec.javax.servlet</groupId>
             <artifactId>jboss-servlet-api_3.0_spec</artifactId>
@@ -106,6 +116,22 @@
                     <Bundle-Activator>io.apiman.gateway.api.osgi.Activator</Bundle-Activator>
                     <Import-Package>
                         io.apiman.gateway.platforms.war,
+                        io.apiman.gateway.platforms.war.filters,
+                        io.apiman.gateway.platforms.war.i18n,
+                        io.apiman.gateway.platforms.war.listeners,
+                        io.apiman.gateway.platforms.war.servlets,
+                        io.apiman.gateway.engine,
+                        io.apiman.gateway.engine.async,
+                        io.apiman.gateway.engine.auth,
+                        io.apiman.gateway.engine.components,
+                        io.apiman.gateway.engine.i18n,
+                        io.apiman.gateway.engine.impl,
+                        io.apiman.gateway.engine.io,
+                        io.apiman.gateway.engine.metrics,
+                        io.apiman.gateway.engine.policy,
+                        io.apiman.gateway.engine.rates,
+                        io.apiman.gateway.engine.beans,
+                        io.apiman.gateway.engine.beans.exceptions,
                         *;resolution:="optional"
                     </Import-Package>
                     <Export-Package>

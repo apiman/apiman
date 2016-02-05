@@ -18,6 +18,7 @@
         <dependency>
             <groupId>io.apiman</groupId>
             <artifactId>apiman-manager-ui-hawtio</artifactId>
+            <version>${project.version}</version>
             <type>war</type>
         </dependency>
     </dependencies>

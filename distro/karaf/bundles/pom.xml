@@ -19,6 +19,7 @@
         <module>manager-osgi-rest-all</module>
         <module>manager-osgi-ui</module>
         <module>gateway-api-osgi</module>
+        <module>gateway-osgi-servlet</module>
     </modules>
 
 </project>

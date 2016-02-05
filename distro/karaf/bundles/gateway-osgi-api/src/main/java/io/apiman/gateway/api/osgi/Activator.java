@@ -1,9 +1,6 @@
-package io.apiman.gateway.platforms.osgi;
+package io.apiman.gateway.api.osgi;
 
-import io.apiman.common.servlet.ApimanCorsFilter;
-import io.apiman.common.servlet.DisableCachingFilter;
-import io.apiman.common.servlet.LocaleFilter;
-import io.apiman.common.servlet.RootResourceFilter;
+import io.apiman.common.servlet.*;
 import io.apiman.gateway.platforms.war.filters.HttpRequestThreadLocalFilter;
 import io.apiman.gateway.platforms.war.listeners.WarGatewayBootstrapper;
 import io.apiman.gateway.platforms.war.servlets.WarGatewayServlet;
@@ -66,20 +63,73 @@ public class Activator implements BundleActivator {
             // set a session timeout of 2 minutes
             webContainer.setSessionTimeout(2, httpContext);
 
-            // Register the WarGatewayBootstrapper listener
+            /*
+             * Register Apiman listeners : BootStrap & RestEasy
+              */
             webContainer.registerEventListener(new WarGatewayBootstrapper(), // registered
                     httpContext // http context
             );
 
-            // Register the WarGatewayServlet
-            webContainer.registerServlet(new WarGatewayServlet(), // registered
-                    new String[] { "/apiman-gateway/*" }, // url patterns
+            webContainer.registerEventListener(new ResteasyBootstrap(), // registered
+                    httpContext // http context
+            );
+
+            /*
+             * Register Filters :
+             * HttpRequestThreadLocalFilter, LocaleFilter, CorsFilter, CachingFilter,
+             * Authentication, RootResource, JAX-RS
+             */
+            webContainer.registerFilter(new HttpRequestThreadLocalFilter(),
+                    new String[] { "/apiman-gateway-api/*" }, // url patterns
+                    new String[] { "HttpRequestThreadLocalFilter" }, // servlet names
+                    initParamsFilter, // init params
+                    httpContext // http context
+            );
+            webContainer.registerFilter(new LocaleFilter(),
+                    new String[] { "/apiman-gateway-api/*" }, // url patterns
+                    new String[] { "LocalFilter" }, // servlet names
+                    initParamsFilter, // init params
+                    httpContext // http context
+            );
+            webContainer.registerFilter(new ApimanCorsFilter(),
+                    new String[] { "/apiman-gateway-api/*" }, // url patterns
+                    new String[] { "CorsFilter" }, // servlet names
+                    initParamsFilter, // init params
+                    httpContext // http context
+            );
+            webContainer.registerFilter(new DisableCachingFilter(),
+                    new String[] { "/apiman-gateway-api/*" }, // url patterns
+                    new String[] { "DisableCachingFilter" }, // servlet names
+                    initParamsFilter, // init params
+                    httpContext // http context
+            );
+/*            webContainer.registerFilter(new AuthenticationFilter(),
+                    new String[] { "/apiman-gateway-api/*" }, // url patterns
+                    new String[] { "AuthenticationFilter" }, // servlet names
+                    initParamsFilter, // init params
+                    httpContext // http context
+            );*/
+            webContainer.registerFilter(new RootResourceFilter(),
+                    new String[] { "/apiman-gateway-api/*" }, // url patterns
+                    new String[] { "RootResourceFilter" }, // servlet names
                     initParamsFilter, // init params
                     httpContext // http context
             );
 
-            // Register static resources
-            // webContainer.registerResources("/apiman-gateway/", "/apiman-gateway/", httpContext);
+
+            // Register the RestEasyServlet
+            initParamsFilter = new Hashtable<String, Object>();
+            initParamsFilter.put("javax.ws.rs.Application", "io.apiman.gateway.api.osgi.GatewayOSGIApplication");
+            webContainer.registerServlet(new HttpServletDispatcher(),
+                    "ResteasyServlet",
+                    new String[] { "/apiman-gateway-api/*" }, // url patterns
+                    initParamsFilter, // init params
+                    httpContext // http context
+            );
+
+            // Register static htmls
+            // webContainer.registerResources("/apiman-gateway-api/", "/apiman-gateway-api/", httpContext);
+
         }
     }
 
@@ -98,4 +148,5 @@ public class Activator implements BundleActivator {
     public static Dictionary config() {
         return apimanProps;
     }
+
 }
