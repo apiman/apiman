@@ -6,9 +6,11 @@ import static org.junit.Assert.assertSame;
 import static org.mockito.Matchers.refEq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+
 import io.apiman.gateway.engine.async.IAsyncHandler;
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.ApiResponse;
+import io.apiman.gateway.engine.beans.util.QueryMap;
 import io.apiman.gateway.engine.components.IBufferFactoryComponent;
 import io.apiman.gateway.engine.io.ByteBuffer;
 import io.apiman.gateway.engine.io.IApimanBuffer;
@@ -17,9 +19,6 @@ import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
 import io.apiman.gateway.engine.policy.PolicyContextImpl;
 import io.apiman.plugins.jsonp_policy.beans.JsonpConfigBean;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -69,7 +68,7 @@ public class JsonpPolicyTest {
         // given
         JsonpConfigBean config = new JsonpConfigBean();
         config.setCallbackParamName("testParam");
-        Map<String, String> queryParams = new HashMap<>();
+        QueryMap queryParams = new QueryMap();
         ApiRequest request = new ApiRequest();
         request.setQueryParams(queryParams);
 
@@ -86,7 +85,7 @@ public class JsonpPolicyTest {
         // given
         JsonpConfigBean config = new JsonpConfigBean();
         config.setCallbackParamName("testParam");
-        Map<String, String> queryParams = new HashMap<>();
+        QueryMap queryParams = new QueryMap();
         queryParams.put("testParam", "testFunction");
         ApiRequest request = new ApiRequest();
         request.setQueryParams(queryParams);
@@ -104,7 +103,7 @@ public class JsonpPolicyTest {
         // given
         JsonpConfigBean config = new JsonpConfigBean();
         config.setCallbackParamName("testParam");
-        Map<String, String> queryParams = new HashMap<>();
+        QueryMap queryParams = new QueryMap();
         queryParams.put("testParam", "testFunction");
         ApiRequest request = new ApiRequest();
         request.setQueryParams(queryParams);

@@ -23,15 +23,14 @@ import io.apiman.gateway.engine.async.IAsyncHandler;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.ApiResponse;
-import io.apiman.gateway.engine.beans.HeaderHashMap;
 import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.beans.PolicyFailureType;
 import io.apiman.gateway.engine.beans.exceptions.ConnectorException;
+import io.apiman.gateway.engine.beans.util.HeaderMap;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.io.IApimanBuffer;
 import io.apiman.plugins.cors_policy.util.HttpHelper;
 
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -62,8 +61,8 @@ public class CorsConnector implements IApiConnector {
     // CORS conversation related fields
     private CorsConfigBean config;
     private ApiRequest request;
-    private Map<String, String> requestHeaders;
-    private Map<String, String> responseHeaders = new HeaderHashMap();
+    private HeaderMap requestHeaders;
+    private HeaderMap responseHeaders = new HeaderMap();
     private boolean shortCircuit = false;
     private PolicyFailure failure = null;
     private IPolicyFailureFactoryComponent failureFactory;
@@ -114,7 +113,7 @@ public class CorsConnector implements IApiConnector {
     /**
      * @return Calculated CORs response headers
      */
-    public Map<String, String> getResponseHeaders() {
+    public HeaderMap getResponseHeaders() {
         return responseHeaders;
     }
 

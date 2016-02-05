@@ -18,6 +18,7 @@ package io.apiman.plugins.cors_policy;
 import io.apiman.gateway.engine.IApiConnector;
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.ApiResponse;
+import io.apiman.gateway.engine.beans.util.CaseInsensitiveStringMultiMap;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.policies.AbstractMappedPolicy;
 import io.apiman.gateway.engine.policy.IConnectorInterceptor;
@@ -106,7 +107,7 @@ public class CorsPolicy extends AbstractMappedPolicy<CorsConfigBean> {
         chain.doApply(response);
     }
 
-    private void setResponseHeaders(IPolicyContext context, Map<String, String> response) {
+    private void setResponseHeaders(IPolicyContext context, CaseInsensitiveStringMultiMap response) {
         context.setAttribute(CORS_SIMPLE_RESPONSE_HEADERS, response);
     }
 

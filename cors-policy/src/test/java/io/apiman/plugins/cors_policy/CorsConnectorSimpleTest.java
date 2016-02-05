@@ -17,9 +17,8 @@ package io.apiman.plugins.cors_policy;
 
 import static org.mockito.BDDMockito.given;
 
+import io.apiman.gateway.engine.beans.util.HeaderMap;
 import io.apiman.plugins.cors_policy.util.HttpHelper;
-
-import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -57,7 +56,7 @@ public class CorsConnectorSimpleTest extends CorsConnectorTestBase {
         allowOrigins.add("thiswillbeignored");
 
         connector = new CorsConnector(request, config, failureFactory);
-        Map<String, String> responseHeaders = connector.getResponseHeaders();
+        HeaderMap responseHeaders = connector.getResponseHeaders();
 
         Assert.assertTrue(!connector.isFailure());
         Assert.assertEquals("blergs", responseHeaders.get(CorsConnector.AC_ALLOW_ORIGIN_KEY));
@@ -74,7 +73,7 @@ public class CorsConnectorSimpleTest extends CorsConnectorTestBase {
         allowOrigins.add("someotherorigin");
 
         connector = new CorsConnector(request, config, failureFactory);
-        Map<String, String> responseHeaders = connector.getResponseHeaders();
+        HeaderMap responseHeaders = connector.getResponseHeaders();
 
         Assert.assertTrue(!connector.isFailure());
         Assert.assertEquals("panacalty", responseHeaders.get(CorsConnector.AC_ALLOW_ORIGIN_KEY));
@@ -90,7 +89,7 @@ public class CorsConnectorSimpleTest extends CorsConnectorTestBase {
         allowOrigins.add("http://example.com");
 
         connector = new CorsConnector(request, config, failureFactory);
-        Map<String, String> responseHeaders = connector.getResponseHeaders();
+        HeaderMap responseHeaders = connector.getResponseHeaders();
 
         Assert.assertTrue(!connector.isFailure());
         Assert.assertEquals("http://example.com", responseHeaders.get(CorsConnector.AC_ALLOW_ORIGIN_KEY));
@@ -139,7 +138,7 @@ public class CorsConnectorSimpleTest extends CorsConnectorTestBase {
         setHost("http://wibble.com");
 
         connector = new CorsConnector(request, config, failureFactory);
-        Map<String, String> responseHeaders = connector.getResponseHeaders();
+        HeaderMap responseHeaders = connector.getResponseHeaders();
 
         Assert.assertTrue(!connector.isFailure());
         Assert.assertEquals("Vindolanda, Lindisfarne",
@@ -159,7 +158,7 @@ public class CorsConnectorSimpleTest extends CorsConnectorTestBase {
         setHost("philosopher");
 
         connector = new CorsConnector(request, config, failureFactory);
-        Map<String, String> responseHeaders = connector.getResponseHeaders();
+        HeaderMap responseHeaders = connector.getResponseHeaders();
 
         Assert.assertTrue(!connector.isFailure());
         Assert.assertEquals("russell", responseHeaders.get(CorsConnector.AC_ALLOW_ORIGIN_KEY));
@@ -178,7 +177,7 @@ public class CorsConnectorSimpleTest extends CorsConnectorTestBase {
         config.setAllowCredentials(true);
 
         connector = new CorsConnector(request, config, failureFactory);
-        Map<String, String> responseHeaders = connector.getResponseHeaders();
+        HeaderMap responseHeaders = connector.getResponseHeaders();
 
         Assert.assertTrue(!connector.isFailure());
         Assert.assertEquals("true", responseHeaders.get(CorsConnector.AC_ALLOW_CREDENTIALS_KEY));
@@ -197,7 +196,7 @@ public class CorsConnectorSimpleTest extends CorsConnectorTestBase {
         config.setAllowCredentials(false);
 
         connector = new CorsConnector(request, config, failureFactory);
-        Map<String, String> responseHeaders = connector.getResponseHeaders();
+        HeaderMap responseHeaders = connector.getResponseHeaders();
 
         Assert.assertTrue(!connector.isFailure());
         // Header should not be set at all if allowCredentials is false.

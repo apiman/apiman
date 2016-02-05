@@ -15,10 +15,9 @@
  */
 package io.apiman.plugins.simpleheaderpolicy;
 
-import java.util.Map;
-
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.ApiResponse;
+import io.apiman.gateway.engine.beans.util.HeaderMap;
 import io.apiman.gateway.engine.policies.AbstractMappedPolicy;
 import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
@@ -26,9 +25,11 @@ import io.apiman.plugins.simpleheaderpolicy.beans.AddHeaderBean;
 import io.apiman.plugins.simpleheaderpolicy.beans.AddHeaderBean.ApplyTo;
 import io.apiman.plugins.simpleheaderpolicy.beans.SimpleHeaderPolicyDefBean;
 
+import java.util.Map;
+
 /**
  * Set, overwrite and/or delete headers on request, response or both, with pattern matching available.
- * 
+ *
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 public class SimpleHeaderPolicy extends AbstractMappedPolicy<SimpleHeaderPolicyDefBean> {
@@ -54,7 +55,7 @@ public class SimpleHeaderPolicy extends AbstractMappedPolicy<SimpleHeaderPolicyD
         chain.doApply(response);
     }
 
-    private void setHeaders(Map<String, String> headers, SimpleHeaderPolicyDefBean config, ApplyTo applyTo) {
+    private void setHeaders(HeaderMap headers, SimpleHeaderPolicyDefBean config, ApplyTo applyTo) {
         for (AddHeaderBean header : config.getAddHeaders()) {
             if ((header.getApplyTo() == applyTo || header.getApplyTo() == ApplyTo.BOTH)) {
                 if (header.getOverwrite() || !headers.containsKey(header.getHeaderName())) {
@@ -64,8 +65,8 @@ public class SimpleHeaderPolicy extends AbstractMappedPolicy<SimpleHeaderPolicyD
         }
     }
 
-    private void stripHeaders(Map<String, String> headers, SimpleHeaderPolicyDefBean config) {
-        for (Map.Entry<String, String> header : headers.entrySet()) {
+    private void stripHeaders(HeaderMap headers, SimpleHeaderPolicyDefBean config) {
+        for (Map.Entry<String, String> header : headers) {
             if (config.getKeyRegex().matcher(header.getKey()).matches()) {
                 headers.remove(header.getKey());
             }

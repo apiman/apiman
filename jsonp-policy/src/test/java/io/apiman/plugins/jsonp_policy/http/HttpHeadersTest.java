@@ -2,8 +2,7 @@ package io.apiman.plugins.jsonp_policy.http;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.HashMap;
-import java.util.Map;
+import io.apiman.gateway.engine.beans.util.HeaderMap;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -12,11 +11,11 @@ import org.junit.Test;
 public class HttpHeadersTest {
 
     private static final String CONTENT_TYPE = "Content-Type"; //$NON-NLS-1$
-    private Map<String, String> headers;
+    private HeaderMap headers;
 
     @Before
     public void setUp() {
-        headers = new HashMap<>();
+        headers = new HeaderMap();
     }
 
     @Test
