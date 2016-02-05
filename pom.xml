@@ -555,7 +555,7 @@
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-distro-eap64</artifactId>
+        <artifactId>apiman-distro-eap7</artifactId>
         <version>${project.version}</version>
         <type>zip</type>
         <classifier>overlay</classifier>

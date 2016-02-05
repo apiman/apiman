@@ -43,10 +43,10 @@
       <classifier>overlay</classifier>
     </dependency>
 
-    <!-- The EAP 6.4 version of APIMan -->
+    <!-- The EAP 7.0 version of APIMan -->
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>apiman-distro-eap64</artifactId>
+      <artifactId>apiman-distro-eap7</artifactId>
       <type>zip</type>
       <classifier>overlay</classifier>
     </dependency>
@@ -326,9 +326,9 @@
         </plugins>
       </build>
     </profile>
-    <!-- Install on EAP 6.4 -->
+    <!-- Install on EAP 7.0 -->
     <profile>
-      <id>install-all-eap64</id>
+      <id>install-all-eap7</id>
       <build>
         <plugins>
           <plugin>
@@ -344,7 +344,7 @@
             </dependencies>
             <executions>
               <execution>
-                <id>run-eap64</id>
+                <id>run-eap7</id>
                 <phase>install</phase>
                 <configuration>
                   <tasks>
@@ -353,9 +353,9 @@
 
                     <property name="apiman.tempdir" value="${project.build.directory}/_tmp" />
                     <property name="apiman.install.dir" value="${project.build.directory}" />
-                    <property name="apiman.appserver.dir" location="${apiman.install.dir}/jboss-eap-6.4" />
-                    <property name="apiman.appserver.zip" location="${basedir}/jboss-eap-6.4.0.zip" />
-                    <property name="apiman.apiman-distro-eap64.zip" value="${maven.dependency.io.apiman.apiman-distro-eap64.overlay.zip.path}" />
+                    <property name="apiman.appserver.dir" location="${apiman.install.dir}/jboss-eap-7.0" />
+                    <property name="apiman.appserver.zip" location="${basedir}/jboss-eap-7.0.0.Beta.zip" />
+                    <property name="apiman.apiman-distro-eap7.zip" value="${maven.dependency.io.apiman.apiman-distro-eap7.overlay.zip.path}" />
                     <property name="apiman.apiman-tools-services.war" value="${maven.dependency.io.apiman.apiman-tools-services.war.path}" />
                     <property name="apiman.eap.home" location="${apiman.appserver.dir}" />
                     <property name="apiman.eap.webapps" location="${apiman.appserver.dir}/standalone/deployments" />
@@ -363,7 +363,7 @@
 
                     <echo></echo>
                     <echo>********************************************************************</echo>
-                    <echo>APIMan Dist: ${apiman.apiman-distro-eap64.zip}</echo>
+                    <echo>APIMan Dist: ${apiman.apiman-distro-eap7.zip}</echo>
                     <echo>Dev Services: ${apiman.apiman-tools-services.war}</echo>
                     <echo>-------</echo>
                     <echo>WildFly Home: ${apiman.eap.home}</echo>
@@ -372,11 +372,11 @@
 
                     <mkdir dir="${apiman.tempdir}" />
 
-                    <!-- Unpack EAP 6.4 -->
+                    <!-- Unpack EAP 7.0 -->
                     <unzip src="${apiman.appserver.zip}" dest="${apiman.install.dir}" overwrite="false" />
 
-                    <!-- Overlay apiman on top of EAP 6.4 -->
-                    <unzip src="${apiman.apiman-distro-eap64.zip}" dest="${apiman.appserver.dir}" overwrite="true" />
+                    <!-- Overlay apiman on top of EAP 7.0 -->
+                    <unzip src="${apiman.apiman-distro-eap7.zip}" dest="${apiman.appserver.dir}" overwrite="true" />
                     
                     <!-- Make sure to chmod 755 the shell scripts -->
                     <chmod perm="a+x" dir="${apiman.appserver.dir}/bin">
@@ -385,7 +385,7 @@
 
                     <!-- Deploy additional stuff -->
                     <copy
-                      file="../../distro/eap64/src/main/resources/overlay/standalone/configuration/standalone-apiman.xml"
+                      file="../../distro/eap7/src/main/resources/overlay/standalone/configuration/standalone-apiman.xml"
                       tofile="${apiman.eap.home}/standalone/configuration/standalone.xml" overwrite="true" />
                     <copy file="${apiman.apiman-tools-services.war}" tofile="${apiman.eap.webapps}/services.war"
                       overwrite="true" />

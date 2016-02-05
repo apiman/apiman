@@ -15,7 +15,7 @@
     <module>db</module>
     <module>ddl</module>
     <module>db-es</module>
-    <module>eap64</module>
+    <module>eap7</module>
     <module>es</module>
     <module>tomcat8</module>
     <module>wildfly8</module>

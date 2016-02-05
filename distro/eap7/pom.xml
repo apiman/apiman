@@ -7,9 +7,9 @@
     <version>1.2.2-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
-  <artifactId>apiman-distro-eap64</artifactId>
+  <artifactId>apiman-distro-eap7</artifactId>
   <packaging>pom</packaging>
-  <name>apiman-distro-eap64</name>
+  <name>apiman-distro-eap7</name>
 
   <dependencies>
     <!-- The WildFly 8 distro of APIMan -->
