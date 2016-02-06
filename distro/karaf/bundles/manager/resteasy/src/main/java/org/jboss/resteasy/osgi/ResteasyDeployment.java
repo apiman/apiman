@@ -7,6 +7,7 @@ import org.jboss.resteasy.plugins.server.resourcefactory.JndiComponentResourceFa
 import org.jboss.resteasy.resteasy_jaxrs.i18n.LogMessages;
 import org.jboss.resteasy.resteasy_jaxrs.i18n.Messages;
 import org.jboss.resteasy.spi.*;
+import org.jboss.resteasy.spi.InjectorFactory;
 import org.jboss.resteasy.util.GetRestful;
 import org.jboss.resteasy.util.PickConstructor;
 
@@ -109,7 +110,7 @@ public class ResteasyDeployment {
 
         try {
             if (injectorFactoryClass != null) {
-                InjectorFactory injectorFactory = null;
+                org.jboss.resteasy.spi.InjectorFactory injectorFactory = null;
 
                 Thread thread = Thread.currentThread();
                 ClassLoader loader = thread.getContextClassLoader();
@@ -118,7 +119,7 @@ public class ResteasyDeployment {
                     Class<?> clazz = Thread.currentThread().getContextClassLoader()
                             .loadClass(injectorFactoryClass);
                     Constructor constructor = clazz.getConstructor(ResteasyProviderFactory.class);
-                    injectorFactory = (InjectorFactory) constructor.newInstance(providerFactory);
+                    injectorFactory = (org.jboss.resteasy.spi.InjectorFactory) constructor.newInstance(providerFactory);
 
                     if (injectorFactory == null)
                         injectorFactory = (InjectorFactory) clazz.newInstance();

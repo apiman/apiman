@@ -1,4 +1,4 @@
-package org.jboss.resteasy.cdi.osgi;
+package org.jboss.resteasy.osgi;
 
 import org.jboss.resteasy.cdi.CdiConstructorInjector;
 import org.jboss.resteasy.cdi.CdiPropertyInjector;
