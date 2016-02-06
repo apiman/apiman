@@ -1,4 +1,4 @@
-package io.apiman.gateway.platforms.osgi;
+package io.apiman.gateway.osgi;
 
 import io.apiman.common.servlet.ApimanCorsFilter;
 import io.apiman.common.servlet.DisableCachingFilter;

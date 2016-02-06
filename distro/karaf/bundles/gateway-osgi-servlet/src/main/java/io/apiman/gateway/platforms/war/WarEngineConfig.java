@@ -25,7 +25,6 @@ import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.impl.DefaultPolicyErrorWriter;
 import io.apiman.gateway.engine.impl.DefaultPolicyFailureWriter;
 import io.apiman.gateway.engine.policy.IPolicyFactory;
-import io.apiman.gateway.platforms.osgi.Activator;
 import org.apache.commons.configuration.BaseConfiguration;
 import org.apache.commons.configuration.Configuration;
 
@@ -54,17 +53,6 @@ public class WarEngineConfig implements IEngineConfig {
     public static final String APIMAN_GATEWAY_ERROR_WRITER_CLASS = "apiman-gateway.writers.error"; //$NON-NLS-1$
 
     public static Configuration config;
-    public static Dictionary props;
-    static {
-        config = new BaseConfiguration();
-
-        Map<String, Object> map = new HashMap<String, Object>(props.size());
-        Enumeration<String> keys = props.keys();
-        while (keys.hasMoreElements()) {
-            String key = keys.nextElement();
-            config.addProperty(key, props.get(key));
-        }
-    }
 
     /**
      * Constructor.
@@ -79,8 +67,14 @@ public class WarEngineConfig implements IEngineConfig {
         return config;
     }
 
-    public static void setDictionary(Dictionary dict) {
-        props = dict;
+    public static void setConfig(Dictionary dict) {
+        config = new BaseConfiguration();
+        Map<String, Object> map = new HashMap<String, Object>(dict.size());
+        Enumeration<String> keys = dict.keys();
+        while (keys.hasMoreElements()) {
+            String key = keys.nextElement();
+            config.addProperty(key, dict.get(key));
+        }
     }
 
     /**

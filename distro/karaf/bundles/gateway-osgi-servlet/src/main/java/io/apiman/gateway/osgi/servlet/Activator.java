@@ -1,4 +1,4 @@
-package io.apiman.gateway.platforms.osgi;
+package io.apiman.gateway.osgi.servlet;
 
 import io.apiman.gateway.platforms.war.WarEngineConfig;
 import org.osgi.framework.BundleActivator;
@@ -33,7 +33,7 @@ public class Activator implements BundleActivator {
         ConfigurationAdmin configurationAdmin = (ConfigurationAdmin) context.getService(configAdminReference);
         Configuration configuration = configurationAdmin.getConfiguration("io.apiman.gateway", null);
         apimanProps = configuration.getProperties();
-        WarEngineConfig.setDictionary(apimanProps);
+        WarEngineConfig.setConfig(apimanProps);
     }
 
     /**

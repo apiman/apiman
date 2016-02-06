@@ -302,7 +302,7 @@
                 <configuration>
                     <instructions>
                         <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
-                        <Bundle-Activator>io.apiman.gateway.platforms.osgi.Activator</Bundle-Activator>
+                        <Bundle-Activator>io.apiman.gateway.osgi.Activator</Bundle-Activator>
                         <Import-Package>
                             javax.servlet,
                             org.apache.lucene.analysis.standard;resolution:="optional",
@@ -405,7 +405,7 @@
                             <instructions>
                                 <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
                                 <Bundle-Name>${project.name}</Bundle-Name>
-                                <Bundle-Activator>io.apiman.gateway.platforms.osgi.Activator
+                                <Bundle-Activator>io.apiman.gateway.osgi.servlet.Activator
                                 </Bundle-Activator>
                                 <Import-Package>
                                     javax.servlet;
