@@ -2,18 +2,20 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
     <parent>
-        <artifactId>apiman-distro-karaf</artifactId>
+        <artifactId>apiman-osgi-bundles</artifactId>
         <groupId>io.apiman</groupId>
         <version>1.2.2-SNAPSHOT</version>
     </parent>
-    <artifactId>apiman-osgi-bundles</artifactId>
-    <name>Apiman :: OSGI bundles</name>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>gateway-project</artifactId>
+    <name>Apiman :: OSGI :: Gateway Project</name>
     <packaging>pom</packaging>
+
     <modules>
-        <module>gateway</module>
-<!--        <module>manager</module>-->
+        <module>gateway-osgi-servlet</module>
+        <module>gateway-osgi-api</module>
+        <module>gateway-osgi</module>
     </modules>
 
 </project>
