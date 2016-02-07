@@ -308,4 +308,18 @@
             <column name="joined_on" valueDate="2015-06-18 17:56:54.794"/>
         </insert>
     </changeSet>
+	<changeSet author="apiman" id="1454276100000">
+		<insert tableName="policydefs">
+			<column name="id" value="TimeRestrictedAccessPolicy" />
+			<column name="description"
+				value="Requests matching specified regular expression and made specified time period will be ignored." />
+			<column name="form" />
+			<column name="form_type" value="Default" />
+			<column name="icon" value="fa-clock-o" />
+			<column name="name" value="Time Restricted Access" />
+			<column name="plugin_id" />
+			<column name="policy_impl"
+				value="class:io.apiman.gateway.engine.policies.TimeRestrictedAccessPolicy" />
+		</insert>
+	</changeSet>
 </databaseChangeLog>

@@ -117,6 +117,19 @@
       ]
     },
     {
+      "id" : "TimeRestrictedAccess",
+      "name" : "Time Restricted Access",
+      "description" : "Requests matching specified regular expression and made specified time period will be ignored",
+      "policyImpl" : "class:io.apiman.gateway.engine.policies.TimeRestrictedAccessPolicy",
+      "icon" : "fa-clock-o",
+      "templates" : [
+        {
+          "language" : null,
+          "template" : "Requests matching regular expression and made outside specified time period will receive a 423 error code."
+        }
+      ]
+    },
+    {
       "id" : "URLRewritingPolicy",
       "name" : "URL Rewriting Policy",
       "description" : "Responses from the back-end API will be modified by fixing up any incorrect URLs found with modified ones.  This is useful because apiman works through an API Gateway.",

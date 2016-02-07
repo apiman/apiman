@@ -20,9 +20,12 @@
     <test name="Create Quota Policy Def">data/policyDefs/006_quota-policydef.resttest</test>
     <test name="Create Caching Policy Def">data/policyDefs/007_caching-policydef.resttest</test>
     <test name="Create Transfer Quota Policy Def">data/policyDefs/008_transfer-quota-policydef.resttest</test>
-    <test name="Time Restricted Access Policy Def">data/policyDefs/009_time-restricted-access-policydef.resttest</test>
+<<<<<<< HEAD
     <test name="Create URL Rewriting Policy Def">data/policyDefs/009_url_rewriting_policydef.resttest</test>
-</testGroup>
+=======
+    <test name="Time Restricted Access Policy Def">data/policyDefs/009_time-restricted-access-policydef.resttest</test>
+>>>>>>> 6d25586... APIMAN-688 - TimeRestrictedAccessPolicy
+  </testGroup>
   
   <!-- Gateways -->
   <testGroup name="Gateways">
