@@ -65,7 +65,6 @@ public class Activator implements BundleActivator {
             webContainer.setSessionTimeout(2, httpContext);
 
             ctxParams = new Hashtable<String, Object>();
-            ctxParams.put("resteasy.resources","io.apiman.gateway.api.osgi.MessageRestService");
             ctxParams.put("resteasy.servlet.mapping.prefix","/apiman-gateway-api");
             ctxParams.put("resteasy.scan","true");
             webContainer.setContextParam(ctxParams, httpContext);
