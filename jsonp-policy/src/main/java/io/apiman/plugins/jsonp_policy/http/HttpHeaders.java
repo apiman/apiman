@@ -1,10 +1,10 @@
 package io.apiman.plugins.jsonp_policy.http;
 
-import java.util.Map;
+import io.apiman.gateway.engine.beans.util.HeaderMap;
 
 /**
  * Utility class to get and set data into headers.
- * 
+ *
  * @author Alexandre Kieling {@literal <alex.kieling@gmail.com>}
  */
 public class HttpHeaders {
@@ -12,20 +12,20 @@ public class HttpHeaders {
     private static final String CONTENT_TYPE = "Content-Type"; //$NON-NLS-1$
     private static final String CONTENT_LENGTH = "Content-Length"; //$NON-NLS-1$
 
-    private final Map<String, String> headers;
+    private final HeaderMap headers;
 
     /**
      * Constructor.
-     * 
+     *
      * @param headers headers map
      */
-    public HttpHeaders(Map<String, String> headers) {
+    public HttpHeaders(HeaderMap headers) {
         this.headers = headers;
     }
 
     /**
      * Extract the charset from the Content-Type header. When not present, the default charset is returned.
-     * 
+     *
      * @param defaultCharset the default charset
      * @return charset
      */
@@ -40,7 +40,7 @@ public class HttpHeaders {
 
     /**
      * Set the type/subtype value of the Content-Type header.
-     * 
+     *
      * @param typeSubtype the type/subtype value
      */
     public void setContentType(String typeSubtype) {
@@ -55,7 +55,7 @@ public class HttpHeaders {
     }
 
     /**
-     * @param additionalContentLength
+     * @param additionalContentLength the additional content length
      */
     public void incrementContentLength(int additionalContentLength) {
         String cl = headers.get(CONTENT_LENGTH);

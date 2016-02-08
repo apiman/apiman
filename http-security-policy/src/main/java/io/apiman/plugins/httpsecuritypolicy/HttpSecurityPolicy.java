@@ -15,10 +15,9 @@
  */
 package io.apiman.plugins.httpsecuritypolicy;
 
-import java.util.Map;
-
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.ApiResponse;
+import io.apiman.gateway.engine.beans.util.HeaderMap;
 import io.apiman.gateway.engine.policies.AbstractMappedPolicy;
 import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
@@ -29,7 +28,7 @@ import io.apiman.plugins.httpsecuritypolicy.beans.HttpSecurityBean.XssProtection
 
 /**
  * Security-related HTTP headers can be set, such as HSTS, CSP and XSS protection.
- * 
+ *
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 public class HttpSecurityPolicy extends AbstractMappedPolicy<HttpSecurityBean> {
@@ -55,7 +54,7 @@ public class HttpSecurityPolicy extends AbstractMappedPolicy<HttpSecurityBean> {
     }
 
     @SuppressWarnings("nls")
-    private void setSecurityHeaders(HttpSecurityBean config, Map<String, String> headers) {
+    private void setSecurityHeaders(HttpSecurityBean config, HeaderMap headers) {
         if (config.getHsts().getEnabled()) {
             headers.put("Strict-Transport-Security", config.getHsts().getHeaderValue());
         }

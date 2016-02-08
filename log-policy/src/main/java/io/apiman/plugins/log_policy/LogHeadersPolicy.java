@@ -17,13 +17,14 @@ package io.apiman.plugins.log_policy;
 
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.ApiResponse;
+import io.apiman.gateway.engine.beans.util.HeaderMap;
 import io.apiman.gateway.engine.policies.AbstractMappedPolicy;
 import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
 import io.apiman.plugins.log_policy.beans.LogHeadersConfigBean;
 import io.apiman.plugins.log_policy.beans.LogHeadersDirectionType;
 
-import java.util.Map;
+import java.util.Map.Entry;
 import java.util.TreeSet;
 
 /**
@@ -97,11 +98,13 @@ public class LogHeadersPolicy extends AbstractMappedPolicy<LogHeadersConfigBean>
 	 * @param direction
 	 * @param endpoint
 	 */
-	private void logHeaders(final Map<String, String> headers, final HttpDirection direction, final String endpoint) {
+	private void logHeaders(final HeaderMap headers, final HttpDirection direction, final String endpoint) {
         System.out.println(String.format("Logging %d %s headers for %s", headers.size(), direction.getDescription(), endpoint)); //$NON-NLS-1$
         TreeSet<String> sortedKeys = new TreeSet<>(headers.keySet());
         for (String key : sortedKeys) {
-            System.out.println(String.format("Key : %s, Value : %s", key, headers.get(key))); //$NON-NLS-1$
+            for (Entry<String, String> pair : headers.getAllEntries(key)) {
+                System.out.println(String.format("Key : %s, Value : %s", pair.getKey(), pair.getValue())); //$NON-NLS-1$
+            }
         }
 	}
 

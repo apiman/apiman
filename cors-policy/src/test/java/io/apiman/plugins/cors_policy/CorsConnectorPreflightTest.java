@@ -17,9 +17,8 @@ package io.apiman.plugins.cors_policy;
 
 import static org.mockito.BDDMockito.given;
 
+import io.apiman.gateway.engine.beans.util.HeaderMap;
 import io.apiman.plugins.cors_policy.util.HttpHelper;
-
-import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -51,7 +50,7 @@ public class CorsConnectorPreflightTest extends CorsConnectorTestBase {
         setRequestMethods(new String[] { "GET" });
 
         connector = new CorsConnector(request, config, failureFactory);
-        Map<String, String> responseHeaders = connector.getResponseHeaders();
+        HeaderMap responseHeaders = connector.getResponseHeaders();
 
         Assert.assertTrue(!connector.isFailure());
         Assert.assertTrue(connector.isShortcircuit());
@@ -70,7 +69,7 @@ public class CorsConnectorPreflightTest extends CorsConnectorTestBase {
         setRequestMethods(new String[] { "DELETE" });
 
         connector = new CorsConnector(request, config, failureFactory);
-        Map<String, String> responseHeaders = connector.getResponseHeaders();
+        HeaderMap responseHeaders = connector.getResponseHeaders();
 
         Assert.assertTrue(connector.isFailure());
         Assert.assertEquals(400, connector.getFailure().getResponseCode());
@@ -90,7 +89,7 @@ public class CorsConnectorPreflightTest extends CorsConnectorTestBase {
         setRequestHeaders(new String[] { "x-monument", "x-penshaw" } );
 
         connector = new CorsConnector(request, config, failureFactory);
-        Map<String, String> responseHeaders = connector.getResponseHeaders();
+        HeaderMap responseHeaders = connector.getResponseHeaders();
 
         Assert.assertTrue(!connector.isFailure());
         Assert.assertTrue(connector.isShortcircuit());
@@ -107,7 +106,7 @@ public class CorsConnectorPreflightTest extends CorsConnectorTestBase {
         setRequestHeaders(new String[] { "x-penshaw", "x-monument" } );
 
         connector = new CorsConnector(request, config, failureFactory);
-        Map<String, String> responseHeaders = connector.getResponseHeaders();
+        HeaderMap responseHeaders = connector.getResponseHeaders();
 
         Assert.assertTrue(connector.isFailure());
         Assert.assertTrue(!connector.isShortcircuit());
@@ -122,7 +121,7 @@ public class CorsConnectorPreflightTest extends CorsConnectorTestBase {
         config.setMaxAge(9001);
 
         connector = new CorsConnector(request, config, failureFactory);
-        Map<String, String> responseHeaders = connector.getResponseHeaders();
+        HeaderMap responseHeaders = connector.getResponseHeaders();
 
         Assert.assertTrue(!connector.isFailure());
         Assert.assertTrue(connector.isShortcircuit());

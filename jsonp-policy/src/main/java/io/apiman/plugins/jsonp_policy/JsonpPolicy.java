@@ -40,7 +40,8 @@ public class JsonpPolicy extends AbstractMappedPolicy<JsonpConfigBean> implement
     protected void doApply(ApiRequest request, IPolicyContext context, JsonpConfigBean config,
             IPolicyChain<ApiRequest> chain) {
         String callbackParamName = config.getCallbackParamName();
-        String callbackFunctionName = request.getQueryParams().remove(callbackParamName);
+        String callbackFunctionName = request.getQueryParams().get(callbackParamName);
+        request.getQueryParams().remove(callbackParamName);
         if (callbackFunctionName != null) {
             context.setAttribute(CALLBACK_FUNCTION_NAME, callbackFunctionName);
         }
@@ -72,7 +73,7 @@ public class JsonpPolicy extends AbstractMappedPolicy<JsonpConfigBean> implement
 
             // JSONP responses should have the Content-Type header set to "application/javascript"
             httpHeaders.setContentType(APPLICATION_JAVASCRIPT);
-            
+
             // the Content-Length will need to be longer
             httpHeaders.incrementContentLength(additionalContentLength);
 
