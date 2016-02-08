@@ -41,17 +41,18 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>apiman-gateway-engine-ispn</artifactId>
         </dependency>
-        <dependency>
+<!--        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>apiman-gateway-engine-es</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>apiman-gateway-engine-influxdb</artifactId>
+            <artifactId>apiman-gateway-engine-policies</artifactId>
         </dependency>
+        -->
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>apiman-gateway-engine-policies</artifactId>
+            <artifactId>apiman-gateway-engine-influxdb</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
