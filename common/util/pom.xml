@@ -43,6 +43,11 @@
             org.apache.commons.codec.binary;version="[1.4,2)",
             org.apache.commons.lang.text;version="[2.6,3)"
             </Import-Package>
+            <DynamicImport-Package>
+              io.apiman.gateway.engine.es,
+              io.apiman.gateway.engine.policy,
+              io.apiman.gateway.engine.impl
+            </DynamicImport-Package>
           </instructions>
         </configuration>
       </plugin>
