@@ -41,17 +41,18 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>apiman-gateway-engine-ispn</artifactId>
         </dependency>
-        <dependency>
+<!--        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>apiman-gateway-engine-es</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>apiman-gateway-engine-influxdb</artifactId>
+            <artifactId>apiman-gateway-engine-policies</artifactId>
         </dependency>
+        -->
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>apiman-gateway-engine-policies</artifactId>
+            <artifactId>apiman-gateway-engine-influxdb</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -184,11 +185,11 @@
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
         </dependency>
-        <dependency>
+<!--        <dependency>
             <groupId>com.codahale.metrics</groupId>
             <artifactId>metrics-healthchecks</artifactId>
             <version>3.0.0</version>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>org.infinispan</groupId>
             <artifactId>infinispan-core</artifactId>

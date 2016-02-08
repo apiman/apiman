@@ -109,6 +109,7 @@
                         <Import-Package>!
                             !io.apiman.gateway.osgi.servlet,
                             !io.apiman.gateway.platforms.war*,
+                            io.apiman.gateway.engine.es,
                             *
                         </Import-Package>
                         <Embed-Dependency>
