@@ -54,6 +54,7 @@ public class Activator implements BundleActivator {
 
         WebContainer webContainer = (WebContainer) context.getService(serviceReference);
         Dictionary<String, Object> initParamsFilter = null;
+        Dictionary<String, Object> ctxParams = null;
 
         if (webContainer != null) {
 
@@ -62,6 +63,12 @@ public class Activator implements BundleActivator {
 
             // set a session timeout of 2 minutes
             webContainer.setSessionTimeout(2, httpContext);
+
+            ctxParams = new Hashtable<String, Object>();
+            ctxParams.put("resteasy.resources","io.apiman.gateway.api.osgi.MessageRestService");
+            ctxParams.put("resteasy.servlet.mapping.prefix","/apiman-gateway-api");
+            ctxParams.put("resteasy.scan","true");
+            webContainer.setContextParam(ctxParams, httpContext);
 
             /*
              * Register Apiman listeners : BootStrap & RestEasy
@@ -121,7 +128,7 @@ public class Activator implements BundleActivator {
             initParamsFilter = new Hashtable<String, Object>();
             initParamsFilter.put("javax.ws.rs.Application", "io.apiman.gateway.api.osgi.GatewayOSGIApplication");
             webContainer.registerServlet(new HttpServletDispatcher(),
-                    "ResteasyServlet",
+                    "resteasy",
                     new String[] { "/apiman-gateway-api/*" }, // url patterns
                     initParamsFilter, // init params
                     httpContext // http context
