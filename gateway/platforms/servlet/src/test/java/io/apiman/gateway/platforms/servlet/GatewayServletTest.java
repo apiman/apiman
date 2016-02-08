@@ -17,6 +17,7 @@ package io.apiman.gateway.platforms.servlet;
 
 import io.apiman.common.util.ApimanPathUtils.ApiRequestPathInfo;
 
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Assert;
@@ -117,36 +118,54 @@ public class GatewayServletTest {
     }
 
     /**
-     * Test method for {@link io.apiman.gateway.platforms.servlet.GatewayServlet#parseApiRequestQueryParams(String)}
+     * Test method for {@link io.apiman.gateway.platforms.servlet.GatewayServlet#parseApiRequestQueryParameters(String)}
      */
     @Test
     public void testParseApiRequestQueryParams() {
-        Map<String, String> paramMap = GatewayServlet.parseApiRequestQueryParams(null);
+        Map<String, List<String>> paramMap = GatewayServlet.parseApiRequestQueryParameters(null);
         Assert.assertNotNull(paramMap);
 
-        paramMap = GatewayServlet.parseApiRequestQueryParams("param1");
-        Assert.assertNull(paramMap.get("param1"));
+        paramMap = GatewayServlet.parseApiRequestQueryParameters("param1");
+        Assert.assertEquals(1, paramMap.get("param1").size());
+        Assert.assertNull(paramMap.get("param1").get(0));
 
-        paramMap = GatewayServlet.parseApiRequestQueryParams("param1=value1");
-        Assert.assertEquals("value1", paramMap.get("param1"));
+        paramMap = GatewayServlet.parseApiRequestQueryParameters("param1=value1");
+        Assert.assertEquals(1, paramMap.get("param1").size());
+        Assert.assertEquals("value1", paramMap.get("param1").get(0));
+        
+        paramMap = GatewayServlet.parseApiRequestQueryParameters("param1=value1&param1=value2");
+        Assert.assertEquals(2, paramMap.get("param1").size());
+        Assert.assertEquals("value1", paramMap.get("param1").get(0));
+        Assert.assertEquals("value2", paramMap.get("param1").get(1));
 
-        paramMap = GatewayServlet.parseApiRequestQueryParams("param1=value1&param2");
-        Assert.assertEquals("value1", paramMap.get("param1"));
-        Assert.assertNull(paramMap.get("param2"));
+        paramMap = GatewayServlet.parseApiRequestQueryParameters("param1=value1&param2");
+        Assert.assertEquals(1, paramMap.get("param1").size());
+        Assert.assertEquals("value1", paramMap.get("param1").get(0));
+        Assert.assertEquals(1, paramMap.get("param2").size());
+        Assert.assertNull(paramMap.get("param2").get(0));
+        
+        paramMap = GatewayServlet.parseApiRequestQueryParameters("param2=");
+        Assert.assertEquals(1, paramMap.get("param2").size());
+        Assert.assertEquals("", paramMap.get("param2").get(0));
+        
+        paramMap = GatewayServlet.parseApiRequestQueryParameters("param2&param2=&param2=value1&param2&param2=");
+        Assert.assertEquals(5, paramMap.get("param2").size());
+        Assert.assertNull(paramMap.get("param2").get(0));
+        Assert.assertEquals("", paramMap.get("param2").get(1));
+        Assert.assertEquals("value1", paramMap.get("param2").get(2));
+        Assert.assertNull(paramMap.get("param2").get(3));
+        Assert.assertEquals("", paramMap.get("param2").get(4));
 
-        paramMap = GatewayServlet.parseApiRequestQueryParams("param1=value1&param2=value2");
-        Assert.assertEquals("value1", paramMap.get("param1"));
-        Assert.assertEquals("value2", paramMap.get("param2"));
-
-        paramMap = GatewayServlet.parseApiRequestQueryParams("param1=value1&param2=value2&param3=value3");
-        Assert.assertEquals("value1", paramMap.get("param1"));
-        Assert.assertEquals("value2", paramMap.get("param2"));
-        Assert.assertEquals("value3", paramMap.get("param3"));
-
-        paramMap = GatewayServlet.parseApiRequestQueryParams("param1=hello%20world&param2=hello+world&param3=hello world");
-        Assert.assertEquals("hello world", paramMap.get("param1"));
-        Assert.assertEquals("hello world", paramMap.get("param2"));
-        Assert.assertEquals("hello world", paramMap.get("param3"));
+        paramMap = GatewayServlet.parseApiRequestQueryParameters("param1=value1&param2=value2");
+        Assert.assertEquals(1, paramMap.get("param1").size());
+        Assert.assertEquals("value1", paramMap.get("param1").get(0));
+        Assert.assertEquals(1, paramMap.get("param2").size());
+        Assert.assertEquals("value2", paramMap.get("param2").get(0));
+        
+        paramMap = GatewayServlet.parseApiRequestQueryParameters("param%201=hello%20world&param+2=hello+world&param+3=%3D%2B%26%3F");
+        Assert.assertEquals("hello world", paramMap.get("param 1").get(0));
+        Assert.assertEquals("hello world", paramMap.get("param 2").get(0));
+        Assert.assertEquals("=+&?", paramMap.get("param 3").get(0));
     }
 
 }

@@ -38,8 +38,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
@@ -263,9 +265,9 @@ public abstract class GatewayServlet extends HttpServlet {
         if (pathInfo.orgId == null) {
             throw new Exception(Messages.i18n.format("GatewayServlet.InvalidApiEndpoint")); //$NON-NLS-1$
         }
-        Map<String, String> queryParams = parseApiRequestQueryParams(request.getQueryString());
+        Map<String, List<String>> queryParameters = parseApiRequestQueryParameters(request.getQueryString());
 
-        String apiKey = getApiKey(request, queryParams);
+        String apiKey = getApiKey(request, queryParameters);
 
         ApiRequest srequest = GatewayThreadContext.getApiRequest();
         srequest.setApiKey(apiKey);
@@ -274,7 +276,7 @@ public abstract class GatewayServlet extends HttpServlet {
         srequest.setApiVersion(pathInfo.apiVersion);
         srequest.setUrl(request.getRequestURL().toString());
         srequest.setDestination(pathInfo.resource);
-        srequest.setQueryParams(queryParams);
+        srequest.setQueryParameters(queryParameters);
         readHeaders(srequest, request);
         srequest.setRawRequest(request);
         srequest.setRemoteAddr(request.getRemoteAddr());
@@ -290,10 +292,12 @@ public abstract class GatewayServlet extends HttpServlet {
      * @param queryParams the inbound request query params
      * @return the api key or null if not found
      */
-    protected String getApiKey(HttpServletRequest request, Map<String, String> queryParams) {
+    protected String getApiKey(HttpServletRequest request, Map<String, List<String>> queryParams) {
         String apiKey = request.getHeader("X-API-Key"); //$NON-NLS-1$
         if (apiKey == null || apiKey.trim().length() == 0) {
-            apiKey = queryParams.get("apikey"); //$NON-NLS-1$
+            if (queryParams.containsKey("apikey")) { //$NON-NLS-1$
+                apiKey = queryParams.get("apikey").get(queryParams.get("apikey").size() - 1); //$NON-NLS-1$                
+            }
         }
         return apiKey;
     }
@@ -439,25 +443,30 @@ public abstract class GatewayServlet extends HttpServlet {
      * Parses the query string into a map.
      * @param queryString
      */
-    protected static final Map<String, String> parseApiRequestQueryParams(String queryString) {
-        Map<String, String> rval = new LinkedHashMap<>();
+    protected static final Map<String, List<String>> parseApiRequestQueryParameters(String queryString) {
+        Map<String, List<String>> rval = new LinkedHashMap<>();
         if (queryString != null) {
             try {
-                queryString = URLDecoder.decode(queryString, "UTF-8"); //$NON-NLS-1$
+                String[] pairSplit = queryString.split("&"); //$NON-NLS-1$
+                for (String paramPair : pairSplit) {
+                    int idx = paramPair.indexOf("="); //$NON-NLS-1$
+                    String key, value;
+                    if (idx != -1) {
+                        key =  URLDecoder.decode(paramPair.substring(0, idx), "UTF-8"); //$NON-NLS-1$
+                        value = URLDecoder.decode(paramPair.substring(idx + 1), "UTF-8"); //$NON-NLS-1$
+                    } else {
+                        key = URLDecoder.decode(paramPair, "UTF-8"); //$NON-NLS-1$
+                        value = null;
+                    }
+                    if (!rval.containsKey(key)) {
+                        rval.put(key, new ArrayList<String>());
+                    }
+                    rval.get(key).add(value);
+                }
             } catch (UnsupportedEncodingException e) {
                 throw new RuntimeException(e);
             }
-            String[] pairSplit = queryString.split("&"); //$NON-NLS-1$
-            for (String paramPair : pairSplit) {
-                int idx = paramPair.indexOf("="); //$NON-NLS-1$
-                if (idx != -1) {
-                    String key = paramPair.substring(0, idx);
-                    String val = paramPair.substring(idx + 1);
-                    rval.put(key, val);
-                } else {
-                    rval.put(paramPair, null);
-                }
-            }
+            
         }
 
         return rval;

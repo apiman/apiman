@@ -52,6 +52,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -161,7 +162,7 @@ class HttpConnector implements IApiConnectionResponse, IApiConnection {
     }
 
     private void doConnection() {
-        String endpoint = apiPath + destination + queryParams(apiRequest.getQueryParams());
+        String endpoint = apiPath + destination + queryParams(apiRequest.getQueryParameters());
         logger.debug(String.format("Connecting to %s | port: %d verb: %s path: %s", apiHost, apiPort,
                 HttpMethod.valueOf(apiRequest.getType()), endpoint));
 
@@ -285,22 +286,25 @@ class HttpConnector implements IApiConnectionResponse, IApiConnection {
         }
     }
 
-    private String queryParams(Map<String, String> queryParams) {
-        if (queryParams == null || queryParams.size() == 0)
+    private String queryParams(Map<String, List<String>> queryParameters) {
+        if (queryParameters == null || queryParameters.size() == 0)
             return "";
 
-        StringBuilder sb = new StringBuilder(queryParams.size() * 2 * 10);
+        StringBuilder sb = new StringBuilder(queryParameters.size() * 2 * 10);
         String joiner = "?";
 
         try {
-            for (Entry<String, String> entry : queryParams.entrySet()) {
-                sb.append(joiner);
-                sb.append(entry.getKey());
-                if (entry.getValue() != null) {
-                    sb.append("=");
-                    sb.append(URLEncoder.encode(entry.getValue(), "UTF-8"));
+            for (Entry<String, List<String>> entry : queryParameters.entrySet()) {
+                for (String value : entry.getValue()) {
+                    sb.append(joiner);
+                    sb.append(URLEncoder.encode(entry.getKey(), "UTF-8"));
+                    if (value != null) {
+                        sb.append("=");
+                        sb.append(URLEncoder.encode(value, "UTF-8"));
+                    }
+                    joiner = "&";
                 }
-                joiner = "&";
+                
             }
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);

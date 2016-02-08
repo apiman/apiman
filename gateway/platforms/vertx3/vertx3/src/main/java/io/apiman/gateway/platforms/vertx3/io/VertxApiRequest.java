@@ -44,7 +44,7 @@ public class VertxApiRequest extends ApiRequest {
         setUrl(copy.getUrl());
         setDestination(copy.getDestination());
         setHeaders(copy.getHeaders());
-        setQueryParams(copy.getQueryParams());
+        setQueryParameters(copy.getQueryParameters());
         setRawRequest(copy.getRawRequest());
         setRemoteAddr(copy.getRemoteAddr());
         setApiId(copy.getApiId());
@@ -81,7 +81,7 @@ public class VertxApiRequest extends ApiRequest {
                 + ", getContract()=" + getContract() + ", getServiceOrgId()=" + getApiOrgId()
                 + ", getServiceId()=" + getApiId() + ", getServiceVersion()=" + getApiVersion()
                 + ", getQueryParams()="
-                + (getQueryParams() != null ? toString(getQueryParams().entrySet(), maxLen) : null)
+                + (getQueryParameters() != null ? toString(getQueryParameters().entrySet(), maxLen) : null)
                 + ", isTransportSecure()=" + isTransportSecure() + ", getClass()=" + getClass()
                 + ", hashCode()=" + hashCode() + "]";
     }
