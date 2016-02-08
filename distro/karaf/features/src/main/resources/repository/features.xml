@@ -86,6 +86,7 @@
         <bundle>mvn:io.apiman/apiman-gateway-engine-beans/${project.version}</bundle>
         <bundle>mvn:io.apiman/apiman-gateway-engine-core/${project.version}</bundle>
         <bundle>mvn:io.apiman/apiman-gateway-engine-es/${project.version}</bundle>
+        <bundle>mvn:io.apiman/apiman-gateway-engine-policies/${project.version}</bundle>
         <bundle>mvn:io.apiman/gateway-osgi-servlet/${project.version}</bundle>
     </feature>
 
