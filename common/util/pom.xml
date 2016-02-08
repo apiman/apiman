@@ -39,7 +39,8 @@
             <DynamicImport-Package>
               io.apiman.gateway.engine.es,
               io.apiman.gateway.engine.policy,
-              io.apiman.gateway.engine.impl
+              io.apiman.gateway.engine.impl,
+              io.apiman.gateway.platforms.servlet.connectors
             </DynamicImport-Package>
           </instructions>
         </configuration>

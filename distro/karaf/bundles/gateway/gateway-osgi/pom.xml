@@ -11,7 +11,6 @@
 
     <artifactId>gateway-osgi</artifactId>
     <name>Apiman :: OSGI :: Gateway Module</name>
-    <!--    <packaging>war</packaging>-->
     <packaging>bundle</packaging>
 
     <properties>
@@ -21,35 +20,14 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>apiman-common-config</artifactId>
-        </dependency>
-        <!--
-                <dependency>
-                    <groupId>${project.groupId}</groupId>
-                    <artifactId>apiman-gateway-engine-beans</artifactId>
-                </dependency>
-                <dependency>
-                    <groupId>${project.groupId}</groupId>
-                    <artifactId>apiman-gateway-engine-core</artifactId>
-                </dependency>-->
-        <dependency>
-            <groupId>${project.groupId}</groupId>
             <artifactId>gateway-osgi-servlet</artifactId>
             <version>1.2.2-SNAPSHOT</version>
         </dependency>
+        <!-- TODO - Deploy ispn and influxdb as bundles -->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>apiman-gateway-engine-ispn</artifactId>
         </dependency>
-<!--        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>apiman-gateway-engine-es</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>apiman-gateway-engine-policies</artifactId>
-        </dependency>
-        -->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>apiman-gateway-engine-influxdb</artifactId>
@@ -66,14 +44,6 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>apiman-gateway-api-rest-impl</artifactId>
         </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>apiman-common-servlet</artifactId>
-        </dependency>
-<!--        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>apiman-gateway-platforms-war</artifactId>
-        </dependency>-->
 
         <!-- Third Party Dependencies -->
         <dependency>

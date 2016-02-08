@@ -14,20 +14,6 @@
 
     <dependencies>
         <!-- Project Libs -->
-        <!--
-<dependency>
-    <groupId>${project.groupId}</groupId>
-    <artifactId>apiman-gateway-platforms-war</artifactId>
-</dependency>
-
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>apiman-gateway-engine-beans</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>apiman-gateway-engine-core</artifactId>
-        </dependency>-->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>apiman-gateway-api-rest</artifactId>
@@ -35,10 +21,6 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>apiman-gateway-api-rest-impl</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>apiman-common-servlet</artifactId>
         </dependency>
 
         <!-- REST Easy -->

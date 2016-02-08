@@ -74,6 +74,7 @@
         <bundle>mvn:com.google.code.findbugs/annotations/2.0.1</bundle>
         <bundle>mvn:com.google.code.gson/gson/2.5</bundle>
         <bundle>mvn:io.swagger/swagger-annotations/1.5.4</bundle>
+        <bundle>wrap:mvn:com.squareup.okhttp/okhttp/2.4.0</bundle>
         <bundle>wrap:mvn:com.squareup.okio/okio/1.4.0</bundle>
         <bundle>wrap:mvn:org.scannotation/scannotation/1.0.3</bundle>
         <!-- Required by jackson-datatype-joda -->
@@ -89,6 +90,7 @@
         <bundle>mvn:io.apiman/apiman-gateway-engine-core/${project.version}</bundle>
         <bundle>mvn:io.apiman/apiman-gateway-engine-es/${project.version}</bundle>
         <bundle>mvn:io.apiman/apiman-gateway-engine-policies/${project.version}</bundle>
+        <bundle>mvn:io.apiman/apiman-gateway-platforms-servlet/${project.version}</bundle>
         <bundle>mvn:io.apiman/gateway-osgi-servlet/${project.version}</bundle>
     </feature>
 
