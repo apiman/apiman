@@ -80,8 +80,8 @@
     <version.org.mockito>1.9.5</version.org.mockito>
     <version.junit>4.11</version.junit>
 
-    <version.org.keycloak>1.8.0.Final</version.org.keycloak>
-    <version.org.bouncycastle>1.51</version.org.bouncycastle>
+    <version.org.keycloak>1.8.1.Final</version.org.keycloak>
+    <version.org.bouncycastle>1.52</version.org.bouncycastle>
     <version.net.iharder>2.3.8</version.net.iharder>
     <version.org.json>20140107</version.org.json>
 
