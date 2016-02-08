@@ -13,24 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apiman.gateway.engine.beans;
 
-import io.apiman.gateway.engine.beans.util.HeaderMap;
+package io.apiman.gateway.engine.beans.util;
 
 /**
- * Represents common elements of {@link ApiRequest} and {@link ApiResponse}.
+ * A map of query parameters to associated values. It is possible to
+ * have multiple values for a given key.
  *
- * @author Marc Savy <msavy@redhat.com>
+ * @author Marc Savy {@literal <msavy@redhat.com>}
  */
-public interface IApiObject {
+public class QueryMap extends CaseInsensitiveStringMultiMap {
+    public QueryMap() {}
 
     /**
-     * @return the headers
+     * Construct a QueryMap
+     *
+     * @param sizeHint the size hint
      */
-    HeaderMap getHeaders();
-
-    /**
-     * @param headers the headers to set
-     */
-    void setHeaders(HeaderMap headers);
+    public QueryMap(int sizeHint) {
+        super(sizeHint);
+    }
 }

@@ -13,24 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apiman.gateway.engine.beans;
 
-import io.apiman.gateway.engine.beans.util.HeaderMap;
+package io.apiman.gateway.engine.beans.util;
 
 /**
- * Represents common elements of {@link ApiRequest} and {@link ApiResponse}.
+ * A map of headers to associated values. It is possible to
+ * have multiple values for a given key.
  *
- * @author Marc Savy <msavy@redhat.com>
+ * @author Marc Savy {@literal <msavy@redhat.com>}
  */
-public interface IApiObject {
+public class HeaderMap extends CaseInsensitiveStringMultiMap {
+    public HeaderMap() {}
 
     /**
-     * @return the headers
+     * Construct a HeaderMap
+     *
+     * @param sizeHint the size hint
      */
-    HeaderMap getHeaders();
-
-    /**
-     * @param headers the headers to set
-     */
-    void setHeaders(HeaderMap headers);
+    public HeaderMap(int sizeHint) {
+        super(sizeHint);
+    }
 }

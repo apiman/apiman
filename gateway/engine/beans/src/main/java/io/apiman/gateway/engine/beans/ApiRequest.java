@@ -15,9 +15,10 @@
  */
 package io.apiman.gateway.engine.beans;
 
+import io.apiman.gateway.engine.beans.util.HeaderMap;
+import io.apiman.gateway.engine.beans.util.QueryMap;
+
 import java.io.Serializable;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 /**
  * An inbound request for a managed API.
@@ -34,8 +35,8 @@ public class ApiRequest implements IApiObject, Serializable {
     private String type;
     private String url;
     private String destination;
-    private Map<String, String> queryParams = new LinkedHashMap<>();
-    private Map<String, String> headers = new HeaderHashMap();
+    private QueryMap queryParams = new QueryMap();
+    private HeaderMap headers = new HeaderMap();
     private String remoteAddr;
     private Object rawRequest;
     private boolean transportSecurity = false;
@@ -100,15 +101,15 @@ public class ApiRequest implements IApiObject, Serializable {
      * @see io.apiman.gateway.engine.beans.IApiObject#getHeaders()
      */
     @Override
-    public Map<String, String> getHeaders() {
+    public HeaderMap getHeaders() {
         return headers;
     }
 
     /**
-     * @see io.apiman.gateway.engine.beans.IApiObject#setHeaders(java.util.Map)
+     * @see io.apiman.gateway.engine.beans.IApiObject#setHeaders(HeaderMap)
      */
     @Override
-    public void setHeaders(Map<String, String> headers) {
+    public void setHeaders(HeaderMap headers) {
         this.headers = headers;
     }
 
@@ -199,14 +200,14 @@ public class ApiRequest implements IApiObject, Serializable {
     /**
      * @return the queryParams
      */
-    public Map<String, String> getQueryParams() {
+    public QueryMap getQueryParams() {
         return queryParams;
     }
 
     /**
      * @param queryParams the queryParams to set
      */
-    public void setQueryParams(Map<String, String> queryParams) {
+    public void setQueryParams(QueryMap queryParams) {
         this.queryParams = queryParams;
     }
 

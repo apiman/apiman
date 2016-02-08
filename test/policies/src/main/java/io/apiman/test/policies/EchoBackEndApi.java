@@ -15,7 +15,6 @@
  */
 package io.apiman.test.policies;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.test.common.mock.EchoResponse;
@@ -24,6 +23,7 @@ import java.io.IOException;
 import java.util.Date;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * The default policy test backend API.
@@ -46,10 +46,10 @@ public class EchoBackEndApi implements IPolicyTestBackEndApi {
             EchoResponse echoResponse = new EchoResponse();
             if (requestBody != null) {
                 echoResponse.setBodyLength(new Long(requestBody.length));
-                echoResponse.setBodySha1(DigestUtils.sha1Hex(requestBody));
+                echoResponse.setBodySha1(DigestUtils.shaHex(requestBody));
             }
             echoResponse.setCounter(counter++);
-            echoResponse.setHeaders(request.getHeaders());
+            echoResponse.setHeaders(request.getHeaders().toMap());
             echoResponse.setMethod(request.getType());
             echoResponse.setResource(request.getDestination());
             echoResponse.setUri("urn:" + request.getDestination());

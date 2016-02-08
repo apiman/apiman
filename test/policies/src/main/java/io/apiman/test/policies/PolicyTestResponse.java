@@ -15,11 +15,10 @@
  */
 package io.apiman.test.policies;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.apiman.gateway.engine.beans.ApiResponse;
+import io.apiman.gateway.engine.beans.util.HeaderMap;
 
-import java.util.Map;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * The data returned by a call to the "send" method of {@link ApimanPolicyTest}.  This
@@ -36,7 +35,7 @@ public class PolicyTestResponse {
 
     /**
      * Constructor.
-     * @param response
+     * @param response the response
      */
     public PolicyTestResponse(ApiResponse response) {
         this.response = response;
@@ -45,8 +44,8 @@ public class PolicyTestResponse {
 
     /**
      * Constructor.
-     * @param response
-     * @param body
+     * @param response the response
+     * @param body the body
      */
     public PolicyTestResponse(ApiResponse response, String body) {
         this.response = response;
@@ -61,7 +60,7 @@ public class PolicyTestResponse {
         return this.response.getHeaders().get(name);
     }
 
-    public Map<String, String> headers() {
+    public HeaderMap headers() {
         return response.getHeaders();
     }
 
@@ -73,7 +72,7 @@ public class PolicyTestResponse {
     }
 
     /**
-     * @param entityClass
+     * @param entityClass the entity class
      * @return the body as an entity (JSON marshalling)
      */
     public <T> T entity(Class<T> entityClass) {

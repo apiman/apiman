@@ -18,6 +18,7 @@ package io.apiman.gateway.engine.policies;
 import io.apiman.gateway.engine.DependsOnComponents;
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.ApiResponse;
+import io.apiman.gateway.engine.beans.util.HeaderMap;
 import io.apiman.gateway.engine.components.IBufferFactoryComponent;
 import io.apiman.gateway.engine.io.IReadWriteStream;
 import io.apiman.gateway.engine.policies.config.URLRewritingConfig;
@@ -25,7 +26,6 @@ import io.apiman.gateway.engine.policies.rewrite.URLRewritingStream;
 import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
 
-import java.util.Map;
 import java.util.Map.Entry;
 
 /**
@@ -58,8 +58,8 @@ public class URLRewritingPolicy extends AbstractMappedDataPolicy<URLRewritingCon
     protected void doApply(ApiResponse response, IPolicyContext context, URLRewritingConfig config,
             IPolicyChain<ApiResponse> chain) {
         if (config.isProcessHeaders()) {
-            Map<String, String> headers = response.getHeaders();
-            for (Entry<String, String> entry : headers.entrySet()) {
+            HeaderMap headers = response.getHeaders();
+            for (Entry<String, String> entry : headers) {
                 String key = entry.getKey();
                 String value = entry.getValue();
                 value = doHeaderReplaceAll(value, config.getFromRegex(), config.getToReplacement());
@@ -70,9 +70,6 @@ public class URLRewritingPolicy extends AbstractMappedDataPolicy<URLRewritingCon
         }
         if (config.isProcessBody() && response.getHeaders().containsKey("Content-Length")) { //$NON-NLS-1$
             response.getHeaders().remove("Content-Length"); //$NON-NLS-1$
-        }
-        if (config.isProcessBody() && response.getHeaders().containsKey("content-length")) { //$NON-NLS-1$
-            response.getHeaders().remove("content-length"); //$NON-NLS-1$
         }
         super.doApply(response, context, config, chain);
     }

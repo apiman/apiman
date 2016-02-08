@@ -2,7 +2,7 @@
 <testPlan xmlns="urn:io.apiman.test:2014:02:testPlan">
 
   <!-- Make sure Plugins are working properly -->
-  <testGroup name="Plugin Management">
+  <!-- <testGroup name="Plugin Management">
     <test name="Plugin 1">test-plan-data/plugins/001_create-1_1.0.resttest</test>
     <test name="Plugin 2">test-plan-data/plugins/002_create-2.resttest</test>
     <test name="Get Plugin 1">test-plan-data/plugins/003_get-1.resttest</test>
@@ -19,7 +19,7 @@
     <test name="List Plugin Policy Defs">test-plan-data/plugins/103_list-plugin-policy-defs.resttest</test>
     <test name="Get JSON Schema Form">test-plan-data/plugins/104_get-config-form.resttest</test>
   </testGroup>
-  
+
   <testGroup name="Available Plugins">
     <test name="Get Available Plugins">test-plan-data/plugins/200_available-plugins.resttest</test>
   </testGroup>
@@ -46,6 +46,6 @@
     <test name="Upgrade Deleted Plugin to v2">test-plan-data/plugins/410_upgrade-deleted-plugin-v2.resttest</test>
     <test name="List Plugins [4]">test-plan-data/plugins/411_list-plugins.resttest</test>
     <test name="List Policy Defs [7]">test-plan-data/plugins/412_list-policy-defs.resttest</test>
-  </testGroup>
+  </testGroup> -->
 
 </testPlan>

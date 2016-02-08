@@ -16,8 +16,9 @@
 
 package io.apiman.gateway.platforms.vertx3.io;
 
+import io.apiman.gateway.engine.beans.util.HeaderMap;
+import io.apiman.gateway.engine.beans.util.QueryMap;
 import io.vertx.core.json.JsonObject;
-import io.vertx.core.json.JsonArray;
 
 /**
  * Converter for {@link io.apiman.gateway.platforms.vertx3.io.VertxApiRequest}.
@@ -34,7 +35,7 @@ public class VertxApiRequestConverter {
       obj.setDestination((String)json.getValue("destination"));
     }
     if (json.getValue("headers") instanceof JsonObject) {
-      java.util.Map<String, java.lang.String> map = new java.util.LinkedHashMap<>();
+      HeaderMap map = new HeaderMap();
       json.getJsonObject("headers").forEach(entry -> {
         if (entry.getValue() instanceof String)
           map.put(entry.getKey(), (String)entry.getValue());
@@ -42,7 +43,7 @@ public class VertxApiRequestConverter {
       obj.setHeaders(map);
     }
     if (json.getValue("queryParams") instanceof JsonObject) {
-      java.util.Map<String, java.lang.String> map = new java.util.LinkedHashMap<>();
+      QueryMap map = new QueryMap();
       json.getJsonObject("queryParams").forEach(entry -> {
         if (entry.getValue() instanceof String)
           map.put(entry.getKey(), (String)entry.getValue());
@@ -81,12 +82,12 @@ public class VertxApiRequestConverter {
     }
     if (obj.getHeaders() != null) {
       JsonObject map = new JsonObject();
-      obj.getHeaders().forEach((key,value) -> map.put(key, value));
+      obj.getHeaders().forEach((pair) -> map.put(pair.getKey(), pair.getValue()));
       json.put("headers", map);
     }
     if (obj.getQueryParams() != null) {
       JsonObject map = new JsonObject();
-      obj.getQueryParams().forEach((key,value) -> map.put(key, value));
+      obj.getQueryParams().forEach((pair) -> map.put(pair.getKey(), pair.getValue()));
       json.put("queryParams", map);
     }
     if (obj.getRawRequest() != null) {

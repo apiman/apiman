@@ -18,10 +18,10 @@ package io.apiman.gateway.platforms.vertx3.http;
 import io.apiman.common.util.MediaType;
 import io.apiman.gateway.engine.beans.EngineErrorResponse;
 import io.apiman.gateway.platforms.vertx3.common.config.VertxEngineConfig;
-import io.apiman.gateway.platforms.vertx3.io.VertxApimanBuffer;
-import io.apiman.gateway.platforms.vertx3.io.VertxPolicyFailure;
 import io.apiman.gateway.platforms.vertx3.io.VertxApiRequest;
 import io.apiman.gateway.platforms.vertx3.io.VertxApiResponse;
+import io.apiman.gateway.platforms.vertx3.io.VertxApimanBuffer;
+import io.apiman.gateway.platforms.vertx3.io.VertxPolicyFailure;
 import io.apiman.gateway.platforms.vertx3.services.IngestorToPolicyService;
 import io.apiman.gateway.platforms.vertx3.services.InitializeIngestorService;
 import io.apiman.gateway.platforms.vertx3.services.PolicyToIngestorService;
@@ -206,7 +206,7 @@ public class HttpExecutor implements Handler<HttpServerRequest> {
         response.setStatusCode(code);
         response.setStatusMessage(failure.getMessage());
 
-        for (Entry<String, String> entry : failure.getHeaders().entrySet()) {
+        for (Entry<String, String> entry : failure.getHeaders()) {
             response.headers().add(entry.getKey(), entry.getValue());
         }
 

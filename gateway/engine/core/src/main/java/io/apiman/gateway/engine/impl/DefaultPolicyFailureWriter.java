@@ -62,7 +62,7 @@ public class DefaultPolicyFailureWriter implements IPolicyFailureWriter {
         response.setHeader("X-Policy-Failure-Type", String.valueOf(failure.getType())); //$NON-NLS-1$
         response.setHeader("X-Policy-Failure-Message", failure.getMessage()); //$NON-NLS-1$
         response.setHeader("X-Policy-Failure-Code", String.valueOf(failure.getFailureCode())); //$NON-NLS-1$
-        for (Entry<String, String> entry : failure.getHeaders().entrySet()) {
+        for (Entry<String, String> entry : failure.getHeaders()) {
             response.setHeader(entry.getKey(), entry.getValue());
         }
         int errorCode = 500;

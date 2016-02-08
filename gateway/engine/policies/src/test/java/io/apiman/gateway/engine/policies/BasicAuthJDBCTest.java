@@ -15,9 +15,9 @@
  */
 package io.apiman.gateway.engine.policies;
 
+import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.beans.PolicyFailureType;
-import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.components.IJdbcComponent;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.impl.DefaultJdbcComponent;
@@ -188,7 +188,7 @@ public class BasicAuthJDBCTest {
         policy.apply(request, context, config, chain);
         Mockito.verify(chain).doApply(request);
     }
-    
+
     public void testApplyJdbcWithRoles(String json) throws Exception {
         // A live LDAP server is required to run this test!
         BasicAuthenticationPolicy policy = new BasicAuthenticationPolicy();
@@ -212,7 +212,7 @@ public class BasicAuthJDBCTest {
         expectedRoles.add("user");
         Mockito.verify(context).setAttribute(AuthorizationPolicy.AUTHENTICATED_USER_ROLES, expectedRoles);
     }
-    
+
     /**
      * Creates the http Authorization string for the given credentials.
      * @param username

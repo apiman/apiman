@@ -17,6 +17,7 @@ package io.apiman.gateway.platforms.vertx3.http;
 
 import io.apiman.common.util.ApimanPathUtils;
 import io.apiman.common.util.ApimanPathUtils.ApiRequestPathInfo;
+import io.apiman.gateway.engine.beans.util.CaseInsensitiveStringMultiMap;
 import io.apiman.gateway.platforms.vertx3.io.VertxApiRequest;
 import io.apiman.gateway.platforms.vertx3.io.VertxApiResponse;
 import io.vertx.core.MultiMap;
@@ -53,7 +54,7 @@ public class HttpApiFactory {
     }
 
     public static void buildResponse(HttpServerResponse httpServerResponse, VertxApiResponse amanResponse) {
-        httpServerResponse.headers().addAll(amanResponse.getHeaders());
+        amanResponse.getHeaders().forEach(e -> httpServerResponse.headers().add(e.getKey(), e.getValue()));
         httpServerResponse.setStatusCode(amanResponse.getCode());
         httpServerResponse.setStatusMessage(amanResponse.getMessage());
     }
@@ -87,7 +88,7 @@ public class HttpApiFactory {
         }
     }
 
-    private static void multimapToMap(Map<String, String> map, MultiMap multimap, Set<String> suppressHeaders) {
+    private static void multimapToMap(CaseInsensitiveStringMultiMap map, MultiMap multimap, Set<String> suppressHeaders) {
         for (Map.Entry<String, String> entry : multimap) {
             if(!suppressHeaders.contains(entry.getKey())) {
                 String key = entry.getKey();
@@ -102,7 +103,7 @@ public class HttpApiFactory {
                     }
                 }
 
-                map.put(key, val);
+                map.add(key, val);
             }
         }
     }
