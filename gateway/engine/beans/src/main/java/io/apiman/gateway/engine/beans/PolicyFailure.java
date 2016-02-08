@@ -15,9 +15,9 @@
  */
 package io.apiman.gateway.engine.beans;
 
+import io.apiman.gateway.engine.beans.util.HeaderMap;
+
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -35,7 +35,7 @@ public class PolicyFailure implements Serializable {
     private int failureCode;
     private int responseCode;
     private String message;
-    private Map<String, String> headers = new HashMap<>();
+    private HeaderMap headers = new HeaderMap();
 
     /**
      * Constructor.
@@ -100,14 +100,14 @@ public class PolicyFailure implements Serializable {
     /**
      * @return the headers
      */
-    public Map<String, String> getHeaders() {
+    public HeaderMap getHeaders() {
         return headers;
     }
 
     /**
      * @param headers the headers to set
      */
-    public void setHeaders(Map<String, String> headers) {
+    public void setHeaders(HeaderMap headers) {
         this.headers = headers;
     }
 

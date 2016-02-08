@@ -134,7 +134,7 @@ public class HttpApiConnection implements IApiConnection, IApiConnectionResponse
             }
             if (request.getQueryParams() != null && !request.getQueryParams().isEmpty()) {
                 String delim = "?"; //$NON-NLS-1$
-                for (Entry<String, String> entry : request.getQueryParams().entrySet()) {
+                for (Entry<String, String> entry : request.getQueryParams()) {
                     endpoint += delim + entry.getKey();
                     if (entry.getValue() != null) {
                         endpoint += "=" + URLEncoder.encode(entry.getValue(), "UTF-8"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -187,7 +187,7 @@ public class HttpApiConnection implements IApiConnection, IApiConnectionResponse
             connection.setRequestMethod(request.getType());
 
             // Set the request headers
-            for (Entry<String, String> entry : request.getHeaders().entrySet()) {
+            for (Entry<String, String> entry : request.getHeaders()) {
                 String hname = entry.getKey();
                 String hval = entry.getValue();
                 if (!suppressedHeaders.contains(hname)) {
@@ -317,7 +317,7 @@ public class HttpApiConnection implements IApiConnection, IApiConnectionResponse
             Map<String, List<String>> headerFields = connection.getHeaderFields();
             for (String headerName : headerFields.keySet()) {
                 if (headerName != null && !SUPPRESSED_RESPONSE_HEADERS.contains(headerName)) {
-                    response.getHeaders().put(headerName, connection.getHeaderField(headerName));
+                    response.getHeaders().add(headerName, connection.getHeaderField(headerName));
                 }
             }
             response.setCode(connection.getResponseCode());

@@ -37,7 +37,6 @@ import io.apiman.gateway.engine.policies.config.basicauth.LDAPBindAsType;
 import io.apiman.gateway.engine.policies.config.basicauth.LDAPIdentitySource;
 import io.apiman.gateway.engine.policy.IPolicyContext;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -268,8 +267,7 @@ public class LDAPIdentityValidator implements IIdentityValidator<LDAPIdentitySou
      * @param request
      */
     private String formatDn(String dnPattern, String username, ApiRequest request) {
-        Map<String, String> valuesMap = new HashMap<>();
-        valuesMap.putAll(request.getHeaders());
+        Map<String, String> valuesMap = request.getHeaders().toMap();
         valuesMap.put("username", username); //$NON-NLS-1$
         StrSubstitutor sub = new StrSubstitutor(valuesMap);
         return sub.replace(dnPattern);

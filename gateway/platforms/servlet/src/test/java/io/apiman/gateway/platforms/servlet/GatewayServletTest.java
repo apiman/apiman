@@ -16,8 +16,7 @@
 package io.apiman.gateway.platforms.servlet;
 
 import io.apiman.common.util.ApimanPathUtils.ApiRequestPathInfo;
-
-import java.util.Map;
+import io.apiman.gateway.engine.beans.util.QueryMap;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -31,7 +30,7 @@ import org.junit.Test;
 public class GatewayServletTest {
 
     /**
-     * Test method for {@link io.apiman.gateway.platforms.servlet.GatewayServlet#parseApiRequestPath(java.lang.String)}.
+     * Test method for {@link io.apiman.gateway.platforms.servlet.GatewayServlet#parseApiRequestPath(javax.servlet.http.HttpServletRequest)}.
      */
     @Test
     public void testParseApiRequestPath() {
@@ -121,7 +120,7 @@ public class GatewayServletTest {
      */
     @Test
     public void testParseApiRequestQueryParams() {
-        Map<String, String> paramMap = GatewayServlet.parseApiRequestQueryParams(null);
+        QueryMap paramMap = GatewayServlet.parseApiRequestQueryParams(null);
         Assert.assertNotNull(paramMap);
 
         paramMap = GatewayServlet.parseApiRequestQueryParams("param1");

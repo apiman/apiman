@@ -29,6 +29,8 @@ import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.engine.beans.PolicyFailure;
+import io.apiman.gateway.engine.beans.util.HeaderMap;
+import io.apiman.gateway.engine.beans.util.QueryMap;
 import io.apiman.gateway.engine.io.ByteBuffer;
 import io.apiman.gateway.engine.io.IApimanBuffer;
 import io.apiman.gateway.engine.io.ISignalWriteStream;
@@ -39,7 +41,6 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.Enumeration;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
@@ -263,7 +264,7 @@ public abstract class GatewayServlet extends HttpServlet {
         if (pathInfo.orgId == null) {
             throw new Exception(Messages.i18n.format("GatewayServlet.InvalidApiEndpoint")); //$NON-NLS-1$
         }
-        Map<String, String> queryParams = parseApiRequestQueryParams(request.getQueryString());
+        QueryMap queryParams = parseApiRequestQueryParams(request.getQueryString());
 
         String apiKey = getApiKey(request, queryParams);
 
@@ -290,7 +291,7 @@ public abstract class GatewayServlet extends HttpServlet {
      * @param queryParams the inbound request query params
      * @return the api key or null if not found
      */
-    protected String getApiKey(HttpServletRequest request, Map<String, String> queryParams) {
+    protected String getApiKey(HttpServletRequest request, QueryMap queryParams) {
         String apiKey = request.getHeader("X-API-Key"); //$NON-NLS-1$
         if (apiKey == null || apiKey.trim().length() == 0) {
             apiKey = queryParams.get("apikey"); //$NON-NLS-1$
@@ -319,7 +320,7 @@ public abstract class GatewayServlet extends HttpServlet {
             if (hname != null && hname.equalsIgnoreCase("X-API-Version")) { //$NON-NLS-1$
                 continue;
             }
-            srequest.getHeaders().put(hname, hval);
+            srequest.getHeaders().add(hname, hval);
         }
     }
 
@@ -330,8 +331,8 @@ public abstract class GatewayServlet extends HttpServlet {
      */
     protected void writeResponse(HttpServletResponse response, ApiResponse sresponse) {
         response.setStatus(sresponse.getCode());
-        Map<String, String> headers = sresponse.getHeaders();
-        for (Map.Entry<String, String> entry : headers.entrySet()) {
+        HeaderMap headers = sresponse.getHeaders();
+        for (Map.Entry<String, String> entry : headers) {
             String hname = entry.getKey();
             String hval = entry.getValue();
             response.setHeader(hname, hval);
@@ -439,8 +440,8 @@ public abstract class GatewayServlet extends HttpServlet {
      * Parses the query string into a map.
      * @param queryString
      */
-    protected static final Map<String, String> parseApiRequestQueryParams(String queryString) {
-        Map<String, String> rval = new LinkedHashMap<>();
+    protected static final QueryMap parseApiRequestQueryParams(String queryString) {
+        QueryMap rval = new QueryMap();
         if (queryString != null) {
             try {
                 queryString = URLDecoder.decode(queryString, "UTF-8"); //$NON-NLS-1$
@@ -453,9 +454,9 @@ public abstract class GatewayServlet extends HttpServlet {
                 if (idx != -1) {
                     String key = paramPair.substring(0, idx);
                     String val = paramPair.substring(idx + 1);
-                    rval.put(key, val);
+                    rval.add(key, val);
                 } else {
-                    rval.put(paramPair, null);
+                    rval.add(paramPair, null);
                 }
             }
         }

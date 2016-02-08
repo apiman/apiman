@@ -28,11 +28,12 @@ import io.apiman.gateway.engine.beans.Api;
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.engine.beans.exceptions.ConnectorException;
+import io.apiman.gateway.engine.beans.util.QueryMap;
 import io.apiman.gateway.engine.io.IApimanBuffer;
 import io.apiman.gateway.engine.io.ISignalReadStream;
 import io.apiman.gateway.engine.io.ISignalWriteStream;
-import io.apiman.gateway.platforms.vertx3.http.HttpClientOptionsFactory;
 import io.apiman.gateway.platforms.vertx3.http.HttpApiFactory;
+import io.apiman.gateway.platforms.vertx3.http.HttpClientOptionsFactory;
 import io.apiman.gateway.platforms.vertx3.i18n.Messages;
 import io.apiman.gateway.platforms.vertx3.io.VertxApimanBuffer;
 import io.vertx.core.Handler;
@@ -52,7 +53,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -198,7 +198,8 @@ class HttpConnector implements IApiConnectionResponse, IApiConnection {
 
         clientRequest.exceptionHandler(exceptionHandler);
         clientRequest.setChunked(true);
-        clientRequest.headers().addAll(apiRequest.getHeaders());
+        apiRequest.getHeaders().forEach(e -> clientRequest.headers().add(e.getKey(), e.getValue()));
+
         addMandatoryRequestHeaders(clientRequest.headers());
 
         if (authType == RequiredAuthType.BASIC) {
@@ -285,7 +286,7 @@ class HttpConnector implements IApiConnectionResponse, IApiConnection {
         }
     }
 
-    private String queryParams(Map<String, String> queryParams) {
+    private String queryParams(QueryMap queryParams) {
         if (queryParams == null || queryParams.size() == 0)
             return "";
 
@@ -293,7 +294,7 @@ class HttpConnector implements IApiConnectionResponse, IApiConnection {
         String joiner = "?";
 
         try {
-            for (Entry<String, String> entry : queryParams.entrySet()) {
+            for (Entry<String, String> entry : queryParams) {
                 sb.append(joiner);
                 sb.append(entry.getKey());
                 if (entry.getValue() != null) {

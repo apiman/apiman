@@ -66,7 +66,7 @@ public class VertxApiResponse extends ApiResponse {
     public String toString() {
         final int maxLen = 10;
         return "VertxApiResponse [getHeaders()="
-                + (getHeaders() != null ? toString(getHeaders().entrySet(), maxLen) : null) + ", getCode()="
+                + (getHeaders() != null ? toString(getHeaders().getEntries(), maxLen) : null) + ", getCode()="
                 + getCode() + ", getMessage()=" + getMessage() + ", getAttributes()="
                 + (getAttributes() != null ? toString(getAttributes().entrySet(), maxLen) : null)
                 + ", getClass()=" + getClass() + ", hashCode()=" + hashCode() + "]";

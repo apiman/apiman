@@ -76,12 +76,12 @@ public class VertxApiRequest extends ApiRequest {
         final int maxLen = 10;
         return "VertxServiceRequest [getApiKey()=" + getApiKey() + ", getRawRequest()=" + getRawRequest()
                 + ", getType()=" + getType() + ", getHeaders()="
-                + (getHeaders() != null ? toString(getHeaders().entrySet(), maxLen) : null)
+                + (getHeaders() != null ? toString(getHeaders().getEntries(), maxLen) : null)
                 + ", getDestination()=" + getDestination() + ", getRemoteAddr()=" + getRemoteAddr()
                 + ", getContract()=" + getContract() + ", getServiceOrgId()=" + getApiOrgId()
                 + ", getServiceId()=" + getApiId() + ", getServiceVersion()=" + getApiVersion()
                 + ", getQueryParams()="
-                + (getQueryParams() != null ? toString(getQueryParams().entrySet(), maxLen) : null)
+                + (getQueryParams() != null ? toString(getQueryParams().getEntries(), maxLen) : null)
                 + ", isTransportSecure()=" + isTransportSecure() + ", getClass()=" + getClass()
                 + ", hashCode()=" + hashCode() + "]";
     }

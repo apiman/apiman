@@ -75,7 +75,7 @@ public class VertxPolicyFailure extends PolicyFailure {
         final int maxLen = 10;
         return "VertxPolicyFailure [toJson()=" + toJson() + ", getMessage()=" + getMessage()
                 + ", getFailureCode()=" + getFailureCode() + ", getType()=" + getType() + ", getHeaders()="
-                + (getHeaders() != null ? toString(getHeaders().entrySet(), maxLen) : null)
+                + (getHeaders() != null ? toString(getHeaders().getEntries(), maxLen) : null)
                 + ", getResponseCode()=" + getResponseCode() + ", getClass()=" + getClass() + ", hashCode()="
                 + hashCode() + "]";
     }
