@@ -20,13 +20,6 @@
       <groupId>commons-lang</groupId>
       <artifactId>commons-lang</artifactId>
     </dependency>
-
-    <!-- For OSGI -->
-<!--    <dependency>
-      <groupId>io.apiman</groupId>
-      <artifactId>apiman-gateway-engine-core</artifactId>
-      <scope>provided</scope>
-    </dependency>-->
   </dependencies>
   
   <build>
