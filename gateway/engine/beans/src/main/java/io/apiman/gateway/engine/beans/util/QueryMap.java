@@ -16,6 +16,11 @@
 
 package io.apiman.gateway.engine.beans.util;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.stream.Collectors;
+
 /**
  * A map of query parameters to associated values. It is possible to
  * have multiple values for a given key.
@@ -33,4 +38,26 @@ public class QueryMap extends CaseInsensitiveStringMultiMap {
     public QueryMap(int sizeHint) {
         super(sizeHint);
     }
+
+    @Override
+    public String toString() {
+        return toQueryString();
+    }
+
+    @SuppressWarnings("nls")
+    public String toQueryString() {
+        return getEntries().stream()
+                .map(pair -> URLEnc(pair.getKey()) + "=" + URLEnc(pair.getValue()))
+                .collect(Collectors.joining("&"));
+    }
+
+    private String URLEnc(String str) {
+        try {
+            return URLEncoder.encode(str, StandardCharsets.UTF_8.name());
+        } catch (UnsupportedEncodingException e) {
+            System.err.println(String.format("Unable to URLEncode " + str)); //$NON-NLS-1$
+            return str;
+        }
+    }
+
 }
