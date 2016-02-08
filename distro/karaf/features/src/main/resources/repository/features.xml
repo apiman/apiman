@@ -23,6 +23,19 @@
     </feature>
 
     <feature name="apiman-gateway" version="${project.version}">
+        <!-- TODO
+        <bundle>wrap:mvn:org.apache.jackrabbit/jackrabbit-webdav/1.5.2</bundle>
+        <bundle>wrap:mvn:org.apache.commons/commons-vfs2/2.0</bundle>
+        <bundle>wrap:mvn:org.infinispan/infinispan-core/5.2.11.Final</bundle>
+        <bundle>wrap:mvn:org.infinispan/infinispan-common/5.2.11.Final</bundle>
+        <bundle>mvn:com.google.guava/guava/18.0</bundle>
+        <bundle>wrap:mvn:io.searchbox/jest-common/2.0.0</bundle>
+        <bundle>wrap:mvn:io.searchbox/jest/2.0.0</bundle>
+        <bundle>mvn:com.google.code.gson/gson/2.3.1</bundle>
+        -->
+        <bundle>mvn:org.apache.commons/commons-lang3/3.3.2</bundle>
+        <bundle>mvn:org.apache.httpcomponents/httpcore-osgi/4.4.4</bundle>
+        <bundle>mvn:org.apache.httpcomponents/httpclient-osgi/4.4.1</bundle>
         <bundle>mvn:org.apache.servicemix.specs/org.apache.servicemix.specs.stax-api-1.0/2.5.0</bundle>
         <bundle>mvn:org.apache.servicemix.specs/org.apache.servicemix.specs.jsr311-api-1.1.1/2.5.0</bundle>
         <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.commons-beanutils/1.8.3_1</bundle>
@@ -32,13 +45,18 @@
         <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.dom4j/1.6.1_4</bundle>
         <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.ant/1.7.0_5</bundle>
         <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.regexp/1.3_3</bundle>
-        <bundle>mvn:org.apache.commons/commons-lang3/3.3.2</bundle>
+        <!-- TODO Check with SMX project when it will be releases -->
+        <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.jest/0.1.6_1-SNAPSHOT</bundle>
+        <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.elasticsearch/1.7.2_1</bundle>
         <bundle>mvn:commons-lang/commons-lang/2.6</bundle>
         <bundle>mvn:commons-codec/commons-codec/1.10</bundle>
         <bundle>mvn:commons-io/commons-io/2.4</bundle>
         <bundle>mvn:commons-digester/commons-digester/2.1</bundle>
         <bundle>mvn:commons-jxpath/commons-jxpath/1.3</bundle>
         <bundle>mvn:org.bouncycastle/bcprov-jdk15on/1.52</bundle>
+        <bundle>mvn:org.codehaus.jackson/jackson-core-asl/1.9.9</bundle>
+        <bundle>mvn:org.codehaus.jackson/jackson-mapper-asl/1.9.9</bundle>
+        <bundle>mvn:org.codehaus.jackson/jackson-jaxrs/1.9.9</bundle>
         <bundle>mvn:org.codehaus.woodstox/stax2-api/3.1.4</bundle>
         <bundle>mvn:com.fasterxml.jackson.core/jackson-core/2.4.5</bundle>
         <bundle>mvn:com.fasterxml.jackson.core/jackson-databind/2.4.5</bundle>
@@ -52,34 +70,23 @@
         <bundle>wrap:mvn:org.reflections/reflections/0.9.9</bundle>
         <bundle>wrap:mvn:org.jdom/jdom/1.1.3</bundle>
         <bundle>mvn:com.google.code.findbugs/annotations/2.0.1</bundle>
-        <bundle>mvn:io.swagger/swagger-annotations/1.5.4</bundle>
-        <bundle>mvn:org.codehaus.jackson/jackson-core-asl/1.9.9</bundle>
-        <bundle>mvn:org.codehaus.jackson/jackson-mapper-asl/1.9.9</bundle>
-        <bundle>mvn:org.codehaus.jackson/jackson-jaxrs/1.9.9</bundle>
-        <bundle>wrap:mvn:com.squareup.okio/okio/1.4.0</bundle>
         <bundle>mvn:com.google.code.gson/gson/2.5</bundle>
-        <bundle>mvn:io.apiman/apiman-common-plugin/1.2.2-SNAPSHOT</bundle>
-        <bundle>mvn:io.apiman/apiman-common-util/1.2.2-SNAPSHOT</bundle>
-<!--        <bundle>wrap:mvn:org.apache.jackrabbit/jackrabbit-webdav/1.5.2</bundle>
-        <bundle>wrap:mvn:org.apache.commons/commons-vfs2/2.0</bundle>-->
-        <bundle>mvn:com.google.code.gson/gson/2.3.1</bundle>
+        <bundle>mvn:io.swagger/swagger-annotations/1.5.4</bundle>
+        <bundle>wrap:mvn:com.squareup.okio/okio/1.4.0</bundle>
         <bundle>wrap:mvn:org.scannotation/scannotation/1.0.3</bundle>
+        <!-- Required by jackson-datatype-joda -->
         <bundle>mvn:joda-time/joda-time/2.5</bundle>
-<!--        <bundle>wrap:mvn:org.infinispan/infinispan-core/5.2.11.Final</bundle>-->
-<!--        <bundle>wrap:mvn:org.infinispan/infinispan-common/5.2.11.Final</bundle>-->
+        <bundle>mvn:joda-time/joda-time/1.6.2</bundle>
+        <bundle>wrap:mvn:org.picketbox/jboss-security-spi/4.1.1.Final</bundle>
         <feature>pax-cdi-1.1-weld</feature>
         <feature>hibernate</feature>
         <feature>war</feature>
         <feature>apiman-common</feature>
-        <feature>apiman-lib</feature>
-        <bundle>mvn:io.apiman/apiman-gateway-engine-beans/1.2.2-SNAPSHOT</bundle>
-        <bundle>mvn:io.apiman/apiman-gateway-engine-core/1.2.2-SNAPSHOT</bundle>
-        <bundle>mvn:io.apiman/apiman-gateway-engine-es/1.2.2-SNAPSHOT</bundle>
-        <bundle>mvn:io.apiman/gateway-osgi-servlet/1.2.2-SNAPSHOT</bundle>
-        <bundle>wrap:mvn:io.searchbox/jest-common/0.1.6</bundle>
-        <bundle>mvn:org.apache.httpcomponents/httpclient-osgi/4.2.5</bundle>
-        <bundle>wrap:mvn:io.searchbox/jest-common/0.1.6</bundle>
-        <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.elasticsearch/1.7.2_1</bundle>
+        <!-- <feature>apiman-lib</feature>-->
+        <bundle>mvn:io.apiman/apiman-gateway-engine-beans/${project.version}</bundle>
+        <bundle>mvn:io.apiman/apiman-gateway-engine-core/${project.version}</bundle>
+        <bundle>mvn:io.apiman/apiman-gateway-engine-es/${project.version}</bundle>
+        <bundle>mvn:io.apiman/gateway-osgi-servlet/${project.version}</bundle>
     </feature>
 
     <feature name="apiman-lib" version="${project.version}">
@@ -92,7 +99,6 @@
         <!--<bundle>mvn:org.ops4j.pax.logging/pax-logging-log4j2/1.8.4</bundle>-->
         <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.commons-configuration/1.9_2</bundle>
         <bundle>mvn:joda-time/joda-time/1.6.2</bundle>
-        <bundle>wrap:mvn:org.picketbox/jboss-security-spi/4.1.1.Final</bundle>
         <bundle>wrap:mvn:org.scannotation/scannotation/1.0.3</bundle>
         <bundle>mvn:org.apache.commons/commons-lang3/3.3.2</bundle>
         <bundle>mvn:org.apache.httpcomponents/httpcore-osgi/4.2.5</bundle>
@@ -169,7 +175,7 @@
         <bundle>mvn:com.fasterxml.jackson.jaxrs/jackson-jaxrs-base/2.4.5</bundle>
         <bundle>mvn:com.fasterxml.jackson.core/jackson-annotations/2.4.5</bundle>
         <bundle>mvn:com.fasterxml.jackson.datatype/jackson-datatype-joda/2.4.5</bundle>
-        <!-- A SMX Bundle is also deployed for reflection - TODO -->
+        <!-- TODO: A SMX Bundle is also deployed for reflection -->
         <bundle>wrap:mvn:org.reflections/reflections/0.9.10</bundle>
         <bundle>mvn:com.google.guava/guava/18.0</bundle>
         <bundle>mvn:com.google.code.findbugs/annotations/2.0.1</bundle>
@@ -186,11 +192,6 @@
         <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.elasticsearch/1.7.2_1</bundle>
         <bundle>wrap:mvn:org.scannotation/scannotation/1.0.3</bundle>
     </feature>
-
-<!--    <feature name="apiman-gateway" version="${project.version}">
-        <bundle>mvn:io.apiman/apiman-gateway-engine-beans/${project.version}</bundle>
-        <bundle>mvn:io.apiman/apiman-gateway-api-rest/${project.version}</bundle>
-    </feature>-->
 
     <feature name="apiman-common" version="${project.version}">
         <bundle>mvn:io.apiman/apiman-common-auth/${project.version}</bundle>
