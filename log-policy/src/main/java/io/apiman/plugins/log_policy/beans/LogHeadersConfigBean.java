@@ -15,7 +15,7 @@
  */
 package io.apiman.plugins.log_policy.beans;
 
-import org.codehaus.jackson.annotate.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Configuration bean for the log policy.
