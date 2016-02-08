@@ -1,6 +1,6 @@
 package io.apiman.plugins.jsonp_policy.beans;
 
-import org.codehaus.jackson.annotate.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Configuration object for the JSONP policy.
