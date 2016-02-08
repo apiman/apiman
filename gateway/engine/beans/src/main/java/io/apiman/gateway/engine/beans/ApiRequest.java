@@ -17,6 +17,7 @@ package io.apiman.gateway.engine.beans;
 
 import java.io.Serializable;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -34,8 +35,9 @@ public class ApiRequest implements IApiObject, Serializable {
     private String type;
     private String url;
     private String destination;
-    private Map<String, String> queryParams = new LinkedHashMap<>();
     private Map<String, String> headers = new HeaderHashMap();
+    private Map<String, List<String>> queryParameters = new LinkedHashMap<String, List<String>>();
+    private final QueryParamsWrapper queryParametersWrapper;
     private String remoteAddr;
     private Object rawRequest;
     private boolean transportSecurity = false;
@@ -52,6 +54,7 @@ public class ApiRequest implements IApiObject, Serializable {
      * Constructor.
      */
     public ApiRequest() {
+        this.queryParametersWrapper = new QueryParamsWrapper(this);
     }
 
     /**
@@ -199,15 +202,33 @@ public class ApiRequest implements IApiObject, Serializable {
     /**
      * @return the queryParams
      */
+    @Deprecated
     public Map<String, String> getQueryParams() {
-        return queryParams;
+        return queryParametersWrapper;
     }
 
     /**
-     * @param queryParams the queryParams to set
+     * @param queryParams
+     *            the queryParams to set
      */
+    @Deprecated
     public void setQueryParams(Map<String, String> queryParams) {
-        this.queryParams = queryParams;
+        throw new UnsupportedOperationException(
+                "Since APIMAN-953, you must use the method getQueryParameters() and setQueryParameters()");
+    }
+
+    /**
+     * @return the queryParameters
+     */
+    public Map<String, List<String>> getQueryParameters() {
+        return queryParameters;
+    }
+
+    /**
+     * @param queryParameters the queryParameters to set
+     */
+    public void setQueryParameters(Map<String, List<String>> queryParameters) {
+        this.queryParameters = queryParameters;
     }
 
     /**

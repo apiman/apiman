@@ -332,7 +332,7 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
 
     private void stripApiKey() {
         request.getHeaders().remove("X-API-Key"); //$NON-NLS-1$
-        request.getQueryParams().remove("apikey"); //$NON-NLS-1$
+        request.getQueryParameters().remove("apikey"); //$NON-NLS-1$
     }
 
     /**

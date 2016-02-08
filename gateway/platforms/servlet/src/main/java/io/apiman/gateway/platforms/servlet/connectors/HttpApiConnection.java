@@ -132,14 +132,16 @@ public class HttpApiConnection implements IApiConnection, IApiConnectionResponse
             if (request.getDestination() != null) {
                 endpoint += request.getDestination();
             }
-            if (request.getQueryParams() != null && !request.getQueryParams().isEmpty()) {
+            if (request.getQueryParameters() != null && !request.getQueryParameters().isEmpty()) {
                 String delim = "?"; //$NON-NLS-1$
-                for (Entry<String, String> entry : request.getQueryParams().entrySet()) {
-                    endpoint += delim + entry.getKey();
-                    if (entry.getValue() != null) {
-                        endpoint += "=" + URLEncoder.encode(entry.getValue(), "UTF-8"); //$NON-NLS-1$ //$NON-NLS-2$
+                for (Entry<String, List<String>> entry : request.getQueryParameters().entrySet()) {
+                    for (String value : entry.getValue()) {
+                        endpoint += delim + URLEncoder.encode(entry.getKey(), "UTF-8"); //$NON-NLS-1$  
+                        if (value != null) {
+                            endpoint += "=" + URLEncoder.encode(value, "UTF-8"); //$NON-NLS-1$ //$NON-NLS-2$
+                        }
+                        delim = "&"; //$NON-NLS-1$
                     }
-                    delim = "&"; //$NON-NLS-1$
                 }
             }
             URL url = new URL(endpoint);

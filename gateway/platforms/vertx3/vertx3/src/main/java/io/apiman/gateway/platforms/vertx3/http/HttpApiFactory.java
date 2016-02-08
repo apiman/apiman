@@ -24,8 +24,10 @@ import io.vertx.core.http.HttpClientResponse;
 import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.http.HttpServerResponse;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -65,7 +67,7 @@ public class HttpApiFactory {
         apimanRequest.setType(req.method().toString());
         apimanRequest.setTransportSecure(isTransportSecure);
         multimapToMap(apimanRequest.getHeaders(), req.headers(), IGNORESET);
-        multimapToMap(apimanRequest.getQueryParams(), req.params(), Collections.<String>emptySet());
+        multimapToListMap(apimanRequest.getQueryParameters(), req.params());
         mungePath(req, apimanRequest);
         return apimanRequest;
     }
@@ -106,7 +108,20 @@ public class HttpApiFactory {
             }
         }
     }
+    
+    private static void multimapToListMap(Map<String, List<String>> destination, MultiMap source) {
+        for (Map.Entry<String, String> entry : source) {
+            String key = entry.getKey();
+            String val = entry.getValue();
 
+            if (!destination.containsKey(key)) {
+                destination.put(key, new ArrayList<>());
+            }
+            
+            destination.get(key).add(val);
+        }
+    }
+    
     private static String parseApiKey(HttpServerRequest req) {
         String headerKey = req.headers().get("X-API-Key");
         if (headerKey == null || headerKey.trim().length() == 0) {

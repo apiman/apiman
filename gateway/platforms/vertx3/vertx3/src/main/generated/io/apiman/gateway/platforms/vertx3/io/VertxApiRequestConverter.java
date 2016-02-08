@@ -41,13 +41,12 @@ public class VertxApiRequestConverter {
       });
       obj.setHeaders(map);
     }
-    if (json.getValue("queryParams") instanceof JsonObject) {
-      java.util.Map<String, java.lang.String> map = new java.util.LinkedHashMap<>();
-      json.getJsonObject("queryParams").forEach(entry -> {
-        if (entry.getValue() instanceof String)
-          map.put(entry.getKey(), (String)entry.getValue());
+    if (json.getValue("queryParameters") instanceof JsonObject) {
+      java.util.Map<String, java.util.List<java.lang.String>> map = new java.util.LinkedHashMap<>();
+      json.getJsonObject("queryParameters").forEach(entry -> {
+        //TODO          if (entry.getValue() instanceof String)          map.put(entry.getKey(), (String)entry.getValue());
       });
-      obj.setQueryParams(map);
+      obj.setQueryParameters(map);
     }
     if (json.getValue("rawRequest") instanceof Object) {
       obj.setRawRequest(json.getValue("rawRequest"));
@@ -84,9 +83,9 @@ public class VertxApiRequestConverter {
       obj.getHeaders().forEach((key,value) -> map.put(key, value));
       json.put("headers", map);
     }
-    if (obj.getQueryParams() != null) {
+    if (obj.getQueryParameters() != null) {
       JsonObject map = new JsonObject();
-      obj.getQueryParams().forEach((key,value) -> map.put(key, value));
+      obj.getQueryParameters().forEach((key,value) -> map.put(key, value));
       json.put("queryParams", map);
     }
     if (obj.getRawRequest() != null) {
