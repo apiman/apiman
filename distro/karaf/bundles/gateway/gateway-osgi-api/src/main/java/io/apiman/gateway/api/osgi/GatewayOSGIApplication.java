@@ -6,10 +6,13 @@ import io.apiman.gateway.api.rest.impl.GatewayApiApplication;
 import io.apiman.gateway.api.rest.impl.SystemResourceImpl;
 import io.apiman.gateway.api.rest.impl.mappers.RestExceptionMapper;
 
+import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.core.Application;
 import java.util.HashSet;
 import java.util.Set;
 
-public class GatewayOSGIApplication extends GatewayApiApplication {
+@ApplicationPath("/")
+public class GatewayOSGIApplication extends Application {
 
     private Set<Object> singletons = new HashSet<>();
     private Set<Class<?>> classes = new HashSet<>();
@@ -18,10 +21,10 @@ public class GatewayOSGIApplication extends GatewayApiApplication {
      * Constructor.
      */
     public GatewayOSGIApplication() {
+        classes.add(MessageRestService.class);
         classes.add(SystemResourceImpl.class);
         classes.add(ApiResourceImpl.class);
         classes.add(ClientResourceImpl.class);
-
         classes.add(RestExceptionMapper.class);
     }
 
