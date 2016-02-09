@@ -472,8 +472,8 @@ public class ActionResourceImpl implements IActionResource {
                   }
                 }
                 List<PolicySummaryBean> clientPolicies = query.getPolicies(org, id, ver, policyType);
-                storage.beginTx();
                 try {
+                    storage.beginTx();
                     for (PolicySummaryBean policySummaryBean : clientPolicies) {
                         PolicyBean policyBean = storage.getPolicy(policyType, org, id, ver, policySummaryBean.getId());
                         Policy policy = new Policy();
@@ -482,12 +482,12 @@ public class ActionResourceImpl implements IActionResource {
                         policies.add(policy);
                     }
                 } finally {
-                    storage.commitTx();
+                    storage.rollbackTx();
                 }
             }
             return policies;
-        } catch (StorageException e) {
-            throw ExceptionFactory.actionException(Messages.i18n.format("PolicyPublishError", contractBean.getApikey()), e); //$NON-NLS-1$
+        } catch (Exception e) {
+            throw ExceptionFactory.actionException(Messages.i18n.format("ErrorAggregatingPolicies", contractBean.getApikey()), e); //$NON-NLS-1$
         }
     }
 
