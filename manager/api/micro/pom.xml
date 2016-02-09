@@ -103,6 +103,10 @@
       <groupId>io.searchbox</groupId>
       <artifactId>jest</artifactId>
     </dependency>
+    <dependency>
+      <groupId>io.searchbox</groupId>
+      <artifactId>jest-common</artifactId>
+    </dependency>
 
     <!-- Jetty -->
     <dependency>
