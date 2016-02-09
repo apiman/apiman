@@ -28,6 +28,14 @@
     </dependency>
     <dependency>
       <groupId>org.apache.directory.server</groupId>
+      <artifactId>apacheds-server-annotations</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.directory.server</groupId>
+      <artifactId>apacheds-server-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.directory.server</groupId>
       <artifactId>apacheds-test-framework</artifactId>
     </dependency>
     <dependency>
