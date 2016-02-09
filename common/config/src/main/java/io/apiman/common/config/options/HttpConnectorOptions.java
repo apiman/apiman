@@ -25,8 +25,8 @@ import java.util.Map;
  */
 public class HttpConnectorOptions extends AbstractOptions {
 
-    private static final int DEFAULT_READ_TIMEOUT = 30;
-    private static final int DEFAULT_WRITE_TIMEOUT = 30;
+    private static final int DEFAULT_READ_TIMEOUT = 15;
+    private static final int DEFAULT_WRITE_TIMEOUT = 15;
     private static final int DEFAULT_CONNECT_TIMEOUT = 10;
     private static final boolean DEFAULT_FOLLOW_REDIRECTS = false;
 

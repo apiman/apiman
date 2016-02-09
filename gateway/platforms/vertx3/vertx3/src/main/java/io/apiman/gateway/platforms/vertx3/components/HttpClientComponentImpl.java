@@ -121,6 +121,16 @@ public class HttpClientComponentImpl implements IHttpClientComponent {
         public HttpClientRequestImpl(HttpClientRequest request) {
             this.request = request;
         }
+        
+        @Override
+        public void setConnectTimeout(int timeout) {
+            this.request.setTimeout(timeout);
+        }
+        
+        @Override
+        public void setReadTimeout(int timeout) {
+            // Do nothing - there is only a single timeout in the vertx http client impl.
+        }
 
         @Override
         public void addHeader(String headerName, String headerValue) {

@@ -21,6 +21,18 @@ package io.apiman.gateway.engine.components.http;
  * @author eric.wittmann@redhat.com
  */
 public interface IHttpClientRequest {
+    
+    /**
+     * Sets the connect timeout (in millis);
+     * @param timeout
+     */
+    void setConnectTimeout(int timeout);
+    
+    /**
+     * Sets the read timeout (in millis).
+     * @param timeout
+     */
+    void setReadTimeout(int timeout);
 
     /**
      * Adds a header to the request.

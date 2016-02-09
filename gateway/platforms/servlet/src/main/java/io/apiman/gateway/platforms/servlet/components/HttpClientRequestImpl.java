@@ -44,6 +44,9 @@ public class HttpClientRequestImpl implements IHttpClientRequest {
     
     private HttpURLConnection connection;
     private OutputStream outputStream;
+    
+    private int readTimeoutMs = 15000;
+    private int connectTimeoutMs = 10000;
 
     /**
      * Constructor.
@@ -55,6 +58,22 @@ public class HttpClientRequestImpl implements IHttpClientRequest {
         this.endpoint = endpoint;
         this.method = method;
         this.handler = handler;
+    }
+    
+    /**
+     * @see io.apiman.gateway.engine.components.http.IHttpClientRequest#setConnectTimeout(int)
+     */
+    @Override
+    public void setConnectTimeout(int timeout) {
+        this.connectTimeoutMs = timeout;
+    }
+    
+    /**
+     * @see io.apiman.gateway.engine.components.http.IHttpClientRequest#setReadTimeout(int)
+     */
+    @Override
+    public void setReadTimeout(int timeout) {
+        this.readTimeoutMs = timeout;
     }
 
     /**
@@ -128,8 +147,8 @@ public class HttpClientRequestImpl implements IHttpClientRequest {
         try {
             URL url = new URL(this.endpoint);
             connection = (HttpURLConnection) url.openConnection();
-            connection.setReadTimeout(15000);
-            connection.setConnectTimeout(10000);
+            connection.setReadTimeout(this.readTimeoutMs);
+            connection.setConnectTimeout(this.connectTimeoutMs);
             connection.setRequestMethod(this.method.name());
             if (method == HttpMethod.POST || method == HttpMethod.PUT) {
                 connection.setDoOutput(true);

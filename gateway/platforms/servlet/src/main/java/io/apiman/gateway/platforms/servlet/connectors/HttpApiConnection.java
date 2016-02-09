@@ -175,8 +175,8 @@ public class HttpApiConnection implements IApiConnection, IApiConnectionResponse
                 https.setHostnameVerifier(sslStrategy.getHostnameVerifier());
             }
 
-            connection.setReadTimeout(15000);
-            connection.setConnectTimeout(10000);
+            setConnectTimeout(connection);
+            setReadTimeout(connection);
             if (request.getType().equalsIgnoreCase("PUT") || request.getType().equalsIgnoreCase("POST")) { //$NON-NLS-1$ //$NON-NLS-2$
                 connection.setDoOutput(true);
             } else {
@@ -201,6 +201,38 @@ public class HttpApiConnection implements IApiConnection, IApiConnectionResponse
             connected = true;
         } catch (IOException e) {
             throw new ConnectorException(e);
+        }
+    }
+
+    /**
+     * If the endpoint properties includes a connect timeout override, then 
+     * set it here.
+     * @param connection
+     */
+    private void setConnectTimeout(HttpURLConnection connection) {
+        try {
+            Map<String, String> endpointProperties = this.api.getEndpointProperties();
+            if (endpointProperties.containsKey("timeouts.connect")) { //$NON-NLS-1$
+                int connectTimeoutMs = new Integer(endpointProperties.get("timeouts.connect")); //$NON-NLS-1$
+                connection.setConnectTimeout(connectTimeoutMs);
+            }
+        } catch (Throwable t) {
+        }
+    }
+
+    /**
+     * If the endpoint properties includes a read timeout override, then 
+     * set it here.
+     * @param connection
+     */
+    private void setReadTimeout(HttpURLConnection connection) {
+        try {
+            Map<String, String> endpointProperties = this.api.getEndpointProperties();
+            if (endpointProperties.containsKey("timeouts.read")) { //$NON-NLS-1$
+                int connectTimeoutMs = new Integer(endpointProperties.get("timeouts.read")); //$NON-NLS-1$
+                connection.setReadTimeout(connectTimeoutMs);
+            }
+        } catch (Throwable t) {
         }
     }
 
