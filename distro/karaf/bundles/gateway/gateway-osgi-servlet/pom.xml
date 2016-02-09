@@ -17,12 +17,10 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>apiman-gateway-api-rest</artifactId>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>apiman-gateway-api-rest-impl</artifactId>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -88,6 +86,10 @@
                             io.apiman.gateway.engine.es,
                             *
                         </Import-Package>
+                        <Embed-Dependency>
+                            *;scope=compile;artifactId=!junit|mockito-all
+                        </Embed-Dependency>
+                        <Embed-Transitive>false</Embed-Transitive>
                         <_removeheaders>Embed-Dependency,Embed-Transitive,Include-Resource,Embedded-Artifacts,Private-Package</_removeheaders>
                     </instructions>
                 </configuration>
@@ -97,7 +99,7 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-scr-plugin</artifactId>
-                <version>1.21</version>
+                <version>1.21.0</version>
                 <executions>
                     <execution>
                         <phase>prepare-package</phase>
