@@ -22,6 +22,11 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>apiman-gateway-api-rest-impl</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.apiman</groupId>
+            <artifactId>apiman-common-servlet</artifactId>
+            <scope>provided</scope>
+        </dependency>
 
         <!-- REST Easy -->
         <dependency>

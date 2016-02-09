@@ -40,6 +40,8 @@
         <bundle>wrap:mvn:org.apache.httpcomponents/httpasyncclient-osgi/4.1.1</bundle>
         <bundle>mvn:org.apache.servicemix.specs/org.apache.servicemix.specs.stax-api-1.0/2.5.0</bundle>
         <bundle>mvn:org.apache.servicemix.specs/org.apache.servicemix.specs.jsr311-api-1.1.1/2.5.0</bundle>
+        <bundle>mvn:org.apache.servicemix.specs/org.apache.servicemix.specs.jsr339-api-2.0/2.6.0</bundle>
+        <bundle>mvn:javax.annotation/javax.annotation-api/1.2</bundle>
         <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.commons-beanutils/1.8.3_1</bundle>
         <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.commons-collections/3.2.1_3/</bundle>
         <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.commons-configuration/1.9_2</bundle>
@@ -60,15 +62,6 @@
         <bundle>mvn:org.codehaus.jackson/jackson-mapper-asl/1.9.9</bundle>
         <bundle>mvn:org.codehaus.jackson/jackson-jaxrs/1.9.9</bundle>
         <bundle>mvn:org.codehaus.woodstox/stax2-api/3.1.4</bundle>
-        <bundle>mvn:com.fasterxml.jackson.core/jackson-core/2.4.5</bundle>
-        <bundle>mvn:com.fasterxml.jackson.core/jackson-databind/2.4.5</bundle>
-        <bundle>mvn:com.fasterxml.jackson.module/jackson-module-jaxb-annotations/2.4.5</bundle>
-        <bundle>mvn:com.fasterxml.jackson.dataformat/jackson-dataformat-xml/2.4.5</bundle>
-        <bundle>mvn:com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/2.4.5</bundle>
-        <bundle>mvn:com.fasterxml.jackson.jaxrs/jackson-jaxrs-base/2.4.5</bundle>
-        <bundle>mvn:com.fasterxml.jackson.jaxrs/jackson-jaxrs-json-provider/2.4.5</bundle>
-        <bundle>mvn:com.fasterxml.jackson.core/jackson-annotations/2.4.5</bundle>
-        <bundle>mvn:com.fasterxml.jackson.datatype/jackson-datatype-joda/2.4.5</bundle>
         <bundle>wrap:mvn:org.reflections/reflections/0.9.9</bundle>
         <bundle>wrap:mvn:org.jdom/jdom/1.1.3</bundle>
         <bundle>mvn:com.google.code.findbugs/annotations/2.0.1</bundle>
@@ -82,6 +75,7 @@
         <bundle>mvn:joda-time/joda-time/1.6.2</bundle>
         <bundle>wrap:mvn:org.picketbox/jboss-security-spi/4.1.1.Final</bundle>
         <feature>pax-cdi-1.1-weld</feature>
+        <feature>jackson</feature>
         <feature>hibernate</feature>
         <feature>war</feature>
         <feature>apiman-common</feature>
@@ -92,6 +86,23 @@
         <bundle>mvn:io.apiman/apiman-gateway-engine-policies/${project.version}</bundle>
         <bundle>mvn:io.apiman/apiman-gateway-platforms-servlet/${project.version}</bundle>
         <bundle>mvn:io.apiman/gateway-osgi-servlet/${project.version}</bundle>
+    </feature>
+
+    <feature name="manager-osgi" version="${project.version}">
+        <bundle>mvn:io.apiman/manager-osgi-rest/${project.version}</bundle>
+        <bundle>mvn:io.apiman/manager-osgi-ui/${project.version}</bundle>
+    </feature>
+
+    <feature name="jackson" version="2.5.5">
+        <bundle>mvn:com.fasterxml.jackson.core/jackson-core/2.5.5</bundle>
+        <bundle>mvn:com.fasterxml.jackson.core/jackson-databind/2.5.5</bundle>
+        <bundle>mvn:com.fasterxml.jackson.module/jackson-module-jaxb-annotations/2.5.5</bundle>
+        <bundle>mvn:com.fasterxml.jackson.dataformat/jackson-dataformat-xml/2.5.5</bundle>
+        <bundle>mvn:com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/2.5.5</bundle>
+        <bundle>mvn:com.fasterxml.jackson.jaxrs/jackson-jaxrs-base/2.5.5</bundle>
+        <bundle>mvn:com.fasterxml.jackson.jaxrs/jackson-jaxrs-json-provider/2.5.5</bundle>
+        <bundle>mvn:com.fasterxml.jackson.core/jackson-annotations/2.5.5</bundle>
+        <bundle>mvn:com.fasterxml.jackson.datatype/jackson-datatype-joda/2.5.5</bundle>
     </feature>
 
     <feature name="apiman-lib" version="${project.version}">
@@ -114,13 +125,12 @@
         <bundle>wrap:mvn:org.jboss.classfilewriter/jboss-classfilewriter/1.1.2.Final</bundle>
     </feature>
 
-    <feature name="resteasy-osgi" version="2.3.10.Final">
-        <bundle>mvn:io.apiman/resteasy-all/2.3.10.Final_1</bundle>
-    </feature>
-
-    <feature name="manager-osgi" version="${project.version}">
-        <bundle>mvn:io.apiman/manager-osgi-rest/${project.version}</bundle>
-        <bundle>mvn:io.apiman/manager-osgi-ui/${project.version}</bundle>
+    <feature name="apiman-common" version="${project.version}">
+        <bundle>mvn:io.apiman/apiman-common-auth/${project.version}</bundle>
+        <bundle>mvn:io.apiman/apiman-common-util/${project.version}</bundle>
+        <bundle>mvn:io.apiman/apiman-common-config/${project.version}</bundle>
+        <bundle>mvn:io.apiman/apiman-common-plugin/${project.version}</bundle>
+        <bundle>mvn:io.apiman/apiman-common-servlet/${project.version}</bundle>
     </feature>
 
     <feature name="apiman-all" version="${project.version}">
@@ -198,14 +208,6 @@
         <bundle>wrap:mvn:org.scannotation/scannotation/1.0.3</bundle>
     </feature>
 
-    <feature name="apiman-common" version="${project.version}">
-        <bundle>mvn:io.apiman/apiman-common-auth/${project.version}</bundle>
-        <bundle>mvn:io.apiman/apiman-common-util/${project.version}</bundle>
-        <bundle>mvn:io.apiman/apiman-common-config/${project.version}</bundle>
-        <bundle>mvn:io.apiman/apiman-common-plugin/${project.version}</bundle>
-        <bundle>mvn:io.apiman/apiman-common-servlet/${project.version}</bundle>
-    </feature>
-
     <feature name="apiman-manager-api" version="${project.version}">
         <bundle>mvn:io.apiman/apiman-manager-api-beans/${project.version}</bundle>
         <bundle>mvn:io.apiman/apiman-manager-api-core/${project.version}</bundle>
@@ -216,6 +218,10 @@
         <bundle>mvn:io.apiman/apiman-manager-api-gateway/${project.version}</bundle>
         <bundle>mvn:io.apiman/apiman-manager-api-rest/${project.version}</bundle>
         <bundle>mvn:io.apiman/apiman-manager-api-rest-impl/${project.version}</bundle>
+    </feature>
+
+    <feature name="resteasy-osgi" version="2.3.10.Final">
+        <bundle>mvn:io.apiman/resteasy-all/2.3.10.Final_1</bundle>
     </feature>
 
     <feature name="apiman-manager-api-es" version="${project.version}">

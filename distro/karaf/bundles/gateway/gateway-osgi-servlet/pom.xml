@@ -25,38 +25,7 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>apiman-gateway-platforms-servlet</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>apiman-common-config</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>apiman-common-auth</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.squareup.okhttp</groupId>
-            <artifactId>okhttp</artifactId>
-        </dependency>
-<!--        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>apiman-gateway-engine-ispn</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>apiman-gateway-engine-es</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>apiman-gateway-engine-influxdb</artifactId>
-        </dependency>-->
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>apiman-gateway-engine-policies</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>apiman-common-servlet</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.jboss.spec.javax.servlet</groupId>
@@ -77,7 +46,12 @@
             <version>4.3.1</version>
             <scope>provided</scope>
         </dependency>
-
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.scr.annotations</artifactId>
+            <version>1.9.12</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -119,6 +93,23 @@
                         <_removeheaders>Embed-Dependency,Embed-Transitive,Include-Resource,Embedded-Artifacts,Private-Package</_removeheaders>
                     </instructions>
                 </configuration>
+            </plugin>
+
+            <!-- SCR plugin adding the code to expose / register OSGI Services -->
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-scr-plugin</artifactId>
+                <version>1.21.0</version>
+                <executions>
+                    <execution>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>scr</goal>
+                        </goals>
+                        <configuration>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

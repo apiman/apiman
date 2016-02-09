@@ -1,9 +1,11 @@
 package io.apiman.gateway.api.osgi;
 
-import io.apiman.common.servlet.*;
+import io.apiman.common.servlet.ApimanCorsFilter;
+import io.apiman.common.servlet.DisableCachingFilter;
+import io.apiman.common.servlet.LocaleFilter;
+import io.apiman.common.servlet.RootResourceFilter;
 import io.apiman.gateway.platforms.war.filters.HttpRequestThreadLocalFilter;
 import io.apiman.gateway.platforms.war.listeners.WarGatewayBootstrapper;
-import io.apiman.gateway.platforms.war.servlets.WarGatewayServlet;
 import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
 import org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap;
 import org.ops4j.pax.web.service.WebContainer;
@@ -54,6 +56,7 @@ public class Activator implements BundleActivator {
 
         WebContainer webContainer = (WebContainer) context.getService(serviceReference);
         Dictionary<String, Object> initParamsFilter = null;
+        Dictionary<String, Object> ctxParams = null;
 
         if (webContainer != null) {
 
@@ -62,6 +65,11 @@ public class Activator implements BundleActivator {
 
             // set a session timeout of 2 minutes
             webContainer.setSessionTimeout(2, httpContext);
+
+            ctxParams = new Hashtable<String, Object>();
+            ctxParams.put("resteasy.servlet.mapping.prefix","/apiman-gateway-api");
+            ctxParams.put("resteasy.scan","true");
+            webContainer.setContextParam(ctxParams, httpContext);
 
             /*
              * Register Apiman listeners : BootStrap & RestEasy
@@ -121,7 +129,7 @@ public class Activator implements BundleActivator {
             initParamsFilter = new Hashtable<String, Object>();
             initParamsFilter.put("javax.ws.rs.Application", "io.apiman.gateway.api.osgi.GatewayOSGIApplication");
             webContainer.registerServlet(new HttpServletDispatcher(),
-                    "ResteasyServlet",
+                    "resteasy",
                     new String[] { "/apiman-gateway-api/*" }, // url patterns
                     initParamsFilter, // init params
                     httpContext // http context
