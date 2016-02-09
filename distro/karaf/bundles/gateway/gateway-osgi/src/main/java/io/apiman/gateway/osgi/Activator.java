@@ -1,14 +1,7 @@
 package io.apiman.gateway.osgi;
 
-import io.apiman.common.servlet.ApimanCorsFilter;
-import io.apiman.common.servlet.DisableCachingFilter;
-import io.apiman.common.servlet.LocaleFilter;
-import io.apiman.common.servlet.RootResourceFilter;
-import io.apiman.gateway.platforms.war.filters.HttpRequestThreadLocalFilter;
 import io.apiman.gateway.platforms.war.listeners.WarGatewayBootstrapper;
 import io.apiman.gateway.platforms.war.servlets.WarGatewayServlet;
-import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
-import org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap;
 import org.ops4j.pax.web.service.WebContainer;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -18,7 +11,6 @@ import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.http.HttpContext;
 
 import java.util.Dictionary;
-import java.util.Hashtable;
 
 public class Activator implements BundleActivator {
 
@@ -77,9 +69,6 @@ public class Activator implements BundleActivator {
                     initParamsFilter, // init params
                     httpContext // http context
             );
-
-            // Register static resources
-            // webContainer.registerResources("/apiman-gateway/", "/apiman-gateway/", httpContext);
         }
     }
 
