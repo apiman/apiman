@@ -9,9 +9,13 @@
   <artifactId>apiman-manager-api-war</artifactId>
   <packaging>war</packaging>
   <name>apiman-manager-api-war</name>
-  
+
   <dependencies>
     <!-- Project JARs -->
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-common-plugin</artifactId>
+    </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-common-util</artifactId>
@@ -34,7 +38,19 @@
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-manager-api-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
       <artifactId>apiman-manager-api-beans</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-manager-api-export-import-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-manager-api-security</artifactId>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
@@ -62,13 +78,21 @@
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-manager-api-gateway</artifactId>
     </dependency>
-    
+
     <!-- Third Party Dependencies -->
     <dependency>
       <groupId>commons-configuration</groupId>
       <artifactId>commons-configuration</artifactId>
     </dependency>
-    
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+    </dependency>
+
     <!-- Provided Dependencies -->
     <dependency>
       <groupId>org.jboss.spec.javax.servlet</groupId>
@@ -81,7 +105,7 @@
       <scope>provided</scope>
     </dependency>
   </dependencies>
-  
+
   <build>
     <finalName>apiman</finalName>
     <plugins>
@@ -107,5 +131,5 @@
       </plugin>
     </plugins>
   </build>
-  
+
 </project>

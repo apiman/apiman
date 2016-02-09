@@ -17,21 +17,24 @@
       <artifactId>apiman-common-util</artifactId>
       <version>${project.version}</version>
     </dependency>
-    
+
     <!-- Third Party Dependencies -->
     <dependency>
       <groupId>commons-codec</groupId>
       <artifactId>commons-codec</artifactId>
     </dependency>
     <dependency>
+      <groupId>commons-configuration</groupId>
+      <artifactId>commons-configuration</artifactId>
+    </dependency>
+    <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
     </dependency>
     <dependency>
-      <groupId>commons-configuration</groupId>
-      <artifactId>commons-configuration</artifactId>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
     </dependency>
-
     <dependency>
       <groupId>org.picketbox</groupId>
       <artifactId>jboss-security-spi</artifactId>
