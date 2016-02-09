@@ -49,20 +49,49 @@ public class ConfigFileConfiguration extends PropertiesConfiguration {
         return null;
     }
 
-    public static ConfigFileConfiguration create(String configFileName) {
+    public static ConfigFileConfiguration create(String configFileName, String customConfigPropertyName) {
         try {
-            return new ConfigFileConfiguration(configFileName);
+            return new ConfigFileConfiguration(configFileName, customConfigPropertyName);
         } catch (ConfigurationException e) {
             throw new RuntimeException("Failed to find configuration file: " + configFileName, e); //$NON-NLS-1$
         }
     }
 
-    private static URL discoverConfigFileUrl(String configFileName) {
-        // Wildfly/EAP takes priority
+    /**
+     * Discover the location of the apiman.properties (for example) file by checking
+     * in various likely locations.
+     * 
+     * @param configFileName
+     */
+    private static URL discoverConfigFileUrl(String configFileName, String customConfigPropertyName) {
+        URL rval = null;
+
+        // User Defined
+        ///////////////////////////////////
+        String userConfig = System.getProperty(customConfigPropertyName);
+        if (userConfig != null) {
+            // Treat it as a URL
+            try {
+                rval = new URL(userConfig);
+                return rval;
+            } catch (Throwable t) {
+            }
+            // Treat it as a file
+            try {
+                File f = new File(userConfig);
+                if (f.isFile()) {
+                    rval = f.toURI().toURL();
+                    return rval;
+                }
+            } catch (Throwable t) {
+            }
+            throw new RuntimeException("Apiman configuration provided at [" + userConfig + "] but could not be loaded."); //$NON-NLS-1$ //$NON-NLS-2$
+        }
+        
+        // Wildfly/EAP
         ///////////////////////////////////
         String jbossConfigDir = System.getProperty("jboss.server.config.dir"); //$NON-NLS-1$
         String jbossConfigUrl = System.getProperty("jboss.server.config.url"); //$NON-NLS-1$
-        URL rval = null;
         if (jbossConfigDir != null) {
             File dirFile = new File(jbossConfigDir);
             rval = findConfigUrlInDirectory(dirFile, configFileName);
@@ -78,7 +107,7 @@ public class ConfigFileConfiguration extends PropertiesConfiguration {
             }
         }
 
-        // Next try tomcat
+        // Apache Tomcat
         ///////////////////////
         String tomcatHomeDir = System.getProperty("catalina.home"); //$NON-NLS-1$
         if (tomcatHomeDir != null) {
@@ -97,10 +126,11 @@ public class ConfigFileConfiguration extends PropertiesConfiguration {
     /**
      * Constructor.
      * @param configFileName
+     * @param customConfigPropertyName
      * @throws ConfigurationException
      */
-    private ConfigFileConfiguration(String configFileName) throws ConfigurationException {
-        super(discoverConfigFileUrl(configFileName));
+    private ConfigFileConfiguration(String configFileName, String customConfigPropertyName) throws ConfigurationException {
+        super(discoverConfigFileUrl(configFileName, customConfigPropertyName));
     }
 
 }
