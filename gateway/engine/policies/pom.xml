@@ -20,6 +20,10 @@
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-gateway-engine-core</artifactId>
     </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-common-util</artifactId>
+    </dependency>
 
     <!-- Third Party Dependencies -->
     <dependency>

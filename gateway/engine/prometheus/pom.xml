@@ -24,21 +24,23 @@
       <artifactId>apiman-gateway-engine-core</artifactId>
     </dependency>
 
-    <!-- Third Party Dependencies -->
+    <!-- Prometheus -->
+    <dependency>
+      <groupId>io.prometheus</groupId>
+      <artifactId>simpleclient_common</artifactId>
+    </dependency>
     <dependency>
       <groupId>io.prometheus</groupId>
       <artifactId>simpleclient</artifactId>
-      <version>0.0.6</version>
     </dependency>
-    <dependency>
-      <groupId>io.prometheus</groupId>
-      <artifactId>simpleclient_pushgateway</artifactId>
-      <version>0.0.6</version>
-    </dependency>
+
+    <!-- Vert.x -->
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-core</artifactId>
     </dependency>
+
+    <!-- Other -->
     <dependency>
       <groupId>com.squareup.okhttp</groupId>
       <artifactId>okhttp</artifactId>

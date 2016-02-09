@@ -18,7 +18,6 @@ package io.apiman.gateway.engine.prometheus;
 import io.apiman.gateway.engine.IComponentRegistry;
 import io.apiman.gateway.engine.IMetrics;
 import io.apiman.gateway.engine.metrics.RequestMetric;
-import io.netty.handler.codec.http.HttpResponseStatus;
 import io.prometheus.client.CollectorRegistry;
 import io.prometheus.client.Counter;
 import io.prometheus.client.Summary;
@@ -124,12 +123,12 @@ public class PrometheusScrapeMetrics implements IMetrics {
             StringWriter sw = new StringWriter();
             try {
                 TextFormat.write004(sw, collectorRegistry.metricFamilySamples());
-                response.setStatusCode(HttpResponseStatus.OK.code())
+                response.setStatusCode(200)
                     .putHeader("Content-Type", TextFormat.CONTENT_TYPE_004)
                     .setChunked(true)
                     .write(sw.toString());
             } catch (Exception e) {
-                response.setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code())
+                response.setStatusCode(500)
                     .write(Json.encode(e));
             }
             response.end();

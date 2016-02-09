@@ -35,6 +35,14 @@
 
     <!-- Third Party Dependencies -->
     <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpclient</artifactId> <!-- Just for security stuff -->
+    </dependency>
+    <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
     </dependency>
@@ -51,8 +59,8 @@
       <artifactId>okhttp</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.apache.httpcomponents</groupId>
-      <artifactId>httpclient</artifactId>
+      <groupId>com.squareup.okio</groupId>
+      <artifactId>okio</artifactId>
     </dependency>
 
     <!-- Spec Libs -->
