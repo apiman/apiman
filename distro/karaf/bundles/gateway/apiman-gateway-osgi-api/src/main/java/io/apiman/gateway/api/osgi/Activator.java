@@ -1,6 +1,7 @@
 package io.apiman.gateway.api.osgi;
 
 import io.apiman.common.servlet.ApimanCorsFilter;
+import io.apiman.common.servlet.AuthenticationFilter;
 import io.apiman.common.servlet.DisableCachingFilter;
 import io.apiman.common.servlet.LocaleFilter;
 import io.apiman.common.servlet.RootResourceFilter;
@@ -15,6 +16,8 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.http.HttpContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Dictionary;
 import java.util.Hashtable;
@@ -26,6 +29,7 @@ public class Activator implements BundleActivator {
      */
     private ServiceReference<WebContainer> serviceReference;
     private ServiceReference<ConfigurationAdmin> configAdminReference;
+    private final static Logger logger = LoggerFactory.getLogger(Activator.class);
 
     protected static Dictionary apimanProps;
 
@@ -35,7 +39,7 @@ public class Activator implements BundleActivator {
     public void start(BundleContext context) throws Exception {
 
         /**
-         * Register the OSGI Config Admin Service to retrieve the Apiman.properties
+         * >> Register the OSGI Config Admin Service to retrieve the Apiman.properties
          */
         configAdminReference = context.getServiceReference(ConfigurationAdmin.class);
         while (configAdminReference == null) {
@@ -46,7 +50,7 @@ public class Activator implements BundleActivator {
         apimanProps = configuration.getProperties();
 
         /**
-         * Register the WebContainer with the Servlet config
+         * >> Register the WebContainer with the Servlet config
          */
         serviceReference = context.getServiceReference(WebContainer.class);
 
@@ -72,8 +76,8 @@ public class Activator implements BundleActivator {
             webContainer.setContextParam(ctxParams, httpContext);
 
             /*
-             * Register Apiman listeners : BootStrap & RestEasy
-              */
+             * >> Register Apiman listeners : BootStrap & RestEasy
+             */
             webContainer.registerEventListener(new WarGatewayBootstrapper(), // registered
                     httpContext // http context
             );
@@ -87,36 +91,42 @@ public class Activator implements BundleActivator {
              * HttpRequestThreadLocalFilter, LocaleFilter, CorsFilter, CachingFilter,
              * Authentication, RootResource, JAX-RS
              */
+            logger.info(">> Register HttpRequestThreadLocalFilter");
             webContainer.registerFilter(new HttpRequestThreadLocalFilter(),
                     new String[] { "/apiman-gateway-api/*" }, // url patterns
                     new String[] { "HttpRequestThreadLocalFilter" }, // servlet names
                     initParamsFilter, // init params
                     httpContext // http context
             );
+            logger.info(">> Register LocaleFilter");
             webContainer.registerFilter(new LocaleFilter(),
                     new String[] { "/apiman-gateway-api/*" }, // url patterns
                     new String[] { "LocalFilter" }, // servlet names
                     initParamsFilter, // init params
                     httpContext // http context
             );
+            logger.info(">> Register ApimanCorsFilter");
             webContainer.registerFilter(new ApimanCorsFilter(),
                     new String[] { "/apiman-gateway-api/*" }, // url patterns
                     new String[] { "CorsFilter" }, // servlet names
                     initParamsFilter, // init params
                     httpContext // http context
             );
+            logger.info(">> Register DisableCachingFilter");
             webContainer.registerFilter(new DisableCachingFilter(),
                     new String[] { "/apiman-gateway-api/*" }, // url patterns
                     new String[] { "DisableCachingFilter" }, // servlet names
                     initParamsFilter, // init params
                     httpContext // http context
             );
-/*            webContainer.registerFilter(new AuthenticationFilter(),
+            logger.info(">> Register AuthenticationFilter");
+            webContainer.registerFilter(new AuthenticationFilter(),
                     new String[] { "/apiman-gateway-api/*" }, // url patterns
                     new String[] { "AuthenticationFilter" }, // servlet names
                     initParamsFilter, // init params
                     httpContext // http context
-            );*/
+            );
+            logger.info(">> Register RootResourceFilter");
             webContainer.registerFilter(new RootResourceFilter(),
                     new String[] { "/apiman-gateway-api/*" }, // url patterns
                     new String[] { "RootResourceFilter" }, // servlet names
@@ -134,10 +144,6 @@ public class Activator implements BundleActivator {
                     initParamsFilter, // init params
                     httpContext // http context
             );
-
-            // Register static htmls
-            // webContainer.registerResources("/apiman-gateway-api/", "/apiman-gateway-api/", httpContext);
-
         }
     }
 
