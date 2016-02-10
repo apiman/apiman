@@ -80,7 +80,7 @@ http GET http://localhost:8181/apiman-gateway/system/status
 http://localhost:8181/apiman-gateway-api/system/status
 ```
 
-# Scenario Api
+# Scenario 1 : Test Api
 
 - Create an API for the organisation : GatewayOSGIApiTest, apiId : echo and the version 1.0
 - Add new versions for the Api (2.0, 3.0)
@@ -96,4 +96,20 @@ http --verify=no DELETE https://localhost:8444/apiman-gateway-api/apis/GatewayOS
 http --verify=no GET https://localhost:8444/apiman-gateway-api/apis/GatewayOSGIApiTest/echo/2.0/endpoint
 http GET http://localhost:9999/apiman-echo/sample/path
 http --verify=no GET https://localhost:8444/apiman-gateway/GatewayOSGIApiTest/echo/2.0/simple/path
+```
+# Scenario 2 : Test Client
+
+- Register a client
+- Register an invalid client
+- Register an retired client
+- Remove a client
+- Re register it again
+
+```
+echo '{"organizationId" : "GatewayOSGIApiTest","clientId" : "test-client", "version" : "1.0", "contracts" : [ {"apiKey" : "12345", "apiOrgId" : "GatewayOSGIApiTest", "apiId" : "echo", "apiVersion" : "1.0"}]}"' | http --verify=no PUT https://localhost:8444/apiman-gateway-api/clients
+echo '{"organizationId" : "GatewayOSGIApiTest","clientId" : "invalid-test-client", "version" : "1.0", "contracts" : [ {"apiKey" : "12345_002", "apiOrgId" : "GatewayOSGIApiTest", "apiId" : "invalid-api", "apiVersion" : "1.0"}]}"' | http --verify=no PUT https://localhost:8444/apiman-gateway-api/clients
+echo '{"organizationId" : "GatewayOSGIApiTest","clientId" : "retired-test-client", "version" : "1.0", "contracts" : [ {"apiKey" : "12345_003", "apiOrgId" : "GatewayOSGIApiTest", "apiId" : "echo", "apiVersion" : "3.0"}]}"' | http --verify=no PUT https://localhost:8444/apiman-gateway-api/clients
+echo '{"organizationId" : "GatewayOSGIApiTest","clientId" : "test-client", "version" : "1.0", "contracts" : [ {"apiKey" : "12345", "apiOrgId" : "GatewayOSGIApiTest", "apiId" : "echo", "apiVersion" : "1.0"}]}"' | http --verify=no PUT https://localhost:8444/apiman-gateway-api/clients
+http --verify=no DELETE https://localhost:8444/apiman-gateway-api/clients/GatewayOSGIApiTest/test-client/1.0
+echo '{"organizationId" : "GatewayOSGIApiTest","clientId" : "test-client", "version" : "1.0", "contracts" : [ {"apiKey" : "12345", "apiOrgId" : "GatewayOSGIApiTest", "apiId" : "echo", "apiVersion" : "1.0"}]}"' | http --verify=no PUT https://localhost:8444/apiman-gateway-api/clients
 ```
