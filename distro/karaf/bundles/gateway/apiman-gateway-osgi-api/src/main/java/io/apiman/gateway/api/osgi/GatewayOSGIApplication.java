@@ -2,7 +2,6 @@ package io.apiman.gateway.api.osgi;
 
 import io.apiman.gateway.api.rest.impl.ApiResourceImpl;
 import io.apiman.gateway.api.rest.impl.ClientResourceImpl;
-import io.apiman.gateway.api.rest.impl.GatewayApiApplication;
 import io.apiman.gateway.api.rest.impl.SystemResourceImpl;
 import io.apiman.gateway.api.rest.impl.mappers.RestExceptionMapper;
 
