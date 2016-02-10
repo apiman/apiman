@@ -57,3 +57,33 @@ http GET http://localhost:8181/apiman-gateway/system/status
 ```
 http://localhost:8181/apiman-gateway-api/system/status
 ```
+
+# Scenario Api
+
+- Create an API for the organisation : GatewayOSGIApiTest, apiId : echo and the version 1.0
+- Add new versions for the Api (2.0, 3.0)
+- Delete the service for the version 3.0
+- Get the info of the service version 2.0
+- Test the echo service
+
+```
+echo '{"organizationId" : "GatewayOSGIApiTest", "apiId" : "echo", "version" : "1.0", "endpointType" : "REST", "endpoint" :"http://localhost:9999/"}' | http --verbose PUT http://localhost:8181/apiman-gateway-api/apis
+echo '{"organizationId" : "GatewayOSGIApiTest", "apiId" : "echo", "version" : "2.0", "endpointType" : "REST", "endpoint" :"http://localhost:9999/"}' | http --verbose PUT http://localhost:8181/apiman-gateway-api/apis
+echo '{"organizationId" : "GatewayOSGIApiTest", "apiId" : "echo", "version" : "3.0", "endpointType" : "REST", "endpoint" :"http://localhost:9999/"}' | http --verbose PUT http://localhost:8181/apiman-gateway-api/apis
+http DELETE http://localhost:8181/apiman-gateway-api/apis/GatewayOSGIApiTest/echo/3.0
+http GET http://localhost:8181/apiman-gateway-api/apis/GatewayOSGIApiTest/echo/2.0/endpoint
+HTTP/1.1 200 OK
+Cache-Control: no-cache, no-store, must-revalidate
+Content-Type: application/json
+Date: Wed, 10 Feb 2016 11:39:10 GMT
+Expires: Tue, 09 Feb 2016 11:39:10 GMT
+Pragma: no-cache
+Server: Jetty(8.1.17.v20150415)
+Transfer-Encoding: chunked
+
+{
+    "endpoint": "https://localhost:8443/apiman-gateway/GatewayOSGIApiTest/echo/2.0"
+}
+http GET http://localhost:9999/apiman-echo/sample/path
+http --verify=no GET https://localhost:8443/apiman-gateway/GatewayOSGIApiTest/echo/2.0
+```
