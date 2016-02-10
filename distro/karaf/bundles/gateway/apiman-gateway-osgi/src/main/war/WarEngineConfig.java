@@ -15,32 +15,22 @@
  */
 package io.apiman.gateway.platforms.war;
 
-import io.apiman.common.config.ConfigFactory;
 import io.apiman.common.plugin.Plugin;
 import io.apiman.common.plugin.PluginClassLoader;
 import io.apiman.common.plugin.PluginCoordinates;
 import io.apiman.common.util.ReflectionUtils;
 import io.apiman.common.util.crypt.IDataEncrypter;
-import io.apiman.gateway.engine.IComponent;
-import io.apiman.gateway.engine.IConnectorFactory;
-import io.apiman.gateway.engine.IEngineConfig;
-import io.apiman.gateway.engine.IMetrics;
-import io.apiman.gateway.engine.IPluginRegistry;
-import io.apiman.gateway.engine.IPolicyErrorWriter;
-import io.apiman.gateway.engine.IPolicyFailureWriter;
-import io.apiman.gateway.engine.IRegistry;
+import io.apiman.gateway.engine.*;
 import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.impl.DefaultPolicyErrorWriter;
 import io.apiman.gateway.engine.impl.DefaultPolicyFailureWriter;
 import io.apiman.gateway.engine.policy.IPolicyFactory;
-
-import java.util.*;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-
 import io.apiman.gateway.platforms.osgi.Activator;
 import org.apache.commons.configuration.BaseConfiguration;
 import org.apache.commons.configuration.Configuration;
+
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 /**
  * Global access to configuration information.

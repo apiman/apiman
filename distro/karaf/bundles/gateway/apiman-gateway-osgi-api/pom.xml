@@ -2,14 +2,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
     <parent>
-        <artifactId>apiman-osgi-bundles</artifactId>
+        <artifactId>apiman-gateway-osgi-project</artifactId>
         <groupId>io.apiman</groupId>
         <version>1.2.2-SNAPSHOT</version>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
     <packaging>bundle</packaging>
-    <artifactId>gateway-osgi-api</artifactId>
+    <artifactId>apiman-gateway-osgi-api</artifactId>
     <name>Apiman :: OSGI :: Gateway Api Module</name>
 
     <dependencies>
@@ -17,10 +17,17 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>apiman-gateway-api-rest</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>apiman-gateway-api-rest-impl</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>apiman-gateway-osgi-servlet</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>io.apiman</groupId>
@@ -42,13 +49,11 @@
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.core</artifactId>
-            <version>4.3.1</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.compendium</artifactId>
-            <version>4.3.1</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -67,8 +72,7 @@
         <!-- Temp dep -->
         <dependency>
             <groupId>io.apiman</groupId>
-            <artifactId>gateway-osgi</artifactId>
-            <version>1.2.2-SNAPSHOT</version>
+            <artifactId>apiman-gateway-osgi</artifactId>
             <scope>provided</scope>
         </dependency>
 
@@ -127,11 +131,6 @@
                         *;scope=compile;artifactId=!junit|mockito-all
                     </Embed-Dependency>
                     <Embed-Transitive>false</Embed-Transitive>
-                    <Require-Capability>
-                        org.ops4j.pax.cdi.extension;filter:="(&amp;(extension=pax-cdi-extension)(version>=0.10)(!(version>=0.14)))",
-                        osgi.extender;filter:="(osgi.extender=pax.cdi)",
-                        osgi.ee;filter:="(&amp;(osgi.ee=JavaSE)(version=1.6))"
-                    </Require-Capability>
                     <_removeheaders>Embed-Dependency,Embed-Transitive,Include-Resource,Embedded-Artifacts,Private-Package</_removeheaders>
                 </instructions>
             </configuration>

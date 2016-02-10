@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>manager</artifactId>
+    <artifactId>apiman-manager-osgi-project</artifactId>
     <name>Apiman :: OSGI :: Manager Project</name>
     <packaging>pom</packaging>
 
