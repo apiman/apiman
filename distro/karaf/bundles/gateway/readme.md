@@ -44,9 +44,6 @@ Install and run ElasticSearch 1.7.2 (https://github.com/apiman/apiman-deployer/b
 ```
 features:addurl mvn:io.apiman/apiman-karaf/1.2.2-SNAPSHOT/xml/features
 features:install apiman-gateway
-install -s mvn:io.apiman/gateway-osgi-servlet/1.2.2-SNAPSHOT
-install -s mvn:io.apiman/gateway-osgi/1.2.2-SNAPSHOT
-install -s mvn:io.apiman/gateway-osgi-api/1.2.2-SNAPSHOT
 ```
 
 # Test Apiman Gateway (using HTTPie tool or curl)
