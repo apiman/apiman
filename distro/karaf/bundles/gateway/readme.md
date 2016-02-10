@@ -16,12 +16,17 @@ Here is an example `CN=localhost, OU=apiman, O=apiman, L=fuse, ST=Unknown, C=BE`
 
 # Create the org.ops4j.pax.web.cfg file under the directory /etc of Karaf
 
+- Define the port to be used for the https and https protocols
+- Setup the paramaters to access the keystore created and the password to be used
+
 ```
 org.osgi.service.http.secure.enabled=true
+org.osgi.service.http.port.secure=8443
+org.osgi.service.http.port=8181
+org.osgi.service.http.enabled=true
 org.ops4j.pax.web.ssl.keystore=/Users/chmoulli/Temp/_apiman/keystore.jks
 org.ops4j.pax.web.ssl.password=apiman
 org.ops4j.pax.web.ssl.keypassword=apiman
-org.osgi.service.http.port.secure=8443
 ```
 
 # Clone Git hub project and build
