@@ -55,8 +55,8 @@ install -s mvn:io.apiman/gateway-osgi-api/1.2.2-SNAPSHOT
 http GET http://localhost:8181/apiman-gateway/system/status
 ```
 
-# Test Apiman Gateway API (does not work as the servlet is not started)
+# Test Apiman Gateway API
 
 ```
-http GET http://localhost:8181/apiman-gateway-api/system/status
+http://localhost:8181/apiman-gateway-api/system/status
 ```
