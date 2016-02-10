@@ -44,6 +44,14 @@
       <groupId>io.vertx</groupId>
       <artifactId>vertx-jdbc-client</artifactId>
     </dependency>
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-auth-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-sql-common</artifactId>
+    </dependency>
 
     <!-- apiman dependencies -->
     <dependency>
@@ -61,6 +69,10 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-gateway-engine-beans</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-common-plugin</artifactId>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
@@ -101,6 +113,10 @@
 
     <!-- Third Party Dependencies -->
     <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
     </dependency>
@@ -111,6 +127,14 @@
     <dependency>
       <groupId>com.unboundid</groupId>
       <artifactId>unboundid-ldapsdk</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>joda-time</groupId>
+      <artifactId>joda-time</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-codec-http</artifactId>
     </dependency>
 
     <!--  Spec Only -->
@@ -134,11 +158,6 @@
       <artifactId>apacheds-test-framework</artifactId>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.apache.directory.server</groupId>
-      <artifactId>apacheds-server-integ</artifactId>
-      <scope>test</scope>
-    </dependency>    
   </dependencies>
 
   <build>
@@ -166,7 +185,7 @@
 
     <!-- This ensures the codegen-ed sources make it into compilation phase
     Should be removed when upstream is fixed. -->
-    <plugins>      
+    <plugins>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
@@ -228,7 +247,7 @@
           </execution>
         </executions>
       </plugin>
-      
+
     <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -243,7 +262,7 @@
         </excludes>
         </configuration>
      </plugin>
-  
+
       <!-- Export test jar -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

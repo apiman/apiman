@@ -89,7 +89,7 @@
     <version.clean.plugin>2.6</version.clean.plugin>
     <version.com.qmino.miredot-plugin>1.6.2</version.com.qmino.miredot-plugin>
     <version.compiler.plugin>3.2</version.compiler.plugin>
-    <version.dependency.plugin>2.9</version.dependency.plugin>
+    <version.dependency.plugin>2.10</version.dependency.plugin>
     <version.deploy.plugin>2.8.2</version.deploy.plugin>
     <version.enforcer.plugin>1.4</version.enforcer.plugin>
     <version.install.plugin>2.5.2</version.install.plugin>
@@ -110,11 +110,10 @@
     <!-- Dependency Versions -->
     <version.com.fasterxml.classmate>1.1.0</version.com.fasterxml.classmate>
     <version.com.fasterxml.jackson>2.5.4</version.com.fasterxml.jackson>
-    <version.com.google.guava>18.0</version.com.google.guava>
-    <version.com.google.gwt>2.5.1</version.com.google.gwt>
     <version.com.h2database>1.3.173</version.com.h2database>
     <version.com.squareup.okhttp>2.4.0</version.com.squareup.okhttp>
     <version.com.squareup.okio>1.4.0</version.com.squareup.okio>
+    <version.com.unboundid.unboundid-ldapsdk>3.0.0</version.com.unboundid.unboundid-ldapsdk>
     <version.commons-codec>1.10</version.commons-codec>
     <version.commons-collections>3.2.2</version.commons-collections>
     <version.commons-configuration>1.6</version.commons-configuration>
@@ -124,6 +123,7 @@
     <version.commons-logging>1.2</version.commons-logging>
     <version.commons-pool>1.6</version.commons-pool>
     <version.com.zaxxer>2.4.0</version.com.zaxxer>
+    <version.com.google.code.gson>2.3.1</version.com.google.code.gson>
     <version.io.searchbox.jest>0.1.6</version.io.searchbox.jest>
     <version.io.prometheus>0.0.13</version.io.prometheus>
     <version.javax.enterprise>1.2</version.javax.enterprise>
@@ -134,6 +134,7 @@
     <version.org.apache.commons.commons-lang3>3.3.2</version.org.apache.commons.commons-lang3>
     <version.org.apache.commons.commons-pool2>2.2</version.org.apache.commons.commons-pool2>
     <version.org.apache.directory.server>1.5.7</version.org.apache.directory.server>
+    <version.org.apache.directory.shared-ldap>0.9.19</version.org.apache.directory.shared-ldap>
     <version.org.apache.felix.scr.annotations>1.7.0</version.org.apache.felix.scr.annotations>
     <version.org.apache.geronimo.specs.geronimo-jta_1.1_spec>1.1.1</version.org.apache.geronimo.specs.geronimo-jta_1.1_spec>
     <version.org.apache.geronimo.specs.geronimo-servlet_3.0_spec>1.0</version.org.apache.geronimo.specs.geronimo-servlet_3.0_spec>
@@ -164,10 +165,10 @@
     <version.org.ow2.asm>4.0</version.org.ow2.asm>
     <version.org.picketbox>4.1.1.Final</version.org.picketbox>
     <version.org.slf4j>1.7.7</version.org.slf4j>
+    <version.io.netty>4.0.33.Final</version.io.netty>
     <version.io.swagger>1.5.3</version.io.swagger>
     <version.xmlunit>1.6</version.xmlunit>
     <version.io.vertx>3.1.0</version.io.vertx>
-    <version.com.unboundid.unboundid-ldapsdk>3.0.0</version.com.unboundid.unboundid-ldapsdk>
   </properties>
 
   <dependencyManagement>
@@ -706,6 +707,46 @@
       </dependency>
       <dependency>
         <groupId>org.apache.directory.server</groupId>
+        <artifactId>apacheds-server-annotations</artifactId>
+        <version>${version.org.apache.directory.server}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.directory.server</groupId>
+        <artifactId>apacheds-core-api</artifactId>
+        <version>${version.org.apache.directory.server}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.directory.server</groupId>
+        <artifactId>apacheds-core-entry</artifactId>
+        <version>${version.org.apache.directory.server}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.directory.server</groupId>
+        <artifactId>apacheds-protocol-ldap</artifactId>
+        <version>${version.org.apache.directory.server}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.directory.server</groupId>
+        <artifactId>apacheds-i18n</artifactId>
+        <version>${version.org.apache.directory.server}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.directory.server</groupId>
+        <artifactId>apacheds-jdbm-partition</artifactId>
+        <version>${version.org.apache.directory.server}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.directory.shared</groupId>
+      	<artifactId>shared-ldap</artifactId>
+        <version>${version.org.apache.directory.shared-ldap}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.directory.shared</groupId>
+        <artifactId>shared-ldif</artifactId>
+        <version>${version.org.apache.directory.shared-ldap}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.directory.server</groupId>
         <artifactId>apacheds-all</artifactId>
         <version>${version.org.apache.directory.server}</version>
       </dependency>
@@ -717,11 +758,6 @@
       <dependency>
         <groupId>org.apache.directory.server</groupId>
         <artifactId>apacheds-test-framework</artifactId>
-        <version>${version.org.apache.directory.server}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.directory.server</groupId>
-        <artifactId>apacheds-server-integ</artifactId>
         <version>${version.org.apache.directory.server}</version>
       </dependency>
       <dependency>
@@ -954,9 +990,9 @@
         <version>${version.org.jboss.resteasy}</version>
       </dependency>
       <dependency>
-        <groupId>com.google.guava</groupId>
-        <artifactId>guava</artifactId>
-        <version>${version.com.google.guava}</version>
+        <groupId>com.google.code.gson</groupId>
+        <artifactId>gson</artifactId>
+        <version>${version.com.google.code.gson}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
@@ -977,6 +1013,11 @@
         <groupId>com.unboundid</groupId>
         <artifactId>unboundid-ldapsdk</artifactId>
         <version>${version.com.unboundid.unboundid-ldapsdk}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-codec-http</artifactId>
+        <version>${version.io.netty}</version>
       </dependency>
 
       <!-- Spec Libraries -->
@@ -1083,6 +1124,16 @@
         <artifactId>vertx-unit</artifactId>
         <version>${version.io.vertx}</version>
       </dependency>
+      <dependency>
+        <groupId>io.vertx</groupId>
+        <artifactId>vertx-auth-common</artifactId>
+        <version>${version.io.vertx}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.vertx</groupId>
+        <artifactId>vertx-sql-common</artifactId>
+        <version>${version.io.vertx}</version>
+      </dependency>
 
       <!-- Swagger 2.0 -->
       <dependency>
@@ -1145,12 +1196,13 @@
               </goals>
               <phase>process-classes</phase>
               <configuration>
-                <fail>false</fail>
+                <fail>true</fail>
                 <rules>
                   <illegalTransitiveDependencyCheck implementation="de.is24.maven.enforcer.rules.IllegalTransitiveDependencyCheck">
-                    <reportOnly>true</reportOnly>
+                    <reportOnly>false</reportOnly>
                     <regexIgnoredClasses>
                       <regexIgnoredClass>javax\..+</regexIgnoredClass>
+                      <regexIgnoredClass>org.w3c.dom\..+</regexIgnoredClass>
                     </regexIgnoredClasses>
                     <useClassesFromLastBuild>true</useClassesFromLastBuild>
                   </illegalTransitiveDependencyCheck>
@@ -1233,11 +1285,6 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-war-plugin</artifactId>
           <version>${version.war.plugin}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>gwt-maven-plugin</artifactId>
-          <version>${version.com.google.gwt}</version>
         </plugin>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
@@ -1374,14 +1421,10 @@
               <directory>${basedir}</directory>
               <includes>
                 <include>www-test/**</include>
-                <include>.gwt/**</include>
-                <include>.errai/**</include>
-                <include>src/main/webapp/.errai/**</include>
                 <include>src/main/webapp/app/**</include>
                 <include>src/main/webapp/WEB-INF/deploy/**</include>
                 <include>src/main/webapp/WEB-INF/lib/**</include>
                 <include>src/main/webapp/WEB-INF/classes/**</include>
-                <include>**/gwt-unitCache/**</include>
                 <include>**/*.JUnit/**</include>
               </includes>
             </fileset>
