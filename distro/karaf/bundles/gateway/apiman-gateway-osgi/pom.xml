@@ -3,13 +3,13 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>apiman-osgi-bundles</artifactId>
+        <artifactId>apiman-gateway-osgi-project</artifactId>
         <groupId>io.apiman</groupId>
         <version>1.2.2-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>gateway-osgi</artifactId>
+    <artifactId>apiman-gateway-osgi</artifactId>
     <name>Apiman :: OSGI :: Gateway Module</name>
     <packaging>bundle</packaging>
 

@@ -403,7 +403,17 @@
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-gateway-engine-osgi</artifactId>
+        <artifactId>apiman-gateway-osgi</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>apiman-gateway-osgi-api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>apiman-gateway-osgi-servlet</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
