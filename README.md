@@ -27,15 +27,11 @@ The general idea is to keep your 'master' branch in-sync with the 'upstream/mast
 
 ## Building apiman
 
-####Note: If you're using JDK 1.7 or earlier, please allocate additional memory within your user profile to allow Maven to do its work:
-  
-	Linux/OS X:
-		export MAVEN_OPTS="-Xmx1024m -XX:MaxPermSize=256M"
-	Windows:
-		set MAVEN_OPTS="-Xmx1024m -XX:MaxPermSize=256M"
+### Requirements
+- Maven 3.x
+- Java 8+
 
-We use Maven 3.x to build our software. The following command compiles all the code, installs the JARs into 
-your local Maven repository, and runs all of the unit tests:
+The following command compiles all the code, installs the JARs into your local Maven repository, and runs all of the unit tests:
 
 	$ mvn clean install
 	
@@ -44,16 +40,16 @@ your local Maven repository, and runs all of the unit tests:
 The project can be built and deployed on a variety of runtime platforms, but if you want to see it in 
 action as quickly as possible try this:
 
-    $ mvn clean install -Pinstall-all-wildfly8
-    $ cd tools/server-all/target/wildfly-8.2.0.Final/
+    $ mvn clean install -Pinstall-all-wildfly9
+    $ cd tools/server-all/target/wildfly-9.0.2.Final/
     $ ./bin/standalone.sh
 
 The above maven command will do the following:
 
 1. A full build of apiman
-2. Download WildFly 8.x
-3. Unpack and configure WildFly 8.x
-4. Deploy the WildFly 8.x version of apiman to WildFly
+2. Download WildFly 9.x
+3. Unpack and configure WildFly 9.x
+4. Deploy the WildFly 9.x version of apiman to WildFly
 
 Once WildFly has started up, and if all went well, you can point your browser to the 
 [API Manager](http://localhost:8080/apimanui/) and log in (either register a new user
@@ -86,7 +82,7 @@ the official repository:
 	                                      (i.e., the latest from master will be the new base for your changes)
 
 If the pull grabbed a lot of changes, you should rerun your build to make sure your changes are still good.
-You can then either [create patches](http://progit.org/book/ch5-2.html) (one file per commit, saved in `~/apiman-1234`) with 
+You can then either [create patches](http://progit.org/book/ch5-2.html) (one file per commit, saved in `~/apiman-1234`) with
 
 	$ git format-patch -M -o ~/apiman-1234 orgin/master
 
@@ -98,6 +94,8 @@ and [generate a pull-request](http://help.github.com/pull-requests/) for your ch
 
 We prefer pull-requests, because we can review the proposed changes, comment on them,
 discuss them with you, and likely merge the changes right into the official repository.
+
+Please try to create one commit per feature or fix, generally the easiest way to do this is via [git squash](https://git-scm.com/book/en/v2/Git-Tools-Rewriting-History#Squashing-Commits). This makes reverting changes easier, and avoids needlessly polluting the repository history with checkpoint commits.
 
 ## Code Formatting
 
