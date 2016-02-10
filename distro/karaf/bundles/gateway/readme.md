@@ -84,9 +84,9 @@ http://localhost:8181/apiman-gateway-api/system/status
 - Test the echo service
 
 ```
-echo '{"organizationId" : "GatewayOSGIApiTest", "apiId" : "echo", "version" : "1.0", "endpointType" : "REST", "endpoint" :"http://localhost:9999/apiman-echo"}' | http --verify=no PUT https://localhost:8443/apiman-gateway-api/apis
-echo '{"organizationId" : "GatewayOSGIApiTest", "apiId" : "echo", "version" : "2.0", "endpointType" : "REST", "endpoint" :"http://localhost:9999/apiman-echo"}' | http --verify=no PUT https://localhost:8443/apiman-gateway-api/apis
-echo '{"organizationId" : "GatewayOSGIApiTest", "apiId" : "echo", "version" : "3.0", "endpointType" : "REST", "endpoint" :"http://localhost:9999/apiman-echo"}' | http --verify=no PUT https://localhost:8443/apiman-gateway-api/apis
+echo '{"organizationId" : "GatewayOSGIApiTest", "apiId" : "echo", "version" : "1.0", "endpointType" : "REST", "publicAPI" : "true", "endpoint" :"http://localhost:9999/apiman-echo"}' | http --verify=no PUT https://localhost:8443/apiman-gateway-api/apis
+echo '{"organizationId" : "GatewayOSGIApiTest", "apiId" : "echo", "version" : "2.0", "endpointType" : "REST", "publicAPI" : "true", "endpoint" :"http://localhost:9999/apiman-echo"}' | http --verify=no PUT https://localhost:8443/apiman-gateway-api/apis
+echo '{"organizationId" : "GatewayOSGIApiTest", "apiId" : "echo", "version" : "3.0", "endpointType" : "REST", "publicAPI" : "true", "endpoint" :"http://localhost:9999/apiman-echo"}' | http --verify=no PUT https://localhost:8443/apiman-gateway-api/apis
 http --verify=no DELETE https://localhost:8443/apiman-gateway-api/apis/GatewayOSGIApiTest/echo/3.0
 http --verify=no GET https://localhost:8443/apiman-gateway-api/apis/GatewayOSGIApiTest/echo/2.0/endpoint
 http GET http://localhost:9999/apiman-echo/sample/path
