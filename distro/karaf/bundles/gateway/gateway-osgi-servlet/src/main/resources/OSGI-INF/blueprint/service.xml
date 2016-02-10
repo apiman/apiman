@@ -8,13 +8,13 @@
 
     <service ref="warEngineAccessor" interface="io.apiman.gateway.api.rest.impl.IEngineAccessor">
         <service-properties>
-            <entry key="engine" value="engineAccessor"/>
+            <entry key="accessor" value="engineAccessor"/>
         </service-properties>
     </service>
 
     <service ref="warPlatformAccessor" interface="io.apiman.gateway.api.rest.impl.IPlatformAccessor">
         <service-properties>
-            <entry key="platform" value="platformAccessor"/>
+            <entry key="accessor" value="platformAccessor"/>
         </service-properties>
     </service>
 
