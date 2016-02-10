@@ -1,6 +1,7 @@
 <features name="my-repo" xmlns="http://karaf.apache.org/xmlns/features/v1.1.0">
 
     <repository>mvn:org.keycloak/keycloak-osgi-features/1.6.1.Final/xml/features</repository>
+    <repository>mvn:org.infinispan/infinispan-core/7.2.5.Final/xml/features</repository>
 
     <feature name="hibernate" description="Hibernate 4.2.x JPA persistence engine support" version="4.2.20">
         <details>Enable Hibernate 4.2.x as persistence engine.</details>
@@ -78,6 +79,7 @@
         <feature>hibernate</feature>
         <feature>war</feature>
         <feature>apiman-common</feature>
+        <feature>infinispan-core</feature>
         <!-- <feature>apiman-lib</feature>-->
         <bundle>mvn:io.apiman/apiman-gateway-engine-beans/${project.version}</bundle>
         <bundle>mvn:io.apiman/apiman-gateway-engine-core/${project.version}</bundle>
@@ -86,7 +88,11 @@
         <bundle>mvn:io.apiman/apiman-gateway-platforms-servlet/${project.version}</bundle>
         <bundle>mvn:io.apiman/apiman-gateway-api-rest/${project.version}</bundle>
         <bundle>mvn:io.apiman/apiman-gateway-api-rest-impl/1.2.2-SNAPSHOT</bundle>
+        <bundle>mvn:io.apiman/apiman-gateway-engine-influxdb/1.2.2-SNAPSHOT</bundle>
+        <bundle>mvn:io.apiman/apiman-gateway-engine-ispn/1.2.2-SNAPSHOT</bundle>
         <bundle>mvn:io.apiman/gateway-osgi-servlet/${project.version}</bundle>
+        <bundle>mvn:io.apiman/gateway-osgi/1.2.2-SNAPSHOT</bundle>
+        <bundle>mvn:io.apiman/gateway-osgi-api/1.2.2-SNAPSHOT</bundle>
     </feature>
 
     <feature name="manager-osgi" version="${project.version}">
