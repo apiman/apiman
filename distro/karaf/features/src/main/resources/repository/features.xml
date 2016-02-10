@@ -29,8 +29,6 @@
         <bundle>wrap:mvn:org.infinispan/infinispan-core/5.2.11.Final</bundle>
         <bundle>wrap:mvn:org.infinispan/infinispan-common/5.2.11.Final</bundle>
         <bundle>mvn:com.google.guava/guava/18.0</bundle>
-        <bundle>wrap:mvn:io.searchbox/jest-common/2.0.0</bundle>
-        <bundle>wrap:mvn:io.searchbox/jest/2.0.0</bundle>
         <bundle>mvn:com.google.code.gson/gson/2.3.1</bundle>
         -->
         <bundle>mvn:org.apache.commons/commons-lang3/3.3.2</bundle>
@@ -151,23 +149,6 @@
         <bundle>mvn:org.jboss.weld/weld-osgi-bundle/2.3.0.Final</bundle>
     </feature>
 
-    <feature name="apiman-embed" version="${project.version}">
-        <feature version="4.2.20">hibernate</feature>
-        <feature>war</feature>
-        <feature>pax-cdi-1.1-weld</feature>
-        <feature>keycloak</feature>
-        <feature>apiman-lib</feature>
-<!--        <feature version="1.5.4">swagger</feature>-->
-        <feature version="1.7.2">elasticsearch</feature>
-        <bundle>mvn:org.jboss.weld/weld-osgi-bundle/2.3.0.Final</bundle>
-    </feature>
-
-    <feature name="manager-osgi-embed" version="${project.version}">
-        <feature>apiman-embed</feature>
-        <bundle>mvn:io.apiman/manager-osgi-rest-all/${project.version}</bundle>
-        <bundle>mvn:io.apiman/manager-osgi-ui/${project.version}</bundle>
-    </feature>
-
     <feature name="swagger" version="1.5.3">
         <!-- swagger 1.5 is not yet available as a feature but only 1.3.6 -->
         <bundle>mvn:com.fasterxml.jackson.core/jackson-databind/2.4.5</bundle>
@@ -216,7 +197,6 @@
         <bundle>mvn:io.apiman/apiman-manager-api-core/${project.version}</bundle>
         <bundle>mvn:io.apiman/apiman-manager-api-config/${project.version}</bundle>
         <bundle>mvn:io.apiman/apiman-manager-api-security/${project.version}</bundle>
-<!--        <bundle>mvn:io.apiman/apiman-manager-api-micro/${project.version}</bundle>-->
         <bundle>mvn:io.apiman/apiman-manager-api-export-import-api/${project.version}</bundle>
         <bundle>mvn:io.apiman/apiman-manager-api-gateway/${project.version}</bundle>
         <bundle>mvn:io.apiman/apiman-manager-api-rest/${project.version}</bundle>
@@ -244,12 +224,23 @@
         <bundle>mvn:io.apiman/apiman-servers-manager-es/${project.version}</bundle>
     </feature>
 
-<!--    <feature name="apiman-server-gateway" version="${project.version}">
+    <!-- TODO : Should be deprecated -->
+    <feature name="apiman-embed" version="${project.version}">
+        <feature version="4.2.20">hibernate</feature>
+        <feature>war</feature>
+        <feature>pax-cdi-1.1-weld</feature>
+        <feature>keycloak</feature>
         <feature>apiman-lib</feature>
-        <feature>apiman-gateway</feature>
-        <feature>apiman-common</feature>
-        <feature>apiman-manager-api</feature>
-        <bundle>mvn:io.apiman/apiman-servers-gateway-es/${project.version}</bundle>
-    </feature>-->
+        <!--        <feature version="1.5.4">swagger</feature>-->
+        <feature version="1.7.2">elasticsearch</feature>
+        <bundle>mvn:org.jboss.weld/weld-osgi-bundle/2.3.0.Final</bundle>
+    </feature>
+
+    <!-- TODO : Should be deprecated -->
+    <feature name="manager-osgi-embed" version="${project.version}">
+        <feature>apiman-embed</feature>
+        <bundle>mvn:io.apiman/manager-osgi-rest-all/${project.version}</bundle>
+        <bundle>mvn:io.apiman/manager-osgi-ui/${project.version}</bundle>
+    </feature>
 
 </features>
