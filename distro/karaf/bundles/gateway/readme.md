@@ -113,3 +113,16 @@ echo '{"organizationId" : "GatewayOSGIApiTest","clientId" : "test-client", "vers
 http --verify=no DELETE https://localhost:8444/apiman-gateway-api/clients/GatewayOSGIApiTest/test-client/1.0
 echo '{"organizationId" : "GatewayOSGIApiTest","clientId" : "test-client", "version" : "1.0", "contracts" : [ {"apiKey" : "12345", "apiOrgId" : "GatewayOSGIApiTest", "apiId" : "echo", "apiVersion" : "1.0"}]}"' | http --verify=no PUT https://localhost:8444/apiman-gateway-api/clients
 ```
+
+# Scenario 3 : Test a simple plugin
+
+```
+echo '{"organizationId":"PluginTestPolicyTest","apiId":"echo","version":"1.0","publicAPI":true,"endpointType":"REST","endpoint":"http://localhost:9999/apiman-echo","apiPolicies":[{"policyImpl":"plugin:io.apiman:apiman-plugins-test-policy:1.2.0-SNAPSHOT:war/io.apiman.plugins.test_policy.TestPolicy","policyJsonConfig":""}]}' | http --verify=no PUT https://localhost:8444/apiman-gateway-api/apis
+
+http --verify=no GET https://localhost:8444/apiman-gateway/PluginTestPolicyTest/echo/1.0/hello
+  
+echo '{"organizationId":"PluginTestPolicyTest","apiId":"reload","version":"1.0","publicAPI":true,"endpointType":"REST","endpoint":"http://localhost:9999/apiman-echo","apiPolicies":[{"policyImpl":"plugin:io.apiman.test:custom-fields-plugin:1.0-SNAPSHOT:war/io.apiman.test.plugins.FieldsPolicy","policyJsonConfig":"{ \"field1\" : \"foo\", \"field2\" : \"fighters\" }"}]}' | http --verify=no PUT https://localhost:8444/apiman-gateway-api/apis
+http --verify=no --verbose GET https://localhost:8444/apiman-gateway-api/apis/PluginTestPolicyTest/reload/1.0/path/to/app/resource X-RestTest-System-Property:apiman.gateway.m2-repository-path=src/test/resources/test-plan-data/plugins/m2-fields-v1
+```
+
+
