@@ -90,9 +90,9 @@
         <bundle>mvn:io.apiman/apiman-gateway-api-rest-impl/1.2.2-SNAPSHOT</bundle>
         <bundle>mvn:io.apiman/apiman-gateway-engine-influxdb/1.2.2-SNAPSHOT</bundle>
         <bundle>mvn:io.apiman/apiman-gateway-engine-ispn/1.2.2-SNAPSHOT</bundle>
-        <bundle>mvn:io.apiman/gateway-osgi-servlet/${project.version}</bundle>
-        <bundle>mvn:io.apiman/gateway-osgi/1.2.2-SNAPSHOT</bundle>
-        <bundle>mvn:io.apiman/gateway-osgi-api/1.2.2-SNAPSHOT</bundle>
+        <bundle>mvn:io.apiman/apiman-gateway-osgi-servlet/${project.version}</bundle>
+        <bundle>mvn:io.apiman/apiman-gateway-osgi/1.2.2-SNAPSHOT</bundle>
+        <bundle>mvn:io.apiman/apiman-gateway-osgi-api/1.2.2-SNAPSHOT</bundle>
     </feature>
 
     <feature name="manager-osgi" version="${project.version}">

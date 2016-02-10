@@ -20,11 +20,9 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>gateway-osgi-servlet</artifactId>
-            <version>1.2.2-SNAPSHOT</version>
+            <artifactId>apiman-gateway-osgi-servlet</artifactId>
             <scope>provided</scope>
         </dependency>
-
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>apiman-gateway-platforms-servlet</artifactId>
@@ -40,7 +38,6 @@
             <artifactId>apiman-gateway-api-rest-impl</artifactId>
             <scope>provided</scope>
         </dependency>
-
 
         <!-- Third Party Dependencies -->
         <dependency>
