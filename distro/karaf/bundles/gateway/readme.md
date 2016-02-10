@@ -7,6 +7,23 @@ tar -vxf apache-karaf-2.4.4.tar.gz
 cd apache-karaf-2.4.4
 ```
 
+# Generate keystore for the Web Container
+
+keytool -genkey -alias server-alias -keyalg RSA -keypass apiman -storepass apiman -keystore keystore.jks
+
+Add `localhost` as name for the first and last name field. You can define the value for the other fields as you want.
+Here is an example `CN=localhost, OU=apiman, O=apiman, L=fuse, ST=Unknown, C=BE`
+
+# Create the org.ops4j.pax.web.cfg file under the directory /etc of Karaf
+
+```
+org.osgi.service.http.secure.enabled=true
+org.ops4j.pax.web.ssl.keystore=/Users/chmoulli/Temp/_apiman/keystore.jks
+org.ops4j.pax.web.ssl.password=apiman
+org.ops4j.pax.web.ssl.keypassword=apiman
+org.osgi.service.http.port.secure=8443
+```
+
 # Clone Git hub project and build
 
 ```
@@ -67,23 +84,11 @@ http://localhost:8181/apiman-gateway-api/system/status
 - Test the echo service
 
 ```
-echo '{"organizationId" : "GatewayOSGIApiTest", "apiId" : "echo", "version" : "1.0", "endpointType" : "REST", "endpoint" :"http://localhost:9999/"}' | http --verbose PUT http://localhost:8181/apiman-gateway-api/apis
-echo '{"organizationId" : "GatewayOSGIApiTest", "apiId" : "echo", "version" : "2.0", "endpointType" : "REST", "endpoint" :"http://localhost:9999/"}' | http --verbose PUT http://localhost:8181/apiman-gateway-api/apis
-echo '{"organizationId" : "GatewayOSGIApiTest", "apiId" : "echo", "version" : "3.0", "endpointType" : "REST", "endpoint" :"http://localhost:9999/"}' | http --verbose PUT http://localhost:8181/apiman-gateway-api/apis
-http DELETE http://localhost:8181/apiman-gateway-api/apis/GatewayOSGIApiTest/echo/3.0
-http GET http://localhost:8181/apiman-gateway-api/apis/GatewayOSGIApiTest/echo/2.0/endpoint
-HTTP/1.1 200 OK
-Cache-Control: no-cache, no-store, must-revalidate
-Content-Type: application/json
-Date: Wed, 10 Feb 2016 11:39:10 GMT
-Expires: Tue, 09 Feb 2016 11:39:10 GMT
-Pragma: no-cache
-Server: Jetty(8.1.17.v20150415)
-Transfer-Encoding: chunked
-
-{
-    "endpoint": "https://localhost:8443/apiman-gateway/GatewayOSGIApiTest/echo/2.0"
-}
+echo '{"organizationId" : "GatewayOSGIApiTest", "apiId" : "echo", "version" : "1.0", "endpointType" : "REST", "endpoint" :"http://localhost:9999/apiman-echo"}' | http --verify=no PUT https://localhost:8443/apiman-gateway-api/apis
+echo '{"organizationId" : "GatewayOSGIApiTest", "apiId" : "echo", "version" : "2.0", "endpointType" : "REST", "endpoint" :"http://localhost:9999/apiman-echo"}' | http --verify=no PUT https://localhost:8443/apiman-gateway-api/apis
+echo '{"organizationId" : "GatewayOSGIApiTest", "apiId" : "echo", "version" : "3.0", "endpointType" : "REST", "endpoint" :"http://localhost:9999/apiman-echo"}' | http --verify=no PUT https://localhost:8443/apiman-gateway-api/apis
+http --verify=no DELETE https://localhost:8443/apiman-gateway-api/apis/GatewayOSGIApiTest/echo/3.0
+http --verify=no GET https://localhost:8443/apiman-gateway-api/apis/GatewayOSGIApiTest/echo/2.0/endpoint
 http GET http://localhost:9999/apiman-echo/sample/path
-http --verify=no GET https://localhost:8443/apiman-gateway/GatewayOSGIApiTest/echo/2.0
+http --verify=no GET https://localhost:8443/apiman-gateway/GatewayOSGIApiTest/echo/2.0/simple/path
 ```
