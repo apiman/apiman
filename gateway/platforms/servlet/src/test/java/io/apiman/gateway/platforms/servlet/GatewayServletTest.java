@@ -142,7 +142,7 @@ public class GatewayServletTest {
         Assert.assertEquals("value2", paramMap.get("param2"));
         Assert.assertEquals("value3", paramMap.get("param3"));
 
-        paramMap = GatewayServlet.parseApiRequestQueryParams("param1=hello%20world&param2=hello+world&param3=hello world");
+        paramMap = GatewayServlet.parseApiRequestQueryParams("param1=hello%20world&param2=hello+world&param3=hello%20world");
         Assert.assertEquals("hello world", paramMap.get("param1"));
         Assert.assertEquals("hello world", paramMap.get("param2"));
         Assert.assertEquals("hello world", paramMap.get("param3"));
