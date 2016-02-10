@@ -142,10 +142,11 @@ public class GatewayServletTest {
         Assert.assertEquals("value2", paramMap.get("param2"));
         Assert.assertEquals("value3", paramMap.get("param3"));
 
-        paramMap = GatewayServlet.parseApiRequestQueryParams("param1=hello%20world&param2=hello+world&param3=hello%20world");
+        paramMap = GatewayServlet.parseApiRequestQueryParams("param1=hello%20world&param2=hello+world&param3=hello%20world&strangekeywith%3D%2B%26%3F=strangevaluewith%3D%2B%26%3F");
         Assert.assertEquals("hello world", paramMap.get("param1"));
         Assert.assertEquals("hello world", paramMap.get("param2"));
         Assert.assertEquals("hello world", paramMap.get("param3"));
+        Assert.assertEquals("strangevaluewith=+&?", paramMap.get("strangekeywith=+&?"));
     }
 
 }
