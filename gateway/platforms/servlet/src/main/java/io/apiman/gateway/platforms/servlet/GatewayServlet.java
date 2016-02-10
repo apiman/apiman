@@ -442,25 +442,28 @@ public abstract class GatewayServlet extends HttpServlet {
      */
     protected static final QueryMap parseApiRequestQueryParams(String queryString) {
         QueryMap rval = new QueryMap();
+        
         if (queryString != null) {
             try {
-                queryString = URLDecoder.decode(queryString, "UTF-8"); //$NON-NLS-1$
+                String[] pairSplit = queryString.split("&"); //$NON-NLS-1$
+                for (String paramPair : pairSplit) {
+                    int idx = paramPair.indexOf("="); //$NON-NLS-1$
+                    String key, value;
+                    if (idx != -1) {
+                        key =  URLDecoder.decode(paramPair.substring(0, idx), "UTF-8"); //$NON-NLS-1$
+                        value = URLDecoder.decode(paramPair.substring(idx + 1), "UTF-8"); //$NON-NLS-1$
+                    } else {
+                        key = URLDecoder.decode(paramPair, "UTF-8"); //$NON-NLS-1$
+                        value = null;
+                    }
+                    rval.add(key,  value);
+                }
             } catch (UnsupportedEncodingException e) {
                 throw new RuntimeException(e);
             }
-            String[] pairSplit = queryString.split("&"); //$NON-NLS-1$
-            for (String paramPair : pairSplit) {
-                int idx = paramPair.indexOf("="); //$NON-NLS-1$
-                if (idx != -1) {
-                    String key = paramPair.substring(0, idx);
-                    String val = paramPair.substring(idx + 1);
-                    rval.add(key, val);
-                } else {
-                    rval.add(paramPair, null);
-                }
-            }
+            
         }
-
+        
         return rval;
     }
 
