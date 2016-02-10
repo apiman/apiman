@@ -15,6 +15,11 @@
     <!-- apiman dependencies (must be excluded from the WAR) -->
     <dependency>
       <groupId>io.apiman</groupId>
+      <artifactId>apiman-gateway-engine-beans</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.apiman</groupId>
       <artifactId>apiman-gateway-engine-core</artifactId>
       <scope>provided</scope>
     </dependency>
@@ -22,6 +27,20 @@
       <groupId>io.apiman</groupId>
       <artifactId>apiman-gateway-engine-policies</artifactId>
       <scope>provided</scope>
+    </dependency>
+
+    <!-- Third party -->
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
     </dependency>
 
     <!-- Testing -->
