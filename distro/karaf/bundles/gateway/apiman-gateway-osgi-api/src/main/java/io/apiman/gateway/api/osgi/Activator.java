@@ -7,6 +7,8 @@ import io.apiman.common.servlet.LocaleFilter;
 import io.apiman.common.servlet.RootResourceFilter;
 import io.apiman.gateway.platforms.war.filters.HttpRequestThreadLocalFilter;
 import io.apiman.gateway.platforms.war.listeners.WarGatewayBootstrapper;
+import org.eclipse.jetty.security.ConstraintMapping;
+import org.eclipse.jetty.util.security.Constraint;
 import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
 import org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap;
 import org.ops4j.pax.web.service.WebContainer;
@@ -19,8 +21,8 @@ import org.osgi.service.http.HttpContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Dictionary;
-import java.util.Hashtable;
+import java.net.URL;
+import java.util.*;
 
 public class Activator implements BundleActivator {
 
@@ -30,6 +32,8 @@ public class Activator implements BundleActivator {
     private ServiceReference<WebContainer> serviceReference;
     private ServiceReference<ConfigurationAdmin> configAdminReference;
     private final static Logger logger = LoggerFactory.getLogger(Activator.class);
+    private final String jettyWebXmlLocation = "/WEB-INF/jetty-web.xml";
+    private List<ConstraintMapping> constraintMappings;
 
     protected static Dictionary apimanProps;
 
@@ -39,7 +43,7 @@ public class Activator implements BundleActivator {
     public void start(BundleContext context) throws Exception {
 
         /**
-         * >> Register the OSGI Config Admin Service to retrieve the Apiman.properties
+         * Register the OSGI Config Admin Service to retrieve the Apiman.properties
          */
         configAdminReference = context.getServiceReference(ConfigurationAdmin.class);
         while (configAdminReference == null) {
@@ -50,7 +54,7 @@ public class Activator implements BundleActivator {
         apimanProps = configuration.getProperties();
 
         /**
-         * >> Register the WebContainer with the Servlet config
+         * Register the WebContainer with the Servlet config
          */
         serviceReference = context.getServiceReference(WebContainer.class);
 
@@ -69,6 +73,30 @@ public class Activator implements BundleActivator {
 
             // set a session timeout of 2 minutes
             webContainer.setSessionTimeout(2, httpContext);
+
+            addJettyWebXml(webContainer, httpContext, context);
+
+            String[] roles = {"admin","apipublisher"};
+
+            Constraint ct = new Constraint();
+            ct.setName("apiman");
+            ct.setAuthenticate(true);
+            ct.setDataConstraint(0);
+            ct.setRoles(roles);
+
+            ConstraintMapping ctMapping = new ConstraintMapping();
+            ctMapping.setConstraint(ct);
+            ctMapping.setPathSpec("/apiman-gateway-api/*");
+
+            addConstraintMapping(webContainer, httpContext, ctMapping);
+
+            // We get a No LoginService for org.eclipse.jetty.security.authentication.BasicAuthenticator@361ce375 in org.eclipse.jetty.security.ConstraintSecurityHandler@3237eb5d
+            webContainer.registerLoginConfig("BASIC", // Authentication mode
+                    "apiman", // Realm name
+                    "", // formLoginPage
+                    "", // formErrorPage
+                    httpContext
+            );
 
             ctxParams = new Hashtable<String, Object>();
             ctxParams.put("resteasy.servlet.mapping.prefix","/apiman-gateway-api");
@@ -119,13 +147,13 @@ public class Activator implements BundleActivator {
                     initParamsFilter, // init params
                     httpContext // http context
             );
-            logger.info(">> Register AuthenticationFilter");
+/*            logger.info(">> Register AuthenticationFilter");
             webContainer.registerFilter(new AuthenticationFilter(),
-                    new String[] { "/apiman-gateway-api/*" }, // url patterns
+                    new String[] { "/apiman-gateway-api*//*" }, // url patterns
                     new String[] { "AuthenticationFilter" }, // servlet names
                     initParamsFilter, // init params
                     httpContext // http context
-            );
+            );*/
             logger.info(">> Register RootResourceFilter");
             webContainer.registerFilter(new RootResourceFilter(),
                     new String[] { "/apiman-gateway-api/*" }, // url patterns
@@ -161,6 +189,47 @@ public class Activator implements BundleActivator {
      */
     public static Dictionary config() {
         return apimanProps;
+    }
+
+    protected void addJettyWebXml(WebContainer service, HttpContext httpContext, BundleContext context) {
+        String jettyWebXmlLoc;
+        if (this.jettyWebXmlLocation == null) {
+            jettyWebXmlLoc = "/WEB-INF/jetty-web.xml";
+        } else {
+            jettyWebXmlLoc = this.jettyWebXmlLocation;
+        }
+
+        URL jettyWebXml = context.getBundle().getResource(jettyWebXmlLoc);
+        if (jettyWebXml != null) {
+            logger.info("Found jetty-web XML configuration on bundle classpath on " + jettyWebXmlLoc);
+            service.registerJettyWebXml(jettyWebXml, httpContext);
+        } else {
+            logger.info("Not found jetty-web XML configuration on bundle classpath on " + jettyWebXmlLoc);
+        }
+    }
+
+    protected void addConstraintMapping(WebContainer service, HttpContext httpContext, ConstraintMapping constraintMapping) {
+        Constraint constraint = constraintMapping.getConstraint();
+        String[] roles = constraint.getRoles();
+        // name property is unavailable on constraint object :/
+        String name = "Constraint-" + new Random().nextInt();
+
+        int dataConstraint = constraint.getDataConstraint();
+        String dataConstraintStr;
+        switch (dataConstraint) {
+        case Constraint.DC_UNSET: dataConstraintStr = null; break;
+        case Constraint.DC_NONE: dataConstraintStr = "NONE"; break;
+        case Constraint.DC_CONFIDENTIAL: dataConstraintStr = "CONFIDENTIAL"; break;
+        case Constraint.DC_INTEGRAL: dataConstraintStr = "INTEGRAL"; break;
+        default:
+            logger.info("Unknown data constraint: " + dataConstraint);
+            dataConstraintStr = "CONFIDENTIAL";
+        }
+        List<String> rolesList = Arrays.asList(roles);
+
+        logger.info("Adding security constraint name=" + name + ", url=" + constraintMapping.getPathSpec() + ", dataConstraint=" + dataConstraintStr + ", canAuthenticate="
+                + constraint.getAuthenticate() + ", roles=" + rolesList);
+        service.registerConstraintMapping(name, constraintMapping.getPathSpec(), null, dataConstraintStr, constraint.getAuthenticate(), rolesList, httpContext);
     }
 
 }

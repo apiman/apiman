@@ -38,10 +38,12 @@ cd distro/karaf
 mvn clean install
 ```
 
-# Copy Apiman Properties config file (from Github repo)
+# Copy Apiman Properties config file & apiman credentials
 
 ```
 cp /Users/chmoulli/Code/jboss/apiman/apiman-core-forked/distro/karaf/bundles/gateway/io.apiman.gateway.cfg ~/Temp/apache-karaf-2.4.4/etc
+cp /Users/chmoulli/Code/jboss/apiman/apiman-core-forked/distro/karaf/bundles/gateway/apiman.properties ~/Temp/apache-karaf-2.4.4/etc
+cp /Users/chmoulli/Code/jboss/apiman/apiman-core-forked/distro/karaf/bundles/gateway/apiman-realm.xml ~/Temp/apache-karaf-2.4.4/deploy
 ```
 
 # Start Karaf
