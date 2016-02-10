@@ -77,7 +77,7 @@ public class ServiceRegistryUtil {
             }
 
             // If the ServiceLoader can't retrieve the service, then we will try to find it using OSGI SErvice
-            if (services.isEmpty()) {
+/*            if (services.isEmpty()) {
                 try {
                     Bundle b = FrameworkUtil.getBundle(ServiceRegistryUtil.class);
                     if (b != null) {
@@ -92,7 +92,7 @@ public class ServiceRegistryUtil {
                 } catch (InvalidSyntaxException ex) {
                     // No services found - don't check again.
                 }
-            }
+            }*/
             return services;
         }
     }
