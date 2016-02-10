@@ -1,50 +1,59 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>io.apiman</groupId>
-    <artifactId>apiman-common</artifactId>
-    <version>1.2.2-SNAPSHOT</version>
-  </parent>
-  <artifactId>apiman-common-util</artifactId>
-  <packaging>bundle</packaging>
-  <name>apiman-common-util</name>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>io.apiman</groupId>
+        <artifactId>apiman-common</artifactId>
+        <version>1.2.2-SNAPSHOT</version>
+    </parent>
+    <artifactId>apiman-common-util</artifactId>
+    <packaging>bundle</packaging>
+    <name>apiman-common-util</name>
 
-  <dependencies>
-    <!-- Third Party Dependencies -->
-    <dependency>
-      <groupId>commons-codec</groupId>
-      <artifactId>commons-codec</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>commons-lang</groupId>
-      <artifactId>commons-lang</artifactId>
-    </dependency>
-  </dependencies>
-  
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <extensions>true</extensions>
-        <configuration>
-          <instructions>
-            <Import-Package>
-            javax.crypto,
-            javax.crypto.spec,
-            org.apache.commons.codec.binary;version="[1.4,2)",
-            org.apache.commons.lang.text;version="[2.6,3)"
-            </Import-Package>
-            <DynamicImport-Package>
-              io.apiman.gateway.engine.es,
-              io.apiman.gateway.engine.policy,
-              io.apiman.gateway.engine.impl,
-              io.apiman.gateway.platforms.servlet.connectors
-            </DynamicImport-Package>
-          </instructions>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+    <dependencies>
+        <!-- Third Party Dependencies -->
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+            <version>4.3.1</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Import-Package>
+                            javax.crypto,
+                            javax.crypto.spec,
+                            org.apache.commons.codec.binary;version="[1.4,2)",
+                            org.apache.commons.lang.text;version="[2.6,3)",
+                            org.osgi.framework,
+                            io.apiman.gateway.platforms.war
+                        </Import-Package>
+                        <DynamicImport-Package>
+                            io.apiman.gateway.engine.es,
+                            io.apiman.gateway.engine.policy,
+                            io.apiman.gateway.engine.impl,
+                            io.apiman.gateway.platforms.servlet.connectors
+                        </DynamicImport-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
