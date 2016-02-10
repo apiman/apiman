@@ -25,7 +25,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import org.keycloak.representations.AccessToken;
 import org.keycloak.representations.IDToken;
 import org.keycloak.representations.JsonWebToken;
 
@@ -37,7 +37,7 @@ public class ClaimLookup {
     private static final Map<String, List<Field>> STANDARD_CLAIMS_FIELD_MAP = new LinkedHashMap<>();
 
     static {
-        Class<?> clazz = IDToken.class;
+        Class<?> clazz = AccessToken.class;
         do {
             getProperties(clazz, "", new ArrayDeque<Field>());
         } while ((clazz = clazz.getSuperclass()) != null);
@@ -49,7 +49,7 @@ public class ClaimLookup {
     private static void getProperties(Class<?> klazz, String path, Deque<Field> fieldChain) {
         for (Field f: klazz.getDeclaredFields()) {
             f.setAccessible(true);
-            JsonProperty jsonProperty = f.getAnnotation(JsonProperty.class);
+            org.codehaus.jackson.annotate.JsonProperty jsonProperty = f.getAnnotation(org.codehaus.jackson.annotate.JsonProperty.class);
             if (jsonProperty != null) {
                 fieldChain.push(f);
                 // If the inspected type has nested @JsonProperty annotations, we need to inspect it
@@ -68,7 +68,7 @@ public class ClaimLookup {
     private static boolean hasJsonPropertyAnnotation(Field f) {
         for (Field g : f.getType().getDeclaredFields()) {
             g.setAccessible(true);
-            if (g.getAnnotation(JsonProperty.class) != null)
+            if (g.getAnnotation(org.codehaus.jackson.annotate.JsonProperty.class) != null)
                 return true;
         }
         return false;
