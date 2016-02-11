@@ -17,10 +17,10 @@
         <bundle dependency="true">wrap:mvn:org.jboss/jandex/1.1.0.Final</bundle>
         <bundle dependency="true">mvn:org.jboss.logging/jboss-logging/3.3.0.Final</bundle>
         <bundle dependency="true">mvn:org.hibernate.common/hibernate-commons-annotations/4.0.4.Final</bundle>
-        <bundle start-level="100">mvn:org.hibernate/hibernate-core/4.2.20.Final-redhat-1</bundle>
-        <bundle start-level="100">mvn:org.hibernate/hibernate-entitymanager/4.2.20.Final-redhat-1</bundle>
-        <bundle start-level="100">mvn:org.hibernate/hibernate-osgi/4.2.20.Final-redhat-1</bundle>
-        <bundle>mvn:org.eclipse.persistence/javax.persistence/2.1.0</bundle>
+        <bundle start-level="100">mvn:org.hibernate/hibernate-core/4.2.20.Final</bundle>
+        <bundle start-level="100">mvn:org.hibernate/hibernate-entitymanager/4.2.20.Final</bundle>
+        <bundle start-level="100">mvn:org.hibernate/hibernate-osgi/4.2.20.Final</bundle>
+        <bundle>wrap:mvn:org.hibernate.javax.persistence/hibernate-jpa-2.0-api/1.0.0.Final</bundle>
     </feature>
 
     <feature name="jackson" version="2.5.5">
@@ -65,10 +65,9 @@
 
     <feature name="elasticsearch" version="1.7.2">
         <bundle>mvn:com.google.code.gson/gson/2.3.1</bundle>
-        <bundle>wrap:mvn:io.searchbox/jest/0.1.6</bundle>
-        <bundle>wrap:mvn:io.searchbox/jest-common/0.1.6</bundle>
-        <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.elasticsearch/1.7.2_1</bundle>
         <bundle>wrap:mvn:org.scannotation/scannotation/1.0.3</bundle>
+        <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.jest/0.1.6_1-SNAPSHOT</bundle>
+        <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.elasticsearch/1.7.2_1</bundle>
     </feature>
 
     <feature name="resteasy-osgi" version="2.3.10.Final">
@@ -92,9 +91,6 @@
         <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.dom4j/1.6.1_4</bundle>
         <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.ant/1.7.0_5</bundle>
         <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.regexp/1.3_3</bundle>
-        <!-- TODO Check with SMX project when it will be released -->
-        <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.jest/0.1.6_1-SNAPSHOT</bundle>
-        <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.elasticsearch/1.7.2_1</bundle>
 
         <bundle>mvn:commons-lang/commons-lang/2.6</bundle>
         <bundle>mvn:commons-codec/commons-codec/1.10</bundle>
@@ -146,10 +142,14 @@
     </feature>
 
     <feature name="apiman-gateway" version="${project.version}" description="Apiman Gateway modules exposing the Gateway and its Rest Api">
-        <feature>jackson</feature>
-        <feature>hibernate</feature>
         <feature>war</feature>
+        <feature>pax-cdi-1.2-weld</feature>
+        <feature>keycloak</feature>
+        <feature>jackson</feature>
+        <feature version="4.2.20">hibernate</feature>
         <feature>infinispan-core</feature>
+        <feature version="1.5.4">swagger</feature>
+        <feature version="1.7.2">elasticsearch</feature>
         <feature>apiman-lib</feature>
         <feature>apiman-common</feature>
         <bundle>mvn:io.apiman/apiman-gateway-engine-beans/${project.version}</bundle>
@@ -178,28 +178,23 @@
     </feature>
 
     <feature name="apiman-manager-ui" version="${project.version}">
-        <feature>apiman-lib</feature>
-        <feature>apiman-common</feature>
-        <feature>apiman-manager-api</feature>
-        <feature>pax-cdi-1.1-weld</feature>
-        <feature>war</feature>
         <bundle>mvn:io.apiman/apiman-manager-osgi-ui/${project.version}</bundle>
     </feature>
 
     <!-- TODO : Review dependencies and if project can be deployed -->
     <feature name="apiman-all" version="${project.version}">
         <feature version="4.2.20">hibernate</feature>
-        <feature>pax-cdi-1.1-weld</feature>
+        <feature>war</feature>
+        <feature>pax-cdi-1.2-weld</feature>
         <feature>keycloak</feature>
-        <feature>apiman-lib</feature>
-        <feature>resteasy-osgi</feature>
+        <feature>jackson</feature>
+        <feature>infinispan-core</feature>
         <feature version="1.5.4">swagger</feature>
         <feature version="1.7.2">elasticsearch</feature>
+        <feature>apiman-lib</feature>
         <feature>apiman-common</feature>
         <feature>apiman-gateway</feature>
-        <feature>apiman-manager-api-es</feature>
-        <feature>manager-osgi</feature>
-        <bundle>mvn:org.jboss.weld/weld-osgi-bundle/2.3.0.Final</bundle>
+        <feature>apiman-manager-ui</feature>
     </feature>
 
 
@@ -215,7 +210,7 @@
     <feature name="apiman-embed" version="${project.version}">
         <feature version="4.2.20">hibernate</feature>
         <feature>war</feature>
-        <feature>pax-cdi-1.1-weld</feature>
+        <feature>pax-cdi-1.2-weld</feature>
         <feature>keycloak</feature>
         <feature>apiman-lib</feature>
         <!--        <feature version="1.5.4">swagger</feature>-->
