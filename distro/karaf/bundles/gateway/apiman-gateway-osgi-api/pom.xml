@@ -155,8 +155,9 @@
                         org.eclipse.jetty.util.log;resolution:=optional;version="[8.0,10)",
                         org.eclipse.jetty.util.resource;resolution:=optional;version="[8.0,10)",
                         org.eclipse.jetty.util.security;version="[8.0,10)",
-                        org.keycloak.adapters.jetty;version="${project.version}",
-                        org.keycloak.*;version="${project.version}",
+                        org.apache.karaf.jaas.boot.principal,
+                        org.keycloak.adapters.jetty;version="${project.version}";resolution:=optional,
+                        org.keycloak.*;version="${project.version}";resolution:=optional,
                         *;resolution:="optional"
                     </Import-Package>
                     <Export-Package>

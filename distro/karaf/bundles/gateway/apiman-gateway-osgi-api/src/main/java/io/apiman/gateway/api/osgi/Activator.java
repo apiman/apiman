@@ -75,32 +75,16 @@ public class Activator implements BundleActivator {
             webContainer.setSessionTimeout(2, httpContext);
 
             /*
-             * Configure the Security Contraints and Authentication mode to be used
+             * Configure the Security Constraints and Authentication mode (BASIC) to be used
+             * Issue : The request is well authenticated but RESTeasy can't reteive the resource. So we will use instead the AuthenticationFilter
+             * setupSecurity(webContainer, httpContext, context);
              */
 
-            addJettyWebXml(webContainer, httpContext, context); // Configure Jetty with the SecurityHandler to be used (JaasLoginService, ...) using the jetty-web.xml file
 
-            String[] roles = {"admin","apipublisher"};
-
-            Constraint ct = new Constraint();
-            ct.setName("apiman"); // Realm Name to be used
-            ct.setAuthenticate(true);
-            ct.setDataConstraint(0);
-            ct.setRoles(roles);
-
-            ConstraintMapping ctMapping = new ConstraintMapping();
-            ctMapping.setConstraint(ct);
-            ctMapping.setPathSpec("/apiman-gateway-api/*"); // Path to be secured
-
-            addConstraintMapping(webContainer, httpContext, ctMapping);
-
-            // We get a No LoginService for org.eclipse.jetty.security.authentication.BasicAuthenticator@361ce375 in org.eclipse.jetty.security.ConstraintSecurityHandler@3237eb5d
-            webContainer.registerLoginConfig("BASIC", // Authentication mode
-                    "apiman", // Realm name
-                    "", // No Form LoginPage
-                    "", // No FormError Page
-                    httpContext
-            );
+            /*
+             * Configure Jetty with the SecurityHandler to be used (JaasLoginService, Basic Authentication) using the jetty-web.xml file
+             */
+            addJettyWebXml(webContainer, httpContext, context);
 
             /*
              * Define the Context Parameters of the Servlet
@@ -153,15 +137,13 @@ public class Activator implements BundleActivator {
                     initParamsFilter, // init params
                     httpContext // http context
             );
-            /*
             logger.info(">> Register AuthenticationFilter");
             webContainer.registerFilter(new AuthenticationFilter(),
-                    new String[] { "/apiman-gateway-api*//*" }, // url patterns
+                    new String[] { "/apiman-gateway-api/*" }, // url patterns
                     new String[] { "AuthenticationFilter" }, // servlet names
                     initParamsFilter, // init params
                     httpContext // http context
             );
-            */
             logger.info(">> Register RootResourceFilter");
             webContainer.registerFilter(new RootResourceFilter(),
                     new String[] { "/apiman-gateway-api/*" }, // url patterns
@@ -197,6 +179,31 @@ public class Activator implements BundleActivator {
      */
     public static Dictionary config() {
         return apimanProps;
+    }
+
+    protected void setupSecurity(WebContainer webContainer, HttpContext httpContext, BundleContext context) {
+        addJettyWebXml(webContainer, httpContext, context); // Configure Jetty with the SecurityHandler to be used (JaasLoginService, ...) using the jetty-web.xml file
+
+        String[] roles = {"admin","apipublisher"};
+
+        Constraint ct = new Constraint();
+        ct.setName("apiman"); // Realm Name to be used
+        ct.setAuthenticate(true);
+        ct.setDataConstraint(0);
+        ct.setRoles(roles);
+
+        ConstraintMapping ctMapping = new ConstraintMapping();
+        ctMapping.setConstraint(ct);
+        ctMapping.setPathSpec("/apiman-gateway-api/*"); // Path to be secured
+
+        addConstraintMapping(webContainer, httpContext, ctMapping);
+
+        webContainer.registerLoginConfig("BASIC", // Authentication mode
+                "apiman", // Realm name
+                "", // No Form LoginPage
+                "", // No FormError Page
+                httpContext
+        );
     }
 
     protected void addJettyWebXml(WebContainer service, HttpContext httpContext, BundleContext context) {

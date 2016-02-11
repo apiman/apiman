@@ -27,5 +27,9 @@
         </Set>
         <!-- Required to avoid this error : No authenticator for: {RoleInfo,C[admin, apipublisher]} -->
         <Set name="realmName">apiman</Set>
+        <!-- Configure Basic Authentication mode -->
+        <Set name="authenticator">
+            <New class="org.eclipse.jetty.security.authentication.BasicAuthenticator"></New>
+        </Set>
     </Get>
 </Configure>
