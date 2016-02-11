@@ -11,12 +11,21 @@
   <packaging>war</packaging>
   <name>apiman-plugins-transformation-policy</name>
   <dependencies>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+    </dependency>
     <!-- library for JSON/XML transformation -->
     <dependency>
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
     </dependency>
     <!-- apiman dependencies (must be excluded from the WAR) -->
+    <dependency>
+      <groupId>io.apiman</groupId>
+      <artifactId>apiman-gateway-engine-beans</artifactId>
+      <scope>provided</scope>
+    </dependency>
     <dependency>
       <groupId>io.apiman</groupId>
       <artifactId>apiman-gateway-engine-core</artifactId>

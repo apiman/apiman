@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
@@ -12,7 +13,25 @@
   <name>apiman-plugins-simple-header-policy</name>
 
   <dependencies>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+    </dependency>
+
     <!-- apiman dependencies (must be excluded from the WAR) -->
+    <dependency>
+      <groupId>io.apiman</groupId>
+      <artifactId>apiman-gateway-engine-beans</artifactId>
+      <scope>provided</scope>
+    </dependency>
     <dependency>
       <groupId>io.apiman</groupId>
       <artifactId>apiman-gateway-engine-core</artifactId>
@@ -39,8 +58,8 @@
   <build>
     <resources>
       <resource>
-        <directory>src/main/resources</directory>
         <filtering>false</filtering>
+        <directory>src/main/resources</directory>
       </resource>
     </resources>
 

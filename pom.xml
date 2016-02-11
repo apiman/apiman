@@ -83,9 +83,8 @@
 
     <version.commons-lang>2.6</version.commons-lang>
     <version.com.fasterxml.jackson>2.5.4</version.com.fasterxml.jackson>
-    <version.org.keycloak>1.8.1.Final</version.org.keycloak>
+    <version.org.keycloak>1.9.0.CR1</version.org.keycloak>
     <version.org.bouncycastle>1.52</version.org.bouncycastle>
-    <version.net.iharder>2.3.8</version.net.iharder>
     <version.org.json>20140107</version.org.json>
   </properties>
 
@@ -199,6 +198,11 @@
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-databind</artifactId>
         <version>${version.com.fasterxml.jackson}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.keycloak</groupId>
+        <artifactId>keycloak-common</artifactId>
+        <version>${version.org.keycloak}</version>
       </dependency>
       <dependency>
         <groupId>org.keycloak</groupId>
@@ -330,7 +334,7 @@
                 <fail>true</fail>
                 <rules>
                   <illegalTransitiveDependencyCheck implementation="de.is24.maven.enforcer.rules.IllegalTransitiveDependencyCheck">
-                    <reportOnly>true</reportOnly>
+                    <reportOnly>false</reportOnly>
                     <regexIgnoredClasses>
                       <regexIgnoredClass>javax\..+</regexIgnoredClass>
                       <regexIgnoredClass>org.w3c.dom\..+</regexIgnoredClass>

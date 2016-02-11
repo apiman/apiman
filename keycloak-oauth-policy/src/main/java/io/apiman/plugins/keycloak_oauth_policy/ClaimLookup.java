@@ -29,6 +29,8 @@ import org.keycloak.representations.AccessToken;
 import org.keycloak.representations.IDToken;
 import org.keycloak.representations.JsonWebToken;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
 * @author Marc Savy {@literal <msavy@redhat.com>}
 */
@@ -49,7 +51,7 @@ public class ClaimLookup {
     private static void getProperties(Class<?> klazz, String path, Deque<Field> fieldChain) {
         for (Field f: klazz.getDeclaredFields()) {
             f.setAccessible(true);
-            org.codehaus.jackson.annotate.JsonProperty jsonProperty = f.getAnnotation(org.codehaus.jackson.annotate.JsonProperty.class);
+            JsonProperty jsonProperty = f.getAnnotation(JsonProperty.class);
             if (jsonProperty != null) {
                 fieldChain.push(f);
                 // If the inspected type has nested @JsonProperty annotations, we need to inspect it
@@ -68,7 +70,7 @@ public class ClaimLookup {
     private static boolean hasJsonPropertyAnnotation(Field f) {
         for (Field g : f.getType().getDeclaredFields()) {
             g.setAccessible(true);
-            if (g.getAnnotation(org.codehaus.jackson.annotate.JsonProperty.class) != null)
+            if (g.getAnnotation(JsonProperty.class) != null)
                 return true;
         }
         return false;
