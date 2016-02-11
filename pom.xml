@@ -328,7 +328,7 @@
                 <fail>true</fail>
                 <rules>
                   <illegalTransitiveDependencyCheck implementation="de.is24.maven.enforcer.rules.IllegalTransitiveDependencyCheck">
-                    <reportOnly>true</reportOnly>
+                    <reportOnly>false</reportOnly>
                     <regexIgnoredClasses>
                       <regexIgnoredClass>javax\..+</regexIgnoredClass>
                       <regexIgnoredClass>org.w3c.dom\..+</regexIgnoredClass>
