@@ -178,6 +178,7 @@
     </feature>
 
     <feature name="apiman-manager-ui" version="${project.version}">
+        <bundle>wrap:mvn:io.apiman/apiman-manager-ui-war/1.2.2-SNAPSHOT/jar/classes</bundle>
         <bundle>mvn:io.apiman/apiman-manager-osgi-ui/${project.version}</bundle>
     </feature>
 
