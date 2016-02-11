@@ -14,14 +14,11 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>gateway-osgi</module>
-        <module>resteasy</module>
+        <module>apiman-manager-osgi-ui</module>
+<!--        <module>resteasy</module>
         <module>resteasy-all</module>
         <module>manager-osgi-rest</module>
-        <module>manager-osgi-rest-all</module>
-        <module>manager-osgi-ui</module>
-        <module>gateway-api-osgi</module>
-        <module>gateway-osgi-servlet</module>
+        <module>manager-osgi-rest-all</module>-->
     </modules>
 
 </project>
