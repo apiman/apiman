@@ -91,13 +91,13 @@ http://localhost:8181/apiman-gateway-api/system/status
 - Test the echo service
 
 ```
-echo '{"organizationId" : "GatewayOSGIApiTest", "apiId" : "echo", "version" : "1.0", "endpointType" : "REST", "publicAPI" : "true", "endpoint" :"http://localhost:9999/apiman-echo"}' | http --verify=no PUT https://localhost:8444/apiman-gateway-api/apis
-echo '{"organizationId" : "GatewayOSGIApiTest", "apiId" : "echo", "version" : "2.0", "endpointType" : "REST", "publicAPI" : "true", "endpoint" :"http://localhost:9999/apiman-echo"}' | http --verify=no PUT https://localhost:8444/apiman-gateway-api/apis
-echo '{"organizationId" : "GatewayOSGIApiTest", "apiId" : "echo", "version" : "3.0", "endpointType" : "REST", "publicAPI" : "true", "endpoint" :"http://localhost:9999/apiman-echo"}' | http --verify=no PUT https://localhost:8444/apiman-gateway-api/apis
-http --verify=no DELETE https://localhost:8444/apiman-gateway-api/apis/GatewayOSGIApiTest/echo/3.0
-http --verify=no GET https://localhost:8444/apiman-gateway-api/apis/GatewayOSGIApiTest/echo/2.0/endpoint
+echo '{"organizationId" : "GatewayOSGIApiTest", "apiId" : "echo", "version" : "1.0", "endpointType" : "REST", "publicAPI" : "true", "endpoint" :"http://localhost:9999/apiman-echo"}' | http --verify=no -a admin:admin123! PUT https://localhost:8444/apiman-gateway-api/apis
+echo '{"organizationId" : "GatewayOSGIApiTest", "apiId" : "echo", "version" : "2.0", "endpointType" : "REST", "publicAPI" : "true", "endpoint" :"http://localhost:9999/apiman-echo"}' | http --verify=no -a admin:admin123! PUT https://localhost:8444/apiman-gateway-api/apis
+echo '{"organizationId" : "GatewayOSGIApiTest", "apiId" : "echo", "version" : "3.0", "endpointType" : "REST", "publicAPI" : "true", "endpoint" :"http://localhost:9999/apiman-echo"}' | http --verify=no -a admin:admin123! PUT https://localhost:8444/apiman-gateway-api/apis
+http --verify=no -a admin:admin123! DELETE https://localhost:8444/apiman-gateway-api/apis/GatewayOSGIApiTest/echo/3.0
+http --verify=no -a admin:admin123! GET https://localhost:8444/apiman-gateway-api/apis/GatewayOSGIApiTest/echo/2.0/endpoint
 http GET http://localhost:9999/apiman-echo/sample/path
-http --verify=no GET https://localhost:8444/apiman-gateway/GatewayOSGIApiTest/echo/2.0/simple/path
+http --verify=no -a admin:admin123! GET https://localhost:8444/apiman-gateway/GatewayOSGIApiTest/echo/2.0/simple/path
 ```
 # Scenario 2 : Test Client
 
@@ -108,23 +108,23 @@ http --verify=no GET https://localhost:8444/apiman-gateway/GatewayOSGIApiTest/ec
 - Re register it again
 
 ```
-echo '{"organizationId" : "GatewayOSGIApiTest","clientId" : "test-client", "version" : "1.0", "contracts" : [ {"apiKey" : "12345", "apiOrgId" : "GatewayOSGIApiTest", "apiId" : "echo", "apiVersion" : "1.0"}]}"' | http --verify=no PUT https://localhost:8444/apiman-gateway-api/clients
-echo '{"organizationId" : "GatewayOSGIApiTest","clientId" : "invalid-test-client", "version" : "1.0", "contracts" : [ {"apiKey" : "12345_002", "apiOrgId" : "GatewayOSGIApiTest", "apiId" : "invalid-api", "apiVersion" : "1.0"}]}"' | http --verify=no PUT https://localhost:8444/apiman-gateway-api/clients
-echo '{"organizationId" : "GatewayOSGIApiTest","clientId" : "retired-test-client", "version" : "1.0", "contracts" : [ {"apiKey" : "12345_003", "apiOrgId" : "GatewayOSGIApiTest", "apiId" : "echo", "apiVersion" : "3.0"}]}"' | http --verify=no PUT https://localhost:8444/apiman-gateway-api/clients
-echo '{"organizationId" : "GatewayOSGIApiTest","clientId" : "test-client", "version" : "1.0", "contracts" : [ {"apiKey" : "12345", "apiOrgId" : "GatewayOSGIApiTest", "apiId" : "echo", "apiVersion" : "1.0"}]}"' | http --verify=no PUT https://localhost:8444/apiman-gateway-api/clients
-http --verify=no DELETE https://localhost:8444/apiman-gateway-api/clients/GatewayOSGIApiTest/test-client/1.0
-echo '{"organizationId" : "GatewayOSGIApiTest","clientId" : "test-client", "version" : "1.0", "contracts" : [ {"apiKey" : "12345", "apiOrgId" : "GatewayOSGIApiTest", "apiId" : "echo", "apiVersion" : "1.0"}]}"' | http --verify=no PUT https://localhost:8444/apiman-gateway-api/clients
+echo '{"organizationId" : "GatewayOSGIApiTest","clientId" : "test-client", "version" : "1.0", "contracts" : [ {"apiKey" : "12345", "apiOrgId" : "GatewayOSGIApiTest", "apiId" : "echo", "apiVersion" : "1.0"}]}"' | http --verify=no -a admin:admin123! PUT https://localhost:8444/apiman-gateway-api/clients
+echo '{"organizationId" : "GatewayOSGIApiTest","clientId" : "invalid-test-client", "version" : "1.0", "contracts" : [ {"apiKey" : "12345_002", "apiOrgId" : "GatewayOSGIApiTest", "apiId" : "invalid-api", "apiVersion" : "1.0"}]}"' | http --verify=no -a admin:admin123! PUT https://localhost:8444/apiman-gateway-api/clients
+echo '{"organizationId" : "GatewayOSGIApiTest","clientId" : "retired-test-client", "version" : "1.0", "contracts" : [ {"apiKey" : "12345_003", "apiOrgId" : "GatewayOSGIApiTest", "apiId" : "echo", "apiVersion" : "3.0"}]}"' | http --verify=no -a admin:admin123! PUT https://localhost:8444/apiman-gateway-api/clients
+echo '{"organizationId" : "GatewayOSGIApiTest","clientId" : "test-client", "version" : "1.0", "contracts" : [ {"apiKey" : "12345", "apiOrgId" : "GatewayOSGIApiTest", "apiId" : "echo", "apiVersion" : "1.0"}]}"' | http --verify=no -a admin:admin123! PUT https://localhost:8444/apiman-gateway-api/clients
+http --verify=no -a admin:admin123! DELETE https://localhost:8444/apiman-gateway-api/clients/GatewayOSGIApiTest/test-client/1.0
+echo '{"organizationId" : "GatewayOSGIApiTest","clientId" : "test-client", "version" : "1.0", "contracts" : [ {"apiKey" : "12345", "apiOrgId" : "GatewayOSGIApiTest", "apiId" : "echo", "apiVersion" : "1.0"}]}"' | http --verify=no -a admin:admin123! PUT https://localhost:8444/apiman-gateway-api/clients
 ```
 
 # Scenario 3 : Test a simple plugin
 
 ```
-echo '{"organizationId":"PluginTestPolicyTest","apiId":"echo","version":"1.0","publicAPI":true,"endpointType":"REST","endpoint":"http://localhost:9999/apiman-echo","apiPolicies":[{"policyImpl":"plugin:io.apiman:apiman-plugins-test-policy:1.2.0-SNAPSHOT:war/io.apiman.plugins.test_policy.TestPolicy","policyJsonConfig":""}]}' | http --verify=no PUT https://localhost:8444/apiman-gateway-api/apis
+echo '{"organizationId":"PluginTestPolicyTest","apiId":"echo","version":"1.0","publicAPI":true,"endpointType":"REST","endpoint":"http://localhost:9999/apiman-echo","apiPolicies":[{"policyImpl":"plugin:io.apiman:apiman-plugins-test-policy:1.2.0-SNAPSHOT:war/io.apiman.plugins.test_policy.TestPolicy","policyJsonConfig":""}]}' | http --verify=no -a admin:admin123! PUT https://localhost:8444/apiman-gateway-api/apis
 
-http --verify=no GET https://localhost:8444/apiman-gateway/PluginTestPolicyTest/echo/1.0/hello
+http --verify=no -a admin:admin123! GET https://localhost:8444/apiman-gateway/PluginTestPolicyTest/echo/1.0/hello
   
-echo '{"organizationId":"PluginTestPolicyTest","apiId":"reload","version":"1.0","publicAPI":true,"endpointType":"REST","endpoint":"http://localhost:9999/apiman-echo","apiPolicies":[{"policyImpl":"plugin:io.apiman.test:custom-fields-plugin:1.0-SNAPSHOT:war/io.apiman.test.plugins.FieldsPolicy","policyJsonConfig":"{ \"field1\" : \"foo\", \"field2\" : \"fighters\" }"}]}' | http --verify=no PUT https://localhost:8444/apiman-gateway-api/apis
-http --verify=no --verbose GET https://localhost:8444/apiman-gateway-api/apis/PluginTestPolicyTest/reload/1.0/path/to/app/resource X-RestTest-System-Property:apiman.gateway.m2-repository-path=src/test/resources/test-plan-data/plugins/m2-fields-v1
+echo '{"organizationId":"PluginTestPolicyTest","apiId":"reload","version":"1.0","publicAPI":true,"endpointType":"REST","endpoint":"http://localhost:9999/apiman-echo","apiPolicies":[{"policyImpl":"plugin:io.apiman.test:custom-fields-plugin:1.0-SNAPSHOT:war/io.apiman.test.plugins.FieldsPolicy","policyJsonConfig":"{ \"field1\" : \"foo\", \"field2\" : \"fighters\" }"}]}' | http --verify=no -a admin:admin123! PUT https://localhost:8444/apiman-gateway-api/apis
+http --verify=no -a admin:admin123! --verbose GET https://localhost:8444/apiman-gateway-api/apis/PluginTestPolicyTest/reload/1.0/path/to/app/resource X-RestTest-System-Property:apiman.gateway.m2-repository-path=src/test/resources/test-plan-data/plugins/m2-fields-v1
 ```
 
 
