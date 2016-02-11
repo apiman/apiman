@@ -80,6 +80,7 @@ public class BasicAuthenticationPolicyTest extends ApimanPolicyTest {
         // Success
         request.header("Authorization", createBasicAuthorization("ckent", "ckent123!"));
         PolicyTestResponse response = send(request);
+        Assert.assertEquals(200, response.code());
         EchoResponse echo = response.entity(EchoResponse.class);
         Assert.assertNotNull(echo);
         String header = echo.getHeaders().get("X-Authenticated-Identity");
