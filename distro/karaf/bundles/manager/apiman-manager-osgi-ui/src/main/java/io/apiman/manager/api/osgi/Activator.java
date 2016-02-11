@@ -101,7 +101,7 @@ public class Activator implements BundleActivator {
             webContainer.registerServlet(new ConfigurationServlet(), "configurationJS",new String[] { "/apimanui/apiman/config.js" },null,httpContext);
 
             // Register Translation Servlet
-            //webContainer.registerServlet(new TranslationServlet(), "translationJS",new String[] { "/apimanui/apiman/translation.js" },null,httpContext);
+            webContainer.registerServlet(new TranslationServlet(), "translationJS",new String[] { "/apimanui/apiman/translation.js" },null,httpContext);
 
             // Register Token Refresh
             webContainer.registerServlet(new TokenRefreshServlet(), "tokenRefresh",new String[] { "/apimanui/rest/tokenRefresh" },null,httpContext);
