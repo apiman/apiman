@@ -4,11 +4,11 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <artifactId>apiman-osgi-bundles</artifactId>
+        <artifactId>apiman-manager-osgi-project</artifactId>
         <groupId>io.apiman</groupId>
         <version>1.2.2-SNAPSHOT</version>
     </parent>
-    <artifactId>manager-osgi-ui</artifactId>
+    <artifactId>apiman-manager-osgi-ui</artifactId>
     <name>Apiman :: OSGI :: Manager UI Module</name>
     <packaging>bundle</packaging>
 
@@ -17,7 +17,7 @@
         <!-- Dep included to add the WAR content within the bundle -->
         <dependency>
             <groupId>io.apiman</groupId>
-            <artifactId>apiman-manager-ui-hawtio</artifactId>
+            <artifactId>apiman-manager-ui-war</artifactId>
             <version>${project.version}</version>
             <type>war</type>
         </dependency>

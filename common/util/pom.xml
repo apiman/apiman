@@ -39,8 +39,7 @@
                             javax.crypto.spec,
                             org.apache.commons.codec.binary;version="[1.4,2)",
                             org.apache.commons.lang.text;version="[2.6,3)",
-                            org.osgi.framework,
-                            io.apiman.gateway.platforms.war
+                            io.apiman.gateway.platforms.war;resolution:="optional"
                         </Import-Package>
                         <DynamicImport-Package>
                             io.apiman.gateway.engine.es,

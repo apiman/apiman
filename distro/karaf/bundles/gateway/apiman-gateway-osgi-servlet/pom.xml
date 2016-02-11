@@ -52,6 +52,12 @@
             <artifactId>org.osgi.compendium</artifactId>
             <scope>provided</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.jetty.aggregate</groupId>
+            <artifactId>jetty-all</artifactId>
+            <version>8.1.17.v20150415</version>
+        </dependency>
     </dependencies>
 
     <build>

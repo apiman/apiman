@@ -73,7 +73,7 @@ featuresBoot=\
 - Open a terminal and launch the console
 
 ```
-./bin.fuse
+./bin/fuse
 ```
 - Install the features file
 
@@ -81,7 +81,7 @@ featuresBoot=\
 features:addurl mvn:io.apiman/apiman-karaf/1.2.2-SNAPSHOT/xml/features
 ```
 
-- Deploy the simple Web Apiman Manager project using ES backend
+- Deploy the Apiman Manager UI project using ES as backend
 
 ```
 features:addurl mvn:io.apiman/apiman-karaf/1.2.2-SNAPSHOT/xml/features
@@ -93,7 +93,6 @@ features:install apiman-lib
 features:install swagger/1.5.4
 features:install elasticsearch/1.7.2
 features:install apiman-common
-features:install apiman-gateway
 features:install apiman-manager-api-es
 features:install manager-osgi
 install -s mvn:org.jboss.weld/weld-osgi-bundle/2.3.0.Final
@@ -104,7 +103,7 @@ or
 
 ```
 features:addurl mvn:io.apiman/apiman-karaf/1.2.2-SNAPSHOT/xml/features
-features:install apiman-all
+features:install apiman-manager-ui
 ```
 
 or with embedded dependencies

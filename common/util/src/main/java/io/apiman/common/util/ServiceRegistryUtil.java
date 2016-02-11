@@ -15,8 +15,6 @@
  */
 package io.apiman.common.util;
 
-import org.osgi.framework.*;
-
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -75,24 +73,6 @@ public class ServiceRegistryUtil {
             } catch (ServiceConfigurationError sce) {
                 // No services found - don't check again.
             }
-
-            // If the ServiceLoader can't retrieve the service, then we will try to find it using OSGI SErvice
-/*            if (services.isEmpty()) {
-                try {
-                    Bundle b = FrameworkUtil.getBundle(ServiceRegistryUtil.class);
-                    if (b != null) {
-                        BundleContext ctx = b.getBundleContext();
-                        String filter = "(accessor=*)";
-                        String sname = serviceInterface.getName();
-                        ServiceReference[] srefs = ctx.getServiceReferences(sname, filter);
-                        T service = (T) ctx.getService(srefs[0]);
-                        services.add(service);
-                    }
-                    servicesCache.put(serviceInterface, services);
-                } catch (InvalidSyntaxException ex) {
-                    // No services found - don't check again.
-                }
-            }*/
             return services;
         }
     }
