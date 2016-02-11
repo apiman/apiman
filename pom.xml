@@ -164,6 +164,7 @@
         <version.org.mockito>1.9.5</version.org.mockito>
         <version.org.mvel>2.2.2.Final</version.org.mvel>
         <version.org.osgi>4.3.1</version.org.osgi>
+        <version.org.ops4j>3.2.4</version.org.ops4j>
         <version.org.ow2.asm>4.0</version.org.ow2.asm>
         <version.org.picketbox>4.1.1.Final</version.org.picketbox>
         <version.org.slf4j>1.7.2</version.org.slf4j>
@@ -994,6 +995,11 @@
                 <groupId>org.osgi</groupId>
                 <artifactId>org.osgi.compendium</artifactId>
                 <version>${version.org.osgi}</version>
+            </dependency>
+            <dependency>
+            <groupId>org.ops4j.pax.web</groupId>
+                <artifactId>pax-web-api</artifactId>
+                <version>${version.org.ops4j}</version>
             </dependency>
             <dependency>
                 <groupId>javax.enterprise</groupId>
