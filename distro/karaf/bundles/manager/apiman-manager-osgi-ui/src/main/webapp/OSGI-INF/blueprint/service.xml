@@ -3,8 +3,8 @@
            xsi:schemaLocation="
            http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd">
 
-    <bean class="io.apiman.manager.ui.server.UIConfig" id="iUIConfig"/>
+    <bean class="io.apiman.manager.platform.WarUIConfig" id="warUIConfig"/>
 
-    <service ref="iUIConfig" interface="io.apiman.manager.ui.server.IUIConfig"/>
+    <service ref="warUIConfig" interface="io.apiman.manager.ui.server.IUIConfig"/>
 
 </blueprint>

@@ -41,6 +41,7 @@
                             org.apache.commons.lang.text;version="[2.6,3)",
                             io.apiman.gateway.platforms.war;resolution:="optional",
                             io.apiman.manager.ui.server;resolution:="optional",
+                            io.apiman.manager.platform;resolution:="optional",
                             io.apiman.common.auth;resolution:="optional"
                         </Import-Package>
                         <Export-Package>

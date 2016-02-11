@@ -1,8 +1,13 @@
 package io.apiman.manager.api.osgi;
 
-import io.apiman.common.servlet.AuthenticationFilter;
 import io.apiman.common.servlet.ResourceCacheControlFilter;
-import io.apiman.manager.ui.server.servlets.*;
+import io.apiman.manager.platform.WarUIConfig;
+import io.apiman.manager.platform.servlets.AngularServlet;
+import io.apiman.manager.platform.servlets.ConfigurationServlet;
+import io.apiman.manager.ui.server.servlets.TranslationServlet;
+import io.apiman.manager.ui.server.servlets.LogoutServlet;
+import io.apiman.manager.ui.server.servlets.UrlFetchProxyServlet;
+import io.apiman.manager.ui.server.servlets.TokenRefreshServlet;
 import org.eclipse.jetty.security.ConstraintMapping;
 import org.eclipse.jetty.util.security.Constraint;
 import org.ops4j.pax.web.service.WebContainer;
@@ -46,6 +51,7 @@ public class Activator implements BundleActivator {
         ConfigurationAdmin configurationAdmin = (ConfigurationAdmin) context.getService(configAdminReference);
         Configuration configuration = configurationAdmin.getConfiguration("io.apiman.manager", null);
         apimanProps = configuration.getProperties();
+        WarUIConfig.setConfig(apimanProps);
 
         /**
          * Register the WebContainer with the Servlet config
@@ -84,9 +90,9 @@ public class Activator implements BundleActivator {
              * ResourceCacheControl
              */
             webContainer.registerFilter(new ResourceCacheControlFilter(),
-                    new String[] { "/apimanui/libs/*","/apimanui/plugins/*","/apimanui/dist/*" }, // url patterns
-                    new String[] { "ResourceCacheControl" },null, httpContext
-            );
+                    new String[] { "/apimanui/libs/*", "/apimanui/plugins/*", "/apimanui/dist/*" },
+                    // url patterns
+                    new String[] { "ResourceCacheControl" }, null, httpContext);
 /*
             webContainer.registerFilter(new AuthenticationFilter(),
                     new String[] { "/apimanui/*" },
@@ -94,27 +100,32 @@ public class Activator implements BundleActivator {
             );*/
 
             // Register the AngularServlet
-            initParamsFilter = new Hashtable<String, Object>();
-            webContainer.registerServlet(new AngularServlet(), "angularServlet", new String[] { "/apimanui/api-manager/*" }, initParamsFilter, httpContext);
+            webContainer.registerServlet(new AngularServlet(), "angularServlet",
+                    new String[] { "/apimanui/api-manager/*" }, null, httpContext);
 
             // Register the Configuration Servlet
-            webContainer.registerServlet(new ConfigurationServlet(), "configurationJS",new String[] { "/apimanui/apiman/config.js" },null,httpContext);
+            webContainer.registerServlet(new ConfigurationServlet(), "configurationJS",
+                    new String[] { "/apimanui/apiman/config.js" }, null, httpContext);
 
             // Register Translation Servlet
-            webContainer.registerServlet(new TranslationServlet(), "translationJS",new String[] { "/apimanui/apiman/translation.js" },null,httpContext);
+            webContainer.registerServlet(new TranslationServlet(), "translationJS",
+                    new String[] { "/apimanui/apiman/translation.js" }, null, httpContext);
 
             // Register Token Refresh
-            webContainer.registerServlet(new TokenRefreshServlet(), "tokenRefresh",new String[] { "/apimanui/rest/tokenRefresh" },null,httpContext);
+            webContainer.registerServlet(new TokenRefreshServlet(), "tokenRefresh",
+                    new String[] { "/apimanui/rest/tokenRefresh" }, null, httpContext);
 
             // Register Fetch Proxy
-            webContainer.registerServlet(new UrlFetchProxyServlet(), "fetchProxy",new String[] { "/apimanui/proxies/fetch/*" },null,httpContext);
+            webContainer.registerServlet(new UrlFetchProxyServlet(), "fetchProxy",
+                    new String[] { "/apimanui/proxies/fetch/*" }, null, httpContext);
 
             // Register Logout Servlet
-            webContainer.registerServlet(new LogoutServlet(), "logoutServlet",new String[] { "/apimanui/logout" },null,httpContext);
+            webContainer.registerServlet(new LogoutServlet(), "logoutServlet",
+                    new String[] { "/apimanui/logout" }, null, httpContext);
 
-            webContainer.registerWelcomeFiles(new String[] {"welcome.html"},false,httpContext);
+            webContainer.registerWelcomeFiles(new String[] { "welcome.html" }, false, httpContext);
 
-            webContainer.registerResources("/apimanui","/",httpContext);
+            webContainer.registerResources("/apimanui", "/", httpContext);
         }
     }
 
