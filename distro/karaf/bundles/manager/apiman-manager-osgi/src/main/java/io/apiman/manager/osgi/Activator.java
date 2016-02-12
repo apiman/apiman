@@ -71,7 +71,7 @@ public class Activator implements BundleActivator {
              */
             ctxParams = new Hashtable<String, Object>();
             ctxParams.put("resteasy.servlet.mapping.prefix","/apiman");
-            ctxParams.put("resteasy.injector.factory","io.apiman.manager.osgi.resteasy.InjectorFactory");
+            //ctxParams.put("resteasy.injector.factory","io.apiman.manager.osgi.resteasy.InjectorFactory");
             ctxParams.put("resteasy.providers","org.jboss.resteasy.plugins.providers.DataSourceProvider,\n"
                     + "            org.jboss.resteasy.plugins.providers.DocumentProvider,\n"
                     + "            org.jboss.resteasy.plugins.providers.DefaultTextPlain,\n"
