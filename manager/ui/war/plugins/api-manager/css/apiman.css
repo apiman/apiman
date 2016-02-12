@@ -134,6 +134,10 @@ textarea.apiman-form-data {
   animation-iteration-count: infinite;
 }
 
+.amg.navbar-pf {
+  border-top: none;
+}
+
 #apiman-header {
   background-color: rgb(36, 52, 70);
   border-bottom: 1px solid black;
