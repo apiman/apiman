@@ -4129,9 +4129,9 @@
       "resolved": "https://registry.npmjs.org/swagger-client/-/swagger-client-2.1.5.tgz"
     },
     "swagger-ui": {
-      "version": "2.1.2",
-      "from": "swagger-ui@2.1.2",
-      "resolved": "https://registry.npmjs.org/swagger-ui/-/swagger-ui-2.1.2.tgz"
+      "version": "2.1.4",
+      "from": "swagger-ui@2.1.4",
+      "resolved": "https://registry.npmjs.org/swagger-ui/-/swagger-ui-2.1.4.tgz"
     },
     "swagger-ui-browserify": {
       "version": "2.1.3",
