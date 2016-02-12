@@ -18,8 +18,9 @@ package io.apiman.test.policies;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.codec.binary.Base64;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Send one of these to the "send" method found in the {@link ApimanPolicyTest} class
@@ -38,6 +39,7 @@ public class PolicyTestRequest {
     private final String resource;
     private Map<String, String> headers = new HashMap<>();
     private String body;
+    private Map<String, Object> contextAttributes = new HashMap<>();
 
     /**
      * Constructor.
@@ -47,6 +49,11 @@ public class PolicyTestRequest {
     public PolicyTestRequest(PolicyTestRequestType method, String resource) {
         this.method = method;
         this.resource = resource;
+    }
+    
+    public PolicyTestRequest contextAttribute(String name, Object value) {
+        contextAttributes.put(name, value);
+        return this;
     }
 
     public PolicyTestRequest header(String name, String value) {
@@ -98,6 +105,13 @@ public class PolicyTestRequest {
      */
     public Map<String, String> headers() {
         return headers;
+    }
+    
+    /**
+     * @return the contextAttributes
+     */
+    public Map<String, Object> contextAttributes() {
+        return contextAttributes;
     }
 
 }

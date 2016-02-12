@@ -15,20 +15,24 @@
  */
 package io.apiman.test.policies;
 
+import io.apiman.gateway.engine.IApiRequestExecutor;
 import io.apiman.gateway.engine.IEngine;
 import io.apiman.gateway.engine.IEngineResult;
-import io.apiman.gateway.engine.IApiRequestExecutor;
 import io.apiman.gateway.engine.async.IAsyncHandler;
 import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
-import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.ApiResponse;
+import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.io.ByteBuffer;
 import io.apiman.gateway.engine.io.IApimanBuffer;
 import io.apiman.gateway.engine.io.ISignalWriteStream;
+import io.apiman.gateway.engine.policy.IPolicyContext;
 
+import java.lang.reflect.Field;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.junit.runner.RunWith;
@@ -92,6 +96,15 @@ public abstract class ApimanPolicyTest {
                 stream.end();
             }
         });
+        
+        // Push any context attributes into the Policy Context.
+        IPolicyContext policyContext = getContext(executor);
+        Map<String, Object> contextAttributes = ptRequest.contextAttributes();
+        for (Entry<String, Object> entry : contextAttributes.entrySet()) {
+            policyContext.setAttribute(entry.getKey(), entry.getValue());
+        }
+        
+        // Execute the request.
         executor.execute();
 
         if (!errorHolder.isEmpty()) {
@@ -105,6 +118,20 @@ public abstract class ApimanPolicyTest {
             return new PolicyTestResponse(response, responseBody.toString());
         }
         throw new Exception("No response found from request!"); //$NON-NLS-1$
+    }
+
+    /**
+     * @param executor
+     */
+    private IPolicyContext getContext(IApiRequestExecutor executor) {
+        try {
+            Field field = executor.getClass().getDeclaredField("context"); //$NON-NLS-1$
+            field.setAccessible(true);
+            Object fieldValue = field.get(executor);
+            return (IPolicyContext) fieldValue;
+        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }
