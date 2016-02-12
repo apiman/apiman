@@ -14,11 +14,11 @@
     <module>core</module>
     <module>beans</module>
     <module>policies</module>
-    <module>osgi</module>
+<!--     <module>osgi</module> -->
     <module>ispn</module>
     <module>es</module>
-    <module>influxdb</module>
+<!--     <module>influxdb</module> -->
     <module>vertx-eb-inmemory</module>
-    <module>prometheus</module>
+<!--     <module>prometheus</module> -->
   </modules>
 </project>

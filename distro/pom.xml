@@ -14,12 +14,13 @@
     <module>data</module>
     <module>db</module>
     <module>ddl</module>
-    <module>db-es</module>
-    <module>eap7</module>
-    <module>es</module>
-    <module>tomcat8</module>
-    <module>wildfly8</module>
-    <module>wildfly9</module>
-    <module>wildfly10</module>
+<!--     <module>db-es</module> -->
+<!--     <module>eap7</module> -->
+<!--     <module>es</module> -->
+<!--     <module>tomcat8</module> -->
+<!--     <module>wildfly8</module> -->
+<!--     <module>wildfly9</module> -->
+<!--     <module>wildfly10</module> -->
+    <module>prod/eap7</module>
   </modules>
 </project>
