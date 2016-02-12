@@ -166,7 +166,7 @@
     <version.org.picketbox>4.1.1.Final</version.org.picketbox>
     <version.org.slf4j>1.7.7</version.org.slf4j>
     <version.io.netty>4.0.33.Final</version.io.netty>
-    <version.io.swagger>1.5.3</version.io.swagger>
+    <version.io.swagger>1.5.7</version.io.swagger>
     <version.xmlunit>1.6</version.xmlunit>
     <version.io.vertx>3.1.0</version.io.vertx>
   </properties>
