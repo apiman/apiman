@@ -70,6 +70,12 @@ featuresBoot=\
         jsr-311
 ```
 
+# Copy Apiman Properties config file & apiman credentials
+
+```
+cp /Users/chmoulli/Code/jboss/apiman/apiman-core-forked/distro/karaf/bundles/manager/io.apiman.manager.cfg ~/Temp/apache-karaf-2.4.4/etc
+```
+
 - Open a terminal and launch the console
 
 ```
@@ -104,6 +110,7 @@ or
 ```
 features:addurl mvn:io.apiman/apiman-karaf/1.2.2-SNAPSHOT/xml/features
 features:install apiman-manager-ui
+features:install apiman-manager
 ```
 
 or with embedded dependencies

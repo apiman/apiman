@@ -9,13 +9,13 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>apiman-manager-osgi-project</artifactId>
-    <name>Apiman :: OSGI :: Manager Project</name>
+    <artifactId>bundles-project</artifactId>
+    <name>Apiman :: OSGI :: Bundles Shaded Project</name>
     <packaging>pom</packaging>
 
     <modules>
-        <module>apiman-manager-osgi-ui</module>
-        <module>apiman-manager-osgi</module>
+        <module>resteasy-cdi-extension</module>
+        <module>resteasy-jaxrs</module>
     </modules>
 
 </project>
