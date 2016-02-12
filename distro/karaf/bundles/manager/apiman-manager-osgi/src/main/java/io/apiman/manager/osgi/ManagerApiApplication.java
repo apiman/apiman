@@ -35,8 +35,7 @@ public class ManagerApiApplication extends Application {
 
         // TODO : To be removed after testing
         classes.add(MessageRestService.class);
-
-/*        classes.add(SystemResourceImpl.class);
+        classes.add(SystemResourceImpl.class);
         classes.add(SearchResourceImpl.class);
         classes.add(RoleResourceImpl.class);
         classes.add(UserResourceImpl.class);
@@ -53,7 +52,7 @@ public class ManagerApiApplication extends Application {
         classes.add(io.swagger.jaxrs.listing.ApiListingResource.class);
         classes.add(io.swagger.jaxrs.listing.SwaggerSerializers.class);
 
-        classes.add(RestExceptionMapper.class);*/
+        classes.add(RestExceptionMapper.class);
     }
 
     @Override
