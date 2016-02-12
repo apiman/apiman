@@ -1,7 +1,6 @@
 package io.apiman.manager.osgi;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 
 @Path("/message")

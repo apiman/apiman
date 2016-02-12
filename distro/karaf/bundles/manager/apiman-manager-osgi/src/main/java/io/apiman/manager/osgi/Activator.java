@@ -17,7 +17,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Dictionary;
 import java.util.Hashtable;
-import java.util.List;
 
 public class Activator implements BundleActivator {
 

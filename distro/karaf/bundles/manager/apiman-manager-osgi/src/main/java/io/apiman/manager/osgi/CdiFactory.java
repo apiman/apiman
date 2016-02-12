@@ -1,42 +1,23 @@
 package io.apiman.manager.osgi;
 
-import io.apiman.common.plugin.Plugin;
-import io.apiman.common.plugin.PluginClassLoader;
-import io.apiman.common.plugin.PluginCoordinates;
-import io.apiman.common.util.ReflectionUtils;
-import io.apiman.manager.api.beans.idm.UserBean;
 import io.apiman.manager.api.core.IApiKeyGenerator;
-import io.apiman.manager.api.core.IMetricsAccessor;
-import io.apiman.manager.api.core.INewUserBootstrapper;
-import io.apiman.manager.api.core.IPluginRegistry;
-import io.apiman.manager.api.core.IServiceCatalog;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.UuidApiKeyGenerator;
-import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.core.logging.ApimanLogger;
 import io.apiman.manager.api.core.logging.IApimanLogger;
 import io.apiman.manager.api.core.logging.JsonLoggerImpl;
-import io.apiman.manager.api.core.noop.NoOpMetricsAccessor;
-import io.apiman.manager.api.es.ESMetricsAccessor;
 import io.apiman.manager.api.es.EsStorage;
-import io.apiman.manager.api.jpa.JpaStorage;
 import io.apiman.manager.api.security.ISecurityContext;
 import io.apiman.manager.api.security.impl.DefaultSecurityContext;
 import io.searchbox.client.JestClient;
 import io.searchbox.client.JestClientFactory;
-import io.searchbox.client.config.HttpClientConfig;
 import io.searchbox.client.config.HttpClientConfig.Builder;
-
-import java.lang.reflect.Constructor;
-import java.util.Map;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.New;
 import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.InjectionPoint;
-import javax.inject.Inject;
 import javax.inject.Named;
 
 /**

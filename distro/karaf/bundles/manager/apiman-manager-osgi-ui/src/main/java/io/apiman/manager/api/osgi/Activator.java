@@ -4,10 +4,10 @@ import io.apiman.common.servlet.ResourceCacheControlFilter;
 import io.apiman.manager.platform.WarUIConfig;
 import io.apiman.manager.platform.servlets.AngularServlet;
 import io.apiman.manager.platform.servlets.ConfigurationServlet;
-import io.apiman.manager.ui.server.servlets.TranslationServlet;
 import io.apiman.manager.ui.server.servlets.LogoutServlet;
-import io.apiman.manager.ui.server.servlets.UrlFetchProxyServlet;
 import io.apiman.manager.ui.server.servlets.TokenRefreshServlet;
+import io.apiman.manager.ui.server.servlets.TranslationServlet;
+import io.apiman.manager.ui.server.servlets.UrlFetchProxyServlet;
 import org.eclipse.jetty.security.ConstraintMapping;
 import org.eclipse.jetty.util.security.Constraint;
 import org.ops4j.pax.web.service.WebContainer;
@@ -21,7 +21,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.URL;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Dictionary;
+import java.util.List;
+import java.util.Random;
 
 public class Activator implements BundleActivator {
 
