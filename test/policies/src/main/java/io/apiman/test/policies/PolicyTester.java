@@ -140,7 +140,7 @@ public class PolicyTester extends BlockJUnit4ClassRunner {
             if (backEnd == null) {
                 backEnd = getTestClass().getJavaClass().getAnnotation(BackEndApi.class);
             }
-            Class<? extends IPolicyTestBackEndApi> backEndApi = null;
+            Class<? extends IPolicyTestBackEndApi> backEndApi;
             if (backEnd == null) {
                 backEndApi = EchoBackEndApi.class;
             } else {

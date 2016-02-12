@@ -64,7 +64,7 @@ public class ConfigFileConfiguration extends PropertiesConfiguration {
      * @param configFileName
      */
     private static URL discoverConfigFileUrl(String configFileName, String customConfigPropertyName) {
-        URL rval = null;
+        URL rval;
 
         // User Defined
         ///////////////////////////////////

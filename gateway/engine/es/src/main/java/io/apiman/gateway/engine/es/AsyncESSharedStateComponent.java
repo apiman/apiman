@@ -72,7 +72,7 @@ public class AsyncESSharedStateComponent extends AbstractESComponent implements 
             public void completed(JestResult result) {
                 if (result.isSucceeded()) {
                     try {
-                        T value = null;
+                        T value;
                         if (defaultValue.getClass().isPrimitive() || defaultValue instanceof String) {
                             value = (T) readPrimitive(result);
                         } else {
@@ -102,7 +102,7 @@ public class AsyncESSharedStateComponent extends AbstractESComponent implements 
             handler.handle(AsyncResultImpl.<Void>create(new Exception("Null value is not allowed."))); //$NON-NLS-1$
             return;
         }
-        String source = null;
+        String source;
         try {
             if (value.getClass().isPrimitive() || value instanceof String) {
                 PrimitiveBean pb = new PrimitiveBean();

@@ -49,7 +49,7 @@ public class InMemorySharedStateComponent implements ISharedStateComponent {
     @Override
     public <T> void getProperty(String namespace, String propertyName, T defaultValue,
             IAsyncResultHandler<T> handler) {
-        T value = null;
+        T value;
         synchronized (sharedState) {
             QName key = new QName(namespace, propertyName);
             value = (T) sharedState.get(key);

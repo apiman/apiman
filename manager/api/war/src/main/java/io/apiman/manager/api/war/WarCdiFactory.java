@@ -120,7 +120,7 @@ public class WarCdiFactory {
     @Produces @ApplicationScoped
     public static IStorage provideStorage(WarApiManagerConfig config, @New JpaStorage jpaStorage,
             @New EsStorage esStorage, IPluginRegistry pluginRegistry) {
-        IStorage storage = null;
+        IStorage storage;
         if ("jpa".equals(config.getStorageType())) { //$NON-NLS-1$
             storage = jpaStorage;
         } else if ("es".equals(config.getStorageType())) { //$NON-NLS-1$
@@ -158,7 +158,7 @@ public class WarCdiFactory {
     @Produces @ApplicationScoped
     public static IMetricsAccessor provideMetricsAccessor(WarApiManagerConfig config,
             @New NoOpMetricsAccessor noopMetrics, @New ESMetricsAccessor esMetrics, IPluginRegistry pluginRegistry) {
-        IMetricsAccessor metrics = null;
+        IMetricsAccessor metrics;
         if ("es".equals(config.getMetricsType())) { //$NON-NLS-1$
             metrics = esMetrics;
         } else {

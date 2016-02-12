@@ -195,7 +195,7 @@ public class UserResourceImpl implements IUserResource {
             pageSize = 20;
         }
         try {
-            SearchResultsBean<AuditEntryBean> rval = null;
+            SearchResultsBean<AuditEntryBean> rval;
             PagingBean paging = new PagingBean();
             paging.setPage(page);
             paging.setPageSize(pageSize);

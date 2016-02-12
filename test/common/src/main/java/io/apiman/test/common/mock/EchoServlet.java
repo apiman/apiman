@@ -91,7 +91,7 @@ public class EchoServlet extends HttpServlet {
                 is = request.getInputStream();
                 MessageDigest sha1 = MessageDigest.getInstance("SHA1");
                 byte[] data = new byte[1024];
-                int read = 0;
+                int read;
                 while ((read = is.read(data)) != -1) {
                     sha1.update(data, 0, read);
                     totalBytes += read;
