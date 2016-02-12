@@ -15,9 +15,9 @@
     <!-- minimal set of dependencies -->
     <dependencies>
         <dependency>
-            <groupId>javax.ws.rs</groupId>
-            <artifactId>javax.ws.rs-api</artifactId>
-            <scope>compile</scope>
+            <groupId>io.apiman</groupId>
+            <artifactId>apiman-common-servlet</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>io.apiman</groupId>
@@ -39,26 +39,51 @@
             <artifactId>apiman-manager-api-jpa</artifactId>
             <scope>compile</scope>
         </dependency>
+
         <dependency>
             <groupId>javax.enterprise</groupId>
             <artifactId>cdi-api</artifactId>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
+
         <dependency>
             <groupId>io.searchbox</groupId>
             <artifactId>jest-common</artifactId>
             <version>0.1.6</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.elasticsearch</groupId>
             <artifactId>elasticsearch</artifactId>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.jboss.weld</groupId>
             <artifactId>weld-osgi-bundle</artifactId>
             <version>2.3.0.Final</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>javax.ws.rs-api</artifactId>
+            <scope>compile</scope>
+        </dependency>
+
+        <!-- REST Easy -->
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jaxrs</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jackson-provider</artifactId>
+        </dependency>
+
+        <!-- Logging -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <!-- OSGI Stuffs -->
@@ -75,6 +100,13 @@
         <dependency>
             <groupId>org.ops4j.pax.web</groupId>
             <artifactId>pax-web-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Servlet -->
+        <dependency>
+            <groupId>org.jboss.spec.javax.servlet</groupId>
+            <artifactId>jboss-servlet-api_3.0_spec</artifactId>
             <scope>provided</scope>
         </dependency>
 
@@ -99,8 +131,6 @@
                     <instructions>
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Bundle-Name>${project.name}</Bundle-Name>
-                        <_wab>src/main/webapp/</_wab>
-                        <Web-ContextPath>/apiman</Web-ContextPath>
                         <Import-Package>
                             javax.enterprise.inject.spi,
                             org.jboss.resteasy.cdi.osgi,
@@ -118,7 +148,7 @@
                             *
                         </Import-Package>
                         <Export-Package>
-                            io.apiman.manager.osgi
+                            !io.apiman.manager.osgi
                         </Export-Package>
                         <Require-Capability>
                             org.ops4j.pax.cdi.extension;filter:="(&amp;(extension=pax-cdi-extension)(version>=0.11)(!(version>=0.12)))",
