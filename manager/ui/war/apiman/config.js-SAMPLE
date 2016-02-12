@@ -12,7 +12,7 @@ var APIMAN_CONFIG_DATA = {
     "metrics" : true
   },
   "api" : {
-    "endpoint" : "http://localhost:8181/apimanui/apiman",
+    "endpoint" : "http://localhost:8080/apiman",
     "auth" : {
       "type" : "basic",
       "basic" : {
