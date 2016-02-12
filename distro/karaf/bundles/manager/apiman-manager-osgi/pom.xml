@@ -14,32 +14,57 @@
 
     <!-- minimal set of dependencies -->
     <dependencies>
+
+
+        <!-- We will embed them -->
+        <dependency>
+            <groupId>io.apiman</groupId>
+            <artifactId>apiman-manager-api-rest-impl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.apiman</groupId>
+            <artifactId>apiman-manager-api-config</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.apiman</groupId>
+            <artifactId>apiman-manager-api-es</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.apiman</groupId>
+            <artifactId>apiman-manager-api-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.apiman</groupId>
+            <artifactId>apiman-manager-api-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.apiman</groupId>
+            <artifactId>apiman-manager-api-export-import-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.apiman</groupId>
+            <artifactId>apiman-manager-api-security</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.lmax</groupId>
+            <artifactId>disruptor</artifactId>
+            <version>3.3.2</version>
+        </dependency>
+
         <dependency>
             <groupId>io.apiman</groupId>
             <artifactId>apiman-common-servlet</artifactId>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>io.apiman</groupId>
-            <artifactId>apiman-manager-api-rest-impl</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.apiman</groupId>
-            <artifactId>apiman-manager-api-config</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.apiman</groupId>
-            <artifactId>apiman-manager-api-es</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.apiman</groupId>
-            <artifactId>apiman-manager-api-jpa</artifactId>
-            <scope>compile</scope>
-        </dependency>
-
         <dependency>
             <groupId>javax.enterprise</groupId>
             <artifactId>cdi-api</artifactId>
@@ -140,6 +165,9 @@
                         <Bundle-Name>${project.name}</Bundle-Name>
                         <Bundle-Activator>io.apiman.manager.osgi.Activator</Bundle-Activator>
                         <Import-Package>
+                            javax.jms;resolution:="optional",
+                            com.lmax.disruptor;resolution:="optional",
+                            com.lmax.disruptor.dsl;resolution:="optional",
                             io.apiman.manager.api.es,
                             io.apiman.manager.api.rest.contract,
                             io.apiman.manager.api.rest.impl,
