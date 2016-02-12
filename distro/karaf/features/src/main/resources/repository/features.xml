@@ -182,6 +182,11 @@
         <bundle>mvn:io.apiman/apiman-manager-osgi-ui/${project.version}</bundle>
     </feature>
 
+    <feature name="apiman-manager" version="${project.version}">
+        <feature>apiman-manager-api</feature>
+        <bundle>mvn:io.apiman/apiman-manager-osgi/${project.version}</bundle>
+    </feature>
+
     <!-- TODO : Review dependencies and if project can be deployed -->
     <feature name="apiman-all" version="${project.version}">
         <feature version="4.2.20">hibernate</feature>
@@ -196,6 +201,8 @@
         <feature>apiman-common</feature>
         <feature>apiman-gateway</feature>
         <feature>apiman-manager-ui</feature>
+        <feature>apiman-manager-api</feature>
+        <feature>apiman-manager</feature>
     </feature>
 
 
