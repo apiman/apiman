@@ -23,6 +23,12 @@
         <bundle>wrap:mvn:org.hibernate.javax.persistence/hibernate-jpa-2.1-api/1.0.0.Final</bundle>
     </feature>
 
+    <feature name="resteasy" version="2.3.10.Final">
+        <bundle>mvn:io.apiman.bundles/resteasy-cdi/2.3.10.Final_1</bundle>
+        <bundle>mvn:io.apiman.bundles/resteasy-jaxrs/2.3.10.Final_1</bundle>
+        <bundle>wrap:mvn:org.jboss.resteasy/resteasy-jackson-provider/2.3.10.Final</bundle>
+    </feature>
+
     <feature name="jackson" version="2.5.5">
         <bundle>mvn:com.fasterxml.jackson.core/jackson-core/2.5.5</bundle>
         <bundle>mvn:com.fasterxml.jackson.core/jackson-databind/2.5.5</bundle>
@@ -83,6 +89,7 @@
         <feature>infinispan-core</feature>
         <feature version="1.5.4">swagger</feature>
         <feature version="1.7.2">elasticsearch</feature>
+        <feature>resteasy</feature>
 
         <bundle>mvn:javax.ws.rs/javax.ws.rs-api/2.0</bundle>
         <bundle>mvn:javax.validation/validation-api/1.1.0.Final</bundle>
