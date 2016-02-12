@@ -1,6 +1,6 @@
 <features name="my-repo" xmlns="http://karaf.apache.org/xmlns/features/v1.1.0">
 
-    <repository>mvn:org.keycloak/keycloak-osgi-features/1.6.1.Final/xml/features</repository>
+    <repository>mvn:org.keycloak/keycloak-osgi-features/1.8.1.Final/xml/features</repository>
     <repository>mvn:org.infinispan/infinispan-core/7.2.5.Final/xml/features</repository>
 
     <feature name="hibernate" description="Hibernate 4.2.x JPA persistence engine support" version="4.2.20">
@@ -20,7 +20,7 @@
         <bundle start-level="100">mvn:org.hibernate/hibernate-core/4.2.20.Final</bundle>
         <bundle start-level="100">mvn:org.hibernate/hibernate-entitymanager/4.2.20.Final</bundle>
         <bundle start-level="100">mvn:org.hibernate/hibernate-osgi/4.2.20.Final</bundle>
-        <bundle>wrap:mvn:org.hibernate.javax.persistence/hibernate-jpa-2.0-api/1.0.0.Final</bundle>
+        <bundle>wrap:mvn:org.hibernate.javax.persistence/hibernate-jpa-2.1-api/1.0.0.Final</bundle>
     </feature>
 
     <feature name="jackson" version="2.5.5">
@@ -75,6 +75,15 @@
     </feature>
 
     <feature name="apiman-lib" version="${project.version}">
+        <feature>war</feature>
+        <feature>pax-cdi-1.2-weld</feature>
+        <feature>keycloak</feature>
+        <feature>jackson</feature>
+        <feature version="4.2.20">hibernate</feature>
+        <feature>infinispan-core</feature>
+        <feature version="1.5.4">swagger</feature>
+        <feature version="1.7.2">elasticsearch</feature>
+
         <bundle>mvn:javax.ws.rs/javax.ws.rs-api/2.0</bundle>
         <bundle>mvn:javax.validation/validation-api/1.1.0.Final</bundle>
         <bundle>mvn:org.apache.servicemix.specs/org.apache.servicemix.specs.stax-api-1.0/2.5.0</bundle>
@@ -142,14 +151,6 @@
     </feature>
 
     <feature name="apiman-gateway" version="${project.version}" description="Apiman Gateway modules exposing the Gateway and its Rest Api">
-        <feature>war</feature>
-        <feature>pax-cdi-1.2-weld</feature>
-        <feature>keycloak</feature>
-        <feature>jackson</feature>
-        <feature version="4.2.20">hibernate</feature>
-        <feature>infinispan-core</feature>
-        <feature version="1.5.4">swagger</feature>
-        <feature version="1.7.2">elasticsearch</feature>
         <feature>apiman-lib</feature>
         <feature>apiman-common</feature>
         <bundle>mvn:io.apiman/apiman-gateway-engine-beans/${project.version}</bundle>
@@ -170,6 +171,8 @@
         <bundle>mvn:io.apiman/apiman-manager-api-beans/${project.version}</bundle>
         <bundle>mvn:io.apiman/apiman-manager-api-core/${project.version}</bundle>
         <bundle>mvn:io.apiman/apiman-manager-api-config/${project.version}</bundle>
+        <bundle>mvn:io.apiman/apiman-manager-api-es/${project.version}</bundle>
+        <bundle>mvn:io.apiman/apiman-manager-api-jpa/${project.version}</bundle>
         <bundle>mvn:io.apiman/apiman-manager-api-security/${project.version}</bundle>
         <bundle>mvn:io.apiman/apiman-manager-api-export-import-api/${project.version}</bundle>
         <bundle>mvn:io.apiman/apiman-manager-api-gateway/${project.version}</bundle>
@@ -177,34 +180,20 @@
         <bundle>mvn:io.apiman/apiman-manager-api-rest-impl/${project.version}</bundle>
     </feature>
 
-    <feature name="apiman-manager-ui" version="${project.version}">
+    <feature name="apiman-manager" version="${project.version}">
+        <feature>apiman-lib</feature>
+        <feature>apiman-common</feature>
+        <feature>apiman-manager-api</feature>
         <bundle>wrap:mvn:io.apiman/apiman-manager-ui-war/1.2.2-SNAPSHOT/jar/classes</bundle>
         <bundle>mvn:io.apiman/apiman-manager-osgi-ui/${project.version}</bundle>
-    </feature>
-
-    <feature name="apiman-manager" version="${project.version}">
-        <feature>apiman-manager-api</feature>
         <bundle>mvn:io.apiman/apiman-manager-osgi/${project.version}</bundle>
     </feature>
 
     <!-- TODO : Review dependencies and if project can be deployed -->
     <feature name="apiman-all" version="${project.version}">
-        <feature version="4.2.20">hibernate</feature>
-        <feature>war</feature>
-        <feature>pax-cdi-1.2-weld</feature>
-        <feature>keycloak</feature>
-        <feature>jackson</feature>
-        <feature>infinispan-core</feature>
-        <feature version="1.5.4">swagger</feature>
-        <feature version="1.7.2">elasticsearch</feature>
-        <feature>apiman-lib</feature>
-        <feature>apiman-common</feature>
         <feature>apiman-gateway</feature>
-        <feature>apiman-manager-ui</feature>
-        <feature>apiman-manager-api</feature>
         <feature>apiman-manager</feature>
     </feature>
-
 
     <feature name="apiman-server-manager" version="${project.version}">
         <feature>apiman-lib</feature>
@@ -237,12 +226,6 @@
         <feature>apiman-embed</feature>
         <bundle>mvn:io.apiman/manager-osgi-rest-all/${project.version}</bundle>
         <bundle>mvn:io.apiman/manager-osgi-ui/${project.version}</bundle>
-    </feature>
-
-    <!-- TODO : Should be deprecated -->
-    <feature name="apiman-manager-api-es" version="${project.version}">
-        <feature>apiman-manager-api</feature>
-        <bundle>mvn:io.apiman/apiman-manager-api-es/${project.version}</bundle>
     </feature>
 
     <!-- TODO : Should be deprecated -->
