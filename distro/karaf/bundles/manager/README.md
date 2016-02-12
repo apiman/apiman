@@ -110,6 +110,7 @@ or
 ```
 features:addurl mvn:io.apiman/apiman-karaf/1.2.2-SNAPSHOT/xml/features
 features:install apiman-manager-ui
+features:install apiman-manager
 ```
 
 or with embedded dependencies
