@@ -13,7 +13,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>gateway</module>
-<!--        <module>manager</module>-->
+        <module>manager</module>
     </modules>
 
 </project>
