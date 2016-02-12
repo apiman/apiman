@@ -1,7 +1,8 @@
 package io.apiman.manager.osgi;
 
 import io.apiman.manager.api.config.Version;
-import io.apiman.manager.api.rest.impl.SystemResourceImpl;
+import io.apiman.manager.api.rest.impl.*;
+import io.apiman.manager.api.rest.impl.mappers.RestExceptionMapper;
 import io.swagger.jaxrs.config.BeanConfig;
 
 import javax.ws.rs.ApplicationPath;
@@ -13,7 +14,6 @@ import java.util.Set;
  * Useful if jax-rs is not supported by the runtime platform.
  *
  */
-@ApplicationPath("/")
 public class ManagerApiApplication extends Application {
 
     private Set<Object> singletons = new HashSet<>();
@@ -32,8 +32,11 @@ public class ManagerApiApplication extends Application {
         //TODO set more info in the beanConfig (title,description, host, port, etc)
         beanConfig.setScan(true);
 
+        // TODO : To be removed after testing
+        classes.add(MessageRestService.class);
+
         classes.add(SystemResourceImpl.class);
-/*        classes.add(SearchResourceImpl.class);
+        classes.add(SearchResourceImpl.class);
         classes.add(RoleResourceImpl.class);
         classes.add(UserResourceImpl.class);
         classes.add(CurrentUserResourceImpl.class);
@@ -49,7 +52,7 @@ public class ManagerApiApplication extends Application {
         classes.add(io.swagger.jaxrs.listing.ApiListingResource.class);
         classes.add(io.swagger.jaxrs.listing.SwaggerSerializers.class);
 
-        classes.add(RestExceptionMapper.class);*/
+        classes.add(RestExceptionMapper.class);
     }
 
     @Override

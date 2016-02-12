@@ -71,6 +71,7 @@ public class Activator implements BundleActivator {
              */
             ctxParams = new Hashtable<String, Object>();
             ctxParams.put("resteasy.servlet.mapping.prefix","/apiman");
+            ctxParams.put("resteasy.injector.factory","io.apiman.manager.osgi.resteasy.InjectorFactory");
             ctxParams.put("resteasy.providers","org.jboss.resteasy.plugins.providers.DataSourceProvider,\n"
                     + "            org.jboss.resteasy.plugins.providers.DocumentProvider,\n"
                     + "            org.jboss.resteasy.plugins.providers.DefaultTextPlain,\n"
@@ -118,7 +119,7 @@ public class Activator implements BundleActivator {
 
             // Register the RestEasyServlet
             initParamsFilter = new Hashtable<String, Object>();
-            initParamsFilter.put("javax.ws.rs.Application", "io.apiman.gateway.api.osgi.GatewayOSGIApplication");
+            initParamsFilter.put("javax.ws.rs.Application", "io.apiman.manager.osgi.ManagerApiApplication");
             webContainer.registerServlet(new HttpServletDispatcher(),
                     "resteasy",
                     new String[] { "/apiman/*" }, // url patterns

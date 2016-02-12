@@ -135,6 +135,7 @@
                     <instructions>
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Bundle-Name>${project.name}</Bundle-Name>
+                        <Bundle-Activator>io.apiman.manager.osgi.Activator</Bundle-Activator>
                         <Import-Package>
                             io.apiman.manager.api.es,
                             io.apiman.manager.api.rest.contract,
