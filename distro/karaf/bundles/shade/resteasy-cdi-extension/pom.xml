@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>io.apiman</groupId>
+        <artifactId>bundles-project</artifactId>
+        <version>1.2.2-SNAPSHOT</version>
+    </parent>
+
+    <groupId>io.apiman.bundles</groupId>
+    <artifactId>resteasy-cdi</artifactId>
+    <version>2.3.10.Final_1</version>
+    <name>Apiman :: OSGI :: Bundles :: Resteasy CDI</name>
+    <packaging>bundle</packaging>
+
+    <properties>
+        <pkgGroupId>org.jboss.resteasy</pkgGroupId>
+        <pkgVersion>2.3.10.Final</pkgVersion>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-cdi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.enterprise</groupId>
+            <artifactId>cdi-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>2.4.1</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <artifactSet>
+                                <includes>
+                                <include>${pkgGroupId}:resteasy-cdi</include>
+                                </includes>
+                            </artifactSet>
+                            <promoteTransitiveDependencies>true</promoteTransitiveDependencies>
+                            <createDependencyReducedPom>true</createDependencyReducedPom>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Import-Package>
+                            javax.ws.rs,
+                            javax.naming,
+                            javax.enterprise.context,
+                            javax.enterprise.context.spi,
+                            javax.enterprise.util,
+                            javax.enterprise.inject.spi,
+                            org.jboss.logging,
+                            org.jboss.resteasy.core,
+                            org.jboss.resteasy.spi
+                        </Import-Package>
+                        <Export-Package>
+                            org.jboss.resteasy.cdi,
+                            org.jboss.resteasy.cdi.i18n
+                        </Export-Package>
+                        <Require-Capability>
+                            osgi.extender;filter:="(osgi.extender=pax.cdi)"
+                        </Require-Capability>
+                        <Provide-Capability>
+                            org.ops4j.pax.cdi.extension; extension="resteasy-cdi"
+                        </Provide-Capability>
+                    </instructions>
+                    <unpackBundle>true</unpackBundle>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
