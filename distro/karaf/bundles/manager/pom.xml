@@ -16,11 +16,6 @@
     <modules>
         <module>apiman-manager-osgi-ui</module>
         <module>apiman-manager-osgi</module>
-        <!--
-        <module>resteasy</module>
-        <module>resteasy-all</module>
-        <module>manager-osgi-rest-all</module>
-        -->
     </modules>
 
 </project>

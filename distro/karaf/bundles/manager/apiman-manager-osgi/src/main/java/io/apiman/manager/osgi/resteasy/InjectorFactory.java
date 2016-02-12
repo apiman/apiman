@@ -13,6 +13,8 @@ import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleReference;
 import org.osgi.framework.ServiceReference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
@@ -31,6 +33,7 @@ public class InjectorFactory implements org.jboss.resteasy.spi.InjectorFactory {
     private BeanManager manager;
     private ResteasyCdiExtension extension;
     private Map<Class<?>, Type> sessionBeanInterface;
+    private final static Logger logger = LoggerFactory.getLogger(InjectorFactory.class);
 
     public InjectorFactory(ResteasyProviderFactory providerFactory) {
         this.providerFactory = providerFactory;
@@ -44,17 +47,17 @@ public class InjectorFactory implements org.jboss.resteasy.spi.InjectorFactory {
         Class<?> clazz = constructor.getDeclaringClass();
 
         if (!manager.getBeans(clazz).isEmpty()) {
-            LogMessages.LOGGER.debug(Messages.MESSAGES.usingCdiConstructorInjector(clazz));
+            logger.debug(Messages.MESSAGES.usingCdiConstructorInjector(clazz));
             return new CdiConstructorInjector(clazz, manager);
         }
 
         if (sessionBeanInterface.containsKey(clazz)) {
             Type intfc = sessionBeanInterface.get(clazz);
-            LogMessages.LOGGER.debug(Messages.MESSAGES.usingInterfaceForLookup(intfc, clazz));
+            logger.debug(Messages.MESSAGES.usingInterfaceForLookup(intfc, clazz));
             return new CdiConstructorInjector(intfc, manager);
         }
 
-        LogMessages.LOGGER.debug(Messages.MESSAGES.noCDIBeansFound(clazz));
+        logger.debug(Messages.MESSAGES.noCDIBeansFound(clazz));
         return delegate.createConstructor(constructor);
     }
 
@@ -96,7 +99,8 @@ public class InjectorFactory implements org.jboss.resteasy.spi.InjectorFactory {
         ServiceReference reference = ctx.getServiceReference(BeanManager.class.getName());
         beanManager = (BeanManager) ctx.getService(reference);
         if (beanManager != null) {
-            LogMessages.LOGGER.debug("BeanManager retrieved as OSGI Service");
+            // TODO : Check why we don't have the RESTeasy Logger Manager - CDI
+            logger.debug("BeanManager retrieved as OSGI Service");
             return beanManager;
         }
 
@@ -111,10 +115,21 @@ public class InjectorFactory implements org.jboss.resteasy.spi.InjectorFactory {
     private ResteasyCdiExtension lookupResteasyCdiExtension() {
         Set<Bean<?>> beans = manager.getBeans(ResteasyCdiExtension.class);
         Bean<?> bean = manager.resolve(beans);
+        ResteasyCdiExtension ext = null;
+
+        if (bean != null) {
+            CreationalContext<?> context = manager.createCreationalContext(bean);
+            ext = (ResteasyCdiExtension) manager.getReference(bean, ResteasyCdiExtension.class, context);
+        } else {
+            try {
+                ext = manager.getExtension(ResteasyCdiExtension.class);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         if (bean == null) {
             throw new IllegalStateException(Messages.MESSAGES.unableToObtainResteasyCdiExtension());
         }
-        CreationalContext<?> context = manager.createCreationalContext(bean);
-        return (ResteasyCdiExtension) manager.getReference(bean, ResteasyCdiExtension.class, context);
+        return ext;
     }
 }

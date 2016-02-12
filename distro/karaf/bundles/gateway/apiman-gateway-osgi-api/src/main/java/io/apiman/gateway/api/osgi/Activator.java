@@ -91,6 +91,24 @@ public class Activator implements BundleActivator {
              */
             ctxParams = new Hashtable<String, Object>();
             ctxParams.put("resteasy.servlet.mapping.prefix","/apiman-gateway-api");
+            ctxParams.put("resteasy.providers","org.jboss.resteasy.plugins.providers.DataSourceProvider,\n"
+                    + "            org.jboss.resteasy.plugins.providers.DocumentProvider,\n"
+                    + "            org.jboss.resteasy.plugins.providers.DefaultTextPlain,\n"
+                    + "            org.jboss.resteasy.plugins.providers.StringTextStar,\n"
+                    + "            org.jboss.resteasy.plugins.providers.InputStreamProvider,\n"
+                    + "            org.jboss.resteasy.plugins.providers.ByteArrayProvider,\n"
+                    + "            org.jboss.resteasy.plugins.providers.FormUrlEncodedProvider,\n"
+                    + "            org.jboss.resteasy.plugins.providers.FileProvider,\n"
+                    + "            org.jboss.resteasy.plugins.providers.StreamingOutputProvider,\n"
+                    + "            org.jboss.resteasy.plugins.providers.IIOImageProvider,\n"
+                    + "            org.jboss.resteasy.plugins.providers.jackson.ResteasyJacksonProvider,\n"
+                    + "            org.jboss.resteasy.plugins.providers.jackson.JacksonJsonpInterceptor,\n"
+                    + "            org.jboss.resteasy.plugins.interceptors.CacheControlInterceptor,\n"
+                    + "            org.jboss.resteasy.plugins.interceptors.encoding.AcceptEncodingGZIPInterceptor,\n"
+                    + "            org.jboss.resteasy.plugins.interceptors.encoding.ClientContentEncodingHeaderInterceptor,\n"
+                    + "            org.jboss.resteasy.plugins.interceptors.encoding.GZIPDecodingInterceptor,\n"
+                    + "            org.jboss.resteasy.plugins.interceptors.encoding.GZIPEncodingInterceptor,\n"
+                    + "            org.jboss.resteasy.plugins.interceptors.encoding.ServerContentEncodingHeaderInterceptor");
             webContainer.setContextParam(ctxParams, httpContext);
 
             /*

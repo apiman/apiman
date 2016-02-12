@@ -39,11 +39,14 @@
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-jaxrs</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-jackson-provider</artifactId>
+            <scope>provided</scope>
         </dependency>
+
 
         <!-- OSGI Stuffs -->
         <dependency>
@@ -155,6 +158,11 @@
                         org.eclipse.jetty.util.resource;resolution:=optional;version="[8.0,10)",
                         org.eclipse.jetty.util.security;version="[8.0,10)",
                         org.apache.karaf.jaas.boot.principal,
+                        org.jboss.resteasy.plugins.server.servlet,
+                        org.jboss.resteasy.plugins.interceptors,
+                        org.jboss.resteasy.plugins.interceptors.encoding,
+                        org.jboss.resteasy.plugins.providers,
+                        org.jboss.resteasy.plugins.providers.jackson,
                         org.keycloak.adapters.jetty;version="${project.version}";resolution:=optional,
                         org.keycloak.*;version="${project.version}";resolution:=optional,
                         *;resolution:="optional"
