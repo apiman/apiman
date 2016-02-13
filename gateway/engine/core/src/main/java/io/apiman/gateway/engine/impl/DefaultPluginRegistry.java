@@ -205,16 +205,14 @@ public class DefaultPluginRegistry implements IPluginRegistry {
             }
 
             // Check the error cache - don't keep trying again and again for a failure.
-            if (!handled) {
-                if (errorCache.containsKey(coordinates)) {
-                    // Invoke the user handle directly - we know we don't need to re-cache it.
-                    AsyncResultImpl<Plugin> result = AsyncResultImpl.create(errorCache.get(coordinates), Plugin.class);
-                    if (userHandler != null) {
-                        userHandler.handle(result);
-                    }
-                    future.setResult(result);
-                    handled = true;
+            if (!handled && errorCache.containsKey(coordinates)) {
+                // Invoke the user handle directly - we know we don't need to re-cache it.
+                AsyncResultImpl<Plugin> result = AsyncResultImpl.create(errorCache.get(coordinates), Plugin.class);
+                if (userHandler != null) {
+                    userHandler.handle(result);
                 }
+                future.setResult(result);
+                handled = true;
             }
         }
 
@@ -226,17 +224,15 @@ public class DefaultPluginRegistry implements IPluginRegistry {
         File pluginFile = new File(pluginDir, "plugin." + coordinates.getType()); //$NON-NLS-1$
 
         // Next try to load it from the plugin file registry
-        if (!handled) {
-            if (pluginFile.isFile()) {
-                if (isSnapshot) {
-                    try { FileUtils.deleteDirectory(pluginDir); } catch (IOException e) { }
-                } else {
-                    handled = true;
-                    try {
-                        handler.handle(AsyncResultImpl.create(readPluginFile(coordinates, pluginFile)));
-                    } catch (Exception error) {
-                        handler.handle(AsyncResultImpl.<Plugin>create(error));
-                    }
+        if (!handled && pluginFile.isFile()) {
+            if (isSnapshot) {
+                try { FileUtils.deleteDirectory(pluginDir); } catch (IOException e) { }
+            } else {
+                handled = true;
+                try {
+                    handler.handle(AsyncResultImpl.create(readPluginFile(coordinates, pluginFile)));
+                } catch (Exception error) {
+                    handler.handle(AsyncResultImpl.<Plugin>create(error));
                 }
             }
         }

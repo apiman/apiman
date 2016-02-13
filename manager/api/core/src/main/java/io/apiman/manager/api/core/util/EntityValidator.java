@@ -84,10 +84,8 @@ public class EntityValidator implements IApiValidator, IClientValidator {
         if (api.getEndpointType() == null) {
             ready = false;
         }
-        if (!api.isPublicAPI()) {
-            if (api.getPlans() == null || api.getPlans().isEmpty()) {
-                ready = false;
-            }
+        if (!api.isPublicAPI() && (api.getPlans() == null || api.getPlans().isEmpty())) {
+            ready = false;
         }
         if (api.getGateways() == null || api.getGateways().isEmpty()) {
             ready = false;
@@ -134,11 +132,9 @@ public class EntityValidator implements IApiValidator, IClientValidator {
             item.setId("plans"); //$NON-NLS-1$
             item.setName(Messages.i18n.format("EntityValidator.plans.name")); //$NON-NLS-1$
             item.setDone(true);
-            if (!api.isPublicAPI()) {
-                if (api.getPlans() == null || api.getPlans().isEmpty()) {
-                    item.setDone(false);
-                    item.setRemediation(Messages.i18n.format("EntityValidator.plans.description")); //$NON-NLS-1$
-                }
+            if (!api.isPublicAPI() && (api.getPlans() == null || api.getPlans().isEmpty())) {
+                item.setDone(false);
+                item.setRemediation(Messages.i18n.format("EntityValidator.plans.description")); //$NON-NLS-1$
             }
             status.getItems().add(item);
 

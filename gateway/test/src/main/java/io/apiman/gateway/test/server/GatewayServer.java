@@ -166,11 +166,9 @@ public class GatewayServer {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if (node != null) {
-            if ("true".equals(System.getProperty("apiman.test.es-delete-index", "true"))) {
-                client.execute(new DeleteIndex.Builder("apiman_gateway").build());
-                ESClientFactory.clearClientCache();
-            }
+        if (node != null && "true".equals(System.getProperty("apiman.test.es-delete-index", "true"))) {
+            client.execute(new DeleteIndex.Builder("apiman_gateway").build());
+            ESClientFactory.clearClientCache();
         }
     }
 

@@ -1615,13 +1615,11 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             newVersion.setDefinitionType(bean.getDefinitionType());
         }
 
-        if (gateway != null) {
-            if (newVersion.getGateways() == null) {
-                newVersion.setGateways(new HashSet<ApiGatewayBean>());
-                ApiGatewayBean sgb = new ApiGatewayBean();
-                sgb.setGatewayId(gateway.getId());
-                newVersion.getGateways().add(sgb);
-            }
+        if (gateway != null && newVersion.getGateways() == null) {
+            newVersion.setGateways(new HashSet<ApiGatewayBean>());
+            ApiGatewayBean sgb = new ApiGatewayBean();
+            sgb.setGatewayId(gateway.getId());
+            newVersion.getGateways().add(sgb);
         }
 
         if (apiValidator.isReady(newVersion)) {
@@ -1886,13 +1884,11 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         try {
             if (avb.getGateways() == null || avb.getGateways().isEmpty()) {
                 GatewaySummaryBean gateway = getSingularGateway();
-                if (gateway != null) {
-                    if (avb.getGateways() == null) {
-                        avb.setGateways(new HashSet<ApiGatewayBean>());
-                        ApiGatewayBean sgb = new ApiGatewayBean();
-                        sgb.setGatewayId(gateway.getId());
-                        avb.getGateways().add(sgb);
-                    }
+                if (gateway != null && avb.getGateways() == null) {
+                    avb.setGateways(new HashSet<ApiGatewayBean>());
+                    ApiGatewayBean sgb = new ApiGatewayBean();
+                    sgb.setGatewayId(gateway.getId());
+                    avb.getGateways().add(sgb);
                 }
             }
 
