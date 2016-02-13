@@ -70,8 +70,8 @@ public class Policy implements Serializable {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((policyImpl == null) ? 0 : policyImpl.hashCode());
-        result = prime * result + ((policyJsonConfig == null) ? 0 : policyJsonConfig.hashCode());
+        result = prime * result + (policyImpl == null ? 0 : policyImpl.hashCode());
+        result = prime * result + (policyJsonConfig == null ? 0 : policyJsonConfig.hashCode());
         return result;
     }
 

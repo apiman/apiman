@@ -59,7 +59,7 @@ public class ApiGatewayBean implements Serializable {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((gatewayId == null) ? 0 : gatewayId.hashCode());
+        result = prime * result + (gatewayId == null ? 0 : gatewayId.hashCode());
         return result;
     }
 

@@ -242,7 +242,7 @@ public class HttpApiConnection implements IApiConnection, IApiConnectionResponse
      * @return the port configured in the URL, or empty string if no port specified
      */
     private String determinePort(URL url) {
-        return (url.getPort() == -1) ? "" : ":" + url.getPort(); //$NON-NLS-1$ //$NON-NLS-2$
+        return url.getPort() == -1 ? "" : ":" + url.getPort(); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**

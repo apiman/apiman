@@ -62,7 +62,7 @@ public class AuditUtils {
      * @return true if value changed, else false
      */
     public static boolean valueChanged(String before, String after) {
-        if ((before == null && after == null) || after == null) {
+        if (before == null && after == null || after == null) {
             return false;
         }
 
@@ -80,7 +80,7 @@ public class AuditUtils {
      * @return true if value changed, else false
      */
     public static boolean valueChanged(Boolean before, Boolean after) {
-        if ((before == null && after == null) || after == null) {
+        if (before == null && after == null || after == null) {
             return false;
         }
 
@@ -99,7 +99,7 @@ public class AuditUtils {
      * @return true if value changed, else false
      */
     public static boolean valueChanged(Set<?> before, Set<?> after) {
-        if ((before == null && after == null) || after == null) {
+        if (before == null && after == null || after == null) {
             return false;
         }
         if (before == null) {
@@ -129,7 +129,7 @@ public class AuditUtils {
      * @return true if value changed, else false
      */
     public static boolean valueChanged(Map<String, String> before, Map<String, String> after) {
-        if ((before == null && after == null) || after == null) {
+        if (before == null && after == null || after == null) {
             return false;
         }
         if (before == null) {

@@ -132,7 +132,7 @@ public class Contract implements Serializable {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((apiKey == null) ? 0 : apiKey.hashCode());
+        result = prime * result + (apiKey == null ? 0 : apiKey.hashCode());
         return result;
     }
 

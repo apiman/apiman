@@ -273,16 +273,16 @@ public class TLSOptions extends AbstractOptions {
         result = prime * result + (allowAnyHost ? 1231 : 1237);
         result = prime * result + Arrays.hashCode(allowedCiphers);
         result = prime * result + Arrays.hashCode(allowedProtocols);
-        result = prime * result + ((clientKeyStore == null) ? 0 : clientKeyStore.hashCode());
+        result = prime * result + (clientKeyStore == null ? 0 : clientKeyStore.hashCode());
         result = prime * result + (devMode ? 1231 : 1237);
         result = prime * result + Arrays.hashCode(disallowedCiphers);
         result = prime * result + Arrays.hashCode(disallowedProtocols);
         result = prime * result + Arrays.hashCode(keyAliases);
-        result = prime * result + ((keyPassword == null) ? 0 : keyPassword.hashCode());
-        result = prime * result + ((keyStorePassword == null) ? 0 : keyStorePassword.hashCode());
+        result = prime * result + (keyPassword == null ? 0 : keyPassword.hashCode());
+        result = prime * result + (keyStorePassword == null ? 0 : keyStorePassword.hashCode());
         result = prime * result + (trustSelfSigned ? 1231 : 1237);
-        result = prime * result + ((trustStore == null) ? 0 : trustStore.hashCode());
-        result = prime * result + ((trustStorePassword == null) ? 0 : trustStorePassword.hashCode());
+        result = prime * result + (trustStore == null ? 0 : trustStore.hashCode());
+        result = prime * result + (trustStorePassword == null ? 0 : trustStorePassword.hashCode());
         return result;
     }
 

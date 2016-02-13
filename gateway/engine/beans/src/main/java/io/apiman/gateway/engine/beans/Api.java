@@ -181,9 +181,9 @@ public class Api implements Serializable {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((organizationId == null) ? 0 : organizationId.hashCode());
-        result = prime * result + ((apiId == null) ? 0 : apiId.hashCode());
-        result = prime * result + ((version == null) ? 0 : version.hashCode());
+        result = prime * result + (organizationId == null ? 0 : organizationId.hashCode());
+        result = prime * result + (apiId == null ? 0 : apiId.hashCode());
+        result = prime * result + (version == null ? 0 : version.hashCode());
         return result;
     }
 

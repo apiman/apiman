@@ -70,7 +70,7 @@ public class InfinispanCacheStoreComponent extends AbstractInfinispanComponent i
                 entry = new InfinispanCacheEntry();
             }
             entry.setHead(jsonObject);
-            entry.setExpiresOn(System.currentTimeMillis() + (timeToLive * 1000));
+            entry.setExpiresOn(System.currentTimeMillis() + timeToLive * 1000);
             getCache().put(cacheKey, entry);
         }
     }
@@ -107,7 +107,7 @@ public class InfinispanCacheStoreComponent extends AbstractInfinispanComponent i
                             entry = new InfinispanCacheEntry();
                         }
                         entry.setHead(jsonObject);
-                        entry.setExpiresOn(System.currentTimeMillis() + (timeToLive * 1000));
+                        entry.setExpiresOn(System.currentTimeMillis() + timeToLive * 1000);
                         entry.setData(dataBuffer.getBytes());
                         getCache().put(cacheKey, entry);
                     }

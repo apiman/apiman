@@ -87,7 +87,7 @@ public class ApiPlanSummaryBean implements Serializable {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((planId == null) ? 0 : planId.hashCode());
+        result = prime * result + (planId == null ? 0 : planId.hashCode());
         return result;
     }
 
