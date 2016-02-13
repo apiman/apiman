@@ -584,7 +584,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             query.setParameter(1, groupId);
             query.setParameter(2, artifactId);
             List<Object[]> rows = query.getResultList();
-            if (rows.size() > 0) {
+            if (!rows.isEmpty()) {
                 Object[] row = rows.get(0);
                 PluginBean plugin = new PluginBean();
                 plugin.setId(((Number) row[0]).longValue());
@@ -1423,7 +1423,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
                 entry.setApiKey(contractBean.getApikey());
 
                 Set<ApiGatewayBean> gateways = svb.getGateways();
-                if (gateways != null && gateways.size() > 0) {
+                if (gateways != null && !gateways.isEmpty()) {
                     ApiGatewayBean sgb = gateways.iterator().next();
                     entry.setGatewayId(sgb.getGatewayId());
                 }

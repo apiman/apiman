@@ -287,7 +287,7 @@ class HttpConnector implements IApiConnectionResponse, IApiConnection {
     }
 
     private String queryParams(QueryMap queryParams) {
-        if (queryParams == null || queryParams.size() == 0)
+        if (queryParams == null || queryParams.isEmpty())
             return "";
 
         StringBuilder sb = new StringBuilder(queryParams.size() * 2 * 10);

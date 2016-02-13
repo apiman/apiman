@@ -1271,7 +1271,7 @@ public class EsStorage implements IStorage, IStorageQuery {
             ApiEntryBean bean = EsMarshalling.unmarshallApiEntry(hit.source);
             ApiVersionBean svb = getApiVersion(bean.getApiOrgId(), bean.getApiId(), bean.getApiVersion());
             Set<ApiGatewayBean> gateways = svb.getGateways();
-            if (gateways != null && gateways.size() > 0) {
+            if (gateways != null && !gateways.isEmpty()) {
                 ApiGatewayBean sgb = gateways.iterator().next();
                 bean.setGatewayId(sgb.getGatewayId());
             }
@@ -1754,7 +1754,7 @@ public class EsStorage implements IStorage, IStorageQuery {
             SearchSourceBuilder builder = new SearchSourceBuilder().query(qb).size(500);
             List<Hit<Map<String,Object>,Void>> hits = listEntities("roleMembership", builder); //$NON-NLS-1$
             Set<PermissionBean> rval = new HashSet<>(hits.size());
-            if (hits.size() > 0) {
+            if (!hits.isEmpty()) {
                 for (Hit<Map<String,Object>,Void> hit : hits) {
                     Map<String, Object> source = hit.source;
                     String roleId = String.valueOf(source.get("roleId")); //$NON-NLS-1$
@@ -2401,7 +2401,7 @@ public class EsStorage implements IStorage, IStorageQuery {
                 }
                 this.nextHitIdx = 0;
             }
-            return hits.size() > 0;
+            return !hits.isEmpty();
         }
 
         /**
