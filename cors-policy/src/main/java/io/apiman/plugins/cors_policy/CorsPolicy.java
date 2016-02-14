@@ -19,14 +19,12 @@ import io.apiman.gateway.engine.IApiConnector;
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.engine.beans.util.CaseInsensitiveStringMultiMap;
+import io.apiman.gateway.engine.beans.util.HeaderMap;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.policies.AbstractMappedPolicy;
 import io.apiman.gateway.engine.policy.IConnectorInterceptor;
 import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
-
-import java.util.Collections;
-import java.util.Map;
 
 /**
  * A policy implementing CORS (Cross-origin resource sharing): a method of defining access to resources
@@ -40,7 +38,7 @@ import java.util.Map;
  */
 public class CorsPolicy extends AbstractMappedPolicy<CorsConfigBean> {
     private static final String CORS_SIMPLE_RESPONSE_HEADERS = "cors-simple-response-headers"; //$NON-NLS-1$
-    private static final Map<String, String> EMPTY_MAP = Collections.<String,String>emptyMap();
+    private static final CaseInsensitiveStringMultiMap EMPTY_MAP = new HeaderMap();
 
 
     public CorsPolicy() {
@@ -98,10 +96,10 @@ public class CorsPolicy extends AbstractMappedPolicy<CorsConfigBean> {
     protected void doApply(ApiResponse response, IPolicyContext context, CorsConfigBean config,
             IPolicyChain<ApiResponse> chain) {
 
-        Map<String, String> corsHeaders = getResponseHeaders(context);
+        CaseInsensitiveStringMultiMap corsHeaders = getResponseHeaders(context);
 
         if(corsHeaders != EMPTY_MAP) {
-            response.getHeaders().putAll(corsHeaders);
+            response.getHeaders().putAll(corsHeaders.toMap());
         }
 
         chain.doApply(response);
@@ -111,7 +109,7 @@ public class CorsPolicy extends AbstractMappedPolicy<CorsConfigBean> {
         context.setAttribute(CORS_SIMPLE_RESPONSE_HEADERS, response);
     }
 
-    private Map<String, String> getResponseHeaders(IPolicyContext context) {
+    private CaseInsensitiveStringMultiMap getResponseHeaders(IPolicyContext context) {
         return context.getAttribute(CORS_SIMPLE_RESPONSE_HEADERS, EMPTY_MAP);
     }
 }
