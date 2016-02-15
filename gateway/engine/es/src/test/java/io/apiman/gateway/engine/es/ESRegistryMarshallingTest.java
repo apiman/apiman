@@ -63,7 +63,7 @@ public class ESRegistryMarshallingTest {
                 + "}", ESRegistryMarshalling.marshall(api).string());
 
         // Set to a tree map so we can guarantee ordering.
-        api.setEndpointProperties(new TreeMap<String, String>());
+        api.setEndpointProperties(new TreeMap<>());
         api.getEndpointProperties().put("property-1", "prop-1-value");
         api.getEndpointProperties().put("property-2", "prop-2-value");
         Assert.assertEquals("{"
@@ -195,7 +195,7 @@ public class ESRegistryMarshallingTest {
         ApiContract sc = new ApiContract();
         sc.setApikey("12345");
         sc.setPlan("Gold");
-        sc.setPolicies(new ArrayList<Policy>());
+        sc.setPolicies(new ArrayList<>());
 
         Api api = new Api();
         api.setApiPolicies(null);
