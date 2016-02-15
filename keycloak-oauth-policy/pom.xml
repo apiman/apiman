@@ -61,7 +61,7 @@
     <dependency>
       <groupId>org.bouncycastle</groupId>
       <artifactId>bcprov-jdk15on</artifactId>
-      <scope>test</scope>
+      <!-- <scope>test</scope> -->
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>
