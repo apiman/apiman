@@ -2686,9 +2686,9 @@
       }
     },
     "json-editor": {
-      "version": "0.7.21",
-      "from": "json-editor@0.7.21",
-      "resolved": "https://registry.npmjs.org/json-editor/-/json-editor-0.7.21.tgz"
+      "version": "0.7.23",
+      "from": "json-editor@0.7.23",
+      "resolved": "https://registry.npmjs.org/json-editor/-/json-editor-0.7.23.tgz"
     },
     "json-pointer": {
       "version": "0.2.2",
