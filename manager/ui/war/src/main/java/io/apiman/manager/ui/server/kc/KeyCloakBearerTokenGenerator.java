@@ -79,9 +79,9 @@ public class KeyCloakBearerTokenGenerator implements ITokenGenerator {
                 Class<?> tc = Class.forName("org.keycloak.util.Time"); //$NON-NLS-1$
                 Method method = tc.getMethod("currentTime"); //$NON-NLS-1$
                 Object object = method.invoke(null);
-                return ((Integer) object);
+                return (Integer) object;
             } catch (Throwable e1) {
-                return ((int) (System.currentTimeMillis() / 1000));
+                return (int) (System.currentTimeMillis() / 1000);
             }
         }
     }

@@ -113,7 +113,7 @@ public class LdapTestParent extends AbstractLdapTestUnit {
     }
 
     public static void injectLdifFiles(String... ldifFiles) throws Exception {
-        if ((ldifFiles != null) && (ldifFiles.length > 0)) {
+        if (ldifFiles != null && ldifFiles.length > 0) {
             for (String ldifFile : ldifFiles) {
                 InputStream is = null;
                 try {

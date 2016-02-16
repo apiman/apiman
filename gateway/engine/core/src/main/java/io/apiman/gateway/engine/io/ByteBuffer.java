@@ -186,7 +186,7 @@ public class ByteBuffer implements IApimanBuffer {
      */
     @Override
     public byte[] getBytes(int start, int end) {
-        int size = (end - start);
+        int size = end - start;
         byte [] rval = new byte[size];
         System.arraycopy(buffer, start, rval, 0, size);
         return rval;
