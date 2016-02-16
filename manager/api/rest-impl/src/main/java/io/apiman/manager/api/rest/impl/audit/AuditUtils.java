@@ -55,6 +55,9 @@ public class AuditUtils {
 
     private static final ObjectMapper mapper = new ObjectMapper();
 
+    private AuditUtils() {
+    }
+
     /**
      * Returns true only if the value changed.
      * @param before the value before change

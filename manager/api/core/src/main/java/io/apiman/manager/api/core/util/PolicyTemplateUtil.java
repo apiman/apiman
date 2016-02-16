@@ -44,6 +44,9 @@ public class PolicyTemplateUtil {
     // Cache a MVEL 2.0 compiled template - the key is PolicyDefId::language
     private static final Map<String, CompiledTemplate> templateCache = new HashMap<>();
 
+    private PolicyTemplateUtil() {
+    }
+
     /**
      * Clears out the template cache.
      */

@@ -23,6 +23,9 @@ package io.apiman.manager.api.beans;
  */
 public class BeanUtils {
 
+    private BeanUtils() {
+    }
+
     /**
      * Creates a bean id from the given bean name.  This essentially removes any
      * non "word" characters from the name.

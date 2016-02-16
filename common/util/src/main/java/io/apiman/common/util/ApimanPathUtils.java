@@ -20,6 +20,9 @@ public class ApimanPathUtils {
     public static final String X_API_VERSION_HEADER = "X-API-Version"; //$NON-NLS-1$
     public static final String ACCEPT_HEADER = "Accept"; //$NON-NLS-1$
 
+    private ApimanPathUtils() {
+    }
+
     /**
      * Parses the HTTP request and returns an object containing all of the API
      * information (Org, Id, Version).

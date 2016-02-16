@@ -34,6 +34,9 @@ public class LDAPConnectionFactory {
     private static final int MAX_CONNECTIONS_PER_POOL = 20;
     private static final int MAX_POOLS = 20;
 
+    private LDAPConnectionFactory() {
+    }
+
     protected static Map<LdapConfigBean, LDAPConnectionPool> connectionPoolCache =
             new LRUMap<LdapConfigBean, LDAPConnectionPool>(MAX_POOLS) {
         private static final long serialVersionUID = 1L;

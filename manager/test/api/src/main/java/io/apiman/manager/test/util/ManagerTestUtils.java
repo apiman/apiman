@@ -21,7 +21,10 @@ package io.apiman.manager.test.util;
  * @author eric.wittmann@redhat.com
  */
 public class ManagerTestUtils {
-    
+
+    private ManagerTestUtils() {
+    }
+
     public static enum TestType {
         jpa, es;
     }

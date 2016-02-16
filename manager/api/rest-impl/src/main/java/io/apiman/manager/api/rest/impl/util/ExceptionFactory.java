@@ -62,6 +62,9 @@ import io.apiman.manager.api.rest.impl.i18n.Messages;
  */
 public final class ExceptionFactory {
 
+    private ExceptionFactory() {
+    }
+
     /**
      * Creates an exception from a username.
      * @param username the username

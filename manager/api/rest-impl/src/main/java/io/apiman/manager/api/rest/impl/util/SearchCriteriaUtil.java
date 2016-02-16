@@ -42,6 +42,9 @@ public final class SearchCriteriaUtil {
         validOperators.add(SearchCriteriaFilterOperator.like);
     }
 
+    private SearchCriteriaUtil() {
+    }
+
     /**
      * Validates that the search criteria bean is complete and makes sense.
      * @param criteria the search criteria
