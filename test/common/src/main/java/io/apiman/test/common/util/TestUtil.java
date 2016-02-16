@@ -38,6 +38,9 @@ import org.apache.commons.io.IOUtils;
 @SuppressWarnings({"nls", "javadoc"})
 public class TestUtil {
 
+    private TestUtil() {
+    }
+
     /**
      * Loads a test plan from a classpath resource.
      * @param resourcePath

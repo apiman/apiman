@@ -31,6 +31,9 @@ public class ServiceRegistryUtil {
 
     private static Map<Class<?>, Set<?>> servicesCache = new HashMap<>();
 
+    private ServiceRegistryUtil() {
+    }
+
     /**
      * Gets a single service by its interface.
      * @param serviceInterface the service interface

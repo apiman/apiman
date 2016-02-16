@@ -42,6 +42,9 @@ public class AesEncrypter {
         skeySpec = new SecretKeySpec(ivraw, "AES"); //$NON-NLS-1$
     }
 
+    private AesEncrypter() {
+    }
+
     /**
      * Encrypt.
      * @param plainText the plain text

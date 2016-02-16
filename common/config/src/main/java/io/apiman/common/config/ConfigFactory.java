@@ -31,6 +31,9 @@ public class ConfigFactory {
         ConfigurationInterpolator.registerGlobalLookup("vault", new VaultLookup()); //$NON-NLS-1$
     }
 
+    private ConfigFactory() {
+    }
+
     public static final CompositeConfiguration createConfig() {
         CompositeConfiguration compositeConfiguration = new CompositeConfiguration();
         compositeConfiguration.addConfiguration(new SystemPropertiesConfiguration());

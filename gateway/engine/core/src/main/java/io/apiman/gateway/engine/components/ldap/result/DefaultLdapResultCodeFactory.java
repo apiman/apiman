@@ -23,6 +23,9 @@ import com.unboundid.ldap.sdk.ResultCode;
  */
 public class DefaultLdapResultCodeFactory {
 
+    private DefaultLdapResultCodeFactory() {
+    }
+
     public static LdapResultCode convertResultCode(ResultCode resultCode) {
         switch (resultCode.intValue()) {
         case ResultCode.SUCCESS_INT_VALUE:
