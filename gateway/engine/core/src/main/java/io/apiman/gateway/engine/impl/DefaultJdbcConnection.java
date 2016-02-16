@@ -66,8 +66,7 @@ public class DefaultJdbcConnection implements IJdbcConnection {
      */
     @Override
     public void query(IAsyncResultHandler<IJdbcResultSet> handler, String sql, Object... params) {
-        try {
-            PreparedStatement statement = connection.prepareStatement(sql);
+        try(PreparedStatement statement = connection.prepareStatement(sql)) {
             int idx = 1;
             for (Object param : params) {
                 statement.setObject(idx++, param);
@@ -85,8 +84,7 @@ public class DefaultJdbcConnection implements IJdbcConnection {
      */
     @Override
     public void execute(IAsyncResultHandler<Void> handler, String sql, Object... params) {
-        try {
-            PreparedStatement statement = connection.prepareStatement(sql);
+        try(PreparedStatement statement = connection.prepareStatement(sql)) {
             int idx = 1;
             for (Object param : params) {
                 statement.setObject(idx++, param);
