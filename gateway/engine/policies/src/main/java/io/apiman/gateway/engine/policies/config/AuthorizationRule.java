@@ -79,9 +79,20 @@ public class AuthorizationRule {
      */
     @Override
     public boolean equals(Object obj) {
+        if (obj == null)
+            return false;
+        if (this.getClass() != obj.getClass())
+            return false;
         AuthorizationRule rule2 = (AuthorizationRule) obj;
         return this.getVerb().equals(rule2.getVerb()) && this.getPathPattern().equals(rule2.getPathPattern())
                 && this.getRole().equals(rule2.getRole());
     }
 
+    @Override
+    public int hashCode() {
+        int result = this.verb != null ? this.verb.hashCode() : 0;
+        result = 31 * result + (this.pathPattern != null ? this.pathPattern.hashCode() : 0);
+        result = 31 * result + (this.role != null ? this.role.hashCode() : 0);
+        return result;
+    }
 }
