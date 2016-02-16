@@ -221,7 +221,7 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
                     @Override
                     public void handle(ApiRequest request) {
                         IConnectorInterceptor connectorInterceptor = context.getConnectorInterceptor();
-                        IApiConnector connector = null;
+                        IApiConnector connector;
                         if (connectorInterceptor == null) {
                             connector = connectorFactory.createConnector(request, api,
                                     RequiredAuthType.parseType(api));
@@ -466,7 +466,7 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
                     if (totalCounter.size() == numPolicies) {
                         // Did we get any errors?  If yes, report the first one. If no, then send back
                         // the fully resolved list of policies.
-                        if (errorCounter.size() > 0) {
+                        if (!errorCounter.isEmpty()) {
                             int errorIdx = errorCounter.iterator().next();
                             Throwable error = errors.get(errorIdx);
                             // TODO add some logging here to indicate which policy error'd out

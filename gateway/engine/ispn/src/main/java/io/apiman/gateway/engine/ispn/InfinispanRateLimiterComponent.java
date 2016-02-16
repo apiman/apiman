@@ -59,7 +59,7 @@ public class InfinispanRateLimiterComponent extends AbstractInfinispanComponent 
     @Override
     public void accept(final String bucketId, final RateBucketPeriod period, final long limit,
             final long increment, final IAsyncResultHandler<RateLimitResponse> handler) {
-        RateLimiterBucket bucket = null;
+        RateLimiterBucket bucket;
         synchronized (mutex) {
             bucket = (RateLimiterBucket) getCache().get(bucketId);
             if (bucket == null) {

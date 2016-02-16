@@ -101,7 +101,7 @@ public abstract class AbstractSecurityContext implements ISecurityContext {
             return new IndexedPermissions(getQuery().getPermissions(userId));
         } catch (StorageException e) {
             logger.error(Messages.getString("AbstractSecurityContext.ErrorLoadingPermissions") + userId, e); //$NON-NLS-1$
-            return new IndexedPermissions(new HashSet<PermissionBean>());
+            return new IndexedPermissions(new HashSet<>());
         }
     }
 

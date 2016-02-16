@@ -27,6 +27,9 @@ import org.apache.commons.lang.StringUtils;
  */
 public class FieldValidator {
 
+    private FieldValidator() {
+    }
+
     /**
      * Validates an entity name.
      * @param name

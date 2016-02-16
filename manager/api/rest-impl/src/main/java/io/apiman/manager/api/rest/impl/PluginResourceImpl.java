@@ -123,7 +123,7 @@ public class PluginResourceImpl implements IPluginResource {
         }
         boolean isUpgrade = isSnapshot || bean.isUpgrade();
 
-        Plugin plugin = null;
+        Plugin plugin;
         try {
             plugin = pluginRegistry.loadPlugin(coordinates);
             bean.setName(plugin.getName());
@@ -318,8 +318,8 @@ public class PluginResourceImpl implements IPluginResource {
     @Override
     public String getPolicyForm(Long pluginId, String policyDefId) throws PluginNotFoundException,
             PluginResourceNotFoundException, PolicyDefinitionNotFoundException {
-        PluginBean pbean = null;
-        PolicyDefinitionBean pdBean = null;
+        PluginBean pbean;
+        PolicyDefinitionBean pdBean;
         try {
             storage.beginTx();
             pbean = storage.getPlugin(pluginId);

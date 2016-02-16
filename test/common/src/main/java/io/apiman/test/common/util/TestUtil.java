@@ -38,6 +38,9 @@ import org.apache.commons.io.IOUtils;
 @SuppressWarnings({"nls", "javadoc"})
 public class TestUtil {
 
+    private TestUtil() {
+    }
+
     /**
      * Loads a test plan from a classpath resource.
      * @param resourcePath
@@ -196,7 +199,7 @@ public class TestUtil {
             return line;
         }
         String rval = line;
-        int sidx = -1;
+        int sidx;
         while ( (sidx = rval.indexOf("${")) != -1 ) {
             int eidx = rval.indexOf('}', sidx);
             String substring = rval.substring(sidx + 2, eidx);

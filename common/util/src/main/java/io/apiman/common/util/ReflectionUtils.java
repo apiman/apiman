@@ -24,6 +24,9 @@ import java.lang.reflect.Method;
  */
 public class ReflectionUtils {
 
+    private ReflectionUtils() {
+    }
+
     /**
      * Call a method if it exists. Use very sparingly and generally prefer interfaces.
      * @param object The object

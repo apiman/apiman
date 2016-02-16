@@ -187,7 +187,7 @@ public abstract class AbstractJpaStorage {
      * @throws StorageException if a storage problem occurs while storing a bean
      */
     public <T> T get(Long id, Class<T> type) throws StorageException {
-        T rval = null;
+        T rval;
         EntityManager entityManager = getActiveEntityManager();
         try {
             rval = entityManager.find(type, id);
@@ -207,7 +207,7 @@ public abstract class AbstractJpaStorage {
      * @throws StorageException if a storage problem occurs while storing a bean
      */
     public <T> T get(String id, Class<T> type) throws StorageException {
-        T rval = null;
+        T rval;
         EntityManager entityManager = getActiveEntityManager();
         try {
             rval = entityManager.find(type, id);
@@ -232,7 +232,7 @@ public abstract class AbstractJpaStorage {
      * @throws StorageException if a storage problem occurs while storing a bean
      */
     public <T> T get(String organizationId, String id, Class<T> type) throws StorageException {
-        T rval = null;
+        T rval;
         EntityManager entityManager = getActiveEntityManager();
         try {
             OrganizationBean orgBean = entityManager.find(OrganizationBean.class, organizationId);

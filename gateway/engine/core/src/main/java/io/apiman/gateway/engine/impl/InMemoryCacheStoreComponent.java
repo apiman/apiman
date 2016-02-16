@@ -46,7 +46,7 @@ public class InMemoryCacheStoreComponent implements ICacheStoreComponent {
     private Map<String, Object> objectCache = new LinkedHashMap<>();
     private Map<String, IApimanBuffer> dataCache = new HashMap<>();
     private long cacheSize = 0;
-    private long maxCacheSize = 10 * 1024 * 1024; // 10 MB
+    private long maxCacheSize = 10 * 1024 * 1024L; // 10 MB
 
     private IBufferFactoryComponent bufferFactory;
 
@@ -135,7 +135,7 @@ public class InMemoryCacheStoreComponent implements ICacheStoreComponent {
     @SuppressWarnings("unchecked")
     public <T> void get(String cacheKey, Class<T> type, IAsyncResultHandler<T> handler) {
         boolean expired = false;
-        Object rval = null;
+        Object rval;
         synchronized (mapMutex) {
             rval = objectCache.get(cacheKey);
             if (rval != null) {
@@ -169,9 +169,9 @@ public class InMemoryCacheStoreComponent implements ICacheStoreComponent {
             IAsyncResultHandler<ISignalReadStream<T>> handler) {
         boolean expired = false;
         ISignalReadStream<T> rval;
-        Object object = null;
+        Object object;
 
-        IApimanBuffer buffer = null;
+        IApimanBuffer buffer;
         synchronized (mapMutex) {
             object = objectCache.get(cacheKey);
             if (object != null) {

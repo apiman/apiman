@@ -56,7 +56,7 @@ public class ESRateLimiterComponent extends AbstractESComponent implements IRate
         try {
             Get get = new Get.Builder(getIndexName(), id).type("rateBucket").build(); //$NON-NLS-1$
             JestResult result = getClient().execute(get);
-            RateLimiterBucket bucket = null;
+            RateLimiterBucket bucket;
             long version;
             if (result.isSucceeded()) {
                 // use the existing bucket

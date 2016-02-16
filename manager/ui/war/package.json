@@ -48,7 +48,7 @@
     "gulp-watch": "4.3.5",
     "jquery": "2.1.4",
     "js-logger": "1.2.0",
-    "json-editor": "0.7.21",
+    "json-editor": "0.7.23",
     "lodash": "3.10.1",
     "ng-file-upload": "9.1.1",
     "ng-sortable": "1.2.2",

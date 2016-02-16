@@ -30,6 +30,9 @@ public final class JpaUtil {
 
     private static Logger logger = LoggerFactory.getLogger(JpaUtil.class);
 
+    private JpaUtil() {
+    }
+
     /**
      * Returns true if the given exception is a unique constraint violation.  This
      * is useful to detect whether someone is trying to persist an entity that

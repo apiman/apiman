@@ -73,7 +73,7 @@ public abstract class CachingESRegistry extends ESRegistry {
      */
     @Override
     public void getContract(final ApiRequest request, final IAsyncResultHandler<ApiContract> handler) {
-        ApiContract contract = null;
+        ApiContract contract;
 
         String contractKey = getContractKey(request);
         synchronized (mutex) {
@@ -127,7 +127,7 @@ public abstract class CachingESRegistry extends ESRegistry {
      */
     protected Api getApi(String orgId, String apiId, String version) throws IOException {
         String apiKey = getApiKey(orgId, apiId, version);
-        Api api = null;
+        Api api;
         synchronized (mutex) {
             api = apiCache.get(apiKey);
         }

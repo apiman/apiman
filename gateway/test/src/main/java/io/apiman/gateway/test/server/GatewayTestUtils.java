@@ -23,6 +23,9 @@ package io.apiman.gateway.test.server;
 @SuppressWarnings("nls")
 public class GatewayTestUtils {
 
+    private GatewayTestUtils() {
+    }
+
     public static GatewayTestType getTestType() {
         return GatewayTestType.valueOf(System.getProperty("apiman.test.type", GatewayTestType.memory.name()));
     }

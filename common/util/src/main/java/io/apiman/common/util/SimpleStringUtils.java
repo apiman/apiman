@@ -26,6 +26,9 @@ package io.apiman.common.util;
  */
 public class SimpleStringUtils {
 
+    private SimpleStringUtils() {
+    }
+
     /**
      * Trim string of whitespace.
      * 

@@ -59,7 +59,10 @@ public class AuthTokenUtil {
             };
         }
     }
-    
+
+    private AuthTokenUtil() {
+    }
+
     /**
      * Produce a token suitable for transmission.  This will generate the auth token,
      * then serialize it to a JSON string, then Base64 encode the JSON.

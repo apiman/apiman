@@ -271,7 +271,7 @@ public class AuthenticationFilter implements Filter {
         if (principal == null) {
             chain.doFilter(request, response);
         } else {
-            HttpServletRequest hsr = null;
+            HttpServletRequest hsr;
             hsr = wrapTheRequest(request, principal);
             chain.doFilter(hsr, response);
         }

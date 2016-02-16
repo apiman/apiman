@@ -42,6 +42,9 @@ public class PluginUtils {
         }
     }
 
+    private PluginUtils() {
+    }
+
     /**
      * @return a set of default maven repositories to search for plugins
      */

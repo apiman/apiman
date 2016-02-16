@@ -22,6 +22,9 @@ package io.apiman.gateway.engine.es;
  */
 public class ESUtils {
 
+    private ESUtils() {
+    }
+
     /**
      * Gets the root cause of an exception.
      * @param e the root cause

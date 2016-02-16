@@ -584,7 +584,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             query.setParameter(1, groupId);
             query.setParameter(2, artifactId);
             List<Object[]> rows = query.getResultList();
-            if (rows.size() > 0) {
+            if (!rows.isEmpty()) {
                 Object[] row = rows.get(0);
                 PluginBean plugin = new PluginBean();
                 plugin.setId(((Number) row[0]).longValue());
@@ -678,7 +678,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         SearchResultsBean<ClientSummaryBean> rval = new SearchResultsBean<>();
         rval.setTotalSize(result.getTotalSize());
         List<ClientBean> beans = result.getBeans();
-        rval.setBeans(new ArrayList<ClientSummaryBean>(beans.size()));
+        rval.setBeans(new ArrayList<>(beans.size()));
         for (ClientBean client : beans) {
             ClientSummaryBean summary = new ClientSummaryBean();
             OrganizationBean organization = client.getOrganization();
@@ -704,7 +704,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         SearchResultsBean<ApiSummaryBean> rval = new SearchResultsBean<>();
         rval.setTotalSize(result.getTotalSize());
         List<ApiBean> beans = result.getBeans();
-        rval.setBeans(new ArrayList<ApiSummaryBean>(beans.size()));
+        rval.setBeans(new ArrayList<>(beans.size()));
         for (ApiBean api : beans) {
             ApiSummaryBean summary = new ApiSummaryBean();
             OrganizationBean organization = api.getOrganization();
@@ -731,7 +731,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         SearchResultsBean<PlanSummaryBean> rval = new SearchResultsBean<>();
         rval.setTotalSize(result.getTotalSize());
         List<PlanBean> plans = result.getBeans();
-        rval.setBeans(new ArrayList<PlanSummaryBean>(plans.size()));
+        rval.setBeans(new ArrayList<>(plans.size()));
         for (PlanBean plan : plans) {
             PlanSummaryBean summary = new PlanSummaryBean();
             OrganizationBean organization = plan.getOrganization();
@@ -1423,7 +1423,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
                 entry.setApiKey(contractBean.getApikey());
 
                 Set<ApiGatewayBean> gateways = svb.getGateways();
-                if (gateways != null && gateways.size() > 0) {
+                if (gateways != null && !gateways.isEmpty()) {
                     ApiGatewayBean sgb = gateways.iterator().next();
                     entry.setGatewayId(sgb.getGatewayId());
                 }

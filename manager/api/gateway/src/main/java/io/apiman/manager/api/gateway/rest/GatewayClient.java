@@ -311,7 +311,7 @@ public class GatewayClient /*implements ISystemResource, IApiResource, IClientRe
         try {
             List<StackTraceElement> elements = new ArrayList<>();
             BufferedReader reader = new BufferedReader(new StringReader(stacktrace));
-            String line = null;
+            String line;
             // Example lines:
             // \tat io.apiman.gateway.engine.es.ESRegistry$1.completed(ESRegistry.java:79)
             // \tat org.apache.http.impl.nio.client.InternalIODispatch.onInputReady(InternalIODispatch.java:81)\r\n

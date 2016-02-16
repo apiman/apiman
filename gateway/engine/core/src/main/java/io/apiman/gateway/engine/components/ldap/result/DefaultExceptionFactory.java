@@ -26,6 +26,9 @@ import com.unboundid.ldap.sdk.ResultCode;
  */
 public class DefaultExceptionFactory {
 
+    private DefaultExceptionFactory() {
+    }
+
     /**
      * Convert LDAP Exceptions
      *

@@ -113,7 +113,7 @@ public class QueryTest {
                                 context.assertEquals(3.14159, queryResult.getDouble(5));
                                 context.assertEquals(true, queryResult.getBoolean(6));
                                 context.assertEquals(new DateTime("1976-06-29T00:00:00.000"), queryResult.getDateTime(7));
-                                context.assertEquals(((byte) 31), queryResult.getBytes(8)[3]);
+                                context.assertEquals((byte) 31, queryResult.getBytes(8)[3]);
 
                                 async.complete();
                             }),
