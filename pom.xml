@@ -213,7 +213,6 @@
         <groupId>org.bouncycastle</groupId>
         <artifactId>bcprov-jdk15on</artifactId>
         <version>${version.org.bouncycastle}</version>
-        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>net.iharder</groupId>
