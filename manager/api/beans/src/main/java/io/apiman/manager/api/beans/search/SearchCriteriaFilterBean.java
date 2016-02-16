@@ -86,9 +86,9 @@ public class SearchCriteriaFilterBean implements Serializable {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((name == null) ? 0 : name.hashCode());
-        result = prime * result + ((operator == null) ? 0 : operator.hashCode());
-        result = prime * result + ((value == null) ? 0 : value.hashCode());
+        result = prime * result + (name == null ? 0 : name.hashCode());
+        result = prime * result + (operator == null ? 0 : operator.hashCode());
+        result = prime * result + (value == null ? 0 : value.hashCode());
         return result;
     }
 

@@ -120,11 +120,11 @@ public class NewContractBean implements Serializable {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((planId == null) ? 0 : planId.hashCode());
-        result = prime * result + ((apiId == null) ? 0 : apiId.hashCode());
-        result = prime * result + ((apiOrgId == null) ? 0 : apiOrgId.hashCode());
-        result = prime * result + ((apiVersion == null) ? 0 : apiVersion.hashCode());
-        result = prime * result + ((apiKey == null) ? 0 : apiKey.hashCode());
+        result = prime * result + (planId == null ? 0 : planId.hashCode());
+        result = prime * result + (apiId == null ? 0 : apiId.hashCode());
+        result = prime * result + (apiOrgId == null ? 0 : apiOrgId.hashCode());
+        result = prime * result + (apiVersion == null ? 0 : apiVersion.hashCode());
+        result = prime * result + (apiKey == null ? 0 : apiKey.hashCode());
         return result;
     }
 

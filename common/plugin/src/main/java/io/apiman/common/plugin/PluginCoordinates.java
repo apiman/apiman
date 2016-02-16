@@ -152,11 +152,11 @@ public class PluginCoordinates implements Serializable {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((artifactId == null) ? 0 : artifactId.hashCode());
-        result = prime * result + ((classifier == null) ? 0 : classifier.hashCode());
-        result = prime * result + ((groupId == null) ? 0 : groupId.hashCode());
-        result = prime * result + ((type == null) ? 0 : type.hashCode());
-        result = prime * result + ((version == null) ? 0 : version.hashCode());
+        result = prime * result + (artifactId == null ? 0 : artifactId.hashCode());
+        result = prime * result + (classifier == null ? 0 : classifier.hashCode());
+        result = prime * result + (groupId == null ? 0 : groupId.hashCode());
+        result = prime * result + (type == null ? 0 : type.hashCode());
+        result = prime * result + (version == null ? 0 : version.hashCode());
         return result;
     }
 

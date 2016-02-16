@@ -799,7 +799,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         contract.setPlan(pvb);
         contract.setCreatedBy(securityContext.getCurrentUser());
         contract.setCreatedOn(new Date());
-        contract.setApikey((bean.getApiKey() == null) ? apiKeyGenerator.generate() : bean.getApiKey());
+        contract.setApikey(bean.getApiKey() == null ? apiKeyGenerator.generate() : bean.getApiKey());
 
         // Move the client to the "Ready" state if necessary.
         if (cvb.getStatus() == ClientStatus.Created && clientValidator.isReady(cvb, true)) {
@@ -977,7 +977,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         boolean hasPermission = securityContext.hasPermission(PermissionType.clientView, organizationId);
         if ("true".equals(download)) { //$NON-NLS-1$
             try {
-                String path = String.format("%s/%s/%s/%s", organizationId, clientId, version, (hasPermission ? '+' : '-' )); //$NON-NLS-1$
+                String path = String.format("%s/%s/%s/%s", organizationId, clientId, version, hasPermission ? '+' : '-'); //$NON-NLS-1$
                 DownloadBean dbean = downloadManager.createDownload(DownloadType.apiRegistryJson, path);
                 return Response.ok(dbean, MediaType.APPLICATION_JSON).build();
             } catch (StorageException e) {
@@ -1009,7 +1009,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         boolean hasPermission = securityContext.hasPermission(PermissionType.clientView, organizationId);
         if ("true".equals(download)) { //$NON-NLS-1$
             try {
-                String path = String.format("%s/%s/%s/%s", organizationId, clientId, version, (hasPermission ? '+' : '-' )); //$NON-NLS-1$
+                String path = String.format("%s/%s/%s/%s", organizationId, clientId, version, hasPermission ? '+' : '-'); //$NON-NLS-1$
                 DownloadBean dbean = downloadManager.createDownload(DownloadType.apiRegistryXml, path);
                 return Response.ok(dbean, MediaType.APPLICATION_JSON).build();
             } catch (StorageException e) {

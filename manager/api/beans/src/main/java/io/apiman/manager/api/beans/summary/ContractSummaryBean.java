@@ -297,7 +297,7 @@ public class ContractSummaryBean implements Serializable {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((contractId == null) ? 0 : contractId.hashCode());
+        result = prime * result + (contractId == null ? 0 : contractId.hashCode());
         return result;
     }
 

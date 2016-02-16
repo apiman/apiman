@@ -80,8 +80,8 @@ public class GrantRolesBean implements Serializable {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((getRoleIds() == null) ? 0 : getRoleIds().hashCode());
-        result = prime * result + ((userId == null) ? 0 : userId.hashCode());
+        result = prime * result + (getRoleIds() == null ? 0 : getRoleIds().hashCode());
+        result = prime * result + (userId == null ? 0 : userId.hashCode());
         return result;
     }
 

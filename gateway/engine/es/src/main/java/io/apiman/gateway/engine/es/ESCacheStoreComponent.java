@@ -72,7 +72,7 @@ public class ESCacheStoreComponent extends AbstractESComponent implements ICache
     public <T> void put(String cacheKey, T jsonObject, long timeToLive) throws IOException {
         ESCacheEntry entry = new ESCacheEntry();
         entry.setData(null);
-        entry.setExpiresOn(System.currentTimeMillis() + (timeToLive * 1000));
+        entry.setExpiresOn(System.currentTimeMillis() + timeToLive * 1000);
         entry.setHead(mapper.writeValueAsString(entry));
         Index index = new Index.Builder(entry).refresh(false).index(getIndexName())
                 .type("cacheEntry").id(cacheKey).build(); //$NON-NLS-1$
@@ -89,7 +89,7 @@ public class ESCacheStoreComponent extends AbstractESComponent implements ICache
     public <T> ISignalWriteStream putBinary(final String cacheKey, final T jsonObject, final long timeToLive)
             throws IOException {
         final ESCacheEntry entry = new ESCacheEntry();
-        entry.setExpiresOn(System.currentTimeMillis() + (timeToLive * 1000));
+        entry.setExpiresOn(System.currentTimeMillis() + timeToLive * 1000);
         entry.setHead(mapper.writeValueAsString(jsonObject));
         final IApimanBuffer data = bufferFactory.createBuffer();
         return new ISignalWriteStream() {

@@ -54,7 +54,7 @@ public class DefaultLdapSearchImpl implements ILdapSearch {
     private void getResults(String searchDn, String filter, LdapSearchScope scope,
             final IAsyncResultHandler<List<SearchResultEntry>> result) {
         try {
-            SearchScope searchScope = (scope == LdapSearchScope.ONE) ? SearchScope.ONE : SearchScope.SUB;
+            SearchScope searchScope = scope == LdapSearchScope.ONE ? SearchScope.ONE : SearchScope.SUB;
             List<SearchResultEntry> searchResults = connection.search(searchDn, searchScope, filter).getSearchEntries();
             result.handle(AsyncResultImpl.create(searchResults));
         } catch (LDAPException e) {

@@ -113,7 +113,7 @@ public class TestVariableResolverFactory extends BaseVariableResolverFactory {
     @Override
     public VariableResolver getVariableResolver(String name) {
         VariableResolver vr = variableResolvers.get(name);
-        return vr != null ? vr : (nextFactory == null ? null : nextFactory.getVariableResolver(name));
+        return vr != null ? vr : nextFactory == null ? null : nextFactory.getVariableResolver(name);
     }
 
     /**

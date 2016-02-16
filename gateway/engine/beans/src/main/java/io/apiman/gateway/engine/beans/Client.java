@@ -111,9 +111,9 @@ public class Client implements Serializable {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((organizationId == null) ? 0 : organizationId.hashCode());
-        result = prime * result + ((getClientId() == null) ? 0 : getClientId().hashCode());
-        result = prime * result + ((version == null) ? 0 : version.hashCode());
+        result = prime * result + (organizationId == null ? 0 : organizationId.hashCode());
+        result = prime * result + (getClientId() == null ? 0 : getClientId().hashCode());
+        result = prime * result + (version == null ? 0 : version.hashCode());
         return result;
     }
 

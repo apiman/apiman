@@ -119,7 +119,7 @@ public class ApiContract implements Serializable {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((apikey == null) ? 0 : apikey.hashCode());
+        result = prime * result + (apikey == null ? 0 : apikey.hashCode());
         return result;
     }
 

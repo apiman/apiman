@@ -367,7 +367,7 @@ public class HttpURLConnectionImpl extends HttpURLConnection {
 
   private String defaultUserAgent() {
     String agent = System.getProperty("http.agent");
-    return agent != null ? agent : ("Java" + System.getProperty("java.version"));
+    return agent != null ? agent : "Java" + System.getProperty("java.version");
   }
 
   /**

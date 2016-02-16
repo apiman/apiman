@@ -71,8 +71,8 @@ public class UserPermissionsBean implements Serializable {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((permissions == null) ? 0 : permissions.hashCode());
-        result = prime * result + ((userId == null) ? 0 : userId.hashCode());
+        result = prime * result + (permissions == null ? 0 : permissions.hashCode());
+        result = prime * result + (userId == null ? 0 : userId.hashCode());
         return result;
     }
 
