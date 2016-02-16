@@ -135,7 +135,7 @@ public class ESMetricsAccessorTest {
         UsageHistogramBean usage = metrics.getUsage("JBossOverlord", "s-ramp-api", "1.0", HistogramIntervalType.day,
                 parseDate("2015-01-01"), new DateTime().withZone(DateTimeZone.UTC));
         List<UsageDataPoint> data = usage.getData();
-        Assert.assertTrue(data.size() > 0);
+        Assert.assertTrue(!data.isEmpty());
         Assert.assertTrue(data.size() > 1);
         Assert.assertEquals("2015-06-19T00:00:00.000Z", usage.getData().get(169).getLabel());
         Assert.assertEquals(46L, usage.getData().get(169).getCount());
@@ -353,7 +353,7 @@ public class ESMetricsAccessorTest {
         ResponseStatsHistogramBean stats = metrics.getResponseStats("JBossOverlord", "s-ramp-api", "1.0", HistogramIntervalType.day,
                 parseDate("2015-06-01"), new DateTime().withZone(DateTimeZone.UTC));
         List<ResponseStatsDataPoint> data = stats.getData();
-        Assert.assertTrue(data.size() > 0);
+        Assert.assertTrue(!data.isEmpty());
         Assert.assertTrue(data.size() > 1);
         Assert.assertEquals("2015-06-19T00:00:00.000Z", stats.getData().get(18).getLabel());
         Assert.assertEquals(46L, stats.getData().get(18).getTotal());
@@ -364,7 +364,7 @@ public class ESMetricsAccessorTest {
         stats = metrics.getResponseStats("Test", "echo", "1.0", HistogramIntervalType.day,
                 parseDate("2015-06-01"), new DateTime().withZone(DateTimeZone.UTC));
         data = stats.getData();
-        Assert.assertTrue(data.size() > 0);
+        Assert.assertTrue(!data.isEmpty());
         Assert.assertTrue(data.size() > 1);
         Assert.assertEquals("2015-06-16T00:00:00.000Z", stats.getData().get(15).getLabel());
         Assert.assertEquals(214L, stats.getData().get(15).getTotal());
@@ -449,7 +449,7 @@ public class ESMetricsAccessorTest {
         ResponseStatsPerPlanBean stats = metrics.getResponseStatsPerPlan("JBossOverlord", "s-ramp-api", "1.0",
                 parseDate("2015-06-01"), new DateTime().withZone(DateTimeZone.UTC));
         Map<String, ResponseStatsDataPoint> data = stats.getData();
-        Assert.assertTrue(data.size() > 0);
+        Assert.assertTrue(!data.isEmpty());
         ResponseStatsDataPoint point = data.get("Gold");
         Assert.assertNotNull(point);
         Assert.assertEquals(12L, point.getTotal());
@@ -470,7 +470,7 @@ public class ESMetricsAccessorTest {
         stats = metrics.getResponseStatsPerPlan("Test", "echo", "1.0",
                 parseDate("2015-06-01"), new DateTime().withZone(DateTimeZone.UTC));
         data = stats.getData();
-        Assert.assertTrue(data.size() > 0);
+        Assert.assertTrue(!data.isEmpty());
         point = data.get("Gold");
         Assert.assertNotNull(point);
         Assert.assertEquals(67L, point.getTotal());

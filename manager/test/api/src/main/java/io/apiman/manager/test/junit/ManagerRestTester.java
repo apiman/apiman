@@ -271,7 +271,7 @@ public class ManagerRestTester extends ParentRunner<TestInfo> {
                     String[] expectedPayloads = ((PublishPayloadTestInfo) testInfo).expectedPayloads;
                     int index = 0;
                     for (String expectedPayload : expectedPayloads) {
-                        if (MockGatewayServlet.getPayloads().size() == 0) {
+                        if (MockGatewayServlet.getPayloads().isEmpty()) {
                             Assert.fail("Expected a payload but did not find one.");
                         }
                         String actualPayload = MockGatewayServlet.getPayloads().get(index);
