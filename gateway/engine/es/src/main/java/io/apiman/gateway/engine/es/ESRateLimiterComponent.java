@@ -28,9 +28,7 @@ import io.searchbox.params.Parameters;
 
 import java.util.Map;
 
-import org.elasticsearch.action.get.GetResponse;
-import org.elasticsearch.common.Base64;
-import org.elasticsearch.index.engine.VersionConflictEngineException;
+import org.apache.commons.codec.binary.Base64;
 
 /**
  * An elasticsearch implementation of the rate limiter component.
@@ -89,18 +87,6 @@ public class ESRateLimiterComponent extends AbstractESComponent implements IRate
     }
 
     /**
-     * Unmarshal a rate limiter bucket from the information in ES.
-     * @param response
-     */
-    protected RateLimiterBucket readBucket(GetResponse response) {
-        RateLimiterBucket bucket = new RateLimiterBucket();
-        Map<String, Object> source = response.getSourceAsMap();
-        bucket.setCount(((Number) source.get("count")).intValue()); //$NON-NLS-1$
-        bucket.setLast(((Number) source.get("last")).longValue()); //$NON-NLS-1$
-        return bucket;
-    }
-
-    /**
      * Update the bucket in ES and then return the rate limit response to the
      * original handler.  If the update fails because we have a stale version,
      * then try the whole thing again (because we conflicted with another
@@ -128,16 +114,16 @@ public class ESRateLimiterComponent extends AbstractESComponent implements IRate
             getClient().execute(index);
             handler.handle(AsyncResultImpl.create(rlr));
         } catch (Throwable e) {
-            // TODO need to fix this now that we've switched to jest!
-            if (ESUtils.rootCause(e) instanceof VersionConflictEngineException) {
-                // If we got a version conflict, then it means some other request
-                // managed to update the ES document since we retrieved it.  Therefore
-                // everything we've done is out of date, so we should do it all
-                // over again.
-                accept(bucketId, period, limit, increment, handler);
-            } else {
+            // FIXME need to fix this now that we've switched to jest!
+//            if (ESUtils.rootCause(e) instanceof VersionConflictEngineException) {
+//                // If we got a version conflict, then it means some other request
+//                // managed to update the ES document since we retrieved it.  Therefore
+//                // everything we've done is out of date, so we should do it all
+//                // over again.
+//                accept(bucketId, period, limit, increment, handler);
+//            } else {
                 handler.handle(AsyncResultImpl.<RateLimitResponse>create(e));
-            }
+//            }
         }
     }
 
@@ -146,7 +132,7 @@ public class ESRateLimiterComponent extends AbstractESComponent implements IRate
      * @param bucketId
      */
     private String id(String bucketId) {
-        return Base64.encodeBytes(bucketId.getBytes());
+        return Base64.encodeBase64String(bucketId.getBytes());
     }
 
     /**

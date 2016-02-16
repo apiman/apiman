@@ -27,52 +27,6 @@
 
     <!-- Third Party Dependencies -->
     <dependency>
-      <groupId>org.elasticsearch</groupId>
-      <artifactId>elasticsearch</artifactId>
-      <exclusions>
-        <exclusion>
-          <artifactId>lucene-queries</artifactId>
-          <groupId>org.apache.lucene</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>lucene-memory</artifactId>
-          <groupId>org.apache.lucene</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>lucene-highlighter</artifactId>
-          <groupId>org.apache.lucene</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>lucene-queryparser</artifactId>
-          <groupId>org.apache.lucene</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>lucene-sandbox</artifactId>
-          <groupId>org.apache.lucene</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>lucene-suggest</artifactId>
-          <groupId>org.apache.lucene</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>lucene-misc</artifactId>
-          <groupId>org.apache.lucene</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>lucene-join</artifactId>
-          <groupId>org.apache.lucene</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>lucene-grouping</artifactId>
-          <groupId>org.apache.lucene</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>lucene-spatial</artifactId>
-          <groupId>org.apache.lucene</groupId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
       <groupId>io.searchbox</groupId>
       <artifactId>jest</artifactId>
     </dependency>

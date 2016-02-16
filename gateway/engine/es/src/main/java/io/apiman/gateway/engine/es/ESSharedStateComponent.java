@@ -15,8 +15,6 @@
  */
 package io.apiman.gateway.engine.es;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.components.ISharedStateComponent;
@@ -30,7 +28,10 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
-import org.elasticsearch.common.Base64;
+import org.apache.commons.codec.binary.Base64;
+
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * An elasticsearch implementation of the shared state component.
@@ -145,7 +146,7 @@ public class ESSharedStateComponent extends AbstractESComponent implements IShar
      */
     private String getPropertyId(String namespace, String propertyName) {
         String qn = new QName(namespace, propertyName).toString();
-        return Base64.encodeBytes(qn.getBytes());
+        return Base64.encodeBase64String(qn.getBytes());
     }
 
     /**

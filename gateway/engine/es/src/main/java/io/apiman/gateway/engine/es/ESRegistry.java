@@ -27,6 +27,7 @@ import io.apiman.gateway.engine.beans.exceptions.InvalidContractException;
 import io.apiman.gateway.engine.beans.exceptions.PublishingException;
 import io.apiman.gateway.engine.beans.exceptions.RegistrationException;
 import io.apiman.gateway.engine.es.i18n.Messages;
+import io.apiman.gateway.engine.es.util.ElasticQueryUtil;
 import io.searchbox.client.JestResult;
 import io.searchbox.core.Delete;
 import io.searchbox.core.DeleteByQuery;
@@ -38,10 +39,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-
-import org.elasticsearch.index.query.FilterBuilders;
-import org.elasticsearch.index.query.QueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
 
 /**
  * An implementation of the Registry that uses elasticsearch as a storage
@@ -66,7 +63,7 @@ public class ESRegistry extends AbstractESComponent implements IRegistry {
     public void publishApi(final Api api, final IAsyncResultHandler<Void> handler) {
         try {
             String id = getApiId(api);
-            Index index = new Index.Builder(ESRegistryMarshalling.marshall(api).string()).refresh(false)
+            Index index = new Index.Builder(api).refresh(false)
                     .index(getIndexName()).setParameter(Parameters.OP_TYPE, "index") //$NON-NLS-1$
                     .type("api").id(id).build(); //$NON-NLS-1$
             JestResult result = getClient().execute(index);
@@ -113,7 +110,7 @@ public class ESRegistry extends AbstractESComponent implements IRegistry {
             // Validate the client and populate the api map with apis found during validation.
             validateClient(client, apiMap);
             String id = getClientId(client);
-            Index index = new Index.Builder(ESRegistryMarshalling.marshall(client).string())
+            Index index = new Index.Builder(client)
                     .refresh(false).index(getIndexName())
                     .setParameter(Parameters.OP_TYPE, "index") //$NON-NLS-1$
                     .type("client").id(id).build(); //$NON-NLS-1$
@@ -171,8 +168,7 @@ public class ESRegistry extends AbstractESComponent implements IRegistry {
             Get get = new Get.Builder(getIndexName(), id).type("api").build(); //$NON-NLS-1$
             JestResult result = getClient().execute(get);
             if (result.isSucceeded()) {
-                Map<String, Object> source = result.getSourceAsObject(Map.class);
-                Api api = ESRegistryMarshalling.unmarshallApi(source);
+                Api api = result.getSourceAsObject(Api.class);
                 api.setApiPolicies(null);
                 apiMap.put(id, api);
             } else {
@@ -201,7 +197,7 @@ public class ESRegistry extends AbstractESComponent implements IRegistry {
                     contract.getPlan(), contract.getPolicies());
             final String contractId = getContractId(contract);
 
-            Index index = new Index.Builder(ESRegistryMarshalling.marshall(sc).string()).refresh(false)
+            Index index = new Index.Builder(sc).refresh(false)
                     .setParameter(Parameters.OP_TYPE, "create") //$NON-NLS-1$
                     .index(getIndexName()).type("apiContract").id(contractId).build(); //$NON-NLS-1$
             JestResult result = getClient().execute(index);
@@ -240,18 +236,12 @@ public class ESRegistry extends AbstractESComponent implements IRegistry {
      * @throws IOException
      */
     protected void unregisterApiContracts(Client client) throws IOException {
-        QueryBuilder qb = QueryBuilders.filteredQuery(
-                QueryBuilders.matchAllQuery(),
-                FilterBuilders.andFilter(
-                        FilterBuilders.termFilter("client.organizationId", client.getOrganizationId()), //$NON-NLS-1$
-                        FilterBuilders.termFilter("client.clientId", client.getClientId()), //$NON-NLS-1$
-                        FilterBuilders.termFilter("client.version", client.getVersion()) //$NON-NLS-1$
-                )
-            );
-        @SuppressWarnings("nls")
-        String dquery = "{\"query\" : " + qb.toString() + "}";
+        String dquery = ElasticQueryUtil.queryContractsByClient(client.getOrganizationId(), client.getClientId(), client.getVersion());
         DeleteByQuery delete = new DeleteByQuery.Builder(dquery).addIndex(getIndexName()).addType("apiContract").build(); //$NON-NLS-1$
-        getClient().execute(delete);
+        JestResult result = getClient().execute(delete);
+        if (!result.isSucceeded()) {
+            throw new IOException("Failed to delete API contracts: " + result.getErrorMessage()); //$NON-NLS-1$
+        }
     }
 
     /**
@@ -268,8 +258,7 @@ public class ESRegistry extends AbstractESComponent implements IRegistry {
                 Exception error = new InvalidContractException(Messages.i18n.format("ESRegistry.NoContractForAPIKey", id)); //$NON-NLS-1$
                 handler.handle(AsyncResultImpl.create(error, ApiContract.class));
             } else {
-                Map<String, Object> source = result.getSourceAsObject(Map.class);
-                ApiContract contract = ESRegistryMarshalling.unmarshallApiContract(source);
+                ApiContract contract = result.getSourceAsObject(ApiContract.class);
                 checkApi(contract);
                 handler.handle(AsyncResultImpl.create(contract));
             }
@@ -329,8 +318,7 @@ public class ESRegistry extends AbstractESComponent implements IRegistry {
         Get get = new Get.Builder(getIndexName(), id).type("api").build(); //$NON-NLS-1$
         JestResult result = getClient().execute(get);
         if (result.isSucceeded()) {
-            Map<String, Object> source = result.getSourceAsObject(Map.class);
-            Api api = ESRegistryMarshalling.unmarshallApi(source);
+            Api api = result.getSourceAsObject(Api.class);
             return api;
         } else {
             return null;

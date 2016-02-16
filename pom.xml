@@ -124,7 +124,7 @@
     <version.commons-pool>1.6</version.commons-pool>
     <version.com.zaxxer>2.4.0</version.com.zaxxer>
     <version.com.google.code.gson>2.3.1</version.com.google.code.gson>
-    <version.io.searchbox.jest>0.1.6</version.io.searchbox.jest>
+    <version.io.searchbox.jest>0.1.7</version.io.searchbox.jest>
     <version.io.prometheus>0.0.13</version.io.prometheus>
     <version.javax.enterprise>1.2</version.javax.enterprise>
     <version.javax.servlet-api>3.1.0</version.javax.servlet-api>

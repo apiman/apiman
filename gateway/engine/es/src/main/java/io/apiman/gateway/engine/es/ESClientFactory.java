@@ -33,7 +33,6 @@ import java.util.Map;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.BooleanUtils;
-import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
 
 /**
  * Factory for creating elasticsearch clients.
@@ -219,10 +218,8 @@ public class ESClientFactory {
      * @throws Exception
      */
     public static void createIndex(JestClient client, String indexName, String settingsName) throws Exception {
-        CreateIndexRequest request = new CreateIndexRequest(indexName);
         URL settings = ESClientFactory.class.getResource(settingsName);
         String source = IOUtils.toString(settings);
-        request.source(source);
         JestResult response = client.execute(new CreateIndex.Builder(indexName).settings(source).build());
         if (!response.isSucceeded()) {
             // When running in e.g. Wildfly, the Gateway exists as two separate WARs - the API and the

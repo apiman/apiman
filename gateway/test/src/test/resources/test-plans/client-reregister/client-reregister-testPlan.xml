@@ -30,8 +30,8 @@
   </testGroup>
 
   <testGroup name="Test the restored Contract">
-    <test name="Echo Api 1 (GET)">test-plan-data/client-reregister/echo/001-api-1.resttest</test>
-    <test name="Echo Api 2 (GET)">test-plan-data/client-reregister/echo/002-api-2.resttest</test>
+    <test name="Echo Api 1 (GET) [3]">test-plan-data/client-reregister/echo/001-api-1.resttest</test>
+    <test name="Echo Api 2 (GET) [3]">test-plan-data/client-reregister/echo/002-api-2.resttest</test>
   </testGroup>
 
 </testPlan>

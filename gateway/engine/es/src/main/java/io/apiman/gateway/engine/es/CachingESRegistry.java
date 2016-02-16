@@ -185,8 +185,7 @@ public abstract class CachingESRegistry extends ESRegistry {
             @Override
             public void completed(JestResult result) {
                 if (result.isSucceeded()) {
-                    Map<String, Object> source = result.getSourceAsObject(Map.class);
-                    Client app = ESRegistryMarshalling.unmarshallClient(source);
+                    Client app = result.getSourceAsObject(Client.class);
                     cacheClient(app);
                 }
             }
