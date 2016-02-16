@@ -37,8 +37,8 @@
   <table class="table table-striped table-bordered">
     <thead>
       <tr>
-        <th width="30%" apiman-i18n-key="verb">Method</th>
-        <th width="70%" apiman-i18n-key="path">Path</th>
+        <th width="30%" apiman-i18n-key="path">Path</th>
+        <th width="70%" apiman-i18n-key="method">Method</th>
         <th width="1%"></th>
       </tr>
     </thead>
