@@ -46,7 +46,7 @@ public class InMemoryCacheStoreComponent implements ICacheStoreComponent {
     private Map<String, Object> objectCache = new LinkedHashMap<>();
     private Map<String, IApimanBuffer> dataCache = new HashMap<>();
     private long cacheSize = 0;
-    private long maxCacheSize = 10 * 1024 * 1024; // 10 MB
+    private long maxCacheSize = 10 * 1024 * 1024L; // 10 MB
 
     private IBufferFactoryComponent bufferFactory;
 

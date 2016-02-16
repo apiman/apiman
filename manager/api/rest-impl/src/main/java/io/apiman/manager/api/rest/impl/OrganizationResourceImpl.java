@@ -197,11 +197,11 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         "EEE, dd MMM yyyy"
     };
 
-    private static final long ONE_MINUTE_MILLIS = 1 * 60 * 1000;
-    private static final long ONE_HOUR_MILLIS = 1 * 60 * 60 * 1000;
-    private static final long ONE_DAY_MILLIS = 1 * 24 * 60 * 60 * 1000;
-    private static final long ONE_WEEK_MILLIS = 7 * 24 * 60 * 60 * 1000;
-    private static final long ONE_MONTH_MILLIS = 30 * 24 * 60 * 60 * 1000;
+    private static final long ONE_MINUTE_MILLIS = 1 * 60 * 1000L;
+    private static final long ONE_HOUR_MILLIS = 1 * 60 * 60 * 1000L;
+    private static final long ONE_DAY_MILLIS = 1 * 24 * 60 * 60 * 1000L;
+    private static final long ONE_WEEK_MILLIS = 7 * 24 * 60 * 60 * 1000L;
+    private static final long ONE_MONTH_MILLIS = 30 * 24 * 60 * 60 * 1000L;
 
     @Inject IStorage storage;
     @Inject IStorageQuery query;
