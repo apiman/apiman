@@ -31,3 +31,4 @@ global.SwaggerAuthorizations = require('swagger-ui-browserify/node_modules/swagg
 
 var sugar = require('sugar');
 var ngFileUpload = require('ng-file-upload');
+global.moment = require('moment/min/moment.min.js');

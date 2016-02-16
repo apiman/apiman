@@ -35,5 +35,6 @@ public final class PolicyFailureCodes {
     public static final int TRANSPORT_SECURITY_REQUIRED = 10011;
     public static final int REQUEST_QUOTA_EXCEEDED      = 10012;
     public static final int BYTE_QUOTA_EXCEEDED         = 10013;
+    public static final int ACCESS_TIME_RESTRICTED      = 10014;
 
 }

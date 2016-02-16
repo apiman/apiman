@@ -1,0 +1,22 @@
+POST /policyDefs ${apiman.suite.api-username}/${apiman.suite.api-password}
+Content-Type: application/json
+
+{
+  "name" : "Time Restricted Access Policy",
+  "description" : "Requests matching specified regular expression and made specified time period will be ignored.",
+  "policyImpl" : "class:io.apiman.gateway.engine.policies.TimeRestrictedAccessPolicy",
+  "icon" : "clock-o",
+  "templates" : [
+    {
+      "language" : null,
+      "template" : "Consumers are limited to access resource in specified time period"
+    }
+  ]
+}
+----
+200
+Content-Type: application/json
+
+{
+  "id" : "TimeRestrictedAccessPolicy"
+}

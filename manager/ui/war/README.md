@@ -25,4 +25,4 @@ To build and run the app:
 
 `gulp`
 
-The above script will also monitor for changes, and will rebuild the app accordingly. To see exactly which files are monitored, check the `watch` task in the Gulpfile, located in `/apiman/manager/ui/hawtio/gulpfile.js`.
+The above script will also monitor for changes, and will rebuild the app accordingly. To see exactly which files are monitored, check the `watch` task in the Gulpfile, located in `/apiman/manager/ui/war/gulpfile.js`.

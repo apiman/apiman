@@ -1,7 +1,7 @@
 /// <reference path="apimanPlugin.ts"/>
 /// <reference path="rpc.ts"/>
 module Apiman {
-    
+	 
     export var isRegexpValid = function(v) {
         var valid = true;
 
@@ -13,13 +13,12 @@ module Apiman {
 
         return valid;
     };
-    
+
     _module.controller('Apiman.DefaultPolicyConfigFormController',
         ['$scope', 'Logger', 'EntityStatusSvc',
         ($scope, Logger, EntityStatusSvc) => {
             var validateRaw = function(config) {
                 var valid = true;
-
                 try {
                     var parsed = JSON.parse(config);
                     $scope.setConfig(parsed);
@@ -677,6 +676,68 @@ module Apiman {
             $scope.isEntityDisabled = EntityStatusSvc.isEntityDisabled;
 
             $scope.$watch('config', validate, true);
+        }]);
+        
+        
+        
+      _module.controller('Apiman.TimeRestrictedAccessFormController',
+        ['$window','$scope', 'Logger', 'EntityStatusSvc',
+        ($window, $scope, Logger, EntityStatusSvc) => {
+            var validate = function(config) {
+              	var valid = config.rules && config.rules.length > 0;
+                $scope.setValid(valid);
+            };
+            $scope.weekdays=["Mon", "Tue", "Wed", "Thu", "Fri", "Sat","Sun"];
+			$scope.currentItemInvalid=function(){
+			   return !$scope.pathPattern || !$scope.timeStart ||
+			       !$scope.timeEnd || !$scope.dayStart ||  
+                   !$scope.dayEnd || !isRegexpValid($scope.path);
+			};
+            $scope.$watch('config', validate, true);
+            $scope.add = function() {
+                if (!$scope.config.rules) {
+                    $scope.config.rules = [];
+                }
+                var rule = {
+                    'timeStart' : $window.moment($scope.timeStart).utc().toDate(),
+                    'timeEnd' :   $window.moment($scope.timeEnd).utc().toDate(),
+                    'dayStart' : $scope.getDayIndex($scope.dayStart),
+                    'dayEnd' : $scope.getDayIndex($scope.dayEnd),
+                    'pathPattern' : $scope.pathPattern
+                };
+                $scope.config.rules.push(rule);
+                $scope.resetModel();
+                $('#path').focus();
+            };
+            $scope.remove = function(selectedRule) {
+ 				var idx = -1;
+                angular.forEach($scope.config.rules, function (item, index) {
+                    if (item == selectedRule) {
+                        idx = index;
+                    }
+                });
+                if (idx != -1) {
+                    $scope.config.rules.splice(idx, 1);
+                }
+            };
+            $scope.resetModel = function() {
+                $scope.timeStart = $window.moment("8:00","hh:mm").toDate();
+                $scope.timeEnd = $window.moment("16:00","hh:mm").toDate();
+                $scope.dayStart = $scope.weekdays[0];
+                $scope.dayEnd = $scope.weekdays[4];
+                $scope.selectedPath = undefined;
+            };
+            $scope.resetModel();
+            $scope.formatToTime = function(time){
+                return new $window.moment(time).format("HH:mm");
+            };
+            $scope.getDayIndex = function(day){
+               return $scope.weekdays.indexOf(day)+1;
+            };
+            $scope.getDayForIndex = function(index){
+              return $scope.weekdays[index-1];
+            };
+            $scope.isEntityDisabled = EntityStatusSvc.isEntityDisabled;
         }]);
 
 }

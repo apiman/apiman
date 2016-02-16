@@ -11,7 +11,8 @@ module Apiman {
         TransferQuotaPolicy: 'transfer-quota.include',
         AuthorizationPolicy: 'authorization.include',
         URLRewritingPolicy: 'url-rewriting.include',
-        CachingPolicy: 'caching.include'
+        CachingPolicy: 'caching.include',
+        TimeRestrictedAccessPolicy: 'time-restricted-access.include'
     };
 
     export var NewPolicyController = _module.controller("Apiman.NewPolicyController",

@@ -169,6 +169,11 @@ INSERT INTO policydefs (id, description, form, form_type, icon, name, plugin_id,
 
 INSERT INTO policydefs (id, description, form, form_type, icon, name, plugin_id, policy_impl) VALUES ('TransferQuotaPolicy', 'Provides a way to limit the total number of bytes that can be transferred from (or to) an API.', NULL, 'Default', 'download', 'Transfer Quota Policy', NULL, 'class:io.apiman.gateway.engine.policies.TransferQuotaPolicy');
 
+INSERT INTO policydefs (id, description, form, form_type, icon, name, plugin_id, policy_impl) VALUES ('TimeRestrictedAccessPolicy', 'Requests matching specified regular expression and made specified time period will be ignored.', NULL, 'Default', 'fa-clock-o', 'Time Restricted Access', NULL, 'class:io.apiman.gateway.engine.policies.TimeRestrictedAccessPolicy');
+
+-- Changeset c:/Users/ewittman/git/apiman/apiman/distro/ddl/src/main/liquibase/current/050-apiman-manager-api.db.data.changelog.xml::1454276100000::apiman
+INSERT INTO policydefs (id, description, form, form_type, icon, name, plugin_id, policy_impl) VALUES ('TimeRestrictedAccessPolicy', 'Requests matching specified regular expression and made specified time period will be ignored.', NULL, 'Default', 'fa-clock-o', 'Time Restricted Access', NULL, 'class:io.apiman.gateway.engine.policies.TimeRestrictedAccessPolicy');
+
 --  Changeset c:/Users/ewittman/git/apiman/apiman/distro/ddl/src/main/liquibase/current/050-apiman-manager-api.db.data.changelog.xml::1434686531709-5::apiman
 INSERT INTO roles (id, auto_grant, created_by, created_on, description, name) VALUES ('OrganizationOwner', 1, 'admin', '2015-06-18 17:56:57.496', 'Automatically granted to the user who creates an Organization.  Grants all privileges.', 'Organization Owner');
 
@@ -361,4 +366,3 @@ CREATE INDEX IDX_FK_contracts_s ON contracts(apiv_id);
 
 --  Changeset c:/Users/ewittman/git/apiman/apiman/distro/ddl/src/main/liquibase/current/200-apiman-manager-api.db.indexes.changelog.xml::createIndex-18::apiman
 CREATE INDEX IDX_FK_contracts_a ON contracts(clientv_id);
-

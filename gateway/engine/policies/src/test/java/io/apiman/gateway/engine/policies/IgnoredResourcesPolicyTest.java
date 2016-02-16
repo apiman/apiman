@@ -19,19 +19,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import com.fasterxml.jackson.core.JsonGenerationException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.apiman.gateway.engine.beans.ApiRequest;
-import io.apiman.gateway.engine.beans.PolicyFailure;
-import io.apiman.gateway.engine.beans.PolicyFailureType;
-import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
-import io.apiman.gateway.engine.policies.config.IgnoredResource;
-import io.apiman.gateway.engine.policies.config.IgnoredResourcesConfig;
-import io.apiman.gateway.engine.policy.IPolicyChain;
-import io.apiman.gateway.engine.policy.IPolicyContext;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +27,18 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.apiman.gateway.engine.beans.ApiRequest;
+import io.apiman.gateway.engine.beans.PolicyFailure;
+import io.apiman.gateway.engine.policies.config.IgnoredResource;
+import io.apiman.gateway.engine.policies.config.IgnoredResourcesConfig;
+import io.apiman.gateway.engine.policy.IPolicyChain;
+import io.apiman.gateway.engine.policy.IPolicyContext;
+
 /**
  * Unit test
  *
@@ -47,7 +46,7 @@ import org.mockito.Mockito;
  *
  */
 @SuppressWarnings({ "unchecked", "nls" })
-public class IgnoredResourcesPolicyTest {
+public class IgnoredResourcesPolicyTest extends PolicyTestBase  {
 
     private static ObjectMapper mapper;
     private static String firstPath = "/invoices/.+/items/.+";
@@ -203,18 +202,6 @@ public class IgnoredResourcesPolicyTest {
         return resource;
     }
 
-    private PolicyFailure createFailurePolicyObject(IPolicyContext context) {
-        // Failure
-        final PolicyFailure failure = new PolicyFailure();
-        Mockito.when(context.getComponent(IPolicyFailureFactoryComponent.class))
-                .thenReturn(new IPolicyFailureFactoryComponent() {
-                    @Override
-                    public PolicyFailure createFailure(PolicyFailureType type, int failureCode,
-                            String message) {
-                        return failure;
-                    }
-                });
-        return failure;
-    }
+
 
 }
