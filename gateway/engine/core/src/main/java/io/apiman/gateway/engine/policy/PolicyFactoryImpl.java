@@ -107,7 +107,7 @@ public class PolicyFactoryImpl implements IPolicyFactory {
      * @param handler
      */
     protected void doLoadFromClasspath(String policyImpl, IAsyncResultHandler<IPolicy> handler) {
-        IPolicy rval = null;
+        IPolicy rval;
         String classname = policyImpl.substring(6);
         Class<?> c = null;
 
@@ -160,7 +160,7 @@ public class PolicyFactoryImpl implements IPolicyFactory {
             @Override
             public void handle(IAsyncResult<Plugin> result) {
                 if (result.isSuccess()) {
-                    IPolicy rval = null;
+                    IPolicy rval;
                     Plugin plugin = result.getResult();
                     PluginClassLoader pluginClassLoader = plugin.getLoader();
                     try {

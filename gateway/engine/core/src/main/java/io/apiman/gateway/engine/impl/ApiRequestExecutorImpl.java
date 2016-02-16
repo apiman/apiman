@@ -221,7 +221,7 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
                     @Override
                     public void handle(ApiRequest request) {
                         IConnectorInterceptor connectorInterceptor = context.getConnectorInterceptor();
-                        IApiConnector connector = null;
+                        IApiConnector connector;
                         if (connectorInterceptor == null) {
                             connector = connectorFactory.createConnector(request, api,
                                     RequiredAuthType.parseType(api));

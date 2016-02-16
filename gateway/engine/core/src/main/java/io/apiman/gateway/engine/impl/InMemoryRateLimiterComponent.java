@@ -46,7 +46,7 @@ public class InMemoryRateLimiterComponent implements IRateLimiterComponent {
      */
     @Override
     public void accept(String bucketId, RateBucketPeriod period, long limit, long increment, IAsyncResultHandler<RateLimitResponse> handler) {
-        RateLimiterBucket bucket = null;
+        RateLimiterBucket bucket;
         synchronized (buckets) {
             bucket = buckets.get(bucketId);
             if (bucket == null) {

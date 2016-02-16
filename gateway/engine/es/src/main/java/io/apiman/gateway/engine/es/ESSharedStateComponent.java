@@ -69,7 +69,7 @@ public class ESSharedStateComponent extends AbstractESComponent implements IShar
             JestResult result = getClient().execute(get);
             if (result.isSucceeded()) {
                 try {
-                    T value = null;
+                    T value;
                     if (defaultValue.getClass().isPrimitive() || defaultValue instanceof String) {
                         value = (T) readPrimitive(result);
                     } else {
@@ -96,7 +96,7 @@ public class ESSharedStateComponent extends AbstractESComponent implements IShar
             handler.handle(AsyncResultImpl.<Void>create(new Exception("Null value is not allowed."))); //$NON-NLS-1$
             return;
         }
-        String source = null;
+        String source;
         try {
             if (value.getClass().isPrimitive() || value instanceof String) {
                 PrimitiveBean pb = new PrimitiveBean();

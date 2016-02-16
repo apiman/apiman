@@ -196,7 +196,7 @@ public class TestUtil {
             return line;
         }
         String rval = line;
-        int sidx = -1;
+        int sidx;
         while ( (sidx = rval.indexOf("${")) != -1 ) {
             int eidx = rval.indexOf('}', sidx);
             String substring = rval.substring(sidx + 2, eidx);

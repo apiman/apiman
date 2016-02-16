@@ -116,7 +116,7 @@ public class RateLimitingPolicyTest {
             }
         });
         Mockito.when(context.getComponent(IRateLimiterComponent.class)).thenReturn(new InMemoryRateLimiterComponent());
-        IPolicyChain<ApiRequest> chain = null;
+        IPolicyChain<ApiRequest> chain;
 
         for (int count = 0; count < 10; count++) {
             chain = Mockito.mock(IPolicyChain.class);

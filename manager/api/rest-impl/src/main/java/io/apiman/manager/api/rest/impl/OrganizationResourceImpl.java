@@ -237,7 +237,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     public OrganizationBean create(NewOrganizationBean bean) throws OrganizationAlreadyExistsException, InvalidNameException {
         FieldValidator.validateName(bean.getName());
 
-        List<RoleBean> autoGrantedRoles = null;
+        List<RoleBean> autoGrantedRoles;
         SearchCriteriaBean criteria = new SearchCriteriaBean();
         criteria.setPage(1);
         criteria.setPageSize(100);
@@ -362,7 +362,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             pageSize = 20;
         }
         try {
-            SearchResultsBean<AuditEntryBean> rval = null;
+            SearchResultsBean<AuditEntryBean> rval;
             PagingBean paging = new PagingBean();
             paging.setPage(page);
             paging.setPageSize(pageSize);
@@ -467,7 +467,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             pageSize = 20;
         }
         try {
-            SearchResultsBean<AuditEntryBean> rval = null;
+            SearchResultsBean<AuditEntryBean> rval;
             PagingBean paging = new PagingBean();
             paging.setPage(page);
             paging.setPageSize(pageSize);
@@ -656,7 +656,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             pageSize = 20;
         }
         try {
-            SearchResultsBean<AuditEntryBean> rval = null;
+            SearchResultsBean<AuditEntryBean> rval;
             PagingBean paging = new PagingBean();
             paging.setPage(page);
             paging.setPageSize(pageSize);
@@ -1370,7 +1370,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             pageSize = 20;
         }
         try {
-            SearchResultsBean<AuditEntryBean> rval = null;
+            SearchResultsBean<AuditEntryBean> rval;
             PagingBean paging = new PagingBean();
             paging.setPage(page);
             paging.setPageSize(pageSize);
@@ -1490,7 +1490,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw ExceptionFactory.notAuthorizedException();
         FieldValidator.validateVersion(bean.getVersion());
 
-        ApiVersionBean newVersion = null;
+        ApiVersionBean newVersion;
         try {
             GatewaySummaryBean gateway = getSingularGateway();
 
@@ -1802,7 +1802,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             pageSize = 20;
         }
         try {
-            SearchResultsBean<AuditEntryBean> rval = null;
+            SearchResultsBean<AuditEntryBean> rval;
             PagingBean paging = new PagingBean();
             paging.setPage(page);
             paging.setPageSize(pageSize);
@@ -1959,7 +1959,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw new SystemErrorException(e);
         }
         try {
-            ApiDefinitionType newDefinitionType = null;
+            ApiDefinitionType newDefinitionType;
             if (contentType.toLowerCase().contains("application/json")) { //$NON-NLS-1$
                 newDefinitionType = ApiDefinitionType.SwaggerJSON;
             } else if (contentType.toLowerCase().contains("application/x-yaml")) { //$NON-NLS-1$
@@ -2631,7 +2631,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             pageSize = 20;
         }
         try {
-            SearchResultsBean<AuditEntryBean> rval = null;
+            SearchResultsBean<AuditEntryBean> rval;
             PagingBean paging = new PagingBean();
             paging.setPage(page);
             paging.setPageSize(pageSize);
@@ -2702,7 +2702,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw ExceptionFactory.notAuthorizedException();
         FieldValidator.validateVersion(bean.getVersion());
 
-        PlanVersionBean newVersion = null;
+        PlanVersionBean newVersion;
         try {
             storage.beginTx();
             PlanBean plan = storage.getPlan(organizationId, planId);
@@ -2808,7 +2808,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             pageSize = 20;
         }
         try {
-            SearchResultsBean<AuditEntryBean> rval = null;
+            SearchResultsBean<AuditEntryBean> rval;
             PagingBean paging = new PagingBean();
             paging.setPage(page);
             paging.setPageSize(pageSize);
@@ -3043,7 +3043,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         if (bean.getDefinitionId() == null) {
             ExceptionFactory.policyDefNotFoundException("null"); //$NON-NLS-1$
         }
-        PolicyDefinitionBean def = null;
+        PolicyDefinitionBean def;
         try {
             storage.beginTx();
             def = storage.getPolicyDefinition(bean.getDefinitionId());
@@ -3057,7 +3057,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw new SystemErrorException(e);
         }
 
-        int newIdx = 0;
+        int newIdx;
         try {
             newIdx = query.getMaxPolicyOrderIndex(organizationId, entityId, entityVersion, type) + 1;
         } catch (StorageException e) {

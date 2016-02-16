@@ -141,7 +141,7 @@ public abstract class GatewayServlet extends HttpServlet {
      */
     protected void doAction(final HttpServletRequest req, final HttpServletResponse resp, String action) {
         // Read the request.
-        ApiRequest srequest = null;
+        ApiRequest srequest;
         try {
             srequest = readRequest(req);
             srequest.setType(action);

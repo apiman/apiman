@@ -58,7 +58,7 @@ public class ESClientFactory {
      * @return the ES client
      */
     public static JestClient createClient(Map<String, String> config, String indexName) {
-        JestClient client = null;
+        JestClient client;
         String clientType = config.get("client.type"); //$NON-NLS-1$
         if (clientType == null) {
             clientType = "jest"; //$NON-NLS-1$

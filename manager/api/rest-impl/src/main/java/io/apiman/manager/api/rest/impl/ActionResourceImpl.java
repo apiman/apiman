@@ -129,7 +129,7 @@ public class ActionResourceImpl implements IActionResource {
         if (!securityContext.hasPermission(PermissionType.apiAdmin, action.getOrganizationId()))
             throw ExceptionFactory.notAuthorizedException();
 
-        ApiVersionBean versionBean = null;
+        ApiVersionBean versionBean;
         try {
             versionBean = orgs.getApiVersion(action.getOrganizationId(), action.getEntityId(), action.getEntityVersion());
         } catch (ApiVersionNotFoundException e) {
@@ -260,7 +260,7 @@ public class ActionResourceImpl implements IActionResource {
         if (!securityContext.hasPermission(PermissionType.apiAdmin, action.getOrganizationId()))
             throw ExceptionFactory.notAuthorizedException();
 
-        ApiVersionBean versionBean = null;
+        ApiVersionBean versionBean;
         try {
             versionBean = orgs.getApiVersion(action.getOrganizationId(), action.getEntityId(), action.getEntityVersion());
         } catch (ApiVersionNotFoundException e) {
@@ -327,8 +327,8 @@ public class ActionResourceImpl implements IActionResource {
         if (!securityContext.hasPermission(PermissionType.clientAdmin, action.getOrganizationId()))
             throw ExceptionFactory.notAuthorizedException();
 
-        ClientVersionBean versionBean = null;
-        List<ContractSummaryBean> contractBeans = null;
+        ClientVersionBean versionBean;
+        List<ContractSummaryBean> contractBeans;
         try {
             versionBean = orgs.getClientVersion(action.getOrganizationId(), action.getEntityId(), action.getEntityVersion());
         } catch (ClientVersionNotFoundException e) {
@@ -499,8 +499,8 @@ public class ActionResourceImpl implements IActionResource {
         if (!securityContext.hasPermission(PermissionType.clientAdmin, action.getOrganizationId()))
             throw ExceptionFactory.notAuthorizedException();
 
-        ClientVersionBean versionBean = null;
-        List<ContractSummaryBean> contractBeans = null;
+        ClientVersionBean versionBean;
+        List<ContractSummaryBean> contractBeans;
         try {
             versionBean = orgs.getClientVersion(action.getOrganizationId(), action.getEntityId(), action.getEntityVersion());
         } catch (ClientVersionNotFoundException e) {
@@ -577,7 +577,7 @@ public class ActionResourceImpl implements IActionResource {
         if (!securityContext.hasPermission(PermissionType.planAdmin, action.getOrganizationId()))
             throw ExceptionFactory.notAuthorizedException();
 
-        PlanVersionBean versionBean = null;
+        PlanVersionBean versionBean;
         try {
             versionBean = orgs.getPlanVersion(action.getOrganizationId(), action.getEntityId(), action.getEntityVersion());
         } catch (PlanVersionNotFoundException e) {

@@ -100,7 +100,7 @@ public class BasicAuthenticationPolicy extends AbstractMappedPolicy<BasicAuthent
         }
 
         // Parse the Authorization http header.
-        String username = null;
+        String username;
         String password = null;
         try {
             String userpassEncoded = authHeader.substring(6);

@@ -60,7 +60,7 @@ public class AsyncESRateLimiterComponent extends AbstractESComponent implements 
         getClient().executeAsync(get, new JestResultHandler<JestResult>() {
             @Override
             public void completed(JestResult result) {
-                RateLimiterBucket bucket = null;
+                RateLimiterBucket bucket;
                 long version;
                 if (result.isSucceeded()) {
                     // use the existing bucket

@@ -85,7 +85,7 @@ public class JDBCIdentityValidator implements IIdentityValidator<JDBCIdentitySou
         final String queryUsername = username;
         final String queryPassword = sqlPwd;
         
-        IJdbcClient client = null;
+        IJdbcClient client;
         try {
             client = createClient(context, config);
         } catch (Throwable e) {
@@ -216,7 +216,7 @@ public class JDBCIdentityValidator implements IIdentityValidator<JDBCIdentitySou
      * @param config
      */
     private DataSource lookupDatasource(JDBCIdentitySource config) {
-        DataSource ds = null;
+        DataSource ds;
         try {
             InitialContext ctx = new InitialContext();
             ds = lookupDS(ctx, config.getDatasourcePath());
