@@ -1616,7 +1616,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         }
 
         if (gateway != null && newVersion.getGateways() == null) {
-            newVersion.setGateways(new HashSet<ApiGatewayBean>());
+            newVersion.setGateways(new HashSet<>());
             ApiGatewayBean sgb = new ApiGatewayBean();
             sgb.setGatewayId(gateway.getId());
             newVersion.getGateways().add(sgb);
@@ -1837,7 +1837,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         if (AuditUtils.valueChanged(avb.getPlans(), bean.getPlans())) {
             data.addChange("plans", AuditUtils.asString_ApiPlanBeans(avb.getPlans()), AuditUtils.asString_ApiPlanBeans(bean.getPlans())); //$NON-NLS-1$
             if (avb.getPlans() == null) {
-                avb.setPlans(new HashSet<ApiPlanBean>());
+                avb.setPlans(new HashSet<>());
             }
             avb.getPlans().clear();
             if (bean.getPlans() != null) {
@@ -1847,7 +1847,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         if (AuditUtils.valueChanged(avb.getGateways(), bean.getGateways())) {
             data.addChange("gateways", AuditUtils.asString_ApiGatewayBeans(avb.getGateways()), AuditUtils.asString_ApiGatewayBeans(bean.getGateways())); //$NON-NLS-1$
             if (avb.getGateways() == null) {
-                avb.setGateways(new HashSet<ApiGatewayBean>());
+                avb.setGateways(new HashSet<>());
             }
             avb.getGateways().clear();
             avb.getGateways().addAll(bean.getGateways());
@@ -1868,7 +1868,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         }
         if (AuditUtils.valueChanged(avb.getEndpointProperties(), bean.getEndpointProperties())) {
             if (avb.getEndpointProperties() == null) {
-                avb.setEndpointProperties(new HashMap<String, String>());
+                avb.setEndpointProperties(new HashMap<>());
             } else {
                 avb.getEndpointProperties().clear();
             }
@@ -1885,7 +1885,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             if (avb.getGateways() == null || avb.getGateways().isEmpty()) {
                 GatewaySummaryBean gateway = getSingularGateway();
                 if (gateway != null && avb.getGateways() == null) {
-                    avb.setGateways(new HashSet<ApiGatewayBean>());
+                    avb.setGateways(new HashSet<>());
                     ApiGatewayBean sgb = new ApiGatewayBean();
                     sgb.setGatewayId(gateway.getId());
                     avb.getGateways().add(sgb);
@@ -3240,7 +3240,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                     member.setEmail(user.getEmail());
                     member.setUserId(userId);
                     member.setUserName(user.getFullName());
-                    member.setRoles(new ArrayList<MemberRoleBean>());
+                    member.setRoles(new ArrayList<>());
                     members.put(userId, member);
                 }
                 MemberRoleBean mrb = new MemberRoleBean();

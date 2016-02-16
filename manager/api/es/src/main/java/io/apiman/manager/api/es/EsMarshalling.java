@@ -965,7 +965,7 @@ public class EsMarshalling {
         bean.setEndpointContentType(asEnum(source.get("endpointContentType"), EndpointContentType.class));
         bean.setPublicAPI(asBoolean(source.get("publicAPI")));
         bean.setDefinitionType(asEnum(source.get("definitionType"), ApiDefinitionType.class));
-        bean.setGateways(new HashSet<ApiGatewayBean>());
+        bean.setGateways(new HashSet<>());
         List<Map<String, Object>> gateways = (List<Map<String, Object>>) source.get("gateways");
         if (gateways != null) {
             for (Map<String, Object> gatewayMap : gateways) {
@@ -974,7 +974,7 @@ public class EsMarshalling {
                 bean.getGateways().add(gatewayBean);
             }
         }
-        bean.setPlans(new HashSet<ApiPlanBean>());
+        bean.setPlans(new HashSet<>());
         List<Map<String, Object>> plans = (List<Map<String, Object>>) source.get("plans");
         if (plans != null) {
             for (Map<String, Object> planMap : plans) {
@@ -986,7 +986,7 @@ public class EsMarshalling {
         }
         Map<String, Object> endpointProperties = (Map<String, Object>) source.get("endpointProperties");
         if (endpointProperties != null) {
-            bean.setEndpointProperties(new HashMap<String, String>());
+            bean.setEndpointProperties(new HashMap<>());
             for (Entry<String, Object> entry : endpointProperties.entrySet()) {
                 bean.getEndpointProperties().put(entry.getKey(), String.valueOf(entry.getValue()));
             }
@@ -1117,7 +1117,7 @@ public class EsMarshalling {
         @SuppressWarnings("unchecked")
         List<Object> permissions = (List<Object>) source.get("permissions");
         if (permissions != null && !permissions.isEmpty()) {
-            bean.setPermissions(new HashSet<PermissionType>());
+            bean.setPermissions(new HashSet<>());
             for (Object permission : permissions) {
                 bean.getPermissions().add(asEnum(permission, PermissionType.class));
             }
@@ -1263,7 +1263,7 @@ public class EsMarshalling {
         @SuppressWarnings("unchecked")
         List<Map<String, Object>> templates = (List<Map<String, Object>>) source.get("templates");
         if (templates != null && !templates.isEmpty()) {
-            bean.setTemplates(new HashSet<PolicyDefinitionTemplateBean>());
+            bean.setTemplates(new HashSet<>());
             for (Map<String, Object> templateMap : templates) {
                 PolicyDefinitionTemplateBean template = new PolicyDefinitionTemplateBean();
                 template.setLanguage(asString(templateMap.get("language")));

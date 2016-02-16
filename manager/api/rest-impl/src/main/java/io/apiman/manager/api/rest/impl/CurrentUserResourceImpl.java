@@ -109,7 +109,7 @@ public class CurrentUserResourceImpl implements ICurrentUserResource {
                 }
                 rval.initFromUser(user);
                 rval.setAdmin(securityContext.isAdmin());
-                rval.setPermissions(new HashSet<PermissionBean>());
+                rval.setPermissions(new HashSet<>());
             } else {
                 rval.initFromUser(user);
                 Set<PermissionBean> permissions = query.getPermissions(userId);

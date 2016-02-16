@@ -678,7 +678,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         SearchResultsBean<ClientSummaryBean> rval = new SearchResultsBean<>();
         rval.setTotalSize(result.getTotalSize());
         List<ClientBean> beans = result.getBeans();
-        rval.setBeans(new ArrayList<ClientSummaryBean>(beans.size()));
+        rval.setBeans(new ArrayList<>(beans.size()));
         for (ClientBean client : beans) {
             ClientSummaryBean summary = new ClientSummaryBean();
             OrganizationBean organization = client.getOrganization();
@@ -704,7 +704,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         SearchResultsBean<ApiSummaryBean> rval = new SearchResultsBean<>();
         rval.setTotalSize(result.getTotalSize());
         List<ApiBean> beans = result.getBeans();
-        rval.setBeans(new ArrayList<ApiSummaryBean>(beans.size()));
+        rval.setBeans(new ArrayList<>(beans.size()));
         for (ApiBean api : beans) {
             ApiSummaryBean summary = new ApiSummaryBean();
             OrganizationBean organization = api.getOrganization();
@@ -731,7 +731,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         SearchResultsBean<PlanSummaryBean> rval = new SearchResultsBean<>();
         rval.setTotalSize(result.getTotalSize());
         List<PlanBean> plans = result.getBeans();
-        rval.setBeans(new ArrayList<PlanSummaryBean>(plans.size()));
+        rval.setBeans(new ArrayList<>(plans.size()));
         for (PlanBean plan : plans) {
             PlanSummaryBean summary = new PlanSummaryBean();
             OrganizationBean organization = plan.getOrganization();
