@@ -50,20 +50,20 @@ public class CaseInsensitiveStringMultiMap implements IStringMultiMap {
 
     @Override
     public IStringMultiMap put(String key, String value) {
-        elemMap.put(key.toLowerCase(), new Element(key, value));
+        elemMap.put(lower(key), new Element(key, value));
         return this;
     }
 
     @Override
     public IStringMultiMap putAll(Map<String, String> map) {
         map.entrySet().stream()
-                      .forEachOrdered(pair -> add(pair.getKey(), pair.getValue()));
+                .forEachOrdered(pair -> put(pair.getKey(), pair.getValue()));
         return this;
     }
 
     @Override
     public IStringMultiMap add(String key, String value) {
-        String lowerKey = key.toLowerCase();
+        String lowerKey = lower(key);
         if (elemMap.containsKey(lowerKey)) {
             elemMap.get(lowerKey).add(key, value);
         } else {
@@ -73,21 +73,28 @@ public class CaseInsensitiveStringMultiMap implements IStringMultiMap {
     }
 
     @Override
-    public IStringMultiMap remove(String key) {
-        elemMap.remove(key.toLowerCase());
+    public IStringMultiMap addAll(Map<String, String> map) {
+        map.entrySet().stream()
+                .forEachOrdered(pair -> put(pair.getKey(), pair.getValue()));
         return this;
     }
 
     @Override
-    public IStringMultiMap addAll(Map<String, String> inmap) {
-        inmap.entrySet().stream()
-             .forEachOrdered(pair -> put(pair.getKey(), pair.getValue()));
+    public IStringMultiMap addAll(IStringMultiMap map) {
+        map.getEntries().stream()
+                .forEachOrdered(pair -> add(pair.getKey(), pair.getValue()));
+        return this;
+    }
+
+    @Override
+    public IStringMultiMap remove(String key) {
+        elemMap.remove(lower(key));
         return this;
     }
 
     @Override
     public String get(String key) {
-        String lowerKey = key.toLowerCase();
+        String lowerKey = lower(key);
         if (elemMap.containsKey(lowerKey)) {
             return elemMap.get(lowerKey).getValue(); // Just return the FIRST value, ignore all others
         }
@@ -96,7 +103,7 @@ public class CaseInsensitiveStringMultiMap implements IStringMultiMap {
 
     @Override
     public List<Entry<String, String>> getAllEntries(String key) {
-        String lowerKey = key.toLowerCase();
+        String lowerKey = lower(key);
         if (elemMap.containsKey(lowerKey)) {
             return elemMap.get(lowerKey).getAllEntries();
         }
@@ -105,7 +112,7 @@ public class CaseInsensitiveStringMultiMap implements IStringMultiMap {
 
     @Override
     public List<String> getAll(String key) {
-        String lowerKey = key.toLowerCase();
+        String lowerKey = lower(key);
         if (elemMap.containsKey(lowerKey)) {
             return elemMap.get(lowerKey).getAllValues();
         }
@@ -115,6 +122,62 @@ public class CaseInsensitiveStringMultiMap implements IStringMultiMap {
     @Override
     public int size() {
         return elemMap.size();
+    }
+
+
+    @Override
+    public List<Entry<String, String>> getEntries() {
+        List<Entry<String, String>> entryList = new ArrayList<>(elemMap.size());
+        // Inspect all pairs of String to List Head Element
+        for (Entry<String, Element> elemMapPair : elemMap.entrySet()) {
+            // Retrieve all Elements and use Name and Value from *Element* to reconstruct original construction of K and V.
+            for (Element elem = elemMapPair.getValue(); elem != null; elem = elem.getNext()) {
+                entryList.add(elem.getEntry());
+            }
+        }
+        return entryList;
+    }
+
+    @Override
+    public Map<String, String> toMap() {
+        return elemMap.entrySet().stream()
+                .collect(Collectors.toMap(k -> k.getValue().getKey(),  // Take only head lower
+                        g -> g.getValue().getValue())); // Take only head value
+    }
+
+    @Override
+    public boolean containsKey(String key) {
+        return elemMap.containsKey(lower(key));
+    }
+
+    @Override
+    public Set<String> keySet() {
+        return elemMap.keySet();
+    }
+
+    @Override
+    public IStringMultiMap clear() {
+        elemMap.clear();
+        return this;
+    }
+
+    private String lower(String in) {
+        return in.toLowerCase();
+    }
+
+    @Override
+    @SuppressWarnings("nls")
+    public String toString() {
+        String elems = keySet().stream()
+                .map(this::getAllEntries)
+                .map(pairs -> pairs.get(0).getKey() + " => [" + joinValues(pairs) + "]")
+                .collect(Collectors.joining(", "));
+        return "{" + elems + "}";
+    }
+
+    @SuppressWarnings("nls")
+    private String joinValues(List<Entry<String, String>> pairs) {
+        return pairs.stream().map(Entry::getValue).collect(Collectors.joining(", "));
     }
 
     private static final class Element implements Iterable<Entry<String, String>> {
@@ -133,7 +196,7 @@ public class CaseInsensitiveStringMultiMap implements IStringMultiMap {
         public List<Entry<String, String>> getAllEntries() {
             List<Entry<String, String>> allElems = new ArrayList<>();
             for (Element elem = this; elem != null; elem = elem.getNext()) {
-              allElems.add(elem.getEntry());
+                allElems.add(elem.getEntry());
             }
             return allElems;
         }
@@ -141,15 +204,14 @@ public class CaseInsensitiveStringMultiMap implements IStringMultiMap {
         public List<String> getAllValues() {
             List<String> allElems = new ArrayList<>();
             for (Element elem = this; elem != null; elem = elem.getNext()) {
-              allElems.add(elem.getValue());
+                allElems.add(elem.getValue());
             }
             return allElems;
         }
 
         public void add(String key, String value) {
             Element oldLastElem = getLast();
-            Element newElem = new Element(key, value);
-            oldLastElem.next = newElem;
+            oldLastElem.next = new Element(key, value);
         }
 
         public Element getLast() {
@@ -175,56 +237,5 @@ public class CaseInsensitiveStringMultiMap implements IStringMultiMap {
         public String getKey() {
             return entry.getKey();
         }
-    }
-
-    @Override
-    public List<Entry<String, String>> getEntries() {
-        List<Entry<String, String>> entryList = new ArrayList<>(elemMap.size());
-        // Inspect all pairs of String to List Head Element
-        for (Entry<String, Element> elemMapPair : elemMap.entrySet()) {
-            // Retrieve all Elements and use Name and Value from *Element* to reconstruct original construction of K and V.
-            for(Element elem = elemMapPair.getValue(); elem != null; elem = elem.getNext()) {
-                entryList.add(elem.getEntry());
-            }
-        }
-        return entryList;
-    }
-
-    @Override
-    public Map<String, String> toMap() {
-        return elemMap.entrySet().stream()
-                                 .collect(Collectors.toMap(k -> k.getValue().getKey(),  // Take only head key
-                                                           g -> g.getValue().getValue())); // Take only head value
-    }
-
-    @Override
-    public boolean containsKey(String key) {
-        return elemMap.containsKey(key.toLowerCase());
-    }
-
-    @Override
-    public Set<String> keySet() {
-        return elemMap.keySet();
-    }
-
-    @Override
-    public IStringMultiMap clear() {
-        elemMap.clear();
-        return this;
-    }
-
-    @SuppressWarnings("nls")
-    @Override
-    public String toString() {
-        String elems = keySet().stream()
-                .map(key -> getAllEntries(key))
-                .map(pairs -> pairs.get(0).getKey() + " => [" + joinValues(pairs) + "]")
-                .collect(Collectors.joining(", "));
-        return "{" + elems + "}";
-    }
-
-    @SuppressWarnings("nls")
-    private String joinValues(List<Entry<String, String>> pairs) {
-        return pairs.stream().map(Entry::getValue).collect(Collectors.joining(", "));
     }
 }
