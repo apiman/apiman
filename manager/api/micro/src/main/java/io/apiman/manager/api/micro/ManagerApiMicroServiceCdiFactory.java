@@ -210,8 +210,7 @@ public class ManagerApiMicroServiceCdiFactory {
 
     @Produces @ApplicationScoped @Named("storage")
     public static JestClient provideStorageESClient(ManagerApiMicroServiceConfig config) {
-        //$NON-NLS-1$
-        if ("es".equals(config.getStorageType()) && sStorageESClient == null) {
+        if ("es".equals(config.getStorageType()) && sStorageESClient == null) { //$NON-NLS-1$
             sStorageESClient = createStorageJestClient(config);
         }
         return sStorageESClient;
@@ -219,8 +218,7 @@ public class ManagerApiMicroServiceCdiFactory {
 
     @Produces @ApplicationScoped @Named("metrics")
     public static JestClient provideMetricsESClient(ManagerApiMicroServiceConfig config) {
-        //$NON-NLS-1$
-        if ("es".equals(config.getMetricsType()) && sMetricsESClient == null) {
+        if ("es".equals(config.getMetricsType()) && sMetricsESClient == null) { //$NON-NLS-1$
             sMetricsESClient = createMetricsJestClient(config);
         }
         return sMetricsESClient;

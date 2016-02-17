@@ -213,6 +213,7 @@ public class CaseInsensitiveStringMultiMap implements IStringMultiMap {
         return this;
     }
 
+    @SuppressWarnings("nls")
     @Override
     public String toString() {
         String elems = keySet().stream()
@@ -222,6 +223,7 @@ public class CaseInsensitiveStringMultiMap implements IStringMultiMap {
         return "{" + elems + "}";
     }
 
+    @SuppressWarnings("nls")
     private String joinValues(List<Entry<String, String>> pairs) {
         return pairs.stream().map(Entry::getValue).collect(Collectors.joining(", "));
     }
