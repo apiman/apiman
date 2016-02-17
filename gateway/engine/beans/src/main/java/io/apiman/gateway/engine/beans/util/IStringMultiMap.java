@@ -53,6 +53,27 @@ public interface IStringMultiMap extends Iterable<Map.Entry<String, String>> {
     IStringMultiMap putAll(Map<String, String> map);
 
     /**
+     * Add all entries from given map. This can include instances
+     * where a given key maps to a list containing multiple
+     * elements {@code f(x) => [A, B, C, D, ...]}.
+     *
+     *
+     * @param map the map
+     * @return a fluent reference to this map
+     */
+    IStringMultiMap addAll(Map<String, String> map);
+
+    /**
+     * Add all entries from given map. This can include instances
+     * where a given key maps to a list containing multiple
+     * elements {@code f(x) => [A, B, C, D, ...]}.
+     *
+     * @param map the CaseInsensitiveStringMultiMap
+     * @return a fluent reference to this map
+     */
+    IStringMultiMap addAll(IStringMultiMap map);
+
+    /**
      * Append an entry to the values mapped by <tt>key</tt> to <tt>value</tt>.
      * This is additive to any existing <tt>value</tt> elements.
      *
@@ -69,14 +90,6 @@ public interface IStringMultiMap extends Iterable<Map.Entry<String, String>> {
      * @return a fluent reference to this map
      */
     IStringMultiMap remove(String key);
-
-    /**
-     * Add all entries from given map.
-     *
-     * @param map the map
-     * @return a fluent reference to this map
-     */
-    IStringMultiMap addAll(Map<String, String> map);
 
     /**
      * Get the first value for given <tt>key</tt>.
