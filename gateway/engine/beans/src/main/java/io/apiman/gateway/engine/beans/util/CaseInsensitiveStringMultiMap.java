@@ -57,7 +57,7 @@ public class CaseInsensitiveStringMultiMap implements IStringMultiMap {
     @Override
     public IStringMultiMap putAll(Map<String, String> map) {
         map.entrySet().stream()
-                      .forEachOrdered(pair -> put(pair.getKey(), pair.getValue()));
+                .forEachOrdered(pair -> put(pair.getKey(), pair.getValue()));
         return this;
     }
 
@@ -131,7 +131,7 @@ public class CaseInsensitiveStringMultiMap implements IStringMultiMap {
         // Inspect all pairs of String to List Head Element
         for (Entry<String, Element> elemMapPair : elemMap.entrySet()) {
             // Retrieve all Elements and use Name and Value from *Element* to reconstruct original construction of K and V.
-            for(Element elem = elemMapPair.getValue(); elem != null; elem = elem.getNext()) {
+            for (Element elem = elemMapPair.getValue(); elem != null; elem = elem.getNext()) {
                 entryList.add(elem.getEntry());
             }
         }
@@ -196,7 +196,7 @@ public class CaseInsensitiveStringMultiMap implements IStringMultiMap {
         public List<Entry<String, String>> getAllEntries() {
             List<Entry<String, String>> allElems = new ArrayList<>();
             for (Element elem = this; elem != null; elem = elem.getNext()) {
-              allElems.add(elem.getEntry());
+                allElems.add(elem.getEntry());
             }
             return allElems;
         }
@@ -204,7 +204,7 @@ public class CaseInsensitiveStringMultiMap implements IStringMultiMap {
         public List<String> getAllValues() {
             List<String> allElems = new ArrayList<>();
             for (Element elem = this; elem != null; elem = elem.getNext()) {
-              allElems.add(elem.getValue());
+                allElems.add(elem.getValue());
             }
             return allElems;
         }
