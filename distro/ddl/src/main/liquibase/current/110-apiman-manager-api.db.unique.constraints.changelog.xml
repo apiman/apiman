@@ -13,8 +13,8 @@
                              constraintName="UK_plan_versions_1" initiallyDeferred="false" tableName="plan_versions"/>
     </changeSet>
     <changeSet author="apiman" id="addUniqueConstraint-4">
-        <addUniqueConstraint columnNames="app_id, app_org_id, version" deferrable="false" disabled="false"
-                             constraintName="UK_app_versions_1" initiallyDeferred="false" tableName="client_versions"/>
+        <addUniqueConstraint columnNames="client_id, client_org_id, version" deferrable="false" disabled="false"
+                             constraintName="UK_client_versions_1" initiallyDeferred="false" tableName="client_versions"/>
     </changeSet>
     <changeSet author="apiman" id="addUniqueConstraint-5">
         <addUniqueConstraint columnNames="api_id, api_org_id, version" deferrable="false" disabled="false"
@@ -25,7 +25,7 @@
                              constraintName="UK_api_defs_1" initiallyDeferred="false" tableName="api_defs"/>
     </changeSet>
     <changeSet author="apiman" id="addUniqueConstraint-7">
-        <addUniqueConstraint columnNames="appv_id, apiv_id, planv_id" deferrable="false" disabled="false"
+        <addUniqueConstraint columnNames="clientv_id, apiv_id, planv_id" deferrable="false" disabled="false"
                              constraintName="UK_contracts_1" initiallyDeferred="false" tableName="contracts"/>
     </changeSet>
 </databaseChangeLog>

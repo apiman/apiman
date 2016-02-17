@@ -64,13 +64,13 @@
         <addForeignKeyConstraint baseColumnNames="organization_id" baseTableName="apis" constraintName="FK_31hj3xmhp1wedxjh5bklnlg15" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="organizations"/>
     </changeSet>
     <changeSet author="apiman (generated)" id="1436469846462-44">
-        <addForeignKeyConstraint baseColumnNames="appv_id" baseTableName="contracts" constraintName="FK_6h06sgs4dudh1wehmk0us973g" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="client_versions"/>
+        <addForeignKeyConstraint baseColumnNames="clientv_id" baseTableName="contracts" constraintName="FK_6h06sgs4dudh1wehmk0us973g" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="client_versions"/>
     </changeSet>
     <changeSet author="apiman (generated)" id="1436469846462-45">
         <addForeignKeyConstraint baseColumnNames="api_version_id" baseTableName="api_defs" constraintName="FK_81fuw1n8afmvpw4buk7l4tyxk" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="api_versions"/>
     </changeSet>
     <changeSet author="apiman (generated)" id="1436469846462-46">
-        <addForeignKeyConstraint baseColumnNames="app_id,app_org_id" baseTableName="client_versions" constraintName="FK_8epnoby31bt7xakegakigpikp" deferrable="false" initiallyDeferred="false" referencedColumnNames="id,organization_id" referencedTableName="clients"/>
+        <addForeignKeyConstraint baseColumnNames="client_id,client_org_id" baseTableName="client_versions" constraintName="FK_8epnoby31bt7xakegakigpikp" deferrable="false" initiallyDeferred="false" referencedColumnNames="id,organization_id" referencedTableName="clients"/>
     </changeSet>
     <changeSet author="apiman (generated)" id="1436469846462-47">
         <addForeignKeyConstraint baseColumnNames="apiv_id" baseTableName="contracts" constraintName="FK_8o6t1f3kg96rxy5uv51f6k9fy" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="api_versions"/>

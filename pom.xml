@@ -737,7 +737,7 @@
       </dependency>
       <dependency>
         <groupId>org.apache.directory.shared</groupId>
-      	<artifactId>shared-ldap</artifactId>
+        <artifactId>shared-ldap</artifactId>
         <version>${version.org.apache.directory.shared-ldap}</version>
       </dependency>
       <dependency>
@@ -1198,7 +1198,8 @@
               <configuration>
                 <fail>true</fail>
                 <rules>
-                  <illegalTransitiveDependencyCheck implementation="de.is24.maven.enforcer.rules.IllegalTransitiveDependencyCheck">
+                  <illegalTransitiveDependencyCheck
+                    implementation="de.is24.maven.enforcer.rules.IllegalTransitiveDependencyCheck">
                     <reportOnly>false</reportOnly>
                     <regexIgnoredClasses>
                       <regexIgnoredClass>javax\..+</regexIgnoredClass>

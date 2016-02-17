@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>io.apiman</groupId>
@@ -11,6 +12,7 @@
   <properties>
     <version.org.postgresql.jdbc.driver>9.4-1201-jdbc41</version.org.postgresql.jdbc.driver>
     <version.mysql.jdbc.driver>5.1.35</version.mysql.jdbc.driver>
+    <version.com.oracle.driver>12.1.0.2</version.com.oracle.driver>
     <version.liquibase>3.4.1</version.liquibase>
   </properties>
 
@@ -30,7 +32,7 @@
         <artifactId>liquibase-maven-plugin</artifactId>
         <version>${version.liquibase}</version>
         <dependencies>
-          <!-- Database drivers-->
+          <!-- Database drivers -->
           <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
@@ -46,6 +48,11 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>${version.mysql.jdbc.driver}</version>
           </dependency>
+          <dependency>
+            <groupId>com.oracle</groupId>
+            <artifactId>ojdbc7</artifactId>
+            <version>${version.com.oracle.driver}</version>
+          </dependency>
           <!-- Liquibase -->
           <dependency>
             <groupId>org.liquibase</groupId>
@@ -57,8 +64,8 @@
             <artifactId>liquibase-hibernate4</artifactId>
             <version>3.5</version>
           </dependency>
-          <!-- Note: the dependency versions below are specific
-           to the liquibase-hibernate4 version being used above. -->
+          <!-- Note: the dependency versions below are specific to the liquibase-hibernate4 version being used 
+            above. -->
           <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-beans</artifactId>
@@ -90,7 +97,7 @@
           <execution>
             <!-- This step is used to create the current database, based on the current changelogs -->
             <id>h2-update</id>
-            <!--<phase>process-resources</phase>-->
+            <!--<phase>process-resources</phase> -->
             <goals>
               <goal>update</goal>
             </goals>
@@ -106,7 +113,7 @@
           </execution>
           <execution>
             <id>h2-entities-diff</id>
-            <!--<phase>process-resources</phase>-->
+            <!--<phase>process-resources</phase> -->
             <goals>
               <goal>diff</goal>
             </goals>
@@ -147,8 +154,8 @@
               <url>offline:postgresql?version=9.3&amp;caseSensitive=true&amp;changeLogFile=${basedir}/target/changelog/postgresql/databasechangelog.csv</url>
               <username>apiman</username>
               <password>apiman</password>
-              <!-- Note: when upgrading from liquibase 3.3.5 -> 3.4.1, adding the defaultSchemaName below became a
-              requirement - otherwise this goal will fail.  This setting only appears to be required for Postgres. -->
+              <!-- Note: when upgrading from liquibase 3.3.5 -> 3.4.1, adding the defaultSchemaName below became 
+                a requirement - otherwise this goal will fail. This setting only appears to be required for Postgres. -->
               <defaultSchemaName>public</defaultSchemaName>
               <promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
               <verbose>true</verbose>
@@ -170,12 +177,35 @@
               <verbose>true</verbose>
             </configuration>
           </execution>
+          <!-- Commented out because you need to manually install the Oracle JDBC driver JAR as a 
+               Maven dependency for this to work.  Here's how you do that:
+               
+               1) Download the oracle driver:  http://www.oracle.com/technetwork/database/features/jdbc/index-091264.html
+               2) Install it:  mvn install:install-file -Dfile=ojdbc7.jar -DgroupId=com.oracle -DartifactId=ojdbc7 -Dversion=12.1.0.2 -Dpackaging=jar
+          <execution>
+            <id>oracle-ddl</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>updateSQL</goal>
+            </goals>
+            <configuration>
+              <migrationSqlOutputFile>${basedir}/target/apiman_oracle12.ddl</migrationSqlOutputFile>
+              <driver>oracle.jdbc.OracleDriver</driver>
+              <url>offline:oracle?version=12&amp;caseSensitive=true&amp;changeLogFile=${basedir}/target/changelog/oracle/databasechangelog.csv</url>
+              <username>apiman</username>
+              <password>apiman</password>
+              <promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
+              <verbose>true</verbose>
+            </configuration>
+          </execution>
+           -->
         </executions>
       </plugin>
     </plugins>
     <pluginManagement>
       <plugins>
-        <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+        <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the 
+          Maven build itself. -->
         <plugin>
           <groupId>org.eclipse.m2e</groupId>
           <artifactId>lifecycle-mapping</artifactId>

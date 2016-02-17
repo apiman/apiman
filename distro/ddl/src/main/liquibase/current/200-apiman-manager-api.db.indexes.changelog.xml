@@ -110,7 +110,7 @@
     <changeSet author="apiman" id="createIndex-18">
         <createIndex indexName="IDX_FK_contracts_a"
                      tableName="contracts">
-            <column name="appv_id"/>
+            <column name="clientv_id"/>
         </createIndex>
     </changeSet>
     <!--<changeSet author="apiman" id="createIndex-19">-->
