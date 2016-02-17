@@ -48,11 +48,13 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>${version.mysql.jdbc.driver}</version>
           </dependency>
+          <!-- The Oracle dependency - uncomment to generate the Oracle DDL
           <dependency>
             <groupId>com.oracle</groupId>
             <artifactId>ojdbc7</artifactId>
             <version>${version.com.oracle.driver}</version>
           </dependency>
+           -->
           <!-- Liquibase -->
           <dependency>
             <groupId>org.liquibase</groupId>
