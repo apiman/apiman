@@ -212,4 +212,17 @@ public class CaseInsensitiveStringMultiMap implements IStringMultiMap {
         elemMap.clear();
         return this;
     }
+
+    @Override
+    public String toString() {
+        String elems = keySet().stream()
+                .map(key -> getAllEntries(key))
+                .map(pairs -> pairs.get(0).getKey() + " => [" + joinValues(pairs) + "]")
+                .collect(Collectors.joining(", "));
+        return "{" + elems + "}";
+    }
+
+    private String joinValues(List<Entry<String, String>> pairs) {
+        return pairs.stream().map(Entry::getValue).collect(Collectors.joining(", "));
+    }
 }
