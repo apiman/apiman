@@ -3,13 +3,13 @@ Content-Type: application/json
 
 {
   "name" : "Time Restricted Access Policy",
-  "description" : "Requests matching specified regular expression and made specified time period will be ignored.",
+  "description" : "Requests matching the specified regular expression and made within the specified time period will be ignored.",
   "policyImpl" : "class:io.apiman.gateway.engine.policies.TimeRestrictedAccessPolicy",
   "icon" : "clock-o",
   "templates" : [
     {
       "language" : null,
-      "template" : "Consumers are limited to access resource in specified time period"
+      "template" : "Requests matching the regular expression and made outside the specified time period will receive a 423 error code."
     }
   ]
 }

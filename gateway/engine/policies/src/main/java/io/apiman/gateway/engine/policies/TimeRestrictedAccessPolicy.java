@@ -15,20 +15,10 @@
  */
 package io.apiman.gateway.engine.policies;
 
+import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.beans.PolicyFailureType;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeComparator;
-import org.joda.time.DateTimeZone;
-
-import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
-import io.apiman.gateway.engine.policies.PolicyFailureCodes;
 import io.apiman.gateway.engine.policies.config.IgnoredResourcesConfig;
 import io.apiman.gateway.engine.policies.config.TimeRestrictedAccess;
 import io.apiman.gateway.engine.policies.config.TimeRestrictedAccessConfig;
@@ -36,18 +26,22 @@ import io.apiman.gateway.engine.policies.i18n.Messages;
 import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+
 /**
  * Policy that restrict access to resource by time when resource can be accessed.
  */
 public class TimeRestrictedAccessPolicy extends AbstractMappedPolicy<TimeRestrictedAccessConfig> {
-
-    private DateTimeComparator timeComparator;
     
     /**
      * Constructor.
      */
     public TimeRestrictedAccessPolicy() {
-        timeComparator = DateTimeComparator.getTimeOnlyInstance();
     }
 
     /**
@@ -131,9 +125,11 @@ public class TimeRestrictedAccessPolicy extends AbstractMappedPolicy<TimeRestric
         if (end == null || start == null) {
             return true;
         }
-        boolean isAfterStart = timeComparator.compare(currentTime, start) >= 0;
-        boolean isBeforeEnd = timeComparator.compare(currentTime, end) < 0;
-        return isAfterStart && isBeforeEnd;
+        long startMs = start.getTime();
+        long endMs = end.getTime();
+        long nowMs = currentTime.toDate().getTime();
+        
+        return nowMs >= startMs && nowMs < endMs;
     }
 
     private boolean matchesDay(DateTime currentTime, TimeRestrictedAccess filter) {

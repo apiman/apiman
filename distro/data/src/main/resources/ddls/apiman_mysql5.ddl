@@ -105,6 +105,8 @@ INSERT INTO pd_templates (policydef_id, language, template) VALUES ('QuotaPolicy
 
 INSERT INTO pd_templates (policydef_id, language, template) VALUES ('TransferQuotaPolicy', NULL, 'Consumers are limited to transferring @{limit} bytes per @{granularity} per @{period}.');
 
+INSERT INTO pd_templates (policydef_id, language, template) VALUES ('TimeRestrictedAccessPolicy', NULL, 'Requests matching the regular expression and made outside the specified time period will receive a 423 error code.');
+
 --  Changeset c:/Users/ewittman/git/apiman/apiman/distro/ddl/src/main/liquibase/current/050-apiman-manager-api.db.data.changelog.xml::1434686531709-3::apiman
 INSERT INTO permissions (role_id, permissions) VALUES ('OrganizationOwner', 1);
 
@@ -169,10 +171,8 @@ INSERT INTO policydefs (id, description, form, form_type, icon, name, plugin_id,
 
 INSERT INTO policydefs (id, description, form, form_type, icon, name, plugin_id, policy_impl) VALUES ('TransferQuotaPolicy', 'Provides a way to limit the total number of bytes that can be transferred from (or to) an API.', NULL, 'Default', 'download', 'Transfer Quota Policy', NULL, 'class:io.apiman.gateway.engine.policies.TransferQuotaPolicy');
 
-INSERT INTO policydefs (id, description, form, form_type, icon, name, plugin_id, policy_impl) VALUES ('TimeRestrictedAccessPolicy', 'Requests matching specified regular expression and made specified time period will be ignored.', NULL, 'Default', 'fa-clock-o', 'Time Restricted Access', NULL, 'class:io.apiman.gateway.engine.policies.TimeRestrictedAccessPolicy');
-
 -- Changeset c:/Users/ewittman/git/apiman/apiman/distro/ddl/src/main/liquibase/current/050-apiman-manager-api.db.data.changelog.xml::1454276100000::apiman
-INSERT INTO policydefs (id, description, form, form_type, icon, name, plugin_id, policy_impl) VALUES ('TimeRestrictedAccessPolicy', 'Requests matching specified regular expression and made specified time period will be ignored.', NULL, 'Default', 'fa-clock-o', 'Time Restricted Access', NULL, 'class:io.apiman.gateway.engine.policies.TimeRestrictedAccessPolicy');
+INSERT INTO policydefs (id, description, form, form_type, icon, name, plugin_id, policy_impl) VALUES ('TimeRestrictedAccessPolicy', 'Requests matching the specified regular expression and made within the specified time period will be ignored.', NULL, 'Default', 'fa-clock-o', 'Time Restricted Access', NULL, 'class:io.apiman.gateway.engine.policies.TimeRestrictedAccessPolicy');
 
 --  Changeset c:/Users/ewittman/git/apiman/apiman/distro/ddl/src/main/liquibase/current/050-apiman-manager-api.db.data.changelog.xml::1434686531709-5::apiman
 INSERT INTO roles (id, auto_grant, created_by, created_on, description, name) VALUES ('OrganizationOwner', 1, 'admin', '2015-06-18 17:56:57.496', 'Automatically granted to the user who creates an Organization.  Grants all privileges.', 'Organization Owner');

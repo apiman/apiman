@@ -235,11 +235,10 @@
               <button ng-disabled="checkValid() === false || isDirty === false || saving === true"
                       ng-click="validateEndpoint()"
                       class="btn btn-primary"
-                      apiman-i18n-key="save"
                       type="submit"
                       data-icon="fa-cog">
-                <span ng-show="saving">Saving</span>
-                <span ng-hide="saving">Save</span>
+                <span ng-show="saving" apiman-i18n-key="saving">Saving</span>
+                <span ng-hide="saving" apiman-i18n-key="save">Save</span>
               </button>
               <button ng-disabled="!isDirty"
                       ng-click="reset()"

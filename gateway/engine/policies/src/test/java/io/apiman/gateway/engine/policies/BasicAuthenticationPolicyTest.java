@@ -26,7 +26,6 @@ import io.apiman.test.policies.PolicyTestRequestType;
 import io.apiman.test.policies.PolicyTestResponse;
 import io.apiman.test.policies.TestingPolicy;
 
-import org.apache.commons.codec.binary.Base64;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -67,7 +66,7 @@ public class BasicAuthenticationPolicyTest extends ApimanPolicyTest {
 
         // Failure
         try {
-            request.header("Authorization", createBasicAuthorization("ckent", "invalid_password"));
+            request.basicAuth("ckent", "invalid_password");
             send(request);
             Assert.fail("Expected a failure response!");
         } catch (PolicyFailureError failure) {
@@ -78,7 +77,7 @@ public class BasicAuthenticationPolicyTest extends ApimanPolicyTest {
         }
 
         // Success
-        request.header("Authorization", createBasicAuthorization("ckent", "ckent123!"));
+        request.basicAuth("ckent", "ckent123!");
         PolicyTestResponse response = send(request);
         Assert.assertEquals(200, response.code());
         EchoResponse echo = response.entity(EchoResponse.class);
@@ -108,18 +107,5 @@ public class BasicAuthenticationPolicyTest extends ApimanPolicyTest {
         Assert.assertNotNull(echo);
         String header = echo.getHeaders().get("X-Authenticated-Identity");
         Assert.assertNull(header);
-    }
-
-    /**
-     * Creates the http Authorization string for the given credentials.
-     * @param username
-     * @param password
-     */
-    private String createBasicAuthorization(String username, String password) {
-        String creds = username + ":" + password;
-        StringBuilder builder = new StringBuilder();
-        builder.append("Basic ");
-        builder.append(Base64.encodeBase64String(creds.getBytes()));
-        return builder.toString();
     }
 }

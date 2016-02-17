@@ -44,8 +44,8 @@ import io.apiman.gateway.engine.policy.IPolicyContext;
  */
 @SuppressWarnings({ "nls" })
 public class TimeRestrictedAccessPolicyTest extends PolicyTestBase {
-    
-    private String path="/admin";
+
+    private String path = "/admin";
     private ObjectMapper mapper;
 
     @Before
@@ -76,7 +76,7 @@ public class TimeRestrictedAccessPolicyTest extends PolicyTestBase {
         rule.setTimeStart(new Date());
         elements.add(rule);
         configObj.setRules(elements);
-        
+
         List<TimeRestrictedAccess> expectedConfiguration;
         config = mapper.writeValueAsString(configObj);
         parsedConfig = policy.parseConfiguration(config);
@@ -84,8 +84,7 @@ public class TimeRestrictedAccessPolicyTest extends PolicyTestBase {
         expectedConfiguration = configObj.getRules();
         assertEquals(expectedConfiguration, parsedConfig.getRules());
     }
-    
-    
+
     @Test
     public void testApply() throws Exception {
         TimeRestrictedAccessPolicy policy = new TimeRestrictedAccessPolicy();
@@ -96,13 +95,14 @@ public class TimeRestrictedAccessPolicyTest extends PolicyTestBase {
         request.setDestination(path);
         IPolicyContext context = Mockito.mock(IPolicyContext.class);
         IPolicyChain<ApiRequest> chain = Mockito.mock(IPolicyChain.class);
-        
+        final PolicyFailure failure = createFailurePolicyObject(context);
+
         TimeRestrictedAccess rule = new TimeRestrictedAccess();
         ArrayList<TimeRestrictedAccess> elements = new ArrayList<>(2);
         TimeRestrictedAccessConfig configObj = new TimeRestrictedAccessConfig();
         elements.add(rule);
         configObj.setRules(elements);
-        
+
         int dayOfWeek = new DateTime().getDayOfWeek();
         rule.setDayEnd(7);
         rule.setDayStart(dayOfWeek);
@@ -111,23 +111,20 @@ public class TimeRestrictedAccessPolicyTest extends PolicyTestBase {
         rule.setPathPattern("PathNotListed");
         configObj.setRules(elements);
         Object config = updateConfig(policy, configObj);
-        
+
         // Successful requests
         policy.apply(request, context, config, chain);
-       
         rule.setPathPattern(path);
         config = updateConfig(policy, configObj);
         policy.apply(request, context, config, chain);
-
         Mockito.verify(chain, Mockito.times(2)).doApply(request);
         Mockito.verify(chain, Mockito.never()).doFailure(Mockito.<PolicyFailure> any());
-        
-        final PolicyFailure failure = createFailurePolicyObject(context);
+
         chain = Mockito.mock(IPolicyChain.class);
-        
+
         // Failed requests
-        rule.setDayEnd(dayOfWeek+1);
-        rule.setDayStart(dayOfWeek-1);
+        rule.setDayEnd(dayOfWeek + 1);
+        rule.setDayStart(dayOfWeek - 1);
         rule.setPathPattern(path);
         rule.setTimeEnd(new DateTime().plusHours(1).toDate());
         rule.setTimeStart(new Date());
@@ -151,5 +148,5 @@ public class TimeRestrictedAccessPolicyTest extends PolicyTestBase {
         Object config = policy.parseConfiguration(json);
         return config;
     }
- 
+
 }

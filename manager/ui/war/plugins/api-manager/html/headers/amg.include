@@ -9,16 +9,14 @@
             class="navbar-toggle"
             data-toggle="collapse"
             data-target=".navbar-collapse-1">
-      <span class="sr-only">Toggle navigation</span>
+      <span class="sr-only" apiman-i18n-key="toggle-navigation">Toggle navigation</span>
       <span class="icon-bar"></span>
       <span class="icon-bar"></span>
       <span class="icon-bar"></span>
     </button>
     <a class="navbar-brand"
-       href="{{ pluginName }}/"
-       title="apiman">
-      <img src="//rawgit.com/patternfly/patternfly/master/dist/img/brand.svg"
-           alt="apiman Open Source API Management" />
+       href="{{ pluginName }}/">
+      <img src="//rawgit.com/patternfly/patternfly/master/dist/img/brand.svg" />
     </a>
   </div>
   <div class="collapse navbar-collapse navbar-collapse-1">

@@ -9,7 +9,7 @@
     <div class="panel-body container-fluid">
       <div class="row">
         <div class="col-md-8">
-          <label for="path" apiman-i18n-key="time-restricted-access-uri">Allow all request matching URI</label>
+          <label for="path" apiman-i18n-key="time-restricted-access-uri">Allow all requests matching URI</label>
         </div>
       </div>
       <div class="row">
@@ -66,7 +66,7 @@
     <thead>
       <tr>
         <th width="50%" apiman-i18n-key="path">Path</th>
-        <th width="50%" apiman-i18n-key="verb">Accessible (UTC)</th>
+        <th width="50%" apiman-i18n-key="accessible-utc">Accessible (UTC)</th>
         <th width="1%"></th>
       </tr>
     </thead>

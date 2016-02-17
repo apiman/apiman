@@ -29,9 +29,8 @@
             <ui-select ng-model="selectedDefId"
                        ng-disabled="isEntityDisabled()"
                        on-select="changeSelectedDefId($item)"
-                       apiman-i18n-key="new-policy.choose-policy-type"
                        style="width: 250px">
-              <ui-select-match placeholder="Choose a policy type...">
+              <ui-select-match apiman-i18n-key="new-policy.choose-policy-type" placeholder="Choose a policy type...">
                 <i class='fa fa-inline fa-fw fa-{{ $select.selected.icon }}'></i> <span ng-bind="$select.selected.name"></span>
               </ui-select-match>
               <ui-select-choices repeat="def in (policyDefs | filter: $select.search | orderBy: 'name.toLowerCase()')">

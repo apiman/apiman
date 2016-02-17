@@ -23,7 +23,7 @@
 	    <select id="direction" ng-model="config.direction" apiman-select-picker="" class="selectpicker inline-line apiman-inline-form-dropdown" data-style="btn-default apiman-inline-form-dropdown" style="width: auto;" ng-disabled="isEntityDisabled()">
 	      <option value="" data-content="<span class='apiman-label-faded'>transfer direction</span>" apiman-i18n-key="transfer-direction">transfer direction</option>
 	      <option apiman-i18n-key="upload" value="upload">upload</option>
-	      <option apiman-i18n-key="download" value="download">download</option>
+	      <option apiman-i18n-key="download_lowercase" value="download">download</option>
 	      <option apiman-i18n-key="upload-plus-download" value="both">upload+download</option>
 	    </select>
 	    
