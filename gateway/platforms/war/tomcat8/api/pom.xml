@@ -32,6 +32,20 @@
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-common-servlet</artifactId>
     </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-gateway-engine-core</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>com.zaxxer</groupId>
+          <artifactId>HikariCP</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.unboundid</groupId>
+          <artifactId>unboundid-ldapsdk</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
     
     <!-- REST Easy -->
     <dependency>
