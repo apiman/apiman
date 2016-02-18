@@ -90,14 +90,10 @@ public class InfluxDb09Driver {
             final IAsyncHandler<InfluxException> failureHandler) {
         // Make request to influx
         IHttpClientRequest request = httpClient.request(writeUrl.toString(), HttpMethod.POST,
-                new IAsyncResultHandler<IHttpClientResponse>() {
-
-                    @Override
-                    public void handle(IAsyncResult<IHttpClientResponse> result) {
-                        if (result.isError() || result.getResult().getResponseCode() < 200
-                                || result.getResult().getResponseCode() > 299) {
-                            failureHandler.handle(new InfluxException(result.getResult()));
-                        }
+                result -> {
+                    if (result.isError() || result.getResult().getResponseCode() < 200
+                            || result.getResult().getResponseCode() > 299) {
+                        failureHandler.handle(new InfluxException(result.getResult()));
                     }
                 });
         // For some reason Java's URLEncoding doesn't seem to be parseable by influx?
@@ -115,33 +111,29 @@ public class InfluxDb09Driver {
     @SuppressWarnings("nls")
     public void listDatabases(final IAsyncResultHandler<List<String>> handler) {
         IHttpClientRequest request = httpClient.request(queryUrl.toString(), HttpMethod.GET,
-                new IAsyncResultHandler<IHttpClientResponse>() {
+                result -> {
+                    try {
 
-                    @Override
-                    public void handle(IAsyncResult<IHttpClientResponse> result) {
-                        try {
-
-                            if (result.isError() || result.getResult().getResponseCode() != 200) {
-                                handleError(result, handler);
-                                return;
-                            }
-
-                            List<String> results = new ArrayList<>();
-
-                            // {"results":
-                            JsonNode arrNode = objectMapper.readTree(result.getResult().getBody())
-                                    .path("results").elements().next() // results: [ first-elem
-                                    .path("series").elements().next(); // series: [ first-elem
-                            // values: [[db1], [db2], [...]] => db1, db2
-                            flattenArrays(arrNode.get("values"), results);
-
-                            // send results
-                            handler.handle(AsyncResultImpl.<List<String>> create(results));
-
-                        } catch (IOException e) {
-                            AsyncResultImpl.create(new RuntimeException(
-                                    "Unable to parse Influx JSON response", e));
+                        if (result.isError() || result.getResult().getResponseCode() != 200) {
+                            handleError(result, handler);
+                            return;
                         }
+
+                        List<String> results = new ArrayList<>();
+
+                        // {"results":
+                        JsonNode arrNode = objectMapper.readTree(result.getResult().getBody())
+                                .path("results").elements().next() // results: [ first-elem
+                                .path("series").elements().next(); // series: [ first-elem
+                        // values: [[db1], [db2], [...]] => db1, db2
+                        flattenArrays(arrNode.get("values"), results);
+
+                        // send results
+                        handler.handle(AsyncResultImpl.create(results));
+
+                    } catch (IOException e) {
+                        AsyncResultImpl.create(new RuntimeException(
+                                "Unable to parse Influx JSON response", e));
                     }
                 });
 
@@ -180,12 +172,11 @@ public class InfluxDb09Driver {
 
     @SuppressWarnings("nls")
     private void addQueryParam(StringBuilder url, String key, String value, String connector) {
-
         if (value == null)
             return;
 
         try {
-            url.append(connector + key + "=" + URLEncoder.encode(value, StandardCharsets.UTF_8.name()));
+            url.append(connector).append(key).append("=").append(URLEncoder.encode(value, StandardCharsets.UTF_8.name()));
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }

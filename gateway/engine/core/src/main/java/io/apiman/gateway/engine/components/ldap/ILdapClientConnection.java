@@ -28,10 +28,9 @@ public interface ILdapClientConnection extends AutoCloseable {
     /**
      * Perform a simple LDAP search
      *
-     * @param searchDn the search
+     * @param searchDn the search DN
      * @param filter the query filter
-     * @param scope the scope
-     * @param result the query results
+     * @param scope the search scope
      * @return ldap search ready to execute
      */
     ILdapSearch search(String searchDn, String filter, LdapSearchScope scope);

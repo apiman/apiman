@@ -140,9 +140,9 @@ public interface IJdbcResultSet {
      * @throws IndexOutOfBoundsException when index is invalid
      */
     DateTime getDateTime(int index);
-    
-    void close();
 
-    // These might be problematic, i.e. not implemented in Vert.x etc
-    //Object getObject(int index);
+    /**
+     * Close the result set
+     */
+    void close();
 }

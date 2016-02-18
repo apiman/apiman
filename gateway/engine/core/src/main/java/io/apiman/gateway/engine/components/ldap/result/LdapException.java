@@ -23,7 +23,7 @@ package io.apiman.gateway.engine.components.ldap.result;
  */
 public class LdapException extends Exception {
     private static final long serialVersionUID = 7864217780903440819L;
-    private LdapResultCode resultCode;
+    private final LdapResultCode resultCode;
 
     /**
      * Construct an LdapException

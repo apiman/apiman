@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 public class CaseInsensitiveStringMultiMap implements IStringMultiMap {
-    private Map<String, Element> elemMap;
+    private final Map<String, Element> elemMap;
 
     public CaseInsensitiveStringMultiMap() {
         elemMap = new LinkedHashMap<>();
@@ -181,7 +181,7 @@ public class CaseInsensitiveStringMultiMap implements IStringMultiMap {
     }
 
     private static final class Element implements Iterable<Entry<String, String>> {
-        private AbstractMap.SimpleImmutableEntry<String, String> entry;
+        private final AbstractMap.SimpleImmutableEntry<String, String> entry;
         private Element next = null;
 
         public Element(String key, String value) {

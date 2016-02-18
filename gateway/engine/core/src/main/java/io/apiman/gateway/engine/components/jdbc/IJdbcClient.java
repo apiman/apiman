@@ -22,6 +22,7 @@ import io.apiman.gateway.engine.async.IAsyncResultHandler;
  *
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
+@FunctionalInterface
 public interface IJdbcClient {
 
     /**
