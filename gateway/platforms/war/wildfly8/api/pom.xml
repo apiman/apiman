@@ -78,14 +78,14 @@
         </exclusion>
       </exclusions>
     </dependency>
-    
+
     <!-- Spec Libs -->
     <dependency>
       <groupId>org.jboss.spec.javax.servlet</groupId>
       <artifactId>jboss-servlet-api_3.0_spec</artifactId>
       <scope>provided</scope>
     </dependency>
-    
+
   </dependencies>
 
   <build>
@@ -108,6 +108,9 @@
               <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
               <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
             </manifest>
+            <manifestEntries>
+              <Dependencies>deployment.apiman-gateway-engine-beans.jar</Dependencies>
+            </manifestEntries>
           </archive>
         </configuration>
       </plugin>

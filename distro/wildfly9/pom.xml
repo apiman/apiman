@@ -33,10 +33,11 @@
       <artifactId>apiman-gateway-platforms-war-wildfly8-gateway</artifactId>
       <type>war</type>
     </dependency>
+    
+    <!-- Other apiman modules -->
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>apiman-gateway-platforms-war-wildfly8-modules</artifactId>
-      <type>zip</type>
+      <artifactId>apiman-gateway-engine-beans</artifactId>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>

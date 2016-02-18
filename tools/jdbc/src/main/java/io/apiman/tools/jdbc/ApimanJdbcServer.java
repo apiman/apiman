@@ -63,7 +63,9 @@ public class ApimanJdbcServer {
             System.out.println("JDBC (H2) server started successfully.");
             System.out.println("");
             System.out.println("  Data: " + dataDir.getAbsolutePath());
-            System.out.println("  URL: " + url);
+            System.out.println("  JDBC URL: " + url);
+            System.out.println("  JDBC User: sa");
+            System.out.println("  JDBC Password: ");
             System.out.println("  Authentication Query:   SELECT * FROM users u WHERE u.username = ? AND u.password = ?");
             System.out.println("  Authorization Query:    SELECT r.rolename FROM roles r WHERE r.username = ?");
             System.out.println("======================================================");

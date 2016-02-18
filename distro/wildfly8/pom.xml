@@ -50,11 +50,6 @@
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>apiman-gateway-platforms-war-wildfly8-modules</artifactId>
-      <type>zip</type>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
       <artifactId>apiman-distro-data</artifactId>
     </dependency>
     <dependency>

@@ -1,7 +1,6 @@
 <jboss-deployment-structure>
   <deployment>
     <dependencies>
-      <module name="io.apiman.apiman-gateway-engine-beans" />
       <module name="org.codehaus.jackson.jackson-core-asl" />
       <module name="org.codehaus.jackson.jackson-mapper-asl" />
       <module name="org.infinispan" />

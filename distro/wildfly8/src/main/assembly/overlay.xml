@@ -62,20 +62,6 @@
       <directoryMode>0755</directoryMode>
       <fileMode>0755</fileMode>
     </dependencySet>
-    <!-- apiman-gateway wildfly8 modules -->
-    <dependencySet>
-      <outputDirectory>/</outputDirectory>
-      <includes>
-        <include>*:apiman-gateway-platforms-war-wildfly8-modules:zip</include>
-      </includes>
-      <useProjectArtifact>false</useProjectArtifact>
-      <useProjectAttachments>false</useProjectAttachments>
-      <useTransitiveDependencies>false</useTransitiveDependencies>
-      <useTransitiveFiltering>false</useTransitiveFiltering>
-      <directoryMode>0755</directoryMode>
-      <fileMode>0755</fileMode>
-      <unpack>true</unpack>
-    </dependencySet>
     <!-- Pre-configured H2 database -->
     <dependencySet>
       <outputDirectory>standalone/data/h2</outputDirectory>

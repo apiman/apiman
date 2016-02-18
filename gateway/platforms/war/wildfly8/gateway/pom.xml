@@ -65,6 +65,9 @@
               <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
               <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
             </manifest>
+            <manifestEntries>
+              <Dependencies>deployment.apiman-gateway-engine-beans.jar</Dependencies>
+            </manifestEntries>
           </archive>
         </configuration>
       </plugin>

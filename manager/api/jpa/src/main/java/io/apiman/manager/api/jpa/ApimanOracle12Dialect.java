@@ -17,7 +17,7 @@ package io.apiman.manager.api.jpa;
 
 import java.sql.Types;
 
-import org.hibernate.dialect.Oracle12cDialect;
+import org.hibernate.dialect.Oracle10gDialect;
 
 /**
  * A custom mysql dialect to convert BOOLEAN to BIT(1).  This is done automatically
@@ -26,7 +26,7 @@ import org.hibernate.dialect.Oracle12cDialect;
  * @author eric.wittmann@redhat.com
  */
 @SuppressWarnings("nls")
-public class ApimanOracle12Dialect extends Oracle12cDialect {
+public class ApimanOracle12Dialect extends Oracle10gDialect {
 
     /**
      * Constructor.

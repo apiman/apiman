@@ -14,7 +14,6 @@
   <modules>
     <module>api</module>
     <module>gateway</module>
-    <module>modules</module>
   </modules>
   
   <build>
