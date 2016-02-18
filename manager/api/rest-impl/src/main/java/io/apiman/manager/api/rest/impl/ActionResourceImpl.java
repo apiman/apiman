@@ -404,7 +404,14 @@ public class ActionResourceImpl implements IActionResource {
                     GatewayBean gbean = gateways.next();
                     if (!links.containsKey(gbean.getId())) {
                         IGatewayLink gatewayLink = createGatewayLink(gbean.getId());
-                        gatewayLink.unregisterClient(client);
+                        
+                        try {
+                            gatewayLink.unregisterClient(client);
+                        } catch (Exception e) {
+                            // We need to catch the error, but ignore it,
+                            // in the event that the gateway is invalid.
+                        }
+                        
                         gatewayLink.close();
                     }
                 }
