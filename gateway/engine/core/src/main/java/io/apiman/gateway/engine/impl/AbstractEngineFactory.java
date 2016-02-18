@@ -54,8 +54,7 @@ public abstract class AbstractEngineFactory implements IEngineFactory {
         IPolicyFactory pfactory = createPolicyFactory(pluginRegistry);
         IMetrics metrics = createMetrics(pluginRegistry);
 
-        IEngine engine = new EngineImpl(registry, pluginRegistry, componentRegistry, cfactory, pfactory, metrics);
-        return engine;
+        return new EngineImpl(registry, pluginRegistry, componentRegistry, cfactory, pfactory, metrics);
     }
 
     /**

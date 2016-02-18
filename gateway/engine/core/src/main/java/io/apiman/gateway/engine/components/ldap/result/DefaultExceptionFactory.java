@@ -22,6 +22,9 @@ import com.unboundid.ldap.sdk.LDAPException;
 import com.unboundid.ldap.sdk.ResultCode;
 
 /**
+ * An factory for creating {@link LdapException}s from various exceptions and
+ * status objects returned by the default LDAP implementation's backend.
+ *
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 public class DefaultExceptionFactory {
@@ -30,24 +33,44 @@ public class DefaultExceptionFactory {
     }
 
     /**
-     * Convert LDAP Exceptions
+     * Convert from {@link LDAPException} to apiman's {@link LdapException}
      *
      * @param e the LDAP Exception
-     * @return an apiman LdapExeption
+     * @return a new LdapException
      */
     public static LdapException create(LDAPException e) {
         return new LdapException(DefaultLdapResultCodeFactory.convertResultCode(e.getResultCode()),
                 e.getDiagnosticMessage(), e);
     }
 
+    /**
+     * Create an {@link LdapException} from an {@link LdapResultCode} and message
+     *
+     * @param resultCode the result code
+     * @param message the exception message
+     * @return a new LDAPException
+     */
     public static LdapException create(LdapResultCode resultCode, String message) {
         return new LdapException(resultCode, message, null);
     }
 
+    /**
+     * Create an {@link LdapException} from a {@link ResultCode} and message
+     *
+     * @param resultCode the result code
+     * @param message the exception message
+     * @return a new LDAPException
+     */
     public static LdapException create(ResultCode resultCode, String message) {
         return new LdapException(DefaultLdapResultCodeFactory.convertResultCode(resultCode), message, null);
     }
 
+    /**
+     * Create an {@link LdapException} from an {@link ILdapResult}
+     *
+     * @param result the result code
+     * @return a new LDAPException
+     */
     public static LdapException create(ILdapResult result) {
         return new LdapException(result.getResultCode(), result.getMessage(), null);
     }
