@@ -78,11 +78,9 @@ public class HttpClientResponseImpl implements IHttpClientResponse {
      */
     @Override
     public String getBody() {
-        InputStream body = null;
-        try {
-            body = connection.getInputStream();
+        try (InputStream body = connection.getInputStream();
+             StringBuilderWriter writer = new StringBuilderWriter()) {
             if (body != null) {
-                StringBuilderWriter writer = new StringBuilderWriter();
                 try {
                     IOUtils.copy(body, writer);
                 } catch (IOException e) {
@@ -94,8 +92,6 @@ public class HttpClientResponseImpl implements IHttpClientResponse {
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
-        } finally {
-            IOUtils.closeQuietly(body);
         }
     }
     
