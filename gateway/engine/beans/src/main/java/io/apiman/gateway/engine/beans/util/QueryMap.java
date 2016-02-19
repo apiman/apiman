@@ -16,6 +16,7 @@
 
 package io.apiman.gateway.engine.beans.util;
 
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -27,11 +28,18 @@ import java.util.stream.Collectors;
  *
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
-public class QueryMap extends CaseInsensitiveStringMultiMap {
-    public QueryMap() {}
+public class QueryMap extends CaseInsensitiveStringMultiMap implements Serializable {
+    private static final long serialVersionUID = -3539301043663183648L;
 
     /**
-     * Construct a QueryMap
+     *  Construct map with default capacity.
+     */
+    public QueryMap() {
+        super();
+    }
+
+    /**
+     * Construct a QueryMap.
      *
      * @param sizeHint the size hint
      */
@@ -55,7 +63,7 @@ public class QueryMap extends CaseInsensitiveStringMultiMap {
         try {
             return URLEncoder.encode(str, StandardCharsets.UTF_8.name());
         } catch (UnsupportedEncodingException e) {
-            System.err.println(String.format("Unable to URLEncode " + str)); //$NON-NLS-1$
+            System.err.println("Unable to URLEncode" + str); //$NON-NLS-1$
             return str;
         }
     }

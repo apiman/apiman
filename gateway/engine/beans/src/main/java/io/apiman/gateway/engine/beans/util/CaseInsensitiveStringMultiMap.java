@@ -16,6 +16,7 @@
 
 package io.apiman.gateway.engine.beans.util;
 
+import java.io.Serializable;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,7 +33,8 @@ import java.util.stream.Collectors;
  *
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
-public class CaseInsensitiveStringMultiMap implements IStringMultiMap {
+public class CaseInsensitiveStringMultiMap implements IStringMultiMap, Serializable {
+    private static final long serialVersionUID = -2052530527825235543L;
     private final Map<String, Element> elemMap;
 
     public CaseInsensitiveStringMultiMap() {

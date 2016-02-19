@@ -45,6 +45,7 @@ public class ConfigDrivenComponentRegistry implements IComponentRegistry {
     /**
      * Constructor.
      * @param engineConfig the engine config
+     * @param pluginRegistry the plugin registry
      */
     public ConfigDrivenComponentRegistry(IEngineConfig engineConfig, IPluginRegistry pluginRegistry) {
         this.engineConfig = engineConfig;

@@ -42,8 +42,8 @@ import java.util.concurrent.CountDownLatch;
  */
 @SuppressWarnings("nls")
 public class InfluxDb09Metrics implements IMetrics, IRequiresInitialization {
-    private static final String USERNAME = "username";
-    private static final String PASSWORD = "password";
+    private static final String USER = "username";
+    private static final String PWORD = "password";
     private static final String INFLUX_ENDPOINT = "endpoint";
     private static final String DATABASE = "database";
     private static final String RETENTION_POLICY = "retentionPolicy";
@@ -75,8 +75,8 @@ public class InfluxDb09Metrics implements IMetrics, IRequiresInitialization {
         this.dbName = getMandatoryString(config, DATABASE);
         this.retentionPolicy = getOptionalString(config, RETENTION_POLICY, null);
         this.seriesName = getMandatoryString(config, SERIES_NAME);
-        this.username = getOptionalString(config, USERNAME, null);
-        this.password = getOptionalString(config, PASSWORD, null);
+        this.username = getOptionalString(config, USER, null);
+        this.password = getOptionalString(config, PWORD, null);
     }
 
     /**
@@ -108,17 +108,14 @@ public class InfluxDb09Metrics implements IMetrics, IRequiresInitialization {
     @Override
     public void record(RequestMetric metric) {
         driver.write(buildRequest(metric),
-                new IAsyncHandler<InfluxException>() {
-                    @Override
-                    public void handle(InfluxException result) {
-                        if (result.isBadResponse()) {
-                            IHttpClientResponse response = result.getResponse();
-                            System.err.println(String.format("Influx stats error. Code: %s with message: '%s'",
-                                    response.getResponseCode(),
-                                    response.getResponseMessage()));
-                        } else {
-                            System.err.println(result.getMessage());
-                        }
+                (InfluxException result) -> {
+                    if (result.isBadResponse()) {
+                        IHttpClientResponse response = result.getResponse();
+                        System.err.println(String.format("Influx stats error. Code: %s with message: '%s'",
+                                response.getResponseCode(),
+                                response.getResponseMessage()));
+                    } else {
+                        System.err.println(result.getMessage());
                     }
                 });
     }
@@ -128,7 +125,7 @@ public class InfluxDb09Metrics implements IMetrics, IRequiresInitialization {
         StringBuilder sb = new StringBuilder(500);
 
         // Series name, followed by comma
-        sb.append(seriesName + ",");
+        sb.append(seriesName).append(",");
 
         // Default tags, comma delimited
         for (Entry<String, String> entry : DEFAULT_TAGS.entrySet()) {
@@ -177,7 +174,7 @@ public class InfluxDb09Metrics implements IMetrics, IRequiresInitialization {
         if (tagValue == null)
             return;
 
-        sb.append(tagname + "=" + tagValue + ",");
+        sb.append(tagname).append("=").append(tagValue).append(",");
     }
 
     private String quote(String item) {
@@ -207,23 +204,19 @@ public class InfluxDb09Metrics implements IMetrics, IRequiresInitialization {
         final CountDownLatch endSignal = new CountDownLatch(1);
         final List<String> results = new ArrayList<>();
 
-        driver.listDatabases(new IAsyncResultHandler<List<String>>() {
-
-            @Override
-            public void handle(IAsyncResult<List<String>> result) {
-                if(result.isSuccess()) {
-                    results.addAll(result.getResult());
-                } else {
-                    throw new InfluxException(result.getError());
-                }
-                endSignal.countDown();
+        driver.listDatabases((IAsyncResult<List<String>> result) -> {
+            if(result.isSuccess()) {
+                results.addAll(result.getResult());
+            } else {
+                throw new InfluxException(result.getError());
             }
+            endSignal.countDown();
         });
 
         try {
             endSignal.await();
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
 
         return results;

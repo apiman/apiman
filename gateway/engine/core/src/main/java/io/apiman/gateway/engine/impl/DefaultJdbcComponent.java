@@ -81,7 +81,6 @@ public class DefaultJdbcComponent implements IJdbcComponent {
 
     /**
      * Creates a datasource from the given jdbc config info.
-     * @param config
      */
     @SuppressWarnings("nls")
     protected DataSource datasourceFromConfig(JdbcOptionsBean config) {
@@ -105,9 +104,6 @@ public class DefaultJdbcComponent implements IJdbcComponent {
 
     /**
      * Sets a configuration property, but only if it's not null.
-     * @param props
-     * @param propName
-     * @param value
      */
     private void setConfigProperty(Properties props, String propName, Object value) {
         if (value != null) {
@@ -117,30 +113,27 @@ public class DefaultJdbcComponent implements IJdbcComponent {
 
     /**
      * Creates a datasource name (for caching) from the config.
-     * @param config
      */
     private String dsNameFromConfig(JdbcOptionsBean config) {
-        StringBuilder builder = new StringBuilder();
-        builder.append(config.getJdbcUrl())
-            .append("::") //$NON-NLS-1$
-            .append(config.getUsername())
-            .append("::") //$NON-NLS-1$
-            .append(config.getPassword())
-            .append("::") //$NON-NLS-1$
-            .append(config.getConnectionTimeout())
-            .append("::") //$NON-NLS-1$
-            .append(config.getIdleTimeout())
-            .append("::") //$NON-NLS-1$
-            .append(config.getMaximumPoolSize())
-            .append("::") //$NON-NLS-1$
-            .append(config.getMaxLifetime())
-            .append("::") //$NON-NLS-1$
-            .append(config.getMinimumIdle())
-            .append("::") //$NON-NLS-1$
-            .append(config.getPoolName())
-            .append("::") //$NON-NLS-1$
-            .append(config.isAutoCommit());
-        return builder.toString();
+        return config.getJdbcUrl() +
+                "::" + //$NON-NLS-1$
+                config.getUsername() +
+                "::" + //$NON-NLS-1$
+                config.getPassword() +
+                "::" + //$NON-NLS-1$
+                config.getConnectionTimeout() +
+                "::" + //$NON-NLS-1$
+                config.getIdleTimeout() +
+                "::" + //$NON-NLS-1$
+                config.getMaximumPoolSize() +
+                "::" + //$NON-NLS-1$
+                config.getMaxLifetime() +
+                "::" + //$NON-NLS-1$
+                config.getMinimumIdle() +
+                "::" + //$NON-NLS-1$
+                config.getPoolName() +
+                "::" + //$NON-NLS-1$
+                config.isAutoCommit();
     }
 
     /**
@@ -153,7 +146,6 @@ public class DefaultJdbcComponent implements IJdbcComponent {
 
         /**
          * Constructor.
-         * @param ds
          */
         public DefaultJdbcClient(DataSource ds) {
             this.ds = ds;
@@ -166,8 +158,7 @@ public class DefaultJdbcComponent implements IJdbcComponent {
         public void connect(IAsyncResultHandler<IJdbcConnection> handler) {
             IJdbcConnection jdbcConnection = null;
             try {
-                Connection connection = ds.getConnection();
-                jdbcConnection = new DefaultJdbcConnection(connection);
+                jdbcConnection = new DefaultJdbcConnection(ds.getConnection());
                 handler.handle(AsyncResultImpl.create(jdbcConnection));
             } catch (Exception e) {
                 handler.handle(AsyncResultImpl.create(e, IJdbcConnection.class));
@@ -175,7 +166,7 @@ public class DefaultJdbcComponent implements IJdbcComponent {
                 try {
                     // If not closed by now (since this is a synchronous implementation of the client
                     // interface) then the consumer messed up.  We'll be nice and close it for them here.
-                    if (!jdbcConnection.isClosed()) {
+                    if (jdbcConnection != null && !jdbcConnection.isClosed()) {
                         System.err.print("NOTE: closing a JDBC connection that should have already been closed!"); //$NON-NLS-1$
                         jdbcConnection.close();
                     }

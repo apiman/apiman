@@ -27,6 +27,7 @@ import io.apiman.manager.api.gateway.GatewayAuthenticationException;
 import io.apiman.manager.api.gateway.i18n.Messages;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.net.URI;
@@ -86,13 +87,12 @@ public class GatewayClient /*implements ISystemResource, IApiResource, IClientRe
             int actualStatusCode = response.getStatusLine().getStatusCode();
             if (actualStatusCode == 401 || actualStatusCode == 403) {
                 throw new GatewayAuthenticationException();
-            }
-            if (actualStatusCode != 200) {
-                throw new Exception("System status check failed: " + actualStatusCode); //$NON-NLS-1$
+            } else if (actualStatusCode != 200) {
+                throw new RuntimeException("System status check failed: " + actualStatusCode); //$NON-NLS-1$
             }
             is = response.getEntity().getContent();
             return mapper.reader(SystemStatus.class).readValue(is);
-        } catch (GatewayAuthenticationException e) {
+        } catch (GatewayAuthenticationException | RuntimeException e) {
             throw e;
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -117,11 +117,11 @@ public class GatewayClient /*implements ISystemResource, IApiResource, IClientRe
                 throw new GatewayAuthenticationException();
             }
             if (actualStatusCode != 200) {
-                throw new Exception("Failed to get the API endpoint: " + actualStatusCode); //$NON-NLS-1$
+                throw new RuntimeException("Failed to get the API endpoint: " + actualStatusCode); //$NON-NLS-1$
             }
             is = response.getEntity().getContent();
             return mapper.reader(ApiEndpoint.class).readValue(is);
-        } catch (GatewayAuthenticationException e) {
+        } catch (GatewayAuthenticationException | RuntimeException e) {
             throw e;
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -149,14 +149,13 @@ public class GatewayClient /*implements ISystemResource, IApiResource, IClientRe
             if (actualStatusCode == 500) {
                 Header[] headers = response.getHeaders("X-API-Gateway-Error"); //$NON-NLS-1$
                 if (headers != null && headers.length > 0) {
-                    RegistrationException re = readRegistrationException(response);
-                    throw re;
+                    throw readRegistrationException(response);
                 }
             }
             if (actualStatusCode >= 300) {
-                throw new Exception(Messages.i18n.format("GatewayClient.ClientRegistrationFailed", actualStatusCode)); //$NON-NLS-1$
+                throw new RuntimeException(Messages.i18n.format("GatewayClient.ClientRegistrationFailed", actualStatusCode)); //$NON-NLS-1$
             }
-        } catch (RegistrationException|GatewayAuthenticationException e) {
+        } catch (GatewayAuthenticationException | RuntimeException e) {
             throw e;
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -308,9 +307,8 @@ public class GatewayClient /*implements ISystemResource, IApiResource, IClientRe
      * @param stacktrace
      */
     protected static StackTraceElement[] parseStackTrace(String stacktrace) {
-        try {
+        try (BufferedReader reader = new BufferedReader(new StringReader(stacktrace))) {
             List<StackTraceElement> elements = new ArrayList<>();
-            BufferedReader reader = new BufferedReader(new StringReader(stacktrace));
             String line;
             // Example lines:
             // \tat io.apiman.gateway.engine.es.ESRegistry$1.completed(ESRegistry.java:79)

@@ -54,8 +54,7 @@ public class WarGateway {
             clazz = DefaultPolicyErrorWriter.class;
         }
         Map<String, String> conf = config.getPolicyErrorWriterConfig();
-        IPolicyErrorWriter formatter = ConfigDrivenEngineFactory.instantiate(clazz, conf);
-        return formatter;
+        return ConfigDrivenEngineFactory.instantiate(clazz, conf);
     }
 
     private static IPolicyFailureWriter loadFailureFormatter() {
@@ -64,8 +63,7 @@ public class WarGateway {
             clazz = DefaultPolicyFailureWriter.class;
         }
         Map<String, String> conf = config.getPolicyFailureWriterConfig();
-        IPolicyFailureWriter formatter = ConfigDrivenEngineFactory.instantiate(clazz, conf);
-        return formatter;
+        return ConfigDrivenEngineFactory.instantiate(clazz, conf);
     }
 
     /**
