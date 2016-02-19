@@ -33,6 +33,7 @@ import org.h2.tools.Server;
 @SuppressWarnings("nls")
 public class ApimanJdbcServer {
 
+    private ApimanJdbcServer() {}
 
     public static void main(String[] args) {
         try {

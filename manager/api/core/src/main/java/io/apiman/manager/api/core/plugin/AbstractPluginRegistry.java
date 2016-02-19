@@ -126,11 +126,9 @@ public abstract class AbstractPluginRegistry implements IPluginRegistry {
 
     /**
      * Creates a plugin classloader for the given plugin file.
-     * @param pluginFile
-     * @throws IOException
      */
     protected PluginClassLoader createPluginClassLoader(final File pluginFile) throws IOException {
-        PluginClassLoader cl = new PluginClassLoader(pluginFile, Thread.currentThread().getContextClassLoader()) {
+        return new PluginClassLoader(pluginFile, Thread.currentThread().getContextClassLoader()) {
             @Override
             protected File createWorkDir(File pluginArtifactFile) throws IOException {
                 File workDir = new File(pluginFile.getParentFile(), ".work"); //$NON-NLS-1$
@@ -138,15 +136,12 @@ public abstract class AbstractPluginRegistry implements IPluginRegistry {
                 return workDir;
             }
         };
-        return cl;
     }
 
     /**
      * Downloads the plugin via its maven GAV information.  This will first look in the local
      * .m2 directory.  If the plugin is not found there, then it will try to download the
      * plugin from one of the configured remote maven repositories.
-     * @param pluginFile
-     * @param coordinates
      */
     protected void downloadPlugin(File pluginFile, PluginCoordinates coordinates) {
         // First check the .m2 directory
@@ -175,9 +170,6 @@ public abstract class AbstractPluginRegistry implements IPluginRegistry {
 
     /**
      * Tries to download the plugin from the given remote maven repository.
-     * @param pluginFile
-     * @param coordinates
-     * @param mavenRepoUrl
      */
     protected boolean downloadFromMavenRepo(File pluginFile, PluginCoordinates coordinates, URL mavenRepoUrl) {
         String artifactSubPath = PluginUtils.getMavenPath(coordinates);

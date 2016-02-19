@@ -18,6 +18,7 @@ package io.apiman.common.plugin;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashSet;
@@ -86,9 +87,8 @@ public class PluginUtils {
      * @throws Exception when an unhandled exception occurs
      * @return plugin's specification
      */
-    public static PluginSpec readPluginSpecFile(URL pluginSpec) throws Exception {
-        PluginSpec spec = (PluginSpec) mapper.reader(PluginSpec.class).readValue(pluginSpec);
-        return spec;
+    public static PluginSpec readPluginSpecFile(URL pluginSpec) throws IOException {
+        return (PluginSpec) mapper.reader(PluginSpec.class).readValue(pluginSpec);
     }
 
     /**
@@ -118,8 +118,7 @@ public class PluginUtils {
      */
     public static File getM2Path(File m2Dir, PluginCoordinates coordinates) {
         String artifactSubPath = getMavenPath(coordinates);
-        File artifactFile = new File(m2Dir, artifactSubPath);
-        return artifactFile;
+        return new File(m2Dir, artifactSubPath);
     }
 
     /**
@@ -150,7 +149,6 @@ public class PluginUtils {
     /**
      * Returns true if the plugin identified by the given coordinates is a
      * snapshot plugin.
-     * @param coordinates
      */
     public static boolean isSnapshot(PluginCoordinates coordinates) {
         return coordinates.getVersion().endsWith("-SNAPSHOT"); //$NON-NLS-1$

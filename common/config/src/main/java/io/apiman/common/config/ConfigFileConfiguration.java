@@ -30,10 +30,18 @@ import org.apache.commons.configuration.PropertiesConfiguration;
  * @author eric.wittmann@redhat.com
  */
 public class ConfigFileConfiguration extends PropertiesConfiguration {
+    /**
+     * Constructor.
+     * @param configFileName the config filename
+     * @param customConfigPropertyName the property name
+     * @throws ConfigurationException
+     */
+    private ConfigFileConfiguration(String configFileName, String customConfigPropertyName) throws ConfigurationException {
+        super(discoverConfigFileUrl(configFileName, customConfigPropertyName));
+    }
 
     /**
      * Returns a URL to a file with the given name inside the given directory.
-     * @param directory
      */
     protected static URL findConfigUrlInDirectory(File directory, String configName) {
         if (directory.isDirectory()) {
@@ -60,8 +68,6 @@ public class ConfigFileConfiguration extends PropertiesConfiguration {
     /**
      * Discover the location of the apiman.properties (for example) file by checking
      * in various likely locations.
-     * 
-     * @param configFileName
      */
     private static URL discoverConfigFileUrl(String configFileName, String customConfigPropertyName) {
         URL rval;
@@ -74,7 +80,7 @@ public class ConfigFileConfiguration extends PropertiesConfiguration {
             try {
                 rval = new URL(userConfig);
                 return rval;
-            } catch (Throwable t) {
+            } catch (Exception t) {
             }
             // Treat it as a file
             try {
@@ -83,7 +89,7 @@ public class ConfigFileConfiguration extends PropertiesConfiguration {
                     rval = f.toURI().toURL();
                     return rval;
                 }
-            } catch (Throwable t) {
+            } catch (Exception t) {
             }
             throw new RuntimeException("Apiman configuration provided at [" + userConfig + "] but could not be loaded."); //$NON-NLS-1$ //$NON-NLS-2$
         }
@@ -122,15 +128,4 @@ public class ConfigFileConfiguration extends PropertiesConfiguration {
         ////////////////////////////////////////
         return ConfigFileConfiguration.class.getResource("empty.properties"); //$NON-NLS-1$
     }
-
-    /**
-     * Constructor.
-     * @param configFileName
-     * @param customConfigPropertyName
-     * @throws ConfigurationException
-     */
-    private ConfigFileConfiguration(String configFileName, String customConfigPropertyName) throws ConfigurationException {
-        super(discoverConfigFileUrl(configFileName, customConfigPropertyName));
-    }
-
 }

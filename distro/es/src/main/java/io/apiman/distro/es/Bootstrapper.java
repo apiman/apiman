@@ -34,7 +34,7 @@ import org.elasticsearch.node.NodeBuilder;
 @SuppressWarnings("nls")
 public class Bootstrapper implements ServletContextListener {
 
-    private static Node node = null;
+    private Node node = null;
 
     /**
      * @see javax.servlet.ServletContextListener#contextInitialized(javax.servlet.ServletContextEvent)

@@ -66,12 +66,12 @@ public class JsonImportReader extends AbstractJsonReader implements IImportReade
 
     /**
      * Constructor.
-     * @param logger
-     * @param in
+     * @param logger the apiman logger
+     * @param in the input stream
      * @throws JsonParseException
      * @throws IOException
      */
-    public JsonImportReader(IApimanLogger logger, InputStream in) throws JsonParseException, IOException {
+    public JsonImportReader(IApimanLogger logger, InputStream in) throws IOException {
         this.logger = logger;
         this.in = in;
         jp = new JsonFactory().createParser(in);
@@ -101,52 +101,22 @@ public class JsonImportReader extends AbstractJsonReader implements IImportReade
 
                 switch(fieldName) {
                 case Metadata:
-                    processEntity(MetadataBean.class, new EntityHandler<MetadataBean>() {
-                        @Override
-                        public void handleEntity(MetadataBean metadata) throws Exception {
-                            dispatcher.metadata(metadata);
-                        }
-                    });
+                    processEntity(MetadataBean.class, dispatcher::metadata);
                     break;
                 case Gateways:
-                    processEntities(GatewayBean.class, new EntityHandler<GatewayBean>() {
-                        @Override
-                        public void handleEntity(GatewayBean gateway) throws Exception {
-                            dispatcher.gateway(gateway);
-                        }
-                    });
+                    processEntities(GatewayBean.class, dispatcher::gateway);
                     break;
                 case Plugins:
-                    processEntities(PluginBean.class, new EntityHandler<PluginBean>() {
-                        @Override
-                        public void handleEntity(PluginBean plugin) throws Exception {
-                            dispatcher.plugin(plugin);
-                        }
-                    });
+                    processEntities(PluginBean.class, dispatcher::plugin);
                     break;
                 case Roles:
-                    processEntities(RoleBean.class, new EntityHandler<RoleBean>() {
-                        @Override
-                        public void handleEntity(RoleBean role) throws Exception {
-                            dispatcher.role(role);
-                        }
-                    });
+                    processEntities(RoleBean.class, dispatcher::role);
                     break;
                 case PolicyDefinitions:
-                    processEntities(PolicyDefinitionBean.class, new EntityHandler<PolicyDefinitionBean>() {
-                        @Override
-                        public void handleEntity(PolicyDefinitionBean policyDef) throws Exception {
-                            dispatcher.policyDef(policyDef);
-                        }
-                    });
+                    processEntities(PolicyDefinitionBean.class, dispatcher::policyDef);
                     break;
                 case Users:
-                    processEntities(UserBean.class, new EntityHandler<UserBean>() {
-                        @Override
-                        public void handleEntity(UserBean user) throws Exception {
-                            dispatcher.user(user);
-                        }
-                    });
+                    processEntities(UserBean.class, dispatcher::user);
                     break;
                 case Orgs:
                     readOrgs();
@@ -184,12 +154,7 @@ public class JsonImportReader extends AbstractJsonReader implements IImportReade
 
                     switch (fieldName) {
                     case Memberships:
-                        processEntities(RoleMembershipBean.class, new EntityHandler<RoleMembershipBean>() {
-                            @Override
-                            public void handleEntity(RoleMembershipBean membership) throws StorageException {
-                                dispatcher.membership(membership);
-                            }
-                        });
+                        processEntities(RoleMembershipBean.class, dispatcher::membership);
                         break;
                     case Plans:
                         readPlans();
@@ -201,12 +166,7 @@ public class JsonImportReader extends AbstractJsonReader implements IImportReade
                         readClients();
                         break;
                     case Audits:
-                        processEntities(AuditEntryBean.class, new EntityHandler<AuditEntryBean>() {
-                            @Override
-                            public void handleEntity(AuditEntryBean entry) throws StorageException {
-                                dispatcher.audit(entry);
-                            }
-                        });
+                        processEntities(AuditEntryBean.class, dispatcher::audit);
                         break;
                     default:
                         throw new RuntimeException("Unhandled entity " + fieldName + " with token " + current);
@@ -346,12 +306,7 @@ public class JsonImportReader extends AbstractJsonReader implements IImportReade
                     current = nextToken();
                     switch (fieldName) {
                     case Policies:
-                        processEntities(PolicyBean.class, new EntityHandler<PolicyBean>() {
-                            @Override
-                            public void handleEntity(PolicyBean policy) throws Exception {
-                                dispatcher.apiPolicy(policy);
-                            }
-                        });
+                        processEntities(PolicyBean.class, dispatcher::apiPolicy);
                         break;
                     default:
                         throw new RuntimeException("Unhandled entity " + fieldName + " with token " + current);
@@ -378,20 +333,10 @@ public class JsonImportReader extends AbstractJsonReader implements IImportReade
                     current = nextToken();
                     switch (fieldName) {
                     case Policies:
-                        processEntities(PolicyBean.class, new EntityHandler<PolicyBean>() {
-                            @Override
-                            public void handleEntity(PolicyBean policy) throws Exception {
-                                dispatcher.clientPolicy(policy);
-                            }
-                        });
+                        processEntities(PolicyBean.class, dispatcher::clientPolicy);
                         break;
                     case Contracts:
-                        processEntities(ContractBean.class, new EntityHandler<ContractBean>() {
-                            @Override
-                            public void handleEntity(ContractBean contract) throws Exception {
-                                dispatcher.clientContract(contract);
-                            }
-                        });
+                        processEntities(ContractBean.class, dispatcher::clientContract);
                         break;
                     default:
                         throw new RuntimeException("Unhandled entity " + fieldName + " with token " + current);
