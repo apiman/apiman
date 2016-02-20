@@ -94,9 +94,9 @@ public class EsMarshalling {
      * @throws StorageException when a storage problem occurs while storing a bean
      */
     public static XContentBuilder marshall(PoliciesBean bean) throws StorageException {
-        try {
+        try (XContentBuilder builder = XContentFactory.jsonBuilder()) {
             preMarshall(bean);
-            XContentBuilder builder = XContentFactory.jsonBuilder()
+            builder
                 .startObject()
                     .field("organizationId", bean.getOrganizationId())
                     .field("entityId", bean.getEntityId())
@@ -135,9 +135,9 @@ public class EsMarshalling {
      * @throws StorageException when a storage problem occurs while storing a bean
      */
     public static XContentBuilder marshall(GatewayBean bean) throws StorageException {
-        try {
+        try (XContentBuilder builder = XContentFactory.jsonBuilder()) {
             preMarshall(bean);
-            XContentBuilder builder = XContentFactory.jsonBuilder()
+            builder
                 .startObject()
                     .field("id", bean.getId())
                     .field("name", bean.getName())
@@ -163,9 +163,9 @@ public class EsMarshalling {
      * @throws StorageException when a storage problem occurs while storing a bean
      */
     public static XContentBuilder marshall(ApiDefinitionBean bean) throws StorageException {
-        try {
+        try (XContentBuilder builder = XContentFactory.jsonBuilder()) {
             preMarshall(bean);
-            XContentBuilder builder = XContentFactory.jsonBuilder()
+            builder
                 .startObject()
                     .field("data", bean.getData())
                 .endObject();
@@ -183,9 +183,9 @@ public class EsMarshalling {
      * @throws StorageException when a storage problem occurs while storing a bean
      */
     public static XContentBuilder marshall(ContractBean bean) throws StorageException {
-        try {
+        try (XContentBuilder builder = XContentFactory.jsonBuilder()) {
             preMarshall(bean);
-            XContentBuilder builder = XContentFactory.jsonBuilder()
+            builder
                 .startObject()
                     .field("id", bean.getId())
                     .field("apiKey", bean.getApikey())
@@ -220,9 +220,9 @@ public class EsMarshalling {
      * @throws StorageException when a storage problem occurs while storing a bean
      */
     public static XContentBuilder marshall(PlanBean bean) throws StorageException {
-        try {
+        try (XContentBuilder builder = XContentFactory.jsonBuilder()) {
             preMarshall(bean);
-            XContentBuilder builder = XContentFactory.jsonBuilder()
+            builder
                 .startObject()
                     .field("organizationId", bean.getOrganization().getId())
                     .field("organizationName", bean.getOrganization().getName())
@@ -246,11 +246,11 @@ public class EsMarshalling {
      * @throws StorageException when a storage problem occurs while storing a bean
      */
     public static XContentBuilder marshall(PlanVersionBean bean) throws StorageException {
-        try {
+        try (XContentBuilder builder = XContentFactory.jsonBuilder()) {
             PlanBean plan = bean.getPlan();
             OrganizationBean org = plan.getOrganization();
             preMarshall(bean);
-            XContentBuilder builder = XContentFactory.jsonBuilder()
+            builder
                 .startObject()
                     .field("organizationId", org.getId())
                     .field("organizationName", org.getName())
@@ -279,9 +279,9 @@ public class EsMarshalling {
      * @throws StorageException when a storage problem occurs while storing a bean
      */
     public static XContentBuilder marshall(ApiBean bean) throws StorageException {
-        try {
+        try (XContentBuilder builder = XContentFactory.jsonBuilder()) {
             preMarshall(bean);
-            XContentBuilder builder = XContentFactory.jsonBuilder()
+            builder
                 .startObject()
                     .field("organizationId", bean.getOrganization().getId())
                     .field("organizationName", bean.getOrganization().getName())
@@ -306,11 +306,11 @@ public class EsMarshalling {
      * @throws StorageException when a storage problem occurs while storing a bean
      */
     public static XContentBuilder marshall(ApiVersionBean bean) throws StorageException {
-        try {
+        try (XContentBuilder builder = XContentFactory.jsonBuilder()) {
             ApiBean api = bean.getApi();
             OrganizationBean org = api.getOrganization();
             preMarshall(bean);
-            XContentBuilder builder = XContentFactory.jsonBuilder()
+            builder
                 .startObject()
                     .field("organizationId", org.getId())
                     .field("organizationName", org.getName())
@@ -374,9 +374,9 @@ public class EsMarshalling {
      * @throws StorageException when a storage problem occurs while storing a bean
      */
     public static XContentBuilder marshall(ClientBean bean) throws StorageException {
-        try {
+        try (XContentBuilder builder = XContentFactory.jsonBuilder()) {
             preMarshall(bean);
-            XContentBuilder builder = XContentFactory.jsonBuilder()
+            builder
                 .startObject()
                     .field("organizationId", bean.getOrganization().getId())
                     .field("organizationName", bean.getOrganization().getName())
@@ -400,11 +400,11 @@ public class EsMarshalling {
      * @throws StorageException when a storage problem occurs while storing a bean
      */
     public static XContentBuilder marshall(ClientVersionBean bean) throws StorageException {
-        try {
+        try (XContentBuilder builder = XContentFactory.jsonBuilder()) {
             ClientBean client = bean.getClient();
             OrganizationBean org = client.getOrganization();
             preMarshall(bean);
-            XContentBuilder builder = XContentFactory.jsonBuilder()
+            builder
                 .startObject()
                     .field("organizationId", org.getId())
                     .field("organizationName", org.getName())
@@ -434,9 +434,9 @@ public class EsMarshalling {
      * @throws StorageException when a storage problem occurs while storing a bean
      */
     public static XContentBuilder marshall(AuditEntryBean bean) throws StorageException {
-        try {
+        try (XContentBuilder builder = XContentFactory.jsonBuilder()) {
             preMarshall(bean);
-            XContentBuilder builder = XContentFactory.jsonBuilder()
+            builder
                 .startObject()
                     .field("id", bean.getId())
                     .field("organizationId", bean.getOrganizationId())
@@ -462,9 +462,9 @@ public class EsMarshalling {
      * @throws StorageException when a storage problem occurs while storing a bean
      */
     public static XContentBuilder marshall(OrganizationBean bean) throws StorageException {
-        try {
+        try (XContentBuilder builder = XContentFactory.jsonBuilder()) {
             preMarshall(bean);
-            XContentBuilder builder = XContentFactory.jsonBuilder()
+            builder
                 .startObject()
                     .field("id", bean.getId())
                     .field("name", bean.getName())
@@ -488,9 +488,9 @@ public class EsMarshalling {
      * @throws StorageException when a storage problem occurs while storing a bean
      */
     public static XContentBuilder marshall(RoleMembershipBean bean) throws StorageException {
-        try {
+        try (XContentBuilder builder = XContentFactory.jsonBuilder()) {
             preMarshall(bean);
-            XContentBuilder builder = XContentFactory.jsonBuilder()
+            builder
                 .startObject()
                     .field("id", bean.getId())
                     .field("organizationId", bean.getOrganizationId())
@@ -512,9 +512,9 @@ public class EsMarshalling {
      * @throws StorageException when a storage problem occurs while storing a bean
      */
     public static XContentBuilder marshall(UserBean bean) throws StorageException {
-        try {
+        try (XContentBuilder builder = XContentFactory.jsonBuilder()) {
             preMarshall(bean);
-            XContentBuilder builder = XContentFactory.jsonBuilder()
+            builder
                 .startObject()
                     .field("username", bean.getUsername())
                     .field("email", bean.getEmail())
@@ -535,9 +535,9 @@ public class EsMarshalling {
      * @throws StorageException when a storage problem occurs while storing a bean
      */
     public static XContentBuilder marshall(RoleBean bean) throws StorageException {
-        try {
+        try (XContentBuilder builder = XContentFactory.jsonBuilder()) {
             preMarshall(bean);
-            XContentBuilder builder = XContentFactory.jsonBuilder()
+            builder
                 .startObject()
                     .field("id", bean.getId())
                     .field("name", bean.getName())
@@ -564,9 +564,9 @@ public class EsMarshalling {
      * @throws StorageException when a storage problem occurs while storing a bean
      */
     public static XContentBuilder marshall(PolicyDefinitionBean bean) throws StorageException {
-        try {
+        try (XContentBuilder builder = XContentFactory.jsonBuilder()) {
             preMarshall(bean);
-            XContentBuilder builder = XContentFactory.jsonBuilder()
+            builder
                 .startObject()
                     .field("id", bean.getId())
                     .field("name", bean.getName())
@@ -605,9 +605,9 @@ public class EsMarshalling {
      * @throws StorageException when a storage problem occurs while storing a bean
      */
     public static XContentBuilder marshall(PluginBean bean) throws StorageException {
-        try {
+        try (XContentBuilder builder = XContentFactory.jsonBuilder()) {
             preMarshall(bean);
-            XContentBuilder builder = XContentFactory.jsonBuilder()
+            builder
                 .startObject()
                     .field("id", bean.getId())
                     .field("name", bean.getName())
@@ -635,9 +635,9 @@ public class EsMarshalling {
      * @throws StorageException when a storage problem occurs while storing a bean
      */
     public static XContentBuilder marshall(DownloadBean bean) throws StorageException {
-        try {
+        try (XContentBuilder builder = XContentFactory.jsonBuilder()) {
             preMarshall(bean);
-            XContentBuilder builder = XContentFactory.jsonBuilder()
+            builder
                 .startObject()
                     .field("id", bean.getId())
                     .field("type", bean.getType().name())
