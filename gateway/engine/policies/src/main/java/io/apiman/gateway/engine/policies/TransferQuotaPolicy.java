@@ -17,10 +17,10 @@ package io.apiman.gateway.engine.policies;
 
 import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
-import io.apiman.gateway.engine.beans.PolicyFailure;
-import io.apiman.gateway.engine.beans.PolicyFailureType;
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.ApiResponse;
+import io.apiman.gateway.engine.beans.PolicyFailure;
+import io.apiman.gateway.engine.beans.PolicyFailureType;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.components.IRateLimiterComponent;
 import io.apiman.gateway.engine.components.rate.RateLimitResponse;
@@ -79,13 +79,13 @@ public class TransferQuotaPolicy extends AbstractMappedDataPolicy<TransferQuotaC
         String bucketId = "XFERQUOTA||" + RateLimitingPolicy.bucketId(request, config); //$NON-NLS-1$
         final RateBucketPeriod period = RateLimitingPolicy.getPeriod(config);
 
-        if (bucketId == RateLimitingPolicy.NO_USER_AVAILABLE) {
+        if (bucketId.equals(RateLimitingPolicy.NO_USER_AVAILABLE)) {
             IPolicyFailureFactoryComponent failureFactory = context.getComponent(IPolicyFailureFactoryComponent.class);
             PolicyFailure failure = failureFactory.createFailure(PolicyFailureType.Other, PolicyFailureCodes.NO_USER_FOR_RATE_LIMITING, Messages.i18n.format("TransferQuotaPolicy.NoUser")); //$NON-NLS-1$
             chain.doFailure(failure);
             return;
         }
-        if (bucketId == RateLimitingPolicy.NO_CLIENT_AVAILABLE) {
+        if (bucketId.equals(RateLimitingPolicy.NO_CLIENT_AVAILABLE)) {
             IPolicyFailureFactoryComponent failureFactory = context.getComponent(IPolicyFailureFactoryComponent.class);
             PolicyFailure failure = failureFactory.createFailure(PolicyFailureType.Other, PolicyFailureCodes.NO_APP_FOR_RATE_LIMITING, Messages.i18n.format("TransferQuotaPolicy.NoApp")); //$NON-NLS-1$
             chain.doFailure(failure);
