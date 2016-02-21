@@ -74,17 +74,17 @@ public class VertxApimanBuffer implements IApimanBuffer {
 
     @Override
     public void insert(int index, IApimanBuffer buffer, int offset, int length) {
-        nativeBuffer.setBuffer(index, (Buffer) buffer, offset, length);
+        nativeBuffer.setBuffer(index, (Buffer) buffer.getNativeBuffer(), offset, length);
     }
 
     @Override
     public void append(IApimanBuffer buffer) {
-        nativeBuffer.appendBuffer((Buffer) buffer);
+        nativeBuffer.appendBuffer((Buffer) buffer.getNativeBuffer());
     }
 
     @Override
     public void append(IApimanBuffer buffer, int offset, int length) {
-        nativeBuffer.appendBuffer((Buffer) buffer, offset, length);
+        nativeBuffer.appendBuffer((Buffer) buffer.getNativeBuffer(), offset, length);
     }
 
     @Override
