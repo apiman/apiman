@@ -63,27 +63,27 @@ public class CipherSelectingSSLSocketFactory extends SSLSocketFactory {
 
     @Override
     public Socket createSocket(String host, int port) throws IOException, UnknownHostException {
-        SSLSocket socket = (SSLSocket) createSocket(host, port);
+        SSLSocket socket = (SSLSocket) delegate.createSocket(host, port);
         return prepareSSLSocket(socket);
     }
 
     @Override
     public Socket createSocket(InetAddress host, int port) throws IOException {
-        SSLSocket socket = (SSLSocket) createSocket(host, port);
+        SSLSocket socket = (SSLSocket) delegate.createSocket(host, port);
         return prepareSSLSocket(socket);
     }
 
     @Override
     public Socket createSocket(String host, int port, InetAddress localHost, int localPort)
             throws IOException, UnknownHostException {
-        SSLSocket socket = (SSLSocket) createSocket(host, port, localHost, localPort);
+        SSLSocket socket = (SSLSocket) delegate.createSocket(host, port, localHost, localPort);
         return prepareSSLSocket(socket);
     }
 
     @Override
     public Socket createSocket(InetAddress address, int port, InetAddress localAddress, int localPort)
             throws IOException {
-        SSLSocket socket = (SSLSocket) createSocket(address, port, localAddress, localPort);
+        SSLSocket socket = (SSLSocket) delegate.createSocket(address, port, localAddress, localPort);
         return prepareSSLSocket(socket);
     }
 
