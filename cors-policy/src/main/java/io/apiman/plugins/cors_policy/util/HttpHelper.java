@@ -32,20 +32,22 @@ public class HttpHelper {
     public static final String OPTIONS = "OPTIONS";//$NON-NLS-1$
 
     // Simple verbs
-    public static final Set<String> SIMPLE_METHODS = new HashSet<>(Arrays.asList(
+    private static final Set<String> SIMPLE_METHODS = new HashSet<>(Arrays.asList(
                 new String[] { GET, HEAD, POST }
             ));
 
     // If Content-Type header is requested, then value must be one of following, else requires preflight
-    public static final Set<String> SIMPLE_CONTENT_TYPES = new InsensitiveLinkedHashSet(Arrays.asList(
+    private static final Set<String> SIMPLE_CONTENT_TYPES = new InsensitiveLinkedHashSet(Arrays.asList(
                 new String[] { "application/x-www-form-urlencoded", "multipart/form-data", "text/plain" } //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             ));
 
     // Any header request other than the following requires preflight. Many browsers don't bother asking if from known list.
-    public static final Set<String> SIMPLE_HEADER_TYPES = new InsensitiveLinkedHashSet(Arrays.asList(
+    private static final Set<String> SIMPLE_HEADER_TYPES = new InsensitiveLinkedHashSet(Arrays.asList(
                 new String[] { "Cache-Control", "Content-Language", "Content-Type",  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                                 "Expires", "Last-Modified", "Pragma" } //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             ));
+
+    private HttpHelper() {}
 
     /**
      * @param method http method
