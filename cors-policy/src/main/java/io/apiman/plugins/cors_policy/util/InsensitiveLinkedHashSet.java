@@ -76,8 +76,7 @@ public class InsensitiveLinkedHashSet extends LinkedHashSet<String> implements S
 
     @Override
     public boolean contains(Object candidate) {
-
-        if (candidate == null && !(candidate instanceof String))
+        if (candidate == null || !(candidate instanceof String))
             return false;
 
         return innerSet.contains(((String) candidate).toLowerCase());

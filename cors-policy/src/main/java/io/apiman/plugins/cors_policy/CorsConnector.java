@@ -185,7 +185,7 @@ public class CorsConnector implements IApiConnector {
         String reqType = request.getType();
 
         if (HttpHelper.isSimpleMethod(reqType)) {
-            if (reqType == HttpHelper.POST) {
+            if (reqType.equals(HttpHelper.POST)) {
                 return HttpHelper.isSimpleContentType(contentType)
                         && (headers == null || HttpHelper.isSimpleHeader(headers));
             } else {
@@ -198,16 +198,16 @@ public class CorsConnector implements IApiConnector {
 
     private void appendMandatory(String name, String value, String defaultValue, boolean predicate,
             String failureMessage) {
-
+        String valToSet = value;
         if (value == null || !predicate) {
-            value = defaultValue;
+            valToSet = defaultValue;
 
             if (!predicate && config.isErrorOnCorsFailure()) {
                 doFailure(failureMessage);
             }
         }
 
-        responseHeaders.put(name, value);
+        responseHeaders.put(name, valToSet);
     }
 
     private void appendOptional(String name, String value, boolean predicate, String failureMessage) {
