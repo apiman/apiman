@@ -18,6 +18,7 @@ package io.apiman.gateway.engine.beans;
 import io.apiman.gateway.engine.beans.util.HeaderMap;
 import io.apiman.gateway.engine.beans.util.QueryMap;
 
+import java.beans.Transient;
 import java.io.Serializable;
 
 /**
@@ -38,7 +39,7 @@ public class ApiRequest implements IApiObject, Serializable {
     private QueryMap queryParams = new QueryMap();
     private HeaderMap headers = new HeaderMap();
     private String remoteAddr;
-    private Object rawRequest;
+    private transient Object rawRequest;
     private boolean transportSecurity = false;
 
     /*

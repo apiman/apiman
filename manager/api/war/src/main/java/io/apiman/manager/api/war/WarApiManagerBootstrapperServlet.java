@@ -45,9 +45,10 @@ public class WarApiManagerBootstrapperServlet extends HttpServlet {
     private static final long serialVersionUID = -362982634664023862L;
 
     @Inject @ApimanLogger(WarApiManagerBootstrapperServlet.class)
-    private IApimanLogger logger;
+    static IApimanLogger logger;
+
     @Inject
-    private StorageImportDispatcher importer;
+    static StorageImportDispatcher importer;
 
     /**
      * @see javax.servlet.GenericServlet#init()
@@ -99,7 +100,7 @@ public class WarApiManagerBootstrapperServlet extends HttpServlet {
     }
 
     /**
-     * @return
+     * Get the data directory
      */
     private static File getDataDir() {
         File rval = null;

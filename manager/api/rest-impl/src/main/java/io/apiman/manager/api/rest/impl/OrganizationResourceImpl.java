@@ -185,7 +185,7 @@ import org.joda.time.format.ISODateTimeFormat;
 public class OrganizationResourceImpl implements IOrganizationResource {
 
     @SuppressWarnings("nls")
-    public static final String [] DATE_FORMATS = {
+    private static final String [] DATE_FORMATS = {
         "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
         "yyyy-MM-dd'T'HH:mm:ss'Z'",
         "yyyy-MM-dd'T'HH:mm:ssz",
@@ -3262,11 +3262,11 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     /**
      * Gets a policy by its id.  Also verifies that the policy really does belong to
      * the entity indicated.
-     * @param type
-     * @param organizationId
-     * @param entityId
-     * @param entityVersion
-     * @param policyId
+     * @param type the policy type
+     * @param organizationId the org id
+     * @param entityId the entity id
+     * @param entityVersion the entity version
+     * @param policyId the policy id
      * @return a policy bean
      * @throws PolicyNotFoundException
      */
@@ -3316,7 +3316,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @param versionBean
+     * Decrypt the endpoint properties
      */
     private void decryptEndpointProperties(ApiVersionBean versionBean) {
         Map<String, String> endpointProperties = versionBean.getEndpointProperties();
@@ -3328,7 +3328,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @param versionBean
+     * Encrypt the endpoint properties
      */
     private void encryptEndpointProperties(ApiVersionBean versionBean) {
         Map<String, String> endpointProperties = versionBean.getEndpointProperties();
@@ -3467,7 +3467,6 @@ public class OrganizationResourceImpl implements IOrganizationResource {
 
     /**
      * Parse the to date query param.
-     * @param fromDate
      */
     private DateTime parseFromDate(String fromDate) {
         // Default to the last 30 days
@@ -3478,7 +3477,6 @@ public class OrganizationResourceImpl implements IOrganizationResource {
 
     /**
      * Parse the from date query param.
-     * @param fromDate
      */
     private DateTime parseToDate(String toDate) {
         // Default to now
@@ -3487,9 +3485,6 @@ public class OrganizationResourceImpl implements IOrganizationResource {
 
     /**
      * Parses a query param representing a date into an actual date object.
-     * @param dateStr
-     * @param defaultDate
-     * @param floor
      */
     private static DateTime parseDate(String dateStr, DateTime defaultDate, boolean floor) {
         if ("now".equals(dateStr)) { //$NON-NLS-1$
@@ -3515,8 +3510,6 @@ public class OrganizationResourceImpl implements IOrganizationResource {
 
     /**
      * Ensures that the given date range is valid.
-     * @param from
-     * @param to
      */
     private void validateMetricRange(DateTime from, DateTime to) throws InvalidMetricCriteriaException {
         if (from.isAfter(to)) {
@@ -3527,9 +3520,6 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     /**
      * Ensures that a time series can be created for the given date range and
      * interval, and that the
-     * @param from
-     * @param to
-     * @param interval
      */
     private void validateTimeSeriesMetric(DateTime from, DateTime to, HistogramIntervalType interval)
             throws InvalidMetricCriteriaException {
@@ -3562,7 +3552,6 @@ public class OrganizationResourceImpl implements IOrganizationResource {
 
     /**
      * Make sure we've got a valid URL.
-     * @param endpoint
      */
     private void validateEndpoint(String endpoint) {
         try {

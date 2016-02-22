@@ -20,6 +20,8 @@ import java.io.File;
 import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 import org.apache.commons.io.FileUtils;
 import org.h2.tools.Server;
@@ -33,6 +35,7 @@ import org.h2.tools.Server;
 @SuppressWarnings("nls")
 public class ApimanJdbcServer {
 
+    private ApimanJdbcServer() {}
 
     public static void main(String[] args) {
         try {
@@ -46,18 +49,19 @@ public class ApimanJdbcServer {
 
             Server.createTcpServer("-tcpPassword", "sa", "-baseDir", dataDir.getAbsolutePath(), "-tcpPort", "9092", "-tcpAllowOthers").start();
             Class.forName("org.h2.Driver");
-            Connection connection = DriverManager.getConnection(url, "sa", "");
-            System.out.println("Connection Established: " + connection.getMetaData().getDatabaseProductName() + "/" + connection.getCatalog());
-            connection.prepareStatement("CREATE TABLE users ( username varchar(255) NOT NULL, password varchar(255) NOT NULL, PRIMARY KEY (username))").executeUpdate();
-            connection.prepareStatement("INSERT INTO users (username, password) VALUES ('bwayne', 'ae2efd698aefdf366736a4eda1bc5241f9fbfec7')").executeUpdate();
-            connection.prepareStatement("INSERT INTO users (username, password) VALUES ('ckent', 'ea59f7ca52a2087c99374caba0ff29be1b2dcdbf')").executeUpdate();
-            connection.prepareStatement("INSERT INTO users (username, password) VALUES ('ballen', 'ea59f7ca52a2087c99374caba0ff29be1b2dcdbf')").executeUpdate();
-            connection.prepareStatement("CREATE TABLE roles (rolename varchar(255) NOT NULL, username varchar(255) NOT NULL)").executeUpdate();
-            connection.prepareStatement("INSERT INTO roles (rolename, username) VALUES ('user', 'bwayne')").executeUpdate();
-            connection.prepareStatement("INSERT INTO roles (rolename, username) VALUES ('admin', 'bwayne')").executeUpdate();
-            connection.prepareStatement("INSERT INTO roles (rolename, username) VALUES ('ckent', 'user')").executeUpdate();
-            connection.prepareStatement("INSERT INTO roles (rolename, username) VALUES ('ballen', 'user')").executeUpdate();
-            connection.close();
+
+            try (Connection connection = DriverManager.getConnection(url, "sa", "")) {
+                System.out.println("Connection Established: " + connection.getMetaData().getDatabaseProductName() + "/" + connection.getCatalog());
+                executeUpdate(connection, "CREATE TABLE users ( username varchar(255) NOT NULL, password varchar(255) NOT NULL, PRIMARY KEY (username))");
+                executeUpdate(connection, "INSERT INTO users (username, password) VALUES ('bwayne', 'ae2efd698aefdf366736a4eda1bc5241f9fbfec7')");
+                executeUpdate(connection, "INSERT INTO users (username, password) VALUES ('ckent', 'ea59f7ca52a2087c99374caba0ff29be1b2dcdbf')");
+                executeUpdate(connection, "INSERT INTO users (username, password) VALUES ('ballen', 'ea59f7ca52a2087c99374caba0ff29be1b2dcdbf')");
+                executeUpdate(connection, "CREATE TABLE roles (rolename varchar(255) NOT NULL, username varchar(255) NOT NULL)");
+                executeUpdate(connection, "INSERT INTO roles (rolename, username) VALUES ('user', 'bwayne')");
+                executeUpdate(connection, "INSERT INTO roles (rolename, username) VALUES ('admin', 'bwayne')");
+                executeUpdate(connection, "INSERT INTO roles (rolename, username) VALUES ('ckent', 'user')");
+                executeUpdate(connection, "INSERT INTO roles (rolename, username) VALUES ('ballen', 'user')");
+            }
 
             System.out.println("======================================================");
             System.out.println("JDBC (H2) server started successfully.");
@@ -81,6 +85,12 @@ public class ApimanJdbcServer {
             System.out.println("Done!");
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private static void executeUpdate(Connection connection, String statement) throws SQLException {
+        try (PreparedStatement ps = connection.prepareStatement(statement)) {
+            ps.executeUpdate();
         }
     }
 

@@ -62,7 +62,7 @@ public class WarEngineConfig implements IEngineConfig {
     public static final String APIMAN_GATEWAY_WRITER_FORMATTER_CLASS = "apiman-gateway.writers.policy-failure"; //$NON-NLS-1$
     public static final String APIMAN_GATEWAY_ERROR_WRITER_CLASS = "apiman-gateway.writers.error"; //$NON-NLS-1$
 
-    public static Configuration config;
+    public static final Configuration config;
     static {
         config = ConfigFactory.createConfig();
     }
@@ -111,6 +111,7 @@ public class WarEngineConfig implements IEngineConfig {
      * @return the class to use as the {@link IPluginRegistry}
      */
     @Override
+    @SuppressWarnings("unchecked")
     public Class<IPluginRegistry> getPluginRegistryClass() {
         return (Class<IPluginRegistry>) loadConfigClass(APIMAN_GATEWAY_PLUGIN_REGISTRY_CLASS, IPluginRegistry.class, null);
     }
@@ -180,6 +181,7 @@ public class WarEngineConfig implements IEngineConfig {
      * @see io.apiman.gateway.engine.IEngineConfig#getComponentClass(java.lang.Class, io.apiman.gateway.engine.IPluginRegistry)
      */
     @Override
+    @SuppressWarnings("unchecked")
     public <T extends IComponent> Class<T> getComponentClass(Class<T> componentType,
             IPluginRegistry pluginRegistry) {
         return (Class<T>) loadConfigClass(APIMAN_GATEWAY_COMPONENT_PREFIX + componentType.getSimpleName(), componentType, pluginRegistry);
@@ -210,8 +212,10 @@ public class WarEngineConfig implements IEngineConfig {
     }
 
     /**
+     * @param pluginRegistry The plugin registry
      * @return the class to use as the {@link IPolicyFailureWriter}
      */
+    @SuppressWarnings("unchecked")
     public Class<IPolicyFailureWriter> getPolicyFailureWriterClass(IPluginRegistry pluginRegistry) {
         return (Class<IPolicyFailureWriter>) loadConfigClass(APIMAN_GATEWAY_WRITER_FORMATTER_CLASS,
                 IPolicyFailureWriter.class, pluginRegistry, DefaultPolicyFailureWriter.class);
@@ -227,6 +231,7 @@ public class WarEngineConfig implements IEngineConfig {
     /**
      * @return the class to use as the {@link IPolicyErrorWriter}
      */
+    @SuppressWarnings("unchecked")
     public Class<IPolicyErrorWriter> getPolicyErrorWriterClass(IPluginRegistry pluginRegistry) {
         return (Class<IPolicyErrorWriter>) loadConfigClass(APIMAN_GATEWAY_ERROR_WRITER_CLASS,
                 IPolicyErrorWriter.class, pluginRegistry, DefaultPolicyErrorWriter.class);
@@ -242,7 +247,6 @@ public class WarEngineConfig implements IEngineConfig {
     /**
      * @return a loaded class
      */
-    @SuppressWarnings("unchecked")
     private <T> Class<? extends T> loadConfigClass(String property, Class<T> type, IPluginRegistry pluginRegistry) {
         Class<? extends T> rval = loadConfigClass(property, type, pluginRegistry, null);
         if (rval == null) {
@@ -252,7 +256,7 @@ public class WarEngineConfig implements IEngineConfig {
     }
 
     /**
-     * @return a loaded class
+     * Load a config class
      */
     @SuppressWarnings("unchecked")
     private <T> Class<? extends T> loadConfigClass(String property, Class<T> type, IPluginRegistry pluginRegistry, Class<? extends T> defaultClass) {
@@ -296,7 +300,7 @@ public class WarEngineConfig implements IEngineConfig {
     /**
      * Gets all properties in the engine configuration that are prefixed
      * with the given prefix.
-     * @param prefix
+     * @param prefix the prefix
      * @return all prefixed properties
      */
     private Map<String, String> getConfigMap(String prefix) {

@@ -61,8 +61,45 @@ import org.apache.commons.io.IOUtils;
  * @author eric.wittmann@redhat.com
  */
 public class DefaultPluginRegistry implements IPluginRegistry {
+    private File pluginsDir;
+    private final Map<PluginCoordinates, Plugin> pluginCache = new HashMap<>();
+    private Map<PluginCoordinates, Throwable> errorCache = new HashMap<>();
+    private Set<URL> pluginRepositories;
 
-    private static File createTempPluginsDir() {
+    /**
+     * Constructor.
+     */
+    public DefaultPluginRegistry() {
+        this(createTempPluginsDir(), PluginUtils.getDefaultMavenRepositories());
+    }
+
+    /**
+     * Constructor.
+     * @param configMap the configuration map
+     */
+    public DefaultPluginRegistry(Map<String, String> configMap) {
+        this(getConfiguredPluginsDir(configMap), getConfiguredPluginRepositories(configMap));
+    }
+
+    /**
+     * Constructor.
+     * @param pluginsDir the plugins directory
+     */
+    public DefaultPluginRegistry(File pluginsDir) {
+        this(pluginsDir, PluginUtils.getDefaultMavenRepositories());
+    }
+
+    /**
+     * Constructor.
+     * @param pluginsDir the plugins directory
+     * @param pluginRepositories the plugin repositories
+     */
+    public DefaultPluginRegistry(File pluginsDir, Set<URL> pluginRepositories) {
+        this.pluginsDir = pluginsDir;
+        this.pluginRepositories = pluginRepositories;
+    }
+
+    private static final File createTempPluginsDir() {
         // TODO log a warning here
         try {
             @SuppressWarnings("nls")
@@ -109,44 +146,6 @@ public class DefaultPluginRegistry implements IPluginRegistry {
         return rval;
     }
 
-    private File pluginsDir;
-    private Map<PluginCoordinates, Plugin> pluginCache = new HashMap<>();
-    private Map<PluginCoordinates, Throwable> errorCache = new HashMap<>();
-    private Set<URL> pluginRepositories;
-
-    /**
-     * Constructor.
-     */
-    public DefaultPluginRegistry() {
-        this(createTempPluginsDir(), PluginUtils.getDefaultMavenRepositories());
-    }
-
-    /**
-     * Constructor.
-     * @param configMap the configuration map
-     */
-    public DefaultPluginRegistry(Map<String, String> configMap) {
-        this(getConfiguredPluginsDir(configMap), getConfiguredPluginRepositories(configMap));
-    }
-
-    /**
-     * Constructor.
-     * @param pluginsDir the plugins directory
-     */
-    public DefaultPluginRegistry(File pluginsDir) {
-        this(pluginsDir, PluginUtils.getDefaultMavenRepositories());
-    }
-
-    /**
-     * Constructor.
-     * @param pluginsDir the plugins directory
-     * @param pluginRepositories the plugin repositories
-     */
-    public DefaultPluginRegistry(File pluginsDir, Set<URL> pluginRepositories) {
-        this.pluginsDir = pluginsDir;
-        this.pluginRepositories = pluginRepositories;
-    }
-
     /**
      * @see io.apiman.gateway.engine.IPluginRegistry#loadPlugin(io.apiman.common.plugin.PluginCoordinates, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
@@ -157,33 +156,30 @@ public class DefaultPluginRegistry implements IPluginRegistry {
 
         // Wrap the user provided handler so we can hook into the response.  We want to cache
         // the result (regardless of whether it's a success or failure)
-        final IAsyncResultHandler<Plugin> handler = new IAsyncResultHandler<Plugin>() {
-            @Override
-            public void handle(IAsyncResult<Plugin> result) {
-                synchronized (pluginCache) {
-                    if (result.isError()) {
-                        // Don't cache errors if the plugin is a snapshot version.
-                        if (!isSnapshot) {
-                            errorCache.put(coordinates, result.getError());
-                        }
+        final IAsyncResultHandler<Plugin> handler = (IAsyncResult<Plugin> result) -> {
+            synchronized (pluginCache) {
+                if (result.isError()) {
+                    // Don't cache errors if the plugin is a snapshot version.
+                    if (!isSnapshot) {
+                        errorCache.put(coordinates, result.getError());
+                    }
+                } else {
+                    // Make sure we *always* use whatever is in the cache.  This resolves a
+                    // race condition where multiple threads could ask for the plugin at the
+                    // same time, resulting in two or more threads downloading the plugin.
+                    // This is OK as long as we make sure we only ever use one.
+                    if (pluginCache.containsKey(coordinates)) {
+                        try { result.getResult().getLoader().close(); } catch (IOException e) {}
+                        result = AsyncResultImpl.create(pluginCache.get(coordinates));
                     } else {
-                        // Make sure we *always* use whatever is in the cache.  This resolves a
-                        // race condition where multiple threads could ask for the plugin at the
-                        // same time, resulting in two or more threads downloading the plugin.
-                        // This is OK as long as we make sure we only ever use one.
-                        if (pluginCache.containsKey(coordinates)) {
-                            try { result.getResult().getLoader().close(); } catch (IOException e) {}
-                            result = AsyncResultImpl.create(pluginCache.get(coordinates));
-                        } else {
-                            pluginCache.put(coordinates, result.getResult());
-                        }
+                        pluginCache.put(coordinates, result.getResult());
                     }
                 }
-                if (userHandler != null) {
-                    userHandler.handle(result);
-                }
-                future.setResult(result);
             }
+            if (userHandler != null) {
+                userHandler.handle(result);
+            }
+            future.setResult(result);
         };
 
         boolean handled = false;
@@ -262,35 +258,32 @@ public class DefaultPluginRegistry implements IPluginRegistry {
         // Last effort - try to download it from a remote maven repository.  If this fails, then
         // we have to simply report "plugin not found".
         if (!handled) {
-            downloadPlugin(coordinates, new IAsyncResultHandler<File>() {
-                @Override
-                public void handle(IAsyncResult<File> result) {
-                    if (result.isSuccess()) {
-                        File downloadedArtifactFile = result.getResult();
-                        if (downloadedArtifactFile == null || !downloadedArtifactFile.isFile()) {
-                            handler.handle(AsyncResultImpl.<Plugin>create(new Exception(Messages.i18n.format("DefaultPluginRegistry.PluginNotFound")))); //$NON-NLS-1$
-                        } else {
-                            try {
-                                String pluginRelativePath = PluginUtils.getPluginRelativePath(coordinates);
-                                File pluginDir = new File(pluginsDir, pluginRelativePath);
-                                if (!pluginDir.exists()) {
-                                    pluginDir.mkdirs();
-                                }
-                                File pluginFile = new File(pluginDir, "plugin." + coordinates.getType()); //$NON-NLS-1$
-                                if (!pluginFile.exists()) {
-                                    FileUtils.copyFile(downloadedArtifactFile, pluginFile);
-                                    FileUtils.deleteQuietly(downloadedArtifactFile);
-                                } else {
-                                    FileUtils.deleteQuietly(downloadedArtifactFile);
-                                }
-                                handler.handle(AsyncResultImpl.create(readPluginFile(coordinates, pluginFile)));
-                            } catch (Exception error) {
-                                handler.handle(AsyncResultImpl.<Plugin>create(error));
-                            }
-                        }
+            downloadPlugin(coordinates, (IAsyncResult<File> result) -> {
+                if (result.isSuccess()) {
+                    File downloadedArtifactFile = result.getResult();
+                    if (downloadedArtifactFile == null || !downloadedArtifactFile.isFile()) {
+                        handler.handle(AsyncResultImpl.<Plugin>create(new Exception(Messages.i18n.format("DefaultPluginRegistry.PluginNotFound")))); //$NON-NLS-1$
                     } else {
-                        handler.handle(AsyncResultImpl.<Plugin>create(result.getError()));
+                        try {
+                            String pluginRelativePath1 = PluginUtils.getPluginRelativePath(coordinates);
+                            File pluginDir1 = new File(pluginsDir, pluginRelativePath1);
+                            if (!pluginDir1.exists()) {
+                                pluginDir1.mkdirs();
+                            }
+                            File pluginFile1 = new File(pluginDir1, "plugin." + coordinates.getType()); //$NON-NLS-1$
+                            if (!pluginFile1.exists()) {
+                                FileUtils.copyFile(downloadedArtifactFile, pluginFile1);
+                                FileUtils.deleteQuietly(downloadedArtifactFile);
+                            } else {
+                                FileUtils.deleteQuietly(downloadedArtifactFile);
+                            }
+                            handler.handle(AsyncResultImpl.create(readPluginFile(coordinates, pluginFile1)));
+                        } catch (Exception error) {
+                            handler.handle(AsyncResultImpl.<Plugin>create(error));
+                        }
                     }
+                } else {
+                    handler.handle(AsyncResultImpl.<Plugin>create(result.getError()));
                 }
             });
         }
@@ -299,7 +292,7 @@ public class DefaultPluginRegistry implements IPluginRegistry {
     }
 
     /**
-     * @param coordinates
+     * @param coordinates the coordinates
      */
     private void removeFromCache(PluginCoordinates coordinates) {
         Plugin plugin = pluginCache.remove(coordinates);
@@ -311,8 +304,6 @@ public class DefaultPluginRegistry implements IPluginRegistry {
      * Reads the plugin into an object.  This method will fail if the plugin is not valid.
      * This could happen if the file is not a java archive, or if the plugin spec file is
      * missing from the archive, etc.
-     * @param coordinates
-     * @param pluginFile
      */
     protected Plugin readPluginFile(PluginCoordinates coordinates, File pluginFile) throws Exception {
         try {
@@ -334,11 +325,9 @@ public class DefaultPluginRegistry implements IPluginRegistry {
 
     /**
      * Creates a plugin classloader for the given plugin file.
-     * @param pluginFile
-     * @throws IOException
      */
     protected PluginClassLoader createPluginClassLoader(final File pluginFile) throws IOException {
-        PluginClassLoader cl = new PluginClassLoader(pluginFile, Thread.currentThread().getContextClassLoader()) {
+        return new PluginClassLoader(pluginFile, Thread.currentThread().getContextClassLoader()) {
             @Override
             protected File createWorkDir(File pluginArtifactFile) throws IOException {
                 File workDir = new File(pluginFile.getParentFile(), ".work"); //$NON-NLS-1$
@@ -346,15 +335,12 @@ public class DefaultPluginRegistry implements IPluginRegistry {
                 return workDir;
             }
         };
-        return cl;
     }
 
     /**
      * Downloads the plugin via its maven GAV information.  This will first look in the local
      * .m2 directory.  If the plugin is not found there, then it will try to download the
      * plugin from one of the configured remote maven repositories.
-     * @param coordinates
-     * @param handler
      */
     protected void downloadPlugin(final PluginCoordinates coordinates, final IAsyncResultHandler<File> handler) {
         if (pluginRepositories.isEmpty()) {
@@ -380,9 +366,6 @@ public class DefaultPluginRegistry implements IPluginRegistry {
 
     /**
      * Tries to download the plugin from the given remote maven repository.
-     * @param coordinates
-     * @param mavenRepoUrl
-     * @param handler
      */
     protected void downloadFromMavenRepo(PluginCoordinates coordinates, URL mavenRepoUrl, IAsyncResultHandler<File> handler) {
         String artifactSubPath = PluginUtils.getMavenPath(coordinates);
@@ -398,9 +381,6 @@ public class DefaultPluginRegistry implements IPluginRegistry {
     /**
      * Download the artifact at the given URL and store it locally into the given
      * plugin file path.
-     * @param artifactUrl
-     * @param pluginFile
-     * @param handler
      */
     protected void downloadArtifactTo(URL artifactUrl, File pluginFile, IAsyncResultHandler<File> handler) {
         InputStream istream = null;

@@ -40,7 +40,7 @@ public class DefaultJdbcResultSet implements IJdbcResultSet {
 
     /**
      * Constructor.
-     * @param resultSet
+     * @param resultSet the result set
      */
     public DefaultJdbcResultSet(ResultSet resultSet) throws Exception {
         this.resultSet = resultSet;

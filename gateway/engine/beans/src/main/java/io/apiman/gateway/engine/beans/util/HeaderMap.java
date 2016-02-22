@@ -16,14 +16,23 @@
 
 package io.apiman.gateway.engine.beans.util;
 
+import java.io.Serializable;
+
 /**
  * A map of headers to associated values. It is possible to
  * have multiple values for a given key.
  *
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
-public class HeaderMap extends CaseInsensitiveStringMultiMap {
-    public HeaderMap() {}
+public class HeaderMap extends CaseInsensitiveStringMultiMap implements Serializable {
+    private static final long serialVersionUID = 5520378999006587108L;
+
+    /**
+     * Construct a HeaderMap with default capacity.
+     */
+    public HeaderMap() {
+        super();
+    }
 
     /**
      * Construct a HeaderMap
