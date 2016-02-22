@@ -37,6 +37,10 @@
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-gateway-engine-jdbc</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
       <artifactId>apiman-gateway-engine-policies</artifactId>
     </dependency>
     <dependency>
@@ -58,12 +62,18 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-gateway-platforms-vertx3</artifactId>
-      <type>jar</type>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-gateway-engine-vertx-eb-inmemory</artifactId>
-      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-distro-data</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-tools-ddl</artifactId>
     </dependency>
 
     <!-- Weld -->
@@ -138,6 +148,18 @@
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-dbcp</groupId>
+      <artifactId>commons-dbcp</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-pool</groupId>
+      <artifactId>commons-pool</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>

@@ -36,8 +36,6 @@ import java.sql.SQLException;
 import java.util.EnumSet;
 
 import javax.naming.InitialContext;
-import javax.naming.NameAlreadyBoundException;
-import javax.naming.NamingException;
 import javax.servlet.DispatcherType;
 
 import org.apache.commons.dbcp.BasicDataSource;
@@ -124,7 +122,7 @@ public class ManagerApiTestServer {
         server.stop();
         if (ds != null) {
             ds.close();
-            InitialContext ctx = new InitialContext();
+            InitialContext ctx = TestUtil.initialContext();
             ctx.unbind("java:comp/env/jdbc/ApiManagerDS");
         }
         if (node != null) {
@@ -149,9 +147,9 @@ public class ManagerApiTestServer {
             TestUtil.setProperty("apiman.hibernate.hbm2ddl.auto", "create-drop");
             TestUtil.setProperty("apiman.hibernate.connection.datasource", "java:/comp/env/jdbc/ApiManagerDS");
             try {
-                InitialContext ctx = new InitialContext();
-                ensureCtx(ctx, "java:/comp/env");
-                ensureCtx(ctx, "java:/comp/env/jdbc");
+                InitialContext ctx = TestUtil.initialContext();
+                TestUtil.ensureCtx(ctx, "java:/comp/env");
+                TestUtil.ensureCtx(ctx, "java:/comp/env/jdbc");
                 String dbOutputPath = System.getProperty("apiman.test.h2-output-dir", null);
                 if (dbOutputPath != null) {
                     ds = createFileDatasource(new File(dbOutputPath));
@@ -205,20 +203,6 @@ public class ManagerApiTestServer {
                     .connTimeout(JEST_TIMEOUT ).readTimeout(JEST_TIMEOUT).build());
             client = factory.getObject();
             ES_CLIENT = client;
-        }
-    }
-
-    /**
-     * Ensure that the given name is bound to a context.
-     * @param ctx
-     * @param name
-     * @throws NamingException
-     */
-    private void ensureCtx(InitialContext ctx, String name) throws NamingException {
-        try {
-            ctx.bind(name, new InitialContext());
-        } catch (NameAlreadyBoundException e) {
-            // this is ok
         }
     }
 

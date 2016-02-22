@@ -22,9 +22,9 @@ import io.apiman.gateway.engine.components.IJdbcComponent;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.impl.DefaultJdbcComponent;
 import io.apiman.gateway.engine.policies.config.BasicAuthenticationConfig;
-import io.apiman.gateway.engine.policies.util.TestInitialContextFactory;
 import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
+import io.apiman.test.common.util.TestUtil;
 
 import java.sql.Connection;
 import java.sql.Driver;
@@ -32,10 +32,7 @@ import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.naming.Context;
 import javax.naming.InitialContext;
-import javax.naming.NameAlreadyBoundException;
-import javax.naming.NamingException;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.dbcp.BasicDataSource;
@@ -56,13 +53,11 @@ public class BasicAuthJDBCTest {
 
     @BeforeClass
     public static void setup() throws Exception {
-        System.setProperty(Context.INITIAL_CONTEXT_FACTORY, TestInitialContextFactory.class.getName());
-
         // Create a test datasource and bind it to JNDI
         BasicDataSource ds = createInMemoryDatasource();
-        InitialContext ctx = new InitialContext();
-        ensureCtx(ctx, "java:comp/env"); //$NON-NLS-1$
-        ensureCtx(ctx, "java:comp/env/jdbc"); //$NON-NLS-1$
+        InitialContext ctx = TestUtil.initialContext();
+        TestUtil.ensureCtx(ctx, "java:comp/env"); //$NON-NLS-1$
+        TestUtil.ensureCtx(ctx, "java:comp/env/jdbc"); //$NON-NLS-1$
         ctx.bind("java:comp/env/jdbc/BasicAuthJDBCTest", ds); //$NON-NLS-1$
     }
 
@@ -248,19 +243,5 @@ public class BasicAuthJDBCTest {
         connection.prepareStatement("INSERT INTO roles (rolename, username) VALUES ('ballen', 'user')").executeUpdate();
         connection.close();
         return ds;
-    }
-
-    /**
-     * Ensure that the given name is bound to a context.
-     * @param ctx
-     * @param name
-     * @throws NamingException
-     */
-    private static void ensureCtx(InitialContext ctx, String name) throws NamingException {
-        try {
-            ctx.bind(name, new InitialContext());
-        } catch (NameAlreadyBoundException e) {
-            // this is ok
-        }
     }
 }

@@ -350,10 +350,12 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
      * Resolve property replacements for list of policies
      */
     private void resolvePropertyReplacements(List<Policy> apiPolicies) {
-        for (Policy policy : apiPolicies) {
-            String config = policy.getPolicyJsonConfig();
-            config = resolveProperties(config);
-            policy.setPolicyJsonConfig(config);
+        if (apiPolicies != null) {
+            for (Policy policy : apiPolicies) {
+                String config = policy.getPolicyJsonConfig();
+                config = resolveProperties(config);
+                policy.setPolicyJsonConfig(config);
+            }
         }
     }
 

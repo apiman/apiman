@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 JBoss Inc
+ * Copyright 2014 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,25 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apiman.gateway.test.server;
+package io.apiman.gateway.engine.jdbc.i18n;
+
+import io.apiman.common.util.AbstractMessages;
 
 /**
- * Utils for the gateway tests.
+ * I18N Messages
  *
  * @author eric.wittmann@redhat.com
  */
-@SuppressWarnings("nls")
-public class GatewayTestUtils {
+public class Messages extends AbstractMessages {
 
-    private GatewayTestUtils() {
-    }
+    public static final Messages i18n = new Messages();
 
-    public static GatewayTestType getTestType() {
-        return GatewayTestType.valueOf(System.getProperty("apiman.test.type", GatewayTestType.memory.name()));
+    /**
+     * Constructor.
+     */
+    public Messages() {
+        super(Messages.class);
     }
-    
-    public static void setTestType(GatewayTestType type) {
-        System.setProperty("apiman.test.type", type.name());
-    }
-    
 }

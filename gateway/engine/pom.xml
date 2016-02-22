@@ -11,14 +11,15 @@
   <name>apiman-gateway-engine</name>
 
   <modules>
-    <module>core</module>
     <module>beans</module>
-    <module>policies</module>
-    <module>osgi</module>
-    <module>ispn</module>
+    <module>core</module>
     <module>es</module>
     <module>influxdb</module>
-    <module>vertx-eb-inmemory</module>
+    <module>ispn</module>
+    <module>jdbc</module>
+    <module>osgi</module>
+    <module>policies</module>
     <module>prometheus</module>
+    <module>vertx-eb-inmemory</module>
   </modules>
 </project>

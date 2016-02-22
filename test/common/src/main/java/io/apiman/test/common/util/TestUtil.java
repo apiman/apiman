@@ -25,6 +25,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NameAlreadyBoundException;
+import javax.naming.NamingException;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 
@@ -228,4 +232,28 @@ public class TestUtil {
         System.setProperty(key, System.getProperty(key, value));
         return System.getProperty(key);
     }
+    
+    /**
+     * Create an initial context.
+     * @throws NamingException 
+     */
+    public static final InitialContext initialContext() throws NamingException {
+        System.setProperty(Context.INITIAL_CONTEXT_FACTORY, org.eclipse.jetty.jndi.InitialContextFactory.class.getName());
+        return new InitialContext();
+    }
+
+    /**
+     * Ensure that the given name is bound to a context.
+     * @param ctx
+     * @param name
+     * @throws NamingException
+     */
+    public static final void ensureCtx(InitialContext ctx, String name) throws NamingException {
+        try {
+            ctx.createSubcontext(name);
+        } catch (NameAlreadyBoundException e) {
+            // this is ok
+        }
+    }
+
 }

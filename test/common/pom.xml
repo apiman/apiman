@@ -53,8 +53,8 @@
       <groupId>org.slf4j</groupId>
     </dependency>
     <dependency>
-	  <groupId>com.squareup.okhttp</groupId>
-	  <artifactId>okhttp</artifactId>
+      <groupId>com.squareup.okhttp</groupId>
+      <artifactId>okhttp</artifactId>
     </dependency>
     <dependency>
       <groupId>commons-codec</groupId>
@@ -69,13 +69,17 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
     </dependency>
-      <dependency>
+    <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-server</artifactId>
     </dependency>
-      <dependency>
+    <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-servlet</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-jndi</artifactId>
     </dependency>
   </dependencies>
 </project>

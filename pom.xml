@@ -118,6 +118,7 @@
     <version.commons-collections>3.2.2</version.commons-collections>
     <version.commons-configuration>1.6</version.commons-configuration>
     <version.commons-dbcp>1.4</version.commons-dbcp>
+    <version.commons-dbutils>1.6</version.commons-dbutils>
     <version.commons-io>2.4</version.commons-io>
     <version.commons-lang>2.6</version.commons-lang>
     <version.commons-logging>1.2</version.commons-logging>
@@ -392,6 +393,11 @@
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
+        <artifactId>apiman-gateway-engine-jdbc</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
         <artifactId>apiman-gateway-engine-vertx-eb-inmemory</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -471,12 +477,7 @@
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-tools-dev-server-manager-ui</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-tools-dev-server-manager-api</artifactId>
+        <artifactId>apiman-tools-ddl</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
@@ -873,6 +874,11 @@
         <groupId>commons-dbcp</groupId>
         <artifactId>commons-dbcp</artifactId>
         <version>${version.commons-dbcp}</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-dbutils</groupId>
+        <artifactId>commons-dbutils</artifactId>
+        <version>${version.commons-dbutils}</version>
       </dependency>
       <dependency>
         <groupId>commons-pool</groupId>
