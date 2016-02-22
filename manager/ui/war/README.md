@@ -26,3 +26,10 @@ To build and run the app:
 `gulp`
 
 The above script will also monitor for changes, and will rebuild the app accordingly. To see exactly which files are monitored, check the `watch` task in the Gulpfile, located in `/apiman/manager/ui/war/gulpfile.js`.
+
+
+#### Contributing
+
+We gladly accept PRs and always appreciate it when community members want to contribute. We use JIRA to track issues [here](https://issues.jboss.org/projects/APIMAN).
+
+If you'll be adding a new package to `package.json`, please note that we use a shrinkwrap file located at `./npm-shrinkwrap.json`. Add the package name and version to `package.json` using the exact version (i.e. `1.2.3` instead of `~1.2.3` or `^1.2.3`). You'll then need to rewrite the shrinkwrap file with `$ npm shrinkwrap` and commit the changes for **both** files. 
