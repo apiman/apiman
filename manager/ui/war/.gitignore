@@ -9,5 +9,4 @@ d.ts/includes.d.ts
 libs/
 node/
 node_modules/
-typings/
 /compiled.js
