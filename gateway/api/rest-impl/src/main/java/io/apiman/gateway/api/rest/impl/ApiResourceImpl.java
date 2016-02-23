@@ -18,11 +18,8 @@ package io.apiman.gateway.api.rest.impl;
 
 import io.apiman.gateway.api.rest.contract.IApiResource;
 import io.apiman.gateway.api.rest.contract.exceptions.NotAuthorizedException;
-import io.apiman.gateway.engine.async.IAsyncResult;
-import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.Api;
 import io.apiman.gateway.engine.beans.ApiEndpoint;
-import io.apiman.gateway.engine.beans.exceptions.AbstractEngineException;
 import io.apiman.gateway.engine.beans.exceptions.PublishingException;
 import io.apiman.gateway.engine.beans.exceptions.RegistrationException;
 
@@ -50,28 +47,9 @@ public class ApiResourceImpl extends AbstractResourceImpl implements IApiResourc
     public void publish(Api api) throws PublishingException, NotAuthorizedException {
         final Set<Throwable> errorHolder = new HashSet<>();
         final CountDownLatch latch = new CountDownLatch(1);
-        getEngine().getRegistry().publishApi(api, new IAsyncResultHandler<Void>() {
-            @Override
-            public void handle(IAsyncResult<Void> result) {
-                if (result.isError()) {
-                    errorHolder.add(result.getError());
-                }
-                latch.countDown();
-            }
-        });
-        try {
-            latch.await();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        if (!errorHolder.isEmpty()) {
-            Throwable error = errorHolder.iterator().next();
-            if (error instanceof AbstractEngineException) {
-                throw (AbstractEngineException) error;
-            } else {
-                throw new RuntimeException(error);
-            }
-        }
+        // Publish api; latch until result returned and evaluated
+        getEngine().getRegistry().publishApi(api, latchedResultHandler(latch, errorHolder));
+        awaitOnLatch(latch, errorHolder);
     }
 
     /**
@@ -86,28 +64,9 @@ public class ApiResourceImpl extends AbstractResourceImpl implements IApiResourc
         api.setOrganizationId(organizationId);
         api.setApiId(apiId);
         api.setVersion(version);
-        getEngine().getRegistry().retireApi(api, new IAsyncResultHandler<Void>() {
-            @Override
-            public void handle(IAsyncResult<Void> result) {
-                if (result.isError()) {
-                    errorHolder.add(result.getError());
-                }
-                latch.countDown();
-            }
-        });
-        try {
-            latch.await();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        if (!errorHolder.isEmpty()) {
-            Throwable error = errorHolder.iterator().next();
-            if (error instanceof AbstractEngineException) {
-                throw (AbstractEngineException) error;
-            } else {
-                throw new RuntimeException(error);
-            }
-        }
+        // Retire api; latch until result returned and evaluated
+        getEngine().getRegistry().retireApi(api, latchedResultHandler(latch, errorHolder));
+        awaitOnLatch(latch, errorHolder);
     }
 
     /**

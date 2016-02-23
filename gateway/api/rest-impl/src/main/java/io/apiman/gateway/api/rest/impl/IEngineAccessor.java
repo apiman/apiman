@@ -23,6 +23,7 @@ import io.apiman.gateway.engine.IEngine;
  *
  * @author eric.wittmann@redhat.com
  */
+@FunctionalInterface
 public interface IEngineAccessor {
     
     /**
