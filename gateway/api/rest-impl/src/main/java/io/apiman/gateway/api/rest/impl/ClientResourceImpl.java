@@ -18,10 +18,7 @@ package io.apiman.gateway.api.rest.impl;
 
 import io.apiman.gateway.api.rest.contract.IClientResource;
 import io.apiman.gateway.api.rest.contract.exceptions.NotAuthorizedException;
-import io.apiman.gateway.engine.async.IAsyncResult;
-import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.Client;
-import io.apiman.gateway.engine.beans.exceptions.AbstractEngineException;
 import io.apiman.gateway.engine.beans.exceptions.RegistrationException;
 
 import java.util.HashSet;
@@ -49,28 +46,9 @@ public class ClientResourceImpl extends AbstractResourceImpl implements IClientR
     public void register(Client client) throws RegistrationException, NotAuthorizedException {
         final Set<Throwable> errorHolder = new HashSet<>();
         final CountDownLatch latch = new CountDownLatch(1);
-        getEngine().getRegistry().registerClient(client, new IAsyncResultHandler<Void>() {
-            @Override
-            public void handle(IAsyncResult<Void> result) {
-                if (result.isError()) {
-                    errorHolder.add(result.getError());
-                }
-                latch.countDown();
-            }
-        });
-        try {
-            latch.await();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        if (!errorHolder.isEmpty()) {
-            Throwable error = errorHolder.iterator().next();
-            if (error instanceof AbstractEngineException) {
-                throw (AbstractEngineException) error;
-            } else {
-                throw new RuntimeException(error);
-            }
-        }
+        // Register client; latch until result returned and evaluated
+        getEngine().getRegistry().registerClient(client, latchedResultHandler(latch, errorHolder));
+        awaitOnLatch(latch, errorHolder);
     }
 
     /**
@@ -85,28 +63,9 @@ public class ClientResourceImpl extends AbstractResourceImpl implements IClientR
         application.setOrganizationId(organizationId);
         application.setClientId(applicationId);
         application.setVersion(version);
-        getEngine().getRegistry().unregisterClient(application, new IAsyncResultHandler<Void>() {
-            @Override
-            public void handle(IAsyncResult<Void> result) {
-                if (result.isError()) {
-                    errorHolder.add(result.getError());
-                }
-                latch.countDown();
-            }
-        });
-        try {
-            latch.await();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        if (!errorHolder.isEmpty()) {
-            Throwable error = errorHolder.iterator().next();
-            if (error instanceof AbstractEngineException) {
-                throw (AbstractEngineException) error;
-            } else {
-                throw new RuntimeException(error);
-            }
-        }
+        // Unregister client; latch until result returned and evaluated
+        getEngine().getRegistry().unregisterClient(application, latchedResultHandler(latch, errorHolder));
+        awaitOnLatch(latch, errorHolder);
     }
 
 }

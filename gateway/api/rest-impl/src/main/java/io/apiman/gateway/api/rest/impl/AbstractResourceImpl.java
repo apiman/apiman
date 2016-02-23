@@ -17,6 +17,12 @@ package io.apiman.gateway.api.rest.impl;
 
 import io.apiman.common.util.ServiceRegistryUtil;
 import io.apiman.gateway.engine.IEngine;
+import io.apiman.gateway.engine.async.IAsyncResult;
+import io.apiman.gateway.engine.async.IAsyncResultHandler;
+import io.apiman.gateway.engine.beans.exceptions.AbstractEngineException;
+
+import java.util.Set;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * Base class for all resource implementation classes.
@@ -43,6 +49,31 @@ public abstract class AbstractResourceImpl {
      */
     protected IPlatform getPlatform() {
         return ServiceRegistryUtil.getSingleService(IPlatformAccessor.class).getPlatform();
+    }
+
+    protected IAsyncResultHandler<Void> latchedResultHandler(CountDownLatch latch, Set<Throwable> errorHolder) {
+        return result -> {
+            if (result.isError()) {
+                errorHolder.add(result.getError());
+            }
+            latch.countDown();
+        };
+    }
+
+    protected void awaitOnLatch(CountDownLatch latch, Set<Throwable> errorHolder) {
+        try {
+            latch.await();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        if (!errorHolder.isEmpty()) {
+            Throwable error = errorHolder.iterator().next();
+            if (error instanceof AbstractEngineException) {
+                throw (AbstractEngineException) error;
+            } else {
+                throw new RuntimeException(error);
+            }
+        }
     }
 
 }
