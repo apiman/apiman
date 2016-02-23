@@ -23,7 +23,6 @@ import io.apiman.gateway.engine.components.jdbc.IJdbcClient;
 import io.apiman.gateway.engine.components.jdbc.IJdbcConnection;
 import io.apiman.gateway.engine.components.jdbc.JdbcOptionsBean;
 
-import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;

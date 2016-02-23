@@ -13,32 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apiman.gateway.engine.es;
-
-import java.io.IOException;
-import java.util.Map;
+package io.apiman.gateway.engine.jdbc;
 
 import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
-import io.apiman.gateway.engine.beans.Client;
 import io.apiman.gateway.engine.beans.Api;
-import io.apiman.gateway.engine.es.beans.DataVersionBean;
-import io.searchbox.client.JestResult;
-import io.searchbox.client.JestResultHandler;
-import io.searchbox.core.Get;
-import io.searchbox.core.Index;
+import io.apiman.gateway.engine.beans.Client;
+
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Map;
+
+import org.apache.commons.dbutils.DbUtils;
+import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.dbutils.ResultSetHandler;
 
 /**
- * Extends the {@link ESRegistry} to provide multi-node caching.  This caching solution
+ * Extends the {@link JdbcRegistry} to provide multi-node caching.  This caching solution
  * will work in a cluster, although it is a rather naive implementation.  The approach
- * taken is that whenever the ES index is modified, a "last modified" record is set in
- * elasticsearch.  The registry utilizes a thread to periodically poll the ES store to
- * check if the data has been changed.  If the data *has* been changed, then the cache
+ * taken is that whenever the data in the DB is modified, a "last modified" record is 
+ * inserted/updated.  The registry utilizes a thread to periodically poll the DB to
+ * check if this data has been changed.  If the data *has* been changed, then the cache
  * is invalidated.
  *
  * @author eric.wittmann@redhat.com
  */
-public class PollCachingESRegistry extends CachingESRegistry {
+public class PollCachingJdbcRegistry extends CachingJdbcRegistry {
 
     private static final int DEFAULT_POLLING_INTERVAL = 10;
     private static final int DEFAULT_STARTUP_DELAY = 30;
@@ -47,12 +48,12 @@ public class PollCachingESRegistry extends CachingESRegistry {
     private int startupDelayMillis;
 
     private boolean polling = false;
-    private String dataVersion = null;
+    private long dataVersion = -1;
 
     /**
      * Constructor.
      */
-    public PollCachingESRegistry(Map<String, String> config) {
+    public PollCachingJdbcRegistry(Map<String, String> config) {
         super(config);
         
         String intervalVal = config.get("cache-polling-interval"); //$NON-NLS-1$
@@ -74,7 +75,7 @@ public class PollCachingESRegistry extends CachingESRegistry {
     }
 
     /**
-     * @see io.apiman.gateway.engine.es.CachingESRegistry#publishApi(io.apiman.gateway.engine.beans.Api, io.apiman.gateway.engine.async.IAsyncResultHandler)
+     * @see io.apiman.gateway.engine.CachingJdbcRegistry.CachingESRegistry#publishApi(io.apiman.gateway.engine.beans.Api, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
     @Override
     public void publishApi(Api api, final IAsyncResultHandler<Void> handler) {
@@ -90,7 +91,7 @@ public class PollCachingESRegistry extends CachingESRegistry {
     }
 
     /**
-     * @see io.apiman.gateway.engine.es.CachingESRegistry#retireApi(io.apiman.gateway.engine.beans.Api, io.apiman.gateway.engine.async.IAsyncResultHandler)
+     * @see io.apiman.gateway.engine.CachingJdbcRegistry.CachingESRegistry#retireApi(io.apiman.gateway.engine.beans.Api, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
     @Override
     public void retireApi(Api api, final IAsyncResultHandler<Void> handler) {
@@ -106,7 +107,7 @@ public class PollCachingESRegistry extends CachingESRegistry {
     }
 
     /**
-     * @see io.apiman.gateway.engine.es.CachingESRegistry#registerClient(io.apiman.gateway.engine.beans.Client, io.apiman.gateway.engine.async.IAsyncResultHandler)
+     * @see io.apiman.gateway.engine.CachingJdbcRegistry.CachingESRegistry#registerClient(io.apiman.gateway.engine.beans.Client, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
     @Override
     public void registerClient(Client client, final IAsyncResultHandler<Void> handler) {
@@ -125,7 +126,7 @@ public class PollCachingESRegistry extends CachingESRegistry {
     }
 
     /**
-     * @see io.apiman.gateway.engine.es.CachingESRegistry#unregisterClient(io.apiman.gateway.engine.beans.Client, io.apiman.gateway.engine.async.IAsyncResultHandler)
+     * @see io.apiman.gateway.engine.CachingJdbcRegistry.CachingESRegistry#unregisterClient(io.apiman.gateway.engine.beans.Client, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
     @Override
     public void unregisterClient(Client client, final IAsyncResultHandler<Void> handler) {
@@ -146,21 +147,23 @@ public class PollCachingESRegistry extends CachingESRegistry {
      * number is what we use to determine whether our cache is stale.
      */
     protected void updateDataVersion() {
-        DataVersionBean dv = new DataVersionBean();
-        dv.setUpdatedOn(System.currentTimeMillis());
-        Index index = new Index.Builder(dv).refresh(false)
-                .index(getIndexName())
-                .type("dataVersion").id("instance").build(); //$NON-NLS-1$ //$NON-NLS-2$
-        getClient().executeAsync(index, new JestResultHandler<JestResult>() {
-            @Override
-            public void completed(JestResult result) {
-                dataVersion = null;
-            }
-            @Override
-            public void failed(Exception e) {
-                dataVersion = null;
-            }
-        });
+        Connection conn = null;
+        try {
+            long newVersion = System.currentTimeMillis();
+
+            conn = ds.getConnection();
+            conn.setAutoCommit(false);
+            QueryRunner run = new QueryRunner();
+
+            run.update(conn, "DELETE FROM dataversion"); //$NON-NLS-1$
+            run.update(conn, "INSERT INTO dataversion (version) VALUES (?)",  //$NON-NLS-1$
+                    newVersion);
+
+            DbUtils.commitAndClose(conn);
+            dataVersion = newVersion;
+        } catch (SQLException e) {
+            dataVersion = -1;
+        }
     }
 
     /**
@@ -171,7 +174,7 @@ public class PollCachingESRegistry extends CachingESRegistry {
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                // Wait for 30s on startup before starting to poll.
+                // Wait on startup before starting to poll.
                 try { Thread.sleep(startupDelayMillis); } catch (InterruptedException e1) { e1.printStackTrace(); }
 
                 while (polling) {
@@ -184,7 +187,7 @@ public class PollCachingESRegistry extends CachingESRegistry {
         thread.setName(getClass().getSimpleName());
         thread.start();
     }
-    
+
     /**
      * Stop polling.
      */
@@ -199,18 +202,15 @@ public class PollCachingESRegistry extends CachingESRegistry {
     protected void checkCacheVersion() {
         // Be very aggressive in invalidating the cache.
         boolean invalidate = true;
+        QueryRunner run = new QueryRunner(ds);
         try {
-            Get get = new Get.Builder(getIndexName(), "instance").type("dataVersion").build(); //$NON-NLS-1$ //$NON-NLS-2$
-            JestResult result = getClient().execute(get);
-            if (result.isSucceeded()) {
-                String latestDV = result.getJsonObject().get("_version").getAsString(); //$NON-NLS-1$
-                if (latestDV != null && dataVersion != null && latestDV.equals(dataVersion)) {
-                    invalidate = false;
-                } else {
-                    dataVersion = latestDV;
-                }
+            long latestVersion = run.query("SELECT version FROM dataversion", Handlers.LONG_HANDLER); //$NON-NLS-1$
+            if (latestVersion > -1 && dataVersion > -1 && latestVersion == dataVersion) {
+                invalidate = false;
+            } else {
+                dataVersion = latestVersion;
             }
-        } catch (IOException e) {
+        } catch (SQLException e) {
             // TODO need to use the gateway logger to log this!
             e.printStackTrace();
         }
@@ -219,4 +219,13 @@ public class PollCachingESRegistry extends CachingESRegistry {
         }
     }
 
+    private static final class Handlers {
+        public static final ResultSetHandler<Long> LONG_HANDLER = (ResultSet rs) -> {
+            if (!rs.next()) {
+                return -1L;
+            }
+            return rs.getLong(1);
+        };
+    }
+    
 }

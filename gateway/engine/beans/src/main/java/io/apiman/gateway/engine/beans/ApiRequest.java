@@ -18,7 +18,6 @@ package io.apiman.gateway.engine.beans;
 import io.apiman.gateway.engine.beans.util.HeaderMap;
 import io.apiman.gateway.engine.beans.util.QueryMap;
 
-import java.beans.Transient;
 import java.io.Serializable;
 
 /**

@@ -184,19 +184,6 @@ import org.joda.time.format.ISODateTimeFormat;
 @RequestScoped
 public class OrganizationResourceImpl implements IOrganizationResource {
 
-    @SuppressWarnings("nls")
-    private static final String [] DATE_FORMATS = {
-        "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
-        "yyyy-MM-dd'T'HH:mm:ss'Z'",
-        "yyyy-MM-dd'T'HH:mm:ssz",
-        "yyyy-MM-dd'T'HH:mm:ss",
-        "yyyy-MM-dd'T'HH:mm",
-        "yyyy-MM-dd",
-        "EEE, dd MMM yyyy HH:mm:ss z",
-        "EEE, dd MMM yyyy HH:mm:ss",
-        "EEE, dd MMM yyyy"
-    };
-
     private static final long ONE_MINUTE_MILLIS = 1 * 60 * 1000L;
     private static final long ONE_HOUR_MILLIS = 1 * 60 * 60 * 1000L;
     private static final long ONE_DAY_MILLIS = 1 * 24 * 60 * 60 * 1000L;

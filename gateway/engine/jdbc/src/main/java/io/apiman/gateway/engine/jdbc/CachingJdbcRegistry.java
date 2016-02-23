@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apiman.gateway.engine.es;
+package io.apiman.gateway.engine.jdbc;
 
 import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncResult;
@@ -22,22 +22,21 @@ import io.apiman.gateway.engine.beans.Api;
 import io.apiman.gateway.engine.beans.ApiContract;
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.exceptions.InvalidContractException;
-import io.apiman.gateway.engine.es.i18n.Messages;
+import io.apiman.gateway.engine.jdbc.i18n.Messages;
 
-import java.io.IOException;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Extends the {@link ESRegistry} to provide single-node caching.  This caching solution
+ * Extends the {@link JdbcRegistry} to provide single-node caching.  This caching solution
  * will not work in a cluster.  If looking for cluster support, either go with the core
- * {@link ESRegistry} or use {@link PollCachingESRegistry}.
- * 
+ * {@link JdbcRegistry} or use {@link CachingJdbcRegistry}.
  *
  * @author eric.wittmann@redhat.com
  */
-public abstract class CachingESRegistry extends ESRegistry {
+public abstract class CachingJdbcRegistry extends JdbcRegistry {
 
     private Map<String, ApiContract> contractCache = new ConcurrentHashMap<>();
     private Map<String, Api> apiCache = new HashMap<>();
@@ -46,7 +45,7 @@ public abstract class CachingESRegistry extends ESRegistry {
     /**
      * Constructor.
      */
-    public CachingESRegistry(Map<String, String> config) {
+    public CachingJdbcRegistry(Map<String, String> config) {
         super(config);
     }
 
@@ -62,7 +61,7 @@ public abstract class CachingESRegistry extends ESRegistry {
     }
 
     /**
-     * @see io.apiman.gateway.engine.es.ESRegistry#getContract(io.apiman.gateway.engine.beans.ApiRequest, io.apiman.gateway.engine.async.IAsyncResultHandler)
+     * @see io.apiman.gateway.engine.jdbc.JdbcRegistry#getContract(io.apiman.gateway.engine.beans.ApiRequest, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
     @Override
     public void getContract(final ApiRequest request, final IAsyncResultHandler<ApiContract> handler) {
@@ -99,7 +98,7 @@ public abstract class CachingESRegistry extends ESRegistry {
     }
 
     /**
-     * @see io.apiman.gateway.engine.es.ESRegistry#getApi(java.lang.String, java.lang.String, java.lang.String, io.apiman.gateway.engine.async.IAsyncResultHandler)
+     * @see io.apiman.gateway.engine.jdbc.JdbcRegistry#getApi(java.lang.String, java.lang.String, java.lang.String, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
     @Override
     public void getApi(final String organizationId, final String apiId, final String apiVersion,
@@ -107,7 +106,7 @@ public abstract class CachingESRegistry extends ESRegistry {
         try {
             Api api = getApi(organizationId, apiId, apiVersion);
             handler.handle(AsyncResultImpl.create(api));
-        } catch (IOException e) {
+        } catch (SQLException e) {
             handler.handle(AsyncResultImpl.create(e, Api.class));
         }
     }
@@ -118,7 +117,7 @@ public abstract class CachingESRegistry extends ESRegistry {
      * @param apiId
      * @param version
      */
-    protected Api getApi(String orgId, String apiId, String version) throws IOException {
+    protected Api getApi(String orgId, String apiId, String version) throws SQLException {
         String apiKey = getApiKey(orgId, apiId, version);
         Api api;
         synchronized (mutex) {
@@ -126,7 +125,7 @@ public abstract class CachingESRegistry extends ESRegistry {
         }
 
         if (api == null) {
-            api = super.getApi(getApiId(orgId, apiId, version));
+            api = super.getApiInternal(orgId, apiId, version);
             synchronized (mutex) {
                 if (api != null) {
                     apiCache.put(apiKey, api);
@@ -136,17 +135,17 @@ public abstract class CachingESRegistry extends ESRegistry {
 
         return api;
     }
-
+    
     /**
-     * @see io.apiman.gateway.engine.es.ESRegistry#checkApi(io.apiman.gateway.engine.beans.ApiContract)
+     * @see io.apiman.gateway.engine.jdbc.JdbcRegistry#checkApi(io.apiman.gateway.engine.beans.ApiContract)
      */
     @Override
-    protected void checkApi(ApiContract contract) throws InvalidContractException, IOException {
+    protected void checkApi(ApiContract contract) throws InvalidContractException, SQLException {
         Api api = getApi(contract.getApi().getOrganizationId(),
                 contract.getApi().getApiId(),
                 contract.getApi().getVersion());
         if (api == null) {
-            throw new InvalidContractException(Messages.i18n.format("ESRegistry.ApiWasRetired", //$NON-NLS-1$
+            throw new InvalidContractException(Messages.i18n.format("JdbcRegistry.ApiWasRetired", //$NON-NLS-1$
                     contract.getApi().getApiId(), contract.getApi().getOrganizationId()));
         }
     }

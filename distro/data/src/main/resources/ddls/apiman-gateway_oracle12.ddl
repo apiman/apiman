@@ -9,3 +9,5 @@ CREATE TABLE contracts (api_key VARCHAR2(255) NOT NULL, client_org_id VARCHAR2(2
 ALTER TABLE contracts ADD PRIMARY KEY (api_key);
 ALTER TABLE contracts ADD CONSTRAINT FK_contracts_1 FOREIGN KEY (client_org_id, client_id, client_version) REFERENCES clients (org_id, id, version);
 CREATE INDEX IDX_contracts_1 ON contracts(client_org_id, client_id, client_version);
+
+CREATE TABLE dataversion (version NUMBER(38, 0) NOT NULL);

@@ -64,8 +64,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class JdbcRegistry implements IRegistry {
     
-    private static final ObjectMapper mapper = new ObjectMapper();
-    private DataSource ds;
+    protected static final ObjectMapper mapper = new ObjectMapper();
+    protected DataSource ds;
 
     /**
      * Constructor.
@@ -305,7 +305,19 @@ public class JdbcRegistry implements IRegistry {
         } catch (SQLException e) {
             handler.handle(AsyncResultImpl.create(e));
         }
-        
+    }
+    
+    /**
+     * Gets an api from the DB.
+     * @param organizationId
+     * @param apiId
+     * @param apiVersion
+     * @throws SQLException
+     */
+    protected Api getApiInternal(String organizationId, String apiId, String apiVersion) throws SQLException {
+        QueryRunner run = new QueryRunner(ds);
+        Api api = getApi(organizationId, apiId, apiVersion, run);
+        return api;
     }
 
     /**
@@ -405,7 +417,6 @@ public class JdbcRegistry implements IRegistry {
                 throw new RuntimeException(e);
             }
         };
-
     }
     
 }
