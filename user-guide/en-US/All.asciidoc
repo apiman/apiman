@@ -499,7 +499,7 @@ test button will turn red.
 ==== Plugins
 Apiman supports contributing additional functionality via a powerful plugin mechanism.  Plugins can be
 managed by an administrator within the API Manager UI.  The plugin management administration page allows
-an admin to add and delete plugins.
+an admin to install and uninstall plugins.
 
 ===== Adding Plugins
 The Plugin admin page has two tabs - one shows the list of plugins currently installed, and the
@@ -530,15 +530,16 @@ discovered (if they exist in the plugin) when a plugin is added to the API Manag
 have been contributed via a plugin will appear in the Policy Definitions admin page along with the
 built-in policies.
 
-===== Deleting Plugins
-At any time you may choose to delete a plugin.  Note that if the plugin was contributing one
+===== Uninstalling Plugins
+At any time you may choose to uninstall a plugin.  Note that if the plugin was contributing one
 or more policies to apiman, then the policy will no longer be available for use when configuring
 your Plans, APIs, and Client Apps.  However, if the policy is already in use by one of these
-entities, it will continue to work.  In other words, deleting a plugin only removes the policy
+entities, it will continue to work.  In other words, uninstalling a plugin only removes the policy
 for use by new entities, it does *not* break existing usages.
 
-To delete a plugin, simply click the "Delete" action for the appropriate plugin on the "Installed Plugins"
-tab.  After confirming the delete, the plugin should disappear from the list.
+To uninstall a plugin, simply click the "Uninstall" action for the appropriate plugin on the 
+"Installed Plugins" tab (it is likely represented as a button with a little X).  After confirming 
+the action, the plugin should disappear from the list.
 
 ===== Upgrading Plugins
 If apiman determines that a plugin can be upgraded, then an "Upgrade Plugin" action button will
