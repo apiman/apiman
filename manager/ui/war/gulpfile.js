@@ -22,7 +22,6 @@ var connect = require('gulp-connect');
 var notify = require('gulp-notify');
 var replace = require('gulp-replace');
 var runSequence = require('run-sequence');
-var tsd = require('gulp-tsd');
 var typescript = require('gulp-typescript');
 var watch = require('gulp-watch');
 
@@ -184,11 +183,6 @@ gulp.task('reload', function() {
 });
 
 
-// Setup Task
-// This is the initial task that users run to install TS definitions.
-gulp.task('setup', ['tsd']);
-
-
 // Template Task
 // Creates the templates.js file in the project root (/manager/ui/hawtio)
 gulp.task('template', function() {
@@ -240,15 +234,6 @@ gulp.task('tsc', function() {
             fs.appendFileSync('defs.d.ts', '/// <reference path="' + relative + '"/>\n');
             return buf;
         }));
-});
-
-
-// TypeScript Definition Resolutions
-gulp.task('tsd', function(callback) {
-    tsd({
-        command: 'reinstall',
-        config: './tsd.json'
-    }, callback);
 });
 
 

@@ -12,6 +12,23 @@
       "from": "acorn@>=1.0.3 <2.0.0",
       "resolved": "https://registry.npmjs.org/acorn/-/acorn-1.2.2.tgz"
     },
+    "agent-base": {
+      "version": "2.0.1",
+      "from": "agent-base@>=2.0.0 <3.0.0",
+      "resolved": "https://registry.npmjs.org/agent-base/-/agent-base-2.0.1.tgz",
+      "dependencies": {
+        "extend": {
+          "version": "3.0.0",
+          "from": "extend@>=3.0.0 <3.1.0",
+          "resolved": "https://registry.npmjs.org/extend/-/extend-3.0.0.tgz"
+        },
+        "semver": {
+          "version": "5.0.3",
+          "from": "semver@>=5.0.1 <5.1.0",
+          "resolved": "https://registry.npmjs.org/semver/-/semver-5.0.3.tgz"
+        }
+      }
+    },
     "amdefine": {
       "version": "1.0.0",
       "from": "amdefine@>=0.0.4",
@@ -39,8 +56,8 @@
     },
     "angular-moment": {
       "version": "1.0.0-beta.4",
-      "from": "angular-moment@>=1.0.0-beta.4 <2.0.0",
-      "resolved": "http://registry.npmjs.org/angular-moment/-/angular-moment-1.0.0-beta.4.tgz"
+      "from": "angular-moment@1.0.0-beta.4",
+      "resolved": "https://registry.npmjs.org/angular-moment/-/angular-moment-1.0.0-beta.4.tgz"
     },
     "angular-resource": {
       "version": "1.3.0",
@@ -72,6 +89,11 @@
       "from": "angular-xeditable-npm@0.1.9",
       "resolved": "https://registry.npmjs.org/angular-xeditable-npm/-/angular-xeditable-npm-0.1.9.tgz"
     },
+    "ansi-escapes": {
+      "version": "1.1.1",
+      "from": "ansi-escapes@>=1.1.0 <2.0.0",
+      "resolved": "https://registry.npmjs.org/ansi-escapes/-/ansi-escapes-1.1.1.tgz"
+    },
     "ansi-regex": {
       "version": "2.0.0",
       "from": "ansi-regex@>=2.0.0 <3.0.0",
@@ -80,12 +102,17 @@
     "ansi-styles": {
       "version": "2.2.0",
       "from": "ansi-styles@>=2.1.0 <3.0.0",
-      "resolved": "http://registry.npmjs.org/ansi-styles/-/ansi-styles-2.2.0.tgz"
+      "resolved": "https://registry.npmjs.org/ansi-styles/-/ansi-styles-2.2.0.tgz"
     },
     "ansicolors": {
       "version": "0.2.1",
       "from": "ansicolors@>=0.2.1 <0.3.0",
       "resolved": "https://registry.npmjs.org/ansicolors/-/ansicolors-0.2.1.tgz"
+    },
+    "any-promise": {
+      "version": "1.1.0",
+      "from": "any-promise@>=1.0.0 <2.0.0",
+      "resolved": "https://registry.npmjs.org/any-promise/-/any-promise-1.1.0.tgz"
     },
     "anymatch": {
       "version": "1.3.0",
@@ -150,7 +177,7 @@
     "asn1.js": {
       "version": "4.5.0",
       "from": "asn1.js@>=4.0.0 <5.0.0",
-      "resolved": "http://registry.npmjs.org/asn1.js/-/asn1.js-4.5.0.tgz"
+      "resolved": "https://registry.npmjs.org/asn1.js/-/asn1.js-4.5.0.tgz"
     },
     "assert": {
       "version": "1.3.0",
@@ -161,11 +188,6 @@
       "version": "0.2.0",
       "from": "assert-plus@>=0.2.0 <0.3.0",
       "resolved": "https://registry.npmjs.org/assert-plus/-/assert-plus-0.2.0.tgz"
-    },
-    "assertion-error": {
-      "version": "1.0.0",
-      "from": "assertion-error@1.0.0",
-      "resolved": "https://registry.npmjs.org/assertion-error/-/assertion-error-1.0.0.tgz"
     },
     "astw": {
       "version": "2.0.0",
@@ -230,7 +252,7 @@
     "big-integer": {
       "version": "1.6.12",
       "from": "big-integer@>=1.6.0 <2.0.0",
-      "resolved": "http://registry.npmjs.org/big-integer/-/big-integer-1.6.12.tgz"
+      "resolved": "https://registry.npmjs.org/big-integer/-/big-integer-1.6.12.tgz"
     },
     "binary-extensions": {
       "version": "1.4.0",
@@ -254,11 +276,6 @@
         }
       }
     },
-    "bluebird": {
-      "version": "1.2.4",
-      "from": "bluebird@>=1.2.4 <1.3.0",
-      "resolved": "https://registry.npmjs.org/bluebird/-/bluebird-1.2.4.tgz"
-    },
     "bn.js": {
       "version": "4.10.3",
       "from": "bn.js@>=4.1.1 <5.0.0",
@@ -277,7 +294,7 @@
     "brace-expansion": {
       "version": "1.1.3",
       "from": "brace-expansion@>=1.0.0 <2.0.0",
-      "resolved": "http://registry.npmjs.org/brace-expansion/-/brace-expansion-1.1.3.tgz"
+      "resolved": "https://registry.npmjs.org/brace-expansion/-/brace-expansion-1.1.3.tgz"
     },
     "braces": {
       "version": "1.8.3",
@@ -417,6 +434,11 @@
       "from": "camelcase-keys@>=2.0.0 <3.0.0",
       "resolved": "https://registry.npmjs.org/camelcase-keys/-/camelcase-keys-2.0.0.tgz"
     },
+    "capture-stack-trace": {
+      "version": "1.0.0",
+      "from": "capture-stack-trace@>=1.0.0 <2.0.0",
+      "resolved": "https://registry.npmjs.org/capture-stack-trace/-/capture-stack-trace-1.0.0.tgz"
+    },
     "cardinal": {
       "version": "0.5.0",
       "from": "cardinal@>=0.5.0 <0.6.0",
@@ -442,22 +464,10 @@
       "from": "cipher-base@>=1.0.0 <2.0.0",
       "resolved": "https://registry.npmjs.org/cipher-base/-/cipher-base-1.0.2.tgz"
     },
-    "cli": {
-      "version": "0.6.6",
-      "from": "cli@>=0.6.0 <0.7.0",
-      "resolved": "https://registry.npmjs.org/cli/-/cli-0.6.6.tgz",
-      "dependencies": {
-        "glob": {
-          "version": "3.2.11",
-          "from": "glob@>=3.2.1 <3.3.0",
-          "resolved": "https://registry.npmjs.org/glob/-/glob-3.2.11.tgz"
-        },
-        "minimatch": {
-          "version": "0.3.0",
-          "from": "minimatch@>=0.3.0 <0.4.0",
-          "resolved": "https://registry.npmjs.org/minimatch/-/minimatch-0.3.0.tgz"
-        }
-      }
+    "cli-cursor": {
+      "version": "1.0.2",
+      "from": "cli-cursor@>=1.0.1 <2.0.0",
+      "resolved": "https://registry.npmjs.org/cli-cursor/-/cli-cursor-1.0.2.tgz"
     },
     "cli-table": {
       "version": "0.3.1",
@@ -476,6 +486,11 @@
         }
       }
     },
+    "cli-width": {
+      "version": "1.1.1",
+      "from": "cli-width@>=1.0.1 <2.0.0",
+      "resolved": "https://registry.npmjs.org/cli-width/-/cli-width-1.1.1.tgz"
+    },
     "clone": {
       "version": "1.0.2",
       "from": "clone@>=1.0.0 <2.0.0",
@@ -486,15 +501,25 @@
       "from": "clone-stats@>=0.0.1 <0.0.2",
       "resolved": "https://registry.npmjs.org/clone-stats/-/clone-stats-0.0.1.tgz"
     },
+    "code-point-at": {
+      "version": "1.0.0",
+      "from": "code-point-at@>=1.0.0 <2.0.0",
+      "resolved": "https://registry.npmjs.org/code-point-at/-/code-point-at-1.0.0.tgz"
+    },
     "color-convert": {
       "version": "1.0.0",
       "from": "color-convert@>=1.0.0 <2.0.0",
-      "resolved": "http://registry.npmjs.org/color-convert/-/color-convert-1.0.0.tgz"
+      "resolved": "https://registry.npmjs.org/color-convert/-/color-convert-1.0.0.tgz"
     },
     "colors": {
       "version": "1.0.3",
       "from": "colors@1.0.3",
       "resolved": "https://registry.npmjs.org/colors/-/colors-1.0.3.tgz"
+    },
+    "columnify": {
+      "version": "1.5.4",
+      "from": "columnify@>=1.5.2 <2.0.0",
+      "resolved": "https://registry.npmjs.org/columnify/-/columnify-1.5.4.tgz"
     },
     "combine-source-map": {
       "version": "0.6.1",
@@ -567,23 +592,6 @@
         }
       }
     },
-    "configstore": {
-      "version": "0.3.2",
-      "from": "configstore@>=0.3.1 <0.4.0",
-      "resolved": "https://registry.npmjs.org/configstore/-/configstore-0.3.2.tgz",
-      "dependencies": {
-        "graceful-fs": {
-          "version": "3.0.8",
-          "from": "graceful-fs@>=3.0.1 <4.0.0",
-          "resolved": "https://registry.npmjs.org/graceful-fs/-/graceful-fs-3.0.8.tgz"
-        },
-        "object-assign": {
-          "version": "2.1.1",
-          "from": "object-assign@>=2.0.0 <3.0.0",
-          "resolved": "https://registry.npmjs.org/object-assign/-/object-assign-2.1.1.tgz"
-        }
-      }
-    },
     "connect": {
       "version": "2.17.3",
       "from": "connect@<2.18.0",
@@ -636,12 +644,17 @@
     "core-util-is": {
       "version": "1.0.2",
       "from": "core-util-is@>=1.0.0 <1.1.0",
-      "resolved": "http://registry.npmjs.org/core-util-is/-/core-util-is-1.0.2.tgz"
+      "resolved": "https://registry.npmjs.org/core-util-is/-/core-util-is-1.0.2.tgz"
     },
     "create-ecdh": {
       "version": "4.0.0",
       "from": "create-ecdh@>=4.0.0 <5.0.0",
       "resolved": "https://registry.npmjs.org/create-ecdh/-/create-ecdh-4.0.0.tgz"
+    },
+    "create-error-class": {
+      "version": "2.0.1",
+      "from": "create-error-class@>=2.0.0 <3.0.0",
+      "resolved": "https://registry.npmjs.org/create-error-class/-/create-error-class-2.0.1.tgz"
     },
     "create-hash": {
       "version": "1.1.2",
@@ -688,12 +701,12 @@
     "dashdash": {
       "version": "1.13.0",
       "from": "dashdash@>=1.10.1 <2.0.0",
-      "resolved": "http://registry.npmjs.org/dashdash/-/dashdash-1.13.0.tgz",
+      "resolved": "https://registry.npmjs.org/dashdash/-/dashdash-1.13.0.tgz",
       "dependencies": {
         "assert-plus": {
           "version": "1.0.0",
           "from": "assert-plus@>=1.0.0 <2.0.0",
-          "resolved": "http://registry.npmjs.org/assert-plus/-/assert-plus-1.0.0.tgz"
+          "resolved": "https://registry.npmjs.org/assert-plus/-/assert-plus-1.0.0.tgz"
         }
       }
     },
@@ -722,11 +735,6 @@
       "from": "deep-extend@>=0.4.0 <0.5.0",
       "resolved": "https://registry.npmjs.org/deep-extend/-/deep-extend-0.4.1.tgz"
     },
-    "deep-freeze": {
-      "version": "0.0.1",
-      "from": "deep-freeze@0.0.1",
-      "resolved": "https://registry.npmjs.org/deep-freeze/-/deep-freeze-0.0.1.tgz"
-    },
     "defaults": {
       "version": "1.0.3",
       "from": "defaults@>=1.0.0 <2.0.0",
@@ -736,11 +744,6 @@
       "version": "1.0.0",
       "from": "defined@>=1.0.0 <2.0.0",
       "resolved": "https://registry.npmjs.org/defined/-/defined-1.0.0.tgz"
-    },
-    "definition-header": {
-      "version": "0.1.0",
-      "from": "definition-header@>=0.1.0 <0.2.0",
-      "resolved": "https://registry.npmjs.org/definition-header/-/definition-header-0.1.0.tgz"
     },
     "delayed-stream": {
       "version": "1.0.0",
@@ -774,74 +777,20 @@
       "from": "des.js@>=1.0.0 <2.0.0",
       "resolved": "https://registry.npmjs.org/des.js/-/des.js-1.0.0.tgz"
     },
-    "detect-indent": {
-      "version": "0.2.0",
-      "from": "detect-indent@>=0.2.0 <0.3.0",
-      "resolved": "https://registry.npmjs.org/detect-indent/-/detect-indent-0.2.0.tgz",
-      "dependencies": {
-        "get-stdin": {
-          "version": "0.1.0",
-          "from": "get-stdin@>=0.1.0 <0.2.0",
-          "resolved": "https://registry.npmjs.org/get-stdin/-/get-stdin-0.1.0.tgz"
-        },
-        "minimist": {
-          "version": "0.1.0",
-          "from": "minimist@>=0.1.0 <0.2.0",
-          "resolved": "https://registry.npmjs.org/minimist/-/minimist-0.1.0.tgz"
-        }
-      }
-    },
     "detective": {
       "version": "4.3.1",
       "from": "detective@>=4.0.0 <5.0.0",
       "resolved": "https://registry.npmjs.org/detective/-/detective-4.3.1.tgz"
-    },
-    "diff": {
-      "version": "1.4.0",
-      "from": "diff@>=1.4.0 <2.0.0",
-      "resolved": "https://registry.npmjs.org/diff/-/diff-1.4.0.tgz"
     },
     "diffie-hellman": {
       "version": "5.0.2",
       "from": "diffie-hellman@>=5.0.0 <6.0.0",
       "resolved": "https://registry.npmjs.org/diffie-hellman/-/diffie-hellman-5.0.2.tgz"
     },
-    "dom-serializer": {
-      "version": "0.1.0",
-      "from": "dom-serializer@>=0.0.0 <1.0.0",
-      "resolved": "https://registry.npmjs.org/dom-serializer/-/dom-serializer-0.1.0.tgz",
-      "dependencies": {
-        "domelementtype": {
-          "version": "1.1.3",
-          "from": "domelementtype@>=1.1.1 <1.2.0",
-          "resolved": "https://registry.npmjs.org/domelementtype/-/domelementtype-1.1.3.tgz"
-        },
-        "entities": {
-          "version": "1.1.1",
-          "from": "entities@>=1.1.1 <1.2.0",
-          "resolved": "https://registry.npmjs.org/entities/-/entities-1.1.1.tgz"
-        }
-      }
-    },
     "domain-browser": {
       "version": "1.1.7",
       "from": "domain-browser@>=1.1.0 <1.2.0",
       "resolved": "https://registry.npmjs.org/domain-browser/-/domain-browser-1.1.7.tgz"
-    },
-    "domelementtype": {
-      "version": "1.3.0",
-      "from": "domelementtype@>=1.0.0 <2.0.0",
-      "resolved": "https://registry.npmjs.org/domelementtype/-/domelementtype-1.3.0.tgz"
-    },
-    "domhandler": {
-      "version": "2.3.0",
-      "from": "domhandler@>=2.3.0 <2.4.0",
-      "resolved": "https://registry.npmjs.org/domhandler/-/domhandler-2.3.0.tgz"
-    },
-    "domutils": {
-      "version": "1.5.1",
-      "from": "domutils@>=1.5.0 <1.6.0",
-      "resolved": "https://registry.npmjs.org/domutils/-/domutils-1.5.1.tgz"
     },
     "duplexer": {
       "version": "0.1.1",
@@ -861,9 +810,9 @@
       }
     },
     "duplexify": {
-      "version": "3.4.2",
+      "version": "3.4.3",
       "from": "duplexify@>=3.2.0 <4.0.0",
-      "resolved": "https://registry.npmjs.org/duplexify/-/duplexify-3.4.2.tgz",
+      "resolved": "https://registry.npmjs.org/duplexify/-/duplexify-3.4.3.tgz",
       "dependencies": {
         "end-of-stream": {
           "version": "1.0.0",
@@ -877,6 +826,11 @@
       "from": "ecc-jsbn@>=0.0.1 <1.0.0",
       "resolved": "https://registry.npmjs.org/ecc-jsbn/-/ecc-jsbn-0.1.1.tgz"
     },
+    "elegant-spinner": {
+      "version": "1.0.1",
+      "from": "elegant-spinner@>=1.0.1 <2.0.0",
+      "resolved": "https://registry.npmjs.org/elegant-spinner/-/elegant-spinner-1.0.1.tgz"
+    },
     "elliptic": {
       "version": "6.2.3",
       "from": "elliptic@>=6.0.0 <7.0.0",
@@ -886,11 +840,6 @@
       "version": "0.1.5",
       "from": "end-of-stream@>=0.1.5 <0.2.0",
       "resolved": "https://registry.npmjs.org/end-of-stream/-/end-of-stream-0.1.5.tgz"
-    },
-    "entities": {
-      "version": "1.0.0",
-      "from": "entities@>=1.0.0 <1.1.0",
-      "resolved": "https://registry.npmjs.org/entities/-/entities-1.0.0.tgz"
     },
     "error-ex": {
       "version": "1.3.0",
@@ -905,7 +854,7 @@
     "escape-string-regexp": {
       "version": "1.0.5",
       "from": "escape-string-regexp@>=1.0.2 <2.0.0",
-      "resolved": "http://registry.npmjs.org/escape-string-regexp/-/escape-string-regexp-1.0.5.tgz"
+      "resolved": "https://registry.npmjs.org/escape-string-regexp/-/escape-string-regexp-1.0.5.tgz"
     },
     "esprima-fb": {
       "version": "12001.1.0-dev-harmony-fb",
@@ -927,9 +876,10 @@
       "from": "evp_bytestokey@>=1.0.0 <2.0.0",
       "resolved": "https://registry.npmjs.org/evp_bytestokey/-/evp_bytestokey-1.0.0.tgz"
     },
-    "exit": {
-      "version": "0.1.2",
-      "from": "exit@>=0.1.0 <0.2.0"
+    "exit-hook": {
+      "version": "1.1.1",
+      "from": "exit-hook@>=1.0.0 <2.0.0",
+      "resolved": "https://registry.npmjs.org/exit-hook/-/exit-hook-1.1.1.tgz"
     },
     "expand-brackets": {
       "version": "0.1.4",
@@ -974,6 +924,11 @@
     "faye-websocket": {
       "version": "0.4.4",
       "from": "faye-websocket@>=0.4.3 <0.5.0"
+    },
+    "figures": {
+      "version": "1.4.0",
+      "from": "figures@>=1.3.5 <2.0.0",
+      "resolved": "https://registry.npmjs.org/figures/-/figures-1.4.0.tgz"
     },
     "filename-regex": {
       "version": "2.0.0",
@@ -1058,14 +1013,14 @@
       "resolved": "https://registry.npmjs.org/from/-/from-0.1.3.tgz"
     },
     "fsevents": {
-      "version": "1.0.7",
+      "version": "1.0.8",
       "from": "fsevents@>=1.0.0 <2.0.0",
-      "resolved": "https://registry.npmjs.org/fsevents/-/fsevents-1.0.7.tgz",
+      "resolved": "https://registry.npmjs.org/fsevents/-/fsevents-1.0.8.tgz",
       "dependencies": {
         "ansi": {
-          "version": "0.3.0",
-          "from": "ansi@~0.3.0",
-          "resolved": "https://registry.npmjs.org/ansi/-/ansi-0.3.0.tgz"
+          "version": "0.3.1",
+          "from": "ansi@~0.3.1",
+          "resolved": "https://registry.npmjs.org/ansi/-/ansi-0.3.1.tgz"
         },
         "ansi-regex": {
           "version": "2.0.0",
@@ -1078,9 +1033,9 @@
           "resolved": "https://registry.npmjs.org/ansi-styles/-/ansi-styles-2.1.0.tgz"
         },
         "are-we-there-yet": {
-          "version": "1.0.5",
-          "from": "are-we-there-yet@~1.0.0",
-          "resolved": "https://registry.npmjs.org/are-we-there-yet/-/are-we-there-yet-1.0.5.tgz"
+          "version": "1.0.6",
+          "from": "are-we-there-yet@~1.0.6",
+          "resolved": "https://registry.npmjs.org/are-we-there-yet/-/are-we-there-yet-1.0.6.tgz"
         },
         "asn1": {
           "version": "0.2.3",
@@ -1088,24 +1043,36 @@
           "resolved": "https://registry.npmjs.org/asn1/-/asn1-0.2.3.tgz"
         },
         "assert-plus": {
-          "version": "0.1.5",
-          "from": "assert-plus@^0.1.5",
-          "resolved": "https://registry.npmjs.org/assert-plus/-/assert-plus-0.1.5.tgz"
+          "version": "0.2.0",
+          "from": "assert-plus@^0.2.0",
+          "resolved": "https://registry.npmjs.org/assert-plus/-/assert-plus-0.2.0.tgz"
         },
         "async": {
-          "version": "1.5.1",
+          "version": "1.5.2",
           "from": "async@^1.4.0",
-          "resolved": "https://registry.npmjs.org/async/-/async-1.5.1.tgz"
+          "resolved": "https://registry.npmjs.org/async/-/async-1.5.2.tgz"
         },
         "aws-sign2": {
           "version": "0.6.0",
           "from": "aws-sign2@~0.6.0",
           "resolved": "https://registry.npmjs.org/aws-sign2/-/aws-sign2-0.6.0.tgz"
         },
+        "aws4": {
+          "version": "1.2.1",
+          "from": "aws4@^1.2.1",
+          "resolved": "https://registry.npmjs.org/aws4/-/aws4-1.2.1.tgz",
+          "dependencies": {
+            "lru-cache": {
+              "version": "2.7.3",
+              "from": "lru-cache@^2.6.5",
+              "resolved": "https://registry.npmjs.org/lru-cache/-/lru-cache-2.7.3.tgz"
+            }
+          }
+        },
         "bl": {
-          "version": "1.0.0",
+          "version": "1.0.2",
           "from": "bl@~1.0.0",
-          "resolved": "https://registry.npmjs.org/bl/-/bl-1.0.0.tgz"
+          "resolved": "https://registry.npmjs.org/bl/-/bl-1.0.2.tgz"
         },
         "block-stream": {
           "version": "0.0.8",
@@ -1148,19 +1115,19 @@
           "resolved": "https://registry.npmjs.org/cryptiles/-/cryptiles-2.0.5.tgz"
         },
         "dashdash": {
-          "version": "1.11.0",
+          "version": "1.12.2",
           "from": "dashdash@>=1.10.1 <2.0.0",
-          "resolved": "https://registry.npmjs.org/dashdash/-/dashdash-1.11.0.tgz"
+          "resolved": "https://registry.npmjs.org/dashdash/-/dashdash-1.12.2.tgz"
         },
         "debug": {
-          "version": "0.7.4",
-          "from": "debug@~0.7.2",
-          "resolved": "https://registry.npmjs.org/debug/-/debug-0.7.4.tgz"
+          "version": "2.2.0",
+          "from": "debug@~2.2.0",
+          "resolved": "https://registry.npmjs.org/debug/-/debug-2.2.0.tgz"
         },
         "deep-extend": {
-          "version": "0.4.0",
+          "version": "0.4.1",
           "from": "deep-extend@~0.4.0",
-          "resolved": "https://registry.npmjs.org/deep-extend/-/deep-extend-0.4.0.tgz"
+          "resolved": "https://registry.npmjs.org/deep-extend/-/deep-extend-0.4.1.tgz"
         },
         "delayed-stream": {
           "version": "1.0.0",
@@ -1168,9 +1135,9 @@
           "resolved": "https://registry.npmjs.org/delayed-stream/-/delayed-stream-1.0.0.tgz"
         },
         "delegates": {
-          "version": "0.1.0",
-          "from": "delegates@^0.1.0",
-          "resolved": "https://registry.npmjs.org/delegates/-/delegates-0.1.0.tgz"
+          "version": "1.0.0",
+          "from": "delegates@^1.0.0",
+          "resolved": "https://registry.npmjs.org/delegates/-/delegates-1.0.0.tgz"
         },
         "ecc-jsbn": {
           "version": "0.1.1",
@@ -1239,9 +1206,9 @@
           }
         },
         "gauge": {
-          "version": "1.2.2",
-          "from": "gauge@~1.2.0",
-          "resolved": "https://registry.npmjs.org/gauge/-/gauge-1.2.2.tgz"
+          "version": "1.2.5",
+          "from": "gauge@~1.2.5",
+          "resolved": "https://registry.npmjs.org/gauge/-/gauge-1.2.5.tgz"
         },
         "generate-function": {
           "version": "2.0.0",
@@ -1254,9 +1221,9 @@
           "resolved": "https://registry.npmjs.org/generate-object-property/-/generate-object-property-1.2.0.tgz"
         },
         "graceful-fs": {
-          "version": "4.1.2",
+          "version": "4.1.3",
           "from": "graceful-fs@^4.1.2",
-          "resolved": "https://registry.npmjs.org/graceful-fs/-/graceful-fs-4.1.2.tgz"
+          "resolved": "https://registry.npmjs.org/graceful-fs/-/graceful-fs-4.1.3.tgz"
         },
         "graceful-readlink": {
           "version": "1.0.1",
@@ -1264,9 +1231,9 @@
           "resolved": "https://registry.npmjs.org/graceful-readlink/-/graceful-readlink-1.0.1.tgz"
         },
         "har-validator": {
-          "version": "2.0.3",
-          "from": "har-validator@~2.0.2",
-          "resolved": "https://registry.npmjs.org/har-validator/-/har-validator-2.0.3.tgz"
+          "version": "2.0.6",
+          "from": "har-validator@~2.0.6",
+          "resolved": "https://registry.npmjs.org/har-validator/-/har-validator-2.0.6.tgz"
         },
         "has-ansi": {
           "version": "2.0.0",
@@ -1274,14 +1241,14 @@
           "resolved": "https://registry.npmjs.org/has-ansi/-/has-ansi-2.0.0.tgz"
         },
         "has-unicode": {
-          "version": "1.0.1",
-          "from": "has-unicode@^1.0.0",
-          "resolved": "https://registry.npmjs.org/has-unicode/-/has-unicode-1.0.1.tgz"
+          "version": "2.0.0",
+          "from": "has-unicode@^2.0.0",
+          "resolved": "https://registry.npmjs.org/has-unicode/-/has-unicode-2.0.0.tgz"
         },
         "hawk": {
-          "version": "3.1.2",
+          "version": "3.1.3",
           "from": "hawk@~3.1.0",
-          "resolved": "https://registry.npmjs.org/hawk/-/hawk-3.1.2.tgz"
+          "resolved": "https://registry.npmjs.org/hawk/-/hawk-3.1.3.tgz"
         },
         "hoek": {
           "version": "2.16.3",
@@ -1289,9 +1256,9 @@
           "resolved": "https://registry.npmjs.org/hoek/-/hoek-2.16.3.tgz"
         },
         "http-signature": {
-          "version": "1.1.0",
+          "version": "1.1.1",
           "from": "http-signature@~1.1.0",
-          "resolved": "https://registry.npmjs.org/http-signature/-/http-signature-1.1.0.tgz"
+          "resolved": "https://registry.npmjs.org/http-signature/-/http-signature-1.1.1.tgz"
         },
         "inherits": {
           "version": "2.0.1",
@@ -1304,9 +1271,9 @@
           "resolved": "https://registry.npmjs.org/ini/-/ini-1.3.4.tgz"
         },
         "is-my-json-valid": {
-          "version": "2.12.3",
-          "from": "is-my-json-valid@^2.12.3",
-          "resolved": "https://registry.npmjs.org/is-my-json-valid/-/is-my-json-valid-2.12.3.tgz"
+          "version": "2.12.4",
+          "from": "is-my-json-valid@^2.12.4",
+          "resolved": "https://registry.npmjs.org/is-my-json-valid/-/is-my-json-valid-2.12.4.tgz"
         },
         "is-property": {
           "version": "1.0.2",
@@ -1368,10 +1335,15 @@
           "from": "lodash._createpadding@^3.0.0",
           "resolved": "https://registry.npmjs.org/lodash._createpadding/-/lodash._createpadding-3.6.1.tgz"
         },
+        "lodash._root": {
+          "version": "3.0.0",
+          "from": "lodash._root@^3.0.0",
+          "resolved": "https://registry.npmjs.org/lodash._root/-/lodash._root-3.0.0.tgz"
+        },
         "lodash.pad": {
-          "version": "3.1.1",
+          "version": "3.3.0",
           "from": "lodash.pad@^3.0.0",
-          "resolved": "https://registry.npmjs.org/lodash.pad/-/lodash.pad-3.1.1.tgz"
+          "resolved": "https://registry.npmjs.org/lodash.pad/-/lodash.pad-3.3.0.tgz"
         },
         "lodash.padleft": {
           "version": "3.1.1",
@@ -1384,9 +1356,9 @@
           "resolved": "https://registry.npmjs.org/lodash.padright/-/lodash.padright-3.1.1.tgz"
         },
         "lodash.repeat": {
-          "version": "3.0.1",
+          "version": "3.2.0",
           "from": "lodash.repeat@^3.0.0",
-          "resolved": "https://registry.npmjs.org/lodash.repeat/-/lodash.repeat-3.0.1.tgz"
+          "resolved": "https://registry.npmjs.org/lodash.repeat/-/lodash.repeat-3.2.0.tgz"
         },
         "mime-db": {
           "version": "1.21.0",
@@ -1408,10 +1380,15 @@
           "from": "mkdirp@>=0.3.0 <0.4.0||>=0.4.0 <0.5.0||>=0.5.0 <0.6.0",
           "resolved": "https://registry.npmjs.org/mkdirp/-/mkdirp-0.5.1.tgz"
         },
+        "ms": {
+          "version": "0.7.1",
+          "from": "ms@0.7.1",
+          "resolved": "https://registry.npmjs.org/ms/-/ms-0.7.1.tgz"
+        },
         "node-pre-gyp": {
-          "version": "0.6.19",
-          "from": "node-pre-gyp@>=0.6.17 <0.7.0",
-          "resolved": "https://registry.npmjs.org/node-pre-gyp/-/node-pre-gyp-0.6.19.tgz",
+          "version": "0.6.21",
+          "from": "node-pre-gyp@>=0.6.21 <0.7.0",
+          "resolved": "https://registry.npmjs.org/node-pre-gyp/-/node-pre-gyp-0.6.21.tgz",
           "dependencies": {
             "nopt": {
               "version": "3.0.6",
@@ -1433,24 +1410,24 @@
           "resolved": "https://registry.npmjs.org/node-uuid/-/node-uuid-1.4.7.tgz"
         },
         "npmlog": {
-          "version": "2.0.0",
+          "version": "2.0.2",
           "from": "npmlog@~2.0.0",
-          "resolved": "https://registry.npmjs.org/npmlog/-/npmlog-2.0.0.tgz"
+          "resolved": "https://registry.npmjs.org/npmlog/-/npmlog-2.0.2.tgz"
         },
         "oauth-sign": {
-          "version": "0.8.0",
+          "version": "0.8.1",
           "from": "oauth-sign@~0.8.0",
-          "resolved": "https://registry.npmjs.org/oauth-sign/-/oauth-sign-0.8.0.tgz"
+          "resolved": "https://registry.npmjs.org/oauth-sign/-/oauth-sign-0.8.1.tgz"
         },
         "once": {
-          "version": "1.1.1",
-          "from": "once@~1.1.1",
-          "resolved": "https://registry.npmjs.org/once/-/once-1.1.1.tgz"
+          "version": "1.3.3",
+          "from": "once@~1.3.3",
+          "resolved": "https://registry.npmjs.org/once/-/once-1.3.3.tgz"
         },
         "pinkie": {
-          "version": "2.0.1",
+          "version": "2.0.4",
           "from": "pinkie@^2.0.0",
-          "resolved": "https://registry.npmjs.org/pinkie/-/pinkie-2.0.1.tgz"
+          "resolved": "https://registry.npmjs.org/pinkie/-/pinkie-2.0.4.tgz"
         },
         "pinkie-promise": {
           "version": "2.0.0",
@@ -1463,9 +1440,9 @@
           "resolved": "https://registry.npmjs.org/process-nextick-args/-/process-nextick-args-1.0.6.tgz"
         },
         "qs": {
-          "version": "5.2.0",
-          "from": "qs@~5.2.0",
-          "resolved": "https://registry.npmjs.org/qs/-/qs-5.2.0.tgz"
+          "version": "6.0.2",
+          "from": "qs@~6.0.2",
+          "resolved": "https://registry.npmjs.org/qs/-/qs-6.0.2.tgz"
         },
         "rc": {
           "version": "1.1.6",
@@ -1485,19 +1462,19 @@
           "resolved": "https://registry.npmjs.org/readable-stream/-/readable-stream-2.0.5.tgz"
         },
         "request": {
-          "version": "2.67.0",
+          "version": "2.69.0",
           "from": "request@2.x",
-          "resolved": "https://registry.npmjs.org/request/-/request-2.67.0.tgz"
+          "resolved": "https://registry.npmjs.org/request/-/request-2.69.0.tgz"
         },
         "rimraf": {
-          "version": "2.5.0",
+          "version": "2.5.1",
           "from": "rimraf@~2.5.0",
-          "resolved": "https://registry.npmjs.org/rimraf/-/rimraf-2.5.0.tgz",
+          "resolved": "https://registry.npmjs.org/rimraf/-/rimraf-2.5.1.tgz",
           "dependencies": {
             "glob": {
-              "version": "6.0.3",
+              "version": "6.0.4",
               "from": "glob@^6.0.1",
-              "resolved": "https://registry.npmjs.org/glob/-/glob-6.0.3.tgz",
+              "resolved": "https://registry.npmjs.org/glob/-/glob-6.0.4.tgz",
               "dependencies": {
                 "inflight": {
                   "version": "1.0.4",
@@ -1513,7 +1490,7 @@
                 },
                 "inherits": {
                   "version": "2.0.1",
-                  "from": "inherits@~2.0.0",
+                  "from": "inherits@2",
                   "resolved": "https://registry.npmjs.org/inherits/-/inherits-2.0.1.tgz"
                 },
                 "minimatch": {
@@ -1572,16 +1549,9 @@
           "resolved": "https://registry.npmjs.org/sntp/-/sntp-1.0.9.tgz"
         },
         "sshpk": {
-          "version": "1.7.2",
+          "version": "1.7.3",
           "from": "sshpk@^1.7.0",
-          "resolved": "https://registry.npmjs.org/sshpk/-/sshpk-1.7.2.tgz",
-          "dependencies": {
-            "assert-plus": {
-              "version": "0.2.0",
-              "from": "assert-plus@>=0.2.0 <0.3.0",
-              "resolved": "https://registry.npmjs.org/assert-plus/-/assert-plus-0.2.0.tgz"
-            }
-          }
+          "resolved": "https://registry.npmjs.org/sshpk/-/sshpk-1.7.3.tgz"
         },
         "string_decoder": {
           "version": "0.10.31",
@@ -1614,83 +1584,9 @@
           "resolved": "https://registry.npmjs.org/tar/-/tar-2.2.1.tgz"
         },
         "tar-pack": {
-          "version": "3.1.2",
+          "version": "3.1.3",
           "from": "tar-pack@~3.1.0",
-          "resolved": "https://registry.npmjs.org/tar-pack/-/tar-pack-3.1.2.tgz",
-          "dependencies": {
-            "rimraf": {
-              "version": "2.4.5",
-              "from": "rimraf@~2.4.4",
-              "resolved": "https://registry.npmjs.org/rimraf/-/rimraf-2.4.5.tgz",
-              "dependencies": {
-                "glob": {
-                  "version": "6.0.3",
-                  "from": "glob@^6.0.1",
-                  "resolved": "https://registry.npmjs.org/glob/-/glob-6.0.3.tgz",
-                  "dependencies": {
-                    "inflight": {
-                      "version": "1.0.4",
-                      "from": "inflight@^1.0.4",
-                      "resolved": "https://registry.npmjs.org/inflight/-/inflight-1.0.4.tgz",
-                      "dependencies": {
-                        "wrappy": {
-                          "version": "1.0.1",
-                          "from": "wrappy@1",
-                          "resolved": "https://registry.npmjs.org/wrappy/-/wrappy-1.0.1.tgz"
-                        }
-                      }
-                    },
-                    "inherits": {
-                      "version": "2.0.1",
-                      "from": "inherits@2",
-                      "resolved": "https://registry.npmjs.org/inherits/-/inherits-2.0.1.tgz"
-                    },
-                    "minimatch": {
-                      "version": "3.0.0",
-                      "from": "minimatch@2 || 3",
-                      "resolved": "https://registry.npmjs.org/minimatch/-/minimatch-3.0.0.tgz",
-                      "dependencies": {
-                        "brace-expansion": {
-                          "version": "1.1.2",
-                          "from": "brace-expansion@^1.0.0",
-                          "resolved": "https://registry.npmjs.org/brace-expansion/-/brace-expansion-1.1.2.tgz",
-                          "dependencies": {
-                            "balanced-match": {
-                              "version": "0.3.0",
-                              "from": "balanced-match@^0.3.0",
-                              "resolved": "https://registry.npmjs.org/balanced-match/-/balanced-match-0.3.0.tgz"
-                            },
-                            "concat-map": {
-                              "version": "0.0.1",
-                              "from": "concat-map@0.0.1",
-                              "resolved": "https://registry.npmjs.org/concat-map/-/concat-map-0.0.1.tgz"
-                            }
-                          }
-                        }
-                      }
-                    },
-                    "once": {
-                      "version": "1.3.3",
-                      "from": "once@^1.3.0",
-                      "resolved": "https://registry.npmjs.org/once/-/once-1.3.3.tgz",
-                      "dependencies": {
-                        "wrappy": {
-                          "version": "1.0.1",
-                          "from": "wrappy@1",
-                          "resolved": "https://registry.npmjs.org/wrappy/-/wrappy-1.0.1.tgz"
-                        }
-                      }
-                    },
-                    "path-is-absolute": {
-                      "version": "1.0.0",
-                      "from": "path-is-absolute@^1.0.0",
-                      "resolved": "https://registry.npmjs.org/path-is-absolute/-/path-is-absolute-1.0.0.tgz"
-                    }
-                  }
-                }
-              }
-            }
-          }
+          "resolved": "https://registry.npmjs.org/tar-pack/-/tar-pack-3.1.3.tgz"
         },
         "tough-cookie": {
           "version": "2.2.1",
@@ -1703,14 +1599,14 @@
           "resolved": "https://registry.npmjs.org/tunnel-agent/-/tunnel-agent-0.4.2.tgz"
         },
         "tweetnacl": {
-          "version": "0.13.2",
+          "version": "0.13.3",
           "from": "tweetnacl@>=0.13.0 <1.0.0",
-          "resolved": "https://registry.npmjs.org/tweetnacl/-/tweetnacl-0.13.2.tgz"
+          "resolved": "https://registry.npmjs.org/tweetnacl/-/tweetnacl-0.13.3.tgz"
         },
         "uid-number": {
-          "version": "0.0.3",
-          "from": "uid-number@0.0.3",
-          "resolved": "https://registry.npmjs.org/uid-number/-/uid-number-0.0.3.tgz"
+          "version": "0.0.6",
+          "from": "uid-number@~0.0.6",
+          "resolved": "https://registry.npmjs.org/uid-number/-/uid-number-0.0.6.tgz"
         },
         "util-deprecate": {
           "version": "1.0.2",
@@ -1722,6 +1618,11 @@
           "from": "verror@1.3.6",
           "resolved": "https://registry.npmjs.org/verror/-/verror-1.3.6.tgz"
         },
+        "wrappy": {
+          "version": "1.0.1",
+          "from": "wrappy@1",
+          "resolved": "https://registry.npmjs.org/wrappy/-/wrappy-1.0.1.tgz"
+        },
         "xtend": {
           "version": "4.0.1",
           "from": "xtend@^4.0.0",
@@ -1732,7 +1633,7 @@
     "function-bind": {
       "version": "1.1.0",
       "from": "function-bind@>=1.0.2 <2.0.0",
-      "resolved": "http://registry.npmjs.org/function-bind/-/function-bind-1.1.0.tgz"
+      "resolved": "https://registry.npmjs.org/function-bind/-/function-bind-1.1.0.tgz"
     },
     "gaze": {
       "version": "0.5.2",
@@ -1834,11 +1735,6 @@
       "from": "glogg@>=1.0.0 <2.0.0",
       "resolved": "https://registry.npmjs.org/glogg/-/glogg-1.0.0.tgz"
     },
-    "got": {
-      "version": "3.3.1",
-      "from": "got@>=3.2.0 <4.0.0",
-      "resolved": "https://registry.npmjs.org/got/-/got-3.3.1.tgz"
-    },
     "graceful-fs": {
       "version": "4.1.3",
       "from": "graceful-fs@>=4.1.2 <5.0.0",
@@ -1855,9 +1751,9 @@
       "resolved": "https://registry.npmjs.org/growly/-/growly-1.2.0.tgz"
     },
     "gulp": {
-      "version": "3.9.0",
-      "from": "gulp@3.9.0",
-      "resolved": "https://registry.npmjs.org/gulp/-/gulp-3.9.0.tgz"
+      "version": "3.9.1",
+      "from": "gulp@3.9.1",
+      "resolved": "https://registry.npmjs.org/gulp/-/gulp-3.9.1.tgz"
     },
     "gulp-angular-templatecache": {
       "version": "1.7.0",
@@ -2109,108 +2005,6 @@
       "from": "gulp-header@>=1.0.0 <2.0.0",
       "resolved": "https://registry.npmjs.org/gulp-header/-/gulp-header-1.7.1.tgz"
     },
-    "gulp-jshint": {
-      "version": "1.6.4",
-      "from": "gulp-jshint@>=1.6.1 <1.7.0",
-      "resolved": "https://registry.npmjs.org/gulp-jshint/-/gulp-jshint-1.6.4.tgz",
-      "dependencies": {
-        "ansi-regex": {
-          "version": "0.2.1",
-          "from": "ansi-regex@>=0.2.0 <0.3.0",
-          "resolved": "https://registry.npmjs.org/ansi-regex/-/ansi-regex-0.2.1.tgz"
-        },
-        "ansi-styles": {
-          "version": "1.1.0",
-          "from": "ansi-styles@>=1.1.0 <2.0.0",
-          "resolved": "https://registry.npmjs.org/ansi-styles/-/ansi-styles-1.1.0.tgz"
-        },
-        "chalk": {
-          "version": "0.5.1",
-          "from": "chalk@>=0.5.0 <0.6.0",
-          "resolved": "https://registry.npmjs.org/chalk/-/chalk-0.5.1.tgz"
-        },
-        "gulp-util": {
-          "version": "2.2.20",
-          "from": "gulp-util@>=2.2.5 <3.0.0",
-          "resolved": "https://registry.npmjs.org/gulp-util/-/gulp-util-2.2.20.tgz"
-        },
-        "has-ansi": {
-          "version": "0.1.0",
-          "from": "has-ansi@>=0.1.0 <0.2.0",
-          "resolved": "https://registry.npmjs.org/has-ansi/-/has-ansi-0.1.0.tgz"
-        },
-        "lodash": {
-          "version": "2.4.2",
-          "from": "lodash@>=2.4.1 <3.0.0",
-          "resolved": "https://registry.npmjs.org/lodash/-/lodash-2.4.2.tgz"
-        },
-        "lodash._reinterpolate": {
-          "version": "2.4.1",
-          "from": "lodash._reinterpolate@>=2.4.1 <3.0.0",
-          "resolved": "https://registry.npmjs.org/lodash._reinterpolate/-/lodash._reinterpolate-2.4.1.tgz"
-        },
-        "lodash.escape": {
-          "version": "2.4.1",
-          "from": "lodash.escape@>=2.4.1 <2.5.0",
-          "resolved": "https://registry.npmjs.org/lodash.escape/-/lodash.escape-2.4.1.tgz"
-        },
-        "lodash.keys": {
-          "version": "2.4.1",
-          "from": "lodash.keys@>=2.4.1 <2.5.0",
-          "resolved": "https://registry.npmjs.org/lodash.keys/-/lodash.keys-2.4.1.tgz"
-        },
-        "lodash.template": {
-          "version": "2.4.1",
-          "from": "lodash.template@>=2.4.1 <3.0.0",
-          "resolved": "https://registry.npmjs.org/lodash.template/-/lodash.template-2.4.1.tgz"
-        },
-        "lodash.templatesettings": {
-          "version": "2.4.1",
-          "from": "lodash.templatesettings@>=2.4.1 <2.5.0",
-          "resolved": "https://registry.npmjs.org/lodash.templatesettings/-/lodash.templatesettings-2.4.1.tgz"
-        },
-        "minimatch": {
-          "version": "0.3.0",
-          "from": "minimatch@>=0.3.0 <0.4.0",
-          "resolved": "https://registry.npmjs.org/minimatch/-/minimatch-0.3.0.tgz"
-        },
-        "minimist": {
-          "version": "0.2.0",
-          "from": "minimist@>=0.2.0 <0.3.0",
-          "resolved": "https://registry.npmjs.org/minimist/-/minimist-0.2.0.tgz"
-        },
-        "readable-stream": {
-          "version": "1.0.33",
-          "from": "readable-stream@>=1.0.17 <1.1.0",
-          "resolved": "https://registry.npmjs.org/readable-stream/-/readable-stream-1.0.33.tgz"
-        },
-        "strip-ansi": {
-          "version": "0.3.0",
-          "from": "strip-ansi@>=0.3.0 <0.4.0",
-          "resolved": "https://registry.npmjs.org/strip-ansi/-/strip-ansi-0.3.0.tgz"
-        },
-        "supports-color": {
-          "version": "0.2.0",
-          "from": "supports-color@>=0.2.0 <0.3.0",
-          "resolved": "https://registry.npmjs.org/supports-color/-/supports-color-0.2.0.tgz"
-        },
-        "through2": {
-          "version": "0.5.1",
-          "from": "through2@>=0.5.0 <0.6.0",
-          "resolved": "https://registry.npmjs.org/through2/-/through2-0.5.1.tgz"
-        },
-        "vinyl": {
-          "version": "0.2.3",
-          "from": "vinyl@>=0.2.1 <0.3.0",
-          "resolved": "https://registry.npmjs.org/vinyl/-/vinyl-0.2.3.tgz"
-        },
-        "xtend": {
-          "version": "3.0.0",
-          "from": "xtend@>=3.0.0 <3.1.0",
-          "resolved": "https://registry.npmjs.org/xtend/-/xtend-3.0.0.tgz"
-        }
-      }
-    },
     "gulp-notify": {
       "version": "2.2.0",
       "from": "gulp-notify@2.2.0",
@@ -2232,11 +2026,6 @@
           "resolved": "https://registry.npmjs.org/through2/-/through2-2.0.1.tgz"
         }
       }
-    },
-    "gulp-tsd": {
-      "version": "0.0.4",
-      "from": "gulp-tsd@0.0.4",
-      "resolved": "https://registry.npmjs.org/gulp-tsd/-/gulp-tsd-0.0.4.tgz"
     },
     "gulp-typescript": {
       "version": "2.9.1",
@@ -2273,7 +2062,7 @@
         "json-stable-stringify": {
           "version": "1.0.1",
           "from": "json-stable-stringify@>=1.0.0 <2.0.0",
-          "resolved": "http://registry.npmjs.org/json-stable-stringify/-/json-stable-stringify-1.0.1.tgz"
+          "resolved": "https://registry.npmjs.org/json-stable-stringify/-/json-stable-stringify-1.0.1.tgz"
         },
         "object-assign": {
           "version": "4.0.1",
@@ -2298,7 +2087,7 @@
         "unique-stream": {
           "version": "2.2.1",
           "from": "unique-stream@>=2.0.2 <3.0.0",
-          "resolved": "http://registry.npmjs.org/unique-stream/-/unique-stream-2.2.1.tgz"
+          "resolved": "https://registry.npmjs.org/unique-stream/-/unique-stream-2.2.1.tgz"
         },
         "vinyl-fs": {
           "version": "2.1.1",
@@ -2408,15 +2197,20 @@
       "from": "htmlescape@>=1.1.0 <2.0.0",
       "resolved": "https://registry.npmjs.org/htmlescape/-/htmlescape-1.1.0.tgz"
     },
-    "htmlparser2": {
-      "version": "3.8.3",
-      "from": "htmlparser2@>=3.8.0 <3.9.0",
-      "resolved": "https://registry.npmjs.org/htmlparser2/-/htmlparser2-3.8.3.tgz",
+    "http-proxy-agent": {
+      "version": "1.0.0",
+      "from": "http-proxy-agent@>=1.0.0 <2.0.0",
+      "resolved": "https://registry.npmjs.org/http-proxy-agent/-/http-proxy-agent-1.0.0.tgz",
       "dependencies": {
-        "readable-stream": {
-          "version": "1.1.13",
-          "from": "readable-stream@>=1.1.0 <1.2.0",
-          "resolved": "https://registry.npmjs.org/readable-stream/-/readable-stream-1.1.13.tgz"
+        "debug": {
+          "version": "2.2.0",
+          "from": "debug@>=2.0.0 <3.0.0",
+          "resolved": "https://registry.npmjs.org/debug/-/debug-2.2.0.tgz"
+        },
+        "extend": {
+          "version": "3.0.0",
+          "from": "extend@>=3.0.0 <4.0.0",
+          "resolved": "https://registry.npmjs.org/extend/-/extend-3.0.0.tgz"
         }
       }
     },
@@ -2428,7 +2222,7 @@
         "sshpk": {
           "version": "1.7.4",
           "from": "sshpk@>=1.7.0 <2.0.0",
-          "resolved": "http://registry.npmjs.org/sshpk/-/sshpk-1.7.4.tgz"
+          "resolved": "https://registry.npmjs.org/sshpk/-/sshpk-1.7.4.tgz"
         }
       }
     },
@@ -2436,6 +2230,23 @@
       "version": "0.0.1",
       "from": "https-browserify@>=0.0.0 <0.1.0",
       "resolved": "https://registry.npmjs.org/https-browserify/-/https-browserify-0.0.1.tgz"
+    },
+    "https-proxy-agent": {
+      "version": "1.0.0",
+      "from": "https-proxy-agent@>=1.0.0 <2.0.0",
+      "resolved": "https://registry.npmjs.org/https-proxy-agent/-/https-proxy-agent-1.0.0.tgz",
+      "dependencies": {
+        "debug": {
+          "version": "2.2.0",
+          "from": "debug@>=2.0.0 <3.0.0",
+          "resolved": "https://registry.npmjs.org/debug/-/debug-2.2.0.tgz"
+        },
+        "extend": {
+          "version": "3.0.0",
+          "from": "extend@>=3.0.0 <4.0.0",
+          "resolved": "https://registry.npmjs.org/extend/-/extend-3.0.0.tgz"
+        }
+      }
     },
     "ieee754": {
       "version": "1.1.6",
@@ -2446,6 +2257,11 @@
       "version": "1.1.0",
       "from": "import-regex@>=1.1.0 <2.0.0",
       "resolved": "https://registry.npmjs.org/import-regex/-/import-regex-1.1.0.tgz"
+    },
+    "imurmurhash": {
+      "version": "0.1.4",
+      "from": "imurmurhash@>=0.1.4 <0.2.0",
+      "resolved": "https://registry.npmjs.org/imurmurhash/-/imurmurhash-0.1.4.tgz"
     },
     "indent-string": {
       "version": "2.1.0",
@@ -2469,8 +2285,7 @@
     },
     "inherits": {
       "version": "2.0.1",
-      "from": "inherits@>=2.0.1 <2.1.0",
-      "resolved": "https://registry.npmjs.org/inherits/-/inherits-2.0.1.tgz"
+      "from": "inherits@>=2.0.1 <2.1.0"
     },
     "ini": {
       "version": "1.3.4",
@@ -2481,6 +2296,11 @@
       "version": "0.5.0",
       "from": "inline-source-map@>=0.5.0 <0.6.0",
       "resolved": "https://registry.npmjs.org/inline-source-map/-/inline-source-map-0.5.0.tgz"
+    },
+    "inquirer": {
+      "version": "0.11.4",
+      "from": "inquirer@>=0.11.0 <0.12.0",
+      "resolved": "https://registry.npmjs.org/inquirer/-/inquirer-0.11.4.tgz"
     },
     "insert-module-globals": {
       "version": "6.6.3",
@@ -2499,10 +2319,42 @@
         }
       }
     },
+    "insight": {
+      "version": "0.7.0",
+      "from": "insight@>=0.7.0 <0.8.0",
+      "resolved": "https://registry.npmjs.org/insight/-/insight-0.7.0.tgz",
+      "dependencies": {
+        "configstore": {
+          "version": "1.4.0",
+          "from": "configstore@>=1.0.0 <2.0.0",
+          "resolved": "https://registry.npmjs.org/configstore/-/configstore-1.4.0.tgz"
+        },
+        "inquirer": {
+          "version": "0.10.1",
+          "from": "inquirer@>=0.10.0 <0.11.0",
+          "resolved": "https://registry.npmjs.org/inquirer/-/inquirer-0.10.1.tgz"
+        },
+        "object-assign": {
+          "version": "4.0.1",
+          "from": "object-assign@>=4.0.1 <5.0.0",
+          "resolved": "https://registry.npmjs.org/object-assign/-/object-assign-4.0.1.tgz"
+        },
+        "xdg-basedir": {
+          "version": "2.0.0",
+          "from": "xdg-basedir@>=2.0.0 <3.0.0",
+          "resolved": "https://registry.npmjs.org/xdg-basedir/-/xdg-basedir-2.0.0.tgz"
+        }
+      }
+    },
     "interpret": {
-      "version": "0.6.6",
-      "from": "interpret@>=0.6.2 <0.7.0",
-      "resolved": "https://registry.npmjs.org/interpret/-/interpret-0.6.6.tgz"
+      "version": "1.0.0",
+      "from": "interpret@>=1.0.0 <2.0.0",
+      "resolved": "https://registry.npmjs.org/interpret/-/interpret-1.0.0.tgz"
+    },
+    "invariant": {
+      "version": "2.2.0",
+      "from": "invariant@>=2.2.0 <3.0.0",
+      "resolved": "https://registry.npmjs.org/invariant/-/invariant-2.2.0.tgz"
     },
     "ip-regex": {
       "version": "1.0.3",
@@ -2513,6 +2365,11 @@
       "version": "3.1.0",
       "from": "is@>=3.0.1 <4.0.0",
       "resolved": "https://registry.npmjs.org/is/-/is-3.1.0.tgz"
+    },
+    "is-absolute": {
+      "version": "0.2.3",
+      "from": "is-absolute@>=0.2.3 <0.3.0",
+      "resolved": "https://registry.npmjs.org/is-absolute/-/is-absolute-0.2.3.tgz"
     },
     "is-arrayish": {
       "version": "0.2.1",
@@ -2559,15 +2416,20 @@
       "from": "is-finite@>=1.0.0 <2.0.0",
       "resolved": "https://registry.npmjs.org/is-finite/-/is-finite-1.0.1.tgz"
     },
+    "is-fullwidth-code-point": {
+      "version": "1.0.0",
+      "from": "is-fullwidth-code-point@>=1.0.0 <2.0.0",
+      "resolved": "https://registry.npmjs.org/is-fullwidth-code-point/-/is-fullwidth-code-point-1.0.0.tgz"
+    },
     "is-glob": {
       "version": "2.0.1",
       "from": "is-glob@>=2.0.0 <3.0.0",
       "resolved": "https://registry.npmjs.org/is-glob/-/is-glob-2.0.1.tgz"
     },
     "is-my-json-valid": {
-      "version": "2.13.0",
+      "version": "2.13.1",
       "from": "is-my-json-valid@>=2.12.4 <3.0.0",
-      "resolved": "http://registry.npmjs.org/is-my-json-valid/-/is-my-json-valid-2.13.0.tgz"
+      "resolved": "https://registry.npmjs.org/is-my-json-valid/-/is-my-json-valid-2.13.1.tgz"
     },
     "is-npm": {
       "version": "1.0.0",
@@ -2578,6 +2440,11 @@
       "version": "2.1.0",
       "from": "is-number@>=2.1.0 <3.0.0",
       "resolved": "https://registry.npmjs.org/is-number/-/is-number-2.1.0.tgz"
+    },
+    "is-plain-obj": {
+      "version": "1.1.0",
+      "from": "is-plain-obj@>=1.0.0 <2.0.0",
+      "resolved": "https://registry.npmjs.org/is-plain-obj/-/is-plain-obj-1.1.0.tgz"
     },
     "is-primitive": {
       "version": "2.0.0",
@@ -2594,6 +2461,16 @@
       "from": "is-redirect@>=1.0.0 <2.0.0",
       "resolved": "https://registry.npmjs.org/is-redirect/-/is-redirect-1.0.0.tgz"
     },
+    "is-relative": {
+      "version": "0.2.1",
+      "from": "is-relative@>=0.2.1 <0.3.0",
+      "resolved": "https://registry.npmjs.org/is-relative/-/is-relative-0.2.1.tgz"
+    },
+    "is-retry-allowed": {
+      "version": "1.0.0",
+      "from": "is-retry-allowed@>=1.0.0 <2.0.0",
+      "resolved": "https://registry.npmjs.org/is-retry-allowed/-/is-retry-allowed-1.0.0.tgz"
+    },
     "is-stream": {
       "version": "1.0.1",
       "from": "is-stream@>=1.0.0 <2.0.0",
@@ -2603,6 +2480,11 @@
       "version": "1.0.0",
       "from": "is-typedarray@>=1.0.0 <1.1.0",
       "resolved": "https://registry.npmjs.org/is-typedarray/-/is-typedarray-1.0.0.tgz"
+    },
+    "is-unc-path": {
+      "version": "0.1.1",
+      "from": "is-unc-path@>=0.1.1 <0.2.0",
+      "resolved": "https://registry.npmjs.org/is-unc-path/-/is-unc-path-0.1.1.tgz"
     },
     "is-utf8": {
       "version": "0.2.1",
@@ -2614,15 +2496,15 @@
       "from": "is-valid-glob@>=0.3.0 <0.4.0",
       "resolved": "https://registry.npmjs.org/is-valid-glob/-/is-valid-glob-0.3.0.tgz"
     },
+    "is-windows": {
+      "version": "0.1.1",
+      "from": "is-windows@>=0.1.0 <0.2.0",
+      "resolved": "https://registry.npmjs.org/is-windows/-/is-windows-0.1.1.tgz"
+    },
     "isarray": {
       "version": "0.0.1",
       "from": "isarray@0.0.1",
       "resolved": "https://registry.npmjs.org/isarray/-/isarray-0.0.1.tgz"
-    },
-    "isemail": {
-      "version": "1.2.0",
-      "from": "isemail@>=1.0.0 <2.0.0",
-      "resolved": "https://registry.npmjs.org/isemail/-/isemail-1.2.0.tgz"
     },
     "isobject": {
       "version": "2.0.0",
@@ -2644,16 +2526,6 @@
       "from": "jodid25519@>=1.0.0 <2.0.0",
       "resolved": "https://registry.npmjs.org/jodid25519/-/jodid25519-1.0.2.tgz"
     },
-    "joi": {
-      "version": "4.9.0",
-      "from": "joi@>=4.7.0 <5.0.0",
-      "resolved": "https://registry.npmjs.org/joi/-/joi-4.9.0.tgz"
-    },
-    "joi-assert": {
-      "version": "0.0.3",
-      "from": "joi-assert@0.0.3",
-      "resolved": "https://registry.npmjs.org/joi-assert/-/joi-assert-0.0.3.tgz"
-    },
     "jquery": {
       "version": "2.1.4",
       "from": "jquery@2.1.4",
@@ -2674,10 +2546,15 @@
       "from": "js-string-escape@>=1.0.0 <1.1.0",
       "resolved": "https://registry.npmjs.org/js-string-escape/-/js-string-escape-1.0.0.tgz"
     },
+    "js-tokens": {
+      "version": "1.0.2",
+      "from": "js-tokens@>=1.0.1 <2.0.0",
+      "resolved": "https://registry.npmjs.org/js-tokens/-/js-tokens-1.0.2.tgz"
+    },
     "js-yaml": {
       "version": "3.5.3",
       "from": "js-yaml@>=3.1.0 <4.0.0",
-      "resolved": "http://registry.npmjs.org/js-yaml/-/js-yaml-3.5.3.tgz",
+      "resolved": "https://registry.npmjs.org/js-yaml/-/js-yaml-3.5.3.tgz",
       "dependencies": {
         "esprima": {
           "version": "2.7.2",
@@ -2691,32 +2568,10 @@
       "from": "jsbn@>=0.1.0 <0.2.0",
       "resolved": "https://registry.npmjs.org/jsbn/-/jsbn-0.1.0.tgz"
     },
-    "jsesc": {
-      "version": "0.5.0",
-      "from": "jsesc@>=0.5.0 <0.6.0",
-      "resolved": "https://registry.npmjs.org/jsesc/-/jsesc-0.5.0.tgz"
-    },
-    "jshint": {
-      "version": "2.9.1",
-      "from": "jshint@>=2.5.0 <3.0.0",
-      "resolved": "https://registry.npmjs.org/jshint/-/jshint-2.9.1.tgz",
-      "dependencies": {
-        "lodash": {
-          "version": "3.7.0",
-          "from": "lodash@>=3.7.0 <3.8.0",
-          "resolved": "https://registry.npmjs.org/lodash/-/lodash-3.7.0.tgz"
-        }
-      }
-    },
     "json-editor": {
       "version": "0.7.23",
       "from": "json-editor@0.7.23",
       "resolved": "https://registry.npmjs.org/json-editor/-/json-editor-0.7.23.tgz"
-    },
-    "json-pointer": {
-      "version": "0.2.2",
-      "from": "json-pointer@>=0.2.2 <0.3.0",
-      "resolved": "https://registry.npmjs.org/json-pointer/-/json-pointer-0.2.2.tgz"
     },
     "json-schema": {
       "version": "0.2.2",
@@ -2775,16 +2630,6 @@
       "from": "labeled-stream-splicer@>=1.0.0 <2.0.0",
       "resolved": "https://registry.npmjs.org/labeled-stream-splicer/-/labeled-stream-splicer-1.0.2.tgz"
     },
-    "latest-version": {
-      "version": "1.0.1",
-      "from": "latest-version@>=1.0.0 <2.0.0",
-      "resolved": "https://registry.npmjs.org/latest-version/-/latest-version-1.0.1.tgz"
-    },
-    "lazy.js": {
-      "version": "0.3.2",
-      "from": "lazy.js@>=0.3.2 <0.4.0",
-      "resolved": "https://registry.npmjs.org/lazy.js/-/lazy.js-0.3.2.tgz"
-    },
     "lexical-scope": {
       "version": "1.2.0",
       "from": "lexical-scope@>=1.2.0 <2.0.0",
@@ -2795,10 +2640,20 @@
       "from": "liftoff@>=2.1.0 <3.0.0",
       "resolved": "https://registry.npmjs.org/liftoff/-/liftoff-2.2.0.tgz"
     },
+    "listify": {
+      "version": "1.0.0",
+      "from": "listify@>=1.0.0 <2.0.0",
+      "resolved": "https://registry.npmjs.org/listify/-/listify-1.0.0.tgz"
+    },
     "load-json-file": {
       "version": "1.1.0",
       "from": "load-json-file@>=1.0.0 <2.0.0",
       "resolved": "https://registry.npmjs.org/load-json-file/-/load-json-file-1.1.0.tgz"
+    },
+    "lockfile": {
+      "version": "1.0.1",
+      "from": "lockfile@>=1.0.1 <2.0.0",
+      "resolved": "https://registry.npmjs.org/lockfile/-/lockfile-1.0.1.tgz"
     },
     "lodash": {
       "version": "3.10.1",
@@ -2925,7 +2780,7 @@
     "lodash._root": {
       "version": "3.0.1",
       "from": "lodash._root@>=3.0.0 <4.0.0",
-      "resolved": "http://registry.npmjs.org/lodash._root/-/lodash._root-3.0.1.tgz"
+      "resolved": "https://registry.npmjs.org/lodash._root/-/lodash._root-3.0.1.tgz"
     },
     "lodash._shimkeys": {
       "version": "2.4.1",
@@ -2935,12 +2790,12 @@
     "lodash.assign": {
       "version": "4.0.3",
       "from": "lodash.assign@*",
-      "resolved": "http://registry.npmjs.org/lodash.assign/-/lodash.assign-4.0.3.tgz",
+      "resolved": "https://registry.npmjs.org/lodash.assign/-/lodash.assign-4.0.3.tgz",
       "dependencies": {
         "lodash.keys": {
           "version": "4.0.3",
           "from": "lodash.keys@>=4.0.0 <5.0.0",
-          "resolved": "http://registry.npmjs.org/lodash.keys/-/lodash.keys-4.0.3.tgz"
+          "resolved": "https://registry.npmjs.org/lodash.keys/-/lodash.keys-4.0.3.tgz"
         }
       }
     },
@@ -2948,6 +2803,11 @@
       "version": "3.0.2",
       "from": "lodash.clonedeep@>=3.0.0 <4.0.0",
       "resolved": "https://registry.npmjs.org/lodash.clonedeep/-/lodash.clonedeep-3.0.2.tgz"
+    },
+    "lodash.debounce": {
+      "version": "3.1.1",
+      "from": "lodash.debounce@>=3.0.1 <4.0.0",
+      "resolved": "https://registry.npmjs.org/lodash.debounce/-/lodash.debounce-3.1.1.tgz"
     },
     "lodash.defaults": {
       "version": "2.4.1",
@@ -2969,7 +2829,7 @@
     "lodash.isarguments": {
       "version": "3.0.7",
       "from": "lodash.isarguments@>=3.0.0 <4.0.0",
-      "resolved": "http://registry.npmjs.org/lodash.isarguments/-/lodash.isarguments-3.0.7.tgz"
+      "resolved": "https://registry.npmjs.org/lodash.isarguments/-/lodash.isarguments-3.0.7.tgz"
     },
     "lodash.isarray": {
       "version": "3.0.4",
@@ -3023,10 +2883,20 @@
         }
       }
     },
+    "log-update": {
+      "version": "1.0.2",
+      "from": "log-update@>=1.0.2 <2.0.0",
+      "resolved": "https://registry.npmjs.org/log-update/-/log-update-1.0.2.tgz"
+    },
+    "loose-envify": {
+      "version": "1.1.0",
+      "from": "loose-envify@>=1.0.0 <2.0.0",
+      "resolved": "https://registry.npmjs.org/loose-envify/-/loose-envify-1.1.0.tgz"
+    },
     "loud-rejection": {
       "version": "1.3.0",
       "from": "loud-rejection@>=1.0.0 <2.0.0",
-      "resolved": "http://registry.npmjs.org/loud-rejection/-/loud-rejection-1.3.0.tgz"
+      "resolved": "https://registry.npmjs.org/loud-rejection/-/loud-rejection-1.3.0.tgz"
     },
     "lowercase-keys": {
       "version": "1.0.0",
@@ -3037,6 +2907,16 @@
       "version": "2.7.3",
       "from": "lru-cache@>=2.0.0 <3.0.0",
       "resolved": "https://registry.npmjs.org/lru-cache/-/lru-cache-2.7.3.tgz"
+    },
+    "make-error": {
+      "version": "1.1.1",
+      "from": "make-error@>=1.0.4 <2.0.0",
+      "resolved": "https://registry.npmjs.org/make-error/-/make-error-1.1.1.tgz"
+    },
+    "make-error-cause": {
+      "version": "1.0.2",
+      "from": "make-error-cause@>=1.0.1 <2.0.0",
+      "resolved": "https://registry.npmjs.org/make-error-cause/-/make-error-cause-1.0.2.tgz"
     },
     "map-obj": {
       "version": "1.0.1",
@@ -3110,17 +2990,12 @@
     "mime-db": {
       "version": "1.22.0",
       "from": "mime-db@>=1.22.0 <1.23.0",
-      "resolved": "http://registry.npmjs.org/mime-db/-/mime-db-1.22.0.tgz"
+      "resolved": "https://registry.npmjs.org/mime-db/-/mime-db-1.22.0.tgz"
     },
     "mime-types": {
       "version": "2.1.10",
       "from": "mime-types@>=2.1.7 <2.2.0",
-      "resolved": "http://registry.npmjs.org/mime-types/-/mime-types-2.1.10.tgz"
-    },
-    "minichain": {
-      "version": "0.0.1",
-      "from": "minichain@>=0.0.1 <0.1.0",
-      "resolved": "https://registry.npmjs.org/minichain/-/minichain-0.0.1.tgz"
+      "resolved": "https://registry.npmjs.org/mime-types/-/mime-types-2.1.10.tgz"
     },
     "minimalistic-assert": {
       "version": "1.0.0",
@@ -3136,28 +3011,6 @@
       "version": "1.2.0",
       "from": "minimist@>=1.1.0 <2.0.0",
       "resolved": "https://registry.npmjs.org/minimist/-/minimist-1.2.0.tgz"
-    },
-    "ministyle": {
-      "version": "0.1.4",
-      "from": "ministyle@>=0.1.3 <0.2.0",
-      "resolved": "https://registry.npmjs.org/ministyle/-/ministyle-0.1.4.tgz"
-    },
-    "minitable": {
-      "version": "0.0.4",
-      "from": "minitable@0.0.4",
-      "resolved": "https://registry.npmjs.org/minitable/-/minitable-0.0.4.tgz"
-    },
-    "miniwrite": {
-      "version": "0.1.4",
-      "from": "miniwrite@>=0.1.3 <0.2.0",
-      "resolved": "https://registry.npmjs.org/miniwrite/-/miniwrite-0.1.4.tgz",
-      "dependencies": {
-        "mkdirp": {
-          "version": "0.3.5",
-          "from": "mkdirp@>=0.3.5 <0.4.0",
-          "resolved": "https://registry.npmjs.org/mkdirp/-/mkdirp-0.3.5.tgz"
-        }
-      }
     },
     "mkdirp": {
       "version": "0.5.1",
@@ -3220,6 +3073,11 @@
       "from": "multipipe@>=0.1.2 <0.2.0",
       "resolved": "https://registry.npmjs.org/multipipe/-/multipipe-0.1.2.tgz"
     },
+    "mute-stream": {
+      "version": "0.0.5",
+      "from": "mute-stream@0.0.5",
+      "resolved": "https://registry.npmjs.org/mute-stream/-/mute-stream-0.0.5.tgz"
+    },
     "nan": {
       "version": "2.2.0",
       "from": "nan@>=2.1.0 <3.0.0",
@@ -3229,11 +3087,6 @@
       "version": "0.4.3",
       "from": "negotiator@0.4.3",
       "resolved": "https://registry.npmjs.org/negotiator/-/negotiator-0.4.3.tgz"
-    },
-    "nested-error-stacks": {
-      "version": "1.0.2",
-      "from": "nested-error-stacks@>=1.0.0 <2.0.0",
-      "resolved": "https://registry.npmjs.org/nested-error-stacks/-/nested-error-stacks-1.0.2.tgz"
     },
     "new-from": {
       "version": "0.0.3",
@@ -3273,6 +3126,11 @@
           "resolved": "https://registry.npmjs.org/semver/-/semver-5.1.0.tgz"
         }
       }
+    },
+    "node-status-codes": {
+      "version": "1.0.0",
+      "from": "node-status-codes@>=1.0.0 <2.0.0",
+      "resolved": "https://registry.npmjs.org/node-status-codes/-/node-status-codes-1.0.0.tgz"
     },
     "node-uuid": {
       "version": "1.4.7",
@@ -3328,6 +3186,11 @@
       "from": "object.omit@>=2.0.0 <3.0.0",
       "resolved": "https://registry.npmjs.org/object.omit/-/object.omit-2.0.0.tgz"
     },
+    "object.pick": {
+      "version": "1.1.1",
+      "from": "object.pick@>=1.1.1 <2.0.0",
+      "resolved": "https://registry.npmjs.org/object.pick/-/object.pick-1.1.1.tgz"
+    },
     "objectpath": {
       "version": "1.2.1",
       "from": "objectpath@>=1.2.1 <2.0.0",
@@ -3343,10 +3206,10 @@
       "from": "once@>=1.3.0 <2.0.0",
       "resolved": "https://registry.npmjs.org/once/-/once-1.3.3.tgz"
     },
-    "open": {
-      "version": "0.0.5",
-      "from": "open@>=0.0.5 <0.1.0",
-      "resolved": "https://registry.npmjs.org/open/-/open-0.0.5.tgz"
+    "onetime": {
+      "version": "1.1.0",
+      "from": "onetime@>=1.0.0 <2.0.0",
+      "resolved": "https://registry.npmjs.org/onetime/-/onetime-1.1.0.tgz"
     },
     "optimist": {
       "version": "0.6.1",
@@ -3380,6 +3243,11 @@
       "from": "os-homedir@>=1.0.0 <2.0.0",
       "resolved": "https://registry.npmjs.org/os-homedir/-/os-homedir-1.0.1.tgz"
     },
+    "os-name": {
+      "version": "1.0.3",
+      "from": "os-name@>=1.0.0 <2.0.0",
+      "resolved": "https://registry.npmjs.org/os-name/-/os-name-1.0.3.tgz"
+    },
     "os-tmpdir": {
       "version": "1.0.1",
       "from": "os-tmpdir@>=1.0.0 <2.0.0",
@@ -3390,10 +3258,10 @@
       "from": "osenv@>=0.1.0 <0.2.0",
       "resolved": "https://registry.npmjs.org/osenv/-/osenv-0.1.3.tgz"
     },
-    "package-json": {
-      "version": "1.2.0",
-      "from": "package-json@>=1.0.0 <2.0.0",
-      "resolved": "https://registry.npmjs.org/package-json/-/package-json-1.2.0.tgz"
+    "osx-release": {
+      "version": "1.1.0",
+      "from": "osx-release@>=1.0.0 <2.0.0",
+      "resolved": "https://registry.npmjs.org/osx-release/-/osx-release-1.1.0.tgz"
     },
     "pako": {
       "version": "0.2.8",
@@ -3429,11 +3297,6 @@
       "version": "1.0.1",
       "from": "parseurl@1.0.1",
       "resolved": "https://registry.npmjs.org/parseurl/-/parseurl-1.0.1.tgz"
-    },
-    "parsimmon": {
-      "version": "0.5.1",
-      "from": "parsimmon@>=0.5.0 <0.6.0",
-      "resolved": "https://registry.npmjs.org/parsimmon/-/parsimmon-0.5.1.tgz"
     },
     "path": {
       "version": "0.12.7",
@@ -3500,10 +3363,62 @@
       "from": "pinkie-promise@>=2.0.0 <3.0.0",
       "resolved": "https://registry.npmjs.org/pinkie-promise/-/pinkie-promise-2.0.0.tgz"
     },
-    "pjs": {
-      "version": "5.1.1",
-      "from": "pjs@>=5.0.0 <6.0.0",
-      "resolved": "https://registry.npmjs.org/pjs/-/pjs-5.1.1.tgz"
+    "popsicle": {
+      "version": "3.2.2",
+      "from": "popsicle@>=3.2.1 <4.0.0",
+      "resolved": "https://registry.npmjs.org/popsicle/-/popsicle-3.2.2.tgz",
+      "dependencies": {
+        "async": {
+          "version": "0.9.2",
+          "from": "async@>=0.9.0 <0.10.0",
+          "resolved": "https://registry.npmjs.org/async/-/async-0.9.2.tgz"
+        },
+        "combined-stream": {
+          "version": "0.0.7",
+          "from": "combined-stream@>=0.0.4 <0.1.0",
+          "resolved": "https://registry.npmjs.org/combined-stream/-/combined-stream-0.0.7.tgz"
+        },
+        "delayed-stream": {
+          "version": "0.0.5",
+          "from": "delayed-stream@0.0.5",
+          "resolved": "https://registry.npmjs.org/delayed-stream/-/delayed-stream-0.0.5.tgz"
+        },
+        "form-data": {
+          "version": "0.2.0",
+          "from": "form-data@>=0.2.0 <0.3.0",
+          "resolved": "https://registry.npmjs.org/form-data/-/form-data-0.2.0.tgz"
+        },
+        "methods": {
+          "version": "1.1.2",
+          "from": "methods@>=1.1.1 <2.0.0",
+          "resolved": "https://registry.npmjs.org/methods/-/methods-1.1.2.tgz"
+        },
+        "mime-db": {
+          "version": "1.12.0",
+          "from": "mime-db@>=1.12.0 <1.13.0",
+          "resolved": "https://registry.npmjs.org/mime-db/-/mime-db-1.12.0.tgz"
+        },
+        "mime-types": {
+          "version": "2.0.14",
+          "from": "mime-types@>=2.0.3 <2.1.0",
+          "resolved": "https://registry.npmjs.org/mime-types/-/mime-types-2.0.14.tgz"
+        }
+      }
+    },
+    "popsicle-proxy-agent": {
+      "version": "1.0.0",
+      "from": "popsicle-proxy-agent@>=1.0.0 <2.0.0",
+      "resolved": "https://registry.npmjs.org/popsicle-proxy-agent/-/popsicle-proxy-agent-1.0.0.tgz"
+    },
+    "popsicle-retry": {
+      "version": "1.0.1",
+      "from": "popsicle-retry@>=1.0.1 <2.0.0",
+      "resolved": "https://registry.npmjs.org/popsicle-retry/-/popsicle-retry-1.0.1.tgz"
+    },
+    "popsicle-status": {
+      "version": "1.0.1",
+      "from": "popsicle-status@>=1.0.1 <2.0.0",
+      "resolved": "https://registry.npmjs.org/popsicle-status/-/popsicle-status-1.0.1.tgz"
     },
     "prepend-http": {
       "version": "1.0.3",
@@ -3518,7 +3433,7 @@
     "pretty-hrtime": {
       "version": "1.0.2",
       "from": "pretty-hrtime@>=1.0.0 <2.0.0",
-      "resolved": "http://registry.npmjs.org/pretty-hrtime/-/pretty-hrtime-1.0.2.tgz"
+      "resolved": "https://registry.npmjs.org/pretty-hrtime/-/pretty-hrtime-1.0.2.tgz"
     },
     "process": {
       "version": "0.11.2",
@@ -3529,6 +3444,11 @@
       "version": "1.0.6",
       "from": "process-nextick-args@>=1.0.6 <1.1.0",
       "resolved": "https://registry.npmjs.org/process-nextick-args/-/process-nextick-args-1.0.6.tgz"
+    },
+    "promise-finally": {
+      "version": "2.1.0",
+      "from": "promise-finally@>=2.0.1 <3.0.0",
+      "resolved": "https://registry.npmjs.org/promise-finally/-/promise-finally-2.1.0.tgz"
     },
     "public-encrypt": {
       "version": "4.0.0",
@@ -3580,23 +3500,6 @@
       "from": "rc@>=1.0.1 <2.0.0",
       "resolved": "https://registry.npmjs.org/rc/-/rc-1.1.6.tgz"
     },
-    "rcfinder": {
-      "version": "0.1.8",
-      "from": "rcfinder@>=0.1.6 <0.2.0",
-      "resolved": "https://registry.npmjs.org/rcfinder/-/rcfinder-0.1.8.tgz",
-      "dependencies": {
-        "lodash": {
-          "version": "2.4.2",
-          "from": "lodash@>=2.4.1 <2.5.0",
-          "resolved": "https://registry.npmjs.org/lodash/-/lodash-2.4.2.tgz"
-        }
-      }
-    },
-    "rcloader": {
-      "version": "0.1.4",
-      "from": "rcloader@>=0.1.2 <0.2.0",
-      "resolved": "https://registry.npmjs.org/rcloader/-/rcloader-0.1.4.tgz"
-    },
     "read-all-stream": {
       "version": "3.1.0",
       "from": "read-all-stream@>=3.0.0 <4.0.0",
@@ -3645,6 +3548,11 @@
       "version": "2.0.0",
       "from": "readdirp@>=2.0.0 <3.0.0",
       "resolved": "https://registry.npmjs.org/readdirp/-/readdirp-2.0.0.tgz"
+    },
+    "readline2": {
+      "version": "1.0.1",
+      "from": "readline2@>=1.0.1 <2.0.0",
+      "resolved": "https://registry.npmjs.org/readline2/-/readline2-1.0.1.tgz"
     },
     "rechoir": {
       "version": "0.6.2",
@@ -3709,7 +3617,7 @@
         "bl": {
           "version": "1.0.3",
           "from": "bl@>=1.0.0 <1.1.0",
-          "resolved": "http://registry.npmjs.org/bl/-/bl-1.0.3.tgz"
+          "resolved": "https://registry.npmjs.org/bl/-/bl-1.0.3.tgz"
         },
         "extend": {
           "version": "3.0.0",
@@ -3737,6 +3645,11 @@
       "version": "1.0.0",
       "from": "response-time@1.0.0",
       "resolved": "https://registry.npmjs.org/response-time/-/response-time-1.0.0.tgz"
+    },
+    "restore-cursor": {
+      "version": "1.0.1",
+      "from": "restore-cursor@>=1.0.1 <2.0.0",
+      "resolved": "https://registry.npmjs.org/restore-cursor/-/restore-cursor-1.0.1.tgz"
     },
     "rework": {
       "version": "1.0.1",
@@ -3773,12 +3686,12 @@
     "rimraf": {
       "version": "2.5.2",
       "from": "rimraf@>=2.2.8 <3.0.0",
-      "resolved": "http://registry.npmjs.org/rimraf/-/rimraf-2.5.2.tgz",
+      "resolved": "https://registry.npmjs.org/rimraf/-/rimraf-2.5.2.tgz",
       "dependencies": {
         "glob": {
           "version": "7.0.0",
           "from": "glob@>=7.0.0 <8.0.0",
-          "resolved": "http://registry.npmjs.org/glob/-/glob-7.0.0.tgz"
+          "resolved": "https://registry.npmjs.org/glob/-/glob-7.0.0.tgz"
         }
       }
     },
@@ -3787,10 +3700,20 @@
       "from": "ripemd160@>=1.0.0 <2.0.0",
       "resolved": "https://registry.npmjs.org/ripemd160/-/ripemd160-1.0.1.tgz"
     },
+    "run-async": {
+      "version": "0.1.0",
+      "from": "run-async@>=0.1.0 <0.2.0",
+      "resolved": "https://registry.npmjs.org/run-async/-/run-async-0.1.0.tgz"
+    },
     "run-sequence": {
       "version": "1.1.4",
       "from": "run-sequence@1.1.4",
       "resolved": "https://registry.npmjs.org/run-sequence/-/run-sequence-1.1.4.tgz"
+    },
+    "rx-lite": {
+      "version": "3.1.2",
+      "from": "rx-lite@>=3.1.2 <4.0.0",
+      "resolved": "https://registry.npmjs.org/rx-lite/-/rx-lite-3.1.2.tgz"
     },
     "scmp": {
       "version": "0.0.3",
@@ -3866,11 +3789,6 @@
       "from": "shell-quote@>=0.0.1 <0.1.0",
       "resolved": "https://registry.npmjs.org/shell-quote/-/shell-quote-0.0.1.tgz"
     },
-    "shelljs": {
-      "version": "0.3.0",
-      "from": "shelljs@>=0.3.0 <0.4.0",
-      "resolved": "https://registry.npmjs.org/shelljs/-/shelljs-0.3.0.tgz"
-    },
     "shellwords": {
       "version": "0.1.0",
       "from": "shellwords@>=0.1.0 <0.2.0",
@@ -3886,10 +3804,20 @@
       "from": "signal-exit@>=2.1.2 <3.0.0",
       "resolved": "https://registry.npmjs.org/signal-exit/-/signal-exit-2.1.2.tgz"
     },
+    "slide": {
+      "version": "1.1.6",
+      "from": "slide@>=1.1.5 <2.0.0",
+      "resolved": "https://registry.npmjs.org/slide/-/slide-1.1.6.tgz"
+    },
     "sntp": {
       "version": "1.0.9",
       "from": "sntp@>=1.0.0 <2.0.0",
       "resolved": "https://registry.npmjs.org/sntp/-/sntp-1.0.9.tgz"
+    },
+    "sort-keys": {
+      "version": "1.1.1",
+      "from": "sort-keys@>=1.0.0 <2.0.0",
+      "resolved": "https://registry.npmjs.org/sort-keys/-/sort-keys-1.1.1.tgz"
     },
     "source-map": {
       "version": "0.4.4",
@@ -4034,6 +3962,16 @@
       "from": "string-length@>=1.0.0 <2.0.0",
       "resolved": "https://registry.npmjs.org/string-length/-/string-length-1.0.1.tgz"
     },
+    "string-template": {
+      "version": "1.0.0",
+      "from": "string-template@>=1.0.0 <2.0.0",
+      "resolved": "https://registry.npmjs.org/string-template/-/string-template-1.0.0.tgz"
+    },
+    "string-width": {
+      "version": "1.0.1",
+      "from": "string-width@>=1.0.1 <2.0.0",
+      "resolved": "https://registry.npmjs.org/string-width/-/string-width-1.0.1.tgz"
+    },
     "stringstream": {
       "version": "0.0.5",
       "from": "stringstream@>=0.0.4 <0.1.0",
@@ -4042,7 +3980,7 @@
     "strip-ansi": {
       "version": "3.0.1",
       "from": "strip-ansi@>=3.0.0 <4.0.0",
-      "resolved": "http://registry.npmjs.org/strip-ansi/-/strip-ansi-3.0.1.tgz"
+      "resolved": "https://registry.npmjs.org/strip-ansi/-/strip-ansi-3.0.1.tgz"
     },
     "strip-bom": {
       "version": "2.0.0",
@@ -4162,9 +4100,9 @@
       "resolved": "https://registry.npmjs.org/swagger-ui-browserify/-/swagger-ui-browserify-2.1.3.tgz",
       "dependencies": {
         "jquery": {
-          "version": "1.12.0",
+          "version": "1.12.1",
           "from": "jquery@>=1.9.1 <2.0.0",
-          "resolved": "https://registry.npmjs.org/jquery/-/jquery-1.12.0.tgz"
+          "resolved": "https://registry.npmjs.org/jquery/-/jquery-1.12.1.tgz"
         },
         "swagger-ui": {
           "version": "2.1.3",
@@ -4189,6 +4127,11 @@
       "version": "1.0.1",
       "from": "textextensions@>=1.0.0 <1.1.0",
       "resolved": "https://registry.npmjs.org/textextensions/-/textextensions-1.0.1.tgz"
+    },
+    "thenify": {
+      "version": "3.2.0",
+      "from": "thenify@>=3.1.0 <4.0.0",
+      "resolved": "https://registry.npmjs.org/thenify/-/thenify-3.2.0.tgz"
     },
     "through": {
       "version": "2.3.8",
@@ -4255,10 +4198,16 @@
       "from": "to-absolute-glob@>=0.1.1 <0.2.0",
       "resolved": "https://registry.npmjs.org/to-absolute-glob/-/to-absolute-glob-0.1.1.tgz"
     },
-    "topo": {
-      "version": "1.1.0",
-      "from": "topo@>=1.0.0 <2.0.0",
-      "resolved": "https://registry.npmjs.org/topo/-/topo-1.1.0.tgz"
+    "touch": {
+      "version": "1.0.0",
+      "from": "touch@>=1.0.0 <2.0.0",
+      "resolved": "https://registry.npmjs.org/touch/-/touch-1.0.0.tgz",
+      "dependencies": {
+        "nopt": {
+          "version": "1.0.10",
+          "from": "nopt@>=1.0.10 <1.1.0"
+        }
+      }
     },
     "tough-cookie": {
       "version": "2.2.1",
@@ -4269,33 +4218,6 @@
       "version": "1.0.0",
       "from": "trim-newlines@>=1.0.0 <2.0.0",
       "resolved": "https://registry.npmjs.org/trim-newlines/-/trim-newlines-1.0.0.tgz"
-    },
-    "tsd": {
-      "version": "0.6.5",
-      "from": "tsd@>=0.6.0-beta.4 <0.7.0",
-      "resolved": "https://registry.npmjs.org/tsd/-/tsd-0.6.5.tgz",
-      "dependencies": {
-        "colors": {
-          "version": "1.1.2",
-          "from": "colors@>=1.1.0 <2.0.0",
-          "resolved": "https://registry.npmjs.org/colors/-/colors-1.1.2.tgz"
-        },
-        "lru-cache": {
-          "version": "2.5.2",
-          "from": "lru-cache@>=2.5.0 <2.6.0",
-          "resolved": "https://registry.npmjs.org/lru-cache/-/lru-cache-2.5.2.tgz"
-        },
-        "minimatch": {
-          "version": "1.0.0",
-          "from": "minimatch@>=1.0.0 <2.0.0",
-          "resolved": "https://registry.npmjs.org/minimatch/-/minimatch-1.0.0.tgz"
-        },
-        "rimraf": {
-          "version": "2.2.8",
-          "from": "rimraf@>=2.2.8 <2.3.0",
-          "resolved": "https://registry.npmjs.org/rimraf/-/rimraf-2.2.8.tgz"
-        }
-      }
     },
     "tty-browserify": {
       "version": "0.0.0",
@@ -4315,12 +4237,7 @@
     "tweetnacl": {
       "version": "0.14.0",
       "from": "tweetnacl@>=0.13.0 <1.0.0",
-      "resolved": "http://registry.npmjs.org/tweetnacl/-/tweetnacl-0.14.0.tgz"
-    },
-    "type-detect": {
-      "version": "0.1.2",
-      "from": "type-detect@>=0.1.2 <0.2.0",
-      "resolved": "https://registry.npmjs.org/type-detect/-/type-detect-0.1.2.tgz"
+      "resolved": "https://registry.npmjs.org/tweetnacl/-/tweetnacl-0.14.0.tgz"
     },
     "type-is": {
       "version": "1.2.0",
@@ -4336,6 +4253,83 @@
       "version": "1.6.2",
       "from": "typescript@1.6.2",
       "resolved": "https://registry.npmjs.org/typescript/-/typescript-1.6.2.tgz"
+    },
+    "typings": {
+      "version": "0.6.8",
+      "from": "typings@0.6.8",
+      "resolved": "https://registry.npmjs.org/typings/-/typings-0.6.8.tgz",
+      "dependencies": {
+        "bluebird": {
+          "version": "3.3.1",
+          "from": "bluebird@>=3.1.1 <4.0.0",
+          "resolved": "https://registry.npmjs.org/bluebird/-/bluebird-3.3.1.tgz"
+        },
+        "configstore": {
+          "version": "1.4.0",
+          "from": "configstore@>=1.0.0 <2.0.0",
+          "resolved": "https://registry.npmjs.org/configstore/-/configstore-1.4.0.tgz"
+        },
+        "debug": {
+          "version": "2.2.0",
+          "from": "debug@>=2.2.0 <3.0.0",
+          "resolved": "https://registry.npmjs.org/debug/-/debug-2.2.0.tgz"
+        },
+        "detect-indent": {
+          "version": "4.0.0",
+          "from": "detect-indent@>=4.0.0 <5.0.0",
+          "resolved": "https://registry.npmjs.org/detect-indent/-/detect-indent-4.0.0.tgz"
+        },
+        "duplexer2": {
+          "version": "0.1.4",
+          "from": "duplexer2@>=0.1.4 <0.2.0",
+          "resolved": "https://registry.npmjs.org/duplexer2/-/duplexer2-0.1.4.tgz"
+        },
+        "got": {
+          "version": "5.4.1",
+          "from": "got@>=5.0.0 <6.0.0",
+          "resolved": "https://registry.npmjs.org/got/-/got-5.4.1.tgz"
+        },
+        "latest-version": {
+          "version": "2.0.0",
+          "from": "latest-version@>=2.0.0 <3.0.0",
+          "resolved": "https://registry.npmjs.org/latest-version/-/latest-version-2.0.0.tgz"
+        },
+        "object-assign": {
+          "version": "4.0.1",
+          "from": "object-assign@>=4.0.1 <5.0.0",
+          "resolved": "https://registry.npmjs.org/object-assign/-/object-assign-4.0.1.tgz"
+        },
+        "package-json": {
+          "version": "2.3.1",
+          "from": "package-json@>=2.0.0 <3.0.0",
+          "resolved": "https://registry.npmjs.org/package-json/-/package-json-2.3.1.tgz"
+        },
+        "semver": {
+          "version": "5.1.0",
+          "from": "semver@>=5.1.0 <6.0.0",
+          "resolved": "https://registry.npmjs.org/semver/-/semver-5.1.0.tgz"
+        },
+        "typescript": {
+          "version": "1.8.0",
+          "from": "typescript@1.8.0",
+          "resolved": "https://registry.npmjs.org/typescript/-/typescript-1.8.0.tgz"
+        },
+        "update-notifier": {
+          "version": "0.6.0",
+          "from": "update-notifier@>=0.6.0 <0.7.0",
+          "resolved": "https://registry.npmjs.org/update-notifier/-/update-notifier-0.6.0.tgz"
+        },
+        "wordwrap": {
+          "version": "1.0.0",
+          "from": "wordwrap@>=1.0.0 <2.0.0",
+          "resolved": "https://registry.npmjs.org/wordwrap/-/wordwrap-1.0.0.tgz"
+        },
+        "xdg-basedir": {
+          "version": "2.0.0",
+          "from": "xdg-basedir@>=2.0.0 <3.0.0",
+          "resolved": "https://registry.npmjs.org/xdg-basedir/-/xdg-basedir-2.0.0.tgz"
+        }
+      }
     },
     "uglify-js": {
       "version": "2.3.6",
@@ -4373,6 +4367,11 @@
       "from": "umd@>=3.0.0 <4.0.0",
       "resolved": "https://registry.npmjs.org/umd/-/umd-3.0.1.tgz"
     },
+    "unc-path-regex": {
+      "version": "0.1.1",
+      "from": "unc-path-regex@>=0.1.0 <0.2.0",
+      "resolved": "https://registry.npmjs.org/unc-path-regex/-/unc-path-regex-0.1.1.tgz"
+    },
     "underscore": {
       "version": "1.8.3",
       "from": "underscore@>=1.0.0 <2.0.0",
@@ -4388,59 +4387,10 @@
       "from": "unique-stream@>=1.0.0 <2.0.0",
       "resolved": "https://registry.npmjs.org/unique-stream/-/unique-stream-1.0.0.tgz"
     },
-    "universal-analytics": {
-      "version": "0.3.10",
-      "from": "universal-analytics@>=0.3.4 <0.4.0",
-      "resolved": "https://registry.npmjs.org/universal-analytics/-/universal-analytics-0.3.10.tgz",
-      "dependencies": {
-        "async": {
-          "version": "0.2.10",
-          "from": "async@>=0.2.0 <0.3.0",
-          "resolved": "https://registry.npmjs.org/async/-/async-0.2.10.tgz"
-        }
-      }
-    },
-    "update-notifier": {
-      "version": "0.2.2",
-      "from": "update-notifier@>=0.2.2 <0.3.0",
-      "resolved": "https://registry.npmjs.org/update-notifier/-/update-notifier-0.2.2.tgz",
-      "dependencies": {
-        "ansi-regex": {
-          "version": "0.2.1",
-          "from": "ansi-regex@>=0.2.0 <0.3.0",
-          "resolved": "https://registry.npmjs.org/ansi-regex/-/ansi-regex-0.2.1.tgz"
-        },
-        "ansi-styles": {
-          "version": "1.1.0",
-          "from": "ansi-styles@>=1.1.0 <2.0.0",
-          "resolved": "https://registry.npmjs.org/ansi-styles/-/ansi-styles-1.1.0.tgz"
-        },
-        "chalk": {
-          "version": "0.5.1",
-          "from": "chalk@>=0.5.1 <0.6.0",
-          "resolved": "https://registry.npmjs.org/chalk/-/chalk-0.5.1.tgz"
-        },
-        "has-ansi": {
-          "version": "0.1.0",
-          "from": "has-ansi@>=0.1.0 <0.2.0",
-          "resolved": "https://registry.npmjs.org/has-ansi/-/has-ansi-0.1.0.tgz"
-        },
-        "strip-ansi": {
-          "version": "0.3.0",
-          "from": "strip-ansi@>=0.3.0 <0.4.0",
-          "resolved": "https://registry.npmjs.org/strip-ansi/-/strip-ansi-0.3.0.tgz"
-        },
-        "supports-color": {
-          "version": "0.2.0",
-          "from": "supports-color@>=0.2.0 <0.3.0",
-          "resolved": "https://registry.npmjs.org/supports-color/-/supports-color-0.2.0.tgz"
-        }
-      }
-    },
-    "uri-templates": {
-      "version": "0.1.9",
-      "from": "uri-templates@>=0.1.5 <0.2.0",
-      "resolved": "https://registry.npmjs.org/uri-templates/-/uri-templates-0.1.9.tgz"
+    "unzip-response": {
+      "version": "1.0.0",
+      "from": "unzip-response@>=1.0.0 <2.0.0",
+      "resolved": "https://registry.npmjs.org/unzip-response/-/unzip-response-1.0.0.tgz"
     },
     "urijs": {
       "version": "1.16.1",
@@ -4463,6 +4413,11 @@
           "resolved": "https://registry.npmjs.org/punycode/-/punycode-1.3.2.tgz"
         }
       }
+    },
+    "url-parse-lax": {
+      "version": "1.0.0",
+      "from": "url-parse-lax@>=1.0.0 <2.0.0",
+      "resolved": "https://registry.npmjs.org/url-parse-lax/-/url-parse-lax-1.0.0.tgz"
     },
     "url-regex": {
       "version": "3.1.0",
@@ -4503,18 +4458,6 @@
       "version": "3.0.1",
       "from": "validate-npm-package-license@>=3.0.1 <4.0.0",
       "resolved": "https://registry.npmjs.org/validate-npm-package-license/-/validate-npm-package-license-3.0.1.tgz"
-    },
-    "verror": {
-      "version": "1.4.0",
-      "from": "verror@>=1.4.0 <1.5.0",
-      "resolved": "https://registry.npmjs.org/verror/-/verror-1.4.0.tgz",
-      "dependencies": {
-        "extsprintf": {
-          "version": "1.0.3",
-          "from": "extsprintf@1.0.3",
-          "resolved": "https://registry.npmjs.org/extsprintf/-/extsprintf-1.0.3.tgz"
-        }
-      }
     },
     "vhost": {
       "version": "1.0.0",
@@ -4617,10 +4560,27 @@
       "from": "vm-browserify@>=0.0.1 <0.1.0",
       "resolved": "https://registry.npmjs.org/vm-browserify/-/vm-browserify-0.0.4.tgz"
     },
+    "wcwidth": {
+      "version": "1.0.0",
+      "from": "wcwidth@>=1.0.0 <2.0.0",
+      "resolved": "https://registry.npmjs.org/wcwidth/-/wcwidth-1.0.0.tgz"
+    },
     "which": {
       "version": "1.0.8",
       "from": "which@1.0.8",
       "resolved": "https://registry.npmjs.org/which/-/which-1.0.8.tgz"
+    },
+    "win-release": {
+      "version": "1.1.1",
+      "from": "win-release@>=1.0.0 <2.0.0",
+      "resolved": "https://registry.npmjs.org/win-release/-/win-release-1.1.1.tgz",
+      "dependencies": {
+        "semver": {
+          "version": "5.1.0",
+          "from": "semver@>=5.0.1 <6.0.0",
+          "resolved": "https://registry.npmjs.org/semver/-/semver-5.1.0.tgz"
+        }
+      }
     },
     "wordwrap": {
       "version": "0.0.3",
@@ -4632,20 +4592,20 @@
       "from": "wrappy@>=1.0.0 <2.0.0",
       "resolved": "https://registry.npmjs.org/wrappy/-/wrappy-1.0.1.tgz"
     },
-    "xdg-basedir": {
-      "version": "1.0.1",
-      "from": "xdg-basedir@>=1.0.0 <2.0.0",
-      "resolved": "https://registry.npmjs.org/xdg-basedir/-/xdg-basedir-1.0.1.tgz"
-    },
-    "xregexp": {
-      "version": "2.0.0",
-      "from": "xregexp@>=2.0.0 <2.1.0",
-      "resolved": "https://registry.npmjs.org/xregexp/-/xregexp-2.0.0.tgz"
+    "write-file-atomic": {
+      "version": "1.1.4",
+      "from": "write-file-atomic@>=1.1.2 <2.0.0",
+      "resolved": "https://registry.npmjs.org/write-file-atomic/-/write-file-atomic-1.1.4.tgz"
     },
     "xtend": {
       "version": "4.0.1",
       "from": "xtend@>=4.0.0 <5.0.0",
       "resolved": "https://registry.npmjs.org/xtend/-/xtend-4.0.1.tgz"
+    },
+    "zip-object": {
+      "version": "0.1.0",
+      "from": "zip-object@>=0.1.0 <0.2.0",
+      "resolved": "https://registry.npmjs.org/zip-object/-/zip-object-0.1.0.tgz"
     }
   }
 }

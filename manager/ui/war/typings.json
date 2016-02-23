@@ -1,0 +1,9 @@
+{
+  "name": "apiman-manager-ui",
+  "ambientDependencies": {
+    "angular": "github:DefinitelyTyped/DefinitelyTyped/angularjs/angular.d.ts#708609e0764daeb5eb64104af7aca50c520c4e6e",
+    "jquery": "github:DefinitelyTyped/DefinitelyTyped/jquery/jquery.d.ts#708609e0764daeb5eb64104af7aca50c520c4e6e",
+    "lodash": "github:DefinitelyTyped/DefinitelyTyped/lodash/lodash.d.ts#3a6e1b8988eba0ba74fe4db20c950242552857e2",
+    "angular-ui-bootstrap": "github:DefinitelyTyped/DefinitelyTyped/angular-ui-bootstrap/angular-ui-bootstrap.d.ts#708609e0764daeb5eb64104af7aca50c520c4e6e"
+  }
+}
