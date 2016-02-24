@@ -3,6 +3,10 @@
  */
 package io.apiman.osgi.pax.testing;
 
+import io.apiman.osgi.pax.testing.util.ElasticSearchEmbed;
+import io.apiman.osgi.pax.testing.util.HttpTestClient;
+import io.apiman.osgi.pax.testing.util.KarafBaseTest;
+import io.searchbox.indices.DeleteIndex;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,7 +15,6 @@ import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.PaxExam;
 import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,6 +31,7 @@ public class GatewayApiSystemStatusTest extends KarafBaseTest {
 
 	private Bundle warBundle;
 	protected HttpTestClient testClient;
+	private ElasticSearchEmbed es;
 
 	@Configuration
 	public Option[] config() {
@@ -41,6 +45,10 @@ public class GatewayApiSystemStatusTest extends KarafBaseTest {
 
 	@Before
 	public void setUp() throws Exception {
+
+		es = new ElasticSearchEmbed();
+		es.launch();
+
 		testClient = new HttpTestClient();
 
 		initWebListener();

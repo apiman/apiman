@@ -1,4 +1,4 @@
-package io.apiman.osgi.pax.testing;
+package io.apiman.osgi.pax.testing.util;
 
 import org.ops4j.pax.web.service.spi.WebEvent;
 import org.ops4j.pax.web.service.spi.WebListener;

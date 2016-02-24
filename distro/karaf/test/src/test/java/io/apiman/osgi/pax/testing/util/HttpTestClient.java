@@ -1,4 +1,4 @@
-package io.apiman.osgi.pax.testing;
+package io.apiman.osgi.pax.testing.util;
 
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
@@ -31,8 +31,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.security.*;
 import java.security.cert.CertificateException;

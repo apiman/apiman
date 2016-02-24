@@ -11,6 +11,6 @@
   <modules>
     <module>features</module>
     <module>bundles</module>
-<!--    <module>test</module>-->
+    <module>test</module>
   </modules>
 </project>

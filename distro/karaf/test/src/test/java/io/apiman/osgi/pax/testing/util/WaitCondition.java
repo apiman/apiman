@@ -1,4 +1,4 @@
-package io.apiman.osgi.pax.testing;
+package io.apiman.osgi.pax.testing.util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
