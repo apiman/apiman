@@ -155,6 +155,7 @@
         <bundle>mvn:io.apiman/apiman-common-config/${project.version}</bundle>
         <bundle>mvn:io.apiman/apiman-common-plugin/${project.version}</bundle>
         <bundle>mvn:io.apiman/apiman-common-servlet/${project.version}</bundle>
+        <bundle>blueprint:mvn:io.apiman/apiman-karaf/${project.version}/apiman-realm.xml</bundle>
     </feature>
 
     <feature name="apiman-gateway" version="${project.version}" description="Apiman Gateway modules exposing the Gateway and its Rest Api">
@@ -172,6 +173,22 @@
         <bundle>mvn:io.apiman/apiman-gateway-osgi-servlet/${project.version}</bundle>
         <bundle>mvn:io.apiman/apiman-gateway-osgi/1.2.2-SNAPSHOT</bundle>
         <bundle>mvn:io.apiman/apiman-gateway-osgi-api/1.2.2-SNAPSHOT</bundle>
+    </feature>
+
+    <feature name="apiman-gateway-test" version="${project.version}" description="Apiman Gateway modules exposing the Gateway and its Rest Api">
+        <feature>apiman-lib</feature>
+        <feature>apiman-common</feature>
+        <bundle>mvn:io.apiman/apiman-gateway-engine-beans/${project.version}</bundle>
+        <bundle>mvn:io.apiman/apiman-gateway-engine-core/${project.version}</bundle>
+        <bundle>mvn:io.apiman/apiman-gateway-engine-es/${project.version}</bundle>
+        <bundle>mvn:io.apiman/apiman-gateway-engine-policies/${project.version}</bundle>
+        <bundle>mvn:io.apiman/apiman-gateway-platforms-servlet/${project.version}</bundle>
+        <bundle>mvn:io.apiman/apiman-gateway-api-rest/${project.version}</bundle>
+        <bundle>mvn:io.apiman/apiman-gateway-api-rest-impl/1.2.2-SNAPSHOT</bundle>
+        <bundle>mvn:io.apiman/apiman-gateway-engine-influxdb/1.2.2-SNAPSHOT</bundle>
+        <bundle>mvn:io.apiman/apiman-gateway-engine-ispn/1.2.2-SNAPSHOT</bundle>
+        <bundle>mvn:io.apiman/apiman-gateway-osgi-servlet/${project.version}</bundle>
+        <bundle>mvn:io.apiman/apiman-gateway-osgi/1.2.2-SNAPSHOT</bundle>
     </feature>
 
     <feature name="apiman-manager-api" version="${project.version}">
