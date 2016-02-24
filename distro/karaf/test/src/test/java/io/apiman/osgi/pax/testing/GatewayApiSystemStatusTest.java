@@ -23,10 +23,10 @@ import static org.ops4j.pax.exam.OptionUtils.combine;
 @RunWith(PaxExam.class)
 public class GatewayApiSystemStatusTest extends KarafBaseTest {
 
-	Logger LOG = LoggerFactory.getLogger(GatewayApiSystemStatusTest.class);
+	private static final Logger LOG = LoggerFactory.getLogger(GatewayApiSystemStatusTest.class);
+	private static final String EXPECTED_CONTENT = "{\"id\":\"apiman-gateway-api\",\"name\":\"API Gateway REST API\",\"description\":\"The API Gateway REST API is used by the API Manager to publish APIs and register clients.  You can use it directly if you wish, but if you are utilizing the API Manager then it's probably best to avoid invoking this API directly.\",\"version\":\"1.2.2-SNAPSHOT\",\"up\":true}";
 
 	private Bundle warBundle;
-
 	protected HttpTestClient testClient;
 
 	@Configuration
@@ -36,7 +36,7 @@ public class GatewayApiSystemStatusTest extends KarafBaseTest {
 
 	@Test
 	public void testSystemStatus() throws Exception {
-		testClient.testWebPath("https://localhost:8444/apiman-gateway-api/system/status","",200,true);
+		testClient.testWebPath("https://localhost:8444/apiman-gateway-api/system/status",EXPECTED_CONTENT,200,true);
 	}
 
 	@Before
