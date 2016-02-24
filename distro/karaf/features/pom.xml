@@ -41,7 +41,7 @@
                                 <artifact>
                                     <file>${project.build.outputDirectory}/apiman-realm.xml</file>
                                     <type>xml</type>
-                                    <classifier>apiman-realm</classifier>
+                                    <classifier>apimanrealm</classifier>
                                 </artifact>
                             </artifacts>
                         </configuration>
