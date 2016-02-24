@@ -1,5 +1,6 @@
 {
     "realm" : "apiman",
+    "displayNameHtml": "<div class=\"kc-logo-text\"><span>Keycloak & Apiman Quickstart</span></div>",
     "enabled" : true,
     "accessTokenLifespan" : 240,
     "accessCodeLifespan" : 60,
