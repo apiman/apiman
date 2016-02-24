@@ -55,7 +55,7 @@ public class KarafBaseTest {
 
 	public static final String GROUP_ID = "org.apache.karaf";
     public static final String ARTIFACT_ID = "apache-karaf";
-    public static final String VERSION = "2.4.3";
+    public static final String VERSION = "2.4.4";
 
 	@Inject
 	protected FeaturesService featuresService;
@@ -67,7 +67,7 @@ public class KarafBaseTest {
 		return new Option[] {
 				karafDistributionConfiguration().frameworkUrl(
 						maven().groupId(GROUP_ID).artifactId(ARTIFACT_ID).version(VERSION).type("tar.gz"))
-						.karafVersion("2.4.4").useDeployFolder(false).name("Karaf")
+						.karafVersion(VERSION).useDeployFolder(false).name("Karaf")
 						.unpackDirectory(new File("target/paxexam/unpack")),
 				configureConsole().ignoreLocalConsole(),
 				logLevel(LogLevel.INFO),
