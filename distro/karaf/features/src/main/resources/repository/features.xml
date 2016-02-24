@@ -158,7 +158,7 @@
     </feature>
 
     <feature name="apiman-security" version="${project.version}">
-        <bundle>blueprint:mvn:io.apiman/apiman-karaf/${project.version}/xml/apiman-realm</bundle>
+        <bundle>blueprint:mvn:io.apiman/apiman-karaf/${project.version}/xml/apimanrealm</bundle>
     </feature>
 
     <feature name="apiman-gateway" version="${project.version}" description="Apiman Gateway modules exposing the Gateway and its Rest Api">
@@ -171,12 +171,12 @@
         <bundle>mvn:io.apiman/apiman-gateway-engine-policies/${project.version}</bundle>
         <bundle>mvn:io.apiman/apiman-gateway-platforms-servlet/${project.version}</bundle>
         <bundle>mvn:io.apiman/apiman-gateway-api-rest/${project.version}</bundle>
-        <bundle>mvn:io.apiman/apiman-gateway-api-rest-impl/1.2.2-SNAPSHOT</bundle>
-        <bundle>mvn:io.apiman/apiman-gateway-engine-influxdb/1.2.2-SNAPSHOT</bundle>
-        <bundle>mvn:io.apiman/apiman-gateway-engine-ispn/1.2.2-SNAPSHOT</bundle>
+        <bundle>mvn:io.apiman/apiman-gateway-api-rest-impl/${project.version}</bundle>
+        <bundle>mvn:io.apiman/apiman-gateway-engine-influxdb/${project.version}</bundle>
+        <bundle>mvn:io.apiman/apiman-gateway-engine-ispn/${project.version}</bundle>
         <bundle>mvn:io.apiman/apiman-gateway-osgi-servlet/${project.version}</bundle>
-        <bundle>mvn:io.apiman/apiman-gateway-osgi/1.2.2-SNAPSHOT</bundle>
-        <bundle>mvn:io.apiman/apiman-gateway-osgi-api/1.2.2-SNAPSHOT</bundle>
+        <bundle>mvn:io.apiman/apiman-gateway-osgi/${project.version}</bundle>
+        <bundle>mvn:io.apiman/apiman-gateway-osgi-api/${project.version}</bundle>
     </feature>
 
     <feature name="apiman-gateway-test" version="${project.version}" description="Apiman Gateway modules exposing the Gateway and its Rest Api">
@@ -188,12 +188,12 @@
         <bundle>mvn:io.apiman/apiman-gateway-engine-policies/${project.version}</bundle>
         <bundle>mvn:io.apiman/apiman-gateway-platforms-servlet/${project.version}</bundle>
         <bundle>mvn:io.apiman/apiman-gateway-api-rest/${project.version}</bundle>
-        <bundle>mvn:io.apiman/apiman-gateway-api-rest-impl/1.2.2-SNAPSHOT</bundle>
-        <bundle>mvn:io.apiman/apiman-gateway-engine-influxdb/1.2.2-SNAPSHOT</bundle>
-        <bundle>mvn:io.apiman/apiman-gateway-engine-ispn/1.2.2-SNAPSHOT</bundle>
+        <bundle>mvn:io.apiman/apiman-gateway-api-rest-impl/${project.version}</bundle>
+        <bundle>mvn:io.apiman/apiman-gateway-engine-influxdb/${project.version}</bundle>
+        <bundle>mvn:io.apiman/apiman-gateway-engine-ispn/${project.version}</bundle>
         <bundle>mvn:io.apiman/apiman-gateway-osgi-servlet/${project.version}</bundle>
-        <bundle>mvn:io.apiman/apiman-gateway-osgi/1.2.2-SNAPSHOT</bundle>
-        <configfile finalname="deploy/apiman-realm.xml">mvn:mvn:io.apiman/apiman-karaf/${project.version}/xml/apiman-realm</configfile>
+        <bundle>mvn:io.apiman/apiman-gateway-osgi/${project.version}</bundle>
+        <configfile finalname="/deploy/apiman-realm.xml">mvn:io.apiman/apiman-karaf/${project.version}/xml/apimanrealm</configfile>
     </feature>
 
     <feature name="apiman-manager-api" version="${project.version}">
