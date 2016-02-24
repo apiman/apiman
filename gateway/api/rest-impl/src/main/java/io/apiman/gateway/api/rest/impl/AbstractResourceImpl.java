@@ -17,7 +17,6 @@ package io.apiman.gateway.api.rest.impl;
 
 import io.apiman.common.util.ServiceRegistryUtil;
 import io.apiman.gateway.engine.IEngine;
-import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.exceptions.AbstractEngineException;
 
