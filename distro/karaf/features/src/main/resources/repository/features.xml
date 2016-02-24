@@ -155,12 +155,16 @@
         <bundle>mvn:io.apiman/apiman-common-config/${project.version}</bundle>
         <bundle>mvn:io.apiman/apiman-common-plugin/${project.version}</bundle>
         <bundle>mvn:io.apiman/apiman-common-servlet/${project.version}</bundle>
+    </feature>
+
+    <feature name="apiman-security" version="${project.version}">
         <bundle>blueprint:mvn:io.apiman/apiman-karaf/${project.version}/xml/apiman-realm</bundle>
     </feature>
 
     <feature name="apiman-gateway" version="${project.version}" description="Apiman Gateway modules exposing the Gateway and its Rest Api">
         <feature>apiman-lib</feature>
         <feature>apiman-common</feature>
+        <feature>apiman-security</feature>
         <bundle>mvn:io.apiman/apiman-gateway-engine-beans/${project.version}</bundle>
         <bundle>mvn:io.apiman/apiman-gateway-engine-core/${project.version}</bundle>
         <bundle>mvn:io.apiman/apiman-gateway-engine-es/${project.version}</bundle>
@@ -189,6 +193,7 @@
         <bundle>mvn:io.apiman/apiman-gateway-engine-ispn/1.2.2-SNAPSHOT</bundle>
         <bundle>mvn:io.apiman/apiman-gateway-osgi-servlet/${project.version}</bundle>
         <bundle>mvn:io.apiman/apiman-gateway-osgi/1.2.2-SNAPSHOT</bundle>
+        <configfile finalname="deploy/apiman-realm.xml">mvn:mvn:io.apiman/apiman-karaf/${project.version}/xml/apiman-realm</configfile>
     </feature>
 
     <feature name="apiman-manager-api" version="${project.version}">
