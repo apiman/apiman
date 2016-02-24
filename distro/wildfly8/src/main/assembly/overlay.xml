@@ -34,6 +34,20 @@
       <directoryMode>0755</directoryMode>
       <fileMode>0755</fileMode>
     </dependencySet>
+    <!-- apiman-gateway-engine-beans JAR -->
+    <dependencySet>
+      <outputDirectory>standalone/deployments</outputDirectory>
+      <includes>
+        <include>*:apiman-gateway-engine-beans:jar</include>
+      </includes>
+      <outputFileNameMapping>apiman-gateway-engine-beans.jar</outputFileNameMapping>
+      <useProjectArtifact>false</useProjectArtifact>
+      <useProjectAttachments>false</useProjectAttachments>
+      <useTransitiveDependencies>false</useTransitiveDependencies>
+      <useTransitiveFiltering>false</useTransitiveFiltering>
+      <directoryMode>0755</directoryMode>
+      <fileMode>0755</fileMode>
+    </dependencySet>
     <!-- apiman-gateway-api -->
     <dependencySet>
       <outputDirectory>standalone/deployments</outputDirectory>
