@@ -157,7 +157,7 @@ public class ESClientFactory {
 
     /**
      * Creates a local client from a configuration map.
-     * @param config the config from apiman.properties
+     * @param config the config from amg.properties
      * @param indexName the name of the ES index
      * @return the ES client
      */

@@ -20,7 +20,7 @@ import org.jboss.security.vault.SecurityVaultUtil;
 
 /**
  * Allows users to lookup strings from the vault and use them in the
- * apiman.properties file.
+ * amg.properties file.
  *
  * @author eric.wittmann@redhat.com
  */
