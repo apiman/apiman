@@ -79,7 +79,7 @@ http GET http://localhost:8181/apiman-gateway/system/status
 # Test Apiman Gateway API
 
 ```
-http://localhost:8181/apiman-gateway-api/system/status
+http --verify=no -a admin:admin123! GET https://localhost:8444/apiman-gateway-api/system/status
 ```
 
 # Scenario 1 : Test Api

@@ -13,6 +13,7 @@
 
     <properties>
         <skipTests>true</skipTests>
+        <karaf.version>2.4.4</karaf.version>
     </properties>
 
     <dependencies>
@@ -20,14 +21,59 @@
         <dependency>
             <groupId>org.ops4j.pax.exam</groupId>
             <artifactId>pax-exam-container-karaf</artifactId>
-            <version>4.6.0</version>
+            <version>4.5.0</version>
+            <scope>test</scope>
         </dependency>
-
-        <!-- Pax Exam -->
         <dependency>
             <groupId>org.ops4j.pax.exam</groupId>
             <artifactId>pax-exam-junit4</artifactId>
-            <version>4.7.0</version>
+            <version>4.5.0</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Pax Web -->
+        <dependency>
+            <groupId>org.ops4j.pax.web</groupId>
+            <artifactId>pax-web-spi</artifactId>
+            <version>3.2.5</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Pax Web -->
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+            <version>1.8.3</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpcore-osgi</artifactId>
+            <version>4.4.4</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient-osgi</artifactId>
+            <version>4.4.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+            <version>3.2.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.10</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.servicemix.specs</groupId>
+            <artifactId>org.apache.servicemix.specs.jsr303-api-1.0.0</artifactId>
+            <version>1.8.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -56,22 +102,25 @@
         <dependency>
             <groupId>io.apiman</groupId>
             <artifactId>apiman-manager-api-core</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>io.apiman</groupId>
             <artifactId>apiman-manager-api-rest-impl</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>io.apiman</groupId>
             <artifactId>apiman-manager-api-es</artifactId>
+            <scope>test</scope>
         </dependency>
 
         <!-- Karaf distribution -->
         <dependency>
             <groupId>org.apache.karaf</groupId>
             <artifactId>apache-karaf</artifactId>
-            <version>2.4.3</version>
-            <type>zip</type>
+            <version>${karaf.version}</version>
+            <type>tar.gz</type>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -91,16 +140,36 @@
                     </execution>
                 </executions>
             </plugin>
-
-<!--            <plugin>
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-resources</id>
+                        <phase>generate-test-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${basedir}/target</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>src/test/resources</directory>
+                                    <includes>
+                                        <include>keystore.jks</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.19</version>
                 <configuration>
                     <skipTests>${skipTests}</skipTests>
                 </configuration>
-            </plugin>-->
-
+            </plugin>
         </plugins>
     </build>
 
