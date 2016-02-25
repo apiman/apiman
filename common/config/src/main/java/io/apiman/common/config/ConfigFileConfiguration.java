@@ -66,7 +66,7 @@ public class ConfigFileConfiguration extends PropertiesConfiguration {
     }
 
     /**
-     * Discover the location of the apiman.properties (for example) file by checking
+     * Discover the location of the amg.properties (for example) file by checking
      * in various likely locations.
      */
     private static URL discoverConfigFileUrl(String configFileName, String customConfigPropertyName) {

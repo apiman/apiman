@@ -19,7 +19,7 @@ import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.interpol.ConfigurationInterpolator;
 
 /**
- * Factory for creating a configuration object from apiman.properties.
+ * Factory for creating a configuration object from amg.properties.
  *
  * @author eric.wittmann@redhat.com
  */
@@ -37,7 +37,7 @@ public class ConfigFactory {
     public static final CompositeConfiguration createConfig() {
         CompositeConfiguration compositeConfiguration = new CompositeConfiguration();
         compositeConfiguration.addConfiguration(new SystemPropertiesConfiguration());
-        compositeConfiguration.addConfiguration(ConfigFileConfiguration.create("apiman.properties", "apiman.config.url")); //$NON-NLS-1$ //$NON-NLS-2$
+        compositeConfiguration.addConfiguration(ConfigFileConfiguration.create("amg.properties", "amg.config.url")); //$NON-NLS-1$ //$NON-NLS-2$
         return compositeConfiguration;
     }
 

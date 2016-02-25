@@ -18,7 +18,7 @@ package io.apiman.common.config;
 import org.apache.commons.lang.text.StrLookup;
 
 /**
- * Allows users to AesEncrypt their properties in apiman.properties.
+ * Allows users to AesEncrypt their properties in amg.properties.
  *
  * @author eric.wittmann@redhat.com
  */
