@@ -49,7 +49,7 @@ public class EntityManagerFactoryAccessor implements IEntityManagerFactoryAccess
     public void postConstruct() {
         Map<String, String> properties = new HashMap<>();
 
-        // Get properties from apiman.properties
+        // Get properties from amg.properties
         Map<String, String> cp = jpaProperties.getAllHibernateProperties();
         if (cp != null) {
             properties.putAll(cp);
