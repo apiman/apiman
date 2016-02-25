@@ -105,8 +105,8 @@ public class WarApiManagerBootstrapperServlet extends HttpServlet {
     private static File getDataDir() {
         File rval = null;
 
-        // First check to see if a data directory has been explicitely configured via system property
-        String dataDir = System.getProperty("apiman.distro-es.data_dir"); //$NON-NLS-1$
+        // First check to see if a data directory has been explicitly configured via system property
+        String dataDir = System.getProperty("apiman.bootstrap.data_dir"); //$NON-NLS-1$
         if (dataDir != null) {
             rval = new File(dataDir);
         }
