@@ -1,21 +1,8 @@
 package io.apiman.osgi.pax.testing.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.ops4j.pax.exam.CoreOptions.maven;
-import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
-import static org.ops4j.pax.exam.CoreOptions.wrappedBundle;
-import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.*;
-
-import java.io.File;
-
-import javax.inject.Inject;
-
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.karaf.features.FeaturesService;
-import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Option;
-import org.ops4j.pax.exam.junit.PaxExam;
 import org.ops4j.pax.exam.karaf.options.KarafDistributionOption;
 import org.ops4j.pax.exam.karaf.options.LogLevelOption.LogLevel;
 import org.ops4j.pax.web.service.spi.WebListener;
@@ -23,7 +10,12 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 
-@RunWith(PaxExam.class)
+import javax.inject.Inject;
+import java.io.File;
+
+import static org.ops4j.pax.exam.CoreOptions.maven;
+import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.*;
+
 public class KarafBaseTest {
 
 	protected DefaultHttpClient httpclient;
