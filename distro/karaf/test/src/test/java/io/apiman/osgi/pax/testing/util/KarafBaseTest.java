@@ -56,9 +56,10 @@ public class KarafBaseTest {
 				KarafDistributionOption.editConfigurationFilePut("etc/org.ops4j.pax.web.cfg", "org.osgi.service.http.port.secure","8444"),
 				KarafDistributionOption.editConfigurationFilePut("etc/org.ops4j.pax.web.cfg", "org.osgi.service.http.port","8181"),
 				KarafDistributionOption.editConfigurationFilePut("etc/org.ops4j.pax.web.cfg", "org.osgi.service.http.enabled","true"),
-				KarafDistributionOption.editConfigurationFilePut("etc/org.ops4j.pax.web.cfg", "org.ops4j.pax.web.ssl.keystore","/Users/chmoulli/Code/jboss/apiman/apiman-core-forked/distro/karaf/test/src/test/resources/keystore.jks"),
+				KarafDistributionOption.editConfigurationFilePut("etc/org.ops4j.pax.web.cfg", "org.ops4j.pax.web.ssl.keystore","${karaf.base}/etc/server-keystore.jks"),
 				KarafDistributionOption.editConfigurationFilePut("etc/org.ops4j.pax.web.cfg", "org.ops4j.pax.web.ssl.password","apiman"),
 				KarafDistributionOption.editConfigurationFilePut("etc/org.ops4j.pax.web.cfg", "org.ops4j.pax.web.ssl.keypassword","apiman"),
+				KarafDistributionOption.replaceConfigurationFile("etc/server-keystore.jks", new File("src/test/resources/keystore.jks")),
 				KarafDistributionOption.replaceConfigurationFile("etc/io.apiman.gateway.cfg", new File("src/test/resources/io.apiman.gateway.cfg")),
 				KarafDistributionOption.replaceConfigurationFile("etc/apiman.properties", new File("src/test/resources/apiman.properties")),
 				features(
