@@ -55,6 +55,7 @@ public abstract class ApiManagerConfig {
     public static final String APIMAN_MANAGER_STORAGE_ES_PASSWORD = "apiman-manager.storage.es.password"; //$NON-NLS-1$
     public static final String APIMAN_MANAGER_STORAGE_ES_INITIALIZE = "apiman-manager.storage.es.initialize"; //$NON-NLS-1$
     public static final String APIMAN_MANAGER_STORAGE_ES_TIMEOUT = "apiman-manager.storage.es.timeout"; //$NON-NLS-1$
+    public static final String APIMAN_MANAGER_STORAGE_ES_INDEX_NAME = "apiman-manager.storage.es.index"; //$NON-NLS-1$
 
     public static final String APIMAN_MANAGER_STORAGE_QUERY_TYPE = "apiman-manager.storage-query.type"; //$NON-NLS-1$
 
@@ -78,6 +79,7 @@ public abstract class ApiManagerConfig {
     public static final String APIMAN_PLUGIN_REGISTRIES = "apiman-manager.plugins.registries"; //$NON-NLS-1$
 
     public static final String DEFAULT_ES_CLUSTER_NAME = "apiman"; //$NON-NLS-1$
+    public static final String DEFAULT_ES_INDEX_NAME = "apiman_manager"; //$NON-NLS-1$
     public static final int DEFAULT_JEST_TIMEOUT = 6000;
 
     private final Configuration config;
@@ -217,6 +219,10 @@ public abstract class ApiManagerConfig {
 
     public int getStorageESTimeout() {
         return config.getInt(APIMAN_MANAGER_STORAGE_ES_TIMEOUT, DEFAULT_JEST_TIMEOUT);
+    }
+    
+    public String getStorageESIndexName() {
+        return config.getString(APIMAN_MANAGER_STORAGE_ES_INDEX_NAME, DEFAULT_ES_INDEX_NAME);
     }
 
     /**

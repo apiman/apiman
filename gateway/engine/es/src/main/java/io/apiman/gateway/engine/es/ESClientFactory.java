@@ -53,19 +53,23 @@ public class ESClientFactory {
     /**
      * Creates a client from information in the config map.
      * @param config the configuration
-     * @param indexName the index to use
+     * @param defaultIndexName the default index to use if not specified in the config
      * @return the ES client
      */
-    public static JestClient createClient(Map<String, String> config, String indexName) {
+    public static JestClient createClient(Map<String, String> config, String defaultIndexName) {
         JestClient client;
         String clientType = config.get("client.type"); //$NON-NLS-1$
         if (clientType == null) {
             clientType = "jest"; //$NON-NLS-1$
         }
+        String indexName = config.get("client.index"); //$NON-NLS-1$
+        if (indexName == null) {
+            indexName = defaultIndexName;
+        }
         if ("jest".equals(clientType)) { //$NON-NLS-1$
-            client = createJestClient(config, indexName);
+            client = createJestClient(config, indexName, defaultIndexName);
         } else if ("local".equals(clientType)) { //$NON-NLS-1$
-            client = createLocalClient(config, indexName);
+            client = createLocalClient(config, indexName, defaultIndexName);
         } else {
             throw new RuntimeException("Invalid elasticsearch client type: " + clientType); //$NON-NLS-1$
         }
@@ -76,9 +80,10 @@ public class ESClientFactory {
      * Creates a transport client from a configuration map.
      * @param config the configuration
      * @param indexName the name of the index
+     * @param defaultIndexName the default index name
      * @return the ES client
      */
-    public static JestClient createJestClient(Map<String, String> config, String indexName) {
+    public static JestClient createJestClient(Map<String, String> config, String indexName, String defaultIndexName) {
         String host = config.get("client.host"); //$NON-NLS-1$
         String port = config.get("client.port"); //$NON-NLS-1$
         String protocol = config.get("client.protocol"); //$NON-NLS-1$
@@ -104,7 +109,7 @@ public class ESClientFactory {
             timeout = "6000"; //$NON-NLS-1$
         }
         return createJestClient(protocol, host, Integer.parseInt(port), indexName, username, password,
-                BooleanUtils.toBoolean(initialize), Integer.parseInt(timeout));
+                BooleanUtils.toBoolean(initialize), Integer.parseInt(timeout), defaultIndexName);
     }
 
     /**
@@ -117,10 +122,11 @@ public class ESClientFactory {
      * @param password the password to authenticate with
      * @param initialize true if the index should be initialized
      * @param timeout the connection and read timeouts in ms
+     * @param defaultIndexName the default index name
      * @return the ES client
      */
     public static JestClient createJestClient(String protocol, String host, int port, String indexName,
-            String username, String password, boolean initialize, int timeout) {
+            String username, String password, boolean initialize, int timeout, String defaultIndexName) {
         String clientKey = "jest:" + host + ':' + port + '/' + indexName; //$NON-NLS-1$
         synchronized (clients) {
             if (clients.containsKey(clientKey)) {
@@ -148,7 +154,7 @@ public class ESClientFactory {
                 JestClient client = factory.getObject();
                 clients.put(clientKey, client);
                 if (initialize) {
-                    initializeClient(client, indexName);
+                    initializeClient(client, indexName, defaultIndexName);
                 }
                 return client;
             }
@@ -159,12 +165,13 @@ public class ESClientFactory {
      * Creates a local client from a configuration map.
      * @param config the config from apiman.properties
      * @param indexName the name of the ES index
+     * @param defaultIndexName the default ES index name
      * @return the ES client
      */
-    public static JestClient createLocalClient(Map<String, String> config, String indexName) {
+    public static JestClient createLocalClient(Map<String, String> config, String indexName, String defaultIndexName) {
         String clientLocClassName = config.get("client.class"); //$NON-NLS-1$
         String clientLocFieldName = config.get("client.field"); //$NON-NLS-1$
-        return createLocalClient(clientLocClassName, clientLocFieldName, indexName);
+        return createLocalClient(clientLocClassName, clientLocFieldName, indexName, defaultIndexName);
     }
 
     /**
@@ -173,9 +180,10 @@ public class ESClientFactory {
      * @param className the class name
      * @param fieldName the field name
      * @param indexName the name of the ES index
+     * @param defaultIndexName the name of the default ES index
      * @return the ES client
      */
-    public static JestClient createLocalClient(String className, String fieldName, String indexName) {
+    public static JestClient createLocalClient(String className, String fieldName, String indexName, String defaultIndexName) {
         String clientKey = "local:" + className + '/' + fieldName; //$NON-NLS-1$
         synchronized (clients) {
             if (clients.containsKey(clientKey)) {
@@ -186,7 +194,7 @@ public class ESClientFactory {
                     Field field = clientLocClass.getField(fieldName);
                     JestClient client = (JestClient) field.get(null);
                     clients.put(clientKey, client);
-                    initializeClient(client, indexName);
+                    initializeClient(client, indexName, defaultIndexName);
                     return client;
                 } catch (ClassNotFoundException | NoSuchFieldException | SecurityException
                         | IllegalArgumentException | IllegalAccessException e) {
@@ -198,14 +206,17 @@ public class ESClientFactory {
 
     /**
      * Called to initialize the storage.
+     * @param client the jest client
+     * @param indexName the name of the ES index to initialize
+     * @param defaultIndexName the default ES index - used to determine which -settings.json file to use
      */
-    public static void initializeClient(JestClient client, String indexName) {
+    public static void initializeClient(JestClient client, String indexName, String defaultIndexName) {
         try {
             client.execute(new Health.Builder().build());
             Action<JestResult> action = new IndicesExists.Builder(indexName).build();
             JestResult result = client.execute(action);
             if (!result.isSucceeded()) {
-                createIndex(client, indexName, indexName + "-settings.json"); //$NON-NLS-1$
+                createIndex(client, indexName, defaultIndexName + "-settings.json"); //$NON-NLS-1$
             }
         } catch (Exception e) {
             throw new RuntimeException(e);

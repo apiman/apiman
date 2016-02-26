@@ -290,6 +290,7 @@ public class WarCdiFactory {
     private static EsStorage initES(WarApiManagerConfig config, EsStorage esStorage) {
         if (sESStorage == null) {
             sESStorage = esStorage;
+            sESStorage.setIndexName(config.getStorageESIndexName());
             if (config.isInitializeStorageES()) {
                 sESStorage.initialize();
             }

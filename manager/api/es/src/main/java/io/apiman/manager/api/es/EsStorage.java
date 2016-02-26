@@ -129,7 +129,7 @@ import com.google.gson.Gson;
 @ApplicationScoped @Alternative
 public class EsStorage implements IStorage, IStorageQuery {
 
-    private static final String INDEX_NAME = "apiman_manager"; //$NON-NLS-1$
+    private static final String DEFAULT_INDEX_NAME = "apiman_manager"; //$NON-NLS-1$
 
     private static int guidCounter = 100;
 
@@ -141,6 +141,8 @@ public class EsStorage implements IStorage, IStorageQuery {
         // Kick the encrypter, causing it to be loaded/resolved in CDI
         encrypter.encrypt(""); //$NON-NLS-1$
     }
+    
+    private String indexName = DEFAULT_INDEX_NAME;
 
     /**
      * Constructor.
@@ -156,10 +158,10 @@ public class EsStorage implements IStorage, IStorageQuery {
         try {
             esClient.execute(new Health.Builder().build());
             // TODO Do we need a loop to wait for all nodes to join the cluster?
-            Action<JestResult> action = new IndicesExists.Builder(INDEX_NAME).build();
+            Action<JestResult> action = new IndicesExists.Builder(getIndexName()).build();
             JestResult result = esClient.execute(action);
             if (! result.isSucceeded()) {
-                createIndex(INDEX_NAME);
+                createIndex(getIndexName());
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -927,7 +929,7 @@ public class EsStorage implements IStorage, IStorageQuery {
                 );
             SearchSourceBuilder builder = new SearchSourceBuilder().query(qb).size(2);
 
-            SearchRequest request = new SearchRequest(INDEX_NAME);
+            SearchRequest request = new SearchRequest(getIndexName());
             request.types("plugin"); //$NON-NLS-1$
             request.source(builder);
             List<Hit<Map<String,Object>,Void>> hits = listEntities("plugin", builder); //$NON-NLS-1$
@@ -1652,7 +1654,7 @@ public class EsStorage implements IStorage, IStorageQuery {
         if (string.indexOf("query") < 0 || string.indexOf("query") > 7) {
             string = "{ \"query\" : " + string + "}";
         }
-        DeleteByQuery deleteByQuery = new DeleteByQuery.Builder(string).addIndex(INDEX_NAME)
+        DeleteByQuery deleteByQuery = new DeleteByQuery.Builder(string).addIndex(getIndexName())
                 .addType("roleMembership").build();
         try {
             JestResult response = esClient.execute(deleteByQuery);
@@ -1800,7 +1802,7 @@ public class EsStorage implements IStorage, IStorageQuery {
             throws StorageException {
         try {
             String json = sourceEntity.string();
-            JestResult response = esClient.execute(new Index.Builder(json).refresh(refresh).index(INDEX_NAME)
+            JestResult response = esClient.execute(new Index.Builder(json).refresh(refresh).index(getIndexName())
                     .setParameter(Parameters.OP_TYPE, "create").type(type).id(id).build());
             if (!response.isSucceeded()) {
                 throw new StorageException("Failed to index document " + id + " of type " + type + ": " + response.getErrorMessage());
@@ -1820,7 +1822,7 @@ public class EsStorage implements IStorage, IStorageQuery {
      */
     private Map<String, Object> getEntity(String type, String id) throws StorageException {
         try {
-            JestResult response = esClient.execute(new Get.Builder(INDEX_NAME, id).type(type).build());
+            JestResult response = esClient.execute(new Get.Builder(getIndexName(), id).type(type).build());
             if (!response.isSucceeded()) {
                 return null;
             }
@@ -1840,7 +1842,7 @@ public class EsStorage implements IStorage, IStorageQuery {
             SearchSourceBuilder searchSourceBuilder) throws StorageException {
         try {
             String query = searchSourceBuilder.toString();
-            Search search = new Search.Builder(query).addIndex(INDEX_NAME).addType(type).build();
+            Search search = new Search.Builder(query).addIndex(getIndexName()).addType(type).build();
             SearchResult response = esClient.execute(search);
             @SuppressWarnings({ "rawtypes", "unchecked" })
             List<Hit<Map<String, Object>, Void>> thehits = (List) response.getHits(Map.class);
@@ -1858,7 +1860,7 @@ public class EsStorage implements IStorage, IStorageQuery {
      */
     private void deleteEntity(String type, String id) throws StorageException {
         try {
-            JestResult response = esClient.execute(new Delete.Builder(id).index(INDEX_NAME).type(type).build());
+            JestResult response = esClient.execute(new Delete.Builder(id).index(getIndexName()).type(type).build());
             if (!response.isSucceeded()) {
                 throw new StorageException("Document could not be deleted because it did not exist:" + response.getErrorMessage()); //$NON-NLS-1$
             }
@@ -1880,7 +1882,7 @@ public class EsStorage implements IStorage, IStorageQuery {
         try {
             String doc = source.string();
             /* JestResult response = */esClient.execute(new Index.Builder(doc)
-                    .setParameter(Parameters.OP_TYPE, "index").index(INDEX_NAME).type(type).id(id).build()); //$NON-NLS-1$
+                    .setParameter(Parameters.OP_TYPE, "index").index(getIndexName()).type(type).id(id).build()); //$NON-NLS-1$
         } catch (Exception e) {
             throw new StorageException(e);
         }
@@ -1957,7 +1959,7 @@ public class EsStorage implements IStorage, IStorageQuery {
 
 
             String query = builder.toString();
-            Search search = new Search.Builder(query).addIndex(INDEX_NAME)
+            Search search = new Search.Builder(query).addIndex(getIndexName())
                     .addType(type).build();
             SearchResult response = esClient.execute(search);
             @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -2423,7 +2425,7 @@ public class EsStorage implements IStorage, IStorageQuery {
 
         private void initScroll() throws StorageException {
             try {
-                Search search = new Search.Builder(query).addIndex(INDEX_NAME).addType(entityType)
+                Search search = new Search.Builder(query).addIndex(getIndexName()).addType(entityType)
                         .setSearchType(SearchType.SCAN).setParameter(Parameters.SCROLL, "1m").build();
                 SearchResult response = esClient.execute(search);
                 scrollId = response.getJsonObject().get("_scroll_id").getAsString();
@@ -2475,6 +2477,20 @@ public class EsStorage implements IStorage, IStorageQuery {
                 "    }" +
                 "  }" +
                 "}";
+    }
+
+    /**
+     * @return the indexName
+     */
+    public String getIndexName() {
+        return indexName;
+    }
+
+    /**
+     * @param indexName the indexName to set
+     */
+    public void setIndexName(String indexName) {
+        this.indexName = indexName;
     }
 
 }
