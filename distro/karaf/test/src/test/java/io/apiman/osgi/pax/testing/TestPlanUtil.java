@@ -6,7 +6,6 @@ import io.apiman.test.common.plan.TestPlan;
 import io.apiman.test.common.plan.TestType;
 import io.apiman.test.common.util.TestUtil;
 import org.junit.runners.model.InitializationError;
-import org.ops4j.pax.exam.junit.PaxExam;
 
 import java.io.File;
 import java.util.ArrayList;

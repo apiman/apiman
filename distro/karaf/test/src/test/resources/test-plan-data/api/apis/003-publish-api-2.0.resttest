@@ -4,7 +4,7 @@ Content-Type: application/json
 {
   "organizationId" : "GatewayApiTest",
   "apiId" : "echo",
-  "version" : "1.0",
+  "version" : "2.0",
   "endpointType" : "REST",
   "endpoint" : "${apiman-gateway-test.endpoints.echo}/"
 }

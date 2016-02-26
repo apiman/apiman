@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testPlan xmlns="urn:io.apiman.test:2014:02:testPlan" endpoint="api">
 
-  <testGroup name="Test Apis">
-    <test name="Publish Api">test-plan-data/api/apis/001-publish-api.resttest</test>
-<!--    <test name="Publish Duplicate Api">test-plan-data/api/apis/002-publish-duplicate.resttest</test>
-    <test name="Publish Api 2.0">test-plan-data/api/apis/003-publish-api-2.0.resttest</test>
-    <test name="Publish Api 3.0">test-plan-data/api/apis/004-publish-api-3.0.resttest</test>
-    <test name="Retire Api 3.0">test-plan-data/api/apis/005-retire-api-3.0.resttest</test>
-    <test name="Get Api Endpoint">test-plan-data/api/apis/006-get-endpoint.resttest</test>
-    <test name="Republish Api 3.0">test-plan-data/api/apis/007-republish-api-3.0.resttest</test>
-    <test name="Retire Api 3.0 (again)">test-plan-data/api/apis/005-retire-api-3.0.resttest</test>-->
-  </testGroup>
+    <testGroup name="Test Apis">
+        <test name="Publish Api">test-plan-data/api/apis/001-publish-api.resttest</test>
+        <test name="Publish Duplicate Api">test-plan-data/api/apis/002-publish-duplicate.resttest</test>
+        <test name="Publish Api 2.0">test-plan-data/api/apis/003-publish-api-2.0.resttest</test>
+        <test name="Publish Api 3.0">test-plan-data/api/apis/004-publish-api-3.0.resttest</test>
+        <test name="Retire Api 3.0">test-plan-data/api/apis/005-retire-api-3.0.resttest</test>
+        <test name="Get Api Endpoint">test-plan-data/api/apis/006-get-endpoint.resttest</test>
+        <test name="Republish Api 3.0">test-plan-data/api/apis/007-republish-api-3.0.resttest</test>
+        <test name="Retire Api 3.0 (again)">test-plan-data/api/apis/005-retire-api-3.0.resttest</test>-->
+    </testGroup>
 
-<!--  <testGroup name="Test Clients">
-    <test name="Register Client">test-plan-data/api/clients/001-register-client.resttest</test>
-    <test name="Register Invalid Client">test-plan-data/api/clients/002-register-client-invalid.resttest</test>
-    <test name="Register Client (retired)">test-plan-data/api/clients/003-register-client-retired.resttest</test>
-    <test name="Register Duplicate Client">test-plan-data/api/clients/004-register-client-duplicate.resttest</test>
-    <test name="Unregister Client">test-plan-data/api/clients/005-unregister-client.resttest</test>
-    <test name="Reregister Client">test-plan-data/api/clients/006-reregister-client.resttest</test>
-  </testGroup>-->
+    <!--  <testGroup name="Test Clients">
+        <test name="Register Client">test-plan-data/api/clients/001-register-client.resttest</test>
+        <test name="Register Invalid Client">test-plan-data/api/clients/002-register-client-invalid.resttest</test>
+        <test name="Register Client (retired)">test-plan-data/api/clients/003-register-client-retired.resttest</test>
+        <test name="Register Duplicate Client">test-plan-data/api/clients/004-register-client-duplicate.resttest</test>
+        <test name="Unregister Client">test-plan-data/api/clients/005-unregister-client.resttest</test>
+        <test name="Reregister Client">test-plan-data/api/clients/006-reregister-client.resttest</test>
+      </testGroup>-->
 
 </testPlan>
