@@ -1527,7 +1527,9 @@
     <profile>
       <id>distros</id>
       <activation>
-        <activeByDefault>true</activeByDefault>
+        <property>
+          <name>!skipDistros</name>
+        </property>
       </activation>
       <modules>
         <module>distro</module>
@@ -1536,7 +1538,9 @@
     <profile>
       <id>tools</id>
       <activation>
-        <activeByDefault>true</activeByDefault>
+        <property>
+          <name>!skipTools</name>
+        </property>
       </activation>
       <modules>
         <module>tools</module>
