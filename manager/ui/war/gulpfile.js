@@ -184,7 +184,7 @@ gulp.task('reload', function() {
 
 
 // Template Task
-// Creates the templates.js file in the project root (/manager/ui/hawtio)
+// Creates the templates.js file in the project root (/manager/ui/war)
 gulp.task('template', function() {
     return gulp.src(config.templates)
         .pipe(angularTemplatecache({
@@ -199,7 +199,7 @@ gulp.task('template', function() {
 
 // TSC Task
 // Compiles TS into JS
-// Creates the compiled.js file in the project root (/manager/ui/hawtio)
+// Creates the compiled.js file in the project root (/manager/ui/war)
 gulp.task('tsc', function() {
     var cwd = process.cwd();
 

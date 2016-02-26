@@ -45,10 +45,10 @@ public class WarApiManagerBootstrapperServlet extends HttpServlet {
     private static final long serialVersionUID = -362982634664023862L;
 
     @Inject @ApimanLogger(WarApiManagerBootstrapperServlet.class)
-    static IApimanLogger logger;
+    private IApimanLogger logger;
 
     @Inject
-    static StorageImportDispatcher importer;
+    private StorageImportDispatcher importer;
 
     /**
      * @see javax.servlet.GenericServlet#init()

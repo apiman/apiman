@@ -42,12 +42,11 @@ import io.apiman.manager.api.exportimport.beans.MetadataBean;
 import io.apiman.manager.api.exportimport.i18n.Messages;
 import io.apiman.manager.api.exportimport.write.IExportWriter;
 
+import java.util.Date;
 import java.util.Iterator;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-
-import org.joda.time.DateTime;
 
 @ApplicationScoped
 public class StorageExporter {
@@ -286,7 +285,7 @@ public class StorageExporter {
         logger.info(Messages.i18n.format("StorageExporter.ExportingMetaData")); //$NON-NLS-1$
         MetadataBean metadata = new MetadataBean();
         metadata.setApimanVersion(version.getVersionString());
-        metadata.setExportedOn(new DateTime());
+        metadata.setExportedOn(new Date());
         writer.writeMetadata(metadata);
     }
 

@@ -15,11 +15,6 @@
  */
 package io.apiman.manager.api.exportimport.json;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.JsonEncoding;
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.apiman.manager.api.beans.apis.ApiBean;
 import io.apiman.manager.api.beans.apis.ApiVersionBean;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
@@ -47,6 +42,13 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonEncoding;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
+
 /**
  * Stream global elements
  *
@@ -60,6 +62,7 @@ public class JsonExportWriter extends AbstractJsonWriter<GlobalElementsEnum> imp
     private ObjectMapper om = new ObjectMapper();
 
     {
+        om.setDateFormat(new ISO8601DateFormat());
         for (GlobalElementsEnum v : GlobalElementsEnum.values()) {
             finished.put(v, false);
         }

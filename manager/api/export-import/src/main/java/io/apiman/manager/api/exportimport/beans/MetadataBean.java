@@ -15,7 +15,7 @@
  */
 package io.apiman.manager.api.exportimport.beans;
 
-import org.joda.time.DateTime;
+import java.util.Date;
 
 /**
  * A bean that holds basic information about a single export of 
@@ -24,24 +24,10 @@ import org.joda.time.DateTime;
  * export was performed.
  */
 public class MetadataBean {
-    private DateTime exportedOn;
+    private Date exportedOn;
     private String apimanVersion;
 
     public MetadataBean() {
-    }
-
-    /**
-     * @return the exportedOn
-     */
-    public DateTime getExportedOn() {
-        return exportedOn;
-    }
-
-    /**
-     * @param exportedOn the exportedOn to set
-     */
-    public void setExportedOn(DateTime exportedOn) {
-        this.exportedOn = exportedOn;
     }
 
     /**
@@ -64,6 +50,20 @@ public class MetadataBean {
     @SuppressWarnings("nls")
     @Override
     public String toString() {
-        return "MetadataBean [exportedOn=" + exportedOn + ", apimanVersion=" + apimanVersion + "]";
+        return "MetadataBean [exportedOn=" + getExportedOn() + ", apimanVersion=" + apimanVersion + "]";
+    }
+
+    /**
+     * @return the exportedOn
+     */
+    public Date getExportedOn() {
+        return exportedOn;
+    }
+
+    /**
+     * @param exportedOn the exportedOn to set
+     */
+    public void setExportedOn(Date exportedOn) {
+        this.exportedOn = exportedOn;
     }
 }
