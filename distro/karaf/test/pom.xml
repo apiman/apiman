@@ -39,7 +39,13 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- Pax Web -->
+        <!-- Others -->
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-http</artifactId>
+            <version>9.2.10.v20150310</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>commons-beanutils</groupId>
             <artifactId>commons-beanutils</artifactId>
@@ -125,6 +131,12 @@
             <groupId>io.apiman</groupId>
             <artifactId>apiman-manager-api-es</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.apiman</groupId>
+            <artifactId>apiman-gateway-test</artifactId>
+            <scope>test</scope>
+            <classifier>test</classifier>
         </dependency>
 
         <!-- Karaf distribution -->

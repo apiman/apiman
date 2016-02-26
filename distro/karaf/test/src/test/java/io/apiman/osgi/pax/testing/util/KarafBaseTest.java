@@ -1,9 +1,6 @@
 package io.apiman.osgi.pax.testing.util;
 
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.karaf.features.FeaturesService;
 import org.ops4j.pax.exam.Option;
-import org.ops4j.pax.exam.karaf.options.KarafDistributionOption;
 import org.ops4j.pax.exam.karaf.options.LogLevelOption.LogLevel;
 import org.ops4j.pax.web.service.spi.WebListener;
 import org.osgi.framework.Bundle;
@@ -14,13 +11,9 @@ import javax.inject.Inject;
 import java.io.File;
 
 import static org.ops4j.pax.exam.CoreOptions.maven;
-import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
-import static org.ops4j.pax.exam.CoreOptions.wrappedBundle;
 import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.*;
 
 public class KarafBaseTest {
-
-	protected DefaultHttpClient httpclient;
 
 	protected WebListener webListener;
 
@@ -28,9 +21,6 @@ public class KarafBaseTest {
     protected static final String ARTIFACT_ID = "apache-karaf";
     protected static final String VERSION = "2.4.4";
 	protected static final String APIMAN_VERSION = "1.2.2-SNAPSHOT";
-
-	@Inject
-	protected FeaturesService featuresService;
 
 	@Inject
 	protected BundleContext bundleContext;
@@ -60,7 +50,6 @@ public class KarafBaseTest {
 				replaceConfigurationFile("etc/apiman.properties", new File("src/test/resources/apiman.properties")),
 				features(maven("io.apiman","apiman-karaf",APIMAN_VERSION).type("xml").classifier("features"),
 					"apiman-gateway-test")
-				//wrappedBundle(mavenBundle("io.apiman","apiman-test-common",APIMAN_VERSION)).exports("*;version=" + APIMAN_VERSION)
 		        };
 	}
 

@@ -135,7 +135,8 @@ public class GatewayApiTest extends TestPlanUtil {
         runTest(restTest, baseApiUrl);
     }
 
-    @Before public void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
 
         es = new ElasticSearchEmbed();
         es.launch();
