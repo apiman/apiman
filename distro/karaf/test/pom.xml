@@ -9,7 +9,7 @@
         <version>1.2.2-SNAPSHOT</version>
     </parent>
     <artifactId>test</artifactId>
-    <name>Apiman :: OSGI :: Pax Test</name>
+    <name>Apiman :: OSGI :: Karaf Pax Exam Test</name>
 
     <properties>
         <skipTests>true</skipTests>
@@ -91,10 +91,17 @@
             <version>2.3.1.Final</version>
         </dependency>
 
-        <!-- Testing -->
+        <!-- Junit -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Junit -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
             <scope>test</scope>
         </dependency>
 
@@ -102,6 +109,11 @@
         <dependency>
             <groupId>io.apiman</groupId>
             <artifactId>apiman-manager-api-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.apiman</groupId>
+            <artifactId>apiman-test-common</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>

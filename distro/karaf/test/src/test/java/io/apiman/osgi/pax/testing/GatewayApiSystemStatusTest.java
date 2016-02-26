@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 import static org.ops4j.pax.exam.OptionUtils.combine;
 
 /**
- * Test service System/status of the Gateway
+ * Test REST Service /system/status of the Gateway API
  */
 @RunWith(PaxExam.class)
 public class GatewayApiSystemStatusTest extends KarafBaseTest {
@@ -39,8 +39,13 @@ public class GatewayApiSystemStatusTest extends KarafBaseTest {
 	}
 
 	@Test
-	public void testSystemStatus() throws Exception {
+	public void testCheckSystemStatus() throws Exception {
 		testClient.testWebPath("https://localhost:8444/apiman-gateway-api/system/status",EXPECTED_CONTENT,200,true);
+	}
+
+	@Test
+	public void testBrokenLink() throws Exception {
+		testClient.testWebPath("https://localhost:8444/apiman-gateway-api/system/status/test","",404,true);
 	}
 
 	@Before

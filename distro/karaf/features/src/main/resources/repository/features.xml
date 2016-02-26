@@ -192,7 +192,8 @@
         <bundle>mvn:io.apiman/apiman-gateway-engine-influxdb/${project.version}</bundle>
         <bundle>mvn:io.apiman/apiman-gateway-engine-ispn/${project.version}</bundle>
         <bundle>mvn:io.apiman/apiman-gateway-osgi-servlet/${project.version}</bundle>
-        <bundle>mvn:io.apiman/apiman-gateway-osgi/${project.version}</bundle>
+        <bundle>wrap:mvn:io.apiman/apiman-test-common/${project.version}</bundle>
+        <bundle>wrap:mvn:xmlunit/xmlunit/1.6</bundle>
         <configfile finalname="/deploy/apiman-realm.xml">mvn:io.apiman/apiman-karaf/${project.version}/xml/apimanrealm</configfile>
     </feature>
 
