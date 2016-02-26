@@ -15,6 +15,7 @@
  */
 package io.apiman.gateway.test.junit.servlet;
 
+import io.apiman.common.util.ddl.DdlParser;
 import io.apiman.gateway.engine.components.IBufferFactoryComponent;
 import io.apiman.gateway.engine.components.IHttpClientComponent;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
@@ -31,7 +32,6 @@ import io.apiman.gateway.test.server.TestMetrics;
 import io.apiman.test.common.echo.EchoServer;
 import io.apiman.test.common.resttest.IGatewayTestServer;
 import io.apiman.test.common.util.TestUtil;
-import io.apiman.tools.ddl.DdlParser;
 import io.searchbox.client.JestClient;
 import io.searchbox.client.JestClientFactory;
 import io.searchbox.client.config.HttpClientConfig;

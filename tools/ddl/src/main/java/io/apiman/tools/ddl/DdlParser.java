@@ -15,92 +15,18 @@
  */
 package io.apiman.tools.ddl;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.LinkedList;
-import java.util.List;
-
-import org.apache.commons.io.IOUtils;
-
 /**
- * Can parse an apiman DDL into a list of individual statements.
+ * @deprecated Please use io.apiman.common.util.ddl.DdlParser
  *
  * @author eric.wittmann@redhat.com
  */
-public class DdlParser {
+@Deprecated
+public class DdlParser extends io.apiman.common.util.ddl.DdlParser {
 
     /**
      * Constructor.
      */
     public DdlParser() {
     }
-
-    /**
-     * @param ddlFile
-     */
-    public List<String> parse(File ddlFile) {
-        InputStream is = null;
-        try {
-            is = new FileInputStream(ddlFile);
-            return parse(is);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        } finally {
-            IOUtils.closeQuietly(is);
-        }
-    }
-
-    /**
-     * @param ddlStream
-     * @throws IOException
-     */
-    @SuppressWarnings("nls")
-    public List<String> parse(InputStream ddlStream) throws IOException {
-        List<String> rval = new LinkedList<>();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(ddlStream, "UTF-8"));
-        String line;
-        StringBuilder builder = new StringBuilder();
-        boolean isInMultiLineStatement = false;
-        while ( (line = reader.readLine()) != null) {
-            if (line.startsWith("--")) {
-                continue;
-            }
-            if (line.trim().isEmpty()) {
-                continue;
-            }
-            if (line.endsWith("'") || line.endsWith("(")) {
-                isInMultiLineStatement = true;
-            }
-            if (line.startsWith("'") || line.startsWith(")")) {
-                isInMultiLineStatement = false;
-            }
-            builder.append(line);
-            builder.append("\n");
-
-            if (!isInMultiLineStatement) {
-                rval.add(builder.toString().trim());
-                builder = new StringBuilder();
-            }
-        }
-        return rval;
-    }
-
-    @SuppressWarnings("nls")
-    public static void main(String[] args) {
-        String ddl = args[0];
-        File file = new File(ddl);
-        DdlParser parser = new DdlParser();
-        List<String> list = parser.parse(file);
-        System.out.println("Found " + list.size() + " SQL statements!");
-        for (String line : list) {
-            System.out.println("--");
-            System.out.println(line);
-        }
-    }
-
 
 }

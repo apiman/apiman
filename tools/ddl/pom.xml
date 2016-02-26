@@ -9,6 +9,11 @@
   <artifactId>apiman-tools-ddl</artifactId>
   <name>apiman-tools-ddl</name>
   <dependencies>
+    <!-- Project Dependencies -->
+    <dependency>
+      <groupId>io.apiman</groupId>
+      <artifactId>apiman-common-util</artifactId>
+    </dependency>
     <!-- Third Party Dependencies -->
     <dependency>
       <groupId>commons-io</groupId>

@@ -71,10 +71,6 @@
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-distro-data</artifactId>
     </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>apiman-tools-ddl</artifactId>
-    </dependency>
 
     <!-- Weld -->
     <dependency>
