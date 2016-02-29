@@ -21,7 +21,7 @@
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>apiman-distro-db</artifactId>
+      <artifactId>apiman-manager-test-api</artifactId>
     </dependency>
 
     <!-- Third Party Dependencies -->

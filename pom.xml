@@ -1518,23 +1518,13 @@
 
   <modules>
     <module>common</module>
+    <module>distro</module>
     <module>manager</module>
     <module>gateway</module>
     <module>test</module>
   </modules>
 
   <profiles>
-    <profile>
-      <id>distros</id>
-      <activation>
-        <property>
-          <name>!skipDistros</name>
-        </property>
-      </activation>
-      <modules>
-        <module>distro</module>
-      </modules>
-    </profile>
     <profile>
       <id>tools</id>
       <activation>
