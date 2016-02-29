@@ -57,6 +57,15 @@
         <role>Developer</role>
       </roles>
     </developer>
+    <developer>
+      <name>Rachel Yordan</name>
+      <id>kahboom</id>
+      <email>ryordan@redhat.com</email>
+      <organization>Red Hat</organization>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
   </developers>
 
   <properties>
@@ -235,6 +244,7 @@
     <module>keycloak-oauth-policy</module>
     <module>noop-policy</module>
     <module>simple-header-policy</module>
+    <module>soap-authorization-policy</module>
     <module>test-policy</module>
     <module>transformation-policy</module>
     <module>log-policy</module>
