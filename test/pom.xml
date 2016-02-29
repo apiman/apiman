@@ -11,6 +11,18 @@
   <modules>
     <module>common</module>
     <module>policies</module>
-    <module>suite</module>
   </modules>
+  <profiles>
+    <profile>
+      <id>distros</id>
+      <activation>
+        <property>
+          <name>!skipDistros</name>
+        </property>
+      </activation>
+      <modules>
+        <module>suite</module>
+      </modules>
+    </profile>
+  </profiles>
 </project>
