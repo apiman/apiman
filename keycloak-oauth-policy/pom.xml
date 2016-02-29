@@ -5,7 +5,7 @@
   <parent>
     <groupId>io.apiman.plugins</groupId>
     <artifactId>apiman-plugins</artifactId>
-    <version>1.2.2.Final</version>
+    <version>1.2.3-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>apiman-plugins-keycloak-oauth-policy</artifactId>
