@@ -28,7 +28,6 @@ public class Contract implements Serializable {
 
     private static final long serialVersionUID = 8344360785926823601L;
 
-    private String apiKey;
     private String apiOrgId;
     private String apiId;
     private String apiVersion;
@@ -39,20 +38,6 @@ public class Contract implements Serializable {
      * Constructor.
      */
     public Contract() {
-    }
-
-    /**
-     * @return the apiKey
-     */
-    public String getApiKey() {
-        return apiKey;
-    }
-
-    /**
-     * @param apiKey the apiKey to set
-     */
-    public void setApiKey(String apiKey) {
-        this.apiKey = apiKey;
     }
 
     /**
@@ -126,34 +111,28 @@ public class Contract implements Serializable {
     }
 
     /**
-     * @see java.lang.Object#hashCode()
+     * Checks the API unique identifier against what this contract expects (org id, id, version).
+     * Returns true if they match.
+     * @param request
+     * @return true if the given request matches this contract
      */
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((apiKey == null) ? 0 : apiKey.hashCode());
-        return result;
+    public boolean matches(ApiRequest request) {
+        String apiOrgId = request.getApiOrgId();
+        String apiId = request.getApiId();
+        String apiVersion = request.getApiVersion();
+        return matches(apiOrgId, apiId, apiVersion);
     }
-
+    
     /**
-     * @see java.lang.Object#equals(java.lang.Object)
+     * Checks the API unique identifier against what this contract expects (org id, id, version).
+     * Returns true if they match.
+     * @param apiOrgId
+     * @param apiId
+     * @param apiVersion
+     * @return true if the given request matches this contract
      */
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Contract other = (Contract) obj;
-        if (apiKey == null) {
-            if (other.apiKey != null)
-                return false;
-        } else if (!apiKey.equals(other.apiKey))
-            return false;
-        return true;
+    public boolean matches(String apiOrgId, String apiId, String apiVersion) {
+        return this.apiOrgId.equals(apiOrgId) && this.apiId.equals(apiId) && this.apiVersion.equals(apiVersion);
     }
 
 }

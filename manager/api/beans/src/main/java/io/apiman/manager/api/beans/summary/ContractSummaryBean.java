@@ -29,7 +29,6 @@ public class ContractSummaryBean implements Serializable {
     private static final long serialVersionUID = 1412354024017539782L;
 
     private Long contractId;
-    private String apikey;
     private String clientOrganizationId;
     private String clientOrganizationName;
     private String clientId;
@@ -277,20 +276,6 @@ public class ContractSummaryBean implements Serializable {
     }
 
     /**
-     * @return the apikey
-     */
-    public String getApikey() {
-        return apikey;
-    }
-
-    /**
-     * @param apikey the apikey to set
-     */
-    public void setApikey(String apikey) {
-        this.apikey = apikey;
-    }
-
-    /**
      * @see java.lang.Object#hashCode()
      */
     @Override
@@ -327,7 +312,7 @@ public class ContractSummaryBean implements Serializable {
     @Override
     @SuppressWarnings("nls")
     public String toString() {
-        return "ContractSummaryBean [contractId=" + contractId + ", apikey=" + apikey
+        return "ContractSummaryBean [contractId=" + contractId
                 + ", clientOrganizationId=" + clientOrganizationId + ", clientOrganizationName=" + clientOrganizationName
                 + ", clientId=" + clientId + ", clientName=" + clientName + ", clientVersion=" + clientVersion
                 + ", apiOrganizationId=" + apiOrganizationId + ", apiOrganizationName="

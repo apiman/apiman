@@ -20,7 +20,6 @@ import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.Api;
 import io.apiman.gateway.engine.beans.ApiContract;
-import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.Client;
 import io.apiman.gateway.engine.impl.InMemoryRegistry;
 import io.apiman.gateway.engine.vertxebinmemory.apis.EBRegistryProxy;
@@ -57,10 +56,16 @@ public class EBInMemoryRegistry extends InMemoryRegistry implements EBRegistryPr
         listenProxyHandler();
         this.proxy = new EBRegistryProxy(vertx, address(), registryUuid);
     }
-
+    
     @Override
-    public void getContract(ApiRequest request, IAsyncResultHandler<ApiContract> handler) {
-        super.getContract(request, handler);
+    public void getClient(String apiKey, IAsyncResultHandler<Client> handler) {
+        super.getClient(apiKey, handler);
+    }
+    
+    @Override
+    public void getContract(String apiOrganizationId, String apiId, String apiVersion, String apiKey,
+            IAsyncResultHandler<ApiContract> handler) {
+        super.getContract(apiOrganizationId, apiId, apiVersion, apiKey, handler);
     }
 
     @Override

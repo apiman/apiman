@@ -15,9 +15,10 @@
  */
 package io.apiman.manager.api.beans.apis;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import java.io.Serializable;
 
 /**
  * Models a plan+version that is available for use with a particular API.  This

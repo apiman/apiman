@@ -15,11 +15,13 @@
  */
 package io.apiman.manager.api.beans.summary;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.apiman.manager.api.beans.apis.ApiDefinitionType;
 import io.apiman.manager.api.beans.apis.EndpointType;
 
 import java.io.Serializable;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 
 /**
@@ -27,7 +29,7 @@ import java.io.Serializable;
  *
  * @author eric.wittmann@redhat.com
  */
-@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
+@JsonInclude(Include.NON_NULL)
 public class AvailableApiBean implements Serializable {
 
     private static final long serialVersionUID = 8809181555186141741L;

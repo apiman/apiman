@@ -15,9 +15,9 @@
  */
 package io.apiman.manager.api.beans.apis;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
 import java.io.Serializable;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 
 /**

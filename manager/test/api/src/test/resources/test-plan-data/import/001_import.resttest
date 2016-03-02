@@ -127,7 +127,8 @@ Content-Type: application/json
                 "createdOn": 1445973206959,
                 "modifiedBy": "admin",
                 "modifiedOn": 1445973207627,
-                "publishedOn": 1445973207765
+                "publishedOn": 1445973207765,
+                "apikey": "6ec478ca-8ccd-48d0-973e-479f42c68a6c"
               },
               "Policies": [],
               "Contracts": [
@@ -224,8 +225,7 @@ Content-Type: application/json
                     "lockedOn": 1445973206889
                   },
                   "createdBy": "admin",
-                  "createdOn": 1445973207620,
-                  "apikey": "6ec478ca-8ccd-48d0-973e-479f42c68a6c"
+                  "createdOn": 1445973207620
                 }
               ]
             }
@@ -394,7 +394,7 @@ INFO:   Importing an audit entry: 13
 INFO:   Importing an audit entry: 15
 INFO:   Importing an audit entry: 16
 INFO:   Importing an audit entry: 17
-INFO: +Importing a client contract: 6ec478ca-8ccd-48d0-973e-479f42c68a6c
+INFO: Importing a client contract.
 INFO: Publishing APIs to the gateway.
 INFO:  Publishing API: Organization1 / API1 -> 1.0
 INFO: Registering clients in the gateway.

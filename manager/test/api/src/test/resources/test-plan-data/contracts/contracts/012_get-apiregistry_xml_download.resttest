@@ -7,8 +7,8 @@ Content-Disposition: attachment; filename=api-registry.xml
 
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <apiRegistry>
+  <apiKey>*</apiKey>
   <apis>
-    <apiKey>*</apiKey>
     <httpEndpoint>http://example.org/endpoint</httpEndpoint>
     <planId>Plan1</planId>
     <planName>Plan 1</planName>
@@ -20,7 +20,6 @@ Content-Disposition: attachment; filename=api-registry.xml
     <apiVersion>1.0</apiVersion>
   </apis>
   <apis>
-    <apiKey>*</apiKey>
     <httpEndpoint>http://example.org/endpoint</httpEndpoint>
     <planId>PlanA</planId>
     <planName>Plan A</planName>

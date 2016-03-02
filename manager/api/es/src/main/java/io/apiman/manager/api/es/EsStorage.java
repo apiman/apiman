@@ -246,8 +246,7 @@ public class EsStorage implements IStorage, IStorageQuery {
         for (ContractSummaryBean csb : contracts) {
             if (csb.getApiOrganizationId().equals(contract.getApi().getApi().getOrganization().getId()) &&
                     csb.getApiId().equals(contract.getApi().getApi().getId()) &&
-                    csb.getApiVersion().equals(contract.getApi().getVersion()) &&
-                    csb.getPlanId().equals(contract.getPlan().getPlan().getId()))
+                    csb.getApiVersion().equals(contract.getApi().getVersion()))
                 {
                     throw new StorageException("Error creating contract: duplicate contract detected."); //$NON-NLS-1$
                 }

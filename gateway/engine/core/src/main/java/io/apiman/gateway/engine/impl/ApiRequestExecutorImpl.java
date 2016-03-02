@@ -273,7 +273,11 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
                         }
                     });
         } else {
-            registry.getContract(request, (IAsyncResult<ApiContract> contractResult) -> {
+            String apiOrgId = request.getApiOrgId();
+            String apiId = request.getApiId();
+            String apiVersion = request.getApiVersion();
+            String apiKey = request.getApiKey();
+            registry.getContract(apiOrgId, apiId, apiVersion, apiKey,(IAsyncResult<ApiContract> contractResult) -> {
                 if (contractResult.isSuccess()) {
                     ApiContract apiContract = contractResult.getResult();
 

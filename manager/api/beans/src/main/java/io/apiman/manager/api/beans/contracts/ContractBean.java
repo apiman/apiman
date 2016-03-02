@@ -43,7 +43,7 @@ import javax.persistence.UniqueConstraint;
  */
 @Entity
 @Table(name = "contracts",
-       uniqueConstraints = { @UniqueConstraint(columnNames = { "clientv_id", "apiv_id", "planv_id" }) })
+       uniqueConstraints = { @UniqueConstraint(columnNames = { "clientv_id", "apiv_id" }) })
 public class ContractBean implements Serializable {
 
     private static final long serialVersionUID = -8534463608508756791L;
@@ -69,8 +69,6 @@ public class ContractBean implements Serializable {
     private String createdBy;
     @Column(name = "created_on", updatable=false, nullable=false)
     private Date createdOn;
-    @Column(updatable=false, nullable=false)
-    private String apikey;
 
     /**
      * Constructor.
@@ -162,20 +160,6 @@ public class ContractBean implements Serializable {
         this.createdOn = createdOn;
     }
 
-    /**
-     * @return the apikey
-     */
-    public String getApikey() {
-        return apikey;
-    }
-
-    /**
-     * @param apikey the apikey to set
-     */
-    public void setApikey(String apikey) {
-        this.apikey = apikey;
-    }
-
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
@@ -183,7 +167,7 @@ public class ContractBean implements Serializable {
     @SuppressWarnings("nls")
     public String toString() {
         return "ContractBean [id=" + id + ", client=" + client + ", api=" + api + ", plan="
-                + plan + ", createdBy=" + createdBy + ", createdOn=" + createdOn + ", apikey=" + apikey + "]";
+                + plan + ", createdBy=" + createdBy + ", createdOn=" + createdOn + "]";
     }
 
 }

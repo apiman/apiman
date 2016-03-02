@@ -16,16 +16,15 @@
 package io.apiman.gateway.engine.es;
 
 import io.apiman.gateway.engine.async.AsyncResultImpl;
-import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.Api;
 import io.apiman.gateway.engine.beans.ApiContract;
-import io.apiman.gateway.engine.beans.ApiRequest;
+import io.apiman.gateway.engine.beans.Client;
+import io.apiman.gateway.engine.beans.Contract;
 import io.apiman.gateway.engine.beans.exceptions.InvalidContractException;
 import io.apiman.gateway.engine.es.i18n.Messages;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -39,8 +38,8 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public abstract class CachingESRegistry extends ESRegistry {
 
-    private Map<String, ApiContract> contractCache = new ConcurrentHashMap<>();
-    private Map<String, Api> apiCache = new HashMap<>();
+    private Map<String, Api> apiCache = new ConcurrentHashMap<>();
+    private Map<String, Client> clientCache = new ConcurrentHashMap<>();
     private Object mutex = new Object();
 
     /**
@@ -56,44 +55,51 @@ public abstract class CachingESRegistry extends ESRegistry {
      */
     protected void invalidateCache() {
         synchronized (mutex) {
-            contractCache.clear();
+            clientCache.clear();
             apiCache.clear();
         }
     }
 
     /**
-     * @see io.apiman.gateway.engine.es.ESRegistry#getContract(io.apiman.gateway.engine.beans.ApiRequest, io.apiman.gateway.engine.async.IAsyncResultHandler)
+     * @see io.apiman.gateway.engine.jdbc.ESRegistry#getContract(java.lang.String, java.lang.String, java.lang.String, java.lang.String, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
     @Override
-    public void getContract(final ApiRequest request, final IAsyncResultHandler<ApiContract> handler) {
-        ApiContract contract;
-
-        final String contractKey = getContractKey(request);
-        synchronized (mutex) {
-            contract = contractCache.get(contractKey);
-        }
-
+    public void getContract(String apiOrganizationId, String apiId, String apiVersion, String apiKey,
+            IAsyncResultHandler<ApiContract> handler) {
+        Client client = null;
+        Api api = null;
+        
         try {
-            if (contract == null) {
-                super.getContract(request, new IAsyncResultHandler<ApiContract>() {
-                    @Override
-                    public void handle(IAsyncResult<ApiContract> result) {
-                        if (result.isSuccess()) {
-                            contractCache.put(contractKey, result.getResult());
-                        }
-                        handler.handle(result);
-                    }
-                });
-            } else {
-                Api api = getApi(request.getApiOrgId(), request.getApiId(), request.getApiVersion());
-                if (api == null) {
-                    throw new InvalidContractException(Messages.i18n.format("ESRegistry.ApiWasRetired", //$NON-NLS-1$
-                            request.getApiId(), request.getApiOrgId()));
-                }
-                contract.setApi(api);
-                handler.handle(AsyncResultImpl.create(contract));
+            synchronized (mutex) {
+                client = getClient(apiKey);
+                api = getApi(apiOrganizationId, apiId, apiVersion);
             }
-        } catch (Throwable e) {
+            if (client == null) {
+                Exception error = new InvalidContractException(Messages.i18n.format("ESRegistry.NoClientForAPIKey", apiKey)); //$NON-NLS-1$
+                handler.handle(AsyncResultImpl.create(error, ApiContract.class));
+                return;
+            }
+            if (api == null) {
+                throw new InvalidContractException(Messages.i18n.format("ESRegistry.ApiWasRetired", //$NON-NLS-1$
+                        apiId, apiOrganizationId));
+            }
+            
+            Contract matchedContract = null;
+            for (Contract contract : client.getContracts()) {
+                if (contract.matches(apiOrganizationId, apiId, apiVersion)) {
+                    matchedContract = contract;
+                    break;
+                }
+            }
+            
+            if (matchedContract == null) {
+                throw new InvalidContractException(Messages.i18n.format("ESRegistry.NoContractFound", //$NON-NLS-1$
+                        client.getClientId(), api.getApiId()));
+            }
+            
+            ApiContract contract = new ApiContract(api, client, matchedContract.getPlan(), matchedContract.getPolicies());
+            handler.handle(AsyncResultImpl.create(contract));
+        } catch (Exception e) {
             handler.handle(AsyncResultImpl.create(e, ApiContract.class));
         }
     }
@@ -119,17 +125,17 @@ public abstract class CachingESRegistry extends ESRegistry {
      * @param version
      */
     protected Api getApi(String orgId, String apiId, String version) throws IOException {
-        String apiKey = getApiKey(orgId, apiId, version);
+        String apiIdx = getApiIdx(orgId, apiId, version);
         Api api;
         synchronized (mutex) {
-            api = apiCache.get(apiKey);
+            api = apiCache.get(apiIdx);
         }
 
         if (api == null) {
             api = super.getApi(getApiId(orgId, apiId, version));
             synchronized (mutex) {
                 if (api != null) {
-                    apiCache.put(apiKey, api);
+                    apiCache.put(apiIdx, api);
                 }
             }
         }
@@ -138,18 +144,43 @@ public abstract class CachingESRegistry extends ESRegistry {
     }
 
     /**
-     * @see io.apiman.gateway.engine.es.ESRegistry#checkApi(io.apiman.gateway.engine.beans.ApiContract)
+     * @see io.apiman.gateway.engine.jdbc.JdbcRegistry#getClient(java.lang.String, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
     @Override
-    protected void checkApi(ApiContract contract) throws InvalidContractException, IOException {
-        Api api = getApi(contract.getApi().getOrganizationId(),
-                contract.getApi().getApiId(),
-                contract.getApi().getVersion());
-        if (api == null) {
-            throw new InvalidContractException(Messages.i18n.format("ESRegistry.ApiWasRetired", //$NON-NLS-1$
-                    contract.getApi().getApiId(), contract.getApi().getOrganizationId()));
+    public void getClient(String apiKey, IAsyncResultHandler<Client> handler) {
+        try {
+            Client client = getClient(apiKey);
+            handler.handle(AsyncResultImpl.create(client));
+        } catch (IOException e) {
+            handler.handle(AsyncResultImpl.create(e, Client.class));
         }
     }
+
+    /**
+     * Gets the client either from the cache or from ES.
+     * @param orgId
+     * @param clientId
+     * @param version
+     * @throws IOException 
+     */
+    protected Client getClient(String apiKey) throws IOException {
+        Client client;
+        synchronized (mutex) {
+            client = clientCache.get(apiKey);
+        }
+
+        if (client == null) {
+            client = super.getClient(apiKey);
+            synchronized (mutex) {
+                if (client != null) {
+                    clientCache.put(apiKey, client);
+                }
+            }
+        }
+
+        return client;
+    }
+    
 
     /**
      * Generates an in-memory key for an API, used to index the app for later quick
@@ -159,16 +190,8 @@ public abstract class CachingESRegistry extends ESRegistry {
      * @param version
      * @return a API key
      */
-    private String getApiKey(String orgId, String apiId, String version) {
+    private String getApiIdx(String orgId, String apiId, String version) {
         return "API::" + orgId + "|" + apiId + "|" + version; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-    }
-
-    /**
-     * Generates an in-memory key for a contract.
-     * @param request
-     */
-    private String getContractKey(ApiRequest request) {
-        return "CONTRACT::" + request.getApiKey(); //$NON-NLS-1$
     }
 
 }

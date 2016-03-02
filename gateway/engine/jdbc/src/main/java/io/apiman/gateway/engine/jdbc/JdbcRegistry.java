@@ -21,7 +21,6 @@ import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.Api;
 import io.apiman.gateway.engine.beans.ApiContract;
-import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.Client;
 import io.apiman.gateway.engine.beans.Contract;
 import io.apiman.gateway.engine.beans.exceptions.InvalidContractException;
@@ -35,7 +34,6 @@ import java.sql.Clob;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -130,8 +128,6 @@ public class JdbcRegistry implements IRegistry {
      */
     @Override
     public void registerClient(Client client, IAsyncResultHandler<Void> handler) {
-        final Map<String, Api> apiMap = new HashMap<>();
-
         Connection conn = null;
         try {
             conn = ds.getConnection();
@@ -139,24 +135,15 @@ public class JdbcRegistry implements IRegistry {
             QueryRunner run = new QueryRunner();
 
             // Validate the client and populate the api map with apis found during validation.
-            validateClient(client, apiMap, conn);
+            validateClient(client, conn);
 
             // Remove any old data first, then (re)insert
-            run.update(conn, "DELETE FROM contracts WHERE client_org_id = ? AND client_id = ? AND client_version = ?",  //$NON-NLS-1$
-                    client.getOrganizationId(), client.getClientId(), client.getVersion());
             run.update(conn, "DELETE FROM clients WHERE org_id = ? AND id = ? AND version = ?",  //$NON-NLS-1$
                     client.getOrganizationId(), client.getClientId(), client.getVersion());
 
             String bean = mapper.writeValueAsString(client);
-            run.update(conn, "INSERT INTO clients (org_id, id, version, bean) VALUES (?, ?, ?, ?)",  //$NON-NLS-1$
-                    client.getOrganizationId(), client.getClientId(), client.getVersion(), bean);
-            
-            // Register all the api contracts.
-            Set<Contract> contracts = client.getContracts();
-            client.setContracts(null);
-            for (Contract contract : contracts) {
-                registerContract(client, contract, apiMap, conn);
-            }
+            run.update(conn, "INSERT INTO clients (api_key, org_id, id, version, bean) VALUES (?, ?, ?, ?, ?)",  //$NON-NLS-1$
+                    client.getApiKey(), client.getOrganizationId(), client.getClientId(), client.getVersion(), bean);
             
             DbUtils.commitAndClose(conn);
             handler.handle(AsyncResultImpl.create((Void) null));
@@ -181,11 +168,10 @@ public class JdbcRegistry implements IRegistry {
     /**
      * Ensures that the api referenced by the Contract actually exists (is published).
      * @param contract
-     * @param apiMap
      * @param connection
      * @throws RegistrationException
      */
-    private void validateContract(final Contract contract, final Map<String, Api> apiMap, Connection connection)
+    private void validateContract(final Contract contract, Connection connection)
             throws RegistrationException {
         QueryRunner run = new QueryRunner();
         try {
@@ -208,50 +194,23 @@ public class JdbcRegistry implements IRegistry {
                 String orgId = contract.getApiOrgId();
                 throw new RegistrationException(Messages.i18n.format("JdbcRegistry.ApiNotFoundInOrg", apiId, orgId));  //$NON-NLS-1$
             }
-            api.setApiPolicies(null);
-            final String id = getApiId(contract);
-            apiMap.put(id, api);
         } catch (SQLException e) {
             throw new RegistrationException(Messages.i18n.format("JdbcRegistry.ErrorValidatingApp"), e); //$NON-NLS-1$
         }
     }
 
     /**
-     * Register a single contract by inserting it into the database.
-     * @param client
-     * @param contracts
-     * @param apiMap
-     * @param connection 
-     */
-    private void registerContract(final Client client, final Contract contract,
-            final Map<String, Api> apiMap, Connection connection) throws RegistrationException {
-        QueryRunner run = new QueryRunner();
-        try {
-            String apiId = getApiId(contract);
-            Api api = apiMap.get(apiId);
-            ApiContract sc = new ApiContract(contract.getApiKey(), api, client,
-                    contract.getPlan(), contract.getPolicies());
-            String bean = mapper.writeValueAsString(sc);
-            run.update(connection, "INSERT INTO contracts (api_key, client_org_id, client_id, client_version, bean) VALUES (?, ?, ?, ?, ?)",  //$NON-NLS-1$
-                    sc.getApikey(), sc.getClient().getOrganizationId(), sc.getClient().getClientId(), sc.getClient().getVersion(), bean);
-        } catch (Exception e) {
-            throw new RegistrationException(Messages.i18n.format("JdbcRegistry.ErrorRegisteringContract"), e);  //$NON-NLS-1$
-        }
-    }
-
-    /**
      * Validate that the client should be registered.
      * @param client
-     * @param apiMap
      * @param connection
      */
-    private void validateClient(Client client, Map<String, Api> apiMap, Connection connection) throws RegistrationException {
+    private void validateClient(Client client, Connection connection) throws RegistrationException {
         Set<Contract> contracts = client.getContracts();
         if (contracts.isEmpty()) {
             throw new RegistrationException(Messages.i18n.format("JdbcRegistry.NoContracts")); //$NON-NLS-1$
         }
         for (Contract contract : contracts) {
-            validateContract(contract, apiMap, connection);
+            validateContract(contract, connection);
         }
     }
 
@@ -275,17 +234,10 @@ public class JdbcRegistry implements IRegistry {
      */
     @Override
     public void unregisterClient(Client client, IAsyncResultHandler<Void> handler) {
-        Connection conn = null;
-        QueryRunner run = new QueryRunner();
         try {
-            conn = ds.getConnection();
-            conn.setAutoCommit(false);
-            run.update(conn, "DELETE FROM contracts WHERE client_org_id = ? AND client_id = ? AND client_version = ?",  //$NON-NLS-1$
+            QueryRunner run = new QueryRunner(ds);
+            run.update("DELETE FROM clients WHERE org_id = ? AND id = ? AND version = ?",  //$NON-NLS-1$
                     client.getOrganizationId(), client.getClientId(), client.getVersion());
-            run.update(conn, "DELETE FROM clients WHERE org_id = ? AND id = ? AND version = ?",  //$NON-NLS-1$
-                    client.getOrganizationId(), client.getClientId(), client.getVersion());
-            
-            DbUtils.commitAndClose(conn);
             handler.handle(AsyncResultImpl.create((Void) null));
         } catch (SQLException e) {
             handler.handle(AsyncResultImpl.create(new PublishingException(Messages.i18n.format("JdbcRegistry.ErrorUnregisteringApp"), e), Void.class)); //$NON-NLS-1$
@@ -298,15 +250,14 @@ public class JdbcRegistry implements IRegistry {
     @Override
     public void getApi(String organizationId, String apiId, String apiVersion,
             IAsyncResultHandler<Api> handler) {
-        QueryRunner run = new QueryRunner(ds);
         try {
-            Api api = getApi(organizationId, apiId, apiVersion, run);
+            Api api = getApiInternal(organizationId, apiId, apiVersion);
             handler.handle(AsyncResultImpl.create(api));
         } catch (SQLException e) {
             handler.handle(AsyncResultImpl.create(e));
         }
     }
-    
+
     /**
      * Gets an api from the DB.
      * @param organizationId
@@ -316,58 +267,75 @@ public class JdbcRegistry implements IRegistry {
      */
     protected Api getApiInternal(String organizationId, String apiId, String apiVersion) throws SQLException {
         QueryRunner run = new QueryRunner(ds);
-        Api api = getApi(organizationId, apiId, apiVersion, run);
-        return api;
-    }
-
-    /**
-     * Gets an API by its orgid, id, version.  Return null if not found.
-     * @param organizationId
-     * @param apiId
-     * @param apiVersion
-     * @param run
-     * @throws SQLException
-     */
-    private Api getApi(String organizationId, String apiId, String apiVersion, QueryRunner run)
-            throws SQLException {
         return run.query("SELECT bean FROM apis WHERE org_id = ? AND id = ? AND version = ?", //$NON-NLS-1$
                 Handlers.API_HANDLER, organizationId, apiId, apiVersion);
     }
-    
+
     /**
-     * @see io.apiman.gateway.engine.IRegistry#getContract(io.apiman.gateway.engine.beans.ApiRequest, io.apiman.gateway.engine.async.IAsyncResultHandler)
+     * @see io.apiman.gateway.engine.IRegistry#getClient(java.lang.String, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
     @Override
-    public void getContract(ApiRequest request, IAsyncResultHandler<ApiContract> handler) {
-        QueryRunner run = new QueryRunner(ds);
-
+    public void getClient(String apiKey, IAsyncResultHandler<Client> handler) {
         try {
-            ApiContract contract = run.query("SELECT bean FROM contracts WHERE api_key = ?", //$NON-NLS-1$
-                    Handlers.API_CONTRACT_HANDLER, request.getApiKey());
-            if (contract == null) {
-                Exception error = new InvalidContractException(Messages.i18n.format("JdbcRegistry.NoContractForAPIKey", request.getApiKey())); //$NON-NLS-1$
-                handler.handle(AsyncResultImpl.create(error, ApiContract.class));
-            } else {
-                checkApi(contract);
-                handler.handle(AsyncResultImpl.create(contract));
-            }
-        } catch (Exception e) {
-            handler.handle(AsyncResultImpl.create(e, ApiContract.class));
+            Client client = getClientInternal(apiKey);
+            handler.handle(AsyncResultImpl.create(client));
+        } catch (SQLException e) {
+            handler.handle(AsyncResultImpl.create(e, Client.class));
         }
     }
 
     /**
-     * Ensure that the api still exists.  If not, it was retired.
-     * @param contract
-     * @throws InvalidContractException
-     * @throws IOException
+     * Simply pull the client from storage.
+     * @param apiKey
+     * @throws SQLException
      */
-    protected void checkApi(final ApiContract contract) throws InvalidContractException, SQLException {
-        final Api api = contract.getApi();
-        Api storedApi = getApi(api.getOrganizationId(), api.getApiId(), api.getVersion(), new QueryRunner(ds));
-        if (storedApi == null) {
-            throw new InvalidContractException(Messages.i18n.format("JdbcRegistry.ApiWasRetired", //$NON-NLS-1$
-                    api.getApiId(), api.getOrganizationId()));
+    protected Client getClientInternal(String apiKey) throws SQLException {
+        QueryRunner run = new QueryRunner(ds);
+        return run.query("SELECT bean FROM clients WHERE api_key = ?", //$NON-NLS-1$
+                Handlers.CLIENT_HANDLER, apiKey);
+    }
+    
+    /**
+     * @see io.apiman.gateway.engine.IRegistry#getContract(java.lang.String, java.lang.String, java.lang.String, java.lang.String, io.apiman.gateway.engine.async.IAsyncResultHandler)
+     */
+    @Override
+    public void getContract(String apiOrganizationId, String apiId, String apiVersion, String apiKey,
+            IAsyncResultHandler<ApiContract> handler) {
+        try {
+            Client client = getClientInternal(apiKey);
+            Api api = getApiInternal(apiOrganizationId, apiId, apiVersion);
+
+            if (client == null) {
+                Exception error = new InvalidContractException(Messages.i18n.format("JdbcRegistry.NoClientForAPIKey", apiKey)); //$NON-NLS-1$
+                handler.handle(AsyncResultImpl.create(error, ApiContract.class));
+                return;
+            }
+            if (api == null) {
+                Exception error = new InvalidContractException(Messages.i18n.format("JdbcRegistry.ApiWasRetired", //$NON-NLS-1$
+                        apiId, apiOrganizationId));
+                handler.handle(AsyncResultImpl.create(error, ApiContract.class));
+                return;
+            }
+            
+            Contract matchedContract = null;
+            for (Contract contract : client.getContracts()) {
+                if (contract.matches(apiOrganizationId, apiId, apiVersion)) {
+                    matchedContract = contract;
+                    break;
+                }
+            }
+            
+            if (matchedContract == null) {
+                Exception error = new InvalidContractException(Messages.i18n.format("JdbcRegistry.NoContractFound", //$NON-NLS-1$
+                        client.getClientId(), api.getApiId()));
+                handler.handle(AsyncResultImpl.create(error, ApiContract.class));
+                return;
+            }
+            
+            ApiContract contract = new ApiContract(api, client, matchedContract.getPlan(), matchedContract.getPolicies());
+            handler.handle(AsyncResultImpl.create(contract));
+        } catch (Exception e) {
+            handler.handle(AsyncResultImpl.create(e, ApiContract.class));
         }
     }
 
@@ -376,7 +344,7 @@ public class JdbcRegistry implements IRegistry {
      * retrieve the api from ES.
      * @param contract
      */
-    private String getApiId(Contract contract) {
+    protected String getApiId(Contract contract) {
         return getApiId(contract.getApiOrgId(), contract.getApiId(), contract.getApiVersion());
     }
 
@@ -387,8 +355,8 @@ public class JdbcRegistry implements IRegistry {
      * @param version
      * @return a api key
      */
-    private String getApiId(String orgId, String apiId, String version) {
-        return orgId + ":" + apiId + ":" + version; //$NON-NLS-1$ //$NON-NLS-2$
+    protected String getApiId(String orgId, String apiId, String version) {
+        return orgId + "|" + apiId + "|" + version; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     private static final class Handlers {
@@ -405,14 +373,14 @@ public class JdbcRegistry implements IRegistry {
             }
         };
 
-        public static final ResultSetHandler<ApiContract> API_CONTRACT_HANDLER = (ResultSet rs) -> {
+        public static final ResultSetHandler<Client> CLIENT_HANDLER = (ResultSet rs) -> {
             if (!rs.next()) {
                 return null;
             }
             Clob clob = rs.getClob(1);
             InputStream is = clob.getAsciiStream();
             try {
-                return mapper.reader(ApiContract.class).readValue(is);
+                return mapper.reader(Client.class).readValue(is);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

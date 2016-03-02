@@ -10,7 +10,7 @@
 CREATE SEQUENCE hibernate_sequence;
 
 -- Changeset C:/Users/ewittman/git/apiman/apiman/distro/ddl/src/main/liquibase/current/010-apiman-manager-api.db.tables.changelog.xml::1436469846462-1::apiman (generated)
-CREATE TABLE client_versions (id NUMBER(38, 0) NOT NULL, created_by VARCHAR2(255) NOT NULL, created_on TIMESTAMP NOT NULL, modified_by VARCHAR2(255) NOT NULL, modified_on TIMESTAMP NOT NULL, published_on TIMESTAMP, retired_on TIMESTAMP, status VARCHAR2(255) NOT NULL, version VARCHAR2(255) NOT NULL, client_id VARCHAR2(255), client_org_id VARCHAR2(255));
+CREATE TABLE client_versions (id NUMBER(38, 0) NOT NULL, created_by VARCHAR2(255) NOT NULL, created_on TIMESTAMP NOT NULL, modified_by VARCHAR2(255) NOT NULL, modified_on TIMESTAMP NOT NULL, published_on TIMESTAMP, retired_on TIMESTAMP, status VARCHAR2(255) NOT NULL, version VARCHAR2(255) NOT NULL, client_id VARCHAR2(255), client_org_id VARCHAR2(255), apikey VARCHAR2(255) NOT NULL);
 
 -- Changeset C:/Users/ewittman/git/apiman/apiman/distro/ddl/src/main/liquibase/current/010-apiman-manager-api.db.tables.changelog.xml::1436469846462-2::apiman (generated)
 CREATE TABLE clients (id VARCHAR2(255) NOT NULL, created_by VARCHAR2(255) NOT NULL, created_on TIMESTAMP NOT NULL, description VARCHAR2(512), name VARCHAR2(255) NOT NULL, organization_id VARCHAR2(255) NOT NULL);
@@ -19,7 +19,7 @@ CREATE TABLE clients (id VARCHAR2(255) NOT NULL, created_by VARCHAR2(255) NOT NU
 CREATE TABLE auditlog (id NUMBER(38, 0) NOT NULL, created_on TIMESTAMP NOT NULL, data CLOB, entity_id VARCHAR2(255), entity_type VARCHAR2(255) NOT NULL, entity_version VARCHAR2(255), organization_id VARCHAR2(255) NOT NULL, what VARCHAR2(255) NOT NULL, who VARCHAR2(255) NOT NULL);
 
 -- Changeset C:/Users/ewittman/git/apiman/apiman/distro/ddl/src/main/liquibase/current/010-apiman-manager-api.db.tables.changelog.xml::1436469846462-4::apiman (generated)
-CREATE TABLE contracts (id NUMBER(38, 0) NOT NULL, apikey VARCHAR2(255) NOT NULL, created_by VARCHAR2(255) NOT NULL, created_on TIMESTAMP NOT NULL, clientv_id NUMBER(38, 0), planv_id NUMBER(38, 0), apiv_id NUMBER(38, 0));
+CREATE TABLE contracts (id NUMBER(38, 0) NOT NULL, created_by VARCHAR2(255) NOT NULL, created_on TIMESTAMP NOT NULL, clientv_id NUMBER(38, 0), planv_id NUMBER(38, 0), apiv_id NUMBER(38, 0));
 
 -- Changeset C:/Users/ewittman/git/apiman/apiman/distro/ddl/src/main/liquibase/current/010-apiman-manager-api.db.tables.changelog.xml::1436469846462-5::apiman (generated)
 CREATE TABLE endpoint_properties (api_version_id NUMBER(38, 0) NOT NULL, value VARCHAR2(255), name VARCHAR2(255) NOT NULL);
@@ -299,6 +299,7 @@ ALTER TABLE plan_versions ADD CONSTRAINT UK_plan_versions_1 UNIQUE (plan_id, pla
 
 -- Changeset C:/Users/ewittman/git/apiman/apiman/distro/ddl/src/main/liquibase/current/110-apiman-manager-api.db.unique.constraints.changelog.xml::addUniqueConstraint-4::apiman
 ALTER TABLE client_versions ADD CONSTRAINT UK_client_versions_1 UNIQUE (client_id, client_org_id, version);
+ALTER TABLE client_versions ADD CONSTRAINT UK_client_versions_2 UNIQUE (apikey);
 
 -- Changeset C:/Users/ewittman/git/apiman/apiman/distro/ddl/src/main/liquibase/current/110-apiman-manager-api.db.unique.constraints.changelog.xml::addUniqueConstraint-5::apiman
 ALTER TABLE api_versions ADD CONSTRAINT UK_api_versions_1 UNIQUE (api_id, api_org_id, version);
@@ -307,7 +308,7 @@ ALTER TABLE api_versions ADD CONSTRAINT UK_api_versions_1 UNIQUE (api_id, api_or
 ALTER TABLE api_defs ADD CONSTRAINT UK_api_defs_1 UNIQUE (api_version_id);
 
 -- Changeset C:/Users/ewittman/git/apiman/apiman/distro/ddl/src/main/liquibase/current/110-apiman-manager-api.db.unique.constraints.changelog.xml::addUniqueConstraint-7::apiman
-ALTER TABLE contracts ADD CONSTRAINT UK_contracts_1 UNIQUE (clientv_id, apiv_id, planv_id);
+ALTER TABLE contracts ADD CONSTRAINT UK_contracts_1 UNIQUE (clientv_id, apiv_id);
 
 -- Changeset C:/Users/ewittman/git/apiman/apiman/distro/ddl/src/main/liquibase/current/200-apiman-manager-api.db.indexes.changelog.xml::createIndex-1::apiman
 CREATE INDEX IDX_auditlog_1 ON auditlog(who);

@@ -15,15 +15,16 @@
  */
 package io.apiman.manager.api.beans.plans;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
 import java.io.Serializable;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 /**
  * Bean used when creating a plan.
  * @author eric.wittmann@redhat.com
  */
-@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
+@JsonInclude(Include.NON_NULL)
 public class NewPlanBean implements Serializable {
 
     private static final long serialVersionUID = 3950418276301140111L;

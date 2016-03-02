@@ -5,13 +5,11 @@ Content-Type: application/json
   "apiOrgId" : "Organization1",
   "apiId" : "API1",
   "apiVersion" : "1.0",
-  "planId" : "Plan1",
-  "apiKey" : "customApiKey"
+  "planId" : "Plan1"
 }
 ----
 200
 Content-Type: application/json
-X-RestTest-BindTo-api-key: apikey
 X-RestTest-BindTo-contractId: id
 
 {
@@ -61,6 +59,5 @@ X-RestTest-BindTo-contractId: id
     "status" : "Locked",
     "version" : "1.0",
     "createdBy" : "admin"
-  },
-  "apikey" : "customApiKey"
+  }
 }

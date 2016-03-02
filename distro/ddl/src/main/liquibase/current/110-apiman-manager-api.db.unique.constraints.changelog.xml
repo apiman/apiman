@@ -25,7 +25,11 @@
                              constraintName="UK_api_defs_1" initiallyDeferred="false" tableName="api_defs"/>
     </changeSet>
     <changeSet author="apiman" id="addUniqueConstraint-7">
-        <addUniqueConstraint columnNames="clientv_id, apiv_id, planv_id" deferrable="false" disabled="false"
+        <addUniqueConstraint columnNames="clientv_id, apiv_id" deferrable="false" disabled="false"
                              constraintName="UK_contracts_1" initiallyDeferred="false" tableName="contracts"/>
+    </changeSet>
+    <changeSet author="apiman" id="addUniqueConstraint-8">
+        <addUniqueConstraint columnNames="apikey" deferrable="false" disabled="false"
+                             constraintName="UK_client_versions_2" initiallyDeferred="false" tableName="client_versions"/>
     </changeSet>
 </databaseChangeLog>

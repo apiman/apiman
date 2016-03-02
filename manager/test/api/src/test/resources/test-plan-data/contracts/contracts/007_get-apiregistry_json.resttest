@@ -4,7 +4,8 @@ GET /organizations/Organization1/clients/Client1/versions/1.0/apiregistry/json a
 200
 Content-Type: application/json
 
-{ 
+{
+  "apiKey" : "*",
   "apis" : [
     {
         "httpEndpoint" : "http://example.org/endpoint",

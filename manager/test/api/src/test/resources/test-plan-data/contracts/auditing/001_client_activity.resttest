@@ -64,6 +64,15 @@ Content-Type: application/json
       "organizationId": "Organization1",
       "entityType": "Client",
       "entityId": "Client1",
+      "entityVersion": "1.1",
+      "what": "Create",
+      "data": null
+    },
+    {
+      "who": "admin",
+      "organizationId": "Organization1",
+      "entityType": "Client",
+      "entityId": "Client1",
       "entityVersion": "1.0",
       "what": "Create",
       "data": null
@@ -78,5 +87,5 @@ Content-Type: application/json
       "data": null
     }
   ],
-  "totalSize": 8
+  "totalSize": 9
 }

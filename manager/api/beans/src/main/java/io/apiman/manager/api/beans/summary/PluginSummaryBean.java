@@ -15,10 +15,11 @@
  */
 package io.apiman.manager.api.beans.summary;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
 import java.io.Serializable;
 import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 /**
  * Models a single gateway configured by an admin.  When publishing APIs,
@@ -26,7 +27,7 @@ import java.util.Date;
  *
  * @author eric.wittmann@redhat.com
  */
-@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
+@JsonInclude(Include.NON_NULL)
 public class PluginSummaryBean implements Serializable {
 
     private static final long serialVersionUID = 7157863269972852063L;

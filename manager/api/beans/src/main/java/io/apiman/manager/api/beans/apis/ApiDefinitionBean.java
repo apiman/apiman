@@ -15,6 +15,9 @@
  */
 package io.apiman.manager.api.beans.apis;
 
+import java.io.Serializable;
+import java.util.Arrays;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
@@ -22,8 +25,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import java.io.Serializable;
-import java.util.Arrays;
 
 /**
  * Bean used to store an API definition.

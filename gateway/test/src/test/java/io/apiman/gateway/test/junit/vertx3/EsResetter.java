@@ -48,7 +48,7 @@ public class EsResetter extends AbstractESComponent implements Resetter {
             // and subtly horrible things will happen, and you'll waste a whole day debugging it! :-)
             ESClientFactory.clearClientCache();
 
-            getClient().executeAsync(new Delete.Builder(getIndexName()).build(),
+            getClient().executeAsync(new Delete.Builder(getDefaultIndexName()).build(),
                     new JestResultHandler<JestResult>() {
 
                 @Override
@@ -72,7 +72,7 @@ public class EsResetter extends AbstractESComponent implements Resetter {
     }
 
     @Override
-    protected String getIndexName() {
+    protected String getDefaultIndexName() {
         return ESConstants.GATEWAY_INDEX_NAME;
     }
 }

@@ -15,16 +15,17 @@
  */
 package io.apiman.manager.api.beans.apis;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
 import java.io.Serializable;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 /**
  * Bean used when updating an API definition via a URL.
  *
  * @author eric.wittmann@redhat.com
  */
-@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
+@JsonInclude(Include.NON_NULL)
 public class NewApiDefinitionBean implements Serializable {
 
     private static final long serialVersionUID = 8305206288757642775L;

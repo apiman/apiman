@@ -10,7 +10,6 @@ Content-Type: application/json
 ----
 200
 Content-Type: application/json
-X-RestTest-BindTo-api-key: apikey
 X-RestTest-BindTo-contractId: id
 
 {

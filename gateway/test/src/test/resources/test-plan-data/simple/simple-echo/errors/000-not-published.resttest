@@ -6,4 +6,4 @@ X-API-Key: 12345
 500
 Content-Type: application/json
 
-{"responseCode":500,"message":"No contract found for API Key 12345 "}
+{"responseCode":500,"message":"No client found for API Key 12345"}

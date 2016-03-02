@@ -5,9 +5,9 @@ Content-Type: application/json
   "organizationId" : "Policy_RateLimitingTest",
   "clientId" : "test",
   "version" : "1.0.0",
+  "apiKey" : "12345",
   "contracts" : [
     {
-      "apiKey" : "12345",
       "apiOrgId" : "Policy_RateLimitingTest",
       "apiId" : "echo",
       "apiVersion" : "1.0.0",

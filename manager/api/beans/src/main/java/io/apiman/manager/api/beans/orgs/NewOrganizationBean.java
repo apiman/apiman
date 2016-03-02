@@ -15,9 +15,10 @@
  */
 package io.apiman.manager.api.beans.orgs;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
 import java.io.Serializable;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 
 /**
@@ -25,7 +26,7 @@ import java.io.Serializable;
  *
  * @author eric.wittmann@redhat.com
  */
-@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
+@JsonInclude(Include.NON_NULL)
 public class NewOrganizationBean implements Serializable {
 
     private static final long serialVersionUID = 6967624347251134433L;

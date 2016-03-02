@@ -15,9 +15,10 @@
  */
 package io.apiman.manager.api.beans.summary;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
 import java.io.Serializable;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 /**
  * A bean modeling a summary of a Client.  Typically used when listing
@@ -25,7 +26,7 @@ import java.io.Serializable;
  *
  * @author eric.wittmann@redhat.com
  */
-@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
+@JsonInclude(Include.NON_NULL)
 public class ClientSummaryBean implements Serializable {
 
     private static final long serialVersionUID = -4213543715123177461L;

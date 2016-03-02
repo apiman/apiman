@@ -528,7 +528,6 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
                         contractBean.getApi().getVersion());
                 if (apisToPublish.contains(apiInfo)) {
                     Contract contract = new Contract();
-                    contract.setApiKey(contractBean.getApikey());
                     contract.setPlan(contractBean.getPlan().getPlan().getId());
                     contract.setApiId(contractBean.getApi().getApi().getId());
                     contract.setApiOrgId(contractBean.getApi().getApi().getOrganization().getId());
@@ -621,7 +620,7 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
      */
     private void importContracts() throws StorageException {
         for (ContractBean contract : contracts) {
-            logger.info(Messages.i18n.format("StorageImportDispatcher.ImportingClientContract") + contract.getApikey()); //$NON-NLS-1$
+            logger.info(Messages.i18n.format("StorageImportDispatcher.ImportingClientContract")); //$NON-NLS-1$
             String clientId = contract.getClient().getClient().getId();
             String clientOrganizationId = contract.getClient().getClient().getOrganization().getId();
             String clientVersion = contract.getClient().getVersion();

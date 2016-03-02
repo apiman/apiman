@@ -1,5 +1,5 @@
 GET /ClientReregisterTest/echo-1/1.0/path/to/app/resource admin/admin
-X-API-Key: api-1
+X-API-Key: 12345
 Accept: application/json
 
 ----

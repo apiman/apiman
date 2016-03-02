@@ -1,6 +1,6 @@
 GET /Test/echo/1.0
 X-Custom-Header: custom-value
-X-API-Key: ${gold-api-key}
+X-API-Key: ${client10-api-key}
 
 ----
 200

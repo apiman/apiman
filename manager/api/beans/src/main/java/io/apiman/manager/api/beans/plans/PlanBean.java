@@ -15,7 +15,6 @@
  */
 package io.apiman.manager.api.beans.plans;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.apiman.manager.api.beans.orgs.OrganizationBasedCompositeId;
 import io.apiman.manager.api.beans.orgs.OrganizationBean;
 
@@ -31,6 +30,9 @@ import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 /**
  * Models a plan.
  *
@@ -39,7 +41,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "plans")
 @IdClass(OrganizationBasedCompositeId.class)
-@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
+@JsonInclude(Include.NON_NULL)
 public class PlanBean implements Serializable {
 
     private static final long serialVersionUID = -7961331943587584049L;

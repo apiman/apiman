@@ -25,6 +25,7 @@ import io.apiman.manager.api.beans.apis.NewApiVersionBean;
 import io.apiman.manager.api.beans.apis.UpdateApiBean;
 import io.apiman.manager.api.beans.apis.UpdateApiVersionBean;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
+import io.apiman.manager.api.beans.clients.ApiKeyBean;
 import io.apiman.manager.api.beans.clients.ClientBean;
 import io.apiman.manager.api.beans.clients.ClientVersionBean;
 import io.apiman.manager.api.beans.clients.NewClientBean;
@@ -315,7 +316,58 @@ public interface IOrganizationResource {
             @PathParam("clientId") String clientId, NewClientVersionBean bean)
             throws ClientNotFoundException, NotAuthorizedException, InvalidVersionException,
             ClientVersionAlreadyExistsException;
+    
+    /**
+     * Use this endpoint to update the API Key for the given client.  You can either
+     * provide your own custom (must be unique) API Key, or you can send an empty request
+     * and apiman will generate a new API key for you.  Note that if the client is already
+     * registered with one or more Gateways, this call will fail (the API Key can only be
+     * modified if the client is not currently registered).
+     * @summary Update API Key
+     * @param organizationId The Organization ID.
+     * @param clientId The Client ID.
+     * @param version The Client Version.
+     * @param bean The new custom API Key (or empty to auto-generate a new one).
+     * @statuscode 200 If the Client's API Key is successfully updated.
+     * @statuscode 404 If the Client does not exist.
+     * @statuscode 409 If the Client has the wrong status.
+     * @return The new API Key value.
+     * @throws ClientNotFoundException when the client does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
+     * @throws InvalidVersionException when the user attempts to use an invalid version of the client
+     * @throws InvalidClientStatusException when the client is not in the proper status
+     */
+    @PUT
+    @Path("{organizationId}/clients/{clientId}/versions/{version}/apikey")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public ApiKeyBean updateClientApiKey(@PathParam("organizationId") String organizationId,
+            @PathParam("clientId") String clientId, @PathParam("version") String version, ApiKeyBean bean)
+            throws ClientNotFoundException, NotAuthorizedException, InvalidVersionException,
+            InvalidClientStatusException;
 
+    /**
+     * Use this endpoint to get the client's current API Key.  This call will fail if
+     * you do not have the proper permission to see the information.
+     * @summary Get API Key
+     * @param organizationId The Organization ID.
+     * @param clientId The Client ID.
+     * @param version The Client Version.
+     * @statuscode 200 If the Client's API Key is successfully returned.
+     * @statuscode 404 If the Client does not exist.
+     * @return The API Key value.
+     * @throws ClientNotFoundException when the client does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
+     * @throws InvalidVersionException when the user attempts to use an invalid version of the client
+     */
+    @GET
+    @Path("{organizationId}/clients/{clientId}/versions/{version}/apikey")
+    @Produces(MediaType.APPLICATION_JSON)
+    public ApiKeyBean getClientApiKey(@PathParam("organizationId") String organizationId,
+            @PathParam("clientId") String clientId, @PathParam("version") String version)
+            throws ClientNotFoundException, NotAuthorizedException, InvalidVersionException;
+    
+    
     /**
      * Use this endpoint to list all of the versions of an Client.
      * @summary List Client Versions
@@ -469,7 +521,7 @@ public interface IOrganizationResource {
     @GET
     @Path("{organizationId}/clients/{clientId}/versions/{version}/contracts")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<ContractSummaryBean> getclientVersionContracts(@PathParam("organizationId") String organizationId,
+    public List<ContractSummaryBean> getClientVersionContracts(@PathParam("organizationId") String organizationId,
             @PathParam("clientId") String clientId, @PathParam("version") String version)
             throws ClientNotFoundException, NotAuthorizedException;
 

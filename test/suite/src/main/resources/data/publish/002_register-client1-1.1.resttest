@@ -1,0 +1,11 @@
+POST /actions ${apiman.suite.api-username}/${apiman.suite.api-password}
+Content-Type: application/json
+
+{
+  "type" : "registerClient",
+  "organizationId" : "Test",
+  "entityId" : "client1",
+  "entityVersion" : "1.1"
+}
+----
+204

@@ -15,16 +15,17 @@
  */
 package io.apiman.manager.api.beans.plugins;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
 import java.io.Serializable;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 /**
  * Models a single plugin when creating.
  *
  * @author eric.wittmann@redhat.com
  */
-@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
+@JsonInclude(Include.NON_NULL)
 public class NewPluginBean implements Serializable {
 
     private static final long serialVersionUID = 3246882829241218365L;

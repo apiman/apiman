@@ -15,12 +15,13 @@
  */
 package io.apiman.manager.api.beans.policies;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.apiman.manager.api.beans.summary.PolicySummaryBean;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
  * Models the list of policies that would get applied if an API were invoked

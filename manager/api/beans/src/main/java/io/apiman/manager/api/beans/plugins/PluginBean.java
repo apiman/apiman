@@ -15,8 +15,6 @@
  */
 package io.apiman.manager.api.beans.plugins;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
 import java.io.Serializable;
 import java.util.Date;
 
@@ -27,6 +25,9 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 /**
  * Models a single plugin configured by an admin.
  *
@@ -34,7 +35,7 @@ import javax.persistence.UniqueConstraint;
  */
 @Entity
 @Table(name = "plugins", uniqueConstraints = { @UniqueConstraint(columnNames = { "group_id", "artifact_id" }) })
-@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
+@JsonInclude(Include.NON_NULL)
 public class PluginBean implements Serializable {
 
     private static final long serialVersionUID = 2932636903455749308L;

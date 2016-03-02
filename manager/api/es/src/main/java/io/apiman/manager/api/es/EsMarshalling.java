@@ -188,7 +188,6 @@ public class EsMarshalling {
             builder
                 .startObject()
                     .field("id", bean.getId())
-                    .field("apiKey", bean.getApikey())
                     .field("clientOrganizationId", bean.getClient().getClient().getOrganization().getId())
                     .field("clientOrganizationName", bean.getClient().getClient().getOrganization().getName())
                     .field("clientId", bean.getClient().getClient().getId())
@@ -412,6 +411,7 @@ public class EsMarshalling {
                     .field("clientName", client.getName())
                     .field("clientDescription", client.getDescription())
                     .field("version", bean.getVersion())
+                    .field("apikey", bean.getApikey())
                     .field("status", bean.getStatus())
                     .field("createdBy", bean.getCreatedBy())
                     .field("createdOn", bean.getCreatedOn().getTime())
@@ -760,7 +760,6 @@ public class EsMarshalling {
         }
         ContractBean bean = new ContractBean();
         bean.setId(asLong(source.get("id")));
-        bean.setApikey(asString(source.get("apiKey")));
         bean.setCreatedBy(asString(source.get("createdBy")));
         bean.setCreatedOn(asDate(source.get("createdOn")));
         postMarshall(bean);
@@ -778,7 +777,6 @@ public class EsMarshalling {
         }
         ContractSummaryBean bean = new ContractSummaryBean();
         bean.setContractId(asLong(source.get("id")));
-        bean.setApikey(asString(source.get("apiKey")));
         bean.setCreatedOn(asDate(source.get("createdOn")));
         bean.setClientOrganizationId(asString(source.get("clientOrganizationId")));
         bean.setClientOrganizationName(asString(source.get("clientOrganizationName")));
@@ -808,7 +806,6 @@ public class EsMarshalling {
             return null;
         }
         ApiEntryBean bean = new ApiEntryBean();
-        bean.setApiKey(asString(source.get("apiKey")));
         bean.setApiOrgId(asString(source.get("apiOrganizationId")));
         bean.setApiOrgName(asString(source.get("apiOrganizationName")));
         bean.setApiId(asString(source.get("apiId")));
@@ -1066,6 +1063,7 @@ public class EsMarshalling {
         }
         ClientVersionBean bean = new ClientVersionBean();
         bean.setVersion(asString(source.get("version")));
+        bean.setApikey(asString(source.get("apikey")));
         bean.setStatus(asEnum(source.get("status"), ClientStatus.class));
         bean.setCreatedBy(asString(source.get("createdBy")));
         bean.setCreatedOn(asDate(source.get("createdOn")));
@@ -1094,6 +1092,7 @@ public class EsMarshalling {
         bean.setOrganizationName(asString(source.get("organizationName")));
         bean.setStatus(asEnum(source.get("status"), ClientStatus.class));
         bean.setVersion(asString(source.get("version")));
+        bean.setApiKey(asString(source.get("apikey")));
         postMarshall(bean);
         return bean;
     }

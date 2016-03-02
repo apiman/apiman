@@ -1,6 +1,6 @@
 GET /Test/echo/1.0
 X-Customer-Header: custom-value
-X-API-Key: ${silver-api-key}
+X-API-Key: client1-1.1_12345
 
 ----
 429

@@ -51,6 +51,7 @@ public class PollCachingESRegistry extends CachingESRegistry {
 
     /**
      * Constructor.
+     * @param config
      */
     public PollCachingESRegistry(Map<String, String> config) {
         super(config);
@@ -149,7 +150,7 @@ public class PollCachingESRegistry extends CachingESRegistry {
         DataVersionBean dv = new DataVersionBean();
         dv.setUpdatedOn(System.currentTimeMillis());
         Index index = new Index.Builder(dv).refresh(false)
-                .index(getIndexName())
+                .index(getDefaultIndexName())
                 .type("dataVersion").id("instance").build(); //$NON-NLS-1$ //$NON-NLS-2$
         getClient().executeAsync(index, new JestResultHandler<JestResult>() {
             @Override
@@ -200,7 +201,7 @@ public class PollCachingESRegistry extends CachingESRegistry {
         // Be very aggressive in invalidating the cache.
         boolean invalidate = true;
         try {
-            Get get = new Get.Builder(getIndexName(), "instance").type("dataVersion").build(); //$NON-NLS-1$ //$NON-NLS-2$
+            Get get = new Get.Builder(getDefaultIndexName(), "instance").type("dataVersion").build(); //$NON-NLS-1$ //$NON-NLS-2$
             JestResult result = getClient().execute(get);
             if (result.isSucceeded()) {
                 String latestDV = result.getJsonObject().get("_version").getAsString(); //$NON-NLS-1$

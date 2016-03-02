@@ -33,6 +33,7 @@ public class Client implements Serializable {
     private String organizationId;
     private String clientId;
     private String version;
+    private String apiKey;
     private Set<Contract> contracts = new HashSet<>();
 
     /**
@@ -171,6 +172,20 @@ public class Client implements Serializable {
         }
         builder.append("]");
         return builder.toString();
+    }
+
+    /**
+     * @return the apiKey
+     */
+    public String getApiKey() {
+        return apiKey;
+    }
+
+    /**
+     * @param apiKey the apiKey to set
+     */
+    public void setApiKey(String apiKey) {
+        this.apiKey = apiKey;
     }
 
 }

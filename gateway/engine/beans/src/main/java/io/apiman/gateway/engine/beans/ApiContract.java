@@ -29,7 +29,6 @@ public class ApiContract implements Serializable {
 
     private static final long serialVersionUID = -4264090614804457252L;
 
-    private String apikey;
     private Api api;
     private Client client;
     private String plan;
@@ -43,31 +42,15 @@ public class ApiContract implements Serializable {
 
     /**
      * Constructor.
-     * @param apikey the api key
      * @param api the api
      * @param client the client
      * @param policies the list of policies
      */
-    public ApiContract(String apikey, Api api, Client client, String plan, List<Policy> policies) {
-        setApikey(apikey);
+    public ApiContract(Api api, Client client, String plan, List<Policy> policies) {
         setApi(api);
         setClient(client);
         setPlan(plan);
         setPolicies(policies);
-    }
-
-    /**
-     * @return the apikey
-     */
-    public String getApikey() {
-        return apikey;
-    }
-
-    /**
-     * @param apikey the apikey to set
-     */
-    public void setApikey(String apikey) {
-        this.apikey = apikey;
     }
 
     /**
@@ -110,37 +93,6 @@ public class ApiContract implements Serializable {
      */
     public void setPolicies(List<Policy> policies) {
         this.policies = policies;
-    }
-
-    /**
-     * @see java.lang.Object#hashCode()
-     */
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((apikey == null) ? 0 : apikey.hashCode());
-        return result;
-    }
-
-    /**
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        ApiContract other = (ApiContract) obj;
-        if (apikey == null) {
-            if (other.apikey != null)
-                return false;
-        } else if (!apikey.equals(other.apikey))
-            return false;
-        return true;
     }
 
     /**

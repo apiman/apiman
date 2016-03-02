@@ -5,13 +5,12 @@ Content-Type: application/json
   "apiOrgId" : "Test",
   "apiId" : "echo",
   "apiVersion" : "1.0",
-  "planId" : "Silver"
+  "planId" : "Gold"
 }
 ----
 200
 Content-Type: application/json
-X-RestTest-BindTo-silver-api-key: apikey
-X-RestTest-BindTo-silver-contractId: id
+X-RestTest-BindTo-gold-contractId: id
 
 {
   "client" : {
@@ -39,7 +38,7 @@ X-RestTest-BindTo-silver-contractId: id
       "organization" : {
         "id" : "Test"
       },
-      "id" : "Silver"
+      "id" : "Gold"
     },
     "version" : "1.0"
   }

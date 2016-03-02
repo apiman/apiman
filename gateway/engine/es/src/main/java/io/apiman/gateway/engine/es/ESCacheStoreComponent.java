@@ -224,10 +224,10 @@ public class ESCacheStoreComponent extends AbstractESComponent implements ICache
     }
 
     /**
-     * @see io.apiman.gateway.engine.es.AbstractESComponent#getIndexName()
+     * @see io.apiman.gateway.engine.es.AbstractESComponent#getDefaultIndexName()
      */
     @Override
-    protected String getIndexName() {
+    protected String getDefaultIndexName() {
         return ESConstants.CACHE_INDEX_NAME;
     }
 

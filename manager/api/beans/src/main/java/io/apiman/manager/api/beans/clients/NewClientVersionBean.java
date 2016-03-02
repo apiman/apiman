@@ -15,16 +15,17 @@
  */
 package io.apiman.manager.api.beans.clients;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
 import java.io.Serializable;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 /**
  * Bean used when creating a new client version.
  *
  * @author eric.wittmann@redhat.com
  */
-@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
+@JsonInclude(Include.NON_NULL)
 public class NewClientVersionBean implements Serializable {
 
     private static final long serialVersionUID = 960818800225855945L;
@@ -32,6 +33,8 @@ public class NewClientVersionBean implements Serializable {
     private String version;
     private boolean clone;
     private String cloneVersion;
+
+    private String apiKey;
 
     /**
      * Constructor.
@@ -79,6 +82,20 @@ public class NewClientVersionBean implements Serializable {
      */
     public void setCloneVersion(String cloneVersion) {
         this.cloneVersion = cloneVersion;
+    }
+
+    /**
+     * @return the apiKey
+     */
+    public String getApiKey() {
+        return apiKey;
+    }
+
+    /**
+     * @param apiKey the apiKey to set
+     */
+    public void setApiKey(String apiKey) {
+        this.apiKey = apiKey;
     }
 
     /* (non-Javadoc)

@@ -139,10 +139,11 @@ public class RateLimitingPolicyTest {
         api.setApiId("Api");
         api.setVersion("1.0");
         Client app = new Client();
+        app.setApiKey("12345");
         app.setOrganizationId("AppOrg");
         app.setClientId("App");
         app.setVersion("1.0");
-        return new ApiContract("12345", api, app, "Gold", null);
+        return new ApiContract(api, app, "Gold", null);
     }
 
 }
