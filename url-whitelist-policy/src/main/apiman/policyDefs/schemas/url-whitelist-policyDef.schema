@@ -1,0 +1,55 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "title" : "URL Whitelist Policy",
+  "description" : "Add whitelist entries for the the requests that should be permitted.",
+  "properties": {
+    "removePathPrefix": {
+      "type": "boolean",
+      "title": "Remove Path Prefix (e.g. /apiman-gateway/myorg/myapi/1.0)",
+      "default": true
+    },
+    "whitelist": {
+      "title": "Add Whitelist Entries",
+      "type": "array",
+      "format": "table",
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "title": "Whitelist Entry",
+        "description": "Permits a request matching criteria.",
+        "properties": {
+          "regex": {
+            "title": "URL Regex (e.g. /foo/[0-9]/bar)",
+            "type": "string"
+          },
+          "methodGet": {
+            "type": "boolean",
+            "title": "GET",
+            "default": false
+          },
+          "methodPost": {
+            "type": "boolean",
+            "title": "POST",
+            "default": false
+          },
+          "methodPut": {
+            "type": "boolean",
+            "title": "PUT",
+            "default": false
+          },
+          "methodPatch": {
+            "type": "boolean",
+            "title": "PATCH",
+            "default": false
+          },
+          "methodDelete": {
+            "type": "boolean",
+            "title": "DELETE",
+            "default": false
+          }
+        }
+      }
+    }
+  }
+}

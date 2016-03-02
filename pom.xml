@@ -248,6 +248,7 @@
     <module>test-policy</module>
     <module>transformation-policy</module>
     <module>log-policy</module>
+    <module>url-whitelist-policy</module>
   </modules>
 
   <profiles>
