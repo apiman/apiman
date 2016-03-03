@@ -7,7 +7,10 @@
       "methodPost": true,
       "methodPut": true,
       "methodPatch": true,
-      "methodDelete": true
+      "methodDelete": true,
+      "methodHead": true,
+      "methodOptions": true,
+      "methodTrace": true
     },
     {
       "regex": "/deny/.*",
@@ -15,7 +18,24 @@
       "methodPost": false,
       "methodPut": false,
       "methodPatch": false,
-      "methodDelete": false
+      "methodDelete": false,
+      "methodHead": false,
+      "methodOptions": false,
+      "methodTrace": false
+    },
+    {
+      "regex": "/mixed/.*",
+      "methodGet": false,
+      "methodPost": false,
+      "methodPut": false,
+      "methodPatch": false,
+      "methodDelete": true,
+      "methodHead": true,
+      "methodOptions": true,
+      "methodTrace": true
+    },
+    {
+      "regex": "/partial/.*"
     }
   ]
 }

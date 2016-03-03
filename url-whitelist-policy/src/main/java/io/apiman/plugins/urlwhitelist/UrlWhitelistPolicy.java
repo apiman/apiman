@@ -65,6 +65,15 @@ public class UrlWhitelistPolicy extends AbstractMappedPolicy<UrlWhitelistBean> {
         }
     }
 
+    /**
+     * Normalise the request URL before evaluating any access control rules, for safety. Returns the path
+     * component of the normalised URL.
+     *
+     * @param config  the policy configuration
+     * @param request the incoming request
+     * @return the normalised path
+     * @throws URISyntaxException
+     */
     private String getNormalisedPath(UrlWhitelistBean config, ApiRequest request) throws URISyntaxException {
         // normalise, for safety
         final URI normalisedUrl = new URI(request.getUrl()).normalize();
@@ -87,15 +96,32 @@ public class UrlWhitelistPolicy extends AbstractMappedPolicy<UrlWhitelistBean> {
         return path;
     }
 
-    private boolean isRequestPermitted(UrlWhitelistBean config, String normalisedUrl, String method) {
+    /**
+     * Evaluates whether the request for the {@code normalisedPath} and {@code method} is permitted by
+     * the rules in the {@code config}.
+     *
+     * @param config         the policy configuration
+     * @param normalisedPath the normalised request path
+     * @param method         the HTTP method
+     * @return {@code true} if the request is permitted, otherwise {@code false}
+     */
+    private boolean isRequestPermitted(UrlWhitelistBean config, String normalisedPath, String method) {
         for (WhitelistEntryBean whitelistEntry : config.getWhitelist()) {
-            if (Pattern.compile(whitelistEntry.getRegex()).matcher(normalisedUrl).matches()) {
+            if (Pattern.compile(whitelistEntry.getRegex()).matcher(normalisedPath).matches()) {
                 return isMethodPermitted(whitelistEntry, method);
             }
         }
         return false;
     }
 
+    /**
+     * Evaluates whether the request for the {@code method} is permitted by the configuration of
+     * the {@code whitelistEntry}.
+     *
+     * @param whitelistEntry the whitelist entry matching the request URL
+     * @param method         the HTTP method
+     * @return {@code true} if the method is permitted, otherwise {@code false}
+     */
     private boolean isMethodPermitted(WhitelistEntryBean whitelistEntry, String method) {
         switch (method.toUpperCase()) {
             case "GET":
@@ -108,6 +134,12 @@ public class UrlWhitelistPolicy extends AbstractMappedPolicy<UrlWhitelistBean> {
                 return whitelistEntry.isMethodPatch();
             case "DELETE":
                 return whitelistEntry.isMethodDelete();
+            case "HEAD":
+                return whitelistEntry.isMethodHead();
+            case "OPTIONS":
+                return whitelistEntry.isMethodOptions();
+            case "TRACE":
+                return whitelistEntry.isMethodTrace();
 
             default:
                 throw new UnsupportedOperationException(String.format("Method '%s' is not supported", method));

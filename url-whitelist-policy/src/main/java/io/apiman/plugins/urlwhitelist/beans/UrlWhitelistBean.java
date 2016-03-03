@@ -28,7 +28,9 @@ public class UrlWhitelistBean implements Serializable {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(whitelist).append(removePathPrefix)
+        return new HashCodeBuilder()
+                .append(whitelist)
+                .append(removePathPrefix)
                 .toHashCode();
     }
 
@@ -40,8 +42,11 @@ public class UrlWhitelistBean implements Serializable {
         if (!(other instanceof UrlWhitelistBean)) {
             return false;
         }
-        UrlWhitelistBean rhs = ((UrlWhitelistBean) other);
-        return new EqualsBuilder().append(whitelist, rhs.whitelist).append(removePathPrefix, rhs.removePathPrefix).isEquals();
+        final UrlWhitelistBean rhs = ((UrlWhitelistBean) other);
+        return new EqualsBuilder()
+                .append(whitelist, rhs.whitelist)
+                .append(removePathPrefix, rhs.removePathPrefix)
+                .isEquals();
     }
 
     public Set<WhitelistEntryBean> getWhitelist() {

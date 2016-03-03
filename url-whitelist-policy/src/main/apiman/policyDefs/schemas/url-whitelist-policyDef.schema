@@ -47,6 +47,21 @@
             "type": "boolean",
             "title": "DELETE",
             "default": false
+          },
+          "methodHead": {
+            "type": "boolean",
+            "title": "HEAD",
+            "default": false
+          },
+          "methodOptions": {
+            "type": "boolean",
+            "title": "OPTIONS",
+            "default": false
+          },
+          "methodTrace": {
+            "type": "boolean",
+            "title": "TRACE",
+            "default": false
           }
         }
       }
