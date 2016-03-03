@@ -384,7 +384,10 @@ public class ESRegistry extends AbstractESComponent implements IRegistry {
      */
     @Override
     protected String getIndexName() {
-        return ESConstants.GATEWAY_INDEX_NAME;
+        if (System.getProperty(ESConstants.GATEWAY_INDEX_NAME) != null) {
+            return System.getProperty(ESConstants.GATEWAY_INDEX_NAME);
+        }
+        return ESConstants.DEFAULT_GATEWAY_INDEX_NAME;
     }
 
 }
