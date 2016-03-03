@@ -22,8 +22,12 @@ package io.apiman.gateway.engine.es;
  */
 public class ESConstants {
 
-    public static final String GATEWAY_INDEX_NAME = "apiman_gateway"; //$NON-NLS-1$
-    public static final String METRICS_INDEX_NAME = "apiman_metrics"; //$NON-NLS-1$
-    public static final String CACHE_INDEX_NAME = "apiman_cache"; //$NON-NLS-1$
+    public static final String GATEWAY_INDEX_NAME = "apiman-gateway.registry.index.name";         //$NON-NLS-1$
+    public static final String METRICS_INDEX_NAME = "apiman-gateway.metrics.index.name"; //$NON-NLS-1$
+    public static final String CACHE_INDEX_NAME   = "apiman-gateway.components.ICacheStoreComponent.client.index"; //$NON-NLS-1$
+    
+    public static final String DEFAULT_GATEWAY_INDEX_NAME = "apiman_gateway"; //$NON-NLS-1$
+    public static final String DEFAULT_METRICS_INDEX_NAME = "apiman_metrics"; //$NON-NLS-1$
+    public static final String DEFAULT_CACHE_INDEX_NAME   = "apiman_cache";   //$NON-NLS-1$
 
 }

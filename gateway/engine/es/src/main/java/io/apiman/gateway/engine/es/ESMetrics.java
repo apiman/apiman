@@ -83,7 +83,10 @@ public class ESMetrics extends AbstractESComponent implements IMetrics {
      */
     @Override
     protected String getIndexName() {
-        return ESConstants.METRICS_INDEX_NAME;
+        if (System.getProperty(ESConstants.METRICS_INDEX_NAME)!=null) {
+            return System.getProperty(ESConstants.METRICS_INDEX_NAME);
+        }
+        return ESConstants.DEFAULT_METRICS_INDEX_NAME;
     }
 
 }

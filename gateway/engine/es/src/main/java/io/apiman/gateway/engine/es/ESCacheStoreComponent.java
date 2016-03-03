@@ -17,6 +17,7 @@ package io.apiman.gateway.engine.es;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.apiman.gateway.engine.DependsOnComponents;
 import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncHandler;
@@ -228,7 +229,10 @@ public class ESCacheStoreComponent extends AbstractESComponent implements ICache
      */
     @Override
     protected String getIndexName() {
-        return ESConstants.CACHE_INDEX_NAME;
+        if (System.getProperty(ESConstants.CACHE_INDEX_NAME)!=null) {
+            return System.getProperty(ESConstants.CACHE_INDEX_NAME);
+        }
+        return ESConstants.DEFAULT_CACHE_INDEX_NAME;
     }
 
 }
