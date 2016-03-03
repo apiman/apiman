@@ -18,15 +18,18 @@ module Apiman {
 
             $scope.animationsEnabled = true;
 
-            $scope.howToInvoke = function (size, api) {
+            $scope.howToInvoke = function (apiKey, api) {
                 var modalInstance = $uibModal.open({
                     animation: $scope.animationsEnabled,
                     templateUrl: 'invokeModal.html',
                     controller: 'ClientApisModalCtrl',
-                    size: size,
+                    size: null,
                     resolve: {
                         api: function() {
                             return api;
+                        },
+                        apiKey: function() {
+                            return apiKey;
                         }
                     }
                 });
@@ -115,26 +118,19 @@ module Apiman {
 
     export var ClientApisModalCtrl = _module.controller('ClientApisModalCtrl', function ($scope,
                                                                                    $uibModalInstance,
-                                                                                   api) {
-
+                                                                                   api, apiKey) {
         $scope.api = api;
-
-        $scope.asQueryParam = api.httpEndpoint + '?apikey=' + api.apiKey;
-
+        $scope.asQueryParam = api.httpEndpoint + '?apikey=' + apiKey;
         if (api.httpEndpoint.indexOf('?') > -1) {
-            $scope.asQueryParam = api.httpEndpoint + '&apikey=' + api.apiKey;
+            $scope.asQueryParam = api.httpEndpoint + '&apikey=' + apiKey;
         }
-
-        $scope.asRequestHeader = 'X-API-Key: ' + api.apiKey;
-
+        $scope.asRequestHeader = 'X-API-Key: ' + apiKey;
 
         $scope.ok = function () {
             $uibModalInstance.close();
         };
 
-
         // Tooltip
-
         $scope.tooltipTxt = 'Copy to clipboard';
 
         // Called on clicking the button the tooltip is attached to
@@ -148,7 +144,6 @@ module Apiman {
                 $scope.tooltipTxt = 'Copy to clipboard';
             }, 100);
         };
-
 
         // Copy-to-Clipboard
 

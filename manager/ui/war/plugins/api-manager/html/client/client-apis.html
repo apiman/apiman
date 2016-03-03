@@ -40,15 +40,14 @@
                 <table class="table table-striped table-bordered table-hover table-with-details" data-field="apis">
                   <thead>
                     <tr>
-                      <th nowrap="nowrap" width="1%"></th>
                       <th apiman-i18n-key="api" nowrap="nowrap">API</th>
                       <th apiman-i18n-key="version" width="1%" nowrap="nowrap">Version</th>
                       <th apiman-i18n-key="plan" nowrap="nowrap">Plan</th>
+                      <th nowrap="nowrap" width="1%"></th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr ng-repeat-start="api in apiRegistry.apis">
-                      <td><a ng-click="toggle(api)" href="javascript:;"><i class="fa fa-fw {{ api.expanded ? 'fa-chevron-down' : 'fa-chevron-right' }}"></i></a></td>
                       <td>
                         <span><a href="{{ pluginName }}/browse/orgs/{{ api.apiOrgId }}">{{ api.apiOrgName }}</a>
                         <span apiman-i18n-skip>/</span>
@@ -56,34 +55,11 @@
                       </td>
                       <td><span>{{ api.apiVersion }}</span></td>
                       <td>{{ api.planName }}</td>
+                      <td><a title="How do I invoke this API?" apiman-i18n-key="client-apis.howtoinvoke" ng-click="howToInvoke(apiRegistry.apiKey, api)" href="javascript:;"><span class="pficon pficon-info"></span></a></td>
                     </tr>
                     <tr ng-repeat-end ng-show="api.expanded">
                       <td colspan="4">
                         <form role="form">
-                          <div class="form-group">
-                            <label apiman-i18n-key="api-key">API Key</label>
-                            <div class="input-group" style="width: 75%">
-                              <input readonly
-                                     type="text"
-                                     class="apiman-form-control form-control readonly apiman-readonly"
-                                     value="{{ api.apiKey }}"
-                                     style="background-color: white; color: black">
-                              <span class="input-group-btn">
-                                <button clipboard
-                                        text="api.apiKey"
-                                        class="btn btn-default clipboard"
-                                        type="button"
-                                        on-copied="copySuccess()"
-                                        on-error="copyFail(err)"
-                                        ng-mouseleave="tooltipReset()"
-                                        ng-click="tooltipChange()"
-                                        style="padding: 2px 6px 4px;"
-                                        uib-tooltip="{{ tooltipTxt }}">
-                                  <span class="glyphicon glyphicon-copy"></span>
-                                </button>
-                              </span>
-                            </div>
-                          </div>
                           <div class="form-group">
                             <div>
                               <script type="text/ng-template"
@@ -162,13 +138,6 @@
                                           ng-click="ok()">Done</button>
                                 </div>
                               </script>
-                              <button type="button"
-                                      title="Click for details on how to invoke this managed API."
-                                      apiman-i18n-key="how-to-invoke"
-                                      class="btn btn-default"
-                                      ng-click="howToInvoke(null, api)">
-                                How to Invoke
-                              </button>
                             </div>
                           </div>
                         </form>
