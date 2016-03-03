@@ -22,6 +22,6 @@ package io.apiman.test.policies;
  */
 public enum PolicyTestRequestType {
 
-    GET, PUT, POST, DELETE, HEAD, OPTIONS, TRACE
+    GET, PUT, POST, DELETE, HEAD, OPTIONS, TRACE, CONNECT, PATCH
 
 }
