@@ -75,14 +75,13 @@ public class UrlWhitelistPolicy extends AbstractMappedPolicy<UrlWhitelistBean> {
                 path = path.substring(APIMAN_GATEWAY.length());
             }
 
-            // remove org prefix, e.g. /myorg
-            path = path.substring(request.getApiOrgId().length() + 1);
+            // remove org/API/version prefix, e.g. '/myorg/myapi/1.0'
+            final String apiPrefix = String.format("/%s/%s/%s",
+                    request.getApiOrgId(),
+                    request.getApiId(),
+                    request.getApiVersion());
 
-            // remove API prefix, e.g. /myapi
-            path = path.substring(request.getApiId().length() + 1);
-
-            // remove version prefix, e.g. /1.0
-            path = path.substring(request.getApiVersion().length() + 1);
+            path = path.substring(apiPrefix.length());
         }
 
         return path;

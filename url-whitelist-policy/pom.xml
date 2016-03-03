@@ -41,6 +41,18 @@
       <artifactId>apiman-gateway-engine-policies</artifactId>
       <scope>provided</scope>
     </dependency>
+
+    <!-- Testing -->
+    <dependency>
+      <groupId>io.apiman</groupId>
+      <artifactId>apiman-test-policies</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
