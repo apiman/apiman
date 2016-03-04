@@ -34,6 +34,10 @@
 
     <!-- Third Party Libs -->
     <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+    </dependency>
+    <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
     </dependency>
@@ -44,10 +48,6 @@
     <dependency>
       <groupId>org.apache.commons</groupId> <!-- Yes, really. -->
       <artifactId>commons-lang3</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.elasticsearch</groupId>
-      <artifactId>elasticsearch</artifactId>
     </dependency>
     <dependency>
       <groupId>io.searchbox</groupId>
@@ -73,6 +73,15 @@
       <groupId>com.google.code.gson</groupId>
       <artifactId>gson</artifactId>
     </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
+    </dependency>
+<!--     <dependency> -->
+<!--       <groupId>com.fasterxml.jackson.core</groupId> -->
+<!--       <artifactId>jackson-databind</artifactId> -->
+<!--     </dependency> -->
+    
 
     <!-- Test Libs -->
     <dependency>
@@ -83,6 +92,11 @@
     <dependency>
       <artifactId>slf4j-log4j12</artifactId>
       <groupId>org.slf4j</groupId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>commons-beanutils</groupId>
+      <artifactId>commons-beanutils</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>

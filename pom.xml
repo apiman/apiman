@@ -114,6 +114,7 @@
     <version.com.squareup.okhttp>2.4.0</version.com.squareup.okhttp>
     <version.com.squareup.okio>1.4.0</version.com.squareup.okio>
     <version.com.unboundid.unboundid-ldapsdk>3.0.0</version.com.unboundid.unboundid-ldapsdk>
+    <version.commons-beanutils>1.9.2</version.commons-beanutils>
     <version.commons-codec>1.10</version.commons-codec>
     <version.commons-collections>3.2.2</version.commons-collections>
     <version.commons-configuration>1.6</version.commons-configuration>
@@ -839,6 +840,11 @@
         <groupId>com.fasterxml.jackson.module</groupId>
         <artifactId>jackson-module-jaxb-annotations</artifactId>
         <version>${version.com.fasterxml.jackson}</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-beanutils</groupId>
+        <artifactId>commons-beanutils</artifactId>
+        <version>${version.commons-beanutils}</version>
       </dependency>
       <dependency>
         <groupId>commons-codec</groupId>

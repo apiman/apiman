@@ -66,6 +66,15 @@ import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.core.util.PolicyTemplateUtil;
 import io.apiman.manager.api.es.beans.ApiDefinitionBean;
 import io.apiman.manager.api.es.beans.PoliciesBean;
+import io.apiman.manager.api.es.util.AndFilterBuilder;
+import io.apiman.manager.api.es.util.FilterBuilders;
+import io.apiman.manager.api.es.util.FilteredQueryBuilder;
+import io.apiman.manager.api.es.util.QueryBuilder;
+import io.apiman.manager.api.es.util.QueryBuilders;
+import io.apiman.manager.api.es.util.SearchSourceBuilder;
+import io.apiman.manager.api.es.util.SortOrder;
+import io.apiman.manager.api.es.util.TermsQueryBuilder;
+import io.apiman.manager.api.es.util.XContentBuilder;
 import io.searchbox.action.Action;
 import io.searchbox.client.JestClient;
 import io.searchbox.client.JestResult;
@@ -103,20 +112,8 @@ import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
-import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
-import org.elasticsearch.action.search.SearchRequest;
-import org.elasticsearch.common.Base64;
-import org.elasticsearch.common.xcontent.XContentBuilder;
-import org.elasticsearch.index.query.AndFilterBuilder;
-import org.elasticsearch.index.query.BaseQueryBuilder;
-import org.elasticsearch.index.query.FilterBuilders;
-import org.elasticsearch.index.query.FilteredQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.index.query.TermsQueryBuilder;
-import org.elasticsearch.search.builder.SearchSourceBuilder;
-import org.elasticsearch.search.sort.SortOrder;
 
 import com.google.gson.Gson;
 
@@ -173,10 +170,8 @@ public class EsStorage implements IStorage, IStorageQuery {
      * @throws Exception
      */
     private void createIndex(String indexName) throws Exception {
-        CreateIndexRequest request = new CreateIndexRequest(indexName);
         URL settings = getClass().getResource("index-settings.json"); //$NON-NLS-1$
         String source = IOUtils.toString(settings);
-        request.source(source);
         JestResult response = esClient.execute(new CreateIndex.Builder(indexName).settings(source).build());
         if (!response.isSucceeded()) {
             throw new StorageException("Failed to create index " + indexName + ": " + response.getErrorMessage()); //$NON-NLS-1$ //$NON-NLS-2$
@@ -470,7 +465,7 @@ public class EsStorage implements IStorage, IStorageQuery {
             apiDefinition = getApiDefinition(version);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             IOUtils.copy(definitionStream, baos);
-            String data = Base64.encodeBytes(baos.toByteArray());
+            String data = Base64.encodeBase64String(baos.toByteArray());
             ApiDefinitionBean definition = new ApiDefinitionBean();
             definition.setData(data);
             if (apiDefinition == null) {
@@ -814,19 +809,15 @@ public class EsStorage implements IStorage, IStorageQuery {
      */
     @Override
     public InputStream getApiDefinition(ApiVersionBean version) throws StorageException {
-        try {
-            String id = id(version.getApi().getOrganization().getId(), version.getApi().getId(), version.getVersion()) + ":def"; //$NON-NLS-1$
-            Map<String, Object> source = getEntity("apiDefinition", id); //$NON-NLS-1$
-            if (source == null) {
-                return null;
-            }
-            ApiDefinitionBean def = EsMarshalling.unmarshallApiDefinition(source);
-            if (def == null) return null;
-            String data = def.getData();
-            return new ByteArrayInputStream(Base64.decode(data));
-        } catch (IOException e) {
-            throw new StorageException(e);
+        String id = id(version.getApi().getOrganization().getId(), version.getApi().getId(), version.getVersion()) + ":def"; //$NON-NLS-1$
+        Map<String, Object> source = getEntity("apiDefinition", id); //$NON-NLS-1$
+        if (source == null) {
+            return null;
         }
+        ApiDefinitionBean def = EsMarshalling.unmarshallApiDefinition(source);
+        if (def == null) return null;
+        String data = def.getData();
+        return new ByteArrayInputStream(Base64.decodeBase64(data));
     }
 
     /**
@@ -927,10 +918,6 @@ public class EsStorage implements IStorage, IStorageQuery {
                     )
                 );
             SearchSourceBuilder builder = new SearchSourceBuilder().query(qb).size(2);
-
-            SearchRequest request = new SearchRequest(getIndexName());
-            request.types("plugin"); //$NON-NLS-1$
-            request.source(builder);
             List<Hit<Map<String,Object>,Void>> hits = listEntities("plugin", builder); //$NON-NLS-1$
             if (hits.size() == 1) {
                 Hit<Map<String,Object>,Void> hit = hits.iterator().next();
@@ -1147,7 +1134,7 @@ public class EsStorage implements IStorage, IStorageQuery {
         @SuppressWarnings("nls")
         QueryBuilder query = QueryBuilders.filteredQuery(
             QueryBuilders.matchAllQuery(),
-            FilterBuilders.termsFilter("id", organizationIds.toArray())
+            FilterBuilders.termsFilter("id", organizationIds.toArray(new String[organizationIds.size()]))
         );
         @SuppressWarnings("nls")
         SearchSourceBuilder builder = new SearchSourceBuilder()
@@ -1647,15 +1634,15 @@ public class EsStorage implements IStorage, IStorageQuery {
                         FilterBuilders.termFilter("organizationId", organizationId),
                         FilterBuilders.termFilter("userId", userId))
         );
-        String string = query.toString();
-        // Workaround for bug in FilteredQueryBuilder which does not (yet) wrap
-        // the JSON in a query element
-        if (string.indexOf("query") < 0 || string.indexOf("query") > 7) {
-            string = "{ \"query\" : " + string + "}";
-        }
-        DeleteByQuery deleteByQuery = new DeleteByQuery.Builder(string).addIndex(getIndexName())
-                .addType("roleMembership").build();
         try {
+            String string = query.string();
+            // Workaround for bug in FilteredQueryBuilder which does not (yet) wrap
+            // the JSON in a query element
+            if (string.indexOf("query") < 0 || string.indexOf("query") > 7) {
+                string = "{ \"query\" : " + string + "}";
+            }
+            DeleteByQuery deleteByQuery = new DeleteByQuery.Builder(string).addIndex(getIndexName())
+                    .addType("roleMembership").build();
             JestResult response = esClient.execute(deleteByQuery);
             if (!response.isSucceeded()) {
                 throw new StorageException(response.getErrorMessage());
@@ -1840,7 +1827,7 @@ public class EsStorage implements IStorage, IStorageQuery {
     private List<Hit<Map<String, Object>, Void>> listEntities(String type,
             SearchSourceBuilder searchSourceBuilder) throws StorageException {
         try {
-            String query = searchSourceBuilder.toString();
+            String query = searchSourceBuilder.string();
             Search search = new Search.Builder(query).addIndex(getIndexName()).addType(type).build();
             SearchResult response = esClient.execute(search);
             @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -1928,7 +1915,7 @@ public class EsStorage implements IStorage, IStorageQuery {
 
             // Now process the filter criteria
             List<SearchCriteriaFilterBean> filters = criteria.getFilters();
-            BaseQueryBuilder q = QueryBuilders.matchAllQuery();
+            QueryBuilder q = QueryBuilders.matchAllQuery();
             if (filters != null && !filters.isEmpty()) {
 
                 AndFilterBuilder andFilter = FilterBuilders.andFilter();
@@ -1957,7 +1944,7 @@ public class EsStorage implements IStorage, IStorageQuery {
             builder.query(q);
 
 
-            String query = builder.toString();
+            String query = builder.string();
             Search search = new Search.Builder(query).addIndex(getIndexName())
                     .addType(type).build();
             SearchResult response = esClient.execute(search);

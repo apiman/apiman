@@ -63,6 +63,8 @@ import io.apiman.manager.api.beans.summary.PolicyFormType;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.es.beans.ApiDefinitionBean;
 import io.apiman.manager.api.es.beans.PoliciesBean;
+import io.apiman.manager.api.es.util.XContentBuilder;
+import io.apiman.manager.api.es.util.XContentFactory;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -74,9 +76,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-
-import org.elasticsearch.common.xcontent.XContentBuilder;
-import org.elasticsearch.common.xcontent.XContentFactory;
 
 /**
  * Marshalls objects into Maps to be used in ES requests.  Also unmarshalls from
@@ -547,7 +546,7 @@ public class EsMarshalling {
                     .field("autoGrant", bean.getAutoGrant());
             Set<PermissionType> permissions = bean.getPermissions();
             if (permissions != null && !permissions.isEmpty()) {
-                builder.array("permissions", permissions.toArray());
+                builder.array("permissions", permissions.toArray(new PermissionType[permissions.size()]));
             }
             builder.endObject();
             postMarshall(bean);

@@ -610,6 +610,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                 throw ExceptionFactory.clientVersionNotFoundException(clientId, version);
             }
             
+            if (clientVersion.getStatus() == ClientStatus.Registered) {
+                throw ExceptionFactory.invalidClientStatusException();
+            }
+            
             String newApiKey = bean.getApiKey();
             if (StringUtils.isEmpty(newApiKey)) {
                 newApiKey = apiKeyGenerator.generate();
