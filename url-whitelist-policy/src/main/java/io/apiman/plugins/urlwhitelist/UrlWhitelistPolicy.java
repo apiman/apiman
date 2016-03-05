@@ -3,6 +3,7 @@ package io.apiman.plugins.urlwhitelist;
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.beans.PolicyFailureType;
+import io.apiman.gateway.engine.beans.exceptions.ConfigurationParseException;
 import io.apiman.gateway.engine.policies.AbstractMappedPolicy;
 import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
@@ -12,6 +13,7 @@ import io.apiman.plugins.urlwhitelist.beans.WhitelistEntryBean;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashMap;
 import java.util.regex.Pattern;
 
 /**
@@ -23,11 +25,36 @@ public class UrlWhitelistPolicy extends AbstractMappedPolicy<UrlWhitelistBean> {
     private static final String APIMAN_GATEWAY = "/apiman-gateway";
 
     /**
+     * Cache of precompiled URL patterns. Note that {@link Pattern} is thread-safe.
+     */
+    private HashMap<String, Pattern> patternMap;
+
+    /**
      * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#getConfigurationClass()
      */
     @Override
     protected Class<UrlWhitelistBean> getConfigurationClass() {
         return UrlWhitelistBean.class;
+    }
+
+    /**
+     * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#parseConfiguration(String)
+     */
+    @Override
+    public UrlWhitelistBean parseConfiguration(String jsonConfiguration) throws ConfigurationParseException {
+        final UrlWhitelistBean config = super.parseConfiguration(jsonConfiguration);
+
+        // precompile patterns for performance
+        patternMap = new HashMap<>();
+        for (WhitelistEntryBean whitelistEntry : config.getWhitelist()) {
+            try {
+                patternMap.put(whitelistEntry.getRegex(), Pattern.compile(whitelistEntry.getRegex()));
+            } catch (Exception e) {
+                throw new ConfigurationParseException("Error compiling whitelist regex pattern: " + whitelistEntry.getRegex(), e);
+            }
+        }
+
+        return config;
     }
 
     /**
@@ -107,7 +134,7 @@ public class UrlWhitelistPolicy extends AbstractMappedPolicy<UrlWhitelistBean> {
      */
     private boolean isRequestPermitted(UrlWhitelistBean config, String normalisedPath, String method) {
         for (WhitelistEntryBean whitelistEntry : config.getWhitelist()) {
-            if (Pattern.compile(whitelistEntry.getRegex()).matcher(normalisedPath).matches()) {
+            if (patternMap.get(whitelistEntry.getRegex()).matcher(normalisedPath).matches()) {
                 return isMethodPermitted(whitelistEntry, method);
             }
         }
