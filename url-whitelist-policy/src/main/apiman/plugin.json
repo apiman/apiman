@@ -1,0 +1,6 @@
+{
+  "frameworkVersion" : 1.0,
+  "name" : "URL Whitelist Policy Plugin",
+  "description" : "This plugin only permits requests matching a whitelist.",
+  "version" : "${project.version}"
+}
