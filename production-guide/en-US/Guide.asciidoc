@@ -258,12 +258,15 @@ https://github.com/apiman/apiman/tree/master/distro/data/src/main/resources/samp
 These examples are also included in the apiman quickstart overlay ZIP download.
 
 Finally you must update the *apiman.properties* file to configure the hibernate dialect for your database.
-Popular dialects for mysql and postgresql are:
+Apiman includes specific dialects that should be used when installing your database via the included
+DDL files:
 
-* *_MySQL 5_*: org.hibernate.dialect.MySQL5Dialect
-* *_Postgresql 9_*: org.hibernate.dialect.PostgreSQLDialect
+* *_H2_*: io.apiman.manager.api.jpa.ApimanH2Dialect
+* *_MySQL_*: io.apiman.manager.api.jpa.ApimanMySQL5Dialect
+* *_Oracle_*: io.apiman.manager.api.jpa.ApimanOracle12Dialect
+* *_Postgresql_*: io.apiman.manager.api.jpa.ApimanPostgreSQLDialect
 
-Here is the line you should change in the *apiman.properties* file:
+For example, here is the line you should change in the *apiman.properties* file:
 
     apiman.hibernate.dialect=io.apiman.manager.api.jpa.ApimanH2Dialect
 

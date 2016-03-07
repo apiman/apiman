@@ -206,12 +206,19 @@ that switching databases also requires a change to the apiman.properties file.  
 changed to appropriate values for your database:
 
 ```
-apiman.hibernate.dialect=org.hibernate.dialect.MySQL5Dialect
+apiman.hibernate.dialect=io.apiman.manager.api.jpa.ApimanMySQL5Dialect
 apiman.hibernate.hbm2ddl.auto=validate
 ```
 
+Note that the following dialects are available:
+
+* io.apiman.manager.api.jpa.ApimanH2Dialect
+* io.apiman.manager.api.jpa.ApimanMySQL5Dialect
+* io.apiman.manager.api.jpa.ApimanOracle12Dialect
+* io.apiman.manager.api.jpa.ApimanPostgreSQLDialect
+
 You can, of course, set the hbm2ddl property to "update" so that hibernate automatically creates the
-database structure when it starts up.  Alternatively, the MySQL and PostgreSQL DDLs can be found in
+database structure when it starts up.  Additional DDLs for various databases can be found in
 *apiman/ddls/*.
 
 === API Gateway Registry
