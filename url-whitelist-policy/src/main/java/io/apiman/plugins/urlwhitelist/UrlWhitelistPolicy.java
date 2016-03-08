@@ -134,7 +134,8 @@ public class UrlWhitelistPolicy extends AbstractMappedPolicy<UrlWhitelistBean> {
      */
     private boolean isRequestPermitted(UrlWhitelistBean config, String normalisedPath, String method) {
         for (WhitelistEntryBean whitelistEntry : config.getWhitelist()) {
-            if (patternMap.get(whitelistEntry.getRegex()).matcher(normalisedPath).matches()) {
+            final Pattern pattern = patternMap.get(whitelistEntry.getRegex());
+            if (null != pattern && pattern.matcher(normalisedPath).matches()) {
                 return isMethodPermitted(whitelistEntry, method);
             }
         }
