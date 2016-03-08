@@ -10,6 +10,7 @@ import java.util.ResourceBundle;
  *
  * @author Pete Cornish {@literal <outofcoffee@gmail.com>}
  */
+@SuppressWarnings("nls")
 public class Messages {
     private static final String DEFAULT_BUNDLE_NAME = "messages";
 

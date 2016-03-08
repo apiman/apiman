@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
  * @author Pete Cornish {@literal <outofcoffee@gmail.com>}
  */
 public class UrlWhitelistPolicy extends AbstractMappedPolicy<UrlWhitelistBean> {
-    private static final String APIMAN_GATEWAY = "/apiman-gateway";
+    private static final String APIMAN_GATEWAY = "/apiman-gateway"; //$NON-NLS-1$
     private static final Messages MESSAGES = Messages.getMessageBundle(UrlWhitelistPolicy.class);
 
     /**
@@ -52,7 +52,7 @@ public class UrlWhitelistPolicy extends AbstractMappedPolicy<UrlWhitelistBean> {
             try {
                 patternMap.put(whitelistEntry.getRegex(), Pattern.compile(whitelistEntry.getRegex()));
             } catch (Exception e) {
-                throw new ConfigurationParseException(MESSAGES.format("Error.CompilingPattern", whitelistEntry.getRegex()), e);
+                throw new ConfigurationParseException(MESSAGES.format("Error.CompilingPattern", whitelistEntry.getRegex()), e); //$NON-NLS-1$
             }
         }
 
@@ -71,7 +71,7 @@ public class UrlWhitelistPolicy extends AbstractMappedPolicy<UrlWhitelistBean> {
         try {
             normalisedPath = getNormalisedPath(config, request);
         } catch (Exception e) {
-            chain.throwError(new RuntimeException(MESSAGES.format("Error.NormalisingPath", request.getUrl()), e));
+            chain.throwError(new RuntimeException(MESSAGES.format("Error.NormalisingPath", request.getUrl()), e)); //$NON-NLS-1$
             return;
         }
 
@@ -80,7 +80,7 @@ public class UrlWhitelistPolicy extends AbstractMappedPolicy<UrlWhitelistBean> {
             requestPermitted = isRequestPermitted(config, normalisedPath, request.getType());
         } catch (Exception e) {
             chain.throwError(new RuntimeException(MESSAGES.format(
-                    "Error.CheckingRequest", request.getType(), normalisedPath), e));
+                    "Error.CheckingRequest", request.getType(), normalisedPath), e)); //$NON-NLS-1$
             return;
         }
 
@@ -88,7 +88,7 @@ public class UrlWhitelistPolicy extends AbstractMappedPolicy<UrlWhitelistBean> {
             chain.doApply(request);
         } else {
             chain.doFailure(new PolicyFailure(PolicyFailureType.Authorization,
-                    HttpURLConnection.HTTP_UNAUTHORIZED, MESSAGES.format("Failure.UrlNotPermitted", normalisedPath)));
+                    HttpURLConnection.HTTP_UNAUTHORIZED, MESSAGES.format("Failure.UrlNotPermitted", normalisedPath))); //$NON-NLS-1$
         }
     }
 
@@ -112,7 +112,7 @@ public class UrlWhitelistPolicy extends AbstractMappedPolicy<UrlWhitelistBean> {
             }
 
             // remove org/API/version prefix, e.g. '/myorg/myapi/1.0'
-            final String apiPrefix = String.format("/%s/%s/%s",
+            final String apiPrefix = String.format("/%s/%s/%s", //$NON-NLS-1$
                     request.getApiOrgId(),
                     request.getApiId(),
                     request.getApiVersion());
@@ -151,25 +151,25 @@ public class UrlWhitelistPolicy extends AbstractMappedPolicy<UrlWhitelistBean> {
      */
     private boolean isMethodPermitted(WhitelistEntryBean whitelistEntry, String method) {
         switch (method.toUpperCase()) {
-            case "GET":
+            case "GET": //$NON-NLS-1$
                 return whitelistEntry.isMethodGet();
-            case "POST":
+            case "POST": //$NON-NLS-1$
                 return whitelistEntry.isMethodPost();
-            case "PUT":
+            case "PUT": //$NON-NLS-1$
                 return whitelistEntry.isMethodPut();
-            case "PATCH":
+            case "PATCH": //$NON-NLS-1$
                 return whitelistEntry.isMethodPatch();
-            case "DELETE":
+            case "DELETE": //$NON-NLS-1$
                 return whitelistEntry.isMethodDelete();
-            case "HEAD":
+            case "HEAD": //$NON-NLS-1$
                 return whitelistEntry.isMethodHead();
-            case "OPTIONS":
+            case "OPTIONS": //$NON-NLS-1$
                 return whitelistEntry.isMethodOptions();
-            case "TRACE":
+            case "TRACE": //$NON-NLS-1$
                 return whitelistEntry.isMethodTrace();
 
             default:
-                throw new UnsupportedOperationException(MESSAGES.format("Error.MethodNotSupported", method));
+                throw new UnsupportedOperationException(MESSAGES.format("Error.MethodNotSupported", method)); //$NON-NLS-1$
         }
     }
 }

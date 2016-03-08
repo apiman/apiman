@@ -19,6 +19,9 @@ import java.util.Set;
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 @JsonPropertyOrder({"removePathPrefix", "whitelist"})
 public class UrlWhitelistBean implements Serializable {
+    
+    private static final long serialVersionUID = 5141852524352883648L;
+
     @JsonProperty("whitelist")
     @JsonDeserialize(as = java.util.LinkedHashSet.class)
     private Set<WhitelistEntryBean> whitelist = new LinkedHashSet<>();

@@ -49,7 +49,7 @@ import java.util.Set;
 public class SoapAuthorizationPolicy extends AbstractMappedPolicy<SoapAuthorizationConfig> {
 
     public static final String AUTHENTICATED_USER_ROLES = "io.apiman.policies.auth::authenticated-user-roles"; //$NON-NLS-1$
-    public static final String HEADER_SOAP_ACTION = "SOAPAction";
+    public static final String HEADER_SOAP_ACTION = "SOAPAction"; //$NON-NLS-1$
 
     public SoapAuthorizationPolicy() {
     }
