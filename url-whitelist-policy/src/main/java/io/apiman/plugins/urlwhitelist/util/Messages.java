@@ -17,30 +17,16 @@ public class Messages {
     private final ResourceBundle resourceBundle;
     private final String messagePrefix;
 
-    public Messages(String bundleName, String messagePrefix) {
+    /**
+     * Creates a new {@link Messages} using the package name of the class as the path and the simple name of the
+     * class as the message prefix.
+     *
+     * @param packageName the package name of the bundle
+     * @param messagePrefix the message prefix (can be {@code null})
+     */
+    public Messages(String packageName, String messagePrefix) {
         this.messagePrefix = (StringUtils.isNotBlank(messagePrefix) ? messagePrefix + "." : "");
-        this.resourceBundle = ResourceBundle.getBundle(bundleName);
-    }
-
-    /**
-     * Creates a new {@link Messages} using the package name of the class as the path and the simple name of the
-     * class as the message prefix.
-     *
-     * @param clazz the Class for which to get the message bundle
-     */
-    public Messages(Class<?> clazz) {
-        this(clazz.getPackage().getName() + "." + DEFAULT_BUNDLE_NAME, clazz.getSimpleName());
-    }
-
-    /**
-     * Creates a new {@link Messages} using the package name of the class as the path and the simple name of the
-     * class as the message prefix.
-     *
-     * @param clazz the Class for which to get the message bundle
-     * @return a new message bundle
-     */
-    public static Messages getMessageBundle(Class<?> clazz) {
-        return new Messages(clazz);
+        this.resourceBundle = ResourceBundle.getBundle(packageName + "." + DEFAULT_BUNDLE_NAME);
     }
 
     /**
