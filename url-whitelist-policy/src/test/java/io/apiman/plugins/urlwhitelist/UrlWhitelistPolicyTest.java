@@ -52,7 +52,7 @@ public class UrlWhitelistPolicyTest extends ApimanPolicyTest {
         } catch (PolicyFailureError policyFailureError) {
             final PolicyFailure failure = policyFailureError.getFailure();
 
-            assertEquals(HttpURLConnection.HTTP_UNAUTHORIZED, failure.getFailureCode());
+            assertEquals(HttpURLConnection.HTTP_FORBIDDEN, failure.getFailureCode());
             assertEquals(PolicyFailureType.Authorization, failure.getType());
         }
     }
