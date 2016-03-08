@@ -23,13 +23,8 @@ import java.util.regex.Pattern;
  * @author Pete Cornish {@literal <outofcoffee@gmail.com>}
  */
 public class UrlWhitelistPolicy extends AbstractMappedPolicy<UrlWhitelistBean> {
+    private static final Messages MESSAGES = new Messages("io.apiman.plugins.urlwhitelist", "UrlWhitelistPolicy");
     private static final String APIMAN_GATEWAY = "/apiman-gateway";
-
-    private final Messages messages;
-
-    public UrlWhitelistPolicy() {
-        messages = Messages.getMessageBundle(UrlWhitelistPolicy.class);
-    }
 
     /**
      * Cache of precompiled URL patterns. Note that {@link Pattern} is thread-safe.
@@ -57,7 +52,7 @@ public class UrlWhitelistPolicy extends AbstractMappedPolicy<UrlWhitelistBean> {
             try {
                 patternMap.put(whitelistEntry.getRegex(), Pattern.compile(whitelistEntry.getRegex()));
             } catch (Exception e) {
-                throw new ConfigurationParseException(messages.format("Error.CompilingPattern", whitelistEntry.getRegex()), e);
+                throw new ConfigurationParseException(MESSAGES.format("Error.CompilingPattern", whitelistEntry.getRegex()), e);
             }
         }
 
@@ -76,7 +71,7 @@ public class UrlWhitelistPolicy extends AbstractMappedPolicy<UrlWhitelistBean> {
         try {
             normalisedPath = getNormalisedPath(config, request);
         } catch (Exception e) {
-            chain.throwError(new RuntimeException(messages.format("Error.NormalisingPath", request.getUrl()), e));
+            chain.throwError(new RuntimeException(MESSAGES.format("Error.NormalisingPath", request.getUrl()), e));
             return;
         }
 
@@ -84,7 +79,7 @@ public class UrlWhitelistPolicy extends AbstractMappedPolicy<UrlWhitelistBean> {
         try {
             requestPermitted = isRequestPermitted(config, normalisedPath, request.getType());
         } catch (Exception e) {
-            chain.throwError(new RuntimeException(messages.format(
+            chain.throwError(new RuntimeException(MESSAGES.format(
                     "Error.CheckingRequest", request.getType(), normalisedPath), e));
             return;
         }
@@ -93,7 +88,7 @@ public class UrlWhitelistPolicy extends AbstractMappedPolicy<UrlWhitelistBean> {
             chain.doApply(request);
         } else {
             chain.doFailure(new PolicyFailure(PolicyFailureType.Authorization,
-                    HttpURLConnection.HTTP_UNAUTHORIZED, messages.format("Failure.UrlNotPermitted", normalisedPath)));
+                    HttpURLConnection.HTTP_FORBIDDEN, MESSAGES.format("Failure.UrlNotPermitted", normalisedPath)));
         }
     }
 
@@ -174,7 +169,7 @@ public class UrlWhitelistPolicy extends AbstractMappedPolicy<UrlWhitelistBean> {
                 return whitelistEntry.isMethodTrace();
 
             default:
-                throw new UnsupportedOperationException(messages.format("Error.MethodNotSupported", method));
+                throw new UnsupportedOperationException(MESSAGES.format("Error.MethodNotSupported", method));
         }
     }
 }
