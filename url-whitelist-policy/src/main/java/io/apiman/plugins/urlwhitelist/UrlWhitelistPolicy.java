@@ -88,7 +88,7 @@ public class UrlWhitelistPolicy extends AbstractMappedPolicy<UrlWhitelistBean> {
             chain.doApply(request);
         } else {
             chain.doFailure(new PolicyFailure(PolicyFailureType.Authorization,
-                    HttpURLConnection.HTTP_UNAUTHORIZED, MESSAGES.format("Failure.UrlNotPermitted", normalisedPath))); //$NON-NLS-1$
+                    HttpURLConnection.HTTP_FORBIDDEN, MESSAGES.format("Failure.UrlNotPermitted", normalisedPath))); //$NON-NLS-1$
         }
     }
 
