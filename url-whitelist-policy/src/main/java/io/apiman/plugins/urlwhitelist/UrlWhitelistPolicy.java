@@ -24,8 +24,8 @@ import java.util.regex.Pattern;
  * @author Pete Cornish {@literal <outofcoffee@gmail.com>}
  */
 public class UrlWhitelistPolicy extends AbstractMappedPolicy<UrlWhitelistBean> {
-    private static final Messages MESSAGES = new Messages("io.apiman.plugins.urlwhitelist", "UrlWhitelistPolicy");
-    private static final String APIMAN_GATEWAY = "/apiman-gateway";
+    private static final Messages MESSAGES = new Messages("io.apiman.plugins.urlwhitelist", "UrlWhitelistPolicy"); //$NON-NLS-1$ //$NON-NLS-2$
+    private static final String APIMAN_GATEWAY = "/apiman-gateway"; //$NON-NLS-1$
 
     /**
      * Cache of precompiled URL patterns. Note that {@link Pattern} is thread-safe.
