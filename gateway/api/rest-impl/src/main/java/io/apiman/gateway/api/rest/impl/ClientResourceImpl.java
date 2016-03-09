@@ -44,6 +44,10 @@ public class ClientResourceImpl extends AbstractResourceImpl implements IClientR
      */
     @Override
     public void register(Client client) throws RegistrationException, NotAuthorizedException {
+        if (client.getApiKey() == null) {
+            throw new RegistrationException("Cannot Register Client: Missing API Key"); //$NON-NLS-1$
+        }
+
         final Set<Throwable> errorHolder = new HashSet<>();
         final CountDownLatch latch = new CountDownLatch(1);
         // Register client; latch until result returned and evaluated

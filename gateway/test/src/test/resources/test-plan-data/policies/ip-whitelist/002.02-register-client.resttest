@@ -1,0 +1,24 @@
+PUT /clients admin/admin
+Content-Type: application/json
+
+{
+  "organizationId" : "Policy_IPWhitelistTest",
+  "clientId" : "test.02",
+  "version" : "1.0.0",
+  "apiKey" : "12345_403",
+  "contracts" : [
+    {
+      "apiOrgId" : "Policy_IPWhitelistTest",
+      "apiId" : "echo",
+      "apiVersion" : "1.0.0",
+      "policies" : [
+        {
+          "policyImpl" : "class:io.apiman.gateway.engine.policies.IPWhitelistPolicy",
+          "policyJsonConfig" : "{ \"responseCode\" : \"403\", \"ipList\" : [ \"1.2.3.4\" ] }"
+        }
+      ]
+    }
+  ]
+}
+----
+204

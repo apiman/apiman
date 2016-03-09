@@ -15,8 +15,6 @@
  */
 package io.apiman.manager.api.beans.orgs;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
 import java.io.Serializable;
 import java.util.Date;
 
@@ -24,6 +22,9 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 /**
  * An APIMan Organization.  This is an important top level entity in the APIMan
@@ -33,7 +34,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "organizations")
-@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
+@JsonInclude(Include.NON_NULL)
 public class OrganizationBean implements Serializable {
 
     private static final long serialVersionUID = -506427154633682906L;

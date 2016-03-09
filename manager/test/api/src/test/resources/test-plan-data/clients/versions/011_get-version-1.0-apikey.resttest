@@ -1,0 +1,8 @@
+GET /organizations/Organization1/clients/Client1/versions/1.0/apikey admin/admin
+----
+200
+Content-Type: application/json
+
+{
+  "apiKey" : "0112358"
+}

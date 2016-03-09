@@ -7,6 +7,7 @@
     <test name="Create Organization 1">test-plan-data/contracts/create/001_create-org1.resttest</test>
     <test name="Create Client 1">test-plan-data/contracts/create/002_create-client1.resttest</test>
     <test name="Create Client Version 1.0">test-plan-data/contracts/create/003_create-client-version-1.0.resttest</test>
+    <test name="Create Client Version 1.1 (Custom API Key)">test-plan-data/contracts/create/003.5_create-client-version-1.1-custom-key.resttest</test>
     <test name="Create Plan 1">test-plan-data/contracts/create/004_create-plan1.resttest</test>
     <test name="Create Plan Version 1.0">test-plan-data/contracts/create/005_create-plan-version-1.0.resttest</test>
     
@@ -38,7 +39,7 @@
     <test name="Publish API 1">test-plan-data/contracts/publish/001_publish-api-1.resttest</test>
     <test name="Publish API 2">test-plan-data/contracts/publish/002_publish-api-2.resttest</test>
 
-    <test name="Create Contract to API 1 (with custom apiKey)">test-plan-data/contracts/contracts/003_create-contract1.resttest</test>
+    <test name="Create Contract to API 1">test-plan-data/contracts/contracts/003_create-contract1.resttest</test>
     <test name="List Contracts for Client 1 [1]">test-plan-data/contracts/contracts/004_get-contracts.resttest</test>
     <test name="Create Contract to API 2">test-plan-data/contracts/contracts/005_create-contract2.resttest</test>
     <test name="List Contracts for Client 1 [2]">test-plan-data/contracts/contracts/006_get-contracts.resttest</test>
@@ -71,6 +72,13 @@
   <testGroup name="Ensure Auditing">
     <test name="Client Activity">test-plan-data/contracts/auditing/001_client_activity.resttest</test>
     <test name="API Activity">test-plan-data/contracts/auditing/002_api_activity.resttest</test>
+  </testGroup>
+
+  <!-- Duplicate Contract Error -->
+  <testGroup name="Duplicate Contract">
+    <test name="Create Client 1 Version 2.0">test-plan-data/contracts/multi-contract/001_create-client-version-2.0.resttest</test>
+    <test name="Create Contract - Plan A">test-plan-data/contracts/multi-contract/002_create-contract-1.resttest</test>
+    <test name="Create Contract - Plan B (error)">test-plan-data/contracts/multi-contract/003_create-contract-2.resttest</test>
   </testGroup>
 
 </testPlan>

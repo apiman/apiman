@@ -36,6 +36,7 @@ public class ClientVersionSummaryBean implements Serializable {
     private String description;
     private ClientStatus status;
     private String version;
+    private String apiKey;
 
     /**
      * Constructor.
@@ -149,7 +150,21 @@ public class ClientVersionSummaryBean implements Serializable {
     public String toString() {
         return "ClientVersionSummaryBean [organizationId=" + organizationId + ", organizationName="
                 + organizationName + ", id=" + id + ", name=" + name + ", description=" + description
-                + ", status=" + status + ", version=" + version + "]";
+                + ", status=" + status + ", version=" + version + ", apiKey=" + apiKey + "]";
+    }
+
+    /**
+     * @return the apiKey
+     */
+    public String getApiKey() {
+        return apiKey;
+    }
+
+    /**
+     * @param apiKey the apiKey to set
+     */
+    public void setApiKey(String apiKey) {
+        this.apiKey = apiKey;
     }
 
 }

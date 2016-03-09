@@ -1,0 +1,24 @@
+PUT /clients admin/admin
+Content-Type: application/json
+
+{
+  "organizationId" : "Policy_IPBlacklistTest",
+  "clientId" : "test.01",
+  "version" : "1.0.0",
+  "apiKey" : "12345",
+  "contracts" : [
+    {
+      "apiOrgId" : "Policy_IPBlacklistTest",
+      "apiId" : "echo",
+      "apiVersion" : "1.0.0",
+      "policies" : [
+        {
+          "policyImpl" : "class:io.apiman.gateway.engine.policies.IPBlacklistPolicy",
+          "policyJsonConfig" : "{ \"ipList\" : [ \"1.2.3.4\" ] }"
+        }
+      ]
+    }
+  ]
+}
+----
+204

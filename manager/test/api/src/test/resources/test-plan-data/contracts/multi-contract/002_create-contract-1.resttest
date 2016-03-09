@@ -1,0 +1,15 @@
+POST /organizations/Organization1/clients/Client1/versions/2.0/contracts admin/admin
+Content-Type: application/json
+
+{
+  "apiOrgId" : "Organization2",
+  "apiId" : "API2",
+  "apiVersion" : "1.5",
+  "planId" : "PlanA"
+}
+----
+200
+Content-Type: application/json
+
+{
+}

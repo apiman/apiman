@@ -15,7 +15,6 @@
  */
 package io.apiman.manager.api.beans.gateways;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.apiman.common.util.crypt.CurrentDataEncrypter;
 
 import java.io.Serializable;
@@ -36,6 +35,9 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Type;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 /**
  * Models a single gateway configured by an admin.  When publishing APIs,
  * the user must specific which Gateway to publish to.
@@ -44,7 +46,7 @@ import org.hibernate.annotations.Type;
  */
 @Entity
 @Table(name = "gateways")
-@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
+@JsonInclude(Include.NON_NULL)
 public class GatewayBean implements Serializable {
 
     private static final long serialVersionUID = 388316225715740602L;

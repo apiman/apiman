@@ -21,7 +21,6 @@ import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.Api;
 import io.apiman.gateway.engine.beans.ApiContract;
-import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.Client;
 import io.apiman.gateway.engine.beans.Contract;
 import io.apiman.gateway.engine.beans.Policy;
@@ -123,13 +122,33 @@ public class SecureRegistryWrapper implements IRegistry {
             }
         });
     }
-
+    
     /**
-     * @see io.apiman.gateway.engine.IRegistry#getContract(io.apiman.gateway.engine.beans.ApiRequest, io.apiman.gateway.engine.async.IAsyncResultHandler)
+     * @see io.apiman.gateway.engine.IRegistry#getClient(java.lang.String, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
     @Override
-    public void getContract(ApiRequest request, final IAsyncResultHandler<ApiContract> handler) {
-        delegate.getContract(request, new IAsyncResultHandler<ApiContract>() {
+    public void getClient(String apiKey, IAsyncResultHandler<Client> handler) {
+        delegate.getClient(apiKey, new IAsyncResultHandler<Client>() {
+            @Override
+            public void handle(IAsyncResult<Client> result) {
+                if (result.isSuccess()) {
+                    Client client = result.getResult();
+                    for (Contract contract : client.getContracts()) {
+                        decryptPolicies(contract.getPolicies());
+                    }
+                }
+                handler.handle(result);
+            }
+        });
+    }
+    
+    /**
+     * @see io.apiman.gateway.engine.IRegistry#getContract(java.lang.String, java.lang.String, java.lang.String, java.lang.String, io.apiman.gateway.engine.async.IAsyncResultHandler)
+     */
+    @Override
+    public void getContract(String apiOrganizationId, String apiId, String apiVersion, String apiKey,
+            IAsyncResultHandler<ApiContract> handler) {
+        delegate.getContract(apiOrganizationId, apiId, apiVersion, apiKey, new IAsyncResultHandler<ApiContract>() {
             @Override
             public void handle(IAsyncResult<ApiContract> result) {
                 if (result.isSuccess()) {

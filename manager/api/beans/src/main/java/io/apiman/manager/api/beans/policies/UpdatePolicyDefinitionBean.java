@@ -15,16 +15,17 @@
  */
 package io.apiman.manager.api.beans.policies;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
 import java.io.Serializable;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 /**
  * The bean/model used when updating a new policy definition.
  *
  * @author eric.wittmann@redhat.com
  */
-@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
+@JsonInclude(Include.NON_NULL)
 public class UpdatePolicyDefinitionBean implements Serializable {
 
     private static final long serialVersionUID = 350049376316732992L;

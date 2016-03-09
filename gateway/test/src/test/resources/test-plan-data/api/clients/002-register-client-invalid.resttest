@@ -5,9 +5,9 @@ Content-Type: application/json
   "organizationId" : "GatewayApiTest",
   "clientId" : "invalid-test-client",
   "version" : "1.0",
+  "apiKey" : "12345",
   "contracts" : [
     {
-      "apiKey" : "12345_002",
       "apiOrgId" : "GatewayApiTest",
       "apiId" : "invalid-api",
       "apiVersion" : "1.0"

@@ -1,0 +1,22 @@
+POST /organizations/Test/clients/client1/versions ${apiman.suite.api-username}/${apiman.suite.api-password}
+Content-Type: application/json
+
+{
+  "version" : "1.1",
+  "apiKey" : "client1-1.1_12345"
+}
+----
+200
+Content-Type: application/json
+
+{
+  "client" : {
+    "organization" : {
+      "id" : "Test"
+    },
+    "id" : "client1",
+    "name" : "client1"
+  },
+  "status" : "Created",
+  "version" : "1.1"
+}

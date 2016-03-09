@@ -500,8 +500,10 @@ public class TestPlanRunner {
                         }
                     }
 
-                    Assert.assertEquals("Value mismatch for text field '" + expectedFieldName + "'.", expected,
-                            actual);
+                    if (!expected.equals("*")) {
+                        Assert.assertEquals("Value mismatch for text field '" + expectedFieldName + "'.", expected,
+                                actual);
+                    }
                 } else if (expectedValue instanceof NumericNode) {
                     NumericNode numeric = (NumericNode) expectedValue;
                     Number expected = numeric.numberValue();

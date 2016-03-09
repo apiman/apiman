@@ -1,0 +1,18 @@
+POST /organizations/Organization1/clients/Client1/versions/2.0/contracts admin/admin
+Content-Type: application/json
+
+{
+  "apiOrgId" : "Organization2",
+  "apiId" : "API2",
+  "apiVersion" : "1.5",
+  "planId" : "PlanB"
+}
+----
+500
+Content-Type: application/json
+
+{
+  "type": "SystemErrorException",
+  "message": "io.apiman.manager.api.core.exceptions.StorageException: Error creating contract: duplicate contract detected.",
+  "stacktrace": "*"
+}

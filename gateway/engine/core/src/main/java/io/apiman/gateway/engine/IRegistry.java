@@ -18,9 +18,7 @@ package io.apiman.gateway.engine;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.Api;
 import io.apiman.gateway.engine.beans.ApiContract;
-import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.Client;
-import io.apiman.gateway.engine.beans.Contract;
 import io.apiman.gateway.engine.beans.exceptions.InvalidContractException;
 import io.apiman.gateway.engine.beans.exceptions.PublishingException;
 import io.apiman.gateway.engine.beans.exceptions.RegistrationException;
@@ -34,16 +32,6 @@ import io.apiman.gateway.engine.beans.exceptions.RegistrationException;
  * @author eric.wittmann@redhat.com
  */
 public interface IRegistry {
-
-    /**
-     * Gets the {@link Contract} to use based on information included in the inbound
-     * API request.
-     *
-     * @param request an inbound API request
-     * @param handler the result handler
-     * @throws InvalidContractException when contract is invalid
-     */
-    public void getContract(ApiRequest request, IAsyncResultHandler<ApiContract> handler);
 
     /**
      * Publishes a new {@link Api} into the registry.
@@ -85,5 +73,24 @@ public interface IRegistry {
      * @param handler the result handler
      */
     public void getApi(String organizationId, String apiId, String apiVersion, IAsyncResultHandler<Api> handler);
+
+    /**
+     * Gets the {@link Client} referenced by the given API Key.
+     *
+     * @param request an inbound API request
+     * @param handler the result handler
+     * @throws InvalidContractException when contract is invalid
+     */
+    public void getClient(String apiKey, IAsyncResultHandler<Client> handler);
+    
+    /**
+     * Gets the full contract associated with the given API identifier and API Key.
+     * @param apiOrganizationId
+     * @param apiId
+     * @param apiVersion
+     * @param apiKey
+     * @param handler
+     */
+    public void getContract(String apiOrganizationId, String apiId, String apiVersion, String apiKey, IAsyncResultHandler<ApiContract> handler);
 
 }

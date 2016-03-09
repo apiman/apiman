@@ -15,8 +15,9 @@
       <span class="icon-bar"></span>
     </button>
     <a class="navbar-brand"
+       style="padding: 9px 0;"
        href="{{ pluginName }}/">
-      <img src="//rawgit.com/patternfly/patternfly/master/dist/img/brand.svg" />
+      <img src="/plugins/{{ pluginName }}/img/API-MGMT-Header.png" />
     </a>
   </div>
   <div class="collapse navbar-collapse navbar-collapse-1">

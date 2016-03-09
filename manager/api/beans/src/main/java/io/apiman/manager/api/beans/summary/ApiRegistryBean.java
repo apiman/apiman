@@ -37,6 +37,7 @@ public class ApiRegistryBean implements Serializable {
 
     private static final long serialVersionUID = 7369169626368271089L;
 
+    private String apiKey;
     private List<ApiEntryBean> apis = new ArrayList<>();
 
     /**
@@ -59,6 +60,20 @@ public class ApiRegistryBean implements Serializable {
         this.apis = apis;
     }
 
+    /**
+     * @return the apiKey
+     */
+    public String getApiKey() {
+        return apiKey;
+    }
+
+    /**
+     * @param apiKey the apiKey to set
+     */
+    public void setApiKey(String apiKey) {
+        this.apiKey = apiKey;
+    }
+
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
@@ -66,7 +81,7 @@ public class ApiRegistryBean implements Serializable {
     @SuppressWarnings("nls")
     public String toString() {
         final int maxLen = 10;
-        return "ApiRegistryBean [apis="
+        return "ApiRegistryBean [apiKey=" + apiKey + ", apis="
                 + (apis != null ? apis.subList(0, Math.min(apis.size(), maxLen)) : null) + "]";
     }
 }

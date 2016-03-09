@@ -357,11 +357,11 @@ public class ActionResourceImpl implements IActionResource {
         client.setOrganizationId(versionBean.getClient().getOrganization().getId());
         client.setClientId(versionBean.getClient().getId());
         client.setVersion(versionBean.getVersion());
+        client.setApiKey(versionBean.getApikey());
 
         Set<Contract> contracts = new HashSet<>();
         for (ContractSummaryBean contractBean : contractBeans) {
             Contract contract = new Contract();
-            contract.setApiKey(contractBean.getApikey());
             contract.setPlan(contractBean.getPlanId());
             contract.setApiId(contractBean.getApiId());
             contract.setApiOrgId(contractBean.getApiOrganizationId());
@@ -494,7 +494,8 @@ public class ActionResourceImpl implements IActionResource {
             }
             return policies;
         } catch (Exception e) {
-            throw ExceptionFactory.actionException(Messages.i18n.format("ErrorAggregatingPolicies", contractBean.getApikey()), e); //$NON-NLS-1$
+            throw ExceptionFactory.actionException(
+                    Messages.i18n.format("ErrorAggregatingPolicies", contractBean.getClientId() + "->" + contractBean.getApiDescription()), e); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
 

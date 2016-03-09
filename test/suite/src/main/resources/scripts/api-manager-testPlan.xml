@@ -34,9 +34,11 @@
   <testGroup name="Clients">
     <test name="Create client1">data/clients/001_create-client1.resttest</test>
     <test name="Create client1 (version 1.0)">data/clients/002_create-client1-version-1.0.resttest</test>
-    <test name="Create client1->echo:Gold contract">data/clients/003_create-gold-contract.resttest</test>
-    <test name="Create client1->echo:Silver contract">data/clients/004_create-silver-contract.resttest</test>
-    <test name="Register client1">data/publish/002_register-client1.resttest</test>
+    <test name="Create client1 (version 1.1)">data/clients/003_create-client1-version-1.1.resttest</test>
+    <test name="Create client1->echo:Gold contract">data/clients/004_create-gold-contract.resttest</test>
+    <test name="Create client1->echo:Silver contract">data/clients/005_create-silver-contract.resttest</test>
+    <test name="Register client1 (version 1.0)">data/publish/002_register-client1-1.0.resttest</test>
+    <test name="Register client1 (version 1.1)">data/publish/002_register-client1-1.1.resttest</test>
   </testGroup>
   
 </testPlan>

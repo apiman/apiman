@@ -28,6 +28,7 @@ public abstract class AbstractESComponent {
 
     private final Map<String, String> config;
     private JestClient esClient;
+    private String indexName;
 
     /**
      * Constructor.
@@ -35,6 +36,11 @@ public abstract class AbstractESComponent {
      */
     public AbstractESComponent(Map<String, String> config) {
         this.config = config;
+        String indexName = config.get("client.index"); //$NON-NLS-1$
+        if (indexName == null) {
+            indexName = getDefaultIndexName();
+        }
+        this.indexName = indexName;
     }
 
     /**
@@ -42,14 +48,21 @@ public abstract class AbstractESComponent {
      */
     public synchronized JestClient getClient() {
         if (esClient == null) {
-            esClient = ESClientFactory.createClient(config, getIndexName());
+            esClient = ESClientFactory.createClient(config, getDefaultIndexName());
         }
         return esClient;
     }
 
     /**
-     * Gets the configured index name.
+     * Gets the default index name for this component.
      */
-    protected abstract String getIndexName();
+    protected abstract String getDefaultIndexName();
+    
+    /**
+     * Gets the index name to use when reading/writing to ES.
+     */
+    protected String getIndexName() {
+        return indexName;
+    }
 
 }

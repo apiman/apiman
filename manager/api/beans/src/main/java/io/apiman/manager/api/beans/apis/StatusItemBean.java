@@ -16,14 +16,15 @@
 
 package io.apiman.manager.api.beans.apis;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 /**
  * A single item in the API status.
  *
  * @author eric.wittmann@redhat.com
  */
-@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
+@JsonInclude(Include.NON_NULL)
 public class StatusItemBean {
 
     private String id;

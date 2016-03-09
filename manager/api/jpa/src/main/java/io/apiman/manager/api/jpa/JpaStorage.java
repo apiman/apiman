@@ -166,6 +166,16 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      */
     @Override
     public void createContract(ContractBean contract) throws StorageException {
+        List<ContractSummaryBean> contracts = getClientContractsInternal(contract.getClient().getClient().getOrganization().getId(),
+                contract.getClient().getClient().getId(), contract.getClient().getVersion());
+        for (ContractSummaryBean csb : contracts) {
+            if (csb.getApiOrganizationId().equals(contract.getApi().getApi().getOrganization().getId()) &&
+                    csb.getApiId().equals(contract.getApi().getApi().getId()) &&
+                    csb.getApiVersion().equals(contract.getApi().getVersion()))
+                {
+                    throw new StorageException("Error creating contract: duplicate contract detected."); //$NON-NLS-1$
+                }
+        }
         super.create(contract);
     }
 
@@ -1217,7 +1227,6 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
 
                 ContractSummaryBean csb = new ContractSummaryBean();
                 csb.setClientId(client.getId());
-                csb.setApikey(contractBean.getApikey());
                 csb.setClientOrganizationId(client.getOrganization().getId());
                 csb.setClientOrganizationName(clientOrg.getName());
                 csb.setClientName(client.getName());
@@ -1300,6 +1309,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
                 avsb.setName(clientVersion.getClient().getName());
                 avsb.setDescription(clientVersion.getClient().getDescription());
                 avsb.setVersion(clientVersion.getVersion());
+                avsb.setApiKey(clientVersion.getApikey());
                 avsb.setStatus(clientVersion.getStatus());
 
                 rval.add(avsb);
@@ -1319,60 +1329,70 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     @Override
     public List<ContractSummaryBean> getClientContracts(String organizationId, String clientId,
             String version) throws StorageException {
-        List<ContractSummaryBean> rval = new ArrayList<>();
-
         beginTx();
         try {
-            EntityManager entityManager = getActiveEntityManager();
-            @SuppressWarnings("nls")
-            String jpql =
-                    "SELECT c from ContractBean c " +
-                    "  JOIN c.client clientv " +
-                    "  JOIN clientv.client client " +
-                    "  JOIN client.organization aorg" +
-                    " WHERE client.id = :clientId " +
-                    "   AND aorg.id = :orgId " +
-                    "   AND clientv.version = :version " +
-                    " ORDER BY aorg.id, client.id ASC";
-            Query query = entityManager.createQuery(jpql);
-            query.setParameter("orgId", organizationId); //$NON-NLS-1$
-            query.setParameter("clientId", clientId); //$NON-NLS-1$
-            query.setParameter("version", version); //$NON-NLS-1$
-            List<ContractBean> contracts = query.getResultList();
-            for (ContractBean contractBean : contracts) {
-                ClientBean client = contractBean.getClient().getClient();
-                ApiBean api = contractBean.getApi().getApi();
-                PlanBean plan = contractBean.getPlan().getPlan();
-
-                OrganizationBean clientOrg = entityManager.find(OrganizationBean.class, client.getOrganization().getId());
-                OrganizationBean apiOrg = entityManager.find(OrganizationBean.class, api.getOrganization().getId());
-
-                ContractSummaryBean csb = new ContractSummaryBean();
-                csb.setClientId(client.getId());
-                csb.setApikey(contractBean.getApikey());
-                csb.setClientOrganizationId(client.getOrganization().getId());
-                csb.setClientOrganizationName(clientOrg.getName());
-                csb.setClientName(client.getName());
-                csb.setClientVersion(contractBean.getClient().getVersion());
-                csb.setContractId(contractBean.getId());
-                csb.setCreatedOn(contractBean.getCreatedOn());
-                csb.setPlanId(plan.getId());
-                csb.setPlanName(plan.getName());
-                csb.setPlanVersion(contractBean.getPlan().getVersion());
-                csb.setApiDescription(api.getDescription());
-                csb.setApiId(api.getId());
-                csb.setApiName(api.getName());
-                csb.setApiOrganizationId(apiOrg.getId());
-                csb.setApiOrganizationName(apiOrg.getName());
-                csb.setApiVersion(contractBean.getApi().getVersion());
-
-                rval.add(csb);
-            }
+            return getClientContractsInternal(organizationId, clientId, version);
         } catch (Throwable t) {
             logger.error(t.getMessage(), t);
             throw new StorageException(t);
         } finally {
             rollbackTx();
+        }
+    }
+    
+    /**
+     * Returns a list of all contracts for the given client.
+     * @param organizationId
+     * @param clientId
+     * @param version
+     * @throws StorageException
+     */
+    protected List<ContractSummaryBean> getClientContractsInternal(String organizationId, String clientId,
+            String version) throws StorageException {
+        List<ContractSummaryBean> rval = new ArrayList<>();
+        EntityManager entityManager = getActiveEntityManager();
+        @SuppressWarnings("nls")
+        String jpql =
+                "SELECT c from ContractBean c " +
+                "  JOIN c.client clientv " +
+                "  JOIN clientv.client client " +
+                "  JOIN client.organization aorg" +
+                " WHERE client.id = :clientId " +
+                "   AND aorg.id = :orgId " +
+                "   AND clientv.version = :version " +
+                " ORDER BY aorg.id, client.id ASC";
+        Query query = entityManager.createQuery(jpql);
+        query.setParameter("orgId", organizationId); //$NON-NLS-1$
+        query.setParameter("clientId", clientId); //$NON-NLS-1$
+        query.setParameter("version", version); //$NON-NLS-1$
+        List<ContractBean> contracts = query.getResultList();
+        for (ContractBean contractBean : contracts) {
+            ClientBean client = contractBean.getClient().getClient();
+            ApiBean api = contractBean.getApi().getApi();
+            PlanBean plan = contractBean.getPlan().getPlan();
+
+            OrganizationBean clientOrg = entityManager.find(OrganizationBean.class, client.getOrganization().getId());
+            OrganizationBean apiOrg = entityManager.find(OrganizationBean.class, api.getOrganization().getId());
+
+            ContractSummaryBean csb = new ContractSummaryBean();
+            csb.setClientId(client.getId());
+            csb.setClientOrganizationId(client.getOrganization().getId());
+            csb.setClientOrganizationName(clientOrg.getName());
+            csb.setClientName(client.getName());
+            csb.setClientVersion(contractBean.getClient().getVersion());
+            csb.setContractId(contractBean.getId());
+            csb.setCreatedOn(contractBean.getCreatedOn());
+            csb.setPlanId(plan.getId());
+            csb.setPlanName(plan.getName());
+            csb.setPlanVersion(contractBean.getPlan().getVersion());
+            csb.setApiDescription(api.getDescription());
+            csb.setApiId(api.getId());
+            csb.setApiName(api.getName());
+            csb.setApiOrganizationId(apiOrg.getId());
+            csb.setApiOrganizationName(apiOrg.getName());
+            csb.setApiVersion(contractBean.getApi().getVersion());
+
+            rval.add(csb);
         }
         return rval;
     }
@@ -1420,7 +1440,6 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
                 entry.setPlanId(plan.getId());
                 entry.setPlanName(plan.getName());
                 entry.setPlanVersion(contractBean.getPlan().getVersion());
-                entry.setApiKey(contractBean.getApikey());
 
                 Set<ApiGatewayBean> gateways = svb.getGateways();
                 if (gateways != null && !gateways.isEmpty()) {

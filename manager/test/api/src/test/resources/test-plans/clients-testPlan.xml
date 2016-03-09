@@ -33,6 +33,8 @@
     <test name="Get Version 1.0 (updated)">test-plan-data/clients/versions/007_get-version-1.0.resttest</test>
     <test name="Create Client Version (invalid)">test-plan-data/clients/versions/008_create-version-invalid.resttest</test>
     <test name="Create Client Version (duplicate)">test-plan-data/clients/versions/009_create-version-duplicate.resttest</test>
+    <test name="Update Client API Key">test-plan-data/clients/versions/010_update-version-1.0-apikey.resttest</test>
+    <test name="Get Client API Key">test-plan-data/clients/versions/011_get-version-1.0-apikey.resttest</test>
   </testGroup>
 
   <!-- Test Client Policy management -->

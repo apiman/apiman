@@ -5,9 +5,9 @@ Content-Type: application/json
   "organizationId" : "Policy_BasicAuthStatic",
   "clientId" : "test-require-basic",
   "version" : "1.0.0",
+  "apiKey" : "23456",
   "contracts" : [
     {
-      "apiKey" : "23456",
       "apiOrgId" : "Policy_BasicAuthStatic",
       "apiId" : "echo",
       "apiVersion" : "1.0.0",

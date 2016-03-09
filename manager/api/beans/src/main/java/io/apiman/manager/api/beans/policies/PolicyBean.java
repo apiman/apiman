@@ -15,7 +15,6 @@
  */
 package io.apiman.manager.api.beans.policies;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.apiman.common.util.crypt.CurrentDataEncrypter;
 
 import java.io.Serializable;
@@ -40,6 +39,9 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Type;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 /**
  * A Policy is the primary unit of work for the runtime engine, which is
  * essentially a chain of policies that are applied to the Request and
@@ -49,7 +51,7 @@ import org.hibernate.annotations.Type;
  */
 @Entity
 @Table(name = "policies")
-@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
+@JsonInclude(Include.NON_NULL)
 public class PolicyBean implements Serializable {
 
     private static final long serialVersionUID = -8534463608508756791L;

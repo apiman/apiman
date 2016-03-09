@@ -63,6 +63,8 @@ import io.apiman.manager.api.beans.summary.PolicyFormType;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.es.beans.ApiDefinitionBean;
 import io.apiman.manager.api.es.beans.PoliciesBean;
+import io.apiman.manager.api.es.util.XContentBuilder;
+import io.apiman.manager.api.es.util.XContentFactory;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -74,9 +76,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-
-import org.elasticsearch.common.xcontent.XContentBuilder;
-import org.elasticsearch.common.xcontent.XContentFactory;
 
 /**
  * Marshalls objects into Maps to be used in ES requests.  Also unmarshalls from
@@ -188,7 +187,6 @@ public class EsMarshalling {
             builder
                 .startObject()
                     .field("id", bean.getId())
-                    .field("apiKey", bean.getApikey())
                     .field("clientOrganizationId", bean.getClient().getClient().getOrganization().getId())
                     .field("clientOrganizationName", bean.getClient().getClient().getOrganization().getName())
                     .field("clientId", bean.getClient().getClient().getId())
@@ -412,6 +410,7 @@ public class EsMarshalling {
                     .field("clientName", client.getName())
                     .field("clientDescription", client.getDescription())
                     .field("version", bean.getVersion())
+                    .field("apikey", bean.getApikey())
                     .field("status", bean.getStatus())
                     .field("createdBy", bean.getCreatedBy())
                     .field("createdOn", bean.getCreatedOn().getTime())
@@ -547,7 +546,7 @@ public class EsMarshalling {
                     .field("autoGrant", bean.getAutoGrant());
             Set<PermissionType> permissions = bean.getPermissions();
             if (permissions != null && !permissions.isEmpty()) {
-                builder.array("permissions", permissions.toArray());
+                builder.array("permissions", permissions.toArray(new PermissionType[permissions.size()]));
             }
             builder.endObject();
             postMarshall(bean);
@@ -760,7 +759,6 @@ public class EsMarshalling {
         }
         ContractBean bean = new ContractBean();
         bean.setId(asLong(source.get("id")));
-        bean.setApikey(asString(source.get("apiKey")));
         bean.setCreatedBy(asString(source.get("createdBy")));
         bean.setCreatedOn(asDate(source.get("createdOn")));
         postMarshall(bean);
@@ -778,7 +776,6 @@ public class EsMarshalling {
         }
         ContractSummaryBean bean = new ContractSummaryBean();
         bean.setContractId(asLong(source.get("id")));
-        bean.setApikey(asString(source.get("apiKey")));
         bean.setCreatedOn(asDate(source.get("createdOn")));
         bean.setClientOrganizationId(asString(source.get("clientOrganizationId")));
         bean.setClientOrganizationName(asString(source.get("clientOrganizationName")));
@@ -808,7 +805,6 @@ public class EsMarshalling {
             return null;
         }
         ApiEntryBean bean = new ApiEntryBean();
-        bean.setApiKey(asString(source.get("apiKey")));
         bean.setApiOrgId(asString(source.get("apiOrganizationId")));
         bean.setApiOrgName(asString(source.get("apiOrganizationName")));
         bean.setApiId(asString(source.get("apiId")));
@@ -1066,6 +1062,7 @@ public class EsMarshalling {
         }
         ClientVersionBean bean = new ClientVersionBean();
         bean.setVersion(asString(source.get("version")));
+        bean.setApikey(asString(source.get("apikey")));
         bean.setStatus(asEnum(source.get("status"), ClientStatus.class));
         bean.setCreatedBy(asString(source.get("createdBy")));
         bean.setCreatedOn(asDate(source.get("createdOn")));
@@ -1094,6 +1091,7 @@ public class EsMarshalling {
         bean.setOrganizationName(asString(source.get("organizationName")));
         bean.setStatus(asEnum(source.get("status"), ClientStatus.class));
         bean.setVersion(asString(source.get("version")));
+        bean.setApiKey(asString(source.get("apikey")));
         postMarshall(bean);
         return bean;
     }

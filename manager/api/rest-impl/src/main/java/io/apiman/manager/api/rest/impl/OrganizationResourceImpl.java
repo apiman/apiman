@@ -34,6 +34,7 @@ import io.apiman.manager.api.beans.apis.UpdateApiVersionBean;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
 import io.apiman.manager.api.beans.audit.data.EntityUpdatedData;
 import io.apiman.manager.api.beans.audit.data.MembershipData;
+import io.apiman.manager.api.beans.clients.ApiKeyBean;
 import io.apiman.manager.api.beans.clients.ClientBean;
 import io.apiman.manager.api.beans.clients.ClientStatus;
 import io.apiman.manager.api.beans.clients.ClientVersionBean;
@@ -172,6 +173,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.ISODateTimeFormat;
@@ -550,7 +552,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
 
         if (bean.isClone() && bean.getCloneVersion() != null) {
             try {
-                List<ContractSummaryBean> contracts = getclientVersionContracts(organizationId, clientId, bean.getCloneVersion());
+                List<ContractSummaryBean> contracts = getClientVersionContracts(organizationId, clientId, bean.getCloneVersion());
                 for (ContractSummaryBean contract : contracts) {
                     NewContractBean ncb = new NewContractBean();
                     ncb.setPlanId(contract.getPlanId());
@@ -574,6 +576,67 @@ public class OrganizationResourceImpl implements IOrganizationResource {
 
         return newVersion;
     }
+    
+    /**
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getClientApiKey(java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public ApiKeyBean getClientApiKey(String organizationId, String clientId, String version)
+            throws ClientNotFoundException, NotAuthorizedException, InvalidVersionException {
+        if (!securityContext.hasPermission(PermissionType.clientView, organizationId) ) {
+            throw ExceptionFactory.notAuthorizedException();
+        }
+        ClientVersionBean client = getClientVersionInternal(organizationId, clientId, version, true);
+        ApiKeyBean apiKeyBean = new ApiKeyBean();
+        apiKeyBean.setApiKey(client.getApikey());
+        return apiKeyBean;
+    }
+
+    /**
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#updateClientApiKey(java.lang.String, java.lang.String, java.lang.String, io.apiman.manager.api.beans.clients.ApiKeyBean)
+     */
+    @Override
+    public ApiKeyBean updateClientApiKey(String organizationId, String clientId, String version, ApiKeyBean bean)
+            throws ClientNotFoundException, NotAuthorizedException, InvalidVersionException,
+            InvalidClientStatusException {
+        if (!securityContext.hasPermission(PermissionType.clientEdit, organizationId) ) {
+            throw ExceptionFactory.notAuthorizedException();
+        }
+        
+        try {
+            storage.beginTx();
+            ClientVersionBean clientVersion = storage.getClientVersion(organizationId, clientId, version);
+            if (clientVersion == null) {
+                throw ExceptionFactory.clientVersionNotFoundException(clientId, version);
+            }
+            
+            if (clientVersion.getStatus() == ClientStatus.Registered) {
+                throw ExceptionFactory.invalidClientStatusException();
+            }
+            
+            String newApiKey = bean.getApiKey();
+            if (StringUtils.isEmpty(newApiKey)) {
+                newApiKey = apiKeyGenerator.generate();
+            }
+
+            clientVersion.setApikey(newApiKey);
+            clientVersion.setModifiedBy(securityContext.getCurrentUser());
+            clientVersion.setModifiedOn(new Date());
+            storage.updateClientVersion(clientVersion);
+            
+            storage.commitTx();
+            log.debug(String.format("Updated an API Key for client %s version %s", clientVersion.getClient().getName(), clientVersion)); //$NON-NLS-1$
+            ApiKeyBean rval = new ApiKeyBean();
+            rval.setApiKey(newApiKey);
+            return rval;
+        } catch (AbstractRestException e) {
+            storage.rollbackTx();
+            throw e;
+        } catch (Exception e) {
+            storage.rollbackTx();
+            throw new SystemErrorException(e);
+        }
+    }
 
     /**
      * Creates a new client version.
@@ -595,6 +658,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         newVersion.setModifiedOn(new Date());
         newVersion.setStatus(ClientStatus.Created);
         newVersion.setVersion(bean.getVersion());
+        newVersion.setApikey(bean.getApiKey());
+        if (newVersion.getApikey() == null) {
+            newVersion.setApikey(apiKeyGenerator.generate());
+        }
 
         storage.createClientVersion(newVersion);
         storage.createAuditEntry(AuditUtils.clientVersionCreated(newVersion, securityContext));
@@ -609,11 +676,29 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     @Override
     public ClientVersionBean getClientVersion(String organizationId, String clientId, String version)
             throws ClientVersionNotFoundException, NotAuthorizedException {
+        boolean hasPermission = securityContext.hasPermission(PermissionType.clientView, organizationId);
+        return getClientVersionInternal(organizationId, clientId, version, hasPermission);
+    }
+
+    /**
+     * Does the same thing as getClientVersion() but accepts the 'hasPermission' param, 
+     * which lets callers dictate whether the user has clientView permission for the org.
+     * @param organizationId
+     * @param clientId
+     * @param version
+     * @param hasPermission
+     */
+    protected ClientVersionBean getClientVersionInternal(String organizationId, String clientId, String version,
+            boolean hasPermission) {
         try {
             storage.beginTx();
             ClientVersionBean clientVersion = storage.getClientVersion(organizationId, clientId, version);
             if (clientVersion == null) {
                 throw ExceptionFactory.clientVersionNotFoundException(clientId, version);
+            }
+            // Hide some data if the user doesn't have the clientView permission
+            if (!hasPermission) {
+                clientVersion.setApikey(null);
             }
             storage.commitTx();
             log.debug(String.format("Got new client version %s: %s", clientVersion.getClient().getName(), clientVersion)); //$NON-NLS-1$
@@ -692,7 +777,14 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         getClient(organizationId, clientId);
 
         try {
-            return query.getClientVersions(organizationId, clientId);
+            List<ClientVersionSummaryBean> clientVersions = query.getClientVersions(organizationId, clientId);
+            boolean hasPermission = securityContext.hasPermission(PermissionType.clientView, organizationId);
+            if (!hasPermission) {
+                for (ClientVersionSummaryBean clientVersionSummaryBean : clientVersions) {
+                    clientVersionSummaryBean.setApiKey(null);
+                }
+            }
+            return clientVersions;
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }
@@ -786,7 +878,6 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         contract.setPlan(pvb);
         contract.setCreatedBy(securityContext.getCurrentUser());
         contract.setCreatedOn(new Date());
-        contract.setApikey((bean.getApiKey() == null) ? apiKeyGenerator.generate() : bean.getApiKey());
 
         // Move the client to the "Ready" state if necessary.
         if (cvb.getStatus() == ClientStatus.Created && clientValidator.isReady(cvb, true)) {
@@ -838,7 +929,6 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     @Override
     public ContractBean getContract(String organizationId, String clientId, String version,
             Long contractId) throws ClientNotFoundException, ContractNotFoundException, NotAuthorizedException {
-        boolean hasPermission = securityContext.hasPermission(PermissionType.clientView, organizationId);
         try {
             storage.beginTx();
             ContractBean contract = storage.getContract(contractId);
@@ -846,11 +936,6 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                 throw ExceptionFactory.contractNotFoundException(contractId);
 
             storage.commitTx();
-
-            // Hide some data if the user doesn't have the clientView permission
-            if (!hasPermission) {
-                contract.setApikey(null);
-            }
 
             log.debug(String.format("Got contract %s: %s", contract.getId(), contract)); //$NON-NLS-1$
             return contract;
@@ -871,7 +956,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throws ClientNotFoundException, NotAuthorizedException {
         if (!securityContext.hasPermission(PermissionType.clientEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
-        List<ContractSummaryBean> contracts = getclientVersionContracts(organizationId, clientId, version);
+        List<ContractSummaryBean> contracts = getClientVersionContracts(organizationId, clientId, version);
         for (ContractSummaryBean contract : contracts) {
             deleteContract(organizationId, clientId, version, contract.getContractId());
         }
@@ -926,26 +1011,16 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getclientVersionContracts(java.lang.String, java.lang.String, java.lang.String)
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getClientVersionContracts(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
-    public List<ContractSummaryBean> getclientVersionContracts(String organizationId, String clientId, String version)
+    public List<ContractSummaryBean> getClientVersionContracts(String organizationId, String clientId, String version)
             throws ClientNotFoundException, NotAuthorizedException {
-        boolean hasPermission = securityContext.hasPermission(PermissionType.clientView, organizationId);
-
         // Try to get the client first - will throw a ClientNotFoundException if not found.
         getClientVersion(organizationId, clientId, version);
 
         try {
             List<ContractSummaryBean> contracts = query.getClientContracts(organizationId, clientId, version);
-
-            // Hide some stuff if the user doesn't have the clientView permission
-            if (!hasPermission) {
-                for (ContractSummaryBean contract : contracts) {
-                    contract.setApikey(null);
-                }
-            }
-
             return contracts;
         } catch (AbstractRestException e) {
             storage.rollbackTx();
@@ -1031,7 +1106,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     protected ApiRegistryBean getApiRegistry(String organizationId, String clientId, String version,
             boolean hasPermission) throws ClientNotFoundException, NotAuthorizedException {
         // Try to get the client first - will throw a ClientNotFoundException if not found.
-        getClientVersion(organizationId, clientId, version);
+        ClientVersionBean clientVersion = getClientVersionInternal(organizationId, clientId, version, hasPermission);
 
         Map<String, IGatewayLink> gatewayLinks = new HashMap<>();
         Map<String, GatewayBean> gateways = new HashMap<>();
@@ -1040,11 +1115,8 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             ApiRegistryBean apiRegistry = query.getApiRegistry(organizationId, clientId, version);
 
             // Hide some stuff if the user doesn't have the clientView permission
-            if (!hasPermission) {
-                List<ApiEntryBean> apis = apiRegistry.getApis();
-                for (ApiEntryBean api : apis) {
-                    api.setApiKey(null);
-                }
+            if (hasPermission) {
+                apiRegistry.setApiKey(clientVersion.getApikey());
             }
 
             List<ApiEntryBean> apis = apiRegistry.getApis();
@@ -2338,13 +2410,6 @@ public class OrganizationResourceImpl implements IOrganizationResource {
 
         try {
             List<ContractSummaryBean> contracts = query.getContracts(organizationId, apiId, version, page, pageSize);
-
-            for (ContractSummaryBean contract : contracts) {
-                if (!securityContext.hasPermission(PermissionType.clientView, contract.getClientOrganizationId())) {
-                    contract.setApikey(null);
-                }
-            }
-
             log.debug(String.format("Got API %s version %s contracts: %s", apiId, version, contracts)); //$NON-NLS-1$
             return contracts;
         } catch (StorageException e) {

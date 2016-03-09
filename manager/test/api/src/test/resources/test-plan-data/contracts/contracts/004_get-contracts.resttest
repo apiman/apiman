@@ -6,7 +6,6 @@ Content-Type: application/json
 
 [
   {
-    "apikey" : "${api-key}",
     "clientOrganizationId" : "Organization1",
     "clientOrganizationName" : "Organization 1",
     "clientId" : "Client1",

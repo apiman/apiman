@@ -3,7 +3,10 @@
 
   <testGroup name="Test Policy">
     <test name="Publish Api" endpoint="api">test-plan-data/policies/ip-blacklist/001-publish-api.resttest</test>
-    <test name="Register Client" endpoint="api">test-plan-data/policies/ip-blacklist/002-register-client.resttest</test>
+    <test name="Register Client 1" endpoint="api">test-plan-data/policies/ip-blacklist/002.01-register-client.resttest</test>
+    <test name="Register Client 2" endpoint="api">test-plan-data/policies/ip-blacklist/002.02-register-client.resttest</test>
+    <test name="Register Client 3" endpoint="api">test-plan-data/policies/ip-blacklist/002.03-register-client.resttest</test>
+    <test name="Register Client 4" endpoint="api">test-plan-data/policies/ip-blacklist/002.04-register-client.resttest</test>
     <test name="Success">test-plan-data/policies/ip-blacklist/003-success.resttest</test>
     <test name="Failure">test-plan-data/policies/ip-blacklist/004-failure.resttest</test>
     <test name="Failure (404)">test-plan-data/policies/ip-blacklist/005-failure-404.resttest</test>

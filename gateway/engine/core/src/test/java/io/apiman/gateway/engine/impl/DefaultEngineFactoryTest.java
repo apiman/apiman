@@ -191,13 +191,13 @@ public class DefaultEngineFactoryTest {
         api.setOrganizationId("TestOrg");
         api.setApiId("TestApi");
         api.setVersion("1.0");
-        // create an app
+        // create a client
         Client app = new Client();
         app.setClientId("TestApp");
         app.setOrganizationId("TestOrg");
         app.setVersion("1.0");
+        app.setApiKey("client-12345");
         Contract contract = new Contract();
-        contract.setApiKey("12345");
         contract.setPlan("Gold");
         contract.setApiId("TestApi");
         contract.setApiOrgId("TestOrg");
@@ -219,7 +219,10 @@ public class DefaultEngineFactoryTest {
         });
 
         ApiRequest request = new ApiRequest();
-        request.setApiKey("12345");
+        request.setApiKey("client-12345");
+        request.setApiId("TestApi");
+        request.setApiOrgId("TestOrg");
+        request.setApiVersion("1.0");
         request.setDestination("/");
         request.setUrl("http://localhost:9999/");
         request.setType("TEST");

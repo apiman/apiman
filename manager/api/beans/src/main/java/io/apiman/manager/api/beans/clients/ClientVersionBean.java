@@ -15,8 +15,6 @@
  */
 package io.apiman.manager.api.beans.clients;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
 import java.io.Serializable;
 import java.util.Date;
 
@@ -32,6 +30,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 /**
  * Models a single version of a client "impl".  Every client in
  * APIMan has basic meta-data stored in {@link ClientBean}.  All
@@ -43,8 +44,10 @@ import javax.persistence.UniqueConstraint;
  */
 @Entity
 @Table(name = "client_versions",
-       uniqueConstraints = { @UniqueConstraint(columnNames = { "client_id", "client_org_id", "version" }) })
-@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
+       uniqueConstraints = { 
+               @UniqueConstraint(columnNames = { "client_id", "client_org_id", "version" }),
+               @UniqueConstraint(columnNames = { "apikey" })})
+@JsonInclude(Include.NON_NULL)
 public class ClientVersionBean implements Serializable {
 
     private static final long serialVersionUID = -2218697175049442690L;
@@ -74,6 +77,8 @@ public class ClientVersionBean implements Serializable {
     private Date publishedOn;
     @Column(name = "retired_on")
     private Date retiredOn;
+    @Column(updatable=true, nullable=false)
+    private String apikey;
 
     /**
      * Constructor.
@@ -222,6 +227,20 @@ public class ClientVersionBean implements Serializable {
     }
 
     /**
+     * @return the apikey
+     */
+    public String getApikey() {
+        return apikey;
+    }
+
+    /**
+     * @param apikey the apikey to set
+     */
+    public void setApikey(String apikey) {
+        this.apikey = apikey;
+    }
+
+    /**
      * @see java.lang.Object#hashCode()
      */
     @Override
@@ -261,7 +280,7 @@ public class ClientVersionBean implements Serializable {
         return "ClientVersionBean [id=" + id + ", client=" + client + ", status=" + status
                 + ", version=" + version + ", createdBy=" + createdBy + ", createdOn=" + createdOn
                 + ", modifiedBy=" + modifiedBy + ", modifiedOn=" + modifiedOn + ", publishedOn="
-                + publishedOn + ", retiredOn=" + retiredOn + "]";
+                + publishedOn + ", retiredOn=" + retiredOn + ", apikey=" + apikey + "]";
     }
 
 }

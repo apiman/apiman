@@ -20,23 +20,19 @@ import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.Api;
 import io.apiman.gateway.engine.beans.ApiContract;
-import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.Client;
 import io.apiman.gateway.engine.beans.Contract;
 import io.apiman.gateway.engine.beans.exceptions.InvalidContractException;
 import io.apiman.gateway.engine.beans.exceptions.PublishingException;
 import io.apiman.gateway.engine.beans.exceptions.RegistrationException;
 import io.apiman.gateway.engine.es.i18n.Messages;
-import io.apiman.gateway.engine.es.util.ElasticQueryUtil;
 import io.searchbox.client.JestResult;
 import io.searchbox.core.Delete;
-import io.searchbox.core.DeleteByQuery;
 import io.searchbox.core.Get;
 import io.searchbox.core.Index;
 import io.searchbox.params.Parameters;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -104,11 +100,10 @@ public class ESRegistry extends AbstractESComponent implements IRegistry {
      */
     @Override
     public void registerClient(final Client client, final IAsyncResultHandler<Void> handler) {
-        final Map<String, Api> apiMap = new HashMap<>();
-
         try {
             // Validate the client and populate the api map with apis found during validation.
-            validateClient(client, apiMap);
+            validateClient(client);
+            
             String id = getClientId(client);
             Index index = new Index.Builder(client)
                     .refresh(false).index(getIndexName())
@@ -117,18 +112,8 @@ public class ESRegistry extends AbstractESComponent implements IRegistry {
             JestResult result = getClient().execute(index);
             if (!result.isSucceeded()) {
                 throw new IOException(result.getErrorMessage());
-            } else {
-                // Remove all the api contracts, then re-add them
-                unregisterApiContracts(client);
-
-                // Register all the api contracts.
-                Set<Contract> contracts = client.getContracts();
-                client.setContracts(null);
-                for (Contract contract : contracts) {
-                    registerContract(client, contract, apiMap);
-                }
-                handler.handle(AsyncResultImpl.create((Void) null));
-            }
+            } 
+            handler.handle(AsyncResultImpl.create((Void) null));
         } catch (IOException e) {
             handler.handle(AsyncResultImpl.create(
                     new RegistrationException(Messages.i18n.format("ESRegistry.ErrorRegisteringClient"), e),  //$NON-NLS-1$
@@ -141,15 +126,14 @@ public class ESRegistry extends AbstractESComponent implements IRegistry {
     /**
      * Validate that the client should be registered.
      * @param client
-     * @param apiMap
      */
-    private void validateClient(Client client, Map<String, Api> apiMap) throws RegistrationException {
+    private void validateClient(Client client) throws RegistrationException {
         Set<Contract> contracts = client.getContracts();
         if (contracts.isEmpty()) {
             throw new RegistrationException(Messages.i18n.format("ESRegistry.NoContracts")); //$NON-NLS-1$
         }
         for (Contract contract : contracts) {
-            validateContract(contract, apiMap);
+            validateContract(contract);
         }
     }
 
@@ -159,53 +143,20 @@ public class ESRegistry extends AbstractESComponent implements IRegistry {
      * @param contract
      * @param apiMap
      */
-    private void validateContract(final Contract contract, final Map<String, Api> apiMap)
+    private void validateContract(final Contract contract)
             throws RegistrationException {
-
         final String id = getApiId(contract);
 
         try {
             Get get = new Get.Builder(getIndexName(), id).type("api").build(); //$NON-NLS-1$
             JestResult result = getClient().execute(get);
-            if (result.isSucceeded()) {
-                Api api = result.getSourceAsObject(Api.class);
-                api.setApiPolicies(null);
-                apiMap.put(id, api);
-            } else {
+            if (!result.isSucceeded()) {
                 String apiId = contract.getApiId();
                 String orgId = contract.getApiOrgId();
                 throw new RegistrationException(Messages.i18n.format("ESRegistry.ApiNotFoundInOrg", apiId, orgId));  //$NON-NLS-1$
             }
         } catch (IOException e) {
             throw new RegistrationException(Messages.i18n.format("ESRegistry.ErrorValidatingApp"), e); //$NON-NLS-1$
-        }
-    }
-
-    /**
-     * Register all the contracts in ES so they can be looked up quickly by
-     * their ID by all nodes in the cluster.
-     * @param client
-     * @param contracts
-     * @param apiMap
-     */
-    private void registerContract(final Client client, final Contract contract,
-            final Map<String, Api> apiMap) throws RegistrationException {
-        try {
-            String apiId = getApiId(contract);
-            Api api = apiMap.get(apiId);
-            ApiContract sc = new ApiContract(contract.getApiKey(), api, client,
-                    contract.getPlan(), contract.getPolicies());
-            final String contractId = getContractId(contract);
-
-            Index index = new Index.Builder(sc).refresh(false)
-                    .setParameter(Parameters.OP_TYPE, "create") //$NON-NLS-1$
-                    .index(getIndexName()).type("apiContract").id(contractId).build(); //$NON-NLS-1$
-            JestResult result = getClient().execute(index);
-            if (!result.isSucceeded()) {
-                throw new RegistrationException(Messages.i18n.format("ESRegistry.ContractAlreadyPublished", contractId)); //$NON-NLS-1$
-            }
-        } catch (Exception e) {
-            throw new RegistrationException(Messages.i18n.format("ESRegistry.ErrorRegisteringContract"), e);  //$NON-NLS-1$
         }
     }
 
@@ -220,7 +171,6 @@ public class ESRegistry extends AbstractESComponent implements IRegistry {
             Delete delete = new Delete.Builder(id).index(getIndexName()).type("client").build(); //$NON-NLS-1$
             JestResult result = getClient().execute(delete);
             if (result.isSucceeded()) {
-                unregisterApiContracts(client);
                 handler.handle(AsyncResultImpl.create((Void) null));
             } else {
                 handler.handle(AsyncResultImpl.create(new PublishingException(Messages.i18n.format("ESRegistry.AppNotFound")), Void.class)); //$NON-NLS-1$
@@ -231,76 +181,12 @@ public class ESRegistry extends AbstractESComponent implements IRegistry {
     }
 
     /**
-     * Removes all of the api contracts from ES.
-     * @param client
-     * @throws IOException
-     */
-    protected void unregisterApiContracts(Client client) throws IOException {
-        String dquery = ElasticQueryUtil.queryContractsByClient(client.getOrganizationId(), client.getClientId(), client.getVersion());
-        DeleteByQuery delete = new DeleteByQuery.Builder(dquery).addIndex(getIndexName()).addType("apiContract").build(); //$NON-NLS-1$
-        JestResult result = getClient().execute(delete);
-        if (!result.isSucceeded()) {
-            throw new IOException("Failed to delete API contracts: " + result.getErrorMessage()); //$NON-NLS-1$
-        }
-    }
-
-    /**
-     * @see io.apiman.gateway.engine.IRegistry#getContract(io.apiman.gateway.engine.beans.ApiRequest, io.apiman.gateway.engine.async.IAsyncResultHandler)
-     */
-    @Override
-    public void getContract(final ApiRequest request, final IAsyncResultHandler<ApiContract> handler) {
-        final String id = getContractId(request);
-
-        try {
-            Get get = new Get.Builder(getIndexName(), id).type("apiContract").build(); //$NON-NLS-1$
-            JestResult result = getClient().execute(get);
-            if (!result.isSucceeded()) {
-                Exception error = new InvalidContractException(Messages.i18n.format("ESRegistry.NoContractForAPIKey", id)); //$NON-NLS-1$
-                handler.handle(AsyncResultImpl.create(error, ApiContract.class));
-            } else {
-                ApiContract contract = result.getSourceAsObject(ApiContract.class);
-                checkApi(contract);
-                handler.handle(AsyncResultImpl.create(contract));
-            }
-        } catch (IOException e) {
-            handler.handle(AsyncResultImpl.create(e, ApiContract.class));
-        }
-    }
-
-    /**
-     * Ensure that the api still exists.  If not, it was retired.
-     * @param contract
-     * @throws InvalidContractException
-     * @throws IOException
-     */
-    protected void checkApi(final ApiContract contract) throws InvalidContractException, IOException {
-        final Api api = contract.getApi();
-        String id = getApiId(api);
-
-        Get get = new Get.Builder(getIndexName(), id).type("api").build(); //$NON-NLS-1$
-        JestResult result = getClient().execute(get);
-        if (!result.isSucceeded()) {
-            throw new InvalidContractException(Messages.i18n.format("ESRegistry.ApiWasRetired", //$NON-NLS-1$
-                    api.getApiId(), api.getOrganizationId()));
-        }
-    }
-
-    /**
      * @see io.apiman.gateway.engine.IRegistry#getApi(java.lang.String, java.lang.String, java.lang.String, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
     @Override
     public void getApi(String organizationId, String apiId, String apiVersion,
             IAsyncResultHandler<Api> handler) {
         String id = getApiId(organizationId, apiId, apiVersion);
-        getApi(id, handler);
-    }
-
-    /**
-     * Asynchronously gets a api.
-     * @param id
-     * @param handler
-     */
-    protected void getApi(String id, final IAsyncResultHandler<Api> handler) {
         try {
             Api api = getApi(id);
             handler.handle(AsyncResultImpl.create(api));
@@ -326,6 +212,82 @@ public class ESRegistry extends AbstractESComponent implements IRegistry {
     }
 
     /**
+     * @see io.apiman.gateway.engine.IRegistry#getClient(java.lang.String, io.apiman.gateway.engine.async.IAsyncResultHandler)
+     */
+    @Override
+    public void getClient(String apiKey, IAsyncResultHandler<Client> handler) {
+        String id = apiKey;
+        try {
+            Client client = getClient(id);
+            handler.handle(AsyncResultImpl.create(client));
+        } catch (IOException e) {
+            handler.handle(AsyncResultImpl.create(e, Client.class));
+        }
+    }
+
+    /**
+     * Gets the client synchronously.
+     * @param id
+     * @throws IOException
+     */
+    protected Client getClient(String id) throws IOException {
+        Get get = new Get.Builder(getIndexName(), id).type("client").build(); //$NON-NLS-1$
+        JestResult result = getClient().execute(get);
+        if (result.isSucceeded()) {
+            Client client = result.getSourceAsObject(Client.class);
+            return client;
+        } else {
+            return null;
+        }
+    }
+    
+    /**
+     * @see io.apiman.gateway.engine.IRegistry#getContract(java.lang.String, java.lang.String, java.lang.String, java.lang.String, io.apiman.gateway.engine.async.IAsyncResultHandler)
+     */
+    @Override
+    public void getContract(String apiOrganizationId, String apiId, String apiVersion, String apiKey,
+            IAsyncResultHandler<ApiContract> handler) {
+
+        try {
+            Client client = getClient(apiKey);
+            Api api = getApi(getApiId(apiOrganizationId, apiId, apiVersion));
+
+            if (client == null) {
+                Exception error = new InvalidContractException(Messages.i18n.format("ESRegistry.NoClientForAPIKey", apiKey)); //$NON-NLS-1$
+                handler.handle(AsyncResultImpl.create(error, ApiContract.class));
+                return;
+            }
+            if (api == null) {
+                Exception error = new InvalidContractException(Messages.i18n.format("ESRegistry.ApiWasRetired", //$NON-NLS-1$
+                        apiId, apiOrganizationId));
+                handler.handle(AsyncResultImpl.create(error, ApiContract.class));
+                return;
+            }
+            
+            Contract matchedContract = null;
+            for (Contract contract : client.getContracts()) {
+                if (contract.matches(apiOrganizationId, apiId, apiVersion)) {
+                    matchedContract = contract;
+                    break;
+                }
+            }
+            
+            if (matchedContract == null) {
+                Exception error = new InvalidContractException(Messages.i18n.format("ESRegistry.NoContractFound", //$NON-NLS-1$
+                        client.getClientId(), api.getApiId()));
+                handler.handle(AsyncResultImpl.create(error, ApiContract.class));
+                return;
+            }
+            
+            ApiContract contract = new ApiContract(api, client, matchedContract.getPlan(), matchedContract.getPolicies());
+            handler.handle(AsyncResultImpl.create(contract));
+        } catch (Exception e) {
+            handler.handle(AsyncResultImpl.create(e, ApiContract.class));
+        }
+
+    }
+
+    /**
      * Generates a valid document ID for a api, used to index the api in ES.
      * @param api an api
      * @return a api key
@@ -348,42 +310,26 @@ public class ESRegistry extends AbstractESComponent implements IRegistry {
      * @param orgId
      * @param apiId
      * @param version
-     * @return a api key
+     * @return a api id
      */
     protected String getApiId(String orgId, String apiId, String version) {
         return orgId + ":" + apiId + ":" + version; //$NON-NLS-1$ //$NON-NLS-2$
     }
-
+    
     /**
-     * Generates a valid document ID for an client, used to index the client in ES.
-     * @param client an client
-     * @return an client key
+     * Generates a valid document ID for the client - used to index the client in ES.
+     * @param client
+     * @return an id
      */
     protected String getClientId(Client client) {
-        return client.getOrganizationId() + ":" + client.getClientId() + ":" + client.getVersion(); //$NON-NLS-1$ //$NON-NLS-2$
+        return client.getApiKey();
     }
 
     /**
-     * Generates a valid document ID for a contract, used to index the contract in ES.
-     * @param request
-     */
-    private String getContractId(ApiRequest request) {
-        return request.getApiKey();
-    }
-
-    /**
-     * Generates a valid document ID for a contract, used to index the contract in ES.
-     * @param contract
-     */
-    private String getContractId(Contract contract) {
-        return contract.getApiKey();
-    }
-
-    /**
-     * @see io.apiman.gateway.engine.es.AbstractESComponent#getIndexName()
+     * @see io.apiman.gateway.engine.es.AbstractESComponent#getDefaultIndexName()
      */
     @Override
-    protected String getIndexName() {
+    protected String getDefaultIndexName() {
         return ESConstants.GATEWAY_INDEX_NAME;
     }
 

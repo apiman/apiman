@@ -1,5 +1,5 @@
 GET /ClientReregisterTest/echo-1/1.0/path/to/app/resource admin/admin
-X-API-Key: api-1
+X-API-Key: 12345
 Accept: application/json
 
 ----
@@ -8,5 +8,5 @@ Content-Type: application/json
 
 {
   "responseCode" : 500,
-  "message" : "No contract found for API Key api-1 "
+  "message" : "No contract found between Client test and API echo-1."
 }

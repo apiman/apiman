@@ -15,9 +15,9 @@
  */
 package io.apiman.manager.api.beans.clients;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
 import java.io.Serializable;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
  * Bean used when creating a client.

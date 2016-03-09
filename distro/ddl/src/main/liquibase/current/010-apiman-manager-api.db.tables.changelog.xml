@@ -27,6 +27,9 @@
             </column>
             <column name="client_id" type="VARCHAR(255)"/>
             <column name="client_org_id" type="VARCHAR(255)"/>
+            <column name="apikey" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
     </changeSet>
     <changeSet author="apiman (generated)" id="1436469846462-2">
@@ -77,9 +80,6 @@
     <changeSet author="apiman (generated)" id="1436469846462-4">
         <createTable tableName="contracts">
             <column name="id" type="BIGINT">
-                <constraints nullable="false"/>
-            </column>
-            <column name="apikey" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
             <column name="created_by" type="VARCHAR(255)">
