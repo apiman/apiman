@@ -130,7 +130,7 @@
     <version.io.prometheus>0.0.13</version.io.prometheus>
     <version.javax.enterprise>1.2</version.javax.enterprise>
     <version.javax.servlet-api>3.1.0</version.javax.servlet-api>
-    <version.javax.ws.rs-api>2.0</version.javax.ws.rs-api>
+    <version.org.jboss.spec.javax.ws.jboss-jaxrs-api_2.0_spec>1.0.0.Final</version.org.jboss.spec.javax.ws.jboss-jaxrs-api_2.0_spec>
     <version.joda-time>2.7</version.joda-time>
     <version.junit>4.11</version.junit>
     <version.org.apache.commons.commons-lang3>3.3.2</version.org.apache.commons.commons-lang3>
@@ -1038,9 +1038,9 @@
         <version>${version.org.apache.geronimo.specs.geronimo-servlet_3.0_spec}</version>
       </dependency>
       <dependency>
-        <groupId>javax.ws.rs</groupId>
-        <artifactId>javax.ws.rs-api</artifactId>
-        <version>${version.javax.ws.rs-api}</version>
+        <groupId>org.jboss.spec.javax.ws.rs</groupId>
+        <artifactId>jboss-jaxrs-api_2.0_spec</artifactId>
+        <version>${version.org.jboss.spec.javax.ws.jboss-jaxrs-api_2.0_spec}</version>
       </dependency>
       <dependency>
         <groupId>org.jboss.spec.javax.servlet</groupId>
