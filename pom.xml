@@ -129,8 +129,6 @@
     <version.io.searchbox.jest>0.1.7</version.io.searchbox.jest>
     <version.io.prometheus>0.0.13</version.io.prometheus>
     <version.javax.enterprise>1.2</version.javax.enterprise>
-    <version.javax.servlet-api>3.1.0</version.javax.servlet-api>
-    <version.org.jboss.spec.javax.ws.jboss-jaxrs-api_2.0_spec>1.0.0.Final</version.org.jboss.spec.javax.ws.jboss-jaxrs-api_2.0_spec>
     <version.joda-time>2.7</version.joda-time>
     <version.junit>4.11</version.junit>
     <version.org.apache.commons.commons-lang3>3.3.2</version.org.apache.commons.commons-lang3>
@@ -159,6 +157,7 @@
     <version.org.jboss.resteasy>3.0.16.Final</version.org.jboss.resteasy>
     <version.org.jboss.spec.javax.servlet.jboss-servlet-api_3.0_spec>1.0.2.Final</version.org.jboss.spec.javax.servlet.jboss-servlet-api_3.0_spec>
     <version.org.jboss.spec.javax.transaction.jboss-transaction-api_1.2_spec>1.0.0.Final</version.org.jboss.spec.javax.transaction.jboss-transaction-api_1.2_spec>
+    <version.org.jboss.spec.javax.ws.jboss-jaxrs-api_2.0_spec>1.0.0.Final</version.org.jboss.spec.javax.ws.jboss-jaxrs-api_2.0_spec>
     <version.org.jboss.weld.weld>2.3.3.Final</version.org.jboss.weld.weld>
     <version.org.keycloak>1.9.0.Final</version.org.keycloak>
     <version.org.mockito>1.9.5</version.org.mockito>
@@ -1046,11 +1045,6 @@
         <groupId>org.jboss.spec.javax.servlet</groupId>
         <artifactId>jboss-servlet-api_3.0_spec</artifactId>
         <version>${version.org.jboss.spec.javax.servlet.jboss-servlet-api_3.0_spec}</version>
-      </dependency>
-      <dependency>
-        <groupId>javax.servlet</groupId>
-        <artifactId>javax.servlet-api</artifactId>
-        <version>${version.javax.servlet-api}</version>
       </dependency>
       <dependency>
         <groupId>org.hibernate.javax.persistence</groupId>
