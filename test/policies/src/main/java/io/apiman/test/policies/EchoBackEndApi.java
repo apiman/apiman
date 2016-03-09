@@ -55,8 +55,17 @@ public class EchoBackEndApi implements IPolicyTestBackEndApi {
             echoResponse.setUri("urn:" + request.getDestination());
 
             ApiResponse apiResponse = new ApiResponse();
-            apiResponse.setCode(200);
-            apiResponse.setMessage("OK");
+            
+            String errorCode = request.getHeaders().get("X-Echo-ErrorCode");
+            if (errorCode != null) {
+                int ec = new Integer(errorCode);
+                String errorMsg = request.getHeaders().get("X-Echo-ErrorMessage");
+                apiResponse.setCode(ec);
+                apiResponse.setMessage(errorMsg);
+            } else {
+                apiResponse.setCode(200);
+                apiResponse.setMessage("OK");
+            }
             apiResponse.getHeaders().put("Date", new Date().toString());
             apiResponse.getHeaders().put("Server", "apiman.policy-test");
             apiResponse.getHeaders().put("Content-Type", "application/json");

@@ -122,6 +122,28 @@ module ApimanRPC {
             }
         }]);
 
+    export var ApiSvcs = _module.factory('ApiSvcs', [
+        '$resource',
+        '$http',
+        'Configuration', function($resource,
+                                  $http,
+                                  Configuration) {
+            return {
+                deleteApi: function(data) {
+                    var endpoint = Configuration.api.endpoint + '/organizations/' + data.orgId + '/apis/' + data.apiId;
+
+                    return $http({
+                        method: 'DELETE',
+                        url: endpoint,
+                        data: {
+                            organizationId: data.orgId,
+                            apiId: data.apiId
+                        }
+                    });
+                }
+            }
+        }]);
+
     export var ApiDefinitionSvcs = _module.factory('ApiDefinitionSvcs', ['$resource', '$http', 'Configuration',
         function($resource, $http, Configuration) {
             return {
