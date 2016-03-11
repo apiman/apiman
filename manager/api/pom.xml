@@ -16,6 +16,7 @@
     <module>es</module>
     <module>export-import</module>
     <module>gateway</module>
+    <module>hawkular</module>
     <module>ispn</module>
     <module>jpa</module>
     <module>micro</module>

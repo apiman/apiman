@@ -180,9 +180,8 @@ public class PollCachingESRegistry extends CachingESRegistry {
                     checkCacheVersion();
                 }
             }
-        });
+        }, "ESRegistryCacheInvalidator"); //$NON-NLS-1$
         thread.setDaemon(true);
-        thread.setName(getClass().getSimpleName());
         thread.start();
     }
     

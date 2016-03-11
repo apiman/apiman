@@ -192,6 +192,11 @@
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
+        <artifactId>apiman-common-net</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
         <artifactId>apiman-common-config</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -228,6 +233,11 @@
       <dependency>
         <groupId>${project.groupId}</groupId>
         <artifactId>apiman-manager-api-es</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>apiman-manager-api-hawkular</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
@@ -389,6 +399,11 @@
       <dependency>
         <groupId>${project.groupId}</groupId>
         <artifactId>apiman-gateway-engine-es</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>apiman-gateway-engine-hawkular</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
