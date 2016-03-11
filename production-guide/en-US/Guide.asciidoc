@@ -45,7 +45,7 @@ The image above should give you an idea of how they all fit together.
 You have a number of persistence options in both Keycloak and apiman, but this guide will focus on using an
 RDBMS instead of other options (e.g. Elasticsearch for apiman or mongodb for KC).
 
-On a separate server, install a production ready database such as mysql, mariadb, or postresql.  You will
+On a separate server, install a production ready database such as mysql, oracle, or postresql.  You will
 want to create two schemas/databases:
 
 * keycloak
@@ -56,7 +56,7 @@ We recommend using two different users and permissioning them appropriately (e.g
 and a "sa_keycloak" account).
 
 After creating the ‘apiman' database, you can initialize it using the appropriate DDL for the database you
-selected.  We currently support mysql5/mariadb and postgresql.  The DDLs for these databases can be found in
+selected.  We currently support mysql 5, oracle 12, and postgresql 9.  The DDLs for these databases can be found in
 the quickstart overlay ZIP file, or you can grab them directly from github.  For example:
 
 https://github.com/apiman/apiman/tree/master/distro/data/src/main/resources/ddls
