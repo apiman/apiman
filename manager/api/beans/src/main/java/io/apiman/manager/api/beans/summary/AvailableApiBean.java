@@ -46,6 +46,7 @@ public class AvailableApiBean implements Serializable {
     private String definitionUrl;
     private String routeDefinitionUrl;
     private ApiDefinitionType definitionType;
+    private String namespace;
     private Set<String> tags = new HashSet<>();
 
     /**
@@ -192,6 +193,20 @@ public class AvailableApiBean implements Serializable {
     
     public void addTag(String tag) {
         getTags().add(tag);
+    }
+
+    /**
+     * @return the namespace
+     */
+    public String getNamespace() {
+        return namespace;
+    }
+
+    /**
+     * @param namespace the namespace to set
+     */
+    public void setNamespace(String namespace) {
+        this.namespace = namespace;
     }
 
 }

@@ -20,6 +20,7 @@ import io.apiman.common.util.crypt.CurrentDataEncrypter;
 import io.apiman.common.util.crypt.IDataEncrypter;
 import io.apiman.manager.api.beans.apis.EndpointType;
 import io.apiman.manager.api.beans.idm.UserBean;
+import io.apiman.manager.api.beans.summary.ApiNamespaceBean;
 import io.apiman.manager.api.beans.summary.AvailableApiBean;
 import io.apiman.manager.api.core.IApiCatalog;
 import io.apiman.manager.api.core.IApiKeyGenerator;
@@ -47,6 +48,7 @@ import io.searchbox.client.JestClientFactory;
 import io.searchbox.client.config.HttpClientConfig;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -153,8 +155,11 @@ public class TestCdiFactory {
     @Produces @ApplicationScoped
     public static IApiCatalog provideApiCatalog(IPluginRegistry pluginRegistry) {
         return new IApiCatalog() {
+            /**
+             * @see io.apiman.manager.api.core.IApiCatalog#search(java.lang.String, java.lang.String)
+             */
             @Override
-            public List<AvailableApiBean> search(String keyword) {
+            public List<AvailableApiBean> search(String keyword, String namespace) {
                 List<AvailableApiBean> rval = new ArrayList<>();
                 AvailableApiBean asb = new AvailableApiBean();
                 asb.setName("Test API 1");
@@ -171,6 +176,13 @@ public class TestCdiFactory {
                 rval.add(asb);
 
                 return rval;
+            }
+            /**
+             * @see io.apiman.manager.api.core.IApiCatalog#getNamespaces(java.lang.String)
+             */
+            @Override
+            public List<ApiNamespaceBean> getNamespaces(String currentUser) {
+                return Collections.EMPTY_LIST;
             }
         };
     }

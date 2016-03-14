@@ -137,7 +137,7 @@ module Apiman {
                 body.filters.push({ "name" : "name", "value" : searchText, "operator" : "like" });
                 var searchStr = angular.toJson(body);
                 Logger.log("Searching API catalogs: {0}", searchStr);
-                ApimanSvcs.save({ entityType: 'search', secondaryType: 'apiCatalogs' }, searchStr, function(reply) {
+                ApimanSvcs.save({ entityType: 'search', secondaryType: 'apiCatalogs/entries' }, searchStr, function(reply) {
                     $scope.apis = reply.beans;
                     Logger.log("Found {0} apis.", reply.beans.length);
                     $scope.searchButton.state = 'complete';

@@ -3,12 +3,18 @@
 module Apiman {
 
     export var ApiCatalogController = _module.controller("Apiman.ApiCatalogController",
-        ['$q', 'Logger', '$scope', 'ApimanSvcs', 'PageLifecycle', '$uibModal', 'CurrentUserSvcs',
-        ($q, Logger, $scope, ApimanSvcs, PageLifecycle, $uibModal, CurrentUserSvcs) => 
+        ['$q', 'Logger', '$scope', 'ApiCatalogSvcs', 'PageLifecycle', '$uibModal', 'CurrentUserSvcs', '$location',
+        ($q, Logger, $scope, ApiCatalogSvcs, PageLifecycle, $uibModal, CurrentUserSvcs, $location) => 
     {
             var body:any = {};
             body.filters = [];
             body.filters.push({ "name" : "name", "value" : "*", "operator" : "like" });
+            
+            var namespace = $location.hash();
+            if (namespace) {
+                body.filters.push({ "name" : "namespace", "value" : namespace, "operator" : "eq" });
+            }
+            
             var searchStr = angular.toJson(body);
 
             $scope.reverse = false;
@@ -23,6 +29,10 @@ module Apiman {
                     return api.routeEndpoint;
                 }
                 return api.endpoint;
+            };
+            
+            $scope.selectNamespace = function(ns) {
+            	$location.hash(ns.name);
             };
             
             $scope.importApi = function(api) {
@@ -42,10 +52,20 @@ module Apiman {
                     }
                 });
             };
-            
+
             var pageData = {
+                namespaces: $q(function(resolve, reject) {
+                    ApiCatalogSvcs.getNamespaces(function(reply) {
+                        angular.forEach(reply, function(ns) {
+                           if ( (namespace && ns.name == namespace) || (!namespace && ns.current) ) {
+                               $scope.namespace = ns;
+                           }
+                        });
+                        resolve(reply);
+                    }, reject);
+                }),
                 apis: $q(function(resolve, reject) {
-                    ApimanSvcs.save({ entityType: 'search', secondaryType: 'apiCatalogs' }, searchStr, function(reply) {
+                    ApiCatalogSvcs.search(searchStr, function(reply) {
                         resolve(reply.beans);
                     }, reject);
                 }),
@@ -125,8 +145,8 @@ module Apiman {
     
     
     export var ApiCatalogDefController = _module.controller("Apiman.ApiCatalogDefController",
-        ['$q', '$scope', 'ApimanSvcs', 'PageLifecycle', '$routeParams', '$window', 'Logger', 'ApiDefinitionSvcs', 'Configuration',
-        ($q, $scope, ApimanSvcs, PageLifecycle, $routeParams, $window, Logger, ApiDefinitionSvcs, Configuration) => {
+        ['$q', '$scope', 'ApiCatalogSvcs', 'PageLifecycle', '$routeParams', '$window', 'Logger', 'ApiDefinitionSvcs', 'Configuration',
+        ($q, $scope, ApiCatalogSvcs, PageLifecycle, $routeParams, $window, Logger, ApiDefinitionSvcs, Configuration) => {
             $scope.params = $routeParams;
             $scope.chains = {};
             
@@ -139,7 +159,7 @@ module Apiman {
             
             var pageData = {
                 apis: $q(function(resolve, reject) {
-                    ApimanSvcs.save({ entityType: 'search', secondaryType: 'apiCatalogs' }, searchStr, function(reply) {
+                    ApiCatalogSvcs.search(searchStr, function(reply) {
                         resolve(reply.beans);
                         $scope.api = reply.beans[0];
                     }, reject);

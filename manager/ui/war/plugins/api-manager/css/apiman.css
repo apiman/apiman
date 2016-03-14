@@ -1874,3 +1874,7 @@ html, body {height: 100%;}
 #api-catalog-filters .api-type {
   width: auto;
 }
+#api-catalog-filters .api-namespaces {
+  width: auto;
+  float: right;
+}

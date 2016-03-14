@@ -19,7 +19,9 @@ package io.apiman.manager.api.rest.impl;
 import io.apiman.manager.api.beans.search.PagingBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaFilterBean;
+import io.apiman.manager.api.beans.search.SearchCriteriaFilterOperator;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
+import io.apiman.manager.api.beans.summary.ApiNamespaceBean;
 import io.apiman.manager.api.beans.summary.ApiSummaryBean;
 import io.apiman.manager.api.beans.summary.AvailableApiBean;
 import io.apiman.manager.api.beans.summary.ClientSummaryBean;
@@ -33,6 +35,7 @@ import io.apiman.manager.api.rest.contract.exceptions.InvalidSearchCriteriaExcep
 import io.apiman.manager.api.rest.contract.exceptions.OrganizationNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.SystemErrorException;
 import io.apiman.manager.api.rest.impl.util.SearchCriteriaUtil;
+import io.apiman.manager.api.security.ISecurityContext;
 
 import java.util.List;
 
@@ -50,6 +53,7 @@ public class SearchResourceImpl implements ISearchResource {
     @Inject IStorage storage;
     @Inject IStorageQuery query;
     @Inject IApiCatalog apiCatalog;
+    @Inject ISecurityContext securityContext;
 
     /**
      * Constructor.
@@ -114,6 +118,8 @@ public class SearchResourceImpl implements ISearchResource {
         if (criteria.getFilters().isEmpty()) {
             return rval;
         }
+        
+        // First criteria is the name search keyword
         SearchCriteriaFilterBean bean = criteria.getFilters().get(0);
         if (bean == null) {
             return rval;
@@ -121,9 +127,18 @@ public class SearchResourceImpl implements ISearchResource {
         if (!bean.getName().equals("name")) { //$NON-NLS-1$
             return rval;
         }
-
         String keyword = bean.getValue();
-        List<AvailableApiBean> apis = apiCatalog.search(keyword);
+        
+        // Second criteria is the namespace
+        String namespace = null;
+        if (criteria.getFilters().size() >= 2) {
+            bean = criteria.getFilters().get(1);
+            if (bean != null && bean.getName().equals("namespace") && bean.getOperator() == SearchCriteriaFilterOperator.eq) { //$NON-NLS-1$
+                namespace = bean.getValue();
+            }
+        }
+
+        List<AvailableApiBean> apis = apiCatalog.search(keyword, namespace);
 
         PagingBean paging = criteria.getPaging();
         if (paging == null) {
@@ -143,6 +158,14 @@ public class SearchResourceImpl implements ISearchResource {
 
         rval.setTotalSize(totalSize);
         return rval;
+    }
+    
+    /**
+     * @see io.apiman.manager.api.rest.contract.ISearchResource#getApiNamespaces()
+     */
+    @Override
+    public List<ApiNamespaceBean> getApiNamespaces() {
+        return apiCatalog.getNamespaces(securityContext.getCurrentUser());
     }
 
     /**

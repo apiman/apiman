@@ -18,6 +18,7 @@ package io.apiman.manager.api.rest.contract;
 
 import io.apiman.manager.api.beans.search.SearchCriteriaBean;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
+import io.apiman.manager.api.beans.summary.ApiNamespaceBean;
 import io.apiman.manager.api.beans.summary.ApiSummaryBean;
 import io.apiman.manager.api.beans.summary.AvailableApiBean;
 import io.apiman.manager.api.beans.summary.ClientSummaryBean;
@@ -26,7 +27,10 @@ import io.apiman.manager.api.rest.contract.exceptions.InvalidSearchCriteriaExcep
 import io.apiman.manager.api.rest.contract.exceptions.OrganizationNotFoundException;
 import io.swagger.annotations.Api;
 
+import java.util.List;
+
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -105,10 +109,23 @@ public interface ISearchResource {
      * @throws InvalidSearchCriteriaException when provided criteria are invalid
      */
     @POST
-    @Path("apiCatalogs")
+    @Path("apiCatalog/entries")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public SearchResultsBean<AvailableApiBean> searchApiCatalogs(SearchCriteriaBean criteria)
             throws InvalidSearchCriteriaException;
+
+    /**
+     * Use this endpoint to get a list of all namespaces available to be searched
+     * within.  Not all platforms support this functionality.  If no namespaces are
+     * found, then the UI should simply suppress the namespace filter.
+     * @summary List All Namespaces in API Catalogs
+     * @statuscode 200 If the namespaces were successfully returned.
+     * @return The list of namespaces.
+     */
+    @GET
+    @Path("apiCatalog/namespaces")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<ApiNamespaceBean> getApiNamespaces();
 
 }

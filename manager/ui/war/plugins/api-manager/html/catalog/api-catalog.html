@@ -44,6 +44,10 @@
                 <option value="rest" apiman-i18n-key="show-only-rest">Show REST only</option>
                 <option value="soap" apiman-i18n-key="show-only-soap">Show SOAP only</option>
               </select>
+              <select ng-show="namespaces.length > 0" class="selectpicker api-namespaces" id="namespace" apiman-select-picker="" ng-model="namespace" ng-change="selectNamespace( namespace )"
+                title="" class="selectpicker" data-live-search="true" apiman-i18n-skip
+                data-ng-options="ns.name for ns in namespaces | orderBy: ns.name">
+              </select>
             </div>
             <!-- Table of APIs -->
             <div class="row apiman-card-table">
