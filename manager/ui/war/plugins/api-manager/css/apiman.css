@@ -1707,8 +1707,31 @@ html, body {height: 100%;}
 }
 .apiman-card-table .card .name {
   font-size: 16px;
-  height: 46px;
 }
+
+.apiman-card-table .card .tags {
+  margin-top: 2px;
+  color: #357;
+  height: 40px;
+}
+.apiman-card-table .card .tags ul {
+  display: inline;
+  list-style: none;
+  padding-left: 0px;
+}
+.apiman-card-table .card .tags ul li {
+  display: inline;
+}
+.apiman-card-table .card .tags ul li:after {
+  content: ", ";
+}
+.apiman-card-table .card .tags ul li:last-child:after {
+  content: "";
+}
+.apiman-card-table .card .tags ul li a {
+  color: #357;
+}
+
 .apiman-card-table .card .actions {
   height: 24px;
 }

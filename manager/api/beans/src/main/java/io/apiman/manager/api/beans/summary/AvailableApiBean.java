@@ -19,6 +19,8 @@ import io.apiman.manager.api.beans.apis.ApiDefinitionType;
 import io.apiman.manager.api.beans.apis.EndpointType;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -44,6 +46,7 @@ public class AvailableApiBean implements Serializable {
     private String definitionUrl;
     private String routeDefinitionUrl;
     private ApiDefinitionType definitionType;
+    private Set<String> tags = new HashSet<>();
 
     /**
      * Constructor.
@@ -177,6 +180,18 @@ public class AvailableApiBean implements Serializable {
 
     public void setRouteDefinitionUrl(String routeDefinitionUrl) {
         this.routeDefinitionUrl = routeDefinitionUrl;
+    }
+
+    public Set<String> getTags() {
+        return tags;
+    }
+
+    public void setTags(Set<String> tags) {
+        this.tags = tags;
+    }
+    
+    public void addTag(String tag) {
+        getTags().add(tag);
     }
 
 }

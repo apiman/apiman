@@ -56,6 +56,12 @@
                     <img ng-show="api.iconIsUrl" src="{{ api.icon }}"></img>
                   </div>
                   <div class="name"><a href="{{ apiEndpoint(api) }}"><span>{{ api.name}}</span></a></div>
+                  <div class="tags" ng-show="api.tags">
+                    <i class="fa fa-fw fa-tags"></i>
+                    <ul>
+                      <li ng-repeat="tag in api.tags"><a href="#{{tag}}">{{ tag }}</a></li>
+                    </ul>
+                  </div>
                   <div><hr /></div>
                   <div class="actions"> 
                      <span class="apiman-action-divider" apiman-i18n-skip="">&nbsp;</span>
