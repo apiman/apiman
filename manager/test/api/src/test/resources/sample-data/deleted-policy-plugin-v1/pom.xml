@@ -11,19 +11,29 @@
     <dependency>
       <groupId>io.apiman</groupId>
       <artifactId>apiman-gateway-engine-core</artifactId>
-      <version>1.1.8.Final</version>
+      <version>1.2.3-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>io.apiman</groupId>
       <artifactId>apiman-gateway-engine-policies</artifactId>
-      <version>1.1.8.Final</version>
+      <version>1.2.3-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>
 
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+          <showDeprecation>false</showDeprecation>
+          <showWarnings>false</showWarnings>
+        </configuration>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
