@@ -3,9 +3,11 @@
 module Apiman {
 
     export var UserOrgsController = _module.controller("Apiman.UserOrgsController",
-        ['$q', '$scope', '$location', 'UserSvcs', 'PageLifecycle', '$routeParams',
-        ($q, $scope, $location, UserSvcs, PageLifecycle, $routeParams) => {
+        ['$q', '$scope', '$location', 'UserSvcs', 'PageLifecycle', '$routeParams', 'Configuration',
+        ($q, $scope, $location, UserSvcs, PageLifecycle, $routeParams, Configuration) => {
             $scope.tab = 'organizations';
+
+            $scope.noCreateOrg = Configuration.ui.platform == 'f8' || Configuration.ui.platform == 'ose';
 
             $scope.filterOrgs = function(value) {
                 if (!value) {

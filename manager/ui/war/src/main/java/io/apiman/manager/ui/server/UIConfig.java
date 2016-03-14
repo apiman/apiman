@@ -34,6 +34,7 @@ public class UIConfig implements IUIConfig {
     public static final String APIMAN_MANAGER_UI_API_AUTH_TOKEN_GENERATOR = "apiman-manager-ui.api.authentication.token.generator"; //$NON-NLS-1$
 
     public static final String APIMAN_MANAGER_UI_ENABLE_METRICS = "apiman-manager-ui.metrics.enable"; //$NON-NLS-1$
+    public static final String APIMAN_MANAGER_UI_PLATFORM = "apiman-manager-ui.platform"; //$NON-NLS-1$
 
     public static final String APIMAN_MANAGER_UI_LOGOUT_URL = "apiman-manager-ui.logout-url"; //$NON-NLS-1$
 
@@ -55,7 +56,15 @@ public class UIConfig implements IUIConfig {
     public boolean isMetricsEnabled() {
         return config.getBoolean(UIConfig.APIMAN_MANAGER_UI_ENABLE_METRICS, true);
     }
-
+    
+    /**
+     * @see io.apiman.manager.ui.server.IUIConfig#getPlatform()
+     */
+    @Override
+    public String getPlatform() {
+        return config.getString(UIConfig.APIMAN_MANAGER_UI_PLATFORM);
+    }
+    
     /**
      * @see io.apiman.manager.ui.server.IUIConfig#getManagementApiEndpoint()
      */
