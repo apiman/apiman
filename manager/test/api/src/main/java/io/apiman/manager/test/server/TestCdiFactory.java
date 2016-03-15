@@ -48,7 +48,6 @@ import io.searchbox.client.JestClientFactory;
 import io.searchbox.client.config.HttpClientConfig;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -182,7 +181,33 @@ public class TestCdiFactory {
              */
             @Override
             public List<ApiNamespaceBean> getNamespaces(String currentUser) {
-                return Collections.EMPTY_LIST;
+                List<ApiNamespaceBean> rval = new ArrayList<>();
+                
+                ApiNamespaceBean bean = new ApiNamespaceBean();
+                bean.setCurrent(true);
+                bean.setName("current");
+                bean.setOwnedByUser(true);
+                rval.add(bean);
+                
+                bean = new ApiNamespaceBean();
+                bean.setCurrent(false);
+                bean.setName("ns1");
+                bean.setOwnedByUser(true);
+                rval.add(bean);
+
+                bean = new ApiNamespaceBean();
+                bean.setCurrent(false);
+                bean.setName("ns2");
+                bean.setOwnedByUser(false);
+                rval.add(bean);
+
+                bean = new ApiNamespaceBean();
+                bean.setCurrent(false);
+                bean.setName("ns3");
+                bean.setOwnedByUser(false);
+                rval.add(bean);
+
+                return rval;
             }
         };
     }
