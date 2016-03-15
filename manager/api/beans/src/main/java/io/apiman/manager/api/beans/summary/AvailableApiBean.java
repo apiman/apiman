@@ -48,6 +48,7 @@ public class AvailableApiBean implements Serializable {
     private ApiDefinitionType definitionType;
     private String namespace;
     private Set<String> tags = new HashSet<>();
+    private boolean internal;
 
     /**
      * Constructor.
@@ -195,18 +196,20 @@ public class AvailableApiBean implements Serializable {
         getTags().add(tag);
     }
 
-    /**
-     * @return the namespace
-     */
     public String getNamespace() {
         return namespace;
     }
 
-    /**
-     * @param namespace the namespace to set
-     */
     public void setNamespace(String namespace) {
         this.namespace = namespace;
+    }
+
+    public boolean isInternal() {
+        return internal;
+    }
+
+    public void setInternal(boolean internal) {
+        this.internal = internal;
     }
 
 }

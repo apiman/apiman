@@ -1878,3 +1878,6 @@ html, body {height: 100%;}
   width: auto;
   float: right;
 }
+#api-catalog-filters .input-search {
+  width: 250px;
+}

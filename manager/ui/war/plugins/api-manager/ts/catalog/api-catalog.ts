@@ -24,6 +24,24 @@ module Apiman {
                 };
             };
             
+            $scope.hideInternal = true;
+            
+            $scope.isInternal = function(actual, expected) {
+            	if (!expected) {
+            		return true;
+            	}
+            	if (!actual) {
+            		return false;
+            	}
+            	if (!actual.id) {
+            		return false;
+        		}
+        		if (actual.internal == true) {
+        			return false;
+    		    }
+    		    return true;
+            };
+            
             $scope.apiEndpoint = function(api) {
                 if (api.routeEndpoint) {
                     return api.routeEndpoint;
@@ -65,7 +83,13 @@ module Apiman {
                     }, reject);
                 }),
                 apis: $q(function(resolve, reject) {
+                    $scope.hasInternalApis = false;
                     ApiCatalogSvcs.search(searchStr, function(reply) {
+                        angular.forEach(reply.beans, function(entry) {
+                            if (entry.internal) {
+                                $scope.hasInternalApis = true;
+                            }
+                        });
                         resolve(reply.beans);
                     }, reject);
                 }),
