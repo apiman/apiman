@@ -4,6 +4,43 @@ body {
   font-size: 13px;
 }
 
+.ui-select-bootstrap .ui-select-choices-row>a:hover, .ui-select-bootstrap .ui-select-choices-row>a:focus {
+  text-decoration: none;
+  color: #262626;
+  background-color: #d4edfa;
+  border-color: #b3d3e7;
+}
+
+.ui-select-bootstrap .ui-select-choices-row.active>a {
+  background-color: #0099d3;
+  border-color: #0076b7;
+  color: #fff;
+  outline: 2px auto -webkit-focus-ring-color;
+  outline-offset: -2px;
+  text-decoration: none;
+}
+
+a.ui-select-match-close {
+  background-image: url('../img/select2x2.png') !important;
+  background-repeat: no-repeat;
+  background-position: right top;
+  background-size: 60px 40px !important;
+  width: 12px;
+  height: 13px;
+  font-size: 1px;
+  right: 3px;
+  top: 6px;
+  zoom: 1;
+  display: block;
+  position: absolute;
+  left: 3px;
+}
+
+a.ui-select-match-close:hover {
+  background-position: right -11px;
+}
+
+
 .bootstrap-select.btn-group .dropdown-menu .selected a span.apiman-label-faded {
   color: white;
 }
