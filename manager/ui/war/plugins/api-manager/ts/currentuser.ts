@@ -36,7 +36,7 @@ module ApimanCurrentUser {
                     }
                 },
                 isMember: function(organizationId) {
-                    if (organizationId) {
+                    if (organizationId && $rootScope.memberships) {
                         return $rootScope.memberships[organizationId];
                     } else {
                         return false;
