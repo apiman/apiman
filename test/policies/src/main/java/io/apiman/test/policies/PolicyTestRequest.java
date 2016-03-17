@@ -62,7 +62,7 @@ public class PolicyTestRequest {
     }
 
     public PolicyTestRequest basicAuth(String username, String password) {
-        return header("Authorization", "BASIC " + Base64.encodeBase64String( (username + ':' + password).getBytes() )); //$NON-NLS-1$ //$NON-NLS-2$
+        return header("Authorization", "Basic " + Base64.encodeBase64String( (username + ':' + password).getBytes() )); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     public PolicyTestRequest body(String body) {

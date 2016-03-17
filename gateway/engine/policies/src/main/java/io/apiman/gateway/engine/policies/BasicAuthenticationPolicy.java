@@ -184,7 +184,7 @@ public class BasicAuthenticationPolicy extends AbstractMappedPolicy<BasicAuthent
         if (realm == null || realm.trim().isEmpty()) {
             realm = "Apiman"; //$NON-NLS-1$
         }
-        failure.getHeaders().put("WWW-Authenticate", String.format("BASIC realm=\"%1$s\"", realm)); //$NON-NLS-1$ //$NON-NLS-2$
+        failure.getHeaders().put("WWW-Authenticate", String.format("Basic realm=\"%1$s\"", realm)); //$NON-NLS-1$ //$NON-NLS-2$
         chain.doFailure(failure);
     }
 
