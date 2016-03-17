@@ -42,7 +42,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 @Table(name = "apis")
 @IdClass(OrganizationBasedCompositeId.class)
 @JsonInclude(Include.NON_NULL)
-public class ApiBean implements Serializable {
+public class ApiBean implements Serializable, Cloneable {
 
     private static final long serialVersionUID = 1526742536153467539L;
 
@@ -180,5 +180,13 @@ public class ApiBean implements Serializable {
         return "APIBean [organization=" + organization + ", id=" + id + ", name=" + name
                 + ", description=" + description + ", createdBy=" + createdBy + ", createdOn=" + createdOn
                 + "]";
+    }
+    
+    /**
+     * @see java.lang.Object#clone()
+     */
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 }

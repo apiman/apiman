@@ -42,7 +42,7 @@ import javax.persistence.UniqueConstraint;
 @Entity
 @Table(name = "plan_versions",
        uniqueConstraints = { @UniqueConstraint(columnNames = { "plan_id", "plan_org_id", "version" }) })
-public class PlanVersionBean implements Serializable {
+public class PlanVersionBean implements Serializable, Cloneable {
 
     private static final long serialVersionUID = -2218697175049442690L;
 
@@ -242,6 +242,14 @@ public class PlanVersionBean implements Serializable {
         return "PlanVersionBean [id=" + id + ", plan=" + plan + ", status=" + status + ", version=" + version
                 + ", createdBy=" + createdBy + ", createdOn=" + createdOn + ", modifiedBy=" + modifiedBy
                 + ", modifiedOn=" + modifiedOn + ", lockedOn=" + lockedOn + "]";
+    }
+    
+    /**
+     * @see java.lang.Object#clone()
+     */
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 
 }

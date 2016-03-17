@@ -432,7 +432,7 @@ public abstract class AbstractJpaStorage {
         @Override
         public T next() {
             T rval = results.get(resultIndex++);
-            entityManager().detach(rval);
+//            entityManager().detach(rval);
             if (resultIndex >= results.size()) {
                 fetch();
             }

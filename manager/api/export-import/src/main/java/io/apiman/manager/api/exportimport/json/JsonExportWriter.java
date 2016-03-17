@@ -277,6 +277,7 @@ public class JsonExportWriter extends AbstractJsonWriter<GlobalElementsEnum> imp
     public IExportWriter startPlan(PlanBean plan) {
         writeStartObject();
         try {
+            plan = (PlanBean) plan.clone();
             plan.setOrganization(null);
             jg.writeObjectField(PlanBean.class.getSimpleName(), plan);
         } catch (Exception e) {
@@ -301,6 +302,7 @@ public class JsonExportWriter extends AbstractJsonWriter<GlobalElementsEnum> imp
     public IExportWriter startPlanVersion(PlanVersionBean pvb) {
         writeStartObject();
         try {
+            pvb = (PlanVersionBean) pvb.clone();
             pvb.setPlan(null);
             jg.writeObjectField(PlanVersionBean.class.getSimpleName(), pvb);
         } catch (Exception e) {
@@ -331,10 +333,15 @@ public class JsonExportWriter extends AbstractJsonWriter<GlobalElementsEnum> imp
      * @return
      */
     private IExportWriter writePolicy(PolicyBean policy) {
-        PolicyDefinitionBean definition = new PolicyDefinitionBean();
-        definition.setId(policy.getDefinition().getId());
-        policy.setDefinition(definition);
-        writePojo(policy);
+        try {
+            policy = (PolicyBean) policy.clone();
+            PolicyDefinitionBean definition = new PolicyDefinitionBean();
+            definition.setId(policy.getDefinition().getId());
+            policy.setDefinition(definition);
+            writePojo(policy);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         return this;
     }
 
@@ -399,6 +406,7 @@ public class JsonExportWriter extends AbstractJsonWriter<GlobalElementsEnum> imp
     public IExportWriter startApi(ApiBean api) {
         writeStartObject();
         try {
+            api = (ApiBean) api.clone();
             api.setOrganization(null);
             jg.writeObjectField(ApiBean.class.getSimpleName(), api);
         } catch (Exception e) {
@@ -420,11 +428,12 @@ public class JsonExportWriter extends AbstractJsonWriter<GlobalElementsEnum> imp
      * @see io.apiman.manager.api.exportimport.write.IExportWriter#startApiVersion(io.apiman.manager.api.beans.apis.ApiVersionBean)
      */
     @Override
-    public IExportWriter startApiVersion(ApiVersionBean pvb) {
+    public IExportWriter startApiVersion(ApiVersionBean avb) {
         writeStartObject();
         try {
-            pvb.setApi(null);
-            jg.writeObjectField(ApiVersionBean.class.getSimpleName(), pvb);
+            avb = (ApiVersionBean) avb.clone();
+            avb.setApi(null);
+            jg.writeObjectField(ApiVersionBean.class.getSimpleName(), avb);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -509,6 +518,7 @@ public class JsonExportWriter extends AbstractJsonWriter<GlobalElementsEnum> imp
     public IExportWriter startClient(ClientBean client) {
         writeStartObject();
         try {
+            client = (ClientBean) client.clone();
             client.setOrganization(null);
             jg.writeObjectField(ClientBean.class.getSimpleName(), client);
         } catch (Exception e) {
@@ -530,11 +540,12 @@ public class JsonExportWriter extends AbstractJsonWriter<GlobalElementsEnum> imp
      * @see io.apiman.manager.api.exportimport.write.IExportWriter#startClientVersion(io.apiman.manager.api.beans.ClientVersionBean.ClientVersionBean)
      */
     @Override
-    public IExportWriter startClientVersion(ClientVersionBean pvb) {
+    public IExportWriter startClientVersion(ClientVersionBean cvb) {
         writeStartObject();
         try {
-            pvb.setClient(null);
-            jg.writeObjectField(ClientVersionBean.class.getSimpleName(), pvb);
+            cvb = (ClientVersionBean) cvb.clone();
+            cvb.setClient(null);
+            jg.writeObjectField(ClientVersionBean.class.getSimpleName(), cvb);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

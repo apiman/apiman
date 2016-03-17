@@ -52,7 +52,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 @Entity
 @Table(name = "policies")
 @JsonInclude(Include.NON_NULL)
-public class PolicyBean implements Serializable {
+public class PolicyBean implements Serializable, Cloneable {
 
     private static final long serialVersionUID = -8534463608508756791L;
 
@@ -345,6 +345,14 @@ public class PolicyBean implements Serializable {
                 + ", description=" + description + ", configuration=***, createdBy="
                 + createdBy + ", createdOn=" + createdOn + ", modifiedBy=" + modifiedBy + ", modifiedOn="
                 + modifiedOn + ", definition=" + definition + ", orderIndex=" + orderIndex + "]";
+    }
+    
+    /**
+     * @see java.lang.Object#clone()
+     */
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 
 }

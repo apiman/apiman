@@ -223,6 +223,7 @@ public class StorageExporter {
                     Iterator<ContractBean> contractIter = storage.getAllContracts(orgId, clientBean.getId(), versionBean.getVersion());
                     while (contractIter.hasNext()) {
                         ContractBean contractBean = contractIter.next();
+                        contractBean = (ContractBean) contractBean.clone();
                         contractBean.setClient(null);
                         contractBean.setApi(minifyApi(contractBean.getApi()));
                         contractBean.setPlan(minifyPlan(contractBean.getPlan()));

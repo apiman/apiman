@@ -518,6 +518,7 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
             client.setOrganizationId(versionBean.getClient().getOrganization().getId());
             client.setClientId(versionBean.getClient().getId());
             client.setVersion(versionBean.getVersion());
+            client.setApiKey(versionBean.getApikey());
 
             Set<Contract> contracts = new HashSet<>();
             while (contractBeans.hasNext()) {

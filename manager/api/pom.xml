@@ -20,6 +20,7 @@
     <module>ispn</module>
     <module>jpa</module>
     <module>micro</module>
+    <module>migrator</module>
     <module>rest</module>
     <module>rest-impl</module>
     <module>security</module>

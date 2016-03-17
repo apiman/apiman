@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testPlan xmlns="urn:io.apiman.test:2014:02:testPlan">
+
+  <testGroup name="Importing Old Date">
+    <test name="Import Data">test-plan-data/migrate/001_import-1.2.2.Final.resttest</test>
+<!--     <test name="Wait" delay="2000" /> -->
+  </testGroup>
+
+  <testGroup name="Exporting">
+    <test name="Export Data">test-plan-data/migrate/002_export.resttest</test>
+  </testGroup>
+
+</testPlan>

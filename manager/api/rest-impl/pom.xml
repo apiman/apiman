@@ -50,6 +50,10 @@
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-manager-api-migrator</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
       <artifactId>apiman-common-plugin</artifactId>
     </dependency>
     <!-- Third Party Dependencies -->
