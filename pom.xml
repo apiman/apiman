@@ -896,6 +896,11 @@
         <version>${version.org.slf4j}</version>
       </dependency>
       <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-jdk14</artifactId>
+        <version>${version.org.slf4j}</version>
+      </dependency>
+      <dependency>
         <groupId>org.infinispan</groupId>
         <artifactId>infinispan-core</artifactId>
         <version>${version.org.infinispan}</version>
