@@ -161,7 +161,7 @@ public class HttpApiConnection implements IApiConnection, IApiConnectionResponse
 
                     String up = options.getUsername() + ':' + options.getPassword();
                     StringBuilder builder = new StringBuilder();
-                    builder.append("BASIC "); //$NON-NLS-1$
+                    builder.append("Basic "); //$NON-NLS-1$
                     builder.append(Base64.encodeBase64String(up.getBytes()));
                     connection.setRequestProperty("Authorization", builder.toString()); //$NON-NLS-1$
                     suppressedHeaders.add("Authorization"); //$NON-NLS-1$
