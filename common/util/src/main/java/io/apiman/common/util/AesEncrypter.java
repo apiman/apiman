@@ -17,6 +17,8 @@ package io.apiman.common.util;
 
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -35,7 +37,11 @@ import org.apache.commons.codec.binary.Base64;
 public class AesEncrypter {
 
     private static final String secretKey = "f2f0aa80-84bd8a6"; //$NON-NLS-1$
+    private static final Map<String, SecretKeySpec> keySpecs = new HashMap<>();
 
+    /**
+     * Constructor.
+     */
     private AesEncrypter() {
     }
 
@@ -62,8 +68,7 @@ public class AesEncrypter {
         byte[] encrypted;
         Cipher cipher;
         try {
-            byte[] ivraw = secretKey.getBytes();
-            SecretKeySpec skeySpec = new SecretKeySpec(ivraw, "AES"); //$NON-NLS-1$
+            SecretKeySpec skeySpec = keySpecFromSecretKey(secretKey);
             
             cipher = Cipher.getInstance("AES"); //$NON-NLS-1$
             cipher.init(Cipher.ENCRYPT_MODE, skeySpec);
@@ -82,6 +87,19 @@ public class AesEncrypter {
             throw new RuntimeException(e);
         }
         return "$CRYPT::" + new String(Base64.encodeBase64(encrypted)); //$NON-NLS-1$
+    }
+
+    /**
+     * Returns a {@link SecretKeySpec} given a secret key.
+     * @param secretKey
+     */
+    private static SecretKeySpec keySpecFromSecretKey(String secretKey) {
+        if (!keySpecs.containsKey(secretKey)) {
+            byte[] ivraw = secretKey.getBytes();
+            SecretKeySpec skeySpec = new SecretKeySpec(ivraw, "AES"); //$NON-NLS-1$
+            keySpecs.put(secretKey, skeySpec);
+        }
+        return keySpecs.get(secretKey);
     }
     
 
@@ -109,8 +127,7 @@ public class AesEncrypter {
             byte[] decoded = Base64.decodeBase64(encryptedText.substring(8));
             Cipher cipher;
             try {
-                byte[] ivraw = secretKey.getBytes();
-                SecretKeySpec skeySpec = new SecretKeySpec(ivraw, "AES"); //$NON-NLS-1$
+                SecretKeySpec skeySpec = keySpecFromSecretKey(secretKey);
                 
                 cipher = Cipher.getInstance("AES"); //$NON-NLS-1$
                 cipher.init(Cipher.DECRYPT_MODE, skeySpec);
