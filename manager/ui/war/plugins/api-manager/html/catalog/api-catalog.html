@@ -88,7 +88,7 @@
                          theme="bootstrap"
                          sortable="true"
                          class="selectpicker api-type"
-                         style="width: 250px; margin: 0 10px; line-height: 1;"
+                         style="width: 250px; margin: 0 10px; line-height: 1; height: 26px; padding: 3px; box-shadow: none; font-size: small; border-color: #bababa;"
                          title="Choose a tag">
                 <ui-select-match placeholder="Filter by tags...">{{$item}}</ui-select-match>
                 <ui-select-choices repeat="tag in tags | filter:$select.search | orderBy: tag"
@@ -98,6 +98,7 @@
               </ui-select>
 
               <button class="btn btn-default btn-xs"
+                      style="box-shadow: none;"
                       ng-click="clear()">Clear</button>
             </div>
 
