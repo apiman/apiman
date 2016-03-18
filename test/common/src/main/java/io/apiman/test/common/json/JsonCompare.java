@@ -49,7 +49,8 @@ public class JsonCompare {
 
     private JsonMissingFieldType missingField = JsonMissingFieldType.ignore;
     private JsonArrayOrderingType arrayOrdering = JsonArrayOrderingType.strict;
-    private boolean ignoreCase;
+    private boolean compareNumericIds = true;
+    private boolean ignoreCase = false;
     private Stack<Object> currentPath = new Stack<Object>();
     
     /**
@@ -94,11 +95,81 @@ public class JsonCompare {
                 actual[idx] = actualArray.get(idx);
             }
             // If strict ordering is disabled, then sort both arrays
-            if (arrayOrdering == JsonArrayOrderingType.any) {
+            if (getArrayOrdering() == JsonArrayOrderingType.any) {
                 Comparator<? super JsonNode> comparator = new Comparator<JsonNode>() {
                     @Override
                     public int compare(JsonNode o1, JsonNode o2) {
-                        int cmp = o1.toString().compareTo(o2.toString());
+                        String str1 = o1.asText();
+                        String str2 = o2.asText();
+                        if (o1.isObject() && o2.isObject()) {
+                            // Try name (PermissionBean only)
+                            JsonNode o1NameNode = o1.get("name");
+                            JsonNode o2NameNode = o2.get("name");
+                            if (o1NameNode != null && o2NameNode != null) {
+                                str1 = o1NameNode.asText();
+                                str2 = o2NameNode.asText();
+                            }
+                            
+                            // Try username (UserBean only)
+                            JsonNode o1UsernameNode = o1.get("username");
+                            JsonNode o2UsernameNode = o2.get("username");
+                            if (o1UsernameNode != null && o2UsernameNode != null) {
+                                str1 = o1UsernameNode.asText();
+                                str2 = o2UsernameNode.asText();
+                            }
+
+                            // Try version (*VersionBeans)
+                            JsonNode o1VersionNode = o1.get("version");
+                            JsonNode o2VersionNode = o2.get("version");
+                            if (o1VersionNode != null && o2VersionNode != null) {
+                                str1 = o1VersionNode.asText();
+                                str2 = o2VersionNode.asText();
+                            }
+                            
+                            // Try OrganizationBean.id (Orgs)
+                            JsonNode o1OrgNode = o1.get("OrganizationBean");
+                            JsonNode o2OrgNode = o2.get("OrganizationBean");
+                            if (o1OrgNode != null && o2OrgNode != null) {
+                                str1 = o1OrgNode.get("id").asText();
+                                str2 = o2OrgNode.get("id").asText();
+                            }
+
+                            // Try ClientBean.id (Orgs)
+                            JsonNode o1ClientNode = o1.get("ClientBean");
+                            JsonNode o2ClientNode = o2.get("ClientBean");
+                            if (o1ClientNode != null && o2ClientNode != null) {
+                                str1 = o1ClientNode.get("id").asText();
+                                str2 = o2ClientNode.get("id").asText();
+                            }
+
+                            // Try PlanBean.id (Orgs)
+                            JsonNode o1PlanNode = o1.get("PlanBean");
+                            JsonNode o2PlanNode = o2.get("PlanBean");
+                            if (o1PlanNode != null && o2PlanNode != null) {
+                                str1 = o1PlanNode.get("id").asText();
+                                str2 = o2PlanNode.get("id").asText();
+                            }
+
+                            // Try ApiBean.id (Orgs)
+                            JsonNode o1ApiNode = o1.get("ApiBean");
+                            JsonNode o2ApiNode = o2.get("ApiBean");
+                            if (o1ApiNode != null && o2ApiNode != null) {
+                                str1 = o1ApiNode.get("id").asText();
+                                str2 = o2ApiNode.get("id").asText();
+                            }
+                            
+                            // Try Id (all other beans)
+                            JsonNode o1IdNode = o1.get("id");
+                            JsonNode o2IdNode = o2.get("id");
+                            if (o1IdNode != null && o2IdNode != null) {
+                                if (o1IdNode.isNumber()) {
+                                    return new Long(o1IdNode.asLong()).compareTo(o2IdNode.asLong());
+                                }
+                                str1 = o1IdNode.asText();
+                                str2 = o2IdNode.asText();
+                            }
+                        }
+                        int cmp = str1.compareTo(str2);
                         if (cmp == 0)
                             cmp = 1;
                         return cmp;
@@ -154,21 +225,27 @@ public class JsonCompare {
                                 message("Value mismatch for text field \"{0}\".", expectedFieldName),
                                 expected, actual);
                     }
-                } else if (expectedValue instanceof NumericNode) {
+                } else if (expectedValue.isNumber()) {
                     NumericNode numeric = (NumericNode) expectedValue;
                     Number expected = numeric.numberValue();
                     JsonNode actualValue = actualJson.get(expectedFieldName);
-                    Assert.assertNotNull(
-                            message("Expected JSON numeric field \"{0}\" with value \"{1}\" but was not found.",
-                                    expectedFieldName, expected),
-                            actualValue);
-                    Assert.assertEquals(
+                    try {
+                        Assert.assertNotNull(
+                                message("Expected JSON numeric field \"{0}\" with value \"{1}\" but was not found.",
+                                        expectedFieldName, expected),
+                                actualValue);
+                    } catch (Error e) {
+                        throw e;
+                    }
+                    Assert.assertTrue(
                             message("Expected JSON numeric field \"{0}\" with value \"{1}\" but found non-numeric [{2}] field with that name instead.",
                                     expectedFieldName, expected, actualValue.getClass().getSimpleName()),
-                            expectedValue.getClass(), actualValue.getClass());
+                            actualValue.isNumber());
                     Number actual = ((NumericNode) actualValue).numberValue();
-                    Assert.assertEquals(message("Value mismatch for numeric field \"{0}\".", expectedFieldName), expected,
-                            actual);
+                    if (!"id".equals(expectedFieldName) || isCompareNumericIds()) {
+                        Assert.assertEquals(message("Value mismatch for numeric field \"{0}\".", expectedFieldName), expected,
+                                actual);
+                    }
                 } else if (expectedValue instanceof BooleanNode) {
                     BooleanNode bool = (BooleanNode) expectedValue;
                     Boolean expected = bool.booleanValue();
@@ -304,6 +381,20 @@ public class JsonCompare {
      */
     public void setMissingField(JsonMissingFieldType missingField) {
         this.missingField = missingField;
+    }
+
+    /**
+     * @return the compareNumericIds
+     */
+    public boolean isCompareNumericIds() {
+        return compareNumericIds;
+    }
+
+    /**
+     * @param compareNumericIds the compareNumericIds to set
+     */
+    public void setCompareNumericIds(boolean compareNumericIds) {
+        this.compareNumericIds = compareNumericIds;
     }
 
 }

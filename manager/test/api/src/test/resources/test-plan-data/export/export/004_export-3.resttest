@@ -2,6 +2,7 @@ GET /system/export admin/admin
 ----
 200
 Content-Type: application/json
+X-RestTest-ArrayOrdering: any
 
 {
   "Metadata": {
@@ -21,6 +22,24 @@ Content-Type: application/json
       "fullName": "Admin 2",
       "email": "admin2@example.org",
       "joinedOn": "*",
+      "admin": false
+    },
+    {
+      "username": "bwayne",
+      "fullName": "Bruce Wayne",
+      "email": "bwayne@wayne-enterprises.com",
+      "admin": false
+    },
+    {
+      "username": "ckent",
+      "fullName": "Clark Kent",
+      "email": "ckent@dailyplanet.com",
+      "admin": false
+    },
+    {
+      "username": "dprince",
+      "fullName": "Diana Prince",
+      "email": "dprince@themyscira.gov",
       "admin": false
     },
     {
@@ -55,27 +74,6 @@ Content-Type: application/json
       "username": "user5",
       "fullName": "User 5",
       "email": "user5@example.org",
-      "joinedOn": "*",
-      "admin": false
-    },
-    {
-      "username": "bwayne",
-      "fullName": "Bruce Wayne",
-      "email": "bwayne@wayne-enterprises.com",
-      "joinedOn": "*",
-      "admin": false
-    },
-    {
-      "username": "ckent",
-      "fullName": "Clark Kent",
-      "email": "ckent@dailyplanet.com",
-      "joinedOn": "*",
-      "admin": false
-    },
-    {
-      "username": "dprince",
-      "fullName": "Diana Prince",
-      "email": "dprince@themyscira.gov",
       "joinedOn": "*",
       "admin": false
     }

@@ -288,7 +288,10 @@ public class TestPlanRunner {
                         .fromString(restTest.getExpectedResponseHeaders().get("X-RestTest-ArrayOrdering")));
                 jsonCompare.setIgnoreCase("true"
                         .equals(restTest.getExpectedResponseHeaders().get("X-RestTest-Assert-IgnoreCase")));
-                jsonCompare.setMissingField(JsonMissingFieldType.ignore);
+                jsonCompare.setCompareNumericIds("true"
+                        .equals(restTest.getExpectedResponseHeaders().get("X-RestTest-Assert-NumericIds")));
+                jsonCompare.setMissingField(JsonMissingFieldType.fromString(
+                        restTest.getExpectedResponseHeaders().get("X-RestTest-Assert-MissingField")));
                 jsonCompare.assertJson(expectedJson, actualJson);
             } catch (Error e) {
                 System.out.println("--- START FAILED JSON PAYLOAD ---");

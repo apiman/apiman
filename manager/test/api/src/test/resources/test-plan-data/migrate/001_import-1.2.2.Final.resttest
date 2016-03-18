@@ -78,7 +78,7 @@ Content-Type: application/json
     "permissions" : [ "planEdit", "planView", "planAdmin" ]
   } ],
   "PolicyDefinitions" : [ {
-    "id" : "IPWhitelistPolicy",
+    "id" : "IpWhitelistPolicy",
     "policyImpl" : "class:io.apiman.gateway.engine.policies.IPWhitelistPolicy",
     "name" : "IP Whitelist Policy",
     "description" : "Only requests that originate from a specified set of valid IP addresses will be allowed through.",
@@ -89,7 +89,7 @@ Content-Type: application/json
     "formType" : "Default",
     "deleted" : false
   }, {
-    "id" : "IPBlacklistPolicy",
+    "id" : "IpBlacklistPolicy",
     "policyImpl" : "class:io.apiman.gateway.engine.policies.IPBlacklistPolicy",
     "name" : "IP Blacklist Policy",
     "description" : "Requests that originate from a specified set of valid IP addresses will be denied access.",
@@ -199,7 +199,7 @@ Content-Type: application/json
     "formType" : "Default",
     "deleted" : false
   }, {
-    "id" : "log-headers-policy",
+    "id" : "Log-headers-policy",
     "policyImpl" : "plugin:io.apiman.plugins:apiman-plugins-log-policy:1.2.2.Final:war/io.apiman.plugins.log_policy.LogHeadersPolicy",
     "name" : "Log Headers Policy",
     "description" : "A policy that logs the headers to std out.  Useful to analyse inbound HTTP traffic to the gateway when added as the first policy in the chain or to analyse outbound HTTP traffic from the gateway when added as the last policy in the chain.",
@@ -210,7 +210,7 @@ Content-Type: application/json
     "form" : "schemas/log-policyDef.schema",
     "deleted" : false
   }, {
-    "id" : "jsonp-policy",
+    "id" : "Jsonp-policy",
     "policyImpl" : "plugin:io.apiman.plugins:apiman-plugins-jsonp-policy:1.2.2.Final:war/io.apiman.plugins.jsonp_policy.JsonpPolicy",
     "name" : "JSONP Policy",
     "description" : "Turns an endpoint into a JSONP compatible endpoint.",
@@ -425,7 +425,7 @@ Content-Type: application/json
           "modifiedBy" : "admin",
           "modifiedOn" : "2016-03-17T10:51:01Z",
           "definition" : {
-            "id" : "log-headers-policy",
+            "id" : "Log-headers-policy",
             "templates" : [ ],
             "deleted" : false
           },
@@ -497,7 +497,7 @@ Content-Type: application/json
               "organization" : {
                 "id" : "Foo"
               },
-              "id" : "foo-echo"
+              "id" : "Foo-echo"
             },
             "endpointProperties" : { },
             "publicAPI" : false,
@@ -786,7 +786,7 @@ Content-Type: application/json
       "entityVersion" : "1.0",
       "createdOn" : "2016-03-17T10:51:01Z",
       "what" : "AddPolicy",
-      "data" : "{\"policyDefId\":\"log-headers-policy\"}"
+      "data" : "{\"policyDefId\":\"Log-headers-policy\"}"
     }, {
       "id" : 87,
       "who" : "admin",
@@ -805,7 +805,7 @@ Content-Type: application/json
       "entityVersion" : "1.0",
       "createdOn" : "2016-03-17T13:26:51Z",
       "what" : "CreateContract",
-      "data" : "{\"clientOrgId\":\"Foo\",\"clientId\":\"foo-app\",\"clientVersion\":\"1.0\",\"apiOrgId\":\"Test\",\"apiId\":\"echo\",\"apiVersion\":\"1.0\",\"planId\":\"Silver\",\"planVersion\":\"1.0\"}"
+      "data" : "{\"clientOrgId\":\"Foo\",\"clientId\":\"Foo-app\",\"clientVersion\":\"1.0\",\"apiOrgId\":\"Test\",\"apiId\":\"echo\",\"apiVersion\":\"1.0\",\"planId\":\"Silver\",\"planVersion\":\"1.0\"}"
     }, {
       "id" : 96,
       "who" : "admin",
@@ -844,7 +844,7 @@ Content-Type: application/json
       "entityVersion" : "1.1",
       "createdOn" : "2016-03-17T13:28:22Z",
       "what" : "CreateContract",
-      "data" : "{\"clientOrgId\":\"Test\",\"clientId\":\"client1\",\"clientVersion\":\"1.1\",\"apiOrgId\":\"Foo\",\"apiId\":\"foo-echo\",\"apiVersion\":\"1.0\",\"planId\":\"Great\",\"planVersion\":\"1.0\"}"
+      "data" : "{\"clientOrgId\":\"Test\",\"clientId\":\"client1\",\"clientVersion\":\"1.1\",\"apiOrgId\":\"Foo\",\"apiId\":\"Foo-echo\",\"apiVersion\":\"1.0\",\"planId\":\"Great\",\"planVersion\":\"1.0\"}"
     } ]
   }, {
     "OrganizationBean" : {
@@ -944,8 +944,8 @@ Content-Type: application/json
     } ],
     "Apis" : [ {
       "ApiBean" : {
-        "id" : "foo-echo",
-        "name" : "foo-echo",
+        "id" : "Foo-echo",
+        "name" : "Foo-echo",
         "description" : "An echo service inside the Foo organization.",
         "createdBy" : "admin",
         "createdOn" : "2016-03-17T09:56:33Z",
@@ -987,7 +987,7 @@ Content-Type: application/json
           "id" : 52,
           "type" : "Api",
           "organizationId" : "Foo",
-          "entityId" : "foo-echo",
+          "entityId" : "Foo-echo",
           "entityVersion" : "1.0",
           "name" : "BASIC Authentication Policy",
           "configuration" : "{\"realm\":\"Foo Echo\",\"forwardIdentityHttpHeader\":\"X-Identity\",\"requireBasicAuth\":true,\"staticIdentity\":{\"identities\":[{\"username\":\"user\",\"password\":\"user\"},{\"username\":\"user1\",\"password\":\"user1\"},{\"username\":\"user2\",\"password\":\"user2\"}]}}",
@@ -1005,7 +1005,7 @@ Content-Type: application/json
           "id" : 54,
           "type" : "Api",
           "organizationId" : "Foo",
-          "entityId" : "foo-echo",
+          "entityId" : "Foo-echo",
           "entityVersion" : "1.0",
           "name" : "Ignored Resources Policy",
           "configuration" : "{\"rules\":[{\"verb\":\"*\",\"pathPattern\":\"/admin/.*\"}]}",
@@ -1156,9 +1156,9 @@ Content-Type: application/json
     } ],
     "Clients" : [ {
       "ClientBean" : {
-        "id" : "foo-app",
-        "name" : "foo-app",
-        "description" : "The foo app!  It probably uses the foo-echo API.",
+        "id" : "Foo-app",
+        "name" : "Foo-app",
+        "description" : "The Foo app!  It probably uses the Foo-echo API.",
         "createdBy" : "admin",
         "createdOn" : "2016-03-17T10:05:26Z"
       },
@@ -1181,7 +1181,7 @@ Content-Type: application/json
               "organization" : {
                 "id" : "Foo"
               },
-              "id" : "foo-echo"
+              "id" : "Foo-echo"
             },
             "endpointProperties" : { },
             "publicAPI" : false,
@@ -1311,7 +1311,7 @@ Content-Type: application/json
       "who" : "admin",
       "organizationId" : "Foo",
       "entityType" : "Api",
-      "entityId" : "foo-echo",
+      "entityId" : "Foo-echo",
       "createdOn" : "2016-03-17T09:56:33Z",
       "what" : "Create"
     }, {
@@ -1319,7 +1319,7 @@ Content-Type: application/json
       "who" : "admin",
       "organizationId" : "Foo",
       "entityType" : "Api",
-      "entityId" : "foo-echo",
+      "entityId" : "Foo-echo",
       "entityVersion" : "1.0",
       "createdOn" : "2016-03-17T09:56:33Z",
       "what" : "Create"
@@ -1328,7 +1328,7 @@ Content-Type: application/json
       "who" : "admin",
       "organizationId" : "Foo",
       "entityType" : "Api",
-      "entityId" : "foo-echo",
+      "entityId" : "Foo-echo",
       "entityVersion" : "1.0",
       "createdOn" : "2016-03-17T09:57:29Z",
       "what" : "Update",
@@ -1338,7 +1338,7 @@ Content-Type: application/json
       "who" : "admin",
       "organizationId" : "Foo",
       "entityType" : "Api",
-      "entityId" : "foo-echo",
+      "entityId" : "Foo-echo",
       "entityVersion" : "1.0",
       "createdOn" : "2016-03-17T09:58:06Z",
       "what" : "UpdateDefinition"
@@ -1347,7 +1347,7 @@ Content-Type: application/json
       "who" : "admin",
       "organizationId" : "Foo",
       "entityType" : "Api",
-      "entityId" : "foo-echo",
+      "entityId" : "Foo-echo",
       "entityVersion" : "1.0",
       "createdOn" : "2016-03-17T09:58:16Z",
       "what" : "Update",
@@ -1357,7 +1357,7 @@ Content-Type: application/json
       "who" : "admin",
       "organizationId" : "Foo",
       "entityType" : "Api",
-      "entityId" : "foo-echo",
+      "entityId" : "Foo-echo",
       "entityVersion" : "1.0",
       "createdOn" : "2016-03-17T09:58:46Z",
       "what" : "AddPolicy",
@@ -1367,7 +1367,7 @@ Content-Type: application/json
       "who" : "admin",
       "organizationId" : "Foo",
       "entityType" : "Api",
-      "entityId" : "foo-echo",
+      "entityId" : "Foo-echo",
       "entityVersion" : "1.0",
       "createdOn" : "2016-03-17T09:59:25Z",
       "what" : "AddPolicy",
@@ -1377,7 +1377,7 @@ Content-Type: application/json
       "who" : "admin",
       "organizationId" : "Foo",
       "entityType" : "Api",
-      "entityId" : "foo-echo",
+      "entityId" : "Foo-echo",
       "entityVersion" : "1.0",
       "createdOn" : "2016-03-17T10:03:01Z",
       "what" : "Publish"
@@ -1412,7 +1412,7 @@ Content-Type: application/json
       "who" : "admin",
       "organizationId" : "Foo",
       "entityType" : "Api",
-      "entityId" : "foo-echo",
+      "entityId" : "Foo-echo",
       "createdOn" : "2016-03-17T10:05:00Z",
       "what" : "Update",
       "data" : "{\"changes\":[{\"name\":\"description\",\"before\":null,\"after\":\"An echo service inside the Foo organization.\"}]}"
@@ -1421,7 +1421,7 @@ Content-Type: application/json
       "who" : "admin",
       "organizationId" : "Foo",
       "entityType" : "Client",
-      "entityId" : "foo-app",
+      "entityId" : "Foo-app",
       "createdOn" : "2016-03-17T10:05:26Z",
       "what" : "Create"
     }, {
@@ -1429,7 +1429,7 @@ Content-Type: application/json
       "who" : "admin",
       "organizationId" : "Foo",
       "entityType" : "Client",
-      "entityId" : "foo-app",
+      "entityId" : "Foo-app",
       "entityVersion" : "1.0",
       "createdOn" : "2016-03-17T10:05:26Z",
       "what" : "Create"
@@ -1524,37 +1524,37 @@ Content-Type: application/json
       "who" : "admin",
       "organizationId" : "Foo",
       "entityType" : "Client",
-      "entityId" : "foo-app",
+      "entityId" : "Foo-app",
       "entityVersion" : "1.0",
       "createdOn" : "2016-03-17T13:26:43Z",
       "what" : "CreateContract",
-      "data" : "{\"clientOrgId\":\"Foo\",\"clientId\":\"foo-app\",\"clientVersion\":\"1.0\",\"apiOrgId\":\"Foo\",\"apiId\":\"foo-echo\",\"apiVersion\":\"1.0\",\"planId\":\"Good\",\"planVersion\":\"1.0\"}"
+      "data" : "{\"clientOrgId\":\"Foo\",\"clientId\":\"Foo-app\",\"clientVersion\":\"1.0\",\"apiOrgId\":\"Foo\",\"apiId\":\"Foo-echo\",\"apiVersion\":\"1.0\",\"planId\":\"Good\",\"planVersion\":\"1.0\"}"
     }, {
       "id" : 90,
       "who" : "admin",
       "organizationId" : "Foo",
       "entityType" : "Api",
-      "entityId" : "foo-echo",
+      "entityId" : "Foo-echo",
       "entityVersion" : "1.0",
       "createdOn" : "2016-03-17T13:26:43Z",
       "what" : "CreateContract",
-      "data" : "{\"clientOrgId\":\"Foo\",\"clientId\":\"foo-app\",\"clientVersion\":\"1.0\",\"apiOrgId\":\"Foo\",\"apiId\":\"foo-echo\",\"apiVersion\":\"1.0\",\"planId\":\"Good\",\"planVersion\":\"1.0\"}"
+      "data" : "{\"clientOrgId\":\"Foo\",\"clientId\":\"Foo-app\",\"clientVersion\":\"1.0\",\"apiOrgId\":\"Foo\",\"apiId\":\"Foo-echo\",\"apiVersion\":\"1.0\",\"planId\":\"Good\",\"planVersion\":\"1.0\"}"
     }, {
       "id" : 92,
       "who" : "admin",
       "organizationId" : "Foo",
       "entityType" : "Client",
-      "entityId" : "foo-app",
+      "entityId" : "Foo-app",
       "entityVersion" : "1.0",
       "createdOn" : "2016-03-17T13:26:51Z",
       "what" : "CreateContract",
-      "data" : "{\"clientOrgId\":\"Foo\",\"clientId\":\"foo-app\",\"clientVersion\":\"1.0\",\"apiOrgId\":\"Test\",\"apiId\":\"echo\",\"apiVersion\":\"1.0\",\"planId\":\"Silver\",\"planVersion\":\"1.0\"}"
+      "data" : "{\"clientOrgId\":\"Foo\",\"clientId\":\"Foo-app\",\"clientVersion\":\"1.0\",\"apiOrgId\":\"Test\",\"apiId\":\"echo\",\"apiVersion\":\"1.0\",\"planId\":\"Silver\",\"planVersion\":\"1.0\"}"
     }, {
       "id" : 94,
       "who" : "admin",
       "organizationId" : "Foo",
       "entityType" : "Client",
-      "entityId" : "foo-app",
+      "entityId" : "Foo-app",
       "entityVersion" : "1.0",
       "createdOn" : "2016-03-17T13:26:57Z",
       "what" : "Register"
@@ -1563,11 +1563,11 @@ Content-Type: application/json
       "who" : "admin",
       "organizationId" : "Foo",
       "entityType" : "Api",
-      "entityId" : "foo-echo",
+      "entityId" : "Foo-echo",
       "entityVersion" : "1.0",
       "createdOn" : "2016-03-17T13:28:22Z",
       "what" : "CreateContract",
-      "data" : "{\"clientOrgId\":\"Test\",\"clientId\":\"client1\",\"clientVersion\":\"1.1\",\"apiOrgId\":\"Foo\",\"apiId\":\"foo-echo\",\"apiVersion\":\"1.0\",\"planId\":\"Great\",\"planVersion\":\"1.0\"}"
+      "data" : "{\"clientOrgId\":\"Test\",\"clientId\":\"client1\",\"clientVersion\":\"1.1\",\"apiOrgId\":\"Foo\",\"apiId\":\"Foo-echo\",\"apiVersion\":\"1.0\",\"planId\":\"Great\",\"planVersion\":\"1.0\"}"
     } ]
   } ]
 }
@@ -1682,7 +1682,7 @@ INFO:       Importing a plan policy: Caching Policy
 INFO:   Importing a plan: Great
 INFO:     Importing a plan version: 1.0
 INFO:       Importing a plan policy: Time Restricted Access Policy
-INFO:     Importing an API: foo-echo
+INFO:     Importing an API: Foo-echo
 INFO:     Importing an API version: 1.0
 INFO:       Importing an API policy: BASIC Authentication Policy
 INFO:       Importing an API policy: Ignored Resources Policy
@@ -1694,7 +1694,7 @@ INFO:     Importing an API: Twitter API
 INFO:     Importing an API version: 1.0
 INFO:     Importing an API: YouTube API
 INFO:     Importing an API version: 1.0
-INFO:   Importing a client: foo-app
+INFO:   Importing a client: Foo-app
 INFO:     Importing a client version: 1.0
 INFO:   Importing an audit entry: 32
 INFO:   Importing an audit entry: 34
@@ -1740,14 +1740,14 @@ INFO: Importing a client contract.
 INFO: Importing a client contract.
 INFO: Importing a client contract.
 INFO: Publishing APIs to the gateway.
-INFO:  Publishing API: Foo / foo-echo -> 1.0
+INFO:  Publishing API: Foo / Foo-echo -> 1.0
 INFO:  Publishing API: Foo / FlickrAPI -> 1.0
 INFO:  Publishing API: Foo / FacebookAPI -> 1.0
 INFO:  Publishing API: Test / public-echo-two -> 1.0
 INFO:  Publishing API: Test / echo -> 1.0
 INFO:  Publishing API: Test / public-echo -> 1.0
 INFO: Registering clients in the gateway.
-INFO:  Registering app: Foo / foo-app -> 1.0
+INFO:  Registering app: Foo / Foo-app -> 1.0
 INFO:  Registering app: Test / client1 -> 1.0
 INFO: -----------------------------------
 INFO: Data import completed successfully!

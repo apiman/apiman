@@ -21,6 +21,14 @@ package io.apiman.test.common.json;
  */
 public enum JsonMissingFieldType {
 
-    fail, ignore
+    fail, ignore;
+
+    public static JsonMissingFieldType fromString(String string) {
+        if (string == null) {
+            return ignore;
+        } else {
+            return JsonMissingFieldType.valueOf(string);
+        }
+    }
     
 }
