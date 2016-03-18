@@ -10,7 +10,7 @@ Content-Type: application/json
   "endpoint" : "${apiman-gateway-test.endpoints.echo}/",
   "apiPolicies" : [
     {
-      "policyImpl" : "plugin:io.apiman:apiman-plugins-test-policy:1.2.0-SNAPSHOT:war/io.apiman.plugins.test_policy.TestPolicy",
+      "policyImpl" : "plugin:io.apiman:apiman-plugins-test-policy:1.2.3-SNAPSHOT:war/io.apiman.plugins.test_policy.TestPolicy",
       "policyJsonConfig" : ""
     }
   ]
