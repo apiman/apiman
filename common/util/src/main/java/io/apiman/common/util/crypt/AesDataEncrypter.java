@@ -33,10 +33,10 @@ public class AesDataEncrypter implements IDataEncrypter {
      * Constructor.
      */
     public AesDataEncrypter(Map<String, String> config) {
-        secretKey = config.get("secretKey");
+        secretKey = config.get("secretKey"); //$NON-NLS-1$
         
         if (secretKey == null) {
-            throw new RuntimeException("Missing configuration property: apiman-manager.config.secretKey");
+            throw new RuntimeException("Missing configuration property: apiman-manager.config.secretKey"); //$NON-NLS-1$
         }
     }
     

@@ -432,22 +432,10 @@ public abstract class AbstractJpaStorage {
         @Override
         public T next() {
             T rval = results.get(resultIndex++);
-//            entityManager().detach(rval);
             if (resultIndex >= results.size()) {
                 fetch();
             }
             return rval;
-        }
-
-        /**
-         * @throws StorageException
-         */
-        private EntityManager entityManager() {
-            try {
-                return getActiveEntityManager();
-            } catch (StorageException e) {
-                throw new RuntimeException(e);
-            }
         }
         
         /**
@@ -457,7 +445,5 @@ public abstract class AbstractJpaStorage {
         public void remove() {
             // Not implemented.
         }
-
     }
-
 }
