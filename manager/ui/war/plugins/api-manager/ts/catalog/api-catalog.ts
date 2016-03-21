@@ -117,6 +117,19 @@ module Apiman {
                         }
                     });
                 };
+                
+                $scope.tagLabel = function(tag) {
+                    var idx = tag.indexOf("=");
+                    if (idx == -1) {
+                        return tag;
+                    } else {
+                        return tag.slice(idx + 1);
+                    }
+                };
+                
+                $scope.tagTitle = function(tag) {
+                    return "Filter by tag: " + tag;
+                };
 
                 var pageData = {
                     namespaces: $q(function (resolve, reject) {

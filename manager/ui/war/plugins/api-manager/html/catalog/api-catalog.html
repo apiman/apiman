@@ -120,7 +120,7 @@
                   <div class="tags" ng-show="api.tags">
                     <i class="fa fa-fw fa-tags"></i>
                     <ul>
-                      <li ng-repeat="tag in api.tags"><a href="#" ng-click="addTag(tag)">{{ tag }}</a></li>
+                      <li ng-repeat="tag in api.tags | orderBy:tag"><a href="#" title="{{tagTitle(tag)}}" ng-click="addTag(tag)">{{ tagLabel(tag) }}</a></li>
                     </ul>
                   </div>
                   <div><hr /></div>
