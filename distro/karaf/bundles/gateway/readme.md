@@ -76,6 +76,14 @@ features:install apiman-gateway
 http GET http://localhost:8181/apiman-gateway/system/status
 ```
 
+# Start the Echo Service
+
+```
+git clone https://github.com/apiman/apiman-quickstarts.git
+cd echo-service
+mvn jetty:run
+```
+
 # Test Apiman Gateway API
 
 ```
