@@ -73,7 +73,6 @@
               <select ng-model="epType"
                       apiman-select-picker=""
                       class="selectpicker api-type"
-                      style="height: 28px;"
                       data-style="btn-default">
                 <option value="" apiman-i18n-key="show-all-api-types">Show All API Types</option>
                 <option value="rest" apiman-i18n-key="show-only-rest">Show REST only</option>
@@ -81,8 +80,7 @@
               </select>
 
               <!-- Filter: Internal APIs -->
-              <span ng-show="hasInternalApis"
-                    style="margin-left: 8px; height: 28px;">
+              <span style="margin-left: 8px; height: 28px;">
                 <input id="hide-internal" type="checkbox" ng-model="hideInternal"></input>
                 <label for="hide-internal"
                        apiman-i18n-key="hide-internal-apis"
@@ -90,8 +88,7 @@
               </span>
 
               <!-- Filter: Namespace -->
-              <select ng-show="namespaces.length > 0"
-                      class="selectpicker api-namespaces"
+              <select class="selectpicker api-namespaces"
                       id="namespace"
                       apiman-select-picker=""
                       ng-model="namespace"
