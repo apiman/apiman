@@ -132,12 +132,6 @@
             <artifactId>apiman-manager-api-es</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>io.apiman</groupId>
-            <artifactId>apiman-gateway-test</artifactId>
-            <scope>test</scope>
-            <classifier>test</classifier>
-        </dependency>
 
         <!-- Karaf distribution -->
         <dependency>
@@ -192,6 +186,10 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <skipTests>${skipTests}</skipTests>
+                    <excludes>
+                        <!-- Exclude this test class as we can't inject the BundleContext when using the ParentRunner-->
+                        <exclude>**/SimpleKarafTest.java</exclude>
+                    </excludes>
                 </configuration>
             </plugin>
         </plugins>
