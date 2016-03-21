@@ -106,10 +106,10 @@ public class SearchResourceImpl implements ISearchResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.ISearchResource#searchApiCatalogs(io.apiman.manager.api.beans.search.SearchCriteriaBean)
+     * @see io.apiman.manager.api.rest.contract.ISearchResource#searchApiCatalog(io.apiman.manager.api.beans.search.SearchCriteriaBean)
      */
     @Override
-    public SearchResultsBean<AvailableApiBean> searchApiCatalogs(SearchCriteriaBean criteria)
+    public SearchResultsBean<AvailableApiBean> searchApiCatalog(SearchCriteriaBean criteria)
             throws InvalidSearchCriteriaException {
         SearchCriteriaUtil.validateSearchCriteria(criteria);
 

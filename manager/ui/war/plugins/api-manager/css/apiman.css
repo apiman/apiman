@@ -1750,6 +1750,7 @@ html, body {height: 100%;}
   margin-top: 2px;
   color: #357;
   height: 40px;
+  overflow: auto;
 }
 .apiman-card-table .card .tags ul {
   display: inline;

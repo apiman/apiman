@@ -44,11 +44,6 @@ module Apiman {
                 $scope.selected = {};
                 $scope.selected.tags = [];
 
-
-                $timeout(function() {
-                    $scope.tags = _.uniq(_.flatten(_.map($scope.apis, 'tags')));
-                }, 1000);
-
                 $scope.filterApis = function (searchText) {
                     $scope.criteria = {
                         name: searchText
@@ -76,7 +71,6 @@ module Apiman {
                     }
                 };
 
-
                 $scope.hideInternal = true;
 
                 $scope.isInternal = function (actual, expected) {
@@ -86,7 +80,7 @@ module Apiman {
                     if (!actual) {
                         return false;
                     }
-                    if (!actual.id) {
+                    if (!actual.id && !actual.name) {
                         return false;
                     }
                     if (actual.internal == true) {
@@ -168,6 +162,8 @@ module Apiman {
                             api.definitionUrl = api.routeDefinitionUrl;
                         }
                     });
+
+                    $scope.tags = _.uniq(_.flatten(_.map($scope.apis, 'tags')));
 
                     PageLifecycle.setPageTitle('api-catalog');
                 });

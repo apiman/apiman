@@ -112,7 +112,7 @@ public interface ISearchResource {
     @Path("apiCatalog/entries")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public SearchResultsBean<AvailableApiBean> searchApiCatalogs(SearchCriteriaBean criteria)
+    public SearchResultsBean<AvailableApiBean> searchApiCatalog(SearchCriteriaBean criteria)
             throws InvalidSearchCriteriaException;
 
     /**
