@@ -7,8 +7,8 @@ module Apiman {
     ];
 
     export var ApiRedirectController = _module.controller("Apiman.ImportApisController",
-        ['$q', '$scope', '$location', 'OrgSvcs', 'PageLifecycle', '$rootScope', 'CurrentUser', '$routeParams', 'Logger', 'ApimanSvcs',
-        ($q, $scope, $location, OrgSvcs, PageLifecycle, $rootScope, CurrentUser, $routeParams, Logger, ApimanSvcs) => {
+        ['$q', '$scope', '$location', 'OrgSvcs', 'PageLifecycle', '$rootScope', 'CurrentUser', '$routeParams', 'Logger', 'ApiCatalogSvcs',
+        ($q, $scope, $location, OrgSvcs, PageLifecycle, $rootScope, CurrentUser, $routeParams, Logger, ApiCatalogSvcs) => {
             var params = $routeParams;
             $scope.params = params;
             $scope.organizationId = params.org;
@@ -135,9 +135,9 @@ module Apiman {
                 var body:any = {};
                 body.filters = [];
                 body.filters.push({ "name" : "name", "value" : searchText, "operator" : "like" });
-                var searchStr = angular.toJson(body);
-                Logger.log("Searching API catalogs: {0}", searchStr);
-                ApimanSvcs.save({ entityType: 'search', secondaryType: 'apiCatalogs/entries' }, searchStr, function(reply) {
+                var criteria = angular.toJson(body);
+                Logger.log("Searching API catalogs: {0}", criteria);
+                ApiCatalogSvcs.search(criteria, function(reply) {
                     $scope.apis = reply.beans;
                     Logger.log("Found {0} apis.", reply.beans.length);
                     $scope.searchButton.state = 'complete';

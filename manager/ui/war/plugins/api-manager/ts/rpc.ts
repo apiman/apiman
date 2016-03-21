@@ -306,9 +306,9 @@ module ApimanRPC {
                         "get" : { "action" : "GET", "isArray" : true }
                     }).get({}, handler, errorHandler);
                 },
-                search: function(query, handler, errorHandler) {
+                search: function(criteria, handler, errorHandler) {
                     var endpoint = Configuration.api.endpoint + '/search/apiCatalog/entries';
-                    $resource(endpoint).save({}, query, handler, errorHandler);
+                    $resource(endpoint).save({}, criteria, handler, errorHandler);
                 }
             }
         }]);
