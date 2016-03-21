@@ -1773,6 +1773,10 @@ html, body {height: 100%;}
   height: 24px;
 }
 
+#apiman-tags-filter div {
+	margin-top: -1px;
+}
+
 .apiman-action-divider {
   color: #ccc;
   font-size: 16px;

@@ -40,12 +40,33 @@
                  id="api-catalog-filters"
                  style="display: flex;">
               <!-- Filter: Search -->
-              <span style="margin-right: 10px">
+              <span>
                 <apiman-search-box id="apis-filter"
                                    apiman-i18n-key="filter-catalog-apis"
                                    function="filterApis"
                                    placeholder="Filter by API name..." />
               </span>
+
+              <!-- Filter: Tags -->
+              <ui-select multiple
+              			 id="apiman-tags-filter"
+                         tagging
+                         tagging-label="false"
+                         ng-model="selected.tags"
+                         theme="bootstrap"
+                         sortable="true"
+                         class="selectpicker"
+                         style="width: 250px; margin: 0 10px; line-height: 1; height: 26px; padding: 3px; box-shadow: none; font-size: small; border-color: #bababa;"
+                         title="Choose a tag">
+                <ui-select-match placeholder="Filter by tags...">{{$item}}</ui-select-match>
+                <ui-select-choices repeat="tag in tags | filter:$select.search | orderBy: tag"
+                                   style="margin: 0 -1px auto -1px; width: 101%;">
+                  {{tag}}
+                </ui-select-choices>
+              </ui-select>
+              <button ng-show="selected.tags.length > 0" class="btn btn-default btn-xs"
+                      style="box-shadow: none; margin-left: -11px; border-left: none; margin-right: 10px"
+                      ng-click="clear()"><i class="fa fa-fw fa-close"></i></button>
 
               <!-- Filter: API Type -->
               <select ng-model="epType"
@@ -80,26 +101,6 @@
                       data-ng-options="ns.name for ns in namespaces | orderBy: ns.name">
               </select>
 
-              <!-- Filter: Tags -->
-              <ui-select multiple
-                         tagging
-                         tagging-label="false"
-                         ng-model="selected.tags"
-                         theme="bootstrap"
-                         sortable="true"
-                         class="selectpicker api-type"
-                         style="width: 250px; margin: 0 10px; line-height: 1; height: 26px; padding: 3px; box-shadow: none; font-size: small; border-color: #bababa;"
-                         title="Choose a tag">
-                <ui-select-match placeholder="Filter by tags...">{{$item}}</ui-select-match>
-                <ui-select-choices repeat="tag in tags | filter:$select.search | orderBy: tag"
-                                   style="margin: 0 -1px auto -1px; width: 101%;">
-                  {{tag}}
-                </ui-select-choices>
-              </ui-select>
-
-              <button class="btn btn-default btn-xs"
-                      style="box-shadow: none;"
-                      ng-click="clear()">Clear</button>
             </div>
 
 
