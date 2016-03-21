@@ -134,7 +134,9 @@ module Apiman {
                 var pageData = {
                     namespaces: $q(function (resolve, reject) {
                         ApiCatalogSvcs.getNamespaces(function (reply) {
+                            $scope.hasNamespaces = false;
                             angular.forEach(reply, function (ns) {
+                                $scope.hasNamespaces = true;
                                 if ((namespace && ns.name == namespace) || (!namespace && ns.current)) {
                                     $scope.namespace = ns;
                                 }

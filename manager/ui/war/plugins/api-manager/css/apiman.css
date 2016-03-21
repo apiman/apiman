@@ -1775,6 +1775,7 @@ html, body {height: 100%;}
 }
 .apiman-card-table .card .tags ul li a {
   color: #357;
+  cursor: pointer;
 }
 
 .apiman-card-table .card .actions {
@@ -1784,6 +1785,12 @@ html, body {height: 100%;}
 #apiman-tags-filter div {
 	margin-top: -1px;
 }
+@-moz-document url-prefix() {
+  #apiman-tags-filter div {
+    margin-top: -2px;
+  }
+}
+
 
 .apiman-action-divider {
   color: #ccc;

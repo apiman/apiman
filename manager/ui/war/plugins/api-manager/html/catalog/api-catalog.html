@@ -37,8 +37,7 @@
 
             <!-- Filter and Actions -->
             <div class="row"
-                 id="api-catalog-filters"
-                 style="display: inline;">
+                 id="api-catalog-filters">
               <!-- Filter: Search -->
               <span>
                 <apiman-search-box id="apis-filter"
@@ -89,7 +88,7 @@
               </span>
 
               <!-- Filter: Namespace -->
-              <select ng-show="namespaces.length > 0"
+              <select ng-show="hasNamespaces"
                       class="selectpicker api-namespaces"
                       id="namespace"
                       apiman-select-picker=""
@@ -102,8 +101,6 @@
               </select>
 
             </div>
-
-
 
 
             <!-- Table of APIs -->
@@ -120,7 +117,7 @@
                   <div class="tags" ng-show="api.tags">
                     <i class="fa fa-fw fa-tags"></i>
                     <ul>
-                      <li ng-repeat="tag in api.tags | orderBy:tag"><a href="#" title="{{tagTitle(tag)}}" ng-click="addTag(tag)">{{ tagLabel(tag) }}</a></li>
+                      <li ng-repeat="tag in api.tags | orderBy:tag"><a class="tagLink" title="{{tagTitle(tag)}}" ng-click="addTag(tag)">{{ tagLabel(tag) }}</a></li>
                     </ul>
                   </div>
                   <div><hr /></div>
