@@ -40,6 +40,10 @@ a.ui-select-match-close:hover {
   background-position: right -11px;
 }
 
+.api-type {
+  margin-top: -1px;
+}
+
 #apis-filter-b, #apis-filter-f, .api-namespaces button, .api-type button {
   height: 28px;
 }

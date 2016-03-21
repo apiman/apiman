@@ -38,7 +38,7 @@
             <!-- Filter and Actions -->
             <div class="row"
                  id="api-catalog-filters"
-                 style="display: flex;">
+                 style="display: inline;">
               <!-- Filter: Search -->
               <span>
                 <apiman-search-box id="apis-filter"
@@ -57,7 +57,7 @@
                          theme="bootstrap"
                          sortable="true"
                          class="selectpicker api-catalog-filters"
-                         style="width: 250px; margin: 0 10px; box-shadow: none; font-size: small; border-color: #bababa;"
+                         style="width: 250px; margin: 0 10px; box-shadow: none; font-size: small; border-color: #bababa; display: inline-table;"
                          title="Choose a tag">
                 <ui-select-match placeholder="Filter by tags...">{{$item}}</ui-select-match>
                 <ui-select-choices repeat="tag in tags | filter:$select.search | orderBy: tag"
@@ -66,7 +66,7 @@
                 </ui-select-choices>
               </ui-select>
               <button ng-show="selected.tags.length > 0" class="btn btn-default btn-xs"
-                      style="box-shadow: none; margin-left: -11px; border-left: none; margin-right: 10px"
+                      style="box-shadow: none; height: 28px; margin: -1px 10px 0 -14px; border-left: none;"
                       ng-click="clear()"><i class="fa fa-fw fa-close"></i></button>
 
               <!-- Filter: API Type -->
@@ -80,7 +80,8 @@
               </select>
 
               <!-- Filter: Internal APIs -->
-              <span style="margin-left: 8px; height: 28px;">
+              <span ng-show="hasInternalApis"
+                    style="margin-left: 8px; height: 28px;">
                 <input id="hide-internal" type="checkbox" ng-model="hideInternal"></input>
                 <label for="hide-internal"
                        apiman-i18n-key="hide-internal-apis"
@@ -88,13 +89,13 @@
               </span>
 
               <!-- Filter: Namespace -->
-              <select class="selectpicker api-namespaces"
+              <select ng-show="namespaces.length > 0"
+                      class="selectpicker api-namespaces"
                       id="namespace"
                       apiman-select-picker=""
                       ng-model="namespace"
                       ng-change="selectNamespace( namespace )"
                       title=""
-                      style="height: 28px;"
                       data-live-search="true"
                       apiman-i18n-skip
                       data-ng-options="ns.name for ns in namespaces | orderBy: ns.name">
