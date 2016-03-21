@@ -54,7 +54,7 @@ public class HttpTestClient {
 	private String keyStore;
 
 	public HttpTestClient() throws Exception {
-		this("admin", "admin123!", "keystore.jks");
+		this("admin", "admin", "keystore.jks");
 	}
 
 	public HttpTestClient(String user, String password, String keyStore)
