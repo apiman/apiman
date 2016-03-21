@@ -283,6 +283,9 @@ module Apiman {
                         ApiCatalogSvcs.search(searchStr, function (reply) {
                             resolve(reply.beans);
                             $scope.api = reply.beans[0];
+                            if ($scope.api.routeDefinitionUrl != null) {
+                                $scope.api.definitionUrl = $scope.api.routeDefinitionUrl;
+                            }
                         }, reject);
                     })
                 };
