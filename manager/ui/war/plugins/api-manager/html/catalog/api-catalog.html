@@ -38,7 +38,7 @@
             <!-- Filter and Actions -->
             <div class="row"
                  id="api-catalog-filters"
-                 style="display: flex;">
+                 style="display: inline;">
               <!-- Filter: Search -->
               <span>
                 <apiman-search-box id="apis-filter"
@@ -57,7 +57,7 @@
                          theme="bootstrap"
                          sortable="true"
                          class="selectpicker api-catalog-filters"
-                         style="width: 250px; margin: 0 10px; box-shadow: none; font-size: small; border-color: #bababa;"
+                         style="width: 250px; margin: 0 10px; box-shadow: none; font-size: small; border-color: #bababa; display: inline-table;"
                          title="Choose a tag">
                 <ui-select-match placeholder="Filter by tags...">{{$item}}</ui-select-match>
                 <ui-select-choices repeat="tag in tags | filter:$select.search | orderBy: tag"
@@ -66,14 +66,13 @@
                 </ui-select-choices>
               </ui-select>
               <button ng-show="selected.tags.length > 0" class="btn btn-default btn-xs"
-                      style="box-shadow: none; margin-left: -11px; border-left: none; margin-right: 10px"
+                      style="box-shadow: none; height: 28px; margin: -1px 10px 0 -14px; border-left: none;"
                       ng-click="clear()"><i class="fa fa-fw fa-close"></i></button>
 
               <!-- Filter: API Type -->
               <select ng-model="epType"
                       apiman-select-picker=""
                       class="selectpicker api-type"
-                      style="height: 28px;"
                       data-style="btn-default">
                 <option value="" apiman-i18n-key="show-all-api-types">Show All API Types</option>
                 <option value="rest" apiman-i18n-key="show-only-rest">Show REST only</option>
@@ -97,7 +96,6 @@
                       ng-model="namespace"
                       ng-change="selectNamespace( namespace )"
                       title=""
-                      style="height: 28px;"
                       data-live-search="true"
                       apiman-i18n-skip
                       data-ng-options="ns.name for ns in namespaces | orderBy: ns.name">
