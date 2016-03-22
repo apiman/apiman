@@ -585,7 +585,7 @@ module Apiman {
       // overwrite templates
       editableThemes['default'].submitTpl = '<button class="btn btn-default inline-save-btn" type="submit"><i class="fa fa-check fa-fw"></i></button>';
       editableThemes['default'].cancelTpl = '<button class="btn btn-default" type="button" ng-click="$form.$cancel()"><i class="fa fa-times fa-fw"></i></button>';
-      editableThemes['default'].buttonsTpl = '<div></div>';
+      editableThemes['default'].buttonsTpl = '<div class="editable-options"></div>';
       editableThemes['default'].formTpl = '<form class="editable-wrap apiman-inline-edit"></form>';
     }]);
 
