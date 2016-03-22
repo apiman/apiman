@@ -1228,6 +1228,10 @@ div.admin-page .admin-content .apiman-summaryrow .emphasis {
   border-radius: 0 3px 3px 0;
 }
 
+.editable-options {
+  -webkit-margin-before: -4px;
+}
+
 div.editable-click { 
   color: black;
   border-bottom: hidden;
