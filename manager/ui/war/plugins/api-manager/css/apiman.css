@@ -1225,6 +1225,7 @@ div.admin-page .admin-content .apiman-summaryrow .emphasis {
   padding-right: 20px;
   overflow: auto;
   height: auto;
+  border-radius: 0 3px 3px 0;
 }
 
 div.editable-click { 
