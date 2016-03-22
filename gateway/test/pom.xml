@@ -37,6 +37,10 @@
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-gateway-engine-hawkular</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
       <artifactId>apiman-gateway-engine-jdbc</artifactId>
     </dependency>
     <dependency>
@@ -132,6 +136,16 @@
     <dependency>
       <groupId>io.searchbox</groupId>
       <artifactId>jest-common</artifactId>
+    </dependency>
+
+    <!-- Infinispan -->
+    <dependency>
+      <groupId>org.infinispan</groupId>
+      <artifactId>infinispan-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.infinispan</groupId>
+      <artifactId>infinispan-embedded</artifactId>
     </dependency>
 
     <!-- Jackson -->

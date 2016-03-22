@@ -2,26 +2,48 @@
 <testPlan xmlns="urn:io.apiman.test:2014:02:testPlan">
 
   <testGroup name="Create Entities">
-    <test name="Create Gateway">test-plan-data/export/creates/000_create-gateway.resttest</test>
-    <test name="Create Organization">test-plan-data/export/creates/001_create_org.resttest</test>
-    <test name="Create Plan">test-plan-data/export/creates/002_create-plan1.resttest</test>
-    <test name="Create Plan Version">test-plan-data/export/creates/003_create-plan1-version-1.0.resttest</test>
-    <test name="Lock Plan">test-plan-data/export/publish/003_lock-plan-1.resttest</test>
-    <test name="Create Client">test-plan-data/export/creates/004_create-client1.resttest</test>
-    <test name="Create Client Version">test-plan-data/export/creates/005_create-client1-version-1.0.resttest</test>
-    <test name="Create API">test-plan-data/export/creates/006_create-api1.resttest</test>
-    <test name="Create API Version">test-plan-data/export/creates/007_create-api1-version-1.0.resttest</test>
-    <test name="Update API Version">test-plan-data/export/creates/007.5_update-api1-version-1.0.resttest</test>
-    <test name="Publish API">test-plan-data/export/publish/001_publish-api-1.resttest</test>
-    <test name="Create Contract">test-plan-data/export/creates/008_create-contract1.resttest</test>
-    <test name="Register Client">test-plan-data/export/publish/002_register-client-1.resttest</test>
+    <test name="Create Gateway">test-plan-data/export/creates-1/000_create-gateway.resttest</test>
+    <test name="Create Organization">test-plan-data/export/creates-1/001_create_org.resttest</test>
+    <test name="Create Plan">test-plan-data/export/creates-1/002_create-plan1.resttest</test>
+    <test name="Create Plan Version">test-plan-data/export/creates-1/003_create-plan1-version-1.0.resttest</test>
+    <test name="Lock Plan">test-plan-data/export/creates-1/003.5_lock-plan-1.resttest</test>
+    <test name="Create Client">test-plan-data/export/creates-1/004_create-client1.resttest</test>
+    <test name="Create Client Version">test-plan-data/export/creates-1/005_create-client1-version-1.0.resttest</test>
+    <test name="Create API">test-plan-data/export/creates-1/006_create-api1.resttest</test>
+    <test name="Create API Version">test-plan-data/export/creates-1/007_create-api1-version-1.0.resttest</test>
+    <test name="Update API Version">test-plan-data/export/creates-1/008_update-api1-version-1.0.resttest</test>
+    <test name="Publish API">test-plan-data/export/creates-1/009_publish-api-1.resttest</test>
+    <test name="Create Contract">test-plan-data/export/creates-1/010_create-contract1.resttest</test>
+    <test name="Register Client">test-plan-data/export/creates-1/011_register-client-1.resttest</test>
     <test name="Wait" delay="2000" />
   </testGroup>
 
   <testGroup name="Exporting">
-    <test name="Export (1)">test-plan-data/export/export/001_export-1.resttest</test>
+    <test name="Export ">test-plan-data/export/export/001_export-1.resttest</test>
     <test name="Export (2) Prep">test-plan-data/export/export/002_export-2-prepare.resttest</test>
     <test name="Export (2) Download">test-plan-data/export/export/003_export-2-download.resttest</test>
+  </testGroup>
+
+  <testGroup name="Create Entities (2)">
+    <test name="Create Organization (2)">test-plan-data/export/creates-2/001_create_org.resttest</test>
+    <test name="Create Plan (2)">test-plan-data/export/creates-2/002_create-plan1.resttest</test>
+    <test name="Create Plan Version (2)">test-plan-data/export/creates-2/003_create-plan1-version-1.0.resttest</test>
+    <test name="Lock Plan (2)">test-plan-data/export/creates-2/003.5_lock-plan-1.resttest</test>
+    <test name="Create Client (2)">test-plan-data/export/creates-2/004_create-client1.resttest</test>
+    <test name="Create Client Version (2)">test-plan-data/export/creates-2/005_create-client1-version-1.0.resttest</test>
+    <test name="Create API (2)">test-plan-data/export/creates-2/006_create-api1.resttest</test>
+    <test name="Create API Version (2)">test-plan-data/export/creates-2/007_create-api1-version-1.0.resttest</test>
+    <test name="Update API Version (2)">test-plan-data/export/creates-2/008_update-api1-version-1.0.resttest</test>
+    <test name="Publish API (2)">test-plan-data/export/creates-2/009_publish-api-1.resttest</test>
+    <test name="Create Contract (2)">test-plan-data/export/creates-2/010_create-contract1.resttest</test>
+    <test name="Register Client (2)">test-plan-data/export/creates-2/011_register-client-1.resttest</test>
+    <test name="Create Plan Version 1.1 (2)">test-plan-data/export/creates-2/012_create-plan1-version-1.1.resttest</test>
+    <test name="Create Plan Version 1.2 (2)">test-plan-data/export/creates-2/013_create-plan1-version-1.2.resttest</test>
+    <test name="Wait (2)" delay="2000" />
+  </testGroup>
+
+  <testGroup name="Exporting Again">
+    <test name="Export (3)">test-plan-data/export/export/004_export-3.resttest</test>
   </testGroup>
 
 </testPlan>

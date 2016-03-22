@@ -52,6 +52,9 @@ module ApimanConfiguration {
             if (cdata.ui.metrics == undefined || cdata.ui.metrics == null) {
                 cdata.ui.metrics = true;
             }
+            if (cdata.ui.platform == undefined || cdata.ui.platform == null) {
+                cdata.ui.platform = "community";
+            }
 
             return cdata;
         }]);

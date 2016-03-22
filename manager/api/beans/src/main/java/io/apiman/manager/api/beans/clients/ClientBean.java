@@ -42,7 +42,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 @Table(name = "clients")
 @IdClass(OrganizationBasedCompositeId.class)
 @JsonInclude(Include.NON_NULL)
-public class ClientBean implements Serializable {
+public class ClientBean implements Serializable, Cloneable {
 
     private static final long serialVersionUID = -197129444021040365L;
 
@@ -157,6 +157,14 @@ public class ClientBean implements Serializable {
         return "ClientBean [organization=" + organization + ", id=" + id + ", name=" + name
                 + ", description=" + description + ", createdBy=" + createdBy + ", createdOn=" + createdOn
                 + "]";
+    }
+    
+    /**
+     * @see java.lang.Object#clone()
+     */
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 
 }

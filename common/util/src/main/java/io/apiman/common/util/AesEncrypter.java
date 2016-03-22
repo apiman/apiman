@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 JBoss Inc
+ * Copyright 2016 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,8 @@ package io.apiman.common.util;
 
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -30,18 +32,16 @@ import org.apache.commons.codec.binary.Base64;
  * A simple AES encrypter.
  *
  * @author eric.wittmann@redhat.com
+ * @author Rachel Yordán <ryordan@redhat.com>
  */
 public class AesEncrypter {
 
     private static final String secretKey = "f2f0aa80-84bd8a6"; //$NON-NLS-1$
+    private static final Map<String, SecretKeySpec> keySpecs = new HashMap<>();
 
-    private static SecretKeySpec skeySpec;
-
-    static {
-        byte[] ivraw = secretKey.getBytes();
-        skeySpec = new SecretKeySpec(ivraw, "AES"); //$NON-NLS-1$
-    }
-
+    /**
+     * Constructor.
+     */
     private AesEncrypter() {
     }
 
@@ -51,12 +51,25 @@ public class AesEncrypter {
      * @return the string
      */
     public static String encrypt(String plainText) {
+        return encrypt(secretKey, plainText);
+    }
+    
+    
+    /**
+     * Encrypt.
+     * @param plainText the plain text
+     * @param secretKey the secret key
+     * @return the string
+     */
+    public static String encrypt(String secretKey, String plainText) {
         if (plainText == null) {
             return null;
         }
         byte[] encrypted;
         Cipher cipher;
         try {
+            SecretKeySpec skeySpec = keySpecFromSecretKey(secretKey);
+            
             cipher = Cipher.getInstance("AES"); //$NON-NLS-1$
             cipher.init(Cipher.ENCRYPT_MODE, skeySpec);
         } catch (NoSuchAlgorithmException e) {
@@ -77,11 +90,36 @@ public class AesEncrypter {
     }
 
     /**
+     * Returns a {@link SecretKeySpec} given a secret key.
+     * @param secretKey
+     */
+    private static SecretKeySpec keySpecFromSecretKey(String secretKey) {
+        if (!keySpecs.containsKey(secretKey)) {
+            byte[] ivraw = secretKey.getBytes();
+            SecretKeySpec skeySpec = new SecretKeySpec(ivraw, "AES"); //$NON-NLS-1$
+            keySpecs.put(secretKey, skeySpec);
+        }
+        return keySpecs.get(secretKey);
+    }
+    
+
+    /**
      * Decrypt.
      * @param encryptedText the encrypted text
      * @return the string
      */
     public static final String decrypt(String encryptedText) {
+        return decrypt(secretKey, encryptedText);
+    }
+    
+    
+    /**
+     * Decrypt.
+     * @param encryptedText the encrypted text
+     * @param secretKey the secret key
+     * @return the string
+     */
+    public static final String decrypt(String secretKey, String encryptedText) {
         if (encryptedText == null) {
             return null;
         }
@@ -89,6 +127,8 @@ public class AesEncrypter {
             byte[] decoded = Base64.decodeBase64(encryptedText.substring(8));
             Cipher cipher;
             try {
+                SecretKeySpec skeySpec = keySpecFromSecretKey(secretKey);
+                
                 cipher = Cipher.getInstance("AES"); //$NON-NLS-1$
                 cipher.init(Cipher.DECRYPT_MODE, skeySpec);
             } catch (NoSuchAlgorithmException e) {
@@ -110,6 +150,7 @@ public class AesEncrypter {
             return encryptedText;
         }
     }
+    
 
     /**
      * Main entry point for the encrypter.  Allows encryption and decryption of text

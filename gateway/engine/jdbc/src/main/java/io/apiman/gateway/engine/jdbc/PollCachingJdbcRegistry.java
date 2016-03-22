@@ -182,9 +182,8 @@ public class PollCachingJdbcRegistry extends CachingJdbcRegistry {
                     checkCacheVersion();
                 }
             }
-        });
+        }, "JdbcRegistryCacheInvalidator"); //$NON-NLS-1$
         thread.setDaemon(true);
-        thread.setName(getClass().getSimpleName());
         thread.start();
     }
 

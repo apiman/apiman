@@ -1967,7 +1967,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     public Iterator<OrganizationBean> getAllOrganizations() throws StorageException {
         EntityManager entityManager = getActiveEntityManager();
 
-        String jqpl = "SELECT b FROM OrganizationBean b";
+        String jqpl = "SELECT b FROM OrganizationBean b ORDER BY b.id ASC";
         Query query = entityManager.createQuery(jqpl);
 
         return super.getAll(OrganizationBean.class, query);
@@ -1984,7 +1984,8 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         String jpql =
                 "SELECT b "
                 + "FROM PlanBean b "
-                + "WHERE b.organization.id = :orgId "; //$NON-NLS-1$
+                + "WHERE b.organization.id = :orgId "
+                + "ORDER BY b.id ASC"; //$NON-NLS-1$
 
         Query query = entityManager.createQuery(jpql);
         query.setParameter("orgId", organizationId);
@@ -2002,7 +2003,8 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         String jpql =
                 "SELECT b "
                 + "FROM ApiBean b "
-                + "WHERE b.organization.id = :orgId "; //$NON-NLS-1$
+                + "WHERE b.organization.id = :orgId "
+                + "ORDER BY b.id ASC"; //$NON-NLS-1$
 
         Query query = entityManager.createQuery(jpql);
         query.setParameter("orgId", organizationId);
@@ -2020,7 +2022,8 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         String jpql =
                 "SELECT b "
                 + "FROM ClientBean b "
-                + "WHERE b.organization.id = :orgId "; //$NON-NLS-1$
+                + "WHERE b.organization.id = :orgId "
+                + "ORDER BY b.id ASC"; //$NON-NLS-1$
 
         Query query = entityManager.createQuery(jpql);
         query.setParameter("orgId", organizationId);
@@ -2041,7 +2044,8 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
                 + "   JOIN v.client a "
                 + "   JOIN a.organization o "
                 + "  WHERE o.id = :orgId "
-                + "    AND a.id = :clientId";
+                + "    AND a.id = :clientId"
+                + "  ORDER BY v.id ASC";
 
         Query query = entityManager.createQuery(jpql);
         query.setParameter("orgId", organizationId);
@@ -2065,7 +2069,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
                 " WHERE client.id = :clientId " +
                 "   AND aorg.id = :orgId " +
                 "   AND clientv.version = :version " +
-                " ORDER BY aorg.id, client.id ASC";
+                " ORDER BY c.id ASC";
         Query query = entityManager.createQuery(jpql);
         query.setParameter("orgId", organizationId); //$NON-NLS-1$
         query.setParameter("clientId", clientId); //$NON-NLS-1$
@@ -2111,7 +2115,8 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
                 + "   JOIN v.plan p "
                 + "   JOIN p.organization o "
                 + "  WHERE o.id = :orgId "
-                + "    AND p.id = :planId";
+                + "    AND p.id = :planId"
+                + "  ORDER BY v.id ASC";
 
         Query query = entityManager.createQuery(jpql);
         query.setParameter("orgId", organizationId);
@@ -2133,7 +2138,8 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
                 + "   JOIN v.api s "
                 + "   JOIN s.organization o "
                 + "  WHERE o.id = :orgId "
-                + "    AND s.id = :apiId";
+                + "    AND s.id = :apiId"
+                + "  ORDER BY v.id ASC";
 
         Query query = entityManager.createQuery(jpql);
         query.setParameter("orgId", organizationId);
@@ -2147,7 +2153,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         EntityManager entityManager = getActiveEntityManager();
 
         String jpql =
-                "SELECT b FROM GatewayBean b";
+                "SELECT b FROM GatewayBean b ORDER BY b.id ASC";
 
         Query query = entityManager.createQuery(jpql);
         return super.getAll(GatewayBean.class, query);
@@ -2161,7 +2167,8 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         String jpql =
                 "SELECT b "
                 + "FROM AuditEntryBean b "
-                + "WHERE organization_id = :orgId "; //$NON-NLS-1$
+                + "WHERE organization_id = :orgId "
+                + "ORDER BY b.id ASC"; //$NON-NLS-1$
 
         Query query = entityManager.createQuery(jpql);
         query.setParameter("orgId", orgId);
@@ -2175,7 +2182,8 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
 
         String jpql =
                 "SELECT b "
-                + "FROM PluginBean b ";
+                + "FROM PluginBean b "
+                + "ORDER BY b.id ASC";
 
         Query query = entityManager.createQuery(jpql);
         return super.getAll(PluginBean.class, query);
@@ -2191,7 +2199,8 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
 
         String jpql =
                 "SELECT b "
-                + "FROM PolicyDefinitionBean b ";
+                + "FROM PolicyDefinitionBean b "
+                + "ORDER BY b.id ASC";
 
         Query query = entityManager.createQuery(jpql);
         return super.getAll(PolicyDefinitionBean.class, query);
@@ -2205,7 +2214,8 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         String jpql =
                 "SELECT b "
                 + "FROM RoleMembershipBean b "
-                + "WHERE organizationId = :orgId "; //$NON-NLS-1$
+                + "WHERE organizationId = :orgId "
+                + "ORDER BY b.id ASC"; //$NON-NLS-1$
 
         Query query = entityManager.createQuery(jpql);
         query.setParameter("orgId", orgId);
@@ -2219,7 +2229,8 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
 
         String jpql =
                 "SELECT b "
-                + "FROM UserBean b ";
+                + "FROM UserBean b "
+                + "ORDER BY b.username ASC";
 
         Query query = entityManager.createQuery(jpql);
         return super.getAll(UserBean.class, query);
@@ -2232,7 +2243,8 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
 
         String jpql =
                 "SELECT b "
-                + "FROM RoleBean b ";
+                + "FROM RoleBean b "
+                + "ORDER BY b.id ASC";
 
         Query query = entityManager.createQuery(jpql);
         return super.getAll(RoleBean.class, query);

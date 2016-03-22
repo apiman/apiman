@@ -4,6 +4,50 @@ body {
   font-size: 13px;
 }
 
+.ui-select-bootstrap .ui-select-choices-row>a:hover, .ui-select-bootstrap .ui-select-choices-row>a:focus {
+  text-decoration: none;
+  color: #262626;
+  background-color: #d4edfa;
+  border-color: #b3d3e7;
+}
+
+.ui-select-bootstrap .ui-select-choices-row.active>a {
+  background-color: #0099d3;
+  border-color: #0076b7;
+  color: #fff;
+  outline: 2px auto -webkit-focus-ring-color;
+  outline-offset: -2px;
+  text-decoration: none;
+}
+
+a.ui-select-match-close {
+  background-image: url('../img/select2x2.png') !important;
+  background-repeat: no-repeat;
+  background-position: right top;
+  background-size: 60px 40px !important;
+  width: 12px;
+  height: 13px;
+  font-size: 1px;
+  right: 3px;
+  top: 6px;
+  zoom: 1;
+  display: block;
+  position: absolute;
+  left: 3px;
+}
+
+a.ui-select-match-close:hover {
+  background-position: right -11px;
+}
+
+.api-type {
+  margin-top: -1px;
+}
+
+#apis-filter-b, #apis-filter-f, .api-namespaces button, .api-type button {
+  height: 28px;
+}
+
 .bootstrap-select.btn-group .dropdown-menu .selected a span.apiman-label-faded {
   color: white;
 }
@@ -1181,6 +1225,11 @@ div.admin-page .admin-content .apiman-summaryrow .emphasis {
   padding-right: 20px;
   overflow: auto;
   height: auto;
+  border-radius: 0 3px 3px 0;
+}
+
+.editable-options {
+  -webkit-margin-before: -4px;
 }
 
 div.editable-click { 
@@ -1707,11 +1756,46 @@ html, body {height: 100%;}
 }
 .apiman-card-table .card .name {
   font-size: 16px;
-  height: 46px;
 }
+
+.apiman-card-table .card .tags {
+  margin-top: 2px;
+  color: #357;
+  height: 40px;
+  overflow: auto;
+}
+.apiman-card-table .card .tags ul {
+  display: inline;
+  list-style: none;
+  padding-left: 0px;
+}
+.apiman-card-table .card .tags ul li {
+  display: inline;
+}
+.apiman-card-table .card .tags ul li:after {
+  content: ", ";
+}
+.apiman-card-table .card .tags ul li:last-child:after {
+  content: "";
+}
+.apiman-card-table .card .tags ul li a {
+  color: #357;
+  cursor: pointer;
+}
+
 .apiman-card-table .card .actions {
   height: 24px;
 }
+
+#apiman-tags-filter div {
+	margin-top: -1px;
+}
+@-moz-document url-prefix() {
+  #apiman-tags-filter div {
+    margin-top: -2px;
+  }
+}
+
 
 .apiman-action-divider {
   color: #ccc;
@@ -1850,4 +1934,11 @@ html, body {height: 100%;}
 
 #api-catalog-filters .api-type {
   width: auto;
+}
+#api-catalog-filters .api-namespaces {
+  width: auto;
+  float: right;
+}
+#api-catalog-filters .input-search {
+  width: 250px;
 }

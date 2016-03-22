@@ -15,8 +15,6 @@
  */
 package io.apiman.test.common.mock;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import io.apiman.common.util.SimpleStringUtils;
 import io.apiman.gateway.engine.beans.EngineErrorResponse;
 
@@ -25,6 +23,8 @@ import java.io.InputStream;
 import java.security.MessageDigest;
 import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -35,6 +35,9 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
 import org.apache.commons.io.IOUtils;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 /**
  * Simple echo servlet - for testing the gateway.
@@ -56,6 +59,13 @@ public class EchoServlet extends HttpServlet {
         } catch (JAXBException e) {
             throw new RuntimeException(e);
         }
+    }
+    private static Set<String> methodsWithBody = new HashSet<>();
+    static {
+        methodsWithBody.add("PUT");
+        methodsWithBody.add("POST");
+        methodsWithBody.add("PATCH");
+        methodsWithBody.add("PUT");
     }
 
     private long servletCounter = 0L;
@@ -120,41 +130,15 @@ public class EchoServlet extends HttpServlet {
      */
     public EchoServlet() {
     }
-
+    
     /**
-     * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     * @see javax.servlet.http.HttpServlet#service(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
-            IOException {
-        doEchoResponse(req, resp, false);
-    }
-
-    /**
-     * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-     */
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
-            IOException {
-        doEchoResponse(req, resp, true);
-    }
-
-    /**
-     * @see javax.servlet.http.HttpServlet#doPut(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-     */
-    @Override
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
-            IOException {
-        doEchoResponse(req, resp, true);
-    }
-
-    /**
-     * @see javax.servlet.http.HttpServlet#doDelete(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-     */
-    @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp)
+    protected void service(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-        doEchoResponse(req, resp, false);
+        String method = req.getMethod();
+        doEchoResponse(req, resp, methodsWithBody .contains(method));
     }
 
     /**

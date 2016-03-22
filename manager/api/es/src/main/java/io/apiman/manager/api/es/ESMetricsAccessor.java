@@ -16,8 +16,6 @@
 package io.apiman.manager.api.es;
 
 import io.apiman.manager.api.beans.metrics.ClientUsagePerApiBean;
-import io.apiman.manager.api.beans.metrics.HistogramBean;
-import io.apiman.manager.api.beans.metrics.HistogramDataPoint;
 import io.apiman.manager.api.beans.metrics.HistogramIntervalType;
 import io.apiman.manager.api.beans.metrics.ResponseStatsDataPoint;
 import io.apiman.manager.api.beans.metrics.ResponseStatsHistogramBean;
@@ -31,6 +29,7 @@ import io.apiman.manager.api.beans.metrics.UsagePerPlanBean;
 import io.apiman.manager.api.core.IMetricsAccessor;
 import io.apiman.manager.api.core.logging.ApimanLogger;
 import io.apiman.manager.api.core.logging.IApimanLogger;
+import io.apiman.manager.api.core.metrics.AbstractMetricsAccessor;
 import io.searchbox.client.JestClient;
 import io.searchbox.core.Search;
 import io.searchbox.core.SearchResult;
@@ -40,7 +39,6 @@ import io.searchbox.core.search.aggregation.FilterAggregation;
 import io.searchbox.core.search.aggregation.MetricAggregation;
 
 import java.io.IOException;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,9 +49,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.commons.lang.text.StrSubstitutor;
-import org.apache.commons.lang.time.DateFormatUtils;
 import org.joda.time.DateTime;
-import org.joda.time.format.ISODateTimeFormat;
 
 /**
  * An elasticsearch implementation of the {@link IMetricsAccessor} interface.  This
@@ -63,7 +59,7 @@ import org.joda.time.format.ISODateTimeFormat;
  * @author eric.wittmann@redhat.com
  */
 @ApplicationScoped @Alternative
-public class ESMetricsAccessor implements IMetricsAccessor {
+public class ESMetricsAccessor extends AbstractMetricsAccessor implements IMetricsAccessor {
 
     private static final String INDEX_NAME = "apiman_metrics"; //$NON-NLS-1$
 
@@ -149,91 +145,6 @@ public class ESMetricsAccessor implements IMetricsAccessor {
         }
 
         return rval;
-    }
-
-    /**
-     * Generate the histogram buckets based on the time frame requested and the interval.  This will
-     * add an entry for each 'slot' or 'bucket' in the histogram, setting the count to 0.
-     * @param rval
-     * @param from
-     * @param to
-     * @param interval
-     */
-    public static <T extends HistogramDataPoint> Map<String, T> generateHistogramSkeleton(HistogramBean<T> rval, DateTime from, DateTime to,
-            HistogramIntervalType interval, Class<T> dataType) {
-        Map<String, T> index = new HashMap<>();
-
-        Calendar fromCal = from.toGregorianCalendar();
-        Calendar toCal = to.toGregorianCalendar();
-
-        switch(interval) {
-            case day:
-                fromCal.set(Calendar.HOUR_OF_DAY, 0);
-                fromCal.set(Calendar.MINUTE, 0);
-                fromCal.set(Calendar.SECOND, 0);
-                fromCal.set(Calendar.MILLISECOND, 0);
-                break;
-            case hour:
-                fromCal.set(Calendar.MINUTE, 0);
-                fromCal.set(Calendar.SECOND, 0);
-                fromCal.set(Calendar.MILLISECOND, 0);
-                break;
-            case minute:
-                fromCal.set(Calendar.SECOND, 0);
-                fromCal.set(Calendar.MILLISECOND, 0);
-                break;
-            case month:
-                fromCal.set(Calendar.DAY_OF_MONTH, 1);
-                fromCal.set(Calendar.HOUR_OF_DAY, 0);
-                fromCal.set(Calendar.MINUTE, 0);
-                fromCal.set(Calendar.SECOND, 0);
-                fromCal.set(Calendar.MILLISECOND, 0);
-                break;
-            case week:
-                fromCal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
-                fromCal.set(Calendar.HOUR_OF_DAY, 0);
-                fromCal.set(Calendar.MINUTE, 0);
-                fromCal.set(Calendar.SECOND, 0);
-                fromCal.set(Calendar.MILLISECOND, 0);
-                break;
-            default:
-                break;
-        }
-
-        while (fromCal.before(toCal)) {
-            String label = formatDateWithMillis(fromCal);
-            T point;
-            try {
-                point = dataType.newInstance();
-            } catch (InstantiationException | IllegalAccessException e) {
-                throw new RuntimeException(e);
-            }
-            point.setLabel(label);
-            rval.addDataPoint(point);
-            index.put(label, point);
-            switch (interval) {
-                case day:
-                    fromCal.add(Calendar.DAY_OF_YEAR, 1);
-                    break;
-                case hour:
-                    fromCal.add(Calendar.HOUR_OF_DAY, 1);
-                    break;
-                case minute:
-                    fromCal.add(Calendar.MINUTE, 1);
-                    break;
-                case month:
-                    fromCal.add(Calendar.MONTH, 1);
-                    break;
-                case week:
-                    fromCal.add(Calendar.WEEK_OF_YEAR, 1);
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        return index;
-
     }
 
     /**
@@ -752,34 +663,6 @@ public class ESMetricsAccessor implements IMetricsAccessor {
 
         return rval;
 
-    }
-
-    /**
-     * @param date
-     */
-    protected static String formatDate(DateTime date) {
-        return ISODateTimeFormat.dateTimeNoMillis().print(date);
-    }
-
-    /**
-     * @param date
-     */
-    protected static String formatDateWithMillis(DateTime date) {
-        return ISODateTimeFormat.dateTime().print(date);
-    }
-
-    /**
-     * @param date
-     */
-    protected static String formatDate(Calendar date) {
-        return DateFormatUtils.formatUTC(date.getTimeInMillis(), "yyyy-MM-dd'T'HH:mm:ss'Z'"); //$NON-NLS-1$
-    }
-
-    /**
-     * @param date
-     */
-    protected static String formatDateWithMillis(Calendar date) {
-        return DateFormatUtils.formatUTC(date.getTimeInMillis(), "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"); //$NON-NLS-1$
     }
 
     /**

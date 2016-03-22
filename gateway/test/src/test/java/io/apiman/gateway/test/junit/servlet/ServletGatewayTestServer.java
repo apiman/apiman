@@ -60,6 +60,9 @@ import org.apache.commons.io.FileUtils;
 import org.elasticsearch.common.settings.ImmutableSettings.Builder;
 import org.elasticsearch.node.Node;
 import org.elasticsearch.node.NodeBuilder;
+import org.infinispan.Cache;
+import org.infinispan.manager.CacheContainer;
+import org.infinispan.manager.DefaultCacheManager;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -81,6 +84,7 @@ public class ServletGatewayTestServer implements IGatewayTestServer {
     
     private boolean withES;
     private boolean withDB;
+    private boolean withISPN;
 
     /*
      * Elasticsearch related.
@@ -96,7 +100,13 @@ public class ServletGatewayTestServer implements IGatewayTestServer {
      */
     private static final String DB_JNDI_LOC = "java:/comp/env/jdbc/ApiGatewayDS";
     private BasicDataSource ds = null;
-
+    
+    /*
+     * Infinispan related.
+     */
+    private static final String ISPN_JNDI_LOC = "java:jboss/infinispan/apiman";
+    private CacheContainer cacheContainer = null;
+    
     /**
      * Constructor.
      */
@@ -110,9 +120,11 @@ public class ServletGatewayTestServer implements IGatewayTestServer {
     public void configure(JsonNode config) {
         JsonNode esNode = config.get("es");
         JsonNode dbNode = config.get("db");
+        JsonNode ispnNode = config.get("ispn");
         
         withES = esNode != null && esNode.asBoolean(false);
         withDB = dbNode != null && dbNode.asBoolean(false);
+        withISPN = ispnNode != null && ispnNode.asBoolean(false);
         
         configureGateway(config);
     }
@@ -305,6 +317,22 @@ public class ServletGatewayTestServer implements IGatewayTestServer {
                 throw new RuntimeException(e);
             }
         }
+        
+        if (withISPN) {
+            cacheContainer = new DefaultCacheManager();
+            Cache<Object, Object> registryCache = cacheContainer.getCache("registry");
+            if (registryCache == null) {
+                throw new RuntimeException("Error with ISPN cache: 'registry'");
+            }
+            try {
+                InitialContext ctx = TestUtil.initialContext();
+                TestUtil.ensureCtx(ctx, "java:jboss");
+                TestUtil.ensureCtx(ctx, "java:jboss/infinispan");
+                ctx.bind(ISPN_JNDI_LOC, cacheContainer);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     /**
@@ -368,9 +396,17 @@ public class ServletGatewayTestServer implements IGatewayTestServer {
                 connection.prepareStatement("DROP ALL OBJECTS").execute();
             }
             ds.close();
+            ds = null;
             InitialContext ctx = TestUtil.initialContext();
             Context pctx = (Context) ctx.lookup("java:/comp/env/jdbc");
             pctx.unbind("ApiGatewayDS");
+        }
+        if (cacheContainer != null) {
+            cacheContainer.stop();
+            cacheContainer = null;
+            InitialContext ctx = TestUtil.initialContext();
+            Context pctx = (Context) ctx.lookup("java:jboss/infinispan");
+            pctx.unbind("apiman");
         }
     }
 

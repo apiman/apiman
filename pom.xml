@@ -192,6 +192,11 @@
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
+        <artifactId>apiman-common-net</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
         <artifactId>apiman-common-config</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -232,12 +237,22 @@
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
+        <artifactId>apiman-manager-api-hawkular</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
         <artifactId>apiman-manager-api-core</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
         <artifactId>apiman-manager-api-export-import-api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>apiman-manager-api-migrator</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
@@ -389,6 +404,11 @@
       <dependency>
         <groupId>${project.groupId}</groupId>
         <artifactId>apiman-gateway-engine-es</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>apiman-gateway-engine-hawkular</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
@@ -873,6 +893,16 @@
       <dependency>
         <groupId>org.infinispan</groupId>
         <artifactId>infinispan-core</artifactId>
+        <version>${version.org.infinispan}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.infinispan</groupId>
+        <artifactId>infinispan-commons</artifactId>
+        <version>${version.org.infinispan}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.infinispan</groupId>
+        <artifactId>infinispan-embedded</artifactId>
         <version>${version.org.infinispan}</version>
       </dependency>
       <dependency>

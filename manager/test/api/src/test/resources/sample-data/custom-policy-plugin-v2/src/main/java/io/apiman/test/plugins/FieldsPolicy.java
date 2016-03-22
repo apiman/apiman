@@ -43,6 +43,7 @@ public class FieldsPolicy extends AbstractMappedPolicy<FieldsBean> {
     /**
      * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#doApply(io.apiman.gateway.engine.beans.ApiRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
      */
+    @SuppressWarnings("nls")
     @Override
     protected void doApply(ApiRequest request, IPolicyContext context, FieldsBean config,
             IPolicyChain<ApiRequest> chain) {

@@ -42,7 +42,7 @@
             </div>
             <div class="actions">
               <ul>
-                <li><a id="org-new" href="{{ pluginName }}/new-org" apiman-i18n-key="actions.create-new-org" data-field="createOrg">Create a New Organization</a></li>
+                <li ng-hide="noCreateOrg"><a id="org-new" href="{{ pluginName }}/new-org" apiman-i18n-key="actions.create-new-org" data-field="createOrg">Create a New Organization</a></li>
                 <li><a id="org-my-orgs" href="{{ pluginName }}/users/{{ currentUser.username }}/orgs" apiman-i18n-key="actions.my-orgs" data-field="myOrgs">Go to My Organizations</a></li>
                 <li><a id="org-browse" href="{{ pluginName }}/browse/orgs" apiman-i18n-key="actions.browse-orgs" data-field="browseOrgs">Browse/Find an Organization</a></li>
               </ul>

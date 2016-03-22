@@ -6,7 +6,7 @@ X-API-Key: 12345
 Content-Type: application/json
 X-Policy-Failure-Type: Authentication
 X-Policy-Failure-Code: 10003
-WWW-Authenticate: BASIC realm="Test"
+WWW-Authenticate: Basic realm="Test"
 
 {
     "type" : "Authentication",

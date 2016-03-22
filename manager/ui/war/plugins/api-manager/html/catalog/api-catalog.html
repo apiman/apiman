@@ -34,36 +34,100 @@
             <div class="row">
               <hr/>
             </div>
+
             <!-- Filter and Actions -->
-            <div class="row" id="api-catalog-filters">
-              <span style="margin-right: 10px">
-                <apiman-search-box id="apis-filter" apiman-i18n-key="filter-catalog-apis" function="filterApis" placeholder="Filter by API name or type..." />
+            <div class="row"
+                 id="api-catalog-filters">
+              <!-- Filter: Search -->
+              <span>
+                <apiman-search-box id="apis-filter"
+                                   apiman-i18n-key="filter-catalog-apis"
+                                   function="filterApis"
+                                   style="height: 28px;"
+                                   placeholder="Filter by API name..." />
               </span>
-              <select ng-model="epType" apiman-select-picker="" class="selectpicker api-type" data-style="btn-default">
+
+              <!-- Filter: Tags -->
+              <ui-select multiple
+              			 id="apiman-tags-filter"
+                         tagging
+                         tagging-label="(press enter)"
+                         ng-model="selected.tags"
+                         theme="bootstrap"
+                         sortable="true"
+                         class="selectpicker api-catalog-filters"
+                         style="width: 250px; margin: 0 10px; box-shadow: none; font-size: small; border-color: #bababa; display: inline-table;"
+                         title="Choose a tag">
+                <ui-select-match placeholder="Filter by tags...">{{$item}}</ui-select-match>
+                <ui-select-choices repeat="tag in tags | filter:$select.search | orderBy: tag"
+                                   style="margin: 0 -1px auto -1px; width: 101%;">
+                  {{tag}}
+                </ui-select-choices>
+              </ui-select>
+              <button ng-show="selected.tags.length > 0" class="btn btn-default btn-xs"
+                      style="box-shadow: none; height: 28px; margin: -1px 10px 0 -14px; border-left: none;"
+                      ng-click="clear()"><i class="fa fa-fw fa-close"></i></button>
+
+              <!-- Filter: API Type -->
+              <select ng-model="epType"
+                      apiman-select-picker=""
+                      class="selectpicker api-type"
+                      data-style="btn-default">
                 <option value="" apiman-i18n-key="show-all-api-types">Show All API Types</option>
                 <option value="rest" apiman-i18n-key="show-only-rest">Show REST only</option>
                 <option value="soap" apiman-i18n-key="show-only-soap">Show SOAP only</option>
               </select>
+
+              <!-- Filter: Internal APIs -->
+              <span ng-show="hasInternalApis"
+                    style="margin-left: 8px; height: 28px;">
+                <input id="hide-internal" type="checkbox" ng-model="hideInternal"></input>
+                <label for="hide-internal"
+                       apiman-i18n-key="hide-internal-apis"
+                       style="padding-left: 3px">Hide internal APIs</label>
+              </span>
+
+              <!-- Filter: Namespace -->
+              <select ng-show="hasNamespaces"
+                      class="selectpicker api-namespaces"
+                      id="namespace"
+                      apiman-select-picker=""
+                      ng-model="namespace"
+                      ng-change="selectNamespace( namespace )"
+                      title=""
+                      data-live-search="true"
+                      apiman-i18n-skip
+                      data-ng-options="ns.name for ns in namespaces | orderBy: ns.name">
+              </select>
+
             </div>
+
+
             <!-- Table of APIs -->
             <div class="row apiman-card-table">
               <div class="container-fluid cards">
-                <div ng-repeat="api in filteredApis=(apis | filter: criteria | filter: epType | orderBy: 'name':reverse)" class="card">
+                <div ng-repeat="api in filteredApis=(apis | filter: criteria | filter: epType | selectedTags: selected.tags  | filter:hideInternal:isInternal | orderBy: 'name':reverse)" class="card">
                   <a ng-show="api.description" uib-tooltip="{{ api.description }}" tooltip-trigger="mouseenter" tooltip-placement="top" href="#" class="info"><i class="fa fa-info-circle"></i></a>
-                  <a ng-show="api.endpointType" uib-tooltip="Endpoint&nbsp;Type:&nbsp;{{ api.endpointType }}" tooltip-trigger="mouseenter" tooltip-placement="top" href="{{ api.definitionUrl }}" class="endpointType"><i class="fa {{ api.ticon }}"></i></a>
+                  <a ng-show="api.endpointType" uib-tooltip="Endpoint&nbsp;Type:&nbsp;{{ api.endpointType }}" tooltip-trigger="mouseenter" tooltip-placement="top" href="{{ api.definitionUrl }}" class="endpointType" target="_blank"><i class="fa {{ api.ticon }}"></i></a>
                   <div class="icon">
                     <i ng-show="!api.iconIsUrl" class="fa fa-{{ api.icon }}"></i>
                     <img ng-show="api.iconIsUrl" src="{{ api.icon }}"></img>
                   </div>
                   <div class="name"><a href="{{ apiEndpoint(api) }}"><span>{{ api.name}}</span></a></div>
+                  <div class="tags" ng-show="api.tags">
+                    <i class="fa fa-fw fa-tags"></i>
+                    <ul>
+                      <li ng-repeat="tag in api.tags | orderBy:tag"><a class="tagLink" title="{{tagTitle(tag)}}" ng-click="addTag(tag)">{{ tagLabel(tag) }}</a></li>
+                    </ul>
+                  </div>
                   <div><hr /></div>
                   <div class="actions"> 
                      <span class="apiman-action-divider" apiman-i18n-skip="">&nbsp;</span>
                      <a href="#" ng-click="importApi(api)"><i class="fa fa-cart-arrow-down"></i><span style="margin-left: 5px" apiman-i18n-key="import">Import</span></a>
                      <span ng-show="api.definitionType == 'SwaggerJSON' || api.definitionType == 'External'" 
                            class="apiman-action-divider" apiman-i18n-skip="">|</span>
-                     <a ng-show="api.definitionType == 'SwaggerJSON'" href="{{ pluginName }}/catalog/api-catalog/{{ api.name | urlEncode }}/def"><i class="fa fa-sitemap"></i><span style="margin-left: 5px" apiman-i18n-key="definition">Definition</span></a>
-                     <a ng-show="api.definitionType == 'External'" href="{{ api.definitionUrl }}"><i class="fa fa-external-link"></i><span style="margin-left: 5px" apiman-i18n-key="definition">Definition</span></a>
+                     <a ng-show="api.definitionType == 'SwaggerJSON'" href="{{ pluginName }}/catalog/api-catalog/{{ api.name | urlEncode }}/def" target="{{api.definitionType == 'External' ? '_blank' : ''}}"><i class="fa fa-sitemap"></i><span style="margin-left: 5px" apiman-i18n-key="definition">Definition</span></a>
+                     <a ng-show="api.definitionType == 'External'" href="{{ api.definitionUrl }}" target="_blank"><i class="fa fa-external-link"></i><span style="margin-left: 5px" apiman-i18n-key="definition">Definition</span></a>
                   </div>
                 </div>
               </div>
@@ -71,7 +135,7 @@
                 <span class="pficon pficon-info"></span>
                 <strong apiman-i18n-key="no-apis-warning.summary">No APIs found.</strong>
                 <p apiman-i18n-key="no-apis-warning.detail">
-                  No APIs matching the above filter criteria were found in the API catalog.  Perhaps try different criteria?
+                  No APIs matching the above filter criteria were found in the API catalog.  Perhaps try changing your filter(s)?
                 </p>
               </div>
             </div>
@@ -140,7 +204,7 @@
       <div ng-hide="orgs.length > 0" class="apiman-no-content container-fluid">
         <div class="row">
           <div class="col-md-12">
-            <p class="apiman-no-entities-description" apiman-i18n-key="missing-create-api-permission">You don't have permission to create an API in any of your Organizations (or you aren't in any orgs)!  Please become a member of an existing Organization or create a new one before trying to create an API.</p>
+            <p class="apiman-no-entities-description" apiman-i18n-key="missing-create-api-permission">You don't have permission to create an API in any of your Organizations (or you aren't in any organizations)!  Please become a member of an existing Organization or create a new one before trying to create an API.</p>
           </div>
         </div>
       </div>

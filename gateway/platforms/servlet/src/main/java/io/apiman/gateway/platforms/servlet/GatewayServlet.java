@@ -68,69 +68,15 @@ public abstract class GatewayServlet extends HttpServlet {
      */
     public GatewayServlet() {
     }
-
+    
     /**
-     * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     * @see javax.servlet.http.HttpServlet#service(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
-            IOException {
-        doAction(req, resp, "GET"); //$NON-NLS-1$
-    }
-
-    /**
-     * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-     */
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
-            IOException {
-        doAction(req, resp, "POST"); //$NON-NLS-1$
-    }
-
-    /**
-     * @see javax.servlet.http.HttpServlet#doPut(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-     */
-    @Override
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
-            IOException {
-        doAction(req, resp, "PUT"); //$NON-NLS-1$
-    }
-
-    /**
-     * @see javax.servlet.http.HttpServlet#doDelete(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-     */
-    @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
-            IOException {
-        doAction(req, resp, "DELETE"); //$NON-NLS-1$
-    }
-
-
-    /* (non-Javadoc)
-     * @see javax.servlet.http.HttpServlet#doOptions(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-     */
-    @Override
-    protected void doOptions(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
-            IOException {
-        doAction(req, resp, "OPTIONS"); //$NON-NLS-1$
-    }
-
-    /* (non-Javadoc)
-     * @see javax.servlet.http.HttpServlet#doHead(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-     */
-    @Override
-    protected void doHead(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
-            IOException {
-        doAction(req, resp, "HEAD"); //$NON-NLS-1$
-    }
-
-    /* (non-Javadoc)
-     * @see javax.servlet.http.HttpServlet#doTrace(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-     */
-    @Override
-    protected void doTrace(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
-            IOException {
-        doAction(req, resp, "TRACE"); //$NON-NLS-1$
+    protected void service(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
+        String method = req.getMethod();
+        doAction(req, resp, method);
     }
 
     /**

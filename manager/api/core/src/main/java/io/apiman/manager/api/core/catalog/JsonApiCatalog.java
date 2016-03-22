@@ -15,8 +15,8 @@
  */
 package io.apiman.manager.api.core.catalog;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.apiman.manager.api.beans.summary.ApiCatalogBean;
+import io.apiman.manager.api.beans.summary.ApiNamespaceBean;
 import io.apiman.manager.api.beans.summary.AvailableApiBean;
 import io.apiman.manager.api.core.IApiCatalog;
 
@@ -24,8 +24,11 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * An API catalog that gets its data from a simple JSON file.
@@ -51,12 +54,12 @@ public class JsonApiCatalog implements IApiCatalog {
             throw new RuntimeException(e);
         }
     }
-
+    
     /**
-     * @see io.apiman.manager.api.core.IApiCatalog#search(java.lang.String)
+     * @see io.apiman.manager.api.core.IApiCatalog#search(java.lang.String, java.lang.String)
      */
     @Override
-    public List<AvailableApiBean> search(String keyword) {
+    public List<AvailableApiBean> search(String keyword, String namespace) {
         if (apis == null) {
             apis = loadAPIs(catalogUrl);
         }
@@ -69,6 +72,14 @@ public class JsonApiCatalog implements IApiCatalog {
         }
 
         return rval;
+    }
+    
+    /**
+     * @see io.apiman.manager.api.core.IApiCatalog#getNamespaces(java.lang.String)
+     */
+    @Override
+    public List<ApiNamespaceBean> getNamespaces(String currentUser) {
+        return Collections.EMPTY_LIST;
     }
 
     /**

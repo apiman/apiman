@@ -65,6 +65,10 @@
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-manager-api-hawkular</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
       <artifactId>apiman-manager-api-gateway</artifactId>
     </dependency>
     <dependency>

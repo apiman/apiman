@@ -2300,7 +2300,14 @@
     "inquirer": {
       "version": "0.11.4",
       "from": "inquirer@>=0.11.0 <0.12.0",
-      "resolved": "https://registry.npmjs.org/inquirer/-/inquirer-0.11.4.tgz"
+      "resolved": "https://registry.npmjs.org/inquirer/-/inquirer-0.11.4.tgz",
+      "dependencies": {
+        "lodash": {
+          "version": "3.10.1",
+          "from": "lodash@>=3.3.1 <4.0.0",
+          "resolved": "https://registry.npmjs.org/lodash/-/lodash-3.10.1.tgz"
+        }
+      }
     },
     "insert-module-globals": {
       "version": "6.6.3",
@@ -2333,6 +2340,11 @@
           "version": "0.10.1",
           "from": "inquirer@>=0.10.0 <0.11.0",
           "resolved": "https://registry.npmjs.org/inquirer/-/inquirer-0.10.1.tgz"
+        },
+        "lodash": {
+          "version": "3.10.1",
+          "from": "lodash@>=3.3.1 <4.0.0",
+          "resolved": "https://registry.npmjs.org/lodash/-/lodash-3.10.1.tgz"
         },
         "object-assign": {
           "version": "4.0.1",
@@ -2656,9 +2668,9 @@
       "resolved": "https://registry.npmjs.org/lockfile/-/lockfile-1.0.1.tgz"
     },
     "lodash": {
-      "version": "3.10.1",
-      "from": "lodash@3.10.1",
-      "resolved": "https://registry.npmjs.org/lodash/-/lodash-3.10.1.tgz"
+      "version": "4.6.1",
+      "from": "lodash@4.6.1",
+      "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.6.1.tgz"
     },
     "lodash-compat": {
       "version": "3.10.2",

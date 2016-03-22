@@ -296,4 +296,21 @@ module ApimanRPC {
             }
         }]);
 
+
+    export var ApiCatalogSvcs = _module.factory('ApiCatalogSvcs', ['$resource', 'Configuration',
+        function($resource, Configuration) {
+            return {
+                getNamespaces: function(handler, errorHandler) {
+                    var endpoint = Configuration.api.endpoint + '/search/apiCatalog/namespaces';
+                    $resource(endpoint, {}, {
+                        "get" : { "action" : "GET", "isArray" : true }
+                    }).get({}, handler, errorHandler);
+                },
+                search: function(criteria, handler, errorHandler) {
+                    var endpoint = Configuration.api.endpoint + '/search/apiCatalog/entries';
+                    $resource(endpoint).save({}, criteria, handler, errorHandler);
+                }
+            }
+        }]);
+
 }
