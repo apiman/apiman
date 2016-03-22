@@ -22,6 +22,7 @@ import java.util.Map;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import org.apache.commons.lang.StringUtils;
 import org.infinispan.Cache;
 import org.infinispan.manager.CacheContainer;
 
@@ -34,7 +35,7 @@ import org.infinispan.manager.CacheContainer;
  */
 public class InfinispanRegistry extends InMemoryRegistry {
     
-    private static final String DEFAULT_CACHE_CONTAINER = "java:jboss/infinispan/container/apiman-gateway"; //$NON-NLS-1$
+    private static final String DEFAULT_CACHE_CONTAINER = "java:jboss/infinispan/apiman"; //$NON-NLS-1$
     private static final String DEFAULT_CACHE = "registry"; //$NON-NLS-1$
     
     private String cacheContainer;
@@ -45,20 +46,18 @@ public class InfinispanRegistry extends InMemoryRegistry {
     
     /**
      * Constructor.
+     * @param config
      */
-    public InfinispanRegistry() {
-        cacheContainer = DEFAULT_CACHE_CONTAINER;
-        cacheName = DEFAULT_CACHE;
-    }
-    
-    /**
-     * Constructor.
-     * @param cacheContainer the cache container
-     * @param cacheName the cache name
-     */
-    public InfinispanRegistry(String cacheContainer, String cacheName) {
-        this.cacheContainer = cacheContainer;
-        this.cacheName = cacheName;
+    public InfinispanRegistry(Map<String, String> config) {
+        cacheContainer = config.get("cache.container"); //$NON-NLS-1$
+        cacheName = config.get("cache.name"); //$NON-NLS-1$
+        
+        if (StringUtils.isEmpty(cacheContainer)) {
+            cacheContainer = DEFAULT_CACHE_CONTAINER;
+        }
+        if (StringUtils.isEmpty(cacheName)) {
+            cacheName = DEFAULT_CACHE;
+        }
     }
     
     /**

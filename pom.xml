@@ -896,6 +896,11 @@
         <version>${version.org.infinispan}</version>
       </dependency>
       <dependency>
+        <groupId>org.infinispan</groupId>
+        <artifactId>infinispan-embedded</artifactId>
+        <version>${version.org.infinispan}</version>
+      </dependency>
+      <dependency>
         <groupId>commons-dbcp</groupId>
         <artifactId>commons-dbcp</artifactId>
         <version>${version.commons-dbcp}</version>
