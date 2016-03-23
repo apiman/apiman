@@ -389,7 +389,7 @@ section of the User Guide for more information on this.
 
 
 === How To:  Use a standalone Elasticsearch instance/cluster instead of the quickstart instance
-The apiman quickstart overlay ZIP ships by default with an embedded instance of Elasticsearch.  
+The apiman quickstart overlay ZIP ships by default with an embedded instance of Elasticsearch.
 This is suitable for getting up and running quickly, but is not a good long term solution.  Instead,
 users are encouraged to install a standalone instance of Elasticsearch and point apiman to it.
 
@@ -735,7 +735,7 @@ The first thing you will need to do is express all of your enterprise plugins as
 JSON file.  The format of the JSON file is specific to apiman.  You can find an
 example of the format here:
 
-https://github.com/apiman/apiman-api-catalog/blob/master/catalog.json
+https://github.com/apiman/apiman-plugin-registry/blob/master/registry.json
 
 ===== Make Your Enterprise Plugin Registry Available
 Now that you have a custom JSON based plugin registry, you need to make it available
