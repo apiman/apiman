@@ -1601,7 +1601,6 @@ INFO: Migrating Organization: "Test"
 INFO: Migrating Organization: "Foo"
 INFO: ----------------------------
 INFO: Starting apiman data import.
-INFO: Importing data from apiman version: 1.2.3-SNAPSHOT
 INFO: Importing a user: admin
 INFO: Importing a gateway: The Gateway
 INFO: Importing a plugin: io.apiman.plugins/apiman-plugins-log-policy/1.2.2.Final

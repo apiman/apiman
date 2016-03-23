@@ -138,8 +138,6 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
     @Override
     public void metadata(MetadataBean metadata) {
         // Nothing to do here at the moment.
-        // TODO: at some point we need to compare the version in metadata against the current version of apiman
-        logger.info(Messages.i18n.format("StorageImportDispatcher.FromVersion") + metadata.getApimanVersion()); //$NON-NLS-1$
     }
 
     /**
