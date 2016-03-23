@@ -144,7 +144,7 @@ public class SearchResourceImpl implements ISearchResource {
         if (paging == null) {
             paging = new PagingBean();
             paging.setPage(1);
-            paging.setPageSize(20);
+            paging.setPageSize(500);
         }
         int page = paging.getPage();
         int pageSize = paging.getPageSize();
