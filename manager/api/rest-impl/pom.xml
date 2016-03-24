@@ -108,7 +108,21 @@
         <configuration>
           <instructions>
             <Export-Package>io.apiman.manager.api.rest.impl*</Export-Package>
-            <Import-Package>!org.jboss.errai.common.client.api.annotations,!javax.enterprise.context,!javax.enterprise.inject,!javax.inject,*</Import-Package>
+            <Import-Package>
+              !org.jboss.errai.common.client.api.annotations,
+              !javax.enterprise.context,
+              !javax.enterprise.inject,
+              !javax.inject,
+              io.apiman.manager.api.es;resolution:=optional,
+              io.apiman.manager.api.es.beans;resolution:=optional,
+              io.apiman.manager.api.jpa;resolution:=optional,
+              *
+            </Import-Package>
+            <Require-Capability>
+              org.ops4j.pax.cdi.extension;filter:="(&amp;(extension=pax-cdi-extension)(version>=0.11)(!(version>=0.12)))",
+              osgi.extender;filter:="(osgi.extender=pax.cdi)",
+              osgi.ee;filter:="(&amp;(osgi.ee=JavaSE)(version=1.6))"
+            </Require-Capability>
           </instructions>
         </configuration>
       </plugin>

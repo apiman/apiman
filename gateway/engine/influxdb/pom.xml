@@ -8,6 +8,7 @@
   </parent>
   <artifactId>apiman-gateway-engine-influxdb</artifactId>
   <name>apiman-gateway-engine-influxdb</name>
+  <packaging>bundle</packaging>
 
   <dependencies>
     <!-- Project Dependencies -->
@@ -29,4 +30,15 @@
       <artifactId>jackson-databind</artifactId>
     </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+      </plugin>
+    </plugins>
+  </build>
+
 </project>

@@ -87,7 +87,25 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Export-Package>io.apiman.gateway.engine,io.apiman.gateway.engine.i18n,io.apiman.gateway.engine.async,io.apiman.gateway.engine.components,io.apiman.gateway.engine.impl,io.apiman.gateway.engine.policy</Export-Package>
+            <Import-Package>
+              com.unboundid.ldap.sdk;resolution:="optional",
+              com.unboundid.util;resolution:="optional",
+              com.unboundid.util.ssl;resolution:="optional",
+              com.zaxxer.hikari;resolution:="optional",
+              *
+            </Import-Package>
+            <Export-Package>
+              io.apiman.gateway.engine,
+              io.apiman.gateway.engine.async,
+              io.apiman.gateway.engine.auth,
+              io.apiman.gateway.engine.components.*,
+              io.apiman.gateway.engine.i18n,
+              io.apiman.gateway.engine.impl,
+              io.apiman.gateway.engine.io,
+              io.apiman.gateway.engine.metrics,
+              io.apiman.gateway.engine.policy,
+              io.apiman.gateway.engine.rates
+            </Export-Package>
           </instructions>
         </configuration>
       </plugin>
