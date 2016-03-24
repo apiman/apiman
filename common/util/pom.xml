@@ -32,6 +32,31 @@
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
         <extensions>true</extensions>
+        <configuration>
+            <instructions>
+                <Import-Package>
+                    javax.crypto,
+                    javax.crypto.spec,
+                    org.apache.commons.codec.binary;version="[1.4,2)",
+                    org.apache.commons.lang.text;version="[2.6,3)",
+                    io.apiman.gateway.platforms.war;resolution:="optional",
+                    io.apiman.manager.ui.server;resolution:="optional",
+                    io.apiman.manager.platform;resolution:="optional",
+                    io.apiman.common.auth;resolution:="optional"
+                </Import-Package>
+                <Export-Package>
+                    !osgi.wiring.package=io.apiman.gateway.platforms.war,
+                    !io.apiman.manager.ui.server,
+                    io.apiman.common*
+                </Export-Package>
+                <DynamicImport-Package>
+                    io.apiman.gateway.engine.es,
+                    io.apiman.gateway.engine.policy,
+                    io.apiman.gateway.engine.impl,
+                    io.apiman.gateway.platforms.servlet.connectors
+                </DynamicImport-Package>
+            </instructions>
+        </configuration>
       </plugin>
     </plugins>
   </build>
