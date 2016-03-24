@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apiman.manager.ui.server;
+package io.apiman.manager.ui.server.impl;
 
 import io.apiman.common.config.ConfigFactory;
+import io.apiman.manager.ui.server.IUIConfig;
 import io.apiman.manager.ui.server.beans.ApiAuthType;
 
 import org.apache.commons.configuration.Configuration;
