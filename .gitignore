@@ -12,4 +12,5 @@ gwt-unitCache
 *.iml
 .idea
 npm-debug.log
-.metadata/*
+.metadata
+dependency-reduced-pom.xml
