@@ -19,10 +19,6 @@
       <exclusions>
         <exclusion>
           <groupId>${project.groupId}</groupId>
-          <artifactId>apiman-gateway-engine-beans</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>${project.groupId}</groupId>
           <artifactId>apiman-gateway-api-rest</artifactId>
         </exclusion>
         <exclusion>
@@ -65,9 +61,6 @@
               <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
               <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
             </manifest>
-            <manifestEntries>
-              <Dependencies>deployment.apiman-gateway-engine-beans.jar</Dependencies>
-            </manifestEntries>
           </archive>
         </configuration>
       </plugin>

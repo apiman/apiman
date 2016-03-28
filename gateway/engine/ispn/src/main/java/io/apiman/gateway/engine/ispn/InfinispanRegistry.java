@@ -16,6 +16,7 @@
 package io.apiman.gateway.engine.ispn;
 
 import io.apiman.gateway.engine.impl.InMemoryRegistry;
+import io.apiman.gateway.engine.ispn.io.RegistryCacheMapWrapper;
 
 import java.util.Map;
 
@@ -66,7 +67,7 @@ public class InfinispanRegistry extends InMemoryRegistry {
     @Override
     protected Map<String, Object> getMap() {
         if (cacheWrapper == null) {
-            cacheWrapper = new CacheMapWrapper(getCache());
+            cacheWrapper = new RegistryCacheMapWrapper(getCache());
         }
         return cacheWrapper;
     }
