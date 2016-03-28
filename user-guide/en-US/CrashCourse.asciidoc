@@ -101,18 +101,17 @@ the API Gateway.  This can be done by clicking the 'Register' button at the top 
 
 ==== Sending Requests
 After the Client App is Registered, navigate to the APIs tab to see a list of all the API
-Contracts and to get details (by clicking the Expand Details arrow on the left) about each one.
-This tab is important because it allows you to find out the API Key assigned to each API
-Contract.  The API Key is necessary when making managing calls to the API Gateway for a particular
-API.  Additionally, this tab shows the actual API Gateway endpoint that your client must
-invoke in order to call the managed API.
+Contracts and to get details about each one.  This tab is important because it allows you to 
+find out the API Key assigned to the Client App.  The API Key is necessary when making managed 
+calls to the API Gateway.  Additionally, this tab shows the actual API Gateway endpoint that 
+your client must invoke in order to call the managed API.
 
 The actual managed endpoint may vary depending on the Gateway, but typically the endpoint is
 something like this:
 
 * http://gatewayhost:port/apiman-gateway/{organizationId}/{apiId}/{version}/
 
-Requests to managed endpoints must include the API Key so that the Gateway knows which Contract
+Requests to managed endpoints must include the API Key so that the Gateway knows which Client App
 is being used to invoke the API.  The API Key can be sent in one of the following ways:
 
 * As an HTTP Header named *X-API-Key*
