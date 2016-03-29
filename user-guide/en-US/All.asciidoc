@@ -741,7 +741,7 @@ TIP: This is a built-in policy and therefore no plugins need to be installed pri
 ===== Configuration
 CONFIGURATION TBD HERE
 
-[underline]#Sample Configuration#
+===== Sample Configuration
 SAMPLE CONFIG TBD
 ```json
 {
@@ -761,7 +761,7 @@ PLUGIN COORDINATES GO HERE
 ===== Configuration
 CONFIGURATION TBD HERE
 
-[underline]#Sample Configuration#
+===== Sample Configuration
 SAMPLE CONFIG TBD
 ```json
 {
@@ -780,7 +780,7 @@ TIP: This is a built-in policy and therefore no plugins need to be installed pri
 ===== Configuration
 CONFIGURATION TBD HERE
 
-[underline]#Sample Configuration#
+===== Sample Configuration
 SAMPLE CONFIG TBD
 ```json
 {
@@ -799,7 +799,7 @@ TIP: This is a built-in policy and therefore no plugins need to be installed pri
 ===== Configuration
 CONFIGURATION TBD HERE
 
-[underline]#Sample Configuration#
+===== Sample Configuration
 SAMPLE CONFIG TBD
 ```json
 {
@@ -818,7 +818,7 @@ TIP: This is a built-in policy and therefore no plugins need to be installed pri
 ===== Configuration
 CONFIGURATION TBD HERE
 
-[underline]#Sample Configuration#
+===== Sample Configuration
 SAMPLE CONFIG TBD
 ```json
 {
@@ -837,7 +837,7 @@ TIP: This is a built-in policy and therefore no plugins need to be installed pri
 ===== Configuration
 CONFIGURATION TBD HERE
 
-[underline]#Sample Configuration#
+===== Sample Configuration
 SAMPLE CONFIG TBD
 ```json
 {
@@ -857,7 +857,7 @@ PLUGIN COORDINATES GO HERE
 ===== Configuration
 CONFIGURATION TBD HERE
 
-[underline]#Sample Configuration#
+===== Sample Configuration
 SAMPLE CONFIG TBD
 ```json
 {
@@ -877,7 +877,7 @@ PLUGIN COORDINATES GO HERE
 ===== Configuration
 CONFIGURATION TBD HERE
 
-[underline]#Sample Configuration#
+===== Sample Configuration
 SAMPLE CONFIG TBD
 ```json
 {
@@ -897,7 +897,7 @@ PLUGIN COORDINATES GO HERE
 ===== Configuration
 CONFIGURATION TBD HERE
 
-[underline]#Sample Configuration#
+===== Sample Configuration
 SAMPLE CONFIG TBD
 ```json
 {
@@ -917,7 +917,7 @@ PLUGIN COORDINATES GO HERE
 ===== Configuration
 CONFIGURATION TBD HERE
 
-[underline]#Sample Configuration#
+===== Sample Configuration
 SAMPLE CONFIG TBD
 ```json
 {
@@ -938,7 +938,7 @@ TIP: This is a built-in policy and therefore no plugins need to be installed pri
 ===== Configuration
 CONFIGURATION TBD HERE
 
-[underline]#Sample Configuration#
+===== Sample Configuration
 SAMPLE CONFIG TBD
 ```json
 {
@@ -957,7 +957,7 @@ TIP: This is a built-in policy and therefore no plugins need to be installed pri
 ===== Configuration
 CONFIGURATION TBD HERE
 
-[underline]#Sample Configuration#
+===== Sample Configuration
 SAMPLE CONFIG TBD
 ```json
 {
@@ -976,7 +976,7 @@ TIP: This is a built-in policy and therefore no plugins need to be installed pri
 ===== Configuration
 CONFIGURATION TBD HERE
 
-[underline]#Sample Configuration#
+===== Sample Configuration
 SAMPLE CONFIG TBD
 ```json
 {
@@ -997,7 +997,7 @@ TIP: This is a built-in policy and therefore no plugins need to be installed pri
 ===== Configuration
 CONFIGURATION TBD HERE
 
-[underline]#Sample Configuration#
+===== Sample Configuration
 SAMPLE CONFIG TBD
 ```json
 {
@@ -1019,7 +1019,7 @@ PLUGIN COORDINATES GO HERE
 ===== Configuration
 CONFIGURATION TBD HERE
 
-[underline]#Sample Configuration#
+===== Sample Configuration
 SAMPLE CONFIG TBD
 ```json
 {
@@ -1038,7 +1038,7 @@ PLUGIN COORDINATES GO HERE
 ===== Configuration
 CONFIGURATION TBD HERE
 
-[underline]#Sample Configuration#
+===== Sample Configuration
 SAMPLE CONFIG TBD
 ```json
 {
@@ -1058,7 +1058,7 @@ PLUGIN COORDINATES GO HERE
 ===== Configuration
 CONFIGURATION TBD HERE
 
-[underline]#Sample Configuration#
+===== Sample Configuration
 SAMPLE CONFIG TBD
 ```json
 {
@@ -1079,7 +1079,7 @@ TIP: This is a built-in policy and therefore no plugins need to be installed pri
 ===== Configuration
 CONFIGURATION TBD HERE
 
-[underline]#Sample Configuration#
+===== Sample Configuration
 SAMPLE CONFIG TBD
 ```json
 {
@@ -1099,7 +1099,7 @@ PLUGIN COORDINATES GO HERE
 ===== Configuration
 CONFIGURATION TBD HERE
 
-[underline]#Sample Configuration#
+===== Sample Configuration
 SAMPLE CONFIG TBD
 ```json
 {
