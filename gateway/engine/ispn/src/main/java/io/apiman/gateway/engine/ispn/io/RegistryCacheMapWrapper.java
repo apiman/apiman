@@ -96,7 +96,7 @@ public class RegistryCacheMapWrapper implements Map<String, Object> {
             try {
                 if (key.toString().startsWith("API::")) { //$NON-NLS-1$
                     value = unmarshalAs(value.toString(), Api.class);
-                } else if (key.toString().startsWith("CLIENT::")) { //$NON-NLS-1$
+                } else {
                     value = unmarshalAs(value.toString(), Client.class);
                 }
             } catch (IOException e) {
