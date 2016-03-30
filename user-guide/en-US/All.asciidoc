@@ -753,19 +753,46 @@ SAMPLE CONFIG TBD
 ==== SOAP Authorization Policy
 [[policy-soap-authorization]]
 ===== Description
-DESCRIPTION TBD HERE
+This policy is nearly identical to our Authorization Policy, with the exception that it accepts a SOAPAction in the HTTP header. Please note that this policy will only accept a single SOAPAction header, and will not extract the operation name from the SOAP body.
 
 ===== Plugin
-PLUGIN COORDINATES GO HERE
-
-===== Configuration
-CONFIGURATION TBD HERE
-
-===== Sample Configuration
-SAMPLE CONFIG TBD
 ```json
 {
-   "TBD" : "TBD"
+	"groupId": "io.apiman.plugins",
+	"artifactId": "apiman-plugins-soap-authorization-policy",
+	"version": "1.2.2-SNAPSHOT" // Please check for the latest version, this is just an example.
+}
+```
+
+===== Configuration
+Just as with the Authorization policy, you can define any number of rules you'd like.
+
+* *rules* (array) : a single rule that your policy will apply if each of the following properties match:
+** *path* (string) : defines the path you'd like the policy to be applicable to.
+** *soapAction* (string) : defines the SOAPAction you'd like the policy to be applicable to.
+** *role* (string) : defines the role you'd like the policy to be applicable to. If you want a single required role to protect your entire API, simply add one item with a path of \".*\" and an action of \"*\".
+
+* *multimatch* (boolean) : should the request pass when any or all of the authorization rules pass?
+* *requestUnmatched* (boolean) : if the request does not match any of the authorization rules, should it pass or fail?
+
+
+===== Sample Configuration
+```json
+{
+   "rules" : [
+   	{
+   		"path": "/admin",
+   		"soapAction": "hello",
+   		"role": "admin"
+   	},
+   	{
+   		"path": "/",
+   		"soapAction": "goodbye",
+   		"role": "user"
+   	}
+   ],
+   "multimatch": true,
+   "requestUnmatched": false
 }
 ```
 
