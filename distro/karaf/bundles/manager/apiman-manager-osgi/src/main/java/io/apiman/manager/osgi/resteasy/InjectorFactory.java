@@ -10,6 +10,10 @@ import org.jboss.resteasy.spi.ConstructorInjector;
 import org.jboss.resteasy.spi.MethodInjector;
 import org.jboss.resteasy.spi.PropertyInjector;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
+import org.jboss.resteasy.spi.metadata.Parameter;
+import org.jboss.resteasy.spi.metadata.ResourceClass;
+import org.jboss.resteasy.spi.metadata.ResourceConstructor;
+import org.jboss.resteasy.spi.metadata.ResourceLocator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleReference;
 import org.osgi.framework.ServiceReference;
@@ -43,7 +47,7 @@ public class InjectorFactory implements org.jboss.resteasy.spi.InjectorFactory {
         sessionBeanInterface = extension.getSessionBeanInterface();
     }
 
-    public ConstructorInjector createConstructor(Constructor constructor) {
+    @Override public ConstructorInjector createConstructor(Constructor constructor, ResteasyProviderFactory resteasyProviderFactory) {
         Class<?> clazz = constructor.getDeclaringClass();
 
         if (!manager.getBeans(clazz).isEmpty()) {
@@ -58,30 +62,9 @@ public class InjectorFactory implements org.jboss.resteasy.spi.InjectorFactory {
         }
 
         logger.debug(Messages.MESSAGES.noCDIBeansFound(clazz));
-        return delegate.createConstructor(constructor);
+        return delegate.createConstructor(constructor, resteasyProviderFactory);
     }
 
-    public MethodInjector createMethodInjector(Class root, Method method) {
-        return delegate.createMethodInjector(root, method);
-    }
-
-    public PropertyInjector createPropertyInjector(Class resourceClass) {
-        return new CdiPropertyInjector(delegate.createPropertyInjector(resourceClass), resourceClass,
-                sessionBeanInterface, manager);
-    }
-
-    public ValueInjector createParameterExtractor(Class injectTargetClass, AccessibleObject injectTarget,
-            Class type, Type genericType, Annotation[] annotations) {
-        return delegate
-                .createParameterExtractor(injectTargetClass, injectTarget, type, genericType, annotations);
-    }
-
-    public ValueInjector createParameterExtractor(Class injectTargetClass, AccessibleObject injectTarget,
-            Class type, Type genericType, Annotation[] annotations, boolean useDefault) {
-        return delegate
-                .createParameterExtractor(injectTargetClass, injectTarget, type, genericType, annotations,
-                        useDefault);
-    }
 
     /**
      * Do a lookup for BeanManager instance. OSGI BeanManager Service is searched.
@@ -131,5 +114,43 @@ public class InjectorFactory implements org.jboss.resteasy.spi.InjectorFactory {
             throw new IllegalStateException(Messages.MESSAGES.unableToObtainResteasyCdiExtension());
         }
         return ext;
+    }
+
+    @Override public PropertyInjector createPropertyInjector(Class aClass,
+            ResteasyProviderFactory resteasyProviderFactory) {
+        return new CdiPropertyInjector(delegate.createPropertyInjector(aClass, resteasyProviderFactory), aClass,
+                sessionBeanInterface, manager);
+    }
+
+    @Override public ValueInjector createParameterExtractor(Class aClass, AccessibleObject accessibleObject,
+            Class aClass1, Type type, Annotation[] annotations,
+            ResteasyProviderFactory resteasyProviderFactory) {
+        return delegate.createParameterExtractor(aClass, accessibleObject, aClass1, type, annotations, resteasyProviderFactory);
+    }
+
+    @Override public ValueInjector createParameterExtractor(Class aClass, AccessibleObject accessibleObject,
+            Class aClass1, Type type, Annotation[] annotations, boolean b,
+            ResteasyProviderFactory resteasyProviderFactory) {
+        return delegate.createParameterExtractor(aClass, accessibleObject, aClass1, type, annotations, b, resteasyProviderFactory);
+    }
+
+    @Override public ValueInjector createParameterExtractor(Parameter parameter,
+            ResteasyProviderFactory resteasyProviderFactory) {
+        return delegate.createParameterExtractor(parameter, resteasyProviderFactory);
+    }
+
+    @Override public MethodInjector createMethodInjector(ResourceLocator resourceLocator,
+            ResteasyProviderFactory resteasyProviderFactory) {
+        return delegate.createMethodInjector(resourceLocator, resteasyProviderFactory);
+    }
+
+    @Override public PropertyInjector createPropertyInjector(ResourceClass resourceClass,
+            ResteasyProviderFactory resteasyProviderFactory) {
+        return delegate.createPropertyInjector(resourceClass, resteasyProviderFactory);
+    }
+
+    @Override public ConstructorInjector createConstructor(ResourceConstructor resourceConstructor,
+            ResteasyProviderFactory resteasyProviderFactory) {
+        return null;
     }
 }
