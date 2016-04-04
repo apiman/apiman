@@ -15,16 +15,16 @@
  */
 package io.apiman.manager.platform.servlets;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonEncoding;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.apiman.manager.ui.server.UIVersion;
 import io.apiman.manager.ui.server.auth.ITokenGenerator;
 import io.apiman.manager.ui.server.beans.*;
 import io.apiman.manager.ui.server.servlets.AbstractUIServlet;
 import org.apache.commons.io.IOUtils;
-import org.codehaus.jackson.JsonEncoding;
-import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -70,7 +70,7 @@ public class ConfigurationServlet extends AbstractUIServlet {
             JsonFactory f = new JsonFactory();
             g = f.createJsonGenerator(response.getOutputStream(), JsonEncoding.UTF8);
             ObjectMapper mapper = new ObjectMapper();
-            mapper.setSerializationInclusion(Inclusion.NON_NULL);
+            mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
             g.setCodec(mapper);
             g.useDefaultPrettyPrinter();
 

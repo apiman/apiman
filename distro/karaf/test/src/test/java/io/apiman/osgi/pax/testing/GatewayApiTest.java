@@ -3,6 +3,9 @@
  */
 package io.apiman.osgi.pax.testing;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.*;
 import com.squareup.okhttp.*;
 import io.apiman.osgi.pax.testing.util.ElasticSearchEmbed;
 import io.apiman.test.common.echo.EchoServer;
@@ -15,9 +18,6 @@ import io.apiman.test.common.util.TestVariableResolver;
 import io.apiman.test.common.util.TestVariableResolverFactory;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.node.*;
 import org.custommonkey.xmlunit.*;
 import org.junit.*;
 import org.junit.runner.RunWith;
@@ -600,14 +600,14 @@ public class GatewayApiTest extends TestPlanUtil {
                 assertJson(restTest, expected[idx], actual[idx]);
             }
         } else {
-            Iterator<Map.Entry<String, JsonNode>> fields = expectedJson.getFields();
+            Iterator<Map.Entry<String, JsonNode>> fields = expectedJson.fields();
             while (fields.hasNext()) {
                 Map.Entry<String, JsonNode> entry = fields.next();
                 String expectedFieldName = entry.getKey();
                 JsonNode expectedValue = entry.getValue();
                 if (expectedValue instanceof TextNode) {
                     TextNode tn = (TextNode) expectedValue;
-                    String expected = tn.getTextValue();
+                    String expected = tn.textValue();
                     JsonNode actualValue = actualJson.get(expectedFieldName);
 
                     if (isAssertionIgnoreCase(restTest)) {
@@ -625,7 +625,7 @@ public class GatewayApiTest extends TestPlanUtil {
                                     + "' but found non-text [" + actualValue.getClass().getSimpleName()
                                     + "] field with that name instead.", TextNode.class,
                             actualValue.getClass());
-                    String actual = ((TextNode) actualValue).getTextValue();
+                    String actual = ((TextNode) actualValue).textValue();
 
                     if (isAssertionIgnoreCase(restTest)) {
                         if (actual != null) {
@@ -637,7 +637,7 @@ public class GatewayApiTest extends TestPlanUtil {
                             expected, actual);
                 } else if (expectedValue instanceof NumericNode) {
                     NumericNode numeric = (NumericNode) expectedValue;
-                    Number expected = numeric.getNumberValue();
+                    Number expected = numeric.numberValue();
                     JsonNode actualValue = actualJson.get(expectedFieldName);
                     Assert.assertNotNull(
                             "Expected JSON numeric field '" + expectedFieldName + "' with value '" + expected
@@ -647,12 +647,12 @@ public class GatewayApiTest extends TestPlanUtil {
                                     + "' but found non-numeric [" + actualValue.getClass().getSimpleName()
                                     + "] field with that name instead.", expectedValue.getClass(),
                             actualValue.getClass());
-                    Number actual = ((NumericNode) actualValue).getNumberValue();
+                    Number actual = ((NumericNode) actualValue).numberValue();
                     Assert.assertEquals("Value mismatch for numeric field '" + expectedFieldName + "'.",
                             expected, actual);
                 } else if (expectedValue instanceof BooleanNode) {
                     BooleanNode bool = (BooleanNode) expectedValue;
-                    Boolean expected = bool.getBooleanValue();
+                    Boolean expected = bool.booleanValue();
                     JsonNode actualValue = actualJson.get(expectedFieldName);
                     Assert.assertNotNull(
                             "Expected JSON boolean field '" + expectedFieldName + "' with value '" + expected
@@ -662,7 +662,7 @@ public class GatewayApiTest extends TestPlanUtil {
                                     + "' but found non-boolean [" + actualValue.getClass().getSimpleName()
                                     + "] field with that name instead.", expectedValue.getClass(),
                             actualValue.getClass());
-                    Boolean actual = ((BooleanNode) actualValue).getBooleanValue();
+                    Boolean actual = ((BooleanNode) actualValue).booleanValue();
                     Assert.assertEquals("Value mismatch for boolean field '" + expectedFieldName + "'.",
                             expected, actual);
                 } else if (expectedValue instanceof ObjectNode) {
