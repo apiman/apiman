@@ -17,6 +17,7 @@ package io.apiman.manager.platform;
 
 import io.apiman.manager.ui.server.IUIConfig;
 import io.apiman.manager.ui.server.beans.ApiAuthType;
+import io.apiman.manager.ui.server.impl.UIConfig;
 import org.apache.commons.configuration.BaseConfiguration;
 import org.apache.commons.configuration.Configuration;
 
@@ -94,6 +95,14 @@ public class WarUIConfig implements IUIConfig {
     @Override
     public String getLogoutUrl() {
         return config.getString(WarUIConfig.APIMAN_MANAGER_UI_LOGOUT_URL, "/apimanui/logout"); //$NON-NLS-1$
+    }
+
+    /**
+     * @see io.apiman.manager.ui.server.IUIConfig#getPlatform()
+     */
+    @Override
+    public String getPlatform() {
+        return config.getString(UIConfig.APIMAN_MANAGER_UI_PLATFORM);
     }
 
     /**
