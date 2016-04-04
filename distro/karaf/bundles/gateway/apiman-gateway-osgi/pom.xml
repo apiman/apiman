@@ -55,6 +55,11 @@
             <artifactId>commons-logging</artifactId>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
 
         <!-- Lucene, ElasticSearch -->
         <dependency>
