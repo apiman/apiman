@@ -3,54 +3,37 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>io.apiman</groupId>
-    <artifactId>apiman-gateway-engine</artifactId>
+    <artifactId>apiman-manager-api</artifactId>
     <version>1.2.4-SNAPSHOT</version>
   </parent>
-  <artifactId>apiman-gateway-engine-jdbc</artifactId>
+  <artifactId>apiman-manager-api-jdbc</artifactId>
   <packaging>bundle</packaging>
-  <name>apiman-gateway-engine-jdbc</name>
+  <name>apiman-manager-api-jdbc</name>
 
   <dependencies>
     <!-- Project Dependencies -->
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>apiman-common-util</artifactId>
+      <artifactId>apiman-manager-api-beans</artifactId>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>apiman-gateway-engine-beans</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>apiman-gateway-engine-core</artifactId>
+      <artifactId>apiman-manager-api-core</artifactId>
     </dependency>
 
-    <!-- Third Party Dependencies -->
+    <!-- Spec Libs -->
     <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-lang3</artifactId>
+      <groupId>javax.enterprise</groupId>
+      <artifactId>cdi-api</artifactId>
+      <scope>provided</scope>
     </dependency>
-    <dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>commons-codec</groupId>
-      <artifactId>commons-codec</artifactId>
-    </dependency>
+    
+    <!-- Third Party Libs -->
     <dependency>
       <groupId>commons-dbutils</groupId>
       <artifactId>commons-dbutils</artifactId>
     </dependency>
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-databind</artifactId>
-    </dependency>
-    
+
     <!-- Test Only Libs -->
     <dependency>
       <groupId>${project.groupId}</groupId>
@@ -61,6 +44,10 @@
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-distro-data</artifactId>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>joda-time</groupId>
+      <artifactId>joda-time</artifactId>
     </dependency>
     <dependency>
       <groupId>commons-io</groupId>
@@ -105,6 +92,11 @@
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
         <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Import-Package>!javax.enterprise.context,!javax.enterprise.inject,!javax.inject,*</Import-Package>
+          </instructions>
+        </configuration>
       </plugin>
     </plugins>
   </build>

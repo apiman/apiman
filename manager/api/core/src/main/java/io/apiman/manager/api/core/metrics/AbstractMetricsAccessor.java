@@ -96,6 +96,19 @@ public abstract class AbstractMetricsAccessor implements IMetricsAccessor {
     }
 
     /**
+     * Shortcut for the label (string) based histogram index.
+     * @param rval
+     * @param from
+     * @param to
+     * @param interval
+     * @param dataType
+     */
+    public static <T extends HistogramDataPoint> Map<String, T> generateHistogramSkeleton(HistogramBean<T> rval, DateTime from, DateTime to,
+            HistogramIntervalType interval, Class<T> dataType) {
+        return generateHistogramSkeleton(rval, from, to, interval, dataType, String.class);
+    }
+
+    /**
      * Generate the histogram buckets based on the time frame requested and the interval.  This will
      * add an entry for each 'slot' or 'bucket' in the histogram, setting the count to 0.
      * @param rval
@@ -103,9 +116,9 @@ public abstract class AbstractMetricsAccessor implements IMetricsAccessor {
      * @param to
      * @param interval
      */
-    public static <T extends HistogramDataPoint> Map<String, T> generateHistogramSkeleton(HistogramBean<T> rval, DateTime from, DateTime to,
-            HistogramIntervalType interval, Class<T> dataType) {
-        Map<String, T> index = new HashMap<>();
+    public static <T extends HistogramDataPoint, K> Map<K, T> generateHistogramSkeleton(HistogramBean<T> rval, DateTime from, DateTime to,
+            HistogramIntervalType interval, Class<T> dataType, Class<K> keyType) {
+        Map<K, T> index = new HashMap<>();
 
         Calendar fromCal = from.toGregorianCalendar();
         Calendar toCal = to.toGregorianCalendar();
@@ -154,7 +167,11 @@ public abstract class AbstractMetricsAccessor implements IMetricsAccessor {
             }
             point.setLabel(label);
             rval.addDataPoint(point);
-            index.put(label, point);
+            if (keyType == String.class ) {
+                index.put((K) label, point);
+            } else {
+                index.put((K) new Long(fromCal.getTimeInMillis()), point);
+            }
             switch (interval) {
                 case day:
                     fromCal.add(Calendar.DAY_OF_YEAR, 1);

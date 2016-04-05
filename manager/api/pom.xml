@@ -18,6 +18,7 @@
     <module>gateway</module>
     <module>hawkular</module>
     <module>ispn</module>
+    <module>jdbc</module>
     <module>jpa</module>
     <module>micro</module>
     <module>migrator</module>

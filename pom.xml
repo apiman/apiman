@@ -237,6 +237,11 @@
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
+        <artifactId>apiman-manager-api-jdbc</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
         <artifactId>apiman-manager-api-hawkular</artifactId>
         <version>${project.version}</version>
       </dependency>

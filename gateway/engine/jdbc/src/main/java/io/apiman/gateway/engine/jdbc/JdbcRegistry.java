@@ -37,9 +37,6 @@ import java.sql.SQLException;
 import java.util.Map;
 import java.util.Set;
 
-import javax.naming.InitialContext;
-import javax.sql.DataSource;
-
 import org.apache.commons.dbutils.DbUtils;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
@@ -60,42 +57,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * 
  * @author ewittman
  */
-public class JdbcRegistry implements IRegistry {
+public class JdbcRegistry extends AbstractJdbcComponent implements IRegistry {
     
     protected static final ObjectMapper mapper = new ObjectMapper();
-    protected DataSource ds;
 
     /**
      * Constructor.
      * @param config map of configuration options
      */
     public JdbcRegistry(Map<String, String> config) {
-        String dsJndiLocation = config.get("datasource.jndi-location"); //$NON-NLS-1$
-        if (dsJndiLocation == null) {
-            throw new RuntimeException("Missing datasource JNDI location from JdbcRegistry configuration."); //$NON-NLS-1$
-        }
-        ds = lookupDS(dsJndiLocation);
+        super(config);
     }
     
-    /**
-     * Lookup the datasource in JNDI.
-     * @param dsJndiLocation
-     */
-    private static DataSource lookupDS(String dsJndiLocation) {
-        DataSource ds;
-        try {
-            InitialContext ctx = new InitialContext();
-            ds = (DataSource) ctx.lookup(dsJndiLocation);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-        if (ds == null) {
-            throw new RuntimeException("Datasource not found: " + dsJndiLocation); //$NON-NLS-1$
-        }
-        return ds;
-    }
-
     /**
      * @see io.apiman.gateway.engine.IRegistry#publishApi(io.apiman.gateway.engine.beans.Api, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
