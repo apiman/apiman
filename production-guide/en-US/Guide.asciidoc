@@ -20,9 +20,8 @@ https://github.com/apiman/apiman-deployer/tree/1.2.3.Final
 Simply download that script and run it on each of the machines you wish to install the various apiman
 components!
 
-TIP: The production guide assumes you are installing into WildFly 9.  The instructions are slightly
-different if you are using EAP 6.4 or WildFly 8.  In particular, the Keycloak settings in standalone.xml
-are a bit different (because for our EAP6.4 and WF8 support we use an older version of KC).
+TIP: The production guide assumes you are installing into WildFly 10.  The instructions are slightly
+different if you are using some other platform (Tomcat, older WildFly versions, EAP 7).
 
 == Architecture Summary
 Before we get started, it may be useful to know the overall architecture of apiman.  Let's start with a
@@ -119,9 +118,9 @@ configuration file and you'll be Gatewaying in no time!
 
 Here are the steps you should take to install a standalone API Gateway:
 
-1. Download and unpack WildFly 9
+1. Download and unpack WildFly 10
 2. Download apiman
-3. Unpack apiman into WildFly 9
+3. Unpack apiman into WildFly 10
 4. Remove unused apiman deployments from standalone/deployments
 
 Which apiman deployments should you delete?  These:
@@ -200,9 +199,9 @@ you should have the Manager running in no time!
 
 Here are the steps you should take to install a standalone API Manager:
 
-1. Download and unpack WildFly 9
+1. Download and unpack WildFly 10
 2. Download apiman
-3. Unpack apiman into WildFly 9
+3. Unpack apiman into WildFly 10
 4. Remove unused apiman deployments from standalone/deployments
 
 Which apiman deployments should you delete?  These:
