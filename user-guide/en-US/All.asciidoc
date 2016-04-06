@@ -760,7 +760,7 @@ This policy is nearly identical to our Authorization Policy, with the exception 
 {
 	"groupId": "io.apiman.plugins",
 	"artifactId": "apiman-plugins-soap-authorization-policy",
-	"version": "1.2.2-SNAPSHOT" // Please check for the latest version, this is just an example.
+	"version": "1.2.3.Final" // Please check for the latest version, this is just an example.
 }
 ```
 
@@ -1099,18 +1099,23 @@ SAMPLE CONFIG TBD
 ==== Caching Policy
 [[policy-caching]]
 ===== Description
-DESCRIPTION TBD HERE
+Allows caching of API responses in the Gateway to reduce overall traffic to the back-end API.  The
+caching policy is currently very naive and only supports a simple "time-to-live" approach to 
+caching.
 
 TIP: This is a built-in policy and therefore no plugins need to be installed prior to using it.
 
 ===== Configuration
-CONFIGURATION TBD HERE
+The caching policy only supports a single configuration options, which is the time to live
+in seconds.
+
+* *ttl* (long) : Number of seconds to cache the response.
+
 
 ===== Sample Configuration
-SAMPLE CONFIG TBD
 ```json
 {
-   "TBD" : "TBD"
+   "ttl" : 60
 }
 ```
 
@@ -1118,18 +1123,28 @@ SAMPLE CONFIG TBD
 ==== Log Policy
 [[policy-log]]
 ===== Description
-DESCRIPTION TBD HERE
+A policy that logs the headers to standard out.  Useful to analyse inbound HTTP traffic to 
+the gateway when added as the first policy in the chain or to analyse outbound HTTP 
+traffic from the gateway when added as the last policy in the chain.
 
 ===== Plugin
-PLUGIN COORDINATES GO HERE
-
-===== Configuration
-CONFIGURATION TBD HERE
-
-===== Sample Configuration
-SAMPLE CONFIG TBD
 ```json
 {
-   "TBD" : "TBD"
+    "groupId": "io.apiman.plugins",
+    "artifactId": "apiman-plugins-log-policy",
+    "version": "1.2.3.Final" // Please check for the latest version, this is just an example.
+}
+```
+
+===== Configuration
+The Log Policy can be configured to output the request headers, the response headers, or 
+both.  When configuring this policy via the apiman REST API, there is only property:
+
+* *direction* (enum) : Which direction you wish to log, options are: 'request', 'response', 'both'
+
+===== Sample Configuration
+```json
+{
+   "direction" : "both"
 }
 ```
