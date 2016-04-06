@@ -1038,41 +1038,113 @@ SAMPLE CONFIG TBD
 ==== Transformation Policy
 [[policy-transformation]]
 ===== Description
-DESCRIPTION TBD HERE
+This policy converts an API format between JSON and XML.  If an API is implemented to
+return XML, but a client would prefer to receive JSON data, this policy can be used
+to automatically convert both the request and response bodies.  In this way, the client
+can work with JSON data even though the back-end API requires XML (and responds with 
+XML).
+
+Note that this policy is very generic, and does an automatic conversion between XML
+and JSON.  For more control over the specifics of the format conversion, a custom 
+policy may be a better choice.
 
 ===== Plugin
-PLUGIN COORDINATES GO HERE
-
-===== Configuration
-CONFIGURATION TBD HERE
-
-===== Sample Configuration
-SAMPLE CONFIG TBD
 ```json
 {
-   "TBD" : "TBD"
+    "groupId": "io.apiman.plugins",
+    "artifactId": "apiman-plugins-transformation-policy",
+    "version": "1.2.3.Final" // Please check for the latest version, this is just an example.
+}
+```
+
+===== Configuration
+The configuration of this policy consists of two properties which indicate:
+
+1. the format required by the client
+2. the format required by the back-end server
+
+From these two properties, the policy can decide how (and if) to convert the data.
+
+* *clientFormat* (enum) : The format required by the client, possible values are:  'XML', 'JSON'
+* *serverFormat* (enum) : The format required by the server, possible values are:  'XML', 'JSON'
+
+===== Sample Configuration
+```json
+{
+   "clientFormat" : "JSON",
+   "serverFormat" : "XML"
 }
 ```
 
 ==== JSONP Policy
 [[policy-jsonp]]
 ===== Description
-DESCRIPTION TBD HERE
+This policy turns a standard REST endpoint into a https://en.wikipedia.org/wiki/JSONP[JSONP] 
+compatible endpoint.  For example, a REST endpoint may typically return the following JSON
+data:
 
-===== Plugin
-PLUGIN COORDINATES GO HERE
-
-===== Configuration
-CONFIGURATION TBD HERE
-
-===== Sample Configuration
-SAMPLE CONFIG TBD
 ```json
 {
-   "TBD" : "TBD"
+  "foo" : "bar",
+  "baz" : 17
 }
 ```
 
+If the JSONP policy is applied to this API, then the caller must provide a JSONP callback
+function name via the URL (for details on this, see the *Configuration* section below).
+When this is done, the API might respond with this instead:
+
+```json
+callbackFunction({
+  "foo" : "bar",
+  "baz" : 17
+})
+```
+
+TIP: If the API client does not send the JSONP callback function name in the URL (via the
+configured query parameter name), this policy will do nothing.  This allows managed endpoints
+to support both standard REST *and* JSONP at the same time.
+
+===== Plugin
+```json
+{
+    "groupId": "io.apiman.plugins",
+    "artifactId": "apiman-plugins-jsonp-policy",
+    "version": "1.2.3.Final" // Please check for the latest version, this is just an example.
+}
+```
+
+===== Configuration
+The JSONP policy has a single configuration property, which can be used to specify the
+name of the HTTP query parameter that the caller must use to pass the name of the
+JSONP callback function.
+
+* *callbackParamName* (string) : Name of the HTTP query parameter that should contain the JSONP callback function name.
+
+===== Sample Configuration
+```json
+{
+   "callbackParamName" : "callback"
+}
+```
+
+If the above configuration were to be used, the API client (caller) must send the JSONP callback
+function name in the URL of the request as a query parameter named *callback*.  For example:
+
+```
+GET /path/to/resource?callback=myCallbackFunction HTTP/1.1
+Host: www.example.org
+Accept: application/json
+```
+
+In this example, the response might look like this:
+
+```json
+myCallbackFunction({
+  "property1" : "value1",
+  "property2" : "value2"
+})
+```
 
 ==== Simple Header Policy
 [[policy-simple-header]]
