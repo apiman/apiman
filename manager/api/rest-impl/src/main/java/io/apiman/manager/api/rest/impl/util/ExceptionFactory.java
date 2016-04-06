@@ -16,6 +16,9 @@
 package io.apiman.manager.api.rest.impl.util;
 
 import io.apiman.common.plugin.PluginCoordinates;
+import io.apiman.manager.api.beans.apis.ApiVersionBean;
+import io.apiman.manager.api.beans.clients.ClientVersionBean;
+import io.apiman.manager.api.beans.contracts.ContractBean;
 import io.apiman.manager.api.rest.contract.exceptions.ActionException;
 import io.apiman.manager.api.rest.contract.exceptions.ApiAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.ApiDefinitionNotFoundException;
@@ -28,6 +31,7 @@ import io.apiman.manager.api.rest.contract.exceptions.ClientVersionAlreadyExists
 import io.apiman.manager.api.rest.contract.exceptions.ClientVersionNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.ContractAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.ContractNotFoundException;
+import io.apiman.manager.api.rest.contract.exceptions.EntityStillActiveException;
 import io.apiman.manager.api.rest.contract.exceptions.GatewayAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.GatewayNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.InvalidApiStatusException;
@@ -54,6 +58,11 @@ import io.apiman.manager.api.rest.contract.exceptions.RoleAlreadyExistsException
 import io.apiman.manager.api.rest.contract.exceptions.RoleNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.UserNotFoundException;
 import io.apiman.manager.api.rest.impl.i18n.Messages;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 /**
  * Simple factory for creating REST exceptions.
@@ -413,10 +422,47 @@ public final class ExceptionFactory {
 
     /**
      * Creates an exception.
-     * @param message
+     * @param message the message
+     * @return the exception
      */
     public static final InvalidVersionException invalidVersionException(String message) {
         return new InvalidVersionException(message);
     }
 
+    public static EntityStillActiveException entityStillActiveExceptionContracts(List<ContractBean> contracts) {
+        return new EntityStillActiveException(Messages.i18n.format("EntityStillActiveContracts", joinList(contracts))); //$NON-NLS-1$
+    }
+
+    public static EntityStillActiveException entityStillActiveExceptionClientVersions(List<ClientVersionBean> clientApps) {
+        return new EntityStillActiveException(Messages.i18n.format("EntityStillActiveClientApps", joinList(clientApps))); //$NON-NLS-1$
+    }
+
+    public static EntityStillActiveException entityStillActiveExceptionApiVersions(List<ApiVersionBean> apis) {
+        return new EntityStillActiveException(Messages.i18n.format("EntityStillActiveApis", joinList(apis))); //$NON-NLS-1$
+    }
+
+    public static EntityStillActiveException entityStillActiveExceptionContracts(Iterator<ContractBean> contracts) {
+        return new EntityStillActiveException(Messages.i18n.format("EntityStillActiveContracts", joinIter(contracts))); //$NON-NLS-1$
+    }
+
+    public static EntityStillActiveException entityStillActiveExceptionClientVersions(Iterator<ClientVersionBean> clientApps) {
+        return new EntityStillActiveException(Messages.i18n.format("EntityStillActiveClientApps", joinIter(clientApps))); //$NON-NLS-1$
+    }
+
+    public static EntityStillActiveException entityStillActiveExceptionApiVersions(Iterator<ApiVersionBean> apis) {
+        return new EntityStillActiveException(Messages.i18n.format("EntityStillActiveApis", joinIter(apis))); //$NON-NLS-1$
+    }
+
+    private static <T> String joinList(List<T> items) {
+        return items.stream()
+                .map(Object::toString)
+                .collect(Collectors.joining(", ")); //$NON-NLS-1$
+    }
+
+    private static <T> String joinIter(Iterator<T> iter) {
+        Iterable<T> iterable = () -> iter;
+        return StreamSupport.stream(iterable.spliterator(), false)
+                .map(Object::toString)
+                .collect(Collectors.joining(", ")); //$NON-NLS-1$
+    }
 }
