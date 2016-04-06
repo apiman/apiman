@@ -1,0 +1,7 @@
+GET /organizations/Organization1/apis/API1 admin/admin
+----
+404
+Content-Type: application/json
+X-Apiman-Error: true
+
+{"type":"ApiNotFoundException","errorCode":5002,"message":"API does not exist: API1","moreInfoUrl":null}'

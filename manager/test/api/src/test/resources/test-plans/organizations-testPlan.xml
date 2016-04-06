@@ -18,5 +18,4 @@
   <testGroup name="Organization Auditing">
     <test name="Organization Activity">test-plan-data/organizations/auditing/001_activity.resttest</test>
   </testGroup>
-
 </testPlan>
