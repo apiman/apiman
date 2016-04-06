@@ -32,6 +32,7 @@ import javax.persistence.UniqueConstraint;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
  * Models a single version of a client "impl".  Every client in
@@ -44,7 +45,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
  */
 @Entity
 @Table(name = "client_versions",
-       uniqueConstraints = { 
+       uniqueConstraints = {
                @UniqueConstraint(columnNames = { "client_id", "client_org_id", "version" }),
                @UniqueConstraint(columnNames = { "apikey" })})
 @JsonInclude(Include.NON_NULL)

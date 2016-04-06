@@ -95,6 +95,7 @@ public abstract class AbstractJpaStorage {
             throw new StorageException(e);
         } catch (RollbackException e) {
             logger.error(e.getMessage(), e);
+            e.printStackTrace(System.err);
             throw new StorageException(e);
         } catch (Throwable t) {
             logger.error(t.getMessage(), t);
@@ -106,6 +107,20 @@ public abstract class AbstractJpaStorage {
      * @see io.apiman.manager.api.core.IStorage#rollbackTx()
      */
     protected void rollbackTx() {
+        if (activeEM.get() == null) {
+            throw new RuntimeException("Transaction not active."); //$NON-NLS-1$
+        }
+        try {
+            JpaUtil.rollbackQuietly(activeEM.get());
+        } finally {
+            activeEM.get().close();
+            activeEM.set(null);
+        }
+    }
+
+    protected void rollbackTx(Exception e) {
+        e.printStackTrace();
+
         if (activeEM.get() == null) {
             throw new RuntimeException("Transaction not active."); //$NON-NLS-1$
         }
@@ -218,6 +233,7 @@ public abstract class AbstractJpaStorage {
         return rval;
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     protected <T> Iterator<T> getAll(Class<T> type, Query query) throws StorageException {
         return new EntityIterator(type, query);
     }
@@ -389,14 +405,14 @@ public abstract class AbstractJpaStorage {
         private Query query;
         private int pageIndex = 0;
         private int pageSize = 100;
-        
+
         private int resultIndex;
         private List<T> results;
 
         /**
          * Constructor.
-         * @param query
-         * @throws StorageException
+         * @param query the query
+         * @throws StorageException if a storage problem occurs while storing a bean.
          */
         public EntityIterator(Class<T> type, Query query) throws StorageException {
             this.query = query;
@@ -437,13 +453,24 @@ public abstract class AbstractJpaStorage {
             }
             return rval;
         }
-        
+
+        /**
+         * @throws StorageException
+         */
+        private EntityManager entityManager() {
+            try {
+                return getActiveEntityManager();
+            } catch (StorageException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
         /**
          * @see java.util.Iterator#remove()
          */
         @Override
         public void remove() {
-            // Not implemented.
+            throw new UnsupportedOperationException();
         }
     }
 }

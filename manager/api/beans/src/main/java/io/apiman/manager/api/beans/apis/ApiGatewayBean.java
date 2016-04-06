@@ -19,6 +19,8 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.persistence.Entity;
+import java.io.Serializable;
 
 /**
  * Models a gateway that an API should be published to.
