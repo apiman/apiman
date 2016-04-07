@@ -286,8 +286,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     @Override
     public void delete(@PathParam("organizationId") String organizationId) throws OrganizationNotFoundException, NotAuthorizedException, EntityStillActiveException {
         try {
-            storage.beginTx();
+            if (!securityContext.hasPermission(PermissionType.orgAdmin, organizationId))
+                throw ExceptionFactory.notAuthorizedException();
 
+            storage.beginTx();
             OrganizationBean organizationBean = storage.getOrganization(organizationId);
             if (organizationBean == null) {
                 throw ExceptionFactory.organizationNotFoundException(organizationId);
@@ -334,6 +336,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     @Override
     public void deleteClient(@PathParam("organizationId") String organizationId, @PathParam("clientId") String clientId) throws OrganizationNotFoundException, NotAuthorizedException, EntityStillActiveException {
         try {
+            if (!securityContext.hasPermission(PermissionType.clientAdmin, organizationId))
+                throw ExceptionFactory.notAuthorizedException();
+
             storage.beginTx();
             ClientBean client = storage.getClient(organizationId, clientId);
             if (client == null) {
@@ -366,8 +371,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     @Override
     public void deleteApi(@PathParam("organizationId") String organizationId, @PathParam("apiId") String apiId) throws OrganizationNotFoundException, NotAuthorizedException, EntityStillActiveException {
         try {
-            storage.beginTx();
+            if (!securityContext.hasPermission(PermissionType.apiAdmin, organizationId))
+                throw ExceptionFactory.notAuthorizedException();
 
+            storage.beginTx();
             ApiBean api = storage.getApi(organizationId, apiId);
             if (api == null) {
                 throw ExceptionFactory.apiNotFoundException(apiId);

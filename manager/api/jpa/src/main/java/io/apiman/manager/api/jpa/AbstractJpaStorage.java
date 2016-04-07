@@ -95,7 +95,6 @@ public abstract class AbstractJpaStorage {
             throw new StorageException(e);
         } catch (RollbackException e) {
             logger.error(e.getMessage(), e);
-            e.printStackTrace(System.err);
             throw new StorageException(e);
         } catch (Throwable t) {
             logger.error(t.getMessage(), t);
@@ -107,20 +106,6 @@ public abstract class AbstractJpaStorage {
      * @see io.apiman.manager.api.core.IStorage#rollbackTx()
      */
     protected void rollbackTx() {
-        if (activeEM.get() == null) {
-            throw new RuntimeException("Transaction not active."); //$NON-NLS-1$
-        }
-        try {
-            JpaUtil.rollbackQuietly(activeEM.get());
-        } finally {
-            activeEM.get().close();
-            activeEM.set(null);
-        }
-    }
-
-    protected void rollbackTx(Exception e) {
-        e.printStackTrace();
-
         if (activeEM.get() == null) {
             throw new RuntimeException("Transaction not active."); //$NON-NLS-1$
         }
@@ -452,17 +437,6 @@ public abstract class AbstractJpaStorage {
                 fetch();
             }
             return rval;
-        }
-
-        /**
-         * @throws StorageException
-         */
-        private EntityManager entityManager() {
-            try {
-                return getActiveEntityManager();
-            } catch (StorageException e) {
-                throw new RuntimeException(e);
-            }
         }
 
         /**
