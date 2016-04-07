@@ -811,131 +811,99 @@ TIP: This is a built-in policy and therefore no plugins need to be installed pri
 ===== Configuration
 The configuration parameters for an IP Whitelist Policy are:
 
-* IP Address HTTP Header - This is an optional parameter that can be used to provide addition information.
-* Failure Response - The server response code. The possible values for the return code are:
+* *ipList* (array) : The IP address(es), and/or ranges of addresses that will be allowed to access the API. 
+* *responseCode* (int) : The server response code. The possible values for the return code are:
  ** 500 - Server error
  ** 404 - Not found
  ** 403 - Authentication failure
-* IP Addresses - The IP address, and/or ranges of addresses that will be permitted to access the configured API. 
+* *httpHeader* (string) [optional] : Tells apiman to use the IP address found in the given HTTP request header *instead* of the one associated with the incoming TCP socket.  Useful when going through a proxy, often the value of this is 'X-Forwarded-For'.
 
 ===== Sample Configuration
-
 ```json
 {
-    "id" : 25,
-    "type" : "Plan",
-    "organizationId" : "test",
-    "entityId" : "test999",
-    "entityVersion" : "1.0",
-    "name" : "IP Whitelist Policy",
-    "configuration" : "{\"ipList\":[\"192.168.3.*\",\"192.168.4.*\"],\"responseCode\":\"500\",\"httpHeader\":\"This is the optional IP Address HTTP Header\"}",
-    "createdBy" : "admin",
-    "createdOn" : "2016-04-06T19:40:20Z",
-    "modifiedBy" : "admin",
-    "modifiedOn" : "2016-04-06T19:40:20Z",
-    "definition" : {
-    "id" : "IPWhitelistPolicy",
-    "templates" : [ ],
-    "deleted" : false
+  "ipList" : ["192.168.3.*", "192.168.4.*"],
+  "responseCode" : 403,
+  "httpHeader" : "X-Forwarded-For"
 }
 ```
 
 ==== IP Blacklist Policy
 [[policy-ip-blacklist]]
 ===== Description
-As its name indicates, the IP blacklist policy type blocks access to an API’s resources based on the IP address of the client application. The apiman Management UI form used to create an IP blacklist policy enables you to use wildcard characters in specifying the IP addresses to be blocked. In addition, apiman gives you the option of specifying the return error code sent in the response to the client if a request is denied. Note that an IP Blacklist policy in a plan overrides the an IP Whitelist policy in the same plan.
+As its name indicates, the IP blacklist policy type blocks access to an API's resources based on the IP address of the client application. The apiman Management UI form used to create an IP blacklist policy enables you to use wildcard characters in specifying the IP addresses to be blocked. In addition, apiman gives you the option of specifying the return error code sent in the response to the client if a request is denied. Note that an IP Blacklist policy in a plan overrides the an IP Whitelist policy in the same plan.
 
 TIP: This is a built-in policy and therefore no plugins need to be installed prior to using it.
 
 ===== Configuration
 The configuration parameters for an IP Blacklist Policy are:
 
-* IP Address HTTP Header - This is an optional parameter that can be used to provide addition information.
-* Failure Response - The server response code. The possible values for the return code are:
+* *ipList* (array) : The IP address(es), and/or ranges of addresses that will be blocked from accessing the API. 
+* *responseCode* (int) : The server response code. The possible values for the return code are:
  ** 500 - Server error
  ** 404 - Not found
  ** 403 - Authentication failure
-* IP Addresses - The IP address, and/or ranges of addresses that will be blocked from accessing the configured API. 
+* *httpHeader* (string) [optional] : Tells apiman to use the IP address found in the given HTTP request header *instead* of the one associated with the incoming TCP socket.  Useful when going through a proxy, often the value of this is 'X-Forwarded-For'.
 
 ===== Sample Configuration
 ```json
 {
-    "id" : 32,
-    "type" : "Plan",
-    "organizationId" : "test",
-    "entityId" : "test",
-    "entityVersion" : "1.0",
-    "name" : "IP Blacklist Policy",
-    "configuration" : "{\"ipList\":[\"192.168.7.*\"],\"responseCode\":\"500\",\"httpHeader\":\"Optional IP Blacklist HTTP Header\"}",
-    "createdBy" : "admin",
-    "createdOn" : "2016-04-06T20:21:35Z",
-    "modifiedBy" : "admin",
-    "modifiedOn" : "2016-04-06T20:21:35Z",
-    "definition" : {
-    "id" : "IPBlacklistPolicy",
-    "templates" : [ ],
-    "deleted" : false
+  "ipList" : ["192.168.7.*"],
+  "responseCode" : 500,
+  "httpHeader" : "X-Forwarded-For"
 }
 ```
 
 ==== Ignored Resources Policy
 [[policy-ignored-resources]]
 ===== Description
-The ignored resources policy type enables you to shield some of an API’s resources from being accessed, without blocking access to all the API’s resources. Requests made to access to API resources designated as “ignored” result in an HTTP 404 (“not found”) error code. By defining ignored resource policies, apiman enables you to have fine-grained control over which clients can access an API’s resources. 
+The ignored resources policy type enables you to shield some of an API's resources from being accessed, without blocking access to all the API's resources. Requests made to access to API resources designated as “ignored” result in an HTTP 404 (“not found”) error code. By defining ignored resource policies, apiman enables you to have fine-grained control over which of an API's resources are accessible.
 
-For example, let’s say that you have an apiman managed API that provides information to remote staff.  The REST resources provided by this API are structured as follows:
+For example, let's say that you have an apiman managed API that provides information to remote staff.  The REST resources provided by this API are structured as follows:
 
 /customers
 /customers/{customer id}/orders
 /customers/{customer id}/orders/bad_debts
 
-By setting up multiple ignored resource policies, these policies can work together to give you more flexibility in how you govern access to to your API’s resources. What you do is to define multiple plans, and in each plan, allow differing levels of access, based on the paths (expressed as regular expressions)defined, for resources to be ignored. To illustrate, using the above examples:
+By setting up multiple ignored resource policies, these policies can work together to give you more flexibility in how you govern access to to your API's resources. What you do is to define multiple plans, and in each plan, allow differing levels of access, based on the paths (expressed as regular expressions)defined, for resources to be ignored. To illustrate, using the above examples:
 
-| This Path                      | Results in these Resources Being Ignored  | 
-| :----------------------------- |:-----------------------------------------:| 
-| (empty)                        | Access to all resources are allowed |
-| /customers                     | Denies access to all customer information |
-| /customers/./orders            | Denies access to all customer order information |
-| /customers/.*/orders/bad_debts | Denies access to all customer bad debt order information |
+[width="75%",options="header"]
+|==========================
+| This Path                      | Results in these Resources Being Ignored 
+| (empty)                        | Access to all resources is allowed
+| /customers                     | Denies access to all customer information
+| /customers/.*/orders           | Denies access to all customer order information
+| /customers/.*/orders/bad_debts | Denies access to all customer bad debt order information
+|==========================
 
 What happens when the policy is applied to an API request is that the apiman Gateway matches the configured paths to the requested API resources. If any of the exclusion paths match, the policy triggers a failure with an HTTP return code of 404.
 
-The IP-related policy types are less fine-grained in that they allow or block access to all of an API’s resources based on the IP address of the client application. We’ll look at these policy types next.
+The IP-related policy types are less fine-grained in that they allow or block access to all of an API's resources based on the IP address of the client application. We'll look at these policy types next.
 
 TIP: This is a built-in policy and therefore no plugins need to be installed prior to using it.
 
 ===== Configuration
 The configuration parameters for an Ignored Resources Policy are:
- * The list of regular expressions representing the resources to be ignored.
-* The HTTP verb to be controlled by the policy. Valid values are:
-  ** GET
-  ** POST
-  ** PUT
-  ** DELETE
-  ** OPTIONS
-  ** HEAD
-  ** TRACE
-  ** CONNECT
+* *rules* (array of objects) : The list of matching rules representing the resources to be ignored.
+** *verb* (enum) : The HTTP verb to be controlled by the rule. Valid values are:
+*** * (matches all verbs)
+*** GET
+*** POST
+*** PUT
+*** DELETE
+*** OPTIONS
+*** HEAD
+*** TRACE
+*** CONNECT
+** *pathPattern* (string regexp) : A regular expression used to match the REST resource being hidden.
 
 ===== Sample Configuration
 ```json
 {
-    "id" : 34,
-    "type" : "Plan",
-    "organizationId" : "test",
-    "entityId" : "test",
-    "entityVersion" : "1.0",
-    "name" : "Ignored Resources Policy",
-    "configuration" : "{\"rules\":[{\"verb\":\"GET\",\"pathPattern\":\"/customers\"},{\"verb\":\"GET\",\"pathPattern\":\"/customers/./orders\"},{\"verb\":\"GET\",\"pathPattern\":\"/customers/.*/orders/bad_debts\"}]}",
-    "createdBy" : "admin",
-    "createdOn" : "2016-04-06T20:27:31Z",
-    "modifiedBy" : "admin",
-    "modifiedOn" : "2016-04-06T20:27:31Z",
-    "definition" : {
-        "id" : "IgnoredResourcesPolicy",
-        "templates" : [ ],
-        "deleted" : false
-    }
+  "rules" : [
+    { "verb" : "GET",  "pathPattern" : "/customers" },
+    { "verb" : "POST", "pathPattern" : "/customers/.*/orders" },
+    { "verb" : "*",    "pathPattern" : "/customers/.*/orders/bad_debts"}
+  ]
 }
 ```
 
@@ -1063,43 +1031,34 @@ TIP: This is a built-in policy and therefore no plugins need to be installed pri
 ===== Configuration
 The configuration parameters for a Rate Limiting Policy are:
 
-* Number of requests - This is the number of requests that must be met to trigger the policy.
-* Granularity - The apiman element for which the requests are counted. Valid values are:
-  ** Client App
-  ** User
-  ** API
-* Period - The time period over which the policy is applied. Valid values are:
-  ** Second
-  ** Minute
-  ** Hour
-  ** Day
-  ** Month
-  ** Year
-* Limit Response Header - An optional header to be added to a response. 
-* Remaining Response Header - An optional header to be added to a response to indicate the level remaining until the policy limit is reached.
-* Reset Response Header - An optional header to be added to a response when the policy limit is reset.
+* *limit* (integer) : This is the number of requests that must be received before the policy will trigger.
+* *granularity* (enum) : The apiman element for which the requests are counted. Valid values are:
+** User
+** Api
+** Client
+* *period* : The time period over which the policy is applied.  Valid values are:
+** Second
+** Minute
+** Hour
+** Day
+** Month
+** Year
+* *headerLimit* (string) [optional] : HTTP response header that apiman will use to store the limit being applied. 
+* *headerRemaining* (string) [optional] : HTTP response header that apiman will use to store how many requests remain before the limit is reached.
+* *headerReset* (string) [optional] : HTTP response header that apiman will use to store the number of seconds until the limit is reset.
 
 ===== Sample Configuration
 ```json
 {
-    "id" : 36,
-    "type" : "Plan",
-    "organizationId" : "test",
-    "entityId" : "test",
-    "entityVersion" : "1.0",
-    "name" : "Rate Limiting Policy",
-    "configuration" : "{\"limit\":10,\"granularity\":\"Api\",\"period\":\"Minute\",\"headerLimit\":\"Optional response header\",\"headerRemaining\":\"Optional remaining response header\",\"headerReset\":\"Optional response header\"}",
-    "createdBy" : "admin",
-    "createdOn" : "2016-04-06T20:31:02Z",
-    "modifiedBy" : "admin",
-    "modifiedOn" : "2016-04-06T20:31:02Z",
-    "definition" : {
-    "id" : "RateLimitingPolicy",
-    "templates" : [ ],
-    "deleted" : false
-    }
+  "limit" : 100,
+  "granularity" : "Api",
+  "period" : "Minute",
+  "headerLimit" : "X-Limit",
+  "headerRemaining" : "X-Limit-Remaining",
+  "headerReset" : "X-Limit-Reset"
 }
 ```
+
 ==== Quota Policy
 [[policy-quota]]
 ===== Description
@@ -1109,38 +1068,30 @@ TIP: This is a built-in policy and therefore no plugins need to be installed pri
 
 ===== Configuration
 The configuration parameters for a Quota Policy are:
-* Number of requests - This is the number of requests that must be met to trigger the policy.
-* Granularity - The apiman element for which the requests are counted. Valid values are:
-  ** Client App
-  ** User
-  ** API
-* Period - The time period over which the policy is applied. Valid values are:
-  ** Day
-  ** Month
-  ** Year
-* Limit Response Header - An optional header to be added to a response. 
-* Remaining Response Header - An optional header to be added to a response to indicate the level remaining until the policy limit is reached.
-* Reset Response Header - An optional header to be added to a response when the policy limit is reset.
+
+* *limit* (integer) : This is the number of requests that must be received before the policy will trigger.
+* *granularity* (enum) : The apiman element for which the requests are counted. Valid values are:
+** User
+** Api
+** Client
+* *period* : The time period over which the policy is applied.  Valid values are:
+** Hour
+** Day
+** Month
+** Year
+* *headerLimit* (string) [optional] : HTTP response header that apiman will use to store the limit being applied. 
+* *headerRemaining* (string) [optional] : HTTP response header that apiman will use to store how many requests remain before the limit is reached.
+* *headerReset* (string) [optional] : HTTP response header that apiman will use to store the number of seconds until the limit is reset.
 
 ===== Sample Configuration
 ```json
 {
-    "id" : 40,
-    "type" : "Plan",
-    "organizationId" : "test",
-    "entityId" : "test",
-    "entityVersion" : "1.0",
-    "name" : "Transfer Quota Policy",
-    "configuration" : "{\"limit\":10240,\"headerLimit\":\"Transfer quota optional limit response header\",\"direction\":\"upload\",\"granularity\":\"Client\",\"period\":\"Minute\",\"headerRemaining\":\"Transfer quota optional remaining response header\",\"headerReset\":\"Transfer quota optional reset response header\"}",
-    "createdBy" : "admin",
-    "createdOn" : "2016-04-06T20:39:30Z",
-    "modifiedBy" : "admin",
-    "modifiedOn" : "2016-04-06T20:39:30Z",
-    "definition" : {
-      "id" : "TransferQuotaPolicy",
-      "templates" : [ ],
-      "deleted" : false
-    }
+  "limit" : 100000,
+  "granularity" : "Client",
+  "period" : "Month",
+  "headerLimit" : "X-Quota-Limit",
+  "headerRemaining" : "X-Quota-Limit-Remaining",
+  "headerReset" : "X-Quota-Limit-Reset"
 }
 ```
 
@@ -1154,38 +1105,34 @@ TIP: This is a built-in policy and therefore no plugins need to be installed pri
 ===== Configuration
 The configuration parameters for a Quota Policy are:
 
-* Transfer quota - The limit to be assigned to the transfer quote. The calid units of measure are:
-  ** Bytes
-  ** KB
-  ** MB
-  ** GB
-* Transfer direction - Valid values are:
-  ** Upload
-  ** Download
-  ** Upload + Download
-* Period - The time period over which the policy is applied. Valid values are:
-  ** Second
-  ** Minute
-  ** Hour
-  ** Day
-  ** Month
-  ** Year
-* Limit Response Header - An optional header to be added to a response. 
-* Remaining Response Header - An optional header to be added to a response to indicate the level remaining until the policy limit is reached.
-* Reset Response Header - An optional header to be added to a response when the policy limit is reset.
+* *direction* (enum) : Indicates whether uploads, downloads, or both directions should count against the limit.  Value values are:
+** upload
+** download
+** both
+* *limit* (integer) : This is the number of requests that must be received before the policy will trigger.
+* *granularity* (enum) : The apiman element for which the transmitted bytes are counted. Valid values are:
+** User
+** Api
+** Client
+* *period* : The time period over which the policy is applied.  Valid values are:
+** Hour
+** Day
+** Month
+** Year
+* *headerLimit* (string) [optional] : HTTP response header that apiman will use to store the limit being applied. 
+* *headerRemaining* (string) [optional] : HTTP response header that apiman will use to store how many requests remain before the limit is reached.
+* *headerReset* (string) [optional] : HTTP response header that apiman will use to store the number of seconds until the limit is reset.
 
 ===== Sample Configuration
 ```json
 {
-   {
-    "id" : "TransferQuotaPolicy",
-    "policyImpl" : "class:io.apiman.gateway.engine.policies.TransferQuotaPolicy",
-    "name" : "Transfer Quota Policy",
-    "description" : "Provides a way to limit the total number of bytes that can be transferred from (or to) an API.",
-    "icon" : "download",
-    "templates" : [ {
-      "template" : "Consumers are limited to transferring @{limit} bytes per @{granularity} per @{period}."
-    } ]
+  "direction" : "download",
+  "limit" : 1024000,
+  "granularity" : "Client",
+  "period" : "Day",
+  "headerLimit" : "X-XferQuota-Limit",
+  "headerRemaining" : "X-XferQuota-Limit-Remaining",
+  "headerReset" : "X-XferQuota-Limit-Reset"
 }
 ```
 
