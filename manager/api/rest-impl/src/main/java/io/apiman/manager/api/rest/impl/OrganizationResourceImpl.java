@@ -16,6 +16,8 @@
 
 package io.apiman.manager.api.rest.impl;
 
+import static java.util.stream.Collectors.toList;
+
 import io.apiman.common.util.crypt.IDataEncrypter;
 import io.apiman.gateway.engine.beans.ApiEndpoint;
 import io.apiman.manager.api.beans.BeanUtils;
@@ -130,6 +132,7 @@ import io.apiman.manager.api.rest.contract.exceptions.InvalidClientStatusExcepti
 import io.apiman.manager.api.rest.contract.exceptions.InvalidMetricCriteriaException;
 import io.apiman.manager.api.rest.contract.exceptions.InvalidNameException;
 import io.apiman.manager.api.rest.contract.exceptions.InvalidParameterException;
+import io.apiman.manager.api.rest.contract.exceptions.InvalidPlanStatusException;
 import io.apiman.manager.api.rest.contract.exceptions.InvalidVersionException;
 import io.apiman.manager.api.rest.contract.exceptions.NotAuthorizedException;
 import io.apiman.manager.api.rest.contract.exceptions.OrganizationAlreadyExistsException;
@@ -163,7 +166,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import javax.enterprise.context.RequestScoped;
@@ -323,7 +325,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             // Delete org
             storage.deleteOrganization(organizationBean);
             storage.commitTx();
-            log.debug("Deleted Organization: " + organizationBean.getName());
+            log.debug("Deleted Organization: " + organizationBean.getName()); //$NON-NLS-1$
         } catch (AbstractRestException e) {
             storage.rollbackTx();
             throw e;
@@ -350,7 +352,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             List<ClientVersionBean> registeredElems = StreamSupport.stream(iterable.spliterator(), false)
                     .filter(clientVersion -> clientVersion.getStatus() == ClientStatus.Registered)
                     .limit(5)
-                    .collect(Collectors.toList());
+                    .collect(toList());
 
             if (!registeredElems.isEmpty()) {
                 throw ExceptionFactory.entityStillActiveExceptionClientVersions(registeredElems);
@@ -358,7 +360,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
 
             storage.deleteClient(client);
             storage.commitTx();
-            log.debug("Deleted ClientApp: " + client.getName());
+            log.debug("Deleted ClientApp: " + client.getName()); //$NON-NLS-1$
         } catch (AbstractRestException e) {
             storage.rollbackTx();
             throw e;
@@ -386,14 +388,14 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             List<ApiVersionBean> registeredElems = StreamSupport.stream(iterable.spliterator(), false)
                     .filter(clientVersion -> clientVersion.getStatus() == ApiStatus.Published)
                     .limit(5)
-                    .collect(Collectors.toList());
+                    .collect(toList());
 
             if (!registeredElems.isEmpty()) {
                 throw ExceptionFactory.entityStillActiveExceptionApiVersions(registeredElems);
             }
             storage.deleteApi(api);
             storage.commitTx();
-            log.debug("Deleted API: " + api.getName());
+            log.debug("Deleted API: " + api.getName()); //$NON-NLS-1$
         } catch (AbstractRestException e) {
             storage.rollbackTx();
             throw e;
@@ -699,7 +701,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
 
         return newVersion;
     }
-    
+
     /**
      * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getClientApiKey(java.lang.String, java.lang.String, java.lang.String)
      */
@@ -725,18 +727,18 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         if (!securityContext.hasPermission(PermissionType.clientEdit, organizationId) ) {
             throw ExceptionFactory.notAuthorizedException();
         }
-        
+
         try {
             storage.beginTx();
             ClientVersionBean clientVersion = storage.getClientVersion(organizationId, clientId, version);
             if (clientVersion == null) {
                 throw ExceptionFactory.clientVersionNotFoundException(clientId, version);
             }
-            
+
             if (clientVersion.getStatus() == ClientStatus.Registered) {
                 throw ExceptionFactory.invalidClientStatusException();
             }
-            
+
             String newApiKey = bean.getApiKey();
             if (StringUtils.isEmpty(newApiKey)) {
                 newApiKey = apiKeyGenerator.generate();
@@ -746,7 +748,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             clientVersion.setModifiedBy(securityContext.getCurrentUser());
             clientVersion.setModifiedOn(new Date());
             storage.updateClientVersion(clientVersion);
-            
+
             storage.commitTx();
             log.debug(String.format("Updated an API Key for client %s version %s", clientVersion.getClient().getName(), clientVersion)); //$NON-NLS-1$
             ApiKeyBean rval = new ApiKeyBean();
@@ -804,7 +806,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * Does the same thing as getClientVersion() but accepts the 'hasPermission' param, 
+     * Does the same thing as getClientVersion() but accepts the 'hasPermission' param,
      * which lets callers dictate whether the user has clientView permission for the org.
      * @param organizationId
      * @param clientId
@@ -2126,13 +2128,6 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         }
     }
 
-    /**
-     * @param organizationId
-     * @param apiId
-     * @param version
-     * @param contentType
-     * @param data
-     */
     protected void storeApiDefinition(String organizationId, String apiId, String version,
             ApiDefinitionType definitionType, InputStream data) {
         if (!securityContext.hasPermission(PermissionType.apiEdit, organizationId))
@@ -3085,6 +3080,32 @@ public class OrganizationResourceImpl implements IOrganizationResource {
 
             storage.commitTx();
             log.debug(String.format("Deleted plan policy %s", policy)); //$NON-NLS-1$
+        } catch (AbstractRestException e) {
+            storage.rollbackTx();
+            throw e;
+        } catch (Exception e) {
+            storage.rollbackTx();
+            throw new SystemErrorException(e);
+        }
+    }
+
+    @Override
+    public void deletePlan(@PathParam("organizationId") String organizationId, @PathParam("planId") String planId)
+            throws ApiNotFoundException, NotAuthorizedException, InvalidPlanStatusException {
+        if (!securityContext.hasPermission(PermissionType.planAdmin, organizationId))
+            throw ExceptionFactory.notAuthorizedException();
+
+        List<PlanVersionSummaryBean> lockedPlans = listPlanVersions(organizationId, planId).stream()
+                .filter(summary -> summary.getStatus() == PlanStatus.Locked).collect(toList());
+
+        if (!lockedPlans.isEmpty())
+            throw ExceptionFactory.invalidPlanStatusException(lockedPlans);
+
+        try {
+            storage.beginTx();
+            PlanBean plan = storage.getPlan(organizationId, planId);
+            storage.deletePlan(plan);
+            storage.commitTx();
         } catch (AbstractRestException e) {
             storage.rollbackTx();
             throw e;

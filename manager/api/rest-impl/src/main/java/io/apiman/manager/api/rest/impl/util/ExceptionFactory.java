@@ -19,6 +19,7 @@ import io.apiman.common.plugin.PluginCoordinates;
 import io.apiman.manager.api.beans.apis.ApiVersionBean;
 import io.apiman.manager.api.beans.clients.ClientVersionBean;
 import io.apiman.manager.api.beans.contracts.ContractBean;
+import io.apiman.manager.api.beans.summary.PlanVersionSummaryBean;
 import io.apiman.manager.api.rest.contract.exceptions.ActionException;
 import io.apiman.manager.api.rest.contract.exceptions.ApiAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.ApiDefinitionNotFoundException;
@@ -38,6 +39,7 @@ import io.apiman.manager.api.rest.contract.exceptions.InvalidApiStatusException;
 import io.apiman.manager.api.rest.contract.exceptions.InvalidClientStatusException;
 import io.apiman.manager.api.rest.contract.exceptions.InvalidMetricCriteriaException;
 import io.apiman.manager.api.rest.contract.exceptions.InvalidNameException;
+import io.apiman.manager.api.rest.contract.exceptions.InvalidPlanStatusException;
 import io.apiman.manager.api.rest.contract.exceptions.InvalidVersionException;
 import io.apiman.manager.api.rest.contract.exceptions.MemberNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.NotAuthorizedException;
@@ -250,8 +252,17 @@ public final class ExceptionFactory {
      * Creates an invalid plan status exception.
      * @return the exception
      */
-    public static final InvalidApiStatusException invalidPlanStatusException() {
-        return new InvalidApiStatusException(Messages.i18n.format("InvalidPlanStatus")); //$NON-NLS-1$
+    public static final InvalidPlanStatusException invalidPlanStatusException() {
+        return new InvalidPlanStatusException(Messages.i18n.format("InvalidPlanStatus")); //$NON-NLS-1$
+    }
+
+    /**
+     * Creates an invalid plan status exception.
+     * @param lockedPlans the list of locked plans
+     * @return the exception
+     */
+    public static InvalidPlanStatusException invalidPlanStatusException(List<PlanVersionSummaryBean> lockedPlans) {
+        return new InvalidPlanStatusException(Messages.i18n.format("InvalidPlanStatus") + " " + joinList(lockedPlans)); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**
@@ -405,7 +416,7 @@ public final class ExceptionFactory {
 
     /**
      * Creates an exception.
-     * @param message
+     * @param message the message
      * @return the exception
      */
     public static final InvalidMetricCriteriaException invalidMetricCriteriaException(String message) {
@@ -414,7 +425,8 @@ public final class ExceptionFactory {
 
     /**
      * Creates an exception.
-     * @param message
+     * @param message the message
+     * @return the exception
      */
     public static final InvalidNameException invalidNameException(String message) {
         return new InvalidNameException(message);

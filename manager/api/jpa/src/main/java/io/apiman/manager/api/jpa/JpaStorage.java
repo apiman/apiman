@@ -463,6 +463,9 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      */
     @Override
     public void deletePlan(PlanBean plan) throws StorageException {
+        // Delete audit entries
+        deleteAllAuditEntries(plan);
+        // Delete entity
         super.delete(plan);
     }
 
@@ -1367,7 +1370,6 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             String version) throws StorageException {
         List<ContractSummaryBean> rval = new ArrayList<>();
         EntityManager entityManager = getActiveEntityManager();
-        @SuppressWarnings("nls")
         String jpql =
                 "SELECT c from ContractBean c " +
                 "  JOIN c.client clientv " +
@@ -2383,24 +2385,28 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         query.executeUpdate();
     }
 
+    private void deleteAllAuditEntries(PlanBean plan) throws StorageException {
+        deleteAllAuditEntries(plan.getOrganization(), AuditEntityType.Plan, plan.getId());
+    }
+
     private void deleteAllAuditEntries(ApiBean apiBean) throws StorageException {
-        deleteAllAuditEntries(apiBean.getOrganization(), apiBean.getId());
+        deleteAllAuditEntries(apiBean.getOrganization(), AuditEntityType.Api, apiBean.getId());
     }
 
     private void deleteAllAuditEntries(ClientBean clientBean) throws StorageException {
-        deleteAllAuditEntries(clientBean.getOrganization(), clientBean.getId());
+        deleteAllAuditEntries(clientBean.getOrganization(), AuditEntityType.Client, clientBean.getId());
     }
 
     private void deleteAllAuditEntries(OrganizationBean organizationBean) throws StorageException {
-        deleteAllAuditEntries(organizationBean, null);
+        deleteAllAuditEntries(organizationBean, null, null);
     }
 
-    private void deleteAllAuditEntries(OrganizationBean organizationBean, String entityId) throws StorageException {
+    private void deleteAllAuditEntries(OrganizationBean organizationBean, AuditEntityType entityType, String entityId) throws StorageException {
         String jpql = "DELETE AuditEntryBean b "
                     + " WHERE b.organizationId = :orgId ";
 
-        if (entityId != null) {
-            jpql += String.format("AND b.entityId = '%s'", entityId);
+        if (entityId != null && entityType != null) {
+            jpql += String.format("AND b.entityId = '%s' AND b.entityType = '%s' ", entityId, entityType.name());
         }
 
         Query query = getActiveEntityManager().createQuery(jpql);
