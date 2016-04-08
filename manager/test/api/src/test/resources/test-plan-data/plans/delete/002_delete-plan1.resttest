@@ -1,0 +1,9 @@
+DELETE /organizations/Organization1/plans/Plan1 admin/admin
+----
+409
+Content-Type: application/json
+
+{
+    "type": "InvalidPlanStatusException",
+    "errorCode": 5004
+}
