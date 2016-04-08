@@ -1668,6 +1668,26 @@ public interface IOrganizationResource {
             PolicyNotFoundException, NotAuthorizedException;
 
     /**
+     * Use this endpoint to delete a plan. Only an unlocked plan may be deleted.
+     *
+     * @summary Delete Plan
+     * @param organizationId The Organization ID.
+     * @param planId The Plan ID.
+     * @statuscode 204 If the Plan was successfully deleted
+     * @statuscode 404 If the Plan does not exist.
+     * @statuscode 409 If the Plan cannot be deleted.
+     * @throws OrganizationNotFoundException when trying to get, update, or delete an organization that does not exist
+     * @throws PlanNotFoundException when trying to get, update, or delete a plan version that does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
+     * @throws InvalidPlanStatusException when the user attempts some action on the Plan when it is not in an appropriate state/status
+     */
+    @DELETE
+    @Path("{organizationId}/plans/{planId}")
+    public void deletePlan(@PathParam("organizationId") String organizationId,
+                          @PathParam("planId") String planId)
+            throws PlanNotFoundException, NotAuthorizedException, InvalidPlanStatusException;
+
+    /**
      * Use this endpoint to list all of the Policies configured for the Plan.
      * @summary List All Plan Policies
      * @param organizationId The Organization ID.
