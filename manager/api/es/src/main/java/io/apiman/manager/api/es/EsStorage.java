@@ -671,7 +671,7 @@ public class EsStorage implements IStorage, IStorageQuery {
                 "                        },\n" +
                 "                        {\n" +
                 "                          \"term\": {\n" +
-                "                            \"entityType\": \"Client\"\n" +
+                "                            \"entityType\": \"" + AuditEntityType.Client.name() + "\"\n" +
                 "                          }\n" +
                 "                        }\n" +
                 "                      ]\n" +
@@ -717,22 +717,6 @@ public class EsStorage implements IStorage, IStorageQuery {
     public void deleteClientVersion(ClientVersionBean version) throws StorageException {
         ClientBean client = version.getClient();
         deleteEntity("clientVersion", id(client.getOrganization().getId(), client.getId(), version.getVersion())); //$NON-NLS-1$
-    }
-
-
-    private void deleteAllEntityEntries(ClientBean client, Set<String> types) throws StorageException {
-        String query = matchEntityQuery(client.getId(), "Client");
-        DeleteByQuery deleteByQuery = new DeleteByQuery.Builder(query).addIndex(getIndexName())
-                .addType(types)
-                .build();
-        try {
-            JestResult response = esClient.execute(deleteByQuery);
-            if (!response.isSucceeded()) {
-                throw new StorageException(response.getErrorMessage());
-            }
-        } catch (Exception e) {
-            throw new StorageException(e);
-        }
     }
 
     /**
@@ -789,7 +773,7 @@ public class EsStorage implements IStorage, IStorageQuery {
                 "                        },\n" +
                 "                        {\n" +
                 "                          \"term\": {\n" +
-                "                            \"entityType\": \"Api\"\n" +
+                "                            \"entityType\": \"" + AuditEntityType.Api.name() + "\"\n" +
                 "                          }\n" +
                 "                        }\n" +
                 "                      ]\n" +
@@ -853,7 +837,67 @@ public class EsStorage implements IStorage, IStorageQuery {
      * @see io.apiman.manager.api.core.IStorage#deletePlan(io.apiman.manager.api.beans.plans.PlanBean)
      */
     @Override
+    @SuppressWarnings("nls")
     public void deletePlan(PlanBean plan) throws StorageException {
+        String query = "{\n" +
+                "  \"query\": {\n" +
+                "    \"filtered\": {\n" +
+                "      \"query\": {\n" +
+                "        \"match_all\": {}\n" +
+                "      },\n" +
+                "      \"filter\": {\n" +
+                "        \"or\": [\n" +
+                "          {\n" +
+                "            \"and\": [\n" +
+                "              {\n" +
+                "                \"term\": {\n" +
+                "                  \"entityId\": \"testplan\"\n" +
+                "                }\n" +
+                "              },\n" +
+                "              {\n" +
+                "                \"term\": {\n" +
+                "                  \"entityType\": \"Plan\"\n" +
+                "                }\n" +
+                "              },\n" +
+                "              {\n" +
+                "                \"term\": {\n" +
+                "                  \"organizationId\": \"test\"\n" +
+                "                }\n" +
+                "              }\n" +
+                "            ]\n" +
+                "          },\n" +
+                "          {\n" +
+                "            \"and\": [\n" +
+                "              {\n" +
+                "                \"term\": {\n" +
+                "                  \"planId\": \"testplan\"\n" +
+                "                }\n" +
+                "              },\n" +
+                "              {\n" +
+                "                \"term\": {\n" +
+                "                  \"organizationId\": \"test\"\n" +
+                "                }\n" +
+                "              }\n" +
+                "            ]\n" +
+                "          }\n" +
+                "        ]\n" +
+                "      }\n" +
+                "    }\n" +
+                "  }\n" +
+                "}";
+
+        DeleteByQuery deleteByQuery = new DeleteByQuery.Builder(query).addIndex(getIndexName())
+                .addType("auditEntry")
+                .addType("planVersion")
+                .build();
+        try {
+            JestResult response = esClient.execute(deleteByQuery);
+            if (!response.isSucceeded()) {
+                throw new StorageException(response.getErrorMessage());
+            }
+        } catch (Exception e) {
+            throw new StorageException(e);
+        }
         deleteEntity("plan", id(plan.getOrganization().getId(), plan.getId())); //$NON-NLS-1$
     }
 
@@ -2623,10 +2667,10 @@ public class EsStorage implements IStorage, IStorageQuery {
 
         /**
          * Constructor.
-         * @param entityType
-         * @param unmarshaller
-         * @param query
-         * @throws StorageException
+         * @param entityType the entity type
+         * @param unmarshaller the unmarshaller
+         * @param query the query
+         * @throws StorageException when storage fails
          */
         public EntityIterator(String entityType, IUnmarshaller<T> unmarshaller, String query) throws StorageException {
             this.entityType = entityType;
@@ -2680,6 +2724,7 @@ public class EsStorage implements IStorage, IStorageQuery {
             }
         }
 
+        @SuppressWarnings({ "unchecked", "rawtypes" })
         private void fetch() throws StorageException {
             try {
                 Builder builder = new SearchScroll.Builder(scrollId, "1m")
@@ -2742,33 +2787,6 @@ public class EsStorage implements IStorage, IStorageQuery {
                 "      }" +
                 "    }" +
                 "  }" +
-                "}";
-    }
-
-    @SuppressWarnings("nls")
-    private String matchEntityQuery(String entityId, String entityType) {
-        return "{\n" +
-                "  \"query\": {\n" +
-                "    \"filtered\": {\n" +
-                "      \"query\": {\n" +
-                "        \"match_all\": {}\n" +
-                "      },\n" +
-                "      \"filter\": {\n" +
-                "        \"and\": [\n" +
-                "          {\n" +
-                "            \"term\": {\n" +
-                "              \"entityId\": \"" + entityId + "\"\n" +
-                "            }\n" +
-                "          },\n" +
-                "          {\n" +
-                "            \"term\": {\n" +
-                "              \"entityType\": \"" + entityType + "\"\n" +
-                "            }\n" +
-                "          }\n" +
-                "        ]\n" +
-                "      }\n" +
-                "    }\n" +
-                "  }\n" +
                 "}";
     }
 
