@@ -15,14 +15,24 @@
  */
 package io.apiman.manager.api.beans.orgs;
 
+import io.apiman.manager.api.beans.apis.ApiBean;
+import io.apiman.manager.api.beans.clients.ClientBean;
+import io.apiman.manager.api.beans.plans.PlanBean;
+
 import java.io.Serializable;
 import java.util.Date;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
@@ -54,6 +64,15 @@ public class OrganizationBean implements Serializable {
     private String modifiedBy;
     @Column(name = "modified_on", updatable=true, nullable=false)
     private Date modifiedOn;
+    @OneToMany(fetch=FetchType.LAZY, orphanRemoval=true, cascade={CascadeType.REMOVE}, mappedBy="organization")
+    @JsonIgnore
+    private Set<PlanBean> planSet = new LinkedHashSet<>();
+    @OneToMany(fetch=FetchType.LAZY, orphanRemoval=true, cascade={CascadeType.REMOVE}, mappedBy="organization")
+    @JsonIgnore
+    private Set<ApiBean> apiSet = new LinkedHashSet<>();
+    @OneToMany(fetch=FetchType.LAZY, orphanRemoval=true, cascade={CascadeType.REMOVE}, mappedBy="organization")
+    @JsonIgnore
+    private Set<ClientBean> clientSet = new LinkedHashSet<>();
 
     /**
      * Constructor.

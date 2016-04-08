@@ -78,11 +78,12 @@
     <test name="Get API 1 [published]">test-plan-data/apis/publish/002_get-api-1.resttest</test>
   </testGroup>
 
-  <!-- Test Deleting an API -->
+  <!-- Test Deleting an unpublished API -->
   <testGroup name="Delete APIs">
     <test name="Create Unpublished API">test-plan-data/apis/delete_unpublished/000_create-unpublished-api1.resttest</test>
     <test name="Get Unpublished API">test-plan-data/apis/delete_unpublished/001_get-unpublished-api1.resttest</test>
     <test name="Delete Unpublished API">test-plan-data/apis/delete_unpublished/002_delete-unpublished-api1.resttest</test>
+    <test name="Wait" delay="500" />
     <test name="Get Unpublished API (404)">test-plan-data/apis/delete_unpublished/003_get-unpublished-api1-404.resttest</test>
   </testGroup>
 
@@ -127,6 +128,14 @@
     <test name="API Status (Created) [2]">test-plan-data/apis/status/005_get-foo-status-2.resttest</test>
     <test name="Update API Foo (Public)">test-plan-data/apis/status/006_update-version-1.0-public.resttest</test>
     <test name="API Status (Ready) [3]">test-plan-data/apis/status/007_get-foo-status-3.resttest</test>
+  </testGroup>
+
+  <testGroup name="Deleting APIs (With subordinate elements)">
+    <test name="Retire API 1">test-plan-data/apis/publish/005_retire-api-1.resttest</test>
+    <test name="Wait" delay="1000" />
+    <test name="Delete API 1">test-plan-data/apis/publish/006_delete-api-1.resttest</test>
+    <test name="Wait" delay="1000" />
+    <test name="Delete API 1 (404)">test-plan-data/apis/delete_unpublished/003_get-unpublished-api1-404.resttest</test>
   </testGroup>
 
 </testPlan>

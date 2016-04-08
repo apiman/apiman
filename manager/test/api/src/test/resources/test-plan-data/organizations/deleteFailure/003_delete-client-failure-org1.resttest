@@ -1,0 +1,11 @@
+DELETE /organizations/Organization1/clients/Client1 admin/admin
+----
+409
+Content-Type: application/json
+X-Apiman-Error: true
+
+{
+    "type": "EntityStillActiveException",
+    "errorCode": 8001,
+    "moreInfoUrl": null
+}

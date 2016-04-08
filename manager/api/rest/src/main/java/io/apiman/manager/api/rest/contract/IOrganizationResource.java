@@ -67,32 +67,7 @@ import io.apiman.manager.api.beans.summary.ContractSummaryBean;
 import io.apiman.manager.api.beans.summary.PlanSummaryBean;
 import io.apiman.manager.api.beans.summary.PlanVersionSummaryBean;
 import io.apiman.manager.api.beans.summary.PolicySummaryBean;
-import io.apiman.manager.api.rest.contract.exceptions.ApiAlreadyExistsException;
-import io.apiman.manager.api.rest.contract.exceptions.ApiNotFoundException;
-import io.apiman.manager.api.rest.contract.exceptions.ApiVersionAlreadyExistsException;
-import io.apiman.manager.api.rest.contract.exceptions.ApiVersionNotFoundException;
-import io.apiman.manager.api.rest.contract.exceptions.ClientAlreadyExistsException;
-import io.apiman.manager.api.rest.contract.exceptions.ClientNotFoundException;
-import io.apiman.manager.api.rest.contract.exceptions.ClientVersionAlreadyExistsException;
-import io.apiman.manager.api.rest.contract.exceptions.ClientVersionNotFoundException;
-import io.apiman.manager.api.rest.contract.exceptions.ContractAlreadyExistsException;
-import io.apiman.manager.api.rest.contract.exceptions.ContractNotFoundException;
-import io.apiman.manager.api.rest.contract.exceptions.GatewayNotFoundException;
-import io.apiman.manager.api.rest.contract.exceptions.InvalidApiStatusException;
-import io.apiman.manager.api.rest.contract.exceptions.InvalidClientStatusException;
-import io.apiman.manager.api.rest.contract.exceptions.InvalidMetricCriteriaException;
-import io.apiman.manager.api.rest.contract.exceptions.InvalidNameException;
-import io.apiman.manager.api.rest.contract.exceptions.InvalidVersionException;
-import io.apiman.manager.api.rest.contract.exceptions.NotAuthorizedException;
-import io.apiman.manager.api.rest.contract.exceptions.OrganizationAlreadyExistsException;
-import io.apiman.manager.api.rest.contract.exceptions.OrganizationNotFoundException;
-import io.apiman.manager.api.rest.contract.exceptions.PlanAlreadyExistsException;
-import io.apiman.manager.api.rest.contract.exceptions.PlanNotFoundException;
-import io.apiman.manager.api.rest.contract.exceptions.PlanVersionAlreadyExistsException;
-import io.apiman.manager.api.rest.contract.exceptions.PlanVersionNotFoundException;
-import io.apiman.manager.api.rest.contract.exceptions.PolicyNotFoundException;
-import io.apiman.manager.api.rest.contract.exceptions.RoleNotFoundException;
-import io.apiman.manager.api.rest.contract.exceptions.UserNotFoundException;
+import io.apiman.manager.api.rest.contract.exceptions.*;
 import io.swagger.annotations.Api;
 
 import java.util.List;
@@ -133,6 +108,37 @@ public interface IOrganizationResource {
     @Produces(MediaType.APPLICATION_JSON)
     public OrganizationBean create(NewOrganizationBean bean) throws OrganizationAlreadyExistsException,
             NotAuthorizedException, InvalidNameException;
+
+    /**
+     * Delete an org
+     * @summary Delete an organization
+     * @param organizationId The Organization ID to delete
+     * @statuscode 204 If the Organization was successfully deleted
+     * @statuscode 409 If the delete preconditions have not been met (i.e. sub-elements are still active, such as still-published APIs).
+     * @throws OrganizationNotFoundException when the specified organization does not exist.
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
+     * @throws EntityStillActiveException when user attempts to delete an organization which still has active sub-elements
+     */
+    @DELETE
+    @Path("{organizationId}")
+    public void delete(@PathParam("organizationId") String organizationId) throws OrganizationNotFoundException,
+            NotAuthorizedException, EntityStillActiveException;
+
+    /**
+     * Delete a ClientApp
+     * @summary Delete a client
+     * @param organizationId The Organization ID the client exists within
+     * @param clientId The ClientApp ID to dlete
+     * @statuscode 204 If the Organization was successfully deleted
+     * @statuscode 409 If the delete preconditions have not been met (i.e. sub-elements are still active, such as still-registered ClientVersions).
+     * @throws OrganizationNotFoundException when the specified organization does not exist.
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
+     * @throws EntityStillActiveException when user attempts to delete a Client which still has active sub-elements
+     */
+    @DELETE
+    @Path("{organizationId}/clients/{clientId}")
+    public void deleteClient(@PathParam("organizationId") String organizationId, @PathParam("clientId") String clientId) throws OrganizationNotFoundException,
+            NotAuthorizedException, EntityStillActiveException;
 
     /**
      * Use this endpoint to get information about a single Organization
