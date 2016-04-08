@@ -839,6 +839,9 @@ public class EsStorage implements IStorage, IStorageQuery {
     @Override
     @SuppressWarnings("nls")
     public void deletePlan(PlanBean plan) throws StorageException {
+        String planId = plan.getId().replace('"', '_');
+        String orgId = plan.getOrganization().getId().replace('"', '_');
+
         String query = "{\n" +
                 "  \"query\": {\n" +
                 "    \"filtered\": {\n" +
@@ -851,17 +854,17 @@ public class EsStorage implements IStorage, IStorageQuery {
                 "            \"and\": [\n" +
                 "              {\n" +
                 "                \"term\": {\n" +
-                "                  \"entityId\": \"testplan\"\n" +
+                "                  \"entityId\": \"" + planId + "\"\n" +
                 "                }\n" +
                 "              },\n" +
                 "              {\n" +
                 "                \"term\": {\n" +
-                "                  \"entityType\": \"Plan\"\n" +
+                "                  \"entityType\": \"" + AuditEntityType.Plan.name() + "\"\n" +
                 "                }\n" +
                 "              },\n" +
                 "              {\n" +
                 "                \"term\": {\n" +
-                "                  \"organizationId\": \"test\"\n" +
+                "                  \"organizationId\": \"" + orgId + "\"\n" +
                 "                }\n" +
                 "              }\n" +
                 "            ]\n" +
@@ -870,12 +873,12 @@ public class EsStorage implements IStorage, IStorageQuery {
                 "            \"and\": [\n" +
                 "              {\n" +
                 "                \"term\": {\n" +
-                "                  \"planId\": \"testplan\"\n" +
+                "                  \"planId\": \"" + planId + "\"\n" +
                 "                }\n" +
                 "              },\n" +
                 "              {\n" +
                 "                \"term\": {\n" +
-                "                  \"organizationId\": \"test\"\n" +
+                "                  \"organizationId\": \"" + orgId + "\"\n" +
                 "                }\n" +
                 "              }\n" +
                 "            ]\n" +
