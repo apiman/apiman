@@ -313,6 +313,7 @@ public interface IOrganizationResource {
      * @throws ClientNotFoundException when trying to get, update, or delete a client that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      * @throws InvalidVersionException when the user attempts to use an invalid version value
+     * @throws ClientVersionAlreadyExistsException when the client version for the given ID already exists
      */
     @POST
     @Path("{organizationId}/clients/{clientId}/versions")
@@ -322,7 +323,7 @@ public interface IOrganizationResource {
             @PathParam("clientId") String clientId, NewClientVersionBean bean)
             throws ClientNotFoundException, NotAuthorizedException, InvalidVersionException,
             ClientVersionAlreadyExistsException;
-    
+
     /**
      * Use this endpoint to update the API Key for the given client.  You can either
      * provide your own custom (must be unique) API Key, or you can send an empty request
@@ -372,8 +373,8 @@ public interface IOrganizationResource {
     public ApiKeyBean getClientApiKey(@PathParam("organizationId") String organizationId,
             @PathParam("clientId") String clientId, @PathParam("version") String version)
             throws ClientNotFoundException, NotAuthorizedException, InvalidVersionException;
-    
-    
+
+
     /**
      * Use this endpoint to list all of the versions of an Client.
      * @summary List Client Versions
@@ -447,6 +448,7 @@ public interface IOrganizationResource {
      * @statuscode 200 If the metrics data is successfully returned.
      * @return Usage metrics information.
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
+     * @throws InvalidMetricCriteriaException when when the metric criteria is not valid.
      */
     @GET
     @Path("{organizationId}/clients/{clientId}/versions/{version}/metrics/apiUsage")
@@ -631,6 +633,7 @@ public interface IOrganizationResource {
      * @throws ClientNotFoundException when trying to get, update, or delete a client that does not exist
      * @throws ContractNotFoundException when trying to get, update, or delete a contract that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
+     * @throws InvalidClientStatusException when the client is not in the proper status
      */
     @DELETE
     @Path("{organizationId}/clients/{clientId}/versions/{version}/contracts/{contractId}")
@@ -868,17 +871,17 @@ public interface IOrganizationResource {
     /**
      * Use this endpoint to delete an API.  There are multiple restrictions on this capability.  Specifically,
      * the API must not have any published versions.  If you try to delete an API with one or more published
-     * versions, it will fail with an 'invalid API status' error.
+     * versions, it will fail with an {@link EntityStillActiveException} error.
      * @summary Delete API
      * @param organizationId The Organization ID.
      * @param apiId The API ID.
-     * @param bean Updated API information.
      * @statuscode 204 If the API is updated successfully.
      * @statuscode 404 If the API does not exist.
      * @statuscode 409 If the API cannot be deleted.
      * @throws ApiNotFoundException when trying to get, update, or delete an API that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
-     * @throws InvalidApiStatusException when the API is in the wrong status and cannot be deleted
+     * @throws EntityStillActiveException when user attempts to delete an API which still has active sub-elements
+     * @throws InvalidApiStatusException when the API's status is invalid for the current action
      */
     @DELETE
     @Path("{organizationId}/apis/{apiId}")
@@ -921,6 +924,7 @@ public interface IOrganizationResource {
      * @throws ApiNotFoundException when trying to get, update, or delete an API that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      * @throws InvalidVersionException when the user attempts to use an invalid version value
+     * @throws ApiVersionAlreadyExistsException when the API version with the given ID already exists
      */
     @POST
     @Path("{organizationId}/apis/{apiId}/versions")
@@ -1023,8 +1027,8 @@ public interface IOrganizationResource {
      * @statuscode 404 If the API does not exist.
      * @return The live API endpoint information.
      * @throws ApiVersionNotFoundException when trying to get, update, or delete an API version that does not exist
-     * @throws InvalidApiStatusException when the user attempts some action on the API when it is not in an appropriate state/status
-     * @throws GatewayNotFoundException when trying to get, update, or delete a gateay that does not exist
+     * @throws InvalidApiStatusException when the API's status is invalid for the current action
+     * @throws GatewayNotFoundException when trying to get, update, or delete a gateway that does not exist
      */
     @GET
     @Path("{organizationId}/apis/{apiId}/versions/{version}/endpoint")
@@ -1500,6 +1504,7 @@ public interface IOrganizationResource {
      * @throws PlanNotFoundException when trying to get, update, or delete an plan that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      * @throws InvalidVersionException when the user attempts to use an invalid version value
+     * @throws PlanVersionAlreadyExistsException when the plan version with the given ID already exists
      */
     @POST
     @Path("{organizationId}/plans/{planId}/versions")
@@ -1803,6 +1808,7 @@ public interface IOrganizationResource {
      * @statuscode 200 If the metrics data is successfully returned.
      * @return Usage metrics information.
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
+     * @throws InvalidMetricCriteriaException when when the metric criteria is not valid.
      */
     @GET
     @Path("{organizationId}/apis/{apiId}/versions/{version}/metrics/usage")
@@ -1826,6 +1832,7 @@ public interface IOrganizationResource {
      * @statuscode 200 If the metrics data is successfully returned.
      * @return Usage metrics information.
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
+     * @throws InvalidMetricCriteriaException when when the metric criteria is not valid.
      */
     @GET
     @Path("{organizationId}/apis/{apiId}/versions/{version}/metrics/clientUsage")
@@ -1850,6 +1857,7 @@ public interface IOrganizationResource {
      * @statuscode 200 If the metrics data is successfully returned.
      * @return Usage metrics information.
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
+     * @throws InvalidMetricCriteriaException when when the metric criteria is not valid.
      */
     @GET
     @Path("{organizationId}/apis/{apiId}/versions/{version}/metrics/planUsage")
@@ -1878,6 +1886,7 @@ public interface IOrganizationResource {
      * @statuscode 200 If the metrics data is successfully returned.
      * @return Response statistics metrics information.
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
+     * @throws InvalidMetricCriteriaException when when the metric criteria is not valid.
      */
     @GET
     @Path("{organizationId}/apis/{apiId}/versions/{version}/metrics/responseStats")
@@ -1902,6 +1911,7 @@ public interface IOrganizationResource {
      * @statuscode 200 If the metrics data is successfully returned.
      * @return Usage metrics information.
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
+     * @throws InvalidMetricCriteriaException when when the metric criteria is not valid.
      */
     @GET
     @Path("{organizationId}/apis/{apiId}/versions/{version}/metrics/summaryResponseStats")
@@ -1924,6 +1934,7 @@ public interface IOrganizationResource {
      * @statuscode 200 If the metrics data is successfully returned.
      * @return Usage metrics information.
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
+     * @throws InvalidMetricCriteriaException when when the metric criteria is not valid.
      */
     @GET
     @Path("{organizationId}/apis/{apiId}/versions/{version}/metrics/clientResponseStats")
@@ -1947,6 +1958,7 @@ public interface IOrganizationResource {
      * @statuscode 200 If the metrics data is successfully returned.
      * @return Usage metrics information.
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
+     * @throws InvalidMetricCriteriaException when when the metric criteria is not valid.
      */
     @GET
     @Path("{organizationId}/apis/{apiId}/versions/{version}/metrics/planResponseStats")
