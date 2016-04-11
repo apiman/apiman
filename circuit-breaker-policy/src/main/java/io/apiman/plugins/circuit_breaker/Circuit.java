@@ -63,7 +63,6 @@ public class Circuit {
 
     /**
      * Trip (open) the circuit.
-     * @param resetMillis # of millis until the circuit can be reset
      */
     public void trip() {
         synchronized (faults) {

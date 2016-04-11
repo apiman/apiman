@@ -29,6 +29,13 @@
       <scope>provided</scope>
     </dependency>
     
+    <!-- Third Party -->
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    
     <!-- Test Only -->
     <dependency>
       <groupId>io.apiman</groupId>
