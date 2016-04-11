@@ -21,10 +21,13 @@ import io.apiman.gateway.engine.IComponentRegistry;
 import io.apiman.gateway.engine.IConnectorFactory;
 import io.apiman.gateway.engine.IEngine;
 import io.apiman.gateway.engine.IEngineFactory;
+import io.apiman.gateway.engine.IGatewayInitializer;
 import io.apiman.gateway.engine.IMetrics;
 import io.apiman.gateway.engine.IPluginRegistry;
 import io.apiman.gateway.engine.IRegistry;
 import io.apiman.gateway.engine.policy.IPolicyFactory;
+
+import java.util.List;
 
 /**
  * Base class useful for creating engine factories.
@@ -53,6 +56,11 @@ public abstract class AbstractEngineFactory implements IEngineFactory {
         IConnectorFactory cfactory = createConnectorFactory(pluginRegistry);
         IPolicyFactory pfactory = createPolicyFactory(pluginRegistry);
         IMetrics metrics = createMetrics(pluginRegistry);
+        
+        List<IGatewayInitializer> initializers = createInitializers(pluginRegistry);
+        for (IGatewayInitializer initializer : initializers) {
+            initializer.initialize();
+        }
 
         return new EngineImpl(registry, pluginRegistry, componentRegistry, cfactory, pfactory, metrics);
     }
@@ -105,5 +113,11 @@ public abstract class AbstractEngineFactory implements IEngineFactory {
      * @return the metrics object
      */
     protected abstract IMetrics createMetrics(IPluginRegistry pluginRegistry);
+
+    /**
+     * Creates the gateway initializers.
+     * @param pluginRegistry
+     */
+    protected abstract List<IGatewayInitializer> createInitializers(IPluginRegistry pluginRegistry);
 
 }
