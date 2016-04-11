@@ -42,7 +42,7 @@ public class RequestChain extends Chain<ApiRequest> {
      */
     @Override
     public Iterator<PolicyWithConfiguration> iterator() {
-        return new RequestIterator(getPolicies());
+        return new RequestPolicyIterator(getPolicies());
     }
 
     /**
@@ -70,7 +70,7 @@ public class RequestChain extends Chain<ApiRequest> {
      * front to back, which is the proper order when applying the policies to
      * the inbound request.
      */
-    private class RequestIterator implements Iterator<PolicyWithConfiguration> {
+    private class RequestPolicyIterator implements Iterator<PolicyWithConfiguration> {
         private List<PolicyWithConfiguration> policies;
         private int index;
 
@@ -78,7 +78,7 @@ public class RequestChain extends Chain<ApiRequest> {
          * Constructor.
          * @param policies list of configured policies
          */
-        public RequestIterator(List<PolicyWithConfiguration> policies) {
+        public RequestPolicyIterator(List<PolicyWithConfiguration> policies) {
             this.policies = policies;
             this.index = 0;
         }

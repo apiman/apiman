@@ -31,6 +31,7 @@ public class AesDataEncrypter implements IDataEncrypter {
 
     /**
      * Constructor.
+     * @param config
      */
     public AesDataEncrypter(Map<String, String> config) {
         secretKey = config.get("secretKey"); //$NON-NLS-1$

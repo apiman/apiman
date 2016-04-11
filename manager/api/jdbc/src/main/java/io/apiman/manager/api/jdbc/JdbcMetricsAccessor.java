@@ -39,9 +39,7 @@ import io.apiman.manager.api.jdbc.handlers.UsagePerClientHandler;
 import io.apiman.manager.api.jdbc.handlers.UsagePerPlanHandler;
 
 import java.sql.SQLException;
-import java.util.Calendar;
 import java.util.Map;
-import java.util.TimeZone;
 
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
@@ -243,44 +241,6 @@ public class JdbcMetricsAccessor extends AbstractMetricsAccessor implements IMet
      */
     private static String groupByColumn(HistogramIntervalType interval) {
         return interval.name();
-    }
-
-    @SuppressWarnings("nls")
-    public static void main(String[] args) {
-        long ts = 1255094610000L;
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeZone(TimeZone.getTimeZone("UTC"));
-        cal.setTimeInMillis(ts);
-        System.out.println("-- " + cal.getTime());
-        cal.set(Calendar.MILLISECOND, 0);
-        cal.set(Calendar.SECOND, 0);
-        long minute = cal.getTimeInMillis();
-        cal.set(Calendar.MINUTE, 0);
-        long hour = cal.getTimeInMillis();
-        cal.set(Calendar.HOUR_OF_DAY, 0);
-        long day = cal.getTimeInMillis();
-        cal.set(Calendar.DAY_OF_WEEK, cal.getFirstDayOfWeek());
-        long week = cal.getTimeInMillis();
-        cal.set(Calendar.DAY_OF_MONTH, 1);
-        long month = cal.getTimeInMillis();
-
-        System.out.print("    ");
-        System.out.print(ts);
-        System.out.print(", ");
-        System.out.print(ts + 100);
-        System.out.println(", 100,");
-
-        System.out.print("    ");
-        System.out.print(month);
-        System.out.print(", ");
-        System.out.print(week);
-        System.out.print(", ");
-        System.out.print(day);
-        System.out.print(", ");
-        System.out.print(hour);
-        System.out.print(", ");
-        System.out.print(minute);
-        System.out.println(",");
     }
         
 }
