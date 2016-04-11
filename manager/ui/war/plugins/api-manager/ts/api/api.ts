@@ -88,6 +88,10 @@ module Apiman {
             };
 
 
+
+            // ----- Delete --------------------->>>>
+            
+            
             // Add check for ability to delete, show/hide Delete option
             $scope.canDelete = function() {};
 
@@ -113,6 +117,10 @@ module Apiman {
                     Logger.info('Modal dismissed at: ' + new Date());
                 });
             };
+
+
+
+            // ----- Why Can't I Publish? --------------------->>>>
 
 
             // Called when user clicks 'Why can't I publish?' & opens modal
@@ -256,10 +264,14 @@ module Apiman {
             };
 
             ApiSvcs.deleteApi(deleteAction).then(function(res) {
-                $uibModalInstance.close();
+                $scope.okayToDelete = false;
 
-                // Redirect users to list of APIs
-                $location.path($rootScope.pluginName + '/users/' + Configuration.user.username + '/apis');
+                setTimeout(function() {
+                    $uibModalInstance.close();
+
+                    // Redirect users to their list of APIs
+                    $location.path($rootScope.pluginName + '/users/' + Configuration.user.username + '/apis');
+                }, 800);
 
                 // We should display some type of Toastr/Growl notification to the user here
             }, PageLifecycle.handleError);
