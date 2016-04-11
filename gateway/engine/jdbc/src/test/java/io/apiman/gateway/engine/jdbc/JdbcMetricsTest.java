@@ -73,7 +73,7 @@ public class JdbcMetricsTest {
     @Before
     public void reset() throws SQLException {
         QueryRunner run = new QueryRunner(ds);
-        run.update("DELETE FROM requests");
+        run.update("DELETE FROM gw_requests");
     }
 
     /**
@@ -91,7 +91,7 @@ public class JdbcMetricsTest {
                 200, "OK", false, 0, null, false, null, 0, 1024));
         
         Thread.sleep(200);
-        assertRowCount(1, "SELECT * FROM requests WHERE api_org_id = ?", "TestOrg");
+        assertRowCount(1, "SELECT * FROM gw_requests WHERE api_org_id = ?", "TestOrg");
         metrics.stop();
     }
 
@@ -120,7 +120,7 @@ public class JdbcMetricsTest {
                 200, "OK", false, 0, null, false, null, 0, 1024));
         
         Thread.sleep(200);
-        assertRowCount(3, "SELECT * FROM requests WHERE api_org_id = ?", "TestOrg");
+        assertRowCount(3, "SELECT * FROM gw_requests WHERE api_org_id = ?", "TestOrg");
         metrics.stop();
     }
 
@@ -165,9 +165,9 @@ public class JdbcMetricsTest {
         
         Thread.sleep(200);
         // aggregate per minute
-        assertRowCount(3, "SELECT count(*) FROM requests WHERE api_org_id = ? GROUP BY minute", "TestOrg");
+        assertRowCount(3, "SELECT count(*) FROM gw_requests WHERE api_org_id = ? GROUP BY minute", "TestOrg");
         // aggregate per hour
-        assertRowCount(2, "SELECT count(*) FROM requests WHERE api_org_id = ? GROUP BY hour", "TestOrg");
+        assertRowCount(2, "SELECT count(*) FROM gw_requests WHERE api_org_id = ? GROUP BY hour", "TestOrg");
         metrics.stop();
     }
     

@@ -1,6 +1,6 @@
 
 -- Wed Feb 10 03:56:50 EST 2016
-INSERT INTO requests (
+INSERT INTO gw_requests (
 	rstart, rend, duration, 
 	month, week, day, hour, minute,
 	api_org_id, api_id, api_version, 
@@ -15,7 +15,7 @@ INSERT INTO requests (
 );
 
 -- Wed Feb 10 03:56:50 EST 2016
-INSERT INTO requests (
+INSERT INTO gw_requests (
 	rstart, rend, duration, 
 	month, week, day, hour, minute,
 	api_org_id, api_id, api_version, 
@@ -31,7 +31,7 @@ INSERT INTO requests (
 
 
 -- Thu Feb 11 07:43:30 EST 2016
-INSERT INTO requests (
+INSERT INTO gw_requests (
 	rstart, rend, duration, 
 	month, week, day, hour, minute,
 	api_org_id, api_id, api_version, 
@@ -47,7 +47,7 @@ INSERT INTO requests (
 
 
 -- Mon Feb 22 21:30:10 EST 2016
-INSERT INTO requests (
+INSERT INTO gw_requests (
 	rstart, rend, duration, 
 	month, week, day, hour, minute,
 	api_org_id, api_id, api_version, 
@@ -62,7 +62,7 @@ INSERT INTO requests (
 );
 
 -- Mon Feb 22 21:30:10 EST 2016
-INSERT INTO requests (
+INSERT INTO gw_requests (
 	rstart, rend, duration, 
 	month, week, day, hour, minute,
 	api_org_id, api_id, api_version, 
@@ -77,7 +77,7 @@ INSERT INTO requests (
 );
 
 -- Mon Feb 22 21:30:10 EST 2016
-INSERT INTO requests (
+INSERT INTO gw_requests (
 	rstart, rend, duration, 
 	month, week, day, hour, minute,
 	api_org_id, api_id, api_version, 
@@ -92,7 +92,7 @@ INSERT INTO requests (
 );
 
 -- Mon Feb 22 21:30:10 EST 2016
-INSERT INTO requests (
+INSERT INTO gw_requests (
 	rstart, rend, duration, 
 	month, week, day, hour, minute,
 	api_org_id, api_id, api_version, 
@@ -107,7 +107,7 @@ INSERT INTO requests (
 );
 
 -- Mon Feb 22 21:30:10 EST 2016
-INSERT INTO requests (
+INSERT INTO gw_requests (
 	rstart, rend, duration, 
 	month, week, day, hour, minute,
 	api_org_id, api_id, api_version, 
@@ -122,7 +122,7 @@ INSERT INTO requests (
 );
 
 -- Mon Feb 22 21:30:10 EST 2016
-INSERT INTO requests (
+INSERT INTO gw_requests (
 	rstart, rend, duration, 
 	month, week, day, hour, minute,
 	api_org_id, api_id, api_version, 
@@ -137,7 +137,7 @@ INSERT INTO requests (
 );
 
 -- Mon Feb 22 21:30:10 EST 2016
-INSERT INTO requests (
+INSERT INTO gw_requests (
 	rstart, rend, duration, 
 	month, week, day, hour, minute,
 	api_org_id, api_id, api_version, 
@@ -152,7 +152,7 @@ INSERT INTO requests (
 );
 
 -- Wed Feb 24 02:40:10 EST 2016
-INSERT INTO requests (
+INSERT INTO gw_requests (
 	rstart, rend, duration, 
 	month, week, day, hour, minute,
 	api_org_id, api_id, api_version, 
@@ -167,7 +167,7 @@ INSERT INTO requests (
 );
 
 -- Wed Feb 24 02:41:50 EST 2016
-INSERT INTO requests (
+INSERT INTO gw_requests (
 	rstart, rend, duration, 
 	month, week, day, hour, minute,
 	api_org_id, api_id, api_version, 
@@ -182,7 +182,7 @@ INSERT INTO requests (
 );
 
 -- Wed Feb 24 02:41:50 EST 2016
-INSERT INTO requests (
+INSERT INTO gw_requests (
 	rstart, rend, duration, 
 	month, week, day, hour, minute,
 	api_org_id, api_id, api_version, 
@@ -197,7 +197,7 @@ INSERT INTO requests (
 );
 
 -- Wed Feb 24 02:41:50 EST 2016
-INSERT INTO requests (
+INSERT INTO gw_requests (
 	rstart, rend, duration, 
 	month, week, day, hour, minute,
 	api_org_id, api_id, api_version, 
@@ -212,7 +212,7 @@ INSERT INTO requests (
 );
 
 -- Wed Feb 24 02:41:50 EST 2016
-INSERT INTO requests (
+INSERT INTO gw_requests (
 	rstart, rend, duration, 
 	month, week, day, hour, minute,
 	api_org_id, api_id, api_version, 
@@ -227,7 +227,7 @@ INSERT INTO requests (
 );
 
 -- Wed Feb 24 02:41:50 EST 2016
-INSERT INTO requests (
+INSERT INTO gw_requests (
 	rstart, rend, duration, 
 	month, week, day, hour, minute,
 	api_org_id, api_id, api_version, 
@@ -242,7 +242,7 @@ INSERT INTO requests (
 );
 
 -- Wed Feb 10 03:56:50 EST 2016
-INSERT INTO requests (
+INSERT INTO gw_requests (
 	rstart, rend, duration, 
 	month, week, day, hour, minute,
 	api_org_id, api_id, api_version, 
@@ -257,7 +257,7 @@ INSERT INTO requests (
 );
 
 -- Wed Feb 10 03:56:50 EST 2016
-INSERT INTO requests (
+INSERT INTO gw_requests (
 	rstart, rend, duration, 
 	month, week, day, hour, minute,
 	api_org_id, api_id, api_version, 
@@ -273,7 +273,7 @@ INSERT INTO requests (
 
 
 -- Thu Feb 11 07:43:30 EST 2016
-INSERT INTO requests (
+INSERT INTO gw_requests (
 	rstart, rend, duration, 
 	month, week, day, hour, minute,
 	api_org_id, api_id, api_version, 
@@ -289,7 +289,7 @@ INSERT INTO requests (
 
 
 -- Mon Feb 22 21:30:10 EST 2016
-INSERT INTO requests (
+INSERT INTO gw_requests (
 	rstart, rend, duration, 
 	month, week, day, hour, minute,
 	api_org_id, api_id, api_version, 
@@ -305,7 +305,7 @@ INSERT INTO requests (
 
 
 -- Mon Feb 22 21:30:10 EST 2016
-INSERT INTO requests (
+INSERT INTO gw_requests (
 	rstart, rend, duration, 
 	month, week, day, hour, minute,
 	api_org_id, api_id, api_version, 
@@ -320,7 +320,7 @@ INSERT INTO requests (
 );
 
 -- Mon Feb 22 21:30:10 EST 2016
-INSERT INTO requests (
+INSERT INTO gw_requests (
 	rstart, rend, duration, 
 	month, week, day, hour, minute,
 	api_org_id, api_id, api_version, 
@@ -340,7 +340,7 @@ INSERT INTO requests (
 
 
 -- Back in 2009!
-INSERT INTO requests (
+INSERT INTO gw_requests (
 	rstart, rend, duration, 
 	month, week, day, hour, minute,
 	api_org_id, api_id, api_version, 
@@ -353,7 +353,7 @@ INSERT INTO requests (
     'TestOrg', 'TestClient', '1.0', 'Gold',
     'user1', NULL, 0, 0
 );
-INSERT INTO requests (
+INSERT INTO gw_requests (
 	rstart, rend, duration, 
 	month, week, day, hour, minute,
 	api_org_id, api_id, api_version, 
@@ -366,7 +366,7 @@ INSERT INTO requests (
     'TestOrg', 'TestClient', '1.0', 'Gold',
     'user1', NULL, 0, 0
 );
-INSERT INTO requests (
+INSERT INTO gw_requests (
 	rstart, rend, duration, 
 	month, week, day, hour, minute,
 	api_org_id, api_id, api_version, 
