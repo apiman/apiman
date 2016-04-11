@@ -1,0 +1,6 @@
+{
+  "frameworkVersion" : 1.0,
+  "name" : "Circuit Breaker Policy Plugin",
+  "description" : "This plugin has policies for performing circuit breaker functionality.",
+  "version" : "${project.version}"
+}

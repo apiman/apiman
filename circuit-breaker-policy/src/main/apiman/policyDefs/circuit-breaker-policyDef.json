@@ -1,0 +1,9 @@
+{
+  "id" : "circuit-breaker-policy",
+  "name" : "Circuit Breaker Policy",
+  "description" : "A policy that monitors access to the back-end API for errors.  When an error threshold is reached, the circuit is tripped and future requests to the API are intercepted and immediately failed.  The circuit is restored after a period of time and at least one successful request.",
+  "policyImpl" : "plugin:${project.groupId}:${project.artifactId}:${project.version}:${project.packaging}/io.apiman.plugins.circuit_breaker.CircuitBreakerPolicy",
+  "icon" : "circle-o-notch",
+  "formType" : "JsonSchema",
+  "form" : "schemas/circuit-breaker-policyDef.schema"
+}
