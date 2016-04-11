@@ -82,7 +82,7 @@ public class JdbcMetricsAccessor extends AbstractMetricsAccessor implements IMet
         try {
             QueryRunner run = new QueryRunner(ds);
             String gbColumn = groupByColumn(interval);
-            String sql = "SELECT " + gbColumn + ", count(*) FROM requests WHERE api_org_id = ? AND api_id = ? AND api_version = ? AND rstart >= ? AND rstart < ? GROUP BY " + gbColumn; //$NON-NLS-1$ //$NON-NLS-2$
+            String sql = "SELECT " + gbColumn + ", count(*) FROM gw_requests WHERE api_org_id = ? AND api_id = ? AND api_version = ? AND rstart >= ? AND rstart < ? GROUP BY " + gbColumn; //$NON-NLS-1$ //$NON-NLS-2$
             ResultSetHandler<UsageHistogramBean> handler = new UsageHistogramHandler(rval, index);
             run.query(sql, handler, organizationId, apiId, version, from.getMillis(), to.getMillis());
         } catch (SQLException e) {
@@ -100,7 +100,7 @@ public class JdbcMetricsAccessor extends AbstractMetricsAccessor implements IMet
             DateTime from, DateTime to) {
         try {
             QueryRunner run = new QueryRunner(ds);
-            String sql = "SELECT client_id, count(*) FROM requests WHERE api_org_id = ? AND api_id = ? AND api_version = ? AND rstart >= ? AND rstart < ? GROUP BY client_id"; //$NON-NLS-1$
+            String sql = "SELECT client_id, count(*) FROM gw_requests WHERE api_org_id = ? AND api_id = ? AND api_version = ? AND rstart >= ? AND rstart < ? GROUP BY client_id"; //$NON-NLS-1$
             ResultSetHandler<UsagePerClientBean> handler = new UsagePerClientHandler();
             return run.query(sql, handler, organizationId, apiId, version, from.getMillis(), to.getMillis());
         } catch (SQLException e) {
@@ -117,7 +117,7 @@ public class JdbcMetricsAccessor extends AbstractMetricsAccessor implements IMet
             DateTime from, DateTime to) {
         try {
             QueryRunner run = new QueryRunner(ds);
-            String sql = "SELECT plan, count(*) FROM requests WHERE api_org_id = ? AND api_id = ? AND api_version = ? AND rstart >= ? AND rstart < ? GROUP BY plan"; //$NON-NLS-1$
+            String sql = "SELECT plan, count(*) FROM gw_requests WHERE api_org_id = ? AND api_id = ? AND api_version = ? AND rstart >= ? AND rstart < ? GROUP BY plan"; //$NON-NLS-1$
             ResultSetHandler<UsagePerPlanBean> handler = new UsagePerPlanHandler();
             return run.query(sql, handler, organizationId, apiId, version, from.getMillis(), to.getMillis());
         } catch (SQLException e) {
@@ -138,7 +138,7 @@ public class JdbcMetricsAccessor extends AbstractMetricsAccessor implements IMet
         try {
             QueryRunner run = new QueryRunner(ds);
             String gbColumn = groupByColumn(interval);
-            String sql = "SELECT " + gbColumn + ", resp_type, count(*) FROM requests WHERE api_org_id = ? AND api_id = ? AND api_version = ? AND rstart >= ? AND rstart < ? GROUP BY resp_type," + gbColumn; //$NON-NLS-1$ //$NON-NLS-2$
+            String sql = "SELECT " + gbColumn + ", resp_type, count(*) FROM gw_requests WHERE api_org_id = ? AND api_id = ? AND api_version = ? AND rstart >= ? AND rstart < ? GROUP BY resp_type," + gbColumn; //$NON-NLS-1$ //$NON-NLS-2$
             ResultSetHandler<ResponseStatsHistogramBean> handler = new ResponseStatsHistogramHandler(rval, index);
             run.query(sql, handler, organizationId, apiId, version, from.getMillis(), to.getMillis());
         } catch (SQLException e) {
@@ -156,7 +156,7 @@ public class JdbcMetricsAccessor extends AbstractMetricsAccessor implements IMet
             String version, DateTime from, DateTime to) {
         try {
             QueryRunner run = new QueryRunner(ds);
-            String sql = "SELECT resp_type, count(*) FROM requests WHERE api_org_id = ? AND api_id = ? AND api_version = ? AND rstart >= ? AND rstart < ? GROUP BY resp_type"; //$NON-NLS-1$
+            String sql = "SELECT resp_type, count(*) FROM gw_requests WHERE api_org_id = ? AND api_id = ? AND api_version = ? AND rstart >= ? AND rstart < ? GROUP BY resp_type"; //$NON-NLS-1$
             ResultSetHandler<ResponseStatsSummaryBean> handler = new ResponseStatsSummaryHandler();
             return run.query(sql, handler, organizationId, apiId, version, from.getMillis(), to.getMillis());
         } catch (SQLException e) {
@@ -173,7 +173,7 @@ public class JdbcMetricsAccessor extends AbstractMetricsAccessor implements IMet
             String version, DateTime from, DateTime to) {
         try {
             QueryRunner run = new QueryRunner(ds);
-            String sql = "SELECT client_id, resp_type, count(*) FROM requests WHERE api_org_id = ? AND api_id = ? AND api_version = ? AND rstart >= ? AND rstart < ? GROUP BY client_id, resp_type"; //$NON-NLS-1$
+            String sql = "SELECT client_id, resp_type, count(*) FROM gw_requests WHERE api_org_id = ? AND api_id = ? AND api_version = ? AND rstart >= ? AND rstart < ? GROUP BY client_id, resp_type"; //$NON-NLS-1$
             ResultSetHandler<ResponseStatsPerClientBean> handler = new ResponseStatsPerClientHandler();
             return run.query(sql, handler, organizationId, apiId, version, from.getMillis(), to.getMillis());
         } catch (SQLException e) {
@@ -190,7 +190,7 @@ public class JdbcMetricsAccessor extends AbstractMetricsAccessor implements IMet
             String version, DateTime from, DateTime to) {
         try {
             QueryRunner run = new QueryRunner(ds);
-            String sql = "SELECT plan, resp_type, count(*) FROM requests WHERE api_org_id = ? AND api_id = ? AND api_version = ? AND rstart >= ? AND rstart < ? GROUP BY plan, resp_type"; //$NON-NLS-1$
+            String sql = "SELECT plan, resp_type, count(*) FROM gw_requests WHERE api_org_id = ? AND api_id = ? AND api_version = ? AND rstart >= ? AND rstart < ? GROUP BY plan, resp_type"; //$NON-NLS-1$
             ResultSetHandler<ResponseStatsPerPlanBean> handler = new ResponseStatsPerPlanHandler();
             return run.query(sql, handler, organizationId, apiId, version, from.getMillis(), to.getMillis());
         } catch (SQLException e) {
@@ -207,7 +207,7 @@ public class JdbcMetricsAccessor extends AbstractMetricsAccessor implements IMet
             DateTime from, DateTime to) {
         try {
             QueryRunner run = new QueryRunner(ds);
-            String sql = "SELECT api_id, count(*) FROM requests WHERE client_org_id = ? AND client_id = ? AND client_version = ? AND rstart >= ? AND rstart < ? GROUP BY api_id"; //$NON-NLS-1$
+            String sql = "SELECT api_id, count(*) FROM gw_requests WHERE client_org_id = ? AND client_id = ? AND client_version = ? AND rstart >= ? AND rstart < ? GROUP BY api_id"; //$NON-NLS-1$
             ResultSetHandler<ClientUsagePerApiBean> handler = new ClientUsagePerApiHandler();
             return run.query(sql, handler, organizationId, clientId, version, from.getMillis(), to.getMillis());
         } catch (SQLException e) {

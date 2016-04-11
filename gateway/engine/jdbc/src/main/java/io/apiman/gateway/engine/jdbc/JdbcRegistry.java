@@ -81,12 +81,12 @@ public class JdbcRegistry extends AbstractJdbcComponent implements IRegistry {
             QueryRunner run = new QueryRunner();
 
             // First delete any record we might already have.
-            run.update(conn, "DELETE FROM apis WHERE org_id = ? AND id = ? AND version = ?",  //$NON-NLS-1$
+            run.update(conn, "DELETE FROM gw_apis WHERE org_id = ? AND id = ? AND version = ?",  //$NON-NLS-1$
                     api.getOrganizationId(), api.getApiId(), api.getVersion());
 
             // Now insert a row for the api.
             String bean = mapper.writeValueAsString(api);
-            run.update(conn, "INSERT INTO apis (org_id, id, version, bean) VALUES (?, ?, ?, ?)",  //$NON-NLS-1$
+            run.update(conn, "INSERT INTO gw_apis (org_id, id, version, bean) VALUES (?, ?, ?, ?)",  //$NON-NLS-1$
                     api.getOrganizationId(), api.getApiId(), api.getVersion(), bean);
 
             DbUtils.commitAndClose(conn);
@@ -111,11 +111,11 @@ public class JdbcRegistry extends AbstractJdbcComponent implements IRegistry {
             validateClient(client, conn);
 
             // Remove any old data first, then (re)insert
-            run.update(conn, "DELETE FROM clients WHERE org_id = ? AND id = ? AND version = ?",  //$NON-NLS-1$
+            run.update(conn, "DELETE FROM gw_clients WHERE org_id = ? AND id = ? AND version = ?",  //$NON-NLS-1$
                     client.getOrganizationId(), client.getClientId(), client.getVersion());
 
             String bean = mapper.writeValueAsString(client);
-            run.update(conn, "INSERT INTO clients (api_key, org_id, id, version, bean) VALUES (?, ?, ?, ?, ?)",  //$NON-NLS-1$
+            run.update(conn, "INSERT INTO gw_clients (api_key, org_id, id, version, bean) VALUES (?, ?, ?, ?, ?)",  //$NON-NLS-1$
                     client.getApiKey(), client.getOrganizationId(), client.getClientId(), client.getVersion(), bean);
             
             DbUtils.commitAndClose(conn);
@@ -160,7 +160,7 @@ public class JdbcRegistry extends AbstractJdbcComponent implements IRegistry {
                     throw new RuntimeException(e);
                 }
             };
-            Api api = run.query(connection, "SELECT bean FROM apis WHERE org_id = ? AND id = ? AND version = ?", //$NON-NLS-1$
+            Api api = run.query(connection, "SELECT bean FROM gw_apis WHERE org_id = ? AND id = ? AND version = ?", //$NON-NLS-1$
                     handler, contract.getApiOrgId(), contract.getApiId(), contract.getApiVersion());
             if (api == null) {
                 String apiId = contract.getApiId();
@@ -194,7 +194,7 @@ public class JdbcRegistry extends AbstractJdbcComponent implements IRegistry {
     public void retireApi(Api api, IAsyncResultHandler<Void> handler) {
         QueryRunner run = new QueryRunner(ds);
         try {
-            run.update("DELETE FROM apis WHERE org_id = ? AND id = ? AND version = ?",  //$NON-NLS-1$
+            run.update("DELETE FROM gw_apis WHERE org_id = ? AND id = ? AND version = ?",  //$NON-NLS-1$
                     api.getOrganizationId(), api.getApiId(), api.getVersion());
             handler.handle(AsyncResultImpl.create((Void) null, Void.class));
         } catch (SQLException e) {
@@ -209,7 +209,7 @@ public class JdbcRegistry extends AbstractJdbcComponent implements IRegistry {
     public void unregisterClient(Client client, IAsyncResultHandler<Void> handler) {
         try {
             QueryRunner run = new QueryRunner(ds);
-            run.update("DELETE FROM clients WHERE org_id = ? AND id = ? AND version = ?",  //$NON-NLS-1$
+            run.update("DELETE FROM gw_clients WHERE org_id = ? AND id = ? AND version = ?",  //$NON-NLS-1$
                     client.getOrganizationId(), client.getClientId(), client.getVersion());
             handler.handle(AsyncResultImpl.create((Void) null));
         } catch (SQLException e) {
@@ -240,7 +240,7 @@ public class JdbcRegistry extends AbstractJdbcComponent implements IRegistry {
      */
     protected Api getApiInternal(String organizationId, String apiId, String apiVersion) throws SQLException {
         QueryRunner run = new QueryRunner(ds);
-        return run.query("SELECT bean FROM apis WHERE org_id = ? AND id = ? AND version = ?", //$NON-NLS-1$
+        return run.query("SELECT bean FROM gw_apis WHERE org_id = ? AND id = ? AND version = ?", //$NON-NLS-1$
                 Handlers.API_HANDLER, organizationId, apiId, apiVersion);
     }
 
@@ -264,7 +264,7 @@ public class JdbcRegistry extends AbstractJdbcComponent implements IRegistry {
      */
     protected Client getClientInternal(String apiKey) throws SQLException {
         QueryRunner run = new QueryRunner(ds);
-        return run.query("SELECT bean FROM clients WHERE api_key = ?", //$NON-NLS-1$
+        return run.query("SELECT bean FROM gw_clients WHERE api_key = ?", //$NON-NLS-1$
                 Handlers.CLIENT_HANDLER, apiKey);
     }
     

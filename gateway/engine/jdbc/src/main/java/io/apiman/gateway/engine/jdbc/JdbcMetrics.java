@@ -130,7 +130,7 @@ public class JdbcMetrics extends AbstractJdbcComponent implements IMetrics {
             long bytes_down = metric.getBytesDownloaded();
 
             // Now insert a row for the metric.
-            run.update("INSERT INTO requests ("
+            run.update("INSERT INTO gw_requests ("
                     + "rstart, rend, duration, month, week, day, hour, minute, "
                     + "api_org_id, api_id, api_version, "
                     + "client_org_id, client_id, client_version, plan, "
