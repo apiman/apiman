@@ -2,7 +2,31 @@
         <div class="col-md-4 apiman-entitysummary" ng-controller="Apiman.OrgSidebarController">
           <div class="container-fluid">
             <div class="row">
-              <div class="col-md-12 apiman-header" data-field="name">{{ org.name }}</div>
+              <div class="col-md-12 apiman-header" data-field="name">
+                {{ org.name }}
+
+                <!-- Dropdown Cog -->
+                <ul class="org-menu pull-right"
+                    style="list-style-type: none;">
+                  <li class="dropdown">
+                    <a href="#"
+                       style="text-decoration: none;"
+                       class="dropdown-toggle dropdown-cog"
+                       data-toggle="dropdown">
+                      <span class="fa fa-cog"></span>
+                      <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu">
+                      <li>
+                        <a class="org-delete"
+                           href="#"
+                           ng-click="callDelete()"
+                           apiman-i18n-key="delete">Delete Organization</a>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </div>
             </div>
             <div class="row">
               <hr />
@@ -28,5 +52,48 @@
               </div>
             </div>
           </div>
+
+
+          <!-- Delete Organization Modal Template -->
+          <script type="text/ng-template"
+                  id="deleteModal.html">
+            <div class="modal-header">
+              <button class="close"
+                      type="button"
+                      ng-click="no()">
+                <span class="pficon pficon-close"></span>
+              </button>
+              <h3 class="modal-title">
+                <span apiman-i18n-key="delete-org-modal-title">Are you SURE you want to delete this organization?</span>
+              </h3>
+            </div>
+            <div class="modal-body">
+              <p class="bg-warning"
+                 style="padding: 15px 25px; margin: -18px -25px 10px -25px;"
+                 apiman-i18n-key="org-delete-modal-confirmation-warning">
+                Unexpected bad things will happen if you don't read this!
+              </p>
+              <p class="explanation"
+                 apiman-i18n-key="org-delete-modal-confirmation-description">
+                This action <b>CANNOT</b> be undone. This will permanently delete the organization, including all of
+                its subelements, their APIs, client apps, plans, policies, memberships, contracts, and any respective activity logs. Please back up the project if you think you may want to roll back the changes, as this action is irrevocable.
+              </p>
+              <p class="explanation"
+                 apiman-i18n-key="org-delete-modal-confirmation-instructions">
+                Please type in the name of the organization to confirm.
+              </p>
+              <input type="text"
+                     class="apiman-form-control form-control"
+                     ng-keyup="typed()"
+                     ng-model="confirmOrgName">
+            </div>
+            <div class="modal-footer">
+              <button class="btn btn-danger"
+                      type="button"
+                      apiman-i18n-key="org-delete-modal-confirmation-button"
+                      ng-disabled="!okayToDelete"
+                      ng-click="yes()">I understand the consequences, delete this organization</button>
+            </div>
+          </script>
         </div>
         <!-- /Left Hand Side -->
