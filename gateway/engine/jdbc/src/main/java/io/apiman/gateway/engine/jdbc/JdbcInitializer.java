@@ -38,12 +38,18 @@ import org.apache.commons.dbutils.ResultSetHandler;
  */
 public class JdbcInitializer extends AbstractJdbcComponent implements IGatewayInitializer {
     
+    private final String dbType;
+    
     /**
      * Constructor.
      * @param config
      */
     public JdbcInitializer(Map<String, String> config) {
         super(config);
+        dbType = config.get("datasource.type"); //$NON-NLS-1$
+        if (dbType == null) {
+            throw new RuntimeException("Missing configuration paramter for JDBC Initializer: 'datasource.type',  Sample values: h2, mysql5, postgresql9, oracle12"); //$NON-NLS-1$
+        }
     }
 
     /**
@@ -75,7 +81,7 @@ public class JdbcInitializer extends AbstractJdbcComponent implements IGatewayIn
         }
         
         ClassLoader cl = JdbcInitializer.class.getClassLoader();
-        URL resource = cl.getResource("ddls/apiman-gateway_h2.ddl");
+        URL resource = cl.getResource("ddls/apiman-gateway_" + dbType + ".ddl");
         try (InputStream is = resource.openStream()) {
             System.out.println("=======================================");
             System.out.println("Initializing apiman Gateway database.");
