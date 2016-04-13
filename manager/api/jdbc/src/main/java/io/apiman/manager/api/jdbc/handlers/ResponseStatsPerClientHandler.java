@@ -43,6 +43,9 @@ public class ResponseStatsPerClientHandler implements ResultSetHandler<ResponseS
         ResponseStatsPerClientBean rval = new ResponseStatsPerClientBean();
         while (rs.next()) {
             String client = rs.getString(1);
+            if (client == null) {
+                continue;
+            }
             String rtype = rs.getString(2);
             long count = rs.getLong(3);
             

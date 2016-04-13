@@ -42,6 +42,9 @@ public class UsagePerClientHandler implements ResultSetHandler<UsagePerClientBea
         UsagePerClientBean rval = new UsagePerClientBean();
         while (rs.next()) {
             String clientId = rs.getString(1);
+            if (clientId == null) {
+                continue;
+            }
             long count = rs.getLong(2);
             rval.getData().put(clientId, count);
         }
