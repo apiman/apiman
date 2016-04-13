@@ -35,14 +35,6 @@ import org.junit.Test;
 public class CircuitBreakerPolicyTest extends ApimanPolicyTest {
 
     /**
-     * Test method for {@link io.apiman.plugins.circuit_breaker.CircuitBreakerPolicy#isCircuitFault(io.apiman.gateway.engine.beans.ApiResponse, io.apiman.plugins.circuit_breaker.beans.CircuitBreakerConfigBean)}.
-     */
-    @Test
-    @Configuration("{}")
-    public void testIsCircuitFault() {
-    }
-
-    /**
      * Test method for {@link io.apiman.plugins.circuit_breaker.CircuitBreakerPolicy#isMatch(int, java.lang.String)}.
      */
     @Test
