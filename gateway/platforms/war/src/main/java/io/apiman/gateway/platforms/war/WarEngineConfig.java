@@ -214,7 +214,7 @@ public class WarEngineConfig implements IEngineConfig {
      */
     @Override
     public Map<String, String> getDataEncrypterConfig() {
-        return getConfigMap(APIMAN_DATA_ENCRYPTER_TYPE);
+        return getConfigMap("apiman.encrypter"); //$NON-NLS-1$
     }
 
     /**

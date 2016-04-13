@@ -55,10 +55,22 @@ public class JdbcInitializer extends AbstractJdbcComponent implements IGatewayIn
     /**
      * @see io.apiman.gateway.engine.IGatewayInitializer#initialize()
      */
-    @SuppressWarnings("nls")
     @Override
-
     public void initialize() {
+        try {
+            doInit();
+        } catch (Throwable t) {
+            // Wait and try again...
+            try { Thread.sleep(1000); } catch (InterruptedException e) {}
+            doInit();
+        }
+    }
+
+    /**
+     * Do the initialization work.
+     */
+    @SuppressWarnings("nls")
+    private void doInit() {
         QueryRunner run = new QueryRunner(ds);
         Boolean isInitialized;
         
