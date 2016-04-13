@@ -43,6 +43,9 @@ public class ResponseStatsPerPlanHandler implements ResultSetHandler<ResponseSta
         ResponseStatsPerPlanBean rval = new ResponseStatsPerPlanBean();
         while (rs.next()) {
             String plan = rs.getString(1);
+            if (plan == null) {
+                continue;
+            }
             String rtype = rs.getString(2);
             long count = rs.getLong(3);
             

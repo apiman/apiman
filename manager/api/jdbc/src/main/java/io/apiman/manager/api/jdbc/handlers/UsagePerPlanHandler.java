@@ -43,7 +43,9 @@ public class UsagePerPlanHandler implements ResultSetHandler<UsagePerPlanBean> {
         while (rs.next()) {
             String planId = rs.getString(1);
             long count = rs.getLong(2);
-            rval.getData().put(planId, count);
+            if (planId != null) {
+                rval.getData().put(planId, count);
+            }
         }
         return rval;
     }
