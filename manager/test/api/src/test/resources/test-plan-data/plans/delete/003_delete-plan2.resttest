@@ -1,0 +1,3 @@
+DELETE /organizations/Organization1/plans/Plan2 admin/admin
+----
+204

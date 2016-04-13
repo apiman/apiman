@@ -155,8 +155,8 @@ public class PollCachingJdbcRegistry extends CachingJdbcRegistry {
             conn.setAutoCommit(false);
             QueryRunner run = new QueryRunner();
 
-            run.update(conn, "DELETE FROM dataversion"); //$NON-NLS-1$
-            run.update(conn, "INSERT INTO dataversion (version) VALUES (?)",  //$NON-NLS-1$
+            run.update(conn, "DELETE FROM gw_dataversion"); //$NON-NLS-1$
+            run.update(conn, "INSERT INTO gw_dataversion (version) VALUES (?)",  //$NON-NLS-1$
                     newVersion);
 
             DbUtils.commitAndClose(conn);
@@ -203,7 +203,7 @@ public class PollCachingJdbcRegistry extends CachingJdbcRegistry {
         boolean invalidate = true;
         QueryRunner run = new QueryRunner(ds);
         try {
-            long latestVersion = run.query("SELECT version FROM dataversion", Handlers.LONG_HANDLER); //$NON-NLS-1$
+            long latestVersion = run.query("SELECT version FROM gw_dataversion", Handlers.LONG_HANDLER); //$NON-NLS-1$
             if (latestVersion > -1 && dataVersion > -1 && latestVersion == dataVersion) {
                 invalidate = false;
             } else {

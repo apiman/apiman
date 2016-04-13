@@ -53,5 +53,14 @@ public class UsageDataPoint extends HistogramDataPoint {
     public void setCount(long count) {
         this.count = count;
     }
+    
+    /**
+     * @see java.lang.Object#toString()
+     */
+    @SuppressWarnings("nls")
+    @Override
+    public String toString() {
+        return getLabel() + "[" + getCount() + "]";
+    }
 
 }

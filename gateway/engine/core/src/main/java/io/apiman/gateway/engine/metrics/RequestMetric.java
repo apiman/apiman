@@ -19,6 +19,8 @@ import io.apiman.gateway.engine.IMetrics;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Metric information about a single request processed by the API Gateway.
@@ -57,6 +59,7 @@ public class RequestMetric implements Serializable {
     private String errorMessage;
     private long bytesUploaded;
     private long bytesDownloaded;
+    private Map<String, String> attributes = new HashMap<>();
 
     /**
      * Constructor.
@@ -442,6 +445,20 @@ public class RequestMetric implements Serializable {
      */
     public void setBytesDownloaded(long bytesDownloaded) {
         this.bytesDownloaded = bytesDownloaded;
+    }
+
+    /**
+     * @return the attributes
+     */
+    public Map<String, String> getAttributes() {
+        return attributes;
+    }
+
+    /**
+     * @param attributes the attributes to set
+     */
+    public void setAttributes(Map<String, String> attributes) {
+        this.attributes = attributes;
     }
 
 }

@@ -21,9 +21,11 @@ import io.apiman.common.plugin.PluginClassLoader;
 import io.apiman.common.plugin.PluginCoordinates;
 import io.apiman.common.util.ReflectionUtils;
 import io.apiman.common.util.crypt.IDataEncrypter;
+import io.apiman.gateway.engine.EngineConfigTuple;
 import io.apiman.gateway.engine.IComponent;
 import io.apiman.gateway.engine.IConnectorFactory;
 import io.apiman.gateway.engine.IEngineConfig;
+import io.apiman.gateway.engine.IGatewayInitializer;
 import io.apiman.gateway.engine.IMetrics;
 import io.apiman.gateway.engine.IPluginRegistry;
 import io.apiman.gateway.engine.IPolicyErrorWriter;
@@ -34,8 +36,10 @@ import io.apiman.gateway.engine.impl.DefaultPolicyErrorWriter;
 import io.apiman.gateway.engine.impl.DefaultPolicyFailureWriter;
 import io.apiman.gateway.engine.policy.IPolicyFactory;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -61,6 +65,8 @@ public class WarEngineConfig implements IEngineConfig {
 
     public static final String APIMAN_GATEWAY_WRITER_FORMATTER_CLASS = "apiman-gateway.writers.policy-failure"; //$NON-NLS-1$
     public static final String APIMAN_GATEWAY_ERROR_WRITER_CLASS = "apiman-gateway.writers.error"; //$NON-NLS-1$
+    
+    public static final String APIMAN_GATEWAY_INITIALIZERS = "apiman-gateway.initializers"; //$NON-NLS-1$
 
     public static final Configuration config;
     static {
@@ -242,6 +248,27 @@ public class WarEngineConfig implements IEngineConfig {
      */
     public Map<String, String> getPolicyErrorWriterConfig() {
         return getConfigMap(APIMAN_GATEWAY_ERROR_WRITER_CLASS);
+    }
+    
+    /**
+     * @see io.apiman.gateway.engine.IEngineConfig#getGatewayInitializers(io.apiman.gateway.engine.IPluginRegistry)
+     */
+    @Override
+    public List<EngineConfigTuple<? extends IGatewayInitializer>> getGatewayInitializers(
+            IPluginRegistry pluginRegistry) {
+        List<EngineConfigTuple<? extends IGatewayInitializer>> rval = new ArrayList<>();
+        
+        String initializerIds = getConfig().getString(APIMAN_GATEWAY_INITIALIZERS);
+        if (initializerIds != null) {
+            for (String initializerId : initializerIds.split(",")) { //$NON-NLS-1$
+                String initializerClassProp = APIMAN_GATEWAY_INITIALIZERS + "." + initializerId; //$NON-NLS-1$
+                Class<? extends IGatewayInitializer> initializerClass = loadConfigClass(initializerClassProp, IGatewayInitializer.class, pluginRegistry);
+                Map<String, String> configMap = getConfigMap(initializerClassProp);
+                rval.add(new EngineConfigTuple<>(initializerClass, configMap));
+            }
+        }
+        
+        return rval;
     }
 
     /**

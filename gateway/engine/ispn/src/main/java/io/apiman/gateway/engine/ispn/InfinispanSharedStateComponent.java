@@ -32,7 +32,7 @@ import javax.xml.namespace.QName;
  */
 public class InfinispanSharedStateComponent extends AbstractInfinispanComponent implements ISharedStateComponent {
 
-    private static final String DEFAULT_CACHE_CONTAINER = "java:jboss/infinispan/container/apiman-gateway"; //$NON-NLS-1$
+    private static final String DEFAULT_CACHE_CONTAINER = "java:jboss/infinispan/apiman"; //$NON-NLS-1$
     private static final String DEFAULT_CACHE = "shared-state"; //$NON-NLS-1$
 
     /**

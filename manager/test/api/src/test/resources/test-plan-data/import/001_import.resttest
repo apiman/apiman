@@ -371,7 +371,6 @@ Content-Type: text/plain
 
 INFO: ----------------------------
 INFO: Starting apiman data import.
-INFO: Importing data from apiman version: 1.2.3-SNAPSHOT
 INFO: Importing a user: importeduser
 INFO: Importing a gateway: The Gateway
 INFO: Importing an organization: Organization 1

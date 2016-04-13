@@ -1,0 +1,9 @@
+GET /organizations/Organization1/plans/Plan2/activity admin/admin
+----
+200
+Content-Type: application/json
+
+{
+  "beans" : [],
+  "totalSize" : 0
+}

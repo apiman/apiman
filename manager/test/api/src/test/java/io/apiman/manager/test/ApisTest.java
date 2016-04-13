@@ -34,7 +34,9 @@ import org.junit.runner.RunWith;
 @ManagerRestTestPlan("test-plans/apis-testPlan.xml")
 @ManagerRestTestGatewayLog(
         "GET:/mock-gateway/system/status\n" +
-        "PUT:/mock-gateway/apis\n"
+        "PUT:/mock-gateway/apis\n" +
+        "GET:/mock-gateway/system/status\n" +
+        "DELETE:/mock-gateway/apis/Organization1/API1/1.0\n"
 )
 @ManagerRestTestPublishPayload({
     "",

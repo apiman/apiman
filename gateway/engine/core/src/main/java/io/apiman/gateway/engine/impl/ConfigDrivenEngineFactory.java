@@ -16,15 +16,19 @@
 package io.apiman.gateway.engine.impl;
 
 import io.apiman.common.util.crypt.IDataEncrypter;
+import io.apiman.gateway.engine.EngineConfigTuple;
 import io.apiman.gateway.engine.IComponentRegistry;
 import io.apiman.gateway.engine.IConnectorFactory;
 import io.apiman.gateway.engine.IEngineConfig;
+import io.apiman.gateway.engine.IGatewayInitializer;
 import io.apiman.gateway.engine.IMetrics;
 import io.apiman.gateway.engine.IPluginRegistry;
 import io.apiman.gateway.engine.IRegistry;
 import io.apiman.gateway.engine.policy.IPolicyFactory;
 
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -122,6 +126,22 @@ public class ConfigDrivenEngineFactory extends AbstractEngineFactory {
         Class<? extends IMetrics> c = engineConfig.getMetricsClass(pluginRegistry);
         Map<String, String> config = engineConfig.getMetricsConfig();
         return create(c, config);
+    }
+    
+    /**
+     * @see io.apiman.gateway.engine.impl.AbstractEngineFactory#createInitializers(io.apiman.gateway.engine.IPluginRegistry)
+     */
+    @Override
+    protected List<IGatewayInitializer> createInitializers(IPluginRegistry pluginRegistry) {
+        List<IGatewayInitializer> rval = new ArrayList<>();
+        
+        List<EngineConfigTuple<? extends IGatewayInitializer>> initializers = engineConfig.getGatewayInitializers(pluginRegistry);
+        for (EngineConfigTuple<? extends IGatewayInitializer> tuple : initializers) {
+            IGatewayInitializer initializer = create(tuple.getComponentClass(), tuple.getComponentConfig());
+            rval.add(initializer);
+        }
+        
+        return rval;
     }
 
     /**

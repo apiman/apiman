@@ -17,11 +17,15 @@ package io.apiman.gateway.engine.impl;
 
 import io.apiman.common.util.crypt.IDataEncrypter;
 import io.apiman.gateway.engine.IComponentRegistry;
+import io.apiman.gateway.engine.IGatewayInitializer;
 import io.apiman.gateway.engine.IMetrics;
 import io.apiman.gateway.engine.IPluginRegistry;
 import io.apiman.gateway.engine.IRegistry;
 import io.apiman.gateway.engine.policy.IPolicyFactory;
 import io.apiman.gateway.engine.policy.PolicyFactoryImpl;
+
+import java.util.Collections;
+import java.util.List;
 
 
 /**
@@ -93,6 +97,14 @@ public abstract class DefaultEngineFactory extends AbstractEngineFactory {
     @Override
     protected IMetrics createMetrics(IPluginRegistry pluginRegistry) {
         return new InMemoryMetrics();
+    }
+    
+    /**
+     * @see io.apiman.gateway.engine.impl.AbstractEngineFactory#createInitializers(io.apiman.gateway.engine.IPluginRegistry)
+     */
+    @Override
+    protected List<IGatewayInitializer> createInitializers(IPluginRegistry pluginRegistry) {
+        return Collections.EMPTY_LIST;
     }
 
 }

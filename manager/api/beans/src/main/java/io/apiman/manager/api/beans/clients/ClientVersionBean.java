@@ -44,7 +44,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
  */
 @Entity
 @Table(name = "client_versions",
-       uniqueConstraints = { 
+       uniqueConstraints = {
                @UniqueConstraint(columnNames = { "client_id", "client_org_id", "version" }),
                @UniqueConstraint(columnNames = { "apikey" })})
 @JsonInclude(Include.NON_NULL)

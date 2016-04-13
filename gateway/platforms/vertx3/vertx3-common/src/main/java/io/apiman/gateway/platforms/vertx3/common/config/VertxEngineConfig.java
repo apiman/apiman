@@ -17,9 +17,11 @@ package io.apiman.gateway.platforms.vertx3.common.config;
 
 import io.apiman.common.util.SimpleStringUtils;
 import io.apiman.common.util.crypt.IDataEncrypter;
+import io.apiman.gateway.engine.EngineConfigTuple;
 import io.apiman.gateway.engine.IComponent;
 import io.apiman.gateway.engine.IConnectorFactory;
 import io.apiman.gateway.engine.IEngineConfig;
+import io.apiman.gateway.engine.IGatewayInitializer;
 import io.apiman.gateway.engine.IMetrics;
 import io.apiman.gateway.engine.IPluginRegistry;
 import io.apiman.gateway.engine.IRegistry;
@@ -28,6 +30,7 @@ import io.apiman.gateway.engine.policy.IPolicyFactory;
 import io.apiman.gateway.platforms.vertx3.common.verticles.VerticleType;
 import io.vertx.core.json.JsonObject;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -166,6 +169,16 @@ public class VertxEngineConfig implements IEngineConfig {
                 getJsonObject(GATEWAY_CONFIG);
 
         return toFlatStringMap(componentConfig);
+    }
+    
+    /**
+     * @see io.apiman.gateway.engine.IEngineConfig#getGatewayInitializers(io.apiman.gateway.engine.IPluginRegistry)
+     */
+    @Override
+    public List<EngineConfigTuple<? extends IGatewayInitializer>> getGatewayInitializers(
+            IPluginRegistry pluginRegistry) {
+        // TODO support gateway initializers in vert.x
+        return Collections.emptyList();
     }
 
     public Boolean isAuthenticationEnabled() {

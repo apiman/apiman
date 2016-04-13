@@ -1,0 +1,7 @@
+GET /organizations/Organization1/plans/Plan2 admin/admin
+----
+404
+Content-Type: application/json
+X-Apiman-Error: true
+
+{"type":"PlanNotFoundException","errorCode":6002,"message":"Plan does not exist: Plan2","moreInfoUrl":null}

@@ -3,7 +3,7 @@
   <parent>
     <groupId>io.apiman</groupId>
     <artifactId>apiman-manager</artifactId>
-    <version>1.2.3-SNAPSHOT</version>
+    <version>1.2.4-SNAPSHOT</version>
   </parent>
   <artifactId>apiman-manager-api</artifactId>
   <packaging>pom</packaging>
@@ -18,6 +18,7 @@
     <module>gateway</module>
     <module>hawkular</module>
     <module>ispn</module>
+    <module>jdbc</module>
     <module>jpa</module>
     <module>micro</module>
     <module>migrator</module>

@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -34,6 +35,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKeyColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -104,6 +106,8 @@ public class ApiVersionBean implements Serializable, Cloneable {
     @Column(name = "definition_type")
     @Enumerated(EnumType.STRING)
     private ApiDefinitionType definitionType;
+    @OneToOne(mappedBy="apiVersion", orphanRemoval=true, cascade={CascadeType.REMOVE}, fetch=FetchType.LAZY)
+    private ApiDefinitionBean apiDefinition;
 
     /**
      * Constructor.

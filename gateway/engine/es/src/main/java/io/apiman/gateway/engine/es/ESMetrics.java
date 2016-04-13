@@ -46,7 +46,7 @@ public class ESMetrics extends AbstractESComponent implements IMetrics {
         super(config);
 
         int queueSize = DEFAULT_QUEUE_SIZE;
-        String queueSizeConfig = config.get("es.queueSize"); //$NON-NLS-1$
+        String queueSizeConfig = config.get("queue.size"); //$NON-NLS-1$
         if (queueSizeConfig != null) {
             queueSize = new Integer(queueSizeConfig);
         }

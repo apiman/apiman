@@ -135,7 +135,7 @@
         </dd>
         <dt apiman-i18n-key="ldap-bind-dn">LDAP Bind DN</dt>
         <dd>
-          <input id="ldap-bind-dn" ng-model="config.ldapIdentity.dnPattern" class="apiman-form-control form-control" type="text" apiman-i18n-key="basic-auth.ldap.enter-binddn" placeholder="LDAP Bind DN (example: cn=${username},dc=overlord,dc=org)" ng-disabled="isEntityDisabled()"></input>
+          <input id="ldap-bind-dn" ng-model="config.ldapIdentity.dnPattern" class="apiman-form-control form-control" type="text" apiman-i18n-key="basic-auth.ldap.enter-binddn" placeholder="LDAP Bind DN (example: cn=${username},dc=example,dc=org)" ng-disabled="isEntityDisabled()"></input>
         </dd>
         <dt apiman-i18n-key="bind-as">Bind to LDAP As...</dt>
         <dd>
