@@ -3,11 +3,11 @@
 
 module Apiman {
     export var OrgSidebarController = _module.controller("Apiman.OrgSidebarController",
-    ['Logger', '$scope', 'OrgSvcs', (Logger, $scope, OrgSvcs) => {
+    ['Logger', '$uibModal', '$scope', 'OrgSvcs', (Logger, $uibModal, $scope, OrgSvcs) => {
         $scope.updateOrgDescription = function(updatedDescription) {
             var updateOrganizationBean = {
                 description: updatedDescription
-            }
+            };
 
             OrgSvcs.update({ organizationId: $scope.organizationId },
                 updateOrganizationBean,
@@ -16,7 +16,34 @@ module Apiman {
                 function(error) {
                     Logger.error("Unable to update org description: {0}", error);
                 });
-        }
+        };
+
+
+
+        // ----- Delete --------------------->>>>
+
+        // Add check for ability to delete, show/hide Delete option
+        $scope.canDelete = function() {};
+
+        // Call delete, open modal
+        $scope.callDelete = function(size) {
+            var modalInstance = $uibModal.open({
+                templateUrl: 'deleteModal.html',
+                controller: 'OrgDeleteModalCtrl',
+                size: size,
+                resolve: {
+                    org: function() {
+                        return $scope.org;
+                    }
+                }
+            });
+
+            modalInstance.result.then(function (selectedItem) {
+                $scope.selected = selectedItem;
+            }, function () {
+                Logger.info('Modal dismissed at: ' + new Date());
+            });
+        };
     }]);
 
     export var OrgDeleteModalCtrl = _module.controller('OrgDeleteModalCtrl', function ($location,
@@ -55,7 +82,11 @@ module Apiman {
                 }, 800);
 
                 // We should display some type of Toastr/Growl notification to the user here
-            }, PageLifecycle.handleError);
+            }, function(err) {
+                $scope.okayToDelete = false;
+                $uibModalInstance.close();
+                PageLifecycle.handleError(err);
+            });
         };
 
         // No, do NOT delete the API

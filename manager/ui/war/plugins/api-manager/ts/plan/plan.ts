@@ -165,7 +165,11 @@ module Apiman {
                 }, 900);
 
                 // We should display some type of Toastr/Growl notification to the user here
-            }, PageLifecycle.handleError);
+            }, function(err) {
+                $scope.okayToDelete = false;
+                $uibModalInstance.close();
+                PageLifecycle.handleError(err);
+            });
         };
 
         // No, do NOT delete the API
