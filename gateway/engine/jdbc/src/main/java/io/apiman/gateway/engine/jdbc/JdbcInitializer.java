@@ -75,7 +75,7 @@ public class JdbcInitializer extends AbstractJdbcComponent implements IGatewayIn
         Boolean isInitialized;
         
         try {
-            isInitialized = run.query("SELECT * FROM apis", new ResultSetHandler<Boolean>() {
+            isInitialized = run.query("SELECT * FROM gw_apis", new ResultSetHandler<Boolean>() {
                 @Override
                 public Boolean handle(ResultSet rs) throws SQLException {
                     return true;
