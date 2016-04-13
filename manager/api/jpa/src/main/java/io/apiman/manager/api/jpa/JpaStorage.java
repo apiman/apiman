@@ -2415,50 +2415,59 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     }
 
     private void deleteAllContracts(ApiBean apiBean) throws StorageException {
-        String jpql = "DELETE ContractBean deleteBean "
-                + "WHERE deleteBean IN ( "
-                + "SELECT b "
-                + "  FROM ContractBean b "
-                + "  JOIN b.api apiVersion "
-                + "  JOIN apiVersion.api api "
-                + "  JOIN api.organization o "
-                + " WHERE o.id = :orgId "
-                + " AND api.id = :apiId ) ";
+        String nativeSql =
+            "DELETE c " +
+            "    FROM contracts c " +
+            "    INNER JOIN api_versions " +
+            "        ON c.apiv_id = api_versions.id " +
+            "    INNER JOIN apis " +
+            "        ON api_versions.api_id = apis.id " +
+            "        AND api_versions.api_org_id = apis.organization_id " +
+            "    INNER JOIN organizations " +
+            "        ON apis.organization_id = organizations.id " +
+            "WHERE organizations.id = :orgId " +
+            "AND apis.id = :apiId ;";
 
-        Query query = getActiveEntityManager().createQuery(jpql);
+        Query query = getActiveEntityManager().createNativeQuery(nativeSql);
         query.setParameter("orgId", apiBean.getOrganization().getId());
         query.setParameter("apiId", apiBean.getId());
         query.executeUpdate();
     }
 
     private void deleteAllContracts(ClientBean clientBean) throws StorageException {
-        String jpql = "DELETE ContractBean deleteBean "
-                + "WHERE deleteBean IN ( "
-                + "SELECT b "
-                + "  FROM ContractBean b "
-                + "  JOIN b.client clientVersion "
-                + "  JOIN clientVersion.client client "
-                + "  JOIN client.organization o "
-                + " WHERE o.id = :orgId "
-                + " AND client.id = :clientId ) ";
+        String nativeSql =
+            "DELETE c " +
+            "    FROM contracts c " +
+            "    INNER JOIN client_versions " +
+            "        ON c.clientv_id = client_versions.id " +
+            "    INNER JOIN clients " +
+            "        ON client_versions.client_id = clients.id " +
+            "        AND client_versions.client_org_id = clients.organization_id " +
+            "    INNER JOIN organizations " +
+            "        ON clients.organization_id = organizations.id " +
+            "WHERE organizations.id = :orgId " +
+            "AND clients.id = :clientId ;";
 
-        Query query = getActiveEntityManager().createQuery(jpql);
+        Query query = getActiveEntityManager().createNativeQuery(nativeSql);
         query.setParameter("orgId", clientBean.getOrganization().getId());
         query.setParameter("clientId", clientBean.getId());
         query.executeUpdate();
     }
 
     private void deleteAllContracts(OrganizationBean organizationBean) throws StorageException {
-        String jpql = "DELETE ContractBean deleteBean "
-                + "WHERE deleteBean IN ( "
-                + "SELECT b "
-                + "  FROM ContractBean b "
-                + "  JOIN b.api apiVersion "
-                + "  JOIN apiVersion.api api "
-                + "  JOIN api.organization o "
-                + " WHERE o.id = :orgId ) ";
-
-        Query query = getActiveEntityManager().createQuery(jpql);
+        String nativeSql =
+            "DELETE c " +
+            "    FROM contracts c " +
+            "    INNER JOIN api_versions " +
+            "        ON c.apiv_id = api_versions.id " +
+            "    INNER JOIN apis " +
+            "        ON api_versions.api_id = apis.id " +
+            "        AND api_versions.api_org_id = apis.organization_id " +
+            "    INNER JOIN organizations " +
+            "        ON apis.organization_id = organizations.id " +
+            "WHERE organizations.id = :orgId ;";
+        
+        Query query = getActiveEntityManager().createNativeQuery(nativeSql);
         query.setParameter("orgId", organizationBean.getId());
         query.executeUpdate();
     }
