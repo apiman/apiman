@@ -734,18 +734,46 @@ BASIC Authentication policy that uses JDBC to validate the inbound credentials:
 ==== Authorization Policy
 [[policy-authorization]]
 ===== Description
-DESCRIPTION TBD HERE
+This policy enables fine grained authorization to API resources based on authenticated user roles.  This
+policy can be used to control precisely who (authenticated users) are allowed to access the API, at an
+arbitrarily fine-grained level.
 
 TIP: This is a built-in policy and therefore no plugins need to be installed prior to using it.
 
 ===== Configuration
-CONFIGURATION TBD HERE
+The configuration of this policy consists of a number of rules that are applied to any inbound request
+to the API.  Each rule consists of a regular expression pattern, an HTTP verb, and the role that an
+authenticated user must possess in order for access to be granted.
+
+TIP: It's *very* important to note that this policy must be configured *after* one of the standard 
+apiman authentication policies (e.g. the BASIC Authentication policy or the Keycloak OAuth Policy).
+The reason is that an Authentication policy is responsible for extracting the authenticated user's 
+roles, which is data that is required for the Authorization Policy to do its work.
+
+* *rules* (array) : Array of rules - each rule is applied only if it matches the current request.
+** *pathPattern* (string regexp) : Pattern that must match the request resource path you'd like the policy to be applicable to.
+** *verb* (string) : The HTTP verb that must match the request you'd like the policy to be applicable to.
+** *role* (string) : The role the user must have if this pattern matches the request.
+* *multimatch* (boolean) : Should the request pass when any or all of the authorization rules pass?  Set to true if all rules must match, false if only one rule must match.
+* *requestUnmatched* (boolean) : If the request does not match any of the authorization rules, should it pass or fail?  Set to true if you want the policy to *pass* when no rules are matched.
 
 ===== Sample Configuration
-SAMPLE CONFIG TBD
 ```json
 {
-   "TBD" : "TBD"
+   "rules" : [
+   	{
+   		"pathPattern": "/admin/.*",
+   		"verb": "*",
+   		"role": "admin"
+   	},
+   	{
+   		"pathPattern": "/.*",
+   		"verb": "GET",
+   		"role": "user"
+   	}
+   ],
+   "multiMatch": true,
+   "requestUnmatched": false
 }
 ```
 
@@ -767,13 +795,12 @@ This policy is nearly identical to our Authorization Policy, with the exception 
 ===== Configuration
 Just as with the Authorization policy, you can define any number of rules you'd like.
 
-* *rules* (array) : a single rule that your policy will apply if each of the following properties match:
-** *path* (string) : defines the path you'd like the policy to be applicable to.
-** *soapAction* (string) : defines the SOAPAction you'd like the policy to be applicable to.
-** *role* (string) : defines the role you'd like the policy to be applicable to. If you want a single required role to protect your entire API, simply add one item with a path of \".*\" and an action of \"*\".
-
-* *multimatch* (boolean) : should the request pass when any or all of the authorization rules pass?
-* *requestUnmatched* (boolean) : if the request does not match any of the authorization rules, should it pass or fail?
+* *rules* (array) : A single rule that your policy will apply if each of the following properties match:
+** *pathPattern* (string) : Defines the path you'd like the policy to be applicable to.
+** *action* (string) : Defines the SOAPAction you'd like the policy to be applicable to.
+** *role* (string) : The role the user must have if this pattern matches the request.
+* *multiMatch* (boolean) : Should the request pass when any or all of the authorization rules pass?  Set to true if all rules must match, false if only one rule must match.
+* *requestUnmatched* (boolean) : If the request does not match any of the authorization rules, should it pass or fail?  Set to true if you want the policy to *pass* when no rules are matched.
 
 
 ===== Sample Configuration
@@ -781,17 +808,17 @@ Just as with the Authorization policy, you can define any number of rules you'd 
 {
    "rules" : [
    	{
-   		"path": "/admin",
-   		"soapAction": "hello",
+   		"pathPattern": "/admin/.*",
+   		"action": "hello",
    		"role": "admin"
    	},
    	{
-   		"path": "/",
-   		"soapAction": "goodbye",
+   		"pathPattern": "/",
+   		"action": "goodbye",
    		"role": "user"
    	}
    ],
-   "multimatch": true,
+   "multiMatch": true,
    "requestUnmatched": false
 }
 ```
@@ -910,20 +937,44 @@ The configuration parameters for an Ignored Resources Policy are:
 ==== Time Restricted Access Policy
 [[policy-time-restricted-access]]
 ===== Description
-DESCRIPTION TBD HERE
+This policy is used to only allow access to an API during certain times.  In fact, the policy can
+be configured to apply different time restrictions to different API resources (matched via 
+regular expressions).  This allows you to control *when* client and users are allowed to access 
+your API.
 
 TIP: This is a built-in policy and therefore no plugins need to be installed prior to using it.
 
 ===== Configuration
-CONFIGURATION TBD HERE
+The configuration parameters for a Time Restricted Access Policy are:
+* *rules* (array of objects) : The list of matching rules representing the resources being controlled and the time ranges they are allowed to be accessed.
+** *timeStart* (time) : Indicates the time of day (UTC) to begin allowing access.
+** *timeEnd* (time) : Indicates the time of day (UTC) to stop allowing access.
+** *dayStart* (integer) : Indicates the day of week (1=Monday, 2=Tuesday, etc) to begin allowing access.
+** *dayEnd* (integer) : Indicates the day of week (1=Monday, 2=Tuesday, etc) to stop allowing access.
+** *pathPattern* (string regexp) : A regular expression used to match the request's resource path/destination.  The time restriction will be applied only when the request's resource matches this pattern.
+
+TIP: If none of the configured rules matches the request resource path/destination, then no rules will be applied and the request will succeed.
 
 ===== Sample Configuration
-SAMPLE CONFIG TBD
 ```json
 {
-   "TBD" : "TBD"
-}
-```
+    "rules": [
+        {
+            "timeStart": "12:00:00",
+            "timeEnd": "20:00:00",
+            "dayStart": 1,
+            "dayEnd": 5,
+            "pathPattern": "/path/to/.*"
+        },
+        {
+            "timeStart": "10:00:00.000Z",
+            "timeEnd": "18:00:00.000Z",
+            "dayStart": 1,
+            "dayEnd": 7,
+            "pathPattern": "/other/path/.*"
+        }
+    ]
+}```
 
 
 ==== CORS Policy
@@ -1141,18 +1192,38 @@ The configuration parameters for a Quota Policy are:
 ==== URL Rewriting Policy
 [[policy-url-rewriting]]
 ===== Description
-DESCRIPTION TBD HERE
+This policy is used to re-write responses from the back-end API such that they will be modified by 
+fixing up any incorrect URLs found with modified ones.  This is useful because apiman works through 
+an API Gateway, and in some cases an API might return URLs to followup action or data endpoints.  In
+these cases the back-end API will likely be configured to return a URL pointing to the unmanaged API
+endpoint.  This policy can fix up those URL references so that they point to the managed API endpoint
+(the API Gateway endpoint) instead.
 
 TIP: This is a built-in policy and therefore no plugins need to be installed prior to using it.
 
 ===== Configuration
-CONFIGURATION TBD HERE
+This policy requires some basic configuration, including a regular expression used to match the
+URL, as well as a replacement value.
+
+* *fromRegex* (string regex) : A regular expression used to identify a matching URL found in the response.
+* *toReplacement* (string) : The replacement URL - regular expression groups identified in the *fromRegex* can be used.
+* *processBody* (boolean) : Set to true if URLs should be replaced in the response body.
+* *processHeaders* (boolean) : Set to true if URLs should be replaced in the response headers.
+
+TIP: This policy *cannot* be used for any other replacements besides URLs - the policy is implemented
+specifically to find and replace valid URLs.  As a result, arbitrary regular expression matching will
+not work (the policy scans for URLs and then matches those URLs against the configured regex).  This
+is done for performance reasons.
 
 ===== Sample Configuration
 SAMPLE CONFIG TBD
 ```json
 {
-   "TBD" : "TBD"
+    "fromRegex" : "https?://[^\/]*\/([.\/]*)",
+    "toReplacement" : "https://apiman.example.com/$1",
+    "processBody" : true,
+    "processHeaders" : true
+
 }
 ```
 
