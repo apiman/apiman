@@ -56,6 +56,13 @@
       "version" : "1.2.4-SNAPSHOT",
       "name" : "Log Headers Policy",
       "description" : "A policy that logs the headers to std out.  Useful to analyse inbound HTTP traffic to the gateway when added as the first policy in the chain or to analyse outbound HTTP traffic from the gateway when added as the last policy in the chain."
+    },
+    {
+      "groupId" : "io.apiman.plugins",
+      "artifactId" : "apiman-plugins-circuit-breaker-policy",
+      "version" : "1.2.4-SNAPSHOT",
+      "name" : "Circuit Breaker Policy",
+      "description" : "This plugin has policies for performing circuit breaker functionality."
     }
   ]
 }
