@@ -56,6 +56,10 @@ public abstract class AbstractJpaStorage {
     @Inject
     private IEntityManagerFactoryAccessor emfAccessor;
 
+    public String getDialect() {
+        return (String) emfAccessor.getEntityManagerFactory().getProperties().get("hibernate.dialect");
+    }
+
     private static ThreadLocal<EntityManager> activeEM = new ThreadLocal<>();
     public static boolean isTxActive() {
         return activeEM.get() != null;
