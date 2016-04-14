@@ -15,6 +15,7 @@
  */
 package io.apiman.manager.api.jpa;
 
+import io.apiman.common.util.crypt.DataEncryptionContext;
 import io.apiman.common.util.crypt.IDataEncrypter;
 import io.apiman.manager.api.beans.apis.ApiBean;
 import io.apiman.manager.api.beans.apis.ApiDefinitionBean;
@@ -112,7 +113,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     @PostConstruct
     public void postConstruct() {
         // Kick the encrypter, causing it to be loaded/resolved in CDI
-        encrypter.encrypt("");
+        encrypter.encrypt("", new DataEncryptionContext());
     }
 
     /**

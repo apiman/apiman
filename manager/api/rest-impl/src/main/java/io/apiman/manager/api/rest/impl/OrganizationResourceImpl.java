@@ -18,7 +18,9 @@ package io.apiman.manager.api.rest.impl;
 
 import static java.util.stream.Collectors.toList;
 
+import io.apiman.common.util.crypt.DataEncryptionContext;
 import io.apiman.common.util.crypt.IDataEncrypter;
+import io.apiman.common.util.crypt.DataEncryptionContext.EntityType;
 import io.apiman.gateway.engine.beans.ApiEndpoint;
 import io.apiman.manager.api.beans.BeanUtils;
 import io.apiman.manager.api.beans.apis.ApiBean;
@@ -3467,7 +3469,12 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         Map<String, String> endpointProperties = versionBean.getEndpointProperties();
         if (endpointProperties != null) {
             for (Entry<String, String> entry : endpointProperties.entrySet()) {
-                entry.setValue(encrypter.decrypt(entry.getValue()));
+                DataEncryptionContext ctx = new DataEncryptionContext(
+                        versionBean.getApi().getOrganization().getId(), 
+                        versionBean.getApi().getId(),
+                        versionBean.getVersion(), 
+                        EntityType.Api);
+                entry.setValue(encrypter.decrypt(entry.getValue(), ctx));
             }
         }
     }
@@ -3479,7 +3486,12 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         Map<String, String> endpointProperties = versionBean.getEndpointProperties();
         if (endpointProperties != null) {
             for (Entry<String, String> entry : endpointProperties.entrySet()) {
-                entry.setValue(encrypter.encrypt(entry.getValue()));
+                DataEncryptionContext ctx = new DataEncryptionContext(
+                        versionBean.getApi().getOrganization().getId(), 
+                        versionBean.getApi().getId(),
+                        versionBean.getVersion(), 
+                        EntityType.Api);
+                entry.setValue(encrypter.encrypt(entry.getValue(), ctx));
             }
         }
     }

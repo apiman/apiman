@@ -17,9 +17,12 @@ package io.apiman.manager.api.core.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.apiman.common.util.crypt.CurrentDataEncrypter;
+import io.apiman.common.util.crypt.DataEncryptionContext;
+import io.apiman.common.util.crypt.DataEncryptionContext.EntityType;
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
 import io.apiman.manager.api.beans.policies.PolicyDefinitionTemplateBean;
+import io.apiman.manager.api.beans.policies.PolicyType;
 import io.apiman.manager.api.core.i18n.Messages;
 
 import java.util.HashMap;
@@ -78,7 +81,15 @@ public class PolicyTemplateUtil {
             // TODO hack to fix broken descriptions - this util should probably not know about encrypted data
             String jsonConfig = policy.getConfiguration();
             if (CurrentDataEncrypter.instance != null) {
-                jsonConfig = CurrentDataEncrypter.instance.decrypt(jsonConfig);
+                EntityType entityType = EntityType.Api;
+                if (policy.getType() == PolicyType.Client) {
+                    entityType = EntityType.ClientApp;
+                } else if (policy.getType() == PolicyType.Plan) {
+                    entityType = EntityType.Plan;
+                }
+                DataEncryptionContext ctx = new DataEncryptionContext(policy.getOrganizationId(),
+                        policy.getEntityId(), policy.getEntityVersion(), entityType);
+                jsonConfig = CurrentDataEncrypter.instance.decrypt(jsonConfig, ctx);
             }
             Map<String, Object> configMap = mapper.readValue(jsonConfig, Map.class);
             configMap = new PolicyConfigMap(configMap);
