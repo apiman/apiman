@@ -1040,22 +1040,56 @@ SAMPLE CONFIG TBD
 ==== URL Whitelist Policy
 [[policy-url-whitelist]]
 ===== Description
-DESCRIPTION TBD HERE
+This policy allows users to explicitly allow only certain API subpaths to be accessed.  It's
+particularly useful when only a small subset of resources from a back-end API should be 
+exposed through the managed endpoint.
 
 ===== Plugin
-PLUGIN COORDINATES GO HERE
-
-===== Configuration
-CONFIGURATION TBD HERE
-
-===== Sample Configuration
-SAMPLE CONFIG TBD
 ```json
 {
-   "TBD" : "TBD"
+	"groupId": "io.apiman.plugins",
+	"artifactId": "apiman-plugins-url-whitelist-policy",
+	"version": "1.2.3.Final" // Please check for the latest version, this is just an example.
 }
 ```
 
+===== Configuration
+Configuration of the URL Whitelist Policy consists of a property to control the stripping
+of the managed endpoint prefix, and then a list of items representing the endpoint paths that
+are allowed.
+
+* *removePathPrefix* (boolean) : Set to true if you want the managed endpoint prefix to be stripped out before trying to match the request path to the whitelisted items (this is typically set to 'true').
+* *whitelist* (array of objects) : A list of items, where each item represents an API sub-resource that should be allowed.
+** *regex* (string) : Regular expression to match the API sub-resource path (e.g. /foo/[0-9]/bar)
+** *methodGet* (boolean) : True if http GET should be allowed (default *false*).
+** *methodPost* (boolean) :True if http POST should be allowed (default *false*).
+** *methodPut* (boolean) : True if http PUT should be allowed (default *false*).
+** *methodPatch* (boolean) : True if http PATCH should be allowed (default *false*).
+** *methodDelete* (boolean) : True if http DELETE should be allowed (default *false*).
+** *methodHead* (boolean) : True if http HEAD should be allowed (default *false*).
+** *methodOptions* (boolean) : True if http OPTIONS should be allowed (default *false*).
+** *methodTrace* (boolean) : True if http TRACE should be allowed (default *false*).
+
+===== Sample Configuration
+```json
+{
+    "removePathPrefix" : true,
+    "whitelist" : [
+        {
+            "regex" : "/admin/.*",
+            "methodGet" : true,
+            "methodPost" : true
+        },
+        {
+            "regex" : "/users/.*",
+            "methodGet" : true,
+            "methodPost" : true,
+            "methodPut" : true,
+            "methodDelete" : true
+        }
+    ]
+}
+```
 
 
 === Limiting Policies
