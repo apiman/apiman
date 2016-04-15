@@ -1250,7 +1250,6 @@ not work (the policy scans for URLs and then matches those URLs against the conf
 is done for performance reasons.
 
 ===== Sample Configuration
-SAMPLE CONFIG TBD
 ```json
 {
     "fromRegex" : "https?://[^\/]*\/([.\/]*)",
