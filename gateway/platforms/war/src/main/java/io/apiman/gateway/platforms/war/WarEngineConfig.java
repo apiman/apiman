@@ -16,6 +16,8 @@
 package io.apiman.gateway.platforms.war;
 
 import io.apiman.common.config.ConfigFactory;
+import io.apiman.common.logging.DefaultDelegateFactory;
+import io.apiman.common.logging.IDelegateFactory;
 import io.apiman.common.plugin.Plugin;
 import io.apiman.common.plugin.PluginClassLoader;
 import io.apiman.common.plugin.PluginCoordinates;
@@ -58,6 +60,7 @@ public class WarEngineConfig implements IEngineConfig {
     public static final String APIMAN_GATEWAY_CONNECTOR_FACTORY_CLASS = "apiman-gateway.connector-factory"; //$NON-NLS-1$
     public static final String APIMAN_GATEWAY_POLICY_FACTORY_CLASS = "apiman-gateway.policy-factory"; //$NON-NLS-1$
     public static final String APIMAN_GATEWAY_METRICS_CLASS = "apiman-gateway.metrics"; //$NON-NLS-1$
+    public static final String APIMAN_GATEWAY_LOGGER_FACTORY_CLASS = "apiman-gateway.logger-factory"; //$NON-NLS-1$
 
     public static final String APIMAN_DATA_ENCRYPTER_TYPE = "apiman.encrypter.type"; //$NON-NLS-1$
 
@@ -65,7 +68,7 @@ public class WarEngineConfig implements IEngineConfig {
 
     public static final String APIMAN_GATEWAY_WRITER_FORMATTER_CLASS = "apiman-gateway.writers.policy-failure"; //$NON-NLS-1$
     public static final String APIMAN_GATEWAY_ERROR_WRITER_CLASS = "apiman-gateway.writers.error"; //$NON-NLS-1$
-    
+
     public static final String APIMAN_GATEWAY_INITIALIZERS = "apiman-gateway.initializers"; //$NON-NLS-1$
 
     public static final Configuration config;
@@ -235,6 +238,7 @@ public class WarEngineConfig implements IEngineConfig {
     }
 
     /**
+     * @param pluginRegistry the plugin registry
      * @return the class to use as the {@link IPolicyErrorWriter}
      */
     @SuppressWarnings("unchecked")
@@ -249,7 +253,18 @@ public class WarEngineConfig implements IEngineConfig {
     public Map<String, String> getPolicyErrorWriterConfig() {
         return getConfigMap(APIMAN_GATEWAY_ERROR_WRITER_CLASS);
     }
-    
+
+    @Override
+    public Class<? extends IDelegateFactory> getLoggerFactoryClass(IPluginRegistry pluginRegistry) {
+        return loadConfigClass(APIMAN_GATEWAY_LOGGER_FACTORY_CLASS,
+                IDelegateFactory.class, pluginRegistry, DefaultDelegateFactory.class);
+    }
+
+    @Override
+    public Map<String, String> getLoggerFactoryConfig() {
+        return getConfigMap(APIMAN_GATEWAY_LOGGER_FACTORY_CLASS);
+    }
+
     /**
      * @see io.apiman.gateway.engine.IEngineConfig#getGatewayInitializers(io.apiman.gateway.engine.IPluginRegistry)
      */
@@ -257,7 +272,7 @@ public class WarEngineConfig implements IEngineConfig {
     public List<EngineConfigTuple<? extends IGatewayInitializer>> getGatewayInitializers(
             IPluginRegistry pluginRegistry) {
         List<EngineConfigTuple<? extends IGatewayInitializer>> rval = new ArrayList<>();
-        
+
         String initializerIds = getConfig().getString(APIMAN_GATEWAY_INITIALIZERS);
         if (initializerIds != null) {
             for (String initializerId : initializerIds.split(",")) { //$NON-NLS-1$
@@ -267,7 +282,7 @@ public class WarEngineConfig implements IEngineConfig {
                 rval.add(new EngineConfigTuple<>(initializerClass, configMap));
             }
         }
-        
+
         return rval;
     }
 
@@ -343,4 +358,6 @@ public class WarEngineConfig implements IEngineConfig {
         }
         return rval;
     }
+
+
 }

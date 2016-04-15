@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apiman.manager.api.core.logging;
+package io.apiman.common.logging;
 
 /**
  * Simple logging interfaces. Later we'll add the ability to pass context info.
  *
- * @author Marc Savy <msavy@redhat.com>
+ * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 public interface IApimanLogger {
 
@@ -53,15 +53,15 @@ public interface IApimanLogger {
     /**
      * Log an error level message.
      *
-     * @param error
+     * @param error the error
      */
     void error(Throwable error);
 
     /**
      * Log an error level message.
      *
-     * @param message
-     * @param error
+     * @param message the message
+     * @param error the error
      */
     void error(String message, Throwable error);
 }

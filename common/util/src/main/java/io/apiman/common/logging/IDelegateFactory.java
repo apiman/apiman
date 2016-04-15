@@ -13,8 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apiman.manager.api.core.logging;
+package io.apiman.common.logging;
 
+/**
+ * Factory to create impl
+ *
+ * @author Marc Savy {@literal <msavy@redhat.com>}
+ */
 public interface IDelegateFactory {
 
     /**

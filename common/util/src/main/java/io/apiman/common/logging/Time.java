@@ -13,12 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apiman.manager.api.core.logging;
+package io.apiman.common.logging;
 
 /**
- * See: {@link IDelegateFactory}, {@link IApimanLogger}
+ * Particularly useful for testing purposes: provides time.
  *
- * @author Marc Savy <msavy@redhat.com>
+ * @author Marc Savy {@literal <msavy@redhat.com>}
  */
-public interface IApimanDelegateLogger extends IDelegateFactory, IApimanLogger {
+public interface Time {
+
+    /**
+     * @return the current time in ISO8601 format
+     */
+    String currentTimeIso8601();
 }

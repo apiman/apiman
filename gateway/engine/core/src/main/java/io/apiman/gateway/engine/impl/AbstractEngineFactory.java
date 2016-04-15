@@ -15,6 +15,7 @@
  */
 package io.apiman.gateway.engine.impl;
 
+import io.apiman.common.logging.IDelegateFactory;
 import io.apiman.common.util.crypt.CurrentDataEncrypter;
 import io.apiman.common.util.crypt.IDataEncrypter;
 import io.apiman.gateway.engine.IComponentRegistry;
@@ -56,13 +57,14 @@ public abstract class AbstractEngineFactory implements IEngineFactory {
         IConnectorFactory cfactory = createConnectorFactory(pluginRegistry);
         IPolicyFactory pfactory = createPolicyFactory(pluginRegistry);
         IMetrics metrics = createMetrics(pluginRegistry);
-        
+        IDelegateFactory logFactory = createLoggerFactory(pluginRegistry);
+
         List<IGatewayInitializer> initializers = createInitializers(pluginRegistry);
         for (IGatewayInitializer initializer : initializers) {
             initializer.initialize();
         }
 
-        return new EngineImpl(registry, pluginRegistry, componentRegistry, cfactory, pfactory, metrics);
+        return new EngineImpl(registry, pluginRegistry, componentRegistry, cfactory, pfactory, metrics, logFactory);
     }
 
     /**
@@ -119,5 +121,11 @@ public abstract class AbstractEngineFactory implements IEngineFactory {
      * @param pluginRegistry
      */
     protected abstract List<IGatewayInitializer> createInitializers(IPluginRegistry pluginRegistry);
+
+    /**
+     * Creates the logger factory
+     * @return anew log factory
+     */
+    protected abstract IDelegateFactory createLoggerFactory(IPluginRegistry pluginRegistry);
 
 }

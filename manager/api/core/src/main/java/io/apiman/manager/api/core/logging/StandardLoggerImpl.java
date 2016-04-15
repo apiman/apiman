@@ -15,6 +15,8 @@
  */
 package io.apiman.manager.api.core.logging;
 
+import io.apiman.common.logging.IApimanDelegateLogger;
+import io.apiman.common.logging.IApimanLogger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

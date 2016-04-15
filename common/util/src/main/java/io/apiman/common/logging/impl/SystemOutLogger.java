@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package io.apiman.manager.api.core.logging;
+package io.apiman.common.logging.impl;
+
+import io.apiman.common.logging.IApimanLogger;
 
 /**
  * @author eric.wittmann@gmail.com
@@ -28,7 +30,7 @@ public class SystemOutLogger implements IApimanLogger {
     }
 
     /**
-     * @see io.apiman.manager.api.core.logging.IApimanLogger#info(java.lang.String)
+     * @see IApimanLogger#info(java.lang.String)
      */
     @Override
     public void info(String message) {
@@ -36,7 +38,7 @@ public class SystemOutLogger implements IApimanLogger {
     }
 
     /**
-     * @see io.apiman.manager.api.core.logging.IApimanLogger#warn(java.lang.String)
+     * @see IApimanLogger#warn(java.lang.String)
      */
     @Override
     public void warn(String message) {
@@ -44,7 +46,7 @@ public class SystemOutLogger implements IApimanLogger {
     }
 
     /**
-     * @see io.apiman.manager.api.core.logging.IApimanLogger#debug(java.lang.String)
+     * @see IApimanLogger#debug(java.lang.String)
      */
     @Override
     public void debug(String message) {
@@ -52,7 +54,7 @@ public class SystemOutLogger implements IApimanLogger {
     }
 
     /**
-     * @see io.apiman.manager.api.core.logging.IApimanLogger#trace(java.lang.String)
+     * @see IApimanLogger#trace(java.lang.String)
      */
     @Override
     public void trace(String message) {
@@ -60,21 +62,21 @@ public class SystemOutLogger implements IApimanLogger {
     }
 
     /**
-     * @see io.apiman.manager.api.core.logging.IApimanLogger#error(java.lang.Throwable)
+     * @see IApimanLogger#error(java.lang.Throwable)
      */
     @Override
     public void error(Throwable error) {
-        System.out.println("** ERROR **"); //$NON-NLS-1$
-        error.printStackTrace();
+        System.err.println("** ERROR **"); //$NON-NLS-1$
+        error.printStackTrace(System.err);
     }
 
     /**
-     * @see io.apiman.manager.api.core.logging.IApimanLogger#error(java.lang.String, java.lang.Throwable)
+     * @see IApimanLogger#error(java.lang.String, java.lang.Throwable)
      */
     @Override
     public void error(String message, Throwable error) {
-        System.out.println("** ERROR: " + message + " **"); //$NON-NLS-1$ //$NON-NLS-2$
-        error.printStackTrace();
+        System.err.println("** ERROR: " + message + " **"); //$NON-NLS-1$ //$NON-NLS-2$
+        error.printStackTrace(System.err);
     }
 
 }

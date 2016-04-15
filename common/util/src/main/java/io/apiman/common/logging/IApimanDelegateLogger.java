@@ -13,28 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apiman.manager.api.core.logging;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.TimeZone;
+package io.apiman.common.logging;
 
 /**
- * Simple ISO-8601 format using local TZ.
+ * See: {@link IDelegateFactory}, {@link IApimanLogger}
  *
- * @author Marc Savy <msavy@redhat.com>
+ * @author Marc Savy {@literal <msavy@redhat.com>}
  */
-public class DefaultTimeImpl implements Time {
-    private static TimeZone zone = TimeZone.getDefault();
-    private static DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'"); //$NON-NLS-1$
-
-    static {
-        format.setTimeZone(zone);
-    }
-
-    @Override
-    public String currentTimeIso8601() {
-        return format.format(new Date());
-    }
+public interface IApimanDelegateLogger extends IDelegateFactory, IApimanLogger {
 }

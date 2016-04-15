@@ -15,7 +15,7 @@
  */
 package io.apiman.manager.api.exportimport.json;
 
-import io.apiman.manager.api.core.logging.IApimanLogger;
+import io.apiman.common.logging.IApimanLogger;
 import io.apiman.manager.api.exportimport.manager.ExportImportConfigParser;
 import io.apiman.manager.api.exportimport.read.IImportReader;
 import io.apiman.manager.api.exportimport.write.IExportWriter;
@@ -31,7 +31,7 @@ import java.io.OutputStream;
 public class JsonFileExportImportFactory implements IExportImportFactory {
 
     /**
-     * @see io.apiman.manager.api.exportimport.json.IExportImportFactory#createWriter(io.apiman.manager.api.exportimport.manager.ExportImportConfigParser, io.apiman.manager.api.core.logging.IApimanLogger)
+     * @see io.apiman.manager.api.exportimport.json.IExportImportFactory#createWriter(io.apiman.manager.api.exportimport.manager.ExportImportConfigParser, IApimanLogger)
      */
     @Override
     public IExportWriter createWriter(ExportImportConfigParser config, IApimanLogger logger) {
@@ -56,7 +56,7 @@ public class JsonFileExportImportFactory implements IExportImportFactory {
     }
     
     /**
-     * @see io.apiman.manager.api.exportimport.json.IExportImportFactory#createReader(io.apiman.manager.api.exportimport.manager.ExportImportConfigParser, io.apiman.manager.api.core.logging.IApimanLogger)
+     * @see io.apiman.manager.api.exportimport.json.IExportImportFactory#createReader(io.apiman.manager.api.exportimport.manager.ExportImportConfigParser, IApimanLogger)
      */
     @Override
     public IImportReader createReader(ExportImportConfigParser config, IApimanLogger logger) {

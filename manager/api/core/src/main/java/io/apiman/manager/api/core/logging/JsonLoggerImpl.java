@@ -20,6 +20,10 @@ import java.io.StringWriter;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.apiman.common.logging.DefaultTimeImpl;
+import io.apiman.common.logging.IApimanDelegateLogger;
+import io.apiman.common.logging.IApimanLogger;
+import io.apiman.common.logging.Time;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -101,7 +105,7 @@ import org.apache.logging.log4j.Logger;
  * </code>
  * </pre>
  *
- * @author Marc Savy <msavy@redhat.com>
+ * @author Marc Savy @{literal<msavy@redhat.com>}
  */
 public class JsonLoggerImpl implements IApimanDelegateLogger {
     /**

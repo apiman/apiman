@@ -18,8 +18,8 @@ package io.apiman.manager.api.migrator;
 
 import io.apiman.manager.api.config.Version;
 import io.apiman.manager.api.core.logging.ApimanLogger;
-import io.apiman.manager.api.core.logging.IApimanLogger;
-import io.apiman.manager.api.core.logging.SystemOutLogger;
+import io.apiman.common.logging.IApimanLogger;
+import io.apiman.common.logging.impl.SystemOutLogger;
 import io.apiman.manager.api.migrator.i18n.Messages;
 
 import java.io.File;
