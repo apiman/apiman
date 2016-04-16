@@ -170,6 +170,7 @@
     <version.io.swagger>1.5.7</version.io.swagger>
     <version.xmlunit>1.6</version.xmlunit>
     <version.io.vertx>3.1.0</version.io.vertx>
+    <version.net.openhft>0.6</version.net.openhft>
   </properties>
 
   <dependencyManagement>
@@ -655,6 +656,11 @@
       </dependency>
 
       <!-- Third Party Libraries -->
+      <dependency>
+	<groupId>net.openhft</groupId>
+	<artifactId>zero-allocation-hashing</artifactId>
+	<version>${version.net.openhft}</version>
+      </dependency>
       <dependency>
         <groupId>com.zaxxer</groupId>
         <artifactId>HikariCP</artifactId>

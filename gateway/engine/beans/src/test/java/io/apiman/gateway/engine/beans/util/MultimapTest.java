@@ -19,10 +19,12 @@ package io.apiman.gateway.engine.beans.util;
 import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -35,49 +37,57 @@ import org.junit.Test;
 @SuppressWarnings("nls")
 public class MultimapTest {
 
+    @SafeVarargs
+    private final static <T> Set<T> expected(T... entries) {
+        return new HashSet<>(Arrays.asList(entries));
+    }
+
+    private static <T> Set<T> toSet(List<T> list) {
+        return new HashSet<>(list);
+    }
+
     @Test
     public void shouldAllowMultipleValuesWhenUsingAdd() {
-        List<Entry<String, String>> expected = Arrays.asList(ent("x", "foo"), ent("x", "boo"),
-                ent("x", "woo"), ent("x", "new"), ent("X", "SHOUTING"));
+        Set<Entry<String, String>> expected = expected(ent("x", "foo"), ent("x", "boo"), ent("x", "woo"), ent("x", "new"), ent("X", "SHOUTING"));
 
         CaseInsensitiveStringMultiMap actual = new CaseInsensitiveStringMultiMap();
         actual.add("x", "foo").add("x", "boo").add("x", "woo").add("x", "new").add("Y", "blerg").add("X", "SHOUTING");
 
-        Assert.assertEquals(expected, actual.getAllEntries("x"));
+        Assert.assertEquals(expected, toSet(actual.getAllEntries("x")));
     }
 
     @Test
     public void shouldOverwriteValueWhenUsingPut() {
-        List<Entry<String, String>> expected = Arrays.asList(ent("x", "foo"));
+        Set<Entry<String, String>> expected = expected(ent("x", "foo"));
 
         CaseInsensitiveStringMultiMap actual = new CaseInsensitiveStringMultiMap();
         actual.add("x", "y").add("x", "z").put("x", "foo");
 
-        Assert.assertEquals(expected, actual.getAllEntries("x"));
+        Assert.assertEquals(expected, toSet(actual.getAllEntries("x")));
     }
 
     @Test // SHOULD include multiple values if they were defined (and matching keys with preserved formatting)
     public void shouldIterateOverEntries() {
-        List<Entry<String, String>> expected = Arrays.asList(ent("x", "foo"), ent("hello", "goodbye"),
+        Set<Entry<String, String>> expected = expected(ent("x", "foo"), ent("hello", "goodbye"),
                 ent("b", "x"), ent("B", "X"));
 
         CaseInsensitiveStringMultiMap mmap = new CaseInsensitiveStringMultiMap();
         mmap.add("x", "foo").add("hello", "goodbye").add("b", "x").add("B", "X");
 
         Iterable<Entry<String, String>> iterable = () -> mmap.iterator();
-        List<Entry<String, String>> actual = StreamSupport.stream(iterable.spliterator(), false).collect(Collectors.toList());
+        Set<Entry<String, String>> actual = toSet(StreamSupport.stream(iterable.spliterator(), false).collect(Collectors.toList()));
 
         Assert.assertEquals(expected, actual);
     }
 
     @Test
     public void shouldGetAllValuesForKey() {
-        List<String> expected = Arrays.asList("foo", "goodbye", "justvalue");
+        Set<String> expected = expected("foo", "goodbye", "justvalue");
 
         CaseInsensitiveStringMultiMap mmap = new CaseInsensitiveStringMultiMap();
         mmap.add("x", "foo").add("x", "goodbye").add("X", "justvalue");
 
-        Assert.assertEquals(expected, mmap.getAll("x"));
+        Assert.assertEquals(expected, toSet(mmap.getAll("x")));
     }
 
     @Test
@@ -105,12 +115,12 @@ public class MultimapTest {
         Assert.assertEquals(expected, c);
     }
 
-    @Test // First head/value pair should be taken, others ignored.
+    @Test // Last head/value pair should be taken, others ignored.
     public void convertToMap() {
         Map<String, String> expected = new LinkedHashMap<>();
         expected.put("a", "x");
         expected.put("b", "y");
-        expected.put("c", "z");
+        expected.put("C", "X_X"); // Last in should win
 
         CaseInsensitiveStringMultiMap mmap = new CaseInsensitiveStringMultiMap();
         // Additional entries should be ignored
@@ -134,12 +144,28 @@ public class MultimapTest {
         Assert.assertEquals(expected, actual);
     }
 
+    @Test // A and C will have same bucket by virtue of size 1 array
+    public void removeEntriesWithCollision() {
+        Map<String, String> expected = new LinkedHashMap<>(); // Expect empty
+        expected.put("C", "X_X");
+        expected.put("b", "b");
+        expected.put("aa", "x");
+
+        CaseInsensitiveStringMultiMap mmap = new CaseInsensitiveStringMultiMap(1);
+        // Additional entries should be ignored
+        mmap.add("b", "b").add("aa", "x").add("a", "x").add("a", "y").add("A", "z").add("a", "XX").add("C", "X_X");
+        mmap.remove("a");
+        Map<String, String> actual = mmap.toMap();
+
+        Assert.assertEquals(expected, actual);
+    }
+
     @Test
-    public void getShouldReturnTheFirstValueOnly() {
+    public void getShouldReturnTheLastValueOnly() {
         CaseInsensitiveStringMultiMap mmap = new CaseInsensitiveStringMultiMap();
         // Additional entries should be ignored
         mmap.add("a", "x").add("b", "y").add("c", "z").add("c", "XX").add("C", "X_X");
-        Assert.assertEquals("z", mmap.get("c"));
+        Assert.assertEquals("X_X", mmap.get("c"));
     }
 
     private Entry<String, String> ent(String k, String v) {

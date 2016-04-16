@@ -29,6 +29,8 @@ import java.util.Set;
  * {@link #put(String, String)}, which behaves like a traditional 1:1 map,
  * versus {@link #add(String, String)} which behaves like a 1:N multimap.
  *
+ * Do not rely upon iteration order being consistent.
+ *
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 public interface IStringMultiMap extends Iterable<Map.Entry<String, String>> {
