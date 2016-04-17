@@ -20,6 +20,9 @@ import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 /**
@@ -53,8 +56,10 @@ public class QueryMap extends CaseInsensitiveStringMultiMap implements Serializa
     }
 
     @SuppressWarnings("nls")
-    public String toQueryString() {
-        return getEntries().stream()
+    public String toQueryString() { // TODO optimise
+        List<Entry<String, String>> elems = getEntries();
+        Collections.reverse(elems);
+        return elems.stream()
                 .map(pair -> URLEnc(pair.getKey()) + "=" + URLEnc(pair.getValue()))
                 .collect(Collectors.joining("&"));
     }
@@ -67,5 +72,4 @@ public class QueryMap extends CaseInsensitiveStringMultiMap implements Serializa
             return str;
         }
     }
-
 }
