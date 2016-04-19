@@ -55,7 +55,7 @@ public class PolicyDefinitionBean implements Serializable {
     @Id
     @Column(nullable=false)
     private String id;
-    @Column(name = "policy_impl", updatable=false, nullable=false)
+    @Column(name = "policy_impl", updatable=true, nullable=false)
     private String policyImpl;
     @Column(updatable=true, nullable=false)
     private String name;

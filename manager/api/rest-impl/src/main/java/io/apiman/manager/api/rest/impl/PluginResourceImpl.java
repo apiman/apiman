@@ -16,7 +16,6 @@
 
 package io.apiman.manager.api.rest.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.apiman.common.plugin.Plugin;
 import io.apiman.common.plugin.PluginClassLoader;
 import io.apiman.common.plugin.PluginCoordinates;
@@ -66,6 +65,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.apache.commons.io.IOUtils;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Implementation of the Plugin API.
@@ -210,6 +211,7 @@ public class PluginResourceImpl implements IPluginResource {
                     existingPolicyDef.setFormType(policyDef.getFormType());
                     existingPolicyDef.setForm(policyDef.getForm());
                     existingPolicyDef.setDeleted(false);
+                    existingPolicyDef.setPolicyImpl(policyDef.getPolicyImpl());
                     storage.updatePolicyDefinition(existingPolicyDef);
                     updatedPolicyDefCounter++;
                 } else {
