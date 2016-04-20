@@ -16,6 +16,7 @@
 package io.apiman.gateway.test;
 
 import io.apiman.gateway.test.junit.GatewayRestTestPlan;
+import io.apiman.gateway.test.junit.GatewayRestTestSystemProperties;
 import io.apiman.gateway.test.junit.GatewayRestTester;
 
 import java.io.File;
@@ -30,6 +31,7 @@ import org.junit.runner.RunWith;
  */
 @RunWith(GatewayRestTester.class)
 @GatewayRestTestPlan("test-plans/plugins/test-policy-testPlan.xml")
+@GatewayRestTestSystemProperties({ "apiman-gateway.policy-factory.reload-snapshots", "true" })
 public class PluginTestPolicyTest {
 
     @BeforeClass

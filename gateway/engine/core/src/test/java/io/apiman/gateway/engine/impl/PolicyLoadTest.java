@@ -24,6 +24,7 @@ import io.apiman.gateway.engine.policy.PolicyFactoryImpl;
 import io.apiman.gateway.engine.util.PassthroughPolicy;
 
 import java.lang.reflect.Field;
+import java.util.Collections;
 import java.util.Map;
 
 import org.junit.Assert;
@@ -43,7 +44,7 @@ public class PolicyLoadTest {
 
     @Before
     public void setup() {
-        policyFactory = new PolicyFactoryImpl();
+        policyFactory = new PolicyFactoryImpl(Collections.emptyMap());
     }
 
     @Test

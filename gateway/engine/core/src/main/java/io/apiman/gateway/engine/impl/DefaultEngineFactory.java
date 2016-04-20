@@ -88,7 +88,7 @@ public abstract class DefaultEngineFactory extends AbstractEngineFactory {
      */
     @Override
     protected IPolicyFactory createPolicyFactory(IPluginRegistry pluginRegistry) {
-        return new PolicyFactoryImpl();
+        return new PolicyFactoryImpl(Collections.emptyMap());
     }
 
     /**

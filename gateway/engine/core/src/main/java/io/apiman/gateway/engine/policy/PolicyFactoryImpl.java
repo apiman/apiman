@@ -38,11 +38,14 @@ public class PolicyFactoryImpl implements IPolicyFactory {
     private IPluginRegistry pluginRegistry;
     private Map<String, IPolicy> policyCache = new HashMap<>();
     private Map<String, Object> policyConfigCache = new HashMap<>();
+    private final boolean reloadSnapshots;
 
     /**
      * Constructor.
+     * @param config
      */
-    public PolicyFactoryImpl() {
+    public PolicyFactoryImpl(Map<String, String> config) {
+        reloadSnapshots = "true".equals(config.get("reload-snapshots")); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**
@@ -155,7 +158,7 @@ public class PolicyFactoryImpl implements IPolicyFactory {
             return;
         }
         final String classname = policyImpl.substring(ssidx + 1);
-        final boolean isSnapshot = PluginUtils.isSnapshot(coordinates);
+        final boolean isSnapshot = reloadSnapshots && PluginUtils.isSnapshot(coordinates);
         this.pluginRegistry.loadPlugin(coordinates, new IAsyncResultHandler<Plugin>() {
             @Override
             public void handle(IAsyncResult<Plugin> result) {
