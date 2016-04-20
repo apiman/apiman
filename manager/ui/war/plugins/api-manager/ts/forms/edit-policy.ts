@@ -44,6 +44,8 @@ module Apiman {
 
                         if (policy.definition.formType == 'JsonSchema') {
                             $scope.include = 'plugins/api-manager/html/policyForms/JsonSchema.include';
+                        } else if($scope.selectedDef.formType == 'Custom') {
+                            $scope.include = 'plugins/api-manager/html/forms/custom.html';
                         } else {
                             var inc = ConfigForms[policy.definition.id];
 

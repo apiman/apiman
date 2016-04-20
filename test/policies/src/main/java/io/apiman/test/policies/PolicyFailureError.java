@@ -17,6 +17,10 @@ package io.apiman.test.policies;
 
 import io.apiman.gateway.engine.beans.PolicyFailure;
 
+import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.util.Map.Entry;
+
 /**
  * Thrown when the policy test results in a policy failure.
  *
@@ -41,6 +45,42 @@ public class PolicyFailureError extends Exception {
      */
     public PolicyFailure getFailure() {
         return failure;
+    }
+    
+    /**
+     * @see java.lang.Throwable#printStackTrace(java.io.PrintStream)
+     */
+    @SuppressWarnings("nls")
+    @Override
+    public void printStackTrace(PrintStream s) {
+        s.println("==== Apiman Failure ====");
+        s.println("Failure Type:  " + this.failure.getType());
+        s.println("Failure Code:  " + this.failure.getFailureCode());
+        s.println("Message:       " + this.failure.getMessage());
+        s.println("Response Code: " + this.failure.getResponseCode());
+        s.println("Headers: ");
+        for (Entry<String, String> entry : this.failure.getHeaders()) {
+            s.println("  " + entry.getKey() + "=" + entry.getValue());
+        }
+        super.printStackTrace(s);
+    }
+    
+    /**
+     * @see java.lang.Throwable#printStackTrace(java.io.PrintWriter)
+     */
+    @SuppressWarnings("nls")
+    @Override
+    public void printStackTrace(PrintWriter s) {
+        s.println("==== Apiman Failure ====");
+        s.println("Failure Type:  " + this.failure.getType());
+        s.println("Failure Code:  " + this.failure.getFailureCode());
+        s.println("Message:       " + this.failure.getMessage());
+        s.println("Response Code: " + this.failure.getResponseCode());
+        s.println("Headers: ");
+        for (Entry<String, String> entry : this.failure.getHeaders()) {
+            s.println("  " + entry.getKey() + "=" + entry.getValue());
+        }
+        super.printStackTrace(s);
     }
 
 }

@@ -14,6 +14,26 @@ module Apiman {
         return valid;
     };
 
+
+
+    // This is the controller that calls the CustomTemplateSvcs service
+    // to determine where to pull the dynamic template from, and provides additional functionality
+    // that can be performed on that template. We can discuss complete customizability in the future. RMY
+    _module.controller('Apiman.CustomFormController',
+        ['$scope', 'Logger', 'PluginSvcs', 'EntityStatusSvc', 'CustomTemplateSvcs', ($scope, Logger, PluginSvcs, EntityStatusSvc, CustomTemplateSvcs) => {
+            $scope.formPath = CustomTemplateSvcs.getTemplate();
+
+            // Convenience methods such as validation, progress bars, etc.
+
+            // Do stuff here to submit request to API using Auth Header
+            $scope.submit = function () {
+                alert('Submitted!');
+            };
+
+            $scope.schemaState = 'loaded';
+        }]);
+
+
     _module.controller('Apiman.DefaultPolicyConfigFormController',
         ['$scope', 'Logger', 'EntityStatusSvc',
         ($scope, Logger, EntityStatusSvc) => {
@@ -37,6 +57,7 @@ module Apiman {
 
             $scope.$watch('rawConfig', validateRaw);
         }]);
+
 
     _module.controller('Apiman.JsonSchemaPolicyConfigFormController',
         ['$scope', 'Logger', 'PluginSvcs', 'EntityStatusSvc',

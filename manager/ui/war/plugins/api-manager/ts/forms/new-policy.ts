@@ -16,8 +16,8 @@ module Apiman {
     };
 
     export var NewPolicyController = _module.controller("Apiman.NewPolicyController",
-        ['$q', '$location', '$scope', 'OrgSvcs', 'ApimanSvcs', 'PageLifecycle', 'Logger', '$routeParams',
-        ($q, $location, $scope, OrgSvcs, ApimanSvcs, PageLifecycle, Logger, $routeParams) => {
+        ['$q', '$location', '$scope', 'OrgSvcs', 'ApimanSvcs', 'CustomTemplateSvcs', 'PageLifecycle', 'Logger', '$routeParams',
+        ($q, $location, $scope, OrgSvcs, ApimanSvcs, CustomTemplateSvcs, PageLifecycle, Logger, $routeParams) => {
             var params = $routeParams;
             
             var pageData = {
@@ -36,6 +36,9 @@ module Apiman {
                     $scope.config = new Object();
                     if ($scope.selectedDef.formType == 'JsonSchema') {
                         $scope.include = 'plugins/api-manager/html/policyForms/JsonSchema.include';
+                    } else if($scope.selectedDef.formType == 'Custom') {
+                        CustomTemplateSvcs.setTemplate('plugins/api-manager/html/policyForms/' + $scope.selectedDef.id + '.html');
+                        $scope.include = 'plugins/api-manager/html/forms/custom.html';
                     } else {
                         var inc = ConfigForms[$scope.selectedDef.id];
 
@@ -71,6 +74,8 @@ module Apiman {
                     $scope.config = new Object();
                     if ($scope.selectedDef.formType == 'JsonSchema') {
                         $scope.include = 'plugins/api-manager/html/policyForms/JsonSchema.include';
+                    } else if($scope.selectedDef.formType == 'Custom') {
+                        $scope.include = 'plugins/api-manager/html/forms/custom.html';
                     } else {
                         var inc = ConfigForms[$scope.selectedDef.id];
                         if (!inc) {

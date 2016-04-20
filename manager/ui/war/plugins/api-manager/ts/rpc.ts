@@ -38,6 +38,22 @@ module ApimanRPC {
                 }});
         }]);
 
+
+    // Best practice here is to use a service to set the custom template path
+    // so that it is accessible by multiple controllers
+    export var CustomTemplateSvcs = _module.service('CustomTemplateSvcs', ['$rootScope', function($rootScope) {
+        return {
+            getTemplate: function() {
+                return $rootScope.customTemplate;
+            },
+            setTemplate: function(template) {
+                $rootScope.customTemplate = template;
+                
+                return;
+            }
+        }
+    }]);
+
     export var UserSvcs = _module.factory('UserSvcs', ['$resource', 'Configuration',
         function($resource, Configuration) {
             var endpoint = Configuration.api.endpoint + '/users/:user/:entityType';
