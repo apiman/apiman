@@ -24,7 +24,6 @@ import io.apiman.gateway.engine.beans.exceptions.ComponentNotFoundException;
 import io.apiman.gateway.engine.beans.exceptions.InterceptorAlreadyRegisteredException;
 
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -38,7 +37,7 @@ public class PolicyContextImpl implements IPolicyContext {
     private final Map<String, Object> conversation = new HashMap<>();
     private final IDelegateFactory logFactory;
     // Using String instead of Class to avoid any accidental memory leak issues.
-    private final static Map<String, IApimanLogger> loggers = new LinkedHashMap<>();
+    private final static Map<String, IApimanLogger> loggers = new HashMap<>();
     private IConnectorInterceptor connectorInterceptor;
 
     /**
