@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 JBoss Inc
+ * Copyright 2016 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apiman.manager.api.core.logging;
+package io.apiman.gateway.test;
+
+import io.apiman.gateway.test.junit.GatewayRestTestPlan;
+import io.apiman.gateway.test.junit.GatewayRestTestSystemProperties;
+import io.apiman.gateway.test.junit.GatewayRestTester;
+
+import org.junit.runner.RunWith;
 
 /**
- * See: {@link IDelegateFactory}, {@link IApimanLogger}
- *
- * @author Marc Savy <msavy@redhat.com>
+ * Test whether logging works
  */
-public interface IApimanDelegateLogger extends IDelegateFactory, IApimanLogger {
+@RunWith(GatewayRestTester.class)
+@GatewayRestTestPlan("test-plans/policies/logging-testPlan.xml")
+@GatewayRestTestSystemProperties({
+   "apiman-gateway.logger-factory", "io.apiman.gateway.test.logging.LogTestDelegateFactory"
+})
+public class LoggingTest {
+
 }

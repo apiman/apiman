@@ -16,6 +16,8 @@
 
 package io.apiman.gateway.engine.policy;
 
+import io.apiman.common.logging.IApimanLogger;
+import io.apiman.common.logging.IDelegateFactory;
 import io.apiman.gateway.engine.IComponent;
 import io.apiman.gateway.engine.IComponentRegistry;
 import io.apiman.gateway.engine.beans.exceptions.ComponentNotFoundException;
@@ -30,17 +32,22 @@ import java.util.Map;
  * @author eric.wittmann@redhat.com
  */
 public class PolicyContextImpl implements IPolicyContext {
-    
+
     private final IComponentRegistry componentRegistry;
     private final Map<String, Object> conversation = new HashMap<>();
+    private final IDelegateFactory logFactory;
+    // Using String instead of Class to avoid any accidental memory leak issues.
+    private final static Map<String, IApimanLogger> loggers = new HashMap<>();
     private IConnectorInterceptor connectorInterceptor;
-    
+
     /**
      * Constructor.
      * @param componentRegistry the component registry
+     * @param logFactory the log factory
      */
-    public PolicyContextImpl(IComponentRegistry componentRegistry) {
+    public PolicyContextImpl(IComponentRegistry componentRegistry, IDelegateFactory logFactory) {
         this.componentRegistry = componentRegistry;
+        this.logFactory = logFactory;
     }
 
     /**
@@ -98,6 +105,17 @@ public class PolicyContextImpl implements IPolicyContext {
     @Override
     public IConnectorInterceptor getConnectorInterceptor() {
         return connectorInterceptor;
+    }
+
+    @Override
+    public IApimanLogger getLogger(Class<?> klazz) {
+        if (loggers.containsKey(klazz.getCanonicalName())) {
+            return loggers.get(klazz.getCanonicalName());
+        } else {
+            IApimanLogger logger = logFactory.createLogger(klazz);
+            loggers.put(klazz.getCanonicalName(), logger);
+            return logger;
+        }
     }
 
 }

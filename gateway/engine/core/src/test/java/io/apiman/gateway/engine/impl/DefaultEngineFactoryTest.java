@@ -21,6 +21,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import io.apiman.common.logging.IDelegateFactory;
 import io.apiman.gateway.engine.IApiConnection;
 import io.apiman.gateway.engine.IApiConnectionResponse;
 import io.apiman.gateway.engine.IApiConnector;
@@ -178,6 +179,12 @@ public class DefaultEngineFactoryTest {
                         return connector;
                     }
                 };
+            }
+
+            @Override
+            protected IDelegateFactory createLoggerFactory(IPluginRegistry pluginRegistry) {
+                // TODO Auto-generated method stub
+                return null;
             }
         };
 

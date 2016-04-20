@@ -13,23 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apiman.manager.api.core.logging;
+package io.apiman.common.logging;
 
-public interface IDelegateFactory {
-
-    /**
-     * Create a logger by name
-     *
-     * @param name the name
-     * @return the logger
-     */
-    IApimanLogger createLogger(String name);
-
-    /**
-     * Create a logger by class
-     *
-     * @param klazz the class
-     * @return the logger
-     */
-    IApimanLogger createLogger(Class <?> klazz);
+/**
+ * See: {@link IDelegateFactory}, {@link IApimanLogger}
+ *
+ * @author Marc Savy {@literal <msavy@redhat.com>}
+ */
+public interface IApimanDelegateLogger extends IDelegateFactory, IApimanLogger {
 }

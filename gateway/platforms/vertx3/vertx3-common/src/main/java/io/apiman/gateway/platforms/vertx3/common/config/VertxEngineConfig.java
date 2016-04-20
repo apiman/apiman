@@ -15,6 +15,7 @@
  */
 package io.apiman.gateway.platforms.vertx3.common.config;
 
+import io.apiman.common.logging.IDelegateFactory;
 import io.apiman.common.util.SimpleStringUtils;
 import io.apiman.common.util.crypt.IDataEncrypter;
 import io.apiman.gateway.engine.EngineConfigTuple;
@@ -170,7 +171,17 @@ public class VertxEngineConfig implements IEngineConfig {
 
         return toFlatStringMap(componentConfig);
     }
-    
+
+    @Override
+    public Class<? extends IDelegateFactory> getLoggerFactoryClass(IPluginRegistry pluginRegistry) {
+        return VertxLoggerDelegate.class;
+    }
+
+    @Override
+    public Map<String, String> getLoggerFactoryConfig() {
+        return null;
+    }
+
     /**
      * @see io.apiman.gateway.engine.IEngineConfig#getGatewayInitializers(io.apiman.gateway.engine.IPluginRegistry)
      */

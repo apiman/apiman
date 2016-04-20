@@ -15,6 +15,7 @@
  */
 package io.apiman.gateway.engine.impl;
 
+import io.apiman.common.logging.IDelegateFactory;
 import io.apiman.common.util.crypt.IDataEncrypter;
 import io.apiman.gateway.engine.EngineConfigTuple;
 import io.apiman.gateway.engine.IComponentRegistry;
@@ -127,21 +128,28 @@ public class ConfigDrivenEngineFactory extends AbstractEngineFactory {
         Map<String, String> config = engineConfig.getMetricsConfig();
         return create(c, config);
     }
-    
+
     /**
      * @see io.apiman.gateway.engine.impl.AbstractEngineFactory#createInitializers(io.apiman.gateway.engine.IPluginRegistry)
      */
     @Override
     protected List<IGatewayInitializer> createInitializers(IPluginRegistry pluginRegistry) {
         List<IGatewayInitializer> rval = new ArrayList<>();
-        
+
         List<EngineConfigTuple<? extends IGatewayInitializer>> initializers = engineConfig.getGatewayInitializers(pluginRegistry);
         for (EngineConfigTuple<? extends IGatewayInitializer> tuple : initializers) {
             IGatewayInitializer initializer = create(tuple.getComponentClass(), tuple.getComponentConfig());
             rval.add(initializer);
         }
-        
+
         return rval;
+    }
+
+    @Override
+    protected IDelegateFactory createLoggerFactory(IPluginRegistry pluginRegistry) {
+        Class<? extends IDelegateFactory> c = engineConfig.getLoggerFactoryClass(pluginRegistry);
+        Map<String, String> config = engineConfig.getLoggerFactoryConfig();
+        return create(c, config);
     }
 
     /**
@@ -176,5 +184,4 @@ public class ConfigDrivenEngineFactory extends AbstractEngineFactory {
             throw new RuntimeException(e);
         }
     }
-
 }

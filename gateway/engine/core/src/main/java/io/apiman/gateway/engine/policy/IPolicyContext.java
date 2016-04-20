@@ -15,6 +15,7 @@
  */
 package io.apiman.gateway.engine.policy;
 
+import io.apiman.common.logging.IApimanLogger;
 import io.apiman.gateway.engine.IComponent;
 import io.apiman.gateway.engine.beans.exceptions.ComponentNotFoundException;
 import io.apiman.gateway.engine.beans.exceptions.InterceptorAlreadyRegisteredException;
@@ -22,7 +23,7 @@ import io.apiman.gateway.engine.beans.exceptions.InterceptorAlreadyRegisteredExc
 
 /**
  * Context information provided to an executing policy.
- * 
+ *
  * @author Marc Savy <msavy@redhat.com>
  */
 public interface IPolicyContext {
@@ -49,28 +50,33 @@ public interface IPolicyContext {
      * @return whether attribute was removed
      */
     boolean removeAttribute(String name);
-    
+
     /**
      * Gets a component by type.  Components are provided by the APIMan system for
      * use by policies during their execution.  Examples of components include the
      * Shared State Component and the HTTP Client Component.
      * @param componentClass
      * @return the component of type T
-     * @throws ComponentNotFoundException 
+     * @throws ComponentNotFoundException
      */
     <T extends IComponent> T getComponent(Class<T> componentClass) throws ComponentNotFoundException;
-    
+
     /**
      * Sets the {@link IConnectorInterceptor} to be used instead of the real connection.
-     * @param connectorInterceptor the connector interceptor  
-     * 
+     * @param connectorInterceptor the connector interceptor
+     *
      * @throws InterceptorAlreadyRegisteredException
      */
     void setConnectorInterceptor(IConnectorInterceptor connectorInterceptor) throws InterceptorAlreadyRegisteredException;
-    
+
     /**
      * @return {@link IConnectorInterceptor} set to the context or null otherwise
      */
     IConnectorInterceptor getConnectorInterceptor();
-    
+
+    /**
+     * @param klazz the class
+     * @return A logger associated with the conversation.
+     */
+    IApimanLogger getLogger(Class<?> klazz);
 }

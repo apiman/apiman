@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testPlan xmlns="urn:io.apiman.test:2014:02:testPlan">
+
+  <testGroup name="Test Gateway Logging">
+    <test name="Setup API" endpoint="api">test-plan-data/policies/logging/001-publish-api.resttest</test>
+    <test name="Blah, blah, blah!" endpoint="gateway">test-plan-data/policies/logging/002-log.resttest</test>
+  </testGroup>
+
+</testPlan>

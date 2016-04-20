@@ -16,7 +16,7 @@
 package io.apiman.manager.api.core.config;
 
 import io.apiman.common.config.ConfigFactory;
-import io.apiman.manager.api.core.logging.IApimanLogger;
+import io.apiman.common.logging.IApimanLogger;
 
 import java.net.MalformedURLException;
 import java.net.URL;
