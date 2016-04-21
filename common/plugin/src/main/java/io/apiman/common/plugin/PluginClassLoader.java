@@ -21,6 +21,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -227,6 +228,23 @@ public class PluginClassLoader extends ClassLoader {
                 }
             }
         }
+        
+        ZipEntry entry;
+        File file;
+        for (ZipFile zipFile : this.dependencyZips) {
+            entry = zipFile.getEntry(name);
+            if (entry != null) {
+                try {
+                    file = new File(zipFile.getName());
+                    URL zipUrl = file.toURI().toURL();
+                    URL entryUrl = new URL("jar:" + zipUrl + "!/" + name);
+                    return entryUrl;
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        
         return super.findResource(name);
     }
 
