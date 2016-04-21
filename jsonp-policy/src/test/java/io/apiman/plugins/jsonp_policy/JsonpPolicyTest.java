@@ -32,7 +32,7 @@ public class JsonpPolicyTest {
     private JsonpPolicy jsonpPolicy;
 
     @Spy
-    private IPolicyContext sContext = new PolicyContextImpl(null);
+    private IPolicyContext sContext = new PolicyContextImpl(null, null);
 
     @Before
     public void setUp() {
