@@ -92,7 +92,7 @@
 
     <version.commons-lang>2.6</version.commons-lang>
     <version.com.fasterxml.jackson>2.5.4</version.com.fasterxml.jackson>
-    <version.org.keycloak>1.9.1.Final</version.org.keycloak>
+    <version.org.keycloak>1.9.2.Final</version.org.keycloak>
     <version.org.bouncycastle>1.52</version.org.bouncycastle>
     <version.org.json>20140107</version.org.json>
   </properties>
