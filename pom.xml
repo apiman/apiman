@@ -159,7 +159,7 @@
     <version.org.jboss.spec.javax.transaction.jboss-transaction-api_1.2_spec>1.0.0.Final</version.org.jboss.spec.javax.transaction.jboss-transaction-api_1.2_spec>
     <version.org.jboss.spec.javax.ws.jboss-jaxrs-api_2.0_spec>1.0.0.Final</version.org.jboss.spec.javax.ws.jboss-jaxrs-api_2.0_spec>
     <version.org.jboss.weld.weld>2.3.3.Final</version.org.jboss.weld.weld>
-    <version.org.keycloak>1.9.1.Final</version.org.keycloak>
+    <version.org.keycloak>1.9.2.Final</version.org.keycloak>
     <version.org.mockito>1.9.5</version.org.mockito>
     <version.org.mvel>2.2.7.Final</version.org.mvel>
     <version.org.osgi>4.2.0</version.org.osgi>
