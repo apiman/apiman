@@ -8,17 +8,13 @@
   "properties": {
     "rules": {
       "title": "Add Authorization Rule",
-      "description": "Manage the list of fine-grained authorization rules in the box below. If you want a single required role to protect your entire API, simply add one item with a path of \".*\" and an action of \"*\".",
+      "description": "Manage the list of fine-grained authorization rules in the box below. If you want a single required role to protect your entire API, simply add one item with an action of \"*\".",
       "type": "array",
       "format": "table",
       "items": {
         "type": "object",
         "title": "Rule",
         "properties": {
-          "pathPattern": {
-            "title": "Path",
-            "type": "string"
-          },
           "action": {
             "title": "SOAPAction",
             "type": "string"

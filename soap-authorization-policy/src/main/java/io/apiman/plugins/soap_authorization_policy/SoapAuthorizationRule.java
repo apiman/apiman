@@ -24,7 +24,6 @@ package io.apiman.plugins.soap_authorization_policy;
 public class SoapAuthorizationRule {
 
     private String action;
-    private String pathPattern;
     private String role;
 
     public SoapAuthorizationRule() {
@@ -42,20 +41,6 @@ public class SoapAuthorizationRule {
      */
     public void setAction(String action) {
         this.action = action;
-    }
-
-    /**
-     * @return pathPattern
-     */
-    public String getPathPattern() {
-        return pathPattern;
-    }
-
-    /**
-     * @param pathPattern
-     */
-    public void setPathPattern(String pathPattern) {
-        this.pathPattern = pathPattern;
     }
 
     /**
@@ -78,8 +63,7 @@ public class SoapAuthorizationRule {
     @Override
     public boolean equals(Object obj) {
         SoapAuthorizationRule rule2 = (SoapAuthorizationRule) obj;
-        return this.getAction().equals(rule2.getAction()) && this.getPathPattern().equals(rule2.getPathPattern())
-                && this.getRole().equals(rule2.getRole());
+        return this.getAction().equals(rule2.getAction()) && this.getRole().equals(rule2.getRole());
     }
 
 }

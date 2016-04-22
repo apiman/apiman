@@ -50,7 +50,7 @@ public class SoapAuthorizationPolicyTest extends ApimanPolicyTest {
     @Test
     @Configuration("{\r\n" +
                 "  \"rules\" : [\r\n" +
-                "    { \"action\" : \"*\", \"pathPattern\" : \".*\", \"role\" : \"role-1\" }\r\n" +
+                "    { \"action\" : \"*\", \"role\" : \"role-1\" }\r\n" +
                 "  ]\r\n" +
                 "}")
     public void testSimple() throws Throwable {
@@ -70,42 +70,7 @@ public class SoapAuthorizationPolicyTest extends ApimanPolicyTest {
     @Configuration("{\r\n" +
                 " \"requestUnmatched\" : \"pass\"," +
                 "  \"rules\" : [\r\n" +
-                "    { \"action\" : \"*\", \"pathPattern\" : \"/auth/.*\", \"role\" : \"the-role\" }\r\n" +
-                "  ]\r\n" +
-                "}")
-    public void testPath() throws Throwable {
-        HashSet<String> userRoles = new HashSet<>();
-        userRoles.add("other-role");
-        
-        // Should Fail
-        PolicyTestRequest request = PolicyTestRequest.build(PolicyTestRequestType.GET, "/auth/my-items");
-        
-        try {
-            request.header("SOAPAction", "reportIncident");
-            request.contextAttribute(SoapAuthorizationPolicy.AUTHENTICATED_USER_ROLES, userRoles);
-            send(request);
-            Assert.fail("Expected a failure response!");
-        } catch (PolicyFailureError failure) {
-            PolicyFailure policyFailure = failure.getFailure();
-            Assert.assertNotNull(policyFailure);
-            Assert.assertEquals(PolicyFailureType.Authorization, policyFailure.getType());
-            Assert.assertEquals(10009, policyFailure.getFailureCode());
-        }
-        
-        // Should Succeed
-        request = PolicyTestRequest.build(PolicyTestRequestType.GET, "/unauth/my-items");
-        request.header("SOAPAction", "reportIncident");
-        request.contextAttribute(SoapAuthorizationPolicy.AUTHENTICATED_USER_ROLES, userRoles);
-        PolicyTestResponse response = send(request);
-        EchoResponse echo = response.entity(EchoResponse.class);
-        Assert.assertNotNull(echo);
-    }
-
-    @Test
-    @Configuration("{\r\n" +
-                " \"requestUnmatched\" : \"pass\"," +
-                "  \"rules\" : [\r\n" +
-                "    { \"action\" : \"reportIncident\", \"pathPattern\" : \"/auth/.*\", \"role\" : \"the-role\" }\r\n" +
+                "    { \"action\" : \"reportIncident\", \"role\" : \"the-role\" }\r\n" +
                 "  ]\r\n" +
                 "}")
     public void testAction() throws Throwable {
@@ -140,8 +105,8 @@ public class SoapAuthorizationPolicyTest extends ApimanPolicyTest {
     @Test
     @Configuration("{\r\n" +
                 "  \"rules\" : [\r\n" +
-                "    { \"action\" : \"*\", \"pathPattern\" : \"/.*\", \"role\" : \"user\" },\r\n" +
-                "    { \"action\" : \"*\", \"pathPattern\" : \"/admin/.*\", \"role\" : \"admin\" }\r\n" +
+                "    { \"action\" : \"reportIncident\", \"role\" : \"user\" },\r\n" +
+                "    { \"action\" : \"resolveIncident\", \"role\" : \"admin\" }\r\n" +
                 "  ]\r\n" +
                 "}")
     public void testMultiple() throws Throwable {
@@ -161,7 +126,7 @@ public class SoapAuthorizationPolicyTest extends ApimanPolicyTest {
         request = PolicyTestRequest.build(PolicyTestRequestType.GET, "/admin/path/to/admin/resource");
         
         try {
-            request.header("SOAPAction", "reportIncident");
+            request.header("SOAPAction", "resolveIncident");
             request.contextAttribute(SoapAuthorizationPolicy.AUTHENTICATED_USER_ROLES, userRoles);
             send(request);
             Assert.fail("Expected a failure response!");
@@ -197,8 +162,8 @@ public class SoapAuthorizationPolicyTest extends ApimanPolicyTest {
     @Configuration("{\r\n" +
                 " \"requestUnmatched\" : \"pass\"," +
                 "  \"rules\" : [\r\n" +
-                "    { \"action\" : \"reportIncident\", \"pathPattern\" : \"/user/.*\", \"role\" : \"user\" },\r\n" +
-                "    { \"action\" : \"reportIncident\", \"pathPattern\" : \"/admin/.*\", \"role\" : \"admin\" }\r\n" +
+                "    { \"action\" : \"viewIncident\", \"role\" : \"user\" },\r\n" +
+                "    { \"action\" : \"viewIncident\", \"role\" : \"admin\" }\r\n" +
                 "  ]\r\n" +
                 "}")
     public void testNoneMatchedPass() throws Throwable {
@@ -206,7 +171,7 @@ public class SoapAuthorizationPolicyTest extends ApimanPolicyTest {
 
         // Should Succeed
         PolicyTestRequest request = PolicyTestRequest.build(PolicyTestRequestType.GET, "/other/resource");
-        request.header("SOAPAction", "reportIncident");
+        request.header("SOAPAction", "resolveIncident");
         request.contextAttribute(SoapAuthorizationPolicy.AUTHENTICATED_USER_ROLES, userRoles);
         PolicyTestResponse response = send(request);
         EchoResponse echo = response.entity(EchoResponse.class);
@@ -215,7 +180,7 @@ public class SoapAuthorizationPolicyTest extends ApimanPolicyTest {
         
         // Should Succeed
         request = PolicyTestRequest.build(PolicyTestRequestType.PUT, "/admin/resource");
-        request.header("SOAPAction", "closedIncident");
+        request.header("SOAPAction", "closeIncident");
         request.contextAttribute(SoapAuthorizationPolicy.AUTHENTICATED_USER_ROLES, userRoles);
         response = send(request);
         echo = response.entity(EchoResponse.class);
@@ -226,8 +191,8 @@ public class SoapAuthorizationPolicyTest extends ApimanPolicyTest {
     @Configuration("{\r\n" +
                 " \"requestUnmatched\" : \"fail\"," +
                 "  \"rules\" : [\r\n" +
-                "    { \"action\" : \"reportIncident\", \"pathPattern\" : \"/user/.*\", \"role\" : \"user\" },\r\n" +
-                "    { \"action\" : \"reportIncident\", \"pathPattern\" : \"/admin/.*\", \"role\" : \"admin\" }\r\n" +
+                "    { \"action\" : \"reportIncident\", \"role\" : \"user\" },\r\n" +
+                "    { \"action\" : \"reportIncident\", \"role\" : \"admin\" }\r\n" +
                 "  ]\r\n" +
                 "}")
     public void testNoneMatchedFail() throws Throwable {
@@ -266,10 +231,10 @@ public class SoapAuthorizationPolicyTest extends ApimanPolicyTest {
     @Configuration("{\r\n" +
                 " \"multiMatch\" : \"any\"," +
                 "  \"rules\" : [\r\n" +
-                "    { \"action\" : \"*\", \"pathPattern\" : \"/.*\", \"role\" : \"user\" },\r\n" +
-                "    { \"action\" : \"*\", \"pathPattern\" : \"/multi/.*\", \"role\" : \"role-1\" },\r\n" +
-                "    { \"action\" : \"*\", \"pathPattern\" : \"/multi/.*\", \"role\" : \"role-2\" },\r\n" +
-                "    { \"action\" : \"*\", \"pathPattern\" : \"/admin/.*\", \"role\" : \"admin\" }\r\n" +
+                "    { \"action\" : \"*\", \"role\" : \"user\" },\r\n" +
+                "    { \"action\" : \"*\", \"role\" : \"role-1\" },\r\n" +
+                "    { \"action\" : \"*\", \"role\" : \"role-2\" },\r\n" +
+                "    { \"action\" : \"*\", \"role\" : \"admin\" }\r\n" +
                 "  ]\r\n" +
                 "}")
     public void testMultipleAnyMatch() throws Throwable {
@@ -316,9 +281,8 @@ public class SoapAuthorizationPolicyTest extends ApimanPolicyTest {
     @Configuration("{\r\n" +
                 " \"multiMatch\" : \"all\"," +
                 "  \"rules\" : [\r\n" +
-                "    { \"action\" : \"*\", \"pathPattern\" : \"/multi/.*\", \"role\" : \"role-1\" },\r\n" +
-                "    { \"action\" : \"*\", \"pathPattern\" : \"/multi/.*\", \"role\" : \"role-2\" },\r\n" +
-                "    { \"action\" : \"*\", \"pathPattern\" : \"/admin/.*\", \"role\" : \"admin\" }\r\n" +
+                "    { \"action\" : \"reportIncident\", \"role\" : \"role-1\" },\r\n" +
+                "    { \"action\" : \"reportIncident\", \"role\" : \"role-2\" }\r\n" +
                 "  ]\r\n" +
                 "}")
     public void testMultipleAllMatch() throws Throwable {

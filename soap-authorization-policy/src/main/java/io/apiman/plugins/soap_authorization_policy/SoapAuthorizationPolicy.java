@@ -70,7 +70,6 @@ public class SoapAuthorizationPolicy extends AbstractMappedPolicy<SoapAuthorizat
             IPolicyChain<ApiRequest> chain) {
         Set<String> userRoles = context.getAttribute(AUTHENTICATED_USER_ROLES, (HashSet<String>) null);
         String action = request.getHeaders().get(HEADER_SOAP_ACTION);
-        String resource = request.getDestination();
 
         // If no roles are set in the context - then fail with a configuration error
         if (userRoles == null) {
@@ -81,7 +80,7 @@ public class SoapAuthorizationPolicy extends AbstractMappedPolicy<SoapAuthorizat
             return;
         }
 
-        if (isAuthorized(config, action, resource, userRoles)) {
+        if (isAuthorized(config, action, userRoles)) {
             chain.doApply(request);
         } else {
             String msg = Messages.i18n.format("SoapAuthorizationPolicy.Unauthorized"); //$NON-NLS-1$
@@ -103,10 +102,7 @@ public class SoapAuthorizationPolicy extends AbstractMappedPolicy<SoapAuthorizat
      * @param resource
      * @param userRoles
      */
-    private boolean isAuthorized(SoapAuthorizationConfig config, String action, String resource, Set<String> userRoles) {
-        if (resource == null || resource.trim().length() == 0) {
-            resource = "/"; //$NON-NLS-1$
-        }
+    private boolean isAuthorized(SoapAuthorizationConfig config, String action, Set<String> userRoles) {
         // If multiMatch is set to 'any', then start out with authorized = false, and we need to
         // find at least one match to turn authorized to true.  If it's set to "all" (the default)
         // then start out authorized, and it requires *every* matching rule to pass or else it'll
@@ -118,8 +114,7 @@ public class SoapAuthorizationPolicy extends AbstractMappedPolicy<SoapAuthorizat
         boolean matchFound = false;
         for (SoapAuthorizationRule soapAuthorizationRule : config.getRules()) {
             boolean actionMatches = "*".equals(soapAuthorizationRule.getAction()) || action.equalsIgnoreCase(soapAuthorizationRule.getAction()); //$NON-NLS-1$
-            boolean ruleMatches = resource.matches(soapAuthorizationRule.getPathPattern());
-            if (actionMatches && ruleMatches) {
+            if (actionMatches) {
                 // the action and resource matched the rule - so enforce the role here!
                 boolean userHasRole = userRoles.contains(soapAuthorizationRule.getRole());
                 matchFound = true;
