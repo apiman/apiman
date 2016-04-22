@@ -796,7 +796,6 @@ This policy is nearly identical to our Authorization Policy, with the exception 
 Just as with the Authorization policy, you can define any number of rules you'd like.
 
 * *rules* (array) : A single rule that your policy will apply if each of the following properties match:
-** *pathPattern* (string) : Defines the path you'd like the policy to be applicable to.
 ** *action* (string) : Defines the SOAPAction you'd like the policy to be applicable to.
 ** *role* (string) : The role the user must have if this pattern matches the request.
 * *multiMatch* (boolean) : Should the request pass when any or all of the authorization rules pass?  Set to true if all rules must match, false if only one rule must match.
@@ -808,12 +807,10 @@ Just as with the Authorization policy, you can define any number of rules you'd 
 {
    "rules" : [
    	{
-   		"pathPattern": "/admin/.*",
    		"action": "hello",
    		"role": "admin"
    	},
    	{
-   		"pathPattern": "/",
    		"action": "goodbye",
    		"role": "user"
    	}
