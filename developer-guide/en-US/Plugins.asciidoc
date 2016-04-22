@@ -717,7 +717,10 @@ Because the version of your plugin ends with "-SNAPSHOT", the API Gateway will n
 will reload it each time you do step #4.  This allows you to quickly make changes, rebuild, and re-test
 with a minimum of additional steps.
 
-TIP: Don't use -SNAPSHOT versions of plugins in production as the lack of policy caching will be a 
+TIP: As of version 1.2.4.Final, you must explicitly enable this "auto plugin reloading" feature by setting
+the following *apiman.properties* property to "true":  `apiman-gateway.policy-factory.reloadSnapshots`
+
+TIP: Don't use this "auto plugin reloading" feature in production as the lack of policy caching will be a 
 significant performance problem.
 
 ==== Uninstalling a Plugin
