@@ -28,7 +28,7 @@ public class TransformationPolicyTest extends ApimanPolicyTest {
         
         PolicyTestResponse response = send(request);
         
-        String expectedResponse = "<root><name>apiman</name></root>";
+        String expectedResponse = "<name>apiman</name>";
         assertEquals("application/xml", response.header("Content-Type"));
         assertNull(response.header("Content-Length"));
         assertEquals(expectedResponse, response.body());
