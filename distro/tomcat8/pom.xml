@@ -50,6 +50,12 @@
       <artifactId>apiman-distro-es</artifactId>
       <type>war</type>
     </dependency>
+
+    <!-- tomcat default logging provider for slf4j -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-jdk14</artifactId>
+    </dependency>
   </dependencies>
 
   <build>
