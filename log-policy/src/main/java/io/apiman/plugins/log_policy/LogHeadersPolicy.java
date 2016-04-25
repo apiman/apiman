@@ -15,6 +15,7 @@
  */
 package io.apiman.plugins.log_policy;
 
+import io.apiman.common.logging.IApimanLogger;
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.engine.beans.util.HeaderMap;
@@ -71,10 +72,11 @@ public class LogHeadersPolicy extends AbstractMappedPolicy<LogHeadersConfigBean>
     @Override
     protected void doApply(ApiRequest request, IPolicyContext context, LogHeadersConfigBean config,
             IPolicyChain<ApiRequest> chain) {
+        IApimanLogger logger = context.getLogger(getClass());
         String endpoint = request.getApi().getEndpoint();
         context.setAttribute(ENDPOINT_ATTRIBUTE, endpoint);
         if (config.getDirection() != LogHeadersDirectionType.response) {
-            logHeaders(request.getHeaders(),HttpDirection.REQUEST, endpoint);
+            logHeaders(logger, request.getHeaders(), HttpDirection.REQUEST, endpoint);
         }
         chain.doApply(request);
     }
@@ -85,25 +87,27 @@ public class LogHeadersPolicy extends AbstractMappedPolicy<LogHeadersConfigBean>
     @Override
     protected void doApply(ApiResponse response, IPolicyContext context, LogHeadersConfigBean config,
             IPolicyChain<ApiResponse> chain) {
+        IApimanLogger logger = context.getLogger(getClass());
         if (config.getDirection() != LogHeadersDirectionType.request) {
             String endpoint = context.getAttribute(ENDPOINT_ATTRIBUTE, ""); //$NON-NLS-1$
-            logHeaders(response.getHeaders(),HttpDirection.RESPONSE, endpoint);
+            logHeaders(logger, response.getHeaders(), HttpDirection.RESPONSE, endpoint);
         }
         chain.doApply(response);
     }
 
 	/**
 	 * Logs the given headers to standard output.
+	 * @param logger 
 	 * @param headers
 	 * @param direction
 	 * @param endpoint
 	 */
-	private void logHeaders(final HeaderMap headers, final HttpDirection direction, final String endpoint) {
-        System.out.println(String.format("Logging %d %s headers for %s", headers.size(), direction.getDescription(), endpoint)); //$NON-NLS-1$
+	private void logHeaders(IApimanLogger logger, final HeaderMap headers, final HttpDirection direction, final String endpoint) {
+        logger.info(String.format("Logging %d %s headers for %s", headers.size(), direction.getDescription(), endpoint)); //$NON-NLS-1$
         TreeSet<String> sortedKeys = new TreeSet<>(headers.keySet());
         for (String key : sortedKeys) {
             for (Entry<String, String> pair : headers.getAllEntries(key)) {
-                System.out.println(String.format("Key : %s, Value : %s", pair.getKey(), pair.getValue())); //$NON-NLS-1$
+                logger.info(String.format("Key : %s, Value : %s", pair.getKey(), pair.getValue())); //$NON-NLS-1$
             }
         }
 	}

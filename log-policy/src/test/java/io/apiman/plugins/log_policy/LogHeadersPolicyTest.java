@@ -34,12 +34,12 @@ public class LogHeadersPolicyTest extends ApimanPolicyTest {
     		String output = testOutput.toString("UTF-8");
     		output = redactDates(output);
     		output = normalize(output);
-    		String expected = "Logging 0 HTTP Request headers for io.apiman.test.policies.EchoBackEndApi\n" +
-    		        "Logging 4 HTTP Response headers for io.apiman.test.policies.EchoBackEndApi\n" +
-    		        "Key : Content-Length, Value : 167\n" +
-    		        "Key : Content-Type, Value : application/json\n" +
-    		        "Key : Date, Value : XXX\n" +
-    		        "Key : Server, Value : apiman.policy-test\n" +
+    		String expected = "INFO: Logging 0 HTTP Request headers for io.apiman.test.policies.EchoBackEndApi\n" +
+    		        "INFO: Logging 4 HTTP Response headers for io.apiman.test.policies.EchoBackEndApi\n" +
+    		        "INFO: Key : Content-Length, Value : 167\n" +
+    		        "INFO: Key : Content-Type, Value : application/json\n" +
+    		        "INFO: Key : Date, Value : XXX\n" +
+    		        "INFO: Key : Server, Value : apiman.policy-test\n" +
     		        "";
     		Assert.assertEquals(expected, output);
         } finally {
@@ -65,13 +65,13 @@ public class LogHeadersPolicyTest extends ApimanPolicyTest {
             String output = testOutput.toString("UTF-8");
             output = redactDates(output);
             output = normalize(output);
-            String expected = "Logging 1 HTTP Request headers for io.apiman.test.policies.EchoBackEndApi\n" +
-                    "Key : X-Test-Name, Value : testGet\n" +
-                    "Logging 4 HTTP Response headers for io.apiman.test.policies.EchoBackEndApi\n" +
-                    "Key : Content-Length, Value : 199\n" +
-                    "Key : Content-Type, Value : application/json\n" +
-                    "Key : Date, Value : XXX\n" +
-                    "Key : Server, Value : apiman.policy-test\n" +
+            String expected = "INFO: Logging 1 HTTP Request headers for io.apiman.test.policies.EchoBackEndApi\n" +
+                    "INFO: Key : X-Test-Name, Value : testGet\n" +
+                    "INFO: Logging 4 HTTP Response headers for io.apiman.test.policies.EchoBackEndApi\n" +
+                    "INFO: Key : Content-Length, Value : 199\n" +
+                    "INFO: Key : Content-Type, Value : application/json\n" +
+                    "INFO: Key : Date, Value : XXX\n" +
+                    "INFO: Key : Server, Value : apiman.policy-test\n" +
                     "";
             Assert.assertEquals(expected, output);
         } finally {
@@ -97,8 +97,8 @@ public class LogHeadersPolicyTest extends ApimanPolicyTest {
             String output = testOutput.toString("UTF-8");
             output = redactDates(output);
             output = normalize(output);
-            String expected = "Logging 1 HTTP Request headers for io.apiman.test.policies.EchoBackEndApi\n" +
-                    "Key : X-Test-Name, Value : testGet\n" +
+            String expected = "INFO: Logging 1 HTTP Request headers for io.apiman.test.policies.EchoBackEndApi\n" +
+                    "INFO: Key : X-Test-Name, Value : testGet\n" +
                     "";
             Assert.assertEquals(expected, output);
         } finally {
@@ -124,11 +124,11 @@ public class LogHeadersPolicyTest extends ApimanPolicyTest {
             String output = testOutput.toString("UTF-8");
             output = redactDates(output);
             output = normalize(output);
-            String expected = "Logging 4 HTTP Response headers for io.apiman.test.policies.EchoBackEndApi\n" +
-                    "Key : Content-Length, Value : 199\n" +
-                    "Key : Content-Type, Value : application/json\n" +
-                    "Key : Date, Value : XXX\n" +
-                    "Key : Server, Value : apiman.policy-test\n" +
+            String expected = "INFO: Logging 4 HTTP Response headers for io.apiman.test.policies.EchoBackEndApi\n" +
+                    "INFO: Key : Content-Length, Value : 199\n" +
+                    "INFO: Key : Content-Type, Value : application/json\n" +
+                    "INFO: Key : Date, Value : XXX\n" +
+                    "INFO: Key : Server, Value : apiman.policy-test\n" +
                     "";
             Assert.assertEquals(expected, output);
         } finally {
