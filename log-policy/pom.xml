@@ -20,6 +20,11 @@
     <!-- apiman dependencies (must be excluded from the WAR) -->
     <dependency>
       <groupId>io.apiman</groupId>
+      <artifactId>apiman-common-util</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.apiman</groupId>
       <artifactId>apiman-gateway-engine-beans</artifactId>
       <scope>provided</scope>
     </dependency>
