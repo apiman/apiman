@@ -11,6 +11,7 @@ module Apiman {
             $scope.tab = 'def';
             $scope.version = params.version;
             $scope.showMetrics = Configuration.ui.metrics;
+            $scope.textAreaHeight = '100';
             
             $scope.typeOptions = [
                 { "label" : "No API Definition",     "value" : "None" },
@@ -30,15 +31,31 @@ module Apiman {
 
             $scope.isEntityDisabled = EntityStatusSvc.isEntityDisabled;
 
-            jQuery('#api-definition').height(100);
+            $scope.saveApi = function() {
+                console.log('$scope.selectedDefinitionType.value: ' + $scope.selectedDefinitionType.value);
+                $scope.saveButton.state = 'in-progress';
+                var update = OrgSvcs.updateJSON;
 
-            jQuery('#api-definition').focus(function() {
-                jQuery('#api-definition').height(450);
-            });
+                if ($scope.selectedDefinitionType.value == 'SwaggerJSON') {
+                    update = OrgSvcs.updateYAML;
+                }
 
-            jQuery('#api-definition').blur(function() {
-                jQuery('#api-definition').height(100);
-            });
+                ApiDefinitionSvcs.updateApiDefinition(params.org, params.api, params.version,
+                    $scope.updatedApiDefinition, $scope.selectedDefinitionType.value,
+                    function(definition) {
+                        Logger.debug("Updated the api definition!");
+                        $scope.apiDefinition = $scope.updatedApiDefinition;
+                        $rootScope.isDirty = false;
+                        $scope.saveButton.state = 'complete';
+                        EntityStatusSvc.getEntity().modifiedOn = Date.now();
+                        EntityStatusSvc.getEntity().modifiedBy = CurrentUser.getCurrentUser();
+                    },
+                    function(error) {
+                        Logger.error("Error updating definition: {0}", error);
+                        $scope.saveButton.state = 'error';
+                    });
+            };
+            
 
             $scope.$on('afterdrop', function(event, data) {
                 var newValue = data.value;
@@ -70,6 +87,7 @@ module Apiman {
                         Logger.error("Error loading definition: {0}", error);
                     });
             };
+
 
             var checkDirty = function() {
                 if ($scope.version) {
@@ -107,30 +125,6 @@ module Apiman {
                 selectType($scope.definitionType);
                 $scope.updatedApiDefinition = $scope.apiDefinition;
                 $rootScope.isDirty = false;
-            };
-
-            $scope.saveApi = function() {
-                $scope.saveButton.state = 'in-progress';
-                var update = OrgSvcs.updateJSON;
-
-                if ($scope.selectedDefinitionType.value == 'SwaggerJSON') {
-                    update = OrgSvcs.updateYAML;
-                }
-
-                ApiDefinitionSvcs.updateApiDefinition(params.org, params.api, params.version,
-                    $scope.updatedApiDefinition, $scope.selectedDefinitionType.value,
-                    function(definition) {
-                        Logger.debug("Updated the api definition!");
-                        $scope.apiDefinition = $scope.updatedApiDefinition;
-                        $rootScope.isDirty = false;
-                        $scope.saveButton.state = 'complete';
-                        EntityStatusSvc.getEntity().modifiedOn = Date.now();
-                        EntityStatusSvc.getEntity().modifiedBy = CurrentUser.getCurrentUser();
-                    },
-                    function(error) {
-                        Logger.error("Error updating definition: {0}", error);
-                        $scope.saveButton.state = 'error';
-                    });
             };
 
             PageLifecycle.loadPage('ApiDef', 'apiView', pageData, $scope, function() {

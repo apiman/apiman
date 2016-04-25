@@ -4,6 +4,22 @@ body {
   font-size: 13px;
 }
 
+textarea#api-definition.apiman-form-data {
+  height: 100px;
+}
+
+textarea#api-definition.apiman-form-data.myFocus {
+  height: 450px;
+}
+
+textarea#api-definition.apiman-form-data.myBlur {
+  height: 100px;
+}
+
+.actions .btn:focus, .actions .btn:active:focus {
+  outline: none;
+}
+
 .ui-select-bootstrap .ui-select-choices-row>a:hover, .ui-select-bootstrap .ui-select-choices-row>a:focus {
   text-decoration: none;
   color: #262626;
