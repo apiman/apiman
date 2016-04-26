@@ -14,5 +14,6 @@
   <modules>
     <module>core</module>
     <module>slf4j</module>
+    <module>log4j2</module>
   </modules>
 </project>
