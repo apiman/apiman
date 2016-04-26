@@ -18,5 +18,6 @@
     <module>plugin</module>
     <module>servlet</module>
     <module>util</module>
+    <module>logging</module>
   </modules>
 </project>
