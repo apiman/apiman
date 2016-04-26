@@ -64,6 +64,6 @@ public class TestLogger implements IApimanLogger {
 
     @Override
     public void error(String message, Throwable error) {
-        mm.add("error", String.format("%s: %s - %s", name, message, error.getMessage()));
+        mm.add("error_with_message", String.format("%s: %s - %s", name, message, error.getMessage()));
     }
 }
