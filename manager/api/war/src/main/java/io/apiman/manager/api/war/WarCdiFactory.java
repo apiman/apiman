@@ -161,7 +161,11 @@ public class WarCdiFactory {
         IMetricsAccessor metrics;
         if ("es".equals(config.getMetricsType())) { //$NON-NLS-1$
             metrics = esMetrics;
+        } else if (config.getMetricsType().equals(ESMetricsAccessor.class.getName())) {
+            metrics = esMetrics;
         } else if ("noop".equals(config.getMetricsType())) { //$NON-NLS-1$
+            metrics = noopMetrics;
+        } else if (config.getMetricsType().equals(NoOpMetricsAccessor.class.getName())) {
             metrics = noopMetrics;
         } else {
             try {
