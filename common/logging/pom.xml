@@ -12,6 +12,7 @@
   <name>apiman-common-logging</name>
 
   <modules>
+    <module>core</module>
     <module>slf4j</module>
   </modules>
 </project>

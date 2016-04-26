@@ -38,6 +38,10 @@
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-common-config</artifactId>
     </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-common-logging-core</artifactId>
+    </dependency>
     
     <!-- Third Party Dependencies -->
     <dependency>
