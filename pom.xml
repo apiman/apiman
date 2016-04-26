@@ -173,7 +173,7 @@
       </dependency>
       <dependency>
         <groupId>io.apiman</groupId>
-        <artifactId>apiman-manager-api-core</artifactId>
+        <artifactId>apiman-common-logging-core</artifactId>
         <version>${version.apiman}</version>
       </dependency>
       <dependency>

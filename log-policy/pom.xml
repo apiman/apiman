@@ -20,7 +20,7 @@
     <!-- apiman dependencies (must be excluded from the WAR) -->
     <dependency>
       <groupId>io.apiman</groupId>
-      <artifactId>apiman-common-util</artifactId>
+      <artifactId>apiman-common-logging-core</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -38,6 +38,8 @@
       <artifactId>apiman-gateway-engine-policies</artifactId>
       <scope>provided</scope>
     </dependency>
+    
+    <!-- Test Only -->
     <dependency>
       <groupId>io.apiman</groupId>
       <artifactId>apiman-test-policies</artifactId>
