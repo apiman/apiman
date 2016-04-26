@@ -4,7 +4,7 @@
 
   <groupId>io.apiman.plugins</groupId>
   <artifactId>apiman-plugins</artifactId>
-  <version>1.2.5-SNAPSHOT</version>
+  <version>1.2.5.Final</version>
   <name>apiman-plugins</name>
   <packaging>pom</packaging>
 
@@ -73,7 +73,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
 
-    <version.apiman>1.2.5-SNAPSHOT</version.apiman>
+    <version.apiman>1.2.5.Final</version.apiman>
 
     <version.javadoc.plugin>2.10.1</version.javadoc.plugin>
     <version.compiler.plugin>3.2</version.compiler.plugin>
