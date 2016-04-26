@@ -16,8 +16,8 @@
 
 package io.apiman.manager.api.migrator;
 
-import io.apiman.manager.api.config.Version;
 import io.apiman.common.logging.impl.StringBuilderLogger;
+import io.apiman.manager.api.config.Version;
 import io.apiman.test.common.json.JsonArrayOrderingType;
 import io.apiman.test.common.json.JsonCompare;
 import io.apiman.test.common.json.JsonMissingFieldType;
