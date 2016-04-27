@@ -29,6 +29,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URI;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -160,8 +161,8 @@ public abstract class AbstractPluginRegistry implements IPluginRegistry {
         }
 
         // Didn't find it in .m2, so try downloading it.
-        Set<URL> repositories = getMavenRepositories();
-        for (URL mavenRepoUrl : repositories) {
+        Set<URI> repositories = getMavenRepositories();
+        for (URI mavenRepoUrl : repositories) {
             if (downloadFromMavenRepo(pluginFile, coordinates, mavenRepoUrl)) {
                 return;
             }
@@ -171,12 +172,12 @@ public abstract class AbstractPluginRegistry implements IPluginRegistry {
     /**
      * Tries to download the plugin from the given remote maven repository.
      */
-    protected boolean downloadFromMavenRepo(File pluginFile, PluginCoordinates coordinates, URL mavenRepoUrl) {
+    protected boolean downloadFromMavenRepo(File pluginFile, PluginCoordinates coordinates, URI mavenRepoUrl) {
         String artifactSubPath = PluginUtils.getMavenPath(coordinates);
         InputStream istream = null;
         OutputStream ostream = null;
         try {
-            URL artifactUrl = new URL(mavenRepoUrl, artifactSubPath);
+            URL artifactUrl = new URL(mavenRepoUrl.toURL(), artifactSubPath);
             istream = artifactUrl.openStream();
             ostream = new FileOutputStream(pluginFile);
             IOUtils.copy(istream, ostream);
@@ -193,7 +194,7 @@ public abstract class AbstractPluginRegistry implements IPluginRegistry {
     /**
      * A valid set of remove maven repository URLs.
      */
-    protected Set<URL> getMavenRepositories() {
+    protected Set<URI> getMavenRepositories() {
         return PluginUtils.getDefaultMavenRepositories();
     }
 
