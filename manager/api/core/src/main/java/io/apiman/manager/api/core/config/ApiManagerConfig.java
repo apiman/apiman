@@ -18,8 +18,8 @@ package io.apiman.manager.api.core.config;
 import io.apiman.common.config.ConfigFactory;
 import io.apiman.common.logging.IApimanLogger;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -101,15 +101,15 @@ public abstract class ApiManagerConfig {
     /**
      * @return the configured plugin repositories
      */
-    public Set<URL> getPluginRepositories() {
-        Set<URL> rval = new HashSet<>();
+    public Set<URI> getPluginRepositories() {
+        Set<URI> rval = new HashSet<>();
         String repositories = config.getString(APIMAN_PLUGIN_REPOSITORIES);
         if (repositories != null) {
             String[] split = repositories.split(","); //$NON-NLS-1$
             for (String repository : split) {
                 try {
-                    rval.add(new URL(repository.trim()));
-                } catch (MalformedURLException e) {
+                    rval.add(new URI(repository.trim()));
+                } catch (URISyntaxException e) {
                     throw new RuntimeException(e);
                 }
             }
@@ -120,15 +120,15 @@ public abstract class ApiManagerConfig {
     /**
      * @return the configured plugin registries
      */
-    public Set<URL> getPluginRegistries() {
-        Set<URL> rval = new HashSet<>();
+    public Set<URI> getPluginRegistries() {
+        Set<URI> rval = new HashSet<>();
         String registries = config.getString(APIMAN_PLUGIN_REGISTRIES);
         if (registries != null) {
             String[] split = registries.split(","); //$NON-NLS-1$
             for (String registry : split) {
                 try {
-                    rval.add(new URL(registry.trim()));
-                } catch (MalformedURLException e) {
+                    rval.add(new URI(registry.trim()));
+                } catch (URISyntaxException e) {
                     throw new RuntimeException(e);
                 }
             }
@@ -220,7 +220,7 @@ public abstract class ApiManagerConfig {
     public int getStorageESTimeout() {
         return config.getInt(APIMAN_MANAGER_STORAGE_ES_TIMEOUT, DEFAULT_JEST_TIMEOUT);
     }
-    
+
     public String getStorageESIndexName() {
         return config.getString(APIMAN_MANAGER_STORAGE_ES_INDEX_NAME, DEFAULT_ES_INDEX_NAME);
     }

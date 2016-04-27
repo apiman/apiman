@@ -51,6 +51,7 @@ import io.apiman.manager.api.security.ISecurityContext;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -84,7 +85,7 @@ public class PluginResourceImpl implements IPluginResource {
     @Inject IPluginRegistry pluginRegistry;
     @Inject ApiManagerConfig config;
 
-    private Map<URL, PluginRegistryBean> registryCache = new HashMap<>();
+    private Map<URI, PluginRegistryBean> registryCache = new HashMap<>();
 
     @Inject @ApimanLogger(PluginResourceImpl.class)
     IApimanLogger log;
@@ -386,9 +387,9 @@ public class PluginResourceImpl implements IPluginResource {
             throw ExceptionFactory.notAuthorizedException();
 
         List<PluginSummaryBean> rval = new ArrayList<>();
-        Set<URL> registries = config.getPluginRegistries();
+        Set<URI> registries = config.getPluginRegistries();
 
-        for (URL registryUrl : registries) {
+        for (URI registryUrl : registries) {
             PluginRegistryBean registry = loadRegistry(registryUrl);
             if (registry == null) {
                 System.out.println("WARN: plugin registry failed to load - " + registryUrl); //$NON-NLS-1$
@@ -413,13 +414,13 @@ public class PluginResourceImpl implements IPluginResource {
      * grab the registry JSON file.
      * @param registryUrl the URL of the registry
      */
-    private PluginRegistryBean loadRegistry(URL registryUrl) {
+    private PluginRegistryBean loadRegistry(URI registryUrl) {
         PluginRegistryBean fromCache = registryCache.get(registryUrl);
         if (fromCache != null) {
             return fromCache;
         }
         try {
-            PluginRegistryBean registry = mapper.reader(PluginRegistryBean.class).readValue(registryUrl);
+            PluginRegistryBean registry = mapper.reader(PluginRegistryBean.class).readValue(registryUrl.toURL());
             registryCache.put(registryUrl, registry);
             return registry;
         } catch (IOException e) {

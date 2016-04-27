@@ -15,14 +15,15 @@
  */
 package io.apiman.common.plugin;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 /**
@@ -34,11 +35,11 @@ public class PluginUtils {
 
     public static final String PLUGIN_SPEC_PATH = "META-INF/apiman/plugin.json"; //$NON-NLS-1$
     private static final ObjectMapper mapper = new ObjectMapper();
-    private static final Set<URL> MAVEN_REPOSITORIES = new HashSet<>();
+    private static final Set<URI> MAVEN_REPOSITORIES = new HashSet<>();
     static {
         try {
-            MAVEN_REPOSITORIES.add(new URL("https://repo1.maven.org/maven2/")); //$NON-NLS-1$
-        } catch (MalformedURLException e) {
+            MAVEN_REPOSITORIES.add(new URI("https://repo1.maven.org/maven2/")); //$NON-NLS-1$
+        } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
     }
@@ -49,7 +50,7 @@ public class PluginUtils {
     /**
      * @return a set of default maven repositories to search for plugins
      */
-    public static Set<URL> getDefaultMavenRepositories() {
+    public static Set<URI> getDefaultMavenRepositories() {
         return MAVEN_REPOSITORIES;
     }
 
@@ -84,7 +85,7 @@ public class PluginUtils {
     /**
      * Reads a plugin spec file and returns a {@link PluginSpec}.
      * @param pluginSpec the plugin spec
-     * @throws Exception when an unhandled exception occurs
+     * @throws IOException when an unhandled exception occurs
      * @return plugin's specification
      */
     public static PluginSpec readPluginSpecFile(URL pluginSpec) throws IOException {
@@ -149,6 +150,8 @@ public class PluginUtils {
     /**
      * Returns true if the plugin identified by the given coordinates is a
      * snapshot plugin.
+     * @param coordinates the plugin coordinates
+     * @return true if the given plugin is a snapshot
      */
     public static boolean isSnapshot(PluginCoordinates coordinates) {
         return coordinates.getVersion().endsWith("-SNAPSHOT"); //$NON-NLS-1$

@@ -32,7 +32,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -64,7 +65,7 @@ public class DefaultPluginRegistry implements IPluginRegistry {
     private File pluginsDir;
     private final Map<PluginCoordinates, Plugin> pluginCache = new HashMap<>();
     private Map<PluginCoordinates, Throwable> errorCache = new HashMap<>();
-    private Set<URL> pluginRepositories;
+    private Set<URI> pluginRepositories;
 
     /**
      * Constructor.
@@ -94,7 +95,7 @@ public class DefaultPluginRegistry implements IPluginRegistry {
      * @param pluginsDir the plugins directory
      * @param pluginRepositories the plugin repositories
      */
-    public DefaultPluginRegistry(File pluginsDir, Set<URL> pluginRepositories) {
+    public DefaultPluginRegistry(File pluginsDir, Set<URI> pluginRepositories) {
         this.pluginsDir = pluginsDir;
         this.pluginRepositories = pluginRepositories;
     }
@@ -126,8 +127,8 @@ public class DefaultPluginRegistry implements IPluginRegistry {
             return createTempPluginsDir();
         }
     }
-    private static Set<URL> getConfiguredPluginRepositories(Map<String, String> configMap) {
-        Set<URL> rval = new HashSet<>();
+    private static Set<URI> getConfiguredPluginRepositories(Map<String, String> configMap) {
+        Set<URI> rval = new HashSet<>();
         rval.addAll(PluginUtils.getDefaultMavenRepositories());
         String repositories = configMap.get("pluginRepositories"); //$NON-NLS-1$
         if (repositories != null) {
@@ -136,9 +137,9 @@ public class DefaultPluginRegistry implements IPluginRegistry {
                 try {
                     String trimmedRepo = repository.trim();
                     if (!trimmedRepo.isEmpty()) {
-                        rval.add(new URL(trimmedRepo));
+                        rval.add(new URI(trimmedRepo));
                     }
-                } catch (MalformedURLException e) {
+                } catch (URISyntaxException e) {
                     throw new RuntimeException(e);
                 }
             }
@@ -349,8 +350,8 @@ public class DefaultPluginRegistry implements IPluginRegistry {
             return;
         }
 
-        final Iterator<URL> iterator = pluginRepositories.iterator();
-        URL repoUrl = iterator.next();
+        final Iterator<URI> iterator = pluginRepositories.iterator();
+        URI repoUrl = iterator.next();
         final IAsyncResultHandler<File> handler2 = new IAsyncResultHandler<File>() {
             @Override
             public void handle(IAsyncResult<File> result) {
@@ -367,11 +368,11 @@ public class DefaultPluginRegistry implements IPluginRegistry {
     /**
      * Tries to download the plugin from the given remote maven repository.
      */
-    protected void downloadFromMavenRepo(PluginCoordinates coordinates, URL mavenRepoUrl, IAsyncResultHandler<File> handler) {
+    protected void downloadFromMavenRepo(PluginCoordinates coordinates, URI mavenRepoUrl, IAsyncResultHandler<File> handler) {
         String artifactSubPath = PluginUtils.getMavenPath(coordinates);
         try {
             File tempArtifactFile = File.createTempFile("_plugin", "dwn"); //$NON-NLS-1$ //$NON-NLS-2$
-            URL artifactUrl = new URL(mavenRepoUrl, artifactSubPath);
+            URL artifactUrl = new URL(mavenRepoUrl.toURL(), artifactSubPath);
             downloadArtifactTo(artifactUrl, tempArtifactFile, handler);
         } catch (Exception e) {
             handler.handle(AsyncResultImpl.<File>create(e));
