@@ -34,11 +34,6 @@ module Apiman {
             $scope.saveApi = function() {
                 console.log('$scope.selectedDefinitionType.value: ' + $scope.selectedDefinitionType.value);
                 $scope.saveButton.state = 'in-progress';
-                var update = OrgSvcs.updateJSON;
-
-                if ($scope.selectedDefinitionType.value == 'SwaggerJSON') {
-                    update = OrgSvcs.updateYAML;
-                }
 
                 ApiDefinitionSvcs.updateApiDefinition(params.org, params.api, params.version,
                     $scope.updatedApiDefinition, $scope.selectedDefinitionType.value,
