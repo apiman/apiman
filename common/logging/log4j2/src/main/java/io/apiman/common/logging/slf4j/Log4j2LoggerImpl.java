@@ -13,21 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apiman.common.logging.log4j2;
+package io.apiman.common.logging.slf4j;
 
 import io.apiman.common.logging.IApimanLogger;
-import org.slf4j.Logger;
+import org.apache.logging.log4j.Logger;
 
 /**
- * Simple SLF4J logger wrapper.
+ * Log4j2 logger wrapper.
  *
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
-public class Slf4jLoggerImpl implements IApimanLogger {
+public class Log4j2LoggerImpl implements IApimanLogger {
     private final Logger logger;
 
-    public Slf4jLoggerImpl(Logger slf4jLogger) {
-        this.logger = slf4jLogger;
+    public Log4j2LoggerImpl(Logger log4j2logger) {
+        this.logger = log4j2logger;
     }
 
     @Override
@@ -52,7 +52,7 @@ public class Slf4jLoggerImpl implements IApimanLogger {
 
     @Override
     public void error(Throwable error) {
-        logger.error(error.getMessage(), error);
+        logger.error(error);
     }
 
     @Override
