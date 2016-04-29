@@ -944,6 +944,7 @@ TIP: This is a built-in policy and therefore no plugins need to be installed pri
 
 ===== Configuration
 The configuration parameters for a Time Restricted Access Policy are:
+
 * *rules* (array of objects) : The list of matching rules representing the resources being controlled and the time ranges they are allowed to be accessed.
 ** *timeStart* (time) : Indicates the time of day (UTC) to begin allowing access.
 ** *timeEnd* (time) : Indicates the time of day (UTC) to stop allowing access.
