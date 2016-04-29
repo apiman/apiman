@@ -408,7 +408,7 @@ will show up in the Gateway.
 ==== Live API Endpoints
 After a client app has been registered with the runtime gateway, it is possible to send requests to the
 back-end APIs on behalf of that client app (through the client app's API contracts). To do this
-you must know the URL of the managed API.  This URL 'optionally' includes the API Key generated for the 
+you must know the URL of the managed API.  This URL 'optionally' includes the API Key generated for the
 Client App.
 
 To view a list of all of these managed endpoints, navigate to the 'APIs' tab on the API detail page. Each
@@ -537,8 +537,8 @@ your Plans, APIs, and Client Apps.  However, if the policy is already in use by 
 entities, it will continue to work.  In other words, uninstalling a plugin only removes the policy
 for use by new entities, it does *not* break existing usages.
 
-To uninstall a plugin, simply click the "Uninstall" action for the appropriate plugin on the 
-"Installed Plugins" tab (it is likely represented as a button with a little X).  After confirming 
+To uninstall a plugin, simply click the "Uninstall" action for the appropriate plugin on the
+"Installed Plugins" tab (it is likely represented as a button with a little X).  After confirming
 the action, the plugin should disappear from the list.
 
 ===== Upgrading Plugins
@@ -649,7 +649,7 @@ can be configured.
 ==== BASIC Authentication Policy
 [[policy-basic-auth]]
 ===== Description
-This policy enables HTTP BASIC Authentication on an API.  In other words, you can use this 
+This policy enables HTTP BASIC Authentication on an API.  In other words, you can use this
 policy to require clients to provide HTTP BASIC authentication credentials when making requests
 to the managed API.
 
@@ -712,6 +712,7 @@ BASIC Authentication policy that uses LDAP to validate the inbound credentials:
 ===== Sample Configuration (JDBC)
 Here is an example of the JSON configuration you might use when configuring a
 BASIC Authentication policy that uses JDBC to validate the inbound credentials:
+
 ```json
 {
    "realm" : "Example",
@@ -728,8 +729,8 @@ BASIC Authentication policy that uses JDBC to validate the inbound credentials:
       "extractRoles" : true,
       "roleQuery" : "SELECT r.rolename FROM roles r WHERE r.user = ?"
    }
+}
 ```
-
 
 ==== Authorization Policy
 [[policy-authorization]]
@@ -745,9 +746,9 @@ The configuration of this policy consists of a number of rules that are applied 
 to the API.  Each rule consists of a regular expression pattern, an HTTP verb, and the role that an
 authenticated user must possess in order for access to be granted.
 
-TIP: It's *very* important to note that this policy must be configured *after* one of the standard 
+TIP: It's *very* important to note that this policy must be configured *after* one of the standard
 apiman authentication policies (e.g. the BASIC Authentication policy or the Keycloak OAuth Policy).
-The reason is that an Authentication policy is responsible for extracting the authenticated user's 
+The reason is that an Authentication policy is responsible for extracting the authenticated user's
 roles, which is data that is required for the Authorization Policy to do its work.
 
 * *rules* (array) : Array of rules - each rule is applied only if it matches the current request.
@@ -824,7 +825,7 @@ Just as with the Authorization policy, you can define any number of rules you'd 
 ==== IP Whitelist Policy
 [[policy-ip-whitelist]]
 ===== Description
-The IP Whitelist Policy Type is the counterpart to the IP Blacklist Policy type. In the IP Whitelist policy, only inbound API requests from Client Apps, policies, or APIs that satisfy the policy are accepted. 
+The IP Whitelist Policy Type is the counterpart to the IP Blacklist Policy type. In the IP Whitelist policy, only inbound API requests from Client Apps, policies, or APIs that satisfy the policy are accepted.
 
 The IP Blacklist and IP Whitelist policies are complementary, but different, approaches to limiting access to an API:
 * The IP Blacklist policy type is exclusive in that you must specify the IP address ranges to be excluded from being able to access the API. Any addresses that you do not explicitly exclude from the policy are able to access the API.
@@ -835,7 +836,7 @@ TIP: This is a built-in policy and therefore no plugins need to be installed pri
 ===== Configuration
 The configuration parameters for an IP Whitelist Policy are:
 
-* *ipList* (array) : The IP address(es), and/or ranges of addresses that will be allowed to access the API. 
+* *ipList* (array) : The IP address(es), and/or ranges of addresses that will be allowed to access the API.
 * *responseCode* (int) : The server response code. The possible values for the return code are:
  ** 500 - Server error
  ** 404 - Not found
@@ -861,7 +862,7 @@ TIP: This is a built-in policy and therefore no plugins need to be installed pri
 ===== Configuration
 The configuration parameters for an IP Blacklist Policy are:
 
-* *ipList* (array) : The IP address(es), and/or ranges of addresses that will be blocked from accessing the API. 
+* *ipList* (array) : The IP address(es), and/or ranges of addresses that will be blocked from accessing the API.
 * *responseCode* (int) : The server response code. The possible values for the return code are:
  ** 500 - Server error
  ** 404 - Not found
@@ -892,7 +893,7 @@ By setting up multiple ignored resource policies, these policies can work togeth
 
 [width="75%",options="header"]
 |==========================
-| This Path                      | Results in these Resources Being Ignored 
+| This Path                      | Results in these Resources Being Ignored
 | (empty)                        | Access to all resources is allowed
 | /customers                     | Denies access to all customer information
 | /customers/.*/orders           | Denies access to all customer order information
@@ -935,8 +936,8 @@ The configuration parameters for an Ignored Resources Policy are:
 [[policy-time-restricted-access]]
 ===== Description
 This policy is used to only allow access to an API during certain times.  In fact, the policy can
-be configured to apply different time restrictions to different API resources (matched via 
-regular expressions).  This allows you to control *when* client and users are allowed to access 
+be configured to apply different time restrictions to different API resources (matched via
+regular expressions).  This allows you to control *when* client and users are allowed to access
 your API.
 
 TIP: This is a built-in policy and therefore no plugins need to be installed prior to using it.
@@ -971,48 +972,213 @@ TIP: If none of the configured rules matches the request resource path/destinati
             "pathPattern": "/other/path/.*"
         }
     ]
-}```
-
+}
+```
 
 ==== CORS Policy
 [[policy-cors]]
 ===== Description
-DESCRIPTION TBD HERE
+A policy implementing CORS (Cross-origin resource sharing): a method of defining access to resources outside of the originating domain. It is principally a security mechanism to prevent the loading of resources from unexpected domains, for instance via XSS injection attacks.
+
+For further references, see http://www.w3.org/TR/2014/REC-cors-20140116/[CORS W3C Recommendation 16 January 2014] and https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS#Access-Control-Allow-Origin[MDN's articles].
 
 ===== Plugin
-PLUGIN COORDINATES GO HERE
 
-===== Configuration
-CONFIGURATION TBD HERE
-
-===== Sample Configuration
-SAMPLE CONFIG TBD
 ```json
 {
-   "TBD" : "TBD"
+    "groupId": "io.apiman.plugins",
+    "artifactId": "apiman-plugins-cors-policy",
+    "version": "1.2.5.Final" <1>
 }
 ```
+<1> Please check for the latest version, this is just an example.
 
+===== Configuration
+The configuration options available, are:
+
+[cols="2,1,4,1", options="header"]
+|===
+| Option
+| Type
+| Description
+| Default
+
+| errorOnCorsFailure
+| Boolean
+| When true, any request that fails CORS validation will be terminated with an appropriate error. When false, the request will still be sent to the backend API, but the browser will be left to enforce the CORS failure. In both cases valid CORS headers will be set
+| true
+
+| allowOrigin (Access-Control-Allow-Origin)
+| Set<String>
+| List of origins permitted to make CORS requests through the gateway. By default same-origin is permitted, and cross-origin is forbidden. An entry of * permits all CORS requests
+| Empty
+
+| allowCredentials (Access-Control-Allow-Credentials)
+| Boolean
+| Whether response may be exposed when the `credentials` flag is set to true on the request
+| false
+
+| exposeHeaders (Access-Control-Expose-Headers)
+| Set<String>
+| Which non-simple headers the browser may expose during CORS
+| Empty
+
+| allowHeaders (Access-Control-Allow-Headers)
+| Set<String>
+| In response to preflight request, which _headers_ can be used during actual request
+| Empty
+
+| allowMethods (Access-Control-Allow-Methods)
+| Set<String>
+| In response to preflight request, which _methods_ can be used during actual request
+| Empty
+
+| maxAge (Access-Control-Max-Age)
+| Integer
+| How long preflight request can be cached in delta seconds
+| Not included
+|===
+
+===== Sample Configuration
+
+```json
+{
+   "exposeHeaders" : [
+      "X-REQUESTS-REMAINING"
+   ],
+   "maxAge" : 9001,
+   "allowOrigin" : [
+      "https://foo.example",
+      "https://bar.example"
+   ],
+   "errorOnCorsFailure" : true,
+   "allowCredentials" : false,
+   "allowMethods" : [
+      "POST"
+   ],
+   "allowHeaders" : [
+      "X-CUSTOM-HEADER"
+   ]
+}
+```
 
 ==== HTTP Security Policy
 [[policy-http-security]]
 ===== Description
-DESCRIPTION TBD HERE
+Security-related HTTP headers can be set, such as HSTS, CSP and XSS protection.
 
 ===== Plugin
-PLUGIN COORDINATES GO HERE
 
-===== Configuration
-CONFIGURATION TBD HERE
-
-===== Sample Configuration
-SAMPLE CONFIG TBD
 ```json
 {
-   "TBD" : "TBD"
+    "groupId": "io.apiman.plugins",
+    "artifactId": "apiman-plugins-http-security-polic",
+    "version": "1.2.5.Final" <1>
 }
 ```
+<1> Please check for the latest version, this is just an example.
 
+===== Configuration
+
+Options for `hsts` are:
+
+[cols="2,1,4,1", options="header"]
+.HTTP Strict Transport Security (hsts): Enforce transport security when using HTTP to mitigate a range of common web vulnerabilities.
+|===
+| Option
+| Type
+| Description
+| Default
+
+| enabled
+| Boolean
+| Enable HTTP Strict Transport (HSTS)
+| false
+
+| includeSubdomains
+| Boolean
+| Include subdomains
+| false
+
+| maxAge
+| Integer
+| Delta seconds user agents should cache HSTS status for
+| 0
+
+| preload (Enable HSTS preload flag)
+| Boolean
+| Flag to verify HSTS preload status. Popular browsers contain a hard-coded (pinned) list of domains and certificates, which they always connect securely with. This mitigates a wide range of identity and MIITM attacks, and is particularly useful for high-profile domains. Users must submit a request for their domain to be included in the scheme.
+| false
+|===
+
+Options for `contentSecurityPolicy` are:
+
+[cols="2,1,4,1", options="header"]
+.CSP (contentSecurityPolicy): A sophisticated mechanism to precisely define the types and sources of content that may be loaded, with violation reporting and the ability to restrict the availability and scope of many security-sensitive features
+|===
+
+| Option
+| Type
+| Description
+| Default
+
+| mode (CSP Mode)
+| Enum [ENABLED, REPORT_ONLY, DISABLED]
+| Which content security policy mode to use.
+| DISABLED
+
+| csp (Content Security Policy Definition)
+| String
+| A valid CSP definition to apply
+| Empty string
+
+|===
+
+[cols="2,1,4,1", options="header"]
+.Other Configuration Options
+|===
+
+| Option
+| Type
+| Description
+| Default
+
+| frameOptions (Frame Options)
+| Enum [DENY, SAMEORIGIN, DISABLED]
+| Defines if, or how, a resource should be displayed in a frame, iframe or object.
+| DISABLED
+
+| xssProtection (XSS Protection)
+| Enum [OFF, ON, BLOCK, DISABLED]
+| Enable or disable XSS filtering in the UA.
+| DISABLED
+
+| contentTypeOptions
+| Boolean
+| X-Content-Type-Options: Prevent MIME-sniffing to any type other than the declared Content-Type.
+| false
+
+|===
+
+===== Sample Configuration
+
+```json
+{
+   "contentSecurityPolicy" : {
+      "mode" : "REPORT_ONLY",
+      "csp" : "default-src none; script-src self; connect-src self; img-src self; style-src self;"
+   },
+   "frameOptions" : "SAMEORIGIN",
+   "contentTypeOptions" : true,
+   "hsts" : {
+      "includeSubdomains" : true,
+      "preload" : false,
+      "enabled" : true,
+      "maxAge" : 9001
+   },
+   "xssProtection" : "ON"
+}
+```
 
 ==== OAuth Policy (Keycloak)
 [[policy-keycloak-oauth]]
@@ -1038,7 +1204,7 @@ SAMPLE CONFIG TBD
 [[policy-url-whitelist]]
 ===== Description
 This policy allows users to explicitly allow only certain API subpaths to be accessed.  It's
-particularly useful when only a small subset of resources from a back-end API should be 
+particularly useful when only a small subset of resources from a back-end API should be
 exposed through the managed endpoint.
 
 ===== Plugin
@@ -1125,7 +1291,7 @@ The configuration parameters for a Rate Limiting Policy are:
 ** Day
 ** Month
 ** Year
-* *headerLimit* (string) [optional] : HTTP response header that apiman will use to store the limit being applied. 
+* *headerLimit* (string) [optional] : HTTP response header that apiman will use to store the limit being applied.
 * *headerRemaining* (string) [optional] : HTTP response header that apiman will use to store how many requests remain before the limit is reached.
 * *headerReset* (string) [optional] : HTTP response header that apiman will use to store the number of seconds until the limit is reset.
 
@@ -1161,7 +1327,7 @@ The configuration parameters for a Quota Policy are:
 ** Day
 ** Month
 ** Year
-* *headerLimit* (string) [optional] : HTTP response header that apiman will use to store the limit being applied. 
+* *headerLimit* (string) [optional] : HTTP response header that apiman will use to store the limit being applied.
 * *headerRemaining* (string) [optional] : HTTP response header that apiman will use to store how many requests remain before the limit is reached.
 * *headerReset* (string) [optional] : HTTP response header that apiman will use to store the number of seconds until the limit is reset.
 
@@ -1201,7 +1367,7 @@ The configuration parameters for a Quota Policy are:
 ** Day
 ** Month
 ** Year
-* *headerLimit* (string) [optional] : HTTP response header that apiman will use to store the limit being applied. 
+* *headerLimit* (string) [optional] : HTTP response header that apiman will use to store the limit being applied.
 * *headerRemaining* (string) [optional] : HTTP response header that apiman will use to store how many requests remain before the limit is reached.
 * *headerReset* (string) [optional] : HTTP response header that apiman will use to store the number of seconds until the limit is reset.
 
@@ -1223,8 +1389,8 @@ The configuration parameters for a Quota Policy are:
 ==== URL Rewriting Policy
 [[policy-url-rewriting]]
 ===== Description
-This policy is used to re-write responses from the back-end API such that they will be modified by 
-fixing up any incorrect URLs found with modified ones.  This is useful because apiman works through 
+This policy is used to re-write responses from the back-end API such that they will be modified by
+fixing up any incorrect URLs found with modified ones.  This is useful because apiman works through
 an API Gateway, and in some cases an API might return URLs to followup action or data endpoints.  In
 these cases the back-end API will likely be configured to return a URL pointing to the unmanaged API
 endpoint.  This policy can fix up those URL references so that they point to the managed API endpoint
@@ -1263,11 +1429,11 @@ is done for performance reasons.
 This policy converts an API format between JSON and XML.  If an API is implemented to
 return XML, but a client would prefer to receive JSON data, this policy can be used
 to automatically convert both the request and response bodies.  In this way, the client
-can work with JSON data even though the back-end API requires XML (and responds with 
+can work with JSON data even though the back-end API requires XML (and responds with
 XML).
 
 Note that this policy is very generic, and does an automatic conversion between XML
-and JSON.  For more control over the specifics of the format conversion, a custom 
+and JSON.  For more control over the specifics of the format conversion, a custom
 policy may be a better choice.
 
 ===== Plugin
@@ -1301,7 +1467,7 @@ From these two properties, the policy can decide how (and if) to convert the dat
 ==== JSONP Policy
 [[policy-jsonp]]
 ===== Description
-This policy turns a standard REST endpoint into a https://en.wikipedia.org/wiki/JSONP[JSONP] 
+This policy turns a standard REST endpoint into a https://en.wikipedia.org/wiki/JSONP[JSONP]
 compatible endpoint.  For example, a REST endpoint may typically return the following JSON
 data:
 
@@ -1394,7 +1560,7 @@ SAMPLE CONFIG TBD
 [[policy-caching]]
 ===== Description
 Allows caching of API responses in the Gateway to reduce overall traffic to the back-end API.  The
-caching policy is currently very naive and only supports a simple "time-to-live" approach to 
+caching policy is currently very naive and only supports a simple "time-to-live" approach to
 caching.
 
 TIP: This is a built-in policy and therefore no plugins need to be installed prior to using it.
@@ -1417,8 +1583,8 @@ in seconds.
 ==== Log Policy
 [[policy-log]]
 ===== Description
-A policy that logs the headers to standard out.  Useful to analyse inbound HTTP traffic to 
-the gateway when added as the first policy in the chain or to analyse outbound HTTP 
+A policy that logs the headers to standard out.  Useful to analyse inbound HTTP traffic to
+the gateway when added as the first policy in the chain or to analyse outbound HTTP
 traffic from the gateway when added as the last policy in the chain.
 
 ===== Plugin
@@ -1431,7 +1597,7 @@ traffic from the gateway when added as the last policy in the chain.
 ```
 
 ===== Configuration
-The Log Policy can be configured to output the request headers, the response headers, or 
+The Log Policy can be configured to output the request headers, the response headers, or
 both.  When configuring this policy via the apiman REST API, there is only property:
 
 * *direction* (enum) : Which direction you wish to log, options are: 'request', 'response', 'both'
