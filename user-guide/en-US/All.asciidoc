@@ -944,6 +944,7 @@ TIP: This is a built-in policy and therefore no plugins need to be installed pri
 
 ===== Configuration
 The configuration parameters for a Time Restricted Access Policy are:
+
 * *rules* (array of objects) : The list of matching rules representing the resources being controlled and the time ranges they are allowed to be accessed.
 ** *timeStart* (time) : Indicates the time of day (UTC) to begin allowing access.
 ** *timeEnd* (time) : Indicates the time of day (UTC) to stop allowing access.
@@ -988,14 +989,14 @@ For further references, see http://www.w3.org/TR/2014/REC-cors-20140116/[CORS W3
 {
     "groupId": "io.apiman.plugins",
     "artifactId": "apiman-plugins-cors-policy",
-    "version": "1.2.5.Final" <1>
+    "version": "1.2.5.Final" // Please check for the latest version, this is just an example.
 }
 ```
-<1> Please check for the latest version, this is just an example.
 
 ===== Configuration
 The configuration options available, are:
 
+.CORS policy configuration
 [cols="2,1,4,1", options="header"]
 |===
 | Option
@@ -1005,37 +1006,44 @@ The configuration options available, are:
 
 | errorOnCorsFailure
 | Boolean
-| When true, any request that fails CORS validation will be terminated with an appropriate error. When false, the request will still be sent to the backend API, but the browser will be left to enforce the CORS failure. In both cases valid CORS headers will be set
+a| .Error on CORS failure
+When true, any request that fails CORS validation will be terminated with an appropriate error. When false, the request will still be sent to the backend API, but the browser will be left to enforce the CORS failure. In both cases valid CORS headers will be set
 | true
 
-| allowOrigin (Access-Control-Allow-Origin)
+| allowOrigin
 | Set<String>
-| List of origins permitted to make CORS requests through the gateway. By default same-origin is permitted, and cross-origin is forbidden. An entry of * permits all CORS requests
+| .Access-Control-Allow-Origin
+List of origins permitted to make CORS requests through the gateway. By default same-origin is permitted, and cross-origin is forbidden. An entry of * permits all CORS requests
 | Empty
 
-| allowCredentials (Access-Control-Allow-Credentials)
+| allowCredentials
 | Boolean
-| Whether response may be exposed when the `credentials` flag is set to true on the request
+a| .Access-Control-Allow-Credentials
+Whether response may be exposed when the `credentials` flag is set to true   on the request
 | false
 
-| exposeHeaders (Access-Control-Expose-Headers)
+| exposeHeaders
 | Set<String>
-| Which non-simple headers the browser may expose during CORS
+a| .Access-Control-Expose-Headers
+Which non-simple headers the browser may expose during CORS
 | Empty
 
-| allowHeaders (Access-Control-Allow-Headers)
+| allowHeaders
 | Set<String>
-| In response to preflight request, which _headers_ can be used during actual request
+a| .Access-Control-Allow-Headers
+In response to preflight request, which _headers_ can be used during actual request
 | Empty
 
-| allowMethods (Access-Control-Allow-Methods)
+| allowMethods
 | Set<String>
-| In response to preflight request, which _methods_ can be used during actual request
+a| .Access-Control-Allow-Methods
+In response to preflight request, which _methods_ can be used during actual request
 | Empty
 
-| maxAge (Access-Control-Max-Age)
+| maxAge
 | Integer
-| How long preflight request can be cached in delta seconds
+a| .Access-Control-Max-Age
+How long preflight request can be cached in delta seconds
 | Not included
 |===
 
@@ -1072,18 +1080,58 @@ Security-related HTTP headers can be set, such as HSTS, CSP and XSS protection.
 ```json
 {
     "groupId": "io.apiman.plugins",
-    "artifactId": "apiman-plugins-http-security-polic",
-    "version": "1.2.5.Final" <1>
+    "artifactId": "apiman-plugins-http-security-policy",
+    "version": "1.2.5.Final" // Please check for the latest version, this is just an example.
 }
 ```
-<1> Please check for the latest version, this is just an example.
 
 ===== Configuration
 
-Options for `hsts` are:
-
+.HTTP security policy configuration
 [cols="2,1,4,1", options="header"]
+|===
+
+| Option
+| Type
+| Description
+| Default
+
+| frameOptions
+| Enum [DENY, SAMEORIGIN, DISABLED]
+a| .Frame Options
+Defines if, or how, a resource should be displayed in a frame, iframe or object.
+| DISABLED
+
+| xssProtection
+| Enum [OFF, ON, BLOCK, DISABLED]
+a| .XSS Protection
+Enable or disable XSS filtering in the UA.
+| DISABLED
+
+| contentTypeOptions
+| Boolean
+a| .X-Content-Type-Options
+Prevent MIME-sniffing to any type other than the declared Content-Type.
+| false
+
+| hsts
+| <<hsts>>
+a.| .HTTP Strict Transport Security
+Configure HSTS.
+| None
+
+| contentSecurityPolicy
+| <<contentSecurityPolicy>>
+a.| .Content Security Policy
+CSP definition.
+| None
+
+|===
+
+====== hsts
+
 .HTTP Strict Transport Security (hsts): Enforce transport security when using HTTP to mitigate a range of common web vulnerabilities.
+[cols="2,1,4,1", options="header"]
 |===
 | Option
 | Type
@@ -1092,7 +1140,8 @@ Options for `hsts` are:
 
 | enabled
 | Boolean
-| Enable HTTP Strict Transport (HSTS)
+a| .HSTS
+Enable HTTP Strict Transport
 | false
 
 | includeSubdomains
@@ -1102,40 +1151,21 @@ Options for `hsts` are:
 
 | maxAge
 | Integer
-| Delta seconds user agents should cache HSTS status for
+a| .Maximum age
+Delta seconds user agents should cache HSTS status for
 | 0
 
-| preload (Enable HSTS preload flag)
+| preload
 | Boolean
-| Flag to verify HSTS preload status. Popular browsers contain a hard-coded (pinned) list of domains and certificates, which they always connect securely with. This mitigates a wide range of identity and MIITM attacks, and is particularly useful for high-profile domains. Users must submit a request for their domain to be included in the scheme.
+a| .Enable HSTS preloading
+Flag to verify HSTS preload status. Popular browsers contain a hard-coded (pinned) list of domains and certificates, which they always connect securely with. This mitigates a wide range of identity and MIITM attacks, and is particularly useful for high-profile domains. Users must submit a request for their domain to be included in the scheme.
 | false
 |===
 
-Options for `contentSecurityPolicy` are:
+====== contentSecurityPolicy
 
-[cols="2,1,4,1", options="header"]
 .CSP (contentSecurityPolicy): A sophisticated mechanism to precisely define the types and sources of content that may be loaded, with violation reporting and the ability to restrict the availability and scope of many security-sensitive features
-|===
-
-| Option
-| Type
-| Description
-| Default
-
-| mode (CSP Mode)
-| Enum [ENABLED, REPORT_ONLY, DISABLED]
-| Which content security policy mode to use.
-| DISABLED
-
-| csp (Content Security Policy Definition)
-| String
-| A valid CSP definition to apply
-| Empty string
-
-|===
-
 [cols="2,1,4,1", options="header"]
-.Other Configuration Options
 |===
 
 | Option
@@ -1143,20 +1173,17 @@ Options for `contentSecurityPolicy` are:
 | Description
 | Default
 
-| frameOptions (Frame Options)
-| Enum [DENY, SAMEORIGIN, DISABLED]
-| Defines if, or how, a resource should be displayed in a frame, iframe or object.
+| mode
+| Enum [ENABLED, REPORT_ONLY, DISABLED]
+a| .CSP Mode
+Which content security policy mode to use.
 | DISABLED
 
-| xssProtection (XSS Protection)
-| Enum [OFF, ON, BLOCK, DISABLED]
-| Enable or disable XSS filtering in the UA.
-| DISABLED
-
-| contentTypeOptions
-| Boolean
-| X-Content-Type-Options: Prevent MIME-sniffing to any type other than the declared Content-Type.
-| false
+| csp
+| String
+a| .Content Security Policy
+A valid CSP definition to apply
+| Empty string
 
 |===
 
@@ -1183,22 +1210,166 @@ Options for `contentSecurityPolicy` are:
 ==== OAuth Policy (Keycloak)
 [[policy-keycloak-oauth]]
 ===== Description
-DESCRIPTION TBD HERE
+
+A http://www.keycloak.org[Keycloak]-specific OAuth2 policy to regulate access to APIs. This plugin enables a wide range of sophisticated auth facilities in combination with, for instance, Keycloak's federation, brokering and user management capabilities. An exploration of the basics can be found http://www.apiman.io/blog/gateway/security/oauth2/keycloak/authentication/authorization/1.2.x/2016/01/22/keycloak-oauth2-redux.html[in our blog], but we encourage users to explore the http://keycloak.jboss.org/docs.html[project documentation], as there is a tremendous depth and breadth of functionality, most of which work extremely well with apiman.
+
+Keycloak's token format and auth mechanism facilitate excellent performance characteristics, with users able to easily tune the setup to meet their security requirements. In general, this is one of the best approaches for achieving security without greatly impacting performance.
 
 ===== Plugin
-PLUGIN COORDINATES GO HERE
 
-===== Configuration
-CONFIGURATION TBD HERE
-
-===== Sample Configuration
-SAMPLE CONFIG TBD
 ```json
 {
-   "TBD" : "TBD"
+    "groupId": "io.apiman.plugins",
+    "artifactId": "apiman-plugins-keycloak-oauth-policy",
+    "version": "1.2.5.Final" // Please check for the latest version, this is just an example.
 }
 ```
 
+===== Configuration
+
+.Keycloak oauth2 policy configuration
+[cols="2,1,4,1", options="header"]
+|===
+
+| Option
+| Type
+| Description
+| Default
+
+| requireOauth
+| Boolean
+a| .Require auth token
+Terminate request if no OAuth token is provided.
+| true
+
+| requireTransportSecurity
+| Boolean
+a| .Require transport security
+Any request used without transport security will be rejected. OAuth2 requires transport security (e.g. TLS, SSL) to provide protection against replay attacks. It is strongly advised for this option to be switched on
+| true
+
+| blacklistUnsafeTokens
+| Boolean
+a| .Blacklist unsafe tokens
+Any tokens used without transport security will be blackedlisted in all gateways to mitigate associated security risks. Uses distributed data store to share blacklist
+| true
+
+| stripTokens
+| Boolean
+a| .Strip tokens
+Remove any Authorization header or token query parameter before forwarding traffic to the API
+| true
+
+| realm
+| String
+a| .Realm name
+If you are using KeyCloak 1.2.0x or later this must be a full iss domain path (e.g. `https://mykeycloak.local/auth/realms/apimanrealm`); pre-1.2.0x simply use the realm name (e.g. `apimanrealm`).
+| Empty
+
+| realmCertificateString
+| String
+a| .Keycloak Realm Certificate
+To validate OAuth2 requests. Must be a PEM-encoded X.509 certificate. This can be copied from the Keycloak console.
+| Empty
+
+| delegateKerberosTicket
+| Boolean
+a| .Delegate Kerberos Ticket
+Delegate any Kerberos Ticket embedded in the Keycloak token to the API (via the Authorization header).
+| false
+
+| forwardRoles
+| <<forwardRoles>>[]
+a| .Forward Keycloak roles
+Set whether to forward roles to an authorization policy.
+| None
+
+| forwardAuthInfo
+| <<forwardAuthInfo>>[]
+a| .Forward auth information
+Set auth information from the token into header(s).
+| None
+
+|===
+
+====== forwardRoles
+
+.Forward Keycloak roles to the Authorization policy. You should specify your required role(s) in the Authorization policy's configuration.
+[cols="2,1,4,1", options="header"]
+|===
+
+| Option
+| Type
+| Description
+| Default
+
+| active
+| Boolean
+a| .Forward roles
+Opt whether to forward any type of roles. By default these will be *realm roles* unless the `applicationName` option is also provided.
+| false
+
+| applicationName (optional)
+| String
+a| .Application Name
+Which application roles to forward. Note that you cannot presently forward realm and application roles, only one or the other.
+| Empty
+
+|===
+
+====== forwardAuthInfo
+
+TIP: Fields from the token can be set as headers and forwarded to the API. All https://openid.net/specs/openid-connect-basic-1_0.html#StandardClaims[standard claims], custom claims and https://openid.net/specs/openid-connect-basic-1_0.html#IDToken[ID token fields] are available (case sensitive). A special value of *access_token* will forward the entire encoded token. Nested claims can be accessed by using javascript dot syntax (e.g: `address.country`, `address.formatted`).
+
+.Forward Keycloak token information
+[cols="2,1,4,1", options="header"]
+|===
+
+| Option
+| Type
+| Description
+| Default
+
+| headers
+| String
+a| .Header
+The header value to set (to paired field).
+| None
+
+| field
+| String
+a| .Field
+The token field name.
+| None
+
+|===
+
+===== Sample Configuration
+
+```json
+{
+  "requireOauth": true,
+  "requireTransportSecurity": true,
+  "blacklistUnsafeTokens": false,
+  "stripTokens": false,
+  "realm": "apiman-is-cool",
+  "realmCertificateString": "Y29uZ3JhdHVsYXRpb25zLCB5b3UgZm91bmQgdGhlIHNlY3JldCByb29tLiB5b3VyIHByaXplIGlzIGEgZnJlZSBkb3dubG9hZCBvZiBhcGltYW4h",
+  "forwardRoles": {
+    "active": true
+  },
+  "delegateKerberosTicket": false,
+  "forwardAuthInfo": [
+    {
+      "headers": "X-COUNTRY",
+      "field": "address.country"
+    },
+    {
+      "headers": "X-USERNAME",
+      "field": "preferred_username"
+    }
+  ]
+}
+```
 
 ==== URL Whitelist Policy
 [[policy-url-whitelist]]
