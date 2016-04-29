@@ -244,18 +244,14 @@
   <modules>
     <module>circuit-breaker-policy</module>
     <module>cors-policy</module>
-    <module>config-policy</module>
     <module>http-security-policy</module>
     <module>jsonp-policy</module>
     <module>keycloak-oauth-policy</module>
-    <module>noop-policy</module>
+    <module>log-policy</module>
     <module>simple-header-policy</module>
     <module>soap-authorization-policy</module>
-    <module>test-policy</module>
     <module>transformation-policy</module>
-    <module>log-policy</module>
     <module>url-whitelist-policy</module>
-    
     <module>repository</module>
   </modules>
 
@@ -277,6 +273,20 @@
         </plugins>
       </build>
     </profile>
+    <profile>
+      <id>standard</id>
+      <activation>
+        <property>
+          <name>!skipStandard</name>
+        </property>
+      </activation>
+      <modules>
+        <module>config-policy</module>
+        <module>noop-policy</module>
+        <module>test-policy</module>
+      </modules>
+    </profile>
+
     <profile>
       <id>release</id>
       <build>
