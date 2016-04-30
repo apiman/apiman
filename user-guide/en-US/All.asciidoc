@@ -1115,14 +1115,14 @@ Prevent MIME-sniffing to any type other than the declared Content-Type.
 | false
 
 | hsts
-| <<hsts>>
-a.| .HTTP Strict Transport Security
+| <<_hsts>>
+a| .HTTP Strict Transport Security
 Configure HSTS.
 | None
 
 | contentSecurityPolicy
 | <<contentSecurityPolicy>>
-a.| .Content Security Policy
+a| .Content Security Policy
 CSP definition.
 | None
 
