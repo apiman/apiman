@@ -51,7 +51,7 @@ final IApiRequestExecutor requestExecutor = engine.executor(request,
 // streamHandler called when back-end connector is ready to receive data.
 requestExecutor.streamHandler(new IAsyncHandler<IApiConnection>() {
   public void handle(final IApiConnection writeStream) { ... }
-}
+});
 
 // Execute the request
 executor.execute();
@@ -78,7 +78,7 @@ requestExecutor.streamHandler(new IAsyncHandler<IApiConnection>() {
     // Call #end only once.
     writeStream.end();
   }
-}
+});
 ```
 
 Any data flowing into the executor must first be wrapped in your implementation of `IApimanBuffer` before being passed to `write`. You may call `write` an unlimited number of times, and indicate that transmission has completed by signalling `end`.
@@ -205,7 +205,7 @@ Looking at an example:
 ```java
 // Native platform's connector (e.g. HTTP)
 ImaginaryBackendConnector imaginaryConnector = ...;
-	Connection c = imaginaryConnector.establishConnection(api.getEndpoint(), ...);
+Connection c = imaginaryConnector.establishConnection(api.getEndpoint(), ...);
 
 // Prepare in advance to do something sensible with the response
 // See next section for more detail.
@@ -298,13 +298,13 @@ void handle(final ImaginaryResponse response) {
       });
 
       // Transmission has finished
-      response.endHandler(new Handler<Void>) {
+      response.endHandler(new Handler<Void>() {
 
         void handle(Void flag) {
           endHandler.handle((Void) null);
           // You may want to close your backend connection here.
         }
-      }
+      });
     }
 
     @Override
@@ -382,4 +382,4 @@ Implementors may notice that the only overlap between the `IApiConnection` and `
 Implementation exemplars:
 
 * link:++https://github.com/apiman/apiman/blob/master/gateway/platforms/servlet/src/main/java/io/apiman/gateway/platforms/servlet/connectors/HttpApiConnection.java++[Servlet HTTP Connector] is a more traditional synchronous implementations.
-* link:++ https://github.com/apiman/apiman/blob/master/gateway/platforms/vertx/src/main/java/io/apiman/gateway/vertx/connector/HttpConnector.java++[Vert.x HTTP Connector] is an asynchronous HTTP implementation.
+* link:++ https://github.com/apiman/apiman/blob/master/gateway/platforms/vertx3/vertx3/src/main/java/io/apiman/gateway/platforms/vertx3/connector/HttpConnector.java++[Vert.x 3 HTTP Connector] is an asynchronous HTTP implementation.
