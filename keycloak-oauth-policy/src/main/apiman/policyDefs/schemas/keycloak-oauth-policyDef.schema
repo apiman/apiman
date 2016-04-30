@@ -29,7 +29,7 @@
     },
     "realm": {
       "title": "Realm",
-      "description": "Realm name. If you are using KeyCloak 1.2.0x or later this must be a full iss domain path (e.g. https://mykeycloak.local/auth/realms/apimanrealm); pre-1.2.0x simply use the realm name (e.g. apimanrealm)",
+      "description": "Realm name. If you are using Keycloak 1.2.0x or later this must be a full iss domain path (e.g. https://mykeycloak.local/auth/realms/apimanrealm); pre-1.2.0x simply use the realm name (e.g. apimanrealm).",
       "type": "string"
     },
     "realmCertificateString": {
@@ -40,7 +40,7 @@
     },
     "forwardRoles": {
       "title": "Forward Authorization Roles",
-      "description": "Forward KeyCloak roles to the Authorization policy. You should specify your required role(s) in the Authorization policy's configuration.",
+      "description": "Forward Keycloak roles to the Authorization policy. You should specify your required role(s) in the Authorization policy's configuration.",
       "type": "object",
       "oneOf": [{
         "title": "Forward Realm Roles",
@@ -73,14 +73,14 @@
       "default": false,
       "links": [
         {
-          "href": "https://docs.jboss.org/keycloak/docs/1.2.0.CR1/userguide/html/kerberos.html#d4e2438",
+          "href": "https://keycloak.github.io/docs/userguide/keycloak-server/html/kerberos.html#d4e3080",
           "rel": "Keycloak Kerberos credential delegation guide"
         }
       ]
     },
     "forwardAuthInfo": {
       "title": "Forward Keycloak Token Information",
-      "description": "Fields from the token can be set as headers and forwarded to the API. All <a href=\"https://openid.net/specs/openid-connect-basic-1_0.html#StandardClaims\" target=\"_blank\">standard claims</a>, custom claims and <a href=\"https://openid.net/specs/openid-connect-basic-1_0.html#IDToken\" target=\"_blank\">ID token fields</a> are available (case sensitive). A special value of <strong><tt>access_token</tt></strong> will forward the entire encoded token. Nested claims can be accessed by using javascript dot syntax (e.g: <tt>address.country</tt>, <tt>address.formatted</tt>)",
+      "description": "Fields from the token can be set as headers and forwarded to the API. All <a href=\"https://openid.net/specs/openid-connect-basic-1_0.html#StandardClaims\" target=\"_blank\">standard claims</a>, custom claims and <a href=\"https://openid.net/specs/openid-connect-basic-1_0.html#IDToken\" target=\"_blank\">ID token fields</a> are available (case sensitive). A special value of <strong><tt>access_token</tt></strong> will forward the entire encoded token. Nested claims can be accessed by using javascript dot syntax (e.g: <tt>address.country</tt>, <tt>address.formatted</tt>).",
       "type": "array",
       "format": "table",
       "items": {
