@@ -3,8 +3,6 @@
 
 include::Introduction.asciidoc[]
 
-include::CrashCourse.asciidoc[]
-
 include::All.asciidoc[]
 
 :numbered!:

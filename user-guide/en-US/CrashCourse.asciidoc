@@ -47,7 +47,7 @@ Apiman uses a hierarchical data model that consists of the following primary ele
  * Client Apps
  * Policies
 
-image::images/apiman_001.jpg[apiman data model]
+image::images/apiman_001.png[apiman data model]
 
  * Policies - Policies are at the lowest level of the data model, but they are arguably the most important concept because they represent the unit of work done at runtime (when the API Gateway applies the policies to all API requests). Everything defined in the API Manager is there to enable apiman to apply policies to requests made to APIs. When a request to an API is made, apiman creates a chain of policies to be applied to that request. Apiman policy chains define a specific sequence order in which the policies defined in the API Manager UI are applied to API requests. You can think of a policy as a rule, or set of rules that are enforced by the API Gateway. There are multiple types of apiman policies. Some policies allow or block access to APIs based on the IP address of the client application, while others allow or restrict access to specific resources provided by an API, while still others enable you to control or “throttle” the rate at which requests made to an API.
 
@@ -70,7 +70,7 @@ Note that the apiman data model supports versioning for many of its data element
 === Apiman at Runtime - Proxying Requests
 What happens is that when an API request is received by the API Gateway at runtime, the policy chain is applied in the order of client app, plan, and API. If no failures, such as a rate counter being exceeded, occur, the API Gateway sends the request to the API. In order to be accepted by the API Gateway, a request must include an API key. The API Gateway acts as a proxy for the API:
 
-image::images/apiman_002.jpg[apiman at runtime]
+image::images/apiman_002.png[apiman at runtime]
 
 Next, when the API Gateway receives a response from the API’s backend implementation, the policy chain is applied again, but this time in the reverse order. The API policies are applied first, then the plan policies, and finally the client app policies. If no failures occur, then the API response is sent back to the consumer of the API.
 
@@ -90,7 +90,7 @@ The sequence in which incoming API requests have policies applied is:
 
 By applying the policy chain twice, both for the originating incoming request and the resulting response, apiman allows policy implementations two opportunities to provide management functionality during the lifecycle. The following diagram illustrates this two-way approach to applying policies:
 
-image::images/apiman_003.jpg[policy ordering]
+image::images/apiman_003.png[policy ordering]
 
 == Section 2 - Policies, the Core of API Management
 Policies are the most important element of API management. All the subsystems in apiman, from the Management API UI to the API Gateway, exist for one ultimate goal; to ensure that API governance is achieved by the application of policies to API requests. In apiman, policies are applied through a policy chain.  Apiman is not only preconfigured with a rich set of policies that you can use, right out of the box, it also supports a mechanism that you can use to define your own custom policies.
@@ -180,7 +180,7 @@ To illustrate, there are about 2.5 million seconds in a month. If we want to set
 
 Here’s a visual view of a rate limiting policy based on a time period of one week. If we define a weekly quota, there is no guarantee that users will not consume that quota before the week is over. This will result in an API’s requests being denied at the end of the week. In contrast, if we augment the weekly quota with a more fine grained policy, we can maintain the API’s ability to respond to requests throughout the week:
 
-image::images/apiman_004.jpg[rate limiting]
+image::images/apiman_004.png[rate limiting]
 
 [TIP]
 ====
@@ -205,7 +205,7 @@ a| * A coarse grained Quota plan with a limit of 20,000 API requests per month, 
 
 This diagram lets us visualize how the two policies will work together:
 
-image::images/apiman_005.jpg[policies working together]
+image::images/apiman_005.png[policies working together]
 
 In this diagram,  each filled in box represents one API request. The important thing to understand is how the policies work together to enable you to have flexible throttling of requests to your API:
 
@@ -237,7 +237,7 @@ The authentication policy type provides username/password security for clients a
 
 The best way to start our discussion of the different, but complementary types of security that we’ll examine in this article is with a diagram. The nodes involved are the client applications that will access our APIs, the apiman API Gateway, and the servers that host our APIs:
 
-image::images/apiman_006.jpg[]
+image::images/apiman_006.png[]
 
 Let’s work our way through the diagram from left to right and start by taking a look at Policy Level Security.
 
@@ -299,7 +299,7 @@ After you’ve created and published your APIs, you will want to be able to keep
 
 API Metrics can be accessed in the Management UI and through the REST API. The metrics are displayed visually in the Management UI, for example:
 
-image::images/apiman_007.jpg[metrics]
+image::images/apiman_007.png[metrics]
 
 == Section 4 - Consuming APIs
 === Invoking Managed APIs
@@ -438,7 +438,7 @@ After you install the prerequisite software, the next thing we have to do is to 
 
 To download apiman, open a browser and navigate to +++<u>+++http://http://www.apiman.io+++</u>+++
 
-image::images/1.png[ExampleImage_1]
+image::images/example/1.png[Apiman homepage]
 
 The phrase “running an apiman server” is a bit misleading, as apiman itself is not a server. apiman is distributed in multiple forms. We’ll examine and use each of these forms in this book:
 
@@ -447,7 +447,7 @@ The phrase “running an apiman server” is a bit misleading, as apiman itself 
 
 We’ll keep things simple in this chapter and use the apiman WildFly Overlay distribution. (You can also download apiman packaged as a Docker image.)  If you navigate to the “downloads” page, you’ll see:
 
-image::images/2.png[ExampleImage_2]
+image::images/example/2.png[Apiman Getting Started page]
 
 Let’s take a look at the contents of the WildFly Overlay. There are three main directories in the WildFly Overlay:
 
@@ -472,7 +472,7 @@ The apiman directory - This directory contains configuration data specific to ap
 
 ----
 
-The modules directory - This directory contains configuration files, including keycloak (URL) configuration files that are added to the WildFly server for apiman. These files are added to the WildFly “standalone” server configuration . The top levels in this directory look like this:
+The modules directory - This directory contains configuration files, including Keycloak (URL) configuration files that are added to the WildFly server for apiman. These files are added to the WildFly “standalone” server configuration . The top levels in this directory look like this:
 
 ----
 ├── modules
@@ -587,19 +587,19 @@ Remember the user account that we created? We’ll use it now. To access the Wil
 
 This page will be displayed:
 
-image::images/3.png[ExampleImage_3]
+image::images/example/3.png[WildFly welcome page]
 
 When you select the Administration Console selection, you will be prompted for the username and password:
 
-image::images/4a.png[ExampleImage_4a]
+image::images/example/4a.png[Prompting for credentials]
 
 Enter the username and password for the user that you defined (for this example, we used the very unimaginative and insecure username “admin”) and you will brought to the WildFly Server Administration Console:
 
-image::images/4.png[ExampleImage_4]
+image::images/example/4.png[WildFly administration console]
 
 If you then select the “Deployments” tab at the top of the page, you’ll see the applications deployed to the server. This is where you should see the apiman deployments for the APIs, Gateway, and Management UI:
 
-image::images/5.png[ExampleImage_5]
+image::images/example/5.png[WildFly deployments tab]
 
 If you don’t see the apiman deployments, don’t panic, but something went wrong with the installation. The most common reason for the apiman deployments to be missing is that you unzipped the apiman overlay .zip file into a different directory from the WildFly server. Remember, that the reason that the overlay file is named “overlay” is that it must be unzipped over an installed WildFly server. You can confirm that this is what happened by looking in the WildFly server’s deployment directory here:  wildfly-10.0.0.Final/standalone/deployments
 
@@ -697,7 +697,7 @@ And, after the download is complete, you'll see a populated directory tree that 
          	└── dist.xml
 ----
 
-As we mentioned earlier,  the example API is very simple. The only action that the API performs is to echo back in responses the meta data in the REST (http://en.wikipedia.org/wiki/Representational_state_transfer) requests that it receives.
+As we mentioned earlier,  the example API is very simple. The only action that the API performs is to echo back in responses the meta data in the http://en.wikipedia.org/wiki/Representational_state_transfer[REST] requests that it receives.
 
 Maven is used to build the API. To build the API into a deployable .war file, navigate to the directory into which you downloaded the API example:
 
@@ -824,15 +824,15 @@ Creating Users for the API Provider and Consumer Organizations
 
 Before we create the organizations, we have to create a user for each organization. We'll start by creating the API provider user. To do this, logout from the admin account in the API Manager UI. The login dialog will then be displayed.
 
-image::images/6.png[ExampleImage_6]
+image::images/example/6.png[Apiman realm login]
 
 Select the "New user/Register" Option and register the API provider user:
 
-image::images/7.png[ExampleImage_7]
+image::images/example/7.png[Apiman user registration for new API provider]
 
 Then, logout and repeat the process to register a new application developer user too:
 
-image::images/8.png[ExampleImage_8]
+image::images/example/8.png[Apiman user registration for new app developer]
 
 Now that the new users are registered we can create the organizations.
 
@@ -840,15 +840,15 @@ Creating the API Provider Organization
 
 To create the API provider organization, log back into the API Manager UI as the apiprov user and select “Create a new Organization”:
 
-image::images/8a.png[ExampleImage_8a]
+image::images/example/8a.png[Create new organization]
 
 Select a name and description for the organization, and press “Create Organization”:
 
-image::images/9.png[ExampleImage_9]
+image::images/example/9.png[Enter new organization details]
 
 And, here’s our organization:
 
-image::images/10.png[ExampleImage_10]
+image::images/example/10.png[The new organization]
 
 Note that in a production environment, users would request membership in an organization. The approval process for accepting new members into an organization would follow the organization's workflow, but this would be handled outside of the API Manager API. For the purposes of our demonstration, we'll keep things simple.
 
@@ -856,53 +856,53 @@ Configuring the API, its Policies, and Plans
 
 To configure the API, we’ll first create a plan to contain the policies that we want applied by the API Gateway at runtime when requests to the API are made. To create a new plan, select the “Plans” tab. We’ll create a “gold” plan:
 
-image::images/11.png[ExampleImage_11]
+image::images/example/11.png[Add a new plan]
 
 Once the plan is created, we will add policies to it:
 
-image::images/12.png[ExampleImage_12]
+image::images/example/12.png[Add a policy]
 
 apiman provides several OOTB policies/plans. Since we want to be able to demonstrate a policy being applied, we’ll select a Rate Limiting Policy, and set its limit to a very low level. If our API receives more than 10 requests in a day/month, the policy should block all subsequent requests. So much for a “gold” level of API!
 
-image::images/13.png[ExampleImage_13]
+image::images/example/13.png[Add and configure rate limiting]
 
 After we create the policy and add it to the plan, we have to lock the plan:
 
-image::images/14.png[ExampleImage_14]
+image::images/example/14.png[Lock the plan]
 
 And, here is the finished, and locked plan:
 
-image::images/15.png[ExampleImage_15]
+image::images/example/15.png[Plan status is "locked"]
 
 At this point, additional plans can be defined for the API. We’ll also create a “silver” plan, that will offer a lower level of API (i.e., a request rate limit lower than 10 per day/month) than the gold plan. Since the process to create this silver plan is identical to that of the gold plan, we’ll skip the screenshots.
 
 Now that the two plans are complete and locked, it’s time to define the API.
 
-image::images/16.png[ExampleImage_16]
+image::images/example/16.png[APIs tab]
 
 We’ll give the API an appropriate name, so that providers and consumers alike will be able to run a query in the API Manager to find it.
 
-image::images/17.png[ExampleImage_17]
+image::images/example/17.png[Add an API]
 
 After the API is defined, we have to define its implementation. In the context of the API Manager, the API Endpoint is the API’s direct URL. Remember that the API Gateway will act as a proxy for the API, so it must know the API’s actual URL. In the case of our example API, the URL is:  +++<u>+++http://localhost:8080/apiman-echo+++</u>+++
 
-image::images/18.png[ExampleImage_18]
+image::images/example/18.png[Add implementation information]
 
 The plans tab shows which plans are available to be applied to the API:
 
-image::images/19.png[ExampleImage_19]
+image::images/example/19.png[Make API available via available plans]
 
 Let’s make our API more secure by adding an authentication policy that will require users to login before they can access the API. Select the Policies tab, and then define a simple authentication policy. Remember the user name and password that you define here as we’ll need them later on when send requests to the API.
 
-image::images/20.png[ExampleImage_20]
+image::images/example/20.png[Add and configure a BASIC auth policy]
 
 After the authentication policy is added, we can publish the API to the API Gateway:
 
-image::images/21.png[ExampleImage_21]
+image::images/example/21.png[Added the policy]
 
 And, here it is, the published API:
 
-image::images/22.png[ExampleImage_22]
+image::images/example/22.png[Publish the API, API status is "Published"]
 
 OK, that finishes the definition of the API provider organization and the publication of the API.
 
@@ -912,33 +912,33 @@ The API Consumer Organization
 
 We'll repeat the process that we used to create the application development organization. Log in to the API Manager UI as the “appdev” user and create the organization:
 
-image::images/23.png[ExampleImage_23]
+image::images/example/23.png[Creating a new organization, AJAX API Consumers]
 
 Unlike the process we used when we created the elements used by the API provider, the first step that we’ll take is to create a new application and then search for the API to be used by the application:
 
-image::images/24.png[ExampleImage_24]
+image::images/example/24.png[Add a new client app]
 
-image::images/26.png[ExampleImage_26]
+image::images/example/26.png[Search for APIs to consume]
 
 Searching for the API is easy, as we were careful to set the API name to something memorable:
 
-image::images/27.png[ExampleImage_27]
+image::images/example/27.png[Searching for "echo"]
 
-image::images/28.png[ExampleImage_28]
+image::images/example/28.png[Found ACME APIs' echo: "The echo API"]
 
 Select the API name, and then specify the plan to be used. We’ll splurge and use the gold plan:
 
-image::images/29.png[ExampleImage_29]
+image::images/example/29.png[Viewing the available contracts]
 
 Next, select “create contract” for the plan (for this example, we’ll just accept all the defaults):
 
-image::images/30.png[ExampleImage_30]
+image::images/example/30.png[Creating a new contract]
 
 The last step is to register the application with the API Gateway so that the gateway can act as a proxy for the API:
 
-image::images/31.png[ExampleImage_31]
+image::images/example/31.png[API Contracts page on the client app]
 
-image::images/32.png[ExampleImage_32]
+image::images/example/32.png[Registered the client app, status is "Registered"]
 
 Congratulations! All the steps necessary to both provide and consume the configure the API are complete!
 
@@ -946,9 +946,9 @@ There’s just one more step that we have to take in order for clients to be abl
 
 Remember the URL that we used to access the unmanaged API directly? Well, forget it. In order to access the managed API through the API Gateway acting as a proxy for other API we have to obtain the managed API's URL. In the API Manager UI, header over to the “APIs” tab for the application, select the API and then click select on the “i” character to the right of the API name. This will expose the API Key and the API’s HTTP endpoint in the API Gateway:
 
-image::images/33.png[ExampleImage_33]
+image::images/example/33.png[APIs tab in client app]
 
-image::images/34.png[ExampleImage_34]
+image::images/example/34.png[Copy API endpoint info]
 
 In order to be able access the API through the API Gateway, we have to provide the API Key with each request.  combine the API Key and HTTP endpoint. The API Key can be provided either through an HTTP Header (X-API-Key) or a URL query parameter.
 
@@ -968,13 +968,13 @@ Open a new browser window or tab, and enter the URL for the managed API.
 
 What happens first is that the authentication policy is applied and a login dialog is then displayed:
 
-image::images/35.png[ExampleImage_35]
+image::images/example/35.png[Auth popup prompt]
 
 Enter the username and password (user1/password) that we defined when we created the authentication policy to access the API. The fact that you are seeing this dialog confirms that you are accessing the managed API and are not accessing the API directly.
 
 When you send a GET request to the API, you should see a successful response:
 
-
+[source, json]
 ----
 {
  "method" : "GET",
@@ -998,8 +998,28 @@ When you send a GET request to the API, you should see a successful response:
 
 So far so good. Now, send 10 more requests and you will see a response that looks like this as the gold plan rate limit is exceeded:
 
+[source, json]
 ----
-{"type":"Other","failureCode":10005,"responseCode":429,"message":"Rate limit exceeded.","headers":{"entries":[{"X-RateLimit-Remaining":"-1"},{"X-RateLimit-Reset":"50904"},{"X-RateLimit-Limit":"10"}],"empty":false}}
+{
+   "type" : "Other",
+   "headers" : {
+      "empty" : false,
+      "entries" : [
+         {
+            "X-RateLimit-Remaining" : "-1"
+         },
+         {
+            "X-RateLimit-Reset" : "50904"
+         },
+         {
+            "X-RateLimit-Limit" : "10"
+         }
+      ]
+   },
+   "failureCode" : 10005,
+   "message" : "Rate limit exceeded.",
+   "responseCode" : 429
+}
 ----
 
 And there it is. Your gold plan has been exceeded. Maybe next time you’ll spend a little more and get the platinum plan!  ;-)
