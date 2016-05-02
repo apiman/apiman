@@ -135,9 +135,11 @@ module Apiman {
                     if (newValue.endpoint != $scope.version.endpoint) {
                         dirty = true;
                     }
+
                     if (newValue.endpointType != $scope.version.endpointType) {
                         dirty = true;
                     }
+
                     if (newValue.endpointContentType != $scope.version.endpointContentType) {
                         dirty = true;
                     }
@@ -145,12 +147,14 @@ module Apiman {
                     if (newValue.gateways && newValue.gateways.length > 0) {
                         dirty = true;
                     }
+
                     if ($scope.version.endpointProperties && newValue.endpointProperties) {
                         if (!angular.equals($scope.version.endpointProperties, newValue.endpointProperties)) {
                             Logger.debug('Dirty due to EP:');
                             Logger.debug('    $scope.version:    {0}', $scope.version);
                             Logger.debug('    $scope.version.EP: {0}', $scope.version.endpointProperties);
                             Logger.debug('    newValue.EP:       {0}', newValue.endpointProperties);
+
                             dirty = true;
                         }
                     }
@@ -170,7 +174,7 @@ module Apiman {
 
 
             // Used, as you'd guess, to compare originally selected values to new values
-            function arraysAreEqual(one,two) {
+            function arraysAreEqual(one, two) {
                 return (one.join('') == two.join(''));
             }
 
@@ -186,8 +190,8 @@ module Apiman {
 
                     // Will need to compare newly selected gateways to available gateways again
                     // by plucking gatewayId values, inserting into an array, and comparing them
-                    var pluckedAfter = _.pluck(newSelectedArray, 'gatewayId');
-                    var pluckedBefore = _.pluck($scope.version.gateways, 'gatewayId');
+                    var pluckedAfter = _.map(newSelectedArray, 'gatewayId');
+                    var pluckedBefore = _.map($scope.version.gateways, 'gatewayId');
 
                     var compare = arraysAreEqual(pluckedAfter, pluckedBefore);
 
