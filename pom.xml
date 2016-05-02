@@ -66,6 +66,7 @@
   </properties>
 
   <modules>
+    <module>crash-course</module>
     <module>user-guide</module>
     <module>developer-guide</module>
     <module>installation-guide</module>
