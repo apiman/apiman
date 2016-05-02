@@ -20,9 +20,12 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Iterator;
 
+import javax.xml.namespace.QName;
+import javax.xml.soap.MessageFactory;
 import javax.xml.soap.SOAPEnvelope;
 import javax.xml.soap.SOAPHeader;
 import javax.xml.soap.SOAPHeaderElement;
+import javax.xml.soap.SOAPMessage;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -75,7 +78,20 @@ public class SoapPayloadIOTest {
      */
     @Test
     public void testMarshall_Simple() throws Exception {
+        MessageFactory msgFactory = MessageFactory.newInstance();
+        SOAPMessage message = msgFactory.createMessage();
+        SOAPEnvelope envelope = message.getSOAPPart().getEnvelope();
         
+        SOAPHeader header = envelope.getHeader();
+        SOAPHeaderElement cheader = header.addHeaderElement(new QName("urn:ns1", "CustomHeader"));
+        cheader.setTextContent("CVALUE");
+        
+        SoapPayloadIO io = new SoapPayloadIO();
+        byte[] data = io.marshall(envelope);
+        String actual = new String(data);
+        
+        String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Header><CustomHeader xmlns=\"urn:ns1\">CVALUE</CustomHeader></SOAP-ENV:Header><SOAP-ENV:Body/></SOAP-ENV:Envelope>";
+        Assert.assertEquals(expected, actual);
     }
     
     

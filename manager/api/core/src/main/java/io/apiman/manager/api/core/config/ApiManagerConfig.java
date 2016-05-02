@@ -47,14 +47,14 @@ public abstract class ApiManagerConfig {
      * Storage
      * ------------------------------------------------------- */
     public static final String APIMAN_MANAGER_STORAGE_TYPE = "apiman-manager.storage.type"; //$NON-NLS-1$
-    public static final String APIMAN_MANAGER_STORAGE_ES_PROTOCOL = "apiman-manager.storage.es.protocol"; //$NON-NLS-1$
-    public static final String APIMAN_MANAGER_STORAGE_ES_HOST = "apiman-manager.storage.es.host"; //$NON-NLS-1$
-    public static final String APIMAN_MANAGER_STORAGE_ES_PORT = "apiman-manager.storage.es.port"; //$NON-NLS-1$
-    public static final String APIMAN_MANAGER_STORAGE_ES_CLUSTER_NAME = "apiman-manager.storage.es.cluster-name"; //$NON-NLS-1$
-    public static final String APIMAN_MANAGER_STORAGE_ES_USERNAME = "apiman-manager.storage.es.username"; //$NON-NLS-1$
-    public static final String APIMAN_MANAGER_STORAGE_ES_PASSWORD = "apiman-manager.storage.es.password"; //$NON-NLS-1$
+    public static final String APIMAN_MANAGER_STORAGE_ES_CLIENT_FACTORY = "apiman-manager.storage.es.client-factory"; //$NON-NLS-1$
+//    public static final String APIMAN_MANAGER_STORAGE_ES_HOST = "apiman-manager.storage.es.host"; //$NON-NLS-1$
+//    public static final String APIMAN_MANAGER_STORAGE_ES_PORT = "apiman-manager.storage.es.port"; //$NON-NLS-1$
+//    public static final String APIMAN_MANAGER_STORAGE_ES_CLUSTER_NAME = "apiman-manager.storage.es.cluster-name"; //$NON-NLS-1$
+//    public static final String APIMAN_MANAGER_STORAGE_ES_USERNAME = "apiman-manager.storage.es.username"; //$NON-NLS-1$
+//    public static final String APIMAN_MANAGER_STORAGE_ES_PASSWORD = "apiman-manager.storage.es.password"; //$NON-NLS-1$
+//    public static final String APIMAN_MANAGER_STORAGE_ES_TIMEOUT = "apiman-manager.storage.es.timeout"; //$NON-NLS-1$
     public static final String APIMAN_MANAGER_STORAGE_ES_INITIALIZE = "apiman-manager.storage.es.initialize"; //$NON-NLS-1$
-    public static final String APIMAN_MANAGER_STORAGE_ES_TIMEOUT = "apiman-manager.storage.es.timeout"; //$NON-NLS-1$
     public static final String APIMAN_MANAGER_STORAGE_ES_INDEX_NAME = "apiman-manager.storage.es.index"; //$NON-NLS-1$
 
     public static final String APIMAN_MANAGER_STORAGE_QUERY_TYPE = "apiman-manager.storage-query.type"; //$NON-NLS-1$
@@ -65,13 +65,14 @@ public abstract class ApiManagerConfig {
      * Metrics
      * ------------------------------------------------------- */
     public static final String APIMAN_MANAGER_METRICS_TYPE = "apiman-manager.metrics.type"; //$NON-NLS-1$
-    public static final String APIMAN_MANAGER_METRICS_ES_PROTOCOL = "apiman-manager.metrics.es.protocol"; //$NON-NLS-1$
-    public static final String APIMAN_MANAGER_METRICS_ES_HOST = "apiman-manager.metrics.es.host"; //$NON-NLS-1$
-    public static final String APIMAN_MANAGER_METRICS_ES_PORT = "apiman-manager.metrics.es.port"; //$NON-NLS-1$
-    public static final String APIMAN_MANAGER_METRICS_ES_CLUSTER_NAME = "apiman-manager.metrics.es.cluster-name"; //$NON-NLS-1$
-    public static final String APIMAN_MANAGER_METRICS_ES_USERNAME = "apiman-manager.metrics.es.username"; //$NON-NLS-1$
-    public static final String APIMAN_MANAGER_METRICS_ES_PASSWORD = "apiman-manager.metrics.es.password"; //$NON-NLS-1$
-    public static final String APIMAN_MANAGER_METRICS_ES_TIMEOUT = "apiman-manager.metrics.es.timeout"; //$NON-NLS-1$
+    public static final String APIMAN_MANAGER_METRICS_ES_CLIENT_FACTORY = "apiman-manager.metrics.es.client-factory"; //$NON-NLS-1$
+//    public static final String APIMAN_MANAGER_METRICS_ES_PROTOCOL = "apiman-manager.metrics.es.protocol"; //$NON-NLS-1$
+//    public static final String APIMAN_MANAGER_METRICS_ES_HOST = "apiman-manager.metrics.es.host"; //$NON-NLS-1$
+//    public static final String APIMAN_MANAGER_METRICS_ES_PORT = "apiman-manager.metrics.es.port"; //$NON-NLS-1$
+//    public static final String APIMAN_MANAGER_METRICS_ES_CLUSTER_NAME = "apiman-manager.metrics.es.cluster-name"; //$NON-NLS-1$
+//    public static final String APIMAN_MANAGER_METRICS_ES_USERNAME = "apiman-manager.metrics.es.username"; //$NON-NLS-1$
+//    public static final String APIMAN_MANAGER_METRICS_ES_PASSWORD = "apiman-manager.metrics.es.password"; //$NON-NLS-1$
+//    public static final String APIMAN_MANAGER_METRICS_ES_TIMEOUT = "apiman-manager.metrics.es.timeout"; //$NON-NLS-1$
 
     public static final String APIMAN_MANAGER_SECURITY_CONTEXT_TYPE = "apiman-manager.security-context.type"; //$NON-NLS-1$
 
@@ -176,51 +177,22 @@ public abstract class ApiManagerConfig {
     }
 
     /**
-     * @return the elasticsearch protocol
+     * @return the elasticsearch client factory or null if not configured
      */
-    public String getStorageESProtocol() {
-        return config.getString(APIMAN_MANAGER_STORAGE_ES_PROTOCOL, "http"); //$NON-NLS-1$
+    public String getStorageESClientFactory() {
+        return config.getString(APIMAN_MANAGER_STORAGE_ES_CLIENT_FACTORY);
+    }
+    
+    /**
+     * @return a map of config properties for the es client factory
+     */
+    public Map<String, String> getStorageESClientFactoryConfig() {
+        return getPrefixedProperties("apiman-manager.storage.es."); //$NON-NLS-1$
     }
 
     /**
-     * @return the elasticsearch host
+     * @return the storage es index name
      */
-    public String getStorageESHost() {
-        return config.getString(APIMAN_MANAGER_STORAGE_ES_HOST, "localhost"); //$NON-NLS-1$
-    }
-
-    /**
-     * @return the elasticsearch port
-     */
-    public int getStorageESPort() {
-        return config.getInt(APIMAN_MANAGER_STORAGE_ES_PORT, 19200);
-    }
-
-    /**
-     * @return the elasticsearch cluster name
-     */
-    public String getStorageESClusterName() {
-        return config.getString(APIMAN_MANAGER_STORAGE_ES_CLUSTER_NAME, DEFAULT_ES_CLUSTER_NAME);
-    }
-
-    /**
-     * @return the elasticsearch username
-     */
-    public String getStorageESUsername() {
-        return config.getString(APIMAN_MANAGER_STORAGE_ES_USERNAME, null);
-    }
-
-    /**
-     * @return the elasticsearch username
-     */
-    public String getStorageESPassword() {
-        return config.getString(APIMAN_MANAGER_STORAGE_ES_PASSWORD, null);
-    }
-
-    public int getStorageESTimeout() {
-        return config.getInt(APIMAN_MANAGER_STORAGE_ES_TIMEOUT, DEFAULT_JEST_TIMEOUT);
-    }
-
     public String getStorageESIndexName() {
         return config.getString(APIMAN_MANAGER_STORAGE_ES_INDEX_NAME, DEFAULT_ES_INDEX_NAME);
     }
@@ -247,49 +219,17 @@ public abstract class ApiManagerConfig {
     }
 
     /**
-     * @return the elasticsearch protocol
+     * @return the elasticsearch client factory or null if not configured
      */
-    public String getMetricsESProtocol() {
-        return config.getString(APIMAN_MANAGER_METRICS_ES_PROTOCOL, "http"); //$NON-NLS-1$
+    public String getMetricsESClientFactory() {
+        return config.getString(APIMAN_MANAGER_METRICS_ES_CLIENT_FACTORY);
     }
-
+    
     /**
-     * @return the elasticsearch host
+     * @return a map of config properties for the es client factory
      */
-    public String getMetricsESHost() {
-        return config.getString(APIMAN_MANAGER_METRICS_ES_HOST, "localhost"); //$NON-NLS-1$
-    }
-
-    /**
-     * @return the elasticsearch port
-     */
-    public int getMetricsESPort() {
-        return config.getInt(APIMAN_MANAGER_METRICS_ES_PORT, 19200);
-    }
-
-    /**
-     * @return the elasticsearch cluster name
-     */
-    public String getMetricsESClusterName() {
-        return config.getString(APIMAN_MANAGER_METRICS_ES_CLUSTER_NAME, DEFAULT_ES_CLUSTER_NAME);
-    }
-
-    /**
-     * @return the elasticsearch username
-     */
-    public String getMetricsESUsername() {
-        return config.getString(APIMAN_MANAGER_METRICS_ES_USERNAME, null);
-    }
-
-    /**
-     * @return the elasticsearch password
-     */
-    public String getMetricsESPassword() {
-        return config.getString(APIMAN_MANAGER_METRICS_ES_PASSWORD, null);
-    }
-
-    public int getMetricsESTimeout() {
-        return config.getInt(APIMAN_MANAGER_METRICS_ES_TIMEOUT, DEFAULT_JEST_TIMEOUT);
+    public Map<String, String> getMetricsESClientFactoryConfig() {
+        return getPrefixedProperties("apiman-manager.metrics.es."); //$NON-NLS-1$
     }
 
     /**
