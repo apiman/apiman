@@ -253,7 +253,7 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
                     (IAsyncResult<Api> apiResult) -> {
                         if (apiResult.isSuccess()) {
                             api = apiResult.getResult();
-
+                            
                             if (api == null) {
                                 Exception error = new InvalidApiException(Messages.i18n.format("EngineImpl.ApiNotFound")); //$NON-NLS-1$
                                 resultHandler.handle(AsyncResultImpl.create(error, IEngineResult.class));
@@ -266,7 +266,18 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
                                 request.setApi(api);
                                 policies = api.getApiPolicies();
                                 policyImpls = new ArrayList<>(policies.size());
-                                loadPolicies(policiesLoadedHandler);
+
+                                // FIXME (parse payload) read all data, parsing it into a payload object HERE (optional)
+                                if (api.isParsePayload()) {
+                                    parsePayload(new IAsyncResultHandler<Object>() {
+                                        @Override
+                                        public void handle(IAsyncResult<Object> result) {
+                                            loadPolicies(policiesLoadedHandler);
+                                        }
+                                    });
+                                } else {
+                                    loadPolicies(policiesLoadedHandler);
+                                }
                             }
                         } else if (apiResult.isError()) {
                             resultHandler.handle(AsyncResultImpl.create(apiResult.getError(), IEngineResult.class));
@@ -277,7 +288,7 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
             String apiId = request.getApiId();
             String apiVersion = request.getApiVersion();
             String apiKey = request.getApiKey();
-            registry.getContract(apiOrgId, apiId, apiVersion, apiKey,(IAsyncResult<ApiContract> contractResult) -> {
+            registry.getContract(apiOrgId, apiId, apiVersion, apiKey, (IAsyncResult<ApiContract> contractResult) -> {
                 if (contractResult.isSuccess()) {
                     ApiContract apiContract = contractResult.getResult();
 
@@ -302,6 +313,9 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
                             return;
                         }
                     }
+
+                    // FIXME (parse payload) read all data, parsing it into a payload object HERE (optional)
+                    
                     loadPolicies(policiesLoadedHandler);
                 } else {
                     resultHandler.handle(AsyncResultImpl.create(contractResult.getError(), IEngineResult.class));

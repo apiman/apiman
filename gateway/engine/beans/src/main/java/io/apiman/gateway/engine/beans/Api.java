@@ -40,6 +40,7 @@ public class Api implements Serializable {
     private String endpointType;
     private String endpointContentType;
     private Map<String, String> endpointProperties = new HashMap<>();
+    private boolean parsePayload;
     private List<Policy> apiPolicies = new ArrayList<>();
 
     /**
@@ -175,6 +176,20 @@ public class Api implements Serializable {
     }
 
     /**
+     * @return the parsePayload
+     */
+    public boolean isParsePayload() {
+        return parsePayload;
+    }
+
+    /**
+     * @param parsePayload the parsePayload to set
+     */
+    public void setParsePayload(boolean parsePayload) {
+        this.parsePayload = parsePayload;
+    }
+
+    /**
      * @see java.lang.Object#hashCode()
      */
     @Override
@@ -229,6 +244,7 @@ public class Api implements Serializable {
                 + ", endpoint=" + endpoint + ", endpointProperties="
                 + (endpointProperties != null ? toString(endpointProperties.entrySet(), maxLen) : null)
                 + ", apiPolicies=" + (apiPolicies != null ? toString(apiPolicies, maxLen) : null)
+                + ", parsePayload=" + parsePayload
                 + "]";
     }
 
