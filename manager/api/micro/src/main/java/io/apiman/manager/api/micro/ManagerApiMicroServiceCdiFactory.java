@@ -228,12 +228,12 @@ public class ManagerApiMicroServiceCdiFactory {
     public static IEsClientFactory provideMetricsESClientFactory(ManagerApiMicroServiceConfig config, IPluginRegistry pluginRegistry) {
         if ("es".equals(config.getMetricsType()) && sMetricsESClientFactory == null) { //$NON-NLS-1$
             try {
-                String factoryClass = config.getStorageESClientFactory();
+                String factoryClass = config.getMetricsESClientFactory();
                 if (factoryClass == null) {
                     factoryClass = DefaultEsClientFactory.class.getName();
                 }
                 sMetricsESClientFactory = createCustomComponent(IEsClientFactory.class, factoryClass,
-                        config.getStorageESClientFactoryConfig(), pluginRegistry);
+                        config.getMetricsESClientFactoryConfig(), pluginRegistry);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
