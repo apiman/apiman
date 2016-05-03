@@ -201,10 +201,11 @@ It's important to keep in mind that a plan can contain multiple policies. For ou
 [cols="1,3"]
 |===
 | Gold plan
-a| * A coarse grained Quota plan with a limit of 100,000 API requests per month, and
+a| * A coarse grained Quota plan with a limit of 100,000 API requests per month, and a fine grained Rate Limiting plan of 100 service requests per minute
 
 | Silver plan
-a| * A coarse grained Quota plan with a limit of 20,000 API requests per month, and
+a| * A coarse grained Quota plan with a limit of 20,000 API requests per month, and a fine grained Rate Limiting plan of 500 service requests per minute
+
 |===
 
 This diagram lets us visualize how the two policies will work together:
