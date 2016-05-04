@@ -65,7 +65,6 @@ image:images/apiman_001.png[apiman data model]
 
 [TIP]
 ====
-.Key concept to remember
 In the apiman data model, almost everything exists in the context of an organization.
 ====
 
@@ -82,7 +81,6 @@ Before we move on, it's important that we're clear on some basic terminology. Wh
 
 [TIP]
 ====
-.Key concept to remember
 From a client app's perspective, the only difference between accessing a managed API and another API is the format of the APIs' endpoint URL.
 ====
 
@@ -101,7 +99,6 @@ Policies are the most important element of API management. All the subsystems in
 
 [TIP]
 ====
-.Key concept to remember
 API governance is achieved by the API Gateway applying policies to API requests.
 ====
 
@@ -188,7 +185,6 @@ image:images/apiman_004.png[rate limiting]
 
 [TIP]
 ====
-.Key concept to remember
 Policies can be configured to work together in combinations.
 ====
 
@@ -267,7 +263,6 @@ One last point that is important to remember is that the endpoint level of secur
 
 [TIP]
 ====
-.Key concept to remember
 Policy security alone does not secure an API's unmanaged endpoints.
 ====
 
@@ -415,7 +410,6 @@ Apiman follows this second approach with its REST interface. All of the function
 
 [TIP]
 ====
-.Key concept to remember
 You can use the REST interface to automate any task that is performed in the UI.
 ====
 
