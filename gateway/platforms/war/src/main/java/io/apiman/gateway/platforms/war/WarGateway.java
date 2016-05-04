@@ -15,6 +15,7 @@
  */
 package io.apiman.gateway.platforms.war;
 
+import io.apiman.gateway.engine.GatewayConfigProperties;
 import io.apiman.gateway.engine.IEngine;
 import io.apiman.gateway.engine.IPolicyErrorWriter;
 import io.apiman.gateway.engine.IPolicyFailureWriter;
@@ -42,6 +43,14 @@ public class WarGateway {
      */
     public static void init() {
         config = new WarEngineConfig();
+        // Surface the max-payload-buffer-size property as a system property, if it exists in the apiman.properties file
+        if (System.getProperty(GatewayConfigProperties.MAX_PAYLOAD_BUFFER_SIZE) == null) {
+            String propVal = config.getConfigProperty(GatewayConfigProperties.MAX_PAYLOAD_BUFFER_SIZE, null);
+            if (propVal != null) {
+                System.setProperty(GatewayConfigProperties.MAX_PAYLOAD_BUFFER_SIZE, propVal);
+            }
+        }
+        
         ConfigDrivenEngineFactory factory = new ConfigDrivenEngineFactory(config);
         engine = factory.createEngine();
         failureFormatter = loadFailureFormatter();

@@ -31,6 +31,7 @@ import io.apiman.gateway.engine.IRequiresInitialization;
 import io.apiman.gateway.engine.Version;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.ApiRequest;
+import io.apiman.gateway.engine.components.IBufferFactoryComponent;
 import io.apiman.gateway.engine.policy.IPolicyFactory;
 import io.apiman.gateway.engine.policy.PolicyContextImpl;
 
@@ -94,13 +95,15 @@ public class EngineImpl implements IEngine {
      */
     @Override
     public IApiRequestExecutor executor(ApiRequest request, final IAsyncResultHandler<IEngineResult> resultHandler) {
+        IBufferFactoryComponent bufferFactory = componentRegistry.getComponent(IBufferFactoryComponent.class);
         return new ApiRequestExecutorImpl(request,
                 resultHandler,
                 registry,
                 new PolicyContextImpl(getComponentRegistry(), getLogFactory()),
                 policyFactory,
                 getConnectorFactory(),
-                getMetrics());
+                getMetrics(),
+                bufferFactory);
     }
 
     /**

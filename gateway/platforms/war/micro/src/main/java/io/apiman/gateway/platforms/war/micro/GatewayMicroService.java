@@ -20,8 +20,11 @@ import io.apiman.common.servlet.AuthenticationFilter;
 import io.apiman.common.servlet.DisableCachingFilter;
 import io.apiman.common.servlet.LocaleFilter;
 import io.apiman.common.servlet.RootResourceFilter;
+import io.apiman.gateway.engine.GatewayConfigProperties;
 import io.apiman.gateway.engine.components.IBufferFactoryComponent;
 import io.apiman.gateway.engine.components.ICacheStoreComponent;
+import io.apiman.gateway.engine.components.IJdbcComponent;
+import io.apiman.gateway.engine.components.ILdapComponent;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.components.IRateLimiterComponent;
 import io.apiman.gateway.engine.components.ISharedStateComponent;
@@ -37,7 +40,6 @@ import io.apiman.gateway.engine.impl.DefaultPluginRegistry;
 import io.apiman.gateway.engine.policy.PolicyFactoryImpl;
 import io.apiman.gateway.platforms.servlet.PolicyFailureFactoryComponent;
 import io.apiman.gateway.platforms.servlet.connectors.HttpConnectorFactory;
-import io.apiman.gateway.platforms.war.WarEngineConfig;
 import io.apiman.gateway.platforms.war.filters.HttpRequestThreadLocalFilter;
 import io.apiman.gateway.platforms.war.listeners.WarGatewayBootstrapper;
 import io.apiman.gateway.platforms.war.servlets.WarGatewayServlet;
@@ -121,7 +123,7 @@ public class GatewayMicroService {
      * The buffer factory component.
      */
     private void registerBufferFactoryComponent() {
-        setConfigProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + IBufferFactoryComponent.class.getSimpleName(),
+        setConfigProperty(GatewayConfigProperties.COMPONENT_PREFIX + IBufferFactoryComponent.class.getSimpleName(),
                 ByteBufferFactoryComponent.class.getName());
     }
 
@@ -129,7 +131,7 @@ public class GatewayMicroService {
      * The policy failure factory component.
      */
     protected void registerPolicyFailureFactoryComponent() {
-        setConfigProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + IPolicyFailureFactoryComponent.class.getSimpleName(),
+        setConfigProperty(GatewayConfigProperties.COMPONENT_PREFIX + IPolicyFailureFactoryComponent.class.getSimpleName(),
                 PolicyFailureFactoryComponent.class.getName());
     }
 
@@ -137,109 +139,114 @@ public class GatewayMicroService {
      * The rate limiter component.
      */
     protected void registerRateLimiterComponent() {
-        setConfigProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + IRateLimiterComponent.class.getSimpleName(),
+        String componentPropName = GatewayConfigProperties.COMPONENT_PREFIX + IRateLimiterComponent.class.getSimpleName();
+        setConfigProperty(componentPropName,
                 ESRateLimiterComponent.class.getName());
-        setConfigProperty("apiman-gateway.components.IRateLimiterComponent.client.type", "jest");
-        setConfigProperty("apiman-gateway.components.IRateLimiterComponent.client.protocol", "${apiman.es.protocol}");
-        setConfigProperty("apiman-gateway.components.IRateLimiterComponent.client.host", "${apiman.es.host}");
-        setConfigProperty("apiman-gateway.components.IRateLimiterComponent.client.port", "${apiman.es.port}");
-        setConfigProperty("apiman-gateway.components.IRateLimiterComponent.client.username", "${apiman.es.username}");
-        setConfigProperty("apiman-gateway.components.IRateLimiterComponent.client.password", "${apiman.es.password}");
+        setConfigProperty(componentPropName + ".client.type", "jest");
+        setConfigProperty(componentPropName + ".client.protocol", "${apiman.es.protocol}");
+        setConfigProperty(componentPropName + ".client.host", "${apiman.es.host}");
+        setConfigProperty(componentPropName + ".client.port", "${apiman.es.port}");
+        setConfigProperty(componentPropName + ".client.username", "${apiman.es.username}");
+        setConfigProperty(componentPropName + ".client.password", "${apiman.es.password}");
     }
 
     /**
      * The shared state component.
      */
     protected void registerSharedStateComponent() {
-        setConfigProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + ISharedStateComponent.class.getSimpleName(),
+        String componentPropName = GatewayConfigProperties.COMPONENT_PREFIX + ISharedStateComponent.class.getSimpleName();
+        setConfigProperty(componentPropName,
                 ESSharedStateComponent.class.getName());
-        setConfigProperty("apiman-gateway.components.ISharedStateComponent.client.type", "jest");
-        setConfigProperty("apiman-gateway.components.ISharedStateComponent.client.protocol", "${apiman.es.protocol}");
-        setConfigProperty("apiman-gateway.components.ISharedStateComponent.client.host", "${apiman.es.host}");
-        setConfigProperty("apiman-gateway.components.ISharedStateComponent.client.port", "${apiman.es.port}");
-        setConfigProperty("apiman-gateway.components.ISharedStateComponent.client.username", "${apiman.es.username}");
-        setConfigProperty("apiman-gateway.components.ISharedStateComponent.client.password", "${apiman.es.password}");
+        setConfigProperty(componentPropName + ".client.type", "jest");
+        setConfigProperty(componentPropName + ".client.protocol", "${apiman.es.protocol}");
+        setConfigProperty(componentPropName + ".client.host", "${apiman.es.host}");
+        setConfigProperty(componentPropName + ".client.port", "${apiman.es.port}");
+        setConfigProperty(componentPropName + ".client.username", "${apiman.es.username}");
+        setConfigProperty(componentPropName + ".client.password", "${apiman.es.password}");
     }
 
     /**
      * The cache store component.
      */
     protected void registerCacheStoreComponent() {
-        setConfigProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + ICacheStoreComponent.class.getSimpleName(),
+        String componentPropName = GatewayConfigProperties.COMPONENT_PREFIX + ICacheStoreComponent.class.getSimpleName();
+        setConfigProperty(componentPropName,
                 ESCacheStoreComponent.class.getName());
-        setConfigProperty("apiman-gateway.components.ICacheStoreComponent.client.type", "jest");
-        setConfigProperty("apiman-gateway.components.ICacheStoreComponent.client.protocol", "${apiman.es.protocol}");
-        setConfigProperty("apiman-gateway.components.ICacheStoreComponent.client.host", "${apiman.es.host}");
-        setConfigProperty("apiman-gateway.components.ICacheStoreComponent.client.port", "${apiman.es.port}");
-        setConfigProperty("apiman-gateway.components.ICacheStoreComponent.client.index", "apiman_cache");
-        setConfigProperty("apiman-gateway.components.ICacheStoreComponent.client.username", "${apiman.es.username}");
-        setConfigProperty("apiman-gateway.components.ICacheStoreComponent.client.password", "${apiman.es.password}");
+        setConfigProperty(componentPropName + ".client.type", "jest");
+        setConfigProperty(componentPropName + ".client.protocol", "${apiman.es.protocol}");
+        setConfigProperty(componentPropName + ".client.host", "${apiman.es.host}");
+        setConfigProperty(componentPropName + ".client.port", "${apiman.es.port}");
+        setConfigProperty(componentPropName + ".client.index", "apiman_cache");
+        setConfigProperty(componentPropName + ".client.username", "${apiman.es.username}");
+        setConfigProperty(componentPropName + ".client.password", "${apiman.es.password}");
     }
 
     /**
      * The jdbc component.
      */
     protected void registerJdbcComponent() {
-        setConfigProperty("apiman-gateway.components.IJdbcComponent", DefaultJdbcComponent.class.getName());
+        String componentPropName = GatewayConfigProperties.COMPONENT_PREFIX + IJdbcComponent.class.getSimpleName();
+        setConfigProperty(componentPropName, DefaultJdbcComponent.class.getName());
     }
 
     /**
      * The ldap component.
      */
     protected void registerLdapComponent() {
-        setConfigProperty("apiman-gateway.components.ILdapComponent", DefaultLdapComponent.class.getName());
+        String componentPropName = GatewayConfigProperties.COMPONENT_PREFIX + ILdapComponent.class.getSimpleName();
+        setConfigProperty(componentPropName, DefaultLdapComponent.class.getName());
     }
 
     /**
      * The policy factory component.
      */
     protected void configurePolicyFactory() {
-        setConfigProperty(WarEngineConfig.APIMAN_GATEWAY_POLICY_FACTORY_CLASS, PolicyFactoryImpl.class.getName());
+        setConfigProperty(GatewayConfigProperties.POLICY_FACTORY_CLASS, PolicyFactoryImpl.class.getName());
     }
 
     /**
      * The connector factory.
      */
     protected void configureConnectorFactory() {
-        setConfigProperty(WarEngineConfig.APIMAN_GATEWAY_CONNECTOR_FACTORY_CLASS, HttpConnectorFactory.class.getName());
-        setConfigProperty(WarEngineConfig.APIMAN_GATEWAY_CONNECTOR_FACTORY_CLASS + ".http.timeouts.read", "25");
-        setConfigProperty(WarEngineConfig.APIMAN_GATEWAY_CONNECTOR_FACTORY_CLASS + ".http.timeouts.write", "25");
-        setConfigProperty(WarEngineConfig.APIMAN_GATEWAY_CONNECTOR_FACTORY_CLASS + ".http.timeouts.connect", "10");
-        setConfigProperty(WarEngineConfig.APIMAN_GATEWAY_CONNECTOR_FACTORY_CLASS + ".http.followRedirects", "true");
+        setConfigProperty(GatewayConfigProperties.CONNECTOR_FACTORY_CLASS, HttpConnectorFactory.class.getName());
+        setConfigProperty(GatewayConfigProperties.CONNECTOR_FACTORY_CLASS + ".http.timeouts.read", "25");
+        setConfigProperty(GatewayConfigProperties.CONNECTOR_FACTORY_CLASS + ".http.timeouts.write", "25");
+        setConfigProperty(GatewayConfigProperties.CONNECTOR_FACTORY_CLASS + ".http.timeouts.connect", "10");
+        setConfigProperty(GatewayConfigProperties.CONNECTOR_FACTORY_CLASS + ".http.followRedirects", "true");
     }
 
     /**
      * The plugin registry.
      */
     protected void configurePluginRegistry() {
-        setConfigProperty(WarEngineConfig.APIMAN_GATEWAY_PLUGIN_REGISTRY_CLASS, DefaultPluginRegistry.class.getName());
+        setConfigProperty(GatewayConfigProperties.PLUGIN_REGISTRY_CLASS, DefaultPluginRegistry.class.getName());
     }
 
     /**
      * The registry.
      */
     protected void configureRegistry() {
-        setConfigProperty(WarEngineConfig.APIMAN_GATEWAY_REGISTRY_CLASS, PollCachingESRegistry.class.getName());
-        setConfigProperty("apiman-gateway.registry.client.type", "jest");
-        setConfigProperty("apiman-gateway.registry.client.protocol", "${apiman.es.protocol}");
-        setConfigProperty("apiman-gateway.registry.client.host", "${apiman.es.host}");
-        setConfigProperty("apiman-gateway.registry.client.port", "${apiman.es.port}");
-        setConfigProperty("apiman-gateway.registry.client.username", "${apiman.es.username}");
-        setConfigProperty("apiman-gateway.registry.client.password", "${apiman.es.password}");
+        setConfigProperty(GatewayConfigProperties.REGISTRY_CLASS, PollCachingESRegistry.class.getName());
+        setConfigProperty(GatewayConfigProperties.REGISTRY_CLASS + ".client.type", "jest");
+        setConfigProperty(GatewayConfigProperties.REGISTRY_CLASS + ".client.protocol", "${apiman.es.protocol}");
+        setConfigProperty(GatewayConfigProperties.REGISTRY_CLASS + ".client.host", "${apiman.es.host}");
+        setConfigProperty(GatewayConfigProperties.REGISTRY_CLASS + ".client.port", "${apiman.es.port}");
+        setConfigProperty(GatewayConfigProperties.REGISTRY_CLASS + ".client.username", "${apiman.es.username}");
+        setConfigProperty(GatewayConfigProperties.REGISTRY_CLASS + ".client.password", "${apiman.es.password}");
     }
 
     /**
      * Configure the metrics system.
      */
     protected void configureMetrics() {
-        setConfigProperty(WarEngineConfig.APIMAN_GATEWAY_METRICS_CLASS, ESMetrics.class.getName());
-        setConfigProperty(WarEngineConfig.APIMAN_GATEWAY_METRICS_CLASS + ".client.type", "jest");
-        setConfigProperty(WarEngineConfig.APIMAN_GATEWAY_METRICS_CLASS + ".client.protocol", "${apiman.es.protocol}");
-        setConfigProperty(WarEngineConfig.APIMAN_GATEWAY_METRICS_CLASS + ".client.host", "${apiman.es.host}");
-        setConfigProperty(WarEngineConfig.APIMAN_GATEWAY_METRICS_CLASS + ".client.port", "${apiman.es.port}");
-        setConfigProperty(WarEngineConfig.APIMAN_GATEWAY_METRICS_CLASS + ".client.username", "${apiman.es.username}");
-        setConfigProperty(WarEngineConfig.APIMAN_GATEWAY_METRICS_CLASS + ".client.password", "${apiman.es.password}");
-        setConfigProperty(WarEngineConfig.APIMAN_GATEWAY_METRICS_CLASS + ".client.index", "apiman_metrics");
+        setConfigProperty(GatewayConfigProperties.METRICS_CLASS, ESMetrics.class.getName());
+        setConfigProperty(GatewayConfigProperties.METRICS_CLASS + ".client.type", "jest");
+        setConfigProperty(GatewayConfigProperties.METRICS_CLASS + ".client.protocol", "${apiman.es.protocol}");
+        setConfigProperty(GatewayConfigProperties.METRICS_CLASS + ".client.host", "${apiman.es.host}");
+        setConfigProperty(GatewayConfigProperties.METRICS_CLASS + ".client.port", "${apiman.es.port}");
+        setConfigProperty(GatewayConfigProperties.METRICS_CLASS + ".client.username", "${apiman.es.username}");
+        setConfigProperty(GatewayConfigProperties.METRICS_CLASS + ".client.password", "${apiman.es.password}");
+        setConfigProperty(GatewayConfigProperties.METRICS_CLASS + ".client.index", "apiman_metrics");
     }
 
     /**

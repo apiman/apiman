@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 JBoss Inc
+ * Copyright 2014 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,13 +23,13 @@ import io.apiman.gateway.test.junit.GatewayRestTester;
 import org.junit.runner.RunWith;
 
 /**
- * Test whether logging works
+ * Make sure the gateway will parse the payload.
+ *
+ * @author eric.wittmann@redhat.com
  */
 @RunWith(GatewayRestTester.class)
-@GatewayRestTestPlan("test-plans/policies/logging-testPlan.xml")
-@GatewayRestTestSystemProperties({
-    GatewayConfigProperties.LOGGER_FACTORY_CLASS, "io.apiman.gateway.test.logging.LogTestDelegateFactory"
-})
-public class LoggingTest {
+@GatewayRestTestPlan("test-plans/simple/simple-payload-policy-testPlan.xml")
+@GatewayRestTestSystemProperties({ GatewayConfigProperties.MAX_PAYLOAD_BUFFER_SIZE, "4096" })
+public class SimplePayloadPolicyTest {
 
 }

@@ -24,6 +24,7 @@ import io.apiman.common.plugin.PluginCoordinates;
 import io.apiman.common.util.ReflectionUtils;
 import io.apiman.common.util.crypt.IDataEncrypter;
 import io.apiman.gateway.engine.EngineConfigTuple;
+import io.apiman.gateway.engine.GatewayConfigProperties;
 import io.apiman.gateway.engine.IComponent;
 import io.apiman.gateway.engine.IConnectorFactory;
 import io.apiman.gateway.engine.IEngineConfig;
@@ -54,22 +55,6 @@ import org.apache.commons.configuration.Configuration;
  * @author eric.wittmann@redhat.com
  */
 public class WarEngineConfig implements IEngineConfig {
-
-    public static final String APIMAN_GATEWAY_REGISTRY_CLASS = "apiman-gateway.registry"; //$NON-NLS-1$
-    public static final String APIMAN_GATEWAY_PLUGIN_REGISTRY_CLASS = "apiman-gateway.plugin-registry"; //$NON-NLS-1$
-    public static final String APIMAN_GATEWAY_CONNECTOR_FACTORY_CLASS = "apiman-gateway.connector-factory"; //$NON-NLS-1$
-    public static final String APIMAN_GATEWAY_POLICY_FACTORY_CLASS = "apiman-gateway.policy-factory"; //$NON-NLS-1$
-    public static final String APIMAN_GATEWAY_METRICS_CLASS = "apiman-gateway.metrics"; //$NON-NLS-1$
-    public static final String APIMAN_GATEWAY_LOGGER_FACTORY_CLASS = "apiman-gateway.logger-factory"; //$NON-NLS-1$
-
-    public static final String APIMAN_DATA_ENCRYPTER_TYPE = "apiman.encrypter.type"; //$NON-NLS-1$
-
-    public static final String APIMAN_GATEWAY_COMPONENT_PREFIX = "apiman-gateway.components."; //$NON-NLS-1$
-
-    public static final String APIMAN_GATEWAY_WRITER_FORMATTER_CLASS = "apiman-gateway.writers.policy-failure"; //$NON-NLS-1$
-    public static final String APIMAN_GATEWAY_ERROR_WRITER_CLASS = "apiman-gateway.writers.error"; //$NON-NLS-1$
-
-    public static final String APIMAN_GATEWAY_INITIALIZERS = "apiman-gateway.initializers"; //$NON-NLS-1$
 
     public static final Configuration config;
     static {
@@ -105,7 +90,7 @@ public class WarEngineConfig implements IEngineConfig {
      */
     @Override
     public Class<? extends IRegistry> getRegistryClass(IPluginRegistry pluginRegistry) {
-        return loadConfigClass(APIMAN_GATEWAY_REGISTRY_CLASS, IRegistry.class, pluginRegistry);
+        return loadConfigClass(GatewayConfigProperties.REGISTRY_CLASS, IRegistry.class, pluginRegistry);
     }
 
     /**
@@ -113,7 +98,7 @@ public class WarEngineConfig implements IEngineConfig {
      */
     @Override
     public Map<String, String> getRegistryConfig() {
-        return getConfigMap(APIMAN_GATEWAY_REGISTRY_CLASS);
+        return getConfigMap(GatewayConfigProperties.REGISTRY_CLASS);
     }
 
     /**
@@ -122,7 +107,7 @@ public class WarEngineConfig implements IEngineConfig {
     @Override
     @SuppressWarnings("unchecked")
     public Class<IPluginRegistry> getPluginRegistryClass() {
-        return (Class<IPluginRegistry>) loadConfigClass(APIMAN_GATEWAY_PLUGIN_REGISTRY_CLASS, IPluginRegistry.class, null);
+        return (Class<IPluginRegistry>) loadConfigClass(GatewayConfigProperties.PLUGIN_REGISTRY_CLASS, IPluginRegistry.class, null);
     }
 
     /**
@@ -130,8 +115,8 @@ public class WarEngineConfig implements IEngineConfig {
      */
     @Override
     public Map<String, String> getPluginRegistryConfig() {
-        Map<String, String> configMap = getConfigMap(APIMAN_GATEWAY_PLUGIN_REGISTRY_CLASS);
-        String pluginsDirOverride = System.getProperty(APIMAN_GATEWAY_PLUGIN_REGISTRY_CLASS + ".pluginsDir"); //$NON-NLS-1$
+        Map<String, String> configMap = getConfigMap(GatewayConfigProperties.PLUGIN_REGISTRY_CLASS);
+        String pluginsDirOverride = System.getProperty(GatewayConfigProperties.PLUGIN_REGISTRY_CLASS + ".pluginsDir"); //$NON-NLS-1$
         if (pluginsDirOverride != null) {
             configMap.put("pluginsDir", pluginsDirOverride); //$NON-NLS-1$
         }
@@ -143,7 +128,7 @@ public class WarEngineConfig implements IEngineConfig {
      */
     @Override
     public Class<? extends IConnectorFactory> getConnectorFactoryClass(IPluginRegistry pluginRegistry) {
-        return loadConfigClass(APIMAN_GATEWAY_CONNECTOR_FACTORY_CLASS, IConnectorFactory.class, pluginRegistry);
+        return loadConfigClass(GatewayConfigProperties.CONNECTOR_FACTORY_CLASS, IConnectorFactory.class, pluginRegistry);
     }
 
     /**
@@ -151,7 +136,7 @@ public class WarEngineConfig implements IEngineConfig {
      */
     @Override
     public Map<String, String> getConnectorFactoryConfig() {
-        return getConfigMap(APIMAN_GATEWAY_CONNECTOR_FACTORY_CLASS);
+        return getConfigMap(GatewayConfigProperties.CONNECTOR_FACTORY_CLASS);
     }
 
     /**
@@ -159,7 +144,7 @@ public class WarEngineConfig implements IEngineConfig {
      */
     @Override
     public Class<? extends IPolicyFactory> getPolicyFactoryClass(IPluginRegistry pluginRegistry) {
-        return loadConfigClass(APIMAN_GATEWAY_POLICY_FACTORY_CLASS, IPolicyFactory.class, pluginRegistry);
+        return loadConfigClass(GatewayConfigProperties.POLICY_FACTORY_CLASS, IPolicyFactory.class, pluginRegistry);
     }
 
     /**
@@ -167,7 +152,7 @@ public class WarEngineConfig implements IEngineConfig {
      */
     @Override
     public Map<String, String> getPolicyFactoryConfig() {
-        return getConfigMap(APIMAN_GATEWAY_POLICY_FACTORY_CLASS);
+        return getConfigMap(GatewayConfigProperties.POLICY_FACTORY_CLASS);
     }
 
     /**
@@ -175,7 +160,7 @@ public class WarEngineConfig implements IEngineConfig {
      */
     @Override
     public Class<? extends IMetrics> getMetricsClass(IPluginRegistry pluginRegistry) {
-        return loadConfigClass(APIMAN_GATEWAY_METRICS_CLASS, IMetrics.class, pluginRegistry);
+        return loadConfigClass(GatewayConfigProperties.METRICS_CLASS, IMetrics.class, pluginRegistry);
     }
 
     /**
@@ -183,7 +168,7 @@ public class WarEngineConfig implements IEngineConfig {
      */
     @Override
     public Map<String, String> getMetricsConfig() {
-        return getConfigMap(APIMAN_GATEWAY_METRICS_CLASS);
+        return getConfigMap(GatewayConfigProperties.METRICS_CLASS);
     }
 
     /**
@@ -193,7 +178,7 @@ public class WarEngineConfig implements IEngineConfig {
     @SuppressWarnings("unchecked")
     public <T extends IComponent> Class<T> getComponentClass(Class<T> componentType,
             IPluginRegistry pluginRegistry) {
-        return (Class<T>) loadConfigClass(APIMAN_GATEWAY_COMPONENT_PREFIX + componentType.getSimpleName(), componentType, pluginRegistry);
+        return (Class<T>) loadConfigClass(GatewayConfigProperties.COMPONENT_PREFIX + componentType.getSimpleName(), componentType, pluginRegistry);
     }
 
     /**
@@ -201,7 +186,7 @@ public class WarEngineConfig implements IEngineConfig {
      */
     @Override
     public <T extends IComponent> Map<String, String> getComponentConfig(Class<T> componentType) {
-        return getConfigMap(APIMAN_GATEWAY_COMPONENT_PREFIX + componentType.getSimpleName());
+        return getConfigMap(GatewayConfigProperties.COMPONENT_PREFIX + componentType.getSimpleName());
     }
 
     /**
@@ -209,7 +194,7 @@ public class WarEngineConfig implements IEngineConfig {
      */
     @Override
     public Class<? extends IDataEncrypter> getDataEncrypterClass(IPluginRegistry pluginRegistry) {
-        return loadConfigClass(APIMAN_DATA_ENCRYPTER_TYPE, IDataEncrypter.class, pluginRegistry);
+        return loadConfigClass(GatewayConfigProperties.DATA_ENCRYPTER_TYPE, IDataEncrypter.class, pluginRegistry);
     }
 
     /**
@@ -226,7 +211,7 @@ public class WarEngineConfig implements IEngineConfig {
      */
     @SuppressWarnings("unchecked")
     public Class<IPolicyFailureWriter> getPolicyFailureWriterClass(IPluginRegistry pluginRegistry) {
-        return (Class<IPolicyFailureWriter>) loadConfigClass(APIMAN_GATEWAY_WRITER_FORMATTER_CLASS,
+        return (Class<IPolicyFailureWriter>) loadConfigClass(GatewayConfigProperties.FAILURE_WRITER_CLASS,
                 IPolicyFailureWriter.class, pluginRegistry, DefaultPolicyFailureWriter.class);
     }
 
@@ -234,7 +219,7 @@ public class WarEngineConfig implements IEngineConfig {
      * @return all properties to be passed to the failure formatter
      */
     public Map<String, String> getPolicyFailureWriterConfig() {
-        return getConfigMap(APIMAN_GATEWAY_WRITER_FORMATTER_CLASS);
+        return getConfigMap(GatewayConfigProperties.FAILURE_WRITER_CLASS);
     }
 
     /**
@@ -243,7 +228,7 @@ public class WarEngineConfig implements IEngineConfig {
      */
     @SuppressWarnings("unchecked")
     public Class<IPolicyErrorWriter> getPolicyErrorWriterClass(IPluginRegistry pluginRegistry) {
-        return (Class<IPolicyErrorWriter>) loadConfigClass(APIMAN_GATEWAY_ERROR_WRITER_CLASS,
+        return (Class<IPolicyErrorWriter>) loadConfigClass(GatewayConfigProperties.ERROR_WRITER_CLASS,
                 IPolicyErrorWriter.class, pluginRegistry, DefaultPolicyErrorWriter.class);
     }
 
@@ -251,18 +236,18 @@ public class WarEngineConfig implements IEngineConfig {
      * @return all properties to be passed to the error formatter
      */
     public Map<String, String> getPolicyErrorWriterConfig() {
-        return getConfigMap(APIMAN_GATEWAY_ERROR_WRITER_CLASS);
+        return getConfigMap(GatewayConfigProperties.ERROR_WRITER_CLASS);
     }
 
     @Override
     public Class<? extends IDelegateFactory> getLoggerFactoryClass(IPluginRegistry pluginRegistry) {
-        return loadConfigClass(APIMAN_GATEWAY_LOGGER_FACTORY_CLASS,
+        return loadConfigClass(GatewayConfigProperties.LOGGER_FACTORY_CLASS,
                 IDelegateFactory.class, pluginRegistry, DefaultDelegateFactory.class);
     }
 
     @Override
     public Map<String, String> getLoggerFactoryConfig() {
-        return getConfigMap(APIMAN_GATEWAY_LOGGER_FACTORY_CLASS);
+        return getConfigMap(GatewayConfigProperties.LOGGER_FACTORY_CLASS);
     }
 
     /**
@@ -273,10 +258,10 @@ public class WarEngineConfig implements IEngineConfig {
             IPluginRegistry pluginRegistry) {
         List<EngineConfigTuple<? extends IGatewayInitializer>> rval = new ArrayList<>();
 
-        String initializerIds = getConfig().getString(APIMAN_GATEWAY_INITIALIZERS);
+        String initializerIds = getConfig().getString(GatewayConfigProperties.INITIALIZERS);
         if (initializerIds != null) {
             for (String initializerId : initializerIds.split(",")) { //$NON-NLS-1$
-                String initializerClassProp = APIMAN_GATEWAY_INITIALIZERS + "." + initializerId; //$NON-NLS-1$
+                String initializerClassProp = GatewayConfigProperties.INITIALIZERS + "." + initializerId; //$NON-NLS-1$
                 Class<? extends IGatewayInitializer> initializerClass = loadConfigClass(initializerClassProp, IGatewayInitializer.class, pluginRegistry);
                 Map<String, String> configMap = getConfigMap(initializerClassProp);
                 rval.add(new EngineConfigTuple<>(initializerClass, configMap));

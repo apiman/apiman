@@ -15,7 +15,6 @@
  */
 package io.apiman.gateway.engine.io;
 
-
 /**
  * Write into a stream by repeatedly submitting chunks via
  * {@link #write(IApimanBuffer)}. End of transmission is indicated by
