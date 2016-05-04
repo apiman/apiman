@@ -426,16 +426,16 @@ Let's start by installing the prerequisite software packages that we will need.
 Like all JBoss middleware projects, you can run apiman on any operating system that supports Java software development. We don't need very much in the way of prerequisite software to run apiman out of the box. (Note that there really isn't a physical box as you can just download everything.)
 
 What you will need to install to run apiman and follow all the steps in this chapter are:
- * Java - apiman can run Java version 1.7 or newer. You will want to install the full Java JDK. You can use either OpenJDK or Oracle's JDK.
+ * Java - apiman can run Java version 1.8 or newer. You will want to install the full Java JDK. You can use either OpenJDK or Oracle's JDK.
  * Apache Maven - While you do not need the maven build tool to run apiman, we will use it to build an example API. You should download and install maven version 3.3 or newer.
 
-We don't need very much to run apiman out of the box. Before we install apiman, you'll have to have Java (version 1.7 or newer, in this section we'll use Java 1.8) installed on your system. You'll also need to install git and maven installed to be able to build the example API that we'll use.
+We don't need very much to run apiman out of the box. Before we install apiman, you'll have to have Java (version 1.8 or newer, in this section we'll use Java 1.8) installed on your system. You'll also need to install git and maven installed to be able to build the example API that we'll use.
 
 After you install the prerequisite software, the next thing we have to do is to get ourselves a copy of JBoss apiman.
 
 === Getting the Bits - Downloading apiman
 
-To download apiman, open a browser and navigate to http://http://www.apiman.io
+To download apiman, open a browser and navigate to http://www.apiman.io
 
 image:images/example/1.png[Apiman homepage]
 
@@ -514,19 +514,19 @@ The steps you follow are:
 
  * Download and Unzip the WildFly Server - Download http://download.jboss.org/wildfly/10.0.0.Final/wildfly-10.0.0.Final.zip  and unzip the file into the directory in which you want to run the sever.
 
- * Download and Unzip the apiman WildFly overlay .zip file - Download the apiman WildFly overlay zip file into the directory that was created when you unzipped the WildFly download. The apiman WildFly overlay zip file is available here: http://downloads.jboss.org/apiman/1.2.3.Final/apiman-distro-wildfly10-1.2.3.Final-overlay.zip  After the file is downloaded, unzip it directly over the directory into which you unzipped the WildFly download. This will install apiman into the WildFly server.
+ * Download and Unzip the apiman WildFly overlay .zip file - Download the apiman WildFly overlay zip file into the directory that was created when you unzipped the WildFly download. The apiman WildFly overlay zip file is available here: http://downloads.jboss.org/apiman/1.2.5.Final/apiman-distro-wildfly10-1.2.5.Final-overlay.zip  After the file is downloaded, unzip it directly over the directory into which you unzipped the WildFly download. This will install apiman into the WildFly server.
 
 Installing apiman on an WildFly Server
 
 The commands that you will execute to install the server will look something like this:
 
 ----
-mkdir ~/apiman-1.2.3.Final
-cd ~/apiman-1.2.3.Final
+mkdir ~/apiman-1.2.5.Final
+cd ~/apiman-1.2.5.Final
 curl http://download.jboss.org/wildfly/10.0.0.Final/wildfly-10.0.0.Final.zip -o wildfly-10.0.0.Final.zip
-curl http://downloads.jboss.org/apiman/1.2.3.Final/apiman-distro-wildfly10-1.2.3.Final-overlay.zip -o apiman-distro-wildfly10-1.2.3.Final-overlay.zip
+curl http://downloads.jboss.org/apiman/1.2.5.Final/apiman-distro-wildfly10-1.2.5.Final-overlay.zip -o apiman-distro-wildfly10-1.2.5.Final-overlay.zip
 unzip wildfly-10.0.0.Final.zip
-unzip -o apiman-distro-wildfly10-1.2.3.Final-overlay.zip -d wildfly-10.0.0.Final
+unzip -o apiman-distro-wildfly10-1.2.5.Final-overlay.zip -d wildfly-10.0.0.Final
 
 ----
 
@@ -535,7 +535,7 @@ Before we move on, we have one server administration task to perform. We have to
 To create a new server user, navigate to this directory:
 
 ----
-cd apiman-1.2.3.Final/wildfly-10.0.0.Final/bin
+cd apiman-1.2.5.Final/wildfly-10.0.0.Final/bin
 ----
 
 And execute this script: +
@@ -560,7 +560,7 @@ Running the WildFly Server
 To start the WildFly server, you navigate back to the directory into which you installed the server, execute these commands - note that in this context, “standalone” refers to a standalone (i.e., non-clustered) WildFly server.  You can learn more about WildFly server configuration options in the WildFly Server Administration Guide:
 
 ----
-cd apiman-1.2.3.Final/wildfly-10.0.0.Final
+cd apiman-1.2.5.Final/wildfly-10.0.0.Final
 ./bin/standalone.sh -c standalone-apiman.xml
 ----
 
