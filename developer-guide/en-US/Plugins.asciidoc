@@ -339,8 +339,10 @@ implementations are available on the classpath, and refer to <<Configuration>> t
 set the `logger-factory` to your `IDelegateFactory`,which will cause the registry to
 load your factory.
 
-.Example IDelegateFactory implementation
-```java
+Example IDelegateFactory implementation
+
+[source, java]
+----
 public class ExampleLoggerFactory implements IDelegateFactory {
 
     public ExampleLoggerFactory() {}
@@ -353,15 +355,18 @@ public class ExampleLoggerFactory implements IDelegateFactory {
 
     @Override
     public IApimanLogger createLogger(Class<?> klazz) {
-      return new ExampleLogger(MyLoggerFactory.getLogger(klazz)); // <2>
+      return new ExampleLogger(MyLoggerFactory.getLogger(klazz)); // <3>
     }
 }
-```
+----
 <1> If you pass config options from `apiman.properties` to your factory, they will appear here.
 <2> `MyLogger` is an example of the logger you're wrapping.
+<3> By class rather than string.
 
-.Example IApimanLogger implementation
-```java
+Example IApimanLogger implementation
+
+[source, java]
+----
 public class ExampleLogger implements IDelegateFactory {
   MyLogger logger;
 
@@ -376,7 +381,7 @@ public class ExampleLogger implements IDelegateFactory {
 
   // And many more... <2>
 }
-```
+----
 <1> Passing the message through to your logger.
 <2> Debug, trace, etc. Consult the interface.
 
