@@ -33,7 +33,7 @@ import io.apiman.manager.api.core.UuidApiKeyGenerator;
 import io.apiman.manager.api.core.crypt.DefaultDataEncrypter;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.core.logging.ApimanLogger;
-import io.apiman.manager.api.core.logging.IApimanLogger;
+import io.apiman.common.logging.IApimanLogger;
 import io.apiman.manager.api.core.logging.StandardLoggerImpl;
 import io.apiman.manager.api.es.ESMetricsAccessor;
 import io.apiman.manager.api.es.EsStorage;

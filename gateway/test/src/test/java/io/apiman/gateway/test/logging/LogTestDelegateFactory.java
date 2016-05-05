@@ -13,23 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apiman.manager.api.core.logging;
 
-public interface IDelegateFactory {
+package io.apiman.gateway.test.logging;
 
-    /**
-     * Create a logger by name
-     *
-     * @param name the name
-     * @return the logger
-     */
-    IApimanLogger createLogger(String name);
+import io.apiman.common.logging.IApimanLogger;
+import io.apiman.common.logging.IDelegateFactory;
 
-    /**
-     * Create a logger by class
-     *
-     * @param klazz the class
-     * @return the logger
-     */
-    IApimanLogger createLogger(Class <?> klazz);
+import java.util.Map;
+
+public class LogTestDelegateFactory implements IDelegateFactory {
+
+    public LogTestDelegateFactory() {}
+    public LogTestDelegateFactory(Map<String, String> opts) {}
+
+    @Override
+    public IApimanLogger createLogger(String name) {
+        return new TestLogger(name);
+    }
+
+    @Override
+    public IApimanLogger createLogger(Class<?> klazz) {
+        return new TestLogger(klazz);
+    }
+
 }

@@ -23,8 +23,20 @@ package io.apiman.common.util.crypt;
  */
 public interface IDataEncrypter {
 
-    public String encrypt(String plainText);
+    /**
+     * Called to encrypt a bit of data, typically prior to storing it in a persistent
+     * storage mechanism.
+     * @param plainText
+     * @param context
+     */
+    public String encrypt(String plainText, DataEncryptionContext context);
 
-    public String decrypt(String encryptedText);
+    /**
+     * Called to decrypt some data, typically after loading it from a persistent storage
+     * mechanism.
+     * @param encryptedText
+     * @param context
+     */
+    public String decrypt(String encryptedText, DataEncryptionContext context);
 
 }

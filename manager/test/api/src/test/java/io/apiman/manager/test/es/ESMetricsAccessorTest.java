@@ -16,7 +16,7 @@
 
 package io.apiman.manager.test.es;
 
-import io.apiman.gateway.engine.es.ESClientFactory;
+import io.apiman.gateway.engine.es.SimpleJestClientFactory;
 import io.apiman.manager.api.beans.metrics.ClientUsagePerApiBean;
 import io.apiman.manager.api.beans.metrics.HistogramIntervalType;
 import io.apiman.manager.api.beans.metrics.ResponseStatsDataPoint;
@@ -95,7 +95,12 @@ public class ESMetricsAccessorTest {
     }
 
     private static JestClient createJestClient() {
-        return ESClientFactory.createJestClient("http", "localhost", 6500, "apiman_metrics", null, null, true, 6000, "apiman_metrics");
+        Map<String, String> config = new HashMap<>();
+        config.put("client.protocol", "http");
+        config.put("client.host", "localhost");
+        config.put("client.port", "6500");
+        config.put("client.initialize", "true");
+        return new SimpleJestClientFactory().createClient(config, "apiman_metrics");
     }
 
     private static void loadTestData() throws Exception {

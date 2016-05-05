@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testPlan xmlns="urn:io.apiman.test:2014:02:testPlan">
+
+  <testGroup name="Configure the Gateway" endpoint="api">
+    <test name="Publish Api (echo-json)">test-plan-data/simple/simple-payload-policy/setup/001-publish-json-api.resttest</test>
+    <test name="Publish Api (echo-xml)">test-plan-data/simple/simple-payload-policy/setup/002-publish-xml-api.resttest</test>
+    <test name="Publish Api (echo-soap)">test-plan-data/simple/simple-payload-policy/setup/003-publish-soap-api.resttest</test>
+  </testGroup>
+
+  <testGroup name="Test the Echo Server through the Gateway">
+    <test name="echo-json">test-plan-data/simple/simple-payload-policy/payloadp/001-json.resttest</test>
+    <test name="echo-xml">test-plan-data/simple/simple-payload-policy/payloadp/002-xml.resttest</test>
+    <test name="echo-soap">test-plan-data/simple/simple-payload-policy/payloadp/003-soap.resttest</test>
+    <test name="echo-json-invalid-format">test-plan-data/simple/simple-payload-policy/payloadp/004-json-invalid-format.resttest</test>
+    <test name="echo-xml-too-large">test-plan-data/simple/simple-payload-policy/payloadp/005-xml-too-large.resttest</test>
+    <test name="echo-json-get">test-plan-data/simple/simple-payload-policy/payloadp/006-json-get.resttest</test>
+  </testGroup>
+
+</testPlan>

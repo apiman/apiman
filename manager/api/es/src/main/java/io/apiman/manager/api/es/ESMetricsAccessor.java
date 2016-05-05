@@ -28,7 +28,7 @@ import io.apiman.manager.api.beans.metrics.UsagePerClientBean;
 import io.apiman.manager.api.beans.metrics.UsagePerPlanBean;
 import io.apiman.manager.api.core.IMetricsAccessor;
 import io.apiman.manager.api.core.logging.ApimanLogger;
-import io.apiman.manager.api.core.logging.IApimanLogger;
+import io.apiman.common.logging.IApimanLogger;
 import io.apiman.manager.api.core.metrics.AbstractMetricsAccessor;
 import io.searchbox.client.JestClient;
 import io.searchbox.core.Search;

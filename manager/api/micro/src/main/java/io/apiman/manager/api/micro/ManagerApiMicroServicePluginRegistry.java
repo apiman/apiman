@@ -17,7 +17,7 @@ package io.apiman.manager.api.micro;
 
 import io.apiman.manager.api.core.plugin.AbstractPluginRegistry;
 
-import java.net.URL;
+import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -37,15 +37,15 @@ public class ManagerApiMicroServicePluginRegistry extends AbstractPluginRegistry
 
     @Inject
     private ManagerApiMicroServiceConfig config;
-    
-    private Set<URL> mavenRepos = null;
+
+    private Set<URI> mavenRepos = null;
 
     /**
      * Constructor.
      */
     public ManagerApiMicroServicePluginRegistry() {
     }
-    
+
     @PostConstruct
     protected void postConstruct() {
         setPluginsDir(config.getPluginDirectory());
@@ -55,7 +55,7 @@ public class ManagerApiMicroServicePluginRegistry extends AbstractPluginRegistry
      * @see io.apiman.manager.api.core.plugin.AbstractPluginRegistry#getMavenRepositories()
      */
     @Override
-    protected Set<URL> getMavenRepositories() {
+    protected Set<URI> getMavenRepositories() {
         if (mavenRepos == null) {
             mavenRepos = loadMavenRepositories();
         }
@@ -65,11 +65,11 @@ public class ManagerApiMicroServicePluginRegistry extends AbstractPluginRegistry
     /**
      * @return the maven repositories to use when downloading plugins
      */
-    protected Set<URL> loadMavenRepositories() {
-        Set<URL> repos = new HashSet<>();
+    protected Set<URI> loadMavenRepositories() {
+        Set<URI> repos = new HashSet<>();
         repos.addAll(super.getMavenRepositories());
         repos.addAll(config.getPluginRepositories());
         return repos;
     }
-    
+
 }

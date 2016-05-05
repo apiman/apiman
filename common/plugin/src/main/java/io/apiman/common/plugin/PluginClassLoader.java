@@ -21,6 +21,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -227,6 +228,23 @@ public class PluginClassLoader extends ClassLoader {
                 }
             }
         }
+        
+        ZipEntry entry;
+        File file;
+        for (ZipFile zipFile : this.dependencyZips) {
+            entry = zipFile.getEntry(name);
+            if (entry != null) {
+                try {
+                    file = new File(zipFile.getName());
+                    URL zipUrl = file.toURI().toURL();
+                    URL entryUrl = new URL("jar:" + zipUrl + "!/" + name);
+                    return entryUrl;
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        
         return super.findResource(name);
     }
 
@@ -236,6 +254,8 @@ public class PluginClassLoader extends ClassLoader {
     @Override
     protected Enumeration<URL> findResources(String name) throws IOException {
         List<URL> resources = new ArrayList<>();
+
+        // Search for the artifact in the plugin WAR itself
         Enumeration<? extends ZipEntry> entries = this.pluginArtifactZip.entries();
         while (entries.hasMoreElements()) {
             ZipEntry zipEntry = entries.nextElement();
@@ -247,6 +267,25 @@ public class PluginClassLoader extends ClassLoader {
                 }
             }
         }
+
+        // Now also add any resources found in dependencies
+        ZipEntry entry;
+        File file;
+        for (ZipFile zipFile : this.dependencyZips) {
+            entry = zipFile.getEntry(name);
+            if (entry != null) {
+                try {
+                    file = new File(zipFile.getName());
+                    URL zipUrl = file.toURI().toURL();
+                    URL entryUrl = new URL("jar:" + zipUrl + "!/" + name);
+                    resources.add(entryUrl);
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        
+        // Return the discovered resources as an Enumeration
         final Iterator<URL> iterator = resources.iterator();
         return new Enumeration<URL>() {
             @Override

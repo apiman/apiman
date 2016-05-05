@@ -16,6 +16,8 @@
 package io.apiman.manager.api.beans.policies;
 
 import io.apiman.common.util.crypt.CurrentDataEncrypter;
+import io.apiman.common.util.crypt.DataEncryptionContext;
+import io.apiman.common.util.crypt.DataEncryptionContext.EntityType;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -98,13 +100,27 @@ public class PolicyBean implements Serializable, Cloneable {
     @PrePersist @PreUpdate
     protected void encryptData() {
         // Encrypt the endpoint properties.
-        configuration = CurrentDataEncrypter.instance.encrypt(configuration);
+        EntityType entityType = EntityType.Api;
+        if (type == PolicyType.Client) {
+            entityType = EntityType.ClientApp;
+        } else if (type == PolicyType.Plan) {
+            entityType = EntityType.Plan;
+        }
+        DataEncryptionContext ctx = new DataEncryptionContext(organizationId, entityId, entityVersion, entityType);
+        configuration = CurrentDataEncrypter.instance.encrypt(configuration, ctx);
     }
 
     @PostPersist @PostUpdate @PostLoad
     protected void decryptData() {
         // Decrypt the endpoint properties.
-        configuration = CurrentDataEncrypter.instance.decrypt(configuration);
+        EntityType entityType = EntityType.Api;
+        if (type == PolicyType.Client) {
+            entityType = EntityType.ClientApp;
+        } else if (type == PolicyType.Plan) {
+            entityType = EntityType.Plan;
+        }
+        DataEncryptionContext ctx = new DataEncryptionContext(organizationId, entityId, entityVersion, entityType);
+        configuration = CurrentDataEncrypter.instance.decrypt(configuration, ctx);
     }
 
     /**

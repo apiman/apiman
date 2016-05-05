@@ -15,6 +15,7 @@
  */
 package io.apiman.gateway.test;
 
+import io.apiman.gateway.engine.GatewayConfigProperties;
 import io.apiman.gateway.test.junit.GatewayRestTestPlan;
 import io.apiman.gateway.test.junit.GatewayRestTestSystemProperties;
 import io.apiman.gateway.test.junit.GatewayRestTester;
@@ -29,7 +30,7 @@ import org.junit.runner.RunWith;
 @RunWith(GatewayRestTester.class)
 @GatewayRestTestPlan("test-plans/simple/simple-echo-no-redirect-testPlan.xml")
 @GatewayRestTestSystemProperties({
-    "apiman-gateway.connector-factory.http.followRedirects", "false"
+    GatewayConfigProperties.CONNECTOR_FACTORY_FOLLOW_REDIRECTS, "false"
 })
 public class SimpleEchoNoRedirectTest {
 

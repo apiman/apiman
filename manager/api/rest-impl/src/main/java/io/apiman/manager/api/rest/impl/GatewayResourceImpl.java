@@ -17,6 +17,8 @@
 package io.apiman.manager.api.rest.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.apiman.common.util.crypt.DataEncryptionContext;
 import io.apiman.common.util.crypt.IDataEncrypter;
 import io.apiman.gateway.engine.beans.SystemStatus;
 import io.apiman.manager.api.beans.BeanUtils;
@@ -31,7 +33,7 @@ import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.core.logging.ApimanLogger;
-import io.apiman.manager.api.core.logging.IApimanLogger;
+import io.apiman.common.logging.IApimanLogger;
 import io.apiman.manager.api.gateway.GatewayAuthenticationException;
 import io.apiman.manager.api.gateway.IGatewayLink;
 import io.apiman.manager.api.gateway.IGatewayLinkFactory;
@@ -262,7 +264,7 @@ public class GatewayResourceImpl implements IGatewayResource {
         try {
             if (bean.getType() == GatewayType.REST) {
                 RestGatewayConfigBean configBean = mapper.readValue(bean.getConfiguration(), RestGatewayConfigBean.class);
-                configBean.setPassword(encrypter.encrypt(configBean.getPassword()));
+                configBean.setPassword(encrypter.encrypt(configBean.getPassword(), new DataEncryptionContext()));
                 bean.setConfiguration(mapper.writeValueAsString(configBean));
             }
         } catch (Exception e) {
@@ -280,7 +282,7 @@ public class GatewayResourceImpl implements IGatewayResource {
         try {
             if (bean.getType() == GatewayType.REST) {
                 RestGatewayConfigBean configBean = mapper.readValue(bean.getConfiguration(), RestGatewayConfigBean.class);
-                configBean.setPassword(encrypter.decrypt(configBean.getPassword()));
+                configBean.setPassword(encrypter.decrypt(configBean.getPassword(), new DataEncryptionContext()));
                 bean.setConfiguration(mapper.writeValueAsString(configBean));
             }
         } catch (Exception e) {

@@ -16,7 +16,7 @@
 package io.apiman.manager.api.exportimport.manager;
 
 import io.apiman.manager.api.core.logging.ApimanLogger;
-import io.apiman.manager.api.core.logging.IApimanLogger;
+import io.apiman.common.logging.IApimanLogger;
 import io.apiman.manager.api.exportimport.json.IExportImportFactory;
 import io.apiman.manager.api.exportimport.json.JsonFileExportImportFactory;
 import io.apiman.manager.api.exportimport.read.IImportReader;

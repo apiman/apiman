@@ -16,6 +16,7 @@
 package io.apiman.manager.api.core.crypt;
 
 import io.apiman.common.util.AesEncrypter;
+import io.apiman.common.util.crypt.DataEncryptionContext;
 import io.apiman.common.util.crypt.IDataEncrypter;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -36,18 +37,18 @@ public class DefaultDataEncrypter implements IDataEncrypter {
     }
 
     /**
-     * @see io.apiman.manager.api.core.IDataEncrypter#encrypt(java.lang.String)
+     * @see io.apiman.common.util.crypt.IDataEncrypter#encrypt(java.lang.String, io.apiman.common.util.crypt.DataEncryptionContext)
      */
     @Override
-    public String encrypt(String plainText) {
+    public String encrypt(String plainText, DataEncryptionContext context) {
         return AesEncrypter.encrypt(plainText);
     }
 
     /**
-     * @see io.apiman.manager.api.core.IDataEncrypter#decrypt(java.lang.String)
+     * @see io.apiman.common.util.crypt.IDataEncrypter#decrypt(java.lang.String, io.apiman.common.util.crypt.DataEncryptionContext)
      */
     @Override
-    public String decrypt(String encryptedText) {
+    public String decrypt(String encryptedText, DataEncryptionContext context) {
         return AesEncrypter.decrypt(encryptedText);
     }
 }

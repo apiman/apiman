@@ -24,5 +24,7 @@ package io.apiman.gateway.engine.policy;
 public class PolicyContextKeys {
 
     public static final String REQUEST_METRIC = "apiman.request-metric";
+    public static final String REQUEST_PAYLOAD = "apiman.request-payload";
+    public static final String REQUEST_PAYLOAD_IO = "apiman.request-payload-io";
 
 }

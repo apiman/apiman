@@ -18,6 +18,9 @@ package io.apiman.manager.api.rest.impl;
 
 import static java.util.stream.Collectors.toList;
 
+import io.apiman.common.logging.IApimanLogger;
+import io.apiman.common.util.crypt.DataEncryptionContext;
+import io.apiman.common.util.crypt.DataEncryptionContext.EntityType;
 import io.apiman.common.util.crypt.IDataEncrypter;
 import io.apiman.gateway.engine.beans.ApiEndpoint;
 import io.apiman.manager.api.beans.BeanUtils;
@@ -105,7 +108,6 @@ import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.core.logging.ApimanLogger;
-import io.apiman.manager.api.core.logging.IApimanLogger;
 import io.apiman.manager.api.core.util.PolicyTemplateUtil;
 import io.apiman.manager.api.gateway.GatewayAuthenticationException;
 import io.apiman.manager.api.gateway.IGatewayLink;
@@ -1499,6 +1501,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                 newApiVersion.setEndpointContentType(bean.getEndpointContentType());
                 newApiVersion.setPlans(bean.getPlans());
                 newApiVersion.setPublicAPI(bean.getPublicAPI());
+                newApiVersion.setParsePayload(bean.getParsePayload());
                 newApiVersion.setVersion(bean.getInitialVersion());
                 newApiVersion.setDefinitionUrl(bean.getDefinitionUrl());
                 newApiVersion.setDefinitionType(bean.getDefinitionType());
@@ -1673,6 +1676,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                 if (bean.getPublicAPI() == null) {
                     updatedApi.setPublicAPI(cloneSource.isPublicAPI());
                 }
+                if (bean.getParsePayload() == null) {
+                    updatedApi.setParsePayload(bean.getParsePayload());
+                }
                 newVersion = updateApiVersion(organizationId, apiId, bean.getVersion(), updatedApi);
 
                 if (bean.getDefinitionUrl() == null) {
@@ -1740,6 +1746,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         newVersion.setEndpointContentType(bean.getEndpointContentType());
         if (bean.getPublicAPI() != null) {
             newVersion.setPublicAPI(bean.getPublicAPI());
+        }
+        if (bean.getParsePayload() != null) {
+            newVersion.setParsePayload(bean.getParsePayload());
         }
         if (bean.getPlans() != null) {
             newVersion.setPlans(bean.getPlans());
@@ -2012,6 +2021,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         if (AuditUtils.valueChanged(avb.isPublicAPI(), bean.getPublicAPI())) {
             data.addChange("publicAPI", String.valueOf(avb.isPublicAPI()), String.valueOf(bean.getPublicAPI())); //$NON-NLS-1$
             avb.setPublicAPI(bean.getPublicAPI());
+        }
+        if (AuditUtils.valueChanged(avb.isParsePayload(), bean.getParsePayload())) {
+            data.addChange("parsePayload", String.valueOf(avb.isParsePayload()), String.valueOf(bean.getParsePayload())); //$NON-NLS-1$
+            avb.setParsePayload(bean.getParsePayload());
         }
 
         try {
@@ -3467,7 +3480,12 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         Map<String, String> endpointProperties = versionBean.getEndpointProperties();
         if (endpointProperties != null) {
             for (Entry<String, String> entry : endpointProperties.entrySet()) {
-                entry.setValue(encrypter.decrypt(entry.getValue()));
+                DataEncryptionContext ctx = new DataEncryptionContext(
+                        versionBean.getApi().getOrganization().getId(), 
+                        versionBean.getApi().getId(),
+                        versionBean.getVersion(), 
+                        EntityType.Api);
+                entry.setValue(encrypter.decrypt(entry.getValue(), ctx));
             }
         }
     }
@@ -3479,7 +3497,12 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         Map<String, String> endpointProperties = versionBean.getEndpointProperties();
         if (endpointProperties != null) {
             for (Entry<String, String> entry : endpointProperties.entrySet()) {
-                entry.setValue(encrypter.encrypt(entry.getValue()));
+                DataEncryptionContext ctx = new DataEncryptionContext(
+                        versionBean.getApi().getOrganization().getId(), 
+                        versionBean.getApi().getId(),
+                        versionBean.getVersion(), 
+                        EntityType.Api);
+                entry.setValue(encrypter.encrypt(entry.getValue(), ctx));
             }
         }
     }

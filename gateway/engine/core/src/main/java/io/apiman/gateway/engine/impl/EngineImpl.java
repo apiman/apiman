@@ -15,6 +15,7 @@
  */
 package io.apiman.gateway.engine.impl;
 
+import io.apiman.common.logging.IDelegateFactory;
 import io.apiman.common.util.ReflectionUtils;
 import io.apiman.gateway.engine.DependsOnComponents;
 import io.apiman.gateway.engine.IApiRequestExecutor;
@@ -30,6 +31,7 @@ import io.apiman.gateway.engine.IRequiresInitialization;
 import io.apiman.gateway.engine.Version;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.ApiRequest;
+import io.apiman.gateway.engine.components.IBufferFactoryComponent;
 import io.apiman.gateway.engine.policy.IPolicyFactory;
 import io.apiman.gateway.engine.policy.PolicyContextImpl;
 
@@ -50,6 +52,7 @@ public class EngineImpl implements IEngine {
     private IConnectorFactory connectorFactory;
     private IPolicyFactory policyFactory;
     private IMetrics metrics;
+    private IDelegateFactory logFactory;
 
     /**
      * Constructor.
@@ -59,22 +62,25 @@ public class EngineImpl implements IEngine {
      * @param connectorFactory the connector factory
      * @param policyFactory the policy factory
      * @param metrics the metrics implementation
+     * @param logFactory the logger factory
      */
     public EngineImpl(final IRegistry registry, final IPluginRegistry pluginRegistry,
             final IComponentRegistry componentRegistry, final IConnectorFactory connectorFactory,
-            final IPolicyFactory policyFactory, final IMetrics metrics) {
+            final IPolicyFactory policyFactory, final IMetrics metrics, final IDelegateFactory logFactory) {
         setRegistry(registry);
         setPluginRegistry(pluginRegistry);
         setComponentRegistry(componentRegistry);
         setConnectorFactory(connectorFactory);
         setPolicyFactory(policyFactory);
         setMetrics(metrics);
+        setLogFactory(logFactory);
 
         policyFactory.setPluginRegistry(pluginRegistry);
         metrics.setComponentRegistry(componentRegistry);
 
         initialize(registry, pluginRegistry, componentRegistry, connectorFactory, policyFactory, metrics);
     }
+
 
     /**
      * @see io.apiman.gateway.engine.IEngine#getVersion()
@@ -89,13 +95,15 @@ public class EngineImpl implements IEngine {
      */
     @Override
     public IApiRequestExecutor executor(ApiRequest request, final IAsyncResultHandler<IEngineResult> resultHandler) {
+        IBufferFactoryComponent bufferFactory = componentRegistry.getComponent(IBufferFactoryComponent.class);
         return new ApiRequestExecutorImpl(request,
                 resultHandler,
                 registry,
-                new PolicyContextImpl(getComponentRegistry()),
+                new PolicyContextImpl(getComponentRegistry(), getLogFactory()),
                 policyFactory,
                 getConnectorFactory(),
-                getMetrics());
+                getMetrics(),
+                bufferFactory);
     }
 
     /**
@@ -182,6 +190,21 @@ public class EngineImpl implements IEngine {
      */
     public void setMetrics(IMetrics metrics) {
         this.metrics = metrics;
+    }
+
+    /**
+     * @return the log factory
+     */
+    public IDelegateFactory getLogFactory() {
+        return logFactory;
+    }
+
+    /**
+     * Set the log factory
+     * @param logFactory the log factory
+     */
+    public void setLogFactory(IDelegateFactory logFactory) {
+        this.logFactory = logFactory;
     }
 
     private void initialize(Object... m) {

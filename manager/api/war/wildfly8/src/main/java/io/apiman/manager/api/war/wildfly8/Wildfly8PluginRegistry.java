@@ -19,7 +19,7 @@ import io.apiman.manager.api.core.plugin.AbstractPluginRegistry;
 import io.apiman.manager.api.war.WarApiManagerConfig;
 
 import java.io.File;
-import java.net.URL;
+import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -38,9 +38,9 @@ public class Wildfly8PluginRegistry extends AbstractPluginRegistry {
 
     @Inject
     private WarApiManagerConfig config;
-    
-    private Set<URL> mavenRepos = null;
-    
+
+    private Set<URI> mavenRepos = null;
+
     /**
      * Creates the directory to use for the plugin registry.  The location of
      * the plugin registry is in the Wildfly data directory.
@@ -66,7 +66,7 @@ public class Wildfly8PluginRegistry extends AbstractPluginRegistry {
      * @see io.apiman.manager.api.core.plugin.AbstractPluginRegistry#getMavenRepositories()
      */
     @Override
-    protected Set<URL> getMavenRepositories() {
+    protected Set<URI> getMavenRepositories() {
         if (mavenRepos == null) {
             mavenRepos = loadMavenRepositories();
         }
@@ -76,11 +76,11 @@ public class Wildfly8PluginRegistry extends AbstractPluginRegistry {
     /**
      * @return the maven repositories to use when downloading plugins
      */
-    protected Set<URL> loadMavenRepositories() {
-        Set<URL> repos = new HashSet<>();
+    protected Set<URI> loadMavenRepositories() {
+        Set<URI> repos = new HashSet<>();
         repos.addAll(super.getMavenRepositories());
         repos.addAll(config.getPluginRepositories());
         return repos;
     }
-    
+
 }

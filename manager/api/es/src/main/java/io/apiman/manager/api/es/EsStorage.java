@@ -15,6 +15,7 @@
  */
 package io.apiman.manager.api.es;
 
+import io.apiman.common.util.crypt.DataEncryptionContext;
 import io.apiman.common.util.crypt.IDataEncrypter;
 import io.apiman.manager.api.beans.apis.ApiBean;
 import io.apiman.manager.api.beans.apis.ApiGatewayBean;
@@ -139,7 +140,7 @@ public class EsStorage implements IStorage, IStorageQuery {
     @PostConstruct
     public void postConstruct() {
         // Kick the encrypter, causing it to be loaded/resolved in CDI
-        encrypter.encrypt(""); //$NON-NLS-1$
+        encrypter.encrypt("", new DataEncryptionContext()); //$NON-NLS-1$
     }
 
     private String indexName = DEFAULT_INDEX_NAME;

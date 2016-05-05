@@ -16,17 +16,17 @@
 package io.apiman.gateway.test.junit.servlet;
 
 import io.apiman.common.util.ddl.DdlParser;
+import io.apiman.gateway.engine.GatewayConfigProperties;
 import io.apiman.gateway.engine.components.IBufferFactoryComponent;
 import io.apiman.gateway.engine.components.IHttpClientComponent;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
-import io.apiman.gateway.engine.es.ESClientFactory;
+import io.apiman.gateway.engine.es.SimpleJestClientFactory;
 import io.apiman.gateway.engine.impl.ByteBufferFactoryComponent;
 import io.apiman.gateway.engine.impl.DefaultPluginRegistry;
 import io.apiman.gateway.engine.policy.PolicyFactoryImpl;
 import io.apiman.gateway.platforms.servlet.PolicyFailureFactoryComponent;
 import io.apiman.gateway.platforms.servlet.components.HttpClientComponentImpl;
 import io.apiman.gateway.platforms.servlet.connectors.HttpConnectorFactory;
-import io.apiman.gateway.platforms.war.WarEngineConfig;
 import io.apiman.gateway.test.server.GatewayServer;
 import io.apiman.gateway.test.server.TestMetrics;
 import io.apiman.test.common.echo.EchoServer;
@@ -136,14 +136,14 @@ public class ServletGatewayTestServer implements IGatewayTestServer {
         Map<String, String> props = new HashMap<>();
         
         // Global settings - all tests share but can override
-        props.put(WarEngineConfig.APIMAN_GATEWAY_PLUGIN_REGISTRY_CLASS, DefaultPluginRegistry.class.getName());
-        props.put(WarEngineConfig.APIMAN_GATEWAY_PLUGIN_REGISTRY_CLASS + ".pluginsDir", new File("target/plugintmp").getAbsolutePath());
-        props.put(WarEngineConfig.APIMAN_GATEWAY_CONNECTOR_FACTORY_CLASS, HttpConnectorFactory.class.getName());
-        props.put(WarEngineConfig.APIMAN_GATEWAY_POLICY_FACTORY_CLASS, PolicyFactoryImpl.class.getName());
-        props.put(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + IPolicyFailureFactoryComponent.class.getSimpleName(), PolicyFailureFactoryComponent.class.getName());
-        props.put(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + IHttpClientComponent.class.getSimpleName(), HttpClientComponentImpl.class.getName());
-        props.put(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + IBufferFactoryComponent.class.getSimpleName(), ByteBufferFactoryComponent.class.getName());
-        props.put(WarEngineConfig.APIMAN_GATEWAY_METRICS_CLASS, TestMetrics.class.getName());
+        props.put(GatewayConfigProperties.PLUGIN_REGISTRY_CLASS, DefaultPluginRegistry.class.getName());
+        props.put(GatewayConfigProperties.PLUGIN_REGISTRY_CLASS + ".pluginsDir", new File("target/plugintmp").getAbsolutePath());
+        props.put(GatewayConfigProperties.CONNECTOR_FACTORY_CLASS, HttpConnectorFactory.class.getName());
+        props.put(GatewayConfigProperties.POLICY_FACTORY_CLASS, PolicyFactoryImpl.class.getName());
+        props.put(GatewayConfigProperties.COMPONENT_PREFIX + IPolicyFailureFactoryComponent.class.getSimpleName(), PolicyFailureFactoryComponent.class.getName());
+        props.put(GatewayConfigProperties.COMPONENT_PREFIX + IHttpClientComponent.class.getSimpleName(), HttpClientComponentImpl.class.getName());
+        props.put(GatewayConfigProperties.COMPONENT_PREFIX + IBufferFactoryComponent.class.getSimpleName(), ByteBufferFactoryComponent.class.getName());
+        props.put(GatewayConfigProperties.METRICS_CLASS, TestMetrics.class.getName());
 
         // First, process the config files.
         if (config.has("config-files")) {
@@ -389,7 +389,7 @@ public class ServletGatewayTestServer implements IGatewayTestServer {
     private void postStop() throws Exception {
         if (node != null) {
             client.execute(new DeleteIndex.Builder("apiman_gateway").build());
-            ESClientFactory.clearClientCache();
+            SimpleJestClientFactory.clearClientCache();
         }
         if (ds != null) {
             try (Connection connection = ds.getConnection()) {

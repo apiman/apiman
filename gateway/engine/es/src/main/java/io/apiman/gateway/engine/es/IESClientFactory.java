@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 JBoss Inc
+ * Copyright 2016 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apiman.manager.api.core.logging;
+
+package io.apiman.gateway.engine.es;
+
+import io.searchbox.client.JestClient;
+
+import java.util.Map;
 
 /**
- * See: {@link IDelegateFactory}, {@link IApimanLogger}
- *
- * @author Marc Savy <msavy@redhat.com>
+ * @author eric.wittmann@gmail.com
  */
-public interface IApimanDelegateLogger extends IDelegateFactory, IApimanLogger {
+public interface IESClientFactory {
+
+    /**
+     * Creates an ES client.
+     * @param config
+     * @param defaultIndexName
+     */
+    public JestClient createClient(Map<String, String> config, String defaultIndexName);
+
 }

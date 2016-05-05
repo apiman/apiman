@@ -62,7 +62,13 @@ public class RequestChain extends Chain<ApiRequest> {
      */
     @Override
     protected void applyPolicy(PolicyWithConfiguration policy, IPolicyContext context) {
-        policy.getPolicy().apply(getHead(), context, policy.getConfiguration(), this);
+        ClassLoader oldCtxLoader = Thread.currentThread().getContextClassLoader();
+        try {
+            Thread.currentThread().setContextClassLoader(policy.getPolicy().getClass().getClassLoader());
+            policy.getPolicy().apply(getHead(), context, policy.getConfiguration(), this);
+        } finally {
+            Thread.currentThread().setContextClassLoader(oldCtxLoader);
+        }
     }
 
     /**

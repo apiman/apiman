@@ -57,7 +57,7 @@ public abstract class AbstractJpaStorage {
     private IEntityManagerFactoryAccessor emfAccessor;
 
     public String getDialect() {
-        return (String) emfAccessor.getEntityManagerFactory().getProperties().get("hibernate.dialect");
+        return (String) emfAccessor.getEntityManagerFactory().getProperties().get("hibernate.dialect"); //$NON-NLS-1$
     }
 
     private static ThreadLocal<EntityManager> activeEM = new ThreadLocal<>();

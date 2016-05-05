@@ -15,6 +15,8 @@
  */
 package io.apiman.manager.api.micro;
 
+import io.apiman.common.logging.IApimanDelegateLogger;
+import io.apiman.common.logging.IApimanLogger;
 import io.apiman.common.plugin.Plugin;
 import io.apiman.common.plugin.PluginClassLoader;
 import io.apiman.common.plugin.PluginCoordinates;
@@ -34,20 +36,17 @@ import io.apiman.manager.api.core.crypt.DefaultDataEncrypter;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.core.i18n.Messages;
 import io.apiman.manager.api.core.logging.ApimanLogger;
-import io.apiman.manager.api.core.logging.IApimanDelegateLogger;
-import io.apiman.manager.api.core.logging.IApimanLogger;
 import io.apiman.manager.api.core.logging.JsonLoggerImpl;
 import io.apiman.manager.api.core.logging.StandardLoggerImpl;
 import io.apiman.manager.api.core.noop.NoOpMetricsAccessor;
+import io.apiman.manager.api.es.DefaultEsClientFactory;
 import io.apiman.manager.api.es.ESMetricsAccessor;
 import io.apiman.manager.api.es.EsStorage;
+import io.apiman.manager.api.es.IEsClientFactory;
 import io.apiman.manager.api.jpa.JpaStorage;
 import io.apiman.manager.api.security.ISecurityContext;
 import io.apiman.manager.api.security.impl.DefaultSecurityContext;
 import io.searchbox.client.JestClient;
-import io.searchbox.client.JestClientFactory;
-import io.searchbox.client.config.HttpClientConfig;
-import io.searchbox.client.config.HttpClientConfig.Builder;
 
 import java.lang.reflect.Constructor;
 import java.util.Map;
@@ -68,8 +67,8 @@ import org.apache.commons.lang.StringUtils;
 @ApplicationScoped
 public class ManagerApiMicroServiceCdiFactory {
 
-    private static JestClient sStorageESClient;
-    private static JestClient sMetricsESClient;
+    private static IEsClientFactory sStorageESClientFactory;
+    private static IEsClientFactory sMetricsESClientFactory;
     private static EsStorage sESStorage;
 
     @Produces @ApimanLogger
@@ -208,70 +207,56 @@ public class ManagerApiMicroServiceCdiFactory {
         }
     }
 
-    @Produces @ApplicationScoped @Named("storage")
-    public static JestClient provideStorageESClient(ManagerApiMicroServiceConfig config) {
-        if ("es".equals(config.getStorageType()) && sStorageESClient == null) { //$NON-NLS-1$
-            sStorageESClient = createStorageJestClient(config);
+    @Produces @ApplicationScoped @Named("storage-factory")
+    public static IEsClientFactory provideStorageESClientFactory(ManagerApiMicroServiceConfig config, IPluginRegistry pluginRegistry) {
+        if ("es".equals(config.getStorageType()) && sStorageESClientFactory == null) { //$NON-NLS-1$
+            try {
+                String factoryClass = config.getStorageESClientFactory();
+                if (factoryClass == null) {
+                    factoryClass = DefaultEsClientFactory.class.getName();
+                }
+                sStorageESClientFactory = createCustomComponent(IEsClientFactory.class, factoryClass,
+                        config.getStorageESClientFactoryConfig(), pluginRegistry);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         }
-        return sStorageESClient;
+        return sStorageESClientFactory;
+    }
+
+    @Produces @ApplicationScoped @Named("metrics-factory")
+    public static IEsClientFactory provideMetricsESClientFactory(ManagerApiMicroServiceConfig config, IPluginRegistry pluginRegistry) {
+        if ("es".equals(config.getMetricsType()) && sMetricsESClientFactory == null) { //$NON-NLS-1$
+            try {
+                String factoryClass = config.getMetricsESClientFactory();
+                if (factoryClass == null) {
+                    factoryClass = DefaultEsClientFactory.class.getName();
+                }
+                sMetricsESClientFactory = createCustomComponent(IEsClientFactory.class, factoryClass,
+                        config.getMetricsESClientFactoryConfig(), pluginRegistry);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return sMetricsESClientFactory;
+    }
+
+    @Produces @ApplicationScoped @Named("storage")
+    public static JestClient provideStorageESClient(ManagerApiMicroServiceConfig config, @Named("storage-factory") IEsClientFactory clientFactory) {
+        if ("es".equals(config.getStorageType())) { //$NON-NLS-1$
+            return clientFactory.createClient();
+        } else {
+            return null;
+        }
     }
 
     @Produces @ApplicationScoped @Named("metrics")
-    public static JestClient provideMetricsESClient(ManagerApiMicroServiceConfig config) {
-        if ("es".equals(config.getMetricsType()) && sMetricsESClient == null) { //$NON-NLS-1$
-            sMetricsESClient = createMetricsJestClient(config);
+    public static JestClient provideMetricsESClient(ManagerApiMicroServiceConfig config, @Named("metrics-factory") IEsClientFactory clientFactory) {
+        if ("es".equals(config.getMetricsType())) { //$NON-NLS-1$
+            return clientFactory.createClient();
+        } else {
+            return null;
         }
-        return sMetricsESClient;
-    }
-
-    /**
-     * @param config
-     * @return create a new test ES client
-     */
-    private static JestClient createStorageJestClient(ManagerApiMicroServiceConfig config) {
-        StringBuilder builder = new StringBuilder();
-        builder.append(config.getStorageESProtocol());
-        builder.append("://"); //$NON-NLS-1$
-        builder.append(config.getStorageESHost());
-        builder.append(":"); //$NON-NLS-1$
-        builder.append(config.getStorageESPort());
-        String connectionUrl = builder.toString();
-        JestClientFactory factory = new JestClientFactory();
-        Builder httpConfig = new HttpClientConfig.Builder(connectionUrl).multiThreaded(true);
-        String username = config.getStorageESUsername();
-        String password = config.getStorageESPassword();
-        if (username != null) {
-            httpConfig.defaultCredentials(username, password);
-        }
-        httpConfig.connTimeout(config.getStorageESTimeout());
-        httpConfig.readTimeout(config.getStorageESTimeout());
-        factory.setHttpClientConfig(httpConfig.build());
-        return factory.getObject();
-    }
-
-    /**
-     * @param config
-     * @return create a new test ES client
-     */
-    private static JestClient createMetricsJestClient(ManagerApiMicroServiceConfig config) {
-        StringBuilder builder = new StringBuilder();
-        builder.append(config.getMetricsESProtocol());
-        builder.append("://"); //$NON-NLS-1$
-        builder.append(config.getMetricsESHost());
-        builder.append(":"); //$NON-NLS-1$
-        builder.append(config.getMetricsESPort());
-        String connectionUrl = builder.toString();
-        JestClientFactory factory = new JestClientFactory();
-        Builder httpConfig = new HttpClientConfig.Builder(connectionUrl).multiThreaded(true);
-        String username = config.getMetricsESUsername();
-        String password = config.getMetricsESPassword();
-        if (username != null) {
-            httpConfig.defaultCredentials(username, password);
-        }
-        httpConfig.connTimeout(config.getMetricsESTimeout());
-        httpConfig.readTimeout(config.getMetricsESTimeout());
-        factory.setHttpClientConfig(httpConfig.build());
-        return factory.getObject();
     }
 
     /**

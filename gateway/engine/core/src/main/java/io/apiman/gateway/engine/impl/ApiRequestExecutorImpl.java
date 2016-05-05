@@ -16,6 +16,7 @@
 package io.apiman.gateway.engine.impl;
 
 import io.apiman.common.util.ApimanStrLookup;
+import io.apiman.gateway.engine.GatewayConfigProperties;
 import io.apiman.gateway.engine.IApiConnection;
 import io.apiman.gateway.engine.IApiConnectionResponse;
 import io.apiman.gateway.engine.IApiConnector;
@@ -38,9 +39,16 @@ import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.beans.exceptions.InvalidApiException;
 import io.apiman.gateway.engine.beans.exceptions.InvalidContractException;
 import io.apiman.gateway.engine.beans.exceptions.RequestAbortedException;
+import io.apiman.gateway.engine.components.IBufferFactoryComponent;
 import io.apiman.gateway.engine.i18n.Messages;
+import io.apiman.gateway.engine.io.ByteBuffer;
+import io.apiman.gateway.engine.io.BytesPayloadIO;
 import io.apiman.gateway.engine.io.IApimanBuffer;
+import io.apiman.gateway.engine.io.IPayloadIO;
 import io.apiman.gateway.engine.io.ISignalWriteStream;
+import io.apiman.gateway.engine.io.JsonPayloadIO;
+import io.apiman.gateway.engine.io.SoapPayloadIO;
+import io.apiman.gateway.engine.io.XmlPayloadIO;
 import io.apiman.gateway.engine.metrics.RequestMetric;
 import io.apiman.gateway.engine.policy.Chain;
 import io.apiman.gateway.engine.policy.IConnectorInterceptor;
@@ -82,16 +90,19 @@ import org.apache.commons.lang.text.StrSubstitutor;
  */
 public class ApiRequestExecutorImpl implements IApiRequestExecutor {
 
+    private static final long DEFAULT_MAX_PAYLOAD_BUFFER_SIZE = 5 * 1024 * 1024; // in bytes
+    
     private static StrLookup LOOKUP = new ApimanStrLookup();
     private static StrSubstitutor PROPERTY_SUBSTITUTOR = new StrSubstitutor(LOOKUP);
 
-    private IRegistry registry;
+    private final IRegistry registry;
     private ApiRequest request;
     private Api api;
     private IPolicyContext context;
     private List<Policy> policies;
-    private IPolicyFactory policyFactory;
-    private IConnectorFactory connectorFactory;
+    private final IPolicyFactory policyFactory;
+    private final IConnectorFactory connectorFactory;
+    private final IBufferFactoryComponent bufferFactory;
     private boolean finished = false;
 
     private List<PolicyWithConfiguration> policyImpls;
@@ -111,6 +122,10 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
     private IMetrics metrics;
     private RequestMetric requestMetric = new RequestMetric();
 
+    private IPayloadIO payloadIO;
+    // max payload buffer size (if not already set in the api itself)
+    private long maxPayloadBufferSize = DEFAULT_MAX_PAYLOAD_BUFFER_SIZE;
+
     /**
      * Constructs a new {@link ApiRequestExecutorImpl}.
      * @param apiRequest the api request
@@ -123,7 +138,8 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
      */
     public ApiRequestExecutorImpl(ApiRequest apiRequest,
             IAsyncResultHandler<IEngineResult> resultHandler, IRegistry registry, IPolicyContext context,
-            IPolicyFactory policyFactory, IConnectorFactory connectorFactory, IMetrics metrics) {
+            IPolicyFactory policyFactory, IConnectorFactory connectorFactory, IMetrics metrics, 
+            IBufferFactoryComponent bufferFactory) {
         this.request = apiRequest;
         this.registry = registry;
         this.resultHandler = wrapResultHandler(resultHandler);
@@ -133,6 +149,12 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
         this.policyFailureHandler = createPolicyFailureHandler();
         this.policyErrorHandler = createPolicyErrorHandler();
         this.metrics = metrics;
+        this.bufferFactory = bufferFactory;
+        
+        String mbs = System.getProperty(GatewayConfigProperties.MAX_PAYLOAD_BUFFER_SIZE);
+        if (mbs != null) {
+            maxPayloadBufferSize = new Long(mbs);
+        }
     }
 
     /**
@@ -245,6 +267,49 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
             requestChain.policyFailureHandler(policyFailureHandler);
             requestChain.doApply(request);
         };
+        
+        // The handler used when we need to parse the inbound request payload into
+        // an object and make it available via the policy context.
+        final IAsyncResultHandler<Object> payloadParserHandler = new IAsyncResultHandler<Object>() {
+            @Override
+            public void handle(IAsyncResult<Object> result) {
+                if (result.isSuccess()) {
+                    final Object payload = result.getResult();
+                    // Store the parsed object in the policy context.
+                    context.setAttribute(PolicyContextKeys.REQUEST_PAYLOAD, payload);
+                    context.setAttribute(PolicyContextKeys.REQUEST_PAYLOAD_IO, payloadIO);
+                    
+                    // Now replace the inbound stream handler with one that uses the payload IO
+                    // object to re-marshall the (possibly modified) payload object to bytes
+                    // and sends that (because the *real* inbound stream has already been consumed)
+                    streamHandler(new IAsyncHandler<ISignalWriteStream>() {
+                        @Override
+                        public void handle(ISignalWriteStream connectorStream) {
+                            try {
+                                if (payload == null) {
+                                    connectorStream.end();
+                                } else {
+                                    payloadIO = context.getAttribute(PolicyContextKeys.REQUEST_PAYLOAD_IO, payloadIO);
+                                    byte[] data = payloadIO.marshall(payload);
+                                    IApimanBuffer buffer = bufferFactory.createBuffer(data);
+                                    connectorStream.write(buffer);
+                                    connectorStream.end();
+                                }
+                            } catch (Exception e) {
+                                connectorStream.abort();
+                                throw new RuntimeException(e);
+                            }
+                        }
+                    });
+                    
+                    // Load and executes the policies
+                    loadPolicies(policiesLoadedHandler);
+                } else {
+                    resultHandler.handle(AsyncResultImpl.create(result.getError(), IEngineResult.class));
+                }
+            }
+        };
+
 
         // If no API Key provided - the api must be public.  If an API Key *is* provided
         // then we lookup the Contract and use that.
@@ -253,7 +318,7 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
                     (IAsyncResult<Api> apiResult) -> {
                         if (apiResult.isSuccess()) {
                             api = apiResult.getResult();
-
+                            
                             if (api == null) {
                                 Exception error = new InvalidApiException(Messages.i18n.format("EngineImpl.ApiNotFound")); //$NON-NLS-1$
                                 resultHandler.handle(AsyncResultImpl.create(error, IEngineResult.class));
@@ -266,7 +331,16 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
                                 request.setApi(api);
                                 policies = api.getApiPolicies();
                                 policyImpls = new ArrayList<>(policies.size());
-                                loadPolicies(policiesLoadedHandler);
+
+                                // If the API is configured to be "stateful", we need to parse the
+                                // inbound request body into an object appropriate to the type and 
+                                // format of the API.  This could be a SOAP message, an XML document,
+                                // or a JSON document
+                                if (api.isParsePayload()) {
+                                    parsePayload(payloadParserHandler);
+                                } else {
+                                    loadPolicies(policiesLoadedHandler);
+                                }
                             }
                         } else if (apiResult.isError()) {
                             resultHandler.handle(AsyncResultImpl.create(apiResult.getError(), IEngineResult.class));
@@ -277,7 +351,7 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
             String apiId = request.getApiId();
             String apiVersion = request.getApiVersion();
             String apiKey = request.getApiKey();
-            registry.getContract(apiOrgId, apiId, apiVersion, apiKey,(IAsyncResult<ApiContract> contractResult) -> {
+            registry.getContract(apiOrgId, apiId, apiVersion, apiKey, (IAsyncResult<ApiContract> contractResult) -> {
                 if (contractResult.isSuccess()) {
                     ApiContract apiContract = contractResult.getResult();
 
@@ -302,7 +376,17 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
                             return;
                         }
                     }
-                    loadPolicies(policiesLoadedHandler);
+
+                    // If the API is configured to be "stateful", we need to parse the
+                    // inbound request body into an object appropriate to the type and 
+                    // format of the API.  This could be a SOAP message, an XML document,
+                    // or a JSON document
+                    if (api.isParsePayload()) {
+                        parsePayload(payloadParserHandler);
+                    } else {
+                        // Load and executes the policies
+                        loadPolicies(policiesLoadedHandler);
+                    }
                 } else {
                     resultHandler.handle(AsyncResultImpl.create(contractResult.getError(), IEngineResult.class));
                 }
@@ -310,6 +394,95 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
         }
     }
 
+    /**
+     * Parse the inbound request's body into a payload object.  The object that is
+     * produced will depend on the type and content-type of the API.  Options
+     * include, but may not be limited to:
+     * <ul>
+     *   <li>REST+json</li>
+     *   <li>REST+xml</li>
+     *   <li>SOAP+xml</li>
+     * </ul>
+     * @param payloadResultHandler
+     */
+    protected void parsePayload(IAsyncResultHandler<Object> payloadResultHandler) {
+        // Strip out any content-length header from the request.  It will very likely
+        // no longer be accurate.
+        request.getHeaders().remove("Content-Length"); //$NON-NLS-1$
+        
+        // Configure the api's max payload buffer size, if it's not already set.
+        if (api.getMaxPayloadBufferSize() <= 0) {
+            api.setMaxPayloadBufferSize(maxPayloadBufferSize);
+        }
+        
+        // Now "handle" the inbound request stream, which will cause bytes to be streamed
+        // to the writeStream we provide (which will store the bytes in a buffer for parsing)
+        final ByteBuffer buffer = new ByteBuffer(2048);
+        inboundStreamHandler.handle(new ISignalWriteStream() {
+            private boolean done = false;
+            
+            @Override
+            public void abort() {
+                done = true;
+                payloadResultHandler.handle(AsyncResultImpl.create(new Exception("Inbound request stream aborted."))); //$NON-NLS-1$
+            }
+            
+            @Override
+            public boolean isFinished() {
+                return done;
+            }
+            
+            @Override
+            public void write(IApimanBuffer chunk) {
+                if (done) {
+                    return;
+                }
+                if (buffer.length() > api.getMaxPayloadBufferSize()) {
+                    payloadResultHandler.handle(AsyncResultImpl.create(new Exception("Max request payload size exceeded."))); //$NON-NLS-1$
+                    done = true;
+                    return;
+                }
+                buffer.append(chunk);
+            }
+            
+            @Override
+            public void end() {
+                if (done) {
+                    return;
+                }
+                // When end() is called, the stream of bytes is done and we can parse them into
+                // an appropriate payload object.
+                done = true;
+                if (buffer.length() == 0) {
+                    payloadResultHandler.handle(AsyncResultImpl.create(null));
+                } else {
+                    payloadIO = null;
+                    if ("soap".equalsIgnoreCase(api.getEndpointType())) { //$NON-NLS-1$
+                        payloadIO = new SoapPayloadIO();
+                    } else if ("rest".equalsIgnoreCase(api.getEndpointType())) { //$NON-NLS-1$
+                        if ("xml".equalsIgnoreCase(api.getEndpointContentType())) { //$NON-NLS-1$
+                            payloadIO = new XmlPayloadIO();
+                        } else if ("json".equalsIgnoreCase(api.getEndpointContentType())) { //$NON-NLS-1$
+                            payloadIO = new JsonPayloadIO();
+                        }
+                    }
+                    if (payloadIO == null) {
+                        payloadIO = new BytesPayloadIO();
+                    }
+                    try {
+                        Object payload = payloadIO.unmarshall(buffer.getBytes());
+                        payloadResultHandler.handle(AsyncResultImpl.create(payload));
+                    } catch (Exception e) {
+                        payloadResultHandler.handle(AsyncResultImpl.create(new Exception("Failed to parse inbound request payload.", e))); //$NON-NLS-1$
+                    }
+                }
+            }
+        });
+    }
+
+    /**
+     * Strips the API key from the request (both the http headers and the query params).
+     */
     private void stripApiKey() {
         request.getHeaders().remove("X-API-Key"); //$NON-NLS-1$
         request.getQueryParams().remove("apikey"); //$NON-NLS-1$

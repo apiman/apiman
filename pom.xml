@@ -4,7 +4,7 @@
 
   <groupId>io.apiman</groupId>
   <artifactId>apiman</artifactId>
-  <version>1.2.4-SNAPSHOT</version>
+  <version>1.2.6-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>apiman</name>
 
@@ -159,7 +159,7 @@
     <version.org.jboss.spec.javax.transaction.jboss-transaction-api_1.2_spec>1.0.0.Final</version.org.jboss.spec.javax.transaction.jboss-transaction-api_1.2_spec>
     <version.org.jboss.spec.javax.ws.jboss-jaxrs-api_2.0_spec>1.0.0.Final</version.org.jboss.spec.javax.ws.jboss-jaxrs-api_2.0_spec>
     <version.org.jboss.weld.weld>2.3.3.Final</version.org.jboss.weld.weld>
-    <version.org.keycloak>1.9.1.Final</version.org.keycloak>
+    <version.org.keycloak>1.9.2.Final</version.org.keycloak>
     <version.org.mockito>1.9.5</version.org.mockito>
     <version.org.mvel>2.2.7.Final</version.org.mvel>
     <version.org.osgi>4.2.0</version.org.osgi>
@@ -170,6 +170,7 @@
     <version.io.swagger>1.5.7</version.io.swagger>
     <version.xmlunit>1.6</version.xmlunit>
     <version.io.vertx>3.1.0</version.io.vertx>
+    <version.net.openhft>0.6</version.net.openhft>
   </properties>
 
   <dependencyManagement>
@@ -188,6 +189,26 @@
       <dependency>
         <groupId>${project.groupId}</groupId>
         <artifactId>apiman-common-util</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>apiman-common-logging</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>apiman-common-logging-core</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>apiman-common-logging-log4j2</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>apiman-common-logging-slf4j</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
@@ -656,6 +677,11 @@
 
       <!-- Third Party Libraries -->
       <dependency>
+	<groupId>net.openhft</groupId>
+	<artifactId>zero-allocation-hashing</artifactId>
+	<version>${version.net.openhft}</version>
+      </dependency>
+      <dependency>
         <groupId>com.zaxxer</groupId>
         <artifactId>HikariCP</artifactId>
         <version>${version.com.zaxxer}</version>
@@ -893,6 +919,11 @@
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-log4j12</artifactId>
+        <version>${version.org.slf4j}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-jdk14</artifactId>
         <version>${version.org.slf4j}</version>
       </dependency>
       <dependency>

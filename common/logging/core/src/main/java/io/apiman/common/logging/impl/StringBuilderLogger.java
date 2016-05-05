@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package io.apiman.manager.api.core.logging;
+package io.apiman.common.logging.impl;
+
+import io.apiman.common.logging.IApimanLogger;
 
 /**
  * Logs to a string builder.
@@ -32,7 +34,7 @@ public class StringBuilderLogger implements IApimanLogger {
     }
 
     /**
-     * @see io.apiman.manager.api.core.logging.IApimanLogger#info(java.lang.String)
+     * @see IApimanLogger#info(java.lang.String)
      */
     @Override
     public void info(String message) {
@@ -40,7 +42,7 @@ public class StringBuilderLogger implements IApimanLogger {
     }
 
     /**
-     * @see io.apiman.manager.api.core.logging.IApimanLogger#warn(java.lang.String)
+     * @see IApimanLogger#warn(java.lang.String)
      */
     @Override
     public void warn(String message) {
@@ -48,7 +50,7 @@ public class StringBuilderLogger implements IApimanLogger {
     }
 
     /**
-     * @see io.apiman.manager.api.core.logging.IApimanLogger#debug(java.lang.String)
+     * @see IApimanLogger#debug(java.lang.String)
      */
     @Override
     public void debug(String message) {
@@ -56,7 +58,7 @@ public class StringBuilderLogger implements IApimanLogger {
     }
 
     /**
-     * @see io.apiman.manager.api.core.logging.IApimanLogger#trace(java.lang.String)
+     * @see IApimanLogger#trace(java.lang.String)
      */
     @Override
     public void trace(String message) {
@@ -64,7 +66,7 @@ public class StringBuilderLogger implements IApimanLogger {
     }
 
     /**
-     * @see io.apiman.manager.api.core.logging.IApimanLogger#error(java.lang.Throwable)
+     * @see IApimanLogger#error(java.lang.Throwable)
      */
     @Override
     public void error(Throwable error) {
@@ -72,7 +74,7 @@ public class StringBuilderLogger implements IApimanLogger {
     }
 
     /**
-     * @see io.apiman.manager.api.core.logging.IApimanLogger#error(java.lang.String, java.lang.Throwable)
+     * @see IApimanLogger#error(java.lang.String, java.lang.Throwable)
      */
     @Override
     public void error(String message, Throwable error) {
@@ -81,7 +83,6 @@ public class StringBuilderLogger implements IApimanLogger {
     
     /**
      * Append to the builder.
-     * @param message
      */
     private void append(String message) {
         builder.append(message);

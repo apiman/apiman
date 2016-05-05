@@ -20,7 +20,7 @@ import io.apiman.common.plugin.PluginCoordinates;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
+import java.net.URI;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
@@ -59,13 +59,13 @@ public class AbstractPluginRegistryTest {
         public TestPluginRegistry(File pluginsDir) {
             super(pluginsDir);
         }
-        
+
         /**
          * @see io.apiman.manager.api.core.plugin.AbstractPluginRegistry#downloadFromMavenRepo(java.io.File, io.apiman.common.plugin.PluginCoordinates, java.net.URL)
          */
         @Override
         protected boolean downloadFromMavenRepo(File pluginFile, PluginCoordinates coordinates,
-                URL mavenRepoUrl) {
+                URI mavenRepoUrl) {
             // Testing - don't actually download from maven central here!
             File file = new File("src/test/resources/plugin.war");
             if (!file.isFile()) {
@@ -78,7 +78,7 @@ public class AbstractPluginRegistryTest {
                 return false;
             }
         }
-        
+
     }
-    
+
 }

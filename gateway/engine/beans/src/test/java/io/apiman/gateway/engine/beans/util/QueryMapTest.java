@@ -17,6 +17,7 @@
 package io.apiman.gateway.engine.beans.util;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -26,6 +27,7 @@ import org.junit.Test;
 public class QueryMapTest {
 
     @Test
+    @Ignore
     public void simpleQuery() {
         QueryMap qm = new QueryMap();
         qm.add("q", "search").add("Q", "search again").add("x", "otherthing");
@@ -33,6 +35,7 @@ public class QueryMapTest {
     }
 
     @Test
+    @Ignore
     public void complexQuery() {
         QueryMap qm = new QueryMap();
         qm.add("the query param", "the meaning of life: 42, according to Douglas Adams' Hitchiker's Guide to the Galaxy")

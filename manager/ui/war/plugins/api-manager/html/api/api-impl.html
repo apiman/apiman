@@ -46,7 +46,7 @@
                      name="endpoint"
                      class="apiman-form-control form-control"
                      type="text"
-                     ng-disabled="isEntityDisabled()"></input>
+                     ng-disabled="isEntityDisabled()">
             </div>
             <div style="color: #ff0000" ng-show="invalidEndpoint === true">
               <p apiman-i18n-key="invalid-endpiont-msg">Please enter a valid endpoint that begins with http:// or https://.</p>
@@ -81,6 +81,16 @@
                   <span ng-bind="ct.toUpperCase()"></span>
                 </ui-select-choices>
               </ui-select>
+            </div>
+
+            <div style="margin-top: 10px">
+              <input ng-model="updatedApi.parsePayload"
+                     type="checkbox"
+                     id="parse-payload"
+                     ng-disabled="isEntityDisabled()"></input>
+              <label for="parse-payload"
+                     apiman-i18n-key="parse-payload-msg"
+                     style="padding-left: 3px">Enable stateful request payload inspection</label>
             </div>
             
             <div class="" style="margin-top:10px;">

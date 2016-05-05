@@ -1,0 +1,19 @@
+PUT /apis admin/admin
+Content-Type: application/json
+
+{
+  "organizationId" : "LoggingTest",
+  "apiId" : "echo",
+  "version" : "2.0",
+  "publicAPI" : true,
+  "endpointType" : "REST",
+  "endpoint" : "${apiman-gateway-test.endpoints.echo}/",
+  "apiPolicies" : [
+        {
+          "policyImpl" : "class:io.apiman.gateway.test.policies.LoggingPolicy",
+          "policyJsonConfig" : ""
+        }
+      ]
+}
+----
+204

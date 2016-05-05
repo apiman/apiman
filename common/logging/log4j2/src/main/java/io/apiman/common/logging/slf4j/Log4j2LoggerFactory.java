@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 JBoss Inc
+ * Copyright 2016 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,28 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apiman.manager.api.core.logging;
+package io.apiman.common.logging.slf4j;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.TimeZone;
+import io.apiman.common.logging.IApimanLogger;
+import io.apiman.common.logging.IDelegateFactory;
+import org.apache.logging.log4j.LogManager;
 
 /**
- * Simple ISO-8601 format using local TZ.
+ * Log4j2 logger factory.
  *
- * @author Marc Savy <msavy@redhat.com>
+ * @author Marc Savy {@literal <msavy@redhat.com>}
  */
-public class DefaultTimeImpl implements Time {
-    private static TimeZone zone = TimeZone.getDefault();
-    private static DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'"); //$NON-NLS-1$
-
-    static {
-        format.setTimeZone(zone);
+public class Log4j2LoggerFactory implements IDelegateFactory {
+    @Override
+    public IApimanLogger createLogger(String name) {
+        return new Log4j2LoggerImpl(LogManager.getLogger(name));
     }
 
     @Override
-    public String currentTimeIso8601() {
-        return format.format(new Date());
+    public IApimanLogger createLogger(Class<?> klazz) {
+        return new Log4j2LoggerImpl(LogManager.getLogger(klazz));
     }
 }

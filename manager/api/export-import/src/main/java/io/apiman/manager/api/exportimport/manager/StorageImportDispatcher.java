@@ -16,6 +16,7 @@
 
 package io.apiman.manager.api.exportimport.manager;
 
+import io.apiman.common.logging.IApimanLogger;
 import io.apiman.gateway.engine.beans.Api;
 import io.apiman.gateway.engine.beans.Client;
 import io.apiman.gateway.engine.beans.Contract;
@@ -44,7 +45,6 @@ import io.apiman.manager.api.beans.policies.PolicyType;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.core.logging.ApimanLogger;
-import io.apiman.manager.api.core.logging.IApimanLogger;
 import io.apiman.manager.api.exportimport.beans.MetadataBean;
 import io.apiman.manager.api.exportimport.i18n.Messages;
 import io.apiman.manager.api.exportimport.read.IImportReaderDispatcher;
@@ -471,6 +471,7 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
                 gatewayApi.setApiId(versionBean.getApi().getId());
                 gatewayApi.setVersion(versionBean.getVersion());
                 gatewayApi.setPublicAPI(versionBean.isPublicAPI());
+                gatewayApi.setParsePayload(versionBean.isParsePayload());
                 if (versionBean.isPublicAPI()) {
                     List<Policy> policiesToPublish = new ArrayList<>();
                     Iterator<PolicyBean> apiPolicies = storage.getAllPolicies(info.organizationId,

@@ -170,7 +170,7 @@ public abstract class GatewayServlet extends HttpServlet {
                         numBytes = buffer.readFrom(is);
                     }
                     connectorStream.end();
-                } catch (IOException e) {
+                } catch (Throwable e) {
                     connectorStream.abort();
                     throw new RuntimeException(e);
                 }
