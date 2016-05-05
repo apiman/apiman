@@ -16,8 +16,8 @@
 package io.apiman.gateway.platforms.war;
 
 import io.apiman.gateway.api.rest.impl.IPlatform;
+import io.apiman.gateway.engine.GatewayConfigProperties;
 import io.apiman.gateway.engine.beans.ApiEndpoint;
-import io.apiman.gateway.platforms.war.WarGateway;
 import io.apiman.gateway.platforms.war.filters.HttpRequestThreadLocalFilter;
 
 import javax.servlet.http.HttpServletRequest;
@@ -29,7 +29,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class WarPlatform implements IPlatform {
     
-    public static final String APIMAN_GATEWAY_ENDPOINT = "apiman-gateway.public-endpoint"; //$NON-NLS-1$
+    public static final String APIMAN_GATEWAY_ENDPOINT = GatewayConfigProperties.PUBLIC_ENDPOINT;
 
     /**
      * Constructor.

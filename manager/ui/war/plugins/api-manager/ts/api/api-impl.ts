@@ -143,7 +143,11 @@ module Apiman {
                     if (newValue.endpointContentType != $scope.version.endpointContentType) {
                         dirty = true;
                     }
-                    
+
+                    if (newValue.parsePayload != $scope.version.parsePayload) {
+                        dirty = true;
+                    }
+
                     if (newValue.gateways && newValue.gateways.length > 0) {
                         dirty = true;
                     }
@@ -228,6 +232,7 @@ module Apiman {
                 $scope.updatedApi.endpointType = $scope.version.endpointType;
                 $scope.updatedApi.endpointContentType = $scope.version.endpointContentType;
                 $scope.updatedApi.endpointProperties = angular.copy($scope.version.endpointProperties);
+                $scope.updatedApi.parsePayload = $scope.version.parsePayload;
 
 
                 // Gateway Handling

@@ -39,6 +39,7 @@ public class NewApiVersionBean implements Serializable {
     private EndpointType endpointType;
     private EndpointContentType endpointContentType;
     private Boolean publicAPI;
+    private Boolean parsePayload;
     private Set<ApiPlanBean> plans;
     private String definitionUrl;
     private ApiDefinitionType definitionType;
@@ -187,6 +188,20 @@ public class NewApiVersionBean implements Serializable {
      */
     public void setEndpointContentType(EndpointContentType endpointContentType) {
         this.endpointContentType = endpointContentType;
+    }
+
+    /**
+     * @return the parsePayload
+     */
+    public Boolean getParsePayload() {
+        return parsePayload;
+    }
+
+    /**
+     * @param parsePayload the parsePayload to set
+     */
+    public void setParsePayload(Boolean parsePayload) {
+        this.parsePayload = parsePayload;
     }
 
 }

@@ -16,6 +16,7 @@
 
 package io.apiman.manager.api.rest.impl;
 
+import io.apiman.common.logging.IApimanLogger;
 import io.apiman.gateway.engine.beans.Api;
 import io.apiman.gateway.engine.beans.Client;
 import io.apiman.gateway.engine.beans.Contract;
@@ -42,7 +43,6 @@ import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.core.logging.ApimanLogger;
-import io.apiman.common.logging.IApimanLogger;
 import io.apiman.manager.api.gateway.IGatewayLink;
 import io.apiman.manager.api.gateway.IGatewayLinkFactory;
 import io.apiman.manager.api.rest.contract.IActionResource;
@@ -165,6 +165,7 @@ public class ActionResourceImpl implements IActionResource {
         gatewayApi.setApiId(versionBean.getApi().getId());
         gatewayApi.setVersion(versionBean.getVersion());
         gatewayApi.setPublicAPI(versionBean.isPublicAPI());
+        gatewayApi.setParsePayload(versionBean.isParsePayload());
         boolean hasTx = false;
         try {
             if (versionBean.isPublicAPI()) {

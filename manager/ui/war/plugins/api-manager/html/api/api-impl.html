@@ -82,6 +82,16 @@
                 </ui-select-choices>
               </ui-select>
             </div>
+
+            <div style="margin-top: 10px">
+              <input ng-model="updatedApi.parsePayload"
+                     type="checkbox"
+                     id="parse-payload"
+                     ng-disabled="isEntityDisabled()"></input>
+              <label for="parse-payload"
+                     apiman-i18n-key="parse-payload-msg"
+                     style="padding-left: 3px">Enable stateful request payload inspection</label>
+            </div>
             
             <div class="" style="margin-top:10px;">
               <span class="clearfix"

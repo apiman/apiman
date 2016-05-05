@@ -374,6 +374,7 @@
             <column name="public_api" type="BOOLEAN">
                 <constraints nullable="false"/>
             </column>
+            <column name="parse_payload" type="BOOLEAN"/>
             <column name="published_on" type="TIMESTAMP"/>
             <column name="retired_on" type="TIMESTAMP"/>
             <column name="status" type="VARCHAR(255)">

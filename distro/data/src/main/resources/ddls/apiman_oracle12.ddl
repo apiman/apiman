@@ -61,7 +61,7 @@ CREATE TABLE roles (id VARCHAR2(255) NOT NULL, auto_grant NUMBER(1), created_by 
 CREATE TABLE api_defs (id NUMBER(38, 0) NOT NULL, data BLOB, api_version_id NUMBER(38, 0));
 
 -- Changeset C:/Users/ewittman/git/apiman/apiman/distro/ddl/src/main/liquibase/current/010-apiman-manager-api.db.tables.changelog.xml::1436469846462-18::apiman (generated)
-CREATE TABLE api_versions (id NUMBER(38, 0) NOT NULL, created_by VARCHAR2(255) NOT NULL, created_on TIMESTAMP NOT NULL, definition_type VARCHAR2(255), endpoint VARCHAR2(255), endpoint_type VARCHAR2(255), endpoint_ct VARCHAR2(255), modified_by VARCHAR2(255) NOT NULL, modified_on TIMESTAMP NOT NULL, public_api NUMBER(1) NOT NULL, published_on TIMESTAMP, retired_on TIMESTAMP, status VARCHAR2(255) NOT NULL, version VARCHAR2(255), api_id VARCHAR2(255), api_org_id VARCHAR2(255));
+CREATE TABLE api_versions (id NUMBER(38, 0) NOT NULL, created_by VARCHAR2(255) NOT NULL, created_on TIMESTAMP NOT NULL, definition_type VARCHAR2(255), endpoint VARCHAR2(255), endpoint_type VARCHAR2(255), endpoint_ct VARCHAR2(255), modified_by VARCHAR2(255) NOT NULL, modified_on TIMESTAMP NOT NULL, public_api NUMBER(1) NOT NULL, published_on TIMESTAMP, retired_on TIMESTAMP, status VARCHAR2(255) NOT NULL, version VARCHAR2(255), api_id VARCHAR2(255), api_org_id VARCHAR2(255), parse_payload NUMBER(1));
 
 -- Changeset C:/Users/ewittman/git/apiman/apiman/distro/ddl/src/main/liquibase/current/010-apiman-manager-api.db.tables.changelog.xml::1436469846462-19::apiman (generated)
 CREATE TABLE apis (id VARCHAR2(255) NOT NULL, created_by VARCHAR2(255) NOT NULL, created_on TIMESTAMP NOT NULL, description VARCHAR2(512), name VARCHAR2(255) NOT NULL, organization_id VARCHAR2(255) NOT NULL, num_published NUMBER(10));
