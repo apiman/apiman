@@ -19,7 +19,5 @@ Content-Type: application/json
   "uri" : "/path/to/app/resource",
   "headers" : {
     "X-Property-1" : "value-1"
-  },
-  "bodyLength" : 245,
-  "bodySha1" : "2b209f2adc32f13bb806d35cef4697e810b3ffed"
+  }
 }

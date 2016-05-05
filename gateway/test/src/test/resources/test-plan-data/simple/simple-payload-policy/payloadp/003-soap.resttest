@@ -27,7 +27,5 @@ Content-Type: application/json
   "uri" : "/path/to/app/resource",
   "headers" : {
     "X-Property-1" : "value-1"
-  },
-  "bodyLength" : 608,
-  "bodySha1" : "97e9efad42b63858341fa7fcaed061f15c5d6cb6"
+  }
 }
