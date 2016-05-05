@@ -283,13 +283,13 @@ core module that contains the IPlugin and other necessary interfaces) are marked
 as 'provided' in your maven project so that they are not included in the plugin
 archive.
 
-===== Logging
+==== Logging
 A policy's logger can be accessed through the context objects provided to `apply`.
 Use `getLogger` with a class. The `IApimanLogger` interface provides the methods
 available for logging, with a variety of pluggable backends available to implement
 the functionality.
 
-====== Usage
+===== Usage
 
 ```java
   @Override
@@ -313,7 +313,7 @@ the functionality.
 <1> Consult the interface's javadoc for the full list of available methods.
 <2> Format string with arguments.
 
-====== Configuration
+===== Configuration
 A few logging backends https://github.com/apiman/apiman/tree/master/common/logging[are provided],
 which should satisfy most user's requirements.
 
@@ -331,7 +331,7 @@ Those shipped in the project, are:
 
 NOTE: Ensure that the implementation is available on the classpath.
 
-====== Custom Implementation
+===== Custom Implementation
 
 To provide your own implementation, you must implement `IDelegateFactory` and which
 should create instances your implementations of `IApimanLogger`. Ensure that your
