@@ -225,7 +225,8 @@ IReadWriteStream<ApiResponse> getResponseDataHandler(ApiResponse response, IPoli
 ```
 
 IMPORTANT: Do not return an `IApimanBuffer` with a different native type than you
-received. Use assign and append patterns instead.
+received. Instantiate new buffers using the `IBufferFactoryComponent` (refer to <<Provided Components>>)
+and prefer append patterns where possible.
 
 Implementors must explicitly hand each chunk onto apiman when they are finished
 interacting with it. A convenient way to achieve this is via `AbstractStream<H>`:
@@ -281,6 +282,103 @@ TIP: You should make sure that any apiman dependencies you use (for example the 
 core module that contains the IPlugin and other necessary interfaces) are marked
 as 'provided' in your maven project so that they are not included in the plugin
 archive.
+
+===== Logging
+A policy's logger can be accessed through the context objects provided to `apply`.
+Use `getLogger` with a class. The `IApimanLogger` interface provides the methods
+available for logging, with a variety of pluggable backends available to implement
+the functionality.
+
+====== Usage
+
+```java
+  @Override
+  public void apply(final ApiRequest request, final IPolicyContext context, final Object config,
+          final IPolicyChain<ApiRequest> chain) {
+      IApimanLogger logger = context.getLogger(getClass());
+      logger.info("Hello, I am an info message in the request"); //<1>
+      logger.debug("Hello, I am a debug message in the request");
+      logger.trace("I am powered by: %s", request.getHeaders().get("X-Powered-By"));
+      chain.doApply(request);
+  }
+
+  @Override
+  public void apply(ApiResponse response, IPolicyContext context, Object config,
+          IPolicyChain<ApiResponse> chain) {
+      IApimanLogger logger = context.getLogger(getClass());
+      logger.info("Response info message: %d", 42); //<2>
+      chain.doApply(response);
+  }
+```
+<1> Consult the interface's javadoc for the full list of available methods.
+<2> Format string with arguments.
+
+====== Configuration
+A few logging backends https://github.com/apiman/apiman/tree/master/common/logging[are provided],
+which should satisfy most user's requirements.
+
+In `apiman.properties`, provide a reference to the logger factory.
+
+```properties
+apiman-gateway.logger-factory=io.apiman.common.logging.slf4j.Slf4jLoggerFactory
+```
+
+Those shipped in the project, are:
+
+- SLF4J: `io.apiman.common.logging.slf4j.Slf4jLoggerFactory`
+- Log4j2: `io.apiman.common.logging.log4j2.Log4j2LoggerFactory`
+- NoOp/Null: `io.apiman.common.logging.impl.NoOpLoggerFactory`
+
+NOTE: Ensure that the implementation is available on the classpath.
+
+====== Custom Implementation
+
+To provide your own implementation, you must implement `IDelegateFactory` and which
+should create instances your implementations of `IApimanLogger`. Ensure that your
+implementations are available on the classpath, and refer to <<Configuration>> to
+set the `logger-factory` to your `IDelegateFactory`,which will cause the registry to
+load your factory.
+
+.Example IDelegateFactory implementation
+```java
+public class ExampleLoggerFactory implements IDelegateFactory {
+
+    public ExampleLoggerFactory() {}
+    public ExampleLoggerFactory(Map<String, String> opts) {} // <1>
+
+    @Override
+    public IApimanLogger createLogger(String name) {
+        return new ExampleLogger(MyLoggerFactory.getLogger(name)); // <2>
+    }
+
+    @Override
+    public IApimanLogger createLogger(Class<?> klazz) {
+      return new ExampleLogger(MyLoggerFactory.getLogger(klazz)); // <2>
+    }
+}
+```
+<1> If you pass config options from `apiman.properties` to your factory, they will appear here.
+<2> `MyLogger` is an example of the logger you're wrapping.
+
+.Example IApimanLogger implementation
+```java
+public class ExampleLogger implements IDelegateFactory {
+  MyLogger logger;
+
+  public TestLogger() {}
+  public TestLogger(MyLogger logger) {
+    this.config = config;
+  }
+
+  public void info(String message) {
+    logger.message(message); // <1>
+  }
+
+  // And many more... <2>
+}
+```
+<1> Passing the message through to your logger.
+<2> Debug, trace, etc. Consult the interface.
 
 ===== Provided Components
 All policy implementations have access to various resources at runtime.  These resources
@@ -686,7 +784,7 @@ back-end API implementation).
 === Using a Plugin Policy
 Once you have built and unit tested your plugin policy, you will most likely want to actually use the policy
 in apiman.  This can be done by adding the plugin to apiman via the Plugin Management UI in the API Manager
-user interface.  
+user interface.
 
 TIP: The Plugin Management UI is restricted to admin users of the API Manager.
 
@@ -720,7 +818,7 @@ with a minimum of additional steps.
 TIP: As of version 1.2.4.Final, you must explicitly enable this "auto plugin reloading" feature by setting
 the following *apiman.properties* property to "true":  `apiman-gateway.policy-factory.reloadSnapshots`
 
-TIP: Don't use this "auto plugin reloading" feature in production as the lack of policy caching will be a 
+TIP: Don't use this "auto plugin reloading" feature in production as the lack of policy caching will be a
 significant performance problem.
 
 ==== Uninstalling a Plugin
@@ -738,7 +836,7 @@ the API to pick up the newer version.  Of course, any *new* APIs will always use
 === Contributing a Core Component
 In addition to policies, the apiman plugin framework allows developers to provide custom implementations
 of core apiman components.  What does this mean?  Apiman is composed of a number of different core
-components, all working together to provide API Management functionality.  Both the API Gateway and 
+components, all working together to provide API Management functionality.  Both the API Gateway and
 the API Manager have core components that can be customized by providing new implementations via plugins.
 
 Some examples of API Manager components include (but are not limited to):
@@ -754,7 +852,7 @@ Additionally, some examples of API Gateway components include:
 * Rate Limiting Component
 * Metrics Emitter (records metrics data for each request)
 
-By default, the apiman quickstart uses default values for all of these, resulting in a stable, working 
+By default, the apiman quickstart uses default values for all of these, resulting in a stable, working
 system with the following characteristics:
 
 * Stores API Manager data in a JDBC database
@@ -767,9 +865,9 @@ Java interface for the correct component, bundle the implementation up into a pl
 apiman to use yours instead of the default.
 
 ==== Implementing a Custom Core Component
-The procedure for creating a plugin to hold your custom component is exactly the same as already 
+The procedure for creating a plugin to hold your custom component is exactly the same as already
 described in the *Creating a Plugin* section above.  Once you have created your plugin, including
-a custom implementation of a core component is simply a matter of creating a Java class that 
+a custom implementation of a core component is simply a matter of creating a Java class that
 implements the appropriate component interface.
 
 Let's try an example.
@@ -785,9 +883,9 @@ public interface IRegistry {
     public void getContract(ApiRequest request, IAsyncResultHandler<ApiContract> handler);
 
     public void publishApi(Api api, IAsyncResultHandler<Void> handler);
-    
+
     public void retireApi(Api api, IAsyncResultHandler<Void> handler);
-    
+
     public void registerClient(Client client, IAsyncResultHandler<Void> handler);
 
     public void unregisterClient(Client client, IAsyncResultHandler<Void> handler);
@@ -797,9 +895,9 @@ public interface IRegistry {
 }
 ```
 
-Perhaps you'd rather store the API Gateway configuration information into mongodb instead of 
+Perhaps you'd rather store the API Gateway configuration information into mongodb instead of
 Elasticsearch.  Since we don't support a mongodb registry, you would need to implement your own
-and contribute it via a plugin.  Simple create a new plugin and include in it the following 
+and contribute it via a plugin.  Simple create a new plugin and include in it the following
 Java class:
 
 ```java
@@ -818,11 +916,11 @@ public class MongoDbRegistry implements IRegistry {
     public void publishApi(Api api, IAsyncResultHandler<Void> handler) {
         // TODO implement mongodb specific logic here
     }
-    
+
     public void retireApi(Api api, IAsyncResultHandler<Void> handler) {
         // TODO implement mongodb specific logic here
     }
-    
+
     public void registerClient(Client client, IAsyncResultHandler<Void> handler) {
         // TODO implement mongodb specific logic here
     }
@@ -845,7 +943,7 @@ can be extremely helpful when, for example, configuring the mongodb connection i
 ==== Enabling Your Custom Component
 Now that you have a custom component built and included in a plugin, you will need to make sure
 that the plugin is available to your server.  You can do this by deploying the plugin artifact
-to a maven repository and then making that repository available to apiman by adding its URL to 
+to a maven repository and then making that repository available to apiman by adding its URL to
 the following property in *apiman.properties*:
 
 ```
@@ -930,7 +1028,7 @@ apiman-manager.storage-query.foo1=value-1
 apiman-manager.storage-query.foo2=value-2
 ```
 
-TIP: If your custom IStorage implementation *also* implements IStorageQuery, then it will be used instead of 
+TIP: If your custom IStorage implementation *also* implements IStorageQuery, then it will be used instead of
 trying to create a separate instance of IStorageQuery.
 
 ====== io.apiman.manager.api.core.IMetricsAccessor Example Configuration
@@ -1128,7 +1226,7 @@ version which retrieves API information from wherever you like.  Like most compo
 implementation is simply a Java class which implements a specific interface and is enabled/configured in the
 _apiman.properties_ file.
 
-The interface you must implement is *io.apiman.manager.api.core.IApiCatalog* and looked like this at the 
+The interface you must implement is *io.apiman.manager.api.core.IApiCatalog* and looked like this at the
 time of this writing:
 
 ```java
@@ -1185,7 +1283,7 @@ public class AvailableApiBean implements Serializable {
 
 ```
 
-Create an implementation of this interface and include it in a valid apiman plugin.  
+Create an implementation of this interface and include it in a valid apiman plugin.
 
 TIP: See the "Creating a Plugin" section of this guide for more information.
 
@@ -1211,7 +1309,7 @@ to first encrypt potentially sensitive information.  Examples are:
 * Endpoint Properties
 
 By default, the apiman quickstart comes with a default encrypter that performs very simple synchronous
-encryption on this data.  However, because it is built-in, it is not secure (it uses a hard-coded 
+encryption on this data.  However, because it is built-in, it is not secure (it uses a hard-coded
 encryption key, for example).  Depending on your security needs, you may wish to implement a custom
 data encrypter - one that is more secure and perhaps uses externally configured keys.
 
@@ -1240,7 +1338,7 @@ the above interface inside a valid apiman plugin.
 
 TIP: See the "Creating a Plugin" section of this guide for more information.
 
-Once the plugin is created with your class inside, configure the data encrypter in _apiman.properties_ like 
+Once the plugin is created with your class inside, configure the data encrypter in _apiman.properties_ like
 this (*note*: it only needs to be configured in a single place for both the Manager and Gateway):
 
 ```
@@ -1251,7 +1349,7 @@ apiman.encrypter.property2=value-2
 
 Remember, if your implementation class has a constructor that accepts a Map<String, String>, then apiman
 will pass the set of applicable configuration properties it finds in apiman.properties when the class is
-instantiated.  In the example above, your DataEncrypterImpl class will be instantiated, with a Map 
+instantiated.  In the example above, your DataEncrypterImpl class will be instantiated, with a Map
 passed to its constructor containing the following:
 
 * property1=value-1
@@ -1307,7 +1405,7 @@ apiman-gateway.writers.policy-error.property2=value-2
 
 Remember, if your implementation class has a constructor that accepts a Map<String, String>, then apiman
 will pass the set of applicable configuration properties it finds in apiman.properties when the class is
-instantiated.  In the example above, your DataEncrypterImpl class will be instantiated, with a Map 
+instantiated.  In the example above, your DataEncrypterImpl class will be instantiated, with a Map
 passed to its constructor containing the following:
 
 * property1=value-1
@@ -1331,7 +1429,7 @@ This can be done by providing your own custom implementation of *io.apiman.manag
  * whenever a new user logs into the API Manager UI for the first time.
  */
 public interface INewUserBootstrapper {
-    
+
     /**
      * Called to bootstrap a user.
      */
@@ -1349,7 +1447,7 @@ the above interface inside a valid apiman plugin.
 
 TIP: See the "Creating a Plugin" section of this guide for more information.
 
-Once the plugin is created with your class inside, configure the user bootstrapper in in _apiman.properties_ 
+Once the plugin is created with your class inside, configure the user bootstrapper in in _apiman.properties_
 like this:
 
 ```
@@ -1360,9 +1458,8 @@ apiman-manager.user-bootstrapper.property2=value-2
 
 Remember, if your implementation class has a constructor that accepts a Map<String, String>, then apiman
 will pass the set of applicable configuration properties it finds in apiman.properties when the class is
-instantiated.  In the example above, your DataEncrypterImpl class will be instantiated, with a Map 
+instantiated.  In the example above, your DataEncrypterImpl class will be instantiated, with a Map
 passed to its constructor containing the following:
 
 * property1=value-1
 * property2=value-2
-

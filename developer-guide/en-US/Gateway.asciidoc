@@ -382,4 +382,4 @@ Implementors may notice that the only overlap between the `IApiConnection` and `
 Implementation exemplars:
 
 * link:++https://github.com/apiman/apiman/blob/master/gateway/platforms/servlet/src/main/java/io/apiman/gateway/platforms/servlet/connectors/HttpApiConnection.java++[Servlet HTTP Connector] is a more traditional synchronous implementations.
-* link:++ https://github.com/apiman/apiman/blob/master/gateway/platforms/vertx3/vertx3/src/main/java/io/apiman/gateway/platforms/vertx3/connector/HttpConnector.java++[Vert.x 3 HTTP Connector] is an asynchronous HTTP implementation.
+* link:++https://github.com/apiman/apiman/blob/master/gateway/platforms/vertx3/vertx3/src/main/java/io/apiman/gateway/platforms/vertx3/connector/HttpConnector.java++[Vert.x 3 HTTP Connector] is an asynchronous HTTP implementation.
