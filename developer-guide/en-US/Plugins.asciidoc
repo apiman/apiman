@@ -296,7 +296,7 @@ the functionality.
   public void apply(final ApiRequest request, final IPolicyContext context, final Object config,
           final IPolicyChain<ApiRequest> chain) {
       IApimanLogger logger = context.getLogger(getClass());
-      logger.info("Hello, I am an info message in the request"); //<1>
+      logger.info("Hello, I am an info message in the request"); // 1
       logger.debug("Hello, I am a debug message in the request");
       logger.trace("I am powered by: %s", request.getHeaders().get("X-Powered-By"));
       chain.doApply(request);
@@ -306,7 +306,7 @@ the functionality.
   public void apply(ApiResponse response, IPolicyContext context, Object config,
           IPolicyChain<ApiResponse> chain) {
       IApimanLogger logger = context.getLogger(getClass());
-      logger.info("Response info message: %d", 42); //<2>
+      logger.info("Response info message: %d", 42); // 2
       chain.doApply(response);
   }
 ```
@@ -346,16 +346,16 @@ Example IDelegateFactory implementation
 public class ExampleLoggerFactory implements IDelegateFactory {
 
     public ExampleLoggerFactory() {}
-    public ExampleLoggerFactory(Map<String, String> opts) {} // <1>
+    public ExampleLoggerFactory(Map<String, String> opts) {} // 1
 
     @Override
     public IApimanLogger createLogger(String name) {
-        return new ExampleLogger(MyLoggerFactory.getLogger(name)); // <2>
+        return new ExampleLogger(MyLoggerFactory.getLogger(name)); // 2
     }
 
     @Override
     public IApimanLogger createLogger(Class<?> klazz) {
-      return new ExampleLogger(MyLoggerFactory.getLogger(klazz)); // <3>
+      return new ExampleLogger(MyLoggerFactory.getLogger(klazz)); // 3
     }
 }
 ----
@@ -376,10 +376,10 @@ public class ExampleLogger implements IDelegateFactory {
   }
 
   public void info(String message) {
-    logger.message(message); // <1>
+    logger.message(message); // 1
   }
 
-  // And many more... <2>
+  // And many more... 2
 }
 ----
 <1> Passing the message through to your logger.
