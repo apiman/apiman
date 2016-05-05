@@ -108,6 +108,8 @@ public class ApiVersionBean implements Serializable, Cloneable {
     private ApiDefinitionType definitionType;
     @OneToOne(mappedBy="apiVersion", orphanRemoval=true, cascade={CascadeType.REMOVE}, fetch=FetchType.LAZY)
     private ApiDefinitionBean apiDefinition;
+    @Column(name = "parse_payload", updatable=true, nullable=true)
+    private boolean parsePayload;
 
     /**
      * Constructor.
@@ -372,6 +374,20 @@ public class ApiVersionBean implements Serializable, Cloneable {
      */
     public void setEndpointProperties(Map<String, String> endpointProperties) {
         this.endpointProperties = endpointProperties;
+    }
+
+    /**
+     * @return the parsePayload
+     */
+    public boolean isParsePayload() {
+        return parsePayload;
+    }
+
+    /**
+     * @param parsePayload the parsePayload to set
+     */
+    public void setParsePayload(boolean parsePayload) {
+        this.parsePayload = parsePayload;
     }
 
     /**

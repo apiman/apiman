@@ -57,11 +57,13 @@ public class SimpleSoapPayloadPolicy implements IPolicy {
             final IPolicyChain<ApiRequest> chain) {
         try {
             SOAPEnvelope soapPayload = context.getAttribute(PolicyContextKeys.REQUEST_PAYLOAD, (SOAPEnvelope) null);
-            SOAPHeader header = soapPayload.getHeader();
-            SOAPHeaderElement header1 = (SOAPHeaderElement) header.examineAllHeaderElements().next();
-            String prop1 = header1.getTextContent();
-            request.getHeaders().put("X-Property-1", prop1);
-            header.addHeaderElement(new QName("urn:ns5", "Property5")).setTextContent("value-5");
+            if (soapPayload != null) {
+                SOAPHeader header = soapPayload.getHeader();
+                SOAPHeaderElement header1 = (SOAPHeaderElement) header.examineAllHeaderElements().next();
+                String prop1 = header1.getTextContent();
+                request.getHeaders().put("X-Property-1", prop1);
+                header.addHeaderElement(new QName("urn:ns5", "Property5")).setTextContent("value-5");
+            }
             chain.doApply(request);
         } catch (Exception e) {
             chain.throwError(e);

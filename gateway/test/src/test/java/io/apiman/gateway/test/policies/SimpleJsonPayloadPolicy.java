@@ -53,9 +53,11 @@ public class SimpleJsonPayloadPolicy implements IPolicy {
     public void apply(final ApiRequest request, final IPolicyContext context, final Object config,
             final IPolicyChain<ApiRequest> chain) {
         Map jsonPayload = context.getAttribute(PolicyContextKeys.REQUEST_PAYLOAD, (Map) null);
-        String prop1 = (String) jsonPayload.get("property-1");
-        request.getHeaders().put("X-Property-1", prop1);
-        jsonPayload.put("property-5", "value-5");
+        if (jsonPayload != null) {
+            String prop1 = (String) jsonPayload.get("property-1");
+            request.getHeaders().put("X-Property-1", prop1);
+            jsonPayload.put("property-5", "value-5");
+        }
         chain.doApply(request);
     }
 

@@ -277,6 +277,7 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
                     final Object payload = result.getResult();
                     // Store the parsed object in the policy context.
                     context.setAttribute(PolicyContextKeys.REQUEST_PAYLOAD, payload);
+                    context.setAttribute(PolicyContextKeys.REQUEST_PAYLOAD_IO, payloadIO);
                     
                     // Now replace the inbound stream handler with one that uses the payload IO
                     // object to re-marshall the (possibly modified) payload object to bytes
@@ -285,10 +286,15 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
                         @Override
                         public void handle(ISignalWriteStream connectorStream) {
                             try {
-                                byte[] data = payloadIO.marshall(payload);
-                                IApimanBuffer buffer = bufferFactory.createBuffer(data);
-                                connectorStream.write(buffer);
-                                connectorStream.end();
+                                if (payload == null) {
+                                    connectorStream.end();
+                                } else {
+                                    payloadIO = context.getAttribute(PolicyContextKeys.REQUEST_PAYLOAD_IO, payloadIO);
+                                    byte[] data = payloadIO.marshall(payload);
+                                    IApimanBuffer buffer = bufferFactory.createBuffer(data);
+                                    connectorStream.write(buffer);
+                                    connectorStream.end();
+                                }
                             } catch (Exception e) {
                                 connectorStream.abort();
                                 throw new RuntimeException(e);
@@ -447,26 +453,29 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
                 // When end() is called, the stream of bytes is done and we can parse them into
                 // an appropriate payload object.
                 done = true;
-                payloadIO = null;
-                if ("soap".equalsIgnoreCase(api.getEndpointType())) { //$NON-NLS-1$
-                    payloadIO = new SoapPayloadIO();
-                } else if ("rest".equalsIgnoreCase(api.getEndpointType())) { //$NON-NLS-1$
-                    if ("xml".equalsIgnoreCase(api.getEndpointContentType())) { //$NON-NLS-1$
-                        payloadIO = new XmlPayloadIO();
-                    } else if ("json".equalsIgnoreCase(api.getEndpointContentType())) { //$NON-NLS-1$
-                        payloadIO = new JsonPayloadIO();
+                if (buffer.length() == 0) {
+                    payloadResultHandler.handle(AsyncResultImpl.create(null));
+                } else {
+                    payloadIO = null;
+                    if ("soap".equalsIgnoreCase(api.getEndpointType())) { //$NON-NLS-1$
+                        payloadIO = new SoapPayloadIO();
+                    } else if ("rest".equalsIgnoreCase(api.getEndpointType())) { //$NON-NLS-1$
+                        if ("xml".equalsIgnoreCase(api.getEndpointContentType())) { //$NON-NLS-1$
+                            payloadIO = new XmlPayloadIO();
+                        } else if ("json".equalsIgnoreCase(api.getEndpointContentType())) { //$NON-NLS-1$
+                            payloadIO = new JsonPayloadIO();
+                        }
+                    }
+                    if (payloadIO == null) {
+                        payloadIO = new BytesPayloadIO();
+                    }
+                    try {
+                        Object payload = payloadIO.unmarshall(buffer.getBytes());
+                        payloadResultHandler.handle(AsyncResultImpl.create(payload));
+                    } catch (Exception e) {
+                        payloadResultHandler.handle(AsyncResultImpl.create(new Exception("Failed to parse inbound request payload.", e))); //$NON-NLS-1$
                     }
                 }
-                if (payloadIO == null) {
-                    payloadIO = new BytesPayloadIO();
-                }
-                try {
-                    Object payload = payloadIO.unmarshall(buffer.getBytes());
-                    payloadResultHandler.handle(AsyncResultImpl.create(payload));
-                } catch (Exception e) {
-                    payloadResultHandler.handle(AsyncResultImpl.create(new Exception("Failed to parse inbound request payload.", e))); //$NON-NLS-1$
-                }
-                
             }
         });
     }

@@ -13,6 +13,7 @@
     <test name="echo-soap">test-plan-data/simple/simple-payload-policy/payloadp/003-soap.resttest</test>
     <test name="echo-json-invalid-format">test-plan-data/simple/simple-payload-policy/payloadp/004-json-invalid-format.resttest</test>
     <test name="echo-xml-too-large">test-plan-data/simple/simple-payload-policy/payloadp/005-xml-too-large.resttest</test>
+    <test name="echo-json-get">test-plan-data/simple/simple-payload-policy/payloadp/006-json-get.resttest</test>
   </testGroup>
 
 </testPlan>

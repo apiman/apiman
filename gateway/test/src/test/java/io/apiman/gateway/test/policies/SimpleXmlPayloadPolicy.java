@@ -54,11 +54,13 @@ public class SimpleXmlPayloadPolicy implements IPolicy {
     public void apply(final ApiRequest request, final IPolicyContext context, final Object config,
             final IPolicyChain<ApiRequest> chain) {
         Document xmlPayload = context.getAttribute(PolicyContextKeys.REQUEST_PAYLOAD, (Document) null);
-        String prop1 = xmlPayload.getElementsByTagName("property-1").item(0).getTextContent();
-        request.getHeaders().put("X-Property-1", prop1);
-        Element prop5Elem = xmlPayload.createElement("property-5");
-        prop5Elem.setTextContent("value-5");
-        xmlPayload.getDocumentElement().appendChild(prop5Elem);
+        if (xmlPayload != null) {
+            String prop1 = xmlPayload.getElementsByTagName("property-1").item(0).getTextContent();
+            request.getHeaders().put("X-Property-1", prop1);
+            Element prop5Elem = xmlPayload.createElement("property-5");
+            prop5Elem.setTextContent("value-5");
+            xmlPayload.getDocumentElement().appendChild(prop5Elem);
+        }
         chain.doApply(request);
     }
 

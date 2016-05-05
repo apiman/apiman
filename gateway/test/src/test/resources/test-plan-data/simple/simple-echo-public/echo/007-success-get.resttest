@@ -1,0 +1,11 @@
+GET /SimpleEchoPublicTest/echo/2.0/path/to/app/resource admin/admin
+----
+200
+Content-Type: application/json
+
+{
+  "method" : "GET",
+  "resource" : "/path/to/app/resource",
+  "uri" : "/path/to/app/resource",
+  "bodyLength" : null
+}
