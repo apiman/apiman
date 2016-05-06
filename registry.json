@@ -2,7 +2,7 @@
   "id" : "apiman-plugin-registry",
   "name" : "Official apiman Plugins",
   "description" : "This plugin registry lists all of the official apiman plugins.  No third party plugins are included in this registry.",
-  "version" : "1.2.6.Beta1",
+  "version" : "1.2.6-SNAPSHOT",
   "repository" : {
     "name" : "JBoss Public Maven Repository",
     "url" : "http://repository.jboss.org/nexus/content/groups/public/"
