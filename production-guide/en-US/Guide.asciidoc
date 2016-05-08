@@ -42,9 +42,9 @@ The image above should give you an idea of how they all fit together.
 
 == Database
 You have a number of persistence options in both Keycloak and apiman, but this guide will focus on using an
-RDBMS instead of other options (e.g. Elasticsearch for apiman or mongodb for KC).
+RDBMS instead of other options (e.g. Elasticsearch for apiman or MongoDB for KC).
 
-On a separate server, install a production ready database such as mysql, oracle, or postresql.  You will
+On a separate server, install a production ready database such as MySQL, Oracle, or PostgreSQL.  You will
 want to create two schemas/databases:
 
 * keycloak
@@ -55,7 +55,7 @@ We recommend using two different users and permissioning them appropriately (e.g
 and a "sa_keycloak" account).
 
 After creating the ‘apiman' database, you can initialize it using the appropriate DDL for the database you
-selected.  We currently support mysql 5, oracle 12, and postgresql 9.  The DDLs for these databases can be found in
+selected.  We currently support MySQL 5, Oracle 12, and PostgreSQL 9.  The DDLs for these databases can be found in
 the quickstart overlay ZIP file, or you can grab them directly from github.  For example:
 
 https://github.com/apiman/apiman/tree/master/distro/data/src/main/resources/ddls
@@ -79,7 +79,7 @@ procedures
 
 
 == Keycloak
-In production, it is typically useful to deploy Keycloak server as a standalone solution.  For more
+In production, it is typically preferred to deploy Keycloak server as a standalone solution.  For more
 specific information about how to configure a standalone Keycloak server, see the Keycloak documentation:
 
 http://keycloak.github.io/docs/userguide/html/server-installation.html
@@ -88,17 +88,17 @@ Once Keycloak is installed as a standalone server, you must configure the ‘api
 be used for authentication into each of the apiman components (API Manager REST services, API Manager UI,
 API Gateway REST services, etc).
 
-TIP: You can configure additional Keycloak Realms for use when using the apiman "Keycloak OAuth2 Policy".
+TIP: You can configure additional Keycloak Realms for use with the apiman "Keycloak OAuth2 Policy".
 
 Fortunately, apiman comes with a realm file you can import.  Simply log into your Keycloak server and then
 create the apiman realm using this file:
 
 https://github.com/apiman/apiman/blob/master/distro/data/src/main/resources/data/apiman-realm.json
 
-WARNING: The realm file contains some credentials/secrets that you will want to modify or regenerate.  The defaults are obviously *not* secure.
+WARNING: The realm file contains some credentials/secrets that you will want to modify or regenerate. The defaults are obviously *not* secure.
 
 Once you have created the apiman realm, you must use the Keycloak UI to add your API Manager UI as a valid
-redirect URL for the ‘apimanui' client.  To do this, log into the Keycloak admin console and choose the
+redirect URL for the 'apimanui' client.  To do this, log into the Keycloak admin console and choose the
 *apiman* realm.  Next click "clients" in the left navigation, and choose *apimanui* in the resulting list.
 From there you can add public URL if your API Manager UI to the list of "*_Valid Redirect URIs_*".  It might
 be something like:
@@ -108,6 +108,7 @@ be something like:
 That will allow users of the API Manager UI to actually log in and be properly redirected back to the
 application!
 
+NOTE: If you're behind load-balancers, you may need to ensure https://keycloak.github.io/docs/userguide/keycloak-server/html/server-installation.html#proxy-address-forwarding[X-Forwarded-For] is set properly.
 
 == API Gateway
 
