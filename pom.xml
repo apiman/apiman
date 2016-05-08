@@ -4,7 +4,7 @@
 
   <groupId>io.apiman.plugins</groupId>
   <artifactId>apiman-plugin-registry</artifactId>
-  <version>1.2.0-SNAPSHOT</version>
+  <version>1.2.6-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>apiman-plugin-registry</name>
 
