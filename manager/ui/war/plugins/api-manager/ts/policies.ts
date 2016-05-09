@@ -683,6 +683,8 @@ module Apiman {
       _module.controller('Apiman.TimeRestrictedAccessFormController',
         ['$window','$scope', 'Logger', 'EntityStatusSvc',
         ($window, $scope, Logger, EntityStatusSvc) => {
+            var moment=$window.moment;
+            var isoTimeFormat="HH:mm:ss";
             var validate = function(config) {
               	var valid = config.rules && config.rules.length > 0;
                 $scope.setValid(valid);
@@ -698,9 +700,11 @@ module Apiman {
                 if (!$scope.config.rules) {
                     $scope.config.rules = [];
                 }
+                var timeStart = moment($scope.timeStart).utc().format(isoTimeFormat);
+                var timeEnd = moment($scope.timeEnd).utc().format(isoTimeFormat);
                 var rule = {
-                    'timeStart' : $window.moment($scope.timeStart).utc().toDate(),
-                    'timeEnd' :   $window.moment($scope.timeEnd).utc().toDate(),
+                    'timeStart' : timeStart,
+                    'timeEnd' : timeEnd,
                     'dayStart' : $scope.getDayIndex($scope.dayStart),
                     'dayEnd' : $scope.getDayIndex($scope.dayEnd),
                     'pathPattern' : $scope.pathPattern
@@ -729,7 +733,7 @@ module Apiman {
             };
             $scope.resetModel();
             $scope.formatToTime = function(time){
-                return new $window.moment(time).format("HH:mm");
+                return moment.utc(time,isoTimeFormat).local().format("HH:mm");
             };
             $scope.getDayIndex = function(day){
                return $scope.weekdays.indexOf(day)+1;

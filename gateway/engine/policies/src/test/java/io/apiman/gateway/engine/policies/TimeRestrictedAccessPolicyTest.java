@@ -38,10 +38,12 @@ import io.apiman.gateway.engine.policies.config.TimeRestrictedAccess;
 import io.apiman.gateway.engine.policies.config.TimeRestrictedAccessConfig;
 import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
+import io.apiman.test.policies.TestingPolicy;
 
 /**
  * TimeRestrictedAccess rule tests
  */
+@TestingPolicy(BasicAuthenticationPolicy.class)
 @SuppressWarnings({ "nls" })
 public class TimeRestrictedAccessPolicyTest extends PolicyTestBase {
 
@@ -82,7 +84,12 @@ public class TimeRestrictedAccessPolicyTest extends PolicyTestBase {
         parsedConfig = policy.parseConfiguration(config);
         assertNotNull(parsedConfig.getRules());
         expectedConfiguration = configObj.getRules();
-        assertEquals(expectedConfiguration, parsedConfig.getRules());
+        List<TimeRestrictedAccess> rules = parsedConfig.getRules();
+        TimeRestrictedAccess expected = expectedConfiguration.get(0);
+        TimeRestrictedAccess actual = rules.get(0);
+        assertEquals(expected.getDayEnd(), actual.getDayEnd());
+        assertEquals(expected.getDayStart(), actual.getDayStart());
+        assertEquals(expected.getPathPattern(), actual.getPathPattern());
     }
 
     @Test
@@ -106,8 +113,8 @@ public class TimeRestrictedAccessPolicyTest extends PolicyTestBase {
         int dayOfWeek = new DateTime().getDayOfWeek();
         rule.setDayEnd(7);
         rule.setDayStart(dayOfWeek);
-        rule.setTimeEnd(new DateTime().plusHours(1).toDate());
-        rule.setTimeStart(new Date());
+        rule.setTimeEnd(new DateTime().plusHours(2).toDate());
+        rule.setTimeStart(new DateTime().minusHours(2).toDate());
         rule.setPathPattern("PathNotListed");
         configObj.setRules(elements);
         Object config = updateConfig(policy, configObj);
