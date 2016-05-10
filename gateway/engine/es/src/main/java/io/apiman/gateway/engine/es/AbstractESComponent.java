@@ -70,14 +70,14 @@ public abstract class AbstractESComponent {
             factoryClass = SimpleJestClientFactory.class.getName();
         } else if ("local".equals(factoryClass)) { //$NON-NLS-1$
             factoryClass = LocalClientFactory.class.getName();
-        } else {
+        } else if (factoryClass == null) {
             throw new RuntimeException("Invalid elasticsearch client type: " + factoryClass); //$NON-NLS-1$
         }
         
         try {
             return (IESClientFactory) Class.forName(factoryClass).newInstance();
         } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error creating elasticsearch client type: " + factoryClass, e); //$NON-NLS-1$
         }
     }
 
