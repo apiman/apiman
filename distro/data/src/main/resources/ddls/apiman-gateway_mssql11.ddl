@@ -1,5 +1,5 @@
 
-USE [apiman];
+USE [apiman_gateway];
 GO
 
 CREATE TABLE [gw_apis] ([org_id] VARCHAR(255) NOT NULL, [id] VARCHAR(255) NOT NULL, [version] VARCHAR(255) NOT NULL, [bean] TEXT NOT NULL);
