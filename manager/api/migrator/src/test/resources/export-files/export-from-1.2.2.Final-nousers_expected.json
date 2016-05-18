@@ -1,0 +1,1559 @@
+{
+  "Metadata" : {
+    "exportedOn" : "2016-03-17T14:53:01Z",
+    "apimanVersion" : "1.2.3.Final"
+  },
+  "Gateways" : [ {
+    "id" : "TheGateway",
+    "name" : "The Gateway",
+    "description" : "This is the gateway.",
+    "createdBy" : "admin",
+    "createdOn" : "2016-02-29T13:43:24Z",
+    "modifiedBy" : "admin",
+    "modifiedOn" : "2016-02-29T13:43:24Z",
+    "type" : "REST",
+    "configuration" : "{\"endpoint\":\"https://localhost:8443/apiman-gateway-api\",\"username\":\"apimanager\",\"password\":\"$CRYPT::nexST5ZhchjjNnLBpQBqrA==\"}"
+  } ],
+  "Plugins" : [ {
+    "id" : 78,
+    "groupId" : "io.apiman.plugins",
+    "artifactId" : "apiman-plugins-log-policy",
+    "version" : "1.2.2.Final",
+    "name" : "Log Policy Plugin",
+    "description" : "This plugin has policies for logging to std out.",
+    "createdBy" : "admin",
+    "createdOn" : "2016-03-17T10:49:39Z",
+    "deleted" : false
+  }, {
+    "id" : 79,
+    "groupId" : "io.apiman.plugins",
+    "artifactId" : "apiman-plugins-jsonp-policy",
+    "version" : "1.2.2.Final",
+    "name" : "JSONP Policy Plugin",
+    "description" : "A plugin that contributes a policy that turns a standard RESTful endpoint into a JSONP compatible endpoint.",
+    "createdBy" : "admin",
+    "createdOn" : "2016-03-17T10:49:49Z",
+    "deleted" : false
+  } ],
+  "Roles" : [ {
+    "id" : "OrganizationOwner",
+    "name" : "Organization Owner",
+    "description" : "Automatically granted to the user who creates an Organization.  Grants all privileges.",
+    "createdBy" : "admin",
+    "createdOn" : "2016-02-29T13:43:23Z",
+    "autoGrant" : true,
+    "permissions" : [ "orgView", "apiAdmin", "apiView", "planEdit", "planView", "apiEdit", "clientAdmin", "orgEdit", "clientView", "planAdmin", "orgAdmin", "clientEdit" ]
+  }, {
+    "id" : "ClientAppDeveloper",
+    "name" : "Client App Developer",
+    "description" : "Users responsible for creating and managing client apps should be granted this role within an Organization.",
+    "createdBy" : "admin",
+    "createdOn" : "2016-02-29T13:43:24Z",
+    "permissions" : [ "clientAdmin", "clientView", "clientEdit" ]
+  }, {
+    "id" : "APIDeveloper",
+    "name" : "API Developer",
+    "description" : "Users responsible for creating and managing APIs should be granted this role within an Organization.",
+    "createdBy" : "admin",
+    "createdOn" : "2016-02-29T13:43:24Z",
+    "permissions" : [ "apiAdmin", "apiView", "planEdit", "planView", "apiEdit", "planAdmin" ]
+  }, {
+    "id" : "PlanMaster",
+    "name" : "Plan Master",
+    "description" : "The master of all plans!",
+    "createdBy" : "admin",
+    "createdOn" : "2016-03-17T10:49:20Z",
+    "permissions" : [ "planEdit", "planView", "planAdmin" ]
+  } ],
+  "PolicyDefinitions" : [ {
+    "id" : "IPWhitelistPolicy",
+    "policyImpl" : "class:io.apiman.gateway.engine.policies.IPWhitelistPolicy",
+    "name" : "IP Whitelist Policy",
+    "description" : "Only requests that originate from a specified set of valid IP addresses will be allowed through.",
+    "icon" : "filter",
+    "templates" : [ {
+      "template" : "Only requests that originate from the set of ${ipList.size()} configured IP address(es) will be allowed to invoke the managed API."
+    } ],
+    "formType" : "Default",
+    "deleted" : false
+  }, {
+    "id" : "IPBlacklistPolicy",
+    "policyImpl" : "class:io.apiman.gateway.engine.policies.IPBlacklistPolicy",
+    "name" : "IP Blacklist Policy",
+    "description" : "Requests that originate from a specified set of valid IP addresses will be denied access.",
+    "icon" : "thumbs-down",
+    "templates" : [ {
+      "template" : "Requests that originate from the set of ${ipList.size()} configured IP address(es) will be denied access to the managed API."
+    } ],
+    "formType" : "Default",
+    "deleted" : false
+  }, {
+    "id" : "BASICAuthenticationPolicy",
+    "policyImpl" : "class:io.apiman.gateway.engine.policies.BasicAuthenticationPolicy",
+    "name" : "BASIC Authentication Policy",
+    "description" : "Enables HTTP BASIC Authentication on an API.  Some configuration required.",
+    "icon" : "lock",
+    "templates" : [ {
+      "template" : "Access to the API is protected by BASIC Authentication through the '${realm}' authentication realm.  @if{forwardIdentityHttpHeader != null}Successfully authenticated requests will forward the authenticated identity to the back end API via the '${forwardIdentityHttpHeader}' custom HTTP header.@end{}"
+    } ],
+    "formType" : "Default",
+    "deleted" : false
+  }, {
+    "id" : "RateLimitingPolicy",
+    "policyImpl" : "class:io.apiman.gateway.engine.policies.RateLimitingPolicy",
+    "name" : "Rate Limiting Policy",
+    "description" : "Enforces rate configurable request rate limits on an API.  This ensures that consumers can't overload an API with too many requests.",
+    "icon" : "sliders",
+    "templates" : [ {
+      "template" : "Consumers are limited to ${limit} requests per ${granularity} per ${period}."
+    } ],
+    "formType" : "Default",
+    "deleted" : false
+  }, {
+    "id" : "IgnoredResourcesPolicy",
+    "policyImpl" : "class:io.apiman.gateway.engine.policies.IgnoredResourcesPolicy",
+    "name" : "Ignored Resources Policy",
+    "description" : "Requests satisfying the provided regular expression will be ignored.",
+    "icon" : "eye-slash",
+    "templates" : [ {
+      "template" : "Requests matching any of the ${rules.size()} regular expressions provided will receive a 404 error code."
+    } ],
+    "formType" : "Default",
+    "deleted" : false
+  }, {
+    "id" : "AuthorizationPolicy",
+    "policyImpl" : "class:io.apiman.gateway.engine.policies.AuthorizationPolicy",
+    "name" : "Authorization Policy",
+    "description" : "Enables fine grained authorization to API resources based on authenticated user roles.",
+    "icon" : "users",
+    "templates" : [ {
+      "template" : "Appropriate authorization roles are required.  There are ${rules.size()} authorization rules defined."
+    } ],
+    "formType" : "Default",
+    "deleted" : false
+  }, {
+    "id" : "QuotaPolicy",
+    "policyImpl" : "class:io.apiman.gateway.engine.policies.QuotaPolicy",
+    "name" : "Quota Policy",
+    "description" : "Provides a way to limit the total number of requests that can be sent to an API.",
+    "icon" : "exchange",
+    "templates" : [ {
+      "template" : "Consumers cannot exceed their quota of ${limit} requests per ${granularity} per ${period}."
+    } ],
+    "formType" : "Default",
+    "deleted" : false
+  }, {
+    "id" : "CachingPolicy",
+    "policyImpl" : "class:io.apiman.gateway.engine.policies.CachingPolicy",
+    "name" : "Caching Policy",
+    "description" : "Allows caching of API responses in the Gateway to reduce overall traffic to the back-end API.",
+    "icon" : "hdd-o",
+    "templates" : [ {
+      "template" : "API responses will be cached for ${ttl} seconds."
+    } ],
+    "formType" : "Default",
+    "deleted" : false
+  }, {
+    "id" : "TransferQuotaPolicy",
+    "policyImpl" : "class:io.apiman.gateway.engine.policies.TransferQuotaPolicy",
+    "name" : "Transfer Quota Policy",
+    "description" : "Provides a way to limit the total number of bytes that can be transferred from (or to) an API.",
+    "icon" : "download",
+    "templates" : [ {
+      "template" : "Consumers are limited to transferring ${limit} bytes per ${granularity} per ${period}."
+    } ],
+    "formType" : "Default",
+    "deleted" : false
+  }, {
+    "id" : "URLRewritingPolicy",
+    "policyImpl" : "class:io.apiman.gateway.engine.policies.URLRewritingPolicy",
+    "name" : "URL Rewriting Policy",
+    "description" : "Responses from the back-end API will be modified by fixing up any incorrect URLs found with modified ones.  This is useful because apiman works through an API Gateway.",
+    "icon" : "pencil-square",
+    "templates" : [ {
+      "template" : "Responses will be modified by finding all text matching regular expression '${fromRegex}' with '${toReplacement}'."
+    } ],
+    "formType" : "Default",
+    "deleted" : false
+  }, {
+    "id" : "TimeRestrictedAccessPolicy",
+    "policyImpl" : "class:io.apiman.gateway.engine.policies.TimeRestrictedAccessPolicy",
+    "name" : "Time Restricted Access Policy",
+    "description" : "Requests matching the specified regular expression and made within the specified time period will be ignored.",
+    "icon" : "clock-o",
+    "templates" : [ {
+      "template" : "Requests matching the regular expression and made outside the specified time period will receive a 423 error code."
+    } ],
+    "formType" : "Default",
+    "deleted" : false
+  }, {
+    "id" : "log-headers-policy",
+    "policyImpl" : "plugin:io.apiman.plugins:apiman-plugins-log-policy:1.2.2.Final:war/io.apiman.plugins.log_policy.LogHeadersPolicy",
+    "name" : "Log Headers Policy",
+    "description" : "A policy that logs the headers to std out.  Useful to analyse inbound HTTP traffic to the gateway when added as the first policy in the chain or to analyse outbound HTTP traffic from the gateway when added as the last policy in the chain.",
+    "icon" : "fire",
+    "templates" : [ ],
+    "pluginId" : 78,
+    "formType" : "JsonSchema",
+    "form" : "schemas/log-policyDef.schema",
+    "deleted" : false
+  }, {
+    "id" : "jsonp-policy",
+    "policyImpl" : "plugin:io.apiman.plugins:apiman-plugins-jsonp-policy:1.2.2.Final:war/io.apiman.plugins.jsonp_policy.JsonpPolicy",
+    "name" : "JSONP Policy",
+    "description" : "Turns an endpoint into a JSONP compatible endpoint.",
+    "icon" : "bars",
+    "templates" : [ ],
+    "pluginId" : 79,
+    "formType" : "JsonSchema",
+    "form" : "schemas/jsonp-policyDef.schema",
+    "deleted" : false
+  } ],
+  "Orgs" : [ {
+    "OrganizationBean" : {
+      "id" : "Test",
+      "name" : "Test",
+      "description" : "A test organization used by the full apiman smoke test suite.",
+      "createdBy" : "admin",
+      "createdOn" : "2016-03-17T09:47:51Z",
+      "modifiedBy" : "admin",
+      "modifiedOn" : "2016-03-17T09:47:51Z"
+    },
+    "Memberships" : [ {
+      "id" : 2,
+      "userId" : "admin",
+      "roleId" : "OrganizationOwner",
+      "organizationId" : "Test",
+      "createdOn" : "2016-03-17T09:47:51Z"
+    } ],
+    "Plans" : [ {
+      "PlanBean" : {
+        "id" : "Gold",
+        "name" : "Gold",
+        "description" : "The Gold plan allows users the highest level of API.",
+        "createdBy" : "admin",
+        "createdOn" : "2016-03-17T09:47:52Z"
+      },
+      "Versions" : [ {
+        "PlanVersionBean" : {
+          "id" : 5,
+          "status" : "Locked",
+          "version" : "1.0",
+          "createdBy" : "admin",
+          "createdOn" : "2016-03-17T09:47:52Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2016-03-17T09:47:52Z",
+          "lockedOn" : "2016-03-17T09:47:52Z"
+        },
+        "Policies" : [ {
+          "id" : 9,
+          "type" : "Plan",
+          "organizationId" : "Test",
+          "entityId" : "Gold",
+          "entityVersion" : "1.0",
+          "name" : "Rate Limiting Policy",
+          "configuration" : "{ \"limit\" : 100, \"granularity\" : \"Client\", \"period\" : \"Minute\" }",
+          "createdBy" : "admin",
+          "createdOn" : "2016-03-17T09:47:52Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2016-03-17T09:47:52Z",
+          "definition" : {
+            "id" : "RateLimitingPolicy",
+            "templates" : [ ],
+            "deleted" : false
+          },
+          "orderIndex" : 1
+        } ]
+      } ]
+    }, {
+      "PlanBean" : {
+        "id" : "Silver",
+        "name" : "Silver",
+        "description" : "The Silver plan allows users a lower level of API.",
+        "createdBy" : "admin",
+        "createdOn" : "2016-03-17T09:47:52Z"
+      },
+      "Versions" : [ {
+        "PlanVersionBean" : {
+          "id" : 7,
+          "status" : "Locked",
+          "version" : "1.0",
+          "createdBy" : "admin",
+          "createdOn" : "2016-03-17T09:47:52Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2016-03-17T09:47:52Z",
+          "lockedOn" : "2016-03-17T09:47:52Z"
+        },
+        "Policies" : [ {
+          "id" : 11,
+          "type" : "Plan",
+          "organizationId" : "Test",
+          "entityId" : "Silver",
+          "entityVersion" : "1.0",
+          "name" : "Rate Limiting Policy",
+          "configuration" : "{ \"limit\" : 5, \"granularity\" : \"Client\", \"period\" : \"Minute\" }",
+          "createdBy" : "admin",
+          "createdOn" : "2016-03-17T09:47:52Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2016-03-17T09:47:52Z",
+          "definition" : {
+            "id" : "RateLimitingPolicy",
+            "templates" : [ ],
+            "deleted" : false
+          },
+          "orderIndex" : 1
+        } ]
+      } ]
+    } ],
+    "Apis" : [ {
+      "ApiBean" : {
+        "id" : "echo",
+        "name" : "echo",
+        "description" : "A simple echo REST API.",
+        "createdBy" : "admin",
+        "createdOn" : "2016-03-17T09:47:52Z",
+        "numPublished" : 1
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 16,
+          "status" : "Published",
+          "endpoint" : "http://localhost:8080/services/echo/echo",
+          "endpointType" : "rest",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "plans" : [ {
+            "planId" : "Gold",
+            "version" : "1.0"
+          }, {
+            "planId" : "Silver",
+            "version" : "1.0"
+          } ],
+          "version" : "1.0",
+          "createdBy" : "admin",
+          "createdOn" : "2016-03-17T09:47:52Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2016-03-17T09:47:52Z",
+          "publishedOn" : "2016-03-17T09:47:53Z"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "public-echo",
+        "name" : "public-echo",
+        "description" : "A public echo REST API.",
+        "createdBy" : "admin",
+        "createdOn" : "2016-03-17T09:47:53Z",
+        "numPublished" : 1
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 21,
+          "status" : "Published",
+          "endpoint" : "http://localhost:8080/services/echo/public-echo",
+          "endpointType" : "rest",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : true,
+          "plans" : [ ],
+          "version" : "1.0",
+          "createdBy" : "admin",
+          "createdOn" : "2016-03-17T09:47:53Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2016-03-17T09:47:53Z",
+          "publishedOn" : "2016-03-17T09:47:53Z"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "public-echo-two",
+        "name" : "public-echo-two",
+        "description" : "A second public echo API.  Tests some plugin policies.",
+        "createdBy" : "admin",
+        "createdOn" : "2016-03-17T10:50:35Z",
+        "numPublished" : 1
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 81,
+          "status" : "Published",
+          "endpoint" : "http://localhost:8080/services/echo",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : true,
+          "plans" : [ ],
+          "version" : "1.0",
+          "createdBy" : "admin",
+          "createdOn" : "2016-03-17T10:50:35Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2016-03-17T10:51:01Z",
+          "publishedOn" : "2016-03-17T10:51:29Z"
+        },
+        "Policies" : [ {
+          "id" : 85,
+          "type" : "Api",
+          "organizationId" : "Test",
+          "entityId" : "public-echo-two",
+          "entityVersion" : "1.0",
+          "name" : "Log Headers Policy",
+          "configuration" : "{\"direction\":\"both\"}",
+          "createdBy" : "admin",
+          "createdOn" : "2016-03-17T10:51:01Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2016-03-17T10:51:01Z",
+          "definition" : {
+            "id" : "log-headers-policy",
+            "templates" : [ ],
+            "deleted" : false
+          },
+          "orderIndex" : 1
+        } ]
+      } ]
+    } ],
+    "Clients" : [ {
+      "ClientBean" : {
+        "id" : "client1",
+        "name" : "client1",
+        "description" : "A simple test client.",
+        "createdBy" : "admin",
+        "createdOn" : "2016-03-17T09:47:53Z"
+      },
+      "Versions" : [ {
+        "ClientVersionBean" : {
+          "id" : 26,
+          "status" : "Registered",
+          "version" : "1.0",
+          "createdBy" : "admin",
+          "createdOn" : "2016-03-17T09:47:53Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2016-03-17T09:54:34Z",
+          "publishedOn" : "2016-03-17T09:54:40Z",
+          "apikey" : "*"
+        },
+        "Policies" : [ ],
+        "Contracts" : [ {
+          "id" : 28,
+          "api" : {
+            "api" : {
+              "organization" : {
+                "id" : "Test"
+              },
+              "id" : "echo"
+            },
+            "endpointProperties" : { },
+            "publicAPI" : false,
+            "version" : "1.0"
+          },
+          "plan" : {
+            "plan" : {
+              "organization" : {
+                "id" : "Test"
+              },
+              "id" : "Gold"
+            },
+            "version" : "1.0"
+          },
+          "createdBy" : "admin",
+          "createdOn" : "2016-03-17T09:54:34Z"
+        } ]
+      }, {
+        "ClientVersionBean" : {
+          "id" : 95,
+          "status" : "Ready",
+          "version" : "1.1",
+          "createdBy" : "admin",
+          "createdOn" : "2016-03-17T13:28:05Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2016-03-17T13:28:22Z",
+          "apikey" : "*"
+        },
+        "Policies" : [ ],
+        "Contracts" : [ {
+          "id" : 100,
+          "api" : {
+            "api" : {
+              "organization" : {
+                "id" : "Foo"
+              },
+              "id" : "foo-echo"
+            },
+            "endpointProperties" : { },
+            "publicAPI" : false,
+            "version" : "1.0"
+          },
+          "plan" : {
+            "plan" : {
+              "organization" : {
+                "id" : "Foo"
+              },
+              "id" : "Great"
+            },
+            "version" : "1.0"
+          },
+          "createdBy" : "admin",
+          "createdOn" : "2016-03-17T13:28:22Z"
+        }, {
+          "id" : 97,
+          "api" : {
+            "api" : {
+              "organization" : {
+                "id" : "Test"
+              },
+              "id" : "echo"
+            },
+            "endpointProperties" : { },
+            "publicAPI" : false,
+            "version" : "1.0"
+          },
+          "plan" : {
+            "plan" : {
+              "organization" : {
+                "id" : "Test"
+              },
+              "id" : "Gold"
+            },
+            "version" : "1.0"
+          },
+          "createdBy" : "admin",
+          "createdOn" : "2016-03-17T13:28:05Z"
+        } ]
+      } ]
+    } ],
+    "Audits" : [ {
+      "id" : 1,
+      "who" : "admin",
+      "organizationId" : "Test",
+      "entityType" : "Organization",
+      "createdOn" : "2016-03-17T09:47:51Z",
+      "what" : "Create"
+    }, {
+      "id" : 3,
+      "who" : "admin",
+      "organizationId" : "Test",
+      "entityType" : "Plan",
+      "entityId" : "Gold",
+      "createdOn" : "2016-03-17T09:47:52Z",
+      "what" : "Create"
+    }, {
+      "id" : 4,
+      "who" : "admin",
+      "organizationId" : "Test",
+      "entityType" : "Plan",
+      "entityId" : "Silver",
+      "createdOn" : "2016-03-17T09:47:52Z",
+      "what" : "Create"
+    }, {
+      "id" : 6,
+      "who" : "admin",
+      "organizationId" : "Test",
+      "entityType" : "Plan",
+      "entityId" : "Gold",
+      "entityVersion" : "1.0",
+      "createdOn" : "2016-03-17T09:47:52Z",
+      "what" : "Create"
+    }, {
+      "id" : 8,
+      "who" : "admin",
+      "organizationId" : "Test",
+      "entityType" : "Plan",
+      "entityId" : "Silver",
+      "entityVersion" : "1.0",
+      "createdOn" : "2016-03-17T09:47:52Z",
+      "what" : "Create"
+    }, {
+      "id" : 10,
+      "who" : "admin",
+      "organizationId" : "Test",
+      "entityType" : "Plan",
+      "entityId" : "Gold",
+      "entityVersion" : "1.0",
+      "createdOn" : "2016-03-17T09:47:52Z",
+      "what" : "AddPolicy",
+      "data" : "{\"policyDefId\":\"RateLimitingPolicy\"}"
+    }, {
+      "id" : 12,
+      "who" : "admin",
+      "organizationId" : "Test",
+      "entityType" : "Plan",
+      "entityId" : "Silver",
+      "entityVersion" : "1.0",
+      "createdOn" : "2016-03-17T09:47:52Z",
+      "what" : "AddPolicy",
+      "data" : "{\"policyDefId\":\"RateLimitingPolicy\"}"
+    }, {
+      "id" : 13,
+      "who" : "admin",
+      "organizationId" : "Test",
+      "entityType" : "Plan",
+      "entityId" : "Gold",
+      "entityVersion" : "1.0",
+      "createdOn" : "2016-03-17T09:47:52Z",
+      "what" : "Lock"
+    }, {
+      "id" : 14,
+      "who" : "admin",
+      "organizationId" : "Test",
+      "entityType" : "Plan",
+      "entityId" : "Silver",
+      "entityVersion" : "1.0",
+      "createdOn" : "2016-03-17T09:47:52Z",
+      "what" : "Lock"
+    }, {
+      "id" : 15,
+      "who" : "admin",
+      "organizationId" : "Test",
+      "entityType" : "Api",
+      "entityId" : "echo",
+      "createdOn" : "2016-03-17T09:47:52Z",
+      "what" : "Create"
+    }, {
+      "id" : 17,
+      "who" : "admin",
+      "organizationId" : "Test",
+      "entityType" : "Api",
+      "entityId" : "echo",
+      "entityVersion" : "1.0",
+      "createdOn" : "2016-03-17T09:47:52Z",
+      "what" : "Create"
+    }, {
+      "id" : 18,
+      "who" : "admin",
+      "organizationId" : "Test",
+      "entityType" : "Api",
+      "entityId" : "echo",
+      "entityVersion" : "1.0",
+      "createdOn" : "2016-03-17T09:47:52Z",
+      "what" : "Update",
+      "data" : "{\"changes\":[{\"name\":\"plans\",\"before\":\"\",\"after\":\"Gold:1.0, Silver:1.0\"},{\"name\":\"endpoint\",\"before\":null,\"after\":\"http://localhost:8080/services/echo/echo\"},{\"name\":\"endpointType\",\"before\":null,\"after\":\"rest\"}]}"
+    }, {
+      "id" : 19,
+      "who" : "admin",
+      "organizationId" : "Test",
+      "entityType" : "Api",
+      "entityId" : "echo",
+      "entityVersion" : "1.0",
+      "createdOn" : "2016-03-17T09:47:53Z",
+      "what" : "Publish"
+    }, {
+      "id" : 20,
+      "who" : "admin",
+      "organizationId" : "Test",
+      "entityType" : "Api",
+      "entityId" : "public-echo",
+      "createdOn" : "2016-03-17T09:47:53Z",
+      "what" : "Create"
+    }, {
+      "id" : 22,
+      "who" : "admin",
+      "organizationId" : "Test",
+      "entityType" : "Api",
+      "entityId" : "public-echo",
+      "entityVersion" : "1.0",
+      "createdOn" : "2016-03-17T09:47:53Z",
+      "what" : "Create"
+    }, {
+      "id" : 23,
+      "who" : "admin",
+      "organizationId" : "Test",
+      "entityType" : "Api",
+      "entityId" : "public-echo",
+      "entityVersion" : "1.0",
+      "createdOn" : "2016-03-17T09:47:53Z",
+      "what" : "Update",
+      "data" : "{\"changes\":[{\"name\":\"endpoint\",\"before\":null,\"after\":\"http://localhost:8080/services/echo/public-echo\"},{\"name\":\"endpointType\",\"before\":null,\"after\":\"rest\"},{\"name\":\"publicAPI\",\"before\":\"false\",\"after\":\"true\"}]}"
+    }, {
+      "id" : 24,
+      "who" : "admin",
+      "organizationId" : "Test",
+      "entityType" : "Api",
+      "entityId" : "public-echo",
+      "entityVersion" : "1.0",
+      "createdOn" : "2016-03-17T09:47:53Z",
+      "what" : "Publish"
+    }, {
+      "id" : 25,
+      "who" : "admin",
+      "organizationId" : "Test",
+      "entityType" : "Client",
+      "entityId" : "client1",
+      "createdOn" : "2016-03-17T09:47:53Z",
+      "what" : "Create"
+    }, {
+      "id" : 27,
+      "who" : "admin",
+      "organizationId" : "Test",
+      "entityType" : "Client",
+      "entityId" : "client1",
+      "entityVersion" : "1.0",
+      "createdOn" : "2016-03-17T09:47:53Z",
+      "what" : "Create"
+    }, {
+      "id" : 29,
+      "who" : "admin",
+      "organizationId" : "Test",
+      "entityType" : "Client",
+      "entityId" : "client1",
+      "entityVersion" : "1.0",
+      "createdOn" : "2016-03-17T09:54:34Z",
+      "what" : "CreateContract",
+      "data" : "{\"clientOrgId\":\"Test\",\"clientId\":\"client1\",\"clientVersion\":\"1.0\",\"apiOrgId\":\"Test\",\"apiId\":\"echo\",\"apiVersion\":\"1.0\",\"planId\":\"Gold\",\"planVersion\":\"1.0\"}"
+    }, {
+      "id" : 30,
+      "who" : "admin",
+      "organizationId" : "Test",
+      "entityType" : "Api",
+      "entityId" : "echo",
+      "entityVersion" : "1.0",
+      "createdOn" : "2016-03-17T09:54:34Z",
+      "what" : "CreateContract",
+      "data" : "{\"clientOrgId\":\"Test\",\"clientId\":\"client1\",\"clientVersion\":\"1.0\",\"apiOrgId\":\"Test\",\"apiId\":\"echo\",\"apiVersion\":\"1.0\",\"planId\":\"Gold\",\"planVersion\":\"1.0\"}"
+    }, {
+      "id" : 31,
+      "who" : "admin",
+      "organizationId" : "Test",
+      "entityType" : "Client",
+      "entityId" : "client1",
+      "entityVersion" : "1.0",
+      "createdOn" : "2016-03-17T09:54:40Z",
+      "what" : "Register"
+    }, {
+      "id" : 80,
+      "who" : "admin",
+      "organizationId" : "Test",
+      "entityType" : "Api",
+      "entityId" : "public-echo-two",
+      "createdOn" : "2016-03-17T10:50:35Z",
+      "what" : "Create"
+    }, {
+      "id" : 82,
+      "who" : "admin",
+      "organizationId" : "Test",
+      "entityType" : "Api",
+      "entityId" : "public-echo-two",
+      "entityVersion" : "1.0",
+      "createdOn" : "2016-03-17T10:50:35Z",
+      "what" : "Create"
+    }, {
+      "id" : 83,
+      "who" : "admin",
+      "organizationId" : "Test",
+      "entityType" : "Api",
+      "entityId" : "public-echo-two",
+      "entityVersion" : "1.0",
+      "createdOn" : "2016-03-17T10:50:40Z",
+      "what" : "Update",
+      "data" : "{\"changes\":[{\"name\":\"endpoint\",\"before\":null,\"after\":\"http://localhost:8080/services/echo\"},{\"name\":\"endpointType\",\"before\":null,\"after\":\"rest\"},{\"name\":\"endpointContentType\",\"before\":null,\"after\":\"json\"}]}"
+    }, {
+      "id" : 84,
+      "who" : "admin",
+      "organizationId" : "Test",
+      "entityType" : "Api",
+      "entityId" : "public-echo-two",
+      "entityVersion" : "1.0",
+      "createdOn" : "2016-03-17T10:50:44Z",
+      "what" : "Update",
+      "data" : "{\"changes\":[{\"name\":\"publicAPI\",\"before\":\"false\",\"after\":\"true\"}]}"
+    }, {
+      "id" : 86,
+      "who" : "admin",
+      "organizationId" : "Test",
+      "entityType" : "Api",
+      "entityId" : "public-echo-two",
+      "entityVersion" : "1.0",
+      "createdOn" : "2016-03-17T10:51:01Z",
+      "what" : "AddPolicy",
+      "data" : "{\"policyDefId\":\"log-headers-policy\"}"
+    }, {
+      "id" : 87,
+      "who" : "admin",
+      "organizationId" : "Test",
+      "entityType" : "Api",
+      "entityId" : "public-echo-two",
+      "entityVersion" : "1.0",
+      "createdOn" : "2016-03-17T10:51:29Z",
+      "what" : "Publish"
+    }, {
+      "id" : 93,
+      "who" : "admin",
+      "organizationId" : "Test",
+      "entityType" : "Api",
+      "entityId" : "echo",
+      "entityVersion" : "1.0",
+      "createdOn" : "2016-03-17T13:26:51Z",
+      "what" : "CreateContract",
+      "data" : "{\"clientOrgId\":\"Foo\",\"clientId\":\"foo-app\",\"clientVersion\":\"1.0\",\"apiOrgId\":\"Test\",\"apiId\":\"echo\",\"apiVersion\":\"1.0\",\"planId\":\"Silver\",\"planVersion\":\"1.0\"}"
+    }, {
+      "id" : 96,
+      "who" : "admin",
+      "organizationId" : "Test",
+      "entityType" : "Client",
+      "entityId" : "client1",
+      "entityVersion" : "1.1",
+      "createdOn" : "2016-03-17T13:28:05Z",
+      "what" : "Create"
+    }, {
+      "id" : 98,
+      "who" : "admin",
+      "organizationId" : "Test",
+      "entityType" : "Client",
+      "entityId" : "client1",
+      "entityVersion" : "1.1",
+      "createdOn" : "2016-03-17T13:28:05Z",
+      "what" : "CreateContract",
+      "data" : "{\"clientOrgId\":\"Test\",\"clientId\":\"client1\",\"clientVersion\":\"1.1\",\"apiOrgId\":\"Test\",\"apiId\":\"echo\",\"apiVersion\":\"1.0\",\"planId\":\"Gold\",\"planVersion\":\"1.0\"}"
+    }, {
+      "id" : 99,
+      "who" : "admin",
+      "organizationId" : "Test",
+      "entityType" : "Api",
+      "entityId" : "echo",
+      "entityVersion" : "1.0",
+      "createdOn" : "2016-03-17T13:28:05Z",
+      "what" : "CreateContract",
+      "data" : "{\"clientOrgId\":\"Test\",\"clientId\":\"client1\",\"clientVersion\":\"1.1\",\"apiOrgId\":\"Test\",\"apiId\":\"echo\",\"apiVersion\":\"1.0\",\"planId\":\"Gold\",\"planVersion\":\"1.0\"}"
+    }, {
+      "id" : 101,
+      "who" : "admin",
+      "organizationId" : "Test",
+      "entityType" : "Client",
+      "entityId" : "client1",
+      "entityVersion" : "1.1",
+      "createdOn" : "2016-03-17T13:28:22Z",
+      "what" : "CreateContract",
+      "data" : "{\"clientOrgId\":\"Test\",\"clientId\":\"client1\",\"clientVersion\":\"1.1\",\"apiOrgId\":\"Foo\",\"apiId\":\"foo-echo\",\"apiVersion\":\"1.0\",\"planId\":\"Great\",\"planVersion\":\"1.0\"}"
+    } ]
+  }, {
+    "OrganizationBean" : {
+      "id" : "Foo",
+      "name" : "Foo",
+      "description" : "An amazing organization so that we have two for testing.",
+      "createdBy" : "admin",
+      "createdOn" : "2016-03-17T09:54:54Z",
+      "modifiedBy" : "admin",
+      "modifiedOn" : "2016-03-17T09:54:54Z"
+    },
+    "Memberships" : [ {
+      "id" : 33,
+      "userId" : "admin",
+      "roleId" : "OrganizationOwner",
+      "organizationId" : "Foo",
+      "createdOn" : "2016-03-17T09:54:54Z"
+    } ],
+    "Plans" : [ {
+      "PlanBean" : {
+        "id" : "Good",
+        "name" : "Good",
+        "description" : "A pretty good plan.",
+        "createdBy" : "admin",
+        "createdOn" : "2016-03-17T09:55:06Z"
+      },
+      "Versions" : [ {
+        "PlanVersionBean" : {
+          "id" : 35,
+          "status" : "Locked",
+          "version" : "1.0",
+          "createdBy" : "admin",
+          "createdOn" : "2016-03-17T09:55:06Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2016-03-17T09:55:14Z",
+          "lockedOn" : "2016-03-17T09:55:15Z"
+        },
+        "Policies" : [ {
+          "id" : 37,
+          "type" : "Plan",
+          "organizationId" : "Foo",
+          "entityId" : "Good",
+          "entityVersion" : "1.0",
+          "name" : "Caching Policy",
+          "configuration" : "{\"ttl\":10}",
+          "createdBy" : "admin",
+          "createdOn" : "2016-03-17T09:55:14Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2016-03-17T09:55:14Z",
+          "definition" : {
+            "id" : "CachingPolicy",
+            "templates" : [ ],
+            "deleted" : false
+          },
+          "orderIndex" : 1
+        } ]
+      } ]
+    }, {
+      "PlanBean" : {
+        "id" : "Great",
+        "name" : "Great",
+        "description" : "A really great plan.",
+        "createdBy" : "admin",
+        "createdOn" : "2016-03-17T09:55:20Z"
+      },
+      "Versions" : [ {
+        "PlanVersionBean" : {
+          "id" : 41,
+          "status" : "Locked",
+          "version" : "1.0",
+          "createdBy" : "admin",
+          "createdOn" : "2016-03-17T09:55:20Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2016-03-17T09:56:15Z",
+          "lockedOn" : "2016-03-17T09:56:26Z"
+        },
+        "Policies" : [ {
+          "id" : 43,
+          "type" : "Plan",
+          "organizationId" : "Foo",
+          "entityId" : "Great",
+          "entityVersion" : "1.0",
+          "name" : "Time Restricted Access Policy",
+          "configuration" : "{\"rules\":[{\"timeStart\":\"2016-03-17T13:00:00.000Z\",\"timeEnd\":\"2016-03-17T21:00:00.000Z\",\"dayStart\":4,\"dayEnd\":5,\"pathPattern\":\".*\"}]}",
+          "createdBy" : "admin",
+          "createdOn" : "2016-03-17T09:56:15Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2016-03-17T09:56:15Z",
+          "definition" : {
+            "id" : "TimeRestrictedAccessPolicy",
+            "templates" : [ ],
+            "deleted" : false
+          },
+          "orderIndex" : 1
+        } ]
+      } ]
+    } ],
+    "Apis" : [ {
+      "ApiBean" : {
+        "id" : "foo-echo",
+        "name" : "foo-echo",
+        "description" : "An echo service inside the Foo organization.",
+        "createdBy" : "admin",
+        "createdOn" : "2016-03-17T09:56:33Z",
+        "numPublished" : 1
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 47,
+          "status" : "Published",
+          "endpoint" : "http://localhost:8080/services/echo",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : {
+            "authorization.type" : "basic",
+            "basic-auth.requireSSL" : "false",
+            "basic-auth.username" : "username",
+            "basic-auth.password" : "password"
+          },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "plans" : [ {
+            "planId" : "Great",
+            "version" : "1.0"
+          }, {
+            "planId" : "Good",
+            "version" : "1.0"
+          } ],
+          "version" : "1.0",
+          "createdBy" : "admin",
+          "createdOn" : "2016-03-17T09:56:33Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2016-03-17T09:59:25Z",
+          "publishedOn" : "2016-03-17T10:03:01Z",
+          "definitionType" : "SwaggerJSON"
+        },
+        "Policies" : [ {
+          "id" : 52,
+          "type" : "Api",
+          "organizationId" : "Foo",
+          "entityId" : "foo-echo",
+          "entityVersion" : "1.0",
+          "name" : "BASIC Authentication Policy",
+          "configuration" : "{\"realm\":\"Foo Echo\",\"forwardIdentityHttpHeader\":\"X-Identity\",\"requireBasicAuth\":true,\"staticIdentity\":{\"identities\":[{\"username\":\"user\",\"password\":\"user\"},{\"username\":\"user1\",\"password\":\"user1\"},{\"username\":\"user2\",\"password\":\"user2\"}]}}",
+          "createdBy" : "admin",
+          "createdOn" : "2016-03-17T09:58:46Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2016-03-17T09:58:46Z",
+          "definition" : {
+            "id" : "BASICAuthenticationPolicy",
+            "templates" : [ ],
+            "deleted" : false
+          },
+          "orderIndex" : 1
+        }, {
+          "id" : 54,
+          "type" : "Api",
+          "organizationId" : "Foo",
+          "entityId" : "foo-echo",
+          "entityVersion" : "1.0",
+          "name" : "Ignored Resources Policy",
+          "configuration" : "{\"rules\":[{\"verb\":\"*\",\"pathPattern\":\"/admin/.*\"}]}",
+          "createdBy" : "admin",
+          "createdOn" : "2016-03-17T09:59:25Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2016-03-17T09:59:25Z",
+          "definition" : {
+            "id" : "IgnoredResourcesPolicy",
+            "templates" : [ ],
+            "deleted" : false
+          },
+          "orderIndex" : 2
+        } ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "FacebookAPI",
+        "name" : "Facebook API",
+        "description" : "The Facebook API is a platform for building applications that are available to the members of the social network of Facebook.",
+        "createdBy" : "admin",
+        "createdOn" : "2016-03-17T10:05:54Z",
+        "numPublished" : 1
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 65,
+          "status" : "Published",
+          "endpoint" : "http://api.facebook.com/restserver.php",
+          "endpointType" : "rest",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "plans" : [ {
+            "planId" : "Great",
+            "version" : "1.0"
+          }, {
+            "planId" : "Good",
+            "version" : "1.0"
+          } ],
+          "version" : "1.0",
+          "createdBy" : "admin",
+          "createdOn" : "2016-03-17T10:05:54Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2016-03-17T10:05:54Z",
+          "publishedOn" : "2016-03-17T10:06:11Z",
+          "definitionType" : "External"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "FlickrAPI",
+        "name" : "Flickr API",
+        "description" : "The Flickr API can be used to retrieve photos from the Flickr photo sharing service using a variety of feeds.",
+        "createdBy" : "admin",
+        "createdOn" : "2016-03-17T10:05:55Z",
+        "numPublished" : 1
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 68,
+          "status" : "Published",
+          "endpoint" : "http://api.flickr.com/services/rest/",
+          "endpointType" : "rest",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "plans" : [ {
+            "planId" : "Great",
+            "version" : "1.0"
+          }, {
+            "planId" : "Good",
+            "version" : "1.0"
+          } ],
+          "version" : "1.0",
+          "createdBy" : "admin",
+          "createdOn" : "2016-03-17T10:05:55Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2016-03-17T10:05:55Z",
+          "publishedOn" : "2016-03-17T10:06:15Z",
+          "definitionType" : "External"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "TwitterAPI",
+        "name" : "Twitter API",
+        "description" : "The Twitter micro-blogging service includes two RESTful APIs.",
+        "createdBy" : "admin",
+        "createdOn" : "2016-03-17T10:06:56Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 73,
+          "status" : "Ready",
+          "endpoint" : "http://twitter.com/statuses/",
+          "endpointType" : "rest",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : true,
+          "plans" : [ ],
+          "version" : "1.0",
+          "createdBy" : "admin",
+          "createdOn" : "2016-03-17T10:06:56Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2016-03-17T10:06:56Z",
+          "definitionType" : "External"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "YouTubeAPI",
+        "name" : "YouTube API",
+        "description" : "The Data API allows users to integrate their program with YouTube and allow it to perform many of the operations available on the website.",
+        "createdBy" : "admin",
+        "createdOn" : "2016-03-17T10:06:57Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 76,
+          "status" : "Ready",
+          "endpoint" : "http://gdata.youtube.com/feeds/",
+          "endpointType" : "rest",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : true,
+          "plans" : [ ],
+          "version" : "1.0",
+          "createdBy" : "admin",
+          "createdOn" : "2016-03-17T10:06:57Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2016-03-17T10:06:57Z",
+          "definitionType" : "External"
+        },
+        "Policies" : [ ]
+      } ]
+    } ],
+    "Clients" : [ {
+      "ClientBean" : {
+        "id" : "foo-app",
+        "name" : "foo-app",
+        "description" : "The foo app!  It probably uses the foo-echo API.",
+        "createdBy" : "admin",
+        "createdOn" : "2016-03-17T10:05:26Z"
+      },
+      "Versions" : [ {
+        "ClientVersionBean" : {
+          "id" : 62,
+          "status" : "Registered",
+          "version" : "1.0",
+          "createdBy" : "admin",
+          "createdOn" : "2016-03-17T10:05:26Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2016-03-17T13:26:51Z",
+          "publishedOn" : "2016-03-17T13:26:57Z",
+          "apikey" : "*"
+        },
+        "Policies" : [ ],
+        "Contracts" : [ {
+          "id" : 88,
+          "api" : {
+            "api" : {
+              "organization" : {
+                "id" : "Foo"
+              },
+              "id" : "foo-echo"
+            },
+            "endpointProperties" : { },
+            "publicAPI" : false,
+            "version" : "1.0"
+          },
+          "plan" : {
+            "plan" : {
+              "organization" : {
+                "id" : "Foo"
+              },
+              "id" : "Good"
+            },
+            "version" : "1.0"
+          },
+          "createdBy" : "admin",
+          "createdOn" : "2016-03-17T13:26:43Z"
+        }, {
+          "id" : 91,
+          "api" : {
+            "api" : {
+              "organization" : {
+                "id" : "Test"
+              },
+              "id" : "echo"
+            },
+            "endpointProperties" : { },
+            "publicAPI" : false,
+            "version" : "1.0"
+          },
+          "plan" : {
+            "plan" : {
+              "organization" : {
+                "id" : "Test"
+              },
+              "id" : "Silver"
+            },
+            "version" : "1.0"
+          },
+          "createdBy" : "admin",
+          "createdOn" : "2016-03-17T13:26:51Z"
+        } ]
+      } ]
+    } ],
+    "Audits" : [ {
+      "id" : 32,
+      "who" : "admin",
+      "organizationId" : "Foo",
+      "entityType" : "Organization",
+      "createdOn" : "2016-03-17T09:54:54Z",
+      "what" : "Create"
+    }, {
+      "id" : 34,
+      "who" : "admin",
+      "organizationId" : "Foo",
+      "entityType" : "Plan",
+      "entityId" : "Good",
+      "createdOn" : "2016-03-17T09:55:06Z",
+      "what" : "Create"
+    }, {
+      "id" : 36,
+      "who" : "admin",
+      "organizationId" : "Foo",
+      "entityType" : "Plan",
+      "entityId" : "Good",
+      "entityVersion" : "1.0",
+      "createdOn" : "2016-03-17T09:55:06Z",
+      "what" : "Create"
+    }, {
+      "id" : 38,
+      "who" : "admin",
+      "organizationId" : "Foo",
+      "entityType" : "Plan",
+      "entityId" : "Good",
+      "entityVersion" : "1.0",
+      "createdOn" : "2016-03-17T09:55:14Z",
+      "what" : "AddPolicy",
+      "data" : "{\"policyDefId\":\"CachingPolicy\"}"
+    }, {
+      "id" : 39,
+      "who" : "admin",
+      "organizationId" : "Foo",
+      "entityType" : "Plan",
+      "entityId" : "Good",
+      "entityVersion" : "1.0",
+      "createdOn" : "2016-03-17T09:55:15Z",
+      "what" : "Lock"
+    }, {
+      "id" : 40,
+      "who" : "admin",
+      "organizationId" : "Foo",
+      "entityType" : "Plan",
+      "entityId" : "Great",
+      "createdOn" : "2016-03-17T09:55:20Z",
+      "what" : "Create"
+    }, {
+      "id" : 42,
+      "who" : "admin",
+      "organizationId" : "Foo",
+      "entityType" : "Plan",
+      "entityId" : "Great",
+      "entityVersion" : "1.0",
+      "createdOn" : "2016-03-17T09:55:20Z",
+      "what" : "Create"
+    }, {
+      "id" : 44,
+      "who" : "admin",
+      "organizationId" : "Foo",
+      "entityType" : "Plan",
+      "entityId" : "Great",
+      "entityVersion" : "1.0",
+      "createdOn" : "2016-03-17T09:56:15Z",
+      "what" : "AddPolicy",
+      "data" : "{\"policyDefId\":\"TimeRestrictedAccessPolicy\"}"
+    }, {
+      "id" : 45,
+      "who" : "admin",
+      "organizationId" : "Foo",
+      "entityType" : "Plan",
+      "entityId" : "Great",
+      "entityVersion" : "1.0",
+      "createdOn" : "2016-03-17T09:56:26Z",
+      "what" : "Lock"
+    }, {
+      "id" : 46,
+      "who" : "admin",
+      "organizationId" : "Foo",
+      "entityType" : "Api",
+      "entityId" : "foo-echo",
+      "createdOn" : "2016-03-17T09:56:33Z",
+      "what" : "Create"
+    }, {
+      "id" : 48,
+      "who" : "admin",
+      "organizationId" : "Foo",
+      "entityType" : "Api",
+      "entityId" : "foo-echo",
+      "entityVersion" : "1.0",
+      "createdOn" : "2016-03-17T09:56:33Z",
+      "what" : "Create"
+    }, {
+      "id" : 49,
+      "who" : "admin",
+      "organizationId" : "Foo",
+      "entityType" : "Api",
+      "entityId" : "foo-echo",
+      "entityVersion" : "1.0",
+      "createdOn" : "2016-03-17T09:57:29Z",
+      "what" : "Update",
+      "data" : "{\"changes\":[{\"name\":\"endpoint\",\"before\":null,\"after\":\"http://localhost:8080/services/echo\"},{\"name\":\"endpointType\",\"before\":null,\"after\":\"rest\"},{\"name\":\"endpointContentType\",\"before\":null,\"after\":\"json\"}]}"
+    }, {
+      "id" : 50,
+      "who" : "admin",
+      "organizationId" : "Foo",
+      "entityType" : "Api",
+      "entityId" : "foo-echo",
+      "entityVersion" : "1.0",
+      "createdOn" : "2016-03-17T09:58:06Z",
+      "what" : "UpdateDefinition"
+    }, {
+      "id" : 51,
+      "who" : "admin",
+      "organizationId" : "Foo",
+      "entityType" : "Api",
+      "entityId" : "foo-echo",
+      "entityVersion" : "1.0",
+      "createdOn" : "2016-03-17T09:58:16Z",
+      "what" : "Update",
+      "data" : "{\"changes\":[{\"name\":\"plans\",\"before\":\"\",\"after\":\"Good:1.0, Great:1.0\"}]}"
+    }, {
+      "id" : 53,
+      "who" : "admin",
+      "organizationId" : "Foo",
+      "entityType" : "Api",
+      "entityId" : "foo-echo",
+      "entityVersion" : "1.0",
+      "createdOn" : "2016-03-17T09:58:46Z",
+      "what" : "AddPolicy",
+      "data" : "{\"policyDefId\":\"BASICAuthenticationPolicy\"}"
+    }, {
+      "id" : 55,
+      "who" : "admin",
+      "organizationId" : "Foo",
+      "entityType" : "Api",
+      "entityId" : "foo-echo",
+      "entityVersion" : "1.0",
+      "createdOn" : "2016-03-17T09:59:25Z",
+      "what" : "AddPolicy",
+      "data" : "{\"policyDefId\":\"IgnoredResourcesPolicy\"}"
+    }, {
+      "id" : 56,
+      "who" : "admin",
+      "organizationId" : "Foo",
+      "entityType" : "Api",
+      "entityId" : "foo-echo",
+      "entityVersion" : "1.0",
+      "createdOn" : "2016-03-17T10:03:01Z",
+      "what" : "Publish"
+    }, {
+      "id" : 57,
+      "who" : "admin",
+      "organizationId" : "Foo",
+      "entityType" : "Organization",
+      "createdOn" : "2016-03-17T10:04:33Z",
+      "what" : "Update",
+      "data" : "{\"changes\":[{\"name\":\"description\",\"before\":null,\"after\":\"An amazing organization so that we have two for testing.\"}]}"
+    }, {
+      "id" : 58,
+      "who" : "admin",
+      "organizationId" : "Foo",
+      "entityType" : "Plan",
+      "entityId" : "Good",
+      "createdOn" : "2016-03-17T10:04:42Z",
+      "what" : "Update",
+      "data" : "{\"changes\":[{\"name\":\"description\",\"before\":null,\"after\":\"A pretty good plan.\"}]}"
+    }, {
+      "id" : 59,
+      "who" : "admin",
+      "organizationId" : "Foo",
+      "entityType" : "Plan",
+      "entityId" : "Great",
+      "createdOn" : "2016-03-17T10:04:49Z",
+      "what" : "Update",
+      "data" : "{\"changes\":[{\"name\":\"description\",\"before\":null,\"after\":\"A really great plan.\"}]}"
+    }, {
+      "id" : 60,
+      "who" : "admin",
+      "organizationId" : "Foo",
+      "entityType" : "Api",
+      "entityId" : "foo-echo",
+      "createdOn" : "2016-03-17T10:05:00Z",
+      "what" : "Update",
+      "data" : "{\"changes\":[{\"name\":\"description\",\"before\":null,\"after\":\"An echo service inside the Foo organization.\"}]}"
+    }, {
+      "id" : 61,
+      "who" : "admin",
+      "organizationId" : "Foo",
+      "entityType" : "Client",
+      "entityId" : "foo-app",
+      "createdOn" : "2016-03-17T10:05:26Z",
+      "what" : "Create"
+    }, {
+      "id" : 63,
+      "who" : "admin",
+      "organizationId" : "Foo",
+      "entityType" : "Client",
+      "entityId" : "foo-app",
+      "entityVersion" : "1.0",
+      "createdOn" : "2016-03-17T10:05:26Z",
+      "what" : "Create"
+    }, {
+      "id" : 64,
+      "who" : "admin",
+      "organizationId" : "Foo",
+      "entityType" : "Api",
+      "entityId" : "FacebookAPI",
+      "createdOn" : "2016-03-17T10:05:54Z",
+      "what" : "Create"
+    }, {
+      "id" : 66,
+      "who" : "admin",
+      "organizationId" : "Foo",
+      "entityType" : "Api",
+      "entityId" : "FacebookAPI",
+      "entityVersion" : "1.0",
+      "createdOn" : "2016-03-17T10:05:54Z",
+      "what" : "Create"
+    }, {
+      "id" : 67,
+      "who" : "admin",
+      "organizationId" : "Foo",
+      "entityType" : "Api",
+      "entityId" : "FlickrAPI",
+      "createdOn" : "2016-03-17T10:05:55Z",
+      "what" : "Create"
+    }, {
+      "id" : 69,
+      "who" : "admin",
+      "organizationId" : "Foo",
+      "entityType" : "Api",
+      "entityId" : "FlickrAPI",
+      "entityVersion" : "1.0",
+      "createdOn" : "2016-03-17T10:05:55Z",
+      "what" : "Create"
+    }, {
+      "id" : 70,
+      "who" : "admin",
+      "organizationId" : "Foo",
+      "entityType" : "Api",
+      "entityId" : "FacebookAPI",
+      "entityVersion" : "1.0",
+      "createdOn" : "2016-03-17T10:06:11Z",
+      "what" : "Publish"
+    }, {
+      "id" : 71,
+      "who" : "admin",
+      "organizationId" : "Foo",
+      "entityType" : "Api",
+      "entityId" : "FlickrAPI",
+      "entityVersion" : "1.0",
+      "createdOn" : "2016-03-17T10:06:15Z",
+      "what" : "Publish"
+    }, {
+      "id" : 72,
+      "who" : "admin",
+      "organizationId" : "Foo",
+      "entityType" : "Api",
+      "entityId" : "TwitterAPI",
+      "createdOn" : "2016-03-17T10:06:56Z",
+      "what" : "Create"
+    }, {
+      "id" : 74,
+      "who" : "admin",
+      "organizationId" : "Foo",
+      "entityType" : "Api",
+      "entityId" : "TwitterAPI",
+      "entityVersion" : "1.0",
+      "createdOn" : "2016-03-17T10:06:56Z",
+      "what" : "Create"
+    }, {
+      "id" : 75,
+      "who" : "admin",
+      "organizationId" : "Foo",
+      "entityType" : "Api",
+      "entityId" : "YouTubeAPI",
+      "createdOn" : "2016-03-17T10:06:57Z",
+      "what" : "Create"
+    }, {
+      "id" : 77,
+      "who" : "admin",
+      "organizationId" : "Foo",
+      "entityType" : "Api",
+      "entityId" : "YouTubeAPI",
+      "entityVersion" : "1.0",
+      "createdOn" : "2016-03-17T10:06:57Z",
+      "what" : "Create"
+    }, {
+      "id" : 89,
+      "who" : "admin",
+      "organizationId" : "Foo",
+      "entityType" : "Client",
+      "entityId" : "foo-app",
+      "entityVersion" : "1.0",
+      "createdOn" : "2016-03-17T13:26:43Z",
+      "what" : "CreateContract",
+      "data" : "{\"clientOrgId\":\"Foo\",\"clientId\":\"foo-app\",\"clientVersion\":\"1.0\",\"apiOrgId\":\"Foo\",\"apiId\":\"foo-echo\",\"apiVersion\":\"1.0\",\"planId\":\"Good\",\"planVersion\":\"1.0\"}"
+    }, {
+      "id" : 90,
+      "who" : "admin",
+      "organizationId" : "Foo",
+      "entityType" : "Api",
+      "entityId" : "foo-echo",
+      "entityVersion" : "1.0",
+      "createdOn" : "2016-03-17T13:26:43Z",
+      "what" : "CreateContract",
+      "data" : "{\"clientOrgId\":\"Foo\",\"clientId\":\"foo-app\",\"clientVersion\":\"1.0\",\"apiOrgId\":\"Foo\",\"apiId\":\"foo-echo\",\"apiVersion\":\"1.0\",\"planId\":\"Good\",\"planVersion\":\"1.0\"}"
+    }, {
+      "id" : 92,
+      "who" : "admin",
+      "organizationId" : "Foo",
+      "entityType" : "Client",
+      "entityId" : "foo-app",
+      "entityVersion" : "1.0",
+      "createdOn" : "2016-03-17T13:26:51Z",
+      "what" : "CreateContract",
+      "data" : "{\"clientOrgId\":\"Foo\",\"clientId\":\"foo-app\",\"clientVersion\":\"1.0\",\"apiOrgId\":\"Test\",\"apiId\":\"echo\",\"apiVersion\":\"1.0\",\"planId\":\"Silver\",\"planVersion\":\"1.0\"}"
+    }, {
+      "id" : 94,
+      "who" : "admin",
+      "organizationId" : "Foo",
+      "entityType" : "Client",
+      "entityId" : "foo-app",
+      "entityVersion" : "1.0",
+      "createdOn" : "2016-03-17T13:26:57Z",
+      "what" : "Register"
+    }, {
+      "id" : 102,
+      "who" : "admin",
+      "organizationId" : "Foo",
+      "entityType" : "Api",
+      "entityId" : "foo-echo",
+      "entityVersion" : "1.0",
+      "createdOn" : "2016-03-17T13:28:22Z",
+      "what" : "CreateContract",
+      "data" : "{\"clientOrgId\":\"Test\",\"clientId\":\"client1\",\"clientVersion\":\"1.1\",\"apiOrgId\":\"Foo\",\"apiId\":\"foo-echo\",\"apiVersion\":\"1.0\",\"planId\":\"Great\",\"planVersion\":\"1.0\"}"
+    } ]
+  } ]
+}

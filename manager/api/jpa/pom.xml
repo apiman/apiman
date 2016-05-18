@@ -24,6 +24,10 @@
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-manager-api-core</artifactId>
     </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-distro-data</artifactId>
+    </dependency>
 
     <!-- Spec Libs -->
     <dependency>
@@ -55,8 +59,12 @@
       <artifactId>commons-io</artifactId>
     </dependency>
     <dependency>
-      <groupId>commons-lang</groupId>
-      <artifactId>commons-lang</artifactId>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-dbutils</groupId>
+      <artifactId>commons-dbutils</artifactId>
     </dependency>
   </dependencies>
 

@@ -43,10 +43,18 @@ public abstract class ApiManagerConfig {
 
     public static final String APIMAN_MANAGER_NEW_USER_BOOTSTRAPPER_TYPE = "apiman-manager.user-bootstrapper.type"; //$NON-NLS-1$
 
+    /*
+     * Database/hibernate properties
+     */
+    public static final String APIMAN_MANAGER_HIBERNATE_DIALECT = "apiman.hibernate.dialect"; //$NON-NLS-1$
+    public static final String APIMAN_MANAGER_HIBERNATE_DS = "apiman.hibernate.connection.datasource"; //$NON-NLS-1$
+
+
     /* -------------------------------------------------------
      * Storage
      * ------------------------------------------------------- */
     public static final String APIMAN_MANAGER_STORAGE_TYPE = "apiman-manager.storage.type"; //$NON-NLS-1$
+    public static final String APIMAN_MANAGER_STORAGE_JPA_INITIALIZE = "apiman-manager.storage.jpa.initialize"; //$NON-NLS-1$
     public static final String APIMAN_MANAGER_STORAGE_ES_CLIENT_FACTORY = "apiman-manager.storage.es.client-factory"; //$NON-NLS-1$
 //    public static final String APIMAN_MANAGER_STORAGE_ES_HOST = "apiman-manager.storage.es.host"; //$NON-NLS-1$
 //    public static final String APIMAN_MANAGER_STORAGE_ES_PORT = "apiman-manager.storage.es.port"; //$NON-NLS-1$
@@ -156,6 +164,20 @@ public abstract class ApiManagerConfig {
     }
 
     /**
+     * @return the configured hibernate data source
+     */
+    public String getHibernateDataSource() {
+        return config.getString(APIMAN_MANAGER_HIBERNATE_DS, null);
+    }
+
+    /**
+     * @return the configured hibernate dialect
+     */
+    public String getHibernateDialect() {
+        return config.getString(APIMAN_MANAGER_HIBERNATE_DIALECT, null);
+    }
+
+    /**
      * @return the configured storage type
      */
     public String getStorageType() {
@@ -167,6 +189,13 @@ public abstract class ApiManagerConfig {
      */
     public String getStorageQueryType() {
         return config.getString(APIMAN_MANAGER_STORAGE_QUERY_TYPE, getStorageType());
+    }
+    
+    /**
+     * @return true if the elasticsearch index should be initialized if not found
+     */
+    public boolean isInitializeStorageJPA() {
+        return config.getBoolean(APIMAN_MANAGER_STORAGE_JPA_INITIALIZE, false);
     }
 
     /**

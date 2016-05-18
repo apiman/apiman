@@ -44,7 +44,7 @@ import java.util.Set;
 
 import javax.naming.NamingException;
 
-import org.apache.commons.lang.text.StrSubstitutor;
+import org.apache.commons.lang3.text.StrSubstitutor;
 
 /**
  * An identity validator that uses the static information in the config

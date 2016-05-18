@@ -49,6 +49,16 @@ public class DataMigratorTest {
                 "1.2.3.Final");
     }
 
+    /**
+     * Test method for {@link io.apiman.manager.api.migrator.DataMigrator#migrate(java.io.File, java.io.File)}.
+     */
+    @Test
+    public void testMigrateNoUsers() throws Exception {
+        doTest( "export-files/export-from-1.2.2.Final-nousers.json",
+                "export-files/export-from-1.2.2.Final-nousers_expected.json", 
+                "1.2.3.Final");
+    }
+
     private void doTest(String fileToMigrate, String expectedResultFile, String versionToMigrateTo) throws Exception {
         Version version = new Version();
         setVersion(version, versionToMigrateTo);

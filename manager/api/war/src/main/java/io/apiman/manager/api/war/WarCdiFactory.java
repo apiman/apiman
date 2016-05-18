@@ -32,6 +32,7 @@ import io.apiman.manager.api.core.IPluginRegistry;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.UuidApiKeyGenerator;
+import io.apiman.manager.api.core.config.ApiManagerConfig;
 import io.apiman.manager.api.core.crypt.DefaultDataEncrypter;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.core.i18n.Messages;
@@ -44,6 +45,7 @@ import io.apiman.manager.api.es.ESMetricsAccessor;
 import io.apiman.manager.api.es.EsStorage;
 import io.apiman.manager.api.es.IEsClientFactory;
 import io.apiman.manager.api.jpa.JpaStorage;
+import io.apiman.manager.api.jpa.JpaStorageInitializer;
 import io.apiman.manager.api.security.ISecurityContext;
 import io.apiman.manager.api.security.impl.DefaultSecurityContext;
 import io.apiman.manager.api.security.impl.KeycloakSecurityContext;
@@ -58,7 +60,7 @@ import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Named;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Attempt to create producer methods for CDI beans.
@@ -70,6 +72,7 @@ public class WarCdiFactory {
 
     private static IEsClientFactory sStorageESClientFactory;
     private static IEsClientFactory sMetricsESClientFactory;
+    private static JpaStorage sJpaStorage;
     private static EsStorage sESStorage;
 
     @Produces @ApimanLogger
@@ -121,7 +124,7 @@ public class WarCdiFactory {
             @New EsStorage esStorage, IPluginRegistry pluginRegistry) {
         IStorage storage;
         if ("jpa".equals(config.getStorageType())) { //$NON-NLS-1$
-            storage = jpaStorage;
+            storage = initJpaStorage(config, jpaStorage);
         } else if ("es".equals(config.getStorageType())) { //$NON-NLS-1$
             storage = initEsStorage(config, esStorage);
         } else {
@@ -139,7 +142,7 @@ public class WarCdiFactory {
     public static IStorageQuery provideStorageQuery(WarApiManagerConfig config, @New JpaStorage jpaStorage,
             @New EsStorage esStorage, IStorage storage, IPluginRegistry pluginRegistry) {
         if ("jpa".equals(config.getStorageType())) { //$NON-NLS-1$
-            return jpaStorage;
+            return initJpaStorage(config, jpaStorage);
         } else if ("es".equals(config.getStorageType())) { //$NON-NLS-1$
             return initEsStorage(config, esStorage);
         } else if (storage != null && storage instanceof IStorageQuery) {
@@ -272,7 +275,7 @@ public class WarCdiFactory {
             return null;
         }
     }
-
+    
     /**
      * Initializes the ES storage (if required).
      * @param config
@@ -287,6 +290,23 @@ public class WarCdiFactory {
             }
         }
         return sESStorage;
+    }
+
+    /**
+     * Initializes the JPA storage (if required).  This basically amounts to installing
+     * the DDL in the database.  This is optional and disabled by default.
+     * @param config
+     * @param jpaStorage
+     */
+    private static JpaStorage initJpaStorage(ApiManagerConfig config, JpaStorage jpaStorage) {
+        if (sJpaStorage == null) {
+            sJpaStorage = jpaStorage;
+            if (config.isInitializeStorageJPA()) {
+                JpaStorageInitializer initializer = new JpaStorageInitializer(config.getHibernateDataSource(), config.getHibernateDialect());
+                initializer.initialize();
+            }
+        }
+        return sJpaStorage;
     }
 
     /**

@@ -34,7 +34,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
  */
 public class TimeRestrictedAccess {
     
-    private static final String TIME_PATTERN = "HH:mm:ss";
+    private static final String TIME_PATTERN = "HH:mm:ss"; //$NON-NLS-1$
     
     @JsonFormat(shape=JsonFormat.Shape.STRING, pattern=TIME_PATTERN)
     private Date timeStart;

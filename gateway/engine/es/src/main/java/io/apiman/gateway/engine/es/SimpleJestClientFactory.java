@@ -22,7 +22,7 @@ import io.searchbox.client.config.HttpClientConfig.Builder;
 
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Factory for creating elasticsearch clients.
@@ -87,7 +87,7 @@ public class SimpleJestClientFactory extends AbstractClientFactory implements IE
             protocol = "http"; //$NON-NLS-1$
         }
         
-        String clientKey = "jest:" + host + ':' + port; //$NON-NLS-1$
+        String clientKey = "jest:" + host + ':' + port + '/' + indexName; //$NON-NLS-1$
         synchronized (clients) {
             if (clients.containsKey(clientKey)) {
                 return clients.get(clientKey);

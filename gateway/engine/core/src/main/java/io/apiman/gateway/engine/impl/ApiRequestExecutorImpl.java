@@ -69,8 +69,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.apache.commons.lang.text.StrLookup;
-import org.apache.commons.lang.text.StrSubstitutor;
+import org.apache.commons.lang3.text.StrLookup;
+import org.apache.commons.lang3.text.StrSubstitutor;
 
 /**
  * Manages a single request-response sequence. It is executed in the following
@@ -94,6 +94,9 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
     
     private static StrLookup LOOKUP = new ApimanStrLookup();
     private static StrSubstitutor PROPERTY_SUBSTITUTOR = new StrSubstitutor(LOOKUP);
+    static {
+        PROPERTY_SUBSTITUTOR.setValueDelimiter(':');
+    }
 
     private final IRegistry registry;
     private ApiRequest request;

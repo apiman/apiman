@@ -13,9 +13,7 @@
 
   <modules>
     <module>data</module>
-    <module>db</module>
     <module>ddl</module>
-    <module>db-es</module>
   </modules>
 
   <profiles>
