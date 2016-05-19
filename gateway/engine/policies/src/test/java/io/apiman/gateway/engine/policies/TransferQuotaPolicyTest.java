@@ -211,8 +211,8 @@ public class TransferQuotaPolicyTest extends ApimanPolicyTest {
 
         PolicyTestResponse response = send(request);
         Assert.assertNotNull(response.body());
-        Assert.assertNull(response.header("X-TransferQuota-Remaining"));
-        Assert.assertNull(response.header("X-TransferQuota-Limit"));
+        Assert.assertEquals("1000", response.header("X-TransferQuota-Remaining"));
+        Assert.assertEquals("1000", response.header("X-TransferQuota-Limit"));
 
         send(request);
         send(request);
