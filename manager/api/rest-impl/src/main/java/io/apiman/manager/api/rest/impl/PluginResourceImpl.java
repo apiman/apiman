@@ -62,6 +62,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.Resource;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -319,7 +320,7 @@ public class PluginResourceImpl implements IPluginResource {
      * @see io.apiman.manager.api.rest.contract.IPluginResource#getPolicyForm(java.lang.Long, java.lang.String)
      */
     @Override
-    public String getPolicyForm(Long pluginId, String policyDefId) throws PluginNotFoundException,
+    public Resource getPolicyForm(Long pluginId, String policyDefId) throws PluginNotFoundException,
             PluginResourceNotFoundException, PolicyDefinitionNotFoundException {
         PluginBean pbean;
         PolicyDefinitionBean pdBean;
@@ -364,10 +365,15 @@ public class PluginResourceImpl implements IPluginResource {
                     }
                     StringWriter writer = new StringWriter();
                     IOUtils.copy(resource, writer);
-                    return writer.toString();
+                    //return writer.toString();
+                    // How can I return `writer` as a string
+                    // Does adding a Cast in this case make sense?
+                    return (Resource) writer;
                 } finally {
                     IOUtils.closeQuietly(resource);
                 }
+            } if(pdBean.getFormType() == PolicyFormType.Custom && pdBean.getForm() != null) {
+                // Hello!
             } else {
                 throw ExceptionFactory.pluginResourceNotFoundException(null, coordinates);
             }

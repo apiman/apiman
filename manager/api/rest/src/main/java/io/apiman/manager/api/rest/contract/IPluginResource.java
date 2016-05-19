@@ -29,6 +29,7 @@ import io.swagger.annotations.Api;
 
 import java.util.List;
 
+import javax.annotation.Resource;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -145,8 +146,7 @@ public interface IPluginResource {
      */
     @GET
     @Path("{pluginId}/policyDefs/{policyDefId}/form")
-    @Produces(MediaType.APPLICATION_JSON)
-    public String getPolicyForm(@PathParam("pluginId") Long pluginId,
+    public Resource getPolicyForm(@PathParam("pluginId") Long pluginId,
             @PathParam("policyDefId") String policyDefId) throws PluginNotFoundException,
             PolicyDefinitionNotFoundException, PluginResourceNotFoundException;
 
