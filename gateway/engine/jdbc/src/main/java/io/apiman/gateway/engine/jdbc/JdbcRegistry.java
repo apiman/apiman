@@ -30,7 +30,6 @@ import io.apiman.gateway.engine.jdbc.i18n.Messages;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.Clob;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -148,20 +147,8 @@ public class JdbcRegistry extends AbstractJdbcComponent implements IRegistry {
             throws RegistrationException {
         QueryRunner run = new QueryRunner();
         try {
-            ResultSetHandler<Api> handler = (ResultSet rs) -> {
-                if (!rs.next()) {
-                    return null;
-                }
-                Clob clob = rs.getClob(1);
-                InputStream is = clob.getAsciiStream();
-                try {
-                    return mapper.reader(Api.class).readValue(is);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            };
             Api api = run.query(connection, "SELECT bean FROM gw_apis WHERE org_id = ? AND id = ? AND version = ?", //$NON-NLS-1$
-                    handler, contract.getApiOrgId(), contract.getApiId(), contract.getApiVersion());
+                    Handlers.API_HANDLER, contract.getApiOrgId(), contract.getApiId(), contract.getApiVersion());
             if (api == null) {
                 String apiId = contract.getApiId();
                 String orgId = contract.getApiOrgId();
@@ -337,9 +324,7 @@ public class JdbcRegistry extends AbstractJdbcComponent implements IRegistry {
             if (!rs.next()) {
                 return null;
             }
-            Clob clob = rs.getClob(1);
-            InputStream is = clob.getAsciiStream();
-            try {
+            try (InputStream is = rs.getAsciiStream(1)) {
                 return mapper.reader(Api.class).readValue(is);
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -350,9 +335,7 @@ public class JdbcRegistry extends AbstractJdbcComponent implements IRegistry {
             if (!rs.next()) {
                 return null;
             }
-            Clob clob = rs.getClob(1);
-            InputStream is = clob.getAsciiStream();
-            try {
+            try (InputStream is = rs.getAsciiStream(1)) {
                 return mapper.reader(Client.class).readValue(is);
             } catch (IOException e) {
                 throw new RuntimeException(e);
