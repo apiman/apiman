@@ -29,8 +29,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -178,7 +180,16 @@ public abstract class AbstractPluginRegistry implements IPluginRegistry {
         OutputStream ostream = null;
         try {
             URL artifactUrl = new URL(mavenRepoUrl.toURL(), artifactSubPath);
-            istream = artifactUrl.openStream();
+            URLConnection connection = artifactUrl.openConnection();
+            connection.connect();
+            if (connection instanceof HttpURLConnection) {
+                HttpURLConnection httpConnection = (HttpURLConnection) connection;
+                if (httpConnection.getResponseCode() != 200) {
+                    throw new IOException();
+                }
+            }
+
+            istream = connection.getInputStream();
             ostream = new FileOutputStream(pluginFile);
             IOUtils.copy(istream, ostream);
             ostream.flush();
