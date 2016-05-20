@@ -91,6 +91,17 @@
               <label for="parse-payload"
                      apiman-i18n-key="parse-payload-msg"
                      style="padding-left: 3px">Enable stateful request payload inspection</label>
+              <a apiman-i18n-key="parse-payload-tooltip" type="button" href="javascript:void(0)" class="" data-toggle="popover" title="Stateful Payload Inspection" data-close="true" data-content="If this feature is enabled, the Gateway will parse the request body into an object prior to applying the policies.  This allows policies to make decisions based on the content of the request payload, but slows down the Gateway a bit.">
+                <span class="pficon pficon-info"></span>
+              </a>
+            </div>
+            
+            <div class="" style="margin-top:10px;"
+                 ng-show="updatedApi.parsePayload">
+              <div class="alert alert-info">
+                 <span class="pficon pficon-info"></span>
+                 <span apiman-i18n-key="api-impl.parse-payload-info">Note that enabling this option may result in additional performance overhead.  However, this feature is sometimes required for certain policies to work (in particular many SOAP policies).</span>
+              </div>
             </div>
             
             <div class="" style="margin-top:10px;">
