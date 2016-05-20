@@ -43,6 +43,7 @@ import org.hibernate.dialect.PostgreSQL92Dialect;
 import org.hibernate.dialect.PostgreSQL94Dialect;
 import org.hibernate.dialect.PostgreSQL9Dialect;
 import org.hibernate.dialect.SQLServer2012Dialect;
+import org.hibernate.dialect.SQLServerDialect;
 
 /**
  * Initializes the database by installing the appropriate DDL for the database in
@@ -73,6 +74,7 @@ public class JpaStorageInitializer {
         DB_TYPE_MAP.put(PostgreSQL94Dialect.class.getName(), "postgresql9"); //$NON-NLS-1$
 
         DB_TYPE_MAP.put(SQLServer2012Dialect.class.getName(), "mssql11"); //$NON-NLS-1$
+        DB_TYPE_MAP.put(SQLServerDialect.class.getName(), "mssql11"); //$NON-NLS-1$
     }
     
     private final DataSource ds;
