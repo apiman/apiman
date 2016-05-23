@@ -38,6 +38,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  * The Plugin API.
@@ -146,7 +147,7 @@ public interface IPluginResource {
      */
     @GET
     @Path("{pluginId}/policyDefs/{policyDefId}/form")
-    public Resource getPolicyForm(@PathParam("pluginId") Long pluginId,
+    public Response getPolicyForm(@PathParam("pluginId") Long pluginId,
             @PathParam("policyDefId") String policyDefId) throws PluginNotFoundException,
             PolicyDefinitionNotFoundException, PluginResourceNotFoundException;
 

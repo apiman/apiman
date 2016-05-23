@@ -65,6 +65,7 @@ import java.util.Set;
 import javax.annotation.Resource;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.ws.rs.core.Response;
 
 import org.apache.commons.io.IOUtils;
 
@@ -317,13 +318,17 @@ public class PluginResourceImpl implements IPluginResource {
     }
 
     /**
+     * @return 
      * @see io.apiman.manager.api.rest.contract.IPluginResource#getPolicyForm(java.lang.Long, java.lang.String)
      */
+    @SuppressWarnings({ "finally", "resource" })
     @Override
-    public Resource getPolicyForm(Long pluginId, String policyDefId) throws PluginNotFoundException,
+    public Response getPolicyForm(Long pluginId, String policyDefId) throws PluginNotFoundException,
             PluginResourceNotFoundException, PolicyDefinitionNotFoundException {
         PluginBean pbean;
         PolicyDefinitionBean pdBean;
+        Response response = null;
+        
         try {
             storage.beginTx();
             pbean = storage.getPlugin(pluginId);
@@ -358,21 +363,26 @@ public class PluginResourceImpl implements IPluginResource {
                 Plugin plugin = pluginRegistry.loadPlugin(coordinates);
                 PluginClassLoader loader = plugin.getLoader();
                 InputStream resource = null;
+                
                 try {
                     resource = loader.getResourceAsStream(formPath);
                     if (resource == null) {
                         throw ExceptionFactory.pluginResourceNotFoundException(formPath, coordinates);
                     }
+                    
+                } finally {
+                    resource = loader.getResourceAsStream(formPath);
+                    response = Response.ok(resource).build();
+                }
+                    /*
                     StringWriter writer = new StringWriter();
                     IOUtils.copy(resource, writer);
-                    //return writer.toString();
-                    // How can I return `writer` as a string
-                    // Does adding a Cast in this case make sense?
-                    return (Resource) writer;
+                    return writer.toString();
                 } finally {
                     IOUtils.closeQuietly(resource);
                 }
-            } if(pdBean.getFormType() == PolicyFormType.Custom && pdBean.getForm() != null) {
+                */
+            } else if(pdBean.getFormType() == PolicyFormType.AngularTemplate && pdBean.getForm() != null) {
                 // Hello!
             } else {
                 throw ExceptionFactory.pluginResourceNotFoundException(null, coordinates);
@@ -382,6 +392,8 @@ public class PluginResourceImpl implements IPluginResource {
         } catch (Throwable t) {
             throw new SystemErrorException(t);
         }
+        
+        return response;
     }
 
     /**
