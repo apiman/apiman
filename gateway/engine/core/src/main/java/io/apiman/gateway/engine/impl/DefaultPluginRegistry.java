@@ -138,6 +138,9 @@ public class DefaultPluginRegistry implements IPluginRegistry {
                 try {
                     String trimmedRepo = repository.trim();
                     if (!trimmedRepo.isEmpty()) {
+                        if (trimmedRepo.startsWith("file:")) { //$NON-NLS-1$
+                            trimmedRepo = trimmedRepo.replace('\\', '/');
+                        }
                         rval.add(new URI(trimmedRepo));
                     }
                 } catch (URISyntaxException e) {
