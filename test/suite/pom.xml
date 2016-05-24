@@ -4,7 +4,7 @@
   <parent>
     <groupId>io.apiman</groupId>
     <artifactId>apiman-test</artifactId>
-    <version>1.2.6.Final</version>
+    <version>1.2.7-SNAPSHOT</version>
   </parent>
   <artifactId>apiman-test-suite</artifactId>
   <name>apiman-test-suite</name>
