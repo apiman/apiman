@@ -7,6 +7,7 @@
 
                 <!-- Dropdown Cog -->
                 <ul class="org-menu pull-right"
+                    ng-show="showCtxMenu"
                     style="list-style-type: none;">
                   <li class="dropdown">
                     <a href="#"

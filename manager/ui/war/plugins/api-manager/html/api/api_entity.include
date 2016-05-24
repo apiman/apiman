@@ -20,6 +20,7 @@
 
                 <!-- Dropdown Cog -->
                 <ul class="api-menu pull-right"
+                    ng-show="showCtxMenu"
                     style="list-style-type: none; padding-left: 10px; padding-top: 6px;">
                   <li class="dropdown">
                     <a href="#"

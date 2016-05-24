@@ -3,7 +3,7 @@
 
 module Apiman {
     export var OrgSidebarController = _module.controller("Apiman.OrgSidebarController",
-    ['Logger', '$uibModal', '$scope', 'OrgSvcs', (Logger, $uibModal, $scope, OrgSvcs) => {
+    ['Logger', '$uibModal', '$scope', 'OrgSvcs', 'Configuration', (Logger, $uibModal, $scope, OrgSvcs, Configuration) => {
         $scope.updateOrgDescription = function(updatedDescription) {
             var updateOrganizationBean = {
                 description: updatedDescription
@@ -18,9 +18,12 @@ module Apiman {
                 });
         };
 
-
-
         // ----- Delete --------------------->>>>
+        
+        $scope.showCtxMenu = true;
+        if (Configuration.ui.platform == 'f8' || Configuration.ui.platform == 'ose') {
+            $scope.showCtxMenu = false;
+        }
 
         // Add check for ability to delete, show/hide Delete option
         $scope.canDelete = function() {};

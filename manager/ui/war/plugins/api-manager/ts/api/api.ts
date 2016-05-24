@@ -88,9 +88,11 @@ module Apiman {
             };
 
 
-
             // ----- Delete --------------------->>>>
-            
+            $scope.showCtxMenu = true;
+            if (Configuration.ui.platform == 'f8' || Configuration.ui.platform == 'ose') {
+                $scope.showCtxMenu = false;
+            }
             
             // Add check for ability to delete, show/hide Delete option
             $scope.canDelete = function() {};
