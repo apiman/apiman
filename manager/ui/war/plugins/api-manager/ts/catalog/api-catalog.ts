@@ -4,27 +4,8 @@ module Apiman {
 
     import CurrentUserSvcs = ApimanRPC.CurrentUserSvcs;
     export var ApiCatalogController = _module.controller("Apiman.ApiCatalogController",
-        [
-            '$q',
-            'Logger',
-            '$scope',
-            '$filter',
-            '$timeout',
-            'ApiCatalogSvcs',
-            'PageLifecycle',
-            '$uibModal',
-            'CurrentUserSvcs',
-            '$location',
-            ($q,
-             Logger,
-             $scope,
-             $filter,
-             $timeout,
-             ApiCatalogSvcs,
-             PageLifecycle,
-             $uibModal,
-             CurrentUserSvcs,
-             $location) => {
+        [ '$q', 'Logger', '$scope', '$filter', '$timeout', 'ApiCatalogSvcs', 'PageLifecycle', '$uibModal', 'CurrentUserSvcs', '$location',
+          ($q, Logger, $scope, $filter, $timeout, ApiCatalogSvcs, PageLifecycle, $uibModal, CurrentUserSvcs, $location) => {
 
                 var body:any = {};
                 body.filters = [];
@@ -134,9 +115,7 @@ module Apiman {
                 var pageData = {
                     namespaces: $q(function (resolve, reject) {
                         ApiCatalogSvcs.getNamespaces(function (reply) {
-                            $scope.hasNamespaces = false;
                             angular.forEach(reply, function (ns) {
-                                $scope.hasNamespaces = true;
                                 if ((namespace && ns.name == namespace) || (!namespace && ns.current)) {
                                     $scope.namespace = ns;
                                 }
@@ -186,27 +165,11 @@ module Apiman {
         ]);
 
     export var ImportApiController = _module.controller("Apiman.ImportApiController",
-        [
-            '$q',
-            '$rootScope',
-            'Logger',
-            '$scope',
-            'OrgSvcs',
-            'PageLifecycle',
-            '$uibModalInstance',
-            'api',
-            'orgs',
-            ($q,
-             $rootScope,
-             Logger,
-             $scope,
-             OrgSvcs,
-             PageLifecycle,
-             $uibModalInstance,
-             api,
-             orgs) => {
-                var recentOrg = $rootScope.mruOrg;
+        [ '$q', '$rootScope', 'Logger', '$scope', 'OrgSvcs', 'PageLifecycle', '$uibModalInstance', 'api', 'orgs',
+          ($q, $rootScope, Logger, $scope, OrgSvcs, PageLifecycle, $uibModalInstance, api, orgs) => {
 
+                var recentOrg = $rootScope.mruOrg;
+                
                 $scope.api = api;
                 $scope.orgs = orgs;
 
@@ -249,25 +212,9 @@ module Apiman {
 
 
     export var ApiCatalogDefController = _module.controller("Apiman.ApiCatalogDefController",
-        [
-            '$q',
-            '$scope',
-            'ApiCatalogSvcs',
-            'PageLifecycle',
-            '$routeParams',
-            '$window',
-            'Logger',
-            'ApiDefinitionSvcs',
-            'Configuration',
-            ($q,
-             $scope,
-             ApiCatalogSvcs,
-             PageLifecycle,
-             $routeParams,
-             $window,
-             Logger,
-             ApiDefinitionSvcs,
-             Configuration) => {
+        [ '$q', '$scope', 'ApiCatalogSvcs', 'PageLifecycle', '$routeParams', '$window', 'Logger', 'ApiDefinitionSvcs', 'Configuration',
+          ($q, $scope, ApiCatalogSvcs, PageLifecycle, $routeParams, $window, Logger, ApiDefinitionSvcs, Configuration) => {
+          
                 $scope.params = $routeParams;
                 $scope.chains = {};
 
