@@ -47,5 +47,10 @@
     <test name="List Plugins [4]">test-plan-data/plugins/411_list-plugins.resttest</test>
     <test name="List Policy Defs [7]">test-plan-data/plugins/412_list-policy-defs.resttest</test>
   </testGroup>
+  
+  <testGroup name="Return Angular HTML Template for Custom Plugin">
+    <test name="Super Duper Policy Plugin">test-plan-data/plugins/105_super-duper-plugin.resttest</test>
+    <test name="Get Angular HTML Form">test-plan-data/plugins/106_get-super-duper-form.resttest</test>
+  </testGroup>
 
 </testPlan>

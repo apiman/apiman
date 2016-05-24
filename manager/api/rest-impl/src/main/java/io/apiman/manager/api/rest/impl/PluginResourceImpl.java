@@ -321,13 +321,12 @@ public class PluginResourceImpl implements IPluginResource {
      * @return 
      * @see io.apiman.manager.api.rest.contract.IPluginResource#getPolicyForm(java.lang.Long, java.lang.String)
      */
-    @SuppressWarnings({ "finally", "resource" })
+    @SuppressWarnings({ "finally" })
     @Override
     public Response getPolicyForm(Long pluginId, String policyDefId) throws PluginNotFoundException,
             PluginResourceNotFoundException, PolicyDefinitionNotFoundException {
         PluginBean pbean;
         PolicyDefinitionBean pdBean;
-        Response response = null;
         
         try {
             storage.beginTx();
@@ -353,7 +352,8 @@ public class PluginResourceImpl implements IPluginResource {
             if (pdBean.getPluginId() == null || !pdBean.getPluginId().equals(pbean.getId())) {
                 throw ExceptionFactory.pluginNotFoundException(pluginId);
             }
-            if (pdBean.getFormType() == PolicyFormType.JsonSchema && pdBean.getForm() != null) {
+            if ((pdBean.getFormType() == PolicyFormType.JsonSchema || pdBean.getFormType() == PolicyFormType.AngularTemplate) 
+                    && pdBean.getForm() != null) {
                 String formPath = pdBean.getForm();
                 if (!formPath.startsWith("/")) { //$NON-NLS-1$
                     formPath = "META-INF/apiman/policyDefs/" + formPath; //$NON-NLS-1$
@@ -372,18 +372,8 @@ public class PluginResourceImpl implements IPluginResource {
                     
                 } finally {
                     resource = loader.getResourceAsStream(formPath);
-                    response = Response.ok(resource).build();
+                    return Response.ok(resource).build();
                 }
-                    /*
-                    StringWriter writer = new StringWriter();
-                    IOUtils.copy(resource, writer);
-                    return writer.toString();
-                } finally {
-                    IOUtils.closeQuietly(resource);
-                }
-                */
-            } else if(pdBean.getFormType() == PolicyFormType.AngularTemplate && pdBean.getForm() != null) {
-                // Hello!
             } else {
                 throw ExceptionFactory.pluginResourceNotFoundException(null, coordinates);
             }
@@ -392,8 +382,6 @@ public class PluginResourceImpl implements IPluginResource {
         } catch (Throwable t) {
             throw new SystemErrorException(t);
         }
-        
-        return response;
     }
 
     /**
