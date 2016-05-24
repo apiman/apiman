@@ -44,7 +44,6 @@ import org.junit.Test;
 
 @TestingPolicy(SoapAuthorizationPolicy.class)
 @SuppressWarnings({ "nls" })
-
 public class SoapAuthorizationPolicyTest extends ApimanPolicyTest {
 
     @Test
