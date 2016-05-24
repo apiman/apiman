@@ -35,6 +35,7 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -387,17 +388,20 @@ public class DefaultPluginRegistry implements IPluginRegistry {
         InputStream istream = null;
         OutputStream ostream = null;
         try {
-            HttpURLConnection connection = (HttpURLConnection) artifactUrl.openConnection();
+            URLConnection connection = artifactUrl.openConnection();
             connection.connect();
-            if (connection.getResponseCode() == 200) {
-                istream = connection.getInputStream();
-                ostream = new FileOutputStream(pluginFile);
-                IOUtils.copy(istream, ostream);
-                ostream.flush();
-                handler.handle(AsyncResultImpl.create(pluginFile));
-            } else {
-                handler.handle(AsyncResultImpl.create(pluginFile));
+            if (connection instanceof HttpURLConnection) {
+                HttpURLConnection httpConnection = (HttpURLConnection) connection;
+                if (httpConnection.getResponseCode() != 200) {
+                    handler.handle(AsyncResultImpl.create(pluginFile));
+                    return;
+                }
             }
+            istream = connection.getInputStream();
+            ostream = new FileOutputStream(pluginFile);
+            IOUtils.copy(istream, ostream);
+            ostream.flush();
+            handler.handle(AsyncResultImpl.create(pluginFile));
         } catch (Exception e) {
             handler.handle(AsyncResultImpl.<File>create(e));
         } finally {

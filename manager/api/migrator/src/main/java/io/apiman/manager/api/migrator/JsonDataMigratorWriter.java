@@ -42,6 +42,8 @@ public class JsonDataMigratorWriter implements IDataMigratorWriter {
     private final JsonGenerator jg;
     private final ObjectMapper om = new ObjectMapper();
     private final Set<String> sections = new HashSet<>();
+    
+    private boolean arrayFieldOpen = false;
 
     /**
      * Constructor.
@@ -70,7 +72,7 @@ public class JsonDataMigratorWriter implements IDataMigratorWriter {
      */
     @Override
     public void close() throws Exception {
-        jg.writeEndArray();
+        closeFieldArray();
         jg.writeEndObject();
         jg.flush();
         IOUtils.closeQuietly(os);
@@ -91,6 +93,7 @@ public class JsonDataMigratorWriter implements IDataMigratorWriter {
     public void writeUser(ObjectNode node) throws IOException {
         if (!sections.contains("Users")) { //$NON-NLS-1$
             jg.writeArrayFieldStart("Users"); //$NON-NLS-1$
+            arrayFieldOpen = true;
             sections.add("Users"); //$NON-NLS-1$
         }
         jg.writeObject(node);
@@ -102,8 +105,9 @@ public class JsonDataMigratorWriter implements IDataMigratorWriter {
     @Override
     public void writeGateway(ObjectNode node) throws IOException {
         if (!sections.contains("Gateways")) { //$NON-NLS-1$
-            jg.writeEndArray();
+            closeFieldArray();
             jg.writeArrayFieldStart("Gateways"); //$NON-NLS-1$
+            arrayFieldOpen = true;
             sections.add("Gateways"); //$NON-NLS-1$
         }
         jg.writeObject(node);
@@ -115,8 +119,9 @@ public class JsonDataMigratorWriter implements IDataMigratorWriter {
     @Override
     public void writePlugin(ObjectNode node) throws IOException {
         if (!sections.contains("Plugins")) { //$NON-NLS-1$
-            jg.writeEndArray();
+            closeFieldArray();
             jg.writeArrayFieldStart("Plugins"); //$NON-NLS-1$
+            arrayFieldOpen = true;
             sections.add("Plugins"); //$NON-NLS-1$
         }
         jg.writeObject(node);
@@ -128,8 +133,9 @@ public class JsonDataMigratorWriter implements IDataMigratorWriter {
     @Override
     public void writeRole(ObjectNode node) throws IOException {
         if (!sections.contains("Roles")) { //$NON-NLS-1$
-            jg.writeEndArray();
+            closeFieldArray();
             jg.writeArrayFieldStart("Roles"); //$NON-NLS-1$
+            arrayFieldOpen = true;
             sections.add("Roles"); //$NON-NLS-1$
         }
         jg.writeObject(node);
@@ -141,8 +147,9 @@ public class JsonDataMigratorWriter implements IDataMigratorWriter {
     @Override
     public void writePolicyDefinition(ObjectNode node) throws IOException {
         if (!sections.contains("PolicyDefinitions")) { //$NON-NLS-1$
-            jg.writeEndArray();
+            closeFieldArray();
             jg.writeArrayFieldStart("PolicyDefinitions"); //$NON-NLS-1$
+            arrayFieldOpen = true;
             sections.add("PolicyDefinitions"); //$NON-NLS-1$
         }
         jg.writeObject(node);
@@ -154,11 +161,23 @@ public class JsonDataMigratorWriter implements IDataMigratorWriter {
     @Override
     public void writeOrg(ObjectNode node) throws IOException {
         if (!sections.contains("Orgs")) { //$NON-NLS-1$
-            jg.writeEndArray();
+            closeFieldArray();
             jg.writeArrayFieldStart("Orgs"); //$NON-NLS-1$
+            arrayFieldOpen = true;
             sections.add("Orgs"); //$NON-NLS-1$
         }
         jg.writeObject(node);
+    }
+    
+    /**
+     * Closes the current field array if one is open.
+     * @throws IOException
+     */
+    private void closeFieldArray() throws IOException {
+        if (arrayFieldOpen) {
+            jg.writeEndArray();
+            arrayFieldOpen = false;
+        }
     }
 
 }

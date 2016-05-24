@@ -2,9 +2,9 @@ language: java
 
 cache:
   directories:
-    - "$HOME/.tsd-cache"
-    - "$TRAVIS_BUILD_DIR/manager/ui/hawtio/node_modules"
-    - "$HOME/.m2"
+    - "$HOME/.tsd-cache" # Typings
+    - "$TRAVIS_BUILD_DIR/manager/ui/war/node_modules" # NPM
+    - "$HOME/.m2" # Maven
 
 before_cache:
   - "rm -rf $HOME/.m2/repository/io/apiman"
@@ -15,9 +15,7 @@ services:
 before_install:
   - export MAVEN_OPTS="-Xmx512m"
   - sed -i.bak -e 's|https://nexus.codehaus.org/snapshots/|https://oss.sonatype.org/content/repositories/codehaus-snapshots/|g' ~/.m2/settings.xml
-  - echo "Settings XML" && cat ~/.m2/settings.xml
-  - echo "node_modules" && echo "$TRAVIS_BUILD_DIR/manager/ui/war/node_modules"
-  
+
 jdk:
   - oraclejdk8
 

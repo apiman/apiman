@@ -79,10 +79,13 @@ public class CaseInsensitiveStringMultiMap implements IStringMultiMap, Serializa
     public IStringMultiMap put(String key, String value) {
         long keyHash = getHash(key);
         int idx = getIndex(keyHash);
-        if (hashArray[idx] == null)
+        if (hashArray[idx] == null) {
             keyCount++;
-
-        hashArray[idx] = new Element(key, value, keyHash);
+            hashArray[idx] = new Element(key, value, keyHash);
+        } else {
+            remove(key);
+            add(key, value);
+        }
         return this;
     }
 

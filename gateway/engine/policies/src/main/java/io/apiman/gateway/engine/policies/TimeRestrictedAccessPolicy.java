@@ -32,6 +32,7 @@ import java.util.List;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.joda.time.LocalTime;
 
 /**
  * Policy that restrict access to resource by time when resource can be accessed.
@@ -96,7 +97,7 @@ public class TimeRestrictedAccessPolicy extends AbstractMappedPolicy<TimeRestric
             for (TimeRestrictedAccess rule : rulesEnabledForPath) {
                 boolean matchesDay = matchesDay(currentTime, rule);
                 if (matchesDay) {
-                    boolean matchesTime = matchesTime(currentTime, rule);
+                    boolean matchesTime = matchesTime(rule);
                     if (matchesTime) {
                         return true;
                     }
@@ -130,7 +131,7 @@ public class TimeRestrictedAccessPolicy extends AbstractMappedPolicy<TimeRestric
      * @param currentTime
      * @param filter
      */
-    private boolean matchesTime(DateTime currentTime, TimeRestrictedAccess filter) {
+    private boolean matchesTime(TimeRestrictedAccess filter) {
         Date start = filter.getTimeStart();
         Date end = filter.getTimeEnd();
         if (end == null || start == null) {
@@ -138,6 +139,7 @@ public class TimeRestrictedAccessPolicy extends AbstractMappedPolicy<TimeRestric
         }
         long startMs = start.getTime();
         long endMs = end.getTime();
+        DateTime currentTime = new LocalTime(DateTimeZone.UTC).toDateTime(new DateTime(0l));
         long nowMs = currentTime.toDate().getTime();
         
         return nowMs >= startMs && nowMs < endMs;

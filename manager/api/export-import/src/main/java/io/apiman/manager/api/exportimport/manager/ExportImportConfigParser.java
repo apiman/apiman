@@ -17,7 +17,7 @@ package io.apiman.manager.api.exportimport.manager;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import org.apache.commons.lang.BooleanUtils;
+import org.apache.commons.lang3.BooleanUtils;
 
 /**
  * @author Marc Savy {@literal <msavy@redhat.com>}

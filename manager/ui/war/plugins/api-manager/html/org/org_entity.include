@@ -76,7 +76,7 @@
               <p class="explanation"
                  apiman-i18n-key="org-delete-modal-confirmation-description">
                 This action <b>CANNOT</b> be undone. This will permanently delete the organization, including all of
-                its subelements, their APIs, client apps, plans, policies, memberships, contracts, and any respective activity logs. Please back up the project if you think you may want to roll back the changes, as this action is irrevocable.
+                its subelements, their APIs, client apps, plans, policies, memberships, contracts, and any respective change logs. Please back up the project if you think you may want to roll back the changes, as this action is irrevocable.
               </p>
               <p class="explanation"
                  apiman-i18n-key="org-delete-modal-confirmation-instructions">

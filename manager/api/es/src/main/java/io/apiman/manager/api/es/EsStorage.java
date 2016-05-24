@@ -1031,6 +1031,9 @@ public class EsStorage implements IStorage, IStorageQuery {
     public ContractBean getContract(Long id) throws StorageException {
         Map<String, Object> source = getEntity("contract", String.valueOf(id)); //$NON-NLS-1$
         ContractBean contract = EsMarshalling.unmarshallContract(source);
+        if (contract == null) {
+            return null;
+        }
         String clientOrgId = (String) source.get("clientOrganizationId");
         String clientId = (String) source.get("clientId");
         String clientVersion = (String) source.get("clientVersion");

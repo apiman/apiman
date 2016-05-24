@@ -95,7 +95,8 @@ and [generate a pull-request](http://help.github.com/pull-requests/) for your ch
 We prefer pull-requests, because we can review the proposed changes, comment on them,
 discuss them with you, and likely merge the changes right into the official repository.
 
-Please try to create one commit per feature or fix, generally the easiest way to do this is via [git squash](https://git-scm.com/book/en/v2/Git-Tools-Rewriting-History#Squashing-Commits). This makes reverting changes easier, and avoids needlessly polluting the repository history with checkpoint commits.
+Please try to create one commit per feature or fix, generally the easiest way to do this is via [git squash](https://git-scm.com/book/en/v2/Git-Tools-Rewriting-History#Squashing-Commits).
+This makes reverting changes easier, and avoids needlessly polluting the repository history with checkpoint commits.
 
 ## Code Formatting
 
