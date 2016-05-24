@@ -1,4 +1,4 @@
-= Guide - Deploying for Production: apiman 1.2.5.Final
+= Guide - Deploying for Production: apiman 1.2.6.Final
 :homepage: http://apiman.io/
 :doctype: book
 
@@ -15,7 +15,7 @@ following components:
 
 You can find the apiman production deployer here:
 
-https://github.com/apiman/apiman-deployer/tree/1.2.5.Final
+https://github.com/apiman/apiman-deployer/tree/1.2.6.Final
 
 Simply download that script and run it on each of the machines you wish to install the various apiman
 components!

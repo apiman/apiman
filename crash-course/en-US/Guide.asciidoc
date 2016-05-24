@@ -1,4 +1,4 @@
-= Crash Course in Apiman 1.2.5.Final
+= Crash Course in Apiman 1.2.6.Final
 :homepage: http://apiman.io/
 :doctype: book
 
@@ -514,19 +514,19 @@ The steps you follow are:
 
  * Download and Unzip the WildFly Server - Download http://download.jboss.org/wildfly/10.0.0.Final/wildfly-10.0.0.Final.zip  and unzip the file into the directory in which you want to run the sever.
 
- * Download and Unzip the apiman WildFly overlay .zip file - Download the apiman WildFly overlay zip file into the directory that was created when you unzipped the WildFly download. The apiman WildFly overlay zip file is available here: http://downloads.jboss.org/apiman/1.2.5.Final/apiman-distro-wildfly10-1.2.5.Final-overlay.zip  After the file is downloaded, unzip it directly over the directory into which you unzipped the WildFly download. This will install apiman into the WildFly server.
+ * Download and Unzip the apiman WildFly overlay .zip file - Download the apiman WildFly overlay zip file into the directory that was created when you unzipped the WildFly download. The apiman WildFly overlay zip file is available here: http://downloads.jboss.org/apiman/1.2.6.Final/apiman-distro-wildfly10-1.2.6.Final-overlay.zip  After the file is downloaded, unzip it directly over the directory into which you unzipped the WildFly download. This will install apiman into the WildFly server.
 
 Installing apiman on an WildFly Server
 
 The commands that you will execute to install the server will look something like this:
 
 ----
-mkdir ~/apiman-1.2.5.Final
-cd ~/apiman-1.2.5.Final
+mkdir ~/apiman-1.2.6.Final
+cd ~/apiman-1.2.6.Final
 curl http://download.jboss.org/wildfly/10.0.0.Final/wildfly-10.0.0.Final.zip -o wildfly-10.0.0.Final.zip
-curl http://downloads.jboss.org/apiman/1.2.5.Final/apiman-distro-wildfly10-1.2.5.Final-overlay.zip -o apiman-distro-wildfly10-1.2.5.Final-overlay.zip
+curl http://downloads.jboss.org/apiman/1.2.6.Final/apiman-distro-wildfly10-1.2.6.Final-overlay.zip -o apiman-distro-wildfly10-1.2.6.Final-overlay.zip
 unzip wildfly-10.0.0.Final.zip
-unzip -o apiman-distro-wildfly10-1.2.5.Final-overlay.zip -d wildfly-10.0.0.Final
+unzip -o apiman-distro-wildfly10-1.2.6.Final-overlay.zip -d wildfly-10.0.0.Final
 
 ----
 
@@ -535,7 +535,7 @@ Before we move on, we have one server administration task to perform. We have to
 To create a new server user, navigate to this directory:
 
 ----
-cd apiman-1.2.5.Final/wildfly-10.0.0.Final/bin
+cd apiman-1.2.6.Final/wildfly-10.0.0.Final/bin
 ----
 
 And execute this script: +
@@ -560,7 +560,7 @@ Running the WildFly Server
 To start the WildFly server, you navigate back to the directory into which you installed the server, execute these commands - note that in this context, “standalone” refers to a standalone (i.e., non-clustered) WildFly server.  You can learn more about WildFly server configuration options in the WildFly Server Administration Guide:
 
 ----
-cd apiman-1.2.5.Final/wildfly-10.0.0.Final
+cd apiman-1.2.6.Final/wildfly-10.0.0.Final
 ./bin/standalone.sh -c standalone-apiman.xml
 ----
 
