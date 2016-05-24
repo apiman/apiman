@@ -88,7 +88,8 @@
               </span>
 
               <!-- Filter: Namespace -->
-              <select ng-show="hasNamespaces"
+              <span ng-show="namespaces.length > 0">
+                <select
                       class="selectpicker api-namespaces"
                       id="namespace"
                       apiman-select-picker=""
@@ -98,7 +99,8 @@
                       data-live-search="true"
                       apiman-i18n-skip
                       data-ng-options="ns.name for ns in namespaces | orderBy: ns.name">
-              </select>
+                </select>
+              </span>
 
             </div>
 
