@@ -9,7 +9,7 @@
             <li ng-class="{ true: 'active' } [tab == 'contracts']" apiman-status="Published"><a id="tab-contracts" href="{{ pluginName }}/orgs/{{ api.organization.id }}/apis/{{ api.id }}/{{ version.version }}/contracts" apiman-i18n-key="contracts">Contracts</a></li>
             <li ng-class="{ true: 'active' } [tab == 'endpoint']" apiman-status="Published"><a id="tab-endpoint" href="{{ pluginName }}/orgs/{{ api.organization.id }}/apis/{{ api.id }}/{{ version.version }}/endpoint" apiman-i18n-key="endpoint">Endpoint</a></li>
             <li ng-class="{ true: 'active' } [tab == 'metrics']" ng-show="showMetrics" apiman-status="Published"><a id="tab-metrics" href="{{ pluginName }}/orgs/{{ api.organization.id }}/apis/{{ api.id }}/{{ version.version }}/metrics" apiman-i18n-key="metrics">Metrics</a></li>
-            <li ng-class="{ true: 'active' } [tab == 'activity']"><a id="tab-activity" href="{{ pluginName }}/orgs/{{ api.organization.id }}/apis/{{ api.id }}/{{ version.version }}/activity" apiman-i18n-key="activity">Activity</a></li>
+            <li ng-class="{ true: 'active' } [tab == 'activity']"><a id="tab-activity" href="{{ pluginName }}/orgs/{{ api.organization.id }}/apis/{{ api.id }}/{{ version.version }}/activity" apiman-i18n-key="activity">Change Log</a></li>
             <li class="last"><a apiman-i18n-skip>&nbsp;</a></li>
           </ul>
         </div>
