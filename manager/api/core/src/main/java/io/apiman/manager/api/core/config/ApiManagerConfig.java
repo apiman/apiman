@@ -136,7 +136,11 @@ public abstract class ApiManagerConfig {
             String[] split = registries.split(","); //$NON-NLS-1$
             for (String registry : split) {
                 try {
-                    rval.add(new URI(registry.trim()));
+                    registry = registry.trim();
+                    if (registry.startsWith("file:")) { //$NON-NLS-1$
+                        registry = registry.replace('\\', '/');
+                    }
+                    rval.add(new URI(registry));
                 } catch (URISyntaxException e) {
                     throw new RuntimeException(e);
                 }
