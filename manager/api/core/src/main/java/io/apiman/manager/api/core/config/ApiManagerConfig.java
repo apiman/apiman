@@ -117,7 +117,13 @@ public abstract class ApiManagerConfig {
             String[] split = repositories.split(","); //$NON-NLS-1$
             for (String repository : split) {
                 try {
-                    rval.add(new URI(repository.trim()));
+                    repository = repository.trim();
+                    if (!repository.isEmpty()) {
+                        if (repository.startsWith("file:")) { //$NON-NLS-1$
+                            repository = repository.replace('\\', '/');
+                        }
+                        rval.add(new URI(repository.trim()));
+                    }
                 } catch (URISyntaxException e) {
                     throw new RuntimeException(e);
                 }
@@ -137,10 +143,12 @@ public abstract class ApiManagerConfig {
             for (String registry : split) {
                 try {
                     registry = registry.trim();
-                    if (registry.startsWith("file:")) { //$NON-NLS-1$
-                        registry = registry.replace('\\', '/');
+                    if (!registry.isEmpty()) {
+                        if (registry.startsWith("file:")) { //$NON-NLS-1$
+                            registry = registry.replace('\\', '/');
+                        }
+                        rval.add(new URI(registry));
                     }
-                    rval.add(new URI(registry));
                 } catch (URISyntaxException e) {
                     throw new RuntimeException(e);
                 }
