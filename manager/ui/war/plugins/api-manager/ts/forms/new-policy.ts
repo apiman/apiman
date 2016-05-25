@@ -46,10 +46,13 @@ module Apiman {
                         });
 
                         // Set template
-                        CustomTemplateSvcs.setTemplate('plugins/api-manager/html/policyForms/' + $scope.selectedDef.id + '.html');
+                        //ConfigForms[$scope.selectedDef.name] = '';
+
+                        //CustomTemplateSvcs.setTemplate();
+                        //CustomTemplateSvcs.setTemplate('plugins/api-manager/html/policyForms/' + $scope.selectedDef.id + '.html');
 
                         // Set include scope to custom HTML file that will include set template
-                        $scope.include = 'plugins/api-manager/html/forms/custom.html';
+                        //$scope.include = 'plugins/api-manager/html/forms/custom.html';
                     } else {
                         var inc = ConfigForms[$scope.selectedDef.id];
 
@@ -86,7 +89,7 @@ module Apiman {
                     if ($scope.selectedDef.formType == 'JsonSchema') {
                         $scope.include = 'plugins/api-manager/html/policyForms/JsonSchema.include';
                     } else if($scope.selectedDef.formType == 'AngularTemplate') {
-                        $scope.include = 'plugins/api-manager/html/forms/custom.html';
+                        //$scope.include = 'plugins/api-manager/html/forms/custom.html';
                     } else {
                         var inc = ConfigForms[$scope.selectedDef.id];
                         if (!inc) {

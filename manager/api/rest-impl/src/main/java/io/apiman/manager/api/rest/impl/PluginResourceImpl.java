@@ -65,6 +65,8 @@ import java.util.Set;
 import javax.annotation.Resource;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.apache.commons.io.IOUtils;
@@ -321,7 +323,6 @@ public class PluginResourceImpl implements IPluginResource {
      * @return 
      * @see io.apiman.manager.api.rest.contract.IPluginResource#getPolicyForm(java.lang.Long, java.lang.String)
      */
-    @SuppressWarnings({ "finally" })
     @Override
     public Response getPolicyForm(Long pluginId, String policyDefId) throws PluginNotFoundException,
             PluginResourceNotFoundException, PolicyDefinitionNotFoundException {
@@ -355,25 +356,32 @@ public class PluginResourceImpl implements IPluginResource {
             if ((pdBean.getFormType() == PolicyFormType.JsonSchema || pdBean.getFormType() == PolicyFormType.AngularTemplate) 
                     && pdBean.getForm() != null) {
                 String formPath = pdBean.getForm();
+                
                 if (!formPath.startsWith("/")) { //$NON-NLS-1$
                     formPath = "META-INF/apiman/policyDefs/" + formPath; //$NON-NLS-1$
                 } else {
                     formPath = formPath.substring(1);
                 }
+                
                 Plugin plugin = pluginRegistry.loadPlugin(coordinates);
                 PluginClassLoader loader = plugin.getLoader();
                 InputStream resource = null;
                 
-                try {
-                    resource = loader.getResourceAsStream(formPath);
-                    if (resource == null) {
-                        throw ExceptionFactory.pluginResourceNotFoundException(formPath, coordinates);
-                    }
-                    
-                } finally {
-                    resource = loader.getResourceAsStream(formPath);
-                    return Response.ok(resource).build();
+                resource = loader.getResourceAsStream(formPath);
+                
+                if (resource == null) {
+                    throw ExceptionFactory.pluginResourceNotFoundException(formPath, coordinates);
                 }
+                
+                MediaType type = MediaType.APPLICATION_JSON_TYPE;
+                
+                if (pdBean.getFormType() == PolicyFormType.AngularTemplate) {
+                    type = MediaType.TEXT_HTML_TYPE;
+                }
+                
+                return Response
+                        .ok(resource, type)
+                        .build();
             } else {
                 throw ExceptionFactory.pluginResourceNotFoundException(null, coordinates);
             }
