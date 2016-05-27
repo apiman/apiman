@@ -1,0 +1,21 @@
+POST /plugins admin/admin
+Content-Type: application/json
+X-RestTest-System-Property: apiman.test.m2-path=src/test/resources/test-plan-data/plugins/m2
+
+{
+  "groupId" : "io.apiman.plugins",
+  "artifactId" : "apiman-plugins-super-duper-policy",
+  "version" : "1.2.6-SNAPSHOT"
+}
+----
+200
+Content-Type: application/json
+X-RestTest-BindTo-plugin-id: id
+
+{
+  "name" : "Super Duper Policy Plugin",
+  "description" : "A really super plugin that does amazing things.",
+  "groupId" : "io.apiman.plugins",
+  "artifactId" : "apiman-plugins-super-duper-policy",
+  "version" : "1.2.6-SNAPSHOT"
+}
