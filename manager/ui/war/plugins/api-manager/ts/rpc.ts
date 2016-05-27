@@ -39,17 +39,24 @@ module ApimanRPC {
         }]);
 
 
-    // Best practice here is to use a service to set the custom template path
-    // so that it is accessible by multiple controllers
-    export var CustomTemplateSvcs = _module.service('CustomTemplateSvcs', ['$rootScope', function($rootScope) {
+    export var CustomPluginSvcs = _module.service('CustomPluginSvcs', [
+        '$rootScope',
+        '$http',
+        '$resource',
+        '$sce',
+        'Configuration',
+        function($rootScope, $http, $resource, $sce, Configuration) {
         return {
-            getTemplate: function() {
-                return $rootScope.customTemplate;
-            },
-            setTemplate: function(template) {
-                $rootScope.customTemplate = template;
-                
-                return;
+            getPolicyForm: function(pluginId, policyDefId, success, error) {
+                var req = {
+                    method: 'GET',
+                    url: Configuration.api.endpoint + '/plugins/' + pluginId + '/policyDefs/' + policyDefId + '/form',
+                    headers: {
+                        'Content-Type': 'text/html'
+                    }
+                };
+
+                return $http(req).then(success, error);
             }
         }
     }]);

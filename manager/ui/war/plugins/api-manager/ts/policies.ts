@@ -19,9 +19,39 @@ module Apiman {
     // This is the controller that calls the CustomTemplateSvcs service
     // to determine where to pull the dynamic template from, and provides additional functionality
     // that can be performed on that template. We can discuss complete customizability in the future. RMY
-    _module.controller('Apiman.CustomFormController',
-        ['$scope', 'Logger', 'PluginSvcs', 'EntityStatusSvc', 'CustomTemplateSvcs', ($scope, Logger, PluginSvcs, EntityStatusSvc, CustomTemplateSvcs) => {
-            $scope.formPath = CustomTemplateSvcs.getTemplate();
+    _module.controller('Apiman.CustomPluginController',
+        [
+            '$compile',
+            '$sce',
+            '$rootScope',
+            '$scope',
+            'Logger',
+            'PluginSvcs',
+            'EntityStatusSvc',
+            'CustomPluginSvcs',
+            ($compile, $sce, $rootScope, $scope, Logger, PluginSvcs, EntityStatusSvc, CustomPluginSvcs) => {
+
+            var loadSchema = function() {
+                $scope.schemaState = 'loading';
+
+                var pluginId = $scope.selectedDef.pluginId;
+                var policyDefId = $scope.selectedDef.id;
+
+                CustomPluginSvcs.getPolicyForm(pluginId, policyDefId, function(schema) {
+                    $scope.formPath = $sce.trustAsHtml(schema.data);
+                    $compile($scope.formPath)($scope);
+                    $scope.schemaState = 'loaded';
+                }, function (error) {
+                    // TODO handle the error better here!
+                    Logger.error(error);
+                    $scope.schemaState = 'loaded';
+                });
+            };
+
+            loadSchema();
+
+                $scope.form = {};
+                $scope.who = 'Rachel';
 
             // Convenience methods such as validation, progress bars, etc.
 
@@ -29,8 +59,6 @@ module Apiman {
             $scope.submit = function () {
                 alert('Submitted!');
             };
-
-            $scope.schemaState = 'loaded';
         }]);
 
 

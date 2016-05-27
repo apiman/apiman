@@ -16,8 +16,8 @@ module Apiman {
     };
 
     export var NewPolicyController = _module.controller("Apiman.NewPolicyController",
-        ['$q', '$location', '$scope', 'OrgSvcs', 'ApimanSvcs', 'CustomTemplateSvcs', 'PageLifecycle', 'Logger', '$routeParams',
-        ($q, $location, $scope, OrgSvcs, ApimanSvcs, CustomTemplateSvcs, PageLifecycle, Logger, $routeParams) => {
+        ['$q', '$location', '$sce', '$scope', 'OrgSvcs', 'ApimanSvcs', 'CustomPluginSvcs', 'PageLifecycle', 'Logger', '$routeParams',
+        ($q, $location, $sce, $scope, OrgSvcs, ApimanSvcs, CustomPluginSvcs, PageLifecycle, Logger, $routeParams) => {
             var params = $routeParams;
             
             var pageData = {
@@ -37,22 +37,8 @@ module Apiman {
                     if ($scope.selectedDef.formType == 'JsonSchema') {
                         $scope.include = 'plugins/api-manager/html/policyForms/JsonSchema.include';
                     } else if($scope.selectedDef.formType == 'AngularTemplate') {
-                        // Fetch HTML file
-                        $q(function (resolve, reject) {
-                            ApimanSvcs.query({ entityType: 'policyDefs' }, function (response) {
-                                resolve(response);
-                                console.log('Response: ' + JSON.stringify(response));
-                            }, reject);
-                        });
-
-                        // Set template
-                        //ConfigForms[$scope.selectedDef.name] = '';
-
-                        //CustomTemplateSvcs.setTemplate();
-                        //CustomTemplateSvcs.setTemplate('plugins/api-manager/html/policyForms/' + $scope.selectedDef.id + '.html');
-
                         // Set include scope to custom HTML file that will include set template
-                        //$scope.include = 'plugins/api-manager/html/forms/custom.html';
+                        $scope.include = 'plugins/api-manager/html/forms/custom.html';
                     } else {
                         var inc = ConfigForms[$scope.selectedDef.id];
 

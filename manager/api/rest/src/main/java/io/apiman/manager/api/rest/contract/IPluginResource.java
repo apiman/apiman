@@ -29,7 +29,6 @@ import io.swagger.annotations.Api;
 
 import java.util.List;
 
-import javax.annotation.Resource;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
