@@ -104,23 +104,35 @@ API governance is achieved by the API Gateway applying policies to API requests.
 
 Apiman has support for many policies, including (but not limited to):
 
-[cols="2*" options="header"]
+[cols="1,2" options="header"]
 |===
 
-| Policy Categories
-| Policies
+| Policy Categories | Policies
 
-| Security Policies
-a| * BASIC Authentication - A username/password is required to access an API.
+| Security Policies 
+a| * *BASIC Authentication* - A username/password is required to access an API.
+* *OAuth Authentication* - Uses Keycloak to provide OAuth authentication.
+* *Authorization* - Access to APIs’ resources is controlled by user roles.
+* *IP Blacklist* - Clients with specific IP address will be blocked from accessing an API.
+* *IP Whitelist* - And, clients with specific IP address will not &nbsp;be blocked from accessing an API.
+* *Ignored Resources* - Paths to APIs’ resources that will not be accessible.
+* *Time Restricted Access* - Specify when an API can be accessed.
+* *URL Whitelist* - Allow only specific sub-resources to be accessed.
 
 | Limiting Policies
-a| * Rate Limiting - Access to an API is limited by the number of requests in a defined time period (generally used to create a fine-grained limit).
+a| * *Rate Limiting* - Access to an API is limited by the number of requests in a defined time period (generally used to create a fine-grained limit).
+* *Quota* - Access to an API is limited by the number of requests in a defined time period (generally used to create a coarse-grained limit).
+* *Transfer Quota* - Similar to a Quota policy, but based on the number of bytes transferred, not the number of requests.
 
 | Modification Policies
-a| * URL Rewriting - Modify any URLs in the API response so that they direct users through the API Gateway rather than directly to the back-end API.
+a| * *URL Rewriting* - Modify any URLs in the API response so that they direct users through the API Gateway rather than directly to the back-end API.
+* *Transformation* - Used to convert between JSON and XML.
+* *JSONP* - Can convert a standard JSON API into a JSONP endpoint.
+* *Simple Header* - Used to make custom changes to the request and/or response headers (add, remove, modify).
 
 | Other Policies
-a| * Caching - Cache results from a backend API.
+a| * *Caching* - Cache results from a backend API.
+* *Logging* - Log all request/response headers for each request.
 
 |===
 
@@ -355,15 +367,16 @@ The full set of permissions provided in apiman by these preconfigured roles are:
 
 | Client App Developer
 | Users responsible for creating and managing client apps.
-| Client App View
+a| * *Client App* View, Edit, Admin
 
 | Organization Owner
 | Automatically granted to the user who creates an Organization. Can be granted to other users by an existing Organization Owner.
-| All permissions
+a| (all permissions)
 
 | API Developer
 | Users responsible for creating and managing APIs.
-| Plan View
+a| * *Plan* View, Edit, Admin
+* *API* View, Edit, Admin
 |===
 
 Organization owners can assign roles to users through the _Manage Members_ form in the apiman Management UI (found off the _Members_ tab for an Organization). Each user must be assigned at least one role, but users can also be assigned multiple roles.
