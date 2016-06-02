@@ -166,7 +166,7 @@ module Apiman {
             };
         }]);
 
-    _module.directive('bindHtmlCompile', ['$compile', '$interpolate', function ($compile, $interpolate) {
+    _module.directive('bindHtmlCompile', ['$compile', function ($compile) {
         return {
             restrict: 'A',
             scope: '=',
@@ -175,10 +175,7 @@ module Apiman {
                     return scope.$eval(attrs.bindHtmlCompile);
                 }, function (value) {
                     element.html(value);
-                    console.log('element.html(value): ' + JSON.stringify(element.html(value)));
-                    console.log('element.contents(): ' + JSON.stringify(element.contents()));
                     $compile(element.contents())(scope);
-                    //$interpolate(element.contents())(scope);
                 });
             }
         };

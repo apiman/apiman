@@ -9,10 +9,13 @@ Content-Type: text/html
     <form name="form.customForm" ng-submit="submit()" novalidate>
         <!-- 1: ng-model must match the key it maps to on the backend -->
         <label for="name">Name</label>
-        <input type="text" name="name" ng-model="one" ng-change="changed()" required>
+        <input type="text" name="name" ng-model="name" ng-change="changed()" required>
+        <br>
+        <label for="name">Company</label>
+        <input type="text" name="company" ng-model="company" ng-change="changed()" required>
         <br>
         <label for="email">Email</label>
-        <input type="email" name="email" ng-model="two" value="blah" required>
+        <input type="email" name="email" ng-model="email" ng-change="changed()" required>
 
         <!-- 2: Custom Validation -->
         <div ng-show="form.customForm.$submitted || form.customForm.name.$touched">
@@ -34,6 +37,6 @@ Content-Type: text/html
         <p></p>
 
         <!-- Submit -->
-        <input ng-click="submit()" type="submit" ng-disabled="form.customForm.$invalid" value="Submit"></input>
+        <input type="submit" ng-disabled="form.customForm.$invalid" value="Submit"></input>
     </form>
 </div>

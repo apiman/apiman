@@ -54,19 +54,14 @@
         </div>
       </div>
 
-      <!-- Custom policy types -->
+      <!-- Custom Policy Types -->
       <div class="row"
            ng-if="selectedDef.formType == 'AngularTemplate' && !include"
            ng-controller="Apiman.CustomPluginController">
         <h3 data-field="policyHeading">{{ selectedDef.name }} <span apiman-i18n-key="configuration">Configuration</span></h3>
         <div class="apiman-box col-md-9 container">
-          <!--
-          <p>ng-bind-html</p>
-          <div ng-bind-html="formPath" class="custom-template"></div>
-          -->
-          <!-->
-          <p>bind-html-compile</p>
-          <div bind-html-compile="formPath" class="custom-template"></div>
+          <div bind-html-compile="formPath"
+               class="custom-template"></div>
         </div>
       </div>
 
