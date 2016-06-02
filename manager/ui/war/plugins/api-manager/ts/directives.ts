@@ -166,6 +166,45 @@ module Apiman {
             };
         }]);
 
+    _module.directive('bindHtmlCompile', ['$compile', '$interpolate', function ($compile, $interpolate) {
+        return {
+            restrict: 'A',
+            scope: '=',
+            link: function (scope, element, attrs) {
+                scope.$watch(function () {
+                    return scope.$eval(attrs.bindHtmlCompile);
+                }, function (value) {
+                    element.html(value);
+                    console.log('element.html(value): ' + JSON.stringify(element.html(value)));
+                    console.log('element.contents(): ' + JSON.stringify(element.contents()));
+                    $compile(element.contents())(scope);
+                    //$interpolate(element.contents())(scope);
+                });
+            }
+        };
+    }]);
+
+    _module.directive('customTemplate', ['$sce', '$compile', 'Configuration', function ($sce, $compile, Configuration) {
+        return {
+            restrict: 'E',
+            scope: '=',
+            link: function(scope, element, attrs) {
+                element.html().show();
+                $compile(element.contents())(scope);
+                var pluginId = attrs.plugin;
+                var policyDefId = attrs.policy;
+
+                return $sce.trustAsHtml(Configuration.api.endpoint + '/plugins/' + pluginId + '/policyDefs/' + policyDefId + '/form');
+            },
+            templateUrl: function(elem, attrs) {
+                var pluginId = attrs.plugin;
+                var policyDefId = attrs.policy;
+
+                return $sce.trustAsHtml(Configuration.api.endpoint + '/plugins/' + pluginId + '/policyDefs/' + policyDefId + '/form');
+            }
+        };
+    }]);
+
     _module.factory('EntityStatusSvc', 
         ['$rootScope', 'Logger',
         function($rootScope, Logger) {

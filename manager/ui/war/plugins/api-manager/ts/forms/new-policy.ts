@@ -38,7 +38,8 @@ module Apiman {
                         $scope.include = 'plugins/api-manager/html/policyForms/JsonSchema.include';
                     } else if($scope.selectedDef.formType == 'AngularTemplate') {
                         // Set include scope to custom HTML file that will include set template
-                        $scope.include = 'plugins/api-manager/html/forms/custom.html';
+                        //$scope.include = 'plugins/api-manager/html/forms/custom.html';
+                        $scope.include = undefined;
                     } else {
                         var inc = ConfigForms[$scope.selectedDef.id];
 
@@ -63,6 +64,9 @@ module Apiman {
 
                     $scope.selectedDef = newDef;
 
+                    CustomPluginSvcs.setSelectedDef(newDef);
+                    console.log('Setting selected def...');
+
                     loadTemplate(newValue);
                 }
             };
@@ -76,6 +80,7 @@ module Apiman {
                         $scope.include = 'plugins/api-manager/html/policyForms/JsonSchema.include';
                     } else if($scope.selectedDef.formType == 'AngularTemplate') {
                         //$scope.include = 'plugins/api-manager/html/forms/custom.html';
+                        $scope.include = undefined;
                     } else {
                         var inc = ConfigForms[$scope.selectedDef.id];
                         if (!inc) {

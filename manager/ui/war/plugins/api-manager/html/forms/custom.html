@@ -1,10 +1,14 @@
-<div class="form policy-config json-schema"
+<div class="form policy-config"
      ng-controller="Apiman.CustomPluginController">
     <div ng-show="schemaState == 'loading'">
         <div class="spinner spinner-sm pull-left"></div>
         <span apiman-i18n-key="loading-policy-config-schema"
               style="margin-left: 5px">Loading policy configuration schema...</span>
     </div>
+    <p>{{ selectedDef | json }}</p>
+    <p>ng-bind-html</p>
     <div ng-bind-html="formPath"></div>
+    <p>bind-html-compile</p>
+    <div bind-html-compile="formPath"></div>
 </div>
 

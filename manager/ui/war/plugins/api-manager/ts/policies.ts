@@ -25,21 +25,53 @@ module Apiman {
             '$sce',
             '$rootScope',
             '$scope',
+            '$interpolate',
             'Logger',
             'PluginSvcs',
             'EntityStatusSvc',
             'CustomPluginSvcs',
-            ($compile, $sce, $rootScope, $scope, Logger, PluginSvcs, EntityStatusSvc, CustomPluginSvcs) => {
+            ($compile, $sce, $rootScope, $scope, $interpolate, Logger, PluginSvcs, EntityStatusSvc, CustomPluginSvcs) => {
+
+                $scope.form = {};
+                $scope.formPath = '';
+                $scope.one = 'Marc';
+                $scope.who = 'Rachel';
+
+                console.log('CustomPluginController has loaded...');
+
+                // Convenience methods such as validation, progress bars, etc.
+
+                // Do stuff here to submit request to API using Auth Header
+                $scope.submit = function () {
+                    alert('Submitted!');
+                };
 
             var loadSchema = function() {
                 $scope.schemaState = 'loading';
 
+                $scope.selectedDef = CustomPluginSvcs.getSelectedDef();
+
+                //var pluginId = $scope.selectedDef.pluginId;
+                //var policyDefId = $scope.selectedDef.id;
                 var pluginId = $scope.selectedDef.pluginId;
                 var policyDefId = $scope.selectedDef.id;
 
+                console.log('pluginId: ' + JSON.stringify(pluginId));
+                console.log('policyDefId: ' + JSON.stringify(policyDefId));
+
                 CustomPluginSvcs.getPolicyForm(pluginId, policyDefId, function(schema) {
-                    $scope.formPath = $sce.trustAsHtml(schema.data);
-                    $compile($scope.formPath)($scope);
+                    //var newTemp = $interpolate(schema.data)($scope);
+                    var newTemp = $compile(schema.data)($scope);
+                    //var trust = $sce.trustAsHtml(schema.data);
+                    //$scope.formPath = $compile(trust)($scope);
+                    //var el = angular.element(schema.data);
+                    //schema.data = $sce.trustAsHtml(schema.data);
+                    //$scope.formPath = $compile(schema.data)($scope || $rootScope);
+                    $scope.formPath = newTemp;
+                    //$scope.formPath = $sce.trustAsHtml(newTemp);
+                    //$scope.formPath = $sce.trustAsHtml(schema.data);
+                    //$scope.formPath = $sce.trustAsHtml(schema);
+                    //$scope.formPath = trust;
                     $scope.schemaState = 'loaded';
                 }, function (error) {
                     // TODO handle the error better here!
@@ -48,17 +80,18 @@ module Apiman {
                 });
             };
 
+                /*
+                $scope.$watch('one', function(newValue) {
+                    console.log('newValue: ' + JSON.stringify(newValue));
+                });
+                */
+
+                $scope.change = function() {
+                    console.log('Change detected');
+                };
+
             loadSchema();
 
-                $scope.form = {};
-                $scope.who = 'Rachel';
-
-            // Convenience methods such as validation, progress bars, etc.
-
-            // Do stuff here to submit request to API using Auth Header
-            $scope.submit = function () {
-                alert('Submitted!');
-            };
         }]);
 
 

@@ -4,14 +4,12 @@ GET /plugins/${plugin-id}/policyDefs/super-duper-policy/form admin/admin
 200
 Content-Type: text/html
 
-
-<h1>super-duper-policy.html</h1>
-
-<div>
-    <form name="form.customForm" novalidate>
+<div class="custom-form">
+    <h1>super-duper-policy.html</h1><p></p>
+    <form name="form.customForm" ng-submit="submit()" novalidate>
         <!-- 1: ng-model must match the key it maps to on the backend -->
         <label for="name">Name</label>
-        <input type="text" name="name" ng-model="one" required>
+        <input type="text" name="name" ng-model="one" ng-change="changed()" required>
         <br>
         <label for="email">Email</label>
         <input type="email" name="email" ng-model="two" value="blah" required>
