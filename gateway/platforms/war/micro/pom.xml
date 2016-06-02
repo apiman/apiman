@@ -4,12 +4,12 @@
   <parent>
     <groupId>io.apiman</groupId>
     <artifactId>apiman-gateway-platforms</artifactId>
-    <version>1.2.3-SNAPSHOT</version>
+    <version>1.2.7-SNAPSHOT</version>
     <relativePath>../../pom.xml</relativePath>
   </parent>
   <artifactId>apiman-gateway-platforms-war-micro</artifactId>
   <name>apiman-gateway-platforms-war-micro</name>
-  
+
   <dependencies>
     <!-- Project JARs -->
     <dependency>
@@ -50,6 +50,10 @@
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-gateway-engine-hawkular</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
       <artifactId>apiman-gateway-engine-jdbc</artifactId>
     </dependency>
     <dependency>
@@ -75,8 +79,8 @@
       <artifactId>commons-configuration</artifactId>
     </dependency>
     <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>javax.servlet-api</artifactId>
+      <groupId>org.jboss.spec.javax.servlet</groupId>
+      <artifactId>jboss-servlet-api_3.0_spec</artifactId>
     </dependency>
     <dependency>
       <groupId>org.jboss.logging</groupId>
@@ -144,7 +148,7 @@
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-jaxb-provider</artifactId>
     </dependency>
-    
+
     <!-- Other Dependencies -->
     <dependency>
       <groupId>commons-dbcp</groupId>
@@ -182,5 +186,5 @@
       <groupId>org.slf4j</groupId>
     </dependency>
   </dependencies>
-  
+
 </project>

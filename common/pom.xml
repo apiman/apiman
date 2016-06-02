@@ -4,7 +4,7 @@
   <parent>
     <groupId>io.apiman</groupId>
     <artifactId>apiman</artifactId>
-    <version>1.2.3-SNAPSHOT</version>
+    <version>1.2.7-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>apiman-common</artifactId>
@@ -14,8 +14,10 @@
   <modules>
     <module>auth</module>
     <module>config</module>
+    <module>net</module>
     <module>plugin</module>
     <module>servlet</module>
     <module>util</module>
+    <module>logging</module>
   </modules>
 </project>

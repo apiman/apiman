@@ -33,7 +33,7 @@ import java.util.Map;
  */
 public class InfinispanRateLimiterComponent extends AbstractInfinispanComponent implements IRateLimiterComponent {
 
-    private static final String DEFAULT_CACHE_CONTAINER = "java:jboss/infinispan/container/apiman-gateway"; //$NON-NLS-1$
+    private static final String DEFAULT_CACHE_CONTAINER = "java:jboss/infinispan/apiman"; //$NON-NLS-1$
     private static final String DEFAULT_CACHE = "rate-limiter"; //$NON-NLS-1$
 
     private Object mutex = new Object();

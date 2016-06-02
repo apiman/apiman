@@ -6,7 +6,7 @@
             <li ng-class="{ true: 'active' } [tab == 'policies']"><a id="tab-policies" data-field="toClientPolicies" href="{{ pluginName }}/orgs/{{ org.id }}/clients/{{ client.id }}/{{version.version}}/policies" apiman-i18n-key="policies">Policies</a></li>
             <li ng-class="{ true: 'active' } [tab == 'apis']" apiman-status="Registered"><a id="tab-apis" data-field="toClientApis" href="{{ pluginName }}/orgs/{{ org.id }}/clients/{{ client.id }}/{{version.version}}/apis" apiman-i18n-key="apis">APIs</a></li>
             <li ng-class="{ true: 'active' } [tab == 'metrics']" ng-show="showMetrics" apiman-status="Registered"><a id="tab-metrics" data-field="toClientMetrics" href="{{ pluginName }}/orgs/{{ org.id }}/clients/{{ client.id }}/{{version.version}}/metrics" apiman-i18n-key="metrics">Metrics</a></li>
-            <li ng-class="{ true: 'active' } [tab == 'activity']"><a id="tab-activity" data-field="toClientActivity" href="{{ pluginName }}/orgs/{{ org.id }}/clients/{{ client.id }}/{{version.version}}/activity" apiman-i18n-key="activity">Activity</a></li>
+            <li ng-class="{ true: 'active' } [tab == 'activity']"><a id="tab-activity" data-field="toClientActivity" href="{{ pluginName }}/orgs/{{ org.id }}/clients/{{ client.id }}/{{version.version}}/activity" apiman-i18n-key="activity">Change Log</a></li>
             <li class="last"><a apiman-i18n-skip>&nbsp;</a></li>
           </ul>
         </div>

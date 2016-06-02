@@ -16,6 +16,7 @@
 
 package io.apiman.manager.api.rest.impl;
 
+import io.apiman.common.logging.IApimanLogger;
 import io.apiman.common.util.MediaType;
 import io.apiman.manager.api.beans.download.DownloadBean;
 import io.apiman.manager.api.beans.download.DownloadType;
@@ -25,13 +26,13 @@ import io.apiman.manager.api.core.IDownloadManager;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.core.logging.ApimanLogger;
-import io.apiman.manager.api.core.logging.IApimanLogger;
 import io.apiman.manager.api.exportimport.json.JsonExportWriter;
 import io.apiman.manager.api.exportimport.json.JsonImportReader;
 import io.apiman.manager.api.exportimport.manager.StorageExporter;
 import io.apiman.manager.api.exportimport.manager.StorageImportDispatcher;
 import io.apiman.manager.api.exportimport.read.IImportReader;
 import io.apiman.manager.api.exportimport.write.IExportWriter;
+import io.apiman.manager.api.migrator.DataMigrator;
 import io.apiman.manager.api.rest.contract.ISystemResource;
 import io.apiman.manager.api.rest.contract.exceptions.SystemErrorException;
 import io.apiman.manager.api.rest.impl.util.ExceptionFactory;
@@ -54,7 +55,7 @@ import javax.ws.rs.core.StreamingOutput;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.BooleanUtils;
+import org.apache.commons.lang3.BooleanUtils;
 
 /**
  * Implementation of the System API.
@@ -78,6 +79,8 @@ public class SystemResourceImpl implements ISystemResource {
     private StorageExporter exporter;
     @Inject
     private StorageImportDispatcher importer;
+    @Inject
+    private DataMigrator migrator;
     @Inject
     private IDownloadManager downloadManager;
 
@@ -178,16 +181,6 @@ public class SystemResourceImpl implements ISystemResource {
         StreamingOutput stream = new StreamingOutput() {
             @Override
             public void write(final OutputStream output) throws IOException, WebApplicationException {
-                InputStream importData = null;
-                IImportReader reader;
-                try {
-                    importData = new FileInputStream(importFile);
-                    reader = new JsonImportReader(importLogger, importData);
-                } catch (IOException e) {
-                    IOUtils.closeQuietly(importData);
-                    throw new SystemErrorException(e);
-                }
-
                 final PrintWriter writer = new PrintWriter(output);
                 IApimanLogger logger = new IApimanLogger() {
                     @Override
@@ -228,6 +221,25 @@ public class SystemResourceImpl implements ISystemResource {
                         writer.flush();
                     }
                 };
+
+                File migratedImportFile = File.createTempFile("apiman_import_migrated", ".json"); //$NON-NLS-1$ //$NON-NLS-2$
+                migratedImportFile.deleteOnExit();
+                
+                // Migrate the data (if necessary)
+                migrator.setLogger(logger);
+                migrator.migrate(importFile, migratedImportFile);
+                
+                // Now import the migrated data
+                InputStream importData = null;
+                IImportReader reader;
+                try {
+                    importData = new FileInputStream(migratedImportFile);
+                    reader = new JsonImportReader(logger, importData);
+                } catch (IOException e) {
+                    IOUtils.closeQuietly(importData);
+                    throw new SystemErrorException(e);
+                }
+
                 try {
                     importer.setLogger(logger);
                     importer.start();
@@ -238,6 +250,7 @@ public class SystemResourceImpl implements ISystemResource {
                 } finally {
                     IOUtils.closeQuietly(importData);
                     FileUtils.deleteQuietly(importFile);
+                    FileUtils.deleteQuietly(migratedImportFile);
                 }
             }
         };

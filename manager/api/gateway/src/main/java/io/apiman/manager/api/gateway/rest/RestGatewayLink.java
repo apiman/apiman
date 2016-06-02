@@ -15,14 +15,30 @@
  */
 package io.apiman.manager.api.gateway.rest;
 
+import io.apiman.common.util.AesEncrypter;
+import io.apiman.common.util.ApimanStrLookup;
+import io.apiman.common.util.crypt.CurrentDataEncrypter;
+import io.apiman.common.util.crypt.DataEncryptionContext;
+import io.apiman.gateway.engine.beans.Api;
+import io.apiman.gateway.engine.beans.ApiEndpoint;
+import io.apiman.gateway.engine.beans.Client;
+import io.apiman.gateway.engine.beans.SystemStatus;
+import io.apiman.gateway.engine.beans.exceptions.PublishingException;
+import io.apiman.gateway.engine.beans.exceptions.RegistrationException;
+import io.apiman.manager.api.beans.gateways.GatewayBean;
+import io.apiman.manager.api.beans.gateways.RestGatewayConfigBean;
+import io.apiman.manager.api.gateway.GatewayAuthenticationException;
+import io.apiman.manager.api.gateway.IGatewayLink;
+import io.apiman.manager.api.gateway.i18n.Messages;
+
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang.text.StrLookup;
-import org.apache.commons.lang.text.StrSubstitutor;
+import org.apache.commons.lang3.text.StrLookup;
+import org.apache.commons.lang3.text.StrSubstitutor;
 import org.apache.http.HttpException;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpRequestInterceptor;
@@ -37,21 +53,6 @@ import org.apache.http.ssl.SSLContextBuilder;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.apiman.common.util.AesEncrypter;
-import io.apiman.common.util.ApimanStrLookup;
-import io.apiman.common.util.crypt.CurrentDataEncrypter;
-import io.apiman.gateway.engine.beans.Api;
-import io.apiman.gateway.engine.beans.ApiEndpoint;
-import io.apiman.gateway.engine.beans.Client;
-import io.apiman.gateway.engine.beans.SystemStatus;
-import io.apiman.gateway.engine.beans.exceptions.PublishingException;
-import io.apiman.gateway.engine.beans.exceptions.RegistrationException;
-import io.apiman.manager.api.beans.gateways.GatewayBean;
-import io.apiman.manager.api.beans.gateways.RestGatewayConfigBean;
-import io.apiman.manager.api.gateway.GatewayAuthenticationException;
-import io.apiman.manager.api.gateway.IGatewayLink;
-import io.apiman.manager.api.gateway.i18n.Messages;
-
 /**
  * An implementation of a Gateway Link that uses the Gateway's simple REST
  * API to publish APIs.
@@ -62,6 +63,9 @@ public class RestGatewayLink implements IGatewayLink {
 
     private static StrLookup LOOKUP = new ApimanStrLookup();
     private static StrSubstitutor PROPERTY_SUBSTITUTOR = new StrSubstitutor(LOOKUP);
+    static {
+        PROPERTY_SUBSTITUTOR.setValueDelimiter(':');
+    }
 
     private static final ObjectMapper mapper = new ObjectMapper();
     private static SSLConnectionSocketFactory sslConnectionFactory;
@@ -94,7 +98,7 @@ public class RestGatewayLink implements IGatewayLink {
         try {
             this.gateway = gateway;
             String cfg = gateway.getConfiguration();
-            cfg = CurrentDataEncrypter.instance.decrypt(cfg);
+            cfg = CurrentDataEncrypter.instance.decrypt(cfg, new DataEncryptionContext());
             cfg = PROPERTY_SUBSTITUTOR.replace(cfg);
             setConfig((RestGatewayConfigBean) mapper.reader(RestGatewayConfigBean.class).readValue(cfg));
             getConfig().setPassword(AesEncrypter.decrypt(getConfig().getPassword()));

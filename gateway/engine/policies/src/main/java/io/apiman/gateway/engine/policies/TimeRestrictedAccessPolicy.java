@@ -32,6 +32,7 @@ import java.util.List;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.joda.time.LocalTime;
 
 /**
  * Policy that restrict access to resource by time when resource can be accessed.
@@ -96,7 +97,7 @@ public class TimeRestrictedAccessPolicy extends AbstractMappedPolicy<TimeRestric
             for (TimeRestrictedAccess rule : rulesEnabledForPath) {
                 boolean matchesDay = matchesDay(currentTime, rule);
                 if (matchesDay) {
-                    boolean matchesTime = matchesTime(rule, currentTime);
+                    boolean matchesTime = matchesTime(rule);
                     if (matchesTime) {
                         return true;
                     }
@@ -107,19 +108,30 @@ public class TimeRestrictedAccessPolicy extends AbstractMappedPolicy<TimeRestric
         return true;
     }
 
+    /**
+     * Returns the set of rules that match the destination path (resource location)
+     * being access by the request.
+     * @param config
+     * @param destination
+     */
     private List<TimeRestrictedAccess> getRulesMatchingPath(TimeRestrictedAccessConfig config,
             String destination) {
         List<TimeRestrictedAccess> rulesForPath = new ArrayList<>();
         for (TimeRestrictedAccess rule : config.getRules()) {
-            boolean destinationMatches = destination.matches(rule.getPathPattern());
-            if (destinationMatches){
+            if (destination.matches(rule.getPathPattern())){
                 rulesForPath.add(rule);
             }
         }
         return rulesForPath;
     }
-    
-    private boolean matchesTime(TimeRestrictedAccess filter, DateTime currentTime) {
+
+    /**
+     * Returns true if the given DateTime matches the time range indicated by the
+     * filter/rule.
+     * @param currentTime
+     * @param filter
+     */
+    private boolean matchesTime(TimeRestrictedAccess filter) {
         Date start = filter.getTimeStart();
         Date end = filter.getTimeEnd();
         if (end == null || start == null) {
@@ -127,11 +139,18 @@ public class TimeRestrictedAccessPolicy extends AbstractMappedPolicy<TimeRestric
         }
         long startMs = start.getTime();
         long endMs = end.getTime();
+        DateTime currentTime = new LocalTime(DateTimeZone.UTC).toDateTime(new DateTime(0l));
         long nowMs = currentTime.toDate().getTime();
         
         return nowMs >= startMs && nowMs < endMs;
     }
 
+    /**
+     * Returns true if the given time matches the day-of-week restrictions specified
+     * by the included filter/rule.
+     * @param currentTime
+     * @param filter
+     */
     private boolean matchesDay(DateTime currentTime, TimeRestrictedAccess filter) {
         Integer dayStart = filter.getDayStart();
         Integer dayEnd = filter.getDayEnd();

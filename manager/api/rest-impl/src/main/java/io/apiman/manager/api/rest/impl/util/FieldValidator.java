@@ -18,7 +18,7 @@ package io.apiman.manager.api.rest.impl.util;
 import io.apiman.manager.api.rest.contract.exceptions.InvalidNameException;
 import io.apiman.manager.api.rest.impl.i18n.Messages;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Validates the name of an entity.

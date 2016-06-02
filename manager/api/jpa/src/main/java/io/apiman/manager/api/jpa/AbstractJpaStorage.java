@@ -56,6 +56,10 @@ public abstract class AbstractJpaStorage {
     @Inject
     private IEntityManagerFactoryAccessor emfAccessor;
 
+    public String getDialect() {
+        return (String) emfAccessor.getEntityManagerFactory().getProperties().get("hibernate.dialect"); //$NON-NLS-1$
+    }
+
     private static ThreadLocal<EntityManager> activeEM = new ThreadLocal<>();
     public static boolean isTxActive() {
         return activeEM.get() != null;
@@ -218,6 +222,7 @@ public abstract class AbstractJpaStorage {
         return rval;
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     protected <T> Iterator<T> getAll(Class<T> type, Query query) throws StorageException {
         return new EntityIterator(type, query);
     }
@@ -389,14 +394,14 @@ public abstract class AbstractJpaStorage {
         private Query query;
         private int pageIndex = 0;
         private int pageSize = 100;
-        
+
         private int resultIndex;
         private List<T> results;
 
         /**
          * Constructor.
-         * @param query
-         * @throws StorageException
+         * @param query the query
+         * @throws StorageException if a storage problem occurs while storing a bean.
          */
         public EntityIterator(Class<T> type, Query query) throws StorageException {
             this.query = query;
@@ -432,7 +437,6 @@ public abstract class AbstractJpaStorage {
         @Override
         public T next() {
             T rval = results.get(resultIndex++);
-            entityManager().detach(rval);
             if (resultIndex >= results.size()) {
                 fetch();
             }
@@ -440,24 +444,11 @@ public abstract class AbstractJpaStorage {
         }
 
         /**
-         * @throws StorageException
-         */
-        private EntityManager entityManager() {
-            try {
-                return getActiveEntityManager();
-            } catch (StorageException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        
-        /**
          * @see java.util.Iterator#remove()
          */
         @Override
         public void remove() {
-            // Not implemented.
+            throw new UnsupportedOperationException();
         }
-
     }
-
 }

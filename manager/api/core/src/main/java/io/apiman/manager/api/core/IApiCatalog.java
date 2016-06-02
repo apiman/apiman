@@ -15,6 +15,7 @@
  */
 package io.apiman.manager.api.core;
 
+import io.apiman.manager.api.beans.summary.ApiNamespaceBean;
 import io.apiman.manager.api.beans.summary.AvailableApiBean;
 
 import java.util.List;
@@ -35,8 +36,17 @@ public interface IApiCatalog {
      * like "echo" "public-echo" and "echo-location".
      *
      * @param keyword the search keyword
+     * @param namespace a namespace within which to search for available APIs (only relevant in some platforms e.g. fabric8)
      * @return the available APIs
      */
-    public List<AvailableApiBean> search(String keyword);
+    public List<AvailableApiBean> search(String keyword, String namespace);
+    
+    /**
+     * Called to get a list of all available namespaces in the API Catalog.
+     * 
+     * @param currentUser the current authenticated user
+     * @return a list of all namespaces available
+     */
+    public List<ApiNamespaceBean> getNamespaces(String currentUser);
 
 }

@@ -87,5 +87,14 @@ public class ResponseStatsDataPoint extends HistogramDataPoint {
     public void setErrors(long errors) {
         this.errors = errors;
     }
+    
+    /**
+     * @see java.lang.Object#toString()
+     */
+    @SuppressWarnings("nls")
+    @Override
+    public String toString() {
+        return getLabel() + "[t:" + getTotal() + " f:" + getFailures() + " e:" + getErrors() + "]";
+    }
 
 }

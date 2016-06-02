@@ -17,10 +17,12 @@ package io.apiman.common.plugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -31,6 +33,25 @@ import org.junit.Test;
  */
 @SuppressWarnings("nls")
 public class PluginClassLoaderTest {
+
+    private static final String RESOURCE_FROM_DEP_EXPECTED = "## ---------------------------------------------------------------------------\r\n" + 
+            "## Licensed to the Apache Software Foundation (ASF) under one or more\r\n" + 
+            "## contributor license agreements.  See the NOTICE file distributed with\r\n" + 
+            "## this work for additional information regarding copyright ownership.\r\n" + 
+            "## The ASF licenses this file to You under the Apache License, Version 2.0\r\n" + 
+            "## (the \"License\"); you may not use this file except in compliance with\r\n" + 
+            "## the License.  You may obtain a copy of the License at\r\n" + 
+            "## \r\n" + 
+            "## http://www.apache.org/licenses/LICENSE-2.0\r\n" + 
+            "## \r\n" + 
+            "## Unless required by applicable law or agreed to in writing, software\r\n" + 
+            "## distributed under the License is distributed on an \"AS IS\" BASIS,\r\n" + 
+            "## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\r\n" + 
+            "## See the License for the specific language governing permissions and\r\n" + 
+            "## limitations under the License.\r\n" + 
+            "## ---------------------------------------------------------------------------\r\n" + 
+            "class=org.apache.activemq.transport.tcp.TcpTransportFactory\r\n" + 
+            "";
 
     /**
      * Test method for {@link io.apiman.common.plugin.PluginClassLoader#loadClass(java.lang.String)}.
@@ -89,6 +110,25 @@ public class PluginClassLoaderTest {
     }
 
     /**
+     * Test method for {@link io.apiman.common.plugin.PluginClassLoader#getResource(String)}.
+     * @throws Exception exception catch-all
+     */
+    @Test
+    public void testGetResourceFromDep() throws Exception {
+        File file = new File("src/test/resources/plugin-with-depResource.war");
+        if (!file.exists()) {
+            throw new Exception("Failed to find test WAR: plugin.war at: " + file.getAbsolutePath());
+        }
+        PluginClassLoader classloader = new TestPluginClassLoader(file);
+        URL resource = classloader.getResource("META-INF/services/org/apache/activemq/transport/tcp");
+        Assert.assertNotNull(resource);
+        try (InputStream input = resource.openStream()) {
+            String data = IOUtils.toString(input);
+            Assert.assertEquals(normalize(RESOURCE_FROM_DEP_EXPECTED), normalize(data));
+        }
+    }
+
+    /**
      * Test method for {@link io.apiman.common.plugin.PluginClassLoader#getPolicyDefinitionResources()}.
      * @throws Exception exception catch-all
      */
@@ -129,5 +169,12 @@ public class PluginClassLoaderTest {
         }
         
     }
-    
+
+    /**
+     * @param data
+     */
+    private String normalize(String data) {
+        return data.replace("\r\n", "\n");
+    }
+
 }

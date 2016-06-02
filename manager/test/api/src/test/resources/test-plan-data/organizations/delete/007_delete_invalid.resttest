@@ -1,0 +1,7 @@
+DELETE /organizations/InvalidOrg admin/admin
+----
+404
+Content-Type: application/json
+X-Apiman-Error: true
+
+{"type":"OrganizationNotFoundException","errorCode":3002,"message":"Organization does not exist: InvalidOrg","moreInfoUrl":null}

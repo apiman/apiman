@@ -1,0 +1,21 @@
+PUT /apis admin/admin
+Content-Type: application/json
+
+{
+  "organizationId" : "SimplePayloadPolicyTest",
+  "apiId" : "echo-soap",
+  "version" : "1.0.0",
+  "endpoint" : "${apiman-gateway-test.endpoints.echo}/",
+  "endpointType" : "soap",
+  "endpointContentType" : "xml",
+  "parsePayload" : true,
+  "publicAPI" : true,
+  "apiPolicies" : [ 
+        {
+          "policyImpl" : "class:io.apiman.gateway.test.policies.SimpleSoapPayloadPolicy",
+          "policyJsonConfig" : ""
+        }
+  ]
+}
+----
+204

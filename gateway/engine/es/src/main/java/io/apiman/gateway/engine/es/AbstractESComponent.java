@@ -48,9 +48,37 @@ public abstract class AbstractESComponent {
      */
     public synchronized JestClient getClient() {
         if (esClient == null) {
-            esClient = ESClientFactory.createClient(config, getDefaultIndexName());
+            esClient = createClient();
         }
         return esClient;
+    }
+
+    /**
+     * @return a new ES client
+     */
+    protected JestClient createClient() {
+        IESClientFactory factory = createEsClientFactory();
+        return factory.createClient(config, getDefaultIndexName());
+    }
+
+    /**
+     * @return the client factory to use to create the ES client
+     */
+    protected IESClientFactory createEsClientFactory() {
+        String factoryClass = config.get("client.type"); //$NON-NLS-1$
+        if ("jest".equals(factoryClass)) { //$NON-NLS-1$
+            factoryClass = SimpleJestClientFactory.class.getName();
+        } else if ("local".equals(factoryClass)) { //$NON-NLS-1$
+            factoryClass = LocalClientFactory.class.getName();
+        } else if (factoryClass == null) {
+            throw new RuntimeException("Invalid elasticsearch client type: " + factoryClass); //$NON-NLS-1$
+        }
+        
+        try {
+            return (IESClientFactory) Class.forName(factoryClass).newInstance();
+        } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+            throw new RuntimeException("Error creating elasticsearch client type: " + factoryClass, e); //$NON-NLS-1$
+        }
     }
 
     /**

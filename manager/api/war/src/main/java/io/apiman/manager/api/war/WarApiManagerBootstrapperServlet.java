@@ -16,7 +16,7 @@
 package io.apiman.manager.api.war;
 
 import io.apiman.manager.api.core.logging.ApimanLogger;
-import io.apiman.manager.api.core.logging.IApimanLogger;
+import io.apiman.common.logging.IApimanLogger;
 import io.apiman.manager.api.exportimport.json.JsonImportReader;
 import io.apiman.manager.api.exportimport.manager.StorageImportDispatcher;
 import io.apiman.manager.api.exportimport.read.IImportReader;
@@ -55,21 +55,30 @@ public class WarApiManagerBootstrapperServlet extends HttpServlet {
      */
     @Override
     public void init() throws ServletException {
-        File dataDir = getDataDir();
-        if (dataDir != null && dataDir.isDirectory()) {
-            logger.debug("Checking for bootstrap files in " + dataDir); //$NON-NLS-1$
-            Collection<File> files = FileUtils.listFiles(dataDir, new String[] { "json" }, false); //$NON-NLS-1$
-            TreeSet<File> sortedFiles = new TreeSet<>(files);
-            for (File file : sortedFiles) {
-                File alreadyProcessed = new File(file.getAbsolutePath() + ".imported"); //$NON-NLS-1$
-                if (!alreadyProcessed.isFile()) {
-                    doImport(file);
-                    try { FileUtils.touch(alreadyProcessed); } catch (IOException e) { }
-                } else {
-                    logger.debug("Skipping (already processed) file: " + file); //$NON-NLS-1$
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                // Wait 5s before doing this - hopefully dependencies will have started up by then
+                try { Thread.sleep(5000); } catch (InterruptedException e1) { }
+                File dataDir = getDataDir();
+                if (dataDir != null && dataDir.isDirectory()) {
+                    logger.debug("Checking for bootstrap files in " + dataDir); //$NON-NLS-1$
+                    Collection<File> files = FileUtils.listFiles(dataDir, new String[] { "json" }, false); //$NON-NLS-1$
+                    TreeSet<File> sortedFiles = new TreeSet<>(files);
+                    for (File file : sortedFiles) {
+                        File alreadyProcessed = new File(file.getAbsolutePath() + ".imported"); //$NON-NLS-1$
+                        if (!alreadyProcessed.isFile()) {
+                            doImport(file);
+                            try { FileUtils.touch(alreadyProcessed); } catch (IOException e) { }
+                        } else {
+                            logger.debug("Skipping (already processed) file: " + file); //$NON-NLS-1$
+                        }
+                    }
                 }
             }
-        }
+        });
+        t.setDaemon(true);
+        t.start();
     }
 
     /**

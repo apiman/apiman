@@ -1,0 +1,15 @@
+PUT /SimplePayloadPolicyTest/echo-json/1.0.0/path/to/app/resource admin/admin
+Content-Type: application/json; charset=UTF-8
+
+{
+  This is invalid JSON!
+}
+
+----
+500
+Content-Type: application/json
+
+{
+  "responseCode" : 500,
+  "message" : "Failed to parse inbound request payload."
+}

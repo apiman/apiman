@@ -35,6 +35,8 @@ import io.apiman.gateway.engine.rates.RateBucketPeriod;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * Policy that enforces rate limits.
  *
@@ -229,15 +231,15 @@ public class RateLimitingPolicy extends AbstractMappedPolicy<RateLimitingConfig>
             String defaultResetHeader) {
         Map<String, String> responseHeaders = new HashMap<>();
         String limitHeader = config.getHeaderLimit();
-        if (limitHeader == null) {
+        if (StringUtils.isEmpty(limitHeader)) {
             limitHeader = defaultLimitHeader;
         }
         String remainingHeader = config.getHeaderRemaining();
-        if (remainingHeader == null) {
+        if (StringUtils.isEmpty(remainingHeader)) {
             remainingHeader = defaultRemainingHeader;
         }
         String resetHeader = config.getHeaderReset();
-        if (resetHeader == null) {
+        if (StringUtils.isEmpty(resetHeader)) {
             resetHeader = defaultResetHeader;
         }
         responseHeaders.put(limitHeader, String.valueOf(config.getLimit()));

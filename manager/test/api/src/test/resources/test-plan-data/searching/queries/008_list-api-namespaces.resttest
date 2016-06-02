@@ -1,0 +1,27 @@
+GET /search/apiCatalog/namespaces admin/admin
+----
+200
+Content-Type: application/json
+
+[
+  {
+    "name": "current",
+    "ownedByUser": true,
+    "current": true
+  },
+  {
+    "name": "ns1",
+    "ownedByUser": true,
+    "current": false
+  },
+  {
+    "name": "ns2",
+    "ownedByUser": false,
+    "current": false
+  },
+  {
+    "name": "ns3",
+    "ownedByUser": false,
+    "current": false
+  }
+]

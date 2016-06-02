@@ -17,7 +17,7 @@
     <a class="navbar-brand"
        style="padding: 9px 0;"
        href="{{ pluginName }}/">
-      <img src="/plugins/{{ pluginName }}/img/API-MGMT-Header.png" />
+      <img src="/apimanui/plugins/{{ pluginName }}/img/API-MGMT-Header.png" />
     </a>
   </div>
   <div class="collapse navbar-collapse navbar-collapse-1">

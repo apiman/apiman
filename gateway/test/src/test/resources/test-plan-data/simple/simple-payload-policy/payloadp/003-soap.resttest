@@ -1,0 +1,31 @@
+POST /SimplePayloadPolicyTest/echo-soap/1.0.0/path/to/app/resource admin/admin
+Content-Type: application/soap+xml; charset=UTF-8
+SOAPAction: "http://www.w3.org/2003/05/soap-envelope"
+
+<?xml version="1.0"?>
+<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope">
+  <soap:Header>
+    <ns:Property1 xmlns:ns="urn:ns1">value-1</ns:Property1>
+    <ns:Property2 xmlns:ns="urn:ns2">value-2</ns:Property2>
+    <ns:Property3 xmlns:ns="urn:ns3">value-3</ns:Property3>
+    <ns:Property4 xmlns:ns="urn:ns4">value-4</ns:Property4>
+  </soap:Header>
+  <soap:Body>
+    <m:GetStockPrice xmlns:m="http://www.example.org/stock/RHT">
+      <m:StockName>RHT</m:StockName>
+    </m:GetStockPrice>
+  </soap:Body>
+</soap:Envelope>
+
+----
+200
+Content-Type: application/json
+
+{
+  "method" : "POST",
+  "resource" : "/path/to/app/resource",
+  "uri" : "/path/to/app/resource",
+  "headers" : {
+    "X-Property-1" : "value-1"
+  }
+}

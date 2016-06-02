@@ -39,6 +39,7 @@ public class UpdateApiVersionBean implements Serializable {
     private EndpointContentType endpointContentType;
     private Map<String, String> endpointProperties;
     private Set<ApiGatewayBean> gateways;
+    private Boolean parsePayload;
     private Boolean publicAPI;
     private Set<ApiPlanBean> plans;
 
@@ -144,6 +145,20 @@ public class UpdateApiVersionBean implements Serializable {
      */
     public void setEndpointContentType(EndpointContentType endpointContentType) {
         this.endpointContentType = endpointContentType;
+    }
+
+    /**
+     * @return the parsePayload
+     */
+    public Boolean getParsePayload() {
+        return parsePayload;
+    }
+
+    /**
+     * @param parsePayload the parsePayload to set
+     */
+    public void setParsePayload(Boolean parsePayload) {
+        this.parsePayload = parsePayload;
     }
 
     /* (non-Javadoc)

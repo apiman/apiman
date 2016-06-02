@@ -4,7 +4,7 @@
   <parent>
     <groupId>io.apiman</groupId>
     <artifactId>apiman-distro</artifactId>
-    <version>1.2.3-SNAPSHOT</version>
+    <version>1.2.7-SNAPSHOT</version>
   </parent>
   <artifactId>apiman-distro-ddl</artifactId>
   <name>apiman-distro-ddl</name>
@@ -13,6 +13,7 @@
     <version.org.postgresql.jdbc.driver>9.4-1201-jdbc41</version.org.postgresql.jdbc.driver>
     <version.mysql.jdbc.driver>5.1.35</version.mysql.jdbc.driver>
     <version.com.oracle.driver>12.1.0.2</version.com.oracle.driver>
+    <version.mssql.driver>4.2</version.mssql.driver>
     <version.liquibase>3.4.1</version.liquibase>
   </properties>
 
@@ -53,6 +54,13 @@
             <groupId>com.oracle</groupId>
             <artifactId>ojdbc7</artifactId>
             <version>${version.com.oracle.driver}</version>
+          </dependency>
+           -->
+          <!-- The MS SQL Server dependency - uncomment to generate the MS SQL Server DDL
+          <dependency>
+            <groupId>com.microsoft</groupId>
+            <artifactId>sqljdbc42</artifactId>
+            <version>${version.mssql.driver}</version>
           </dependency>
            -->
           <!-- Liquibase -->
@@ -194,6 +202,28 @@
               <migrationSqlOutputFile>${basedir}/target/apiman_oracle12.ddl</migrationSqlOutputFile>
               <driver>oracle.jdbc.OracleDriver</driver>
               <url>offline:oracle?version=12&amp;caseSensitive=true&amp;changeLogFile=${basedir}/target/changelog/oracle/databasechangelog.csv</url>
+              <username>apiman</username>
+              <password>apiman</password>
+              <promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
+              <verbose>true</verbose>
+            </configuration>
+          </execution>
+           -->
+          <!-- Commented out because you need to manually install the MS SQL Server JDBC driver JAR as a
+               Maven dependency for this to work.  Here's how you do that:
+
+               1) Download the MS SQL Server driver:  https://www.microsoft.com/en-us/download/details.aspx?displaylang=en&id=11774
+               2) Install it:  mvn install:install-file -Dfile=sqljdbc42.jar -DgroupId=com.microsoft -DartifactId=sqljdbc42 -Dversion=4.2 -Dpackaging=jar
+          <execution>
+            <id>mssql-ddl</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>updateSQL</goal>
+            </goals>
+            <configuration>
+              <migrationSqlOutputFile>${basedir}/target/apiman_mssql.ddl</migrationSqlOutputFile>
+              <driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</driver>
+              <url>offline:mssql?version=11.0&amp;caseSensitive=true&amp;catalog=apiman&amp;changeLogFile=${basedir}/target/changelog/mssql/databasechangelog.csv</url>
               <username>apiman</username>
               <password>apiman</password>
               <promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>

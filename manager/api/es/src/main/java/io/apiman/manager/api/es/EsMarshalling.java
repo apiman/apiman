@@ -327,6 +327,7 @@ public class EsMarshalling {
                     .field("endpoint", bean.getEndpoint())
                     .field("endpointType", bean.getEndpointType())
                     .field("endpointContentType", bean.getEndpointContentType())
+                    .field("parsePayload", bean.isParsePayload())
                     .field("definitionType", bean.getDefinitionType());
             Set<ApiGatewayBean> gateways = bean.getGateways();
             if (gateways != null) {
@@ -961,6 +962,7 @@ public class EsMarshalling {
         bean.setEndpointContentType(asEnum(source.get("endpointContentType"), EndpointContentType.class));
         bean.setPublicAPI(asBoolean(source.get("publicAPI")));
         bean.setDefinitionType(asEnum(source.get("definitionType"), ApiDefinitionType.class));
+        bean.setParsePayload(asBool(source.get("parsePayload")));
         bean.setGateways(new HashSet<>());
         List<Map<String, Object>> gateways = (List<Map<String, Object>>) source.get("gateways");
         if (gateways != null) {
@@ -1413,6 +1415,16 @@ public class EsMarshalling {
     private static Boolean asBoolean(Object object) {
         if (object == null) {
             return null;
+        }
+        return (Boolean) object;
+    }
+
+    /**
+     * @param object
+     */
+    private static boolean asBool(Object object) {
+        if (object == null) {
+            return false;
         }
         return (Boolean) object;
     }

@@ -3,6 +3,7 @@ GET /downloads/${download-id}
 200
 Content-Type: application/json
 Content-Disposition: attachment; filename=api-manager-export.json
+X-RestTest-ArrayOrdering: any
 
 {
   "Metadata": {
@@ -18,6 +19,24 @@ Content-Disposition: attachment; filename=api-manager-export.json
       "username": "admin2",
       "fullName": "Admin 2",
       "email": "admin2@example.org",
+      "admin": false
+    },
+    {
+      "username": "bwayne",
+      "fullName": "Bruce Wayne",
+      "email": "bwayne@wayne-enterprises.com",
+      "admin": false
+    },
+    {
+      "username": "ckent",
+      "fullName": "Clark Kent",
+      "email": "ckent@dailyplanet.com",
+      "admin": false
+    },
+    {
+      "username": "dprince",
+      "fullName": "Diana Prince",
+      "email": "dprince@themyscira.gov",
       "admin": false
     },
     {
@@ -48,24 +67,6 @@ Content-Disposition: attachment; filename=api-manager-export.json
       "username": "user5",
       "fullName": "User 5",
       "email": "user5@example.org",
-      "admin": false
-    },
-    {
-      "username": "bwayne",
-      "fullName": "Bruce Wayne",
-      "email": "bwayne@wayne-enterprises.com",
-      "admin": false
-    },
-    {
-      "username": "ckent",
-      "fullName": "Clark Kent",
-      "email": "ckent@dailyplanet.com",
-      "admin": false
-    },
-    {
-      "username": "dprince",
-      "fullName": "Diana Prince",
-      "email": "dprince@themyscira.gov",
       "admin": false
     }
   ],

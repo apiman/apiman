@@ -15,17 +15,18 @@
  */
 package io.apiman.manager.api.core.catalog;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.apiman.manager.api.beans.summary.ApiCatalogBean;
+import io.apiman.manager.api.beans.summary.ApiNamespaceBean;
 import io.apiman.manager.api.beans.summary.AvailableApiBean;
 import io.apiman.manager.api.core.IApiCatalog;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * An API catalog that gets its data from a simple JSON file.
@@ -36,7 +37,7 @@ public class JsonApiCatalog implements IApiCatalog {
 
     private static final ObjectMapper mapper = new ObjectMapper();
 
-    private URL catalogUrl;
+    private URI catalogUri;
     private List<AvailableApiBean> apis;
 
     /**
@@ -46,19 +47,23 @@ public class JsonApiCatalog implements IApiCatalog {
     public JsonApiCatalog(Map<String, String> config) {
         String cu = config.get("catalog-url"); //$NON-NLS-1$
         try {
-            catalogUrl = new URL(cu);
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
+            cu = cu.trim();
+            if (cu.startsWith("file:")) { //$NON-NLS-1$
+                cu = cu.replace('\\', '/');
+            }
+            catalogUri = new URI(cu);
+        } catch (Exception e) {
+            throw new RuntimeException("Error configuring the JSON API catalog from a URI: " + cu, e); //$NON-NLS-1$
         }
     }
-
+    
     /**
-     * @see io.apiman.manager.api.core.IApiCatalog#search(java.lang.String)
+     * @see io.apiman.manager.api.core.IApiCatalog#search(java.lang.String, java.lang.String)
      */
     @Override
-    public List<AvailableApiBean> search(String keyword) {
+    public List<AvailableApiBean> search(String keyword, String namespace) {
         if (apis == null) {
-            apis = loadAPIs(catalogUrl);
+            apis = loadAPIs(catalogUri);
         }
         ArrayList<AvailableApiBean> rval = new ArrayList<>();
 
@@ -70,17 +75,25 @@ public class JsonApiCatalog implements IApiCatalog {
 
         return rval;
     }
+    
+    /**
+     * @see io.apiman.manager.api.core.IApiCatalog#getNamespaces(java.lang.String)
+     */
+    @Override
+    public List<ApiNamespaceBean> getNamespaces(String currentUser) {
+        return Collections.EMPTY_LIST;
+    }
 
     /**
-     * @param catalogUrl the URL to load the catalog from
+     * @param uri the URL to load the catalog from
      * @return Loads APIs from the catalog URL
      */
-    private static List<AvailableApiBean> loadAPIs(URL catalogUrl) {
+    private static List<AvailableApiBean> loadAPIs(URI uri) {
         try {
-            ApiCatalogBean catalog = (ApiCatalogBean) mapper.reader(ApiCatalogBean.class).readValue(catalogUrl);
+            ApiCatalogBean catalog = (ApiCatalogBean) mapper.reader(ApiCatalogBean.class).readValue(uri.toURL());
             return catalog.getApis();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            throw new RuntimeException("Error loading APIs from a URL: " + uri, e); //$NON-NLS-1$
         }
     }
 

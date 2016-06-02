@@ -17,11 +17,37 @@
                   </ul>
                 </div>
                 <a apiman-permission="apiEdit" href="{{ pluginName }}/orgs/{{ org.id }}/apis/{{ api.id}}/{{ version.version }}/new-version" class="btn btn-primary apiman-entity-action" apiman-i18n-key="new-version">New Version</a>
+
+                <!-- Dropdown Cog -->
+                <ul class="api-menu pull-right"
+                    ng-show="showCtxMenu"
+                    style="list-style-type: none; padding-left: 10px; padding-top: 6px;">
+                  <li class="dropdown">
+                    <a href="#"
+                       style="text-decoration: none;"
+                       class="dropdown-toggle dropdown-cog"
+                       data-toggle="dropdown">
+                      <span class="fa fa-cog"></span>
+                      <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu">
+                      <li>
+                        <a class="api-delete"
+                           href="#"
+                           ng-click="callDelete()"
+                           apiman-i18n-key="delete">Delete API</a>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
               </div>
+
+
             </div>
             <hr />
           </div>
         </div>
+
         <div class="row apiman-entity-metadata">
           <div class="col-md-7" style="margin-bottom: 8px">
             <!-- Api Summary -->
@@ -54,6 +80,7 @@
                 <a apiman-i18n-key="ttdo-new-api-version" data-field="ttd_toNewApiVersion" href="{{ pluginName }}/orgs/{{ org.id }}/apis/{{ api.id}}/{{ version.version }}/new-version">Create a new version of this API (New Version)</a>
               </div>
             </div>
+
             <!-- The Publish Action -->
             <div class="apiman-divider-40"></div>
             <div class="">
@@ -128,6 +155,48 @@
           <div class="optional"
                style="margin: -5px 0 10px 15px;">
             * optional
+          </div>
+        </script>
+
+        <!-- Delete API Modal Template -->
+        <script type="text/ng-template"
+                id="deleteModal.html">
+          <div class="modal-header">
+            <button class="close"
+                    type="button"
+                    ng-click="no()">
+              <span class="pficon pficon-close"></span>
+            </button>
+            <h3 class="modal-title">
+              <span apiman-i18n-key="delete-api-modal-title">Are you SURE you want to delete this API?</span>
+            </h3>
+          </div>
+          <div class="modal-body">
+            <p class="bg-warning"
+               style="padding: 15px 25px; margin: -18px -25px 10px -25px;"
+               apiman-i18n-key="api-delete-modal-confirmation-warning">
+              Unexpected bad things will happen if you don't read this!
+            </p>
+            <p class="explanation"
+               apiman-i18n-key="api-delete-modal-confirmation-description">
+              This action <b>CANNOT</b> be undone. This will permanently delete the API, including all of its versions, their policies, contracts, and change logs. Please back up the project if you think you may want to roll back the changes,
+              as this action is irrevocable.
+            </p>
+            <p class="explanation"
+               apiman-i18n-key="api-delete-modal-confirmation-instructions">
+              Please type in the name of the API to confirm.
+            </p>
+            <input type="text"
+                   class="apiman-form-control form-control"
+                   ng-keyup="typed()"
+                   ng-model="confirmApiName">
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-danger"
+                    type="button"
+                    apiman-i18n-key="api-delete-modal-confirmation-button"
+                    ng-disabled="!okayToDelete"
+                    ng-click="yes()">I understand the consequences, delete this API</button>
           </div>
         </script>
       </div>

@@ -3,7 +3,7 @@
             <li class="first"><a apiman-i18n-skip>&nbsp;</a></li>
             <li ng-class="{ true: 'active' } [tab == 'overview']"><a id="tab-overview" data-field="toPlanOverview" href="{{ pluginName }}/orgs/{{ org.id }}/plans/{{ plan.id }}/{{ version.version }}" apiman-i18n-key="overview">Overview</a></li>
             <li ng-class="{ true: 'active' } [tab == 'policies']"><a id="tab-policies" data-field="toPlanPolicies" href="{{ pluginName }}/orgs/{{ org.id }}/plans/{{ plan.id }}/{{ version.version }}/policies" apiman-i18n-key="policies">Policies</a></li>
-            <li ng-class="{ true: 'active' } [tab == 'activity']"><a id="tab-activity" data-field="toPlanActivity" href="{{ pluginName }}/orgs/{{ org.id }}/plans/{{ plan.id }}/{{ version.version }}/activity" apiman-i18n-key="activity">Activity</a></li>
+            <li ng-class="{ true: 'active' } [tab == 'activity']"><a id="tab-activity" data-field="toPlanActivity" href="{{ pluginName }}/orgs/{{ org.id }}/plans/{{ plan.id }}/{{ version.version }}/activity" apiman-i18n-key="activity">Change Log</a></li>
             <li class="last"><a apiman-i18n-skip>&nbsp;</a></li>
           </ul>
         </div>

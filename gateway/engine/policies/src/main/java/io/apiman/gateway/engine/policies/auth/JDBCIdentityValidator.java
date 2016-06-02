@@ -118,7 +118,6 @@ public class JDBCIdentityValidator implements IIdentityValidator<JDBCIdentitySou
             return jdbcComponent.create(ds);
         }
         if (config.getType() == JDBCType.url) {
-            config.getJdbcUrl();
             JdbcOptionsBean options = new JdbcOptionsBean();
             options.setJdbcUrl(config.getJdbcUrl());
             options.setUsername(config.getUsername());

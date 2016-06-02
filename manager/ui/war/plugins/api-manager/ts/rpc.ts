@@ -122,6 +122,28 @@ module ApimanRPC {
             }
         }]);
 
+    export var ApiSvcs = _module.factory('ApiSvcs', [
+        '$resource',
+        '$http',
+        'Configuration', function($resource,
+                                  $http,
+                                  Configuration) {
+            return {
+                deleteApi: function(data) {
+                    var endpoint = Configuration.api.endpoint + '/organizations/' + data.orgId + '/apis/' + data.apiId;
+
+                    return $http({
+                        method: 'DELETE',
+                        url: endpoint,
+                        data: {
+                            organizationId: data.orgId,
+                            apiId: data.apiId
+                        }
+                    });
+                }
+            }
+        }]);
+
     export var ApiDefinitionSvcs = _module.factory('ApiDefinitionSvcs', ['$resource', '$http', 'Configuration',
         function($resource, $http, Configuration) {
             return {
@@ -270,6 +292,23 @@ module ApimanRPC {
                     	"version" : version
                     });
                     $resource(endpoint).get({}, handler, errorHandler);
+                }
+            }
+        }]);
+
+
+    export var ApiCatalogSvcs = _module.factory('ApiCatalogSvcs', ['$resource', 'Configuration',
+        function($resource, Configuration) {
+            return {
+                getNamespaces: function(handler, errorHandler) {
+                    var endpoint = Configuration.api.endpoint + '/search/apiCatalog/namespaces';
+                    $resource(endpoint, {}, {
+                        "get" : { "action" : "GET", "isArray" : true }
+                    }).get({}, handler, errorHandler);
+                },
+                search: function(criteria, handler, errorHandler) {
+                    var endpoint = Configuration.api.endpoint + '/search/apiCatalog/entries';
+                    $resource(endpoint).save({}, criteria, handler, errorHandler);
                 }
             }
         }]);

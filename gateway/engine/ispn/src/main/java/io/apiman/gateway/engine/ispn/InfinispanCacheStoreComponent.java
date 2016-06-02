@@ -37,8 +37,8 @@ import java.util.Map;
 @DependsOnComponents({ IBufferFactoryComponent.class })
 public class InfinispanCacheStoreComponent extends AbstractInfinispanComponent implements ICacheStoreComponent {
 
-    private static final String DEFAULT_CACHE_CONTAINER = "java:jboss/infinispan/container/apiman-gateway"; //$NON-NLS-1$
-    private static final String DEFAULT_CACHE = "caching"; //$NON-NLS-1$
+    private static final String DEFAULT_CACHE_CONTAINER = "java:jboss/infinispan/apiman"; //$NON-NLS-1$
+    private static final String DEFAULT_CACHE = "cachestore"; //$NON-NLS-1$
 
     private Object mutex = new Object();
     private IBufferFactoryComponent bufferFactory;

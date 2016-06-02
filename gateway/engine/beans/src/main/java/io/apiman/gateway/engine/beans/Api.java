@@ -23,6 +23,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * Models an API published to the API Management runtime.
  *
@@ -40,6 +42,9 @@ public class Api implements Serializable {
     private String endpointType;
     private String endpointContentType;
     private Map<String, String> endpointProperties = new HashMap<>();
+    private boolean parsePayload;
+    @JsonIgnore
+    private transient long maxPayloadBufferSize;
     private List<Policy> apiPolicies = new ArrayList<>();
 
     /**
@@ -175,6 +180,20 @@ public class Api implements Serializable {
     }
 
     /**
+     * @return the parsePayload
+     */
+    public boolean isParsePayload() {
+        return parsePayload;
+    }
+
+    /**
+     * @param parsePayload the parsePayload to set
+     */
+    public void setParsePayload(boolean parsePayload) {
+        this.parsePayload = parsePayload;
+    }
+
+    /**
      * @see java.lang.Object#hashCode()
      */
     @Override
@@ -229,6 +248,7 @@ public class Api implements Serializable {
                 + ", endpoint=" + endpoint + ", endpointProperties="
                 + (endpointProperties != null ? toString(endpointProperties.entrySet(), maxLen) : null)
                 + ", apiPolicies=" + (apiPolicies != null ? toString(apiPolicies, maxLen) : null)
+                + ", parsePayload=" + parsePayload
                 + "]";
     }
 
@@ -244,6 +264,20 @@ public class Api implements Serializable {
         }
         builder.append("]");
         return builder.toString();
+    }
+
+    /**
+     * @return the maxPayloadBufferSize
+     */
+    public long getMaxPayloadBufferSize() {
+        return maxPayloadBufferSize;
+    }
+
+    /**
+     * @param maxPayloadBufferSize the maxPayloadBufferSize to set
+     */
+    public void setMaxPayloadBufferSize(long maxPayloadBufferSize) {
+        this.maxPayloadBufferSize = maxPayloadBufferSize;
     }
 
 }

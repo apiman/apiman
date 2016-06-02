@@ -15,16 +15,20 @@
  */
 package io.apiman.gateway.engine.impl;
 
+import io.apiman.common.logging.IDelegateFactory;
 import io.apiman.common.util.crypt.CurrentDataEncrypter;
 import io.apiman.common.util.crypt.IDataEncrypter;
 import io.apiman.gateway.engine.IComponentRegistry;
 import io.apiman.gateway.engine.IConnectorFactory;
 import io.apiman.gateway.engine.IEngine;
 import io.apiman.gateway.engine.IEngineFactory;
+import io.apiman.gateway.engine.IGatewayInitializer;
 import io.apiman.gateway.engine.IMetrics;
 import io.apiman.gateway.engine.IPluginRegistry;
 import io.apiman.gateway.engine.IRegistry;
 import io.apiman.gateway.engine.policy.IPolicyFactory;
+
+import java.util.List;
 
 /**
  * Base class useful for creating engine factories.
@@ -53,8 +57,14 @@ public abstract class AbstractEngineFactory implements IEngineFactory {
         IConnectorFactory cfactory = createConnectorFactory(pluginRegistry);
         IPolicyFactory pfactory = createPolicyFactory(pluginRegistry);
         IMetrics metrics = createMetrics(pluginRegistry);
+        IDelegateFactory logFactory = createLoggerFactory(pluginRegistry);
 
-        return new EngineImpl(registry, pluginRegistry, componentRegistry, cfactory, pfactory, metrics);
+        List<IGatewayInitializer> initializers = createInitializers(pluginRegistry);
+        for (IGatewayInitializer initializer : initializers) {
+            initializer.initialize();
+        }
+
+        return new EngineImpl(registry, pluginRegistry, componentRegistry, cfactory, pfactory, metrics, logFactory);
     }
 
     /**
@@ -105,5 +115,17 @@ public abstract class AbstractEngineFactory implements IEngineFactory {
      * @return the metrics object
      */
     protected abstract IMetrics createMetrics(IPluginRegistry pluginRegistry);
+
+    /**
+     * Creates the gateway initializers.
+     * @param pluginRegistry
+     */
+    protected abstract List<IGatewayInitializer> createInitializers(IPluginRegistry pluginRegistry);
+
+    /**
+     * Creates the logger factory
+     * @return anew log factory
+     */
+    protected abstract IDelegateFactory createLoggerFactory(IPluginRegistry pluginRegistry);
 
 }

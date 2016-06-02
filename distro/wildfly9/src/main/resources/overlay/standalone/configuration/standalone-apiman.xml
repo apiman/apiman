@@ -233,6 +233,20 @@
             <buffer-pool name="default"/>
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:infinispan:3.0">
+            <!--
+            <cache-container name="apiman" jndi-name="infinispan/apiman">
+                <local-cache name="registry">
+                    <file-store passivation="false" />
+                </local-cache>
+                <local-cache name="shared-state" />
+                <local-cache name="rate-limiter">
+                    <file-store passivation="false" />
+                </local-cache>
+                <local-cache name="cachestore">
+                    <file-store passivation="true" />
+                </local-cache>
+            </cache-container>
+            -->
             <cache-container name="keycloak" jndi-name="infinispan/Keycloak">
                 <local-cache name="realms"/>
                 <local-cache name="users"/>

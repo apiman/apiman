@@ -26,7 +26,8 @@ import java.lang.annotation.Target;
 import javax.enterprise.util.Nonbinding;
 import javax.inject.Qualifier;
 
-import org.apache.commons.lang.ObjectUtils.Null;
+import io.apiman.common.logging.IApimanLogger;
+import org.apache.commons.lang3.ObjectUtils.Null;
 
 /**
  * Allows injection of an {@link IApimanLogger} instance, with a class passed as the requester

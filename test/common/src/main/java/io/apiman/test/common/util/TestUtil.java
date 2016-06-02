@@ -248,11 +248,12 @@ public class TestUtil {
      * @param name
      * @throws NamingException
      */
-    public static final void ensureCtx(InitialContext ctx, String name) throws NamingException {
+    public static final Context ensureCtx(InitialContext ctx, String name) throws NamingException {
         try {
-            ctx.createSubcontext(name);
+            return ctx.createSubcontext(name);
         } catch (NameAlreadyBoundException e) {
             // this is ok
+            return (Context) ctx.lookup(name);
         }
     }
 

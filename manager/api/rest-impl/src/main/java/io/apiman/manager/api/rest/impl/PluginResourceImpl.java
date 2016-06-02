@@ -16,7 +16,6 @@
 
 package io.apiman.manager.api.rest.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.apiman.common.plugin.Plugin;
 import io.apiman.common.plugin.PluginClassLoader;
 import io.apiman.common.plugin.PluginCoordinates;
@@ -36,7 +35,7 @@ import io.apiman.manager.api.core.config.ApiManagerConfig;
 import io.apiman.manager.api.core.exceptions.InvalidPluginException;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.core.logging.ApimanLogger;
-import io.apiman.manager.api.core.logging.IApimanLogger;
+import io.apiman.common.logging.IApimanLogger;
 import io.apiman.manager.api.rest.contract.IPluginResource;
 import io.apiman.manager.api.rest.contract.exceptions.AbstractRestException;
 import io.apiman.manager.api.rest.contract.exceptions.NotAuthorizedException;
@@ -52,6 +51,7 @@ import io.apiman.manager.api.security.ISecurityContext;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -66,6 +66,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.apache.commons.io.IOUtils;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Implementation of the Plugin API.
@@ -83,7 +85,7 @@ public class PluginResourceImpl implements IPluginResource {
     @Inject IPluginRegistry pluginRegistry;
     @Inject ApiManagerConfig config;
 
-    private Map<URL, PluginRegistryBean> registryCache = new HashMap<>();
+    private Map<URI, PluginRegistryBean> registryCache = new HashMap<>();
 
     @Inject @ApimanLogger(PluginResourceImpl.class)
     IApimanLogger log;
@@ -210,6 +212,7 @@ public class PluginResourceImpl implements IPluginResource {
                     existingPolicyDef.setFormType(policyDef.getFormType());
                     existingPolicyDef.setForm(policyDef.getForm());
                     existingPolicyDef.setDeleted(false);
+                    existingPolicyDef.setPolicyImpl(policyDef.getPolicyImpl());
                     storage.updatePolicyDefinition(existingPolicyDef);
                     updatedPolicyDefCounter++;
                 } else {
@@ -384,9 +387,9 @@ public class PluginResourceImpl implements IPluginResource {
             throw ExceptionFactory.notAuthorizedException();
 
         List<PluginSummaryBean> rval = new ArrayList<>();
-        Set<URL> registries = config.getPluginRegistries();
+        Set<URI> registries = config.getPluginRegistries();
 
-        for (URL registryUrl : registries) {
+        for (URI registryUrl : registries) {
             PluginRegistryBean registry = loadRegistry(registryUrl);
             if (registry == null) {
                 System.out.println("WARN: plugin registry failed to load - " + registryUrl); //$NON-NLS-1$
@@ -411,13 +414,13 @@ public class PluginResourceImpl implements IPluginResource {
      * grab the registry JSON file.
      * @param registryUrl the URL of the registry
      */
-    private PluginRegistryBean loadRegistry(URL registryUrl) {
+    private PluginRegistryBean loadRegistry(URI registryUrl) {
         PluginRegistryBean fromCache = registryCache.get(registryUrl);
         if (fromCache != null) {
             return fromCache;
         }
         try {
-            PluginRegistryBean registry = mapper.reader(PluginRegistryBean.class).readValue(registryUrl);
+            PluginRegistryBean registry = mapper.reader(PluginRegistryBean.class).readValue(registryUrl.toURL());
             registryCache.put(registryUrl, registry);
             return registry;
         } catch (IOException e) {

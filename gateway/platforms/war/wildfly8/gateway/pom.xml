@@ -4,7 +4,7 @@
   <parent>
     <groupId>io.apiman</groupId>
     <artifactId>apiman-gateway-platforms-war-wildfly8</artifactId>
-    <version>1.2.3-SNAPSHOT</version>
+    <version>1.2.7-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>apiman-gateway-platforms-war-wildfly8-gateway</artifactId>
@@ -17,10 +17,6 @@
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-gateway-platforms-war</artifactId>
       <exclusions>
-        <exclusion>
-          <groupId>${project.groupId}</groupId>
-          <artifactId>apiman-gateway-engine-beans</artifactId>
-        </exclusion>
         <exclusion>
           <groupId>${project.groupId}</groupId>
           <artifactId>apiman-gateway-api-rest</artifactId>
@@ -65,9 +61,6 @@
               <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
               <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
             </manifest>
-            <manifestEntries>
-              <Dependencies>deployment.apiman-gateway-engine-beans.jar</Dependencies>
-            </manifestEntries>
           </archive>
         </configuration>
       </plugin>

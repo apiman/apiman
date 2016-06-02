@@ -3,5 +3,5 @@
               <li ng-class="{ true: 'active' } [tab == 'apis']" apiman-permission="apiView"><a id="tab-apis" href="{{ pluginName }}/orgs/{{org.id}}/apis" data-field="toOrgApis" apiman-i18n-key="apis">APIs</a></li>
               <li ng-class="{ true: 'active' } [tab == 'clients']" apiman-permission="clientView"><a id="tab-clients" href="{{ pluginName }}/orgs/{{org.id}}/clients" data-field="toOrgClients" apiman-i18n-key="client-clients">Client Apps</a></li>
               <li ng-class="{ true: 'active' } [tab == 'members']"><a id="tab-members" href="{{ pluginName }}/orgs/{{org.id}}/members" data-field="toOrgMembers" apiman-i18n-key="members">Members</a></li>
-              <li ng-class="{ true: 'active' } [tab == 'activity']" class="pull-right"><a id="tab-activity" href="{{ pluginName }}/orgs/{{org.id}}/activity" data-field="toOrgActivity" apiman-i18n-key="activity">Activity</a></li>
+              <li ng-class="{ true: 'active' } [tab == 'activity']" class="pull-right"><a id="tab-activity" href="{{ pluginName }}/orgs/{{org.id}}/activity" data-field="toOrgActivity" apiman-i18n-key="activity">Change Log</a></li>
             </ul>

@@ -1,0 +1,18 @@
+PUT /organizations/TestOrganization1/apis/API1/versions/1.0 admin/admin
+Content-Type: application/json
+
+{
+  "endpoint" : "http://localhost:8080/services/echo",
+  "endpointType" : "rest",
+  "plans" : [
+    { "planId" : "Plan1", "version" : "1.0" }
+  ]
+}
+----
+200
+Content-Type: application/json
+
+{
+  "endpoint" : "http://localhost:8080/services/echo",
+  "endpointType" : "rest"
+}

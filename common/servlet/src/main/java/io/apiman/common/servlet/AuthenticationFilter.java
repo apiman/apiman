@@ -339,7 +339,7 @@ public class AuthenticationFilter implements Filter {
      * @throws IOException when an error cannot be sent
      */
     private void sendAuthResponse(HttpServletResponse response) throws IOException {
-        response.setHeader("WWW-Authenticate", String.format("BASIC realm=\"%1$s\"", realm)); //$NON-NLS-1$ //$NON-NLS-2$
+        response.setHeader("WWW-Authenticate", String.format("Basic realm=\"%1$s\"", realm)); //$NON-NLS-1$ //$NON-NLS-2$
         response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
     }
 

@@ -51,7 +51,7 @@ import java.util.Set;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.BeanUtilsBean;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -178,7 +178,7 @@ public class EsMarshallingTest {
     public void testMarshallApiVersionBean() throws Exception {
         ApiVersionBean bean = createBean(ApiVersionBean.class);
         XContentBuilder builder = EsMarshalling.marshall(bean);
-        Assert.assertEquals("{\"organizationId\":\"ID\",\"organizationName\":\"NAME\",\"apiId\":\"ID\",\"apiName\":\"NAME\",\"apiDescription\":\"DESCRIPTION\",\"version\":\"VERSION\",\"status\":\"Created\",\"createdBy\":\"CREATEDBY\",\"createdOn\":1,\"modifiedBy\":\"MODIFIEDBY\",\"modifiedOn\":1,\"publishedOn\":1,\"retiredOn\":1,\"publicAPI\":true,\"endpoint\":\"ENDPOINT\",\"endpointType\":\"rest\",\"endpointContentType\":\"json\",\"definitionType\":\"None\",\"gateways\":[{\"gatewayId\":\"GATEWAYID\"}],\"plans\":[{\"planId\":\"PLANID\",\"version\":\"VERSION\"}],\"endpointProperties\":{\"KEY-1\":\"VALUE-1\",\"KEY-2\":\"VALUE-2\"}}", builder.string());
+        Assert.assertEquals("{\"organizationId\":\"ID\",\"organizationName\":\"NAME\",\"apiId\":\"ID\",\"apiName\":\"NAME\",\"apiDescription\":\"DESCRIPTION\",\"version\":\"VERSION\",\"status\":\"Created\",\"createdBy\":\"CREATEDBY\",\"createdOn\":1,\"modifiedBy\":\"MODIFIEDBY\",\"modifiedOn\":1,\"publishedOn\":1,\"retiredOn\":1,\"publicAPI\":true,\"endpoint\":\"ENDPOINT\",\"endpointType\":\"rest\",\"endpointContentType\":\"json\",\"parsePayload\":true,\"definitionType\":\"None\",\"gateways\":[{\"gatewayId\":\"GATEWAYID\"}],\"plans\":[{\"planId\":\"PLANID\",\"version\":\"VERSION\"}],\"endpointProperties\":{\"KEY-1\":\"VALUE-1\",\"KEY-2\":\"VALUE-2\"}}", builder.string());
     }
 
     /**

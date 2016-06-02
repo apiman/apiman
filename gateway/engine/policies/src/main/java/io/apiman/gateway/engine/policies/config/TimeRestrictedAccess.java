@@ -17,6 +17,8 @@ package io.apiman.gateway.engine.policies.config;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 /**
  * Determines timeslot when service with specific path pattern can be called.
  * Extendible by adding additional cron type ranges like weeks,month years.
@@ -31,7 +33,12 @@ import java.util.Date;
  * @author wtr@redhat.com
  */
 public class TimeRestrictedAccess {
+    
+    private static final String TIME_PATTERN = "HH:mm:ss"; //$NON-NLS-1$
+    
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern=TIME_PATTERN)
     private Date timeStart;
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern=TIME_PATTERN)
     private Date timeEnd;
     private Integer dayStart;
     private Integer dayEnd;

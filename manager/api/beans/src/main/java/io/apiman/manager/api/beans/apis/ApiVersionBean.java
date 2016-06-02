@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -34,6 +35,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKeyColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -52,7 +54,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 @Table(name = "api_versions",
        uniqueConstraints = { @UniqueConstraint(columnNames = { "api_id", "api_org_id", "version" }) })
 @JsonInclude(Include.NON_NULL)
-public class ApiVersionBean implements Serializable {
+public class ApiVersionBean implements Serializable, Cloneable {
 
     private static final long serialVersionUID = -2218697175049442690L;
 
@@ -104,6 +106,10 @@ public class ApiVersionBean implements Serializable {
     @Column(name = "definition_type")
     @Enumerated(EnumType.STRING)
     private ApiDefinitionType definitionType;
+    @OneToOne(mappedBy="apiVersion", orphanRemoval=true, cascade={CascadeType.REMOVE}, fetch=FetchType.LAZY)
+    private ApiDefinitionBean apiDefinition;
+    @Column(name = "parse_payload", updatable=true, nullable=true)
+    private boolean parsePayload;
 
     /**
      * Constructor.
@@ -371,6 +377,20 @@ public class ApiVersionBean implements Serializable {
     }
 
     /**
+     * @return the parsePayload
+     */
+    public boolean isParsePayload() {
+        return parsePayload;
+    }
+
+    /**
+     * @param parsePayload the parsePayload to set
+     */
+    public void setParsePayload(boolean parsePayload) {
+        this.parsePayload = parsePayload;
+    }
+
+    /**
      * @see java.lang.Object#hashCode()
      */
     @Override
@@ -413,5 +433,13 @@ public class ApiVersionBean implements Serializable {
                 + ", createdOn=" + createdOn + ", modifiedBy=" + modifiedBy + ", modifiedOn=" + modifiedOn
                 + ", publishedOn=" + publishedOn + ", retiredOn=" + retiredOn + ", definitionType="
                 + definitionType + "]";
+    }
+    
+    /**
+     * @see java.lang.Object#clone()
+     */
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 }

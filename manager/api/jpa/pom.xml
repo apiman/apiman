@@ -4,7 +4,7 @@
   <parent>
     <groupId>io.apiman</groupId>
     <artifactId>apiman-manager-api</artifactId>
-    <version>1.2.3-SNAPSHOT</version>
+    <version>1.2.7-SNAPSHOT</version>
   </parent>
   <artifactId>apiman-manager-api-jpa</artifactId>
   <packaging>bundle</packaging>
@@ -23,6 +23,10 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-manager-api-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-distro-data</artifactId>
     </dependency>
 
     <!-- Spec Libs -->
@@ -53,6 +57,14 @@
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-dbutils</groupId>
+      <artifactId>commons-dbutils</artifactId>
     </dependency>
   </dependencies>
 

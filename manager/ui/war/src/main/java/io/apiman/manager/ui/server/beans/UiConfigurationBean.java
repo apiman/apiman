@@ -25,6 +25,7 @@ public class UiConfigurationBean {
 
     private String header;
     private Boolean metrics;
+    private String platform = "community"; //$NON-NLS-1$
 
     /**
      * Constructor.
@@ -58,6 +59,20 @@ public class UiConfigurationBean {
      */
     public void setMetrics(Boolean metrics) {
         this.metrics = metrics;
+    }
+
+    /**
+     * @return the platform
+     */
+    public String getPlatform() {
+        return platform;
+    }
+
+    /**
+     * @param platform the platform to set
+     */
+    public void setPlatform(String platform) {
+        this.platform = platform;
     }
 
 }

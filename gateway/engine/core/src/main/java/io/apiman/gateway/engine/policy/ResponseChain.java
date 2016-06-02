@@ -42,7 +42,7 @@ public class ResponseChain extends Chain<ApiResponse> {
      */
     @Override
     public Iterator<PolicyWithConfiguration> iterator() {
-        return new ResponseIterator(getPolicies());
+        return new ResponsePolicyIterator(getPolicies());
     }
 
     /**
@@ -62,7 +62,13 @@ public class ResponseChain extends Chain<ApiResponse> {
      */
     @Override
     protected void applyPolicy(PolicyWithConfiguration policy, IPolicyContext context) {
-        policy.getPolicy().apply(getHead(), context, policy.getConfiguration(), this);
+        ClassLoader oldCtxLoader = Thread.currentThread().getContextClassLoader();
+        try {
+            Thread.currentThread().setContextClassLoader(policy.getPolicy().getClass().getClassLoader());
+            policy.getPolicy().apply(getHead(), context, policy.getConfiguration(), this);
+        } finally {
+            Thread.currentThread().setContextClassLoader(oldCtxLoader);
+        }
     }
 
     /**
@@ -70,7 +76,7 @@ public class ResponseChain extends Chain<ApiResponse> {
      * back to front (in reverse), which is the proper order when applying the
      * policies to a response (on the way back out).
      */
-    private class ResponseIterator implements Iterator<PolicyWithConfiguration> {
+    private class ResponsePolicyIterator implements Iterator<PolicyWithConfiguration> {
         private List<PolicyWithConfiguration> policies;
         private int index;
 
@@ -78,7 +84,7 @@ public class ResponseChain extends Chain<ApiResponse> {
          * Constructor.
          * @param policies list of configured policies
          */
-        public ResponseIterator(List<PolicyWithConfiguration> policies) {
+        public ResponsePolicyIterator(List<PolicyWithConfiguration> policies) {
             this.policies = policies;
             this.index = policies.size() - 1;
         }

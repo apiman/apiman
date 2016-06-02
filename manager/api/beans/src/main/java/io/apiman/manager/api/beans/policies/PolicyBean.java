@@ -16,6 +16,8 @@
 package io.apiman.manager.api.beans.policies;
 
 import io.apiman.common.util.crypt.CurrentDataEncrypter;
+import io.apiman.common.util.crypt.DataEncryptionContext;
+import io.apiman.common.util.crypt.DataEncryptionContext.EntityType;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -52,7 +54,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 @Entity
 @Table(name = "policies")
 @JsonInclude(Include.NON_NULL)
-public class PolicyBean implements Serializable {
+public class PolicyBean implements Serializable, Cloneable {
 
     private static final long serialVersionUID = -8534463608508756791L;
 
@@ -98,13 +100,27 @@ public class PolicyBean implements Serializable {
     @PrePersist @PreUpdate
     protected void encryptData() {
         // Encrypt the endpoint properties.
-        configuration = CurrentDataEncrypter.instance.encrypt(configuration);
+        EntityType entityType = EntityType.Api;
+        if (type == PolicyType.Client) {
+            entityType = EntityType.ClientApp;
+        } else if (type == PolicyType.Plan) {
+            entityType = EntityType.Plan;
+        }
+        DataEncryptionContext ctx = new DataEncryptionContext(organizationId, entityId, entityVersion, entityType);
+        configuration = CurrentDataEncrypter.instance.encrypt(configuration, ctx);
     }
 
     @PostPersist @PostUpdate @PostLoad
     protected void decryptData() {
         // Decrypt the endpoint properties.
-        configuration = CurrentDataEncrypter.instance.decrypt(configuration);
+        EntityType entityType = EntityType.Api;
+        if (type == PolicyType.Client) {
+            entityType = EntityType.ClientApp;
+        } else if (type == PolicyType.Plan) {
+            entityType = EntityType.Plan;
+        }
+        DataEncryptionContext ctx = new DataEncryptionContext(organizationId, entityId, entityVersion, entityType);
+        configuration = CurrentDataEncrypter.instance.decrypt(configuration, ctx);
     }
 
     /**
@@ -345,6 +361,14 @@ public class PolicyBean implements Serializable {
                 + ", description=" + description + ", configuration=***, createdBy="
                 + createdBy + ", createdOn=" + createdOn + ", modifiedBy=" + modifiedBy + ", modifiedOn="
                 + modifiedOn + ", definition=" + definition + ", orderIndex=" + orderIndex + "]";
+    }
+    
+    /**
+     * @see java.lang.Object#clone()
+     */
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 
 }

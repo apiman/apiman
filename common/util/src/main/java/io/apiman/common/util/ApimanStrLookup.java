@@ -15,7 +15,7 @@
  */
 package io.apiman.common.util;
 
-import org.apache.commons.lang.text.StrLookup;
+import org.apache.commons.lang3.text.StrLookup;
 
 /**
  * A simple string lookup class that supports system properties and environment

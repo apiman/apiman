@@ -4,7 +4,7 @@
   <parent>
     <groupId>io.apiman</groupId>
     <artifactId>apiman-manager-test</artifactId>
-    <version>1.2.3-SNAPSHOT</version>
+    <version>1.2.7-SNAPSHOT</version>
   </parent>
   <artifactId>apiman-manager-test-api</artifactId>
   <name>apiman-manager-test-api</name>
@@ -26,6 +26,10 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-common-auth</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-common-logging-core</artifactId>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
@@ -62,6 +66,10 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-manager-api-es</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-manager-api-hawkular</artifactId>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
@@ -187,8 +195,8 @@
       <artifactId>commons-io</artifactId>
     </dependency>
     <dependency>
-      <groupId>commons-lang</groupId>
-      <artifactId>commons-lang</artifactId>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
     </dependency>
     <dependency>
       <groupId>commons-pool</groupId>

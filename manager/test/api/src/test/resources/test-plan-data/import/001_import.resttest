@@ -4,7 +4,7 @@ Content-Type: application/json
 {
   "Metadata": {
     "exportedOn": 1445973221630,
-    "apimanVersion": "1.2.0-SNAPSHOT"
+    "apimanVersion": "1.2.3-SNAPSHOT"
   },
   "Users": [
     {
@@ -371,7 +371,6 @@ Content-Type: text/plain
 
 INFO: ----------------------------
 INFO: Starting apiman data import.
-INFO: Importing data from apiman version: 1.2.0-SNAPSHOT
 INFO: Importing a user: importeduser
 INFO: Importing a gateway: The Gateway
 INFO: Importing an organization: Organization 1

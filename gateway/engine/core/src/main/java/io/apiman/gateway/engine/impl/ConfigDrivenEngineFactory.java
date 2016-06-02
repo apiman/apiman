@@ -15,16 +15,21 @@
  */
 package io.apiman.gateway.engine.impl;
 
+import io.apiman.common.logging.IDelegateFactory;
 import io.apiman.common.util.crypt.IDataEncrypter;
+import io.apiman.gateway.engine.EngineConfigTuple;
 import io.apiman.gateway.engine.IComponentRegistry;
 import io.apiman.gateway.engine.IConnectorFactory;
 import io.apiman.gateway.engine.IEngineConfig;
+import io.apiman.gateway.engine.IGatewayInitializer;
 import io.apiman.gateway.engine.IMetrics;
 import io.apiman.gateway.engine.IPluginRegistry;
 import io.apiman.gateway.engine.IRegistry;
 import io.apiman.gateway.engine.policy.IPolicyFactory;
 
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -125,6 +130,29 @@ public class ConfigDrivenEngineFactory extends AbstractEngineFactory {
     }
 
     /**
+     * @see io.apiman.gateway.engine.impl.AbstractEngineFactory#createInitializers(io.apiman.gateway.engine.IPluginRegistry)
+     */
+    @Override
+    protected List<IGatewayInitializer> createInitializers(IPluginRegistry pluginRegistry) {
+        List<IGatewayInitializer> rval = new ArrayList<>();
+
+        List<EngineConfigTuple<? extends IGatewayInitializer>> initializers = engineConfig.getGatewayInitializers(pluginRegistry);
+        for (EngineConfigTuple<? extends IGatewayInitializer> tuple : initializers) {
+            IGatewayInitializer initializer = create(tuple.getComponentClass(), tuple.getComponentConfig());
+            rval.add(initializer);
+        }
+
+        return rval;
+    }
+
+    @Override
+    protected IDelegateFactory createLoggerFactory(IPluginRegistry pluginRegistry) {
+        Class<? extends IDelegateFactory> c = engineConfig.getLoggerFactoryClass(pluginRegistry);
+        Map<String, String> config = engineConfig.getLoggerFactoryConfig();
+        return create(c, config);
+    }
+
+    /**
      * Creates a new instance of the given type, passing the given config
      * map if possible (if the class has a Map constructor).
      * @param type the type to create
@@ -156,5 +184,4 @@ public class ConfigDrivenEngineFactory extends AbstractEngineFactory {
             throw new RuntimeException(e);
         }
     }
-
 }

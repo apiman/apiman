@@ -35,11 +35,29 @@
     <test name="Register Client 1">test-plan-data/publishing/publish/002_register-client-1.resttest</test>
   </testGroup>
 
+  <testGroup name="Test Deletion Failure Conditions">
+    <test name="Wait" delay="1000" />
+    <test name="Delete Organization (Children still active)">test-plan-data/organizations/deleteFailure/001_delete-org-failure-org1.resttest</test>
+    <test name="Delete API (ApiVersions still active)">test-plan-data/organizations/deleteFailure/002_delete-api-failure-org1.resttest</test>
+    <test name="Delete Client (ClientVersions still active)">test-plan-data/organizations/deleteFailure/003_delete-client-failure-org1.resttest</test>
+  </testGroup>
+
   <testGroup name="Test Retiring">
     <test name="User2 Unregister Client 1">test-plan-data/publishing/retire/003_dev-user2-unregister-client-1.resttest</test>
     <test name="Unregister Client 1">test-plan-data/publishing/retire/001_unregister-client-1.resttest</test>
     <test name="User2 Retire API 1">test-plan-data/publishing/retire/004_dev-user2-retire-api-1.resttest</test>
     <test name="Retire API 1">test-plan-data/publishing/retire/002_retire-api-1.resttest</test>
+  </testGroup>
+
+  <testGroup name="Test Deletion">
+    <test name="Wait" delay="1000" />
+    <test name="Delete Organization">test-plan-data/organizations/delete/005_delete.resttest</test>
+    <test name="Wait" delay="500" />
+    <test name="Delete Already Deleted Org (should no longer exist)">test-plan-data/organizations/delete/006_delete_already_deleted.resttest</test>
+    <test name="Delete Organization (invalid, never existed)">test-plan-data/organizations/delete/007_delete_invalid.resttest</test>
+    <test name="Get Org Activity (empty)">test-plan-data/organizations/delete/008_activity.resttest</test>
+    <test name="Get API (should no longer exist)">test-plan-data/organizations/delete/009_get_api.resttest</test>
+    <!-- Note that we can't test for other elements, as the attached org/client/api no longer exists and simply causes 404 -->
   </testGroup>
 
 </testPlan>

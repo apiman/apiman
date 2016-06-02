@@ -51,8 +51,8 @@ module Apiman {
         }]);
 
     export var ClientEntityController = _module.controller("Apiman.ClientEntityController",
-        ['$q', '$scope', '$location', 'ActionSvcs', 'Logger', 'Dialogs', 'PageLifecycle', '$routeParams', 'OrgSvcs', 'EntityStatusSvc', 'Configuration',
-        ($q, $scope, $location, ActionSvcs, Logger, Dialogs, PageLifecycle, $routeParams, OrgSvcs, EntityStatusSvc, Configuration) => {
+        ['$q', '$uibModal', '$scope', '$rootScope', '$location', 'ActionSvcs', 'Logger', 'Dialogs', 'PageLifecycle', '$routeParams', 'OrgSvcs', 'EntityStatusSvc', 'Configuration',
+        ($q, $uibModal, $scope, $rootScope, $location, ActionSvcs, Logger, Dialogs, PageLifecycle, $routeParams, OrgSvcs, EntityStatusSvc, Configuration) => {
             var params = $routeParams;
 
             $scope.setEntityStatus = EntityStatusSvc.setEntityStatus;
@@ -125,7 +125,7 @@ module Apiman {
             $scope.updateClientDescription = function(updatedDescription) {
                 var updateClientBean = {
                     description: updatedDescription
-                }
+                };
 
                 OrgSvcs.update({
                     organizationId: $scope.organizationId,
@@ -140,6 +140,90 @@ module Apiman {
                 });
             };
 
-        }])
+
+
+            // ----- Delete --------------------->>>>
+
+
+            // Add check for ability to delete, show/hide Delete option
+            $scope.canDelete = function() {};
+
+            // Call delete, open modal
+            $scope.callDelete = function(size) {
+                var modalInstance = $uibModal.open({
+                    templateUrl: 'deleteModal.html',
+                    controller: 'ClientAppDeleteModalCtrl',
+                    size: size,
+                    resolve: {
+                        client: function() {
+                            return $scope.client;
+                        },
+                        params: function() {
+                            return params;
+                        }
+                    }
+                });
+
+                modalInstance.result.then(function (selectedItem) {
+                    $scope.selected = selectedItem;
+                }, function () {
+                    Logger.info('Modal dismissed at: ' + new Date());
+                });
+            };
+    }]);
+
+
+
+    export var ClientAppDeleteModalCtrl = _module.controller('ClientAppDeleteModalCtrl', function ($location, 
+                                                                                                   $rootScope, 
+                                                                                                   $scope, 
+                                                                                                   $uibModalInstance,
+                                                                                                   OrgSvcs, 
+                                                                                                   Configuration, 
+                                                                                                   PageLifecycle, 
+                                                                                                   client, 
+                                                                                                   params) {
+        
+        $scope.confirmClientName = '';
+
+        // Used for enabling/disabling the submit button
+        $scope.okayToDelete = false;
+
+        $scope.typed = function () {
+            // For user convenience, compare lower case values so that check is not case-sensitive
+            $scope.okayToDelete = ($scope.confirmClientName.toLowerCase() === client.name.toLowerCase());
+        };
+
+        // Yes, delete the API
+        $scope.yes = function () {
+            var deleteAction = {
+                entityId: client.id,
+                entityType: 'clients',
+                organizationId: params.org
+            };
+
+            OrgSvcs.remove(deleteAction).$promise.then(function(res) {
+                $scope.okayToDelete = false;
+
+                setTimeout(function() {
+                    $uibModalInstance.close();
+
+                    // Redirect users to their list of APIs
+                    $location.path($rootScope.pluginName + '/users/' + Configuration.user.username + '/clients');
+                }, 800);
+
+                // We should display some type of Toastr/Growl notification to the user here
+            }, function(err) {
+                $scope.okayToDelete = false;
+                $uibModalInstance.close();
+                PageLifecycle.handleError(err);
+            });
+        };
+
+        // No, do NOT delete the API
+        $scope.no = function () {
+            $uibModalInstance.dismiss('cancel');
+        };
+    });
 
 }

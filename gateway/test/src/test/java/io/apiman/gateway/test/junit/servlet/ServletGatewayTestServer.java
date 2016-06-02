@@ -16,17 +16,17 @@
 package io.apiman.gateway.test.junit.servlet;
 
 import io.apiman.common.util.ddl.DdlParser;
+import io.apiman.gateway.engine.GatewayConfigProperties;
 import io.apiman.gateway.engine.components.IBufferFactoryComponent;
 import io.apiman.gateway.engine.components.IHttpClientComponent;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
-import io.apiman.gateway.engine.es.ESClientFactory;
+import io.apiman.gateway.engine.es.SimpleJestClientFactory;
 import io.apiman.gateway.engine.impl.ByteBufferFactoryComponent;
 import io.apiman.gateway.engine.impl.DefaultPluginRegistry;
 import io.apiman.gateway.engine.policy.PolicyFactoryImpl;
 import io.apiman.gateway.platforms.servlet.PolicyFailureFactoryComponent;
 import io.apiman.gateway.platforms.servlet.components.HttpClientComponentImpl;
 import io.apiman.gateway.platforms.servlet.connectors.HttpConnectorFactory;
-import io.apiman.gateway.platforms.war.WarEngineConfig;
 import io.apiman.gateway.test.server.GatewayServer;
 import io.apiman.gateway.test.server.TestMetrics;
 import io.apiman.test.common.echo.EchoServer;
@@ -60,6 +60,9 @@ import org.apache.commons.io.FileUtils;
 import org.elasticsearch.common.settings.ImmutableSettings.Builder;
 import org.elasticsearch.node.Node;
 import org.elasticsearch.node.NodeBuilder;
+import org.infinispan.Cache;
+import org.infinispan.manager.CacheContainer;
+import org.infinispan.manager.DefaultCacheManager;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -81,6 +84,7 @@ public class ServletGatewayTestServer implements IGatewayTestServer {
     
     private boolean withES;
     private boolean withDB;
+    private boolean withISPN;
 
     /*
      * Elasticsearch related.
@@ -96,7 +100,13 @@ public class ServletGatewayTestServer implements IGatewayTestServer {
      */
     private static final String DB_JNDI_LOC = "java:/comp/env/jdbc/ApiGatewayDS";
     private BasicDataSource ds = null;
-
+    
+    /*
+     * Infinispan related.
+     */
+    private static final String ISPN_JNDI_LOC = "java:jboss/infinispan/apiman";
+    private CacheContainer cacheContainer = null;
+    
     /**
      * Constructor.
      */
@@ -110,9 +120,11 @@ public class ServletGatewayTestServer implements IGatewayTestServer {
     public void configure(JsonNode config) {
         JsonNode esNode = config.get("es");
         JsonNode dbNode = config.get("db");
+        JsonNode ispnNode = config.get("ispn");
         
         withES = esNode != null && esNode.asBoolean(false);
         withDB = dbNode != null && dbNode.asBoolean(false);
+        withISPN = ispnNode != null && ispnNode.asBoolean(false);
         
         configureGateway(config);
     }
@@ -124,14 +136,14 @@ public class ServletGatewayTestServer implements IGatewayTestServer {
         Map<String, String> props = new HashMap<>();
         
         // Global settings - all tests share but can override
-        props.put(WarEngineConfig.APIMAN_GATEWAY_PLUGIN_REGISTRY_CLASS, DefaultPluginRegistry.class.getName());
-        props.put(WarEngineConfig.APIMAN_GATEWAY_PLUGIN_REGISTRY_CLASS + ".pluginsDir", new File("target/plugintmp").getAbsolutePath());
-        props.put(WarEngineConfig.APIMAN_GATEWAY_CONNECTOR_FACTORY_CLASS, HttpConnectorFactory.class.getName());
-        props.put(WarEngineConfig.APIMAN_GATEWAY_POLICY_FACTORY_CLASS, PolicyFactoryImpl.class.getName());
-        props.put(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + IPolicyFailureFactoryComponent.class.getSimpleName(), PolicyFailureFactoryComponent.class.getName());
-        props.put(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + IHttpClientComponent.class.getSimpleName(), HttpClientComponentImpl.class.getName());
-        props.put(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + IBufferFactoryComponent.class.getSimpleName(), ByteBufferFactoryComponent.class.getName());
-        props.put(WarEngineConfig.APIMAN_GATEWAY_METRICS_CLASS, TestMetrics.class.getName());
+        props.put(GatewayConfigProperties.PLUGIN_REGISTRY_CLASS, DefaultPluginRegistry.class.getName());
+        props.put(GatewayConfigProperties.PLUGIN_REGISTRY_CLASS + ".pluginsDir", new File("target/plugintmp").getAbsolutePath());
+        props.put(GatewayConfigProperties.CONNECTOR_FACTORY_CLASS, HttpConnectorFactory.class.getName());
+        props.put(GatewayConfigProperties.POLICY_FACTORY_CLASS, PolicyFactoryImpl.class.getName());
+        props.put(GatewayConfigProperties.COMPONENT_PREFIX + IPolicyFailureFactoryComponent.class.getSimpleName(), PolicyFailureFactoryComponent.class.getName());
+        props.put(GatewayConfigProperties.COMPONENT_PREFIX + IHttpClientComponent.class.getSimpleName(), HttpClientComponentImpl.class.getName());
+        props.put(GatewayConfigProperties.COMPONENT_PREFIX + IBufferFactoryComponent.class.getSimpleName(), ByteBufferFactoryComponent.class.getName());
+        props.put(GatewayConfigProperties.METRICS_CLASS, TestMetrics.class.getName());
 
         // First, process the config files.
         if (config.has("config-files")) {
@@ -305,6 +317,22 @@ public class ServletGatewayTestServer implements IGatewayTestServer {
                 throw new RuntimeException(e);
             }
         }
+        
+        if (withISPN) {
+            cacheContainer = new DefaultCacheManager();
+            Cache<Object, Object> registryCache = cacheContainer.getCache("registry");
+            if (registryCache == null) {
+                throw new RuntimeException("Error with ISPN cache: 'registry'");
+            }
+            try {
+                InitialContext ctx = TestUtil.initialContext();
+                TestUtil.ensureCtx(ctx, "java:jboss");
+                TestUtil.ensureCtx(ctx, "java:jboss/infinispan");
+                ctx.bind(ISPN_JNDI_LOC, cacheContainer);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     /**
@@ -361,16 +389,24 @@ public class ServletGatewayTestServer implements IGatewayTestServer {
     private void postStop() throws Exception {
         if (node != null) {
             client.execute(new DeleteIndex.Builder("apiman_gateway").build());
-            ESClientFactory.clearClientCache();
+            SimpleJestClientFactory.clearClientCache();
         }
         if (ds != null) {
             try (Connection connection = ds.getConnection()) {
                 connection.prepareStatement("DROP ALL OBJECTS").execute();
             }
             ds.close();
+            ds = null;
             InitialContext ctx = TestUtil.initialContext();
             Context pctx = (Context) ctx.lookup("java:/comp/env/jdbc");
             pctx.unbind("ApiGatewayDS");
+        }
+        if (cacheContainer != null) {
+            cacheContainer.stop();
+            cacheContainer = null;
+            InitialContext ctx = TestUtil.initialContext();
+            Context pctx = (Context) ctx.lookup("java:jboss/infinispan");
+            pctx.unbind("apiman");
         }
     }
 

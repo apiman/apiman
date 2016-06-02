@@ -15,14 +15,17 @@
  */
 package io.apiman.manager.api.es;
 
+import io.apiman.common.util.crypt.DataEncryptionContext;
 import io.apiman.common.util.crypt.IDataEncrypter;
 import io.apiman.manager.api.beans.apis.ApiBean;
 import io.apiman.manager.api.beans.apis.ApiGatewayBean;
 import io.apiman.manager.api.beans.apis.ApiPlanBean;
+import io.apiman.manager.api.beans.apis.ApiStatus;
 import io.apiman.manager.api.beans.apis.ApiVersionBean;
 import io.apiman.manager.api.beans.audit.AuditEntityType;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
 import io.apiman.manager.api.beans.clients.ClientBean;
+import io.apiman.manager.api.beans.clients.ClientStatus;
 import io.apiman.manager.api.beans.clients.ClientVersionBean;
 import io.apiman.manager.api.beans.contracts.ContractBean;
 import io.apiman.manager.api.beans.download.DownloadBean;
@@ -34,6 +37,7 @@ import io.apiman.manager.api.beans.idm.RoleMembershipBean;
 import io.apiman.manager.api.beans.idm.UserBean;
 import io.apiman.manager.api.beans.orgs.OrganizationBean;
 import io.apiman.manager.api.beans.plans.PlanBean;
+import io.apiman.manager.api.beans.plans.PlanStatus;
 import io.apiman.manager.api.beans.plans.PlanVersionBean;
 import io.apiman.manager.api.beans.plugins.PluginBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
@@ -136,9 +140,9 @@ public class EsStorage implements IStorage, IStorageQuery {
     @PostConstruct
     public void postConstruct() {
         // Kick the encrypter, causing it to be loaded/resolved in CDI
-        encrypter.encrypt(""); //$NON-NLS-1$
+        encrypter.encrypt("", new DataEncryptionContext()); //$NON-NLS-1$
     }
-    
+
     private String indexName = DEFAULT_INDEX_NAME;
 
     /**
@@ -566,16 +570,145 @@ public class EsStorage implements IStorage, IStorageQuery {
      * @see io.apiman.manager.api.core.IStorage#deleteOrganization(io.apiman.manager.api.beans.orgs.OrganizationBean)
      */
     @Override
+    @SuppressWarnings("nls")
     public void deleteOrganization(OrganizationBean organization) throws StorageException {
-        deleteEntity("organization", organization.getId()); //$NON-NLS-1$
+        String orgId = organization.getId().replace('"', '_');
+        String query = "{\n" +
+                "  \"query\": {\n" +
+                "    \"filtered\": {\n" +
+                "      \"query\": {\n" +
+                "        \"match_all\": {}\n" +
+                "      },\n" +
+                "      \"filter\": {\n" +
+                "        \"or\": [\n" +
+                "          {\n" +
+                "            \"term\": {\n" +
+                "              \"organizationId\": \"" + orgId + "\"\n" +
+                "            }\n" +
+                "          },\n" +
+                "          {\n" +
+                "            \"term\": {\n" +
+                "              \"clientOrganizationId\": \"" + orgId + "\"\n" +
+                "            }\n" +
+                "          },\n" +
+                "          {\n" +
+                "            \"term\": {\n" +
+                "              \"apiOrganizationId\": \"" + orgId + "\"\n" +
+                "            }\n" +
+                "          }\n" +
+                "        ]\n" +
+                "      }\n" +
+                "    }\n" +
+                "  }\n" +
+                "}";
+        DeleteByQuery deleteByQuery = new DeleteByQuery.Builder(query).addIndex(getIndexName())
+                .addType("api")
+                .addType("apiPolicies")
+                .addType("apiVersion")
+                .addType("auditEntry")
+                .addType("client")
+                .addType("clientPolicies")
+                .addType("clientVersion")
+                .addType("contract")
+                .addType("plan")
+                .addType("planPolicies")
+                .addType("planVersion")
+                .addType("roleMembership")
+                .build();
+        try {
+            JestResult response = esClient.execute(deleteByQuery);
+            if (!response.isSucceeded()) {
+                throw new StorageException(response.getErrorMessage());
+            }
+        } catch (Exception e) {
+            throw new StorageException(e);
+        }
+        deleteEntity("organization", orgId); //$NON-NLS-1$
     }
 
     /**
      * @see io.apiman.manager.api.core.IStorage#deleteClient(io.apiman.manager.api.beans.clients.ClientBean)
      */
     @Override
+    @SuppressWarnings("nls")
     public void deleteClient(ClientBean client) throws StorageException {
-        deleteEntity("client", id(client.getOrganization().getId(), client.getId())); //$NON-NLS-1$
+        String clientId = client.getId().replace('"', '_');
+        String orgId = client.getOrganization().getId().replace('"', '_');
+        String query = "{\n" +
+                "  \"query\": {\n" +
+                "    \"filtered\": {\n" +
+                "      \"query\": {\n" +
+                "        \"match_all\": {}\n" +
+                "      },\n" +
+                "      \"filter\": {\n" +
+                "        \"bool\": {\n" +
+                "          \"must\": [\n" +
+                "            {\n" +
+                "              \"bool\": {\n" +
+                "                \"should\": [\n" +
+                "                  {\n" +
+                "                    \"term\": {\n" +
+                "                      \"clientOrganizationId\": \"" + orgId + "\"\n" +
+                "                    }\n" +
+                "                  },\n" +
+                "                  {\n" +
+                "                    \"term\": {\n" +
+                "                      \"organizationId\": \"" + orgId + "\"\n" +
+                "                    }\n" +
+                "                  }\n" +
+                "                ]\n" +
+                "              }\n" +
+                "            },\n" +
+                "            {\n" +
+                "              \"bool\": {\n" +
+                "                \"should\": [\n" +
+                "                  {\n" +
+                "                    \"bool\": {\n" +
+                "                      \"must\": [\n" +
+                "                        {\n" +
+                "                          \"term\": {\n" +
+                "                            \"entityId\": \"" + clientId + "\"\n" +
+                "                          }\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                          \"term\": {\n" +
+                "                            \"entityType\": \"" + AuditEntityType.Client.name() + "\"\n" +
+                "                          }\n" +
+                "                        }\n" +
+                "                      ]\n" +
+                "                    }\n" +
+                "                  },\n" +
+                "                  {\n" +
+                "                    \"term\": {\n" +
+                "                      \"clientId\": \"" + clientId + "\"\n" +
+                "                    }\n" +
+                "                  }\n" +
+                "                ]\n" +
+                "              }\n" +
+                "            }\n" +
+                "          ]\n" +
+                "        }\n" +
+                "      }\n" +
+                "    }\n" +
+                "  }\n" +
+                "}";
+
+        DeleteByQuery deleteByQuery = new DeleteByQuery.Builder(query).addIndex(getIndexName())
+                .addType("auditEntry")
+                .addType("client")
+                .addType("clientVersion")
+                .addType("clientPolicies")
+                .addType("contract")
+                .build();
+        try {
+            JestResult response = esClient.execute(deleteByQuery);
+            if (!response.isSucceeded()) {
+                throw new StorageException(response.getErrorMessage());
+            }
+        } catch (Exception e) {
+            throw new StorageException(e);
+        }
+        deleteEntity("client", id(orgId, clientId)); //$NON-NLS-1$
     }
 
     /**
@@ -599,8 +732,85 @@ public class EsStorage implements IStorage, IStorageQuery {
      * @see io.apiman.manager.api.core.IStorage#deleteApi(io.apiman.manager.api.beans.apis.ApiBean)
      */
     @Override
+    @SuppressWarnings("nls")
     public void deleteApi(ApiBean api) throws StorageException {
-        deleteEntity("api", id(api.getOrganization().getId(), api.getId())); //$NON-NLS-1$
+        String apiId = api.getId().replace('"', '_');
+        String orgId = api.getOrganization().getId().replace('"', '_');
+        String query = "{\n" +
+                "  \"query\": {\n" +
+                "    \"filtered\": {\n" +
+                "      \"query\": {\n" +
+                "        \"match_all\": {}\n" +
+                "      },\n" +
+                "      \"filter\": {\n" +
+                "        \"bool\": {\n" +
+                "          \"must\": [\n" +
+                "            {\n" +
+                "              \"bool\": {\n" +
+                "                \"should\": [\n" +
+                "                  {\n" +
+                "                    \"term\": {\n" +
+                "                      \"apiOrganizationId\": \"" + orgId + "\"\n" +
+                "                    }\n" +
+                "                  },\n" +
+                "                  {\n" +
+                "                    \"term\": {\n" +
+                "                      \"organizationId\": \"" + orgId + "\"\n" +
+                "                    }\n" +
+                "                  }\n" +
+                "                ]\n" +
+                "              }\n" +
+                "            },\n" +
+                "            {\n" +
+                "              \"bool\": {\n" +
+                "                \"should\": [\n" +
+                "                  {\n" +
+                "                    \"bool\": {\n" +
+                "                      \"must\": [\n" +
+                "                        {\n" +
+                "                          \"term\": {\n" +
+                "                            \"entityId\": \"" + apiId + "\"\n" +
+                "                          }\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                          \"term\": {\n" +
+                "                            \"entityType\": \"" + AuditEntityType.Api.name() + "\"\n" +
+                "                          }\n" +
+                "                        }\n" +
+                "                      ]\n" +
+                "                    }\n" +
+                "                  },\n" +
+                "                  {\n" +
+                "                    \"term\": {\n" +
+                "                      \"apiId\": \"" + apiId + "\"\n" +
+                "                    }\n" +
+                "                  }\n" +
+                "                ]\n" +
+                "              }\n" +
+                "            }\n" +
+                "          ]\n" +
+                "        }\n" +
+                "      }\n" +
+                "    }\n" +
+                "  }\n" +
+                "}";
+
+        DeleteByQuery deleteByQuery = new DeleteByQuery.Builder(query).addIndex(getIndexName())
+                .addType("auditEntry")
+                .addType("api")
+                .addType("apiVersion")
+                .addType("apiPolicies")
+                .addType("contract")
+                .build();
+        try {
+            JestResult response = esClient.execute(deleteByQuery);
+            if (!response.isSucceeded()) {
+                throw new StorageException(response.getErrorMessage());
+            }
+        } catch (Exception e) {
+            throw new StorageException(e);
+        }
+        deleteEntity("api", id(orgId, apiId)); //$NON-NLS-1$
     }
 
     /**
@@ -628,7 +838,70 @@ public class EsStorage implements IStorage, IStorageQuery {
      * @see io.apiman.manager.api.core.IStorage#deletePlan(io.apiman.manager.api.beans.plans.PlanBean)
      */
     @Override
+    @SuppressWarnings("nls")
     public void deletePlan(PlanBean plan) throws StorageException {
+        String planId = plan.getId().replace('"', '_');
+        String orgId = plan.getOrganization().getId().replace('"', '_');
+
+        String query = "{\n" +
+                "  \"query\": {\n" +
+                "    \"filtered\": {\n" +
+                "      \"query\": {\n" +
+                "        \"match_all\": {}\n" +
+                "      },\n" +
+                "      \"filter\": {\n" +
+                "        \"or\": [\n" +
+                "          {\n" +
+                "            \"and\": [\n" +
+                "              {\n" +
+                "                \"term\": {\n" +
+                "                  \"entityId\": \"" + planId + "\"\n" +
+                "                }\n" +
+                "              },\n" +
+                "              {\n" +
+                "                \"term\": {\n" +
+                "                  \"entityType\": \"" + AuditEntityType.Plan.name() + "\"\n" +
+                "                }\n" +
+                "              },\n" +
+                "              {\n" +
+                "                \"term\": {\n" +
+                "                  \"organizationId\": \"" + orgId + "\"\n" +
+                "                }\n" +
+                "              }\n" +
+                "            ]\n" +
+                "          },\n" +
+                "          {\n" +
+                "            \"and\": [\n" +
+                "              {\n" +
+                "                \"term\": {\n" +
+                "                  \"planId\": \"" + planId + "\"\n" +
+                "                }\n" +
+                "              },\n" +
+                "              {\n" +
+                "                \"term\": {\n" +
+                "                  \"organizationId\": \"" + orgId + "\"\n" +
+                "                }\n" +
+                "              }\n" +
+                "            ]\n" +
+                "          }\n" +
+                "        ]\n" +
+                "      }\n" +
+                "    }\n" +
+                "  }\n" +
+                "}";
+
+        DeleteByQuery deleteByQuery = new DeleteByQuery.Builder(query).addIndex(getIndexName())
+                .addType("auditEntry")
+                .addType("planVersion")
+                .build();
+        try {
+            JestResult response = esClient.execute(deleteByQuery);
+            if (!response.isSucceeded()) {
+                throw new StorageException(response.getErrorMessage());
+            }
+        } catch (Exception e) {
+            throw new StorageException(e);
+        }
         deleteEntity("plan", id(plan.getOrganization().getId(), plan.getId())); //$NON-NLS-1$
     }
 
@@ -758,6 +1031,9 @@ public class EsStorage implements IStorage, IStorageQuery {
     public ContractBean getContract(Long id) throws StorageException {
         Map<String, Object> source = getEntity("contract", String.valueOf(id)); //$NON-NLS-1$
         ContractBean contract = EsMarshalling.unmarshallContract(source);
+        if (contract == null) {
+            return null;
+        }
         String clientOrgId = (String) source.get("clientOrganizationId");
         String clientId = (String) source.get("clientId");
         String clientVersion = (String) source.get("clientVersion");
@@ -1768,7 +2044,7 @@ public class EsStorage implements IStorage, IStorageQuery {
      * Indexes an entity.
      * @param type
      * @param id
-     * @param entitySource
+     * @param sourceEntity
      * @throws StorageException
      */
     private void indexEntity(String type, String id, XContentBuilder sourceEntity) throws StorageException {
@@ -1779,7 +2055,7 @@ public class EsStorage implements IStorage, IStorageQuery {
      * Indexes an entity.
      * @param type
      * @param id
-     * @param entitySource
+     * @param sourceEntity
      * @param refresh true if the operation should wait for a refresh before it returns
      * @throws StorageException
      */
@@ -2270,6 +2546,41 @@ public class EsStorage implements IStorage, IStorageQuery {
     }
 
     @Override
+    public Iterator<ContractBean> getAllContracts(OrganizationBean organizationBean, int lim) throws StorageException {
+        return getAll("contract", EsMarshalling::unmarshallContract, matchOrgQuery(organizationBean.getId())); //$NON-NLS-1$
+    }
+
+    @Override
+    public Iterator<ClientVersionBean> getAllClientVersions(OrganizationBean organizationBean, int lim) throws StorageException {
+        return getAll("clientVersion", EsMarshalling::unmarshallClientVersion, matchOrgQuery(organizationBean.getId())); //$NON-NLS-1$
+    }
+
+    @Override
+    public Iterator<ClientVersionBean> getAllClientVersions(OrganizationBean organizationBean, ClientStatus status, int lim) throws StorageException {
+        return getAll("clientVersion", EsMarshalling::unmarshallClientVersion, matchOrgAndStatusQuery(organizationBean.getId(), status.name())); //$NON-NLS-1$
+    }
+
+    @Override
+    public Iterator<ApiVersionBean> getAllApiVersions(OrganizationBean organizationBean, int lim) throws StorageException {
+        return getAll("apiVersion", EsMarshalling::unmarshallApiVersion, matchOrgQuery(organizationBean.getId())); //$NON-NLS-1$
+    }
+
+    @Override
+    public Iterator<ApiVersionBean> getAllApiVersions(OrganizationBean organizationBean, ApiStatus status, int lim) throws StorageException {
+        return getAll("apiVersion", EsMarshalling::unmarshallApiVersion, matchOrgAndStatusQuery(organizationBean.getId(), status.name())); //$NON-NLS-1$
+    }
+
+    @Override
+    public Iterator<PlanVersionBean> getAllPlanVersions(OrganizationBean organizationBean, int lim) throws StorageException {
+        return getAll("planVersion", EsMarshalling::unmarshallPlanVersion, matchOrgQuery(organizationBean.getId())); //$NON-NLS-1$
+    }
+
+    @Override
+    public Iterator<PlanVersionBean> getAllPlanVersions(OrganizationBean organizationBean, PlanStatus status, int lim) throws StorageException {
+        return getAll("planVersion", EsMarshalling::unmarshallPlanVersion, matchOrgAndStatusQuery(organizationBean.getId(), status.name())); //$NON-NLS-1$
+    }
+
+    @Override
     public Iterator<RoleMembershipBean> getAllMemberships(String organizationId) throws StorageException {
         return getAll("roleMembership", new IUnmarshaller<RoleMembershipBean>() { //$NON-NLS-1$
             @Override
@@ -2363,10 +2674,10 @@ public class EsStorage implements IStorage, IStorageQuery {
 
         /**
          * Constructor.
-         * @param entityType
-         * @param unmarshaller
-         * @param query
-         * @throws StorageException
+         * @param entityType the entity type
+         * @param unmarshaller the unmarshaller
+         * @param query the query
+         * @throws StorageException when storage fails
          */
         public EntityIterator(String entityType, IUnmarshaller<T> unmarshaller, String query) throws StorageException {
             this.entityType = entityType;
@@ -2420,6 +2731,7 @@ public class EsStorage implements IStorage, IStorageQuery {
             }
         }
 
+        @SuppressWarnings({ "unchecked", "rawtypes" })
         private void fetch() throws StorageException {
             try {
                 Builder builder = new SearchScroll.Builder(scrollId, "1m")
@@ -2438,6 +2750,26 @@ public class EsStorage implements IStorage, IStorageQuery {
             }
         }
 
+    }
+
+    @SuppressWarnings("nls")
+    private String matchOrgAndStatusQuery(String organizationId, String status) {
+        return  "{" +
+                "  \"query\": {" +
+                "    \"filtered\": { " +
+                "      \"filter\": {" +
+                "        \"and\" : [" +
+                "          {" +
+                "            \"term\": { \"organizationId\": \"" + organizationId + "\" }" +
+                "          }," +
+                "          {" +
+                "            \"term\": { \"status\": \"" + status + "\" }" +
+                "          }" +
+                "      ]" +
+                "      }" +
+                "    }" +
+                "  }" +
+                "}";
     }
 
     /**

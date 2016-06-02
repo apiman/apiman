@@ -15,15 +15,18 @@
  */
 package io.apiman.manager.api.jpa;
 
+import io.apiman.common.util.crypt.DataEncryptionContext;
 import io.apiman.common.util.crypt.IDataEncrypter;
 import io.apiman.manager.api.beans.apis.ApiBean;
 import io.apiman.manager.api.beans.apis.ApiDefinitionBean;
 import io.apiman.manager.api.beans.apis.ApiGatewayBean;
 import io.apiman.manager.api.beans.apis.ApiPlanBean;
+import io.apiman.manager.api.beans.apis.ApiStatus;
 import io.apiman.manager.api.beans.apis.ApiVersionBean;
 import io.apiman.manager.api.beans.audit.AuditEntityType;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
 import io.apiman.manager.api.beans.clients.ClientBean;
+import io.apiman.manager.api.beans.clients.ClientStatus;
 import io.apiman.manager.api.beans.clients.ClientVersionBean;
 import io.apiman.manager.api.beans.contracts.ContractBean;
 import io.apiman.manager.api.beans.download.DownloadBean;
@@ -36,6 +39,7 @@ import io.apiman.manager.api.beans.idm.RoleMembershipBean;
 import io.apiman.manager.api.beans.idm.UserBean;
 import io.apiman.manager.api.beans.orgs.OrganizationBean;
 import io.apiman.manager.api.beans.plans.PlanBean;
+import io.apiman.manager.api.beans.plans.PlanStatus;
 import io.apiman.manager.api.beans.plans.PlanVersionBean;
 import io.apiman.manager.api.beans.plugins.PluginBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
@@ -90,6 +94,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -98,6 +103,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author eric.wittmann@redhat.com
  */
+@SuppressWarnings("nls")
 @ApplicationScoped @Alternative
 public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorageQuery {
 
@@ -107,7 +113,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     @PostConstruct
     public void postConstruct() {
         // Kick the encrypter, causing it to be loaded/resolved in CDI
-        encrypter.encrypt(""); //$NON-NLS-1$
+        encrypter.encrypt("", new DataEncryptionContext());
     }
 
     /**
@@ -378,7 +384,15 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      */
     @Override
     public void deleteOrganization(OrganizationBean organization) throws StorageException {
-        super.delete(organization);
+        // Remove memberships
+        deleteAllMemberships(organization);
+        // Remove audit entries (as now orphaned)
+        deleteAllAuditEntries(organization);
+        // Remove contracts
+        deleteAllContracts(organization);
+        // Remove Policies
+        deleteAllPolicies(organization);
+        remove(organization);
     }
 
     /**
@@ -386,7 +400,13 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      */
     @Override
     public void deleteClient(ClientBean client) throws StorageException {
-        super.delete(client);
+        // Remove audit
+        deleteAllAuditEntries(client);
+        // Remove contracts
+        deleteAllContracts(client);
+        // Remove policies
+        deleteAllPolicies(client);
+        remove(client);
     }
 
     /**
@@ -394,7 +414,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      */
     @Override
     public void deleteClientVersion(ClientVersionBean version) throws StorageException {
-        super.delete(version);
+        remove(version);
     }
 
     /**
@@ -402,7 +422,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      */
     @Override
     public void deleteContract(ContractBean contract) throws StorageException {
-        super.delete(contract);
+        remove(contract);
     }
 
     /**
@@ -410,7 +430,13 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      */
     @Override
     public void deleteApi(ApiBean api) throws StorageException {
-        super.delete(api);
+        // Remove audit entries (as now orphaned)
+        deleteAllAuditEntries(api);
+        // Remove contracts
+        deleteAllContracts(api);
+        // Remove policies
+        deleteAllPolicies(api);
+        remove(api);
     }
 
     /**
@@ -418,8 +444,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      */
     @Override
     public void deleteApiVersion(ApiVersionBean version) throws StorageException {
-        deleteApiDefinition(version);
-        super.delete(version);
+        remove(version);
     }
 
     /**
@@ -431,7 +456,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         if (bean != null) {
             super.delete(bean);
         } else {
-            throw new StorageException("No definition found."); //$NON-NLS-1$
+            throw new StorageException("No definition found.");
         }
     }
 
@@ -440,6 +465,9 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      */
     @Override
     public void deletePlan(PlanBean plan) throws StorageException {
+        // Delete audit entries
+        deleteAllAuditEntries(plan);
+        // Delete entity
         super.delete(plan);
     }
 
@@ -585,8 +613,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         try {
             EntityManager entityManager = getActiveEntityManager();
 
-            @SuppressWarnings("nls")
-            String sql =
+                    String sql =
                     "SELECT p.id, p.artifact_id, p.group_id, p.version, p.classifier, p.type, p.name, p.description, p.created_by, p.created_on, p.deleted" +
                     "  FROM plugins p" +
                     " WHERE p.group_id = ? AND p.artifact_id = ?";
@@ -636,7 +663,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         for (Long policyId : newOrder) {
             PolicyBean storedPolicy = getPolicy(type, organizationId, entityId, entityVersion, policyId);
             if (storedPolicy == null) {
-                throw new StorageException("Invalid policy id: " + policyId); //$NON-NLS-1$
+                throw new StorageException("Invalid policy id: " + policyId);
             }
             storedPolicy.setOrderIndex(orderIndex++);
             updatePolicy(storedPolicy);
@@ -736,7 +763,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     public SearchResultsBean<PlanSummaryBean> findPlans(String organizationId, SearchCriteriaBean criteria)
             throws StorageException {
 
-        criteria.addFilter("organization.id", organizationId, SearchCriteriaFilterOperator.eq); //$NON-NLS-1$
+        criteria.addFilter("organization.id", organizationId, SearchCriteriaFilterOperator.eq);
         SearchResultsBean<PlanBean> result = find(criteria, PlanBean.class);
         SearchResultsBean<PlanSummaryBean> rval = new SearchResultsBean<>();
         rval.setTotalSize(result.getTotalSize());
@@ -776,15 +803,15 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             criteria.setPage(1);
             criteria.setPageSize(20);
         }
-        criteria.setOrder("id", false); //$NON-NLS-1$
+        criteria.setOrder("id", false);
         if (organizationId != null) {
-            criteria.addFilter("organizationId", organizationId, SearchCriteriaFilterOperator.eq); //$NON-NLS-1$
+            criteria.addFilter("organizationId", organizationId, SearchCriteriaFilterOperator.eq);
         }
         if (entityId != null) {
-            criteria.addFilter("entityId", entityId, SearchCriteriaFilterOperator.eq); //$NON-NLS-1$
+            criteria.addFilter("entityId", entityId, SearchCriteriaFilterOperator.eq);
         }
         if (entityVersion != null) {
-            criteria.addFilter("entityVersion", entityVersion, SearchCriteriaFilterOperator.eq); //$NON-NLS-1$
+            criteria.addFilter("entityVersion", entityVersion, SearchCriteriaFilterOperator.eq);
         }
         if (type != null) {
             AuditEntityType entityType = null;
@@ -798,7 +825,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
                 entityType = AuditEntityType.Plan;
             }
             if (entityType != null) {
-                criteria.addFilter("entityType", entityType.name(), SearchCriteriaFilterOperator.eq); //$NON-NLS-1$
+                criteria.addFilter("entityType", entityType.name(), SearchCriteriaFilterOperator.eq);
             }
         }
 
@@ -818,9 +845,9 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             criteria.setPage(1);
             criteria.setPageSize(20);
         }
-        criteria.setOrder("createdOn", false); //$NON-NLS-1$
+        criteria.setOrder("createdOn", false);
         if (userId != null) {
-            criteria.addFilter("who", userId, SearchCriteriaFilterOperator.eq); //$NON-NLS-1$
+            criteria.addFilter("who", userId, SearchCriteriaFilterOperator.eq);
         }
 
         return find(criteria, AuditEntryBean.class);
@@ -835,8 +862,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         try {
             EntityManager entityManager = getActiveEntityManager();
 
-            @SuppressWarnings("nls")
-            String sql =
+                    String sql =
                     "SELECT g.id, g.name, g.description, g.type" +
                     "  FROM gateways g" +
                     " ORDER BY g.name ASC";
@@ -870,8 +896,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         try {
             EntityManager entityManager = getActiveEntityManager();
 
-            @SuppressWarnings("nls")
-            String sql =
+                    String sql =
                     "SELECT p.id, p.artifact_id, p.group_id, p.version, p.classifier, p.type, p.name, p.description, p.created_by, p.created_on" +
                     "  FROM plugins p" +
                     " WHERE p.deleted IS NULL OR p.deleted = 0" +
@@ -912,8 +937,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         try {
             EntityManager entityManager = getActiveEntityManager();
 
-            @SuppressWarnings("nls")
-            String sql =
+                    String sql =
                     "SELECT pd.id, pd.policy_impl, pd.name, pd.description, pd.icon, pd.plugin_id, pd.form_type" +
                     "  FROM policydefs pd" +
                     " WHERE pd.deleted IS NULL OR pd.deleted = 0" +
@@ -958,9 +982,9 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         beginTx();
         try {
             EntityManager entityManager = getActiveEntityManager();
-            String jpql = "SELECT o from OrganizationBean o WHERE o.id IN :orgs ORDER BY o.id ASC"; //$NON-NLS-1$
+            String jpql = "SELECT o from OrganizationBean o WHERE o.id IN :orgs ORDER BY o.id ASC";
             Query query = entityManager.createQuery(jpql);
-            query.setParameter("orgs", orgIds); //$NON-NLS-1$
+            query.setParameter("orgs", orgIds);
             List<OrganizationBean> qr = query.getResultList();
             for (OrganizationBean bean : qr) {
                 OrganizationSummaryBean summary = new OrganizationSummaryBean();
@@ -1000,9 +1024,9 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         beginTx();
         try {
             EntityManager entityManager = getActiveEntityManager();
-            String jpql = "SELECT a FROM ClientBean a JOIN a.organization o WHERE o.id IN :orgs ORDER BY a.id ASC"; //$NON-NLS-1$
+            String jpql = "SELECT a FROM ClientBean a JOIN a.organization o WHERE o.id IN :orgs ORDER BY a.id ASC";
             Query query = entityManager.createQuery(jpql);
-            query.setParameter("orgs", orgIds); //$NON-NLS-1$
+            query.setParameter("orgs", orgIds);
 
             List<ClientBean> qr = query.getResultList();
             for (ClientBean bean : qr) {
@@ -1048,9 +1072,9 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         beginTx();
         try {
             EntityManager entityManager = getActiveEntityManager();
-            String jpql = "SELECT a FROM ApiBean a JOIN a.organization o WHERE o.id IN :orgs ORDER BY a.id ASC"; //$NON-NLS-1$
+            String jpql = "SELECT a FROM ApiBean a JOIN a.organization o WHERE o.id IN :orgs ORDER BY a.id ASC";
             Query query = entityManager.createQuery(jpql);
-            query.setParameter("orgs", orgIds); //$NON-NLS-1$
+            query.setParameter("orgs", orgIds);
 
             List<ApiBean> qr = query.getResultList();
             for (ApiBean bean : qr) {
@@ -1081,11 +1105,11 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             throws StorageException {
         try {
             EntityManager entityManager = getActiveEntityManager();
-            String jpql = "SELECT v from ApiVersionBean v JOIN v.api s JOIN s.organization o WHERE o.id = :orgId AND s.id = :apiId AND v.version = :version"; //$NON-NLS-1$
+            String jpql = "SELECT v from ApiVersionBean v JOIN v.api s JOIN s.organization o WHERE o.id = :orgId AND s.id = :apiId AND v.version = :version";
             Query query = entityManager.createQuery(jpql);
-            query.setParameter("orgId", orgId); //$NON-NLS-1$
-            query.setParameter("apiId", apiId); //$NON-NLS-1$
-            query.setParameter("version", version); //$NON-NLS-1$
+            query.setParameter("orgId", orgId);
+            query.setParameter("apiId", apiId);
+            query.setParameter("version", version);
 
             return (ApiVersionBean) query.getSingleResult();
         } catch (NoResultException e) {
@@ -1118,8 +1142,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         beginTx();
         try {
             EntityManager entityManager = getActiveEntityManager();
-            @SuppressWarnings("nls")
-            String jpql =
+                    String jpql =
                       "SELECT v "
                     + "  FROM ApiVersionBean v"
                     + "  JOIN v.api s"
@@ -1129,8 +1152,8 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
                     + " ORDER BY v.createdOn DESC";
             Query query = entityManager.createQuery(jpql);
             query.setMaxResults(500);
-            query.setParameter("orgId", orgId); //$NON-NLS-1$
-            query.setParameter("apiId", apiId); //$NON-NLS-1$
+            query.setParameter("orgId", orgId);
+            query.setParameter("apiId", apiId);
 
             List<ApiVersionBean> apiVersions = query.getResultList();
             List<ApiVersionSummaryBean> rval = new ArrayList<>(apiVersions.size());
@@ -1196,8 +1219,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         beginTx();
         try {
             EntityManager entityManager = getActiveEntityManager();
-            @SuppressWarnings("nls")
-            String jpql =
+                    String jpql =
                     "SELECT c from ContractBean c " +
                     "  JOIN c.api apiv " +
                     "  JOIN apiv.api api " +
@@ -1208,11 +1230,11 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
                     " WHERE api.id = :apiId " +
                     "   AND sorg.id = :orgId " +
                     "   AND apiv.version = :version " +
-                    " ORDER BY sorg.id, api.id ASC"; //$NON-NLS-1$
+                    " ORDER BY sorg.id, api.id ASC";
             Query query = entityManager.createQuery(jpql);
-            query.setParameter("orgId", organizationId); //$NON-NLS-1$
-            query.setParameter("apiId", apiId); //$NON-NLS-1$
-            query.setParameter("version", version); //$NON-NLS-1$
+            query.setParameter("orgId", organizationId);
+            query.setParameter("apiId", apiId);
+            query.setParameter("version", version);
             query.setFirstResult(start);
             query.setMaxResults(pageSize);
             List<ContractBean> contracts = query.getResultList();
@@ -1262,11 +1284,11 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             throws StorageException {
         try {
             EntityManager entityManager = getActiveEntityManager();
-            String jpql = "SELECT v from ClientVersionBean v JOIN v.client a JOIN a.organization o WHERE o.id = :orgId AND a.id = :clientId AND v.version = :version"; //$NON-NLS-1$
+            String jpql = "SELECT v from ClientVersionBean v JOIN v.client a JOIN a.organization o WHERE o.id = :orgId AND a.id = :clientId AND v.version = :version";
             Query query = entityManager.createQuery(jpql);
-            query.setParameter("orgId", orgId); //$NON-NLS-1$
-            query.setParameter("clientId", clientId); //$NON-NLS-1$
-            query.setParameter("version", version); //$NON-NLS-1$
+            query.setParameter("orgId", orgId);
+            query.setParameter("clientId", clientId);
+            query.setParameter("version", version);
 
             return (ClientVersionBean) query.getSingleResult();
         } catch (NoResultException e) {
@@ -1286,19 +1308,18 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         beginTx();
         try {
             EntityManager entityManager = getActiveEntityManager();
-            @SuppressWarnings("nls")
-            String jpql =
+                    String jpql =
                       "SELECT v"
                     + "  FROM ClientVersionBean v"
                     + "  JOIN v.client a"
                     + "  JOIN a.organization o"
                     + " WHERE o.id = :orgId"
                     + "   AND a.id = :clientId"
-                    + " ORDER BY v.createdOn DESC"; //$NON-NLS-1$
+                    + " ORDER BY v.createdOn DESC";
             Query query = entityManager.createQuery(jpql);
             query.setMaxResults(500);
-            query.setParameter("orgId", orgId); //$NON-NLS-1$
-            query.setParameter("clientId", clientId); //$NON-NLS-1$
+            query.setParameter("orgId", orgId);
+            query.setParameter("clientId", clientId);
             List<ClientVersionBean> clientVersions = query.getResultList();
             List<ClientVersionSummaryBean> rval = new ArrayList<>();
             for (ClientVersionBean clientVersion : clientVersions) {
@@ -1339,7 +1360,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             rollbackTx();
         }
     }
-    
+
     /**
      * Returns a list of all contracts for the given client.
      * @param organizationId
@@ -1351,7 +1372,6 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             String version) throws StorageException {
         List<ContractSummaryBean> rval = new ArrayList<>();
         EntityManager entityManager = getActiveEntityManager();
-        @SuppressWarnings("nls")
         String jpql =
                 "SELECT c from ContractBean c " +
                 "  JOIN c.client clientv " +
@@ -1408,8 +1428,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         beginTx();
         try {
             EntityManager entityManager = getActiveEntityManager();
-            @SuppressWarnings("nls")
-            String jpql =
+                    String jpql =
                     "SELECT c from ContractBean c " +
                     "  JOIN c.client clientv " +
                     "  JOIN clientv.client client " +
@@ -1419,9 +1438,9 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
                     "   AND clientv.version = :version " +
                     " ORDER BY c.id ASC";
             Query query = entityManager.createQuery(jpql);
-            query.setParameter("orgId", organizationId); //$NON-NLS-1$
-            query.setParameter("clientId", clientId); //$NON-NLS-1$
-            query.setParameter("version", version); //$NON-NLS-1$
+            query.setParameter("orgId", organizationId);
+            query.setParameter("clientId", clientId);
+            query.setParameter("version", version);
 
             List<ContractBean> contracts = query.getResultList();
             for (ContractBean contractBean : contracts) {
@@ -1480,9 +1499,9 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         beginTx();
         try {
             EntityManager entityManager = getActiveEntityManager();
-            String jpql = "SELECT p FROM PlanBean p JOIN p.organization o WHERE o.id IN :orgs ORDER BY p.id ASC"; //$NON-NLS-1$
+            String jpql = "SELECT p FROM PlanBean p JOIN p.organization o WHERE o.id IN :orgs ORDER BY p.id ASC";
             Query query = entityManager.createQuery(jpql);
-            query.setParameter("orgs", orgIds); //$NON-NLS-1$
+            query.setParameter("orgs", orgIds);
             query.setMaxResults(500);
 
             List<PlanBean> qr = query.getResultList();
@@ -1513,11 +1532,11 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             throws StorageException {
         try {
             EntityManager entityManager = getActiveEntityManager();
-            String jpql = "SELECT v from PlanVersionBean v JOIN v.plan p JOIN p.organization o WHERE o.id = :orgId AND p.id = :planId AND v.version = :version"; //$NON-NLS-1$
+            String jpql = "SELECT v from PlanVersionBean v JOIN v.plan p JOIN p.organization o WHERE o.id = :orgId AND p.id = :planId AND v.version = :version";
             Query query = entityManager.createQuery(jpql);
-            query.setParameter("orgId", orgId); //$NON-NLS-1$
-            query.setParameter("planId", planId); //$NON-NLS-1$
-            query.setParameter("version", version); //$NON-NLS-1$
+            query.setParameter("orgId", orgId);
+            query.setParameter("planId", planId);
+            query.setParameter("version", version);
 
             return (PlanVersionBean) query.getSingleResult();
         } catch (NoResultException e) {
@@ -1536,8 +1555,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         beginTx();
         try {
             EntityManager entityManager = getActiveEntityManager();
-            @SuppressWarnings("nls")
-            String jpql = "SELECT v from PlanVersionBean v" +
+                    String jpql = "SELECT v from PlanVersionBean v" +
                           "  JOIN v.plan p" +
                           "  JOIN p.organization o" +
                           " WHERE o.id = :orgId" +
@@ -1545,8 +1563,8 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
                           " ORDER BY v.createdOn DESC";
             Query query = entityManager.createQuery(jpql);
             query.setMaxResults(500);
-            query.setParameter("orgId", orgId); //$NON-NLS-1$
-            query.setParameter("planId", planId); //$NON-NLS-1$
+            query.setParameter("orgId", orgId);
+            query.setParameter("planId", planId);
             List<PlanVersionBean> planVersions = query.getResultList();
             List<PlanVersionSummaryBean> rval = new ArrayList<>(planVersions.size());
             for (PlanVersionBean planVersion : planVersions) {
@@ -1572,7 +1590,6 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     /**
      * @see io.apiman.manager.api.core.IStorageQuery#getPolicies(java.lang.String, java.lang.String, java.lang.String, io.apiman.manager.api.beans.policies.PolicyType)
      */
-    @SuppressWarnings("nls")
     @Override
     public List<PolicySummaryBean> getPolicies(String organizationId, String entityId, String version,
             PolicyType type) throws StorageException {
@@ -1622,11 +1639,11 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     public int getMaxPolicyOrderIndex(String organizationId, String entityId, String entityVersion,
             PolicyType type) throws StorageException {
         SearchCriteriaBean criteria = new SearchCriteriaBean();
-        criteria.addFilter("organizationId", organizationId, SearchCriteriaFilterOperator.eq); //$NON-NLS-1$
-        criteria.addFilter("entityId", entityId, SearchCriteriaFilterOperator.eq); //$NON-NLS-1$
-        criteria.addFilter("entityVersion", entityVersion, SearchCriteriaFilterOperator.eq); //$NON-NLS-1$
-        criteria.addFilter("type", type.name(), SearchCriteriaFilterOperator.eq); //$NON-NLS-1$
-        criteria.setOrder("orderIndex", false); //$NON-NLS-1$
+        criteria.addFilter("organizationId", organizationId, SearchCriteriaFilterOperator.eq);
+        criteria.addFilter("entityId", entityId, SearchCriteriaFilterOperator.eq);
+        criteria.addFilter("entityVersion", entityVersion, SearchCriteriaFilterOperator.eq);
+        criteria.addFilter("type", type.name(), SearchCriteriaFilterOperator.eq);
+        criteria.setOrder("orderIndex", false);
         criteria.setPage(1);
         criteria.setPageSize(1);
         SearchResultsBean<PolicyBean> resultsBean = find(criteria, PolicyBean.class);
@@ -1646,8 +1663,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         try {
             EntityManager entityManager = getActiveEntityManager();
 
-            @SuppressWarnings("nls")
-            String sql =
+                    String sql =
                     "SELECT pd.id, pd.policy_impl, pd.name, pd.description, pd.icon, pd.plugin_id, pd.form_type" +
                     "  FROM policydefs pd" +
                     " WHERE pd.plugin_id = ?" +
@@ -1745,8 +1761,8 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             RoleBean prole = get(role.getId(), RoleBean.class);
 
             // First delete all memberships in this role
-            Query query = entityManager.createQuery("DELETE from RoleMembershipBean m WHERE m.roleId = :roleId" ); //$NON-NLS-1$
-            query.setParameter("roleId", role.getId()); //$NON-NLS-1$
+            Query query = entityManager.createQuery("DELETE from RoleMembershipBean m WHERE m.roleId = :roleId" );
+            query.setParameter("roleId", role.getId());
             query.executeUpdate();
 
             // Then delete the role itself.
@@ -1792,10 +1808,10 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     public RoleMembershipBean getMembership(String userId, String roleId, String organizationId) throws StorageException {
         try {
             EntityManager entityManager = getActiveEntityManager();
-            Query query = entityManager.createQuery("SELECT m FROM RoleMembershipBean m WHERE m.roleId = :roleId AND m.userId = :userId AND m.organizationId = :orgId" ); //$NON-NLS-1$
-            query.setParameter("roleId", roleId); //$NON-NLS-1$
-            query.setParameter("userId", userId); //$NON-NLS-1$
-            query.setParameter("orgId", organizationId); //$NON-NLS-1$
+            Query query = entityManager.createQuery("SELECT m FROM RoleMembershipBean m WHERE m.roleId = :roleId AND m.userId = :userId AND m.organizationId = :orgId" );
+            query.setParameter("roleId", roleId);
+            query.setParameter("userId", userId);
+            query.setParameter("orgId", organizationId);
             RoleMembershipBean bean = null;
             List<?> resultList = query.getResultList();
             if (!resultList.isEmpty()) {
@@ -1814,10 +1830,10 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     public void deleteMembership(String userId, String roleId, String organizationId) throws StorageException {
         try {
             EntityManager entityManager = getActiveEntityManager();
-            Query query = entityManager.createQuery("DELETE FROM RoleMembershipBean m WHERE m.roleId = :roleId AND m.userId = :userId AND m.organizationId = :orgId" ); //$NON-NLS-1$
-            query.setParameter("roleId", roleId); //$NON-NLS-1$
-            query.setParameter("userId", userId); //$NON-NLS-1$
-            query.setParameter("orgId", organizationId); //$NON-NLS-1$
+            Query query = entityManager.createQuery("DELETE FROM RoleMembershipBean m WHERE m.roleId = :roleId AND m.userId = :userId AND m.organizationId = :orgId" );
+            query.setParameter("roleId", roleId);
+            query.setParameter("userId", userId);
+            query.setParameter("orgId", organizationId);
             query.executeUpdate();
         } catch (Throwable t) {
             throw new StorageException(t);
@@ -1831,9 +1847,9 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     public void deleteMemberships(String userId, String organizationId) throws StorageException {
         try {
             EntityManager entityManager = getActiveEntityManager();
-            Query query = entityManager.createQuery("DELETE FROM RoleMembershipBean m WHERE m.userId = :userId AND m.organizationId = :orgId" ); //$NON-NLS-1$
-            query.setParameter("userId", userId); //$NON-NLS-1$
-            query.setParameter("orgId", organizationId); //$NON-NLS-1$
+            Query query = entityManager.createQuery("DELETE FROM RoleMembershipBean m WHERE m.userId = :userId AND m.organizationId = :orgId" );
+            query.setParameter("userId", userId);
+            query.setParameter("orgId", organizationId);
             query.executeUpdate();
         } catch (Throwable t) {
             throw new StorageException(t);
@@ -1852,7 +1868,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             CriteriaBuilder builder = entityManager.getCriteriaBuilder();
             CriteriaQuery<RoleMembershipBean> criteriaQuery = builder.createQuery(RoleMembershipBean.class);
             Root<RoleMembershipBean> from = criteriaQuery.from(RoleMembershipBean.class);
-            criteriaQuery.where(builder.equal(from.get("userId"), userId)); //$NON-NLS-1$
+            criteriaQuery.where(builder.equal(from.get("userId"), userId));
             TypedQuery<RoleMembershipBean> typedQuery = entityManager.createQuery(criteriaQuery);
             List<RoleMembershipBean> resultList = typedQuery.getResultList();
             memberships.addAll(resultList);
@@ -1878,8 +1894,8 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             CriteriaQuery<RoleMembershipBean> criteriaQuery = builder.createQuery(RoleMembershipBean.class);
             Root<RoleMembershipBean> from = criteriaQuery.from(RoleMembershipBean.class);
             criteriaQuery.where(
-                    builder.equal(from.get("userId"), userId), //$NON-NLS-1$
-                    builder.equal(from.get("organizationId"), organizationId) ); //$NON-NLS-1$
+                    builder.equal(from.get("userId"), userId),
+                    builder.equal(from.get("organizationId"), organizationId) );
             TypedQuery<RoleMembershipBean> typedQuery = entityManager.createQuery(criteriaQuery);
             List<RoleMembershipBean> resultList = typedQuery.getResultList();
             memberships.addAll(resultList);
@@ -1904,7 +1920,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             CriteriaBuilder builder = entityManager.getCriteriaBuilder();
             CriteriaQuery<RoleMembershipBean> criteriaQuery = builder.createQuery(RoleMembershipBean.class);
             Root<RoleMembershipBean> from = criteriaQuery.from(RoleMembershipBean.class);
-            criteriaQuery.where(builder.equal(from.get("organizationId"), organizationId)); //$NON-NLS-1$
+            criteriaQuery.where(builder.equal(from.get("organizationId"), organizationId));
             TypedQuery<RoleMembershipBean> typedQuery = entityManager.createQuery(criteriaQuery);
             List<RoleMembershipBean> resultList = typedQuery.getResultList();
             memberships.addAll(resultList);
@@ -1929,7 +1945,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             CriteriaBuilder builder = entityManager.getCriteriaBuilder();
             CriteriaQuery<RoleMembershipBean> criteriaQuery = builder.createQuery(RoleMembershipBean.class);
             Root<RoleMembershipBean> from = criteriaQuery.from(RoleMembershipBean.class);
-            criteriaQuery.where(builder.equal(from.get("userId"), userId)); //$NON-NLS-1$
+            criteriaQuery.where(builder.equal(from.get("userId"), userId));
             TypedQuery<RoleMembershipBean> typedQuery = entityManager.createQuery(criteriaQuery);
             typedQuery.setMaxResults(500);
             List<RoleMembershipBean> resultList = typedQuery.getResultList();
@@ -1953,21 +1969,19 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     }
 
     /**
-     * @param roleId
+     * @param roleId the role id
      * @return a role by id
      * @throws StorageException
-     * @throws DoesNotExistException
      */
     protected RoleBean getRoleInternal(String roleId) throws StorageException {
         return super.get(roleId, RoleBean.class);
     }
 
-    @SuppressWarnings("nls")
     @Override
     public Iterator<OrganizationBean> getAllOrganizations() throws StorageException {
         EntityManager entityManager = getActiveEntityManager();
 
-        String jqpl = "SELECT b FROM OrganizationBean b";
+        String jqpl = "SELECT b FROM OrganizationBean b ORDER BY b.id ASC";
         Query query = entityManager.createQuery(jqpl);
 
         return super.getAll(OrganizationBean.class, query);
@@ -1976,7 +1990,6 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     /**
      * @see io.apiman.manager.api.core.IStorage#getAllPlans(java.lang.String)
      */
-    @SuppressWarnings("nls")
     @Override
     public Iterator<PlanBean> getAllPlans(String organizationId) throws StorageException {
         EntityManager entityManager = getActiveEntityManager();
@@ -1984,7 +1997,8 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         String jpql =
                 "SELECT b "
                 + "FROM PlanBean b "
-                + "WHERE b.organization.id = :orgId "; //$NON-NLS-1$
+                + "WHERE b.organization.id = :orgId "
+                + "ORDER BY b.id ASC"; //$NON-NLS-1$
 
         Query query = entityManager.createQuery(jpql);
         query.setParameter("orgId", organizationId);
@@ -1994,7 +2008,6 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     /**
      * @see io.apiman.manager.api.core.IStorage#getAllApis(java.lang.String)
      */
-    @SuppressWarnings("nls")
     @Override
     public Iterator<ApiBean> getAllApis(String organizationId) throws StorageException {
         EntityManager entityManager = getActiveEntityManager();
@@ -2002,7 +2015,8 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         String jpql =
                 "SELECT b "
                 + "FROM ApiBean b "
-                + "WHERE b.organization.id = :orgId "; //$NON-NLS-1$
+                + "WHERE b.organization.id = :orgId "
+                + "ORDER BY b.id ASC"; //$NON-NLS-1$
 
         Query query = entityManager.createQuery(jpql);
         query.setParameter("orgId", organizationId);
@@ -2012,7 +2026,6 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     /**
      * @see io.apiman.manager.api.core.IStorage#getAllClients(java.lang.String)
      */
-    @SuppressWarnings("nls")
     @Override
     public Iterator<ClientBean> getAllClients(String organizationId) throws StorageException {
         EntityManager entityManager = getActiveEntityManager();
@@ -2020,7 +2033,8 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         String jpql =
                 "SELECT b "
                 + "FROM ClientBean b "
-                + "WHERE b.organization.id = :orgId "; //$NON-NLS-1$
+                + "WHERE b.organization.id = :orgId "
+                + "ORDER BY b.id ASC"; //$NON-NLS-1$
 
         Query query = entityManager.createQuery(jpql);
         query.setParameter("orgId", organizationId);
@@ -2030,7 +2044,6 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     /**
      * @see io.apiman.manager.api.core.IStorage#getAllClientVersions(java.lang.String, java.lang.String)
      */
-    @SuppressWarnings("nls")
     @Override
     public Iterator<ClientVersionBean> getAllClientVersions(String organizationId,
             String clientId) throws StorageException {
@@ -2041,7 +2054,8 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
                 + "   JOIN v.client a "
                 + "   JOIN a.organization o "
                 + "  WHERE o.id = :orgId "
-                + "    AND a.id = :clientId";
+                + "    AND a.id = :clientId"
+                + "  ORDER BY v.id ASC";
 
         Query query = entityManager.createQuery(jpql);
         query.setParameter("orgId", organizationId);
@@ -2056,8 +2070,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     public Iterator<ContractBean> getAllContracts(String organizationId, String clientId, String version)
             throws StorageException {
         EntityManager entityManager = getActiveEntityManager();
-        @SuppressWarnings("nls")
-        String jpql =
+            String jpql =
                 "SELECT c from ContractBean c " +
                 "  JOIN c.client clientv " +
                 "  JOIN clientv.client client " +
@@ -2065,11 +2078,11 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
                 " WHERE client.id = :clientId " +
                 "   AND aorg.id = :orgId " +
                 "   AND clientv.version = :version " +
-                " ORDER BY aorg.id, client.id ASC";
+                " ORDER BY c.id ASC";
         Query query = entityManager.createQuery(jpql);
-        query.setParameter("orgId", organizationId); //$NON-NLS-1$
-        query.setParameter("clientId", clientId); //$NON-NLS-1$
-        query.setParameter("version", version); //$NON-NLS-1$
+        query.setParameter("orgId", organizationId);
+        query.setParameter("clientId", clientId);
+        query.setParameter("version", version);
 
         return getAll(ContractBean.class, query);
     }
@@ -2077,7 +2090,6 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     /**
      * @see io.apiman.manager.api.core.IStorage#getAllPolicies(java.lang.String, java.lang.String, java.lang.String, io.apiman.manager.api.beans.policies.PolicyType)
      */
-    @SuppressWarnings("nls")
     @Override
     public Iterator<PolicyBean> getAllPolicies(String organizationId, String entityId, String version,
             PolicyType type) throws StorageException {
@@ -2100,7 +2112,6 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     /**
      * @see io.apiman.manager.api.core.IStorage#getAllPlanVersions(java.lang.String, java.lang.String)
      */
-    @SuppressWarnings("nls")
     @Override
     public Iterator<PlanVersionBean> getAllPlanVersions(String organizationId, String planId)
             throws StorageException {
@@ -2111,7 +2122,8 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
                 + "   JOIN v.plan p "
                 + "   JOIN p.organization o "
                 + "  WHERE o.id = :orgId "
-                + "    AND p.id = :planId";
+                + "    AND p.id = :planId"
+                + "  ORDER BY v.id ASC";
 
         Query query = entityManager.createQuery(jpql);
         query.setParameter("orgId", organizationId);
@@ -2122,7 +2134,6 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     /**
      * @see io.apiman.manager.api.core.IStorage#getAllApiVersions(java.lang.String, java.lang.String)
      */
-    @SuppressWarnings("nls")
     @Override
     public Iterator<ApiVersionBean> getAllApiVersions(String organizationId, String apiId)
             throws StorageException {
@@ -2133,7 +2144,8 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
                 + "   JOIN v.api s "
                 + "   JOIN s.organization o "
                 + "  WHERE o.id = :orgId "
-                + "    AND s.id = :apiId";
+                + "    AND s.id = :apiId"
+                + "  ORDER BY v.id ASC";
 
         Query query = entityManager.createQuery(jpql);
         query.setParameter("orgId", organizationId);
@@ -2141,19 +2153,17 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         return super.getAll(ApiVersionBean.class, query);
     }
 
-    @SuppressWarnings("nls")
     @Override
     public Iterator<GatewayBean> getAllGateways() throws StorageException {
         EntityManager entityManager = getActiveEntityManager();
 
         String jpql =
-                "SELECT b FROM GatewayBean b";
+                "SELECT b FROM GatewayBean b ORDER BY b.id ASC";
 
         Query query = entityManager.createQuery(jpql);
         return super.getAll(GatewayBean.class, query);
     }
 
-    @SuppressWarnings("nls")
     @Override
     public Iterator<AuditEntryBean> getAllAuditEntries(String orgId) throws StorageException {
         EntityManager entityManager = getActiveEntityManager();
@@ -2161,21 +2171,22 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         String jpql =
                 "SELECT b "
                 + "FROM AuditEntryBean b "
-                + "WHERE organization_id = :orgId "; //$NON-NLS-1$
+                + "WHERE organization_id = :orgId "
+                + "ORDER BY b.id ASC"; //$NON-NLS-1$
 
         Query query = entityManager.createQuery(jpql);
         query.setParameter("orgId", orgId);
         return super.getAll(AuditEntryBean.class, query);
     }
 
-    @SuppressWarnings("nls")
     @Override
     public Iterator<PluginBean> getAllPlugins() throws StorageException {
         EntityManager entityManager = getActiveEntityManager();
 
         String jpql =
                 "SELECT b "
-                + "FROM PluginBean b ";
+                + "FROM PluginBean b "
+                + "ORDER BY b.id ASC";
 
         Query query = entityManager.createQuery(jpql);
         return super.getAll(PluginBean.class, query);
@@ -2184,20 +2195,19 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     /**
      * @see io.apiman.manager.api.core.IStorage#getAllPolicyDefinitions()
      */
-    @SuppressWarnings("nls")
     @Override
     public Iterator<PolicyDefinitionBean> getAllPolicyDefinitions() throws StorageException {
         EntityManager entityManager = getActiveEntityManager();
 
         String jpql =
                 "SELECT b "
-                + "FROM PolicyDefinitionBean b ";
+                + "FROM PolicyDefinitionBean b "
+                + "ORDER BY b.id ASC";
 
         Query query = entityManager.createQuery(jpql);
         return super.getAll(PolicyDefinitionBean.class, query);
     }
 
-    @SuppressWarnings("nls")
     @Override
     public Iterator<RoleMembershipBean> getAllMemberships(String orgId) throws StorageException {
         EntityManager entityManager = getActiveEntityManager();
@@ -2205,37 +2215,348 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         String jpql =
                 "SELECT b "
                 + "FROM RoleMembershipBean b "
-                + "WHERE organizationId = :orgId "; //$NON-NLS-1$
+                + "WHERE organizationId = :orgId "
+                + "ORDER BY b.id ASC"; //$NON-NLS-1$
 
         Query query = entityManager.createQuery(jpql);
         query.setParameter("orgId", orgId);
         return super.getAll(RoleMembershipBean.class, query);
     }
 
-    @SuppressWarnings("nls")
     @Override
     public Iterator<UserBean> getAllUsers() throws StorageException {
         EntityManager entityManager = getActiveEntityManager();
 
         String jpql =
                 "SELECT b "
-                + "FROM UserBean b ";
+                + "FROM UserBean b "
+                + "ORDER BY b.username ASC";
 
         Query query = entityManager.createQuery(jpql);
         return super.getAll(UserBean.class, query);
     }
 
-    @SuppressWarnings("nls")
     @Override
     public Iterator<RoleBean> getAllRoles() throws StorageException {
         EntityManager entityManager = getActiveEntityManager();
 
         String jpql =
                 "SELECT b "
-                + "FROM RoleBean b ";
+                + "FROM RoleBean b "
+                + "ORDER BY b.id ASC";
 
         Query query = entityManager.createQuery(jpql);
         return super.getAll(RoleBean.class, query);
+    }
+
+    @Override
+    public Iterator<ContractBean> getAllContracts(OrganizationBean organizationBean, int lim) throws StorageException {
+        String jpql =
+                  " SELECT contractBean "
+                + " FROM ContractBean contractBean "
+                // Api
+                + " JOIN contractBean.api apiVersion "
+                + " JOIN apiVersion.api api "
+                + " JOIN api.organization apiOrg "
+                // Client
+                + " JOIN contractBean.client clientVersion "
+                + " JOIN clientVersion.client client "
+                + " JOIN api.organization clientOrg "
+                // Check API status
+                + " WHERE (apiOrg.id = :orgId AND apiVersion.status = :apiStatus)"
+                // Check In-Org ClientApp status
+                + " OR (clientOrg.id = :orgId AND clientVersion.status = :clientStatus)";
+
+        Query query = getActiveEntityManager().createQuery(jpql);
+        query.setParameter("orgId", organizationBean.getId());
+        query.setParameter("clientStatus", ClientStatus.Registered);
+        query.setParameter("apiStatus", ApiStatus.Published);
+
+        if (lim > 0) {
+            query.setMaxResults(lim);
+        }
+        return super.getAll(ContractBean.class, query);
+    }
+
+    @Override
+    public Iterator<ClientVersionBean> getAllClientVersions(OrganizationBean organizationBean, int lim) throws StorageException {
+        return getAllClientVersions(organizationBean, null, lim);
+    }
+
+    @Override
+    public Iterator<ClientVersionBean> getAllClientVersions(OrganizationBean organizationBean, ClientStatus status, int lim) throws StorageException {
+        String jpql = "SELECT v "
+                + " FROM ClientVersionBean v "
+                + " JOIN v.client c "
+                + " JOIN c.organization o "
+                + "WHERE o.id = :orgId ";
+
+        if (status != null) {
+            jpql += String.format(" AND v.status = '%s' ", status.name());
+        }
+
+        Query query = getActiveEntityManager().createQuery(jpql);
+        query.setParameter("orgId", organizationBean.getId());
+        if (lim > 0) {
+            query.setMaxResults(lim);
+        }
+        return super.getAll(ClientVersionBean.class, query);
+    }
+
+    @Override
+    public Iterator<ApiVersionBean> getAllApiVersions(OrganizationBean organizationBean, int lim) throws StorageException {
+        return getAllApiVersions(organizationBean, null, lim);
+    }
+
+    @Override
+    public Iterator<ApiVersionBean> getAllApiVersions(OrganizationBean organizationBean, ApiStatus status, int lim) throws StorageException {
+        String jpql = "SELECT v "
+                + "  FROM ApiVersionBean v "
+                + "  JOIN v.api a"
+                + "  JOIN a.organization o "
+                + " WHERE o.id = :orgId ";
+
+        if (status != null) {
+            jpql += String.format(" AND v.status = '%s' ", status.name());
+        }
+
+        Query query = getActiveEntityManager().createQuery(jpql);
+        query.setParameter("orgId", organizationBean.getId());
+
+        if (lim > 0) {
+            query.setMaxResults(lim);
+        }
+        return super.getAll(ApiVersionBean.class, query);
+    }
+
+    @Override
+    public Iterator<PlanVersionBean> getAllPlanVersions(OrganizationBean organizationBean, int lim) throws StorageException {
+        return getAllPlanVersions(organizationBean, null, lim);
+    }
+
+    @Override
+    public Iterator<PlanVersionBean> getAllPlanVersions(OrganizationBean organizationBean, PlanStatus status, int lim) throws StorageException {
+        String jpql = "SELECT v "
+                + "  FROM PlanVersionBean v "
+                + "  JOIN v.plan p "
+                + "  JOIN p.organization o "
+                + " WHERE o.id = :orgId ";
+
+        if (status != null) {
+            jpql += String.format(" AND v.status = '%s' ", status.name());
+        }
+
+        Query query = getActiveEntityManager().createQuery(jpql);
+        query.setParameter("orgId", organizationBean.getId());
+        if (lim > 0) {
+            query.setMaxResults(lim);
+        }
+        return super.getAll(PlanVersionBean.class, query);
+    }
+
+    private void deleteAllPolicies(OrganizationBean organizationBean) throws StorageException {
+        deleteAllPolicies(organizationBean, null);
+    }
+
+    private void deleteAllPolicies(ApiBean apiBean) throws StorageException {
+        deleteAllPolicies(apiBean.getOrganization(), apiBean.getId());
+    }
+
+    private void deleteAllPolicies(ClientBean clientBean) throws StorageException {
+        deleteAllPolicies(clientBean.getOrganization(), clientBean.getId());
+    }
+
+    private void deleteAllPolicies(OrganizationBean organizationBean, String entityId) throws StorageException {
+        String jpql = "DELETE PolicyBean b "
+                    + " WHERE b.organizationId = :orgId ";
+
+        if (entityId != null) {
+            jpql += String.format("AND b.entityId = '%s'", entityId);
+        }
+
+        Query query = getActiveEntityManager().createQuery(jpql);
+        query.setParameter("orgId", organizationBean.getId());
+    }
+
+    private void deleteAllMemberships(OrganizationBean organizationBean) throws StorageException {
+        String jpql = "DELETE RoleMembershipBean b "
+                    + " WHERE b.organizationId = :orgId ";
+
+        Query query = getActiveEntityManager().createQuery(jpql);
+        query.setParameter("orgId", organizationBean.getId());
+        query.executeUpdate();
+    }
+
+    private void deleteAllAuditEntries(PlanBean plan) throws StorageException {
+        deleteAllAuditEntries(plan.getOrganization(), AuditEntityType.Plan, plan.getId());
+    }
+
+    private void deleteAllAuditEntries(ApiBean apiBean) throws StorageException {
+        deleteAllAuditEntries(apiBean.getOrganization(), AuditEntityType.Api, apiBean.getId());
+    }
+
+    private void deleteAllAuditEntries(ClientBean clientBean) throws StorageException {
+        deleteAllAuditEntries(clientBean.getOrganization(), AuditEntityType.Client, clientBean.getId());
+    }
+
+    private void deleteAllAuditEntries(OrganizationBean organizationBean) throws StorageException {
+        deleteAllAuditEntries(organizationBean, null, null);
+    }
+
+    private void deleteAllAuditEntries(OrganizationBean organizationBean, AuditEntityType entityType, String entityId) throws StorageException {
+        String jpql = "DELETE AuditEntryBean b "
+                    + " WHERE b.organizationId = :orgId ";
+
+        if (entityId != null && entityType != null) {
+            jpql += String.format("AND b.entityId = '%s' AND b.entityType = '%s' ", entityId, entityType.name());
+        }
+
+        Query query = getActiveEntityManager().createQuery(jpql);
+        query.setParameter("orgId", organizationBean.getId());
+        query.executeUpdate();
+    }
+
+    private void deleteAllContracts(ApiBean apiBean) throws StorageException {
+        Query query;
+
+        if (isMySql()) {
+            String sql =
+                "DELETE c " +
+                "    FROM contracts c " +
+                "    JOIN api_versions " +
+                "        ON c.apiv_id = api_versions.id " +
+                "    JOIN apis " +
+                "        ON api_versions.api_id = apis.id " +
+                "        AND api_versions.api_org_id = apis.organization_id " +
+                "    JOIN organizations " +
+                "        ON apis.organization_id = organizations.id " +
+                "WHERE organizations.id = :orgId " +
+                "AND apis.id = :apiId ;";
+            query = getActiveEntityManager().createNativeQuery(sql);
+        } else {
+            String jpql =
+                "DELETE ContractBean deleteBean " +
+                "   WHERE deleteBean IN ( " +
+                "       SELECT b " +
+                "           FROM ContractBean b " +
+                "           JOIN b.api apiVersion " +
+                "           JOIN apiVersion.api api " +
+                "           JOIN api.organization o " +
+                "       WHERE o.id = :orgId " +
+                "       AND api.id = :apiId " +
+                "   )";
+            query = getActiveEntityManager().createQuery(jpql);
+        }
+
+        query.setParameter("orgId", apiBean.getOrganization().getId());
+        query.setParameter("apiId", apiBean.getId());
+        query.executeUpdate();
+    }
+
+    private void deleteAllContracts(ClientBean clientBean) throws StorageException {
+        Query query;
+
+        if (isMySql()) {
+            String sql =
+                "DELETE c " +
+                "    FROM contracts c " +
+                "    JOIN client_versions " +
+                "        ON c.clientv_id = client_versions.id " +
+                "    JOIN clients " +
+                "        ON client_versions.client_id = clients.id " +
+                "        AND client_versions.client_org_id = clients.organization_id " +
+                "    JOIN organizations " +
+                "        ON clients.organization_id = organizations.id " +
+                "WHERE organizations.id = :orgId " +
+                "AND clients.id = :clientId ;";
+            query = getActiveEntityManager().createNativeQuery(sql);
+        } else {
+            String jpql =
+                "DELETE ContractBean deleteBean " +
+                "   WHERE deleteBean IN ( " +
+                "       SELECT b " +
+                "           FROM ContractBean b " +
+                "           JOIN b.client clientVersion " +
+                "           JOIN clientVersion.client client " +
+                "           JOIN client.organization o " +
+                "       WHERE o.id = :orgId " +
+                "       AND client.id = :clientId " +
+                "   )";
+            query = getActiveEntityManager().createQuery(jpql);
+        }
+
+        query.setParameter("orgId", clientBean.getOrganization().getId());
+        query.setParameter("clientId", clientBean.getId());
+        query.executeUpdate();
+    }
+
+    private void deleteAllContracts(OrganizationBean organizationBean) throws StorageException {
+        Query query;
+
+        if (isMySql()) {
+            String sql =
+                "DELETE c " +
+                "    FROM contracts c " +
+                "    JOIN api_versions " +
+                "        ON c.apiv_id = api_versions.id " +
+                "    JOIN apis " +
+                "        ON api_versions.api_id = apis.id " +
+                "        AND api_versions.api_org_id = apis.organization_id " +
+                "    JOIN organizations " +
+                "        ON apis.organization_id = organizations.id " +
+                "WHERE organizations.id = :orgId ;";
+            query = getActiveEntityManager().createNativeQuery(sql);
+        } else {
+            String jpql =
+                "DELETE ContractBean deleteBean " +
+                "   WHERE deleteBean IN ( " +
+                "       SELECT b " +
+                "           FROM ContractBean b " +
+                "           JOIN b.api apiVersion " +
+                "           JOIN apiVersion.api api " +
+                "           JOIN api.organization o " +
+                "       WHERE o.id = :orgId " +
+                "   )";
+            query = getActiveEntityManager().createQuery(jpql);
+        }
+
+        query.setParameter("orgId", organizationBean.getId());
+        query.executeUpdate();
+    }
+
+    private boolean isMySql() throws StorageException {
+        return StringUtils.containsIgnoreCase(getDialect(), "mysql");
+    }
+
+    private <T> void remove(T entity) throws StorageException {
+        EntityManager em = getActiveEntityManager();
+        em.remove(em.contains(entity) ? entity : em.merge(entity));
+    }
+
+    public void deleteAllPlans(OrganizationBean organizationBean) throws StorageException {
+        deleteAllPlanVersions(organizationBean);
+
+        String jpql = "DELETE PlanBean p "
+                + "     WHERE p.organization.id = :orgId ";
+
+        Query query = getActiveEntityManager().createQuery(jpql);
+        query.setParameter("orgId", organizationBean.getId());
+        query.executeUpdate();
+    }
+
+    private void deleteAllPlanVersions(OrganizationBean organizationBean) throws StorageException {
+        String jpql = "DELETE PlanVersionBean deleteBean "
+                + " WHERE deleteBean IN ("
+                + "SELECT v"
+                + "  FROM PlanVersionBean v "
+                + "  JOIN v.plan p "
+                + "  JOIN p.organization o "
+                + " WHERE o.id = :orgId "
+                + ")";
+
+        Query query = getActiveEntityManager().createQuery(jpql);
+        query.setParameter("orgId", organizationBean.getId());
+        query.executeUpdate();
     }
 
 }

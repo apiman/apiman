@@ -16,7 +16,7 @@
 
 package io.apiman.manager.test.es;
 
-import io.apiman.gateway.engine.es.ESClientFactory;
+import io.apiman.gateway.engine.es.SimpleJestClientFactory;
 import io.apiman.manager.api.beans.metrics.ClientUsagePerApiBean;
 import io.apiman.manager.api.beans.metrics.HistogramIntervalType;
 import io.apiman.manager.api.beans.metrics.ResponseStatsDataPoint;
@@ -28,6 +28,7 @@ import io.apiman.manager.api.beans.metrics.UsageDataPoint;
 import io.apiman.manager.api.beans.metrics.UsageHistogramBean;
 import io.apiman.manager.api.beans.metrics.UsagePerClientBean;
 import io.apiman.manager.api.beans.metrics.UsagePerPlanBean;
+import io.apiman.manager.api.core.metrics.AbstractMetricsAccessor;
 import io.apiman.manager.api.es.ESMetricsAccessor;
 import io.searchbox.client.JestClient;
 import io.searchbox.indices.Refresh;
@@ -94,7 +95,12 @@ public class ESMetricsAccessorTest {
     }
 
     private static JestClient createJestClient() {
-        return ESClientFactory.createJestClient("http", "localhost", 6500, "apiman_metrics", null, null, true, 6000, "apiman_metrics");
+        Map<String, String> config = new HashMap<>();
+        config.put("client.protocol", "http");
+        config.put("client.host", "localhost");
+        config.put("client.port", "6500");
+        config.put("client.initialize", "true");
+        return new SimpleJestClientFactory().createClient(config, "apiman_metrics");
     }
 
     private static void loadTestData() throws Exception {
@@ -269,7 +275,7 @@ public class ESMetricsAccessorTest {
         DateTime from = parseDate("2015-01-01T00:00:00Z");
         DateTime to = parseDate("2015-01-10T00:00:00Z");
         UsageHistogramBean histogram = new UsageHistogramBean();
-        Map<String, UsageDataPoint> index = ESMetricsAccessor.generateHistogramSkeleton(histogram, from, to,
+        Map<String, UsageDataPoint> index = AbstractMetricsAccessor.generateHistogramSkeleton(histogram, from, to,
                 HistogramIntervalType.day, UsageDataPoint.class);
         Assert.assertEquals(9, index.size());
         Assert.assertEquals(9, histogram.getData().size());
@@ -281,7 +287,7 @@ public class ESMetricsAccessorTest {
         from = parseDate("2015-01-01T00:00:00Z");
         to = parseDate("2015-01-03T00:00:00Z");
         histogram = new UsageHistogramBean();
-        index = ESMetricsAccessor.generateHistogramSkeleton(histogram, from, to, HistogramIntervalType.hour,
+        index = AbstractMetricsAccessor.generateHistogramSkeleton(histogram, from, to, HistogramIntervalType.hour,
                 UsageDataPoint.class);
         Assert.assertEquals(48, index.size());
         Assert.assertEquals(48, histogram.getData().size());
@@ -294,7 +300,7 @@ public class ESMetricsAccessorTest {
         from = parseDate("2015-01-01");
         to = parseDate("2015-01-03");
         histogram = new UsageHistogramBean();
-        index = ESMetricsAccessor.generateHistogramSkeleton(histogram, from, to, HistogramIntervalType.hour,
+        index = AbstractMetricsAccessor.generateHistogramSkeleton(histogram, from, to, HistogramIntervalType.hour,
                 UsageDataPoint.class);
         Assert.assertEquals(48, index.size());
         Assert.assertEquals(48, histogram.getData().size());
@@ -307,7 +313,7 @@ public class ESMetricsAccessorTest {
         from = parseDate("2015-01-01T00:00:00Z");
         to = parseDate("2015-01-02T00:00:00Z");
         histogram = new UsageHistogramBean();
-        index = ESMetricsAccessor.generateHistogramSkeleton(histogram, from, to,
+        index = AbstractMetricsAccessor.generateHistogramSkeleton(histogram, from, to,
                 HistogramIntervalType.minute, UsageDataPoint.class);
         Assert.assertEquals(1440, index.size());
         Assert.assertEquals(1440, histogram.getData().size());
@@ -319,7 +325,7 @@ public class ESMetricsAccessorTest {
         from = parseDate("2015-01-01");
         to = parseDate("2015-12-31");
         histogram = new UsageHistogramBean();
-        index = ESMetricsAccessor.generateHistogramSkeleton(histogram, from, to, HistogramIntervalType.month,
+        index = AbstractMetricsAccessor.generateHistogramSkeleton(histogram, from, to, HistogramIntervalType.month,
                 UsageDataPoint.class);
         Assert.assertEquals(12, index.size());
         Assert.assertEquals(12, histogram.getData().size());
@@ -331,7 +337,7 @@ public class ESMetricsAccessorTest {
         from = parseDate("2015-01-01");
         to = parseDate("2015-12-30");
         histogram = new UsageHistogramBean();
-        index = ESMetricsAccessor.generateHistogramSkeleton(histogram, from, to, HistogramIntervalType.week,
+        index = AbstractMetricsAccessor.generateHistogramSkeleton(histogram, from, to, HistogramIntervalType.week,
                 UsageDataPoint.class);
 
         Assert.assertEquals(53, index.size());

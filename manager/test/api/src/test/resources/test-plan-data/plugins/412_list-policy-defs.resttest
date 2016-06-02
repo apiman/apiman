@@ -14,7 +14,7 @@ Content-Type: application/json
   },
   {
     "id": "deleted-plugin-policy",
-    "policyImpl": "plugin:io.apiman.test:deleted-plugin:1.0:war/io.apiman.test.plugins.DeletedPluginPolicy",
+    "policyImpl": "plugin:io.apiman.test:deleted-plugin:2.0:war/io.apiman.test.plugins.DeletedPluginPolicy",
     "name": "Deleted Plugin Policy",
     "description": "A policy used to test deleting a plugin and upgrading it. (v2)",
     "icon": "question",

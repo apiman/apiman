@@ -15,12 +15,11 @@
  */
 package io.apiman.manager.test.junit;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.apiman.manager.api.core.util.PolicyTemplateUtil;
 import io.apiman.manager.test.junit.ManagerRestTester.TestInfo;
 import io.apiman.manager.test.server.ManagerApiTestServer;
 import io.apiman.manager.test.server.MockGatewayServlet;
+import io.apiman.test.common.json.JsonCompare;
 import io.apiman.test.common.plan.TestGroupType;
 import io.apiman.test.common.plan.TestPlan;
 import io.apiman.test.common.plan.TestType;
@@ -38,7 +37,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 import org.junit.runner.Description;
 import org.junit.runner.notification.RunNotifier;
@@ -47,6 +46,9 @@ import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * A junit test runner that fires up apiman and makes it ready for
@@ -281,8 +283,8 @@ public class ManagerRestTester extends ParentRunner<TestInfo> {
                             ObjectMapper mapper = new ObjectMapper();
                             JsonNode expected = mapper.readTree(expectedPayload);
                             JsonNode actual = mapper.readTree(actualPayload.trim());
-                            RestTest mockRT = new RestTest();
-                            testInfo.plan.runner.assertJson(mockRT, expected, actual);
+                            JsonCompare jsonCompare = new JsonCompare();
+                            jsonCompare.assertJson(expected, actual);
                         }
 
                         index++;

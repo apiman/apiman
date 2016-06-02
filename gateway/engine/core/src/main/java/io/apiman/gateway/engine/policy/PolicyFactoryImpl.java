@@ -38,11 +38,14 @@ public class PolicyFactoryImpl implements IPolicyFactory {
     private IPluginRegistry pluginRegistry;
     private Map<String, IPolicy> policyCache = new HashMap<>();
     private Map<String, Object> policyConfigCache = new HashMap<>();
+    private final boolean reloadSnapshots;
 
     /**
      * Constructor.
+     * @param config
      */
-    public PolicyFactoryImpl() {
+    public PolicyFactoryImpl(Map<String, String> config) {
+        reloadSnapshots = "true".equals(config.get("reload-snapshots")); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**
@@ -63,7 +66,15 @@ public class PolicyFactoryImpl implements IPolicyFactory {
             if (policyConfigCache.containsKey(cacheKey)) {
                 return policyConfigCache.get(cacheKey);
             }
-            Object config = policy.parseConfiguration(configData);
+            Object config;
+            
+            ClassLoader oldCtxLoader = Thread.currentThread().getContextClassLoader();
+            try {
+                Thread.currentThread().setContextClassLoader(policy.getClass().getClassLoader());
+                config = policy.parseConfiguration(configData);
+            } finally {
+                Thread.currentThread().setContextClassLoader(oldCtxLoader);
+            }
 
             // Note: don't cache configuration objects for snapshot versions of policies.
             if (!policySpec.contains("-SNAPSHOT")) { //$NON-NLS-1$
@@ -155,7 +166,7 @@ public class PolicyFactoryImpl implements IPolicyFactory {
             return;
         }
         final String classname = policyImpl.substring(ssidx + 1);
-        final boolean isSnapshot = PluginUtils.isSnapshot(coordinates);
+        final boolean isSnapshot = reloadSnapshots && PluginUtils.isSnapshot(coordinates);
         this.pluginRegistry.loadPlugin(coordinates, new IAsyncResultHandler<Plugin>() {
             @Override
             public void handle(IAsyncResult<Plugin> result) {
@@ -163,12 +174,16 @@ public class PolicyFactoryImpl implements IPolicyFactory {
                     IPolicy rval;
                     Plugin plugin = result.getResult();
                     PluginClassLoader pluginClassLoader = plugin.getLoader();
+                    ClassLoader oldCtxLoader = Thread.currentThread().getContextClassLoader();
                     try {
+                        Thread.currentThread().setContextClassLoader(pluginClassLoader);
                         Class<?> c = pluginClassLoader.loadClass(classname);
                         rval = (IPolicy) c.newInstance();
                     } catch (Exception e) {
                         handler.handle(AsyncResultImpl.<IPolicy>create(new PolicyNotFoundException(policyImpl, e)));
                         return;
+                    } finally {
+                        Thread.currentThread().setContextClassLoader(oldCtxLoader);
                     }
 
                     if (!isSnapshot) {

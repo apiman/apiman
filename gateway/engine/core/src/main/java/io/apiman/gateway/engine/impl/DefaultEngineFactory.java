@@ -15,13 +15,19 @@
  */
 package io.apiman.gateway.engine.impl;
 
+import io.apiman.common.logging.DefaultDelegateFactory;
+import io.apiman.common.logging.IDelegateFactory;
 import io.apiman.common.util.crypt.IDataEncrypter;
 import io.apiman.gateway.engine.IComponentRegistry;
+import io.apiman.gateway.engine.IGatewayInitializer;
 import io.apiman.gateway.engine.IMetrics;
 import io.apiman.gateway.engine.IPluginRegistry;
 import io.apiman.gateway.engine.IRegistry;
 import io.apiman.gateway.engine.policy.IPolicyFactory;
 import io.apiman.gateway.engine.policy.PolicyFactoryImpl;
+
+import java.util.Collections;
+import java.util.List;
 
 
 /**
@@ -84,7 +90,7 @@ public abstract class DefaultEngineFactory extends AbstractEngineFactory {
      */
     @Override
     protected IPolicyFactory createPolicyFactory(IPluginRegistry pluginRegistry) {
-        return new PolicyFactoryImpl();
+        return new PolicyFactoryImpl(Collections.emptyMap());
     }
 
     /**
@@ -95,4 +101,16 @@ public abstract class DefaultEngineFactory extends AbstractEngineFactory {
         return new InMemoryMetrics();
     }
 
+    /**
+     * @see io.apiman.gateway.engine.impl.AbstractEngineFactory#createInitializers(io.apiman.gateway.engine.IPluginRegistry)
+     */
+    @Override
+    protected List<IGatewayInitializer> createInitializers(IPluginRegistry pluginRegistry) {
+        return Collections.emptyList();
+    }
+
+    @Override
+    protected IDelegateFactory createLoggerFactory(IPluginRegistry pluginRegistry) {
+        return new DefaultDelegateFactory();
+    }
 }

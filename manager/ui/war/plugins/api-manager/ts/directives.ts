@@ -514,9 +514,10 @@ module Apiman {
                     var elem = null;
                     var previousRows = 1;
 
-                    $scope.topPosition = 0;
-                    $scope.leftPosition = 0;
-                    $scope.height = 60;
+                    //$scope.topPosition = 0;
+                    //$scope.leftPosition = 0;
+                    //$scope.height = 60;
+                    //$scope.height = 'auto';
                     
                     /*
                     // If description is updated, call updateFunction.
@@ -561,15 +562,17 @@ module Apiman {
                         // console.log("elem.left " + position.left);
                         // console.log("elem.right " + position.right);
 
+                        /*
                         if (position.right != 0) {
                             $scope.leftPosition = (position.right - position.left) - 15;
                             $scope.height = (position.bottom - position.top);
                         }
-                    }
+                        */
+                    };
 
                     $scope.descriptionMouseOut = function(event) {
                         $scope.showPencil = false;
-                    }
+                    };
 
                 },
                 templateUrl: 'plugins/api-manager/html/directives/editDescription.html'
@@ -582,7 +585,7 @@ module Apiman {
       // overwrite templates
       editableThemes['default'].submitTpl = '<button class="btn btn-default inline-save-btn" type="submit"><i class="fa fa-check fa-fw"></i></button>';
       editableThemes['default'].cancelTpl = '<button class="btn btn-default" type="button" ng-click="$form.$cancel()"><i class="fa fa-times fa-fw"></i></button>';
-      editableThemes['default'].buttonsTpl = '<div></div>';
+      editableThemes['default'].buttonsTpl = '<div class="editable-options"></div>';
       editableThemes['default'].formTpl = '<form class="editable-wrap apiman-inline-edit"></form>';
     }]);
 
@@ -668,4 +671,5 @@ module Apiman {
                 }
             };
         }]);
+
 }

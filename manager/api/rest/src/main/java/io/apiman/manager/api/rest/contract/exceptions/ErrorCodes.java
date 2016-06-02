@@ -109,11 +109,13 @@ public final class ErrorCodes {
     public static final int PLAN_NOT_FOUND                   = 6002;
     public static final int PLAN_VERSION_NOT_FOUND           = 6003;
     public static final int PLAN_VERSION_ALREADY_EXISTS      = 6004;
+    public static final int PLAN_STATUS_ERROR                = 5004;
 
     public static final String PLAN_ALREADY_EXISTS_INFO      = null;
     public static final String PLAN_NOT_FOUND_INFO           = null;
     public static final String PLAN_VERSION_NOT_FOUND_INFO   = null;
     public static final String PLAN_VERSION_ALREADY_EXISTS_INFO = null;
+    public static final String PLAN_STATUS_ERROR_INFO        = null;
 
     //
     // Member API related
@@ -201,6 +203,4 @@ public final class ErrorCodes {
     public static final int DOWNLOAD_NOT_FOUND                   = 15001;
 
     public static final String DOWNLOAD_NOT_FOUND_INFO           = null;
-
-
 }

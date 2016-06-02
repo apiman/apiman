@@ -162,6 +162,72 @@ public class TransferQuotaPolicyTest extends ApimanPolicyTest {
         }
     }
 
+    @Test
+    @Configuration("{" +
+            "  \"limit\" : 1000," +
+            "  \"direction\" : \"download\"," +
+            "  \"granularity\" : \"Api\"," +
+            "  \"period\" : \"Minute\"" +
+            "}")
+    @BackEndApi(DownloadTestBackEndApi.class)
+    public void testDownloadLimitNoHeaderConfig() throws Throwable {
+        PolicyTestRequest request = PolicyTestRequest.build(PolicyTestRequestType.GET, "/some/resource");
+        request.header("X-Payload-Size", "389");
+
+        PolicyTestResponse response = send(request);
+        Assert.assertNotNull(response.body());
+        Assert.assertEquals("1000", response.header("X-TransferQuota-Remaining"));
+        Assert.assertEquals("1000", response.header("X-TransferQuota-Limit"));
+
+        send(request);
+        send(request);
+
+        // Now if we try it one more time, we'll get a failure!
+        try {
+            send(request);
+            Assert.fail("Expected a policy failure!");
+        } catch (PolicyFailureError e) {
+            PolicyFailure failure = e.getFailure();
+            Assert.assertEquals(PolicyFailureCodes.BYTE_QUOTA_EXCEEDED, failure.getFailureCode());
+            Assert.assertEquals("Transfer quota exceeded.", failure.getMessage());
+            Assert.assertEquals(429, failure.getResponseCode());
+        }
+    }
+
+    @Test
+    @Configuration("{" +
+            "  \"limit\" : 1000," +
+            "  \"direction\" : \"download\"," +
+            "  \"granularity\" : \"Api\"," +
+            "  \"period\" : \"Day\"," +
+            "  \"headerRemaining\" : \"\"," +
+            "  \"headerLimit\" : \"\"," +
+            "  \"headerReset\" : \"\"" +
+            "}")
+    @BackEndApi(DownloadTestBackEndApi.class)
+    public void testDownloadLimitEmptyHeaderConfig() throws Throwable {
+        PolicyTestRequest request = PolicyTestRequest.build(PolicyTestRequestType.GET, "/some/resource");
+        request.header("X-Payload-Size", "389");
+
+        PolicyTestResponse response = send(request);
+        Assert.assertNotNull(response.body());
+        Assert.assertEquals("1000", response.header("X-TransferQuota-Remaining"));
+        Assert.assertEquals("1000", response.header("X-TransferQuota-Limit"));
+
+        send(request);
+        send(request);
+
+        // Now if we try it one more time, we'll get a failure!
+        try {
+            send(request);
+            Assert.fail("Expected a policy failure!");
+        } catch (PolicyFailureError e) {
+            PolicyFailure failure = e.getFailure();
+            Assert.assertEquals(PolicyFailureCodes.BYTE_QUOTA_EXCEEDED, failure.getFailureCode());
+            Assert.assertEquals("Transfer quota exceeded.", failure.getMessage());
+            Assert.assertEquals(429, failure.getResponseCode());
+        }
+    }
 
     @Test
     @Configuration("{" +

@@ -16,7 +16,7 @@
 package io.apiman.manager.api.exportimport.json;
 
 import com.fasterxml.jackson.core.JsonGenerator;
-import io.apiman.manager.api.core.logging.IApimanLogger;
+import io.apiman.common.logging.IApimanLogger;
 
 import java.io.IOException;
 import java.util.Map;

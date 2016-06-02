@@ -1,0 +1,19 @@
+GET /LoggingTest/echo/2.0/path/to/app/resource
+
+----
+200
+Content-Type: application/json
+
+{
+  "method" : "GET",
+  "resource" : "/path/to/app/resource",
+  "uri" : "/path/to/app/resource",
+  "headers" : {
+    "info": "io.apiman.gateway.test.policies.LoggingPolicy: Hello, I am an info message",
+  	"warn": "io.apiman.gateway.test.policies.LoggingPolicy: Hello, I am a warn message",
+    "trace": "io.apiman.gateway.test.policies.LoggingPolicy: Hello, I am a trace message",
+  	"debug": "io.apiman.gateway.test.policies.LoggingPolicy: Hello, I am a debug message",
+  	"error_with_message": "io.apiman.gateway.test.policies.LoggingPolicy: Hello, I am an error message - An example of an error",
+  	"error": "io.apiman.gateway.test.policies.LoggingPolicy: Just the exception"
+  }
+}

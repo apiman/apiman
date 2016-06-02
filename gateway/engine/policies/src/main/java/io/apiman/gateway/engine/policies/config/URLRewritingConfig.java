@@ -20,8 +20,8 @@ package io.apiman.gateway.engine.policies.config;
  */
 public class URLRewritingConfig {
 
-    private String fromRegex; // in seconds
-    private String toReplacement; // in seconds
+    private String fromRegex;
+    private String toReplacement;
     private boolean processBody;
     private boolean processHeaders;
 

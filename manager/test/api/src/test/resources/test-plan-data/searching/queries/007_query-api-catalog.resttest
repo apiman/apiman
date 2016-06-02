@@ -1,4 +1,4 @@
-POST /search/apiCatalogs admin/admin
+POST /search/apiCatalog/entries admin/admin
 Content-Type: application/json
 
 {

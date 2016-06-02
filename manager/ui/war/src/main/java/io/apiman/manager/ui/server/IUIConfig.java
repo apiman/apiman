@@ -68,4 +68,9 @@ public interface IUIConfig {
      */
     public String getLogoutUrl();
 
+    /**
+     * @return The current platform (e.g. f8 or community).
+     */
+    public String getPlatform();
+
 }

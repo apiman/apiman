@@ -7,10 +7,12 @@
   </testGroup>
 
   <testGroup name="Test the Echo Server through the Gateway">
-    <test name="Echo 1 (GET)">test-plan-data/simple/simple-echo-public/echo/001-failure.resttest</test>
+    <test name="Echo 1 (Failure)">test-plan-data/simple/simple-echo-public/echo/001-failure.resttest</test>
     <test name="Echo 2 (PUT)">test-plan-data/simple/simple-echo-public/echo/002-success.resttest</test>
     <test name="Echo 3 (Version in Accept Header)">test-plan-data/simple/simple-echo-public/echo/003-success-accept.resttest</test>
     <test name="Echo 4 (Version in X-API-Version header)">test-plan-data/simple/simple-echo-public/echo/004-success-header.resttest</test>
     <test name="Echo 5 (Encoded URL)">test-plan-data/simple/simple-echo-public/echo/005-success-encoded-url.resttest</test>
+    <test name="Echo 6 (PATCH)">test-plan-data/simple/simple-echo-public/echo/006-patch.resttest</test>
+    <test name="Echo 7 (GET)">test-plan-data/simple/simple-echo-public/echo/007-success-get.resttest</test>
   </testGroup>
 </testPlan>

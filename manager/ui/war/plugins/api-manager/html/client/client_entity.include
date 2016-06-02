@@ -17,6 +17,29 @@
                   </ul>
                 </div>
                 <a apiman-permission="clientEdit" href="{{ pluginName }}/orgs/{{ org.id }}/clients/{{ client.id}}/{{ version.version }}/new-version" class="btn btn-primary apiman-entity-action" data-field="toNewClientVersion" apiman-i18n-key="new-version">New Version</a>
+
+
+                <!-- Dropdown Cog -->
+                <ul class="client-app-menu pull-right"
+                    style="list-style-type: none; padding-left: 10px; padding-top: 6px;">
+                  <li class="dropdown">
+                    <a href="#"
+                       style="text-decoration: none;"
+                       class="dropdown-toggle dropdown-cog"
+                       data-toggle="dropdown">
+                      <span class="fa fa-cog"></span>
+                      <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu">
+                      <li>
+                        <a class="client-app-delete"
+                           href="#"
+                           ng-click="callDelete()"
+                           apiman-i18n-key="delete">Delete Client App</a>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
               </div>
             </div>
             <hr />
@@ -60,4 +83,46 @@
             </div>
           </div>
         </div>
+
+        <!-- Delete Client App Modal Template -->
+        <script type="text/ng-template"
+                id="deleteModal.html">
+          <div class="modal-header">
+            <button class="close"
+                    type="button"
+                    ng-click="no()">
+              <span class="pficon pficon-close"></span>
+            </button>
+            <h3 class="modal-title">
+              <span apiman-i18n-key="delete-client-modal-title">Are you SURE you want to delete this client app?</span>
+            </h3>
+          </div>
+          <div class="modal-body">
+            <p class="bg-warning"
+               style="padding: 15px 25px; margin: -18px -25px 10px -25px;"
+               apiman-i18n-key="client-delete-modal-confirmation-warning">
+              Unexpected bad things will happen if you don't read this!
+            </p>
+            <p class="explanation"
+               apiman-i18n-key="client-delete-modal-confirmation-description">
+              This action <b>CANNOT</b> be undone. This will permanently delete the client app, including all of its
+              versions, their policies, contracts, endpoint properties and change logs. Please back up the project if you think you may want to roll back the changes, as this action is irrevocable.
+            </p>
+            <p class="explanation"
+               apiman-i18n-key="client-delete-modal-confirmation-instructions">
+              Please type in the name of the client app to confirm.
+            </p>
+            <input type="text"
+                   class="apiman-form-control form-control"
+                   ng-keyup="typed()"
+                   ng-model="confirmClientName">
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-danger"
+                    type="button"
+                    apiman-i18n-key="client-delete-modal-confirmation-button"
+                    ng-disabled="!okayToDelete"
+                    ng-click="yes()">I understand the consequences, delete this client app</button>
+          </div>
+        </script>
       </div>

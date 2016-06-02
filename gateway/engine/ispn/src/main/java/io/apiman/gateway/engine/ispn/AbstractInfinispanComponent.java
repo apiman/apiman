@@ -20,6 +20,7 @@ import java.util.Map;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import org.apache.commons.lang3.StringUtils;
 import org.infinispan.Cache;
 import org.infinispan.manager.CacheContainer;
 
@@ -39,14 +40,14 @@ public abstract class AbstractInfinispanComponent {
      * @param config the config
      */
     public AbstractInfinispanComponent(Map<String, String> config, String defaultCacheContainer, String defaultCache) {
-        cacheContainer = defaultCacheContainer;
-        cacheName = defaultCache;
-
-        if (config.containsKey("cache-container")) { //$NON-NLS-1$
-            cacheContainer = config.get("cache-container"); //$NON-NLS-1$
+        cacheContainer = config.get("cache.container"); //$NON-NLS-1$
+        cacheName = config.get("cache.name"); //$NON-NLS-1$
+        
+        if (StringUtils.isEmpty(cacheContainer)) {
+            cacheContainer = defaultCacheContainer;
         }
-        if (config.containsKey("cache")) { //$NON-NLS-1$
-            cacheName = config.get("cache"); //$NON-NLS-1$
+        if (StringUtils.isEmpty(cacheName)) {
+            cacheName = defaultCache;
         }
     }
 

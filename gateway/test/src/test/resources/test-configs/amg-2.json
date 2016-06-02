@@ -1,0 +1,8 @@
+{
+    "factory" : "io.apiman.gateway.test.junit.servlet.ServletGatewayTestServerFactory",
+    "es" : false,
+    "ispn" : true,
+    "config-files" : [
+      "amg-2.properties"
+    ]
+}

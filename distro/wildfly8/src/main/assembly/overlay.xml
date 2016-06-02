@@ -76,25 +76,6 @@
       <directoryMode>0755</directoryMode>
       <fileMode>0755</fileMode>
     </dependencySet>
-    <!-- Pre-configured H2 database -->
-    <dependencySet>
-      <outputDirectory>standalone/data/h2</outputDirectory>
-      <includes>
-        <include>io.apiman:apiman-distro-db:jar</include>
-      </includes>
-      <useProjectArtifact>false</useProjectArtifact>
-      <useProjectAttachments>false</useProjectAttachments>
-      <useTransitiveDependencies>false</useTransitiveDependencies>
-      <useTransitiveFiltering>false</useTransitiveFiltering>
-      <directoryMode>0755</directoryMode>
-      <fileMode>0755</fileMode>
-      <unpack>true</unpack>
-      <unpackOptions>
-        <includes>
-          <include>apiman*.db</include>
-        </includes>
-      </unpackOptions>
-    </dependencySet>
     <!-- apiman -->
     <dependencySet>
       <outputDirectory>standalone/deployments</outputDirectory>
@@ -108,25 +89,6 @@
       <useTransitiveFiltering>false</useTransitiveFiltering>
       <directoryMode>0755</directoryMode>
       <fileMode>0755</fileMode>
-    </dependencySet>
-    <!-- Pre-configured elasticsearch data -->
-    <dependencySet>
-      <outputDirectory>standalone/data/es</outputDirectory>
-      <includes>
-        <include>io.apiman:apiman-distro-db-es:jar</include>
-      </includes>
-      <useProjectArtifact>false</useProjectArtifact>
-      <useProjectAttachments>false</useProjectAttachments>
-      <useTransitiveDependencies>false</useTransitiveDependencies>
-      <useTransitiveFiltering>false</useTransitiveFiltering>
-      <directoryMode>0755</directoryMode>
-      <fileMode>0755</fileMode>
-      <unpack>true</unpack>
-      <unpackOptions>
-        <excludes>
-          <exclude>**/META-INF/**</exclude>
-        </excludes>
-      </unpackOptions>
     </dependencySet>
     <!-- Sample data -->
     <dependencySet>

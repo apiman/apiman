@@ -5,6 +5,7 @@ module Apiman {
     export var _module = angular.module(Apiman.pluginName, [
         'angular-clipboard',
         'ngRoute',
+        'ngSanitize',
         'ui.bootstrap',
         'ui.select',
         'ui.sortable',

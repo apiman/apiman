@@ -44,11 +44,11 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
  */
 @Entity
 @Table(name = "client_versions",
-       uniqueConstraints = { 
+       uniqueConstraints = {
                @UniqueConstraint(columnNames = { "client_id", "client_org_id", "version" }),
                @UniqueConstraint(columnNames = { "apikey" })})
 @JsonInclude(Include.NON_NULL)
-public class ClientVersionBean implements Serializable {
+public class ClientVersionBean implements Serializable, Cloneable {
 
     private static final long serialVersionUID = -2218697175049442690L;
 
@@ -281,6 +281,14 @@ public class ClientVersionBean implements Serializable {
                 + ", version=" + version + ", createdBy=" + createdBy + ", createdOn=" + createdOn
                 + ", modifiedBy=" + modifiedBy + ", modifiedOn=" + modifiedOn + ", publishedOn="
                 + publishedOn + ", retiredOn=" + retiredOn + ", apikey=" + apikey + "]";
+    }
+    
+    /**
+     * @see java.lang.Object#clone()
+     */
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 
 }

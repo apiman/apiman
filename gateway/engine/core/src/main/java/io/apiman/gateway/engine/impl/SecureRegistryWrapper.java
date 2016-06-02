@@ -16,6 +16,8 @@
 package io.apiman.gateway.engine.impl;
 
 import io.apiman.common.util.crypt.IDataEncrypter;
+import io.apiman.common.util.crypt.DataEncryptionContext;
+import io.apiman.common.util.crypt.DataEncryptionContext.EntityType;
 import io.apiman.gateway.engine.IRegistry;
 import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
@@ -57,11 +59,11 @@ public class SecureRegistryWrapper implements IRegistry {
     @Override
     public void publishApi(Api api, IAsyncResultHandler<Void> handler) {
         List<Policy> policies = api.getApiPolicies();
-        encryptPolicies(policies);
-        encryptEndpointProperties(api.getEndpointProperties());
+        encryptPolicies(api.getOrganizationId(), api.getApiId(), api.getVersion(), EntityType.Api, policies);
+        encryptEndpointProperties(api.getOrganizationId(), api.getApiId(), api.getVersion(), EntityType.Api, api.getEndpointProperties());
         delegate.publishApi(api, handler);
-        decryptPolicies(policies);
-        decryptEndpointProperties(api.getEndpointProperties());
+        decryptPolicies(api.getOrganizationId(), api.getApiId(), api.getVersion(), EntityType.Api, policies);
+        decryptEndpointProperties(api.getOrganizationId(), api.getApiId(), api.getVersion(), EntityType.Api, api.getEndpointProperties());
     }
 
     /**
@@ -73,14 +75,14 @@ public class SecureRegistryWrapper implements IRegistry {
         if (contracts != null) {
             for (Contract contract : contracts) {
                 List<Policy> policies = contract.getPolicies();
-                encryptPolicies(policies);
+                encryptPolicies(client.getOrganizationId(), client.getClientId(), client.getVersion(), EntityType.ClientApp, policies);
             }
         }
         delegate.registerClient(client, handler);
         if (contracts != null) {
             for (Contract contract : contracts) {
                 List<Policy> policies = contract.getPolicies();
-                decryptPolicies(policies);
+                decryptPolicies(client.getOrganizationId(), client.getClientId(), client.getVersion(), EntityType.ClientApp, policies);
             }
         }
     }
@@ -114,8 +116,8 @@ public class SecureRegistryWrapper implements IRegistry {
                     Api api = result.getResult();
                     if (api != null) {
                         List<Policy> policies = api.getApiPolicies();
-                        decryptPolicies(policies);
-                        decryptEndpointProperties(api.getEndpointProperties());
+                        decryptPolicies(organizationId, apiId, apiVersion, EntityType.Api, policies);
+                        decryptEndpointProperties(organizationId, apiId, apiVersion, EntityType.Api, api.getEndpointProperties());
                     }
                 }
                 handler.handle(result);
@@ -134,7 +136,8 @@ public class SecureRegistryWrapper implements IRegistry {
                 if (result.isSuccess()) {
                     Client client = result.getResult();
                     for (Contract contract : client.getContracts()) {
-                        decryptPolicies(contract.getPolicies());
+                        decryptPolicies(client.getOrganizationId(), client.getClientId(), client.getVersion(),
+                                EntityType.ClientApp, contract.getPolicies());
                     }
                 }
                 handler.handle(result);
@@ -154,12 +157,16 @@ public class SecureRegistryWrapper implements IRegistry {
                 if (result.isSuccess()) {
                     ApiContract contract = result.getResult();
                     List<Policy> policies = contract.getPolicies();
-                    decryptPolicies(policies);
+                    decryptPolicies(contract.getClient().getOrganizationId(),
+                            contract.getClient().getClientId(), contract.getClient().getVersion(),
+                            EntityType.ClientApp, policies);
                     Api api = contract.getApi();
                     if (api != null) {
                         List<Policy> apiPolicies = api.getApiPolicies();
-                        decryptPolicies(apiPolicies);
-                        decryptEndpointProperties(api.getEndpointProperties());
+                        decryptPolicies(api.getOrganizationId(), api.getApiId(), api.getVersion(),
+                                EntityType.Api, apiPolicies);
+                        decryptEndpointProperties(api.getOrganizationId(), api.getApiId(),
+                                api.getVersion(), EntityType.Api, api.getEndpointProperties());
                     }
                 }
                 handler.handle(result);
@@ -168,13 +175,20 @@ public class SecureRegistryWrapper implements IRegistry {
     }
 
     /**
+     * @param entityType 
+     * @param entityVersion 
+     * @param entityId 
+     * @param orgId 
+     * @param entityType 
      * @param policies
      */
-    protected void encryptPolicies(List<Policy> policies) {
+    protected void encryptPolicies(String orgId, String entityId, String entityVersion, EntityType entityType,
+            List<Policy> policies) {
         if (policies != null) {
+            DataEncryptionContext ctx = new DataEncryptionContext(orgId, entityId, entityVersion, entityType);
             for (Policy policy : policies) {
                 String jsonConfig = policy.getPolicyJsonConfig();
-                policy.setPolicyJsonConfig(encrypter.encrypt(jsonConfig));
+                policy.setPolicyJsonConfig(encrypter.encrypt(jsonConfig, ctx));
             }
         }
     }
@@ -182,20 +196,23 @@ public class SecureRegistryWrapper implements IRegistry {
     /**
      * @param endpointProperties
      */
-    protected void encryptEndpointProperties(Map<String, String> endpointProperties) {
+    protected void encryptEndpointProperties(String orgId, String entityId, String entityVersion,
+            EntityType entityType, Map<String, String> endpointProperties) {
+        DataEncryptionContext ctx = new DataEncryptionContext(orgId, entityId, entityVersion, entityType);
         for (Entry<String, String> entry : endpointProperties.entrySet()) {
-            entry.setValue(encrypter.encrypt(entry.getValue()));
+            entry.setValue(encrypter.encrypt(entry.getValue(), ctx));
         }
     }
 
     /**
      * @param policies
      */
-    protected void decryptPolicies(List<Policy> policies) {
+    protected void decryptPolicies(String orgId, String entityId, String entityVersion, EntityType entityType, List<Policy> policies) {
         if (policies != null) {
+            DataEncryptionContext ctx = new DataEncryptionContext(orgId, entityId, entityVersion, entityType);
             for (Policy policy : policies) {
                 String encryptedConfig = policy.getPolicyJsonConfig();
-                policy.setPolicyJsonConfig(encrypter.decrypt(encryptedConfig));
+                policy.setPolicyJsonConfig(encrypter.decrypt(encryptedConfig, ctx));
             }
         }
     }
@@ -203,10 +220,11 @@ public class SecureRegistryWrapper implements IRegistry {
     /**
      * @param endpointProperties
      */
-    protected void decryptEndpointProperties(Map<String, String> endpointProperties) {
+    protected void decryptEndpointProperties(String orgId, String entityId, String entityVersion, EntityType entityType, Map<String, String> endpointProperties) {
         if (endpointProperties != null) {
+            DataEncryptionContext ctx = new DataEncryptionContext(orgId, entityId, entityVersion, entityType);
             for (Entry<String, String> entry : endpointProperties.entrySet()) {
-                entry.setValue(encrypter.decrypt(entry.getValue()));
+                entry.setValue(encrypter.decrypt(entry.getValue(), ctx));
             }
         }
     }

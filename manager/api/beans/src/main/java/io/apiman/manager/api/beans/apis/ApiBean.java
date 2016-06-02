@@ -20,16 +20,22 @@ import io.apiman.manager.api.beans.orgs.OrganizationBean;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
@@ -42,7 +48,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 @Table(name = "apis")
 @IdClass(OrganizationBasedCompositeId.class)
 @JsonInclude(Include.NON_NULL)
-public class ApiBean implements Serializable {
+public class ApiBean implements Serializable, Cloneable {
 
     private static final long serialVersionUID = 1526742536153467539L;
 
@@ -65,7 +71,9 @@ public class ApiBean implements Serializable {
     private Date createdOn;
     @Column(name = "num_published", updatable=true, nullable=true)
     private Integer numPublished;
-
+    @OneToMany(cascade = CascadeType.REMOVE, orphanRemoval=true, fetch=FetchType.LAZY, mappedBy="api")
+    @JsonIgnore
+    private Set<ApiVersionBean> apiVersionSet = new LinkedHashSet<>();
 
     /**
      * Constructor.
@@ -180,5 +188,13 @@ public class ApiBean implements Serializable {
         return "APIBean [organization=" + organization + ", id=" + id + ", name=" + name
                 + ", description=" + description + ", createdBy=" + createdBy + ", createdOn=" + createdOn
                 + "]";
+    }
+    
+    /**
+     * @see java.lang.Object#clone()
+     */
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 }

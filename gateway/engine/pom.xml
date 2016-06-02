@@ -4,7 +4,7 @@
   <parent>
     <groupId>io.apiman</groupId>
     <artifactId>apiman-gateway</artifactId>
-    <version>1.2.3-SNAPSHOT</version>
+    <version>1.2.7-SNAPSHOT</version>
   </parent>
   <artifactId>apiman-gateway-engine</artifactId>
   <packaging>pom</packaging>
@@ -14,6 +14,7 @@
     <module>beans</module>
     <module>core</module>
     <module>es</module>
+    <module>hawkular</module>
     <module>influxdb</module>
     <module>ispn</module>
     <module>jdbc</module>
