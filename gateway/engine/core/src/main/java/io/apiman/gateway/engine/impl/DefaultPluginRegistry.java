@@ -396,7 +396,7 @@ public class DefaultPluginRegistry implements IPluginRegistry {
             if (connection instanceof HttpURLConnection) {
                 HttpURLConnection httpConnection = (HttpURLConnection) connection;
                 if (httpConnection.getResponseCode() != 200) {
-                    handler.handle(AsyncResultImpl.create(pluginFile));
+                    handler.handle(AsyncResultImpl.create(null));
                     return;
                 }
             }
