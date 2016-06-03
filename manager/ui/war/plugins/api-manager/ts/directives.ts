@@ -188,7 +188,7 @@ module Apiman {
             scope: false,
             link: function(scope, elem, attr)
             {
-                if (attr.type==='text/javascript-lazy')
+                if ((<any>$(attr)).type==='text/javascript-lazy')
                 {
                     var s = document.createElement("script");
                     s.type = "text/javascript";
