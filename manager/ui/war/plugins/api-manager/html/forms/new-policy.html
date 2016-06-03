@@ -47,7 +47,7 @@
       </div>
 
       <!-- Policy Type-specific config -->
-      <div class="row" ng-show="include">
+      <div class="row policy-template" ng-show="include">
         <h3 data-field="policyHeading">{{ selectedDef.name }} <span apiman-i18n-key="configuration">Configuration</span></h3>
         <div class="apiman-box col-md-9 container">
           <div ng-include="include"></div>
@@ -55,7 +55,7 @@
       </div>
 
       <!-- Custom Policy Types -->
-      <div class="row"
+      <div class="row policy-template"
            ng-if="selectedDef.formType == 'AngularTemplate' && !include"
            ng-controller="Apiman.CustomPluginController">
         <h3 data-field="policyHeading">{{ selectedDef.name }} <span apiman-i18n-key="configuration">Configuration</span></h3>

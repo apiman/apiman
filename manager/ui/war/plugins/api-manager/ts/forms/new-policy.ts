@@ -65,7 +65,6 @@ module Apiman {
                     $scope.selectedDef = newDef;
 
                     CustomPluginSvcs.setSelectedDef(newDef);
-                    console.log('Setting selected def...');
 
                     loadTemplate(newValue);
                 }
@@ -79,7 +78,6 @@ module Apiman {
                     if ($scope.selectedDef.formType == 'JsonSchema') {
                         $scope.include = 'plugins/api-manager/html/policyForms/JsonSchema.include';
                     } else if($scope.selectedDef.formType == 'AngularTemplate') {
-                        //$scope.include = 'plugins/api-manager/html/forms/custom.html';
                         $scope.include = undefined;
                     } else {
                         var inc = ConfigForms[$scope.selectedDef.id];

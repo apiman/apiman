@@ -2,8 +2,8 @@
 module Apiman {
     
     export var EditPolicyController = _module.controller("Apiman.EditPolicyController",
-        ['$q', '$location', '$scope', 'OrgSvcs', 'ApimanSvcs', 'PageLifecycle', 'Logger', '$routeParams', 'EntityStatusSvc', 'CurrentUser',
-        ($q, $location, $scope, OrgSvcs, ApimanSvcs, PageLifecycle, Logger, $routeParams, EntityStatusSvc, CurrentUser) => {
+        ['$q', '$location', '$scope', 'OrgSvcs', 'ApimanSvcs', 'CustomPluginSvcs', 'PageLifecycle', 'Logger', '$routeParams', 'EntityStatusSvc', 'CurrentUser',
+        ($q, $location, $scope, OrgSvcs, ApimanSvcs, CustomPluginSvcs, PageLifecycle, Logger, $routeParams, EntityStatusSvc, CurrentUser) => {
             var params = $routeParams;
 
             $scope.organizationId = params.org;
@@ -45,7 +45,7 @@ module Apiman {
                         if (policy.definition.formType == 'JsonSchema') {
                             $scope.include = 'plugins/api-manager/html/policyForms/JsonSchema.include';
                         } else if($scope.selectedDef.formType == 'AngularTemplate') {
-                            $scope.include = 'plugins/api-manager/html/forms/custom.html';
+                            $scope.include = undefined;
                         } else {
                             var inc = ConfigForms[policy.definition.id];
 
@@ -97,6 +97,7 @@ module Apiman {
             };
             
             var requiredPermission = requiredPermissionMap[etype];
+
             PageLifecycle.loadPage('EditPolicy', requiredPermission, pageData, $scope, function() {
                 EntityStatusSvc.setEntity($scope.version, etype);
 

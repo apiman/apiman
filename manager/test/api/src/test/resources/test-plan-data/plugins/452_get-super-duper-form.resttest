@@ -37,6 +37,10 @@ Content-Type: text/html
         <p></p>
 
         <!-- Submit -->
-        <input type="submit" ng-disabled="form.customForm.$invalid" value="Submit"></input>
+        <button type="submit" ng-disabled="form.customForm.$invalid">Submit</button>
     </form>
+    
+    <script type="text/javascript-lazy" >
+        alert("lazy loaded");
+    </script>
 </div>

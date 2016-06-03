@@ -34,11 +34,23 @@
       </div>
 
       <!-- Policy Type-specific config -->
-      <div class="row"
+      <div class="row policy-template"
            ng-show="include">
         <h3 data-field="policyHeading">{{ policy.definition.name }} Configuration</h3>
         <div class="apiman-box col-md-9 container">
           <div ng-include="include"></div>
+        </div>
+      </div>
+
+      <!-- Custom Policy Types -->
+      <div class="row policy-template"
+           ng-if="policy.definition.type == 'AngularTemplate' && !include"
+           ng-controller="Apiman.CustomPluginController">
+        <h3 data-field="policyHeading">{{ policy.definition.name }}
+          <span apiman-i18n-key="configuration">Configuration</span></h3>
+        <div class="apiman-box col-md-9 container">
+          <div bind-html-compile="formPath"
+               class="custom-template"></div>
         </div>
       </div>
 

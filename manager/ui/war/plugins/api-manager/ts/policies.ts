@@ -42,29 +42,6 @@ module Apiman {
                 $scope.who = 'Rachel';
 
 
-                // ----- Load Custom Template --------------------->>>>
-
-
-                var loadSchema = function () {
-                    $scope.schemaState = 'loading';
-                    $scope.selectedDef = CustomPluginSvcs.getSelectedDef();
-
-                    var pluginId = $scope.selectedDef.pluginId;
-                    var policyDefId = $scope.selectedDef.id;
-
-                    CustomPluginSvcs.getPolicyForm(pluginId, policyDefId, function (schema) {
-                        $scope.formPath = $compile(schema.data)($scope);
-                        $scope.schemaState = 'loaded';
-                    }, function (error) {
-                        // TODO handle the error better here!
-                        Logger.error(error);
-                        $scope.schemaState = 'loaded';
-                    });
-                };
-
-
-                loadSchema();
-
 
                 // ----- Watchers --------------------->>>>
 
@@ -86,6 +63,31 @@ module Apiman {
                 $scope.submit = function () {
                     alert('Submitted!');
                 };
+
+
+                // ----- Load Custom Template --------------------->>>>
+
+
+                var loadSchema = function () {
+                    $scope.schemaState = 'loading';
+                    $scope.selectedDef = CustomPluginSvcs.getSelectedDef();
+
+                    var pluginId = $scope.selectedDef.pluginId;
+                    var policyDefId = $scope.selectedDef.id;
+
+                    CustomPluginSvcs.getPolicyForm(pluginId, policyDefId, function (schema) {
+                        $scope.formPath = $compile(schema.data)($scope);
+                        $scope.schemaState = 'loaded';
+                    }, function (error) {
+                        Logger.error(error);
+                        $scope.schemaState = 'loaded';
+                    });
+                };
+
+
+                loadSchema();
+
+
 
             }]);
 
