@@ -36,8 +36,8 @@ module Apiman {
                 $scope.form = {};
                 $scope.formPath = '';
 
-                $scope.one = 'Eric';
-                $scope.two = 'ewittmann@redhat.com';
+                $scope.name = 'Eric';
+                $scope.email = 'ewittmann@redhat.com';
 
                 $scope.who = 'Rachel';
 
@@ -69,7 +69,7 @@ module Apiman {
                 // ----- Watchers --------------------->>>>
 
 
-                $scope.$watch('one', function (newValue) {
+                $scope.$watch('name', function (newValue) {
                     console.log('newValue: ' + JSON.stringify(newValue));
                 });
 

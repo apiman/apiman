@@ -48,11 +48,9 @@ module ApimanRPC {
         function($rootScope, $http, $resource, $sce, Configuration) {
         return {
             getSelectedDef: function() {
-                console.log('Getting $rootScope.selectedDef: ' + JSON.stringify($rootScope.selectedDef));
                 return $rootScope.selectedDef;
             },
             setSelectedDef: function(selectedDef) {
-                console.log('Setting selectedDef: ' + JSON.stringify(selectedDef));
                 return $rootScope.selectedDef = selectedDef;
             },
             getPolicyForm: function(pluginId, policyDefId, success, error) {
