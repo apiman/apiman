@@ -11,7 +11,20 @@
   <name>apiman-manager-ui</name>
   <modules>
     <module>war</module>
-    <module>war/tomcat8</module>
     <module>war/wildfly8</module>
   </modules>
+
+  <profiles>
+    <profile>
+      <id>standard</id>
+      <activation>
+        <property>
+          <name>!skipTomcat</name>
+        </property>
+      </activation>
+      <modules>
+        <module>war/tomcat8</module>
+      </modules>
+    </profile>
+  </profiles>
 </project>
