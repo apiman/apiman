@@ -25,6 +25,7 @@
     <test name="Query By Name">test-plan-data/searching/queries/006_query-by-name.resttest</test>
     <test name="Query API Catalogs">test-plan-data/searching/queries/007_query-api-catalog.resttest</test>
     <test name="List API Catalog Namespaces">test-plan-data/searching/queries/008_list-api-namespaces.resttest</test>
+    <test name="Query By Name (Caps)">test-plan-data/searching/queries/009_query-by-name-caps.resttest</test>
   </testGroup>
 
   <!-- Now, test that request validation is working -->
