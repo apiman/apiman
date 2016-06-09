@@ -2,8 +2,8 @@
 module Apiman {
 
     export var NewContractController = _module.controller("Apiman.NewContractController",
-        ['$q', '$location', '$scope', 'OrgSvcs', 'CurrentUserSvcs', 'PageLifecycle', 'Logger', '$rootScope', 'Dialogs',
-        ($q, $location, $scope, OrgSvcs, CurrentUserSvcs, PageLifecycle, Logger, $rootScope, Dialogs) => {
+        ['$q', '$location', '$scope', '$timeout', 'OrgSvcs', 'CurrentUserSvcs', 'PageLifecycle', 'Logger', '$rootScope', 'Dialogs',
+        ($q, $location, $scope, $timeout, OrgSvcs, CurrentUserSvcs, PageLifecycle, Logger, $rootScope, Dialogs) => {
             var params = $location.search();
             var apiId = params.api;
             var apiOrgId = params.apiorg;
@@ -92,9 +92,11 @@ module Apiman {
             };
             
             $scope.selectApi = function() {
-                Dialogs.selectApi('Select an API', function(apiVersion) {
-                    $scope.selectedApi = apiVersion;
-                }, true);
+                $timeout(function() {
+                    Dialogs.selectApi('Select an API', function(apiVersion) {
+                        $scope.selectedApi = apiVersion;
+                    }, true);
+                });
             };
 
             $scope.changedPlan = function(newValue) {
