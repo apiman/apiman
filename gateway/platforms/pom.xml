@@ -14,9 +14,22 @@
     <module>servlet</module>
     <module>war</module>
     <module>war/micro</module>
-    <module>war/tomcat8</module>
     <module>war/wildfly8</module>
     <module>vertx3/vertx3</module>
     <module>vertx3/vertx3-common</module>
   </modules>
+
+  <profiles>
+    <profile>
+      <id>standard</id>
+      <activation>
+        <property>
+          <name>!skipTomcat</name>
+        </property>
+      </activation>
+      <modules>
+        <module>war/tomcat8</module>
+      </modules>
+    </profile>
+  </profiles>
 </project>

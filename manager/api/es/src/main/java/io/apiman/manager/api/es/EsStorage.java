@@ -2198,9 +2198,6 @@ public class EsStorage implements IStorage, IStorageQuery {
                 int filterCount = 0;
                 for (SearchCriteriaFilterBean filter : filters) {
                     String propertyName = filter.getName();
-                    if (propertyName.equals("name")) { //$NON-NLS-1$
-                        propertyName = "name.raw"; //$NON-NLS-1$
-                    }
                     if (filter.getOperator() == SearchCriteriaFilterOperator.eq) {
                         andFilter.add(FilterBuilders.termFilter(propertyName, filter.getValue()));
                         filterCount++;
