@@ -4,8 +4,8 @@
   "description" : "This plugin registry lists all of the official apiman plugins.  No third party plugins are included in this registry.",
   "version" : "1.2.7-SNAPSHOT",
   "repository" : {
-    "name" : "JBoss Public Maven Repository",
-    "url" : "http://repository.jboss.org/nexus/content/groups/public/"
+    "name" : "Maven Central",
+    "url" : "https://repo1.maven.org/maven2/"
   },
   "plugins" : [
     {
