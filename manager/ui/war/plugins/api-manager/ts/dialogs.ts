@@ -96,7 +96,7 @@ module ApimanDialogs {
                             $('#selectApiModal').on('shown.bs.modal', function () {
                                 $('#selectApiModal .input-search').focus();
                             });
-                        }, 75);
+                        }, 200);
 
                         modalScope.search = function () {
                             modalScope.selectedApi = undefined;
