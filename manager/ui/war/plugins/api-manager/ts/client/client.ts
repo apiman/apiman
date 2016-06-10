@@ -2,20 +2,23 @@
 /// <reference path="../rpc.ts"/>
 module Apiman {
 
-    export var ClientRedirectController = _module.controller("Apiman.ClientRedirectController",
+    export var ClientRedirectController = _module.controller('Apiman.ClientRedirectController',
         ['$q', '$scope', '$location', 'OrgSvcs', 'PageLifecycle', '$rootScope', '$routeParams',
         ($q, $scope, $location, OrgSvcs, PageLifecycle, $rootScope, $routeParams) => {
             var orgId = $routeParams.org;
             var clientId = $routeParams.client;
+
             var pageData = {
                 versions: $q(function(resolve, reject) {
                     OrgSvcs.query({ organizationId: orgId, entityType: 'clients', entityId: clientId, versionsOrActivity: 'versions' }, resolve, reject);
                 })
             };
+
             $scope.organizationId = orgId;
 
             PageLifecycle.loadPage('ClientRedirect', 'clientView', pageData, $scope, function() {
                 var version = $scope.versions[0].version;
+
                 if (!version) {
                     PageLifecycle.handleError({ status: 404 });
                 } else {
@@ -30,7 +33,9 @@ module Apiman {
             return {
                 getCommonData: function($scope, $location) {
                     var params = $routeParams;
-                    console.log('params provided to ClientEntityLoader: ' + JSON.stringify(params));
+
+                    //console.log('params provided to ClientEntityLoader: ' + JSON.stringify(params));
+
                     return {
                         version: $q(function(resolve, reject) {
                             OrgSvcs.get({ organizationId: params.org, entityType: 'clients', entityId: params.client, versionsOrActivity: 'versions', version: params.version }, function(version) {
@@ -38,7 +43,7 @@ module Apiman {
                                 $scope.client = version.client;
                                 $rootScope.mruClient = version;
                                 EntityStatusSvc.setEntity(version, 'client');
-                                Logger.debug("client version: {0}", version);
+                                Logger.debug('client version: {0}', version);
                                 resolve(version);
                             }, reject);
                         }),
@@ -50,9 +55,21 @@ module Apiman {
             }
         }]);
 
-    export var ClientEntityController = _module.controller("Apiman.ClientEntityController",
-        ['$q', '$uibModal', '$scope', '$rootScope', '$location', 'ActionSvcs', 'Logger', 'Dialogs', 'PageLifecycle', '$routeParams', 'OrgSvcs', 'EntityStatusSvc', 'Configuration',
-        ($q, $uibModal, $scope, $rootScope, $location, ActionSvcs, Logger, Dialogs, PageLifecycle, $routeParams, OrgSvcs, EntityStatusSvc, Configuration) => {
+    export var ClientEntityController = _module.controller('Apiman.ClientEntityController',
+        [
+            '$q',
+            '$uibModal',
+            '$scope',
+            '$rootScope',
+            '$location',
+            'ActionSvcs',
+            'Logger',
+            'PageLifecycle',
+            '$routeParams',
+            'OrgSvcs',
+            'EntityStatusSvc',
+            'Configuration',
+        ($q, $uibModal, $scope, $rootScope, $location, ActionSvcs, Logger, PageLifecycle, $routeParams, OrgSvcs, EntityStatusSvc, Configuration) => {
             var params = $routeParams;
 
             $scope.setEntityStatus = EntityStatusSvc.setEntityStatus;
@@ -88,12 +105,14 @@ module Apiman {
             $scope.registerClient = function() {
                 $scope.registerButton.state = 'in-progress';
                 $scope.reregisterButton.state = 'in-progress';
+                
                 var registerAction = {
                     type: 'registerClient',
                     entityId: params.client,
                     organizationId: params.org,
                     entityVersion: params.version
                 };
+                
                 ActionSvcs.save(registerAction, function(reply) {
                     $scope.version.publishedOn = Date.now();
                     $scope.registerButton.state = 'complete';
@@ -103,23 +122,51 @@ module Apiman {
                 }, PageLifecycle.handleError);
             };
 
-            $scope.unregisterClient = function() {
+            $scope.unregisterClient = function(size) {
                 $scope.unregisterButton.state = 'in-progress';
-                Dialogs.confirm('Confirm Unregister App', 'Do you really want to unregister the Client App?  This cannot be undone.', function() {
+
+                var options = {
+                    publishedOnly: true,
+                    title: 'Confirm Unregister App'
+                };
+
+                $scope.animationsEnabled = true;
+
+                $scope.toggleAnimation = function () {
+                    $scope.animationsEnabled = !$scope.animationsEnabled;
+                };
+
+                var modalInstance = $uibModal.open({
+                    animation: $scope.animationsEnabled,
+                    templateUrl: 'confirmModal.html',
+                    //templateUrl: 'modal.html',
+                    controller: 'ModalConfirmCtrl',
+                    size: size,
+                    resolve: {
+                        options: function () {
+                            return options;
+                        }
+                    }
+                });
+
+                modalInstance.result.then(function () {
                     var unregisterAction = {
                         type: 'unregisterClient',
                         entityId: params.client,
                         organizationId: params.org,
                         entityVersion: params.version
                     };
+
                     ActionSvcs.save(unregisterAction, function(reply) {
                         $scope.version.status = 'Retired';
                         $scope.unregisterButton.state = 'complete';
                         $scope.setEntityStatus($scope.version.status);
                     }, PageLifecycle.handleError);
-                }, function() {
+                }, function () {
+                    //console.log('Modal dismissed at: ' + new Date());
                     $scope.unregisterButton.state = 'complete';
                 });
+
             };
 
             $scope.updateClientDescription = function(updatedDescription) {
@@ -133,10 +180,9 @@ module Apiman {
                     entityId: $scope.client.id
                 },
                 updateClientBean,
-                function(success) {
-                },
+                function(success) {},
                 function(error) {
-                    Logger.error("Unable to update client description: {0}", error);
+                    Logger.error('Unable to update client description: {0}', error);
                 });
             };
 
@@ -152,7 +198,7 @@ module Apiman {
             $scope.callDelete = function(size) {
                 var modalInstance = $uibModal.open({
                     templateUrl: 'deleteModal.html',
-                    controller: 'ClientAppDeleteModalCtrl',
+                    controller: 'ModalClientAppDeleteCtrl',
                     size: size,
                     resolve: {
                         client: function() {
@@ -171,59 +217,5 @@ module Apiman {
                 });
             };
     }]);
-
-
-
-    export var ClientAppDeleteModalCtrl = _module.controller('ClientAppDeleteModalCtrl', function ($location, 
-                                                                                                   $rootScope, 
-                                                                                                   $scope, 
-                                                                                                   $uibModalInstance,
-                                                                                                   OrgSvcs, 
-                                                                                                   Configuration, 
-                                                                                                   PageLifecycle, 
-                                                                                                   client, 
-                                                                                                   params) {
-        
-        $scope.confirmClientName = '';
-
-        // Used for enabling/disabling the submit button
-        $scope.okayToDelete = false;
-
-        $scope.typed = function () {
-            // For user convenience, compare lower case values so that check is not case-sensitive
-            $scope.okayToDelete = ($scope.confirmClientName.toLowerCase() === client.name.toLowerCase());
-        };
-
-        // Yes, delete the API
-        $scope.yes = function () {
-            var deleteAction = {
-                entityId: client.id,
-                entityType: 'clients',
-                organizationId: params.org
-            };
-
-            OrgSvcs.remove(deleteAction).$promise.then(function(res) {
-                $scope.okayToDelete = false;
-
-                setTimeout(function() {
-                    $uibModalInstance.close();
-
-                    // Redirect users to their list of APIs
-                    $location.path($rootScope.pluginName + '/users/' + Configuration.user.username + '/clients');
-                }, 800);
-
-                // We should display some type of Toastr/Growl notification to the user here
-            }, function(err) {
-                $scope.okayToDelete = false;
-                $uibModalInstance.close();
-                PageLifecycle.handleError(err);
-            });
-        };
-
-        // No, do NOT delete the API
-        $scope.no = function () {
-            $uibModalInstance.dismiss('cancel');
-        };
-    });
 
 }

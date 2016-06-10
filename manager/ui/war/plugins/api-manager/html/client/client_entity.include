@@ -125,4 +125,27 @@
                     ng-click="yes()">I understand the consequences, delete this client app</button>
           </div>
         </script>
+
+
+        <!-- Confirm Modal -->
+        <script type="text/ng-template" id="confirmModal.html">
+          <div class="modal-header">
+            <h3 class="modal-title">{{ title }}</h3>
+          </div>
+          <div class="modal-body">
+            {{ message }}
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-default"
+                    type="button"
+                    ng-click="cancel()"
+                    apiman-i18n-key="cancel">Cancel
+            </button>
+            <button class="btn btn-primary"
+                    type="button"
+                    ng-click="ok()"
+                    apiman-i18n-key="ok">OK
+            </button>
+          </div>
+        </script>
       </div>

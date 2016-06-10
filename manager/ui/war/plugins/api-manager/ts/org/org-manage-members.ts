@@ -77,10 +77,14 @@ module Apiman {
     PageLifecycle.loadPage('OrgManageMembers', 'orgAdmin', pageData, $scope, function() {
       PageLifecycle.setPageTitle('org-manage-members', [ $scope.org.name ]);
     });
-  }])
+  }]);
 
-  OrgManageMembersController.directive('apimanUserCard', ['OrgSvcs', 'Dialogs', 'Logger', 'PageLifecycle',
-  (OrgSvcs, Dialogs, $log, PageLifecycle) => {
+  OrgManageMembersController.directive('apimanUserCard', [
+    '$uibModal',
+    'OrgSvcs',
+    'Logger',
+    'PageLifecycle',
+  ($uibModal, OrgSvcs, $log, PageLifecycle) => {
     return {
       restrict: 'E',
       scope: {
@@ -99,17 +103,17 @@ module Apiman {
 
         $scope.flipCard = function(face) {
           $scope.cardFace = face;
-        }
+        };
 
         $scope.currentTemplate = function() {
           return 'plugins/api-manager/html/org/' + $scope.cardFace + '.html';
-        }
+        };
 
         $scope.joinRoles = function(roles) {
           return roles.map(function(role) {
             return role.roleName;
           }).join(', ');
-        }
+        };
 
         // Update is revoke + grant
         $scope.updateRoles = function(selectedRoles: Array<string>) {
@@ -128,17 +132,40 @@ module Apiman {
           }, PageLifecycle.handleError);
 
           _reassignRoles(selectedRoles);
-        }
+        };
 
         // Revoke all permissions with warning
-        $scope.revokeAll = function() {
-          Dialogs.confirm('Confirm Revoke All',
-          'This will remove ' + $scope.member.userName + ' from all roles in the Organization. Really do this?',
-          function() {
+        $scope.revokeAll = function(size) {
+          var options = {
+            message: 'This will remove ' + $scope.member.userName + ' from all roles in the Organization. Really do this?',
+            title: 'Confirm Revoke All'
+          };
+
+          $scope.animationsEnabled = true;
+
+          $scope.toggleAnimation = function () {
+            $scope.animationsEnabled = !$scope.animationsEnabled;
+          };
+
+          var modalInstance = $uibModal.open({
+            animation: $scope.animationsEnabled,
+            templateUrl: 'confirmModal.html',
+            controller: 'ModalConfirmCtrl',
+            size: size,
+            resolve: {
+              options: function () {
+                return options;
+              }
+            }
+          });
+
+          modalInstance.result.then(function () {
             _revokeAll($scope.orgId, $scope.member.userId);
             $scope.isCardVisible = false;
+          }, function () {
+            //console.log('Modal dismissed at: ' + new Date());
           });
-        }
+        };
 
         // Actual revoke function.
         var _revokeAll = function(orgId, userId) {
@@ -146,7 +173,7 @@ module Apiman {
           function() {
             $log.debug('Successfully revoked all roles for ' + userId);
           }, PageLifecycle.handleError);
-        }
+        };
 
         // Now we've modified the roles, we can update to reflect.
         var _reassignRoles = function(newRoles) {

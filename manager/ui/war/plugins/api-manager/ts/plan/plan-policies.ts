@@ -3,8 +3,8 @@
 module Apiman {
 
     export var PlanPoliciesController = _module.controller("Apiman.PlanPoliciesController",
-        ['$q', '$scope', '$location', 'OrgSvcs', 'ApimanSvcs', 'Logger', 'PageLifecycle', 'PlanEntityLoader', 'Dialogs', '$routeParams', 
-        ($q, $scope, $location, OrgSvcs, ApimanSvcs, Logger, PageLifecycle, PlanEntityLoader, Dialogs, $routeParams) => {
+        ['$q', '$scope', '$location', '$uibModal', 'OrgSvcs', 'ApimanSvcs', 'Logger', 'PageLifecycle', 'PlanEntityLoader', '$routeParams',
+        ($q, $scope, $location, $uibModal, OrgSvcs, ApimanSvcs, Logger, PageLifecycle, PlanEntityLoader, $routeParams) => {
             var params = $routeParams;
             $scope.organizationId = params.org;
             $scope.tab = 'policies';
@@ -18,12 +18,38 @@ module Apiman {
                 });
             };
 
-            $scope.removePolicy = function(policy) {
+            $scope.removePolicy = function(policy, size) {
                 Logger.info('Removing policy: {0}', policy);
-                Dialogs.confirm('Confirm Remove Policy', 'Do you really want to remove this policy from the plan?', function() {
+
+                var options = {
+                    message: 'Do you really want to remove this policy from the plan?',
+                    title: 'Confirm Remove Policy'
+                };
+
+                $scope.animationsEnabled = true;
+
+                $scope.toggleAnimation = function () {
+                    $scope.animationsEnabled = !$scope.animationsEnabled;
+                };
+
+                var modalInstance = $uibModal.open({
+                    animation: $scope.animationsEnabled,
+                    templateUrl: 'confirmModal.html',
+                    controller: 'ModalConfirmCtrl',
+                    size: size,
+                    resolve: {
+                        options: function () {
+                            return options;
+                        }
+                    }
+                });
+
+                modalInstance.result.then(function () {
                     OrgSvcs.delete({ organizationId: params.org, entityType: 'plans', entityId: params.plan, versionsOrActivity: 'versions', version: params.version, policiesOrActivity: 'policies', policyId: policy.id }, function(reply) {
                         removePolicy(policy);
                     }, PageLifecycle.handleError);
+                }, function () {
+                    //console.log('Modal dismissed at: ' + new Date());
                 });
             };
 
