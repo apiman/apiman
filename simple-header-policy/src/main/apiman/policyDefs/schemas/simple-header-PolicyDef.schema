@@ -76,6 +76,16 @@
           "pattern": {
             "title": "Pattern",
             "type": "string"
+          },
+          "applyTo": {
+            "type": "string",
+            "title": "Apply To",
+            "enum": [
+              "Request",
+              "Response",
+              "Both"
+            ],
+            "default": "Both"
           }
         }
       }

@@ -39,7 +39,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
  */
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 @Generated("org.jsonschema2pojo")
-@JsonPropertyOrder({ "stripType", "with", "pattern" })
+@JsonPropertyOrder({ "stripType", "with", "pattern", "applyTo" })
 @SuppressWarnings("nls")
 public class StripHeaderBean {
 
@@ -60,6 +60,12 @@ public class StripHeaderBean {
     private String pattern;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<>();
+
+    /**
+     * Apply To
+     */
+    @JsonProperty("applyTo")
+    private AddHeaderBean.ApplyTo applyTo = AddHeaderBean.ApplyTo.BOTH;
 
     /**
      * Strip Header(s) That Match
@@ -119,6 +125,30 @@ public class StripHeaderBean {
     @JsonProperty("pattern")
     public void setPattern(String pattern) {
         this.pattern = pattern;
+    }
+
+    /**
+     * Apply To
+     * <p>
+     *
+     *
+     * @return The applyTo
+     */
+    @JsonProperty("applyTo")
+    public AddHeaderBean.ApplyTo getApplyTo() {
+        return applyTo;
+    }
+
+    /**
+     * Apply To
+     * <p>
+     *
+     *
+     * @param applyTo The applyTo
+     */
+    @JsonProperty("applyTo")
+    public void setApplyTo(AddHeaderBean.ApplyTo applyTo) {
+        this.applyTo = applyTo;
     }
 
     @Override
