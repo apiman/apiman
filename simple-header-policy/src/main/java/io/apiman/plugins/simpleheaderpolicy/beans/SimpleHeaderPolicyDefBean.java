@@ -61,8 +61,18 @@ public class SimpleHeaderPolicyDefBean {
     private Set<StripHeaderBean> stripHeaders = new LinkedHashSet<>();
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<>();
-    private Pattern stripKeyRegex;
-    private Pattern stripValueRegex;
+    
+    // BOTH
+    private Pattern stripBothKeyRegex;
+    private Pattern stripBothValueRegex;
+    
+    // REQUEST
+    private Pattern stripRequestKeyRegex;
+    private Pattern stripRequestValueRegex;
+
+    // RESPONSE
+    private Pattern stripKeyResponseRegex;
+    private Pattern stripValueResponseRegex;
 
     /**
      * Add Headers
@@ -160,36 +170,95 @@ public class SimpleHeaderPolicyDefBean {
     /**
      * @return the keyRegex
      */
-    public Pattern getKeyRegex() {
-        if (stripKeyRegex == null) {
+    private Pattern getRequestKeyRegex() {
+        if (stripRequestKeyRegex == null) {
             List<StripHeaderBean> keys = new ArrayList<>();
 
             for (StripHeaderBean bean : stripHeaders) {
-                if (bean.getStripType() == StripHeaderBean.StripType.KEY) {
+                if (bean.getStripType() == StripHeaderBean.StripType.KEY &&
+                        bean.getApplyTo() == AddHeaderBean.ApplyTo.REQUEST ||
+                        bean.getApplyTo() == AddHeaderBean.ApplyTo.BOTH) {
                     keys.add(bean);
                 }
             }
 
-            stripKeyRegex = buildRegex(keys);
+            stripRequestKeyRegex = buildRegex(keys);
         }
-        return stripKeyRegex;
+        return stripRequestKeyRegex;
     }
 
     /**
      * @return the keyRegex
      */
-    public Pattern getValueRegex() {
-        if (stripValueRegex == null) {
+    private Pattern getRequestValueRegex() {
+        if (stripRequestValueRegex == null) {
             List<StripHeaderBean> values = new ArrayList<>();
 
             for (StripHeaderBean bean : stripHeaders) {
-                if (bean.getStripType() == StripHeaderBean.StripType.VALUE) {
+                if (bean.getStripType() == StripHeaderBean.StripType.VALUE &&
+                        bean.getApplyTo() == AddHeaderBean.ApplyTo.REQUEST ||
+                        bean.getApplyTo() == AddHeaderBean.ApplyTo.BOTH) {
                     values.add(bean);
                 }
             }
 
-            stripValueRegex = buildRegex(values);
+            stripRequestValueRegex = buildRegex(values);
         }
-        return stripValueRegex;
+        return stripRequestValueRegex;
+    }
+
+
+    /**
+     * @return the keyRegex
+     */
+    private Pattern getResponseKeyRegex() {
+        if (stripKeyResponseRegex == null) {
+            List<StripHeaderBean> keys = new ArrayList<>();
+
+            for (StripHeaderBean bean : stripHeaders) {
+                if (bean.getStripType() == StripHeaderBean.StripType.KEY &&
+                        bean.getApplyTo() == AddHeaderBean.ApplyTo.RESPONSE ||
+                        bean.getApplyTo() == AddHeaderBean.ApplyTo.BOTH) {
+                    keys.add(bean);
+                }
+            }
+
+            stripKeyResponseRegex = buildRegex(keys);
+        }
+        return stripKeyResponseRegex;
+    }
+
+    /**
+     * @return the keyRegex
+     */
+    private Pattern getResponseValueRegex() {
+        if (stripValueResponseRegex == null) {
+            List<StripHeaderBean> values = new ArrayList<>();
+
+            for (StripHeaderBean bean : stripHeaders) {
+                if (bean.getStripType() == StripHeaderBean.StripType.VALUE &&
+                        bean.getApplyTo() == AddHeaderBean.ApplyTo.RESPONSE ||
+                        bean.getApplyTo() == AddHeaderBean.ApplyTo.BOTH) {
+                    values.add(bean);
+                }
+            }
+
+            stripValueResponseRegex = buildRegex(values);
+        }
+        return stripValueResponseRegex;
+    }
+
+    public Pattern getKeyRegex(AddHeaderBean.ApplyTo applyTo) {
+        if (applyTo == AddHeaderBean.ApplyTo.REQUEST) {
+            return getRequestKeyRegex();
+        }
+        return getResponseKeyRegex();
+    }
+
+    public Pattern getValueRegex(AddHeaderBean.ApplyTo applyTo) {
+        if (applyTo == AddHeaderBean.ApplyTo.REQUEST) {
+            return getRequestValueRegex();
+        }
+        return getResponseValueRegex();
     }
 }

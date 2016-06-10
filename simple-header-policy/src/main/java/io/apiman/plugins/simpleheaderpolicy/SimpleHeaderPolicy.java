@@ -43,7 +43,7 @@ public class SimpleHeaderPolicy extends AbstractMappedPolicy<SimpleHeaderPolicyD
     protected void doApply(ApiRequest request, IPolicyContext context, SimpleHeaderPolicyDefBean config,
             IPolicyChain<ApiRequest> chain) {
         setHeaders(request.getHeaders(), config, ApplyTo.REQUEST);
-        stripHeaders(request.getHeaders(), config);
+        stripHeaders(request.getHeaders(), config, ApplyTo.REQUEST);
         chain.doApply(request);
     }
 
@@ -51,7 +51,7 @@ public class SimpleHeaderPolicy extends AbstractMappedPolicy<SimpleHeaderPolicyD
     protected void doApply(ApiResponse response, IPolicyContext context,
             SimpleHeaderPolicyDefBean config, IPolicyChain<ApiResponse> chain) {
         setHeaders(response.getHeaders(), config, ApplyTo.RESPONSE);
-        stripHeaders(response.getHeaders(), config);
+        stripHeaders(response.getHeaders(), config, ApplyTo.RESPONSE);
         chain.doApply(response);
     }
 
@@ -65,13 +65,13 @@ public class SimpleHeaderPolicy extends AbstractMappedPolicy<SimpleHeaderPolicyD
         }
     }
 
-    private void stripHeaders(HeaderMap headers, SimpleHeaderPolicyDefBean config) {
+    private void stripHeaders(HeaderMap headers, SimpleHeaderPolicyDefBean config, ApplyTo applyTo) {
         for (Map.Entry<String, String> header : headers) {
-            if (config.getKeyRegex().matcher(header.getKey()).matches()) {
+            if (config.getKeyRegex(applyTo).matcher(header.getKey()).matches()) {
                 headers.remove(header.getKey());
             }
 
-            if (config.getValueRegex().matcher(header.getValue()).matches()) {
+            if (config.getValueRegex(applyTo).matcher(header.getValue()).matches()) {
                 headers.remove(header.getKey());
             }
         }
