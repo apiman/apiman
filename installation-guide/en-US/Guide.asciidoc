@@ -644,32 +644,42 @@ https://github.com/apiman/apiman/blob/master/distro/data/src/main/resources/data
 
 ==== Configure the API Manager UI client in Keycloak
 Once the apiman realm has been created or imported, make sure to configure the
-*Valid Redirect URIs* section of the *apimanui* client.  The default value of
-"/apimanui/*" must be replaced with the full public URL of your API Manager UI.
-For example, the value may be something like:
+*Valid Redirect URIs* section of the *apimanui*, *apiman* and *apiman-gateway-api* clients.  
+The default relative URL of each must be replaced by the full (absolute) public URL of your API 
+Manager UI.
 
-    https://apiman.myorg.com/apimanui/*
+For example, the values may be something like:
+
+    apimanui:: `https://apiman.myorg.com/apimanui/*`
+    apiman:: `https://apiman.myorg.com/apiman/*`
+    apiman-gateway-api:: `https://apiman.myorg.com/apiman-gateway-api/*`
 
 TIP: Don't forget the "*" wildcard at the end of the URL.
 
 ==== Point apiman at the remote Keycloak
 Finally, you must modify the *standalone-apiman.xml* configuration file to point
-apiman at the remote Keycloak server.  Make sure you know the full public URL of
+apiman at the remote Keycloak server.  
+
+//NOTE: If you switch to the client's `Installation` tab, and select 
+//`Keycloak OIDC JBoss Subsystem XML`, Keycloak will display most of the information
+//already formatted as XML for you. Some amendments will still be necessary.
+
+Make sure you know the full public URL of
 your Keycloak server and add it to the following section of *standalone-apiman.xml*:
 
 ```xml
-<kc:realm xmlns:kc="urn:jboss:domain:keycloak:1.0" name="apiman">
-  <kc:realm-public-key>MIGf..snip..QAB</kc:realm-public-key>
-  <kc:auth-server-url>https://keycloak-host.org:8443/auth</kc:auth-server-url>
-  <kc:ssl-required>none</kc:ssl-required>
-  <kc:enable-cors>false</kc:enable-cors>
-  <kc:principal-attribute>preferred_username</kc:principal-attribute>
-</kc:realm>
+<realm xmlns:kc="urn:jboss:domain:keycloak:1.0" name="apiman">
+    <realm-public-key>MIIBIjAN<...>AQAB</realm-public-key>
+    <auth-server-url>http://apiman.myorg.com:8080/auth</auth-server-url>
+    <public-client>true</public-client>
+    <ssl-required>NONE</ssl-required>
+    <enable-cors>false</enable-cors>
+    <principal-attribute>preferred_username</principal-attribute>
+</realm>
 ```
 
 TIP: If you manually created the apiman realm in Keycloak, you will also need to
-copy the realm's public key into <kc:realm-public-key> above.
-
+copy the realm's public key into <realm-public-key> above. 
 
 === How To:  Configure a Custom API Catalog
 The API Manager has a feature where users can import APIs from a globally configured
