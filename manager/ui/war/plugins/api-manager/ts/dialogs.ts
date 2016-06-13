@@ -42,7 +42,7 @@ module ApimanDialogs {
                             });
 
                             $('#valueModal')['modal']({'keyboard': true, 'backdrop': 'static'});
-                        }, 75);
+                        }, 200);
 
                     },
                     // A standard confirmation dialog
@@ -77,7 +77,7 @@ module ApimanDialogs {
                             });
 
                             $('#confirmModal')['modal']({'keyboard': true, 'backdrop': 'static'});
-                        }, 75);
+                        }, 200);
                     },
 
                     // A simple "Select an API" dialog (allows selecting a single api + version
