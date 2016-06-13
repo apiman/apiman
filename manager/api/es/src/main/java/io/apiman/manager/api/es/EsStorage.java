@@ -679,10 +679,26 @@ public class EsStorage implements IStorage, IStorageQuery {
                 "                    }\n" +
                 "                  },\n" +
                 "                  {\n" +
-                "                    \"term\": {\n" +
-                "                      \"clientId\": \"" + clientId + "\"\n" +
-                "                    }\n" +
-                "                  }\n" +
+                "                    \"bool\": {\n" +
+                "                      \"must\": [\n" +
+                "                        {\n" +
+                "                          \"term\": {\n" +
+                "                             \"entityId\": \"" + clientId + "\"\n" +
+                "                           }\n" +
+                "                         },\n" +
+                "                         {\n" +
+                "                           \"term\": {\n" +
+                "                               \"type\": \"" + AuditEntityType.Client.name() + "\"\n" +
+                "                             }\n" +
+                "                           }\n" +
+                "                         ]\n" +
+                "                       }\n" +
+                "                     },\n" +
+                "                     {\n" +
+                "                       \"term\": {\n" +
+                "                           \"clientId\": \"" + clientId + "\"\n" +
+                "                       }\n" +
+                "                     }" +
                 "                ]\n" +
                 "              }\n" +
                 "            }\n" +
@@ -736,65 +752,81 @@ public class EsStorage implements IStorage, IStorageQuery {
     public void deleteApi(ApiBean api) throws StorageException {
         String apiId = api.getId().replace('"', '_');
         String orgId = api.getOrganization().getId().replace('"', '_');
-        String query = "{\n" +
-                "  \"query\": {\n" +
-                "    \"filtered\": {\n" +
-                "      \"query\": {\n" +
-                "        \"match_all\": {}\n" +
-                "      },\n" +
-                "      \"filter\": {\n" +
-                "        \"bool\": {\n" +
-                "          \"must\": [\n" +
-                "            {\n" +
-                "              \"bool\": {\n" +
-                "                \"should\": [\n" +
-                "                  {\n" +
-                "                    \"term\": {\n" +
-                "                      \"apiOrganizationId\": \"" + orgId + "\"\n" +
-                "                    }\n" +
-                "                  },\n" +
-                "                  {\n" +
-                "                    \"term\": {\n" +
-                "                      \"organizationId\": \"" + orgId + "\"\n" +
-                "                    }\n" +
-                "                  }\n" +
-                "                ]\n" +
-                "              }\n" +
-                "            },\n" +
-                "            {\n" +
-                "              \"bool\": {\n" +
-                "                \"should\": [\n" +
-                "                  {\n" +
-                "                    \"bool\": {\n" +
-                "                      \"must\": [\n" +
-                "                        {\n" +
-                "                          \"term\": {\n" +
-                "                            \"entityId\": \"" + apiId + "\"\n" +
-                "                          }\n" +
-                "                        },\n" +
-                "                        {\n" +
-                "                          \"term\": {\n" +
-                "                            \"entityType\": \"" + AuditEntityType.Api.name() + "\"\n" +
-                "                          }\n" +
-                "                        }\n" +
-                "                      ]\n" +
-                "                    }\n" +
-                "                  },\n" +
-                "                  {\n" +
-                "                    \"term\": {\n" +
-                "                      \"apiId\": \"" + apiId + "\"\n" +
-                "                    }\n" +
-                "                  }\n" +
-                "                ]\n" +
-                "              }\n" +
-                "            }\n" +
-                "          ]\n" +
-                "        }\n" +
-                "      }\n" +
-                "    }\n" +
-                "  }\n" +
-                "}";
 
+        String query = "{\n" +
+        "    \"query\": {\n" +
+        "        \"filtered\": {\n" +
+        "            \"query\": {\n" +
+        "                \"match_all\": {}\n" +
+        "            },\n" +
+        "            \"filter\": {\n" +
+        "                \"bool\": {\n" +
+        "                    \"must\": [\n" +
+        "                        {\n" +
+        "                            \"bool\": {\n" +
+        "                                \"should\": [\n" +
+        "                                    {\n" +
+        "                                        \"term\": {\n" +
+        "                                            \"apiOrganizationId\": \"" + orgId + "\"\n" +
+        "                                        }\n" +
+        "                                    },\n" +
+        "                                    {\n" +
+        "                                        \"term\": {\n" +
+        "                                            \"organizationId\": \"" + orgId + "\"\n" +
+        "                                        }\n" +
+        "                                    }\n" +
+        "                                ]\n" +
+        "                            }\n" +
+        "                        },\n" +
+        "                        {\n" +
+        "                            \"bool\": {\n" +
+        "                                \"should\": [\n" +
+        "                                    {\n" +
+        "                                        \"bool\": {\n" +
+        "                                            \"must\": [\n" +
+        "                                                {\n" +
+        "                                                    \"term\": {\n" +
+        "                                                        \"entityId\": \"" + apiId + "\"\n" +
+        "                                                    }\n" +
+        "                                                },\n" +
+        "                                                {\n" +
+        "                                                    \"term\": {\n" +
+        "                                                        \"entityType\": \"" + AuditEntityType.Api.name() + "\"\n" +
+        "                                                    }\n" +
+        "                                                }\n" +
+        "                                            ]\n" +
+        "                                        }\n" +
+        "                                    },\n" +
+        "                                    {\n" +
+        "                                        \"bool\": {\n" +
+        "                                            \"must\": [\n" +
+        "                                                {\n" +
+        "                                                    \"term\": {\n" +
+        "                                                        \"entityId\": \"" + apiId + "\"\n" +
+        "                                                    }\n" +
+        "                                                },\n" +
+        "                                                {\n" +
+        "                                                    \"term\": {\n" +
+        "                                                        \"type\": \"" + AuditEntityType.Api.name() + "\"\n" +
+        "                                                    }\n" +
+        "                                                }\n" +
+        "                                            ]\n" +
+        "                                        }\n" +
+        "                                    },\n" +
+        "                                    {\n" +
+        "                                        \"term\": {\n" +
+        "                                            \"apiId\": \"" + apiId + "\"\n" +
+        "                                        }\n" +
+        "                                    }\n" +
+        "                                ]\n" +
+        "                            }\n" +
+        "                        }\n" +
+        "                    ]\n" +
+        "                }\n" +
+        "            }\n" +
+        "        }\n" +
+        "    }\n" +
+        "}";
         DeleteByQuery deleteByQuery = new DeleteByQuery.Builder(query).addIndex(getIndexName())
                 .addType("auditEntry")
                 .addType("api")
@@ -883,13 +915,26 @@ public class EsStorage implements IStorage, IStorageQuery {
                 "                }\n" +
                 "              }\n" +
                 "            ]\n" +
+                "          },\n" +
+                "          {\n" +
+                "            \"and\": [\n" +
+                "              {\n" +
+                "                \"term\": {\n" +
+                "                  \"entityId\": \"" + planId + "\"\n" +
+                "                }\n" +
+                "              },\n" +
+                "              {\n" +
+                "                \"term\": {\n" +
+                "                  \"type\": \"" + AuditEntityType.Plan.name() + "\"\n" +
+                "                }\n" +
+                "              }\n" +
+                "            ]\n" +
                 "          }\n" +
                 "        ]\n" +
                 "      }\n" +
                 "    }\n" +
                 "  }\n" +
                 "}";
-
         DeleteByQuery deleteByQuery = new DeleteByQuery.Builder(query).addIndex(getIndexName())
                 .addType("auditEntry")
                 .addType("planVersion")
