@@ -39,14 +39,17 @@ public class RateLimiterBucket implements Serializable {
     }
 
     /**
-     * Resets the count if the period boundary has been crossed.
+     * Resets the count if the period boundary has been crossed.  Returns true if the
+     * count was reset to 0 or false otherwise.
      * @param period the period
      */
-    public void resetIfNecessary(RateBucketPeriod period) {
+    public boolean resetIfNecessary(RateBucketPeriod period) {
         long periodBoundary = getLastPeriodBoundary(period);
         if (System.currentTimeMillis() >= periodBoundary) {
             setCount(0);
+            return true;
         }
+        return false;
     }
 
     /**

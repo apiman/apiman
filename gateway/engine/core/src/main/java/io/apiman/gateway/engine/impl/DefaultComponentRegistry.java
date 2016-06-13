@@ -74,7 +74,7 @@ public class DefaultComponentRegistry implements IComponentRegistry {
     }
 
     protected void registerRateLimiterComponent() {
-        addComponent(IRateLimiterComponent.class, new InMemoryRateLimiterComponent());
+        addComponent(IRateLimiterComponent.class, new SingleNodeRateLimiterComponent());
     }
 
     protected void registerSharedStateComponent() {
