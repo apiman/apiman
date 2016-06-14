@@ -4,7 +4,7 @@
   <parent>
     <groupId>io.apiman</groupId>
     <artifactId>apiman-distro</artifactId>
-    <version>1.2.7-SNAPSHOT</version>
+    <version>1.2.7.Beta1</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>apiman-distro-wildfly8</artifactId>
