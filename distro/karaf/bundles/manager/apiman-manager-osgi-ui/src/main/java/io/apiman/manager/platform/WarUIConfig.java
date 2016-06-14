@@ -13,19 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apiman.manager.ui.server;
+package io.apiman.manager.platform;
 
-import io.apiman.common.config.ConfigFactory;
+import io.apiman.manager.ui.server.IUIConfig;
 import io.apiman.manager.ui.server.beans.ApiAuthType;
-
+import io.apiman.manager.ui.server.impl.UIConfig;
+import org.apache.commons.configuration.BaseConfiguration;
 import org.apache.commons.configuration.Configuration;
+
+import java.util.Dictionary;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Global access to configuration information.
  *
- * @author eric.wittmann@redhat.com
  */
-public class UIConfig implements IUIConfig {
+public class WarUIConfig implements IUIConfig {
 
     public static final String APIMAN_MANAGER_UI_API_ENDPOINT = "apiman-manager-ui.api.endpoint"; //$NON-NLS-1$
     public static final String APIMAN_MANAGER_UI_API_AUTH_TYPE = "apiman-manager-ui.api.authentication.type"; //$NON-NLS-1$
@@ -34,51 +39,49 @@ public class UIConfig implements IUIConfig {
     public static final String APIMAN_MANAGER_UI_API_AUTH_TOKEN_GENERATOR = "apiman-manager-ui.api.authentication.token.generator"; //$NON-NLS-1$
 
     public static final String APIMAN_MANAGER_UI_ENABLE_METRICS = "apiman-manager-ui.metrics.enable"; //$NON-NLS-1$
-    public static final String APIMAN_MANAGER_UI_PLATFORM = "apiman-manager-ui.platform"; //$NON-NLS-1$
 
     public static final String APIMAN_MANAGER_UI_LOGOUT_URL = "apiman-manager-ui.logout-url"; //$NON-NLS-1$
 
     private static Configuration config;
-    static {
-        config = ConfigFactory.createConfig();
+
+    public static void setConfig(Dictionary dict) {
+        config = new BaseConfiguration();
+        Map<String, Object> map = new HashMap<String, Object>(dict.size());
+        Enumeration<String> keys = dict.keys();
+        while (keys.hasMoreElements()) {
+            String key = keys.nextElement();
+            config.addProperty(key, dict.get(key));
+        }
     }
 
     /**
      * Constructor.
      */
-    public UIConfig() {
+    public WarUIConfig() {
     }
 
     /**
-     * @see io.apiman.manager.ui.server.IUIConfig#isMetricsEnabled()
+     * @see IUIConfig#isMetricsEnabled()
      */
     @Override
     public boolean isMetricsEnabled() {
-        return config.getBoolean(UIConfig.APIMAN_MANAGER_UI_ENABLE_METRICS, true);
-    }
-    
-    /**
-     * @see io.apiman.manager.ui.server.IUIConfig#getPlatform()
-     */
-    @Override
-    public String getPlatform() {
-        return config.getString(UIConfig.APIMAN_MANAGER_UI_PLATFORM);
-    }
-    
-    /**
-     * @see io.apiman.manager.ui.server.IUIConfig#getManagementApiEndpoint()
-     */
-    @Override
-    public String getManagementApiEndpoint() {
-        return config.getString(UIConfig.APIMAN_MANAGER_UI_API_ENDPOINT);
+        return config.getBoolean(WarUIConfig.APIMAN_MANAGER_UI_ENABLE_METRICS, true);
     }
 
     /**
-     * @see io.apiman.manager.ui.server.IUIConfig#getManagementApiAuthType()
+     * @see IUIConfig#getManagementApiEndpoint()
+     */
+    @Override
+    public String getManagementApiEndpoint() {
+        return config.getString(WarUIConfig.APIMAN_MANAGER_UI_API_ENDPOINT);
+    }
+
+    /**
+     * @see IUIConfig#getManagementApiAuthType()
      */
     @Override
     public ApiAuthType getManagementApiAuthType() {
-        String at = config.getString(UIConfig.APIMAN_MANAGER_UI_API_AUTH_TYPE);
+        String at = config.getString(WarUIConfig.APIMAN_MANAGER_UI_API_AUTH_TYPE);
         try {
             return ApiAuthType.valueOf(at);
         } catch (Exception e) {
@@ -87,35 +90,43 @@ public class UIConfig implements IUIConfig {
     }
 
     /**
-     * @see io.apiman.manager.ui.server.IUIConfig#getLogoutUrl()
+     * @see IUIConfig#getLogoutUrl()
      */
     @Override
     public String getLogoutUrl() {
-        return config.getString(UIConfig.APIMAN_MANAGER_UI_LOGOUT_URL, "/apimanui/logout"); //$NON-NLS-1$
+        return config.getString(WarUIConfig.APIMAN_MANAGER_UI_LOGOUT_URL, "/apimanui/logout"); //$NON-NLS-1$
     }
 
     /**
-     * @see io.apiman.manager.ui.server.IUIConfig#getManagementApiAuthUsername()
+     * @see io.apiman.manager.ui.server.IUIConfig#getPlatform()
+     */
+    @Override
+    public String getPlatform() {
+        return config.getString(UIConfig.APIMAN_MANAGER_UI_PLATFORM);
+    }
+
+    /**
+     * @see IUIConfig#getManagementApiAuthUsername()
      */
     @Override
     public String getManagementApiAuthUsername() {
-        return config.getString(UIConfig.APIMAN_MANAGER_UI_API_BASIC_AUTH_USER);
+        return config.getString(WarUIConfig.APIMAN_MANAGER_UI_API_BASIC_AUTH_USER);
     }
 
     /**
-     * @see io.apiman.manager.ui.server.IUIConfig#getManagementApiAuthPassword()
+     * @see IUIConfig#getManagementApiAuthPassword()
      */
     @Override
     public String getManagementApiAuthPassword() {
-        return config.getString(UIConfig.APIMAN_MANAGER_UI_API_BASIC_AUTH_PASS);
+        return config.getString(WarUIConfig.APIMAN_MANAGER_UI_API_BASIC_AUTH_PASS);
     }
 
     /**
-     * @see io.apiman.manager.ui.server.IUIConfig#getManagementApiAuthTokenGenerator()
+     * @see IUIConfig#getManagementApiAuthTokenGenerator()
      */
     @Override
     public String getManagementApiAuthTokenGenerator() {
-        return config.getString(UIConfig.APIMAN_MANAGER_UI_API_AUTH_TOKEN_GENERATOR);
+        return config.getString(WarUIConfig.APIMAN_MANAGER_UI_API_AUTH_TOKEN_GENERATOR);
     }
 
     /**

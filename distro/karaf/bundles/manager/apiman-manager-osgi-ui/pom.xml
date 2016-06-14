@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>apiman-manager-osgi-project</artifactId>
+        <groupId>io.apiman</groupId>
+        <version>1.2.4-SNAPSHOT</version>
+    </parent>
+    <artifactId>apiman-manager-osgi-ui</artifactId>
+    <name>Apiman :: OSGI :: Manager UI Module</name>
+    <packaging>bundle</packaging>
+
+    <properties>
+        <maven.build.timestamp.format>yyyy-MM-dd_HH:mm</maven.build.timestamp.format>
+        <ui.webcontext>/apimanui/</ui.webcontext>
+        <timestamp>${maven.build.timestamp}</timestamp>
+    </properties>
+
+    <!-- minimal set of dependencies -->
+    <dependencies>
+        <!-- Dep included to add the WAR content within the bundle -->
+        <dependency>
+            <groupId>io.apiman</groupId>
+            <artifactId>apiman-manager-ui-war</artifactId>
+            <type>war</type>
+        </dependency>
+        <dependency>
+            <groupId>io.apiman</groupId>
+            <artifactId>apiman-manager-ui-war</artifactId>
+            <classifier>classes</classifier>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.apiman</groupId>
+            <artifactId>apiman-common-servlet</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-util</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-configuration</groupId>
+            <artifactId>commons-configuration</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Logging -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- OSGI Stuffs -->
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.compendium</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.web</groupId>
+            <artifactId>pax-web-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-security</artifactId>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/webapp</directory>
+            </resource>
+        </resources>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <executions>
+                    <execution>
+                        <id>bundle-manifest</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>manifest</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <instructions>
+                        <Bundle-Name>${project.name}</Bundle-Name>
+                        <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
+                        <Bundle-Activator>io.apiman.manager.api.osgi.Activator</Bundle-Activator>
+                        <Import-Package>
+                            javax.servlet*;version="[3.0,4)",,
+                            org.eclipse.jetty.util.security;version="[8.0,10)",,
+                            org.eclipse.jetty.security.authentication;resolution:=optional;version="[8.0,10)",
+                            org.eclipse.jetty.security;resolution:=optional;version="[8.0,10)",
+                            *
+                        </Import-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>2.4.2</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+<!--                        <transformers>
+                            <transformer implementation="org.apache.maven.plugins.shade.resource.IncludeResourceTransformer">
+                                <resource>webapp</resource>
+                            </transformer>
+                        </transformers>-->
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.ant</groupId>
+                        <artifactId>ant</artifactId>
+                        <version>1.8.2</version>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <id>transform-indexhtml</id>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <target>
+                                <antversion property="antversion" />
+                                <echo>Ant Version: ${antversion}</echo>
+
+                                <echo></echo>
+                                <echo>********************************************************************</echo>
+                                <echo>Generating OSGI API Manager index.html file</echo>
+                                <echo>********************************************************************</echo>
+                                <echo></echo>
+
+                                <replaceregexp file="${basedir}/src/main/webapp/index.html"
+                                               match="&lt;base.href....&gt;" replace="&lt;base href=&apos;${ui.webcontext}&apos;&gt;" byline="true" />
+                                <replaceregexp file="${basedir}/src/main/webapp/index.html"
+                                               match="&lt;script.src=&quot;([\w\/\.\-]+)&quot;" replace="&lt;script src=&quot;\1?cid=${timestamp}&quot;" byline="true" />
+                                <replaceregexp file="${basedir}/src/main/webapp/index.html"
+                                               match="&lt;link.rel=&quot;stylesheet&quot;.href=&quot;([\w\/\.\-]+)&quot;" replace="&lt;link rel=&quot;stylesheet&quot; href=&quot;\1?cid=${timestamp}&quot;" byline="true" />
+                                <echo>Successfully processed file ${project.build.directory}/${project.artifactId}-${project.version}/index.html</echo>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+
+</project>

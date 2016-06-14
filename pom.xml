@@ -162,7 +162,8 @@
     <version.org.keycloak>1.9.7.Final</version.org.keycloak>
     <version.org.mockito>1.9.5</version.org.mockito>
     <version.org.mvel>2.2.7.Final</version.org.mvel>
-    <version.org.osgi>4.2.0</version.org.osgi>
+    <version.org.ops4j.pax.web>3.2.4</version.org.ops4j.pax.web>
+    <version.org.osgi>4.3.1</version.org.osgi>
     <version.org.ow2.asm>4.0</version.org.ow2.asm>
     <version.org.picketbox>4.9.6.Final</version.org.picketbox>
     <version.org.slf4j>1.7.7</version.org.slf4j>
@@ -460,6 +461,16 @@
       <dependency>
         <groupId>${project.groupId}</groupId>
         <artifactId>apiman-gateway-engine-osgi</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>apiman-gateway-osgi-servlet</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.apiman</groupId>
+        <artifactId>apiman-gateway-osgi</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
@@ -1110,6 +1121,16 @@
         <groupId>org.osgi</groupId>
         <artifactId>org.osgi.core</artifactId>
         <version>${version.org.osgi}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.osgi</groupId>
+        <artifactId>org.osgi.compendium</artifactId>
+        <version>${version.org.osgi}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.ops4j.pax.web</groupId>
+        <artifactId>pax-web-api</artifactId>
+        <version>${version.org.ops4j.pax.web}</version>
       </dependency>
       <dependency>
         <groupId>javax.enterprise</groupId>
