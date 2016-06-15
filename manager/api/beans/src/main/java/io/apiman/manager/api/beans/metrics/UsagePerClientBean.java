@@ -46,5 +46,14 @@ public class UsagePerClientBean {
     public void setData(Map<String, Long> data) {
         this.data = data;
     }
+    
+    /**
+     * Adds a data point.
+     * @param id
+     * @param value
+     */
+    public void addData(String id, Long value) {
+        data.put(id, value);
+    }
 
 }

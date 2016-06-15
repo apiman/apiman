@@ -20,7 +20,7 @@ package io.apiman.manager.api.beans.metrics;
  *
  * @author eric.wittmann@redhat.com
  */
-public class ResponseStatsDataPoint extends HistogramDataPoint {
+public class ResponseStatsDataPoint extends HistogramDataPoint implements Comparable<ResponseStatsDataPoint> {
 
     private long total;
     private long failures;
@@ -95,6 +95,14 @@ public class ResponseStatsDataPoint extends HistogramDataPoint {
     @Override
     public String toString() {
         return getLabel() + "[t:" + getTotal() + " f:" + getFailures() + " e:" + getErrors() + "]";
+    }
+
+    /**
+     * @see java.lang.Comparable#compareTo(java.lang.Object)
+     */
+    @Override
+    public int compareTo(ResponseStatsDataPoint other) {
+        return this.total < other.total ? -1 : (this.total > other.total ? 1 : 0);
     }
 
 }

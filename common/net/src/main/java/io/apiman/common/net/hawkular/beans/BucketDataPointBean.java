@@ -34,6 +34,7 @@ public class BucketDataPointBean {
     private double median;
     private double max;
     private boolean empty;
+    private double sum;
     
     /**
      * Constructor.
@@ -151,6 +152,20 @@ public class BucketDataPointBean {
      */
     public void setEmpty(boolean empty) {
         this.empty = empty;
+    }
+
+    /**
+     * @return the sum
+     */
+    public double getSum() {
+        return sum;
+    }
+
+    /**
+     * @param sum the sum to set
+     */
+    public void setSum(double sum) {
+        this.sum = sum;
     }
 
 }

@@ -23,6 +23,7 @@ public class Basic {
     private Basic() {
     }
 
+
     public static String encode(String username, String password) {
         String up = username + ':' + password;
         StringBuilder builder = new StringBuilder();
@@ -30,4 +31,5 @@ public class Basic {
         builder.append(Base64.encodeBase64String(up.getBytes()));
         return builder.toString();
     }
+
 }

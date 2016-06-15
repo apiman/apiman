@@ -16,6 +16,9 @@
 
 package io.apiman.common.net.hawkular.beans;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author eric.wittmann@gmail.com
  */
@@ -25,6 +28,7 @@ public class MetricBean {
     private int dataRetention;
     private MetricType type;
     private String tenantId;
+    private Map<String, String> tags;
 
     /**
      * Constructor.
@@ -87,6 +91,50 @@ public class MetricBean {
      */
     public void setTenantId(String tenantId) {
         this.tenantId = tenantId;
+    }
+
+    /**
+     * @param name
+     * @param value
+     */
+    public void addTag(String name, String value) {
+        if (this.tags == null) {
+            this.tags = new HashMap<>();
+        }
+        this.tags.put(name, value);
+    }
+    
+    /**
+     * Removes a single tag.
+     * @param name
+     */
+    public void removeTag(String name) {
+        if (this.tags != null) {
+            this.tags.remove(name);
+        }
+    }
+    
+    /**
+     * Clear the tags for the data point.
+     */
+    public void clearTags() {
+        if (this.tags != null) {
+            this.tags.clear();
+        }
+    }
+
+    /**
+     * @return the tags
+     */
+    public Map<String, String> getTags() {
+        return tags;
+    }
+
+    /**
+     * @param tags the tags to set
+     */
+    public void setTags(Map<String, String> tags) {
+        this.tags = tags;
     }
     
 }

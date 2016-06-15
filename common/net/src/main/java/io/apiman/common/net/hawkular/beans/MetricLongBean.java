@@ -18,7 +18,10 @@ package io.apiman.common.net.hawkular.beans;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * @author eric.wittmann@gmail.com
@@ -28,6 +31,7 @@ public class MetricLongBean {
     private String id;
     private List<DataPointLongBean> dataPoints = new ArrayList<>();
     private MetricType type = MetricType.counter;
+    private Map<String, String> tags;
     
     /**
      * Constructor.
@@ -82,9 +86,69 @@ public class MetricLongBean {
      * @param timestamp
      * @param value
      */
-    public void addDataPoint(Date timestamp, long value) {
+    public DataPointLongBean addDataPoint(Date timestamp, long value) {
         DataPointLongBean point = new DataPointLongBean(timestamp, value);
         dataPoints.add(point);
+        return point;
     }
 
+    /**
+     * Adds a single data point to the metric.
+     * @param timestamp
+     * @param value
+     * @param tags
+     */
+    public DataPointLongBean addDataPoint(Date timestamp, long value, Map<String, String> tags) {
+        DataPointLongBean point = new DataPointLongBean(timestamp, value);
+        for (Entry<String, String> entry : tags.entrySet()) {
+            point.addTag(entry.getKey(), entry.getValue());
+        }
+        dataPoints.add(point);
+        return point;
+    }
+
+    /**
+     * @param name
+     * @param value
+     */
+    public void addTag(String name, String value) {
+        if (this.tags == null) {
+            this.tags = new HashMap<>();
+        }
+        this.tags.put(name, value);
+    }
+    
+    /**
+     * Removes a single tag.
+     * @param name
+     */
+    public void removeTag(String name) {
+        if (this.tags != null) {
+            this.tags.remove(name);
+        }
+    }
+    
+    /**
+     * Clear the tags for the data point.
+     */
+    public void clearTags() {
+        if (this.tags != null) {
+            this.tags.clear();
+        }
+    }
+
+    /**
+     * @return the tags
+     */
+    public Map<String, String> getTags() {
+        return tags;
+    }
+
+    /**
+     * @param tags the tags to set
+     */
+    public void setTags(Map<String, String> tags) {
+        this.tags = tags;
+    }
+    
 }

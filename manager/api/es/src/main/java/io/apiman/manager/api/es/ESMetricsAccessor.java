@@ -499,8 +499,6 @@ public class ESMetricsAccessor extends AbstractMetricsAccessor implements IMetri
                 List<ApimanTermsAggregation.Entry> buckets = aggregation.getBuckets();
                 int counter = 0;
                 for (ApimanTermsAggregation.Entry entry : buckets) {
-                    ResponseStatsDataPoint point = new ResponseStatsDataPoint();
-                    point.setTotal(entry.getCount());
                     rval.addDataPoint(entry.getKey(), entry.getCount(), entry.getFilterAggregation("total_failures").getCount(),
                             entry.getFilterAggregation("total_errors").getCount());
                     counter++;
@@ -581,8 +579,6 @@ public class ESMetricsAccessor extends AbstractMetricsAccessor implements IMetri
                 List<ApimanTermsAggregation.Entry> buckets = aggregation.getBuckets();
                 int counter = 0;
                 for (ApimanTermsAggregation.Entry entry : buckets) {
-                    ResponseStatsDataPoint point = new ResponseStatsDataPoint();
-                    point.setTotal(entry.getCount());
                     rval.addDataPoint(entry.getKey(), entry.getCount(), entry.getFilterAggregation("total_failures").getCount(),
                             entry.getFilterAggregation("total_errors").getCount());
                     counter++;

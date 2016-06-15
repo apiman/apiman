@@ -113,30 +113,79 @@ public class HawkularMetrics implements IMetrics {
         // 3) # of errors (only when an error)
         String tenantId = metric.getApiOrgId();
         List<MetricLongBean> data = new ArrayList<>();
-        
-        // # of total requests
-        MetricLongBean totalRequests = new MetricLongBean();
-        totalRequests.addDataPoint(metric.getRequestStart(), 1);
-        totalRequests.setId("apis." + metric.getApiId() + "." + metric.getApiVersion()); //$NON-NLS-1$ //$NON-NLS-2$
-        totalRequests.setType(MetricType.counter);
-        data.add(totalRequests);
 
-        // # of failures
-        if (metric.isFailure()) {
-            MetricLongBean failedRequests = new MetricLongBean();
-            failedRequests.addDataPoint(metric.getRequestStart(), 1);
-            failedRequests.setId("apis." + metric.getApiId() + "." + metric.getApiVersion() + ".Failed"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-            failedRequests.setType(MetricType.counter);
-            data.add(failedRequests);
+        // ******************************
+        // API metrics
+        // ******************************
+        {
+            @SuppressWarnings("nls")
+            Map<String, String> tags = HawkularMetricsClient.tags(
+                    "planId", metric.getPlanId(),
+                    "clientOrgId", metric.getClientOrgId(),
+                    "clientId", metric.getClientId(), 
+                    "clientVersion", metric.getClientVersion());
+
+            // # of total requests
+            MetricLongBean totalRequests = new MetricLongBean();
+            totalRequests.addDataPoint(metric.getRequestStart(), 1).setTags(tags);
+            totalRequests.setId("apis." + metric.getApiId() + "." + metric.getApiVersion() + ".Requests.Total"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            totalRequests.setType(MetricType.counter);
+            data.add(totalRequests);
+    
+            // # of failures
+            if (metric.isFailure()) {
+                MetricLongBean failedRequests = new MetricLongBean();
+                failedRequests.addDataPoint(metric.getRequestStart(), 1).setTags(tags);
+                failedRequests.setId("apis." + metric.getApiId() + "." + metric.getApiVersion() + ".Requests.Failed"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                failedRequests.setType(MetricType.counter);
+                data.add(failedRequests);
+            }
+    
+            // # of errors
+            if (metric.isError()) {
+                MetricLongBean erroredRequests = new MetricLongBean();
+                erroredRequests.addDataPoint(metric.getRequestStart(), 1).setTags(tags);
+                erroredRequests.setId("apis." + metric.getApiId() + "." + metric.getApiVersion() + ".Requests.Errored"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                erroredRequests.setType(MetricType.counter);
+                data.add(erroredRequests);
+            }
         }
 
-        // # of errors
-        if (metric.isError()) {
-            MetricLongBean erroredRequests = new MetricLongBean();
-            erroredRequests.addDataPoint(metric.getRequestStart(), 1);
-            erroredRequests.setId("apis." + metric.getApiId() + "." + metric.getApiVersion() + ".Errored"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-            erroredRequests.setType(MetricType.counter);
-            data.add(erroredRequests);
+        // ******************************
+        // Client metrics
+        // ******************************
+        {
+            @SuppressWarnings("nls")
+            Map<String, String> tags = HawkularMetricsClient.tags(
+                    "planId", metric.getPlanId(),
+                    "apiOrgId", metric.getApiOrgId(),
+                    "apiId", metric.getApiId(), 
+                    "apiVersion", metric.getApiVersion());
+
+            // # of total requests
+            MetricLongBean totalRequests = new MetricLongBean();
+            totalRequests.addDataPoint(metric.getRequestStart(), 1).setTags(tags);
+            totalRequests.setId("clients." + metric.getClientId() + "." + metric.getClientVersion() + ".Requests.Total"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            totalRequests.setType(MetricType.counter);
+            data.add(totalRequests);
+    
+            // # of failures
+            if (metric.isFailure()) {
+                MetricLongBean failedRequests = new MetricLongBean();
+                failedRequests.addDataPoint(metric.getRequestStart(), 1).setTags(tags);
+                failedRequests.setId("clients." + metric.getClientId() + "." + metric.getClientVersion() + ".Requests.Failed"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                failedRequests.setType(MetricType.counter);
+                data.add(failedRequests);
+            }
+    
+            // # of errors
+            if (metric.isError()) {
+                MetricLongBean erroredRequests = new MetricLongBean();
+                erroredRequests.addDataPoint(metric.getRequestStart(), 1).setTags(tags);
+                erroredRequests.setId("clients." + metric.getClientId() + "." + metric.getClientVersion() + ".Requests.Errored"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                erroredRequests.setType(MetricType.counter);
+                data.add(erroredRequests);
+            }
         }
 
         try {

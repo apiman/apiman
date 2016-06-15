@@ -47,4 +47,13 @@ public class UsagePerPlanBean {
         this.data = data;
     }
 
+    /**
+     * Adds a single data point.
+     * @param key
+     * @param samples
+     */
+    public void addData(String id, Long value) {
+        data.put(id, value);
+    }
+
 }
