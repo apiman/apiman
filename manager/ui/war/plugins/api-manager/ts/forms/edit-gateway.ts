@@ -3,8 +3,16 @@
 module Apiman {
 
     export var EditGatewayController = _module.controller("Apiman.EditGatewayController",
-        ['$q', '$rootScope', '$scope', '$location', 'ApimanSvcs', 'PageLifecycle', 'Dialogs', '$routeParams',
-        ($q, $rootScope, $scope, $location, ApimanSvcs, PageLifecycle, Dialogs, $routeParams) => {
+        [
+            '$location',
+            '$q',
+            '$rootScope',
+            '$routeParams',
+            '$scope',
+            '$uibModal',
+            'ApimanSvcs',
+            'PageLifecycle',
+        ($location, $q, $rootScope, $routeParams, $scope, $uibModal, ApimanSvcs, PageLifecycle) => {
             $scope.isValid = false;
             var params = $routeParams;
             
@@ -106,13 +114,38 @@ module Apiman {
                 }, PageLifecycle.handleError);
             };
             
-            $scope.deleteGateway  = function() {
+            $scope.deleteGateway  = function(size) {
                 $scope.deleteButton.state = 'in-progress';
-                Dialogs.confirm('Confirm Delete Gateway', 'Do you really want to permanently delete this gateway?  This can be very destructive to any API published to it.', function() {
+
+                var options = {
+                    message: 'Do you really want to permanently delete this gateway?  This can be very destructive to any API published to it.',
+                    title: 'Confirm Delete Gateway'
+                };
+
+                $scope.animationsEnabled = true;
+
+                $scope.toggleAnimation = function () {
+                    $scope.animationsEnabled = !$scope.animationsEnabled;
+                };
+
+                var modalInstance = $uibModal.open({
+                    animation: $scope.animationsEnabled,
+                    templateUrl: 'confirmModal.html',
+                    controller: 'ModalConfirmCtrl',
+                    size: size,
+                    resolve: {
+                        options: function () {
+                            return options;
+                        }
+                    }
+                });
+
+                modalInstance.result.then(function () {
                     ApimanSvcs.delete({ entityType: 'gateways', secondaryType: $scope.gateway.id }, function(reply) {
                         PageLifecycle.redirectTo('/admin/gateways');
                     }, PageLifecycle.handleError);
-                }, function() {
+                }, function () {
+                    //console.log('Modal dismissed at: ' + new Date());
                     $scope.deleteButton.state = 'complete';
                 });
             };

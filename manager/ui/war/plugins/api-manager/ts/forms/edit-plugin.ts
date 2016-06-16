@@ -3,8 +3,15 @@
 module Apiman {
 
     export var EditPluginController = _module.controller("Apiman.EditPluginController",
-        ['$q', '$scope', '$location', 'ApimanSvcs', 'PageLifecycle', 'Dialogs', '$routeParams', 'Logger',
-        ($q, $scope, $location, ApimanSvcs, PageLifecycle, Dialogs, $routeParams, Logger) => {
+        [
+            '$q', 
+            '$scope', 
+            '$location', 
+            'ApimanSvcs', 
+            'PageLifecycle', 
+            '$routeParams', 
+            'Logger',
+        ($q, $scope, $location, ApimanSvcs, PageLifecycle, $routeParams, Logger) => {
             var params = $routeParams;
             
             var pageData = {

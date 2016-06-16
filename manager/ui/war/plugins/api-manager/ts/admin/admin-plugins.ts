@@ -3,8 +3,14 @@
 module Apiman {
 
     export var AdminPluginsController = _module.controller("Apiman.AdminPluginsController",
-        ['$q', '$scope', 'ApimanSvcs', 'PageLifecycle', 'Dialogs', 'Logger',
-        ($q, $scope, ApimanSvcs, PageLifecycle, Dialogs, Logger) => {
+        [
+            '$q',
+            '$scope',
+            '$uibModal',
+            'ApimanSvcs',
+            'PageLifecycle',
+            'Logger',
+        ($q, $scope, $uibModal, ApimanSvcs, PageLifecycle, Logger) => {
             $scope.tab = 'plugins';
             $scope.filterAvailablePlugins = function(value) {
                 if (!value) {
@@ -19,6 +25,7 @@ module Apiman {
                     $scope.filteredAvailablePlugins = filtered;
                 }
             };
+
             var pageData = {
                 plugins: $q(function(resolve, reject) {
                     ApimanSvcs.query({ entityType: 'plugins' }, function(plugins) {
@@ -58,25 +65,69 @@ module Apiman {
                 }
             };
             
-            $scope.uninstallPlugin = function(plugin) {
+            $scope.uninstallPlugin = function(plugin, size) {
                 plugin.deleting = true;
-                Dialogs.confirm('Confirm Uninstall Plugin', 'Do you really want to uninstall this plugin?  Any policies it provided will no longer be available.', function() {
+
+                var options = {
+                    message: 'Do you really want to uninstall this plugin?  Any policies it provided will no longer be available.',
+                    title: 'Confirm Uninstall Plugin'
+                };
+
+                $scope.animationsEnabled = true;
+
+                $scope.toggleAnimation = function () {
+                    $scope.animationsEnabled = !$scope.animationsEnabled;
+                };
+
+                var modalInstance = $uibModal.open({
+                    animation: $scope.animationsEnabled,
+                    templateUrl: 'confirmModal.html',
+                    controller: 'ModalConfirmCtrl',
+                    size: size,
+                    resolve: {
+                        options: function () {
+                            return options;
+                        }
+                    }
+                });
+
+                modalInstance.result.then(function () {
                     ApimanSvcs.delete({ entityType: 'plugins', secondaryType: plugin.id }, function(reply) {
                         removePlugin(plugin);
                         refreshPlugins();
                     }, PageLifecycle.handleError);
-                }, function() {
-                    delete plugin.deleting;
+                }, function () {
+                    //console.log('Modal dismissed at: ' + new Date());
                 });
             };
             
-            $scope.upgradePlugin = function(plugin) {
-                var initialVersion = plugin.latestVersion;
-                Dialogs.getValue('Confirm Upgrade Plugin', 
-                        'Do you really want to upgrade this plugin?  Any published APIs already using the plugin will continue to use the old version.  All new policies will use the newly upgraded version.', 
-                        'New Plugin Version',
-                        initialVersion, function(value) 
-                {
+            $scope.upgradePlugin = function(plugin, size) {
+                var options = {
+                    initialVersion: plugin.latestVersion,
+                    label: 'New Plugin Version',
+                    message: 'Do you really want to upgrade this plugin?  Any published APIs already using the plugin will continue to use the old version.  All new policies will use the newly upgraded version.',
+                    title: 'Confirm Upgrade Plugin'
+                };
+
+                $scope.animationsEnabled = true;
+
+                $scope.toggleAnimation = function () {
+                    $scope.animationsEnabled = !$scope.animationsEnabled;
+                };
+
+                var modalInstance = $uibModal.open({
+                    animation: $scope.animationsEnabled,
+                    templateUrl: 'getValueModal.html',
+                    controller: 'ModalGetValueCtrl',
+                    size: size,
+                    resolve: {
+                        options: function () {
+                            return options;
+                        }
+                    }
+                });
+
+                modalInstance.result.then(function (value) {
                     var uplugin = {
                         groupId: plugin.groupId,
                         artifactId: plugin.artifactId,
@@ -85,16 +136,18 @@ module Apiman {
                         version: value,
                         upgrade: true
                     };
-                    
+
                     plugin.upgrading = true;
+
                     ApimanSvcs.save({ entityType: 'plugins' }, uplugin, function(reply) {
                         delete plugin.upgrading;
                         plugin.version = value;
                         refreshPlugins();
                     }, PageLifecycle.handleError);
-                }, function() {
+                }, function () {
+                    //console.log('Modal dismissed at: ' + new Date());
                 });
-            }
+            };
             
             var refreshPlugins = function() {
                 angular.forEach($scope.plugins, function(ip) {
@@ -102,8 +155,10 @@ module Apiman {
                   ip.hasAvailableVersion = false;
                   ip.canUpgrade = true;
                 });
+
                 angular.forEach($scope.availablePlugins, function(plugin) {
                     var ip = getInstalledPlugin(plugin);
+
                     if (ip) {
                         plugin.isInstalled = true;
                         plugin.installedVersion = ip.version;

@@ -9,7 +9,11 @@
   <div>
     
     <div ng-include="headerInclude"></div>
-    <div ng-controller="Apiman.ClientPoliciesController" class="container page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
+    <div ng-controller="Apiman.ClientPoliciesController"
+         class="container page"
+         data-field="page"
+         ng-cloak=""
+         ng-show="pageState == 'loaded'">
       <div ng-include="'plugins/api-manager/html/client/client_bc.include'"></div>
       <!-- Entity Summary Row -->
       <div ng-include="'plugins/api-manager/html/client/client_entity.include'"></div>
@@ -24,33 +28,72 @@
         <div class="col-md-10 apiman-entity-content">
           <div class="col-md-9">
             <!-- Title and help text -->
-            <div class="title" apiman-i18n-key="client-client-policies">Client App Policies</div>
-            <div class="description" apiman-i18n-key="client-policies-help">Here is a list of all Policies defined for this Client App.  These Policies will be applied to all API invocations made by the Client App, in addition to whatever Policies are defined by the API itself.</div>
+            <div class="title"
+                 apiman-i18n-key="client-client-policies">Client App Policies</div>
+            <div class="description"
+                 apiman-i18n-key="client-policies-help">Here is a list of all Policies defined for this Client App.  These Policies will be applied to all API invocations made by the Client App, in addition to whatever Policies are defined by the API itself.</div>
             <hr />
             <!-- The list of policies -->
-            <div apiman-permission="clientEdit" apiman-status="Created,Ready,Registered" class="apiman-filters apiman-policies-filters">
-              <a apiman-i18n-key="add-policy" href="{{ pluginName }}/orgs/{{ org.id }}/clients/{{ client.id }}/{{ version.version }}/new-policy" class="btn btn-primary pull-right">Add Policy</a>
+            <div apiman-permission="clientEdit"
+                 apiman-status="Created,Ready,Registered"
+                 class="apiman-filters apiman-policies-filters">
+              <a apiman-i18n-key="add-policy"
+                 href="{{ pluginName }}/orgs/{{ org.id }}/clients/{{ client.id }}/{{ version.version }}/new-policy"
+                 class="btn btn-primary pull-right">Add Policy</a>
             </div>
             <div class="clearfix"></div>
-            <div class="apiman-policies" data-field="policies">
+            <div class="apiman-policies"
+                 data-field="policies">
 
-              <div class="apiman-no-content container-fluid" ng-hide="policies.length > 0">
+              <div class="apiman-no-content container-fluid"
+                   ng-hide="policies.length > 0">
                 <div class="row">
                   <div class="col-md-9">
-                    <p class="apiman-no-entities-description" apiman-i18n-key="no-policies-for-client">It looks like there aren't any policies defined! That may be exactly what you want (of course) but if not, you may try defining one using the Add Policy button above...</p>
+                    <p class="apiman-no-entities-description"
+                       apiman-i18n-key="no-policies-for-client">It looks like there aren't any policies defined! That may be exactly what you want (of course) but if not, you may try defining one using the Add Policy button above...</p>
                   </div>
-                  <div apiman-permission="apiEdit" apiman-status="Created,Ready,Registered" class="col-md-3">
+                  <div apiman-permission="apiEdit"
+                       apiman-status="Created,Ready,Registered"
+                       class="col-md-3">
                     <div class="apiman-no-entities-arrow"></div>
                   </div>
                 </div>
               </div>
               <div class="clearfix"></div>
-              <apiman-policy-list ng-model="policies" remove-function="removePolicy" reorder-function="reorderPolicies" type="clients" org-id="{{ org.id }}" page-id="{{ client.id }}" version="{{ version.version }}"></policy-list>
+              <apiman-policy-list ng-model="policies"
+                                  remove-function="removePolicy"
+                                  reorder-function="reorderPolicies"
+                                  type="clients"
+                                  org-id="{{ org.id }}"
+                                  page-id="{{ client.id }}"
+                                  version="{{ version.version }}"></policy-list>
             </div>
           </div>
         </div>
         <!-- /Content -->
       </div>
+
+      <!-- Confirm Modal -->
+      <script type="text/ng-template" id="confirmModal.html">
+        <div class="modal-header">
+          <h3 class="modal-title">{{ title }}</h3>
+        </div>
+        <div class="modal-body">
+          {{ message }}
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-default"
+                  type="button"
+                  ng-click="cancel()"
+                  apiman-i18n-key="cancel">Cancel
+          </button>
+          <button class="btn btn-primary"
+                  type="button"
+                  ng-click="ok()"
+                  apiman-i18n-key="ok">OK
+          </button>
+        </div>
+      </script>
     </div> <!-- /container -->
   </div>
   </body>

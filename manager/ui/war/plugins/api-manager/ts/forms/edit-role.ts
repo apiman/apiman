@@ -3,8 +3,16 @@
 module Apiman {
 
     export var EditRoleController = _module.controller("Apiman.EditRoleController",
-        ['$q', '$scope', '$location', 'ApimanSvcs', 'PageLifecycle', 'Logger', 'Dialogs', '$routeParams',
-        ($q, $scope, $location, ApimanSvcs, PageLifecycle, Logger, Dialogs, $routeParams) => {
+        [
+            '$q', 
+            '$scope', 
+            '$location',
+            '$uibModal',
+            'ApimanSvcs', 
+            'PageLifecycle', 
+            'Logger',  
+            '$routeParams',
+        ($q, $scope, $location, $uibModal, ApimanSvcs, PageLifecycle, Logger, $routeParams) => {
             var params = $routeParams;
             var allPermissions     = ['orgView', 'orgEdit', 'orgAdmin',
                                       'planView','planEdit','planAdmin',
@@ -57,18 +65,43 @@ module Apiman {
                 ApimanSvcs.update({ entityType: 'roles', secondaryType: $scope.role.id }, role, function(reply) {
                      PageLifecycle.redirectTo('/admin/roles');
                 }, PageLifecycle.handleError);
-            }
+            };
             
-            $scope.deleteRole  = function() {
+            $scope.deleteRole  = function(size) {
                 $scope.deleteButton.state = 'in-progress';
-                Dialogs.confirm('Confirm Delete Role', 'Do you really want to delete this role?', function() {
+
+                var options = {
+                    message: 'Do you really want to delete this role?',
+                    title: 'Confirm Delete Role'
+                };
+
+                $scope.animationsEnabled = true;
+
+                $scope.toggleAnimation = function () {
+                    $scope.animationsEnabled = !$scope.animationsEnabled;
+                };
+
+                var modalInstance = $uibModal.open({
+                    animation: $scope.animationsEnabled,
+                    templateUrl: 'confirmModal.html',
+                    controller: 'ModalConfirmCtrl',
+                    size: size,
+                    resolve: {
+                        options: function () {
+                            return options;
+                        }
+                    }
+                });
+
+                modalInstance.result.then(function () {
                     ApimanSvcs.delete({ entityType: 'roles', secondaryType: $scope.role.id }, function(reply) {
                         PageLifecycle.redirectTo('/admin/roles');
                     }, PageLifecycle.handleError);
-                }, function() {
+                }, function () {
+                    //console.log('Modal dismissed at: ' + new Date());
                     $scope.deleteButton.state = 'complete';
                 });
-            }
+            };
             
             PageLifecycle.loadPage('EditRole', 'admin', pageData, $scope, function() {
                 PageLifecycle.setPageTitle('edit-role');
