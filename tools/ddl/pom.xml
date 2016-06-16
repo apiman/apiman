@@ -14,11 +14,6 @@
       <groupId>io.apiman</groupId>
       <artifactId>apiman-common-util</artifactId>
     </dependency>
-    <!-- Third Party Dependencies -->
-    <dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
-    </dependency>
   </dependencies>
   <build>
     <plugins>

@@ -19,18 +19,6 @@
 
     <!-- Third Party Dependencies -->
     <dependency>
-      <groupId>commons-codec</groupId>
-      <artifactId>commons-codec</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-lang3</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
-    </dependency>
-    <dependency>
       <groupId>com.squareup.okhttp</groupId>
       <artifactId>okhttp</artifactId>
     </dependency>
@@ -47,7 +35,7 @@
       <artifactId>jackson-annotations</artifactId>
     </dependency>
   </dependencies>
-  
+
   <build>
     <plugins>
       <plugin>
