@@ -26,6 +26,7 @@ public class UiConfigurationBean {
     private String header;
     private Boolean metrics;
     private String platform = "community"; //$NON-NLS-1$
+    private String backToConsole;
 
     /**
      * Constructor.
@@ -73,6 +74,20 @@ public class UiConfigurationBean {
      */
     public void setPlatform(String platform) {
         this.platform = platform;
+    }
+
+    /**
+     * @return the backToUrl
+     */
+    public String getBackToUrl() {
+        return backToConsole;
+    }
+
+    /**
+     * @param backToUrl the backToUrl to set
+     */
+    public void setBackToUrl(String backToUrl) {
+        this.backToConsole = backToUrl;
     }
 
 }

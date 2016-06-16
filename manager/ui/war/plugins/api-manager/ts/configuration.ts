@@ -25,7 +25,7 @@ module ApimanConfiguration {
                     var enc = btoa(username + ':' + password);
 
                     authHeader = 'Basic ' + enc;
-                } else if (cdata.api.auth.type == 'bearerToken' || cdata.api.auth.type == 'bearerTokenFromHash') {
+                } else if (cdata.api.auth.type == 'bearerToken') {
                     if (cdata.api.auth.bearerToken && cdata.api.auth.bearerToken.token) {
                         var token = cdata.api.auth.bearerToken.token;
 
