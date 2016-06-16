@@ -6,8 +6,6 @@
   </head>
 
   <body>
-  <div>
-    
     <div ng-include="headerInclude"></div>   
     <div ng-controller="Apiman.EditRoleController" id="form-page" class="container apiman-edit-role apiman-entity-new page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
       <div class="row">
@@ -143,7 +141,9 @@
         <a id="cancel" href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" apiman-i18n-key="cancel">Cancel</a>
         <button id="delete-role" apiman-action-btn="" class="btn btn-danger" style="margin-left: 100px;" data-field="deleteButton" apiman-i18n-key="delete-role" placeholder="Deleting..." data-icon="fa-cog" ng-click="deleteRole()">Delete Role</button>
       </div>
+
+      <div ng-include="'plugins/api-manager/html/modals/confirmModal.html'"></div>
+
     </div> <!-- /container -->
-  </div>
   </body>
 </html>

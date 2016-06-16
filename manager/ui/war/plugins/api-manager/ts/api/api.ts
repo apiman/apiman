@@ -51,8 +51,20 @@ module Apiman {
         }]);
 
     export var ApiEntityController = _module.controller("Apiman.ApiEntityController",
-        ['$rootScope', '$q', '$location', '$scope', '$uibModal', 'ActionSvcs', 'Logger', 'Dialogs', 'PageLifecycle', '$routeParams', 'OrgSvcs', 'EntityStatusSvc', 'Configuration',
-        ($rootScope, $q, $location, $scope, $uibModal, ActionSvcs, Logger, Dialogs, PageLifecycle, $routeParams, OrgSvcs, EntityStatusSvc, Configuration) => {
+        [
+            '$rootScope',
+            '$q',
+            '$location',
+            '$scope',
+            '$uibModal',
+            'ActionSvcs',
+            'Logger',
+            'PageLifecycle',
+            '$routeParams',
+            'OrgSvcs',
+            'EntityStatusSvc',
+            'Configuration',
+        ($rootScope, $q, $location, $scope, $uibModal, ActionSvcs, Logger, PageLifecycle, $routeParams, OrgSvcs, EntityStatusSvc, Configuration) => {
             var params = $routeParams;
             $scope.params = params;
 
@@ -191,10 +203,33 @@ module Apiman {
                 }, PageLifecycle.handleError);
             };
 
-            $scope.retireApi = function() {
+            $scope.retireApi = function(size) {
                 $scope.retireButton.state = 'in-progress';
 
-                Dialogs.confirm('Confirm Retire API', 'Do you really want to retire this API?  This action cannot be undone.', function() {
+                var options = {
+                    message: 'Do you really want to retire this API?  This action cannot be undone.',
+                    title: 'Confirm Retire API'
+                };
+
+                $scope.animationsEnabled = true;
+
+                $scope.toggleAnimation = function () {
+                    $scope.animationsEnabled = !$scope.animationsEnabled;
+                };
+
+                var modalInstance = $uibModal.open({
+                    animation: $scope.animationsEnabled,
+                    templateUrl: 'confirmModal.html',
+                    controller: 'ModalConfirmCtrl',
+                    size: size,
+                    resolve: {
+                        options: function () {
+                            return options;
+                        }
+                    }
+                });
+
+                modalInstance.result.then(function () {
                     var retireAction = {
                         type: 'retireAPI',
                         entityId: params.api,
@@ -208,9 +243,9 @@ module Apiman {
                         $scope.retireButton.state = 'complete';
                         $scope.setEntityStatus($scope.version.status);
                     }, PageLifecycle.handleError);
-
-                }, function() {
-                    $scope.retireButton.state = 'complete';
+                }, function () {
+                    //console.log('Modal dismissed at: ' + new Date());
+                    $scope.unregisterButton.state = 'complete';
                 });
             };
 

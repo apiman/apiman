@@ -3,8 +3,19 @@
 module Apiman {
 
     export var ClientPoliciesController = _module.controller("Apiman.ClientPoliciesController",
-        ['$q', '$scope', '$location', 'PageLifecycle', 'ClientEntityLoader', 'OrgSvcs', 'Dialogs', '$routeParams', 'Configuration', 'EntityStatusSvc', 'CurrentUser',
-        ($q, $scope, $location, PageLifecycle, ClientEntityLoader, OrgSvcs, Dialogs, $routeParams, Configuration, EntityStatusSvc, CurrentUser) => {
+        [
+            '$q',
+            '$scope',
+            '$location',
+            '$uibModal',
+            'PageLifecycle',
+            'ClientEntityLoader',
+            'OrgSvcs',
+            '$routeParams',
+            'Configuration',
+            'EntityStatusSvc',
+            'CurrentUser',
+        ($q, $scope, $location, $uibModal, PageLifecycle, ClientEntityLoader, OrgSvcs, $routeParams, Configuration, EntityStatusSvc, CurrentUser) => {
             var params = $routeParams;
             $scope.organizationId = params.org;
             $scope.tab = 'policies';
@@ -19,13 +30,38 @@ module Apiman {
                 });
             };
 
-            $scope.removePolicy = function(policy) {
-                Dialogs.confirm('Confirm Remove Policy', 'Do you really want to remove this policy from the client app?', function() {
+            $scope.removePolicy = function(policy, size) {
+                var options = {
+                    title: 'Confirm Remove Policy',
+                    message: 'Do you really want to remove this policy from the client app?'
+                };
+    
+                $scope.animationsEnabled = true;
+    
+                $scope.toggleAnimation = function () {
+                    $scope.animationsEnabled = !$scope.animationsEnabled;
+                };
+    
+                var modalInstance = $uibModal.open({
+                    animation: $scope.animationsEnabled,
+                    templateUrl: 'confirmModal.html',
+                    controller: 'ModalConfirmCtrl',
+                    size: size,
+                    resolve: {
+                        options: function () {
+                            return options;
+                        }
+                    }
+                });
+    
+                modalInstance.result.then(function () {
                     OrgSvcs.delete({ organizationId: params.org, entityType: 'clients', entityId: params.client, versionsOrActivity: 'versions', version: params.version, policiesOrActivity: 'policies', policyId: policy.id }, function(reply) {
                         removePolicy(policy);
                         EntityStatusSvc.getEntity().modifiedOn = Date.now();
                         EntityStatusSvc.getEntity().modifiedBy = CurrentUser.getCurrentUser();
                     }, PageLifecycle.handleError);
+                }, function () {
+                    //console.log('Modal dismissed at: ' + new Date());
                 });
             };
 
@@ -43,7 +79,7 @@ module Apiman {
                     }, function() {
                         Logger.debug("Reordering POST failed.")
                     });
-            }
+            };
 
             var pageData = ClientEntityLoader.getCommonData($scope, $location);
             pageData = angular.extend(pageData, {

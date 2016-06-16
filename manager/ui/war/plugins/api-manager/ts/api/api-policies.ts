@@ -3,8 +3,20 @@
 module Apiman {
 
  export var ApiPoliciesController = _module.controller('Apiman.ApiPoliciesController',
-        ['$q', '$scope', '$location', 'PageLifecycle', 'ApiEntityLoader', 'OrgSvcs', 'Dialogs', '$routeParams', 'Configuration', 'EntityStatusSvc', 'CurrentUser',
-        ($q, $scope, $location, PageLifecycle, ApiEntityLoader, OrgSvcs, Dialogs, $routeParams, Configuration, EntityStatusSvc, CurrentUser) => {
+        [
+            '$q',
+            '$scope',
+            '$location',
+            '$uibModal',
+            'PageLifecycle',
+            'ActionSvcs',
+            'ApiEntityLoader',
+            'OrgSvcs',
+            '$routeParams',
+            'Configuration',
+            'EntityStatusSvc',
+            'CurrentUser',
+        ($q, $scope, $location, $uibModal, PageLifecycle, ActionSvcs, ApiEntityLoader, OrgSvcs, $routeParams, Configuration, EntityStatusSvc, CurrentUser) => {
             var params = $routeParams;
 
             $scope.organizationId = params.org;
@@ -22,13 +34,48 @@ module Apiman {
 
             $scope.isEntityDisabled = EntityStatusSvc.isEntityDisabled;
 
-            $scope.removePolicy = function(policy) {
-                Dialogs.confirm('Confirm Remove Policy', 'Do you really want to remove this policy from the API?', function() {
-                    OrgSvcs.delete({ organizationId: params.org, entityType: 'apis', entityId:params.api, versionsOrActivity: 'versions', version: params.version, policiesOrActivity: 'policies', policyId: policy.id }, function(reply) {
+            $scope.removePolicy = function(policy, size) {
+
+                var options = {
+                    message: 'Do you really want to remove this policy from the API?',
+                    title: 'Confirm Remove Policy'
+                };
+
+                $scope.animationsEnabled = true;
+
+                $scope.toggleAnimation = function () {
+                    $scope.animationsEnabled = !$scope.animationsEnabled;
+                };
+
+                var modalInstance = $uibModal.open({
+                    animation: $scope.animationsEnabled,
+                    templateUrl: 'confirmModal.html',
+                    controller: 'ModalConfirmCtrl',
+                    size: size,
+                    resolve: {
+                        options: function () {
+                            return options;
+                        }
+                    }
+                });
+
+                modalInstance.result.then(function () {
+                    OrgSvcs.delete({
+                        organizationId: params.org,
+                        entityType: 'apis',
+                        entityId:params.api,
+                        versionsOrActivity: 'versions',
+                        version: params.version,
+                        policiesOrActivity: 'policies',
+                        policyId: policy.id
+                    }, function(reply) {
                         removePolicy(policy);
                         EntityStatusSvc.getEntity().modifiedOn = Date.now();
                         EntityStatusSvc.getEntity().modifiedBy = CurrentUser.getCurrentUser();
                     }, PageLifecycle.handleError);
+                }, function () {
+                    //console.log('Modal dismissed at: ' + new Date());
+                    $scope.unregisterButton.state = 'complete';
                 });
             };
 

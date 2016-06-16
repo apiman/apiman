@@ -298,58 +298,6 @@ module Apiman {
             };
         }]);
 
-    _module.directive('apimanConfirmModal',
-        ['Logger', 
-        function(Logger) {
-            return {
-                templateUrl: 'plugins/api-manager/html/directives/confirmModal.html',
-                replace: true,
-                restrict: 'E',
-                transclude: true,
-                link: function(scope, element, attrs) {
-                    scope.title = attrs.modalTitle;
-
-                    $(element).on('hidden.bs.modal', function() {
-                        $(element).remove();
-                    });
-                }
-            };
-        }]);
-    
-    _module.directive('apimanGetvalueModal',
-        ['Logger', 
-        function(Logger) {
-            return {
-                templateUrl: 'plugins/api-manager/html/directives/getvalueModal.html',
-                replace: true,
-                restrict: 'E',
-                transclude: true,
-                link: function(scope, element, attrs) {
-                    scope.title = attrs.modalTitle;
-
-                    $(element).on('hidden.bs.modal', function() {
-                        $(element).remove();
-                    });
-                }
-            };
-        }]);
-
-    _module.directive('apimanSelectApiModal',
-        ['Logger', 
-        function(Logger) {
-            return {
-                templateUrl: 'plugins/api-manager/html/directives/selectApiModal.html',
-                replace: true,
-                restrict: 'E',
-                link: function(scope, element, attrs) {
-                    scope.title = attrs.modalTitle;
-                    $(element).on('hidden.bs.modal', function() {
-                        $(element).remove();
-                    });
-                }
-            };
-        }]);
-
     var entryTypeClasses = {
         Organization : 'fa-shield',
         Client : 'fa-gears',

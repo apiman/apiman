@@ -4,19 +4,29 @@
             <div class="title container-fluid">
               <i class="breadcrumb-icon fa fa-puzzle-piece"></i>
               <div class="entity emphasis">
-                <a data-field="apiName" href="{{ pluginName }}/orgs/{{ api.organization.id }}/apis/{{ api.id }}">{{ api.name }}</a>
+                <a data-field="apiName"
+                   href="{{ pluginName }}/orgs/{{ api.organization.id }}/apis/{{ api.id }}">{{ api.name }}</a>
               </div>
               <div class="versions">
-                <div class="btn-group apiman-entity-action" data-field="versions">
-                  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                <div class="btn-group apiman-entity-action"
+                     data-field="versions">
+                  <button type="button"
+                          class="btn btn-default dropdown-toggle"
+                          data-toggle="dropdown">
                     Version: {{ version.version }}
                     <span class="caret"></span>
                   </button>
                   <ul class="dropdown-menu" role="menu">
-                    <li ng-repeat="apiVersion in versions"><a href="#" ng-click="setVersion( apiVersion )">{{ apiVersion.version }}</a></li>
+                    <li ng-repeat="apiVersion in versions">
+                      <a href="#"
+                         ng-click="setVersion( apiVersion )">{{ apiVersion.version }}</a>
+                    </li>
                   </ul>
                 </div>
-                <a apiman-permission="apiEdit" href="{{ pluginName }}/orgs/{{ org.id }}/apis/{{ api.id}}/{{ version.version }}/new-version" class="btn btn-primary apiman-entity-action" apiman-i18n-key="new-version">New Version</a>
+                <a apiman-permission="apiEdit"
+                   href="{{ pluginName }}/orgs/{{ org.id }}/apis/{{ api.id}}/{{ version.version }}/new-version"
+                   class="btn btn-primary apiman-entity-action"
+                   apiman-i18n-key="new-version">New Version</a>
 
                 <!-- Dropdown Cog -->
                 <ul class="api-menu pull-right"
@@ -49,44 +59,80 @@
         </div>
 
         <div class="row apiman-entity-metadata">
-          <div class="col-md-7" style="margin-bottom: 8px">
+          <div class="col-md-7"
+               style="margin-bottom: 8px">
             <!-- Api Summary -->
-            <apiman-editable-description description="api.description" callback="updateApiDescription"
+            <apiman-editable-description description="api.description"
+                                         callback="updateApiDescription"
               default-value="no description"></apiman-editable-description>
             <div style="padding: 8px">
               <div class="entity-info-with-icon">
                 <i class="fa fa-clock-o fa-fw"></i>
-                <span class="apiman-label-faded" apiman-i18n-key="created-on">Created on</span>
+                <span class="apiman-label-faded"
+                      apiman-i18n-key="created-on">Created on</span>
                 <span data-field="createdOn" >{{ api.createdOn | date:'yyyy-MM-dd' }}</span>
               </div>
               <div class="entity-info-with-icon">
                 <i class="fa fa-user fa-fw"></i>
-                <span class="apiman-label-faded" apiman-i18n-key="created-by">Created by</span>
-                <span><a href="{{ pluginName }}/users/{{ api.createdBy }}" data-field="createdBy">{{ api.createdBy }}</a></span>
+                <span class="apiman-label-faded"
+                      apiman-i18n-key="created-by">Created by</span>
+                <span><a href="{{ pluginName }}/users/{{ api.createdBy }}"
+                         data-field="createdBy">{{ api.createdBy }}</a></span>
               </div>
             </div>
             <div class="entity-info-with-icon">
               <span apiman-i18n-key="status-label">Status:</span>
               <span apiman-entity-status />
-              <span title="The API has been modified since it was last published!" apiman-i18n-key="api-modified" ng-show="version.status == 'Published' && isModified()" class="apiman-label apiman-label-default">Modified</span>
+              <span title="The API has been modified since it was last published!"
+                    apiman-i18n-key="api-modified"
+                    ng-show="version.status == 'Published' && isModified()"
+                    class="apiman-label apiman-label-default">Modified</span>
             </div>
           </div>
           <div class="col-md-5" apiman-permission="apiAdmin">
             <div>
               <div apiman-status="Published">
-                <a apiman-i18n-key="ttdo-new-api-contract" data-field="ttd_toNewContract" href="{{ pluginName }}/new-contract?api={{ params.api }}&amp;apiorg={{ params.org }}&amp;apiv={{ params.version }}">Link my Client App to this API (New Contract)</a>
+                <a apiman-i18n-key="ttdo-new-api-contract"
+                   data-field="ttd_toNewContract"
+                   href="{{ pluginName }}/new-contract?api={{ params.api }}&amp;apiorg={{ params.org }}&amp;apiv={{ params.version }}">Link my Client App to this API (New Contract)</a>
               </div>
               <div>
-                <a apiman-i18n-key="ttdo-new-api-version" data-field="ttd_toNewApiVersion" href="{{ pluginName }}/orgs/{{ org.id }}/apis/{{ api.id}}/{{ version.version }}/new-version">Create a new version of this API (New Version)</a>
+                <a apiman-i18n-key="ttdo-new-api-version"
+                   data-field="ttd_toNewApiVersion"
+                   href="{{ pluginName }}/orgs/{{ org.id }}/apis/{{ api.id}}/{{ version.version }}/new-version">Create a new version of this API (New Version)</a>
               </div>
             </div>
 
             <!-- The Publish Action -->
             <div class="apiman-divider-40"></div>
             <div class="">
-              <button ng-disabled="getEntityStatus() == 'Created'" apiman-action-btn="" apiman-status="Created,Ready" class="btn btn-primary" data-field="publishButton" apiman-i18n-key="publish" placeholder="Publishing..." data-icon="fa-cog" ng-click="publishApi()">Publish</button>
-              <button ng-show="version.publicAPI" ng-disabled="!isModified()" apiman-action-btn="" apiman-status="Published" class="btn btn-primary" data-field="republishButton" apiman-i18n-key="republish" placeholder="Publishing..." data-icon="fa-cog" ng-click="publishApi()">Re-Publish</button>
-              <button apiman-action-btn="" apiman-status="Published" class="btn btn-warning" data-field="retireButton" apiman-i18n-key="retire" placeholder="Retiring..." data-icon="fa-cog" ng-click="retireApi()">Retire</button>
+              <button ng-disabled="getEntityStatus() == 'Created'"
+                      apiman-action-btn=""
+                      apiman-status="Created,Ready"
+                      class="btn btn-primary"
+                      data-field="publishButton"
+                      apiman-i18n-key="publish"
+                      placeholder="Publishing..."
+                      data-icon="fa-cog"
+                      ng-click="publishApi()">Publish</button>
+              <button ng-show="version.publicAPI"
+                      ng-disabled="!isModified()"
+                      apiman-action-btn=""
+                      apiman-status="Published"
+                      class="btn btn-primary"
+                      data-field="republishButton"
+                      apiman-i18n-key="republish"
+                      placeholder="Publishing..."
+                      data-icon="fa-cog"
+                      ng-click="publishApi()">Re-Publish</button>
+              <button apiman-action-btn=""
+                      apiman-status="Published"
+                      class="btn btn-warning"
+                      data-field="retireButton"
+                      apiman-i18n-key="retire"
+                      placeholder="Retiring..."
+                      data-icon="fa-cog"
+                      ng-click="retireApi()">Retire</button>
             </div>
 
             <!-- Why Can't I Publish? Popover Checklist -->
@@ -105,7 +151,9 @@
                    popover-is-open="isOpen"
                    popover-placement="right"
                    ng-click="getStatusDetails()">
-                  <span class="fa fa-info"></span><span style="margin-left: 6px" apiman-i18n-key="why-cannot-publish">Why can't I publish?</span>
+                  <span class="fa fa-info"></span>
+                  <span style="margin-left: 6px"
+                        apiman-i18n-key="why-cannot-publish">Why can't I publish?</span>
                 </a>
               </div>
             </div>
@@ -199,4 +247,6 @@
                     ng-click="yes()">I understand the consequences, delete this API</button>
           </div>
         </script>
+
+        <div ng-include="'plugins/api-manager/html/modals/confirmModal.html'"></div>
       </div>
