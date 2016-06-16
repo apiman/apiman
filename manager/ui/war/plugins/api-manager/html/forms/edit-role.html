@@ -142,28 +142,7 @@
         <button id="delete-role" apiman-action-btn="" class="btn btn-danger" style="margin-left: 100px;" data-field="deleteButton" apiman-i18n-key="delete-role" placeholder="Deleting..." data-icon="fa-cog" ng-click="deleteRole()">Delete Role</button>
       </div>
 
-
-      <!-- Confirm Modal -->
-      <script type="text/ng-template" id="confirmModal.html">
-        <div class="modal-header">
-          <h3 class="modal-title">{{ title }}</h3>
-        </div>
-        <div class="modal-body">
-          {{ message }}
-        </div>
-        <div class="modal-footer">
-          <button class="btn btn-default"
-                  type="button"
-                  ng-click="cancel()"
-                  apiman-i18n-key="cancel">Cancel
-          </button>
-          <button class="btn btn-primary"
-                  type="button"
-                  ng-click="ok()"
-                  apiman-i18n-key="ok">OK
-          </button>
-        </div>
-      </script>
+      <div ng-include="'plugins/api-manager/html/modals/confirmModal.html'"></div>
 
     </div> <!-- /container -->
   </body>

@@ -99,9 +99,7 @@
               <div>
                 <a apiman-i18n-key="ttdo-new-api-version"
                    data-field="ttd_toNewApiVersion"
-                   href="{{ pluginName }}/orgs/{{ org.id }}/apis/{{ api.id}}/{{ version.version }}/new-version">
-                  Create a new version of this API (New Version)
-                </a>
+                   href="{{ pluginName }}/orgs/{{ org.id }}/apis/{{ api.id}}/{{ version.version }}/new-version">Create a new version of this API (New Version)</a>
               </div>
             </div>
 
@@ -162,30 +160,6 @@
           </div>
         </div>
 
-
-
-        <!-- Confirm Modal -->
-        <script type="text/ng-template" id="confirmModal.html">
-          <div class="modal-header">
-            <h3 class="modal-title">{{ title }}</h3>
-          </div>
-          <div class="modal-body">
-            {{ message }}
-          </div>
-          <div class="modal-footer">
-            <button class="btn btn-default"
-                    type="button"
-                    ng-click="cancel()"
-                    apiman-i18n-key="cancel">Cancel
-            </button>
-            <button class="btn btn-primary"
-                    type="button"
-                    ng-click="ok()"
-                    apiman-i18n-key="ok">OK
-            </button>
-          </div>
-        </script>
-
         <!-- Checklist Template -->
         <script type="text/ng-template"
                 id="checklistTemplate.html">
@@ -242,9 +216,7 @@
               <span class="pficon pficon-close"></span>
             </button>
             <h3 class="modal-title">
-              <span apiman-i18n-key="delete-api-modal-title">
-                Are you SURE you want to delete this API?
-              </span>
+              <span apiman-i18n-key="delete-api-modal-title">Are you SURE you want to delete this API?</span>
             </h3>
           </div>
           <div class="modal-body">
@@ -275,4 +247,6 @@
                     ng-click="yes()">I understand the consequences, delete this API</button>
           </div>
         </script>
+
+        <div ng-include="'plugins/api-manager/html/modals/confirmModal.html'"></div>
       </div>

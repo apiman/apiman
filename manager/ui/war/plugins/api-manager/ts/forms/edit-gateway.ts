@@ -3,15 +3,7 @@
 module Apiman {
 
     export var EditGatewayController = _module.controller("Apiman.EditGatewayController",
-        [
-            '$location',
-            '$q',
-            '$rootScope',
-            '$routeParams',
-            '$scope',
-            '$uibModal',
-            'ApimanSvcs',
-            'PageLifecycle',
+        ['$location', '$q', '$rootScope', '$routeParams', '$scope', '$uibModal', 'ApimanSvcs', 'PageLifecycle',
         ($location, $q, $rootScope, $routeParams, $scope, $uibModal, ApimanSvcs, PageLifecycle) => {
             $scope.isValid = false;
             var params = $routeParams;

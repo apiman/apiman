@@ -1,0 +1,25 @@
+      <!-- Get Value Modal -->
+      <script type="text/ng-template" id="getValueModal.html">
+        <div class="modal-header">
+          <h3 class="modal-title">{{ title }}</h3>
+        </div>
+        <div class="modal-body">
+          <div class="" style="margin-bottom: 15px">{{ message }}</div>
+          <dl>
+            <dt>{{ label }}</dt>
+            <dd>
+              <input ng-model="value" id="uservalue" class="apiman-form-control form-control entityname" type="text"></input>
+            </dd>
+          </dl>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-default"
+                  type="button"
+                  ng-click="cancel()"
+                  apiman-i18n-key="cancel">Cancel</button>
+          <button class="btn btn-primary"
+                  type="button"
+                  ng-click="ok()"
+                  apiman-i18n-key="ok">OK</button>
+        </div>
+      </script>

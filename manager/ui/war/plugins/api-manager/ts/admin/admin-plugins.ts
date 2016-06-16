@@ -3,14 +3,8 @@
 module Apiman {
 
     export var AdminPluginsController = _module.controller("Apiman.AdminPluginsController",
-        [
-            '$q',
-            '$scope',
-            '$uibModal',
-            'ApimanSvcs',
-            'PageLifecycle',
-            'Logger',
-        ($q, $scope, $uibModal, ApimanSvcs, PageLifecycle, Logger) => {
+        ['$q', '$scope', 'Modals', 'ApimanSvcs', 'PageLifecycle', 'Logger',
+        ($q, $scope, Modals, ApimanSvcs, PageLifecycle, Logger) => {
             $scope.tab = 'plugins';
             $scope.filterAvailablePlugins = function(value) {
                 if (!value) {
@@ -64,89 +58,53 @@ module Apiman {
                     $scope.plugins.splice(index, 1);
                 }
             };
-            
-            $scope.uninstallPlugin = function(plugin, size) {
+
+            $scope.uninstallPlugin = function(plugin) {
                 plugin.deleting = true;
-
-                var options = {
-                    message: 'Do you really want to uninstall this plugin?  Any policies it provided will no longer be available.',
-                    title: 'Confirm Uninstall Plugin'
-                };
-
-                $scope.animationsEnabled = true;
-
-                $scope.toggleAnimation = function () {
-                    $scope.animationsEnabled = !$scope.animationsEnabled;
-                };
-
-                var modalInstance = $uibModal.open({
-                    animation: $scope.animationsEnabled,
-                    templateUrl: 'confirmModal.html',
-                    controller: 'ModalConfirmCtrl',
-                    size: size,
-                    resolve: {
-                        options: function () {
-                            return options;
-                        }
+                
+                Modals.confirm(
+                    'Confirm Uninstall Plugin',
+                    'Do you really want to uninstall this plugin?  Any policies it provided will no longer be available.',
+                    function () {
+                        ApimanSvcs.delete({ entityType: 'plugins', secondaryType: plugin.id }, function(reply) {
+                            removePlugin(plugin);
+                            refreshPlugins();
+                        }, PageLifecycle.handleError);
+                    },
+                    function () {
+                        plugin.deleting = false;
                     }
-                });
-
-                modalInstance.result.then(function () {
-                    ApimanSvcs.delete({ entityType: 'plugins', secondaryType: plugin.id }, function(reply) {
-                        removePlugin(plugin);
-                        refreshPlugins();
-                    }, PageLifecycle.handleError);
-                }, function () {
-                    //console.log('Modal dismissed at: ' + new Date());
-                });
+                );
             };
-            
-            $scope.upgradePlugin = function(plugin, size) {
-                var options = {
-                    initialVersion: plugin.latestVersion,
-                    label: 'New Plugin Version',
-                    message: 'Do you really want to upgrade this plugin?  Any published APIs already using the plugin will continue to use the old version.  All new policies will use the newly upgraded version.',
-                    title: 'Confirm Upgrade Plugin'
-                };
 
-                $scope.animationsEnabled = true;
+            $scope.upgradePlugin = function(plugin) {
+                Modals.getValue(
+                    'Confirm Upgrade Plugin',
+                    'Do you really want to upgrade this plugin?  Any published APIs already using the plugin will continue to use the old version.  All new policies will use the newly upgraded version.',
+                    'New Plugin Version',
+                    plugin.latestVersion,
+                    function (value) {
+                        var uplugin = {
+                            groupId: plugin.groupId,
+                            artifactId: plugin.artifactId,
+                            classifier: plugin.classifier,
+                            type: plugin.type,
+                            version: value,
+                            upgrade: true
+                        };
 
-                $scope.toggleAnimation = function () {
-                    $scope.animationsEnabled = !$scope.animationsEnabled;
-                };
+                        plugin.upgrading = true;
 
-                var modalInstance = $uibModal.open({
-                    animation: $scope.animationsEnabled,
-                    templateUrl: 'getValueModal.html',
-                    controller: 'ModalGetValueCtrl',
-                    size: size,
-                    resolve: {
-                        options: function () {
-                            return options;
-                        }
+                        ApimanSvcs.save({ entityType: 'plugins' }, uplugin, function(reply) {
+                            delete plugin.upgrading;
+                            plugin.version = value;
+                            refreshPlugins();
+                        }, PageLifecycle.handleError);
+                    },
+                    function () {
+                        //console.log('Modal dismissed at: ' + new Date());
                     }
-                });
-
-                modalInstance.result.then(function (value) {
-                    var uplugin = {
-                        groupId: plugin.groupId,
-                        artifactId: plugin.artifactId,
-                        classifier: plugin.classifier,
-                        type: plugin.type,
-                        version: value,
-                        upgrade: true
-                    };
-
-                    plugin.upgrading = true;
-
-                    ApimanSvcs.save({ entityType: 'plugins' }, uplugin, function(reply) {
-                        delete plugin.upgrading;
-                        plugin.version = value;
-                        refreshPlugins();
-                    }, PageLifecycle.handleError);
-                }, function () {
-                    //console.log('Modal dismissed at: ' + new Date());
-                });
+                );
             };
             
             var refreshPlugins = function() {

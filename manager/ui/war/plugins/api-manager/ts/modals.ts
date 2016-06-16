@@ -2,16 +2,61 @@
 module ApimanModals {
 
     export var _module = angular.module('ApimanModals', ['ApimanLogger', 'ApimanRPC']);
-    
-    export var ClientAppDeleteModalCtrl = _module.controller('ModalClientAppDeleteCtrl', function ($location,
-                                                                                                   $rootScope,
-                                                                                                   $scope,
-                                                                                                   $uibModalInstance,
-                                                                                                   OrgSvcs,
-                                                                                                   Configuration,
-                                                                                                   PageLifecycle,
-                                                                                                   client,
-                                                                                                   params) {
+
+    export var Modals = _module.factory('Modals',
+        ['Logger', '$uibModal',
+        (Logger, $uibModal) => {
+                return {
+                    // Simple data entry dialog
+                    ///////////////////////////
+                    getValue: function (title, message, label, initialValue, okCallback, cancelCallback) {
+                        var options = {
+                            initialValue: initialValue,
+                            label: label,
+                            message: message,
+                            title: title
+                        };
+
+                        var modalInstance = $uibModal.open({
+                            animation: true,
+                            templateUrl: 'getValueModal.html',
+                            controller: 'ModalGetValueCtrl',
+                            resolve: {
+                                options: function () {
+                                    return options;
+                                }
+                            }
+                        });
+
+                        modalInstance.result.then(okCallback, cancelCallback);
+                    },
+                    // A standard confirmation dialog
+                    /////////////////////////////////
+                    confirm: function (title, message, yesCallback, noCallback) {
+                        var options = {
+                            title: title,
+                            message: message
+                        };
+
+                        var modalInstance = $uibModal.open({
+                            animation: true,
+                            templateUrl: 'confirmModal.html',
+                            controller: 'ModalConfirmCtrl',
+                            resolve: {
+                                options: function () {
+                                    return options;
+                                }
+                            }
+                        });
+
+                        modalInstance.result.then(yesCallback, noCallback);
+                    }
+                }
+            }]);
+
+
+    export var ClientAppDeleteModalCtrl = _module.controller('ModalClientAppDeleteCtrl', 
+        function ($location, $rootScope, $scope, $uibModalInstance, OrgSvcs, Configuration, PageLifecycle, client, params) {
         
         $scope.confirmClientName = '';
         
@@ -56,14 +101,8 @@ module ApimanModals {
     });
 
     export var ModalSelectApiCtrl = _module.controller('ModalSelectApiCtrl',
-        [
-            '$scope',
-            '$uibModalInstance',
-            'ApimanSvcs',
-            'Logger',
-            'OrgSvcs',
-            'options',
-            function ($scope, $uibModalInstance, ApimanSvcs, Logger, OrgSvcs, options) {
+        ['$scope', '$uibModalInstance', 'ApimanSvcs', 'Logger', 'OrgSvcs', 'options',
+        ($scope, $uibModalInstance, ApimanSvcs, Logger, OrgSvcs, options) => {
 
                 $scope.options = options;
                 $scope.selectedApi = undefined;
@@ -117,6 +156,10 @@ module ApimanModals {
                         });
                     }
                 };
+                
+                $scope.$watch('selectedApiVersion', function(newValue) {
+                    Logger.info("===========> Api Version: {0}", newValue);
+                }, false);
 
                 $scope.onApiSelected = function (api) {
                     if ($scope.selectedApi) {
@@ -143,7 +186,6 @@ module ApimanModals {
                             });
 
                             $scope.apiVersions = validVersions;
-
                         } else {
                             $scope.apiVersions = versions;
                         }
@@ -155,6 +197,11 @@ module ApimanModals {
                         $scope.apiVersions = [];
                         $scope.selectedApiVersion = undefined;
                     });
+                };
+                
+                $scope.onApiVersionSelected = function (apiVersion) {
+                    Logger.info("===========> Called onApiVersionSelected: {0}", apiVersion);
+                    $scope.selectedApiVersion = apiVersion;
                 };
 
                 $scope.ok = function () {
@@ -169,13 +216,8 @@ module ApimanModals {
 
 
     export var ModalGetValueCtrl = _module.controller('ModalGetValueCtrl',
-        [
-            '$scope',
-            '$uibModalInstance',
-            'Logger',
-            'options',
-            function ($scope, $uibModalInstance, Logger, options) {
-
+        ['$scope', '$uibModalInstance', 'Logger', 'options',
+        ($scope, $uibModalInstance, Logger, options) => {
                 $scope.options = options;
                 $scope.title = $scope.options.title;
                 $scope.message = $scope.options.message;
@@ -193,15 +235,9 @@ module ApimanModals {
         ]
     );
 
-
-
     export var ModalConfirmCtrl = _module.controller('ModalConfirmCtrl',
-        [
-            '$scope',
-            '$uibModalInstance',
-            'Logger',
-            'options',
-            function ($scope, $uibModalInstance, Logger, options) {
+        ['$scope', '$uibModalInstance', 'Logger', 'options',
+        ($scope, $uibModalInstance, Logger, options) => {
 
                 $scope.options = options;
                 $scope.title = $scope.options.title;

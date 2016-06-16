@@ -120,4 +120,6 @@
                     ng-click="yes()">I understand the consequences, delete this plan</button>
           </div>
         </script>
+
+        <div ng-include="'plugins/api-manager/html/modals/confirmModal.html'"></div>
       </div>

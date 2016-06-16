@@ -2,17 +2,8 @@
 module Apiman {
 
     export var NewContractController = _module.controller('Apiman.NewContractController',
-        [
-            '$location',
-            '$q',
-            '$rootScope',
-            '$scope',
-            '$uibModal',
-            'CurrentUserSvcs',
-            'Logger',
-            'OrgSvcs',
-            'PageLifecycle',
-            ($location, $q, $rootScope, $scope, $uibModal, CurrentUserSvcs, Logger, OrgSvcs, PageLifecycle) => {
+        ['$location', '$q', '$rootScope', '$scope', '$uibModal', 'CurrentUserSvcs', 'Logger', 'OrgSvcs', 'PageLifecycle',
+        ($location, $q, $rootScope, $scope, $uibModal, CurrentUserSvcs, Logger, OrgSvcs, PageLifecycle) => {
                 var params = $location.search();
                 var apiId = params.api;
                 var apiOrgId = params.apiorg;
@@ -112,19 +103,15 @@ module Apiman {
                     });
                 };
 
-                var options = {
-                    publishedOnly: true,
-                    title: 'Select an API'
-                };
+                $scope.selectApi = function() {
+                    var options = {
+                        publishedOnly: true
+                    };
 
-                $scope.animationsEnabled = true;
-
-                $scope.open = function (size) {
                     var modalInstance = $uibModal.open({
                         animation: $scope.animationsEnabled,
                         templateUrl: 'selectApiModal.html',
                         controller: 'ModalSelectApiCtrl',
-                        size: size,
                         resolve: {
                             options: function () {
                                 return options;
