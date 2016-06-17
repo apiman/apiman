@@ -18,12 +18,17 @@ package io.apiman.gateway.engine.beans.util;
 
 import java.io.Serializable;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 /**
  * A map of headers to associated values. It is possible to
  * have multiple values for a given key.
  *
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
+@JsonSerialize(using=HeaderMapSerializer.class)
+@JsonDeserialize(using=HeaderMapDeserializer.class)
 public class HeaderMap extends CaseInsensitiveStringMultiMap implements Serializable {
     private static final long serialVersionUID = 5520378999006587108L;
 

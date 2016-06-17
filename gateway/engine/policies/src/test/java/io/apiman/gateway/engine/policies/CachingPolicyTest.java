@@ -39,7 +39,7 @@ public class CachingPolicyTest extends ApimanPolicyTest {
     @Configuration("{" +
             "  \"ttl\" : 2" +
             "}")
-    public void testUploadLimit() throws Throwable {
+    public void testCaching() throws Throwable {
         PolicyTestRequest request = PolicyTestRequest.build(PolicyTestRequestType.GET, "/some/cached-resource");
 
         PolicyTestResponse response = send(request);
@@ -47,6 +47,7 @@ public class CachingPolicyTest extends ApimanPolicyTest {
         Assert.assertNotNull(echo);
         Long counterValue = echo.getCounter();
         Assert.assertNotNull(counterValue);
+        Assert.assertEquals("application/json", response.header("Content-Type"));
 
         // Now send the request again - we should get the *same* counter value!
         response = send(request);
@@ -55,6 +56,7 @@ public class CachingPolicyTest extends ApimanPolicyTest {
         Long counterValue2 = echo.getCounter();
         Assert.assertNotNull(counterValue2);
         Assert.assertEquals(counterValue, counterValue2);
+        Assert.assertEquals("application/json", response.header("Content-Type"));
 
         // One more time, just to be sure
         response = send(request);
@@ -63,6 +65,7 @@ public class CachingPolicyTest extends ApimanPolicyTest {
         Long counterValue3 = echo.getCounter();
         Assert.assertNotNull(counterValue3);
         Assert.assertEquals(counterValue, counterValue3);
+        Assert.assertEquals("application/json", response.header("Content-Type"));
 
         // Now wait for 3s and make sure the cache entry expired
         Thread.sleep(3000);
@@ -72,6 +75,7 @@ public class CachingPolicyTest extends ApimanPolicyTest {
         Long counterValue4 = echo.getCounter();
         Assert.assertNotNull(counterValue4);
         Assert.assertNotEquals(counterValue, counterValue4);
+        Assert.assertEquals("application/json", response.header("Content-Type"));
 
         // And again - should be re-cached
         response = send(request);
@@ -80,5 +84,6 @@ public class CachingPolicyTest extends ApimanPolicyTest {
         Long counterValue5 = echo.getCounter();
         Assert.assertNotNull(counterValue5);
         Assert.assertEquals(counterValue4, counterValue5);
+        Assert.assertEquals("application/json", response.header("Content-Type"));
     }
 }

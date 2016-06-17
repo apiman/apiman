@@ -46,6 +46,7 @@ public class CachingPolicy extends AbstractMappedDataPolicy<CachingConfig> imple
     private static final String KEY_SEPARATOR = ":"; //$NON-NLS-1$
     private static final String SHOULD_CACHE_ATTR = CachingPolicy.class.getName() + ".should-cache"; //$NON-NLS-1$
     private static final String CACHE_ID_ATTR = CachingPolicy.class.getName() + ".cache-id"; //$NON-NLS-1$
+    private static final String CACHED_RESPONSE = CachingPolicy.class.getName() + ".cached-response"; //$NON-NLS-1$
 
     /**
      * Constructor.
@@ -88,6 +89,7 @@ public class CachingPolicy extends AbstractMappedDataPolicy<CachingConfig> imple
                                 if (cacheEntry != null) {
                                     context.setConnectorInterceptor(new CacheConnectorInterceptor(cacheEntry));
                                     context.setAttribute(SHOULD_CACHE_ATTR, Boolean.FALSE);
+                                    context.setAttribute(CACHED_RESPONSE, cacheEntry.getHead());
                                 }
                                 chain.doApply(request);
                             }
