@@ -88,19 +88,21 @@ module Apiman {
 
                     $scope.selectedClient = newValue;
 
-                    $scope.refreshClientVersions(newValue.organizationId, newValue.id, function (versions) {
-                        Logger.debug('Versions: {0}', versions);
-
-                        if ($rootScope.mruClient) {
-                            if ($rootScope.mruClient.client.organization.id == newValue.organizationId && $rootScope.mruClient.client.id == newValue.id) {
-                                $scope.selectedClientVersion = $rootScope.mruClient.version;
+                    if (newValue) {
+                        $scope.refreshClientVersions(newValue.organizationId, newValue.id, function (versions) {
+                            Logger.debug('Versions: {0}', versions);
+    
+                            if ($rootScope.mruClient) {
+                                if ($rootScope.mruClient.client.organization.id == newValue.organizationId && $rootScope.mruClient.client.id == newValue.id) {
+                                    $scope.selectedClientVersion = $rootScope.mruClient.version;
+                                }
+                            } else {
+                                if (versions.length > 0) {
+                                    $scope.selectedClientVersion = versions[0];
+                                }
                             }
-                        } else {
-                            if (versions.length > 0) {
-                                $scope.selectedClientVersion = versions[0];
-                            }
-                        }
-                    });
+                        });
+                    }
                 };
 
                 $scope.selectApi = function() {
