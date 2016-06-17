@@ -7,6 +7,11 @@
       </dd>
       <dt apiman-i18n-key="require-transport-security">Require Transport Security</dt>
       <dd>
+        <p class="apiman-label-faded" apiman-i18n-key="basic-auth.require-transport-security-explanation">
+          <span class="pficon pficon-info"></span>
+          If this option is enabled, then requests will fail unless they come in to the API Gateway via SSL 
+          (https).  The API Gateway must accept inbound SSL connections for this to work.
+        </p>
         <input id="requireTS" type="checkbox" ng-model="config.requireTransportSecurity" ng-disabled="isEntityDisabled()"></input>
         <label for="requireTS" apiman-i18n-key="basic-auth.transport-security-required" title="When enabled, requests must be received on a secure channel (e.g. SSL) otherwise they will fail.">Transport security required</label>
       </dd>
@@ -17,6 +22,7 @@
       <dt apiman-i18n-key="require-basic-auth">Require Basic Authentication</dt>
       <dd>
         <p class="apiman-label-faded" apiman-i18n-key="basic-auth.require-explanation">
+          <span class="pficon pficon-info"></span>
           If this option is enabled, then BASIC authentication is required for the request to succeed.  You
           might disable this option if you want to support both BASIC auth and OAuth policies (for example).
         </p>
