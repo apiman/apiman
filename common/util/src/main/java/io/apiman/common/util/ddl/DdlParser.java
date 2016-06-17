@@ -82,7 +82,11 @@ public class DdlParser {
             builder.append("\n");
 
             if (!isInMultiLineStatement) {
-                rval.add(builder.toString().trim());
+                String sqlStatement = builder.toString().trim();
+                if (sqlStatement.endsWith(";")) {
+                    sqlStatement = sqlStatement.substring(0, sqlStatement.length() - 1);
+                }
+                rval.add(sqlStatement);
                 builder = new StringBuilder();
             }
         }

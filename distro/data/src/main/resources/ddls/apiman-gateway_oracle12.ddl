@@ -5,7 +5,6 @@ ALTER TABLE gw_apis ADD PRIMARY KEY (org_id, id, version);
 CREATE TABLE gw_clients (api_key VARCHAR2(255) NOT NULL, org_id VARCHAR2(255) NOT NULL, id VARCHAR2(255) NOT NULL, version VARCHAR2(255) NOT NULL, bean CLOB NOT NULL);
 ALTER TABLE gw_clients ADD PRIMARY KEY (api_key);
 ALTER TABLE gw_clients ADD CONSTRAINT UK_gw_clients_1 UNIQUE (org_id, id, version);
-CREATE INDEX IDX_gw_clients_1 ON gw_clients(org_id, id, version);
 
 CREATE TABLE gw_dataversion (version NUMBER(38, 0) NOT NULL);
 
