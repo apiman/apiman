@@ -64,10 +64,7 @@ public class DefaultPolicyErrorWriter implements IPolicyErrorWriter {
         response.setHeader("X-Gateway-Error", error.getMessage());
         response.setStatusCode(500);
 
-        EngineErrorResponse eer = new EngineErrorResponse();
-        eer.setResponseCode(500);
-        eer.setMessage(error.getMessage());
-        eer.setTrace(error);
+        EngineErrorResponse eer = createErrorResponse(error);
 
         if (isXml) {
             response.setHeader("Content-Type", "application/xml");
@@ -89,6 +86,16 @@ public class DefaultPolicyErrorWriter implements IPolicyErrorWriter {
                 e.printStackTrace();
             }
         }
+    }
+
+    /**
+     * @param error
+     */
+    protected EngineErrorResponse createErrorResponse(Throwable error) {
+        EngineErrorResponse eer = new EngineErrorResponse();
+        eer.setResponseCode(500);
+        eer.setMessage(error.getMessage());
+        return eer;
     }
 
 }
