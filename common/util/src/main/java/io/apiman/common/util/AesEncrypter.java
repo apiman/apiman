@@ -72,18 +72,12 @@ public class AesEncrypter {
             
             cipher = Cipher.getInstance("AES"); //$NON-NLS-1$
             cipher.init(Cipher.ENCRYPT_MODE, skeySpec);
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        } catch (NoSuchPaddingException e) {
-            throw new RuntimeException(e);
-        } catch (InvalidKeyException e) {
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException e) {
             throw new RuntimeException(e);
         }
         try {
             encrypted = cipher.doFinal(plainText.getBytes());
-        } catch (IllegalBlockSizeException e) {
-            throw new RuntimeException(e);
-        } catch (BadPaddingException e) {
+        } catch (IllegalBlockSizeException | BadPaddingException e) {
             throw new RuntimeException(e);
         }
         return "$CRYPT::" + new String(Base64.encodeBase64(encrypted)); //$NON-NLS-1$
@@ -131,19 +125,12 @@ public class AesEncrypter {
                 
                 cipher = Cipher.getInstance("AES"); //$NON-NLS-1$
                 cipher.init(Cipher.DECRYPT_MODE, skeySpec);
-            } catch (NoSuchAlgorithmException e) {
-                throw new RuntimeException(e);
-            } catch (NoSuchPaddingException e) {
-                throw new RuntimeException(e);
-            } catch (InvalidKeyException e) {
+            } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException e) {
                 throw new RuntimeException(e);
             }
             try {
-                String decryptedString = new String(cipher.doFinal(decoded));
-                return decryptedString;
-            } catch (IllegalBlockSizeException e) {
-                throw new RuntimeException(e);
-            } catch (BadPaddingException e) {
+                return new String(cipher.doFinal(decoded));
+            } catch (IllegalBlockSizeException | BadPaddingException e) {
                 throw new RuntimeException(e);
             }
         } else {
