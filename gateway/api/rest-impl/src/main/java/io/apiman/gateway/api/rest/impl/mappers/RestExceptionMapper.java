@@ -49,10 +49,7 @@ public class RestExceptionMapper implements ExceptionMapper<AbstractEngineExcept
      */
     @Override
     public Response toResponse(AbstractEngineException data) {
-        int errorCode = 500;
-        if (data instanceof NotAuthorizedException) {
-            errorCode = 403;
-        }
+        int errorCode = mapExceptionToHttpErrorCode(data);
 
         GatewayApiErrorBean error = new GatewayApiErrorBean();
         error.setErrorType(data.getClass().getSimpleName());
@@ -61,6 +58,14 @@ public class RestExceptionMapper implements ExceptionMapper<AbstractEngineExcept
         ResponseBuilder builder = Response.status(errorCode).header("X-API-Gateway-Error", "true"); //$NON-NLS-1$ //$NON-NLS-2$
         builder.type(MediaType.APPLICATION_JSON_TYPE);
         return builder.entity(error).build();
+    }
+
+    private int mapExceptionToHttpErrorCode(AbstractEngineException data) {
+        int errorCode = 500;
+        if (data instanceof NotAuthorizedException) {
+            errorCode = 403;
+        }
+        return errorCode;
     }
 
     /**
