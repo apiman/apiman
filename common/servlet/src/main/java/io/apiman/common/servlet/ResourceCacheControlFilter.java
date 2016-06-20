@@ -66,9 +66,7 @@ public class ResourceCacheControlFilter implements Filter {
                 || v.contains("SNAPSHOT") //$NON-NLS-1$
                 || "true".equals(System.getProperty("apiman.resource-caching.disabled", "false"))) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         {
-            httpResponse.setDateHeader("Expires", expiredSinceYesterday(now)); //$NON-NLS-1$
-            httpResponse.setHeader("Pragma", "no-cache"); //$NON-NLS-1$ //$NON-NLS-2$
-            httpResponse.setHeader("Cache-control", "no-cache, no-store, must-revalidate"); //$NON-NLS-1$ //$NON-NLS-2$
+            HttpCacheUtil.disableHttpCaching(httpResponse);
         } else {
             httpResponse.setDateHeader("Expires", expiresInOneYear(now)); //$NON-NLS-1$
             // Cache for one year
@@ -80,10 +78,6 @@ public class ResourceCacheControlFilter implements Filter {
 
     private long expiresInOneYear(Date now) {
         return now.getTime() + 31536000000L;
-    }
-
-    private long expiredSinceYesterday(Date now) {
-        return now.getTime() - 86400000L;
     }
 
     /**
