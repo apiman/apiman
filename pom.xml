@@ -135,6 +135,7 @@
     <version.org.apache.directory.shared-ldap>0.9.19</version.org.apache.directory.shared-ldap>
     <version.org.apache.httpcomponents.httpclient>4.5</version.org.apache.httpcomponents.httpclient>
     <version.org.apache.httpcomponents.httpcore>4.4.1</version.org.apache.httpcomponents.httpcore>
+    <version.org.apache.httpcomponents.httpasyncclient>4.1</version.org.apache.httpcomponents.httpasyncclient>
     <version.org.apache.logging.log4j>2.2</version.org.apache.logging.log4j>
     <version.org.eclipse.jetty>9.2.10.v20150310</version.org.eclipse.jetty>
     <version.org.elasticsearch>1.7.2</version.org.elasticsearch>
@@ -896,6 +897,11 @@
         <groupId>org.apache.httpcomponents</groupId>
         <artifactId>httpcore</artifactId>
         <version>${version.org.apache.httpcomponents.httpcore}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpasyncclient</artifactId>
+        <version>${version.org.apache.httpcomponents.httpasyncclient}</version>
       </dependency>
       <dependency>
         <groupId>com.squareup.okhttp</groupId>
