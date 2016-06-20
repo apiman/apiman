@@ -52,8 +52,12 @@ public class ResourceCacheControlFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         String requestURI = ((HttpServletRequest) request).getRequestURI();
         String v = request.getParameter("v"); //$NON-NLS-1$
-        if (v == null)
+        if (v == null){
             v = ""; //$NON-NLS-1$
+        }
+        Date now = new Date();
+        HttpServletResponse httpResponse = (HttpServletResponse) response;
+        httpResponse.setDateHeader("Date", now.getTime()); //$NON-NLS-1$
 
         // By default, cache aggressively.  However, if a file contains '.nocache.' as part of its
         // name, then tell the browser not to cache it.  Also, if the version of the resource being
@@ -62,24 +66,24 @@ public class ResourceCacheControlFilter implements Filter {
                 || v.contains("SNAPSHOT") //$NON-NLS-1$
                 || "true".equals(System.getProperty("apiman.resource-caching.disabled", "false"))) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         {
-            Date now = new Date();
-            HttpServletResponse httpResponse = (HttpServletResponse) response;
-            httpResponse.setDateHeader("Date", now.getTime()); //$NON-NLS-1$
-            // one day old
-            httpResponse.setDateHeader("Expires", now.getTime() - 86400000L); //$NON-NLS-1$
+            httpResponse.setDateHeader("Expires", expiredSinceYesterday(now)); //$NON-NLS-1$
             httpResponse.setHeader("Pragma", "no-cache"); //$NON-NLS-1$ //$NON-NLS-2$
             httpResponse.setHeader("Cache-control", "no-cache, no-store, must-revalidate"); //$NON-NLS-1$ //$NON-NLS-2$
         } else {
-            Date now = new Date();
-            HttpServletResponse httpResponse = (HttpServletResponse) response;
-            httpResponse.setDateHeader("Date", now.getTime()); //$NON-NLS-1$
-            // Expire in one year
-            httpResponse.setDateHeader("Expires", now.getTime() + 31536000000L); //$NON-NLS-1$
+            httpResponse.setDateHeader("Expires", expiresInOneYear(now)); //$NON-NLS-1$
             // Cache for one year
             httpResponse.setHeader("Cache-control", "public, max-age=31536000"); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
         chain.doFilter(request, response);
+    }
+
+    private long expiresInOneYear(Date now) {
+        return now.getTime() + 31536000000L;
+    }
+
+    private long expiredSinceYesterday(Date now) {
+        return now.getTime() - 86400000L;
     }
 
     /**
