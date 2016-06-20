@@ -67,7 +67,7 @@ public abstract class AbstractESComponent {
     protected IESClientFactory createEsClientFactory() {
         String factoryClass = config.get("client.type"); //$NON-NLS-1$
         if ("jest".equals(factoryClass)) { //$NON-NLS-1$
-            factoryClass = SimpleJestClientFactory.class.getName();
+            factoryClass = DefaultESClientFactory.class.getName();
         } else if ("local".equals(factoryClass)) { //$NON-NLS-1$
             factoryClass = LocalClientFactory.class.getName();
         } else if (factoryClass == null) {

@@ -15,6 +15,8 @@
  */
 package io.apiman.gateway.engine.es;
 
+import io.apiman.common.util.ssl.KeyStoreUtil;
+import io.apiman.common.util.ssl.KeyStoreUtil.Info;
 import io.searchbox.client.JestClient;
 import io.searchbox.client.JestClientFactory;
 import io.searchbox.client.config.HttpClientConfig;
@@ -22,14 +24,21 @@ import io.searchbox.client.config.HttpClientConfig.Builder;
 
 import java.util.Map;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLContext;
+
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.conn.ssl.DefaultHostnameVerifier;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.nio.conn.SchemeIOSessionStrategy;
+import org.apache.http.nio.conn.ssl.SSLIOSessionStrategy;
 
 /**
  * Factory for creating elasticsearch clients.
  *
  * @author eric.wittmann@redhat.com
  */
-public class SimpleJestClientFactory extends AbstractClientFactory implements IESClientFactory {
+public class DefaultESClientFactory extends AbstractClientFactory implements IESClientFactory {
 
     /**
      * Clears all the clients from the cache.  Useful for unit testing.
@@ -41,7 +50,7 @@ public class SimpleJestClientFactory extends AbstractClientFactory implements IE
     /**
      * Constructor.
      */
-    public SimpleJestClientFactory() {
+    public DefaultESClientFactory() {
     }
 
     /**
@@ -137,6 +146,39 @@ public class SimpleJestClientFactory extends AbstractClientFactory implements IE
             .multiThreaded(true);
         if (!StringUtils.isBlank(username)) {
             httpClientConfig.defaultCredentials(username, password);
+        }
+
+        if ("https".equals(config.get("protocol"))) { //$NON-NLS-1$ //$NON-NLS-2$
+            updateSslConfig(httpClientConfig, config);
+        }
+    }
+
+    /**
+     * @param httpConfig
+     * @param config 
+     */
+    @SuppressWarnings("nls")
+    private void updateSslConfig(Builder httpConfig, Map<String, String> config) {
+        try {
+            String clientKeystorePath = config.get("client-keystore");
+            String clientKeystorePassword = config.get("client-keystore.password");
+            String trustStorePath = config.get("trust-store");
+            String trustStorePassword = config.get("trust-store.password");
+
+            SSLContext sslContext = SSLContext.getInstance("TLS");
+            Info kPathInfo = new Info(clientKeystorePath, clientKeystorePassword);
+            Info tPathInfo = new Info(trustStorePath, trustStorePassword);
+            sslContext.init(KeyStoreUtil.getKeyManagers(kPathInfo), KeyStoreUtil.getTrustManagers(tPathInfo), null);
+            HostnameVerifier hostnameVerifier = new DefaultHostnameVerifier();
+            SSLConnectionSocketFactory sslSocketFactory = new SSLConnectionSocketFactory(sslContext, hostnameVerifier);
+            SchemeIOSessionStrategy httpsIOSessionStrategy = new SSLIOSessionStrategy(sslContext, hostnameVerifier);
+            
+            httpConfig.defaultSchemeForDiscoveredNodes("https");
+            httpConfig.sslSocketFactory(sslSocketFactory); // for sync calls
+            httpConfig.httpsIOSessionStrategy(httpsIOSessionStrategy); // for async calls
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
     

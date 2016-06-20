@@ -16,7 +16,7 @@
 
 package io.apiman.manager.test.es;
 
-import io.apiman.gateway.engine.es.SimpleJestClientFactory;
+import io.apiman.gateway.engine.es.DefaultESClientFactory;
 import io.apiman.manager.api.beans.metrics.ClientUsagePerApiBean;
 import io.apiman.manager.api.beans.metrics.HistogramIntervalType;
 import io.apiman.manager.api.beans.metrics.ResponseStatsDataPoint;
@@ -100,7 +100,7 @@ public class ESMetricsAccessorTest {
         config.put("client.host", "localhost");
         config.put("client.port", "6500");
         config.put("client.initialize", "true");
-        return new SimpleJestClientFactory().createClient(config, "apiman_metrics");
+        return new DefaultESClientFactory().createClient(config, "apiman_metrics");
     }
 
     private static void loadTestData() throws Exception {

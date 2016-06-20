@@ -16,7 +16,7 @@
 package io.apiman.gateway.test.junit.vertx3;
 
 import io.apiman.gateway.engine.es.AbstractESComponent;
-import io.apiman.gateway.engine.es.SimpleJestClientFactory;
+import io.apiman.gateway.engine.es.DefaultESClientFactory;
 import io.apiman.gateway.engine.es.ESConstants;
 import io.apiman.gateway.platforms.vertx3.common.config.VertxEngineConfig;
 import io.searchbox.client.JestResult;
@@ -46,7 +46,7 @@ public class EsResetter extends AbstractESComponent implements Resetter {
 
             // Important! Or will get cached client that assumes the DB schema has already been created
             // and subtly horrible things will happen, and you'll waste a whole day debugging it! :-)
-            SimpleJestClientFactory.clearClientCache();
+            DefaultESClientFactory.clearClientCache();
 
             getClient().executeAsync(new Delete.Builder(getDefaultIndexName()).build(),
                     new JestResultHandler<JestResult>() {

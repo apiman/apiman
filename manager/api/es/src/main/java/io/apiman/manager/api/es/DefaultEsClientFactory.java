@@ -16,12 +16,22 @@
 
 package io.apiman.manager.api.es;
 
+import io.apiman.common.util.ssl.KeyStoreUtil;
+import io.apiman.common.util.ssl.KeyStoreUtil.Info;
 import io.searchbox.client.JestClient;
 import io.searchbox.client.JestClientFactory;
 import io.searchbox.client.config.HttpClientConfig;
 import io.searchbox.client.config.HttpClientConfig.Builder;
 
 import java.util.Map;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLContext;
+
+import org.apache.http.conn.ssl.DefaultHostnameVerifier;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.nio.conn.SchemeIOSessionStrategy;
+import org.apache.http.nio.conn.ssl.SSLIOSessionStrategy;
 
 /**
  * A default implementation of the ES client factory.
@@ -96,6 +106,38 @@ public class DefaultEsClientFactory implements IEsClientFactory {
         httpConfig.maxTotalConnection(75);
         httpConfig.defaultMaxTotalConnectionPerRoute(75);
         httpConfig.multiThreaded(true);
+
+        if ("https".equals(getConfig().get("protocol"))) { //$NON-NLS-1$ //$NON-NLS-2$
+            updateSslConfig(httpConfig);
+        }
+    }
+
+    /**
+     * @param httpConfig
+     */
+    @SuppressWarnings("nls")
+    private void updateSslConfig(Builder httpConfig) {
+        try {
+            String clientKeystorePath = getConfig().get("client-keystore");
+            String clientKeystorePassword = getConfig().get("client-keystore.password");
+            String trustStorePath = getConfig().get("trust-store");
+            String trustStorePassword = getConfig().get("trust-store.password");
+
+            SSLContext sslContext = SSLContext.getInstance("TLS");
+            Info kPathInfo = new Info(clientKeystorePath, clientKeystorePassword);
+            Info tPathInfo = new Info(trustStorePath, trustStorePassword);
+            sslContext.init(KeyStoreUtil.getKeyManagers(kPathInfo), KeyStoreUtil.getTrustManagers(tPathInfo), null);
+            HostnameVerifier hostnameVerifier = new DefaultHostnameVerifier();
+            SSLConnectionSocketFactory sslSocketFactory = new SSLConnectionSocketFactory(sslContext, hostnameVerifier);
+            SchemeIOSessionStrategy httpsIOSessionStrategy = new SSLIOSessionStrategy(sslContext, hostnameVerifier);
+            
+            httpConfig.defaultSchemeForDiscoveredNodes("https");
+            httpConfig.sslSocketFactory(sslSocketFactory); // for sync calls
+            httpConfig.httpsIOSessionStrategy(httpsIOSessionStrategy); // for async calls
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**

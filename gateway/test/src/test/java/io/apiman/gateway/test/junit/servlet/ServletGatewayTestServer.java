@@ -20,7 +20,7 @@ import io.apiman.gateway.engine.GatewayConfigProperties;
 import io.apiman.gateway.engine.components.IBufferFactoryComponent;
 import io.apiman.gateway.engine.components.IHttpClientComponent;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
-import io.apiman.gateway.engine.es.SimpleJestClientFactory;
+import io.apiman.gateway.engine.es.DefaultESClientFactory;
 import io.apiman.gateway.engine.impl.ByteBufferFactoryComponent;
 import io.apiman.gateway.engine.impl.DefaultPluginRegistry;
 import io.apiman.gateway.engine.policy.PolicyFactoryImpl;
@@ -389,7 +389,7 @@ public class ServletGatewayTestServer implements IGatewayTestServer {
     private void postStop() throws Exception {
         if (node != null) {
             client.execute(new DeleteIndex.Builder("apiman_gateway").build());
-            SimpleJestClientFactory.clearClientCache();
+            DefaultESClientFactory.clearClientCache();
         }
         if (ds != null) {
             try (Connection connection = ds.getConnection()) {
