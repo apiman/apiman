@@ -74,12 +74,9 @@ public class RestExceptionMapper implements ExceptionMapper<AbstractEngineExcept
      * @param data
      */
     private String getStackTrace(AbstractEngineException data) {
-        StringBuilderWriter writer = new StringBuilderWriter();
-        try {
+        try (StringBuilderWriter writer = new StringBuilderWriter()) {
             data.printStackTrace(new PrintWriter(writer));
             return writer.getBuilder().toString();
-        } finally {
-            writer.close();
         }
     }
 }
