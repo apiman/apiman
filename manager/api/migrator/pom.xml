@@ -56,11 +56,7 @@
       <artifactId>cdi-api</artifactId>
       <scope>provided</scope>
     </dependency>
-    <dependency>
-      <groupId>joda-time</groupId>
-      <artifactId>joda-time</artifactId>
-    </dependency>
-    
+
     <!-- Test Only -->
     <dependency>
       <groupId>${project.groupId}</groupId>
