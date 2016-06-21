@@ -6,6 +6,6 @@ X-Apiman-Error: true
 
 {
     "type": "EntityStillActiveException",
-    "errorCode": 8001,
+    "errorCode": 8002,
     "moreInfoUrl": null
 }
