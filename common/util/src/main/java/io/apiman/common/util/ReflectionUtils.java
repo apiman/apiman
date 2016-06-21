@@ -68,7 +68,7 @@ public class ReflectionUtils {
 
     /**
      * Squishy way to find a setter method.
-     * @param theClass
+     * @param onClass, targetClass
      */
     public static Method findSetter(Class<?> onClass, Class<?> targetClass) {
         Method[] methods = onClass.getMethods();

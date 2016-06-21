@@ -49,10 +49,7 @@ public class RestExceptionMapper implements ExceptionMapper<AbstractEngineExcept
      */
     @Override
     public Response toResponse(AbstractEngineException data) {
-        int errorCode = 500;
-        if (data instanceof NotAuthorizedException) {
-            errorCode = 403;
-        }
+        int errorCode = mapExceptionToHttpErrorCode(data);
 
         GatewayApiErrorBean error = new GatewayApiErrorBean();
         error.setErrorType(data.getClass().getSimpleName());
@@ -63,18 +60,23 @@ public class RestExceptionMapper implements ExceptionMapper<AbstractEngineExcept
         return builder.entity(error).build();
     }
 
+    private int mapExceptionToHttpErrorCode(AbstractEngineException data) {
+        int errorCode = 500;
+        if (data instanceof NotAuthorizedException) {
+            errorCode = 403;
+        }
+        return errorCode;
+    }
+
     /**
      * Gets the full stack trace for the given exception and returns it as a
      * string.
      * @param data
      */
     private String getStackTrace(AbstractEngineException data) {
-        StringBuilderWriter writer = new StringBuilderWriter();
-        try {
+        try (StringBuilderWriter writer = new StringBuilderWriter()) {
             data.printStackTrace(new PrintWriter(writer));
             return writer.getBuilder().toString();
-        } finally {
-            writer.close();
         }
     }
 }
