@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+  </head>
+
+  <body>
+    
+    <div ng-include="headerInclude"></div>
+    <div ng-controller="Apiman.Error409Controller" class="container error-page" data-field="error-page">
+      <div class="row">
+        <div class="col-md-3">
+          <div class="error-icon error-409 pull-right"></div>
+        </div>
+        <div class="col-md-8">
+          <div class="title" apiman-i18n-key="error-409-title">Entity Still Active</div>
+          <div class="description" apiman-i18n-key="error-409-8002-description">
+            You tried to delete something that could not be deleted in its current
+            state.  See the information below to possibly get an idea of what went
+            wrong, based on what you were attempting to delete.
+          </div>
+        </div>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="col-md-3">
+        </div>
+        <div class="col-md-8">
+          <h1>Organizations</h1>
+          <ul>
+            <li>Must have zero published APIs</li>
+            <li>Must have zero registered Client Apps</li>
+          </ul>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-3">
+        </div>
+        <div class="col-md-8">
+          <h1>APIs</h1>
+          <ul>
+            <li>All versions must be retired (or not yet published)</li>
+          </ul>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-3">
+        </div>
+        <div class="col-md-8">
+          <h1>Client Apps</h1>
+          <ul>
+            <li>All versions must be retired (or not yet registered)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

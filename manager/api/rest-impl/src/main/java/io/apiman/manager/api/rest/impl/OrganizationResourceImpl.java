@@ -287,8 +287,12 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         }
     }
 
+    /**
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#delete(java.lang.String)
+     */
     @Override
-    public void delete(@PathParam("organizationId") String organizationId) throws OrganizationNotFoundException, NotAuthorizedException, EntityStillActiveException {
+    public void delete(@PathParam("organizationId") String organizationId)
+            throws OrganizationNotFoundException, NotAuthorizedException, EntityStillActiveException {
         try {
             if (!securityContext.hasPermission(PermissionType.orgAdmin, organizationId))
                 throw ExceptionFactory.notAuthorizedException();
@@ -337,8 +341,12 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         }
     }
 
+    /**
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#deleteClient(java.lang.String, java.lang.String)
+     */
     @Override
-    public void deleteClient(@PathParam("organizationId") String organizationId, @PathParam("clientId") String clientId) throws OrganizationNotFoundException, NotAuthorizedException, EntityStillActiveException {
+    public void deleteClient(@PathParam("organizationId") String organizationId, @PathParam("clientId") String clientId) 
+            throws OrganizationNotFoundException, NotAuthorizedException, EntityStillActiveException {
         try {
             if (!securityContext.hasPermission(PermissionType.clientAdmin, organizationId))
                 throw ExceptionFactory.notAuthorizedException();
@@ -372,8 +380,12 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         }
     }
 
+    /**
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#deleteApi(java.lang.String, java.lang.String)
+     */
     @Override
-    public void deleteApi(@PathParam("organizationId") String organizationId, @PathParam("apiId") String apiId) throws OrganizationNotFoundException, NotAuthorizedException, EntityStillActiveException {
+    public void deleteApi(@PathParam("organizationId") String organizationId, @PathParam("apiId") String apiId)
+            throws OrganizationNotFoundException, NotAuthorizedException, EntityStillActiveException {
         try {
             if (!securityContext.hasPermission(PermissionType.apiAdmin, organizationId))
                 throw ExceptionFactory.notAuthorizedException();

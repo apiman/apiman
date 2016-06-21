@@ -80,8 +80,7 @@
         </div>
 
         <!-- Delete Plan Modal Template -->
-        <script type="text/ng-template"
-                id="deleteModal.html">
+        <script type="text/ng-template" id="deleteModal.html">
           <div class="modal-header">
             <button class="close"
                     type="button"
@@ -103,12 +102,12 @@
               This action <b>CANNOT</b> be undone. This will permanently delete the plan, including all of its versions, their policies, and change logs. Please back up the project if you think you may want to roll back the changes, as this
               action is irrevocable.
             </p>
-            <p class="explanation"
-               apiman-i18n-key="plan-delete-modal-confirmation-instructions">
-              Please type in the name of the plan to confirm.
+            <p class="explanation">
+              <b apiman-i18n-key="plan-delete-modal-confirmation-instructions">Please type in the name of the plan to confirm.</b>
             </p>
             <input type="text"
                    class="apiman-form-control form-control"
+                   placeholder="{{ plan.name }}"
                    ng-keyup="typed()"
                    ng-model="confirmPlanName">
           </div>

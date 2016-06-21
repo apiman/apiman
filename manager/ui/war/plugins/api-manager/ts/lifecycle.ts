@@ -128,7 +128,13 @@ module ApimanPageLifecycle {
                     $location.url(Apiman.pluginName + '/errors/404').replace();
                 } else if (error.status == 409) {
                     Logger.info('Detected an error {0}, redirecting to 409.', error.status);
-                    $location.url(Apiman.pluginName + '/errors/409').replace();
+                    var errorUri = '409';
+                    Logger.info('=====> {0}', error);
+                    Logger.info('=====> error code: {0}', error.data.errorCode);
+                    if (error.data.errorCode && error.data.errorCode == 8002) {
+                        errorUri = '409-8002';
+                    }
+                    $location.url(Apiman.pluginName + '/errors/' + errorUri).replace();
                 } else if (error.status == 0) {
                     Logger.info('Detected an error {0}, redirecting to CORS error page.', error.status);
                     $location.url(Apiman.pluginName + '/errors/invalid_server').replace();

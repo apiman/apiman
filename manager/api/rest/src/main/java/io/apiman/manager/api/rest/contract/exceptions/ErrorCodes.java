@@ -130,8 +130,10 @@ public final class ErrorCodes {
     // Action API related
     //
     public static final int ACTION_ERROR                      = 8001;
+    public static final int ENTITY_STILL_ACTIVE_ERROR         = 8002;
 
     public static final String ACTION_ERROR_INFO              = null;
+    public static final String ENTITY_STILL_ACTIVE_ERROR_INFO = null;
 
 
     //

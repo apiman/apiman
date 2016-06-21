@@ -260,6 +260,9 @@ module Apiman {
                 .when(prefix + '/errors/409', {
                     templateUrl: path + 'errors/409.html'
                 })
+                .when(prefix + '/errors/409-8002', {
+                    templateUrl: path + 'errors/409-8002.html'
+                })
                 .when(prefix + '/errors/500', {
                     templateUrl: path + 'errors/500.html'
                 })

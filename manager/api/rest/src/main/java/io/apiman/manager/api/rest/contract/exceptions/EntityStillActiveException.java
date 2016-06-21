@@ -45,7 +45,7 @@ public class EntityStillActiveException extends AbstractUserException {
      */
     @Override
     public int getErrorCode() {
-        return ErrorCodes.ACTION_ERROR;
+        return ErrorCodes.ENTITY_STILL_ACTIVE_ERROR;
     }
 
     /**
@@ -53,7 +53,7 @@ public class EntityStillActiveException extends AbstractUserException {
      */
     @Override
     public String getMoreInfoUrl() {
-        return ErrorCodes.ACTION_ERROR_INFO;
+        return ErrorCodes.ENTITY_STILL_ACTIVE_ERROR_INFO;
     }
 
     @Override

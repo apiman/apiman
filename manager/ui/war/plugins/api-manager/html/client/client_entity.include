@@ -108,12 +108,12 @@
               This action <b>CANNOT</b> be undone. This will permanently delete the client app, including all of its
               versions, their policies, contracts, endpoint properties and change logs. Please back up the project if you think you may want to roll back the changes, as this action is irrevocable.
             </p>
-            <p class="explanation"
-               apiman-i18n-key="client-delete-modal-confirmation-instructions">
-              Please type in the name of the client app to confirm.
+            <p class="explanation">
+              <b apiman-i18n-key="client-delete-modal-confirmation-instructions">Please type in the name of the client app to confirm.</b>
             </p>
             <input type="text"
                    class="apiman-form-control form-control"
+                   placeholder="{{ client.name }}"
                    ng-keyup="typed()"
                    ng-model="confirmClientName">
           </div>
