@@ -14,6 +14,9 @@ public class JsonToXmlTransformer implements DataTransformer {
         JSONObject jsonObject = null;
 	    if (json.trim().startsWith("{")) { //$NON-NLS-1$
 	        jsonObject = new JSONObject(json);
+	        if (jsonObject.length() > 1) {
+	            ROOT = "root"; //$NON-NLS-1$
+	        }
 	    } else {
 	        JSONArray jsonArray = new JSONArray(json);
 	        jsonObject = new JSONObject().put(ELEMENT, jsonArray);

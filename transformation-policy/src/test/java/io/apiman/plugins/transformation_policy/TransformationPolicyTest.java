@@ -1,9 +1,13 @@
 package io.apiman.plugins.transformation_policy;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import io.apiman.plugins.transformation_policy.backend.ConsumeJsonBackEndApi;
 import io.apiman.plugins.transformation_policy.backend.ConsumeXmlBackEndApi;
+import io.apiman.plugins.transformation_policy.backend.ProduceComplexJsonBackEndApi;
+import io.apiman.plugins.transformation_policy.backend.ProduceEchoXmlResponseBackend;
 import io.apiman.plugins.transformation_policy.backend.ProduceJsonBackEndApi;
 import io.apiman.plugins.transformation_policy.backend.ProduceXmlBackEndApi;
 import io.apiman.test.policies.ApimanPolicyTest;
@@ -99,6 +103,33 @@ public class TransformationPolicyTest extends ApimanPolicyTest {
         String expectedResponse = "<name>apiman</name>";
         assertEquals("application/xml", response.header("Content-Type"));
         assertEquals(String.valueOf(expectedResponse.getBytes("UTF-8").length), response.header("Content-Length"));
+        assertEquals(expectedResponse, response.body());
+    }
+
+    @Test
+    @Configuration("{\"clientFormat\": \"JSON\", \"serverFormat\": \"XML\"}")
+    @BackEndApi(ProduceEchoXmlResponseBackend.class)
+    public void transformServerEchoXmlResponseToJson() throws Throwable {
+        PolicyTestRequest request = PolicyTestRequest.build(PolicyTestRequestType.GET, "/some/resource");
+        
+        PolicyTestResponse response = send(request);
+        
+        assertEquals("application/json", response.header("Content-Type"));
+        assertNull(response.header("Content-Length"));
+        assertTrue(response.body().startsWith("{\"echoResponse\":"));
+    }
+
+    @Test
+    @Configuration("{\"clientFormat\": \"XML\", \"serverFormat\": \"JSON\"}")
+    @BackEndApi(ProduceComplexJsonBackEndApi.class)
+    public void transformComplexServerJsonResponseToXml() throws Throwable {
+        PolicyTestRequest request = PolicyTestRequest.build(PolicyTestRequestType.GET, "/some/resource");
+        
+        PolicyTestResponse response = send(request);
+        
+        String expectedResponse = "<root><property-1>value-1</property-1><array-1>10</array-1><array-1>5</array-1><array-1>3</array-1><array-1>12</array-1><property-2>value-2</property-2><object-1><p1>v1</p1><p2>v2</p2></object-1></root>";
+        assertEquals("application/xml", response.header("Content-Type"));
+        assertNull(response.header("Content-Length"));
         assertEquals(expectedResponse, response.body());
     }
 

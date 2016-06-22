@@ -5,14 +5,15 @@ import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.test.policies.IPolicyTestBackEndApi;
 import io.apiman.test.policies.PolicyTestBackEndApiResponse;
 
+import org.junit.Assert;
+
 @SuppressWarnings("nls")
 public class ConsumeJsonBackEndApi implements IPolicyTestBackEndApi {
 
     @Override
     public PolicyTestBackEndApiResponse invoke(ApiRequest apiRequest, byte[] requestBody) {
-        if (!new String(requestBody).equals("<a><b>test</b></a>")) {
-            throw new AssertionError();
-        }
+        String body = new String(requestBody);
+        Assert.assertEquals("{\"a\":{\"b\":\"test\"}}", body);
         ApiResponse apiResponse = new ApiResponse();
         return new PolicyTestBackEndApiResponse(apiResponse, null);
     }

@@ -26,6 +26,7 @@ public class TransformationPolicy extends AbstractMappedPolicy<TransformationCon
     private static final String SERVER_FORMAT = "serverFormat"; //$NON-NLS-1$
     private static final String CONTENT_TYPE = "Content-Type"; //$NON-NLS-1$
     private static final String CONTENT_LENGTH = "Content-Length"; //$NON-NLS-1$
+    private static final String ACCEPT = "Accept"; //$NON-NLS-1$
 
     @Override
     protected Class<TransformationConfigBean> getConfigurationClass() {
@@ -44,6 +45,8 @@ public class TransformationPolicy extends AbstractMappedPolicy<TransformationCon
 
             request.getHeaders().put(CONTENT_TYPE, serverFormat.getContentType());
             request.getHeaders().remove(CONTENT_LENGTH);
+            
+            request.getHeaders().put(ACCEPT, serverFormat.getContentType());
         }
 
         super.doApply(request, context, config, chain);
@@ -55,50 +58,49 @@ public class TransformationPolicy extends AbstractMappedPolicy<TransformationCon
     @Override
     public IReadWriteStream<ApiRequest> getRequestDataHandler(final ApiRequest request,
             IPolicyContext context, Object policyConfiguration) {
-        final DataFormat clientFormat = (DataFormat) context.getAttribute(CLIENT_FORMAT, null);
-        final DataFormat serverFormat = (DataFormat) context.getAttribute(SERVER_FORMAT, null);
 
-        if (isValidTransformation(clientFormat, serverFormat)) {
-            final IBufferFactoryComponent bufferFactory = context.getComponent(IBufferFactoryComponent.class);
-            final int contentLength = request.getHeaders().containsKey(CONTENT_LENGTH)
-                    ? Integer.parseInt(request.getHeaders().get(CONTENT_LENGTH))
-                    : 0;
+        final IBufferFactoryComponent bufferFactory = context.getComponent(IBufferFactoryComponent.class);
+        final int contentLength = request.getHeaders().containsKey(CONTENT_LENGTH)
+                ? Integer.parseInt(request.getHeaders().get(CONTENT_LENGTH))
+                : 0;
 
-            return new AbstractStream<ApiRequest>() {
+        return new AbstractStream<ApiRequest>() {
 
-                private IApimanBuffer readBuffer = bufferFactory.createBuffer(contentLength);
+            private IApimanBuffer readBuffer = bufferFactory.createBuffer(contentLength);
 
-                @Override
-                public ApiRequest getHead() {
-                    return request;
+            @Override
+            public ApiRequest getHead() {
+                return request;
+            }
+
+            @Override
+            protected void handleHead(ApiRequest head) {
+            }
+
+            @Override
+            public void write(IApimanBuffer chunk) {
+                readBuffer.append(chunk.getBytes());
+            }
+
+            @Override
+            public void end() {
+                final DataFormat clientFormat = (DataFormat) context.getAttribute(CLIENT_FORMAT, null);
+                final DataFormat serverFormat = (DataFormat) context.getAttribute(SERVER_FORMAT, null);
+                
+                if (isValidTransformation(clientFormat, serverFormat) && readBuffer.length() > 0) {
+                    DataTransformer dataTransformer = DataTransformerFactory.getDataTransformer(clientFormat, serverFormat);
+                    IApimanBuffer writeBuffer = bufferFactory.createBuffer(readBuffer.length());
+
+                    String data = dataTransformer.transform(new String(readBuffer.getBytes()));
+                    writeBuffer.append(data);
+
+                    super.write(writeBuffer);
+                } else {
+                    super.write(readBuffer);
                 }
-
-                @Override
-                protected void handleHead(ApiRequest head) {
-                }
-
-                @Override
-                public void write(IApimanBuffer chunk) {
-                    readBuffer.append(chunk.getBytes());
-                }
-
-                @Override
-                public void end() {
-                    if (readBuffer.length() > 0) {
-                        DataTransformer dataTransformer = DataTransformerFactory.getDataTransformer(clientFormat, serverFormat);
-                        IApimanBuffer writeBuffer = bufferFactory.createBuffer(readBuffer.length());
-
-                        String data = dataTransformer.transform(new String(readBuffer.getBytes()));
-                        writeBuffer.append(data);
-
-                        super.write(writeBuffer);
-                    }
-                    super.end();
-                }
-            };
-        }
-
-        return null;
+                super.end();
+            }
+        };
     }
 
     @Override
