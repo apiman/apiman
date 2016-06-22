@@ -87,16 +87,18 @@ public class TransformationPolicy extends AbstractMappedPolicy<TransformationCon
                 final DataFormat clientFormat = (DataFormat) context.getAttribute(CLIENT_FORMAT, null);
                 final DataFormat serverFormat = (DataFormat) context.getAttribute(SERVER_FORMAT, null);
                 
-                if (isValidTransformation(clientFormat, serverFormat) && readBuffer.length() > 0) {
-                    DataTransformer dataTransformer = DataTransformerFactory.getDataTransformer(clientFormat, serverFormat);
-                    IApimanBuffer writeBuffer = bufferFactory.createBuffer(readBuffer.length());
-
-                    String data = dataTransformer.transform(new String(readBuffer.getBytes()));
-                    writeBuffer.append(data);
-
-                    super.write(writeBuffer);
-                } else {
-                    super.write(readBuffer);
+                if (readBuffer.length() > 0) {
+                    if (isValidTransformation(clientFormat, serverFormat)) {
+                        DataTransformer dataTransformer = DataTransformerFactory.getDataTransformer(clientFormat, serverFormat);
+                        IApimanBuffer writeBuffer = bufferFactory.createBuffer(readBuffer.length());
+    
+                        String data = dataTransformer.transform(new String(readBuffer.getBytes()));
+                        writeBuffer.append(data);
+    
+                        super.write(writeBuffer);
+                    } else {
+                        super.write(readBuffer);
+                    }
                 }
                 super.end();
             }
