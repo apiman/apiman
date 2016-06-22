@@ -73,7 +73,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
 
-    <version.apiman>1.2.7-SNAPSHOT</version.apiman>
+    <version.apiman>1.2.7.Beta1</version.apiman>
 
     <version.javadoc.plugin>2.10.1</version.javadoc.plugin>
     <version.compiler.plugin>3.2</version.compiler.plugin>
@@ -92,7 +92,7 @@
 
     <version.commons-lang>2.6</version.commons-lang>
     <version.com.fasterxml.jackson>2.5.4</version.com.fasterxml.jackson>
-    <version.org.keycloak>1.9.5.Final</version.org.keycloak>
+    <version.org.keycloak>1.9.7.Final</version.org.keycloak>
     <version.org.bouncycastle>1.52</version.org.bouncycastle>
     <version.org.json>20140107</version.org.json>
   </properties>
@@ -227,11 +227,6 @@
         <groupId>org.bouncycastle</groupId>
         <artifactId>bcprov-jdk15on</artifactId>
         <version>${version.org.bouncycastle}</version>
-      </dependency>
-      <dependency>
-        <groupId>net.iharder</groupId>
-        <artifactId>base64</artifactId>
-        <version>${version.net.iharder}</version>
       </dependency>
       <dependency>
         <groupId>org.json</groupId>

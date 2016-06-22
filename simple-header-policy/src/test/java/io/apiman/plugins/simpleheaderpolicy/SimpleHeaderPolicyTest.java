@@ -268,6 +268,7 @@ public class SimpleHeaderPolicyTest {
         shb.setPattern("VETINAR\\w+");
         shb.setStripType(StripType.VALUE);
         shb.setWith(With.REGEX);
+        shb.setApplyTo(ApplyTo.REQUEST);
 
         config.getStripHeaders().add(shb);
 
@@ -277,20 +278,39 @@ public class SimpleHeaderPolicyTest {
         assertTrue(request.getHeaders().isEmpty());
     }
 
-    // @Test
-    // public void shouldTrimWhitespace() {
-    // request.getHeaders().put("      lord      ", " Vetinari ");
-    //
-    // StripHeaderBean shb = new StripHeaderBean();
-    // shb.setPattern("VETINAR\\w+");
-    // shb.setStripType(StripType.KEY);
-    // shb.setWith(With.REGEX);
-    //
-    // config.getStripHeaders().add(shb);
-    //
-    // policy.apply(request, mContext, config, mRequestChain);
-    //
-    // assertFalse(request.getHeaders().containsKey("lord"));
-    // assertTrue(request.getHeaders().isEmpty());
-    // }
+    @Test
+    public void shouldNotStripRequest() {
+        request.getHeaders().put("lord", "Vetinari");
+
+        StripHeaderBean shb = new StripHeaderBean();
+        shb.setPattern("vetinar\\w+");
+        shb.setStripType(StripType.VALUE);
+        shb.setWith(With.REGEX);
+        shb.setApplyTo(ApplyTo.RESPONSE);
+
+        config.getStripHeaders().add(shb);
+
+        policy.apply(request, mContext, config, mRequestChain);
+
+        assertTrue(request.getHeaders().containsKey("lord"));
+        assertTrue(request.getHeaders().size() == 1);
+    }
+
+    @Test
+    public void shouldStripResponse() {
+        response.getHeaders().put("lord", "Vetinari");
+
+        StripHeaderBean shb = new StripHeaderBean();
+        shb.setPattern("vetinar\\w+");
+        shb.setStripType(StripType.VALUE);
+        shb.setWith(With.REGEX);
+        shb.setApplyTo(ApplyTo.RESPONSE);
+
+        config.getStripHeaders().add(shb);
+
+        policy.apply(response, mContext, config, mResponseChain);
+
+        assertFalse(response.getHeaders().containsKey("lord"));
+        assertTrue(response.getHeaders().isEmpty());
+    }
 }
