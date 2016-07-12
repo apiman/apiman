@@ -62,10 +62,6 @@ public class SimpleHeaderPolicyDefBean {
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<>();
     
-    // BOTH
-    private Pattern stripBothKeyRegex;
-    private Pattern stripBothValueRegex;
-    
     // REQUEST
     private Pattern stripRequestKeyRegex;
     private Pattern stripRequestValueRegex;
