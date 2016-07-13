@@ -30,51 +30,50 @@ public class KeyStoreUtil {
 
     /**
      * Gets the array of key managers for a given info store+info.
+     *
      * @param pathInfo
      * @throws Exception
      */
     public static KeyManager[] getKeyManagers(Info pathInfo) throws Exception {
-        if (pathInfo.store != null) {
-            File clientKeyStoreFile = new File(pathInfo.store);
-            if (clientKeyStoreFile.isFile()) {
-                String clientKeyStorePassword = pathInfo.password;
-                KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
-                KeyStore keyStore = KeyStore.getInstance("JKS");
-    
-                FileInputStream clientFis = new FileInputStream(pathInfo.store);
-                keyStore.load(clientFis, clientKeyStorePassword.toCharArray());
-                clientFis.close();
-                kmf.init(keyStore, clientKeyStorePassword.toCharArray());
-                return kmf.getKeyManagers();
-            } else {
-                throw new Exception("No KeyManager: " + pathInfo.store + " does not exist or is not a file.");
-            }
-        } else {
+        if (pathInfo.store == null) {
             return null;
         }
+        File clientKeyStoreFile = new File(pathInfo.store);
+        if (!clientKeyStoreFile.isFile()) {
+            throw new Exception("No KeyManager: " + pathInfo.store + " does not exist or is not a file.");
+        }
+        String clientKeyStorePassword = pathInfo.password;
+        KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+        KeyStore keyStore = KeyStore.getInstance("JKS");
+
+        FileInputStream clientFis = new FileInputStream(pathInfo.store);
+        keyStore.load(clientFis, clientKeyStorePassword.toCharArray());
+        clientFis.close();
+        kmf.init(keyStore, clientKeyStorePassword.toCharArray());
+        return kmf.getKeyManagers();
     }
 
     /**
      * Gets an array of trust managers for a given store+password.
+     *
      * @param pathInfo
      * @return
      * @throws Exception
      */
     public static TrustManager[] getTrustManagers(Info pathInfo) throws Exception {
         File trustStoreFile = new File(pathInfo.store);
-        if (trustStoreFile.isFile()) {
-            String trustStorePassword = pathInfo.password;
-            TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-            KeyStore truststore = KeyStore.getInstance("JKS");
-
-            FileInputStream fis = new FileInputStream(pathInfo.store);
-            truststore.load(fis, trustStorePassword.toCharArray());
-            fis.close();
-            tmf.init(truststore);
-            return tmf.getTrustManagers();
-        } else {
+        if (!trustStoreFile.isFile()) {
             throw new Exception("No TrustManager: " + pathInfo.store + " does not exist.");
         }
+        String trustStorePassword = pathInfo.password;
+        TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+        KeyStore truststore = KeyStore.getInstance("JKS");
+
+        FileInputStream fis = new FileInputStream(pathInfo.store);
+        truststore.load(fis, trustStorePassword.toCharArray());
+        fis.close();
+        tmf.init(truststore);
+        return tmf.getTrustManagers();
     }
 
     public static class Info {
@@ -84,6 +83,7 @@ public class KeyStoreUtil {
 
         /**
          * Constructor.
+         *
          * @param store
          * @param password
          */

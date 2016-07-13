@@ -34,7 +34,7 @@ import java.util.TreeMap;
  */
 public class AbstractMessages {
 
-    public static final List<String> FORMATS = Collections.unmodifiableList(Arrays.asList("java.properties")); //$NON-NLS-1$
+    private static final List<String> FORMATS = Collections.unmodifiableList(Collections.singletonList("java.properties")); //$NON-NLS-1$
 
     private static Map<String, ResourceBundle> bundles = new HashMap<>();
 

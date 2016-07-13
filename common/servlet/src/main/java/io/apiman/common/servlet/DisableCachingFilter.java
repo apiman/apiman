@@ -49,13 +49,7 @@ public class DisableCachingFilter implements Filter {
      */
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        Date now = new Date();
-        HttpServletResponse httpResponse = (HttpServletResponse) response;
-        httpResponse.setDateHeader("Date", now.getTime()); //$NON-NLS-1$
-        // one day old
-        httpResponse.setDateHeader("Expires", now.getTime() - 86400000L); //$NON-NLS-1$
-        httpResponse.setHeader("Pragma", "no-cache"); //$NON-NLS-1$ //$NON-NLS-2$
-        httpResponse.setHeader("Cache-control", "no-cache, no-store, must-revalidate"); //$NON-NLS-1$ //$NON-NLS-2$
+        HttpCacheUtil.disableHttpCaching((HttpServletResponse) response);
         chain.doFilter(request, response);
     }
 
