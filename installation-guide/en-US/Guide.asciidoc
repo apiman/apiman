@@ -804,4 +804,94 @@ then cached.  To change a value, you must restart your server.
 TIP: When resolving variables, if there is an environment variable with the same
 name as a system property, the value of the *system property* will be used.
 
+
+=== How To:  Use a SQL Database to Store and Retrieve Metrics (Replacing Elasticsearch)
+Sometimes you just don't want to use Elasticsearch to store your metrics, even
+though it's really good at it.  We typically recommend that you stick with ES
+if possible, because it gives you the option of installing Kibana, opening up
+a whole new world of advanced analytics over the metric data.  However, if all
+you want is the basic graphs/charts shown in the apiman UI, you can easily
+switch to storing metric data in a database.
+
+==== High Level Overview
+1. Deploy an appropriate JDBC datasource
+2. Enable the API Gateway JDBC initializer
+3. Configure the API Gateway metrics provider to be JDBC
+4. Configure the API Manager metrics accessor to be JDBC
+
+===== Deploy an appropriate JDBC datasource
+The first thing to do is deploy a datasource into WildFly that will be used
+by the JDBC metrics implementations.  There are a number of ways to do this, and
+documenting how to create a datasource in WildFly is outside the scope of this
+guide.  However, an example -ds.xml descriptor file, specifically for this
+purpose, can be found here:
+
+https://github.com/apiman/apiman/blob/master/distro/data/src/main/resources/sample-configs/apiman_gw-ds_mysql.xml
+
+TIP: Make sure you take note of the datasource jndi-name - you will need it when
+configuring the metrics implementations in apiman.properties
+
+TIP: Don't forget to also deploy the appropriate JDBC driver JAR for your database.
+
+===== Enable the API Gateway JDBC initializer
+Of course, there is a database schema that must be installed in your database, 
+which creates the tables and indexes needed.  This schema can be automatically 
+created by apiman the first time it is used.  To enable this feature, you must
+configure the API Gateway JDBC initializer in the *apiman.properties* file, like
+so:
+
+```
+# Initializer for the Gateway JDBC
+# ################################
+apiman.jdbc.datasource.jndi-location=java:jboss/datasources/apiman-gateway
+apiman-gateway.initializers=jdbc
+apiman-gateway.initializers.jdbc=io.apiman.gateway.engine.jdbc.JdbcInitializer
+apiman-gateway.initializers.jdbc.datasource.jndi-location=${apiman.jdbc.datasource.jndi-location}
+apiman-gateway.initializers.jdbc.datasource.type=mysql5
+```
+
+This initializer will run whenever apiman starts up, and it will install the 
+API Gateway schema/DDL into the configured database so that the metrics JDBC
+implementations can function properly.
+
+Note that you will need to set the correct value of *apiman-gateway.initializers.jdbc.datasource.type*
+based on the specific database you will be using.  Possible values for this
+property include:
+
+* h2
+* mysql5
+* postgresql9
+* mssql11
+* oracle12
+
+===== Configure the API Gateway metrics provider to be JDBC
+Next, you just need to tell apiman that you want to use JDBC instead of Elasticsearch
+for the storage of metrics data.  This can be done again by setting a specific
+property in *apiman.properties*:
+
+```
+apiman-gateway.metrics=io.apiman.gateway.engine.jdbc.JdbcMetrics
+apiman-gateway.metrics.datasource.jndi-location=${apiman.jdbc.datasource.jndi-location}
+```
+
+The metrics will be stored in JDBC (asynchronously) instead of Elasticsearch!
+
+===== Configure the API Manager metrics accessor to be JDBC
+It doesn't help us to store the metrics data in SQL unless we also query the data
+when showing information in the UI.  For this reason you will need to configure
+the API Manager to use JDBC to *retrieve* metric information instead of using
+Elasticsearch.  Again, this is done by editing the *apiman.properties* file:
+
+```
+# API Manager metrics settings
+# ############################
+apiman-manager.metrics.type=io.apiman.manager.api.jdbc.JdbcMetricsAccessor
+apiman-manager.metrics.datasource.jndi-location=${apiman.jdbc.datasource.jndi-location}
+```
+
+TIP: If you are deploying the API Manager and API Gateway separately (on different
+nodes), make sure you edit the correct apiman.properties files on the correct nodes.
+Feel free to make all of the above changes to all your nodes, since any properties 
+in apiman.properties will be ignored on nodes where certain components are excluded.
+
 :numbered!:
