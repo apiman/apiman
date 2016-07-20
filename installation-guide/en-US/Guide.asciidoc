@@ -819,7 +819,7 @@ switch to storing metric data in a database.
 3. Configure the API Gateway metrics provider to be JDBC
 4. Configure the API Manager metrics accessor to be JDBC
 
-===== Deploy an appropriate JDBC datasource
+==== Deploy an appropriate JDBC datasource
 The first thing to do is deploy a datasource into WildFly that will be used
 by the JDBC metrics implementations.  There are a number of ways to do this, and
 documenting how to create a datasource in WildFly is outside the scope of this
@@ -833,7 +833,7 @@ configuring the metrics implementations in apiman.properties
 
 TIP: Don't forget to also deploy the appropriate JDBC driver JAR for your database.
 
-===== Enable the API Gateway JDBC initializer
+==== Enable the API Gateway JDBC initializer
 Of course, there is a database schema that must be installed in your database, 
 which creates the tables and indexes needed.  This schema can be automatically 
 created by apiman the first time it is used.  To enable this feature, you must
@@ -864,7 +864,7 @@ property include:
 * mssql11
 * oracle12
 
-===== Configure the API Gateway metrics provider to be JDBC
+==== Configure the API Gateway metrics provider to be JDBC
 Next, you just need to tell apiman that you want to use JDBC instead of Elasticsearch
 for the storage of metrics data.  This can be done again by setting a specific
 property in *apiman.properties*:
@@ -876,7 +876,7 @@ apiman-gateway.metrics.datasource.jndi-location=${apiman.jdbc.datasource.jndi-lo
 
 The metrics will be stored in JDBC (asynchronously) instead of Elasticsearch!
 
-===== Configure the API Manager metrics accessor to be JDBC
+==== Configure the API Manager metrics accessor to be JDBC
 It doesn't help us to store the metrics data in SQL unless we also query the data
 when showing information in the UI.  For this reason you will need to configure
 the API Manager to use JDBC to *retrieve* metric information instead of using
