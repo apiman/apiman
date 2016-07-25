@@ -109,14 +109,15 @@ public class RateLimiterBucket implements Serializable {
             lastCal.set(Calendar.SECOND, 0);
             lastCal.set(Calendar.MINUTE, 0);
             lastCal.set(Calendar.HOUR_OF_DAY, 0);
-            lastCal.add(Calendar.DAY_OF_MONTH, 1);
+            lastCal.set(Calendar.DAY_OF_MONTH, 1);
+            lastCal.add(Calendar.MONTH, 1);
             return lastCal.getTimeInMillis();
         case Year:
             lastCal.set(Calendar.MILLISECOND, 0);
             lastCal.set(Calendar.SECOND, 0);
             lastCal.set(Calendar.MINUTE, 0);
             lastCal.set(Calendar.HOUR_OF_DAY, 0);
-            lastCal.set(Calendar.DAY_OF_YEAR, 0);
+            lastCal.set(Calendar.DAY_OF_YEAR, 1);
             lastCal.add(Calendar.YEAR, 1);
             return lastCal.getTimeInMillis();
         }
