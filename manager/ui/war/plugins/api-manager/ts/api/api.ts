@@ -245,7 +245,7 @@ module Apiman {
                     }, PageLifecycle.handleError);
                 }, function () {
                     //console.log('Modal dismissed at: ' + new Date());
-                    $scope.unregisterButton.state = 'complete';
+                    $scope.retireButton.state = 'complete';
                 });
             };
 
