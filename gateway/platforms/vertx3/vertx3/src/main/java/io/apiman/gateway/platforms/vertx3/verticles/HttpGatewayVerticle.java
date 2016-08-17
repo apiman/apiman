@@ -16,7 +16,7 @@
 package io.apiman.gateway.platforms.vertx3.verticles;
 
 import io.apiman.gateway.platforms.vertx3.common.verticles.VerticleType;
-import io.apiman.gateway.platforms.vertx3.http.HttpExecutor;
+import io.apiman.gateway.platforms.vertx3.http.HttpPolicyAdapter;
 import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.http.HttpServerRequest;
 
@@ -25,8 +25,8 @@ import io.vertx.core.http.HttpServerRequest;
  *
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
-public class HttpGatewayVerticle extends ApimanVerticleBase {
-    public static final VerticleType VERTICLE_TYPE = VerticleType.HTTP;
+public class HttpGatewayVerticle extends ApimanVerticleWithEngine {
+    static final VerticleType VERTICLE_TYPE = VerticleType.HTTP;
 
     @Override
     public void start() {
@@ -40,8 +40,8 @@ public class HttpGatewayVerticle extends ApimanVerticleBase {
             .listen(apimanConfig.getPort(VERTICLE_TYPE));
     }
 
-    public void requestHandler(HttpServerRequest req) {
-        new HttpExecutor(vertx, log, false).handle(req);
+    private void requestHandler(HttpServerRequest req) {
+        new HttpPolicyAdapter(req, engine, log, false).execute();
     }
 
     @Override

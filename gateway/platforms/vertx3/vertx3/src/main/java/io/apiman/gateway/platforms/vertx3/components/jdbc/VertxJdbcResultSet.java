@@ -17,7 +17,6 @@ package io.apiman.gateway.platforms.vertx3.components.jdbc;
 
 import io.apiman.gateway.engine.components.jdbc.IJdbcResultSet;
 import io.vertx.core.json.JsonArray;
-import io.vertx.ext.jdbc.impl.actions.AbstractJDBCStatement;
 import io.vertx.ext.sql.ResultSet;
 
 import java.math.BigDecimal;
@@ -139,7 +138,7 @@ public class VertxJdbcResultSet implements IJdbcResultSet {
     }
 
     /**
-     * Looking at Vert.x source code this /should/ work. See: {@link AbstractJDBCStatement#convertSqlValue}
+     * Looking at Vert.x source code this /should/ work.
      *
      * @see io.apiman.gateway.engine.components.jdbc.IJdbcResultSet#getBigDecimal(int)
      */

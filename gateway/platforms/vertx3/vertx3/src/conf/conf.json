@@ -98,10 +98,15 @@
   // Port - The port a given verticle listens on (where relevant)
   // Count - Number of given verticle type launched
   "verticles": {
-    "http": { "port": 8082, "count": 1 },
-    "https": { "port": 8443, "count": 1 },
-    "api": { "port": 8081, "count": 1 },
-    "policy": { "port": -1, "count": 1 }
+    "http": {
+      "port": 8082,
+      "count": 1
+    },
+    "https": {
+      "port": 8443,
+      "count": 1
+    },
+    "api": { "port": 8081, "count": 1 }
   },
 
 // SSL configuration to the gateway's *front end* (i.e. client <-> gateway).
