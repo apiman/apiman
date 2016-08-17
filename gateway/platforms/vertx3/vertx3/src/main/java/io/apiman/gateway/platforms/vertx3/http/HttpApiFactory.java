@@ -18,8 +18,6 @@ package io.apiman.gateway.platforms.vertx3.http;
 import io.apiman.common.util.ApimanPathUtils;
 import io.apiman.common.util.ApimanPathUtils.ApiRequestPathInfo;
 import io.apiman.gateway.engine.beans.util.CaseInsensitiveStringMultiMap;
-import io.apiman.gateway.platforms.vertx3.io.VertxApiRequest;
-import io.apiman.gateway.platforms.vertx3.io.VertxApiResponse;
 import io.vertx.core.MultiMap;
 import io.vertx.core.http.HttpClientResponse;
 import io.vertx.core.http.HttpServerRequest;
