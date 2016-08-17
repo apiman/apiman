@@ -11,6 +11,11 @@
       }
     }
   },
+  
+  "encrypter": {
+  	"class": "io.apiman.gateway.engine.impl.DefaultDataEncrypter",
+  	"config": {}
+  },
 
   "plugin-registry": {
     "class": "io.apiman.gateway.platforms.vertx3.engine.VertxPluginRegistry",
@@ -104,7 +109,7 @@
     },
     "https": {
       "port": 8443,
-      "count": 1
+      "count": 0
     },
     "api": { "port": 8081, "count": 1 }
   },
@@ -131,5 +136,5 @@
   },
 
   // When reporting an API's endpoint, prefer secure (i.e. https)
-  "preferSecure": true
+  "preferSecure": false
 }
