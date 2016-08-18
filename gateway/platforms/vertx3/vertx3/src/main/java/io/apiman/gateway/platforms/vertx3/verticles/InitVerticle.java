@@ -32,11 +32,11 @@ import java.util.List;
  */
 public class InitVerticle extends ApimanVerticleBase {
 
-    class ApimanDeployment {
-        public DeploymentOptions deploymentOptions;
-        public String className;
+    private class ApimanDeployment {
+        DeploymentOptions deploymentOptions;
+        String className;
 
-        public ApimanDeployment(DeploymentOptions deploymentOptions, String className) {
+        ApimanDeployment(DeploymentOptions deploymentOptions, String className) {
             this.deploymentOptions = deploymentOptions;
             this.className = className;
         }
@@ -53,7 +53,6 @@ public class InitVerticle extends ApimanVerticleBase {
 
         @SuppressWarnings("serial")
         List<ApimanDeployment> deployList = new ArrayList<ApimanDeployment>() {{
-            add(buildDeploymentOptions(base, PolicyVerticle.class.getCanonicalName(), PolicyVerticle.VERTICLE_TYPE));
             add(buildDeploymentOptions(base, ApiVerticle.class.getCanonicalName(), ApiVerticle.VERTICLE_TYPE));
             add(buildDeploymentOptions(base, HttpGatewayVerticle.class.getCanonicalName(), HttpGatewayVerticle.VERTICLE_TYPE));
             add(buildDeploymentOptions(base, HttpsGatewayVerticle.class.getCanonicalName(), HttpsGatewayVerticle.VERTICLE_TYPE));

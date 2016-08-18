@@ -26,27 +26,19 @@ import io.vertx.core.Handler;
  */
 public interface HandlerHelpers {
     static <T> Handler<AsyncResult<T>> translateVoidHandlers(IAsyncResultHandler<Void> apimanResult) {
-        return new Handler<AsyncResult<T>>() {
-
-            @Override
-            public void handle(AsyncResult<T> vertxResult) {
-                if (vertxResult.succeeded()) {
-                    apimanResult.handle(AsyncResultImpl.create((Void) null));
-                } else {
-                    apimanResult.handle(AsyncResultImpl.create(vertxResult.cause()));
-                }
+        return vertxResult -> {
+            if (vertxResult.succeeded()) {
+                apimanResult.handle(AsyncResultImpl.create((Void) null));
+            } else {
+                apimanResult.handle(AsyncResultImpl.create(vertxResult.cause()));
             }
         };
     }
 
     static <T, R> Handler<AsyncResult<T>> translateFailureHandler(IAsyncResultHandler<R> apimanResult) {
-        return new Handler<AsyncResult<T>>() {
-
-            @Override
-            public void handle(AsyncResult<T> result) {
-                if (!result.succeeded()) {
-                    apimanResult.handle(AsyncResultImpl.create(result.cause()));
-                }
+        return result -> {
+            if (!result.succeeded()) {
+                apimanResult.handle(AsyncResultImpl.create(result.cause()));
             }
         };
     }

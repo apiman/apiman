@@ -17,9 +17,9 @@ package io.apiman.gateway.platforms.vertx3.http;
 
 import io.apiman.common.util.ApimanPathUtils;
 import io.apiman.common.util.ApimanPathUtils.ApiRequestPathInfo;
+import io.apiman.gateway.engine.beans.ApiRequest;
+import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.engine.beans.util.CaseInsensitiveStringMultiMap;
-import io.apiman.gateway.platforms.vertx3.io.VertxApiRequest;
-import io.apiman.gateway.platforms.vertx3.io.VertxApiResponse;
 import io.vertx.core.MultiMap;
 import io.vertx.core.http.HttpClientResponse;
 import io.vertx.core.http.HttpServerRequest;
@@ -31,7 +31,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Construct {@link VertxApiRequest} and {@link VertxApiResponse} objects from {@link HttpServerRequest},
+ * Construct {@link ApiRequest} and {@link ApiResponse} objects from {@link HttpServerRequest},
  * {@link HttpServerResponse} and {@link HttpClientResponse}
  *
  * @author Marc Savy {@literal <msavy@redhat.com>}
@@ -45,22 +45,22 @@ public class HttpApiFactory {
         IGNORESET.add("Host");
     }
 
-    public static VertxApiResponse buildResponse(HttpClientResponse response, Set<String> suppressHeaders) {
-        VertxApiResponse apimanResponse = new VertxApiResponse();
+    public static ApiResponse buildResponse(HttpClientResponse response, Set<String> suppressHeaders) {
+        ApiResponse apimanResponse = new ApiResponse();
         apimanResponse.setCode(response.statusCode());
         apimanResponse.setMessage(response.statusMessage());
         multimapToMap(apimanResponse.getHeaders(), response.headers(), suppressHeaders);
         return apimanResponse;
     }
 
-    public static void buildResponse(HttpServerResponse httpServerResponse, VertxApiResponse amanResponse) {
+    public static void buildResponse(HttpServerResponse httpServerResponse, ApiResponse amanResponse) {
         amanResponse.getHeaders().forEach(e -> httpServerResponse.headers().add(e.getKey(), e.getValue()));
         httpServerResponse.setStatusCode(amanResponse.getCode());
         httpServerResponse.setStatusMessage(amanResponse.getMessage());
     }
 
-    public static VertxApiRequest buildRequest(HttpServerRequest req, boolean isTransportSecure) {
-        VertxApiRequest apimanRequest = new VertxApiRequest();
+    public static ApiRequest buildRequest(HttpServerRequest req, boolean isTransportSecure) {
+        ApiRequest apimanRequest = new ApiRequest();
         apimanRequest.setApiKey(parseApiKey(req));
         apimanRequest.setRemoteAddr(req.remoteAddress().host());
         apimanRequest.setType(req.method().toString());
@@ -71,7 +71,7 @@ public class HttpApiFactory {
         return apimanRequest;
     }
 
-    private static void mungePath(HttpServerRequest request, VertxApiRequest apimanRequest) {
+    private static void mungePath(HttpServerRequest request, ApiRequest apimanRequest) {
         ApiRequestPathInfo parsedPath = ApimanPathUtils.parseApiRequestPath(
                 request.getHeader(ApimanPathUtils.X_API_VERSION_HEADER),
                 request.getHeader(ApimanPathUtils.ACCEPT_HEADER),

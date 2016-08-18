@@ -155,10 +155,10 @@
     <version.org.osgi>4.2.0</version.org.osgi>
     <version.org.picketbox>4.9.6.Final</version.org.picketbox>
     <version.org.slf4j>1.7.7</version.org.slf4j>
-    <version.io.netty>4.0.32.Final</version.io.netty>
+    <version.io.netty>4.1.4.Final</version.io.netty>
     <version.io.swagger>1.5.7</version.io.swagger>
     <version.xmlunit>1.6</version.xmlunit>
-    <version.io.vertx>3.1.0</version.io.vertx>
+    <version.io.vertx>3.3.2</version.io.vertx>
     <version.net.openhft>0.6</version.net.openhft>
   </properties>
 
