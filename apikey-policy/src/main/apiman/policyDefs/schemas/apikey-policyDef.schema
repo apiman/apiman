@@ -1,0 +1,15 @@
+{
+  "title" : "API Key Options",
+  "description" : "This policy passes the API Key through to the back-end service by adding it to a customizable HTTP header.",
+  "type" : "object",
+  "properties": {
+    "requestHeader": {
+      "title" : "Request Header",
+      "description" : "The name of the HTTP request header that the API Key will be copied to (and sent to the back-end service).",
+      "default" : "X-API-Key",
+      "type" : "string",
+      "minLength" : 1,
+      "maxLength" : 128
+    }
+  }
+}

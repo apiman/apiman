@@ -237,6 +237,7 @@
   </dependencyManagement>
 
   <modules>
+    <module>apikey-policy</module>
     <module>circuit-breaker-policy</module>
     <module>cors-policy</module>
     <module>http-security-policy</module>
