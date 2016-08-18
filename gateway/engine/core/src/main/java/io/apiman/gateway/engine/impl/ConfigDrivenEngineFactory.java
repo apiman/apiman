@@ -71,7 +71,7 @@ public class ConfigDrivenEngineFactory extends AbstractEngineFactory {
             IDataEncrypter encrypter = create(c, config);
             return encrypter;
         } catch (RuntimeException e) {
-            if (e.getMessage().equals("No IDataEncrypter class configured.")) { //$NON-NLS-1$
+            if ("No IDataEncrypter class configured.".equals(e.getMessage())) { //$NON-NLS-1$
                 System.out.println("NOTE: No explicit Data Encrypter found.  Falling back to the Default. [" + e.getMessage() + "]"); //$NON-NLS-1$ //$NON-NLS-2$
                 return new DefaultDataEncrypter();
             } else {
