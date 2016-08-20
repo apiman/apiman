@@ -23,7 +23,6 @@ import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.engine.beans.EngineErrorResponse;
 import io.apiman.gateway.engine.beans.PolicyFailure;
-import io.apiman.gateway.platforms.vertx3.http.HttpApiFactory;
 import io.apiman.gateway.platforms.vertx3.io.VertxApimanBuffer;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.buffer.Buffer;
@@ -98,7 +97,7 @@ public class HttpPolicyAdapter {
         // Everything worked
         if (engineResult.isResponse()) {
             ApiResponse response = engineResult.getApiResponse();
-            HttpApiFactory.buildResponse(vertxResponse, response);
+            HttpApiFactory.buildResponse(vertxResponse, response, vertxRequest.version());
             vertxResponse.setChunked(true);
 
             engineResult.bodyHandler(buffer -> {
