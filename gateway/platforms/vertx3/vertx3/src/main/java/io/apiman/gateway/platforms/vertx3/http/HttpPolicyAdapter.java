@@ -79,7 +79,7 @@ public class HttpPolicyAdapter {
 
         // Write data into executor. Called when ready.
         executor.streamHandler(writeStream -> {
-            vertxRequest.bodyHandler(bufferChunk -> {
+            vertxRequest.handler(bufferChunk -> {
                 // Wrap Vert.x buffer into apiman's buffer IR, then write into engine.
                 writeStream.write(new VertxApimanBuffer(bufferChunk));
             });
