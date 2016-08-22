@@ -24,6 +24,7 @@ import io.vertx.core.MultiMap;
 import io.vertx.core.http.HttpClientResponse;
 import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.http.HttpServerResponse;
+import io.vertx.core.http.HttpVersion;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -53,8 +54,12 @@ public class HttpApiFactory {
         return apimanResponse;
     }
 
-    public static void buildResponse(HttpServerResponse httpServerResponse, ApiResponse amanResponse) {
-        amanResponse.getHeaders().forEach(e -> httpServerResponse.headers().add(e.getKey(), e.getValue()));
+    public static void buildResponse(HttpServerResponse httpServerResponse, ApiResponse amanResponse, HttpVersion httpVersion) {
+        amanResponse.getHeaders().forEach(e -> {
+            if (httpVersion == HttpVersion.HTTP_1_0 || httpVersion == HttpVersion.HTTP_1_1 || !e.getKey().equals("Connection")) {
+                httpServerResponse.headers().add(e.getKey(), e.getValue());
+            }
+        });
         httpServerResponse.setStatusCode(amanResponse.getCode());
         httpServerResponse.setStatusMessage(amanResponse.getMessage());
     }
