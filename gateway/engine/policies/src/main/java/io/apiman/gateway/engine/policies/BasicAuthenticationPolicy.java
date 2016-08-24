@@ -68,6 +68,13 @@ public class BasicAuthenticationPolicy extends AbstractMappedPolicy<BasicAuthent
     @Override
     protected void doApply(final ApiRequest request, final IPolicyContext context, final BasicAuthenticationConfig config,
             final IPolicyChain<ApiRequest> chain) {
+
+        // Check transport security
+        if (config.isRequireTransportSecurity() && !request.isTransportSecure()) {
+            sendAuthFailure(context, chain, config, PolicyFailureCodes.TRANSPORT_SECURITY_REQUIRED);
+            return;
+        }
+
         String authHeader = request.getHeaders().get("Authorization"); //$NON-NLS-1$
         boolean requireBasic = config.getRequireBasicAuth() == null ? Boolean.TRUE : config.getRequireBasicAuth();
 
@@ -92,11 +99,6 @@ public class BasicAuthenticationPolicy extends AbstractMappedPolicy<BasicAuthent
                 chain.doApply(request);
                 return;
             }
-        }
-
-        // Check transport security
-        if (config.isRequireTransportSecurity() && !request.isTransportSecure()) {
-            sendAuthFailure(context, chain, config, PolicyFailureCodes.TRANSPORT_SECURITY_REQUIRED);
         }
 
         // Parse the Authorization http header.
