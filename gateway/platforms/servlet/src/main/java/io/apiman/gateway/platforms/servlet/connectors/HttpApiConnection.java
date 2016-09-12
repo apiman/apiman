@@ -38,11 +38,11 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
+import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
+import java.util.Map.Entry;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSocketFactory;
@@ -58,9 +58,16 @@ import com.squareup.okhttp.OkHttpClient;
  * @author eric.wittmann@redhat.com
  */
 public class HttpApiConnection implements IApiConnection, IApiConnectionResponse {
+    /**
+     * Header key comparisons should be case-insensitive as per HTTP specification.
+     */
+    private static final Set<String> SUPPRESSED_REQUEST_HEADERS = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
 
-    private static final Set<String> SUPPRESSED_REQUEST_HEADERS = new HashSet<>();
-    private static final Set<String> SUPPRESSED_RESPONSE_HEADERS = new HashSet<>();
+    /**
+     * Header key comparisons should be case-insensitive as per HTTP specification.
+     */
+    private static final Set<String> SUPPRESSED_RESPONSE_HEADERS = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+
     static {
         SUPPRESSED_REQUEST_HEADERS.add("Transfer-Encoding"); //$NON-NLS-1$
         SUPPRESSED_REQUEST_HEADERS.add("Content-Length"); //$NON-NLS-1$
@@ -123,7 +130,8 @@ public class HttpApiConnection implements IApiConnection, IApiConnectionResponse
      */
     private void connect() throws ConnectorException {
         try {
-            Set<String> suppressedHeaders = new HashSet<>(SUPPRESSED_REQUEST_HEADERS);
+            final Set<String> suppressedHeaders = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+            suppressedHeaders.addAll(SUPPRESSED_REQUEST_HEADERS);
 
             String endpoint = api.getEndpoint();
             if (endpoint.endsWith("/")) { //$NON-NLS-1$
@@ -190,7 +198,7 @@ public class HttpApiConnection implements IApiConnection, IApiConnectionResponse
             for (Entry<String, String> entry : request.getHeaders()) {
                 String hname = entry.getKey();
                 String hval = entry.getValue();
-                if (!suppressedHeaders.stream().anyMatch(suppressedHeader -> suppressedHeader.equalsIgnoreCase(hname))) {
+                if (!suppressedHeaders.contains(hname)) {
                     connection.setRequestProperty(hname, hval);
                 }
             }
@@ -348,7 +356,7 @@ public class HttpApiConnection implements IApiConnection, IApiConnectionResponse
             response = GatewayThreadContext.getApiResponse();
             Map<String, List<String>> headerFields = connection.getHeaderFields();
             for (String headerName : headerFields.keySet()) {
-                if (headerName != null && !SUPPRESSED_RESPONSE_HEADERS.stream().anyMatch(suppressedHeader -> suppressedHeader.equalsIgnoreCase(headerName))) {
+                if (headerName != null && !SUPPRESSED_RESPONSE_HEADERS.contains(headerName)) {
                     response.getHeaders().add(headerName, connection.getHeaderField(headerName));
                 }
             }
