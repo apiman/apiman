@@ -1,0 +1,12 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "title" : "Unique Header Policy",
+  "description" : "Sets a unique value in a named header.",
+  "properties": {
+    "headerName": {
+      "type": "string",
+      "title": "HTTP Header Name"
+    }
+  }
+}

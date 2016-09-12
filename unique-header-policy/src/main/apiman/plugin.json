@@ -1,0 +1,6 @@
+{
+  "frameworkVersion" : 1.0,
+  "name" : "Unique Header Policy Plugin",
+  "description" : "This plugin sets a unique value in a named header.",
+  "version" : "${project.version}"
+}
