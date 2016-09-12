@@ -190,7 +190,7 @@ public class HttpApiConnection implements IApiConnection, IApiConnectionResponse
             for (Entry<String, String> entry : request.getHeaders()) {
                 String hname = entry.getKey();
                 String hval = entry.getValue();
-                if (!suppressedHeaders.contains(hname)) {
+                if (!suppressedHeaders.stream().anyMatch(suppressedHeader -> suppressedHeader.equalsIgnoreCase(hname))) {
                     connection.setRequestProperty(hname, hval);
                 }
             }
@@ -348,7 +348,7 @@ public class HttpApiConnection implements IApiConnection, IApiConnectionResponse
             response = GatewayThreadContext.getApiResponse();
             Map<String, List<String>> headerFields = connection.getHeaderFields();
             for (String headerName : headerFields.keySet()) {
-                if (headerName != null && !SUPPRESSED_RESPONSE_HEADERS.contains(headerName)) {
+                if (headerName != null && !SUPPRESSED_RESPONSE_HEADERS.stream().anyMatch(suppressedHeader -> suppressedHeader.equalsIgnoreCase(headerName))) {
                     response.getHeaders().add(headerName, connection.getHeaderField(headerName));
                 }
             }
