@@ -34,7 +34,7 @@
                         <a class="plan-delete"
                            href="#"
                            ng-click="callDelete()"
-                           apiman-i18n-key="delete">Delete Plan</a>
+                           apiman-i18n-key="delete-plan">Delete Plan</a>
                       </li>
                     </ul>
                   </li>

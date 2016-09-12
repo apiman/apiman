@@ -22,7 +22,7 @@
                         <a class="org-delete"
                            href="#"
                            ng-click="callDelete()"
-                           apiman-i18n-key="delete">Delete Organization</a>
+                           apiman-i18n-key="delete-org">Delete Organization</a>
                       </li>
                     </ul>
                   </li>

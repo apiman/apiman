@@ -263,7 +263,7 @@
             <button ng-disabled="disableBackButton || currentPage == 'overview'" id="back" class="btn btn-default" ng-click="prevPage()"><span class="i fa fa-angle-left"></span><span apiman-i18n-key="back">Back</span></button>
             <button ng-disabled="currentPage == 'import-apis' || !currentPageValid" id="next" class="btn btn-default" ng-click="nextPage()"><span apiman-i18n-key="next">Next</span><span class="i fa fa-angle-right"></span></button>
             <button ng-hide="hideImportButton" ng-disabled="currentPage != 'import-apis' || !currentPageValid" id="import" class="btn btn-primary" apiman-action-btn="" data-field="importButton" apiman-i18n-key="import" ng-click="doImport()" data-icon="fa-cog" placeholder="Importing">Import</button>
-            <a ng-show="showFinishButton" id="finish" href="{{ pluginName }}/orgs/{{ params.org }}/apis" class="btn btn-primary" apiman-i18n-key="Finish">Finish</a>
+            <a ng-show="showFinishButton" id="finish" href="{{ pluginName }}/orgs/{{ params.org }}/apis" class="btn btn-primary" apiman-i18n-key="finish">Finish</a>
             <a ng-disabled="disableCancelButton" id="cancel" href="javascript:window.history.back()" class="btn btn-default btn-cancel" apiman-i18n-key="cancel">Cancel</a>
           </div>
 

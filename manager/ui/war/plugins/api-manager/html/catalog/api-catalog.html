@@ -57,8 +57,9 @@
                          sortable="true"
                          class="selectpicker api-catalog-filters"
                          style="width: 250px; margin: 0 10px; box-shadow: none; font-size: small; border-color: #bababa; display: inline-table;"
+                         apiman-i18n-key="choose-a-tag"
                          title="Choose a tag">
-                <ui-select-match placeholder="Filter by tags...">{{$item}}</ui-select-match>
+                <ui-select-match apiman-i18n-key="filter-by-tags" placeholder="Filter by tags...">{{$item}}</ui-select-match>
                 <ui-select-choices repeat="tag in tags | filter:$select.search | orderBy: tag"
                                    style="margin: 0 -1px auto -1px; width: 101%;">
                   {{tag}}

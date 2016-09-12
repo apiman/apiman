@@ -35,7 +35,7 @@
                         <a class="client-app-delete"
                            href="#"
                            ng-click="callDelete()"
-                           apiman-i18n-key="delete">Delete Client App</a>
+                           apiman-i18n-key="delete-client-app">Delete Client App</a>
                       </li>
                     </ul>
                   </li>
