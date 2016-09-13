@@ -278,10 +278,10 @@ public abstract class GatewayServlet extends HttpServlet {
     protected void writeResponse(HttpServletResponse response, ApiResponse sresponse) {
         response.setStatus(sresponse.getCode());
         HeaderMap headers = sresponse.getHeaders();
-        for (Map.Entry<String, String> entry : headers) {
-            String hname = entry.getKey();
-            String hval = entry.getValue();
-            response.setHeader(hname, hval);
+        for (String hkey : headers.keySet()) {
+            for (String hval : headers.getAll(hkey)) {
+                response.addHeader(hkey, hval);
+            }
         }
     }
 
