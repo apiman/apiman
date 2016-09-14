@@ -72,7 +72,6 @@
     <!-- Instruct the build to use only UTF-8 encoding for source code -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
-
     <version.apiman>1.3.0.Final</version.apiman>
     <version.javadoc.plugin>2.10.1</version.javadoc.plugin>
     <version.compiler.plugin>3.2</version.compiler.plugin>
@@ -90,6 +89,7 @@
     <version.junit>4.11</version.junit>
 
     <version.commons-lang>2.6</version.commons-lang>
+    <version.com.google.guava>21.0</version.com.google.guava>
     <version.com.fasterxml.jackson>2.5.4</version.com.fasterxml.jackson>
     <version.org.keycloak>2.0.0.Final</version.org.keycloak>
     <version.org.bouncycastle>1.52</version.org.bouncycastle>
@@ -214,6 +214,11 @@
         <version>${version.com.fasterxml.jackson}</version>
       </dependency>
       <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>${version.com.google.guava}</version>
+      </dependency>
+      <dependency>
         <groupId>org.keycloak</groupId>
         <artifactId>keycloak-common</artifactId>
         <version>${version.org.keycloak}</version>
@@ -256,6 +261,7 @@
     <module>unique-header-policy</module>
     <module>url-whitelist-policy</module>
     <module>repository</module>
+    <module>auth-3scale</module>
   </modules>
 
   <profiles>
@@ -360,40 +366,40 @@
           <artifactId>maven-gpg-plugin</artifactId>
           <version>${version.maven-gpg-plugin.plugin}</version>
         </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-enforcer-plugin</artifactId>
-          <version>${version.enforcer.plugin}</version>
-          <dependencies>
-            <dependency>
-              <groupId>de.is24.maven.enforcer.rules</groupId>
-              <artifactId>illegal-transitive-dependency-check</artifactId>
-              <version>1.7.4</version>
-            </dependency>
-          </dependencies>
-          <executions>
-            <execution>
-              <id>enforcer-transitives-check</id>
-              <goals>
-                <goal>enforce</goal>
-              </goals>
-              <phase>process-classes</phase>
-              <configuration>
-                <fail>true</fail>
-                <rules>
-                  <illegalTransitiveDependencyCheck implementation="de.is24.maven.enforcer.rules.IllegalTransitiveDependencyCheck">
-                    <reportOnly>false</reportOnly>
-                    <regexIgnoredClasses>
-                      <regexIgnoredClass>javax\..+</regexIgnoredClass>
-                      <regexIgnoredClass>org.w3c.dom\..+</regexIgnoredClass>
-                    </regexIgnoredClasses>
-                    <useClassesFromLastBuild>true</useClassesFromLastBuild>
-                  </illegalTransitiveDependencyCheck>
-                </rules>
-              </configuration>
-            </execution>
-          </executions>
-        </plugin>
+      <!--   <plugin> -->
+      <!--     <groupId>org.apache.maven.plugins</groupId> -->
+      <!--     <artifactId>maven-enforcer-plugin</artifactId> -->
+      <!--     <version>${version.enforcer.plugin}</version> -->
+      <!--     <dependencies> -->
+      <!--       <dependency> -->
+      <!--         <groupId>de.is24.maven.enforcer.rules</groupId> -->
+      <!--         <artifactId>illegal-transitive-dependency-check</artifactId> -->
+      <!--         <version>1.7.4</version> -->
+      <!--       </dependency> -->
+      <!--     </dependencies> -->
+      <!--     <executions> -->
+      <!--       <execution> -->
+      <!--         <id>enforcer-transitives-check</id> -->
+      <!--         <goals> -->
+      <!--           <goal>enforce</goal> -->
+      <!--         </goals> -->
+      <!--         <phase>process-classes</phase> -->
+      <!--         <configuration> -->
+      <!--           <fail>true</fail> -->
+      <!--           <rules> -->
+      <!--             <illegalTransitiveDependencyCheck implementation="de.is24.maven.enforcer.rules.IllegalTransitiveDependencyCheck"> -->
+      <!--               <reportOnly>false</reportOnly> -->
+      <!--               <regexIgnoredClasses> -->
+      <!--                 <regexIgnoredClass>javax\..+</regexIgnoredClass> -->
+      <!--                 <regexIgnoredClass>org.w3c.dom\..+</regexIgnoredClass> -->
+      <!--               </regexIgnoredClasses> -->
+      <!--               <useClassesFromLastBuild>true</useClassesFromLastBuild> -->
+      <!--             </illegalTransitiveDependencyCheck> -->
+      <!--           </rules> -->
+      <!--         </configuration> -->
+      <!--       </execution> -->
+      <!--     </executions> -->
+      <!--   </plugin> -->
       </plugins>
     </pluginManagement>
     <plugins>

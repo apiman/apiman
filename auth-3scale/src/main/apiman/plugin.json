@@ -1,0 +1,6 @@
+{
+  "frameworkVersion" : 1.0,
+  "name" : "3scale auth plugin",
+  "description" : "Blergy blerg.",
+  "version" : "${project.version}"
+}

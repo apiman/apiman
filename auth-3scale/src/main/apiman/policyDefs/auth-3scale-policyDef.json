@@ -1,0 +1,15 @@
+{
+  "id" : "auth-3scale-policy",
+  "name" : "3scale auth",
+  "description" : "todo.",
+  "policyImpl" : "plugin:${project.groupId}:${project.artifactId}:${project.version}:${project.packaging}/io.apiman.plugins.auth3scale.Auth3Scale",
+  "icon" : "header",
+  "formType" : "JsonSchema",
+  "templates" : [
+    {
+      "language" : null,
+      "template" : "todo"
+    }
+  ],
+  "form" : "schemas/auth-3scale-policyDef.schema"
+}
