@@ -1,0 +1,49 @@
+POST /organizations/clientB/clients/ClientApp/versions/1.0/contracts admin/admin
+Content-Type: application/json
+
+{"planId":"plan","apiOrgId":"provider","apiId":"api","apiVersion":"1.0"}
+----
+200
+Content-Type: application/json
+
+{
+  "client" : {
+    "client" : {
+      "organization" : {
+        "id" : "clientB"
+      },
+      "id" : "ClientApp",
+      "name" : "ClientApp",
+      "createdBy" : "admin"
+    },
+    "status" : "Ready",
+    "version" : "1.0",
+    "createdBy" : "admin"
+  },
+  
+  "api":{
+    "api" : {
+      "organization" : {
+        "id" : "provider"
+      },
+      "id" : "api",
+      "name" : "api",
+      "createdBy" : "admin"
+    },
+    "createdBy" : "admin"
+  },
+  
+  "plan" : {
+    "plan" : {
+      "organization" : {
+        "id" : "provider"
+      },
+      "id" : "plan",
+      "name" : "plan",
+      "createdBy" : "admin"
+    },
+    "status" : "Locked",
+    "version" : "1.0",
+    "createdBy" : "admin"
+  }
+}

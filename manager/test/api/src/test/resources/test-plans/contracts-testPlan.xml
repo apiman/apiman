@@ -67,7 +67,7 @@
 
     <test name="Re-Register Client 1 (success)">test-plan-data/contracts/publish/021_re-register-client-1.resttest</test>
   </testGroup>
-
+  
   <!-- Auditing -->
   <testGroup name="Ensure Auditing">
     <test name="Client Activity">test-plan-data/contracts/auditing/001_client_activity.resttest</test>
@@ -79,6 +79,12 @@
     <test name="Create Client 1 Version 2.0">test-plan-data/contracts/multi-contract/001_create-client-version-2.0.resttest</test>
     <test name="Create Contract - Plan A">test-plan-data/contracts/multi-contract/002_create-contract-1.resttest</test>
     <test name="Create Contract - Plan B (error)">test-plan-data/contracts/multi-contract/003_create-contract-2.resttest</test>
+  </testGroup>
+
+  <!-- Some Error Cases -->
+  <testGroup name="Error Cases">
+    <test name="Request Non-existant Contract">test-plan-data/contracts/error-cases/001_get-contract-404.resttest</test>
+    <test name="Create Contract For Non-Existant Client">test-plan-data/contracts/error-cases/002_create-contract-no-client.resttest</test>
   </testGroup>
 
 </testPlan>

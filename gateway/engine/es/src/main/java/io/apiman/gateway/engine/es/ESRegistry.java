@@ -30,6 +30,9 @@ import io.searchbox.client.JestResult;
 import io.searchbox.core.Delete;
 import io.searchbox.core.Get;
 import io.searchbox.core.Index;
+import io.searchbox.core.Search;
+import io.searchbox.core.SearchResult;
+import io.searchbox.core.SearchResult.Hit;
 import io.searchbox.params.Parameters;
 
 import java.io.IOException;
@@ -156,7 +159,7 @@ public class ESRegistry extends AbstractESComponent implements IRegistry {
                 throw new RegistrationException(Messages.i18n.format("ESRegistry.ApiNotFoundInOrg", apiId, orgId));  //$NON-NLS-1$
             }
         } catch (IOException e) {
-            throw new RegistrationException(Messages.i18n.format("ESRegistry.ErrorValidatingApp"), e); //$NON-NLS-1$
+            throw new RegistrationException(Messages.i18n.format("ESRegistry.ErrorValidatingClient"), e); //$NON-NLS-1$
         }
     }
 
@@ -165,7 +168,8 @@ public class ESRegistry extends AbstractESComponent implements IRegistry {
      */
     @Override
     public void unregisterClient(final Client client, final IAsyncResultHandler<Void> handler) {
-        final String id = getClientId(client);
+        final Client lclient = lookupClient(client.getOrganizationId(), client.getClientId(), client.getVersion());
+        final String id = getClientId(lclient);
 
         try {
             Delete delete = new Delete.Builder(id).index(getIndexName()).type("client").build(); //$NON-NLS-1$
@@ -173,10 +177,50 @@ public class ESRegistry extends AbstractESComponent implements IRegistry {
             if (result.isSucceeded()) {
                 handler.handle(AsyncResultImpl.create((Void) null));
             } else {
-                handler.handle(AsyncResultImpl.create(new PublishingException(Messages.i18n.format("ESRegistry.AppNotFound")), Void.class)); //$NON-NLS-1$
+                handler.handle(AsyncResultImpl.create(new PublishingException(Messages.i18n.format("ESRegistry.ClientNotFound")), Void.class)); //$NON-NLS-1$
             }
         } catch (IOException e) {
-            handler.handle(AsyncResultImpl.create(new PublishingException(Messages.i18n.format("ESRegistry.ErrorUnregisteringApp"), e), Void.class)); //$NON-NLS-1$
+            handler.handle(AsyncResultImpl.create(new PublishingException(Messages.i18n.format("ESRegistry.ErrorUnregisteringClient"), e), Void.class)); //$NON-NLS-1$
+        }
+    }
+
+    /**
+     * Searches for a client by its orgid:clientId:version and returns it.
+     * @param orgId
+     * @param clientId
+     * @param version
+     */
+    private Client lookupClient(String orgId, String clientId, String version) {
+        String query = "{" + 
+                "  \"query\": {" + 
+                "    \"filtered\": { " + 
+                "      \"filter\": {" + 
+                "        \"and\" : [" + 
+                "          {" + 
+                "            \"term\": { \"organizationId\": \"" + orgId + "\" }" + 
+                "          }," + 
+                "          {" + 
+                "            \"term\": { \"clientId\": \"" + clientId + "\" }" + 
+                "          }," + 
+                "          {" + 
+                "            \"term\": { \"version\": \"" + version + "\" }" + 
+                "          }" + 
+                "        ]" + 
+                "      }" + 
+                "    }" + 
+                "  }" + 
+                "}";
+        try {
+            Search search = new Search.Builder(query).addIndex(getIndexName())
+                    .addType("client").build();
+            SearchResult response = getClient().execute(search);
+            if (response.getTotal() < 1) {
+                throw new IOException();
+            }
+            Hit<Client,Void> hit = response.getFirstHit(Client.class);
+            return hit.source;
+        } catch (IOException e) {
+            throw new RegistrationException(Messages.i18n.format("ESRegistry.ClientNotFound"), e);  //$NON-NLS-1$
         }
     }
 

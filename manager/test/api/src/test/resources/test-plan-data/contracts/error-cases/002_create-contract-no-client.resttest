@@ -1,0 +1,18 @@
+POST /organizations/Organization1/clients/Client1/versions/1.0/contracts admin/admin
+Content-Type: application/json
+
+{
+  "apiOrgId" : "Organization2",
+  "apiId" : "API-NA",
+  "apiVersion" : "1.0",
+  "planId" : "PlanA"
+}
+----
+404
+Content-Type: application/json
+
+{
+  "type" : "ApiNotFoundException",
+  "errorCode" : 5002,
+  "message" : "API does not exist: API-NA"
+}

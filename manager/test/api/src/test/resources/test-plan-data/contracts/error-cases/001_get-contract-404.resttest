@@ -1,0 +1,11 @@
+GET /organizations/Organization1/clients/Client1/versions/1.0/contracts/666 admin/admin
+
+----
+404
+Content-Type: application/json
+
+{
+  "type" : "ContractNotFoundException",
+  "errorCode" : 4004,
+  "message" : "Contract does not exist: 666"
+}

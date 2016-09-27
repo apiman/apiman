@@ -1,0 +1,25 @@
+POST /organizations/provider/apis admin/admin
+Content-Type: application/json
+
+{
+  "name":"api", 
+  "description":"", 
+  "endpointContentType":"json", 
+  "initialVersion":"1.0", 
+  "endpoint":"http://some_host",
+  "publicAPI":"true", 
+  "plans":[ { "version":"1.0", "planId":"plan" }], 
+  "endpointType":"rest", 
+  "parsePayload":"false"}
+----
+200
+Content-Type: application/json
+
+{
+  "organization" : {
+    "id" : "provider"
+  },
+  "id" : "api",
+  "name" : "api",
+  "createdBy" : "admin"
+}
