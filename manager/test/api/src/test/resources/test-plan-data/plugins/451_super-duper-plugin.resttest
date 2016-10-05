@@ -1,0 +1,15 @@
+GET /plugins/${plugin-id}/policyDefs admin/admin
+----
+200
+Content-Type: application/json
+
+[
+  {
+    "description" : "A super duper policy that does amazing things.",
+    "formType" : "AngularTemplate",
+    "icon" : "rocket",
+    "id" : "super-duper-policy",
+    "name" : "Super Duper Policy",
+    "policyImpl" : "plugin:io.apiman.plugins:apiman-plugins-super-duper-policy:1.2.6-SNAPSHOT:war/io.apiman.plugins.super_duper_policy.SuperDuperPolicy"
+  }
+]

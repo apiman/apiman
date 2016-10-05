@@ -38,6 +38,35 @@ module ApimanRPC {
                 }});
         }]);
 
+
+    export var CustomPluginSvcs = _module.service('CustomPluginSvcs', [
+        '$rootScope',
+        '$http',
+        '$resource',
+        '$sce',
+        'Configuration',
+        function($rootScope, $http, $resource, $sce, Configuration) {
+        return {
+            getSelectedDef: function() {
+                return $rootScope.selectedDef;
+            },
+            setSelectedDef: function(selectedDef) {
+                return $rootScope.selectedDef = selectedDef;
+            },
+            getPolicyForm: function(pluginId, policyDefId, success, error) {
+                var req = {
+                    method: 'GET',
+                    url: Configuration.api.endpoint + '/plugins/' + pluginId + '/policyDefs/' + policyDefId + '/form',
+                    headers: {
+                        'Content-Type': 'text/html'
+                    }
+                };
+
+                return $http(req).then(success, error);
+            }
+        }
+    }]);
+
     export var UserSvcs = _module.factory('UserSvcs', ['$resource', 'Configuration',
         function($resource, Configuration) {
             var endpoint = Configuration.api.endpoint + '/users/:user/:entityType';

@@ -16,8 +16,8 @@ module Apiman {
     };
 
     export var NewPolicyController = _module.controller("Apiman.NewPolicyController",
-        ['$q', '$location', '$scope', 'OrgSvcs', 'ApimanSvcs', 'PageLifecycle', 'Logger', '$routeParams',
-        ($q, $location, $scope, OrgSvcs, ApimanSvcs, PageLifecycle, Logger, $routeParams) => {
+        ['$q', '$location', '$sce', '$scope', 'OrgSvcs', 'ApimanSvcs', 'CustomPluginSvcs', 'PageLifecycle', 'Logger', '$routeParams',
+        ($q, $location, $sce, $scope, OrgSvcs, ApimanSvcs, CustomPluginSvcs, PageLifecycle, Logger, $routeParams) => {
             var params = $routeParams;
             
             var pageData = {
@@ -36,6 +36,10 @@ module Apiman {
                     $scope.config = new Object();
                     if ($scope.selectedDef.formType == 'JsonSchema') {
                         $scope.include = 'plugins/api-manager/html/policyForms/JsonSchema.include';
+                    } else if($scope.selectedDef.formType == 'AngularTemplate') {
+                        // Set include scope to custom HTML file that will include set template
+                        //$scope.include = 'plugins/api-manager/html/forms/custom.html';
+                        $scope.include = undefined;
                     } else {
                         var inc = ConfigForms[$scope.selectedDef.id];
 
@@ -60,6 +64,8 @@ module Apiman {
 
                     $scope.selectedDef = newDef;
 
+                    CustomPluginSvcs.setSelectedDef(newDef);
+
                     loadTemplate(newValue);
                 }
             };
@@ -71,6 +77,8 @@ module Apiman {
                     $scope.config = new Object();
                     if ($scope.selectedDef.formType == 'JsonSchema') {
                         $scope.include = 'plugins/api-manager/html/policyForms/JsonSchema.include';
+                    } else if($scope.selectedDef.formType == 'AngularTemplate') {
+                        $scope.include = undefined;
                     } else {
                         var inc = ConfigForms[$scope.selectedDef.id];
                         if (!inc) {

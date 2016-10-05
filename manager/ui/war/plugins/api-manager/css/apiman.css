@@ -1958,3 +1958,7 @@ html, body {height: 100%;}
 #api-catalog-filters .input-search {
   width: 250px;
 }
+
+.custom-template {
+  margin-bottom: 40px;
+}

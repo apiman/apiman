@@ -16,6 +16,7 @@
 
 package io.apiman.manager.api.rest.impl;
 
+import io.apiman.common.logging.IApimanLogger;
 import io.apiman.common.plugin.Plugin;
 import io.apiman.common.plugin.PluginClassLoader;
 import io.apiman.common.plugin.PluginCoordinates;
@@ -35,7 +36,6 @@ import io.apiman.manager.api.core.config.ApiManagerConfig;
 import io.apiman.manager.api.core.exceptions.InvalidPluginException;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.core.logging.ApimanLogger;
-import io.apiman.common.logging.IApimanLogger;
 import io.apiman.manager.api.rest.contract.IPluginResource;
 import io.apiman.manager.api.rest.contract.exceptions.AbstractRestException;
 import io.apiman.manager.api.rest.contract.exceptions.NotAuthorizedException;
@@ -50,7 +50,6 @@ import io.apiman.manager.api.security.ISecurityContext;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringWriter;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
@@ -64,8 +63,8 @@ import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-
-import org.apache.commons.io.IOUtils;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -316,13 +315,15 @@ public class PluginResourceImpl implements IPluginResource {
     }
 
     /**
+     * @return 
      * @see io.apiman.manager.api.rest.contract.IPluginResource#getPolicyForm(java.lang.Long, java.lang.String)
      */
     @Override
-    public String getPolicyForm(Long pluginId, String policyDefId) throws PluginNotFoundException,
+    public Response getPolicyForm(Long pluginId, String policyDefId) throws PluginNotFoundException,
             PluginResourceNotFoundException, PolicyDefinitionNotFoundException {
         PluginBean pbean;
         PolicyDefinitionBean pdBean;
+        
         try {
             storage.beginTx();
             pbean = storage.getPlugin(pluginId);
@@ -347,27 +348,35 @@ public class PluginResourceImpl implements IPluginResource {
             if (pdBean.getPluginId() == null || !pdBean.getPluginId().equals(pbean.getId())) {
                 throw ExceptionFactory.pluginNotFoundException(pluginId);
             }
-            if (pdBean.getFormType() == PolicyFormType.JsonSchema && pdBean.getForm() != null) {
+            if ((pdBean.getFormType() == PolicyFormType.JsonSchema || pdBean.getFormType() == PolicyFormType.AngularTemplate) 
+                    && pdBean.getForm() != null) {
                 String formPath = pdBean.getForm();
+                
                 if (!formPath.startsWith("/")) { //$NON-NLS-1$
                     formPath = "META-INF/apiman/policyDefs/" + formPath; //$NON-NLS-1$
                 } else {
                     formPath = formPath.substring(1);
                 }
+                
                 Plugin plugin = pluginRegistry.loadPlugin(coordinates);
                 PluginClassLoader loader = plugin.getLoader();
                 InputStream resource = null;
-                try {
-                    resource = loader.getResourceAsStream(formPath);
-                    if (resource == null) {
-                        throw ExceptionFactory.pluginResourceNotFoundException(formPath, coordinates);
-                    }
-                    StringWriter writer = new StringWriter();
-                    IOUtils.copy(resource, writer);
-                    return writer.toString();
-                } finally {
-                    IOUtils.closeQuietly(resource);
+                
+                resource = loader.getResourceAsStream(formPath);
+                
+                if (resource == null) {
+                    throw ExceptionFactory.pluginResourceNotFoundException(formPath, coordinates);
                 }
+                
+                MediaType type = MediaType.APPLICATION_JSON_TYPE;
+                
+                if (pdBean.getFormType() == PolicyFormType.AngularTemplate) {
+                    type = MediaType.TEXT_HTML_TYPE;
+                }
+                
+                return Response
+                        .ok(resource, type)
+                        .build();
             } else {
                 throw ExceptionFactory.pluginResourceNotFoundException(null, coordinates);
             }

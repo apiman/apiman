@@ -34,6 +34,6 @@ package io.apiman.manager.api.beans.summary;
  */
 public enum PolicyFormType {
     
-    Default, JsonSchema;
+    Default, JsonSchema, AngularTemplate;
 
 }
