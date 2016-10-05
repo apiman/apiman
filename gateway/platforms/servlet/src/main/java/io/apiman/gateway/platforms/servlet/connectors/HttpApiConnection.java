@@ -79,6 +79,8 @@ public class HttpApiConnection implements IApiConnection, IApiConnectionResponse
         SUPPRESSED_RESPONSE_HEADERS.add("OkHttp-Response-Source"); //$NON-NLS-1$
         SUPPRESSED_RESPONSE_HEADERS.add("OkHttp-Selected-Protocol"); //$NON-NLS-1$
         SUPPRESSED_RESPONSE_HEADERS.add("OkHttp-Sent-Millis"); //$NON-NLS-1$
+        SUPPRESSED_RESPONSE_HEADERS.add("Transfer-Encoding"); //$NON-NLS-1$
+        SUPPRESSED_RESPONSE_HEADERS.add("Connection"); //$NON-NLS-1$
     }
 
     private ApiRequest request;
