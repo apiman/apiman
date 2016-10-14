@@ -15,19 +15,21 @@
  */
 package io.apiman.gateway.engine.components.http;
 
+import io.apiman.gateway.engine.io.IApimanBuffer;
+
 /**
  * An async client request returned by the http client component.
- * 
+ *
  * @author eric.wittmann@redhat.com
  */
 public interface IHttpClientRequest {
-    
+
     /**
      * Sets the connect timeout (in millis);
      * @param timeout
      */
     void setConnectTimeout(int timeout);
-    
+
     /**
      * Sets the read timeout (in millis).
      * @param timeout
@@ -36,7 +38,7 @@ public interface IHttpClientRequest {
 
     /**
      * Adds a header to the request.
-     * 
+     *
      * @param headerName
      * @param headerValue
      */
@@ -44,16 +46,24 @@ public interface IHttpClientRequest {
 
     /**
      * Removes a header.
-     * 
+     *
      * @param headerName
      */
     void removeHeader(String headerName);
 
     /**
+     * Writes some data to the request, forming the body. Obviously this is
+     * optional depending on the type of request being made.
+     *
+     * @param buffer the data to write.
+     */
+    void write(IApimanBuffer buffer);
+
+    /**
      * Writes some data to the request. This data represents the body of the
      * http request. Obviously this is optional depending on the type of request
      * being made.
-     * 
+     *
      * @param data
      */
     void write(byte[] data);
@@ -61,12 +71,11 @@ public interface IHttpClientRequest {
     /**
      * Writes some data to the request, forming the body. Obviously this is
      * optional depending on the type of request being made.
-     * 
+     *
      * @param body
      * @param charsetName
      */
     void write(String body, String charsetName);
-
     /**
      * Called once all headers have been set and all data has been written.
      */
