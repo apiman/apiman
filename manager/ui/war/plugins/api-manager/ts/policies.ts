@@ -643,9 +643,40 @@ module Apiman {
                 $scope.setValid(valid);
             };
 
-            $scope.isEntityDisabled = EntityStatusSvc.isEntityDisabled;
-
             $scope.$watch('config', validate, true);
+            if (!$scope.config.statusCodes) {
+                $scope.config.statusCodes = [];
+            }
+
+            $scope.add = function (statusCode) {
+                $scope.remove(statusCode);
+                $scope.config.statusCodes.push(statusCode);
+                $scope.selectedStatusCode = [statusCode];
+                $scope.statusCode = undefined;
+                $('#status-code').focus();
+            };
+
+            $scope.remove = function (statusCodes) {
+                angular.forEach(statusCodes, function (statusCode) {
+                    var idx = -1;
+                    angular.forEach($scope.config.statusCodes, function (item, index) {
+                        if (item == statusCode) {
+                            idx = index;
+                        }
+                    });
+                    if (idx != -1) {
+                        $scope.config.statusCodes.splice(idx, 1);
+                    }
+                });
+                $scope.selectedStatusCode = undefined;
+            };
+
+            $scope.clear = function () {
+                $scope.config.statusCodes = [];
+                $scope.selectedStatusCode = undefined;
+            };
+
+            $scope.isEntityDisabled = EntityStatusSvc.isEntityDisabled;
         }]);
 
     _module.controller('Apiman.URLRewritingFormController',

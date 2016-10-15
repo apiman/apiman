@@ -15,6 +15,9 @@
  */
 package io.apiman.gateway.engine.policies.config;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Configuration object for the Caching policy.
  *
@@ -23,6 +26,7 @@ package io.apiman.gateway.engine.policies.config;
 public class CachingConfig {
 
     private long ttl; // in seconds
+    private List<String> statusCodes = new ArrayList<>();
 
     /**
      * Constructor.
@@ -44,4 +48,17 @@ public class CachingConfig {
         this.ttl = ttl;
     }
 
+    /**
+     * @return the status codes
+     */
+    public List<String> getStatusCodes() {
+        return statusCodes;
+    }
+
+    /**
+     * @param statusCodes the statusCodes to set
+     */
+    public void setStatusCodes(List<String> statusCodes) {
+        this.statusCodes = statusCodes;
+    }
 }
