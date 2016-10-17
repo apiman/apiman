@@ -35,6 +35,9 @@ import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
 
 import java.io.IOException;
+import java.util.List;
+
+import static java.util.Optional.ofNullable;
 
 /**
  * Policy that enables caching for back-end APIs responses.
@@ -126,8 +129,14 @@ public class CachingPolicy extends AbstractMappedDataPolicy<CachingConfig> imple
     @Override
     protected IReadWriteStream<ApiResponse> responseDataHandler(final ApiResponse response,
             IPolicyContext context, CachingConfig policyConfiguration) {
-        // Possible cache the response for future posterity.
-        Boolean shouldCache = context.getAttribute(SHOULD_CACHE_ATTR, Boolean.TRUE);
+
+        // Possibly cache the response for future posterity.
+        // Check the response code against list in config (empty/null list means cache all).
+        final boolean shouldCache = (context.getAttribute(SHOULD_CACHE_ATTR, Boolean.TRUE) &&
+                ofNullable(policyConfiguration.getStatusCodes())
+                    .map(statusCodes -> statusCodes.isEmpty() || statusCodes.contains(String.valueOf(response.getCode())))
+                    .orElse(true));
+
         if (shouldCache) {
             try {
                 String cacheId = context.getAttribute(CACHE_ID_ATTR, null);
