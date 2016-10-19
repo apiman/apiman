@@ -697,7 +697,11 @@ module Apiman {
                     valid = false;
                 }
 
-                if (!config.processBody && !config.processHeaders) {
+                if (!config.processResponseBody &&
+                    !config.processResponseHeaders &&
+                    !config.processRequestHeaders &&
+                    !config.processRequestUrl) {
+
                     valid = false;
                 }
 

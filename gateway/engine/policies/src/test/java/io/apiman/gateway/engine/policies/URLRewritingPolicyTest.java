@@ -15,20 +15,16 @@
  */
 package io.apiman.gateway.engine.policies;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.ApiResponse;
-import io.apiman.test.policies.ApimanPolicyTest;
-import io.apiman.test.policies.BackEndApi;
-import io.apiman.test.policies.Configuration;
-import io.apiman.test.policies.IPolicyTestBackEndApi;
-import io.apiman.test.policies.PolicyTestBackEndApiResponse;
-import io.apiman.test.policies.PolicyTestRequest;
-import io.apiman.test.policies.PolicyTestRequestType;
-import io.apiman.test.policies.PolicyTestResponse;
-import io.apiman.test.policies.TestingPolicy;
+import io.apiman.test.policies.*;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Unit test.
@@ -43,20 +39,22 @@ public class URLRewritingPolicyTest extends ApimanPolicyTest {
     @Configuration("{" +
             "  \"fromRegex\" : \"http://localhost:8080/path/to/api\",\n" +
             "  \"toReplacement\" : \"http://example.org:8888/my-api/api-path\",\n" +
-            "  \"processBody\" : true,\n" +
-            "  \"processHeaders\" : true\n" +
+            "  \"processResponseBody\" : true,\n" +
+            "  \"processResponseHeaders\" : true,\n" +
+            "  \"processRequestHeaders\" : false,\n" +
+            "  \"processRequestUrl\" : false\n" +
             "}")
     @BackEndApi(URLRewritingTestBackend.class)
     public void testFullRewriting() throws Throwable {
-        PolicyTestRequest request = PolicyTestRequest.build(PolicyTestRequestType.GET, "/some/path/to/resource");
+        final PolicyTestRequest request = PolicyTestRequest.build(PolicyTestRequestType.GET, "/some/path/to/resource");
 
-        PolicyTestResponse response = send(request);
+        final PolicyTestResponse response = send(request);
         Assert.assertEquals("http://example.org:8888/my-api/api-path/specific-resource/action", response.headers().get("Location"));
         Assert.assertEquals("application/json", response.headers().get("Content-Type"));
         Assert.assertEquals("no-cache", response.headers().get("Cache"));
         Assert.assertEquals("http://example.org:8888/my-api/api-path/alt-resource/alt-action", response.headers().get("X-Alt-Location"));
         Assert.assertEquals("http://localhost:8080/path-12948792147", response.headers().get("ETag"));
-        String responseBody = response.body();
+        final String responseBody = response.body();
         Assert.assertNotNull(responseBody);
         Assert.assertEquals("\r\n" +
                 "{\r\n" +
@@ -67,6 +65,32 @@ public class URLRewritingPolicyTest extends ApimanPolicyTest {
                 "  \"property-4\" : \"value-4\",\r\n" +
                 "  \"api-alt\" : \"http://example.org:8888/my-api/api-path/alt-action/there\"\r\n" +
                 "}", responseBody);
+    }
+
+    /**
+     * Rewrite the request URL and a URL in the request header.
+     */
+    @Test
+    @Configuration("{" +
+            "  \"fromRegex\" : \"\\/my-api/(.*)\",\n" +
+            "  \"toReplacement\" : \"/$1?foo=bar\",\n" +
+            "  \"processResponseBody\" : false,\n" +
+            "  \"processResponseHeaders\" : false,\n" +
+            "  \"processRequestHeaders\" : true,\n" +
+            "  \"processRequestUrl\" : true\n" +
+            "}")
+    @BackEndApi(EchoBackEndApi.class)
+    public void testRewriteRequest() throws Throwable {
+        final PolicyTestRequest request = PolicyTestRequest.build(PolicyTestRequestType.GET, "/my-api/api-path");
+        request.header("X-Custom-Location", "/my-api/another-path");
+
+        final PolicyTestResponse response = send(request);
+        final String responseBody = response.body();
+        Assert.assertNotNull(responseBody);
+
+        final HashMap responseMap = new ObjectMapper().readValue(responseBody, HashMap.class);
+        Assert.assertEquals("/api-path?foo=bar", responseMap.get("resource"));
+        Assert.assertEquals("/another-path?foo=bar", ((Map) responseMap.get("headers")).get("X-Custom-Location"));
     }
 
     public static final class URLRewritingTestBackend implements IPolicyTestBackEndApi {

@@ -43,23 +43,29 @@ public class URLRewritingPolicyConfigTest {
         URLRewritingConfig parsedConfig = (URLRewritingConfig) parsed;
         Assert.assertNull(parsedConfig.getFromRegex());
         Assert.assertNull(parsedConfig.getToReplacement());
-        Assert.assertFalse(parsedConfig.isProcessBody());
-        Assert.assertFalse(parsedConfig.isProcessHeaders());
+        Assert.assertFalse(parsedConfig.isProcessResponseBody());
+        Assert.assertFalse(parsedConfig.isProcessResponseHeaders());
+        Assert.assertFalse(parsedConfig.isProcessRequestHeaders());
+        Assert.assertFalse(parsedConfig.isProcessRequestUrl());
 
         // Sample real config
         config = "{\n" +
                 "  \"fromRegex\" : \"http://localhost:8080/path/to/api\",\n" +
                 "  \"toReplacement\" : \"http://example.org:8888/my-api/api-path\",\n" +
-                "  \"processBody\" : true,\n" +
-                "  \"processHeaders\" : true\n" +
+                "  \"processResponseBody\" : true,\n" +
+                "  \"processResponseHeaders\" : true,\n" +
+                "  \"processRequestHeaders\" : true,\n" +
+                "  \"processRequestUrl\" : true\n" +
                 "}";
 
         parsed = policy.parseConfiguration(config);
         parsedConfig = (URLRewritingConfig) parsed;
         Assert.assertEquals("http://localhost:8080/path/to/api", parsedConfig.getFromRegex());
         Assert.assertEquals("http://example.org:8888/my-api/api-path", parsedConfig.getToReplacement());
-        Assert.assertTrue(parsedConfig.isProcessBody());
-        Assert.assertTrue(parsedConfig.isProcessHeaders());
+        Assert.assertTrue(parsedConfig.isProcessResponseBody());
+        Assert.assertTrue(parsedConfig.isProcessResponseHeaders());
+        Assert.assertTrue(parsedConfig.isProcessRequestHeaders());
+        Assert.assertTrue(parsedConfig.isProcessRequestUrl());
     }
 
 }

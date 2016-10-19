@@ -354,7 +354,7 @@ X-RestTest-ArrayOrdering: any
       "icon": "pencil-square",
       "templates": [
         {
-          "template": "Responses will be modified by finding all text matching regular expression '' with ''."
+          "template": "Requests and/or responses will be modified by finding all text matching regular expression '' with ''."
         }
       ],
       "formType": "Default",

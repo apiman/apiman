@@ -17,12 +17,20 @@
       <dt style="margin-top: 25px" apiman-i18n-key="urlrewriting.where-to-find">Where to Find Them</dt>
       <dd>
         <div>
-          <input id="processHeaders" type="checkbox" ng-model="config.processHeaders" ng-disabled="isEntityDisabled()"></input>
-          <label for="processHeaders" apiman-i18n-key="urlrewriting.process-headers" title="When enabled, apiman will rewrite URLs found in the API response headers.">Response HTTP headers</label>
+          <input id="processRequestUrl" type="checkbox" ng-model="config.processRequestUrl" ng-disabled="isEntityDisabled()"></input>
+          <label for="processRequestUrl" apiman-i18n-key="urlrewriting.process-request-url" title="When enabled, apiman will rewrite the API request URL.">Request URL</label>
         </div>
         <div>
-          <input id="processBody" type="checkbox" ng-model="config.processBody" ng-disabled="isEntityDisabled()"></input>
-          <label for="processBody" apiman-i18n-key="urlrewriting.process-body" title="When enabled, apiman will rewrite URLs found in the API response body.">Response HTTP body</label>
+          <input id="processRequestHeaders" type="checkbox" ng-model="config.processRequestHeaders" ng-disabled="isEntityDisabled()"></input>
+          <label for="processRequestHeaders" apiman-i18n-key="urlrewriting.process-request-headers" title="When enabled, apiman will rewrite URLs found in the API request headers.">Request HTTP headers</label>
+        </div>
+        <div>
+          <input id="processResponseHeaders" type="checkbox" ng-model="config.processResponseHeaders" ng-disabled="isEntityDisabled()"></input>
+          <label for="processResponseHeaders" apiman-i18n-key="urlrewriting.process-response-headers" title="When enabled, apiman will rewrite URLs found in the API response headers.">Response HTTP headers</label>
+        </div>
+        <div>
+          <input id="processResponseBody" type="checkbox" ng-model="config.processResponseBody" ng-disabled="isEntityDisabled()"></input>
+          <label for="processResponseBody" apiman-i18n-key="urlrewriting.process-response-body" title="When enabled, apiman will rewrite URLs found in the API response body.">Response HTTP body</label>
         </div>
       </dd>
     </dl>
