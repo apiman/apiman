@@ -22,8 +22,10 @@ public class URLRewritingConfig {
 
     private String fromRegex;
     private String toReplacement;
-    private boolean processBody;
-    private boolean processHeaders;
+    private boolean processRequestUrl;
+    private boolean processRequestHeaders;
+    private boolean processResponseHeaders;
+    private boolean processResponseBody;
 
     /**
      * Constructor.
@@ -60,31 +62,58 @@ public class URLRewritingConfig {
     }
 
     /**
-     * @return the processBody
+     * @return the processRequestUrl
      */
-    public boolean isProcessBody() {
-        return processBody;
+    public boolean isProcessRequestUrl() {
+        return processRequestUrl;
     }
 
     /**
-     * @param processBody the processBody to set
+     * @param processRequestUrl the processRequestUrl to set
      */
-    public void setProcessBody(boolean processBody) {
-        this.processBody = processBody;
+    public void setProcessRequestUrl(boolean processRequestUrl) {
+        this.processRequestUrl = processRequestUrl;
     }
 
     /**
-     * @return the processHeaders
+     * @return the processRequestHeaders
      */
-    public boolean isProcessHeaders() {
-        return processHeaders;
+    public boolean isProcessRequestHeaders() {
+        return processRequestHeaders;
     }
 
     /**
-     * @param processHeaders the processHeaders to set
+     * @param processRequestHeaders the processRequestHeaders to set
      */
-    public void setProcessHeaders(boolean processHeaders) {
-        this.processHeaders = processHeaders;
+    public void setProcessRequestHeaders(boolean processRequestHeaders) {
+        this.processRequestHeaders = processRequestHeaders;
     }
 
+    /**
+     * @return the processResponseHeaders
+     */
+    public boolean isProcessResponseHeaders() {
+        return processResponseHeaders;
+    }
+
+    /**
+     * @param processResponseHeaders the processResponseHeaders to set
+     */
+    public void setProcessResponseHeaders(boolean processResponseHeaders) {
+        this.processResponseHeaders = processResponseHeaders;
+    }
+
+    /**
+     * @return the processResponseBody
+     */
+    public boolean isProcessResponseBody() {
+        return processResponseBody;
+    }
+
+    /**
+     * @param processResponseBody the processResponseBody to set
+     */
+    public void setProcessResponseBody(boolean processResponseBody) {
+        this.processResponseBody = processResponseBody;
+    }
 }

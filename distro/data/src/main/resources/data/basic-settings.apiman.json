@@ -108,7 +108,7 @@
     "description" : "Responses from the back-end API will be modified by fixing up any incorrect URLs found with modified ones.  This is useful because apiman works through an API Gateway.",
     "icon" : "pencil-square",
     "templates" : [ {
-      "template" : "Responses will be modified by finding all text matching regular expression '@{fromRegex}' with '@{toReplacement}'."
+      "template" : "Requests and/or responses will be modified by finding all text matching regular expression '@{fromRegex}' with '@{toReplacement}'."
     } ],
     "formType" : "Default",
     "deleted" : false

@@ -52,26 +52,51 @@ public class URLRewritingPolicy extends AbstractMappedDataPolicy<URLRewritingCon
     }
 
     /**
+     * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#doApply(io.apiman.gateway.engine.beans.ApiRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
+     */
+    @Override
+    protected void doApply(ApiRequest request, IPolicyContext context, URLRewritingConfig config,
+            IPolicyChain<ApiRequest> chain) {
+        if (config.isProcessRequestUrl()) {
+            request.setDestination(request.getDestination().replaceAll(config.getFromRegex(), config.getToReplacement()));
+        }
+        if (config.isProcessRequestHeaders()) {
+            replaceHeaders(config, request.getHeaders());
+        }
+        super.doApply(request, context, config, chain);
+    }
+
+    /**
      * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#doApply(io.apiman.gateway.engine.beans.ApiResponse, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
      */
     @Override
     protected void doApply(ApiResponse response, IPolicyContext context, URLRewritingConfig config,
             IPolicyChain<ApiResponse> chain) {
-        if (config.isProcessHeaders()) {
-            HeaderMap headers = response.getHeaders();
-            for (Entry<String, String> entry : headers) {
-                String key = entry.getKey();
-                String value = entry.getValue();
-                value = doHeaderReplaceAll(value, config.getFromRegex(), config.getToReplacement());
-                if (value != null) {
-                    headers.put(key, value);
-                }
-            }
+        final HeaderMap headers = response.getHeaders();
+        if (config.isProcessResponseHeaders()) {
+            replaceHeaders(config, headers);
         }
-        if (config.isProcessBody() && response.getHeaders().containsKey("Content-Length")) { //$NON-NLS-1$
-            response.getHeaders().remove("Content-Length"); //$NON-NLS-1$
+        if (config.isProcessResponseBody() && headers.containsKey("Content-Length")) { //$NON-NLS-1$
+            headers.remove("Content-Length"); //$NON-NLS-1$
         }
         super.doApply(response, context, config, chain);
+    }
+
+    /**
+     * Perform replacement.
+     *
+     * @param config
+     * @param headers
+     */
+    private void replaceHeaders(URLRewritingConfig config, HeaderMap headers) {
+        for (Entry<String, String> entry : headers) {
+            String key = entry.getKey();
+            String value = entry.getValue();
+            value = doHeaderReplaceAll(value, config.getFromRegex(), config.getToReplacement());
+            if (value != null) {
+                headers.put(key, value);
+            }
+        }
     }
 
     /**
@@ -101,7 +126,7 @@ public class URLRewritingPolicy extends AbstractMappedDataPolicy<URLRewritingCon
     @Override
     protected IReadWriteStream<ApiResponse> responseDataHandler(ApiResponse response,
             IPolicyContext context, URLRewritingConfig policyConfiguration) {
-        if (policyConfiguration.isProcessBody()) {
+        if (policyConfiguration.isProcessResponseBody()) {
             return new URLRewritingStream(context.getComponent(IBufferFactoryComponent.class), response,
                     policyConfiguration.getFromRegex(), policyConfiguration.getToReplacement());
         } else {

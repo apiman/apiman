@@ -138,7 +138,7 @@
       "templates" : [
         {
           "language" : null,
-          "template" : "Responses will be modified by finding all text matching regular expression '@{fromRegex}' with '@{toReplacement}'."
+          "template" : "Requests and/or responses will be modified by finding all text matching regular expression '@{fromRegex}' with '@{toReplacement}'."
         }
       ]
     }
