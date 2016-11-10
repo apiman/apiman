@@ -41,6 +41,8 @@ public class BeanUtilsTest {
                 "My Injection: <img src=\\\"//a.fsdn.com/sd/topics/space_64.png\\\" alt=\\\"Space\\\" title=\\\"Space\\\" height=\\\"64\\\" width=\\\"64\\\">");
         assertIdFromName("1.0.7-SNAPSHOT", "1.0.7-SNAPSHOT");
         assertIdFromName("2.1.0_Final", "2.1.0_Final");
+        assertIdFromName("Teparados", "Té para dos");
+        assertIdFromName("Cajdladvoih", "Чай для двоих");
     }
 
     /**

@@ -18,4 +18,10 @@
   <testGroup name="Organization Auditing">
     <test name="Organization Activity">test-plan-data/organizations/auditing/001_activity.resttest</test>
   </testGroup>
+
+  <!-- Non-latin org name -->
+  <testGroup name="Non Latin Orgs">
+    <test name="Create Spanish Org">test-plan-data/organizations/i18n/001_create-spanish.resttest</test>
+    <test name="Create Russian Org">test-plan-data/organizations/i18n/002_create-russian.resttest</test>
+  </testGroup>
 </testPlan>
