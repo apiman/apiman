@@ -160,6 +160,7 @@
     <version.xmlunit>1.6</version.xmlunit>
     <version.io.vertx>3.3.2</version.io.vertx>
     <version.net.openhft>0.6</version.net.openhft>
+    <version.com.ibm.icu4j>57.1</version.com.ibm.icu4j>
   </properties>
 
   <dependencyManagement>
@@ -1054,6 +1055,13 @@
         <groupId>io.swagger</groupId>
         <artifactId>swagger-jaxrs</artifactId>
         <version>${version.io.swagger}</version>
+      </dependency>
+
+      <!-- Transliteration -->
+      <dependency>
+	<groupId>com.ibm.icu</groupId>
+	<artifactId>icu4j</artifactId>
+	<version>${version.com.ibm.icu4j}</version>
       </dependency>
 
       <!-- Test -->
