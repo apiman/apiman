@@ -15,6 +15,7 @@
  */
 package io.apiman.manager.api.beans;
 
+import com.ibm.icu.text.Transliterator;
 
 /**
  * Some simple bean utils.
@@ -27,12 +28,21 @@ public class BeanUtils {
     }
 
     /**
-     * Creates a bean id from the given bean name.  This essentially removes any
-     * non "word" characters from the name.
+     * Creates a bean id from the given bean name.
      * @param name the name
      * @return the id
      */
     public static final String idFromName(String name) {
+        Transliterator tr = Transliterator.getInstance("Any-Latin");
+        return removeNonWord(tr.transliterate(name));
+    }
+
+    /**
+     * This essentially removes any non "word" characters from the name.
+     * @param name the name
+     * @return the id
+     */
+    private static String removeNonWord(String name) {
         return name.replaceAll("[^\\w-\\.]", ""); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
@@ -43,6 +53,6 @@ public class BeanUtils {
      * @return true if valid, else false
      */
     public static final boolean isValidVersion(String version) {
-        return idFromName(version).equals(version);
+        return removeNonWord(version).equals(version);
     }
 }
