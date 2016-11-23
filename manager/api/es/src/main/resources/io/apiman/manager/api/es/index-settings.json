@@ -6,6 +6,7 @@
                     "type" : "string",
                     "fields" : { "raw" : { "type" : "string", "index" : "not_analyzed" } }
                 },
+                "id" : { "type" : "string", "index" : "not_analyzed" },
                 "createdBy" : { "type" : "string", "index" : "not_analyzed" },
                 "modifiedBy" : { "type" : "string", "index" : "not_analyzed" },
                 "gatewayType" : { "type" : "string", "index" : "not_analyzed" }
@@ -13,6 +14,7 @@
         },
         "download" : {
             "properties" : {
+                "id" : { "type" : "string", "index" : "not_analyzed" },
                 "path" : { "type" : "string", "index" : "not_analyzed" },
                 "type" : { "type" : "string", "index" : "not_analyzed" }
             }
@@ -23,6 +25,7 @@
                     "type" : "string",
                     "fields" : { "raw" : { "type" : "string", "index" : "not_analyzed" } }
                 },
+                "id" : { "type" : "string", "index" : "not_analyzed" },
                 "formType" : { "type" : "string", "index" : "not_analyzed" }
             }
         },
@@ -46,6 +49,7 @@
                     "type" : "string",
                     "fields" : { "raw" : { "type" : "string", "index" : "not_analyzed" } }
                 },
+                "id" : { "type" : "string", "index" : "not_analyzed" },
                 "createdBy" : { "type" : "string", "index" : "not_analyzed" }
             }
         },
@@ -71,12 +75,14 @@
                     "type" : "string",
                     "fields" : { "raw" : { "type" : "string", "index" : "not_analyzed" } }
                 },
+                "id" : { "type" : "string", "index" : "not_analyzed" },
                 "createdBy" : { "type" : "string", "index" : "not_analyzed" },
                 "modifiedBy" : { "type" : "string", "index" : "not_analyzed" }
             }
         },
         "auditEntry" : {
             "properties" : {
+                "id" : { "type" : "string", "index" : "not_analyzed" },
                 "organizationId" : { "type" : "string", "index" : "not_analyzed" },
                 "entityType" : { "type" : "string", "index" : "not_analyzed" },
                 "entityId" : { "type" : "string", "index" : "not_analyzed" },
@@ -93,6 +99,7 @@
                     "type" : "string",
                     "fields" : { "raw" : { "type" : "string", "index" : "not_analyzed" } }
                 },
+                "id" : { "type" : "string", "index" : "not_analyzed" },
                 "name" : {
                     "type" : "string",
                     "fields" : { "raw" : { "type" : "string", "index" : "not_analyzed" } }
@@ -146,6 +153,7 @@
                     "fields" : { "raw" : { "type" : "string", "index" : "not_analyzed" } }
                 },
                 "organizationId" : { "type" : "string", "index" : "not_analyzed" },
+                "id" : { "type" : "string", "index" : "not_analyzed" },
                 "createdBy" : { "type" : "string", "index" : "not_analyzed" }
             }
         },
@@ -191,6 +199,7 @@
                     "type" : "string",
                     "fields" : { "raw" : { "type" : "string", "index" : "not_analyzed" } }
                 },
+                "id" : { "type" : "string", "index" : "not_analyzed" },
                 "name" : {
                     "type" : "string",
                     "fields" : { "raw" : { "type" : "string", "index" : "not_analyzed" } }
@@ -236,6 +245,7 @@
         },
         "contract" : {
             "properties" : {
+                "id" : { "type" : "string" ,"index" : "not_analyzed" },
                 "clientOrganizationId" : { "type" : "string", "index" : "not_analyzed" },
                 "clientId" : { "type" : "string", "index" : "not_analyzed" },
                 "clientVersion" : { "type" : "string", "index" : "not_analyzed" },
