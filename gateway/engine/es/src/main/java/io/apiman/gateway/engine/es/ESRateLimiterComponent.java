@@ -106,10 +106,12 @@ public class ESRateLimiterComponent extends AbstractESComponent implements IRate
             final RateBucketPeriod period, final long limit, final long increment,
             final IAsyncResultHandler<RateLimitResponse> handler) {
 
-        Index index = new Index.Builder(bucket).refresh(false).index(getIndexName())
-                .setParameter(Parameters.OP_TYPE, "index") //$NON-NLS-1$
-                .setParameter(Parameters.VERSION, String.valueOf(version))
-                .type("rateBucket").id(id).build(); //$NON-NLS-1$
+    	Index.Builder builder = new Index.Builder(bucket).refresh(false).index(getIndexName());
+    	if (version>0) {
+    		builder.setParameter(Parameters.VERSION, String.valueOf(version));
+        }
+    	Index index = builder.setParameter(Parameters.OP_TYPE, "index") //$NON-NLS-1$
+    			             .type("rateBucket").id(id).build(); //$NON-NLS-1$          
         try {
             getClient().execute(index);
             handler.handle(AsyncResultImpl.create(rlr));
