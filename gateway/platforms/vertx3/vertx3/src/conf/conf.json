@@ -89,6 +89,11 @@
       "IBufferFactoryComponent": {
         "class": "io.apiman.gateway.platforms.vertx3.components.BufferFactoryComponentImpl",
         "config": {}
+      },
+      
+      "IExecuteBlockingComponent": {
+      	"class": "io.apiman.gateway.platforms.vertx3.components.ExecuteBlockingComponentImpl",
+      	"config": {}
       }
   },
 
