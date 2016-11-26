@@ -19,6 +19,7 @@ import io.apiman.gateway.engine.IComponent;
 import io.apiman.gateway.engine.IComponentRegistry;
 import io.apiman.gateway.engine.beans.exceptions.ComponentNotFoundException;
 import io.apiman.gateway.engine.components.ICacheStoreComponent;
+import io.apiman.gateway.engine.components.IExecuteBlockingComponent;
 import io.apiman.gateway.engine.components.IJdbcComponent;
 import io.apiman.gateway.engine.components.ILdapComponent;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
@@ -51,6 +52,7 @@ public class DefaultComponentRegistry implements IComponentRegistry {
         registerCacheStoreComponent();
         registerJdbcComponent();
         registerLdapComponent();
+        registerExecuteBlockingComponent();
     }
 
     /**
@@ -91,6 +93,10 @@ public class DefaultComponentRegistry implements IComponentRegistry {
 
     protected void registerLdapComponent() {
         addComponent(ILdapComponent.class, new DefaultLdapComponent());
+    }
+
+    protected void registerExecuteBlockingComponent() {
+        addComponent(IExecuteBlockingComponent.class, new DefaultExecuteBlockingComponent());
     }
 
     /**
