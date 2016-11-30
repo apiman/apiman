@@ -59,6 +59,7 @@ public abstract class ApimanPolicyTest {
         srequest.setDestination(ptRequest.resource());
         srequest.setType(ptRequest.method().name());
         srequest.getHeaders().putAll(ptRequest.headers());
+        srequest.getQueryParams().putAll(ptRequest.queryParams());
 
         IApiRequestExecutor executor = engine.executor(srequest, new IAsyncResultHandler<IEngineResult>() {
             @Override
@@ -96,14 +97,14 @@ public abstract class ApimanPolicyTest {
                 stream.end();
             }
         });
-        
+
         // Push any context attributes into the Policy Context.
         IPolicyContext policyContext = getContext(executor);
         Map<String, Object> contextAttributes = ptRequest.contextAttributes();
         for (Entry<String, Object> entry : contextAttributes.entrySet()) {
             policyContext.setAttribute(entry.getKey(), entry.getValue());
         }
-        
+
         // Execute the request.
         executor.execute();
 
