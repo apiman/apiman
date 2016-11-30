@@ -1,0 +1,69 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "JWT Authentication Policy Configuration",
+    "type": "object",
+    "properties": {
+        "requireJWT": {
+            "title": "Require JWT",
+            "description": "Terminate request if no JWT provided.",
+            "type": "boolean",
+            "default": true
+        },
+        "requireTransportSecurity": {
+            "title": "Require Transport Security",
+            "description": "Any request used without transport security will be rejected. JWT requires transport security (e.g. TLS, SSL) to provide protection against a variety of attacks. It is strongly advised this option be switched on.",
+            "type": "boolean",
+            "default": true
+        },
+        "stripTokens": {
+            "title": "Strip Tokens",
+            "description": "Remove any Authorization header or token query parameter before forwarding traffic to the API.",
+            "type": "boolean",
+            "default": false
+        },
+        "signingKeyString": {
+            "title": "Signing Key",
+            "description": "To validate JWT. Must be Base-64 encoded.",
+            "type": "string",
+            "format": "textarea"
+        },
+        "allowedClockSkew": {
+        	"title": "Maximum Clock Skew",
+        	"description": "Maximum allowed clock skew in seconds when validating exp (expiry) and nbf (not before) claims. Zero implies default behaviour.",
+        	"type": "integer",
+        	"default": 0,
+        	"minimum": 0
+        },
+        "requiredClaims": {
+            "title": "Required Claims",
+            "description": "Require claims <a href=\"https://openid.net/specs/openid-connect-basic-1_0.html#StandardClaims\" target=\"_blank\">standard claims</a>, custom claims and <a href=\"https://openid.net/specs/openid-connect-basic-1_0.html#IDToken\" target=\"_blank\">ID token fields</a> (case sensitive).",
+            "type": "array",
+            "format": "table",
+            "items": {
+                "type": "object",
+                "title": "Claim",
+                "properties": {
+                    "claimName": {
+                        "title": "Claim",
+                        "type": "string",
+                        "uniqueItems": true
+                    },
+                    "claimValue": {
+                        "title": "Value",
+                        "type": "string"
+                    }
+                }
+            },
+            "links": [
+                {
+                    "href": "https://openid.net/specs/openid-connect-basic-1_0.html#StandardClaims",
+                    "rel": "Specification: All standard claims and their descriptions. This includes name, preferred_username, email, etc."
+                },
+                {
+                    "href": "https://openid.net/specs/openid-connect-basic-1_0.html#IDToken",
+                    "rel": "Specification: Standard ID token fields"
+                }
+            ]
+        }
+    }
+}

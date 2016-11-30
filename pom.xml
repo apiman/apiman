@@ -74,7 +74,6 @@
     <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
 
     <version.apiman>1.2.8.Final</version.apiman>
-
     <version.javadoc.plugin>2.10.1</version.javadoc.plugin>
     <version.compiler.plugin>3.2</version.compiler.plugin>
     <version.enforcer.plugin>1.4</version.enforcer.plugin>
@@ -95,6 +94,7 @@
     <version.org.keycloak>2.0.0.Final</version.org.keycloak>
     <version.org.bouncycastle>1.52</version.org.bouncycastle>
     <version.org.json>20140107</version.org.json>
+    <version.io.jsonwebtoken.jjwt>0.7.0</version.io.jsonwebtoken.jjwt>
   </properties>
 
   <repositories>
@@ -233,6 +233,11 @@
         <artifactId>json</artifactId>
         <version>${version.org.json}</version>
       </dependency>
+      <dependency>
+	<groupId>io.jsonwebtoken</groupId>
+	<artifactId>jjwt</artifactId>
+	<version>${version.io.jsonwebtoken.jjwt}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -243,6 +248,7 @@
     <module>http-security-policy</module>
     <module>jsonp-policy</module>
     <module>keycloak-oauth-policy</module>
+    <module>jwt-policy</module>
     <module>log-policy</module>
     <module>simple-header-policy</module>
     <module>soap-authorization-policy</module>
