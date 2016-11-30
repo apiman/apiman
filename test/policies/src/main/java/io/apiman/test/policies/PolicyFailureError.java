@@ -30,9 +30,10 @@ public class PolicyFailureError extends Exception {
 
     /**
      * Constructor.
-     * @param next
+     * @param failure
      */
     public PolicyFailureError(PolicyFailure failure) {
+        super(failure.getMessage());
         this.failure = failure;
     }
 
@@ -43,4 +44,11 @@ public class PolicyFailureError extends Exception {
         return failure;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return "PolicyFailureError [failure=" + failure + "]";
+    }
 }

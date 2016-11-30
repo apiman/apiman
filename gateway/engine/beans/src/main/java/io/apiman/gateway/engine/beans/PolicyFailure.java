@@ -125,4 +125,13 @@ public class PolicyFailure implements Serializable {
         this.responseCode = responseCode;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    @SuppressWarnings("nls")
+    public String toString() {
+        return "PolicyFailure [type=" + type + ", failureCode=" + failureCode + ", responseCode=" + responseCode + ", message=" + message
+                + ", headers=" + headers + "]";
+    }
 }
