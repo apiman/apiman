@@ -38,6 +38,7 @@ public class PolicyTestRequest {
     private final PolicyTestRequestType method;
     private final String resource;
     private Map<String, String> headers = new HashMap<>();
+    private Map<String, String> queryParams = new HashMap<>();
     private String body;
     private Map<String, Object> contextAttributes = new HashMap<>();
 
@@ -50,7 +51,7 @@ public class PolicyTestRequest {
         this.method = method;
         this.resource = resource;
     }
-    
+
     public PolicyTestRequest contextAttribute(String name, Object value) {
         contextAttributes.put(name, value);
         return this;
@@ -106,12 +107,21 @@ public class PolicyTestRequest {
     public Map<String, String> headers() {
         return headers;
     }
-    
+
     /**
      * @return the contextAttributes
      */
     public Map<String, Object> contextAttributes() {
         return contextAttributes;
+    }
+
+    public Map<String, String> queryParams() {
+        return queryParams;
+    }
+
+    public PolicyTestRequest query(String key, String value) {
+        queryParams.put(key, value);
+        return this;
     }
 
 }
