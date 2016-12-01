@@ -9,6 +9,12 @@
             "type": "boolean",
             "default": true
         },
+        "requireSigned": {
+        	"title": "Require Signed JWT (JWS).",
+        	"description": "Require JWTs be cryptographically signed and verified (JWS). It is strongly recommended this be enabled.",
+        	"type": "boolean",
+        	"default": true
+        },
         "requireTransportSecurity": {
             "title": "Require Transport Security",
             "description": "Any request used without transport security will be rejected. JWT requires transport security (e.g. TLS, SSL) to provide protection against a variety of attacks. It is strongly advised this option be switched on.",

@@ -40,8 +40,11 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Generated("org.jsonschema2pojo")
-@JsonPropertyOrder({ "requireJWT", "requireTransportSecurity", "stripTokens", "signingKeyString", "requiredClaims", "forwardAuthInfo" })
+@JsonPropertyOrder({ "requireJWT", "requireSigned", "requireTransportSecurity", "stripTokens", "signingKeyString", "requiredClaims", "forwardAuthInfo" })
 public class JWTPolicyBean {
+
+    @JsonProperty("requireSigned")
+    private Boolean requireSigned = true;
 
     /**
      * Require JWT
@@ -334,4 +337,13 @@ public class JWTPolicyBean {
         return this;
     }
 
+    @JsonProperty("requireSigned")
+    public Boolean getRequireSigned() {
+        return requireSigned;
+    }
+
+    @JsonProperty("requireSigned")
+    public void setRequireSigned(Boolean requireSigned) {
+        this.requireSigned = requireSigned;
+    }
 }

@@ -21,13 +21,19 @@ import io.apiman.gateway.engine.policies.AbstractMappedPolicy;
 import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
 import io.apiman.plugins.jwt.beans.JWTPolicyBean;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Header;
 import io.jsonwebtoken.InvalidClaimException;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwt;
+import io.jsonwebtoken.JwtHandlerAdapter;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.PrematureJwtException;
 import io.jsonwebtoken.SignatureException;
+import io.jsonwebtoken.UnsupportedJwtException;
 
 import java.util.Optional;
 
@@ -85,6 +91,8 @@ public class JWTPolicy extends AbstractMappedPolicy<JWTPolicyBean> {
                 chain.doFailure(FAILURE_FACTORY.signatureException(context, e));
             } catch (InvalidClaimException e) {
                 chain.doFailure(FAILURE_FACTORY.invalidClaim(context, e));
+            } catch (UnsupportedJwtException e) {
+                chain.doFailure(FAILURE_FACTORY.unsupportedJwt(context, e));
             } catch (Exception e) {
                 chain.doFailure(FAILURE_FACTORY.genericFailure(context, e));
             }
@@ -93,7 +101,7 @@ public class JWTPolicy extends AbstractMappedPolicy<JWTPolicyBean> {
         }
     }
 
-    private void validateJwt(String token, ApiRequest request, JWTPolicyBean config) throws ExpiredJwtException, MalformedJwtException, SignatureException {
+    private void validateJwt(String token, ApiRequest request, JWTPolicyBean config) throws ExpiredJwtException, PrematureJwtException, MalformedJwtException, SignatureException, InvalidClaimException {
         JwtParser parser = Jwts.parser()
                 .setSigningKey(config.getSigningKey())
                 .setAllowedClockSkewSeconds(config.getAllowedClockSkew());
@@ -102,7 +110,33 @@ public class JWTPolicy extends AbstractMappedPolicy<JWTPolicyBean> {
         config.getRequiredClaims().stream() // TODO add type variable to allow dates, etc
             .forEach(requiredClaim -> parser.require(requiredClaim.getClaimName(), requiredClaim.getClaimValue()));
 
-        parser.parse(token); // TODO need to forward fields where claims are available.
+        parser.parse(token, new JwtHandlerAdapter<Void>() {
+            @Override
+            public Void onPlaintextJwt(@SuppressWarnings("rawtypes") Jwt<Header, String> jwt) {
+                if (config.getRequireSigned()) {
+                    super.onPlaintextJwt(jwt);
+                }
+                return null;
+            }
+
+            @Override
+            public Void onClaimsJwt(@SuppressWarnings("rawtypes") Jwt<Header, Claims> jwt) {
+                if (config.getRequireSigned()) {
+                    super.onClaimsJwt(jwt);
+                }
+                return null;
+            }
+
+            @Override
+            public Void onPlaintextJws(Jws<String> jws) {
+                return null;
+            }
+
+            @Override
+            public Void onClaimsJws(Jws<Claims> jws) {
+                return null;
+            }
+        });
     }
 
     private void stripAuthTokens(ApiRequest request, JWTPolicyBean config) {

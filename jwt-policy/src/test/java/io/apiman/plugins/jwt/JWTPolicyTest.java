@@ -46,12 +46,13 @@ import org.keycloak.common.util.PemUtils;
 @SuppressWarnings("nls")
 public class JWTPolicyTest extends ApimanPolicyTest {
     private static final String PUBLIC_KEY_PEM = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAmoV2gM0BGxgLQUpMkNdLKkXq46tcCBjoatHWqukrYj6VZ1t6OciWYKZRsmBVDsc34gFM6/fBqBn7zRwIK+OGXu1OLGoXEjR9I+awdxpQItjDq9lyFMDFPfXu6nCPSpZ+txNWl6V2cno6PpcEPpUYT6n6lUjcwpbTuGwq80P29Net212ksAwLJGvpIIUJ5yWuYJtirhoUeJEwKJAGbo5xrRrY9w1pkw+1kdPhUpP26pd80Mga2hcwJtykeIx5gLajRbhsXaijOv2FBtBSKgEH8tXISt16SBjaUbp642tLvqsT/VUPvvcgmcWWqhvm72ALaBwu3G/OHswRMCxxMohMyQIDAQAB";
-    private static final String PRIVATE_KEY_PEM = "MIIEpQIBAAKCAQEAmoV2gM0BGxgLQUpMkNdLKkXq46tcCBjoatHWqukrYj6VZ1t6OciWYKZRsmBVDsc34gFM6/fBqBn7zRwIK+OGXu1OLGoXEjR9I+awdxpQItjDq9lyFMDFPfXu6nCPSpZ+txNWl6V2cno6PpcEPpUYT6n6lUjcwpbTuGwq80P29Net212ksAwLJGvpIIUJ5yWuYJtirhoUeJEwKJAGbo5xrRrY9w1pkw+1kdPhUpP26pd80Mga2hcwJtykeIx5gLajRbhsXaijOv2FBtBSKgEH8tXISt16SBjaUbp642tLvqsT/VUPvvcgmcWWqhvm72ALaBwu3G/OHswRMCxxMohMyQIDAQABAoIBAQCHcwZ10T5u6Zy0FtUXAiI5ZCCKgeOilXLmcBqkptAIxqNgfqedj1+CSUjD+/2Tfr5Vtp4fGob/PAelvDTNhBx9ibdE55phsvEfT1DQlpg4c5rSQUHnPzOnJLXRe+mfkFxzTthRBhHWN55mzypBUaCF9JJb2grp6ByfRPJBXApWhHrEALUwTd/9OiETsC4d7GbJ6ofk45tSl0HzNIeld9iEZk0WrgH95ucN75yCYv839096nB9nCH80yXV9JZIGj8bC6aPwbBnUnUdQqZxsDBlKNkT7U5AIdhqQdYjdXteTopuv11bflXtZGyTJoes1qLL8lpWgzkbjQg91+qmpCywhAoGBANv5opBc10C3y6ZJh9zepbM+wr0tbzUvTFAhj1Y1DoaHwxb9qV1mtWQZ5qEf1O+7RJYljv3hwzUc/gsZ13nBfySpVrdiVMTVIuLC8UPuH/sv0Z/uXcbwr3jxezrhJX5dJkhz1I8gPUKHLWIhMp/jZr26ieSPz9KwupTn+MPmPyYfAoGBALPTtHqZbB4dpxPmImv2l7PgR92CwVSd/yjrfOold4Oi1bODjhNSR6/h/YghWfRHAHIoRBWTlSfu/JsffJG/2bZa2xlcpqMb/fHzg05zBtmu8ozi3CAE7Twg5bE4GtuqV1hFXK4mPxzboSmj8H4puU85GNuTA/sRDd9saZSu6CAXAoGAJ30//rR7++VCzN5EYpUhn/TzVqyyWxTbmUL9DVfG/MWgcx8kaV0H0SmJKoGhY0v1+xJRAiimN4G15V5FPVlMLtOreo5Pc2pjsduXHj/ARAKImjJbaVxJ0+dd3OsQJQgp2DXbAbqi5K+JqSUWhnd3OTYkjQB4KXWKeTLPiLNrwLcCgYEAm7l8dCLCRv4kvo2vR1E/I+zYLxHZO96qpRPwk4+ohJ0RdKg6865wF/abKDTBglGuKC2IcCriordJl0fYBxtdfJYHYFokj+FgsxLOpbPkvcPLlYerWisKCeTvI93THGDRzMYcMU87nlDvqnCmhYq6R8nJJfSVIOku20k10ST6LTcCgYEAtrTamlY8tQ9Li+yi+yeGB2nxQCVkjQE0yl2GPxGrZaXlpH2mrhshtz0UUXcDmfpUOINCc3OzgWNCymNUesmVNuaobvgERXiDv51cSDgfYNT6NZz4+JPox2sGgeZIgkvQlFPr6+OxaMl8iQLHKwIqFjJAGCajKA4CodlIRaQClqM=";
+    private static final String PRIVATE_KEY_PEM = "MIIEpQIBAAKCAQEAmoV2gM0BGxgLQUpMkNdLKkXq46tcCBjoatHWqukrYj6VZ1t6OciWYKZRsmBVDsc34gFM6/fBqBn7zRwIK+OGXu1OLGoXEjR9I+awdxpQItjDq9lyFMDFPfXu6nCPSpZ+txNWl6V2cno6PpcEPpUYT6n6lUjcwpbTuGwq80P29Net212ksAwLJGvpIIUJ5yWuYJtirhoUeJEwKJAGbo5xrRrY9w1pkw+1kdPhUpP26pd80Mga2hcwJtykeIx5gLajRbhsXaijOv2FBtBSKgEH8tXISt16SBjaUbp642tLvqsT/VUPvvcgmcWWqhvm72ALaBwu3G/OHswRMCxxMohMyQIDAQABAoIBAQCHcwZ10T5u6Zy0FtUXAiI5ZCCKgeOilXLmcBqkptAIxqNgfqedj1+CSUjD+/2Tfr5Vtp4fGob/PAelvDTNhBx9ibdE55phsvEfT1DQlpg4c5rSQUHnPzOnJLXRe+mfkFxzTthRBhHWN55mzypBUaCF9JJb2grp6ByfRPJBXApWhHrEALUwTd/9OiETsC4d7GbJ6ofk45tSl0HzNIeld9iEZk0WrgH95ucN75yCYv839096nB9nCH80yXV9JZIGj8bC6aPwbBnUnUdQqZxsDBlKNkT7U5AIdhqQdYjdXteTopuv12bflXtZGyTJoes1qLL8lpWgzkbjQg91+qmpCywhAoGBANv5opBc10C3y6ZJh9zepbM+wr0tbzUvTFAhj1Y1DoaHwxb9qV1mtWQZ5qEf1O+7RJYljv3hwzUc/gsZ13nBfySpVrdiVMTVIuLC8UPuH/sv0Z/uXcbwr3jxezrhJX5dJkhz1I8gPUKHLWIhMp/jZr26ieSPz9KwupTn+MPmPyYfAoGBALPTtHqZbB4dpxPmImv2l7PgR92CwVSd/yjrfOold4Oi1bODjhNSR6/h/YghWfRHAHIoRBWTlSfu/JsffJG/2bZa2xlcpqMb/fHzg05zBtmu8ozi3CAE7Twg5bE4GtuqV1hFXK4mPxzboSmj8H4puU85GNuTA/sRDd9saZSu6CAXAoGAJ30//rR7++VCzN5EYpUhn/TzVqyyWxTbmUL9DVfG/MWgcx8kaV0H0SmJKoGhY0v1+xJRAiimN4G15V5FPVlMLtOreo5Pc2pjsduXHj/ARAKImjJbaVxJ0+dd3OsQJQgp2DXbAbqi5K+JqSUWhnd3OTYkjQB4KXWKeTLPiLNrwLcCgYEAm7l8dCLCRv4kvo2vR1E/I+zYLxHZO96qpRPwk4+ohJ0RdKg6865wF/abKDTBglGuKC2IcCriordJl0fYBxtdfJYHYFokj+FgsxLOpbPkvcPLlYerWisKCeTvI93THGDRzMYcMU87nlDvqnCmhYq6R8nJJfSVIOku20k10ST6LTcCgYEAtrTamlY8tQ9Li+yi+yeGB2nxQCVkjQE0yl2GPxGrZaXlpH2mrhshtz0UUXcDmfpUOINCc3OzgWNCymNUesmVNuaobvgERXiDv51cSDgfYNT6NZz4+JPox2sGgeZIgkvQlFPr6+OxaMl8iQLHKwIqFjJAGCajKA4CodlIRaQClqM=";
     private static final String AUTHORIZATION = "Authorization";
 
     @Test
     @Configuration("{\n" +
             "  \"requireJWT\": true,\n" +
+            "  \"requireSigned\": true,\n" +
             "  \"requireTransportSecurity\": true,\n" +
             "  \"stripTokens\": false,\n" +
             "  \"signingKeyString\": \""+ PUBLIC_KEY_PEM +"\",\n" +
@@ -61,7 +62,7 @@ public class JWTPolicyTest extends ApimanPolicyTest {
     )
     public void signedValidToken() throws Throwable {
         String authVal = "Bearer " + signedToken();
-        PolicyTestRequest request = PolicyTestRequest.build(PolicyTestRequestType.GET, "/france/frichot")
+        PolicyTestRequest request = PolicyTestRequest.build(PolicyTestRequestType.GET, "/amirante")
                 .header(AUTHORIZATION, authVal);
         PolicyTestResponse response = send(request);
         EchoResponse echo = response.entity(EchoResponse.class);
@@ -73,6 +74,7 @@ public class JWTPolicyTest extends ApimanPolicyTest {
     @Test
     @Configuration("{\n" +
             "  \"requireJWT\": true,\n" +
+            "  \"requireSigned\": true,\n" +
             "  \"requireTransportSecurity\": true,\n" +
             "  \"stripTokens\": true,\n" +
             "  \"signingKeyString\": \""+ PUBLIC_KEY_PEM +"\",\n" +
@@ -81,7 +83,7 @@ public class JWTPolicyTest extends ApimanPolicyTest {
             "}"
     )
     public void signedValidTokenStripAuth() throws Throwable {
-        PolicyTestRequest request = PolicyTestRequest.build(PolicyTestRequestType.GET, "/france/frichot")
+        PolicyTestRequest request = PolicyTestRequest.build(PolicyTestRequestType.GET, "/amirante")
                 .header(AUTHORIZATION, "Bearer " + signedToken());
 
         PolicyTestResponse response = send(request);
@@ -93,6 +95,7 @@ public class JWTPolicyTest extends ApimanPolicyTest {
     @Test
     @Configuration("{\n" +
             "  \"requireJWT\": true,\n" +
+            "  \"requireSigned\": false,\n" +
             "  \"requireTransportSecurity\": true,\n" +
             "  \"stripTokens\": true,\n" +
             "  \"signingKeyString\": \""+ PUBLIC_KEY_PEM +"\",\n" +
@@ -101,7 +104,7 @@ public class JWTPolicyTest extends ApimanPolicyTest {
             "}"
     )
     public void unsignedValidTokenHeader() throws Throwable {
-        PolicyTestRequest request = PolicyTestRequest.build(PolicyTestRequestType.GET, "/france/frichot")
+        PolicyTestRequest request = PolicyTestRequest.build(PolicyTestRequestType.GET, "/amirante")
                 .header(AUTHORIZATION, "Bearer " + unsignedToken());
 
         PolicyTestResponse response = send(request);
@@ -112,6 +115,7 @@ public class JWTPolicyTest extends ApimanPolicyTest {
     @Test
     @Configuration("{\n" +
             "  \"requireJWT\": true,\n" +
+            "  \"requireSigned\": false,\n" +
             "  \"requireTransportSecurity\": true,\n" +
             "  \"stripTokens\": true,\n" +
             "  \"signingKeyString\": \""+ PUBLIC_KEY_PEM +"\",\n" +
@@ -120,7 +124,7 @@ public class JWTPolicyTest extends ApimanPolicyTest {
             "}"
     )
     public void unsignedValidTokenQueryParam() throws Throwable {
-        PolicyTestRequest request = PolicyTestRequest.build(PolicyTestRequestType.GET, "/france/frichot")
+        PolicyTestRequest request = PolicyTestRequest.build(PolicyTestRequestType.GET, "/amirante")
                   .query("access_token", unsignedToken());
         PolicyTestResponse response = send(request);
         EchoResponse echo = response.entity(EchoResponse.class);
@@ -130,6 +134,7 @@ public class JWTPolicyTest extends ApimanPolicyTest {
     @Test
     @Configuration("{\n" +
             "  \"requireJWT\": true,\n" +
+            "  \"requireSigned\": false,\n" +
             "  \"requireTransportSecurity\": true,\n" +
             "  \"stripTokens\": true,\n" +
             "  \"signingKeyString\": \""+ PUBLIC_KEY_PEM +"\",\n" +
@@ -139,7 +144,7 @@ public class JWTPolicyTest extends ApimanPolicyTest {
     )
     public void shouldFailWhenNoTokenProvided() throws Throwable {
         PolicyFailure failure = null;
-        PolicyTestRequest request = PolicyTestRequest.build(PolicyTestRequestType.GET, "/france/frichot");
+        PolicyTestRequest request = PolicyTestRequest.build(PolicyTestRequestType.GET, "/amirante");
         try {
             send(request);
         } catch (PolicyFailureError pfe) {
@@ -147,13 +152,14 @@ public class JWTPolicyTest extends ApimanPolicyTest {
         }
         Assert.assertNotNull(failure);
         Assert.assertEquals(401, failure.getResponseCode());
-        Assert.assertEquals(11005, failure.getFailureCode());
+        Assert.assertEquals(12005, failure.getFailureCode());
         Assert.assertEquals(PolicyFailureType.Authentication, failure.getType());
     }
 
     @Test
     @Configuration("{\n" +
             "  \"requireJWT\": true,\n" +
+            "  \"requireSigned\": false,\n" +
             "  \"requireTransportSecurity\": true,\n" +
             "  \"stripTokens\": true,\n" +
             "  \"signingKeyString\": \""+ PUBLIC_KEY_PEM +"\",\n" +
@@ -163,7 +169,7 @@ public class JWTPolicyTest extends ApimanPolicyTest {
     )
     public void shouldFailWhenTokenInvalid() throws Throwable {
         PolicyFailure failure = null;
-        PolicyTestRequest request = PolicyTestRequest.build(PolicyTestRequestType.GET, "/france/frichot")
+        PolicyTestRequest request = PolicyTestRequest.build(PolicyTestRequestType.GET, "/amirante")
                     .header("Authorization", "Bearer <Obviously invalid token>");
         try {
             send(request);
@@ -172,13 +178,14 @@ public class JWTPolicyTest extends ApimanPolicyTest {
         }
         Assert.assertNotNull(failure);
         Assert.assertEquals(401, failure.getResponseCode());
-        Assert.assertEquals(11007, failure.getFailureCode());
+        Assert.assertEquals(12007, failure.getFailureCode());
         Assert.assertEquals(PolicyFailureType.Authentication, failure.getType());
     }
 
     @Test
     @Configuration("{\n" +
             "  \"requireJWT\": true,\n" +
+            "  \"requireSigned\": false,\n" +
             "  \"requireTransportSecurity\": true,\n" +
             "  \"stripTokens\": true,\n" +
             "  \"signingKeyString\": \""+ PUBLIC_KEY_PEM +"\",\n" +
@@ -188,7 +195,7 @@ public class JWTPolicyTest extends ApimanPolicyTest {
     )
     public void shouldFailWhenTokenNotYetValid() throws Throwable {
         PolicyFailure failure = null;
-        PolicyTestRequest request = PolicyTestRequest.build(PolicyTestRequestType.GET, "/france/frichot")
+        PolicyTestRequest request = PolicyTestRequest.build(PolicyTestRequestType.GET, "/amirante")
                     .header("Authorization", "Bearer " + unsignedNotYetValidToken());
         try {
             send(request);
@@ -197,13 +204,14 @@ public class JWTPolicyTest extends ApimanPolicyTest {
         }
         Assert.assertNotNull(failure);
         Assert.assertEquals(401, failure.getResponseCode());
-        Assert.assertEquals(11010, failure.getFailureCode());
+        Assert.assertEquals(12010, failure.getFailureCode());
         Assert.assertEquals(PolicyFailureType.Authentication, failure.getType());
     }
 
     @Test
     @Configuration("{\n" +
             "  \"requireJWT\": true,\n" +
+            "  \"requireSigned\": false,\n" +
             "  \"requireTransportSecurity\": true,\n" +
             "  \"stripTokens\": true,\n" +
             "  \"signingKeyString\": \""+ PUBLIC_KEY_PEM +"\",\n" +
@@ -213,7 +221,7 @@ public class JWTPolicyTest extends ApimanPolicyTest {
     )
     public void shouldFailWhenTokenExpired() throws Throwable {
         PolicyFailure failure = null;
-        PolicyTestRequest request = PolicyTestRequest.build(PolicyTestRequestType.GET, "/france/frichot")
+        PolicyTestRequest request = PolicyTestRequest.build(PolicyTestRequestType.GET, "/amirante")
                     .header("Authorization", "Bearer " + unsignedExpiredToken());
         try {
             send(request);
@@ -222,13 +230,14 @@ public class JWTPolicyTest extends ApimanPolicyTest {
         }
         Assert.assertNotNull(failure);
         Assert.assertEquals(401, failure.getResponseCode());
-        Assert.assertEquals(11006, failure.getFailureCode());
+        Assert.assertEquals(12006, failure.getFailureCode());
         Assert.assertEquals(PolicyFailureType.Authentication, failure.getType());
     }
 
     @Test
     @Configuration("{\n" +
             "  \"requireJWT\": true,\n" +
+            "  \"requireSigned\": false,\n" +
             "  \"requireTransportSecurity\": true,\n" +
             "  \"stripTokens\": true,\n" +
             "  \"signingKeyString\": \""+ PUBLIC_KEY_PEM +"\",\n" +
@@ -238,23 +247,23 @@ public class JWTPolicyTest extends ApimanPolicyTest {
     )
     public void shouldFailWithUnexpectedClaimValue() throws Throwable {
         PolicyFailure failure = null;
-        PolicyTestRequest request = PolicyTestRequest.build(PolicyTestRequestType.GET, "/france/frichot")
+        PolicyTestRequest request = PolicyTestRequest.build(PolicyTestRequestType.GET, "/amirante")
                     .header("Authorization", "Bearer " + unsignedToken());
         try {
             send(request);
         } catch (PolicyFailureError pfe) {
             failure = pfe.getFailure();
-            System.out.println(pfe);
         }
         Assert.assertNotNull(failure);
         Assert.assertEquals(401, failure.getResponseCode());
-        Assert.assertEquals(11009, failure.getFailureCode());
+        Assert.assertEquals(12009, failure.getFailureCode());
         Assert.assertEquals(PolicyFailureType.Authentication, failure.getType());
     }
 
     @Test
     @Configuration("{\n" +
             "  \"requireJWT\": true,\n" +
+            "  \"requireSigned\": false,\n" +
             "  \"requireTransportSecurity\": true,\n" +
             "  \"stripTokens\": true,\n" +
             "  \"signingKeyString\": \""+ PUBLIC_KEY_PEM +"\",\n" +
@@ -264,23 +273,23 @@ public class JWTPolicyTest extends ApimanPolicyTest {
     )
     public void shouldFailWithMissingClaim() throws Throwable {
         PolicyFailure failure = null;
-        PolicyTestRequest request = PolicyTestRequest.build(PolicyTestRequestType.GET, "/france/frichot")
+        PolicyTestRequest request = PolicyTestRequest.build(PolicyTestRequestType.GET, "/amirante")
                     .header("Authorization", "Bearer " + Jwts.builder().claim("x", "x").compact());
         try {
             send(request);
         } catch (PolicyFailureError pfe) {
             failure = pfe.getFailure();
-            System.out.println(pfe);
         }
         Assert.assertNotNull(failure);
         Assert.assertEquals(401, failure.getResponseCode());
-        Assert.assertEquals(11009, failure.getFailureCode());
+        Assert.assertEquals(12009, failure.getFailureCode());
         Assert.assertEquals(PolicyFailureType.Authentication, failure.getType());
     }
 
     @Test
     @Configuration("{\n" +
             "  \"requireJWT\": true,\n" +
+            "  \"requireSigned\": false,\n" +
             "  \"requireTransportSecurity\": true,\n" +
             "  \"stripTokens\": true,\n" +
             "  \"signingKeyString\": \""+ PUBLIC_KEY_PEM +"\",\n" +
@@ -290,30 +299,27 @@ public class JWTPolicyTest extends ApimanPolicyTest {
     )
     public void shouldFailWithNoTls() throws Throwable {
         PolicyFailure failure = null;
-        PolicyTestRequest request = PolicyTestRequest.build(PolicyTestRequestType.GET, "/france/frichot")
+        PolicyTestRequest request = PolicyTestRequest.build(PolicyTestRequestType.GET, "/amirante")
                     .header("Authorization", "Bearer " + Jwts.builder().claim("x", "x").compact());
         try {
             send(request);
         } catch (PolicyFailureError pfe) {
             failure = pfe.getFailure();
-            System.out.println(pfe);
         }
         Assert.assertNotNull(failure);
         Assert.assertEquals(401, failure.getResponseCode());
-        Assert.assertEquals(11009, failure.getFailureCode());
+        Assert.assertEquals(12009, failure.getFailureCode());
         Assert.assertEquals(PolicyFailureType.Authentication, failure.getType());
     }
 
     private String signedToken() throws Exception {
         JwtBuilder jwts = Jwts.builder().setSubject("france frichot")
                 .signWith(SignatureAlgorithm.RS256, PemUtils.decodePrivateKey(PRIVATE_KEY_PEM));
-        System.out.println(jwts.compact());
         return jwts.compact();
    }
 
     private String unsignedToken() throws Exception {
          JwtBuilder jwts = Jwts.builder().setSubject("france frichot");
-         System.out.println(jwts.compact());
          return jwts.compact();
     }
 
@@ -321,7 +327,6 @@ public class JWTPolicyTest extends ApimanPolicyTest {
         Instant instant = LocalDateTime.now().plusDays(5).toInstant(ZoneOffset.UTC);
         Date nbf = Date.from(instant);
         JwtBuilder jwts = Jwts.builder().setSubject("france frichot").setNotBefore(nbf);
-        System.out.println(jwts.compact());
         return jwts.compact();
     }
 
@@ -329,7 +334,6 @@ public class JWTPolicyTest extends ApimanPolicyTest {
         Instant instant = LocalDateTime.now().minusDays(5).toInstant(ZoneOffset.UTC);
         Date exp = Date.from(instant);
         JwtBuilder jwts = Jwts.builder().setSubject("france frichot").setExpiration(exp);
-        System.out.println(jwts.compact());
         return jwts.compact();
     }
 }

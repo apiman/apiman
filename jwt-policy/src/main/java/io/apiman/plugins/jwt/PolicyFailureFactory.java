@@ -24,6 +24,7 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.PrematureJwtException;
 import io.jsonwebtoken.SignatureException;
+import io.jsonwebtoken.UnsupportedJwtException;
 
 /**
  * Policy failures
@@ -32,16 +33,15 @@ import io.jsonwebtoken.SignatureException;
  */
 public class PolicyFailureFactory {
     private static final int HTTP_UNAUTHORIZED = 401;
-
-    private static final int AUTH_NO_TRANSPORT_SECURITY = 11003;
-    private static final int AUTH_VERIFICATION_ERROR = 11004;
-    private static final int AUTH_NOT_PROVIDED = 11005;
-    private static final int AUTH_JWT_EXPIRED = 11006;
-    private static final int AUTH_JWT_MALFORMED = 11007;
-    private static final int AUTH_JWT_SIGNATURE_EXCEPTION = 11008;
-    private static final int AUTH_CLAIM_FAILURE = 11009;
-    private static final int AUTH_JWT_PREMATURE = 11010;
-
+    private static final int AUTH_NO_TRANSPORT_SECURITY = 12003;
+    private static final int AUTH_VERIFICATION_ERROR = 12004;
+    private static final int AUTH_NOT_PROVIDED = 12005;
+    private static final int AUTH_JWT_EXPIRED = 12006;
+    private static final int AUTH_JWT_MALFORMED = 12007;
+    private static final int AUTH_JWT_SIGNATURE_EXCEPTION = 12008;
+    private static final int AUTH_JWT_CLAIM_FAILURE = 12009;
+    private static final int AUTH_JWT_PREMATURE = 12010;
+    private static final int AUTH_JWT_UNSUPPORTED_JWT = 12011;
 
     private static final PolicyFailureFactory INSTANCE = new PolicyFailureFactory();
 
@@ -68,6 +68,16 @@ public class PolicyFailureFactory {
     public PolicyFailure signatureException(IPolicyContext context, SignatureException e) {
         return createAuthenticationPolicyFailure(context, AUTH_JWT_SIGNATURE_EXCEPTION,
                 e.getLocalizedMessage());
+    }
+
+    public PolicyFailure invalidClaim(IPolicyContext context, ClaimJwtException e) {
+        return createAuthenticationPolicyFailure(context, AUTH_JWT_CLAIM_FAILURE,
+                e.getLocalizedMessage());
+    }
+
+    public PolicyFailure unsupportedJwt(IPolicyContext context, UnsupportedJwtException e) {
+        return createAuthenticationPolicyFailure(context, AUTH_JWT_UNSUPPORTED_JWT,
+                Messages.getString("JWTPolicy.NoTransportSecurity")); //$NON-NLS-1$
     }
 
     public PolicyFailure noAuthenticationProvided(IPolicyContext context) {
@@ -97,8 +107,4 @@ public class PolicyFailureFactory {
         return context.getComponent(IPolicyFailureFactoryComponent.class);
     }
 
-    public PolicyFailure invalidClaim(IPolicyContext context, ClaimJwtException e) {
-        return createAuthenticationPolicyFailure(context, AUTH_CLAIM_FAILURE,
-                e.getLocalizedMessage());
-    }
 }
