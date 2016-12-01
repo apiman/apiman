@@ -20,21 +20,19 @@ import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.policies.AbstractMappedPolicy;
 import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
+import io.apiman.plugins.jwt.beans.ForwardAuthInfo;
 import io.apiman.plugins.jwt.beans.JWTPolicyBean;
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Header;
 import io.jsonwebtoken.InvalidClaimException;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwt;
-import io.jsonwebtoken.JwtHandlerAdapter;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.PrematureJwtException;
 import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.lang.Objects;
 
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -78,7 +76,8 @@ public class JWTPolicy extends AbstractMappedPolicy<JWTPolicyBean> {
 
         if (jwt != null) {
             try {
-                validateJwt(jwt, request, config);
+                Map<String, Object> claims = validateJwt(jwt, request, config);
+                forwardHeaders(request, config, jwt, claims);
                 stripAuthTokens(request, config);
                 chain.doApply(request);
             } catch (ExpiredJwtException e) {
@@ -101,7 +100,8 @@ public class JWTPolicy extends AbstractMappedPolicy<JWTPolicyBean> {
         }
     }
 
-    private void validateJwt(String token, ApiRequest request, JWTPolicyBean config) throws ExpiredJwtException, PrematureJwtException, MalformedJwtException, SignatureException, InvalidClaimException {
+    private Map<String, Object> validateJwt(String token, ApiRequest request, JWTPolicyBean config)
+            throws ExpiredJwtException, PrematureJwtException, MalformedJwtException, SignatureException, InvalidClaimException {
         JwtParser parser = Jwts.parser()
                 .setSigningKey(config.getSigningKey())
                 .setAllowedClockSkewSeconds(config.getAllowedClockSkew());
@@ -110,39 +110,23 @@ public class JWTPolicy extends AbstractMappedPolicy<JWTPolicyBean> {
         config.getRequiredClaims().stream() // TODO add type variable to allow dates, etc
             .forEach(requiredClaim -> parser.require(requiredClaim.getClaimName(), requiredClaim.getClaimValue()));
 
-        parser.parse(token, new JwtHandlerAdapter<Void>() {
-            @Override
-            public Void onPlaintextJwt(@SuppressWarnings("rawtypes") Jwt<Header, String> jwt) {
-                if (config.getRequireSigned()) {
-                    super.onPlaintextJwt(jwt);
-                }
-                return null;
-            }
-
-            @Override
-            public Void onClaimsJwt(@SuppressWarnings("rawtypes") Jwt<Header, Claims> jwt) {
-                if (config.getRequireSigned()) {
-                    super.onClaimsJwt(jwt);
-                }
-                return null;
-            }
-
-            @Override
-            public Void onPlaintextJws(Jws<String> jws) {
-                return null;
-            }
-
-            @Override
-            public Void onClaimsJws(Jws<Claims> jws) {
-                return null;
-            }
-        });
+        return parser.parse(token, new ConfigCheckingJwtHandler(config));
     }
 
     private void stripAuthTokens(ApiRequest request, JWTPolicyBean config) {
         if (config.getStripTokens()) {
             request.getHeaders().remove(AUTHORIZATION_KEY);
             request.getQueryParams().remove(ACCESS_TOKEN_QUERY_KEY);
+        }
+    }
+
+    private void forwardHeaders(ApiRequest request, JWTPolicyBean config, String rawToken, Map<String, Object> claims) {
+        for (ForwardAuthInfo entry : config.getForwardAuthInfo()) {
+            // Add the header if we've been able to look it up, else it'll just be empty.
+            Object claimValue = ACCESS_TOKEN_QUERY_KEY.equals(entry.getField()) ? rawToken : claims.get(entry.getField());
+            if (claimValue != null) {
+                request.getHeaders().put(entry.getHeader(), Objects.nullSafeToString(claimValue));
+            }
         }
     }
 }

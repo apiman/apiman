@@ -34,33 +34,36 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 /**
  * JWT Authentication Policy Configuration
- * <p>
  *
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Generated("org.jsonschema2pojo")
-@JsonPropertyOrder({ "requireJWT", "requireSigned", "requireTransportSecurity", "stripTokens", "signingKeyString", "requiredClaims", "forwardAuthInfo" })
+@JsonPropertyOrder({ "requireJWT", "requireSigned", "requireTransportSecurity", "stripTokens", "signingKeyString", "allowedClockSkew",
+        "requiredClaims", "forwardAuthInfo" })
 public class JWTPolicyBean {
-
-    @JsonProperty("requireSigned")
-    private Boolean requireSigned = true;
 
     /**
      * Require JWT
      * <p>
      * Terminate request if no JWT provided.
-     *
      */
     @JsonProperty("requireJWT")
     private Boolean requireJWT = true;
+    /**
+     * Require Signed JWT (JWS).
+     * <p>
+     * Require JWTs be cryptographically signed and verified (JWS). It is strongly recommended
+     * this be enabled.
+     */
+    @JsonProperty("requireSigned")
+    private Boolean requireSigned = true;
     /**
      * Require Transport Security
      * <p>
      * Any request used without transport security will be rejected. JWT requires transport
      * security (e.g. TLS, SSL) to provide protection against a variety of attacks. It is
      * strongly advised this option be switched on.
-     *
      */
     @JsonProperty("requireTransportSecurity")
     private Boolean requireTransportSecurity = true;
@@ -69,7 +72,6 @@ public class JWTPolicyBean {
      * <p>
      * Remove any Authorization header or token query parameter before forwarding traffic to
      * the API.
-     *
      */
     @JsonProperty("stripTokens")
     private Boolean stripTokens = false;
@@ -77,35 +79,45 @@ public class JWTPolicyBean {
      * Signing Key
      * <p>
      * To validate JWT. Must be Base-64 encoded.
-     *
      */
     @JsonProperty("signingKeyString")
     private String signingKeyString;
     private Key signingKey;
     /**
+     * Maximum Clock Skew
+     * <p>
+     * Maximum allowed clock skew in seconds when validating exp (expiry) and nbf (not before)
+     * claims. Zero implies default behaviour.
+     */
+    @JsonProperty("allowedClockSkew")
+    private Integer allowedClockSkew = 0;
+    /**
      * Required Claims
      * <p>
      * Require claims
      * <a href="https://openid.net/specs/openid-connect-basic-1_0.html#StandardClaims" target=
-     * "_blank">standard claims, custom claims and ID token fields (case sensitive).
-     *
+     * "_blank">standard claims</a>, custom claims and
+     * <a href="https://openid.net/specs/openid-connect-basic-1_0.html#IDToken" target=
+     * "_blank">ID token fields</a> (case sensitive).
      */
     @JsonProperty("requiredClaims")
     private List<RequiredClaim> requiredClaims = new ArrayList<>();
     /**
-     * Forward Keycloak Token Information
+     * Forward Claim Information
      * <p>
-     * Fields from the token can be set as headers and forwarded to the API. All
+     * Fields from the JWT can be set as headers and forwarded to the API. All
      * <a href="https://openid.net/specs/openid-connect-basic-1_0.html#StandardClaims" target=
-     * "_blank">standard claims, custom claims and ID token fields are available (case
-     * sensitive). A special value of access_token will forward the entire encoded token.
-     *
+     * "_blank">standard claims</a>, custom claims and
+     * <a href="https://openid.net/specs/openid-connect-basic-1_0.html#IDToken" target=
+     * "_blank">ID token fields</a> are available (case sensitive). A special value of
+     * <strong><tt>access_token</tt></strong> will forward the entire encoded token. Nested
+     * claims can be accessed by using javascript dot syntax (e.g: <tt>address.country</tt>,
+     * <tt>address.formatted</tt>).
      */
     @JsonProperty("forwardAuthInfo")
     private List<ForwardAuthInfo> forwardAuthInfo = new ArrayList<>();
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<>();
-    private long allowedClockSkew;
 
     /**
      * Require JWT
@@ -134,6 +146,38 @@ public class JWTPolicyBean {
 
     public JWTPolicyBean withRequireJWT(Boolean requireJWT) {
         this.requireJWT = requireJWT;
+        return this;
+    }
+
+    /**
+     * Require Signed JWT (JWS).
+     * <p>
+     * Require JWTs be cryptographically signed and verified (JWS). It is strongly recommended
+     * this be enabled.
+     *
+     * @return The requireSigned
+     */
+    @JsonProperty("requireSigned")
+    public Boolean getRequireSigned() {
+        return requireSigned;
+    }
+
+    /**
+     * Require Signed JWT (JWS).
+     * <p>
+     * Require JWTs be cryptographically signed and verified (JWS). It is strongly recommended
+     * this be enabled.
+     *
+     * @param requireSigned
+     *            The requireSigned
+     */
+    @JsonProperty("requireSigned")
+    public void setRequireSigned(Boolean requireSigned) {
+        this.requireSigned = requireSigned;
+    }
+
+    public JWTPolicyBean withRequireSigned(Boolean requireSigned) {
+        this.requireSigned = requireSigned;
         return this;
     }
 
@@ -215,12 +259,8 @@ public class JWTPolicyBean {
         return signingKeyString;
     }
 
-    public Key getSigningKey() {
-        return signingKey;
-    }
-
     /**
-     * Signing Key String
+     * Signing Key
      * <p>
      * To validate JWT. Must be Base-64 encoded.
      *
@@ -242,11 +282,45 @@ public class JWTPolicyBean {
     }
 
     /**
+     * Maximum Clock Skew
+     * <p>
+     * Maximum allowed clock skew in seconds when validating exp (expiry) and nbf (not before)
+     * claims. Zero implies default behaviour.
+     *
+     * @return The allowedClockSkew
+     */
+    @JsonProperty("allowedClockSkew")
+    public Integer getAllowedClockSkew() {
+        return allowedClockSkew;
+    }
+
+    /**
+     * Maximum Clock Skew
+     * <p>
+     * Maximum allowed clock skew in seconds when validating exp (expiry) and nbf (not before)
+     * claims. Zero implies default behaviour.
+     *
+     * @param allowedClockSkew
+     *            The allowedClockSkew
+     */
+    @JsonProperty("allowedClockSkew")
+    public void setAllowedClockSkew(Integer allowedClockSkew) {
+        this.allowedClockSkew = allowedClockSkew;
+    }
+
+    public JWTPolicyBean withAllowedClockSkew(Integer allowedClockSkew) {
+        this.allowedClockSkew = allowedClockSkew;
+        return this;
+    }
+
+    /**
      * Required Claims
      * <p>
      * Require claims
      * <a href="https://openid.net/specs/openid-connect-basic-1_0.html#StandardClaims" target=
-     * "_blank">standard claims, custom claims and ID token fields (case sensitive).
+     * "_blank">standard claims</a>, custom claims and
+     * <a href="https://openid.net/specs/openid-connect-basic-1_0.html#IDToken" target=
+     * "_blank">ID token fields</a> (case sensitive).
      *
      * @return The requiredClaims
      */
@@ -260,7 +334,9 @@ public class JWTPolicyBean {
      * <p>
      * Require claims
      * <a href="https://openid.net/specs/openid-connect-basic-1_0.html#StandardClaims" target=
-     * "_blank">standard claims, custom claims and ID token fields (case sensitive).
+     * "_blank">standard claims</a>, custom claims and
+     * <a href="https://openid.net/specs/openid-connect-basic-1_0.html#IDToken" target=
+     * "_blank">ID token fields</a> (case sensitive).
      *
      * @param requiredClaims
      *            The requiredClaims
@@ -276,12 +352,16 @@ public class JWTPolicyBean {
     }
 
     /**
-     * Forward Keycloak Token Information
+     * Forward Claim Information
      * <p>
-     * Fields from the token can be set as headers and forwarded to the API. All
+     * Fields from the JWT can be set as headers and forwarded to the API. All
      * <a href="https://openid.net/specs/openid-connect-basic-1_0.html#StandardClaims" target=
-     * "_blank">standard claims, custom claims and ID token fields are available (case
-     * sensitive). A special value of access_token will forward the entire encoded token.
+     * "_blank">standard claims</a>, custom claims and
+     * <a href="https://openid.net/specs/openid-connect-basic-1_0.html#IDToken" target=
+     * "_blank">ID token fields</a> are available (case sensitive). A special value of
+     * <strong><tt>access_token</tt></strong> will forward the entire encoded token. Nested
+     * claims can be accessed by using javascript dot syntax (e.g: <tt>address.country</tt>,
+     * <tt>address.formatted</tt>).
      *
      * @return The forwardAuthInfo
      */
@@ -291,12 +371,16 @@ public class JWTPolicyBean {
     }
 
     /**
-     * Forward Keycloak Token Information
+     * Forward Claim Information
      * <p>
-     * Fields from the token can be set as headers and forwarded to the API. All
+     * Fields from the JWT can be set as headers and forwarded to the API. All
      * <a href="https://openid.net/specs/openid-connect-basic-1_0.html#StandardClaims" target=
-     * "_blank">standard claims, custom claims and ID token fields are available (case
-     * sensitive). A special value of access_token will forward the entire encoded token.
+     * "_blank">standard claims</a>, custom claims and
+     * <a href="https://openid.net/specs/openid-connect-basic-1_0.html#IDToken" target=
+     * "_blank">ID token fields</a> are available (case sensitive). A special value of
+     * <strong><tt>access_token</tt></strong> will forward the entire encoded token. Nested
+     * claims can be accessed by using javascript dot syntax (e.g: <tt>address.country</tt>,
+     * <tt>address.formatted</tt>).
      *
      * @param forwardAuthInfo
      *            The forwardAuthInfo
@@ -326,24 +410,7 @@ public class JWTPolicyBean {
         return this;
     }
 
-    @JsonProperty("allowedClockSkew")
-    public long getAllowedClockSkew() {
-        return allowedClockSkew;
-    }
-
-    @JsonProperty("allowedClockSkew")
-    public JWTPolicyBean setAllowedClockSkew(long allowedClockSkew) {
-        this.allowedClockSkew = allowedClockSkew;
-        return this;
-    }
-
-    @JsonProperty("requireSigned")
-    public Boolean getRequireSigned() {
-        return requireSigned;
-    }
-
-    @JsonProperty("requireSigned")
-    public void setRequireSigned(Boolean requireSigned) {
-        this.requireSigned = requireSigned;
+    public Key getSigningKey() {
+        return signingKey;
     }
 }

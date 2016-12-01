@@ -10,10 +10,10 @@
             "default": true
         },
         "requireSigned": {
-        	"title": "Require Signed JWT (JWS).",
-        	"description": "Require JWTs be cryptographically signed and verified (JWS). It is strongly recommended this be enabled.",
-        	"type": "boolean",
-        	"default": true
+            "title": "Require Signed JWT (JWS).",
+            "description": "Require JWTs be cryptographically signed and verified (JWS). It is strongly recommended this be enabled.",
+            "type": "boolean",
+            "default": true
         },
         "requireTransportSecurity": {
             "title": "Require Transport Security",
@@ -34,11 +34,11 @@
             "format": "textarea"
         },
         "allowedClockSkew": {
-        	"title": "Maximum Clock Skew",
-        	"description": "Maximum allowed clock skew in seconds when validating exp (expiry) and nbf (not before) claims. Zero implies default behaviour.",
-        	"type": "integer",
-        	"default": 0,
-        	"minimum": 0
+            "title": "Maximum Clock Skew",
+            "description": "Maximum allowed clock skew in seconds when validating exp (expiry) and nbf (not before) claims. Zero implies default behaviour.",
+            "type": "integer",
+            "default": 0,
+            "minimum": 0
         },
         "requiredClaims": {
             "title": "Required Claims",
@@ -60,16 +60,42 @@
                     }
                 }
             },
-            "links": [
-                {
-                    "href": "https://openid.net/specs/openid-connect-basic-1_0.html#StandardClaims",
-                    "rel": "Specification: All standard claims and their descriptions. This includes name, preferred_username, email, etc."
-                },
-                {
-                    "href": "https://openid.net/specs/openid-connect-basic-1_0.html#IDToken",
-                    "rel": "Specification: Standard ID token fields"
+            "links": [{
+                "href": "https://openid.net/specs/openid-connect-basic-1_0.html#StandardClaims",
+                "rel": "Specification: All standard claims and their descriptions. This includes name, preferred_username, email, etc."
+            }, {
+                "href": "https://openid.net/specs/openid-connect-basic-1_0.html#IDToken",
+                "rel": "Specification: Standard ID token fields"
+            }]
+        },
+        "forwardAuthInfo": {
+            "title": "Forward Claim Information",
+            "description": "Fields from the JWT can be set as headers and forwarded to the API. All <a href=\"https://openid.net/specs/openid-connect-basic-1_0.html#StandardClaims\" target=\"_blank\">standard claims</a>, custom claims and <a href=\"https://openid.net/specs/openid-connect-basic-1_0.html#IDToken\" target=\"_blank\">ID token fields</a> are available (case sensitive). A special value of <strong><tt>access_token</tt></strong> will forward the entire encoded token. Nested claims can be accessed by using javascript dot syntax (e.g: <tt>address.country</tt>, <tt>address.formatted</tt>).",
+            "type": "array",
+            "format": "table",
+            "items": {
+                "type": "object",
+                "title": "Header",
+                "properties": {
+                    "header": {
+                        "title": "Header",
+                        "type": "string",
+                        "uniqueItems": true,
+                        "pattern": "^[^()<>@,;:\\\\<>\\/\\[\\]?={}\\s\\t]+$"
+                    },
+                    "field": {
+                        "title": "Field",
+                        "type": "string"
+                    }
                 }
-            ]
+            },
+            "links": [{
+                "href": "https://openid.net/specs/openid-connect-basic-1_0.html#StandardClaims",
+                "rel": "Specification: All standard claims and their descriptions. This includes name, preferred_username, email, etc."
+            }, {
+                "href": "https://openid.net/specs/openid-connect-basic-1_0.html#IDToken",
+                "rel": "Specification: Standard ID token fields"
+            }]
         }
     }
 }

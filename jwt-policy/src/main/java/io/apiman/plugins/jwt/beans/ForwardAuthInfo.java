@@ -34,7 +34,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Generated("org.jsonschema2pojo")
-@JsonPropertyOrder({ "headers", "field" })
+@JsonPropertyOrder({ "header", "field" })
 public class ForwardAuthInfo {
 
     /**
@@ -43,8 +43,8 @@ public class ForwardAuthInfo {
      *
      *
      */
-    @JsonProperty("headers")
-    private String headers;
+    @JsonProperty("header")
+    private String header;
     /**
      * Field
      * <p>
@@ -61,11 +61,11 @@ public class ForwardAuthInfo {
      * <p>
      *
      *
-     * @return The headers
+     * @return The header
      */
-    @JsonProperty("headers")
-    public String getHeaders() {
-        return headers;
+    @JsonProperty("header")
+    public String getHeader() {
+        return header;
     }
 
     /**
@@ -73,16 +73,16 @@ public class ForwardAuthInfo {
      * <p>
      *
      *
-     * @param headers
-     *            The headers
+     * @param header
+     *            The header
      */
-    @JsonProperty("headers")
-    public void setHeaders(String headers) {
-        this.headers = headers;
+    @JsonProperty("header")
+    public void setHeader(String header) {
+        this.header = header;
     }
 
-    public ForwardAuthInfo withHeaders(String headers) {
-        this.headers = headers;
+    public ForwardAuthInfo withHeader(String header) {
+        this.header = header;
         return this;
     }
 
