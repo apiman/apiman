@@ -120,6 +120,52 @@ public class JWTPolicyTest extends ApimanPolicyTest {
             "  \"stripTokens\": true,\n" +
             "  \"signingKeyString\": \""+ PUBLIC_KEY_PEM +"\",\n" +
             "  \"allowedClockSkew\": 0,\n" +
+            "  \"requiredClaims\": [{ \"claimName\": \"sub\", \"claimValue\": \"aride\" }],\n" +
+            "  \"forwardAuthInfo\": [{ \"header\": \"X-Foo\", \"field\": \"sub\" }]\n" +
+            "}"
+    )
+    public void shouldForwardClaimsAsHeaders() throws Throwable {
+        PolicyTestRequest request = PolicyTestRequest.build(PolicyTestRequestType.GET, "/amirante")
+                .header(AUTHORIZATION, "Bearer " + Jwts.builder().setSubject("aride").compact());
+
+        PolicyTestResponse response = send(request);
+        EchoResponse echo = response.entity(EchoResponse.class);
+        Assert.assertNotNull(echo);
+        Assert.assertEquals("aride", echo.getHeaders().get("X-Foo"));
+    }
+
+    @Test
+    @Configuration("{\n" +
+            "  \"requireJWT\": true,\n" +
+            "  \"requireSigned\": false,\n" +
+            "  \"requireTransportSecurity\": true,\n" +
+            "  \"stripTokens\": true,\n" +
+            "  \"signingKeyString\": \""+ PUBLIC_KEY_PEM +"\",\n" +
+            "  \"allowedClockSkew\": 0,\n" +
+            "  \"requiredClaims\": [{ \"claimName\": \"sub\", \"claimValue\": \"france frichot\" }],\n" +
+            "  \"forwardAuthInfo\": [{ \"header\": \"X-Foo\", \"field\": \"access_token\" }]\n" +
+            "}"
+    )
+    public void shouldForwardAccessTokenAsHeader() throws Throwable {
+        String token = unsignedToken();
+        PolicyTestRequest request = PolicyTestRequest.build(PolicyTestRequestType.GET, "/amirante")
+                .header(AUTHORIZATION, "Bearer " + token);
+
+        PolicyTestResponse response = send(request);
+        EchoResponse echo = response.entity(EchoResponse.class);
+        Assert.assertNotNull(echo);
+        Assert.assertEquals(token, echo.getHeaders().get("X-Foo"));
+    }
+
+
+    @Test
+    @Configuration("{\n" +
+            "  \"requireJWT\": true,\n" +
+            "  \"requireSigned\": false,\n" +
+            "  \"requireTransportSecurity\": true,\n" +
+            "  \"stripTokens\": true,\n" +
+            "  \"signingKeyString\": \""+ PUBLIC_KEY_PEM +"\",\n" +
+            "  \"allowedClockSkew\": 0,\n" +
             "  \"requiredClaims\": [{ \"claimName\": \"sub\", \"claimValue\": \"france frichot\" }]\n" +
             "}"
     )
