@@ -1,0 +1,6 @@
+{
+  "frameworkVersion" : 1.0,
+  "name" : "JWT Policy",
+  "description" : "Validating JWTs.",
+  "version" : "${project.version}"
+}
