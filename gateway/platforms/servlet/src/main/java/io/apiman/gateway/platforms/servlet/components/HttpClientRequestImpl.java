@@ -20,6 +20,7 @@ import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.components.http.HttpMethod;
 import io.apiman.gateway.engine.components.http.IHttpClientRequest;
 import io.apiman.gateway.engine.components.http.IHttpClientResponse;
+import io.apiman.gateway.engine.io.IApimanBuffer;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -91,6 +92,11 @@ public class HttpClientRequestImpl implements IHttpClientRequest {
     public void removeHeader(String headerName) {
         headers.remove(headerName);
     }
+    
+	@Override
+	public void write(IApimanBuffer buffer) {
+		write((byte[]) buffer.getNativeBuffer());	
+	}
 
     /**
      * @see io.apiman.gateway.engine.components.http.IHttpClientRequest#write(byte[])
