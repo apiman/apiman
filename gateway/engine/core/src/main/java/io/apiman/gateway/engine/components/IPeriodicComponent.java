@@ -15,6 +15,7 @@
  */
 package io.apiman.gateway.engine.components;
 
+import io.apiman.gateway.engine.IComponent;
 import io.apiman.gateway.engine.async.IAsyncHandler;
 
 /**
@@ -24,7 +25,7 @@ import io.apiman.gateway.engine.async.IAsyncHandler;
  * 
  * @author Marc Savy <msavy@redhat.com>
  */
-public interface IPeriodicComponent {
+public interface IPeriodicComponent extends IComponent {
 
     /**
      * Calls handler every {@code periodMillis} milliseconds after waiting {@code initialDelayMillis} for the
