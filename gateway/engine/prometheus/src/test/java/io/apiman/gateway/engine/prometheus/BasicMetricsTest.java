@@ -31,6 +31,7 @@ import java.util.concurrent.CountDownLatch;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.squareup.okhttp.OkHttpClient;
@@ -74,7 +75,7 @@ public class BasicMetricsTest {
         latch.await();
     }
 
-    @Test
+    @Test @Ignore
     public void validMetrics() throws IOException {
         @SuppressWarnings("serial")
         Set<String> expected = new LinkedHashSet<String>(){{
@@ -114,7 +115,7 @@ public class BasicMetricsTest {
         Assert.assertTrue(equals(expected, rString));
     }
 
-    @Test
+    @Test @Ignore
     public void errorMetrics() throws IOException {
         @SuppressWarnings("serial")
         Set<String> expected = new LinkedHashSet<String>(){{

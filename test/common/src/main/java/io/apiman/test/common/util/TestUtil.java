@@ -93,7 +93,7 @@ public class TestUtil {
             if (url == null)
                 throw new RuntimeException("Rest Test not found: " + resourcePath);
             is = url.openStream();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
             return parseRestTest(reader);
         } catch (Throwable e) {
             throw new RuntimeException(e);

@@ -33,7 +33,7 @@ public class BeanUtils {
      * @return the id
      */
     public static final String idFromName(String name) {
-        Transliterator tr = Transliterator.getInstance("Any-Latin; Latin-ASCII");
+        Transliterator tr = Transliterator.getInstance("Any-Latin; Latin-ASCII"); //$NON-NLS-1$
         return removeNonWord(tr.transliterate(name));
     }
 
