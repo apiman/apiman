@@ -242,6 +242,26 @@ public class CaseInsensitiveStringMultiMapTest {
     }
 
     @Test
+    public void shouldDistinguishBetweenCollisionsWithGetAll() {
+        CaseInsensitiveStringMultiMap mmap = new CaseInsensitiveStringMultiMap(1);
+        mmap.add("Access-Control-Allow-Origin", "*").add("Server", "WildFly/10");
+        Assert.assertEquals(2, mmap.size());
+        Assert.assertEquals(mmap.getAll("Access-Control-Allow-Origin").size(), 1);
+        Assert.assertEquals(mmap.getAll("Access-Control-Allow-Origin").get(0), "*");
+        Assert.assertEquals(mmap.getAll("Server").size(), 1);
+    }
+
+    @Test
+    public void shouldDistinguishBetweenCollisionsWithGetEntries() {
+        CaseInsensitiveStringMultiMap mmap = new CaseInsensitiveStringMultiMap(1);
+        mmap.add("Access-Control-Allow-Origin", "*").add("Server", "WildFly/10");
+        Assert.assertEquals(2, mmap.size());
+        Assert.assertEquals(mmap.getAllEntries("Access-Control-Allow-Origin").size(), 1);
+        Assert.assertEquals(mmap.getAllEntries("Access-Control-Allow-Origin").get(0).getValue(), "*");
+        Assert.assertEquals(mmap.getAllEntries("Server").size(), 1);
+    }
+
+    @Test
     public void getShouldReturnTheLastValueOnly() {
         CaseInsensitiveStringMultiMap mmap = new CaseInsensitiveStringMultiMap();
         // Additional entries should be ignored
