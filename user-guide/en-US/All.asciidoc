@@ -789,7 +789,7 @@ This policy is nearly identical to our Authorization Policy, with the exception 
 {
 	"groupId": "io.apiman.plugins",
 	"artifactId": "apiman-plugins-soap-authorization-policy",
-	"version": "1.2.6.Final" // Please check for the latest version, this is just an example.
+	"version": "1.2.9.Final" // Please check for the latest version, this is just an example.
 }
 ```
 
@@ -989,7 +989,7 @@ For further references, see http://www.w3.org/TR/2014/REC-cors-20140116/[CORS W3
 {
     "groupId": "io.apiman.plugins",
     "artifactId": "apiman-plugins-cors-policy",
-    "version": "1.2.6.Final" // Please check for the latest version, this is just an example.
+    "version": "1.2.9.Final" // Please check for the latest version, this is just an example.
 }
 ```
 
@@ -1081,7 +1081,7 @@ Security-related HTTP headers can be set, such as HSTS, CSP and XSS protection.
 {
     "groupId": "io.apiman.plugins",
     "artifactId": "apiman-plugins-http-security-policy",
-    "version": "1.2.6.Final" // Please check for the latest version, this is just an example.
+    "version": "1.2.9.Final" // Please check for the latest version, this is just an example.
 }
 ```
 
@@ -1221,7 +1221,7 @@ Keycloak's token format and auth mechanism facilitate excellent performance char
 {
     "groupId": "io.apiman.plugins",
     "artifactId": "apiman-plugins-keycloak-oauth-policy",
-    "version": "1.2.6.Final" // Please check for the latest version, this is just an example.
+    "version": "1.2.9.Final" // Please check for the latest version, this is just an example.
 }
 ```
 
@@ -1383,7 +1383,7 @@ exposed through the managed endpoint.
 {
 	"groupId": "io.apiman.plugins",
 	"artifactId": "apiman-plugins-url-whitelist-policy",
-	"version": "1.2.6.Final" // Please check for the latest version, this is just an example.
+	"version": "1.2.9.Final" // Please check for the latest version, this is just an example.
 }
 ```
 
@@ -1612,7 +1612,7 @@ policy may be a better choice.
 {
     "groupId": "io.apiman.plugins",
     "artifactId": "apiman-plugins-transformation-policy",
-    "version": "1.2.6.Final" // Please check for the latest version, this is just an example.
+    "version": "1.2.9.Final" // Please check for the latest version, this is just an example.
 }
 ```
 
@@ -1669,7 +1669,7 @@ to support both standard REST *and* JSONP at the same time.
 {
     "groupId": "io.apiman.plugins",
     "artifactId": "apiman-plugins-jsonp-policy",
-    "version": "1.2.6.Final" // Please check for the latest version, this is just an example.
+    "version": "1.2.9.Final" // Please check for the latest version, this is just an example.
 }
 ```
 
@@ -1717,7 +1717,7 @@ Set and remove headers on request, response or both. The values can be literal s
 {
     "groupId": "io.apiman.plugins",
     "artifactId": "apiman-plugins-simple-header-policy",
-    "version": "1.2.6.Final" // Please check for the latest version, this is just an example.
+    "version": "1.2.9.Final" // Please check for the latest version, this is just an example.
 }
 ```
 
@@ -1905,7 +1905,7 @@ traffic from the gateway when added as the last policy in the chain.
 {
     "groupId": "io.apiman.plugins",
     "artifactId": "apiman-plugins-log-policy",
-    "version": "1.2.6.Final" // Please check for the latest version, this is just an example.
+    "version": "1.2.9.Final" // Please check for the latest version, this is just an example.
 }
 ```
 
