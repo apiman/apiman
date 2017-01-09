@@ -525,7 +525,7 @@ The apiman download page is here:  http://www.apiman.io/latest/download.html
 
 The steps you follow are:
 
- * Download and Unzip the WildFly Server - Download http://download.jboss.org/wildfly/10.0.0.Final/wildfly-10.0.0.Final.zip  and unzip the file into the directory in which you want to run the sever.
+ * Download and Unzip the WildFly Server - Download http://download.jboss.org/wildfly/10.1.0.Final/wildfly-10.1.0.Final.zip  and unzip the file into the directory in which you want to run the sever.
 
  * Download and Unzip the apiman WildFly overlay .zip file - Download the apiman WildFly overlay zip file into the directory that was created when you unzipped the WildFly download. The apiman WildFly overlay zip file is available here: http://downloads.jboss.org/apiman/1.2.9.Final/apiman-distro-wildfly10-1.2.9.Final-overlay.zip  After the file is downloaded, unzip it directly over the directory into which you unzipped the WildFly download. This will install apiman into the WildFly server.
 
@@ -536,10 +536,10 @@ The commands that you will execute to install the server will look something lik
 ----
 mkdir ~/apiman-1.2.9.Final
 cd ~/apiman-1.2.9.Final
-curl http://download.jboss.org/wildfly/10.0.0.Final/wildfly-10.0.0.Final.zip -o wildfly-10.0.0.Final.zip
+curl http://download.jboss.org/wildfly/10.1.0.Final/wildfly-10.1.0.Final.zip -o wildfly-10.1.0.Final.zip
 curl http://downloads.jboss.org/apiman/1.2.9.Final/apiman-distro-wildfly10-1.2.9.Final-overlay.zip -o apiman-distro-wildfly10-1.2.9.Final-overlay.zip
-unzip wildfly-10.0.0.Final.zip
-unzip -o apiman-distro-wildfly10-1.2.9.Final-overlay.zip -d wildfly-10.0.0.Final
+unzip wildfly-10.1.0.Final.zip
+unzip -o apiman-distro-wildfly10-1.2.9.Final-overlay.zip -d wildfly-10.1.0.Final
 
 ----
 
@@ -548,7 +548,7 @@ Before we move on, we have one server administration task to perform. We have to
 To create a new server user, navigate to this directory:
 
 ----
-cd apiman-1.2.9.Final/wildfly-10.0.0.Final/bin
+cd apiman-1.2.9.Final/wildfly-10.1.0.Final/bin
 ----
 
 And execute this script: +
@@ -573,7 +573,7 @@ Running the WildFly Server
 To start the WildFly server, you navigate back to the directory into which you installed the server, execute these commands - note that in this context, “standalone” refers to a standalone (i.e., non-clustered) WildFly server.  You can learn more about WildFly server configuration options in the WildFly Server Administration Guide:
 
 ----
-cd apiman-1.2.9.Final/wildfly-10.0.0.Final
+cd apiman-1.2.9.Final/wildfly-10.1.0.Final
 ./bin/standalone.sh -c standalone-apiman.xml
 ----
 
@@ -582,7 +582,7 @@ When the server starts, it will write logging messages (a lot of messages!) to t
 ----
 "apiman-gateway.war")23:28:49,091 INFO  [org.jboss.as] (Controller Boot Thread) WFLYSRV0060: Http management interface listening on http://127.0.0.1:9990/management
 23:28:49,091 INFO  [org.jboss.as] (Controller Boot Thread) WFLYSRV0051: Admin console listening on http://127.0.0.1:9990
-23:28:49,091 INFO  [org.jboss.as] (Controller Boot Thread) WFLYSRV0025: WildFly Full 10.0.0.Final (WildFly Core 2.0.10.Final) started in 11891ms - Started 1131 of 1543 services (616 services are lazy, passive or on-demand)
+23:28:49,091 INFO  [org.jboss.as] (Controller Boot Thread) WFLYSRV0025: WildFly Full 10.1.0.Final (WildFly Core 2.0.10.Final) started in 11891ms - Started 1131 of 1543 services (616 services are lazy, passive or on-demand)
 ----
 
 Testing the Installation
@@ -613,7 +613,7 @@ If you then select the “Deployments” tab at the top of the page, you'll see 
 
 image:images/example/5.png[WildFly deployments tab]
 
-If you don't see the apiman deployments, don't panic, but something went wrong with the installation. The most common reason for the apiman deployments to be missing is that you unzipped the apiman overlay .zip file into a different directory from the WildFly server. Remember, that the reason that the overlay file is named “overlay” is that it must be unzipped over an installed WildFly server. You can confirm that this is what happened by looking in the WildFly server's deployment directory here:  wildfly-10.0.0.Final/standalone/deployments
+If you don't see the apiman deployments, don't panic, but something went wrong with the installation. The most common reason for the apiman deployments to be missing is that you unzipped the apiman overlay .zip file into a different directory from the WildFly server. Remember, that the reason that the overlay file is named “overlay” is that it must be unzipped over an installed WildFly server. You can confirm that this is what happened by looking in the WildFly server's deployment directory here:  wildfly-10.1.0.Final/standalone/deployments
 
 If you look in this directory, you should see these files (the presence of files with the “.deployed” suffix indicates that the corresponding file was deployed successfully):
 
@@ -638,7 +638,7 @@ The second place we'll look for evidence that the installation was successful is
 
 The WildFly server's server.log file is created when the server is started. All the information that is displayed on the screen when you started the server is also written to the log file. (The level of detail written to the console and the log file is configurable. You can read about configuring WildFly logging here: https://docs.jboss.org/author/display/WFLY10/Admin+Guide)
 
-You can find the WildFly server file here: wildfly-10.0.0.Final/standalone/log/server.log
+You can find the WildFly server file here: wildfly-10.1.0.Final/standalone/log/server.log
 
 The WildFly server log file can be quite large as the server will append more logging statements to it over time. While you can certainly read the entire file anytime you want, we'll focus on some highlights related to ensuring that the server started cleanly. An obvious first step is to search the file for logging statements written at the ERROR level. If the file does not contain any errors, you can look for statements that look like this to confirm that the server started cleanly:
 
@@ -675,7 +675,7 @@ Receiving objects: 100% (104/104), 18.16 KiB, done.
 Resolving deltas: 100% (40/40), done.
 ----
 
-The source code for the example API is provided in the wildfly-10.0.0.Final/apiman/quickstarts directory. (In JBoss software, the term “quickstart” refers to an example program.)
+The source code for the example API is provided in the wildfly-10.1.0.Final/apiman/quickstarts directory. (In JBoss software, the term “quickstart” refers to an example program.)
 
 The echo-API quickstart includes these files:
 
@@ -784,7 +784,7 @@ local/redhat_git/apiman-quickstarts/echo-service/target/apiman-quickstarts-echo-
 To deploy the API, we can copy the .war file to our WildFly server's deployments directory. After you copy the API's .war file to the deployments directory, you'll see output like this generated by the WildFly server:
 
 ----
-22:33:59,794 INFO  [org.jboss.as.repository] (DeploymentScanner-threads - 1) WFLYDR0001: Content added at location local/redhat_git/apiman/tools/server-all/target/wildfly-10.0.0.Final/standalone/data/content/31/f9a163bd92c51daf54f70d09bff518c2aeef7e/content
+22:33:59,794 INFO  [org.jboss.as.repository] (DeploymentScanner-threads - 1) WFLYDR0001: Content added at location local/redhat_git/apiman/tools/server-all/target/wildfly-10.1.0.Final/standalone/data/content/31/f9a163bd92c51daf54f70d09bff518c2aeef7e/content
 22:33:59,797 INFO  [org.jboss.as.server.deployment] (MSC service thread 1-6) WFLYSRV0027: Starting deployment of "apiman-quickstarts-echo-service-1.2.4-SNAPSHOT.war" (runtime-name: "apiman-quickstarts-echo-service-1.2.4-SNAPSHOT.war")
 22:33:59,907 INFO  [org.wildfly.extension.undertow] (ServerService Thread Pool -- 76) WFLYUT0021: Registered web context: /apiman-echo
 22:33:59,960 INFO  [org.jboss.as.server] (DeploymentScanner-threads - 1) WFLYSRV0010: Deployed "apiman-quickstarts-echo-service-1.2.4-SNAPSHOT.war" (runtime-name : "apiman-quickstarts-echo-service-1.2.4-SNAPSHOT.war")

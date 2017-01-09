@@ -13,11 +13,11 @@ both are downloaded, it's a simple matter of unpacking both into the same locati
 ==== Download
 First you will need to download both WildFly 10 and apiman:
 
-* http://download.jboss.org/wildfly/10.0.0.Final/wildfly-10.0.0.Final.zip[Download WildFly 10]
+* http://download.jboss.org/wildfly/10.1.0.Final/wildfly-10.1.0.Final.zip[Download WildFly 10]
 * http://downloads.jboss.org/apiman/1.2.9.Final/apiman-distro-wildfly10-1.2.9.Final-overlay.zip[Download apiman 1.2.9.Final]
 
 ....
-curl http://download.jboss.org/wildfly/10.0.0.Final/wildfly-10.0.0.Final.zip -o wildfly-10.0.0.Final.zip
+curl http://download.jboss.org/wildfly/10.1.0.Final/wildfly-10.1.0.Final.zip -o wildfly-10.1.0.Final.zip
 curl http://downloads.jboss.org/apiman/1.2.9.Final/apiman-distro-wildfly10-1.2.9.Final-overlay.zip -o apiman-distro-wildfly10-1.2.9.Final-overlay.zip
 ....
 
@@ -25,8 +25,8 @@ curl http://downloads.jboss.org/apiman/1.2.9.Final/apiman-distro-wildfly10-1.2.9
 Once both files have been downloaded, simply unpack both in the same location.
 
 ....
-unzip wildfly-10.0.0.Final.zip
-unzip -o apiman-distro-wildfly10-1.2.9.Final-overlay.zip -d wildfly-10.0.0.Final
+unzip wildfly-10.1.0.Final.zip
+unzip -o apiman-distro-wildfly10-1.2.9.Final-overlay.zip -d wildfly-10.1.0.Final
 ....
 
 ==== Run WildFly 10
@@ -43,7 +43,7 @@ For this reason, there is no additional configuration required to run apiman.  S
 WildFly using the apiman configuration file:
 
 ....
-cd wildfly-10.0.0.Final
+cd wildfly-10.1.0.Final
 ./bin/standalone.sh -c standalone-apiman.xml
 ....
 
