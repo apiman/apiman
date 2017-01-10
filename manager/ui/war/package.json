@@ -71,5 +71,8 @@
     "vinyl-source-stream": "1.1.0",
     "which": "1.0.8"
   },
-  "devDependencies": {}
+  "devDependencies": {},
+  "optionalDependencies": {
+    "fsevents": "*"
+  }
 }
