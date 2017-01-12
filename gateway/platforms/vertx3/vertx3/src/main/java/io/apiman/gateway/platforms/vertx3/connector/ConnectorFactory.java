@@ -41,7 +41,6 @@ public class ConnectorFactory implements IConnectorFactory {
     private static final Set<String> SUPPRESSED_HEADERS = new HashSet<>();
     static {
         SUPPRESSED_HEADERS.add("Transfer-Encoding"); //$NON-NLS-1$
-        SUPPRESSED_HEADERS.add("Content-Length"); //$NON-NLS-1$
         SUPPRESSED_HEADERS.add("X-API-Key"); //$NON-NLS-1$
     }
 
@@ -59,7 +58,7 @@ public class ConnectorFactory implements IConnectorFactory {
     }
 
     @Override
-    public IApiConnector createConnector(ApiRequest request, final Api api, RequiredAuthType authType) {
+    public IApiConnector createConnector(ApiRequest request, final Api api, RequiredAuthType authType, boolean hasDataPolicy) {
         return new IApiConnector() {
 
             @Override
@@ -67,7 +66,7 @@ public class ConnectorFactory implements IConnectorFactory {
                     IAsyncResultHandler<IApiConnectionResponse> resultHandler)
                     throws ConnectorException {
                 // In the future we can switch to different back-end implementations here!
-                return new HttpConnector(vertx, api, request, authType, tlsOptions, resultHandler);
+                return new HttpConnector(vertx, api, request, authType, tlsOptions, hasDataPolicy, resultHandler);
             }
         };
     }

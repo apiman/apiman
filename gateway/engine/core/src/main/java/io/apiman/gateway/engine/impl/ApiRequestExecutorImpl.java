@@ -52,6 +52,7 @@ import io.apiman.gateway.engine.io.XmlPayloadIO;
 import io.apiman.gateway.engine.metrics.RequestMetric;
 import io.apiman.gateway.engine.policy.Chain;
 import io.apiman.gateway.engine.policy.IConnectorInterceptor;
+import io.apiman.gateway.engine.policy.IDataPolicy;
 import io.apiman.gateway.engine.policy.IPolicy;
 import io.apiman.gateway.engine.policy.IPolicyContext;
 import io.apiman.gateway.engine.policy.IPolicyFactory;
@@ -128,6 +129,7 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
     private IPayloadIO payloadIO;
     // max payload buffer size (if not already set in the api itself)
     private long maxPayloadBufferSize = DEFAULT_MAX_PAYLOAD_BUFFER_SIZE;
+    private boolean hasDataPolicy = false;
 
     /**
      * Constructs a new {@link ApiRequestExecutorImpl}.
@@ -141,7 +143,7 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
      */
     public ApiRequestExecutorImpl(ApiRequest apiRequest,
             IAsyncResultHandler<IEngineResult> resultHandler, IRegistry registry, IPolicyContext context,
-            IPolicyFactory policyFactory, IConnectorFactory connectorFactory, IMetrics metrics, 
+            IPolicyFactory policyFactory, IConnectorFactory connectorFactory, IMetrics metrics,
             IBufferFactoryComponent bufferFactory) {
         this.request = apiRequest;
         this.registry = registry;
@@ -241,7 +243,7 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
                 IApiConnector connector;
                 if (connectorInterceptor == null) {
                     connector = connectorFactory.createConnector(req, api,
-                            RequiredAuthType.parseType(api));
+                            RequiredAuthType.parseType(api), hasDataPolicy);
                 } else {
                     connector = connectorInterceptor.createConnector();
                 }
@@ -603,6 +605,10 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
             policyFactory.loadPolicy(policy.getPolicyImpl(), (IAsyncResult<IPolicy> result) -> {
                 if (result.isSuccess()) {
                     IPolicy policyImpl = result.getResult();
+                    // Test whether pipeline contains any data policies. Connectors can use this for Content-Length pass-through.
+                    if (policyImpl instanceof IDataPolicy) {
+                        hasDataPolicy = true;
+                    }
                     try {
                         Object policyConfig = policyFactory.loadConfig(policyImpl, policy.getPolicyImpl(), policy.getPolicyJsonConfig());
                         PolicyWithConfiguration pwc = new PolicyWithConfiguration(policyImpl, policyConfig);

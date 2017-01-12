@@ -113,7 +113,7 @@ public class DefaultEngineFactoryTest {
             protected IConnectorFactory createConnectorFactory(IPluginRegistry pluginRegistry) {
                 return new IConnectorFactory() {
                     @Override
-                    public IApiConnector createConnector(ApiRequest request, Api api, RequiredAuthType requiredAuthType) {
+                    public IApiConnector createConnector(ApiRequest request, Api api, RequiredAuthType requiredAuthType, boolean hasDataPolicy) {
                         Assert.assertEquals("test", api.getEndpointType());
                         Assert.assertEquals("test:endpoint", api.getEndpoint());
                         IApiConnector connector = new IApiConnector() {

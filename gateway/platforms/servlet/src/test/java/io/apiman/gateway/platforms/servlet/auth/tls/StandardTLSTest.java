@@ -156,7 +156,7 @@ public class StandardTLSTest {
         config.put(TLSOptions.TLS_ALLOWSELFSIGNED, "false");
 
         HttpConnectorFactory factory = new HttpConnectorFactory(config);
-        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.DEFAULT);
+        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.DEFAULT, false);
         IApiConnection connection = connector.connect(request,
                 new IAsyncResultHandler<IApiConnectionResponse>() {
 
@@ -187,7 +187,7 @@ public class StandardTLSTest {
         config.put(TLSOptions.TLS_ALLOWSELFSIGNED, "false");
 
         HttpConnectorFactory factory = new HttpConnectorFactory(config);
-        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.DEFAULT);
+        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.DEFAULT, false);
         IApiConnection connection = connector.connect(request,
                 new IAsyncResultHandler<IApiConnectionResponse>() {
 
@@ -212,7 +212,7 @@ public class StandardTLSTest {
         config.put(TLSOptions.TLS_DEVMODE, "true");
 
         HttpConnectorFactory factory = new HttpConnectorFactory(config);
-        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.DEFAULT);
+        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.DEFAULT, false);
         IApiConnection connection = connector.connect(request,
                 new IAsyncResultHandler<IApiConnectionResponse>() {
 
@@ -234,7 +234,7 @@ public class StandardTLSTest {
     @Test
     public void shouldFailWithNoSettings() {
         HttpConnectorFactory factory = new HttpConnectorFactory(config);
-        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.DEFAULT);
+        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.DEFAULT, false);
         IApiConnection connection = connector.connect(request,
                 new IAsyncResultHandler<IApiConnectionResponse>() {
 

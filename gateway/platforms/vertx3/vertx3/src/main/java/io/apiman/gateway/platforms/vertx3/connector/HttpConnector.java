@@ -71,7 +71,6 @@ class HttpConnector implements IApiConnectionResponse, IApiConnection {
     private static final Set<String> SUPPRESSED_HEADERS = new HashSet<>();
     static {
         SUPPRESSED_HEADERS.add("Transfer-Encoding");
-        SUPPRESSED_HEADERS.add("Content-Length");
         SUPPRESSED_HEADERS.add("X-API-Key");
         SUPPRESSED_HEADERS.add("Host");
     }
@@ -104,6 +103,8 @@ class HttpConnector implements IApiConnectionResponse, IApiConnection {
 
     private URL apiEndpoint;
 
+    private boolean hasDataPolicies;
+
     /**
      * Construct an {@link HttpConnector} instance. The {@link #resultHandler} must remain exclusive to a
      * given instance.
@@ -113,15 +114,17 @@ class HttpConnector implements IApiConnectionResponse, IApiConnection {
      * @param request a request with fields filled
      * @param authType the required auth type
      * @param tlsOptions the tls options
+     * @param hasDataPolicy if the policy chain contains a data policy
      * @param resultHandler a handler, called when reading is permitted
      */
     public HttpConnector(Vertx vertx, Api api, ApiRequest request, RequiredAuthType authType,
-            TLSOptions tlsOptions, IAsyncResultHandler<IApiConnectionResponse> resultHandler) {
+            TLSOptions tlsOptions, boolean hasDataPolicy, IAsyncResultHandler<IApiConnectionResponse> resultHandler) {
        this.api = api;
        this.apiRequest = request;
        this.authType = authType;
        this.resultHandler = resultHandler;
        this.exceptionHandler = new ExceptionHandler();
+       this.hasDataPolicies = hasDataPolicy;
 
        apiEndpoint = parseApiEndpoint(api);
 
@@ -197,7 +200,12 @@ class HttpConnector implements IApiConnectionResponse, IApiConnection {
         });
 
         clientRequest.exceptionHandler(exceptionHandler);
-        clientRequest.setChunked(true);
+
+        if (hasDataPolicies) {
+            clientRequest.headers().remove("Content-Length");
+            clientRequest.setChunked(true);
+        }
+
         apiRequest.getHeaders().forEach(e -> clientRequest.headers().add(e.getKey(), e.getValue()));
 
         addMandatoryRequestHeaders(clientRequest.headers());
