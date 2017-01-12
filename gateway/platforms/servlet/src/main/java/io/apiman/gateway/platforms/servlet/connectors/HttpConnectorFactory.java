@@ -104,7 +104,7 @@ public class HttpConnectorFactory implements IConnectorFactory {
      */
     @Override
     public IApiConnector createConnector(ApiRequest request, final Api api,
-            final RequiredAuthType requiredAuthType) {
+            final RequiredAuthType requiredAuthType, boolean hasDataPolicy) {
         return new IApiConnector() {
             /**
              * @see io.apiman.gateway.engine.IApiConnector#connect(io.apiman.gateway.engine.beans.ApiRequest, io.apiman.gateway.engine.async.IAsyncResultHandler)
@@ -114,7 +114,7 @@ public class HttpConnectorFactory implements IConnectorFactory {
                     IAsyncResultHandler<IApiConnectionResponse> handler) throws ConnectorException {
 
                 HttpApiConnection connection = new HttpApiConnection(okClient, request, api,
-                        requiredAuthType, getSslStrategy(requiredAuthType), handler);
+                        requiredAuthType, getSslStrategy(requiredAuthType), hasDataPolicy, handler);
                 return connection;
             }
         };

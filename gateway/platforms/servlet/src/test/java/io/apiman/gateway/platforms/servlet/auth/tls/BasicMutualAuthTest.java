@@ -178,7 +178,7 @@ public class BasicMutualAuthTest {
         config.put(TLSOptions.TLS_ALLOWSELFSIGNED, "false");
 
        HttpConnectorFactory factory = new HttpConnectorFactory(config);
-       IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.MTLS);
+       IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.MTLS, false);
        IApiConnection connection = connector.connect(request,
                new IAsyncResultHandler<IApiConnectionResponse>() {
 
@@ -211,7 +211,7 @@ public class BasicMutualAuthTest {
         config.put(TLSOptions.TLS_ALLOWSELFSIGNED, "false");
 
        HttpConnectorFactory factory = new HttpConnectorFactory(config);
-       IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.MTLS);
+       IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.MTLS, false);
        IApiConnection connection = connector.connect(request,
                new IAsyncResultHandler<IApiConnectionResponse>() {
 
@@ -247,7 +247,7 @@ public class BasicMutualAuthTest {
         config.put(TLSOptions.TLS_ALLOWSELFSIGNED, "false");
 
         HttpConnectorFactory factory = new HttpConnectorFactory(config);
-        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.MTLS);
+        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.MTLS, false);
         IApiConnection connection = connector.connect(request,
                 new IAsyncResultHandler<IApiConnectionResponse>() {
 
@@ -283,7 +283,7 @@ public class BasicMutualAuthTest {
         config.put(TLSOptions.TLS_ALLOWSELFSIGNED, "true");
 
        HttpConnectorFactory factory = new HttpConnectorFactory(config);
-       IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.MTLS);
+       IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.MTLS, false);
        IApiConnection connection = connector.connect(request,
                new IAsyncResultHandler<IApiConnectionResponse>() {
 
@@ -321,7 +321,7 @@ public class BasicMutualAuthTest {
         inStream.close();
 
         HttpConnectorFactory factory = new HttpConnectorFactory(config);
-        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.MTLS);
+        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.MTLS, false);
         IApiConnection connection = connector.connect(request,
                 new IAsyncResultHandler<IApiConnectionResponse>() {
 
@@ -365,7 +365,7 @@ public class BasicMutualAuthTest {
         inStream.close();
 
         HttpConnectorFactory factory = new HttpConnectorFactory(config);
-        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.MTLS);
+        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.MTLS, false);
         IApiConnection connection = connector.connect(request,
                 new IAsyncResultHandler<IApiConnectionResponse>() {
 
@@ -404,7 +404,7 @@ public class BasicMutualAuthTest {
         config.put(TLSOptions.TLS_KEYALIASES, "xxx");
 
         HttpConnectorFactory factory = new HttpConnectorFactory(config);
-        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.MTLS);
+        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.MTLS, false);
         IApiConnection connection = connector.connect(request,
                 new IAsyncResultHandler<IApiConnectionResponse>() {
 
@@ -428,7 +428,7 @@ public class BasicMutualAuthTest {
         config.put(TLSOptions.TLS_DEVMODE, "true");
 
         HttpConnectorFactory factory = new HttpConnectorFactory(config);
-        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.DEFAULT);
+        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.DEFAULT, false);
         IApiConnection connection = connector.connect(request,
                 new IAsyncResultHandler<IApiConnectionResponse>() {
 

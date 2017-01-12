@@ -166,7 +166,7 @@ public class CipherAndProtocolSelectionTest {
         server.start();
 
         HttpConnectorFactory factory = new HttpConnectorFactory(config);
-        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.DEFAULT);
+        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.DEFAULT, false);
         IApiConnection connection = connector.connect(request,
                 new IAsyncResultHandler<IApiConnectionResponse>() {
 
@@ -204,7 +204,7 @@ public class CipherAndProtocolSelectionTest {
 
 
         HttpConnectorFactory factory = new HttpConnectorFactory(config);
-        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.DEFAULT);
+        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.DEFAULT, false);
         IApiConnection connection = connector.connect(request,
                 new IAsyncResultHandler<IApiConnectionResponse>() {
 
@@ -239,7 +239,7 @@ public class CipherAndProtocolSelectionTest {
 
 
         HttpConnectorFactory factory = new HttpConnectorFactory(config);
-        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.DEFAULT);
+        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.DEFAULT, false);
         IApiConnection connection = connector.connect(request,
                 new IAsyncResultHandler<IApiConnectionResponse>() {
 
@@ -274,7 +274,7 @@ public class CipherAndProtocolSelectionTest {
 
 
         HttpConnectorFactory factory = new HttpConnectorFactory(config);
-        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.DEFAULT);
+        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.DEFAULT, false);
         IApiConnection connection = connector.connect(request,
                 new IAsyncResultHandler<IApiConnectionResponse>() {
 
@@ -309,7 +309,7 @@ public class CipherAndProtocolSelectionTest {
         server.start();
 
         HttpConnectorFactory factory = new HttpConnectorFactory(config);
-        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.DEFAULT);
+        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.DEFAULT, false);
         IApiConnection connection = connector.connect(request,
                 new IAsyncResultHandler<IApiConnectionResponse>() {
 
@@ -345,7 +345,7 @@ public class CipherAndProtocolSelectionTest {
         server.start();
 
         HttpConnectorFactory factory = new HttpConnectorFactory(config);
-        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.DEFAULT);
+        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.DEFAULT, false);
         IApiConnection connection = connector.connect(request,
                 new IAsyncResultHandler<IApiConnectionResponse>() {
 
@@ -382,7 +382,7 @@ public class CipherAndProtocolSelectionTest {
         final CountDownLatch latch = new CountDownLatch(1);
 
         HttpConnectorFactory factory = new HttpConnectorFactory(config);
-        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.DEFAULT);
+        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.DEFAULT, false);
         IApiConnection connection = connector.connect(request,
                 new IAsyncResultHandler<IApiConnectionResponse>() {
 

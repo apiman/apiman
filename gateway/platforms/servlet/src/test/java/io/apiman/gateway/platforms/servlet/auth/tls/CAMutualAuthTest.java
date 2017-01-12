@@ -157,7 +157,7 @@ public class CAMutualAuthTest {
         config.put(TLSOptions.TLS_ALLOWSELFSIGNED, "false");
 
        HttpConnectorFactory factory = new HttpConnectorFactory(config);
-       IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.MTLS);
+       IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.MTLS, false);
        IApiConnection connection = connector.connect(request,
                new IAsyncResultHandler<IApiConnectionResponse>() {
 
@@ -191,7 +191,7 @@ public class CAMutualAuthTest {
         config.put(TLSOptions.TLS_ALLOWSELFSIGNED, "false");
 
         HttpConnectorFactory factory = new HttpConnectorFactory(config);
-        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.MTLS);
+        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.MTLS, false);
         IApiConnection connection = connector.connect(request,
                 new IAsyncResultHandler<IApiConnectionResponse>() {
 

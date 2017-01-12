@@ -65,7 +65,7 @@ public class HttpPolicyAdapter {
         // Exception
         vertxRequest.exceptionHandler(ex -> {
             handleError(vertxResponse, ex);
-        }); // TODO: handle here or level above?
+        }); // TODO: Should probably log error also.
 
         // Set up executor to run conversation through apiman's policy engine.
         IApiRequestExecutor executor = engine.executor(request, result -> {
@@ -98,7 +98,10 @@ public class HttpPolicyAdapter {
         if (engineResult.isResponse()) {
             ApiResponse response = engineResult.getApiResponse();
             HttpApiFactory.buildResponse(vertxResponse, response, vertxRequest.version());
-            vertxResponse.setChunked(true);
+
+            if (!response.getHeaders().containsKey("Content-Length")) { //$NON-NLS-1$
+                vertxResponse.setChunked(true);
+            }
 
             engineResult.bodyHandler(buffer -> {
                 vertxResponse.write((Buffer) buffer.getNativeBuffer());
@@ -106,7 +109,7 @@ public class HttpPolicyAdapter {
 
             engineResult.endHandler(end -> vertxResponse.end());
         } else { // Policy failure (i.e. denial - it's not an exception).
-            log.debug(String.format("Failed with policy failure (denial): %s", engineResult.getPolicyFailure()));
+            log.debug(String.format("Failed with policy failure (denial): %s", engineResult.getPolicyFailure())); //$NON-NLS-1$
             handlePolicyFailure(vertxResponse, engineResult.getPolicyFailure());
         }
     }
@@ -155,7 +158,7 @@ public class HttpPolicyAdapter {
         for (Map.Entry<String, String> entry : failure.getHeaders()) {
             response.headers().add(entry.getKey(), entry.getValue());
         }
-
+        response.setChunked(true);
         response.end(Json.encode(failure));
     }
 }
