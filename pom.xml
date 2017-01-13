@@ -161,6 +161,7 @@
     <version.io.vertx>3.3.2</version.io.vertx>
     <version.net.openhft>0.6</version.net.openhft>
     <version.com.ibm.icu4j>57.1</version.com.ibm.icu4j>
+    <version.com.hazelcast>3.6.4</version.com.hazelcast>
   </properties>
 
   <dependencyManagement>
@@ -405,6 +406,11 @@
       <dependency>
         <groupId>${project.groupId}</groupId>
         <artifactId>apiman-gateway-engine-core</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>apiman-gateway-engine-hazelcast</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
@@ -943,6 +949,11 @@
         <groupId>io.netty</groupId>
         <artifactId>netty-codec-http</artifactId>
         <version>${version.io.netty}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.hazelcast</groupId>
+        <artifactId>hazelcast</artifactId>
+        <version>${version.com.hazelcast}</version>
       </dependency>
 
       <!-- Spec Libraries -->
