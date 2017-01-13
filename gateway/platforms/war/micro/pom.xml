@@ -54,6 +54,10 @@
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-gateway-engine-hazelcast</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
       <artifactId>apiman-gateway-engine-jdbc</artifactId>
     </dependency>
     <dependency>
