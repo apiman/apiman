@@ -32,9 +32,13 @@ matrix:
   include:
     - env: ACTION='-Dapiman-test.type=es -Dapiman.gateway-test.config=servlet-es'
       jdk: oraclejdk8
+    - env: ACTION='-Dapiman.gateway-test.config=vertx3-mem'
+      jdk: oraclejdk8
+    - env: ACTION='-Dapiman.gateway-test.config=vertx3-es'
+      jdk: oraclejdk8
     - env: ACTION='-Dapiman.gateway-test.config=amg-1'
       jdk: oraclejdk8
-
-install: travis_retry mvn clean install -Dinvoker.skip -Dmaven.javadoc.skip=true -B | egrep -v 'Download|\\[exec\\] [[:digit:]]+/[[:digit:]]+|^[[:space:]]*\\[exec\\][[:space:]]*$' ; [ ${PIPESTATUS[0]} == 0 ];
+      
+install: travis_retry mvn clean install -Dinvoker.skip -Dmaven.javadoc.skip=true -Dmvn.skip.test=true -DskipTests=true -T2C -B | egrep -v 'Download|\\[exec\\] [[:digit:]]+/[[:digit:]]+|^[[:space:]]*\\[exec\\][[:space:]]*$' ; [ ${PIPESTATUS[0]} == 0 ];
 
 script: if [[ -v COMMAND ]]; then $COMMAND; else travis_retry mvn test install -B -Dmaven.javadoc.skip=true $ACTION | egrep -v 'Download|\\[exec\\] [[:digit:]]+/[[:digit:]]+|^[[:space:]]*\\[exec\\][[:space:]]*$' ; [ ${PIPESTATUS[0]} == 0 ]; fi
