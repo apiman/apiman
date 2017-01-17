@@ -121,7 +121,7 @@ public class HttpPolicyAdapter {
         errorResponse.setResponseCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
         errorResponse.setMessage(error.getMessage());
         errorResponse.setTrace(error);
-
+        response.setChunked(true);
         response.write(Json.encode(errorResponse));
         response.end();
     }

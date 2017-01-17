@@ -19,6 +19,7 @@ import io.apiman.common.logging.IDelegateFactory;
 import io.apiman.common.util.SimpleStringUtils;
 import io.apiman.common.util.crypt.IDataEncrypter;
 import io.apiman.gateway.engine.EngineConfigTuple;
+import io.apiman.gateway.engine.GatewayConfigProperties;
 import io.apiman.gateway.engine.IComponent;
 import io.apiman.gateway.engine.IConnectorFactory;
 import io.apiman.gateway.engine.IEngineConfig;
@@ -36,6 +37,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Engine configuration, read simplistically from Vert'x JSON config.
@@ -155,6 +158,17 @@ public class VertxEngineConfig implements IEngineConfig {
     }
 
     @Override
+    public Class<? extends IDelegateFactory> getLoggerFactoryClass(IPluginRegistry pluginRegistry) {
+        return loadConfigClass(getClassname(config, GatewayConfigProperties.LOGGER_FACTORY_CLASS), // Problem with prefix
+                IDelegateFactory.class);
+    }
+
+    @Override
+    public Map<String, String> getLoggerFactoryConfig() {
+        return null;
+    }
+
+    @Override
     public <T extends IComponent> Class<T> getComponentClass(Class<T> componentType, IPluginRegistry pluginRegistry) {
         String className = config.getJsonObject(GATEWAY_COMPONENT_PREFIX).
                 getJsonObject(componentType.getSimpleName()).
@@ -170,16 +184,6 @@ public class VertxEngineConfig implements IEngineConfig {
                 getJsonObject(GATEWAY_CONFIG);
 
         return toFlatStringMap(componentConfig);
-    }
-
-    @Override
-    public Class<? extends IDelegateFactory> getLoggerFactoryClass(IPluginRegistry pluginRegistry) {
-        return VertxLoggerDelegate.class;
-    }
-
-    @Override
-    public Map<String, String> getLoggerFactoryConfig() {
-        return null;
     }
 
     /**
@@ -255,7 +259,19 @@ public class VertxEngineConfig implements IEngineConfig {
     }
 
     protected String getClassname(JsonObject obj, String prefix) {
-        return obj.getJsonObject(prefix).getString(GATEWAY_CLASS);
+        String clazzName = System.getProperty(prefix);
+
+        // Something of a hack because the constants may assume apiman-gateway prefix, which isn't in the vert.x JSON.
+
+        String strippedPrefix = StringUtils.substringAfter(prefix, "apiman-gateway.");
+
+        String filteredPrefix = strippedPrefix.isEmpty() ? prefix : strippedPrefix;
+
+
+        if (clazzName == null)
+            return obj.getJsonObject(filteredPrefix).getString(GATEWAY_CLASS);
+
+        return clazzName;
     }
 
     protected JsonObject getConfig(JsonObject obj, String prefix) {
