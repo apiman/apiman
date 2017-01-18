@@ -49,8 +49,12 @@
       <artifactId>slf4j-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.squareup.okhttp</groupId>
-      <artifactId>okhttp</artifactId>
+      <groupId>com.jcabi</groupId>
+      <artifactId>jcabi-http</artifactId>
+    </dependency>
+    <dependency> <!-- Seems to be required jcabi-http? -->
+      <groupId>javax.json</groupId>
+      <artifactId>javax.json-api</artifactId>
     </dependency>
     <dependency>
       <groupId>commons-codec</groupId>
