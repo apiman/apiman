@@ -83,7 +83,7 @@ public class ConfigDrivenComponentRegistry implements IComponentRegistry {
     public <T extends IComponent> T createAndRegisterComponent(Class<T> componentType) throws ComponentNotFoundException {
         try {
             synchronized (components) {
-                Class<T> componentClass = engineConfig.getComponentClass(componentType, pluginRegistry);
+                Class<? extends T> componentClass = engineConfig.getComponentClass(componentType, pluginRegistry);
                 Map<String, String> componentConfig = engineConfig.getComponentConfig(componentType);
                 T component = create(componentClass, componentConfig);
                 components.put(componentType, component);

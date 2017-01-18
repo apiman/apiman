@@ -15,6 +15,7 @@
  */
 package io.apiman.gateway.engine.vertxebinmemory;
 
+import io.apiman.gateway.engine.IEngineConfig;
 import io.apiman.gateway.engine.IRegistry;
 import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
@@ -24,7 +25,6 @@ import io.apiman.gateway.engine.beans.Client;
 import io.apiman.gateway.engine.impl.InMemoryRegistry;
 import io.apiman.gateway.engine.vertxebinmemory.apis.EBRegistryProxy;
 import io.apiman.gateway.engine.vertxebinmemory.apis.EBRegistryProxyHandler;
-import io.apiman.gateway.platforms.vertx3.common.config.VertxEngineConfig;
 import io.vertx.core.Vertx;
 
 import java.util.Map;
@@ -47,7 +47,7 @@ public class EBInMemoryRegistry extends InMemoryRegistry implements EBRegistryPr
     private final static String ADDRESS = "io.vertx.core.Vertx.registry.EBInMemoryRegistry.event"; //$NON-NLS-1$
     private String registryUuid = UUID.randomUUID().toString();
 
-    public EBInMemoryRegistry(Vertx vertx, VertxEngineConfig vxConfig, Map<String, String> options) {
+    public EBInMemoryRegistry(Vertx vertx, IEngineConfig vxConfig, Map<String, String> options) {
         super();
 
         System.out.println("Starting an EBInMemoryRegistry on UUID " + registryUuid);
@@ -56,12 +56,12 @@ public class EBInMemoryRegistry extends InMemoryRegistry implements EBRegistryPr
         listenProxyHandler();
         this.proxy = new EBRegistryProxy(vertx, address(), registryUuid);
     }
-    
+
     @Override
     public void getClient(String apiKey, IAsyncResultHandler<Client> handler) {
         super.getClient(apiKey, handler);
     }
-    
+
     @Override
     public void getContract(String apiOrganizationId, String apiId, String apiVersion, String apiKey,
             IAsyncResultHandler<ApiContract> handler) {

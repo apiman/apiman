@@ -89,7 +89,7 @@ public interface IEngineConfig {
      * @param pluginRegistry the plugin registry
      * @return the class to use for the given component
      */
-    public <T extends IComponent> Class<T> getComponentClass(Class<T> componentType, IPluginRegistry pluginRegistry);
+    public <T extends IComponent> Class<? extends T> getComponentClass(Class<? extends T> componentType, IPluginRegistry pluginRegistry);
 
     /**
      * @param componentType the component type
@@ -114,7 +114,6 @@ public interface IEngineConfig {
      */
     public List<EngineConfigTuple<? extends IGatewayInitializer>> getGatewayInitializers(IPluginRegistry pluginRegistry);
 
-
     /**
      * @param pluginRegistry the plugin registry
      * @return the factory used to create instances of {@link ILogger}.
@@ -126,4 +125,25 @@ public interface IEngineConfig {
      */
     public Map<String, String> getLoggerFactoryConfig();
 
+    /**
+     * @param pluginRegistry the plugin registry
+     * @return the class to use as the {@link IPolicyErrorWriter}
+     */
+    Class<? extends IPolicyErrorWriter> getPolicyErrorWriterClass(IPluginRegistry pluginRegistry);
+
+    /**
+     * @return all properties to be passed to the error formatter
+     */
+    Map<String, String> getPolicyErrorWriterConfig();
+
+    /**
+     * @param pluginRegistry The plugin registry
+     * @return the class to use as the {@link IPolicyFailureWriter}
+     */
+    Class<? extends IPolicyFailureWriter> getPolicyFailureWriterClass(IPluginRegistry pluginRegistry);
+
+    /**
+     * @return all properties to be passed to the failure formatter
+     */
+    Map<String, String> getPolicyFailureWriterConfig();
 }

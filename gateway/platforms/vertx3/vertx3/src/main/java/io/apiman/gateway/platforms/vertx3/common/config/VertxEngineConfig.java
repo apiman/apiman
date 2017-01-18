@@ -26,19 +26,31 @@ import io.apiman.gateway.engine.IEngineConfig;
 import io.apiman.gateway.engine.IGatewayInitializer;
 import io.apiman.gateway.engine.IMetrics;
 import io.apiman.gateway.engine.IPluginRegistry;
+import io.apiman.gateway.engine.IPolicyErrorWriter;
+import io.apiman.gateway.engine.IPolicyFailureWriter;
 import io.apiman.gateway.engine.IRegistry;
-import io.apiman.gateway.engine.i18n.Messages;
+import io.apiman.gateway.engine.impl.DefaultDataEncrypter;
+import io.apiman.gateway.engine.impl.DefaultPolicyErrorWriter;
+import io.apiman.gateway.engine.impl.DefaultPolicyFailureWriter;
 import io.apiman.gateway.engine.policy.IPolicyFactory;
+import io.apiman.gateway.engine.policy.PolicyFactoryImpl;
 import io.apiman.gateway.platforms.vertx3.common.verticles.VerticleType;
+import io.apiman.gateway.platforms.vertx3.connector.ConnectorFactory;
+import io.apiman.gateway.platforms.vertx3.engine.VertxPluginRegistry;
+import io.apiman.gateway.platforms.vertx3.i18n.Messages;
 import io.vertx.core.json.JsonObject;
 
+import java.util.AbstractMap;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
+
 
 /**
  * Engine configuration, read simplistically from Vert'x JSON config.
@@ -48,10 +60,6 @@ import org.apache.commons.lang3.StringUtils;
  */
 @SuppressWarnings("nls")
 public class VertxEngineConfig implements IEngineConfig {
-    public static final String GATEWAY_ENDPOINT_POLICY_INGESTION = "io.apiman.gateway.platforms.vertx2.policy";
-    public static final String GATEWAY_ENDPOINT_REQUEST = ".request";
-    public static final String GATEWAY_ENDPOINT_RESPONSE = ".response";
-
     private static final String VERTICLES = "verticles";
     private static final String VERTICLE_PORT = "port";
     private static final String VERTICLE_COUNT = "count";
@@ -95,72 +103,72 @@ public class VertxEngineConfig implements IEngineConfig {
     @Override
     public Class<? extends IRegistry> getRegistryClass(IPluginRegistry pluginRegistry) {
         return loadConfigClass(getClassname(config, GATEWAY_REGISTRY_PREFIX),
-                IRegistry.class);
+                IRegistry.class, null);
     }
 
     @Override
     public Class<? extends IDataEncrypter> getDataEncrypterClass(IPluginRegistry pluginRegistry) {
-        return loadConfigClass(getClassname(config, GATEWAY_ENCRYPTER_PREFIX), IDataEncrypter.class);
+        return loadConfigClass(getClassname(config, GATEWAY_ENCRYPTER_PREFIX), IDataEncrypter.class, DefaultDataEncrypter.class);
     }
 
     @Override
     public Map<String, String> getRegistryConfig() {
-        return toFlatStringMap(getConfig(config, GATEWAY_REGISTRY_PREFIX));
+        return getConfig(config, GATEWAY_REGISTRY_PREFIX);
     }
 
     @Override
     public Map<String, String> getDataEncrypterConfig() {
-        return toFlatStringMap(getConfig(config, GATEWAY_ENCRYPTER_PREFIX));
+        return getConfig(config, GATEWAY_ENCRYPTER_PREFIX);
     }
 
     @Override
     public Class<? extends IPluginRegistry> getPluginRegistryClass() {
         return loadConfigClass(getClassname(config, GATEWAY_PLUGIN_REGISTRY_PREFIX),
-                IPluginRegistry.class);
+                IPluginRegistry.class, VertxPluginRegistry.class);
     }
 
     @Override
     public Map<String, String> getPluginRegistryConfig() {
-        return toFlatStringMap(getConfig(config, GATEWAY_PLUGIN_REGISTRY_PREFIX));
+        return getConfig(config, GATEWAY_PLUGIN_REGISTRY_PREFIX);
     }
 
     @Override
     public Class<? extends IConnectorFactory> getConnectorFactoryClass(IPluginRegistry pluginRegistry) {
         return loadConfigClass(getClassname(config, GATEWAY_CONNECTOR_FACTORY_PREFIX),
-                IConnectorFactory.class);
+                IConnectorFactory.class, ConnectorFactory.class);
     }
 
     @Override
     public Map<String, String> getConnectorFactoryConfig() {
-        return toFlatStringMap(getConfig(config, GATEWAY_CONNECTOR_FACTORY_PREFIX));
+        return getConfig(config, GATEWAY_CONNECTOR_FACTORY_PREFIX);
     }
 
     @Override
     public Class<? extends IPolicyFactory> getPolicyFactoryClass(IPluginRegistry pluginRegistry) {
         return loadConfigClass(getClassname(config, GATEWAY_POLICY_FACTORY_PREFIX),
-                IPolicyFactory.class);
+                IPolicyFactory.class, PolicyFactoryImpl.class);
     }
 
     @Override
     public Map<String, String> getPolicyFactoryConfig() {
-        return toFlatStringMap(getConfig(config, GATEWAY_POLICY_FACTORY_PREFIX));
+        return getConfig(config, GATEWAY_POLICY_FACTORY_PREFIX);
     }
 
     @Override
     public Class<? extends IMetrics> getMetricsClass(IPluginRegistry pluginRegistry) {
         return loadConfigClass(getClassname(config, GATEWAY_METRICS_PREFIX),
-                IMetrics.class);
+                IMetrics.class, null);
     }
 
     @Override
     public Map<String, String> getMetricsConfig() {
-        return toFlatStringMap(getConfig(config, GATEWAY_METRICS_PREFIX));
+        return getConfig(config, GATEWAY_METRICS_PREFIX);
     }
 
     @Override
     public Class<? extends IDelegateFactory> getLoggerFactoryClass(IPluginRegistry pluginRegistry) {
-        return loadConfigClass(getClassname(config, GatewayConfigProperties.LOGGER_FACTORY_CLASS), // Problem with prefix
-                IDelegateFactory.class);
+        return loadConfigClass(getClassname(config, GatewayConfigProperties.LOGGER_FACTORY_CLASS),
+                IDelegateFactory.class, VertxLoggerDelegate.class);
     }
 
     @Override
@@ -169,12 +177,34 @@ public class VertxEngineConfig implements IEngineConfig {
     }
 
     @Override
-    public <T extends IComponent> Class<T> getComponentClass(Class<T> componentType, IPluginRegistry pluginRegistry) {
+    public Class<? extends IPolicyErrorWriter> getPolicyErrorWriterClass(IPluginRegistry pluginRegistry) {
+        return loadConfigClass(getClassname(config, GatewayConfigProperties.ERROR_WRITER_CLASS),
+                IPolicyErrorWriter.class, DefaultPolicyErrorWriter.class);
+    }
+
+    @Override
+    public Map<String, String> getPolicyErrorWriterConfig() {
+        return getConfig(config, GatewayConfigProperties.ERROR_WRITER_CLASS);
+    }
+
+    @Override
+    public Class<? extends IPolicyFailureWriter> getPolicyFailureWriterClass(IPluginRegistry pluginRegistry) {
+        return loadConfigClass(getClassname(config, GatewayConfigProperties.FAILURE_WRITER_CLASS),
+                IPolicyFailureWriter.class, DefaultPolicyFailureWriter.class);
+    }
+
+    @Override
+    public Map<String, String> getPolicyFailureWriterConfig() {
+        return getConfig(config, GatewayConfigProperties.FAILURE_WRITER_CLASS);
+    }
+
+    @Override
+    public <T extends IComponent> Class<? extends T> getComponentClass(Class<? extends T> componentType, IPluginRegistry pluginRegistry) {
         String className = config.getJsonObject(GATEWAY_COMPONENT_PREFIX).
                 getJsonObject(componentType.getSimpleName()).
                 getString(GATEWAY_CLASS);
 
-        return loadConfigClass(className, componentType);
+        return loadConfigClass(className, componentType, null);
     }
 
     @Override
@@ -260,13 +290,9 @@ public class VertxEngineConfig implements IEngineConfig {
 
     protected String getClassname(JsonObject obj, String prefix) {
         String clazzName = System.getProperty(prefix);
-
-        // Something of a hack because the constants may assume apiman-gateway prefix, which isn't in the vert.x JSON.
-
+        // TODO Something of a hack because the constants may assume apiman-gateway prefix, which isn't in the vert.x JSON.
         String strippedPrefix = StringUtils.substringAfter(prefix, "apiman-gateway.");
-
         String filteredPrefix = strippedPrefix.isEmpty() ? prefix : strippedPrefix;
-
 
         if (clazzName == null)
             return obj.getJsonObject(filteredPrefix).getString(GATEWAY_CLASS);
@@ -274,35 +300,43 @@ public class VertxEngineConfig implements IEngineConfig {
         return clazzName;
     }
 
-    protected JsonObject getConfig(JsonObject obj, String prefix) {
-        return obj.getJsonObject(prefix).getJsonObject(GATEWAY_CONFIG);
+    protected Map<String, String> getConfig(JsonObject obj, String prefix) {
+        // First, check whether there's something interesting in System properties.
+        Map<String, String> mfp = getConfigMapFromProperties("apiman-gateway." + prefix);
+
+        if (mfp != null && !mfp.isEmpty()) { // TODO
+            return mfp;
+        }
+        return toFlatStringMap(obj.getJsonObject(prefix).getJsonObject(GATEWAY_CONFIG));
     }
 
     /**
      * @return a loaded class
      */
     @SuppressWarnings("unchecked")
-    protected <T> Class<T> loadConfigClass(String classname, Class<T> type) {
-
-        if (classname == null) {
+    protected <T> Class<? extends T> loadConfigClass(String className, Class<T> type, Class<? extends T> defaultClass) {
+        if (className == null) {
+            if (defaultClass != null) {
+                return defaultClass;
+            }
             throw new RuntimeException("No " + type.getSimpleName() + " class configured.");  //$NON-NLS-2$
         }
         try {
-            Class<T> c = (Class<T>) Thread.currentThread().getContextClassLoader().loadClass(classname);
+            Class<T> c = (Class<T>) Thread.currentThread().getContextClassLoader().loadClass(className);
             return c;
         } catch (ClassNotFoundException e) {
             // Not found via Class.forName() - try other mechanisms.
         }
         try {
-            Class<T> c = (Class<T>) Class.forName(classname);
+            Class<T> c = (Class<T>) Class.forName(className);
             return c;
         } catch (ClassNotFoundException e) {
             // Not found via Class.forName() - try other mechanisms.
         }
 
-        System.err.println("COULD NOT LOAD " + classname);
-
-        throw new RuntimeException(Messages.i18n.format("EngineConfig.FailedToLoadClass", classname));
+        System.err.println(Messages.getString("EngineConfig.FailedToLoadClass") + className);
+        System.exit(-1);
+        return null;
     }
 
     protected String stringConfigWithDefault(String name, String defaultValue) {
@@ -349,6 +383,30 @@ public class VertxEngineConfig implements IEngineConfig {
 
     public String getTrustStorePassword() {
         return config.getJsonObject(SSL, new JsonObject()).getJsonObject(SSL_TRUSTSTORE, new JsonObject()).getString(API_PASSWORD);
+    }
+
+    /**
+     * Gets all properties in the engine configuration that are prefixed
+     * with the given prefix.
+     * @param prefix the prefix
+     * @return all prefixed properties
+     */
+    private Map<String, String> getConfigMapFromProperties(String prefix) {
+        Map<String, String> rval = new HashMap<>();
+        getKeys(prefix).forEach(pair -> {
+            if (!pair.getKey().equals(prefix)) {
+                String shortKey = pair.getKey().substring(prefix.length() + 1);
+                rval.put(shortKey, pair.getValue());
+            }
+        });
+        return rval;
+    }
+
+    private List<Entry<String, String>> getKeys(String prefix) {
+        return System.getProperties().entrySet().stream()
+                .map(pair -> new AbstractMap.SimpleEntry<>(String.valueOf(pair.getKey()), String.valueOf(pair.getValue())))
+                .filter(pair -> StringUtils.startsWith(pair.getKey(), prefix))
+                .collect(Collectors.toList());
     }
 
 }

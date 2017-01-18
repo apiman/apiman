@@ -45,7 +45,7 @@ public class PolicyFactoryImpl implements IPolicyFactory {
      * @param config
      */
     public PolicyFactoryImpl(Map<String, String> config) {
-        reloadSnapshots = "true".equals(config.get("reload-snapshots")); //$NON-NLS-1$ //$NON-NLS-2$
+        reloadSnapshots = "true".equalsIgnoreCase(config.get("reload-snapshots")); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**
@@ -67,7 +67,7 @@ public class PolicyFactoryImpl implements IPolicyFactory {
                 return policyConfigCache.get(cacheKey);
             }
             Object config;
-            
+
             ClassLoader oldCtxLoader = Thread.currentThread().getContextClassLoader();
             try {
                 Thread.currentThread().setContextClassLoader(policy.getClass().getClassLoader());

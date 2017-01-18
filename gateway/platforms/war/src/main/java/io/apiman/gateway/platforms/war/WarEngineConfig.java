@@ -175,10 +175,9 @@ public class WarEngineConfig implements IEngineConfig {
      * @see io.apiman.gateway.engine.IEngineConfig#getComponentClass(java.lang.Class, io.apiman.gateway.engine.IPluginRegistry)
      */
     @Override
-    @SuppressWarnings("unchecked")
-    public <T extends IComponent> Class<T> getComponentClass(Class<T> componentType,
+    public <T extends IComponent> Class<? extends T> getComponentClass(Class<? extends T> componentType,
             IPluginRegistry pluginRegistry) {
-        return (Class<T>) loadConfigClass(GatewayConfigProperties.COMPONENT_PREFIX + componentType.getSimpleName(), componentType, pluginRegistry);
+        return loadConfigClass(GatewayConfigProperties.COMPONENT_PREFIX + componentType.getSimpleName(), componentType, pluginRegistry);
     }
 
     /**
@@ -205,36 +204,26 @@ public class WarEngineConfig implements IEngineConfig {
         return getConfigMap("apiman.encrypter"); //$NON-NLS-1$
     }
 
-    /**
-     * @param pluginRegistry The plugin registry
-     * @return the class to use as the {@link IPolicyFailureWriter}
-     */
+    @Override
     @SuppressWarnings("unchecked")
     public Class<IPolicyFailureWriter> getPolicyFailureWriterClass(IPluginRegistry pluginRegistry) {
         return (Class<IPolicyFailureWriter>) loadConfigClass(GatewayConfigProperties.FAILURE_WRITER_CLASS,
                 IPolicyFailureWriter.class, pluginRegistry, DefaultPolicyFailureWriter.class);
     }
 
-    /**
-     * @return all properties to be passed to the failure formatter
-     */
+    @Override
     public Map<String, String> getPolicyFailureWriterConfig() {
         return getConfigMap(GatewayConfigProperties.FAILURE_WRITER_CLASS);
     }
 
-    /**
-     * @param pluginRegistry the plugin registry
-     * @return the class to use as the {@link IPolicyErrorWriter}
-     */
+    @Override
     @SuppressWarnings("unchecked")
     public Class<IPolicyErrorWriter> getPolicyErrorWriterClass(IPluginRegistry pluginRegistry) {
         return (Class<IPolicyErrorWriter>) loadConfigClass(GatewayConfigProperties.ERROR_WRITER_CLASS,
                 IPolicyErrorWriter.class, pluginRegistry, DefaultPolicyErrorWriter.class);
     }
 
-    /**
-     * @return all properties to be passed to the error formatter
-     */
+    @Override
     public Map<String, String> getPolicyErrorWriterConfig() {
         return getConfigMap(GatewayConfigProperties.ERROR_WRITER_CLASS);
     }
