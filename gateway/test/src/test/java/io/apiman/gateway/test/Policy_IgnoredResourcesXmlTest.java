@@ -18,6 +18,7 @@ package io.apiman.gateway.test;
 import io.apiman.gateway.test.junit.GatewayRestTestPlan;
 import io.apiman.gateway.test.junit.GatewayRestTester;
 
+import org.junit.Ignore;
 import org.junit.runner.RunWith;
 
 /**
@@ -27,6 +28,7 @@ import org.junit.runner.RunWith;
  */
 @RunWith(GatewayRestTester.class)
 @GatewayRestTestPlan("test-plans/policies/ignored-resources-xml-testPlan.xml")
+@Ignore
 public class Policy_IgnoredResourcesXmlTest {
 
 }
