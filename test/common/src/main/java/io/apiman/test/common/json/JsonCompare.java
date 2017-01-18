@@ -51,8 +51,8 @@ public class JsonCompare {
     private JsonArrayOrderingType arrayOrdering = JsonArrayOrderingType.strict;
     private boolean compareNumericIds = true;
     private boolean ignoreCase = false;
-    private Stack<Object> currentPath = new Stack<Object>();
-    
+    private Stack<Object> currentPath = new Stack<>();
+
     /**
      * Constructor.
      */
@@ -61,7 +61,7 @@ public class JsonCompare {
 
     /**
      * Asserts that the JSON document matches what we expected.
-     * 
+     *
      * Note: the input streams should be closed by the caller
      * @param expectedJson
      * @param actualJson
@@ -109,7 +109,7 @@ public class JsonCompare {
                                 str1 = o1NameNode.asText();
                                 str2 = o2NameNode.asText();
                             }
-                            
+
                             // Try username (UserBean only)
                             JsonNode o1UsernameNode = o1.get("username");
                             JsonNode o2UsernameNode = o2.get("username");
@@ -125,7 +125,7 @@ public class JsonCompare {
                                 str1 = o1VersionNode.asText();
                                 str2 = o2VersionNode.asText();
                             }
-                            
+
                             // Try OrganizationBean.id (Orgs)
                             JsonNode o1OrgNode = o1.get("OrganizationBean");
                             JsonNode o2OrgNode = o2.get("OrganizationBean");
@@ -157,7 +157,7 @@ public class JsonCompare {
                                 str1 = o1ApiNode.get("id").asText();
                                 str2 = o2ApiNode.get("id").asText();
                             }
-                            
+
                             // Try Id (all other beans)
                             JsonNode o1IdNode = o1.get("id");
                             JsonNode o2IdNode = o2.get("id");
@@ -298,7 +298,7 @@ public class JsonCompare {
                 }
                 currentPath.pop();
             }
-            
+
             if (getMissingField() == JsonMissingFieldType.fail) {
                 Set<String> actualFieldNames = new HashSet();
                 Iterator<String> names = actualJson.fieldNames();
@@ -312,7 +312,7 @@ public class JsonCompare {
             }
         }
     }
-    
+
     /**
      * Format an assertion message, including the current path.
      * @param pattern
@@ -321,7 +321,7 @@ public class JsonCompare {
     private String message(String pattern, Object ... params) {
         return path() + "::" + MessageFormat.format(pattern, params);
     }
-    
+
     /**
      * Format the current path as a string.
      */

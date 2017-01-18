@@ -162,6 +162,8 @@
     <version.net.openhft>0.6</version.net.openhft>
     <version.com.ibm.icu4j>57.1</version.com.ibm.icu4j>
     <version.com.hazelcast>3.6.4</version.com.hazelcast>
+    <version.com.jcbai>1.16</version.com.jcbai>
+    <version.javax.json.javax.json-api>1.0</version.javax.json.javax.json-api>
   </properties>
 
   <dependencyManagement>
@@ -958,6 +960,11 @@
 
       <!-- Spec Libraries -->
       <dependency>
+        <groupId>javax.json</groupId>
+        <artifactId>javax.json-api</artifactId>
+        <version>${version.javax.json.javax.json-api}</version>
+      </dependency>
+      <dependency>
         <groupId>org.jboss.spec.javax.ws.rs</groupId>
         <artifactId>jboss-jaxrs-api_2.0_spec</artifactId>
         <version>${version.org.jboss.spec.javax.ws.jboss-jaxrs-api_2.0_spec}</version>
@@ -1007,6 +1014,11 @@
         <artifactId>keycloak-server-overlay</artifactId>
         <version>${version.org.keycloak}</version>
         <type>zip</type>
+      </dependency>
+      <dependency>
+        <groupId>com.jcabi</groupId>
+        <artifactId>jcabi-http</artifactId>
+        <version>${version.com.jcbai}</version>
       </dependency>
 
       <!-- Vert.x -->
