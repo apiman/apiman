@@ -12,6 +12,17 @@
     }
   },
 
+//  "writers": {
+//    "error": {
+//      "class": "io.apiman.gateway.engine.impl.TracePolicyErrorWriter",
+//      "config": {}
+//    },
+//    "policy-failure": {
+//      "class": "",
+//      "config": {}
+//    }
+//  },
+
   "encrypter": {
     "class": "io.apiman.gateway.engine.impl.DefaultDataEncrypter",
     "config": {}
@@ -25,13 +36,13 @@
   "connector-factory": {
     "class": "io.apiman.gateway.platforms.vertx3.connector.ConnectorFactory",
     "config": {
-    //  "tls": {
-    //    "allowSelfSigned": true,
-    //    "devMode": true,
-    //    "trustStore": "/path/to/your/truststore.jks",
-    //    "keyStore": "/path/to/your/keystore.jks",
-    //    "keyStorePassword": "abc123"
-    //  }
+  //    "tls": {
+  //    "allowSelfSigned": true,
+  //    "devMode": true,
+  //    "trustStore": "/path/to/your/truststore.jks",
+  //    "keyStore": "/path/to/your/keystore.jks",
+  //    "keyStorePassword": "abc123"
+  //    }
     }
   },
 
@@ -42,14 +53,15 @@
 
   "policy-factory": {
     "class": "io.apiman.gateway.engine.policy.PolicyFactoryImpl",
-    "config": {}
+    "config": {
+    }
   },
 
   "metrics": {
     "class": "io.apiman.gateway.test.server.TestMetrics",
     "config": {}
   },
-
+  
   "components": {
       "IHttpClientComponent": {
         "class": "io.apiman.gateway.platforms.vertx3.components.HttpClientComponentImpl",
@@ -93,7 +105,7 @@
       }
   },
 
-  // Host-name to bind to for this machine.
+    // Host-name to bind to for this machine.
   "hostname": "localhost",
 
   // You can force a particular endpoint to be reported here (e.g.
@@ -110,7 +122,7 @@
     },
     "https": {
       "port": 8443,
-      "count": 1
+      "count": 0
     },
     "api": {
       "port": 8081,
@@ -119,16 +131,16 @@
   },
 
 // SSL configuration to the gateway's *front end* (i.e. client <-> gateway).
-  "ssl": {
-    "keystore": {
-      "path": "/Users/msavy/apiman/apiman/gateway/platforms/servlet/src/test/resources/io/apiman/gateway/platforms/servlet/auth/basic/service_ks.jks",
-      "password": "password"
-    },
-    "truststore": {
-      "path": "/Users/msavy/apiman/apiman/gateway/platforms/servlet/src/test/resources/io/apiman/gateway/platforms/servlet/auth/basic/service_ks.jks",
-      "password": "password"
-    }
-  },
+//"ssl": {
+//  "keystore": {
+//    "path": "<keystore path here>",
+//    "password": "password"
+//  },
+//  "truststore": {
+//    "path": "<truststore path here>",
+//    "password": "password"
+//  }
+//},
 
   // API authentication; presently just BASIC auth.
   "auth": {
@@ -141,4 +153,6 @@
 
   // When reporting a API's endpoint, prefer secure (i.e. https)
   "preferSecure": false
+}
+
 }

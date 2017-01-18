@@ -99,7 +99,7 @@
     },
     "https": {
       "port": 8443,
-      "count": 1
+      "count": 0
     },
     "api": {
       "port": 8081,
@@ -108,16 +108,16 @@
   },
 
 // SSL configuration to the gateway's *front end* (i.e. client <-> gateway).
-"ssl": {
-  "keystore": {
-    "path": "/Users/msavy/apiman/apiman/gateway/platforms/servlet/src/test/resources/io/apiman/gateway/platforms/servlet/auth/basic/service_ks.jks",
-    "password": "password"
-  },
-  "truststore": {
-    "path": "/Users/msavy/apiman/apiman/gateway/platforms/servlet/src/test/resources/io/apiman/gateway/platforms/servlet/auth/basic/service_ks.jks",
-    "password": "password"
-  }
-},
+//"ssl": {
+//  "keystore": {
+//    "path": "<keystore path here>",
+//    "password": "password"
+//  },
+//  "truststore": {
+//    "path": "<truststore path here>",
+//    "password": "password"
+//  }
+//},
 
   // API authentication; presently just BASIC auth.
   "auth": {

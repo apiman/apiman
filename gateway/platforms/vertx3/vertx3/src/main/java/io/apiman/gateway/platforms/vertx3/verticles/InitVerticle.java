@@ -16,12 +16,12 @@
 package io.apiman.gateway.platforms.vertx3.verticles;
 
 import io.apiman.gateway.platforms.vertx3.common.verticles.VerticleType;
-import io.vertx.core.AsyncResult;
+import io.vertx.core.CompositeFuture;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Future;
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,65 +31,48 @@ import java.util.List;
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 public class InitVerticle extends ApimanVerticleBase {
-
-    private class ApimanDeployment {
-        DeploymentOptions deploymentOptions;
-        String className;
-
-        ApimanDeployment(DeploymentOptions deploymentOptions, String className) {
-            this.deploymentOptions = deploymentOptions;
-            this.className = className;
-        }
-    }
-
-    private boolean failed = false;
-    private int ctr;
+    private Logger log = LoggerFactory.getLogger(InitVerticle.class);
+    private DeploymentOptions base;
 
     @Override
     public void start(Future<Void> start) {
         super.start();
+        base = new DeploymentOptions().setConfig(config());
 
-        DeploymentOptions base = new DeploymentOptions().setConfig(config());
+        @SuppressWarnings({ "rawtypes" }) // CompositeFuture doesn't accept generic type
+        List<Future> deployList = new ArrayList<>();
 
-        @SuppressWarnings("serial")
-        List<ApimanDeployment> deployList = new ArrayList<ApimanDeployment>() {{
-            add(buildDeploymentOptions(base, ApiVerticle.class.getCanonicalName(), ApiVerticle.VERTICLE_TYPE));
-            add(buildDeploymentOptions(base, HttpGatewayVerticle.class.getCanonicalName(), HttpGatewayVerticle.VERTICLE_TYPE));
-            add(buildDeploymentOptions(base, HttpsGatewayVerticle.class.getCanonicalName(), HttpsGatewayVerticle.VERTICLE_TYPE));
-        }};
+        deploy(ApiVerticle.class.getCanonicalName(), ApiVerticle.VERTICLE_TYPE, deployList);
+        deploy(HttpGatewayVerticle.class.getCanonicalName(), HttpGatewayVerticle.VERTICLE_TYPE, deployList);
+        deploy(HttpsGatewayVerticle.class.getCanonicalName(), HttpsGatewayVerticle.VERTICLE_TYPE, deployList);
 
-        ctr = deployList.size();
-
-        deployList.forEach(deployment -> {
-            if (!failed) {
-                vertx.deployVerticle(deployment.className, deployment.deploymentOptions, result -> {
-                    checkAndSetStatus(result, start);
-                });
+        CompositeFuture.all(deployList).setHandler(compositeResult -> {
+            if (compositeResult.failed()) {
+                compositeResult.cause().printStackTrace();
+                log.fatal("Failed to deploy verticles: " + compositeResult.cause().getMessage()); //$NON-NLS-1$
+                start.fail(compositeResult.cause());
+            } else {
+                log.info("Successfully deployed all verticles"); //$NON-NLS-1$
+                start.complete();
             }
         });
     }
 
-    private void checkAndSetStatus(AsyncResult<String> result, Future<Void> start) {
-        ctr--;
-        if (result.failed()) {
-            start.fail(result.cause());
-            failed = true;
-            printError(result.cause());
-        } else if (ctr == 0) {
-            start.complete();
+    private void deploy(String canonicalName, VerticleType verticleType, @SuppressWarnings("rawtypes") List<Future> deployList) {
+        log.info("Will deploy {0} of type {1}", apimanConfig.getVerticleCount(verticleType), verticleType); //$NON-NLS-1$
+
+        if (apimanConfig.getVerticleCount(verticleType) <= 0) {
+            return;
         }
-    }
 
-    private void printError(Throwable cause) {
-        StringWriter errorTrace = new StringWriter();
-        cause.printStackTrace(new PrintWriter(errorTrace));
-        System.err.println("Failed to deploy verticles: " + cause.getMessage()); //$NON-NLS-1$
-        System.err.println(errorTrace);
-    }
-
-    private ApimanDeployment buildDeploymentOptions(DeploymentOptions base, String className, VerticleType type) {
-        DeploymentOptions deploymentOptions = new DeploymentOptions(base).setInstances(apimanConfig.getVerticleCount(type));
-        return new ApimanDeployment(deploymentOptions, className);
+        DeploymentOptions deploymentOptions = new DeploymentOptions(base)
+                .setInstances(apimanConfig.getVerticleCount(verticleType));
+        // Future for this deployment.
+        Future<String> future = Future.future();
+        // Do deployment
+        vertx.deployVerticle(canonicalName, deploymentOptions, future.completer());
+        // Set the future associated with the deployment so #all can wait for it.
+        deployList.add(future);
     }
 
     @Override
