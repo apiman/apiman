@@ -17,6 +17,7 @@ package io.apiman.gateway.platforms.vertx3.engine;
 
 import io.apiman.gateway.engine.IComponentRegistry;
 import io.apiman.gateway.engine.IConnectorFactory;
+import io.apiman.gateway.engine.IEngineConfig;
 import io.apiman.gateway.engine.IPluginRegistry;
 import io.apiman.gateway.engine.impl.ConfigDrivenEngineFactory;
 import io.apiman.gateway.platforms.vertx3.common.config.VertxEngineConfig;
@@ -59,6 +60,13 @@ public class VertxConfigDrivenEngineFactory extends ConfigDrivenEngineFactory {
     protected <T> T create(Class<T> type, Map<String, String> mapConfig) {
         try {
             Constructor<T> constructor = type.getConstructor(Vertx.class, VertxEngineConfig.class, Map.class);
+            return constructor.newInstance(vertx, vxConfig, mapConfig);
+        } catch (NoSuchMethodException e) { // If doesn't have constructor, try other method.
+        } catch (Exception e ) {
+            throw new RuntimeException(e);
+        }
+        try {
+            Constructor<T> constructor = type.getConstructor(Vertx.class, IEngineConfig.class, Map.class);
             return constructor.newInstance(vertx, vxConfig, mapConfig);
         } catch (NoSuchMethodException e) { // If doesn't have constructor, try other method.
         } catch (Exception e ) {
