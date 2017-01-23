@@ -56,6 +56,8 @@ import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * A vert.x-based HTTP connector; implementing both {@link ISignalReadStream} and {@link ISignalWriteStream}.
  *
@@ -132,7 +134,7 @@ class HttpConnector implements IApiConnectionResponse, IApiConnection {
        apiHost = apiEndpoint.getHost();
        apiPort = getPort();
        apiPath = apiEndpoint.getPath().isEmpty() || apiEndpoint.getPath().equals("/") ? "" : apiEndpoint.getPath();
-       destination = apiRequest.getDestination() == null ? "/" : apiRequest.getDestination();
+       destination = apiRequest.getDestination() == null ? "" : apiRequest.getDestination();
 
        HttpClientOptions clientOptions = HttpClientOptionsFactory.parseOptions(tlsOptions, apiEndpoint);
        this.client = vertx.createHttpClient(clientOptions);
@@ -164,7 +166,7 @@ class HttpConnector implements IApiConnectionResponse, IApiConnection {
     }
 
     private void doConnection() {
-        String endpoint = apiPath + destination + queryParams(apiRequest.getQueryParams());
+        String endpoint = join(apiPath, destination + queryParams(apiRequest.getQueryParams()));
         logger.debug(String.format("Connecting to %s | port: %d verb: %s path: %s", apiHost, apiPort,
                 HttpMethod.valueOf(apiRequest.getType()), endpoint));
 
@@ -213,6 +215,15 @@ class HttpConnector implements IApiConnectionResponse, IApiConnection {
         if (authType == RequiredAuthType.BASIC) {
             clientRequest.putHeader("Authorization", Basic.encode(basicOptions.getUsername(), basicOptions.getPassword()));
         }
+    }
+
+    private String join(String a, String b) {
+        if (StringUtils.endsWith(a, "/") && b.startsWith("/")) {
+            return a + b.substring(1);
+        } else if (StringUtils.endsWith(a, "/") ^ b.startsWith("/")) {
+            return a + b;
+        }
+        return a + "/" + b;
     }
 
     private void addMandatoryRequestHeaders(MultiMap headers) {
