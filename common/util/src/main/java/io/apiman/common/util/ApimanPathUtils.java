@@ -69,6 +69,8 @@ public class ApimanPathUtils {
                         resource.append('/');
                     }
                     info.resource = resource.toString();
+                } else if (pathInfo.endsWith("/")) {
+                	info.resource = "/";
                 }
             }
         }

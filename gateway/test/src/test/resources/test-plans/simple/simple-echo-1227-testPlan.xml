@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testPlan xmlns="urn:io.apiman.test:2014:02:testPlan">
+
+  <!-- Reproducer for APIMAN-1227 -->
+  
+  <testGroup name="setup" endpoint="api">
+    <test name="Publish Api">test-plan-data/simple/simple-echo-1227/001-publish-api.resttest</test>
+  </testGroup>
+
+  <testGroup name="test">
+    <test name="Echo 1">test-plan-data/simple/simple-echo-1227/002-echo.resttest</test>
+    <test name="Echo 2">test-plan-data/simple/simple-echo-1227/003-echo-2.resttest</test>
+    <test name="Echo 3">test-plan-data/simple/simple-echo-1227/004-echo-3.resttest</test>
+    <test name="Echo 4">test-plan-data/simple/simple-echo-1227/005-echo-4.resttest</test>
+  </testGroup>
+</testPlan>
