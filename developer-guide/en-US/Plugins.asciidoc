@@ -1135,9 +1135,9 @@ apiman-gateway.writers.policy-failure.foo2=value-2
 ====== io.apiman.gateway.engine.IPolicyErrorWriter Example Configuration
 
 ```
-apiman-gateway.writers.policy-error=plugin:com.example.groupId:artifactId:1.0.Final/com.example.apiman.FooPolicyErrorWriterImpl
-apiman-gateway.writers.policy-error.foo1=value-1
-apiman-gateway.writers.policy-error.foo2=value-2
+apiman-gateway.writers.error=plugin:com.example.groupId:artifactId:1.0.Final/com.example.apiman.FooPolicyErrorWriterImpl
+apiman-gateway.writers.error.foo1=value-1
+apiman-gateway.writers.error.foo2=value-2
 ```
 
 ====== io.apiman.gateway.engine.components.IBufferFactoryComponent Example Configuration
@@ -1403,9 +1403,9 @@ apiman-gateway.writers.policy-failure.property2=value-2
 ```
 
 ```
-apiman-gateway.writers.policy-error=plugin:com.example.groupId:artifactId:1.0.Final/com.example.apiman.PolicyErrorWriterImpl
-apiman-gateway.writers.policy-error.property1=value-1
-apiman-gateway.writers.policy-error.property2=value-2
+apiman-gateway.writers.error=plugin:com.example.groupId:artifactId:1.0.Final/com.example.apiman.PolicyErrorWriterImpl
+apiman-gateway.writers.error.property1=value-1
+apiman-gateway.writers.error.property2=value-2
 ```
 
 Remember, if your implementation class has a constructor that accepts a Map<String, String>, then apiman
