@@ -15,10 +15,13 @@
  */
 package io.apiman.common.util;
 
+import org.apache.commons.lang3.StringUtils;
+
+@SuppressWarnings("nls")
 public class ApimanPathUtils {
 
-    public static final String X_API_VERSION_HEADER = "X-API-Version"; //$NON-NLS-1$
-    public static final String ACCEPT_HEADER = "Accept"; //$NON-NLS-1$
+    public static final String X_API_VERSION_HEADER = "X-API-Version";
+    public static final String ACCEPT_HEADER = "Accept";
 
     private ApimanPathUtils() {
     }
@@ -26,25 +29,23 @@ public class ApimanPathUtils {
     /**
      * Parses the HTTP request and returns an object containing all of the API
      * information (Org, Id, Version).
-     * @param apiVersionHeader
-     * @param acceptHeader
-     * @param pathInfo
+     * @param apiVersionHeader the API Version header
+     * @param acceptHeader the accept header
+     * @param pathInfo the path info
+     * @return the parsed object containing API information.
      */
     public static final ApiRequestPathInfo parseApiRequestPath(String apiVersionHeader, String acceptHeader, String pathInfo) {
-        //String pathInfo = request.getPathInfo();
         ApiRequestPathInfo info = new ApiRequestPathInfo();
 
         boolean versionFound = false;
 
-        //String apiVersionHeader = request.getHeader("X-API-Version"); //$NON-NLS-1$
         if (apiVersionHeader != null && apiVersionHeader.trim().length() > 0) {
             info.apiVersion = apiVersionHeader;
             versionFound = true;
         } else {
-            //String acceptHeader = request.getHeader("Accept"); //$NON-NLS-1$
-            if (acceptHeader != null && acceptHeader.startsWith("application/apiman.")) { //$NON-NLS-1$
-                String [] split = acceptHeader.split("\\+"); //$NON-NLS-1$
-                info.apiVersion = split[0].substring("application/apiman.".length()); //$NON-NLS-1$
+            if (acceptHeader != null && acceptHeader.startsWith("application/apiman.")) {
+                String [] split = acceptHeader.split("\\+");
+                info.apiVersion = split[0].substring("application/apiman.".length());
                 versionFound = true;
             }
         }
@@ -52,7 +53,7 @@ public class ApimanPathUtils {
         int minParts = versionFound ? 3 : 4;
 
         if (pathInfo != null) {
-            String[] split = pathInfo.split("/"); //$NON-NLS-1$
+            String[] split = pathInfo.split("/");
             if (split.length >= minParts) {
                 info.orgId = split[1];
                 info.apiId = split[2];
@@ -65,7 +66,7 @@ public class ApimanPathUtils {
                         resource.append('/');
                         resource.append(urlEncode(split[idx]));
                     }
-                    if (pathInfo.endsWith("/")) { //$NON-NLS-1$
+                    if (pathInfo.endsWith("/")) {
                         resource.append('/');
                     }
                     info.resource = resource.toString();
@@ -78,11 +79,32 @@ public class ApimanPathUtils {
     }
 
     /**
-     * @param string
+     * @param string string to replace # with %23
+     * @return the encoded string
      */
-    @SuppressWarnings("nls")
     public static String urlEncode(String string) {
         return string.replace("#", "%23");
+    }
+
+    /**
+     * Join endpoint and path with sensible / behaviour.
+     *
+     * @param endpoint the endpoint
+     * @param path the destination (path)
+     * @return the joined endpoint + destination.
+     */
+    public static String join(String endpoint, String path) {
+        if (endpoint == null || endpoint.isEmpty())
+            return path;
+        if (path == null || path.isEmpty())
+            return endpoint;
+
+        if (StringUtils.endsWith(endpoint, "/") && path.startsWith("/")) {
+            return endpoint + path.substring(1);
+        } else if (StringUtils.endsWith(endpoint, "/") ^ path.startsWith("/")) {
+            return endpoint + path;
+        }
+        return endpoint + "/" + path;
     }
 
     /**

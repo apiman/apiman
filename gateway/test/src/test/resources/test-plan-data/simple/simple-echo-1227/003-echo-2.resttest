@@ -7,8 +7,8 @@ Content-Type: application/json
 
 {
   "method" : "GET",
-  "resource" : "/endpoint/with-trailing-slash",
-  "uri" : "/endpoint/with-trailing-slash",
+  "resource" : "/endpoint/with-trailing-slash/",
+  "uri" : "/endpoint/with-trailing-slash/",
   "headers" : {
   }
 }
