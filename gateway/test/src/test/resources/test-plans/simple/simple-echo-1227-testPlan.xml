@@ -5,12 +5,20 @@
   
   <testGroup name="setup" endpoint="api">
     <test name="Publish Api">test-plan-data/simple/simple-echo-1227/001-publish-api.resttest</test>
+    <test name="Publish Api (No Final Slash API)">test-plan-data/simple/simple-echo-1227/noslash-001-publish-api.resttest</test>
   </testGroup>
 
-  <testGroup name="test">
+  <testGroup name="slash-test">
     <test name="Echo 1">test-plan-data/simple/simple-echo-1227/002-echo.resttest</test>
     <test name="Echo 2">test-plan-data/simple/simple-echo-1227/003-echo-2.resttest</test>
     <test name="Echo 3">test-plan-data/simple/simple-echo-1227/004-echo-3.resttest</test>
     <test name="Echo 4">test-plan-data/simple/simple-echo-1227/005-echo-4.resttest</test>
+  </testGroup>
+  
+  <testGroup name="noslash-test">
+    <test name="Echo NS 1">test-plan-data/simple/simple-echo-1227/ns-002-echo.resttest</test>
+    <test name="Echo NS 2">test-plan-data/simple/simple-echo-1227/ns-003-echo-2.resttest</test>
+    <test name="Echo NS 3">test-plan-data/simple/simple-echo-1227/ns-004-echo-3.resttest</test>
+    <test name="Echo NS 4">test-plan-data/simple/simple-echo-1227/ns-005-echo-4.resttest</test>
   </testGroup>
 </testPlan>

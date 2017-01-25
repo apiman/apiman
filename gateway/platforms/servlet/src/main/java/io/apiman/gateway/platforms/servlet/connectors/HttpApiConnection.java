@@ -16,6 +16,7 @@
 package io.apiman.gateway.platforms.servlet.connectors;
 
 import io.apiman.common.config.options.BasicAuthOptions;
+import io.apiman.common.util.ApimanPathUtils;
 import io.apiman.gateway.engine.IApiConnection;
 import io.apiman.gateway.engine.IApiConnectionResponse;
 import io.apiman.gateway.engine.async.AsyncResultImpl;
@@ -137,13 +138,8 @@ public class HttpApiConnection implements IApiConnection, IApiConnectionResponse
             final Set<String> suppressedHeaders = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
             suppressedHeaders.addAll(SUPPRESSED_REQUEST_HEADERS);
 
-            String endpoint = api.getEndpoint();
-            if (endpoint.endsWith("/")) { //$NON-NLS-1$
-                endpoint = endpoint.substring(0, endpoint.length() - 1);
-            }
-            if (request.getDestination() != null) {
-                endpoint += request.getDestination();
-            }
+            String endpoint = ApimanPathUtils.join(api.getEndpoint(), request.getDestination());
+
             if (request.getQueryParams() != null && !request.getQueryParams().isEmpty()) {
                 String delim = "?"; //$NON-NLS-1$
                 for (Entry<String, String> entry : request.getQueryParams()) {
@@ -221,7 +217,7 @@ public class HttpApiConnection implements IApiConnection, IApiConnectionResponse
     }
 
     /**
-     * If the endpoint properties includes a connect timeout override, then 
+     * If the endpoint properties includes a connect timeout override, then
      * set it here.
      * @param connection
      */
@@ -237,7 +233,7 @@ public class HttpApiConnection implements IApiConnection, IApiConnectionResponse
     }
 
     /**
-     * If the endpoint properties includes a read timeout override, then 
+     * If the endpoint properties includes a read timeout override, then
      * set it here.
      * @param connection
      */

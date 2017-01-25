@@ -1,0 +1,14 @@
+GET /SimpleEcho1227Test/echo-noslash/1.0/some/resource admin/admin
+Accept: application/json
+
+----
+200
+Content-Type: application/json
+
+{
+  "method" : "GET",
+  "resource" : "/endpoint/without-trailing-slash/some/resource",
+  "uri" : "/endpoint/without-trailing-slash/some/resource",
+  "headers" : {
+  }
+}
