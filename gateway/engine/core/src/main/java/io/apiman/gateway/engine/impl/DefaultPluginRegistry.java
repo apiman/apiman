@@ -300,8 +300,11 @@ public class DefaultPluginRegistry implements IPluginRegistry {
      * @param coordinates the coordinates
      */
     private void removeFromCache(PluginCoordinates coordinates) {
-        Plugin plugin = pluginCache.remove(coordinates);
-        try { plugin.getLoader().close(); } catch (IOException e) { }
+        /**Plugin plugin = **/pluginCache.remove(coordinates);
+        // Do not close the plugin's classloader.  If we do this, any outstanding references to the
+        // classloader could fail with "zipfileclosed" when trying to load additional classes.
+        // Commenting out the below code fixes https://issues.jboss.org/browse/APIMAN-1232
+        //try { plugin.getLoader().close(); } catch (IOException e) { }
 
     }
 
