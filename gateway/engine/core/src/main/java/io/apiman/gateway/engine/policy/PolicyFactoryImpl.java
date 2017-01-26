@@ -15,18 +15,17 @@
  */
 package io.apiman.gateway.engine.policy;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import io.apiman.common.plugin.Plugin;
 import io.apiman.common.plugin.PluginClassLoader;
 import io.apiman.common.plugin.PluginCoordinates;
-import io.apiman.common.plugin.PluginUtils;
 import io.apiman.gateway.engine.IPluginRegistry;
 import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.exceptions.PolicyNotFoundException;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * An implementation of the {@link IPolicyFactory} interface.
@@ -38,14 +37,12 @@ public class PolicyFactoryImpl implements IPolicyFactory {
     private IPluginRegistry pluginRegistry;
     private Map<String, IPolicy> policyCache = new HashMap<>();
     private Map<String, Object> policyConfigCache = new HashMap<>();
-    private final boolean reloadSnapshots;
 
     /**
      * Constructor.
      * @param config
      */
     public PolicyFactoryImpl(Map<String, String> config) {
-        reloadSnapshots = "true".equalsIgnoreCase(config.get("reload-snapshots")); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**
@@ -166,7 +163,6 @@ public class PolicyFactoryImpl implements IPolicyFactory {
             return;
         }
         final String classname = policyImpl.substring(ssidx + 1);
-        final boolean isSnapshot = reloadSnapshots && PluginUtils.isSnapshot(coordinates);
         this.pluginRegistry.loadPlugin(coordinates, new IAsyncResultHandler<Plugin>() {
             @Override
             public void handle(IAsyncResult<Plugin> result) {
@@ -186,9 +182,7 @@ public class PolicyFactoryImpl implements IPolicyFactory {
                         Thread.currentThread().setContextClassLoader(oldCtxLoader);
                     }
 
-                    if (!isSnapshot) {
-                        policyCache.put(policyImpl, rval);
-                    }
+                    policyCache.put(policyImpl, rval);
                     handler.handle(AsyncResultImpl.create(rval));
                 } else {
                     handler.handle(AsyncResultImpl.<IPolicy>create(new PolicyNotFoundException(policyImpl, result.getError())));
