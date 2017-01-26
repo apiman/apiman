@@ -1,6 +1,0 @@
-{
-  "frameworkVersion" : 1.0,
-  "name" : "Custom Fields Policy Plugin",
-  "description" : "Test plugin for custom fields.",
-  "version" : "${project.version}"
-}

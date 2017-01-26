@@ -33,7 +33,6 @@ public class GatewayConfigProperties {
     public static final String CONNECTOR_FACTORY_CLASS = "apiman-gateway.connector-factory";
     public static final String CONNECTOR_FACTORY_FOLLOW_REDIRECTS = "apiman-gateway.connector-factory.http.followRedirects";
     public static final String POLICY_FACTORY_CLASS = "apiman-gateway.policy-factory";
-    public static final String POLICY_FACTORY_CLASS_RELOAD_SNAPSHOTS = "apiman-gateway.policy-factory.reload-snapshots";
     public static final String METRICS_CLASS = "apiman-gateway.metrics";
     public static final String LOGGER_FACTORY_CLASS = "apiman-gateway.logger-factory";
     public static final String DATA_ENCRYPTER_TYPE = "apiman.encrypter.type";

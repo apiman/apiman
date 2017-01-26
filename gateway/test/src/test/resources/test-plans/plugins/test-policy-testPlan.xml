@@ -6,10 +6,4 @@
     <test name="Success">test-plan-data/plugins/test-policy/002-success.resttest</test>
   </testGroup>
 
-  <testGroup name="Test snapshot plugins (auto-reload)">
-    <test name="Publish Fields API" endpoint="api">test-plan-data/plugins/reload/001-publish-api.resttest</test>
-    <test name="Success (v1)">test-plan-data/plugins/reload/002-success-v1.resttest</test>
-    <test name="Success (v2)">test-plan-data/plugins/reload/003-success-v2.resttest</test>
-  </testGroup>
-
 </testPlan>

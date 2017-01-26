@@ -164,10 +164,7 @@ public class DefaultPluginRegistry implements IPluginRegistry {
         final IAsyncResultHandler<Plugin> handler = (IAsyncResult<Plugin> result) -> {
             synchronized (pluginCache) {
                 if (result.isError()) {
-                    // Don't cache errors if the plugin is a snapshot version.
-                    if (!isSnapshot) {
-                        errorCache.put(coordinates, result.getError());
-                    }
+                    errorCache.put(coordinates, result.getError());
                 } else {
                     // Make sure we *always* use whatever is in the cache.  This resolves a
                     // race condition where multiple threads could ask for the plugin at the
@@ -192,17 +189,13 @@ public class DefaultPluginRegistry implements IPluginRegistry {
 
             // First check the cache.
             if (pluginCache.containsKey(coordinates)) {
-                if (isSnapshot) {
-                    removeFromCache(coordinates);
-                } else {
-                    // Invoke the user handler directly - we know we don't need to re-cache it.
-                    AsyncResultImpl<Plugin> result = AsyncResultImpl.create(pluginCache.get(coordinates));
-                    if (userHandler != null) {
-                        userHandler.handle(result);
-                    }
-                    future.setResult(result);
-                    handled = true;
+                // Invoke the user handler directly - we know we don't need to re-cache it.
+                AsyncResultImpl<Plugin> result = AsyncResultImpl.create(pluginCache.get(coordinates));
+                if (userHandler != null) {
+                    userHandler.handle(result);
                 }
+                future.setResult(result);
+                handled = true;
             }
 
             // Check the error cache - don't keep trying again and again for a failure.
@@ -226,6 +219,8 @@ public class DefaultPluginRegistry implements IPluginRegistry {
 
         // Next try to load it from the plugin file registry
         if (!handled && pluginFile.isFile()) {
+        	// If it's a snapshot, delete it here. (first time loading this plugin from the plugin file registry).  This
+        	// means that snapshot plugins will be redownloaded each time the server is restarted.
             if (isSnapshot) {
                 try { FileUtils.deleteDirectory(pluginDir); } catch (IOException e) { }
             } else {
@@ -294,18 +289,6 @@ public class DefaultPluginRegistry implements IPluginRegistry {
         }
 
         return future;
-    }
-
-    /**
-     * @param coordinates the coordinates
-     */
-    private void removeFromCache(PluginCoordinates coordinates) {
-        /**Plugin plugin = **/pluginCache.remove(coordinates);
-        // Do not close the plugin's classloader.  If we do this, any outstanding references to the
-        // classloader could fail with "zipfileclosed" when trying to load additional classes.
-        // Commenting out the below code fixes https://issues.jboss.org/browse/APIMAN-1232
-        //try { plugin.getLoader().close(); } catch (IOException e) { }
-
     }
 
     /**
