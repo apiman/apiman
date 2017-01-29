@@ -82,6 +82,7 @@ class HttpConnector implements IApiConnectionResponse, IApiConnection {
     private ApiResponse apiResponse;
 
     private IAsyncResultHandler<IApiConnectionResponse> resultHandler;
+    private IAsyncHandler<Void> drainHandler;
     private IAsyncHandler<IApimanBuffer> bodyHandler;
     private IAsyncHandler<Void> endHandler;
     private ExceptionHandler exceptionHandler;
@@ -173,32 +174,28 @@ class HttpConnector implements IApiConnectionResponse, IApiConnection {
                 apiPort,
                 apiHost,
                 endpoint,
-                new Handler<HttpClientResponse>() {
+                (HttpClientResponse vxClientResponse) -> {
+                    clientResponse = vxClientResponse;
 
-            @Override
-            public void handle(final HttpClientResponse vxClientResponse) {
-                clientResponse = vxClientResponse;
+                    // Pause until we're given permission to xfer the response.
+                    vxClientResponse.pause();
 
-                // Pause until we're given permission to xfer the response.
-                vxClientResponse.pause();
+                    apiResponse = HttpApiFactory.buildResponse(vxClientResponse, SUPPRESSED_HEADERS);
 
-                apiResponse = HttpApiFactory.buildResponse(vxClientResponse, SUPPRESSED_HEADERS);
+                    vxClientResponse.handler((Handler<Buffer>) chunk -> {
+                        bodyHandler.handle(new VertxApimanBuffer(chunk));
+                    });
 
-                vxClientResponse.handler((Handler<Buffer>) chunk -> {
-                    bodyHandler.handle(new VertxApimanBuffer(chunk));
+                    vxClientResponse.endHandler((Handler<Void>) v -> {
+                        endHandler.handle((Void) null);
+                    });
+
+                    vxClientResponse.exceptionHandler(exceptionHandler);
+
+                    // The response is only ever returned when vxClientResponse is valid.
+                    resultHandler.handle(AsyncResultImpl
+                            .create((IApiConnectionResponse) HttpConnector.this));
                 });
-
-                vxClientResponse.endHandler((Handler<Void>) v -> {
-                    endHandler.handle((Void) null);
-                });
-
-                vxClientResponse.exceptionHandler(exceptionHandler);
-
-                // The response is only ever returned when vxClientResponse is valid.
-                resultHandler.handle(AsyncResultImpl
-                        .create((IApiConnectionResponse) HttpConnector.this));
-            }
-        });
 
         clientRequest.exceptionHandler(exceptionHandler);
 
@@ -263,6 +260,10 @@ class HttpConnector implements IApiConnectionResponse, IApiConnection {
 
         if (chunk.getNativeBuffer() instanceof Buffer) {
             clientRequest.write((Buffer) chunk.getNativeBuffer());
+            // When write queue has diminished sufficiently, drain handler will be invoked.
+            if (clientRequest.writeQueueFull() && drainHandler != null) {
+                clientRequest.drainHandler(drainHandler::handle);
+            }
         } else {
             throw new IllegalArgumentException(Messages.getString("HttpConnector.1"));
         }
@@ -279,12 +280,19 @@ class HttpConnector implements IApiConnectionResponse, IApiConnection {
         return inboundFinished && outboundFinished;
     }
 
-    /**
-     * @see io.apiman.gateway.engine.IApiConnection#isConnected()
-     */
     @Override
     public boolean isConnected() {
         return !isFinished();
+    }
+
+    @Override
+    public void drainHandler(IAsyncHandler<Void> drainHandler) {
+        this.drainHandler = drainHandler;
+    }
+
+    @Override
+    public boolean isFull() {
+        return clientRequest.writeQueueFull();
     }
 
     private URL parseApiEndpoint(Api api) {
@@ -325,4 +333,5 @@ class HttpConnector implements IApiConnectionResponse, IApiConnection {
                     .<IApiConnectionResponse> create(error));
         }
     }
+
 }
