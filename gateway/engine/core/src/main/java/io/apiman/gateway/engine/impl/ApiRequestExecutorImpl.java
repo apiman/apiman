@@ -92,7 +92,7 @@ import org.apache.commons.lang3.text.StrSubstitutor;
 public class ApiRequestExecutorImpl implements IApiRequestExecutor {
 
     private static final long DEFAULT_MAX_PAYLOAD_BUFFER_SIZE = 5 * 1024 * 1024; // in bytes
-    
+
     private static StrLookup LOOKUP = new ApimanStrLookup();
     private static StrSubstitutor PROPERTY_SUBSTITUTOR = new StrSubstitutor(LOOKUP);
     static {
@@ -155,7 +155,7 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
         this.policyErrorHandler = createPolicyErrorHandler();
         this.metrics = metrics;
         this.bufferFactory = bufferFactory;
-        
+
         String mbs = System.getProperty(GatewayConfigProperties.MAX_PAYLOAD_BUFFER_SIZE);
         if (mbs != null) {
             maxPayloadBufferSize = new Long(mbs);
@@ -272,7 +272,7 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
             requestChain.policyFailureHandler(policyFailureHandler);
             requestChain.doApply(request);
         };
-        
+
         // The handler used when we need to parse the inbound request payload into
         // an object and make it available via the policy context.
         final IAsyncResultHandler<Object> payloadParserHandler = new IAsyncResultHandler<Object>() {
@@ -283,7 +283,7 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
                     // Store the parsed object in the policy context.
                     context.setAttribute(PolicyContextKeys.REQUEST_PAYLOAD, payload);
                     context.setAttribute(PolicyContextKeys.REQUEST_PAYLOAD_IO, payloadIO);
-                    
+
                     // Now replace the inbound stream handler with one that uses the payload IO
                     // object to re-marshall the (possibly modified) payload object to bytes
                     // and sends that (because the *real* inbound stream has already been consumed)
@@ -306,7 +306,7 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
                             }
                         }
                     });
-                    
+
                     // Load and executes the policies
                     loadPolicies(policiesLoadedHandler);
                 } else {
@@ -323,7 +323,7 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
                     (IAsyncResult<Api> apiResult) -> {
                         if (apiResult.isSuccess()) {
                             api = apiResult.getResult();
-                            
+
                             if (api == null) {
                                 Exception error = new InvalidApiException(Messages.i18n.format("EngineImpl.ApiNotFound")); //$NON-NLS-1$
                                 resultHandler.handle(AsyncResultImpl.create(error, IEngineResult.class));
@@ -338,7 +338,7 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
                                 policyImpls = new ArrayList<>(policies.size());
 
                                 // If the API is configured to be "stateful", we need to parse the
-                                // inbound request body into an object appropriate to the type and 
+                                // inbound request body into an object appropriate to the type and
                                 // format of the API.  This could be a SOAP message, an XML document,
                                 // or a JSON document
                                 if (api.isParsePayload()) {
@@ -383,7 +383,7 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
                     }
 
                     // If the API is configured to be "stateful", we need to parse the
-                    // inbound request body into an object appropriate to the type and 
+                    // inbound request body into an object appropriate to the type and
                     // format of the API.  This could be a SOAP message, an XML document,
                     // or a JSON document
                     if (api.isParsePayload()) {
@@ -414,29 +414,29 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
         // Strip out any content-length header from the request.  It will very likely
         // no longer be accurate.
         request.getHeaders().remove("Content-Length"); //$NON-NLS-1$
-        
+
         // Configure the api's max payload buffer size, if it's not already set.
         if (api.getMaxPayloadBufferSize() <= 0) {
             api.setMaxPayloadBufferSize(maxPayloadBufferSize);
         }
-        
+
         // Now "handle" the inbound request stream, which will cause bytes to be streamed
         // to the writeStream we provide (which will store the bytes in a buffer for parsing)
         final ByteBuffer buffer = new ByteBuffer(2048);
         inboundStreamHandler.handle(new ISignalWriteStream() {
             private boolean done = false;
-            
+
             @Override
             public void abort() {
                 done = true;
                 payloadResultHandler.handle(AsyncResultImpl.create(new Exception("Inbound request stream aborted."))); //$NON-NLS-1$
             }
-            
+
             @Override
             public boolean isFinished() {
                 return done;
             }
-            
+
             @Override
             public void write(IApimanBuffer chunk) {
                 if (done) {
@@ -449,7 +449,7 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
                 }
                 buffer.append(chunk);
             }
-            
+
             @Override
             public void end() {
                 if (done) {
@@ -481,6 +481,16 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
                         payloadResultHandler.handle(AsyncResultImpl.create(new Exception("Failed to parse inbound request payload.", e))); //$NON-NLS-1$
                     }
                 }
+            }
+
+            @Override
+            public void drainHandler(IAsyncHandler<Void> drainHandler) {
+                apiConnection.drainHandler(drainHandler);
+            }
+
+            @Override
+            public boolean isFull() {
+                return apiConnection.isFull();
             }
         });
     }
@@ -731,6 +741,16 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
             @Override
             public boolean isFinished() {
                 return streamFinished;
+            }
+
+            @Override
+            public void drainHandler(IAsyncHandler<Void> drainHandler) {
+                apiConnection.drainHandler(drainHandler);
+            }
+
+            @Override
+            public boolean isFull() {
+                return apiConnection.isFull();
             }
         });
     }

@@ -80,11 +80,19 @@ public class HttpPolicyAdapter {
         // Write data into executor. Called when ready.
         executor.streamHandler(writeStream -> {
             vertxRequest.handler(bufferChunk -> {
+                // Apply back-pressure.
+                if (writeStream.isFull()) {
+                    vertxRequest.pause();
+                }
                 // Wrap Vert.x buffer into apiman's buffer IR, then write into engine.
                 writeStream.write(new VertxApimanBuffer(bufferChunk));
             });
 
+            // Called when back-pressure has reduced sufficiently to resume.
+            writeStream.drainHandler(onDrain -> vertxRequest.resume());
+
             vertxRequest.endHandler(end -> writeStream.end());
+
             // Now safe to resume body transmission.
             vertxRequest.resume();
         });
