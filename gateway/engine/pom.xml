@@ -24,5 +24,6 @@
     <module>prometheus</module>
     <module>vertx-eb-inmemory</module>
     <module>vertx-polling</module>
+    <module>vertx-shareddata</module>
   </modules>
 </project>
