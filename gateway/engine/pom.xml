@@ -23,5 +23,6 @@
     <module>policies</module>
     <module>prometheus</module>
     <module>vertx-eb-inmemory</module>
+    <module>vertx-polling</module>
   </modules>
 </project>
