@@ -108,6 +108,10 @@
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-gateway-engine-vertx-polling</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
       <artifactId>apiman-gateway-engine-influxdb</artifactId>
     </dependency>
     <dependency>
