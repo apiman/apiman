@@ -1,0 +1,5 @@
+{
+    "factory" : "io.apiman.gateway.test.junit.vertx3.Vertx3ClusteredGatewayTestServerFactory",
+    "config" : "vertx3/conf-shared-global-data.json",
+    "resetter" : "io.apiman.gateway.test.junit.vertx3.NoOpResetter"   
+}

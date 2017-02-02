@@ -1,0 +1,133 @@
+{
+  "registry": {
+    "class": "io.apiman.gateway.engine.vertx.shareddata.SharedGlobalDataRegistry",
+    "config": {
+    }
+  },
+
+//  "writers": {
+//    "error": {
+//      "class": "io.apiman.gateway.engine.impl.TracePolicyErrorWriter",
+//      "config": {}
+//    },
+//    "policy-failure": {
+//      "class": "",
+//      "config": {}
+//    }
+//  },
+
+  "encrypter": {
+    "class": "io.apiman.gateway.engine.impl.DefaultDataEncrypter",
+    "config": {}
+  },
+
+  "plugin-registry": {
+    "class": "io.apiman.gateway.platforms.vertx3.engine.VertxPluginRegistry",
+    "config": {}
+  },
+
+  "connector-factory": {
+    "class": "io.apiman.gateway.platforms.vertx3.connector.ConnectorFactory",
+    "config": {
+  //    "tls": {
+  //    "allowSelfSigned": true,
+  //    "devMode": true,
+  //    "trustStore": "/path/to/your/truststore.jks",
+  //    "keyStore": "/path/to/your/keystore.jks",
+  //    "keyStorePassword": "abc123"
+  //    }
+    }
+  },
+
+  "logger-factory": {
+    "class": "io.apiman.gateway.platforms.vertx3.common.config.VertxLoggerDelegate",
+    "config": {}
+  },
+
+  "policy-factory": {
+    "class": "io.apiman.gateway.engine.policy.PolicyFactoryImpl",
+    "config": {
+    }
+  },
+
+  "metrics": {
+    "class": "io.apiman.gateway.test.server.TestMetrics",
+    "config": {}
+  },
+
+  "components": {
+      "IHttpClientComponent": {
+        "class": "io.apiman.gateway.platforms.vertx3.components.HttpClientComponentImpl",
+        "config": {}
+      },
+
+      "ISharedStateComponent": {
+        "class": "io.apiman.gateway.engine.impl.InMemorySharedStateComponent",
+        "config": {}
+      },
+
+      "IRateLimiterComponent": {
+        "class": "io.apiman.gateway.engine.impl.InMemoryRateLimiterComponent",
+        "config": {}
+      },
+
+      "IPolicyFailureFactoryComponent": {
+        "class": "io.apiman.gateway.platforms.vertx3.components.PolicyFailureFactoryComponent",
+        "config": {}
+      },
+
+      "IBufferFactoryComponent": {
+        "class": "io.apiman.gateway.platforms.vertx3.components.BufferFactoryComponentImpl",
+        "config": {}
+      }
+  },
+
+  // Host-name to bind to for this machine.
+  "hostname": "localhost",
+
+  // You can force a particular endpoint to be reported here (e.g.
+  // if you have some clustered setup with exotic DNS setup)
+  //"endpoint": "localhost",
+
+  // Verticle configuration
+  // Port - The port a given verticle listens on (where relevant)
+  // Count - Number of given verticle type launched
+  "verticles": {
+    "http": {
+      "port": 8082,
+      "count": 1
+    },
+    "https": {
+      "port": 8443,
+      "count": 0
+    },
+    "api": {
+      "port": 8081,
+      "count": 1
+    }
+  },
+
+// SSL configuration to the gateway's *front end* (i.e. client <-> gateway).
+//"ssl": {
+//  "keystore": {
+//    "path": "<keystore path here>",
+//    "password": "password"
+//  },
+//  "truststore": {
+//    "path": "<truststore path here>",
+//    "password": "password"
+//  }
+//},
+
+  // API authentication; presently just BASIC auth.
+  "auth": {
+    "required": "basic",
+    "realm": "apiman-gateway",
+    "basic": { // Password is SHA256 digest encoded as Base64.
+      "admin" : "jGl25bVBBBW96Qi9Te4V37Fnqchz/Eu4qB9vKrRIqRg="
+    }
+  },
+
+  // When reporting a API's endpoint, prefer secure (i.e. https)
+  "preferSecure": false
+}
