@@ -452,6 +452,11 @@
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
+        <artifactId>apiman-gateway-engine-vertx-shareddata</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
         <artifactId>apiman-gateway-engine-prometheus</artifactId>
         <version>${project.version}</version>
       </dependency>

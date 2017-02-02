@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 JBoss Inc
+ * Copyright 2017 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,17 +23,17 @@ import io.apiman.test.common.resttest.IGatewayTestServerFactory;
  *
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
-public class Vertx3GatewayTestServerFactory implements IGatewayTestServerFactory {
+public class Vertx3ClusteredGatewayTestServerFactory implements IGatewayTestServerFactory {
 
     /**
      * Constructor.
      */
-    public Vertx3GatewayTestServerFactory() {
+    public Vertx3ClusteredGatewayTestServerFactory() {
     }
 
     @Override
     public IGatewayTestServer createGatewayTestServer() {
-        return new Vertx3GatewayTestServer(false);
+        return new Vertx3GatewayTestServer(true);
     }
 
 }
