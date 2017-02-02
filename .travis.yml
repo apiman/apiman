@@ -36,6 +36,8 @@ matrix:
       jdk: oraclejdk8
     - env: ACTION='-Dapiman.gateway-test.config=vertx3-es'
       jdk: oraclejdk8
+    - env: ACTION='-Dapiman.gateway-test.config=vertx3-shared-global-data'
+      jdk: oraclejdk8
     - env: ACTION='-Dapiman.gateway-test.config=amg-1'
       jdk: oraclejdk8
       
