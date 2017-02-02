@@ -22,6 +22,7 @@ package io.apiman.gateway.engine.async;
  *
  * @param <T> The event to handle
  */
+@FunctionalInterface
 public interface IAsyncHandler<T> {
 
     /**
