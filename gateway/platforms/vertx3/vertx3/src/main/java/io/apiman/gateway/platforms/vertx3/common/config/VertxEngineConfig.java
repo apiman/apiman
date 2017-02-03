@@ -295,7 +295,7 @@ public class VertxEngineConfig implements IEngineConfig {
         String filteredPrefix = strippedPrefix.isEmpty() ? prefix : strippedPrefix;
 
         if (clazzName == null)
-            return obj.getJsonObject(filteredPrefix).getString(GATEWAY_CLASS);
+            return obj.getJsonObject(filteredPrefix, new JsonObject()).getString(GATEWAY_CLASS);
 
         return clazzName;
     }
