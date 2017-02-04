@@ -122,7 +122,7 @@ public class Contract implements Serializable {
         String apiVersion = request.getApiVersion();
         return matches(apiOrgId, apiId, apiVersion);
     }
-    
+
     /**
      * Checks the API unique identifier against what this contract expects (org id, id, version).
      * Returns true if they match.
@@ -133,6 +133,14 @@ public class Contract implements Serializable {
      */
     public boolean matches(String apiOrgId, String apiId, String apiVersion) {
         return this.apiOrgId.equals(apiOrgId) && this.apiId.equals(apiId) && this.apiVersion.equals(apiVersion);
+    }
+
+    @Override
+    @SuppressWarnings("nls")
+    public String toString() {
+        final int maxLen = 10;
+        return "Contract [apiOrgId=" + apiOrgId + ", apiId=" + apiId + ", apiVersion=" + apiVersion + ", plan=" + plan + ", policies="
+                + (policies != null ? policies.subList(0, Math.min(policies.size(), maxLen)) : null) + "]";
     }
 
 }

@@ -40,7 +40,7 @@ public class HttpResourceFetcher implements ResourceFetcher {
     private URI uri;
     private boolean isHttps;
     private Vertx vertx;
-    private Buffer rawData;
+    private Buffer rawData = Buffer.buffer();
     private Handler<Throwable> exceptionHandler;
     private Map<String, String> config;
     private Authenticator authenticator;
@@ -72,11 +72,7 @@ public class HttpResourceFetcher implements ResourceFetcher {
             .get(port, uri.getHost(), uri.getPath(), clientResponse -> {
                 if (clientResponse.statusCode() / 100 == 2) {
                     clientResponse.handler(data -> {
-                        if (rawData == null) {
-                            rawData = data;
-                        } else {
-                            rawData.appendBuffer(data);
-                        }
+                        rawData.appendBuffer(data);
                     })
                     .endHandler(end -> resultHandler.handle(rawData))
                     .exceptionHandler(exceptionHandler);

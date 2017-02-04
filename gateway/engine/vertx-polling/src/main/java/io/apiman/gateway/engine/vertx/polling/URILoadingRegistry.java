@@ -190,7 +190,7 @@ public class URILoadingRegistry extends InMemoryRegistry {
         private void loadDataIntoRegistries() {
             URILoadingRegistry reg = null;
             while ((reg = awaiting.poll()) != null) {
-                log.debug("Loading data into registry: {0} ", reg);
+                log.debug("Loading data into registry {0}:", reg);
                 for (Api api : apis) {
                     reg.publishApiInternal(api, handleAnyFailure());
                     log.debug("Publishing: {0} ", api);
