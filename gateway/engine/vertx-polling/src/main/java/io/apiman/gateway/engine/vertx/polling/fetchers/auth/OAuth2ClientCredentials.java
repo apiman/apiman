@@ -42,7 +42,7 @@ public class OAuth2ClientCredentials implements Authenticator {
     public Authenticator validateConfig(Map<String, String> config) {
         Objects.requireNonNull(config.get("clientId"), "must provide clientId");
         Objects.requireNonNull(config.get("clientSecret"), "must provide clientSecret");
-        Objects.requireNonNull(config.get("uri"), "must provide OAuth URI 'uri'.");
+        Objects.requireNonNull(config.get("oauthUri"), "must provide OAuth URI 'uri'.");
         return this;
     }
 
@@ -51,7 +51,7 @@ public class OAuth2ClientCredentials implements Authenticator {
         OAuth2ClientOptions credentials = new OAuth2ClientOptions()
                 .setClientID(config.get("clientId"))
                 .setClientSecret(config.get("clientSecret"))
-                .setSite(config.get("uri"));
+                .setSite(config.get("oauthUri"));
 
         OAuth2Auth oauth2 = OAuth2Auth.create(vertx, OAuth2FlowType.CLIENT, credentials);
 

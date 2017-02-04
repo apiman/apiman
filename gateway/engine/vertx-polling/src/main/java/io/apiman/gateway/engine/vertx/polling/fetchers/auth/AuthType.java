@@ -22,7 +22,7 @@ import java.util.Arrays;
 * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
 */
 public enum AuthType {
-    NONE(new NoneAuth()), BASIC(new BasicAuth()), OAUTH2(new OAuth2ClientCredentials());
+    NONE(new NoneAuth()), BASIC(new BasicAuth()), OAUTH2CLIENTCREDENTIALS(new OAuth2ClientCredentials());
 
     private Authenticator auth;
 
