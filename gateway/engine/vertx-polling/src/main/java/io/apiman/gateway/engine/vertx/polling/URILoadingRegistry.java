@@ -136,7 +136,7 @@ public class URILoadingRegistry extends InMemoryRegistry {
 
         // TODO perhaps use enum + factory instead if we add more protocols.
         private ResourceFetcher getResourceFetcher() {
-            switch (uri.getScheme().toUpperCase()) {
+            switch (uri.getScheme().toLowerCase()) {
             case "http":
                 return new HttpResourceFetcher(vertx, uri, config, false);
             case "https":
@@ -190,13 +190,14 @@ public class URILoadingRegistry extends InMemoryRegistry {
         private void loadDataIntoRegistries() {
             URILoadingRegistry reg = null;
             while ((reg = awaiting.poll()) != null) {
+                log.debug("Loading data into registry: {0} ", reg);
                 for (Api api : apis) {
                     reg.publishApiInternal(api, handleAnyFailure());
-                    log.debug("Publishing {0}: ", api);
+                    log.debug("Publishing: {0} ", api);
                 }
                 for (Client client : clients) {
                     reg.registerClientInternal(client, handleAnyFailure());
-                    log.debug("Registering {0}: ", client);
+                    log.debug("Registering: {0} ", client);
                 }
             }
         }
