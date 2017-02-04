@@ -58,7 +58,7 @@ public class OAuth2ClientCredentials implements Authenticator {
         oauth2.getToken(new JsonObject(), tokenResult -> {
           if (tokenResult.succeeded()) {
               AccessToken token = tokenResult.result();
-              headerMap.set("Authorization", "Bearer " + token);
+              headerMap.set("Authorization", "Bearer " + token.principal().getString("access_token"));
               resultHandler.handle(Future.succeededFuture());
           } else {
               resultHandler.handle(Future.failedFuture(tokenResult.cause()));
