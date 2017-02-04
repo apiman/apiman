@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package io.apiman.gateway.engine.vertx.polling;
+package io.apiman.gateway.engine.vertx.polling.fetchers;
+
+import io.vertx.core.Handler;
+import io.vertx.core.buffer.Buffer;
 
 /**
 * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
 */
-public class UnsupportedProtocolException extends RuntimeException {
-    private static final long serialVersionUID = 4315005390975110836L;
-
-    public UnsupportedProtocolException(String message) {
-        super(message);
-    }
+public interface ResourceFetcher {
+    void fetch(Handler<Buffer> resultHandler);
+    void exceptionHandler(Handler<Throwable> exceptionHandler);
 }

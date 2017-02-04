@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.apiman.gateway.engine.vertx.polling;
+package io.apiman.gateway.engine.vertx.polling.exceptions;
 
 /**
 * @author Marc Savy {@literal <marc@rhymewithgravy.com>}

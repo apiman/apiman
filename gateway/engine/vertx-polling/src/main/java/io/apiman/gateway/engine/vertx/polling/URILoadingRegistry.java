@@ -22,10 +22,13 @@ import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.Api;
 import io.apiman.gateway.engine.beans.Client;
 import io.apiman.gateway.engine.impl.InMemoryRegistry;
+import io.apiman.gateway.engine.vertx.polling.exceptions.UnsupportedProtocolException;
+import io.apiman.gateway.engine.vertx.polling.fetchers.FileResourceFetcher;
+import io.apiman.gateway.engine.vertx.polling.fetchers.HttpResourceFetcher;
+import io.apiman.gateway.engine.vertx.polling.fetchers.ResourceFetcher;
 import io.apiman.gateway.platforms.vertx3.common.verticles.Json;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
-import io.vertx.core.http.HttpClientOptions;
 import io.vertx.core.impl.Arguments;
 import io.vertx.core.json.DecodeException;
 import io.vertx.core.json.JsonArray;
@@ -51,7 +54,6 @@ public class URILoadingRegistry extends InMemoryRegistry {
     // Protected by DCL, use #getUriLoader
     private static volatile OneShotURILoader instance;
 
-    // TODO: Authentication for HTTP(S).
     public URILoadingRegistry(Vertx vertx, IEngineConfig vxConfig, Map<String, String> options) {
         super();
         Arguments.require(options.containsKey("configUri"), "configUri is required in configuration");
@@ -104,80 +106,39 @@ public class URILoadingRegistry extends InMemoryRegistry {
     }
 
     private static final class OneShotURILoader {
+
         private Vertx vertx;
-        private Deque<URILoadingRegistry> awaiting = new ArrayDeque<>();
-        private List<IAsyncResultHandler<Void>> failureHandlers = new ArrayList<>();
         private URI uri;
+        private Map<String, String> config;
+        private List<IAsyncResultHandler<Void>> failureHandlers = new ArrayList<>();
+        private Deque<URILoadingRegistry> awaiting = new ArrayDeque<>();
         private Buffer rawData;
+        //private int maxSize = 102400;
         private boolean dataProcessed = false;
         private List<Client> clients;
         private List<Api> apis;
-        private Map<String, String> options;
+        private ResourceFetcher resourceFetcher;
         private Logger log = LoggerFactory.getLogger(OneShotURILoader.class);
 
-        public OneShotURILoader(Vertx vertx, URI uri, Map<String, String> options) {
-            this.options = options;
+        public OneShotURILoader(Vertx vertx, URI uri, Map<String, String> config) {
+            this.config = config;
             this.vertx = vertx;
             this.uri = uri;
-            loadData();
+            this.resourceFetcher = getResourceFetcher();
         }
 
-        private void loadData() {
-            switch (uri.getScheme().toLowerCase()) {
+        // TODO perhaps use enum + factory instead if we add more protocols.
+        private ResourceFetcher getResourceFetcher() {
+            switch (uri.getScheme().toUpperCase()) {
             case "http":
-                fetchHttp(false);
-                break;
+                return new HttpResourceFetcher(vertx, uri, config, false);
             case "https":
-                fetchHttp(true);
-                break;
+                return new HttpResourceFetcher(vertx, uri, config, true);
             case "file":
-                fetchFile();
-                break;
+                return new FileResourceFetcher(vertx, uri, config);
             default:
                 throw new UnsupportedProtocolException(String.format("%s is not supported. Available: http, https and file.", uri.getScheme()));
             }
-        }
-
-        private void fetchFile() {
-            vertx.fileSystem().readFile(uri.getPath(), result -> {
-                if (result.succeeded()) {
-                    rawData = result.result();
-                    processData();
-                } else {
-                    failAll(result.cause());
-                }
-            });
-        }
-
-        private void fetchHttp(boolean isHttps) {
-            int port = uri.getPort();
-            if (port == -1) {
-                if (isHttps) {
-                    port = 443;
-                } else {
-                    port = 80;
-                }
-            }
-
-            vertx.createHttpClient(new HttpClientOptions().setSsl(isHttps))
-                .get(port, uri.getHost(), uri.getPath(), clientResponse -> {
-                    if (clientResponse.statusCode() / 100 == 2) {
-                        clientResponse.handler(data -> {
-                            if (rawData == null) {
-                                rawData = data;
-                            } else {
-                                rawData.appendBuffer(data);
-                            }
-                        })
-                        .endHandler(end -> processData())
-                        .exceptionHandler(this::failAll);
-                    } else {
-                        failAll(new BadResponseCodeError("Unexpected response code when trying to retrieve config: "
-                                + clientResponse.statusCode()));
-                    }
-                })
-                .exceptionHandler(this::failAll)
-                .end();
         }
 
         private void processData() {
@@ -201,9 +162,9 @@ public class URILoadingRegistry extends InMemoryRegistry {
             // Is of type array.
             Arguments.require(json.getValue(keyName) instanceof JsonArray,
                     String.format("'%s' must be a Json array", keyName));
+            // Transform into List<T>.
             return Json.decodeValue(json.getJsonArray(keyName).encode(), List.class, klazz);
         }
-
 
         public synchronized void subscribe(URILoadingRegistry registry, IAsyncResultHandler<Void> failureHandler) {
             Objects.requireNonNull(registry, "registry must be non-null.");
