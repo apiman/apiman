@@ -38,9 +38,8 @@ matrix:
     - env: ACTION='-Dapiman.gateway-test.config=amg-1'
       jdk: oraclejdk8
 
-env:
-  global:
-    - MAVEN_OPTS="XX:+TieredCompilation -XX:TieredStopAtLevel=1 -Xmx512m"
+before_install:
+    - echo 'MAVEN_OPTS="-XX:+TieredCompilation -XX:TieredStopAtLevel=1 -Xmx512m"' > ~/.mavenrc
       
 install: travis_retry mvn clean install -Dinvoker.skip -Dmaven.javadoc.skip=true -Dmvn.skip.test=true -DskipTests=true -T1C -B | egrep -v 'Download|\\[exec\\] [[:digit:]]+/[[:digit:]]+|^[[:space:]]*\\[exec\\][[:space:]]*$' ; [ ${PIPESTATUS[0]} == 0 ];
 
