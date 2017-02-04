@@ -24,5 +24,5 @@ import io.vertx.core.buffer.Buffer;
 */
 public interface ResourceFetcher {
     void fetch(Handler<Buffer> resultHandler);
-    void exceptionHandler(Handler<Throwable> exceptionHandler);
+    ResourceFetcher exceptionHandler(Handler<Throwable> exceptionHandler);
 }

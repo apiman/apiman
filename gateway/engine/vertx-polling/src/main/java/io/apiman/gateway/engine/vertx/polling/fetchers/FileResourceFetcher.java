@@ -49,8 +49,9 @@ public class FileResourceFetcher implements ResourceFetcher {
     }
 
     @Override
-    public void exceptionHandler(Handler<Throwable> exceptionHandler) {
+    public FileResourceFetcher exceptionHandler(Handler<Throwable> exceptionHandler) {
         this.exceptionHandler = exceptionHandler;
+        return this;
     }
 
 }

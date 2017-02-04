@@ -113,18 +113,25 @@ public class URILoadingRegistry extends InMemoryRegistry {
         private List<IAsyncResultHandler<Void>> failureHandlers = new ArrayList<>();
         private Deque<URILoadingRegistry> awaiting = new ArrayDeque<>();
         private Buffer rawData;
-        //private int maxSize = 102400;
         private boolean dataProcessed = false;
         private List<Client> clients;
         private List<Api> apis;
-        private ResourceFetcher resourceFetcher;
         private Logger log = LoggerFactory.getLogger(OneShotURILoader.class);
 
         public OneShotURILoader(Vertx vertx, URI uri, Map<String, String> config) {
             this.config = config;
             this.vertx = vertx;
             this.uri = uri;
-            this.resourceFetcher = getResourceFetcher();
+            fetchResource();
+        }
+
+        private void fetchResource() {
+            getResourceFetcher()
+                .exceptionHandler(this::failAll)
+                .fetch(data -> {
+                    rawData = data;
+                    processData();
+                });
         }
 
         // TODO perhaps use enum + factory instead if we add more protocols.

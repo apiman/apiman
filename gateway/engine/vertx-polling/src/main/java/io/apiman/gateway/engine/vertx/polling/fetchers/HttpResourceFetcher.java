@@ -98,7 +98,8 @@ public class HttpResourceFetcher implements ResourceFetcher {
     }
 
     @Override
-    public void exceptionHandler(Handler<Throwable> exceptionHandler) {
+    public HttpResourceFetcher exceptionHandler(Handler<Throwable> exceptionHandler) {
         this.exceptionHandler = exceptionHandler;
+        return this;
     }
 }
