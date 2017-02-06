@@ -98,6 +98,12 @@ public class PluginUtils {
      * @return user's M2 repo
      */
     public static File getUserM2Repository() {
+		// if there is m2override system propery, use it.
+        String m2Override = System.getProperty("apiman.gateway.m2-repository-path"); //$NON-NLS-1$
+        if (m2Override != null) {
+            return new File(m2Override).getAbsoluteFile();
+        }
+		
         String userHome = System.getProperty("user.home"); //$NON-NLS-1$
         if (userHome != null) {
             File userHomeDir = new File(userHome);

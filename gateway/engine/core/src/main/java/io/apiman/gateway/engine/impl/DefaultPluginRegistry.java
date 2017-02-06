@@ -237,10 +237,6 @@ public class DefaultPluginRegistry implements IPluginRegistry {
         // registry first though)
         if (!handled) {
             File m2Dir = PluginUtils.getUserM2Repository();
-            String m2Override = System.getProperty("apiman.gateway.m2-repository-path"); //$NON-NLS-1$
-            if (m2Override != null) {
-                m2Dir = new File(m2Override).getAbsoluteFile();
-            }
             if (m2Dir != null) {
                 File artifactFile = PluginUtils.getM2Path(m2Dir, coordinates);
                 if (artifactFile.isFile()) {
