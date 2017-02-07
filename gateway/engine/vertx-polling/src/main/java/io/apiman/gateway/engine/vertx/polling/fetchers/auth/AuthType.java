@@ -14,15 +14,30 @@
  * limitations under the License.
  */
 
-package io.apiman.gateway.engine.vertx.polling;
+package io.apiman.gateway.engine.vertx.polling.fetchers.auth;
+
+import java.util.Arrays;
 
 /**
 * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
 */
-public class UnsupportedProtocolException extends RuntimeException {
-    private static final long serialVersionUID = 4315005390975110836L;
+public enum AuthType {
+    NONE(new NoneAuth()),
+    BASIC(new BasicAuth()),
+    OAUTH2CLIENT(new OAuth2Client()),
+    KEYCLOAKOAUTH2CLIENT(new KeycloakOAuth2Client());
 
-    public UnsupportedProtocolException(String message) {
-        super(message);
+    private Authenticator auth;
+
+    AuthType(Authenticator auth) {
+        this.auth = auth;
+    }
+
+    public Authenticator getAuthenticator() {
+        return auth;
+    }
+
+    public static String all() {
+        return Arrays.toString(AuthType.values());
     }
 }

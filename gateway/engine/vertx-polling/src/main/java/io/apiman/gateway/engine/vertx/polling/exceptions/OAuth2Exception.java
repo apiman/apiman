@@ -14,15 +14,19 @@
  * limitations under the License.
  */
 
-package io.apiman.gateway.engine.vertx.polling;
+package io.apiman.gateway.engine.vertx.polling.exceptions;
 
 /**
 * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
 */
-public class BadResponseCodeError extends Throwable {
-    private static final long serialVersionUID = 2395471139939236916L;
+public class OAuth2Exception extends RuntimeException {
+    private static final long serialVersionUID = 3751025512606276265L;
 
-    public BadResponseCodeError(String message) {
+    public OAuth2Exception(Exception e) {
+        super(e);
+    }
+
+    public OAuth2Exception(String message) {
         super(message);
     }
 }
