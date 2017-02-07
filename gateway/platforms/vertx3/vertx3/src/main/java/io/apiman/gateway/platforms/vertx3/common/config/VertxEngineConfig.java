@@ -50,6 +50,8 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.text.StrLookup;
+import org.apache.commons.lang3.text.StrSubstitutor;
 
 
 /**
@@ -263,6 +265,7 @@ public class VertxEngineConfig implements IEngineConfig {
         Map<String, String> outMap = new LinkedHashMap<>();
         // TODO figure out why this workaround is necessary.
         jsonMapToProperties("", new JsonObject(jsonObject.encode()).getMap(), outMap);
+        substituteValues(outMap);
         return outMap;
     }
 
@@ -408,5 +411,23 @@ public class VertxEngineConfig implements IEngineConfig {
                 .filter(pair -> StringUtils.startsWith(pair.getKey(), prefix))
                 .collect(Collectors.toList());
     }
+
+    private void substituteValues(Map<String, String> map) {
+        map.entrySet().stream()
+            .forEach(pair -> map.put(pair.getKey(), substitutor.replace(pair.getValue())));
+    }
+
+    private static final StrSubstitutor substitutor = new StrSubstitutor(new StrLookup<String>() {
+
+        @Override
+        public String lookup(String key) {
+            if (System.getenv().containsKey(key)) {
+                return System.getenv(key);
+            } else if (System.getProperties().containsKey(key)) {
+                return System.getProperty(key);
+            }
+            return null;
+        }
+    });
 
 }
