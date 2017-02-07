@@ -26,6 +26,19 @@ import java.util.Map;
 * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
 */
 public interface Authenticator {
+    /**
+     * Validate config.
+     * @param config
+     * @return fluent
+     */
     Authenticator validateConfig(Map<String, String> config);
+    /**
+     * Authenticate the call.
+     * @param vertx
+     * @param config
+     * @param headerMap header(s) may be set by the authenticator.
+     * @param resultHandler invoked with result of the authentication.
+     * @return fluent
+     */
     Authenticator authenticate(Vertx vertx, Map<String, String> config, MultiMap headerMap, AsyncResultHandler<Void> resultHandler);
 }

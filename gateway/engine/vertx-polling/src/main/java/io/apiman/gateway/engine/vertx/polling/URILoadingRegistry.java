@@ -26,6 +26,7 @@ import io.apiman.gateway.engine.vertx.polling.exceptions.UnsupportedProtocolExce
 import io.apiman.gateway.engine.vertx.polling.fetchers.FileResourceFetcher;
 import io.apiman.gateway.engine.vertx.polling.fetchers.HttpResourceFetcher;
 import io.apiman.gateway.engine.vertx.polling.fetchers.ResourceFetcher;
+import io.apiman.gateway.platforms.vertx3.common.AsyncInitialize;
 import io.apiman.gateway.platforms.vertx3.common.verticles.Json;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
@@ -50,19 +51,25 @@ import org.apache.commons.lang3.StringUtils;
 * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
 */
 @SuppressWarnings("nls")
-public class URILoadingRegistry extends InMemoryRegistry {
+public class URILoadingRegistry extends InMemoryRegistry implements AsyncInitialize {
     // Protected by DCL, use #getUriLoader
     private static volatile OneShotURILoader instance;
+    private URI uri;
+    private Vertx vertx;
+    private Map<String, String> options;
 
     public URILoadingRegistry(Vertx vertx, IEngineConfig vxConfig, Map<String, String> options) {
         super();
+        this.vertx = vertx;
+        this.options = options;
         Arguments.require(options.containsKey("configUri"), "configUri is required in configuration");
-        URI uri = URI.create(options.get("configUri"));
+        uri = URI.create(options.get("configUri"));
+    }
+
+    @Override
+    public void initialize(IAsyncResultHandler<Void> resultHandler) {
         getURILoader(vertx, uri, options).subscribe(this, result -> {
-            // For now just throw any exception as it should successfully propagate at this phase
-            // In future we should add an initialise method with a result handler (e.g. via interface).
-            if (result.isError())
-                throw new RuntimeException(result.getError());
+            resultHandler.handle(result);
         });
     }
 

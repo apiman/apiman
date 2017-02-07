@@ -25,7 +25,6 @@ import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.ext.auth.oauth2.AccessToken;
 import io.vertx.ext.auth.oauth2.OAuth2Auth;
-import io.vertx.ext.auth.oauth2.OAuth2ClientOptions;
 import io.vertx.ext.auth.oauth2.OAuth2FlowType;
 
 import java.util.Map;
@@ -35,31 +34,21 @@ import java.util.Objects;
 * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
 */
 @SuppressWarnings("nls")
-public class OAuth2ClientCredentials extends AbstractOAuth2Base implements Authenticator {
+public class KeycloakOAuth2Client extends AbstractOAuth2Base implements Authenticator {
 
-    private Logger log = LoggerFactory.getLogger(OAuth2ClientCredentials.class);
+    private Logger log = LoggerFactory.getLogger(KeycloakOAuth2Client.class);
 
-    public OAuth2ClientCredentials() {
+    public KeycloakOAuth2Client() {
     }
 
     @Override
     public Authenticator validateConfig(Map<String, String> config) {
-        Objects.requireNonNull(config.get("clientId") != null || config.get("clientID") != null, "must provide clientId");
-        Objects.requireNonNull(config.get("clientSecret"), "must provide clientSecret");
-        Objects.requireNonNull(config.get("oauthUri") != null, "must provide OAuth URI 'oauthUri'.");
         Objects.requireNonNull(config.get("flowType"), "must provide OAuth2 flow type 'flowType'.");
         return this;
     }
 
     @Override
     public Authenticator authenticate(Vertx vertx, Map<String, String> config, MultiMap headerMap, AsyncResultHandler<Void> resultHandler) {
-        OAuth2ClientOptions credentials = new OAuth2ClientOptions(mapToJson(config));
-        if (config.get("oauthUri") != null) {
-            credentials.setSite(config.get("oauthUri"));
-        }
-        if (config.get("clientId") != null) {
-            credentials.setClientID(config.get("clientId"));
-        }
 
         OAuth2FlowType flowType = getFlowType(config.get("flowType"));
         JsonObject params = new JsonObject();
@@ -70,19 +59,19 @@ public class OAuth2ClientCredentials extends AbstractOAuth2Base implements Authe
             params.put("password", config.get("password"));
         }
 
-        OAuth2Auth oauth2 = OAuth2Auth.create(vertx, flowType, credentials);
+        OAuth2Auth oauth2 = OAuth2Auth.createKeycloak(vertx, flowType, mapToJson(config));
 
         oauth2.getToken(params, tokenResult -> {
-          if (tokenResult.succeeded()) {
-              log.debug("OAuth2 exchange succeeded.");
-              AccessToken token = tokenResult.result();
-              headerMap.set("Authorization", "Bearer " + token.principal().getString("access_token"));
-              resultHandler.handle(Future.succeededFuture());
-          } else {
-              log.error("Access Token Error: {0}.", tokenResult.cause().getMessage());
-              resultHandler.handle(Future.failedFuture(tokenResult.cause()));
-          }
-        });
+            if (tokenResult.succeeded()) {
+                log.debug("OAuth2 Keycloak exchange succeeded.");
+                AccessToken token = tokenResult.result();
+                headerMap.set("Authorization", "Bearer " + token.principal().getString("access_token"));
+                resultHandler.handle(Future.succeededFuture());
+            } else {
+                log.error("Access Token Error: {0}.", tokenResult.cause().getMessage());
+                resultHandler.handle(Future.failedFuture(tokenResult.cause()));
+            }
+          });
         return this;
     }
 

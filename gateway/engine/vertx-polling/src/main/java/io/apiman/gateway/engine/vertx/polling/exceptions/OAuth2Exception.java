@@ -14,30 +14,19 @@
  * limitations under the License.
  */
 
-package io.apiman.gateway.engine.vertx.polling.fetchers.auth;
-
-import java.util.Arrays;
+package io.apiman.gateway.engine.vertx.polling.exceptions;
 
 /**
 * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
 */
-public enum AuthType {
-    NONE(new NoneAuth()),
-    BASIC(new BasicAuth()),
-    OAUTH2CLIENT(new OAuth2ClientCredentials()),
-    KEYCLOAKOAUTH2CLIENT(new KeycloakOAuth2Client());
+public class OAuth2Exception extends RuntimeException {
+    private static final long serialVersionUID = 3751025512606276265L;
 
-    private Authenticator auth;
-
-    AuthType(Authenticator auth) {
-        this.auth = auth;
+    public OAuth2Exception(Exception e) {
+        super(e);
     }
 
-    public Authenticator getAuthenticator() {
-        return auth;
-    }
-
-    public static String all() {
-        return Arrays.toString(AuthType.values());
+    public OAuth2Exception(String message) {
+        super(message);
     }
 }
