@@ -17,6 +17,7 @@ package io.apiman.gateway.platforms.vertx3.verticles;
 
 import io.apiman.gateway.platforms.vertx3.common.verticles.VerticleType;
 import io.apiman.gateway.platforms.vertx3.http.HttpPolicyAdapter;
+import io.vertx.core.Future;
 import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.net.JksOptions;
@@ -30,8 +31,8 @@ public class HttpsGatewayVerticle extends ApimanVerticleWithEngine {
     static final VerticleType VERTICLE_TYPE = VerticleType.HTTPS;
 
     @Override
-    public void start() {
-        super.start();
+    public void start(Future<Void> startFuture) {
+        super.start(startFuture);
 
         HttpServerOptions sslOptions = new HttpServerOptions()
             .setHost(apimanConfig.getHostname())

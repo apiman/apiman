@@ -17,6 +17,7 @@ package io.apiman.gateway.platforms.vertx3.verticles;
 
 import io.apiman.gateway.engine.IEngine;
 import io.apiman.gateway.platforms.vertx3.engine.VertxConfigDrivenEngineFactory;
+import io.vertx.core.Future;
 
 /**
  * A base for those verticles that require an instantiated engine.
@@ -26,16 +27,20 @@ import io.apiman.gateway.platforms.vertx3.engine.VertxConfigDrivenEngineFactory;
 public abstract class ApimanVerticleWithEngine extends ApimanVerticleBase {
 
     protected IEngine engine;
-    //protected ApiListener apiListener;
 
     @Override
-    public void start() {
-        super.start();
-
-        engine = new VertxConfigDrivenEngineFactory(vertx, getEngineConfig()).createEngine();
+    public void start(Future<Void> startFuture) {
+        super.start(startFuture);
+        engine = new VertxConfigDrivenEngineFactory(vertx, getEngineConfig())
+                .setHandler(result -> {
+                    if (result.isSuccess()) {
+                        startFuture.complete();
+                    } else {
+                        startFuture.fail(result.getError());
+                    }
+                })
+                .createEngine();
         engine.getRegistry(); // this should help avoid slow first-time loads.
-        //apiListener = new ApiListener(eb, uuid);
-        //apiListener.listen(engine);
     }
 
     protected IEngine engine() {

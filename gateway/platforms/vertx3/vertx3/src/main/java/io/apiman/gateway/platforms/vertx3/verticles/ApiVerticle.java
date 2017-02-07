@@ -45,8 +45,8 @@ public class ApiVerticle extends ApimanVerticleWithEngine {
     public static final VerticleType VERTICLE_TYPE = VerticleType.API;
 
     @Override
-    public void start() {
-        super.start();
+    public void start(Future<Void> startFuture) {
+        super.start(startFuture);
         IRouteBuilder clientResource = new ClientResourceImpl(apimanConfig, engine);
         IRouteBuilder apiResource = new ApiResourceImpl(apimanConfig, engine);
         IRouteBuilder systemResource = new SystemResourceImpl(apimanConfig, engine);
