@@ -36,7 +36,7 @@ public class InitVerticle extends ApimanVerticleBase {
 
     @Override
     public void start(Future<Void> start) {
-        super.start();
+        super.start(start);
         base = new DeploymentOptions().setConfig(config());
 
         @SuppressWarnings({ "rawtypes" }) // CompositeFuture doesn't accept generic type
