@@ -172,4 +172,8 @@ public class Vertx3GatewayTestServer implements IGatewayTestServer {
             }
         }
     }
+
+    @Override
+    public void next(String endpoint) {
+    }
 }

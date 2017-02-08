@@ -39,4 +39,6 @@ public interface IGatewayTestServer {
 
     public void stop();
 
+    public void next(String endpoint);
+
 }

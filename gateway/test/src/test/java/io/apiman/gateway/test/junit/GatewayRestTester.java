@@ -256,6 +256,7 @@ public class GatewayRestTester extends ParentRunner<TestInfo> {
                     }
     
                     testInfo.plan.runner.runTest(restTest, endpoint);
+                    gatewayServer.next(endpoint);
                 }
             }
         }, description, notifier);
