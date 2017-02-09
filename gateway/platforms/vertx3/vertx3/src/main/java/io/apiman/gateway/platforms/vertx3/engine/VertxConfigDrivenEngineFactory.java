@@ -44,6 +44,7 @@ public class VertxConfigDrivenEngineFactory extends ConfigDrivenEngineFactory {
     private IAsyncResultHandler<Void> handler;
     private int started = 0;
     private static final int ELEMENTS_TO_START = 6;
+    private boolean failed = false;
 
 
     public VertxConfigDrivenEngineFactory(Vertx vertx, VertxEngineConfig config) {
@@ -70,10 +71,11 @@ public class VertxConfigDrivenEngineFactory extends ConfigDrivenEngineFactory {
             ((AsyncInitialize) instance).initialize(initResult -> {
                 if (initResult.isError()) {
                     handler.handle(initResult);
+                    failed = true;
                 }
             });
         }
-        if (started == ELEMENTS_TO_START) {
+        if (started == ELEMENTS_TO_START && !failed) {
             handler.handle(AsyncResultImpl.create((Void) null));
         }
         return instance;
