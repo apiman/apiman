@@ -35,6 +35,9 @@ import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+* @author Marc Savy {@literal <marc@rhymewithgravy.com>}
+*/
 @SuppressWarnings("nls")
 public class ApiToFileRegistry extends InMemoryRegistry {
 
@@ -94,15 +97,9 @@ public class ApiToFileRegistry extends InMemoryRegistry {
 
     private void rewrite() {
         fileSystem.writeFileBlocking(file.getAbsolutePath(), Buffer.buffer(root.encodePrettily()));
-        restartReader();
-    }
-
-    private void restartReader() {
-        eb.publish("restartReader", "reset!");
     }
 
     private void publish(Api api) {
-        System.out.println("WANT TO PUBLISH " + api);
         JsonObject apiJson = new JsonObject(Json.encode(api));
         apis.add(apiJson);
         apiMap.put(api, apiJson);
