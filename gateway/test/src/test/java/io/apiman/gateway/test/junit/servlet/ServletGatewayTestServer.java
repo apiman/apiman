@@ -410,4 +410,8 @@ public class ServletGatewayTestServer implements IGatewayTestServer {
         }
     }
 
+    @Override
+    public void next(String endpoint) {
+    }
+
 }
