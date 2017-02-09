@@ -85,7 +85,7 @@ public class ApiToFileRegistry extends InMemoryRegistry {
     }
 
     public void reset() {
-        fileSystem.deleteBlocking(file.getAbsolutePath());
+        fileSystem.writeFileBlocking(file.getAbsolutePath(), Buffer.buffer(""));
         super.getMap().clear();
         apis.clear();
         clients.clear();
@@ -93,36 +93,44 @@ public class ApiToFileRegistry extends InMemoryRegistry {
         apiMap.clear();
         root.clear();
         linkRoot();
+        resetCompleteSignal();
     }
 
     private void rewrite() {
         fileSystem.writeFileBlocking(file.getAbsolutePath(), Buffer.buffer(root.encodePrettily()));
+        rewriteCompleteSignal();
+    }
+
+    private void rewriteCompleteSignal() {
+        eb.publish("rewrite", null);
+        System.out.println("sent rewrite");
+    }
+
+    private void resetCompleteSignal() {
+        eb.publish("reset", null);
+        System.out.println("sent reset");
     }
 
     private void publish(Api api) {
         JsonObject apiJson = new JsonObject(Json.encode(api));
         apis.add(apiJson);
         apiMap.put(api, apiJson);
-        rewrite();
     }
 
     private void retire(Api api) {
         JsonObject removeJson = apiMap.remove(api);
         apis.remove(removeJson);
-        rewrite();
     }
 
     private void register(Client client) {
         JsonObject clientJson = new JsonObject(Json.encode(client));
         clients.add(clientJson);
         clientMap.put(client, clientJson);
-        rewrite();
     }
 
     private void unregister(Client lookup) {
         JsonObject removeJson = clientMap.remove(lookup);
         clients.remove(removeJson);
-        rewrite();
     }
 
     @Override
@@ -132,6 +140,7 @@ public class ApiToFileRegistry extends InMemoryRegistry {
                publish(api);
            }
            handler.handle(result);
+           rewrite();
         });
     }
 
@@ -142,6 +151,7 @@ public class ApiToFileRegistry extends InMemoryRegistry {
                 retire(api);
             }
             handler.handle(result);
+            rewrite();
          });
     }
 
@@ -152,6 +162,7 @@ public class ApiToFileRegistry extends InMemoryRegistry {
                 register(client);
             }
             handler.handle(result);
+            rewrite();
          });
     }
 
@@ -162,6 +173,7 @@ public class ApiToFileRegistry extends InMemoryRegistry {
                 unregister(client);
             }
             handler.handle(result);
+            rewrite();
          });
     }
 

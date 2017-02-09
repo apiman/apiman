@@ -150,6 +150,7 @@ public class URILoadingRegistry extends InMemoryRegistry implements AsyncInitial
             awaiting.addAll(allRegistries);
             apis.clear();
             clients.clear();
+            failureHandlers.clear(); // Initial design assumption was that this would never be reloaded - so this is the future for boot-time and thus has already been called.
             allRegistries.stream()
                 .map(URILoadingRegistry::getMap)
                 .forEach(Map::clear);
