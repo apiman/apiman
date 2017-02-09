@@ -1,3 +1,5 @@
+[![Apiman Project](https://img.shields.io/travis/apiman/apiman/master.svg?label=Apiman&maxAge=600)](https://travis-ci.org/apiman/apiman) [![Apiman Plugins](https://img.shields.io/travis/apiman/apiman-plugins/master.svg?label=Apiman%20Plugins&maxAge=600)](https://travis-ci.org/apiman/apiman-plugins)
+
 # The apiman project (Open Source API Management)
 
 ## Summary
