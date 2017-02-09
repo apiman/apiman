@@ -268,7 +268,7 @@ public class InMemoryRegistry implements IRegistry {
     /**
      * @return the map to use when storing stuff
      */
-    protected Map<String, Object> getMap() {
+    public Map<String, Object> getMap() {
         return map;
     }
 

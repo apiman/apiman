@@ -65,7 +65,7 @@ public class InfinispanRegistry extends InMemoryRegistry {
      * @see io.apiman.gateway.engine.impl.InMemoryRegistry#getMap()
      */
     @Override
-    protected Map<String, Object> getMap() {
+    public Map<String, Object> getMap() {
         if (cacheWrapper == null) {
             cacheWrapper = new RegistryCacheMapWrapper(getCache());
         }

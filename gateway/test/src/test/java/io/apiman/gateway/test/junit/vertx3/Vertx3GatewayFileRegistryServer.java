@@ -24,6 +24,7 @@ import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
 import io.vertx.core.eventbus.DeliveryOptions;
+import io.vertx.core.eventbus.MessageConsumer;
 import io.vertx.core.json.JsonObject;
 
 import java.io.File;
@@ -54,6 +55,10 @@ public class Vertx3GatewayFileRegistryServer implements IGatewayTestServer {
     private JsonObject vertxConf;
     private Vertx secondVx;
     private JsonObject pushEmulatorConfig;
+    private MessageConsumer<Object> resetConsumer;
+    private MessageConsumer<Object> rewriteConsumer;
+    private CountDownLatch rewriteCdl = new CountDownLatch(1);
+    private CountDownLatch resetCdl = new CountDownLatch(1);
 
     /**
      * Constructor.
@@ -71,6 +76,9 @@ public class Vertx3GatewayFileRegistryServer implements IGatewayTestServer {
 
         secondVx.deployVerticle(ApiVerticle.class.getCanonicalName(),
                 new DeploymentOptions().setConfig(pushEmulatorConfig));
+
+        resetConsumer = secondVx.eventBus().consumer("reset").handler(reset -> resetCdl.countDown());
+        rewriteConsumer = secondVx.eventBus().consumer("rewrite").handler(rewritten -> rewriteCdl.countDown());
     }
 
     private JsonObject loadJsonObjectFromResources(JsonNode nodeConfig, String name) {
@@ -108,8 +116,8 @@ public class Vertx3GatewayFileRegistryServer implements IGatewayTestServer {
             echoServer.start();
 
             startLatch = new CountDownLatch(1);
-            DeploymentOptions options = new DeploymentOptions();
-            options.setConfig(vertxConf);
+            DeploymentOptions options = new DeploymentOptions().
+                    setConfig(vertxConf);
 
             vertx.deployVerticle(InitVerticle.class.getCanonicalName(),
                     options, event -> {
@@ -131,6 +139,7 @@ public class Vertx3GatewayFileRegistryServer implements IGatewayTestServer {
 
         secondVx.eventBus().publish(ApiToFileRegistry.class.getCanonicalName(), null,
                 new DeliveryOptions().addHeader("action", "reset"));
+
         URILoadingRegistry.reset();
 
         vertx.close(result -> {
@@ -139,9 +148,12 @@ public class Vertx3GatewayFileRegistryServer implements IGatewayTestServer {
 
         try {
             stopLatch.await();
+            resetCdl.await();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+
+        resetCdl = new CountDownLatch(1);
     }
 
     @Override
@@ -149,11 +161,17 @@ public class Vertx3GatewayFileRegistryServer implements IGatewayTestServer {
         try {
             if (URI.create(endpoint).getPort() == API_PORT) {
                 CountDownLatch cdl = new CountDownLatch(1);
+
+                System.out.println("awaiting rewrite");
+                rewriteCdl.await();
+
                 URILoadingRegistry.reloadData(done -> {
                     cdl.countDown();
                 });
+
                 cdl.await();
                 System.out.println("Next...");
+                rewriteCdl = new CountDownLatch(1);
             }
         } catch (Exception e) {
             throw new RuntimeException(e);

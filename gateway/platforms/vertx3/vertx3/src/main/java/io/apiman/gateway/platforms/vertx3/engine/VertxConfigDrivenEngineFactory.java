@@ -27,6 +27,8 @@ import io.apiman.gateway.platforms.vertx3.common.AsyncInitialize;
 import io.apiman.gateway.platforms.vertx3.common.config.VertxEngineConfig;
 import io.apiman.gateway.platforms.vertx3.connector.ConnectorFactory;
 import io.vertx.core.Vertx;
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 
 import java.lang.reflect.Constructor;
 import java.util.Map;
@@ -45,6 +47,7 @@ public class VertxConfigDrivenEngineFactory extends ConfigDrivenEngineFactory {
     private int started = 0;
     private static final int ELEMENTS_TO_START = 6;
     private boolean failed = false;
+    private Logger log = LoggerFactory.getLogger(VertxConfigDrivenEngineFactory.class);
 
 
     public VertxConfigDrivenEngineFactory(Vertx vertx, VertxEngineConfig config) {
@@ -70,8 +73,12 @@ public class VertxConfigDrivenEngineFactory extends ConfigDrivenEngineFactory {
         if (instance instanceof AsyncInitialize) {
             ((AsyncInitialize) instance).initialize(initResult -> {
                 if (initResult.isError()) {
-                    handler.handle(initResult);
-                    failed = true;
+                    if (!failed) {
+                        handler.handle(initResult);
+                        failed = true;
+                    } else {
+                        log.error("Failure occurred, but error handler was already invoked.", initResult.getError().getCause()); //$NON-NLS-1$
+                    }
                 }
             });
         }
