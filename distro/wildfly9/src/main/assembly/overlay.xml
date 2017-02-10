@@ -140,5 +140,12 @@
         <exclude>**/aesh/**</exclude>
       </excludes>
     </fileSet>
+    <fileSet>
+      <directory>target/keycloak/themes</directory>
+      <outputDirectory>themes</outputDirectory>
+      <filtered>false</filtered>
+      <directoryMode>0755</directoryMode>
+      <fileMode>0755</fileMode>
+    </fileSet>
   </fileSets>
 </assembly>
