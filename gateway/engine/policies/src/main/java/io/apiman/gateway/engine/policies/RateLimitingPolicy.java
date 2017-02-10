@@ -94,9 +94,6 @@ public class RateLimitingPolicy extends AbstractMappedPolicy<RateLimitingConfig>
                 if (result.isError()) {
                     chain.throwError(result.getError());
                 } else {
-                    // TODO verificar limit header
-                    // request.getRemoteAddr();
-
                     RateLimitResponse rtr = result.getResult();
 
                     Map<String, String> responseHeaders = responseHeaders(config, rtr,
