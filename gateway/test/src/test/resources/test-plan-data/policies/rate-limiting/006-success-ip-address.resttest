@@ -1,0 +1,13 @@
+GET /Policy_RateLimitingTest/echo/1.0.0/path/to/app/resource admin/admin
+X-API-Key: 12345-ip
+
+----
+200
+Content-Type: application/json
+X-RateLimit-Limit: 1
+
+{
+  "method" : "GET",
+  "resource" : "/path/to/app/resource",
+  "uri" : "/path/to/app/resource"
+}
