@@ -45,10 +45,7 @@ public class ApiToFileRegistry extends InMemoryRegistry {
     private File file;
     private JsonArray clients = new JsonArray();
     private JsonArray apis = new JsonArray();
-    private JsonObject root = new JsonObject(); private void linkRoot() {
-        root.put("clients", clients);
-        root.put("apis", apis);
-    }
+    private JsonObject root = new JsonObject();
     private Map<Client, JsonObject> clientMap = new LinkedHashMap<>();
     private Map<Api, JsonObject> apiMap = new LinkedHashMap<>();
     private EventBus eb;
@@ -60,6 +57,11 @@ public class ApiToFileRegistry extends InMemoryRegistry {
         linkRoot();
         createTempFile();
         createResetListener();
+    }
+
+    private void linkRoot() {
+        root.put("clients", clients);
+        root.put("apis", apis);
     }
 
     private void createResetListener() {

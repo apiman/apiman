@@ -24,7 +24,6 @@ import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
 import io.vertx.core.eventbus.DeliveryOptions;
-import io.vertx.core.eventbus.MessageConsumer;
 import io.vertx.core.json.JsonObject;
 
 import java.io.File;
@@ -55,8 +54,6 @@ public class Vertx3GatewayFileRegistryServer implements IGatewayTestServer {
     private JsonObject vertxConf;
     private Vertx secondVx;
     private JsonObject pushEmulatorConfig;
-    private MessageConsumer<Object> resetConsumer;
-    private MessageConsumer<Object> rewriteConsumer;
     private CountDownLatch rewriteCdl = new CountDownLatch(1);
     private CountDownLatch resetCdl = new CountDownLatch(1);
 
@@ -77,8 +74,8 @@ public class Vertx3GatewayFileRegistryServer implements IGatewayTestServer {
         secondVx.deployVerticle(ApiVerticle.class.getCanonicalName(),
                 new DeploymentOptions().setConfig(pushEmulatorConfig));
 
-        resetConsumer = secondVx.eventBus().consumer("reset").handler(reset -> resetCdl.countDown());
-        rewriteConsumer = secondVx.eventBus().consumer("rewrite").handler(rewritten -> rewriteCdl.countDown());
+        secondVx.eventBus().consumer("reset").handler(reset -> resetCdl.countDown());
+        secondVx.eventBus().consumer("rewrite").handler(rewritten -> rewriteCdl.countDown());
     }
 
     private JsonObject loadJsonObjectFromResources(JsonNode nodeConfig, String name) {
