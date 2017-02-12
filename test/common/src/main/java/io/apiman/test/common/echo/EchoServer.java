@@ -50,7 +50,7 @@ public class EchoServer {
      */
     public EchoServer start() throws Exception {
         long startTime = System.currentTimeMillis();
-        System.out.println("**** Starting Server (" + getClass().getSimpleName() + ")"); //$NON-NLS-1$ //$NON-NLS-2$
+        System.out.println("**** Starting Server (" + getClass().getSimpleName() + ") on port " +  port); //$NON-NLS-1$ //$NON-NLS-2$
         preStart();
 
         ContextHandlerCollection handlers = new ContextHandlerCollection();
