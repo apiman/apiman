@@ -17,6 +17,7 @@ package io.apiman.test.common.echo;
 
 import io.apiman.test.common.mock.EchoServlet;
 
+import org.apache.commons.lang3.math.NumberUtils;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.servlet.ServletContextHandler;
@@ -47,9 +48,9 @@ public class EchoServer {
     /**
      * Start/run the server.
      */
-    public void start() throws Exception {
+    public EchoServer start() throws Exception {
         long startTime = System.currentTimeMillis();
-        System.out.println("**** Starting Server (" + getClass().getSimpleName() + ")"); //$NON-NLS-1$ //$NON-NLS-2$
+        System.out.println("**** Starting Server (" + getClass().getSimpleName() + ") on port " +  port); //$NON-NLS-1$ //$NON-NLS-2$
         preStart();
 
         ContextHandlerCollection handlers = new ContextHandlerCollection();
@@ -61,6 +62,12 @@ public class EchoServer {
         server.start();
         long endTime = System.currentTimeMillis();
         System.out.println("******* Started in " + (endTime - startTime) + "ms"); //$NON-NLS-1$ //$NON-NLS-2$
+        return this;
+    }
+
+    public EchoServer join() throws InterruptedException {
+        server.join();
+        return this;
     }
 
     /**
@@ -100,10 +107,9 @@ public class EchoServer {
     }
 
     public static void main(String [] args) throws Exception {
-        new EchoServer(9999).start();
-        while (Boolean.TRUE) {
-            Thread.sleep(1000);
-        }
+        int port = NumberUtils.toInt(System.getProperty("io.apiman.test.common.echo.port"), 9999); //$NON-NLS-1$
+        new EchoServer(port)
+            .start()
+            .join();
     }
-
 }
