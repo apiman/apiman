@@ -47,7 +47,7 @@ public class EchoServer {
     /**
      * Start/run the server.
      */
-    public void start() throws Exception {
+    public EchoServer start() throws Exception {
         long startTime = System.currentTimeMillis();
         System.out.println("**** Starting Server (" + getClass().getSimpleName() + ")"); //$NON-NLS-1$ //$NON-NLS-2$
         preStart();
@@ -61,6 +61,12 @@ public class EchoServer {
         server.start();
         long endTime = System.currentTimeMillis();
         System.out.println("******* Started in " + (endTime - startTime) + "ms"); //$NON-NLS-1$ //$NON-NLS-2$
+        return this;
+    }
+
+    public EchoServer join() throws InterruptedException {
+        server.join();
+        return this;
     }
 
     /**
@@ -100,10 +106,8 @@ public class EchoServer {
     }
 
     public static void main(String [] args) throws Exception {
-        new EchoServer(9999).start();
-        while (Boolean.TRUE) {
-            Thread.sleep(1000);
-        }
+        new EchoServer(9999)
+            .start()
+            .join();
     }
-
 }
