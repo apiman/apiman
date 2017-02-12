@@ -17,6 +17,7 @@ package io.apiman.test.common.echo;
 
 import io.apiman.test.common.mock.EchoServlet;
 
+import org.apache.commons.lang3.math.NumberUtils;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.servlet.ServletContextHandler;
@@ -106,7 +107,8 @@ public class EchoServer {
     }
 
     public static void main(String [] args) throws Exception {
-        new EchoServer(9999)
+        int port = NumberUtils.toInt(System.getProperty("io.apiman.test.common.echo.port"), 9999); //$NON-NLS-1$
+        new EchoServer(port)
             .start()
             .join();
     }
