@@ -16,9 +16,7 @@
 
 package io.apiman.gateway.platforms.vertx3.connector;
 
-import io.apiman.common.config.options.TLSOptions;
 import io.apiman.gateway.engine.async.IAsyncHandler;
-import io.apiman.gateway.engine.auth.RequiredAuthType;
 import io.apiman.gateway.engine.beans.Api;
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.io.IApimanBuffer;
@@ -31,7 +29,7 @@ import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
 
-import java.util.Collections;
+import java.net.URI;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -104,7 +102,7 @@ public class HttpConnectorDrainTest {
     }
 
     @Test
-    public void shouldTriggerDrainHandler(TestContext context) {
+    public void shouldTriggerDrainHandler(TestContext context) throws Exception {
         Async asyncDrain = context.async(2);
         Async asyncServer = context.async();
 
@@ -120,13 +118,15 @@ public class HttpConnectorDrainTest {
             requestToPause.handler(data -> {});
         }).listen(7297);
 
-
-        HttpConnector httpConnector = new HttpConnector(Vertx.vertx(),
-                api,
+        Vertx vertx = Vertx.vertx();
+        HttpConnector httpConnector = new HttpConnector(vertx,
+                vertx.createHttpClient(),
                 request,
-                RequiredAuthType.DEFAULT,
-                new TLSOptions(Collections.EMPTY_MAP),
-                true, result -> {});
+                api,
+                new HttpConnectorOptions()
+                    .setHasDataPolicy(true)
+                    .setUri(URI.create(api.getEndpoint())),
+                result -> {});
 
         // Should be fired when write queue reduces to acceptable size.
         httpConnector.drainHandler(drain -> {

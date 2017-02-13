@@ -16,7 +16,6 @@
 package io.apiman.gateway.platforms.vertx3.connector;
 
 import io.apiman.common.config.options.BasicAuthOptions;
-import io.apiman.common.config.options.TLSOptions;
 import io.apiman.common.util.ApimanPathUtils;
 import io.apiman.common.util.Basic;
 import io.apiman.gateway.engine.IApiConnection;
@@ -34,7 +33,6 @@ import io.apiman.gateway.engine.io.IApimanBuffer;
 import io.apiman.gateway.engine.io.ISignalReadStream;
 import io.apiman.gateway.engine.io.ISignalWriteStream;
 import io.apiman.gateway.platforms.vertx3.http.HttpApiFactory;
-import io.apiman.gateway.platforms.vertx3.http.HttpClientOptionsFactory;
 import io.apiman.gateway.platforms.vertx3.i18n.Messages;
 import io.apiman.gateway.platforms.vertx3.io.VertxApimanBuffer;
 import io.vertx.core.Handler;
@@ -42,7 +40,6 @@ import io.vertx.core.MultiMap;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpClient;
-import io.vertx.core.http.HttpClientOptions;
 import io.vertx.core.http.HttpClientRequest;
 import io.vertx.core.http.HttpClientResponse;
 import io.vertx.core.http.HttpMethod;
@@ -50,8 +47,7 @@ import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 
 import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
 import java.net.URLEncoder;
 import java.util.HashSet;
 import java.util.Map.Entry;
@@ -96,48 +92,45 @@ class HttpConnector implements IApiConnectionResponse, IApiConnection {
     private String destination;
     private int apiPort;
     private boolean isHttps;
-    private RequiredAuthType authType;
     private BasicAuthOptions basicOptions;
 
     private HttpClient client;
     private HttpClientRequest clientRequest;
     private HttpClientResponse clientResponse;
 
-    private URL apiEndpoint;
+    private URI apiEndpoint;
 
-    private boolean hasDataPolicies;
+    private HttpConnectorOptions options;
+
 
     /**
      * Construct an {@link HttpConnector} instance. The {@link #resultHandler} must remain exclusive to a
      * given instance.
      *
      * @param vertx a vertx
-     * @param api a api
+     * @param client the vertx http client
+     * @param api an API
      * @param request a request with fields filled
-     * @param authType the required auth type
-     * @param tlsOptions the tls options
-     * @param hasDataPolicy if the policy chain contains a data policy
+     * @param options the connector options
      * @param resultHandler a handler, called when reading is permitted
      */
-    public HttpConnector(Vertx vertx, Api api, ApiRequest request, RequiredAuthType authType,
-            TLSOptions tlsOptions, boolean hasDataPolicy, IAsyncResultHandler<IApiConnectionResponse> resultHandler) {
+    public HttpConnector(Vertx vertx, HttpClient client, ApiRequest request, Api api, HttpConnectorOptions options,
+            IAsyncResultHandler<IApiConnectionResponse> resultHandler) {
+        this.client = client;
        this.api = api;
        this.apiRequest = request;
-       this.authType = authType;
+
        this.resultHandler = resultHandler;
        this.exceptionHandler = new ExceptionHandler();
-       this.hasDataPolicies = hasDataPolicy;
+       this.apiEndpoint = options.getUri();
+       this.options = options;
 
-       apiEndpoint = parseApiEndpoint(api);
-
-       isHttps = apiEndpoint.getProtocol().equals("https");
+       isHttps = apiEndpoint.getScheme().equals("https");
        apiHost = apiEndpoint.getHost();
        apiPort = getPort();
        apiPath = apiEndpoint.getPath().isEmpty() || apiEndpoint.getPath().equals("/") ? "" : apiEndpoint.getPath();
        destination = apiRequest.getDestination() == null ? "" : apiRequest.getDestination();
 
-       HttpClientOptions clientOptions = HttpClientOptionsFactory.parseOptions(tlsOptions, apiEndpoint);
-       this.client = vertx.createHttpClient(clientOptions);
        verifyConnection();
        doConnection();
     }
@@ -150,7 +143,7 @@ class HttpConnector implements IApiConnectionResponse, IApiConnection {
     }
 
     private void verifyConnection() {
-        switch (authType) {
+        switch (options.getRequiredAuthType()) {
         case BASIC:
             basicOptions = new BasicAuthOptions(api.getEndpointProperties());
             if (!isHttps && basicOptions.isRequireSSL())
@@ -199,7 +192,7 @@ class HttpConnector implements IApiConnectionResponse, IApiConnection {
 
         clientRequest.exceptionHandler(exceptionHandler);
 
-        if (hasDataPolicies) {
+        if (options.hasDataPolicy()) {
             clientRequest.headers().remove("Content-Length");
             clientRequest.setChunked(true);
         }
@@ -208,7 +201,7 @@ class HttpConnector implements IApiConnectionResponse, IApiConnection {
 
         addMandatoryRequestHeaders(clientRequest.headers());
 
-        if (authType == RequiredAuthType.BASIC) {
+        if (options.getRequiredAuthType() == RequiredAuthType.BASIC) {
             clientRequest.putHeader("Authorization", Basic.encode(basicOptions.getUsername(), basicOptions.getPassword()));
         }
     }
@@ -293,14 +286,6 @@ class HttpConnector implements IApiConnectionResponse, IApiConnection {
     @Override
     public boolean isFull() {
         return clientRequest.writeQueueFull();
-    }
-
-    private URL parseApiEndpoint(Api api) {
-        try {
-            return new URL(api.getEndpoint());
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     private String queryParams(QueryMap queryParams) {
