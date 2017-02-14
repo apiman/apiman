@@ -16,15 +16,11 @@
 package io.apiman.gateway.platforms.vertx3.connector;
 
 import io.apiman.common.config.options.TLSOptions;
-import io.apiman.gateway.engine.IApiConnection;
-import io.apiman.gateway.engine.IApiConnectionResponse;
 import io.apiman.gateway.engine.IApiConnector;
 import io.apiman.gateway.engine.IConnectorFactory;
-import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.auth.RequiredAuthType;
 import io.apiman.gateway.engine.beans.Api;
 import io.apiman.gateway.engine.beans.ApiRequest;
-import io.apiman.gateway.engine.beans.exceptions.ConnectorException;
 import io.apiman.gateway.platforms.vertx3.http.HttpClientOptionsFactory;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpClient;
@@ -87,23 +83,17 @@ public class ConnectorFactory implements IConnectorFactory {
 
     // In the future we can switch to different back-end implementations here!
     @Override
-    public IApiConnector createConnector(ApiRequest request, Api api, RequiredAuthType authType, boolean hasDataPolicy) {
-        return new IApiConnector() {
-
-            @Override
-            public IApiConnection connect(ApiRequest request,
-                    IAsyncResultHandler<IApiConnectionResponse> resultHandler)
-                    throws ConnectorException {
-                HttpConnectorOptions httpOptions = new HttpConnectorOptions()
-                        .setHasDataPolicy(hasDataPolicy)
-                        .setRequiredAuthType(authType)
-                        .setTlsOptions(tlsOptions)
-                        .setUri(parseApiEndpoint(api));
-                // Get from cache
-                HttpClient client = clientFromCache(httpOptions);
-                return new HttpConnector(vertx, client, request, api, httpOptions, resultHandler);
-            }
-        };
+    public IApiConnector createConnector(ApiRequest req, Api api, RequiredAuthType authType, boolean hasDataPolicy) {
+        return (request, resultHandler) -> {
+            HttpConnectorOptions httpOptions = new HttpConnectorOptions()
+            .setHasDataPolicy(hasDataPolicy)
+            .setRequiredAuthType(authType)
+            .setTlsOptions(tlsOptions)
+            .setUri(parseApiEndpoint(api));
+            // Get from cache
+            HttpClient client = clientFromCache(httpOptions);
+            return new HttpConnector(vertx, client, request, api, httpOptions, resultHandler);
+         };
     }
 
     private HttpClient clientFromCache(HttpConnectorOptions key) {
@@ -113,7 +103,6 @@ public class ConnectorFactory implements IConnectorFactory {
             throw new RuntimeException(e);
         }
     }
-
 
     private URI parseApiEndpoint(Api api) {
         try {
