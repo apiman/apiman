@@ -15,6 +15,10 @@
  */
 package io.apiman.gateway.engine.policies;
 
+import static java.util.Optional.ofNullable;
+
+import java.io.IOException;
+
 import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.ApiRequest;
@@ -33,11 +37,6 @@ import io.apiman.gateway.engine.policy.IConnectorInterceptor;
 import io.apiman.gateway.engine.policy.IDataPolicy;
 import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
-
-import java.io.IOException;
-import java.util.List;
-
-import static java.util.Optional.ofNullable;
 
 /**
  * Policy that enables caching for back-end APIs responses.
