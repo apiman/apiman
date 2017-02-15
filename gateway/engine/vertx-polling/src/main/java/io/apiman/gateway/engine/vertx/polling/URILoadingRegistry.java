@@ -68,6 +68,11 @@ public class URILoadingRegistry extends InMemoryRegistry implements AsyncInitial
         uri = URI.create(options.get("configUri"));
     }
 
+    public URILoadingRegistry(Map<String, String> options) {
+        this(Vertx.vertx(), null, options);
+        initialize(init->{});
+    }
+
     @Override
     public void initialize(IAsyncResultHandler<Void> resultHandler) {
         getURILoader(vertx, uri, options).subscribe(this, resultHandler::handle);
