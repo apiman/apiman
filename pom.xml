@@ -1017,10 +1017,10 @@
         <version>${version.org.mvel}</version>
       </dependency>
       <dependency> <!-- Stop Maven trying to download snapshot version. -->
-	<groupId>org.glassfish</groupId>
-	<artifactId>javax.el</artifactId>
-	<version>${version.org.glassfish.javax.el}</version>
-	<scope>provided</scope>
+        <groupId>org.glassfish</groupId>
+        <artifactId>javax.el</artifactId>
+        <version>${version.org.glassfish.javax.el}</version>
+        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.keycloak</groupId>
@@ -1110,9 +1110,9 @@
 
       <!-- Transliteration -->
       <dependency>
-	<groupId>com.ibm.icu</groupId>
-	<artifactId>icu4j</artifactId>
-	<version>${version.com.ibm.icu4j}</version>
+        <groupId>com.ibm.icu</groupId>
+        <artifactId>icu4j</artifactId>
+        <version>${version.com.ibm.icu4j}</version>
       </dependency>
 
       <!-- Test -->
