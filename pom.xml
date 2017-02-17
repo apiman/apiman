@@ -138,7 +138,8 @@
     <version.org.apache.httpcomponents.httpcore>4.4.1</version.org.apache.httpcomponents.httpcore>
     <version.org.apache.httpcomponents.httpasyncclient>4.1</version.org.apache.httpcomponents.httpasyncclient>
     <version.org.apache.logging.log4j>2.2</version.org.apache.logging.log4j>
-    <version.org.eclipse.jetty>9.2.10.v20150310</version.org.eclipse.jetty>
+    <version.org.eclipse.jetty>9.2.20.v20161216</version.org.eclipse.jetty>
+    <version.org.glassfish.javax.el>3.0.0</version.org.glassfish.javax.el>
     <version.org.elasticsearch>1.7.2</version.org.elasticsearch>
     <version.org.hibernate.javax.persistence.hibernate-jpa-2.1-api>1.0.0.Final</version.org.hibernate.javax.persistence.hibernate-jpa-2.1-api>
     <version.org.hibernate>5.0.9.Final</version.org.hibernate>
@@ -1014,6 +1015,12 @@
         <groupId>org.mvel</groupId>
         <artifactId>mvel2</artifactId>
         <version>${version.org.mvel}</version>
+      </dependency>
+      <dependency> <!-- Stop Maven trying to download snapshot version. -->
+	<groupId>org.glassfish</groupId>
+	<artifactId>javax.el</artifactId>
+	<version>${version.org.glassfish.javax.el}</version>
+	<scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.keycloak</groupId>
