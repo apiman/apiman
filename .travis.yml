@@ -1,9 +1,10 @@
 language: java
 
 cache:
+  yarn: true
   directories:
     - "$HOME/.tsd-cache" # Typings
-    - "$TRAVIS_BUILD_DIR/manager/ui/war/node_modules" # NPM
+    - "$TRAVIS_BUILD_DIR/manager/ui/war/node_modules" # NPM/Yarn
     - "$HOME/.m2" # Maven
 
 before_cache:
