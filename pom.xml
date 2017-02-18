@@ -1378,7 +1378,7 @@
               <value>${basedir}/target</value>
             </property>
           </systemProperties>
-          <argLine>-Xmx512m -XX:MaxPermSize=256m</argLine>
+          <argLine>-Xmx512m</argLine>
         </configuration>
       </plugin>
       <plugin>
