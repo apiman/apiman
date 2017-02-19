@@ -10,10 +10,10 @@ toc::[]
 You'll need to have a valid JSON config (see following sections), and build apiman with Java 8 (`mvn clean install`):
 
 ```shell
-java -jar target/apiman-gateway-platforms-vertx3-1.2.0-SNAPSHOT-fat.jar -conf <path-to-your-config.json>
+java -jar target/apiman-gateway-platforms-vertx3-1.2.10-SNAPSHOT-fat.jar -conf <path-to-your-config.json>
 ```
 
-Replace `1.2.0-SNAPSHOT` with the version you built.
+Replace `1.2.10-SNAPSHOT` with the version you built.
 
 == Configuration
 
@@ -103,26 +103,20 @@ If you don't want any instances of a particular verticle type, set its `count` t
 NOTE: Verticle count only defines the number of verticles deployed in a given JVM instance (i.e. per `java -jar apiman<...>.jar -conf <...>`). How many deployments, and hence total number of verticles exist within your overall cluster is entirely up to you.
 
 ==== HTTP
+
 Plaintext HTTP entry-point, with no transport security. Turn off by reducing count to zero.
 
 ==== HTTPS
+
 Encrypted HTTPS entry-point, with TLS. Turn off by reducing count to zero.
 
 ==== API
+
 Hosts the apiman gateway API, which is typically used by the apiman manager to drive the gateway. For instance, publishing and retiring APIs, Contracts.
 
-==== Policy
-Handles execution of apiman's engine, policies and pipes data to and from the backend, before returning it to the sender.
+=== Gateway API Authentication
 
-==== Data Flow
-
-Data arrives at a verticle listening for incoming traffic, such as an HTTP and HTTPS or verticle, this is packaged into an intermediary format, and sent to a policy verticle over the event bus.
-
-The policy verticle handles the complexities of policy execution, sending and receiving from the backend. Finally, it responds over the bus to the caller with its result, and that caller is responsible for transforming the result back into its native format. This means we can have many different listener types without modifying the policy verticle.
-
-=== Gateway API Auth
-
-TIP: This only relates to apiman's Gateway API; it is *unrelated* to auth of traffic transiting the gateway.
+NOTE: This only relates to apiman's Gateway API; it is *unrelated* to auth of traffic transiting the gateway.
 
 ```json
 {
@@ -175,13 +169,17 @@ TIP: Each component is standalone, so it may be that you need to repeat configur
 
 === Other
 
+Most configuration options should be sufficiently annotated in the example configs to explain their purpose, a few others are worth briefly expanding upon.
+
 ==== Hostname
+
 ```json
 { "hostname": "localhost" }
 ```
 The hostname to bind to.
 
 ==== Endpoint
+
 ```json
 { "endpoint": "mynode.local" }
 ```
@@ -189,16 +187,13 @@ The hostname to bind to.
 Force the gateway to report the given gateway endpoint when it is queried by the manager. By default the gateway will inspect the request used to hit the Gateway API, and use whichever address was used to reach it as the endpoint.
 
 ==== Prefer Secure
+
 ```json
 { "preferSecure": true }
 ```
 
 When reporting the gateway endpoint (as above), prefer to report the secure (HTTPS) URI rather than an insecure one (HTTP).
 
-== Future
+== TODO
 
-* Eventually-consistent caching system to reduce datastore load (using event bus).
-* Additional components, registries, etc, using Vert.x specific adapters (e.g. Vert.x Infinispan, when it arrives; Vert.x MongoDB; ...). This would be Vert.x gateway only.
-* Integrate a bunch of improvements from upstream which should significantly improve performance
-  ** Custom EB marshallers.
-  ** Tidy proxies with improvements added since they were written. Still more convoluted than I'd like.
+- Enable auth to the Gateway API via Keycloak
