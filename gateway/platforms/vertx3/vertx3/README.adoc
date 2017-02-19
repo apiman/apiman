@@ -194,6 +194,90 @@ Force the gateway to report the given gateway endpoint when it is queried by the
 
 When reporting the gateway endpoint (as above), prefer to report the secure (HTTPS) URI rather than an insecure one (HTTP).
 
+== Standalone Gateway
+
+The Vert.x gateway has an immutable registry which loads its configuration from a local file or remote HTTP(S) server.
+
+This is ideal for those who only need apiman's gateway capabilities and don't need the UI aspects.
+
+=== URI Loading Registry
+
+The URI Loading Registry registry can be selected using the following `class` reference in the `registry` section of the config:
+`io.apiman.gateway.engine.vertx.polling.URILoadingRegistry`
+
+==== Data
+
+https://gist.githubusercontent.com/msavy/cb245f4ed5228e8aa368a03b035f4b9b/raw/25dcc614dba43821b7623e16302b404c39bdeeca/apiman-gateway-api.json[An example data file] that the registry will load. This is immutable, and hence the gateway must be restarted if you want it to be refreshed.
+
+==== Configuration
+
+Provide the path to the configuration via `configUri`
+
+```
+{
+    "registry": {
+        "class": "io.apiman.gateway.engine.vertx.polling.URILoadingRegistry", // <1>
+        "config": {
+            "configUri": "file:///tmp/apiman-gateway.json" // <2>
+        }
+    }
+```
+<1> Reference to URI Loading Registry.
+<2> URI to JSON configuration.
+
+===== File
+
+```
+"config": {
+    "configUri": "file:///Users/foo/bar.json"
+}
+```
+
+File is simply `file://` followed by the full path to the configuration.
+
+===== HTTP(S)
+
+```
+"config": {
+    "configUri": "https://example.org/apiman-gateway.json"
+}
+```
+
+HTTP(S) is simply the full URL to the resource.
+
+There are multiple authentication options available:
+
+====== BASIC
+
+```
+"config": {
+    "configUri": "https://example.org/apiman-gateway.json"
+    "auth": "BASIC", // <0>
+    "username": "admin", // <1>
+    "password": "${PASSWORD}" // <2>
+}
+```
+<0> Select auth type BASIC.
+<1> Example username as a literal string.
+<2> Password taken from system properties or environment.
+
+====== OAuth2
+
+OAuth2 is much more flexible, but somewhat more complex with various different configurations available....
+
+```
+"config": {
+    "configUri": "https://example.org/apiman-gateway.json"
+    "auth": "OAuth2Client", // <1>
+    "flowType": "password", // <2>
+    ""
+}
+```
+<1> Select auth type as OAuth2 Client.
+<2> OAuth2 flow type: PASSWORD, AUTH_CODE, CLIENT,
+<3> Password taken from system properties or environment.
+
 == TODO
 
 - Enable auth to the Gateway API via Keycloak
+- Strip this README - move and expand documentation to main apiman website (too much content). 
