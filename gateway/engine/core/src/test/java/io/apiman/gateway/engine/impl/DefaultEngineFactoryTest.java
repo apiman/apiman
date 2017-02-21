@@ -157,7 +157,7 @@ public class DefaultEngineFactoryTest {
                                     }
 
                                     @Override
-                                    public void abort() {
+                                    public void abort(Throwable t) {
                                     }
                                 };
 

@@ -94,7 +94,7 @@ public class InMemoryCacheStoreComponent implements ICacheStoreComponent {
         return new ISignalWriteStream() {
             private boolean finished = false;
             @Override
-            public void abort() {
+            public void abort(Throwable t) {
                 finished = true;
             }
             @Override
@@ -226,7 +226,7 @@ public class InMemoryCacheStoreComponent implements ICacheStoreComponent {
                     return finished;
                 }
                 @Override
-                public void abort() {
+                public void abort(Throwable t) {
                     finished = true;
                 }
                 @Override

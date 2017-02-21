@@ -223,7 +223,7 @@ class HttpConnector implements IApiConnectionResponse, IApiConnection {
     }
 
     @Override
-    public void abort() {
+    public void abort(Throwable t) {
         bodyHandler(null);
 
         if(clientRequest != null) {
