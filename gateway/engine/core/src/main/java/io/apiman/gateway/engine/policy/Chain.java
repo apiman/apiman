@@ -226,7 +226,7 @@ public abstract class Chain<H> extends AbstractStream<H> implements IAbortable, 
      */
     @Override
     public void doFailure(PolicyFailure failure) {
-        abort();
+        abort(null);
         policyFailureHandler.handle(failure);
     }
 
@@ -245,7 +245,7 @@ public abstract class Chain<H> extends AbstractStream<H> implements IAbortable, 
      */
     @Override
     public void throwError(Throwable error) {
-        abort();
+        abort(error);
         policyErrorHandler.handle(error);
     }
 
@@ -253,7 +253,7 @@ public abstract class Chain<H> extends AbstractStream<H> implements IAbortable, 
      * Send abort signal to all policies.
      */
     @Override
-    public void abort() {
+    public void abort(Throwable t) {
 //        for (IPolicy policy : policies) {
 //            policy.abort();
 //        }

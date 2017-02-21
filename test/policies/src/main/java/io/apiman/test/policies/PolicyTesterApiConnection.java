@@ -110,7 +110,7 @@ public class PolicyTesterApiConnection implements IApiConnection {
      * @see io.apiman.gateway.engine.io.IAbortable#abort()
      */
     @Override
-    public void abort() {
+    public void abort(Throwable t) {
         finished = true;
     }
 

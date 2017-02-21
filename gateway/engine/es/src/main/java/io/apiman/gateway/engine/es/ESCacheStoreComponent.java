@@ -96,7 +96,7 @@ public class ESCacheStoreComponent extends AbstractESComponent implements ICache
             boolean finished = false;
             boolean aborted = false;
             @Override
-            public void abort() {
+            public void abort(Throwable t) {
                 finished = true;
                 aborted = false;
             }
@@ -200,7 +200,7 @@ public class ESCacheStoreComponent extends AbstractESComponent implements ICache
                         return finished;
                     }
                     @Override
-                    public void abort() {
+                    public void abort(Throwable t) {
                         finished = true;
                         aborted = true;
                     }

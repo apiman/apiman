@@ -143,7 +143,7 @@ public abstract class GatewayServlet extends HttpServlet {
                             // this would mean we couldn't get the output stream from the response, so we
                             // need to abort the engine result (which will let the back-end connection
                             // close down).
-                            engineResult.abort();
+                            engineResult.abort(e);
                             latch.countDown();
                             throw new RuntimeException(e);
                         }
@@ -170,8 +170,7 @@ public abstract class GatewayServlet extends HttpServlet {
                     }
                     connectorStream.end();
                 } catch (Throwable e) {
-                    connectorStream.abort();
-                    throw new RuntimeException(e);
+                    connectorStream.abort(e);
                 }
             }
         });

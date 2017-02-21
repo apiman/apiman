@@ -116,8 +116,8 @@ public class EngineResultImpl extends AbstractStream<ApiResponse> implements IEn
      * @see io.apiman.gateway.engine.io.IAbortable#abort()
      */
     @Override
-    public void abort() {
-        connectorResponseStream.abort();
+    public void abort(Throwable t) {
+        connectorResponseStream.abort(t);
     }
 
     /**

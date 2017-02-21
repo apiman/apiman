@@ -301,7 +301,7 @@ public class HttpApiConnection implements IApiConnection, IApiConnectionResponse
      * @see io.apiman.gateway.engine.io.IAbortable#abort()
      */
     @Override
-    public void abort() {
+    public void abort(Throwable t) {
         try {
             if (!connected) {
                 throw new IOException("Not connected."); //$NON-NLS-1$
@@ -398,7 +398,7 @@ public class HttpApiConnection implements IApiConnection, IApiConnectionResponse
             // the originating client - and we're in the process of sending the body data. So
             // I guess the only thing to do is abort() the connection and cross our fingers.
             if (connected) {
-                abort();
+                abort(e);
             }
             throw new RuntimeException(e);
         }

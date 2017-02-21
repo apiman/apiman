@@ -100,11 +100,11 @@ public class CacheConnectorInterceptor implements IConnectorInterceptor, IApiCon
      * @see io.apiman.gateway.engine.io.IAbortable#abort()
      */
     @Override
-    public void abort() {
+    public void abort(Throwable t) {
         if (!finished) {
             finished = true;
             connected = false;
-            cacheEntry.abort();
+            cacheEntry.abort(t);
         }
     }
 

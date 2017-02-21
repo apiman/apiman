@@ -301,7 +301,7 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
                                     connectorStream.end();
                                 }
                             } catch (Exception e) {
-                                connectorStream.abort();
+                                connectorStream.abort(e);
                                 throw new RuntimeException(e);
                             }
                         }
@@ -427,9 +427,9 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
             private boolean done = false;
 
             @Override
-            public void abort() {
+            public void abort(Throwable t) {
                 done = true;
-                payloadResultHandler.handle(AsyncResultImpl.create(new Exception("Inbound request stream aborted."))); //$NON-NLS-1$
+                payloadResultHandler.handle(AsyncResultImpl.create(new RuntimeException("Inbound request stream aborted.", t))); //$NON-NLS-1$
             }
 
             @Override
@@ -727,14 +727,14 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
              * @see io.apiman.gateway.engine.io.IAbortable#abort()
              */
             @Override
-            public void abort() {
+            public void abort(Throwable t) {
                 // If this is called, it means that something went wrong on the inbound
                 // side of things - so we need to make sure we abort and cleanup the
                 // api connector resources.  We'll also call handle() on the result
                 // handler so that the caller knows something went wrong.
                 streamFinished = true;
-                apiConnection.abort();
-                resultHandler.handle(AsyncResultImpl.<IEngineResult>create(new RequestAbortedException()));
+                apiConnection.abort(t);
+                resultHandler.handle(AsyncResultImpl.<IEngineResult>create(new RequestAbortedException(t)));
             }
 
 
