@@ -18,6 +18,7 @@ package io.apiman.gateway.engine.impl;
 import io.apiman.common.logging.IDelegateFactory;
 import io.apiman.common.util.crypt.IDataEncrypter;
 import io.apiman.gateway.engine.EngineConfigTuple;
+import io.apiman.gateway.engine.IApiRequestPathParser;
 import io.apiman.gateway.engine.IComponentRegistry;
 import io.apiman.gateway.engine.IConnectorFactory;
 import io.apiman.gateway.engine.IEngineConfig;
@@ -152,6 +153,14 @@ public class ConfigDrivenEngineFactory extends AbstractEngineFactory {
         return create(c, config);
     }
 
+
+    @Override
+    protected IApiRequestPathParser createRequestPathParser(IPluginRegistry pluginRegistry) {
+        Class<? extends IApiRequestPathParser> c = engineConfig.getApiRequestPathParserClass(pluginRegistry);
+        Map<String, String> config = engineConfig.getApiRequestPathParserConfig();
+        return create(c, config);
+    }
+
     /**
      * Creates a new instance of the given type, passing the given config
      * map if possible (if the class has a Map constructor).
@@ -184,4 +193,5 @@ public class ConfigDrivenEngineFactory extends AbstractEngineFactory {
             throw new RuntimeException(e);
         }
     }
+
 }

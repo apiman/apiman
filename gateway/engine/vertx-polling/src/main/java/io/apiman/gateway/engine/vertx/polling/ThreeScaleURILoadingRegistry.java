@@ -22,6 +22,7 @@ import io.apiman.gateway.engine.async.IAsyncHandler;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.Api;
 import io.apiman.gateway.engine.beans.Client;
+import io.apiman.gateway.engine.beans.Policy;
 import io.apiman.gateway.engine.impl.InMemoryRegistry;
 import io.apiman.gateway.engine.vertx.polling.fetchers.AccessTokenResourceFetcher;
 import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.Content;
@@ -36,8 +37,6 @@ import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.impl.Arguments;
 import io.vertx.core.json.DecodeException;
-import io.vertx.core.json.JsonArray;
-import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 
@@ -55,8 +54,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
-
 /**
 * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
 */
@@ -67,6 +64,12 @@ public class ThreeScaleURILoadingRegistry extends InMemoryRegistry implements As
     private URI apiUri;
     private Vertx vertx;
     private Map<String, String> options;
+    private static final Policy THREESCALE_PLUGIN_POLICY = new Policy();
+
+    static {
+        THREESCALE_PLUGIN_POLICY.setPolicyImpl("plugin:io.apiman.plugins:apiman-plugins-3scale-auth:1.2.8-SNAPSHOT:war/io.apiman.plugins.auth3scale.Auth3Scale");
+        THREESCALE_PLUGIN_POLICY.setPolicyJsonConfig("{}");
+    }
 
     private String requireOpt(String key, String errorMsg) {
         Arguments.require(options.containsKey(key), errorMsg);
@@ -179,6 +182,7 @@ public class ThreeScaleURILoadingRegistry extends InMemoryRegistry implements As
                         .map(service -> service.getService().getId())
                         .collect(Collectors.toList());
                 // Get all configs.
+                @SuppressWarnings("rawtypes")
                 List<Future> futureList = sids.stream()
                     .map(this::getConfig)
                     .collect(Collectors.toList());
@@ -199,6 +203,7 @@ public class ThreeScaleURILoadingRegistry extends InMemoryRegistry implements As
         // ?access_token=914e2f81d22b0c1baf62e75250d3daab9bec675318ecb555b8e39f91877ed5a8
         private List<ProxyConfigRoot> configs = new ArrayList<>();
 
+        @SuppressWarnings("rawtypes")
         private Future getConfig(long id) {
             Future future = Future.future();
             String path = String.format("/admin/api/services/%d/proxy/configs/production/latest.json", id);
@@ -241,10 +246,6 @@ public class ThreeScaleURILoadingRegistry extends InMemoryRegistry implements As
                 return;
             }
             try {
-                //JsonObject json = new JsonObject(rawData.toString("UTF-8").trim());
-                //log.trace("Processing JSON: {0}", json);
-                //clients = requireJsonArray("clients", json, Client.class);
-                //apis = requireJsonArray("apis", json, Api.class);
 
                 // Naive version initially.
                 for (ProxyConfigRoot root : configs) {
@@ -252,7 +253,30 @@ public class ThreeScaleURILoadingRegistry extends InMemoryRegistry implements As
                     Content config = root.getProxyConfig().getContent();
                     Api api = new Api();
                     api.setEndpoint(config.getProxy().getEndpoint());
+                    setDefaultPolicy(api);
                     api.setPublicAPI(true);
+
+
+                    // API ID = service id (i think)
+                    api.setOrganizationId("DEFAULT");
+                    //api.setApiId(service.getString("system_name"));
+                    //api.setApiNumericId(service.getLong("id"));
+                    api.setEndpoint(config.getProxy().getApiBackend());
+                    api.setEndpointContentType("text/json"); // don't think there is an equivalent of this in 3scale
+                    api.setEndpointType("rest"); //don't think there is an equivalent of this in 3scale
+                    api.setParsePayload(false); // can let user override this?
+                    api.setPublicAPI(true); // is there an equivalent of this?
+                    api.setVersion("DEFAULT"); // don't think this is relevant anymore
+                    ////
+                    //api.getIdentifiers().put(idElement.getCanonicalName(), idElement);
+                    //api.setUserKeyField(keyField);
+                    //api.setUserKeyLocation(keyLocation);
+
+                  //  api.setAuthType(AuthTypeEnum.API_KEY);
+                  //  api.setProviderKey(backendResponse.getString("provider_key")); // to connect to 3scale manager
+                  //  api.setManagerEndpoint(service.getJsonObject("backend").getString("endpoint")); // where does the 3scale manager live
+
+
 
                     log.info("Processing - {0}: ", config);
                     log.info("Creating API - {0}: ", api);
@@ -271,16 +295,8 @@ public class ThreeScaleURILoadingRegistry extends InMemoryRegistry implements As
             }
         }
 
-        @SuppressWarnings("unchecked")
-        private <T, K> List<T> requireJsonArray(String keyName, JsonObject json, Class<K> klazz) {
-            // Contains key.
-            Arguments.require(json.containsKey(keyName),
-                    String.format("Must provide array of %s objects for key '%s'", StringUtils.capitalize(keyName), keyName));
-            // Is of type array.
-            Arguments.require(json.getValue(keyName) instanceof JsonArray,
-                    String.format("'%s' must be a Json array", keyName));
-            // Transform into List<T>.
-            return Json.decodeValue(json.getJsonArray(keyName).encode(), List.class, klazz);
+        private void setDefaultPolicy(Api api) {
+            api.getApiPolicies().add(THREESCALE_PLUGIN_POLICY);
         }
 
         public synchronized void subscribe(ThreeScaleURILoadingRegistry registry, IAsyncResultHandler<Void> failureHandler) {

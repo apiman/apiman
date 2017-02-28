@@ -16,6 +16,7 @@
 package io.apiman.gateway.platforms.vertx3.verticles;
 
 import io.apiman.gateway.engine.IEngine;
+import io.apiman.gateway.engine.impl.EngineImpl;
 import io.apiman.gateway.platforms.vertx3.engine.VertxConfigDrivenEngineFactory;
 import io.vertx.core.Future;
 
@@ -26,20 +27,20 @@ import io.vertx.core.Future;
  */
 public abstract class ApimanVerticleWithEngine extends ApimanVerticleBase {
 
-    protected IEngine engine;
+    protected EngineImpl engine; //FIXME
 
     @Override
     public void start(Future<Void> startFuture) {
         super.start(startFuture);
-        engine = new VertxConfigDrivenEngineFactory(vertx, getEngineConfig())
+        engine = (EngineImpl) new VertxConfigDrivenEngineFactory(vertx, getEngineConfig())
                 .setHandler(result -> {
                     if (result.isSuccess()) {
                         startFuture.complete();
                     } else {
                         startFuture.fail(result.getError());
                     }
-                })
-                .createEngine();
+                }).createEngine();
+
         engine.getRegistry(); // this should help avoid slow first-time loads.
     }
 

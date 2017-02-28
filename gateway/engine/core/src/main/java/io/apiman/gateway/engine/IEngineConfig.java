@@ -68,6 +68,10 @@ public interface IEngineConfig {
      */
     public Class<? extends IConnectorFactory> getConnectorFactoryClass(IPluginRegistry pluginRegistry);
 
+    public Class<? extends IApiRequestPathParser> getApiRequestPathParserClass(IPluginRegistry pluginRegistry);
+
+    public Map<String, String> getApiRequestPathParserConfig();
+
     /**
      * @return all properties to be passed to the factory
      */

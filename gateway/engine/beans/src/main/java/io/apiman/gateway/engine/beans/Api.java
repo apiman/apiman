@@ -46,6 +46,8 @@ public class Api implements Serializable {
     @JsonIgnore
     private transient long maxPayloadBufferSize;
     private List<Policy> apiPolicies = new ArrayList<>();
+    @JsonIgnore
+    private transient Map<String, Object> cache = new HashMap<>();
 
     /**
      * Constructor.
@@ -278,6 +280,20 @@ public class Api implements Serializable {
      */
     public void setMaxPayloadBufferSize(long maxPayloadBufferSize) {
         this.maxPayloadBufferSize = maxPayloadBufferSize;
+    }
+
+    /**
+     * @return the cache
+     */
+    public Map<String, Object> getCache() {
+        return cache;
+    }
+
+    /**
+     * @param cache the cache to set
+     */
+    public void setCache(Map<String, Object> cache) {
+        this.cache = cache;
     }
 
 }

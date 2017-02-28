@@ -17,6 +17,7 @@ package io.apiman.gateway.platforms.vertx3.http;
 
 import io.apiman.common.util.ApimanPathUtils;
 import io.apiman.common.util.ApimanPathUtils.ApiRequestPathInfo;
+import io.apiman.gateway.engine.IApiRequestPathParser;
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.engine.beans.util.CaseInsensitiveStringMultiMap;
@@ -40,13 +41,19 @@ import java.util.Set;
 @SuppressWarnings("nls")
 public class HttpApiFactory {
 
-    final static Set<String> IGNORESET = new HashSet<>();
+    private final static Set<String> IGNORESET = new HashSet<>();
     static {
         IGNORESET.add(ApimanPathUtils.X_API_VERSION_HEADER);
         IGNORESET.add("Host");
     }
 
-    public static ApiResponse buildResponse(HttpClientResponse response, Set<String> suppressHeaders) {
+    private final IApiRequestPathParser requestPathParser;
+
+    public HttpApiFactory(IApiRequestPathParser requestPathParser) {
+        this.requestPathParser = requestPathParser;
+    }
+
+    public ApiResponse buildResponse(HttpClientResponse response, Set<String> suppressHeaders) {
         ApiResponse apimanResponse = new ApiResponse();
         apimanResponse.setCode(response.statusCode());
         apimanResponse.setMessage(response.statusMessage());
@@ -54,7 +61,7 @@ public class HttpApiFactory {
         return apimanResponse;
     }
 
-    public static void buildResponse(HttpServerResponse httpServerResponse, ApiResponse amanResponse, HttpVersion httpVersion) {
+    public void buildResponse(HttpServerResponse httpServerResponse, ApiResponse amanResponse, HttpVersion httpVersion) {
         amanResponse.getHeaders().forEach(e -> {
             if (httpVersion == HttpVersion.HTTP_1_0 || httpVersion == HttpVersion.HTTP_1_1 || !e.getKey().equals("Connection")) {
                 httpServerResponse.headers().add(e.getKey(), e.getValue());
@@ -64,7 +71,7 @@ public class HttpApiFactory {
         httpServerResponse.setStatusMessage(amanResponse.getMessage());
     }
 
-    public static ApiRequest buildRequest(HttpServerRequest req, boolean isTransportSecure) {
+    public ApiRequest buildRequest(HttpServerRequest req, boolean isTransportSecure) {
         ApiRequest apimanRequest = new ApiRequest();
         apimanRequest.setApiKey(parseApiKey(req));
         apimanRequest.setRemoteAddr(req.remoteAddress().host());
@@ -76,24 +83,16 @@ public class HttpApiFactory {
         return apimanRequest;
     }
 
-    private static void mungePath(HttpServerRequest request, ApiRequest apimanRequest) {
-        ApiRequestPathInfo parsedPath = ApimanPathUtils.parseApiRequestPath(
-                request.getHeader(ApimanPathUtils.X_API_VERSION_HEADER),
-                request.getHeader(ApimanPathUtils.ACCEPT_HEADER),
-                request.path());
-
+    private void mungePath(HttpServerRequest request, ApiRequest apimanRequest) {
+        ApiRequestPathInfo parsedPath = requestPathParser.parseEndpoint(request.path(), apimanRequest.getHeaders());
         apimanRequest.setApiOrgId(parsedPath.orgId);
         apimanRequest.setApiId(parsedPath.apiId);
         apimanRequest.setApiVersion(parsedPath.apiVersion);
         apimanRequest.setUrl(request.absoluteURI());
         apimanRequest.setDestination(parsedPath.resource);
-
-        if (apimanRequest.getApiOrgId() == null) {
-            throw new IllegalArgumentException("Invalid endpoint provided: " + request.path());
-        }
     }
 
-    private static void multimapToMap(CaseInsensitiveStringMultiMap map, MultiMap multimap, Set<String> suppressHeaders) {
+    private void multimapToMap(CaseInsensitiveStringMultiMap map, MultiMap multimap, Set<String> suppressHeaders) {
         for (Map.Entry<String, String> entry : multimap) {
             if(!suppressHeaders.contains(entry.getKey())) {
                 String key = entry.getKey();

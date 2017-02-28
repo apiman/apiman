@@ -31,6 +31,7 @@ import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.core.json.Json;
 import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 
 import java.util.Map;
 
@@ -41,18 +42,19 @@ public class HttpPolicyAdapter {
     private final HttpServerRequest vertxRequest;
     private final HttpServerResponse vertxResponse;
     private final IEngine engine;
-    private final Logger log;
+    private final Logger log = LoggerFactory.getLogger(HttpPolicyAdapter.class);
     private final boolean isTls;
+    private final HttpApiFactory httpApiFactory;
 
     public HttpPolicyAdapter(HttpServerRequest req,
                       IEngine engine,
-                      Logger log,
+                      HttpApiFactory httpApiFactory,
                       boolean isTls) {
         this.vertxRequest = req;
         this.engine = engine;
-        this.log = log;
         this.isTls = isTls;
         this.vertxResponse = req.response();
+        this.httpApiFactory = httpApiFactory;
     }
 
     public void execute() {
@@ -60,7 +62,7 @@ public class HttpPolicyAdapter {
         vertxRequest.pause();
 
         // Transform Vert.x request object into apiman's intermediate representation.
-        ApiRequest request = HttpApiFactory.buildRequest(vertxRequest, isTls);
+        ApiRequest request = httpApiFactory.buildRequest(vertxRequest, isTls);
 
         // Exception
         vertxRequest.exceptionHandler(ex -> {
@@ -105,7 +107,7 @@ public class HttpPolicyAdapter {
         // Everything worked
         if (engineResult.isResponse()) {
             ApiResponse response = engineResult.getApiResponse();
-            HttpApiFactory.buildResponse(vertxResponse, response, vertxRequest.version());
+            httpApiFactory.buildResponse(vertxResponse, response, vertxRequest.version());
 
             if (!response.getHeaders().containsKey("Content-Length")) { //$NON-NLS-1$
                 vertxResponse.setChunked(true);
