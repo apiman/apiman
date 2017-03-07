@@ -29,10 +29,6 @@
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-gateway-platforms-vertx3-common</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-lang3</artifactId>
-    </dependency>
     <!-- Third Party Dependencies -->
     <dependency>
       <groupId>io.vertx</groupId>
@@ -41,6 +37,20 @@
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-auth-oauth2</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.fulmicoton</groupId>
+      <artifactId>multiregexp</artifactId>
+      <version>0.5.1</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
 </project>

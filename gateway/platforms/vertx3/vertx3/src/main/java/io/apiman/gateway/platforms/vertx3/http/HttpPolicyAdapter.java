@@ -44,25 +44,32 @@ public class HttpPolicyAdapter {
     private final IEngine engine;
     private final Logger log = LoggerFactory.getLogger(HttpPolicyAdapter.class);
     private final boolean isTls;
-    private final HttpApiFactory httpApiFactory;
 
     public HttpPolicyAdapter(HttpServerRequest req,
                       IEngine engine,
-                      HttpApiFactory httpApiFactory,
                       boolean isTls) {
         this.vertxRequest = req;
         this.engine = engine;
         this.isTls = isTls;
         this.vertxResponse = req.response();
-        this.httpApiFactory = httpApiFactory;
     }
 
     public void execute() {
+        try {
+            _execute();
+        } catch (Exception ex) {
+            handleError(vertxResponse, ex);
+        }
+    }
+
+    public void _execute() {
+        log.trace("Received request {0}", vertxRequest.absoluteURI()); //$NON-NLS-1$
+
         // First, pause the request to avoid losing any data
         vertxRequest.pause();
 
         // Transform Vert.x request object into apiman's intermediate representation.
-        ApiRequest request = httpApiFactory.buildRequest(vertxRequest, isTls);
+        ApiRequest request = HttpApiFactory.buildRequest(vertxRequest, isTls);
 
         // Exception
         vertxRequest.exceptionHandler(ex -> {
@@ -107,7 +114,7 @@ public class HttpPolicyAdapter {
         // Everything worked
         if (engineResult.isResponse()) {
             ApiResponse response = engineResult.getApiResponse();
-            httpApiFactory.buildResponse(vertxResponse, response, vertxRequest.version());
+            HttpApiFactory.buildResponse(vertxResponse, response, vertxRequest.version());
 
             if (!response.getHeaders().containsKey("Content-Length")) { //$NON-NLS-1$
                 vertxResponse.setChunked(true);

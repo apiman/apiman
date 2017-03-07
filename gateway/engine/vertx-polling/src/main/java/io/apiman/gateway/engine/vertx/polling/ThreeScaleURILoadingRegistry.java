@@ -46,9 +46,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Deque;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -64,12 +62,6 @@ public class ThreeScaleURILoadingRegistry extends InMemoryRegistry implements As
     private URI apiUri;
     private Vertx vertx;
     private Map<String, String> options;
-    private static final Policy THREESCALE_PLUGIN_POLICY = new Policy();
-
-    static {
-        THREESCALE_PLUGIN_POLICY.setPolicyImpl("plugin:io.apiman.plugins:apiman-plugins-3scale-auth:1.2.8-SNAPSHOT:war/io.apiman.plugins.auth3scale.Auth3Scale");
-        THREESCALE_PLUGIN_POLICY.setPolicyJsonConfig("{}");
-    }
 
     private String requireOpt(String key, String errorMsg) {
         Arguments.require(options.containsKey(key), errorMsg);
@@ -81,6 +73,10 @@ public class ThreeScaleURILoadingRegistry extends InMemoryRegistry implements As
         this.vertx = vertx;
         this.options = options;
         apiUri = URI.create(requireOpt("apiEndpoint", "apiEndpoint is required in configuration"));
+    }
+
+    public ThreeScaleURILoadingRegistry(Map<String, String> options) {
+        this(Vertx.vertx(), null, options);
     }
 
     @Override
@@ -145,8 +141,8 @@ public class ThreeScaleURILoadingRegistry extends InMemoryRegistry implements As
         private Deque<ThreeScaleURILoadingRegistry> awaiting = new ArrayDeque<>();
         private List<ThreeScaleURILoadingRegistry> allRegistries = new ArrayList<>(); // TODO for testing, perhaps can get rid of?
         private boolean dataProcessed = false;
-        private List<Client> clients = Collections.emptyList();
-        private List<Api> apis = Collections.emptyList();
+        private List<Client> clients = new ArrayList<>();
+        private List<Api> apis = new ArrayList<>();
         private Logger log = LoggerFactory.getLogger(OneShotURILoader.class);
         private IAsyncHandler<Void> reloadHandler;
 
@@ -253,40 +249,23 @@ public class ThreeScaleURILoadingRegistry extends InMemoryRegistry implements As
                     Content config = root.getProxyConfig().getContent();
                     Api api = new Api();
                     api.setEndpoint(config.getProxy().getEndpoint());
-                    setDefaultPolicy(api);
+                    set3ScalePolicy(api, root);
                     api.setPublicAPI(true);
 
-
                     // API ID = service id (i think)
+                    api.setApiId(config.getSystemName());
                     api.setOrganizationId("DEFAULT");
-                    //api.setApiId(service.getString("system_name"));
-                    //api.setApiNumericId(service.getLong("id"));
                     api.setEndpoint(config.getProxy().getApiBackend());
                     api.setEndpointContentType("text/json"); // don't think there is an equivalent of this in 3scale
                     api.setEndpointType("rest"); //don't think there is an equivalent of this in 3scale
                     api.setParsePayload(false); // can let user override this?
                     api.setPublicAPI(true); // is there an equivalent of this?
                     api.setVersion("DEFAULT"); // don't think this is relevant anymore
-                    ////
-                    //api.getIdentifiers().put(idElement.getCanonicalName(), idElement);
-                    //api.setUserKeyField(keyField);
-                    //api.setUserKeyLocation(keyLocation);
-
-                  //  api.setAuthType(AuthTypeEnum.API_KEY);
-                  //  api.setProviderKey(backendResponse.getString("provider_key")); // to connect to 3scale manager
-                  //  api.setManagerEndpoint(service.getJsonObject("backend").getString("endpoint")); // where does the 3scale manager live
-
-
 
                     log.info("Processing - {0}: ", config);
                     log.info("Creating API - {0}: ", api);
-
-//                    api.setApiId(config.getId());
-                    //api.setApiId(config);
+                    apis.add(api);
                 }
-
-
-
 
                 dataProcessed = true;
                 checkQueue();
@@ -295,8 +274,12 @@ public class ThreeScaleURILoadingRegistry extends InMemoryRegistry implements As
             }
         }
 
-        private void setDefaultPolicy(Api api) {
-            api.getApiPolicies().add(THREESCALE_PLUGIN_POLICY);
+        private void set3ScalePolicy(Api api, ProxyConfigRoot config) { // FIXME optimise
+            //JsonObject json = new JsonObject().put("proxyConfig", new JsonObject(Json.encode(root.getProxyConfig())));
+            Policy pol = new Policy();
+            pol.setPolicyImpl(String.format("plugin:io.apiman.plugins:apiman-plugins-3scale-auth:%s:war/io.apiman.plugins.auth3scale.Auth3Scale", engine.)); // TODO get version? Hmm! Env?
+            pol.setPolicyJsonConfig(Json.encode(config));
+            api.getApiPolicies().add(pol);
         }
 
         public synchronized void subscribe(ThreeScaleURILoadingRegistry registry, IAsyncResultHandler<Void> failureHandler) {
@@ -346,18 +329,6 @@ public class ThreeScaleURILoadingRegistry extends InMemoryRegistry implements As
                 vertx.runOnContext(run -> failureHandler.handle(failure));
             });
         }
-    }
-
-    public static void main(String[] args) {
-        Map<String, String> opts = new HashMap<>();
-        opts.put("apiEndpoint", "https://ewittman-admin.3scale.net/");
-        opts.put("accessToken", "914e2f81d22b0c1baf62e77250d3daab9bec675318ebb555b8e39f91877ed5a8");
-        ThreeScaleURILoadingRegistry reg = new ThreeScaleURILoadingRegistry(Vertx.vertx(), null, opts);
-        reg.initialize(res -> {
-            if (res.isError()) {
-                throw new RuntimeException(res.getError());
-            }
-        });
     }
 
 }

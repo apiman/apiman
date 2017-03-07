@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 
-package io.apiman.gateway.platforms.vertx3.common.config;
+package io.apiman.gateway.engine.impl;
 
 import io.apiman.common.util.ApimanPathUtils;
 import io.apiman.common.util.ApimanPathUtils.ApiRequestPathInfo;
 import io.apiman.gateway.engine.IApiRequestPathParser;
 import io.apiman.gateway.engine.beans.util.HeaderMap;
-import io.vertx.core.Vertx;
 
 import java.util.Map;
 
-public class DefaultApiRequestFactoryImpl implements IApiRequestPathParser {
+public class DefaultRequestPathParser implements IApiRequestPathParser {
 
-    public DefaultApiRequestFactoryImpl(Vertx vertx, Map<String, String> config) {
+    public DefaultRequestPathParser(Map<String, String> config) {
     }
 
     @Override

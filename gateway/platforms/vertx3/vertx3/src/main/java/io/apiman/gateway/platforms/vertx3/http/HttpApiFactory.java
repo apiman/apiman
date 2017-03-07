@@ -21,6 +21,7 @@ import io.apiman.gateway.engine.IApiRequestPathParser;
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.engine.beans.util.CaseInsensitiveStringMultiMap;
+import io.apiman.gateway.engine.beans.util.HeaderMap;
 import io.vertx.core.MultiMap;
 import io.vertx.core.http.HttpClientResponse;
 import io.vertx.core.http.HttpServerRequest;
@@ -47,13 +48,13 @@ public class HttpApiFactory {
         IGNORESET.add("Host");
     }
 
-    private final IApiRequestPathParser requestPathParser;
+    private static IApiRequestPathParser requestPathParser;
 
-    public HttpApiFactory(IApiRequestPathParser requestPathParser) {
-        this.requestPathParser = requestPathParser;
+    public static void init(IApiRequestPathParser requestPathParser) {
+        HttpApiFactory.requestPathParser = requestPathParser;
     }
 
-    public ApiResponse buildResponse(HttpClientResponse response, Set<String> suppressHeaders) {
+    public static ApiResponse buildResponse(HttpClientResponse response, Set<String> suppressHeaders) {
         ApiResponse apimanResponse = new ApiResponse();
         apimanResponse.setCode(response.statusCode());
         apimanResponse.setMessage(response.statusMessage());
@@ -61,7 +62,7 @@ public class HttpApiFactory {
         return apimanResponse;
     }
 
-    public void buildResponse(HttpServerResponse httpServerResponse, ApiResponse amanResponse, HttpVersion httpVersion) {
+    public static void buildResponse(HttpServerResponse httpServerResponse, ApiResponse amanResponse, HttpVersion httpVersion) {
         amanResponse.getHeaders().forEach(e -> {
             if (httpVersion == HttpVersion.HTTP_1_0 || httpVersion == HttpVersion.HTTP_1_1 || !e.getKey().equals("Connection")) {
                 httpServerResponse.headers().add(e.getKey(), e.getValue());
@@ -71,7 +72,7 @@ public class HttpApiFactory {
         httpServerResponse.setStatusMessage(amanResponse.getMessage());
     }
 
-    public ApiRequest buildRequest(HttpServerRequest req, boolean isTransportSecure) {
+    public static ApiRequest buildRequest(HttpServerRequest req, boolean isTransportSecure) {
         ApiRequest apimanRequest = new ApiRequest();
         apimanRequest.setApiKey(parseApiKey(req));
         apimanRequest.setRemoteAddr(req.remoteAddress().host());
@@ -79,12 +80,14 @@ public class HttpApiFactory {
         apimanRequest.setTransportSecure(isTransportSecure);
         multimapToMap(apimanRequest.getHeaders(), req.headers(), IGNORESET);
         multimapToMap(apimanRequest.getQueryParams(), req.params(), Collections.<String>emptySet());
-        mungePath(req, apimanRequest);
+        parsePath(req, apimanRequest);
         return apimanRequest;
     }
 
-    private void mungePath(HttpServerRequest request, ApiRequest apimanRequest) {
-        ApiRequestPathInfo parsedPath = requestPathParser.parseEndpoint(request.path(), apimanRequest.getHeaders());
+    private static void parsePath(HttpServerRequest request, ApiRequest apimanRequest) {
+        // NB: The apiman version of the headers has already been parsed, so the headers have already been filtered/modified.
+        // Therefore we wrap the original inbound headers (just get) to efficiently access the necessary data.
+        ApiRequestPathInfo parsedPath = requestPathParser.parseEndpoint(request.path(), wrapMultiMap(request.headers()));
         apimanRequest.setApiOrgId(parsedPath.orgId);
         apimanRequest.setApiId(parsedPath.apiId);
         apimanRequest.setApiVersion(parsedPath.apiVersion);
@@ -92,7 +95,19 @@ public class HttpApiFactory {
         apimanRequest.setDestination(parsedPath.resource);
     }
 
-    private void multimapToMap(CaseInsensitiveStringMultiMap map, MultiMap multimap, Set<String> suppressHeaders) {
+    // TODO hacky...
+    private static HeaderMap wrapMultiMap(MultiMap headers) {
+        return new HeaderMap() {
+            private static final long serialVersionUID = -1406124274678587935L;
+
+            @Override()
+            public String get(String key) {
+                return headers.get(key);
+            }
+        };
+    }
+
+    private static void multimapToMap(CaseInsensitiveStringMultiMap map, MultiMap multimap, Set<String> suppressHeaders) {
         for (Map.Entry<String, String> entry : multimap) {
             if(!suppressHeaders.contains(entry.getKey())) {
                 String key = entry.getKey();

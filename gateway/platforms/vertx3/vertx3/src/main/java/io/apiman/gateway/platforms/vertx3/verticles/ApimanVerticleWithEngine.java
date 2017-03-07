@@ -16,7 +16,6 @@
 package io.apiman.gateway.platforms.vertx3.verticles;
 
 import io.apiman.gateway.engine.IEngine;
-import io.apiman.gateway.engine.impl.EngineImpl;
 import io.apiman.gateway.platforms.vertx3.engine.VertxConfigDrivenEngineFactory;
 import io.vertx.core.Future;
 
@@ -27,12 +26,12 @@ import io.vertx.core.Future;
  */
 public abstract class ApimanVerticleWithEngine extends ApimanVerticleBase {
 
-    protected EngineImpl engine; //FIXME
+    protected IEngine engine; //FIXME
 
     @Override
     public void start(Future<Void> startFuture) {
         super.start(startFuture);
-        engine = (EngineImpl) new VertxConfigDrivenEngineFactory(vertx, getEngineConfig())
+        engine = new VertxConfigDrivenEngineFactory(vertx, getEngineConfig())
                 .setHandler(result -> {
                     if (result.isSuccess()) {
                         startFuture.complete();

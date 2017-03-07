@@ -19,16 +19,15 @@ package io.apiman.gateway.platforms.vertx3.common.config;
 import io.apiman.common.util.ApimanPathUtils.ApiRequestPathInfo;
 import io.apiman.gateway.engine.IApiRequestPathParser;
 import io.apiman.gateway.engine.beans.util.HeaderMap;
-import io.vertx.core.Vertx;
 
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
 @SuppressWarnings("nls")
-public class TScaleRequestPathParser implements IApiRequestPathParser {
+public class TScaleRequestPathParser implements IApiRequestPathParser { // TODO move to common area so servlet can use
 
-    public TScaleRequestPathParser(Vertx vertx, Map<String, String> config) {
+    public TScaleRequestPathParser(Map<String, String> config) {
     }
 
     @Override
@@ -43,7 +42,11 @@ public class TScaleRequestPathParser implements IApiRequestPathParser {
         parsed.orgId="DEFAULT";
         parsed.apiVersion="DEFAULT";
         parsed.apiId=split[1];
-        parsed.resource=split[2];
+        if (split.length > 2) {
+            parsed.resource="/"+split[2];
+        } else {
+            parsed.resource="/";
+        }
         return parsed;
     }
 

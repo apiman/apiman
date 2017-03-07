@@ -26,6 +26,7 @@ import io.apiman.gateway.engine.IApiConnection;
 import io.apiman.gateway.engine.IApiConnectionResponse;
 import io.apiman.gateway.engine.IApiConnector;
 import io.apiman.gateway.engine.IApiRequestExecutor;
+import io.apiman.gateway.engine.IApiRequestPathParser;
 import io.apiman.gateway.engine.IComponentRegistry;
 import io.apiman.gateway.engine.IConnectorFactory;
 import io.apiman.gateway.engine.IEngine;
@@ -185,6 +186,11 @@ public class DefaultEngineFactoryTest {
             protected IDelegateFactory createLoggerFactory(IPluginRegistry pluginRegistry) {
                 // TODO Auto-generated method stub
                 return null;
+            }
+
+            @Override
+            protected IApiRequestPathParser createRequestPathParser(IPluginRegistry pluginRegistry) {
+                return new DefaultRequestPathParser(null);
             }
         };
 

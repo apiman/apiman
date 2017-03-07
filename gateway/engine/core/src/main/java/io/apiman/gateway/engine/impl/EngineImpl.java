@@ -78,7 +78,7 @@ public class EngineImpl implements IEngine {
         setPolicyFactory(policyFactory);
         setMetrics(metrics);
         setLogFactory(logFactory);
-        setRequestPathParser(pathParser);
+        setApiRequestPathParser(pathParser);
 
         policyFactory.setPluginRegistry(pluginRegistry);
         metrics.setComponentRegistry(componentRegistry);
@@ -86,12 +86,12 @@ public class EngineImpl implements IEngine {
         initialize(registry, pluginRegistry, componentRegistry, connectorFactory, policyFactory, metrics);
     }
 
-
-    public void setRequestPathParser(IApiRequestPathParser pathParser) {
+    public void setApiRequestPathParser(IApiRequestPathParser pathParser) {
         this.requestPathParser = pathParser;
     }
 
-    public IApiRequestPathParser getRequestPathParser() {
+    @Override
+    public IApiRequestPathParser getApiRequestPathParser() {
         return requestPathParser;
     }
 

@@ -945,9 +945,9 @@
         <version>${version.com.google.code.gson}</version>
       </dependency>
       <dependency>
-	<groupId>com.google.guava</groupId>
-	<artifactId>guava</artifactId>
-	<version>${version.com.google.guava}</version>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>${version.com.google.guava}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>

@@ -59,14 +59,15 @@ public class AccessTokenResourceFetcher {
       String path = apiUri.getPath() + "?access_token=" + accessToken;
       vertx.createHttpClient(new HttpClientOptions().setSsl(isHttps))
       .get(getPort(), apiUri.getHost(), path, clientResponse -> {
+          clientResponse.exceptionHandler(exceptionHandler);
+
           if (clientResponse.statusCode() / 100 == 2) {
               clientResponse.handler(data -> {
                   rawData.appendBuffer(data);
                   System.out.println("Got some data " + data);
               })
-              .endHandler(end -> resultHandler.handle(rawData))
-              .exceptionHandler(exceptionHandler);
-          } else if (clientResponse.statusCode() == 404) {
+              .endHandler(end -> resultHandler.handle(rawData));
+              } else if (clientResponse.statusCode() == 404) {
               // Is there any way to determine this in advance?
               resultHandler.handle(rawData); // Empty
           } else {
@@ -82,27 +83,6 @@ public class AccessTokenResourceFetcher {
       .end();
     }
 
-//    private Future<List<Long>> getServiceIds() {
-//        Future<List<Long>> future = Future.future();
-//
-//        String path = apiUri.getPath() + "?access_token=" + accessToken;
-//        httpClient.get(getPort(), apiUri.getHost(), path, clientResponse -> {
-//            if (clientResponse.statusCode() / 100 == 2) {
-//                clientResponse.handler(data -> {
-//                    rawData.appendBuffer(data);
-//                })
-//                //.endHandler(end -> resultHandler.handle(rawData))
-//                .exceptionHandler(exceptionHandler);
-//            } else {
-//                exceptionHandler.handle(new BadResponseCodeError("Unexpected response code when trying to retrieve config: " //$NON-NLS-1$
-//                        + clientResponse.statusCode()));
-//            }
-//        })
-//        .exceptionHandler(exceptionHandler);
-//
-//        return future;
-//    }
-
     public AccessTokenResourceFetcher exceptionHandler(Handler<Throwable> exceptionHandler) {
         this.exceptionHandler = exceptionHandler;
         return this;
@@ -112,22 +92,5 @@ public class AccessTokenResourceFetcher {
         Arguments.require(options.containsKey(key), errorMsg);
         return options.get(key);
     }
-
-//
-//    String path = apiUri.getPath() + "?access_token=" + accessToken;
-//    vertx.createHttpClient(new HttpClientOptions().setSsl(isHttps))
-//    .get(port, apiUri.getHost(), path, clientResponse -> {
-//        if (clientResponse.statusCode() / 100 == 2) {
-//            clientResponse.handler(data -> {
-//                rawData.appendBuffer(data);
-//            })
-//            .endHandler(end -> resultHandler.handle(rawData))
-//            .exceptionHandler(exceptionHandler);
-//        } else {
-//            exceptionHandler.handle(new BadResponseCodeError("Unexpected response code when trying to retrieve config: " //$NON-NLS-1$
-//                    + clientResponse.statusCode()));
-//        }
-//    })
-//    .exceptionHandler(exceptionHandler);
 
 }

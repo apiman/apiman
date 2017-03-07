@@ -74,23 +74,23 @@ public class Content implements Serializable
     @JsonProperty("name")
     private String name;
     @JsonProperty("oneline_description")
-    private Object onelineDescription;
+    private String onelineDescription;
     @JsonProperty("description")
-    private Object description;
+    private String description;
     @JsonProperty("txt_api")
-    private Object txtApi;
+    private String txtApi;
     @JsonProperty("txt_support")
-    private Object txtSupport;
+    private String txtSupport;
     @JsonProperty("txt_features")
-    private Object txtFeatures;
+    private String txtFeatures;
     @JsonProperty("created_at")
     private String createdAt;
     @JsonProperty("updated_at")
     private String updatedAt;
     @JsonProperty("logo_file_name")
-    private Object logoFileName;
+    private String logoFileName;
     @JsonProperty("logo_content_type")
-    private Object logoContentType;
+    private String logoContentType;
     @JsonProperty("logo_file_size")
     private Object logoFileSize;
     @JsonProperty("state")
@@ -106,11 +106,11 @@ public class Content implements Serializable
     @JsonProperty("display_provider_keys")
     private boolean displayProviderKeys;
     @JsonProperty("tech_support_email")
-    private Object techSupportEmail;
+    private String techSupportEmail;
     @JsonProperty("admin_support_email")
-    private Object adminSupportEmail;
+    private String adminSupportEmail;
     @JsonProperty("credit_card_support_email")
-    private Object creditCardSupportEmail;
+    private String creditCardSupportEmail;
     @JsonProperty("buyers_manage_apps")
     private boolean buyersManageApps;
     @JsonProperty("buyers_manage_keys")
@@ -130,7 +130,7 @@ public class Content implements Serializable
     @JsonProperty("buyer_can_see_log_requests")
     private boolean buyerCanSeeLogRequests;
     @JsonProperty("default_end_user_plan_id")
-    private Object defaultEndUserPlanId;
+    private String defaultEndUserPlanId;
     @JsonProperty("end_user_registration_required")
     private boolean endUserRegistrationRequired;
     @JsonProperty("tenant_id")
@@ -212,11 +212,11 @@ public class Content implements Serializable
     }
 
     @JsonProperty("oneline_description")
-    public void setOnelineDescription(Object onelineDescription) {
+    public void setOnelineDescription(String onelineDescription) {
         this.onelineDescription = onelineDescription;
     }
 
-    public Content withOnelineDescription(Object onelineDescription) {
+    public Content withOnelineDescription(String onelineDescription) {
         this.onelineDescription = onelineDescription;
         return this;
     }
@@ -227,11 +227,11 @@ public class Content implements Serializable
     }
 
     @JsonProperty("description")
-    public void setDescription(Object description) {
+    public void setDescription(String description) {
         this.description = description;
     }
 
-    public Content withDescription(Object description) {
+    public Content withDescription(String description) {
         this.description = description;
         return this;
     }
@@ -242,11 +242,11 @@ public class Content implements Serializable
     }
 
     @JsonProperty("txt_api")
-    public void setTxtApi(Object txtApi) {
+    public void setTxtApi(String txtApi) {
         this.txtApi = txtApi;
     }
 
-    public Content withTxtApi(Object txtApi) {
+    public Content withTxtApi(String txtApi) {
         this.txtApi = txtApi;
         return this;
     }
@@ -257,11 +257,11 @@ public class Content implements Serializable
     }
 
     @JsonProperty("txt_support")
-    public void setTxtSupport(Object txtSupport) {
+    public void setTxtSupport(String txtSupport) {
         this.txtSupport = txtSupport;
     }
 
-    public Content withTxtSupport(Object txtSupport) {
+    public Content withTxtSupport(String txtSupport) {
         this.txtSupport = txtSupport;
         return this;
     }
@@ -272,11 +272,11 @@ public class Content implements Serializable
     }
 
     @JsonProperty("txt_features")
-    public void setTxtFeatures(Object txtFeatures) {
+    public void setTxtFeatures(String txtFeatures) {
         this.txtFeatures = txtFeatures;
     }
 
-    public Content withTxtFeatures(Object txtFeatures) {
+    public Content withTxtFeatures(String txtFeatures) {
         this.txtFeatures = txtFeatures;
         return this;
     }
@@ -317,11 +317,11 @@ public class Content implements Serializable
     }
 
     @JsonProperty("logo_file_name")
-    public void setLogoFileName(Object logoFileName) {
+    public void setLogoFileName(String logoFileName) {
         this.logoFileName = logoFileName;
     }
 
-    public Content withLogoFileName(Object logoFileName) {
+    public Content withLogoFileName(String logoFileName) {
         this.logoFileName = logoFileName;
         return this;
     }
@@ -332,11 +332,11 @@ public class Content implements Serializable
     }
 
     @JsonProperty("logo_content_type")
-    public void setLogoContentType(Object logoContentType) {
+    public void setLogoContentType(String logoContentType) {
         this.logoContentType = logoContentType;
     }
 
-    public Content withLogoContentType(Object logoContentType) {
+    public Content withLogoContentType(String logoContentType) {
         this.logoContentType = logoContentType;
         return this;
     }
@@ -452,11 +452,11 @@ public class Content implements Serializable
     }
 
     @JsonProperty("tech_support_email")
-    public void setTechSupportEmail(Object techSupportEmail) {
+    public void setTechSupportEmail(String techSupportEmail) {
         this.techSupportEmail = techSupportEmail;
     }
 
-    public Content withTechSupportEmail(Object techSupportEmail) {
+    public Content withTechSupportEmail(String techSupportEmail) {
         this.techSupportEmail = techSupportEmail;
         return this;
     }
@@ -467,11 +467,11 @@ public class Content implements Serializable
     }
 
     @JsonProperty("admin_support_email")
-    public void setAdminSupportEmail(Object adminSupportEmail) {
+    public void setAdminSupportEmail(String adminSupportEmail) {
         this.adminSupportEmail = adminSupportEmail;
     }
 
-    public Content withAdminSupportEmail(Object adminSupportEmail) {
+    public Content withAdminSupportEmail(String adminSupportEmail) {
         this.adminSupportEmail = adminSupportEmail;
         return this;
     }
@@ -482,11 +482,11 @@ public class Content implements Serializable
     }
 
     @JsonProperty("credit_card_support_email")
-    public void setCreditCardSupportEmail(Object creditCardSupportEmail) {
+    public void setCreditCardSupportEmail(String creditCardSupportEmail) {
         this.creditCardSupportEmail = creditCardSupportEmail;
     }
 
-    public Content withCreditCardSupportEmail(Object creditCardSupportEmail) {
+    public Content withCreditCardSupportEmail(String creditCardSupportEmail) {
         this.creditCardSupportEmail = creditCardSupportEmail;
         return this;
     }
@@ -632,11 +632,11 @@ public class Content implements Serializable
     }
 
     @JsonProperty("default_end_user_plan_id")
-    public void setDefaultEndUserPlanId(Object defaultEndUserPlanId) {
+    public void setDefaultEndUserPlanId(String defaultEndUserPlanId) {
         this.defaultEndUserPlanId = defaultEndUserPlanId;
     }
 
-    public Content withDefaultEndUserPlanId(Object defaultEndUserPlanId) {
+    public Content withDefaultEndUserPlanId(String defaultEndUserPlanId) {
         this.defaultEndUserPlanId = defaultEndUserPlanId;
         return this;
     }
@@ -856,9 +856,32 @@ public class Content implements Serializable
         return this;
     }
 
+    @SuppressWarnings("nls")
+    public AuthTypeEnum getAuthType() {
+        switch(getBackendVersion()) {
+        case "1":
+            return AuthTypeEnum.API_KEY;
+        case "2":
+            return AuthTypeEnum.APP_ID;
+        case "oauth": // Yes, really.
+            return AuthTypeEnum.OAUTH;
+        default:
+            throw new IllegalStateException("Unrecognised auth type: " + getBackendVersion());
+        }
+    }
+
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(id).append(accountId).append(name).append(onelineDescription).append(description).append(txtApi).append(txtSupport).append(txtFeatures).append(createdAt).append(updatedAt).append(logoFileName).append(logoContentType).append(logoFileSize).append(state).append(intentionsRequired).append(draftName).append(infobar).append(terms).append(displayProviderKeys).append(techSupportEmail).append(adminSupportEmail).append(creditCardSupportEmail).append(buyersManageApps).append(buyersManageKeys).append(customKeysEnabled).append(buyerPlanChangePermission).append(buyerCanSelectPlan).append(notificationSettings).append(defaultApplicationPlanId).append(defaultServicePlanId).append(buyerCanSeeLogRequests).append(defaultEndUserPlanId).append(endUserRegistrationRequired).append(tenantId).append(systemName).append(backendVersion).append(mandatoryAppKey).append(buyerKeyRegenerateEnabled).append(supportEmail).append(referrerFiltersRequired).append(deploymentOption).append(proxiable).append(backendAuthenticationType).append(backendAuthenticationValue).append(proxy).append(additionalProperties).toHashCode();
+        return new HashCodeBuilder().append(id).append(accountId).append(name).append(onelineDescription).append(description).append(txtApi)
+                .append(txtSupport).append(txtFeatures).append(createdAt).append(updatedAt).append(logoFileName).append(logoContentType)
+                .append(logoFileSize).append(state).append(intentionsRequired).append(draftName).append(infobar).append(terms)
+                .append(displayProviderKeys).append(techSupportEmail).append(adminSupportEmail).append(creditCardSupportEmail)
+                .append(buyersManageApps).append(buyersManageKeys).append(customKeysEnabled).append(buyerPlanChangePermission)
+                .append(buyerCanSelectPlan).append(notificationSettings).append(defaultApplicationPlanId).append(defaultServicePlanId)
+                .append(buyerCanSeeLogRequests).append(defaultEndUserPlanId).append(endUserRegistrationRequired).append(tenantId).append(systemName)
+                .append(backendVersion).append(mandatoryAppKey).append(buyerKeyRegenerateEnabled).append(supportEmail).append(referrerFiltersRequired)
+                .append(deploymentOption).append(proxiable).append(backendAuthenticationType).append(backendAuthenticationValue).append(proxy)
+                .append(additionalProperties).toHashCode();
     }
 
     @Override
@@ -870,7 +893,26 @@ public class Content implements Serializable
             return false;
         }
         Content rhs = ((Content) other);
-        return new EqualsBuilder().append(id, rhs.id).append(accountId, rhs.accountId).append(name, rhs.name).append(onelineDescription, rhs.onelineDescription).append(description, rhs.description).append(txtApi, rhs.txtApi).append(txtSupport, rhs.txtSupport).append(txtFeatures, rhs.txtFeatures).append(createdAt, rhs.createdAt).append(updatedAt, rhs.updatedAt).append(logoFileName, rhs.logoFileName).append(logoContentType, rhs.logoContentType).append(logoFileSize, rhs.logoFileSize).append(state, rhs.state).append(intentionsRequired, rhs.intentionsRequired).append(draftName, rhs.draftName).append(infobar, rhs.infobar).append(terms, rhs.terms).append(displayProviderKeys, rhs.displayProviderKeys).append(techSupportEmail, rhs.techSupportEmail).append(adminSupportEmail, rhs.adminSupportEmail).append(creditCardSupportEmail, rhs.creditCardSupportEmail).append(buyersManageApps, rhs.buyersManageApps).append(buyersManageKeys, rhs.buyersManageKeys).append(customKeysEnabled, rhs.customKeysEnabled).append(buyerPlanChangePermission, rhs.buyerPlanChangePermission).append(buyerCanSelectPlan, rhs.buyerCanSelectPlan).append(notificationSettings, rhs.notificationSettings).append(defaultApplicationPlanId, rhs.defaultApplicationPlanId).append(defaultServicePlanId, rhs.defaultServicePlanId).append(buyerCanSeeLogRequests, rhs.buyerCanSeeLogRequests).append(defaultEndUserPlanId, rhs.defaultEndUserPlanId).append(endUserRegistrationRequired, rhs.endUserRegistrationRequired).append(tenantId, rhs.tenantId).append(systemName, rhs.systemName).append(backendVersion, rhs.backendVersion).append(mandatoryAppKey, rhs.mandatoryAppKey).append(buyerKeyRegenerateEnabled, rhs.buyerKeyRegenerateEnabled).append(supportEmail, rhs.supportEmail).append(referrerFiltersRequired, rhs.referrerFiltersRequired).append(deploymentOption, rhs.deploymentOption).append(proxiable, rhs.proxiable).append(backendAuthenticationType, rhs.backendAuthenticationType).append(backendAuthenticationValue, rhs.backendAuthenticationValue).append(proxy, rhs.proxy).append(additionalProperties, rhs.additionalProperties).isEquals();
+        return new EqualsBuilder().append(id, rhs.id).append(accountId, rhs.accountId).append(name, rhs.name)
+                .append(onelineDescription, rhs.onelineDescription).append(description, rhs.description).append(txtApi, rhs.txtApi)
+                .append(txtSupport, rhs.txtSupport).append(txtFeatures, rhs.txtFeatures).append(createdAt, rhs.createdAt)
+                .append(updatedAt, rhs.updatedAt).append(logoFileName, rhs.logoFileName).append(logoContentType, rhs.logoContentType)
+                .append(logoFileSize, rhs.logoFileSize).append(state, rhs.state).append(intentionsRequired, rhs.intentionsRequired)
+                .append(draftName, rhs.draftName).append(infobar, rhs.infobar).append(terms, rhs.terms)
+                .append(displayProviderKeys, rhs.displayProviderKeys).append(techSupportEmail, rhs.techSupportEmail)
+                .append(adminSupportEmail, rhs.adminSupportEmail).append(creditCardSupportEmail, rhs.creditCardSupportEmail)
+                .append(buyersManageApps, rhs.buyersManageApps).append(buyersManageKeys, rhs.buyersManageKeys)
+                .append(customKeysEnabled, rhs.customKeysEnabled).append(buyerPlanChangePermission, rhs.buyerPlanChangePermission)
+                .append(buyerCanSelectPlan, rhs.buyerCanSelectPlan).append(notificationSettings, rhs.notificationSettings)
+                .append(defaultApplicationPlanId, rhs.defaultApplicationPlanId).append(defaultServicePlanId, rhs.defaultServicePlanId)
+                .append(buyerCanSeeLogRequests, rhs.buyerCanSeeLogRequests).append(defaultEndUserPlanId, rhs.defaultEndUserPlanId)
+                .append(endUserRegistrationRequired, rhs.endUserRegistrationRequired).append(tenantId, rhs.tenantId)
+                .append(systemName, rhs.systemName).append(backendVersion, rhs.backendVersion).append(mandatoryAppKey, rhs.mandatoryAppKey)
+                .append(buyerKeyRegenerateEnabled, rhs.buyerKeyRegenerateEnabled).append(supportEmail, rhs.supportEmail)
+                .append(referrerFiltersRequired, rhs.referrerFiltersRequired).append(deploymentOption, rhs.deploymentOption)
+                .append(proxiable, rhs.proxiable).append(backendAuthenticationType, rhs.backendAuthenticationType)
+                .append(backendAuthenticationValue, rhs.backendAuthenticationValue).append(proxy, rhs.proxy)
+                .append(additionalProperties, rhs.additionalProperties).isEquals();
     }
 
 }

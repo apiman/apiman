@@ -113,7 +113,7 @@ public class HttpClientComponentImpl implements IHttpClientComponent {
             // And as of 3.2.2 the convenience bodyHandler method doesn't always work reliably for some reason... So a DIY version.
             response.handler((Handler<Buffer>) buff -> {
                 if (body == null) {
-                	body = buff;
+                	body = Buffer.buffer(buff.length()).appendBuffer(buff);
                 } else {
                 	body.appendBuffer(buff);
                 }

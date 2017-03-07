@@ -2,9 +2,11 @@
 package io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -16,6 +18,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fulmicoton.multiregexp.MultiPattern;
+import com.fulmicoton.multiregexp.MultiPatternMatcher;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -33,6 +37,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
     "parameters",
     "querystring_parameters"
 })
+@SuppressWarnings("nls")
 public class ProxyRule implements Serializable
 {
 
@@ -65,6 +70,30 @@ public class ProxyRule implements Serializable
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<>();
     private final static long serialVersionUID = 5993748206678997809L;
+    @JsonIgnore
+    private transient Pattern regex;
+
+    // The pattern can only contain valid URL characters and 'wildcards' - words
+    // inside curly brackets ('{}') that match any string up to the following
+    // slash, ampersand or question mark.
+    private static String convertPattern(ProxyRule bean) {
+        String str = bean.getPattern().replaceAll("\\{.+?\\}", "([^/&?]*)"); // /foo/{bar}/{baz} => /foo/([^\/&?]*)/([^/&?]*).*
+        return str.endsWith("$") ? str : str + ".*";  // Implicitly other stuff on end unless $ explicitly specified (see description)
+    }
+
+   public static void main(String... proxyRegex) {
+       String pattern1 = convertPattern(new ProxyRule().withPattern("/foo/{bar}/{baz}"));
+       String pattern2 = convertPattern(new ProxyRule().withPattern("/foo/{bar}/somethings"));
+       String pattern3 = convertPattern(new ProxyRule().withPattern("/glue/{bar}/{baz}"));
+
+       MultiPatternMatcher matcher = MultiPattern.of(
+               pattern1,
+               pattern2,
+               pattern3
+       ).matcher();
+       int[] matching = matcher.match("/foo/anything/somethings/other"); // return {0, 1}
+       System.out.println(Arrays.toString(matching));
+   }
 
     @JsonProperty("id")
     public long getId() {
@@ -119,6 +148,7 @@ public class ProxyRule implements Serializable
     @JsonProperty("pattern")
     public void setPattern(String pattern) {
         this.pattern = pattern;
+        this.setRegex(Pattern.compile(convertPattern(this))); // TODO weird from refactoring, tidy up
     }
 
     public ProxyRule withPattern(String pattern) {
@@ -283,7 +313,9 @@ public class ProxyRule implements Serializable
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(id).append(proxyId).append(httpMethod).append(pattern).append(metricId).append(metricSystemName).append(delta).append(tenantId).append(createdAt).append(updatedAt).append(redirectUrl).append(parameters).append(querystringParameters).append(additionalProperties).toHashCode();
+        return new HashCodeBuilder().append(id).append(proxyId).append(httpMethod).append(pattern).append(metricId).append(metricSystemName)
+                .append(delta).append(tenantId).append(createdAt).append(updatedAt).append(redirectUrl).append(parameters)
+                .append(querystringParameters).append(additionalProperties).toHashCode();
     }
 
     @Override
@@ -295,7 +327,25 @@ public class ProxyRule implements Serializable
             return false;
         }
         ProxyRule rhs = ((ProxyRule) other);
-        return new EqualsBuilder().append(id, rhs.id).append(proxyId, rhs.proxyId).append(httpMethod, rhs.httpMethod).append(pattern, rhs.pattern).append(metricId, rhs.metricId).append(metricSystemName, rhs.metricSystemName).append(delta, rhs.delta).append(tenantId, rhs.tenantId).append(createdAt, rhs.createdAt).append(updatedAt, rhs.updatedAt).append(redirectUrl, rhs.redirectUrl).append(parameters, rhs.parameters).append(querystringParameters, rhs.querystringParameters).append(additionalProperties, rhs.additionalProperties).isEquals();
+        return new EqualsBuilder().append(id, rhs.id).append(proxyId, rhs.proxyId).append(httpMethod, rhs.httpMethod).append(pattern, rhs.pattern)
+                .append(metricId, rhs.metricId).append(metricSystemName, rhs.metricSystemName).append(delta, rhs.delta).append(tenantId, rhs.tenantId)
+                .append(createdAt, rhs.createdAt).append(updatedAt, rhs.updatedAt).append(redirectUrl, rhs.redirectUrl)
+                .append(parameters, rhs.parameters).append(querystringParameters, rhs.querystringParameters)
+                .append(additionalProperties, rhs.additionalProperties).isEquals();
+    }
+
+    /**
+     * @return the regex
+     */
+    public Pattern getRegex() {
+        return regex;
+    }
+
+    /**
+     * @param regex the regex to set
+     */
+    public void setRegex(Pattern regex) {
+        this.regex = regex;
     }
 
 }

@@ -29,13 +29,12 @@ import io.vertx.core.http.HttpServerRequest;
  */
 public class HttpGatewayVerticle extends ApimanVerticleWithEngine {
     static final VerticleType VERTICLE_TYPE = VerticleType.HTTP;
-    HttpApiFactory apiFactory;
 
     @Override
     public void start(Future<Void> startFuture) {
         super.start(startFuture);
 
-        //apiFactory = new HttpApiFactory(engineFactory.);
+        HttpApiFactory.init(engine.getApiRequestPathParser());
 
         HttpServerOptions standardOptions = new HttpServerOptions()
             .setHost(apimanConfig.getHostname());
@@ -46,7 +45,7 @@ public class HttpGatewayVerticle extends ApimanVerticleWithEngine {
     }
 
     private void requestHandler(HttpServerRequest req) {
-        new HttpPolicyAdapter(req, engine,  false).execute();
+        new HttpPolicyAdapter(req, engine, false).execute();
     }
 
     @Override

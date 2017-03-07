@@ -86,10 +86,10 @@ public class ConnectorFactory implements IConnectorFactory {
     public IApiConnector createConnector(ApiRequest req, Api api, RequiredAuthType authType, boolean hasDataPolicy) {
         return (request, resultHandler) -> {
             HttpConnectorOptions httpOptions = new HttpConnectorOptions()
-            .setHasDataPolicy(hasDataPolicy)
-            .setRequiredAuthType(authType)
-            .setTlsOptions(tlsOptions)
-            .setUri(parseApiEndpoint(api));
+                    .setHasDataPolicy(hasDataPolicy)
+                    .setRequiredAuthType(authType)
+                    .setTlsOptions(tlsOptions)
+                    .setUri(parseApiEndpoint(api));
             // Get from cache
             HttpClient client = clientFromCache(httpOptions);
             return new HttpConnector(vertx, client, request, api, httpOptions, resultHandler);

@@ -58,4 +58,8 @@ public interface IEngine {
      */
     IPluginRegistry getPluginRegistry();
 
+
+
+    IApiRequestPathParser getApiRequestPathParser();
+
 }

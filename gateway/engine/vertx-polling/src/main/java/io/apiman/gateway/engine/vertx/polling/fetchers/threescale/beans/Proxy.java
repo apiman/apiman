@@ -5,6 +5,8 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -13,9 +15,12 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fulmicoton.multiregexp.MultiPattern;
+import com.fulmicoton.multiregexp.MultiPatternMatcher;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -54,6 +59,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
     "backend",
     "proxy_rules"
 })
+@JsonIgnoreProperties({ "routeMatcher", "maxPayloadBufferSize" }) // @JsonIgnore being buggy
 public class Proxy implements Serializable
 {
 
@@ -127,6 +133,8 @@ public class Proxy implements Serializable
     private List<ProxyRule> proxyRules = null;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<>();
+    @JsonIgnore
+    private transient MultiPatternMatcher routeMatcher;
     private final static long serialVersionUID = 7319432853004376356L;
 
     @JsonProperty("id")
@@ -629,13 +637,28 @@ public class Proxy implements Serializable
         return proxyRules;
     }
 
+    private void  buildRegex() {
+        List<String> patterns = proxyRules.stream()
+                .map(ProxyRule::getRegex)
+                .map(Pattern::toString)
+                .collect(Collectors.toList());
+        System.out.println("Built some patterns? " +  patterns); //$NON-NLS-1$
+        this.routeMatcher = MultiPattern.of(patterns).matcher();
+    }
+
+    public MultiPatternMatcher getRouteMatcher() {
+        return routeMatcher;
+    }
+
     @JsonProperty("proxy_rules")
     public void setProxyRules(List<ProxyRule> proxyRules) {
         this.proxyRules = proxyRules;
+        buildRegex();
     }
 
     public Proxy withProxyRules(List<ProxyRule> proxyRules) {
         this.proxyRules = proxyRules;
+        buildRegex();
         return this;
     }
 
@@ -675,5 +698,6 @@ public class Proxy implements Serializable
         Proxy rhs = ((Proxy) other);
         return new EqualsBuilder().append(id, rhs.id).append(tenantId, rhs.tenantId).append(serviceId, rhs.serviceId).append(endpoint, rhs.endpoint).append(deployedAt, rhs.deployedAt).append(apiBackend, rhs.apiBackend).append(authAppKey, rhs.authAppKey).append(authAppId, rhs.authAppId).append(authUserKey, rhs.authUserKey).append(credentialsLocation, rhs.credentialsLocation).append(errorAuthFailed, rhs.errorAuthFailed).append(errorAuthMissing, rhs.errorAuthMissing).append(createdAt, rhs.createdAt).append(updatedAt, rhs.updatedAt).append(errorStatusAuthFailed, rhs.errorStatusAuthFailed).append(errorHeadersAuthFailed, rhs.errorHeadersAuthFailed).append(errorStatusAuthMissing, rhs.errorStatusAuthMissing).append(errorHeadersAuthMissing, rhs.errorHeadersAuthMissing).append(errorNoMatch, rhs.errorNoMatch).append(errorStatusNoMatch, rhs.errorStatusNoMatch).append(errorHeadersNoMatch, rhs.errorHeadersNoMatch).append(secretToken, rhs.secretToken).append(hostnameRewrite, rhs.hostnameRewrite).append(oauthLoginUrl, rhs.oauthLoginUrl).append(sandboxEndpoint, rhs.sandboxEndpoint).append(apiTestPath, rhs.apiTestPath).append(apiTestSuccess, rhs.apiTestSuccess).append(hostnameRewriteForSandbox, rhs.hostnameRewriteForSandbox).append(endpointPort, rhs.endpointPort).append(valid, rhs.valid).append(serviceBackendVersion, rhs.serviceBackendVersion).append(hosts, rhs.hosts).append(backend, rhs.backend).append(proxyRules, rhs.proxyRules).append(additionalProperties, rhs.additionalProperties).isEquals();
     }
+
 
 }
