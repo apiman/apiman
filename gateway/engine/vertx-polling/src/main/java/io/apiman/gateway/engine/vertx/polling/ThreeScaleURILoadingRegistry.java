@@ -17,6 +17,7 @@
 package io.apiman.gateway.engine.vertx.polling;
 
 import io.apiman.gateway.engine.IEngineConfig;
+import io.apiman.gateway.engine.Version;
 import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncHandler;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
@@ -275,11 +276,17 @@ public class ThreeScaleURILoadingRegistry extends InMemoryRegistry implements As
         }
 
         private void set3ScalePolicy(Api api, ProxyConfigRoot config) { // FIXME optimise
-            //JsonObject json = new JsonObject().put("proxyConfig", new JsonObject(Json.encode(root.getProxyConfig())));
             Policy pol = new Policy();
-            pol.setPolicyImpl(String.format("plugin:io.apiman.plugins:apiman-plugins-3scale-auth:%s:war/io.apiman.plugins.auth3scale.Auth3Scale", engine.)); // TODO get version? Hmm! Env?
+            pol.setPolicyImpl(determinePolicyImpl()); // TODO get version? Hmm! Env?
             pol.setPolicyJsonConfig(Json.encode(config));
             api.getApiPolicies().add(pol);
+        }
+
+        private String determinePolicyImpl() {
+            String version = config.getOrDefault("pluginVersion", Version.get().getVersionString());
+            return "plugin:io.apiman.plugins:apiman-plugins-3scale-auth:" +
+                    version +
+                   ":war/io.apiman.plugins.auth3scale.Auth3Scale";
         }
 
         public synchronized void subscribe(ThreeScaleURILoadingRegistry registry, IAsyncResultHandler<Void> failureHandler) {
