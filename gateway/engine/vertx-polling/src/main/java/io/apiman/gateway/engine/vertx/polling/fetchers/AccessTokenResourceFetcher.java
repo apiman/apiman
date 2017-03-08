@@ -26,6 +26,11 @@ import io.vertx.core.impl.Arguments;
 import java.net.URI;
 import java.util.Map;
 
+/**
+ * Fetch a remote HTTP/S resource using a 3scale Access Token.
+ *
+ * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
+ */
 @SuppressWarnings("nls")
 public class AccessTokenResourceFetcher {
     private Vertx vertx;

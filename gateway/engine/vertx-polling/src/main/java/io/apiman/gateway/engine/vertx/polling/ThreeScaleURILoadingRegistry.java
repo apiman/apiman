@@ -144,12 +144,15 @@ public class ThreeScaleURILoadingRegistry extends InMemoryRegistry implements As
         private Logger log = LoggerFactory.getLogger(OneShotURILoader.class);
         private IAsyncHandler<Void> reloadHandler;
         private List<Api> policyConfigApis = Collections.emptyList();
+        private String environment;
 
         public OneShotURILoader(Vertx vertx, Map<String, String> config) {
             this.config = config;
             this.vertx = vertx;
 
+
             apiUri = URI.create(requireOpt("apiEndpoint", "apiEndpoint is required in configuration"));
+            environment = config.getOrDefault("environment", "production");
             if (config.containsKey("policyConfigUri"))
                 policyConfigUri = URI.create(config.get("policyConfigUri")); // Can be null.
 
@@ -194,7 +197,6 @@ public class ThreeScaleURILoadingRegistry extends InMemoryRegistry implements As
                 // If policyConfigUri is provided, then load API policy config.
                 // NB: THESE ARE API BEANSs WITH *ONLY* POLICY CONFIG!
                 if (policyConfigUri != null) {
-                    System.out.println("Foo");
                     configFutures.add(fetchPolicyConfig());
                 }
 
@@ -222,13 +224,10 @@ public class ThreeScaleURILoadingRegistry extends InMemoryRegistry implements As
             return apiResultFuture;
         }
 
-        // https://ewittman-admin.3scale.net/admin/api/services/2555417735060/proxy/configs/production/latest.json
-        // ?access_token=914e2f81d22b0c1baf62e75250d3daab9bec675318ecb555b8e39f91877ed5a8
-
         @SuppressWarnings("rawtypes")
         private Future getConfig(long id) {
             Future future = Future.future();
-            String path = String.format("/admin/api/services/%d/proxy/configs/production/latest.json", id);
+            String path = String.format("/admin/api/services/%d/proxy/configs/%s/latest.json", id, environment);
             new AccessTokenResourceFetcher(vertx, config, joinPath(path))
                 .exceptionHandler(future::fail)
                 .fetch(buffer -> {
@@ -273,10 +272,6 @@ public class ThreeScaleURILoadingRegistry extends InMemoryRegistry implements As
                     // Reflects the remote data structure.
                     Content config = root.getProxyConfig().getContent();
                     Api api = new Api();
-                    api.setEndpoint(config.getProxy().getEndpoint());
-                    api.setPublicAPI(true);
-
-                    // API ID = service id (i think)
                     api.setApiId(config.getSystemName());
                     api.setOrganizationId(DEFAULT_NS);
                     api.setEndpoint(config.getProxy().getApiBackend());

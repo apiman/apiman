@@ -19,6 +19,9 @@ package io.apiman.gateway.engine.vertx.polling.fetchers;
 import io.apiman.gateway.engine.vertx.polling.exceptions.BadResponseCodeError;
 import io.apiman.gateway.engine.vertx.polling.fetchers.auth.AuthType;
 import io.apiman.gateway.engine.vertx.polling.fetchers.auth.Authenticator;
+import io.apiman.gateway.engine.vertx.polling.fetchers.auth.BasicAuth;
+import io.apiman.gateway.engine.vertx.polling.fetchers.auth.KeycloakOAuth2Client;
+import io.apiman.gateway.engine.vertx.polling.fetchers.auth.OAuth2Client;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
@@ -32,8 +35,15 @@ import java.util.Map;
 import org.apache.commons.lang3.EnumUtils;
 
 /**
-* @author Marc Savy {@literal <marc@rhymewithgravy.com>}
-*/
+ * Fetch HTTP and HTTPS resources, with Auth options
+ * including BASIC and various OAuth2 permutations.
+ *
+ * @see BasicAuth
+ * @see OAuth2Client
+ * @see KeycloakOAuth2Client
+ *
+ * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
+ */
 @SuppressWarnings("nls")
 public class HttpResourceFetcher implements ResourceFetcher {
 

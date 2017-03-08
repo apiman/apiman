@@ -21,6 +21,9 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fulmicoton.multiregexp.MultiPattern;
 import com.fulmicoton.multiregexp.MultiPatternMatcher;
 
+/**
+* @author Marc Savy {@literal <marc@rhymewithgravy.com>}
+*/
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
     "id",

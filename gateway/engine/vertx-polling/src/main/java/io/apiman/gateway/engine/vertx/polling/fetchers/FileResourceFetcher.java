@@ -24,8 +24,10 @@ import java.net.URI;
 import java.util.Map;
 
 /**
-* @author Marc Savy {@literal <marc@rhymewithgravy.com>}
-*/
+ * Fetch a file from the local filesystem.
+ *
+ * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
+ */
 public class FileResourceFetcher implements ResourceFetcher {
 
     private Vertx vertx;
