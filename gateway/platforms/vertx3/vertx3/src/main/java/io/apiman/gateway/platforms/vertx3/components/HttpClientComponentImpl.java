@@ -62,11 +62,11 @@ public class HttpClientComponentImpl implements IHttpClientComponent {
 
         URL pEndpoint = parseEndpoint(endpoint);
         int port = pEndpoint.getPort();
-    	String proto = pEndpoint.getProtocol();
-    	HttpClient client;
+    	String proto = pEndpoint.getProtocol() == null ? "http" : "https";  //$NON-NLS-1$//$NON-NLS-2$
+    	HttpClient client = plainClient;
 
     	// If protocol provided
-    	if (port != -1 || proto != null) {
+    	if (port != -1) {
     		if (port == 443 || proto.charAt(proto.length()-1) == 's') {
         		client = sslClient;
         		port = (port == -1) ? 443 : port;
@@ -75,9 +75,8 @@ public class HttpClientComponentImpl implements IHttpClientComponent {
         		port = (port == -1) ? 80 : port;
     		}
     	} else {
-        	client = plainClient;
-        	port = 80;
-        }
+    	    port = 80;
+    	}
 
         HttpClientRequest request = client.request(convertMethod(method),
                 pEndpoint.getPort(),
@@ -88,7 +87,7 @@ public class HttpClientComponentImpl implements IHttpClientComponent {
         request.setChunked(true);
 
         request.exceptionHandler(exception -> {
-        	logger.error(exception);
+            logger.error("Exception in HttpClientRequestImpl: {0}", exception.getMessage()); //$NON-NLS-1$
         	responseHandler.handle(AsyncResultImpl.create(exception));
         });
 
@@ -100,6 +99,7 @@ public class HttpClientComponentImpl implements IHttpClientComponent {
         private HttpClientResponse response;
         private Buffer body;
 		private IAsyncResultHandler<IHttpClientResponse> responseHandler;
+	    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
         public HttpClientResponseImpl(IAsyncResultHandler<IHttpClientResponse> responseHandler) {
 			this.responseHandler = responseHandler;
@@ -125,7 +125,7 @@ public class HttpClientComponentImpl implements IHttpClientComponent {
             });
 
             response.exceptionHandler(exception -> {
-            	exception.printStackTrace();
+            	logger.error("Exception in HttpClientResponseImpl: {0}", exception.getMessage()); //$NON-NLS-1$
             	responseHandler.handle(AsyncResultImpl.create(exception));
             });
         }
@@ -252,7 +252,7 @@ public class HttpClientComponentImpl implements IHttpClientComponent {
 		case TRACE:
 			return io.vertx.core.http.HttpMethod.TRACE;
 		default:
-	    	return io.vertx.core.http.HttpMethod.valueOf(method.toString());
+            return io.vertx.core.http.HttpMethod.OTHER;
     	}
     }
 

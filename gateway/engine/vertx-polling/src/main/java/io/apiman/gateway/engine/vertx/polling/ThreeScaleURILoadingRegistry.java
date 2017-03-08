@@ -20,7 +20,6 @@ import io.apiman.gateway.engine.IEngineConfig;
 import io.apiman.gateway.engine.Version;
 import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncHandler;
-import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.Api;
 import io.apiman.gateway.engine.beans.Client;
@@ -48,6 +47,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.List;
 import java.util.Map;
@@ -143,7 +143,7 @@ public class ThreeScaleURILoadingRegistry extends InMemoryRegistry implements As
         private List<Api> apis = new ArrayList<>();
         private Logger log = LoggerFactory.getLogger(OneShotURILoader.class);
         private IAsyncHandler<Void> reloadHandler;
-
+        private List<Api> policyConfigApis = Collections.emptyList();
 
         public OneShotURILoader(Vertx vertx, Map<String, String> config) {
             this.config = config;
@@ -177,7 +177,7 @@ public class ThreeScaleURILoadingRegistry extends InMemoryRegistry implements As
         }
 
         private void fetchResource() {
-            log.debug("Fetching resources");
+            log.debug("Fetching 3scale services...");
             // Fetch list of all services
             getServicesRoot(servicesRoot -> {
                 List<Service> services = servicesRoot.getServices();
@@ -191,9 +191,14 @@ public class ThreeScaleURILoadingRegistry extends InMemoryRegistry implements As
                     .map(this::getConfig)
                     .collect(Collectors.toList());
 
+                // If policyConfigUri is provided, then load API policy config.
+                // NB: THESE ARE API BEANSs WITH *ONLY* POLICY CONFIG!
+                if (policyConfigUri != null) {
+                    System.out.println("Foo");
+                    configFutures.add(fetchPolicyConfig());
+                }
 
-
-                Future<?> fut = CompositeFuture.all(configFutures)
+                CompositeFuture.all(configFutures)
                     .setHandler(result -> {
                         if (result.succeeded()) {
                             processData();
@@ -201,51 +206,21 @@ public class ThreeScaleURILoadingRegistry extends InMemoryRegistry implements As
                             failAll(result.cause());
                         }
                     });
-
-                // If policyConfigUri is provided, then load remote resource
-                // And load specified policies into existing APIs.
-                if (policyConfigUri != null) {
-                    fut.compose(r2 -> {
-                        log.debug("Now loading file-based policy configuration into registered APIs...");
-                        Future<List<Api>> apiResultFuture = Future.future();
-                        new PolicyConfigLoader(vertx, policyConfigUri, config)
-                            .setApiResultHandler(apiResultFuture::complete)
-                            .setExceptionHandler(apiResultFuture::fail);
-                        return apiResultFuture;
-                    }).compose(this::loadIntoRegistry);
-                }
            });
-
         }
 
-
-//        private Future<?> loadIntoRegistry(List<Api> apiList) {
-//            @SuppressWarnings("rawtypes")
-//            List<Future> futures = new ArrayList<>();
-//
-//            for (ThreeScaleURILoadingRegistry reg : allRegistries) {
-//                apiList.stream().map(api -> {
-//                    Future<?> fut = Future.future();
-//
-//                    reg.getApi(DEFAULT_NS , api.getApiId(), DEFAULT_NS, result -> {
-//                        if (result.isSuccess()) {
-//
-//                            Api api = result.getResult();
-//                            api.setApiPolicies();
-//
-//
-//                            fut.complete();
-//                        } else {
-//                            fut.fail(result.getError());
-//                        }
-//                    });
-//
-//                    return fut;
-//                });
-//            }
-//
-//            return CompositeFuture.all(futures);
-//        }
+        private Future<List<Api>> fetchPolicyConfig() {
+            log.debug("Loading policy configuration from {0}...", policyConfigUri);
+            Future<List<Api>> apiResultFuture = Future.future();
+            new PolicyConfigLoader(vertx, policyConfigUri, config)
+                .setApiResultHandler(apis -> {
+                    this.policyConfigApis = apis;
+                    apiResultFuture.complete();
+                })
+                .setExceptionHandler(apiResultFuture::fail)
+                .load();
+            return apiResultFuture;
+        }
 
         // https://ewittman-admin.3scale.net/admin/api/services/2555417735060/proxy/configs/production/latest.json
         // ?access_token=914e2f81d22b0c1baf62e75250d3daab9bec675318ecb555b8e39f91877ed5a8
@@ -293,14 +268,12 @@ public class ThreeScaleURILoadingRegistry extends InMemoryRegistry implements As
                 return;
             }
             try {
-
                 // Naive version initially.
                 for (ProxyConfigRoot root : configs) {
                     // Reflects the remote data structure.
                     Content config = root.getProxyConfig().getContent();
                     Api api = new Api();
                     api.setEndpoint(config.getProxy().getEndpoint());
-                    set3ScalePolicy(api, root);
                     api.setPublicAPI(true);
 
                     // API ID = service id (i think)
@@ -312,6 +285,7 @@ public class ThreeScaleURILoadingRegistry extends InMemoryRegistry implements As
                     api.setParsePayload(false); // can let user override this?
                     api.setPublicAPI(true); // is there an equivalent of this?
                     api.setVersion(DEFAULT_NS); // don't think this is relevant anymore
+                    setPolicies(api, root);
 
                     log.info("Processing - {0}: ", config);
                     log.info("Creating API - {0}: ", api);
@@ -325,11 +299,17 @@ public class ThreeScaleURILoadingRegistry extends InMemoryRegistry implements As
             }
         }
 
-        private void set3ScalePolicy(Api api, ProxyConfigRoot config) { // FIXME optimise
+        private void setPolicies(Api api, ProxyConfigRoot config) { // FIXME optimise
+            // Add 3scale policy
             Policy pol = new Policy();
             pol.setPolicyImpl(determinePolicyImpl()); // TODO get version? Hmm! Env?
             pol.setPolicyJsonConfig(Json.encode(config));
             api.getApiPolicies().add(pol);
+            // Add any policies user specified in remote config.
+            policyConfigApis.stream()
+                .filter(skeleton -> skeleton.getApiId().equals(api.getApiId()))
+                // Apply policies from skeleton to 3scale API.
+                .forEach(skeleton -> api.getApiPolicies().addAll(skeleton.getApiPolicies()));
         }
 
         private String determinePolicyImpl() {
@@ -349,7 +329,7 @@ public class ThreeScaleURILoadingRegistry extends InMemoryRegistry implements As
         }
 
         private void checkQueue() {
-            if (dataProcessed && awaiting.size()>0) {
+            if (dataProcessed && awaiting.size() > 0) {
                 loadDataIntoRegistries();
             }
         }
@@ -357,7 +337,7 @@ public class ThreeScaleURILoadingRegistry extends InMemoryRegistry implements As
         private void loadDataIntoRegistries() {
             ThreeScaleURILoadingRegistry reg = null;
             while ((reg = awaiting.poll()) != null) {
-                log.debug("Loading data into registry {0}:", reg);
+                log.debug("Loading data into registry {0}: ", reg);
                 for (Api api : apis) {
                     reg.publishApiInternal(api, handleAnyFailure());
                     log.debug("Publishing: {0} ", api);
@@ -378,11 +358,6 @@ public class ThreeScaleURILoadingRegistry extends InMemoryRegistry implements As
                     throw new RuntimeException(result.getError());
                 }
             };
-        }
-
-        private void failAll(IAsyncResult<?> result) {
-            if (result.isError())
-                failAll(result.getError());
         }
 
         private void failAll(Throwable cause) {

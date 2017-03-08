@@ -50,7 +50,6 @@ public class PolicyConfigLoader {
     private Map<String, String> config;
     private List<Client> clients;
     private List<Api> apis;
-    private boolean dataProcessed;
     private Handler<List<Api>> apiResultHandler;
     private Handler<List<Client>> clientResultHandler;
 
@@ -114,8 +113,10 @@ public class PolicyConfigLoader {
         try {
             JsonObject json = new JsonObject(rawData.toString("UTF-8").trim());
             log.trace("Processing JSON: {0}", json);
-            clients = requireJsonArray("clients", json, Client.class);
-            apis = requireJsonArray("apis", json, Api.class);
+            if (clientResultHandler != null)
+                clients = requireJsonArray("clients", json, Client.class);
+            if (apiResultHandler != null)
+                apis = requireJsonArray("apis", json, Api.class);
         } catch (DecodeException e) {
             exceptionHandler.handle(e);
         }
