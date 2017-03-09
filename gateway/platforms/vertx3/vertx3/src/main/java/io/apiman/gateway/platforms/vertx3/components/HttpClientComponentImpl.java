@@ -62,12 +62,12 @@ public class HttpClientComponentImpl implements IHttpClientComponent {
 
         URL pEndpoint = parseEndpoint(endpoint);
         int port = pEndpoint.getPort();
-    	String proto = pEndpoint.getProtocol() == null ? "http" : "https";  //$NON-NLS-1$//$NON-NLS-2$
-    	HttpClient client = plainClient;
+    	String proto = pEndpoint.getProtocol();
+    	HttpClient client;
 
     	// If protocol provided
-    	if (port != -1) {
-    		if (port == 443 || proto.charAt(proto.length()-1) == 's') {
+    	if (port != -1 || proto != null) {
+    		if (port == 443 || "https".equals(proto)) { //$NON-NLS-1$
         		client = sslClient;
         		port = (port == -1) ? 443 : port;
     		} else {
@@ -75,8 +75,9 @@ public class HttpClientComponentImpl implements IHttpClientComponent {
         		port = (port == -1) ? 80 : port;
     		}
     	} else {
-    	    port = 80;
-    	}
+        	client = plainClient;
+        	port = 80;
+        }
 
         HttpClientRequest request = client.request(convertMethod(method),
                 pEndpoint.getPort(),
@@ -87,7 +88,7 @@ public class HttpClientComponentImpl implements IHttpClientComponent {
         request.setChunked(true);
 
         request.exceptionHandler(exception -> {
-            logger.error("Exception in HttpClientRequestImpl: {0}", exception.getMessage()); //$NON-NLS-1$
+        	logger.error(exception);
         	responseHandler.handle(AsyncResultImpl.create(exception));
         });
 
@@ -99,7 +100,6 @@ public class HttpClientComponentImpl implements IHttpClientComponent {
         private HttpClientResponse response;
         private Buffer body;
 		private IAsyncResultHandler<IHttpClientResponse> responseHandler;
-	    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
         public HttpClientResponseImpl(IAsyncResultHandler<IHttpClientResponse> responseHandler) {
 			this.responseHandler = responseHandler;
@@ -113,7 +113,7 @@ public class HttpClientComponentImpl implements IHttpClientComponent {
             // And as of 3.2.2 the convenience bodyHandler method doesn't always work reliably for some reason... So a DIY version.
             response.handler((Handler<Buffer>) buff -> {
                 if (body == null) {
-                	body = Buffer.buffer(buff.length()).appendBuffer(buff);
+                	body = buff;
                 } else {
                 	body.appendBuffer(buff);
                 }
@@ -125,7 +125,7 @@ public class HttpClientComponentImpl implements IHttpClientComponent {
             });
 
             response.exceptionHandler(exception -> {
-            	logger.error("Exception in HttpClientResponseImpl: {0}", exception.getMessage()); //$NON-NLS-1$
+            	exception.printStackTrace();
             	responseHandler.handle(AsyncResultImpl.create(exception));
             });
         }
@@ -252,7 +252,7 @@ public class HttpClientComponentImpl implements IHttpClientComponent {
 		case TRACE:
 			return io.vertx.core.http.HttpMethod.TRACE;
 		default:
-            return io.vertx.core.http.HttpMethod.OTHER;
+	    	return io.vertx.core.http.HttpMethod.valueOf(method.toString());
     	}
     }
 
