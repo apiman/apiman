@@ -88,7 +88,7 @@ public class HttpClientComponentImpl implements IHttpClientComponent {
         request.setChunked(true);
 
         request.exceptionHandler(exception -> {
-        	logger.error(exception);
+            logger.error("Exception in HttpClientRequestImpl: {0}", exception.getMessage()); //$NON-NLS-1$
         	responseHandler.handle(AsyncResultImpl.create(exception));
         });
 
@@ -100,6 +100,7 @@ public class HttpClientComponentImpl implements IHttpClientComponent {
         private HttpClientResponse response;
         private Buffer body;
 		private IAsyncResultHandler<IHttpClientResponse> responseHandler;
+	    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
         public HttpClientResponseImpl(IAsyncResultHandler<IHttpClientResponse> responseHandler) {
 			this.responseHandler = responseHandler;
@@ -113,7 +114,7 @@ public class HttpClientComponentImpl implements IHttpClientComponent {
             // And as of 3.2.2 the convenience bodyHandler method doesn't always work reliably for some reason... So a DIY version.
             response.handler((Handler<Buffer>) buff -> {
                 if (body == null) {
-                	body = buff;
+                	body = Buffer.buffer(buff.length()).appendBuffer(buff);
                 } else {
                 	body.appendBuffer(buff);
                 }
@@ -125,7 +126,7 @@ public class HttpClientComponentImpl implements IHttpClientComponent {
             });
 
             response.exceptionHandler(exception -> {
-            	exception.printStackTrace();
+            	logger.error("Exception in HttpClientResponseImpl: {0}", exception.getMessage()); //$NON-NLS-1$
             	responseHandler.handle(AsyncResultImpl.create(exception));
             });
         }
@@ -252,7 +253,7 @@ public class HttpClientComponentImpl implements IHttpClientComponent {
 		case TRACE:
 			return io.vertx.core.http.HttpMethod.TRACE;
 		default:
-	    	return io.vertx.core.http.HttpMethod.valueOf(method.toString());
+            return io.vertx.core.http.HttpMethod.OTHER;
     	}
     }
 
