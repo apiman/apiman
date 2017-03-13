@@ -72,8 +72,6 @@ public class VertxEngineConfig implements IEngineConfig {
 
     private static final String API_AUTH = "auth";
     private static final String API_PASSWORD = "password";
-    private static final String API_REQUIRED = "required";
-    private static final String API_REALM = "realm";
 
     private static final String GATEWAY_REGISTRY_PREFIX = "registry";
     private static final String GATEWAY_ENCRYPTER_PREFIX = "encrypter";
@@ -92,7 +90,6 @@ public class VertxEngineConfig implements IEngineConfig {
     private static final String SSL_PATH = "path";
 
     private JsonObject config;
-    private HashMap<String, String> basicAuthMap = new HashMap<>();
 
     public VertxEngineConfig(JsonObject config) {
         this.config = config;
@@ -228,14 +225,6 @@ public class VertxEngineConfig implements IEngineConfig {
         return Collections.emptyList();
     }
 
-    public Boolean isAuthenticationEnabled() {
-        return config.getJsonObject(API_AUTH).getString(API_REQUIRED) != null;
-    }
-
-    public String getRealm() {
-        return config.getJsonObject(API_AUTH).getString(API_REALM);
-    }
-
     public String getHostname() {
         return stringConfigWithDefault(GATEWAY_HOSTNAME, "localhost");
     }
@@ -248,17 +237,40 @@ public class VertxEngineConfig implements IEngineConfig {
         return config.getBoolean(GATEWAY_PREFER_SECURE);
     }
 
-    public Map<String, String> getBasicAuthCredentials() {
-        if (!basicAuthMap.isEmpty())
-            return basicAuthMap;
+    public int getPort(String name) {
+        return getVerticleConfig(name).getInteger(VERTICLE_PORT, -1);
+    }
 
-        JsonObject pairs = config.getJsonObject(API_AUTH).getJsonObject("basic");
+    public int getPort(VerticleType verticleType) {
+        return getPort(verticleType.name());
+    }
 
-        for (String username : pairs.fieldNames()) {
-            basicAuthMap.put(username, pairs.getString(username));
-        }
+    public int getVerticleCount(VerticleType verticleType) {
+        return getVerticleConfig(verticleType.name()).getInteger(VERTICLE_COUNT);
+    }
 
-        return basicAuthMap;
+    public boolean isSSL() {
+        return config.containsKey(SSL);
+    }
+
+    public String getKeyStore() {
+        return config.getJsonObject(SSL, new JsonObject()).getJsonObject(SSL_KEYSTORE, new JsonObject()).getString(SSL_PATH);
+    }
+
+    public String getKeyStorePassword() {
+        return config.getJsonObject(SSL, new JsonObject()).getJsonObject(SSL_KEYSTORE, new JsonObject()).getString(API_PASSWORD);
+    }
+
+    public String getTrustStore() {
+        return config.getJsonObject(SSL, new JsonObject()).getJsonObject(SSL_TRUSTSTORE, new JsonObject()).getString(SSL_PATH);
+    }
+
+    public String getTrustStorePassword() {
+        return config.getJsonObject(SSL, new JsonObject()).getJsonObject(SSL_TRUSTSTORE, new JsonObject()).getString(API_PASSWORD);
+    }
+
+    public JsonObject getAuth() {
+        return config.getJsonObject(API_AUTH, new JsonObject());
     }
 
     protected Map<String, String> toFlatStringMap(JsonObject jsonObject) {
@@ -356,37 +368,7 @@ public class VertxEngineConfig implements IEngineConfig {
         return config.getJsonObject(VERTICLES).getJsonObject(verticleType.toLowerCase());
     }
 
-    public int getPort(String name) {
-        return getVerticleConfig(name).getInteger(VERTICLE_PORT);
-    }
 
-    public int getPort(VerticleType verticleType) {
-        return getPort(verticleType.name());
-    }
-
-    public int getVerticleCount(VerticleType verticleType) {
-        return getVerticleConfig(verticleType.name()).getInteger(VERTICLE_COUNT);
-    }
-
-    public boolean isSSL() {
-        return config.containsKey(SSL);
-    }
-
-    public String getKeyStore() {
-        return config.getJsonObject(SSL, new JsonObject()).getJsonObject(SSL_KEYSTORE, new JsonObject()).getString(SSL_PATH);
-    }
-
-    public String getKeyStorePassword() {
-        return config.getJsonObject(SSL, new JsonObject()).getJsonObject(SSL_KEYSTORE, new JsonObject()).getString(API_PASSWORD);
-    }
-
-    public String getTrustStore() {
-        return config.getJsonObject(SSL, new JsonObject()).getJsonObject(SSL_TRUSTSTORE, new JsonObject()).getString(SSL_PATH);
-    }
-
-    public String getTrustStorePassword() {
-        return config.getJsonObject(SSL, new JsonObject()).getJsonObject(SSL_TRUSTSTORE, new JsonObject()).getString(API_PASSWORD);
-    }
 
     /**
      * Gets all properties in the engine configuration that are prefixed

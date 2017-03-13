@@ -19,19 +19,13 @@ import io.apiman.gateway.platforms.vertx3.api.ApiResourceImpl;
 import io.apiman.gateway.platforms.vertx3.api.ClientResourceImpl;
 import io.apiman.gateway.platforms.vertx3.api.IRouteBuilder;
 import io.apiman.gateway.platforms.vertx3.api.SystemResourceImpl;
+import io.apiman.gateway.platforms.vertx3.api.auth.AuthFactory;
 import io.apiman.gateway.platforms.vertx3.common.verticles.VerticleType;
-import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
-import io.vertx.core.Handler;
-import io.vertx.core.json.JsonObject;
-import io.vertx.ext.auth.User;
+import io.vertx.core.http.HttpServerOptions;
+import io.vertx.core.net.JksOptions;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.AuthHandler;
-import io.vertx.ext.web.handler.BasicAuthHandler;
-
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * API verticle provides the Gateway API RESTful API. Config is validated and pushed into the registry
@@ -51,18 +45,37 @@ public class ApiVerticle extends ApimanVerticleWithEngine {
         IRouteBuilder apiResource = new ApiResourceImpl(apimanConfig, engine);
         IRouteBuilder systemResource = new SystemResourceImpl(apimanConfig, engine);
 
-        Router router = Router.router(vertx);
+        Router router = Router.router(vertx)
+                    .exceptionHandler(log::error);
 
-        if (apimanConfig.isAuthenticationEnabled()) {
-            AuthHandler basicAuthHandler = BasicAuthHandler.create(this::authenticateBasic, apimanConfig.getRealm());
-            router.route("/*").handler(basicAuthHandler);
-        }
+        AuthHandler handler = AuthFactory.getAuth(vertx, router, apimanConfig, apimanConfig.getAuth());
+
+        router.route("/*").handler(handler);
 
         clientResource.buildRoutes(router);
         apiResource.buildRoutes(router);
         systemResource.buildRoutes(router);
 
-        vertx.createHttpServer()
+        HttpServerOptions httpOptions = new HttpServerOptions()
+                .setHost(apimanConfig.getHostname());
+
+        if (apimanConfig.isSSL()) {
+            httpOptions.setSsl(true)
+            .setKeyStoreOptions(
+                    new JksOptions()
+                        .setPath(apimanConfig.getKeyStore())
+                        .setPassword(apimanConfig.getKeyStorePassword())
+                    )
+            .setTrustStoreOptions(
+                    new JksOptions()
+                        .setPath(apimanConfig.getTrustStore())
+                        .setPassword(apimanConfig.getTrustStorePassword())
+                    );
+        } else {
+            log.warn("API is running in plaintext mode. Enable SSL in config for production deployments.");
+        }
+
+        vertx.createHttpServer(httpOptions)
             .requestHandler(router::accept)
             .listen(apimanConfig.getPort(VERTICLE_TYPE));
     }
@@ -70,17 +83,5 @@ public class ApiVerticle extends ApimanVerticleWithEngine {
     @Override
     public VerticleType verticleType() {
         return VERTICLE_TYPE;
-    }
-
-    public void authenticateBasic(JsonObject authInfo, Handler<AsyncResult<User>> resultHandler) {
-        String username = authInfo.getString("username");
-        String password = StringUtils.chomp(Base64.encodeBase64String(DigestUtils.sha256(authInfo.getString("password")))); // Chomp, Digest, Base64Encode
-        String storedPassword = apimanConfig.getBasicAuthCredentials().get(username);
-
-        if (storedPassword != null && password.equals(storedPassword)) {
-            resultHandler.handle(Future.<User>succeededFuture(null));
-        } else {
-            resultHandler.handle(Future.<User>failedFuture("Not such user, or password is incorrect."));
-        }
     }
 }

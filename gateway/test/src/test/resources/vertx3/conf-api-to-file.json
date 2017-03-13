@@ -127,11 +127,12 @@
 
     // API authentication; presently just BASIC auth.
     "auth": {
-        "required": "basic",
-        "realm": "apiman-gateway",
-        "basic": { // Password is SHA256 digest encoded as Base64.
-            "admin" : "jGl25bVBBBW96Qi9Te4V37Fnqchz/Eu4qB9vKrRIqRg="
-        }
+      "type": "basic",
+      "config": {
+          "realm": "apiman-gateway",
+          "username" : "admin",
+          "password": "admin"
+      }
     },
 
     // When reporting an API's endpoint, prefer secure (i.e. https)
