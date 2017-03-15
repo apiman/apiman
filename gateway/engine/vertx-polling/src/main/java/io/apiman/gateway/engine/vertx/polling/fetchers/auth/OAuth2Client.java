@@ -16,8 +16,9 @@
 
 package io.apiman.gateway.engine.vertx.polling.fetchers.auth;
 
-import io.vertx.core.AsyncResultHandler;
+import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
+import io.vertx.core.Handler;
 import io.vertx.core.MultiMap;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
@@ -52,7 +53,7 @@ public class OAuth2Client extends AbstractOAuth2Base implements Authenticator {
     }
 
     @Override
-    public Authenticator authenticate(Vertx vertx, Map<String, String> config, MultiMap headerMap, AsyncResultHandler<Void> resultHandler) {
+    public Authenticator authenticate(Vertx vertx, Map<String, String> config, MultiMap headerMap, Handler<AsyncResult<Void>> resultHandler) {
         OAuth2ClientOptions credentials = new OAuth2ClientOptions(mapToJson(config));
         if (config.get("oauthUri") != null) {
             credentials.setSite(config.get("oauthUri"));
