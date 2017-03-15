@@ -17,8 +17,9 @@
 package io.apiman.gateway.engine.vertx.polling.fetchers.auth;
 
 import io.apiman.common.util.Basic;
-import io.vertx.core.AsyncResultHandler;
+import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
+import io.vertx.core.Handler;
 import io.vertx.core.MultiMap;
 import io.vertx.core.Vertx;
 
@@ -39,7 +40,7 @@ public final class BasicAuth implements Authenticator {
     }
 
     @Override
-    public Authenticator authenticate(Vertx vertx, Map<String, String> config, MultiMap headerMap, AsyncResultHandler<Void> resultHandler) {
+    public Authenticator authenticate(Vertx vertx, Map<String, String> config, MultiMap headerMap, Handler<AsyncResult<Void>> resultHandler) {
         headerMap.set("Authorization", Basic.encode(config.get("username"), config.get("password")));
         resultHandler.handle(Future.succeededFuture());
         return this;

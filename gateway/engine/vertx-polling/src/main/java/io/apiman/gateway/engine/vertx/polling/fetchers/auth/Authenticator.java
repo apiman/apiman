@@ -16,7 +16,8 @@
 
 package io.apiman.gateway.engine.vertx.polling.fetchers.auth;
 
-import io.vertx.core.AsyncResultHandler;
+import io.vertx.core.AsyncResult;
+import io.vertx.core.Handler;
 import io.vertx.core.MultiMap;
 import io.vertx.core.Vertx;
 
@@ -40,5 +41,5 @@ public interface Authenticator {
      * @param resultHandler invoked with result of the authentication.
      * @return fluent
      */
-    Authenticator authenticate(Vertx vertx, Map<String, String> config, MultiMap headerMap, AsyncResultHandler<Void> resultHandler);
+    Authenticator authenticate(Vertx vertx, Map<String, String> config, MultiMap headerMap, Handler<AsyncResult<Void>> resultHandler);
 }

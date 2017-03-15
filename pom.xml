@@ -160,7 +160,7 @@
     <version.io.netty>4.1.8.Final</version.io.netty>
     <version.io.swagger>1.5.7</version.io.swagger>
     <version.xmlunit>1.6</version.xmlunit>
-    <version.io.vertx>3.4.0.Beta1</version.io.vertx>
+    <version.io.vertx>3.4.0</version.io.vertx>
     <version.net.openhft>0.6</version.net.openhft>
     <version.com.ibm.icu4j>57.1</version.com.ibm.icu4j>
     <version.com.hazelcast>3.6.4</version.com.hazelcast>
