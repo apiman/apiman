@@ -32,6 +32,7 @@ import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.AuthHandler;
 import io.vertx.ext.web.handler.OAuth2AuthHandler;
 
+import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Set;
@@ -78,14 +79,13 @@ public class KeycloakOAuthFactory {
             public void handle(RoutingContext context) {
                 try {
                     String[] auth = Basic.decodeWithScheme(context.request().getHeader("Authorization"));
-                    doOauth2(context, role, auth[0], auth[1]);
+                    doBasic2Oauth(context, role, auth[0], auth[1]);
                 } catch (RuntimeException e) {
-                    context.response().setStatusMessage(e.getMessage());
-                    context.fail(400);
+                    handle400(context, e.getMessage());
                 }
             }
 
-            private void doOauth2(RoutingContext context, String role, String username, String password) {
+            private void doBasic2Oauth(RoutingContext context, String role, String username, String password) {
                 JsonObject params = new JsonObject()
                         .put("username", username)
                         .put("password", password);
@@ -99,19 +99,34 @@ public class KeycloakOAuthFactory {
                             if (res.result()) {
                                 context.next();
                             } else {
-                                String message = "User {0} does not have required role: {1}.";
-                                log.error(message, username, role);
-                                context.response().setStatusMessage(message);
-                                context.fail(403);
+                                String message = MessageFormat.format("User {0} does not have required role: {1}.", username, role);
+                                log.error(message);
+                                handle403(context, "insufficient_scope", message);
                             }
                         });
                     } else {
                         String message = tokenResult.cause().getMessage();
                         log.error("Access Token Error: {0}.", message);
-                        context.response().setStatusMessage(message);
-                        context.fail(403);
+                        handle401(context, "invalid_token", message);
                     }
                 });
+            }
+
+            private void handle400(RoutingContext context, String message) {
+                context.response().setStatusMessage(message);
+                context.fail(400);
+            }
+
+            private void handle401(RoutingContext context, String error, String message) {
+                String value = MessageFormat.format("Basic realm=\"{0}\" error=\"{1}\" error_message=\"{2}\"", "apiman-gw", error, message);
+                context.response().putHeader("WWW-Authenticate", value);
+                context.fail(401);
+            }
+
+            private void handle403(RoutingContext context, String error, String message) {
+                String value = MessageFormat.format("Basic realm=\"{0}\" error=\"{1}\" error_message=\"{2}\"", "apiman-gw", error, message);
+                context.response().putHeader("WWW-Authenticate", value);
+                context.fail(403);
             }
 
             @Override
