@@ -19,6 +19,27 @@ package io.apiman.gateway.engine;
 import io.apiman.common.util.ApimanPathUtils.ApiRequestPathInfo;
 import io.apiman.gateway.engine.beans.util.HeaderMap;
 
-public interface IApiRequestPathParser {  // RequestPathParser/Lookup or something
+/**
+ * <p>
+ * Parse an inbound request's path and headers, and return {@link ApiRequestPathInfo} for use
+ * by the engine to determine how to route the request.
+ * </p>
+ *
+ * <p>
+ * In essence, this is the identification of information that the gateway needs so that it can
+ * be separated.
+ * </p>
+ *
+ * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
+ */
+public interface IApiRequestPathParser {
+
+    /**
+     * Parse an inbound API Request's endpoint.
+     *
+     * @param path the inbound path
+     * @param headers the request's headers
+     * @return parsed request path info
+     */
     ApiRequestPathInfo parseEndpoint(String path, HeaderMap headers);
 }

@@ -58,8 +58,10 @@ public interface IEngine {
      */
     IPluginRegistry getPluginRegistry();
 
-
-
+    /**
+     * Get the API Request path parser.
+     * @return the API request path parser
+     */
     IApiRequestPathParser getApiRequestPathParser();
 
 }

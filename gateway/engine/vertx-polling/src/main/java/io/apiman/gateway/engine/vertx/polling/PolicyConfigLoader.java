@@ -39,6 +39,14 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
+/**
+ * Load apiman policy configuration as JSON from a remote file and unmarshalls them
+ * into lists of Clients and APIs.
+ *
+ * Supports file and HTTP/S, with OAuth2 and BASIC for the latter.
+ *
+ * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
+ */
 @SuppressWarnings("nls")
 public class PolicyConfigLoader {
 
@@ -53,27 +61,50 @@ public class PolicyConfigLoader {
     private Handler<List<Api>> apiResultHandler;
     private Handler<List<Client>> clientResultHandler;
 
+    /**
+     * @param vertx the vertx instance
+     * @param policyConfigUri the config URI
+     * @param config the configuration
+     */
     public PolicyConfigLoader(Vertx vertx, URI policyConfigUri, Map<String, String> config) {
         this.vertx = vertx;
         this.uri = policyConfigUri;
         this.config = config;
     }
 
+    /**
+     * Set the client result handler, invoked when Clients have been unmarshalled successfully.
+     * @param clientResultHandler the handler
+     * @return fluent
+     */
     public PolicyConfigLoader setClientResultHandler(Handler<List<Client>> clientResultHandler) {
         this.clientResultHandler = clientResultHandler;
         return this;
     }
 
+    /**
+     * Set the API result handler, invoked when APIs have been unmarshalled successfully.
+     * @param apiResultHandler the API result handler
+     * @return fluent
+     */
     public PolicyConfigLoader setApiResultHandler(Handler<List<Api>> apiResultHandler) {
         this.apiResultHandler = apiResultHandler;
         return this;
     }
 
+    /**
+     * Set the exception handler, invoked if an exception occurs.
+     * @param exceptionHandler the exception handler
+     * @return fluent
+     */
     public PolicyConfigLoader setExceptionHandler(Handler<Throwable> exceptionHandler) {
         this.exceptionHandler = exceptionHandler;
         return this;
     }
 
+    /**
+     * Excepute the fetcher and load the resources.
+     */
     public void load() {
         fetchResources();
     }

@@ -24,10 +24,15 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
+/**
+ * 3scale-specific request path parser.
+ *
+ * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
+ */
 @SuppressWarnings("nls")
-public class TScaleRequestPathParser implements IApiRequestPathParser { // TODO move to common area so servlet can use
+public class ThreeScaleRequestPathParser implements IApiRequestPathParser { // TODO move to common area so servlet can use
 
-    public TScaleRequestPathParser(Map<String, String> config) {
+    public ThreeScaleRequestPathParser(Map<String, String> config) {
     }
 
     @Override

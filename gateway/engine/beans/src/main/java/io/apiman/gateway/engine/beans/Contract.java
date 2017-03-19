@@ -113,7 +113,7 @@ public class Contract implements Serializable {
     /**
      * Checks the API unique identifier against what this contract expects (org id, id, version).
      * Returns true if they match.
-     * @param request
+     * @param request the request
      * @return true if the given request matches this contract
      */
     public boolean matches(ApiRequest request) {
@@ -126,9 +126,9 @@ public class Contract implements Serializable {
     /**
      * Checks the API unique identifier against what this contract expects (org id, id, version).
      * Returns true if they match.
-     * @param apiOrgId
-     * @param apiId
-     * @param apiVersion
+     * @param apiOrgId the api org id
+     * @param apiId the api id
+     * @param apiVersion the api version
      * @return true if the given request matches this contract
      */
     public boolean matches(String apiOrgId, String apiId, String apiVersion) {

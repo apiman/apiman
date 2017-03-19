@@ -131,6 +131,11 @@ public abstract class AbstractEngineFactory implements IEngineFactory {
     protected abstract IDelegateFactory createLoggerFactory(IPluginRegistry pluginRegistry);
 
 
+    /**
+     * Creates the request path parser.
+     * @param pluginRegistry the plugin registry
+     * @return the request path parser
+     */
     protected abstract IApiRequestPathParser createRequestPathParser(IPluginRegistry pluginRegistry);
 
 }

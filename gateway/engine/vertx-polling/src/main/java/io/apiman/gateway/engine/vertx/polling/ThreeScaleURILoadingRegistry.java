@@ -26,6 +26,8 @@ import io.apiman.gateway.engine.beans.Client;
 import io.apiman.gateway.engine.beans.Policy;
 import io.apiman.gateway.engine.impl.InMemoryRegistry;
 import io.apiman.gateway.engine.vertx.polling.fetchers.AccessTokenResourceFetcher;
+import io.apiman.gateway.engine.vertx.polling.fetchers.FileResourceFetcher;
+import io.apiman.gateway.engine.vertx.polling.fetchers.HttpResourceFetcher;
 import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.Content;
 import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.ProxyConfigRoot;
 import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.Service;
@@ -55,16 +57,34 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
-* @author Marc Savy {@literal <marc@rhymewithgravy.com>}
-*/
+ * URI loading registry that pulls configuration from a specified 3scale backend, this is
+ * mapped to the internal apiman data model and
+ * <ul>
+ *   <li>accessToken: 3scale access token</li>
+ *   <li>apiEndpoint: 3scale API endpoint</li>
+ *   <li>environment: which environment (e.g. production, staging)</li>
+ *   <li>policyConfigUri: apiman policy config to load as JSON from file
+ *   ({@link FileResourceFetcher}) or HTTP/S ({@link HttpResourceFetcher}).
+ *   See the corresponding fetcher for additional options.</li>
+ * </ul>
+ *
+ * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
+ * @see FileResourceFetcher
+ * @see HttpResourceFetcher
+ * @see AccessTokenResourceFetcher
+ */
 @SuppressWarnings("nls")
 public class ThreeScaleURILoadingRegistry extends InMemoryRegistry implements AsyncInitialize {
-    // Protected by DCL, use #getUriLoader
     private static volatile OneShotURILoader instance;
     private Vertx vertx;
     private Map<String, String> options;
     public static final String DEFAULT_NS = "DEFAULT";
 
+    /**
+     * @param vertx the vertx instance
+     * @param vxConfig the engine config
+     * @param options the options
+     */
     public ThreeScaleURILoadingRegistry(Vertx vertx, IEngineConfig vxConfig, Map<String, String> options) {
         super();
         this.vertx = vertx;

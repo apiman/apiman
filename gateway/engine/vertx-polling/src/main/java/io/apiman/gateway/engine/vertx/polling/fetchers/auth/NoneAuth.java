@@ -25,8 +25,10 @@ import io.vertx.core.Vertx;
 import java.util.Map;
 
 /**
-* @author Marc Savy {@literal <marc@rhymewithgravy.com>}
-*/
+ * Default none auth.
+ *
+ * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
+ */
 public class NoneAuth implements Authenticator {
 
     @Override

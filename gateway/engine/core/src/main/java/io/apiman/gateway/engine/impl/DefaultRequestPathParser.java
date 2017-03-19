@@ -23,6 +23,11 @@ import io.apiman.gateway.engine.beans.util.HeaderMap;
 
 import java.util.Map;
 
+/**
+ * The standard apiman {@link IApiRequestPathParser}.
+ *
+ * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
+ */
 public class DefaultRequestPathParser implements IApiRequestPathParser {
 
     public DefaultRequestPathParser(Map<String, String> config) {

@@ -22,12 +22,19 @@ import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpClientOptions;
 import io.vertx.core.impl.Arguments;
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 
 import java.net.URI;
+import java.text.MessageFormat;
 import java.util.Map;
 
 /**
  * Fetch a remote HTTP/S resource using a 3scale Access Token.
+ *
+ * <ul>
+ *   <li>accessToken: Access token string to allow access to 3scale API.
+ * </ul>
  *
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
  */
@@ -40,6 +47,7 @@ public class AccessTokenResourceFetcher {
     private Buffer rawData = Buffer.buffer();
     private Handler<Throwable> exceptionHandler;
     private String accessToken;
+    private Logger log = LoggerFactory.getLogger(AccessTokenResourceFetcher.class);
 
     public AccessTokenResourceFetcher(Vertx vertx, Map<String, String> options, URI uri) {
         this.vertx = vertx;
@@ -76,11 +84,10 @@ public class AccessTokenResourceFetcher {
               // Is there any way to determine this in advance?
               resultHandler.handle(rawData); // Empty
           } else {
-              System.out.println("Response code was " + clientResponse.statusCode());
-              System.out.println(path);
-              System.out.println(clientResponse.headers().entries());
-              exceptionHandler.handle(new BadResponseCodeError("Unexpected response code when trying to retrieve config: " //$NON-NLS-1$
-                      + clientResponse.statusCode()));
+              String errorMessage = MessageFormat.format("Error response code: {0}, message: {1}", clientResponse.statusCode(),
+                        clientResponse.statusMessage());
+              log.error(errorMessage);
+              exceptionHandler.handle(new BadResponseCodeError(errorMessage));
           }
       })
       .putHeader("Accept", "application/json") // Seems to ignore this.
