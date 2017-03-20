@@ -24,8 +24,10 @@ import io.vertx.core.Vertx;
 import java.util.Map;
 
 /**
-* @author Marc Savy {@literal <marc@rhymewithgravy.com>}
-*/
+ * Authenticator interface.
+ *
+ * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
+ */
 public interface Authenticator {
     /**
      * Validate config.
