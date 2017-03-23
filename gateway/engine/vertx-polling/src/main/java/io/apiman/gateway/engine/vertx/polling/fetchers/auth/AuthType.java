@@ -19,13 +19,15 @@ package io.apiman.gateway.engine.vertx.polling.fetchers.auth;
 import java.util.Arrays;
 
 /**
-* @author Marc Savy {@literal <marc@rhymewithgravy.com>}
-*/
+ * Auth types supported.
+ *
+ * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
+ */
 public enum AuthType {
     NONE(new NoneAuth()),
     BASIC(new BasicAuth()),
-    OAUTH2CLIENT(new OAuth2Client()),
-    KEYCLOAKOAUTH2CLIENT(new KeycloakOAuth2Client());
+    OAUTH2(new OAuth2()),
+    KEYCLOAKOAUTH2(new KeycloakOAuth2());
 
     private Authenticator auth;
 

@@ -16,6 +16,7 @@
 package io.apiman.gateway.platforms.vertx3.verticles;
 
 import io.apiman.gateway.platforms.vertx3.common.verticles.VerticleType;
+import io.apiman.gateway.platforms.vertx3.http.HttpApiFactory;
 import io.apiman.gateway.platforms.vertx3.http.HttpPolicyAdapter;
 import io.vertx.core.Future;
 import io.vertx.core.http.HttpServerOptions;
@@ -33,6 +34,8 @@ public class HttpsGatewayVerticle extends ApimanVerticleWithEngine {
     @Override
     public void start(Future<Void> startFuture) {
         super.start(startFuture);
+
+        HttpApiFactory.init(engine.getApiRequestPathParser());
 
         HttpServerOptions sslOptions = new HttpServerOptions()
             .setHost(apimanConfig.getHostname())
@@ -54,7 +57,7 @@ public class HttpsGatewayVerticle extends ApimanVerticleWithEngine {
     }
 
     private void requestHandler(HttpServerRequest req) {
-        new HttpPolicyAdapter(req, engine, log, true).execute();
+        new HttpPolicyAdapter(req, engine, true).execute();
     }
 
     @Override

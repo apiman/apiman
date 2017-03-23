@@ -18,6 +18,7 @@ package io.apiman.gateway.engine.impl;
 import io.apiman.common.logging.IDelegateFactory;
 import io.apiman.common.util.crypt.CurrentDataEncrypter;
 import io.apiman.common.util.crypt.IDataEncrypter;
+import io.apiman.gateway.engine.IApiRequestPathParser;
 import io.apiman.gateway.engine.IComponentRegistry;
 import io.apiman.gateway.engine.IConnectorFactory;
 import io.apiman.gateway.engine.IEngine;
@@ -58,13 +59,14 @@ public abstract class AbstractEngineFactory implements IEngineFactory {
         IPolicyFactory pfactory = createPolicyFactory(pluginRegistry);
         IMetrics metrics = createMetrics(pluginRegistry);
         IDelegateFactory logFactory = createLoggerFactory(pluginRegistry);
+        IApiRequestPathParser pathParser = createRequestPathParser(pluginRegistry);
 
         List<IGatewayInitializer> initializers = createInitializers(pluginRegistry);
         for (IGatewayInitializer initializer : initializers) {
             initializer.initialize();
         }
 
-        return new EngineImpl(registry, pluginRegistry, componentRegistry, cfactory, pfactory, metrics, logFactory);
+        return new EngineImpl(registry, pluginRegistry, componentRegistry, cfactory, pfactory, metrics, logFactory, pathParser);
     }
 
     /**
@@ -127,5 +129,13 @@ public abstract class AbstractEngineFactory implements IEngineFactory {
      * @return anew log factory
      */
     protected abstract IDelegateFactory createLoggerFactory(IPluginRegistry pluginRegistry);
+
+
+    /**
+     * Creates the request path parser.
+     * @param pluginRegistry the plugin registry
+     * @return the request path parser
+     */
+    protected abstract IApiRequestPathParser createRequestPathParser(IPluginRegistry pluginRegistry);
 
 }

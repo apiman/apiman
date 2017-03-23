@@ -31,6 +31,7 @@ import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.core.json.Json;
 import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 
 import java.util.Map;
 
@@ -41,21 +42,29 @@ public class HttpPolicyAdapter {
     private final HttpServerRequest vertxRequest;
     private final HttpServerResponse vertxResponse;
     private final IEngine engine;
-    private final Logger log;
+    private final Logger log = LoggerFactory.getLogger(HttpPolicyAdapter.class);
     private final boolean isTls;
 
     public HttpPolicyAdapter(HttpServerRequest req,
                       IEngine engine,
-                      Logger log,
                       boolean isTls) {
         this.vertxRequest = req;
         this.engine = engine;
-        this.log = log;
         this.isTls = isTls;
         this.vertxResponse = req.response();
     }
 
     public void execute() {
+        try {
+            _execute();
+        } catch (Exception ex) {
+            handleError(vertxResponse, ex);
+        }
+    }
+
+    public void _execute() {
+        log.trace("Received request {0}", vertxRequest.absoluteURI()); //$NON-NLS-1$
+
         // First, pause the request to avoid losing any data
         vertxRequest.pause();
 

@@ -32,8 +32,18 @@ import java.util.Map;
 import org.apache.commons.lang3.EnumUtils;
 
 /**
-* @author Marc Savy {@literal <marc@rhymewithgravy.com>}
-*/
+ * Fetch HTTP and HTTPS resources, with Auth options including BASIC and various OAuth2
+ * permutations.
+ *
+ * <ul>
+ *   <li>auth: auth type, one of {@link AuthType}. Otherwise <tt>None</tt> by default.<li>
+ * </ul>
+ *
+ * Refer to {@link AuthType} for available options, such as BASIC, OAuth2, Keycloak, etc.
+ *
+ * @see AuthType
+ * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
+ */
 @SuppressWarnings("nls")
 public class HttpResourceFetcher implements ResourceFetcher {
 

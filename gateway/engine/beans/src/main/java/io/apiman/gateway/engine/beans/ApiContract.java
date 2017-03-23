@@ -44,6 +44,7 @@ public class ApiContract implements Serializable {
      * Constructor.
      * @param api the api
      * @param client the client
+     * @param plan the plan
      * @param policies the list of policies
      */
     public ApiContract(Api api, Client client, String plan, List<Policy> policies) {

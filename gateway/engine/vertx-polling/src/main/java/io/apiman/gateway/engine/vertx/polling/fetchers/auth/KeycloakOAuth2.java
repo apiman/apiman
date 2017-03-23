@@ -27,19 +27,31 @@ import io.vertx.core.logging.LoggerFactory;
 import io.vertx.ext.auth.oauth2.AccessToken;
 import io.vertx.ext.auth.oauth2.OAuth2Auth;
 import io.vertx.ext.auth.oauth2.OAuth2FlowType;
+import io.vertx.ext.auth.oauth2.providers.KeycloakAuth;
 
 import java.util.Map;
 import java.util.Objects;
 
 /**
-* @author Marc Savy {@literal <marc@rhymewithgravy.com>}
-*/
+ * Authenticator for Keycloak OAuth2.
+ *
+ * <ul>
+ *   <li>flowType: OAuth2 flow type</li>
+ *   <li>username: if password flow</li>
+ *   <li>password: if password flow</li>
+ * </ul>
+ *
+ * Paste JSON config from your Keycloak realm.
+ *
+ * @see OAuth2FlowType
+ * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
+ */
 @SuppressWarnings("nls")
-public class KeycloakOAuth2Client extends AbstractOAuth2Base implements Authenticator {
+public class KeycloakOAuth2 extends AbstractOAuth2Base implements Authenticator {
 
-    private Logger log = LoggerFactory.getLogger(KeycloakOAuth2Client.class);
+    private Logger log = LoggerFactory.getLogger(KeycloakOAuth2.class);
 
-    public KeycloakOAuth2Client() {
+    public KeycloakOAuth2() {
     }
 
     @Override
@@ -60,7 +72,7 @@ public class KeycloakOAuth2Client extends AbstractOAuth2Base implements Authenti
             params.put("password", config.get("password"));
         }
 
-        OAuth2Auth oauth2 = OAuth2Auth.createKeycloak(vertx, flowType, mapToJson(config));
+        OAuth2Auth oauth2 = KeycloakAuth.create(vertx,  flowType, mapToJson(config));
 
         oauth2.getToken(params, tokenResult -> {
             if (tokenResult.succeeded()) {

@@ -25,6 +25,7 @@ import io.apiman.common.util.ReflectionUtils;
 import io.apiman.common.util.crypt.IDataEncrypter;
 import io.apiman.gateway.engine.EngineConfigTuple;
 import io.apiman.gateway.engine.GatewayConfigProperties;
+import io.apiman.gateway.engine.IApiRequestPathParser;
 import io.apiman.gateway.engine.IComponent;
 import io.apiman.gateway.engine.IConnectorFactory;
 import io.apiman.gateway.engine.IEngineConfig;
@@ -37,6 +38,7 @@ import io.apiman.gateway.engine.IRegistry;
 import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.impl.DefaultPolicyErrorWriter;
 import io.apiman.gateway.engine.impl.DefaultPolicyFailureWriter;
+import io.apiman.gateway.engine.impl.DefaultRequestPathParser;
 import io.apiman.gateway.engine.policy.IPolicyFactory;
 
 import java.util.ArrayList;
@@ -237,6 +239,17 @@ public class WarEngineConfig implements IEngineConfig {
     @Override
     public Map<String, String> getLoggerFactoryConfig() {
         return getConfigMap(GatewayConfigProperties.LOGGER_FACTORY_CLASS);
+    }
+
+    @Override
+    public Class<? extends IApiRequestPathParser> getApiRequestPathParserClass(IPluginRegistry pluginRegistry) {
+        return loadConfigClass(GatewayConfigProperties.REQUEST_PARSER_CLASS,
+                IApiRequestPathParser.class, pluginRegistry, DefaultRequestPathParser.class);
+    }
+
+    @Override
+    public Map<String, String> getApiRequestPathParserConfig() {
+        return getConfigMap(GatewayConfigProperties.REQUEST_PARSER_CLASS);
     }
 
     /**

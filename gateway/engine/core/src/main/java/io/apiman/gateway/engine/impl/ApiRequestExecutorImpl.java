@@ -93,7 +93,7 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
 
     private static final long DEFAULT_MAX_PAYLOAD_BUFFER_SIZE = 5 * 1024 * 1024; // in bytes
 
-    private static StrLookup LOOKUP = new ApimanStrLookup();
+    private static StrLookup<String> LOOKUP = new ApimanStrLookup();
     private static StrSubstitutor PROPERTY_SUBSTITUTOR = new StrSubstitutor(LOOKUP);
     static {
         PROPERTY_SUBSTITUTOR.setValueDelimiter(':');
@@ -126,6 +126,7 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
     private IMetrics metrics;
     private RequestMetric requestMetric = new RequestMetric();
 
+    @SuppressWarnings("rawtypes")
     private IPayloadIO payloadIO;
     // max payload buffer size (if not already set in the api itself)
     private long maxPayloadBufferSize = DEFAULT_MAX_PAYLOAD_BUFFER_SIZE;
@@ -140,6 +141,7 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
      * @param policyFactory the policy factory
      * @param connectorFactory the connector factory
      * @param metrics the metrics instance
+     * @param bufferFactory the buffer factory
      */
     public ApiRequestExecutorImpl(ApiRequest apiRequest,
             IAsyncResultHandler<IEngineResult> resultHandler, IRegistry registry, IPolicyContext context,

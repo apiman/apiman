@@ -45,7 +45,7 @@ public class VertxConfigDrivenEngineFactory extends ConfigDrivenEngineFactory {
     private VertxEngineConfig vxConfig;
     private IAsyncResultHandler<Void> handler;
     private int started = 0;
-    private static final int ELEMENTS_TO_START = 6;
+    private static final int ELEMENTS_TO_START = 7; // TODO calculate elem count.
     private boolean failed = false;
     private Logger log = LoggerFactory.getLogger(VertxConfigDrivenEngineFactory.class);
 

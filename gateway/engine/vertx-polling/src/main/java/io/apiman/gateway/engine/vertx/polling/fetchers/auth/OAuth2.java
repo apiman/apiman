@@ -36,11 +36,11 @@ import java.util.Objects;
 * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
 */
 @SuppressWarnings("nls")
-public class OAuth2Client extends AbstractOAuth2Base implements Authenticator {
+public class OAuth2 extends AbstractOAuth2Base implements Authenticator {
 
-    private Logger log = LoggerFactory.getLogger(OAuth2Client.class);
+    private Logger log = LoggerFactory.getLogger(OAuth2.class);
 
-    public OAuth2Client() {
+    public OAuth2() {
     }
 
     @Override

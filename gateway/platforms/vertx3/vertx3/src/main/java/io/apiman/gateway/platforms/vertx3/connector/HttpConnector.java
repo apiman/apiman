@@ -116,7 +116,7 @@ class HttpConnector implements IApiConnectionResponse, IApiConnection {
      */
     public HttpConnector(Vertx vertx, HttpClient client, ApiRequest request, Api api, HttpConnectorOptions options,
             IAsyncResultHandler<IApiConnectionResponse> resultHandler) {
-        this.client = client;
+       this.client = client;
        this.api = api;
        this.apiRequest = request;
 

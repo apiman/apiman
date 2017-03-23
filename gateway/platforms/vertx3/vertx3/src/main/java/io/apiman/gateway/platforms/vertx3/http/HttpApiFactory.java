@@ -17,9 +17,11 @@ package io.apiman.gateway.platforms.vertx3.http;
 
 import io.apiman.common.util.ApimanPathUtils;
 import io.apiman.common.util.ApimanPathUtils.ApiRequestPathInfo;
+import io.apiman.gateway.engine.IApiRequestPathParser;
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.engine.beans.util.CaseInsensitiveStringMultiMap;
+import io.apiman.gateway.engine.beans.util.HeaderMap;
 import io.vertx.core.MultiMap;
 import io.vertx.core.http.HttpClientResponse;
 import io.vertx.core.http.HttpServerRequest;
@@ -40,10 +42,16 @@ import java.util.Set;
 @SuppressWarnings("nls")
 public class HttpApiFactory {
 
-    final static Set<String> IGNORESET = new HashSet<>();
+    private final static Set<String> IGNORESET = new HashSet<>();
     static {
         IGNORESET.add(ApimanPathUtils.X_API_VERSION_HEADER);
         IGNORESET.add("Host");
+    }
+
+    private static IApiRequestPathParser requestPathParser;
+
+    public static void init(IApiRequestPathParser requestPathParser) {
+        HttpApiFactory.requestPathParser = requestPathParser;
     }
 
     public static ApiResponse buildResponse(HttpClientResponse response, Set<String> suppressHeaders) {
@@ -72,25 +80,31 @@ public class HttpApiFactory {
         apimanRequest.setTransportSecure(isTransportSecure);
         multimapToMap(apimanRequest.getHeaders(), req.headers(), IGNORESET);
         multimapToMap(apimanRequest.getQueryParams(), req.params(), Collections.<String>emptySet());
-        mungePath(req, apimanRequest);
+        parsePath(req, apimanRequest);
         return apimanRequest;
     }
 
-    private static void mungePath(HttpServerRequest request, ApiRequest apimanRequest) {
-        ApiRequestPathInfo parsedPath = ApimanPathUtils.parseApiRequestPath(
-                request.getHeader(ApimanPathUtils.X_API_VERSION_HEADER),
-                request.getHeader(ApimanPathUtils.ACCEPT_HEADER),
-                request.path());
-
+    private static void parsePath(HttpServerRequest request, ApiRequest apimanRequest) {
+        // NB: The apiman version of the headers has already been parsed, so the headers have already been filtered/modified.
+        // Therefore we wrap the original inbound headers (just get) to efficiently access the necessary data.
+        ApiRequestPathInfo parsedPath = requestPathParser.parseEndpoint(request.path(), wrapMultiMap(request.headers()));
         apimanRequest.setApiOrgId(parsedPath.orgId);
         apimanRequest.setApiId(parsedPath.apiId);
         apimanRequest.setApiVersion(parsedPath.apiVersion);
         apimanRequest.setUrl(request.absoluteURI());
         apimanRequest.setDestination(parsedPath.resource);
+    }
 
-        if (apimanRequest.getApiOrgId() == null) {
-            throw new IllegalArgumentException("Invalid endpoint provided: " + request.path());
-        }
+    // TODO hacky...
+    private static HeaderMap wrapMultiMap(MultiMap headers) {
+        return new HeaderMap() {
+            private static final long serialVersionUID = -1406124274678587935L;
+
+            @Override()
+            public String get(String key) {
+                return headers.get(key);
+            }
+        };
     }
 
     private static void multimapToMap(CaseInsensitiveStringMultiMap map, MultiMap multimap, Set<String> suppressHeaders) {

@@ -26,7 +26,7 @@ import io.vertx.core.Future;
  */
 public abstract class ApimanVerticleWithEngine extends ApimanVerticleBase {
 
-    protected IEngine engine;
+    protected IEngine engine; //FIXME
 
     @Override
     public void start(Future<Void> startFuture) {
@@ -38,8 +38,8 @@ public abstract class ApimanVerticleWithEngine extends ApimanVerticleBase {
                     } else {
                         startFuture.fail(result.getError());
                     }
-                })
-                .createEngine();
+                }).createEngine();
+
         engine.getRegistry(); // this should help avoid slow first-time loads.
     }
 

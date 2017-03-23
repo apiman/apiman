@@ -30,8 +30,10 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 /**
-* @author Marc Savy {@literal <marc@rhymewithgravy.com>}
-*/
+ * Common OAuth2 base.
+ *
+ * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
+ */
 public abstract class AbstractOAuth2Base {
     // Umm :-)
     protected static JsonObject mapToJson(Map<String, String> map) {

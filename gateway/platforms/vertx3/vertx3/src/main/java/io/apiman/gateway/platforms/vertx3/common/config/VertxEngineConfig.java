@@ -21,6 +21,7 @@ import io.apiman.common.util.SimpleStringUtils;
 import io.apiman.common.util.crypt.IDataEncrypter;
 import io.apiman.gateway.engine.EngineConfigTuple;
 import io.apiman.gateway.engine.GatewayConfigProperties;
+import io.apiman.gateway.engine.IApiRequestPathParser;
 import io.apiman.gateway.engine.IComponent;
 import io.apiman.gateway.engine.IConnectorFactory;
 import io.apiman.gateway.engine.IEngineConfig;
@@ -33,6 +34,7 @@ import io.apiman.gateway.engine.IRegistry;
 import io.apiman.gateway.engine.impl.DefaultDataEncrypter;
 import io.apiman.gateway.engine.impl.DefaultPolicyErrorWriter;
 import io.apiman.gateway.engine.impl.DefaultPolicyFailureWriter;
+import io.apiman.gateway.engine.impl.DefaultRequestPathParser;
 import io.apiman.gateway.engine.policy.IPolicyFactory;
 import io.apiman.gateway.engine.policy.PolicyFactoryImpl;
 import io.apiman.gateway.platforms.vertx3.common.verticles.VerticleType;
@@ -80,6 +82,7 @@ public class VertxEngineConfig implements IEngineConfig {
     private static final String GATEWAY_POLICY_FACTORY_PREFIX = "policy-factory";
     private static final String GATEWAY_METRICS_PREFIX = "metrics";
     private static final String GATEWAY_COMPONENT_PREFIX = "components";
+    private static final String GATEWAY_REQUEST_PARSER_PREFIX = "request-parser";
 
     private static final String GATEWAY_CONFIG = "config";
     private static final String GATEWAY_CLASS = "class";
@@ -151,6 +154,18 @@ public class VertxEngineConfig implements IEngineConfig {
     @Override
     public Map<String, String> getPolicyFactoryConfig() {
         return getConfig(config, GATEWAY_POLICY_FACTORY_PREFIX);
+    }
+
+
+    @Override
+    public Class<? extends IApiRequestPathParser> getApiRequestPathParserClass(IPluginRegistry pluginRegistry) {
+        return loadConfigClass(getClassname(config, GATEWAY_REQUEST_PARSER_PREFIX),
+                IApiRequestPathParser.class, DefaultRequestPathParser.class);
+    }
+
+    @Override
+    public Map<String, String> getApiRequestPathParserConfig() { // Probably will not be used
+        return getConfig(config, GATEWAY_REQUEST_PARSER_PREFIX);
     }
 
     @Override
@@ -274,6 +289,9 @@ public class VertxEngineConfig implements IEngineConfig {
     }
 
     protected Map<String, String> toFlatStringMap(JsonObject jsonObject) {
+        if (jsonObject == null)
+            return Collections.emptyMap();
+
         Map<String, String> outMap = new LinkedHashMap<>();
         // TODO figure out why this workaround is necessary.
         jsonMapToProperties("", new JsonObject(jsonObject.encode()).getMap(), outMap);
@@ -322,7 +340,7 @@ public class VertxEngineConfig implements IEngineConfig {
         if (mfp != null && !mfp.isEmpty()) { // TODO
             return mfp;
         }
-        return toFlatStringMap(obj.getJsonObject(prefix).getJsonObject(GATEWAY_CONFIG));
+        return toFlatStringMap(obj.getJsonObject(prefix, new JsonObject()).getJsonObject(GATEWAY_CONFIG));
     }
 
     /**

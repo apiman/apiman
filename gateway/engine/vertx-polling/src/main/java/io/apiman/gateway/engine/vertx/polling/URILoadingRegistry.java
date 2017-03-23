@@ -24,6 +24,7 @@ import io.apiman.gateway.engine.beans.Api;
 import io.apiman.gateway.engine.beans.Client;
 import io.apiman.gateway.engine.impl.InMemoryRegistry;
 import io.apiman.gateway.engine.vertx.polling.exceptions.UnsupportedProtocolException;
+import io.apiman.gateway.engine.vertx.polling.fetchers.AccessTokenResourceFetcher;
 import io.apiman.gateway.engine.vertx.polling.fetchers.FileResourceFetcher;
 import io.apiman.gateway.engine.vertx.polling.fetchers.HttpResourceFetcher;
 import io.apiman.gateway.engine.vertx.polling.fetchers.ResourceFetcher;
@@ -50,8 +51,18 @@ import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
 
 /**
-* @author Marc Savy {@literal <marc@rhymewithgravy.com>}
-*/
+ * URI loading registry that pulls configuration from a specified JSON file.
+ * <ul>
+ *   <li>configUri: apiman policy config to load from JSON via file
+ *   ({@link FileResourceFetcher}) or HTTP/S ({@link HttpResourceFetcher}).
+ *   See the corresponding fetcher for additional options.</li>
+ * </ul>
+ *
+ * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
+ * @see FileResourceFetcher
+ * @see HttpResourceFetcher
+ * @see AccessTokenResourceFetcher
+ */
 @SuppressWarnings("nls")
 public class URILoadingRegistry extends InMemoryRegistry implements AsyncInitialize {
     // Protected by DCL, use #getUriLoader

@@ -20,9 +20,30 @@ import io.vertx.core.Handler;
 import io.vertx.core.buffer.Buffer;
 
 /**
-* @author Marc Savy {@literal <marc@rhymewithgravy.com>}
-*/
+ * <p>
+ * Interface for asynchronously fetching simple remote resources, for instance
+ * via HTTP or local file-system.
+ * </p>
+ * <p>
+ * Any exceptions are returned via {@link #exceptionHandler(Handler)}, which
+ * the user should set if they are interested in handling errors.
+ * </p>
+ *
+ * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
+ */
 public interface ResourceFetcher {
+    /**
+     * Fetch a resource and return its content via the resultHandler
+     *
+     * @param resultHandler the result handler
+     */
     void fetch(Handler<Buffer> resultHandler);
+
+    /**
+     * Set an exception handler, invoked in an error occurs.
+     *
+     * @param exceptionHandler the exception handler
+     * @return fluent
+     */
     ResourceFetcher exceptionHandler(Handler<Throwable> exceptionHandler);
 }

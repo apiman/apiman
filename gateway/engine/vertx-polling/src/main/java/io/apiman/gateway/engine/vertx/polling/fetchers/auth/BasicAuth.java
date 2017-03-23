@@ -27,8 +27,15 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
-* @author Marc Savy {@literal <marc@rhymewithgravy.com>}
-*/
+ * Set BASIC auth credentials.
+ *
+ * <ul>
+ *   <li>username: username</li>
+ *   <li>password: password</li>
+ * </ul>
+ *
+ * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
+ */
 @SuppressWarnings("nls")
 public final class BasicAuth implements Authenticator {
 
