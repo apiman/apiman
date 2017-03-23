@@ -94,7 +94,7 @@ public interface IStringMultiMap extends Iterable<Map.Entry<String, String>> {
     IStringMultiMap remove(String key);
 
     /**
-     * Get the first value for given <tt>key</tt>.
+     * Get the last value for given <tt>key</tt>.
      *
      * @param key the key
      * @return the value if present, else null
@@ -132,7 +132,7 @@ public interface IStringMultiMap extends Iterable<Map.Entry<String, String>> {
     /**
      * Converts this multimap into a plain map. Note that this method will be lossy
      * if multiple values have been associated with any given key. It will select
-     * only the first value.
+     * only the last value.
      *
      * @return the map
      */

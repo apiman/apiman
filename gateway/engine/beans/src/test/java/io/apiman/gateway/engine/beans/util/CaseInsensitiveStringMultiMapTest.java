@@ -213,7 +213,7 @@ public class CaseInsensitiveStringMultiMapTest {
 
     @Test
     public void removeEntries() {
-        Map<String, String> expected = new LinkedHashMap<>(); // Expect empty
+        Map<String, String> expected = new LinkedHashMap<>();
         expected.put("C", "X_X");
 
         CaseInsensitiveStringMultiMap mmap = new CaseInsensitiveStringMultiMap();
@@ -227,14 +227,15 @@ public class CaseInsensitiveStringMultiMapTest {
 
     @Test // A and C will have same bucket by virtue of size 1 array
     public void removeEntriesWithCollision() {
-        Map<String, String> expected = new LinkedHashMap<>(); // Expect empty
+        Map<String, String> expected = new LinkedHashMap<>();
         expected.put("C", "X_X");
         expected.put("b", "b");
         expected.put("aa", "x");
 
         CaseInsensitiveStringMultiMap mmap = new CaseInsensitiveStringMultiMap(1);
         // Additional entries should be ignored
-        mmap.add("b", "b").add("aa", "x").add("a", "x").add("a", "y").add("A", "z").add("a", "XX").add("C", "X_X");
+        mmap.add("a", "x").add("a", "y").add("A", "z").add("a", "Problem").add("C", "X_X").add("aa", "x").add("b", "b");
+
         mmap.remove("a");
         Map<String, String> actual = mmap.toMap();
 
