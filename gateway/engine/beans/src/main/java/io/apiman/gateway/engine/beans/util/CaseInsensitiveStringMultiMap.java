@@ -312,6 +312,8 @@ public class CaseInsensitiveStringMultiMap implements IStringMultiMap, Serializa
                     current.previous = null;
                     current = prev;
                     removedAny = true;
+                    if (link != null)
+                        link.previous = prev;
                 } else if (newHead == null) {
                     newHead = link = current;
                     current = newHead.previous;
