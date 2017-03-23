@@ -28,6 +28,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import net.openhft.hashing.Access;
 import net.openhft.hashing.LongHashFunction;
@@ -247,7 +248,10 @@ public class CaseInsensitiveStringMultiMap implements IStringMultiMap, Serializa
 
     @SuppressWarnings("nls")
     private String joinValues(List<Entry<String, String>> pairs) {
-        return pairs.stream().map(Entry::getValue).collect(Collectors.joining(", "));
+        return IntStream.rangeClosed(1, pairs.size())
+                .mapToObj(i -> pairs.get(pairs.size() - i))
+                .map(Entry::getValue)
+                .collect(Collectors.joining(", "));
     }
 
     private static boolean insensitiveEquals(String a, String b) {
