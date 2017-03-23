@@ -114,8 +114,7 @@ public class CaseInsensitiveStringMultiMapTest {
     public void shouldGenerateSensibleToString() throws Exception {
         CaseInsensitiveStringMultiMap actual = new CaseInsensitiveStringMultiMap();
         actual.add("a", "b").add("c", "d").add("a", "x");
-        String str = actual.toString();
-        Assert.assertEquals("{a => [x, b], c => [d]}", str);
+        Assert.assertEquals("{a => [b, x], c => [d]}", actual.toString());
     }
 
     @Test
