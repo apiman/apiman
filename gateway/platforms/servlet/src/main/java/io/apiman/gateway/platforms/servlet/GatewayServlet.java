@@ -67,7 +67,7 @@ public abstract class GatewayServlet extends HttpServlet {
      */
     public GatewayServlet() {
     }
-    
+
     /**
      * @see javax.servlet.http.HttpServlet#service(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
@@ -204,7 +204,7 @@ public abstract class GatewayServlet extends HttpServlet {
      * @throws IOException
      */
     protected ApiRequest readRequest(HttpServletRequest request) throws Exception {
-        ApiRequestPathInfo pathInfo = parseApiRequestPath(request);
+        ApiRequestPathInfo pathInfo = getEngine().getApiRequestPathParser().parseEndpoint(request.getPathInfo(), wrapMultiMap(request));//parseApiRequestPath(request);
         if (pathInfo.orgId == null) {
             throw new Exception(Messages.i18n.format("GatewayServlet.InvalidApiEndpoint")); //$NON-NLS-1$
         }
@@ -225,6 +225,17 @@ public abstract class GatewayServlet extends HttpServlet {
         srequest.setRemoteAddr(request.getRemoteAddr());
         srequest.setTransportSecure(request.isSecure());
         return srequest;
+    }
+
+    private HeaderMap wrapMultiMap(HttpServletRequest request) {
+        return new HeaderMap() {
+            private static final long serialVersionUID = -1406124274678587935L;
+
+            @Override()
+            public String get(String key) {
+                return request.getHeader(key);
+            }
+        };
     }
 
     /**
@@ -308,7 +319,7 @@ public abstract class GatewayServlet extends HttpServlet {
                     resp.getOutputStream().flush();
                 } catch (IOException e) {
                     e.printStackTrace();
-                };
+                }
             }
 
             /**
@@ -351,7 +362,7 @@ public abstract class GatewayServlet extends HttpServlet {
                     resp.getOutputStream().flush();
                 } catch (IOException e) {
                     e.printStackTrace();
-                };
+                }
             }
 
             /**
@@ -386,7 +397,7 @@ public abstract class GatewayServlet extends HttpServlet {
      */
     protected static final QueryMap parseApiRequestQueryParams(String queryString) {
         QueryMap rval = new QueryMap();
-        
+
         if (queryString != null) {
             try {
                 String[] pairSplit = queryString.split("&"); //$NON-NLS-1$
@@ -405,9 +416,9 @@ public abstract class GatewayServlet extends HttpServlet {
             } catch (UnsupportedEncodingException e) {
                 throw new RuntimeException(e);
             }
-            
+
         }
-        
+
         return rval;
     }
 
