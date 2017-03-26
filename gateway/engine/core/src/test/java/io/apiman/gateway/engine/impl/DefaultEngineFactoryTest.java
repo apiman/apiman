@@ -184,13 +184,16 @@ public class DefaultEngineFactoryTest {
 
             @Override
             protected IDelegateFactory createLoggerFactory(IPluginRegistry pluginRegistry) {
-                // TODO Auto-generated method stub
                 return null;
             }
 
             @Override
             protected IApiRequestPathParser createRequestPathParser(IPluginRegistry pluginRegistry) {
                 return new DefaultRequestPathParser(null);
+            }
+
+            @Override
+            protected void complete() {
             }
         };
 

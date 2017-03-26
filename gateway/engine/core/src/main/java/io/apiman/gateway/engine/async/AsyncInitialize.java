@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-package io.apiman.gateway.platforms.vertx3.common;
-
-import io.apiman.gateway.engine.async.IAsyncResultHandler;
+package io.apiman.gateway.engine.async;
 
 /**
 * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
