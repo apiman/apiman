@@ -26,7 +26,7 @@ import io.vertx.core.Future;
  */
 public abstract class ApimanVerticleWithEngine extends ApimanVerticleBase {
 
-    protected IEngine engine; //FIXME
+    protected IEngine engine;
 
     @Override
     public void start(Future<Void> startFuture) {

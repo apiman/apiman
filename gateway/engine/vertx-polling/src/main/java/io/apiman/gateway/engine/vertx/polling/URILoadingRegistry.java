@@ -47,6 +47,7 @@ import java.util.Deque;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -67,12 +68,14 @@ import org.apache.commons.lang3.StringUtils;
 public class URILoadingRegistry extends InMemoryRegistry implements AsyncInitialize {
     // Protected by DCL, use #getUriLoader
     private static volatile OneShotURILoader instance;
+    private static AtomicInteger registryCounter = new AtomicInteger(0);
     private URI uri;
     private Vertx vertx;
     private Map<String, String> options;
 
     public URILoadingRegistry(Vertx vertx, IEngineConfig vxConfig, Map<String, String> options) {
         super();
+        registryCounter.incrementAndGet();
         this.vertx = vertx;
         this.options = options;
         Arguments.require(options.containsKey("configUri"), "configUri is required in configuration");
@@ -81,7 +84,6 @@ public class URILoadingRegistry extends InMemoryRegistry implements AsyncInitial
 
     public URILoadingRegistry(Map<String, String> options) {
         this(Vertx.vertx(), null, options);
-        initialize(init->{});
     }
 
     @Override
@@ -93,7 +95,7 @@ public class URILoadingRegistry extends InMemoryRegistry implements AsyncInitial
         if (instance == null) {
             synchronized(URILoadingRegistry.class) {
                 if (instance == null) {
-                    instance = new OneShotURILoader(vertx, uri, options);
+                    instance = new OneShotURILoader(vertx, uri, registryCounter, options);
                 }
             }
         }
@@ -142,6 +144,7 @@ public class URILoadingRegistry extends InMemoryRegistry implements AsyncInitial
 
         private Vertx vertx;
         private URI uri;
+        private AtomicInteger registryCounter;
         private Map<String, String> config;
         private List<IAsyncResultHandler<Void>> failureHandlers = new ArrayList<>();
         private Deque<URILoadingRegistry> awaiting = new ArrayDeque<>();
@@ -152,8 +155,10 @@ public class URILoadingRegistry extends InMemoryRegistry implements AsyncInitial
         private List<Api> apis = Collections.emptyList();
         private Logger log = LoggerFactory.getLogger(OneShotURILoader.class);
         private IAsyncHandler<Void> reloadHandler;
+        private boolean failed;
 
-        public OneShotURILoader(Vertx vertx, URI uri, Map<String, String> config) {
+        public OneShotURILoader(Vertx vertx, URI uri, AtomicInteger registryCounter, Map<String, String> config) {
+            this.registryCounter = registryCounter;
             this.config = config;
             this.vertx = vertx;
             this.uri = uri;
@@ -164,6 +169,7 @@ public class URILoadingRegistry extends InMemoryRegistry implements AsyncInitial
         public synchronized void reload(IAsyncHandler<Void> reloadHandler) {
             this.reloadHandler = reloadHandler;
             awaiting.addAll(allRegistries);
+            registryCounter = new AtomicInteger(allRegistries.size());
             apis.clear();
             clients.clear();
             failureHandlers.clear(); // Initial design assumption was that this would never be reloaded - so this is the future for boot-time and thus has already been called.
@@ -171,6 +177,7 @@ public class URILoadingRegistry extends InMemoryRegistry implements AsyncInitial
                 .map(URILoadingRegistry::getMap)
                 .forEach(Map::clear);
             dataProcessed = false;
+            failed = false;
             // Load again from scratch.
             fetchResource();
         }
@@ -184,7 +191,6 @@ public class URILoadingRegistry extends InMemoryRegistry implements AsyncInitial
                 });
         }
 
-        // TODO perhaps use enum + factory instead if we add more protocols.
         private ResourceFetcher getResourceFetcher() {
             String scheme = uri.getScheme() == null ? "file" : uri.getScheme().toLowerCase();
             switch (scheme) {
@@ -202,6 +208,8 @@ public class URILoadingRegistry extends InMemoryRegistry implements AsyncInitial
         private void processData() {
             if (rawData.length() == 0) {
                 log.warn("File loaded into registry was empty. No entities created.");
+                registryCounter.set(0); // Shortcut.
+                checkSuccess();
                 return;
             }
             try {
@@ -241,6 +249,7 @@ public class URILoadingRegistry extends InMemoryRegistry implements AsyncInitial
             if (dataProcessed && awaiting.size()>0) {
                 loadDataIntoRegistries();
             }
+            checkSuccess();
         }
 
         private void loadDataIntoRegistries() {
@@ -255,6 +264,7 @@ public class URILoadingRegistry extends InMemoryRegistry implements AsyncInitial
                     reg.registerClientInternal(client, handleAnyFailure());
                     log.debug("Registering: {0} ", client);
                 }
+                registryCounter.decrementAndGet();
             }
             if (reloadHandler != null)
                 reloadHandler.handle((Void) null);
@@ -270,10 +280,19 @@ public class URILoadingRegistry extends InMemoryRegistry implements AsyncInitial
         }
 
         private void failAll(Throwable cause) {
+            failed = true;
             AsyncResultImpl<Void> failure = AsyncResultImpl.create(cause);
             failureHandlers.stream().forEach(failureHandler -> {
                 vertx.runOnContext(run -> failureHandler.handle(failure));
             });
+        }
+
+        private void checkSuccess() {
+            if (registryCounter.get() == 0 && !failed) {
+                failureHandlers.stream().forEach(failureHandler -> {
+                    vertx.runOnContext(run -> failureHandler.handle(AsyncResultImpl.create((Void) null)));
+                });
+            }
         }
     }
 
