@@ -27,38 +27,45 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.StreamSupport;
 
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.experimental.theories.DataPoints;
+import org.junit.experimental.theories.Theories;
+import org.junit.experimental.theories.Theory;
+import org.junit.runner.RunWith;
 
 /**
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 @SuppressWarnings("nls")
+@RunWith(Theories.class)
 public class CaseInsensitiveStringMultiMapTest {
 
-    @Test
-    public void isNotEmpty() {
-        CaseInsensitiveStringMultiMap actual = new CaseInsensitiveStringMultiMap();
+    public static @DataPoints int[] candidates = IntStream.range(1, 4096).toArray();
+
+    @Theory
+    public void isNotEmpty(int size) {
+        CaseInsensitiveStringMultiMap actual = new CaseInsensitiveStringMultiMap(size);
         actual.add("x", "y");
         Assert.assertFalse(actual.isEmpty());
     }
 
-    @Test
-    public void isEmpty() {
-        CaseInsensitiveStringMultiMap actual = new CaseInsensitiveStringMultiMap();
+    @Theory
+    public void isEmpty(int size) {
+        CaseInsensitiveStringMultiMap actual = new CaseInsensitiveStringMultiMap(size);
         actual.add("x", "y").add("x", "z");
         actual.remove("x");
         Assert.assertTrue(actual.isEmpty());
     }
 
-    @Test
-    public void shouldAddAllEntriesFromMultiMap() {
-        CaseInsensitiveStringMultiMap putMap = new CaseInsensitiveStringMultiMap();
+    @Theory
+    public void shouldAddAllEntriesFromMultiMap(int size) {
+        CaseInsensitiveStringMultiMap putMap = new CaseInsensitiveStringMultiMap(size);
         putMap.add("foo", "bar").add("api", "man").add("marc", "red-hat").add("marc", "savy");
 
-        CaseInsensitiveStringMultiMap actual = new CaseInsensitiveStringMultiMap();
+        CaseInsensitiveStringMultiMap actual = new CaseInsensitiveStringMultiMap(size);
         actual.addAll(putMap);
 
         Assert.assertEquals(
@@ -66,60 +73,60 @@ public class CaseInsensitiveStringMultiMapTest {
                 toSet(actual.getEntries()));
     }
 
-    @Test
-    public void shouldPutAllEntriesFromMap() {
+    @Theory
+    public void shouldPutAllEntriesFromMap(int size) {
         Map<String, String> putAllMap = new HashMap<>();
         putAllMap.put("a", "x");
         putAllMap.put("b", "y");
         putAllMap.put("c", "z");
 
-        CaseInsensitiveStringMultiMap actual = new CaseInsensitiveStringMultiMap();
+        CaseInsensitiveStringMultiMap actual = new CaseInsensitiveStringMultiMap(size);
         actual.putAll(putAllMap);
 
         Assert.assertEquals(expected(ent("a", "x"), ent("b", "y"), ent("c", "z")),
                 toSet(actual.getEntries()));
     }
 
-    @Test
-    public void shouldReturnTrueWhenContainsKey() throws Exception {
-        CaseInsensitiveStringMultiMap actual = new CaseInsensitiveStringMultiMap();
+    @Theory
+    public void shouldReturnTrueWhenContainsKey(int size) throws Exception {
+        CaseInsensitiveStringMultiMap actual = new CaseInsensitiveStringMultiMap(size);
         actual.put("a", "b").put("c", "d").put("a", "x");
         Assert.assertTrue(actual.containsKey("a"));
     }
 
-    @Test
-    public void shouldReturnFalseWhenNotContainsKey() throws Exception {
+    @Theory
+    public void shouldReturnFalseWhenNotContainsKey(int size) throws Exception {
         CaseInsensitiveStringMultiMap actual = new CaseInsensitiveStringMultiMap(1);
         actual.put("a", "b").put("c", "d").put("a", "x");
         Assert.assertFalse(actual.containsKey("cc"));
     }
 
-    @Test
-    public void shouldReturnFalseWhenContainsKeyOnEmptyMap() {
-        CaseInsensitiveStringMultiMap actual = new CaseInsensitiveStringMultiMap();
+    @Theory
+    public void shouldReturnFalseWhenContainsKeyOnEmptyMap(int size) {
+        CaseInsensitiveStringMultiMap actual = new CaseInsensitiveStringMultiMap(size);
         Assert.assertFalse(actual.containsKey("z"));
     }
 
     // Note: even with multiple values for a given key, still only counts as 1 in keyset.
-    @Test
-    public void keySet() throws Exception {
-        CaseInsensitiveStringMultiMap actual = new CaseInsensitiveStringMultiMap();
+    @Theory
+    public void shouldGetKeySet(int size) throws Exception {
+        CaseInsensitiveStringMultiMap actual = new CaseInsensitiveStringMultiMap(size);
         actual.put("a", "b").put("c", "d").put("a", "x");
         Assert.assertEquals(expected("a", "c"), actual.keySet());
         actual.remove("c");
         Assert.assertEquals(expected("a"), actual.keySet());
     }
 
-    @Test
-    public void shouldGenerateSensibleToString() throws Exception {
-        CaseInsensitiveStringMultiMap actual = new CaseInsensitiveStringMultiMap();
+    @Theory
+    public void shouldGenerateSensibleToString(int size) throws Exception {
+        CaseInsensitiveStringMultiMap actual = new CaseInsensitiveStringMultiMap(size);
         actual.add("a", "b").add("c", "d").add("a", "x");
         Assert.assertEquals("{a => [b, x], c => [d]}", actual.toString());
     }
 
-    @Test
-    public void shouldReturnEmptySetWhenNoEntries() {
-        CaseInsensitiveStringMultiMap actual = new CaseInsensitiveStringMultiMap();
+    @Theory
+    public void shouldReturnEmptySetWhenNoEntries(int size) {
+        CaseInsensitiveStringMultiMap actual = new CaseInsensitiveStringMultiMap(size);
         Assert.assertEquals(Collections.emptyList(), actual.getAllEntries("Foo"));
         Assert.assertEquals(Collections.emptyList(), actual.getAll("Foo"));
         actual.put("Not", "Thingie");
@@ -127,32 +134,32 @@ public class CaseInsensitiveStringMultiMapTest {
         Assert.assertEquals(Collections.emptyList(), actual.getAll("Foo"));
     }
 
-    @Test
-    public void shouldAllowMultipleValuesWhenUsingAdd() {
+    @Theory
+    public void shouldAllowMultipleValuesWhenUsingAdd(int size) {
         Set<Entry<String, String>> expected = expected(ent("x", "foo"), ent("x", "boo"), ent("x", "woo"), ent("x", "new"), ent("X", "SHOUTING"));
 
-        CaseInsensitiveStringMultiMap actual = new CaseInsensitiveStringMultiMap();
+        CaseInsensitiveStringMultiMap actual = new CaseInsensitiveStringMultiMap(size);
         actual.add("x", "foo").add("x", "boo").add("x", "woo").add("x", "new").add("Y", "blerg").add("X", "SHOUTING");
 
         Assert.assertEquals(expected, toSet(actual.getAllEntries("x")));
     }
 
-    @Test
-    public void shouldOverwriteValueWhenUsingPut() {
+    @Theory
+    public void shouldOverwriteValueWhenUsingPut(int size) {
         Set<Entry<String, String>> expected = expected(ent("x", "foo"));
 
-        CaseInsensitiveStringMultiMap actual = new CaseInsensitiveStringMultiMap();
+        CaseInsensitiveStringMultiMap actual = new CaseInsensitiveStringMultiMap(size);
         actual.add("x", "y").add("x", "z").put("x", "foo");
 
         Assert.assertEquals(expected, toSet(actual.getAllEntries("x")));
     }
 
-    @Test // SHOULD include multiple values if they were defined (and matching keys with preserved formatting)
-    public void shouldIterateOverEntries() {
+    @Theory // SHOULD include multiple values if they were defined (and matching keys with preserved formatting)
+    public void shouldIterateOverEntries(int size) {
         Set<Entry<String, String>> expected = expected(ent("x", "foo"), ent("hello", "goodbye"),
                 ent("b", "x"), ent("B", "X"));
 
-        CaseInsensitiveStringMultiMap mmap = new CaseInsensitiveStringMultiMap();
+        CaseInsensitiveStringMultiMap mmap = new CaseInsensitiveStringMultiMap(size);
         mmap.add("x", "foo").add("hello", "goodbye").add("b", "x").add("B", "X");
 
         Set<Entry<String, String>> actual = toSet(StreamSupport.stream(mmap.spliterator(), false).collect(Collectors.toList()));
@@ -160,18 +167,18 @@ public class CaseInsensitiveStringMultiMapTest {
         Assert.assertEquals(expected, actual);
     }
 
-    @Test
-    public void shouldGetAllValuesForKey() {
+    @Theory
+    public void shouldGetAllValuesForKey(int size) {
         Set<String> expected = expected("foo", "goodbye", "justvalue");
 
-        CaseInsensitiveStringMultiMap mmap = new CaseInsensitiveStringMultiMap();
+        CaseInsensitiveStringMultiMap mmap = new CaseInsensitiveStringMultiMap(size);
         mmap.add("x", "foo").add("x", "goodbye").add("X", "justvalue");
 
         Assert.assertEquals(expected, toSet(mmap.getAll("x")));
     }
 
-    @Test
-    public void shouldAddEntriesFromMap() {
+    @Theory
+    public void shouldAddEntriesFromMap(int size) {
         List<Entry<String, String>> expected = Arrays.asList(ent("a", "b"), ent("x", "y"), ent("y", "z"));
 
         Map<String, String> in = new HashMap<String, String>() {
@@ -181,7 +188,7 @@ public class CaseInsensitiveStringMultiMapTest {
             put("a", "b");
         }};
 
-        CaseInsensitiveStringMultiMap mmap = new CaseInsensitiveStringMultiMap();
+        CaseInsensitiveStringMultiMap mmap = new CaseInsensitiveStringMultiMap(size);
         mmap.addAll(in);
 
         List<Entry<String, String>> c = mmap.getEntries();
@@ -195,14 +202,14 @@ public class CaseInsensitiveStringMultiMapTest {
         Assert.assertEquals(expected, c);
     }
 
-    @Test // Last head/value pair should be taken, others ignored.
-    public void convertToMap() {
+    @Theory // Last head/value pair should be taken, others ignored.
+    public void convertToMap(int size) {
         Map<String, String> expected = new LinkedHashMap<>();
         expected.put("a", "x");
         expected.put("b", "y");
         expected.put("C", "X_X"); // Last in should win
 
-        CaseInsensitiveStringMultiMap mmap = new CaseInsensitiveStringMultiMap();
+        CaseInsensitiveStringMultiMap mmap = new CaseInsensitiveStringMultiMap(size);
         // Additional entries should be ignored
         mmap.add("a", "x").add("b", "y").add("c", "z").add("c", "XX").add("C", "X_X");
         Map<String, String> actual = mmap.toMap();
@@ -210,12 +217,12 @@ public class CaseInsensitiveStringMultiMapTest {
         Assert.assertEquals(expected, actual);
     }
 
-    @Test
-    public void removeEntries() {
+    @Theory
+    public void removeEntries(int size) {
         Map<String, String> expected = new LinkedHashMap<>();
         expected.put("C", "X_X");
 
-        CaseInsensitiveStringMultiMap mmap = new CaseInsensitiveStringMultiMap();
+        CaseInsensitiveStringMultiMap mmap = new CaseInsensitiveStringMultiMap(size);
         // Additional entries should be ignored
         mmap.add("a", "x").add("a", "y").add("A", "z").add("a", "XX").add("C", "X_X");
         mmap.remove("a");
@@ -224,8 +231,8 @@ public class CaseInsensitiveStringMultiMapTest {
         Assert.assertEquals(expected, actual);
     }
 
-    @Test // A and C will have same bucket by virtue of size 1 array
-    public void removeEntriesWithCollision() {
+    @Theory // A and C will have same bucket by virtue of size 1 array
+    public void removeEntriesWithCollision(int size) {
         Map<String, String> expected = new LinkedHashMap<>();
         expected.put("C", "X_X");
         expected.put("b", "b");
@@ -241,8 +248,8 @@ public class CaseInsensitiveStringMultiMapTest {
         Assert.assertEquals(expected, actual);
     }
 
-    @Test
-    public void shouldDistinguishBetweenCollisionsWithGetAll() {
+    @Theory
+    public void shouldDistinguishBetweenCollisionsWithGetAll(int size) {
         CaseInsensitiveStringMultiMap mmap = new CaseInsensitiveStringMultiMap(1);
         mmap.add("Access-Control-Allow-Origin", "*").add("Server", "WildFly/10");
         Assert.assertEquals(2, mmap.size());
@@ -251,8 +258,8 @@ public class CaseInsensitiveStringMultiMapTest {
         Assert.assertEquals(mmap.getAll("Server").size(), 1);
     }
 
-    @Test
-    public void shouldDistinguishBetweenCollisionsWithGetEntries() {
+    @Theory
+    public void shouldDistinguishBetweenCollisionsWithGetEntries(int size) {
         CaseInsensitiveStringMultiMap mmap = new CaseInsensitiveStringMultiMap(1);
         mmap.add("Access-Control-Allow-Origin", "*").add("Server", "WildFly/10");
         Assert.assertEquals(2, mmap.size());
@@ -261,25 +268,25 @@ public class CaseInsensitiveStringMultiMapTest {
         Assert.assertEquals(mmap.getAllEntries("Server").size(), 1);
     }
 
-    @Test
-    public void getShouldReturnTheLastValueOnly() {
-        CaseInsensitiveStringMultiMap mmap = new CaseInsensitiveStringMultiMap();
+    @Theory
+    public void getShouldReturnTheLastValueOnly(int size) {
+        CaseInsensitiveStringMultiMap mmap = new CaseInsensitiveStringMultiMap(size);
         // Additional entries should be ignored
         mmap.add("a", "x").add("b", "y").add("c", "z").add("c", "XX").add("C", "X_X");
         Assert.assertEquals("X_X", mmap.get("c"));
     }
 
-    @Test
-    public void getKeyCount() {
-        CaseInsensitiveStringMultiMap mmap = new CaseInsensitiveStringMultiMap();
+    @Theory
+    public void getKeyCount(int size) {
+        CaseInsensitiveStringMultiMap mmap = new CaseInsensitiveStringMultiMap(size);
         // Additional entries should be ignored
         mmap.add("a", "x").add("b", "y").add("c", "z").add("c", "XX").add("C", "X_X");
         Assert.assertEquals(3, mmap.size());
     }
 
-    @Test
-    public void getKeyCountAfterRemove() {
-        CaseInsensitiveStringMultiMap mmap = new CaseInsensitiveStringMultiMap();
+    @Theory
+    public void getKeyCountAfterRemove(int size) {
+        CaseInsensitiveStringMultiMap mmap = new CaseInsensitiveStringMultiMap(size);
         // Additional entries should be ignored
         mmap.add("a", "x").add("b", "y").add("c", "z").add("c", "XX").add("C", "X_X");
         Assert.assertEquals(3, mmap.size());
@@ -298,9 +305,9 @@ public class CaseInsensitiveStringMultiMapTest {
         Assert.assertEquals(3, mmap.size());
     }
 
-    @Test
-    public void emptyAndRefill() {
-        CaseInsensitiveStringMultiMap mmap = new CaseInsensitiveStringMultiMap();
+    @Theory
+    public void emptyAndRefill(int size) {
+        CaseInsensitiveStringMultiMap mmap = new CaseInsensitiveStringMultiMap(size);
         // Additional entries should be ignored
         mmap.add("a", "x").add("b", "y").add("c", "z").add("c", "XX").add("C", "X_X");
         mmap.remove("a");
