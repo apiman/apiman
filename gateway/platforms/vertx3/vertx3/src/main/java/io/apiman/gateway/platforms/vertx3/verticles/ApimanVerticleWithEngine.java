@@ -32,7 +32,7 @@ public abstract class ApimanVerticleWithEngine extends ApimanVerticleBase {
     public void start(Future<Void> startFuture) {
         super.start(startFuture);
         engine = new VertxConfigDrivenEngineFactory(vertx, getEngineConfig())
-                .setHandler(result -> {
+                .setResultHandler(result -> {
                     if (result.isSuccess()) {
                         startFuture.complete();
                     } else {

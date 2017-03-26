@@ -17,7 +17,6 @@ package io.apiman.test.policies;
 
 import io.apiman.common.plugin.Plugin;
 import io.apiman.common.plugin.PluginCoordinates;
-import io.apiman.gateway.engine.IApiRequestPathParser;
 import io.apiman.gateway.engine.IComponentRegistry;
 import io.apiman.gateway.engine.IConnectorFactory;
 import io.apiman.gateway.engine.IEngine;
@@ -31,7 +30,6 @@ import io.apiman.gateway.engine.components.IBufferFactoryComponent;
 import io.apiman.gateway.engine.impl.ByteBufferFactoryComponent;
 import io.apiman.gateway.engine.impl.DefaultComponentRegistry;
 import io.apiman.gateway.engine.impl.DefaultEngineFactory;
-import io.apiman.gateway.engine.impl.DefaultRequestPathParser;
 import io.apiman.gateway.engine.policy.IPolicy;
 
 import java.io.IOException;
@@ -65,8 +63,8 @@ public class PolicyTester extends BlockJUnit4ClassRunner {
 
     /**
      * Constructor.
-     * @param testClass
-     * @throws InitializationError
+     * @param testClass the test class
+     * @throws InitializationError initializationerror if error on init
      */
     public PolicyTester(Class<?> testClass) throws InitializationError {
         super(testClass);
@@ -252,8 +250,7 @@ public class PolicyTester extends BlockJUnit4ClassRunner {
             }
 
             @Override
-            protected IApiRequestPathParser createRequestPathParser(IPluginRegistry pluginRegistry) {
-                return new DefaultRequestPathParser(null);
+            protected void complete() {
             }
         };
         return factory.createEngine();

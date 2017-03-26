@@ -17,6 +17,7 @@
 package io.apiman.gateway.engine.vertx.polling;
 
 import io.apiman.gateway.engine.IEngineConfig;
+import io.apiman.gateway.engine.async.AsyncInitialize;
 import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncHandler;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
@@ -28,7 +29,6 @@ import io.apiman.gateway.engine.vertx.polling.fetchers.AccessTokenResourceFetche
 import io.apiman.gateway.engine.vertx.polling.fetchers.FileResourceFetcher;
 import io.apiman.gateway.engine.vertx.polling.fetchers.HttpResourceFetcher;
 import io.apiman.gateway.engine.vertx.polling.fetchers.ResourceFetcher;
-import io.apiman.gateway.platforms.vertx3.common.AsyncInitialize;
 import io.apiman.gateway.platforms.vertx3.common.verticles.Json;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
