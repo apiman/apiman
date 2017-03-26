@@ -45,9 +45,9 @@ public class ConfigDrivenEngineFactory extends AbstractEngineFactory {
 
     private IEngineConfig engineConfig;
     private IAsyncResultHandler<Void> handler;
-    private boolean failed;
-    private int asyncInitializeAwaiting;
-    private boolean finishedLoading;
+    private boolean failed = false;
+    private int asyncInitializeAwaiting = 0;
+    private boolean finishedLoading = false;
 
     /**
      * Constructor.
@@ -182,6 +182,7 @@ public class ConfigDrivenEngineFactory extends AbstractEngineFactory {
         if (instance instanceof AsyncInitialize) {
             asyncInitializeAwaiting += 1;
             ((AsyncInitialize) instance).initialize(initResult -> {
+                asyncInitializeAwaiting -= 1;
                 if (initResult.isError()) {
                     if (!failed) { // Not already failed before
                         failed = true;
@@ -191,7 +192,6 @@ public class ConfigDrivenEngineFactory extends AbstractEngineFactory {
                         System.err.println("Failure occurred, but error handler was already invoked: " + initResult.getError().getCause()); //$NON-NLS-1$
                     }
                 } else {
-                    asyncInitializeAwaiting -= 1;
                     checkLoadingStatus();
                 }
             });
