@@ -35,6 +35,7 @@ import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Factory for creating the engine, obviously.
@@ -46,7 +47,7 @@ public class ConfigDrivenEngineFactory extends AbstractEngineFactory {
     private IEngineConfig engineConfig;
     private IAsyncResultHandler<Void> handler;
     private boolean failed = false;
-    private int asyncInitializeAwaiting = 0;
+    private AtomicInteger asyncInitializeAwaiting = new AtomicInteger(0);
     private boolean finishedLoading = false;
 
     /**
@@ -180,9 +181,9 @@ public class ConfigDrivenEngineFactory extends AbstractEngineFactory {
         T instance = doInstantiate(type, config);
 
         if (instance instanceof AsyncInitialize) {
-            asyncInitializeAwaiting += 1;
+            asyncInitializeAwaiting.incrementAndGet();
             ((AsyncInitialize) instance).initialize(initResult -> {
-                asyncInitializeAwaiting -= 1;
+                asyncInitializeAwaiting.decrementAndGet();
                 if (initResult.isError()) {
                     if (!failed) { // Not already failed before
                         failed = true;
@@ -202,7 +203,7 @@ public class ConfigDrivenEngineFactory extends AbstractEngineFactory {
     }
 
     protected void checkLoadingStatus() {
-        if (handler != null && !failed && finishedLoading && asyncInitializeAwaiting == 0) {
+        if (handler != null && !failed && finishedLoading && asyncInitializeAwaiting.get() == 0) {
             handler.handle(AsyncResultImpl.create((Void) null));
         }
     }
