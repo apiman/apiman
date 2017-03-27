@@ -17,6 +17,7 @@
 package io.apiman.gateway.engine.vertx.polling;
 
 import io.apiman.gateway.engine.IEngineConfig;
+import io.apiman.gateway.engine.async.AsyncInitialize;
 import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncHandler;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
@@ -28,7 +29,6 @@ import io.apiman.gateway.engine.vertx.polling.fetchers.AccessTokenResourceFetche
 import io.apiman.gateway.engine.vertx.polling.fetchers.FileResourceFetcher;
 import io.apiman.gateway.engine.vertx.polling.fetchers.HttpResourceFetcher;
 import io.apiman.gateway.engine.vertx.polling.fetchers.ResourceFetcher;
-import io.apiman.gateway.platforms.vertx3.common.AsyncInitialize;
 import io.apiman.gateway.platforms.vertx3.common.verticles.Json;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
@@ -44,6 +44,7 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Deque;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -81,7 +82,6 @@ public class URILoadingRegistry extends InMemoryRegistry implements AsyncInitial
 
     public URILoadingRegistry(Map<String, String> options) {
         this(Vertx.vertx(), null, options);
-        initialize(init->{});
     }
 
     @Override
@@ -143,7 +143,7 @@ public class URILoadingRegistry extends InMemoryRegistry implements AsyncInitial
         private Vertx vertx;
         private URI uri;
         private Map<String, String> config;
-        private List<IAsyncResultHandler<Void>> failureHandlers = new ArrayList<>();
+        private Map<URILoadingRegistry, IAsyncResultHandler<Void>> handlers = new LinkedHashMap<>();
         private Deque<URILoadingRegistry> awaiting = new ArrayDeque<>();
         private List<URILoadingRegistry> allRegistries = new ArrayList<>(); // TODO for testing, perhaps can get rid of?
         private Buffer rawData;
@@ -152,6 +152,7 @@ public class URILoadingRegistry extends InMemoryRegistry implements AsyncInitial
         private List<Api> apis = Collections.emptyList();
         private Logger log = LoggerFactory.getLogger(OneShotURILoader.class);
         private IAsyncHandler<Void> reloadHandler;
+        private boolean failed;
 
         public OneShotURILoader(Vertx vertx, URI uri, Map<String, String> config) {
             this.config = config;
@@ -166,11 +167,12 @@ public class URILoadingRegistry extends InMemoryRegistry implements AsyncInitial
             awaiting.addAll(allRegistries);
             apis.clear();
             clients.clear();
-            failureHandlers.clear(); // Initial design assumption was that this would never be reloaded - so this is the future for boot-time and thus has already been called.
+            handlers.clear(); // Initial design assumption was that this would never be reloaded - so this is the future for boot-time and thus has already been called.
             allRegistries.stream()
                 .map(URILoadingRegistry::getMap)
                 .forEach(Map::clear);
             dataProcessed = false;
+            failed = false;
             // Load again from scratch.
             fetchResource();
         }
@@ -184,7 +186,6 @@ public class URILoadingRegistry extends InMemoryRegistry implements AsyncInitial
                 });
         }
 
-        // TODO perhaps use enum + factory instead if we add more protocols.
         private ResourceFetcher getResourceFetcher() {
             String scheme = uri.getScheme() == null ? "file" : uri.getScheme().toLowerCase();
             switch (scheme) {
@@ -202,6 +203,7 @@ public class URILoadingRegistry extends InMemoryRegistry implements AsyncInitial
         private void processData() {
             if (rawData.length() == 0) {
                 log.warn("File loaded into registry was empty. No entities created.");
+                allRegistries.stream().forEach(this::checkSuccess);
                 return;
             }
             try {
@@ -228,10 +230,11 @@ public class URILoadingRegistry extends InMemoryRegistry implements AsyncInitial
             return Json.decodeValue(json.getJsonArray(keyName).encode(), List.class, klazz);
         }
 
-        public synchronized void subscribe(URILoadingRegistry registry, IAsyncResultHandler<Void> failureHandler) {
+        public synchronized void subscribe(URILoadingRegistry registry, IAsyncResultHandler<Void> handler) {
             Objects.requireNonNull(registry, "registry must be non-null.");
-            Objects.requireNonNull(failureHandler, "failure handler must be non-null.");
-            failureHandlers.add(failureHandler);
+            Objects.requireNonNull(handler, "handler must be non-null.");
+            assert(handler != null);
+            handlers.put(registry, handler);
             allRegistries.add(registry);
             awaiting.add(registry);
             vertx.runOnContext(action -> checkQueue());
@@ -255,6 +258,7 @@ public class URILoadingRegistry extends InMemoryRegistry implements AsyncInitial
                     reg.registerClientInternal(client, handleAnyFailure());
                     log.debug("Registering: {0} ", client);
                 }
+                checkSuccess(reg);
             }
             if (reloadHandler != null)
                 reloadHandler.handle((Void) null);
@@ -270,10 +274,17 @@ public class URILoadingRegistry extends InMemoryRegistry implements AsyncInitial
         }
 
         private void failAll(Throwable cause) {
+            failed = true;
             AsyncResultImpl<Void> failure = AsyncResultImpl.create(cause);
-            failureHandlers.stream().forEach(failureHandler -> {
+            handlers.values().stream().forEach(failureHandler -> {
                 vertx.runOnContext(run -> failureHandler.handle(failure));
             });
+        }
+
+        private void checkSuccess(URILoadingRegistry reg) {
+            if (!failed && handlers.containsKey(reg)) {
+                handlers.get(reg).handle(AsyncResultImpl.create((Void) null));
+            }
         }
     }
 

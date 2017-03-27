@@ -66,6 +66,7 @@ public abstract class AbstractEngineFactory implements IEngineFactory {
             initializer.initialize();
         }
 
+        complete();
         return new EngineImpl(registry, pluginRegistry, componentRegistry, cfactory, pfactory, metrics, logFactory, pathParser);
     }
 
@@ -137,5 +138,10 @@ public abstract class AbstractEngineFactory implements IEngineFactory {
      * @return the request path parser
      */
     protected abstract IApiRequestPathParser createRequestPathParser(IPluginRegistry pluginRegistry);
+
+    /**
+     * Call when the engine factory has completed initial startup/loading..
+     */
+    protected abstract void complete();
 
 }

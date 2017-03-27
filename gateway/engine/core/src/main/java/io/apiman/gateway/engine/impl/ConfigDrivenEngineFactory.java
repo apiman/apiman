@@ -26,6 +26,9 @@ import io.apiman.gateway.engine.IGatewayInitializer;
 import io.apiman.gateway.engine.IMetrics;
 import io.apiman.gateway.engine.IPluginRegistry;
 import io.apiman.gateway.engine.IRegistry;
+import io.apiman.gateway.engine.async.AsyncInitialize;
+import io.apiman.gateway.engine.async.AsyncResultImpl;
+import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.policy.IPolicyFactory;
 
 import java.lang.reflect.Constructor;
@@ -41,6 +44,10 @@ import java.util.Map;
 public class ConfigDrivenEngineFactory extends AbstractEngineFactory {
 
     private IEngineConfig engineConfig;
+    private IAsyncResultHandler<Void> handler;
+    private boolean failed = false;
+    private int asyncInitializeAwaiting = 0;
+    private boolean finishedLoading = false;
 
     /**
      * Constructor.
@@ -169,6 +176,47 @@ public class ConfigDrivenEngineFactory extends AbstractEngineFactory {
      * @return a new instance of 'type'
      */
     protected <T> T create(Class<T> type, Map<String, String> config) {
+        // Use #doInstantiate so inheriting classes can override it, as #instantiate is static final.
+        T instance = doInstantiate(type, config);
+
+        if (instance instanceof AsyncInitialize) {
+            asyncInitializeAwaiting += 1;
+            ((AsyncInitialize) instance).initialize(initResult -> {
+                asyncInitializeAwaiting -= 1;
+                if (initResult.isError()) {
+                    if (!failed) { // Not already failed before
+                        failed = true;
+                        if (handler != null)
+                            handler.handle(initResult);
+                    } else {
+                        System.err.println("Failure occurred, but error handler was already invoked: " + initResult.getError().getCause()); //$NON-NLS-1$
+                    }
+                } else {
+                    checkLoadingStatus();
+                }
+            });
+        }
+
+        checkLoadingStatus();
+        return instance;
+    }
+
+    protected void checkLoadingStatus() {
+        if (handler != null && !failed && finishedLoading && asyncInitializeAwaiting == 0) {
+            handler.handle(AsyncResultImpl.create((Void) null));
+        }
+    }
+
+    protected IAsyncResultHandler<Void> getResultHandler() {
+        return handler;
+    }
+
+    public AbstractEngineFactory setResultHandler(IAsyncResultHandler<Void> handler) {
+        this.handler = handler;
+        return this;
+    }
+
+    protected <T> T doInstantiate(Class<T> type, Map<String, String> config) {
         return instantiate(type, config);
     }
 
@@ -192,6 +240,12 @@ public class ConfigDrivenEngineFactory extends AbstractEngineFactory {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    protected void complete() {
+        finishedLoading = true;
+        checkLoadingStatus();
     }
 
 }

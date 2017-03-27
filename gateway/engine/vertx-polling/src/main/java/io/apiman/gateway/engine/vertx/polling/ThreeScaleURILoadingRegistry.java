@@ -18,6 +18,7 @@ package io.apiman.gateway.engine.vertx.polling;
 
 import io.apiman.gateway.engine.IEngineConfig;
 import io.apiman.gateway.engine.Version;
+import io.apiman.gateway.engine.async.AsyncInitialize;
 import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncHandler;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
@@ -32,7 +33,6 @@ import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.Content;
 import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.ProxyConfigRoot;
 import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.Service;
 import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.ServicesRoot;
-import io.apiman.gateway.platforms.vertx3.common.AsyncInitialize;
 import io.apiman.gateway.platforms.vertx3.common.verticles.Json;
 import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;

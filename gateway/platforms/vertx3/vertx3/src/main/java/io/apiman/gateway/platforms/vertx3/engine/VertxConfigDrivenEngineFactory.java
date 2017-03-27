@@ -19,16 +19,10 @@ import io.apiman.gateway.engine.IComponentRegistry;
 import io.apiman.gateway.engine.IConnectorFactory;
 import io.apiman.gateway.engine.IEngineConfig;
 import io.apiman.gateway.engine.IPluginRegistry;
-import io.apiman.gateway.engine.async.AsyncResultImpl;
-import io.apiman.gateway.engine.async.IAsyncResultHandler;
-import io.apiman.gateway.engine.impl.AbstractEngineFactory;
 import io.apiman.gateway.engine.impl.ConfigDrivenEngineFactory;
-import io.apiman.gateway.platforms.vertx3.common.AsyncInitialize;
 import io.apiman.gateway.platforms.vertx3.common.config.VertxEngineConfig;
 import io.apiman.gateway.platforms.vertx3.connector.ConnectorFactory;
 import io.vertx.core.Vertx;
-import io.vertx.core.logging.Logger;
-import io.vertx.core.logging.LoggerFactory;
 
 import java.lang.reflect.Constructor;
 import java.util.Map;
@@ -43,12 +37,6 @@ import java.util.Map;
 public class VertxConfigDrivenEngineFactory extends ConfigDrivenEngineFactory {
     private Vertx vertx;
     private VertxEngineConfig vxConfig;
-    private IAsyncResultHandler<Void> handler;
-    private int started = 0;
-    private static final int ELEMENTS_TO_START = 7; // TODO calculate elem count.
-    private boolean failed = false;
-    private Logger log = LoggerFactory.getLogger(VertxConfigDrivenEngineFactory.class);
-
 
     public VertxConfigDrivenEngineFactory(Vertx vertx, VertxEngineConfig config) {
         super(config);
@@ -66,30 +54,10 @@ public class VertxConfigDrivenEngineFactory extends ConfigDrivenEngineFactory {
         return new VertxConfigDrivenComponentRegistry(pluginRegistry, vertx, vxConfig);
     }
 
+    // NB: We can't override static parent version of instantiate.
     @Override
-    protected <T> T create(Class<T> type, Map<String, String> mapConfig) {
-        started +=1;
-        T instance = getInstance(type, mapConfig);
-        if (instance instanceof AsyncInitialize) {
-            ((AsyncInitialize) instance).initialize(initResult -> {
-                if (initResult.isError()) {
-                    if (!failed) {
-                        handler.handle(initResult);
-                        failed = true;
-                    } else {
-                        log.error("Failure occurred, but error handler was already invoked.", initResult.getError().getCause()); //$NON-NLS-1$
-                    }
-                }
-            });
-        }
-        if (started == ELEMENTS_TO_START && !failed) {
-            handler.handle(AsyncResultImpl.create((Void) null));
-        }
-        return instance;
-    }
-
     @SuppressWarnings("nls")
-    private <T> T getInstance(Class<T> type, Map<String, String> mapConfig) {
+    protected <T> T doInstantiate(Class<T> type, Map<String, String> mapConfig) {
         try {
             Constructor<T> constructor = type.getConstructor(Vertx.class, VertxEngineConfig.class, Map.class);
             return constructor.newInstance(vertx, vxConfig, mapConfig);
@@ -116,10 +84,5 @@ public class VertxConfigDrivenEngineFactory extends ConfigDrivenEngineFactory {
                     "Could not instantiate %s. Verify class has valid constructor parameters: %s", type,
                     e.getMessage()), e);
         }
-    }
-
-    public AbstractEngineFactory setHandler(IAsyncResultHandler<Void> handler) {
-        this.handler = handler;
-        return this;
     }
 }
