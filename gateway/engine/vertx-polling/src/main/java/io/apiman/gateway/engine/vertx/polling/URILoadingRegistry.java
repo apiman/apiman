@@ -44,10 +44,10 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Deque;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -68,14 +68,12 @@ import org.apache.commons.lang3.StringUtils;
 public class URILoadingRegistry extends InMemoryRegistry implements AsyncInitialize {
     // Protected by DCL, use #getUriLoader
     private static volatile OneShotURILoader instance;
-    private static AtomicInteger registryCounter = new AtomicInteger(0);
     private URI uri;
     private Vertx vertx;
     private Map<String, String> options;
 
     public URILoadingRegistry(Vertx vertx, IEngineConfig vxConfig, Map<String, String> options) {
         super();
-        registryCounter.incrementAndGet();
         this.vertx = vertx;
         this.options = options;
         Arguments.require(options.containsKey("configUri"), "configUri is required in configuration");
@@ -95,7 +93,7 @@ public class URILoadingRegistry extends InMemoryRegistry implements AsyncInitial
         if (instance == null) {
             synchronized(URILoadingRegistry.class) {
                 if (instance == null) {
-                    instance = new OneShotURILoader(vertx, uri, registryCounter, options);
+                    instance = new OneShotURILoader(vertx, uri, options);
                 }
             }
         }
@@ -144,9 +142,8 @@ public class URILoadingRegistry extends InMemoryRegistry implements AsyncInitial
 
         private Vertx vertx;
         private URI uri;
-        private AtomicInteger registryCounter;
         private Map<String, String> config;
-        private List<IAsyncResultHandler<Void>> failureHandlers = new ArrayList<>();
+        private Map<URILoadingRegistry, IAsyncResultHandler<Void>> handlers = new LinkedHashMap<>();
         private Deque<URILoadingRegistry> awaiting = new ArrayDeque<>();
         private List<URILoadingRegistry> allRegistries = new ArrayList<>(); // TODO for testing, perhaps can get rid of?
         private Buffer rawData;
@@ -157,8 +154,7 @@ public class URILoadingRegistry extends InMemoryRegistry implements AsyncInitial
         private IAsyncHandler<Void> reloadHandler;
         private boolean failed;
 
-        public OneShotURILoader(Vertx vertx, URI uri, AtomicInteger registryCounter, Map<String, String> config) {
-            this.registryCounter = registryCounter;
+        public OneShotURILoader(Vertx vertx, URI uri, Map<String, String> config) {
             this.config = config;
             this.vertx = vertx;
             this.uri = uri;
@@ -169,10 +165,9 @@ public class URILoadingRegistry extends InMemoryRegistry implements AsyncInitial
         public synchronized void reload(IAsyncHandler<Void> reloadHandler) {
             this.reloadHandler = reloadHandler;
             awaiting.addAll(allRegistries);
-            registryCounter = new AtomicInteger(allRegistries.size());
             apis.clear();
             clients.clear();
-            failureHandlers.clear(); // Initial design assumption was that this would never be reloaded - so this is the future for boot-time and thus has already been called.
+            handlers.clear(); // Initial design assumption was that this would never be reloaded - so this is the future for boot-time and thus has already been called.
             allRegistries.stream()
                 .map(URILoadingRegistry::getMap)
                 .forEach(Map::clear);
@@ -208,8 +203,7 @@ public class URILoadingRegistry extends InMemoryRegistry implements AsyncInitial
         private void processData() {
             if (rawData.length() == 0) {
                 log.warn("File loaded into registry was empty. No entities created.");
-                registryCounter.set(0); // Shortcut.
-                checkSuccess();
+                allRegistries.stream().forEach(this::checkSuccess);
                 return;
             }
             try {
@@ -236,10 +230,11 @@ public class URILoadingRegistry extends InMemoryRegistry implements AsyncInitial
             return Json.decodeValue(json.getJsonArray(keyName).encode(), List.class, klazz);
         }
 
-        public synchronized void subscribe(URILoadingRegistry registry, IAsyncResultHandler<Void> failureHandler) {
+        public synchronized void subscribe(URILoadingRegistry registry, IAsyncResultHandler<Void> handler) {
             Objects.requireNonNull(registry, "registry must be non-null.");
-            Objects.requireNonNull(failureHandler, "failure handler must be non-null.");
-            failureHandlers.add(failureHandler);
+            Objects.requireNonNull(handler, "handler must be non-null.");
+            assert(handler != null);
+            handlers.put(registry, handler);
             allRegistries.add(registry);
             awaiting.add(registry);
             vertx.runOnContext(action -> checkQueue());
@@ -249,7 +244,6 @@ public class URILoadingRegistry extends InMemoryRegistry implements AsyncInitial
             if (dataProcessed && awaiting.size()>0) {
                 loadDataIntoRegistries();
             }
-            checkSuccess();
         }
 
         private void loadDataIntoRegistries() {
@@ -264,7 +258,7 @@ public class URILoadingRegistry extends InMemoryRegistry implements AsyncInitial
                     reg.registerClientInternal(client, handleAnyFailure());
                     log.debug("Registering: {0} ", client);
                 }
-                registryCounter.decrementAndGet();
+                checkSuccess(reg);
             }
             if (reloadHandler != null)
                 reloadHandler.handle((Void) null);
@@ -282,16 +276,14 @@ public class URILoadingRegistry extends InMemoryRegistry implements AsyncInitial
         private void failAll(Throwable cause) {
             failed = true;
             AsyncResultImpl<Void> failure = AsyncResultImpl.create(cause);
-            failureHandlers.stream().forEach(failureHandler -> {
+            handlers.values().stream().forEach(failureHandler -> {
                 vertx.runOnContext(run -> failureHandler.handle(failure));
             });
         }
 
-        private void checkSuccess() {
-            if (registryCounter.get() == 0 && !failed) {
-                failureHandlers.stream().forEach(failureHandler -> {
-                    vertx.runOnContext(run -> failureHandler.handle(AsyncResultImpl.create((Void) null)));
-                });
+        private void checkSuccess(URILoadingRegistry reg) {
+            if (!failed && handlers.containsKey(reg)) {
+                handlers.get(reg).handle(AsyncResultImpl.create((Void) null));
             }
         }
     }
