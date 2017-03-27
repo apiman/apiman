@@ -111,12 +111,12 @@ public class HttpConnectorDrainTest {
                     System.out.println("Connection");
                 })
                 .requestHandler(requestToPause -> {
-            System.out.println("Test server: pausing inbound request!");
-            requestToPause.pause();
-            pausedRequest = requestToPause;
-            asyncServer.complete();
-            requestToPause.handler(data -> {});
-        }).listen(7297);
+                    System.out.println("Test server: pausing inbound request!");
+                    requestToPause.pause();
+                    pausedRequest = requestToPause;
+                    asyncServer.complete();
+                    requestToPause.handler(data -> {});
+                }).listen(7297);
 
         Vertx vertx = Vertx.vertx();
         HttpConnector httpConnector = new HttpConnector(vertx,
