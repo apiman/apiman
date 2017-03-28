@@ -249,14 +249,10 @@ public class URILoadingRegistry extends InMemoryRegistry implements AsyncInitial
             handlers.put(registry, handler);
             allRegistries.add(registry);
             awaiting.add(registry);
-            System.out.println("Adding " + registry + " with handler " + handler);
             vertx.runOnContext(action -> checkQueue());
         }
 
         private void checkQueue() {
-            System.out.println("Checking queue.... ");
-            System.out.println("dataProcessed " + dataProcessed);
-            System.out.println("awaiting.size() " + awaiting.size());
             if (dataProcessed && awaiting.size()>0) {
                 loadDataIntoRegistries();
             }
