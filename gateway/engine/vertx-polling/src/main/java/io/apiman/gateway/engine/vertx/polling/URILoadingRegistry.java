@@ -104,6 +104,9 @@ public class URILoadingRegistry extends InMemoryRegistry implements AsyncInitial
     // For testing only. Reloads rather than full restart.
     public static void reloadData(IAsyncHandler<Void> doneHandler) {
         synchronized(URILoadingRegistry.class) {
+            if (instance == null) {
+                doneHandler.handle(null);
+            }
             Map<URILoadingRegistry, IAsyncResultHandler<Void>> regs = instance.handlers;
             Vertx vertx = instance.vertx;
             URI uri = instance.uri;
@@ -215,8 +218,8 @@ public class URILoadingRegistry extends InMemoryRegistry implements AsyncInitial
         private void processData() {
             if (rawData.length() == 0) {
                 log.warn("File loaded into registry was empty. No entities created.");
-                allRegistries.stream().forEach(this::checkSuccess);
                 dataProcessed = true;
+                allRegistries.stream().forEach(this::checkSuccess);
                 return;
             }
             try {
@@ -243,13 +246,15 @@ public class URILoadingRegistry extends InMemoryRegistry implements AsyncInitial
             return Json.decodeValue(json.getJsonArray(keyName).encode(), List.class, klazz);
         }
 
-        public synchronized void subscribe(URILoadingRegistry registry, IAsyncResultHandler<Void> handler) {
-            Objects.requireNonNull(registry, "registry must be non-null.");
-            Objects.requireNonNull(handler, "handler must be non-null.");
-            handlers.put(registry, handler);
-            allRegistries.add(registry);
-            awaiting.add(registry);
-            vertx.runOnContext(action -> checkQueue());
+        public void subscribe(URILoadingRegistry registry, IAsyncResultHandler<Void> handler) {
+            synchronized (URILoadingRegistry.class) {
+                Objects.requireNonNull(registry, "registry must be non-null.");
+                Objects.requireNonNull(handler, "handler must be non-null.");
+                handlers.put(registry, handler);
+                allRegistries.add(registry);
+                awaiting.add(registry);
+                vertx.runOnContext(action -> checkQueue());
+            }
         }
 
         private void checkQueue() {
