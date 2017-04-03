@@ -34,6 +34,7 @@ import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 
 /**
@@ -128,32 +129,44 @@ public class ApiResourceImpl implements IApiResource, IRouteBuilder {
         retire(orgId, apiId, ver);
     }
 
-    // TODO refactor to look up apiId in engine, we can then determine more accurately what the URL scheme should be.
     @Override
     public ApiEndpoint getApiEndpoint(String organizationId, String apiId, String version)
             throws NotAuthorizedException {
         String scheme = apimanConfig.preferSecure() ? "https" : "http";
         int port = apimanConfig.getPort(scheme);
-        StringBuilder sb = new StringBuilder(100);
-        sb.append(scheme + "://");
+        String host = this.host;
+        String path = "";
+        // If endpoint was manually specified
+        if (apimanConfig.getPublicEndpoint() != null) {
+           URI publicEndpoint = URI.create(apimanConfig.getPublicEndpoint());
 
-        if (apimanConfig.getEndpoint() == null) {
-            sb.append(host);
-        } else {
-            sb.append(apimanConfig.getEndpoint());
+           if (publicEndpoint.getPort() != -1) {
+               port = publicEndpoint.getPort();
+           }
+           if (publicEndpoint.getScheme() != null && !publicEndpoint.getScheme().isEmpty()) {
+               scheme = publicEndpoint.getScheme();
+           }
+           if (publicEndpoint.getPath() != null && !publicEndpoint.getPath().isEmpty()) {
+               path = publicEndpoint.getPath();
+           }
+           if (publicEndpoint.getHost() != null && !publicEndpoint.getHost().isEmpty()) {
+               host = publicEndpoint.getHost();
+           }
         }
 
+        String endpoint = scheme + "://" + host;
         if (port != 443 && port != 80)
-            sb.append(":" + port + "/");
-        sb.append(SimpleStringUtils.join("/", organizationId, apiId, version));
+            endpoint += ":" + port + "/";
+        endpoint += path;
+        endpoint += SimpleStringUtils.join("/", organizationId, apiId, version);
 
-        ApiEndpoint endpoint = new ApiEndpoint();
-        endpoint.setEndpoint(sb.toString());
-        return endpoint;
+        ApiEndpoint endpointObj = new ApiEndpoint();
+        endpointObj.setEndpoint(endpoint);
+        return endpointObj;
     }
 
     public void getApiEndpoint(RoutingContext routingContext) {
-        if (apimanConfig.getEndpoint() == null) {
+        if (apimanConfig.getPublicEndpoint() == null) {
             try {
                 host = new URL(routingContext.request().absoluteURI()).getHost();
             } catch (MalformedURLException e) {
