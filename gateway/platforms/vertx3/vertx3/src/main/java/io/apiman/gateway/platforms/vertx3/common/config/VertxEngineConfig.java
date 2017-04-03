@@ -69,7 +69,7 @@ public class VertxEngineConfig implements IEngineConfig {
     private static final String VERTICLE_COUNT = "count";
 
     private static final String GATEWAY_HOSTNAME = "hostname";
-    private static final String GATEWAY_ENDPOINT = "endpoint";
+    private static final String GATEWAY_PUBLIC_ENDPOINT = "publicEndpoint";
     private static final String GATEWAY_PREFER_SECURE = "preferSecure";
 
     private static final String API_AUTH = "auth";
@@ -244,8 +244,8 @@ public class VertxEngineConfig implements IEngineConfig {
         return stringConfigWithDefault(GATEWAY_HOSTNAME, "localhost");
     }
 
-    public String getEndpoint() {
-        return config.getString(GATEWAY_ENDPOINT);
+    public String getPublicEndpoint() {
+        return config.getString(GATEWAY_PUBLIC_ENDPOINT);
     }
 
     public Boolean preferSecure() {

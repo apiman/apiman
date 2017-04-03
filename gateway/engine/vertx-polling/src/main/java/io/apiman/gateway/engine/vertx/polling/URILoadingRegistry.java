@@ -105,14 +105,14 @@ public class URILoadingRegistry extends InMemoryRegistry implements AsyncInitial
     public static void reloadData(IAsyncHandler<Void> doneHandler) {
         synchronized(URILoadingRegistry.class) {
             if (instance == null) {
-                doneHandler.handle(null);
+                doneHandler.handle((Void) null);
+                return;
             }
             Map<URILoadingRegistry, IAsyncResultHandler<Void>> regs = instance.handlers;
             Vertx vertx = instance.vertx;
             URI uri = instance.uri;
             Map<String, String> config = instance.config;
             AtomicInteger ctr = new AtomicInteger(regs.size());
-
             OneShotURILoader newLoader = new OneShotURILoader(vertx, uri, config);
 
             regs.entrySet().stream().forEach(pair -> {
