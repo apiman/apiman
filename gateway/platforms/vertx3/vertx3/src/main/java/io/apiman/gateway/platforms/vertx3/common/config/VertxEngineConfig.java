@@ -427,8 +427,10 @@ public class VertxEngineConfig implements IEngineConfig {
     private class VertxEngineStrSubstitutor extends ApimanStrLookup {
         @Override
         public String lookup(String key) {
-            if (getVariables().containsKey(key)) {
-                return getVariables().getString(key);
+            Map<String, String> flattenedMap = new LinkedHashMap<>();
+            jsonMapToProperties("", getVariables().getMap(), flattenedMap);
+            if (flattenedMap.containsKey(key)) {
+                return flattenedMap.get(key);
             } else {
                 return super.lookup(key);
             }
