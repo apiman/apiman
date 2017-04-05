@@ -428,7 +428,7 @@ public class VertxEngineConfig implements IEngineConfig {
         @Override
         public String lookup(String key) {
             Map<String, String> flattenedMap = new LinkedHashMap<>();
-            jsonMapToProperties("", getVariables().getMap(), flattenedMap);
+            jsonMapToProperties("", new JsonObject(getVariables().encode()).getMap(), flattenedMap); // TODO tidy up
             if (flattenedMap.containsKey(key)) {
                 return flattenedMap.get(key);
             } else {

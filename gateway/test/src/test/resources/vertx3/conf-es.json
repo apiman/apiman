@@ -2,7 +2,7 @@
 
   "variables": {
     "test": {
-      "variables": {
+      "foo": {
         "es": {
           "type": "jest"
         }
@@ -14,7 +14,7 @@
     "class": "io.apiman.gateway.engine.es.ESRegistry",
     "config": {
       "client": {
-        "type": "${test.variables.es.type}",
+        "type": "${test.foo.es.type}",
         "cluster-name": "elasticsearch",
         "host": "localhost",
         "port": "9200",
