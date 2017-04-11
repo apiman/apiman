@@ -91,6 +91,7 @@ public class VertxEngineConfig implements IEngineConfig {
     private static final String SSL_TRUSTSTORE = "truststore";
     private static final String SSL_KEYSTORE = "keystore";
     private static final String SSL_PATH = "path";
+    private static final String VARIABLES = "variables";
 
     private JsonObject config;
 
@@ -386,6 +387,10 @@ public class VertxEngineConfig implements IEngineConfig {
         return config.getJsonObject(VERTICLES).getJsonObject(verticleType.toLowerCase());
     }
 
+    private JsonObject getVariables() {
+        return config.getJsonObject(VARIABLES, new JsonObject());
+    }
+
 
 
     /**
@@ -417,6 +422,19 @@ public class VertxEngineConfig implements IEngineConfig {
             .forEach(pair -> map.put(pair.getKey(), SUBSTITUTOR.replace(pair.getValue())));
     }
 
-    private static final StrSubstitutor SUBSTITUTOR = new StrSubstitutor(new ApimanStrLookup());
+    private final StrSubstitutor SUBSTITUTOR = new StrSubstitutor(new VertxEngineStrSubstitutor());
+
+    private class VertxEngineStrSubstitutor extends ApimanStrLookup {
+        @Override
+        public String lookup(String key) {
+            Map<String, String> flattenedMap = new LinkedHashMap<>();
+            jsonMapToProperties("", new JsonObject(getVariables().encode()).getMap(), flattenedMap); // TODO tidy up
+            if (flattenedMap.containsKey(key)) {
+                return flattenedMap.get(key);
+            } else {
+                return super.lookup(key);
+            }
+        }
+    }
 
 }

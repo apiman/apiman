@@ -1,9 +1,20 @@
 { // Example ElasticSearch based config
+
+  "variables": {
+    "test": {
+      "foo": {
+        "es": {
+          "type": "jest"
+        }
+      }
+    }
+  },
+
   "registry": {
     "class": "io.apiman.gateway.engine.es.ESRegistry",
     "config": {
       "client": {
-        "type": "jest",
+        "type": "${test.foo.es.type}",
         "cluster-name": "elasticsearch",
         "host": "localhost",
         "port": "9200",
