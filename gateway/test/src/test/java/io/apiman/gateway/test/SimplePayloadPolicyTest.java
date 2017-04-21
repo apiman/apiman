@@ -20,7 +20,6 @@ import io.apiman.gateway.test.junit.GatewayRestTestPlan;
 import io.apiman.gateway.test.junit.GatewayRestTestSystemProperties;
 import io.apiman.gateway.test.junit.GatewayRestTester;
 
-import org.junit.Ignore;
 import org.junit.runner.RunWith;
 
 /**
@@ -34,7 +33,6 @@ import org.junit.runner.RunWith;
     GatewayConfigProperties.MAX_PAYLOAD_BUFFER_SIZE, "4096",
     GatewayConfigProperties.ERROR_WRITER_CLASS, "io.apiman.gateway.engine.impl.TracePolicyErrorWriter"
 })
-@Ignore
 public class SimplePayloadPolicyTest {
 
 }

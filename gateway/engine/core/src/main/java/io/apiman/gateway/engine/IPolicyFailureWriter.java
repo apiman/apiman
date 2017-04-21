@@ -28,9 +28,9 @@ public interface IPolicyFailureWriter {
 
     /**
      * Formats the given policy failure.
-     * @param request
-     * @param failure
-     * @param response
+     * @param request the API request
+     * @param failure the policy failure
+     * @param response the client response
      */
     public void write(ApiRequest request, PolicyFailure failure, IApiClientResponse response);
 
