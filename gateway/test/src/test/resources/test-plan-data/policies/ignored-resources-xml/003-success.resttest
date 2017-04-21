@@ -35,7 +35,7 @@ Content-Type: application/xml
       <value>*</value>
     </entry>
     <entry>
-      <key>Content-Length</key>
+      <key>Transfer-Encoding</key>
       <value>*</value>
     </entry>
   </headers>
