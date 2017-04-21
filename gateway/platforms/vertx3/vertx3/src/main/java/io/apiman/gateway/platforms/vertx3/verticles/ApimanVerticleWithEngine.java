@@ -16,8 +16,13 @@
 package io.apiman.gateway.platforms.vertx3.verticles;
 
 import io.apiman.gateway.engine.IEngine;
+import io.apiman.gateway.engine.IPolicyErrorWriter;
+import io.apiman.gateway.engine.IPolicyFailureWriter;
+import io.apiman.gateway.engine.impl.ConfigDrivenEngineFactory;
 import io.apiman.gateway.platforms.vertx3.engine.VertxConfigDrivenEngineFactory;
 import io.vertx.core.Future;
+
+import java.util.Map;
 
 /**
  * A base for those verticles that require an instantiated engine.
@@ -27,6 +32,8 @@ import io.vertx.core.Future;
 public abstract class ApimanVerticleWithEngine extends ApimanVerticleBase {
 
     protected IEngine engine;
+    protected IPolicyFailureWriter policyFailureWriter;
+    protected IPolicyErrorWriter policyErrorWriter;
 
     @Override
     public void start(Future<Void> startFuture) {
@@ -40,7 +47,20 @@ public abstract class ApimanVerticleWithEngine extends ApimanVerticleBase {
                     }
                 }).createEngine();
 
-        engine.getRegistry(); // this should help avoid slow first-time loads.
+        policyFailureWriter = initPolicyFailureWriter();
+        policyErrorWriter = initPolicyErrorWriter();
+    }
+
+    private IPolicyFailureWriter initPolicyFailureWriter() {
+        Class<? extends IPolicyFailureWriter> clazz = apimanConfig.getPolicyFailureWriterClass(engine.getPluginRegistry());
+        Map<String, String> conf = apimanConfig.getPolicyFailureWriterConfig();
+        return ConfigDrivenEngineFactory.instantiate(clazz, conf);
+    }
+
+    private IPolicyErrorWriter initPolicyErrorWriter() {
+        Class<? extends IPolicyErrorWriter> clazz = apimanConfig.getPolicyErrorWriterClass(engine.getPluginRegistry());
+        Map<String, String> conf = apimanConfig.getPolicyErrorWriterConfig();
+        return ConfigDrivenEngineFactory.instantiate(clazz, conf);
     }
 
     protected IEngine engine() {

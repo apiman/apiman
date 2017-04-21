@@ -57,7 +57,7 @@ public class HttpsGatewayVerticle extends ApimanVerticleWithEngine {
     }
 
     private void requestHandler(HttpServerRequest req) {
-        new HttpPolicyAdapter(req, engine, true).execute();
+        new HttpPolicyAdapter(req, policyFailureWriter, policyErrorWriter, engine, true).execute();
     }
 
     @Override

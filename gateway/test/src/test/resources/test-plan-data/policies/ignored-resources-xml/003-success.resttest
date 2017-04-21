@@ -34,6 +34,10 @@ Content-Type: application/xml
       <key>Accept-Encoding</key>
       <value>*</value>
     </entry>
+    <entry>
+      <key>Content-Length</key>
+      <value>*</value>
+    </entry>
   </headers>
   <method>GET</method>
   <resource>/invoices</resource>
