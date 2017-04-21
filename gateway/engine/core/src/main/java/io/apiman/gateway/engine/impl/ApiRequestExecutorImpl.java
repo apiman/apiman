@@ -485,14 +485,29 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
                 }
             }
 
+            /**
+             * Because of the way the parsePayload code was written, it's possible
+             * with async for apiConnection to be +null+ when this is called.
+             *
+             * This is because parsePayload invokes inboundStreamHandler before
+             * policiesLoadedHandler has had a chance to return (and assigned apiConnection).
+             *
+             * To work around this we check whether apiConnection is null for #drainHandler
+             * and #isFull.
+             */
             @Override
             public void drainHandler(IAsyncHandler<Void> drainHandler) {
-                apiConnection.drainHandler(drainHandler);
+                if (apiConnection != null)
+                    apiConnection.drainHandler(drainHandler);
             }
 
             @Override
             public boolean isFull() {
-                return apiConnection.isFull();
+                if (apiConnection != null) {
+                    return apiConnection.isFull();
+                } else {
+                    return false;
+                }
             }
         });
     }

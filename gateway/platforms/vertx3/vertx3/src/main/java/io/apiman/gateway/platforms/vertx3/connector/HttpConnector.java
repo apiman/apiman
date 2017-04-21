@@ -192,7 +192,7 @@ class HttpConnector implements IApiConnectionResponse, IApiConnection {
 
         clientRequest.exceptionHandler(exceptionHandler);
 
-        if (options.hasDataPolicy()) {
+        if (options.hasDataPolicy() || !clientRequest.headers().contains("Content-Length")) {
             clientRequest.headers().remove("Content-Length");
             clientRequest.setChunked(true);
         }
