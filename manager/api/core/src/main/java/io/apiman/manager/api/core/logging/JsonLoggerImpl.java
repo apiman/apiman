@@ -15,17 +15,20 @@
  */
 package io.apiman.manager.api.core.logging;
 
-import java.io.IOException;
-import java.io.StringWriter;
-
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.apiman.common.logging.DefaultTimeImpl;
 import io.apiman.common.logging.IApimanDelegateLogger;
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.common.logging.Time;
+
+import java.io.IOException;
+import java.io.StringWriter;
+import java.text.MessageFormat;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Simple JSON logger, see {@link #jsonify(String, LogLevel, Throwable)}. Aims to provide
@@ -165,8 +168,24 @@ public class JsonLoggerImpl implements IApimanDelegateLogger {
     }
 
     @Override
+    public void info(String message, Object... args) {
+        if (delegatedLogger.isInfoEnabled()) {
+            String formatted = format(message,  args);
+            delegatedLogger.info(jsonify(formatted, LogLevel.INFO));
+        }
+    }
+
+    @Override
     public void warn(String message) {
         delegatedLogger.warn(jsonify(message, LogLevel.WARN));
+    }
+
+    @Override
+    public void warn(String message, Object... args) {
+        if (delegatedLogger.isWarnEnabled()) {
+            String formatted = format(message,  args);
+            delegatedLogger.warn(jsonify(formatted, LogLevel.WARN));
+        }
     }
 
     @Override
@@ -175,8 +194,24 @@ public class JsonLoggerImpl implements IApimanDelegateLogger {
     }
 
     @Override
+    public void debug(String message, Object... args) {
+        if (delegatedLogger.isDebugEnabled()) {
+            String formatted = format(message,  args);
+            delegatedLogger.warn(jsonify(formatted, LogLevel.DEBUG));
+        }
+    }
+
+    @Override
     public void trace(String message) {
         delegatedLogger.trace(jsonify(message, LogLevel.TRACE));
+    }
+
+    @Override
+    public void trace(String message, Object... args) {
+        if (delegatedLogger.isTraceEnabled()) {
+            String formatted = format(message,  args);
+            delegatedLogger.trace(jsonify(formatted, LogLevel.TRACE));
+        }
     }
 
     @Override
@@ -189,8 +224,20 @@ public class JsonLoggerImpl implements IApimanDelegateLogger {
         delegatedLogger.error(jsonify(error.getMessage(), LogLevel.ERROR, error));
     }
 
+    @Override
+    public void error(Throwable error, String message, Object... args) {
+        if (delegatedLogger.isErrorEnabled()) {
+            String formatted = format(message,  args);
+            delegatedLogger.error(jsonify(formatted, LogLevel.ERROR));
+        }
+    }
+
     private String jsonify(String message, LogLevel level) {
         return jsonify(message, level, null);
+    }
+
+    private static String format(String message, Object... args) {
+        return MessageFormat.format(message, args);
     }
 
     @SuppressWarnings("nls")

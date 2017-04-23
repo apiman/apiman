@@ -17,6 +17,9 @@ package io.apiman.manager.api.core.logging;
 
 import io.apiman.common.logging.IApimanDelegateLogger;
 import io.apiman.common.logging.IApimanLogger;
+
+import java.text.MessageFormat;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -46,9 +49,20 @@ public class StandardLoggerImpl implements IApimanDelegateLogger {
         delegatedLogger.info(message);
     }
 
+
+    @Override
+    public void info(String message, Object... args) {
+        delegatedLogger.info(message, args);
+    }
+
     @Override
     public void debug(String message) {
         delegatedLogger.debug(message);
+    }
+
+    @Override
+    public void debug(String message, Object... args) {
+        delegatedLogger.debug(message, args);
     }
 
     @Override
@@ -57,8 +71,18 @@ public class StandardLoggerImpl implements IApimanDelegateLogger {
     }
 
     @Override
+    public void trace(String message, Object... args) {
+        delegatedLogger.trace(message, args);
+    }
+
+    @Override
     public void warn(String message) {
         delegatedLogger.warn(message);
+    }
+
+    @Override
+    public void warn(String message, Object... args) {
+        delegatedLogger.warn(message, args);
     }
 
     @Override
@@ -69,5 +93,13 @@ public class StandardLoggerImpl implements IApimanDelegateLogger {
     @Override
     public void error(String message, Throwable error) {
         delegatedLogger.error(message, error);
+    }
+
+    @Override
+    public void error(Throwable error, String message, Object... args) {
+        if (delegatedLogger.isErrorEnabled()) {
+            String formatted = MessageFormat.format(message, args);
+            delegatedLogger.error(formatted, error);
+        }
     }
 }
