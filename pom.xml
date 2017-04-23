@@ -71,6 +71,8 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+    <timestamp>${maven.build.timestamp}</timestamp>
     <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
 
     <maven.compiler.target>1.8</maven.compiler.target>
@@ -515,7 +517,7 @@
         <groupId>${project.groupId}</groupId>
         <artifactId>apiman-gateway-platforms-vertx3</artifactId>
         <version>${project.version}</version>
-	<classifier>fat</classifier>
+        <classifier>fat</classifier>
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
@@ -667,9 +669,9 @@
 
       <!-- Third Party Libraries -->
       <dependency>
-	<groupId>net.openhft</groupId>
-	<artifactId>zero-allocation-hashing</artifactId>
-	<version>${version.net.openhft}</version>
+        <groupId>net.openhft</groupId>
+        <artifactId>zero-allocation-hashing</artifactId>
+        <version>${version.net.openhft}</version>
       </dependency>
       <dependency>
         <groupId>com.zaxxer</groupId>
