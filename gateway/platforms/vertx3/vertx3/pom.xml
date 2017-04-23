@@ -47,7 +47,7 @@
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-auth-common</artifactId>
-    </dependency>    
+    </dependency>
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-auth-oauth2</artifactId>
@@ -217,13 +217,11 @@
         </executions>
       </plugin>
 
-      <!-- You only need the part below if you want to build your application into a fat executable jar.
-      This is a jar that contains all the dependencies required to run it, so you can just run it with
-      java -jar -->
+      <!-- Fat JAR -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
-        <version>2.4.3</version>
+        <version>3.0.0</version>
         <executions>
           <execution>
             <phase>package</phase>
@@ -231,10 +229,12 @@
               <goal>shade</goal>
             </goals>
             <configuration>
+              <shadedArtifactAttached>true</shadedArtifactAttached>
+              <shadedClassifierName>fat</shadedClassifierName>
               <transformers>
                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                   <manifestEntries>
-                    <Main-Class>io.vertx.core.Starter</Main-Class>
+                    <Main-Class>io.apiman.gateway.platforms.vertx3.ApimanLauncher</Main-Class>
                     <Main-Verticle>${main.verticle}</Main-Verticle>
                   </manifestEntries>
                 </transformer>
@@ -244,7 +244,6 @@
               </transformers>
               <artifactSet>
               </artifactSet>
-              <outputFile>${project.build.directory}/${project.artifactId}-${project.version}-fat.jar</outputFile>
               <filters>
                 <filter>
                   <artifact>*:*</artifact>
