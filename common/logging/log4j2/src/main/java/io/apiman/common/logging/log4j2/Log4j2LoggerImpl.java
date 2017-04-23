@@ -13,10 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apiman.common.logging.slf4j;
+package io.apiman.common.logging.log4j2;
 
 import io.apiman.common.logging.IApimanLogger;
+
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.message.ParameterizedMessage;
 
 /**
  * Log4j2 logger wrapper.
@@ -36,8 +38,19 @@ public class Log4j2LoggerImpl implements IApimanLogger {
     }
 
     @Override
+    public void info(String message, Object... args) {
+        logger.info(message, args);
+    }
+
+    @Override
     public void warn(String message) {
         logger.warn(message);
+    }
+
+
+    @Override
+    public void warn(String message, Object... args) {
+        logger.warn(message, args);
     }
 
     @Override
@@ -46,8 +59,18 @@ public class Log4j2LoggerImpl implements IApimanLogger {
     }
 
     @Override
+    public void debug(String message, Object... args) {
+        logger.debug(message, args);
+    }
+
+    @Override
     public void trace(String message) {
         logger.trace(message);
+    }
+
+    @Override
+    public void trace(String message, Object... args) {
+        logger.trace(message, args);
     }
 
     @Override
@@ -58,5 +81,13 @@ public class Log4j2LoggerImpl implements IApimanLogger {
     @Override
     public void error(String message, Throwable error) {
         logger.error(message, error);
+    }
+
+    @Override
+    public void error(Throwable error, String message, Object... args) {
+        if (logger.isErrorEnabled()) {
+            String formatted = ParameterizedMessage.format(message, args);
+            logger.error(formatted, error);
+        }
     }
 }

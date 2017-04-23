@@ -44,6 +44,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.text.MessageFormat;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -190,15 +191,30 @@ public class SystemResourceImpl implements ISystemResource {
                     }
 
                     @Override
+                    public void warn(String message, Object... args) {
+                        warn(MessageFormat.format(message, args));
+                    }
+
+                    @Override
                     public void trace(String message) {
                         writer.println("TRACE: " + message); //$NON-NLS-1$
                         writer.flush();
                     }
 
                     @Override
+                    public void trace(String message, Object... args) {
+                        trace(MessageFormat.format(message, args));
+                    }
+
+                    @Override
                     public void info(String message) {
                         writer.println("INFO: " + message); //$NON-NLS-1$
                         writer.flush();
+                    }
+
+                    @Override
+                    public void info(String message, Object... args) {
+                        info(MessageFormat.format(message, args));
                     }
 
                     @Override
@@ -216,19 +232,29 @@ public class SystemResourceImpl implements ISystemResource {
                     }
 
                     @Override
+                    public void error(Throwable error, String message, Object... args) {
+                        error(MessageFormat.format(message, args), error);
+                    }
+
+                    @Override
                     public void debug(String message) {
                         writer.println("DEBUG: " + message); //$NON-NLS-1$
                         writer.flush();
+                    }
+
+                    @Override
+                    public void debug(String message, Object... args) {
+                        debug(MessageFormat.format(message, args));
                     }
                 };
 
                 File migratedImportFile = File.createTempFile("apiman_import_migrated", ".json"); //$NON-NLS-1$ //$NON-NLS-2$
                 migratedImportFile.deleteOnExit();
-                
+
                 // Migrate the data (if necessary)
                 migrator.setLogger(logger);
                 migrator.migrate(importFile, migratedImportFile);
-                
+
                 // Now import the migrated data
                 InputStream importData = null;
                 IImportReader reader;

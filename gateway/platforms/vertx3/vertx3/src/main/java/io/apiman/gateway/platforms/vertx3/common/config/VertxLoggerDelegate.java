@@ -46,8 +46,18 @@ public class VertxLoggerDelegate implements IDelegateFactory {
         }
 
         @Override
+        public void info(String message, Object... args) {
+            logger.info(message, args);
+        }
+
+        @Override
         public void warn(String message) {
             logger.warn(message);
+        }
+
+        @Override
+        public void warn(String message, Object... args) {
+            logger.warn(message, args);
         }
 
         @Override
@@ -56,8 +66,18 @@ public class VertxLoggerDelegate implements IDelegateFactory {
         }
 
         @Override
+        public void debug(String message, Object... args) {
+            logger.debug(message, args);
+        }
+
+        @Override
         public void trace(String message) {
             logger.trace(message);
+        }
+
+        @Override
+        public void trace(String message, Object... args) {
+            logger.trace(message, args);
         }
 
         @Override
@@ -68,6 +88,11 @@ public class VertxLoggerDelegate implements IDelegateFactory {
         @Override
         public void error(String message, Throwable error) {
             logger.error(message, error);
+        }
+
+        @Override
+        public void error(Throwable error, String message, Object... args) {
+            logger.error(message, error, args);
         }
     }
 

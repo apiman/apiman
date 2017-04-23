@@ -188,7 +188,7 @@ public class VertxEngineConfig implements IEngineConfig {
 
     @Override
     public Map<String, String> getLoggerFactoryConfig() {
-        return null;
+        return getConfig(config, GatewayConfigProperties.LOGGER_FACTORY_CLASS);
     }
 
     @Override

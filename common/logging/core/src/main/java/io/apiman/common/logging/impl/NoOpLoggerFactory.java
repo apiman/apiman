@@ -69,4 +69,24 @@ public class NoOpLoggerFactory implements IApimanLogger, IDelegateFactory {
     public void error(String message, Throwable error) {
     }
 
+    @Override
+    public void info(String message, Object... args) {
+    }
+
+    @Override
+    public void warn(String message, Object... args) {
+    }
+
+    @Override
+    public void debug(String message, Object... args) {
+    }
+
+    @Override
+    public void trace(String message, Object... args) {
+    }
+
+    @Override
+    public void error(Throwable error, String message, Object... args) {
+    }
+
 }
