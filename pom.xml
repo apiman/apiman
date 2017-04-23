@@ -513,6 +513,12 @@
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
+        <artifactId>apiman-gateway-platforms-vertx3</artifactId>
+        <version>${project.version}</version>
+	<classifier>fat</classifier>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
         <artifactId>apiman-gateway-platforms-vertx3-common</artifactId>
         <version>${project.version}</version>
       </dependency>
