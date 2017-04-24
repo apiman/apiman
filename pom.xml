@@ -139,7 +139,7 @@
     <version.org.apache.httpcomponents.httpclient>4.5</version.org.apache.httpcomponents.httpclient>
     <version.org.apache.httpcomponents.httpcore>4.4.1</version.org.apache.httpcomponents.httpcore>
     <version.org.apache.httpcomponents.httpasyncclient>4.1</version.org.apache.httpcomponents.httpasyncclient>
-    <version.org.apache.logging.log4j>2.2</version.org.apache.logging.log4j>
+    <version.org.apache.logging.log4j>2.8.2</version.org.apache.logging.log4j>
     <version.org.eclipse.jetty>9.2.20.v20161216</version.org.eclipse.jetty>
     <version.org.glassfish.javax.el>3.0.0</version.org.glassfish.javax.el>
     <version.org.elasticsearch>1.7.2</version.org.elasticsearch>
@@ -158,7 +158,7 @@
     <version.org.mvel>2.2.7.Final</version.org.mvel>
     <version.org.osgi>4.2.0</version.org.osgi>
     <version.org.picketbox>4.9.6.Final</version.org.picketbox>
-    <version.org.slf4j>1.7.7</version.org.slf4j>
+    <version.org.slf4j>1.7.21</version.org.slf4j>
     <version.io.netty>4.1.8.Final</version.io.netty>
     <version.io.swagger>1.5.7</version.io.swagger>
     <version.xmlunit>1.6</version.xmlunit>

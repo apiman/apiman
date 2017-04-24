@@ -18,7 +18,6 @@ package io.apiman.gateway.platforms.vertx3.verticles;
 import io.apiman.common.util.SimpleStringUtils;
 import io.apiman.gateway.platforms.vertx3.common.config.VertxEngineConfig;
 import io.apiman.gateway.platforms.vertx3.common.verticles.VerticleType;
-import io.apiman.gateway.platforms.vertx3.i18n.Messages;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
 import io.vertx.core.logging.Logger;
@@ -40,10 +39,7 @@ public abstract class ApimanVerticleBase extends AbstractVerticle {
     @Override
     public void start(Future<Void> startFuture) {
         apimanConfig = getEngineConfig();
-
-        log.info(Messages.getString("ApimanVerticleBase.starting_verticle") + this.getClass().getName() + "\n" +
-                Messages.getString("ApimanVerticleBase.type") + verticleType() + "\n" +
-                Messages.getString("ApimanVerticleBase.uuid") + uuid + "\n");
+        log.info("Starting verticle: {0}. UUID: {1}.", verticleType(), uuid);
     }
 
     /**

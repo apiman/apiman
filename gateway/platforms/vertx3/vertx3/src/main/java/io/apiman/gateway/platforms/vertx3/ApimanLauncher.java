@@ -16,6 +16,7 @@
 
 package io.apiman.gateway.platforms.vertx3;
 
+import io.apiman.gateway.platforms.vertx3.logging.ApimanLog4j2LogDelegateFactory;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Launcher;
 import io.vertx.core.Vertx;
@@ -25,6 +26,13 @@ import io.vertx.core.impl.launcher.VertxLifecycleHooks;
 import io.vertx.core.json.JsonObject;
 
 public class ApimanLauncher extends VertxCommandLauncher implements VertxLifecycleHooks {
+
+    // Ensure we're in control of logging.
+    static {
+        if (System.getProperty("vertx.logger-delegate-factory-class-name") == null) { //$NON-NLS-1$
+            System.setProperty("vertx.logger-delegate-factory-class-name", ApimanLog4j2LogDelegateFactory.class.getCanonicalName()); //$NON-NLS-1$
+        }
+    }
 
     /**
      * Main entry point.

@@ -41,6 +41,7 @@ import io.apiman.gateway.platforms.vertx3.common.verticles.VerticleType;
 import io.apiman.gateway.platforms.vertx3.connector.ConnectorFactory;
 import io.apiman.gateway.platforms.vertx3.engine.VertxPluginRegistry;
 import io.apiman.gateway.platforms.vertx3.i18n.Messages;
+import io.apiman.gateway.platforms.vertx3.logging.VertxLoggerDelegate;
 import io.vertx.core.json.JsonObject;
 
 import java.util.AbstractMap;
