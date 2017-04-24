@@ -40,7 +40,7 @@
   },
 
   "logger-factory": {
-    "class": "io.apiman.gateway.platforms.vertx3.common.config.VertxLoggerDelegate",
+    "class": "io.apiman.gateway.platforms.vertx3.logging.VertxLoggerDelegate",
     "config": {}
   },
 

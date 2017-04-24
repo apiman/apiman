@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.apiman.gateway.platforms.vertx3.common.config;
+package io.apiman.gateway.platforms.vertx3.logging;
 
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.common.logging.IDelegateFactory;
@@ -23,6 +23,7 @@ import io.vertx.core.logging.LoggerFactory;
 
 public class VertxLoggerDelegate implements IDelegateFactory {
 
+    // For the Apiman logger system.
     @Override
     public IApimanLogger createLogger(String name) {
         return new VertxApimanLogger(LoggerFactory.getLogger(name));
