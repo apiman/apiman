@@ -50,6 +50,7 @@ public interface IJdbcResultSet {
 
     /**
      * Point at next row in result set
+     * @return true if next
      */
     boolean next();
 
