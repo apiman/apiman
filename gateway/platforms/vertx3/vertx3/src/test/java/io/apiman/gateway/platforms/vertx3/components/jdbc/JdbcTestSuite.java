@@ -22,8 +22,10 @@ import io.apiman.gateway.platforms.vertx3.components.jdbc.suitetests.NestedQuery
 import io.apiman.gateway.platforms.vertx3.components.jdbc.suitetests.QueryTest;
 
 import java.sql.SQLException;
+import java.util.TimeZone;
 
 import org.h2.tools.Server;
+import org.joda.time.DateTimeZone;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -39,17 +41,22 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({ CreateTableTest.class, ExecuteTest.class, QueryTest.class, NestedQueryTest.class })
 @SuppressWarnings("nls")
 public class JdbcTestSuite {
-
-    public static Server h2Server;
-
     private static JdbcOptionsBean options = new JdbcOptionsBean();
     private static final String JDBC_URL = String.format("jdbc:h2:tcp://localhost/%s/JdbcClientComponentTestDb",
             System.getProperty("java.io.tmpdir"));
+
     static {
+        // Important, this should occur BEFORE H2 is loaded otherwise it'll use local TZ and break everything.
+        System.err.println("Permanently attempting to set the TZ to UTC.");
+        System.setProperty("user.timezone", "UTC");
+        TimeZone.setDefault(TimeZone.getTimeZone("Etc/UTC"));
+        DateTimeZone.setDefault(DateTimeZone.UTC);
         options.setJdbcUrl(JDBC_URL);
         options.setAutoCommit(true);
         options.setPoolName("JdbcClientComponentTestPool");
     }
+
+    public static Server h2Server;
 
     /**
      * Slow to start & stop so do this as infrequently as possible.
