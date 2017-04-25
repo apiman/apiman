@@ -18,7 +18,7 @@ See more detail at: https://logging.apache.org/log4j/2.x/manual/async.html
       <PatternLayout>
           <pattern>
               [%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n
-          </pattern>>
+          </pattern>
       </PatternLayout>
     </Console>
   </Appenders>
