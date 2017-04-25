@@ -3,16 +3,17 @@
   <id>gateway</id>
   <formats>
     <format>zip</format>
+    <format>tgz</format>
   </formats>
   <includeBaseDirectory>false</includeBaseDirectory>
   <dependencySets>
     <!-- apiman -->
     <dependencySet>
-      <outputDirectory>/</outputDirectory>
+      <outputDirectory>${project.artifactId}-${project.version}</outputDirectory>
       <includes>
         <include>*</include>
       </includes>
-      <outputFileNameMapping>apiman-gateway-vertx.jar</outputFileNameMapping>
+      <outputFileNameMapping>apiman-gateway.jar</outputFileNameMapping>
       <useProjectArtifact>true</useProjectArtifact>
       <useProjectAttachments>true</useProjectAttachments>
       <useTransitiveDependencies>false</useTransitiveDependencies>
@@ -24,7 +25,7 @@
   <fileSets>
     <fileSet>
       <directory>src/main/resources/overlay</directory>
-      <outputDirectory>/</outputDirectory>
+      <outputDirectory>${project.artifactId}-${project.version}</outputDirectory>
       <filtered>false</filtered>
       <directoryMode>0755</directoryMode>
       <fileMode>0755</fileMode>

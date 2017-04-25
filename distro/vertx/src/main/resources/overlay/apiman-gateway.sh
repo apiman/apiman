@@ -25,4 +25,4 @@ $JAVA $APIMAN_GATEWAY_OPTS -Dlog4j.configurationFile="$DIRNAME/log4j2.xml" \
     `# Async Log4j2 logging using LMAX Disruptor.` \
     -DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector \
     `# $@ to pass args through.` \
-    -jar "$DIRNAME/apiman-gateway-vertx.jar" "$@"
+    -jar "$DIRNAME/apiman-gateway.jar" "$@"
