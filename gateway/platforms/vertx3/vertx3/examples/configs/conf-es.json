@@ -179,7 +179,7 @@
   "verticles": {
     "http": {
       "port": 8082,
-      "count": 1
+      "count": "auto"
     },
     // Configure the following SSL section to enable SSL/TLS.
     "https": {

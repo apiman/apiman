@@ -263,6 +263,12 @@ public class VertxEngineConfig implements IEngineConfig {
     }
 
     public int getVerticleCount(VerticleType verticleType) {
+        // If the field is set as "auto", then number of verticles == number of cores
+        // TODO should be decent default choice, but should benchmark to find optimum.
+        // See: VertxOptions
+        if ("auto".equalsIgnoreCase(getVerticleConfig(verticleType.name()).getValue(VERTICLE_COUNT).toString())) {
+            return Runtime.getRuntime().availableProcessors();
+        }
         return getVerticleConfig(verticleType.name()).getInteger(VERTICLE_COUNT);
     }
 

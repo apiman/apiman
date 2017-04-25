@@ -82,12 +82,10 @@
       "class": "io.apiman.gateway.engine.policy.PolicyFactoryImpl",
       "config": {}
     },
-    
+
     "logger-factory": {
       "class": "io.apiman.gateway.platforms.vertx3.logging.VertxLoggerDelegate",
-      "config": {
-
-      }
+      "config": {}
     },
 
     // Elasticsearch Metrics Settings
@@ -182,11 +180,11 @@
 
     // Verticle configuration
     // Port - The port a given verticle listens on (where relevant)
-    // Count - Number of given verticle type launched
+    // Count - Number of given verticle type launched, or "auto" for automatic.
     "verticles": {
       "http": {
         "port": 8082,
-        "count": 1
+        "count": "auto"
       },
       // Configure the following SSL section to enable SSL/TLS.
       "https": {
