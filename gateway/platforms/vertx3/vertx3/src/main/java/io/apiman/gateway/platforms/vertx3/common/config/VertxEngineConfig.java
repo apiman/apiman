@@ -318,11 +318,15 @@ public class VertxEngineConfig implements IEngineConfig {
             list.forEach(elem -> jsonMapToProperties(pathSoFar, elem, output));
         } else { // Value
             if (output.containsKey(pathSoFar)) {
-                output.put(pathSoFar, SimpleStringUtils.join(",", output.get(pathSoFar), value.toString()));
+                output.put(pathSoFar, SimpleStringUtils.join(",", output.get(pathSoFar), valueOrNull(value)));
             } else {
-                output.put(pathSoFar, value.toString());
+                output.put(pathSoFar, valueOrNull(value));
             }
         }
+    }
+
+    private String valueOrNull(Object value) {
+        return value == null ? null : value.toString();
     }
 
     private String determineKey(String pathSoFar, String key) {
