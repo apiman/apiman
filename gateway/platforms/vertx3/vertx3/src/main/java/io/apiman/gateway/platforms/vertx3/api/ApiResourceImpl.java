@@ -27,8 +27,6 @@ import io.apiman.gateway.engine.beans.exceptions.PublishingException;
 import io.apiman.gateway.engine.beans.exceptions.RegistrationException;
 import io.apiman.gateway.platforms.vertx3.common.config.VertxEngineConfig;
 import io.netty.handler.codec.http.HttpResponseStatus;
-import io.vertx.core.Handler;
-import io.vertx.core.buffer.Buffer;
 import io.vertx.core.json.Json;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
@@ -88,13 +86,11 @@ public class ApiResourceImpl implements IApiResource, IRouteBuilder {
     }
 
     public void publish() {
-        routingContext.request().bodyHandler((Handler<Buffer>) buffer -> {
-            try {
-                publish(Json.decodeValue(buffer.toString("utf-8"), Api.class));
-            } catch (Exception e) {
-                error(routingContext, HttpResponseStatus.BAD_REQUEST, e.getMessage(), e);
-            }
-        });
+      try {
+          publish(Json.decodeValue(routingContext.getBodyAsString(), Api.class));
+      } catch (Exception e) {
+          error(routingContext, HttpResponseStatus.BAD_REQUEST, e.getMessage(), e);
+      }
     }
 
     @Override

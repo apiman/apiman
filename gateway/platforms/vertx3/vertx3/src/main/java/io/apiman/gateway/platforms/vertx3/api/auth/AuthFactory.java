@@ -43,9 +43,17 @@ public class AuthFactory {
         }
     }
 
-    public static AuthHandler getAuth(Vertx vertx, Router router, VertxEngineConfig apimanConfig, JsonObject auth) {
-        String type = auth.getString("type", "NONE");
-        JsonObject authConfig = auth.getJsonObject("config", new JsonObject());
+    /**
+     * Creates an auth handler of the type indicated in the `auth` section of config.
+     *
+     * @param vertx the vert.x instance
+     * @param router the vert.x web router to protect
+     * @param apimanConfig the apiman config
+     * @return an auth handler
+     */
+    public static AuthHandler getAuth(Vertx vertx, Router router, VertxEngineConfig apimanConfig) {
+        String type = apimanConfig.getAuth().getString("type", "NONE");
+        JsonObject authConfig = apimanConfig.getAuth().getJsonObject("config", new JsonObject());
 
         switch(AuthType.getType(type)) {
         case BASIC:
