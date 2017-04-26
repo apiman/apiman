@@ -256,7 +256,7 @@
       "flowType": "PASSWORD",
       "requiredRole": "realm:apipublisher",
       // Paste and overwrite your Keycloak config here.
-      // Remember to change to *confidential client* type in KC console.
+      // Remember to change to *confidential client* type in KC console. TODO.
       // See: https://msavy.gitbooks.io/apiman-production-guide/content/production-guide/gateway/vertx.html#_configuring_keycloak_authentication_for_the_gateway_api
       "realm": "apiman",
       "realm-public-key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxyG61ohrfJQKNmDA/ePZtqZVpPXjwn3k3T+iWiTvMsxW2+WlnqIEmL5qZ09DMhBH9r50WZRO2gVoCb657Er9x0vfD6GNf/47XU2y33TX8axhP+hSwkv/VViaDlu4jQrfgPWz/FXMjWIZxg1xQS+nOBF2ScCRYWNQ/ZnUNnvrq8dGC2/AlyeYcgDUOdwlJuvgkGlF0QoVPQiRPurR3RwlG+BjL8JB3hbaAZhdJqwqApmGQbcpgLj2tODnlrZnEAp5cPPU/lgqCE1OOp78BAEiE91ZLPl/+D8qDHk+Maz0Io3bkeRZMXPpvtbL3qN+3GlF8Yz264HDSsTNrH+nd19tFQIDAQAB",
