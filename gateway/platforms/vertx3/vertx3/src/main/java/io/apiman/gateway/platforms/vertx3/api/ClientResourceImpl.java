@@ -24,8 +24,6 @@ import io.apiman.gateway.engine.beans.Client;
 import io.apiman.gateway.engine.beans.exceptions.RegistrationException;
 import io.apiman.gateway.platforms.vertx3.common.config.VertxEngineConfig;
 import io.netty.handler.codec.http.HttpResponseStatus;
-import io.vertx.core.Handler;
-import io.vertx.core.buffer.Buffer;
 import io.vertx.core.json.Json;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
@@ -79,13 +77,11 @@ public class ClientResourceImpl implements IClientResource, IRouteBuilder {
     }
 
     public void register() {
-        routingContext.request().bodyHandler((Handler<Buffer>) buffer -> {
-            try {
-                register(Json.decodeValue(buffer.toString("utf-8"), Client.class)); //$NON-NLS-1$
-            } catch (Exception e) {
-                error(routingContext, HttpResponseStatus.BAD_REQUEST, e.getMessage(), e);
-            }
-        });
+        try {
+            register(Json.decodeValue(routingContext.getBodyAsString(), Client.class));
+        } catch (Exception e) {
+            error(routingContext, HttpResponseStatus.BAD_REQUEST, e.getMessage(), e);
+        }
     }
 
     @Override

@@ -26,6 +26,7 @@ import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.net.JksOptions;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.AuthHandler;
+import io.vertx.ext.web.handler.BodyHandler;
 
 /**
  * API verticle provides the Gateway API RESTful API. Config is validated and pushed into the registry
@@ -48,9 +49,15 @@ public class ApiVerticle extends ApimanVerticleWithEngine {
         Router router = Router.router(vertx)
                     .exceptionHandler(log::error);
 
-        AuthHandler handler = AuthFactory.getAuth(vertx, router, apimanConfig, apimanConfig.getAuth());
+        // Ensure body handler is attached early so that if AuthHandler takes an external action
+        // we don't end up losing the body (e.g OAuth2).
+        router.route()
+            .handler(BodyHandler.create());
 
-        router.route("/*").handler(handler);
+        AuthHandler authHandler = AuthFactory.getAuth(vertx, router, apimanConfig);
+
+        router.route("/*")
+            .handler(authHandler);
 
         clientResource.buildRoutes(router);
         apiResource.buildRoutes(router);
