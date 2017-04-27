@@ -2,8 +2,9 @@
 
 # Convenience script to launch apiman's Vert.x gateway with sensible
 # default behaviour.
+#
 # To pass additional Java options with $APIMAN_GATEWAY_OPTS.
-# e.g. export APIMAN_GATEWAY_OPTS="-Xmx2048".
+# e.g. export APIMAN_GATEWAY_OPTS="-Xmx2048m".
 
 # Some elements cribbed from WF's `standalone.sh`; thanks.
 DIRNAME=$(dirname "$0")
