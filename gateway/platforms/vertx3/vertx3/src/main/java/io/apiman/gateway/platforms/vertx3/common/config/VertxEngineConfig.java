@@ -398,12 +398,6 @@ public class VertxEngineConfig implements IEngineConfig {
         return config.getJsonObject(VERTICLES).getJsonObject(verticleType.toLowerCase());
     }
 
-    private JsonObject getVariables() {
-        return config.getJsonObject(VARIABLES, new JsonObject());
-    }
-
-
-
     /**
      * Gets all properties in the engine configuration that are prefixed
      * with the given prefix.
@@ -445,6 +439,10 @@ public class VertxEngineConfig implements IEngineConfig {
             } else {
                 return super.lookup(key);
             }
+        }
+
+        private JsonObject getVariables() {
+            return config.getJsonObject(VARIABLES, new JsonObject());
         }
     }
 

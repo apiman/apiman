@@ -25,7 +25,6 @@ import io.apiman.gateway.engine.async.IAsyncHandler;
 public interface ISignalWriteStream extends IWriteStream, IAbortable {
 
     default void drainHandler(IAsyncHandler<Void> drainHandler) {
-        throw new UnsupportedOperationException("Drain handler has not been implemented."); //$NON-NLS-1$
     }
 
     default boolean isFull() {
