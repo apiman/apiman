@@ -139,16 +139,19 @@ public class HttpPolicyAdapter {
 
             @Override
             public void write(StringBuffer buffer) {
+                vertxRequest.resume();
                 vertxResponse.end(buffer.toString());
             }
 
             @Override
             public void write(StringBuilder builder) {
+                vertxRequest.resume();
                 vertxResponse.end(builder.toString());
             }
 
             @Override
             public void write(String body) {
+                vertxRequest.resume();
                 vertxResponse.end(body);
             }
 
@@ -170,16 +173,19 @@ public class HttpPolicyAdapter {
 
             @Override
             public void write(StringBuffer buffer) {
+                vertxRequest.resume();
                 vertxResponse.end(buffer.toString());
             }
 
             @Override
             public void write(StringBuilder builder) {
+                vertxRequest.resume();
                 vertxResponse.end(builder.toString());
             }
 
             @Override
             public void write(String body) {
+                vertxRequest.resume();
                 vertxResponse.end(body);
             }
 
