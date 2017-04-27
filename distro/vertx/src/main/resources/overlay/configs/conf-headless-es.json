@@ -153,14 +153,16 @@
     "ICacheStoreComponent": {
       "class": "io.apiman.gateway.engine.es.ESCacheStoreComponent",
       "config": {
-        "type": "jest",
-        "protocol": "${apiman.es.protocol}",
-        "host": "${apiman.es.host}",
-        "port": "${apiman.es.port}",
-        "initialize": true,
-        "username": "${apiman.es.username}",
-        "password": "${apiman.es.password}",
-        "timeout": "${apiman.es.timeout}"
+        "client": {
+          "type": "jest",
+          "protocol": "${apiman.es.protocol}",
+          "host": "${apiman.es.host}",
+          "port": "${apiman.es.port}",
+          "initialize": true,
+          "username": "${apiman.es.username}",
+          "password": "${apiman.es.password}",
+          "timeout": "${apiman.es.timeout}"
+        }
       }
     },
 
