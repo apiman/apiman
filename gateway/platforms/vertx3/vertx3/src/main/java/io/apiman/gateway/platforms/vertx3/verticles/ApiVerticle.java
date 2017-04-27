@@ -47,7 +47,9 @@ public class ApiVerticle extends ApimanVerticleWithEngine {
         IRouteBuilder systemResource = new SystemResourceImpl(apimanConfig, engine);
 
         Router router = Router.router(vertx)
-                    .exceptionHandler(log::error);
+                    .exceptionHandler(error -> {
+                        log.error(error.getMessage(), error);
+                    });
 
         // Ensure body handler is attached early so that if AuthHandler takes an external action
         // we don't end up losing the body (e.g OAuth2).
