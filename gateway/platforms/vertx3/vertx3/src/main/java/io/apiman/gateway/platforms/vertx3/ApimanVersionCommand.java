@@ -35,11 +35,11 @@ public class ApimanVersionCommand extends DefaultCommand {
 
     @Override
     public void run() throws CLIException {
-      log.info("Apiman " + getApimanVersion());
-      log.info("Vert.x " + VersionCommand.getVersion());
+        log.info("Apiman " + getApimanVersion());
+        log.info("Vert.x " + VersionCommand.getVersion());
     }
 
-    private String getApimanVersion() {
+    public static String getApimanVersion() {
         if (Version.get().getVersionString().contains("SNAPSHOT")) {
             return Version.get().getVersionString() + " @ " + Version.get().getVersionDate();
         } else {
