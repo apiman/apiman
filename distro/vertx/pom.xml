@@ -39,6 +39,7 @@
               <goal>single</goal>
             </goals>
             <configuration>
+              <appendAssemblyId>false</appendAssemblyId>
               <attach>true</attach>
               <descriptors>
                 <descriptor>src/main/assembly/overlay.xml</descriptor>
