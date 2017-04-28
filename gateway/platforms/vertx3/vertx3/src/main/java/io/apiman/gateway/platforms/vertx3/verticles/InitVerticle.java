@@ -30,6 +30,7 @@ import java.util.List;
  *
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
+@SuppressWarnings("nls")
 public class InitVerticle extends ApimanVerticleBase {
     private Logger log = LoggerFactory.getLogger(InitVerticle.class);
     private DeploymentOptions base;
@@ -49,17 +50,18 @@ public class InitVerticle extends ApimanVerticleBase {
         CompositeFuture.all(deployList).setHandler(compositeResult -> {
             if (compositeResult.failed()) {
                 compositeResult.cause().printStackTrace();
-                log.fatal("Failed to deploy verticles: " + compositeResult.cause().getMessage()); //$NON-NLS-1$
+                log.fatal("Failed to deploy verticles: " + compositeResult.cause().getMessage());
                 start.fail(compositeResult.cause());
             } else {
-                log.info("Successfully deployed all verticles"); //$NON-NLS-1$
+                log.info("Successfully deployed all verticles");
+                log.info("Gateway API port: {}", apimanConfig.getPort(ApiVerticle.VERTICLE_TYPE));
                 start.complete();
             }
         });
     }
 
     private void deploy(String canonicalName, VerticleType verticleType, @SuppressWarnings("rawtypes") List<Future> deployList) {
-        log.info("Will deploy {0} of type {1}", apimanConfig.getVerticleCount(verticleType), verticleType); //$NON-NLS-1$
+        log.info("Will deploy {0} of type {1}", apimanConfig.getVerticleCount(verticleType), verticleType);
 
         if (apimanConfig.getVerticleCount(verticleType) <= 0) {
             return;
