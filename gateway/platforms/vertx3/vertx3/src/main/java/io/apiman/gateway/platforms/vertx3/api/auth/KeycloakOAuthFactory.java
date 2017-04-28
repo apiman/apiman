@@ -113,7 +113,7 @@ public class KeycloakOAuthFactory {
             }
 
             private void handle400(RoutingContext context, String message) {
-                context.response().setStatusMessage(message);
+                if (message != null) context.response().setStatusMessage(message);
                 context.fail(400);
             }
 
