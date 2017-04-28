@@ -15,10 +15,12 @@
  */
 package io.apiman.gateway.platforms.vertx3.verticles;
 
+import io.apiman.gateway.platforms.vertx3.ApimanVersionCommand;
 import io.apiman.gateway.platforms.vertx3.common.verticles.VerticleType;
 import io.vertx.core.CompositeFuture;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Future;
+import io.vertx.core.impl.launcher.commands.VersionCommand;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 
@@ -53,8 +55,12 @@ public class InitVerticle extends ApimanVerticleBase {
                 log.fatal("Failed to deploy verticles: " + compositeResult.cause().getMessage());
                 start.fail(compositeResult.cause());
             } else {
+                log.info("Apiman Version: {}", ApimanVersionCommand.getApimanVersion());
+                log.info("Vert.x Version: {}", VersionCommand.getVersion());
+
                 log.info("Successfully deployed all verticles");
                 log.info("Gateway API port: {}", apimanConfig.getPort(ApiVerticle.VERTICLE_TYPE));
+
                 start.complete();
             }
         });
