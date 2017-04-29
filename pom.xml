@@ -1189,8 +1189,7 @@
               <configuration>
                 <fail>true</fail>
                 <rules>
-                  <illegalTransitiveDependencyCheck
-                    implementation="de.is24.maven.enforcer.rules.IllegalTransitiveDependencyCheck">
+                  <illegalTransitiveDependencyCheck implementation="de.is24.maven.enforcer.rules.IllegalTransitiveDependencyCheck">
                     <reportOnly>false</reportOnly>
                     <regexIgnoredClasses>
                       <regexIgnoredClass>javax\..+</regexIgnoredClass>
@@ -1348,6 +1347,49 @@
       </plugins>
     </pluginManagement>
     <plugins>
+      <plugin>
+        <groupId>pl.project13.maven</groupId>
+        <artifactId>git-commit-id-plugin</artifactId>
+        <version>2.2.1</version>
+        <executions>
+          <execution>
+            <id>get-the-git-infos</id>
+            <goals>
+              <goal>revision</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <dotGitDirectory>${project.basedir}/.git</dotGitDirectory>
+          <dateFormat>yyyy-MM-dd'T'HH:mm:ss'Z'</dateFormat>
+          <dateFormatTimeZone>UTC</dateFormatTimeZone>
+          <verbose>false</verbose>
+          <generateGitPropertiesFile>false</generateGitPropertiesFile>
+          <skipPoms>true</skipPoms>
+          <injectAllReactorProjects>false</injectAllReactorProjects>
+          <failOnNoGitDirectory>true</failOnNoGitDirectory>
+          <failOnUnableToExtractRepoInfo>true</failOnUnableToExtractRepoInfo>
+          <useNativeGit>false</useNativeGit>
+          <abbrevLength>7</abbrevLength>
+          <commitIdGenerationMode>flat</commitIdGenerationMode>
+          <gitDescribe>
+            <always>false</always>
+            <!-- Chars to displayed as the commit object id? 7 is git's default -->
+            <abbrev>7</abbrev>
+            <!-- When the build is triggered while the repo is in "dirty state", append this suffix -->
+            <dirty>-dirty</dirty>
+            <!-- Only consider tags matching the given pattern. This can be used to avoid leaking private tags from the repository. -->
+            <match>*</match>
+            <!-- When you run git-describe it only looks only for *annotated tags* by default -->
+            <tags>false</tags>
+            <!--
+            always print using the "tag-commits_from_tag-g_commit_id-maybe_dirty" format, even if "on" a tag.
+            The distance will always be 0 if you're "on" the tag.
+          -->
+            <forceLongFormat>false</forceLongFormat>
+          </gitDescribe>
+        </configuration>
+      </plugin>
       <!-- Enforcer-related stuff -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

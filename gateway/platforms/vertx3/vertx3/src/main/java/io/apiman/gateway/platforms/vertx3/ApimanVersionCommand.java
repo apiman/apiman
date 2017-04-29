@@ -41,7 +41,7 @@ public class ApimanVersionCommand extends DefaultCommand {
 
     public static String getApimanVersion() {
         if (Version.get().getVersionString().contains("SNAPSHOT")) {
-            return Version.get().getVersionString() + " @ " + Version.get().getVersionDate();
+            return Version.get().getVersionString() + " " + Version.get().getVcsCommitDescription() + Version.get().getVersionDate();
         } else {
             return Version.get().getVersionString();
         }
