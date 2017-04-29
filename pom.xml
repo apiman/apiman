@@ -1368,8 +1368,8 @@
           <generateGitPropertiesFile>false</generateGitPropertiesFile>
           <skipPoms>true</skipPoms>
           <injectAllReactorProjects>false</injectAllReactorProjects>
-          <failOnNoGitDirectory>true</failOnNoGitDirectory>
-          <failOnUnableToExtractRepoInfo>true</failOnUnableToExtractRepoInfo>
+          <failOnNoGitDirectory>false</failOnNoGitDirectory>
+          <failOnUnableToExtractRepoInfo>false</failOnUnableToExtractRepoInfo>
           <useNativeGit>false</useNativeGit>
           <abbrevLength>7</abbrevLength>
           <commitIdGenerationMode>flat</commitIdGenerationMode>
