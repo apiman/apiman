@@ -15,6 +15,7 @@
  */
 package io.apiman.gateway.platforms.vertx3.verticles;
 
+import io.apiman.gateway.engine.Version;
 import io.apiman.gateway.platforms.vertx3.ApimanVersionCommand;
 import io.apiman.gateway.platforms.vertx3.common.verticles.VerticleType;
 import io.vertx.core.CompositeFuture;
@@ -56,6 +57,7 @@ public class InitVerticle extends ApimanVerticleBase {
                 start.fail(compositeResult.cause());
             } else {
                 log.info("Apiman Version: {}", ApimanVersionCommand.getApimanVersion());
+                if (log.isDebugEnabled()) log.debug("Git commit info: {}", Version.get().getVerbose());
                 log.info("Vert.x Version: {}", VersionCommand.getVersion());
 
                 log.info("Successfully deployed all verticles");
