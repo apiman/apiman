@@ -17,6 +17,7 @@
 package io.apiman.test.common.echo;
 
 import io.apiman.common.util.SimpleStringUtils;
+import io.apiman.gateway.engine.beans.EngineErrorResponse;
 import io.apiman.test.common.mock.EchoResponse;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
@@ -25,6 +26,7 @@ import io.vertx.core.MultiMap;
 import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.http.HttpServerResponse;
 
+import java.io.StringWriter;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
@@ -33,12 +35,14 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+
 import org.apache.commons.lang3.math.NumberUtils;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
 /**
  * Vert.x edition of Echo servlet, with view to being more amenable
@@ -50,9 +54,17 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 public class EchoServerVertx extends AbstractVerticle {
 
     private static ObjectMapper jsonMapper = new ObjectMapper();
-    private static ObjectMapper xmlMapper = new XmlMapper();
     static {
         jsonMapper.enable(SerializationFeature.INDENT_OUTPUT);
+    }
+
+    private static JAXBContext jaxbContext;
+    static {
+        try {
+            jaxbContext = JAXBContext.newInstance(EngineErrorResponse.class, EchoResponse.class);
+        } catch (JAXBException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private long counter = 0L;
@@ -74,8 +86,11 @@ public class EchoServerVertx extends AbstractVerticle {
 
     private static String asXml(EchoResponse obj) {
         try {
-            return xmlMapper.writeValueAsString(obj);
-        } catch (JsonProcessingException e) {
+            Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+            StringWriter sr = new StringWriter(500); //TODO StringWriter sucks, make adapter for OutputStream
+            jaxbMarshaller.marshal(obj, sr);
+            return sr.toString();
+        } catch (JAXBException e) {
             throw new RuntimeException(e);
         }
     }
@@ -83,7 +98,7 @@ public class EchoServerVertx extends AbstractVerticle {
     private static String asJson(EchoResponse obj) {
         try {
             return jsonMapper.writeValueAsString(obj);
-        } catch (JsonProcessingException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
