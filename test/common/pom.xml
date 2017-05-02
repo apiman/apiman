@@ -81,7 +81,7 @@
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-jndi</artifactId>
     </dependency>
-      <dependency   >
+    <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-core</artifactId>
     </dependency>

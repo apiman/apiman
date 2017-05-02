@@ -1195,6 +1195,7 @@
                     <regexIgnoredClasses>
                       <regexIgnoredClass>javax\..+</regexIgnoredClass>
                       <regexIgnoredClass>org.w3c.dom\..+</regexIgnoredClass>
+                      <regexIgnoredClass>io.netty.buffer.ByteBuf</regexIgnoredClass>
                     </regexIgnoredClasses>
                     <useClassesFromLastBuild>true</useClassesFromLastBuild>
                   </illegalTransitiveDependencyCheck>

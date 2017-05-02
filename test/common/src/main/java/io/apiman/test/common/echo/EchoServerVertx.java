@@ -23,10 +23,12 @@ import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.MultiMap;
+import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.http.HttpServerResponse;
+import io.vertx.core.streams.WriteStream;
 
-import java.io.StringWriter;
+import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
@@ -45,8 +47,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
 /**
+ * <p>
  * Vert.x edition of Echo servlet, with view to being more amenable
  * to performance testing.
+ * </p>
+ * <p>
+ * Can be run directly with: <tt>vertx run EchoServerVertx.java</tt>
+ * </p>
+ * <p>
+ * To set port, use the property -Dio.apiman.test.common.echo.port=1234
+ * </p>
  *
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
  */
@@ -81,24 +91,26 @@ public class EchoServerVertx extends AbstractVerticle {
                     startFuture.fail(result.cause());
                 }
             });
-        System.out.println("Starting EchoServerVertx on: " + port);
+        System.out.println("*** Starting EchoServerVertx on: " + port);
     }
 
-    private static String asXml(EchoResponse obj) {
-        try {
+    // Writes buffered chunks directly to the response and then calls #end.
+    private static void writeXmlAndEnd(HttpServerResponse rep, EchoResponse echo) {
+        try (BufferOutputStream bufferOutputStream = new BufferOutputStream(500, rep)) {
             Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
-            StringWriter sr = new StringWriter(500); //TODO StringWriter sucks, make adapter for OutputStream
-            jaxbMarshaller.marshal(obj, sr);
-            return sr.toString();
+            jaxbMarshaller.marshal(echo, bufferOutputStream);
         } catch (JAXBException e) {
+            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
 
-    private static String asJson(EchoResponse obj) {
-        try {
-            return jsonMapper.writeValueAsString(obj);
+    // Writes buffered chunks directly to the response and then calls #end.
+    private static void writeJsonAndEnd(HttpServerResponse rep, EchoResponse echo) {
+        try (BufferOutputStream bufferOutputStream = new BufferOutputStream(500, rep)) {
+            jsonMapper.writeValue(bufferOutputStream, echo);
         } catch (Exception e) {
+            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
@@ -177,12 +189,13 @@ public class EchoServerVertx extends AbstractVerticle {
                 echo.setCounter(++counter);
                 echo.setHeaders(multimapToMap(req.headers()));
                 rep.putHeader("Response-Counter", echo.getCounter().toString());
+                rep.setChunked(true);
                 if (isXml) { // XML
                     rep.putHeader("Content-Type", "application/xml");
-                    rep.end(asXml(echo));
+                    writeXmlAndEnd(rep, echo);
                 } else { // JSON
                     rep.putHeader("Content-Type", "application/json");
-                    rep.end(asJson(echo));
+                    writeJsonAndEnd(rep, echo);
                 }
             });
         }
@@ -209,6 +222,61 @@ public class EchoServerVertx extends AbstractVerticle {
                 return req.path() + "?" + SimpleStringUtils.join("&", normalisedQueryString);
             } else {
                 return req.path();
+            }
+        }
+    }
+
+    private static final class BufferOutputStream extends java.io.OutputStream {
+        private Buffer vxBuffer;
+        private int sizeHint;
+        private WriteStream<Buffer> writeStream;
+        private boolean ended = false;
+
+        public BufferOutputStream(int sizeHint, WriteStream<Buffer> writeStream) {
+            this.sizeHint = sizeHint;
+            this.writeStream = writeStream;
+            vxBuffer = Buffer.buffer(sizeHint);
+        }
+
+        @Override
+        public void write(int b) throws IOException {
+            checkFlush(1);
+            vxBuffer.appendByte((byte) b);
+        }
+
+        @Override
+        public void write(byte b[]) throws IOException {
+            checkFlush(b.length);
+            vxBuffer.appendBytes(b);
+        }
+
+        @Override
+        public void write(byte b[], int off, int len) throws IOException {
+            checkFlush(len);
+            vxBuffer.appendBytes(b, off, len);
+        }
+
+        private void checkFlush(int len) {
+            if (vxBuffer.length() + len >= sizeHint) {
+                flush();
+            }
+        }
+
+        @Override
+        public void flush() {
+            writeStream.write(vxBuffer);
+            vxBuffer.getByteBuf().clear();
+        }
+
+        @Override
+        public void close() {
+            if (!ended) {
+                if (vxBuffer.length() > 0) {
+                    writeStream.end(vxBuffer);
+                } else {
+                    writeStream.end();
+                }
+                ended = true;
             }
         }
     }
