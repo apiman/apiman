@@ -4,10 +4,15 @@ Marc Savy <marc@rhymewithgravy.com>
 
 This is an apiman gateway implemented using http://www.vertx.io[Vert.x 3].
 
+NOTE: **You should also refer to the documentation specific to the configuration you're using. This README provides a high-level, generic overview.**
+
 toc::[]
 
-== Running
-You'll need to have a valid JSON config (see following sections), and build apiman with Java 8 (`mvn clean install`):
+== Building & Running
+
+This module can be built with `mvn clean install`.
+
+To run the Vert.x apiman gateway, you'll need to have a valid JSON config (see following sections), and build apiman with Java 8 (`mvn clean install`):
 
 ```shell
 java -jar target/apiman-gateway-platforms-vertx3-1.2.10-SNAPSHOT-fat.jar -conf <path-to-your-config.json>
@@ -15,9 +20,11 @@ java -jar target/apiman-gateway-platforms-vertx3-1.2.10-SNAPSHOT-fat.jar -conf <
 
 Replace `1.2.10-SNAPSHOT` with the version you built.
 
+If you're using the distro version, you can make use of the `apiman-gateway.sh` script which provides a number of helpful defaults and sets up logging for you.
+
 == Configuration
 
-The counterpart to `apiman.properties` is a simple JSON-based configuration file, examples of which are provided in the https://github.com/apiman/apiman/blob/master/gateway/platforms/vertx3/vertx3/src/conf/[repository].
+This gateway's counterpart to `apiman.properties` is a simple JSON-based configuration file, examples of which are provided in the https://github.com/apiman/apiman/blob/master/distro/vertx/src/main/resources/overlay/configs/[repository].
 
 We'll use ElasticSearch components examples throughout this README.
 
@@ -50,6 +57,7 @@ client.port=9200
 client.initialize=true
 client.apiman=great,fantastic,excellent
 ```
+
 ==== Comments
 
 Unlike standard JSON, you can insert comments into the configuration by using C-style `// comment` syntax.
@@ -60,45 +68,70 @@ Unlike standard JSON, you can insert comments into the configuration by using C-
 }
 ```
 
-=== Registries and factories
+==== Variables
+
+The configuration supports variable substitution (transclusion) in the form `"${SOME_VARIABLE}"`; where `SOME_VARIABLE` is the variable to be transcluded.
+The following list defines the lookup sources and order of precedence for variable resolution.
+
+1. JSON config's `variables` section:
+
+  "variables": {
+    "SOME_VARIABLE": "foo"
+  }
+
+2. System properties: `-DSOME_VARIABLE="foo"`
+3. Environment: `export SOME_VARIABLE="foo"`
+
+A default value can be provided, which will be used if other lookup sources fail.
+
+For example `${MAGIC_NUMBER:-8090}` will result in `8090` being set if `MAGIC_NUMBER` is unresolved after the prior steps.
+
+=== Registries, factories and components
 
 ```json
 {
   "registry": {
-    "class": "io.apiman.gateway.engine.es.ESCachingRegistry", // <1>
+    "class": "io.apiman.gateway.engine.es.PollCachingESRegistry", // <1>
     "config": {
       "client": {
-        "type": "jest",
-        "cluster-name": "elasticsearch",
-        "host": "127.0.0.1",
-        "port": "9200",
-        "initialize": true
+        "client": "jest",
+        "protocol": "${apiman.es.protocol}", // <2>
+        "host": "${apiman.es.host}",
+        "port": "${apiman.es.port}",
+        "initialize": true,
+        "username": "${apiman.es.username}",
+        "password": "${apiman.es.password}",
+        "timeout": "${apiman.es.timeout}"
       }
     }
   }
 }
 ```
 <1> Fully qualified path to registry class.
+<2> Note the variables here, which will be resolved as defined in <<Variables>>.
 
 To configure a registry, component or factory, set the `class` to the corresponding fully qualified name of a valid implementation on the classpath.
 
 You can pass arguments to the component using the `config` section.
 
-=== Verticles
+=== Verticles and scaling
 
 ```json
 {
   "verticles": {
-    "http": { "port": 8082, "count": 1 },
+    "http": { "port": 8082, "count": "auto" },
     "https": { "port": 8443, "count": 1 },
     "api": { "port": 8081, "count": 1 }
   }
 }
 ```
 
-To scale your gateway, you can alter the number of verticles that will be spun up per-JVM when the project is deployed by changing `count`. Which port the verticle listens on can be changed with `port`.
+To scale your gateway, you can alter the number of verticles that will be spun up per-JVM when the project is deployed by changing `count`.
+If you prefer, a count value of `"auto"` will provide a sensible default based upon the number of cores.
 
 If you don't want any instances of a particular verticle type, set its `count` to `0`.
+
+Which port the verticle listens on can be changed with `port`.
 
 NOTE: Verticle count only defines the number of verticles deployed in a given JVM instance (i.e. per `java -jar apiman<...>.jar -conf <...>`). How many deployments, and hence total number of verticles exist within your overall cluster is entirely up to you.
 
@@ -112,73 +145,22 @@ Encrypted HTTPS entry-point, with TLS. Turn off by reducing count to zero.
 
 ==== API
 
-Hosts the apiman gateway API, which is typically used by the apiman manager to drive the gateway. For instance, publishing and retiring APIs, Contracts.
+Hosts the apiman gateway API, which is typically used by the apiman manager to drive the gateway.
+For instance, publishing and retiring APIs, Contracts.
+You probably only need 1 of these.
 
 === Gateway API Authentication
 
 NOTE: This only relates to apiman's Gateway API; it is *unrelated* to auth of traffic transiting the gateway.
 
-```json
-{
-  "auth": {
-    "required": "basic",
-    "realm": "apiman-gateway",
-    "basic": { // Password is SHA256 digest encoded as Base64.
-      "admin" : "jGl25bVBBBW96Qi9Te4V37Fnqchz/Eu4qB9vKrRIqRg="
-    }
-  }
-}
-```
-
-At present, there is only BASIC authentication support for the gateway API. You must provide a string key of your username and a Base64 encoded SHA256 hash of the corresponding password.
-
-Here's a Ruby one-liner to achieve that for you:
-
-```bash
-ruby -e "require 'digest/sha2'; puts(Digest::SHA2.base64digest('admin'))"
-
-$ jGl25bVBBBW96Qi9Te4V37Fnqchz/Eu4qB9vKrRIqRg=
-```
-
-=== Components
-
-These are the various runtime components made available to apiman. They should be added to the `components` subsection of the config, but otherwise it's an identical pattern to the factories, etc.
-
-```json
-{
-  "components": {
-    "ISharedStateComponent": {
-      "class": "io.apiman.gateway.engine.es.ESSharedStateComponent",
-      "config": {
-        "client": {
-          "type": "jest",
-          "cluster-name": "elasticsearch",
-          "host": "127.0.0.1",
-          "port": "9200",
-          "initialize": true
-        }
-      }
-    }
-  }
-}
-```
-
-In this example, we can see we're again using an ElasticSearch component, with the client configured in the `config` section.
-
-TIP: Each component is standalone, so it may be that you need to repeat configuration in multiple components and registries.
-
-=== Other
-
-Most configuration options should be sufficiently annotated in the example configs to explain their purpose, a few others are worth briefly expanding upon.
-
-==== Hostname
+=== Hostname
 
 ```json
 { "hostname": "localhost" }
 ```
 The hostname to bind to.
 
-==== Endpoint
+=== Endpoint
 
 ```json
 { "endpoint": "mynode.local" }
@@ -186,98 +168,10 @@ The hostname to bind to.
 
 Force the gateway to report the given gateway endpoint when it is queried by the manager. By default the gateway will inspect the request used to hit the Gateway API, and use whichever address was used to reach it as the endpoint.
 
-==== Prefer Secure
+=== Prefer Secure
 
 ```json
 { "preferSecure": true }
 ```
 
 When reporting the gateway endpoint (as above), prefer to report the secure (HTTPS) URI rather than an insecure one (HTTP).
-
-== Standalone Gateway
-
-The Vert.x gateway has an immutable registry which loads its configuration from a local file or remote HTTP(S) server.
-
-This is ideal for those who only need apiman's gateway capabilities and don't need the UI aspects.
-
-=== URI Loading Registry
-
-The URI Loading Registry registry can be selected using the following `class` reference in the `registry` section of the config:
-`io.apiman.gateway.engine.vertx.polling.URILoadingRegistry`
-
-==== Data
-
-https://gist.githubusercontent.com/msavy/cb245f4ed5228e8aa368a03b035f4b9b/raw/25dcc614dba43821b7623e16302b404c39bdeeca/apiman-gateway-api.json[An example data file] that the registry will load. This is immutable, and hence the gateway must be restarted if you want it to be refreshed.
-
-==== Configuration
-
-Provide the path to the configuration via `configUri`
-
-```
-{
-    "registry": {
-        "class": "io.apiman.gateway.engine.vertx.polling.URILoadingRegistry", // <1>
-        "config": {
-            "configUri": "file:///tmp/apiman-gateway.json" // <2>
-        }
-    }
-```
-<1> Reference to URI Loading Registry.
-<2> URI to JSON configuration.
-
-===== File
-
-```
-"config": {
-    "configUri": "file:///Users/foo/bar.json"
-}
-```
-
-File is simply `file://` followed by the full path to the configuration.
-
-===== HTTP(S)
-
-```
-"config": {
-    "configUri": "https://example.org/apiman-gateway.json"
-}
-```
-
-HTTP(S) is simply the full URL to the resource.
-
-There are multiple authentication options available:
-
-====== BASIC
-
-```
-"config": {
-    "configUri": "https://example.org/apiman-gateway.json"
-    "auth": "BASIC", // <0>
-    "username": "admin", // <1>
-    "password": "${PASSWORD}" // <2>
-}
-```
-<0> Select auth type BASIC.
-<1> Example username as a literal string.
-<2> Password taken from system properties or environment.
-
-====== OAuth2
-
-OAuth2 is much more flexible, but somewhat more complex with various different configurations available....
-
-```
-"config": {
-    "configUri": "https://example.org/apiman-gateway.json"
-    "auth": "OAuth2Client", // <1>
-    "flowType": "password", // <2>
-    ""
-}
-```
-<1> Select auth type as OAuth2 Client.
-<2> OAuth2 flow type: PASSWORD, AUTH_CODE, CLIENT,
-<3> Password taken from system properties or environment.
-
-== TODO
-
-- Enable auth to the Gateway API via Keycloak
-- Strip this README - move and expand documentation to main apiman website (too much content). 
