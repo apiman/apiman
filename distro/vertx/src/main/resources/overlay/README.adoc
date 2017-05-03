@@ -16,7 +16,7 @@ Modify `log4j2.xml` to tailor logging config.
 
 == Interactive Debugging
 
-Provide the `--debug` flag to enable [interactive debugging](https://docs.oracle.com/javase/8/docs/technotes/guides/troubleshoot/introclientissues005.html).
+Provide the `--debug` flag to enable https://docs.oracle.com/javase/8/docs/technotes/guides/troubleshoot/introclientissues005.html[interactive debugging].
 You can attach your debugger on port `8787` or set `DEBUG_PORT` to customise the port.
 Refer to OpenJDK's documentation for more detailed information. 
 
