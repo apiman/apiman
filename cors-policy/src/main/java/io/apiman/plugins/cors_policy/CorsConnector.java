@@ -263,6 +263,10 @@ public class CorsConnector implements IApiConnector {
         }
 
         @Override
+        public void abort(Throwable t) {
+        }
+
+        @Override
         public boolean isFinished() {
             return finished;
         }
@@ -304,5 +308,6 @@ public class CorsConnector implements IApiConnector {
         public ApiResponse getHead() {
             return response;
         }
+
     }
 }
