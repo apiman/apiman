@@ -14,6 +14,19 @@
     <module>api</module>
     <module>engine</module>
     <module>platforms</module>
-    <module>test</module>
   </modules>
+
+  <profiles>
+    <profile>
+      <id>distros</id>
+      <activation>
+        <property>
+          <name>!skipDistros</name>
+        </property>
+      </activation>
+      <modules>
+        <module>test</module>
+      </modules>
+    </profile>
+  </profiles>
 </project>
