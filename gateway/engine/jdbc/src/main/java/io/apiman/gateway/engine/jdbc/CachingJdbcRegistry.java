@@ -31,7 +31,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Extends the {@link JdbcRegistry} to provide single-node caching.  This caching solution
  * will not work in a cluster.  If looking for cluster support, either go with the core
- * {@link JdbcRegistry} or use {@link CachingJdbcRegistry}.
+ * {@link JdbcRegistry} or use {@link PollCachingJdbcRegistry}.
  *
  * @author eric.wittmann@redhat.com
  */
@@ -43,6 +43,7 @@ public abstract class CachingJdbcRegistry extends JdbcRegistry {
 
     /**
      * Constructor.
+     * @param config the component configuration
      */
     public CachingJdbcRegistry(Map<String, String> config) {
         super(config);
