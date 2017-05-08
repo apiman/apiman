@@ -238,8 +238,7 @@
     }
   },
 
-  // SSL configuration to the gateway's *front end* (i.e. client <-> gateway)
-  // and the Gateway API (i.e. Manager -> Gateway API).
+  // SSL configuration to the gateway's *front end* (i.e. client <-> gateway).
   //  "ssl": {
   //    "keystore": {
   //      "path": "/the/keystore/path/here.jks",
