@@ -8,6 +8,18 @@
       "title": "Direction",
       "description": "You may choose to log either the Request headers, Response headers, or both.",
       "enum": [ "request", "response", "both" ]
+    },
+    "logHeaders": {
+      "title": "Log Headers",
+      "description": "Whether to log the HTTP headers.",
+      "type": "boolean",
+      "default": true
+    },
+    "logStatusCode": {
+      "title": "Log Status Code",
+      "description": "Whether to log the HTTP response status code.",
+      "type": "boolean",
+      "default": false
     }
   }
 }

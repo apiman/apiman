@@ -23,7 +23,7 @@ public class LogHeadersPolicyTest extends ApimanPolicyTest {
 	 * A simple happy flow test to verify the policy does not blow up in our face.
 	 */
 	@Test
-	@Configuration("{ \"direction\" : \"both\" }")
+	@Configuration("{ \"direction\" : \"both\", \"logStatusCode\" : true }")
 	public void testLogHeadersWithoutAnyRequestHeaders() throws PolicyFailureError, Throwable {
 	    PrintStream out = System.out;
 	    ByteArrayOutputStream testOutput = new ByteArrayOutputStream();
@@ -35,11 +35,12 @@ public class LogHeadersPolicyTest extends ApimanPolicyTest {
     		output = redactDates(output);
     		output = normalize(output);
     		String expected = "INFO: Logging 0 HTTP Request headers for io.apiman.test.policies.EchoBackEndApi\n" +
-    		        "INFO: Logging 4 HTTP Response headers for io.apiman.test.policies.EchoBackEndApi\n" +
-    		        "INFO: Key : Content-Length, Value : 167\n" +
-    		        "INFO: Key : Content-Type, Value : application/json\n" +
-    		        "INFO: Key : Date, Value : XXX\n" +
-    		        "INFO: Key : Server, Value : apiman.policy-test\n" +
+                    "INFO: Status code 200 for io.apiman.test.policies.EchoBackEndApi\n" +
+                    "INFO: Logging 4 HTTP Response headers for io.apiman.test.policies.EchoBackEndApi\n" +
+    		        "Key : Content-Length, Value : 167\n" +
+    		        "Key : Content-Type, Value : application/json\n" +
+    		        "Key : Date, Value : XXX\n" +
+    		        "Key : Server, Value : apiman.policy-test\n" +
     		        "";
     		Assert.assertEquals(expected, output);
         } finally {
@@ -51,7 +52,7 @@ public class LogHeadersPolicyTest extends ApimanPolicyTest {
 	 * A simple happy flow test to verify the policy does not blow up in our face.
 	 */
 	@Test
-    @Configuration("{ \"direction\" : \"both\" }")
+    @Configuration("{ \"direction\" : \"both\", \"logStatusCode\" : true }")
 	public void testLogHeadersHappyFlow() throws PolicyFailureError, Throwable {
         PrintStream out = System.out;
         ByteArrayOutputStream testOutput = new ByteArrayOutputStream();
@@ -66,12 +67,13 @@ public class LogHeadersPolicyTest extends ApimanPolicyTest {
             output = redactDates(output);
             output = normalize(output);
             String expected = "INFO: Logging 1 HTTP Request headers for io.apiman.test.policies.EchoBackEndApi\n" +
-                    "INFO: Key : X-Test-Name, Value : testGet\n" +
+                    "Key : X-Test-Name, Value : testGet\n" +
+                    "INFO: Status code 200 for io.apiman.test.policies.EchoBackEndApi\n" +
                     "INFO: Logging 4 HTTP Response headers for io.apiman.test.policies.EchoBackEndApi\n" +
-                    "INFO: Key : Content-Length, Value : 199\n" +
-                    "INFO: Key : Content-Type, Value : application/json\n" +
-                    "INFO: Key : Date, Value : XXX\n" +
-                    "INFO: Key : Server, Value : apiman.policy-test\n" +
+                    "Key : Content-Length, Value : 199\n" +
+                    "Key : Content-Type, Value : application/json\n" +
+                    "Key : Date, Value : XXX\n" +
+                    "Key : Server, Value : apiman.policy-test\n" +
                     "";
             Assert.assertEquals(expected, output);
         } finally {
@@ -98,7 +100,7 @@ public class LogHeadersPolicyTest extends ApimanPolicyTest {
             output = redactDates(output);
             output = normalize(output);
             String expected = "INFO: Logging 1 HTTP Request headers for io.apiman.test.policies.EchoBackEndApi\n" +
-                    "INFO: Key : X-Test-Name, Value : testGet\n" +
+                    "Key : X-Test-Name, Value : testGet\n" +
                     "";
             Assert.assertEquals(expected, output);
         } finally {
@@ -110,7 +112,7 @@ public class LogHeadersPolicyTest extends ApimanPolicyTest {
      * A simple happy flow test to verify the policy does not blow up in our face.
      */
     @Test
-    @Configuration("{ \"direction\" : \"response\" }")
+    @Configuration("{ \"direction\" : \"response\", \"logStatusCode\" : true }")
     public void testLogHeadersHappyFlowResponseOnly() throws PolicyFailureError, Throwable {
         PrintStream out = System.out;
         ByteArrayOutputStream testOutput = new ByteArrayOutputStream();
@@ -124,11 +126,12 @@ public class LogHeadersPolicyTest extends ApimanPolicyTest {
             String output = testOutput.toString("UTF-8");
             output = redactDates(output);
             output = normalize(output);
-            String expected = "INFO: Logging 4 HTTP Response headers for io.apiman.test.policies.EchoBackEndApi\n" +
-                    "INFO: Key : Content-Length, Value : 199\n" +
-                    "INFO: Key : Content-Type, Value : application/json\n" +
-                    "INFO: Key : Date, Value : XXX\n" +
-                    "INFO: Key : Server, Value : apiman.policy-test\n" +
+            String expected = "INFO: Status code 200 for io.apiman.test.policies.EchoBackEndApi\n" +
+                    "INFO: Logging 4 HTTP Response headers for io.apiman.test.policies.EchoBackEndApi\n" +
+                    "Key : Content-Length, Value : 199\n" +
+                    "Key : Content-Type, Value : application/json\n" +
+                    "Key : Date, Value : XXX\n" +
+                    "Key : Server, Value : apiman.policy-test\n" +
                     "";
             Assert.assertEquals(expected, output);
         } finally {

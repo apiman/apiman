@@ -28,6 +28,19 @@ public class LogHeadersConfigBean {
     private LogHeadersDirectionType direction;
 
     /**
+     * Whether to log the request/response headers.
+     * Defaults to {@code true} for backwards compatibility.
+     */
+    @JsonProperty
+    private boolean logHeaders = true;
+
+    /**
+     * Whether to log the response status code.
+     */
+    @JsonProperty
+    private boolean logStatusCode;
+
+    /**
      * Constructor.
      */
     public LogHeadersConfigBean() {
@@ -47,4 +60,17 @@ public class LogHeadersConfigBean {
         this.direction = direction;
     }
 
+    /**
+     * @return whether to log the headers
+     */
+    public boolean isLogHeaders() {
+        return logHeaders;
+    }
+
+    /**
+     * @return whether to log the status code
+     */
+    public boolean isLogStatusCode() {
+        return logStatusCode;
+    }
 }

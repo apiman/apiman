@@ -1,6 +1,6 @@
 {
   "frameworkVersion" : 1.0,
   "name" : "Log Policy Plugin",
-  "description" : "This plugin has policies for logging to std out.",
+  "description" : "This plugin has policies for logging HTTP headers.",
   "version" : "${project.version}"
 }
