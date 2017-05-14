@@ -21,6 +21,7 @@ import io.apiman.gateway.platforms.vertx3.http.HttpPolicyAdapter;
 import io.vertx.core.Future;
 import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.http.HttpServerRequest;
+import io.vertx.core.net.JdkSSLEngineOptions;
 import io.vertx.core.net.JksOptions;
 
 /**
@@ -50,6 +51,10 @@ public class HttpsGatewayVerticle extends ApimanVerticleWithEngine {
                         .setPath(apimanConfig.getTrustStore())
                         .setPassword(apimanConfig.getTrustStorePassword())
                     );
+
+        if (JdkSSLEngineOptions.isAlpnAvailable()) {
+            sslOptions.setUseAlpn(true);
+        }
 
         vertx.createHttpServer(sslOptions)
             .requestHandler(this::requestHandler)
