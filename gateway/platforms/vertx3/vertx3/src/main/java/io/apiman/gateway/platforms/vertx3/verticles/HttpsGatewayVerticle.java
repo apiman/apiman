@@ -15,12 +15,14 @@
  */
 package io.apiman.gateway.platforms.vertx3.verticles;
 
+import io.apiman.gateway.platforms.vertx3.common.config.InheritingHttpServerOptions;
+import io.apiman.gateway.platforms.vertx3.common.config.InheritingHttpServerOptionsConverter;
 import io.apiman.gateway.platforms.vertx3.common.verticles.VerticleType;
 import io.apiman.gateway.platforms.vertx3.http.HttpApiFactory;
 import io.apiman.gateway.platforms.vertx3.http.HttpPolicyAdapter;
 import io.vertx.core.Future;
-import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.http.HttpServerRequest;
+import io.vertx.core.json.JsonObject;
 import io.vertx.core.net.JdkSSLEngineOptions;
 import io.vertx.core.net.JksOptions;
 
@@ -38,8 +40,8 @@ public class HttpsGatewayVerticle extends ApimanVerticleWithEngine {
 
         HttpApiFactory.init(engine.getApiRequestPathParser());
 
-        HttpServerOptions sslOptions = new HttpServerOptions()
-            .setHost(apimanConfig.getHostname())
+        InheritingHttpServerOptions httpsServerOptions = new InheritingHttpServerOptions();
+        httpsServerOptions.setHost(apimanConfig.getHostname())
             .setSsl(true)
             .setKeyStoreOptions(
                     new JksOptions()
@@ -53,10 +55,15 @@ public class HttpsGatewayVerticle extends ApimanVerticleWithEngine {
                     );
 
         if (JdkSSLEngineOptions.isAlpnAvailable()) {
-            sslOptions.setUseAlpn(true);
+            httpsServerOptions.setUseAlpn(true);
         }
 
-        vertx.createHttpServer(sslOptions)
+        // Load any provided configuration into the HttpServerOptions.
+        JsonObject httpServerOptionsJson = apimanConfig.getVerticleConfig(verticleType().name())
+                .getJsonObject("httpServerOptions", new JsonObject());
+        InheritingHttpServerOptionsConverter.fromJson(httpServerOptionsJson, httpsServerOptions);
+
+        vertx.createHttpServer(httpsServerOptions)
             .requestHandler(this::requestHandler)
             .listen(apimanConfig.getPort(VERTICLE_TYPE));
     }
