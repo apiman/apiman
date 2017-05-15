@@ -56,12 +56,12 @@ public class InitVerticle extends ApimanVerticleBase {
                 log.fatal("Failed to deploy verticles: " + compositeResult.cause().getMessage());
                 start.fail(compositeResult.cause());
             } else {
-                log.info("Apiman Version: {}", ApimanVersionCommand.getApimanVersion());
-                if (log.isDebugEnabled()) log.debug("Git commit info: {}", Version.get().getVerbose());
-                log.info("Vert.x Version: {}", VersionCommand.getVersion());
+                log.info("Apiman Version: {0}", ApimanVersionCommand.getApimanVersion());
+                if (log.isDebugEnabled()) log.debug("Git commit info: {0}", Version.get().getVerbose());
+                log.info("Vert.x Version: {0}", VersionCommand.getVersion());
 
                 log.info("Successfully deployed all verticles");
-                log.info("Gateway API port: {}", apimanConfig.getPort(ApiVerticle.VERTICLE_TYPE));
+                log.info("Gateway API port: {0}", apimanConfig.getPort(ApiVerticle.VERTICLE_TYPE));
 
                 start.complete();
             }
