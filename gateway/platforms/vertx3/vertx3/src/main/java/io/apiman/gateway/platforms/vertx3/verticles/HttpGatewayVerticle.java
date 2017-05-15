@@ -15,12 +15,14 @@
  */
 package io.apiman.gateway.platforms.vertx3.verticles;
 
+import io.apiman.gateway.platforms.vertx3.common.config.InheritingHttpServerOptions;
+import io.apiman.gateway.platforms.vertx3.common.config.InheritingHttpServerOptionsConverter;
 import io.apiman.gateway.platforms.vertx3.common.verticles.VerticleType;
 import io.apiman.gateway.platforms.vertx3.http.HttpApiFactory;
 import io.apiman.gateway.platforms.vertx3.http.HttpPolicyAdapter;
 import io.vertx.core.Future;
-import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.http.HttpServerRequest;
+import io.vertx.core.json.JsonObject;
 
 /**
  * A HTTP gateway verticle
@@ -36,10 +38,15 @@ public class HttpGatewayVerticle extends ApimanVerticleWithEngine {
 
         HttpApiFactory.init(engine.getApiRequestPathParser());
 
-        HttpServerOptions standardOptions = new HttpServerOptions()
-            .setHost(apimanConfig.getHostname());
+        InheritingHttpServerOptions httpServerOptions = new InheritingHttpServerOptions();
+        httpServerOptions.setHost(apimanConfig.getHostname());
 
-        vertx.createHttpServer(standardOptions)
+        // Load any provided configuration into the HttpServerOptions.
+        JsonObject httpServerOptionsJson = apimanConfig.getVerticleConfig(verticleType().name())
+                .getJsonObject("httpServerOptions", new JsonObject());
+        InheritingHttpServerOptionsConverter.fromJson(httpServerOptionsJson, httpServerOptions);
+
+        vertx.createHttpServer(httpServerOptions)
             .requestHandler(this::requestHandler)
             .listen(apimanConfig.getPort(VERTICLE_TYPE));
     }
