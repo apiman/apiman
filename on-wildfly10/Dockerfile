@@ -1,5 +1,5 @@
 # Use Wildfly 10 image as the base
-FROM jboss/wildfly:10.0.0.Final
+FROM jboss/wildfly:10.1.0.Final
 
 MAINTAINER Eric Wittmann <eric.wittmann@redhat.com>
 
