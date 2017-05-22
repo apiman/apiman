@@ -117,10 +117,10 @@
     <version.com.squareup.okhttp>2.4.0</version.com.squareup.okhttp>
     <version.com.squareup.okio>1.4.0</version.com.squareup.okio>
     <version.com.unboundid.unboundid-ldapsdk>3.0.0</version.com.unboundid.unboundid-ldapsdk>
-    <version.commons-beanutils>1.9.2</version.commons-beanutils>
+    <version.commons-beanutils>1.9.3</version.commons-beanutils>
     <version.commons-codec>1.10</version.commons-codec>
     <version.commons-collections>3.2.2</version.commons-collections>
-    <version.commons-configuration>1.6</version.commons-configuration>
+    <version.commons-configuration>1.10</version.commons-configuration>
     <version.commons-dbcp>1.4</version.commons-dbcp>
     <version.commons-dbutils>1.6</version.commons-dbutils>
     <version.commons-io>2.4</version.commons-io>
@@ -162,7 +162,7 @@
     <version.org.picketbox>4.9.6.Final</version.org.picketbox>
     <version.org.slf4j>1.7.21</version.org.slf4j>
     <version.io.netty>4.1.8.Final</version.io.netty>
-    <version.io.swagger>1.5.7</version.io.swagger>
+    <version.io.swagger>1.5.13</version.io.swagger>
     <version.xmlunit>1.6</version.xmlunit>
     <version.io.vertx>3.4.0</version.io.vertx>
     <version.net.openhft>0.6</version.net.openhft>
@@ -883,6 +883,11 @@
             <artifactId>commons-logging</artifactId>
           </exclusion>
         </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>commons-collections</groupId>
+        <artifactId>commons-collections</artifactId>
+        <version>${version.commons-collections}</version>
       </dependency>
       <dependency>
         <groupId>org.jboss.resteasy</groupId>
