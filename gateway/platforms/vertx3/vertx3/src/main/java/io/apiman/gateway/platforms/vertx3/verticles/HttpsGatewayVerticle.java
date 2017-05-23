@@ -60,7 +60,7 @@ public class HttpsGatewayVerticle extends ApimanVerticleWithEngine {
 
         // Load any provided configuration into the HttpServerOptions.
         JsonObject httpServerOptionsJson = apimanConfig.getVerticleConfig(verticleType().name())
-                .getJsonObject("httpServerOptions", new JsonObject());
+                .getJsonObject("httpServerOptions", new JsonObject()); //$NON-NLS-1$
         InheritingHttpServerOptionsConverter.fromJson(httpServerOptionsJson, httpsServerOptions);
 
         vertx.createHttpServer(httpsServerOptions)

@@ -20,15 +20,26 @@ import io.apiman.common.util.SimpleStringUtils;
 import io.apiman.gateway.engine.beans.EngineErrorResponse;
 import io.apiman.test.common.mock.EchoResponse;
 import io.vertx.core.AbstractVerticle;
+import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.MultiMap;
 import io.vertx.core.buffer.Buffer;
+import io.vertx.core.http.HttpServer;
+import io.vertx.core.http.HttpServerOptions;
+import io.vertx.core.http.HttpServerOptionsConverter;
 import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.http.HttpServerResponse;
+import io.vertx.core.json.JsonObject;
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
+import io.vertx.core.net.JdkSSLEngineOptions;
+import io.vertx.core.net.JksOptions;
 import io.vertx.core.streams.WriteStream;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
@@ -62,6 +73,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
  */
 @SuppressWarnings("nls")
 public class EchoServerVertx extends AbstractVerticle {
+    private Logger log = LoggerFactory.getLogger(EchoServerVertx.class);
 
     private static ObjectMapper jsonMapper = new ObjectMapper();
     static {
@@ -78,20 +90,61 @@ public class EchoServerVertx extends AbstractVerticle {
     }
 
     private long counter = 0L;
+    private int toStart = 2;
 
     @Override
     public void start(Future<Void> startFuture)  {
-        int port = NumberUtils.toInt(System.getProperty("io.apiman.test.common.echo.port"), 9999);
-        vertx.createHttpServer()
+        int port = NumberUtils.toInt(System.getProperty("io.apiman.test.common.echo.port"), 9998);
+        HttpServerOptions httpServerOptions = getHttpServerOptions();
+        HttpServerOptions httpsServerOptions = getHttpsServerOptions()
+                .setSsl(true)
+                .setKeyStoreOptions(getKeystore())
+                .setTrustStoreOptions(getTrustStore());
+
+        // Plain HTTP server
+        vertx.createHttpServer(httpServerOptions)
             .requestHandler(new EchoHandler())
             .listen(port, result -> {
                 if (result.succeeded()) {
-                    startFuture.complete();
+                    checkSuccess(startFuture, result);
                 } else {
                     startFuture.fail(result.cause());
                 }
             });
-        System.out.println("*** Starting EchoServerVertx on: " + port);
+        // HTTPS server
+        vertx.createHttpServer(httpsServerOptions)
+            .requestHandler(new EchoHandler())
+            .listen(port+1, result -> {
+                if (result.succeeded()) {
+                    checkSuccess(startFuture, result);
+                } else {
+                    startFuture.fail(result.cause());
+                }
+            });
+
+        log.info("*** Starting EchoServerVertx on HTTP: {0} HTTPS: {1}", port, port+1);
+    }
+
+    private void checkSuccess(Future<Void> startFuture, AsyncResult<HttpServer> result) {
+        toStart--;
+        if (toStart == 0) startFuture.complete();
+    }
+
+    private HttpServerOptions getHttpServerOptions() {
+        return getHttpServerOptions("http");
+    }
+
+    private HttpServerOptions getHttpsServerOptions() {
+        return getHttpServerOptions("https");
+    }
+
+    private HttpServerOptions getHttpServerOptions(String name) {
+        HttpServerOptions options = new HttpServerOptions();
+        HttpServerOptionsConverter.fromJson(config().getJsonObject(name, new JsonObject()), options);
+        if (JdkSSLEngineOptions.isAlpnAvailable()) {
+            options.setUseAlpn(true);
+        }
+        return options;
     }
 
     // Writes buffered chunks directly to the response and then calls #end.
@@ -130,9 +183,12 @@ public class EchoServerVertx extends AbstractVerticle {
         @Override
         public void handle(HttpServerRequest req) {
             try {
+                req.exceptionHandler(ex -> {
+                    handleError(req.response(), ex);
+                });
                 _handle(req);
-            } catch (Exception e) {
-                handleError(req.response(), e);
+            } catch (Exception ex) {
+                handleError(req.response(), ex);
             }
         }
 
@@ -200,8 +256,8 @@ public class EchoServerVertx extends AbstractVerticle {
             });
         }
 
-        private void handleError(HttpServerResponse rep, Exception e) {
-            e.printStackTrace();
+        private void handleError(HttpServerResponse rep, Throwable e) {
+            log.error(e);
             if (!rep.ended()) {
                 rep.setStatusCode(500);
                 rep.end();
@@ -280,4 +336,36 @@ public class EchoServerVertx extends AbstractVerticle {
             }
         }
     }
+
+    private JksOptions getKeystore() {
+        return getJksOptions("keystore", "jks/keystore.jks");
+    }
+
+    private JksOptions getTrustStore() {
+        return getJksOptions("trustStore", "jks/truststore.ts");
+    }
+
+    private JksOptions getJksOptions(String key, String defaultResource) {
+        JsonObject config = config()
+                .getJsonObject(key, new JsonObject());
+        JksOptions jksOptions = new JksOptions()
+                .setPassword(config.getString("password", "secret"))
+                .setValue(getResource(config.getString("resourceName", defaultResource)));
+        return jksOptions;
+    }
+
+    private Buffer getResource(String fPath) {
+        ClassLoader classLoader = getClass().getClassLoader();
+        File file = new File(classLoader.getResource(fPath).getFile());
+        Buffer buff;
+        try {
+            buff = Buffer.buffer(Files.readAllBytes(file.toPath()));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return buff;
+    }
+
+
+
 }
