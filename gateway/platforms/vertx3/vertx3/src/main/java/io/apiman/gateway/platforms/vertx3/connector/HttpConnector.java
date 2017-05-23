@@ -54,7 +54,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 /**
- * A vert.x-based HTTP connector; implementing both {@link ISignalReadStream} and {@link ISignalWriteStream}.
+ * A Vert.x-based HTTP connector; implementing both {@link ISignalReadStream} and {@link ISignalWriteStream}.
  *
  * Its {@link ISignalWriteStream} elements are valid immediately and its {@link ISignalReadStream} is sent as
  * an event to the provided {@link #resultHandler} when once it has reached a valid state. Hence, it is safe
@@ -160,8 +160,8 @@ class HttpConnector implements IApiConnectionResponse, IApiConnection {
 
     private void doConnection() {
         String endpoint = ApimanPathUtils.join(apiPath, destination + queryParams(apiRequest.getQueryParams()));
-        logger.debug(String.format("Connecting to %s | port: %d verb: %s path: %s", apiHost, apiPort,
-                HttpMethod.valueOf(apiRequest.getType()), endpoint));
+        logger.debug("Connecting to {0} | port: {1} verb: {2} path: {3}", apiHost, apiPort,
+                HttpMethod.valueOf(apiRequest.getType()), endpoint);
 
         clientRequest = client.request(HttpMethod.valueOf(apiRequest.getType()),
                 apiPort,

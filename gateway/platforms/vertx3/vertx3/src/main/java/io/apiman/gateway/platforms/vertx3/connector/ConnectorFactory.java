@@ -15,6 +15,9 @@
  */
 package io.apiman.gateway.platforms.vertx3.connector;
 
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import io.apiman.common.config.options.TLSOptions;
 import io.apiman.gateway.engine.IApiConnector;
 import io.apiman.gateway.engine.IConnectorFactory;
@@ -33,10 +36,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
-
 /**
  * Create Vert.x connectors to the enable apiman to connect to a backend API.
  *
@@ -54,7 +53,7 @@ public class ConnectorFactory implements IConnectorFactory {
     private TLSOptions tlsOptions;
     private LoadingCache<HttpConnectorOptions, HttpClient> clientCache = CacheBuilder.newBuilder()
                 // TODO make this tuneable.
-                .maximumSize(500)
+                .maximumSize(2000)
                 // Close any evicted connections.
                 .<HttpConnectorOptions, HttpClient>removalListener(eviction -> eviction.getValue().close())
                 // Either grab from cache or build new (which will be cached automatically).
