@@ -576,20 +576,6 @@
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-distro-wildfly8</artifactId>
-        <version>${project.version}</version>
-        <type>zip</type>
-        <classifier>overlay</classifier>
-      </dependency>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-distro-wildfly9</artifactId>
-        <version>${project.version}</version>
-        <type>zip</type>
-        <classifier>overlay</classifier>
-      </dependency>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
         <artifactId>apiman-distro-wildfly10</artifactId>
         <version>${project.version}</version>
         <type>zip</type>

@@ -28,13 +28,10 @@
         <module>eap7</module>
         <module>es</module>
         <module>tomcat8</module>
-        <module>wildfly8</module>
-        <module>wildfly9</module>
         <module>wildfly10</module>
         <module>vertx</module>
       </modules>
     </profile>
   </profiles>
-
 
 </project>
