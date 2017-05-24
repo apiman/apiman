@@ -12,12 +12,64 @@
   <name>apiman-distro-wildfly10</name>
 
   <dependencies>
+    <!-- The WildFly 8 version of APIMan -->
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>apiman-distro-wildfly9</artifactId>
-      <classifier>overlay</classifier>
+      <artifactId>apiman-manager-api-war-wildfly8</artifactId>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-manager-ui-war-wildfly8</artifactId>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-gateway-platforms-war-wildfly8-api</artifactId>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-gateway-platforms-war-wildfly8-gateway</artifactId>
+      <type>war</type>
+    </dependency>
+
+    <!-- Other apiman modules -->
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-gateway-engine-beans</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-distro-data</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-distro-es</artifactId>
+      <type>war</type>
+    </dependency>
+
+    <!-- KeyCloak -->
+    <dependency>
+      <groupId>org.keycloak</groupId>
+      <artifactId>keycloak-server-overlay</artifactId>
       <type>zip</type>
-      <version>${project.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.keycloak</groupId>
+          <artifactId>keycloak-jboss-modules</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.keycloak</groupId>
+          <artifactId>keycloak-server-feature-pack</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.keycloak</groupId>
+      <artifactId>keycloak-wildfly-adapter-dist</artifactId>
+      <version>${version.org.keycloak}</version>
+      <type>zip</type>
     </dependency>
   </dependencies>
 
@@ -29,6 +81,39 @@
         <configuration>
           <skip>true</skip>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>unpack</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.keycloak</groupId>
+                  <artifactId>keycloak-server-overlay</artifactId>
+                  <version>${version.org.keycloak}</version>
+                  <type>zip</type>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${project.build.directory}/keycloak</outputDirectory>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.keycloak</groupId>
+                  <artifactId>keycloak-wildfly-adapter-dist</artifactId>
+                  <version>${version.org.keycloak}</version>
+                  <type>zip</type>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${project.build.directory}/keycloak</outputDirectory>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
