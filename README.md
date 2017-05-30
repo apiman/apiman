@@ -86,7 +86,7 @@ the official repository:
 If the pull grabbed a lot of changes, you should rerun your build to make sure your changes are still good.
 You can then either [create patches](http://progit.org/book/ch5-2.html) (one file per commit, saved in `~/apiman-1234`) with
 
-	$ git format-patch -M -o ~/apiman-1234 orgin/master
+	$ git format-patch -M -o ~/apiman-1234 origin/master
 
 and upload them to the JIRA issue, or you can push your topic branch and its changes into your public fork repository
 
