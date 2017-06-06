@@ -713,7 +713,7 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
 
                 responseChain.doApply(apiResponse);
             } else {
-                // TODO handle the use case where there is an error!
+                resultHandler.handle(AsyncResultImpl.create(result.getError()));
             }
         };
     }
