@@ -15,7 +15,6 @@
  */
 package io.apiman.plugins.auth3scale.util.report;
 
-import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncHandler;
 import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
@@ -24,26 +23,96 @@ import io.apiman.gateway.engine.beans.PolicyFailureType;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.components.http.IHttpClientResponse;
 import io.apiman.gateway.engine.policies.PolicyFailureCodes;
+import io.apiman.plugins.auth3scale.util.Status;
+
+import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 
 /**
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 public class AuthResponseHandler implements IAsyncResultHandler<IHttpClientResponse> {
-
-    private static final AsyncResultImpl<Void> OK_RESPONSE = AsyncResultImpl.create((Void) null);
-
     private final IPolicyFailureFactoryComponent failureFactory;
-    private IAsyncResultHandler<Void> resultHandler;
     private IAsyncHandler<PolicyFailure> policyFailureHandler;
-    private IAsyncHandler<Void> limitHandler;
+    private IAsyncHandler<Status> statusHandler;
+    private IAsyncHandler<Throwable> exceptionHandler;
+
+    private IHttpClientResponse response;
+    private Status status;
+
+    private static JAXBContext jaxbContext;
+    static {
+        try {
+            jaxbContext = JAXBContext.newInstance(Status.class);
+        } catch (JAXBException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public AuthResponseHandler(IPolicyFailureFactoryComponent failureFactory) {
         this.failureFactory = failureFactory;
     }
 
-    public AuthResponseHandler resultHandler(IAsyncResultHandler<Void> resultHandler) {
-        this.resultHandler = resultHandler;
-        return this;
+    @Override
+    public void handle(IAsyncResult<IHttpClientResponse> result) {
+        if (result.isSuccess()) {
+            response = result.getResult();
+            status = parseStatus(response.getBody());
+            PolicyFailure policyFailure = null;
+
+            switch (response.getResponseCode()) {
+                case 200:
+                case 202:
+                    break;
+                case 403:
+                    // May be able to treat all error cases without distinction by using parsed response, maybe?
+                    policyFailure = policyFailure(PolicyFailureType.Authentication,
+                            PolicyFailureCodes.BASIC_AUTH_FAILED,
+                            403,
+                            status.getReason());
+                    break;
+                case 409: // Over limit.
+                    policyFailure = policyFailure(PolicyFailureType.Other,
+                            PolicyFailureCodes.RATE_LIMIT_EXCEEDED,
+                            409,
+                            status.getReason());
+                    break;
+                default:
+                    RuntimeException re = new RuntimeException("Unexpected or undocumented response code: " + response.getResponseCode()); //$NON-NLS-1$
+                    exceptionHandler.handle(re); // TODO catch-all. policy failure or exception?
+                    break;
+            }
+
+            if (policyFailure != null) {
+                policyFailureHandler.handle(policyFailure);
+            }
+
+            statusHandler.handle(status);
+
+            response.close();
+        } else {
+            exceptionHandler.handle(result.getError());
+        }
+    }
+
+    private PolicyFailure policyFailure(PolicyFailureType type, int pfCode, int responseCode, String message) {
+        PolicyFailure policyFailure = failureFactory.createFailure(type, pfCode, message);
+        policyFailure.setResponseCode(responseCode);
+        return policyFailure;
+    }
+
+    private Status parseStatus(String body) {
+        try (Reader reader = new StringReader(body)) {
+            Unmarshaller um = jaxbContext.createUnmarshaller();
+            return (Status) um.unmarshal(reader);
+        } catch (JAXBException | IOException e1) {
+            throw new RuntimeException(e1);
+        }
     }
 
     public AuthResponseHandler failureHandler(IAsyncHandler<PolicyFailure> policyFailureHandler) {
@@ -51,61 +120,14 @@ public class AuthResponseHandler implements IAsyncResultHandler<IHttpClientRespo
         return this;
     }
 
-    public IAsyncResultHandler<IHttpClientResponse> limitHandler(IAsyncHandler<Void> limitHandler) {
-        this.limitHandler = limitHandler;
+    public AuthResponseHandler statusHandler(IAsyncHandler<Status> statusHandler) {
+        this.statusHandler = statusHandler;
         return this;
     }
 
-    @Override
-    public void handle(IAsyncResult<IHttpClientResponse> result) {
-        if (result.isSuccess()) {
-            System.err.println("Successfully connected to backend");
-
-            IHttpClientResponse response = result.getResult();
-            PolicyFailure policyFailure = null;
-
-            switch (response.getResponseCode()) {
-                case 200:
-                case 202:
-                    System.out.println("3scale backend was happy");
-                    System.out.println(response.getBody());
-                    resultHandler.handle(OK_RESPONSE);
-                    break;
-                case 403:
-                    System.out.println("403??");
-                    System.out.println(response.getBody());
-                    // May be able to treat all error cases without distinction by using parsed response, maybe?
-                    policyFailure = failureFactory.createFailure(PolicyFailureType.Authentication,
-                            PolicyFailureCodes.BASIC_AUTH_FAILED,
-                            response.getResponseMessage());
-                    break;
-                case 409:  // Possibly over limit
-                    System.out.println("409");
-                    policyFailure = failureFactory.createFailure(PolicyFailureType.Other,
-                            PolicyFailureCodes.RATE_LIMIT_EXCEEDED,
-                            response.getResponseMessage());
-                    evaluateLimit(response.getBody());
-                    break;
-                default:
-                    RuntimeException re = new RuntimeException("Unexpected or undocumented response code " + response.getResponseCode());
-                    resultHandler.handle(AsyncResultImpl.create(re)); // TODO catch-all. policy failure or exception?
-                    break;
-            }
-
-            if (policyFailure != null)
-                policyFailureHandler.handle(policyFailure);
-
-            System.out.println("Closed on AuthResponseHandler");
-            response.close();
-        } else {
-            System.err.println("HTTP request failed ...");
-            result.getError().printStackTrace(); // TODO, there's actually no point in returning this to the user, is there.
-            resultHandler.handle(AsyncResultImpl.create(result.getError()));
-        }
-    }
-
-    private void evaluateLimit(String body) {
-        System.out.println(body);
+    public AuthResponseHandler exceptionHandler(IAsyncHandler<Throwable> exceptionHandler) {
+        this.exceptionHandler = exceptionHandler;
+        return this;
     }
 
 }

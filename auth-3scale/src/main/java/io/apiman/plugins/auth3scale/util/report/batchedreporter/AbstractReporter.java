@@ -16,7 +16,7 @@
 package io.apiman.plugins.auth3scale.util.report.batchedreporter;
 
 import io.apiman.gateway.engine.async.IAsyncHandler;
-import io.apiman.plugins.auth3scale.util.ParameterMap;
+import io.apiman.plugins.auth3scale.util.IMetricsBuilder;
 
 import java.util.List;
 import java.util.Map;
@@ -27,7 +27,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * @author Marc Savy {@literal <msavy@redhat.com>}
  * @param <T> extends ReportData
  */
-public abstract class AbstractReporter<T extends ReportData> {
+public abstract class AbstractReporter<T extends ReportData> implements IMetricsBuilder {
     private IAsyncHandler<Void> fullHandler;
 
     protected final Map<Integer, ConcurrentLinkedQueue<T>> reports = new ConcurrentHashMap<>(); // TODO LRU?
@@ -51,10 +51,4 @@ public abstract class AbstractReporter<T extends ReportData> {
         fullHandler.handle((Void) null);
     }
 
-    protected <Value> ParameterMap setIfNotNull(ParameterMap in, String k, Value v) {
-        if (v == null)
-            return in;
-        in.add(k, v);
-        return in;
-    }
 }

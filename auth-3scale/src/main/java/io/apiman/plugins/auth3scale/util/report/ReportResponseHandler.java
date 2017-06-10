@@ -15,6 +15,11 @@
  */
 package io.apiman.plugins.auth3scale.util.report;
 
+import io.apiman.gateway.engine.async.AsyncResultImpl;
+import io.apiman.gateway.engine.async.IAsyncResult;
+import io.apiman.gateway.engine.async.IAsyncResultHandler;
+import io.apiman.gateway.engine.components.http.IHttpClientResponse;
+
 import java.io.IOException;
 import java.io.StringReader;
 
@@ -27,18 +32,14 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import io.apiman.gateway.engine.async.AsyncResultImpl;
-import io.apiman.gateway.engine.async.IAsyncResult;
-import io.apiman.gateway.engine.async.IAsyncResultHandler;
-import io.apiman.gateway.engine.components.http.IHttpClientResponse;
-
 /**
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
+@SuppressWarnings("nls")
 public class ReportResponseHandler implements IAsyncResultHandler<IHttpClientResponse> {
     private final static IAsyncResult<ReportResponse> RESULT_OK = AsyncResultImpl.create(new SuccessfulReportResponse());
     private final static SAXParserFactory factory = SAXParserFactory.newInstance();
-    
+
     private final IAsyncResultHandler<ReportResponse> resultHandler;
 
     public ReportResponseHandler(IAsyncResultHandler<ReportResponse> resultHandler) {
@@ -59,13 +60,13 @@ public class ReportResponseHandler implements IAsyncResultHandler<IHttpClientRes
                     ReportResponse reportResponse = parseReport(postResponse.getBody());
                     resultHandler.handle(AsyncResultImpl.create(reportResponse));
                 } catch (Exception e) {
-                    RuntimeException re = new RuntimeException("Unable to parse report response", e); // TODO more specific
+                    RuntimeException re = new RuntimeException("Unable to parse report response", e); // TODO more specific //$NON-NLS-1$
                     resultHandler.handle(AsyncResultImpl.create(re));
-                }               
+                }
             }
         }
     }
-    
+
     private static ReportResponse parseReport(String report) {
         try {
             SAXParser saxParser = factory.newSAXParser();
@@ -76,14 +77,14 @@ public class ReportResponseHandler implements IAsyncResultHandler<IHttpClientRes
             throw new RuntimeException(e);
         }
     }
-    
+
     public static interface ReportResponse {
         boolean success();
         // boolean unauthorized?
         String getErrorCode();
         String getErrorMessage();
     }
-    
+
     private static final class SuccessfulReportResponse implements ReportResponse {
         @Override
         public boolean success() {
@@ -100,12 +101,12 @@ public class ReportResponseHandler implements IAsyncResultHandler<IHttpClientRes
             return null; // We don't actually care
         }
     }
-    
+
     private static final class ReturnCodeListener extends DefaultHandler implements ReportResponse {
         private boolean qErrorMessage;
         private String returnCode;
         private String errorMessage;
-        
+
         @Override
         public void startElement(String uri, String localName,
                 String qName, Attributes attributes) throws SAXException {
@@ -124,15 +125,17 @@ public class ReportResponseHandler implements IAsyncResultHandler<IHttpClientRes
         }
 
         @Override
-        public void endElement(String uri, String localName, String qName) 
+        public void endElement(String uri, String localName, String qName)
                 throws SAXException {
             qErrorMessage = false;
         }
-        
+
+        @Override
         public String getErrorCode() {
             return returnCode;
         }
-        
+
+        @Override
         public String getErrorMessage() {
             return errorMessage;
         }
@@ -147,9 +150,5 @@ public class ReportResponseHandler implements IAsyncResultHandler<IHttpClientRes
             return false;
         }
 
-    }
-    
-    public static void main(String... args) {
-        System.out.println(parseReport("<error code=\"123\">application with id=\"foo\" was not found</error>"));
     }
 }

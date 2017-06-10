@@ -24,5 +24,4 @@ public interface ReportToSend {
     String getData();
     String getEncoding();
     URI getEndpoint();
-//    void invalidate();
 }

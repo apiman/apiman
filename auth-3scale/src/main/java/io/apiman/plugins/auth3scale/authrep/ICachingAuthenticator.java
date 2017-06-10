@@ -18,6 +18,7 @@ package io.apiman.plugins.auth3scale.authrep;
 
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.Content;
+import io.apiman.plugins.auth3scale.authrep.apikey.ApiKeyAuthCache;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -25,20 +26,26 @@ import java.util.Objects;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 
-public abstract class CachingAuthenticator {
-    private static final int CAPACITY = 1_000_000;
+public interface ICachingAuthenticator {
+    static final int CAPACITY = 1_000_000;
 
-    protected Cache<Integer, Boolean> lruCache = CacheBuilder.newBuilder()
+    Cache<Integer, Boolean> lruCache = CacheBuilder.newBuilder()
             .initialCapacity(CAPACITY) // TODO sensible capacity?
             .maximumSize(CAPACITY) // LRU capacity
             .concurrencyLevel(Runtime.getRuntime().availableProcessors())
             .build();
 
-    protected int getCacheKey(Object... objects) {
+    default int getCacheKey(Object... objects) {
         return Objects.hash(objects);
     }
 
-    protected int hashArray(Content config, ApiRequest req) {
-        return Arrays.hashCode(config.getProxy().getRouteMatcher().match(req.getDestination()));
+    default int hashArray(Content config, ApiRequest req) {
+        return Arrays.hashCode(config.getProxy().match(req.getDestination()));
     }
+
+    ApiKeyAuthCache invalidate(Content config, ApiRequest serviceRequest, Object... elems);
+
+    ApiKeyAuthCache cache(Content config, ApiRequest serviceRequest, Object... elems);
+
+    boolean isAuthCached(Content config, ApiRequest serviceRequest, Object... elems);
 }

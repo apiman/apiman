@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 JBoss Inc
+ * Copyright 2017 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,17 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apiman.plugins.auth3scale.util.report.batchedreporter;
 
-import io.apiman.plugins.auth3scale.util.ParameterMap;
+package io.apiman.plugins.auth3scale.ratelimit;
 
-/**
- * @author Marc Savy {@literal <msavy@redhat.com>}
- */
-public interface ReportData {
-    ParameterMap getUsage();
-    ParameterMap getLog();
-    int groupId();
-    // This is only used for non-batched impls
-    String encode();
+import io.apiman.gateway.engine.async.IAsyncHandler;
+import io.apiman.gateway.engine.async.IAsyncResultHandler;
+import io.apiman.gateway.engine.beans.PolicyFailure;
+
+public interface IAuth {
+    IAuth auth(IAsyncResultHandler<Void> resultHandler);
+
+    IAuth policyFailureHandler(IAsyncHandler<PolicyFailure> policyFailureHandler);
 }

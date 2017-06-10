@@ -13,17 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apiman.plugins.auth3scale.util.report.batchedreporter;
+package io.apiman.plugins.auth3scale.authrep;
 
-import io.apiman.plugins.auth3scale.util.ParameterMap;
+import io.apiman.plugins.auth3scale.util.report.batchedreporter.AbstractReporter;
+import io.apiman.plugins.auth3scale.util.report.batchedreporter.ReportData;
 
 /**
  * @author Marc Savy {@literal <msavy@redhat.com>}
+ * @param <T> the type
  */
-public interface ReportData {
-    ParameterMap getUsage();
-    ParameterMap getLog();
-    int groupId();
-    // This is only used for non-batched impls
-    String encode();
+public abstract class AbstractRep<T extends AbstractReporter<? extends ReportData>> implements AbstractAuthRepBase {
+
+    //public abstract AbstractRep<T> setReporter();
+
+    public abstract AbstractRep<T> setAuthCache(ICachingAuthenticator authCache);
+
+    public abstract AbstractRep<T> setReport(ReportData report);
+
+    public abstract AbstractRep<T> rep();
+
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 JBoss Inc
+ * Copyright 2017 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,21 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package io.apiman.plugins.auth3scale.authrep;
 
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.engine.policy.IPolicyContext;
 import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.Content;
-import io.apiman.plugins.auth3scale.ratelimit.IAuth;
-import io.apiman.plugins.auth3scale.ratelimit.IRep;
-import io.apiman.plugins.auth3scale.util.report.batchedreporter.AbstractReporter;
 
-/**
- * @author Marc Savy {@literal <msavy@redhat.com>}
- */
-public interface AuthRepFactory {
-    IAuth createAuth(Content config, ApiRequest request, IPolicyContext context, AbstractAuth<?> authStrategy);
-    IRep createRep(Content config, ApiResponse response, ApiRequest request, IPolicyContext context, AbstractRep<?> repStrategy);
-    AbstractReporter<?> getReporter();
+public interface IAuthStrategyFactory {
+    AbstractAuth<?>  getAuthStrategy(Content config,
+            ApiRequest request,
+            IPolicyContext context);
+
+    AbstractRep<?> getRepStrategy(Content config,
+            ApiRequest request,
+            ApiResponse response,
+            IPolicyContext context);
 }

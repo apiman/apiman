@@ -61,33 +61,29 @@ public class ParameterMap {
      */
     public ParameterMap() {
         // Note: use a linked hash map for more predictable serialization of the parameters (mostly for testing)
-        data = new LinkedHashMap<String, Object>();
+        data = new LinkedHashMap<>();
     }
 
     /**
      * Add a string value
      *
-     * @param key
-     * @param value
+     * @param key the key
+     * @param value the value
      */
     public void add(String key, String value) {
         data.put(key, value);
     }
-    
+
     public <T> ParameterMap add(String key, T value) {
         data.put(key, value);
         return this;
-    }
-    
-    public void addUsage(ParameterMap usage) {
-        data.put("usage", usage);
     }
 
     /**
      * Add another ParameterMap
      *
-     * @param key
-     * @param map
+     * @param key the key
+     * @param map the map to add
      */
     public void add(String key, ParameterMap map) {
         data.put(key, map);
@@ -96,8 +92,8 @@ public class ParameterMap {
     /**
      * Add an array of parameter maps
      *
-     * @param key
-     * @param array
+     * @param key the key
+     * @param array to add
      */
     public void add(String key, ParameterMap[] array) {
         data.put(key, array);
@@ -106,7 +102,7 @@ public class ParameterMap {
     /**
      * Return the keys in a ParameterMap
      *
-     * @return
+     * @return the keys
      */
     public Set<String> getKeys() {
         return data.keySet();
@@ -115,7 +111,7 @@ public class ParameterMap {
     /**
      * Get the type of data item associated with the key
      *
-     * @param key
+     * @param key the key
      * @return STRING, MAP, ARRAY
      */
     public ParameterMapType getType(String key) {
@@ -132,14 +128,14 @@ public class ParameterMap {
         if (clazz == Long.class) {
             return ParameterMapType.LONG;
         }
-        throw new RuntimeException("Unknown object in parameters");
+        throw new RuntimeException("Unknown object in parameters"); //$NON-NLS-1$
     }
 
     /**
      * Get the String associated with a key
      *
-     * @param key
-     * @return
+     * @param key the key
+     * @return the value as string
      */
     public String getStringValue(String key) {
         switch (getType(key)) {
@@ -158,8 +154,8 @@ public class ParameterMap {
     /**
      * Get the map associated with a key
      *
-     * @param key
-     * @return
+     * @param key the key
+     * @return the map value
      */
     public ParameterMap getMapValue(String key) {
         return (ParameterMap) data.get(key);
@@ -168,17 +164,17 @@ public class ParameterMap {
     /**
      * Get the array associated with a key.
      *
-     * @param key
-     * @return
+     * @param key the key
+     * @return the array associated with a key
      */
     public ParameterMap[] getArrayValue(String key) {
         return (ParameterMap[]) data.get(key);
     }
-    
+
     public long getLongValue(String key) {
         return (long) data.get(key);
     }
-    
+
     public void setLongValue(String key, long value) {
         data.put(key, value);
     }
@@ -186,20 +182,21 @@ public class ParameterMap {
     /**
      * Return the number of elements in the map.
      *
-     * @return
+     * @return the size
      */
     public int size() {
         return data.size();
     }
-    
+
     public String encode() {
         return encoder.encode(this);
     }
-    
+
     public boolean containsKey(String key) {
         return data.containsKey(key);
     }
 
+    @SuppressWarnings("nls")
     @Override
     public String toString() {
         return "ParameterMap [data=" + data + "]";

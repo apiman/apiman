@@ -15,15 +15,17 @@
  */
 package io.apiman.plugins.auth3scale.authrep.apikey;
 
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import static io.apiman.plugins.auth3scale.util.IMetricsBuilder.setIfNotNull;
 
 import io.apiman.plugins.auth3scale.authrep.AuthRepConstants;
 import io.apiman.plugins.auth3scale.util.ParameterMap;
 import io.apiman.plugins.auth3scale.util.report.batchedreporter.AbstractReporter;
 import io.apiman.plugins.auth3scale.util.report.batchedreporter.ReportToSend;
+
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * @author Marc Savy {@literal <msavy@redhat.com>}
@@ -40,7 +42,7 @@ public class ApiKeyAuthReporter extends AbstractReporter<ApiKeyReportData> {
             URI endpoint = reportData.getEndpoint();
             // Base report
             ParameterMap data = new ParameterMap();
-            data.add(AuthRepConstants.SERVICE_TOKEN, reportData.getServiceToken()); 
+            data.add(AuthRepConstants.SERVICE_TOKEN, reportData.getServiceToken());
             data.add(AuthRepConstants.SERVICE_ID, reportData.getServiceId());
 
             // Transactions
@@ -61,7 +63,7 @@ public class ApiKeyAuthReporter extends AbstractReporter<ApiKeyReportData> {
             } while (reportData != null && i < MAX_RECORDS);
 
             data.add(AuthRepConstants.TRANSACTIONS, transactions.toArray(new ParameterMap[transactions.size()]));
-            System.out.println("data about to be encoded... " + reportData);
+//            System.out.println("data about to be encoded... " + reportData);
             encodedReports.add(new ApiKeyAuthReportToSend(endpoint, data.encode()));
         }
         return encodedReports;
@@ -95,7 +97,7 @@ public class ApiKeyAuthReporter extends AbstractReporter<ApiKeyReportData> {
 
         @Override
         public String getEncoding() {
-            return "application/x-www-form-urlencoded";
+            return "application/x-www-form-urlencoded"; //$NON-NLS-1$
         }
 
         @Override

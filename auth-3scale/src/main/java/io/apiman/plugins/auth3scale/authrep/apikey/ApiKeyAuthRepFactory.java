@@ -19,25 +19,30 @@ import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.engine.policy.IPolicyContext;
 import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.Content;
+import io.apiman.plugins.auth3scale.authrep.AbstractAuth;
+import io.apiman.plugins.auth3scale.authrep.AbstractRep;
 import io.apiman.plugins.auth3scale.authrep.AuthRepFactory;
+import io.apiman.plugins.auth3scale.ratelimit.IAuth;
+import io.apiman.plugins.auth3scale.ratelimit.IRep;
 import io.apiman.plugins.auth3scale.util.report.batchedreporter.AbstractReporter;
 
 /**
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
-public class ApiKeyFactory implements AuthRepFactory {
+public class ApiKeyAuthRepFactory implements AuthRepFactory {
     private final ApiKeyAuthReporter reporter = new ApiKeyAuthReporter();
-    private final ApiKeyCachingAuthenticator authCache = new ApiKeyCachingAuthenticator();
-
+    private final ApiKeyAuthCache authCache = new ApiKeyAuthCache();
 
     @Override
-    public ApiKeyAuthExecutor createAuth(Content config, ApiRequest request, IPolicyContext context) {
-        return new ApiKeyAuthExecutor(config, request, context, authCache);
+    public IAuth createAuth(Content config, ApiRequest request, IPolicyContext context, AbstractAuth<?> authStrategy) {
+        authStrategy.setAuthCache(authCache);
+        return new ApiKeyAuth(config, request, context, authStrategy);
     }
 
     @Override
-    public ApiKeyRepExecutor createRep(Content config, ApiResponse response, ApiRequest request, IPolicyContext context) {
-        return new ApiKeyRepExecutor(config, request, response, context, reporter, authCache);
+    public IRep createRep(Content config, ApiResponse response, ApiRequest request, IPolicyContext context, AbstractRep<?> repStrategy) {
+        repStrategy.setAuthCache(authCache);
+        return new ApiKeyRep(config, request, response, context, repStrategy);
     }
 
     @Override

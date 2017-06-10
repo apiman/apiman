@@ -17,7 +17,7 @@ package io.apiman.plugins.auth3scale.authrep.apikey;
 
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.Content;
-import io.apiman.plugins.auth3scale.authrep.CachingAuthenticator;
+import io.apiman.plugins.auth3scale.authrep.ICachingAuthenticator;
 
 import java.util.concurrent.ExecutionException;
 
@@ -26,26 +26,31 @@ import com.google.common.util.concurrent.UncheckedExecutionException;
 /**
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
-public class ApiKeyCachingAuthenticator extends CachingAuthenticator {
-
-    boolean isAuthCached(Content config, ApiRequest serviceRequest, String apiKey) {
+public class ApiKeyAuthCache implements ICachingAuthenticator {
+    @Override
+    public boolean isAuthCached(Content config, ApiRequest serviceRequest, Object... elems) {
         try {
-            return lruCache.get(getCacheKey(serviceRequest.getApiId(), apiKey,
+            return lruCache.get(getCacheKey(serviceRequest.getApiId(), elems[0],
                     hashArray(config, serviceRequest)), () -> false); // TODO cache routematcher result into request?
         } catch (ExecutionException e) {
             throw new UncheckedExecutionException(e);
         }
     }
 
-    public ApiKeyCachingAuthenticator cache(Content config, ApiRequest serviceRequest, String apiKey) {
-        lruCache.put(getCacheKey(serviceRequest.getApiId(), apiKey,
+    @Override
+    public ApiKeyAuthCache cache(Content config, ApiRequest serviceRequest, Object... elems) {
+        lruCache.put(getCacheKey(serviceRequest.getApiId(),  elems[0],
                 hashArray(config, serviceRequest)), true);
         return this;
     }
 
-    public ApiKeyCachingAuthenticator invalidate(Content config, ApiRequest serviceRequest, String apiKey) { // TODO invalidate will be with what apikey..?
-        lruCache.invalidate(getCacheKey(serviceRequest.getApiId(), apiKey,
-                hashArray(config, serviceRequest))); // TODO optmise
+    @Override
+    public ApiKeyAuthCache invalidate(Content config, ApiRequest serviceRequest, Object... elems) {
+        if (elems.length == 0 || elems[0] == null || elems[0].equals("")) {
+            System.out.println("Bad"); //$NON-NLS-1$
+        }
+        lruCache.invalidate(getCacheKey(serviceRequest.getApiId(),  elems[0],
+                hashArray(config, serviceRequest))); // TODO optimise
         return this;
     }
 }
