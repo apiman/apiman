@@ -12,3 +12,4 @@ gwt-unitCache
 *.iml
 .idea
 \#*\#
+.externalToolBuilders/
