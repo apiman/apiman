@@ -108,7 +108,7 @@ public class EchoServlet extends HttpServlet {
                 };
 
                 byte[] hashBytes = sha1.digest();
-                StringBuffer sb = new StringBuffer();
+                StringBuilder sb = new StringBuilder();
                 for (int i = 0; i < hashBytes.length; i++) {
                   sb.append(Integer.toString((hashBytes[i] & 0xff) + 0x100, 16).substring(1));
                 }
@@ -130,7 +130,7 @@ public class EchoServlet extends HttpServlet {
      */
     public EchoServlet() {
     }
-    
+
     /**
      * @see javax.servlet.http.HttpServlet#service(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
