@@ -43,14 +43,14 @@ public class SimpleStringUtils {
      * Join together varargs using a join sequence.
      * <p>
      * <tt>join("-", a, b, c) => a-b-c</tt>
-     * 
+     *
      * @param joinChar character to join string
      * @param args strings to join
      * @return joined string
      */
     public static String join(String joinChar, String... args) {
         String next = ""; //$NON-NLS-1$
-        StringBuffer result = new StringBuffer(length(args) + (args.length - 1));
+        StringBuilder result = new StringBuilder(length(args) + (args.length - 1));
 
         for (String arg : args) {
             result.append(next);
