@@ -15,9 +15,6 @@
  */
 package io.apiman.gateway.engine.policy;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import io.apiman.common.plugin.Plugin;
 import io.apiman.common.plugin.PluginClassLoader;
 import io.apiman.common.plugin.PluginCoordinates;
@@ -26,6 +23,9 @@ import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.exceptions.PolicyNotFoundException;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * An implementation of the {@link IPolicyFactory} interface.
@@ -73,10 +73,8 @@ public class PolicyFactoryImpl implements IPolicyFactory {
                 Thread.currentThread().setContextClassLoader(oldCtxLoader);
             }
 
-            // Note: don't cache configuration objects for snapshot versions of policies.
-            if (!policySpec.contains("-SNAPSHOT")) { //$NON-NLS-1$
-                policyConfigCache.put(cacheKey, config);
-            }
+            policyConfigCache.put(cacheKey, config);
+
             return config;
         }
     }
