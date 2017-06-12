@@ -16,9 +16,7 @@
 
 package io.apiman.plugins.auth3scale.authrep;
 
-import io.apiman.plugins.auth3scale.util.IMetricsBuilder;
-
-public interface AbstractAuthRepBase extends IMetricsBuilder {
+public interface AbstractAuthRepBase {
 
     AbstractAuthRepBase setKeyElems(Object... keyElems);
 }

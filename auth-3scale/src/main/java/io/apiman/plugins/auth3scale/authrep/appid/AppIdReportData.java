@@ -13,15 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apiman.plugins.auth3scale.authrep.apikey;
+package io.apiman.plugins.auth3scale.authrep.appid;
 
+import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.APP_ID;
+import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.APP_KEY;
 import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.LOG;
 import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.REFERRER;
 import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.SERVICE_ID;
 import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.SERVICE_TOKEN;
 import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.USAGE;
 import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.USER_ID;
-import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.USER_KEY;
 import static io.apiman.plugins.auth3scale.util.Auth3ScaleUtils.setIfNotNull;
 
 import io.apiman.plugins.auth3scale.util.ParameterMap;
@@ -33,22 +34,23 @@ import java.util.Objects;
 /**
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
-public class ApiKeyReportData implements ReportData {
+public class AppIdReportData implements ReportData {
     private URI endpoint;
     private String serviceToken;
-    private String userKey;
     private String serviceId;
     private String timestamp;
+    private String appId;
     private String userId;
     private ParameterMap usage;
     private ParameterMap log;
     private String referrer;
+    private String appKey;
 
     public URI getEndpoint() {
         return endpoint;
     }
 
-    public ApiKeyReportData setEndpoint(URI endpoint) {
+    public AppIdReportData setEndpoint(URI endpoint) {
         this.endpoint = endpoint;
         return this;
     }
@@ -57,17 +59,8 @@ public class ApiKeyReportData implements ReportData {
         return serviceToken;
     }
 
-    public ApiKeyReportData setServiceToken(String serviceToken) {
+    public AppIdReportData setServiceToken(String serviceToken) {
         this.serviceToken = serviceToken;
-        return this;
-    }
-
-    public String getUserKey() {
-        return userKey;
-    }
-
-    public ApiKeyReportData setUserKey(String userKey) {
-        this.userKey = userKey;
         return this;
     }
 
@@ -75,7 +68,7 @@ public class ApiKeyReportData implements ReportData {
         return serviceId;
     }
 
-    public ApiKeyReportData setServiceId(String serviceId) {
+    public AppIdReportData setServiceId(String serviceId) {
         this.serviceId = serviceId;
         return this;
     }
@@ -84,7 +77,7 @@ public class ApiKeyReportData implements ReportData {
         return timestamp;
     }
 
-    public ApiKeyReportData setTimestamp(String timestamp) {
+    public AppIdReportData setTimestamp(String timestamp) {
         this.timestamp = timestamp;
         return this;
     }
@@ -93,7 +86,7 @@ public class ApiKeyReportData implements ReportData {
         return userId;
     }
 
-    public ApiKeyReportData setUserId(String userId) {
+    public AppIdReportData setUserId(String userId) {
         this.userId = userId;
         return this;
     }
@@ -103,7 +96,7 @@ public class ApiKeyReportData implements ReportData {
         return usage;
     }
 
-    public ApiKeyReportData setUsage(ParameterMap usage) {
+    public AppIdReportData setUsage(ParameterMap usage) {
         this.usage = usage;
         return this;
     }
@@ -113,7 +106,7 @@ public class ApiKeyReportData implements ReportData {
         return log;
     }
 
-    public ApiKeyReportData setLog(ParameterMap log) {
+    public AppIdReportData setLog(ParameterMap log) {
         this.log = log;
         return this;
     }
@@ -127,21 +120,30 @@ public class ApiKeyReportData implements ReportData {
         return referrer;
     }
 
-    public ApiKeyReportData setReferrer(String referrer) {
+    public AppIdReportData setReferrer(String referrer) {
         this.referrer = referrer;
         return this;
     }
 
+    public String getAppId() {
+        return appId;
+    }
+
+    public AppIdReportData setAppId(String appId) {
+        this.appId = appId;
+        return this;
+    }
+
     @Override
-    public int hashCode() { // TODO
-        return Objects.hash(endpoint, serviceToken, serviceId);
+    public int hashCode() { //TODO
+        return Objects.hash(endpoint, serviceToken, serviceId, appId);
     }
 
     @SuppressWarnings("nls")
     @Override
     public String toString() {
-        return "ApiKeyReportData [endpoint=" + endpoint + ", serviceToken=" + serviceToken + ", userKey="
-                + userKey + ", serviceId=" + serviceId + ", timestamp=" + timestamp + ", userId=" + userId
+        return "AppIdReportData [endpoint=" + endpoint + ", serviceToken=" + serviceToken + ", serviceId="
+                + serviceId + ", appId=" + appId + ", userId=" + userId + ", timestamp=" + timestamp
                 + ", usage=" + usage + ", log=" + log + "]";
     }
 
@@ -153,7 +155,7 @@ public class ApiKeyReportData implements ReportData {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        ApiKeyReportData other = (ApiKeyReportData) obj;
+        AppIdReportData other = (AppIdReportData) obj;
         if (endpoint == null) {
             if (other.endpoint != null)
                 return false;
@@ -175,14 +177,26 @@ public class ApiKeyReportData implements ReportData {
     @Override
     public String encode() {
       ParameterMap paramMap = new ParameterMap();
-      paramMap.add(USER_KEY, getUserKey());
-      paramMap.add(SERVICE_TOKEN, getServiceToken());// maybe use endpoint properties or something. or new properties field.
+      paramMap.add(APP_ID, getAppId());
+      paramMap.add(APP_KEY, getAppKey());
+      paramMap.add(SERVICE_TOKEN, getServiceToken());
       paramMap.add(SERVICE_ID, getServiceId());
       paramMap.add(USAGE, getUsage());
       paramMap.add(LOG, getLog());
 
       setIfNotNull(paramMap, REFERRER, getReferrer());
       setIfNotNull(paramMap, USER_ID, getUserId());
+
       return paramMap.encode();
     }
+
+    public String getAppKey() {
+        return appKey;
+    }
+
+    public AppIdReportData setAppKey(String appKey) {
+        this.appKey = appKey;
+        return this;
+    }
+
 }

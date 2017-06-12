@@ -29,6 +29,7 @@ import io.apiman.plugins.auth3scale.authrep.AuthRepFactory;
 import io.apiman.plugins.auth3scale.authrep.IAuthStrategyFactory;
 import io.apiman.plugins.auth3scale.authrep.StandardStrategyFactory;
 import io.apiman.plugins.auth3scale.authrep.apikey.ApiKeyAuthRepFactory;
+import io.apiman.plugins.auth3scale.authrep.appid.AppIdAuthRepFactory;
 import io.apiman.plugins.auth3scale.ratelimit.IAuth;
 import io.apiman.plugins.auth3scale.ratelimit.IRep;
 import io.apiman.plugins.auth3scale.util.report.batchedreporter.BatchedReporter;
@@ -41,28 +42,28 @@ import java.util.Map;
  */
 public class AuthRep {
     private Map<AuthTypeEnum, AuthRepFactory> authTypeFactory = new HashMap<>();
-    private BatchedReporter batchedReporter;
+    private Map<RateLimitingStrategy, IAuthStrategyFactory> strategyFactoryMap = new HashMap<>();
+
+    private BatchedReporter batchedReporter; // TODO simplifly this by making public static as everyone wants to share it anyway?
     private volatile boolean reporterInitialised = false;
 
-    private Map<RateLimitingStrategy, IAuthStrategyFactory> strategyFactoryMap = new HashMap<>();
 
     public AuthRep(BatchedReporter batchedReporter) {
         this.batchedReporter = batchedReporter;
 
+        // API Key
         ApiKeyAuthRepFactory apiKeyFactory = new ApiKeyAuthRepFactory();
-
-
-//        AppIdFactory appIdFactory = new AppIdFactory();
-//        OauthFactory oauthFactory = new OauthFactory();
-
         authTypeFactory.put(AuthTypeEnum.API_KEY, apiKeyFactory);
-//        factories.put(AuthTypeEnum.APP_ID, appIdFactory);
-//        factories.put(AuthTypeEnum.OAUTH, oauthFactory);
+//        batchedReporter.addReporter(apiKeyFactory.getReporter());
 
-        batchedReporter.addReporter(apiKeyFactory.getReporter());
+        // App Id
+        AppIdAuthRepFactory appIdFactory = new AppIdAuthRepFactory();
+        authTypeFactory.put(AuthTypeEnum.APP_ID, appIdFactory);
+//        batchedReporter.addReporter(appIdFactory.getReporter());
 
+        // Add different RL strategies (bad name... TODO better name!).
+        // Standard naive rate limiting.
         strategyFactoryMap.put(RateLimitingStrategy.STANDARD, new StandardStrategyFactory());
-
 
 //                .addReporter(appIdFactory.getReporter())
 //                .addReporter(oauthFactory.getReporter());

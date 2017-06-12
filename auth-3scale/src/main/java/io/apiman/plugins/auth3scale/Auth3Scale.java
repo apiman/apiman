@@ -60,6 +60,7 @@ public class Auth3Scale extends AbstractMappedPolicy<Auth3ScaleBean> {
                         context.setAttribute(AUTH3SCALE_REQUEST, request);
                         chain.doApply(request);
                     } else {
+                        result.getError().printStackTrace();
                         chain.throwError(result.getError());
                     }
                 });

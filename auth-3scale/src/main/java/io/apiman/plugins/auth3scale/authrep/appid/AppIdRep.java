@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.apiman.plugins.auth3scale.authrep.apikey;
+package io.apiman.plugins.auth3scale.authrep.appid;
 
 import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.REFERRER;
 import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.REPORT_URI;
@@ -27,16 +27,16 @@ import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.engine.policy.IPolicyContext;
 import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.Content;
 import io.apiman.plugins.auth3scale.authrep.AbstractRep;
-import io.apiman.plugins.auth3scale.authrep.AuthRepConstants;
 import io.apiman.plugins.auth3scale.ratelimit.IRep;
+import io.apiman.plugins.auth3scale.util.Auth3ScaleUtils;
 
-public class ApiKeyRep implements IRep {
+public class AppIdRep implements IRep {
     private final Content config;
     private final ApiRequest request;
     private final ApiResponse response;
     private final AbstractRep<?> rep;
 
-    public ApiKeyRep(Content config,
+    public AppIdRep(Content config,
             ApiRequest request,
             ApiResponse response,
             IPolicyContext context,
@@ -50,12 +50,13 @@ public class ApiKeyRep implements IRep {
     @Override
     public IRep rep() {
         // Otherwise build report to be encoded.
-        ApiKeyReportData report = new ApiKeyReportData()
+        AppIdReportData report = new AppIdReportData()
                 .setEndpoint(REPORT_URI)
                 .setReferrer(request.getHeaders().get(REFERRER))
                 .setServiceToken(config.getBackendAuthenticationValue())
-                .setUserKey(getUserKey())
                 .setServiceId(Long.toString(config.getProxy().getServiceId()))
+                .setAppId(AppIdUtils.getAppId(config, request))
+                .setAppKey(AppIdUtils.getAppKey(config, request))
                 .setUserId(getUserId())
                 .setUsage(buildRepMetrics(config, request))
                 .setLog(buildLog(response));
@@ -71,17 +72,7 @@ public class ApiKeyRep implements IRep {
     }
 
     private String getUserKey() {
-        return getIdentityElement(config, request, AuthRepConstants.USER_KEY);
-    }
-
-    protected String getIdentityElement(Content config, ApiRequest request, String canonicalName)  {
-        // Manual for now as there's no mapping in the config.
-        String keyFieldName = config.getProxy().getAuthUserKey();
-        if (config.getProxy().getCredentialsLocation().equalsIgnoreCase("query")) { //$NON-NLS-1$
-            return request.getQueryParams().get(keyFieldName);
-        } else { // Else let's assume header
-            return request.getHeaders().get(keyFieldName);
-        }
+        return Auth3ScaleUtils.getUserKey(config, request);
     }
 
 }

@@ -18,7 +18,6 @@ package io.apiman.plugins.auth3scale.authrep;
 
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.Content;
-import io.apiman.plugins.auth3scale.authrep.apikey.ApiKeyAuthCache;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -43,9 +42,9 @@ public interface ICachingAuthenticator {
         return Arrays.hashCode(config.getProxy().match(req.getDestination()));
     }
 
-    ApiKeyAuthCache invalidate(Content config, ApiRequest serviceRequest, Object... elems);
+    ICachingAuthenticator invalidate(Content config, ApiRequest serviceRequest, Object... elems);
 
-    ApiKeyAuthCache cache(Content config, ApiRequest serviceRequest, Object... elems);
+    ICachingAuthenticator cache(Content config, ApiRequest serviceRequest, Object... elems);
 
     boolean isAuthCached(Content config, ApiRequest serviceRequest, Object... elems);
 }

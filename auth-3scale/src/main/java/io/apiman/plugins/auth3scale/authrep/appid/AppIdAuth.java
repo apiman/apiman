@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 
-package io.apiman.plugins.auth3scale.authrep.apikey;
+package io.apiman.plugins.auth3scale.authrep.appid;
 
+import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.APP_ID;
+import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.APP_KEY;
 import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.REFERRER;
 import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.SERVICE_ID;
 import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.SERVICE_TOKEN;
 import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.USAGE;
 import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.USER_ID;
-import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.USER_KEY;
 import static io.apiman.plugins.auth3scale.util.Auth3ScaleUtils.buildRepMetrics;
-import static io.apiman.plugins.auth3scale.util.Auth3ScaleUtils.hasRoutes;
-import static io.apiman.plugins.auth3scale.util.Auth3ScaleUtils.setIfNotNull;
 
 import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncHandler;
@@ -38,16 +37,18 @@ import io.apiman.plugins.auth3scale.ratelimit.IAuth;
 import io.apiman.plugins.auth3scale.util.Auth3ScaleUtils;
 import io.apiman.plugins.auth3scale.util.ParameterMap;
 
-public class ApiKeyAuth implements IAuth {
-    private static final AsyncResultImpl<Void> FAIL_PROVIDE_USER_KEY = AsyncResultImpl.create(new RuntimeException("No user apikey provided!"));
+@SuppressWarnings("nls")
+public class AppIdAuth implements IAuth {
     private static final AsyncResultImpl<Void> FAIL_NO_ROUTE = AsyncResultImpl.create(new RuntimeException("No valid route"));
+    private static final AsyncResultImpl<Void> FAIL_PROVIDE_APP_ID = AsyncResultImpl.create(new RuntimeException("No user app id provided")); // TODO mirror 3scale errors
+    private static final AsyncResultImpl<Void> FAIL_PROVIDE_APP_KEY = AsyncResultImpl.create(new RuntimeException("No user app key provided")); // TODO mirror 3scale errors
 
     private Content config;
     private ApiRequest request;
     private AbstractAuth<?> auth;
     private IAsyncHandler<PolicyFailure> policyFailureHandler;
 
-    public ApiKeyAuth(Content config,
+    public AppIdAuth(Content config,
             ApiRequest request,
             IPolicyContext context,
             AbstractAuth<?> auth) {
@@ -58,41 +59,44 @@ public class ApiKeyAuth implements IAuth {
 
     @Override
     public IAuth auth(IAsyncResultHandler<Void> resultHandler) {
-      String userKey = getUserKey();
-      if (userKey == null) {
-          resultHandler.handle(FAIL_PROVIDE_USER_KEY);
-          return this;
-      }
+        String appId = AppIdUtils.getAppId(config, request);
+        String appKey = AppIdUtils.getAppKey(config, request);
 
-      if (!hasRoutes(config, request)) {
-          resultHandler.handle(FAIL_NO_ROUTE);
-          return this;
-      }
+        if (appId == null) {
+            resultHandler.handle(FAIL_PROVIDE_APP_ID);
+            return this;
+        }
 
-      String serviceId = Long.toString(config.getProxy().getServiceId());
-      ParameterMap paramMap = new ParameterMap();
-      paramMap.add(USER_KEY, userKey);
-      paramMap.add(SERVICE_TOKEN, config.getBackendAuthenticationValue());
-      paramMap.add(SERVICE_ID, serviceId);
-      paramMap.add(USAGE, buildRepMetrics(config, request));
+        if (appKey == null) {
+            resultHandler.handle(FAIL_PROVIDE_APP_KEY);
+            return this;
+        }
 
-      setIfNotNull(paramMap, REFERRER, request.getHeaders().get(REFERRER));
-      setIfNotNull(paramMap, USER_ID, request.getHeaders().get(USER_ID));
+        if (!Auth3ScaleUtils.hasRoutes(config, request)) {
+            resultHandler.handle(FAIL_NO_ROUTE);
+            return this;
+        }
 
-      auth.setKeyElems(userKey);
-      auth.setParameterMap(paramMap);
-      auth.policyFailureHandler(policyFailureHandler::handle);
-      auth.auth(resultHandler);
-      return this;
-    }
+        ParameterMap paramMap = new ParameterMap();
+        paramMap.add(APP_ID, appId);
+        paramMap.add(APP_KEY, appKey); // TODO possibly optional according to API docs, but not 100% clear
+        paramMap.add(SERVICE_TOKEN, config.getBackendAuthenticationValue());
+        paramMap.add(SERVICE_ID, Long.toString(config.getProxy().getServiceId()));
+        paramMap.add(USAGE, buildRepMetrics(config, request));
 
-    @Override
-    public ApiKeyAuth policyFailureHandler(IAsyncHandler<PolicyFailure> policyFailureHandler) {
-        this.policyFailureHandler = policyFailureHandler;
+        Auth3ScaleUtils.setIfNotNull(paramMap, REFERRER, request.getHeaders().get(REFERRER));
+        Auth3ScaleUtils.setIfNotNull(paramMap, USER_ID, request.getHeaders().get(USER_ID));
+
+        auth.setKeyElems(appId, appKey);
+        auth.setParameterMap(paramMap);
+        auth.policyFailureHandler(policyFailureHandler::handle);
+        auth.auth(resultHandler);
         return this;
     }
 
-    private String getUserKey() {
-        return Auth3ScaleUtils.getUserKey(config, request);
+    @Override
+    public AppIdAuth policyFailureHandler(IAsyncHandler<PolicyFailure> policyFailureHandler) {
+        this.policyFailureHandler = policyFailureHandler;
+        return this;
     }
 }
