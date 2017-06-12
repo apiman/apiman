@@ -36,6 +36,7 @@ public class HttpConnectorOptions {
     private boolean tryUseCompression = HttpClientOptions.DEFAULT_TRY_USE_COMPRESSION;
     private TLSOptions tlsOptions;
     private URI endpoint;
+    private boolean isSsl;
 
     /**
      * @return the requiredAuthType
@@ -140,6 +141,15 @@ public class HttpConnectorOptions {
         return this;
     }
 
+    public HttpConnectorOptions setSsl(boolean isSsl) {
+        this.isSsl = isSsl;
+        return this;
+    }
+
+    public boolean isSsl() {
+        return isSsl;
+    }
+
     /* (non-Javadoc)
      * @see java.lang.Object#hashCode()
      */
@@ -152,6 +162,7 @@ public class HttpConnectorOptions {
         result = prime * result + (keepAlive ? 1231 : 1237);
         result = prime * result + ((tlsOptions == null) ? 0 : tlsOptions.hashCode());
         result = prime * result + (tryUseCompression ? 1231 : 1237);
+        result = prime * result + (isSsl ? 0 : 1);
         return result;
     }
     /* (non-Javadoc)
@@ -181,4 +192,5 @@ public class HttpConnectorOptions {
             return false;
         return true;
     }
+
 }

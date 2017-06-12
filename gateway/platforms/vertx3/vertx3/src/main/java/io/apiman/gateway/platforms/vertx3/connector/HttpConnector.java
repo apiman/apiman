@@ -40,6 +40,7 @@ import io.vertx.core.MultiMap;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpClient;
+import io.vertx.core.http.HttpClientOptions;
 import io.vertx.core.http.HttpClientRequest;
 import io.vertx.core.http.HttpClientResponse;
 import io.vertx.core.http.HttpMethod;
@@ -91,7 +92,6 @@ class HttpConnector implements IApiConnectionResponse, IApiConnection {
     private String apiHost;
     private String destination;
     private int apiPort;
-    private boolean isHttps;
     private BasicAuthOptions basicOptions;
 
     private HttpClient client;
@@ -125,7 +125,6 @@ class HttpConnector implements IApiConnectionResponse, IApiConnection {
        this.apiEndpoint = options.getUri();
        this.options = options;
 
-       isHttps = apiEndpoint.getScheme().equals("https");
        apiHost = apiEndpoint.getHost();
        apiPort = getPort();
        apiPath = apiEndpoint.getPath().isEmpty() || apiEndpoint.getPath().equals("/") ? "" : apiEndpoint.getPath();
@@ -139,18 +138,18 @@ class HttpConnector implements IApiConnectionResponse, IApiConnection {
         if (apiEndpoint.getPort() != -1)
             return apiEndpoint.getPort();
 
-        return isHttps ? 443 : 80;
+        return options.isSsl() ? 443 : 80;
     }
 
     private void verifyConnection() {
         switch (options.getRequiredAuthType()) {
         case BASIC:
             basicOptions = new BasicAuthOptions(api.getEndpointProperties());
-            if (!isHttps && basicOptions.isRequireSSL())
+            if (!options.isSsl() && basicOptions.isRequireSSL())
                 throw new ConnectorException("Endpoint security requested (BASIC auth) but endpoint is not secure (SSL).");
             break;
         case MTLS:
-            if (!isHttps)
+            if (!options.isSsl())
                 throw new ConnectorException("Mutual TLS specified, but endpoint is not HTTPS.");
             break;
         case DEFAULT:
@@ -314,6 +313,7 @@ class HttpConnector implements IApiConnectionResponse, IApiConnection {
     private class ExceptionHandler implements Handler<Throwable> {
         @Override
         public void handle(Throwable error) {
+            // TODO better exception distinguishing.
             resultHandler.handle(AsyncResultImpl
                     .<IApiConnectionResponse> create(error));
         }

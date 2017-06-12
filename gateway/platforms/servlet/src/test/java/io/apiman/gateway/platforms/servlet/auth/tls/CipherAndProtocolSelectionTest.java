@@ -378,7 +378,7 @@ public class CipherAndProtocolSelectionTest {
 
         server.start();
 
-        final StringBuffer sbuff = new StringBuffer();
+        final StringBuilder sbuff = new StringBuilder();
         final CountDownLatch latch = new CountDownLatch(1);
 
         HttpConnectorFactory factory = new HttpConnectorFactory(config);
