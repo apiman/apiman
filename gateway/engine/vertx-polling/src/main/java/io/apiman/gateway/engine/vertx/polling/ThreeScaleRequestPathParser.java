@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.apiman.gateway.platforms.vertx3.common.config;
+package io.apiman.gateway.engine.vertx.polling;
 
 import io.apiman.common.util.ApimanPathUtils.ApiRequestPathInfo;
 import io.apiman.gateway.engine.IApiRequestPathParser;
@@ -30,9 +30,13 @@ import org.apache.commons.lang3.StringUtils;
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
  */
 @SuppressWarnings("nls")
-public class ThreeScaleRequestPathParser implements IApiRequestPathParser { // TODO move to common area so servlet can use
+public class ThreeScaleRequestPathParser implements IApiRequestPathParser {
+    private final String defaultOrgName;
+    private final String defaultVersion;
 
     public ThreeScaleRequestPathParser(Map<String, String> config) {
+        this.defaultOrgName = config.getOrDefault("defaultOrgName", ThreeScaleURILoadingRegistry.DEFAULT_ORGNAME);
+        this.defaultVersion = config.getOrDefault("defaultVersion", ThreeScaleURILoadingRegistry.DEFAULT_VERSION);
     }
 
     @Override
@@ -40,17 +44,17 @@ public class ThreeScaleRequestPathParser implements IApiRequestPathParser { // T
         String[] split = StringUtils.split(path, "/", 3);
 
         if (split == null || split.length < 2 || !"services".equalsIgnoreCase(split[0])) {
-            throw new IllegalArgumentException("Invalid path format, expected /service/serviceName");
+            throw new IllegalArgumentException("Invalid path format, expected /services/serviceName");
         }
 
         ApiRequestPathInfo parsed = new ApiRequestPathInfo();
-        parsed.orgId="DEFAULT";
-        parsed.apiVersion="DEFAULT";
-        parsed.apiId=split[1];
+        parsed.orgId = defaultOrgName;
+        parsed.apiVersion = defaultVersion;
+        parsed.apiId = split[1];
         if (split.length > 2) {
-            parsed.resource="/"+split[2];
+            parsed.resource = "/" + split[2];
         } else {
-            parsed.resource="/";
+            parsed.resource = "/";
         }
         return parsed;
     }

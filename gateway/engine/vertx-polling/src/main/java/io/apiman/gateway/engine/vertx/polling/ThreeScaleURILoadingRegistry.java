@@ -29,6 +29,7 @@ import io.apiman.gateway.engine.impl.InMemoryRegistry;
 import io.apiman.gateway.engine.vertx.polling.fetchers.AccessTokenResourceFetcher;
 import io.apiman.gateway.engine.vertx.polling.fetchers.FileResourceFetcher;
 import io.apiman.gateway.engine.vertx.polling.fetchers.HttpResourceFetcher;
+import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.Auth3ScaleBean;
 import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.Content;
 import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.ProxyConfigRoot;
 import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.Service;
@@ -60,13 +61,23 @@ import java.util.stream.Collectors;
  * URI loading registry that pulls configuration from a specified 3scale backend, this is
  * mapped to the internal apiman data model and
  * <ul>
- *   <li>accessToken: 3scale access token</li>
- *   <li>apiEndpoint: 3scale API endpoint</li>
- *   <li>environment: which environment (e.g. production, staging)</li>
- *   <li>policyConfigUri: apiman policy config to load as JSON from file
- *   ({@link FileResourceFetcher}) or HTTP/S ({@link HttpResourceFetcher}).
- *   See the corresponding fetcher for additional options.</li>
+ * <li>accessToken: 3scale access token</li>
+ * <li>apiEndpoint: 3scale API endpoint</li>
+ * <li>environment: which environment (e.g. production, staging)</li>
+ * <li>policyConfigUri: apiman policy config to load as JSON from file
+ * ({@link FileResourceFetcher}) or HTTP/S ({@link HttpResourceFetcher}). See the corresponding
+ * fetcher for additional options.</li>
+ * <li>orgName: 3scale does not presently support multi-tenanted namespacing within a single
+ * gateway, so a default namespace is used internally (reflected in metrics, etc). <em>Does
+ * not</em> impact the path used to call the gateway <em>Default: apiman</em></li>
+ * <li>version: 3scale does not presently support versioning, so a default version is used
+ * internally (reflected in metrics, etc). <em>Does not</em> impact the path used to call the
+ * gateway <em>Default: 1.0</em></li>
  * </ul>
+ *
+ * <p>
+ * From a metrics perspective, with defaults, you would see: Org: apiman; Api: [Your API Name]; Version: 1.0.
+ * </p>
  *
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
  * @see FileResourceFetcher
@@ -75,10 +86,12 @@ import java.util.stream.Collectors;
  */
 @SuppressWarnings("nls")
 public class ThreeScaleURILoadingRegistry extends InMemoryRegistry implements AsyncInitialize {
+    public static final String DEFAULT_ORGNAME = "apiman";
+    public static final String DEFAULT_VERSION = "1.0";
+
     private static volatile OneShotURILoader instance;
     private Vertx vertx;
     private Map<String, String> options;
-    public static final String DEFAULT_NS = "DEFAULT";
 
     /**
      * @param vertx the vertx instance
@@ -158,23 +171,27 @@ public class ThreeScaleURILoadingRegistry extends InMemoryRegistry implements As
         private Deque<ThreeScaleURILoadingRegistry> awaiting = new ArrayDeque<>();
         private List<ThreeScaleURILoadingRegistry> allRegistries = new ArrayList<>();
         private boolean dataProcessed = false;
-        private List<ProxyConfigRoot> configs = new ArrayList<>();
+        private List<Auth3ScaleBean> configs = new ArrayList<>();
         private List<Client> clients = new ArrayList<>();
         private List<Api> apis = new ArrayList<>();
         private Logger log = LoggerFactory.getLogger(OneShotURILoader.class);
         private IAsyncHandler<Void> reloadHandler;
         private List<Api> policyConfigApis = Collections.emptyList();
         private String environment;
+        private String defaultOrgName;
+        private String defaultVersion;
 
         public OneShotURILoader(Vertx vertx, Map<String, String> config) {
             this.config = config;
             this.vertx = vertx;
+            this.defaultOrgName = config.getOrDefault("defaultOrgName", DEFAULT_ORGNAME);
+            this.defaultVersion = config.getOrDefault("defaultVersion", DEFAULT_VERSION);
+            this.apiUri = URI.create(requireOpt("apiEndpoint", "apiEndpoint is required in configuration"));
+            this.environment = config.getOrDefault("environment", "production");
 
-
-            apiUri = URI.create(requireOpt("apiEndpoint", "apiEndpoint is required in configuration"));
-            environment = config.getOrDefault("environment", "production");
-            if (config.containsKey("policyConfigUri"))
-                policyConfigUri = URI.create(config.get("policyConfigUri")); // Can be null.
+            if (config.containsKey("policyConfigUri")) {
+                this.policyConfigUri = URI.create(config.get("policyConfigUri")); // Can be null.
+            }
 
             fetchResource();
         }
@@ -215,7 +232,7 @@ public class ThreeScaleURILoadingRegistry extends InMemoryRegistry implements As
                     .collect(Collectors.toList());
 
                 // If policyConfigUri is provided, then load API policy config.
-                // NB: THESE ARE API BEANSs WITH *ONLY* POLICY CONFIG!
+                // NB: THESE ARE API BEANS WITH *ONLY* POLICY CONFIG!
                 if (policyConfigUri != null) {
                     configFutures.add(fetchPolicyConfig());
                 }
@@ -254,7 +271,11 @@ public class ThreeScaleURILoadingRegistry extends InMemoryRegistry implements As
                     if (buffer.length() > 0) {
                         ProxyConfigRoot pc = Json.decodeValue(buffer.toString(), ProxyConfigRoot.class);
                         log.debug("Received Proxy Config: {0}", pc);
-                        configs.add(pc);
+                        Auth3ScaleBean bean = new Auth3ScaleBean()
+                                .setThreescaleConfig(pc)
+                                .setDefaultOrg(defaultOrgName)
+                                .setDefaultVersion(defaultVersion);
+                        configs.add(bean);
                     }
                     future.complete();
                 });
@@ -288,19 +309,19 @@ public class ThreeScaleURILoadingRegistry extends InMemoryRegistry implements As
             }
             try {
                 // Naive version initially.
-                for (ProxyConfigRoot root : configs) {
+                for (Auth3ScaleBean bean : configs) {
                     // Reflects the remote data structure.
-                    Content config = root.getProxyConfig().getContent();
+                    Content config = bean.getThreescaleConfig().getProxyConfig().getContent();
                     Api api = new Api();
                     api.setApiId(config.getSystemName());
-                    api.setOrganizationId(DEFAULT_NS);
+                    api.setOrganizationId(defaultOrgName);
                     api.setEndpoint(config.getProxy().getApiBackend());
                     api.setEndpointContentType("text/json"); // don't think there is an equivalent of this in 3scale
                     api.setEndpointType("rest"); //don't think there is an equivalent of this in 3scale
                     api.setParsePayload(false); // can let user override this?
                     api.setPublicAPI(true); // is there an equivalent of this?
-                    api.setVersion(DEFAULT_NS); // don't think this is relevant anymore
-                    setPolicies(api, root);
+                    api.setVersion(defaultVersion); // don't think this is relevant anymore
+                    setPolicies(api, bean);
 
                     log.info("Processing - {0}: ", config);
                     log.info("Creating API - {0}: ", api);
@@ -314,7 +335,7 @@ public class ThreeScaleURILoadingRegistry extends InMemoryRegistry implements As
             }
         }
 
-        private void setPolicies(Api api, ProxyConfigRoot config) { // FIXME optimise
+        private void setPolicies(Api api, Auth3ScaleBean config) { // FIXME optimise
             // Add 3scale policy
             Policy pol = new Policy();
             pol.setPolicyImpl(determinePolicyImpl()); // TODO get version? Hmm! Env?
@@ -381,7 +402,6 @@ public class ThreeScaleURILoadingRegistry extends InMemoryRegistry implements As
                 vertx.runOnContext(run -> failureHandler.handle(failure));
             });
         }
-
     }
 
 }

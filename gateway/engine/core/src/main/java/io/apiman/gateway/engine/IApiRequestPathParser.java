@@ -27,7 +27,7 @@ import io.apiman.gateway.engine.beans.util.HeaderMap;
  *
  * <p>
  * In essence, this is the identification of information that the gateway needs so that it can
- * be separated.
+ * be distinguished.
  * </p>
  *
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
