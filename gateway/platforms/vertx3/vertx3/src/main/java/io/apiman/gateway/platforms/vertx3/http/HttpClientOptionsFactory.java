@@ -25,9 +25,7 @@ import java.net.URI;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.net.ssl.SSLContext;
 
@@ -38,19 +36,9 @@ import javax.net.ssl.SSLContext;
  */
 public class HttpClientOptionsFactory {
     private static final String[] EMPTY = new String[]{};
-    private static Map<TLSOptions, HttpClientOptions> configCache = new HashMap<>();
     private static Logger log = LoggerFactory.getLogger(HttpClientOptionsFactory.class);
 
     public static HttpClientOptions parseTlsOptions(TLSOptions tlsOptions, URI apiEndpoint) {
-        if (configCache.containsKey(tlsOptions))
-            return configCache.get(tlsOptions);
-
-        HttpClientOptions clientOptions = doParse(tlsOptions, apiEndpoint);
-        configCache.put(tlsOptions, clientOptions);
-        return clientOptions;
-    }
-
-    private static HttpClientOptions doParse(TLSOptions tlsOptions, URI apiEndpoint) {
         HttpClientOptions clientOptions = new HttpClientOptions();
 
         if (apiEndpoint.getScheme().equals("http")) { //$NON-NLS-1$
@@ -60,7 +48,7 @@ public class HttpClientOptionsFactory {
         }
 
         clientOptions.setTrustAll(tlsOptions.isTrustSelfSigned() || tlsOptions.isDevMode())
-            .setVerifyHost(!tlsOptions.isAllowAnyHost() || tlsOptions.isDevMode());
+            .setVerifyHost(!(tlsOptions.isAllowAnyHost() || tlsOptions.isDevMode()));
 
         if (tlsOptions.getTrustStore() != null) {
             clientOptions.setTrustStoreOptions(
