@@ -88,7 +88,8 @@ public class ConnectorFactory implements IConnectorFactory {
                     .setHasDataPolicy(hasDataPolicy)
                     .setRequiredAuthType(authType)
                     .setTlsOptions(tlsOptions)
-                    .setUri(parseApiEndpoint(api));
+                    .setUri(parseApiEndpoint(api))
+                    .setSsl(api.getEndpoint().toLowerCase().startsWith("https")); //$NON-NLS-1$
             // Get from cache
             HttpClient client = clientFromCache(httpOptions);
             return new HttpConnector(vertx, client, request, api, httpOptions, resultHandler);
