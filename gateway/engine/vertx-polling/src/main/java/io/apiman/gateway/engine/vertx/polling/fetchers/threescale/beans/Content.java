@@ -70,6 +70,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 public class Content implements Serializable
 {
 
+    private RateLimitingStrategy rateLimitingStrategy = RateLimitingStrategy.STANDARD;
     @JsonProperty("id")
     private long id;
     @JsonProperty("account_id")
@@ -916,6 +917,14 @@ public class Content implements Serializable
                 .append(proxiable, rhs.proxiable).append(backendAuthenticationType, rhs.backendAuthenticationType)
                 .append(backendAuthenticationValue, rhs.backendAuthenticationValue).append(proxy, rhs.proxy)
                 .append(additionalProperties, rhs.additionalProperties).isEquals();
+    }
+
+    public RateLimitingStrategy getRateLimitingStrategy() {
+        return rateLimitingStrategy;
+    }
+
+    public void setRateLimitingStrategy(RateLimitingStrategy rateLimitingStrategy) {
+        this.rateLimitingStrategy = rateLimitingStrategy;
     }
 
 }

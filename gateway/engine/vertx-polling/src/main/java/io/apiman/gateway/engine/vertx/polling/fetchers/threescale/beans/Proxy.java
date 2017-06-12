@@ -139,6 +139,8 @@ public class Proxy implements Serializable
     @JsonIgnore
     private transient MultiPatternMatcher routeMatcher;
     private final static long serialVersionUID = 7319432853004376356L;
+    // Avoid repeated reevaluation of Regex
+    private Map<String, int[]> REGEX_MATCH_CACHE = new HashMap<>();
 
     @JsonProperty("id")
     public long getId() {
@@ -645,12 +647,31 @@ public class Proxy implements Serializable
                 .map(ProxyRule::getRegex)
                 .map(Pattern::toString)
                 .collect(Collectors.toList());
-        System.out.println("Built some patterns? " +  patterns); //$NON-NLS-1$
         this.routeMatcher = MultiPattern.of(patterns).matcher();
     }
 
-    public MultiPatternMatcher getRouteMatcher() {
-        return routeMatcher;
+    public int[] match(String path) {
+        if (REGEX_MATCH_CACHE.containsKey(path)) {
+            return REGEX_MATCH_CACHE.get(path);
+        }
+        int[] match = routeMatcher.match(path);
+        REGEX_MATCH_CACHE.put(path, match);
+        return match;
+    }
+
+    // TODO consider storing cache of metricName -> index mappings for O(1) performance.
+    public boolean match(String destination, String metricName) {
+        int[] matches = match(destination);
+        if (matches == null || matches.length == 0) {
+            return false;
+        }
+        for (int match : matches) {
+            String candidateMetricName = proxyRules.get(match).getMetricSystemName();
+            if (metricName.equals(candidateMetricName)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @JsonProperty("proxy_rules")
@@ -687,7 +708,13 @@ public class Proxy implements Serializable
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(id).append(tenantId).append(serviceId).append(endpoint).append(deployedAt).append(apiBackend).append(authAppKey).append(authAppId).append(authUserKey).append(credentialsLocation).append(errorAuthFailed).append(errorAuthMissing).append(createdAt).append(updatedAt).append(errorStatusAuthFailed).append(errorHeadersAuthFailed).append(errorStatusAuthMissing).append(errorHeadersAuthMissing).append(errorNoMatch).append(errorStatusNoMatch).append(errorHeadersNoMatch).append(secretToken).append(hostnameRewrite).append(oauthLoginUrl).append(sandboxEndpoint).append(apiTestPath).append(apiTestSuccess).append(hostnameRewriteForSandbox).append(endpointPort).append(valid).append(serviceBackendVersion).append(hosts).append(backend).append(proxyRules).append(additionalProperties).toHashCode();
+        return new HashCodeBuilder().append(id).append(tenantId).append(serviceId).append(endpoint).append(deployedAt).append(apiBackend)
+                .append(authAppKey).append(authAppId).append(authUserKey).append(credentialsLocation).append(errorAuthFailed).append(errorAuthMissing)
+                .append(createdAt).append(updatedAt).append(errorStatusAuthFailed).append(errorHeadersAuthFailed).append(errorStatusAuthMissing)
+                .append(errorHeadersAuthMissing).append(errorNoMatch).append(errorStatusNoMatch).append(errorHeadersNoMatch).append(secretToken)
+                .append(hostnameRewrite).append(oauthLoginUrl).append(sandboxEndpoint).append(apiTestPath).append(apiTestSuccess)
+                .append(hostnameRewriteForSandbox).append(endpointPort).append(valid).append(serviceBackendVersion).append(hosts).append(backend)
+                .append(proxyRules).append(additionalProperties).toHashCode();
     }
 
     @Override
@@ -699,7 +726,19 @@ public class Proxy implements Serializable
             return false;
         }
         Proxy rhs = ((Proxy) other);
-        return new EqualsBuilder().append(id, rhs.id).append(tenantId, rhs.tenantId).append(serviceId, rhs.serviceId).append(endpoint, rhs.endpoint).append(deployedAt, rhs.deployedAt).append(apiBackend, rhs.apiBackend).append(authAppKey, rhs.authAppKey).append(authAppId, rhs.authAppId).append(authUserKey, rhs.authUserKey).append(credentialsLocation, rhs.credentialsLocation).append(errorAuthFailed, rhs.errorAuthFailed).append(errorAuthMissing, rhs.errorAuthMissing).append(createdAt, rhs.createdAt).append(updatedAt, rhs.updatedAt).append(errorStatusAuthFailed, rhs.errorStatusAuthFailed).append(errorHeadersAuthFailed, rhs.errorHeadersAuthFailed).append(errorStatusAuthMissing, rhs.errorStatusAuthMissing).append(errorHeadersAuthMissing, rhs.errorHeadersAuthMissing).append(errorNoMatch, rhs.errorNoMatch).append(errorStatusNoMatch, rhs.errorStatusNoMatch).append(errorHeadersNoMatch, rhs.errorHeadersNoMatch).append(secretToken, rhs.secretToken).append(hostnameRewrite, rhs.hostnameRewrite).append(oauthLoginUrl, rhs.oauthLoginUrl).append(sandboxEndpoint, rhs.sandboxEndpoint).append(apiTestPath, rhs.apiTestPath).append(apiTestSuccess, rhs.apiTestSuccess).append(hostnameRewriteForSandbox, rhs.hostnameRewriteForSandbox).append(endpointPort, rhs.endpointPort).append(valid, rhs.valid).append(serviceBackendVersion, rhs.serviceBackendVersion).append(hosts, rhs.hosts).append(backend, rhs.backend).append(proxyRules, rhs.proxyRules).append(additionalProperties, rhs.additionalProperties).isEquals();
+        return new EqualsBuilder().append(id, rhs.id).append(tenantId, rhs.tenantId).append(serviceId, rhs.serviceId).append(endpoint, rhs.endpoint)
+                .append(deployedAt, rhs.deployedAt).append(apiBackend, rhs.apiBackend).append(authAppKey, rhs.authAppKey)
+                .append(authAppId, rhs.authAppId).append(authUserKey, rhs.authUserKey).append(credentialsLocation, rhs.credentialsLocation)
+                .append(errorAuthFailed, rhs.errorAuthFailed).append(errorAuthMissing, rhs.errorAuthMissing).append(createdAt, rhs.createdAt)
+                .append(updatedAt, rhs.updatedAt).append(errorStatusAuthFailed, rhs.errorStatusAuthFailed)
+                .append(errorHeadersAuthFailed, rhs.errorHeadersAuthFailed).append(errorStatusAuthMissing, rhs.errorStatusAuthMissing)
+                .append(errorHeadersAuthMissing, rhs.errorHeadersAuthMissing).append(errorNoMatch, rhs.errorNoMatch)
+                .append(errorStatusNoMatch, rhs.errorStatusNoMatch).append(errorHeadersNoMatch, rhs.errorHeadersNoMatch)
+                .append(secretToken, rhs.secretToken).append(hostnameRewrite, rhs.hostnameRewrite).append(oauthLoginUrl, rhs.oauthLoginUrl)
+                .append(sandboxEndpoint, rhs.sandboxEndpoint).append(apiTestPath, rhs.apiTestPath).append(apiTestSuccess, rhs.apiTestSuccess)
+                .append(hostnameRewriteForSandbox, rhs.hostnameRewriteForSandbox).append(endpointPort, rhs.endpointPort).append(valid, rhs.valid)
+                .append(serviceBackendVersion, rhs.serviceBackendVersion).append(hosts, rhs.hosts).append(backend, rhs.backend)
+                .append(proxyRules, rhs.proxyRules).append(additionalProperties, rhs.additionalProperties).isEquals();
     }
 
 
