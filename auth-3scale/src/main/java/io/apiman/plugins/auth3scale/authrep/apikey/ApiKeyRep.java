@@ -34,13 +34,13 @@ public class ApiKeyRep implements IRep {
     private final Content config;
     private final ApiRequest request;
     private final ApiResponse response;
-    private final AbstractRep<?> rep;
+    private final AbstractRep rep;
 
     public ApiKeyRep(Content config,
             ApiRequest request,
             ApiResponse response,
             IPolicyContext context,
-            AbstractRep<?> rep) {
+            AbstractRep rep) {
                 this.config = config;
                 this.request = request;
                 this.response = response;

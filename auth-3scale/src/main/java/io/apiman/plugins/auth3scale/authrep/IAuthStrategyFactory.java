@@ -22,11 +22,11 @@ import io.apiman.gateway.engine.policy.IPolicyContext;
 import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.Content;
 
 public interface IAuthStrategyFactory {
-    AbstractAuth<?>  getAuthStrategy(Content config,
+    AbstractAuth getAuthStrategy(Content config,
             ApiRequest request,
             IPolicyContext context);
 
-    AbstractRep<?> getRepStrategy(Content config,
+    AbstractRep getRepStrategy(Content config,
             ApiRequest request,
             ApiResponse response,
             IPolicyContext context);

@@ -25,7 +25,7 @@ public interface AuthRepConstants {
     String DEFAULT_BACKEND = "http://su1.3scale.net:80";
     String AUTHORIZE_PATH = "/transactions/authorize.xml?";
     String AUTHREP_PATH = "/transactions/authrep.xml?";
-    String REPORT_PATH = "/transactions/report.xml?";
+    String REPORT_PATH = "/transactions/report.xml";
     URI REPORT_URI = URI.create(DEFAULT_BACKEND+REPORT_PATH);
 
     String USER_KEY = "user_key";

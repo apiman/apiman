@@ -24,29 +24,22 @@ import io.apiman.plugins.auth3scale.authrep.AbstractRep;
 import io.apiman.plugins.auth3scale.authrep.AuthRepFactory;
 import io.apiman.plugins.auth3scale.ratelimit.IAuth;
 import io.apiman.plugins.auth3scale.ratelimit.IRep;
-import io.apiman.plugins.auth3scale.util.report.batchedreporter.AbstractReporter;
 
 /**
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 public class AppIdAuthRepFactory implements AuthRepFactory {
-//    private final ApiKeyAuthReporter reporter = new ApiKeyAuthReporter();
-    private final AppIdAuthCache authCache = new AppIdAuthCache();
+//    private final AppIdAuthCache authCache = new AppIdAuthCache();
 
     @Override
-    public IAuth createAuth(Content config, ApiRequest request, IPolicyContext context, AbstractAuth<?> authStrategy) {
-        authStrategy.setAuthCache(authCache);
+    public IAuth createAuth(Content config, ApiRequest request, IPolicyContext context, AbstractAuth authStrategy) {
+//        authStrategy.setAuthCache(authCache);
         return new AppIdAuth(config, request, context, authStrategy);
     }
 
     @Override
-    public IRep createRep(Content config, ApiResponse response, ApiRequest request, IPolicyContext context, AbstractRep<?> repStrategy) {
-        repStrategy.setAuthCache(authCache);
+    public IRep createRep(Content config, ApiResponse response, ApiRequest request, IPolicyContext context, AbstractRep repStrategy) {
+//        repStrategy.setAuthCache(authCache);
         return new AppIdRep(config, request, response, context, repStrategy);
-    }
-
-    @Override
-    public AbstractReporter<?> getReporter() {
-        return null;
     }
 }

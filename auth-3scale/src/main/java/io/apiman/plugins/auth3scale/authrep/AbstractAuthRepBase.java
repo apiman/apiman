@@ -16,7 +16,11 @@
 
 package io.apiman.plugins.auth3scale.authrep;
 
+import io.apiman.plugins.auth3scale.util.report.batchedreporter.ReportData;
+
 public interface AbstractAuthRepBase {
 
     AbstractAuthRepBase setKeyElems(Object... keyElems);
+
+    AbstractAuthRepBase setReport(ReportData report);
 }

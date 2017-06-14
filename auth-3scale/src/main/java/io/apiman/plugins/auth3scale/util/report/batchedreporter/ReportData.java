@@ -21,9 +21,13 @@ import io.apiman.plugins.auth3scale.util.ParameterMap;
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 public interface ReportData {
+    ReportData setTimestamp(String timestamp);
     ParameterMap getUsage();
     ParameterMap getLog();
-    int groupId();
+    int bucketId();
     // This is only used for non-batched impls
+    String getServiceToken();
+    String getServiceId();
     String encode();
+    ParameterMap toParameterMap();
 }

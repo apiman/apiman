@@ -17,14 +17,9 @@
 package io.apiman.plugins.auth3scale.authrep.apikey;
 
 import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.REFERRER;
-import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.SERVICE_ID;
-import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.SERVICE_TOKEN;
-import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.USAGE;
 import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.USER_ID;
-import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.USER_KEY;
 import static io.apiman.plugins.auth3scale.util.Auth3ScaleUtils.buildRepMetrics;
 import static io.apiman.plugins.auth3scale.util.Auth3ScaleUtils.hasRoutes;
-import static io.apiman.plugins.auth3scale.util.Auth3ScaleUtils.setIfNotNull;
 
 import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncHandler;
@@ -36,7 +31,6 @@ import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.Content;
 import io.apiman.plugins.auth3scale.authrep.AbstractAuth;
 import io.apiman.plugins.auth3scale.ratelimit.IAuth;
 import io.apiman.plugins.auth3scale.util.Auth3ScaleUtils;
-import io.apiman.plugins.auth3scale.util.ParameterMap;
 
 public class ApiKeyAuth implements IAuth {
     private static final AsyncResultImpl<Void> FAIL_PROVIDE_USER_KEY = AsyncResultImpl.create(new RuntimeException("No user apikey provided!"));
@@ -44,13 +38,13 @@ public class ApiKeyAuth implements IAuth {
 
     private Content config;
     private ApiRequest request;
-    private AbstractAuth<?> auth;
+    private AbstractAuth auth;
     private IAsyncHandler<PolicyFailure> policyFailureHandler;
 
     public ApiKeyAuth(Content config,
             ApiRequest request,
             IPolicyContext context,
-            AbstractAuth<?> auth) {
+            AbstractAuth auth) {
         this.config = config;
         this.request = request;
         this.auth = auth;
@@ -70,17 +64,16 @@ public class ApiKeyAuth implements IAuth {
       }
 
       String serviceId = Long.toString(config.getProxy().getServiceId());
-      ParameterMap paramMap = new ParameterMap();
-      paramMap.add(USER_KEY, userKey);
-      paramMap.add(SERVICE_TOKEN, config.getBackendAuthenticationValue());
-      paramMap.add(SERVICE_ID, serviceId);
-      paramMap.add(USAGE, buildRepMetrics(config, request));
-
-      setIfNotNull(paramMap, REFERRER, request.getHeaders().get(REFERRER));
-      setIfNotNull(paramMap, USER_ID, request.getHeaders().get(USER_ID));
+      ApiKeyReportData data = new ApiKeyReportData()
+              .setUserKey(userKey)
+              .setServiceToken(config.getBackendAuthenticationValue())
+              .setServiceId(serviceId)
+              .setUsage(buildRepMetrics(config, request))
+              .setReferrer(request.getHeaders().get(REFERRER))
+              .setUserId(request.getHeaders().get(USER_ID));
 
       auth.setKeyElems(userKey);
-      auth.setParameterMap(paramMap);
+      auth.setReport(data);
       auth.policyFailureHandler(policyFailureHandler::handle);
       auth.auth(resultHandler);
       return this;

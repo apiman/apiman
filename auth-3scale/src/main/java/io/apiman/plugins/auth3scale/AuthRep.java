@@ -20,6 +20,7 @@ import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.engine.components.IHttpClientComponent;
 import io.apiman.gateway.engine.components.IPeriodicComponent;
 import io.apiman.gateway.engine.policy.IPolicyContext;
+import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.Auth3ScaleBean;
 import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.AuthTypeEnum;
 import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.Content;
 import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.RateLimitingStrategy;
@@ -27,9 +28,10 @@ import io.apiman.plugins.auth3scale.authrep.AbstractAuth;
 import io.apiman.plugins.auth3scale.authrep.AbstractRep;
 import io.apiman.plugins.auth3scale.authrep.AuthRepFactory;
 import io.apiman.plugins.auth3scale.authrep.IAuthStrategyFactory;
-import io.apiman.plugins.auth3scale.authrep.StandardStrategyFactory;
 import io.apiman.plugins.auth3scale.authrep.apikey.ApiKeyAuthRepFactory;
 import io.apiman.plugins.auth3scale.authrep.appid.AppIdAuthRepFactory;
+import io.apiman.plugins.auth3scale.authrep.strategies.BatchedStrategyFactory;
+import io.apiman.plugins.auth3scale.authrep.strategies.StandardStrategyFactory;
 import io.apiman.plugins.auth3scale.ratelimit.IAuth;
 import io.apiman.plugins.auth3scale.ratelimit.IRep;
 import io.apiman.plugins.auth3scale.util.report.batchedreporter.BatchedReporter;
@@ -43,64 +45,53 @@ import java.util.Map;
 public class AuthRep {
     private Map<AuthTypeEnum, AuthRepFactory> authTypeFactory = new HashMap<>();
     private Map<RateLimitingStrategy, IAuthStrategyFactory> strategyFactoryMap = new HashMap<>();
+    private BatchedReporter batchedReporter;
 
-    private BatchedReporter batchedReporter; // TODO simplifly this by making public static as everyone wants to share it anyway?
-    private volatile boolean reporterInitialised = false;
-
-
-    public AuthRep(BatchedReporter batchedReporter) {
-        this.batchedReporter = batchedReporter;
+    public AuthRep(IPolicyContext context) {
+        batchedReporter = new BatchedReporter()
+                .start(context.getComponent(IPeriodicComponent.class), context.getComponent(IHttpClientComponent.class));
 
         // API Key
         ApiKeyAuthRepFactory apiKeyFactory = new ApiKeyAuthRepFactory();
         authTypeFactory.put(AuthTypeEnum.API_KEY, apiKeyFactory);
-//        batchedReporter.addReporter(apiKeyFactory.getReporter());
 
         // App Id
         AppIdAuthRepFactory appIdFactory = new AppIdAuthRepFactory();
         authTypeFactory.put(AuthTypeEnum.APP_ID, appIdFactory);
-//        batchedReporter.addReporter(appIdFactory.getReporter());
 
         // Add different RL strategies (bad name... TODO better name!).
         // Standard naive rate limiting.
         strategyFactoryMap.put(RateLimitingStrategy.STANDARD, new StandardStrategyFactory());
-
-//                .addReporter(appIdFactory.getReporter())
-//                .addReporter(oauthFactory.getReporter());
+        strategyFactoryMap.put(RateLimitingStrategy.BATCHED_HYBRID, new BatchedStrategyFactory(batchedReporter));
     }
 
-    public IAuth getAuth(Content config, ApiRequest request, IPolicyContext context) {
-        AbstractAuth<?> authStrategy = getAuthStrategy(config, request, context);
-        return authTypeFactory.get(config.getAuthType())
-                .createAuth(config, request, context, authStrategy);
+    private Content getContentConfig(Auth3ScaleBean config) {
+        return config.getThreescaleConfig().getProxyConfig().getContent();
     }
 
-    private AbstractAuth<?> getAuthStrategy(Content config, ApiRequest request, IPolicyContext context) {
-        return strategyFactoryMap.get(RateLimitingStrategy.STANDARD)
-                .getAuthStrategy(config, request, context); // TODO
+    public IAuth getAuth(Auth3ScaleBean config, ApiRequest request, IPolicyContext context) {
+        Content contentConfig = getContentConfig(config); // TODO horrible
+        AbstractAuth authStrategy = getAuthStrategy(config, contentConfig, request, context);
+        return authTypeFactory.get(contentConfig.getAuthType())
+                .createAuth(contentConfig, request, context, authStrategy);
     }
 
-    public IRep getRep(Content config, ApiResponse response, ApiRequest request, IPolicyContext context) {
-        safeInitialise(context);
-        AbstractRep<?> repStrategy = getRepStrategy(config, request, response, context);
-        return authTypeFactory.get(config.getAuthType())
-                .createRep(config, response, request, context, repStrategy);
+    public IRep getRep(Auth3ScaleBean config, ApiResponse response, ApiRequest request, IPolicyContext context) {
+        Content contentConfig = config.getThreescaleConfig().getProxyConfig().getContent();
+
+        AbstractRep repStrategy = getRepStrategy(config, contentConfig, request, response, context);
+
+        return authTypeFactory.get(contentConfig.getAuthType())
+                .createRep(contentConfig, response, request, context, repStrategy);
     }
 
-    private AbstractRep<?> getRepStrategy(Content config, ApiRequest request, ApiResponse response, IPolicyContext context) {
-        return strategyFactoryMap.get(RateLimitingStrategy.STANDARD)
-                .getRepStrategy(config, request, response, context); // TODO
+    private AbstractAuth getAuthStrategy(Auth3ScaleBean config, Content contentConfig, ApiRequest request, IPolicyContext context) {
+        return strategyFactoryMap.get(config.getRateLimitingStrategy())
+                .getAuthStrategy(contentConfig, request, context);
     }
 
-    // TODO Could convert to component to avoid DCL.
-    private void safeInitialise(IPolicyContext context) {
-        if (!reporterInitialised) {
-            synchronized (this) {
-                if (!reporterInitialised) {
-                    batchedReporter.start(context.getComponent(IPeriodicComponent.class), context.getComponent(IHttpClientComponent.class));
-                    reporterInitialised = true;
-                }
-            }
-        }
+    private AbstractRep getRepStrategy(Auth3ScaleBean config, Content contentConfig, ApiRequest request, ApiResponse response, IPolicyContext context) {
+        return strategyFactoryMap.get(config.getRateLimitingStrategy())
+                .getRepStrategy(contentConfig, request, response, context);
     }
 }

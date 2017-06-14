@@ -16,14 +16,8 @@
 
 package io.apiman.plugins.auth3scale.authrep.appid;
 
-import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.APP_ID;
-import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.APP_KEY;
 import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.REFERRER;
-import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.SERVICE_ID;
-import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.SERVICE_TOKEN;
-import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.USAGE;
 import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.USER_ID;
-import static io.apiman.plugins.auth3scale.util.Auth3ScaleUtils.buildRepMetrics;
 
 import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncHandler;
@@ -35,7 +29,6 @@ import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.Content;
 import io.apiman.plugins.auth3scale.authrep.AbstractAuth;
 import io.apiman.plugins.auth3scale.ratelimit.IAuth;
 import io.apiman.plugins.auth3scale.util.Auth3ScaleUtils;
-import io.apiman.plugins.auth3scale.util.ParameterMap;
 
 @SuppressWarnings("nls")
 public class AppIdAuth implements IAuth {
@@ -45,13 +38,13 @@ public class AppIdAuth implements IAuth {
 
     private Content config;
     private ApiRequest request;
-    private AbstractAuth<?> auth;
+    private AbstractAuth auth;
     private IAsyncHandler<PolicyFailure> policyFailureHandler;
 
     public AppIdAuth(Content config,
             ApiRequest request,
             IPolicyContext context,
-            AbstractAuth<?> auth) {
+            AbstractAuth auth) {
         this.config = config;
         this.request = request;
         this.auth = auth;
@@ -77,18 +70,17 @@ public class AppIdAuth implements IAuth {
             return this;
         }
 
-        ParameterMap paramMap = new ParameterMap();
-        paramMap.add(APP_ID, appId);
-        paramMap.add(APP_KEY, appKey); // TODO possibly optional according to API docs, but not 100% clear
-        paramMap.add(SERVICE_TOKEN, config.getBackendAuthenticationValue());
-        paramMap.add(SERVICE_ID, Long.toString(config.getProxy().getServiceId()));
-        paramMap.add(USAGE, buildRepMetrics(config, request));
-
-        Auth3ScaleUtils.setIfNotNull(paramMap, REFERRER, request.getHeaders().get(REFERRER));
-        Auth3ScaleUtils.setIfNotNull(paramMap, USER_ID, request.getHeaders().get(USER_ID));
+        AppIdReportData report = new AppIdReportData()
+                .setAppId(appId)
+                .setAppKey(appKey)
+                .setServiceToken(config.getBackendAuthenticationValue())
+                .setServiceId(Long.toString(config.getProxy().getServiceId()))
+                .setUsage(Auth3ScaleUtils.buildRepMetrics(config, request))
+                .setReferrer(request.getHeaders().get(REFERRER))
+                .setUserId(request.getHeaders().get(USER_ID));
 
         auth.setKeyElems(appId, appKey);
-        auth.setParameterMap(paramMap);
+        auth.setReport(report);
         auth.policyFailureHandler(policyFailureHandler::handle);
         auth.auth(resultHandler);
         return this;

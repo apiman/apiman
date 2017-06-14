@@ -21,6 +21,7 @@ import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.LOG;
 import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.REFERRER;
 import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.SERVICE_ID;
 import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.SERVICE_TOKEN;
+import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.TIMESTAMP;
 import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.USAGE;
 import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.USER_ID;
 import static io.apiman.plugins.auth3scale.util.Auth3ScaleUtils.setIfNotNull;
@@ -55,6 +56,7 @@ public class AppIdReportData implements ReportData {
         return this;
     }
 
+    @Override
     public String getServiceToken() {
         return serviceToken;
     }
@@ -64,6 +66,7 @@ public class AppIdReportData implements ReportData {
         return this;
     }
 
+    @Override
     public String getServiceId() {
         return serviceId;
     }
@@ -77,6 +80,7 @@ public class AppIdReportData implements ReportData {
         return timestamp;
     }
 
+    @Override
     public AppIdReportData setTimestamp(String timestamp) {
         this.timestamp = timestamp;
         return this;
@@ -112,7 +116,7 @@ public class AppIdReportData implements ReportData {
     }
 
     @Override
-    public int groupId() {
+    public int bucketId() {
         return hashCode();
     }
 
@@ -175,19 +179,19 @@ public class AppIdReportData implements ReportData {
     }
 
     @Override
-    public String encode() {
+    public ParameterMap toParameterMap() {
       ParameterMap paramMap = new ParameterMap();
       paramMap.add(APP_ID, getAppId());
       paramMap.add(APP_KEY, getAppKey());
       paramMap.add(SERVICE_TOKEN, getServiceToken());
       paramMap.add(SERVICE_ID, getServiceId());
       paramMap.add(USAGE, getUsage());
-      paramMap.add(LOG, getLog());
 
+      setIfNotNull(paramMap, TIMESTAMP, getTimestamp());
+      setIfNotNull(paramMap, LOG, getLog());
       setIfNotNull(paramMap, REFERRER, getReferrer());
       setIfNotNull(paramMap, USER_ID, getUserId());
-
-      return paramMap.encode();
+      return paramMap;
     }
 
     public String getAppKey() {
@@ -197,6 +201,11 @@ public class AppIdReportData implements ReportData {
     public AppIdReportData setAppKey(String appKey) {
         this.appKey = appKey;
         return this;
+    }
+
+    @Override
+    public String encode() {
+        return toParameterMap().encode();
     }
 
 }

@@ -1,41 +1,36 @@
-/*
- * Copyright 2016 JBoss Inc
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package io.apiman.plugins.auth3scale.authrep.apikey;
-
-import io.apiman.plugins.auth3scale.util.report.batchedreporter.AbstractReporter;
-import io.apiman.plugins.auth3scale.util.report.batchedreporter.ReportToSend;
-
-import java.util.List;
-
-/**
- * @author Marc Savy {@literal <msavy@redhat.com>}
- */
-public class ApiKeyAuthReporter extends AbstractReporter<ApiKeyReportData> {
-
-    @Override
-    public List<ReportToSend> encode() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public AbstractReporter<ApiKeyReportData> addRecord(ApiKeyReportData record) {
-        // TODO Auto-generated method stub
-        return null;
-    }
+///*
+// * Copyright 2016 JBoss Inc
+// *
+// * Licensed under the Apache License, Version 2.0 (the "License");
+// * you may not use this file except in compliance with the License.
+// * You may obtain a copy of the License at
+// *
+// *      http://www.apache.org/licenses/LICENSE-2.0
+// *
+// * Unless required by applicable law or agreed to in writing, software
+// * distributed under the License is distributed on an "AS IS" BASIS,
+// * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// * See the License for the specific language governing permissions and
+// * limitations under the License.
+// */
+//package io.apiman.plugins.auth3scale.authrep.apikey;
+//
+//import io.apiman.plugins.auth3scale.authrep.AuthRepConstants;
+//import io.apiman.plugins.auth3scale.util.Auth3ScaleUtils;
+//import io.apiman.plugins.auth3scale.util.ParameterMap;
+//import io.apiman.plugins.auth3scale.util.report.batchedreporter.AbstractReporter;
+//import io.apiman.plugins.auth3scale.util.report.batchedreporter.ReportToSend;
+//
+//import java.net.URI;
+//import java.util.ArrayList;
+//import java.util.List;
+//import java.util.concurrent.ConcurrentLinkedQueue;
+//
+///**
+// * @author Marc Savy {@literal <msavy@redhat.com>}
+// */
+//public class ApiKeyAuthReporter extends AbstractReporter<ApiKeyReportData> {
+//
 //    @Override // TODO need locking?
 //    public List<ReportToSend> encode() {
 //        List<ReportToSend> encodedReports = new ArrayList<>(reports.size());
@@ -58,10 +53,10 @@ public class ApiKeyAuthReporter extends AbstractReporter<ApiKeyReportData> {
 //                transactions.add(transaction);
 //
 //                transaction.add(AuthRepConstants.USER_KEY, reportData.getUserKey());
-//                setIfNotNull(transaction, AuthRepConstants.USER_ID, reportData.getUserId());
-//                setIfNotNull(transaction, AuthRepConstants.TIMESTAMP, reportData.getTimestamp());
-//                setIfNotNull(transaction, AuthRepConstants.USAGE, reportData.getUsage());
-//                setIfNotNull(transaction, AuthRepConstants.LOG, reportData.getLog());
+//                Auth3ScaleUtils.setIfNotNull(transaction, AuthRepConstants.USER_ID, reportData.getUserId());
+//                Auth3ScaleUtils.setIfNotNull(transaction, AuthRepConstants.TIMESTAMP, reportData.getTimestamp());
+//                Auth3ScaleUtils.setIfNotNull(transaction, AuthRepConstants.USAGE, reportData.getUsage());
+//                Auth3ScaleUtils.setIfNotNull(transaction, AuthRepConstants.LOG, reportData.getLog());
 //
 //                i++;
 //                reportData = queue.poll();
@@ -110,4 +105,4 @@ public class ApiKeyAuthReporter extends AbstractReporter<ApiKeyReportData> {
 //            return endpoint;
 //        }
 //    }
-}
+//}

@@ -15,21 +15,12 @@
  */
 package io.apiman.plugins.auth3scale.authrep;
 
-import io.apiman.plugins.auth3scale.util.report.batchedreporter.AbstractReporter;
-import io.apiman.plugins.auth3scale.util.report.batchedreporter.ReportData;
-
 /**
  * @author Marc Savy {@literal <msavy@redhat.com>}
- * @param <T> the type
  */
-public abstract class AbstractRep<T extends AbstractReporter<? extends ReportData>> implements AbstractAuthRepBase {
+public abstract class AbstractRep
+    implements AbstractAuthRepBase {
 
-    //public abstract AbstractRep<T> setReporter();
-
-    public abstract AbstractRep<T> setAuthCache(ICachingAuthenticator authCache);
-
-    public abstract AbstractRep<T> setReport(ReportData report);
-
-    public abstract AbstractRep<T> rep();
+    public abstract AbstractRep rep();
 
 }
