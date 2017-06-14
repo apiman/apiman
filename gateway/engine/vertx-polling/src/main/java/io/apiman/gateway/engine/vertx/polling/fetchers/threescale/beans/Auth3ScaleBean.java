@@ -19,8 +19,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * Does nothing (yet).
- *
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -29,6 +27,8 @@ public class Auth3ScaleBean {
     private ProxyConfigRoot threescaleConfig;
     private String defaultOrg;
     private String defaultVersion;
+    private RateLimitingStrategy rateLimitingStrategy = RateLimitingStrategy.STANDARD;
+    private String backendEndpoint;
 
     public ProxyConfigRoot getThreescaleConfig() {
         return threescaleConfig;
@@ -54,6 +54,24 @@ public class Auth3ScaleBean {
 
     public Auth3ScaleBean setDefaultVersion(String defaultVersion) {
         this.defaultVersion = defaultVersion;
+        return this;
+    }
+
+    public RateLimitingStrategy getRateLimitingStrategy() {
+        return rateLimitingStrategy;
+    }
+
+    public Auth3ScaleBean setRateLimitingStrategy(RateLimitingStrategy rateLimitingStrategy) {
+        this.rateLimitingStrategy = rateLimitingStrategy;
+        return this;
+    }
+
+    public String getBackendEndpoint() {
+        return backendEndpoint;
+    }
+
+    public Auth3ScaleBean setBackendEndpoint(String backendEndpoint) {
+        this.backendEndpoint = backendEndpoint;
         return this;
     }
 }

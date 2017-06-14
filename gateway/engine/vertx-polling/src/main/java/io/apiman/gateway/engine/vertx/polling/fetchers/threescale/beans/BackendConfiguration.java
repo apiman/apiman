@@ -67,10 +67,9 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
     "backend_authentication_value",
     "proxy"
 })
-public class Content implements Serializable
+public class BackendConfiguration implements Serializable
 {
 
-    private RateLimitingStrategy rateLimitingStrategy = RateLimitingStrategy.STANDARD;
     @JsonProperty("id")
     private long id;
     @JsonProperty("account_id")
@@ -175,7 +174,7 @@ public class Content implements Serializable
         this.id = id;
     }
 
-    public Content withId(long id) {
+    public BackendConfiguration withId(long id) {
         this.id = id;
         return this;
     }
@@ -190,7 +189,7 @@ public class Content implements Serializable
         this.accountId = accountId;
     }
 
-    public Content withAccountId(long accountId) {
+    public BackendConfiguration withAccountId(long accountId) {
         this.accountId = accountId;
         return this;
     }
@@ -205,7 +204,7 @@ public class Content implements Serializable
         this.name = name;
     }
 
-    public Content withName(String name) {
+    public BackendConfiguration withName(String name) {
         this.name = name;
         return this;
     }
@@ -220,7 +219,7 @@ public class Content implements Serializable
         this.onelineDescription = onelineDescription;
     }
 
-    public Content withOnelineDescription(String onelineDescription) {
+    public BackendConfiguration withOnelineDescription(String onelineDescription) {
         this.onelineDescription = onelineDescription;
         return this;
     }
@@ -235,7 +234,7 @@ public class Content implements Serializable
         this.description = description;
     }
 
-    public Content withDescription(String description) {
+    public BackendConfiguration withDescription(String description) {
         this.description = description;
         return this;
     }
@@ -250,7 +249,7 @@ public class Content implements Serializable
         this.txtApi = txtApi;
     }
 
-    public Content withTxtApi(String txtApi) {
+    public BackendConfiguration withTxtApi(String txtApi) {
         this.txtApi = txtApi;
         return this;
     }
@@ -265,7 +264,7 @@ public class Content implements Serializable
         this.txtSupport = txtSupport;
     }
 
-    public Content withTxtSupport(String txtSupport) {
+    public BackendConfiguration withTxtSupport(String txtSupport) {
         this.txtSupport = txtSupport;
         return this;
     }
@@ -280,7 +279,7 @@ public class Content implements Serializable
         this.txtFeatures = txtFeatures;
     }
 
-    public Content withTxtFeatures(String txtFeatures) {
+    public BackendConfiguration withTxtFeatures(String txtFeatures) {
         this.txtFeatures = txtFeatures;
         return this;
     }
@@ -295,7 +294,7 @@ public class Content implements Serializable
         this.createdAt = createdAt;
     }
 
-    public Content withCreatedAt(String createdAt) {
+    public BackendConfiguration withCreatedAt(String createdAt) {
         this.createdAt = createdAt;
         return this;
     }
@@ -310,7 +309,7 @@ public class Content implements Serializable
         this.updatedAt = updatedAt;
     }
 
-    public Content withUpdatedAt(String updatedAt) {
+    public BackendConfiguration withUpdatedAt(String updatedAt) {
         this.updatedAt = updatedAt;
         return this;
     }
@@ -325,7 +324,7 @@ public class Content implements Serializable
         this.logoFileName = logoFileName;
     }
 
-    public Content withLogoFileName(String logoFileName) {
+    public BackendConfiguration withLogoFileName(String logoFileName) {
         this.logoFileName = logoFileName;
         return this;
     }
@@ -340,7 +339,7 @@ public class Content implements Serializable
         this.logoContentType = logoContentType;
     }
 
-    public Content withLogoContentType(String logoContentType) {
+    public BackendConfiguration withLogoContentType(String logoContentType) {
         this.logoContentType = logoContentType;
         return this;
     }
@@ -355,7 +354,7 @@ public class Content implements Serializable
         this.logoFileSize = logoFileSize;
     }
 
-    public Content withLogoFileSize(Object logoFileSize) {
+    public BackendConfiguration withLogoFileSize(Object logoFileSize) {
         this.logoFileSize = logoFileSize;
         return this;
     }
@@ -370,7 +369,7 @@ public class Content implements Serializable
         this.state = state;
     }
 
-    public Content withState(String state) {
+    public BackendConfiguration withState(String state) {
         this.state = state;
         return this;
     }
@@ -385,7 +384,7 @@ public class Content implements Serializable
         this.intentionsRequired = intentionsRequired;
     }
 
-    public Content withIntentionsRequired(boolean intentionsRequired) {
+    public BackendConfiguration withIntentionsRequired(boolean intentionsRequired) {
         this.intentionsRequired = intentionsRequired;
         return this;
     }
@@ -400,7 +399,7 @@ public class Content implements Serializable
         this.draftName = draftName;
     }
 
-    public Content withDraftName(String draftName) {
+    public BackendConfiguration withDraftName(String draftName) {
         this.draftName = draftName;
         return this;
     }
@@ -415,7 +414,7 @@ public class Content implements Serializable
         this.infobar = infobar;
     }
 
-    public Content withInfobar(Object infobar) {
+    public BackendConfiguration withInfobar(Object infobar) {
         this.infobar = infobar;
         return this;
     }
@@ -430,7 +429,7 @@ public class Content implements Serializable
         this.terms = terms;
     }
 
-    public Content withTerms(Object terms) {
+    public BackendConfiguration withTerms(Object terms) {
         this.terms = terms;
         return this;
     }
@@ -445,7 +444,7 @@ public class Content implements Serializable
         this.displayProviderKeys = displayProviderKeys;
     }
 
-    public Content withDisplayProviderKeys(boolean displayProviderKeys) {
+    public BackendConfiguration withDisplayProviderKeys(boolean displayProviderKeys) {
         this.displayProviderKeys = displayProviderKeys;
         return this;
     }
@@ -460,7 +459,7 @@ public class Content implements Serializable
         this.techSupportEmail = techSupportEmail;
     }
 
-    public Content withTechSupportEmail(String techSupportEmail) {
+    public BackendConfiguration withTechSupportEmail(String techSupportEmail) {
         this.techSupportEmail = techSupportEmail;
         return this;
     }
@@ -475,7 +474,7 @@ public class Content implements Serializable
         this.adminSupportEmail = adminSupportEmail;
     }
 
-    public Content withAdminSupportEmail(String adminSupportEmail) {
+    public BackendConfiguration withAdminSupportEmail(String adminSupportEmail) {
         this.adminSupportEmail = adminSupportEmail;
         return this;
     }
@@ -490,7 +489,7 @@ public class Content implements Serializable
         this.creditCardSupportEmail = creditCardSupportEmail;
     }
 
-    public Content withCreditCardSupportEmail(String creditCardSupportEmail) {
+    public BackendConfiguration withCreditCardSupportEmail(String creditCardSupportEmail) {
         this.creditCardSupportEmail = creditCardSupportEmail;
         return this;
     }
@@ -505,7 +504,7 @@ public class Content implements Serializable
         this.buyersManageApps = buyersManageApps;
     }
 
-    public Content withBuyersManageApps(boolean buyersManageApps) {
+    public BackendConfiguration withBuyersManageApps(boolean buyersManageApps) {
         this.buyersManageApps = buyersManageApps;
         return this;
     }
@@ -520,7 +519,7 @@ public class Content implements Serializable
         this.buyersManageKeys = buyersManageKeys;
     }
 
-    public Content withBuyersManageKeys(boolean buyersManageKeys) {
+    public BackendConfiguration withBuyersManageKeys(boolean buyersManageKeys) {
         this.buyersManageKeys = buyersManageKeys;
         return this;
     }
@@ -535,7 +534,7 @@ public class Content implements Serializable
         this.customKeysEnabled = customKeysEnabled;
     }
 
-    public Content withCustomKeysEnabled(boolean customKeysEnabled) {
+    public BackendConfiguration withCustomKeysEnabled(boolean customKeysEnabled) {
         this.customKeysEnabled = customKeysEnabled;
         return this;
     }
@@ -550,7 +549,7 @@ public class Content implements Serializable
         this.buyerPlanChangePermission = buyerPlanChangePermission;
     }
 
-    public Content withBuyerPlanChangePermission(String buyerPlanChangePermission) {
+    public BackendConfiguration withBuyerPlanChangePermission(String buyerPlanChangePermission) {
         this.buyerPlanChangePermission = buyerPlanChangePermission;
         return this;
     }
@@ -565,7 +564,7 @@ public class Content implements Serializable
         this.buyerCanSelectPlan = buyerCanSelectPlan;
     }
 
-    public Content withBuyerCanSelectPlan(boolean buyerCanSelectPlan) {
+    public BackendConfiguration withBuyerCanSelectPlan(boolean buyerCanSelectPlan) {
         this.buyerCanSelectPlan = buyerCanSelectPlan;
         return this;
     }
@@ -580,7 +579,7 @@ public class Content implements Serializable
         this.notificationSettings = notificationSettings;
     }
 
-    public Content withNotificationSettings(Object notificationSettings) {
+    public BackendConfiguration withNotificationSettings(Object notificationSettings) {
         this.notificationSettings = notificationSettings;
         return this;
     }
@@ -595,7 +594,7 @@ public class Content implements Serializable
         this.defaultApplicationPlanId = defaultApplicationPlanId;
     }
 
-    public Content withDefaultApplicationPlanId(long defaultApplicationPlanId) {
+    public BackendConfiguration withDefaultApplicationPlanId(long defaultApplicationPlanId) {
         this.defaultApplicationPlanId = defaultApplicationPlanId;
         return this;
     }
@@ -610,7 +609,7 @@ public class Content implements Serializable
         this.defaultServicePlanId = defaultServicePlanId;
     }
 
-    public Content withDefaultServicePlanId(long defaultServicePlanId) {
+    public BackendConfiguration withDefaultServicePlanId(long defaultServicePlanId) {
         this.defaultServicePlanId = defaultServicePlanId;
         return this;
     }
@@ -625,7 +624,7 @@ public class Content implements Serializable
         this.buyerCanSeeLogRequests = buyerCanSeeLogRequests;
     }
 
-    public Content withBuyerCanSeeLogRequests(boolean buyerCanSeeLogRequests) {
+    public BackendConfiguration withBuyerCanSeeLogRequests(boolean buyerCanSeeLogRequests) {
         this.buyerCanSeeLogRequests = buyerCanSeeLogRequests;
         return this;
     }
@@ -640,7 +639,7 @@ public class Content implements Serializable
         this.defaultEndUserPlanId = defaultEndUserPlanId;
     }
 
-    public Content withDefaultEndUserPlanId(String defaultEndUserPlanId) {
+    public BackendConfiguration withDefaultEndUserPlanId(String defaultEndUserPlanId) {
         this.defaultEndUserPlanId = defaultEndUserPlanId;
         return this;
     }
@@ -655,7 +654,7 @@ public class Content implements Serializable
         this.endUserRegistrationRequired = endUserRegistrationRequired;
     }
 
-    public Content withEndUserRegistrationRequired(boolean endUserRegistrationRequired) {
+    public BackendConfiguration withEndUserRegistrationRequired(boolean endUserRegistrationRequired) {
         this.endUserRegistrationRequired = endUserRegistrationRequired;
         return this;
     }
@@ -670,7 +669,7 @@ public class Content implements Serializable
         this.tenantId = tenantId;
     }
 
-    public Content withTenantId(long tenantId) {
+    public BackendConfiguration withTenantId(long tenantId) {
         this.tenantId = tenantId;
         return this;
     }
@@ -685,7 +684,7 @@ public class Content implements Serializable
         this.systemName = systemName;
     }
 
-    public Content withSystemName(String systemName) {
+    public BackendConfiguration withSystemName(String systemName) {
         this.systemName = systemName;
         return this;
     }
@@ -700,7 +699,7 @@ public class Content implements Serializable
         this.backendVersion = backendVersion;
     }
 
-    public Content withBackendVersion(String backendVersion) {
+    public BackendConfiguration withBackendVersion(String backendVersion) {
         this.backendVersion = backendVersion;
         return this;
     }
@@ -715,7 +714,7 @@ public class Content implements Serializable
         this.mandatoryAppKey = mandatoryAppKey;
     }
 
-    public Content withMandatoryAppKey(boolean mandatoryAppKey) {
+    public BackendConfiguration withMandatoryAppKey(boolean mandatoryAppKey) {
         this.mandatoryAppKey = mandatoryAppKey;
         return this;
     }
@@ -730,7 +729,7 @@ public class Content implements Serializable
         this.buyerKeyRegenerateEnabled = buyerKeyRegenerateEnabled;
     }
 
-    public Content withBuyerKeyRegenerateEnabled(boolean buyerKeyRegenerateEnabled) {
+    public BackendConfiguration withBuyerKeyRegenerateEnabled(boolean buyerKeyRegenerateEnabled) {
         this.buyerKeyRegenerateEnabled = buyerKeyRegenerateEnabled;
         return this;
     }
@@ -745,7 +744,7 @@ public class Content implements Serializable
         this.supportEmail = supportEmail;
     }
 
-    public Content withSupportEmail(String supportEmail) {
+    public BackendConfiguration withSupportEmail(String supportEmail) {
         this.supportEmail = supportEmail;
         return this;
     }
@@ -760,7 +759,7 @@ public class Content implements Serializable
         this.referrerFiltersRequired = referrerFiltersRequired;
     }
 
-    public Content withReferrerFiltersRequired(boolean referrerFiltersRequired) {
+    public BackendConfiguration withReferrerFiltersRequired(boolean referrerFiltersRequired) {
         this.referrerFiltersRequired = referrerFiltersRequired;
         return this;
     }
@@ -775,7 +774,7 @@ public class Content implements Serializable
         this.deploymentOption = deploymentOption;
     }
 
-    public Content withDeploymentOption(String deploymentOption) {
+    public BackendConfiguration withDeploymentOption(String deploymentOption) {
         this.deploymentOption = deploymentOption;
         return this;
     }
@@ -790,7 +789,7 @@ public class Content implements Serializable
         this.proxiable = proxiable;
     }
 
-    public Content withProxiable(boolean proxiable) {
+    public BackendConfiguration withProxiable(boolean proxiable) {
         this.proxiable = proxiable;
         return this;
     }
@@ -805,7 +804,7 @@ public class Content implements Serializable
         this.backendAuthenticationType = backendAuthenticationType;
     }
 
-    public Content withBackendAuthenticationType(String backendAuthenticationType) {
+    public BackendConfiguration withBackendAuthenticationType(String backendAuthenticationType) {
         this.backendAuthenticationType = backendAuthenticationType;
         return this;
     }
@@ -820,7 +819,7 @@ public class Content implements Serializable
         this.backendAuthenticationValue = backendAuthenticationValue;
     }
 
-    public Content withBackendAuthenticationValue(String backendAuthenticationValue) {
+    public BackendConfiguration withBackendAuthenticationValue(String backendAuthenticationValue) {
         this.backendAuthenticationValue = backendAuthenticationValue;
         return this;
     }
@@ -835,7 +834,7 @@ public class Content implements Serializable
         this.proxy = proxy;
     }
 
-    public Content withProxy(Proxy proxy) {
+    public BackendConfiguration withProxy(Proxy proxy) {
         this.proxy = proxy;
         return this;
     }
@@ -855,7 +854,7 @@ public class Content implements Serializable
         this.additionalProperties.put(name, value);
     }
 
-    public Content withAdditionalProperty(String name, Object value) {
+    public BackendConfiguration withAdditionalProperty(String name, Object value) {
         this.additionalProperties.put(name, value);
         return this;
     }
@@ -893,10 +892,10 @@ public class Content implements Serializable
         if (other == this) {
             return true;
         }
-        if ((other instanceof Content) == false) {
+        if ((other instanceof BackendConfiguration) == false) {
             return false;
         }
-        Content rhs = ((Content) other);
+        BackendConfiguration rhs = ((BackendConfiguration) other);
         return new EqualsBuilder().append(id, rhs.id).append(accountId, rhs.accountId).append(name, rhs.name)
                 .append(onelineDescription, rhs.onelineDescription).append(description, rhs.description).append(txtApi, rhs.txtApi)
                 .append(txtSupport, rhs.txtSupport).append(txtFeatures, rhs.txtFeatures).append(createdAt, rhs.createdAt)
@@ -917,14 +916,6 @@ public class Content implements Serializable
                 .append(proxiable, rhs.proxiable).append(backendAuthenticationType, rhs.backendAuthenticationType)
                 .append(backendAuthenticationValue, rhs.backendAuthenticationValue).append(proxy, rhs.proxy)
                 .append(additionalProperties, rhs.additionalProperties).isEquals();
-    }
-
-    public RateLimitingStrategy getRateLimitingStrategy() {
-        return rateLimitingStrategy;
-    }
-
-    public void setRateLimitingStrategy(RateLimitingStrategy rateLimitingStrategy) {
-        this.rateLimitingStrategy = rateLimitingStrategy;
     }
 
 }
