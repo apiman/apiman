@@ -40,7 +40,6 @@ import io.vertx.core.MultiMap;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpClient;
-import io.vertx.core.http.HttpClientOptions;
 import io.vertx.core.http.HttpClientRequest;
 import io.vertx.core.http.HttpClientResponse;
 import io.vertx.core.http.HttpMethod;
@@ -313,6 +312,7 @@ class HttpConnector implements IApiConnectionResponse, IApiConnection {
     private class ExceptionHandler implements Handler<Throwable> {
         @Override
         public void handle(Throwable error) {
+            error.printStackTrace();
             // TODO better exception distinguishing.
             resultHandler.handle(AsyncResultImpl
                     .<IApiConnectionResponse> create(error));

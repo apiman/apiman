@@ -33,7 +33,7 @@ public class ProxyConfig implements Serializable
     @JsonProperty("environment")
     private String environment;
     @JsonProperty("content")
-    private Content content;
+    private BackendConfiguration content;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<>();
     private final static long serialVersionUID = 4009643270463245312L;
@@ -69,16 +69,16 @@ public class ProxyConfig implements Serializable
     }
 
     @JsonProperty("content")
-    public Content getContent() {
+    public BackendConfiguration getBackendConfig() {
         return content;
     }
 
     @JsonProperty("content")
-    public void setContent(Content content) {
+    public void setBackendConfig(BackendConfiguration content) {
         this.content = content;
     }
 
-    public ProxyConfig withContent(Content content) {
+    public ProxyConfig withBackendConfig(BackendConfiguration content) {
         this.content = content;
         return this;
     }

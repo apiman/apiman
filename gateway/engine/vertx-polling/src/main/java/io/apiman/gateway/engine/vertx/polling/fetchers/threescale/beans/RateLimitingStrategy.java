@@ -17,15 +17,15 @@
 package io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans;
 
 public enum RateLimitingStrategy {
-    STANDARD(false), BATCHED(true), XC(true);
+    STANDARD, // Standard naive RL scheme. First call is sync and creates cache entry; subsequent requests are async until invalidated.
+    BATCHED_HYBRID, // First call is sync and creates cache entry; subsequent requests are batched until TTL or size limit met. Batch is flushed and async authrep done.
+    BATCHED_NO_3SCALE_RATE_LIMITING, // Just do batching, no 3scale RL (caveat emptor!)
+    XC_EMULATION; // Emulated XC
 
-    private boolean batched;
-
-    RateLimitingStrategy(boolean batched) {
-        this.batched = batched;
-    }
-
-    public boolean isBatched() {
-        return batched;
+    public static RateLimitingStrategy valueOfOrDefault(String name, RateLimitingStrategy defaultValue) {
+        if (name == null) {
+            return defaultValue;
+        }
+        return RateLimitingStrategy.valueOf(name.trim().toUpperCase());
     }
 }
