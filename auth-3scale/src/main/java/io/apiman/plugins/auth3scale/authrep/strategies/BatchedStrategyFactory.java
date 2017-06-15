@@ -27,9 +27,8 @@ import io.apiman.plugins.auth3scale.util.report.batchedreporter.BatchedReporter;
 import io.apiman.plugins.auth3scale.util.report.batchedreporter.Reporter;
 
 public class BatchedStrategyFactory implements IAuthStrategyFactory {
-    // move stuff here
-    // is this safe for mixing multiple different types? probably not.
-    // Maybe caller should sort that out (seems better)
+    // is this safe for mixing multiple different users? probably not. TODO verify it's fixed
+    // Maybe caller should sort that out (seems better) -- might be OK with user ID figured in?
     private Reporter<BatchedReportData> reporter = new Reporter<>(AuthRepConstants.REPORT_URI);
     private StandardAuthCache standardCache = new StandardAuthCache();
     private BatchedAuthCache heuristicCache = new BatchedAuthCache();
@@ -37,8 +36,6 @@ public class BatchedStrategyFactory implements IAuthStrategyFactory {
     public BatchedStrategyFactory(BatchedReporter batchedReporter) {
         reporter.flushHandler(result -> {
             BatchedReportData entry = result.getResult().get(0);
-            // Invalidate standard cache to ensure next request goes through blocking authrep
-            standardCache.invalidate(entry.getConfig(), entry.getRequest(), entry.getKeyElems());
             // Make cache entry in heuristic cache to force subsequent N entries to be blocking authrep
             // with the hope that the backend has caught up and we will catch the updated rate limiting status.
             heuristicCache.cache(entry.getConfig(), entry.getRequest(), entry.getKeyElems());
@@ -59,7 +56,7 @@ public class BatchedStrategyFactory implements IAuthStrategyFactory {
             ApiRequest request,
             ApiResponse response,
             IPolicyContext context) {
-        return new BatchedRep(config, request, response, context, reporter);
+        return new BatchedRep(config, request, response, context, reporter, standardCache, heuristicCache);
     }
 
 }

@@ -16,6 +16,7 @@
 package io.apiman.plugins.auth3scale.authrep.strategies;
 
 import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.AUTHREP_PATH;
+import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.BLOCKING_FLAG;
 import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.DEFAULT_BACKEND;
 
 import io.apiman.common.logging.IApimanLogger;
@@ -29,7 +30,6 @@ import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.components.http.HttpMethod;
 import io.apiman.gateway.engine.components.http.IHttpClientRequest;
 import io.apiman.gateway.engine.policy.IPolicyContext;
-import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.AuthTypeEnum;
 import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.Content;
 import io.apiman.plugins.auth3scale.authrep.AbstractAuth;
 import io.apiman.plugins.auth3scale.authrep.AbstractAuthRepBase;
@@ -94,7 +94,7 @@ public class StandardAuth extends AbstractAuth {
             resultHandler.handle(OK_CACHED);
         } else {
             logger.debug("[ServiceId: {0}] Uncached auth on request: {1}", serviceId, request);
-            context.setAttribute("3scale.blocking", true); // TODO
+            context.setAttribute(BLOCKING_FLAG, true);
             doBlockingAuthRep(result -> {
                 logger.debug("Blocking auth success?: {0}", result.isSuccess());
                 // Only cache if successful
@@ -134,11 +134,6 @@ public class StandardAuth extends AbstractAuth {
     protected void flushCache() {
         logger.debug("Invalidating cache");
         authCache.invalidate(config, request, keyElems);
-    }
-
-    @Override
-    public AuthTypeEnum getType() {
-        return AuthTypeEnum.API_KEY;
     }
 
     @Override

@@ -16,63 +16,133 @@
 
 package io.apiman.plugins.auth3scale.authrep.strategies;
 
+import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.AUTHREP_PATH;
+import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.BLOCKING_FLAG;
+import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.DEFAULT_BACKEND;
+
+import io.apiman.common.logging.IApimanLogger;
+import io.apiman.gateway.engine.async.AsyncResultImpl;
+import io.apiman.gateway.engine.async.IAsyncHandler;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.ApiRequest;
+import io.apiman.gateway.engine.beans.PolicyFailure;
+import io.apiman.gateway.engine.components.IHttpClientComponent;
+import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
+import io.apiman.gateway.engine.components.http.HttpMethod;
+import io.apiman.gateway.engine.components.http.IHttpClientRequest;
 import io.apiman.gateway.engine.policy.IPolicyContext;
 import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.Content;
+import io.apiman.plugins.auth3scale.authrep.AbstractAuth;
+import io.apiman.plugins.auth3scale.authrep.AbstractAuthRepBase;
+import io.apiman.plugins.auth3scale.util.report.AuthResponseHandler;
+import io.apiman.plugins.auth3scale.util.report.batchedreporter.ReportData;
 
 /**
  *  First leg is the same as {@link StandardAuth}.
  *
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
  */
-public class BatchedAuth {
+@SuppressWarnings("nls")
+public class BatchedAuth extends AbstractAuth {
+    private static final AsyncResultImpl<Void> OK_CACHED = AsyncResultImpl.create((Void) null);
+
+    private final StandardAuthCache authCache;
     private final BatchedAuthCache heuristicCache;
     private Content config;
     private ApiRequest request;
     private Object[] keyElems;
+    private IAsyncHandler<PolicyFailure> policyFailureHandler;
+    private final IApimanLogger logger;
+    private ReportData report;
+    private long serviceId;
+    private IPolicyContext context;
+    private IHttpClientComponent httpClient;
+    private IPolicyFailureFactoryComponent failureFactory;
 
     public BatchedAuth(Content config,
             ApiRequest request,
             IPolicyContext context,
-            StandardAuthCache standardAuthCache,
+            StandardAuthCache authCache,
             BatchedAuthCache heuristicCache) {
-        //super(config, request, context, standardAuthCache);
         this.config = config;
         this.request = request;
+        this.context = context;
+        this.authCache = authCache;
         this.heuristicCache = heuristicCache;
+        this.logger = context.getLogger(BatchedAuth.class);
+        this.serviceId = config.getProxy().getServiceId();
+        this.httpClient = context.getComponent(IHttpClientComponent.class);
+        this.failureFactory = context.getComponent(IPolicyFailureFactoryComponent.class);
     }
 
     @Override
-    public StandardAuth setKeyElems(Object... keyElems) {
+    public BatchedAuth setKeyElems(Object... keyElems) {
         this.keyElems = keyElems;
         return this;
     }
 
     @Override
-    public StandardAuth auth(IAsyncResultHandler<Void> resultHandler) {
-        // A cache entry at this level implies that we are forcing standard auth.
-        // because a batch was recently flushed and we want to try to ensure we
-        // catch the rate limiting state updates as quickly as possible.
-        // TODO could use time instead of number of requests?
-//        System.out.println("DO BLOCKING?");
-//        if (heuristicCache.isAuthCached(config, request, keyElems)) {
-//            System.out.println("IS IN HEURISTIC CACHE; DO BLOCKING AUTHREP");
-//            super.doBlockingAuthRep(resultHandler);
-//            // This will decrement the cache by 1.
-//            System.out.println("DECREMENTING HEURISTIC COUNTER");
-//            heuristicCache.invalidate(config, request, keyElems);
-//        } else {
-//            System.out.println("NO CACHE ENTRY; GOING FROM SCRATCH");
-//            super.auth(resultHandler);
-//        }
-//        return this;
+    public BatchedAuth auth(IAsyncResultHandler<Void> resultHandler) {
+        // If we have no cache entry, then block. Otherwise, the request can immediately go
+        // through and we will resolve the rate limiting status post hoc (various strategies
+        // depending on settings).
+        if (authCache.isAuthCached(config, request, keyElems)) {
+            logger.debug("B[ServiceId: {0}] Cached auth on request: {1}", serviceId, request);
+            resultHandler.handle(OK_CACHED);
+        } else {
+            logger.debug("B[ServiceId: {0}] Uncached auth on request: {1}", serviceId, request);
+            context.setAttribute(BLOCKING_FLAG, true);
+            doBlockingAuthRep(result -> {
+                logger.debug("Blocking auth success?: {0}", result.isSuccess());
+                // Only cache if successful
+                if (result.isSuccess()) {
+                    authCache.cache(config, request, keyElems);
+                }
+                // Pass result up.
+                resultHandler.handle(result);
+            });
+        }
+        return this;
+    }
 
-        super.auth(result -> {
-            if (result.isSuccess()) {
+    protected void doBlockingAuthRep(IAsyncResultHandler<Void> resultHandler) {
+        IHttpClientRequest get = httpClient.request(DEFAULT_BACKEND + AUTHREP_PATH + report.encode(),
+                HttpMethod.GET,
+                new AuthResponseHandler(failureFactory)
+                .failureHandler(failure -> {
+                    logger.debug("B[ServiceId: {0}] Blocking AuthRep failure: {1}", serviceId, failure.getResponseCode());
+                    policyFailureHandler.handle(failure);
+                })
+                .exceptionHandler(exception -> resultHandler.handle(AsyncResultImpl.create(exception)))
+                .statusHandler(status -> {
+                    logger.debug("B[ServiceId: {0}] Backend status: {1}", serviceId, status);
+                    if (!status.isAuthorized()) {
+                        flushCache();
+                    } else {
+                        resultHandler.handle(OK_CACHED);
+                    }
+                }));
 
-            }
-        });
+        get.addHeader("Accept-Charset", "UTF-8");
+        get.addHeader("X-3scale-User-Client", "apiman");
+        get.end();
+    }
+
+    protected void flushCache() {
+        logger.debug("Invalidating cache");
+        authCache.invalidate(config, request, keyElems);
+        heuristicCache.invalidate(config, request, keyElems);
+    }
+
+    @Override
+    public BatchedAuth policyFailureHandler(IAsyncHandler<PolicyFailure> policyFailureHandler) {
+        this.policyFailureHandler = policyFailureHandler;
+        return this;
+    }
+
+    @Override
+    public AbstractAuthRepBase setReport(ReportData report) {
+        this.report = report;
         return this;
     }
 }

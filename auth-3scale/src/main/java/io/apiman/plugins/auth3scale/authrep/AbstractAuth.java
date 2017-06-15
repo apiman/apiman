@@ -18,7 +18,6 @@ package io.apiman.plugins.auth3scale.authrep;
 import io.apiman.gateway.engine.async.IAsyncHandler;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.PolicyFailure;
-import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.AuthTypeEnum;
 
 /**
  * @author Marc Savy {@literal <msavy@redhat.com>}
@@ -27,8 +26,6 @@ public abstract class AbstractAuth
     implements AbstractAuthRepBase {
 
     public abstract AbstractAuth policyFailureHandler(IAsyncHandler<PolicyFailure> policyFailureHandler);
-
-    public abstract AuthTypeEnum getType();
 
     public abstract AbstractAuth auth(IAsyncResultHandler<Void> resultHandler);
 }

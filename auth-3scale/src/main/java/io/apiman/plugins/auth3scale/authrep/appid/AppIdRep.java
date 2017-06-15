@@ -28,7 +28,6 @@ import io.apiman.gateway.engine.policy.IPolicyContext;
 import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.Content;
 import io.apiman.plugins.auth3scale.authrep.AbstractRep;
 import io.apiman.plugins.auth3scale.ratelimit.IRep;
-import io.apiman.plugins.auth3scale.util.Auth3ScaleUtils;
 
 public class AppIdRep implements IRep {
     private final Content config;
@@ -49,19 +48,20 @@ public class AppIdRep implements IRep {
 
     @Override
     public IRep rep() {
+        String appId = AppIdUtils.getAppId(config, request);
+        String appKey = AppIdUtils.getAppKey(config, request);
         // Otherwise build report to be encoded.
         AppIdReportData report = new AppIdReportData()
                 .setEndpoint(REPORT_URI)
                 .setReferrer(request.getHeaders().get(REFERRER))
                 .setServiceToken(config.getBackendAuthenticationValue())
                 .setServiceId(Long.toString(config.getProxy().getServiceId()))
-                .setAppId(AppIdUtils.getAppId(config, request))
-                .setAppKey(AppIdUtils.getAppKey(config, request))
+                .setAppId(appId)
+                .setAppKey(appKey)
                 .setUserId(getUserId())
                 .setUsage(buildRepMetrics(config, request))
                 .setLog(buildLog(response));
-
-        rep.setKeyElems(getUserKey());
+        rep.setKeyElems(appId, appKey);
         rep.setReport(report);
         rep.rep();
         return this;
@@ -70,9 +70,4 @@ public class AppIdRep implements IRep {
     private String getUserId() {
         return request.getHeaders().get(USER_ID);
     }
-
-    private String getUserKey() {
-        return Auth3ScaleUtils.getUserKey(config, request);
-    }
-
 }

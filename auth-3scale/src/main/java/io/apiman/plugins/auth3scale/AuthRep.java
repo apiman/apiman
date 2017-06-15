@@ -17,8 +17,6 @@ package io.apiman.plugins.auth3scale;
 
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.ApiResponse;
-import io.apiman.gateway.engine.components.IHttpClientComponent;
-import io.apiman.gateway.engine.components.IPeriodicComponent;
 import io.apiman.gateway.engine.policy.IPolicyContext;
 import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.Auth3ScaleBean;
 import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.AuthTypeEnum;
@@ -49,7 +47,7 @@ public class AuthRep {
 
     public AuthRep(IPolicyContext context) {
         batchedReporter = new BatchedReporter()
-                .start(context.getComponent(IPeriodicComponent.class), context.getComponent(IHttpClientComponent.class));
+                .start(context);
 
         // API Key
         ApiKeyAuthRepFactory apiKeyFactory = new ApiKeyAuthRepFactory();

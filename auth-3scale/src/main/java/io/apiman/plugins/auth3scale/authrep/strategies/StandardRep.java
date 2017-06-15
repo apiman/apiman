@@ -16,6 +16,7 @@
 package io.apiman.plugins.auth3scale.authrep.strategies;
 
 import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.AUTHREP_PATH;
+import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.BLOCKING_FLAG;
 import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.DEFAULT_BACKEND;
 
 import io.apiman.common.logging.IApimanLogger;
@@ -59,26 +60,23 @@ public class StandardRep extends AbstractRep {
         this.authCache = authCache;
     }
 
-    // Rep seems to require POST with URLEncoding
     @Override
     public StandardRep rep() {
         // If was a blocking request then we already reported, so do nothing.
-        if (context.getAttribute("3scale.blocking", false))
+        if (context.getAttribute(BLOCKING_FLAG, false))
             return this;
 
         IHttpClientRequest get = httpClient.request(DEFAULT_BACKEND + AUTHREP_PATH + report.encode(),
                 HttpMethod.GET,
                 new AuthResponseHandler(failureFactory)
-                .failureHandler(failure -> {
                     // At this point can't do anything but log it.
-                    logger.debug("Async AuthRep failure code {0} on: {1}",  failure.getResponseCode(), report);
-                })
-                .exceptionHandler(AsyncResultImpl::create)
-                .statusHandler(status -> {
-                    if (!status.isAuthorized() || rateLimitReached(status)) {
-                        flushCache();
-                    }
-                }));
+                    .failureHandler(failure -> logger.debug("Async AuthRep failure code {0} on: {1}", failure.getResponseCode(), report))
+                    .exceptionHandler(AsyncResultImpl::create)
+                    .statusHandler(status -> {
+                        if (!status.isAuthorized() || rateLimitReached(status)) {
+                            flushCache();
+                        }
+                    }));
 
         get.addHeader("Accept-Charset", "UTF-8");
         get.addHeader("X-3scale-User-Client", "apiman");
@@ -86,62 +84,18 @@ public class StandardRep extends AbstractRep {
         return this;
     }
 
-    private void doRep() {
-//        // If was a blocking request then we already reported, so do nothing.
-//        if (context.getAttribute("3scale.blocking", false))
-//            return;
-//
-//        if (config.getRateLimitingStrategy().isBatched()) {
-//            doBatchedReport();
-//        } else {
-//            doAsyncAuthRep();
-//        }
-    }
-
-    // ApiKeyReportData [endpoint=http://su1.3scale.net:80/transactions.xml, serviceToken=null, userKey=6ade731336760382403649c5d75886ee,
-    private void doAsyncAuthRep() {
-//        // Auth elems
-//        ParameterMap paramMap = new ParameterMap();
-//        paramMap.add(USER_KEY, context.getAttribute("3scale.userKey", ""));
-//        paramMap.add(SERVICE_TOKEN, config.getBackendAuthenticationValue());// maybe use endpoint properties or something. or new properties field.
-//        paramMap.add(SERVICE_ID, Long.toString(config.getProxy().getServiceId()));
-//        paramMap.add(USAGE, buildRepMetrics());
-//        paramMap.add(LOG, buildLog());
-//
-//        setIfNotNull(paramMap, REFERRER, request.getHeaders().get(REFERRER));
-//        setIfNotNull(paramMap, USER_ID, request.getHeaders().get(USER_ID));
-
-    }
-
     private boolean rateLimitReached(Status status) {
-        System.out.println(status);
         return status.getUsageReports()
             .stream()
             .filter(report -> report.getCurrentValue() == report.getMaxValue())
-            .filter(report -> config.getProxy().match(request.getDestination(), report.getMetric())) // TODO if metric is one relevant to this path.
+            .filter(report -> config.getProxy().match(request.getDestination(), report.getMetric()))
             .findFirst()
             .isPresent();
     }
 
     private void flushCache() {
         logger.debug("Invalidating cache");
-        authCache.invalidate(config, request, keyElems); //context.getAttribute("3scale.userKey", "")
-    }
-
-    // serviceId=2555417735060, timestamp=2016-10-28T22:57:44.273+01:00, userId=null, usage=ParameterMap [data={foo/fooId=1}], log=ParameterMap [data={code=200}]]
-    private void doBatchedReport() {
-//        ApiKeyReportData report = new ApiKeyReportData()
-//                .setEndpoint(REPORT_ENDPOINT)
-//                .setServiceToken(config.getBackendAuthenticationValue())
-//                .setUserKey(getUserKey())
-//                .setServiceId(Long.toString(config.getProxy().getServiceId()))
-//                .setTimestamp(OffsetDateTime.now().toString())
-//                .setUserId(getUserId())
-//                .setUsage(buildRepMetrics(config, request))
-//                .setLog(buildLog());
-
-        logger.debug("Adding a report to batch.");
-//        reporter.addRecord(report);
+        authCache.invalidate(config, request, keyElems);
     }
 
     @Override

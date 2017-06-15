@@ -27,7 +27,11 @@ import com.google.common.util.concurrent.UncheckedExecutionException;
 
 public class BatchedAuthCache extends AbstractCachingAuthenticator<AtomicInteger> {
     private static final AtomicInteger SENTINEL = new AtomicInteger(-1);
-    private static final AtomicInteger DEFAULT_AUTHREP_COUNT = new AtomicInteger(5);
+    private static final int DEFAULT_AUTHREP_COUNT = 5; // TODO make configurable
+
+    public boolean shouldForceAsyncAuthRep(Content config, ApiRequest req, Object... elems) {
+        return isAuthCached(config, req, elems);
+    }
 
     @Override
     public boolean isAuthCached(Content config, ApiRequest req, Object... elems) {
@@ -44,22 +48,23 @@ public class BatchedAuthCache extends AbstractCachingAuthenticator<AtomicInteger
 
     @Override
     public BatchedAuthCache cache(Content config, ApiRequest req, Object... elems) {
-        lruCache.put(getCacheKey(config, req, elems), DEFAULT_AUTHREP_COUNT);
+        lruCache.put(getCacheKey(config, req, elems), new AtomicInteger(DEFAULT_AUTHREP_COUNT));
         return this;
     }
 
     @Override
     public BatchedAuthCache invalidate(Content config, ApiRequest req, Object... elems) {
-        int val = getAndDecrement(config, req, elems);
-        if (val <= 0) {
-            lruCache.invalidate(getCacheKey(config, req, elems));
-        }
+        lruCache.invalidate(getCacheKey(config, req, elems));
         return this;
     }
 
-    private int getAndDecrement(Content config, ApiRequest req, Object... elems) {
+    public int decrement(Content config, ApiRequest req, Object... elems) {
         try {
-            return lruCache.get(getCacheKey(config, req, elems), () -> SENTINEL).getAndDecrement();
+            int val = lruCache.get(getCacheKey(config, req, elems), () -> SENTINEL).getAndDecrement();
+            if (val <= 0) {
+                lruCache.invalidate(getCacheKey(config, req, elems));
+            }
+            return val;
         } catch (ExecutionException e) {
             throw new UncheckedExecutionException(e);
         }

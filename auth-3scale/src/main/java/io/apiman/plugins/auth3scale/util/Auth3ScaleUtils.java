@@ -70,7 +70,7 @@ public class Auth3ScaleUtils {
     }
 
     public static String getCredentialFromQueryOrHeader(Content config, ApiRequest request, String keyFieldName) {
-        if (config.getProxy().getCredentialsLocation().equalsIgnoreCase("query")) {
+        if (config.getProxy().getCredentialsLocation().equalsIgnoreCase("query")) { //$NON-NLS-1$
             return request.getQueryParams().get(keyFieldName);
         } else { // Else let's assume header
             return request.getHeaders().get(keyFieldName);

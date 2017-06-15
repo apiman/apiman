@@ -39,7 +39,6 @@ import org.xml.sax.helpers.DefaultHandler;
 public class ReportResponseHandler implements IAsyncResultHandler<IHttpClientResponse> {
     private final static IAsyncResult<ReportResponse> RESULT_OK = AsyncResultImpl.create(new SuccessfulReportResponse());
     private final static SAXParserFactory factory = SAXParserFactory.newInstance();
-
     private final IAsyncResultHandler<ReportResponse> resultHandler;
 
     public ReportResponseHandler(IAsyncResultHandler<ReportResponse> resultHandler) {
@@ -50,7 +49,7 @@ public class ReportResponseHandler implements IAsyncResultHandler<IHttpClientRes
     public void handle(IAsyncResult<IHttpClientResponse> result) {
         if (result.isSuccess()) {
             IHttpClientResponse postResponse = result.getResult();
-            if (postResponse.getResponseCode() == 200 || postResponse.getResponseCode() == 202) {
+            if ((postResponse.getResponseCode() / 100) == 2) {
                 resultHandler.handle(RESULT_OK);
             } else {
                 try {
@@ -99,6 +98,11 @@ public class ReportResponseHandler implements IAsyncResultHandler<IHttpClientRes
         @Override
         public String getErrorMessage() {
             return null; // We don't actually care
+        }
+
+        @Override
+        public String toString() {
+            return "SuccessfulReportResponse [success=" + success() + "]";
         }
     }
 

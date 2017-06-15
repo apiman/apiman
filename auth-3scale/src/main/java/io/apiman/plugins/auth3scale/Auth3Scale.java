@@ -50,6 +50,7 @@ public class Auth3Scale extends AbstractMappedPolicy<Auth3ScaleBean> {
         if (!init) {
             synchronized (this) {
                 auth3scale = new AuthRep(context);
+                init = true;
             }
         }
     }

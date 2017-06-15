@@ -82,5 +82,13 @@ public abstract class AbstractCachingAuthenticator<CacheValue> {
             return true;
         }
 
+        /* (non-Javadoc)
+         * @see java.lang.Object#toString()
+         */
+        @Override
+        public String toString() {
+            return String.format("CacheKey [%d]", Arrays.deepHashCode(keyElems)); //$NON-NLS-1$
+        }
+
     }
 }

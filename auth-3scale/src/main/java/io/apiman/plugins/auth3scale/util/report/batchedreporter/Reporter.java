@@ -155,6 +155,13 @@ public class Reporter<T extends BatchedReportData> implements IReporter {
                 });
             }
         }
+
+        @Override
+        public String toString() {
+            final int maxLen = 10;
+            return String.format("Report [endpoint=%s, reports=%s]", endpoint, //$NON-NLS-1$
+                    reports != null ? reports.subList(0, Math.min(reports.size(), maxLen)) : null);
+        }
     }
 
 }

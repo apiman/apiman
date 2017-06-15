@@ -20,11 +20,14 @@ import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.Content;
 import io.apiman.plugins.auth3scale.authrep.AbstractCachingAuthenticator;
 
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 import com.google.common.util.concurrent.UncheckedExecutionException;
 
 public class StandardAuthCache extends AbstractCachingAuthenticator<Boolean> {
+
+    public String randomId = UUID.randomUUID().toString();
 
     @Override
     public boolean isAuthCached(Content config, ApiRequest req, Object... elems) {
