@@ -33,6 +33,7 @@ import io.apiman.manager.api.es.ESMetricsAccessor;
 import io.searchbox.client.JestClient;
 import io.searchbox.indices.Refresh;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -45,9 +46,9 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
-import org.elasticsearch.common.settings.ImmutableSettings;
+import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.common.settings.Settings.Builder;
 import org.elasticsearch.node.Node;
-import org.elasticsearch.node.NodeBuilder;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.ISODateTimeFormat;
@@ -72,16 +73,29 @@ public class ESMetricsAccessorTest {
     @BeforeClass @Ignore
     public static void setup() throws Exception {
         System.out.println("----------- Creating the ES node.");
-        ImmutableSettings.Builder settings = NodeBuilder.nodeBuilder().settings();
-        settings.put("http.port", "6500-6600");
-        settings.put("transport.tcp.port", "6600-6700");
+
 
         String clusterName = System.getProperty("apiman.test.es-cluster-name", "apiman");
 
+        Builder settings = Settings.builder()
+                .put("path.home", "/tmp")
+                .put("http.port", "6500-6600")
+                .put("transport.tcp.port", "6600-6700")
+                .put("transport.type", "local")
+                .put("discovery.type", "local")
+                .put("cluster.name", clusterName);
+
+
+
         settings.put("index.store.type", "memory").put("gateway.type", "none")
                 .put("index.number_of_shards", 1).put("index.number_of_replicas", 1);
-        node = NodeBuilder.nodeBuilder().client(false).clusterName(clusterName).data(true).local(true)
-                .settings(settings).build();
+
+//        node = NodeBuilder.nodeBuilder().client(false).clusterName(clusterName).data(true).local(true)
+//                .settings(settings).build();
+
+        settings.put("node.local_storage", "true");
+
+        node = new Node(settings.build());
 
         System.out.println("----------- Starting the ES node.");
         node.start();
@@ -92,6 +106,36 @@ public class ESMetricsAccessorTest {
 
         client = createJestClient();
         loadTestData();
+    }
+
+    private static File getDataDir() {
+        File esHome = null;
+
+        // First check to see if a data directory has been explicitely configured via system property
+        String dataDir = System.getProperty("apiman.distro-es.data_dir");
+        if (dataDir != null) {
+            esHome = new File(dataDir, "es");
+        }
+
+        // If that wasn't set, then check to see if we're running in wildfly/eap
+        if (esHome == null) {
+            dataDir = System.getProperty("jboss.server.data.dir");
+            if (dataDir != null) {
+                esHome = new File(dataDir, "es");
+            }
+        }
+
+        // If that didn't work, try to locate a tomcat data directory
+        if (esHome == null) {
+            dataDir = System.getProperty("catalina.home");
+            if (dataDir != null) {
+                esHome = new File(dataDir, "data/es");
+            }
+        }
+
+        // If all else fails, just let it return null
+
+        return esHome;
     }
 
     private static JestClient createJestClient() {
@@ -123,9 +167,9 @@ public class ESMetricsAccessorTest {
     }
 
     @AfterClass @Ignore
-    public static void teardown() {
+    public static void teardown() throws Exception {
         System.out.println("----------- Stopping the ES node.");
-        node.stop();
+        node.close();
         System.out.println("----------- All done.");
         Locale.setDefault(locale);
     }

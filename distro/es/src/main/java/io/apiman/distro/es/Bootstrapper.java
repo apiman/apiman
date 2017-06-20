@@ -16,13 +16,15 @@
 package io.apiman.distro.es;
 
 import java.io.File;
+import java.io.IOException;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import org.elasticsearch.common.settings.ImmutableSettings.Builder;
+import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.common.settings.Settings.Builder;
 import org.elasticsearch.node.Node;
-import org.elasticsearch.node.NodeBuilder;
+import org.elasticsearch.node.NodeValidationException;
 
 /**
  * Starts up an embedded elasticsearch cluster.  This is useful when running
@@ -62,18 +64,29 @@ public class Bootstrapper implements ServletContextListener {
         System.out.println("   ES Data Dir:     " + esHome);
         System.out.println("------------------------------------------------------------");
 
-        Builder settings = NodeBuilder.nodeBuilder().settings();
-        settings.put("path.home", esHome.getAbsolutePath());
-        settings.put("http.port", config.getHttpPortRange());
-        settings.put("transport.tcp.port", config.getTransportPortRange());
-        settings.put("discovery.zen.ping.multicast.enabled", false);
+        String clusterName = "apiman";
+
+        //Builder settings = NodeBuilder.nodeBuilder().settings();
+        Builder settings = Settings.builder()
+        .put("path.home", esHome.getAbsolutePath())
+        .put("http.port", config.getHttpPortRange())
+        .put("transport.tcp.port", config.getTransportPortRange())
+        .put("discovery.zen.ping.multicast.enabled", "false")
+        .put("transport.type", "client")
+        .put("cluster.name", clusterName);
         if (config.getBindHost() != null) {
             settings.put("network.bind_host", config.getBindHost());
         }
+        settings.put("node.local_storage", false);
 
-        String clusterName = "apiman";
-        node = NodeBuilder.nodeBuilder().client(false).clusterName(clusterName).data(true).local(false).settings(settings).build();
-        node.start();
+        //node = NodeBuilder.nodeBuilder().client(false).clusterName(clusterName).data(true).local(false).settings(settings).build();
+        node = new Node(settings.build());
+
+        try {
+            node.start().client();
+        } catch (NodeValidationException e) {
+            throw new RuntimeException(e);
+        }
         System.out.println("-----------------------------");
         System.out.println("apiman-es started!");
         System.out.println("-----------------------------");
@@ -118,7 +131,11 @@ public class Bootstrapper implements ServletContextListener {
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
         if (node != null) {
-            node.stop();
+            try {
+                node.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
             System.out.println("-----------------------------");
             System.out.println("apiman-es stopped!");
             System.out.println("-----------------------------");

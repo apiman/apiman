@@ -33,6 +33,8 @@ import java.io.File;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.EnumSet;
 
 import javax.naming.InitialContext;
@@ -49,9 +51,12 @@ import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.security.Credential;
-import org.elasticsearch.common.settings.ImmutableSettings.Builder;
+import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.common.settings.Settings.Builder;
+import org.elasticsearch.node.InternalSettingsPreparer;
 import org.elasticsearch.node.Node;
-import org.elasticsearch.node.NodeBuilder;
+import org.elasticsearch.plugins.Plugin;
+import org.elasticsearch.transport.Netty4Plugin;
 import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
 import org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap;
 import org.jboss.weld.environment.servlet.BeanManagerResourceBindingListener;
@@ -171,29 +176,41 @@ public class ManagerApiTestServer {
             if (esHome.isDirectory()) {
                 FileUtils.deleteDirectory(esHome);
             }
-            Builder settings = NodeBuilder.nodeBuilder().settings();
-            settings.put("path.home", esHome.getAbsolutePath());
-            settings.put("http.port", "6500-6600");
-            settings.put("transport.tcp.port", "6600-6700");
-            settings.put("discovery.zen.ping.multicast.enabled", false);
 
             String clusterName = System.getProperty("apiman.test.es-cluster-name", ES_CLUSTER_NAME);
+
+            Builder settings = Settings.builder()
+                    .put("path.home", esHome.getAbsolutePath())
+                    .put("http.port", "6500-6600")
+                    .put("transport.tcp.port", "6600-6700")
+                    .put("transport.type", "local")
+//                    .put("discovery.type", "local")
+                    .put("cluster.name", clusterName)
+                    .put("http.type", "netty4")
+                    .put("node.ingest", "true");
 
             boolean isPersistent = "true".equals(System.getProperty("apiman.test.es-persistence", "false"));
             if (!isPersistent) {
                 System.out.println("Creating non-persistent ES");
-                settings.put("index.store.type", "memory").put("gateway.type", "none")
-                        .put("index.number_of_shards", 1).put("index.number_of_replicas", 1);
-                node = NodeBuilder.nodeBuilder().client(false).clusterName(clusterName).data(true).local(true)
-                        .settings(settings).build();
+                settings.put("index.store.type", "mmapfs");
+//                settings.put("index.store.type", "memory");//.put("gateway.type", "none");
+                        //.put("index.number_of_shards", 1).put("index.number_of_replicas", 1);
+//                node = NodeBuilder.nodeBuilder().client(false).clusterName(clusterName).data(true).local(true)
+//                        .settings(settings).build();
+                // settings.put("node.local_storage", "false");
+
             } else {
                 System.out.println("Creating *persistent* ES here: " + esHome);
-                node = NodeBuilder.nodeBuilder().client(false).clusterName(clusterName).data(true).local(false)
-                        .settings(settings).build();
+//                node = NodeBuilder.nodeBuilder().client(false).clusterName(clusterName).data(true).local(false)
+//                        .settings(settings).build();
+                  settings.put("node.local_storage", "true");
             }
 
             System.out.println("Starting the ES node.");
+            Collection<Class<? extends Plugin>> plugins = Arrays.asList(Netty4Plugin.class);
+            node = new PluginConfigurableNode(settings.build(), plugins);
             node.start();
+
             System.out.println("ES node was successfully started.");
 
             // TODO parameterize this
@@ -333,6 +350,12 @@ public class ManagerApiTestServer {
 
     public JestClient getESClient() {
         return client;
+    }
+
+    private static class PluginConfigurableNode extends Node {
+        public PluginConfigurableNode(Settings settings, Collection<Class<? extends Plugin>> classpathPlugins) {
+            super(InternalSettingsPreparer.prepareEnvironment(settings, null), classpathPlugins);
+        }
     }
 
 }

@@ -141,6 +141,10 @@
       <artifactId>jackson-databind</artifactId>
     </dependency>
     <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
+    </dependency>
+    <dependency>
       <groupId>io.searchbox</groupId>
       <artifactId>jest</artifactId>
     </dependency>
@@ -230,5 +234,18 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
     </dependency>
+    <dependency>
+        <groupId>org.elasticsearch.plugin</groupId>
+        <artifactId>transport-netty4-client</artifactId>
+        <version>5.3.2</version>
+    </dependency>
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-api</artifactId>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-core</artifactId>
+      </dependency>
   </dependencies>
 </project>
