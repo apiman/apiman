@@ -33,9 +33,9 @@ import io.vertx.core.http.HttpClientRequest;
 import io.vertx.core.http.HttpClientResponse;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
+import io.vertx.core.net.JdkSSLEngineOptions;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
 import java.util.Map;
 
 /**
@@ -52,7 +52,16 @@ public class HttpClientComponentImpl implements IHttpClientComponent {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public HttpClientComponentImpl(Vertx vertx, VertxEngineConfig engineConfig, Map<String, String> componentConfig) {
-        this.sslClient = vertx.createHttpClient(new HttpClientOptions().setSsl(true));
+        HttpClientOptions sslOptions = new HttpClientOptions()
+                .setSsl(true)
+                .setVerifyHost(false)
+                .setTrustAll(true); // TODO
+
+        if (JdkSSLEngineOptions.isAlpnAvailable()) {
+            sslOptions.setUseAlpn(true);
+        }
+
+        this.sslClient = vertx.createHttpClient(sslOptions);
         this.plainClient = vertx.createHttpClient(new HttpClientOptions());
     }
 
@@ -60,10 +69,11 @@ public class HttpClientComponentImpl implements IHttpClientComponent {
     public IHttpClientRequest request(String endpoint, HttpMethod method,
             IAsyncResultHandler<IHttpClientResponse> responseHandler) {
 
-        URL pEndpoint = parseEndpoint(endpoint);
+        URI pEndpoint = URI.create(endpoint);
         int port = pEndpoint.getPort();
-    	String proto = pEndpoint.getProtocol();
+    	String proto = pEndpoint.getScheme();
     	HttpClient client;
+    	String pathAndQuery = getPathAndQuery(pEndpoint);
 
     	// If protocol provided
     	if (port != -1 || proto != null) {
@@ -80,19 +90,24 @@ public class HttpClientComponentImpl implements IHttpClientComponent {
         }
 
         HttpClientRequest request = client.request(convertMethod(method),
-                pEndpoint.getPort(),
+                port,
                 pEndpoint.getHost(),
-                pEndpoint.getFile(),
+                pathAndQuery,
                 new HttpClientResponseImpl(responseHandler));
 
         request.setChunked(true);
 
         request.exceptionHandler(exception -> {
-            logger.error("Exception in HttpClientRequestImpl: {0}", exception.getMessage()); //$NON-NLS-1$
+            logger.error("Exception in HttpClientRequestImpl: {0}", exception); //$NON-NLS-1$
         	responseHandler.handle(AsyncResultImpl.create(exception));
         });
 
         return new HttpClientRequestImpl(request);
+    }
+
+    private String getPathAndQuery(URI pEndpoint) {
+        return pEndpoint.getPath() +
+                (pEndpoint.getQuery() == null || pEndpoint.getQuery().isEmpty() ? "" : "?" + pEndpoint.getQuery());
     }
 
     private static final class HttpClientResponseImpl implements IHttpClientResponse, Handler<HttpClientResponse> {
@@ -102,7 +117,7 @@ public class HttpClientComponentImpl implements IHttpClientComponent {
 		private IAsyncResultHandler<IHttpClientResponse> responseHandler;
 	    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-        public HttpClientResponseImpl(IAsyncResultHandler<IHttpClientResponse> responseHandler) {
+        HttpClientResponseImpl(IAsyncResultHandler<IHttpClientResponse> responseHandler) {
 			this.responseHandler = responseHandler;
 		}
 
@@ -169,7 +184,7 @@ public class HttpClientComponentImpl implements IHttpClientComponent {
 
         @Override
         public void setConnectTimeout(int timeout) {
-            this.request.setTimeout(timeout);
+            request.setTimeout(timeout);
         }
 
         @Override
@@ -226,14 +241,6 @@ public class HttpClientComponentImpl implements IHttpClientComponent {
 				return Buffer.buffer(buffer.getBytes());
 			}
 		}
-    }
-
-    private URL parseEndpoint(String endpoint) {
-        try {
-            return new URL(endpoint);
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     private io.vertx.core.http.HttpMethod convertMethod(HttpMethod method) {
