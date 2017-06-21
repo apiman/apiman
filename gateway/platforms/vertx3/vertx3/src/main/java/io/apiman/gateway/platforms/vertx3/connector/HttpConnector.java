@@ -49,7 +49,7 @@ import io.vertx.core.logging.LoggerFactory;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLEncoder;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -65,15 +65,17 @@ import java.util.Set;
 @SuppressWarnings("nls")
 class HttpConnector implements IApiConnectionResponse, IApiConnection {
 
-    private static final Set<String> SUPPRESSED_HEADERS = new HashSet<>();
+    private static final Set<String> SUPPRESSED_REQUEST_HEADERS = new LinkedHashSet<>();
+    private static final Set<String> SUPPRESSED_RESPONSE_HEADERS = new LinkedHashSet<>();
+
     static {
-        SUPPRESSED_HEADERS.add("Transfer-Encoding");
-        SUPPRESSED_HEADERS.add("X-API-Key");
-        SUPPRESSED_HEADERS.add("Host");
+        SUPPRESSED_REQUEST_HEADERS.add("X-API-Key");
+        SUPPRESSED_REQUEST_HEADERS.add("Host");
+
+        SUPPRESSED_RESPONSE_HEADERS.add("Connection");
     }
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
-
     private ApiRequest apiRequest;
     private ApiResponse apiResponse;
 
@@ -171,7 +173,7 @@ class HttpConnector implements IApiConnectionResponse, IApiConnection {
                     // Pause until we're given permission to xfer the response.
                     vxClientResponse.pause();
 
-                    apiResponse = HttpApiFactory.buildResponse(vxClientResponse, SUPPRESSED_HEADERS);
+                    apiResponse = HttpApiFactory.buildResponse(vxClientResponse, SUPPRESSED_RESPONSE_HEADERS);
 
                     vxClientResponse.handler((Handler<Buffer>) chunk -> {
                         bodyHandler.handle(new VertxApimanBuffer(chunk));
@@ -195,7 +197,12 @@ class HttpConnector implements IApiConnectionResponse, IApiConnection {
             clientRequest.setChunked(true);
         }
 
-        apiRequest.getHeaders().forEach(e -> clientRequest.headers().add(e.getKey(), e.getValue()));
+        apiRequest.getHeaders()
+            .forEach(e -> {
+                if (!SUPPRESSED_REQUEST_HEADERS.contains(e.getKey())) {
+                    clientRequest.headers().add(e.getKey(), e.getValue());
+                }
+            });
 
         addMandatoryRequestHeaders(clientRequest.headers());
 

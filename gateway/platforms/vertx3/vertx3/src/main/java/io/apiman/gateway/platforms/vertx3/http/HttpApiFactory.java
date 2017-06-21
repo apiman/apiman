@@ -45,7 +45,7 @@ public class HttpApiFactory {
     private final static Set<String> IGNORESET = new HashSet<>();
     static {
         IGNORESET.add(ApimanPathUtils.X_API_VERSION_HEADER);
-        IGNORESET.add("Host");
+        //IGNORESET.add("Host");
     }
 
     private static IApiRequestPathParser requestPathParser;
@@ -57,7 +57,7 @@ public class HttpApiFactory {
     public static ApiResponse buildResponse(HttpClientResponse response, Set<String> suppressHeaders) {
         ApiResponse apimanResponse = new ApiResponse();
         apimanResponse.setCode(response.statusCode());
-        apimanResponse.setMessage(response.statusMessage());
+        apimanResponse.setMessage(response.statusMessage() == null ? "" : response.statusMessage());
         multimapToMap(apimanResponse.getHeaders(), response.headers(), suppressHeaders);
         return apimanResponse;
     }
@@ -69,7 +69,7 @@ public class HttpApiFactory {
             }
         });
         httpServerResponse.setStatusCode(amanResponse.getCode());
-        httpServerResponse.setStatusMessage(amanResponse.getMessage());
+        httpServerResponse.setStatusMessage(amanResponse.getMessage() == null ? "" : amanResponse.getMessage());
     }
 
     public static ApiRequest buildRequest(HttpServerRequest req, boolean isTransportSecure) {
