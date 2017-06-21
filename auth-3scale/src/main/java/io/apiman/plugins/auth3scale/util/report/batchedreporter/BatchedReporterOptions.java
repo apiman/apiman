@@ -16,7 +16,11 @@
 
 package io.apiman.plugins.auth3scale.util.report.batchedreporter;
 
+/**
+ * @author Marc Savy {@literal <msavy@redhat.com>}
+ */
 public class BatchedReporterOptions {
+
     public static final int DEFAULT_REPORTING_INTERVAL = 5000;
     public static final int DEFAULT_INITIAL_WAIT = 5;
     public static final int DEFAULT_RETRY_QUEUE_MAX_SIZE = 10000;

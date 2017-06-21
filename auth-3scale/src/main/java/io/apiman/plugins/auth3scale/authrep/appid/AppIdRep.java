@@ -33,7 +33,11 @@ import io.apiman.plugins.auth3scale.util.Auth3ScaleUtils;
 
 import java.net.URI;
 
+/**
+ * @author Marc Savy {@literal <msavy@redhat.com>}
+ */
 public class AppIdRep implements IRep {
+
     private final BackendConfiguration config;
     private final ApiRequest request;
     private final ApiResponse response;

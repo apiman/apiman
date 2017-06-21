@@ -26,6 +26,9 @@ import io.apiman.plugins.auth3scale.util.report.batchedreporter.BatchedReporter;
 import io.apiman.plugins.auth3scale.util.report.batchedreporter.Reporter;
 import io.apiman.plugins.auth3scale.util.report.batchedreporter.ReporterOptions;
 
+/**
+ * @author Marc Savy {@literal <msavy@redhat.com>}
+ */
 public class BatchedStrategyFactory implements IAuthStrategyFactory {
     // is this safe for mixing multiple different users? probably not. TODO verify it's fixed
     // Maybe caller should sort that out (seems better) -- might be OK with user ID figured in?

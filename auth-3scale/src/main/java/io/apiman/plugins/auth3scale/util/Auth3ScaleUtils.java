@@ -27,7 +27,11 @@ import java.util.concurrent.ExecutionException;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 
+/**
+ * @author Marc Savy {@literal <msavy@redhat.com>}
+ */
 public class Auth3ScaleUtils {
+
     private static final Cache<String, URI> URI_CACHE = CacheBuilder.newBuilder().maximumSize(1000).build();
 
     public static <T> T getOrDefault(T val, T def) {

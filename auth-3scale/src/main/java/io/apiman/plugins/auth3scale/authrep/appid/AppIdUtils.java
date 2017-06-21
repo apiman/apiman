@@ -20,6 +20,9 @@ import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.BackendConfiguration;
 import io.apiman.plugins.auth3scale.util.Auth3ScaleUtils;
 
+/**
+ * @author Marc Savy {@literal <msavy@redhat.com>}
+ */
 public class AppIdUtils {
 
     public static String getAppKey(BackendConfiguration config, ApiRequest request) {

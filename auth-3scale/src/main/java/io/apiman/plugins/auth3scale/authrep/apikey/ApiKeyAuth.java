@@ -33,7 +33,11 @@ import io.apiman.plugins.auth3scale.authrep.AbstractAuth;
 import io.apiman.plugins.auth3scale.ratelimit.IAuth;
 import io.apiman.plugins.auth3scale.util.Auth3ScaleUtils;
 
+/**
+ * @author Marc Savy {@literal <msavy@redhat.com>}
+ */
 public class ApiKeyAuth implements IAuth {
+
     private static final AsyncResultImpl<Void> FAIL_PROVIDE_USER_KEY = AsyncResultImpl.create(new RuntimeException("No user apikey provided!")); //$NON-NLS-1$
     private static final AsyncResultImpl<Void> FAIL_NO_ROUTE = AsyncResultImpl.create(new RuntimeException("No valid route")); //$NON-NLS-1$
 

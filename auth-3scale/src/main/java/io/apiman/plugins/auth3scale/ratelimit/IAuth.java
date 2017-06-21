@@ -20,6 +20,9 @@ import io.apiman.gateway.engine.async.IAsyncHandler;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.PolicyFailure;
 
+/**
+ * @author Marc Savy {@literal <msavy@redhat.com>}
+ */
 public interface IAuth {
     IAuth auth(IAsyncResultHandler<Void> resultHandler);
 

@@ -24,6 +24,10 @@ import java.util.Arrays;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 
+/**
+ * @author Marc Savy {@literal <msavy@redhat.com>}
+ * @param <CacheValue> Value being cached
+ */
 public abstract class AbstractCachingAuthenticator<CacheValue> {
     static final int CAPACITY = 1_000_000;
 

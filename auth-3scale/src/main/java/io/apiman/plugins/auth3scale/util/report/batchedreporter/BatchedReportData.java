@@ -19,6 +19,9 @@ package io.apiman.plugins.auth3scale.util.report.batchedreporter;
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.BackendConfiguration;
 
+/**
+ * @author Marc Savy {@literal <msavy@redhat.com>}
+ */
 public interface BatchedReportData extends ReportData {
     ApiRequest getRequest();
     Object[] getKeyElems();

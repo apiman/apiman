@@ -33,6 +33,9 @@ import io.apiman.plugins.auth3scale.util.Auth3ScaleUtils;
 
 import java.net.URI;
 
+/**
+ * @author Marc Savy {@literal <msavy@redhat.com>}
+ */
 public class ApiKeyRep implements IRep {
 
     private final URI endpoint;

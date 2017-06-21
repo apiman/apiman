@@ -16,6 +16,9 @@
 
 package io.apiman.plugins.auth3scale.ratelimit;
 
+/**
+ * @author Marc Savy {@literal <msavy@redhat.com>}
+ */
 public interface IRep {
     IRep rep();
 }

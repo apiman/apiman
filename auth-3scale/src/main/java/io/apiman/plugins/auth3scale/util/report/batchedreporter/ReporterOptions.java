@@ -21,6 +21,9 @@ import io.apiman.plugins.auth3scale.authrep.AuthRepConstants;
 
 import java.net.URI;
 
+/**
+ * @author Marc Savy {@literal <msavy@redhat.com>}
+ */
 public class ReporterOptions {
 
     public static final int DEFAULT_LIST_CAPAC = 800;

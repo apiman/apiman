@@ -25,7 +25,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import com.google.common.util.concurrent.UncheckedExecutionException;
 
+/**
+ * @author Marc Savy {@literal <msavy@redhat.com>}
+ */
 public class BatchedAuthCache extends AbstractCachingAuthenticator<AtomicInteger> {
+
     private static final AtomicInteger SENTINEL = new AtomicInteger(-1);
     private static final int DEFAULT_AUTHREP_COUNT = 5; // TODO make configurable
 

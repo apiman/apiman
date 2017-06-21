@@ -38,6 +38,9 @@ import io.apiman.plugins.auth3scale.util.report.batchedreporter.BatchedReportDat
 import io.apiman.plugins.auth3scale.util.report.batchedreporter.ReportData;
 import io.apiman.plugins.auth3scale.util.report.batchedreporter.Reporter;
 
+/**
+ * @author Marc Savy {@literal <msavy@redhat.com>}
+ */
 @SuppressWarnings("nls")
 public class BatchedRep extends AbstractRep {
 

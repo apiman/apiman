@@ -41,9 +41,8 @@ import io.apiman.plugins.auth3scale.util.report.batchedreporter.ReportData;
  */
 @SuppressWarnings("nls")
 public class StandardAuth extends AbstractAuth {
-    // TODO Can't remember the place where we put the special exceptions for this...
-    private static final AsyncResultImpl<Void> OK_CACHED = AsyncResultImpl.create((Void) null);
 
+    private static final AsyncResultImpl<Void> OK_CACHED = AsyncResultImpl.create((Void) null);
     private final String backendUri;
     private final StandardAuthCache authCache;
     private final BackendConfiguration config;

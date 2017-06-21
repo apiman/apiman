@@ -36,6 +36,7 @@ import java.util.Objects;
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 public class AppIdReportData implements ReportData {
+
     private URI endpoint;
     private String serviceToken;
     private String serviceId;

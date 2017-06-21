@@ -21,7 +21,11 @@ import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.engine.policy.IPolicyContext;
 import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.Auth3ScaleBean;
 
+/**
+ * @author Marc Savy {@literal <msavy@redhat.com>}
+ */
 public interface IAuthStrategyFactory {
+
     AbstractAuth getAuthStrategy(Auth3ScaleBean bean,
             ApiRequest request,
             IPolicyContext context);

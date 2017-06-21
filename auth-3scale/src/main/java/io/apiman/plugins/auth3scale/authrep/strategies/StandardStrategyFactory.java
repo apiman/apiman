@@ -22,7 +22,11 @@ import io.apiman.gateway.engine.policy.IPolicyContext;
 import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.Auth3ScaleBean;
 import io.apiman.plugins.auth3scale.authrep.IAuthStrategyFactory;
 
+/**
+ * @author Marc Savy {@literal <msavy@redhat.com>}
+ */
 public class StandardStrategyFactory implements IAuthStrategyFactory {
+
     private final StandardAuthCache authCache = new StandardAuthCache();
 
     @Override

@@ -1,6 +1,6 @@
 {
   "frameworkVersion" : 1.0,
   "name" : "3scale auth plugin",
-  "description" : "Blergy blerg.",
+  "description" : "3scale auth plugin for apiman. You typically would not use this via the apiman UI.",
   "version" : "${project.version}"
 }

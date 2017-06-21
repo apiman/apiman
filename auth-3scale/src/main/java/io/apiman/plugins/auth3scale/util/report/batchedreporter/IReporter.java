@@ -20,6 +20,9 @@ import io.apiman.gateway.engine.async.IAsyncHandler;
 
 import java.util.List;
 
+/**
+ * @author Marc Savy {@literal <msavy@redhat.com>}
+ */
 public interface IReporter {
 
     List<ReportToSend> encode();

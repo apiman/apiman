@@ -42,6 +42,7 @@ import java.util.Map;
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 public class AuthRep {
+
     private Map<AuthTypeEnum, AuthRepFactory> authTypeFactory = new HashMap<>();
     private Map<RateLimitingStrategy, IAuthStrategyFactory> strategyFactoryMap = new HashMap<>();
     private BatchedReporter batchedReporter;
