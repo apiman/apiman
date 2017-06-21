@@ -60,8 +60,8 @@ public class DefaultPolicyErrorWriter implements IPolicyErrorWriter {
         if (request != null && request.getApi() != null && "xml".equals(request.getApi().getEndpointContentType())) {
             isXml = true;
         }
-
-        response.setHeader("X-Gateway-Error", error.getMessage());
+        String message = (error.getMessage() == null) ? "" : error.getMessage(); // TODO get and/or print ultimate cause?
+        response.setHeader("X-Gateway-Error", message);
         response.setStatusCode(500);
 
         EngineErrorResponse eer = createErrorResponse(error);
