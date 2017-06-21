@@ -288,6 +288,9 @@ public class CorsConfigBean implements Serializable {
      * @return true if origin is allowed
      */
     public boolean isAllowedOrigin(String origin, String host) {
+        if (origin == null || host == null) {
+            return false;
+        }
         return (host.equals(origin) || allowOrigin.contains("*") || allowOrigin.contains(origin)); //$NON-NLS-1$
     }
 

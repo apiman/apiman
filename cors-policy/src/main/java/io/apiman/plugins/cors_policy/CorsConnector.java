@@ -255,6 +255,7 @@ public class CorsConnector implements IApiConnector {
 
             response = new ApiResponse();
             response.setCode(200);
+            response.setMessage("OK"); //$NON-NLS-1$
             response.setHeaders(responseHeaders);
         }
 
