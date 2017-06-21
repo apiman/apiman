@@ -35,17 +35,14 @@ import java.util.concurrent.ConcurrentHashMap;
  * @param <T> extends ReportData
  */
 public class Reporter<T extends BatchedReportData> implements IReporter {
-    private final URI endpoint;
+    private final ReporterOptions options;
     private IAsyncHandler<Void> fullHandler;
     private IAsyncResultHandler<List<BatchedReportData>> flushHandler;
 
-    protected final Map<Integer, ArrayBlockingQueue<T>> reportBuckets = new ConcurrentHashMap<>();
-    protected static final int DEFAULT_LIST_CAPAC = 800;
-    protected static final int FULL_TRIGGER_CAPAC = 500;
-    protected static final int MAX_RECORDS = 1000;
+    private final Map<Integer, ArrayBlockingQueue<T>> reportBuckets = new ConcurrentHashMap<>();
 
-    public Reporter(URI endpoint) {
-        this.endpoint = endpoint;
+    public Reporter(ReporterOptions options) {
+        this.options = options;
     }
 
     @Override
@@ -59,16 +56,16 @@ public class Reporter<T extends BatchedReportData> implements IReporter {
             // Drain TODO Small chance of brief blocking; can rework easily if this becomes a problem.
             List<BatchedReportData> reports = new ArrayList<>(bucket.size());
             bucket.drainTo(reports);
-            encodedReports.add(new ReportToSendImpl(endpoint, reports, flushHandler));
+            encodedReports.add(new ReportToSendImpl(options.getReportEndpoint(), reports, flushHandler));
         }
         return encodedReports;
     }
 
     public Reporter<T> addRecord(T record) {
-        ArrayBlockingQueue<T> reportGroup = reportBuckets.computeIfAbsent(record.bucketId(), k -> new ArrayBlockingQueue<>(100));
+        ArrayBlockingQueue<T> reportGroup = reportBuckets.computeIfAbsent(record.bucketId(), k -> new ArrayBlockingQueue<>(options.getInitialBucketCapacity()));
         reportGroup.add(record);
         // This is just approximate, we don't care whether it's somewhat out.
-        if (reportGroup.size() >= FULL_TRIGGER_CAPAC) {
+        if (reportGroup.size() >= options.getBucketFullTriggerSize()) {
             full();
         }
         return this;

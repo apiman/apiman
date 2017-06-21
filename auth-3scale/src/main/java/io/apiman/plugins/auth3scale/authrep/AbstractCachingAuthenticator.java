@@ -17,7 +17,7 @@
 package io.apiman.plugins.auth3scale.authrep;
 
 import io.apiman.gateway.engine.beans.ApiRequest;
-import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.Content;
+import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.BackendConfiguration;
 
 import java.util.Arrays;
 
@@ -33,17 +33,17 @@ public abstract class AbstractCachingAuthenticator<CacheValue> {
             .concurrencyLevel(Runtime.getRuntime().availableProcessors())
             .build();
 
-    public int hashMatchedRoutes(Content config, ApiRequest req) {
+    public int hashMatchedRoutes(BackendConfiguration config, ApiRequest req) {
         return Arrays.hashCode(config.getProxy().match(req.getDestination()));
     }
 
-    public abstract AbstractCachingAuthenticator<CacheValue> invalidate(Content config, ApiRequest serviceRequest, Object... elems);
+    public abstract AbstractCachingAuthenticator<CacheValue> invalidate(BackendConfiguration config, ApiRequest serviceRequest, Object... elems);
 
-    public abstract AbstractCachingAuthenticator<CacheValue> cache(Content config, ApiRequest serviceRequest, Object... elems);
+    public abstract AbstractCachingAuthenticator<CacheValue> cache(BackendConfiguration config, ApiRequest serviceRequest, Object... elems);
 
-    public abstract boolean isAuthCached(Content config, ApiRequest serviceRequest, Object... elems);
+    public abstract boolean isAuthCached(BackendConfiguration config, ApiRequest serviceRequest, Object... elems);
 
-    public CacheKey getCacheKey(Content config, ApiRequest req, Object... elems) {
+    public CacheKey getCacheKey(BackendConfiguration config, ApiRequest req, Object... elems) {
         return new CacheKey(req.getApiId(), elems, config.getProxy().match(req.getDestination()));
     }
 

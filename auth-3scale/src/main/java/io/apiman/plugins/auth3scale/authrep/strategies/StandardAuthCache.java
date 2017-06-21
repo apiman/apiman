@@ -17,7 +17,7 @@
 package io.apiman.plugins.auth3scale.authrep.strategies;
 
 import io.apiman.gateway.engine.beans.ApiRequest;
-import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.Content;
+import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.BackendConfiguration;
 import io.apiman.plugins.auth3scale.authrep.AbstractCachingAuthenticator;
 
 import java.util.UUID;
@@ -30,7 +30,7 @@ public class StandardAuthCache extends AbstractCachingAuthenticator<Boolean> {
     public String randomId = UUID.randomUUID().toString();
 
     @Override
-    public boolean isAuthCached(Content config, ApiRequest req, Object... elems) {
+    public boolean isAuthCached(BackendConfiguration config, ApiRequest req, Object... elems) {
         try {
             return lruCache.get(getCacheKey(config, req, elems), () -> false);
         } catch (ExecutionException e) {
@@ -39,13 +39,13 @@ public class StandardAuthCache extends AbstractCachingAuthenticator<Boolean> {
     }
 
     @Override
-    public StandardAuthCache cache(Content config, ApiRequest req, Object... elems) {
+    public StandardAuthCache cache(BackendConfiguration config, ApiRequest req, Object... elems) {
         lruCache.put(getCacheKey(config, req, elems), true);
         return this;
     }
 
     @Override
-    public StandardAuthCache invalidate(Content config, ApiRequest req, Object... elems) {
+    public StandardAuthCache invalidate(BackendConfiguration config, ApiRequest req, Object... elems) {
         lruCache.invalidate(getCacheKey(config, req, elems));
         return this;
     }

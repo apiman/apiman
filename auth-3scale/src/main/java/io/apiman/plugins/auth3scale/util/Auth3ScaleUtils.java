@@ -18,10 +18,25 @@ package io.apiman.plugins.auth3scale.util;
 
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.ApiResponse;
-import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.Content;
+import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.BackendConfiguration;
 import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.ProxyRule;
 
+import java.net.URI;
+import java.util.concurrent.ExecutionException;
+
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+
 public class Auth3ScaleUtils {
+    private static final Cache<String, URI> URI_CACHE = CacheBuilder.newBuilder().maximumSize(1000).build();
+
+    public static <T> T getOrDefault(T val, T def) {
+        if (val == null) {
+            return def;
+        }
+        return val;
+    }
+
     public static <T> ParameterMap setIfNotNull(ParameterMap in, String k, T v) {
         if (v == null) {
             return in;
@@ -30,7 +45,7 @@ public class Auth3ScaleUtils {
         return in;
     }
 
-    public static ParameterMap buildRepMetrics(Content config, ApiRequest request) {
+    public static ParameterMap buildRepMetrics(BackendConfiguration config, ApiRequest request) {
         ParameterMap pm = new ParameterMap(); // TODO could be interesting to cache a partially built map and just replace values?
 
         int[] matches = config.getProxy().match(request.getDestination());
@@ -55,7 +70,7 @@ public class Auth3ScaleUtils {
         return pm;
     }
 
-    public static boolean hasRoutes(Content config, ApiRequest req) {
+    public static boolean hasRoutes(BackendConfiguration config, ApiRequest req) {
         return config.getProxy().match(req.getDestination()).length > 0;
     }
 
@@ -63,17 +78,25 @@ public class Auth3ScaleUtils {
         return new ParameterMap().add("code", (long) response.getCode()); //$NON-NLS-1$
     }
 
-    public static String getUserKey(Content config, ApiRequest request)  {
+    public static String getUserKey(BackendConfiguration config, ApiRequest request)  {
         // Manual for now as there's no mapping in the config.
         String keyFieldName = config.getProxy().getAuthUserKey();
         return getCredentialFromQueryOrHeader(config, request, keyFieldName);
     }
 
-    public static String getCredentialFromQueryOrHeader(Content config, ApiRequest request, String keyFieldName) {
+    public static String getCredentialFromQueryOrHeader(BackendConfiguration config, ApiRequest request, String keyFieldName) {
         if (config.getProxy().getCredentialsLocation().equalsIgnoreCase("query")) { //$NON-NLS-1$
             return request.getQueryParams().get(keyFieldName);
         } else { // Else let's assume header
             return request.getHeaders().get(keyFieldName);
+        }
+    }
+
+    public static URI parseUri(String uri) {
+        try {
+            return URI_CACHE.get(uri, () -> { return URI.create(uri); });
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
         }
     }
 

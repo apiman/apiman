@@ -17,16 +17,16 @@
 package io.apiman.plugins.auth3scale.authrep.appid;
 
 import io.apiman.gateway.engine.beans.ApiRequest;
-import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.Content;
+import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.BackendConfiguration;
 import io.apiman.plugins.auth3scale.util.Auth3ScaleUtils;
 
 public class AppIdUtils {
 
-    public static String getAppKey(Content config, ApiRequest request) {
+    public static String getAppKey(BackendConfiguration config, ApiRequest request) {
         return Auth3ScaleUtils.getCredentialFromQueryOrHeader(config, request, config.getProxy().getAuthAppKey());
     }
 
-    public static String getAppId(Content config, ApiRequest request) {
+    public static String getAppId(BackendConfiguration config, ApiRequest request) {
         return Auth3ScaleUtils.getCredentialFromQueryOrHeader(config, request, config.getProxy().getAuthAppId());
     }
 

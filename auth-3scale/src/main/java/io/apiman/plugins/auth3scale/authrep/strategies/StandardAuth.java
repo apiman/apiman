@@ -17,7 +17,6 @@ package io.apiman.plugins.auth3scale.authrep.strategies;
 
 import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.AUTHREP_PATH;
 import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.BLOCKING_FLAG;
-import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.DEFAULT_BACKEND;
 
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.gateway.engine.async.AsyncResultImpl;
@@ -30,7 +29,8 @@ import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.components.http.HttpMethod;
 import io.apiman.gateway.engine.components.http.IHttpClientRequest;
 import io.apiman.gateway.engine.policy.IPolicyContext;
-import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.Content;
+import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.Auth3ScaleBean;
+import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.BackendConfiguration;
 import io.apiman.plugins.auth3scale.authrep.AbstractAuth;
 import io.apiman.plugins.auth3scale.authrep.AbstractAuthRepBase;
 import io.apiman.plugins.auth3scale.util.report.AuthResponseHandler;
@@ -44,9 +44,9 @@ public class StandardAuth extends AbstractAuth {
     // TODO Can't remember the place where we put the special exceptions for this...
     private static final AsyncResultImpl<Void> OK_CACHED = AsyncResultImpl.create((Void) null);
 
+    private final String backendUri;
     private final StandardAuthCache authCache;
-
-    private final Content config;
+    private final BackendConfiguration config;
     private final ApiRequest request;
     private final IPolicyContext context;
     private final IHttpClientComponent httpClient;
@@ -58,11 +58,12 @@ public class StandardAuth extends AbstractAuth {
     private long serviceId;
     private IAsyncHandler<PolicyFailure> policyFailureHandler;
 
-    public StandardAuth(Content config,
+    public StandardAuth(Auth3ScaleBean auth3ScaleBean,
             ApiRequest request,
             IPolicyContext context,
             StandardAuthCache authCache) {
-        this.config = config;
+        this.backendUri = auth3ScaleBean.getBackendEndpoint();
+        this.config = auth3ScaleBean.getThreescaleConfig().getProxyConfig().getBackendConfig();
         this.request = request;
         this.context = context;
         this.httpClient = context.getComponent(IHttpClientComponent.class);
@@ -109,7 +110,7 @@ public class StandardAuth extends AbstractAuth {
     }
 
     protected void doBlockingAuthRep(IAsyncResultHandler<Void> resultHandler) {
-        IHttpClientRequest get = httpClient.request(DEFAULT_BACKEND + AUTHREP_PATH + report.encode(),
+        IHttpClientRequest get = httpClient.request(backendUri + AUTHREP_PATH + report.encode(),
                 HttpMethod.GET,
                 new AuthResponseHandler(failureFactory)
                 .failureHandler(failure -> {

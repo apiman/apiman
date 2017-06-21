@@ -17,7 +17,6 @@
 package io.apiman.plugins.auth3scale.authrep.apikey;
 
 import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.REFERRER;
-import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.REPORT_URI;
 import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.USER_ID;
 import static io.apiman.plugins.auth3scale.util.Auth3ScaleUtils.buildLog;
 import static io.apiman.plugins.auth3scale.util.Auth3ScaleUtils.buildRepMetrics;
@@ -25,33 +24,40 @@ import static io.apiman.plugins.auth3scale.util.Auth3ScaleUtils.buildRepMetrics;
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.engine.policy.IPolicyContext;
-import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.Content;
+import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.Auth3ScaleBean;
+import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.BackendConfiguration;
 import io.apiman.plugins.auth3scale.authrep.AbstractRep;
 import io.apiman.plugins.auth3scale.authrep.AuthRepConstants;
 import io.apiman.plugins.auth3scale.ratelimit.IRep;
+import io.apiman.plugins.auth3scale.util.Auth3ScaleUtils;
+
+import java.net.URI;
 
 public class ApiKeyRep implements IRep {
-    private final Content config;
+
+    private final URI endpoint;
+    private final BackendConfiguration config;
     private final ApiRequest request;
     private final ApiResponse response;
     private final AbstractRep rep;
 
-    public ApiKeyRep(Content config,
+    public ApiKeyRep(Auth3ScaleBean auth3ScaleBean,
             ApiRequest request,
             ApiResponse response,
             IPolicyContext context,
             AbstractRep rep) {
-                this.config = config;
-                this.request = request;
-                this.response = response;
-                this.rep = rep;
+        this.endpoint = Auth3ScaleUtils.parseUri(auth3ScaleBean.getBackendEndpoint() + AuthRepConstants.REPORT_PATH);
+        this.config = auth3ScaleBean.getThreescaleConfig().getProxyConfig().getBackendConfig();
+        this.request = request;
+        this.response = response;
+        this.rep = rep;
     }
 
     @Override
     public IRep rep() {
         // Otherwise build report to be encoded.
         ApiKeyReportData report = new ApiKeyReportData()
-                .setEndpoint(REPORT_URI)
+                .setEndpoint(endpoint)
                 .setReferrer(request.getHeaders().get(REFERRER))
                 .setServiceToken(config.getBackendAuthenticationValue())
                 .setUserKey(getUserKey())
@@ -74,7 +80,7 @@ public class ApiKeyRep implements IRep {
         return getIdentityElement(config, request, AuthRepConstants.USER_KEY);
     }
 
-    protected String getIdentityElement(Content config, ApiRequest request, String canonicalName)  {
+    protected String getIdentityElement(BackendConfiguration config, ApiRequest request, String canonicalName)  {
         // Manual for now as there's no mapping in the config.
         String keyFieldName = config.getProxy().getAuthUserKey();
         if (config.getProxy().getCredentialsLocation().equalsIgnoreCase("query")) { //$NON-NLS-1$

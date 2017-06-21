@@ -27,25 +27,26 @@ import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.policy.IPolicyContext;
-import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.Content;
+import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.Auth3ScaleBean;
+import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.BackendConfiguration;
 import io.apiman.plugins.auth3scale.authrep.AbstractAuth;
 import io.apiman.plugins.auth3scale.ratelimit.IAuth;
 import io.apiman.plugins.auth3scale.util.Auth3ScaleUtils;
 
 public class ApiKeyAuth implements IAuth {
-    private static final AsyncResultImpl<Void> FAIL_PROVIDE_USER_KEY = AsyncResultImpl.create(new RuntimeException("No user apikey provided!"));
-    private static final AsyncResultImpl<Void> FAIL_NO_ROUTE = AsyncResultImpl.create(new RuntimeException("No valid route"));
+    private static final AsyncResultImpl<Void> FAIL_PROVIDE_USER_KEY = AsyncResultImpl.create(new RuntimeException("No user apikey provided!")); //$NON-NLS-1$
+    private static final AsyncResultImpl<Void> FAIL_NO_ROUTE = AsyncResultImpl.create(new RuntimeException("No valid route")); //$NON-NLS-1$
 
-    private Content config;
+    private BackendConfiguration config;
     private ApiRequest request;
     private AbstractAuth auth;
     private IAsyncHandler<PolicyFailure> policyFailureHandler;
 
-    public ApiKeyAuth(Content config,
+    public ApiKeyAuth(Auth3ScaleBean auth3ScaleBean,
             ApiRequest request,
             IPolicyContext context,
             AbstractAuth auth) {
-        this.config = config;
+        this.config = auth3ScaleBean.getThreescaleConfig().getProxyConfig().getBackendConfig();
         this.request = request;
         this.auth = auth;
     }

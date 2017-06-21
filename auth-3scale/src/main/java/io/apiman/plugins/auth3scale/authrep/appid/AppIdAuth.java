@@ -25,7 +25,8 @@ import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.policy.IPolicyContext;
-import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.Content;
+import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.Auth3ScaleBean;
+import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.BackendConfiguration;
 import io.apiman.plugins.auth3scale.authrep.AbstractAuth;
 import io.apiman.plugins.auth3scale.ratelimit.IAuth;
 import io.apiman.plugins.auth3scale.util.Auth3ScaleUtils;
@@ -36,16 +37,16 @@ public class AppIdAuth implements IAuth {
     private static final AsyncResultImpl<Void> FAIL_PROVIDE_APP_ID = AsyncResultImpl.create(new RuntimeException("No user app id provided")); // TODO mirror 3scale errors
     private static final AsyncResultImpl<Void> FAIL_PROVIDE_APP_KEY = AsyncResultImpl.create(new RuntimeException("No user app key provided")); // TODO mirror 3scale errors
 
-    private Content config;
+    private BackendConfiguration config;
     private ApiRequest request;
     private AbstractAuth auth;
     private IAsyncHandler<PolicyFailure> policyFailureHandler;
 
-    public AppIdAuth(Content config,
+    public AppIdAuth(Auth3ScaleBean auth3ScaleBean,
             ApiRequest request,
             IPolicyContext context,
             AbstractAuth auth) {
-        this.config = config;
+        this.config = auth3ScaleBean.getThreescaleConfig().getProxyConfig().getBackendConfig();
         this.request = request;
         this.auth = auth;
     }

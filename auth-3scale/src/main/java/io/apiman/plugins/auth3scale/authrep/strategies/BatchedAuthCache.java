@@ -17,7 +17,7 @@
 package io.apiman.plugins.auth3scale.authrep.strategies;
 
 import io.apiman.gateway.engine.beans.ApiRequest;
-import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.Content;
+import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.BackendConfiguration;
 import io.apiman.plugins.auth3scale.authrep.AbstractCachingAuthenticator;
 
 import java.util.concurrent.ExecutionException;
@@ -29,12 +29,12 @@ public class BatchedAuthCache extends AbstractCachingAuthenticator<AtomicInteger
     private static final AtomicInteger SENTINEL = new AtomicInteger(-1);
     private static final int DEFAULT_AUTHREP_COUNT = 5; // TODO make configurable
 
-    public boolean shouldForceAsyncAuthRep(Content config, ApiRequest req, Object... elems) {
+    public boolean shouldForceAsyncAuthRep(BackendConfiguration config, ApiRequest req, Object... elems) {
         return isAuthCached(config, req, elems);
     }
 
     @Override
-    public boolean isAuthCached(Content config, ApiRequest req, Object... elems) {
+    public boolean isAuthCached(BackendConfiguration config, ApiRequest req, Object... elems) {
         try {
             AtomicInteger val = lruCache.get(getCacheKey(config, req, elems), () -> SENTINEL);
             if (val == SENTINEL || val.get() <= 0) {
@@ -47,18 +47,18 @@ public class BatchedAuthCache extends AbstractCachingAuthenticator<AtomicInteger
     }
 
     @Override
-    public BatchedAuthCache cache(Content config, ApiRequest req, Object... elems) {
+    public BatchedAuthCache cache(BackendConfiguration config, ApiRequest req, Object... elems) {
         lruCache.put(getCacheKey(config, req, elems), new AtomicInteger(DEFAULT_AUTHREP_COUNT));
         return this;
     }
 
     @Override
-    public BatchedAuthCache invalidate(Content config, ApiRequest req, Object... elems) {
+    public BatchedAuthCache invalidate(BackendConfiguration config, ApiRequest req, Object... elems) {
         lruCache.invalidate(getCacheKey(config, req, elems));
         return this;
     }
 
-    public int decrement(Content config, ApiRequest req, Object... elems) {
+    public int decrement(BackendConfiguration config, ApiRequest req, Object... elems) {
         try {
             int val = lruCache.get(getCacheKey(config, req, elems), () -> SENTINEL).getAndDecrement();
             if (val <= 0) {

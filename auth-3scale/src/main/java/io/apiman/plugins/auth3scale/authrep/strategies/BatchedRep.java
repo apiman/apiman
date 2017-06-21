@@ -18,7 +18,6 @@ package io.apiman.plugins.auth3scale.authrep.strategies;
 
 import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.AUTHREP_PATH;
 import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.BLOCKING_FLAG;
-import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.DEFAULT_BACKEND;
 
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.gateway.engine.async.AsyncResultImpl;
@@ -29,7 +28,8 @@ import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.components.http.HttpMethod;
 import io.apiman.gateway.engine.components.http.IHttpClientRequest;
 import io.apiman.gateway.engine.policy.IPolicyContext;
-import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.Content;
+import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.Auth3ScaleBean;
+import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.BackendConfiguration;
 import io.apiman.plugins.auth3scale.authrep.AbstractRep;
 import io.apiman.plugins.auth3scale.util.ParameterMap;
 import io.apiman.plugins.auth3scale.util.Status;
@@ -40,7 +40,9 @@ import io.apiman.plugins.auth3scale.util.report.batchedreporter.Reporter;
 
 @SuppressWarnings("nls")
 public class BatchedRep extends AbstractRep {
-    private final Content config;
+
+    private final String backendUri;
+    private final BackendConfiguration config;
     private final ApiRequest request;
     private final Reporter<BatchedReportData> reporter;
     private final IPolicyContext context;
@@ -52,14 +54,15 @@ public class BatchedRep extends AbstractRep {
     private IPolicyFailureFactoryComponent failureFactory;
     private IApimanLogger logger;
 
-    public BatchedRep(Content config,
+    public BatchedRep(Auth3ScaleBean auth3ScaleBean,
             ApiRequest request,
             ApiResponse response,
             IPolicyContext context,
             Reporter<BatchedReportData> reporter,
             StandardAuthCache authCache,
             BatchedAuthCache heuristicCache) {
-        this.config = config;
+        this.config = auth3ScaleBean.getThreescaleConfig().getProxyConfig().getBackendConfig();
+        this.backendUri = auth3ScaleBean.getBackendEndpoint();
         this.request = request;
         this.context = context;
         this.reporter = reporter;
@@ -88,7 +91,7 @@ public class BatchedRep extends AbstractRep {
     }
 
     private void doAsyncRep() {
-        IHttpClientRequest get = httpClient.request(DEFAULT_BACKEND + AUTHREP_PATH + report.encode(),
+        IHttpClientRequest get = httpClient.request(backendUri + AUTHREP_PATH + report.encode(),
                 HttpMethod.GET,
                 new AuthResponseHandler(failureFactory)
                 .failureHandler(failure -> {
@@ -136,12 +139,12 @@ public class BatchedRep extends AbstractRep {
 
     // TODO quite heavy-weight carrying around lots of req objects. Think of how to cleanly optimise.
     private static final class BatchedReportDataWrapper implements BatchedReportData {
-        private final Content config;
+        private final BackendConfiguration config;
         private final ReportData reportData;
         private final ApiRequest request;
         private final Object[] keyElems;
 
-        public BatchedReportDataWrapper(Content config, ReportData reportData, ApiRequest request, Object... keyElems) {
+        public BatchedReportDataWrapper(BackendConfiguration config, ReportData reportData, ApiRequest request, Object... keyElems) {
             this.config = config;
             this.reportData = reportData;
             this.request = request;
@@ -200,7 +203,7 @@ public class BatchedRep extends AbstractRep {
         }
 
         @Override
-        public Content getConfig() {
+        public BackendConfiguration getConfig() {
             return config;
         }
     }

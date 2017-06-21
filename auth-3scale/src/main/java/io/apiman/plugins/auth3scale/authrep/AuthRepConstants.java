@@ -15,18 +15,15 @@
  */
 package io.apiman.plugins.auth3scale.authrep;
 
-import java.net.URI;
-
 /**
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 @SuppressWarnings("nls")
 public interface AuthRepConstants {
-    String DEFAULT_BACKEND = "http://su1.3scale.net:80";
     String AUTHORIZE_PATH = "/transactions/authorize.xml?";
     String AUTHREP_PATH = "/transactions/authrep.xml?";
     String REPORT_PATH = "/transactions.xml";
-    URI REPORT_URI = URI.create(DEFAULT_BACKEND+REPORT_PATH);
+    //URI DEFAULT_REPORT_URI = URI.create(DEFAULT_BACKEND+REPORT_PATH);
 
     String USER_KEY = "user_key";
     String SERVICE_ID = "service_id";

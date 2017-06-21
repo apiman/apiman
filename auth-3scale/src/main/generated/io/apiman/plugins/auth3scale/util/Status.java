@@ -59,6 +59,7 @@ import javax.xml.bind.annotation.XmlType;
     "usageReports"
 })
 @XmlRootElement(name = "status")
+@SuppressWarnings("javadoc")
 public class Status {
 
     protected boolean authorized;

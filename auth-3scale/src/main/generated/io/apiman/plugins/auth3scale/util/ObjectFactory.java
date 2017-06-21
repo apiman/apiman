@@ -29,6 +29,7 @@ import javax.xml.namespace.QName;
  *
  */
 @XmlRegistry
+@SuppressWarnings({"nls", "javadoc"})
 public class ObjectFactory {
 
     private final static QName _PeriodEnd_QNAME = new QName("", "period_end");

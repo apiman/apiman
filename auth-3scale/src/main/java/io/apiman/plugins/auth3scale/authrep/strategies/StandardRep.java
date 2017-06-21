@@ -17,7 +17,6 @@ package io.apiman.plugins.auth3scale.authrep.strategies;
 
 import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.AUTHREP_PATH;
 import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.BLOCKING_FLAG;
-import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.DEFAULT_BACKEND;
 
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.gateway.engine.async.AsyncResultImpl;
@@ -28,7 +27,8 @@ import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.components.http.HttpMethod;
 import io.apiman.gateway.engine.components.http.IHttpClientRequest;
 import io.apiman.gateway.engine.policy.IPolicyContext;
-import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.Content;
+import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.Auth3ScaleBean;
+import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.BackendConfiguration;
 import io.apiman.plugins.auth3scale.authrep.AbstractRep;
 import io.apiman.plugins.auth3scale.util.Status;
 import io.apiman.plugins.auth3scale.util.report.AuthResponseHandler;
@@ -39,7 +39,9 @@ import io.apiman.plugins.auth3scale.util.report.batchedreporter.ReportData;
  */
 @SuppressWarnings("nls")
 public class StandardRep extends AbstractRep {
-    private final Content config;
+
+    private final String backendUri;
+    private final BackendConfiguration config;
     private final ApiRequest request;
     private final IHttpClientComponent httpClient;
     private final IPolicyFailureFactoryComponent failureFactory;
@@ -50,8 +52,13 @@ public class StandardRep extends AbstractRep {
     private ReportData report;
     private IPolicyContext context;
 
-    public StandardRep(Content config, ApiRequest request, ApiResponse response, IPolicyContext context, StandardAuthCache authCache) {
-        this.config = config;
+    public StandardRep(Auth3ScaleBean auth3ScaleBean,
+            ApiRequest request,
+            ApiResponse response,
+            IPolicyContext context,
+            StandardAuthCache authCache) {
+        this.backendUri = auth3ScaleBean.getBackendEndpoint();
+        this.config = auth3ScaleBean.getThreescaleConfig().getProxyConfig().getBackendConfig();
         this.request = request;
         this.context = context;
         this.httpClient = context.getComponent(IHttpClientComponent.class);
@@ -66,7 +73,7 @@ public class StandardRep extends AbstractRep {
         if (context.getAttribute(BLOCKING_FLAG, false))
             return this;
 
-        IHttpClientRequest get = httpClient.request(DEFAULT_BACKEND + AUTHREP_PATH + report.encode(),
+        IHttpClientRequest get = httpClient.request(backendUri + AUTHREP_PATH + report.encode(),
                 HttpMethod.GET,
                 new AuthResponseHandler(failureFactory)
                     // At this point can't do anything but log it.
@@ -94,7 +101,7 @@ public class StandardRep extends AbstractRep {
     }
 
     private void flushCache() {
-        logger.debug("Invalidating cache");
+        logger.debug("Invalidating cache {0}", keyElems);
         authCache.invalidate(config, request, keyElems);
     }
 

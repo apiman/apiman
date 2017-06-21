@@ -19,14 +19,14 @@ package io.apiman.plugins.auth3scale.authrep;
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.engine.policy.IPolicyContext;
-import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.Content;
+import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.Auth3ScaleBean;
 
 public interface IAuthStrategyFactory {
-    AbstractAuth getAuthStrategy(Content config,
+    AbstractAuth getAuthStrategy(Auth3ScaleBean bean,
             ApiRequest request,
             IPolicyContext context);
 
-    AbstractRep getRepStrategy(Content config,
+    AbstractRep getRepStrategy(Auth3ScaleBean bean,
             ApiRequest request,
             ApiResponse response,
             IPolicyContext context);

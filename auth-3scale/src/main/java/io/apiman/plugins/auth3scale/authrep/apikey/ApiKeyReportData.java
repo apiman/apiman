@@ -35,6 +35,7 @@ import java.util.Objects;
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 public class ApiKeyReportData implements ReportData {
+
     private URI endpoint;
     private String serviceToken;
     private String userKey;

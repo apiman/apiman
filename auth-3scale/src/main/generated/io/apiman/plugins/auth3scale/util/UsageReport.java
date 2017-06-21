@@ -51,6 +51,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
     "currentValue"
 })
 @XmlRootElement(name = "usage_report")
+@SuppressWarnings({"javadoc"})
 public class UsageReport {
 
     @XmlElement(name = "period_start", required = true)

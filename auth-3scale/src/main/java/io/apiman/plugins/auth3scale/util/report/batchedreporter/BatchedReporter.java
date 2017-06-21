@@ -37,16 +37,9 @@ import com.google.common.collect.EvictingQueue;
  */
 @SuppressWarnings("nls")
 public class BatchedReporter {
-
-    private static final int DEFAULT_REPORTING_INTERVAL = 5000;
-    private static final int DEFAULT_INITIAL_WAIT = 5;
-    private static final int DEFAULT_RETRY_QUEUE_MAXSIZE = 10000;
-    private int reportingInterval = DEFAULT_REPORTING_INTERVAL;
-
     // Change to RingBuffer?
     private Set<IReporter> reporters = new LinkedHashSet<>();
-    private RetryReporter retryReporter = new RetryReporter();
-
+    private RetryReporter retryReporter;
     private IPeriodicComponent periodic;
     private IHttpClientComponent httpClient;
     private long timerId;
@@ -55,21 +48,20 @@ public class BatchedReporter {
     private volatile boolean sending = false;
     private IApimanLogger logger;
 
-    public BatchedReporter() {
-        reporters.add(retryReporter);
-    }
-
-    public BatchedReporter start(IPolicyContext context) {
+    public BatchedReporter start(IPolicyContext context, BatchedReporterOptions options) {
         if (started) {
             throw new IllegalStateException("Already started");
         }
+
+        this.retryReporter = new RetryReporter(options.getRetryQueueMaxSize());
+        reporters.add(retryReporter);
 
         this.httpClient = context.getComponent(IHttpClientComponent.class);
         this.periodic = context.getComponent(IPeriodicComponent.class);
         this.logger = context.getLogger(BatchedReporter.class);
 
-        this.timerId = periodic.setPeriodicTimer(reportingInterval,
-                DEFAULT_INITIAL_WAIT,
+        this.timerId = periodic.setPeriodicTimer(options.getReportingInterval(),
+                options.getInitialWait(),
                 id -> send());
         started = true;
         return this;
@@ -81,11 +73,6 @@ public class BatchedReporter {
 
     public boolean isStarted() {
         return started;
-    }
-
-    public BatchedReporter setReportingInterval(int millis) {
-        this.reportingInterval = millis;
-        return this;
     }
 
     public BatchedReporter addReporter(IReporter reporter) {
@@ -150,8 +137,12 @@ public class BatchedReporter {
         }
     }
 
-    private static class RetryReporter implements IReporter {
-        private Queue<ReportToSend> resendReports = EvictingQueue.create(DEFAULT_RETRY_QUEUE_MAXSIZE);
+    private static final class RetryReporter implements IReporter {
+        private final Queue<ReportToSend> resendReports;
+
+        public RetryReporter(int maxSize) {
+            resendReports = EvictingQueue.create(maxSize);
+        }
 
         @Override
         public List<ReportToSend> encode() {

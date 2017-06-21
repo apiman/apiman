@@ -18,7 +18,7 @@ package io.apiman.plugins.auth3scale.authrep;
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.engine.policy.IPolicyContext;
-import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.Content;
+import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.Auth3ScaleBean;
 import io.apiman.plugins.auth3scale.ratelimit.IAuth;
 import io.apiman.plugins.auth3scale.ratelimit.IRep;
 
@@ -26,6 +26,6 @@ import io.apiman.plugins.auth3scale.ratelimit.IRep;
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 public interface AuthRepFactory {
-    IAuth createAuth(Content config, ApiRequest request, IPolicyContext context, AbstractAuth authStrategy);
-    IRep createRep(Content config, ApiResponse response, ApiRequest request, IPolicyContext context, AbstractRep repStrategy);
+    IAuth createAuth(Auth3ScaleBean config, ApiRequest request, IPolicyContext context, AbstractAuth authStrategy);
+    IRep createRep(Auth3ScaleBean config, ApiResponse response, ApiRequest request, IPolicyContext context, AbstractRep repStrategy);
 }

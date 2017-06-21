@@ -17,7 +17,6 @@
 package io.apiman.plugins.auth3scale.authrep.appid;
 
 import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.REFERRER;
-import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.REPORT_URI;
 import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.USER_ID;
 import static io.apiman.plugins.auth3scale.util.Auth3ScaleUtils.buildLog;
 import static io.apiman.plugins.auth3scale.util.Auth3ScaleUtils.buildRepMetrics;
@@ -25,22 +24,29 @@ import static io.apiman.plugins.auth3scale.util.Auth3ScaleUtils.buildRepMetrics;
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.engine.policy.IPolicyContext;
-import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.Content;
+import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.Auth3ScaleBean;
+import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.BackendConfiguration;
 import io.apiman.plugins.auth3scale.authrep.AbstractRep;
+import io.apiman.plugins.auth3scale.authrep.AuthRepConstants;
 import io.apiman.plugins.auth3scale.ratelimit.IRep;
+import io.apiman.plugins.auth3scale.util.Auth3ScaleUtils;
+
+import java.net.URI;
 
 public class AppIdRep implements IRep {
-    private final Content config;
+    private final BackendConfiguration config;
     private final ApiRequest request;
     private final ApiResponse response;
     private final AbstractRep rep;
+    private final URI endpoint;
 
-    public AppIdRep(Content config,
+    public AppIdRep(Auth3ScaleBean auth3ScaleBean,
             ApiRequest request,
             ApiResponse response,
             IPolicyContext context,
             AbstractRep rep) {
-                this.config = config;
+                this.endpoint = Auth3ScaleUtils.parseUri(auth3ScaleBean.getBackendEndpoint() + AuthRepConstants.REPORT_PATH);
+                this.config = auth3ScaleBean.getThreescaleConfig().getProxyConfig().getBackendConfig();
                 this.request = request;
                 this.response = response;
                 this.rep = rep;
@@ -52,7 +58,7 @@ public class AppIdRep implements IRep {
         String appKey = AppIdUtils.getAppKey(config, request);
         // Otherwise build report to be encoded.
         AppIdReportData report = new AppIdReportData()
-                .setEndpoint(REPORT_URI)
+                .setEndpoint(endpoint)
                 .setReferrer(request.getHeaders().get(REFERRER))
                 .setServiceToken(config.getBackendAuthenticationValue())
                 .setServiceId(Long.toString(config.getProxy().getServiceId()))

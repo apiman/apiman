@@ -18,7 +18,6 @@ package io.apiman.plugins.auth3scale.authrep.strategies;
 
 import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.AUTHREP_PATH;
 import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.BLOCKING_FLAG;
-import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.DEFAULT_BACKEND;
 
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.gateway.engine.async.AsyncResultImpl;
@@ -31,7 +30,8 @@ import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.components.http.HttpMethod;
 import io.apiman.gateway.engine.components.http.IHttpClientRequest;
 import io.apiman.gateway.engine.policy.IPolicyContext;
-import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.Content;
+import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.Auth3ScaleBean;
+import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.BackendConfiguration;
 import io.apiman.plugins.auth3scale.authrep.AbstractAuth;
 import io.apiman.plugins.auth3scale.authrep.AbstractAuthRepBase;
 import io.apiman.plugins.auth3scale.util.report.AuthResponseHandler;
@@ -45,10 +45,10 @@ import io.apiman.plugins.auth3scale.util.report.batchedreporter.ReportData;
 @SuppressWarnings("nls")
 public class BatchedAuth extends AbstractAuth {
     private static final AsyncResultImpl<Void> OK_CACHED = AsyncResultImpl.create((Void) null);
-
+    private final String backendUri;
     private final StandardAuthCache authCache;
     private final BatchedAuthCache heuristicCache;
-    private Content config;
+    private BackendConfiguration config;
     private ApiRequest request;
     private Object[] keyElems;
     private IAsyncHandler<PolicyFailure> policyFailureHandler;
@@ -59,12 +59,13 @@ public class BatchedAuth extends AbstractAuth {
     private IHttpClientComponent httpClient;
     private IPolicyFailureFactoryComponent failureFactory;
 
-    public BatchedAuth(Content config,
+    public BatchedAuth(Auth3ScaleBean auth3ScaleBean,
             ApiRequest request,
             IPolicyContext context,
             StandardAuthCache authCache,
             BatchedAuthCache heuristicCache) {
-        this.config = config;
+        this.backendUri = auth3ScaleBean.getBackendEndpoint();
+        this.config = auth3ScaleBean.getThreescaleConfig().getProxyConfig().getBackendConfig();
         this.request = request;
         this.context = context;
         this.authCache = authCache;
@@ -87,10 +88,10 @@ public class BatchedAuth extends AbstractAuth {
         // through and we will resolve the rate limiting status post hoc (various strategies
         // depending on settings).
         if (authCache.isAuthCached(config, request, keyElems)) {
-            logger.debug("B[ServiceId: {0}] Cached auth on request: {1}", serviceId, request);
+            logger.debug("[ServiceId: {0}] Cached auth on request: {1}", serviceId, request);
             resultHandler.handle(OK_CACHED);
         } else {
-            logger.debug("B[ServiceId: {0}] Uncached auth on request: {1}", serviceId, request);
+            logger.debug("[ServiceId: {0}] Uncached auth on request: {1}", serviceId, request);
             context.setAttribute(BLOCKING_FLAG, true);
             doBlockingAuthRep(result -> {
                 logger.debug("Blocking auth success?: {0}", result.isSuccess());
@@ -106,16 +107,16 @@ public class BatchedAuth extends AbstractAuth {
     }
 
     protected void doBlockingAuthRep(IAsyncResultHandler<Void> resultHandler) {
-        IHttpClientRequest get = httpClient.request(DEFAULT_BACKEND + AUTHREP_PATH + report.encode(),
+        IHttpClientRequest get = httpClient.request(backendUri + AUTHREP_PATH + report.encode(),
                 HttpMethod.GET,
                 new AuthResponseHandler(failureFactory)
                 .failureHandler(failure -> {
-                    logger.debug("B[ServiceId: {0}] Blocking AuthRep failure: {1}", serviceId, failure.getResponseCode());
+                    logger.debug("[ServiceId: {0}] Blocking AuthRep failure: {1}", serviceId, failure.getResponseCode());
                     policyFailureHandler.handle(failure);
                 })
                 .exceptionHandler(exception -> resultHandler.handle(AsyncResultImpl.create(exception)))
                 .statusHandler(status -> {
-                    logger.debug("B[ServiceId: {0}] Backend status: {1}", serviceId, status);
+                    logger.debug("[ServiceId: {0}] Backend status: {1}", serviceId, status);
                     if (!status.isAuthorized()) {
                         flushCache();
                     } else {

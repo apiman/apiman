@@ -19,21 +19,23 @@ package io.apiman.plugins.auth3scale.authrep.strategies;
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.engine.policy.IPolicyContext;
-import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.Content;
-import io.apiman.plugins.auth3scale.authrep.AuthRepConstants;
+import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.Auth3ScaleBean;
 import io.apiman.plugins.auth3scale.authrep.IAuthStrategyFactory;
 import io.apiman.plugins.auth3scale.util.report.batchedreporter.BatchedReportData;
 import io.apiman.plugins.auth3scale.util.report.batchedreporter.BatchedReporter;
 import io.apiman.plugins.auth3scale.util.report.batchedreporter.Reporter;
+import io.apiman.plugins.auth3scale.util.report.batchedreporter.ReporterOptions;
 
 public class BatchedStrategyFactory implements IAuthStrategyFactory {
     // is this safe for mixing multiple different users? probably not. TODO verify it's fixed
     // Maybe caller should sort that out (seems better) -- might be OK with user ID figured in?
-    private Reporter<BatchedReportData> reporter = new Reporter<>(AuthRepConstants.REPORT_URI);
+    private Reporter<BatchedReportData> reporter;
     private StandardAuthCache standardCache = new StandardAuthCache();
     private BatchedAuthCache heuristicCache = new BatchedAuthCache();
 
     public BatchedStrategyFactory(BatchedReporter batchedReporter) {
+        reporter = new Reporter<>(new ReporterOptions());
+
         reporter.flushHandler(result -> {
             BatchedReportData entry = result.getResult().get(0);
             // Make cache entry in heuristic cache to force subsequent N entries to be blocking authrep
@@ -45,18 +47,18 @@ public class BatchedStrategyFactory implements IAuthStrategyFactory {
     }
 
     @Override
-    public BatchedAuth getAuthStrategy(Content config,
+    public BatchedAuth getAuthStrategy(Auth3ScaleBean bean,
             ApiRequest request,
             IPolicyContext context) {
-        return new BatchedAuth(config, request, context, standardCache, heuristicCache);
+        return new BatchedAuth(bean, request, context, standardCache, heuristicCache);
     }
 
     @Override
-    public BatchedRep getRepStrategy(Content config,
+    public BatchedRep getRepStrategy(Auth3ScaleBean bean,
             ApiRequest request,
             ApiResponse response,
             IPolicyContext context) {
-        return new BatchedRep(config, request, response, context, reporter, standardCache, heuristicCache);
+        return new BatchedRep(bean, request, response, context, reporter, standardCache, heuristicCache);
     }
 
 }
