@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans;
+package io.apiman.gateway.engine.threescale.beans;
 
 public enum RateLimitingStrategy {
     STANDARD, // Standard naive RL scheme. First call is sync and creates cache entry; subsequent requests are async until invalidated.

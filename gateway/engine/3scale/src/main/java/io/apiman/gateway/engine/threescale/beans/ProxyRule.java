@@ -1,5 +1,5 @@
 
-package io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans;
+package io.apiman.gateway.engine.threescale.beans;
 
 import java.io.Serializable;
 import java.util.Arrays;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.apiman.gateway.engine.vertx.polling;
+package io.apiman.gateway.engine.threescale;
 
 import io.apiman.common.util.ApimanPathUtils.ApiRequestPathInfo;
 import io.apiman.gateway.engine.IApiRequestPathParser;
@@ -35,8 +35,8 @@ public class ThreeScaleRequestPathParser implements IApiRequestPathParser {
     private final String defaultVersion;
 
     public ThreeScaleRequestPathParser(Map<String, String> config) {
-        this.defaultOrgName = config.getOrDefault("defaultOrgName", ThreeScaleURILoadingRegistry.DEFAULT_ORGNAME);
-        this.defaultVersion = config.getOrDefault("defaultVersion", ThreeScaleURILoadingRegistry.DEFAULT_VERSION);
+        this.defaultOrgName = config.getOrDefault("defaultOrgName", ThreeScaleConstants.DEFAULT_ORGNAME);
+        this.defaultVersion = config.getOrDefault("defaultVersion", ThreeScaleConstants.DEFAULT_VERSION);
     }
 
     @Override

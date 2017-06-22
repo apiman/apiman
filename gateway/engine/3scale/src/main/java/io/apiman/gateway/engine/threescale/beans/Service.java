@@ -1,5 +1,5 @@
 
-package io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans;
+package io.apiman.gateway.engine.threescale.beans;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -20,44 +20,30 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
 */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({ "endpoint", "host" })
-public class Backend implements Serializable {
+@JsonPropertyOrder({
+    "service"
+})
+public class Service implements Serializable
+{
 
-    @JsonProperty("endpoint")
-    private String endpoint;
-    @JsonProperty("host")
-    private String host;
+    @JsonProperty("service")
+    private Service_ service;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<>();
-    private final static long serialVersionUID = 2716559165671659040L;
+    private final static long serialVersionUID = -4671291473457024477L;
 
-    @JsonProperty("endpoint")
-    public String getEndpoint() {
-        return endpoint;
+    @JsonProperty("service")
+    public Service_ getService() {
+        return service;
     }
 
-    @JsonProperty("endpoint")
-    public void setEndpoint(String endpoint) {
-        this.endpoint = endpoint;
+    @JsonProperty("service")
+    public void setService(Service_ service) {
+        this.service = service;
     }
 
-    public Backend withEndpoint(String endpoint) {
-        this.endpoint = endpoint;
-        return this;
-    }
-
-    @JsonProperty("host")
-    public String getHost() {
-        return host;
-    }
-
-    @JsonProperty("host")
-    public void setHost(String host) {
-        this.host = host;
-    }
-
-    public Backend withHost(String host) {
-        this.host = host;
+    public Service withService(Service_ service) {
+        this.service = service;
         return this;
     }
 
@@ -76,14 +62,14 @@ public class Backend implements Serializable {
         this.additionalProperties.put(name, value);
     }
 
-    public Backend withAdditionalProperty(String name, Object value) {
+    public Service withAdditionalProperty(String name, Object value) {
         this.additionalProperties.put(name, value);
         return this;
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(endpoint).append(host).append(additionalProperties).toHashCode();
+        return new HashCodeBuilder().append(service).append(additionalProperties).toHashCode();
     }
 
     @Override
@@ -91,12 +77,11 @@ public class Backend implements Serializable {
         if (other == this) {
             return true;
         }
-        if ((other instanceof Backend) == false) {
+        if ((other instanceof Service) == false) {
             return false;
         }
-        Backend rhs = ((Backend) other);
-        return new EqualsBuilder().append(endpoint, rhs.endpoint).append(host, rhs.host).append(additionalProperties, rhs.additionalProperties)
-                .isEquals();
+        Service rhs = ((Service) other);
+        return new EqualsBuilder().append(service, rhs.service).append(additionalProperties, rhs.additionalProperties).isEquals();
     }
 
 }
