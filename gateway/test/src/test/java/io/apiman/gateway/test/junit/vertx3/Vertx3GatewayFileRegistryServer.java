@@ -48,14 +48,15 @@ public class Vertx3GatewayFileRegistryServer implements IGatewayTestServer {
 
     private EchoServer echoServer = new EchoServer(ECHO_PORT);
     private String conf;
-    private CountDownLatch startLatch;
-    private CountDownLatch stopLatch;
+    private CountDownLatch gatewayStartLatch;
+    private CountDownLatch gatewayStopLatch;
     private Vertx vertx;
     private JsonObject vertxConf;
-    private Vertx secondVx;
-    private JsonObject pushEmulatorConfig;
+    private Vertx apiToFileVx;
+    private JsonObject apiToFilePushEmulatorConfig;
     private CountDownLatch rewriteCdl = new CountDownLatch(1);
-    private CountDownLatch resetCdl = new CountDownLatch(1);
+    private CountDownLatch resetLatch = new CountDownLatch(1);
+    private CountDownLatch a2fInitLatch = new CountDownLatch(1);
 
     /**
      * Constructor.
@@ -66,16 +67,25 @@ public class Vertx3GatewayFileRegistryServer implements IGatewayTestServer {
     @Override
     public void configure(JsonNode nodeConfig) {
         vertxConf = loadJsonObjectFromResources(nodeConfig, "config");
-        pushEmulatorConfig = loadJsonObjectFromResources(nodeConfig, "configPushEmulator");
+        apiToFilePushEmulatorConfig = loadJsonObjectFromResources(nodeConfig, "configPushEmulator");
 
-        secondVx = Vertx.vertx(new VertxOptions()
+        apiToFileVx = Vertx.vertx(new VertxOptions()
                 .setBlockedThreadCheckInterval(99999));
 
-        secondVx.deployVerticle(ApiVerticle.class.getCanonicalName(),
-                new DeploymentOptions().setConfig(pushEmulatorConfig));
+        apiToFileVx.deployVerticle(ApiVerticle.class.getCanonicalName(),
+                new DeploymentOptions().setConfig(apiToFilePushEmulatorConfig),
+                complete -> a2fInitLatch.countDown());
 
-        secondVx.eventBus().consumer("reset").handler(reset -> resetCdl.countDown());
-        secondVx.eventBus().consumer("rewrite").handler(rewritten -> rewriteCdl.countDown());
+        apiToFileVx.eventBus().consumer("reset").handler(reset -> resetLatch.countDown());
+        apiToFileVx.eventBus().consumer("rewrite").handler(rewritten -> rewriteCdl.countDown());
+
+        // Important: before we deploy the verticle, we must ensure that the API-to-File registry
+        // has fully initialised. Otherwise the variable may not be substituted yet.
+        try {
+            a2fInitLatch.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     private JsonObject loadJsonObjectFromResources(JsonNode nodeConfig, String name) {
@@ -108,11 +118,12 @@ public class Vertx3GatewayFileRegistryServer implements IGatewayTestServer {
     @Override
     public void start() {
         try {
+            gatewayStartLatch = new CountDownLatch(1);
+
             vertx = Vertx.vertx(new VertxOptions()
                     .setBlockedThreadCheckInterval(99999));
             echoServer.start();
 
-            startLatch = new CountDownLatch(1);
             DeploymentOptions options = new DeploymentOptions().
                     setConfig(vertxConf);
 
@@ -120,10 +131,10 @@ public class Vertx3GatewayFileRegistryServer implements IGatewayTestServer {
                     options,
                     result -> {
                         System.out.println("Deployed init verticle! " + (result.failed() ? "failed" : "succeeded"));
-                        startLatch.countDown();
+                        gatewayStartLatch.countDown();
                     });
 
-            startLatch.await();
+            gatewayStartLatch.await();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -132,26 +143,26 @@ public class Vertx3GatewayFileRegistryServer implements IGatewayTestServer {
     @Override
     public void stop() {
         System.err.println("Stopping main Vert.x");
-        stopLatch = new CountDownLatch(1);
+        gatewayStopLatch = new CountDownLatch(1);
         echoServer.stop();
 
-        secondVx.eventBus().publish(ApiToFileRegistry.class.getCanonicalName(), null,
+        apiToFileVx.eventBus().publish(ApiToFileRegistry.class.getCanonicalName(), null,
                 new DeliveryOptions().addHeader("action", "reset"));
 
         URILoadingRegistry.reset();
 
         vertx.close(result -> {
-            stopLatch.countDown();
+            gatewayStopLatch.countDown();
         });
 
         try {
-            stopLatch.await();
-            resetCdl.await();
+            gatewayStopLatch.await();
+            resetLatch.await();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
-        resetCdl = new CountDownLatch(1);
+        resetLatch = new CountDownLatch(1);
     }
 
     @Override
