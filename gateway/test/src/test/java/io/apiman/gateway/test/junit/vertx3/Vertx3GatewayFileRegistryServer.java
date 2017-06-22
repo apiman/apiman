@@ -117,8 +117,9 @@ public class Vertx3GatewayFileRegistryServer implements IGatewayTestServer {
                     setConfig(vertxConf);
 
             vertx.deployVerticle(InitVerticle.class.getCanonicalName(),
-                    options, event -> {
-                        System.out.println("Deployed init verticle!");
+                    options,
+                    result -> {
+                        System.out.println("Deployed init verticle! " + (result.failed() ? "failed" : "succeeded"));
                         startLatch.countDown();
                     });
 

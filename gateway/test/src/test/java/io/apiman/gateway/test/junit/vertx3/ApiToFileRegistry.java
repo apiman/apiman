@@ -78,9 +78,9 @@ public class ApiToFileRegistry extends InMemoryRegistry {
     private void createTempFile()  {
         try {
             file = File.createTempFile("apiman", "fs");
-            System.setProperty("CONFIG_FILE_PATH", "file:///" + file.getAbsolutePath());
-            System.out.println("file path file:///" + file.getAbsolutePath());
             file.deleteOnExit();
+            System.setProperty("CONFIG_FILE_PATH", "file:///" + file.getAbsolutePath());
+            System.out.println("Setting CONFIG_FILE_PATH file:///" + file.getAbsolutePath());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
