@@ -21,7 +21,9 @@ import io.apiman.gateway.platforms.vertx3.api.IRouteBuilder;
 import io.apiman.gateway.platforms.vertx3.api.SystemResourceImpl;
 import io.apiman.gateway.platforms.vertx3.api.auth.AuthFactory;
 import io.apiman.gateway.platforms.vertx3.common.verticles.VerticleType;
+import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
+import io.vertx.core.http.HttpServer;
 import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.net.JksOptions;
 import io.vertx.ext.web.Router;
@@ -41,7 +43,19 @@ public class ApiVerticle extends ApimanVerticleWithEngine {
 
     @Override
     public void start(Future<Void> startFuture) {
-        super.start(startFuture);
+        Future<Void> superFuture = Future.future();
+        Future<HttpServer> listenFuture = Future.future();
+        super.start(superFuture);
+
+        CompositeFuture.all(superFuture, listenFuture)
+            .setHandler(compositeResult -> {
+                if (compositeResult.succeeded()) {
+                    startFuture.complete(null);
+                } else {
+                    startFuture.fail(compositeResult.cause());
+                }
+            });
+
         IRouteBuilder clientResource = new ClientResourceImpl(apimanConfig, engine);
         IRouteBuilder apiResource = new ApiResourceImpl(apimanConfig, engine);
         IRouteBuilder systemResource = new SystemResourceImpl(apimanConfig, engine);
@@ -86,7 +100,8 @@ public class ApiVerticle extends ApimanVerticleWithEngine {
 
         vertx.createHttpServer(httpOptions)
             .requestHandler(router::accept)
-            .listen(apimanConfig.getPort(VERTICLE_TYPE));
+            .listen(apimanConfig.getPort(VERTICLE_TYPE),
+                    listenFuture.completer());
     }
 
     @Override
