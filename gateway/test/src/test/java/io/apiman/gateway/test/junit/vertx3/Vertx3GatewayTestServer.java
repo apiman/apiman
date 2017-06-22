@@ -20,9 +20,7 @@ import io.apiman.gateway.platforms.vertx3.common.config.VertxEngineConfig;
 import io.apiman.gateway.platforms.vertx3.verticles.InitVerticle;
 import io.apiman.test.common.echo.EchoServer;
 import io.apiman.test.common.resttest.IGatewayTestServer;
-import io.vertx.core.AsyncResult;
 import io.vertx.core.DeploymentOptions;
-import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
 import io.vertx.core.json.JsonObject;
@@ -93,8 +91,6 @@ public class Vertx3GatewayTestServer implements IGatewayTestServer {
     @Override
     public void start() {
         try {
-            resetter.reset();
-
             if (clustered) {
                 CountDownLatch clusteredStart = new CountDownLatch(1);
                 Vertx.clusteredVertx(new VertxOptions().setClustered(clustered).setClusterHost("localhost").setBlockedThreadCheckInterval(9999999), result -> {
@@ -118,14 +114,14 @@ public class Vertx3GatewayTestServer implements IGatewayTestServer {
             options.setConfig(vertxConf);
 
             vertx.deployVerticle(InitVerticle.class.getCanonicalName(),
-                    options, new Handler<AsyncResult<String>>() {
-
-                @Override
-                public void handle(AsyncResult<String> event) {
-                    System.out.println("Deployed init verticle!");
-                    startLatch.countDown();
-                }
-            });
+                    options, result -> {
+                        if (result.succeeded()) {
+                            System.out.println("*** Started Non-clustered Vert.x successfully ***");
+                        } else {
+                            throw new RuntimeException("InitVerticle deployment failed", result.cause());
+                        }
+                        startLatch.countDown();
+                    });
 
             startLatch.await();
         } catch (Exception e) {
@@ -149,9 +145,10 @@ public class Vertx3GatewayTestServer implements IGatewayTestServer {
             });
 
             stopLatch.await();
-            resetter.reset(); // Also reset at end to avoid leaving pollution in index.
         } catch (Exception e) {
             throw new RuntimeException(e);
+        } finally {
+            resetter.reset(); // Also reset at end to avoid leaving pollution in index.
         }
     }
 
