@@ -1,5 +1,5 @@
 
-package io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans;
+package io.apiman.gateway.engine.threescale.beans;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -21,29 +21,29 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "service"
+    "action"
 })
-public class Service implements Serializable
+public class QuerystringParameters implements Serializable
 {
 
-    @JsonProperty("service")
-    private Service_ service;
+    @JsonProperty("action")
+    private String action;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<>();
-    private final static long serialVersionUID = -4671291473457024477L;
+    private final static long serialVersionUID = 941124674150268152L;
 
-    @JsonProperty("service")
-    public Service_ getService() {
-        return service;
+    @JsonProperty("action")
+    public String getAction() {
+        return action;
     }
 
-    @JsonProperty("service")
-    public void setService(Service_ service) {
-        this.service = service;
+    @JsonProperty("action")
+    public void setAction(String action) {
+        this.action = action;
     }
 
-    public Service withService(Service_ service) {
-        this.service = service;
+    public QuerystringParameters withAction(String action) {
+        this.action = action;
         return this;
     }
 
@@ -62,14 +62,14 @@ public class Service implements Serializable
         this.additionalProperties.put(name, value);
     }
 
-    public Service withAdditionalProperty(String name, Object value) {
+    public QuerystringParameters withAdditionalProperty(String name, Object value) {
         this.additionalProperties.put(name, value);
         return this;
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(service).append(additionalProperties).toHashCode();
+        return new HashCodeBuilder().append(action).append(additionalProperties).toHashCode();
     }
 
     @Override
@@ -77,11 +77,11 @@ public class Service implements Serializable
         if (other == this) {
             return true;
         }
-        if ((other instanceof Service) == false) {
+        if ((other instanceof QuerystringParameters) == false) {
             return false;
         }
-        Service rhs = ((Service) other);
-        return new EqualsBuilder().append(service, rhs.service).append(additionalProperties, rhs.additionalProperties).isEquals();
+        QuerystringParameters rhs = ((QuerystringParameters) other);
+        return new EqualsBuilder().append(action, rhs.action).append(additionalProperties, rhs.additionalProperties).isEquals();
     }
 
 }

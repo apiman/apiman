@@ -1,5 +1,5 @@
 
-package io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans;
+package io.apiman.gateway.engine.threescale.beans;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -21,29 +21,47 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "proxy_config"
+    "rel",
+    "href"
 })
-public class ProxyConfigRoot implements Serializable
+public class Link implements Serializable
 {
 
-    @JsonProperty("proxy_config")
-    private ProxyConfig proxyConfig;
+    @JsonProperty("rel")
+    private String rel;
+    @JsonProperty("href")
+    private String href;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<>();
-    private final static long serialVersionUID = 3256162881292185464L;
+    private final static long serialVersionUID = -7282274840433466116L;
 
-    @JsonProperty("proxy_config")
-    public ProxyConfig getProxyConfig() {
-        return proxyConfig;
+    @JsonProperty("rel")
+    public String getRel() {
+        return rel;
     }
 
-    @JsonProperty("proxy_config")
-    public void setProxyConfig(ProxyConfig proxyConfig) {
-        this.proxyConfig = proxyConfig;
+    @JsonProperty("rel")
+    public void setRel(String rel) {
+        this.rel = rel;
     }
 
-    public ProxyConfigRoot withProxyConfig(ProxyConfig proxyConfig) {
-        this.proxyConfig = proxyConfig;
+    public Link withRel(String rel) {
+        this.rel = rel;
+        return this;
+    }
+
+    @JsonProperty("href")
+    public String getHref() {
+        return href;
+    }
+
+    @JsonProperty("href")
+    public void setHref(String href) {
+        this.href = href;
+    }
+
+    public Link withHref(String href) {
+        this.href = href;
         return this;
     }
 
@@ -62,14 +80,14 @@ public class ProxyConfigRoot implements Serializable
         this.additionalProperties.put(name, value);
     }
 
-    public ProxyConfigRoot withAdditionalProperty(String name, Object value) {
+    public Link withAdditionalProperty(String name, Object value) {
         this.additionalProperties.put(name, value);
         return this;
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(proxyConfig).append(additionalProperties).toHashCode();
+        return new HashCodeBuilder().append(rel).append(href).append(additionalProperties).toHashCode();
     }
 
     @Override
@@ -77,11 +95,11 @@ public class ProxyConfigRoot implements Serializable
         if (other == this) {
             return true;
         }
-        if ((other instanceof ProxyConfigRoot) == false) {
+        if ((other instanceof Link) == false) {
             return false;
         }
-        ProxyConfigRoot rhs = ((ProxyConfigRoot) other);
-        return new EqualsBuilder().append(proxyConfig, rhs.proxyConfig).append(additionalProperties, rhs.additionalProperties).isEquals();
+        Link rhs = ((Link) other);
+        return new EqualsBuilder().append(rel, rhs.rel).append(href, rhs.href).append(additionalProperties, rhs.additionalProperties).isEquals();
     }
 
 }

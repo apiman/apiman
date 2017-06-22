@@ -1,3 +1,4 @@
+package io.apiman.gateway.engine.threescale;
 /*
  * Copyright 2017 JBoss Inc
  *
@@ -14,8 +15,6 @@
  * limitations under the License.
  */
 
-package io.apiman.gateway.engine.vertx.polling;
-
 import io.apiman.gateway.engine.IEngineConfig;
 import io.apiman.gateway.engine.Version;
 import io.apiman.gateway.engine.async.AsyncInitialize;
@@ -26,15 +25,16 @@ import io.apiman.gateway.engine.beans.Api;
 import io.apiman.gateway.engine.beans.Client;
 import io.apiman.gateway.engine.beans.Policy;
 import io.apiman.gateway.engine.impl.InMemoryRegistry;
+import io.apiman.gateway.engine.threescale.beans.Auth3ScaleBean;
+import io.apiman.gateway.engine.threescale.beans.BackendConfiguration;
+import io.apiman.gateway.engine.threescale.beans.ProxyConfigRoot;
+import io.apiman.gateway.engine.threescale.beans.RateLimitingStrategy;
+import io.apiman.gateway.engine.threescale.beans.Service;
+import io.apiman.gateway.engine.threescale.beans.ServicesRoot;
+import io.apiman.gateway.engine.vertx.polling.PolicyConfigLoader;
 import io.apiman.gateway.engine.vertx.polling.fetchers.AccessTokenResourceFetcher;
 import io.apiman.gateway.engine.vertx.polling.fetchers.FileResourceFetcher;
 import io.apiman.gateway.engine.vertx.polling.fetchers.HttpResourceFetcher;
-import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.Auth3ScaleBean;
-import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.BackendConfiguration;
-import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.ProxyConfigRoot;
-import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.RateLimitingStrategy;
-import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.Service;
-import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.ServicesRoot;
 import io.apiman.gateway.platforms.vertx3.common.verticles.Json;
 import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
@@ -70,12 +70,14 @@ import java.util.stream.Collectors;
  *   fetcher for additional options.</li>
  *   <li>orgName: 3scale does not presently support multi-tenanted namespacing within a single
  *   gateway, so a default namespace is used internally (reflected in metrics, etc). <em>Does
- *   not</em> impact the path used to call the gateway <em>Default: {@value #DEFAULT_ORGNAME}</em></li>
+ *   not</em> impact the path used to call the gateway <em>Default: {@value ThreeScaleConstants#DEFAULT_ORGNAME}</em></li>
  *   <li>version: 3scale does not presently support versioning, so a default version is used
  *   internally (reflected in metrics, etc). <em>Does not</em> impact the path used to call the
- *   gateway <em>Default: {@value #DEFAULT_VERSION}</em></li>
+ *   gateway <em>Default: {@value ThreeScaleConstants#DEFAULT_VERSION}</em></li>
  *   <li>strategy: Various strategies for auth and reporting: See {@link RateLimitingStrategy}</li>
- *   <li>backendEndpoint: 3scale backend endpoint. <em>Default: {@value #DEFAULT_BACKEND}</em></li>
+ *   <li>backendEndpoint: 3scale backend endpoint. <em>Default: {@value ThreeScaleConstants#DEFAULT_BACKEND}</em></li>
+ *   <li>pluginUri: 3scale policy plugin URI. Does not usually need changing.
+ *   <em>Default: {@link OneShotURILoader#determinePolicyImpl()}</em></li>
  * </ul>
  *
  * <p>
@@ -88,11 +90,7 @@ import java.util.stream.Collectors;
  * @see AccessTokenResourceFetcher
  */
 @SuppressWarnings("nls")
-public class ThreeScaleURILoadingRegistry extends InMemoryRegistry implements AsyncInitialize {
-    public static final String DEFAULT_ORGNAME = "apiman";
-    public static final String DEFAULT_VERSION = "1.0";
-    public static final String DEFAULT_BACKEND = "https://su1.3scale.net:443";
-
+public class ThreeScaleImmutableRegistry extends InMemoryRegistry implements AsyncInitialize {
     private static volatile OneShotURILoader instance;
     private Vertx vertx;
     private Map<String, String> options;
@@ -102,13 +100,13 @@ public class ThreeScaleURILoadingRegistry extends InMemoryRegistry implements As
      * @param vxConfig the engine config
      * @param options the options
      */
-    public ThreeScaleURILoadingRegistry(Vertx vertx, IEngineConfig vxConfig, Map<String, String> options) {
+    public ThreeScaleImmutableRegistry(Vertx vertx, IEngineConfig vxConfig, Map<String, String> options) {
         super();
         this.vertx = vertx;
         this.options = options;
     }
 
-    public ThreeScaleURILoadingRegistry(Map<String, String> options) {
+    public ThreeScaleImmutableRegistry(Map<String, String> options) {
         this(Vertx.vertx(), null, options);
     }
 
@@ -119,7 +117,7 @@ public class ThreeScaleURILoadingRegistry extends InMemoryRegistry implements As
 
     private OneShotURILoader getURILoader(Vertx vertx, Map<String, String> options) {
         if (instance == null) {
-            synchronized(ThreeScaleURILoadingRegistry.class) {
+            synchronized(ThreeScaleImmutableRegistry.class) {
                 if (instance == null) {
                     instance = new OneShotURILoader(vertx, options);
                 }
@@ -128,12 +126,14 @@ public class ThreeScaleURILoadingRegistry extends InMemoryRegistry implements As
         return instance;
     }
 
+    // For testing.
     public static void reloadData(IAsyncHandler<Void> doneHandler) {
         instance.reload(doneHandler);
     }
 
+    // For testing.
     public static void reset() {
-        synchronized(ThreeScaleURILoadingRegistry.class) {
+        synchronized(ThreeScaleImmutableRegistry.class) {
             instance = null;
         }
     }
@@ -172,8 +172,8 @@ public class ThreeScaleURILoadingRegistry extends InMemoryRegistry implements As
         private Map<String, String> config;
         private IAsyncHandler<Void> reloadHandler;
         private List<IAsyncResultHandler<Void>> failureHandlers = new ArrayList<>();
-        private Deque<ThreeScaleURILoadingRegistry> awaiting = new ArrayDeque<>();
-        private List<ThreeScaleURILoadingRegistry> allRegistries = new ArrayList<>();
+        private Deque<ThreeScaleImmutableRegistry> awaiting = new ArrayDeque<>();
+        private List<ThreeScaleImmutableRegistry> allRegistries = new ArrayList<>();
         private List<Api> policyConfigApis = Collections.emptyList();
         private boolean dataProcessed = false;
         private List<Auth3ScaleBean> configs = new ArrayList<>();
@@ -190,12 +190,12 @@ public class ThreeScaleURILoadingRegistry extends InMemoryRegistry implements As
         public OneShotURILoader(Vertx vertx, Map<String, String> config) {
             this.config = config;
             this.vertx = vertx;
-            this.defaultOrgName = config.getOrDefault("defaultOrgName", DEFAULT_ORGNAME);
-            this.defaultVersion = config.getOrDefault("defaultVersion", DEFAULT_VERSION);
+            this.defaultOrgName = config.getOrDefault("defaultOrgName", ThreeScaleConstants.DEFAULT_ORGNAME);
+            this.defaultVersion = config.getOrDefault("defaultVersion", ThreeScaleConstants.DEFAULT_VERSION);
             this.strategy = RateLimitingStrategy.valueOfOrDefault(config.get("strategy"), RateLimitingStrategy.STANDARD);
             this.apiUri = URI.create(requireOpt("apiEndpoint", "apiEndpoint is required in configuration"));
             this.environment = config.getOrDefault("environment", "production");
-            this.backendEndpoint = config.getOrDefault("backendEndpoint", DEFAULT_BACKEND);
+            this.backendEndpoint = config.getOrDefault("backendEndpoint", ThreeScaleConstants.DEFAULT_BACKEND);
 
             if (config.containsKey("policyConfigUri")) {
                 this.policyConfigUri = URI.create(config.get("policyConfigUri")); // Can be null.
@@ -217,7 +217,7 @@ public class ThreeScaleURILoadingRegistry extends InMemoryRegistry implements As
             clients.clear();
             failureHandlers.clear();
             allRegistries.stream()
-                .map(ThreeScaleURILoadingRegistry::getMap)
+                .map(ThreeScaleImmutableRegistry::getMap)
                 .forEach(Map::clear);
             dataProcessed = false;
             // Load again from scratch.
@@ -359,13 +359,16 @@ public class ThreeScaleURILoadingRegistry extends InMemoryRegistry implements As
         }
 
         private String determinePolicyImpl() {
+            if (config.containsKey("pluginUri")) {
+                return config.get("pluginUri");
+            }
             String version = config.getOrDefault("pluginVersion", Version.get().getVersionString());
             return "plugin:io.apiman.plugins:apiman-plugins-3scale-auth:" +
                     version +
                    ":war/io.apiman.plugins.auth3scale.Auth3Scale";
         }
 
-        public synchronized void subscribe(ThreeScaleURILoadingRegistry registry, IAsyncResultHandler<Void> failureHandler) {
+        public synchronized void subscribe(ThreeScaleImmutableRegistry registry, IAsyncResultHandler<Void> failureHandler) {
             Objects.requireNonNull(registry, "registry must be non-null.");
             Objects.requireNonNull(failureHandler, "failure handler must be non-null.");
             failureHandlers.add(failureHandler);
@@ -381,7 +384,7 @@ public class ThreeScaleURILoadingRegistry extends InMemoryRegistry implements As
         }
 
         private void loadDataIntoRegistries() {
-            ThreeScaleURILoadingRegistry reg = null;
+            ThreeScaleImmutableRegistry reg = null;
             while ((reg = awaiting.poll()) != null) {
                 log.debug("Loading data into registry {0}: ", reg);
                 for (Api api : apis) {

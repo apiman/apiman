@@ -1,5 +1,5 @@
 
-package io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans;
+package io.apiman.gateway.engine.threescale.beans;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -20,30 +20,44 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
 */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({
-    "action"
-})
-public class QuerystringParameters implements Serializable
-{
+@JsonPropertyOrder({ "endpoint", "host" })
+public class Backend implements Serializable {
 
-    @JsonProperty("action")
-    private String action;
+    @JsonProperty("endpoint")
+    private String endpoint;
+    @JsonProperty("host")
+    private String host;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<>();
-    private final static long serialVersionUID = 941124674150268152L;
+    private final static long serialVersionUID = 2716559165671659040L;
 
-    @JsonProperty("action")
-    public String getAction() {
-        return action;
+    @JsonProperty("endpoint")
+    public String getEndpoint() {
+        return endpoint;
     }
 
-    @JsonProperty("action")
-    public void setAction(String action) {
-        this.action = action;
+    @JsonProperty("endpoint")
+    public void setEndpoint(String endpoint) {
+        this.endpoint = endpoint;
     }
 
-    public QuerystringParameters withAction(String action) {
-        this.action = action;
+    public Backend withEndpoint(String endpoint) {
+        this.endpoint = endpoint;
+        return this;
+    }
+
+    @JsonProperty("host")
+    public String getHost() {
+        return host;
+    }
+
+    @JsonProperty("host")
+    public void setHost(String host) {
+        this.host = host;
+    }
+
+    public Backend withHost(String host) {
+        this.host = host;
         return this;
     }
 
@@ -62,14 +76,14 @@ public class QuerystringParameters implements Serializable
         this.additionalProperties.put(name, value);
     }
 
-    public QuerystringParameters withAdditionalProperty(String name, Object value) {
+    public Backend withAdditionalProperty(String name, Object value) {
         this.additionalProperties.put(name, value);
         return this;
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(action).append(additionalProperties).toHashCode();
+        return new HashCodeBuilder().append(endpoint).append(host).append(additionalProperties).toHashCode();
     }
 
     @Override
@@ -77,11 +91,12 @@ public class QuerystringParameters implements Serializable
         if (other == this) {
             return true;
         }
-        if ((other instanceof QuerystringParameters) == false) {
+        if ((other instanceof Backend) == false) {
             return false;
         }
-        QuerystringParameters rhs = ((QuerystringParameters) other);
-        return new EqualsBuilder().append(action, rhs.action).append(additionalProperties, rhs.additionalProperties).isEquals();
+        Backend rhs = ((Backend) other);
+        return new EqualsBuilder().append(endpoint, rhs.endpoint).append(host, rhs.host).append(additionalProperties, rhs.additionalProperties)
+                .isEquals();
     }
 
 }

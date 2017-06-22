@@ -1,4 +1,4 @@
-package io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans;
+package io.apiman.gateway.engine.threescale.beans;
 
 /**
 * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
