@@ -16,19 +16,19 @@
 
 package io.apiman.plugins.auth3scale.authrep.appid;
 
-import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.REFERRER;
-import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.USER_ID;
+import static io.apiman.plugins.auth3scale.Auth3ScaleConstants.REFERRER;
+import static io.apiman.plugins.auth3scale.Auth3ScaleConstants.USER_ID;
 import static io.apiman.plugins.auth3scale.util.Auth3ScaleUtils.buildLog;
 import static io.apiman.plugins.auth3scale.util.Auth3ScaleUtils.buildRepMetrics;
 
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.engine.policy.IPolicyContext;
-import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.Auth3ScaleBean;
-import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.BackendConfiguration;
-import io.apiman.plugins.auth3scale.authrep.AbstractRep;
-import io.apiman.plugins.auth3scale.authrep.AuthRepConstants;
-import io.apiman.plugins.auth3scale.ratelimit.IRep;
+import io.apiman.gateway.engine.threescale.beans.Auth3ScaleBean;
+import io.apiman.gateway.engine.threescale.beans.BackendConfiguration;
+import io.apiman.plugins.auth3scale.Auth3ScaleConstants;
+import io.apiman.plugins.auth3scale.authrep.RepPrincipal;
+import io.apiman.plugins.auth3scale.authrep.strategies.RepStrategy;
 import io.apiman.plugins.auth3scale.util.Auth3ScaleUtils;
 
 import java.net.URI;
@@ -36,20 +36,20 @@ import java.net.URI;
 /**
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
-public class AppIdRep implements IRep {
+public class AppIdRep implements RepPrincipal {
 
     private final BackendConfiguration config;
     private final ApiRequest request;
     private final ApiResponse response;
-    private final AbstractRep rep;
+    private final RepStrategy rep;
     private final URI endpoint;
 
     public AppIdRep(Auth3ScaleBean auth3ScaleBean,
             ApiRequest request,
             ApiResponse response,
             IPolicyContext context,
-            AbstractRep rep) {
-                this.endpoint = Auth3ScaleUtils.parseUri(auth3ScaleBean.getBackendEndpoint() + AuthRepConstants.REPORT_PATH);
+            RepStrategy rep) {
+                this.endpoint = Auth3ScaleUtils.parseUri(auth3ScaleBean.getBackendEndpoint() + Auth3ScaleConstants.REPORT_PATH);
                 this.config = auth3ScaleBean.getThreescaleConfig().getProxyConfig().getBackendConfig();
                 this.request = request;
                 this.response = response;
@@ -57,7 +57,7 @@ public class AppIdRep implements IRep {
     }
 
     @Override
-    public IRep rep() {
+    public RepPrincipal rep() {
         String appId = AppIdUtils.getAppId(config, request);
         String appKey = AppIdUtils.getAppKey(config, request);
         // Otherwise build report to be encoded.

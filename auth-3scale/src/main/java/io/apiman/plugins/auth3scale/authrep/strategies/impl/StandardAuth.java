@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 JBoss Inc
+ * Copyright 2016 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package io.apiman.plugins.auth3scale.authrep.strategies.impl;
 
-package io.apiman.plugins.auth3scale.authrep.strategies;
-
-import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.AUTHREP_PATH;
-import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.BLOCKING_FLAG;
+import static io.apiman.plugins.auth3scale.Auth3ScaleConstants.AUTHREP_PATH;
+import static io.apiman.plugins.auth3scale.Auth3ScaleConstants.BLOCKING_FLAG;
 
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.gateway.engine.async.AsyncResultImpl;
@@ -30,61 +29,63 @@ import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.components.http.HttpMethod;
 import io.apiman.gateway.engine.components.http.IHttpClientRequest;
 import io.apiman.gateway.engine.policy.IPolicyContext;
-import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.Auth3ScaleBean;
-import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.BackendConfiguration;
-import io.apiman.plugins.auth3scale.authrep.AbstractAuth;
-import io.apiman.plugins.auth3scale.authrep.AbstractAuthRepBase;
+import io.apiman.gateway.engine.threescale.beans.Auth3ScaleBean;
+import io.apiman.gateway.engine.threescale.beans.BackendConfiguration;
+import io.apiman.plugins.auth3scale.authrep.AuthRepBase;
+import io.apiman.plugins.auth3scale.authrep.strategies.AuthStrategy;
 import io.apiman.plugins.auth3scale.util.report.AuthResponseHandler;
 import io.apiman.plugins.auth3scale.util.report.batchedreporter.ReportData;
 
 /**
- *  First leg is the same as {@link StandardAuth}.
- *
- * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
+ * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 @SuppressWarnings("nls")
-public class BatchedAuth extends AbstractAuth {
+public class StandardAuth implements AuthStrategy {
 
     private static final AsyncResultImpl<Void> OK_CACHED = AsyncResultImpl.create((Void) null);
     private final String backendUri;
     private final StandardAuthCache authCache;
-    private final BatchedAuthCache heuristicCache;
-    private BackendConfiguration config;
-    private ApiRequest request;
-    private Object[] keyElems;
-    private IAsyncHandler<PolicyFailure> policyFailureHandler;
+    private final BackendConfiguration config;
+    private final ApiRequest request;
+    private final IPolicyContext context;
+    private final IHttpClientComponent httpClient;
+    private final IPolicyFailureFactoryComponent failureFactory;
     private final IApimanLogger logger;
-    private ReportData report;
-    private long serviceId;
-    private IPolicyContext context;
-    private IHttpClientComponent httpClient;
-    private IPolicyFailureFactoryComponent failureFactory;
 
-    public BatchedAuth(Auth3ScaleBean auth3ScaleBean,
+    private ReportData report;
+    private Object[] keyElems;
+    private long serviceId;
+    private IAsyncHandler<PolicyFailure> policyFailureHandler;
+
+    public StandardAuth(Auth3ScaleBean auth3ScaleBean,
             ApiRequest request,
             IPolicyContext context,
-            StandardAuthCache authCache,
-            BatchedAuthCache heuristicCache) {
+            StandardAuthCache authCache) {
         this.backendUri = auth3ScaleBean.getBackendEndpoint();
         this.config = auth3ScaleBean.getThreescaleConfig().getProxyConfig().getBackendConfig();
         this.request = request;
         this.context = context;
-        this.authCache = authCache;
-        this.heuristicCache = heuristicCache;
-        this.logger = context.getLogger(BatchedAuth.class);
-        this.serviceId = config.getProxy().getServiceId();
         this.httpClient = context.getComponent(IHttpClientComponent.class);
         this.failureFactory = context.getComponent(IPolicyFailureFactoryComponent.class);
+        this.logger = context.getLogger(StandardAuth.class);
+        this.serviceId = config.getProxy().getServiceId();
+        this.authCache = authCache;
     }
 
     @Override
-    public BatchedAuth setKeyElems(Object... keyElems) {
+    public StandardAuth setKeyElems(Object... keyElems) {
         this.keyElems = keyElems;
         return this;
     }
 
     @Override
-    public BatchedAuth auth(IAsyncResultHandler<Void> resultHandler) {
+    public AuthRepBase setReport(ReportData report) {
+        this.report = report;
+        return this;
+    }
+
+    @Override
+    public StandardAuth auth(IAsyncResultHandler<Void> resultHandler) {
         // If we have no cache entry, then block. Otherwise, the request can immediately go
         // through and we will resolve the rate limiting status post hoc (various strategies
         // depending on settings).
@@ -133,18 +134,11 @@ public class BatchedAuth extends AbstractAuth {
     protected void flushCache() {
         logger.debug("Invalidating cache");
         authCache.invalidate(config, request, keyElems);
-        heuristicCache.invalidate(config, request, keyElems);
     }
 
     @Override
-    public BatchedAuth policyFailureHandler(IAsyncHandler<PolicyFailure> policyFailureHandler) {
+    public StandardAuth policyFailureHandler(IAsyncHandler<PolicyFailure> policyFailureHandler) {
         this.policyFailureHandler = policyFailureHandler;
-        return this;
-    }
-
-    @Override
-    public AbstractAuthRepBase setReport(ReportData report) {
-        this.report = report;
         return this;
     }
 }

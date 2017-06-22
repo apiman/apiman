@@ -15,12 +15,13 @@
  */
 package io.apiman.plugins.auth3scale;
 
+import io.apiman.common.logging.IApimanLogger;
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.engine.policies.AbstractMappedPolicy;
 import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
-import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.Auth3ScaleBean;
+import io.apiman.gateway.engine.threescale.beans.Auth3ScaleBean;
 
 /**
  * @author Marc Savy {@literal <msavy@redhat.com>}
@@ -28,13 +29,16 @@ import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.Auth3Sca
 @SuppressWarnings("nls")
 public class Auth3Scale extends AbstractMappedPolicy<Auth3ScaleBean> {
     private static final String AUTH3SCALE_REQUEST = "Auth3Scale.Req";
+    private static final RuntimeException UNEXPECTED_ERROR = new RuntimeException("Unexpected error, refer to logs for more information.");
     private AuthRep auth3scale;
+    private IApimanLogger logger;
     private volatile boolean init = false;
 
     private void init(IPolicyContext context) {
         if (!init) {
             synchronized (this) {
                 auth3scale = new AuthRep(context);
+                logger = context.getLogger(Auth3Scale.class);
                 init = true;
             }
         }
@@ -55,24 +59,27 @@ public class Auth3Scale extends AbstractMappedPolicy<Auth3ScaleBean> {
                         context.setAttribute(AUTH3SCALE_REQUEST, request);
                         chain.doApply(request);
                     } else {
-                        result.getError().printStackTrace();
                         chain.throwError(result.getError());
                     }
                 });
         } catch (Exception e) {
+            logger.error("Unexpected error", e);
             e.printStackTrace();
+            chain.throwError(UNEXPECTED_ERROR);
         }
     }
 
     @Override
     protected void doApply(ApiResponse response, IPolicyContext context, Auth3ScaleBean config, IPolicyChain<ApiResponse> chain) {
         try {
-        // Just let it go ahead, and report stuff at our leisure.
-        chain.doApply(response);
-        ApiRequest request = context.getAttribute(AUTH3SCALE_REQUEST, null);
-        auth3scale.getRep(config, response, request, context).rep();
+            // Just let it go ahead, and report stuff at our leisure.
+            chain.doApply(response);
+            ApiRequest request = context.getAttribute(AUTH3SCALE_REQUEST, null);
+            auth3scale.getRep(config, response, request, context).rep();
         } catch (Exception e) {
+            logger.error("Unexpected error", e);
             e.printStackTrace();
+            chain.throwError(UNEXPECTED_ERROR);
         }
     }
 

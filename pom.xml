@@ -181,6 +181,11 @@
         <artifactId>apiman-test-common</artifactId>
         <version>${version.apiman}</version>
       </dependency>
+      <dependency>
+        <groupId>io.apiman</groupId>
+        <artifactId>apiman-gateway-engine-3scale</artifactId>
+        <version>${version.apiman}</version>
+      </dependency>
       <!-- testing -->
       <dependency>
         <groupId>junit</groupId>

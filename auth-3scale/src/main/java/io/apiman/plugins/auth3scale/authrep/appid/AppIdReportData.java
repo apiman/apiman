@@ -15,15 +15,15 @@
  */
 package io.apiman.plugins.auth3scale.authrep.appid;
 
-import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.APP_ID;
-import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.APP_KEY;
-import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.LOG;
-import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.REFERRER;
-import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.SERVICE_ID;
-import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.SERVICE_TOKEN;
-import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.TIMESTAMP;
-import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.USAGE;
-import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.USER_ID;
+import static io.apiman.plugins.auth3scale.Auth3ScaleConstants.APP_ID;
+import static io.apiman.plugins.auth3scale.Auth3ScaleConstants.APP_KEY;
+import static io.apiman.plugins.auth3scale.Auth3ScaleConstants.LOG;
+import static io.apiman.plugins.auth3scale.Auth3ScaleConstants.REFERRER;
+import static io.apiman.plugins.auth3scale.Auth3ScaleConstants.SERVICE_ID;
+import static io.apiman.plugins.auth3scale.Auth3ScaleConstants.SERVICE_TOKEN;
+import static io.apiman.plugins.auth3scale.Auth3ScaleConstants.TIMESTAMP;
+import static io.apiman.plugins.auth3scale.Auth3ScaleConstants.USAGE;
+import static io.apiman.plugins.auth3scale.Auth3ScaleConstants.USER_ID;
 import static io.apiman.plugins.auth3scale.util.Auth3ScaleUtils.setIfNotNull;
 
 import io.apiman.plugins.auth3scale.util.ParameterMap;

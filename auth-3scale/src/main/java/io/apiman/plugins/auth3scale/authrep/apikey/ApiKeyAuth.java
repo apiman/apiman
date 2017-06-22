@@ -16,8 +16,8 @@
 
 package io.apiman.plugins.auth3scale.authrep.apikey;
 
-import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.REFERRER;
-import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.USER_ID;
+import static io.apiman.plugins.auth3scale.Auth3ScaleConstants.REFERRER;
+import static io.apiman.plugins.auth3scale.Auth3ScaleConstants.USER_ID;
 import static io.apiman.plugins.auth3scale.util.Auth3ScaleUtils.buildRepMetrics;
 import static io.apiman.plugins.auth3scale.util.Auth3ScaleUtils.hasRoutes;
 
@@ -27,36 +27,36 @@ import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.policy.IPolicyContext;
-import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.Auth3ScaleBean;
-import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.BackendConfiguration;
-import io.apiman.plugins.auth3scale.authrep.AbstractAuth;
-import io.apiman.plugins.auth3scale.ratelimit.IAuth;
+import io.apiman.gateway.engine.threescale.beans.Auth3ScaleBean;
+import io.apiman.gateway.engine.threescale.beans.BackendConfiguration;
+import io.apiman.plugins.auth3scale.authrep.AuthPrincipal;
+import io.apiman.plugins.auth3scale.authrep.strategies.AuthStrategy;
 import io.apiman.plugins.auth3scale.util.Auth3ScaleUtils;
 
 /**
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
-public class ApiKeyAuth implements IAuth {
+public class ApiKeyAuth implements AuthPrincipal {
 
     private static final AsyncResultImpl<Void> FAIL_PROVIDE_USER_KEY = AsyncResultImpl.create(new RuntimeException("No user apikey provided!")); //$NON-NLS-1$
     private static final AsyncResultImpl<Void> FAIL_NO_ROUTE = AsyncResultImpl.create(new RuntimeException("No valid route")); //$NON-NLS-1$
 
     private BackendConfiguration config;
     private ApiRequest request;
-    private AbstractAuth auth;
+    private AuthStrategy auth;
     private IAsyncHandler<PolicyFailure> policyFailureHandler;
 
     public ApiKeyAuth(Auth3ScaleBean auth3ScaleBean,
             ApiRequest request,
             IPolicyContext context,
-            AbstractAuth auth) {
+            AuthStrategy auth) {
         this.config = auth3ScaleBean.getThreescaleConfig().getProxyConfig().getBackendConfig();
         this.request = request;
         this.auth = auth;
     }
 
     @Override
-    public IAuth auth(IAsyncResultHandler<Void> resultHandler) {
+    public AuthPrincipal auth(IAsyncResultHandler<Void> resultHandler) {
       String userKey = getUserKey();
       if (userKey == null) {
           resultHandler.handle(FAIL_PROVIDE_USER_KEY);

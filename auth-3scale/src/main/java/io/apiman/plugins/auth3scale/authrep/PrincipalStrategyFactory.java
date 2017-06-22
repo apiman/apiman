@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 JBoss Inc
+ * Copyright 2017 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,30 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apiman.plugins.auth3scale.authrep.apikey;
+
+package io.apiman.plugins.auth3scale.authrep;
 
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.engine.policy.IPolicyContext;
 import io.apiman.gateway.engine.threescale.beans.Auth3ScaleBean;
-import io.apiman.plugins.auth3scale.authrep.RepPrincipal;
 import io.apiman.plugins.auth3scale.authrep.strategies.AuthStrategy;
 import io.apiman.plugins.auth3scale.authrep.strategies.RepStrategy;
-import io.apiman.plugins.auth3scale.authrep.AuthPrincipal;
-import io.apiman.plugins.auth3scale.authrep.AuthRepFactory;
 
 /**
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
-public class ApiKeyAuthRepFactory implements AuthRepFactory {
+public interface PrincipalStrategyFactory {
 
-    @Override
-    public AuthPrincipal createAuth(Auth3ScaleBean config, ApiRequest request, IPolicyContext context, AuthStrategy authStrategy) {
-        return new ApiKeyAuth(config, request, context, authStrategy);
-    }
+    AuthStrategy getAuthPrincipal(Auth3ScaleBean bean,
+            ApiRequest request,
+            IPolicyContext context);
 
-    @Override
-    public RepPrincipal createRep(Auth3ScaleBean config, ApiResponse response, ApiRequest request, IPolicyContext context, RepStrategy repStrategy) {
-        return new ApiKeyRep(config, request, response, context, repStrategy);
-    }
+    RepStrategy getRepPrincipal(Auth3ScaleBean bean,
+            ApiRequest request,
+            ApiResponse response,
+            IPolicyContext context);
 }

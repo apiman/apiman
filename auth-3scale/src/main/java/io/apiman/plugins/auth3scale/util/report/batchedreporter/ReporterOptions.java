@@ -16,8 +16,8 @@
 
 package io.apiman.plugins.auth3scale.util.report.batchedreporter;
 
-import io.apiman.gateway.engine.vertx.polling.ThreeScaleURILoadingRegistry;
-import io.apiman.plugins.auth3scale.authrep.AuthRepConstants;
+import io.apiman.gateway.engine.threescale.ThreeScaleConstants;
+import io.apiman.plugins.auth3scale.Auth3ScaleConstants;
 
 import java.net.URI;
 
@@ -29,7 +29,7 @@ public class ReporterOptions {
     public static final int DEFAULT_LIST_CAPAC = 800;
     public static final int DEFAULT_FULL_TRIGGER = 500;
     public static final int DEFAULT_BUCKET_MAX_SIZE = 1000;
-    public static final URI DEFAULT_REPORT_ENDPOINT = URI.create(ThreeScaleURILoadingRegistry.DEFAULT_BACKEND + AuthRepConstants.REPORT_PATH);
+    public static final URI DEFAULT_REPORT_ENDPOINT = URI.create(ThreeScaleConstants.DEFAULT_BACKEND + Auth3ScaleConstants.REPORT_PATH);
 
     private int initialBucketCapacity = DEFAULT_LIST_CAPAC;
     private int bucketMaxSize = DEFAULT_BUCKET_MAX_SIZE;

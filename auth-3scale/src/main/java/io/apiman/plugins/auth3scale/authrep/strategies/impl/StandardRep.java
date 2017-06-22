@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apiman.plugins.auth3scale.authrep.strategies;
+package io.apiman.plugins.auth3scale.authrep.strategies.impl;
 
-import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.AUTHREP_PATH;
-import static io.apiman.plugins.auth3scale.authrep.AuthRepConstants.BLOCKING_FLAG;
+import static io.apiman.plugins.auth3scale.Auth3ScaleConstants.AUTHREP_PATH;
+import static io.apiman.plugins.auth3scale.Auth3ScaleConstants.BLOCKING_FLAG;
 
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.gateway.engine.async.AsyncResultImpl;
@@ -27,9 +27,9 @@ import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.components.http.HttpMethod;
 import io.apiman.gateway.engine.components.http.IHttpClientRequest;
 import io.apiman.gateway.engine.policy.IPolicyContext;
-import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.Auth3ScaleBean;
-import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.BackendConfiguration;
-import io.apiman.plugins.auth3scale.authrep.AbstractRep;
+import io.apiman.gateway.engine.threescale.beans.Auth3ScaleBean;
+import io.apiman.gateway.engine.threescale.beans.BackendConfiguration;
+import io.apiman.plugins.auth3scale.authrep.strategies.RepStrategy;
 import io.apiman.plugins.auth3scale.util.Status;
 import io.apiman.plugins.auth3scale.util.report.AuthResponseHandler;
 import io.apiman.plugins.auth3scale.util.report.batchedreporter.ReportData;
@@ -38,7 +38,7 @@ import io.apiman.plugins.auth3scale.util.report.batchedreporter.ReportData;
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 @SuppressWarnings("nls")
-public class StandardRep extends AbstractRep {
+public class StandardRep implements RepStrategy {
 
     private final String backendUri;
     private final BackendConfiguration config;

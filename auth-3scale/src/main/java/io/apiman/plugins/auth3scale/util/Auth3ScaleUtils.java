@@ -18,8 +18,8 @@ package io.apiman.plugins.auth3scale.util;
 
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.ApiResponse;
-import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.BackendConfiguration;
-import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.ProxyRule;
+import io.apiman.gateway.engine.threescale.beans.BackendConfiguration;
+import io.apiman.gateway.engine.threescale.beans.ProxyRule;
 
 import java.net.URI;
 import java.util.concurrent.ExecutionException;

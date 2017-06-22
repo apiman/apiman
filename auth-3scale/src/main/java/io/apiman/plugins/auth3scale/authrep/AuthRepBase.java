@@ -21,9 +21,9 @@ import io.apiman.plugins.auth3scale.util.report.batchedreporter.ReportData;
 /**
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
-public interface AbstractAuthRepBase {
+public interface AuthRepBase {
 
-    AbstractAuthRepBase setKeyElems(Object... keyElems);
+    AuthRepBase setKeyElems(Object... keyElems);
 
-    AbstractAuthRepBase setReport(ReportData report);
+    AuthRepBase setReport(ReportData report);
 }

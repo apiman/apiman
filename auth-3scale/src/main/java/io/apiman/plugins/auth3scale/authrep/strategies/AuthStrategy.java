@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 JBoss Inc
+ * Copyright 2016 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,20 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package io.apiman.plugins.auth3scale.util.report.batchedreporter;
+package io.apiman.plugins.auth3scale.authrep.strategies;
 
 import io.apiman.gateway.engine.async.IAsyncHandler;
-
-import java.util.List;
+import io.apiman.gateway.engine.async.IAsyncResultHandler;
+import io.apiman.gateway.engine.beans.PolicyFailure;
+import io.apiman.plugins.auth3scale.authrep.AuthRepBase;
 
 /**
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
-public interface IReporter {
+public interface AuthStrategy extends AuthRepBase {
 
-    List<ReportToSend> encode();
+    AuthStrategy policyFailureHandler(IAsyncHandler<PolicyFailure> policyFailureHandler);
 
-    IReporter setFullHandler(IAsyncHandler<Void> fullHandler);
-
+    AuthStrategy auth(IAsyncResultHandler<Void> resultHandler);
 }

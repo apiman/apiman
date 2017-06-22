@@ -38,7 +38,7 @@ import com.google.common.collect.EvictingQueue;
 @SuppressWarnings("nls")
 public class BatchedReporter {
     // Change to RingBuffer?
-    private Set<IReporter> reporters = new LinkedHashSet<>();
+    private Set<Reporter> reporters = new LinkedHashSet<>();
     private RetryReporter retryReporter;
     private IPeriodicComponent periodic;
     private IHttpClientComponent httpClient;
@@ -75,7 +75,7 @@ public class BatchedReporter {
         return started;
     }
 
-    public BatchedReporter addReporter(IReporter reporter) {
+    public BatchedReporter addReporter(Reporter reporter) {
         reporter.setFullHandler(isFull -> send());
         reporters.add(reporter);
         return this;
@@ -97,10 +97,10 @@ public class BatchedReporter {
 
     // speed up / slow down (primitive back-pressure mechanism?)
     private void doSend() {
-        for (IReporter reporter : reporters) {
-            List<ReportToSend> sendItList = reporter.encode();
+        for (Reporter reporter : reporters) {
+            List<EncodedReport> sendItList = reporter.encode();
 
-            for (final ReportToSend sendIt : sendItList) {
+            for (final EncodedReport sendIt : sendItList) {
                 itemsOfWork++;
                 logger.debug("[Report {}] Attempting to send: {}", sendIt.hashCode(), sendIt);
                 IHttpClientRequest post = httpClient.request(sendIt.getEndpoint().toString(), // TODO change to broken down components
@@ -114,7 +114,7 @@ public class BatchedReporter {
         checkFinishedSending();
     }
 
-    private ReportResponseHandler handleResponse(ReportToSend report) {
+    private ReportResponseHandler handleResponse(EncodedReport report) {
         return new ReportResponseHandler(reportResult -> {
             logger.debug("[Report {}] Send result: {}", report.hashCode(), reportResult.getResult());
             // Flush back to allow caller to invalidate cache, etc.
@@ -137,28 +137,28 @@ public class BatchedReporter {
         }
     }
 
-    private static final class RetryReporter implements IReporter {
-        private final Queue<ReportToSend> resendReports;
+    private static final class RetryReporter implements Reporter {
+        private final Queue<EncodedReport> resendReports;
 
         public RetryReporter(int maxSize) {
             resendReports = EvictingQueue.create(maxSize);
         }
 
         @Override
-        public List<ReportToSend> encode() {
-            List<ReportToSend> copy = new LinkedList<>(resendReports);
+        public List<EncodedReport> encode() {
+            List<EncodedReport> copy = new LinkedList<>(resendReports);
             resendReports.clear(); // Some may end up coming back again if retry fails.
             return copy;
         }
 
         // Never call full; we just evict old records once limit is hit.
-        public RetryReporter addRetry(ReportToSend report) {
+        public RetryReporter addRetry(EncodedReport report) {
             resendReports.offer(report);
             return this;
         }
 
         @Override
-        public IReporter setFullHandler(IAsyncHandler<Void> fullHandler) {
+        public Reporter setFullHandler(IAsyncHandler<Void> fullHandler) {
             return null;
         }
     }

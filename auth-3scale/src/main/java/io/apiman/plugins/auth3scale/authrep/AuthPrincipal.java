@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 JBoss Inc
+ * Copyright 2017 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,14 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package io.apiman.plugins.auth3scale.authrep;
+
+import io.apiman.gateway.engine.async.IAsyncHandler;
+import io.apiman.gateway.engine.async.IAsyncResultHandler;
+import io.apiman.gateway.engine.beans.PolicyFailure;
 
 /**
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
-public abstract class AbstractRep
-    implements AbstractAuthRepBase {
+public interface AuthPrincipal {
 
-    public abstract AbstractRep rep();
+    AuthPrincipal auth(IAsyncResultHandler<Void> resultHandler);
 
+    AuthPrincipal policyFailureHandler(IAsyncHandler<PolicyFailure> policyFailureHandler);
 }

@@ -16,22 +16,11 @@
 
 package io.apiman.plugins.auth3scale.authrep;
 
-import io.apiman.gateway.engine.beans.ApiRequest;
-import io.apiman.gateway.engine.beans.ApiResponse;
-import io.apiman.gateway.engine.policy.IPolicyContext;
-import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.Auth3ScaleBean;
-
 /**
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
-public interface IAuthStrategyFactory {
+public interface RepPrincipal {
 
-    AbstractAuth getAuthStrategy(Auth3ScaleBean bean,
-            ApiRequest request,
-            IPolicyContext context);
+    RepPrincipal rep();
 
-    AbstractRep getRepStrategy(Auth3ScaleBean bean,
-            ApiRequest request,
-            ApiResponse response,
-            IPolicyContext context);
 }

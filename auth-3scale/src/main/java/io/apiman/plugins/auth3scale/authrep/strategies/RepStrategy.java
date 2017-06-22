@@ -13,19 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apiman.plugins.auth3scale.util.report.batchedreporter;
+package io.apiman.plugins.auth3scale.authrep.strategies;
 
-import io.apiman.gateway.engine.async.IAsyncResult;
-import io.apiman.plugins.auth3scale.util.report.ReportResponseHandler.ReportResponse;
-
-import java.net.URI;
+import io.apiman.plugins.auth3scale.authrep.AuthRepBase;
 
 /**
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
-public interface ReportToSend {
-    String getData();
-    String getContentType();
-    URI getEndpoint();
-    void flush(IAsyncResult<ReportResponse> reportResponse);
+public interface RepStrategy extends AuthRepBase {
+
+    RepStrategy rep();
+
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 JBoss Inc
+ * Copyright 2016 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package io.apiman.plugins.auth3scale.util.report.batchedreporter;
 
-package io.apiman.plugins.auth3scale.ratelimit;
+import io.apiman.gateway.engine.async.IAsyncResult;
+import io.apiman.plugins.auth3scale.util.report.ReportResponseHandler.ReportResponse;
+
+import java.net.URI;
 
 /**
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
-public interface IRep {
-    IRep rep();
+public interface EncodedReport {
+    String getData();
+    String getContentType();
+    URI getEndpoint();
+    void flush(IAsyncResult<ReportResponse> reportResponse);
 }

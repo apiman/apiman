@@ -17,7 +17,7 @@
 package io.apiman.plugins.auth3scale.authrep.appid;
 
 import io.apiman.gateway.engine.beans.ApiRequest;
-import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.BackendConfiguration;
+import io.apiman.gateway.engine.threescale.beans.BackendConfiguration;
 import io.apiman.plugins.auth3scale.util.Auth3ScaleUtils;
 
 /**

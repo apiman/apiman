@@ -18,20 +18,20 @@ package io.apiman.plugins.auth3scale;
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.engine.policy.IPolicyContext;
-import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.Auth3ScaleBean;
-import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.AuthTypeEnum;
-import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.BackendConfiguration;
-import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.RateLimitingStrategy;
-import io.apiman.plugins.auth3scale.authrep.AbstractAuth;
-import io.apiman.plugins.auth3scale.authrep.AbstractRep;
+import io.apiman.gateway.engine.threescale.beans.Auth3ScaleBean;
+import io.apiman.gateway.engine.threescale.beans.AuthTypeEnum;
+import io.apiman.gateway.engine.threescale.beans.BackendConfiguration;
+import io.apiman.gateway.engine.threescale.beans.RateLimitingStrategy;
+import io.apiman.plugins.auth3scale.authrep.AuthPrincipal;
 import io.apiman.plugins.auth3scale.authrep.AuthRepFactory;
-import io.apiman.plugins.auth3scale.authrep.IAuthStrategyFactory;
+import io.apiman.plugins.auth3scale.authrep.PrincipalStrategyFactory;
+import io.apiman.plugins.auth3scale.authrep.RepPrincipal;
 import io.apiman.plugins.auth3scale.authrep.apikey.ApiKeyAuthRepFactory;
 import io.apiman.plugins.auth3scale.authrep.appid.AppIdAuthRepFactory;
-import io.apiman.plugins.auth3scale.authrep.strategies.BatchedStrategyFactory;
-import io.apiman.plugins.auth3scale.authrep.strategies.StandardStrategyFactory;
-import io.apiman.plugins.auth3scale.ratelimit.IAuth;
-import io.apiman.plugins.auth3scale.ratelimit.IRep;
+import io.apiman.plugins.auth3scale.authrep.strategies.AuthStrategy;
+import io.apiman.plugins.auth3scale.authrep.strategies.RepStrategy;
+import io.apiman.plugins.auth3scale.authrep.strategies.impl.BatchedStrategyFactory;
+import io.apiman.plugins.auth3scale.authrep.strategies.impl.StandardStrategyFactory;
 import io.apiman.plugins.auth3scale.util.report.batchedreporter.BatchedReporter;
 import io.apiman.plugins.auth3scale.util.report.batchedreporter.BatchedReporterOptions;
 
@@ -44,7 +44,7 @@ import java.util.Map;
 public class AuthRep {
 
     private Map<AuthTypeEnum, AuthRepFactory> authTypeFactory = new HashMap<>();
-    private Map<RateLimitingStrategy, IAuthStrategyFactory> strategyFactoryMap = new HashMap<>();
+    private Map<RateLimitingStrategy, PrincipalStrategyFactory> principalFactoryMap = new HashMap<>();
     private BatchedReporter batchedReporter;
 
     public AuthRep(IPolicyContext context) {
@@ -61,20 +61,20 @@ public class AuthRep {
 
         // Add different RL strategies (bad name... TODO better name!).
         // Standard naive rate limiting.
-        strategyFactoryMap.put(RateLimitingStrategy.STANDARD, new StandardStrategyFactory());
-        strategyFactoryMap.put(RateLimitingStrategy.BATCHED_HYBRID, new BatchedStrategyFactory(batchedReporter));
+        principalFactoryMap.put(RateLimitingStrategy.STANDARD, new StandardStrategyFactory());
+        principalFactoryMap.put(RateLimitingStrategy.BATCHED_HYBRID, new BatchedStrategyFactory(batchedReporter));
     }
 
-    public IAuth getAuth(Auth3ScaleBean config, ApiRequest request, IPolicyContext context) {
+    public AuthPrincipal getAuth(Auth3ScaleBean config, ApiRequest request, IPolicyContext context) {
         BackendConfiguration backendConfig = getBackendConfig(config);
-        AbstractAuth authStrategy = getAuthStrategy(config, request, context);
+        AuthStrategy authStrategy = getAuthStrategy(config, request, context);
         return authTypeFactory.get(backendConfig.getAuthType())
                 .createAuth(config, request, context, authStrategy);
     }
 
-    public IRep getRep(Auth3ScaleBean config, ApiResponse response, ApiRequest request, IPolicyContext context) {
+    public RepPrincipal getRep(Auth3ScaleBean config, ApiResponse response, ApiRequest request, IPolicyContext context) {
         BackendConfiguration contentConfig = config.getThreescaleConfig().getProxyConfig().getBackendConfig();
-        AbstractRep repStrategy = getRepStrategy(config, request, response, context);
+        RepStrategy repStrategy = getRepStrategy(config, request, response, context);
         return authTypeFactory.get(contentConfig.getAuthType())
                 .createRep(config, response, request, context, repStrategy);
     }
@@ -83,13 +83,13 @@ public class AuthRep {
         return config.getThreescaleConfig().getProxyConfig().getBackendConfig();
     }
 
-    private AbstractAuth getAuthStrategy(Auth3ScaleBean config, ApiRequest request, IPolicyContext context) {
-        return strategyFactoryMap.get(config.getRateLimitingStrategy())
-                .getAuthStrategy(config, request, context);
+    private AuthStrategy getAuthStrategy(Auth3ScaleBean config, ApiRequest request, IPolicyContext context) {
+        return principalFactoryMap.get(config.getRateLimitingStrategy())
+                .getAuthPrincipal(config, request, context);
     }
 
-    private AbstractRep getRepStrategy(Auth3ScaleBean config, ApiRequest request, ApiResponse response, IPolicyContext context) {
-        return strategyFactoryMap.get(config.getRateLimitingStrategy())
-                .getRepStrategy(config, request, response, context);
+    private RepStrategy getRepStrategy(Auth3ScaleBean config, ApiRequest request, ApiResponse response, IPolicyContext context) {
+        return principalFactoryMap.get(config.getRateLimitingStrategy())
+                .getRepPrincipal(config, request, response, context);
     }
 }

@@ -14,30 +14,30 @@
  * limitations under the License.
  */
 
-package io.apiman.plugins.auth3scale.authrep.strategies;
+package io.apiman.plugins.auth3scale.authrep.strategies.impl;
 
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.engine.policy.IPolicyContext;
-import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.Auth3ScaleBean;
-import io.apiman.plugins.auth3scale.authrep.IAuthStrategyFactory;
+import io.apiman.gateway.engine.threescale.beans.Auth3ScaleBean;
+import io.apiman.plugins.auth3scale.authrep.PrincipalStrategyFactory;
 import io.apiman.plugins.auth3scale.util.report.batchedreporter.BatchedReportData;
 import io.apiman.plugins.auth3scale.util.report.batchedreporter.BatchedReporter;
-import io.apiman.plugins.auth3scale.util.report.batchedreporter.Reporter;
+import io.apiman.plugins.auth3scale.util.report.batchedreporter.ReporterImpl;
 import io.apiman.plugins.auth3scale.util.report.batchedreporter.ReporterOptions;
 
 /**
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
-public class BatchedStrategyFactory implements IAuthStrategyFactory {
+public class BatchedStrategyFactory implements PrincipalStrategyFactory {
     // is this safe for mixing multiple different users? probably not. TODO verify it's fixed
     // Maybe caller should sort that out (seems better) -- might be OK with user ID figured in?
-    private Reporter<BatchedReportData> reporter;
+    private ReporterImpl<BatchedReportData> reporter;
     private StandardAuthCache standardCache = new StandardAuthCache();
     private BatchedAuthCache heuristicCache = new BatchedAuthCache();
 
     public BatchedStrategyFactory(BatchedReporter batchedReporter) {
-        reporter = new Reporter<>(new ReporterOptions());
+        reporter = new ReporterImpl<>(new ReporterOptions());
 
         reporter.flushHandler(result -> {
             BatchedReportData entry = result.getResult().get(0);
@@ -50,14 +50,14 @@ public class BatchedStrategyFactory implements IAuthStrategyFactory {
     }
 
     @Override
-    public BatchedAuth getAuthStrategy(Auth3ScaleBean bean,
+    public BatchedAuth getAuthPrincipal(Auth3ScaleBean bean,
             ApiRequest request,
             IPolicyContext context) {
         return new BatchedAuth(bean, request, context, standardCache, heuristicCache);
     }
 
     @Override
-    public BatchedRep getRepStrategy(Auth3ScaleBean bean,
+    public BatchedRep getRepPrincipal(Auth3ScaleBean bean,
             ApiRequest request,
             ApiResponse response,
             IPolicyContext context) {

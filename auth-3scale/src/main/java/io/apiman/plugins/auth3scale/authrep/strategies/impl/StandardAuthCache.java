@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package io.apiman.plugins.auth3scale.authrep.strategies;
+package io.apiman.plugins.auth3scale.authrep.strategies.impl;
 
 import io.apiman.gateway.engine.beans.ApiRequest;
-import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.BackendConfiguration;
-import io.apiman.plugins.auth3scale.authrep.AbstractCachingAuthenticator;
+import io.apiman.gateway.engine.threescale.beans.BackendConfiguration;
+import io.apiman.plugins.auth3scale.authrep.strategies.AbstractCachingAuthenticator;
 
 import java.util.concurrent.ExecutionException;
 

@@ -18,12 +18,12 @@ package io.apiman.plugins.auth3scale.authrep.appid;
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.engine.policy.IPolicyContext;
-import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.Auth3ScaleBean;
-import io.apiman.plugins.auth3scale.authrep.AbstractAuth;
-import io.apiman.plugins.auth3scale.authrep.AbstractRep;
+import io.apiman.gateway.engine.threescale.beans.Auth3ScaleBean;
+import io.apiman.plugins.auth3scale.authrep.RepPrincipal;
+import io.apiman.plugins.auth3scale.authrep.strategies.AuthStrategy;
+import io.apiman.plugins.auth3scale.authrep.strategies.RepStrategy;
+import io.apiman.plugins.auth3scale.authrep.AuthPrincipal;
 import io.apiman.plugins.auth3scale.authrep.AuthRepFactory;
-import io.apiman.plugins.auth3scale.ratelimit.IAuth;
-import io.apiman.plugins.auth3scale.ratelimit.IRep;
 
 /**
  * @author Marc Savy {@literal <msavy@redhat.com>}
@@ -31,12 +31,12 @@ import io.apiman.plugins.auth3scale.ratelimit.IRep;
 public class AppIdAuthRepFactory implements AuthRepFactory {
 
     @Override
-    public IAuth createAuth(Auth3ScaleBean config, ApiRequest request, IPolicyContext context, AbstractAuth authStrategy) {
+    public AuthPrincipal createAuth(Auth3ScaleBean config, ApiRequest request, IPolicyContext context, AuthStrategy authStrategy) {
         return new AppIdAuth(config, request, context, authStrategy);
     }
 
     @Override
-    public IRep createRep(Auth3ScaleBean config, ApiResponse response, ApiRequest request, IPolicyContext context, AbstractRep repStrategy) {
+    public RepPrincipal createRep(Auth3ScaleBean config, ApiResponse response, ApiRequest request, IPolicyContext context, RepStrategy repStrategy) {
         return new AppIdRep(config, request, response, context, repStrategy);
     }
 }

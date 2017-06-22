@@ -14,30 +14,30 @@
  * limitations under the License.
  */
 
-package io.apiman.plugins.auth3scale.authrep.strategies;
+package io.apiman.plugins.auth3scale.authrep.strategies.impl;
 
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.engine.policy.IPolicyContext;
-import io.apiman.gateway.engine.vertx.polling.fetchers.threescale.beans.Auth3ScaleBean;
-import io.apiman.plugins.auth3scale.authrep.IAuthStrategyFactory;
+import io.apiman.gateway.engine.threescale.beans.Auth3ScaleBean;
+import io.apiman.plugins.auth3scale.authrep.PrincipalStrategyFactory;
 
 /**
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
-public class StandardStrategyFactory implements IAuthStrategyFactory {
+public class StandardStrategyFactory implements PrincipalStrategyFactory {
 
     private final StandardAuthCache authCache = new StandardAuthCache();
 
     @Override
-    public StandardAuth getAuthStrategy(Auth3ScaleBean bean,
+    public StandardAuth getAuthPrincipal(Auth3ScaleBean bean,
             ApiRequest request,
             IPolicyContext context) {
         return new StandardAuth(bean, request, context, authCache);
     }
 
     @Override
-    public StandardRep getRepStrategy(Auth3ScaleBean bean,
+    public StandardRep getRepPrincipal(Auth3ScaleBean bean,
             ApiRequest request,
             ApiResponse response,
             IPolicyContext context) {
