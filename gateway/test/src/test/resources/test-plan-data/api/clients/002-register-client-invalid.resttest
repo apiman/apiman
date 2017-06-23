@@ -20,6 +20,6 @@ Content-Type: application/json
 X-API-Gateway-Error: true
 
 {
-  "errorType" : "RegistrationException",
+  "errorType" : "ApiNotFoundException",
   "message" : "API invalid-api not found in Organization GatewayApiTest."
 }

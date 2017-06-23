@@ -91,7 +91,7 @@ public class InMemoryRegistry implements IRegistry {
             for (Contract contract : client.getContracts()) {
                 String apiIdx = getApiIndex(contract.getApiOrgId(), contract.getApiId(), contract.getApiVersion());
                 if (!getMap().containsKey(apiIdx)) {
-                    error = new RegistrationException(Messages.i18n.format("InMemoryRegistry.ApiNotFoundInOrg", //$NON-NLS-1$
+                    error = new ApiNotFoundException(Messages.i18n.format("InMemoryRegistry.ApiNotFoundInOrg", //$NON-NLS-1$
                             contract.getApiId(), contract.getApiOrgId()));
                     break;
                 }
