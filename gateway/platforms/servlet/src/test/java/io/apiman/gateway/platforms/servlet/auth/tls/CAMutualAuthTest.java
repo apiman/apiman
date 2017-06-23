@@ -203,7 +203,6 @@ public class CAMutualAuthTest {
          }
         });
 
-        exception.expect(RuntimeException.class);
         connection.end();
     }
 

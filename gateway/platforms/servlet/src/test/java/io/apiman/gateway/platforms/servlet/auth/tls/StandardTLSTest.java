@@ -199,7 +199,6 @@ public class StandardTLSTest {
          }
         });
 
-        exception.expect(RuntimeException.class);
         connection.end();
     }
 
@@ -245,7 +244,6 @@ public class StandardTLSTest {
              }
         });
 
-        exception.expect(RuntimeException.class);
         connection.end();
     }
 
