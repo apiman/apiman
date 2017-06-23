@@ -124,7 +124,7 @@ public class ESRegistry extends AbstractESComponent implements IRegistry {
             handler.handle(AsyncResultImpl.create(
                     new RegistrationException(Messages.i18n.format("ESRegistry.ErrorRegisteringClient"), e),  //$NON-NLS-1$
                     Void.class));
-        } catch (RegistrationException re) {
+        } catch (RuntimeException re) {
             handler.handle(AsyncResultImpl.create(re, Void.class));
         }
     }
@@ -136,7 +136,7 @@ public class ESRegistry extends AbstractESComponent implements IRegistry {
     private void validateClient(Client client) throws RegistrationException {
         Set<Contract> contracts = client.getContracts();
         if (contracts.isEmpty()) {
-            throw new RegistrationException(Messages.i18n.format("ESRegistry.NoContracts")); //$NON-NLS-1$
+            throw new NoContractFoundException(Messages.i18n.format("ESRegistry.NoContracts")); //$NON-NLS-1$
         }
         for (Contract contract : contracts) {
             validateContract(contract);
