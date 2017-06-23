@@ -426,7 +426,7 @@ public class HttpApiConnection implements IApiConnection, IApiConnectionResponse
         if (ce != null) {
             throw ce;
         } else {
-            throw new RuntimeException(error);
+            throw new ConnectorException(error);
         }
     }
 
