@@ -16,27 +16,46 @@
 
 package io.apiman.gateway.platforms.vertx3.connector;
 
+import io.apiman.common.config.options.AbstractOptions;
 import io.apiman.common.config.options.TLSOptions;
 import io.apiman.gateway.engine.auth.RequiredAuthType;
 import io.vertx.core.http.HttpClientOptions;
 
 import java.net.URI;
+import java.util.Map;
 
 /**
  * Options for {@link HttpConnector}.
  *
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
  */
-public class HttpConnectorOptions {
+public class ApimanHttpConnectorOptions extends AbstractOptions {
+
     private RequiredAuthType requiredAuthType = RequiredAuthType.DEFAULT;
     private boolean hasDataPolicy = false;
     private int connectionTimeout = HttpClientOptions.DEFAULT_CONNECT_TIMEOUT;
     private int idleTimeout = HttpClientOptions.DEFAULT_IDLE_TIMEOUT;
+    private int requestTimeout = HttpClientOptions.DEFAULT_CONNECT_TIMEOUT * 2;
     private boolean keepAlive = HttpClientOptions.DEFAULT_KEEP_ALIVE;
     private boolean tryUseCompression = HttpClientOptions.DEFAULT_TRY_USE_COMPRESSION;
     private TLSOptions tlsOptions;
     private URI endpoint;
     private boolean isSsl;
+
+    public ApimanHttpConnectorOptions() {
+        super();
+    }
+
+    public ApimanHttpConnectorOptions(Map<String, String> options) {
+        super();
+        parse(options);
+    }
+
+    @Override
+    protected void parse(Map<String, String> options) {
+        connectionTimeout = parseInt(options, "http.timeouts.connect", HttpClientOptions.DEFAULT_CONNECT_TIMEOUT);
+        requestTimeout = parseInt(options, "http.timeouts.read", HttpClientOptions.DEFAULT_CONNECT_TIMEOUT * 2);
+    }
 
     /**
      * @return the requiredAuthType
@@ -48,7 +67,7 @@ public class HttpConnectorOptions {
      * @param requiredAuthType the requiredAuthType to set
      * @return this
      */
-    public HttpConnectorOptions setRequiredAuthType(RequiredAuthType requiredAuthType) {
+    public ApimanHttpConnectorOptions setRequiredAuthType(RequiredAuthType requiredAuthType) {
         this.requiredAuthType = requiredAuthType;
         return this;
     }
@@ -62,7 +81,7 @@ public class HttpConnectorOptions {
      * @param hasDataPolicy the hasDataPolicy to set
      * @return this
      */
-    public HttpConnectorOptions setHasDataPolicy(boolean hasDataPolicy) {
+    public ApimanHttpConnectorOptions setHasDataPolicy(boolean hasDataPolicy) {
         this.hasDataPolicy = hasDataPolicy;
         return this;
     }
@@ -76,7 +95,7 @@ public class HttpConnectorOptions {
      * @param connectionTimeout the connectionTimeout to set
      * @return this
      */
-    public HttpConnectorOptions setConnectionTimeout(int connectionTimeout) {
+    public ApimanHttpConnectorOptions setConnectionTimeout(int connectionTimeout) {
         this.connectionTimeout = connectionTimeout;
         return this;
     }
@@ -90,9 +109,17 @@ public class HttpConnectorOptions {
      * @param idleTimeout the idleTimeout to set
      * @return this
      */
-    public HttpConnectorOptions setIdleTimeout(int idleTimeout) {
+    public ApimanHttpConnectorOptions setIdleTimeout(int idleTimeout) {
         this.idleTimeout = idleTimeout;
         return this;
+    }
+
+    public long getRequestTimeout() {
+        return requestTimeout;
+    }
+
+    public void setRequestTimeout(int requestTimeout) {
+        this.requestTimeout = requestTimeout;
     }
     /**
      * @return the keepAlive
@@ -104,7 +131,7 @@ public class HttpConnectorOptions {
      * @param keepAlive the keepAlive to set
      * @return this
      */
-    public HttpConnectorOptions setKeepAlive(boolean keepAlive) {
+    public ApimanHttpConnectorOptions setKeepAlive(boolean keepAlive) {
         this.keepAlive = keepAlive;
         return this;
     }
@@ -118,7 +145,7 @@ public class HttpConnectorOptions {
      * @param tryUseCompression the tryUseCompression to set
      * @return this
      */
-    public HttpConnectorOptions setTryUseCompression(boolean tryUseCompression) {
+    public ApimanHttpConnectorOptions setTryUseCompression(boolean tryUseCompression) {
         this.tryUseCompression = tryUseCompression;
         return this;
     }
@@ -127,7 +154,7 @@ public class HttpConnectorOptions {
         return tlsOptions;
     }
 
-    public HttpConnectorOptions setTlsOptions(TLSOptions tlsOptions) {
+    public ApimanHttpConnectorOptions setTlsOptions(TLSOptions tlsOptions) {
         this.tlsOptions = tlsOptions;
         return this;
     }
@@ -136,12 +163,12 @@ public class HttpConnectorOptions {
         return endpoint;
     }
 
-    public HttpConnectorOptions setUri(URI endpoint) {
+    public ApimanHttpConnectorOptions setUri(URI endpoint) {
         this.endpoint = endpoint;
         return this;
     }
 
-    public HttpConnectorOptions setSsl(boolean isSsl) {
+    public ApimanHttpConnectorOptions setSsl(boolean isSsl) {
         this.isSsl = isSsl;
         return this;
     }
@@ -176,7 +203,7 @@ public class HttpConnectorOptions {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        HttpConnectorOptions other = (HttpConnectorOptions) obj;
+        ApimanHttpConnectorOptions other = (ApimanHttpConnectorOptions) obj;
         if (connectionTimeout != other.connectionTimeout)
             return false;
         if (idleTimeout != other.idleTimeout)
@@ -192,5 +219,6 @@ public class HttpConnectorOptions {
             return false;
         return true;
     }
+
 
 }

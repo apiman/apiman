@@ -21,7 +21,8 @@ import io.apiman.gateway.engine.beans.Api;
 import io.apiman.gateway.engine.beans.ApiContract;
 import io.apiman.gateway.engine.beans.Client;
 import io.apiman.gateway.engine.beans.Contract;
-import io.apiman.gateway.engine.beans.exceptions.InvalidContractException;
+import io.apiman.gateway.engine.beans.exceptions.ApiRetiredException;
+import io.apiman.gateway.engine.beans.exceptions.NoContractFoundException;
 import io.apiman.gateway.engine.jdbc.i18n.Messages;
 
 import java.sql.SQLException;
@@ -59,7 +60,7 @@ public abstract class CachingJdbcRegistry extends JdbcRegistry {
             apiCache.clear();
         }
     }
-    
+
     /**
      * @see io.apiman.gateway.engine.jdbc.JdbcRegistry#getContract(java.lang.String, java.lang.String, java.lang.String, java.lang.String, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
@@ -68,22 +69,22 @@ public abstract class CachingJdbcRegistry extends JdbcRegistry {
             IAsyncResultHandler<ApiContract> handler) {
         Client client = null;
         Api api = null;
-        
+
         try {
             synchronized (mutex) {
                 client = getClient(apiKey);
                 api = getApi(apiOrganizationId, apiId, apiVersion);
             }
             if (client == null) {
-                Exception error = new InvalidContractException(Messages.i18n.format("JdbcRegistry.NoClientForAPIKey", apiKey)); //$NON-NLS-1$
+                Exception error = new NoContractFoundException(Messages.i18n.format("JdbcRegistry.NoClientForAPIKey", apiKey)); //$NON-NLS-1$
                 handler.handle(AsyncResultImpl.create(error, ApiContract.class));
                 return;
             }
             if (api == null) {
-                throw new InvalidContractException(Messages.i18n.format("JdbcRegistry.ApiWasRetired", //$NON-NLS-1$
+                throw new ApiRetiredException(Messages.i18n.format("JdbcRegistry.ApiWasRetired", //$NON-NLS-1$
                         apiId, apiOrganizationId));
             }
-            
+
             Contract matchedContract = null;
             for (Contract contract : client.getContracts()) {
                 if (contract.matches(apiOrganizationId, apiId, apiVersion)) {
@@ -91,12 +92,12 @@ public abstract class CachingJdbcRegistry extends JdbcRegistry {
                     break;
                 }
             }
-            
+
             if (matchedContract == null) {
-                throw new InvalidContractException(Messages.i18n.format("JdbcRegistry.NoContractFound", //$NON-NLS-1$
+                throw new NoContractFoundException(Messages.i18n.format("JdbcRegistry.NoContractFound", //$NON-NLS-1$
                         client.getClientId(), api.getApiId()));
             }
-            
+
             ApiContract contract = new ApiContract(api, client, matchedContract.getPlan(), matchedContract.getPolicies());
             handler.handle(AsyncResultImpl.create(contract));
         } catch (Exception e) {
@@ -142,7 +143,7 @@ public abstract class CachingJdbcRegistry extends JdbcRegistry {
 
         return api;
     }
-    
+
     /**
      * @see io.apiman.gateway.engine.jdbc.JdbcRegistry#getClient(java.lang.String, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
@@ -179,5 +180,5 @@ public abstract class CachingJdbcRegistry extends JdbcRegistry {
 
         return client;
     }
-    
+
 }

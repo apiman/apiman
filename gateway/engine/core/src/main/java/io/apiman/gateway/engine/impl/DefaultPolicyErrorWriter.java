@@ -15,17 +15,19 @@
  */
 package io.apiman.gateway.engine.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.apiman.gateway.engine.IApiClientResponse;
 import io.apiman.gateway.engine.IPolicyErrorWriter;
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.EngineErrorResponse;
+import io.apiman.gateway.engine.beans.exceptions.IStatusCode;
 
 import java.io.StringWriter;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * A default implementation of the error formatter.
@@ -62,10 +64,15 @@ public class DefaultPolicyErrorWriter implements IPolicyErrorWriter {
         }
         String message = (error.getMessage() == null) ? "" : error.getMessage(); // TODO get and/or print ultimate cause?
         response.setHeader("X-Gateway-Error", message);
-        response.setStatusCode(500);
 
-        EngineErrorResponse eer = createErrorResponse(error);
+        int statusCode = 500;
+        if (error instanceof IStatusCode) {
+            statusCode = ((IStatusCode) error).getStatusCode();
+        }
+        response.setStatusCode(statusCode);
 
+
+        EngineErrorResponse eer = createErrorResponse(error, statusCode);
         if (isXml) {
             response.setHeader("Content-Type", "application/xml");
             try {
@@ -91,9 +98,9 @@ public class DefaultPolicyErrorWriter implements IPolicyErrorWriter {
     /**
      * @param error
      */
-    protected EngineErrorResponse createErrorResponse(Throwable error) {
+    protected EngineErrorResponse createErrorResponse(Throwable error, int statusCode) {
         EngineErrorResponse eer = new EngineErrorResponse();
-        eer.setResponseCode(500);
+        eer.setResponseCode(statusCode);
         eer.setMessage(error.getMessage());
         return eer;
     }

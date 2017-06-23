@@ -35,10 +35,15 @@ import io.apiman.gateway.platforms.servlet.connectors.ssl.SSLSessionStrategy;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InterruptedIOException;
 import java.io.OutputStream;
+import java.net.ConnectException;
 import java.net.HttpURLConnection;
+import java.net.NoRouteToHostException;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -99,6 +104,7 @@ public class HttpApiConnection implements IApiConnection, IApiConnectionResponse
     final private OkHttpClient client;
 
     private boolean hasDataPolicy;
+    private boolean isError = false;
 
     /**
      * Constructor.
@@ -126,7 +132,11 @@ public class HttpApiConnection implements IApiConnection, IApiConnectionResponse
         try {
             connect();
         } catch (Exception e) {
-            handler.handle(AsyncResultImpl.<IApiConnectionResponse> create(e));
+            // Sometimes it's possible that multiple exceptions end up coming through. Ignore secondary ones.
+            if (!isError) {
+                handler.handle(AsyncResultImpl.<IApiConnectionResponse> create(e));
+                isError = true;
+            }
         }
     }
 
@@ -211,8 +221,8 @@ public class HttpApiConnection implements IApiConnection, IApiConnectionResponse
             connection.setRequestProperty("Host", url.getHost() + determinePort(url)); //$NON-NLS-1$
             connection.connect();
             connected = true;
-        } catch (IOException e) {
-            throw new ConnectorException(e);
+        } catch (IOException error) {
+            handleConnectionError(error);
         }
     }
 
@@ -340,8 +350,7 @@ public class HttpApiConnection implements IApiConnection, IApiConnectionResponse
                 outputStream.write(chunk.getBytes());
             }
         } catch (IOException e) {
-            // TODO log this error.
-            throw new ConnectorException(e);
+            handleConnectionError(e);
         }
     }
 
@@ -351,10 +360,12 @@ public class HttpApiConnection implements IApiConnection, IApiConnectionResponse
     @Override
     public void end() {
         try {
-            if (!connected) {
+            IOUtils.closeQuietly(outputStream);
+            if (isError) {
+                return;
+            } else if (!connected) {
                 throw new IOException("Not connected."); //$NON-NLS-1$
             }
-            IOUtils.closeQuietly(outputStream);
             outputStream = null;
             // Process the response, convert to an ApiResponse object, and return it
             response = GatewayThreadContext.getApiResponse();
@@ -368,8 +379,7 @@ public class HttpApiConnection implements IApiConnection, IApiConnectionResponse
             response.setMessage(connection.getResponseMessage());
             responseHandler.handle(AsyncResultImpl.<IApiConnectionResponse> create(this));
         } catch (Exception e) {
-            // TODO log this error
-            throw new ConnectorException(e);
+            handleConnectionError(e);
         }
     }
 
@@ -401,6 +411,22 @@ public class HttpApiConnection implements IApiConnection, IApiConnectionResponse
                 abort(e);
             }
             throw new RuntimeException(e);
+        }
+    }
+
+    private void handleConnectionError(Exception error) {
+        ConnectorException ce = null;
+        if (error instanceof UnknownHostException || error instanceof ConnectException || error instanceof NoRouteToHostException) {
+            ce = new ConnectorException("Unable to connect to backend: " + error.getMessage(), error); //$NON-NLS-1$
+            ce.setStatusCode(502); // BAD GATEWAY
+        } else if (error instanceof SocketTimeoutException || error instanceof InterruptedIOException) {
+            ce = new ConnectorException("Connection to backend terminated: " + error.getMessage(), error); //$NON-NLS-1$
+            ce.setStatusCode(504); // GATEWAY TIMEOUT
+        }
+        if (ce != null) {
+            throw ce;
+        } else {
+            throw new RuntimeException(error);
         }
     }
 

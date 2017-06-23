@@ -3,10 +3,10 @@ X-API-Key: 12345
 Accept: application/json
 
 ----
-500
+404
 Content-Type: application/json
 
 {
-  "responseCode" : 500,
+  "responseCode" : 404,
   "message" : "No contract found between Client test and API echo-1."
 }
