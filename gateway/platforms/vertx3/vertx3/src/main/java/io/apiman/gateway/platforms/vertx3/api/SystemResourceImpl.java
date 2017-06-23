@@ -19,7 +19,6 @@ import io.apiman.gateway.api.rest.contract.ISystemResource;
 import io.apiman.gateway.engine.IEngine;
 import io.apiman.gateway.engine.beans.SystemStatus;
 import io.apiman.gateway.platforms.vertx3.common.config.VertxEngineConfig;
-import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 
@@ -47,7 +46,8 @@ public class SystemResourceImpl implements ISystemResource, IRouteBuilder {
 
     public void getStatus(RoutingContext routingContext) {
         if (getStatus() == null) {
-            error(routingContext, HttpResponseStatus.INTERNAL_SERVER_ERROR, "Status invalid", null); //$NON-NLS-1$
+            error(routingContext, new RuntimeException("System status invalid")); //$NON-NLS-1$
+
         } else {
             writeBody(routingContext, getStatus());
         }

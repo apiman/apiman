@@ -15,7 +15,7 @@ Content-Type: application/json
   ]
 }
 ----
-500
+404
 Content-Type: application/json
 X-API-Gateway-Error: true
 

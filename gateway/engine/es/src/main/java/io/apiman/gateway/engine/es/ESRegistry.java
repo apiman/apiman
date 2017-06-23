@@ -171,10 +171,10 @@ public class ESRegistry extends AbstractESComponent implements IRegistry {
      */
     @Override
     public void unregisterClient(final Client client, final IAsyncResultHandler<Void> handler) {
-        final Client lclient = lookupClient(client.getOrganizationId(), client.getClientId(), client.getVersion());
-        final String id = getClientId(lclient);
-
         try {
+            final Client lclient = lookupClient(client.getOrganizationId(), client.getClientId(), client.getVersion());
+            final String id = getClientId(lclient);
+
             Delete delete = new Delete.Builder(id).index(getIndexName()).type("client").build(); //$NON-NLS-1$
             JestResult result = getClient().execute(delete);
             if (result.isSucceeded()) {
@@ -184,6 +184,8 @@ public class ESRegistry extends AbstractESComponent implements IRegistry {
             }
         } catch (IOException e) {
             handler.handle(AsyncResultImpl.create(new PublishingException(Messages.i18n.format("ESRegistry.ErrorUnregisteringClient"), e), Void.class)); //$NON-NLS-1$
+        } catch (RuntimeException e) {
+            handler.handle(AsyncResultImpl.create(e));
         }
     }
 

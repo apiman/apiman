@@ -16,6 +16,7 @@
 
 package io.apiman.gateway.api.rest.contract.exceptions;
 
+import io.apiman.gateway.engine.beans.exceptions.IStatusCode;
 
 /**
  * Thrown when the user attempts to do or see something that they
@@ -23,9 +24,10 @@ package io.apiman.gateway.api.rest.contract.exceptions;
  *
  * @author eric.wittmann@redhat.com
  */
-public class NotAuthorizedException extends AbstractRestException {
+public class NotAuthorizedException extends AbstractRestException implements IStatusCode {
 
     private static final long serialVersionUID = 4663705773331595639L;
+    private int statusCode = 403;
 
     /**
      * Constructor.
@@ -33,6 +35,16 @@ public class NotAuthorizedException extends AbstractRestException {
      */
     public NotAuthorizedException(String message) {
         super(message);
+    }
+
+    @Override
+    public void setStatusCode(int code) {
+        this.statusCode = code;
+    }
+
+    @Override
+    public int getStatusCode() {
+        return statusCode;
     }
 
 }
