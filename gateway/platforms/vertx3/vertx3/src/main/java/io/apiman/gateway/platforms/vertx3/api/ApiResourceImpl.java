@@ -71,14 +71,15 @@ public class ApiResourceImpl implements IApiResource, IRouteBuilder {
     public void publish(Api api) throws PublishingException, NotAuthorizedException {
         registry.publishApi(api, (IAsyncResultHandler<Void>) result -> {
             if (result.isError()) {
-                Throwable e = result.getError();
-                if (e instanceof PublishingException) {
-                    error(routingContext, HttpResponseStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
-                } else if (e instanceof NotAuthorizedException) {
-                    error(routingContext, HttpResponseStatus.UNAUTHORIZED, e.getMessage(), e);
-                } else {
-                    error(routingContext, HttpResponseStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
-                }
+                error(routingContext, result.getError());
+//                Throwable e = result.getError();
+//                if (e instanceof PublishingException) {
+//                    error(routingContext, HttpResponseStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
+//                } else if (e instanceof NotAuthorizedException) {
+//                    error(routingContext, HttpResponseStatus.UNAUTHORIZED, e.getMessage(), e);
+//                } else {
+//                    error(routingContext, HttpResponseStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
+//                }
             } else {
                 end(routingContext, HttpResponseStatus.NO_CONTENT);
             }
@@ -89,7 +90,8 @@ public class ApiResourceImpl implements IApiResource, IRouteBuilder {
       try {
           publish(Json.decodeValue(routingContext.getBodyAsString(), Api.class));
       } catch (Exception e) {
-          error(routingContext, HttpResponseStatus.BAD_REQUEST, e.getMessage(), e);
+//          error(routingContext, HttpResponseStatus.BAD_REQUEST, e.getMessage(), e);
+          error(routingContext, e);
       }
     }
 
@@ -103,14 +105,15 @@ public class ApiResourceImpl implements IApiResource, IRouteBuilder {
 
         registry.retireApi(api, (IAsyncResultHandler<Void>) result -> {
             if (result.isError()) {
-                Throwable e = result.getError();
-                if (e instanceof RegistrationException) {
-                    error(routingContext, HttpResponseStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
-                } else if (e instanceof NotAuthorizedException) {
-                    error(routingContext, HttpResponseStatus.UNAUTHORIZED, e.getMessage(), e);
-                } else {
-                    error(routingContext, HttpResponseStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
-                }
+                error(routingContext, result.getError());
+//                Throwable e = result.getError();
+//                if (e instanceof RegistrationException) {
+//                    error(routingContext, HttpResponseStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
+//                } else if (e instanceof NotAuthorizedException) {
+//                    error(routingContext, HttpResponseStatus.UNAUTHORIZED, e.getMessage(), e);
+//                } else {
+//                    error(routingContext, HttpResponseStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
+//                }
             } else {
                 end(routingContext, HttpResponseStatus.NO_CONTENT);
             }
@@ -176,7 +179,8 @@ public class ApiResourceImpl implements IApiResource, IRouteBuilder {
         try {
             writeBody(routingContext, getApiEndpoint(orgId, apiId, ver));
         } catch (NotAuthorizedException e) {
-            error(routingContext, HttpResponseStatus.UNAUTHORIZED, e.getMessage(), e);
+            error(routingContext, e);
+//            error(routingContext, HttpResponseStatus.UNAUTHORIZED, e.getMessage(), e);
         }
     }
 

@@ -47,8 +47,11 @@ import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 
 import java.io.UnsupportedEncodingException;
+import java.net.ConnectException;
+import java.net.NoRouteToHostException;
 import java.net.URI;
 import java.net.URLEncoder;
+import java.net.UnknownHostException;
 import java.util.LinkedHashSet;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -101,7 +104,7 @@ class HttpConnector implements IApiConnectionResponse, IApiConnection {
 
     private URI apiEndpoint;
 
-    private HttpConnectorOptions options;
+    private ApimanHttpConnectorOptions options;
 
 
     /**
@@ -115,7 +118,7 @@ class HttpConnector implements IApiConnectionResponse, IApiConnection {
      * @param options the connector options
      * @param resultHandler a handler, called when reading is permitted
      */
-    public HttpConnector(Vertx vertx, HttpClient client, ApiRequest request, Api api, HttpConnectorOptions options,
+    public HttpConnector(Vertx vertx, HttpClient client, ApiRequest request, Api api, ApimanHttpConnectorOptions options,
             IAsyncResultHandler<IApiConnectionResponse> resultHandler) {
        this.client = client;
        this.api = api;
@@ -189,6 +192,8 @@ class HttpConnector implements IApiConnectionResponse, IApiConnection {
                     resultHandler.handle(AsyncResultImpl
                             .create((IApiConnectionResponse) HttpConnector.this));
                 });
+
+        clientRequest.setTimeout(options.getRequestTimeout());
 
         clientRequest.exceptionHandler(exceptionHandler);
 
@@ -319,10 +324,15 @@ class HttpConnector implements IApiConnectionResponse, IApiConnection {
     private class ExceptionHandler implements Handler<Throwable> {
         @Override
         public void handle(Throwable error) {
-            error.printStackTrace();
-            // TODO better exception distinguishing.
+            ConnectorException ce = new ConnectorException(error.getMessage(), error);
+            if (error instanceof UnknownHostException || error instanceof ConnectException || error instanceof NoRouteToHostException) {
+                ce.setStatusCode(502); // BAD GATEWAY
+            } else if (error instanceof java.util.concurrent.TimeoutException) {
+                ce.setStatusCode(504); // GATEWAY TIMEOUT
+            }
+
             resultHandler.handle(AsyncResultImpl
-                    .<IApiConnectionResponse> create(error));
+                    .<IApiConnectionResponse> create(ce));
         }
     }
 

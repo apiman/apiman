@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 JBoss Inc
+ * Copyright 2017 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,28 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package io.apiman.gateway.engine.beans.exceptions;
 
 /**
- * Exception thrown when attempting to use a Contract in some invalid way.  For example
- * when trying to use a Contract for one API when accessing a different API.
+ * Augment classes to provide status code information. This is particularly useful for
+ * exceptions which may want to indicate a particular HTTP status code, for example.
  *
- * @author eric.wittmann@redhat.com
+ * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
  */
-public class InvalidContractException extends AbstractEngineException {
-
-    private static final long serialVersionUID = -378275941461121749L;
+public interface IStatusCode {
 
     /**
-     * Constructor.
-     * @param message an error message
+     * Set a status code
+     * @param code the status code
      */
-    public InvalidContractException(String message) {
-        super(message);
-    }
+    void setStatusCode(int code);
 
-    public InvalidContractException(String message, Exception e) {
-        super(message, e);
-    }
+    /**
+     * Get a status code
+     * @return the status code
+     */
+    int getStatusCode();
 
 }

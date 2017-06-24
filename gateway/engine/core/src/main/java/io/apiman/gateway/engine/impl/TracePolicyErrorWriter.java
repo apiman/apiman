@@ -22,14 +22,15 @@ import io.apiman.gateway.engine.beans.EngineErrorResponse;
  * @author eric.wittmann@gmail.com
  */
 public class TracePolicyErrorWriter extends DefaultPolicyErrorWriter {
-    
+
     /**
      * @see io.apiman.gateway.engine.impl.DefaultPolicyErrorWriter#createErrorResponse(java.lang.Throwable)
      */
     @Override
-    protected EngineErrorResponse createErrorResponse(Throwable error) {
-        EngineErrorResponse response = super.createErrorResponse(error);
+    protected EngineErrorResponse createErrorResponse(Throwable error, int statusCode) {
+        EngineErrorResponse response = super.createErrorResponse(error, statusCode);
         response.setTrace(error);
+        response.setResponseCode(statusCode);
         return response;
     }
 

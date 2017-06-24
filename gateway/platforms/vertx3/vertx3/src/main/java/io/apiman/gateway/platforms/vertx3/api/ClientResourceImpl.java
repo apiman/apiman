@@ -62,14 +62,15 @@ public class ClientResourceImpl implements IClientResource, IRouteBuilder {
     public void register(Client client) throws RegistrationException, NotAuthorizedException {
         registry.registerClient(client, (IAsyncResultHandler<Void>) result -> {
             if (result.isError()) {
-                Throwable e = result.getError();
-                if (e instanceof RegistrationException) {
-                    error(routingContext, HttpResponseStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
-                } else if (e instanceof NotAuthorizedException) {
-                    error(routingContext, HttpResponseStatus.UNAUTHORIZED, e.getMessage(), e);
-                } else {
-                    error(routingContext, HttpResponseStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
-                }
+                error(routingContext, result.getError());
+//                Throwable e = result.getError();
+//                if (e instanceof RegistrationException) {
+//                    error(routingContext, HttpResponseStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
+//                } else if (e instanceof NotAuthorizedException) {
+//                    error(routingContext, HttpResponseStatus.UNAUTHORIZED, e.getMessage(), e);
+//                } else {
+//                    error(routingContext, HttpResponseStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
+//                }
             } else {
                 end(routingContext, HttpResponseStatus.NO_CONTENT);
             }
@@ -80,7 +81,8 @@ public class ClientResourceImpl implements IClientResource, IRouteBuilder {
         try {
             register(Json.decodeValue(routingContext.getBodyAsString(), Client.class));
         } catch (Exception e) {
-            error(routingContext, HttpResponseStatus.BAD_REQUEST, e.getMessage(), e);
+            error(routingContext, e);
+//            error(routingContext, HttpResponseStatus.BAD_REQUEST, e.getMessage(), e);
         }
     }
 
@@ -96,13 +98,14 @@ public class ClientResourceImpl implements IClientResource, IRouteBuilder {
         registry.unregisterClient(client, (IAsyncResultHandler<Void>) result -> {
             if (result.isError()) {
                 Throwable e = result.getError();
-                if (e instanceof RegistrationException) {
-                    error(routingContext, HttpResponseStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
-                } else if (e instanceof NotAuthorizedException) {
-                    error(routingContext, HttpResponseStatus.UNAUTHORIZED, e.getMessage(), e);
-                } else {
-                    error(routingContext, HttpResponseStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
-                }
+                error(routingContext, e);
+//                if (e instanceof RegistrationException) {
+//                    error(routingContext, HttpResponseStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
+//                } else if (e instanceof NotAuthorizedException) {
+//                    error(routingContext, HttpResponseStatus.UNAUTHORIZED, e.getMessage(), e);
+//                } else {
+//                    error(routingContext, HttpResponseStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
+//                }
             } else {
                 end(routingContext, HttpResponseStatus.NO_CONTENT);
             }

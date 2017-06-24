@@ -24,9 +24,10 @@ import io.apiman.gateway.engine.beans.Api;
 import io.apiman.gateway.engine.beans.ApiContract;
 import io.apiman.gateway.engine.beans.Client;
 import io.apiman.gateway.engine.beans.Contract;
-import io.apiman.gateway.engine.beans.exceptions.InvalidContractException;
-import io.apiman.gateway.engine.beans.exceptions.PublishingException;
-import io.apiman.gateway.engine.beans.exceptions.RegistrationException;
+import io.apiman.gateway.engine.beans.exceptions.ApiNotFoundException;
+import io.apiman.gateway.engine.beans.exceptions.ApiRetiredException;
+import io.apiman.gateway.engine.beans.exceptions.ClientNotFoundException;
+import io.apiman.gateway.engine.beans.exceptions.NoContractFoundException;
 import io.apiman.gateway.engine.i18n.Messages;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.CompositeFuture;
@@ -77,7 +78,7 @@ public class SharedGlobalDataRegistry implements IRegistry {
     public void retireApi(Api api, IAsyncResultHandler<Void> handler) {
         objectMap.remove(getApiIndex(api), handleSuccessfulResult(handler, deletedApi -> {
             if (deletedApi == null) {
-                Exception ex = new PublishingException(Messages.i18n.format("InMemoryRegistry.ApiNotFound"));
+                Exception ex = new ApiNotFoundException(Messages.i18n.format("InMemoryRegistry.ApiNotFound"));
                 handler.handle(AsyncResultImpl.create(ex));
             } else {
                 handler.handle(AsyncResultImpl.create((Void) null));
@@ -122,7 +123,7 @@ public class SharedGlobalDataRegistry implements IRegistry {
                 }
                 // If we found an invalid contract.
                 if (failedContract != null) {
-                    Exception ex = new RegistrationException(Messages.i18n.format("InMemoryRegistry.ApiNotFoundInOrg",
+                    Exception ex = new ApiNotFoundException(Messages.i18n.format("InMemoryRegistry.ApiNotFoundInOrg",
                             failedContract.getApiId(), failedContract.getApiOrgId()));
                     resultHandler.handle(AsyncResultImpl.create(ex));
                 } else {
@@ -169,7 +170,7 @@ public class SharedGlobalDataRegistry implements IRegistry {
         objectMap.get(clientIndex, handleSuccessfulResult(resultHandler, oldClientRaw -> {
             Client oldClient = (Client) oldClientRaw;
             if (oldClient == null) {
-                Exception ex = new RegistrationException(Messages.i18n.format("InMemoryRegistry.ClientNotFound"));
+                Exception ex = new ClientNotFoundException(Messages.i18n.format("InMemoryRegistry.ClientNotFound"));
                 resultHandler.handle(AsyncResultImpl.create(ex));
             } else {
                 Future<Object> future1 = Future.future();
@@ -210,10 +211,10 @@ public class SharedGlobalDataRegistry implements IRegistry {
                 Client client = (Client) clientFuture.result();
 
                 if (api == null) {
-                    Exception error = new InvalidContractException(Messages.i18n.format("InMemoryRegistry.NoClientForAPIKey", apiKey));
+                    Exception error = new ClientNotFoundException(Messages.i18n.format("InMemoryRegistry.NoClientForAPIKey", apiKey));
                     handler.handle(AsyncResultImpl.create(error, ApiContract.class));
                 } else if (client == null) {
-                    Exception error = new InvalidContractException(Messages.i18n.format("InMemoryRegistry.ApiWasRetired",
+                    Exception error = new ApiRetiredException(Messages.i18n.format("InMemoryRegistry.ApiWasRetired",
                             apiId, apiOrganizationId));
                     handler.handle(AsyncResultImpl.create(error, ApiContract.class));
                 } else {
@@ -226,7 +227,7 @@ public class SharedGlobalDataRegistry implements IRegistry {
                         ApiContract apiContract = new ApiContract(api, client, contract.getPlan(), contract.getPolicies());
                         handler.handle(AsyncResultImpl.create(apiContract));
                     } else {
-                        Exception error = new InvalidContractException(Messages.i18n.format("InMemoryRegistry.NoContractFound", //$NON-NLS-1$
+                        Exception error = new NoContractFoundException(Messages.i18n.format("InMemoryRegistry.NoContractFound", //$NON-NLS-1$
                                 client.getClientId(), api.getApiId()));
                         handler.handle(AsyncResultImpl.create(error, ApiContract.class));
                     }

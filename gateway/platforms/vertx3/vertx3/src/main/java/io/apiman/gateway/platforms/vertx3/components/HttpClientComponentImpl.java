@@ -107,7 +107,7 @@ public class HttpClientComponentImpl implements IHttpClientComponent {
 
     private String getPathAndQuery(URI pEndpoint) {
         return pEndpoint.getPath() +
-                (pEndpoint.getQuery() == null || pEndpoint.getQuery().isEmpty() ? "" : "?" + pEndpoint.getQuery());
+                (pEndpoint.getQuery() == null || pEndpoint.getQuery().isEmpty() ? "" : "?" + pEndpoint.getQuery()); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     private static final class HttpClientResponseImpl implements IHttpClientResponse, Handler<HttpClientResponse> {

@@ -27,6 +27,9 @@ import org.apache.commons.lang.StringUtils;
  */
 public abstract class AbstractOptions {
 
+    public AbstractOptions() {
+    }
+
     /**
      * Constructor. Parses options immediately.
      * @param options the options
@@ -61,6 +64,13 @@ public abstract class AbstractOptions {
         }
 
         return out;
+    }
+
+    protected static int parseInt(Map<String, String> optionsMap, String key, int defaultValue) {
+        if (optionsMap.containsKey(key)) {
+            return Integer.valueOf(optionsMap.get(key));
+        }
+        return defaultValue;
     }
 
     protected static boolean parseBool(Map<String, String> optionsMap, String key) {

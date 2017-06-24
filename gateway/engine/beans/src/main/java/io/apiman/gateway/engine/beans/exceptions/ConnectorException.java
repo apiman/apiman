@@ -20,9 +20,10 @@ package io.apiman.gateway.engine.beans.exceptions;
  *
  * @author eric.wittmann@redhat.com
  */
-public class ConnectorException extends AbstractEngineException {
+public class ConnectorException extends AbstractEngineException implements IStatusCode {
 
     private static final long serialVersionUID = -3509254747425991797L;
+    private int statusCode = 500;
 
     /**
      * Constructor.
@@ -47,6 +48,14 @@ public class ConnectorException extends AbstractEngineException {
      */
     public ConnectorException(Throwable cause) {
         super(cause.getMessage(), cause);
+    }
+
+    public void setStatusCode(int code) {
+        this.statusCode = code;
+    }
+
+    public int getStatusCode() {
+        return statusCode;
     }
 
 }

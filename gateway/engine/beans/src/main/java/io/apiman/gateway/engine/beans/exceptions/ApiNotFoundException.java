@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 JBoss Inc
+ * Copyright 2017 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,28 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package io.apiman.gateway.engine.beans.exceptions;
 
-/**
- * Exception thrown when attempting to use a Contract in some invalid way.  For example
- * when trying to use a Contract for one API when accessing a different API.
- *
- * @author eric.wittmann@redhat.com
- */
-public class InvalidContractException extends AbstractEngineException {
+public class ApiNotFoundException extends AbstractEngineException
+    implements IStatusCode {
 
-    private static final long serialVersionUID = -378275941461121749L;
+    private int statusCode = 404;
 
-    /**
-     * Constructor.
-     * @param message an error message
-     */
-    public InvalidContractException(String message) {
+    public ApiNotFoundException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public ApiNotFoundException(String message) {
         super(message);
     }
 
-    public InvalidContractException(String message, Exception e) {
-        super(message, e);
+    private static final long serialVersionUID = 1300486813670211561L;
+
+    @Override
+    public void setStatusCode(int code) {
+        this.statusCode = code;
+    }
+
+    @Override
+    public int getStatusCode() {
+        return statusCode;
     }
 
 }

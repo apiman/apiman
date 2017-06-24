@@ -217,7 +217,6 @@ public class CipherAndProtocolSelectionTest {
             }
            });
 
-           exception.expect(RuntimeException.class);
            connection.end();
     }
 
@@ -252,7 +251,6 @@ public class CipherAndProtocolSelectionTest {
             }
            });
 
-           exception.expect(RuntimeException.class);
            connection.end();
     }
 
@@ -286,7 +284,6 @@ public class CipherAndProtocolSelectionTest {
             }
            });
 
-           exception.expect(RuntimeException.class);
            connection.end();
     }
 
@@ -321,7 +318,6 @@ public class CipherAndProtocolSelectionTest {
             }
            });
 
-           exception.expect(RuntimeException.class);
            connection.end();
     }
 
@@ -357,7 +353,6 @@ public class CipherAndProtocolSelectionTest {
             }
            });
 
-           exception.expect(RuntimeException.class);
            connection.end();
     }
 

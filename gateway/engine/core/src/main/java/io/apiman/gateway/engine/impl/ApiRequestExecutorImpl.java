@@ -36,6 +36,7 @@ import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.engine.beans.Policy;
 import io.apiman.gateway.engine.beans.PolicyFailure;
+import io.apiman.gateway.engine.beans.exceptions.ApiNotFoundException;
 import io.apiman.gateway.engine.beans.exceptions.InvalidApiException;
 import io.apiman.gateway.engine.beans.exceptions.InvalidContractException;
 import io.apiman.gateway.engine.beans.exceptions.RequestAbortedException;
@@ -327,10 +328,11 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
                             api = apiResult.getResult();
 
                             if (api == null) {
-                                Exception error = new InvalidApiException(Messages.i18n.format("EngineImpl.ApiNotFound")); //$NON-NLS-1$
+                                ApiNotFoundException error = new ApiNotFoundException(Messages.i18n.format("EngineImpl.ApiNotFound")); //$NON-NLS-1$
                                 resultHandler.handle(AsyncResultImpl.create(error, IEngineResult.class));
                             } else if (!api.isPublicAPI()) {
-                                Exception error = new InvalidApiException(Messages.i18n.format("EngineImpl.ApiNotPublic")); //$NON-NLS-1$
+                                InvalidApiException error = new InvalidApiException(Messages.i18n.format("EngineImpl.ApiNotPublic")); //$NON-NLS-1$
+                                error.setStatusCode(403); // Forbidden
                                 resultHandler.handle(AsyncResultImpl.create(error, IEngineResult.class));
                             } else {
                                 resolvePropertyReplacements(api);

@@ -21,9 +21,10 @@ package io.apiman.gateway.engine.beans.exceptions;
  *
  * @author eric.wittmann@redhat.com
  */
-public class InvalidApiException extends AbstractEngineException {
+public class InvalidApiException extends AbstractEngineException implements IStatusCode {
 
     private static final long serialVersionUID = 2430774910840954299L;
+    private int statusCode;
 
     /**
      * Constructor.
@@ -31,6 +32,16 @@ public class InvalidApiException extends AbstractEngineException {
      */
     public InvalidApiException(String message) {
         super(message);
+    }
+
+    @Override
+    public void setStatusCode(int code) {
+        this.statusCode = code;
+    }
+
+    @Override
+    public int getStatusCode() {
+        return statusCode;
     }
 
 }

@@ -19,6 +19,7 @@ package io.apiman.gateway.api.rest.impl.mappers;
 import io.apiman.gateway.api.rest.contract.exceptions.GatewayApiErrorBean;
 import io.apiman.gateway.api.rest.contract.exceptions.NotAuthorizedException;
 import io.apiman.gateway.engine.beans.exceptions.AbstractEngineException;
+import io.apiman.gateway.engine.beans.exceptions.IStatusCode;
 
 import java.io.PrintWriter;
 
@@ -43,14 +44,17 @@ public class RestExceptionMapper implements ExceptionMapper<AbstractEngineExcept
      */
     public RestExceptionMapper() {
     }
-
     /**
      * @see javax.ws.rs.ext.ExceptionMapper#toResponse(java.lang.Throwable)
      */
     @Override
     public Response toResponse(AbstractEngineException data) {
-        int errorCode = mapExceptionToHttpErrorCode(data);
-
+        int errorCode;
+        if (data instanceof IStatusCode) {
+            errorCode = ((IStatusCode) data).getStatusCode();
+        } else {
+            errorCode = mapExceptionToHttpErrorCode(data);
+        }
         GatewayApiErrorBean error = new GatewayApiErrorBean();
         error.setErrorType(data.getClass().getSimpleName());
         error.setMessage(data.getMessage());

@@ -57,9 +57,7 @@ import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 /**
  * Important note from {@link SSLSocket#getNeedClientAuth()} about requiring client auth:
@@ -79,8 +77,6 @@ public class BasicMutualAuthTest {
     private Map<String, String> config = new HashMap<>();
     //private java.security.cert.X509Certificate clientCertUsed;
 
-    @Rule
-    public ExpectedException exception = ExpectedException.none();
     protected BigInteger clientSerial;
 
     /**
@@ -226,7 +222,6 @@ public class BasicMutualAuthTest {
         }
        });
 
-       exception.expect(RuntimeException.class);
        connection.end();
     }
 
@@ -262,8 +257,7 @@ public class BasicMutualAuthTest {
          }
         });
 
-        exception.expect(RuntimeException.class);
-        connection.end();
+                connection.end();
     }
 
     /**
@@ -414,8 +408,7 @@ public class BasicMutualAuthTest {
                     }
                 });
 
-        exception.expect(RuntimeException.class);
-        connection.end();
+                connection.end();
     }
 
     /**
@@ -439,7 +432,6 @@ public class BasicMutualAuthTest {
              }
         });
 
-        exception.expect(RuntimeException.class);
         connection.end();
     }
 

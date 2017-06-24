@@ -123,7 +123,7 @@ public class HttpConnectorDrainTest {
                 vertx.createHttpClient(),
                 request,
                 api,
-                new HttpConnectorOptions()
+                new ApimanHttpConnectorOptions()
                     .setHasDataPolicy(true)
                     .setUri(URI.create(api.getEndpoint())),
                 result -> {});

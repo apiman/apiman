@@ -22,8 +22,10 @@ import io.apiman.gateway.engine.beans.Api;
 import io.apiman.gateway.engine.beans.ApiContract;
 import io.apiman.gateway.engine.beans.Client;
 import io.apiman.gateway.engine.beans.Contract;
-import io.apiman.gateway.engine.beans.exceptions.InvalidContractException;
-import io.apiman.gateway.engine.beans.exceptions.PublishingException;
+import io.apiman.gateway.engine.beans.exceptions.ApiNotFoundException;
+import io.apiman.gateway.engine.beans.exceptions.ApiRetiredException;
+import io.apiman.gateway.engine.beans.exceptions.ClientNotFoundException;
+import io.apiman.gateway.engine.beans.exceptions.NoContractFoundException;
 import io.apiman.gateway.engine.beans.exceptions.RegistrationException;
 import io.apiman.gateway.engine.i18n.Messages;
 
@@ -68,7 +70,7 @@ public class InMemoryRegistry implements IRegistry {
         synchronized (mutex) {
             Api removedApi = (Api) getMap().remove(apiIdx);
             if (removedApi == null) {
-                error = new PublishingException(Messages.i18n.format("InMemoryRegistry.ApiNotFound")); //$NON-NLS-1$
+                error = new ApiNotFoundException(Messages.i18n.format("InMemoryRegistry.ApiNotFound")); //$NON-NLS-1$
             }
         }
         if (error == null) {
@@ -89,7 +91,7 @@ public class InMemoryRegistry implements IRegistry {
             for (Contract contract : client.getContracts()) {
                 String apiIdx = getApiIndex(contract.getApiOrgId(), contract.getApiId(), contract.getApiVersion());
                 if (!getMap().containsKey(apiIdx)) {
-                    error = new RegistrationException(Messages.i18n.format("InMemoryRegistry.ApiNotFoundInOrg", //$NON-NLS-1$
+                    error = new ApiNotFoundException(Messages.i18n.format("InMemoryRegistry.ApiNotFoundInOrg", //$NON-NLS-1$
                             contract.getApiId(), contract.getApiOrgId()));
                     break;
                 }
@@ -122,7 +124,7 @@ public class InMemoryRegistry implements IRegistry {
             handler.handle(AsyncResultImpl.create(e, Void.class));
         }
     }
-    
+
     /**
      * @param client
      * @param silent
@@ -133,14 +135,14 @@ public class InMemoryRegistry implements IRegistry {
             Client oldClient = (Client) getMap().remove(clientIdx);
             if (oldClient == null) {
                 if (!silent) {
-                    throw new RegistrationException(Messages.i18n.format("InMemoryRegistry.ClientNotFound")); //$NON-NLS-1$
+                    throw new ClientNotFoundException(Messages.i18n.format("InMemoryRegistry.ClientNotFound")); //$NON-NLS-1$
                 }
             } else {
                 getMap().remove(oldClient.getApiKey());
             }
         }
     }
-    
+
     /**
      * @see io.apiman.gateway.engine.IRegistry#getClient(java.lang.String, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
@@ -161,7 +163,7 @@ public class InMemoryRegistry implements IRegistry {
         }
         return client;
     }
-    
+
     /**
      * @see io.apiman.gateway.engine.IRegistry#getContract(java.lang.String, java.lang.String, java.lang.String, java.lang.String, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
@@ -170,24 +172,24 @@ public class InMemoryRegistry implements IRegistry {
             IAsyncResultHandler<ApiContract> handler) {
         Client client = null;
         Api api = null;
-        
+
         String apiIdx = getApiIndex(apiOrganizationId, apiId, apiVersion);
         synchronized (mutex) {
             client = (Client) getMap().get(apiKey);
             api = (Api) getMap().get(apiIdx);
         }
         if (client == null) {
-            Exception error = new InvalidContractException(Messages.i18n.format("InMemoryRegistry.NoClientForAPIKey", apiKey)); //$NON-NLS-1$
+            Exception error = new ClientNotFoundException(Messages.i18n.format("InMemoryRegistry.NoClientForAPIKey", apiKey)); //$NON-NLS-1$
             handler.handle(AsyncResultImpl.create(error, ApiContract.class));
             return;
         }
         if (api == null) {
-            Exception error = new InvalidContractException(Messages.i18n.format("InMemoryRegistry.ApiWasRetired", //$NON-NLS-1$
+            Exception error = new ApiRetiredException(Messages.i18n.format("InMemoryRegistry.ApiWasRetired", //$NON-NLS-1$
                     apiId, apiOrganizationId));
             handler.handle(AsyncResultImpl.create(error, ApiContract.class));
             return;
         }
-        
+
         Contract matchedContract = null;
         for (Contract contract : client.getContracts()) {
             if (contract.matches(apiOrganizationId, apiId, apiVersion)) {
@@ -195,14 +197,14 @@ public class InMemoryRegistry implements IRegistry {
                 break;
             }
         }
-        
+
         if (matchedContract == null) {
-            Exception error = new InvalidContractException(Messages.i18n.format("InMemoryRegistry.NoContractFound", //$NON-NLS-1$
+            Exception error = new NoContractFoundException(Messages.i18n.format("InMemoryRegistry.NoContractFound", //$NON-NLS-1$
                     client.getClientId(), api.getApiId()));
             handler.handle(AsyncResultImpl.create(error, ApiContract.class));
             return;
         }
-        
+
         ApiContract contract = new ApiContract(api, client, matchedContract.getPlan(), matchedContract.getPolicies());
         handler.handle(AsyncResultImpl.create(contract));
     }

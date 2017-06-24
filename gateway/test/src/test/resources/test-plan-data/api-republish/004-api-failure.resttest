@@ -2,9 +2,9 @@ GET /ApiRepublishTest/public-echo/1.0/path/to/app/resource admin/admin
 Accept: application/json
 
 ----
-500
+404
 Content-Type: application/json
 
 {
-  "responseCode" : 500
+  "responseCode" : 404
 }
