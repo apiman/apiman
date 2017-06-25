@@ -13,4 +13,4 @@ gwt-unitCache
 .idea
 npm-debug.log
 .metadata/*
-.log
+*.log
