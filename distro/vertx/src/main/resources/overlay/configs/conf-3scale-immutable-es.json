@@ -7,13 +7,15 @@
             "defaultVersion": "1.0"
         },
         // ES in this config is for metrics, shared state, etc.
-        "es": {
+        "apiman": {
+          "es": {
             "protocol": "http",
             "host": "localhost",
-            "port": 19200,
+            "port": 9200,
             "username": null,
             "password": null,
             "timeout": 10000
+          }
         }
     },
 
