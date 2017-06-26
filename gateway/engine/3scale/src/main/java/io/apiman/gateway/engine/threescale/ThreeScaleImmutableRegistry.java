@@ -15,6 +15,7 @@ package io.apiman.gateway.engine.threescale;
  * limitations under the License.
  */
 
+import io.apiman.common.config.options.AbstractOptions;
 import io.apiman.gateway.engine.IEngineConfig;
 import io.apiman.gateway.engine.Version;
 import io.apiman.gateway.engine.async.AsyncInitialize;
@@ -35,6 +36,7 @@ import io.apiman.gateway.engine.vertx.polling.PolicyConfigLoader;
 import io.apiman.gateway.engine.vertx.polling.fetchers.AccessTokenResourceFetcher;
 import io.apiman.gateway.engine.vertx.polling.fetchers.FileResourceFetcher;
 import io.apiman.gateway.engine.vertx.polling.fetchers.HttpResourceFetcher;
+import io.apiman.gateway.engine.vertx.polling.fetchers.auth.AuthType;
 import io.apiman.gateway.platforms.vertx3.common.verticles.Json;
 import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
@@ -65,9 +67,13 @@ import java.util.stream.Collectors;
  *   <li>accessToken: 3scale access token</li>
  *   <li>apiEndpoint: 3scale API endpoint</li>
  *   <li>environment: which environment (e.g. production, staging). <em>Default: production</em></li>
- *   <li>policyConfigUri: apiman policy config to load as JSON from file
- *    ({@link FileResourceFetcher}) or HTTP/S ({@link HttpResourceFetcher}). See the corresponding
- *   fetcher for additional options.</li>
+ *   <li>policyConfig:
+ *      <ul>
+ *          <li>overlayUri: apiman policy config to load as JSON from file ({@link FileResourceFetcher}) or HTTP/S
+ *          ({@link HttpResourceFetcher}). See the corresponding fetcher for additional options.</li>
+ *          <li>auth: auth type. See {@link AuthType}</li>
+ *      </ul>
+ *   </li>
  *   <li>orgName: 3scale does not presently support multi-tenanted namespacing within a single
  *   gateway, so a default namespace is used internally (reflected in metrics, etc). <em>Does
  *   not</em> impact the path used to call the gateway <em>Default: {@value ThreeScaleConstants#DEFAULT_ORGNAME}</em></li>
@@ -197,8 +203,8 @@ public class ThreeScaleImmutableRegistry extends InMemoryRegistry implements Asy
             this.environment = config.getOrDefault("environment", "production");
             this.backendEndpoint = config.getOrDefault("backendEndpoint", ThreeScaleConstants.DEFAULT_BACKEND);
 
-            if (config.containsKey("policyConfigUri")) {
-                this.policyConfigUri = URI.create(config.get("policyConfigUri")); // Can be null.
+            if (config.containsKey("policyConfig.overlayUri")) {
+                this.policyConfigUri = URI.create(config.get("policyConfig.overlayUri")); // Can be null.
             }
 
             fetchResource();
@@ -259,7 +265,8 @@ public class ThreeScaleImmutableRegistry extends InMemoryRegistry implements Asy
         private Future<List<Api>> fetchPolicyConfig() {
             log.debug("Loading policy configuration from {0}...", policyConfigUri);
             Future<List<Api>> apiResultFuture = Future.future();
-            new PolicyConfigLoader(vertx, policyConfigUri, config)
+            Map<String, String> filteredConfig = AbstractOptions.getSubmap(config, "policyConfig.");
+            new PolicyConfigLoader(vertx, policyConfigUri, filteredConfig)
                 .setApiResultHandler(apis -> {
                     this.policyConfigApis = apis;
                     apiResultFuture.complete();
@@ -297,8 +304,7 @@ public class ThreeScaleImmutableRegistry extends InMemoryRegistry implements Asy
                 .exceptionHandler(this::failAll)
                 .fetch(buffer -> {
                     ServicesRoot sr = Json.decodeValue(buffer.toString(), ServicesRoot.class);
-                    System.out.println("Received buffer");
-                    //log.debug("Received Services: {0}", sr);
+                    log.debug("Received Service Root: {0}", sr);
                     resultHandler.handle(sr);
                 });
         }
@@ -333,8 +339,8 @@ public class ThreeScaleImmutableRegistry extends InMemoryRegistry implements Asy
                     api.setVersion(defaultVersion); // don't think this is relevant anymore
                     setPolicies(api, bean);
 
-                    log.info("Processing - {0}: ", config);
-                    log.info("Creating API - {0}: ", api);
+                    log.debug("Processing: {0}", config);
+                    log.debug("Creating API: {0}", api);
                     apis.add(api);
                 }
 

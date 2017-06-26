@@ -15,7 +15,10 @@
  */
 package io.apiman.common.config.options;
 
+import java.util.AbstractMap;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
@@ -85,4 +88,25 @@ public abstract class AbstractOptions {
             return BooleanUtils.toBoolean(value);
         }
     }
+
+    /**
+     * Takes map and produces a submap using a key.
+     *
+     * For example, all foo.bar elements are inserted into the new map.
+     *
+     * @param mapIn config map in
+     * @param subkey subkey to determine the submap
+     * @return the submap
+     */
+    public static Map<String, String> getSubmap(Map<String, String> mapIn, String subkey) {
+        // Get map sub-element.
+        return mapIn.entrySet().stream()
+                .filter(entry -> entry.getKey().toLowerCase().startsWith(subkey.toLowerCase()))
+                .map(entry -> {
+                    String newKey = entry.getKey().substring(subkey.length(), entry.getKey().length());
+                    return new AbstractMap.SimpleImmutableEntry<>(newKey, entry.getValue());
+                })
+                .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+    }
+
 }
