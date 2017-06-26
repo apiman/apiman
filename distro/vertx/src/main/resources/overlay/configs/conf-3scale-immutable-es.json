@@ -225,6 +225,12 @@
       "IBufferFactoryComponent": {
         "class": "io.apiman.gateway.platforms.vertx3.components.BufferFactoryComponentImpl",
         "config": {}
+      },
+
+      // Periodic Component
+      "IPeriodicComponent": {
+          "class": "io.apiman.gateway.platforms.vertx3.components.PeriodicComponentImpl",
+          "config": {}
       }
     },
 
