@@ -77,15 +77,16 @@ public class AccessTokenResourceFetcher {
           if (clientResponse.statusCode() / 100 == 2) {
               clientResponse.handler(data -> {
                   rawData.appendBuffer(data);
-                  System.out.println("Got some data " + data);
+                  log.trace("Got some data from backend {0}", data);
               })
               .endHandler(end -> resultHandler.handle(rawData));
-              } else if (clientResponse.statusCode() == 404) {
+          } else if (clientResponse.statusCode() == 404) {
               // Is there any way to determine this in advance?
               resultHandler.handle(rawData); // Empty
           } else {
-              String errorMessage = MessageFormat.format("Error response code: {0}, message: {1}", clientResponse.statusCode(),
-                        clientResponse.statusMessage());
+              String errorMessage = MessageFormat.format("Error response code: {0}, message: {1}",
+                      clientResponse.statusCode(),
+                      clientResponse.statusMessage());
               log.error(errorMessage);
               exceptionHandler.handle(new BadResponseCodeError(errorMessage));
           }
