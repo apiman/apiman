@@ -15,12 +15,16 @@
  */
 package io.apiman.gateway.engine.vertxebinmemory.apis;
 
+import io.apiman.gateway.engine.async.AsyncResultImpl;
+import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.Api;
 import io.apiman.gateway.engine.beans.Client;
 import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.Message;
+import io.vertx.core.eventbus.MessageConsumer;
 import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonObject;
+import io.vertx.core.logging.Logger;
 
 /**
  * Listens for registry events on the event bus. Ignores self-generated events. These arrive as a simple JSON
@@ -34,15 +38,14 @@ import io.vertx.core.json.JsonObject;
 public interface EBRegistryProxyHandler {
 
     @SuppressWarnings("nls")
-    default void listenProxyHandler() {
-        System.out.println("Setting up a listener on " + address());
+    default void listenProxyHandler(IAsyncResultHandler<Void> startupHandler) {
+        log().info("Setting up a listener on: {0}", address());
 
-        vertx().eventBus().consumer(address(), (Message<JsonObject> message) -> {
-            String uuid = message.body().getString("uuid");
+        MessageConsumer<JsonObject> consumer = vertx().eventBus().consumer(address(), (Message<JsonObject> message) -> {
+            String inboundUuid = message.body().getString("uuid");
+            log().debug("[{0}] Handling command from inbound UUID: {1} {2}", uuid(), inboundUuid, message);
 
-            System.out.println("UUID == " + uuid + " vs " + uuid());
-
-            if (shouldIgnore(uuid))
+            if (shouldIgnore(inboundUuid))
                 return;
 
             String type = message.body().getString("type");
@@ -53,9 +56,9 @@ public interface EBRegistryProxyHandler {
                 case "client":
                     Client app = Json.decodeValue(body, Client.class);
 
-                    if (action == "register") {
+                    if (action.equals("register")) {
                         registerClient(app);
-                    } else if (action == "unregister") {
+                    } else if (action.equals("unregister")) {
                         unregisterClient(app);
                     }
 
@@ -63,9 +66,9 @@ public interface EBRegistryProxyHandler {
                 case "api":
                     Api api = Json.decodeValue(body, Api.class);
 
-                    if (action == "publish") { //$NON-NLS-1$
+                    if (action.equals("publish")) {
                         publishApi(api);
-                    } else if (action == "retire") {
+                    } else if (action.equals("retire")) {
                         retireApi(api);
                     }
 
@@ -74,6 +77,19 @@ public interface EBRegistryProxyHandler {
                     throw new IllegalStateException("Unknown type: " + type);
             }
 
+        });
+
+        consumer.completionHandler(complete ->  {
+            if (complete.succeeded()) {
+                startupHandler.handle(AsyncResultImpl.create((Void) null));
+            } else {
+                startupHandler.handle(AsyncResultImpl.create(complete.cause()));
+            }
+        });
+
+        consumer.exceptionHandler(ex -> {
+            log().error("[{0}] An exception occurred: {1}", uuid(), ex);
+            ex.printStackTrace();
         });
     }
 
@@ -87,9 +103,10 @@ public interface EBRegistryProxyHandler {
     void retireApi(Api api);
     void registerClient(Client app);
     void unregisterClient(Client app);
+    Logger log();
 
     // If *we* sent the message, we shouldn't also digest it, else we'll end in a cycle.
     default boolean shouldIgnore(String uuid) {
-        return uuid() == uuid;
+        return uuid().equals(uuid);
     }
 }
