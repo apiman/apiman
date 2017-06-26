@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.apiman.gateway.engine.vertx.polling.fetchers;
+package io.apiman.gateway.engine.threescale.fetchers;
 
 import io.apiman.gateway.engine.vertx.polling.exceptions.BadResponseCodeError;
 import io.vertx.core.Handler;

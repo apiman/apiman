@@ -27,18 +27,18 @@
             // 3scale backend endpoint, this is the SaaS default. Alter this for on-prem deployment.
             "backendEndpoint": "https://su1.3scale.net:443",
             // Optional: Apiman policy overlay, allowing apiman custom policies to be applied to 3scale APIs.
-            "policyConfig": {
-                // Your overlay is a JSON document. Refer to docs for format information.
-                "overlayUri": "file:///path/to/your/apiman-your-3scale-overlay.json",
-                // For HTTP(S), BASIC and OAuth2 are supported. Refer to docs for more info.
-                "auth": "NONE"
-            },
+            // "policyConfig": {
+            //     // Your overlay is a JSON document. Refer to docs for format information.
+            //     "overlayUri": "file:///path/to/your/apiman-your-3scale-overlay.json",
+            //     // For HTTP(S), BASIC and OAuth2 are supported. Refer to docs for more info.
+            //     "auth": "NONE"
+            // },
             // Which environment (e.g. production, staging). Default: production
             "environment": "production",
             // 3scale authrep strategy: STANDARD, BATCHED_HYBRID. Refer to docs for more.
             "strategy": "STANDARD",
             "defaultOrgName": "${3scale.defaultOrgName}",
-            "defaultVersion": "${3scale.defaultVersion}",
+            "defaultVersion": "${3scale.defaultVersion}"
         }
     },
 
