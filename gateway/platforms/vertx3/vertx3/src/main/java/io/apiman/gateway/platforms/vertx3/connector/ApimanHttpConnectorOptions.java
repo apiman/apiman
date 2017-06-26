@@ -29,6 +29,7 @@ import java.util.Map;
  *
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
  */
+@SuppressWarnings("nls")
 public class ApimanHttpConnectorOptions extends AbstractOptions {
 
     private RequiredAuthType requiredAuthType = RequiredAuthType.DEFAULT;
