@@ -16,6 +16,7 @@
 package io.apiman.common.config.options;
 
 import java.util.AbstractMap;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
@@ -99,6 +100,9 @@ public abstract class AbstractOptions {
      * @return the submap
      */
     public static Map<String, String> getSubmap(Map<String, String> mapIn, String subkey) {
+        if (mapIn == null || mapIn.isEmpty()) {
+            return Collections.emptyMap();
+        }
         // Get map sub-element.
         return mapIn.entrySet().stream()
                 .filter(entry -> entry.getKey().toLowerCase().startsWith(subkey.toLowerCase()))
