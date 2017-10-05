@@ -66,6 +66,7 @@ import org.apache.commons.lang3.text.StrSubstitutor;
 @SuppressWarnings("nls")
 public class VertxEngineConfig implements IEngineConfig {
     private static final String VERTICLES = "verticles";
+    private static final String VERTICLE_HOST = "host";
     private static final String VERTICLE_PORT = "port";
     private static final String VERTICLE_COUNT = "count";
 
@@ -252,6 +253,14 @@ public class VertxEngineConfig implements IEngineConfig {
 
     public Boolean preferSecure() {
         return config.getBoolean(GATEWAY_PREFER_SECURE);
+    }
+
+    public String getHost(String name) {
+        return getVerticleConfig(name).getString(VERTICLE_HOST, "0.0.0.0");
+    }
+
+    public String getHost(VerticleType verticleType) {
+        return getHost(verticleType.name());
     }
 
     public int getPort(String name) {

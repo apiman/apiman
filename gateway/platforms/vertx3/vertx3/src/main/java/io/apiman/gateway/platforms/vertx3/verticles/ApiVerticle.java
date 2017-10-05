@@ -101,6 +101,7 @@ public class ApiVerticle extends ApimanVerticleWithEngine {
         vertx.createHttpServer(httpOptions)
             .requestHandler(router::accept)
             .listen(apimanConfig.getPort(VERTICLE_TYPE),
+                    apimanConfig.getHost(VERTICLE_TYPE),
                     listenFuture.completer());
     }
 
