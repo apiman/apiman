@@ -25,6 +25,9 @@ import io.vertx.core.impl.launcher.VertxCommandLauncher;
 import io.vertx.core.impl.launcher.VertxLifecycleHooks;
 import io.vertx.core.json.JsonObject;
 
+/**
+ * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
+ */
 public class ApimanLauncher extends VertxCommandLauncher implements VertxLifecycleHooks {
 
     // Ensure we're in control of logging.
@@ -107,5 +110,13 @@ public class ApimanLauncher extends VertxCommandLauncher implements VertxLifecyc
     public void handleDeployFailed(Vertx vertx, String mainVerticle, DeploymentOptions deploymentOptions, Throwable cause) {
       // Default behaviour is to close Vert.x if the deploy failed
       vertx.close();
+    }
+
+    @Override
+    public void beforeStoppingVertx(Vertx vertx) {
+    }
+
+    @Override
+    public void afterStoppingVertx() {
     }
 }
