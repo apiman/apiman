@@ -1315,6 +1315,7 @@
             <systemProperties>
               <java.io.tmpdir>${project.build.directory}</java.io.tmpdir>
             </systemProperties>
+            <argLine>-Xmx1024m</argLine>
           </configuration>
         </plugin>
         <plugin>
