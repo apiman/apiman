@@ -28,7 +28,7 @@
   <fileSets>
     <fileSet>
       <directory>src/main/resources/overlay</directory>
-      <outputDirectory>/</outputDirectory>
+      <outputDirectory></outputDirectory>
       <filtered>false</filtered>
       <directoryMode>0755</directoryMode>
       <fileMode>0755</fileMode>
