@@ -132,6 +132,7 @@
               <archiverConfig>
                 <defaultDirectoryMode>0755</defaultDirectoryMode>
               </archiverConfig>
+              <archiveBaseDirectory>${project.basedir}</archiveBaseDirectory>
             </configuration>
           </execution>
         </executions>
