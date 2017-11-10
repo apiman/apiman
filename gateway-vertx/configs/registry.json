@@ -1,0 +1,30 @@
+{
+    "apis": [{
+        "publicAPI": false,
+        "organizationId": "example",
+        "apiId": "echo",
+        "version": "1.0",
+        "endpoint": "https://httpbin.org/get",
+        "endpointType": "rest",
+        "endpointContentType": "json",
+        "endpointProperties": {},
+        "parsePayload": false,
+        "apiPolicies": [{
+            "policyImpl": "class:io.apiman.gateway.engine.policies.RateLimitingPolicy",
+            "policyJsonConfig": "{ \"limit\" : 20, \"granularity\" : \"Client\", \"period\" : \"Minute\" }"
+        }]
+    }],
+    "clients": [{
+        "organizationId": "example",
+        "clientId": "client",
+        "version": "1.0",
+        "apiKey": "secret",
+        "contracts": [ {
+            "apiOrgId": "example",
+            "apiId": "echo",
+            "apiVersion": "1.0"
+        }]
+    }]
+}
+
+
