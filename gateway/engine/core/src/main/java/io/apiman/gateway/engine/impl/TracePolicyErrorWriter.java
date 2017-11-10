@@ -16,6 +16,7 @@
 
 package io.apiman.gateway.engine.impl;
 
+import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.EngineErrorResponse;
 
 /**
@@ -27,11 +28,18 @@ public class TracePolicyErrorWriter extends DefaultPolicyErrorWriter {
      * @see io.apiman.gateway.engine.impl.DefaultPolicyErrorWriter#createErrorResponse(java.lang.Throwable)
      */
     @Override
-    protected EngineErrorResponse createErrorResponse(Throwable error, int statusCode) {
-        EngineErrorResponse response = super.createErrorResponse(error, statusCode);
+    protected EngineErrorResponse createErrorResponse(Throwable error, String message, int statusCode) {
+        EngineErrorResponse response = super.createErrorResponse(error, message, statusCode);
         response.setTrace(error);
-        response.setResponseCode(statusCode);
         return response;
+    }
+
+    @Override
+    protected String createErrorMessage(ApiRequest request, Throwable error) {
+        if (error.getMessage() == null) {
+            return error.getClass().getCanonicalName();
+        }
+        return error.getMessage();
     }
 
 }
