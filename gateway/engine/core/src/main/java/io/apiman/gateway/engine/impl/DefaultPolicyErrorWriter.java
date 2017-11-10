@@ -62,7 +62,8 @@ public class DefaultPolicyErrorWriter implements IPolicyErrorWriter {
         if (request != null && request.getApi() != null && "xml".equals(request.getApi().getEndpointContentType())) {
             isXml = true;
         }
-        String message = (error.getMessage() == null) ? "" : error.getMessage(); // TODO get and/or print ultimate cause?
+        String message = createErrorMessage(request, error);
+        // TODO get and/or print ultimate cause?
         response.setHeader("X-Gateway-Error", message);
 
         int statusCode = 500;
@@ -71,8 +72,8 @@ public class DefaultPolicyErrorWriter implements IPolicyErrorWriter {
         }
         response.setStatusCode(statusCode);
 
-
-        EngineErrorResponse eer = createErrorResponse(error, statusCode);
+        // #createErrorResponse can be overriden by subclasses (e.g. trace). So need to be careful.
+        EngineErrorResponse eer = createErrorResponse(error, message, statusCode);
         if (isXml) {
             response.setHeader("Content-Type", "application/xml");
             try {
@@ -95,13 +96,20 @@ public class DefaultPolicyErrorWriter implements IPolicyErrorWriter {
         }
     }
 
+    protected String createErrorMessage(ApiRequest request, Throwable error) {
+        if (error.getMessage() == null) {
+            return error.getClass().getCanonicalName() + " error occurred with no message. Refer to logs.";
+        }
+        return error.getMessage();
+    }
+
     /**
      * @param error
      */
-    protected EngineErrorResponse createErrorResponse(Throwable error, int statusCode) {
+    protected EngineErrorResponse createErrorResponse(Throwable error, String message, int statusCode) {
         EngineErrorResponse eer = new EngineErrorResponse();
         eer.setResponseCode(statusCode);
-        eer.setMessage(error.getMessage());
+        eer.setMessage(message);
         return eer;
     }
 

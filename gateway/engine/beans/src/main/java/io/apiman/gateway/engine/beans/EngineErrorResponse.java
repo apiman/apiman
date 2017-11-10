@@ -21,12 +21,16 @@ import java.io.StringWriter;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 /**
  * Models an error from the engine.
  *
  * @author Marc Savy <msavy@redhat.com>
  */
 @XmlRootElement
+@JsonInclude(Include.NON_NULL)
 public class EngineErrorResponse implements Serializable {
 
     private static final long serialVersionUID = 8881390951647532958L;
