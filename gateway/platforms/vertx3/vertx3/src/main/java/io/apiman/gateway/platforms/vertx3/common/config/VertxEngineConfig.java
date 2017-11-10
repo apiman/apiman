@@ -43,6 +43,8 @@ import io.apiman.gateway.platforms.vertx3.engine.VertxPluginRegistry;
 import io.apiman.gateway.platforms.vertx3.i18n.Messages;
 import io.apiman.gateway.platforms.vertx3.logging.VertxLoggerDelegate;
 import io.vertx.core.json.JsonObject;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.text.StrSubstitutor;
 
 import java.util.AbstractMap;
 import java.util.Collections;
@@ -52,9 +54,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.text.StrSubstitutor;
 
 
 /**
@@ -339,8 +338,10 @@ public class VertxEngineConfig implements IEngineConfig {
         String strippedPrefix = StringUtils.substringAfter(prefix, "apiman-gateway.");
         String filteredPrefix = strippedPrefix.isEmpty() ? prefix : strippedPrefix;
 
-        if (clazzName == null)
-            return obj.getJsonObject(filteredPrefix, new JsonObject()).getString(GATEWAY_CLASS);
+        if (clazzName == null) {
+            Map<String, String> mfp = toFlatStringMap(obj);
+            return mfp.get(filteredPrefix + "." + GATEWAY_CLASS);
+        }
 
         return clazzName;
     }
