@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 JBoss Inc
+ * Copyright 2017 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,31 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package io.apiman.gateway.platforms.vertx3.api;
 
-import io.apiman.gateway.api.rest.contract.ISystemResource;
+import io.apiman.gateway.api.rest.contract.IOrgResource;
+import io.apiman.gateway.api.rest.contract.exceptions.NotAuthorizedException;
 import io.apiman.gateway.engine.IEngine;
-import io.apiman.gateway.engine.beans.SystemStatus;
+import io.apiman.gateway.engine.IRegistry;
 import io.apiman.gateway.platforms.vertx3.common.config.VertxEngineConfig;
 
+import javax.ws.rs.container.AsyncResponse;
+
 /**
- * System Resource route builder
+ * Implementation of the Org API
  *
- * @author Marc Savy {@literal <msavy@redhat.com>}
+ * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
  */
-public class SystemResourceImpl implements ISystemResource {
+public class OrgResourceImpl extends AbstractResource implements IOrgResource {
 
-    private IEngine engine;
+    private IRegistry registry;
 
-    public SystemResourceImpl(VertxEngineConfig apimanConfig, IEngine engine) {
-        this.engine = engine;
+    public OrgResourceImpl(VertxEngineConfig apimanConfig, IEngine engine) {
+        this.registry = engine.getRegistry();
     }
 
     @Override
-    public SystemStatus getStatus() {
-        SystemStatus status = new SystemStatus();
-        status.setUp(true);
-        status.setVersion(engine.getVersion());
-        return status;
+    public void listOrgs(AsyncResponse response) throws NotAuthorizedException {
+        registry.listOrgs(handlerWithResult(response));
     }
+
 }

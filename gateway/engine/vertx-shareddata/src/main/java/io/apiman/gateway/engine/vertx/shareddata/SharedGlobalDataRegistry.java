@@ -194,6 +194,12 @@ public class SharedGlobalDataRegistry implements IRegistry {
         objectMap.get(apiKey, handleResult(handler));
     }
 
+    @Override
+    public void getClient(String organizationId, String clientId, String clientVersion, IAsyncResultHandler<Client> handler) {
+        String idx = getClientIndex(organizationId, clientId, clientVersion);
+        objectMap.get(idx, handleResult(handler));
+    }
+
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public void getContract(String apiOrganizationId, String apiId, String apiVersion, String apiKey, IAsyncResultHandler<ApiContract> handler) {
@@ -238,6 +244,31 @@ public class SharedGlobalDataRegistry implements IRegistry {
         });
     }
 
+    @Override
+    public void listApis(String organizationId, int page, int pageSize, IAsyncResultHandler<List<String>> handler) {
+        throw new UnsupportedOperationException("Vert.x AsyncMap does not yet support iteration"); // TODO 1.5.x supports iteration.
+    }
+
+    @Override
+    public void listOrgs(IAsyncResultHandler<List<String>> handler) {
+        throw new UnsupportedOperationException("Vert.x AsyncMap does not yet support iteration"); // TODO 1.5.x supports iteration.
+    }
+
+    @Override
+    public void listApiVersions(String organizationId, String apiId, int page, int pageSize, IAsyncResultHandler<List<String>> handler) {
+        throw new UnsupportedOperationException("Vert.x AsyncMap does not yet support iteration"); // TODO 1.5.x supports iteration.
+    }
+
+    @Override
+    public void listClients(String organizationId, int page, int pageSize, IAsyncResultHandler<List<String>> handler) {
+        throw new UnsupportedOperationException("Vert.x AsyncMap does not yet support iteration"); // TODO 1.5.x supports iteration.
+    }
+
+    @Override
+    public void listClientVersions(String organizationId, String clientId, int page, int pageSize, IAsyncResultHandler<List<String>> handler) {
+        throw new UnsupportedOperationException("Vert.x AsyncMap does not yet support iteration"); // TODO 1.5.x supports iteration.
+    }
+
     private String getApiIndex(Api api) {
         return getApiIndex(api.getOrganizationId(), api.getApiId(), api.getVersion());
     }
@@ -247,7 +278,11 @@ public class SharedGlobalDataRegistry implements IRegistry {
     }
 
     private String getClientIndex(Client client) {
-        return "CLIENT::" + client.getOrganizationId() + "|" + client.getClientId() + "|" + client.getVersion(); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        return getClientIndex(client.getOrganizationId(), client.getClientId(), client.getVersion());
+    }
+
+    private String getClientIndex(String orgId, String clientId, String version) {
+        return "CLIENT::" + orgId + "|" + clientId + "|" + version; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
     @SuppressWarnings("unchecked")
@@ -262,7 +297,7 @@ public class SharedGlobalDataRegistry implements IRegistry {
     }
 
     @SuppressWarnings("unchecked")
-    private <T> Handler<AsyncResult<Object>> handleResult(IAsyncResultHandler<T> apimanResultHandler) {
+    private <T, Q> Handler<AsyncResult<Q>> handleResult(IAsyncResultHandler<T> apimanResultHandler) {
         return result -> {
             if (result.succeeded()) {
                 apimanResultHandler.handle(AsyncResultImpl.create((T) result.result()));

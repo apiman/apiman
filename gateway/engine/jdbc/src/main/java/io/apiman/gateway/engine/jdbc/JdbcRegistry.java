@@ -36,12 +36,14 @@ import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.dbutils.DbUtils;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
+import org.apache.commons.dbutils.handlers.AbstractListHandler;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -221,6 +223,20 @@ public class JdbcRegistry extends AbstractJdbcComponent implements IRegistry {
         }
     }
 
+
+    @Override
+    public void getClient(String organizationId, String clientId, String clientVersion,
+            IAsyncResultHandler<Client> handler) {
+        try {
+            QueryRunner run = new QueryRunner(ds);
+            Client client = run.query("SELECT bean FROM gw_clients WHERE org_id = ? AND id = ? AND version = ?", //$NON-NLS-1$
+                    Handlers.CLIENT_HANDLER, organizationId, clientId, clientVersion);
+            handler.handle(AsyncResultImpl.create(client));
+        } catch (SQLException e) {
+            handler.handle(AsyncResultImpl.create(e, Client.class));
+        }
+    }
+
     /**
      * Gets an api from the DB.
      * @param organizationId
@@ -302,6 +318,79 @@ public class JdbcRegistry extends AbstractJdbcComponent implements IRegistry {
         }
     }
 
+    @Override
+    public void listApis(String organizationId, int page, int pageSize, IAsyncResultHandler<List<String>> handler) {
+        QueryRunner run = new QueryRunner(ds);
+        try {
+            List<String> apiList = run.query("SELECT DISTINCT id FROM gw_apis WHERE org_id = ?",
+                    Handlers.STRING_LIST_COL1_HANDLER, organizationId);
+            handler.handle(AsyncResultImpl.create(apiList));
+        } catch (SQLException e) {
+            handler.handle(AsyncResultImpl.create(e));
+        }
+    }
+
+    @Override
+    @SuppressWarnings("nls")
+    public void listOrgs(IAsyncResultHandler<List<String>> handler) {
+        QueryRunner run = new QueryRunner(ds);
+        try {
+            List<String> orgList = run.query("SELECT DISTINCT merged.org_id\n" +
+                    "FROM\n" +
+                    "    (\n" +
+                    "        SELECT\n" +
+                    "            org_id\n" +
+                    "        FROM\n" +
+                    "            gw_apis\n" +
+                    "    UNION \n" +
+                    "        SELECT\n" +
+                    "            org_id\n" +
+                    "        FROM\n" +
+                    "            gw_clients\n" +
+                    "    ) merged;",
+                    Handlers.STRING_LIST_COL1_HANDLER);
+            handler.handle(AsyncResultImpl.create(orgList));
+        } catch (SQLException e) {
+            handler.handle(AsyncResultImpl.create(e));
+        }
+    }
+
+    @Override
+    public void listApiVersions(String organizationId, String apiId, int page, int pageSize, IAsyncResultHandler<List<String>> handler) {
+        QueryRunner run = new QueryRunner(ds);
+        try {
+            List<String> apiVersions = run.query("SELECT DISTINCT version FROM gw_apis WHERE org_id = ? AND id = ?",
+                    Handlers.STRING_LIST_COL1_HANDLER, organizationId, apiId);
+            handler.handle(AsyncResultImpl.create(apiVersions));
+        } catch (SQLException e) {
+            handler.handle(AsyncResultImpl.create(e));
+        }
+    }
+
+    @Override
+    public void listClients(String organizationId, int page, int pageSize, IAsyncResultHandler<List<String>> handler) {
+        QueryRunner run = new QueryRunner(ds);
+        try {
+            List<String> clientList = run.query("SELECT DISTINCT id FROM gw_clients WHERE org_id = ?",
+                    Handlers.STRING_LIST_COL1_HANDLER, organizationId);
+            handler.handle(AsyncResultImpl.create(clientList));
+        } catch (SQLException e) {
+            handler.handle(AsyncResultImpl.create(e));
+        }
+    }
+
+    @Override
+    public void listClientVersions(String organizationId, String clientId, int page, int pageSize, IAsyncResultHandler<List<String>> handler) {
+        QueryRunner run = new QueryRunner(ds);
+        try {
+            List<String> clientVersions = run.query("SELECT DISTINCT version FROM gw_clients WHERE org_id = ? AND id = ?",
+                    Handlers.STRING_LIST_COL1_HANDLER, organizationId, clientId);
+            handler.handle(AsyncResultImpl.create(clientVersions));
+        } catch (SQLException e) {
+            handler.handle(AsyncResultImpl.create(e));
+        }
+    }
+
     /**
      * Generates a valid document ID for a api referenced by a contract, used to
      * retrieve the api from ES.
@@ -323,6 +412,15 @@ public class JdbcRegistry extends AbstractJdbcComponent implements IRegistry {
     }
 
     private static final class Handlers {
+        public static final AbstractListHandler<String> STRING_LIST_COL1_HANDLER = new AbstractListHandler<String>() {
+
+            @Override
+            protected String handleRow(ResultSet rs) throws SQLException {
+                return rs.getString(1);
+            }
+
+        };
+
         public static final ResultSetHandler<Api> API_HANDLER = (ResultSet rs) -> {
             if (!rs.next()) {
                 return null;

@@ -11,6 +11,7 @@
   <filter>
     <filter-name>HttpRequestThreadLocalFilter</filter-name>
     <filter-class>io.apiman.gateway.platforms.war.filters.HttpRequestThreadLocalFilter</filter-class>
+    <async-supported>true</async-supported>
   </filter>
   <filter-mapping>
     <filter-name>HttpRequestThreadLocalFilter</filter-name>
@@ -21,6 +22,7 @@
   <filter>
     <filter-name>LocaleFilter</filter-name>
     <filter-class>io.apiman.common.servlet.LocaleFilter</filter-class>
+    <async-supported>true</async-supported>
   </filter>
   <filter-mapping>
     <filter-name>LocaleFilter</filter-name>
@@ -31,6 +33,7 @@
   <filter>
     <filter-name>CorsFilter</filter-name>
     <filter-class>io.apiman.common.servlet.ApimanCorsFilter</filter-class>
+    <async-supported>true</async-supported>
   </filter>
   <filter-mapping>
     <filter-name>CorsFilter</filter-name>

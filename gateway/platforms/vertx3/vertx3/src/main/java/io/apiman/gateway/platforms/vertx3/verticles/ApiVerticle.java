@@ -17,7 +17,9 @@ package io.apiman.gateway.platforms.vertx3.verticles;
 
 import io.apiman.gateway.platforms.vertx3.api.ApiResourceImpl;
 import io.apiman.gateway.platforms.vertx3.api.ClientResourceImpl;
-import io.apiman.gateway.platforms.vertx3.api.IRouteBuilder;
+import io.apiman.gateway.platforms.vertx3.api.OrgResourceImpl;
+import io.apiman.gateway.platforms.vertx3.api.RestExceptionMapper;
+import io.apiman.gateway.platforms.vertx3.api.Router2ResteasyRequestAdapter;
 import io.apiman.gateway.platforms.vertx3.api.SystemResourceImpl;
 import io.apiman.gateway.platforms.vertx3.api.auth.AuthFactory;
 import io.apiman.gateway.platforms.vertx3.common.verticles.VerticleType;
@@ -29,6 +31,11 @@ import io.vertx.core.net.JksOptions;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.AuthHandler;
 import io.vertx.ext.web.handler.BodyHandler;
+
+import org.jboss.resteasy.plugins.server.vertx.VertxRegistry;
+import org.jboss.resteasy.plugins.server.vertx.VertxRequestHandler;
+import org.jboss.resteasy.plugins.server.vertx.VertxResteasyDeployment;
+
 
 /**
  * API verticle provides the Gateway API RESTful API. Config is validated and pushed into the registry
@@ -56,14 +63,21 @@ public class ApiVerticle extends ApimanVerticleWithEngine {
                 }
             });
 
-        IRouteBuilder clientResource = new ClientResourceImpl(apimanConfig, engine);
-        IRouteBuilder apiResource = new ApiResourceImpl(apimanConfig, engine);
-        IRouteBuilder systemResource = new SystemResourceImpl(apimanConfig, engine);
+        VertxResteasyDeployment deployment = new VertxResteasyDeployment();
+        deployment.start();
+
+        addResources(deployment.getRegistry(),
+                new SystemResourceImpl(apimanConfig, engine),
+                new ApiResourceImpl(apimanConfig, engine),
+                new ClientResourceImpl(apimanConfig, engine),
+                new OrgResourceImpl(apimanConfig, engine));
+
+        deployment.getProviderFactory().register(RestExceptionMapper.class);
+
+        VertxRequestHandler resteasyRh = new VertxRequestHandler(vertx, deployment);
 
         Router router = Router.router(vertx)
-                    .exceptionHandler(error -> {
-                        log.error(error.getMessage(), error);
-                    });
+                    .exceptionHandler(error -> log.error(error.getMessage(), error));
 
         // Ensure body handler is attached early so that if AuthHandler takes an external action
         // we don't end up losing the body (e.g OAuth2).
@@ -75,9 +89,8 @@ public class ApiVerticle extends ApimanVerticleWithEngine {
         router.route("/*")
             .handler(authHandler);
 
-        clientResource.buildRoutes(router);
-        apiResource.buildRoutes(router);
-        systemResource.buildRoutes(router);
+        router.route("/*") // We did the previous stuff, now we call into JaxRS.
+            .handler(context -> resteasyRh.handle(new Router2ResteasyRequestAdapter(context)));
 
         HttpServerOptions httpOptions = new HttpServerOptions()
                 .setHost(apimanConfig.getHostname());
@@ -102,6 +115,12 @@ public class ApiVerticle extends ApimanVerticleWithEngine {
             .requestHandler(router::accept)
             .listen(apimanConfig.getPort(VERTICLE_TYPE),
                     listenFuture.completer());
+    }
+
+    private void addResources(VertxRegistry registry, Object...objs) {
+        for (Object obj : objs) {
+            registry.addSingletonResource(obj);
+        }
     }
 
     @Override

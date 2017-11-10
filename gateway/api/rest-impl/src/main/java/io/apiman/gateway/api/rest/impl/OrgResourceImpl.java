@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 JBoss Inc
+ * Copyright 2014 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,29 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apiman.gateway.engine.es;
+
+package io.apiman.gateway.api.rest.impl;
+
+import io.apiman.gateway.api.rest.contract.IOrgResource;
+import io.apiman.gateway.api.rest.contract.exceptions.NotAuthorizedException;
+
+import javax.ws.rs.container.AsyncResponse;
 
 /**
- * Util methods.
+ * Implementation of the Org API
  *
- * @author eric.wittmann@redhat.com
  */
-public class ESUtils {
-
-    private ESUtils() {
-    }
+public class OrgResourceImpl extends AbstractResourceImpl implements IOrgResource {
 
     /**
-     * Gets the root cause of an exception.
-     * @param e the root cause
-     * @return the throwable
+     * Constructor.
      */
-    public static final Throwable rootCause(Throwable e) {
-        Throwable cause = e;
-        while (cause.getCause() != null) {
-            cause = e.getCause();
-        }
-        return cause;
+    public OrgResourceImpl() {
     }
 
+    @Override
+    public void listOrgs(AsyncResponse response) throws NotAuthorizedException {
+        getEngine().getRegistry().listOrgs(handlerWithResult(response));
+    }
 }

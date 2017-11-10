@@ -27,6 +27,10 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+
 /**
  * Implementation of the API API :).
  *
@@ -76,6 +80,54 @@ public class ApiResourceImpl extends AbstractResourceImpl implements IApiResourc
     public ApiEndpoint getApiEndpoint(String organizationId, String apiId, String version)
             throws NotAuthorizedException {
         return getPlatform().getApiEndpoint(organizationId, apiId, version);
+    }
+
+    @Override
+    public void retire(String organizationId, String apiId, String version, AsyncResponse response)
+            throws RegistrationException, NotAuthorizedException {
+        Api api = new Api();
+        api.setOrganizationId(organizationId);
+        api.setApiId(apiId);
+        api.setVersion(version);
+        getEngine().getRegistry().retireApi(api, handlerWithEmptyResult(response));
+    }
+
+    @Override
+    public void getApiEndpoint(String organizationId, String apiId, String version, AsyncResponse response)
+            throws NotAuthorizedException {
+        ApiEndpoint apiEndpoint = getPlatform().getApiEndpoint(organizationId, apiId, version);
+        response.resume(Response.ok(apiEndpoint).build());
+    }
+
+
+    @Override
+    public void listApis(String organizationId, int page, int pageSize, AsyncResponse response)
+            throws NotAuthorizedException {
+        getEngine().getRegistry().listApis(organizationId, page, pageSize, handlerWithResult(response));
+    }
+
+
+    @Override
+    public void listApiVersions(String organizationId, String apiId, int page, int pageSize, AsyncResponse response)
+            throws NotAuthorizedException {
+        getEngine().getRegistry().listApiVersions(organizationId, apiId, page, pageSize, handlerWithResult(response));
+    }
+
+    @Override
+    public void getApiVersion(String organizationId, String apiId, String version, AsyncResponse response)
+            throws NotAuthorizedException {
+        getEngine().getRegistry().getApi(organizationId, apiId, version, result -> {
+            if (result.isSuccess()) {
+                Api api = result.getResult();
+                if (api == null) {
+                    response.resume(Response.status(Status.NOT_FOUND).build());
+                } else {
+                    response.resume(Response.ok(api).build());
+                }
+            } else {
+                throwError(result.getError());
+            }
+        });
     }
 
 }

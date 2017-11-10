@@ -2,7 +2,7 @@ GET /downloads/${download-id}
 
 ----
 200
-Content-Type: application/xml
+Content-Type: application/xml;charset=UTF-8
 Content-Disposition: attachment; filename=api-registry.xml
 
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>

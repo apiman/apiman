@@ -18,6 +18,7 @@ package io.apiman.gateway.platforms.war.micro;
 import io.apiman.gateway.api.rest.impl.ClientResourceImpl;
 import io.apiman.gateway.api.rest.impl.GatewayApiApplication;
 import io.apiman.gateway.api.rest.impl.ApiResourceImpl;
+import io.apiman.gateway.api.rest.impl.OrgResourceImpl;
 import io.apiman.gateway.api.rest.impl.SystemResourceImpl;
 import io.apiman.gateway.api.rest.impl.mappers.RestExceptionMapper;
 import io.swagger.jaxrs.config.BeanConfig;
@@ -49,6 +50,7 @@ public class GatewayMicroServiceApplication extends GatewayApiApplication {
         classes.add(SystemResourceImpl.class);
         classes.add(ApiResourceImpl.class);
         classes.add(ClientResourceImpl.class);
+        classes.add(OrgResourceImpl.class);
 
         //add swagger 2.0 resource
         classes.add(io.swagger.jaxrs.listing.ApiListingResource.class);
