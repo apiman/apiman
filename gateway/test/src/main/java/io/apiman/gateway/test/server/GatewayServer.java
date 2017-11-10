@@ -17,22 +17,21 @@ package io.apiman.gateway.test.server;
 
 import io.apiman.gateway.api.rest.impl.ApiResourceImpl;
 import io.apiman.gateway.api.rest.impl.ClientResourceImpl;
+import io.apiman.gateway.api.rest.impl.OrgResourceImpl;
 import io.apiman.gateway.api.rest.impl.SystemResourceImpl;
 import io.apiman.gateway.api.rest.impl.mappers.RestExceptionMapper;
 import io.apiman.gateway.platforms.war.listeners.WarGatewayBootstrapper;
 import io.apiman.gateway.platforms.war.servlets.WarGatewayServlet;
-
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.ws.rs.ApplicationPath;
-import javax.ws.rs.core.Application;
-
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
+
+import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.core.Application;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Uses Jetty to run the WAR version of the API Management gateway.
@@ -131,6 +130,7 @@ public class GatewayServer {
             classes.add(SystemResourceImpl.class);
             classes.add(ApiResourceImpl.class);
             classes.add(ClientResourceImpl.class);
+            classes.add(OrgResourceImpl.class);
             classes.add(RestExceptionMapper.class);
             return classes;
         }

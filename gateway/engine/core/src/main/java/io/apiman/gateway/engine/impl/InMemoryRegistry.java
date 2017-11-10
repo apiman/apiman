@@ -29,8 +29,10 @@ import io.apiman.gateway.engine.beans.exceptions.NoContractFoundException;
 import io.apiman.gateway.engine.beans.exceptions.RegistrationException;
 import io.apiman.gateway.engine.i18n.Messages;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 /**
  * An in-memory implementation of the registry.
@@ -39,8 +41,8 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class InMemoryRegistry implements IRegistry {
 
-    private Map<String, Object> map = new ConcurrentHashMap<>();
-    private Object mutex = new Object();
+    private final Map<String, Object> map = new ConcurrentHashMap<>();
+    private final Object mutex = new Object();
 
     /**
      * Constructor.
@@ -152,14 +154,21 @@ public class InMemoryRegistry implements IRegistry {
         handler.handle(AsyncResultImpl.create(client));
     }
 
+    @Override
+    public void getClient(String organizationId, String clientId, String clientVersion, IAsyncResultHandler<Client> handler) {
+        String clientIdx = getClientIndex(organizationId, clientId, clientVersion);
+        Client client = getClientInternal(clientIdx);
+        handler.handle(AsyncResultImpl.create(client));
+    }
+
     /**
      * Gets the client and returns it.
      * @param apiKey
      */
-    protected Client getClientInternal(String apiKey) {
+    protected Client getClientInternal(String idx) {
         Client client;
         synchronized (mutex) {
-            client = (Client) getMap().get(apiKey);
+            client = (Client) getMap().get(idx);
         }
         return client;
     }
@@ -207,6 +216,78 @@ public class InMemoryRegistry implements IRegistry {
 
         ApiContract contract = new ApiContract(api, client, matchedContract.getPlan(), matchedContract.getPolicies());
         handler.handle(AsyncResultImpl.create(contract));
+    }
+
+    @Override
+    public void listClients(String organizationId, int page, int pageSize, IAsyncResultHandler<List<String>> handler) {
+        // For now, ignore paging, but it's there for future. Would need to ensure stable ordering.
+        List<String> res = map.entrySet().stream()
+                .map(Map.Entry::getValue)
+                .filter(entity -> entity instanceof Client)
+                .map(entity -> (Client) entity)
+                .filter(client -> client.getOrganizationId().equals(organizationId))
+                .map(client -> client.getClientId())
+                .distinct()
+                .collect(Collectors.toList());
+        handler.handle(AsyncResultImpl.create(res));
+    }
+
+    @Override
+    public void listClientVersions(String organizationId, String clientId, int page, int pageSize, IAsyncResultHandler<List<String>> handler) {
+        // For now, ignore paging, but it's there for future. Would need to ensure stable ordering.
+        List<String> res = map.entrySet().stream()
+                .map(Map.Entry::getValue)
+                .filter(entity -> entity instanceof Client)
+                .map(entity -> (Client) entity)
+                .filter(client -> client.getOrganizationId().equals(organizationId) && client.getClientId().equals(clientId))
+                .map(client -> client.getVersion())
+                .distinct()
+                .collect(Collectors.toList());
+        handler.handle(AsyncResultImpl.create(res));
+    }
+
+    @Override
+    public void listApis(String organizationId, int page, int pageSize, IAsyncResultHandler<List<String>> handler) {
+        // For now, ignore paging, but it's there for future. Would need to ensure stable ordering.
+        List<String> res = map.entrySet().stream()
+                .map(Map.Entry::getValue)
+                .filter(entity -> entity instanceof Api)
+                .map(entity -> (Api) entity)
+                .filter(api -> api.getOrganizationId().equals(organizationId))
+                .map(api -> api.getApiId())
+                .distinct()
+                .collect(Collectors.toList());
+        handler.handle(AsyncResultImpl.create(res));
+    }
+
+    @Override
+    public void listApiVersions(String organizationId, String apiId, int page, int pageSize, IAsyncResultHandler<List<String>> handler) {
+        // For now, ignore paging, but it's there for future. Would need to ensure stable ordering.
+        List<String> res = map.entrySet().stream()
+                .map(Map.Entry::getValue)
+                .filter(entity -> entity instanceof Api)
+                .map(entity -> (Api) entity)
+                .filter(api -> api.getOrganizationId().equals(organizationId) && api.getApiId().equals(apiId))
+                .map(api -> api.getVersion())
+                .distinct()
+                .collect(Collectors.toList());
+        handler.handle(AsyncResultImpl.create(res));
+    }
+
+    @Override
+    public void listOrgs(IAsyncResultHandler<List<String>> handler) {
+        // TODO: We should track set of OrgId -> AtomicCounter if this API has meaningfully high usage.
+        List<String> res = map.entrySet().stream()
+                .map(Map.Entry::getValue)
+                .map(elem -> {
+                    if (elem instanceof Api) {
+                        return ((Api) elem).getOrganizationId();
+                    } else {
+                        return ((Client) elem).getOrganizationId();
+                    }
+                })
+                .collect(Collectors.toList());
+        handler.handle(AsyncResultImpl.create(res));
     }
 
     /**
@@ -264,7 +345,11 @@ public class InMemoryRegistry implements IRegistry {
      * @return a client key
      */
     private String getClientIndex(Client client) {
-        return "CLIENT::" + client.getOrganizationId() + "|" + client.getClientId() + "|" + client.getVersion(); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        return getClientIndex(client.getOrganizationId(), client.getClientId(), client.getVersion());
+    }
+
+    private String getClientIndex(String orgId, String clientId, String version) {
+        return "CLIENT::" + orgId + "|" + clientId + "|" + version; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
     /**

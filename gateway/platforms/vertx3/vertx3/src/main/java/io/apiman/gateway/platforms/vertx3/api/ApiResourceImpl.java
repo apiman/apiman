@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 JBoss Inc
+ * Copyright 2017 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package io.apiman.gateway.platforms.vertx3.api;
 
 import io.apiman.common.util.SimpleStringUtils;
@@ -26,114 +27,55 @@ import io.apiman.gateway.engine.beans.ApiEndpoint;
 import io.apiman.gateway.engine.beans.exceptions.PublishingException;
 import io.apiman.gateway.engine.beans.exceptions.RegistrationException;
 import io.apiman.gateway.platforms.vertx3.common.config.VertxEngineConfig;
-import io.netty.handler.codec.http.HttpResponseStatus;
-import io.vertx.core.json.Json;
-import io.vertx.ext.web.Router;
-import io.vertx.ext.web.RoutingContext;
 
-import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URL;
+
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 /**
- * API Resource route builder
- *
- * @author Marc Savy {@literal <msavy@redhat.com>}
+ * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
  */
-@SuppressWarnings("nls")
-public class ApiResourceImpl implements IApiResource, IRouteBuilder {
-    private static final String ORG_ID = "organizationId";
-    private static final String API_ID = "apiId";
-    private static final String VER = "version";
-    private static final String RETIRE = IRouteBuilder.join(ORG_ID, API_ID, VER);
-    private static final String ENDPOINT = IRouteBuilder.join(ORG_ID, API_ID, VER) + "/endpoint";
+public class ApiResourceImpl extends AbstractResource implements IApiResource {
+
     private VertxEngineConfig apimanConfig;
-    private String host;
     private IRegistry registry;
-    private RoutingContext routingContext;
-    private IEngine engine;
 
     public ApiResourceImpl(VertxEngineConfig apimanConfig, IEngine engine) {
         this.apimanConfig = apimanConfig;
         this.registry = engine.getRegistry();
-        this.engine = engine;
-        this.routingContext = null;
-    }
-
-    private ApiResourceImpl(VertxEngineConfig apimanConfig, IEngine engine, RoutingContext routingContext) {
-        this.apimanConfig = apimanConfig;
-        this.registry = engine.getRegistry();
-        this.engine = engine;
-        this.routingContext = routingContext;
     }
 
     @Override
     public void publish(Api api) throws PublishingException, NotAuthorizedException {
         registry.publishApi(api, (IAsyncResultHandler<Void>) result -> {
             if (result.isError()) {
-                error(routingContext, result.getError());
-//                Throwable e = result.getError();
-//                if (e instanceof PublishingException) {
-//                    error(routingContext, HttpResponseStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
-//                } else if (e instanceof NotAuthorizedException) {
-//                    error(routingContext, HttpResponseStatus.UNAUTHORIZED, e.getMessage(), e);
-//                } else {
-//                    error(routingContext, HttpResponseStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
-//                }
-            } else {
-                end(routingContext, HttpResponseStatus.NO_CONTENT);
+                throwError(result.getError());
             }
         });
     }
 
-    public void publish() {
-      try {
-          publish(Json.decodeValue(routingContext.getBodyAsString(), Api.class));
-      } catch (Exception e) {
-//          error(routingContext, HttpResponseStatus.BAD_REQUEST, e.getMessage(), e);
-          error(routingContext, e);
-      }
-    }
-
     @Override
-    public void retire(String organizationId, String apiId, String version) throws RegistrationException,
-            NotAuthorizedException {
+    public void retire(String organizationId, String apiId, String version) throws RegistrationException, NotAuthorizedException {
         Api api = new Api();
         api.setOrganizationId(organizationId);
         api.setApiId(apiId);
         api.setVersion(version);
-
         registry.retireApi(api, (IAsyncResultHandler<Void>) result -> {
             if (result.isError()) {
-                error(routingContext, result.getError());
-//                Throwable e = result.getError();
-//                if (e instanceof RegistrationException) {
-//                    error(routingContext, HttpResponseStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
-//                } else if (e instanceof NotAuthorizedException) {
-//                    error(routingContext, HttpResponseStatus.UNAUTHORIZED, e.getMessage(), e);
-//                } else {
-//                    error(routingContext, HttpResponseStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
-//                }
-            } else {
-                end(routingContext, HttpResponseStatus.NO_CONTENT);
+                throwError(result.getError());
             }
         });
     }
 
-    public void retire() {
-        String orgId = routingContext.request().getParam(ORG_ID);
-        String apiId = routingContext.request().getParam(API_ID);
-        String ver = routingContext.request().getParam(VER);
-
-        retire(orgId, apiId, ver);
-    }
-
     @Override
+    @SuppressWarnings("nls")
     public ApiEndpoint getApiEndpoint(String organizationId, String apiId, String version)
             throws NotAuthorizedException {
         String scheme = apimanConfig.preferSecure() ? "https" : "http";
         int port = apimanConfig.getPort(scheme);
-        String host = this.host;
+        String host = "localhost"; // TODO host from request context
         String path = "";
         // If endpoint was manually specified
         if (apimanConfig.getPublicEndpoint() != null) {
@@ -164,39 +106,46 @@ public class ApiResourceImpl implements IApiResource, IRouteBuilder {
         return endpointObj;
     }
 
-    public void getApiEndpoint(RoutingContext routingContext) {
-        if (apimanConfig.getPublicEndpoint() == null) {
-            try {
-                host = new URL(routingContext.request().absoluteURI()).getHost();
-            } catch (MalformedURLException e) {
-                throw new RuntimeException(e);
+    @Override
+    public void retire(String organizationId, String apiId, String version, AsyncResponse response)
+            throws RegistrationException, NotAuthorizedException {
+        Api api = new Api();
+        api.setOrganizationId(organizationId);
+        api.setApiId(apiId);
+        api.setVersion(version);
+        registry.retireApi(api, handlerWithEmptyResult(response));
+    }
+
+    @Override
+    public void getApiEndpoint(String organizationId, String apiId, String version, AsyncResponse response) throws NotAuthorizedException {
+        ApiEndpoint apiEndpoint = getApiEndpoint(organizationId, apiId, version);
+        response.resume(Response.ok(apiEndpoint).build());
+    }
+
+    @Override
+    public void listApis(String organizationId, int page, int pageSize, AsyncResponse response) throws NotAuthorizedException {
+        registry.listApis(organizationId, page, pageSize, handlerWithResult(response));
+    }
+
+    @Override
+    public void listApiVersions(String organizationId, String apiId, int page, int pageSize, AsyncResponse response) throws NotAuthorizedException {
+        registry.listApiVersions(organizationId, apiId, page, pageSize, handlerWithResult(response));
+    }
+
+    @Override
+    public void getApiVersion(String organizationId, String apiId, String version, AsyncResponse response) throws NotAuthorizedException {
+        registry.getApi(organizationId, apiId, version, result -> {
+            if (result.isSuccess()) {
+                Api api = result.getResult();
+                if (api == null) {
+                    response.resume(Response.status(Status.NOT_FOUND).build());
+                } else {
+                    response.resume(Response.ok(api).build());
+                }
+            } else {
+                throwError(result.getError());
             }
-        }
-
-        String orgId = routingContext.request().getParam(ORG_ID);
-        String apiId = routingContext.request().getParam(API_ID);
-        String ver = routingContext.request().getParam(VER);
-        try {
-            writeBody(routingContext, getApiEndpoint(orgId, apiId, ver));
-        } catch (NotAuthorizedException e) {
-            error(routingContext, e);
-//            error(routingContext, HttpResponseStatus.UNAUTHORIZED, e.getMessage(), e);
-        }
-    }
-
-    @Override
-    public void buildRoutes(Router router) {
-        router.put(buildPath("")).handler(routingContext -> {
-            new ApiResourceImpl(apimanConfig, engine, routingContext).publish();
         });
-        router.delete(buildPath(RETIRE)).handler(routingContext -> {
-            new ApiResourceImpl(apimanConfig, engine, routingContext).retire();
-        });
-        router.get(buildPath(ENDPOINT)).handler(this::getApiEndpoint);
     }
 
-    @Override
-    public String getPath() {
-        return "apis";
-    }
 }

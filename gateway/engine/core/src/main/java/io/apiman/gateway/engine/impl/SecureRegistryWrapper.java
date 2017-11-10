@@ -15,9 +15,9 @@
  */
 package io.apiman.gateway.engine.impl;
 
-import io.apiman.common.util.crypt.IDataEncrypter;
 import io.apiman.common.util.crypt.DataEncryptionContext;
 import io.apiman.common.util.crypt.DataEncryptionContext.EntityType;
+import io.apiman.common.util.crypt.IDataEncrypter;
 import io.apiman.gateway.engine.IRegistry;
 import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
@@ -124,27 +124,44 @@ public class SecureRegistryWrapper implements IRegistry {
             }
         });
     }
-    
+
     /**
      * @see io.apiman.gateway.engine.IRegistry#getClient(java.lang.String, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
     @Override
     public void getClient(String apiKey, IAsyncResultHandler<Client> handler) {
-        delegate.getClient(apiKey, new IAsyncResultHandler<Client>() {
-            @Override
-            public void handle(IAsyncResult<Client> result) {
-                if (result.isSuccess()) {
-                    Client client = result.getResult();
+        delegate.getClient(apiKey, result -> {
+            if (result.isSuccess()) {
+                Client client = result.getResult();
+                if (client != null) {
                     for (Contract contract : client.getContracts()) {
                         decryptPolicies(client.getOrganizationId(), client.getClientId(), client.getVersion(),
                                 EntityType.ClientApp, contract.getPolicies());
                     }
                 }
-                handler.handle(result);
             }
+            handler.handle(result);
         });
     }
-    
+
+
+    @Override
+    public void getClient(String organizationId, String clientId, String clientVersion, IAsyncResultHandler<Client> handler) {
+        delegate.getClient(organizationId, clientId, clientVersion, result -> {
+            if (result.isSuccess()) {
+                Client client = result.getResult();
+                if (client != null) {
+                    for (Contract contract : client.getContracts()) {
+                        decryptPolicies(client.getOrganizationId(), client.getClientId(), client.getVersion(),
+                                EntityType.ClientApp, contract.getPolicies());
+                    }
+                }
+            }
+            handler.handle(result);
+        });
+    }
+
+
     /**
      * @see io.apiman.gateway.engine.IRegistry#getContract(java.lang.String, java.lang.String, java.lang.String, java.lang.String, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
@@ -174,12 +191,22 @@ public class SecureRegistryWrapper implements IRegistry {
         });
     }
 
+    @Override
+    public void listApis(String organizationId, int page, int pageSize, IAsyncResultHandler<List<String>> handler) {
+        delegate.listApis(organizationId, page, pageSize, handler);
+    }
+
+    @Override
+    public void listOrgs(IAsyncResultHandler<List<String>> handler) {
+        delegate.listOrgs(handler);
+    }
+
     /**
-     * @param entityType 
-     * @param entityVersion 
-     * @param entityId 
-     * @param orgId 
-     * @param entityType 
+     * @param entityType
+     * @param entityVersion
+     * @param entityId
+     * @param orgId
+     * @param entityType
      * @param policies
      */
     protected void encryptPolicies(String orgId, String entityId, String entityVersion, EntityType entityType,
@@ -227,6 +254,21 @@ public class SecureRegistryWrapper implements IRegistry {
                 entry.setValue(encrypter.decrypt(entry.getValue(), ctx));
             }
         }
+    }
+
+    @Override
+    public void listApiVersions(String organizationId, String apiId, int page, int pageSize, IAsyncResultHandler<List<String>> handler) {
+        delegate.listApiVersions(organizationId, apiId, page, pageSize, handler);
+    }
+
+    @Override
+    public void listClients(String organizationId, int page, int pageSize, IAsyncResultHandler<List<String>> handler) {
+        delegate.listClients(organizationId, page, pageSize, handler);
+    }
+
+    @Override
+    public void listClientVersions(String organizationId, String clientId, int page, int pageSize, IAsyncResultHandler<List<String>> handler) {
+        delegate.listClientVersions(organizationId, clientId, page, pageSize, handler);
     }
 
 }

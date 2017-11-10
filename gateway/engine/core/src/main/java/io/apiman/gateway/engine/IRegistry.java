@@ -23,6 +23,8 @@ import io.apiman.gateway.engine.beans.exceptions.InvalidContractException;
 import io.apiman.gateway.engine.beans.exceptions.PublishingException;
 import io.apiman.gateway.engine.beans.exceptions.RegistrationException;
 
+import java.util.List;
+
 /**
  * A registry that maintains a collection of APIs and Contracts that have
  * been published to the API Management runtime engine. This registry provides a
@@ -35,7 +37,8 @@ public interface IRegistry {
 
     /**
      * Publishes a new {@link Api} into the registry.
-     * @param api the api being published
+     *
+     * @param api     the api being published
      * @param handler the result handler
      * @throws PublishingException when unable to publish api
      */
@@ -43,7 +46,8 @@ public interface IRegistry {
 
     /**
      * Retires (removes) a {@link Api} from the registry.
-     * @param api the api
+     *
+     * @param api     the api
      * @param handler the result handler
      * @throws PublishingException when unable to retire api
      */
@@ -51,7 +55,8 @@ public interface IRegistry {
 
     /**
      * Registers a new {@link Client} with the registry.
-     * @param client the client being registered
+     *
+     * @param client  the client being registered
      * @param handler the result handler
      * @throws RegistrationException when unable to register entity
      */
@@ -59,7 +64,8 @@ public interface IRegistry {
 
     /**
      * Removes an {@link Client} from the registry.
-     * @param client the client to remove
+     *
+     * @param client  the client to remove
      * @param handler the result handler
      * @throws RegistrationException when unable to register entity
      */
@@ -67,10 +73,11 @@ public interface IRegistry {
 
     /**
      * Gets an API by its coordinates.
+     *
      * @param organizationId the org id
-     * @param apiId the api id
-     * @param apiVersion the api version
-     * @param handler the result handler
+     * @param apiId          the api id
+     * @param apiVersion     the api version
+     * @param handler        the result handler
      */
     public void getApi(String organizationId, String apiId, String apiVersion, IAsyncResultHandler<Api> handler);
 
@@ -82,9 +89,12 @@ public interface IRegistry {
      * @throws InvalidContractException when contract is invalid
      */
     public void getClient(String apiKey, IAsyncResultHandler<Client> handler);
-    
+
+    public void getClient(String organizationId, String clientId, String clientVersion, IAsyncResultHandler<Client> handler);
+
     /**
      * Gets the full contract associated with the given API identifier and API Key.
+     *
      * @param apiOrganizationId
      * @param apiId
      * @param apiVersion
@@ -92,5 +102,17 @@ public interface IRegistry {
      * @param handler
      */
     public void getContract(String apiOrganizationId, String apiId, String apiVersion, String apiKey, IAsyncResultHandler<ApiContract> handler);
+
+    // New list methods (for headless, CLI, etc):
+
+    public void listApis(String organizationId, int page, int pageSize, IAsyncResultHandler<List<String>> handler);
+
+    public void listApiVersions(String organizationId, String apiId, int page, int pageSize, IAsyncResultHandler<List<String>> handler);
+
+    public void listClients(String organizationId, int page, int pageSize, IAsyncResultHandler<List<String>> handler);
+
+    public void listClientVersions(String organizationId, String clientId, int page, int pageSize, IAsyncResultHandler<List<String>> handler);
+
+    public void listOrgs(IAsyncResultHandler<List<String>> handler);
 
 }
