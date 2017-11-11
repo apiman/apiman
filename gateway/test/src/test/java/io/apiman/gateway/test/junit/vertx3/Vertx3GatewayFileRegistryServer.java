@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Files;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -172,7 +173,7 @@ public class Vertx3GatewayFileRegistryServer implements IGatewayTestServer {
                 CountDownLatch cdl = new CountDownLatch(1);
 
                 System.out.println("awaiting rewrite");
-                rewriteCdl.await();
+                rewriteCdl.await(5, TimeUnit.SECONDS);
 
                 URILoadingRegistry.reloadData(done -> {
                     cdl.countDown();
