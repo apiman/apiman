@@ -244,7 +244,7 @@ public class VertxEngineConfig implements IEngineConfig {
     }
 
     public String getHostname() {
-        return stringConfigWithDefault(GATEWAY_HOSTNAME, "localhost");
+        return stringConfigWithDefault(GATEWAY_HOSTNAME, "0.0.0.0");
     }
 
     public String getPublicEndpoint() {
@@ -253,14 +253,6 @@ public class VertxEngineConfig implements IEngineConfig {
 
     public Boolean preferSecure() {
         return config.getBoolean(GATEWAY_PREFER_SECURE);
-    }
-
-    public String getHost(String name) {
-        return getVerticleConfig(name).getString(VERTICLE_HOST, "0.0.0.0");
-    }
-
-    public String getHost(VerticleType verticleType) {
-        return getHost(verticleType.name());
     }
 
     public int getPort(String name) {

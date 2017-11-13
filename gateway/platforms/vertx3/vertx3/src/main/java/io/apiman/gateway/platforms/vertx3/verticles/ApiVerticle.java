@@ -79,8 +79,7 @@ public class ApiVerticle extends ApimanVerticleWithEngine {
         apiResource.buildRoutes(router);
         systemResource.buildRoutes(router);
 
-        HttpServerOptions httpOptions = new HttpServerOptions()
-                .setHost(apimanConfig.getHostname());
+        HttpServerOptions httpOptions = new HttpServerOptions();
 
         if (apimanConfig.isSSL()) {
             httpOptions.setSsl(true)
@@ -101,7 +100,7 @@ public class ApiVerticle extends ApimanVerticleWithEngine {
         vertx.createHttpServer(httpOptions)
             .requestHandler(router::accept)
             .listen(apimanConfig.getPort(VERTICLE_TYPE),
-                    apimanConfig.getHost(VERTICLE_TYPE),
+                    apimanConfig.getHostname(),
                     listenFuture.completer());
     }
 
