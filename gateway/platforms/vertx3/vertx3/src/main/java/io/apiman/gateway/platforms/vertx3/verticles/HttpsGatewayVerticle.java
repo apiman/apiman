@@ -41,7 +41,7 @@ public class HttpsGatewayVerticle extends ApimanVerticleWithEngine {
         HttpApiFactory.init(engine.getApiRequestPathParser());
 
         InheritingHttpServerOptions httpsServerOptions = new InheritingHttpServerOptions();
-        httpsServerOptions.setHost(apimanConfig.getHostname())
+        httpsServerOptions
             .setSsl(true)
             .setKeyStoreOptions(
                     new JksOptions()
@@ -65,7 +65,8 @@ public class HttpsGatewayVerticle extends ApimanVerticleWithEngine {
 
         vertx.createHttpServer(httpsServerOptions)
             .requestHandler(this::requestHandler)
-            .listen(apimanConfig.getPort(VERTICLE_TYPE));
+            .listen(apimanConfig.getPort(VERTICLE_TYPE),
+                    apimanConfig.getHostname());
     }
 
     private void requestHandler(HttpServerRequest req) {

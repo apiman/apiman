@@ -66,6 +66,7 @@ import org.apache.commons.lang3.text.StrSubstitutor;
 @SuppressWarnings("nls")
 public class VertxEngineConfig implements IEngineConfig {
     private static final String VERTICLES = "verticles";
+    private static final String VERTICLE_HOST = "host";
     private static final String VERTICLE_PORT = "port";
     private static final String VERTICLE_COUNT = "count";
 
@@ -244,7 +245,7 @@ public class VertxEngineConfig implements IEngineConfig {
     }
 
     public String getHostname() {
-        return stringConfigWithDefault(GATEWAY_HOSTNAME, "localhost");
+        return stringConfigWithDefault(GATEWAY_HOSTNAME, "0.0.0.0");
     }
 
     public String getPublicEndpoint() {

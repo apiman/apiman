@@ -35,6 +35,7 @@ import io.vertx.ext.web.handler.OAuth2AuthHandler;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 import org.apache.commons.lang3.EnumUtils;
@@ -63,7 +64,8 @@ public class KeycloakOAuthFactory {
     private static OAuth2AuthHandler standardAuth(Vertx vertx, Router router, VertxEngineConfig apimanConfig, JsonObject authConfig, OAuth2FlowType flowType)  {
         String proto = apimanConfig.isSSL() ? "https://" : "http://";
         int port = apimanConfig.getPort(ApiVerticle.VERTICLE_TYPE);
-        String redirect = proto + apimanConfig.getHostname() + ":" + port; // Redirect back here to *after* auth.
+        String hostname = Optional.of(apimanConfig.getPublicEndpoint()).orElse(apimanConfig.getHostname());
+        String redirect = proto + hostname + ":" + port; // Redirect back here to *after* auth.
         // Set up KC OAuth2 Authentication
         OAuth2AuthHandler auth = OAuth2AuthHandler.create(KeycloakAuth.create(vertx, flowType, authConfig), redirect);
         // Callback can be anything (as long as it's not already used by something else).
