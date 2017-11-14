@@ -35,6 +35,7 @@ jobs:
       script: travis_retry mvn test install -Dinvoker.skip -Dmaven.javadoc.skip=true -B $ACTION
     - stage: deploy
       script:
+        - mvn install -Pdocker -Dinvoker.skip -Dmaven.javadoc.skip=true -B
         - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
         - docker push apiman/on-wildfly10:master
 
