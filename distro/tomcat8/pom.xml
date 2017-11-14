@@ -10,7 +10,7 @@
   <artifactId>apiman-distro-tomcat8</artifactId>
   <packaging>pom</packaging>
   <name>apiman-distro-tomcat8</name>
-  
+
   <dependencies>
     <!-- The Tomcat 8 version of APIMan -->
     <dependency>
@@ -84,7 +84,7 @@
     </plugins>
   </build>
 
-  <profiles>
+  <!-- <profiles>
     <profile>
         <id>docker</id>
         <build>
@@ -117,5 +117,5 @@
         </plugins>
       </build>
     </profile>
-  </profiles>
+  </profiles> -->
 </project>

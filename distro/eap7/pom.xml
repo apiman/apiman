@@ -12,7 +12,7 @@
   <name>apiman-distro-eap7</name>
 
   <dependencies>
-    <!-- The WildFly 8 distro of APIMan -->
+    <!-- The WildFly 10 distro of APIMan -->
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-distro-wildfly10</artifactId>
