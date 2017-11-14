@@ -12,12 +12,37 @@ before_cache:
 
 services:
   - elasticsearch
+  - docker
 
 before_install:
   - sed -i.bak -e 's|https://nexus.codehaus.org/snapshots/|https://oss.sonatype.org/content/repositories/codehaus-snapshots/|g' ~/.m2/settings.xml
   - echo 'MAVEN_OPTS="-XX:+TieredCompilation -XX:TieredStopAtLevel=1 -Xmx1024m"' > ~/.mavenrc
   - curl -O https://download.elastic.co/elasticsearch/elasticsearch/elasticsearch-1.7.5.deb && sudo dpkg -i --force-confnew elasticsearch-1.7.5.deb && sudo service elasticsearch restart
   - java -version
+
+env:
+  - ACTION='-Dapiman-test.type=es -Dapiman.gateway-test.config=servlet-es'
+  - ACTION='-Dapiman.gateway-test.config=vertx3-mem'
+  - ACTION='-Dapiman.gateway-test.config=vertx3-es'
+  - ACTION='-Dapiman.gateway-test.config=vertx3-file'
+  - ACTION='-Dapiman.gateway-test.config=amg-1'
+
+jobs:
+  include:
+    - stage: build
+      script: travis_retry mvn clean install -Dinvoker.skip -Dmaven.javadoc.skip=true -Dmvn.skip.test=true -DskipTests=true -T1C -B
+    - stage: test
+      script: travis_retry mvn test install -Dinvoker.skip -Dmaven.javadoc.skip=true -B $ACTION
+    - stage: deploy
+      script:
+        - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+        - docker push apiman/on-wildfly10:master
+
+stages:
+  - build
+  - test
+  - name: deploy
+    if: "branch = master AND type != pull_request"
 
 jdk:
   - oraclejdk8
@@ -30,22 +55,3 @@ notifications:
     on_failure: always
     template:
       - "%{repository} (%{branch}:%{commit} by %{author}): %{message} (%{build_url})"
-
-matrix:
-  include:
-    - env: ACTION='-Dapiman-test.type=es -Dapiman.gateway-test.config=servlet-es'
-      jdk: oraclejdk8
-    - env: ACTION='-Dapiman.gateway-test.config=vertx3-mem'
-      jdk: oraclejdk8
-    - env: ACTION='-Dapiman.gateway-test.config=vertx3-es'
-      jdk: oraclejdk8
-    # - env: ACTION='-Dapiman.gateway-test.config=vertx3-shared-global-data'
-    #   jdk: oraclejdk8
-    - env: ACTION='-Dapiman.gateway-test.config=vertx3-file'
-      jdk: oraclejdk8
-    - env: ACTION='-Dapiman.gateway-test.config=amg-1'
-      jdk: oraclejdk8
-      
-install: travis_retry mvn clean install -Dinvoker.skip -Dmaven.javadoc.skip=true -Dmvn.skip.test=true -DskipTests=true -T1C -B | egrep -v 'Download|\\[exec\\] [[:digit:]]+/[[:digit:]]+|^[[:space:]]*\\[exec\\][[:space:]]*$' ; [ ${PIPESTATUS[0]} == 0 ];
-
-script: if [[ -v COMMAND ]]; then $COMMAND; else travis_retry mvn test install -B -Dmaven.javadoc.skip=true $ACTION | egrep -v 'Download|\\[exec\\] [[:digit:]]+/[[:digit:]]+|^[[:space:]]*\\[exec\\][[:space:]]*$' ; [ ${PIPESTATUS[0]} == 0 ]; fi
