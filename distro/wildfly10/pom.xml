@@ -11,6 +11,11 @@
   <packaging>pom</packaging>
   <name>apiman-distro-wildfly10</name>
 
+  <properties>
+      <docker.base-image>jboss/wildfly:10.1.0.Final</docker.base-image>
+      <docker.target-image-name>apiman/on-wildfly10:master</docker.target-image-name>
+  </properties>
+
   <dependencies>
     <!-- The WildFly 8 version of APIMan -->
     <dependency>
@@ -144,32 +149,50 @@
     <profile>
         <id>docker</id>
         <build>
-            <finalName>${project.artifactId}</finalName>
-            <plugins>
-          <plugin>
-            <groupId>com.spotify</groupId>
-            <artifactId>docker-maven-plugin</artifactId>
-            <version>0.1.1</version>
-            <executions>
-              <execution>
-                <phase>package</phase>
-                <goals>
-                  <goal>build</goal>
-                </goals>
-              </execution>
-            </executions>
-            <configuration>
-              <imageName>${project.artifactId}:${project.version}</imageName>
-              <dockerDirectory>${project.basedir}/src/main/docker</dockerDirectory>
-              <resources>
-                <resource>
-                  <targetPath>/</targetPath>
-                  <directory>${project.build.directory}</directory>
-                  <include>${project.artifactId}-overlay.zip</include>
-                </resource>
-              </resources>
-            </configuration>
-          </plugin>
+          <plugins>
+            <plugin>
+              <groupId>io.fabric8</groupId>
+              <artifactId>docker-maven-plugin</artifactId>
+              <executions>
+                <execution>
+                  <id>docker-build</id>
+                  <goals>
+                    <goal>build</goal>
+                  </goals>
+                </execution>
+              </executions>
+              <configuration>
+                <images>
+                  <image>
+                    <name>${docker.target-image-name}</name>
+                    <alias>wildfly-master</alias>
+                    <build>
+                      <dockerFileDir>${project.basedir}/src/main/docker</dockerFileDir>
+                      <assembly>
+                        <inline>
+                          <fileSets>
+                            <fileSet>
+                              <includes>
+                                <include>target/${project.artifactId}-${project.version}-overlay.zip</include>
+                              </includes>
+                              <outputDirectory></outputDirectory>
+                              <filtered>false</filtered>
+                              <directoryMode>0755</directoryMode>
+                              <fileMode>0755</fileMode>
+                            </fileSet>
+                          </fileSets>
+                        </inline>
+                      </assembly>
+                    </build>
+                    <run>
+                      <ports>
+                        <port>8080:8080</port>
+                      </ports>
+                    </run>
+                  </image>
+                </images>
+              </configuration>
+            </plugin>
         </plugins>
       </build>
     </profile>
