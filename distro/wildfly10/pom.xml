@@ -153,6 +153,7 @@
             <plugin>
               <groupId>io.fabric8</groupId>
               <artifactId>docker-maven-plugin</artifactId>
+              <version>${version.docker.plugin}</version>
               <executions>
                 <execution>
                   <id>docker-build</id>
