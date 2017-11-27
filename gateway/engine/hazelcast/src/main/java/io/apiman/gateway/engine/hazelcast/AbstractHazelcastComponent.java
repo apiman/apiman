@@ -28,7 +28,13 @@ import java.util.Map;
  */
 abstract class AbstractHazelcastComponent {
     private final String storeName;
-    private final HazelcastInstance hazelcastInstance;
+    private final Config config;
+    private final Object mutex = new Object();
+
+    /**
+     * Access this via {@link #getHazelcastInstance()}.
+     */
+    private HazelcastInstance hazelcastInstance;
 
     /**
      * Constructor.
@@ -44,27 +50,53 @@ abstract class AbstractHazelcastComponent {
      */
     public AbstractHazelcastComponent(String storeName, Config config) {
         this.storeName = storeName;
-        hazelcastInstance = Hazelcast.newHazelcastInstance(config);
+        this.config = config;
     }
 
     /**
-     * Returns an instance of the shared state.
+     * @return a new or existing Hazelcast instance
+     */
+    private HazelcastInstance getHazelcastInstance() {
+        if (null == hazelcastInstance) {
+            synchronized (mutex) {
+                if (null == hazelcastInstance) {
+                    hazelcastInstance = Hazelcast.newHazelcastInstance(config);
+                }
+            }
+        }
+        return hazelcastInstance;
+    }
+
+    /**
+     * Returns an instance of the Map for the current {@link #storeName}.
      *
      * @param <T> the value type
-     * @return the shared state
+     * @return the Map
      */
-    protected <T> Map<String, T> getSharedState() {
-        return hazelcastInstance.getMap(storeName);
+    protected <T> Map<String, T> getMap() {
+        return getHazelcastInstance().getMap(storeName);
     }
 
     /**
      * Builds a key derived from the namespace.
      *
-     * @param namespace the namespace
+     * @param namespace    the namespace
      * @param propertyName the property name
      * @return the namespaced key
      */
     protected String buildNamespacedKey(String namespace, String propertyName) {
         return namespace + "." + propertyName;
+    }
+
+    /**
+     * Shut down the Hazelcast instance.
+     */
+    public void reset() {
+        if (null != hazelcastInstance) {
+            synchronized (mutex) {
+                hazelcastInstance.shutdown();
+                hazelcastInstance = null;
+            }
+        }
     }
 }

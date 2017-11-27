@@ -58,10 +58,10 @@ public class HazelcastRateLimiterComponent extends AbstractHazelcastComponent im
                        final long increment, final IAsyncResultHandler<RateLimitResponse> handler) {
         RateLimiterBucket bucket;
         synchronized (mutex) {
-            bucket = (RateLimiterBucket) getSharedState().get(bucketId);
+            bucket = (RateLimiterBucket) getMap().get(bucketId);
             if (bucket == null) {
                 bucket = new RateLimiterBucket();
-                getSharedState().put(bucketId, bucket);
+                getMap().put(bucketId, bucket);
             }
             bucket.resetIfNecessary(period);
 
@@ -77,7 +77,7 @@ public class HazelcastRateLimiterComponent extends AbstractHazelcastComponent im
             response.setReset(reset);
             response.setRemaining(limit - bucket.getCount());
             handler.handle(AsyncResultImpl.create(response));
-            getSharedState().put(bucketId, bucket);
+            getMap().put(bucketId, bucket);
         }
     }
 }

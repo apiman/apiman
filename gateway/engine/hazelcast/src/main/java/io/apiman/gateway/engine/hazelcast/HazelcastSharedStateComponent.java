@@ -52,9 +52,9 @@ public class HazelcastSharedStateComponent extends AbstractHazelcastComponent im
     @Override
     public <T> void getProperty(String namespace, String propertyName, T defaultValue, IAsyncResultHandler<T> handler) {
         final String namespacedKey = buildNamespacedKey(namespace, propertyName);
-        if (getSharedState().containsKey(namespacedKey)) {
+        if (getMap().containsKey(namespacedKey)) {
             try {
-                T rval = (T) getSharedState().get(namespacedKey);
+                T rval = (T) getMap().get(namespacedKey);
                 handler.handle(AsyncResultImpl.create(rval));
             } catch (Exception e) {
                 handler.handle(AsyncResultImpl.create(e));
@@ -72,7 +72,7 @@ public class HazelcastSharedStateComponent extends AbstractHazelcastComponent im
     public <T> void setProperty(String namespace, String propertyName, T value, IAsyncResultHandler<Void> handler) {
         final String namespacedKey = buildNamespacedKey(namespace, propertyName);
         try {
-            getSharedState().put(namespacedKey, value);
+            getMap().put(namespacedKey, value);
             handler.handle(AsyncResultImpl.create((Void) null));
         } catch (Exception e) {
             handler.handle(AsyncResultImpl.create(e));
@@ -86,7 +86,7 @@ public class HazelcastSharedStateComponent extends AbstractHazelcastComponent im
     public <T> void clearProperty(String namespace, String propertyName, IAsyncResultHandler<Void> handler) {
         final String namespacedKey = buildNamespacedKey(namespace, propertyName);
         try {
-            getSharedState().remove(namespacedKey);
+            getMap().remove(namespacedKey);
             handler.handle(AsyncResultImpl.create((Void) null));
         } catch (Exception e) {
             handler.handle(AsyncResultImpl.create(e));
