@@ -30,6 +30,7 @@ import io.vertx.core.http.HttpServerResponse;
 import io.vertx.core.json.Json;
 
 import java.io.StringWriter;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
 
@@ -154,28 +155,39 @@ public class PrometheusScrapeMetrics implements IMetrics {
     }
 
     private void doFailureCtr(RequestMetric metric) {
-        failureCtr.labels(metric.getMethod(),
+        failureCtr.labels(nullToEmpty(metric.getMethod(),
                 Integer.toString(metric.getResponseCode()),
                 Integer.toString(metric.getFailureCode()),
                 metric.getApiId(),
                 metric.getApiVersion(),
-                metric.getClientId()).inc();
+                metric.getClientId())).inc();
     }
 
     protected void doRequestsCtr(Counter ctr, RequestMetric metric) {
-        ctr.labels(metric.getMethod(),
+        ctr.labels(nullToEmpty(metric.getMethod(),
                 Integer.toString(metric.getResponseCode()),
                 metric.getApiId(),
                 metric.getApiVersion(),
-                metric.getClientId()).inc();
+                metric.getClientId())).inc();
     }
 
     protected void doRequestDuration(RequestMetric metric) {
-        requestDuration.labels(metric.getMethod(),
+        requestDuration.labels(nullToEmpty(metric.getMethod(),
                 Integer.toString(metric.getResponseCode()),
                 metric.getApiId(),
                 metric.getApiVersion(),
-                metric.getClientId()).observe(metric.getRequestDuration());
+                metric.getClientId())).observe(metric.getRequestDuration());
+    }
+
+    /**
+     * Prometheus doesn't permit {@code null} labels, so replace them with empty strings.
+     * @param labelValues the label values, which may contain {@code null} elements
+     * @return the label values with {@code null} elements replaced with empty strings
+     */
+    private String[] nullToEmpty(String... labelValues) {
+        return Arrays.stream(labelValues)
+                .map(labelValue -> null == labelValue ? "" : labelValue)
+                .toArray(String[]::new);
     }
 
     public void close(Handler<AsyncResult<Void>> completionHandler) {
