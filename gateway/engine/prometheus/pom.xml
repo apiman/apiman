@@ -45,5 +45,12 @@
       <groupId>com.squareup.okhttp</groupId>
       <artifactId>okhttp</artifactId>
     </dependency>
+
+    <!-- Test only -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 </project>
