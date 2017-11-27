@@ -73,7 +73,7 @@ public class ESCacheStoreComponent extends AbstractESComponent implements ICache
         ESCacheEntry entry = new ESCacheEntry();
         entry.setData(null);
         entry.setExpiresOn(System.currentTimeMillis() + (timeToLive * 1000));
-        entry.setHead(mapper.writeValueAsString(entry));
+        entry.setHead(mapper.writeValueAsString(jsonObject));
         Index index = new Index.Builder(entry).refresh(false).index(getIndexName())
                 .type("cacheEntry").id(cacheKey).build(); //$NON-NLS-1$
         try {
