@@ -15,6 +15,7 @@
     <docker.wildfly.version>wildfly11</docker.wildfly.version>
     <docker.base-image>jboss/wildfly:11.0.0.Final</docker.base-image>
     <docker.target-image-name>apiman/on-wildfly11:master</docker.target-image-name>
+    <docker.target-image-name.alias>wildfly11-master</docker.target-image-name.alias>
   </properties>
 
   <dependencies>
@@ -167,7 +168,7 @@
                 <images>
                   <image>
                     <name>${docker.target-image-name}</name>
-                    <alias>wildfly-master</alias>
+                    <alias>${docker.target-image-name.alias}</alias>
                     <build>
                       <dockerFileDir>${project.basedir}/src/main/docker</dockerFileDir>
                       <assembly>
