@@ -38,6 +38,7 @@ jobs:
         - mvn install -Pdocker -Dinvoker.skip -Dmaven.javadoc.skip=true -B
         - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
         - docker push apiman/on-wildfly10:master
+        - docker push apiman/on-wildfly11:master
 
 stages:
   - build
