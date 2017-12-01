@@ -138,7 +138,7 @@
     <version.org.apache.commons.commons-lang3>3.3.2</version.org.apache.commons.commons-lang3>
     <version.org.apache.directory.server>1.5.7</version.org.apache.directory.server>
     <version.org.apache.directory.shared-ldap>0.9.19</version.org.apache.directory.shared-ldap>
-    <version.org.apache.httpcomponents.httpclient>4.5</version.org.apache.httpcomponents.httpclient>
+    <version.org.apache.httpcomponents.httpclient>4.5.3</version.org.apache.httpcomponents.httpclient>
     <version.org.apache.httpcomponents.httpcore>4.4.1</version.org.apache.httpcomponents.httpcore>
     <version.org.apache.httpcomponents.httpasyncclient>4.1</version.org.apache.httpcomponents.httpasyncclient>
     <version.org.apache.logging.log4j>2.8.2</version.org.apache.logging.log4j>
