@@ -135,7 +135,6 @@ class HttpConnector implements IApiConnectionResponse, IApiConnection {
        destination = apiRequest.getDestination() == null ? "" : apiRequest.getDestination();
 
        verifyConnection();
-       doConnection();
     }
 
     private int getPort() {
@@ -161,7 +160,7 @@ class HttpConnector implements IApiConnectionResponse, IApiConnection {
         }
     }
 
-    private void doConnection() {
+    public HttpConnector connect() {
         String endpoint = ApimanPathUtils.join(apiPath, destination + queryParams(apiRequest.getQueryParams()));
         logger.debug("Connecting to {0} | ssl?: {1} port: {2} verb: {3} path: {4}",
                 apiHost, options.isSsl(), apiPort, HttpMethod.valueOf(apiRequest.getType()), endpoint);
@@ -214,6 +213,8 @@ class HttpConnector implements IApiConnectionResponse, IApiConnection {
         if (options.getRequiredAuthType() == RequiredAuthType.BASIC) {
             clientRequest.putHeader("Authorization", Basic.encode(basicOptions.getUsername(), basicOptions.getPassword()));
         }
+
+        return this;
     }
 
     private void addMandatoryRequestHeaders(MultiMap headers) {

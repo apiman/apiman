@@ -28,13 +28,12 @@ import io.vertx.core.http.HttpServerRequest;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
-
-import java.net.URI;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.net.URI;
 
 /**
  * <p>
@@ -72,6 +71,7 @@ import org.junit.runner.RunWith;
 @RunWith(VertxUnitRunner.class)
 public class HttpConnectorDrainTest {
 
+    private static final int WRITE_LIM = 1_000_000;
     final Api api = new Api();
     {
         api.setApiId("");
@@ -93,9 +93,8 @@ public class HttpConnectorDrainTest {
         request.setType("POST");
     }
 
-    HttpServer server;
-    boolean stop = false;
     HttpServerRequest pausedRequest = null;
+    HttpConnector httpConnector;
 
     @Before
     public void setup() {
@@ -105,8 +104,10 @@ public class HttpConnectorDrainTest {
     public void shouldTriggerDrainHandler(TestContext context) throws Exception {
         Async asyncDrain = context.async(2);
         Async asyncServer = context.async();
+        Async waitForServer = context.async();
+        Async receivedResponse = context.async();
 
-        server = Vertx.vertx().createHttpServer()
+        HttpServer server = Vertx.vertx().createHttpServer()
                 .connectionHandler(connection -> {
                     System.out.println("Connection");
                 })
@@ -114,29 +115,82 @@ public class HttpConnectorDrainTest {
                     System.out.println("Test server: pausing inbound request!");
                     requestToPause.pause();
                     pausedRequest = requestToPause;
+                    requestToPause
+                            .handler(ignored -> {})
+                            .endHandler(isEnded -> {
+                                requestToPause.response().end("bye!");
+                            });
                     asyncServer.complete();
-                    requestToPause.handler(data -> {});
-                }).listen(7297);
+                }).listen(7297, result -> waitForServer.complete());
+
+        waitForServer.await();
 
         Vertx vertx = Vertx.vertx();
-        HttpConnector httpConnector = new HttpConnector(vertx,
+        httpConnector = new HttpConnector(vertx,
                 vertx.createHttpClient(),
                 request,
                 api,
                 new ApimanHttpConnectorOptions()
                     .setHasDataPolicy(true)
                     .setUri(URI.create(api.getEndpoint())),
-                result -> {});
+                ignored -> {
+                    // Immediately allow the dummy response to come back.
+                    if (ignored.isError())
+                        throw (RuntimeException) ignored.getError();
+                    // Give permission to resume any response immediately.
+                    httpConnector.transmit();
+                });
 
         // Should be fired when write queue reduces to acceptable size.
         httpConnector.drainHandler(drain -> {
             System.err.println("Drain handler has been called! Yay.");
-            stop = true;
-            asyncDrain.complete();
+            asyncDrain.countDown();
         });
 
+        httpConnector.bodyHandler(ignored -> {});
+
+        httpConnector.endHandler(end -> {
+            System.out.println("Called end on client. Should no longer be full!");
+            receivedResponse.complete();
+        });
+
+        httpConnector.connect();
+
+        writeUntilFull(httpConnector);
+
+        Assert.assertTrue("Connection should be full", httpConnector.isFull());
+
+        System.out.println("Waiting for server...");
+        asyncServer.await();
+
+        // Try to write some more as there *could* be some buffer flushed before the remote
+        // server hit #pause.
+        writeUntilFull(httpConnector);
+
+        Assert.assertTrue("Connection should still be full", httpConnector.isFull());
+
+        System.out.println("Resuming #pause()d server request; waiting packets should be consumed by the server.");
+        pausedRequest.resume();
+
+        System.out.println("Waiting for drain to be called (at least once)...");
+        asyncDrain.await();
+
+        Assert.assertFalse("Connector should no longer be full", httpConnector.isFull());
+
+        System.out.println("Ending outbound connection");
+        httpConnector.end();
+
+        System.out.println("Waiting for response from server");
+        receivedResponse.awaitSuccess();
+    }
+
+    private void writeUntilFull(HttpConnector httpConnector) {
+        System.out.println("Writing until full. " +
+                "Connected? " + httpConnector.isConnected() +
+                " Full? " + httpConnector.isFull());
+        int i;
         // Keep sending until stop is called (or reasonable upper bound.)
-        for (int i=0; i<100000 && !httpConnector.isFull(); i++) {
+        for (i = 0; i < WRITE_LIM && !httpConnector.isFull(); i++) {
             httpConnector.write(new VertxApimanBuffer("Anonyme\n"
                     + "Aride\n"
                     + "Bird Island\n"
@@ -156,7 +210,6 @@ public class HttpConnectorDrainTest {
                     + "Mahé\n"
                     + "Moyenne\n"
                     + "North Island\n"
-                    + "Others\n"
                     + "Petite Soeur\n"
                     + "Praslin\n"
                     + "Round Island\n"
@@ -165,25 +218,9 @@ public class HttpConnectorDrainTest {
                     + "Ste. Anne"));
         }
 
-        System.out.println("Connection is full? " + httpConnector.isFull());
-        Assert.assertTrue(httpConnector.isFull());
-
-        System.out.println("Waiting for server...");
-        asyncServer.await();
-
-        System.out.println("Connection is still full? " + httpConnector.isFull());
-        Assert.assertTrue(httpConnector.isFull());
-
-        System.out.println("Resuming #pause()d server request; waiting packets should be consumed by the server.");
-        pausedRequest.resume();
-
-        System.out.println("Waiting for drain to be called...");
-        asyncDrain.await();
-
-        System.out.println("Called end on client. Should no longer be full!");
-        Assert.assertFalse(httpConnector.isFull());
-
-        httpConnector.end();
+        if (i == WRITE_LIM) {
+            System.err.println("Sanity bound for #write met; something has likely gone wrong");
+        }
     }
 
 }
