@@ -180,12 +180,9 @@ public class GatewayResourceImpl implements IGatewayResource {
 
             log.debug(String.format("Successfully fetched gateway %s: %s", bean.getName(), bean)); //$NON-NLS-1$
             return bean;
-        } catch (AbstractRestException e) {
-            storage.rollbackTx();
-            throw e;
         } catch (Exception e) {
-            storage.rollbackTx();
-            throw new SystemErrorException(e);
+            attemptRollback(e);
+            return null;
         }
     }
 
@@ -218,12 +215,8 @@ public class GatewayResourceImpl implements IGatewayResource {
             storage.commitTx();
 
             log.debug(String.format("Successfully updated gateway %s: %s", gbean.getName(), gbean)); //$NON-NLS-1$
-        } catch (AbstractRestException e) {
-            storage.rollbackTx();
-            throw e;
         } catch (Exception e) {
-            storage.rollbackTx();
-            throw new SystemErrorException(e);
+            attemptRollback(e);
         }
     }
 
@@ -245,13 +238,25 @@ public class GatewayResourceImpl implements IGatewayResource {
             storage.commitTx();
 
             log.debug(String.format("Successfully deleted gateway %s: %s", gbean.getName(), gbean)); //$NON-NLS-1$
-        } catch (AbstractRestException e) {
-            storage.rollbackTx();
-            throw e;
         } catch (Exception e) {
-            storage.rollbackTx();
-            throw new SystemErrorException(e);
+            attemptRollback(e);
         }
+    }
+
+    /**
+     * Attempt to rollback the transaction. If the rollback itself fails, add the rollback failure
+     * as a suppressed {@link Exception}.
+     * @param cause the original cause
+     */
+    private void attemptRollback(Exception cause) throws SystemErrorException {
+        final SystemErrorException exToThrow = new SystemErrorException(cause);
+        try {
+            storage.rollbackTx();
+        } catch (Exception rollbackEx) {
+            // rollback failed; wrap the reason and add the cause as a suppressed exception
+            exToThrow.addSuppressed(rollbackEx);
+        }
+        throw exToThrow;
     }
 
     /**
