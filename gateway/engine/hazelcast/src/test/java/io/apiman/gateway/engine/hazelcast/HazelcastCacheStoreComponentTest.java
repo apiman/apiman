@@ -1,15 +1,23 @@
 package io.apiman.gateway.engine.hazelcast;
 
-import com.hazelcast.config.*;
+import com.hazelcast.config.AwsConfig;
+import com.hazelcast.config.Config;
+import com.hazelcast.config.JoinConfig;
+import com.hazelcast.config.MulticastConfig;
+import com.hazelcast.config.TcpIpConfig;
 import io.apiman.gateway.engine.hazelcast.model.Example;
 import io.apiman.gateway.engine.impl.ByteBufferFactoryComponent;
 import io.apiman.gateway.engine.io.ByteBuffer;
 import io.apiman.gateway.engine.io.ISignalReadStream;
 import io.apiman.gateway.engine.io.ISignalWriteStream;
-import org.junit.*;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.function.BiConsumer;
 
@@ -74,7 +82,7 @@ public class HazelcastCacheStoreComponentTest {
      * @param callback     consumes the member and its thread
      */
     private static void startMemberThread(String instanceName, int memberPort, int peerPort,
-                                   BiConsumer<HazelcastCacheStoreComponent, Thread> callback) {
+                                          BiConsumer<HazelcastCacheStoreComponent, Thread> callback) {
 
         final Config config = new Config() {{
             setInstanceName(instanceName);
@@ -96,7 +104,10 @@ public class HazelcastCacheStoreComponentTest {
             }});
         }};
 
-        final HazelcastCacheStoreComponent member = new HazelcastCacheStoreComponent(config);
+        final Map<String, String> componentConfig = new HashMap<>();
+        componentConfig.put(AbstractHazelcastComponent.CONFIG_EAGER_INIT, "false");
+
+        final HazelcastCacheStoreComponent member = new HazelcastCacheStoreComponent(componentConfig, config);
         member.setBufferFactory(new ByteBufferFactoryComponent());
 
         final Thread memberThread = new Thread(() -> {
@@ -104,7 +115,7 @@ public class HazelcastCacheStoreComponentTest {
             member.getMap();
             latch.countDown();
 
-            // wait shutdown command
+            // await shutdown command
             while (shouldRun) Thread.yield();
         });
 
@@ -152,8 +163,8 @@ public class HazelcastCacheStoreComponentTest {
         });
 
         // verify propagation
-            member2.getBinary(cacheKey, String.class, result -> {
-                assertFalse("Result should be retrieved successfully from peer member", result.isError());
+        member2.getBinary(cacheKey, String.class, result -> {
+            assertFalse("Result should be retrieved successfully from peer member", result.isError());
 
             final ISignalReadStream<String> readStream = result.getResult();
             readStream.bodyHandler(bodyResult -> assertEquals(cacheBody, new String(bodyResult.getBytes())));
@@ -164,4 +175,3 @@ public class HazelcastCacheStoreComponentTest {
         });
     }
 }
-

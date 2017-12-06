@@ -23,6 +23,8 @@ import io.apiman.gateway.engine.components.rate.RateLimitResponse;
 import io.apiman.gateway.engine.rates.RateBucketPeriod;
 import io.apiman.gateway.engine.rates.RateLimiterBucket;
 
+import java.util.Map;
+
 /**
  * Rate limiter component backed by a Hazelcast Map. This allows rate limiting
  * to be done across nodes in a cluster of gateways.
@@ -37,8 +39,8 @@ public class HazelcastRateLimiterComponent extends AbstractHazelcastComponent im
     /**
      * Constructor.
      */
-    public HazelcastRateLimiterComponent() {
-        super(STORE_NAME);
+    public HazelcastRateLimiterComponent(Map<String, String> componentConfig) {
+        super(componentConfig, STORE_NAME);
     }
 
     /**
@@ -46,8 +48,8 @@ public class HazelcastRateLimiterComponent extends AbstractHazelcastComponent im
      *
      * @param config the config
      */
-    public HazelcastRateLimiterComponent(Config config) {
-        super(STORE_NAME, config);
+    public HazelcastRateLimiterComponent(Map<String, String> componentConfig, Config config) {
+        super(componentConfig, STORE_NAME, config);
     }
 
     /**

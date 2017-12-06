@@ -20,6 +20,8 @@ import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.components.ISharedStateComponent;
 
+import java.util.Map;
+
 /**
  * Shared state component backed by a Hazelcast Map. This allows the shared state
  * to be easily clusterable.
@@ -32,8 +34,8 @@ public class HazelcastSharedStateComponent extends AbstractHazelcastComponent im
     /**
      * Constructor.
      */
-    public HazelcastSharedStateComponent() {
-        super(STORE_NAME);
+    public HazelcastSharedStateComponent(Map<String, String> componentConfig) {
+        super(componentConfig, STORE_NAME);
     }
 
     /**
@@ -41,8 +43,8 @@ public class HazelcastSharedStateComponent extends AbstractHazelcastComponent im
      *
      * @param config the config
      */
-    public HazelcastSharedStateComponent(Config config) {
-        super(STORE_NAME, config);
+    public HazelcastSharedStateComponent(Map<String, String> componentConfig, Config config) {
+        super(componentConfig, STORE_NAME, config);
     }
 
     /**

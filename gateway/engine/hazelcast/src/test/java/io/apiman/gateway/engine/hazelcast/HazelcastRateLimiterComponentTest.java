@@ -5,6 +5,7 @@ import io.apiman.gateway.engine.rates.RateBucketPeriod;
 import org.junit.Before;
 import org.junit.Test;
 
+import static java.util.Collections.emptyMap;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -20,7 +21,7 @@ public class HazelcastRateLimiterComponentTest {
     @Before
     public void setUp() throws Exception {
         final Config config = HazelcastConfigUtil.buildConfigWithDisabledNetwork();
-        component = new HazelcastRateLimiterComponent(config);
+        component = new HazelcastRateLimiterComponent(emptyMap(), config);
     }
 
     @Test

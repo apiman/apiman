@@ -27,6 +27,7 @@ import java.util.Map;
  * @author Pete Cornish
  */
 abstract class AbstractHazelcastComponent {
+    public static final String CONFIG_EAGER_INIT = "eager-init";
     private final String storeName;
     private final Config config;
     private final Object mutex = new Object();
@@ -39,8 +40,8 @@ abstract class AbstractHazelcastComponent {
     /**
      * Constructor.
      */
-    public AbstractHazelcastComponent(String storeName) {
-        this(storeName, null);
+    public AbstractHazelcastComponent(Map<String, String> componentConfig, String storeName) {
+        this(componentConfig, storeName, null);
     }
 
     /**
@@ -48,9 +49,13 @@ abstract class AbstractHazelcastComponent {
      *
      * @param config the config
      */
-    public AbstractHazelcastComponent(String storeName, Config config) {
+    public AbstractHazelcastComponent(Map<String, String> componentConfig, String storeName, Config config) {
         this.storeName = storeName;
         this.config = config;
+
+        if (Boolean.valueOf(componentConfig.get(CONFIG_EAGER_INIT))) {
+            getHazelcastInstance();
+        }
     }
 
     /**

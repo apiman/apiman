@@ -32,6 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.Map;
 
 /**
  * A Hazelcast implementation of a cache store.
@@ -53,8 +54,8 @@ public class HazelcastCacheStoreComponent extends AbstractHazelcastComponent imp
     /**
      * Constructor.
      */
-    public HazelcastCacheStoreComponent() {
-        super(STORE_NAME);
+    public HazelcastCacheStoreComponent(Map<String, String> componentConfig) {
+        super(componentConfig, STORE_NAME);
     }
 
     /**
@@ -62,8 +63,8 @@ public class HazelcastCacheStoreComponent extends AbstractHazelcastComponent imp
      *
      * @param config the config
      */
-    public HazelcastCacheStoreComponent(Config config) {
-        super(STORE_NAME, config);
+    public HazelcastCacheStoreComponent(Map<String, String> componentConfig, Config config) {
+        super(componentConfig, STORE_NAME, config);
     }
 
     /**

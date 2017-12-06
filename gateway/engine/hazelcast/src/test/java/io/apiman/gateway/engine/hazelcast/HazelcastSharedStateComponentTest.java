@@ -4,6 +4,7 @@ import com.hazelcast.config.Config;
 import org.junit.Before;
 import org.junit.Test;
 
+import static java.util.Collections.emptyMap;
 import static org.junit.Assert.*;
 
 /**
@@ -17,7 +18,7 @@ public class HazelcastSharedStateComponentTest {
     @Before
     public void setUp() throws Exception {
         final Config config = HazelcastConfigUtil.buildConfigWithDisabledNetwork();
-        component = new HazelcastSharedStateComponent(config);
+        component = new HazelcastSharedStateComponent(emptyMap(), config);
     }
 
     @Test
