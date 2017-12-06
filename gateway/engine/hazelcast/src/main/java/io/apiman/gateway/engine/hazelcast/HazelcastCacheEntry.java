@@ -16,13 +16,15 @@
 package io.apiman.gateway.engine.hazelcast;
 
 
+import java.io.Serializable;
+
 /**
  * This is what gets stored in the Hazelcast cache.
  *
  * @author Pete Cornish
  */
-public class HazelcastCacheEntry<H> {
-    private H head;
+public class HazelcastCacheEntry implements Serializable {
+    private String head;
     private String data;
     private long expiresOn;
 
@@ -63,14 +65,14 @@ public class HazelcastCacheEntry<H> {
     /**
      * @return the head
      */
-    public H getHead() {
+    public String getHead() {
         return head;
     }
 
     /**
      * @param head the head to set
      */
-    public void setHead(H head) {
+    public void setHead(String head) {
         this.head = head;
     }
 }

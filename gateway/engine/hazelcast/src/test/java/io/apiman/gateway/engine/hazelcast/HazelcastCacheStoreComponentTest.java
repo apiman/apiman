@@ -1,6 +1,7 @@
 package io.apiman.gateway.engine.hazelcast;
 
 import com.hazelcast.config.*;
+import io.apiman.gateway.engine.hazelcast.model.Example;
 import io.apiman.gateway.engine.impl.ByteBufferFactoryComponent;
 import io.apiman.gateway.engine.io.ByteBuffer;
 import io.apiman.gateway.engine.io.ISignalReadStream;
@@ -114,16 +115,16 @@ public class HazelcastCacheStoreComponentTest {
     @Test
     public void putAndGetFromCluster() throws Exception {
         final String cacheKey = "cacheKeySimple";
-        final String cacheValue = "cacheValue";
+        final Example cacheValue = new Example("cacheValue");
 
         member1.put(cacheKey, cacheValue, 120);
-        member1.get(cacheKey, String.class, result -> {
+        member1.get(cacheKey, Example.class, result -> {
             assertFalse("Result should be retrieved successfully from initial member", result.isError());
             assertEquals(cacheValue, result.getResult());
         });
 
         // verify propagation
-        member2.get(cacheKey, String.class, result -> {
+        member2.get(cacheKey, Example.class, result -> {
             assertFalse("Result should be retrieved successfully from peer member", result.isError());
             assertEquals(cacheValue, result.getResult());
         });
@@ -151,8 +152,8 @@ public class HazelcastCacheStoreComponentTest {
         });
 
         // verify propagation
-        member2.getBinary(cacheKey, String.class, result -> {
-            assertFalse("Result should be retrieved successfully from peer member", result.isError());
+            member2.getBinary(cacheKey, String.class, result -> {
+                assertFalse("Result should be retrieved successfully from peer member", result.isError());
 
             final ISignalReadStream<String> readStream = result.getResult();
             readStream.bodyHandler(bodyResult -> assertEquals(cacheBody, new String(bodyResult.getBytes())));
@@ -163,3 +164,4 @@ public class HazelcastCacheStoreComponentTest {
         });
     }
 }
+

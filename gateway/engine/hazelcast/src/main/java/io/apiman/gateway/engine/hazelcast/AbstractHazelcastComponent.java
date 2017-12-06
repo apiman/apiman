@@ -40,7 +40,7 @@ abstract class AbstractHazelcastComponent {
      * Constructor.
      */
     public AbstractHazelcastComponent(String storeName) {
-        this(storeName, new Config());
+        this(storeName, null);
     }
 
     /**

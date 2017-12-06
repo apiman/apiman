@@ -78,12 +78,12 @@ public class HazelcastCacheStoreComponent extends AbstractHazelcastComponent imp
      */
     @Override
     public <T> void put(String cacheKey, T jsonObject, long timeToLive) throws IOException {
-        final HazelcastCacheEntry<T> entry = new HazelcastCacheEntry<>();
+        final HazelcastCacheEntry entry = new HazelcastCacheEntry();
         entry.setData(null);
         entry.setExpiresOn(System.currentTimeMillis() + (timeToLive * 1000));
-        entry.setHead(jsonObject);
+        entry.setHead(mapper.writeValueAsString(jsonObject));
         try {
-            getMap().put(cacheKey, mapper.writeValueAsString(entry));
+            getMap().put(cacheKey, entry);
         } catch (Throwable e) {
             LOGGER.error("Error writing cache entry with key: {}", cacheKey, e);
         }
@@ -95,9 +95,9 @@ public class HazelcastCacheStoreComponent extends AbstractHazelcastComponent imp
     @Override
     public <T> ISignalWriteStream putBinary(final String cacheKey, final T jsonObject, final long timeToLive)
             throws IOException {
-        final HazelcastCacheEntry<T> entry = new HazelcastCacheEntry<>();
+        final HazelcastCacheEntry entry = new HazelcastCacheEntry();
         entry.setExpiresOn(System.currentTimeMillis() + (timeToLive * 1000));
-        entry.setHead(jsonObject);
+        entry.setHead(mapper.writeValueAsString(jsonObject));
 
         final IApimanBuffer data = bufferFactory.createBuffer();
         return new ISignalWriteStream() {
@@ -125,7 +125,7 @@ public class HazelcastCacheStoreComponent extends AbstractHazelcastComponent imp
                 if (!aborted) {
                     entry.setData(Base64.encodeBase64String(data.getBytes()));
                     try {
-                        getMap().put(cacheKey, mapper.writeValueAsString(entry));
+                        getMap().put(cacheKey, entry);
                     } catch (Throwable e) {
                         LOGGER.error("Error writing binary cache entry with key: {}", cacheKey, e);
                     }
@@ -141,12 +141,11 @@ public class HazelcastCacheStoreComponent extends AbstractHazelcastComponent imp
     @Override
     public <T> void get(String cacheKey, final Class<T> type, final IAsyncResultHandler<T> handler) {
         try {
-            final String mapEntry = (String) getMap().get(cacheKey);
-            if (null != mapEntry) {
+            final HazelcastCacheEntry cacheEntry = (HazelcastCacheEntry) getMap().get(cacheKey);
+            if (null != cacheEntry) {
                 try {
-                    @SuppressWarnings("unchecked")
-                    final HazelcastCacheEntry<T> cacheEntry = mapper.readValue(mapEntry, HazelcastCacheEntry.class);
-                    handler.handle(AsyncResultImpl.create(cacheEntry.getHead()));
+                    @SuppressWarnings("unchecked") final T head = mapper.readValue(cacheEntry.getHead(), type);
+                    handler.handle(AsyncResultImpl.create(head));
                 } catch (Exception e) {
                     LOGGER.error("Error reading cache entry with key: {}", cacheKey, e);
                     handler.handle(AsyncResultImpl.create((T) null));
@@ -166,16 +165,13 @@ public class HazelcastCacheStoreComponent extends AbstractHazelcastComponent imp
     public <T> void getBinary(final String cacheKey, final Class<T> type,
                               final IAsyncResultHandler<ISignalReadStream<T>> handler) {
         try {
-            final String mapEntry = (String) getMap().get(cacheKey);
+            final HazelcastCacheEntry cacheEntry = (HazelcastCacheEntry) getMap().get(cacheKey);
 
             // Did the fetch succeed? If not, return null.
-            if (null == mapEntry) {
+            if (null == cacheEntry) {
                 handler.handle(AsyncResultImpl.create((ISignalReadStream<T>) null));
                 return;
             }
-
-            @SuppressWarnings("unchecked")
-            final HazelcastCacheEntry cacheEntry = mapper.readValue(mapEntry, HazelcastCacheEntry.class);
 
             // Is the cache entry expired?  If so return null.
             if (System.currentTimeMillis() > cacheEntry.getExpiresOn()) {
@@ -185,7 +181,7 @@ public class HazelcastCacheStoreComponent extends AbstractHazelcastComponent imp
             }
 
             try {
-                @SuppressWarnings("unchecked") final T head = (T) cacheEntry.getHead();
+                @SuppressWarnings("unchecked") final T head = (T) mapper.readValue(cacheEntry.getHead(), type);
                 final String b64Data = cacheEntry.getData();
                 final IApimanBuffer data = bufferFactory.createBuffer(Base64.decodeBase64(b64Data));
                 final ISignalReadStream<T> rval = new ISignalReadStream<T>() {
