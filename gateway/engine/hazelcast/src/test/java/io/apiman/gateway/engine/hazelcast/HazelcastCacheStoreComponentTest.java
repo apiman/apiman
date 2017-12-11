@@ -5,6 +5,7 @@ import com.hazelcast.config.Config;
 import com.hazelcast.config.JoinConfig;
 import com.hazelcast.config.MulticastConfig;
 import com.hazelcast.config.TcpIpConfig;
+import io.apiman.gateway.engine.hazelcast.config.HazelcastInstanceManager;
 import io.apiman.gateway.engine.hazelcast.model.Example;
 import io.apiman.gateway.engine.impl.ByteBufferFactoryComponent;
 import io.apiman.gateway.engine.io.ByteBuffer;
@@ -19,7 +20,6 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
-import java.util.function.BiConsumer;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -32,27 +32,16 @@ import static org.junit.Assert.assertFalse;
 public class HazelcastCacheStoreComponentTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(HazelcastCacheStoreComponentTest.class);
 
-    private static HazelcastCacheStoreComponent member1;
-    private static HazelcastCacheStoreComponent member2;
-    private static Thread thread1;
-    private static Thread thread2;
     private static volatile boolean shouldRun;
     private static CountDownLatch latch;
+    private static TestObjectHolder first, second;
 
     @BeforeClass
     public static void setUp() throws Exception {
         shouldRun = true;
         latch = new CountDownLatch(2);
-
-        startMemberThread("member1", 5701, 5702, (member, thread) -> {
-            member1 = member;
-            thread1 = thread;
-        });
-
-        startMemberThread("member2", 5702, 5701, (member, thread) -> {
-            member2 = member;
-            thread2 = thread;
-        });
+        first = startMemberThread("member1", 5701, 5702);
+        second = startMemberThread("member2", 5702, 5701);
 
         // Instances are configured with a minimum cluster size of 2, so they will block on initialisation
         // until this condition is set.
@@ -63,29 +52,27 @@ public class HazelcastCacheStoreComponentTest {
     @AfterClass
     public static void tearDown() throws InterruptedException {
         LOGGER.info("Stopping Hazelcast instances");
-        member1.reset();
-        member2.reset();
+        first.manager.reset();
+        second.manager.reset();
 
         LOGGER.info("Waiting for threads to stop");
         shouldRun = false;
-        thread1.join();
-        thread2.join();
+        first.thread.join();
+        second.thread.join();
     }
 
     /**
      * Start a {@link HazelcastCacheStoreComponent} with its own Hazelcast instance in its own thread,
      * peered with the member on the given port.
      *
-     * @param instanceName the unique name of this instance
-     * @param memberPort   the port on which this member should listen
-     * @param peerPort     the port of this member's peer in the group
-     * @param callback     consumes the member and its thread
+     * @param name       the unique name of this instance
+     * @param memberPort the port on which this member should listen
+     * @param peerPort   the port of this member's peer in the group
+     * @return TestObjectHolder      the instance, member and its thread
      */
-    private static void startMemberThread(String instanceName, int memberPort, int peerPort,
-                                          BiConsumer<HazelcastCacheStoreComponent, Thread> callback) {
-
+    private static TestObjectHolder startMemberThread(String name, int memberPort, int peerPort) {
         final Config config = new Config() {{
-            setInstanceName(instanceName);
+            setInstanceName(name);
             getGroupConfig().setName("test-cluster");
             setProperty("hazelcast.initial.min.cluster.size", "2");
 
@@ -104,10 +91,13 @@ public class HazelcastCacheStoreComponentTest {
             }});
         }};
 
+        final HazelcastInstanceManager manager = new HazelcastInstanceManager();
+        manager.setOverrideConfig(config);
+
         final Map<String, String> componentConfig = new HashMap<>();
         componentConfig.put(AbstractHazelcastComponent.CONFIG_EAGER_INIT, "false");
 
-        final HazelcastCacheStoreComponent member = new HazelcastCacheStoreComponent(componentConfig, config);
+        final HazelcastCacheStoreComponent member = new HazelcastCacheStoreComponent(manager, componentConfig);
         member.setBufferFactory(new ByteBufferFactoryComponent());
 
         final Thread memberThread = new Thread(() -> {
@@ -119,8 +109,8 @@ public class HazelcastCacheStoreComponentTest {
             while (shouldRun) Thread.yield();
         });
 
-        callback.accept(member, memberThread);
         memberThread.start();
+        return new TestObjectHolder(manager, member, memberThread);
     }
 
     @Test
@@ -128,14 +118,14 @@ public class HazelcastCacheStoreComponentTest {
         final String cacheKey = "cacheKeySimple";
         final Example cacheValue = new Example("cacheValue");
 
-        member1.put(cacheKey, cacheValue, 120);
-        member1.get(cacheKey, Example.class, result -> {
+        first.cacheStore.put(cacheKey, cacheValue, 120);
+        first.cacheStore.get(cacheKey, Example.class, result -> {
             assertFalse("Result should be retrieved successfully from initial member", result.isError());
             assertEquals(cacheValue, result.getResult());
         });
 
         // verify propagation
-        member2.get(cacheKey, Example.class, result -> {
+        second.cacheStore.get(cacheKey, Example.class, result -> {
             assertFalse("Result should be retrieved successfully from peer member", result.isError());
             assertEquals(cacheValue, result.getResult());
         });
@@ -147,11 +137,11 @@ public class HazelcastCacheStoreComponentTest {
         final String cacheHead = "cacheHead";
         final String cacheBody = "cacheBody";
 
-        final ISignalWriteStream writeStream = member1.putBinary(cacheKey, cacheHead, 120);
+        final ISignalWriteStream writeStream = first.cacheStore.putBinary(cacheKey, cacheHead, 120);
         writeStream.write(new ByteBuffer(cacheBody));
         writeStream.end();
 
-        member1.getBinary(cacheKey, String.class, result -> {
+        first.cacheStore.getBinary(cacheKey, String.class, result -> {
             assertFalse("Result should be retrieved successfully from initial member", result.isError());
 
             final ISignalReadStream<String> readStream = result.getResult();
@@ -163,7 +153,7 @@ public class HazelcastCacheStoreComponentTest {
         });
 
         // verify propagation
-        member2.getBinary(cacheKey, String.class, result -> {
+        second.cacheStore.getBinary(cacheKey, String.class, result -> {
             assertFalse("Result should be retrieved successfully from peer member", result.isError());
 
             final ISignalReadStream<String> readStream = result.getResult();
@@ -173,5 +163,17 @@ public class HazelcastCacheStoreComponentTest {
 
             assertEquals(cacheHead, readStream.getHead());
         });
+    }
+
+    private static class TestObjectHolder {
+        HazelcastInstanceManager manager;
+        HazelcastCacheStoreComponent cacheStore;
+        Thread thread;
+
+        TestObjectHolder(HazelcastInstanceManager manager, HazelcastCacheStoreComponent cacheStore, Thread thread) {
+            this.manager = manager;
+            this.cacheStore = cacheStore;
+            this.thread = thread;
+        }
     }
 }

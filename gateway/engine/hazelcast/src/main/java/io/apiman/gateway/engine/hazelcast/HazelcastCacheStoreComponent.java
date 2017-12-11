@@ -17,13 +17,14 @@ package io.apiman.gateway.engine.hazelcast;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hazelcast.config.Config;
 import io.apiman.gateway.engine.DependsOnComponents;
 import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncHandler;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.components.IBufferFactoryComponent;
 import io.apiman.gateway.engine.components.ICacheStoreComponent;
+import io.apiman.gateway.engine.hazelcast.config.HazelcastInstanceManager;
+import io.apiman.gateway.engine.hazelcast.model.HazelcastCacheEntry;
 import io.apiman.gateway.engine.io.IApimanBuffer;
 import io.apiman.gateway.engine.io.ISignalReadStream;
 import io.apiman.gateway.engine.io.ISignalWriteStream;
@@ -60,11 +61,9 @@ public class HazelcastCacheStoreComponent extends AbstractHazelcastComponent imp
 
     /**
      * Constructor.
-     *
-     * @param config the config
      */
-    public HazelcastCacheStoreComponent(Map<String, String> componentConfig, Config config) {
-        super(componentConfig, STORE_NAME, config);
+    public HazelcastCacheStoreComponent(HazelcastInstanceManager instanceManager, Map<String, String> componentConfig) {
+        super(instanceManager, componentConfig, STORE_NAME);
     }
 
     /**

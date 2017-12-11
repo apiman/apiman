@@ -15,7 +15,6 @@
  */
 package io.apiman.gateway.engine.hazelcast;
 
-import com.hazelcast.config.Config;
 import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.components.ISharedStateComponent;
@@ -36,15 +35,6 @@ public class HazelcastSharedStateComponent extends AbstractHazelcastComponent im
      */
     public HazelcastSharedStateComponent(Map<String, String> componentConfig) {
         super(componentConfig, STORE_NAME);
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param config the config
-     */
-    public HazelcastSharedStateComponent(Map<String, String> componentConfig, Config config) {
-        super(componentConfig, STORE_NAME, config);
     }
 
     /**

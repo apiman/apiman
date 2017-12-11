@@ -15,9 +15,8 @@
  */
 package io.apiman.gateway.engine.hazelcast;
 
-import com.hazelcast.config.Config;
-import com.hazelcast.core.Hazelcast;
-import com.hazelcast.core.HazelcastInstance;
+import io.apiman.gateway.engine.IRequiresInitialization;
+import io.apiman.gateway.engine.hazelcast.config.HazelcastInstanceManager;
 
 import java.util.Map;
 
@@ -26,50 +25,34 @@ import java.util.Map;
  *
  * @author Pete Cornish
  */
-abstract class AbstractHazelcastComponent {
+abstract class AbstractHazelcastComponent implements IRequiresInitialization {
     public static final String CONFIG_EAGER_INIT = "eager-init";
-    private final String storeName;
-    private final Config config;
-    private final Object mutex = new Object();
 
-    /**
-     * Access this via {@link #getHazelcastInstance()}.
-     */
-    private HazelcastInstance hazelcastInstance;
+    private final HazelcastInstanceManager instanceManager;
+    private final Map<String, String> componentConfig;
+    private final String storeName;
 
     /**
      * Constructor.
      */
     public AbstractHazelcastComponent(Map<String, String> componentConfig, String storeName) {
-        this(componentConfig, storeName, null);
+        this(HazelcastInstanceManager.DEFAULT_MANAGER, componentConfig, storeName);
     }
 
     /**
      * Constructor.
-     *
-     * @param config the config
      */
-    public AbstractHazelcastComponent(Map<String, String> componentConfig, String storeName, Config config) {
+    public AbstractHazelcastComponent(HazelcastInstanceManager instanceManager, Map<String, String> componentConfig, String storeName) {
+        this.instanceManager = instanceManager;
+        this.componentConfig = componentConfig;
         this.storeName = storeName;
-        this.config = config;
-
-        if (Boolean.valueOf(componentConfig.get(CONFIG_EAGER_INIT))) {
-            getHazelcastInstance();
-        }
     }
 
-    /**
-     * @return a new or existing Hazelcast instance
-     */
-    private HazelcastInstance getHazelcastInstance() {
-        if (null == hazelcastInstance) {
-            synchronized (mutex) {
-                if (null == hazelcastInstance) {
-                    hazelcastInstance = Hazelcast.newHazelcastInstance(config);
-                }
-            }
+    @Override
+    public void initialize() {
+        if (Boolean.valueOf(componentConfig.get(CONFIG_EAGER_INIT))) {
+            getMap();
         }
-        return hazelcastInstance;
     }
 
     /**
@@ -79,7 +62,7 @@ abstract class AbstractHazelcastComponent {
      * @return the Map
      */
     protected <T> Map<String, T> getMap() {
-        return getHazelcastInstance().getMap(storeName);
+        return instanceManager.getHazelcastMap(storeName);
     }
 
     /**
@@ -91,17 +74,5 @@ abstract class AbstractHazelcastComponent {
      */
     protected String buildNamespacedKey(String namespace, String propertyName) {
         return namespace + "." + propertyName;
-    }
-
-    /**
-     * Shut down the Hazelcast instance.
-     */
-    public void reset() {
-        if (null != hazelcastInstance) {
-            synchronized (mutex) {
-                hazelcastInstance.shutdown();
-                hazelcastInstance = null;
-            }
-        }
     }
 }

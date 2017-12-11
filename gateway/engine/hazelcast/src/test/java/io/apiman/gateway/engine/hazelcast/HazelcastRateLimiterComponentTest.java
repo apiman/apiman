@@ -1,6 +1,7 @@
 package io.apiman.gateway.engine.hazelcast;
 
-import com.hazelcast.config.*;
+import com.hazelcast.config.Config;
+import io.apiman.gateway.engine.hazelcast.config.HazelcastInstanceManager;
 import io.apiman.gateway.engine.rates.RateBucketPeriod;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,7 +22,9 @@ public class HazelcastRateLimiterComponentTest {
     @Before
     public void setUp() throws Exception {
         final Config config = HazelcastConfigUtil.buildConfigWithDisabledNetwork();
-        component = new HazelcastRateLimiterComponent(emptyMap(), config);
+        HazelcastInstanceManager.DEFAULT_MANAGER.setOverrideConfig(config);
+
+        component = new HazelcastRateLimiterComponent(emptyMap());
     }
 
     @Test

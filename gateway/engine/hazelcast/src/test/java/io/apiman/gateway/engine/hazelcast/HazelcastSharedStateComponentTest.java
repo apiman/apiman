@@ -1,6 +1,7 @@
 package io.apiman.gateway.engine.hazelcast;
 
 import com.hazelcast.config.Config;
+import io.apiman.gateway.engine.hazelcast.config.HazelcastInstanceManager;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -18,7 +19,9 @@ public class HazelcastSharedStateComponentTest {
     @Before
     public void setUp() throws Exception {
         final Config config = HazelcastConfigUtil.buildConfigWithDisabledNetwork();
-        component = new HazelcastSharedStateComponent(emptyMap(), config);
+        HazelcastInstanceManager.DEFAULT_MANAGER.setOverrideConfig(config);
+
+        component = new HazelcastSharedStateComponent(emptyMap());
     }
 
     @Test
