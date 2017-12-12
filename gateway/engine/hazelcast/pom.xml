@@ -26,10 +26,18 @@
     </dependency>
 
     <!-- Third Party Dependencies -->
+
     <dependency>
       <groupId>com.hazelcast</groupId>
       <artifactId>hazelcast</artifactId>
+      <!--
+        Important: Hazelcast should be added to the container's classpath (e.g. 'lib'),
+        not packaged within the engine deployable (e.g. WAR), otherwise odd classloading
+        issues can occur.
+       -->
+      <scope>provided</scope>
     </dependency>
+
     <dependency>
       <groupId>commons-codec</groupId>
       <artifactId>commons-codec</artifactId>
