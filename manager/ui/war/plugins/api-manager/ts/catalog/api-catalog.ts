@@ -244,70 +244,77 @@ module Apiman {
                     })
                 };
 
+                const DisableTryItOutPlugin = function() {
+                  return {
+                      statePlugins: {
+                          spec: {
+                              wrapSelectors: {
+                                  allowTryItOutFor: () => () => false
+                              }
+                          }
+                      }
+                  }
+                };
+
+                // SwaggerUI Plugins
+                const DisableAuthorizePlugin = function() {
+                  return {
+                      wrapComponents: {
+                          authorizeBtn: () => () => null
+                      }
+                  }
+                };
+
                 PageLifecycle.loadPage('ApiCatalogDef', undefined, pageData, $scope, function () {
 
                     $scope.hasError = false;
 
                     PageLifecycle.setPageTitle('api-catalog-def', [$scope.params.name]);
 
-                    var hasSwagger = false;
-
-                    try {
-                        var swagger = SwaggerUi;
-                        hasSwagger = true;
-                    } catch (e) {
-                    }
-
                     var definitionUrl = $scope.api.definitionUrl;
                     if ($scope.api.routeDefinitionUrl != null) definitionUrl = $scope.api.routeDefinitionUrl;
                     var definitionType = $scope.api.definitionType;
 
-                    if ((definitionType == 'SwaggerJSON' || definitionType == 'SwaggerYAML') && hasSwagger) {
-                        var authHeader = Configuration.getAuthorizationHeader();
+                    if ((definitionType == 'SwaggerJSON' || definitionType == 'SwaggerYAML') && SwaggerUIBundle) {
 
                         $scope.definitionStatus = 'loading';
-                        var swaggerOptions = {
+                        let ui;
+                        let swaggerOptions = <any>{
                             url: definitionUrl,
-                            dom_id: "swagger-ui-container",
-                            validatorUrl: null,
-                            sorter: "alpha",
+                            dom_id: "#swagger-ui-container",
+                            validatorUrl: "https://online.swagger.io/validator",
+                            presets: [
+                                SwaggerUIBundle.presets.apis
+                            ],
+                            layout: "BaseLayout",
+                            sorter : "alpha",
 
-                            onComplete: function () {
-                                $('#swagger-ui-container a').each(function (idx, elem) {
-                                    var href = $(elem).attr('href');
-                                    if (href[0] == '#') {
-                                        $(elem).removeAttr('href');
-                                    }
-                                });
-                                $('#swagger-ui-container div.sandbox_header').each(function (idx, elem) {
-                                    $(elem).remove();
-                                });
-                                $('#swagger-ui-container li.operation div.auth').each(function (idx, elem) {
-                                    $(elem).remove();
-                                });
-                                $('#swagger-ui-container li.operation div.access').each(function (idx, elem) {
-                                    $(elem).remove();
-                                });
-                                $scope.$apply(function (error) {
+                            onComplete: function() {
+                                $scope.$apply(function() {
                                     $scope.definitionStatus = 'complete';
                                 });
                             },
-                            onFailure: function () {
-                                $scope.$apply(function (error) {
-                                    $scope.definitionStatus = 'error';
-                                    $scope.hasError = true;
-                                    $scope.error = error;
-                                });
+                            // do error handling in the responseInterceptor
+                            responseInterceptor: function (response) {
+                                if (response.status == 500 && response.ok === false) {
+                                    $scope.$apply(function() {
+                                        $scope.definitionStatus = 'error';
+                                        $scope.hasError = true;
+                                    });
+                                }
+                                return response;
                             }
                         };
 
-                        $window.swaggerUi = new SwaggerUi(swaggerOptions);
-                        $window.swaggerUi.load();
+                        swaggerOptions.plugins = [];
+                        swaggerOptions.plugins.push(DisableTryItOutPlugin, DisableAuthorizePlugin);
 
+                        ui = SwaggerUIBundle(swaggerOptions);
                         $scope.hasDefinition = true;
                     } else {
                         $scope.hasDefinition = false;
                     }
+
                 });
             }
         ]);

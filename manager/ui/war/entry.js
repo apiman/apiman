@@ -3,9 +3,9 @@
 // installed server-side with npm. Browserify will check all requires(), subsequently
 // bundling them into a single file, which we can then use on the client.
 
-global.jQuery = global.$ = require('patternfly/components/jquery/dist/jquery.js');
-var bootstrap = require('patternfly/components/bootstrap/dist/js/bootstrap.js');
-var bootstrapSelect = require('patternfly/components/bootstrap-select/dist/js/bootstrap-select.js');
+global.jQuery = global.$ = require('jquery/dist/jquery.js');
+var bootstrap = require('bootstrap/dist/js/bootstrap.js');
+var bootstrapSelect = require('bootstrap-select/dist/js/bootstrap-select.js');
 var jsonEditor = require('json-editor');
 var patternfly = require('patternfly/dist/js/patternfly.js');
 var angular = require('angular');
@@ -16,7 +16,7 @@ var ngClipboard = require('angular-clipboard');
 var ngResource = require('angular-resource');
 var ngSortable = require('ng-sortable/dist/ng-sortable.js');
 var d3 = require('d3');
-global.c3 = require('patternfly/components/c3/c3.js');
+global.c3 = require('c3/c3.js');
 var ngXEditable = require('angular-xeditable-npm/dist/js/xeditable.js');
 var ngSanitize = require('angular-sanitize');
 var ngAnimate = require('angular-animate');
@@ -25,9 +25,9 @@ global._ = require('lodash');
 var ngRoute = require('angular-route');
 var URI = require('urijs');
 var ngSchemaForm = require('angular-schema-form');
-global.SwaggerUi = require('swagger-ui-browserify');
+global.SwaggerUIBundle = require('swagger-ui-dist/swagger-ui-bundle.js');
 global.SwaggerClient = require('swagger-client');
-global.SwaggerAuthorizations = require('swagger-ui-browserify/node_modules/swagger-ui/dist/lib/swagger-oauth.js');
+
 
 var sugar = require('sugar');
 var ngFileUpload = require('ng-file-upload');

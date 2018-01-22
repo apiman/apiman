@@ -32,12 +32,6 @@ module Apiman {
             $scope.params = $routeParams;
             $scope.chains = {};
             
-            $scope.hasSwagger = false;
-            try {
-                var swagger = SwaggerUi;
-                $scope.hasSwagger = true;
-            } catch (e) {}
-            
             $scope.getPolicyChain = function(plan) {
                 var planId = plan.planId;
                 if (!$scope.chains[planId]) {
@@ -131,65 +125,79 @@ module Apiman {
                     OrgSvcs.get({ organizationId: $routeParams.org, entityType: 'apis', entityId: $routeParams.api, versionsOrActivity: 'versions', version: $routeParams.version }, resolve, reject);
                 })
             };
-            
+
+            const DisableTryItOutPlugin = function() {
+                return {
+                    statePlugins: {
+                        spec: {
+                            wrapSelectors: {
+                                allowTryItOutFor: () => () => false
+                            }
+                        }
+                    }
+                }
+            };
+
+            // SwaggerUI Plugins
+            const DisableAuthorizePlugin = function() {
+                return {
+                    wrapComponents: {
+                        authorizeBtn: () => () => null
+                    }
+                }
+            };
+
             PageLifecycle.loadPage('ConsumerApiDef', undefined, pageData, $scope, function() {
                 $scope.api = $scope.version.api;
                 $scope.org = $scope.api.organization;
                 $scope.hasError = false;
 
                 PageLifecycle.setPageTitle('consumer-api-def', [ $scope.api.name ]);
-                
-                var hasSwagger = false;
-                try {
-                    var swagger = SwaggerUi;
-                    hasSwagger = true;
-                } catch (e) {}
 
-                if (($scope.version.definitionType == 'SwaggerJSON' || $scope.version.definitionType == 'SwaggerYAML') && hasSwagger) {
+                if (($scope.version.definitionType == 'SwaggerJSON' || $scope.version.definitionType == 'SwaggerYAML') && SwaggerUIBundle) {
                     var url = ApiDefinitionSvcs.getApimanDefinitionUrl($scope.params.org, $scope.params.api, $scope.params.version);
                     Logger.debug("!!!!! Using definition URL: {0}", url);
 
-                    var authHeader = Configuration.getAuthorizationHeader();
-                    
                     $scope.definitionStatus = 'loading';
-                    var swaggerOptions = {
+                    let ui;
+                    let swaggerOptions = <any>{
                         url: url,
-                        dom_id:"swagger-ui-container",
-                        validatorUrl:null,
+                        dom_id: "#swagger-ui-container",
+                        validatorUrl: "https://online.swagger.io/validator",
+                        presets: [
+                            SwaggerUIBundle.presets.apis
+                        ],
+                        layout: "BaseLayout",
                         sorter : "alpha",
-                        authorizations: {
-                            apimanauth: new SwaggerClient.ApiKeyAuthorization("Authorization", authHeader, "header")
+
+                        requestInterceptor: function(request) {
+                            // Only add auth header to requests where the URL matches the one specified above.
+                            if (request.url === url) {
+                                request.headers.Authorization = Configuration.getAuthorizationHeader();
+                            }
+                            return request;
                         },
                         onComplete: function() {
-                            $('#swagger-ui-container a').each(function(idx, elem) {
-                                var href = $(elem).attr('href');
-                                if (href[0] == '#') {
-                                    $(elem).removeAttr('href');
-                                }
-                            });
-                            $('#swagger-ui-container div.sandbox_header').each(function(idx, elem) {
-                                $(elem).remove();
-                            });
-                            $('#swagger-ui-container li.operation div.auth').each(function(idx, elem) {
-                                $(elem).remove();
-                            });
-                            $('#swagger-ui-container li.operation div.access').each(function(idx, elem) {
-                                $(elem).remove();
-                            });
-                            $scope.$apply(function(error) {
+                            $scope.$apply(function() {
                                 $scope.definitionStatus = 'complete';
                             });
                         },
-                        onFailure: function() {
-                            $scope.$apply(function(error) {
-                                $scope.definitionStatus = 'error';
-                                $scope.hasError = true;
-                                $scope.error = error;
-                            });
+                        // do error handling in the responseInterceptor
+                        responseInterceptor: function (response) {
+                            if (response.status == 500 && response.ok === false) {
+                                $scope.$apply(function() {
+                                    $scope.definitionStatus = 'error';
+                                    $scope.hasError = true;
+                                });
+                            }
+                            return response;
                         }
                     };
-                    $window.swaggerUi = new SwaggerUi(swaggerOptions);
-                    $window.swaggerUi.load();
+
+                    swaggerOptions.plugins = [];
+                    swaggerOptions.plugins.push(DisableTryItOutPlugin, DisableAuthorizePlugin);
+
+                    ui = SwaggerUIBundle(swaggerOptions);
                     $scope.hasDefinition = true;
                 } else {
                     $scope.hasDefinition = false;
