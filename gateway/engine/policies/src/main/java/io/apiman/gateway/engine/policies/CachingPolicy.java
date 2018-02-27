@@ -171,8 +171,8 @@ public class CachingPolicy extends AbstractMappedDataPolicy<CachingConfig> imple
 
     /**
      * Builds a cached request id composed by the API key followed by the HTTP
-     * verb and the destination. In the case where there's no API key the ID
-     * will contain ApiOrgId + ApiId + ApiVersion
+     * verb and the destination and a md5 of Query Parameters. In the case where there's no API key the ID
+     * will contain ApiOrgId + ApiId + ApiVersion + md5 of Query Parameters
      */
     private static String buildCacheID(ApiRequest request) {
         StringBuilder req = new StringBuilder();
@@ -184,6 +184,8 @@ public class CachingPolicy extends AbstractMappedDataPolicy<CachingConfig> imple
         }
         req.append(KEY_SEPARATOR).append(request.getType()).append(KEY_SEPARATOR)
                 .append(request.getDestination());
+        req.append(KEY_SEPARATOR)
+            .append(Md5Crypt.apr1Crypt(request.getQueryParams().toQueryString()));
         return req.toString();
     }
 
