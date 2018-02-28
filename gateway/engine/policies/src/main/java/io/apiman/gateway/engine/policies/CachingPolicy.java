@@ -19,6 +19,8 @@ import static java.util.Optional.ofNullable;
 
 import java.io.IOException;
 
+import org.apache.commons.codec.digest.Md5Crypt;
+
 import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.ApiRequest;
