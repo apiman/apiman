@@ -86,4 +86,70 @@ public class CachingPolicyTest extends ApimanPolicyTest {
         Assert.assertEquals(counterValue4, counterValue5);
         Assert.assertEquals("application/json", response.header("Content-Type"));
     }
+
+    @Test
+    @Configuration("{" +
+            "  \"ttl\" : 2" +
+            "}")
+    public void testCachingWithQueryParams() throws Throwable {
+    	
+    	// cache with two query params
+        PolicyTestRequest request = PolicyTestRequest.build(PolicyTestRequestType.GET, "/some/cached-resource");
+        request.queryParams().put("titi", "toto");
+        request.queryParams().put("toto", "titi");
+        PolicyTestResponse response = send(request);
+        EchoResponse echo = response.entity(EchoResponse.class);
+        Assert.assertNotNull(echo);
+        Long counterValue = echo.getCounter();
+        Assert.assertNotNull(counterValue);
+        Assert.assertEquals("application/json", response.header("Content-Type"));
+
+        // Now send the request again - we should get the *same* counter value!
+        response = send(request);
+        echo = response.entity(EchoResponse.class);
+        Assert.assertNotNull(echo);
+        Long counterValue2 = echo.getCounter();
+        Assert.assertNotNull(counterValue2);
+        Assert.assertEquals(counterValue, counterValue2);
+        Assert.assertEquals("application/json", response.header("Content-Type"));
+
+        // One more time, just to be sure
+        response = send(request);
+        echo = response.entity(EchoResponse.class);
+        Assert.assertNotNull(echo);
+        Long counterValue3 = echo.getCounter();
+        Assert.assertNotNull(counterValue3);
+        Assert.assertEquals(counterValue, counterValue3);
+        Assert.assertEquals("application/json", response.header("Content-Type"));
+
+        // Now wait for 3s and make sure the cache entry expired
+        Thread.sleep(3000);
+        response = send(request);
+        echo = response.entity(EchoResponse.class);
+        Assert.assertNotNull(echo);
+        Long counterValue4 = echo.getCounter();
+        Assert.assertNotNull(counterValue4);
+        Assert.assertNotEquals(counterValue, counterValue4);
+        Assert.assertEquals("application/json", response.header("Content-Type"));
+
+        // cache with three query params
+        request.queryParams().put("tutu", "tititoto");
+        // should be cached a new entry
+        response = send(request);
+        echo = response.entity(EchoResponse.class);
+        Assert.assertNotNull(echo);
+        Long counterValue5 = echo.getCounter();
+        Assert.assertNotNull(counterValue5);
+        Assert.assertEquals("application/json", response.header("Content-Type"));
+        
+        
+        // Now send the request again - we should get the *same* counter value!
+        response = send(request);
+        echo = response.entity(EchoResponse.class);
+        Assert.assertNotNull(echo);
+        Long counterValue6 = echo.getCounter();
+        Assert.assertNotNull(counterValue6);
+        Assert.assertEquals(counterValue5, counterValue6);
+        Assert.assertEquals("application/json", response.header("Content-Type"));
+    }
 }
