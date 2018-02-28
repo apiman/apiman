@@ -19,6 +19,8 @@ import static java.util.Optional.ofNullable;
 
 import java.io.IOException;
 
+import org.apache.commons.codec.digest.Md5Crypt;
+
 import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.ApiRequest;
@@ -169,22 +171,27 @@ public class CachingPolicy extends AbstractMappedDataPolicy<CachingConfig> imple
         }
     }
 
-    /**
-     * Builds a cached request id composed by the API key followed by the HTTP
-     * verb and the destination. In the case where there's no API key the ID
-     * will contain ApiOrgId + ApiId + ApiVersion
-     */
-    private static String buildCacheID(ApiRequest request) {
-        StringBuilder req = new StringBuilder();
-        if (request.getContract() != null) {
-            req.append(request.getApiKey());
-        } else {
-            req.append(request.getApiOrgId()).append(KEY_SEPARATOR).append(request.getApiId())
-                    .append(KEY_SEPARATOR).append(request.getApiVersion());
-        }
-        req.append(KEY_SEPARATOR).append(request.getType()).append(KEY_SEPARATOR)
-                .append(request.getDestination());
-        return req.toString();
-    }
+	/**
+	 * Builds a cached request id composed by the API key followed by the HTTP verb
+	 * and the destination. In the case where there's no API key the ID will contain
+	 * ApiOrgId + ApiId + ApiVersion + md5 of Query Parameters
+	 */
+	private static String buildCacheID(ApiRequest request) {
+		StringBuilder req = new StringBuilder();
+		if (request.getContract() != null) {
+			req.append(request.getApiKey());
+		} else {
+			req.append(request.getApiOrgId()).append(KEY_SEPARATOR).append(request.getApiId()).append(KEY_SEPARATOR)
+					.append(request.getApiVersion());
+		}
+		req.append(KEY_SEPARATOR).append(request.getType()).append(KEY_SEPARATOR).append(request.getDestination());
+
+		if (!request.getQueryParams().isEmpty()) {
+			req.append(KEY_SEPARATOR)
+					.append(Md5Crypt.apr1Crypt(request.getQueryParams().toQueryString(), CACHE_ID_ATTR));
+		}
+
+		return req.toString();
+	}
 
 }
