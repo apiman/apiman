@@ -151,5 +151,9 @@ public class CachingPolicyTest extends ApimanPolicyTest {
         Assert.assertNotNull(counterValue6);
         Assert.assertEquals(counterValue5, counterValue6);
         Assert.assertEquals("application/json", response.header("Content-Type"));
+<<<<<<< HEAD
     }
+=======
+    }    
+>>>>>>> refs/remotes/alesuffleur/apiman.git/FixCachePolicy
 }
