@@ -145,7 +145,6 @@ public class HttpConnectorDrainTest {
         httpConnector.drainHandler(drain -> {
             System.err.println("Drain handler has been called! Yay.");
             asyncDrain.countDown();
-            asyncDrain.complete();
         });
 
         httpConnector.bodyHandler(ignored -> {});
