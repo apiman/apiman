@@ -102,7 +102,7 @@ public class HttpConnectorDrainTest {
 
     @Test
     public void shouldTriggerDrainHandler(TestContext context) throws Exception {
-        Async asyncDrain = context.async(2);
+        Async  asyncDrain = context.async(2);
         Async asyncServer = context.async();
         Async waitForServer = context.async();
         Async receivedResponse = context.async();
@@ -145,6 +145,7 @@ public class HttpConnectorDrainTest {
         httpConnector.drainHandler(drain -> {
             System.err.println("Drain handler has been called! Yay.");
             asyncDrain.countDown();
+            asyncDrain.complete();
         });
 
         httpConnector.bodyHandler(ignored -> {});
