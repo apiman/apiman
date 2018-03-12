@@ -33,6 +33,7 @@ import io.vertx.core.net.SocketAddress;
 import io.vertx.ext.web.RoutingContext;
 
 import javax.net.ssl.SSLPeerUnverifiedException;
+import javax.net.ssl.SSLSession;
 import javax.security.cert.X509Certificate;
 
 /**
@@ -109,6 +110,11 @@ public class Router2ResteasyRequestAdapter implements HttpServerRequest {
     @Override
     public X509Certificate[] peerCertificateChain() throws SSLPeerUnverifiedException {
         return request.peerCertificateChain();
+    }
+
+    @Override
+    public SSLSession sslSession(){
+        return null;
     }
 
     @Override
