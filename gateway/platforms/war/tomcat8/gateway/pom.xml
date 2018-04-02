@@ -19,6 +19,10 @@
 
     <!-- Logging provider -->
     <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-common-logging-log4j2</artifactId>
     </dependency>
