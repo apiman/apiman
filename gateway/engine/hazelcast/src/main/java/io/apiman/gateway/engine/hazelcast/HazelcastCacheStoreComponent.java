@@ -44,10 +44,10 @@ import java.util.Map;
 public class HazelcastCacheStoreComponent extends AbstractHazelcastComponent implements ICacheStoreComponent {
     private static final Logger LOGGER = LoggerFactory.getLogger(HazelcastCacheStoreComponent.class);
     private static final String STORE_NAME = "cache"; //$NON-NLS-1$
-    private static final ObjectMapper mapper = new ObjectMapper();
+    private static final ObjectMapper MAPPER = new ObjectMapper();
 
     static {
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
     private IBufferFactoryComponent bufferFactory;
@@ -81,7 +81,7 @@ public class HazelcastCacheStoreComponent extends AbstractHazelcastComponent imp
         final HazelcastCacheEntry entry = new HazelcastCacheEntry();
         entry.setData(null);
         entry.setExpiresOn(System.currentTimeMillis() + (timeToLive * 1000));
-        entry.setHead(mapper.writeValueAsString(jsonObject));
+        entry.setHead(MAPPER.writeValueAsString(jsonObject));
         try {
             getMap().put(cacheKey, entry);
         } catch (Throwable e) {
@@ -97,7 +97,7 @@ public class HazelcastCacheStoreComponent extends AbstractHazelcastComponent imp
             throws IOException {
         final HazelcastCacheEntry entry = new HazelcastCacheEntry();
         entry.setExpiresOn(System.currentTimeMillis() + (timeToLive * 1000));
-        entry.setHead(mapper.writeValueAsString(jsonObject));
+        entry.setHead(MAPPER.writeValueAsString(jsonObject));
 
         final IApimanBuffer data = bufferFactory.createBuffer();
         return new ISignalWriteStream() {
@@ -144,7 +144,7 @@ public class HazelcastCacheStoreComponent extends AbstractHazelcastComponent imp
             final HazelcastCacheEntry cacheEntry = (HazelcastCacheEntry) getMap().get(cacheKey);
             if (null != cacheEntry) {
                 try {
-                    @SuppressWarnings("unchecked") final T head = mapper.readValue(cacheEntry.getHead(), type);
+                    @SuppressWarnings("unchecked") final T head = MAPPER.readValue(cacheEntry.getHead(), type);
                     handler.handle(AsyncResultImpl.create(head));
                 } catch (Exception e) {
                     LOGGER.error("Error reading cache entry with key: {}", cacheKey, e);
@@ -154,6 +154,7 @@ public class HazelcastCacheStoreComponent extends AbstractHazelcastComponent imp
                 handler.handle(AsyncResultImpl.create((T) null));
             }
         } catch (Throwable e) {
+            LOGGER.error("Error reading cache entry with key: {}", cacheKey, e);
             handler.handle(AsyncResultImpl.create(e, type));
         }
     }
@@ -181,7 +182,7 @@ public class HazelcastCacheStoreComponent extends AbstractHazelcastComponent imp
             }
 
             try {
-                @SuppressWarnings("unchecked") final T head = (T) mapper.readValue(cacheEntry.getHead(), type);
+                @SuppressWarnings("unchecked") final T head = (T) MAPPER.readValue(cacheEntry.getHead(), type);
                 final String b64Data = cacheEntry.getData();
                 final IApimanBuffer data = bufferFactory.createBuffer(Base64.decodeBase64(b64Data));
                 final ISignalReadStream<T> rval = new ISignalReadStream<T>() {
@@ -231,6 +232,7 @@ public class HazelcastCacheStoreComponent extends AbstractHazelcastComponent imp
                 handler.handle(AsyncResultImpl.create((ISignalReadStream<T>) null));
             }
         } catch (Throwable e) {
+            LOGGER.error("Error reading binary cache entry with key: {}", cacheKey, e);
             handler.handle(AsyncResultImpl.create((ISignalReadStream<T>) null));
         }
     }
