@@ -4,13 +4,13 @@
   <parent>
     <groupId>io.apiman</groupId>
     <artifactId>apiman-distro</artifactId>
-    <version>1.2.10-SNAPSHOT</version>
+    <version>1.3.2-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>apiman-distro-tomcat8</artifactId>
   <packaging>pom</packaging>
   <name>apiman-distro-tomcat8</name>
-  
+
   <dependencies>
     <!-- The Tomcat 8 version of APIMan -->
     <dependency>
@@ -76,6 +76,7 @@
               <archiverConfig>
                 <defaultDirectoryMode>0755</defaultDirectoryMode>
               </archiverConfig>
+              <archiveBaseDirectory>${project.basedir}</archiveBaseDirectory>
             </configuration>
           </execution>
         </executions>
@@ -83,7 +84,7 @@
     </plugins>
   </build>
 
-  <profiles>
+  <!-- <profiles>
     <profile>
         <id>docker</id>
         <build>
@@ -116,5 +117,5 @@
         </plugins>
       </build>
     </profile>
-  </profiles>
+  </profiles> -->
 </project>

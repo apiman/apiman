@@ -21,7 +21,9 @@ import io.apiman.gateway.engine.beans.Api;
 import io.apiman.gateway.engine.beans.ApiContract;
 import io.apiman.gateway.engine.beans.Client;
 import io.apiman.gateway.engine.beans.Contract;
-import io.apiman.gateway.engine.beans.exceptions.InvalidContractException;
+import io.apiman.gateway.engine.beans.exceptions.ApiRetiredException;
+import io.apiman.gateway.engine.beans.exceptions.ClientNotFoundException;
+import io.apiman.gateway.engine.beans.exceptions.NoContractFoundException;
 import io.apiman.gateway.engine.es.i18n.Messages;
 
 import java.io.IOException;
@@ -32,7 +34,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Extends the {@link ESRegistry} to provide single-node caching.  This caching solution
  * will not work in a cluster.  If looking for cluster support, either go with the core
  * {@link ESRegistry} or use {@link PollCachingESRegistry}.
- * 
+ *
  *
  * @author eric.wittmann@redhat.com
  */
@@ -68,22 +70,22 @@ public abstract class CachingESRegistry extends ESRegistry {
             IAsyncResultHandler<ApiContract> handler) {
         Client client = null;
         Api api = null;
-        
+
         try {
             synchronized (mutex) {
                 client = getClient(apiKey);
                 api = getApi(apiOrganizationId, apiId, apiVersion);
             }
             if (client == null) {
-                Exception error = new InvalidContractException(Messages.i18n.format("ESRegistry.NoClientForAPIKey", apiKey)); //$NON-NLS-1$
+                Exception error = new ClientNotFoundException(Messages.i18n.format("ESRegistry.NoClientForAPIKey", apiKey)); //$NON-NLS-1$
                 handler.handle(AsyncResultImpl.create(error, ApiContract.class));
                 return;
             }
             if (api == null) {
-                throw new InvalidContractException(Messages.i18n.format("ESRegistry.ApiWasRetired", //$NON-NLS-1$
+                throw new ApiRetiredException(Messages.i18n.format("ESRegistry.ApiWasRetired", //$NON-NLS-1$
                         apiId, apiOrganizationId));
             }
-            
+
             Contract matchedContract = null;
             for (Contract contract : client.getContracts()) {
                 if (contract.matches(apiOrganizationId, apiId, apiVersion)) {
@@ -91,12 +93,12 @@ public abstract class CachingESRegistry extends ESRegistry {
                     break;
                 }
             }
-            
+
             if (matchedContract == null) {
-                throw new InvalidContractException(Messages.i18n.format("ESRegistry.NoContractFound", //$NON-NLS-1$
+                throw new NoContractFoundException(Messages.i18n.format("ESRegistry.NoContractFound", //$NON-NLS-1$
                         client.getClientId(), api.getApiId()));
             }
-            
+
             ApiContract contract = new ApiContract(api, client, matchedContract.getPlan(), matchedContract.getPolicies());
             handler.handle(AsyncResultImpl.create(contract));
         } catch (Exception e) {
@@ -161,8 +163,9 @@ public abstract class CachingESRegistry extends ESRegistry {
      * @param orgId
      * @param clientId
      * @param version
-     * @throws IOException 
+     * @throws IOException
      */
+    @Override
     protected Client getClient(String apiKey) throws IOException {
         Client client;
         synchronized (mutex) {
@@ -180,7 +183,7 @@ public abstract class CachingESRegistry extends ESRegistry {
 
         return client;
     }
-    
+
 
     /**
      * Generates an in-memory key for an API, used to index the app for later quick

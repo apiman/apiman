@@ -15,10 +15,13 @@
  */
 package io.apiman.gateway.platforms.vertx3.verticles;
 
+import io.apiman.gateway.engine.Version;
+import io.apiman.gateway.platforms.vertx3.ApimanVersionCommand;
 import io.apiman.gateway.platforms.vertx3.common.verticles.VerticleType;
 import io.vertx.core.CompositeFuture;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Future;
+import io.vertx.core.impl.launcher.commands.VersionCommand;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 
@@ -30,13 +33,14 @@ import java.util.List;
  *
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
+@SuppressWarnings("nls")
 public class InitVerticle extends ApimanVerticleBase {
     private Logger log = LoggerFactory.getLogger(InitVerticle.class);
     private DeploymentOptions base;
 
     @Override
     public void start(Future<Void> start) {
-        super.start();
+        super.start(start);
         base = new DeploymentOptions().setConfig(config());
 
         @SuppressWarnings({ "rawtypes" }) // CompositeFuture doesn't accept generic type
@@ -49,17 +53,23 @@ public class InitVerticle extends ApimanVerticleBase {
         CompositeFuture.all(deployList).setHandler(compositeResult -> {
             if (compositeResult.failed()) {
                 compositeResult.cause().printStackTrace();
-                log.fatal("Failed to deploy verticles: " + compositeResult.cause().getMessage()); //$NON-NLS-1$
+                log.fatal("Failed to deploy verticles: " + compositeResult.cause().getMessage());
                 start.fail(compositeResult.cause());
             } else {
-                log.info("Successfully deployed all verticles"); //$NON-NLS-1$
+                log.info("Apiman Version: {0}", ApimanVersionCommand.getApimanVersion());
+                if (log.isDebugEnabled()) log.debug("Git commit info: {0}", Version.get().getVerbose());
+                log.info("Vert.x Version: {0}", VersionCommand.getVersion());
+
+                log.info("Successfully deployed all verticles");
+                log.info("Gateway API port: {0}", apimanConfig.getPort(ApiVerticle.VERTICLE_TYPE));
+
                 start.complete();
             }
         });
     }
 
     private void deploy(String canonicalName, VerticleType verticleType, @SuppressWarnings("rawtypes") List<Future> deployList) {
-        log.info("Will deploy {0} of type {1}", apimanConfig.getVerticleCount(verticleType), verticleType); //$NON-NLS-1$
+        log.info("Will deploy {0} of type {1}", apimanConfig.getVerticleCount(verticleType), verticleType);
 
         if (apimanConfig.getVerticleCount(verticleType) <= 0) {
             return;

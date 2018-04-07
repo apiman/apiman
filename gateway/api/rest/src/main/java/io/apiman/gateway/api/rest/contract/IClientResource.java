@@ -23,9 +23,14 @@ import io.swagger.annotations.Api;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.MediaType;
 
 /**
@@ -33,17 +38,55 @@ import javax.ws.rs.core.MediaType;
  *
  * @author eric.wittmann@redhat.com
  */
-@Path("clients")
 @Api
+@Path("/")
 public interface IClientResource {
 
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
+    @Path("clients")
     public void register(Client client) throws RegistrationException, NotAuthorizedException;
 
     @DELETE
-    @Path("{organizationId}/{clientId}/{version}")
+    @Path("clients/{organizationId}/{clientId}/{version}")
+    @Deprecated
     public void unregister(@PathParam("organizationId") String organizationId,
-            @PathParam("clientId") String clientId, @PathParam("version") String version)
+            @PathParam("clientId") String clientId,
+            @PathParam("version") String version)
             throws RegistrationException, NotAuthorizedException;
+
+    // New API
+    @DELETE
+    @Path("organizations/{organizationId}/clients/{clientId}/versions/{version}")
+    public void unregister(@PathParam("organizationId") String organizationId,
+            @PathParam("clientId") String clientId,
+            @PathParam("version") String version,
+            @Suspended final AsyncResponse response)
+            throws RegistrationException, NotAuthorizedException;
+
+    @GET
+    @Path("organizations/{organizationId}/clients/")
+    @Produces(MediaType.APPLICATION_JSON)
+    public void listClients(@PathParam("organizationId") String organizationId,
+                         @QueryParam("page") int page,
+                         @QueryParam("pageSize") int pageSize,
+                         @Suspended final AsyncResponse response) throws NotAuthorizedException;
+
+    @GET
+    @Path("organizations/{organizationId}/clients/{clientId}/versions")
+    @Produces(MediaType.APPLICATION_JSON)
+    public void listClientVersions(@PathParam("organizationId") String organizationId,
+                         @PathParam("clientId") String clientId,
+                         @QueryParam("page") int page,
+                         @QueryParam("pageSize") int pageSize,
+                         @Suspended final AsyncResponse response) throws NotAuthorizedException;
+
+    @GET
+    @Path("organizations/{organizationId}/clients/{clientId}/versions/{version}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public void getClientVersion(@PathParam("organizationId") String organizationId,
+                              @PathParam("clientId") String clientId,
+                              @PathParam("version") String version,
+                              @Suspended final AsyncResponse response) throws NotAuthorizedException;
+
 }

@@ -19,6 +19,7 @@ import io.apiman.common.logging.IDelegateFactory;
 import io.apiman.common.util.ReflectionUtils;
 import io.apiman.gateway.engine.DependsOnComponents;
 import io.apiman.gateway.engine.IApiRequestExecutor;
+import io.apiman.gateway.engine.IApiRequestPathParser;
 import io.apiman.gateway.engine.IComponent;
 import io.apiman.gateway.engine.IComponentRegistry;
 import io.apiman.gateway.engine.IConnectorFactory;
@@ -53,6 +54,7 @@ public class EngineImpl implements IEngine {
     private IPolicyFactory policyFactory;
     private IMetrics metrics;
     private IDelegateFactory logFactory;
+    private IApiRequestPathParser requestPathParser;
 
     /**
      * Constructor.
@@ -63,10 +65,12 @@ public class EngineImpl implements IEngine {
      * @param policyFactory the policy factory
      * @param metrics the metrics implementation
      * @param logFactory the logger factory
+     * @param pathParser the path parser
      */
     public EngineImpl(final IRegistry registry, final IPluginRegistry pluginRegistry,
             final IComponentRegistry componentRegistry, final IConnectorFactory connectorFactory,
-            final IPolicyFactory policyFactory, final IMetrics metrics, final IDelegateFactory logFactory) {
+            final IPolicyFactory policyFactory, final IMetrics metrics, final IDelegateFactory logFactory,
+            final IApiRequestPathParser pathParser) {
         setRegistry(registry);
         setPluginRegistry(pluginRegistry);
         setComponentRegistry(componentRegistry);
@@ -74,6 +78,7 @@ public class EngineImpl implements IEngine {
         setPolicyFactory(policyFactory);
         setMetrics(metrics);
         setLogFactory(logFactory);
+        setApiRequestPathParser(pathParser);
 
         policyFactory.setPluginRegistry(pluginRegistry);
         metrics.setComponentRegistry(componentRegistry);
@@ -81,6 +86,14 @@ public class EngineImpl implements IEngine {
         initialize(registry, pluginRegistry, componentRegistry, connectorFactory, policyFactory, metrics);
     }
 
+    public void setApiRequestPathParser(IApiRequestPathParser pathParser) {
+        this.requestPathParser = pathParser;
+    }
+
+    @Override
+    public IApiRequestPathParser getApiRequestPathParser() {
+        return requestPathParser;
+    }
 
     /**
      * @see io.apiman.gateway.engine.IEngine#getVersion()

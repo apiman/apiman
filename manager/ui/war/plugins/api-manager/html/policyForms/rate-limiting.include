@@ -8,6 +8,7 @@
       <option value="Client" apiman-i18n-key="rate-limiting.client-client">Client App</option>
       <option value="User" apiman-i18n-key="rate-limiting.user">User</option>
       <option value="Api" apiman-i18n-key="rate-limiting.api">API</option>
+      <option value="Ip" apiman-i18n-key="rate-limiting.ip">IP Address</option>
     </select>
     <span apiman-i18n-key="per">per</span>
     <select id="period" ng-model="config.period" apiman-select-picker="" data-field="period" class="selectpicker inline-line apiman-inline-form-dropdown" data-style="btn-default apiman-inline-form-dropdown" style="width: 100px" ng-disabled="isEntityDisabled()">

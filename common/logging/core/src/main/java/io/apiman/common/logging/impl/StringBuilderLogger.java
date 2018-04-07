@@ -24,7 +24,7 @@ import io.apiman.common.logging.IApimanLogger;
  */
 @SuppressWarnings("nls")
 public class StringBuilderLogger implements IApimanLogger {
-    
+
     private StringBuilder builder = new StringBuilder();
 
     /**
@@ -41,12 +41,22 @@ public class StringBuilderLogger implements IApimanLogger {
         append("INFO: " + message);
     }
 
+    @Override
+    public void info(String message, Object... args) {
+        append(String.format(message, args));
+    }
+
     /**
      * @see IApimanLogger#warn(java.lang.String)
      */
     @Override
     public void warn(String message) {
         append("WARN: " + message);
+    }
+
+    @Override
+    public void warn(String message, Object... args) {
+        append(String.format(message, args));
     }
 
     /**
@@ -57,12 +67,22 @@ public class StringBuilderLogger implements IApimanLogger {
         append("DEBUG: " + message);
     }
 
+    @Override
+    public void debug(String message, Object... args) {
+        append(String.format(message, args));
+    }
+
     /**
      * @see IApimanLogger#trace(java.lang.String)
      */
     @Override
     public void trace(String message) {
         append("TRACE: " + message);
+    }
+
+    @Override
+    public void trace(String message, Object... args) {
+        append(String.format(message, args));
     }
 
     /**
@@ -80,7 +100,12 @@ public class StringBuilderLogger implements IApimanLogger {
     public void error(String message, Throwable error) {
         append("ERROR: " + message);
     }
-    
+
+    @Override
+    public void error(Throwable error, String message, Object... args) {
+        append(String.format(message, args));
+    }
+
     /**
      * Append to the builder.
      */
@@ -88,14 +113,14 @@ public class StringBuilderLogger implements IApimanLogger {
         builder.append(message);
         builder.append("\n");
     }
-    
+
     /**
      * @return the log data
      */
     public String string() {
         return builder.toString();
     }
-    
+
     /**
      * Reset the builder to empty.
      */

@@ -33,7 +33,7 @@ public class Vertx3GatewayTestServerFactory implements IGatewayTestServerFactory
 
     @Override
     public IGatewayTestServer createGatewayTestServer() {
-        return new Vertx3GatewayTestServer();
+        return new Vertx3GatewayTestServer(false);
     }
 
 }

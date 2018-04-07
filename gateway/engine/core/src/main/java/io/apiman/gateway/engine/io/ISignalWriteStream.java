@@ -15,11 +15,19 @@
  */
 package io.apiman.gateway.engine.io;
 
+import io.apiman.gateway.engine.async.IAsyncHandler;
 
 /**
  * As {@link IWriteStream} but with {@link #abort()}.
- * 
+ *
  * @author Marc Savy <msavy@redhat.com>
  */
 public interface ISignalWriteStream extends IWriteStream, IAbortable {
+
+    default void drainHandler(IAsyncHandler<Void> drainHandler) {
+    }
+
+    default boolean isFull() {
+        return false;
+    }
 }

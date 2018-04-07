@@ -35,7 +35,6 @@ import java.util.Map;
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 public class VertxConfigDrivenEngineFactory extends ConfigDrivenEngineFactory {
-
     private Vertx vertx;
     private VertxEngineConfig vxConfig;
 
@@ -55,9 +54,10 @@ public class VertxConfigDrivenEngineFactory extends ConfigDrivenEngineFactory {
         return new VertxConfigDrivenComponentRegistry(pluginRegistry, vertx, vxConfig);
     }
 
+    // NB: We can't override static parent version of instantiate.
     @Override
     @SuppressWarnings("nls")
-    protected <T> T create(Class<T> type, Map<String, String> mapConfig) {
+    protected <T> T doInstantiate(Class<T> type, Map<String, String> mapConfig) {
         try {
             Constructor<T> constructor = type.getConstructor(Vertx.class, VertxEngineConfig.class, Map.class);
             return constructor.newInstance(vertx, vxConfig, mapConfig);

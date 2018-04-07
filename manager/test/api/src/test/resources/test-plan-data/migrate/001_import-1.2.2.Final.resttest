@@ -1573,7 +1573,7 @@ Content-Type: application/json
 }
 ----
 200
-Content-Type: text/plain
+Content-Type: text/plain;charset=UTF-8
 
 INFO: Migrating export data from old version 1.2.2.Final.
 INFO: Migrating User: "admin"

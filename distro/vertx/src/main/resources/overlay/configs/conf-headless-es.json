@@ -1,0 +1,276 @@
+{ // Example headless config with ES-based components (e.g. rate-limiting).
+  "variables": {
+    "apiman": {
+      "es": {
+        "protocol": "http",
+        "host": "localhost",
+        "port": 9200,
+        "username": null,
+        "password": null,
+        "timeout": 10000
+      }
+    }
+  },
+
+  "registry": {
+    "class": "io.apiman.gateway.engine.vertx.polling.URILoadingRegistry",
+    "config": {
+      // Path to your apiman JSON config; refer to apiman's documentation for format description.
+      // Supports: file, HTTP & HTTPS.
+      "configUri": "file:///path/to/my/json/config.json",
+      // For HTTP/HTTPS auth is supported: BASIC, OAUTH2, KEYCLOAKOAUTH2
+      // For more detail refer to the apiman documentation.
+      "auth": "NONE"
+    }
+  },
+
+  // Gateway error writer
+  // A "trace" version of the error writer - comment out/remove this to suppress stack traces
+  // in the JSON/XML payload returned by the gateway when an error occurs.
+  "writers": {
+    "error": {
+      "class": "io.apiman.gateway.engine.impl.TracePolicyErrorWriter",
+      "config": {}
+    }//,
+      // "policy-failure": {
+      //   "class": "",
+      //   "config": {}
+      // }
+  },
+
+  "encrypter": {
+    "class": "io.apiman.gateway.engine.impl.DefaultDataEncrypter",
+    "config": {}
+  },
+
+  "plugin-registry": {
+    "class": "io.apiman.gateway.platforms.vertx3.engine.VertxPluginRegistry",
+    "config": {}
+  },
+
+  "connector-factory": {
+    "class": "io.apiman.gateway.platforms.vertx3.connector.ConnectorFactory",
+    "config": {
+      // -----------------------------------------------
+      // SSL/TLS settings for the gateway connector(s).
+      // -----------------------------------------------
+      "tls": {
+        // Enable devMode for HTTPS connections (gateway trusts any certificate).
+        // This should *NOT* be used in production mode. *Use with great care.*
+        "devMode": true
+
+        // Whether self-signed certificates should be automatically trusted. *Use with great care.*
+        // "allowSelfSigned": false,
+
+        // Whether certificate host checks should be bypassed. *Use with great care.*
+        // "allowAnyHost": false,
+
+        // Trust store contains certificate(s) trusted by gateway.
+        // "trustStore": "/path/to/your/truststore.jks",
+        // "trustStorePassword": "abc123",
+
+        // Key store contains gateway's keys (including private components: keep it safe).
+        // "keyStore": "/path/to/your/keystore.jks",
+        // "keyStorePassword": "abc123",
+
+        // By default all keys can be used (will try all). If alias list provided, will only attempt to use listed keys.
+        // "keyAliases": "mykey,myotherkey",
+
+        // Allowed TLS/SSL protocols and ciphers suites as CSV. Availability will vary depending on your JVM impl.
+        // Uses JVM defaults depending if not explicitly provided.
+        // See: https://docs.oracle.com/javase/7/docs/technotes/guides/security/SunProviders.html
+        // You may wish to consider global JVM settings by modifying java.security
+        // "allowedProtocols": "TLSv1.2,TLSv1.1",
+        // "allowedCiphers": "TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA,...",
+        // "disallowedCiphers": "..."
+      }
+    }
+  },
+
+  "policy-factory": {
+    "class": "io.apiman.gateway.engine.policy.PolicyFactoryImpl",
+    "config": {}
+  },
+
+  "logger-factory": {
+    "class": "io.apiman.gateway.platforms.vertx3.logging.VertxLoggerDelegate",
+    "config": {}
+  },
+
+  // Elasticsearch Metrics Settings
+  "metrics": {
+    "class": "io.apiman.gateway.engine.es.ESMetrics",
+    "config": {
+      "client": {
+        "type": "jest",
+        "protocol": "${apiman.es.protocol}",
+        "host": "${apiman.es.host}",
+        "port": "${apiman.es.port}",
+        "initialize": true,
+        "username": "${apiman.es.username}",
+        "password": "${apiman.es.password}",
+        "timeout": "${apiman.es.timeout}"
+      }
+    }
+  },
+
+  "components": {
+    // Shared State Component Settings
+    "ISharedStateComponent": {
+      "class": "io.apiman.gateway.engine.es.ESSharedStateComponent",
+      "config": {
+        "client": {
+          "type": "jest",
+          "protocol": "${apiman.es.protocol}",
+          "host": "${apiman.es.host}",
+          "port": "${apiman.es.port}",
+          "initialize": true,
+          "username": "${apiman.es.username}",
+          "password": "${apiman.es.password}",
+          "timeout": "${apiman.es.timeout}"
+        }
+      }
+    },
+
+    // Rate Limiter Component Settings
+    "IRateLimiterComponent": {
+      "class": "io.apiman.gateway.engine.es.ESRateLimiterComponent",
+      "config": {
+        "client": {
+          "type": "jest",
+          "protocol": "${apiman.es.protocol}",
+          "host": "${apiman.es.host}",
+          "port": "${apiman.es.port}",
+          "initialize": true,
+          "username": "${apiman.es.username}",
+          "password": "${apiman.es.password}",
+          "timeout": "${apiman.es.timeout}"
+        }
+      }
+    },
+
+    // Cache Store Component Settings
+    "ICacheStoreComponent": {
+      "class": "io.apiman.gateway.engine.es.ESCacheStoreComponent",
+      "config": {
+        "client": {
+          "type": "jest",
+          "protocol": "${apiman.es.protocol}",
+          "host": "${apiman.es.host}",
+          "port": "${apiman.es.port}",
+          "initialize": true,
+          "username": "${apiman.es.username}",
+          "password": "${apiman.es.password}",
+          "timeout": "${apiman.es.timeout}"
+        }
+      }
+    },
+
+    // Execute Blocking Component
+    "IExecuteBlockingComponent": {
+      "class": "io.apiman.gateway.platforms.vertx3.components.ExecuteBlockingComponentImpl",
+      "config": {}
+    },
+
+    // JDBC Component Settings
+    "IJdbcComponent": {
+      "class": "io.apiman.gateway.platforms.vertx3.components.JdbcClientComponentImpl",
+      "config": {}
+    },
+
+    // LDAP Component Settings
+    "ILdapComponent": {
+      "class": "io.apiman.gateway.platforms.vertx3.components.LdapClientComponentImpl",
+      "config": {}
+    },
+
+    // HTTP Component Settings
+    "IHttpClientComponent": {
+      "class": "io.apiman.gateway.platforms.vertx3.components.HttpClientComponentImpl",
+      "config": {}
+    },
+
+    // Policy Failure Factory Component
+    "IPolicyFailureFactoryComponent": {
+      "class": "io.apiman.gateway.platforms.vertx3.components.PolicyFailureFactoryComponent",
+      "config": {}
+    },
+
+    // Buffer Factory Component
+    "IBufferFactoryComponent": {
+      "class": "io.apiman.gateway.platforms.vertx3.components.BufferFactoryComponentImpl",
+      "config": {}
+    },
+
+    // Periodic Component
+    "IPeriodicComponent": {
+        "class": "io.apiman.gateway.platforms.vertx3.components.PeriodicComponentImpl",
+        "config": {}
+    }
+  },
+
+  // Host-name to bind to for this machine.
+  "hostname": "localhost",
+
+  // You can force a particular endpoint to be reported here (e.g.
+  // if you have some clustered setup with exotic DNS setup)
+  //"publicEndpoint": "localhost",
+
+  // Verticle configuration
+  // Port - The port a given verticle listens on (where relevant)
+  // Count - Number of given verticle type launched, or "auto" for automatic.
+  "verticles": {
+    "http": {
+      "port": 8082,
+      "count": "auto"
+    },
+    // Configure the following SSL section to enable SSL/TLS.
+    "https": {
+      "port": 8443,
+      "count": 0
+    },
+    // The Gateway API; this will be the port to set in the UI.
+    // e.g. http://localhost:8081 or https://gateway.machine:8081
+    // Configure the following SSL section to enable SSL/TLS.
+    "api": {
+      "port": 8081,
+      "count": 1
+    }
+  },
+
+  // SSL configuration to the gateway's *front end* (i.e. client <-> gateway).
+  //  "ssl": {
+  //    "keystore": {
+  //      "path": "/the/keystore/path/here.jks",
+  //      "password": "password-here"
+  //    },
+  //    "truststore": {
+  //      "path": "/the/truststore/path/here.jks",
+  //      "password": "password-here"
+  //    }
+  //  },
+
+  // Gateway API Authentication. See documentation for further possibilities.
+  "auth": {
+    "type": "keycloak",
+    "config": {
+      "flowType": "PASSWORD",
+      "requiredRole": "realm:apipublisher",
+      // Paste and overwrite your Keycloak config here.
+      "realm": "apiman",
+      "realm-public-key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxyG61ohrfJQKNmDA/ePZtqZVpPXjwn3k3T+iWiTvMsxW2+WlnqIEmL5qZ09DMhBH9r50WZRO2gVoCb657Er9x0vfD6GNf/47XU2y33TX8axhP+hSwkv/VViaDlu4jQrfgPWz/FXMjWIZxg1xQS+nOBF2ScCRYWNQ/ZnUNnvrq8dGC2/AlyeYcgDUOdwlJuvgkGlF0QoVPQiRPurR3RwlG+BjL8JB3hbaAZhdJqwqApmGQbcpgLj2tODnlrZnEAp5cPPU/lgqCE1OOp78BAEiE91ZLPl/+D8qDHk+Maz0Io3bkeRZMXPpvtbL3qN+3GlF8Yz264HDSsTNrH+nd19tFQIDAQAB",
+      "auth-server-url": "http://localhost:8080/auth",
+      "ssl-required": "none",
+      "resource": "apiman-gateway-api",
+      // A limitation in the current OAuth2 implementation means a credentials section is required
+      // even if your client is not set to "confidential". Leave this dummy section if you're using non-confidential.
+      "credentials": {
+        "secret": "217b725d-7790-47a7-a3fc-5cf31f92a8db"
+      }
+      // End paste here
+    }
+  },
+
+  // When reporting an API's endpoint, prefer secure (i.e. https). You should probably change this after enabling HTTPS.
+  "preferSecure": false
+}

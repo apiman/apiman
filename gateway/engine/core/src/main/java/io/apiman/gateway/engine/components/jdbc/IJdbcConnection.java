@@ -20,7 +20,7 @@ import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import java.sql.Connection;
 
 /**
- * This is essentially an simple, async subset rendition of the standard SQL {@link Connection} interface.
+ * This is a simple, async subset rendition of the standard SQL {@link Connection} interface.
  *
  * Extending the {@link AutoCloseable} interface means we can use this with the
  * Java 7 try-catch-autoclose feature.

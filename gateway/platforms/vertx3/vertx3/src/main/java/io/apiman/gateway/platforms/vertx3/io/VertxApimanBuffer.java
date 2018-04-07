@@ -54,7 +54,7 @@ public class VertxApimanBuffer implements IApimanBuffer {
     }
 
     public VertxApimanBuffer(IApimanBuffer buffer) {
-        this.nativeBuffer = Buffer.buffer().appendBuffer((Buffer) buffer.getNativeBuffer());
+        this.nativeBuffer = Buffer.buffer(buffer.length()).appendBuffer((Buffer) buffer.getNativeBuffer());
     }
 
     @Override

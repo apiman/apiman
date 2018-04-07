@@ -22,13 +22,17 @@ import io.apiman.gateway.engine.beans.Api;
 import io.apiman.gateway.engine.beans.ApiContract;
 import io.apiman.gateway.engine.beans.Client;
 import io.apiman.gateway.engine.beans.Contract;
-import io.apiman.gateway.engine.beans.exceptions.InvalidContractException;
-import io.apiman.gateway.engine.beans.exceptions.PublishingException;
+import io.apiman.gateway.engine.beans.exceptions.ApiNotFoundException;
+import io.apiman.gateway.engine.beans.exceptions.ApiRetiredException;
+import io.apiman.gateway.engine.beans.exceptions.ClientNotFoundException;
+import io.apiman.gateway.engine.beans.exceptions.NoContractFoundException;
 import io.apiman.gateway.engine.beans.exceptions.RegistrationException;
 import io.apiman.gateway.engine.i18n.Messages;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 /**
  * An in-memory implementation of the registry.
@@ -37,8 +41,8 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class InMemoryRegistry implements IRegistry {
 
-    private Map<String, Object> map = new ConcurrentHashMap<>();
-    private Object mutex = new Object();
+    private final Map<String, Object> map = new ConcurrentHashMap<>();
+    private final Object mutex = new Object();
 
     /**
      * Constructor.
@@ -68,7 +72,7 @@ public class InMemoryRegistry implements IRegistry {
         synchronized (mutex) {
             Api removedApi = (Api) getMap().remove(apiIdx);
             if (removedApi == null) {
-                error = new PublishingException(Messages.i18n.format("InMemoryRegistry.ApiNotFound")); //$NON-NLS-1$
+                error = new ApiNotFoundException(Messages.i18n.format("InMemoryRegistry.ApiNotFound")); //$NON-NLS-1$
             }
         }
         if (error == null) {
@@ -89,7 +93,7 @@ public class InMemoryRegistry implements IRegistry {
             for (Contract contract : client.getContracts()) {
                 String apiIdx = getApiIndex(contract.getApiOrgId(), contract.getApiId(), contract.getApiVersion());
                 if (!getMap().containsKey(apiIdx)) {
-                    error = new RegistrationException(Messages.i18n.format("InMemoryRegistry.ApiNotFoundInOrg", //$NON-NLS-1$
+                    error = new ApiNotFoundException(Messages.i18n.format("InMemoryRegistry.ApiNotFoundInOrg", //$NON-NLS-1$
                             contract.getApiId(), contract.getApiOrgId()));
                     break;
                 }
@@ -122,7 +126,7 @@ public class InMemoryRegistry implements IRegistry {
             handler.handle(AsyncResultImpl.create(e, Void.class));
         }
     }
-    
+
     /**
      * @param client
      * @param silent
@@ -133,14 +137,14 @@ public class InMemoryRegistry implements IRegistry {
             Client oldClient = (Client) getMap().remove(clientIdx);
             if (oldClient == null) {
                 if (!silent) {
-                    throw new RegistrationException(Messages.i18n.format("InMemoryRegistry.ClientNotFound")); //$NON-NLS-1$
+                    throw new ClientNotFoundException(Messages.i18n.format("InMemoryRegistry.ClientNotFound")); //$NON-NLS-1$
                 }
             } else {
                 getMap().remove(oldClient.getApiKey());
             }
         }
     }
-    
+
     /**
      * @see io.apiman.gateway.engine.IRegistry#getClient(java.lang.String, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
@@ -150,18 +154,25 @@ public class InMemoryRegistry implements IRegistry {
         handler.handle(AsyncResultImpl.create(client));
     }
 
+    @Override
+    public void getClient(String organizationId, String clientId, String clientVersion, IAsyncResultHandler<Client> handler) {
+        String clientIdx = getClientIndex(organizationId, clientId, clientVersion);
+        Client client = getClientInternal(clientIdx);
+        handler.handle(AsyncResultImpl.create(client));
+    }
+
     /**
      * Gets the client and returns it.
      * @param apiKey
      */
-    protected Client getClientInternal(String apiKey) {
+    protected Client getClientInternal(String idx) {
         Client client;
         synchronized (mutex) {
-            client = (Client) getMap().get(apiKey);
+            client = (Client) getMap().get(idx);
         }
         return client;
     }
-    
+
     /**
      * @see io.apiman.gateway.engine.IRegistry#getContract(java.lang.String, java.lang.String, java.lang.String, java.lang.String, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
@@ -170,24 +181,24 @@ public class InMemoryRegistry implements IRegistry {
             IAsyncResultHandler<ApiContract> handler) {
         Client client = null;
         Api api = null;
-        
+
         String apiIdx = getApiIndex(apiOrganizationId, apiId, apiVersion);
         synchronized (mutex) {
             client = (Client) getMap().get(apiKey);
             api = (Api) getMap().get(apiIdx);
         }
         if (client == null) {
-            Exception error = new InvalidContractException(Messages.i18n.format("InMemoryRegistry.NoClientForAPIKey", apiKey)); //$NON-NLS-1$
+            Exception error = new ClientNotFoundException(Messages.i18n.format("InMemoryRegistry.NoClientForAPIKey", apiKey)); //$NON-NLS-1$
             handler.handle(AsyncResultImpl.create(error, ApiContract.class));
             return;
         }
         if (api == null) {
-            Exception error = new InvalidContractException(Messages.i18n.format("InMemoryRegistry.ApiWasRetired", //$NON-NLS-1$
+            Exception error = new ApiRetiredException(Messages.i18n.format("InMemoryRegistry.ApiWasRetired", //$NON-NLS-1$
                     apiId, apiOrganizationId));
             handler.handle(AsyncResultImpl.create(error, ApiContract.class));
             return;
         }
-        
+
         Contract matchedContract = null;
         for (Contract contract : client.getContracts()) {
             if (contract.matches(apiOrganizationId, apiId, apiVersion)) {
@@ -195,16 +206,88 @@ public class InMemoryRegistry implements IRegistry {
                 break;
             }
         }
-        
+
         if (matchedContract == null) {
-            Exception error = new InvalidContractException(Messages.i18n.format("InMemoryRegistry.NoContractFound", //$NON-NLS-1$
+            Exception error = new NoContractFoundException(Messages.i18n.format("InMemoryRegistry.NoContractFound", //$NON-NLS-1$
                     client.getClientId(), api.getApiId()));
             handler.handle(AsyncResultImpl.create(error, ApiContract.class));
             return;
         }
-        
+
         ApiContract contract = new ApiContract(api, client, matchedContract.getPlan(), matchedContract.getPolicies());
         handler.handle(AsyncResultImpl.create(contract));
+    }
+
+    @Override
+    public void listClients(String organizationId, int page, int pageSize, IAsyncResultHandler<List<String>> handler) {
+        // For now, ignore paging, but it's there for future. Would need to ensure stable ordering.
+        List<String> res = map.entrySet().stream()
+                .map(Map.Entry::getValue)
+                .filter(entity -> entity instanceof Client)
+                .map(entity -> (Client) entity)
+                .filter(client -> client.getOrganizationId().equals(organizationId))
+                .map(client -> client.getClientId())
+                .distinct()
+                .collect(Collectors.toList());
+        handler.handle(AsyncResultImpl.create(res));
+    }
+
+    @Override
+    public void listClientVersions(String organizationId, String clientId, int page, int pageSize, IAsyncResultHandler<List<String>> handler) {
+        // For now, ignore paging, but it's there for future. Would need to ensure stable ordering.
+        List<String> res = map.entrySet().stream()
+                .map(Map.Entry::getValue)
+                .filter(entity -> entity instanceof Client)
+                .map(entity -> (Client) entity)
+                .filter(client -> client.getOrganizationId().equals(organizationId) && client.getClientId().equals(clientId))
+                .map(client -> client.getVersion())
+                .distinct()
+                .collect(Collectors.toList());
+        handler.handle(AsyncResultImpl.create(res));
+    }
+
+    @Override
+    public void listApis(String organizationId, int page, int pageSize, IAsyncResultHandler<List<String>> handler) {
+        // For now, ignore paging, but it's there for future. Would need to ensure stable ordering.
+        List<String> res = map.entrySet().stream()
+                .map(Map.Entry::getValue)
+                .filter(entity -> entity instanceof Api)
+                .map(entity -> (Api) entity)
+                .filter(api -> api.getOrganizationId().equals(organizationId))
+                .map(api -> api.getApiId())
+                .distinct()
+                .collect(Collectors.toList());
+        handler.handle(AsyncResultImpl.create(res));
+    }
+
+    @Override
+    public void listApiVersions(String organizationId, String apiId, int page, int pageSize, IAsyncResultHandler<List<String>> handler) {
+        // For now, ignore paging, but it's there for future. Would need to ensure stable ordering.
+        List<String> res = map.entrySet().stream()
+                .map(Map.Entry::getValue)
+                .filter(entity -> entity instanceof Api)
+                .map(entity -> (Api) entity)
+                .filter(api -> api.getOrganizationId().equals(organizationId) && api.getApiId().equals(apiId))
+                .map(api -> api.getVersion())
+                .distinct()
+                .collect(Collectors.toList());
+        handler.handle(AsyncResultImpl.create(res));
+    }
+
+    @Override
+    public void listOrgs(IAsyncResultHandler<List<String>> handler) {
+        // TODO: We should track set of OrgId -> AtomicCounter if this API has meaningfully high usage.
+        List<String> res = map.entrySet().stream()
+                .map(Map.Entry::getValue)
+                .map(elem -> {
+                    if (elem instanceof Api) {
+                        return ((Api) elem).getOrganizationId();
+                    } else {
+                        return ((Client) elem).getOrganizationId();
+                    }
+                })
+                .collect(Collectors.toList());
+        handler.handle(AsyncResultImpl.create(res));
     }
 
     /**
@@ -262,13 +345,17 @@ public class InMemoryRegistry implements IRegistry {
      * @return a client key
      */
     private String getClientIndex(Client client) {
-        return "CLIENT::" + client.getOrganizationId() + "|" + client.getClientId() + "|" + client.getVersion(); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        return getClientIndex(client.getOrganizationId(), client.getClientId(), client.getVersion());
+    }
+
+    private String getClientIndex(String orgId, String clientId, String version) {
+        return "CLIENT::" + orgId + "|" + clientId + "|" + version; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
     /**
      * @return the map to use when storing stuff
      */
-    protected Map<String, Object> getMap() {
+    public Map<String, Object> getMap() {
         return map;
     }
 

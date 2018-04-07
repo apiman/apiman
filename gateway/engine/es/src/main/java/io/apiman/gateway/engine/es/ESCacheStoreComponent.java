@@ -73,7 +73,7 @@ public class ESCacheStoreComponent extends AbstractESComponent implements ICache
         ESCacheEntry entry = new ESCacheEntry();
         entry.setData(null);
         entry.setExpiresOn(System.currentTimeMillis() + (timeToLive * 1000));
-        entry.setHead(mapper.writeValueAsString(entry));
+        entry.setHead(mapper.writeValueAsString(jsonObject));
         Index index = new Index.Builder(entry).refresh(false).index(getIndexName())
                 .type("cacheEntry").id(cacheKey).build(); //$NON-NLS-1$
         try {
@@ -96,7 +96,7 @@ public class ESCacheStoreComponent extends AbstractESComponent implements ICache
             boolean finished = false;
             boolean aborted = false;
             @Override
-            public void abort() {
+            public void abort(Throwable t) {
                 finished = true;
                 aborted = false;
             }
@@ -200,7 +200,7 @@ public class ESCacheStoreComponent extends AbstractESComponent implements ICache
                         return finished;
                     }
                     @Override
-                    public void abort() {
+                    public void abort(Throwable t) {
                         finished = true;
                         aborted = true;
                     }

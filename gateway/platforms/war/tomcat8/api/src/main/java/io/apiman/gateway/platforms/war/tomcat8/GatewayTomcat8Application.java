@@ -18,6 +18,7 @@ package io.apiman.gateway.platforms.war.tomcat8;
 import io.apiman.gateway.api.rest.impl.ApiResourceImpl;
 import io.apiman.gateway.api.rest.impl.ClientResourceImpl;
 import io.apiman.gateway.api.rest.impl.GatewayApiApplication;
+import io.apiman.gateway.api.rest.impl.OrgResourceImpl;
 import io.apiman.gateway.api.rest.impl.SystemResourceImpl;
 import io.apiman.gateway.api.rest.impl.mappers.RestExceptionMapper;
 
@@ -42,7 +43,7 @@ public class GatewayTomcat8Application extends GatewayApiApplication {
         classes.add(SystemResourceImpl.class);
         classes.add(ApiResourceImpl.class);
         classes.add(ClientResourceImpl.class);
-
+        classes.add(OrgResourceImpl.class);
         classes.add(RestExceptionMapper.class);
     }
 

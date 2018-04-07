@@ -33,4 +33,12 @@ public class RequestAbortedException extends AbstractEngineException {
     public RequestAbortedException() {
     }
 
+    public RequestAbortedException(Throwable cause) {
+        super(cause);
+    }
+
+    public RequestAbortedException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
 }

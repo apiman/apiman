@@ -36,6 +36,7 @@ import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.engine.beans.Policy;
 import io.apiman.gateway.engine.beans.PolicyFailure;
+import io.apiman.gateway.engine.beans.exceptions.ApiNotFoundException;
 import io.apiman.gateway.engine.beans.exceptions.InvalidApiException;
 import io.apiman.gateway.engine.beans.exceptions.InvalidContractException;
 import io.apiman.gateway.engine.beans.exceptions.RequestAbortedException;
@@ -92,8 +93,8 @@ import org.apache.commons.lang3.text.StrSubstitutor;
 public class ApiRequestExecutorImpl implements IApiRequestExecutor {
 
     private static final long DEFAULT_MAX_PAYLOAD_BUFFER_SIZE = 5 * 1024 * 1024; // in bytes
-    
-    private static StrLookup LOOKUP = new ApimanStrLookup();
+
+    private static StrLookup<String> LOOKUP = new ApimanStrLookup();
     private static StrSubstitutor PROPERTY_SUBSTITUTOR = new StrSubstitutor(LOOKUP);
     static {
         PROPERTY_SUBSTITUTOR.setValueDelimiter(':');
@@ -126,6 +127,7 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
     private IMetrics metrics;
     private RequestMetric requestMetric = new RequestMetric();
 
+    @SuppressWarnings("rawtypes")
     private IPayloadIO payloadIO;
     // max payload buffer size (if not already set in the api itself)
     private long maxPayloadBufferSize = DEFAULT_MAX_PAYLOAD_BUFFER_SIZE;
@@ -140,6 +142,7 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
      * @param policyFactory the policy factory
      * @param connectorFactory the connector factory
      * @param metrics the metrics instance
+     * @param bufferFactory the buffer factory
      */
     public ApiRequestExecutorImpl(ApiRequest apiRequest,
             IAsyncResultHandler<IEngineResult> resultHandler, IRegistry registry, IPolicyContext context,
@@ -155,7 +158,7 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
         this.policyErrorHandler = createPolicyErrorHandler();
         this.metrics = metrics;
         this.bufferFactory = bufferFactory;
-        
+
         String mbs = System.getProperty(GatewayConfigProperties.MAX_PAYLOAD_BUFFER_SIZE);
         if (mbs != null) {
             maxPayloadBufferSize = new Long(mbs);
@@ -272,7 +275,7 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
             requestChain.policyFailureHandler(policyFailureHandler);
             requestChain.doApply(request);
         };
-        
+
         // The handler used when we need to parse the inbound request payload into
         // an object and make it available via the policy context.
         final IAsyncResultHandler<Object> payloadParserHandler = new IAsyncResultHandler<Object>() {
@@ -283,7 +286,7 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
                     // Store the parsed object in the policy context.
                     context.setAttribute(PolicyContextKeys.REQUEST_PAYLOAD, payload);
                     context.setAttribute(PolicyContextKeys.REQUEST_PAYLOAD_IO, payloadIO);
-                    
+
                     // Now replace the inbound stream handler with one that uses the payload IO
                     // object to re-marshall the (possibly modified) payload object to bytes
                     // and sends that (because the *real* inbound stream has already been consumed)
@@ -301,12 +304,12 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
                                     connectorStream.end();
                                 }
                             } catch (Exception e) {
-                                connectorStream.abort();
+                                connectorStream.abort(e);
                                 throw new RuntimeException(e);
                             }
                         }
                     });
-                    
+
                     // Load and executes the policies
                     loadPolicies(policiesLoadedHandler);
                 } else {
@@ -323,12 +326,13 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
                     (IAsyncResult<Api> apiResult) -> {
                         if (apiResult.isSuccess()) {
                             api = apiResult.getResult();
-                            
+
                             if (api == null) {
-                                Exception error = new InvalidApiException(Messages.i18n.format("EngineImpl.ApiNotFound")); //$NON-NLS-1$
+                                ApiNotFoundException error = new ApiNotFoundException(Messages.i18n.format("EngineImpl.ApiNotFound")); //$NON-NLS-1$
                                 resultHandler.handle(AsyncResultImpl.create(error, IEngineResult.class));
                             } else if (!api.isPublicAPI()) {
-                                Exception error = new InvalidApiException(Messages.i18n.format("EngineImpl.ApiNotPublic")); //$NON-NLS-1$
+                                InvalidApiException error = new InvalidApiException(Messages.i18n.format("EngineImpl.ApiNotPublic")); //$NON-NLS-1$
+                                error.setStatusCode(403); // Forbidden
                                 resultHandler.handle(AsyncResultImpl.create(error, IEngineResult.class));
                             } else {
                                 resolvePropertyReplacements(api);
@@ -338,7 +342,7 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
                                 policyImpls = new ArrayList<>(policies.size());
 
                                 // If the API is configured to be "stateful", we need to parse the
-                                // inbound request body into an object appropriate to the type and 
+                                // inbound request body into an object appropriate to the type and
                                 // format of the API.  This could be a SOAP message, an XML document,
                                 // or a JSON document
                                 if (api.isParsePayload()) {
@@ -383,7 +387,7 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
                     }
 
                     // If the API is configured to be "stateful", we need to parse the
-                    // inbound request body into an object appropriate to the type and 
+                    // inbound request body into an object appropriate to the type and
                     // format of the API.  This could be a SOAP message, an XML document,
                     // or a JSON document
                     if (api.isParsePayload()) {
@@ -414,29 +418,29 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
         // Strip out any content-length header from the request.  It will very likely
         // no longer be accurate.
         request.getHeaders().remove("Content-Length"); //$NON-NLS-1$
-        
+
         // Configure the api's max payload buffer size, if it's not already set.
         if (api.getMaxPayloadBufferSize() <= 0) {
             api.setMaxPayloadBufferSize(maxPayloadBufferSize);
         }
-        
+
         // Now "handle" the inbound request stream, which will cause bytes to be streamed
         // to the writeStream we provide (which will store the bytes in a buffer for parsing)
         final ByteBuffer buffer = new ByteBuffer(2048);
         inboundStreamHandler.handle(new ISignalWriteStream() {
             private boolean done = false;
-            
+
             @Override
-            public void abort() {
+            public void abort(Throwable t) {
                 done = true;
-                payloadResultHandler.handle(AsyncResultImpl.create(new Exception("Inbound request stream aborted."))); //$NON-NLS-1$
+                payloadResultHandler.handle(AsyncResultImpl.create(new RuntimeException("Inbound request stream aborted.", t))); //$NON-NLS-1$
             }
-            
+
             @Override
             public boolean isFinished() {
                 return done;
             }
-            
+
             @Override
             public void write(IApimanBuffer chunk) {
                 if (done) {
@@ -449,7 +453,7 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
                 }
                 buffer.append(chunk);
             }
-            
+
             @Override
             public void end() {
                 if (done) {
@@ -480,6 +484,31 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
                     } catch (Exception e) {
                         payloadResultHandler.handle(AsyncResultImpl.create(new Exception("Failed to parse inbound request payload.", e))); //$NON-NLS-1$
                     }
+                }
+            }
+
+            /**
+             * Because of the way the parsePayload code was written, it's possible
+             * with async for apiConnection to be +null+ when this is called.
+             *
+             * This is because parsePayload invokes inboundStreamHandler before
+             * policiesLoadedHandler has had a chance to return (and assigned apiConnection).
+             *
+             * To work around this we check whether apiConnection is null for #drainHandler
+             * and #isFull.
+             */
+            @Override
+            public void drainHandler(IAsyncHandler<Void> drainHandler) {
+                if (apiConnection != null)
+                    apiConnection.drainHandler(drainHandler);
+            }
+
+            @Override
+            public boolean isFull() {
+                if (apiConnection != null) {
+                    return apiConnection.isFull();
+                } else {
+                    return false;
                 }
             }
         });
@@ -686,7 +715,7 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
 
                 responseChain.doApply(apiResponse);
             } else {
-                // TODO handle the use case where there is an error!
+                resultHandler.handle(AsyncResultImpl.create(result.getError()));
             }
         };
     }
@@ -717,20 +746,30 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
              * @see io.apiman.gateway.engine.io.IAbortable#abort()
              */
             @Override
-            public void abort() {
+            public void abort(Throwable t) {
                 // If this is called, it means that something went wrong on the inbound
                 // side of things - so we need to make sure we abort and cleanup the
                 // api connector resources.  We'll also call handle() on the result
                 // handler so that the caller knows something went wrong.
                 streamFinished = true;
-                apiConnection.abort();
-                resultHandler.handle(AsyncResultImpl.<IEngineResult>create(new RequestAbortedException()));
+                apiConnection.abort(t);
+                resultHandler.handle(AsyncResultImpl.<IEngineResult>create(new RequestAbortedException(t)));
             }
 
 
             @Override
             public boolean isFinished() {
                 return streamFinished;
+            }
+
+            @Override
+            public void drainHandler(IAsyncHandler<Void> drainHandler) {
+                apiConnection.drainHandler(drainHandler);
+            }
+
+            @Override
+            public boolean isFull() {
+                return apiConnection.isFull();
             }
         });
     }

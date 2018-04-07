@@ -19,13 +19,13 @@ import java.io.Serializable;
 
 /**
  * Models a policy.
- * 
+ *
  * @author Marc Savy <msavy@redhat.com>
  */
 public class Policy implements Serializable {
 
     private static final long serialVersionUID = -5945877012261045491L;
-    
+
     private String policyJsonConfig; //config_info json str
     private String policyImpl; //Reference to policy (classname?) we're going to load?
 
@@ -99,4 +99,11 @@ public class Policy implements Serializable {
             return false;
         return true;
     }
+
+    @Override
+    @SuppressWarnings("nls")
+    public String toString() {
+        return "Policy [policyJsonConfig=" + policyJsonConfig + ", policyImpl=" + policyImpl + "]";
+    }
+
 }

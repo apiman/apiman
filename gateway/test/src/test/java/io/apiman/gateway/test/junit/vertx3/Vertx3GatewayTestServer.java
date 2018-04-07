@@ -15,16 +15,14 @@
  */
 package io.apiman.gateway.test.junit.vertx3;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import io.apiman.common.util.ReflectionUtils;
 import io.apiman.gateway.platforms.vertx3.common.config.VertxEngineConfig;
 import io.apiman.gateway.platforms.vertx3.verticles.InitVerticle;
 import io.apiman.test.common.echo.EchoServer;
 import io.apiman.test.common.resttest.IGatewayTestServer;
-import io.vertx.core.AsyncResult;
 import io.vertx.core.DeploymentOptions;
-import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
+import io.vertx.core.VertxOptions;
 import io.vertx.core.json.JsonObject;
 
 import java.io.File;
@@ -32,6 +30,8 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.util.concurrent.CountDownLatch;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * A Vert.x 3 version of the gateway test server
@@ -52,11 +52,10 @@ public class Vertx3GatewayTestServer implements IGatewayTestServer {
     private Resetter resetter;
     private Vertx vertx;
     private JsonObject vertxConf;
+    private boolean clustered;
 
-    /**
-     * Constructor.
-     */
-    public Vertx3GatewayTestServer() {
+    public Vertx3GatewayTestServer(boolean clustered) {
+        this.clustered = clustered;
     }
 
     @Override
@@ -92,9 +91,21 @@ public class Vertx3GatewayTestServer implements IGatewayTestServer {
     @Override
     public void start() {
         try {
-            resetter.reset();
-
-            vertx = Vertx.vertx();
+            if (clustered) {
+                CountDownLatch clusteredStart = new CountDownLatch(1);
+                Vertx.clusteredVertx(new VertxOptions().setClustered(clustered).setClusterHost("localhost").setBlockedThreadCheckInterval(9999999), result -> {
+                    if (result.succeeded()) {
+                        System.out.println("**** Clustered Vert.x started up successfully! ****");
+                        this.vertx = result.result();
+                        clusteredStart.countDown();
+                    } else {
+                        throw new RuntimeException(result.cause());
+                    }
+                });
+                clusteredStart.await();
+            } else {
+                vertx = Vertx.vertx(new VertxOptions().setBlockedThreadCheckInterval(9999999));
+            }
             echoServer.start();
 
             startLatch = new CountDownLatch(1);
@@ -103,14 +114,14 @@ public class Vertx3GatewayTestServer implements IGatewayTestServer {
             options.setConfig(vertxConf);
 
             vertx.deployVerticle(InitVerticle.class.getCanonicalName(),
-                    options, new Handler<AsyncResult<String>>() {
-
-                @Override
-                public void handle(AsyncResult<String> event) {
-                    System.out.println("Deployed init verticle!");
-                    startLatch.countDown();
-                }
-            });
+                    options, result -> {
+                        if (result.succeeded()) {
+                            System.out.println("*** Started Non-clustered Vert.x successfully ***");
+                        } else {
+                            throw new RuntimeException("InitVerticle deployment failed", result.cause());
+                        }
+                        startLatch.countDown();
+                    });
 
             startLatch.await();
         } catch (Exception e) {
@@ -125,13 +136,19 @@ public class Vertx3GatewayTestServer implements IGatewayTestServer {
             echoServer.stop();
 
             vertx.close(result -> {
+                if (result.succeeded()) {
+                    System.out.println("**** Shut Vert.x down successfully! ****");
+                } else {
+                  throw new RuntimeException(result.cause());
+                }
                 stopLatch.countDown();
             });
 
             stopLatch.await();
-            resetter.reset(); // Also reset at end to avoid leaving pollution in index.
         } catch (Exception e) {
             throw new RuntimeException(e);
+        } finally {
+            resetter.reset(); // Also reset at end to avoid leaving pollution in index.
         }
     }
 
@@ -151,5 +168,9 @@ public class Vertx3GatewayTestServer implements IGatewayTestServer {
                 throw new RuntimeException(f);
             }
         }
+    }
+
+    @Override
+    public void next(String endpoint) {
     }
 }

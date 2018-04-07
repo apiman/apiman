@@ -40,5 +40,6 @@ public class GatewayConfigProperties {
     public static final String FAILURE_WRITER_CLASS = "apiman-gateway.writers.policy-failure";
     public static final String ERROR_WRITER_CLASS = "apiman-gateway.writers.error";
     public static final String INITIALIZERS = "apiman-gateway.initializers";
+    public static final String REQUEST_PARSER_CLASS = "apiman-gateway.request-parser";
 
 }

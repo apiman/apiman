@@ -108,7 +108,16 @@ public class ApimanPathUtils {
     }
 
     /**
+     * <p>
      * Parsed API request path information.
+     * </p>
+     *
+     * <ul>
+     *   <li>Organisation ID: orgId</li>
+     *   <li>API ID: apiId</li>
+     *   <li>API Version: apiVersion</li>
+     *   <li>Resource: public String resource</li>
+     * </ul>
      */
     public static class ApiRequestPathInfo {
         public String orgId;

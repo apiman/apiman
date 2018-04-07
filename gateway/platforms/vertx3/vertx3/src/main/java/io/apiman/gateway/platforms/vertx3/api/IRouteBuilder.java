@@ -17,6 +17,7 @@ package io.apiman.gateway.platforms.vertx3.api;
 
 import io.apiman.common.util.MediaType;
 import io.apiman.common.util.SimpleStringUtils;
+import io.apiman.gateway.engine.beans.exceptions.IStatusCode;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.http.HttpHeaders;
 import io.vertx.core.http.HttpServerResponse;
@@ -45,20 +46,23 @@ public interface IRouteBuilder {
         return "/" + (path.length() == 0 ? getPath() : getPath() + "/" + path);
     }
 
-    default <T extends Throwable> void error(RoutingContext context, HttpResponseStatus code, String message, T object) {
-        HttpServerResponse response = context.response().setStatusCode(code.code());
+    default void error(RoutingContext context, Throwable error) {
+        HttpServerResponse response = context.response();
+
         response.putHeader("X-API-Gateway-Error", "true");
 
-        if (message == null) {
-            response.setStatusMessage(code.reasonPhrase());
+        if (error instanceof IStatusCode) {
+            response.setStatusCode(((IStatusCode)error).getStatusCode());
+            response.setStatusMessage(error.getMessage());
         } else {
-            response.setStatusMessage(message);
+            response.setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
+            response.setStatusMessage(error.getMessage() != null ? error.getMessage() : HttpResponseStatus.INTERNAL_SERVER_ERROR.reasonPhrase());
         }
 
-        if (object != null) {
+        if (error != null) {
             JsonObject errorResponse = new JsonObject()
-                    .put("errorType", object.getClass().getSimpleName())
-                    .put("message", object.getMessage());
+                    .put("errorType", error.getClass().getSimpleName())
+                    .put("message", error.getMessage());
 
             response.setChunked(true)
                 .putHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)

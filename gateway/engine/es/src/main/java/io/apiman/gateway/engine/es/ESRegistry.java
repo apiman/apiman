@@ -15,6 +15,7 @@
  */
 package io.apiman.gateway.engine.es;
 
+import io.apiman.common.es.util.ESUtils;
 import io.apiman.gateway.engine.IRegistry;
 import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
@@ -22,7 +23,10 @@ import io.apiman.gateway.engine.beans.Api;
 import io.apiman.gateway.engine.beans.ApiContract;
 import io.apiman.gateway.engine.beans.Client;
 import io.apiman.gateway.engine.beans.Contract;
-import io.apiman.gateway.engine.beans.exceptions.InvalidContractException;
+import io.apiman.gateway.engine.beans.exceptions.ApiNotFoundException;
+import io.apiman.gateway.engine.beans.exceptions.ApiRetiredException;
+import io.apiman.gateway.engine.beans.exceptions.ClientNotFoundException;
+import io.apiman.gateway.engine.beans.exceptions.NoContractFoundException;
 import io.apiman.gateway.engine.beans.exceptions.PublishingException;
 import io.apiman.gateway.engine.beans.exceptions.RegistrationException;
 import io.apiman.gateway.engine.es.i18n.Messages;
@@ -33,11 +37,15 @@ import io.searchbox.core.Index;
 import io.searchbox.core.Search;
 import io.searchbox.core.SearchResult;
 import io.searchbox.core.SearchResult.Hit;
+import io.searchbox.core.search.aggregation.MetricAggregation;
+import io.searchbox.core.search.aggregation.TermsAggregation;
 import io.searchbox.params.Parameters;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * An implementation of the Registry that uses elasticsearch as a storage
@@ -91,10 +99,10 @@ public class ESRegistry extends AbstractESComponent implements IRegistry {
             if (result.isSucceeded()) {
                 handler.handle(AsyncResultImpl.create((Void) null));
             } else {
-                handler.handle(AsyncResultImpl.create(new PublishingException(Messages.i18n.format("ESRegistry.ApiNotFound")), Void.class)); //$NON-NLS-1$
+                handler.handle(AsyncResultImpl.create(new ApiNotFoundException(Messages.i18n.format("ESRegistry.ApiNotFound")))); //$NON-NLS-1$
             }
         } catch (IOException e) {
-            handler.handle(AsyncResultImpl.create(new PublishingException(Messages.i18n.format("ESRegistry.ErrorRetiringApi"), e), Void.class)); //$NON-NLS-1$
+            handler.handle(AsyncResultImpl.create(new PublishingException(Messages.i18n.format("ESRegistry.ErrorRetiringApi"), e))); //$NON-NLS-1$
         }
     }
 
@@ -106,22 +114,26 @@ public class ESRegistry extends AbstractESComponent implements IRegistry {
         try {
             // Validate the client and populate the api map with apis found during validation.
             validateClient(client);
-            
+
             String id = getClientId(client);
             Index index = new Index.Builder(client)
-                    .refresh(false).index(getIndexName())
+                    .refresh(false)
+                    .index(getIndexName())
                     .setParameter(Parameters.OP_TYPE, "index") //$NON-NLS-1$
-                    .type("client").id(id).build(); //$NON-NLS-1$
+                    .type("client") //$NON-NLS-1$
+                    .id(id)
+                    .build();
             JestResult result = getClient().execute(index);
             if (!result.isSucceeded()) {
                 throw new IOException(result.getErrorMessage());
-            } 
-            handler.handle(AsyncResultImpl.create((Void) null));
+            } else {
+                handler.handle(AsyncResultImpl.create((Void) null));
+            }
         } catch (IOException e) {
             handler.handle(AsyncResultImpl.create(
                     new RegistrationException(Messages.i18n.format("ESRegistry.ErrorRegisteringClient"), e),  //$NON-NLS-1$
                     Void.class));
-        } catch (RegistrationException re) {
+        } catch (RuntimeException re) {
             handler.handle(AsyncResultImpl.create(re, Void.class));
         }
     }
@@ -133,7 +145,7 @@ public class ESRegistry extends AbstractESComponent implements IRegistry {
     private void validateClient(Client client) throws RegistrationException {
         Set<Contract> contracts = client.getContracts();
         if (contracts.isEmpty()) {
-            throw new RegistrationException(Messages.i18n.format("ESRegistry.NoContracts")); //$NON-NLS-1$
+            throw new NoContractFoundException(Messages.i18n.format("ESRegistry.NoContracts")); //$NON-NLS-1$
         }
         for (Contract contract : contracts) {
             validateContract(contract);
@@ -156,7 +168,7 @@ public class ESRegistry extends AbstractESComponent implements IRegistry {
             if (!result.isSucceeded()) {
                 String apiId = contract.getApiId();
                 String orgId = contract.getApiOrgId();
-                throw new RegistrationException(Messages.i18n.format("ESRegistry.ApiNotFoundInOrg", apiId, orgId));  //$NON-NLS-1$
+                throw new ApiNotFoundException(Messages.i18n.format("ESRegistry.ApiNotFoundInOrg", apiId, orgId));  //$NON-NLS-1$
             }
         } catch (IOException e) {
             throw new RegistrationException(Messages.i18n.format("ESRegistry.ErrorValidatingClient"), e); //$NON-NLS-1$
@@ -168,19 +180,21 @@ public class ESRegistry extends AbstractESComponent implements IRegistry {
      */
     @Override
     public void unregisterClient(final Client client, final IAsyncResultHandler<Void> handler) {
-        final Client lclient = lookupClient(client.getOrganizationId(), client.getClientId(), client.getVersion());
-        final String id = getClientId(lclient);
-
         try {
+            final Client lclient = lookupClient(client.getOrganizationId(), client.getClientId(), client.getVersion());
+            final String id = getClientId(lclient);
+
             Delete delete = new Delete.Builder(id).index(getIndexName()).type("client").build(); //$NON-NLS-1$
             JestResult result = getClient().execute(delete);
             if (result.isSucceeded()) {
                 handler.handle(AsyncResultImpl.create((Void) null));
             } else {
-                handler.handle(AsyncResultImpl.create(new PublishingException(Messages.i18n.format("ESRegistry.ClientNotFound")), Void.class)); //$NON-NLS-1$
+                handler.handle(AsyncResultImpl.create(new ClientNotFoundException(Messages.i18n.format("ESRegistry.ClientNotFound")), Void.class)); //$NON-NLS-1$
             }
         } catch (IOException e) {
             handler.handle(AsyncResultImpl.create(new PublishingException(Messages.i18n.format("ESRegistry.ErrorUnregisteringClient"), e), Void.class)); //$NON-NLS-1$
+        } catch (RuntimeException e) {
+            handler.handle(AsyncResultImpl.create(e));
         }
     }
 
@@ -190,37 +204,44 @@ public class ESRegistry extends AbstractESComponent implements IRegistry {
      * @param clientId
      * @param version
      */
+    @SuppressWarnings("nls") // Do beans need escaping or will that be done 'automatically'. Test it. Strings do, but probably only quotes?
     private Client lookupClient(String orgId, String clientId, String version) {
-        String query = "{" + 
-                "  \"query\": {" + 
-                "    \"filtered\": { " + 
-                "      \"filter\": {" + 
-                "        \"and\" : [" + 
-                "          {" + 
-                "            \"term\": { \"organizationId\": \"" + orgId + "\" }" + 
-                "          }," + 
-                "          {" + 
-                "            \"term\": { \"clientId\": \"" + clientId + "\" }" + 
-                "          }," + 
-                "          {" + 
-                "            \"term\": { \"version\": \"" + version + "\" }" + 
-                "          }" + 
-                "        ]" + 
-                "      }" + 
-                "    }" + 
-                "  }" + 
+        String query = "{" +
+                "  \"query\": {" +
+                "    \"filtered\": { " +
+                "      \"filter\": {" +
+                "        \"and\" : [" +
+                "          {" +
+                "            \"term\": { \"organizationId\": ? }" + // orgId
+                "          }," +
+                "          {" +
+                "            \"term\": { \"clientId\": ? }" + // clientId
+                "          }," +
+                "          {" +
+                "            \"term\": { \"version\": ? }" + // version
+                "          }" +
+                "        ]" +
+                "      }" +
+                "    }" +
+                "  }" +
                 "}";
+        String escaped = ESUtils.queryWithEscapedArgs(query, orgId, clientId, version);
         try {
-            Search search = new Search.Builder(query).addIndex(getIndexName())
-                    .addType("client").build();
+            Search search = new Search.Builder(escaped)
+                    .addIndex(getIndexName())
+                    .addType("client")
+                    .build();
             SearchResult response = getClient().execute(search);
+            if (!response.isSucceeded()) {
+                throw new RuntimeException(response.getErrorMessage());
+            }
             if (response.getTotal() < 1) {
                 throw new IOException();
             }
             Hit<Client,Void> hit = response.getFirstHit(Client.class);
             return hit.source;
         } catch (IOException e) {
-            throw new RegistrationException(Messages.i18n.format("ESRegistry.ClientNotFound"), e);  //$NON-NLS-1$
+            throw new ClientNotFoundException(Messages.i18n.format("ESRegistry.ClientNotFound"), e);  //$NON-NLS-1$
         }
     }
 
@@ -236,6 +257,17 @@ public class ESRegistry extends AbstractESComponent implements IRegistry {
             handler.handle(AsyncResultImpl.create(api));
         } catch (IOException e) {
             handler.handle(AsyncResultImpl.create(e, Api.class));
+        }
+    }
+
+    @Override
+    public void getClient(String organizationId, String clientId, String clientVersion,
+            IAsyncResultHandler<Client> handler) {
+        try {
+            Client client = lookupClient(organizationId, clientId, clientVersion);
+            handler.handle(AsyncResultImpl.create(client));
+        } catch (ClientNotFoundException e) {
+            handler.handle(AsyncResultImpl.create(e, Client.class));
         }
     }
 
@@ -284,7 +316,7 @@ public class ESRegistry extends AbstractESComponent implements IRegistry {
             return null;
         }
     }
-    
+
     /**
      * @see io.apiman.gateway.engine.IRegistry#getContract(java.lang.String, java.lang.String, java.lang.String, java.lang.String, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
@@ -297,17 +329,17 @@ public class ESRegistry extends AbstractESComponent implements IRegistry {
             Api api = getApi(getApiId(apiOrganizationId, apiId, apiVersion));
 
             if (client == null) {
-                Exception error = new InvalidContractException(Messages.i18n.format("ESRegistry.NoClientForAPIKey", apiKey)); //$NON-NLS-1$
+                Exception error = new ClientNotFoundException(Messages.i18n.format("ESRegistry.NoClientForAPIKey", apiKey)); //$NON-NLS-1$
                 handler.handle(AsyncResultImpl.create(error, ApiContract.class));
                 return;
             }
             if (api == null) {
-                Exception error = new InvalidContractException(Messages.i18n.format("ESRegistry.ApiWasRetired", //$NON-NLS-1$
+                Exception error = new ApiRetiredException(Messages.i18n.format("ESRegistry.ApiWasRetired", //$NON-NLS-1$
                         apiId, apiOrganizationId));
                 handler.handle(AsyncResultImpl.create(error, ApiContract.class));
                 return;
             }
-            
+
             Contract matchedContract = null;
             for (Contract contract : client.getContracts()) {
                 if (contract.matches(apiOrganizationId, apiId, apiVersion)) {
@@ -315,20 +347,254 @@ public class ESRegistry extends AbstractESComponent implements IRegistry {
                     break;
                 }
             }
-            
+
             if (matchedContract == null) {
-                Exception error = new InvalidContractException(Messages.i18n.format("ESRegistry.NoContractFound", //$NON-NLS-1$
+                Exception error = new NoContractFoundException(Messages.i18n.format("ESRegistry.NoContractFound", //$NON-NLS-1$
                         client.getClientId(), api.getApiId()));
                 handler.handle(AsyncResultImpl.create(error, ApiContract.class));
                 return;
             }
-            
+
             ApiContract contract = new ApiContract(api, client, matchedContract.getPlan(), matchedContract.getPolicies());
             handler.handle(AsyncResultImpl.create(contract));
         } catch (Exception e) {
             handler.handle(AsyncResultImpl.create(e, ApiContract.class));
         }
 
+    }
+
+    @Override
+    @SuppressWarnings("nls")
+    public void listClients(String organizationId, int page, int pageSize, IAsyncResultHandler<List<String>> handler) {
+        try {
+            String query =
+                    "{\n" +
+                    "  \"query\": {\n" +
+                    "        \"filtered\": {\n" +
+                    "           \"query\": {\n" +
+                    "                \"match_all\": {}\n" +
+                    "           },\n" +
+                    "           \"filter\": {\n" +
+                    "               \"term\": {\n" +
+                    "                  \"organizationId\": ?\n" + // organizationId
+                    "               }\n" +
+                    "           }\n" +
+                    "        }\n" +
+                    "    },\n" +
+                    "    \"aggs\" : {\n" +
+                    "        \"clients\" : {\n" +
+                    "            \"terms\" : { \"field\" : \"clientId\" }\n" + // Only records with a clientId field
+                    "        }\n" +
+                    "    }\n" +
+                    "}";
+            String escaped = ESUtils.queryWithEscapedArgs(query, organizationId);
+            Search search = new Search.Builder(escaped)
+                    .addIndex(getIndexName())
+                    .setParameter(Parameters.SIZE, 0)
+                    .build();
+            SearchResult response = getClient().execute(search);
+            // Aggregations section
+            MetricAggregation aggregation = response.getAggregations();
+            // Look at the terms subsection
+            TermsAggregation terms = aggregation.getTermsAggregation("clients");
+            // Grab only the name of each aggregation (we don't care about count [for now]).
+            List<String> results = terms.getBuckets().stream()
+                    .map(TermsAggregation.Entry::getKey)
+                    .collect(Collectors.toList());
+            handler.handle(AsyncResultImpl.create(results));
+        } catch (IOException e) {
+            handler.handle(AsyncResultImpl.create(e));
+        }
+    }
+
+    @SuppressWarnings("nls")
+    @Override
+    public void listApis(String organizationId, int page, int pageSize, IAsyncResultHandler<List<String>> handler) {
+        try {
+            String query =
+                    "{\n" +
+                    "  \"query\": {\n" +
+                    "        \"filtered\": {\n" +
+                    "           \"query\": {\n" +
+                    "                \"match_all\": {}\n" +
+                    "           },\n" +
+                    "           \"filter\": {\n" +
+                    "               \"term\": {\n" +
+                    "                  \"organizationId\": ?\n" + // organizationId
+                    "               }\n" +
+                    "           }\n" +
+                    "        }\n" +
+                    "    },\n" +
+                    "    \"aggs\" : {\n" +
+                    "        \"apis\" : {\n" +
+                    "            \"terms\" : { \"field\" : \"apiId\" }\n" + // Show only records containing an API ID field.
+                    "        }\n" +
+                    "    }\n" +
+                    "}";
+            String escaped = ESUtils.queryWithEscapedArgs(query, organizationId);
+            Search search = new Search.Builder(escaped)
+                    .addIndex(getIndexName())
+                    .setParameter(Parameters.SIZE, 0)
+                    .build();
+            SearchResult response = getClient().execute(search);
+            // Aggregations section
+            MetricAggregation aggregation = response.getAggregations();
+            // Look at the terms subsection
+            TermsAggregation terms = aggregation.getTermsAggregation("apis");
+            // Grab only the name of each aggregation (we don't care about count [for now]).
+            List<String> results = terms.getBuckets().stream()
+                    .map(TermsAggregation.Entry::getKey)
+                    .collect(Collectors.toList());
+            handler.handle(AsyncResultImpl.create(results));
+        } catch (IOException e) {
+            handler.handle(AsyncResultImpl.create(e));
+        }
+    }
+
+    @Override
+    @SuppressWarnings("nls")
+    public void listOrgs(IAsyncResultHandler<List<String>> handler) {
+        try {
+            String query =
+                    "{\n" +
+                    "    \"aggs\" : {\n" +
+                    "        \"all_orgs\" : {\n" +
+                    "            \"terms\" : { \"field\" : \"organizationId\" }\n" + // i.e. only records containing an orgId field.
+                    "        }\n" +
+                    "    }\n" +
+                    "}";
+            Search search = new Search.Builder(query)
+                    .addIndex(getIndexName())
+                    .setParameter(Parameters.SIZE, 0)
+                    .build();
+            SearchResult response = getClient().execute(search);
+            // Aggregations section
+            MetricAggregation aggregation = response.getAggregations();
+            // Look at the terms subsection
+            TermsAggregation terms = aggregation.getTermsAggregation("all_orgs");
+            // Grab only the name of each aggregation (we don't care about count
+            List<String> results = terms.getBuckets().stream()
+                    .map(TermsAggregation.Entry::getKey)
+                    .collect(Collectors.toList());
+            handler.handle(AsyncResultImpl.create(results));
+        } catch (IOException e) {
+            handler.handle(AsyncResultImpl.create(e));
+        }
+    }
+
+    @Override
+    @SuppressWarnings("nls")
+    public void listClientVersions(String organizationId, String clientId, int page, int pageSize, IAsyncResultHandler<List<String>> handler) {
+        try {
+            String query =
+                    "{\n" +
+                    "  \"query\": {\n" +
+                    "    \"filtered\": {\n" +
+                    "      \"query\": {\n" +
+                    "        \"match_all\": {}\n" +
+                    "      },\n" +
+                    "      \"filter\": {\n" +
+                    "        \"bool\": {\n" +
+                    "          \"must\": [\n" +
+                    "            {\n" +
+                    "              \"term\": {\n" +
+                    "                \"organizationId\": ? \n" + // organizationId
+                    "              }\n" +
+                    "            },\n" +
+                    "            {\n" +
+                    "              \"term\": {\n" +
+                    "                \"clientId\": ? \n" + // clientId
+                    "              }\n" +
+                    "            }\n" +
+                    "          ]\n" +
+                    "        }\n" +
+                    "      }\n" +
+                    "    }\n" +
+                    "  },\n" +
+                    "  \"aggs\": {\n" +
+                    "    \"client_versions\": {\n" +
+                    "      \"terms\": {\n" +
+                    "        \"field\": \"version\"\n" +
+                    "      }\n" +
+                    "    }\n" +
+                    "  }\n" +
+                    "}";
+            String escaped = ESUtils.queryWithEscapedArgs(query, organizationId, clientId);
+            Search search = new Search.Builder(escaped)
+                    .addIndex(getIndexName())
+                    .setParameter(Parameters.SIZE, 0)
+                    .build();
+            SearchResult response = getClient().execute(search);
+            // Aggregations section
+            MetricAggregation aggregation = response.getAggregations();
+            // Look at the terms subsection
+            TermsAggregation terms = aggregation.getTermsAggregation("client_versions");
+            // Grab only the name of each aggregation
+            List<String> results = terms.getBuckets().stream()
+                    .map(TermsAggregation.Entry::getKey)
+                    .collect(Collectors.toList());
+            handler.handle(AsyncResultImpl.create(results));
+        } catch (IOException e) {
+            handler.handle(AsyncResultImpl.create(e));
+        }
+    }
+
+    @Override
+    @SuppressWarnings("nls")
+    public void listApiVersions(String organizationId, String apiId, int page, int pageSize,
+                                IAsyncResultHandler<List<String>> handler) {
+        try {
+            String query =
+                    "{\n" +
+                    "  \"query\": {\n" +
+                    "    \"filtered\": {\n" +
+                    "      \"query\": {\n" +
+                    "        \"match_all\": {}\n" +
+                    "      },\n" +
+                    "      \"filter\": {\n" +
+                    "        \"bool\": {\n" +
+                    "          \"must\": [\n" +
+                    "            {\n" +
+                    "              \"term\": {\n" +
+                    "                \"organizationId\": ? \n" + // organizationId
+                    "              }\n" +
+                    "            },\n" +
+                    "            {\n" +
+                    "              \"term\": {\n" +
+                    "                \"apiId\": ? \n" + // apiId
+                    "              }\n" +
+                    "            }\n" +
+                    "          ]\n" +
+                    "        }\n" +
+                    "      }\n" +
+                    "    }\n" +
+                    "  },\n" +
+                    "  \"aggs\": {\n" +
+                    "    \"api_versions\": {\n" +
+                    "      \"terms\": {\n" +
+                    "        \"field\": \"version\"\n" +
+                    "      }\n" +
+                    "    }\n" +
+                    "  }\n" +
+                    "}";
+            String escaped = ESUtils.queryWithEscapedArgs(query, organizationId, apiId);
+            Search search = new Search.Builder(escaped)
+                    .addIndex(getIndexName())
+                    .setParameter(Parameters.SIZE, 0)
+                    .build();
+            SearchResult response = getClient().execute(search);
+            // Aggregations section
+            MetricAggregation aggregation = response.getAggregations();
+            // Look at the terms subsection
+            TermsAggregation terms = aggregation.getTermsAggregation("api_versions");
+            // Grab only the name of each aggregation
+            List<String> results = terms.getBuckets().stream()
+                    .map(TermsAggregation.Entry::getKey)
+                    .collect(Collectors.toList());
+            handler.handle(AsyncResultImpl.create(results));
+        } catch (IOException e) {
+            handler.handle(AsyncResultImpl.create(e));
+        }
     }
 
     /**
@@ -357,9 +623,9 @@ public class ESRegistry extends AbstractESComponent implements IRegistry {
      * @return a api id
      */
     protected String getApiId(String orgId, String apiId, String version) {
-        return orgId + ":" + apiId + ":" + version; //$NON-NLS-1$ //$NON-NLS-2$
+        return ESUtils.escape(orgId + ":" + apiId + ":" + version); //$NON-NLS-1$ //$NON-NLS-2$
     }
-    
+
     /**
      * Generates a valid document ID for the client - used to index the client in ES.
      * @param client

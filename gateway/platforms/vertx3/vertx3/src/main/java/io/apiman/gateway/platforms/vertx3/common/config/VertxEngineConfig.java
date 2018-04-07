@@ -16,10 +16,12 @@
 package io.apiman.gateway.platforms.vertx3.common.config;
 
 import io.apiman.common.logging.IDelegateFactory;
+import io.apiman.common.util.ApimanStrLookup;
 import io.apiman.common.util.SimpleStringUtils;
 import io.apiman.common.util.crypt.IDataEncrypter;
 import io.apiman.gateway.engine.EngineConfigTuple;
 import io.apiman.gateway.engine.GatewayConfigProperties;
+import io.apiman.gateway.engine.IApiRequestPathParser;
 import io.apiman.gateway.engine.IComponent;
 import io.apiman.gateway.engine.IConnectorFactory;
 import io.apiman.gateway.engine.IEngineConfig;
@@ -32,12 +34,14 @@ import io.apiman.gateway.engine.IRegistry;
 import io.apiman.gateway.engine.impl.DefaultDataEncrypter;
 import io.apiman.gateway.engine.impl.DefaultPolicyErrorWriter;
 import io.apiman.gateway.engine.impl.DefaultPolicyFailureWriter;
+import io.apiman.gateway.engine.impl.DefaultRequestPathParser;
 import io.apiman.gateway.engine.policy.IPolicyFactory;
 import io.apiman.gateway.engine.policy.PolicyFactoryImpl;
 import io.apiman.gateway.platforms.vertx3.common.verticles.VerticleType;
 import io.apiman.gateway.platforms.vertx3.connector.ConnectorFactory;
 import io.apiman.gateway.platforms.vertx3.engine.VertxPluginRegistry;
 import io.apiman.gateway.platforms.vertx3.i18n.Messages;
+import io.apiman.gateway.platforms.vertx3.logging.VertxLoggerDelegate;
 import io.vertx.core.json.JsonObject;
 
 import java.util.AbstractMap;
@@ -50,6 +54,7 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.text.StrSubstitutor;
 
 
 /**
@@ -61,17 +66,16 @@ import org.apache.commons.lang3.StringUtils;
 @SuppressWarnings("nls")
 public class VertxEngineConfig implements IEngineConfig {
     private static final String VERTICLES = "verticles";
+    private static final String VERTICLE_HOST = "host";
     private static final String VERTICLE_PORT = "port";
     private static final String VERTICLE_COUNT = "count";
 
     private static final String GATEWAY_HOSTNAME = "hostname";
-    private static final String GATEWAY_ENDPOINT = "endpoint";
+    private static final String GATEWAY_PUBLIC_ENDPOINT = "publicEndpoint";
     private static final String GATEWAY_PREFER_SECURE = "preferSecure";
 
     private static final String API_AUTH = "auth";
     private static final String API_PASSWORD = "password";
-    private static final String API_REQUIRED = "required";
-    private static final String API_REALM = "realm";
 
     private static final String GATEWAY_REGISTRY_PREFIX = "registry";
     private static final String GATEWAY_ENCRYPTER_PREFIX = "encrypter";
@@ -80,6 +84,7 @@ public class VertxEngineConfig implements IEngineConfig {
     private static final String GATEWAY_POLICY_FACTORY_PREFIX = "policy-factory";
     private static final String GATEWAY_METRICS_PREFIX = "metrics";
     private static final String GATEWAY_COMPONENT_PREFIX = "components";
+    private static final String GATEWAY_REQUEST_PARSER_PREFIX = "request-parser";
 
     private static final String GATEWAY_CONFIG = "config";
     private static final String GATEWAY_CLASS = "class";
@@ -88,12 +93,13 @@ public class VertxEngineConfig implements IEngineConfig {
     private static final String SSL_TRUSTSTORE = "truststore";
     private static final String SSL_KEYSTORE = "keystore";
     private static final String SSL_PATH = "path";
+    private static final String VARIABLES = "variables";
 
     private JsonObject config;
-    private HashMap<String, String> basicAuthMap = new HashMap<>();
 
     public VertxEngineConfig(JsonObject config) {
         this.config = config;
+        substituteLeafVars(config);
     }
 
     public JsonObject getConfig() {
@@ -154,6 +160,18 @@ public class VertxEngineConfig implements IEngineConfig {
         return getConfig(config, GATEWAY_POLICY_FACTORY_PREFIX);
     }
 
+
+    @Override
+    public Class<? extends IApiRequestPathParser> getApiRequestPathParserClass(IPluginRegistry pluginRegistry) {
+        return loadConfigClass(getClassname(config, GATEWAY_REQUEST_PARSER_PREFIX),
+                IApiRequestPathParser.class, DefaultRequestPathParser.class);
+    }
+
+    @Override
+    public Map<String, String> getApiRequestPathParserConfig() { // Probably will not be used
+        return getConfig(config, GATEWAY_REQUEST_PARSER_PREFIX);
+    }
+
     @Override
     public Class<? extends IMetrics> getMetricsClass(IPluginRegistry pluginRegistry) {
         return loadConfigClass(getClassname(config, GATEWAY_METRICS_PREFIX),
@@ -173,7 +191,7 @@ public class VertxEngineConfig implements IEngineConfig {
 
     @Override
     public Map<String, String> getLoggerFactoryConfig() {
-        return null;
+        return getConfig(config, GatewayConfigProperties.LOGGER_FACTORY_CLASS);
     }
 
     @Override
@@ -226,42 +244,65 @@ public class VertxEngineConfig implements IEngineConfig {
         return Collections.emptyList();
     }
 
-    public Boolean isAuthenticationEnabled() {
-        return config.getJsonObject(API_AUTH).getString(API_REQUIRED) != null;
-    }
-
-    public String getRealm() {
-        return config.getJsonObject(API_AUTH).getString(API_REALM);
-    }
-
     public String getHostname() {
-        return stringConfigWithDefault(GATEWAY_HOSTNAME, "localhost");
+        return stringConfigWithDefault(GATEWAY_HOSTNAME, "0.0.0.0");
     }
 
-    public String getEndpoint() {
-        return config.getString(GATEWAY_ENDPOINT);
+    public String getPublicEndpoint() {
+        return config.getString(GATEWAY_PUBLIC_ENDPOINT);
     }
 
     public Boolean preferSecure() {
         return config.getBoolean(GATEWAY_PREFER_SECURE);
     }
 
-    public Map<String, String> getBasicAuthCredentials() {
-        if (!basicAuthMap.isEmpty())
-            return basicAuthMap;
+    public int getPort(String name) {
+        return getValueAsInteger(getVerticleConfig(name), VERTICLE_PORT, -1);
+    }
 
-        JsonObject pairs = config.getJsonObject(API_AUTH).getJsonObject("basic");
+    public int getPort(VerticleType verticleType) {
+        return getPort(verticleType.name());
+    }
 
-        for (String username : pairs.fieldNames()) {
-            basicAuthMap.put(username, pairs.getString(username));
+    public int getVerticleCount(VerticleType verticleType) {
+        // If the field is set as "auto", then number of verticles == number of cores
+        // TODO should be decent default choice, but should benchmark to find optimum.
+        // See: VertxOptions
+        if ("auto".equalsIgnoreCase(getVerticleConfig(verticleType.name()).getValue(VERTICLE_COUNT).toString())) {
+            return Runtime.getRuntime().availableProcessors();
         }
+        return getValueAsInteger(getVerticleConfig(verticleType.name()), VERTICLE_COUNT, 1);
+    }
 
-        return basicAuthMap;
+    public boolean isSSL() {
+        return config.containsKey(SSL);
+    }
+
+    public String getKeyStore() {
+        return config.getJsonObject(SSL, new JsonObject()).getJsonObject(SSL_KEYSTORE, new JsonObject()).getString(SSL_PATH);
+    }
+
+    public String getKeyStorePassword() {
+        return config.getJsonObject(SSL, new JsonObject()).getJsonObject(SSL_KEYSTORE, new JsonObject()).getString(API_PASSWORD);
+    }
+
+    public String getTrustStore() {
+        return config.getJsonObject(SSL, new JsonObject()).getJsonObject(SSL_TRUSTSTORE, new JsonObject()).getString(SSL_PATH);
+    }
+
+    public String getTrustStorePassword() {
+        return config.getJsonObject(SSL, new JsonObject()).getJsonObject(SSL_TRUSTSTORE, new JsonObject()).getString(API_PASSWORD);
+    }
+
+    public JsonObject getAuth() {
+        return config.getJsonObject(API_AUTH, new JsonObject());
     }
 
     protected Map<String, String> toFlatStringMap(JsonObject jsonObject) {
+        if (jsonObject == null)
+            return Collections.emptyMap();
+
         Map<String, String> outMap = new LinkedHashMap<>();
-        // TODO figure out why this workaround is necessary.
         jsonMapToProperties("", new JsonObject(jsonObject.encode()).getMap(), outMap);
         return outMap;
     }
@@ -277,11 +318,15 @@ public class VertxEngineConfig implements IEngineConfig {
             list.forEach(elem -> jsonMapToProperties(pathSoFar, elem, output));
         } else { // Value
             if (output.containsKey(pathSoFar)) {
-                output.put(pathSoFar, SimpleStringUtils.join(",", output.get(pathSoFar), value.toString()));
+                output.put(pathSoFar, SimpleStringUtils.join(",", output.get(pathSoFar), valueOrNull(value)));
             } else {
-                output.put(pathSoFar, value.toString());
+                output.put(pathSoFar, valueOrNull(value));
             }
         }
+    }
+
+    private String valueOrNull(Object value) {
+        return value == null ? null : value.toString();
     }
 
     private String determineKey(String pathSoFar, String key) {
@@ -294,8 +339,10 @@ public class VertxEngineConfig implements IEngineConfig {
         String strippedPrefix = StringUtils.substringAfter(prefix, "apiman-gateway.");
         String filteredPrefix = strippedPrefix.isEmpty() ? prefix : strippedPrefix;
 
-        if (clazzName == null)
-            return obj.getJsonObject(filteredPrefix).getString(GATEWAY_CLASS);
+        if (clazzName == null) {
+            Map<String, String> mfp = toFlatStringMap(obj);
+            return mfp.get(filteredPrefix + "." + GATEWAY_CLASS);
+        }
 
         return clazzName;
     }
@@ -307,7 +354,21 @@ public class VertxEngineConfig implements IEngineConfig {
         if (mfp != null && !mfp.isEmpty()) { // TODO
             return mfp;
         }
-        return toFlatStringMap(obj.getJsonObject(prefix).getJsonObject(GATEWAY_CONFIG));
+        return toFlatStringMap(obj.getJsonObject(prefix, new JsonObject()).getJsonObject(GATEWAY_CONFIG));
+    }
+
+    private int getValueAsInteger(JsonObject obj, String key, int defaultValue) {
+        Object val = obj.getValue(key);
+        if (val == null) {
+            return defaultValue;
+        } else {
+            if (val instanceof Number) {
+                return (int) val;
+            } else if (val instanceof String) {
+                return Integer.valueOf((String)val);
+            }
+            throw new IllegalArgumentException("Expected integer, got " + obj.getClass().getName());
+        }
     }
 
     /**
@@ -344,45 +405,8 @@ public class VertxEngineConfig implements IEngineConfig {
         return str == null ? defaultValue : str;
     }
 
-    protected Boolean boolConfigWithDefault(String name, Boolean defaultValue) {
-        Boolean bool = config.containsKey(name);
-        return bool == null ? defaultValue : bool;
-    }
-
     public JsonObject getVerticleConfig(String verticleType) {
         return config.getJsonObject(VERTICLES).getJsonObject(verticleType.toLowerCase());
-    }
-
-    public int getPort(String name) {
-        return getVerticleConfig(name).getInteger(VERTICLE_PORT);
-    }
-
-    public int getPort(VerticleType verticleType) {
-        return getPort(verticleType.name());
-    }
-
-    public int getVerticleCount(VerticleType verticleType) {
-        return getVerticleConfig(verticleType.name()).getInteger(VERTICLE_COUNT);
-    }
-
-    public boolean isSSL() {
-        return config.containsKey(SSL);
-    }
-
-    public String getKeyStore() {
-        return config.getJsonObject(SSL, new JsonObject()).getJsonObject(SSL_KEYSTORE, new JsonObject()).getString(SSL_PATH);
-    }
-
-    public String getKeyStorePassword() {
-        return config.getJsonObject(SSL, new JsonObject()).getJsonObject(SSL_KEYSTORE, new JsonObject()).getString(API_PASSWORD);
-    }
-
-    public String getTrustStore() {
-        return config.getJsonObject(SSL, new JsonObject()).getJsonObject(SSL_TRUSTSTORE, new JsonObject()).getString(SSL_PATH);
-    }
-
-    public String getTrustStorePassword() {
-        return config.getJsonObject(SSL, new JsonObject()).getJsonObject(SSL_TRUSTSTORE, new JsonObject()).getString(API_PASSWORD);
     }
 
     /**
@@ -407,6 +431,39 @@ public class VertxEngineConfig implements IEngineConfig {
                 .map(pair -> new AbstractMap.SimpleEntry<>(String.valueOf(pair.getKey()), String.valueOf(pair.getValue())))
                 .filter(pair -> StringUtils.startsWith(pair.getKey(), prefix))
                 .collect(Collectors.toList());
+    }
+
+    protected void substituteLeafVars(JsonObject node) {
+        node.forEach(elem -> {
+           Object value = elem.getValue();
+           if (value instanceof JsonObject) {
+               substituteLeafVars((JsonObject) value);
+           } else if (value instanceof String) {
+               node.put(elem.getKey(), SUBSTITUTOR.replace((String) value));
+           }
+        });
+    }
+
+    private final StrSubstitutor SUBSTITUTOR = new StrSubstitutor(new VertxEngineStrSubstitutor());
+
+    private class VertxEngineStrSubstitutor extends ApimanStrLookup {
+
+        @Override
+        public String lookup(String key) {
+            // Upside of this approach is that we can capture any dynamically defined variables.
+            // Downside is that it's slightly expensive but should only happen at startup.
+            Map<String, String> flattenedMap = new LinkedHashMap<>();
+            jsonMapToProperties("", new JsonObject(getVariables().encode()).getMap(), flattenedMap);
+            if (flattenedMap.containsKey(key)) {
+                return flattenedMap.get(key);
+            } else {
+                return super.lookup(key);
+            }
+        }
+
+        private JsonObject getVariables() {
+            return config.getJsonObject(VARIABLES, new JsonObject());
+        }
     }
 
 }

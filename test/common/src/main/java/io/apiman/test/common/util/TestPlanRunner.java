@@ -173,7 +173,6 @@ public class TestPlanRunner {
 
             if (restTest.getRequestPayload() != null && !restTest.getRequestPayload().isEmpty()) {
                 request = request.body().set(restTest.getRequestPayload()).back();
-                System.err.println("Rawtype = ");
             }
 
             assertResponse(restTest, request.fetch());
@@ -181,10 +180,10 @@ public class TestPlanRunner {
             logPlain("[ERROR] " + e.getMessage());
             throw e;
         } catch (ProtocolException e) {
-            logPlain("[HTTP PROTOCOL EXCEPTION]" + e.getMessage());
+            logPlain("[HTTP PROTOCOL EXCEPTION] " + e.getMessage());
             throw new Error(e);
         } catch (IOException e) {
-            System.err.println("[IO EXCEPTION]");
+            logPlain("[IO EXCEPTION] " + e.getMessage());
             throw new Error(e);
         } catch (Exception e) {
             logPlain("[EXCEPTION] " + e.getMessage());

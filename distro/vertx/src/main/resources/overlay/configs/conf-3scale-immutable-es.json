@@ -1,0 +1,289 @@
+{ // Example 3scale conf. Refer to documentation for more detail.
+    "variables": {
+        // 3scale does not have yet have the concept of org or version.
+        // For metrics and other internal purposes a default mapping is used.
+        "3scale": {
+            "defaultOrgName": "apiman",
+            "defaultVersion": "1.0"
+        },
+        // ES in this config is for metrics, shared state, etc.
+        "apiman": {
+          "es": {
+            "protocol": "http",
+            "host": "localhost",
+            "port": 9200,
+            "username": null,
+            "password": null,
+            "timeout": 10000
+          }
+        }
+    },
+
+    "registry": {
+        "class": "io.apiman.gateway.engine.threescale.ThreeScaleImmutableRegistry",
+        "config": {
+            // Access token: https://support.3scale.net/docs/accounts/tokens
+            "accessToken": "<YOUR ACCESS TOKEN>",
+            // 3scale API endpoint e.g. https://<YOUR-USERNAME>-admin.3scale.net/.
+            "apiEndpoint": "https://<YOUR-USERNAME>-admin.3scale.net/",
+            // 3scale backend endpoint, this is the SaaS default. Alter this for on-prem deployment.
+            "backendEndpoint": "https://su1.3scale.net:443",
+            // Optional: Apiman policy overlay, allowing apiman custom policies to be applied to 3scale APIs.
+            // "policyConfig": {
+            //     // Your overlay is a JSON document. Refer to docs for format information.
+            //     "overlayUri": "file:///path/to/your/apiman-your-3scale-overlay.json",
+            //     // For HTTP(S), BASIC and OAuth2 are supported. Refer to docs for more info.
+            //     "auth": "NONE"
+            // },
+            // Which environment (e.g. production, staging). Default: production
+            "environment": "production",
+            // 3scale authrep strategy: STANDARD, BATCHED_HYBRID. Refer to docs for more.
+            "strategy": "STANDARD",
+            "defaultOrgName": "${3scale.defaultOrgName}",
+            "defaultVersion": "${3scale.defaultVersion}"
+        }
+    },
+
+    "request-parser": {
+        "class": "io.apiman.gateway.engine.threescale.ThreeScaleRequestPathParser",
+        "config": {
+            "defaultOrgName": "${3scale.defaultOrgName}",
+            "defaultVersion": "${3scale.defaultVersion}"
+        }
+    },
+    // Gateway error writer
+    // A "trace" version of the error writer - comment out/remove this to suppress stack traces
+    // in the JSON/XML payload returned by the gateway when an error occurs.
+    "writers": {
+      "error": {
+        "class": "io.apiman.gateway.engine.impl.TracePolicyErrorWriter",
+        "config": {}
+      }//,
+        // "policy-failure": {
+        //   "class": "",
+        //   "config": {}
+        // }
+    },
+
+    "encrypter": {
+      "class": "io.apiman.gateway.engine.impl.DefaultDataEncrypter",
+      "config": {}
+    },
+
+    "plugin-registry": {
+      "class": "io.apiman.gateway.platforms.vertx3.engine.VertxPluginRegistry",
+      "config": {}
+    },
+
+    "connector-factory": {
+      "class": "io.apiman.gateway.platforms.vertx3.connector.ConnectorFactory",
+      "config": {
+        // -----------------------------------------------
+        // SSL/TLS settings for the gateway connector(s).
+        // -----------------------------------------------
+        "tls": {
+          // Enable devMode for HTTPS connections (gateway trusts any certificate).
+          // This should *NOT* be used in production mode. *Use with great care.*
+          "devMode": true
+
+          // Whether self-signed certificates should be automatically trusted. *Use with great care.*
+          // "allowSelfSigned": false,
+
+          // Whether certificate host checks should be bypassed. *Use with great care.*
+          // "allowAnyHost": false,
+
+          // Trust store contains certificate(s) trusted by gateway.
+          // "trustStore": "/path/to/your/truststore.jks",
+          // "trustStorePassword": "abc123",
+
+          // Key store contains gateway's keys (including private components: keep it safe).
+          // "keyStore": "/path/to/your/keystore.jks",
+          // "keyStorePassword": "abc123",
+
+          // By default all keys can be used (will try all). If alias list provided, will only attempt to use listed keys.
+          // "keyAliases": "mykey,myotherkey",
+
+          // Allowed TLS/SSL protocols and ciphers suites as CSV. Availability will vary depending on your JVM impl.
+          // Uses JVM defaults depending if not explicitly provided.
+          // See: https://docs.oracle.com/javase/7/docs/technotes/guides/security/SunProviders.html
+          // You may wish to consider global JVM settings by modifying java.security
+          // "allowedProtocols": "TLSv1.2,TLSv1.1",
+          // "allowedCiphers": "TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA,...",
+          // "disallowedCiphers": "..."
+        }
+      }
+    },
+
+    "policy-factory": {
+      "class": "io.apiman.gateway.engine.policy.PolicyFactoryImpl",
+      "config": {}
+    },
+
+    "logger-factory": {
+      "class": "io.apiman.gateway.platforms.vertx3.logging.VertxLoggerDelegate",
+      "config": {}
+    },
+
+    // Elasticsearch Metrics Settings
+    "metrics": {
+      "class": "io.apiman.gateway.engine.es.ESMetrics",
+      "config": {
+        "client": {
+          "type": "jest",
+          "protocol": "${apiman.es.protocol}",
+          "host": "${apiman.es.host}",
+          "port": "${apiman.es.port}",
+          "initialize": true,
+          "username": "${apiman.es.username}",
+          "password": "${apiman.es.password}",
+          "timeout": "${apiman.es.timeout}"
+        }
+      }
+    },
+
+    "components": {
+      // Shared State Component Settings
+      "ISharedStateComponent": {
+        "class": "io.apiman.gateway.engine.es.ESSharedStateComponent",
+        "config": {
+          "client": {
+            "type": "jest",
+            "protocol": "${apiman.es.protocol}",
+            "host": "${apiman.es.host}",
+            "port": "${apiman.es.port}",
+            "initialize": true,
+            "username": "${apiman.es.username}",
+            "password": "${apiman.es.password}",
+            "timeout": "${apiman.es.timeout}"
+          }
+        }
+      },
+
+      // Rate Limiter Component Settings
+      "IRateLimiterComponent": {
+        "class": "io.apiman.gateway.engine.es.ESRateLimiterComponent",
+        "config": {
+          "client": {
+            "type": "jest",
+            "protocol": "${apiman.es.protocol}",
+            "host": "${apiman.es.host}",
+            "port": "${apiman.es.port}",
+            "initialize": true,
+            "username": "${apiman.es.username}",
+            "password": "${apiman.es.password}",
+            "timeout": "${apiman.es.timeout}"
+          }
+        }
+      },
+
+      // Cache Store Component Settings
+      "ICacheStoreComponent": {
+        "class": "io.apiman.gateway.engine.es.ESCacheStoreComponent",
+        "config": {
+          "client": {
+            "type": "jest",
+            "protocol": "${apiman.es.protocol}",
+            "host": "${apiman.es.host}",
+            "port": "${apiman.es.port}",
+            "initialize": true,
+            "username": "${apiman.es.username}",
+            "password": "${apiman.es.password}",
+            "timeout": "${apiman.es.timeout}"
+          }
+        }
+      },
+
+      // Execute Blocking Component
+      "IExecuteBlockingComponent": {
+        "class": "io.apiman.gateway.platforms.vertx3.components.ExecuteBlockingComponentImpl",
+        "config": {}
+      },
+
+      // JDBC Component Settings
+      "IJdbcComponent": {
+        "class": "io.apiman.gateway.platforms.vertx3.components.JdbcClientComponentImpl",
+        "config": {}
+      },
+
+      // LDAP Component Settings
+      "ILdapComponent": {
+        "class": "io.apiman.gateway.platforms.vertx3.components.LdapClientComponentImpl",
+        "config": {}
+      },
+
+      // HTTP Component Settings
+      "IHttpClientComponent": {
+        "class": "io.apiman.gateway.platforms.vertx3.components.HttpClientComponentImpl",
+        "config": {}
+      },
+
+      // Policy Failure Factory Component
+      "IPolicyFailureFactoryComponent": {
+        "class": "io.apiman.gateway.platforms.vertx3.components.PolicyFailureFactoryComponent",
+        "config": {}
+      },
+
+      // Buffer Factory Component
+      "IBufferFactoryComponent": {
+        "class": "io.apiman.gateway.platforms.vertx3.components.BufferFactoryComponentImpl",
+        "config": {}
+      },
+
+      // Periodic Component
+      "IPeriodicComponent": {
+          "class": "io.apiman.gateway.platforms.vertx3.components.PeriodicComponentImpl",
+          "config": {}
+      }
+    },
+
+    // Host-name to bind to for this machine.
+    "hostname": "localhost",
+
+    // You can force a particular endpoint to be reported here (e.g.
+    // if you have some clustered setup with exotic DNS setup)
+    //"publicEndpoint": "localhost",
+
+    // Verticle configuration
+    // Port - The port a given verticle listens on (where relevant)
+    // Count - Number of given verticle type launched, or "auto" for automatic.
+    "verticles": {
+      "http": {
+        "port": 8082,
+        "count": "auto"
+      },
+      // Configure the following SSL section to enable SSL/TLS.
+      "https": {
+        "port": 8443,
+        "count": 0
+      },
+      // The Gateway API; this will be the port to set in the UI.
+      // e.g. http://localhost:8081 or https://gateway.machine:8081
+      // Configure the following SSL section to enable SSL/TLS.
+      "api": {
+        "port": 8081,
+        "count": 1
+      }
+    },
+
+    // SSL configuration to the gateway's *front end* (i.e. client <-> gateway).
+    //  "ssl": {
+    //    "keystore": {
+    //      "path": "/the/keystore/path/here.jks",
+    //      "password": "password-here"
+    //    },
+    //    "truststore": {
+    //      "path": "/the/truststore/path/here.jks",
+    //      "password": "password-here"
+    //    }
+    //  },
+
+    // Gateway API Authentication. With the headless config this section is
+    // redundant and can be left alone.
+    "auth": {
+        "config": {}
+    },
+
+    // When reporting an API's endpoint, prefer secure (i.e. https).
+    // You should probably change this after enabling HTTPS.
+    "preferSecure": false
+}

@@ -22,7 +22,9 @@ import io.apiman.gateway.platforms.vertx3.common.config.VertxEngineConfig;
 import io.searchbox.client.JestResult;
 import io.searchbox.client.JestResultHandler;
 import io.searchbox.core.Delete;
+import io.searchbox.indices.Flush;
 
+import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -65,8 +67,12 @@ public class EsResetter extends AbstractESComponent implements Resetter {
                 }
             });
 
+            Flush flush = new Flush.Builder().build();
+            getClient().execute(flush);
+            Thread.sleep(100);
+
             latch.await();
-        } catch (InterruptedException e) {
+        } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
     }

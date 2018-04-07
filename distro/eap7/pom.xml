@@ -4,7 +4,7 @@
   <parent>
     <groupId>io.apiman</groupId>
     <artifactId>apiman-distro</artifactId>
-    <version>1.2.10-SNAPSHOT</version>
+    <version>1.3.2-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>apiman-distro-eap7</artifactId>
@@ -12,7 +12,7 @@
   <name>apiman-distro-eap7</name>
 
   <dependencies>
-    <!-- The WildFly 8 distro of APIMan -->
+    <!-- The WildFly 10 distro of APIMan -->
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-distro-wildfly10</artifactId>
@@ -47,6 +47,7 @@
               <archiverConfig>
                 <defaultDirectoryMode>0755</defaultDirectoryMode>
               </archiverConfig>
+              <archiveBaseDirectory>${project.basedir}</archiveBaseDirectory>
             </configuration>
           </execution>
         </executions>

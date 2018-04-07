@@ -16,15 +16,19 @@
 
 package io.apiman.gateway.engine.es;
 
-import io.apiman.gateway.engine.IComponentRegistry;
-import io.apiman.gateway.engine.IMetrics;
-import io.apiman.gateway.engine.metrics.RequestMetric;
-import io.searchbox.core.DocumentResult;
-import io.searchbox.core.Index;
-
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
+
+import io.apiman.gateway.engine.IComponentRegistry;
+import io.apiman.gateway.engine.IMetrics;
+import io.apiman.gateway.engine.metrics.RequestMetric;
+import io.searchbox.core.Bulk;
+import io.searchbox.core.Bulk.Builder;
+import io.searchbox.core.BulkResult;
+import io.searchbox.core.Index;
 
 /**
  * An elasticsearch implementation of the {@link IMetrics} interface.
@@ -34,9 +38,11 @@ import java.util.concurrent.LinkedBlockingDeque;
 public class ESMetrics extends AbstractESComponent implements IMetrics {
 
     private static final int DEFAULT_QUEUE_SIZE = 10000;
+    private static final int DEFAULT_BATCH_SIZE = 1000;
     
     protected IComponentRegistry componentRegistry;
     private final BlockingQueue<RequestMetric> queue;
+    private final int batchSize;
 
     /**
      * Constructor.
@@ -51,6 +57,14 @@ public class ESMetrics extends AbstractESComponent implements IMetrics {
             queueSize = new Integer(queueSizeConfig);
         }
         queue = new LinkedBlockingDeque<>(queueSize);
+        
+        int batchSize = DEFAULT_BATCH_SIZE;
+        String batchSizeConfig = config.get("batch.size"); //$NON-NLS-1$
+        if (batchSizeConfig != null) {
+            batchSize = new Integer(batchSizeConfig);
+        }
+        this.batchSize = batchSize;
+        
         startConsumerThread();
     }
 
@@ -96,13 +110,22 @@ public class ESMetrics extends AbstractESComponent implements IMetrics {
      */
     protected void processQueue() {
         try {
-            RequestMetric metric = queue.take();
-            Index index = new Index.Builder(metric).refresh(false)
-                    .index(getIndexName())
-                    .type("request").build(); //$NON-NLS-1$
-            DocumentResult result = getClient().execute(index);
+            Collection<RequestMetric> batch = new ArrayList<>(this.batchSize);
+            RequestMetric rm = queue.take();
+            batch.add(rm);
+			queue.drainTo(batch, this.batchSize - 1);
+			
+			Builder builder = new Bulk.Builder();
+			for (RequestMetric metric : batch) {
+	            Index index = new Index.Builder(metric).refresh(false)
+	                    .index(getIndexName())
+	                    .type("request").build(); //$NON-NLS-1$
+				builder.addAction(index);
+			}
+            
+            BulkResult result = getClient().execute(builder.build());
             if (!result.isSucceeded()) {
-                System.err.println("Failed to add metric to ES: " + result.getErrorMessage()); //$NON-NLS-1$
+                System.err.println("Failed to add metric(s) to ES: " + result.getErrorMessage()); //$NON-NLS-1$
             }
         } catch (Exception e) {
             // TODO better logging of this unlikely error

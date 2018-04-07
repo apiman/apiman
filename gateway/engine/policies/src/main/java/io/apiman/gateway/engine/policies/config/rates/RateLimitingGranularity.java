@@ -22,6 +22,6 @@ package io.apiman.gateway.engine.policies.config.rates;
  */
 public enum RateLimitingGranularity {
 
-    User, Api, Client;
+    User, Api, Client, Ip;
     
 }

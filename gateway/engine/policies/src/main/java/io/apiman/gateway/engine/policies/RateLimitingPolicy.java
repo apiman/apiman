@@ -159,6 +159,9 @@ public class RateLimitingPolicy extends AbstractMappedPolicy<RateLimitingConfig>
                 String user = request.getHeaders().get(header);
                 builder.append("||"); //$NON-NLS-1$
                 builder.append(user);
+            } else if (config.getGranularity() == RateLimitingGranularity.Ip) {
+                builder.append("||"); //$NON-NLS-1$
+                builder.append(request.getRemoteAddr());
             } else if (config.getGranularity() == RateLimitingGranularity.Api) {
             } else {
                 return NO_CLIENT_AVAILABLE;
@@ -184,6 +187,12 @@ public class RateLimitingPolicy extends AbstractMappedPolicy<RateLimitingConfig>
                 builder.append(request.getContract().getClient().getOrganizationId());
                 builder.append("||"); //$NON-NLS-1$
                 builder.append(request.getContract().getClient().getClientId());
+            } else if (config.getGranularity() == RateLimitingGranularity.Ip) {
+                builder.append(request.getApiKey());
+                builder.append("||IP||"); //$NON-NLS-1$
+                builder.append(request.getContract().getClient().getOrganizationId());
+                builder.append("||"); //$NON-NLS-1$
+                builder.append(request.getRemoteAddr());
             } else {
                 builder.append(request.getApiKey());
                 builder.append("||SERVICE||"); //$NON-NLS-1$

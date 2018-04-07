@@ -18,9 +18,12 @@ package io.apiman.common.logging.impl;
 
 import io.apiman.common.logging.IApimanLogger;
 
+import java.text.MessageFormat;
+
 /**
  * @author eric.wittmann@gmail.com
  */
+@SuppressWarnings("nls")
 public class SystemOutLogger implements IApimanLogger {
 
     /**
@@ -34,7 +37,12 @@ public class SystemOutLogger implements IApimanLogger {
      */
     @Override
     public void info(String message) {
-        System.out.println("INFO: " + message); //$NON-NLS-1$
+        System.out.println("INFO: " + message);
+    }
+
+    @Override
+    public void info(String message, Object... args) {
+        System.out.println("INFO: " + MessageFormat.format(message, args));
     }
 
     /**
@@ -42,7 +50,12 @@ public class SystemOutLogger implements IApimanLogger {
      */
     @Override
     public void warn(String message) {
-        System.out.println("WARN: " + message); //$NON-NLS-1$
+        System.out.println("WARN: " + message);
+    }
+
+    @Override
+    public void warn(String message, Object... args) {
+        System.out.println("WARN: " + MessageFormat.format(message, args));
     }
 
     /**
@@ -50,7 +63,12 @@ public class SystemOutLogger implements IApimanLogger {
      */
     @Override
     public void debug(String message) {
-        System.out.println("DEBUG: " + message); //$NON-NLS-1$
+        System.out.println("DEBUG: " + message);
+    }
+
+    @Override
+    public void debug(String message, Object... args) {
+        System.out.println("DEBUG: " + MessageFormat.format(message, args));
     }
 
     /**
@@ -58,7 +76,12 @@ public class SystemOutLogger implements IApimanLogger {
      */
     @Override
     public void trace(String message) {
-        System.out.println("TRACE: " + message); //$NON-NLS-1$
+        System.out.println("TRACE: " + message);
+    }
+
+    @Override
+    public void trace(String message, Object... args) {
+        System.out.println("TRACE: " + MessageFormat.format(message, args));
     }
 
     /**
@@ -66,7 +89,7 @@ public class SystemOutLogger implements IApimanLogger {
      */
     @Override
     public void error(Throwable error) {
-        System.err.println("** ERROR **"); //$NON-NLS-1$
+        System.err.println("** ERROR **");
         error.printStackTrace(System.err);
     }
 
@@ -75,7 +98,13 @@ public class SystemOutLogger implements IApimanLogger {
      */
     @Override
     public void error(String message, Throwable error) {
-        System.err.println("** ERROR: " + message + " **"); //$NON-NLS-1$ //$NON-NLS-2$
+        System.err.println("** ERROR: " + message + " **");
+        error.printStackTrace(System.err);
+    }
+
+    @Override
+    public void error(Throwable error, String message, Object... args) {
+        System.err.println("** ERROR: " + MessageFormat.format(message, args));
         error.printStackTrace(System.err);
     }
 

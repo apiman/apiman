@@ -17,21 +17,25 @@ package io.apiman.gateway.platforms.vertx3.verticles;
 
 import io.apiman.gateway.platforms.vertx3.api.ApiResourceImpl;
 import io.apiman.gateway.platforms.vertx3.api.ClientResourceImpl;
-import io.apiman.gateway.platforms.vertx3.api.IRouteBuilder;
+import io.apiman.gateway.platforms.vertx3.api.OrgResourceImpl;
+import io.apiman.gateway.platforms.vertx3.api.RestExceptionMapper;
+import io.apiman.gateway.platforms.vertx3.api.Router2ResteasyRequestAdapter;
 import io.apiman.gateway.platforms.vertx3.api.SystemResourceImpl;
+import io.apiman.gateway.platforms.vertx3.api.auth.AuthFactory;
 import io.apiman.gateway.platforms.vertx3.common.verticles.VerticleType;
-import io.vertx.core.AsyncResult;
+import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
-import io.vertx.core.Handler;
-import io.vertx.core.json.JsonObject;
-import io.vertx.ext.auth.User;
+import io.vertx.core.http.HttpServer;
+import io.vertx.core.http.HttpServerOptions;
+import io.vertx.core.net.JksOptions;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.AuthHandler;
-import io.vertx.ext.web.handler.BasicAuthHandler;
+import io.vertx.ext.web.handler.BodyHandler;
 
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.lang3.StringUtils;
+import org.jboss.resteasy.plugins.server.vertx.VertxRegistry;
+import org.jboss.resteasy.plugins.server.vertx.VertxRequestHandler;
+import org.jboss.resteasy.plugins.server.vertx.VertxResteasyDeployment;
+
 
 /**
  * API verticle provides the Gateway API RESTful API. Config is validated and pushed into the registry
@@ -45,42 +49,82 @@ public class ApiVerticle extends ApimanVerticleWithEngine {
     public static final VerticleType VERTICLE_TYPE = VerticleType.API;
 
     @Override
-    public void start() {
-        super.start();
-        IRouteBuilder clientResource = new ClientResourceImpl(apimanConfig, engine);
-        IRouteBuilder apiResource = new ApiResourceImpl(apimanConfig, engine);
-        IRouteBuilder systemResource = new SystemResourceImpl(apimanConfig, engine);
+    public void start(Future<Void> startFuture) {
+        Future<Void> superFuture = Future.future();
+        Future<HttpServer> listenFuture = Future.future();
+        super.start(superFuture);
 
-        Router router = Router.router(vertx);
+        CompositeFuture.all(superFuture, listenFuture)
+            .setHandler(compositeResult -> {
+                if (compositeResult.succeeded()) {
+                    startFuture.complete(null);
+                } else {
+                    startFuture.fail(compositeResult.cause());
+                }
+            });
 
-        if (apimanConfig.isAuthenticationEnabled()) {
-            AuthHandler basicAuthHandler = BasicAuthHandler.create(this::authenticateBasic, apimanConfig.getRealm());
-            router.route("/*").handler(basicAuthHandler);
+        VertxResteasyDeployment deployment = new VertxResteasyDeployment();
+        deployment.start();
+
+        addResources(deployment.getRegistry(),
+                new SystemResourceImpl(apimanConfig, engine),
+                new ApiResourceImpl(apimanConfig, engine),
+                new ClientResourceImpl(apimanConfig, engine),
+                new OrgResourceImpl(apimanConfig, engine));
+
+        deployment.getProviderFactory().register(RestExceptionMapper.class);
+
+        VertxRequestHandler resteasyRh = new VertxRequestHandler(vertx, deployment);
+
+        Router router = Router.router(vertx)
+                    .exceptionHandler(error -> log.error(error.getMessage(), error));
+
+        // Ensure body handler is attached early so that if AuthHandler takes an external action
+        // we don't end up losing the body (e.g OAuth2).
+        router.route()
+            .handler(BodyHandler.create());
+
+        AuthHandler authHandler = AuthFactory.getAuth(vertx, router, apimanConfig);
+
+        router.route("/*")
+            .handler(authHandler);
+
+        router.route("/*") // We did the previous stuff, now we call into JaxRS.
+            .handler(context -> resteasyRh.handle(new Router2ResteasyRequestAdapter(context)));
+
+        HttpServerOptions httpOptions = new HttpServerOptions();
+
+        if (apimanConfig.isSSL()) {
+            httpOptions.setSsl(true)
+            .setKeyStoreOptions(
+                    new JksOptions()
+                        .setPath(apimanConfig.getKeyStore())
+                        .setPassword(apimanConfig.getKeyStorePassword())
+                    )
+            .setTrustStoreOptions(
+                    new JksOptions()
+                        .setPath(apimanConfig.getTrustStore())
+                        .setPassword(apimanConfig.getTrustStorePassword())
+                    );
+        } else {
+            log.warn("API is running in plaintext mode. Enable SSL in config for production deployments.");
         }
 
-        clientResource.buildRoutes(router);
-        apiResource.buildRoutes(router);
-        systemResource.buildRoutes(router);
-
-        vertx.createHttpServer()
+        vertx.createHttpServer(httpOptions)
             .requestHandler(router::accept)
-            .listen(apimanConfig.getPort(VERTICLE_TYPE));
+            .listen(apimanConfig.getPort(VERTICLE_TYPE),
+                    apimanConfig.getHostname(),
+                    listenFuture.completer());
+    }
+
+    private void addResources(VertxRegistry registry, Object...objs) {
+        for (Object obj : objs) {
+            registry.addSingletonResource(obj);
+        }
     }
 
     @Override
     public VerticleType verticleType() {
         return VERTICLE_TYPE;
-    }
-
-    public void authenticateBasic(JsonObject authInfo, Handler<AsyncResult<User>> resultHandler) {
-        String username = authInfo.getString("username");
-        String password = StringUtils.chomp(Base64.encodeBase64String(DigestUtils.sha256(authInfo.getString("password")))); // Chomp, Digest, Base64Encode
-        String storedPassword = apimanConfig.getBasicAuthCredentials().get(username);
-
-        if (storedPassword != null && password.equals(storedPassword)) {
-            resultHandler.handle(Future.<User>succeededFuture(null));
-        } else {
-            resultHandler.handle(Future.<User>failedFuture("Not such user, or password is incorrect."));
-        }
     }
 }

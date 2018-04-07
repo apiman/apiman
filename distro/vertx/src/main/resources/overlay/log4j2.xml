@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Ensure you set the system property to make all loggers asynchronous.
+-DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector
+This is done automatically if you are using the provided shell script.
+
+See more detail at: https://logging.apache.org/log4j/2.x/manual/async.html
+-->
+<Configuration status="WARN">
+  <Appenders>
+    <!-- Async Loggers will auto-flush in batches, so switch off immediateFlush. -->
+    <RandomAccessFile name="RandomAccessFile" fileName="apiman-gateway.log" immediateFlush="false" append="false">
+      <PatternLayout>
+        <Pattern>%d %p %c{1.} [%t] %m %ex%n</Pattern>
+      </PatternLayout>
+    </RandomAccessFile>
+    <Console name="Console-Appender" target="SYSTEM_OUT" immediateFlush="false">
+      <PatternLayout>
+          <pattern>
+              [%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n
+          </pattern>
+      </PatternLayout>
+    </Console>
+  </Appenders>
+  <Loggers>
+    <!-- apiman package only logging -->
+    <AsyncLogger level="info" name="io.apiman" additivity="false">
+      <AppenderRef ref="RandomAccessFile"/>
+      <AppenderRef ref="Console-Appender"/>
+    </AsyncLogger>
+    <!-- You can add your own loggers with separate levels, etc. -->
+    <!-- <AsyncLogger level="info" name="com.example.yourpackage" additivity="false">
+      <AppenderRef ref="RandomAccessFile"/>
+      <AppenderRef ref="Console-Appender"/>
+    </AsyncLogger> -->
+    <!-- Root/Global file logging config -->
+    <AsyncRoot level="info" includeLocation="false">
+      <AppenderRef ref="RandomAccessFile"/>
+    </AsyncRoot>
+    <!-- Root/Global console logging config -->
+    <AsyncRoot level="info">
+      <AppenderRef ref="Console-Appender"/>
+    </AsyncRoot>
+  </Loggers>
+</Configuration>

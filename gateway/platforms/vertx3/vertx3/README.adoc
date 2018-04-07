@@ -1,45 +1,36 @@
 = Apiman Vert.x 3 Gateway
 Marc Savy <marc@rhymewithgravy.com>
+:toc: macro
 
 This is an apiman gateway implemented using http://www.vertx.io[Vert.x 3].
 
-== Running
-You'll need to have a valid JSON config (see following sections), and build apiman with Java 8 (`mvn clean install`):
+NOTE: **You should also refer to the documentation specific to the configuration you're using. This README provides a high-level, generic overview.**
+
+toc::[]
+
+== Building & Running
+
+This module can be built with `mvn clean install`.
+
+To run the Vert.x apiman gateway, you'll need to have a valid JSON config (see following sections), and build apiman with Java 8 (`mvn clean install`):
 
 ```shell
-java -jar target/apiman-gateway-platforms-vertx3-1.2.0-SNAPSHOT-fat.jar -conf <path-to-your-config.json>
+java -jar target/apiman-gateway-platforms-vertx3-1.2.10-SNAPSHOT-fat.jar -conf <path-to-your-config.json>
 ```
 
-Replace `1.2.0-SNAPSHOT` with the version you built.
+Replace `1.2.10-SNAPSHOT` with the version you built.
+
+If you're using the distro version, you can make use of the `apiman-gateway.sh` script which provides a number of helpful defaults and sets up logging for you.
 
 == Configuration
 
-The counterpart to `apiman.properties` is a simple JSON-based configuration file, examples of which are provided in the https://github.com/apiman/apiman/blob/master/gateway/platforms/vertx3/vertx3/src/conf/[repository].
+This gateway's counterpart to `apiman.properties` is a simple JSON-based configuration file, examples of which are provided in the https://github.com/apiman/apiman/blob/master/distro/vertx/src/main/resources/overlay/configs/[repository].
 
 We'll use ElasticSearch components examples throughout this README.
 
-=== Registries and factories
+=== Format
 
-```json
-{
-  "registry": {
-    "class": "io.apiman.gateway.engine.es.ESRegistry",
-    "config": {
-      "client": {
-        "type": "jest",
-        "cluster-name": "elasticsearch",
-        "host": "127.0.0.1",
-        "port": "9200",
-        "initialize": true
-      }
-    }
-  }
-}
-```
-
-To configure a registry, component or factory, set the `class` to the corresponding fully qualified name of a valid implementation on the classpath.
-
-You can pass arguments to the component using the `config` section, and these are transformed automatically to flat Java properties-style configuration map.
+If you've used apiman before, then there's a simple and direct conversion between `apiman.properties` and `config.json`.
 
 For example:
 
@@ -56,7 +47,7 @@ For example:
 }
 ```
 
-Becomes:
+Is equivalent to:
 
 ```properties
 client.type=jest
@@ -67,119 +58,120 @@ client.initialize=true
 client.apiman=great,fantastic,excellent
 ```
 
-=== Verticles
+==== Comments
+
+Unlike standard JSON, you can insert comments into the configuration by using C-style `// comment` syntax.
 
 ```json
 {
-  "verticles": {
-    "http": { "port": 8082, "count": 1 },
-    "https": { "port": 8443, "count": 1 },
-    "api": { "port": 8081, "count": 1 },
-    "policy": { "port": -1, "count": 4 }
-  }
-}
-```
-To scale your gateway, you can alter the number of verticles that will be spun up per-JVM when the project is deployed by changing `count`. Which port the service listens on can be changed with `port`. Some verticles don't need a port, so `-1` is used as a placeholder.
-
-NOTE: Verticle count only defines the number of verticles deployed in a given JVM instance (i.e. per `java -jar apiman<...>.jar -conf <...>`). How many deployments, and hence total number of verticles exist within your overall cluster is entirely up to you.
-
-==== HTTP
-Plaintext HTTP entry-point, with no transport security. Turn off by reducing count to zero.
-
-==== HTTPS
-Encrypted HTTPS entry-point, with TLS. Turn off by reducing count to zero.
-
-==== API
-Hosts the apiman gateway API, which is typically used by the apiman manager to drive the gateway. For instance, publishing and retiring APIs, Contracts.
-
-==== Policy
-Handles execution of apiman's engine, policies and pipes data to and from the backend, before returning it to the sender.
-
-==== Data Flow
-
-Data arrives at a verticle listening for incoming traffic, such as an HTTP and HTTPS or verticle, this is packaged into an intermediary format, and sent to a policy verticle over the event bus.
-
-The policy verticle handles the complexities of policy execution, sending and receiving from the backend. Finally, it responds over the bus to the caller with its result, and that caller is responsible for transforming the result back into its native format. This means we can have many different listener types without modifying the policy verticle.
-
-=== Gateway API Auth
-
-TIP: This only relates to apiman's Gateway API; it is *unrelated* to auth of traffic transiting the gateway.
-
-```json
-{
-  "auth": {
-    "required": "basic",
-    "realm": "apiman-gateway",
-    "basic": { // Password is SHA256 digest encoded as Base64.
-      "admin" : "jGl25bVBBBW96Qi9Te4V37Fnqchz/Eu4qB9vKrRIqRg="
-    }
-  }
+  "foo": "bar" // This is a comment.
 }
 ```
 
-At present, there is only BASIC authentication support for the gateway API. You must provide a string key of your username and a Base64 encoded SHA256 hash of the corresponding password.
+==== Variables
 
-Here's a Ruby one-liner to achieve that for you:
+The configuration supports variable substitution (transclusion) in the form `"${SOME_VARIABLE}"`; where `SOME_VARIABLE` is the variable to be transcluded.
+The following list defines the lookup sources and order of precedence for variable resolution.
 
-```bash
-ruby -e "require 'digest/sha2'; puts(Digest::SHA2.base64digest('admin'))"
+1. JSON config's `variables` section:
 
-$ jGl25bVBBBW96Qi9Te4V37Fnqchz/Eu4qB9vKrRIqRg=
-```
+  "variables": {
+    "SOME_VARIABLE": "foo"
+  }
 
-=== Components
+2. System properties: `-DSOME_VARIABLE="foo"`
+3. Environment: `export SOME_VARIABLE="foo"`
 
-These are the various runtime components made available to apiman. They should be added to the `components` subsection of the config, but otherwise it's an identical pattern to the factories, etc.
+A default value can be provided, which will be used if other lookup sources fail.
+
+For example `${MAGIC_NUMBER:-8090}` will result in `8090` being set if `MAGIC_NUMBER` is unresolved after the prior steps.
+
+=== Registries, factories and components
 
 ```json
 {
-  "components": {
-    "ISharedStateComponent": {
-      "class": "io.apiman.gateway.engine.es.ESSharedStateComponent",
-      "config": {
-        "client": {
-          "type": "jest",
-          "cluster-name": "elasticsearch",
-          "host": "127.0.0.1",
-          "port": "9200",
-          "initialize": true
-        }
+  "registry": {
+    "class": "io.apiman.gateway.engine.es.PollCachingESRegistry", // <1>
+    "config": {
+      "client": {
+        "client": "jest",
+        "protocol": "${apiman.es.protocol}", // <2>
+        "host": "${apiman.es.host}",
+        "port": "${apiman.es.port}",
+        "initialize": true,
+        "username": "${apiman.es.username}",
+        "password": "${apiman.es.password}",
+        "timeout": "${apiman.es.timeout}"
       }
     }
   }
 }
 ```
+<1> Fully qualified path to registry class.
+<2> Note the variables here, which will be resolved as defined in <<Variables>>.
 
-In this example, we can see we're again using an ElasticSearch component, with the client configured in the `config` section.
+To configure a registry, component or factory, set the `class` to the corresponding fully qualified name of a valid implementation on the classpath.
 
-TIP: Each component is standalone, so it may be that you need to repeat configuration in multiple components and registries.
+You can pass arguments to the component using the `config` section.
 
-=== Other
+=== Verticles and scaling
 
-==== Hostname
+```json
+{
+  "verticles": {
+    "http": { "port": 8082, "count": "auto" },
+    "https": { "port": 8443, "count": 1 },
+    "api": { "port": 8081, "count": 1 }
+  }
+}
+```
+
+To scale your gateway, you can alter the number of verticles that will be spun up per-JVM when the project is deployed by changing `count`.
+If you prefer, a count value of `"auto"` will provide a sensible default based upon the number of cores.
+
+If you don't want any instances of a particular verticle type, set its `count` to `0`.
+
+Which port the verticle listens on can be changed with `port`.
+
+NOTE: Verticle count only defines the number of verticles deployed in a given JVM instance (i.e. per `java -jar apiman<...>.jar -conf <...>`). How many deployments, and hence total number of verticles exist within your overall cluster is entirely up to you.
+
+==== HTTP
+
+Plaintext HTTP entry-point, with no transport security. Turn off by reducing count to zero.
+
+==== HTTPS
+
+Encrypted HTTPS entry-point, with TLS. Turn off by reducing count to zero.
+
+==== API
+
+Hosts the apiman gateway API, which is typically used by the apiman manager to drive the gateway.
+For instance, publishing and retiring APIs, Contracts.
+You probably only need 1 of these.
+
+=== Gateway API Authentication
+
+NOTE: This only relates to apiman's Gateway API; it is *unrelated* to auth of traffic transiting the gateway.
+
+=== Hostname
+
 ```json
 { "hostname": "localhost" }
 ```
 The hostname to bind to.
 
-==== Endpoint
+=== Endpoint
+
 ```json
 { "endpoint": "mynode.local" }
 ```
 
 Force the gateway to report the given gateway endpoint when it is queried by the manager. By default the gateway will inspect the request used to hit the Gateway API, and use whichever address was used to reach it as the endpoint.
 
-==== Prefer Secure
+=== Prefer Secure
+
 ```json
 { "preferSecure": true }
 ```
 
 When reporting the gateway endpoint (as above), prefer to report the secure (HTTPS) URI rather than an insecure one (HTTP).
-
-== Future
-
-* Eventually-consistent caching system to reduce datastore load (using event bus).
-* Additional components, registries, etc, using Vert.x specific adapters (e.g. Vert.x Infinispan, when it arrives; Vert.x MongoDB; ...). This would be Vert.x gateway only.
-* Integrate a bunch of improvements from upstream which should significantly improve performance
-  ** Custom EB marshallers.
-  ** Tidy proxies with improvements added since they were written. Still more convoluted than I'd like.

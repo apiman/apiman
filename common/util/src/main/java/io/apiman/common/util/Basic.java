@@ -15,7 +15,9 @@
  */
 package io.apiman.common.util;
 
-import org.apache.commons.codec.binary.Base64;
+import java.util.Base64;
+
+import org.apache.commons.lang3.StringUtils;
 
 @SuppressWarnings("nls")
 public class Basic {
@@ -23,13 +25,30 @@ public class Basic {
     private Basic() {
     }
 
-
     public static String encode(String username, String password) {
         String up = username + ':' + password;
         StringBuilder builder = new StringBuilder();
         builder.append("Basic ");
-        builder.append(Base64.encodeBase64String(up.getBytes()));
+        builder.append(Base64.getEncoder().encodeToString(up.getBytes()));
         return builder.toString();
+    }
+
+    public static String[] decodeWithScheme(String input) {
+        String[] split = StringUtils.split(input, null);
+        if ("Basic".equalsIgnoreCase(split[0])) {
+            if (split.length == 2) {
+                return decode(split[1]);
+            } else {
+                throw new IllegalArgumentException("Authorization header invalid for BASIC");
+            }
+        } else {
+            throw new IllegalArgumentException("Auth scheme was not BASIC");
+        }
+    }
+
+    public static String[] decode(String input) {
+        String decoded = new String(Base64.getDecoder().decode(input));
+        return StringUtils.split(decoded, ":");
     }
 
 }

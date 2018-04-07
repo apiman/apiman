@@ -15,10 +15,14 @@
  */
 package io.apiman.gateway.platforms.vertx3.verticles;
 
+import io.apiman.gateway.platforms.vertx3.common.config.InheritingHttpServerOptions;
+import io.apiman.gateway.platforms.vertx3.common.config.InheritingHttpServerOptionsConverter;
 import io.apiman.gateway.platforms.vertx3.common.verticles.VerticleType;
+import io.apiman.gateway.platforms.vertx3.http.HttpApiFactory;
 import io.apiman.gateway.platforms.vertx3.http.HttpPolicyAdapter;
-import io.vertx.core.http.HttpServerOptions;
+import io.vertx.core.Future;
 import io.vertx.core.http.HttpServerRequest;
+import io.vertx.core.json.JsonObject;
 
 /**
  * A HTTP gateway verticle
@@ -29,19 +33,26 @@ public class HttpGatewayVerticle extends ApimanVerticleWithEngine {
     static final VerticleType VERTICLE_TYPE = VerticleType.HTTP;
 
     @Override
-    public void start() {
-        super.start();
+    public void start(Future<Void> startFuture) {
+        super.start(startFuture);
 
-        HttpServerOptions standardOptions = new HttpServerOptions()
-            .setHost(apimanConfig.getHostname());
+        HttpApiFactory.init(engine.getApiRequestPathParser());
 
-        vertx.createHttpServer(standardOptions)
+        InheritingHttpServerOptions httpServerOptions = new InheritingHttpServerOptions();
+
+        // Load any provided configuration into the HttpServerOptions.
+        JsonObject httpServerOptionsJson = apimanConfig.getVerticleConfig(verticleType().name())
+                .getJsonObject("httpServerOptions", new JsonObject()); //$NON-NLS-1$
+        InheritingHttpServerOptionsConverter.fromJson(httpServerOptionsJson, httpServerOptions);
+
+        vertx.createHttpServer(httpServerOptions)
             .requestHandler(this::requestHandler)
-            .listen(apimanConfig.getPort(VERTICLE_TYPE));
+            .listen(apimanConfig.getPort(VERTICLE_TYPE),
+                    apimanConfig.getHostname());
     }
 
     private void requestHandler(HttpServerRequest req) {
-        new HttpPolicyAdapter(req, engine, log, false).execute();
+        new HttpPolicyAdapter(req, policyFailureWriter, policyErrorWriter, engine, false).execute();
     }
 
     @Override

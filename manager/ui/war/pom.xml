@@ -4,7 +4,7 @@
   <parent>
     <groupId>io.apiman</groupId>
     <artifactId>apiman-manager-ui</artifactId>
-    <version>1.2.10-SNAPSHOT</version>
+    <version>1.3.2-SNAPSHOT</version>
   </parent>
   <artifactId>apiman-manager-ui-war</artifactId>
   <packaging>war</packaging>
@@ -141,20 +141,20 @@
         <executions>
 
           <execution>
-            <id>install node and npm</id>
+            <id>install node and yarn</id>
             <goals>
-              <goal>install-node-and-npm</goal>
+              <goal>install-node-and-yarn</goal>
             </goals>
             <configuration>
               <nodeVersion>v5.6.0</nodeVersion>
-              <npmVersion>3.6.0</npmVersion>
+              <yarnVersion>v0.20.3</yarnVersion>
             </configuration>
           </execution>
 
           <execution>
-            <id>npm install</id>
+            <id>yarn install</id>
             <goals>
-              <goal>npm</goal>
+              <goal>yarn</goal>
             </goals>
             <configuration>
               <arguments>install</arguments>

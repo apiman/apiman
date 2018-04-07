@@ -29,14 +29,14 @@ import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
+
+import static org.junit.Assert.assertTrue;
 
 /**
  * Prometheus scrape metrics tests.
@@ -51,10 +51,10 @@ public class BasicMetricsTest {
 
     @Before
     public void before() throws InterruptedException {
-        CountDownLatch latch = new CountDownLatch(1);
+        final CountDownLatch latch = new CountDownLatch(1);
         client = new OkHttpClient();
 
-        Map<String, String> promConfig = new HashMap<>();
+        final Map<String, String> promConfig = new HashMap<>();
         promConfig.put("port", "9876");
         this.prometheusMetrics = new PrometheusScrapeMetrics(promConfig, result -> latch.countDown());
         prometheusMetrics.setComponentRegistry(null);
@@ -64,73 +64,78 @@ public class BasicMetricsTest {
 
     @After
     public void after() throws InterruptedException {
-        CountDownLatch latch = new CountDownLatch(1);
+        final CountDownLatch latch = new CountDownLatch(1);
 
         prometheusMetrics.close(result -> {
-            if (result.failed())
-                throw new RuntimeException(result.cause());
+            if (result.failed()) throw new RuntimeException(result.cause());
             latch.countDown();
         });
 
         latch.await();
     }
 
-    @Test @Ignore
-    public void validMetrics() throws IOException {
+    @Test
+    public void validMetrics_WithClientId() throws IOException {
         @SuppressWarnings("serial")
-        Set<String> expected = new LinkedHashSet<String>(){{
+        final Set<String> expected = new LinkedHashSet<String>(){{
             add("apiman_request_duration_milliseconds_count{method=\"GET\",responseCode=\"200\",api=\"apiId\",apiVersion=\"apiVersion\",client=\"clientId\",} 1.0");
             add("apiman_request_duration_milliseconds_sum{method=\"GET\",responseCode=\"200\",api=\"apiId\",apiVersion=\"apiVersion\",client=\"clientId\",} 644.0");
             add("apiman_requests_total{method=\"GET\",responseCode=\"200\",api=\"apiId\",apiVersion=\"apiVersion\",client=\"clientId\",} 1.0");
         }};
 
-        RequestMetric requestMetric = new RequestMetric();
-        requestMetric.setClientId("clientId");
-        requestMetric.setClientOrgId("clientOrgId");
-        requestMetric.setClientVersion("clientVersion");
-        requestMetric.setContractId("contractId");
-        requestMetric.setError(false);
-        requestMetric.setFailure(false);
-        requestMetric.setMethod("GET");
-        requestMetric.setPlanId("planId");
-        requestMetric.setRequestDuration(9001);
-        requestMetric.setRequestStart(new Date(1440770200));
-        requestMetric.setRequestEnd(new Date(1440770844));
-        requestMetric.setResource("/wibble");
-        requestMetric.setResponseCode(200);
-        requestMetric.setResponseMessage("hamsters are cool");
-        requestMetric.setApiDuration(1000);
-        requestMetric.setApiStart(new Date(1440770233));
-        requestMetric.setApiEnd(new Date(1440770822));
-        requestMetric.setApiId("apiId");
-        requestMetric.setApiOrgId("apiOrgId");
-        requestMetric.setApiVersion("apiVersion");
-        requestMetric.setUser("user");
-        //Record it
+        final RequestMetric requestMetric = buildRequestMetric("clientId", false, 200, "hamsters are cool");
         prometheusMetrics.record(requestMetric);
 
-        Request request = new Request.Builder().url("http://localhost:9876/").get().build();
-        Response response = client.newCall(request).execute();
-        String rString = response.body().string();
-        Assert.assertTrue(equals(expected, rString));
+        final Request request = new Request.Builder().url("http://localhost:9876/").get().build();
+        final Response response = client.newCall(request).execute();
+        final String rString = response.body().string();
+        assertTrue(equals(expected, rString));
     }
 
-    @Test @Ignore
+    @Test
+    public void validMetrics_NullClientId() throws IOException {
+        @SuppressWarnings("serial")
+        final Set<String> expected = new LinkedHashSet<String>(){{
+            add("apiman_request_duration_milliseconds_count{method=\"GET\",responseCode=\"200\",api=\"apiId\",apiVersion=\"apiVersion\",client=\"\",} 1.0");
+            add("apiman_request_duration_milliseconds_sum{method=\"GET\",responseCode=\"200\",api=\"apiId\",apiVersion=\"apiVersion\",client=\"\",} 644.0");
+            add("apiman_requests_total{method=\"GET\",responseCode=\"200\",api=\"apiId\",apiVersion=\"apiVersion\",client=\"\",} 1.0");
+        }};
+
+        final RequestMetric requestMetric = buildRequestMetric(null, false, 200, "hamsters are cool");
+        prometheusMetrics.record(requestMetric);
+
+        final Request request = new Request.Builder().url("http://localhost:9876/").get().build();
+        final Response response = client.newCall(request).execute();
+        final String rString = response.body().string();
+        assertTrue(equals(expected, rString));
+    }
+
+    @Test
     public void errorMetrics() throws IOException {
         @SuppressWarnings("serial")
-        Set<String> expected = new LinkedHashSet<String>(){{
+        final Set<String> expected = new LinkedHashSet<String>(){{
             add("apiman_request_duration_milliseconds_count{method=\"GET\",responseCode=\"404\",api=\"apiId\",apiVersion=\"apiVersion\",client=\"clientId\",} 1.0");
             add("apiman_request_duration_milliseconds_sum{method=\"GET\",responseCode=\"404\",api=\"apiId\",apiVersion=\"apiVersion\",client=\"clientId\",} 644.0");
             add("apiman_requests_total{method=\"GET\",responseCode=\"404\",api=\"apiId\",apiVersion=\"apiVersion\",client=\"clientId\",} 1.0");
             add("apiman_errors_total{method=\"GET\",responseCode=\"404\",api=\"apiId\",apiVersion=\"apiVersion\",client=\"clientId\",} 1.0");
         }};
 
-        RequestMetric requestMetric = new RequestMetric();
-        requestMetric.setClientId("clientId");
+        final RequestMetric requestMetric = buildRequestMetric("clientId", true, 404, "could not find hamsters");
+        prometheusMetrics.record(requestMetric);
+
+        final Request request = new Request.Builder().url("http://localhost:9876/").get().build();
+        final Response response = client.newCall(request).execute();
+        final String rString = response.body().string();
+        assertTrue(equals(expected, rString));
+    }
+
+    private RequestMetric buildRequestMetric(String clientId, boolean error, int responseCode, String responseMessage) {
+        final RequestMetric requestMetric = new RequestMetric();
+        requestMetric.setClientId(clientId);
         requestMetric.setClientOrgId("clientOrgId");
         requestMetric.setClientVersion("clientVersion");
         requestMetric.setContractId("contractId");
-        requestMetric.setError(true);
+        requestMetric.setError(error);
         requestMetric.setFailure(false);
         requestMetric.setMethod("GET");
         requestMetric.setPlanId("planId");
@@ -138,8 +143,8 @@ public class BasicMetricsTest {
         requestMetric.setRequestStart(new Date(1440770200));
         requestMetric.setRequestEnd(new Date(1440770844));
         requestMetric.setResource("/wibble");
-        requestMetric.setResponseCode(404);
-        requestMetric.setResponseMessage("could not find hamsters");
+        requestMetric.setResponseCode(responseCode);
+        requestMetric.setResponseMessage(responseMessage);
         requestMetric.setApiDuration(1000);
         requestMetric.setApiStart(new Date(1440770233));
         requestMetric.setApiEnd(new Date(1440770822));
@@ -147,21 +152,14 @@ public class BasicMetricsTest {
         requestMetric.setApiOrgId("apiOrgId");
         requestMetric.setApiVersion("apiVersion");
         requestMetric.setUser("user");
-        //Record it
-        prometheusMetrics.record(requestMetric);
-
-        Request request = new Request.Builder().url("http://localhost:9876/").get().build();
-        Response response = client.newCall(request).execute();
-        String rString = response.body().string();
-        Assert.assertTrue(equals(expected, rString));
+        return requestMetric;
     }
 
     private boolean equals(Set<String> expected, String actualRaw) {
-        List<String> lines = new ArrayList<>(Arrays.asList(actualRaw.split(System.getProperty("line.separator"))));
+        final List<String> lines = new ArrayList<>(Arrays.asList(actualRaw.split(System.getProperty("line.separator"))));
 
         return lines.stream()
                 .filter( e -> !e.isEmpty() && e.charAt(0) != '#' )
-                .allMatch( e -> expected.contains(e) );
+                .allMatch(expected::contains);
     }
-
 }

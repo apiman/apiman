@@ -69,6 +69,17 @@ public interface IEngineConfig {
     public Class<? extends IConnectorFactory> getConnectorFactoryClass(IPluginRegistry pluginRegistry);
 
     /**
+     * @param pluginRegistry the plugin registry
+     * @return the class to use as the {@link IApiRequestPathParser}
+     */
+    public Class<? extends IApiRequestPathParser> getApiRequestPathParserClass(IPluginRegistry pluginRegistry);
+
+    /**
+     * @return all properties to be passed to the path parser
+     */
+    public Map<String, String> getApiRequestPathParserConfig();
+
+    /**
      * @return all properties to be passed to the factory
      */
     public Map<String, String> getConnectorFactoryConfig();

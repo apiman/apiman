@@ -4,20 +4,79 @@
   <parent>
     <groupId>io.apiman</groupId>
     <artifactId>apiman-distro</artifactId>
-    <version>1.2.10-SNAPSHOT</version>
+    <version>1.3.2-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>apiman-distro-wildfly10</artifactId>
   <packaging>pom</packaging>
   <name>apiman-distro-wildfly10</name>
 
+  <properties>
+    <docker.wildfly.version>wildfly10</docker.wildfly.version>
+    <docker.base-image>jboss/wildfly:10.1.0.Final</docker.base-image>
+    <docker.target-image-name>apiman/on-wildfly10:master</docker.target-image-name>
+    <docker.target-image-name.alias>wildfly10-master</docker.target-image-name.alias>
+  </properties>
+
   <dependencies>
+    <!-- The WildFly 8 version of APIMan -->
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>apiman-distro-wildfly9</artifactId>
-      <classifier>overlay</classifier>
+      <artifactId>apiman-manager-api-war-wildfly8</artifactId>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-manager-ui-war-wildfly8</artifactId>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-gateway-platforms-war-wildfly8-api</artifactId>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-gateway-platforms-war-wildfly8-gateway</artifactId>
+      <type>war</type>
+    </dependency>
+
+    <!-- Other apiman modules -->
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-gateway-engine-beans</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-distro-data</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-distro-es</artifactId>
+      <type>war</type>
+    </dependency>
+
+    <!-- KeyCloak -->
+    <dependency>
+      <groupId>org.keycloak</groupId>
+      <artifactId>keycloak-server-overlay</artifactId>
       <type>zip</type>
-      <version>${project.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.keycloak</groupId>
+          <artifactId>keycloak-jboss-modules</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.keycloak</groupId>
+          <artifactId>keycloak-server-feature-pack</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.keycloak</groupId>
+      <artifactId>keycloak-wildfly-adapter-dist</artifactId>
+      <version>${version.org.keycloak}</version>
+      <type>zip</type>
     </dependency>
   </dependencies>
 
@@ -29,6 +88,39 @@
         <configuration>
           <skip>true</skip>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>unpack</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.keycloak</groupId>
+                  <artifactId>keycloak-server-overlay</artifactId>
+                  <version>${version.org.keycloak}</version>
+                  <type>zip</type>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${project.build.directory}/keycloak</outputDirectory>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.keycloak</groupId>
+                  <artifactId>keycloak-wildfly-adapter-dist</artifactId>
+                  <version>${version.org.keycloak}</version>
+                  <type>zip</type>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${project.build.directory}/keycloak</outputDirectory>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
@@ -47,6 +139,7 @@
               <archiverConfig>
                 <defaultDirectoryMode>0755</defaultDirectoryMode>
               </archiverConfig>
+              <archiveBaseDirectory>${project.basedir}</archiveBaseDirectory>
             </configuration>
           </execution>
         </executions>
@@ -58,32 +151,52 @@
     <profile>
         <id>docker</id>
         <build>
-            <finalName>${project.artifactId}</finalName>
-            <plugins>
-          <plugin>
-            <groupId>com.spotify</groupId>
-            <artifactId>docker-maven-plugin</artifactId>
-            <version>0.1.1</version>
-            <executions>
-              <execution>
-                <phase>package</phase>
-                <goals>
-                  <goal>build</goal>
-                </goals>
-              </execution>
-            </executions>
-            <configuration>
-              <imageName>${project.artifactId}:${project.version}</imageName>
-              <dockerDirectory>${project.basedir}/src/main/docker</dockerDirectory>
-              <resources>
-                <resource>
-                  <targetPath>/</targetPath>
-                  <directory>${project.build.directory}</directory>
-                  <include>${project.artifactId}-overlay.zip</include>
-                </resource>
-              </resources>
-            </configuration>
-          </plugin>
+          <plugins>
+            <plugin>
+              <groupId>io.fabric8</groupId>
+              <artifactId>docker-maven-plugin</artifactId>
+              <version>${version.docker.plugin}</version>
+              <executions>
+                <execution>
+                  <id>docker-build</id>
+                  <goals>
+                    <goal>build</goal>
+                  </goals>
+                </execution>
+              </executions>
+              <configuration>
+                <images>
+                  <image>
+                    <name>${docker.target-image-name}</name>
+                    <alias>${docker.target-image-name.alias}</alias>
+                    <build>
+                      <dockerFileDir>${project.basedir}/src/main/docker</dockerFileDir>
+                      <assembly>
+                        <inline>
+                          <fileSets>
+                            <fileSet>
+                              <includes>
+                                <include>target/${project.artifactId}-${project.version}-overlay.zip</include>
+                              </includes>
+                              <outputDirectory></outputDirectory>
+                              <filtered>false</filtered>
+                              <directoryMode>0755</directoryMode>
+                              <fileMode>0755</fileMode>
+                            </fileSet>
+                          </fileSets>
+                        </inline>
+                      </assembly>
+                    </build>
+                    <run>
+                      <ports>
+                        <port>8080:8080</port>
+                        <port>8443:8443</port>
+                      </ports>
+                    </run>
+                  </image>
+                </images>
+              </configuration>
+            </plugin>
         </plugins>
       </build>
     </profile>

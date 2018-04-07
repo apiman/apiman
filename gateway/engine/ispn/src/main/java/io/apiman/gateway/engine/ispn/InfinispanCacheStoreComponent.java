@@ -86,7 +86,7 @@ public class InfinispanCacheStoreComponent extends AbstractInfinispanComponent i
             private boolean finished = false;
             private boolean aborted = false;
             @Override
-            public void abort() {
+            public void abort(Throwable t) {
                 aborted = true;
                 finished = false;
             }
@@ -178,7 +178,7 @@ public class InfinispanCacheStoreComponent extends AbstractInfinispanComponent i
                             return finished;
                         }
                         @Override
-                        public void abort() {
+                        public void abort(Throwable t) {
                             finished = true;
                         }
                         @Override

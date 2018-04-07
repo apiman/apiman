@@ -33,4 +33,8 @@ public class InvalidContractException extends AbstractEngineException {
         super(message);
     }
 
+    public InvalidContractException(String message, Exception e) {
+        super(message, e);
+    }
+
 }

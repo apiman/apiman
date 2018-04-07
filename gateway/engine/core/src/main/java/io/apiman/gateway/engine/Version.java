@@ -21,23 +21,23 @@ import java.net.URL;
 import java.util.Date;
 import java.util.Properties;
 
-import org.apache.commons.io.IOUtils;
-
 /**
  * Accessor - used to get the current version of the engine.
  *
  * @author eric.wittmann@redhat.com
  */
 public class Version {
-    
+
     private static final Version instance = new Version();
     public static final Version get() {
         return instance;
     }
-    
+
+    private Properties allProperties;
     private String versionString;
     private String versionDate;
-    
+    private String vcsDescribe;
+
     /**
      * Constructor.
      */
@@ -48,23 +48,21 @@ public class Version {
     /**
      * Loads the version info from version.properties.
      */
+    @SuppressWarnings("nls")
     private void load() {
-        URL url = Version.class.getResource("version.properties"); //$NON-NLS-1$
+        URL url = Version.class.getResource("version.properties");
         if (url == null) {
-            this.versionString = "Unknown"; //$NON-NLS-1$
+            this.versionString = "Unknown";
             this.versionDate = new Date().toString();
         } else {
-            InputStream is = null;
-            Properties props = new Properties();
-            try {
-                is = url.openStream();
-                props.load(is);
-                this.versionString = props.getProperty("version", "Unknown"); //$NON-NLS-1$ //$NON-NLS-2$
-                this.versionDate = props.getProperty("date", new Date().toString()); //$NON-NLS-1$
+            allProperties = new Properties();
+            try(InputStream is = url.openStream()){
+                allProperties.load(is);
+                this.versionString = allProperties.getProperty("version", "Unknown");
+                this.versionDate = allProperties.getProperty("date", new Date().toString());
+                this.vcsDescribe = allProperties.getProperty("git.commit.id.describe", "Non-Git Build");
             } catch (IOException e) {
                 throw new RuntimeException(e);
-            } finally {
-                IOUtils.closeQuietly(is);
             }
         }
     }
@@ -81,6 +79,23 @@ public class Version {
      */
     public String getVersionDate() {
         return versionDate;
+    }
+
+    /**
+     * @return the verbose version output
+     */
+    public String getVerbose() {
+        return allProperties.toString();
+    }
+
+    /**
+     * The version control system (VCS) commit description. Particularly useful for identifying which
+     * code point a SNAPSHOT was using. Presently git.
+     *
+     * @return the VCS commit description
+     */
+    public String getVcsCommitDescription() {
+        return vcsDescribe;
     }
 
 }

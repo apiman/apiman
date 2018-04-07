@@ -9,7 +9,10 @@
     <test name="Success 3">test-plan-data/policies/rate-limiting/003-success.resttest</test>
     <test name="Success 4">test-plan-data/policies/rate-limiting/003-success.resttest</test>
     <test name="Success 5">test-plan-data/policies/rate-limiting/003-success.resttest</test>
-    <test name="Failure">test-plan-data/policies/rate-limiting/004-failure.resttest</test>
+    <test name="Failure 1">test-plan-data/policies/rate-limiting/004-failure.resttest</test>
+    <test name="Register Client With Ip policy" endpoint="api">test-plan-data/policies/rate-limiting/005-register-client-ip-policy.resttest</test>
+    <test name="Success 6">test-plan-data/policies/rate-limiting/006-success-ip-address.resttest</test>
+    <test name="Failure 2">test-plan-data/policies/rate-limiting/007-failure-ip-address.resttest</test>
   </testGroup>
 
 </testPlan>

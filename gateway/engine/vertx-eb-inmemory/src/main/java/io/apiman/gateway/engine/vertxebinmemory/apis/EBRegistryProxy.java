@@ -18,7 +18,6 @@ package io.apiman.gateway.engine.vertxebinmemory.apis;
 import io.apiman.gateway.engine.beans.Api;
 import io.apiman.gateway.engine.beans.Client;
 import io.vertx.core.Vertx;
-import io.vertx.core.eventbus.DeliveryOptions;
 
 /**
  * Publishes mutating events onto the event bus for listeners to consume. A UUID is sent to avoid circular
@@ -27,9 +26,8 @@ import io.vertx.core.eventbus.DeliveryOptions;
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 public class EBRegistryProxy {
-    Vertx vertx;
-    DeliveryOptions options;
-    String address;
+    private final Vertx vertx;
+    private final String address;
     private String uuid;
 
     public static final String REGISTER = "register"; //$NON-NLS-1$

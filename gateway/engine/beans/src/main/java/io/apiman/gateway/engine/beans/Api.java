@@ -194,6 +194,20 @@ public class Api implements Serializable {
     }
 
     /**
+     * @return the maxPayloadBufferSize
+     */
+    public long getMaxPayloadBufferSize() {
+        return maxPayloadBufferSize;
+    }
+
+    /**
+     * @param maxPayloadBufferSize the maxPayloadBufferSize to set
+     */
+    public void setMaxPayloadBufferSize(long maxPayloadBufferSize) {
+        this.maxPayloadBufferSize = maxPayloadBufferSize;
+    }
+
+    /**
      * @see java.lang.Object#hashCode()
      */
     @Override
@@ -264,20 +278,6 @@ public class Api implements Serializable {
         }
         builder.append("]");
         return builder.toString();
-    }
-
-    /**
-     * @return the maxPayloadBufferSize
-     */
-    public long getMaxPayloadBufferSize() {
-        return maxPayloadBufferSize;
-    }
-
-    /**
-     * @param maxPayloadBufferSize the maxPayloadBufferSize to set
-     */
-    public void setMaxPayloadBufferSize(long maxPayloadBufferSize) {
-        this.maxPayloadBufferSize = maxPayloadBufferSize;
     }
 
 }

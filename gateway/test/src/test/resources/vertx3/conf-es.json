@@ -1,9 +1,20 @@
 { // Example ElasticSearch based config
+
+  "variables": {
+    "test": {
+      "foo": {
+        "es": {
+          "type": "jest"
+        }
+      }
+    }
+  },
+
   "registry": {
     "class": "io.apiman.gateway.engine.es.ESRegistry",
     "config": {
       "client": {
-        "type": "jest",
+        "type": "${test.foo.es.type}",
         "cluster-name": "elasticsearch",
         "host": "localhost",
         "port": "9200",
@@ -47,7 +58,7 @@
   },
 
   "logger-factory": {
-    "class": "io.apiman.gateway.platforms.vertx3.common.config.VertxLoggerDelegate",
+    "class": "io.apiman.gateway.platforms.vertx3.logging.VertxLoggerDelegate",
     "config": {}
   },
 
@@ -144,10 +155,11 @@
 
   // API authentication; presently just BASIC auth.
   "auth": {
-    "required": "basic",
-    "realm": "apiman-gateway",
-    "basic": { // Password is SHA256 digest encoded as Base64.
-      "admin" : "jGl25bVBBBW96Qi9Te4V37Fnqchz/Eu4qB9vKrRIqRg="
+    "type": "basic",
+    "config": {
+        "realm": "apiman-gateway",
+        "username" : "admin",
+        "password": "admin"
     }
   },
 

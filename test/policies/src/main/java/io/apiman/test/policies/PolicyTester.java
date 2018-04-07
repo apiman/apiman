@@ -63,8 +63,8 @@ public class PolicyTester extends BlockJUnit4ClassRunner {
 
     /**
      * Constructor.
-     * @param testClass
-     * @throws InitializationError
+     * @param testClass the test class
+     * @throws InitializationError initializationerror if error on init
      */
     public PolicyTester(Class<?> testClass) throws InitializationError {
         super(testClass);
@@ -247,6 +247,10 @@ public class PolicyTester extends BlockJUnit4ClassRunner {
                         throw new RuntimeException("Plugins not supported.");
                     }
                 };
+            }
+
+            @Override
+            protected void complete() {
             }
         };
         return factory.createEngine();

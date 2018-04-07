@@ -15,17 +15,19 @@
  */
 package io.apiman.gateway.engine.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.apiman.gateway.engine.IApiClientResponse;
 import io.apiman.gateway.engine.IPolicyErrorWriter;
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.EngineErrorResponse;
+import io.apiman.gateway.engine.beans.exceptions.IStatusCode;
 
 import java.io.StringWriter;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * A default implementation of the error formatter.
@@ -60,12 +62,18 @@ public class DefaultPolicyErrorWriter implements IPolicyErrorWriter {
         if (request != null && request.getApi() != null && "xml".equals(request.getApi().getEndpointContentType())) {
             isXml = true;
         }
+        String message = createErrorMessage(request, error);
+        // TODO get and/or print ultimate cause?
+        response.setHeader("X-Gateway-Error", message);
 
-        response.setHeader("X-Gateway-Error", error.getMessage());
-        response.setStatusCode(500);
+        int statusCode = 500;
+        if (error instanceof IStatusCode) {
+            statusCode = ((IStatusCode) error).getStatusCode();
+        }
+        response.setStatusCode(statusCode);
 
-        EngineErrorResponse eer = createErrorResponse(error);
-
+        // #createErrorResponse can be overriden by subclasses (e.g. trace). So need to be careful.
+        EngineErrorResponse eer = createErrorResponse(error, message, statusCode);
         if (isXml) {
             response.setHeader("Content-Type", "application/xml");
             try {
@@ -88,13 +96,20 @@ public class DefaultPolicyErrorWriter implements IPolicyErrorWriter {
         }
     }
 
+    protected String createErrorMessage(ApiRequest request, Throwable error) {
+        if (error.getMessage() == null) {
+            return error.getClass().getCanonicalName() + " error occurred with no message. Refer to logs.";
+        }
+        return error.getMessage();
+    }
+
     /**
      * @param error
      */
-    protected EngineErrorResponse createErrorResponse(Throwable error) {
+    protected EngineErrorResponse createErrorResponse(Throwable error, String message, int statusCode) {
         EngineErrorResponse eer = new EngineErrorResponse();
-        eer.setResponseCode(500);
-        eer.setMessage(error.getMessage());
+        eer.setResponseCode(statusCode);
+        eer.setMessage(message);
         return eer;
     }
 

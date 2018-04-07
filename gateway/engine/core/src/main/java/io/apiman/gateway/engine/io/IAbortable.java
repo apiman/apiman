@@ -23,6 +23,14 @@ package io.apiman.gateway.engine.io;
 public interface IAbortable {
     /**
      * Signal abort.
+     * @param t the throwable
      */
-    void abort();
+    void abort(Throwable t);
+
+    /**
+     * Signal abort.
+     */
+    default void abort() {
+        abort(null);
+    }
 }

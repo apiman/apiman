@@ -23,7 +23,10 @@ import io.apiman.gateway.engine.beans.Api;
 import io.apiman.gateway.engine.beans.ApiContract;
 import io.apiman.gateway.engine.beans.Client;
 import io.apiman.gateway.engine.beans.Contract;
-import io.apiman.gateway.engine.beans.exceptions.InvalidContractException;
+import io.apiman.gateway.engine.beans.exceptions.ApiNotFoundException;
+import io.apiman.gateway.engine.beans.exceptions.ApiRetiredException;
+import io.apiman.gateway.engine.beans.exceptions.ClientNotFoundException;
+import io.apiman.gateway.engine.beans.exceptions.NoContractFoundException;
 import io.apiman.gateway.engine.beans.exceptions.PublishingException;
 import io.apiman.gateway.engine.beans.exceptions.RegistrationException;
 import io.apiman.gateway.engine.jdbc.i18n.Messages;
@@ -33,31 +36,33 @@ import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.dbutils.DbUtils;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
+import org.apache.commons.dbutils.handlers.AbstractListHandler;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * A JDBC implementation of the gateway registry.  Only suitable for a 
- * synchronous environment - should not be used when running an async 
+ * A JDBC implementation of the gateway registry.  Only suitable for a
+ * synchronous environment - should not be used when running an async
  * Gateway (e.g. vert.x).
- * 
+ *
  * Must be configured with the JNDI location of the datasource to use.
  * Example:
- * 
+ *
  *     apiman-gateway.registry=io.apiman.gateway.engine.jdbc.JdbcRegistry
  *     apiman-gateway.registry.datasource.jndi-location=java:jboss/datasources/apiman-gateway
- * 
+ *
  * @author ewittman
  */
 public class JdbcRegistry extends AbstractJdbcComponent implements IRegistry {
-    
+
     protected static final ObjectMapper mapper = new ObjectMapper();
 
     /**
@@ -67,7 +72,7 @@ public class JdbcRegistry extends AbstractJdbcComponent implements IRegistry {
     public JdbcRegistry(Map<String, String> config) {
         super(config);
     }
-    
+
     /**
      * @see io.apiman.gateway.engine.IRegistry#publishApi(io.apiman.gateway.engine.beans.Api, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
@@ -94,7 +99,7 @@ public class JdbcRegistry extends AbstractJdbcComponent implements IRegistry {
             handler.handle(AsyncResultImpl.create(e));
         }
     }
-    
+
     /**
      * @see io.apiman.gateway.engine.IRegistry#registerClient(io.apiman.gateway.engine.beans.Client, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
@@ -116,7 +121,7 @@ public class JdbcRegistry extends AbstractJdbcComponent implements IRegistry {
             String bean = mapper.writeValueAsString(client);
             run.update(conn, "INSERT INTO gw_clients (api_key, org_id, id, version, bean) VALUES (?, ?, ?, ?, ?)",  //$NON-NLS-1$
                     client.getApiKey(), client.getOrganizationId(), client.getClientId(), client.getVersion(), bean);
-            
+
             DbUtils.commitAndClose(conn);
             handler.handle(AsyncResultImpl.create((Void) null));
         } catch (Exception re) {
@@ -128,7 +133,7 @@ public class JdbcRegistry extends AbstractJdbcComponent implements IRegistry {
     /**
      * Removes all of the api contracts from the database.
      * @param client
-     * @param connection 
+     * @param connection
      * @throws SQLException
      */
     protected void unregisterApiContracts(Client client, Connection connection) throws SQLException {
@@ -152,7 +157,7 @@ public class JdbcRegistry extends AbstractJdbcComponent implements IRegistry {
             if (api == null) {
                 String apiId = contract.getApiId();
                 String orgId = contract.getApiOrgId();
-                throw new RegistrationException(Messages.i18n.format("JdbcRegistry.ApiNotFoundInOrg", apiId, orgId));  //$NON-NLS-1$
+                throw new ApiNotFoundException(Messages.i18n.format("JdbcRegistry.ApiNotFoundInOrg", apiId, orgId));  //$NON-NLS-1$
             }
         } catch (SQLException e) {
             throw new RegistrationException(Messages.i18n.format("JdbcRegistry.ErrorValidatingApp"), e); //$NON-NLS-1$
@@ -188,7 +193,7 @@ public class JdbcRegistry extends AbstractJdbcComponent implements IRegistry {
             handler.handle(AsyncResultImpl.create(e));
         }
     }
-    
+
     /**
      * @see io.apiman.gateway.engine.IRegistry#unregisterClient(io.apiman.gateway.engine.beans.Client, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
@@ -203,7 +208,7 @@ public class JdbcRegistry extends AbstractJdbcComponent implements IRegistry {
             handler.handle(AsyncResultImpl.create(new PublishingException(Messages.i18n.format("JdbcRegistry.ErrorUnregisteringApp"), e), Void.class)); //$NON-NLS-1$
         }
     }
-    
+
     /**
      * @see io.apiman.gateway.engine.IRegistry#getApi(java.lang.String, java.lang.String, java.lang.String, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
@@ -215,6 +220,20 @@ public class JdbcRegistry extends AbstractJdbcComponent implements IRegistry {
             handler.handle(AsyncResultImpl.create(api));
         } catch (SQLException e) {
             handler.handle(AsyncResultImpl.create(e));
+        }
+    }
+
+
+    @Override
+    public void getClient(String organizationId, String clientId, String clientVersion,
+            IAsyncResultHandler<Client> handler) {
+        try {
+            QueryRunner run = new QueryRunner(ds);
+            Client client = run.query("SELECT bean FROM gw_clients WHERE org_id = ? AND id = ? AND version = ?", //$NON-NLS-1$
+                    Handlers.CLIENT_HANDLER, organizationId, clientId, clientVersion);
+            handler.handle(AsyncResultImpl.create(client));
+        } catch (SQLException e) {
+            handler.handle(AsyncResultImpl.create(e, Client.class));
         }
     }
 
@@ -254,7 +273,7 @@ public class JdbcRegistry extends AbstractJdbcComponent implements IRegistry {
         return run.query("SELECT bean FROM gw_clients WHERE api_key = ?", //$NON-NLS-1$
                 Handlers.CLIENT_HANDLER, apiKey);
     }
-    
+
     /**
      * @see io.apiman.gateway.engine.IRegistry#getContract(java.lang.String, java.lang.String, java.lang.String, java.lang.String, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
@@ -266,17 +285,17 @@ public class JdbcRegistry extends AbstractJdbcComponent implements IRegistry {
             Api api = getApiInternal(apiOrganizationId, apiId, apiVersion);
 
             if (client == null) {
-                Exception error = new InvalidContractException(Messages.i18n.format("JdbcRegistry.NoClientForAPIKey", apiKey)); //$NON-NLS-1$
+                Exception error = new ClientNotFoundException(Messages.i18n.format("JdbcRegistry.NoClientForAPIKey", apiKey)); //$NON-NLS-1$
                 handler.handle(AsyncResultImpl.create(error, ApiContract.class));
                 return;
             }
             if (api == null) {
-                Exception error = new InvalidContractException(Messages.i18n.format("JdbcRegistry.ApiWasRetired", //$NON-NLS-1$
+                Exception error = new ApiRetiredException(Messages.i18n.format("JdbcRegistry.ApiWasRetired", //$NON-NLS-1$
                         apiId, apiOrganizationId));
                 handler.handle(AsyncResultImpl.create(error, ApiContract.class));
                 return;
             }
-            
+
             Contract matchedContract = null;
             for (Contract contract : client.getContracts()) {
                 if (contract.matches(apiOrganizationId, apiId, apiVersion)) {
@@ -284,18 +303,91 @@ public class JdbcRegistry extends AbstractJdbcComponent implements IRegistry {
                     break;
                 }
             }
-            
+
             if (matchedContract == null) {
-                Exception error = new InvalidContractException(Messages.i18n.format("JdbcRegistry.NoContractFound", //$NON-NLS-1$
+                Exception error = new NoContractFoundException(Messages.i18n.format("JdbcRegistry.NoContractFound", //$NON-NLS-1$
                         client.getClientId(), api.getApiId()));
                 handler.handle(AsyncResultImpl.create(error, ApiContract.class));
                 return;
             }
-            
+
             ApiContract contract = new ApiContract(api, client, matchedContract.getPlan(), matchedContract.getPolicies());
             handler.handle(AsyncResultImpl.create(contract));
         } catch (Exception e) {
             handler.handle(AsyncResultImpl.create(e, ApiContract.class));
+        }
+    }
+
+    @Override
+    public void listApis(String organizationId, int page, int pageSize, IAsyncResultHandler<List<String>> handler) {
+        QueryRunner run = new QueryRunner(ds);
+        try {
+            List<String> apiList = run.query("SELECT DISTINCT id FROM gw_apis WHERE org_id = ?",
+                    Handlers.STRING_LIST_COL1_HANDLER, organizationId);
+            handler.handle(AsyncResultImpl.create(apiList));
+        } catch (SQLException e) {
+            handler.handle(AsyncResultImpl.create(e));
+        }
+    }
+
+    @Override
+    @SuppressWarnings("nls")
+    public void listOrgs(IAsyncResultHandler<List<String>> handler) {
+        QueryRunner run = new QueryRunner(ds);
+        try {
+            List<String> orgList = run.query("SELECT DISTINCT merged.org_id\n" +
+                    "FROM\n" +
+                    "    (\n" +
+                    "        SELECT\n" +
+                    "            org_id\n" +
+                    "        FROM\n" +
+                    "            gw_apis\n" +
+                    "    UNION \n" +
+                    "        SELECT\n" +
+                    "            org_id\n" +
+                    "        FROM\n" +
+                    "            gw_clients\n" +
+                    "    ) merged;",
+                    Handlers.STRING_LIST_COL1_HANDLER);
+            handler.handle(AsyncResultImpl.create(orgList));
+        } catch (SQLException e) {
+            handler.handle(AsyncResultImpl.create(e));
+        }
+    }
+
+    @Override
+    public void listApiVersions(String organizationId, String apiId, int page, int pageSize, IAsyncResultHandler<List<String>> handler) {
+        QueryRunner run = new QueryRunner(ds);
+        try {
+            List<String> apiVersions = run.query("SELECT DISTINCT version FROM gw_apis WHERE org_id = ? AND id = ?",
+                    Handlers.STRING_LIST_COL1_HANDLER, organizationId, apiId);
+            handler.handle(AsyncResultImpl.create(apiVersions));
+        } catch (SQLException e) {
+            handler.handle(AsyncResultImpl.create(e));
+        }
+    }
+
+    @Override
+    public void listClients(String organizationId, int page, int pageSize, IAsyncResultHandler<List<String>> handler) {
+        QueryRunner run = new QueryRunner(ds);
+        try {
+            List<String> clientList = run.query("SELECT DISTINCT id FROM gw_clients WHERE org_id = ?",
+                    Handlers.STRING_LIST_COL1_HANDLER, organizationId);
+            handler.handle(AsyncResultImpl.create(clientList));
+        } catch (SQLException e) {
+            handler.handle(AsyncResultImpl.create(e));
+        }
+    }
+
+    @Override
+    public void listClientVersions(String organizationId, String clientId, int page, int pageSize, IAsyncResultHandler<List<String>> handler) {
+        QueryRunner run = new QueryRunner(ds);
+        try {
+            List<String> clientVersions = run.query("SELECT DISTINCT version FROM gw_clients WHERE org_id = ? AND id = ?",
+                    Handlers.STRING_LIST_COL1_HANDLER, organizationId, clientId);
+            handler.handle(AsyncResultImpl.create(clientVersions));
+        } catch (SQLException e) {
+            handler.handle(AsyncResultImpl.create(e));
         }
     }
 
@@ -320,6 +412,15 @@ public class JdbcRegistry extends AbstractJdbcComponent implements IRegistry {
     }
 
     private static final class Handlers {
+        public static final AbstractListHandler<String> STRING_LIST_COL1_HANDLER = new AbstractListHandler<String>() {
+
+            @Override
+            protected String handleRow(ResultSet rs) throws SQLException {
+                return rs.getString(1);
+            }
+
+        };
+
         public static final ResultSetHandler<Api> API_HANDLER = (ResultSet rs) -> {
             if (!rs.next()) {
                 return null;
@@ -342,5 +443,5 @@ public class JdbcRegistry extends AbstractJdbcComponent implements IRegistry {
             }
         };
     }
-    
+
 }

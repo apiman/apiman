@@ -23,11 +23,8 @@ import org.apache.commons.lang3.text.StrLookup;
  *
  * @author eric.wittmann@redhat.com
  */
-public class ApimanStrLookup extends StrLookup {
+public class ApimanStrLookup extends StrLookup<String> {
 
-    /**
-     * @see org.apache.commons.lang.text.StrLookup#lookup(java.lang.String)
-     */
     @Override
     public String lookup(String key) {
         String replacement = System.getProperty(key);

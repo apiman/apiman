@@ -21,13 +21,11 @@ import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.core.net.JksOptions;
 
-import java.net.URL;
+import java.net.URI;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.net.ssl.SSLContext;
 
@@ -38,29 +36,19 @@ import javax.net.ssl.SSLContext;
  */
 public class HttpClientOptionsFactory {
     private static final String[] EMPTY = new String[]{};
-    private static Map<TLSOptions, HttpClientOptions> configCache = new HashMap<>();
     private static Logger log = LoggerFactory.getLogger(HttpClientOptionsFactory.class);
 
-    public static HttpClientOptions parseOptions(TLSOptions tlsOptions, URL apiEndpoint) {
-        if (configCache.containsKey(tlsOptions))
-            return configCache.get(tlsOptions);
-
-        HttpClientOptions clientOptions = doParse(tlsOptions, apiEndpoint);
-        configCache.put(tlsOptions, clientOptions);
-        return clientOptions;
-    }
-
-    private static HttpClientOptions doParse(TLSOptions tlsOptions, URL apiEndpoint) {
+    public static HttpClientOptions parseTlsOptions(TLSOptions tlsOptions, URI apiEndpoint) {
         HttpClientOptions clientOptions = new HttpClientOptions();
 
-        if (apiEndpoint.getProtocol().equals("http")) { //$NON-NLS-1$
+        if (apiEndpoint.getScheme().equals("http")) { //$NON-NLS-1$
             return clientOptions.setSsl(false);
         } else {
             clientOptions.setSsl(true);
         }
 
         clientOptions.setTrustAll(tlsOptions.isTrustSelfSigned() || tlsOptions.isDevMode())
-            .setVerifyHost(!tlsOptions.isAllowAnyHost() || tlsOptions.isDevMode());
+            .setVerifyHost(!(tlsOptions.isAllowAnyHost() || tlsOptions.isDevMode()));
 
         if (tlsOptions.getTrustStore() != null) {
             clientOptions.setTrustStoreOptions(

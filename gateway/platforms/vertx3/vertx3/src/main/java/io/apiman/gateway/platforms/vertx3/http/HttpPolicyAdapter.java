@@ -15,24 +15,21 @@
  */
 package io.apiman.gateway.platforms.vertx3.http;
 
-import io.apiman.common.util.MediaType;
+import io.apiman.gateway.engine.IApiClientResponse;
 import io.apiman.gateway.engine.IApiRequestExecutor;
 import io.apiman.gateway.engine.IEngine;
 import io.apiman.gateway.engine.IEngineResult;
+import io.apiman.gateway.engine.IPolicyErrorWriter;
+import io.apiman.gateway.engine.IPolicyFailureWriter;
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.ApiResponse;
-import io.apiman.gateway.engine.beans.EngineErrorResponse;
 import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.platforms.vertx3.io.VertxApimanBuffer;
-import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.buffer.Buffer;
-import io.vertx.core.http.HttpHeaders;
 import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.http.HttpServerResponse;
-import io.vertx.core.json.Json;
 import io.vertx.core.logging.Logger;
-
-import java.util.Map;
+import io.vertx.core.logging.LoggerFactory;
 
 /**
  * @author Marc Savy {@literal <msavy@redhat.com>}
@@ -40,22 +37,36 @@ import java.util.Map;
 public class HttpPolicyAdapter {
     private final HttpServerRequest vertxRequest;
     private final HttpServerResponse vertxResponse;
+    private final IPolicyFailureWriter policyFailureWriter;
+    private final IPolicyErrorWriter policyErrorWriter;
     private final IEngine engine;
-    private final Logger log;
+    private final Logger log = LoggerFactory.getLogger(HttpPolicyAdapter.class);
     private final boolean isTls;
 
     public HttpPolicyAdapter(HttpServerRequest req,
+                      IPolicyFailureWriter policyFailureWriter,
+                      IPolicyErrorWriter policyErrorWriter,
                       IEngine engine,
-                      Logger log,
                       boolean isTls) {
         this.vertxRequest = req;
+        this.policyFailureWriter = policyFailureWriter;
+        this.policyErrorWriter = policyErrorWriter;
         this.engine = engine;
-        this.log = log;
         this.isTls = isTls;
         this.vertxResponse = req.response();
     }
 
     public void execute() {
+        try {
+            _execute();
+        } catch (Exception ex) {
+            handleError(new ApiRequest(), ex, vertxResponse);
+        }
+    }
+
+    public void _execute() {
+        log.trace("Received request {0}", vertxRequest.absoluteURI()); //$NON-NLS-1$
+
         // First, pause the request to avoid losing any data
         vertxRequest.pause();
 
@@ -64,27 +75,35 @@ public class HttpPolicyAdapter {
 
         // Exception
         vertxRequest.exceptionHandler(ex -> {
-            handleError(vertxResponse, ex);
+            handleError(request, ex, vertxResponse);
         }); // TODO: Should probably log error also.
 
         // Set up executor to run conversation through apiman's policy engine.
         IApiRequestExecutor executor = engine.executor(request, result -> {
             if (result.isSuccess()) {
-                handleEngineResult(result.getResult());
+                handleEngineResult(request, result.getResult());
             } else {
                 // An unexpected problem occurred somewhere.
-                handleError(vertxResponse, result.getError());
+                handleError(request, result.getError(), vertxResponse);
             }
         });
 
         // Write data into executor. Called when ready.
         executor.streamHandler(writeStream -> {
             vertxRequest.handler(bufferChunk -> {
+                // Apply back-pressure.
+                if (writeStream.isFull()) {
+                    vertxRequest.pause();
+                }
                 // Wrap Vert.x buffer into apiman's buffer IR, then write into engine.
                 writeStream.write(new VertxApimanBuffer(bufferChunk));
             });
 
+            // Called when back-pressure has reduced sufficiently to resume.
+            writeStream.drainHandler(onDrain -> vertxRequest.resume());
+
             vertxRequest.endHandler(end -> writeStream.end());
+
             // Now safe to resume body transmission.
             vertxRequest.resume();
         });
@@ -93,7 +112,7 @@ public class HttpPolicyAdapter {
         executor.execute();
     }
 
-    private void handleEngineResult(IEngineResult engineResult) {
+    private void handleEngineResult(ApiRequest request, IEngineResult engineResult) {
         // Everything worked
         if (engineResult.isResponse()) {
             ApiResponse response = engineResult.getApiResponse();
@@ -110,55 +129,75 @@ public class HttpPolicyAdapter {
             engineResult.endHandler(end -> vertxResponse.end());
         } else { // Policy failure (i.e. denial - it's not an exception).
             log.debug(String.format("Failed with policy failure (denial): %s", engineResult.getPolicyFailure())); //$NON-NLS-1$
-            handlePolicyFailure(vertxResponse, engineResult.getPolicyFailure());
+            handlePolicyFailure(request, engineResult.getPolicyFailure(), vertxResponse);
         }
     }
 
-    private static void handleError(HttpServerResponse response, Throwable error) {
-        response.setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
-        response.setStatusMessage(HttpResponseStatus.INTERNAL_SERVER_ERROR.reasonPhrase());
-        response.headers().add("X-Gateway-Error", String.valueOf(error.getMessage())); //$NON-NLS-1$
-        response.headers().add(HttpHeaders.CONTENT_TYPE,  MediaType.APPLICATION_JSON);
+    private void handleError(ApiRequest apimanRequest, Throwable error, HttpServerResponse vertxResponse) {
+        vertxResponse.setChunked(true);
+        policyErrorWriter.write(apimanRequest, error, new IApiClientResponse() {
 
-        EngineErrorResponse errorResponse = new EngineErrorResponse();
-        errorResponse.setResponseCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
-        errorResponse.setMessage(error.getMessage());
-        errorResponse.setTrace(error);
-        response.setChunked(true);
-        response.write(Json.encode(errorResponse));
-        response.end();
+            @Override
+            public void write(StringBuffer buffer) {
+                vertxRequest.resume();
+                vertxResponse.end(buffer.toString());
+            }
+
+            @Override
+            public void write(StringBuilder builder) {
+                vertxRequest.resume();
+                vertxResponse.end(builder.toString());
+            }
+
+            @Override
+            public void write(String body) {
+                vertxRequest.resume();
+                vertxResponse.end(body);
+            }
+
+            @Override
+            public void setStatusCode(int code) {
+                vertxResponse.setStatusCode(code);
+            }
+
+            @Override
+            public void setHeader(String headerName, String headerValue) {
+                vertxResponse.putHeader(headerName, headerValue);
+            }
+        });
     }
 
-    private static void handlePolicyFailure(HttpServerResponse response, PolicyFailure failure) {
-        response.headers().add("X-Policy-Failure-Type", String.valueOf(failure.getType())); //$NON-NLS-1$
-        response.headers().add("X-Policy-Failure-Message", failure.getMessage()); //$NON-NLS-1$
-        response.headers().add("X-Policy-Failure-Code", String.valueOf(failure.getFailureCode())); //$NON-NLS-1$
-        response.headers().add(HttpHeaders.CONTENT_TYPE,  MediaType.APPLICATION_JSON);
+    private void handlePolicyFailure(ApiRequest apimanRequest, PolicyFailure policyFailure, HttpServerResponse vertxResponse) {
+        vertxResponse.setChunked(true);
+        policyFailureWriter.write(apimanRequest, policyFailure, new IApiClientResponse() {
 
-        int code = HttpResponseStatus.INTERNAL_SERVER_ERROR.code();
+            @Override
+            public void write(StringBuffer buffer) {
+                vertxRequest.resume();
+                vertxResponse.end(buffer.toString());
+            }
 
-        switch (failure.getType()) {
-        case Authentication:
-            code = HttpResponseStatus.UNAUTHORIZED.code();
-            break;
-        case Authorization:
-            code = HttpResponseStatus.FORBIDDEN.code();
-            break;
-        case NotFound:
-            code = HttpResponseStatus.NOT_FOUND.code();
-            break;
-        case Other:
-            code = failure.getResponseCode();
-            break;
-        }
+            @Override
+            public void write(StringBuilder builder) {
+                vertxRequest.resume();
+                vertxResponse.end(builder.toString());
+            }
 
-        response.setStatusCode(code);
-        response.setStatusMessage(failure.getMessage());
+            @Override
+            public void write(String body) {
+                vertxRequest.resume();
+                vertxResponse.end(body);
+            }
 
-        for (Map.Entry<String, String> entry : failure.getHeaders()) {
-            response.headers().add(entry.getKey(), entry.getValue());
-        }
-        response.setChunked(true);
-        response.end(Json.encode(failure));
+            @Override
+            public void setStatusCode(int code) {
+                vertxResponse.setStatusCode(code);
+            }
+
+            @Override
+            public void setHeader(String headerName, String headerValue) {
+                vertxResponse.putHeader(headerName, headerValue);
+            }
+        });
     }
 }

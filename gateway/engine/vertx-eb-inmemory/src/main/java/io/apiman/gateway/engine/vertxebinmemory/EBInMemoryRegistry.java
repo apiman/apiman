@@ -17,6 +17,7 @@ package io.apiman.gateway.engine.vertxebinmemory;
 
 import io.apiman.gateway.engine.IEngineConfig;
 import io.apiman.gateway.engine.IRegistry;
+import io.apiman.gateway.engine.async.AsyncInitialize;
 import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.Api;
@@ -26,6 +27,8 @@ import io.apiman.gateway.engine.impl.InMemoryRegistry;
 import io.apiman.gateway.engine.vertxebinmemory.apis.EBRegistryProxy;
 import io.apiman.gateway.engine.vertxebinmemory.apis.EBRegistryProxyHandler;
 import io.vertx.core.Vertx;
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 
 import java.util.Map;
 import java.util.UUID;
@@ -41,20 +44,24 @@ import java.util.UUID;
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 @SuppressWarnings("nls")
-public class EBInMemoryRegistry extends InMemoryRegistry implements EBRegistryProxyHandler {
+public class EBInMemoryRegistry extends InMemoryRegistry
+        implements EBRegistryProxyHandler, AsyncInitialize {
     private Vertx vertx;
     private EBRegistryProxy proxy;
     private final static String ADDRESS = "io.vertx.core.Vertx.registry.EBInMemoryRegistry.event"; //$NON-NLS-1$
     private String registryUuid = UUID.randomUUID().toString();
+    private Logger log = LoggerFactory.getLogger(EBInMemoryRegistry.class);
 
     public EBInMemoryRegistry(Vertx vertx, IEngineConfig vxConfig, Map<String, String> options) {
         super();
-
-        System.out.println("Starting an EBInMemoryRegistry on UUID " + registryUuid);
-
         this.vertx = vertx;
-        listenProxyHandler();
+    }
+
+    @Override
+    public void initialize(IAsyncResultHandler<Void> startupHandler) {
+        log.info("Starting an EBInMemoryRegistry on UUID {0}", registryUuid);
         this.proxy = new EBRegistryProxy(vertx, address(), registryUuid);
+        listenProxyHandler(startupHandler);
     }
 
     @Override
@@ -72,7 +79,7 @@ public class EBInMemoryRegistry extends InMemoryRegistry implements EBRegistryPr
     public void publishApi(Api api, IAsyncResultHandler<Void> handler) {
         super.publishApi(api, handler);
         proxy.publishApi(api);
-        System.out.println("Published a api");
+        log.info("Published an API {0}", api);
     }
 
     @Override
@@ -115,29 +122,29 @@ public class EBInMemoryRegistry extends InMemoryRegistry implements EBRegistryPr
     }
 
     // These are called back by the listener
-
     @Override
     public void publishApi(Api api) {
-        System.out.println("Publish api");
         super.publishApi(api, emptyHandler);
     }
 
     @Override
     public void retireApi(Api api) {
-        System.out.println("Retire api");
         super.retireApi(api, emptyHandler);
     }
 
     @Override
     public void registerClient(Client client) {
-        System.out.println("Register client");
         super.registerClient(client, emptyHandler);
     }
 
     @Override
     public void unregisterClient(Client client) {
-        System.out.println("Unregister client");
         super.unregisterClient(client, emptyHandler);
+    }
+
+    @Override
+    public Logger log() {
+        return log;
     }
 
     private EmptyHandler emptyHandler = new EmptyHandler();
@@ -147,10 +154,9 @@ public class EBInMemoryRegistry extends InMemoryRegistry implements EBRegistryPr
         @Override
         public void handle(IAsyncResult<Void> result) {
             if (result.isError()) {
-                System.err.println("Error " + result.getError());
+                log.error("Error {0}", result.getError());
                 throw new RuntimeException(result.getError());
             }
         }
     }
-
 }
