@@ -64,7 +64,11 @@ public class AesEncrypter {
     public static String encrypt(String secretKey, String plainText) {
         if (plainText == null) {
             return null;
+        } else if (plainText.startsWith("$CRYPT::")) {
+             // Avoid encrypting already encrypted text - APIMAN-1201
+             return plainText;
         }
+        
         byte[] encrypted;
         Cipher cipher;
         try {
