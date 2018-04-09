@@ -812,11 +812,6 @@
         <version>${version.org.slf4j}</version>
       </dependency>
       <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-jdk14</artifactId>
-        <version>${version.org.slf4j}</version>
-      </dependency>
-      <dependency>
         <groupId>org.infinispan</groupId>
         <artifactId>infinispan-core</artifactId>
         <version>${version.org.infinispan}</version>
@@ -973,6 +968,11 @@
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-core</artifactId>
+        <version>${version.org.apache.logging.log4j}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-jcl</artifactId>
         <version>${version.org.apache.logging.log4j}</version>
       </dependency>
       <dependency>
