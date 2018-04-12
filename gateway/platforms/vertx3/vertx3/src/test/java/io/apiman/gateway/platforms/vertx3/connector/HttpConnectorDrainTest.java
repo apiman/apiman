@@ -30,6 +30,7 @@ import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -68,6 +69,7 @@ import java.net.URI;
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 @SuppressWarnings("nls")
+@Ignore
 @RunWith(VertxUnitRunner.class)
 public class HttpConnectorDrainTest {
 
