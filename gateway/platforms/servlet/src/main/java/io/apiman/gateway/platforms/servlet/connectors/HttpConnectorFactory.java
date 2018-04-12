@@ -17,10 +17,10 @@ package io.apiman.gateway.platforms.servlet.connectors;
 
 import io.apiman.common.config.options.HttpConnectorOptions;
 import io.apiman.common.config.options.TLSOptions;
-import io.apiman.gateway.engine.IConnectorFactory;
 import io.apiman.gateway.engine.IApiConnection;
 import io.apiman.gateway.engine.IApiConnectionResponse;
 import io.apiman.gateway.engine.IApiConnector;
+import io.apiman.gateway.engine.IConnectorFactory;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.auth.RequiredAuthType;
 import io.apiman.gateway.engine.beans.Api;
@@ -91,7 +91,7 @@ public class HttpConnectorFactory implements IConnectorFactory {
         client.setCertificatePinner(CertificatePinner.DEFAULT);
         client.setAuthenticator(AuthenticatorAdapter.INSTANCE);
         client.setConnectionPool(ConnectionPool.getDefault());
-        client.setProtocols(Util.immutableList(Protocol.HTTP_1_1));
+        client.setProtocols(Util.immutableList(Protocol.HTTP_1_1, Protocol.HTTP_1_0));
         client.setConnectionSpecs(DEFAULT_CONNECTION_SPECS);
         client.setSocketFactory(SocketFactory.getDefault());
         Internal.instance.setNetwork(client, Network.DEFAULT);
