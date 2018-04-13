@@ -18,7 +18,7 @@ package io.apiman.test.common.echo;
 
 import io.apiman.common.util.SimpleStringUtils;
 import io.apiman.gateway.engine.beans.EngineErrorResponse;
-import io.apiman.gateway.engine.beans.util.CaseInsensitiveStringMultiMap;
+import io.apiman.gateway.engine.beans.util.HeaderMap;
 import io.apiman.test.common.mock.EchoResponse;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.AsyncResult;
@@ -263,8 +263,8 @@ public class EchoServerVertx extends AbstractVerticle {
             }
         }
 
-        private CaseInsensitiveStringMultiMap multimapToMap(MultiMap headers) {
-            CaseInsensitiveStringMultiMap map = new CaseInsensitiveStringMultiMap();
+        private HeaderMap multimapToMap(MultiMap headers) {
+            HeaderMap map = new HeaderMap();
             headers.forEach(pair -> map.add(pair.getKey(), pair.getValue()));
             return map;
         }

@@ -15,8 +15,7 @@
  */
 package io.apiman.test.common.mock;
 
-import java.util.HashMap;
-import java.util.Map;
+import io.apiman.gateway.engine.beans.util.HeaderMap;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -31,7 +30,7 @@ public class EchoResponse {
     private String method;
     private String resource;
     private String uri;
-    private Map<String, String> headers = new HashMap<>();
+    private HeaderMap headers = new HeaderMap();
     private Long bodyLength;
     private String bodySha1;
     private Long counter;
@@ -73,14 +72,14 @@ public class EchoResponse {
     /**
      * @return the headers
      */
-    public Map<String, String> getHeaders() {
+    public HeaderMap getHeaders() {
         return headers;
     }
 
     /**
      * @param headers the headers to set
      */
-    public void setHeaders(Map<String, String> headers) {
+    public void setHeaders(HeaderMap headers) {
         this.headers = headers;
     }
 

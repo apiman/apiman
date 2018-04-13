@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.Date;
 
 import org.apache.commons.codec.digest.DigestUtils;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -49,13 +50,13 @@ public class EchoBackEndApi implements IPolicyTestBackEndApi {
                 echoResponse.setBodySha1(DigestUtils.sha1Hex(requestBody));
             }
             echoResponse.setCounter(counter++);
-            echoResponse.setHeaders(request.getHeaders().toMap());
+            echoResponse.setHeaders(request.getHeaders());
             echoResponse.setMethod(request.getType());
             echoResponse.setResource(request.getDestination());
             echoResponse.setUri("urn:" + request.getDestination());
 
             ApiResponse apiResponse = new ApiResponse();
-            
+
             String errorCode = request.getHeaders().get("X-Echo-ErrorCode");
             if (errorCode != null) {
                 int ec = new Integer(errorCode);
