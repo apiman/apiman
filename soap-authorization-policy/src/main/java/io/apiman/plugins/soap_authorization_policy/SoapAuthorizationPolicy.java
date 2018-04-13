@@ -31,6 +31,8 @@ import io.apiman.gateway.engine.policy.IPolicyContext;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * Adds authorization capabilities to apiman. This policy allows users to
  * specify what roles the authenticated user must have in order to be allowed to
@@ -45,11 +47,14 @@ import java.util.Set;
  *
  * @author eric.wittmann@redhat.com
  * @author rachel.yordan@redhat.com
+ * @author tevo.souza@hotmail.com
  */
 public class SoapAuthorizationPolicy extends AbstractMappedPolicy<SoapAuthorizationConfig> {
 
     public static final String AUTHENTICATED_USER_ROLES = "io.apiman.policies.auth::authenticated-user-roles"; //$NON-NLS-1$
     public static final String HEADER_SOAP_ACTION = "SOAPAction"; //$NON-NLS-1$
+
+    public static final int SOAP_ACTION_NOTDEFINED = 13003;
 
     public SoapAuthorizationPolicy() {
     }
@@ -71,9 +76,21 @@ public class SoapAuthorizationPolicy extends AbstractMappedPolicy<SoapAuthorizat
         Set<String> userRoles = context.getAttribute(AUTHENTICATED_USER_ROLES, (HashSet<String>) null);
         String action = request.getHeaders().get(HEADER_SOAP_ACTION);
 
+        // Check if action are defined then fail with configuration error.
+        if (action == null || StringUtils.isBlank(action)) { //"SOAPAction header is not defined."
+        	String msg = Messages.i18n.format("SoapAuthorizationPolicy.SOAPActionHeaderNotDefined"); //$NON-NLS-1$
+
+        	PolicyFailure failure = context.getComponent(IPolicyFailureFactoryComponent.class).createFailure(
+                    PolicyFailureType.Other, SOAP_ACTION_NOTDEFINED, msg );
+
+        	chain.doFailure(failure);
+
+        	return;
+        }
+
         // If no roles are set in the context - then fail with a configuration error
         if (userRoles == null) {
-            String msg = Messages.i18n.format("SoapAuthorizationPolicy.MissingRoles"); //$NON-NLS-1$
+            String msg = Messages.i18n.format("SoapAuthorizationPolicy.MissingRoles"); //$NON-NLS-1$ TODO where are these defined?!
             PolicyFailure failure = context.getComponent(IPolicyFailureFactoryComponent.class).createFailure(
                     PolicyFailureType.Other, PolicyFailureCodes.CONFIGURATION_ERROR, msg);
             chain.doFailure(failure);

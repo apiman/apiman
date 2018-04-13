@@ -38,6 +38,7 @@ import org.junit.Test;
  *
  * @author rubenrm1@gmail.com
  * @author rachel.yordan@redhat.com
+ * @author tevo.souza@hotmail.com
  * Test the {@link SoapAuthorizationPolicy}.
  *
  */
@@ -55,14 +56,36 @@ public class SoapAuthorizationPolicyTest extends ApimanPolicyTest {
     public void testSimple() throws Throwable {
         HashSet<String> userRoles = new HashSet<>();
         userRoles.add("role-1");
-        
+
         PolicyTestRequest request = PolicyTestRequest.build(PolicyTestRequestType.GET, "/invoices/1");
         request.header("SOAPAction", "reportIncident");
         request.contextAttribute(SoapAuthorizationPolicy.AUTHENTICATED_USER_ROLES, userRoles);
-        
+
         PolicyTestResponse response = send(request);
         EchoResponse echo = response.entity(EchoResponse.class);
         Assert.assertNotNull(echo);
+    }
+
+    @Test
+    @Configuration("{\r\n" +
+                "  \"rules\" : [\r\n" +
+                "    { \"action\" : \"*\", \"role\" : \"role-1\" }\r\n" +
+                "  ]\r\n" +
+                "}")
+    public void testNoSOAPHeader() throws Throwable {
+        HashSet<String> userRoles = new HashSet<>();
+        userRoles.add("role-1");
+
+        PolicyTestRequest request = PolicyTestRequest.build(PolicyTestRequestType.GET, "/invoices/1");
+
+        try {
+        	request.contextAttribute(SoapAuthorizationPolicy.AUTHENTICATED_USER_ROLES, userRoles);
+        	send(request);
+        	Assert.fail("expected a failure response");
+        } catch (PolicyFailureError failure) {
+        	 Assert.assertNotNull(failure.getFailure());
+        	 Assert.assertEquals(PolicyFailureType.Other, failure.getFailure().getType());
+        }
     }
 
     @Test
@@ -75,8 +98,8 @@ public class SoapAuthorizationPolicyTest extends ApimanPolicyTest {
     public void testAction() throws Throwable {
         HashSet<String> userRoles = new HashSet<>();
         userRoles.add("other-role");
-        
-        
+
+
         // Should Succeed
         PolicyTestRequest request = PolicyTestRequest.build(PolicyTestRequestType.GET, "/auth/my-items");
         request.header("SOAPAction", "closeIncident");
@@ -84,11 +107,11 @@ public class SoapAuthorizationPolicyTest extends ApimanPolicyTest {
         PolicyTestResponse response = send(request);
         EchoResponse echo = response.entity(EchoResponse.class);
         Assert.assertNotNull(echo);
-        
-        
+
+
         // Should Fail
         request = PolicyTestRequest.build(PolicyTestRequestType.GET, "/auth/my-items");
-        
+
         try {
             request.header("SOAPAction", "reportIncident");
             request.contextAttribute(SoapAuthorizationPolicy.AUTHENTICATED_USER_ROLES, userRoles);
@@ -111,7 +134,7 @@ public class SoapAuthorizationPolicyTest extends ApimanPolicyTest {
     public void testMultiple() throws Throwable {
         HashSet<String> userRoles = new HashSet<>();
         userRoles.add("user");
-     
+
         // Should Succeed
         PolicyTestRequest request = PolicyTestRequest.build(PolicyTestRequestType.GET, "/path/to/user/resource");
         request.header("SOAPAction", "reportIncident");
@@ -119,11 +142,11 @@ public class SoapAuthorizationPolicyTest extends ApimanPolicyTest {
         PolicyTestResponse response = send(request);
         EchoResponse echo = response.entity(EchoResponse.class);
         Assert.assertNotNull(echo);
-      
-     
+
+
         // Should Fail
         request = PolicyTestRequest.build(PolicyTestRequestType.GET, "/admin/path/to/admin/resource");
-        
+
         try {
             request.header("SOAPAction", "resolveIncident");
             request.contextAttribute(SoapAuthorizationPolicy.AUTHENTICATED_USER_ROLES, userRoles);
@@ -134,11 +157,11 @@ public class SoapAuthorizationPolicyTest extends ApimanPolicyTest {
             Assert.assertNotNull(policyFailure);
             Assert.assertEquals(PolicyFailureType.Authorization, policyFailure.getType());
         }
-        
+
         //
 
         userRoles.add("admin");
-        
+
         // Should Succeed
         request = PolicyTestRequest.build(PolicyTestRequestType.GET, "/path/to/user/resource");
         request.header("SOAPAction", "reportIncident");
@@ -146,8 +169,8 @@ public class SoapAuthorizationPolicyTest extends ApimanPolicyTest {
         response = send(request);
         echo = response.entity(EchoResponse.class);
         Assert.assertNotNull(echo);
-        
-        
+
+
         // Should Succeed
         request = PolicyTestRequest.build(PolicyTestRequestType.GET, "/admin/path/to/admin/resource");
         request.header("SOAPAction", "reportIncident");
@@ -175,8 +198,8 @@ public class SoapAuthorizationPolicyTest extends ApimanPolicyTest {
         PolicyTestResponse response = send(request);
         EchoResponse echo = response.entity(EchoResponse.class);
         Assert.assertNotNull(echo);
-        
-        
+
+
         // Should Succeed
         request = PolicyTestRequest.build(PolicyTestRequestType.PUT, "/admin/resource");
         request.header("SOAPAction", "closeIncident");
@@ -196,10 +219,10 @@ public class SoapAuthorizationPolicyTest extends ApimanPolicyTest {
                 "}")
     public void testNoneMatchedFail() throws Throwable {
         HashSet<String> userRoles = new HashSet<>();
-     
+
         // Should Fail
         PolicyTestRequest request = PolicyTestRequest.build(PolicyTestRequestType.GET, "/other/resource");
-        
+
         try {
             request.header("SOAPAction", "reportIncident");
             request.contextAttribute(SoapAuthorizationPolicy.AUTHENTICATED_USER_ROLES, userRoles);
@@ -210,11 +233,11 @@ public class SoapAuthorizationPolicyTest extends ApimanPolicyTest {
             Assert.assertNotNull(policyFailure);
             Assert.assertEquals(PolicyFailureType.Authorization, policyFailure.getType());
         }
-        
-     
+
+
         // Should Fail
         request = PolicyTestRequest.build(PolicyTestRequestType.POST, "/admin/resource");
-        
+
         try {
             request.header("SOAPAction", "reportIncident");
             request.contextAttribute(SoapAuthorizationPolicy.AUTHENTICATED_USER_ROLES, userRoles);
@@ -239,10 +262,10 @@ public class SoapAuthorizationPolicyTest extends ApimanPolicyTest {
     public void testMultipleAnyMatch() throws Throwable {
         HashSet<String> userRoles = new HashSet<>();
         userRoles.add("other-role");
-        
+
         // Should Fail
         PolicyTestRequest request = PolicyTestRequest.build(PolicyTestRequestType.GET, "/multi/resource");
-        
+
         try {
             request.header("SOAPAction", "reportIncident");
             request.contextAttribute(SoapAuthorizationPolicy.AUTHENTICATED_USER_ROLES, userRoles);
@@ -252,10 +275,10 @@ public class SoapAuthorizationPolicyTest extends ApimanPolicyTest {
             PolicyFailure policyFailure = failure.getFailure();
             Assert.assertNotNull(policyFailure);
         }
-        
+
 
         userRoles.add("role-1");
-        
+
         // Should Succeed
         request = PolicyTestRequest.build(PolicyTestRequestType.GET, "/multi/resource");
         request.header("SOAPAction", "reportIncident");
@@ -264,9 +287,9 @@ public class SoapAuthorizationPolicyTest extends ApimanPolicyTest {
         EchoResponse echo = response.entity(EchoResponse.class);
         Assert.assertNotNull(echo);
 
-        
+
         userRoles.add("role-2");
-        
+
         // Should Succeed
         request = PolicyTestRequest.build(PolicyTestRequestType.GET, "/multi/resource");
         request.header("SOAPAction", "reportIncident");
@@ -287,10 +310,10 @@ public class SoapAuthorizationPolicyTest extends ApimanPolicyTest {
     public void testMultipleAllMatch() throws Throwable {
         HashSet<String> userRoles = new HashSet<>();
         userRoles.add("other-role");
-        
+
         // Should Fail
         PolicyTestRequest request = PolicyTestRequest.build(PolicyTestRequestType.GET, "/multi/resource");
-        
+
         try {
             request.header("SOAPAction", "reportIncident");
             request.contextAttribute(SoapAuthorizationPolicy.AUTHENTICATED_USER_ROLES, userRoles);
@@ -303,10 +326,10 @@ public class SoapAuthorizationPolicyTest extends ApimanPolicyTest {
         }
 
         userRoles.add("role-1");
-        
+
         // Should Fail
         request = PolicyTestRequest.build(PolicyTestRequestType.GET, "/multi/resource");
-        
+
         try {
             request.header("SOAPAction", "reportIncident");
             request.contextAttribute(SoapAuthorizationPolicy.AUTHENTICATED_USER_ROLES, userRoles);
@@ -319,12 +342,12 @@ public class SoapAuthorizationPolicyTest extends ApimanPolicyTest {
         }
 
         userRoles.add("role-2");
-        
+
         // Should Succeed
         request = PolicyTestRequest.build(PolicyTestRequestType.GET, "/multi/resource");
         request.header("SOAPAction", "reportIncident");
         request.contextAttribute(SoapAuthorizationPolicy.AUTHENTICATED_USER_ROLES, userRoles);
-        
+
         PolicyTestResponse response = send(request);
         EchoResponse echo = response.entity(EchoResponse.class);
         Assert.assertNotNull(echo);
