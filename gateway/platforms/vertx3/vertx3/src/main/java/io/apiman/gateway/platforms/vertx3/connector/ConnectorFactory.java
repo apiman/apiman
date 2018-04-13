@@ -97,7 +97,7 @@ public class ConnectorFactory implements IConnectorFactory {
             setAttributesFromApiEndpointProperties(api, httpOptions);
             // Get from cache
             HttpClient client = clientFromCache(httpOptions);
-            return new HttpConnector(vertx, client, request, api, httpOptions, resultHandler);
+            return new HttpConnector(vertx, client, request, api, httpOptions, resultHandler).connect();
          };
     }
 
