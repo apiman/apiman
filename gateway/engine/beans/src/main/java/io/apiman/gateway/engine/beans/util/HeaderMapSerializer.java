@@ -17,6 +17,7 @@
 package io.apiman.gateway.engine.beans.util;
 
 import java.io.IOException;
+import java.util.List;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -38,9 +39,25 @@ public class HeaderMapSerializer extends JsonSerializer<HeaderMap> {
      * @see com.fasterxml.jackson.databind.JsonSerializer#serialize(java.lang.Object, com.fasterxml.jackson.core.JsonGenerator, com.fasterxml.jackson.databind.SerializerProvider)
      */
     @Override
-    public void serialize(HeaderMap value, JsonGenerator gen, SerializerProvider serializers)
+    public void serialize(HeaderMap map, JsonGenerator gen, SerializerProvider serializers)
             throws IOException, JsonProcessingException {
-        gen.writeObject(value.getEntries());
-    }
+        gen.writeStartObject(); // {
 
+        for (String key : map.keySet()) {
+            List<String> values = map.getAll(key);
+
+            if (values.size() <= 1) {
+                gen.writeStringField(key, values.get(0)); // "key": "value"
+            } else {
+                gen.writeFieldName(key); // "key":
+                gen.writeStartArray(values.size()); // [
+                for (String val : values) {
+                    gen.writeString(val); // "value", ...
+                }
+                gen.writeEndArray();// ]
+            }
+        }
+
+        gen.writeEndObject(); // }
+    }
 }

@@ -17,12 +17,11 @@
 package io.apiman.gateway.engine.beans.util;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Map.Entry;
+import java.util.ArrayDeque;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 
@@ -30,7 +29,7 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
  * @author eric.wittmann@gmail.com
  */
 public class HeaderMapDeserializer extends JsonDeserializer<HeaderMap> {
-    
+
     /**
      * Constructor.
      */
@@ -44,11 +43,21 @@ public class HeaderMapDeserializer extends JsonDeserializer<HeaderMap> {
     public HeaderMap deserialize(JsonParser p, DeserializationContext ctxt)
             throws IOException, JsonProcessingException {
         HeaderMap map = new HeaderMap();
-        List<Entry<String,String>> entries = p.readValueAs(new TypeReference<List<Entry<String,String>>>() {});
-        for (Entry<String, String> entry : entries) {
-            String key = entry.getKey();
-            String val = entry.getValue();
-            map.add(key, val);
+
+        while (p.nextToken() != JsonToken.END_OBJECT) {
+            String name = p.getCurrentName();
+
+            p.nextToken();
+
+            if (p.currentToken().isScalarValue()) {
+                map.add(name, p.getValueAsString());
+            } else {
+                ArrayDeque<String> values = new ArrayDeque<>();
+                while (p.nextToken() != JsonToken.END_ARRAY) {
+                    values.push(p.getValueAsString());
+                }
+                values.forEach(value -> map.add(name, value));
+            }
         }
         return map;
     }
