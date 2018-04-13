@@ -125,6 +125,11 @@ public class CaseInsensitiveStringMultiMap implements IStringMultiMap, Serializa
         return this;
     }
 
+    public IStringMultiMap add(String key, List<String> values) {
+        values.forEach((value) -> add(key, value));
+        return this;
+    }
+
     private Element getElement(String key) {
         long hash = getHash(key);
         Element head = hashArray[getIndex(hash)];

@@ -18,6 +18,7 @@ package io.apiman.test.common.echo;
 
 import io.apiman.common.util.SimpleStringUtils;
 import io.apiman.gateway.engine.beans.EngineErrorResponse;
+import io.apiman.gateway.engine.beans.util.CaseInsensitiveStringMultiMap;
 import io.apiman.test.common.mock.EchoResponse;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.AsyncResult;
@@ -44,8 +45,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Base64;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.Optional;
 
 import javax.xml.bind.JAXBContext;
@@ -264,11 +263,10 @@ public class EchoServerVertx extends AbstractVerticle {
             }
         }
 
-        // IMPORTANT: This is lossy
-        private Map<String, String> multimapToMap(MultiMap headers) {
-            LinkedHashMap<String, String> out = new LinkedHashMap<>();
-            headers.forEach(pair -> out.put(pair.getKey(), pair.getValue()));
-            return out;
+        private CaseInsensitiveStringMultiMap multimapToMap(MultiMap headers) {
+            CaseInsensitiveStringMultiMap map = new CaseInsensitiveStringMultiMap();
+            headers.forEach(pair -> map.add(pair.getKey(), pair.getValue()));
+            return map;
         }
 
         private String normaliseResource(HttpServerRequest req) {

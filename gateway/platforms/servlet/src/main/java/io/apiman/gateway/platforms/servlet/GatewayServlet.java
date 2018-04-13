@@ -41,6 +41,7 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.Enumeration;
+import java.util.Map.Entry;
 import java.util.concurrent.CountDownLatch;
 
 import javax.servlet.ServletException;
@@ -264,18 +265,23 @@ public abstract class GatewayServlet extends HttpServlet {
         Enumeration<String> headerNames = request.getHeaderNames();
         while (headerNames.hasMoreElements()) {
             String hname = headerNames.nextElement();
-            String hval = request.getHeader(hname);
-            if (hname != null && hname.equalsIgnoreCase("accept") && hval != null && hval.startsWith("application/apiman.")) { //$NON-NLS-1$ //$NON-NLS-2$
-                if (hval.contains("+json")) { //$NON-NLS-1$
-                    hval = "application/json"; //$NON-NLS-1$
-                } else if (hval.contains("+xml")) { //$NON-NLS-1$
-                    hval = "text/xml"; //$NON-NLS-1$
+            Enumeration<String> headerValues = request.getHeaders(hname);
+
+            while (headerValues.hasMoreElements()) {
+                String hval = headerValues.nextElement();
+
+                if (hname != null && hname.equalsIgnoreCase("accept") && hval != null && hval.startsWith("application/apiman.")) { //$NON-NLS-1$ //$NON-NLS-2$
+                    if (hval.contains("+json")) { //$NON-NLS-1$
+                        hval = "application/json"; //$NON-NLS-1$
+                    } else if (hval.contains("+xml")) { //$NON-NLS-1$
+                        hval = "text/xml"; //$NON-NLS-1$
+                    }
                 }
+                if (hname != null && hname.equalsIgnoreCase("X-API-Version")) { //$NON-NLS-1$
+                    continue;
+                }
+                srequest.getHeaders().add(hname, hval);
             }
-            if (hname != null && hname.equalsIgnoreCase("X-API-Version")) { //$NON-NLS-1$
-                continue;
-            }
-            srequest.getHeaders().add(hname, hval);
         }
     }
 
@@ -286,11 +292,8 @@ public abstract class GatewayServlet extends HttpServlet {
      */
     protected void writeResponse(HttpServletResponse response, ApiResponse sresponse) {
         response.setStatus(sresponse.getCode());
-        HeaderMap headers = sresponse.getHeaders();
-        for (String hkey : headers.keySet()) {
-            for (String hval : headers.getAll(hkey)) {
-                response.addHeader(hkey, hval);
-            }
+        for (Entry<String, String> entry : sresponse.getHeaders()) {
+            response.addHeader(entry.getKey(), entry.getValue());
         }
     }
 

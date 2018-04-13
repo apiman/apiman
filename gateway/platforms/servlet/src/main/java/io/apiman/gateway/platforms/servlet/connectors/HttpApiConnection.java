@@ -210,10 +210,10 @@ public class HttpApiConnection implements IApiConnection, IApiConnectionResponse
 
             // Set the request headers
             for (Entry<String, String> entry : request.getHeaders()) {
-                String hname = entry.getKey();
+                String hkey = entry.getKey();
                 String hval = entry.getValue();
-                if (!suppressedHeaders.contains(hname)) {
-                    connection.setRequestProperty(hname, hval);
+                if (!suppressedHeaders.contains(hkey)) {
+                    connection.addRequestProperty(hkey, hval);
                 }
             }
 
@@ -369,12 +369,17 @@ public class HttpApiConnection implements IApiConnection, IApiConnectionResponse
             outputStream = null;
             // Process the response, convert to an ApiResponse object, and return it
             response = GatewayThreadContext.getApiResponse();
-            Map<String, List<String>> headerFields = connection.getHeaderFields();
-            for (String headerName : headerFields.keySet()) {
+
+            // Add headers
+            for (Entry<String, List<String>> headerEntry : connection.getHeaderFields().entrySet()) {
+                String headerName = headerEntry.getKey();
+                List<String> headerValues = headerEntry.getValue();
+
                 if (headerName != null && !SUPPRESSED_RESPONSE_HEADERS.contains(headerName)) {
-                    response.getHeaders().add(headerName, connection.getHeaderField(headerName));
+                    response.getHeaders().add(headerName, headerValues);
                 }
             }
+
             response.setCode(connection.getResponseCode());
             response.setMessage(connection.getResponseMessage());
             responseHandler.handle(AsyncResultImpl.<IApiConnectionResponse> create(this));

@@ -17,6 +17,7 @@ package io.apiman.gateway.platforms.servlet.components;
 
 import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
+import io.apiman.gateway.engine.beans.util.HeaderMap;
 import io.apiman.gateway.engine.components.http.HttpMethod;
 import io.apiman.gateway.engine.components.http.IHttpClientRequest;
 import io.apiman.gateway.engine.components.http.IHttpClientResponse;
@@ -26,8 +27,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 
@@ -37,15 +36,15 @@ import org.apache.commons.io.IOUtils;
  * @author eric.wittmann@redhat.com
  */
 public class HttpClientRequestImpl implements IHttpClientRequest {
-    
+
     private String endpoint;
     private HttpMethod method;
-    private Map<String, String> headers = new HashMap<>();
+    private HeaderMap headers = new HeaderMap();
     private IAsyncResultHandler<IHttpClientResponse> handler;
-    
+
     private HttpURLConnection connection;
     private OutputStream outputStream;
-    
+
     private int readTimeoutMs = 15000;
     private int connectTimeoutMs = 10000;
 
@@ -60,7 +59,7 @@ public class HttpClientRequestImpl implements IHttpClientRequest {
         this.method = method;
         this.handler = handler;
     }
-    
+
     /**
      * @see io.apiman.gateway.engine.components.http.IHttpClientRequest#setConnectTimeout(int)
      */
@@ -68,7 +67,7 @@ public class HttpClientRequestImpl implements IHttpClientRequest {
     public void setConnectTimeout(int timeout) {
         this.connectTimeoutMs = timeout;
     }
-    
+
     /**
      * @see io.apiman.gateway.engine.components.http.IHttpClientRequest#setReadTimeout(int)
      */
@@ -82,7 +81,7 @@ public class HttpClientRequestImpl implements IHttpClientRequest {
      */
     @Override
     public void addHeader(String headerName, String headerValue) {
-        headers.put(headerName, headerValue);
+        headers.add(headerName, headerValue);
     }
 
     /**
@@ -92,10 +91,10 @@ public class HttpClientRequestImpl implements IHttpClientRequest {
     public void removeHeader(String headerName) {
         headers.remove(headerName);
     }
-    
+
 	@Override
 	public void write(IApimanBuffer buffer) {
-		write((byte[]) buffer.getNativeBuffer());	
+		write((byte[]) buffer.getNativeBuffer());
 	}
 
     /**
@@ -106,7 +105,7 @@ public class HttpClientRequestImpl implements IHttpClientRequest {
         if (connection == null) {
             connect();
         }
-        try { 
+        try {
             if (outputStream == null) {
                 outputStream = connection.getOutputStream();
             }
@@ -126,7 +125,7 @@ public class HttpClientRequestImpl implements IHttpClientRequest {
         if (connection == null) {
             connect();
         }
-        
+
         try { connection.getOutputStream().write(data.getBytes(charsetName)); } catch (IOException e) { throw new RuntimeException(e); }
     }
 
@@ -145,7 +144,7 @@ public class HttpClientRequestImpl implements IHttpClientRequest {
         IHttpClientResponse clientResponse = new HttpClientResponseImpl(connection);
         handler.handle(AsyncResultImpl.create(clientResponse));
     }
-    
+
     /**
      * Connect to the remote server.
      */
