@@ -712,7 +712,7 @@ catalog is configured in the *apiman.properties* file via these properties:
 
 ```
 apiman-manager.api-catalog.type=io.apiman.manager.api.core.catalog.JsonApiCatalog
-apiman-manager.api-catalog.catalog-url=http://cdn.rawgit.com/apiman/apiman-api-catalog/1.2.0.Final/catalog.json
+apiman-manager.api-catalog.catalog-url=https://cdn.rawgit.com/apiman/apiman-api-catalog/1.2.0.Final/catalog.json
 ```
 
 Simply change the URL defined by the `apiman-manager.api-catalog.catalog-url` property
@@ -754,7 +754,7 @@ The last step is to make apiman aware of your custom plugin registry file.  The
 registry is configured in the *apiman.properties* file via the following property:
 
 ```
-apiman-manager.plugins.registries=http://cdn.rawgit.com/apiman/apiman-plugin-registry/1.2.0.Final/registry.json
+apiman-manager.plugins.registries=https://cdn.rawgit.com/apiman/apiman-plugin-registry/1.2.0.Final/registry.json
 ```
 
 The value of this property is a comma-separated list of URLs.  Each URL in the list
