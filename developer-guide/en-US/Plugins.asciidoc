@@ -668,7 +668,7 @@ and start using it to author a custom JSON Schema.
 
 Alternatively you can use "rawgit" and just go straight to the following URL:
 
-http://rawgit.com/apiman/apiman/master/manager/ui/war/src/main/sdk/json-schema.html
+https://rawgit.com/apiman/apiman/master/manager/ui/war/src/main/sdk/json-schema.html
 
 The SDK provides a way to edit your JSON schema and then see how that schema will look in
 the apiman UI, as well as the format that the policy configuration data will ultimately
