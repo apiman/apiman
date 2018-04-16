@@ -4,7 +4,7 @@
   <parent>
     <groupId>io.apiman</groupId>
     <artifactId>apiman-manager-ui</artifactId>
-    <version>1.3.2-SNAPSHOT</version>
+    <version>1.3.2.Final</version>
     <relativePath>../../pom.xml</relativePath>
   </parent>
   <artifactId>apiman-manager-ui-war-tomcat8</artifactId>
