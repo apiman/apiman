@@ -28,6 +28,7 @@
         <module>eap7</module>
         <module>es</module>
         <module>tomcat8</module>
+        <module>wildfly10</module>
         <module>wildfly11</module>
         <module>vertx</module>
       </modules>
