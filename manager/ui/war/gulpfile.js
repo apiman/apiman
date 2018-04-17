@@ -44,7 +44,7 @@ var config = {
     })
 };
 
-var SwaggerUIPath = './node_modules/swagger-ui-browserify/node_modules/swagger-ui';
+var SwaggerUIPath = './node_modules/swagger-ui';
 
 
 
@@ -127,13 +127,11 @@ gulp.task('css', function() {
             'node_modules/angular-ui-bootstrap/ui-bootstrap-csp.css',
             'node_modules/ui-select/dist/select.css',
             'node_modules/select2/select2.css',
-            SwaggerUIPath + '/dist/css/screen.css',
-            SwaggerUIPath + '/dist/css/typography.css'
+            SwaggerUIPath + '/dist/swagger-ui.css',
         ], {base: 'node_modules/'})
         .pipe(concatCss('deps.css'))
         .pipe(gulp.dest('.'));
 });
-
 
 // Fonts Task
 // Copies all fonts to /lib/fonts
@@ -143,7 +141,7 @@ gulp.task('fonts', function() {
             './node_modules/patternfly/components/bootstrap/dist/fonts/*.{eot,svg,ttf,woff,woff2}',
             './node_modules/patternfly/components/font-awesome/fonts/*.{eot,svg,ttf,woff,woff2}',
             './node_modules/patternfly/dist/fonts/*.{eot,svg,ttf,woff,woff2}',
-            SwaggerUIPath + '/dist/fonts/*.{eot,svg,ttf,woff,woff2}'
+            SwaggerUIPath + '/dist/*.{eot,svg,ttf,woff,woff2}'
         ])
         .pipe(gulp.dest(config.dest + '/fonts'));
 });
@@ -170,8 +168,6 @@ gulp.task('path-adjust', function() {
         .pipe(replace('patternfly/components/font-awesome/fonts/', './fonts/'))
         .pipe(replace('patternfly/dist/fonts/', './fonts/'))
         .pipe(replace('patternfly/dist/img/', './images/'))
-        .pipe(replace('swagger-ui-browserify/node_modules/swagger-ui/dist/images/', './images/'))
-        .pipe(replace('swagger-ui-browserify/node_modules/swagger-ui/dist/fonts/', './fonts/'))
         .pipe(gulp.dest(config.dest));
 });
 

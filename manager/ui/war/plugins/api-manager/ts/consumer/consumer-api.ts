@@ -138,44 +138,41 @@ module Apiman {
                 $scope.hasError = false;
 
                 PageLifecycle.setPageTitle('consumer-api-def', [ $scope.api.name ]);
-                
-                var hasSwagger = false;
-                try {
-                    var swagger = SwaggerUi;
-                    hasSwagger = true;
-                } catch (e) {}
 
-                if ($scope.version.definitionType == 'SwaggerJSON' && hasSwagger) {
-                    var url = ApiDefinitionSvcs.getApiDefinitionUrl($scope.params.org, $scope.params.api, $scope.params.version);
+                if ($scope.version.definitionType == 'SwaggerJSON' && SwaggerUi) {
+                    const url = ApiDefinitionSvcs.getApiDefinitionUrl($scope.params.org, $scope.params.api, $scope.params.version);
                     Logger.debug("!!!!! Using definition URL: {0}", url);
 
-                    var authHeader = Configuration.getAuthorizationHeader();
-                    
                     $scope.definitionStatus = 'loading';
-                    var swaggerOptions = {
+
+                    const swaggerOpts = {
                         url: url,
-                        dom_id:"swagger-ui-container",
+                        dom_id:"#swagger-ui-container",
                         validatorUrl:null,
                         sorter : "alpha",
-                        authorizations: {
-                            apimanauth: new SwaggerClient.ApiKeyAuthorization("Authorization", authHeader, "header")
+                        requestInterceptor: function(request) {
+                            // Only add auth header to requests where the URL matches the one specified above.
+                            if (request.url === url) {
+                                request.headers.Authorization = Configuration.getAuthorizationHeader();
+                            }
                         },
                         onComplete: function() {
-                            $('#swagger-ui-container a').each(function(idx, elem) {
-                                var href = $(elem).attr('href');
-                                if (href[0] == '#') {
-                                    $(elem).removeAttr('href');
-                                }
-                            });
-                            $('#swagger-ui-container div.sandbox_header').each(function(idx, elem) {
-                                $(elem).remove();
-                            });
-                            $('#swagger-ui-container li.operation div.auth').each(function(idx, elem) {
-                                $(elem).remove();
-                            });
-                            $('#swagger-ui-container li.operation div.access').each(function(idx, elem) {
-                                $(elem).remove();
-                            });
+                            Logger.debug("complete");
+                            // $('#swagger-ui-container a').each(function(idx, elem) {
+                            //     var href = $(elem).attr('href');
+                            //     if (href[0] == '#') {
+                            //         $(elem).removeAttr('href');
+                            //     }
+                            // });
+                            // $('#swagger-ui-container div.sandbox_header').each(function(idx, elem) {
+                            //     $(elem).remove();
+                            // });
+                            // $('#swagger-ui-container li.operation div.auth').each(function(idx, elem) {
+                            //     $(elem).remove();
+                            // });
+                            // $('#swagger-ui-container li.operation div.access').each(function(idx, elem) {
+                            //     $(elem).remove();
+                            // });
                             $scope.$apply(function(error) {
                                 $scope.definitionStatus = 'complete';
                             });
@@ -188,8 +185,10 @@ module Apiman {
                             });
                         }
                     };
-                    $window.swaggerUi = new SwaggerUi(swaggerOptions);
-                    $window.swaggerUi.load();
+
+                    // Initialise Swagger UI
+                    SwaggerUi(swaggerOpts);
+
                     $scope.hasDefinition = true;
                 } else {
                     $scope.hasDefinition = false;
