@@ -2,7 +2,7 @@
   "id" : "apiman-plugin-registry",
   "name" : "Official apiman Plugins",
   "description" : "This plugin registry lists all of the official apiman plugins.  No third party plugins are included in this registry.",
-  "version" : "1.3.3.Final",
+  "version" : "1.4.0-SNAPSHOT",
   "repository" : {
     "name" : "Maven Central",
     "url" : "https://repo1.maven.org/maven2/"
@@ -11,56 +11,56 @@
     {
       "groupId" : "io.apiman.plugins",
       "artifactId" : "apiman-plugins-cors-policy",
-      "version" : "1.3.3.Final",
+      "version" : "1.4.0-SNAPSHOT",
       "name" : "CORS Policy Plugin",
       "description" : "This plugin implements CORS (Cross-origin resource sharing): A method of controlling access to resources outside of an originating domain."
     },
     {
       "groupId" : "io.apiman.plugins",
       "artifactId" : "apiman-plugins-http-security-policy",
-      "version" : "1.3.3.Final",
+      "version" : "1.4.0-SNAPSHOT",
       "name" : "HTTP Security Policy Plugin",
       "description" : "Provides a policy which allows security-related HTTP headers to be set, which can help mitigate a range of common security vulnerabilities."
     },
     {
       "groupId" : "io.apiman.plugins",
       "artifactId" : "apiman-plugins-jsonp-policy",
-      "version" : "1.3.3.Final",
+      "version" : "1.4.0-SNAPSHOT",
       "name" : "JSONP Policy Plugin",
       "description" : "A plugin that contributes a policy that turns a standard RESTful endpoint into a JSONP compatible endpoint."
     },
     {
       "groupId" : "io.apiman.plugins",
       "artifactId" : "apiman-plugins-keycloak-oauth-policy",
-      "version" : "1.3.3.Final",
+      "version" : "1.4.0-SNAPSHOT",
       "name" : "Keycloak OAuth Policy Plugin",
       "description" : "This plugin offers an OAuth2 policy which leverages the Keycloak authentication platform as the identity and access provider."
     },
     {
       "groupId" : "io.apiman.plugins",
       "artifactId" : "apiman-plugins-simple-header-policy",
-      "version" : "1.3.3.Final",
+      "version" : "1.4.0-SNAPSHOT",
       "name" : "Simple Header Policy Plugin",
       "description" : "Offers a simple policy that allows request headers to be added or stripped from the HTTP request (outgoing) or HTTP response (incoming)."
     },
     {
       "groupId" : "io.apiman.plugins",
       "artifactId" : "apiman-plugins-transformation-policy",
-      "version" : "1.3.3.Final",
+      "version" : "1.4.0-SNAPSHOT",
       "name" : "XML<->JSON Transformation Policy Plugin",
       "description" : "This plugin provides a very simple policy which can transform the request and/or response payload between XML and JSON."
     },
     {
       "groupId" : "io.apiman.plugins",
       "artifactId" : "apiman-plugins-log-policy",
-      "version" : "1.3.3.Final",
+      "version" : "1.4.0-SNAPSHOT",
       "name" : "Log Headers Policy",
       "description" : "A policy that logs the headers to std out.  Useful to analyse inbound HTTP traffic to the gateway when added as the first policy in the chain or to analyse outbound HTTP traffic from the gateway when added as the last policy in the chain."
     },
     {
       "groupId" : "io.apiman.plugins",
       "artifactId" : "apiman-plugins-circuit-breaker-policy",
-      "version" : "1.3.3.Final",
+      "version" : "1.4.0-SNAPSHOT",
       "name" : "Circuit Breaker Policy",
       "description" : "This plugin has policies for performing circuit breaker functionality."
     }
