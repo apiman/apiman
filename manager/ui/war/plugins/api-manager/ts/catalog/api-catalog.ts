@@ -264,34 +264,40 @@ module Apiman {
                                 if (request.url === definitionUrl) {
                                     request.headers.Authorization = Configuration.getAuthorizationHeader();
                                 }
+                                return request;
                             },
-                            onComplete: function () {
-                                // $('#swagger-ui-container a').each(function (idx, elem) {
-                                //     var href = $(elem).attr('href');
-                                //     if (href[0] == '#') {
-                                //         $(elem).removeAttr('href');
-                                //     }
-                                // });
-                                // $('#swagger-ui-container div.sandbox_header').each(function (idx, elem) {
-                                //     $(elem).remove();
-                                // });
-                                // $('#swagger-ui-container li.operation div.auth').each(function (idx, elem) {
-                                //     $(elem).remove();
-                                // });
-                                // $('#swagger-ui-container li.operation div.access').each(function (idx, elem) {
-                                //     $(elem).remove();
-                                // });
-                                $scope.$apply(function (error) {
+                            onComplete: function() {
+                                // Base URL doesn't make sense as we're calling through a gateway.
+                                $('#swagger-ui-container .base-url').remove();
+
+                                // Server URL (if baked into spec).
+                                $('#swagger-ui-container div.global-server-container').remove();
+
+                                // Link to spec in backend (won't work without auth).
+                                $('#swagger-ui-container .info .main a').remove();
+
+                                $scope.$apply(function(error) {
                                     $scope.definitionStatus = 'complete';
                                 });
                             },
-                            onFailure: function () {
-                                $scope.$apply(function (error) {
+                            onFailure: function() {
+                                $scope.$apply(function(error) {
                                     $scope.definitionStatus = 'error';
                                     $scope.hasError = true;
                                     $scope.error = error;
                                 });
-                            }
+                            },
+                            plugins: [
+                                {
+                                    statePlugins: {
+                                        spec: {
+                                            wrapSelectors: {
+                                                allowTryItOutFor: () => () => false
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
                         };
 
                         // Initialise Swagger UI

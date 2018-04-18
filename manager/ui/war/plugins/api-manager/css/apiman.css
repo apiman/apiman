@@ -1,3 +1,11 @@
+.swagger-ui .info pre
+{
+  padding: 0;
+  color: #fff;
+  background-color: transparent;
+  border: 0;
+  /*all: unset;*/
+}
 
 body {
   line-height: normal;
@@ -1433,44 +1441,6 @@ textarea.apiman-endpoint {
 #selectApiModal .version {
   display: block;
   width: auto;
-}
-
-#apiman-swagger.swagger-section .swagger-ui-wrap {
-  max-width: none;
-  margin-left: 0px;
-  margin-right: 0px;
-}
-#apiman-swagger.swagger-section .swagger-ui-wrap a {
-  cursor: pointer;
-}
-#apiman-swagger.swagger-section #resources_container {
-  padding: 0px;
-  margin: 0px;
-  width: auto;
-}
-#apiman-swagger.swagger-section #resources_container #resources {
-  padding: 0px;
-  margin: 0px;
-}
-#apiman-swagger.swagger-section #resources_container #resources .resource h2 {
-  margin: 0px;
-}
-#apiman-swagger.swagger-section #resources_container #resources ul.endpoints {
-  padding: 0px;
-  margin: 0px;
-}
-#apiman-swagger.swagger-section .swagger-ui-wrap table tbody tr td {
-  font-size: inherit;
-}
-#apiman-swagger.swagger-section .swagger-ui-wrap table thead tr th {
-  font-size: inherit;
-}
-#apiman-swagger.swagger-section .swagger-ui-wrap ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operation div.content h4 {
-  padding: 0px;
-  margin: 0px;
-}
-#apiman-swagger.swagger-section .swagger-ui-wrap p {
-  padding: 0px;
 }
 
 .apiman-chart-title {
