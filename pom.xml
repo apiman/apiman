@@ -130,7 +130,7 @@
     <version.com.zaxxer>2.4.0</version.com.zaxxer>
     <version.com.google.code.gson>2.3.1</version.com.google.code.gson>
     <version.com.google.guava>21.0</version.com.google.guava>
-    <version.io.searchbox.jest>5.3.2</version.io.searchbox.jest>
+    <version.io.searchbox.jest>5.3.3</version.io.searchbox.jest>
     <version.io.prometheus>0.0.13</version.io.prometheus>
     <version.javax.enterprise>1.2</version.javax.enterprise>
     <version.joda-time>2.7</version.joda-time>
