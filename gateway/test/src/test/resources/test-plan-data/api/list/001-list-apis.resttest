@@ -1,0 +1,6 @@
+GET /organizations/GatewayApiTest/apis/ admin/admin
+----
+200
+Content-Type: application/json
+
+["echo"]

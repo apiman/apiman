@@ -57,9 +57,10 @@ import javax.naming.InitialContext;
 
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.io.FileUtils;
-import org.elasticsearch.common.settings.ImmutableSettings.Builder;
+import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.common.settings.Settings.Builder;
 import org.elasticsearch.node.Node;
-import org.elasticsearch.node.NodeBuilder;
+import org.elasticsearch.node.NodeValidationException;
 import org.infinispan.Cache;
 import org.infinispan.manager.CacheContainer;
 import org.infinispan.manager.DefaultCacheManager;
@@ -274,27 +275,43 @@ public class ServletGatewayTestServer implements IGatewayTestServer {
             if (esHome.isDirectory()) {
                 FileUtils.deleteDirectory(esHome);
             }
-            Builder settings = NodeBuilder.nodeBuilder().settings();
-            settings.put("path.home", esHome.getAbsolutePath());
-            settings.put("http.port", "6500-6600");
-            settings.put("transport.tcp.port", "6600-6700");
-            settings.put("script.disable_dynamic", "false");
+            
+            Builder settings = Settings.builder()
+                    .put("path.home", esHome.getAbsolutePath())
+                    .put("http.port", "6500-6600")
+                    .put("transport.tcp.port", "6600-6700")
+                    .put("discovery.zen.ping.multicast.enabled", "false")
+                    .put("transport.type", "client")
+                    .put("cluster.name", "apiman");
 
             String clusterName = System.getProperty("apiman.test.es-cluster-name", ES_CLUSTER_NAME);
 
             boolean isPersistent = "true".equals(System.getProperty("apiman.test.es-persistence", "false"));
             if (!isPersistent) {
+            	// doubt this will work
                 settings.put("index.store.type", "memory").put("gateway.type", "none")
                         .put("index.number_of_shards", 1).put("index.number_of_replicas", 1);
-                node = NodeBuilder.nodeBuilder().client(false).clusterName(clusterName).data(true).local(true)
-                        .settings(settings).build();
+             
+
+                
             } else {
-                node = NodeBuilder.nodeBuilder().client(false).clusterName(clusterName).data(true).local(false)
-                        .settings(settings).build();
+            	
+            	
+            	
+//                node = NodeBuilder.nodeBuilder().client(false).clusterName(clusterName).data(true).local(false)
+//                        .settings(settings).build();
             }
+            
+            node = new Node(settings.build());
 
             System.out.println("Starting the ES node.");
-            node.start();
+            
+            try {
+                node.start().client();
+            } catch (NodeValidationException e) {
+                throw new RuntimeException(e);
+            }            
+            
             System.out.println("ES node was successfully started.");
             String connectionUrl = "http://localhost:6500";
             JestClientFactory factory = new JestClientFactory();
