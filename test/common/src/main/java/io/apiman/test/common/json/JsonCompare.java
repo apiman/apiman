@@ -37,6 +37,7 @@ import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.NumericNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
+import com.fasterxml.jackson.databind.node.ValueNode;
 
 /**
  * Used to compare an expected JSON document to an actual one.
@@ -183,6 +184,9 @@ public class JsonCompare {
                 assertJson(expected[idx], actual[idx]);
                 currentPath.pop();
             }
+        } else if (expectedJson instanceof ValueNode) {
+            // If we have a value by itself (e.g. from an array that contained leaf values)
+            Assert.assertEquals(message("Expected leaf JSON value did not match."), expectedJson, actualJson);
         } else {
             Iterator<Entry<String, JsonNode>> fields = expectedJson.fields();
             Set<String> expectedFieldNames = new HashSet<>();
@@ -300,7 +304,7 @@ public class JsonCompare {
             }
 
             if (getMissingField() == JsonMissingFieldType.fail) {
-                Set<String> actualFieldNames = new HashSet();
+                Set<String> actualFieldNames = new HashSet<>();
                 Iterator<String> names = actualJson.fieldNames();
                 while (names.hasNext()) {
                     actualFieldNames.add(names.next());
