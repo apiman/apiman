@@ -163,6 +163,7 @@ module ApimanModals {
 
                 $scope.onApiSelected = function (api, event) {
                     event.preventDefault();
+                    event.stopPropagation();
 
                     if ($scope.selectedApi) {
                         $scope.selectedApi.selected = false;
