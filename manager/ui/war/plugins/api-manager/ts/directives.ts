@@ -75,6 +75,13 @@ module Apiman {
                         $(element)['selectpicker']('refresh');
                     });
 
+                    scope.$on('$locationChangeStart', function(event, absNewUrl, absOldUrl) {
+                        if (absNewUrl === absOldUrl) {
+                            console.log("Inhibiting $locationChangeStart event", event, absNewUrl, absOldUrl);
+                            event.preventDefault();
+                        }
+                    });
+
                     if (attrs.ngOptions && / in /.test(attrs.ngOptions)) {
                         var refreshModel = attrs.ngOptions.split(' in ')[1].split(' ')[0];
                         Logger.debug('Watching model {0} for {1}.', refreshModel, attrs.ngModel);
