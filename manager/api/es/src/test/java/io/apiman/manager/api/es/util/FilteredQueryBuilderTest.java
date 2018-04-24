@@ -28,13 +28,13 @@ import org.junit.Test;
 public class FilteredQueryBuilderTest {
 
     /**
-     * Test method for {@link io.apiman.manager.api.es.util.AndFilterBuilder#doXContent(io.apiman.manager.api.es.util.XContentBuilder)}.
+     * Test method for {@link io.apiman.manager.api.es.util.BoolFilterBuilder#doXContent(io.apiman.manager.api.es.util.XContentBuilder)}.
      */
     @Test
     public void test() throws IOException {
         FilteredQueryBuilder query = QueryBuilders.filteredQuery(
                 QueryBuilders.matchAllQuery(),
-                FilterBuilders.andFilter(
+                FilterBuilders.boolFilter(
                         FilterBuilders.termFilter("organizationId", "ORG_ID"),
                         FilterBuilders.termFilter("userId", "USER")));
         String actual = query.string();

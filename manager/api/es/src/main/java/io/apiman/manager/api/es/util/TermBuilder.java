@@ -21,7 +21,7 @@ import java.io.IOException;
  * @author ewittman
  *
  */
-public class TermFilterBuilder extends AbstractQueryBuilder {
+public class TermBuilder extends AbstractQueryBuilder {
     
     private String term;
     private String sValue;
@@ -33,7 +33,7 @@ public class TermFilterBuilder extends AbstractQueryBuilder {
      * @param term
      * @param value
      */
-    public TermFilterBuilder(String term, String value) {
+    public TermBuilder(String term, String value) {
         this.term = term;
         this.sValue = value;
     }
@@ -43,7 +43,7 @@ public class TermFilterBuilder extends AbstractQueryBuilder {
      * @param term
      * @param value
      */
-    public TermFilterBuilder(String term, boolean value) {
+    public TermBuilder(String term, boolean value) {
         this.term = term;
         this.bValue = value;
     }
@@ -53,7 +53,7 @@ public class TermFilterBuilder extends AbstractQueryBuilder {
      * @param term
      * @param value
      */
-    public TermFilterBuilder(String term, Long value) {
+    public TermBuilder(String term, Long value) {
         this.term = term;
         this.lValue = value;
     }

@@ -19,6 +19,7 @@ import io.apiman.common.servlet.ApimanCorsFilter;
 import io.apiman.common.servlet.AuthenticationFilter;
 import io.apiman.common.servlet.DisableCachingFilter;
 import io.apiman.common.servlet.RootResourceFilter;
+import io.apiman.gateway.engine.es.DefaultESClientFactory;
 import io.apiman.manager.api.security.impl.DefaultSecurityContextFilter;
 import io.apiman.manager.api.war.TransactionWatchdogFilter;
 import io.apiman.manager.test.util.ManagerTestUtils;
@@ -28,6 +29,7 @@ import io.searchbox.client.JestClient;
 import io.searchbox.client.JestClientFactory;
 import io.searchbox.client.config.HttpClientConfig;
 import io.searchbox.indices.DeleteIndex;
+import io.searchbox.indices.Flush;
 
 import java.io.File;
 import java.sql.Connection;
@@ -36,6 +38,8 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.EnumSet;
+import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 
 import javax.naming.InitialContext;
 import javax.servlet.DispatcherType;
@@ -53,7 +57,6 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.security.Credential;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.settings.Settings.Builder;
-import org.elasticsearch.node.InternalSettingsPreparer;
 import org.elasticsearch.node.Node;
 import org.elasticsearch.plugins.Plugin;
 import org.elasticsearch.transport.Netty4Plugin;
@@ -92,11 +95,29 @@ public class ManagerApiTestServer {
     //private Client client = null;
     private JestClient client = null;
     private static final int JEST_TIMEOUT = 6000;
+    private static final String ES_DEFAULT_PORT = "9200";
+    private static final String ES_DEFAULT_HOST = "192.168.99.100";
+
+    //String connectionUrl = "http://localhost:9200";
+    //String connectionUrl = "http://localhost:6500";
 
     /**
      * Constructor.
      */
+    public ManagerApiTestServer(Map<String, String> config) {
+        //super(config);
+    }
+
+    @SuppressWarnings("serial")
     public ManagerApiTestServer() {
+//
+//        super(new LinkedHashMap<String, String>() {{
+//            put("client.initialize", "false");
+//            put("client.type", "jest");
+//            put("client.index", "apiman_manager");
+//            put("client.port", ES_DEFAULT_PORT);// FIXME
+//            put("client.host", ES_DEFAULT_HOST);
+//        }});
     }
 
     /**
@@ -130,11 +151,46 @@ public class ManagerApiTestServer {
             InitialContext ctx = TestUtil.initialContext();
             ctx.unbind("java:comp/env/jdbc/ApiManagerDS");
         }
-        if (node != null) {
-            if ("true".equals(System.getProperty("apiman.test.es-delete-index", "true"))) {
+        //if (node != null) {
+            //if ("true".equals(System.getProperty("apiman.test.es-delete-index", "true"))) {
             	client.execute(new DeleteIndex.Builder("apiman_manager").build());
-            }
+                client.execute(new Flush.Builder().build());
+            //}
+        //}
+
+        try {
+            CountDownLatch latch = new CountDownLatch(1);
+
+            // Important! Or will get cached client that assumes the DB schema has already been created
+            // and subtly horrible things will happen, and you'll waste a whole day debugging it! :-)
+            DefaultESClientFactory.clearClientCache();
+
+//            getClient().executeAsync(new Delete.Builder(getDefaultIndexName()).build(),
+//                    new JestResultHandler<JestResult>() {
+//
+//                @Override
+//                public void completed(JestResult result) {
+//                    latch.countDown();
+//                    System.out.println("=== Deleted index: " + result.getJsonString());
+//                }
+//
+//                @Override
+//                public void failed(Exception ex) {
+//                    latch.countDown();
+//                    System.err.println("=== Failed to delete index: " + ex.getMessage());
+//                    throw new RuntimeException(ex);
+//                }
+//            });
+
+            Flush flush = new Flush.Builder().build();
+//            getClient().execute(flush);
+            Thread.sleep(100);
+
+            latch.await();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
+
     }
 
     /**
@@ -192,7 +248,7 @@ public class ManagerApiTestServer {
             boolean isPersistent = "true".equals(System.getProperty("apiman.test.es-persistence", "false"));
             if (!isPersistent) {
                 System.out.println("Creating non-persistent ES");
-                settings.put("index.store.type", "mmapfs");
+                //settings.put("index.store.type", "mmapfs");
 //                settings.put("index.store.type", "memory");//.put("gateway.type", "none");
                         //.put("index.number_of_shards", 1).put("index.number_of_replicas", 1);
 //                node = NodeBuilder.nodeBuilder().client(false).clusterName(clusterName).data(true).local(true)
@@ -208,15 +264,18 @@ public class ManagerApiTestServer {
 
             System.out.println("Starting the ES node.");
             Collection<Class<? extends Plugin>> plugins = Arrays.asList(Netty4Plugin.class);
-            node = new PluginConfigurableNode(settings.build(), plugins);
-            node.start();
+
+
+
+//            node = new PluginConfigurableNode(settings.build(), plugins);
+//            node.start();
 
             System.out.println("ES node was successfully started.");
 
             // TODO parameterize this
-            String connectionUrl = "http://localhost:6500";
+
             JestClientFactory factory = new JestClientFactory();
-            factory.setHttpClientConfig(new HttpClientConfig.Builder(connectionUrl).multiThreaded(true)
+            factory.setHttpClientConfig(new HttpClientConfig.Builder("http://" + ES_DEFAULT_HOST + ":" + ES_DEFAULT_PORT).multiThreaded(true)
                     .connTimeout(JEST_TIMEOUT ).readTimeout(JEST_TIMEOUT).build());
             client = factory.getObject();
             ES_CLIENT = client;
@@ -351,11 +410,4 @@ public class ManagerApiTestServer {
     public JestClient getESClient() {
         return client;
     }
-
-    private static class PluginConfigurableNode extends Node {
-        public PluginConfigurableNode(Settings settings, Collection<Class<? extends Plugin>> classpathPlugins) {
-            super(InternalSettingsPreparer.prepareEnvironment(settings, null), classpathPlugins);
-        }
-    }
-
 }

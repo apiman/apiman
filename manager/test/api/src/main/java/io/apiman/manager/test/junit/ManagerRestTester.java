@@ -257,6 +257,12 @@ public class ManagerRestTester extends ParentRunner<TestInfo> {
         log("-----------------------------------------------------------");
         log("Starting Test [{0} / {1}]", testInfo.plan.name, testInfo.name);
         log("-----------------------------------------------------------");
+
+            System.out.println("sleeping2");
+            try { Thread.sleep(250); } catch (InterruptedException e) { }
+
+
+
         Description description = describeChild(testInfo);
         if (testInfo instanceof GatewayAssertionTestInfo) {
             runLeaf(new Statement() {
@@ -299,7 +305,8 @@ public class ManagerRestTester extends ParentRunner<TestInfo> {
                     Integer delay = testInfo.test.getDelay();
 
                     if (delay != null) {
-                        try { Thread.sleep(delay); } catch (InterruptedException e) { }
+                        System.out.println("sleeping");
+                        try { Thread.sleep(1000); } catch (InterruptedException e) { }
                     }
                     if (rtPath != null && !rtPath.trim().isEmpty()) {
                         RestTest restTest = TestUtil.loadRestTest(rtPath, getTestClass().getJavaClass().getClassLoader());

@@ -28,11 +28,11 @@ import org.junit.Test;
 public class AndFilterBuilderTest {
 
     /**
-     * Test method for {@link io.apiman.manager.api.es.util.AndFilterBuilder#doXContent(io.apiman.manager.api.es.util.XContentBuilder)}.
+     * Test method for {@link io.apiman.manager.api.es.util.BoolFilterBuilder#doXContent(io.apiman.manager.api.es.util.XContentBuilder)}.
      */
     @Test
     public void test() throws IOException {
-        String actual = FilterBuilders.andFilter(
+        String actual = FilterBuilders.boolFilter(
                 FilterBuilders.termFilter("groupId", "GROUP_ID"),
                 FilterBuilders.termFilter("artifactId", "ARTIFACT_ID")
         ).string();

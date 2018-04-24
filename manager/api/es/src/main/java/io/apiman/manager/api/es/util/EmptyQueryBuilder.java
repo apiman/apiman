@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 JBoss Inc
+ * Copyright 2017 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,22 +18,25 @@ package io.apiman.manager.api.es.util;
 
 import java.io.IOException;
 
-import org.junit.Assert;
-import org.junit.Test;
+public class EmptyQueryBuilder extends AbstractQueryBuilder {
 
-/**
- * @author eric.wittmann@gmail.com
- */
-@SuppressWarnings("nls")
-public class MatchAllQueryBuilderTest {
+    private QueryBuilder queryBuilder;
 
-    /**
-     * Test method for {@link io.apiman.manager.api.es.util.BoolFilterBuilder#doXContent(io.apiman.manager.api.es.util.XContentBuilder)}.
-     */
-    @Test
-    public void test() throws IOException {
-        String actual = QueryBuilders.matchAllQuery().string();
-        Assert.assertEquals("{\"match_all\":{}}", actual);
+    public EmptyQueryBuilder(QueryBuilder queryBuilder) {
+        this.queryBuilder = queryBuilder;
     }
+
+    @Override
+    protected void doXContent(XContentBuilder builder) throws IOException {
+        System.out.println("In TopLevelBuilder");
+
+        builder.field("query");
+        queryBuilder.toXContent(builder);
+        builder.endObject();
+
+        System.out.println("End TopLevelBuilder");
+
+    }
+
 
 }
