@@ -32,7 +32,6 @@
         <extension module="org.wildfly.extension.undertow"/>
         <extension module="org.keycloak.keycloak-server-subsystem"/>
         <extension module="org.keycloak.keycloak-adapter-subsystem"/>
-        <extension module="org.keycloak.keycloak-saml-adapter-subsystem"/>
     </extensions>
     <management>
         <security-realms>
@@ -655,7 +654,6 @@
             <enable-basic-auth>true</enable-basic-auth>
           </secure-deployment>
         </subsystem>
-        <subsystem xmlns="urn:jboss:domain:keycloak-saml:1.1"/>
     </profile>
     <interfaces>
         <interface name="management">
