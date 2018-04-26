@@ -4,7 +4,7 @@
   <parent>
     <groupId>io.apiman</groupId>
     <artifactId>apiman-gateway-engine</artifactId>
-    <version>1.4.0-SNAPSHOT</version>
+    <version>1.3.5.Final</version>
   </parent>
   <artifactId>apiman-gateway-engine-core</artifactId>
   <packaging>bundle</packaging>
