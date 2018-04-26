@@ -7809,7 +7809,7 @@ ua-parser-js@^0.7.9:
   version "0.7.17"
   resolved "https://registry.yarnpkg.com/ua-parser-js/-/ua-parser-js-0.7.17.tgz#e9ec5f9498b9ec910e7ae3ac626a805c4d09ecac"
 
-ui-select@0.14.9:
+ui-select@0.14.10:
   version "0.14.10"
   resolved "https://registry.yarnpkg.com/ui-select/-/ui-select-0.14.10.tgz#f1f648ceadaa4261d9cc55b783f4c95ea9b13651"
 
