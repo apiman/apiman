@@ -35,8 +35,8 @@
 
             <div class="row">
               <ul class="nav nav-tabs">
-                <li class="active"><a href="#installed-plugins" data-toggle="tab" role="tab" apiman-i18n-key="installed-plugins">Installed Plugins</a></li>
-                <li><a href="#available-plugins" data-toggle="tab" role="tab" apiman-i18n-key="available-plugins">Available Plugins</a></li>
+                <li class="active"><button data-target="#installed-plugins" data-toggle="tab" role="tab">Installed Plugins</button></li>
+                <li><button data-target="#available-plugins" data-toggle="tab" role="tab">Available Plugins</button></li>
               </ul>
             </div>
             
@@ -67,7 +67,7 @@
                           </td>
                         </tr>
                         <tr ng-repeat="plugin in plugins" ng-class="{apiman_deleting: plugin.deleting}">
-                          <td><a href="{{ pluginName }}/admin/plugins/{{ plugin.id }}">{{ plugin.name }}</a></td>
+                          <td><a ng-href="{{ pluginName }}/admin/plugins/{{ plugin.id }}">{{ plugin.name }}</a></td>
                           <td><span>{{plugin.description}}</span></td>
                           <td nowrap="nowrap"><span>{{plugin.version}}</span></td>
                           <td nowrap="nowrap" valign="middle">
@@ -92,7 +92,7 @@
                     <div>
                       <apiman-search-box id="plugin-name-filter" apiman-i18n-key="filter-plugins" function="filterAvailablePlugins" placeholder="Filter by plugin name..." />
                     </div>
-                    <a apiman-i18n-key="add-custom-plugin" href="{{ pluginName }}/new-plugin" class="btn btn-primary pull-right">Add Custom Plugin</a>
+                    <a apiman-i18n-key="add-custom-plugin" ng-href="{{ pluginName }}/new-plugin" class="btn btn-primary pull-right">Add Custom Plugin</a>
                   </div>
                 </div>
                 <!-- Table of Available Plugins -->
@@ -133,7 +133,9 @@
                           <td>{{ plugin.name }}</td>
                           <td><span>{{plugin.description}}</span></td>
                           <td nowrap="nowrap">
-                            <a ng-hide="plugin.isInstalled" href="{{ pluginName }}/new-plugin?groupId={{ plugin.groupId }}&amp;artifactId={{ plugin.artifactId }}&amp;version={{ plugin.version }}&amp;classifier={{ plugin.classifier }}&amp;type={{ plugin.type }}" apiman-i18n-key="install">Install</a>
+                            <a ng-hide="plugin.isInstalled"
+                               ng-href="{{ pluginName }}/new-plugin?groupId={{ plugin.groupId }}&amp;artifactId={{ plugin.artifactId }}&amp;version={{ plugin.version }}&amp;classifier={{ plugin.classifier }}&amp;type={{ plugin.type }}"
+                               apiman-i18n-key="install">Install</a>
                             <span class="apiman-label apiman-label-success" ng-hide="!plugin.isInstalled" apiman-i18n-key="installed">Installed</span>
                           </td>
                         </tr>
