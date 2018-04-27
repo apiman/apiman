@@ -4,7 +4,7 @@
 
   <groupId>io.apiman.plugins</groupId>
   <artifactId>apiman-plugins</artifactId>
-  <version>1.4.0-SNAPSHOT</version>
+  <version>1.3.5.Final</version>
   <name>apiman-plugins</name>
   <packaging>pom</packaging>
 
@@ -72,7 +72,7 @@
     <!-- Instruct the build to use only UTF-8 encoding for source code -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
-    <version.apiman>1.3.4.Final</version.apiman>
+    <version.apiman>1.3.5.Final</version.apiman>
     <version.javadoc.plugin>2.10.1</version.javadoc.plugin>
     <version.compiler.plugin>3.2</version.compiler.plugin>
     <version.enforcer.plugin>1.4</version.enforcer.plugin>
