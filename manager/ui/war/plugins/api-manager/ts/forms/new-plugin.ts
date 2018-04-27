@@ -44,7 +44,7 @@ module Apiman {
                 ApimanSvcs.save({ entityType: 'plugins' }, $scope.plugin, function(reply) {
                      PageLifecycle.redirectTo('/admin/plugins');
                 }, PageLifecycle.handleError);
-            };
+            }
             
             PageLifecycle.loadPage('NewPlugin', 'admin', undefined, $scope, function() {
                 PageLifecycle.setPageTitle('new-plugin');

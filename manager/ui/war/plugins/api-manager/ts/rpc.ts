@@ -161,11 +161,7 @@ module ApimanRPC {
                         method: 'GET', 
                         url: endpoint, 
                         transformResponse: function(value) { return value; }
-                    }).then((response) => {
-                        handler(response.data, response.status, response.statusText, response.headers, response.config);
-                    }, (err) => {
-                        errorHandler(err.data, err.status, err.statusText, err.headers, err.config);
-                    });
+                    }).success(handler).error(errorHandler);
                 },
                 updateApiDefinition: function(orgId, apiId, version, definition, definitionType, handler, errorHandler) {
                     var ct = 'application/json';
@@ -180,11 +176,7 @@ module ApimanRPC {
                         url: endpoint,
                         headers: { 'Content-Type' : ct },
                         data: definition
-                    }).then((response) => {
-                        handler(response.data, response.status, response.statusText, response.headers, response.config);
-                    }, (err) => {
-                        errorHandler(err.data, err.status, err.statusText, err.headers, err.config);
-                    });
+                    }).success(handler).error(errorHandler);
                 }
             }
         }]);

@@ -1,46 +1,3 @@
-/* Because of Bootstrap + AngularJS 1.6 (+ our config?) bug, we need to use <button> instead of <a> for
-Bootstrap tabs. This replicates the style elements. */
-
-.nav > li > button {
-  position: relative;
-  display: block;
-  padding: 10px 15px;
-}
-
-.nav-tabs > li > button {
-  outline: none;
-  border: none;
-  color: #4d5258;
-  margin-right: -1px;
-  padding-bottom: 5px;
-  padding-top: 5px;
-  line-height: 1.66666667;
-  border-radius: 1px 1px 0 0;
-  background: transparent;
-}
-
-.nav-tabs > li.active > button,
-.nav-tabs > li.active > button:hover,
-.nav-tabs > li.active > button:focus {
-  color: #0099d3;
-  background-color: #ffffff;
-  border: 1px solid #dddddd;
-  border-bottom-color: transparent;
-  cursor: default;
-}
-
-/* End of Bootstrap supplement */
-
-/* Swagger customisations */
-.swagger-ui .info pre
-{
-  padding: 0;
-  color: #fff;
-  background-color: transparent;
-  border: 0;
-  /*all: unset;*/
-}
-/* End of swagger customisations */
 
 body {
   line-height: normal;
@@ -63,8 +20,7 @@ textarea#api-definition.apiman-form-data.myBlur {
   outline: none;
 }
 
-.ui-select-bootstrap .ui-select-choices-row>a:hover,
-.ui-select-bootstrap .ui-select-choices-row>a:focus {
+.ui-select-bootstrap .ui-select-choices-row>a:hover, .ui-select-bootstrap .ui-select-choices-row>a:focus {
   text-decoration: none;
   color: #262626;
   background-color: #d4edfa;
@@ -1477,6 +1433,44 @@ textarea.apiman-endpoint {
 #selectApiModal .version {
   display: block;
   width: auto;
+}
+
+#apiman-swagger.swagger-section .swagger-ui-wrap {
+  max-width: none;
+  margin-left: 0px;
+  margin-right: 0px;
+}
+#apiman-swagger.swagger-section .swagger-ui-wrap a {
+  cursor: pointer;
+}
+#apiman-swagger.swagger-section #resources_container {
+  padding: 0px;
+  margin: 0px;
+  width: auto;
+}
+#apiman-swagger.swagger-section #resources_container #resources {
+  padding: 0px;
+  margin: 0px;
+}
+#apiman-swagger.swagger-section #resources_container #resources .resource h2 {
+  margin: 0px;
+}
+#apiman-swagger.swagger-section #resources_container #resources ul.endpoints {
+  padding: 0px;
+  margin: 0px;
+}
+#apiman-swagger.swagger-section .swagger-ui-wrap table tbody tr td {
+  font-size: inherit;
+}
+#apiman-swagger.swagger-section .swagger-ui-wrap table thead tr th {
+  font-size: inherit;
+}
+#apiman-swagger.swagger-section .swagger-ui-wrap ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operation div.content h4 {
+  padding: 0px;
+  margin: 0px;
+}
+#apiman-swagger.swagger-section .swagger-ui-wrap p {
+  padding: 0px;
 }
 
 .apiman-chart-title {

@@ -138,35 +138,44 @@ module Apiman {
                 $scope.hasError = false;
 
                 PageLifecycle.setPageTitle('consumer-api-def', [ $scope.api.name ]);
+                
+                var hasSwagger = false;
+                try {
+                    var swagger = SwaggerUi;
+                    hasSwagger = true;
+                } catch (e) {}
 
-                if ($scope.version.definitionType == 'SwaggerJSON' && SwaggerUi) {
-                    const url = ApiDefinitionSvcs.getApiDefinitionUrl($scope.params.org, $scope.params.api, $scope.params.version);
+                if ($scope.version.definitionType == 'SwaggerJSON' && hasSwagger) {
+                    var url = ApiDefinitionSvcs.getApiDefinitionUrl($scope.params.org, $scope.params.api, $scope.params.version);
                     Logger.debug("!!!!! Using definition URL: {0}", url);
 
+                    var authHeader = Configuration.getAuthorizationHeader();
+                    
                     $scope.definitionStatus = 'loading';
-
-                    const swaggerOpts = {
+                    var swaggerOptions = {
                         url: url,
-                        dom_id:"#swagger-ui-container",
+                        dom_id:"swagger-ui-container",
                         validatorUrl:null,
                         sorter : "alpha",
-                        requestInterceptor: function(request) {
-                            // Only add auth header to requests where the URL matches the one specified above.
-                            if (request.url === url) {
-                                request.headers.Authorization = Configuration.getAuthorizationHeader();
-                            }
-                            return request;
+                        authorizations: {
+                            apimanauth: new SwaggerClient.ApiKeyAuthorization("Authorization", authHeader, "header")
                         },
                         onComplete: function() {
-                            // Base URL doesn't make sense as we're calling through a gateway.
-                            $('#swagger-ui-container .base-url').remove();
-
-                            // Server URL (if baked into spec).
-                            $('#swagger-ui-container div.global-server-container').remove();
-
-                            // Link to spec in backend (won't work without auth).
-                            $('#swagger-ui-container .info .main a').remove();
-
+                            $('#swagger-ui-container a').each(function(idx, elem) {
+                                var href = $(elem).attr('href');
+                                if (href[0] == '#') {
+                                    $(elem).removeAttr('href');
+                                }
+                            });
+                            $('#swagger-ui-container div.sandbox_header').each(function(idx, elem) {
+                                $(elem).remove();
+                            });
+                            $('#swagger-ui-container li.operation div.auth').each(function(idx, elem) {
+                                $(elem).remove();
+                            });
+                            $('#swagger-ui-container li.operation div.access').each(function(idx, elem) {
+                                $(elem).remove();
+                            });
                             $scope.$apply(function(error) {
                                 $scope.definitionStatus = 'complete';
                             });
@@ -177,23 +186,10 @@ module Apiman {
                                 $scope.hasError = true;
                                 $scope.error = error;
                             });
-                        },
-                        plugins: [
-                            { // Thanks: https://github.com/swagger-api/swagger-ui/issues/3725#issuecomment-334899276
-                                statePlugins: {
-                                    spec: {
-                                        wrapSelectors: {
-                                            allowTryItOutFor: () => () => false
-                                        }
-                                    }
-                                }
-                            }
-                        ]
+                        }
                     };
-
-                    // Initialise Swagger UI
-                    SwaggerUi(swaggerOpts);
-
+                    $window.swaggerUi = new SwaggerUi(swaggerOptions);
+                    $window.swaggerUi.load();
                     $scope.hasDefinition = true;
                 } else {
                     $scope.hasDefinition = false;

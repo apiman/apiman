@@ -161,10 +161,7 @@ module ApimanModals {
                     Logger.info("===========> Api Version: {0}", newValue);
                 }, false);
 
-                $scope.onApiSelected = function (api, event) {
-                    event.preventDefault();
-                    event.stopPropagation();
-
+                $scope.onApiSelected = function (api) {
                     if ($scope.selectedApi) {
                         $scope.selectedApi.selected = false;
                     }
