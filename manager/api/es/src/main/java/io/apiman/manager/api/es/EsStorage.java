@@ -573,34 +573,6 @@ public class EsStorage implements IStorage, IStorageQuery {
     public void deleteOrganization(OrganizationBean organization) throws StorageException {
         try {
             String orgId = organization.getId().replace('"', '_');
-//        String query = "{\n" +
-//                "  \"query\": {\n" +
-//                "    \"filtered\": {\n" +
-//                "      \"query\": {\n" +
-//                "        \"match_all\": {}\n" +
-//                "      },\n" +
-//                "      \"filter\": {\n" +
-//                "        \"or\": [\n" +
-//                "          {\n" +
-//                "            \"term\": {\n" +
-//                "              \"organizationId\": \"" + orgId + "\"\n" +
-//                "            }\n" +
-//                "          },\n" +
-//                "          {\n" +
-//                "            \"term\": {\n" +
-//                "              \"clientOrganizationId\": \"" + orgId + "\"\n" +
-//                "            }\n" +
-//                "          },\n" +
-//                "          {\n" +
-//                "            \"term\": {\n" +
-//                "              \"apiOrganizationId\": \"" + orgId + "\"\n" +
-//                "            }\n" +
-//                "          }\n" +
-//                "        ]\n" +
-//                "      }\n" +
-//                "    }\n" +
-//                "  }\n" +
-//                "}";
 
             QueryBuilder qb =
                 FilterBuilders.boolFilter(
@@ -645,80 +617,6 @@ public class EsStorage implements IStorage, IStorageQuery {
     public void deleteClient(ClientBean client) throws StorageException {
         String clientId = client.getId().replace('"', '_');
         String orgId = client.getOrganization().getId().replace('"', '_');
-//        String query = "{\n" +
-//                "  \"query\": {\n" +
-//                "    \"filtered\": {\n" +
-//                "      \"query\": {\n" +
-//                "        \"match_all\": {}\n" +
-//                "      },\n" +
-//                "      \"filter\": {\n" +
-//                "        \"bool\": {\n" +
-//                "          \"must\": [\n" +
-//                "            {\n" +
-//                "              \"bool\": {\n" +
-//                "                \"should\": [\n" +
-//                "                  {\n" +
-//                "                    \"term\": {\n" +
-//                "                      \"clientOrganizationId\": \"" + orgId + "\"\n" +
-//                "                    }\n" +
-//                "                  },\n" +
-//                "                  {\n" +
-//                "                    \"term\": {\n" +
-//                "                      \"organizationId\": \"" + orgId + "\"\n" +
-//                "                    }\n" +
-//                "                  }\n" +
-//                "                ]\n" +
-//                "              }\n" +
-//                "            },\n" +
-//                "            {\n" +
-//                "              \"bool\": {\n" +
-//                "                \"should\": [\n" +
-//                "                  {\n" +
-//                "                    \"bool\": {\n" +
-//                "                      \"must\": [\n" +
-//                "                        {\n" +
-//                "                          \"term\": {\n" +
-//                "                            \"entityId\": \"" + clientId + "\"\n" +
-//                "                          }\n" +
-//                "                        },\n" +
-//                "                        {\n" +
-//                "                          \"term\": {\n" +
-//                "                            \"entityType\": \"" + AuditEntityType.Client.name() + "\"\n" +
-//                "                          }\n" +
-//                "                        }\n" +
-//                "                      ]\n" +
-//                "                    }\n" +
-//                "                  },\n" +
-//                "                  {\n" +
-//                "                    \"bool\": {\n" +
-//                "                      \"must\": [\n" +
-//                "                        {\n" +
-//                "                          \"term\": {\n" +
-//                "                             \"entityId\": \"" + clientId + "\"\n" +
-//                "                           }\n" +
-//                "                         },\n" +
-//                "                         {\n" +
-//                "                           \"term\": {\n" +
-//                "                               \"type\": \"" + AuditEntityType.Client.name() + "\"\n" +
-//                "                             }\n" +
-//                "                           }\n" +
-//                "                         ]\n" +
-//                "                       }\n" +
-//                "                     },\n" +
-//                "                     {\n" +
-//                "                       \"term\": {\n" +
-//                "                           \"clientId\": \"" + clientId + "\"\n" +
-//                "                       }\n" +
-//                "                     }" +
-//                "                ]\n" +
-//                "              }\n" +
-//                "            }\n" +
-//                "          ]\n" +
-//                "        }\n" +
-//                "      }\n" +
-//                "    }\n" +
-//                "  }\n" +
-//                "}";
 
         QueryBuilder qb =
             QueryBuilders.query(
@@ -796,88 +694,46 @@ public class EsStorage implements IStorage, IStorageQuery {
         String apiId = api.getId().replace('"', '_');
         String orgId = api.getOrganization().getId().replace('"', '_');
 
-        String query = "{\n" +
-        "    \"query\": {\n" +
-        "        \"filtered\": {\n" +
-        "            \"query\": {\n" +
-        "                \"match_all\": {}\n" +
-        "            },\n" +
-        "            \"filter\": {\n" +
-        "                \"bool\": {\n" +
-        "                    \"must\": [\n" +
-        "                        {\n" +
-        "                            \"bool\": {\n" +
-        "                                \"should\": [\n" +
-        "                                    {\n" +
-        "                                        \"term\": {\n" +
-        "                                            \"apiOrganizationId\": \"" + orgId + "\"\n" +
-        "                                        }\n" +
-        "                                    },\n" +
-        "                                    {\n" +
-        "                                        \"term\": {\n" +
-        "                                            \"organizationId\": \"" + orgId + "\"\n" +
-        "                                        }\n" +
-        "                                    }\n" +
-        "                                ]\n" +
-        "                            }\n" +
-        "                        },\n" +
-        "                        {\n" +
-        "                            \"bool\": {\n" +
-        "                                \"should\": [\n" +
-        "                                    {\n" +
-        "                                        \"bool\": {\n" +
-        "                                            \"must\": [\n" +
-        "                                                {\n" +
-        "                                                    \"term\": {\n" +
-        "                                                        \"entityId\": \"" + apiId + "\"\n" +
-        "                                                    }\n" +
-        "                                                },\n" +
-        "                                                {\n" +
-        "                                                    \"term\": {\n" +
-        "                                                        \"entityType\": \"" + AuditEntityType.Api.name() + "\"\n" +
-        "                                                    }\n" +
-        "                                                }\n" +
-        "                                            ]\n" +
-        "                                        }\n" +
-        "                                    },\n" +
-        "                                    {\n" +
-        "                                        \"bool\": {\n" +
-        "                                            \"must\": [\n" +
-        "                                                {\n" +
-        "                                                    \"term\": {\n" +
-        "                                                        \"entityId\": \"" + apiId + "\"\n" +
-        "                                                    }\n" +
-        "                                                },\n" +
-        "                                                {\n" +
-        "                                                    \"term\": {\n" +
-        "                                                        \"type\": \"" + AuditEntityType.Api.name() + "\"\n" +
-        "                                                    }\n" +
-        "                                                }\n" +
-        "                                            ]\n" +
-        "                                        }\n" +
-        "                                    },\n" +
-        "                                    {\n" +
-        "                                        \"term\": {\n" +
-        "                                            \"apiId\": \"" + apiId + "\"\n" +
-        "                                        }\n" +
-        "                                    }\n" +
-        "                                ]\n" +
-        "                            }\n" +
-        "                        }\n" +
-        "                    ]\n" +
-        "                }\n" +
-        "            }\n" +
-        "        }\n" +
-        "    }\n" +
-        "}";
-        DeleteByQuery deleteByQuery = new DeleteByQuery.Builder(query).addIndex(getIndexName())
-                .addType("auditEntry")
-                .addType("api")
-                .addType("apiVersion")
-                .addType("apiPolicies")
-                .addType("contract")
-                .build();
+        QueryBuilder qb =
+                QueryBuilders.query(
+                    FilterBuilders.boolFilter(
+                        FilterBuilders.filter(
+                            FilterBuilders.boolFilter(
+                                FilterBuilders.shouldFilter(
+                                    FilterBuilders.termFilter("apiOrganizationId", orgId),
+                                    FilterBuilders.termFilter("organizationId", orgId)
+                                )
+                            ),
+                            FilterBuilders.boolFilter(
+                                FilterBuilders.shouldFilter(
+                                    FilterBuilders.boolFilter(
+                                        FilterBuilders.filter(
+                                            FilterBuilders.termFilter("entityId", apiId),
+                                            FilterBuilders.termFilter("entityType", AuditEntityType.Api.name())
+                                        )
+                                    ),
+                                    FilterBuilders.boolFilter(
+                                        FilterBuilders.filter(
+                                            FilterBuilders.termFilter("entityId", apiId),
+                                            FilterBuilders.termFilter("type", AuditEntityType.Api.name())
+                                        )
+                                    ),
+                                    FilterBuilders.termFilter("apiId", apiId)
+                                )
+                            )
+                        )
+                    )
+                );
+
         try {
+            DeleteByQuery deleteByQuery = new DeleteByQuery.Builder(qb.string()).addIndex(getIndexName())
+                    .addType("auditEntry")
+                    .addType("api")
+                    .addType("apiVersion")
+                    .addType("apiPolicies")
+                    .addType("contract")
+                    .build();
+
             JestResult response = esClient.execute(deleteByQuery);
             if (!response.isSucceeded()) {
                 throw new StorageException(response.getErrorMessage());
@@ -1263,31 +1119,6 @@ public class EsStorage implements IStorage, IStorageQuery {
         } catch (Exception e) {
             throw new StorageException(e);
         }
-    }
-
-    public static void main(String...strings) throws IOException {
-        QueryBuilder builder = QueryBuilders.query(
-                FilterBuilders.boolFilter(
-                    FilterBuilders.filter(
-                        FilterBuilders.termFilter("organizationId", "orgid"),
-                        FilterBuilders.termFilter("clientId", "cid")
-                    )
-                )
-             );
-
-
-
-//        QueryBuilder qb =
-//                FilterBuilders.boolFilter(
-//                    FilterBuilders.filter(
-//                            FilterBuilders.termFilter("clientOrganizationId", "organizationId"),
-//                            FilterBuilders.termFilter("clientId", "clientId"),
-//                            FilterBuilders.termFilter("clientVersion", "version")
-//                    )
-//                );
-//
-//        SearchSourceBuilder builder = new SearchSourceBuilder().query(qb);
-        System.out.println(builder.string());
     }
 
     /**
@@ -2410,33 +2241,18 @@ public class EsStorage implements IStorage, IStorageQuery {
     @Override
     public Iterator<PlanVersionBean> getAllPlanVersions(String organizationId, String planId)
             throws StorageException {
-//        String query = "{" +
-//                "  \"query\": {" +
-//                "    \"filtered\": { " +
-//                "      \"filter\": {" +
-//                "        \"and\" : [" +
-//                "          {" +
-//                "            \"term\": { \"organizationId\": \"" + organizationId + "\" }" +
-//                "          }," +
-//                "          {" +
-//                "            \"term\": { \"planId\": \"" + planId + "\" }" +
-//                "          }" +
-//                "      ]" +
-//                "      }" +
-//                "    }" +
-//                "  }" +
-//                "}";
-        try {
-            QueryBuilder qb =
-                QueryBuilders.query(
-                    FilterBuilders.boolFilter(
-                        FilterBuilders.filter(
-                                FilterBuilders.termFilter("organizationId", organizationId),
-                                FilterBuilders.termFilter("planId", planId)
-                        )
-                    )
-                );
 
+        QueryBuilder qb =
+            QueryBuilders.query(
+                FilterBuilders.boolFilter(
+                    FilterBuilders.filter(
+                            FilterBuilders.termFilter("organizationId", organizationId),
+                            FilterBuilders.termFilter("planId", planId)
+                    )
+                )
+            );
+
+        try {
             return getAll("planVersion", new IUnmarshaller<PlanVersionBean>() { //$NON-NLS-1$
                 @Override
                 public PlanVersionBean unmarshal(Map<String, Object> source) {
@@ -2456,34 +2272,18 @@ public class EsStorage implements IStorage, IStorageQuery {
     @Override
     public Iterator<ApiVersionBean> getAllApiVersions(String organizationId, String apiId)
             throws StorageException {
-//        String query = "{" +
-//                "  \"query\": {" +
-//                "    \"filtered\": { " +
-//                "      \"filter\": {" +
-//                "        \"and\" : [" +
-//                "          {" +
-//                "            \"term\": { \"organizationId\": \"" + organizationId + "\" }" +
-//                "          }," +
-//                "          {" +
-//                "            \"term\": { \"apiId\": \"" + apiId + "\" }" +
-//                "          }" +
-//                "      ]" +
-//                "      }" +
-//                "    }" +
-//                "  }" +
-//                "}";
+
+        QueryBuilder qb =
+            QueryBuilders.query(
+                FilterBuilders.boolFilter(
+                    FilterBuilders.filter(
+                            FilterBuilders.termFilter("organizationId", organizationId),
+                            FilterBuilders.termFilter("apiId", apiId)
+                    )
+                )
+        );
 
         try {
-            QueryBuilder qb =
-                QueryBuilders.query(
-                    FilterBuilders.boolFilter(
-                        FilterBuilders.filter(
-                                FilterBuilders.termFilter("organizationId", organizationId),
-                                FilterBuilders.termFilter("apiId", apiId)
-                        )
-                    )
-            );
-
             return getAll("apiVersion", new IUnmarshaller<ApiVersionBean>() { //$NON-NLS-1$
                 @Override
                 public ApiVersionBean unmarshal(Map<String, Object> source) {
@@ -2502,34 +2302,17 @@ public class EsStorage implements IStorage, IStorageQuery {
     @Override
     public Iterator<ClientVersionBean> getAllClientVersions(String organizationId,
             String clientId) throws StorageException {
-//        String query = "{" +
-//                "  \"query\": {" +
-//                "    \"filtered\": { " +
-//                "      \"filter\": {" +
-//                "        \"and\" : [" +
-//                "          {" +
-//                "            \"term\": { \"organizationId\": \"" + organizationId + "\" }" +
-//                "          }," +
-//                "          {" +
-//                "            \"term\": { \"clientId\": \"" + clientId + "\" }" +
-//                "          }" +
-//                "      ]" +
-//                "      }" +
-//                "    }" +
-//                "  }" +
-//                "}";
-//
-        try {
-            QueryBuilder qb =
-                QueryBuilders.query(
-                   FilterBuilders.boolFilter(
-                       FilterBuilders.filter(
-                           FilterBuilders.termFilter("organizationId", organizationId),
-                           FilterBuilders.termFilter("clientId", clientId)
-                       )
+        QueryBuilder qb =
+            QueryBuilders.query(
+               FilterBuilders.boolFilter(
+                   FilterBuilders.filter(
+                       FilterBuilders.termFilter("organizationId", organizationId),
+                       FilterBuilders.termFilter("clientId", clientId)
                    )
-                );
+               )
+            );
 
+        try {
             return getAll("clientVersion", new IUnmarshaller<ClientVersionBean>() { //$NON-NLS-1$
                 @Override
                 public ClientVersionBean unmarshal(Map<String, Object> source) {
@@ -2560,26 +2343,6 @@ public class EsStorage implements IStorage, IStorageQuery {
 
             String query = new SearchSourceBuilder().query(qb).string();
 
-
-    //        String query = "{" +
-    //                "  \"query\": {" +
-    //                "    \"bool\": {" +
-    //                "      \"filter\": {" +
-    //                "        \"and\" : [" +
-    //                "          {" +
-    //                "            \"term\": { \"clientOrganizationId\": \"" + organizationId + "\" }" +
-    //                "          }," +
-    //                "          {" +
-    //                "            \"term\": { \"clientId\": \"" + clientId + "\" }" +
-    //                "          }," +
-    //                "          {" +
-    //                "            \"term\": { \"clientVersion\": \"" + version + "\" }" +
-    //                "          }" +
-    //                "      ]" +
-    //                "      }" +
-    //                "    }" +
-    //                "  }" +
-    //                "}";
             return getAll("contract", new IUnmarshaller<ContractBean>() { //$NON-NLS-1$
                 @Override
                 public ContractBean unmarshal(Map<String, Object> source) {
