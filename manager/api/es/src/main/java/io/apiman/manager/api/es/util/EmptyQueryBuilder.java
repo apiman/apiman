@@ -29,13 +29,9 @@ public class EmptyQueryBuilder extends AbstractQueryBuilder {
     @Override
     protected void doXContent(XContentBuilder builder) throws IOException {
         System.out.println("In TopLevelBuilder");
-
         builder.field("query");
         queryBuilder.toXContent(builder);
-        builder.endObject();
-
         System.out.println("End TopLevelBuilder");
-
     }
 
 

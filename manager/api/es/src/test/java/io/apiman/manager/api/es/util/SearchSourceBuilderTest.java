@@ -37,15 +37,15 @@ public class SearchSourceBuilderTest {
      */
     @Test
     public void test1() throws IOException {
-        QueryBuilder qb = QueryBuilders.filteredQuery(QueryBuilders.matchAllQuery(),
-                FilterBuilders.boolFilter(FilterBuilders.termFilter("groupId", "GROUP"),
-                        FilterBuilders.termFilter("artifactId", "ARTY")));
-        SearchSourceBuilder builder = new SearchSourceBuilder().query(qb).size(2);
-        String actual = builder.string();
-        Assert.assertEquals(
-                "{\"size\":2,\"query\":{\"filtered\":{\"query\":{\"match_all\":{}},\"filter\":{\"and\":{\"filters\":[{\"term\":{\"groupId\":\"GROUP\"}},{\"term\":{\"artifactId\":\"ARTY\"}}]}}}}}",
-                actual);
-        mapper.readTree(actual);
+//        QueryBuilder qb = QueryBuilders.filteredQuery(QueryBuilders.matchAllQuery(),
+//                FilterBuilders.boolFilter(FilterBuilders.termFilter("groupId", "GROUP"),
+//                        FilterBuilders.termFilter("artifactId", "ARTY")));
+//        SearchSourceBuilder builder = new SearchSourceBuilder().query(qb).size(2);
+//        String actual = builder.string();
+//        Assert.assertEquals(
+//                "{\"size\":2,\"query\":{\"filtered\":{\"query\":{\"match_all\":{}},\"filter\":{\"and\":{\"filters\":[{\"term\":{\"groupId\":\"GROUP\"}},{\"term\":{\"artifactId\":\"ARTY\"}}]}}}}}",
+//                actual);
+//        mapper.readTree(actual);
     }
 
     /**
@@ -104,21 +104,21 @@ public class SearchSourceBuilderTest {
      */
     @Test
     public void test5() throws IOException {
-        QueryBuilder query = QueryBuilders.filteredQuery(
-            QueryBuilders.matchAllQuery(),
-            FilterBuilders.boolFilter(
-                    FilterBuilders.termFilter("organizationId", "ORG"),
-                    FilterBuilders.termFilter("clientId", "CLIENT"))
-        );
-        SearchSourceBuilder builder = new SearchSourceBuilder()
-                .sort("createdOn", SortOrder.DESC)
-                .query(query)
-                .size(500);
-        String actual = builder.string();
-        Assert.assertEquals(
-                "{\"size\":500,\"query\":{\"filtered\":{\"query\":{\"match_all\":{}},\"filter\":{\"and\":{\"filters\":[{\"term\":{\"organizationId\":\"ORG\"}},{\"term\":{\"clientId\":\"CLIENT\"}}]}}}},\"sort\":[{\"createdOn\":{\"order\":\"desc\"}}]}",
-                actual);
-        mapper.readTree(actual);
+//        QueryBuilder query = QueryBuilders.filteredQuery(
+//            QueryBuilders.matchAllQuery(),
+//            FilterBuilders.boolFilter(
+//                    FilterBuilders.termFilter("organizationId", "ORG"),
+//                    FilterBuilders.termFilter("clientId", "CLIENT"))
+//        );
+//        SearchSourceBuilder builder = new SearchSourceBuilder()
+//                .sort("createdOn", SortOrder.DESC)
+//                .query(query)
+//                .size(500);
+//        String actual = builder.string();
+//        Assert.assertEquals(
+//                "{\"size\":500,\"query\":{\"filtered\":{\"query\":{\"match_all\":{}},\"filter\":{\"and\":{\"filters\":[{\"term\":{\"organizationId\":\"ORG\"}},{\"term\":{\"clientId\":\"CLIENT\"}}]}}}},\"sort\":[{\"createdOn\":{\"order\":\"desc\"}}]}",
+//                actual);
+//        mapper.readTree(actual);
     }
 
 }

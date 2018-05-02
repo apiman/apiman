@@ -91,10 +91,10 @@ import io.searchbox.core.SearchResult;
 import io.searchbox.core.SearchResult.Hit;
 import io.searchbox.core.SearchScroll;
 import io.searchbox.core.SearchScroll.Builder;
+import io.searchbox.core.search.sort.Sort;
 import io.searchbox.indices.CreateIndex;
 import io.searchbox.indices.IndicesExists;
 import io.searchbox.params.Parameters;
-import io.searchbox.params.SearchType;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -645,89 +645,121 @@ public class EsStorage implements IStorage, IStorageQuery {
     public void deleteClient(ClientBean client) throws StorageException {
         String clientId = client.getId().replace('"', '_');
         String orgId = client.getOrganization().getId().replace('"', '_');
-        String query = "{\n" +
-                "  \"query\": {\n" +
-                "    \"filtered\": {\n" +
-                "      \"query\": {\n" +
-                "        \"match_all\": {}\n" +
-                "      },\n" +
-                "      \"filter\": {\n" +
-                "        \"bool\": {\n" +
-                "          \"must\": [\n" +
-                "            {\n" +
-                "              \"bool\": {\n" +
-                "                \"should\": [\n" +
-                "                  {\n" +
-                "                    \"term\": {\n" +
-                "                      \"clientOrganizationId\": \"" + orgId + "\"\n" +
-                "                    }\n" +
-                "                  },\n" +
-                "                  {\n" +
-                "                    \"term\": {\n" +
-                "                      \"organizationId\": \"" + orgId + "\"\n" +
-                "                    }\n" +
-                "                  }\n" +
-                "                ]\n" +
-                "              }\n" +
-                "            },\n" +
-                "            {\n" +
-                "              \"bool\": {\n" +
-                "                \"should\": [\n" +
-                "                  {\n" +
-                "                    \"bool\": {\n" +
-                "                      \"must\": [\n" +
-                "                        {\n" +
-                "                          \"term\": {\n" +
-                "                            \"entityId\": \"" + clientId + "\"\n" +
-                "                          }\n" +
-                "                        },\n" +
-                "                        {\n" +
-                "                          \"term\": {\n" +
-                "                            \"entityType\": \"" + AuditEntityType.Client.name() + "\"\n" +
-                "                          }\n" +
-                "                        }\n" +
-                "                      ]\n" +
-                "                    }\n" +
-                "                  },\n" +
-                "                  {\n" +
-                "                    \"bool\": {\n" +
-                "                      \"must\": [\n" +
-                "                        {\n" +
-                "                          \"term\": {\n" +
-                "                             \"entityId\": \"" + clientId + "\"\n" +
-                "                           }\n" +
-                "                         },\n" +
-                "                         {\n" +
-                "                           \"term\": {\n" +
-                "                               \"type\": \"" + AuditEntityType.Client.name() + "\"\n" +
-                "                             }\n" +
-                "                           }\n" +
-                "                         ]\n" +
-                "                       }\n" +
-                "                     },\n" +
-                "                     {\n" +
-                "                       \"term\": {\n" +
-                "                           \"clientId\": \"" + clientId + "\"\n" +
-                "                       }\n" +
-                "                     }" +
-                "                ]\n" +
-                "              }\n" +
-                "            }\n" +
-                "          ]\n" +
-                "        }\n" +
-                "      }\n" +
-                "    }\n" +
-                "  }\n" +
-                "}";
+//        String query = "{\n" +
+//                "  \"query\": {\n" +
+//                "    \"filtered\": {\n" +
+//                "      \"query\": {\n" +
+//                "        \"match_all\": {}\n" +
+//                "      },\n" +
+//                "      \"filter\": {\n" +
+//                "        \"bool\": {\n" +
+//                "          \"must\": [\n" +
+//                "            {\n" +
+//                "              \"bool\": {\n" +
+//                "                \"should\": [\n" +
+//                "                  {\n" +
+//                "                    \"term\": {\n" +
+//                "                      \"clientOrganizationId\": \"" + orgId + "\"\n" +
+//                "                    }\n" +
+//                "                  },\n" +
+//                "                  {\n" +
+//                "                    \"term\": {\n" +
+//                "                      \"organizationId\": \"" + orgId + "\"\n" +
+//                "                    }\n" +
+//                "                  }\n" +
+//                "                ]\n" +
+//                "              }\n" +
+//                "            },\n" +
+//                "            {\n" +
+//                "              \"bool\": {\n" +
+//                "                \"should\": [\n" +
+//                "                  {\n" +
+//                "                    \"bool\": {\n" +
+//                "                      \"must\": [\n" +
+//                "                        {\n" +
+//                "                          \"term\": {\n" +
+//                "                            \"entityId\": \"" + clientId + "\"\n" +
+//                "                          }\n" +
+//                "                        },\n" +
+//                "                        {\n" +
+//                "                          \"term\": {\n" +
+//                "                            \"entityType\": \"" + AuditEntityType.Client.name() + "\"\n" +
+//                "                          }\n" +
+//                "                        }\n" +
+//                "                      ]\n" +
+//                "                    }\n" +
+//                "                  },\n" +
+//                "                  {\n" +
+//                "                    \"bool\": {\n" +
+//                "                      \"must\": [\n" +
+//                "                        {\n" +
+//                "                          \"term\": {\n" +
+//                "                             \"entityId\": \"" + clientId + "\"\n" +
+//                "                           }\n" +
+//                "                         },\n" +
+//                "                         {\n" +
+//                "                           \"term\": {\n" +
+//                "                               \"type\": \"" + AuditEntityType.Client.name() + "\"\n" +
+//                "                             }\n" +
+//                "                           }\n" +
+//                "                         ]\n" +
+//                "                       }\n" +
+//                "                     },\n" +
+//                "                     {\n" +
+//                "                       \"term\": {\n" +
+//                "                           \"clientId\": \"" + clientId + "\"\n" +
+//                "                       }\n" +
+//                "                     }" +
+//                "                ]\n" +
+//                "              }\n" +
+//                "            }\n" +
+//                "          ]\n" +
+//                "        }\n" +
+//                "      }\n" +
+//                "    }\n" +
+//                "  }\n" +
+//                "}";
 
-        DeleteByQuery deleteByQuery = new DeleteByQuery.Builder(query).addIndex(getIndexName())
-                .addType("auditEntry")
-                .addType("client")
-                .addType("clientVersion")
-                .addType("clientPolicies")
-                .addType("contract")
-                .build();
+        QueryBuilder qb =
+            QueryBuilders.query(
+                FilterBuilders.boolFilter(
+                    FilterBuilders.filter(
+                        FilterBuilders.boolFilter(
+                            FilterBuilders.shouldFilter(
+                                FilterBuilders.termFilter("clientOrganizationId", orgId),
+                                FilterBuilders.termFilter("organizationId", orgId)
+                            )
+                        ),
+                        FilterBuilders.boolFilter(
+                            FilterBuilders.shouldFilter(
+                                FilterBuilders.boolFilter(
+                                    FilterBuilders.filter(
+                                        FilterBuilders.termFilter("entityId", clientId),
+                                        FilterBuilders.termFilter("entityType", AuditEntityType.Client.name())
+                                    )
+                                ),
+                                FilterBuilders.boolFilter(
+                                    FilterBuilders.filter(
+                                        FilterBuilders.termFilter("entityId", clientId),
+                                        FilterBuilders.termFilter("type", AuditEntityType.Client.name())
+                                    )
+                                ),
+                                FilterBuilders.termFilter("clientId", clientId)
+                            )
+                        )
+                    )
+                )
+            );
+
         try {
+            DeleteByQuery deleteByQuery = new DeleteByQuery.Builder(qb.string()).addIndex(getIndexName())
+                    .addType("auditEntry")
+                    .addType("client")
+                    .addType("clientVersion")
+                    .addType("clientPolicies")
+                    .addType("contract")
+                    .build();
+
             JestResult response = esClient.execute(deleteByQuery);
             if (!response.isSucceeded()) {
                 throw new StorageException(response.getErrorMessage());
@@ -1234,7 +1266,16 @@ public class EsStorage implements IStorage, IStorageQuery {
     }
 
     public static void main(String...strings) throws IOException {
-        System.out.println(Double.MAX_VALUE);
+        QueryBuilder builder = QueryBuilders.query(
+                FilterBuilders.boolFilter(
+                    FilterBuilders.filter(
+                        FilterBuilders.termFilter("organizationId", "orgid"),
+                        FilterBuilders.termFilter("clientId", "cid")
+                    )
+                )
+             );
+
+
 
 //        QueryBuilder qb =
 //                FilterBuilders.boolFilter(
@@ -1246,7 +1287,7 @@ public class EsStorage implements IStorage, IStorageQuery {
 //                );
 //
 //        SearchSourceBuilder builder = new SearchSourceBuilder().query(qb);
-//        System.out.println(builder.string());
+        System.out.println(builder.string());
     }
 
     /**
@@ -2369,28 +2410,43 @@ public class EsStorage implements IStorage, IStorageQuery {
     @Override
     public Iterator<PlanVersionBean> getAllPlanVersions(String organizationId, String planId)
             throws StorageException {
-        String query = "{" +
-                "  \"query\": {" +
-                "    \"filtered\": { " +
-                "      \"filter\": {" +
-                "        \"and\" : [" +
-                "          {" +
-                "            \"term\": { \"organizationId\": \"" + organizationId + "\" }" +
-                "          }," +
-                "          {" +
-                "            \"term\": { \"planId\": \"" + planId + "\" }" +
-                "          }" +
-                "      ]" +
-                "      }" +
-                "    }" +
-                "  }" +
-                "}";
-        return getAll("planVersion", new IUnmarshaller<PlanVersionBean>() { //$NON-NLS-1$
-            @Override
-            public PlanVersionBean unmarshal(Map<String, Object> source) {
-                return EsMarshalling.unmarshallPlanVersion(source);
-            }
-        }, query);
+//        String query = "{" +
+//                "  \"query\": {" +
+//                "    \"filtered\": { " +
+//                "      \"filter\": {" +
+//                "        \"and\" : [" +
+//                "          {" +
+//                "            \"term\": { \"organizationId\": \"" + organizationId + "\" }" +
+//                "          }," +
+//                "          {" +
+//                "            \"term\": { \"planId\": \"" + planId + "\" }" +
+//                "          }" +
+//                "      ]" +
+//                "      }" +
+//                "    }" +
+//                "  }" +
+//                "}";
+        try {
+            QueryBuilder qb =
+                QueryBuilders.query(
+                    FilterBuilders.boolFilter(
+                        FilterBuilders.filter(
+                                FilterBuilders.termFilter("organizationId", organizationId),
+                                FilterBuilders.termFilter("planId", planId)
+                        )
+                    )
+                );
+
+            return getAll("planVersion", new IUnmarshaller<PlanVersionBean>() { //$NON-NLS-1$
+                @Override
+                public PlanVersionBean unmarshal(Map<String, Object> source) {
+                    return EsMarshalling.unmarshallPlanVersion(source);
+                }
+            }, qb.string());
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -2400,28 +2456,43 @@ public class EsStorage implements IStorage, IStorageQuery {
     @Override
     public Iterator<ApiVersionBean> getAllApiVersions(String organizationId, String apiId)
             throws StorageException {
-        String query = "{" +
-                "  \"query\": {" +
-                "    \"filtered\": { " +
-                "      \"filter\": {" +
-                "        \"and\" : [" +
-                "          {" +
-                "            \"term\": { \"organizationId\": \"" + organizationId + "\" }" +
-                "          }," +
-                "          {" +
-                "            \"term\": { \"apiId\": \"" + apiId + "\" }" +
-                "          }" +
-                "      ]" +
-                "      }" +
-                "    }" +
-                "  }" +
-                "}";
-        return getAll("apiVersion", new IUnmarshaller<ApiVersionBean>() { //$NON-NLS-1$
-            @Override
-            public ApiVersionBean unmarshal(Map<String, Object> source) {
-                return EsMarshalling.unmarshallApiVersion(source);
-            }
-        }, query);
+//        String query = "{" +
+//                "  \"query\": {" +
+//                "    \"filtered\": { " +
+//                "      \"filter\": {" +
+//                "        \"and\" : [" +
+//                "          {" +
+//                "            \"term\": { \"organizationId\": \"" + organizationId + "\" }" +
+//                "          }," +
+//                "          {" +
+//                "            \"term\": { \"apiId\": \"" + apiId + "\" }" +
+//                "          }" +
+//                "      ]" +
+//                "      }" +
+//                "    }" +
+//                "  }" +
+//                "}";
+
+        try {
+            QueryBuilder qb =
+                QueryBuilders.query(
+                    FilterBuilders.boolFilter(
+                        FilterBuilders.filter(
+                                FilterBuilders.termFilter("organizationId", organizationId),
+                                FilterBuilders.termFilter("apiId", apiId)
+                        )
+                    )
+            );
+
+            return getAll("apiVersion", new IUnmarshaller<ApiVersionBean>() { //$NON-NLS-1$
+                @Override
+                public ApiVersionBean unmarshal(Map<String, Object> source) {
+                    return EsMarshalling.unmarshallApiVersion(source);
+                }
+            }, qb.string());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -2431,28 +2502,43 @@ public class EsStorage implements IStorage, IStorageQuery {
     @Override
     public Iterator<ClientVersionBean> getAllClientVersions(String organizationId,
             String clientId) throws StorageException {
-        String query = "{" +
-                "  \"query\": {" +
-                "    \"filtered\": { " +
-                "      \"filter\": {" +
-                "        \"and\" : [" +
-                "          {" +
-                "            \"term\": { \"organizationId\": \"" + organizationId + "\" }" +
-                "          }," +
-                "          {" +
-                "            \"term\": { \"clientId\": \"" + clientId + "\" }" +
-                "          }" +
-                "      ]" +
-                "      }" +
-                "    }" +
-                "  }" +
-                "}";
-        return getAll("clientVersion", new IUnmarshaller<ClientVersionBean>() { //$NON-NLS-1$
-            @Override
-            public ClientVersionBean unmarshal(Map<String, Object> source) {
-                return EsMarshalling.unmarshallClientVersion(source);
-            }
-        }, query);
+//        String query = "{" +
+//                "  \"query\": {" +
+//                "    \"filtered\": { " +
+//                "      \"filter\": {" +
+//                "        \"and\" : [" +
+//                "          {" +
+//                "            \"term\": { \"organizationId\": \"" + organizationId + "\" }" +
+//                "          }," +
+//                "          {" +
+//                "            \"term\": { \"clientId\": \"" + clientId + "\" }" +
+//                "          }" +
+//                "      ]" +
+//                "      }" +
+//                "    }" +
+//                "  }" +
+//                "}";
+//
+        try {
+            QueryBuilder qb =
+                QueryBuilders.query(
+                   FilterBuilders.boolFilter(
+                       FilterBuilders.filter(
+                           FilterBuilders.termFilter("organizationId", organizationId),
+                           FilterBuilders.termFilter("clientId", clientId)
+                       )
+                   )
+                );
+
+            return getAll("clientVersion", new IUnmarshaller<ClientVersionBean>() { //$NON-NLS-1$
+                @Override
+                public ClientVersionBean unmarshal(Map<String, Object> source) {
+                    return EsMarshalling.unmarshallClientVersion(source);
+                }
+            }, qb.string());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -2764,8 +2850,12 @@ public class EsStorage implements IStorage, IStorageQuery {
 
         private void initScroll() throws StorageException {
             try {
-                Search search = new Search.Builder(query).addIndex(getIndexName()).addType(entityType)
-                        .setSearchType(SearchType.SCAN).setParameter(Parameters.SCROLL, "1m").build();
+                Search search = new Search.Builder(query)
+                        .addIndex(getIndexName())
+                        .addType(entityType)
+                        .setParameter(Parameters.SCROLL, "1m")
+                        .addSort(new Sort("_doc"))
+                        .build();
                 SearchResult response = esClient.execute(search);
                 scrollId = response.getJsonObject().get("_scroll_id").getAsString();
             } catch (IOException e) {
@@ -2776,8 +2866,7 @@ public class EsStorage implements IStorage, IStorageQuery {
         @SuppressWarnings({ "unchecked", "rawtypes" })
         private void fetch() throws StorageException {
             try {
-                Builder builder = new SearchScroll.Builder(scrollId, "1m")
-                        .setParameter(Parameters.SIZE, 1);
+                Builder builder = new SearchScroll.Builder(scrollId, "1m");
                 SearchScroll scroll = new SearchScroll(builder) {
                     @Override
                     public JestResult createNewElasticSearchResult(String responseBody, int statusCode,
