@@ -46,8 +46,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
-import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.settings.Settings.Builder;
 import org.elasticsearch.node.Node;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -75,32 +73,28 @@ public class ESMetricsAccessorTest {
         System.out.println("----------- Creating the ES node.");
 
 
-        String clusterName = System.getProperty("apiman.test.es-cluster-name", "apiman");
-
-        Builder settings = Settings.builder()
-                .put("path.home", "/tmp")
-                .put("http.port", "6500-6600")
-                .put("transport.tcp.port", "6600-6700")
-                .put("transport.type", "local")
-                .put("discovery.type", "local")
-                .put("cluster.name", clusterName);
-
-
-
-        settings.put("index.store.type", "memory").put("gateway.type", "none")
-                .put("index.number_of_shards", 1).put("index.number_of_replicas", 1);
-
-//        node = NodeBuilder.nodeBuilder().client(false).clusterName(clusterName).data(true).local(true)
-//                .settings(settings).build();
-
-        settings.put("node.local_storage", "true");
-
-        node = new Node(settings.build());
-
-        System.out.println("----------- Starting the ES node.");
-        node.start();
-        System.out.println("----------- ES node was successfully started.");
-        System.out.println("--- Fixing locale for testing purposes");
+//        String clusterName = System.getProperty("apiman.test.es-cluster-name", "apiman");
+//
+//        Builder settings = Settings.builder()
+//        .put("path.home", "/tmp")
+//        .put("http.port", "6500-6600")
+//        .put("transport.tcp.port", "6600-6700")
+//        .put("transport.type", "local")
+//        .put("cluster.name", clusterName)
+//        .put("http.type", "netty4")
+//        .put("node.ingest", "true");
+//
+////        node = NodeBuilder.nodeBuilder().client(false).clusterName(clusterName).data(true).local(true)
+////                .settings(settings).build();
+//
+//        settings.put("node.local_storage", "true");
+//
+//        node = new Node(settings.build());
+//
+//        System.out.println("----------- Starting the ES node.");
+//        node.start();
+//        System.out.println("----------- ES node was successfully started.");
+//        System.out.println("--- Fixing locale for testing purposes");
         locale = Locale.getDefault();
         Locale.setDefault(Locale.US);
 
@@ -111,7 +105,7 @@ public class ESMetricsAccessorTest {
     private static File getDataDir() {
         File esHome = null;
 
-        // First check to see if a data directory has been explicitely configured via system property
+        // First check to see if a data directory has been explicitly configured via system property
         String dataDir = System.getProperty("apiman.distro-es.data_dir");
         if (dataDir != null) {
             esHome = new File(dataDir, "es");
@@ -141,14 +135,14 @@ public class ESMetricsAccessorTest {
     private static JestClient createJestClient() {
         Map<String, String> config = new HashMap<>();
         config.put("client.protocol", "http");
-        config.put("client.host", "localhost");
-        config.put("client.port", "6500");
+        config.put("client.host", "192.168.99.100");
+        config.put("client.port", "9200");
         config.put("client.initialize", "true");
         return new DefaultESClientFactory().createClient(config, "apiman_metrics");
     }
 
     private static void loadTestData() throws Exception {
-        String url = "http://localhost:6500/_bulk";
+        String url = "http://192.168.99.100:9200/_bulk";
         HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
         conn.setRequestMethod("POST");
         conn.setDoInput(true);
@@ -163,13 +157,13 @@ public class ESMetricsAccessorTest {
             throw new IOException("Bulk load of data failed with: " + conn.getResponseMessage());
         }
 
-        client.execute(new Refresh.Builder().addIndex("apiman_metrics").refresh(true).build());
+        client.execute(new Refresh.Builder().addIndex("apiman_metrics").build());
     }
 
     @AfterClass @Ignore
     public static void teardown() throws Exception {
         System.out.println("----------- Stopping the ES node.");
-        node.close();
+        //node.close();
         System.out.println("----------- All done.");
         Locale.setDefault(locale);
     }

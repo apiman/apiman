@@ -375,7 +375,7 @@ public class TestEsStorageQueryWrapper implements IStorageQuery {
      */
     private void refresh() {
         try {
-        	esClient.execute(new Refresh.Builder().refresh(true).addIndex("apiman_manager").build()); //$NON-NLS-1$
+        	esClient.execute(new Refresh.Builder().addIndex("apiman_manager").build()); //$NON-NLS-1$
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
