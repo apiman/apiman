@@ -66,7 +66,7 @@ public class PolicyDefinitionBean implements Serializable {
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "pd_templates", joinColumns = @JoinColumn(name = "policydef_id"))
     private Set<PolicyDefinitionTemplateBean> templates = new HashSet<>();
-    @Column(name = "plugin_id", updatable=false, nullable=true)
+    @Column(name = "plugin_id", updatable=true, nullable=true)
     private Long pluginId;
     @Column(name = "form_type", updatable=true, nullable=true)
     @Enumerated(EnumType.STRING)
