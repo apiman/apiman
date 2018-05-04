@@ -273,7 +273,7 @@ X-RestTest-ArrayOrdering: any
       "description": "Turns an endpoint into a JSONP compatible endpoint.",
       "icon": "bars",
       "templates": [],
-      "pluginId": 79,
+      "pluginId": 2,
       "formType": "JsonSchema",
       "form": "schemas/jsonp-policyDef.schema",
       "deleted": false
@@ -285,7 +285,7 @@ X-RestTest-ArrayOrdering: any
       "description": "A policy that logs the headers to std out.  Useful to analyse inbound HTTP traffic to the gateway when added as the first policy in the chain or to analyse outbound HTTP traffic from the gateway when added as the last policy in the chain.",
       "icon": "fire",
       "templates": [],
-      "pluginId": 78,
+      "pluginId": 1,
       "formType": "JsonSchema",
       "form": "schemas/log-policyDef.schema",
       "deleted": false
