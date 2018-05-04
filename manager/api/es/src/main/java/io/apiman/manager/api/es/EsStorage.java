@@ -2620,6 +2620,9 @@ public class EsStorage implements IStorage, IStorageQuery {
                         .addSort(new Sort("_doc"))
                         .build();
                 SearchResult response = esClient.execute(search);
+                if (!response.isSucceeded()) {
+                    throw new StorageException("Scrolled query failed " + response.getErrorMessage());
+                }
                 scrollId = response.getJsonObject().get("_scroll_id").getAsString();
             } catch (IOException e) {
                 throw new StorageException(e);
@@ -2649,20 +2652,14 @@ public class EsStorage implements IStorage, IStorageQuery {
     @SuppressWarnings("nls")
     private String matchOrgAndStatusQuery(String organizationId, String status) {
         return  "{" +
-                "  \"query\": {" +
-                "    \"filtered\": { " +
-                "      \"filter\": {" +
-                "        \"and\" : [" +
-                "          {" +
-                "            \"term\": { \"organizationId\": \"" + organizationId + "\" }" +
-                "          }," +
-                "          {" +
-                "            \"term\": { \"status\": \"" + status + "\" }" +
-                "          }" +
-                "      ]" +
-                "      }" +
+                "    \"query\": {" +
+                "        \"bool\": {" +
+                "            \"filter\": [" +
+                "                { \"term\": { \"organizationId\": \"" + organizationId + "\" } }, " +
+                "                { \"term\": { \"status\": \"" + status + "\" } }" +
+                "            ]" +
+                "        }" +
                 "    }" +
-                "  }" +
                 "}";
     }
 
@@ -2682,7 +2679,7 @@ public class EsStorage implements IStorage, IStorageQuery {
     private String matchOrgQuery(String organizationId) {
         return "{" +
                 "  \"query\": {" +
-                "    \"filtered\": { " +
+                "    \"bool\": { " +
                 "      \"filter\": {" +
                 "        \"term\": { \"organizationId\": \"" + organizationId + "\" }" +
                 "      }" +
