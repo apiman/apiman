@@ -33,10 +33,12 @@ public class AndFilterBuilderTest {
     @Test
     public void test() throws IOException {
         String actual = FilterBuilders.boolFilter(
+            FilterBuilders.filter(
                 FilterBuilders.termFilter("groupId", "GROUP_ID"),
                 FilterBuilders.termFilter("artifactId", "ARTIFACT_ID")
+            )
         ).string();
-        Assert.assertEquals("{\"and\":{\"filters\":[{\"term\":{\"groupId\":\"GROUP_ID\"}},{\"term\":{\"artifactId\":\"ARTIFACT_ID\"}}]}}", actual);
+        Assert.assertEquals("{\"bool\":{\"filter\":[{\"term\":{\"groupId\":\"GROUP_ID\"}},{\"term\":{\"artifactId\":\"ARTIFACT_ID\"}}]}}", actual);
     }
 
 }

@@ -170,7 +170,7 @@ public class ManagerApiTestServer {
             // Create client before flush
             client = createJestClient();
             deleteAndFlush();
-            // Recreate client again as it might be invalid (TODO refactor this)
+            // Recreate client again as index needs re-initialising (see index-settings.json) -- TODO refactor this
             client = createJestClient();
             ES_CLIENT = client;
         }
