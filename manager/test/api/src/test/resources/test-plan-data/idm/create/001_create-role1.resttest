@@ -10,6 +10,7 @@ Content-Type: application/json
 ----
 200
 Content-Type: application/json
+X-RestTest-ArrayOrdering: any
 
 {
   "id" : "TestRole1",

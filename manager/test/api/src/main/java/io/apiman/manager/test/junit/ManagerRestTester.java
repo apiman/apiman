@@ -28,6 +28,7 @@ import io.apiman.test.common.util.TestPlanRunner;
 import io.apiman.test.common.util.TestUtil;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -258,10 +259,11 @@ public class ManagerRestTester extends ParentRunner<TestInfo> {
         log("Starting Test [{0} / {1}]", testInfo.plan.name, testInfo.name);
         log("-----------------------------------------------------------");
 
-            System.out.println("sleeping2");
-            try { Thread.sleep(250); } catch (InterruptedException e) { }
-
-
+        try {
+            testServer.flush();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         Description description = describeChild(testInfo);
         if (testInfo instanceof GatewayAssertionTestInfo) {
@@ -305,8 +307,7 @@ public class ManagerRestTester extends ParentRunner<TestInfo> {
                     Integer delay = testInfo.test.getDelay();
 
                     if (delay != null) {
-                        System.out.println("sleeping");
-                        try { Thread.sleep(1000); } catch (InterruptedException e) { }
+                        try { Thread.sleep(delay); } catch (InterruptedException e) { }
                     }
                     if (rtPath != null && !rtPath.trim().isEmpty()) {
                         RestTest restTest = TestUtil.loadRestTest(rtPath, getTestClass().getJavaClass().getClassLoader());

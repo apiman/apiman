@@ -39,7 +39,7 @@
     <test name="Register Client (2)">test-plan-data/export/creates-2/011_register-client-1.resttest</test>
     <test name="Create Plan Version 1.1 (2)">test-plan-data/export/creates-2/012_create-plan1-version-1.1.resttest</test>
     <test name="Create Plan Version 1.2 (2)">test-plan-data/export/creates-2/013_create-plan1-version-1.2.resttest</test>
-    <test name="Wait (2)" delay="2000" />
+    <test name="Wait (2)" delay="5000" />
   </testGroup>
 
   <testGroup name="Exporting Again">

@@ -583,7 +583,7 @@ public class EsStorage implements IStorage, IStorageQuery {
                     )
                 );
 
-            SearchSourceBuilder query = new SearchSourceBuilder().query(qb).size(2);
+            SearchSourceBuilder query = new SearchSourceBuilder().query(qb);
             DeleteByQuery deleteByQuery = new DeleteByQuery.Builder(query.string()).addIndex(getIndexName())
                     .addType("api")
                     .addType("apiPolicies")
@@ -1109,7 +1109,7 @@ public class EsStorage implements IStorage, IStorageQuery {
                             FilterBuilders.termFilter("artifactId", artifactId)
                         )
                 );
-            SearchSourceBuilder builder = new SearchSourceBuilder().query(qb).size(2);
+            SearchSourceBuilder builder = new SearchSourceBuilder().query(qb).size(50);
             List<Hit<Map<String,Object>,Void>> hits = listEntities("plugin", builder); //$NON-NLS-1$
             if (hits.size() == 1) {
                 Hit<Map<String,Object>,Void> hit = hits.iterator().next();
@@ -2561,7 +2561,7 @@ public class EsStorage implements IStorage, IStorageQuery {
         private IUnmarshaller<T> unmarshaller;
         private String scrollId = null;
         private List<Hit<Map<String, Object>, Void>> hits;
-        private int nextHitIdx;;
+        private int nextHitIdx;
 
         /**
          * Constructor.
@@ -2624,6 +2624,7 @@ public class EsStorage implements IStorage, IStorageQuery {
                     throw new StorageException("Scrolled query failed " + response.getErrorMessage());
                 }
                 scrollId = response.getJsonObject().get("_scroll_id").getAsString();
+                this.hits = (List) response.getHits(Map.class);
             } catch (IOException e) {
                 throw new StorageException(e);
             }
@@ -2641,6 +2642,9 @@ public class EsStorage implements IStorage, IStorageQuery {
                     }
                 };
                 SearchResult response = (SearchResult) esClient.execute(scroll);
+                if (!response.isSucceeded()) {
+                    throw new StorageException("Scrolled fetch failed " + response.getErrorMessage());
+                }
                 this.hits = (List) response.getHits(Map.class);
             } catch (IOException e) {
                 throw new StorageException(e);
