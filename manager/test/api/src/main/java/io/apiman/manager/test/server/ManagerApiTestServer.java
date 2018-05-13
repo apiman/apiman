@@ -118,10 +118,12 @@ public class ManagerApiTestServer {
     }
 
     private void deleteAndFlush() throws IOException {
-        //System.out.println("FLUSH AND DELETE>>>>>>");
-        client.execute(new DeleteIndex.Builder(ES_DEFAULT_INDEX).build());
-        client.execute(new Flush.Builder().build());
-        DefaultESClientFactory.clearClientCache();
+        if (client != null) {
+            //System.out.println("FLUSH AND DELETE>>>>>>");
+            client.execute(new DeleteIndex.Builder(ES_DEFAULT_INDEX).build());
+            client.execute(new Flush.Builder().build());
+            DefaultESClientFactory.clearClientCache();
+        }
     }
 
     /**
@@ -316,7 +318,9 @@ public class ManagerApiTestServer {
     }
 
     public void flush() throws IOException {
-        //System.out.println("FLUSH>>>>>>");
-        client.execute(new Flush.Builder().force(true).build());
+        if (client != null) {
+            //System.out.println("FLUSH>>>>>>");
+            client.execute(new Flush.Builder().force(true).build());
+        }
     }
 }
