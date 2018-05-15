@@ -248,72 +248,70 @@
     </dependency>
   </dependencies>
 
-<build>
-  <plugins>
-        <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <configuration>
-                <!-- Disable unit tests -->
-                <skip>true</skip>
-            </configuration>
-        </plugin>
-
-    
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-failsafe-plugin</artifactId>
-          <version>2.21.0</version>
-          <configuration>
-            <includes>
-              <include>**/*Test.java</include>
-              <include>**/*Test.java</include>
-            </includes>
-          </configuration>
-          <executions>
-            <execution>
-              <goals>
-                <goal>integration-test</goal>
-                <goal>verify</goal>
-              </goals>
-            </execution>
-          </executions>
-        </plugin>
-    
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <!-- Disable unit tests -->
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+      
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <version>2.21.0</version>
+        <configuration>
+          <includes>
+            <include>**/*Test.java</include>
+          </includes>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      
       <plugin>
         <groupId>com.github.alexcojocaru</groupId>
         <artifactId>elasticsearch-maven-plugin</artifactId>
         <!-- REPLACE THE FOLLOWING WITH THE PLUGIN VERSION YOU NEED -->
         <version>6.5</version>
         <configuration>
-            <!-- REPLACE THE FOLLOWING WITH THE ELASTICSEARCH VERSION YOU NEED -->
-            <version>5.6.9</version>
-            <clusterName>apimantest</clusterName>
-            <transportPort>19350</transportPort>
-            <httpPort>19250</httpPort>
+          <!-- REPLACE THE FOLLOWING WITH THE ELASTICSEARCH VERSION YOU NEED -->
+          <version>5.6.9</version>
+          <clusterName>apimantest</clusterName>
+          <transportPort>19350</transportPort>
+          <httpPort>19250</httpPort>
         </configuration>
         <executions>
-            <!--
-                The elasticsearch maven plugin goals are by default bound to the
-                pre-integration-test and post-integration-test phases
-            -->
-            <execution>
-                <id>start-elasticsearch</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                    <goal>runforked</goal>
-                </goals>
-            </execution>
-            <execution>
-                <id>stop-elasticsearch</id>
-                <phase>post-integration-test</phase>
-                <goals>
-                    <goal>stop</goal>
-                </goals>
-            </execution>
+          <!--
+              The elasticsearch maven plugin goals are by default bound to the
+              pre-integration-test and post-integration-test phases
+          -->
+          <execution>
+            <id>start-elasticsearch</id>
+            <phase>pre-integration-test</phase>
+            <goals>
+              <goal>runforked</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>stop-elasticsearch</id>
+            <phase>post-integration-test</phase>
+            <goals>
+              <goal>stop</goal>
+            </goals>
+          </execution>
         </executions>
-    </plugin>  
-  </plugins>
-</build>
+      </plugin>  
+    </plugins>
+  </build>
 
 </project>
