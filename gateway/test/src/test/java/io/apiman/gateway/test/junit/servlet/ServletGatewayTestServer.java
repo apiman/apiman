@@ -375,9 +375,9 @@ public class ServletGatewayTestServer implements IGatewayTestServer {
      * Called after stopping the gateway.
      */
     private void postStop() throws Exception {
-        if (node != null) {
-            node.stop();
-        }
+//        if (node != null) {
+//            node.stop();
+//        }
         if (client != null) {
             client.execute(new DeleteIndex.Builder("apiman_gateway").build());
             DefaultESClientFactory.clearClientCache();

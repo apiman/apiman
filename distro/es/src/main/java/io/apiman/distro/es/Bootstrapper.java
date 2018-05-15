@@ -74,7 +74,8 @@ public class Bootstrapper implements ServletContextListener {
                 .withSetting(PopularProperties.CLUSTER_NAME, clusterName)
                 .withSetting(PopularProperties.HTTP_PORT, config.getHttpPortRange())
                 .withSetting("path.home", esHome)
-                .withSetting("", config.getBindHost());
+                .withInstallationDirectory(esHome)
+                .withSetting("---", config.getBindHost());
 
             if (config.getBindHost() != null) {
                 builder.withSetting("network.bind_host", config.getBindHost());
