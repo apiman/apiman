@@ -17,7 +17,7 @@
         "type": "${test.foo.es.type}",
         "cluster-name": "elasticsearch",
         "host": "localhost",
-        "port": "9200",
+        "port": 19250,
         "initialize": true
       }
     }
@@ -86,7 +86,7 @@
             "type": "jest",
             "cluster-name": "elasticsearch",
             "host": "localhost",
-            "port": "9200",
+            "port": 19250,
             "initialize": true
           }
         }
@@ -99,7 +99,7 @@
             "type": "jest",
             "cluster-name": "elasticsearch",
             "host": "localhost",
-            "port": "9200",
+            "port": 19250,
             "initialize": true
           }
         }

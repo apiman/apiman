@@ -21,10 +21,8 @@ import java.io.IOException;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.settings.Settings.Builder;
-import org.elasticsearch.node.Node;
-import org.elasticsearch.node.NodeValidationException;
+import pl.allegro.tech.embeddedelasticsearch.EmbeddedElastic;
+import pl.allegro.tech.embeddedelasticsearch.PopularProperties;
 
 /**
  * Starts up an embedded elasticsearch cluster.  This is useful when running
@@ -36,7 +34,7 @@ import org.elasticsearch.node.NodeValidationException;
 @SuppressWarnings("nls")
 public class Bootstrapper implements ServletContextListener {
 
-    private Node node = null;
+    private EmbeddedElastic node;
 
     /**
      * @see javax.servlet.ServletContextListener#contextInitialized(javax.servlet.ServletContextEvent)
@@ -66,27 +64,19 @@ public class Bootstrapper implements ServletContextListener {
 
         String clusterName = "apiman";
 
-        //Builder settings = NodeBuilder.nodeBuilder().settings();
-        Builder settings = Settings.builder()
-        .put("path.home", esHome.getAbsolutePath())
-        .put("http.port", config.getHttpPortRange())
-        .put("transport.tcp.port", config.getTransportPortRange())
-        .put("discovery.zen.ping.multicast.enabled", "false")
-        .put("transport.type", "client")
-        .put("cluster.name", clusterName);
-        if (config.getBindHost() != null) {
-            settings.put("network.bind_host", config.getBindHost());
-        }
-        settings.put("node.local_storage", false);
-
-        //node = NodeBuilder.nodeBuilder().client(false).clusterName(clusterName).data(true).local(false).settings(settings).build();
-        node = new Node(settings.build());
-
         try {
-            node.start().client();
-        } catch (NodeValidationException e) {
+            node = EmbeddedElastic.builder()
+                    .withElasticVersion("5.6.9")
+                    .withSetting(PopularProperties.TRANSPORT_TCP_PORT, config.getTransportPortRange())
+                    .withSetting(PopularProperties.CLUSTER_NAME, clusterName)
+                    .withSetting(PopularProperties.HTTP_PORT, config.getHttpPortRange())
+                    .withSetting("path.home", esHome)
+                    .build()
+                    .start();
+        } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
+
         System.out.println("-----------------------------");
         System.out.println("apiman-es started!");
         System.out.println("-----------------------------");
@@ -98,7 +88,7 @@ public class Bootstrapper implements ServletContextListener {
     private static File getDataDir() {
         File esHome = null;
 
-        // First check to see if a data directory has been explicitely configured via system property
+        // First check to see if a data directory has been explicitly configured via system property
         String dataDir = System.getProperty("apiman.distro-es.data_dir");
         if (dataDir != null) {
             esHome = new File(dataDir, "es");
@@ -131,11 +121,7 @@ public class Bootstrapper implements ServletContextListener {
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
         if (node != null) {
-            try {
-                node.close();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            node.stop();
             System.out.println("-----------------------------");
             System.out.println("apiman-es stopped!");
             System.out.println("-----------------------------");

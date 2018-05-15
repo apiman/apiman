@@ -36,6 +36,13 @@
       <artifactId>jboss-servlet-api_3.0_spec</artifactId>
       <scope>provided</scope>
     </dependency>
+    
+    <dependency>
+      <groupId>pl.allegro.tech</groupId>
+      <artifactId>embedded-elasticsearch</artifactId>
+      <version>2.5.0</version>
+    </dependency>
+    
   </dependencies>
 
   <build>
