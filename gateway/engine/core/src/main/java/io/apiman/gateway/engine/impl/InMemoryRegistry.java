@@ -99,18 +99,19 @@ public class InMemoryRegistry implements IRegistry {
                 }
             }
 
-            // Unregister the client (if it exists)
-            unregisterClientInternal(client, true);
+            if (error == null) {
+                // Unregister the client (if it exists)
+                unregisterClientInternal(client, true);
 
-            // Now, register the client.
-            String clientIdx = getClientIndex(client);
-            getMap().put(clientIdx, client);
-            getMap().put(client.getApiKey(), client);
-        }
-        if (error == null) {
-            handler.handle(AsyncResultImpl.create((Void) null));
-        } else {
-            handler.handle(AsyncResultImpl.create(error, Void.class));
+                // Now, register the client.
+                String clientIdx = getClientIndex(client);
+                getMap().put(clientIdx, client);
+                getMap().put(client.getApiKey(), client);
+
+                handler.handle(AsyncResultImpl.create((Void) null));
+            } else {
+                handler.handle(AsyncResultImpl.create(error, Void.class));
+            }
         }
     }
 
@@ -286,6 +287,7 @@ public class InMemoryRegistry implements IRegistry {
                         return ((Client) elem).getOrganizationId();
                     }
                 })
+                .distinct()
                 .collect(Collectors.toList());
         handler.handle(AsyncResultImpl.create(res));
     }
