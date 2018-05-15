@@ -22,6 +22,7 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 import pl.allegro.tech.embeddedelasticsearch.EmbeddedElastic;
+import pl.allegro.tech.embeddedelasticsearch.EmbeddedElastic.Builder;
 import pl.allegro.tech.embeddedelasticsearch.PopularProperties;
 
 /**
@@ -65,14 +66,21 @@ public class Bootstrapper implements ServletContextListener {
         String clusterName = "apiman";
 
         try {
-            node = EmbeddedElastic.builder()
-                    .withElasticVersion("5.6.9")
-                    .withSetting(PopularProperties.TRANSPORT_TCP_PORT, config.getTransportPortRange())
-                    .withSetting(PopularProperties.CLUSTER_NAME, clusterName)
-                    .withSetting(PopularProperties.HTTP_PORT, config.getHttpPortRange())
-                    .withSetting("path.home", esHome)
-                    .build()
-                    .start();
+            Builder builder = EmbeddedElastic.builder()
+                .withElasticVersion("5.6.9")
+                .withCleanInstallationDirectoryOnStop(false)
+                .withDownloadDirectory(new File("$HOME/.cache/elasticsearch"))
+                .withSetting(PopularProperties.TRANSPORT_TCP_PORT, config.getTransportPortRange())
+                .withSetting(PopularProperties.CLUSTER_NAME, clusterName)
+                .withSetting(PopularProperties.HTTP_PORT, config.getHttpPortRange())
+                .withSetting("path.home", esHome)
+                .withSetting("", config.getBindHost());
+
+            if (config.getBindHost() != null) {
+                builder.withSetting("network.bind_host", config.getBindHost());
+            }
+
+            node = builder.build().start();
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }

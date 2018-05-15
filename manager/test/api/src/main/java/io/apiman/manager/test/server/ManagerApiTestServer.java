@@ -51,11 +51,13 @@ import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.security.Credential;
-import org.elasticsearch.node.Node;
 import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
 import org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap;
 import org.jboss.weld.environment.servlet.BeanManagerResourceBindingListener;
 import org.jboss.weld.environment.servlet.Listener;
+
+import pl.allegro.tech.embeddedelasticsearch.EmbeddedElastic;
+import pl.allegro.tech.embeddedelasticsearch.PopularProperties;
 
 /**
  * This class starts up an embedded Jetty test server so that integration tests
@@ -82,7 +84,7 @@ public class ManagerApiTestServer {
     /*
      * The elasticsearch node and client - only if using ES
      */
-    private Node node = null;
+    private EmbeddedElastic node = null;
     private JestClient client = null;
     private static final int JEST_TIMEOUT = 6000;
     private static final String ES_DEFAULT_PORT = "19250";
@@ -131,6 +133,11 @@ public class ManagerApiTestServer {
      * @throws Exception
      */
     public void stop() throws Exception {
+        if (node != null) {
+            deleteAndFlush();
+            //node.stop();
+            //System.out.println("================ STOPPED ES ================ ");
+        }
         server.stop();
         if (ds != null) {
             ds.close();
@@ -169,6 +176,24 @@ public class ManagerApiTestServer {
             }
         }
         if (ManagerTestUtils.getTestType() == TestType.es && node == null) {
+            try {
+                File esDownloadCache = new File(System.getenv("HOME") + "/.cache/apiman/elasticsearch");
+                esDownloadCache.getParentFile().mkdirs();
+
+                node = EmbeddedElastic.builder()
+                            .withElasticVersion("5.6.9")
+                            .withDownloadDirectory(esDownloadCache)
+                            .withSetting(PopularProperties.CLUSTER_NAME, "apiman")
+                            .withSetting(PopularProperties.HTTP_PORT, ES_DEFAULT_PORT)
+                            .withCleanInstallationDirectoryOnStop(true)
+                            .build()
+                            .start();
+
+                System.out.println("================ STARTED ES ================ ");
+
+            } catch (IOException | InterruptedException e) {
+                 throw new RuntimeException(e);
+            }
             // Create client before flush
             client = createJestClient();
             deleteAndFlush();
@@ -309,7 +334,7 @@ public class ManagerApiTestServer {
         return csh;
     }
 
-    public Node getESNode() {
+    public EmbeddedElastic getESNode() {
         return node;
     }
 

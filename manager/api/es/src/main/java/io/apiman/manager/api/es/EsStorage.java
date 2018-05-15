@@ -156,7 +156,14 @@ public class EsStorage implements IStorage, IStorageQuery {
     @Override
     public void initialize() {
         try {
-            esClient.execute(new Health.Builder().build());
+            //Thread.sleep(10000);
+
+            try {
+                esClient.execute(new Health.Builder().build());
+            } catch (RuntimeException e) {
+                System.out.println("Give it an extra few moments...");
+                esClient.execute(new Health.Builder().build());
+            }
             // TODO Do we need a loop to wait for all nodes to join the cluster?
             Action<JestResult> action = new IndicesExists.Builder(getIndexName()).build();
             JestResult result = esClient.execute(action);

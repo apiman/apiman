@@ -35,6 +35,7 @@ import io.searchbox.indices.DeleteIndex;
 import io.searchbox.indices.Flush;
 import io.searchbox.indices.Refresh;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -57,6 +58,9 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import pl.allegro.tech.embeddedelasticsearch.EmbeddedElastic;
+import pl.allegro.tech.embeddedelasticsearch.PopularProperties;
+
 /**
  * Tests the elasticsearch metrics accessor.
  *
@@ -65,12 +69,24 @@ import org.junit.Test;
 @SuppressWarnings("nls")
 public class ESMetricsAccessorTest {
 
-    //private static Node node;
+    private static EmbeddedElastic node;
     private static JestClient client;
     private static Locale locale;
 
     @BeforeClass @Ignore
     public static void setup() throws Exception {
+        File esDownloadCache = new File(System.getenv("HOME") + "/.cache/apiman/elasticsearch");
+        esDownloadCache.getParentFile().mkdirs();
+
+        node = EmbeddedElastic.builder()
+            .withElasticVersion("5.6.9")
+            .withDownloadDirectory(esDownloadCache)
+            .withSetting(PopularProperties.CLUSTER_NAME, "apiman")
+            .withSetting(PopularProperties.HTTP_PORT, "19250")
+            .withCleanInstallationDirectoryOnStop(true)
+            .build()
+            .start();
+
         locale = Locale.getDefault();
         Locale.setDefault(Locale.US);
 
@@ -120,6 +136,7 @@ public class ESMetricsAccessorTest {
     public static void teardown() throws Exception {
         System.out.println("----------- All done.");
         Locale.setDefault(locale);
+        node.stop();
     }
 
     @Before

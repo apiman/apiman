@@ -62,6 +62,9 @@ import org.infinispan.manager.DefaultCacheManager;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import pl.allegro.tech.embeddedelasticsearch.EmbeddedElastic;
+import pl.allegro.tech.embeddedelasticsearch.PopularProperties;
+
 /**
  * A servlet version of the gateway test server.
  *
@@ -89,6 +92,7 @@ public class ServletGatewayTestServer implements IGatewayTestServer {
     private static final int JEST_TIMEOUT = 6000;
     public static JestClient ES_CLIENT = null;
     private JestClient client = null;
+    private EmbeddedElastic node;
 
     /*
      * Database related.
@@ -120,6 +124,22 @@ public class ServletGatewayTestServer implements IGatewayTestServer {
         withES = esNode != null && esNode.asBoolean(false);
         withDB = dbNode != null && dbNode.asBoolean(false);
         withISPN = ispnNode != null && ispnNode.asBoolean(false);
+
+        try {
+            File esDownloadCache = new File(System.getenv("HOME") + "/.cache/apiman/elasticsearch");
+            esDownloadCache.getParentFile().mkdirs();
+
+            node = EmbeddedElastic.builder()
+                    .withElasticVersion("5.6.9")
+                    .withDownloadDirectory(esDownloadCache)
+                    .withSetting(PopularProperties.CLUSTER_NAME, "apiman")
+                    .withSetting(PopularProperties.HTTP_PORT, "19250")
+                    .withCleanInstallationDirectoryOnStop(true)
+                    .build()
+                    .start();
+        } catch (IOException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
 
         configureGateway(config);
     }
@@ -355,6 +375,9 @@ public class ServletGatewayTestServer implements IGatewayTestServer {
      * Called after stopping the gateway.
      */
     private void postStop() throws Exception {
+        if (node != null) {
+            node.stop();
+        }
         if (client != null) {
             client.execute(new DeleteIndex.Builder("apiman_gateway").build());
             DefaultESClientFactory.clearClientCache();
