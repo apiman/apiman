@@ -151,6 +151,11 @@ textarea.dropping {
   padding: 0px;
 }
 
+.container-fluid .cards {
+  display: flex;
+  flex-wrap: wrap;
+}
+
 .apiman-form-control {
   height: 28px;
 }
@@ -1730,10 +1735,10 @@ html, body {height: 100%;}
 }
 .apiman-card-table .card {
   position: relative;
-  width: 260px;
+  width: 23%;
   padding: 15px 5px 15px 5px;
-  float: left;
-  margin-right: 15px;
+  margin-left: 1%;
+  margin-right: 1%;
   margin-bottom: 15px;
   background-color: white;
   border-top: 2px solid transparent;
@@ -1772,6 +1777,7 @@ html, body {height: 100%;}
 }
 .apiman-card-table .card .name {
   font-size: 16px;
+  overflow-wrap: break-word;
 }
 
 .apiman-card-table .card .tags {

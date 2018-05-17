@@ -109,7 +109,7 @@
             <!-- Table of APIs -->
             <div class="row apiman-card-table">
               <div class="container-fluid cards">
-                <div ng-repeat="api in filteredApis=(apis | filter: criteria | filter: epType | selectedTags: selected.tags  | filter:hideInternal:isInternal | orderBy: 'name':reverse)" class="card">
+                <div ng-repeat="api in filteredApis=(apis | filter: criteria | filter: {endpointType: epType} | selectedTags: selected.tags  | filter:hideInternal:isInternal | orderBy: 'name':reverse)" class="card">
                   <a ng-show="api.description" uib-tooltip="{{ api.description }}" tooltip-trigger="mouseenter" tooltip-placement="top" href="#" class="info"><i class="fa fa-info-circle"></i></a>
                   <a ng-show="api.endpointType" uib-tooltip="Endpoint&nbsp;Type:&nbsp;{{ api.endpointType }}" tooltip-trigger="mouseenter" tooltip-placement="top" href="{{ api.definitionUrl }}" class="endpointType" target="_blank"><i class="fa {{ api.ticon }}"></i></a>
                   <div class="icon">
