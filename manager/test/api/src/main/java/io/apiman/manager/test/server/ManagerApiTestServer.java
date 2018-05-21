@@ -87,7 +87,7 @@ public class ManagerApiTestServer {
     private EmbeddedElastic node = null;
     private JestClient client = null;
     private static final int JEST_TIMEOUT = 6000;
-    private static final String ES_DEFAULT_PORT = "19250";
+    private static final Integer ES_DEFAULT_PORT = 19250;
     private static final String ES_DEFAULT_HOST = "localhost";
     private static final String ES_DEFAULT_INDEX = "apiman_manager";
 
@@ -135,8 +135,8 @@ public class ManagerApiTestServer {
     public void stop() throws Exception {
         if (node != null) {
             deleteAndFlush();
-            //node.stop();
-            //System.out.println("================ STOPPED ES ================ ");
+            node.stop();
+            System.out.println("================ STOPPED ES ================ ");
         }
         server.stop();
         if (ds != null) {
@@ -175,8 +175,13 @@ public class ManagerApiTestServer {
                 throw new RuntimeException(e);
             }
         }
-        if (ManagerTestUtils.getTestType() == TestType.es && node == null) {
+        if (ManagerTestUtils.getTestType() == TestType.es) {
             try {
+
+                System.out.println("================ TRYING TO START ES ================ ");
+
+                if (node != null) node.stop();
+
                 File esDownloadCache = new File(System.getenv("HOME") + "/.cache/apiman/elasticsearch");
                 esDownloadCache.getParentFile().mkdirs();
 
@@ -207,7 +212,7 @@ public class ManagerApiTestServer {
         Map<String, String> config = new HashMap<>();
         config.put("client.protocol", "http");
         config.put("client.host", ES_DEFAULT_HOST);
-        config.put("client.port", ES_DEFAULT_PORT);
+        config.put("client.port", String.valueOf(ES_DEFAULT_PORT));
         config.put("client.timeout", String.valueOf(JEST_TIMEOUT));
         config.put("client.initialize", "true");
         return new DefaultESClientFactory().createClient(config, ES_DEFAULT_INDEX);

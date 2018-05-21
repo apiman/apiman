@@ -125,22 +125,6 @@ public class ServletGatewayTestServer implements IGatewayTestServer {
         withDB = dbNode != null && dbNode.asBoolean(false);
         withISPN = ispnNode != null && ispnNode.asBoolean(false);
 
-        try {
-            File esDownloadCache = new File(System.getenv("HOME") + "/.cache/apiman/elasticsearch");
-            esDownloadCache.getParentFile().mkdirs();
-
-            node = EmbeddedElastic.builder()
-                    .withElasticVersion("5.6.9")
-                    .withDownloadDirectory(esDownloadCache)
-                    .withSetting(PopularProperties.CLUSTER_NAME, "apiman")
-                    .withSetting(PopularProperties.HTTP_PORT, "19250")
-                    .withCleanInstallationDirectoryOnStop(true)
-                    .build()
-                    .start();
-        } catch (IOException | InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-
         configureGateway(config);
     }
 
@@ -280,6 +264,26 @@ public class ServletGatewayTestServer implements IGatewayTestServer {
      */
     private void preStart() throws IOException {
         if (withES) {
+            try {
+                File esDownloadCache = new File(System.getenv("HOME") + "/.cache/apiman/elasticsearch");
+                esDownloadCache.getParentFile().mkdirs();
+
+                System.out.println("================ TRYING TO START ES 2 ================ ");
+
+                node = EmbeddedElastic.builder()
+                            .withElasticVersion("5.6.9")
+                            .withDownloadDirectory(esDownloadCache)
+                            .withSetting(PopularProperties.CLUSTER_NAME, "apiman")
+                            .withSetting(PopularProperties.HTTP_PORT, 19250)
+                            .withCleanInstallationDirectoryOnStop(true)
+                            .build()
+                            .start();
+
+                System.out.println("================ STARTED ES ================ ");
+            } catch (IOException | InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
             // Copy from manager?
             String connectionUrl = "http://localhost:19250";
             JestClientFactory factory = new JestClientFactory();
@@ -375,12 +379,13 @@ public class ServletGatewayTestServer implements IGatewayTestServer {
      * Called after stopping the gateway.
      */
     private void postStop() throws Exception {
-//        if (node != null) {
-//            node.stop();
-//        }
         if (client != null) {
             client.execute(new DeleteIndex.Builder("apiman_gateway").build());
             DefaultESClientFactory.clearClientCache();
+        }
+        if (node != null) {
+            System.out.println("======== STOPPING ES ========");
+            node.stop();
         }
         if (ds != null) {
             try (Connection connection = ds.getConnection()) {
