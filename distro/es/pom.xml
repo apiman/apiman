@@ -17,8 +17,10 @@
     </dependency>
 
     <dependency>
-      <groupId>org.elasticsearch</groupId>
+      <groupId>org.elasticsearch.distribution.zip</groupId>
       <artifactId>elasticsearch</artifactId>
+      <version>5.6.9</version>
+      <type>zip</type>
     </dependency>
 
     <dependency>
@@ -45,6 +47,7 @@
     
   </dependencies>
 
+
   <build>
     <finalName>apiman-es</finalName>
     <plugins>
@@ -55,6 +58,33 @@
           <skip>true</skip>
         </configuration>
       </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-dependency</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.elasticsearch.distribution.zip</groupId>
+                  <artifactId>elasticsearch</artifactId>
+                  <version>5.6.9</version>
+                  <type>zip</type>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>target/apiman-es/WEB-INF</outputDirectory>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      
     </plugins>
   </build>
 

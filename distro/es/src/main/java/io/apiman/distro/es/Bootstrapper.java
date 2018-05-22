@@ -17,6 +17,8 @@ package io.apiman.distro.es;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -66,16 +68,16 @@ public class Bootstrapper implements ServletContextListener {
         String clusterName = "apiman";
 
         try {
+            URL url = sce.getServletContext().getResource("/WEB-INF/elasticsearch-5.6.9.zip");
+
             Builder builder = EmbeddedElastic.builder()
-                .withElasticVersion("5.6.9")
+                .withDownloadUrl(url)
                 .withCleanInstallationDirectoryOnStop(false)
-                .withDownloadDirectory(new File("$HOME/.cache/elasticsearch"))
+                .withInstallationDirectory(esHome)
                 .withSetting(PopularProperties.TRANSPORT_TCP_PORT, config.getTransportPortRange())
                 .withSetting(PopularProperties.CLUSTER_NAME, clusterName)
                 .withSetting(PopularProperties.HTTP_PORT, config.getHttpPortRange())
-                .withSetting("path.home", esHome)
-                .withInstallationDirectory(esHome)
-                .withSetting("---", config.getBindHost());
+                .withStartTimeout(1, TimeUnit.MINUTES);
 
             if (config.getBindHost() != null) {
                 builder.withSetting("network.bind_host", config.getBindHost());

@@ -37,6 +37,7 @@ import java.sql.SQLException;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import javax.naming.InitialContext;
 import javax.servlet.DispatcherType;
@@ -191,6 +192,7 @@ public class ManagerApiTestServer {
                             .withSetting(PopularProperties.CLUSTER_NAME, "apiman")
                             .withSetting(PopularProperties.HTTP_PORT, ES_DEFAULT_PORT)
                             .withCleanInstallationDirectoryOnStop(true)
+                            .withStartTimeout(1, TimeUnit.MINUTES)
                             .build()
                             .start();
 

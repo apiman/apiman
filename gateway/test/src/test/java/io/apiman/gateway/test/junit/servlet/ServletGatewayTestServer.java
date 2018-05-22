@@ -51,6 +51,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -276,6 +277,7 @@ public class ServletGatewayTestServer implements IGatewayTestServer {
                             .withSetting(PopularProperties.CLUSTER_NAME, "apiman")
                             .withSetting(PopularProperties.HTTP_PORT, 19250)
                             .withCleanInstallationDirectoryOnStop(true)
+                            .withStartTimeout(1, TimeUnit.MINUTES)
                             .build()
                             .start();
 
