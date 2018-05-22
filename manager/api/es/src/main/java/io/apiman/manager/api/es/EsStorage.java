@@ -15,6 +15,8 @@
  */
 package io.apiman.manager.api.es;
 
+import io.apiman.common.logging.IApimanLogger;
+import io.apiman.common.util.Holder;
 import io.apiman.common.util.crypt.DataEncryptionContext;
 import io.apiman.common.util.crypt.IDataEncrypter;
 import io.apiman.manager.api.beans.apis.ApiBean;
@@ -67,6 +69,7 @@ import io.apiman.manager.api.beans.summary.PolicySummaryBean;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.StorageException;
+import io.apiman.manager.api.core.logging.ApimanLogger;
 import io.apiman.manager.api.core.util.PolicyTemplateUtil;
 import io.apiman.manager.api.es.beans.ApiDefinitionBean;
 import io.apiman.manager.api.es.beans.PoliciesBean;
@@ -108,6 +111,11 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -133,6 +141,9 @@ public class EsStorage implements IStorage, IStorageQuery {
 
     private static int guidCounter = 100;
 
+    @Inject @ApimanLogger(EsStorage.class)
+    private IApimanLogger logger;
+
     @Inject @Named("storage")
     JestClient esClient;
     @Inject IDataEncrypter encrypter;
@@ -154,13 +165,35 @@ public class EsStorage implements IStorage, IStorageQuery {
      * Called to initialize the storage.
      */
     @Override
+    @SuppressWarnings("nls")
     public void initialize() {
         try {
-            try {
-                esClient.execute(new Health.Builder().build());
-            } catch (Exception e) {
-                Thread.sleep(5000);
-                esClient.execute(new Health.Builder().build());
+            ScheduledExecutorService schedulerService = Executors.newSingleThreadScheduledExecutor();
+            CountDownLatch cdl = new CountDownLatch(1);
+            Holder<Exception> exception = new Holder<>();
+
+            ScheduledFuture<?> sched = schedulerService.scheduleAtFixedRate(() -> {
+                System.out.println("Polling for Elasticsearch...");
+                try {
+                    esClient.execute(new Health.Builder().build());
+                    cdl.countDown();
+                } catch (IOException e) {
+                    System.out.println("Unable to reach Elasticsearch. Will continue polling.");
+                    //System.out.println("Result of polling", e);
+                    exception.setValue(e);
+                }
+            },
+            0, // Start immediately
+            1, // Poll every 1 seconds
+            TimeUnit.SECONDS);
+
+            System.out.println("Waiting");
+            cdl.await(30, TimeUnit.SECONDS); // Wait 5 mins max
+            sched.cancel(true);
+            System.out.println("Cancelled polling!");
+
+            if (exception.getValue() != null && cdl.getCount() > 0) {
+                throw exception.getValue();
             }
             // TODO Do we need a loop to wait for all nodes to join the cluster?
             Action<JestResult> action = new IndicesExists.Builder(getIndexName()).build();
