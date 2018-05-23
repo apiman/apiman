@@ -344,7 +344,7 @@ public class ManagerApiTestServer {
     public void flush() throws IOException {
         if (client != null) {
             System.out.println("FLUSH>>>>>>");
-            client.execute(new Flush.Builder().force(true).build());
+            client.execute(new Flush.Builder().addIndex(ES_DEFAULT_INDEX).force().waitIfOngoing().build());
         }
     }
 }
