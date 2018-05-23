@@ -26,6 +26,7 @@ import io.apiman.manager.test.util.ManagerTestUtils;
 import io.apiman.manager.test.util.ManagerTestUtils.TestType;
 import io.apiman.test.common.util.TestUtil;
 import io.searchbox.client.JestClient;
+import io.searchbox.indices.ClearCache;
 import io.searchbox.indices.DeleteIndex;
 import io.searchbox.indices.Flush;
 
@@ -345,6 +346,7 @@ public class ManagerApiTestServer {
         if (client != null) {
             System.out.println("FLUSH>>>>>>");
             client.execute(new Flush.Builder().addIndex(ES_DEFAULT_INDEX).force().waitIfOngoing().build());
+            client.execute(new ClearCache.Builder().addIndex(ES_DEFAULT_INDEX).build());
         }
     }
 }
