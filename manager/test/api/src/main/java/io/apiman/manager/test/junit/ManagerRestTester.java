@@ -239,7 +239,12 @@ public class ManagerRestTester extends ParentRunner<TestInfo> {
         try {
             super.run(notifier);
         } finally {
-            try { shutdown(); } catch (Throwable e) { e.printStackTrace(); }
+            try {
+                testServer.flush();
+                shutdown();
+            } catch (Throwable e) {
+                e.printStackTrace(); // TODO: Was this deliberate?
+            }
             resetSystemProperties();
         }
 

@@ -178,11 +178,6 @@ public class ManagerApiTestServer {
         }
         if (ManagerTestUtils.getTestType() == TestType.es) {
             try {
-
-                System.out.println("================ TRYING TO START ES ================ ");
-
-                if (node != null) node.stop();
-
                 File esDownloadCache = new File(System.getenv("HOME") + "/.cache/apiman/elasticsearch");
                 esDownloadCache.getParentFile().mkdirs();
 
@@ -195,9 +190,6 @@ public class ManagerApiTestServer {
                             .withStartTimeout(1, TimeUnit.MINUTES)
                             .build()
                             .start();
-
-                System.out.println("================ STARTED ES ================ ");
-
             } catch (IOException | InterruptedException e) {
                  throw new RuntimeException(e);
             }
@@ -351,7 +343,7 @@ public class ManagerApiTestServer {
 
     public void flush() throws IOException {
         if (client != null) {
-            //System.out.println("FLUSH>>>>>>");
+            System.out.println("FLUSH>>>>>>");
             client.execute(new Flush.Builder().force(true).build());
         }
     }
