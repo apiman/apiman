@@ -74,15 +74,15 @@ public class Bootstrapper implements ServletContextListener {
 
         try {
 
-            URL url = resolveEsDistro(sce);//.getResource("/WEB-INF/elasticsearch-5.6.9.zip");
+            URL url = resolveEsDistro(sce);
 
             Builder builder = ApimanEmbeddedElastic.builder()
+                .withPort(Integer.valueOf(config.getHttpPortRange()))
                 .withDownloadUrl(url)
                 .withCleanInstallationDirectoryOnStop(false)
                 .withInstallationDirectory(esHome)
                 .withSetting(PopularProperties.TRANSPORT_TCP_PORT, config.getTransportPortRange())
                 .withSetting(PopularProperties.CLUSTER_NAME, clusterName)
-                .withSetting(PopularProperties.HTTP_PORT, config.getHttpPortRange())
                 .withStartTimeout(1, TimeUnit.MINUTES);
 
             if (config.getBindHost() != null) {
@@ -148,6 +148,7 @@ public class Bootstrapper implements ServletContextListener {
                 String dPath = Optional
                         .ofNullable(allProperties.getProperty("apiman.es-distro"))
                         .orElseThrow(() -> new RuntimeException("apiman.es-distro not defined"));
+
                 return sce.getServletContext().getResource(dPath);
             } catch (IOException e) {
                 throw new RuntimeException(e);

@@ -270,10 +270,10 @@ public class ServletGatewayTestServer implements IGatewayTestServer {
                 esDownloadCache.getParentFile().mkdirs();
 
                 node = ApimanEmbeddedElastic.builder()
+                            .withPort(19250)
                             .withElasticVersion(ApimanEmbeddedElastic.getEsBuildVersion())
                             .withDownloadDirectory(esDownloadCache)
                             .withSetting(PopularProperties.CLUSTER_NAME, "apiman")
-                            .withSetting(PopularProperties.HTTP_PORT, 19250)
                             .withCleanInstallationDirectoryOnStop(true)
                             .withStartTimeout(1, TimeUnit.MINUTES)
                             .build()
