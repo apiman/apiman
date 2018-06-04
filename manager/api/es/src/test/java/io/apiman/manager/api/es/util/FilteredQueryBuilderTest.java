@@ -18,6 +18,7 @@ package io.apiman.manager.api.es.util;
 
 import java.io.IOException;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -31,13 +32,14 @@ public class FilteredQueryBuilderTest {
      */
     @Test
     public void test() throws IOException {
-//        FilteredQueryBuilder query = QueryBuilders.filteredQuery(
-//                QueryBuilders.matchAllQuery(),
-//                FilterBuilders.boolFilter(
-//                        FilterBuilders.termFilter("organizationId", "ORG_ID"),
-//                        FilterBuilders.termFilter("userId", "USER")));
-//        String actual = query.string();
-//        Assert.assertEquals("{\"filtered\":{\"query\":{\"match_all\":{}},\"filter\":{\"and\":{\"filters\":[{\"term\":{\"organizationId\":\"ORG_ID\"}},{\"term\":{\"userId\":\"USER\"}}]}}}}", actual);
+        EmptyQueryBuilder query = QueryBuilders.query(
+                FilterBuilders.boolFilter(
+                        FilterBuilders.filter(
+                                FilterBuilders.termFilter("organizationId", "ORG_ID"),
+                                FilterBuilders.termFilter("userId", "USER")))
+                );
+        String actual = query.string();
+        Assert.assertEquals("{\"query\":{\"bool\":{\"filter\":[{\"term\":{\"organizationId\":\"ORG_ID\"}},{\"term\":{\"userId\":\"USER\"}}]}}}", actual);
     }
 
 }

@@ -13,6 +13,10 @@
     <!-- Project Dependencies -->
     <dependency>
       <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-common-es</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
       <artifactId>apiman-common-util</artifactId>
     </dependency>
     <dependency>
@@ -134,21 +138,12 @@
 
     <!-- Elasticsearch -->
     <dependency>
-      <groupId>org.elasticsearch</groupId>
-      <artifactId>elasticsearch</artifactId>
-    </dependency>
-    <dependency>
       <groupId>io.searchbox</groupId>
       <artifactId>jest</artifactId>
     </dependency>
     <dependency>
       <groupId>io.searchbox</groupId>
       <artifactId>jest-common</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>pl.allegro.tech</groupId>
-      <artifactId>embedded-elasticsearch</artifactId>
-      <version>2.5.0</version>
     </dependency>
 
     <!-- Infinispan -->

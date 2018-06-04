@@ -47,15 +47,11 @@ public class FilterBuilder extends AbstractQueryBuilder {
      */
     @Override
     protected void doXContent(XContentBuilder builder) throws IOException {
-        System.out.println("In filter");
-
         builder.startArray("filter");
         for (QueryBuilder query : filters) {
             query.toXContent(builder);
         }
         builder.endArray();
-
-        System.out.println("finish filter");
     }
 
 }

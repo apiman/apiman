@@ -37,33 +37,34 @@ public class SearchSourceBuilderTest {
      */
     @Test
     public void test1() throws IOException {
-//        QueryBuilder qb = QueryBuilders.filteredQuery(QueryBuilders.matchAllQuery(),
-//                FilterBuilders.boolFilter(FilterBuilders.termFilter("groupId", "GROUP"),
-//                        FilterBuilders.termFilter("artifactId", "ARTY")));
-//        SearchSourceBuilder builder = new SearchSourceBuilder().query(qb).size(2);
-//        String actual = builder.string();
-//        Assert.assertEquals(
-//                "{\"size\":2,\"query\":{\"filtered\":{\"query\":{\"match_all\":{}},\"filter\":{\"and\":{\"filters\":[{\"term\":{\"groupId\":\"GROUP\"}},{\"term\":{\"artifactId\":\"ARTY\"}}]}}}}}",
-//                actual);
-//        mapper.readTree(actual);
+        QueryBuilder qb =
+            FilterBuilders.boolFilter(
+                FilterBuilders.filter(
+                    FilterBuilders.termFilter("groupId", "GROUP"),
+                    FilterBuilders.termFilter("artifactId", "ARTY"))
+            );
+        SearchSourceBuilder builder = new SearchSourceBuilder().query(qb).size(2);
+        String actual = builder.string();
+        Assert.assertEquals(
+                "{\"size\":2,\"query\":{\"bool\":{\"filter\":[{\"term\":{\"groupId\":\"GROUP\"}},{\"term\":{\"artifactId\":\"ARTY\"}}]}}}",
+                actual);
+        mapper.readTree(actual);
     }
 
     /**
      */
     @Test
     public void test2() throws IOException {
-//        String[] fields = {"id", "artifactId", "groupId", "version", "classifier", "type", "name",
-//                "description", "createdBy", "createdOn"};
-//        QueryBuilder query = QueryBuilders.filteredQuery(QueryBuilders.matchAllQuery(),
-//                FilterBuilders.orFilter(FilterBuilders.missingFilter("deleted"),
-//                        FilterBuilders.termFilter("deleted", false)));
-//        SearchSourceBuilder builder = new SearchSourceBuilder().fetchSource(fields, null).query(query)
-//                .sort("name.raw", SortOrder.ASC).size(200); //$NON-NLS-1$
-//        String actual = builder.string();
-//        Assert.assertEquals(
-//                "{\"size\":200,\"query\":{\"filtered\":{\"query\":{\"match_all\":{}},\"filter\":{\"or\":{\"filters\":[{\"missing\":{\"field\":\"deleted\"}},{\"term\":{\"deleted\":false}}]}}}},\"sort\":[{\"name.raw\":{\"order\":\"asc\"}}],\"_source\":{\"include\":[\"id\",\"artifactId\",\"groupId\",\"version\",\"classifier\",\"type\",\"name\",\"description\",\"createdBy\",\"createdOn\"]}}",
-//                actual);
-//        mapper.readTree(actual);
+        String[] fields = {"id", "artifactId", "groupId", "version", "classifier", "type", "name",
+                "description", "createdBy", "createdOn"};
+        QueryBuilder query = FilterBuilders.notExistOrFalse("deleted");
+        SearchSourceBuilder builder = new SearchSourceBuilder().fetchSource(fields, null).query(query)
+                .sort("name.raw", SortOrder.ASC).size(200); //$NON-NLS-1$
+        String actual = builder.string();
+        Assert.assertEquals(
+                "{\"size\":200,\"query\":{\"bool\":{\"should\":[{\"bool\":{\"must_not\":[{\"term\":{\"deleted\":true}}]}},{\"bool\":{\"must_not\":[{\"exists\":{\"field\":\"deleted\"}}]}}]}},\"sort\":[{\"name.raw\":{\"order\":\"asc\"}}],\"_source\":{\"include\":[\"id\",\"artifactId\",\"groupId\",\"version\",\"classifier\",\"type\",\"name\",\"description\",\"createdBy\",\"createdOn\"]}}",
+                actual);
+        mapper.readTree(actual);
     }
 
     /**
@@ -104,21 +105,23 @@ public class SearchSourceBuilderTest {
      */
     @Test
     public void test5() throws IOException {
-//        QueryBuilder query = QueryBuilders.filteredQuery(
-//            QueryBuilders.matchAllQuery(),
-//            FilterBuilders.boolFilter(
-//                    FilterBuilders.termFilter("organizationId", "ORG"),
-//                    FilterBuilders.termFilter("clientId", "CLIENT"))
-//        );
-//        SearchSourceBuilder builder = new SearchSourceBuilder()
-//                .sort("createdOn", SortOrder.DESC)
-//                .query(query)
-//                .size(500);
-//        String actual = builder.string();
-//        Assert.assertEquals(
-//                "{\"size\":500,\"query\":{\"filtered\":{\"query\":{\"match_all\":{}},\"filter\":{\"and\":{\"filters\":[{\"term\":{\"organizationId\":\"ORG\"}},{\"term\":{\"clientId\":\"CLIENT\"}}]}}}},\"sort\":[{\"createdOn\":{\"order\":\"desc\"}}]}",
-//                actual);
-//        mapper.readTree(actual);
+        QueryBuilder query =
+            FilterBuilders.boolFilter(
+                    FilterBuilders.filter(
+                            FilterBuilders.termFilter("organizationId", "ORG"),
+                            FilterBuilders.termFilter("clientId", "CLIENT"))
+                    );
+
+        SearchSourceBuilder builder = new SearchSourceBuilder()
+                .sort("createdOn", SortOrder.DESC)
+                .query(query)
+                .size(500);
+        String actual = builder.string();
+        System.out.println(actual);
+        Assert.assertEquals(
+                "{\"size\":500,\"query\":{\"bool\":{\"filter\":[{\"term\":{\"organizationId\":\"ORG\"}},{\"term\":{\"clientId\":\"CLIENT\"}}]}},\"sort\":[{\"createdOn\":{\"order\":\"desc\"}}]}",
+                actual);
+        mapper.readTree(actual);
     }
 
 }

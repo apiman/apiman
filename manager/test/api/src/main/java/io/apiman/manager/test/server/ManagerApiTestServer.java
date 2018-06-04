@@ -183,7 +183,7 @@ public class ManagerApiTestServer {
                 esDownloadCache.getParentFile().mkdirs();
 
                 node = ApimanEmbeddedElastic.builder()
-                        .withElasticVersion("5.6.9")
+                        .withElasticVersion(ApimanEmbeddedElastic.getEsBuildVersion())
                         .withDownloadDirectory(esDownloadCache)
                         .withSetting(PopularProperties.CLUSTER_NAME, "apiman")
                         .withPort(ES_DEFAULT_PORT)

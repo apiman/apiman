@@ -18,13 +18,17 @@ package io.apiman.common.es.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
+import java.util.Optional;
+import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -55,7 +59,26 @@ public class ApimanEmbeddedElastic {
 
     private ApimanEmbeddedElastic(EmbeddedElastic embeddedElastic, long port) {
         this.elastic = embeddedElastic;
-        pidPath = Paths.get(System.getenv("HOME"), "/.cache/apiman/embedded-es-pid-" + port);
+        this.pidPath = Paths.get(System.getenv("HOME"), "/.cache/apiman/embedded-es-pid-" + port);
+    }
+
+    // Get version of ES that the project was built with. This is only really useful for
+    // testing.
+    public static String getEsBuildVersion() {
+        URL url = ApimanEmbeddedElastic.class.getResource("apiman-embedded-elastic.properties");
+        if (url == null) {
+            throw new RuntimeException("embedded-elastic.properties missing.");
+        } else {
+            Properties allProperties = new Properties();
+            try(InputStream is = url.openStream()){
+                allProperties.load(is);
+                return Optional
+                        .ofNullable(allProperties.getProperty("apiman.embedded-es-version"))
+                        .orElseThrow(() -> new RuntimeException("apiman.embedded-es-version"));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     public static Builder builder() {
@@ -124,7 +147,7 @@ public class ApimanEmbeddedElastic {
 
     public static final class Builder {
         pl.allegro.tech.embeddedelasticsearch.EmbeddedElastic.Builder wrappedBuilder;
-        Integer port;
+        Integer port = -1;
 
         public Builder() {
             wrappedBuilder = pl.allegro.tech.embeddedelasticsearch.EmbeddedElastic.builder();
@@ -156,6 +179,9 @@ public class ApimanEmbeddedElastic {
         }
 
         public ApimanEmbeddedElastic build() {
+            if (port == -1) {
+                throw new IllegalStateException("Must set port");
+            }
             return new ApimanEmbeddedElastic(wrappedBuilder.build(), port);
         }
 
@@ -165,7 +191,16 @@ public class ApimanEmbeddedElastic {
             return this;
         }
 
-    }
+        public Builder withDownloadUrl(URL url) {
+            wrappedBuilder.withDownloadUrl(url);
+            return this;
+        }
 
+        public Builder withInstallationDirectory(File installationDirectory) {
+            wrappedBuilder.withInstallationDirectory(installationDirectory);
+            return this;
+        }
+
+    }
 
 }

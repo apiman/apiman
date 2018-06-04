@@ -18,6 +18,7 @@ package io.apiman.manager.api.es.util;
 
 import java.io.IOException;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -31,10 +32,12 @@ public class OrFilterBuilderTest {
      */
     @Test
     public void test() throws IOException {
-//        String actual = FilterBuilders.orFilter(
-//                FilterBuilders.missingFilter("deleted"),
-//                FilterBuilders.termFilter("deleted", false)).string();
-//        Assert.assertEquals("{\"or\":{\"filters\":[{\"missing\":{\"field\":\"deleted\"}},{\"term\":{\"deleted\":false}}]}}", actual);
+        String actual = QueryBuilders.query(
+                FilterBuilders.notExistOrFalse("deleted")
+            ).string();
+
+    Assert.assertEquals("{\"query\":{\"bool\":{\"should\":[{\"bool\":{\"must_not\":[{\"term\":{\"deleted\":true}}]}},{\"bool\":{\"must_not\":[{\"exists\":{\"field\":\"deleted\"}}]}}]}}}",
+            actual);
     }
 
 }

@@ -50,13 +50,9 @@ public class BoolFilterBuilder extends AbstractQueryBuilder {
      */
     @Override
     protected void doXContent(XContentBuilder builder) throws IOException {
-        System.out.println("In BoolFilterBuilder");
-
         builder.field("bool");
         for (QueryBuilder query : filters) {
             query.toXContent(builder);
         }
-
-        System.out.println("Finish BoolFilterBuilder");
     }
 }

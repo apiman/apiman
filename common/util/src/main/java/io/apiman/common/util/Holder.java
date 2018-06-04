@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 JBoss Inc
+ * Copyright 2018 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,12 @@
 
 package io.apiman.common.util;
 
+/**
+ * Simple value holder.
+ *
+ * @param <T> Type to hold
+ * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
+ */
 public class Holder<T> {
     private T value;
 

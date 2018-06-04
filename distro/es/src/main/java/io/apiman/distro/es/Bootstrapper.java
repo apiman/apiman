@@ -15,16 +15,21 @@
  */
 package io.apiman.distro.es;
 
+import io.apiman.common.es.util.ApimanEmbeddedElastic;
+import io.apiman.common.es.util.ApimanEmbeddedElastic.Builder;
+
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Optional;
+import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import pl.allegro.tech.embeddedelasticsearch.EmbeddedElastic;
-import pl.allegro.tech.embeddedelasticsearch.EmbeddedElastic.Builder;
 import pl.allegro.tech.embeddedelasticsearch.PopularProperties;
 
 /**
@@ -37,7 +42,7 @@ import pl.allegro.tech.embeddedelasticsearch.PopularProperties;
 @SuppressWarnings("nls")
 public class Bootstrapper implements ServletContextListener {
 
-    private EmbeddedElastic node;
+    private ApimanEmbeddedElastic node;
 
     /**
      * @see javax.servlet.ServletContextListener#contextInitialized(javax.servlet.ServletContextEvent)
@@ -68,9 +73,10 @@ public class Bootstrapper implements ServletContextListener {
         String clusterName = "apiman";
 
         try {
-            URL url = sce.getServletContext().getResource("/WEB-INF/elasticsearch-5.6.9.zip");
 
-            Builder builder = EmbeddedElastic.builder()
+            URL url = resolveEsDistro(sce);//.getResource("/WEB-INF/elasticsearch-5.6.9.zip");
+
+            Builder builder = ApimanEmbeddedElastic.builder()
                 .withDownloadUrl(url)
                 .withCleanInstallationDirectoryOnStop(false)
                 .withInstallationDirectory(esHome)
@@ -126,13 +132,40 @@ public class Bootstrapper implements ServletContextListener {
         return esHome;
     }
 
+    private URL resolveEsDistro(ServletContextEvent sce) throws MalformedURLException {
+        String systemProp = System.getProperty("apiman.es-distro");
+        if (systemProp != null) {
+            return new URL(systemProp);
+        }
+
+        URL url = Bootstrapper.class.getResource("embedded-elastic.properties");
+        if (url == null) {
+            throw new RuntimeException("embedded-elastic.properties missing.");
+        } else {
+            Properties allProperties = new Properties();
+            try(InputStream is = url.openStream()){
+                allProperties.load(is);
+                String dPath = Optional
+                        .ofNullable(allProperties.getProperty("apiman.es-distro"))
+                        .orElseThrow(() -> new RuntimeException("apiman.es-distro not defined"));
+                return sce.getServletContext().getResource(dPath);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
     /**
      * @see javax.servlet.ServletContextListener#contextDestroyed(javax.servlet.ServletContextEvent)
      */
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
         if (node != null) {
-            node.stop();
+            try {
+                node.stop();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
             System.out.println("-----------------------------");
             System.out.println("apiman-es stopped!");
             System.out.println("-----------------------------");

@@ -18,6 +18,7 @@ package io.apiman.manager.api.es.util;
 
 import java.io.IOException;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -31,8 +32,12 @@ public class MissingFilterBuilderTest {
      */
     @Test
     public void test() throws IOException {
-        //String actual = FilterBuilders.missingFilter("deleted").string();
-        //Assert.assertEquals("{\"missing\":{\"field\":\"deleted\"}}", actual);
+        String actual = QueryBuilders.query(
+                    FilterBuilders.notExistOrFalse("deleted")
+                ).string();
+
+        Assert.assertEquals("{\"query\":{\"bool\":{\"should\":[{\"bool\":{\"must_not\":[{\"term\":{\"deleted\":true}}]}},{\"bool\":{\"must_not\":[{\"exists\":{\"field\":\"deleted\"}}]}}]}}}",
+                actual);
     }
 
 }

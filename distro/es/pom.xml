@@ -13,14 +13,12 @@
   <dependencies>
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>apiman-common-config</artifactId>
+      <artifactId>apiman-common-es</artifactId>
     </dependency>
-
+    
     <dependency>
-      <groupId>org.elasticsearch.distribution.zip</groupId>
-      <artifactId>elasticsearch</artifactId>
-      <version>5.6.9</version>
-      <type>zip</type>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-common-config</artifactId>
     </dependency>
 
     <dependency>
@@ -38,17 +36,21 @@
       <artifactId>jboss-servlet-api_3.0_spec</artifactId>
       <scope>provided</scope>
     </dependency>
-    
-    <dependency>
-      <groupId>pl.allegro.tech</groupId>
-      <artifactId>embedded-elasticsearch</artifactId>
-      <version>2.5.0</version>
-    </dependency>
-    
   </dependencies>
-
-
+  
+  
   <build>
+     <resources>
+       <resource>
+         <directory>src/main/resources</directory>
+         <filtering>false</filtering>
+       </resource>
+       <resource>
+         <directory>src/main/resources-filtered</directory>
+         <filtering>true</filtering>
+       </resource>
+     </resources>
+  
     <finalName>apiman-es</finalName>
     <plugins>
       <plugin>
@@ -74,17 +76,17 @@
                 <artifactItem>
                   <groupId>org.elasticsearch.distribution.zip</groupId>
                   <artifactId>elasticsearch</artifactId>
-                  <version>5.6.9</version>
+                  <version>${version.org.elasticsearch}</version>
                   <type>zip</type>
                   <overWrite>true</overWrite>
-                  <outputDirectory>target/apiman-es/WEB-INF</outputDirectory>
+                  <!-- Ensure this correlates correctly with entry in embedded-elastic.properties  -->
+                  <outputDirectory>target/apiman-es/WEB-INF</outputDirectory> 
                 </artifactItem>
               </artifactItems>
             </configuration>
           </execution>
         </executions>
-      </plugin>
-      
+      </plugin>      
     </plugins>
   </build>
 

@@ -16,6 +16,7 @@
 
 package io.apiman.manager.test.es;
 
+import io.apiman.common.es.util.ApimanEmbeddedElastic;
 import io.apiman.gateway.engine.es.DefaultESClientFactory;
 import io.apiman.manager.api.beans.metrics.ClientUsagePerApiBean;
 import io.apiman.manager.api.beans.metrics.HistogramIntervalType;
@@ -55,10 +56,8 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
-import pl.allegro.tech.embeddedelasticsearch.EmbeddedElastic;
 import pl.allegro.tech.embeddedelasticsearch.PopularProperties;
 
 /**
@@ -69,26 +68,34 @@ import pl.allegro.tech.embeddedelasticsearch.PopularProperties;
 @SuppressWarnings("nls")
 public class ESMetricsAccessorTest {
 
-    private static EmbeddedElastic node;
+    private static ApimanEmbeddedElastic node;
     private static JestClient client;
     private static Locale locale;
 
-    @BeforeClass @Ignore
+    @BeforeClass
     public static void setup() throws Exception {
         File esDownloadCache = new File(System.getenv("HOME") + "/.cache/apiman/elasticsearch");
         esDownloadCache.getParentFile().mkdirs();
 
-        node = EmbeddedElastic.builder()
-            .withElasticVersion("5.6.9")
-            .withDownloadDirectory(esDownloadCache)
-            .withSetting(PopularProperties.CLUSTER_NAME, "apiman")
-            .withSetting(PopularProperties.HTTP_PORT, "19250")
-            .withCleanInstallationDirectoryOnStop(true)
-            .build()
-            .start();
+        System.out.println("Setting locale");
 
         locale = Locale.getDefault();
         Locale.setDefault(Locale.US);
+
+        try {
+        node = ApimanEmbeddedElastic.builder()
+            .withPort(19250)
+            .withElasticVersion(ApimanEmbeddedElastic.getEsBuildVersion())
+            .withDownloadDirectory(esDownloadCache)
+            .withSetting(PopularProperties.CLUSTER_NAME, "apiman")
+            .withCleanInstallationDirectoryOnStop(true)
+            .build()
+            .start();
+        } catch (Exception e ) {
+
+            System.out.println(e);
+
+        }
 
         // Delete, refresh and create new client
         client = createJestClient();

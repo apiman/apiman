@@ -50,15 +50,11 @@ public class ShouldFilterBuilder extends AbstractQueryBuilder {
      */
     @Override
     protected void doXContent(XContentBuilder builder) throws IOException {
-        System.out.println("In should");
-
         builder.startArray("should");
         for (QueryBuilder query : filters) {
             query.toXContent(builder);
         }
         builder.endArray();
-
-        System.out.println("Finish should");
     }
 
 }

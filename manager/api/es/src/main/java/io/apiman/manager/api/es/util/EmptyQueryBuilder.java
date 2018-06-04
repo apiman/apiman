@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 JBoss Inc
+ * Copyright 2018 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,11 @@ package io.apiman.manager.api.es.util;
 
 import java.io.IOException;
 
+/**
+ * Empty query
+ *
+ * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
+ */
 public class EmptyQueryBuilder extends AbstractQueryBuilder {
 
     private QueryBuilder queryBuilder;
@@ -28,11 +33,8 @@ public class EmptyQueryBuilder extends AbstractQueryBuilder {
 
     @Override
     protected void doXContent(XContentBuilder builder) throws IOException {
-        System.out.println("In TopLevelBuilder");
-        builder.field("query");
+        builder.field("query"); //$NON-NLS-1$
         queryBuilder.toXContent(builder);
-        System.out.println("End TopLevelBuilder");
     }
-
 
 }

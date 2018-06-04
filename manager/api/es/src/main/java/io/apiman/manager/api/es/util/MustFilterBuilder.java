@@ -50,15 +50,11 @@ public class MustFilterBuilder extends AbstractQueryBuilder {
      */
     @Override
     protected void doXContent(XContentBuilder builder) throws IOException {
-        System.out.println("In must");
-
         builder.startArray("must");
         for (QueryBuilder query : filters) {
             query.toXContent(builder);
         }
         builder.endArray();
-
-        System.out.println("Finish must");
     }
 
 }

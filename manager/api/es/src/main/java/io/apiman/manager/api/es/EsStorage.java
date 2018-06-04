@@ -2576,7 +2576,7 @@ public class EsStorage implements IStorage, IStorageQuery {
     }
 
     /**
-     * Returns an iterator over all instances of the given entity type with the specified sort.
+     * Returns an iterator over all instances of the given entity type with the provided sort.
      * @param entityType
      * @param unmarshaller
      * @param query

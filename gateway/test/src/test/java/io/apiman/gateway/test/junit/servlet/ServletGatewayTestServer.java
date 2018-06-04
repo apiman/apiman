@@ -15,6 +15,7 @@
  */
 package io.apiman.gateway.test.junit.servlet;
 
+import io.apiman.common.es.util.ApimanEmbeddedElastic;
 import io.apiman.common.util.ddl.DdlParser;
 import io.apiman.gateway.engine.GatewayConfigProperties;
 import io.apiman.gateway.engine.components.IBufferFactoryComponent;
@@ -63,7 +64,6 @@ import org.infinispan.manager.DefaultCacheManager;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import pl.allegro.tech.embeddedelasticsearch.EmbeddedElastic;
 import pl.allegro.tech.embeddedelasticsearch.PopularProperties;
 
 /**
@@ -93,7 +93,7 @@ public class ServletGatewayTestServer implements IGatewayTestServer {
     private static final int JEST_TIMEOUT = 6000;
     public static JestClient ES_CLIENT = null;
     private JestClient client = null;
-    private EmbeddedElastic node;
+    private ApimanEmbeddedElastic node;
 
     /*
      * Database related.
@@ -269,10 +269,8 @@ public class ServletGatewayTestServer implements IGatewayTestServer {
                 File esDownloadCache = new File(System.getenv("HOME") + "/.cache/apiman/elasticsearch");
                 esDownloadCache.getParentFile().mkdirs();
 
-                System.out.println("================ TRYING TO START ES 2 ================ ");
-
-                node = EmbeddedElastic.builder()
-                            .withElasticVersion("5.6.9")
+                node = ApimanEmbeddedElastic.builder()
+                            .withElasticVersion(ApimanEmbeddedElastic.getEsBuildVersion())
                             .withDownloadDirectory(esDownloadCache)
                             .withSetting(PopularProperties.CLUSTER_NAME, "apiman")
                             .withSetting(PopularProperties.HTTP_PORT, 19250)
