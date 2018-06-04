@@ -191,6 +191,16 @@ public class ApimanEmbeddedElastic {
             return this;
         }
 
+        public Builder withPort(String portRange) {
+            wrappedBuilder.withSetting(PopularProperties.HTTP_PORT, portRange);
+            if (portRange.contains("-")) {
+                this.port = Integer.valueOf(portRange.split("-")[0].trim());
+            } else {
+                this.port = Integer.valueOf(portRange);
+            }
+            return this;
+        }
+
         public Builder withDownloadUrl(URL url) {
             wrappedBuilder.withDownloadUrl(url);
             return this;

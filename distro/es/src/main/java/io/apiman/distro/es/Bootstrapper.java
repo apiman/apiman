@@ -77,7 +77,7 @@ public class Bootstrapper implements ServletContextListener {
             URL url = resolveEsDistro(sce);
 
             Builder builder = ApimanEmbeddedElastic.builder()
-                .withPort(Integer.valueOf(config.getHttpPortRange()))
+                .withPort(config.getHttpPortRange())
                 .withDownloadUrl(url)
                 .withCleanInstallationDirectoryOnStop(false)
                 .withInstallationDirectory(esHome)
