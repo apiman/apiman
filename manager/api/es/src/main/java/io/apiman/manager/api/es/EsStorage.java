@@ -2520,13 +2520,14 @@ public class EsStorage implements IStorage, IStorageQuery {
     }
 
     @Override
+    @SuppressWarnings("nls")
     public Iterator<AuditEntryBean> getAllAuditEntries(String organizationId) throws StorageException {
-        return getAll("auditEntry", new IUnmarshaller<AuditEntryBean>() { //$NON-NLS-1$
+        return getAll("auditEntry", new IUnmarshaller<AuditEntryBean>() {
             @Override
             public AuditEntryBean unmarshal(Map<String, Object> source) {
                 return EsMarshalling.unmarshallAuditEntry(source);
             }
-        }, matchOrgQuery(organizationId));
+        }, matchOrgQuery(organizationId), new Sort("id"));
     }
 
     @Override
@@ -2564,7 +2565,7 @@ public class EsStorage implements IStorage, IStorageQuery {
     }
 
     /**
-     * Returns an iterator over all instances of the given entity type.
+     * Returns an iterator over all instances of the given entity type with index sort (_doc).
      * @param entityType
      * @param unmarshaller
      * @param query
@@ -2572,6 +2573,19 @@ public class EsStorage implements IStorage, IStorageQuery {
      */
     private <T> Iterator<T> getAll(String entityType, IUnmarshaller<T> unmarshaller, String query) throws StorageException {
         return new EntityIterator<>(entityType, unmarshaller, query);
+    }
+
+    /**
+     * Returns an iterator over all instances of the given entity type with the specified sort.
+     * @param entityType
+     * @param unmarshaller
+     * @param query
+     * @param sort
+     * @return
+     * @throws StorageException
+     */
+    private <T> Iterator<T> getAll(String entityType, IUnmarshaller<T> unmarshaller, String query, Sort sort) throws StorageException {
+        return new EntityIterator<>(entityType, unmarshaller, query, sort);
     }
 
     /**
@@ -2594,9 +2608,10 @@ public class EsStorage implements IStorage, IStorageQuery {
     @SuppressWarnings("nls")
     private class EntityIterator<T> implements Iterator<T> {
 
-        private String query;
-        private String entityType;
-        private IUnmarshaller<T> unmarshaller;
+        private final String query;
+        private final Sort sort;
+        private final String entityType;
+        private final IUnmarshaller<T> unmarshaller;
         private String scrollId = null;
         private List<Hit<Map<String, Object>, Void>> hits;
         private int nextHitIdx;
@@ -2612,6 +2627,16 @@ public class EsStorage implements IStorage, IStorageQuery {
             this.entityType = entityType;
             this.unmarshaller = unmarshaller;
             this.query = query;
+            this.sort = new Sort("_doc");
+            initScroll();
+            this.nextHitIdx = 0;
+        }
+
+        public EntityIterator(String entityType, IUnmarshaller<T> unmarshaller, String query, Sort sort) throws StorageException {
+            this.entityType = entityType;
+            this.unmarshaller = unmarshaller;
+            this.query = query;
+            this.sort = sort;
             initScroll();
             this.nextHitIdx = 0;
         }
@@ -2655,7 +2680,7 @@ public class EsStorage implements IStorage, IStorageQuery {
                         .addIndex(getIndexName())
                         .addType(entityType)
                         .setParameter(Parameters.SCROLL, "1m")
-                        .addSort(new Sort("_doc"))
+                        .addSort(sort)
                         .build();
                 SearchResult response = esClient.execute(search);
                 if (!response.isSucceeded()) {

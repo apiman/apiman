@@ -15,6 +15,7 @@
  */
 package io.apiman.manager.test.server;
 
+import io.apiman.common.es.util.ApimanEmbeddedElastic;
 import io.apiman.common.servlet.ApimanCorsFilter;
 import io.apiman.common.servlet.AuthenticationFilter;
 import io.apiman.common.servlet.DisableCachingFilter;
@@ -58,7 +59,6 @@ import org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap;
 import org.jboss.weld.environment.servlet.BeanManagerResourceBindingListener;
 import org.jboss.weld.environment.servlet.Listener;
 
-import pl.allegro.tech.embeddedelasticsearch.EmbeddedElastic;
 import pl.allegro.tech.embeddedelasticsearch.PopularProperties;
 
 /**
@@ -86,7 +86,7 @@ public class ManagerApiTestServer {
     /*
      * The elasticsearch node and client - only if using ES
      */
-    private EmbeddedElastic node = null;
+    private ApimanEmbeddedElastic node = null;
     private JestClient client = null;
     private static final int JEST_TIMEOUT = 6000;
     private static final Integer ES_DEFAULT_PORT = 19250;
@@ -182,24 +182,29 @@ public class ManagerApiTestServer {
                 File esDownloadCache = new File(System.getenv("HOME") + "/.cache/apiman/elasticsearch");
                 esDownloadCache.getParentFile().mkdirs();
 
-                node = EmbeddedElastic.builder()
-                            .withElasticVersion("5.6.9")
-                            .withDownloadDirectory(esDownloadCache)
-                            .withSetting(PopularProperties.CLUSTER_NAME, "apiman")
-                            .withSetting(PopularProperties.HTTP_PORT, ES_DEFAULT_PORT)
-                            .withCleanInstallationDirectoryOnStop(true)
-                            .withStartTimeout(1, TimeUnit.MINUTES)
-                            .build()
-                            .start();
-            } catch (IOException | InterruptedException e) {
-                 throw new RuntimeException(e);
-            }
-            // Create client before flush
-            client = createJestClient();
-            deleteAndFlush();
-            // Recreate client again as index needs re-initialising (see index-settings.json) -- TODO refactor this
-            client = createJestClient();
-            ES_CLIENT = client;
+                node = ApimanEmbeddedElastic.builder()
+                        .withElasticVersion("5.6.9")
+                        .withDownloadDirectory(esDownloadCache)
+                        .withSetting(PopularProperties.CLUSTER_NAME, "apiman")
+                        .withPort(ES_DEFAULT_PORT)
+                        .withCleanInstallationDirectoryOnStop(true)
+                        .withStartTimeout(1, TimeUnit.MINUTES)
+                        .build()
+                        .start();
+
+                // Create client before flush
+                client = createJestClient();
+                deleteAndFlush();
+                // Recreate client again as index needs re-initialising (see index-settings.json) -- TODO refactor this
+                client = createJestClient();
+                ES_CLIENT = client;
+
+                } catch (IOException | InterruptedException e) {
+                    if (node != null) {
+                        node.stop();
+                    }
+                    throw new RuntimeException(e);
+               }
         }
     }
 
@@ -334,7 +339,7 @@ public class ManagerApiTestServer {
         return csh;
     }
 
-    public EmbeddedElastic getESNode() {
+    public ApimanEmbeddedElastic getESNode() {
         return node;
     }
 
