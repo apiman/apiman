@@ -172,6 +172,8 @@
     <version.com.hazelcast>3.6.4</version.com.hazelcast>
     <version.com.jcbai>1.16</version.com.jcbai>
     <version.javax.json.javax.json-api>1.0</version.javax.json.javax.json-api>
+    <version.pl.allegro.tech.embedded-elastic>2.5.0</version.pl.allegro.tech.embedded-elastic>
+    <version.org.skyscreamer.jsonassert>1.5.0</version.org.skyscreamer.jsonassert>
   </properties>
 
   <dependencyManagement>
@@ -684,9 +686,9 @@
         <version>${version.org.elasticsearch}</version>
       </dependency>
       <dependency>
-        <groupId>org.elasticsearch.plugin</groupId>
-        <artifactId>transport-netty4-client</artifactId>
-        <version>${version.org.elasticsearch}</version>
+        <groupId>pl.allegro.tech</groupId>
+        <artifactId>embedded-elasticsearch</artifactId>
+        <version>${version.pl.allegro.tech.embedded-elastic}</version>
       </dependency>
       <dependency>
         <groupId>io.prometheus</groupId>
@@ -1168,6 +1170,11 @@
         <artifactId>hamcrest-all</artifactId>
         <version>${version.org.hamcrest}</version>
       </dependency>
+      <dependency>
+        <groupId>org.skyscreamer</groupId>
+        <artifactId>jsonassert</artifactId>
+        <version>${version.org.skyscreamer.jsonassert}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -1214,6 +1221,7 @@
                       <regexIgnoredClass>javax\..+</regexIgnoredClass>
                       <regexIgnoredClass>org.w3c.dom\..+</regexIgnoredClass>
                       <regexIgnoredClass>io.netty.buffer.ByteBuf</regexIgnoredClass>
+                      <regexIgnoredClass>org.json\..+</regexIgnoredClass>
                     </regexIgnoredClasses>
                     <useClassesFromLastBuild>true</useClassesFromLastBuild>
                   </illegalTransitiveDependencyCheck>

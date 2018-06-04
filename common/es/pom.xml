@@ -17,13 +17,12 @@
       <artifactId>apiman-common-config</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.elasticsearch.plugin</groupId>
-      <artifactId>transport-netty4-client</artifactId>
-    </dependency>
-    <dependency>
       <groupId>pl.allegro.tech</groupId>
       <artifactId>embedded-elasticsearch</artifactId>
-      <version>2.5.0</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
     </dependency>
   </dependencies>
 
