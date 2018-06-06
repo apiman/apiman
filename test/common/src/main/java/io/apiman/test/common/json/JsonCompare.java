@@ -67,31 +67,18 @@ public class JsonCompare {
 
         @Override
         protected void compareJSONArrayOfJsonObjects(String key, JSONArray expected, JSONArray actual, JSONCompareResult result) throws JSONException {
-            //super.compareJSONArrayOfJsonObjects(key, expected, actual, result);
-
-
             if (key.toLowerCase().endsWith("id")) {
-                System.out.println("Ends with? 12312321 " + key);
                 return;
             }
 
             super.recursivelyCompareJSONArray(key, expected, actual, result);
         }
 
-        // AUDITS SECTION?!
-//        @Override
-//        public void compareJSONArray(String prefix, JSONArray expected, JSONArray actual, JSONCompareResult result) throws JSONException {
-//            super.compareJSONArray(prefix, expected, actual, result);
-//        }
-
         @Override
         public void compareValues(String prefix, Object expectedValue, Object actualValue, JSONCompareResult result)
                 throws JSONException {
 
-                System.out.println("prefix = " + prefix);
-
             if (prefix.toLowerCase().equals("id")) {
-                System.out.println("Ignoring/autoaccepting " + prefix);
                 return;
             }
 

@@ -173,12 +173,12 @@ public class EsStorage implements IStorage, IStorageQuery {
             Holder<Exception> exception = new Holder<>();
 
             ScheduledFuture<?> sched = schedulerService.scheduleAtFixedRate(() -> {
-                System.out.println("Polling for Elasticsearch...");
+                logger.info("Polling for Elasticsearch...");
                 try {
                     esClient.execute(new Health.Builder().build());
                     cdl.countDown();
                 } catch (IOException e) {
-                    System.out.println("Unable to reach Elasticsearch. Will continue polling.");
+                    logger.info("Unable to reach Elasticsearch. Will continue polling.");
                     //System.out.println("Result of polling", e);
                     exception.setValue(e);
                 }
@@ -187,11 +187,10 @@ public class EsStorage implements IStorage, IStorageQuery {
             1, // Poll every 1 seconds
             TimeUnit.SECONDS);
 
-            System.out.println("Waiting");
-            cdl.await(30, TimeUnit.SECONDS); // Wait 5 mins max
+            cdl.await(30, TimeUnit.SECONDS); // Max wait 30 seconds
             sched.cancel(true);
-            System.out.println("Cancelled polling!");
 
+            // CDL > 0 means we never successfully hit the health endpoint.
             if (exception.getValue() != null && cdl.getCount() > 0) {
                 throw exception.getValue();
             }

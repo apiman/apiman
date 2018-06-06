@@ -77,12 +77,9 @@ public class ESMetricsAccessorTest {
         File esDownloadCache = new File(System.getenv("HOME") + "/.cache/apiman/elasticsearch");
         esDownloadCache.getParentFile().mkdirs();
 
-        System.out.println("Setting locale");
-
         locale = Locale.getDefault();
         Locale.setDefault(Locale.US);
 
-        try {
         node = ApimanEmbeddedElastic.builder()
             .withPort(19250)
             .withElasticVersion(ApimanEmbeddedElastic.getEsBuildVersion())
@@ -91,11 +88,6 @@ public class ESMetricsAccessorTest {
             .withCleanInstallationDirectoryOnStop(true)
             .build()
             .start();
-        } catch (Exception e ) {
-
-            System.out.println(e);
-
-        }
 
         // Delete, refresh and create new client
         client = createJestClient();

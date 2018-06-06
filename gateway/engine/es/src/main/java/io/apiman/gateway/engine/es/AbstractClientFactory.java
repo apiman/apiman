@@ -43,7 +43,7 @@ public abstract class AbstractClientFactory {
     public static void clearClientCache() {
         clients.clear();
     }
-    
+
     /**
      * Constructor.
      */
@@ -60,9 +60,13 @@ public abstract class AbstractClientFactory {
         try {
             client.execute(new Health.Builder().build());
             Action<JestResult> action = new IndicesExists.Builder(indexName).build();
-            JestResult result = client.execute(action);
-            if (!result.isSucceeded()) {
-                createIndex(client, indexName, defaultIndexName + "-settings.json"); //$NON-NLS-1$
+            // There was occasions where a race occurred here when multiple threads try to
+            // create the index simultaneously. This caused a non-fatal, but annoying, exception.
+            synchronized(AbstractClientFactory.class) {
+                JestResult result = client.execute(action);
+                if (!result.isSucceeded()) {
+                    createIndex(client, indexName, defaultIndexName + "-settings.json"); //$NON-NLS-1$
+                }
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
