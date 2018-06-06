@@ -28,15 +28,17 @@ import org.junit.Test;
 public class AndFilterBuilderTest {
 
     /**
-     * Test method for {@link io.apiman.manager.api.es.util.AndFilterBuilder#doXContent(io.apiman.manager.api.es.util.XContentBuilder)}.
+     * Test method for {@link io.apiman.manager.api.es.util.BoolFilterBuilder#doXContent(io.apiman.manager.api.es.util.XContentBuilder)}.
      */
     @Test
     public void test() throws IOException {
-        String actual = FilterBuilders.andFilter(
+        String actual = FilterBuilders.boolFilter(
+            FilterBuilders.filter(
                 FilterBuilders.termFilter("groupId", "GROUP_ID"),
                 FilterBuilders.termFilter("artifactId", "ARTIFACT_ID")
+            )
         ).string();
-        Assert.assertEquals("{\"and\":{\"filters\":[{\"term\":{\"groupId\":\"GROUP_ID\"}},{\"term\":{\"artifactId\":\"ARTIFACT_ID\"}}]}}", actual);
+        Assert.assertEquals("{\"bool\":{\"filter\":[{\"term\":{\"groupId\":\"GROUP_ID\"}},{\"term\":{\"artifactId\":\"ARTIFACT_ID\"}}]}}", actual);
     }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 JBoss Inc
+ * Copyright 2018 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,17 +20,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author ewittman
+ * @author Marc Savy
  */
-public class OrFilterBuilder extends AbstractQueryBuilder {
+@SuppressWarnings("nls")
+public class ShouldFilterBuilder extends AbstractQueryBuilder {
 
     private List<QueryBuilder> filters = new ArrayList<>();
 
     /**
      * Constructor.
+     * @param operationType
      * @param filters
      */
-    public OrFilterBuilder(QueryBuilder[] filters) {
+    public ShouldFilterBuilder(QueryBuilder... filters) {
         for (QueryBuilder filter : filters) {
             this.filters.add(filter);
         }
@@ -42,20 +44,17 @@ public class OrFilterBuilder extends AbstractQueryBuilder {
     public void add(QueryBuilder filter) {
         this.filters.add(filter);
     }
-    
+
     /**
      * @see io.apiman.manager.api.es.util.AbstractQueryBuilder#doXContent(io.apiman.manager.api.es.util.XContentBuilder)
      */
-    @SuppressWarnings("nls")
     @Override
     protected void doXContent(XContentBuilder builder) throws IOException {
-        builder.startObject("or");
-        builder.startArray("filters");
-        for (QueryBuilder filter : filters) {
-            filter.toXContent(builder);
+        builder.startArray("should");
+        for (QueryBuilder query : filters) {
+            query.toXContent(builder);
         }
         builder.endArray();
-        builder.endObject();
     }
 
 }

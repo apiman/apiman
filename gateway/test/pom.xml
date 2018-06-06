@@ -13,6 +13,10 @@
     <!-- Project Dependencies -->
     <dependency>
       <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-common-es</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
       <artifactId>apiman-common-util</artifactId>
     </dependency>
     <dependency>
@@ -134,10 +138,6 @@
 
     <!-- Elasticsearch -->
     <dependency>
-      <groupId>org.elasticsearch</groupId>
-      <artifactId>elasticsearch</artifactId>
-    </dependency>
-    <dependency>
       <groupId>io.searchbox</groupId>
       <artifactId>jest</artifactId>
     </dependency>
@@ -191,5 +191,5 @@
       <groupId>org.jboss.logging</groupId>
       <artifactId>jboss-logging</artifactId>
     </dependency>
-  </dependencies>
+  </dependencies>   
 </project>

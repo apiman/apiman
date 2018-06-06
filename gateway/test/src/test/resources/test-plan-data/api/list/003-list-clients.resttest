@@ -1,0 +1,6 @@
+GET /organizations/GatewayApiTest/clients admin/admin
+----
+200
+Content-Type: application/json
+
+["test-client"]

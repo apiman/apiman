@@ -13,12 +13,12 @@
   <dependencies>
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>apiman-common-config</artifactId>
+      <artifactId>apiman-common-es</artifactId>
     </dependency>
-
+    
     <dependency>
-      <groupId>org.elasticsearch</groupId>
-      <artifactId>elasticsearch</artifactId>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-common-config</artifactId>
     </dependency>
 
     <dependency>
@@ -37,8 +37,20 @@
       <scope>provided</scope>
     </dependency>
   </dependencies>
-
+  
+  
   <build>
+     <resources>
+       <resource>
+         <directory>src/main/resources</directory>
+         <filtering>false</filtering>
+       </resource>
+       <resource>
+         <directory>src/main/resources-filtered</directory>
+         <filtering>true</filtering>
+       </resource>
+     </resources>
+  
     <finalName>apiman-es</finalName>
     <plugins>
       <plugin>
@@ -48,6 +60,33 @@
           <skip>true</skip>
         </configuration>
       </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-dependency</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.elasticsearch.distribution.zip</groupId>
+                  <artifactId>elasticsearch</artifactId>
+                  <version>${version.org.elasticsearch}</version>
+                  <type>zip</type>
+                  <overWrite>true</overWrite>
+                  <!-- Ensure this correlates correctly with entry in embedded-elastic.properties  -->
+                  <outputDirectory>target/apiman-es/WEB-INF</outputDirectory> 
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>      
     </plugins>
   </build>
 

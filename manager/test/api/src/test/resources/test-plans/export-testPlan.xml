@@ -15,10 +15,11 @@
     <test name="Publish API">test-plan-data/export/creates-1/009_publish-api-1.resttest</test>
     <test name="Create Contract">test-plan-data/export/creates-1/010_create-contract1.resttest</test>
     <test name="Register Client">test-plan-data/export/creates-1/011_register-client-1.resttest</test>
-    <test name="Wait" delay="2000" />
+    <test name="Wait" delay="1000" />
   </testGroup>
 
   <testGroup name="Exporting">
+    <test name="Wait" delay="2000" />
     <test name="Export ">test-plan-data/export/export/001_export-1.resttest</test>
     <test name="Export (2) Prep">test-plan-data/export/export/002_export-2-prepare.resttest</test>
     <test name="Export (2) Download">test-plan-data/export/export/003_export-2-download.resttest</test>
@@ -39,10 +40,11 @@
     <test name="Register Client (2)">test-plan-data/export/creates-2/011_register-client-1.resttest</test>
     <test name="Create Plan Version 1.1 (2)">test-plan-data/export/creates-2/012_create-plan1-version-1.1.resttest</test>
     <test name="Create Plan Version 1.2 (2)">test-plan-data/export/creates-2/013_create-plan1-version-1.2.resttest</test>
-    <test name="Wait (2)" delay="2000" />
+    <test name="Wait (2)" delay="1000" />
   </testGroup>
 
   <testGroup name="Exporting Again">
+    <test name="Wait (2)" delay="2000" />
     <test name="Export (3)">test-plan-data/export/export/004_export-3.resttest</test>
   </testGroup>
 

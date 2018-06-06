@@ -28,12 +28,16 @@ import org.junit.Test;
 public class MissingFilterBuilderTest {
 
     /**
-     * Test method for {@link io.apiman.manager.api.es.util.AndFilterBuilder#doXContent(io.apiman.manager.api.es.util.XContentBuilder)}.
+     * Test method for {@link io.apiman.manager.api.es.util.BoolFilterBuilder#doXContent(io.apiman.manager.api.es.util.XContentBuilder)}.
      */
     @Test
     public void test() throws IOException {
-        String actual = FilterBuilders.missingFilter("deleted").string();
-        Assert.assertEquals("{\"missing\":{\"field\":\"deleted\"}}", actual);
+        String actual = QueryBuilders.query(
+                    FilterBuilders.notExistOrFalse("deleted")
+                ).string();
+
+        Assert.assertEquals("{\"query\":{\"bool\":{\"should\":[{\"bool\":{\"must_not\":[{\"term\":{\"deleted\":true}}]}},{\"bool\":{\"must_not\":[{\"exists\":{\"field\":\"deleted\"}}]}}]}}}",
+                actual);
     }
 
 }
