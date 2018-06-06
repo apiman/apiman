@@ -16,9 +16,28 @@
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-common-config</artifactId>
     </dependency>
+    <dependency>
+      <groupId>pl.allegro.tech</groupId>
+      <artifactId>embedded-elasticsearch</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+    </dependency>
   </dependencies>
 
   <build>
+    <resources>                                                                                                                 
+      <resource>                                                                                                                    
+        <directory>src/main/resources</directory>                                                                          
+        <filtering>false</filtering>                                                                                              
+      </resource>                                                                                                                  
+       <resource>                                                                                                                   
+         <directory>src/main/resources-filtered</directory>                                                                         
+         <filtering>true</filtering>                                                                                              
+       </resource>                                                                                                                  
+     </resources>
+  
     <plugins>
       <plugin>
         <groupId>org.apache.felix</groupId>

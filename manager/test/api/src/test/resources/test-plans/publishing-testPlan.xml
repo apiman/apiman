@@ -50,9 +50,7 @@
   </testGroup>
 
   <testGroup name="Test Deletion">
-    <test name="Wait" delay="1000" />
     <test name="Delete Organization">test-plan-data/organizations/delete/005_delete.resttest</test>
-    <test name="Wait" delay="500" />
     <test name="Delete Already Deleted Org (should no longer exist)">test-plan-data/organizations/delete/006_delete_already_deleted.resttest</test>
     <test name="Delete Organization (invalid, never existed)">test-plan-data/organizations/delete/007_delete_invalid.resttest</test>
     <test name="Get Org Activity (empty)">test-plan-data/organizations/delete/008_activity.resttest</test>

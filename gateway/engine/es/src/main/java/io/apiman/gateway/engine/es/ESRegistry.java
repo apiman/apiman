@@ -208,23 +208,27 @@ public class ESRegistry extends AbstractESComponent implements IRegistry {
     private Client lookupClient(String orgId, String clientId, String version) {
         String query = "{" +
                 "  \"query\": {" +
-                "    \"filtered\": { " +
-                "      \"filter\": {" +
-                "        \"and\" : [" +
-                "          {" +
-                "            \"term\": { \"organizationId\": ? }" + // orgId
+                "        \"bool\": {" +
+                "            \"filter\": [{" +
+                "                    \"term\": {" +
+                "                        \"organizationId\": ? " + // orgId
+                "                    }" +
                 "          }," +
                 "          {" +
-                "            \"term\": { \"clientId\": ? }" + // clientId
+                "                    \"term\": {" +
+                "                        \"clientId\": ? " + // clientId
+                "                    }" +
                 "          }," +
                 "          {" +
-                "            \"term\": { \"version\": ? }" + // version
+                "                    \"term\": {" +
+                "                        \"version\": ? " + // version
                 "          }" +
-                "        ]" +
                 "      }" +
+                "            ]" +
                 "    }" +
                 "  }" +
                 "}";
+
         String escaped = ESUtils.queryWithEscapedArgs(query, orgId, clientId, version);
         try {
             Search search = new Search.Builder(escaped)
@@ -367,29 +371,35 @@ public class ESRegistry extends AbstractESComponent implements IRegistry {
     @SuppressWarnings("nls")
     public void listClients(String organizationId, int page, int pageSize, IAsyncResultHandler<List<String>> handler) {
         try {
-            String query =
-                    "{\n" +
-                    "  \"query\": {\n" +
-                    "        \"filtered\": {\n" +
-                    "           \"query\": {\n" +
-                    "                \"match_all\": {}\n" +
-                    "           },\n" +
-                    "           \"filter\": {\n" +
-                    "               \"term\": {\n" +
-                    "                  \"organizationId\": ?\n" + // organizationId
-                    "               }\n" +
-                    "           }\n" +
-                    "        }\n" +
-                    "    },\n" +
-                    "    \"aggs\" : {\n" +
-                    "        \"clients\" : {\n" +
-                    "            \"terms\" : { \"field\" : \"clientId\" }\n" + // Only records with a clientId field
-                    "        }\n" +
-                    "    }\n" +
+            String query = "{" +
+                    "      \"query\": {" +
+                    "        \"bool\": {" +
+                    "          \"filter\": [" +
+                    "            {" +
+                    "              \"exists\": {" +
+                    "                \"field\": \"clientId\" " + // clientId
+                    "              }" +
+                    "            }," +
+                    "            {" +
+                    "              \"term\": {" +
+                    "                \"organizationId\": ? " +  // organizationId
+                    "              }" +
+                    "            }" +
+                    "          ]" +
+                    "        }" +
+                    "    }," +
+                    "    \"aggs\": {" +
+                    "        \"clients\": {" +
+                    "            \"terms\": {" +
+                    "                \"field\": \"clientId\" " + // only return aggregated clientId field
+                    "            }" +
+                    "        }" +
+                    "    }" +
                     "}";
             String escaped = ESUtils.queryWithEscapedArgs(query, organizationId);
             Search search = new Search.Builder(escaped)
                     .addIndex(getIndexName())
+                    .addType("client")
                     .setParameter(Parameters.SIZE, 0)
                     .build();
             SearchResult response = getClient().execute(search);
@@ -411,29 +421,35 @@ public class ESRegistry extends AbstractESComponent implements IRegistry {
     @Override
     public void listApis(String organizationId, int page, int pageSize, IAsyncResultHandler<List<String>> handler) {
         try {
-            String query =
-                    "{\n" +
-                    "  \"query\": {\n" +
-                    "        \"filtered\": {\n" +
-                    "           \"query\": {\n" +
-                    "                \"match_all\": {}\n" +
-                    "           },\n" +
-                    "           \"filter\": {\n" +
-                    "               \"term\": {\n" +
-                    "                  \"organizationId\": ?\n" + // organizationId
-                    "               }\n" +
-                    "           }\n" +
-                    "        }\n" +
-                    "    },\n" +
-                    "    \"aggs\" : {\n" +
-                    "        \"apis\" : {\n" +
-                    "            \"terms\" : { \"field\" : \"apiId\" }\n" + // Show only records containing an API ID field.
-                    "        }\n" +
-                    "    }\n" +
+            String query = "{" +
+                    "      \"query\": {" +
+                    "        \"bool\": {" +
+                    "          \"filter\": [" +
+                    "            {" +
+                    "              \"exists\": {" +
+                    "                \"field\": \"apiId\" " + // must have field apiId
+                    "              }" +
+                    "            }," +
+                    "            {" +
+                    "              \"term\": {" +
+                    "                \"organizationId\": ? " +  // organizationId
+                    "              }" +
+                    "            }" +
+                    "          ]" +
+                    "        }" +
+                    "    }," +
+                    "    \"aggs\": {" +
+                    "        \"apis\": {" +
+                    "            \"terms\": {" +
+                    "                \"field\": \"apiId\" " + // only return aggregated apiId field
+                    "            }" +
+                    "        }" +
+                    "    }" +
                     "}";
             String escaped = ESUtils.queryWithEscapedArgs(query, organizationId);
             Search search = new Search.Builder(escaped)
                     .addIndex(getIndexName())
+                    .addType("api")
                     .setParameter(Parameters.SIZE, 0)
                     .build();
             SearchResult response = getClient().execute(search);
@@ -486,43 +502,37 @@ public class ESRegistry extends AbstractESComponent implements IRegistry {
     @SuppressWarnings("nls")
     public void listClientVersions(String organizationId, String clientId, int page, int pageSize, IAsyncResultHandler<List<String>> handler) {
         try {
-            String query =
-                    "{\n" +
-                    "  \"query\": {\n" +
-                    "    \"filtered\": {\n" +
-                    "      \"query\": {\n" +
-                    "        \"match_all\": {}\n" +
-                    "      },\n" +
-                    "      \"filter\": {\n" +
-                    "        \"bool\": {\n" +
-                    "          \"must\": [\n" +
-                    "            {\n" +
-                    "              \"term\": {\n" +
-                    "                \"organizationId\": ? \n" + // organizationId
-                    "              }\n" +
-                    "            },\n" +
-                    "            {\n" +
-                    "              \"term\": {\n" +
-                    "                \"clientId\": ? \n" + // clientId
-                    "              }\n" +
-                    "            }\n" +
-                    "          ]\n" +
-                    "        }\n" +
-                    "      }\n" +
-                    "    }\n" +
-                    "  },\n" +
-                    "  \"aggs\": {\n" +
-                    "    \"client_versions\": {\n" +
-                    "      \"terms\": {\n" +
-                    "        \"field\": \"version\"\n" +
-                    "      }\n" +
-                    "    }\n" +
-                    "  }\n" +
+            String query = "{" +
+                    "  \"query\": {" +
+                    "    \"bool\": {" +
+                    "      \"filter\": [" +
+                    "        {" +
+                    "          \"term\": {" +
+                    "            \"organizationId\": ?" +  // organizationId
+                    "          }" +
+                    "        }," +
+                    "        {" +
+                    "          \"term\": {" +
+                    "            \"clientId\": ?" + // clientId
+                    "          }" +
+                    "        }" +
+                    "      ]" +
+                    "    }" +
+                    "  }," +
+                    "    \"aggs\": {" +
+                    "      \"client_versions\": {" +
+                    "        \"terms\": {" +
+                    "          \"field\": \"version\"" + // only return version fields of clients
+                    "        }" +
+                    "      }" +
+                    "    }" +
                     "}";
+
             String escaped = ESUtils.queryWithEscapedArgs(query, organizationId, clientId);
             Search search = new Search.Builder(escaped)
                     .addIndex(getIndexName())
-                    .setParameter(Parameters.SIZE, 0)
+                    .addType("client")
+                    .setParameter(Parameters.SIZE, 0) // size zero to return only aggregate data (not raw query results)
                     .build();
             SearchResult response = getClient().execute(search);
             // Aggregations section
@@ -544,42 +554,35 @@ public class ESRegistry extends AbstractESComponent implements IRegistry {
     public void listApiVersions(String organizationId, String apiId, int page, int pageSize,
                                 IAsyncResultHandler<List<String>> handler) {
         try {
-            String query =
-                    "{\n" +
-                    "  \"query\": {\n" +
-                    "    \"filtered\": {\n" +
-                    "      \"query\": {\n" +
-                    "        \"match_all\": {}\n" +
-                    "      },\n" +
-                    "      \"filter\": {\n" +
-                    "        \"bool\": {\n" +
-                    "          \"must\": [\n" +
-                    "            {\n" +
-                    "              \"term\": {\n" +
-                    "                \"organizationId\": ? \n" + // organizationId
-                    "              }\n" +
-                    "            },\n" +
-                    "            {\n" +
-                    "              \"term\": {\n" +
-                    "                \"apiId\": ? \n" + // apiId
-                    "              }\n" +
-                    "            }\n" +
-                    "          ]\n" +
-                    "        }\n" +
-                    "      }\n" +
-                    "    }\n" +
-                    "  },\n" +
-                    "  \"aggs\": {\n" +
-                    "    \"api_versions\": {\n" +
-                    "      \"terms\": {\n" +
-                    "        \"field\": \"version\"\n" +
-                    "      }\n" +
-                    "    }\n" +
-                    "  }\n" +
+            String query = "{" +
+                    "  \"query\": {" +
+                    "    \"bool\": {" +
+                    "      \"filter\": [" +
+                    "        {" +
+                    "          \"term\": {" +
+                    "            \"organizationId\": ?" + // organizationId
+                    "          }" +
+                    "        }," +
+                    "        {" +
+                    "          \"term\": {" +
+                    "            \"apiId\": ?" + // apiId
+                    "          }" +
+                    "        }" +
+                    "      ]" +
+                    "    }" +
+                    "  }," +
+                    "    \"aggs\": {" +
+                    "      \"api_versions\": {" +
+                    "        \"terms\": {" +
+                    "          \"field\": \"version\"" + // only return version fields of APIs
+                    "        }" +
+                    "      }" +
+                    "    }" +
                     "}";
             String escaped = ESUtils.queryWithEscapedArgs(query, organizationId, apiId);
             Search search = new Search.Builder(escaped)
                     .addIndex(getIndexName())
+                    .addType("api")
                     .setParameter(Parameters.SIZE, 0)
                     .build();
             SearchResult response = getClient().execute(search);

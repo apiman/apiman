@@ -24,28 +24,64 @@ public class FilterBuilders {
         return new TermsFilterBuilder(name, values);
     }
 
-    public static TermFilterBuilder termFilter(String term, String value) {
-        return new TermFilterBuilder(term, value);
+
+    public static TermBuilder termFilter(String term, String value) {
+        return new TermBuilder(term, value);
     }
 
-    public static TermFilterBuilder termFilter(String term, boolean value) {
-        return new TermFilterBuilder(term, value);
+    public static TermBuilder termFilter(String term, boolean value) {
+        return new TermBuilder(term, value);
     }
 
-    public static TermFilterBuilder termFilter(String term, Long value) {
-        return new TermFilterBuilder(term, value);
+    public static TermBuilder termFilter(String term, Long value) {
+        return new TermBuilder(term, value);
     }
 
-    public static AndFilterBuilder andFilter(QueryBuilder ... filters) {
-        return new AndFilterBuilder(filters);
+    public static BoolFilterBuilder boolFilter(QueryBuilder ... filters) {
+        return new BoolFilterBuilder(filters);
     }
 
-    public static MissingFilterBuilder missingFilter(String name) {
-        return new MissingFilterBuilder(name);
+    public static FilterBuilder filter(QueryBuilder... filters) {
+        return new FilterBuilder(filters);
     }
 
-    public static OrFilterBuilder orFilter(QueryBuilder ... filters) {
-        return new OrFilterBuilder(filters);
+    public static ShouldFilterBuilder shouldFilter(QueryBuilder ... filters) {
+        return new ShouldFilterBuilder(filters);
+    }
+
+    public static MustNotFilterBuilder mustNotFilter(QueryBuilder ... filters) {
+        return new MustNotFilterBuilder(filters);
+    }
+
+    public static MustFilterBuilder mustFilter(QueryBuilder ... filters) {
+        return new MustFilterBuilder(filters);
+    }
+
+    public static ExistsFilterBuilder existsFilter(String fieldName) {
+        return new ExistsFilterBuilder(fieldName);
+    }
+
+    public static BoolFilterBuilder notExistOrFalse(String fieldName) {
+        // ES 5.x has no convenient way to express this without sub-query composition.
+        // https://www.elastic.co/guide/en/elasticsearch/reference/5.6/query-dsl-exists-query.html#_literal_missing_literal_query
+        return FilterBuilders.boolFilter(
+                // OR
+                FilterBuilders.shouldFilter(
+                        // NOT TERM "deleted" TRUE
+                        FilterBuilders.boolFilter(
+                                FilterBuilders.mustNotFilter(
+                                            FilterBuilders.termFilter(fieldName, true)
+                                        )
+                        ),
+                        // NOT EXISTS FIELD "deleted"
+                        FilterBuilders.boolFilter(
+                                FilterBuilders.mustNotFilter(
+                                            FilterBuilders.existsFilter(fieldName)
+                                        )
+                        )
+
+                )
+        );
     }
 
 }

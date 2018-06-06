@@ -16,6 +16,7 @@
 
 package io.apiman.manager.test.es;
 
+import io.apiman.common.es.util.ApimanEmbeddedElastic;
 import io.apiman.gateway.engine.es.DefaultESClientFactory;
 import io.apiman.manager.api.beans.metrics.ClientUsagePerApiBean;
 import io.apiman.manager.api.beans.metrics.HistogramIntervalType;
@@ -31,8 +32,11 @@ import io.apiman.manager.api.beans.metrics.UsagePerPlanBean;
 import io.apiman.manager.api.core.metrics.AbstractMetricsAccessor;
 import io.apiman.manager.api.es.ESMetricsAccessor;
 import io.searchbox.client.JestClient;
+import io.searchbox.indices.DeleteIndex;
+import io.searchbox.indices.Flush;
 import io.searchbox.indices.Refresh;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -45,17 +49,16 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
-import org.elasticsearch.common.settings.ImmutableSettings;
-import org.elasticsearch.node.Node;
-import org.elasticsearch.node.NodeBuilder;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.ISODateTimeFormat;
 import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
+
+import pl.allegro.tech.embeddedelasticsearch.PopularProperties;
 
 /**
  * Tests the elasticsearch metrics accessor.
@@ -65,46 +68,54 @@ import org.junit.Test;
 @SuppressWarnings("nls")
 public class ESMetricsAccessorTest {
 
-    private static Node node;
+    private static ApimanEmbeddedElastic node;
     private static JestClient client;
     private static Locale locale;
 
-    @BeforeClass @Ignore
+    @BeforeClass
     public static void setup() throws Exception {
-        System.out.println("----------- Creating the ES node.");
-        ImmutableSettings.Builder settings = NodeBuilder.nodeBuilder().settings();
-        settings.put("http.port", "6500-6600");
-        settings.put("transport.tcp.port", "6600-6700");
+        File esDownloadCache = new File(System.getenv("HOME") + "/.cache/apiman/elasticsearch");
+        esDownloadCache.getParentFile().mkdirs();
 
-        String clusterName = System.getProperty("apiman.test.es-cluster-name", "apiman");
-
-        settings.put("index.store.type", "memory").put("gateway.type", "none")
-                .put("index.number_of_shards", 1).put("index.number_of_replicas", 1);
-        node = NodeBuilder.nodeBuilder().client(false).clusterName(clusterName).data(true).local(true)
-                .settings(settings).build();
-
-        System.out.println("----------- Starting the ES node.");
-        node.start();
-        System.out.println("----------- ES node was successfully started.");
-        System.out.println("--- Fixing locale for testing purposes");
         locale = Locale.getDefault();
         Locale.setDefault(Locale.US);
 
+        node = ApimanEmbeddedElastic.builder()
+            .withPort(19250)
+            .withElasticVersion(ApimanEmbeddedElastic.getEsBuildVersion())
+            .withDownloadDirectory(esDownloadCache)
+            .withSetting(PopularProperties.CLUSTER_NAME, "apiman")
+            .withCleanInstallationDirectoryOnStop(true)
+            .build()
+            .start();
+
+        // Delete, refresh and create new client
         client = createJestClient();
+        client.execute(new DeleteIndex.Builder("apiman_metrics").build());
+        client.execute(new Flush.Builder().force().build());
+        DefaultESClientFactory.clearClientCache();
+        // Because of the delete above, the metrics fields need reinitialising with the index
+        // mappings otherwise everything will screw up. See apiman_metrics-settings.json
+        client = createJestClient();
+
+        // Load test
         loadTestData();
+
+        client.execute(new Flush.Builder().force().build());
+        DefaultESClientFactory.clearClientCache();
     }
 
     private static JestClient createJestClient() {
         Map<String, String> config = new HashMap<>();
         config.put("client.protocol", "http");
         config.put("client.host", "localhost");
-        config.put("client.port", "6500");
+        config.put("client.port", "19250");
         config.put("client.initialize", "true");
         return new DefaultESClientFactory().createClient(config, "apiman_metrics");
     }
 
     private static void loadTestData() throws Exception {
-        String url = "http://localhost:6500/_bulk";
+        String url = "http://localhost:19250/_bulk";
         HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
         conn.setRequestMethod("POST");
         conn.setDoInput(true);
@@ -118,16 +129,18 @@ public class ESMetricsAccessorTest {
             IOUtils.copy(conn.getInputStream(), System.err);
             throw new IOException("Bulk load of data failed with: " + conn.getResponseMessage());
         }
-
-        client.execute(new Refresh.Builder().addIndex("apiman_metrics").refresh(true).build());
     }
 
-    @AfterClass @Ignore
-    public static void teardown() {
-        System.out.println("----------- Stopping the ES node.");
-        node.stop();
+    @AfterClass
+    public static void teardown() throws Exception {
         System.out.println("----------- All done.");
         Locale.setDefault(locale);
+        node.stop();
+    }
+
+    @Before
+    public void before() throws IOException {
+        client.execute(new Refresh.Builder().addIndex("apiman_metrics").build());
     }
 
     /**

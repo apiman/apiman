@@ -25,15 +25,15 @@ import com.fasterxml.jackson.core.JsonGenerator;
 /**
  * Mimics the ES class of the same name.  For more details please see
  * {@link XContentFactory}.
- * 
+ *
  * @author ewittman
  */
 public class XContentBuilder implements AutoCloseable {
-    
+
     private static final JsonFactory jsonFactory = new JsonFactory();
-    private JsonGenerator json;
+    public JsonGenerator json;
     private StringBuilderWriter writer;
-    
+
     /**
      * Constructor.
      */
@@ -59,14 +59,14 @@ public class XContentBuilder implements AutoCloseable {
             throw new RuntimeException(e);
         }
     }
-    
+
     /**
      * @return the string value of the builder
      */
     public String string() {
         return writer.getBuilder().toString();
     }
-    
+
     /**
      * @param fieldName
      * @throws IOException
@@ -92,7 +92,7 @@ public class XContentBuilder implements AutoCloseable {
         json.writeArrayFieldStart(fieldName);
         return this;
     }
-    
+
     /**
      * @param fieldName
      * @param fieldValue
@@ -155,16 +155,16 @@ public class XContentBuilder implements AutoCloseable {
 
     /**
      * End the current object.
-     * @throws IOException 
+     * @throws IOException
      */
     public XContentBuilder endObject() throws IOException {
         json.writeEndObject();
         return this;
     }
-    
+
     /**
      * End the current array.
-     * @throws IOException 
+     * @throws IOException
      */
     public XContentBuilder endArray() throws IOException {
         json.writeEndArray();
@@ -198,7 +198,7 @@ public class XContentBuilder implements AutoCloseable {
         json.writeEndArray();
         return this;
     }
-    
+
     /**
      * @param fieldName
      * @throws IOException
@@ -210,7 +210,7 @@ public class XContentBuilder implements AutoCloseable {
 
     /**
      * Starts an array.
-     * @throws IOException 
+     * @throws IOException
      */
     public XContentBuilder startArray() throws IOException {
         json.writeStartArray();

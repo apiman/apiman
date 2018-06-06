@@ -45,5 +45,4 @@ public class DistroESConfig extends CompositeConfiguration {
         return getString("apiman.distro-es.network.bind_host", null); //$NON-NLS-1$
     }
 
-
 }

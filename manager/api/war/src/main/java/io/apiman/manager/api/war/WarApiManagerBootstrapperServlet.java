@@ -58,11 +58,9 @@ public class WarApiManagerBootstrapperServlet extends HttpServlet {
         Thread t = new Thread(new Runnable() {
             @Override
             public void run() {
-                // Wait 5s before doing this - hopefully dependencies will have started up by then
-                try { Thread.sleep(5000); } catch (InterruptedException e1) { }
                 File dataDir = getDataDir();
                 if (dataDir != null && dataDir.isDirectory()) {
-                    logger.debug("Checking for bootstrap files in " + dataDir); //$NON-NLS-1$
+                    logger.info("Checking for bootstrap files in " + dataDir); //$NON-NLS-1$
                     Collection<File> files = FileUtils.listFiles(dataDir, new String[] { "json" }, false); //$NON-NLS-1$
                     TreeSet<File> sortedFiles = new TreeSet<>(files);
                     for (File file : sortedFiles) {

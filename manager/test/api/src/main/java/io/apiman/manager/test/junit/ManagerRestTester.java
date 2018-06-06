@@ -28,6 +28,7 @@ import io.apiman.test.common.util.TestPlanRunner;
 import io.apiman.test.common.util.TestUtil;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -238,7 +239,12 @@ public class ManagerRestTester extends ParentRunner<TestInfo> {
         try {
             super.run(notifier);
         } finally {
-            try { shutdown(); } catch (Throwable e) { e.printStackTrace(); }
+            try {
+                testServer.flush();
+                shutdown();
+            } catch (Throwable e) {
+                e.printStackTrace(); // TODO: Was this deliberate?
+            }
             resetSystemProperties();
         }
 
@@ -257,6 +263,13 @@ public class ManagerRestTester extends ParentRunner<TestInfo> {
         log("-----------------------------------------------------------");
         log("Starting Test [{0} / {1}]", testInfo.plan.name, testInfo.name);
         log("-----------------------------------------------------------");
+
+        try {
+            testServer.flush();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
         Description description = describeChild(testInfo);
         if (testInfo instanceof GatewayAssertionTestInfo) {
             runLeaf(new Statement() {

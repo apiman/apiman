@@ -15,6 +15,7 @@
  */
 package io.apiman.gateway.test.junit.servlet;
 
+import io.apiman.common.es.util.ApimanEmbeddedElastic;
 import io.apiman.common.util.ddl.DdlParser;
 import io.apiman.gateway.engine.GatewayConfigProperties;
 import io.apiman.gateway.engine.components.IBufferFactoryComponent;
@@ -51,20 +52,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
 
 import org.apache.commons.dbcp.BasicDataSource;
-import org.apache.commons.io.FileUtils;
-import org.elasticsearch.common.settings.ImmutableSettings.Builder;
-import org.elasticsearch.node.Node;
-import org.elasticsearch.node.NodeBuilder;
 import org.infinispan.Cache;
 import org.infinispan.manager.CacheContainer;
 import org.infinispan.manager.DefaultCacheManager;
 
 import com.fasterxml.jackson.databind.JsonNode;
+
+import pl.allegro.tech.embeddedelasticsearch.PopularProperties;
 
 /**
  * A servlet version of the gateway test server.
@@ -81,7 +81,7 @@ public class ServletGatewayTestServer implements IGatewayTestServer {
 
     private EchoServer echoServer = new EchoServer(ECHO_PORT);
     private GatewayServer gatewayServer = new GatewayServer(GATEWAY_PORT);
-    
+
     private boolean withES;
     private boolean withDB;
     private boolean withISPN;
@@ -92,21 +92,21 @@ public class ServletGatewayTestServer implements IGatewayTestServer {
     private static final String ES_CLUSTER_NAME = "_apimantest";
     private static final int JEST_TIMEOUT = 6000;
     public static JestClient ES_CLIENT = null;
-    private Node node = null;
     private JestClient client = null;
-    
+    private ApimanEmbeddedElastic node;
+
     /*
      * Database related.
      */
     private static final String DB_JNDI_LOC = "java:/comp/env/jdbc/ApiGatewayDS";
     private BasicDataSource ds = null;
-    
+
     /*
      * Infinispan related.
      */
     private static final String ISPN_JNDI_LOC = "java:jboss/infinispan/apiman";
     private CacheContainer cacheContainer = null;
-    
+
     /**
      * Constructor.
      */
@@ -121,11 +121,11 @@ public class ServletGatewayTestServer implements IGatewayTestServer {
         JsonNode esNode = config.get("es");
         JsonNode dbNode = config.get("db");
         JsonNode ispnNode = config.get("ispn");
-        
+
         withES = esNode != null && esNode.asBoolean(false);
         withDB = dbNode != null && dbNode.asBoolean(false);
         withISPN = ispnNode != null && ispnNode.asBoolean(false);
-        
+
         configureGateway(config);
     }
 
@@ -134,7 +134,7 @@ public class ServletGatewayTestServer implements IGatewayTestServer {
      */
     protected static void configureGateway(JsonNode config) {
         Map<String, String> props = new HashMap<>();
-        
+
         // Global settings - all tests share but can override
         props.put(GatewayConfigProperties.PLUGIN_REGISTRY_CLASS, DefaultPluginRegistry.class.getName());
         props.put(GatewayConfigProperties.PLUGIN_REGISTRY_CLASS + ".pluginsDir", new File("target/plugintmp").getAbsolutePath());
@@ -156,7 +156,7 @@ public class ServletGatewayTestServer implements IGatewayTestServer {
                 }
             }
         }
-        
+
         // Then layer on top of that, the properties defined in the config itself.
         if (config.has("config-properties")) {
             JsonNode configNode = config.get("config-properties");
@@ -167,7 +167,7 @@ public class ServletGatewayTestServer implements IGatewayTestServer {
                 props.put(fieldName, value);
             }
         }
-        
+
         for (Entry<String, String> entry : props.entrySet()) {
             TestUtil.setProperty(entry.getKey(), entry.getValue());
         }
@@ -190,7 +190,7 @@ public class ServletGatewayTestServer implements IGatewayTestServer {
             // Move on to the next type.
             System.out.println("Tried to load config file as a URL but failed: " + configFile);
         }
-        
+
         // Now try loading as a resource.
         ClassLoader cl = ServletGatewayTestServer.class.getClassLoader();
         URL resource = cl.getResource(configFile);
@@ -207,7 +207,7 @@ public class ServletGatewayTestServer implements IGatewayTestServer {
             // Move on to the next type.
             System.out.println("Tried to load config file as a resource but failed: " + configFile);
         }
-        
+
         throw new RuntimeException("Failed to load referenced config: " + configFile);
     }
 
@@ -264,46 +264,38 @@ public class ServletGatewayTestServer implements IGatewayTestServer {
      * @throws IOException
      */
     private void preStart() throws IOException {
-        if (withES && node == null) {
-            System.out.println("******* Creating the ES node for gateway testing.");
-            File esHome = new File("target/es");
-            String esHomeSP = System.getProperty("apiman.test.es-home", null);
-            if (esHomeSP != null) {
-                esHome = new File(esHomeSP);
-            }
-            if (esHome.isDirectory()) {
-                FileUtils.deleteDirectory(esHome);
-            }
-            Builder settings = NodeBuilder.nodeBuilder().settings();
-            settings.put("path.home", esHome.getAbsolutePath());
-            settings.put("http.port", "6500-6600");
-            settings.put("transport.tcp.port", "6600-6700");
-            settings.put("script.disable_dynamic", "false");
+        if (withES) {
+            try {
+                File esDownloadCache = new File(System.getenv("HOME") + "/.cache/apiman/elasticsearch");
+                esDownloadCache.getParentFile().mkdirs();
 
-            String clusterName = System.getProperty("apiman.test.es-cluster-name", ES_CLUSTER_NAME);
+                node = ApimanEmbeddedElastic.builder()
+                            .withPort(19250)
+                            .withElasticVersion(ApimanEmbeddedElastic.getEsBuildVersion())
+                            .withDownloadDirectory(esDownloadCache)
+                            .withSetting(PopularProperties.CLUSTER_NAME, "apiman")
+                            .withCleanInstallationDirectoryOnStop(true)
+                            .withStartTimeout(1, TimeUnit.MINUTES)
+                            .build()
+                            .start();
 
-            boolean isPersistent = "true".equals(System.getProperty("apiman.test.es-persistence", "false"));
-            if (!isPersistent) {
-                settings.put("index.store.type", "memory").put("gateway.type", "none")
-                        .put("index.number_of_shards", 1).put("index.number_of_replicas", 1);
-                node = NodeBuilder.nodeBuilder().client(false).clusterName(clusterName).data(true).local(true)
-                        .settings(settings).build();
-            } else {
-                node = NodeBuilder.nodeBuilder().client(false).clusterName(clusterName).data(true).local(false)
-                        .settings(settings).build();
+                System.out.println("================ STARTED ES ================ ");
+            } catch (IOException | InterruptedException e) {
+                throw new RuntimeException(e);
             }
 
-            System.out.println("Starting the ES node.");
-            node.start();
-            System.out.println("ES node was successfully started.");
-            String connectionUrl = "http://localhost:6500";
+            // Copy from manager?
+            String connectionUrl = "http://localhost:19250";
             JestClientFactory factory = new JestClientFactory();
-            factory.setHttpClientConfig(new HttpClientConfig.Builder(connectionUrl).multiThreaded(true)
-                    .connTimeout(JEST_TIMEOUT).readTimeout(JEST_TIMEOUT).build());
+            factory.setHttpClientConfig(new HttpClientConfig.Builder(connectionUrl)
+                    .multiThreaded(true)
+                    .connTimeout(JEST_TIMEOUT)
+                    .readTimeout(JEST_TIMEOUT)
+                    .build());
             client = factory.getObject();
             ES_CLIENT = client;
         }
-        
+
         if (withDB) {
             TestUtil.setProperty("apiman-gateway", DB_JNDI_LOC);
             try {
@@ -317,7 +309,7 @@ public class ServletGatewayTestServer implements IGatewayTestServer {
                 throw new RuntimeException(e);
             }
         }
-        
+
         if (withISPN) {
             cacheContainer = new DefaultCacheManager();
             Cache<Object, Object> registryCache = cacheContainer.getCache("registry");
@@ -387,9 +379,13 @@ public class ServletGatewayTestServer implements IGatewayTestServer {
      * Called after stopping the gateway.
      */
     private void postStop() throws Exception {
-        if (node != null) {
+        if (client != null) {
             client.execute(new DeleteIndex.Builder("apiman_gateway").build());
             DefaultESClientFactory.clearClientCache();
+        }
+        if (node != null) {
+            System.out.println("======== STOPPING ES ========");
+            node.stop();
         }
         if (ds != null) {
             try (Connection connection = ds.getConnection()) {

@@ -16,31 +16,46 @@
 package io.apiman.manager.api.es.util;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author ewittman
+ *
  */
-public class AndFilterBuilder extends AbstractQueryBuilder {
+public class TermBuilder extends AbstractQueryBuilder {
     
-    private List<QueryBuilder> filters = new ArrayList<>();
+    private String term;
+    private String sValue;
+    private Boolean bValue;
+    private Long lValue;
 
     /**
      * Constructor.
-     * @param filters
+     * @param term
+     * @param value
      */
-    public AndFilterBuilder(QueryBuilder[] filters) {
-        for (QueryBuilder filter : filters) {
-            this.filters.add(filter);
-        }
+    public TermBuilder(String term, String value) {
+        this.term = term;
+        this.sValue = value;
     }
 
     /**
-     * @param filter
+     * Constructor.
+     * @param term
+     * @param value
      */
-    public void add(QueryBuilder filter) {
-        this.filters.add(filter);
+    public TermBuilder(String term, boolean value) {
+        this.term = term;
+        this.bValue = value;
+    }
+
+    /**
+     * Constructor.
+     * @param term
+     * @param value
+     */
+    public TermBuilder(String term, Long value) {
+        this.term = term;
+        this.lValue = value;
     }
     
     /**
@@ -49,12 +64,14 @@ public class AndFilterBuilder extends AbstractQueryBuilder {
     @SuppressWarnings("nls")
     @Override
     protected void doXContent(XContentBuilder builder) throws IOException {
-        builder.startObject("and");
-        builder.startArray("filters");
-        for (QueryBuilder filter : filters) {
-            filter.toXContent(builder);
+        builder.startObject("term");
+        if (sValue != null) {
+            builder.field(term, sValue);
+        } else if (bValue != null) {
+            builder.field(term, bValue);
+        } else if (lValue != null) {
+            builder.field(term, lValue);
         }
-        builder.endArray();
         builder.endObject();
     }
 

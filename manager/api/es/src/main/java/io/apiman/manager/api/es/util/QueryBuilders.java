@@ -20,7 +20,7 @@ package io.apiman.manager.api.es.util;
  * enormous elasticsearch.jar dependency.
  */
 public final class QueryBuilders {
-    
+
     /**
      * Constructor.
      */
@@ -31,10 +31,10 @@ public final class QueryBuilders {
         return new MatchAllQueryBuilder();
     }
 
-    public static FilteredQueryBuilder filteredQuery(QueryBuilder queryBuilder, QueryBuilder filterBuilder) {
-        return new FilteredQueryBuilder(queryBuilder, filterBuilder);
+    public static EmptyQueryBuilder query(QueryBuilder queryBuilder) {
+        return new EmptyQueryBuilder(queryBuilder);
     }
-    
+
     public static TermsQueryBuilder termsQuery(String name, String... values) {
         return new TermsQueryBuilder(name, values);
     }

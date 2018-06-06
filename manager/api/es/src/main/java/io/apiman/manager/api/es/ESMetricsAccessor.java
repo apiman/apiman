@@ -15,6 +15,7 @@
  */
 package io.apiman.manager.api.es;
 
+import io.apiman.common.logging.IApimanLogger;
 import io.apiman.manager.api.beans.metrics.ClientUsagePerApiBean;
 import io.apiman.manager.api.beans.metrics.HistogramIntervalType;
 import io.apiman.manager.api.beans.metrics.ResponseStatsDataPoint;
@@ -28,7 +29,6 @@ import io.apiman.manager.api.beans.metrics.UsagePerClientBean;
 import io.apiman.manager.api.beans.metrics.UsagePerPlanBean;
 import io.apiman.manager.api.core.IMetricsAccessor;
 import io.apiman.manager.api.core.logging.ApimanLogger;
-import io.apiman.common.logging.IApimanLogger;
 import io.apiman.manager.api.core.metrics.AbstractMetricsAccessor;
 import io.searchbox.client.JestClient;
 import io.searchbox.core.Search;
@@ -88,35 +88,43 @@ public class ESMetricsAccessor extends AbstractMetricsAccessor implements IMetri
         try {
             String query =
                     "{" +
-                    "  \"query\": {" +
-                    "    \"filtered\" : {" +
-                    "      \"query\" : {" +
-                    "        \"range\" : {" +
-                    "          \"requestStart\" : {" +
-                    "            \"gte\": \"${from}\"," +
-                    "            \"lte\": \"${to}\"" +
-                    "          }" +
+                    "    \"query\": {" +
+                    "        \"bool\": {" +
+                    "            \"filter\": [{" +
+                    "                    \"term\": {" +
+                    "                        \"apiOrgId\": \"${apiOrgId}\"" +
+                    "                    }" +
+                    "                }, {" +
+                    "                    \"term\": {" +
+                    "                        \"apiId\": \"${apiId}\"" +
+                    "                    }" +
+                    "                }, {" +
+                    "                    \"term\": {" +
+                    "                        \"apiVersion\": \"${apiVersion}\"" +
+                    "                    }" +
+                    "                }," +
+                    "                {" +
+                    "                    \"range\": {" +
+                    "                        \"requestStart\": {" +
+                    "                            \"gte\": \"${from}\"," +
+                    "                            \"lte\": \"${to}\"" +
+                    "                        }" +
+                    "                    }" +
+                    "                }" +
+                    "            ]" +
                     "        }" +
-                    "      }," +
-                    "      \"filter\": {" +
-                    "        \"and\" : [" +
-                    "          { \"term\" : { \"apiOrgId\" : \"${apiOrgId}\" } }," +
-                    "          { \"term\" : { \"apiId\" : \"${apiId}\" } }," +
-                    "          { \"term\" : { \"apiVersion\" : \"${apiVersion}\" } }" +
-                    "        ]" +
-                    "      }" +
+                    "    }," +
+                    "    \"size\": 0," +
+                    "    \"aggs\": {" +
+                    "        \"histogram\": {" +
+                    "            \"date_histogram\": {" +
+                    "                \"field\": \"requestStart\"," +
+                    "                \"interval\": \"${interval}\"" +
+                    "            }" +
+                    "        }" +
                     "    }" +
-                    "  }," +
-                    "  \"size\": 0, " +
-                    "  \"aggs\" : {" +
-                    "      \"histogram\" : {" +
-                    "          \"date_histogram\" : {" +
-                    "              \"field\" : \"requestStart\"," +
-                    "              \"interval\" : \"${interval}\"" +
-                    "          }" +
-                    "      }" +
-                    "  }" +
                     "}";
+
             Map<String, String> params = new HashMap<>();
             params.put("from", formatDate(from));
             params.put("to", formatDate(to));
@@ -159,34 +167,40 @@ public class ESMetricsAccessor extends AbstractMetricsAccessor implements IMetri
         try {
             String query =
                     "{" +
-                    "  \"query\": {" +
-                    "    \"filtered\" : {" +
-                    "      \"query\" : {" +
-                    "        \"range\" : {" +
-                    "          \"requestStart\" : {" +
-                    "            \"gte\": \"${from}\"," +
-                    "            \"lte\": \"${to}\"" +
-                    "          }" +
+                    "    \"query\": {" +
+                    "        \"bool\": {" +
+                    "            \"filter\": [{" +
+                    "                \"term\": {" +
+                    "                    \"apiOrgId\": \"${apiOrgId}\"" +
+                    "                }" +
+                    "            }, {" +
+                    "                \"term\": {" +
+                    "                    \"apiId\": \"${apiId}\"" +
+                    "                }" +
+                    "            }, {" +
+                    "                \"term\": {" +
+                    "                    \"apiVersion\": \"${apiVersion}\"" +
+                    "                }" +
+                    "            }, {" +
+                    "                \"range\": {" +
+                    "                    \"requestStart\": {" +
+                    "                        \"gte\": \"${from}\"," +
+                    "                        \"lte\": \"${to}\"" +
+                    "                    }" +
+                    "                }" +
+                    "            }]" +
                     "        }" +
-                    "      }," +
-                    "      \"filter\": {" +
-                    "        \"and\" : [" +
-                    "          { \"term\" : { \"apiOrgId\" : \"${apiOrgId}\" } }," +
-                    "          { \"term\" : { \"apiId\" : \"${apiId}\" } }," +
-                    "          { \"term\" : { \"apiVersion\" : \"${apiVersion}\" } }" +
-                    "        ]" +
-                    "      }" +
+                    "    }," +
+                    "    \"size\": 0," +
+                    "    \"aggs\": {" +
+                    "        \"usage_by_client\": {" +
+                    "            \"terms\": {" +
+                    "                \"field\": \"clientId\"" +
+                    "            }" +
+                    "        }" +
                     "    }" +
-                    "  }," +
-                    "  \"size\": 0, " +
-                    "  \"aggs\" : {" +
-                    "      \"usage_by_client\" : {" +
-                    "        \"terms\" : {" +
-                    "          \"field\" : \"clientId\"" +
-                    "        }" +
-                    "      }" +
-                    "  }" +
                     "}";
+
             Map<String, String> params = new HashMap<>();
             params.put("from", formatDate(from));
             params.put("to", formatDate(to));
@@ -230,34 +244,42 @@ public class ESMetricsAccessor extends AbstractMetricsAccessor implements IMetri
         try {
             String query =
                     "{" +
-                    "  \"query\": {" +
-                    "    \"filtered\" : {" +
-                    "      \"query\" : {" +
-                    "        \"range\" : {" +
-                    "          \"requestStart\" : {" +
-                    "            \"gte\": \"${from}\"," +
-                    "            \"lte\": \"${to}\"" +
-                    "          }" +
+                    "    \"query\": {" +
+                    "        \"bool\": {" +
+                    "            \"filter\": [{" +
+                    "                    \"term\": {" +
+                    "                        \"apiOrgId\": \"${apiOrgId}\"" +
+                    "                    }" +
+                    "                }, {" +
+                    "                    \"term\": {" +
+                    "                        \"apiId\": \"${apiId}\"" +
+                    "                    }" +
+                    "                }, {" +
+                    "                    \"term\": {" +
+                    "                        \"apiVersion\": \"${apiVersion}\"" +
+                    "                    }" +
+                    "                }," +
+                    "                {" +
+                    "                    \"range\": {" +
+                    "                        \"requestStart\": {" +
+                    "                            \"gte\": \"${from}\"," +
+                    "                            \"lte\": \"${to}\"" +
+                    "                        }" +
+                    "                    }" +
+                    "                }" +
+                    "            ]" +
                     "        }" +
-                    "      }," +
-                    "      \"filter\": {" +
-                    "        \"and\" : [" +
-                    "          { \"term\" : { \"apiOrgId\" : \"${apiOrgId}\" } }," +
-                    "          { \"term\" : { \"apiId\" : \"${apiId}\" } }," +
-                    "          { \"term\" : { \"apiVersion\" : \"${apiVersion}\" } }" +
-                    "        ]" +
-                    "      }" +
+                    "    }," +
+                    "    \"size\": 0," +
+                    "    \"aggs\": {" +
+                    "        \"usage_by_plan\": {" +
+                    "            \"terms\": {" +
+                    "                \"field\": \"planId\"" +
+                    "            }" +
+                    "        }" +
                     "    }" +
-                    "  }," +
-                    "  \"size\": 0, " +
-                    "  \"aggs\" : {" +
-                    "      \"usage_by_plan\" : {" +
-                    "        \"terms\" : {" +
-                    "          \"field\" : \"planId\"" +
-                    "        }" +
-                    "      }" +
-                    "  }" +
                     "}";
+
             Map<String, String> params = new HashMap<>();
             params.put("from", formatDate(from));
             params.put("to", formatDate(to));
@@ -297,43 +319,57 @@ public class ESMetricsAccessor extends AbstractMetricsAccessor implements IMetri
         try {
             String query =
                     "{" +
-                    "  \"query\": {" +
-                    "    \"filtered\" : {" +
-                    "      \"query\" : {" +
-                    "        \"range\" : {" +
-                    "          \"requestStart\" : {" +
-                    "            \"gte\": \"${from}\"," +
-                    "            \"lte\": \"${to}\"" +
-                    "          }" +
+                    "    \"query\": {" +
+                    "        \"bool\": {" +
+                    "            \"filter\": [{" +
+                    "                \"term\": {" +
+                    "                    \"apiOrgId\": \"${apiOrgId}\"" +
+                    "                }" +
+                    "            }, {" +
+                    "                \"term\": {" +
+                    "                    \"apiId\": \"${apiId}\"" +
+                    "                }" +
+                    "            }, {" +
+                    "                \"term\": {" +
+                    "                    \"apiVersion\": \"${apiVersion}\"" +
+                    "                }" +
+                    "            }, {" +
+                    "                \"range\": {" +
+                    "                    \"requestStart\": {" +
+                    "                        \"gte\": \"${from}\"," +
+                    "                        \"lte\": \"${to}\"" +
+                    "                    }" +
+                    "                }" +
+                    "            }]" +
                     "        }" +
-                    "      }," +
-                    "      \"filter\": {" +
-                    "        \"and\" : [" +
-                    "          { \"term\" : { \"apiOrgId\" : \"${apiOrgId}\" } }," +
-                    "          { \"term\" : { \"apiId\" : \"${apiId}\" } }," +
-                    "          { \"term\" : { \"apiVersion\" : \"${apiVersion}\" } }" +
-                    "        ]" +
-                    "      }" +
+                    "    }," +
+                    "    \"size\": 0," +
+                    "    \"aggs\": {" +
+                    "        \"histogram\": {" +
+                    "            \"date_histogram\": {" +
+                    "                \"field\": \"requestStart\"," +
+                    "                \"interval\": \"${interval}\"" +
+                    "            }," +
+                    "            \"aggs\": {" +
+                    "                \"total_failures\": {" +
+                    "                    \"filter\": {" +
+                    "                        \"term\": {" +
+                    "                            \"failure\": true" +
+                    "                        }" +
+                    "                    }" +
+                    "                }," +
+                    "                \"total_errors\": {" +
+                    "                    \"filter\": {" +
+                    "                        \"term\": {" +
+                    "                            \"error\": true" +
+                    "                        }" +
+                    "                    }" +
+                    "                }" +
+                    "            }" +
+                    "        }" +
                     "    }" +
-                    "  }," +
-                    "  \"size\": 0, " +
-                    "  \"aggs\" : {" +
-                    "      \"histogram\" : {" +
-                    "          \"date_histogram\" : {" +
-                    "              \"field\" : \"requestStart\"," +
-                    "              \"interval\" : \"${interval}\"" +
-                    "          }," +
-                    "          \"aggs\" : {" +
-                    "              \"total_failures\" : {" +
-                    "                  \"filter\" : { \"term\": { \"failure\": true } }" +
-                    "              }," +
-                    "              \"total_errors\" : {" +
-                    "                  \"filter\" : { \"term\": { \"error\": true } }" +
-                    "              }" +
-                    "          }" +
-                    "      }" +
-                    "  }" +
                     "}";
+
             Map<String, String> params = new HashMap<>();
             params.put("from", formatDate(from));
             params.put("to", formatDate(to));
@@ -383,35 +419,49 @@ public class ESMetricsAccessor extends AbstractMetricsAccessor implements IMetri
         try {
             String query =
                     "{" +
-                    "  \"query\": {" +
-                    "    \"filtered\" : {" +
-                    "      \"query\" : {" +
-                    "        \"range\" : {" +
-                    "          \"requestStart\" : {" +
-                    "            \"gte\": \"${from}\"," +
-                    "            \"lte\": \"${to}\"" +
-                    "          }" +
+                    "    \"query\": {" +
+                    "        \"bool\": {" +
+                    "            \"filter\": [{" +
+                    "                \"term\": {" +
+                    "                    \"apiOrgId\": \"${apiOrgId}\"" +
+                    "                }" +
+                    "            }, {" +
+                    "                \"term\": {" +
+                    "                    \"apiId\": \"${apiId}\"" +
+                    "                }" +
+                    "            }, {" +
+                    "                \"term\": {" +
+                    "                    \"apiVersion\": \"${apiVersion}\"" +
+                    "                }" +
+                    "            }, {" +
+                    "                \"range\": {" +
+                    "                    \"requestStart\": {" +
+                    "                        \"gte\": \"${from}\"," +
+                    "                        \"lte\": \"${to}\"" +
+                    "                    }" +
+                    "                }" +
+                    "            }]" +
                     "        }" +
-                    "      }," +
-                    "      \"filter\": {" +
-                    "        \"and\" : [" +
-                    "          { \"term\" : { \"apiOrgId\" : \"${apiOrgId}\" } }," +
-                    "          { \"term\" : { \"apiId\" : \"${apiId}\" } }," +
-                    "          { \"term\" : { \"apiVersion\" : \"${apiVersion}\" } }" +
-                    "        ]" +
-                    "      }" +
-                    "    }" +
-                    "  }," +
-                    "  \"size\": 0, " +
-                    "  \"aggs\" : {" +
-                    "    \"total_failures\" : {" +
-                    "      \"filter\" : { \"term\": { \"failure\": true } }" +
                     "    }," +
-                    "    \"total_errors\" : {" +
-                    "      \"filter\" : { \"term\": { \"error\": true } }" +
+                    "    \"size\": 0," +
+                    "    \"aggs\": {" +
+                    "        \"total_failures\": {" +
+                    "            \"filter\": {" +
+                    "                \"term\": {" +
+                    "                    \"failure\": true" +
+                    "                }" +
+                    "            }" +
+                    "        }," +
+                    "        \"total_errors\": {" +
+                    "            \"filter\": {" +
+                    "                \"term\": {" +
+                    "                    \"error\": true" +
+                    "                }" +
+                    "            }" +
+                    "        }" +
                     "    }" +
-                    "  }" +
                     "}";
+
             Map<String, String> params = new HashMap<>();
             params.put("from", formatDate(from));
             params.put("to", formatDate(to));
@@ -446,42 +496,57 @@ public class ESMetricsAccessor extends AbstractMetricsAccessor implements IMetri
         try {
             String query =
                     "{" +
-                    "  \"query\": {" +
-                    "    \"filtered\" : {" +
-                    "      \"query\" : {" +
-                    "        \"range\" : {" +
-                    "          \"requestStart\" : {" +
-                    "            \"gte\": \"${from}\"," +
-                    "            \"lte\": \"${to}\"" +
-                    "          }" +
+                    "    \"query\": {" +
+                    "        \"bool\": {" +
+                    "            \"filter\": [{" +
+                    "                    \"term\": {" +
+                    "                        \"apiOrgId\": \"${apiOrgId}\"" +
+                    "                    }" +
+                    "                }, {" +
+                    "                    \"term\": {" +
+                    "                        \"apiId\": \"${apiId}\"" +
+                    "                    }" +
+                    "                }, {" +
+                    "                    \"term\": {" +
+                    "                        \"apiVersion\": \"${apiVersion}\"" +
+                    "                    }" +
+                    "                }, {" +
+                    "                    \"range\": {" +
+                    "                        \"requestStart\": {" +
+                    "                            \"gte\": \"${from}\"," +
+                    "                            \"lte\": \"${to}\"" +
+                    "                        }" +
+                    "                    }" +
+                    "                }" +
+                    "            ]" +
                     "        }" +
-                    "      }," +
-                    "      \"filter\": {" +
-                    "        \"and\" : [" +
-                    "          { \"term\" : { \"apiOrgId\" : \"${apiOrgId}\" } }," +
-                    "          { \"term\" : { \"apiId\" : \"${apiId}\" } }," +
-                    "          { \"term\" : { \"apiVersion\" : \"${apiVersion}\" } }" +
-                    "        ]" +
-                    "      }" +
-                    "    }" +
-                    "  }," +
-                    "  \"size\": 0, " +
-                    "  \"aggs\" : {" +
-                    "      \"by_client\" : {" +
-                    "        \"terms\" : {" +
-                    "          \"field\" : \"clientId\"" +
-                    "        }," +
-                    "        \"aggs\" : {" +
-                    "          \"total_failures\" : {" +
-                    "            \"filter\" : { \"term\": { \"failure\": true } }" +
-                    "          }," +
-                    "          \"total_errors\" : {" +
-                    "            \"filter\" : { \"term\": { \"error\": true } }" +
-                    "          }" +
+                    "    }," +
+                    "    \"aggs\": {" +
+                    "        \"by_client\": {" +
+                    "            \"terms\": {" +
+                    "                \"field\": \"clientId\"" +
+                    "            }," +
+                    "            \"aggs\": {" +
+                    "                \"total_failures\": {" +
+                    "                    \"filter\": {" +
+                    "                        \"term\": {" +
+                    "                            \"failure\": true" +
+                    "                        }" +
+                    "                    }" +
+                    "                }," +
+                    "                \"total_errors\": {" +
+                    "                    \"filter\": {" +
+                    "                        \"term\": {" +
+                    "                            \"error\": true" +
+                    "                        }" +
+                    "                    }" +
+                    "                }" +
+                    "            }" +
                     "        }" +
-                    "      }" +
-                    "  }" +
+                    "    }," +
+                    "    \"size\": 0" +
                     "}";
+
             Map<String, String> params = new HashMap<>();
             params.put("from", formatDate(from));
             params.put("to", formatDate(to));
@@ -526,42 +591,56 @@ public class ESMetricsAccessor extends AbstractMetricsAccessor implements IMetri
         try {
             String query =
                     "{" +
-                    "  \"query\": {" +
-                    "    \"filtered\" : {" +
-                    "      \"query\" : {" +
-                    "        \"range\" : {" +
-                    "          \"requestStart\" : {" +
-                    "            \"gte\": \"${from}\"," +
-                    "            \"lte\": \"${to}\"" +
-                    "          }" +
+                    "    \"query\": {" +
+                    "        \"bool\": {" +
+                    "            \"filter\": [{" +
+                    "                \"term\": {" +
+                    "                    \"apiOrgId\": \"${apiOrgId}\"" +
+                    "                }" +
+                    "            }, {" +
+                    "                \"term\": {" +
+                    "                    \"apiId\": \"${apiId}\"" +
+                    "                }" +
+                    "            }, {" +
+                    "                \"term\": {" +
+                    "                    \"apiVersion\": \"${apiVersion}\"" +
+                    "                }" +
+                    "            }, {" +
+                    "                \"range\": {" +
+                    "                    \"requestStart\": {" +
+                    "                        \"gte\": \"${from}\"," +
+                    "                        \"lte\": \"${to}\"" +
+                    "                    }" +
+                    "                }" +
+                    "            }]" +
                     "        }" +
-                    "      }," +
-                    "      \"filter\": {" +
-                    "        \"and\" : [" +
-                    "          { \"term\" : { \"apiOrgId\" : \"${apiOrgId}\" } }," +
-                    "          { \"term\" : { \"apiId\" : \"${apiId}\" } }," +
-                    "          { \"term\" : { \"apiVersion\" : \"${apiVersion}\" } }" +
-                    "        ]" +
-                    "      }" +
+                    "    }," +
+                    "    \"size\": 0," +
+                    "    \"aggs\": {" +
+                    "        \"by_plan\": {" +
+                    "            \"terms\": {" +
+                    "                \"field\": \"planId\"" +
+                    "            }," +
+                    "            \"aggs\": {" +
+                    "                \"total_failures\": {" +
+                    "                    \"filter\": {" +
+                    "                        \"term\": {" +
+                    "                            \"failure\": true" +
+                    "                        }" +
+                    "                    }" +
+                    "                }," +
+                    "                \"total_errors\": {" +
+                    "                    \"filter\": {" +
+                    "                        \"term\": {" +
+                    "                            \"error\": true" +
+                    "                        }" +
+                    "                    }" +
+                    "                }" +
+                    "            }" +
+                    "        }" +
                     "    }" +
-                    "  }," +
-                    "  \"size\": 0, " +
-                    "  \"aggs\" : {" +
-                    "      \"by_plan\" : {" +
-                    "        \"terms\" : {" +
-                    "          \"field\" : \"planId\"" +
-                    "        }," +
-                    "        \"aggs\" : {" +
-                    "          \"total_failures\" : {" +
-                    "            \"filter\" : { \"term\": { \"failure\": true } }" +
-                    "          }," +
-                    "          \"total_errors\" : {" +
-                    "            \"filter\" : { \"term\": { \"error\": true } }" +
-                    "          }" +
-                    "        }" +
-                    "      }" +
-                    "  }" +
                     "}";
+
             Map<String, String> params = new HashMap<>();
             params.put("from", formatDate(from));
             params.put("to", formatDate(to));
@@ -606,34 +685,44 @@ public class ESMetricsAccessor extends AbstractMetricsAccessor implements IMetri
         try {
             String query =
                     "{" +
-                    "  \"query\": {\n" +
-                    "    \"filtered\" : {\n" +
-                    "      \"query\" : {\n" +
-                    "        \"range\" : {\n" +
-                    "          \"requestStart\" : {\n" +
-                    "            \"gte\": \"${from}\",\n" +
-                    "            \"lte\": \"${to}\"\n" +
-                    "          }\n" +
-                    "        }\n" +
-                    "      },\n" +
-                    "      \"filter\": {\n" +
-                    "        \"and\" : [\n" +
-                    "          { \"term\" : { \"clientOrgId\" : \"${clientOrgId}\" } },\n" +
-                    "          { \"term\" : { \"clientId\" : \"${clientId}\" } },\n" +
-                    "          { \"term\" : { \"clientVersion\" : \"${clientVersion}\" } }\n" +
-                    "        ]\n" +
-                    "      }\n" +
-                    "    }\n" +
-                    "  },\n" +
-                    "  \"size\": 0, \n" +
-                    "  \"aggs\" : {\n" +
-                    "      \"usage_by_api\" : {\n" +
-                    "        \"terms\" : {\n" +
-                    "          \"field\" : \"apiId\"\n" +
-                    "        }\n" +
-                    "      }\n" +
-                    "  }\n" +
+                    "    \"query\": {" +
+                    "        \"bool\": {" +
+                    "            \"filter\": [{" +
+                    "                    \"term\": {" +
+                    "                        \"clientOrgId\": \"${clientOrgId}\"" +
+                    "                    }" +
+                    "                }," +
+                    "                {" +
+                    "                    \"term\": {" +
+                    "                        \"clientId\": \"${clientId}\"" +
+                    "                    }" +
+                    "                }," +
+                    "                {" +
+                    "                    \"term\": {" +
+                    "                        \"clientVersion\": \"${clientVersion}\"" +
+                    "                    }" +
+                    "                }," +
+                    "                {" +
+                    "                    \"range\": {" +
+                    "                        \"requestStart\": {" +
+                    "                            \"gte\": \"${from}\"," +
+                    "                            \"lte\": \"${to}\"" +
+                    "                        }" +
+                    "                    }" +
+                    "                }" +
+                    "            ]" +
+                    "        }" +
+                    "    }," +
+                    "    \"size\": 0," +
+                    "    \"aggs\": {" +
+                    "        \"usage_by_api\": {" +
+                    "            \"terms\": {" +
+                    "                \"field\": \"apiId\"" +
+                    "            }" +
+                    "        }" +
+                    "    }" +
                     "}";
+
             Map<String, String> params = new HashMap<>();
             params.put("from", formatDate(from));
             params.put("to", formatDate(to));

@@ -28,7 +28,7 @@ import org.junit.Test;
 public class MatchAllQueryBuilderTest {
 
     /**
-     * Test method for {@link io.apiman.manager.api.es.util.AndFilterBuilder#doXContent(io.apiman.manager.api.es.util.XContentBuilder)}.
+     * Test method for {@link io.apiman.manager.api.es.util.BoolFilterBuilder#doXContent(io.apiman.manager.api.es.util.XContentBuilder)}.
      */
     @Test
     public void test() throws IOException {
