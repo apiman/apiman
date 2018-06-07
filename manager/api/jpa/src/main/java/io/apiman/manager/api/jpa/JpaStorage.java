@@ -94,6 +94,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -634,7 +635,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
                 plugin.setDescription(String.valueOf(row[7]));
                 plugin.setCreatedBy(String.valueOf(row[8]));
                 plugin.setCreatedOn((Date) row[9]);
-                plugin.setDeleted((Boolean) row[10]);
+                plugin.setDeleted(parseBoolValue(row[10]));
                 return plugin;
             } else {
                 return null;
@@ -643,6 +644,16 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             logger.error(t.getMessage(), t);
             throw new StorageException(t);
         }
+    }
+
+    private Boolean parseBoolValue(Object object) {
+        if (object instanceof Boolean) {
+            return (Boolean) object;
+        } else if (object instanceof Number) {
+            Byte num = ((Number) object).byteValue();
+            return num > 0;
+        }
+        return BooleanUtils.toBooleanObject(String.valueOf(object));
     }
 
     /**
