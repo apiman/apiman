@@ -51,17 +51,9 @@ import io.apiman.manager.api.exportimport.read.IImportReaderDispatcher;
 import io.apiman.manager.api.gateway.IGatewayLink;
 import io.apiman.manager.api.gateway.IGatewayLinkFactory;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import java.util.*;
 
 /**
  * Used to store imported entities into the {@link IStorage}.
@@ -79,6 +71,7 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
     private IGatewayLinkFactory gatewayLinks;
 
     private Map<String, PolicyDefinitionBean> policyDefIndex = new HashMap<>();
+    private Map<Long, Map.Entry<String, String>> pluginBeanIdMap = new HashMap<>();
 
     private OrganizationBean currentOrg;
     private PlanBean currentPlan;
@@ -183,11 +176,16 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
     public void plugin(PluginBean plugin) {
         try {
             logger.info(Messages.i18n.format("StorageImportDispatcher.ImportingPlugin") + plugin.getGroupId() + '/' + plugin.getArtifactId() + '/' + plugin.getVersion()); //$NON-NLS-1$
+            mapPluginIds(plugin);
             plugin.setId(null);
             storage.createPlugin(plugin);
         } catch (StorageException e) {
             error(e);
         }
+    }
+
+    private void mapPluginIds(PluginBean plugin) {
+        pluginBeanIdMap.put(plugin.getId(), new AbstractMap.SimpleEntry<>(plugin.getGroupId(), plugin.getArtifactId()));
     }
 
     /**
@@ -216,6 +214,8 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
         try {
             logger.info(Messages.i18n.format("StorageImportDispatcher.ImportingPolicyDef") + policyDef.getName()); //$NON-NLS-1$
 
+            policyDef = updatePluginIdInPolicyDefinition(policyDef);
+
             PolicyDefinitionBean policyDefBean = storage.getPolicyDefinition(policyDef.getId());
             if (policyDefBean != null) {
                 storage.updatePolicyDefinition(policyDef);
@@ -226,6 +226,24 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
         } catch (StorageException e) {
             error(e);
         }
+    }
+
+    /**
+     * Update the pluginID in the policyDefinition to the new generated pluginID
+     * @param policyDef
+     * @return updated PolicyDefinitionBean policyDef
+     */
+    private PolicyDefinitionBean updatePluginIdInPolicyDefinition(PolicyDefinitionBean policyDef) {
+        if (pluginBeanIdMap.containsKey(policyDef.getPluginId())){
+            try {
+                Map.Entry<String, String> pluginCoordinates = pluginBeanIdMap.get(policyDef.getPluginId());
+                PluginBean plugin = storage.getPlugin(pluginCoordinates.getKey(), pluginCoordinates.getValue());
+                policyDef.setPluginId(plugin.getId());
+            } catch (StorageException e) {
+                error(e);
+            }
+        }
+        return policyDef;
     }
 
     /**
