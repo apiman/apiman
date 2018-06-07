@@ -158,7 +158,7 @@ public class TimeRestrictedAccessPolicy extends AbstractMappedPolicy<TimeRestric
         if (dayStart >= dayEnd) {
             return dayNow >= dayStart && dayNow <= dayEnd;
         } else {
-            return dayNow <= dayEnd && dayNow <= dayStart;
+            return dayNow <= dayEnd && dayNow >= dayStart;
         }
     }
 }
