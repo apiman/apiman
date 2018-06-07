@@ -93,7 +93,6 @@ X-RestTest-ArrayOrdering: any
   ],
   "Plugins": [
     {
-      "id": 1,
       "groupId": "io.apiman.plugins",
       "artifactId": "apiman-plugins-log-policy",
       "version": "1.2.2.Final",
@@ -101,10 +100,10 @@ X-RestTest-ArrayOrdering: any
       "description": "This plugin has policies for logging to std out.",
       "createdBy": "admin",
       "createdOn": "2016-03-17T10:49:39Z",
-      "deleted": false
+      "deleted": false,
+      "id": "CORRELATE_VALUE_1"
     },
     {
-      "id": 2,
       "groupId": "io.apiman.plugins",
       "artifactId": "apiman-plugins-jsonp-policy",
       "version": "1.2.2.Final",
@@ -112,7 +111,8 @@ X-RestTest-ArrayOrdering: any
       "description": "A plugin that contributes a policy that turns a standard RESTful endpoint into a JSONP compatible endpoint.",
       "createdBy": "admin",
       "createdOn": "2016-03-17T10:49:49Z",
-      "deleted": false
+      "deleted": false,
+      "id": "CORRELATE_VALUE_2"
     }
   ],
   "Roles": [
@@ -273,10 +273,10 @@ X-RestTest-ArrayOrdering: any
       "description": "Turns an endpoint into a JSONP compatible endpoint.",
       "icon": "bars",
       "templates": [],
-      "pluginId": 2,
       "formType": "JsonSchema",
       "form": "schemas/jsonp-policyDef.schema",
-      "deleted": false
+      "deleted": false,
+      "pluginId": "CORRELATE_VALUE_2"
     },
     {
       "id": "Log-headers-policy",
@@ -285,10 +285,10 @@ X-RestTest-ArrayOrdering: any
       "description": "A policy that logs the headers to std out.  Useful to analyse inbound HTTP traffic to the gateway when added as the first policy in the chain or to analyse outbound HTTP traffic from the gateway when added as the last policy in the chain.",
       "icon": "fire",
       "templates": [],
-      "pluginId": 1,
       "formType": "JsonSchema",
       "form": "schemas/log-policyDef.schema",
-      "deleted": false
+      "deleted": false,
+      "pluginId": "CORRELATE_VALUE_1"
     },
     {
       "id": "QuotaPolicy",
