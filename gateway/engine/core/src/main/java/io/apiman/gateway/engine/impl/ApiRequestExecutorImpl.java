@@ -21,6 +21,7 @@ import io.apiman.gateway.engine.IApiConnection;
 import io.apiman.gateway.engine.IApiConnectionResponse;
 import io.apiman.gateway.engine.IApiConnector;
 import io.apiman.gateway.engine.IApiRequestExecutor;
+import io.apiman.gateway.engine.IConnectorConfig;
 import io.apiman.gateway.engine.IConnectorFactory;
 import io.apiman.gateway.engine.IEngineResult;
 import io.apiman.gateway.engine.IMetrics;
@@ -244,9 +245,15 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
             requestChain = createRequestChain((ApiRequest req) -> {
                 IConnectorInterceptor connectorInterceptor = context.getConnectorInterceptor();
                 IApiConnector connector;
+                IConnectorConfig connectorConfig = connectorFactory.createConnectorConfig(request, api);
+                context.setConnectorConfiguration(connectorConfig);
+
                 if (connectorInterceptor == null) {
-                    connector = connectorFactory.createConnector(req, api,
-                            RequiredAuthType.parseType(api), hasDataPolicy);
+                    connector = connectorFactory.createConnector(req,
+                            api,
+                            RequiredAuthType.parseType(api),
+                            hasDataPolicy,
+                            connectorConfig);
                 } else {
                     connector = connectorInterceptor.createConnector();
                 }

@@ -17,6 +17,7 @@ package io.apiman.gateway.engine.policy;
 
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.gateway.engine.IComponent;
+import io.apiman.gateway.engine.IConnectorConfig;
 import io.apiman.gateway.engine.beans.exceptions.ComponentNotFoundException;
 import io.apiman.gateway.engine.beans.exceptions.InterceptorAlreadyRegisteredException;
 
@@ -79,4 +80,21 @@ public interface IPolicyContext {
      * @return A logger associated with the conversation.
      */
     IApimanLogger getLogger(Class<?> klazz);
+
+
+    /**
+     * Mutate connector attributes
+     * @return the connector configuration
+     */
+    IConnectorConfig getConnectorConfiguration();
+
+    /**
+     * Set the connector configuration.
+     *
+     * Most usecases should simply mutate the existing configuration via
+     * {@link #getConnectorConfiguration()}.
+     *
+     * @param config the configuration
+     */
+    void setConnectorConfiguration(IConnectorConfig config);
 }

@@ -28,6 +28,7 @@ import io.apiman.gateway.engine.IApiConnector;
 import io.apiman.gateway.engine.IApiRequestExecutor;
 import io.apiman.gateway.engine.IApiRequestPathParser;
 import io.apiman.gateway.engine.IComponentRegistry;
+import io.apiman.gateway.engine.IConnectorConfig;
 import io.apiman.gateway.engine.IConnectorFactory;
 import io.apiman.gateway.engine.IEngine;
 import io.apiman.gateway.engine.IEngineResult;
@@ -114,7 +115,7 @@ public class DefaultEngineFactoryTest {
             protected IConnectorFactory createConnectorFactory(IPluginRegistry pluginRegistry) {
                 return new IConnectorFactory() {
                     @Override
-                    public IApiConnector createConnector(ApiRequest request, Api api, RequiredAuthType requiredAuthType, boolean hasDataPolicy) {
+                    public IApiConnector createConnector(ApiRequest request, Api api, RequiredAuthType requiredAuthType, boolean hasDataPolicy, IConnectorConfig connectorConfig) {
                         Assert.assertEquals("test", api.getEndpointType());
                         Assert.assertEquals("test:endpoint", api.getEndpoint());
                         IApiConnector connector = new IApiConnector() {
@@ -178,6 +179,11 @@ public class DefaultEngineFactoryTest {
 
                         };
                         return connector;
+                    }
+
+                    @Override
+                    public IConnectorConfig createConnectorConfig(ApiRequest request, Api api) {
+                        return new TestConnectorConfigImpl();
                     }
                 };
             }

@@ -51,23 +51,25 @@ public interface IRouteBuilder {
 
         response.putHeader("X-API-Gateway-Error", "true");
 
-        if (error instanceof IStatusCode) {
-            response.setStatusCode(((IStatusCode)error).getStatusCode());
-            response.setStatusMessage(error.getMessage());
-        } else {
-            response.setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
-            response.setStatusMessage(error.getMessage() != null ? error.getMessage() : HttpResponseStatus.INTERNAL_SERVER_ERROR.reasonPhrase());
-        }
-
         if (error != null) {
+            if (error instanceof IStatusCode) {
+                response.setStatusCode(((IStatusCode)error).getStatusCode());
+                response.setStatusMessage(error.getMessage());
+            } else {
+                response.setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
+                response.setStatusMessage(error.getMessage() != null ? error.getMessage() : HttpResponseStatus.INTERNAL_SERVER_ERROR.reasonPhrase());
+            }
+
             JsonObject errorResponse = new JsonObject()
                     .put("errorType", error.getClass().getSimpleName())
                     .put("message", error.getMessage());
 
             response.setChunked(true)
-                .putHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
-                .end(errorResponse.toString(), "UTF-8");
+            .putHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+            .end(errorResponse.toString(), "UTF-8");
         } else {
+            response.setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
+            response.setStatusMessage(HttpResponseStatus.INTERNAL_SERVER_ERROR.reasonPhrase());
             response.end();
         }
     }

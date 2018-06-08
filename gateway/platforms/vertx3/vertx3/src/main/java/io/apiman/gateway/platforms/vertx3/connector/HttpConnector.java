@@ -20,6 +20,7 @@ import io.apiman.common.util.ApimanPathUtils;
 import io.apiman.common.util.Basic;
 import io.apiman.gateway.engine.IApiConnection;
 import io.apiman.gateway.engine.IApiConnectionResponse;
+import io.apiman.gateway.engine.IConnectorConfig;
 import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncHandler;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
@@ -52,9 +53,7 @@ import java.net.NoRouteToHostException;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.net.UnknownHostException;
-import java.util.LinkedHashSet;
 import java.util.Map.Entry;
-import java.util.Set;
 
 /**
  * A Vert.x-based HTTP connector; implementing both {@link ISignalReadStream} and {@link ISignalWriteStream}.
@@ -67,17 +66,6 @@ import java.util.Set;
  */
 @SuppressWarnings("nls")
 class HttpConnector implements IApiConnectionResponse, IApiConnection {
-
-    private static final Set<String> SUPPRESSED_REQUEST_HEADERS = new LinkedHashSet<>();
-    private static final Set<String> SUPPRESSED_RESPONSE_HEADERS = new LinkedHashSet<>();
-
-    static {
-        SUPPRESSED_REQUEST_HEADERS.add("X-API-Key");
-        SUPPRESSED_REQUEST_HEADERS.add("Host");
-
-        SUPPRESSED_RESPONSE_HEADERS.add("Connection");
-    }
-
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private ApiRequest apiRequest;
     private ApiResponse apiResponse;
@@ -105,6 +93,7 @@ class HttpConnector implements IApiConnectionResponse, IApiConnection {
     private URI apiEndpoint;
 
     private ApimanHttpConnectorOptions options;
+    private IConnectorConfig connectorConfig;
 
 
     /**
@@ -116,13 +105,15 @@ class HttpConnector implements IApiConnectionResponse, IApiConnection {
      * @param api an API
      * @param request a request with fields filled
      * @param options the connector options
+     * @param connectorConfig the dynamic connector configuration as possibly modified by policies
      * @param resultHandler a handler, called when reading is permitted
      */
     public HttpConnector(Vertx vertx, HttpClient client, ApiRequest request, Api api, ApimanHttpConnectorOptions options,
-            IAsyncResultHandler<IApiConnectionResponse> resultHandler) {
+            IConnectorConfig connectorConfig, IAsyncResultHandler<IApiConnectionResponse> resultHandler) {
        this.client = client;
        this.api = api;
        this.apiRequest = request;
+       this.connectorConfig = connectorConfig;
 
        this.resultHandler = resultHandler;
        this.exceptionHandler = new ExceptionHandler();
@@ -175,7 +166,7 @@ class HttpConnector implements IApiConnectionResponse, IApiConnection {
                     // Pause until we're given permission to xfer the response.
                     vxClientResponse.pause();
 
-                    apiResponse = HttpApiFactory.buildResponse(vxClientResponse, SUPPRESSED_RESPONSE_HEADERS);
+                    apiResponse = HttpApiFactory.buildResponse(vxClientResponse, connectorConfig.getSuppressedResponseHeaders());
 
                     vxClientResponse.handler((Handler<Buffer>) chunk -> {
                         bodyHandler.handle(new VertxApimanBuffer(chunk));
@@ -203,7 +194,7 @@ class HttpConnector implements IApiConnectionResponse, IApiConnection {
 
         apiRequest.getHeaders()
             .forEach(e -> {
-                if (!SUPPRESSED_REQUEST_HEADERS.contains(e.getKey())) {
+                if (!connectorConfig.getSuppressedRequestHeaders().contains(e.getKey())) {
                     clientRequest.headers().add(e.getKey(), e.getValue());
                 }
             });

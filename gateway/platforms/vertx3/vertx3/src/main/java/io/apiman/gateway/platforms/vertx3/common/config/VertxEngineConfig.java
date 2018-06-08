@@ -395,9 +395,7 @@ public class VertxEngineConfig implements IEngineConfig {
             // Not found via Class.forName() - try other mechanisms.
         }
 
-        System.err.println(Messages.getString("EngineConfig.FailedToLoadClass") + className);
-        System.exit(-1);
-        return null;
+        throw new IllegalStateException(Messages.getString("EngineConfig.FailedToLoadClass") + className);
     }
 
     protected String stringConfigWithDefault(String name, String defaultValue) {

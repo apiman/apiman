@@ -17,10 +17,11 @@ package io.apiman.gateway.platforms.servlet.connectors;
 
 import io.apiman.common.config.options.HttpConnectorOptions;
 import io.apiman.common.config.options.TLSOptions;
-import io.apiman.gateway.engine.IConnectorFactory;
 import io.apiman.gateway.engine.IApiConnection;
 import io.apiman.gateway.engine.IApiConnectionResponse;
 import io.apiman.gateway.engine.IApiConnector;
+import io.apiman.gateway.engine.IConnectorConfig;
+import io.apiman.gateway.engine.IConnectorFactory;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.auth.RequiredAuthType;
 import io.apiman.gateway.engine.beans.Api;
@@ -104,7 +105,8 @@ public class HttpConnectorFactory implements IConnectorFactory {
      */
     @Override
     public IApiConnector createConnector(ApiRequest request, final Api api,
-            final RequiredAuthType requiredAuthType, boolean hasDataPolicy) {
+            final RequiredAuthType requiredAuthType, boolean hasDataPolicy,
+            final IConnectorConfig connectorConfig) {
         return new IApiConnector() {
             /**
              * @see io.apiman.gateway.engine.IApiConnector#connect(io.apiman.gateway.engine.beans.ApiRequest, io.apiman.gateway.engine.async.IAsyncResultHandler)
@@ -114,7 +116,8 @@ public class HttpConnectorFactory implements IConnectorFactory {
                     IAsyncResultHandler<IApiConnectionResponse> handler) throws ConnectorException {
 
                 HttpApiConnection connection = new HttpApiConnection(okClient, request, api,
-                        requiredAuthType, getSslStrategy(requiredAuthType), hasDataPolicy, handler);
+                        requiredAuthType, getSslStrategy(requiredAuthType), hasDataPolicy,
+                        connectorConfig, handler);
                 return connection;
             }
         };
@@ -145,5 +148,10 @@ public class HttpConnectorFactory implements IConnectorFactory {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public IConnectorConfig createConnectorConfig(ApiRequest request, Api api) {
+        return new ConnectorConfigImpl();
     }
 }

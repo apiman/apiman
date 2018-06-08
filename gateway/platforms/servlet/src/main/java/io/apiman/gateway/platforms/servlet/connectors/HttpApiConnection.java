@@ -19,6 +19,7 @@ import io.apiman.common.config.options.BasicAuthOptions;
 import io.apiman.common.util.ApimanPathUtils;
 import io.apiman.gateway.engine.IApiConnection;
 import io.apiman.gateway.engine.IApiConnectionResponse;
+import io.apiman.gateway.engine.IConnectorConfig;
 import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncHandler;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
@@ -47,8 +48,6 @@ import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
-import java.util.TreeSet;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSocketFactory;
@@ -64,29 +63,6 @@ import com.squareup.okhttp.OkHttpClient;
  * @author eric.wittmann@redhat.com
  */
 public class HttpApiConnection implements IApiConnection, IApiConnectionResponse {
-    /**
-     * Header key comparisons should be case-insensitive as per HTTP specification.
-     */
-    private static final Set<String> SUPPRESSED_REQUEST_HEADERS = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
-
-    /**
-     * Header key comparisons should be case-insensitive as per HTTP specification.
-     */
-    private static final Set<String> SUPPRESSED_RESPONSE_HEADERS = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
-
-    static {
-        SUPPRESSED_REQUEST_HEADERS.add("Transfer-Encoding"); //$NON-NLS-1$
-        SUPPRESSED_REQUEST_HEADERS.add("X-API-Key"); //$NON-NLS-1$
-        SUPPRESSED_REQUEST_HEADERS.add("Host"); //$NON-NLS-1$
-
-        SUPPRESSED_RESPONSE_HEADERS.add("OkHttp-Received-Millis"); //$NON-NLS-1$
-        SUPPRESSED_RESPONSE_HEADERS.add("OkHttp-Response-Source"); //$NON-NLS-1$
-        SUPPRESSED_RESPONSE_HEADERS.add("OkHttp-Selected-Protocol"); //$NON-NLS-1$
-        SUPPRESSED_RESPONSE_HEADERS.add("OkHttp-Sent-Millis"); //$NON-NLS-1$
-        SUPPRESSED_RESPONSE_HEADERS.add("Transfer-Encoding"); //$NON-NLS-1$
-        SUPPRESSED_RESPONSE_HEADERS.add("Connection"); //$NON-NLS-1$
-    }
-
     private ApiRequest request;
     private Api api;
     private RequiredAuthType requiredAuthType;
@@ -106,6 +82,8 @@ public class HttpApiConnection implements IApiConnection, IApiConnectionResponse
     private boolean hasDataPolicy;
     private boolean isError = false;
 
+    private IConnectorConfig connectorConfig;
+
     /**
      * Constructor.
      *
@@ -115,18 +93,21 @@ public class HttpApiConnection implements IApiConnection, IApiConnectionResponse
      * @param api the API
      * @param requiredAuthType the authorization type
      * @param hasDataPolicy if policy chain contains data policies
+     * @param connectorConfig the dynamic connector configuration as possibly modified by policies
      * @param handler the result handler
      * @throws ConnectorException when unable to connect
      */
     public HttpApiConnection(OkHttpClient client, ApiRequest request, Api api,
             RequiredAuthType requiredAuthType, SSLSessionStrategy sslStrategy,
-            boolean hasDataPolicy, IAsyncResultHandler<IApiConnectionResponse> handler) throws ConnectorException {
+            boolean hasDataPolicy, IConnectorConfig connectorConfig,
+            IAsyncResultHandler<IApiConnectionResponse> handler) throws ConnectorException {
         this.client = client;
         this.request = request;
         this.api = api;
         this.requiredAuthType = requiredAuthType;
         this.sslStrategy = sslStrategy;
         this.hasDataPolicy = hasDataPolicy;
+        this.connectorConfig = connectorConfig;
         this.responseHandler = handler;
 
         try {
@@ -145,9 +126,6 @@ public class HttpApiConnection implements IApiConnection, IApiConnectionResponse
      */
     private void connect() throws ConnectorException {
         try {
-            final Set<String> suppressedHeaders = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
-            suppressedHeaders.addAll(SUPPRESSED_REQUEST_HEADERS);
-
             String endpoint = ApimanPathUtils.join(api.getEndpoint(), request.getDestination());
 
             if (request.getQueryParams() != null && !request.getQueryParams().isEmpty()) {
@@ -182,12 +160,12 @@ public class HttpApiConnection implements IApiConnection, IApiConnectionResponse
                     builder.append("Basic "); //$NON-NLS-1$
                     builder.append(Base64.encodeBase64String(up.getBytes()));
                     connection.setRequestProperty("Authorization", builder.toString()); //$NON-NLS-1$
-                    suppressedHeaders.add("Authorization"); //$NON-NLS-1$
+                    connectorConfig.suppressRequestHeader("Authorization"); //$NON-NLS-1$
                 }
             }
 
             if (hasDataPolicy) {
-                suppressedHeaders.add("Content-Length"); //$NON-NLS-1$
+                connectorConfig.suppressRequestHeader("Content-Length"); //$NON-NLS-1$
             }
 
             if (isSsl) {
@@ -212,7 +190,7 @@ public class HttpApiConnection implements IApiConnection, IApiConnectionResponse
             for (Entry<String, String> entry : request.getHeaders()) {
                 String hkey = entry.getKey();
                 String hval = entry.getValue();
-                if (!suppressedHeaders.contains(hkey)) {
+                if (!connectorConfig.getSuppressedRequestHeaders().contains(hkey)) {
                     connection.addRequestProperty(hkey, hval);
                 }
             }
@@ -375,7 +353,7 @@ public class HttpApiConnection implements IApiConnection, IApiConnectionResponse
                 String headerName = headerEntry.getKey();
                 List<String> headerValues = headerEntry.getValue();
 
-                if (headerName != null && !SUPPRESSED_RESPONSE_HEADERS.contains(headerName)) {
+                if (headerName != null && !connectorConfig.getSuppressedResponseHeaders().contains(headerName)) {
                     response.getHeaders().add(headerName, headerValues);
                 }
             }
