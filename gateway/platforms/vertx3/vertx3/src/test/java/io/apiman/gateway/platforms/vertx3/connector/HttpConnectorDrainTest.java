@@ -135,6 +135,7 @@ public class HttpConnectorDrainTest {
                 new ApimanHttpConnectorOptions()
                     .setHasDataPolicy(true)
                     .setUri(URI.create(api.getEndpoint())),
+                new VertxConnectorConfig(),
                 ignored -> {
                     // Immediately allow the dummy response to come back.
                     if (ignored.isError())

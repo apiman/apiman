@@ -20,6 +20,7 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import io.apiman.common.config.options.TLSOptions;
 import io.apiman.gateway.engine.IApiConnector;
+import io.apiman.gateway.engine.IConnectorConfig;
 import io.apiman.gateway.engine.IConnectorFactory;
 import io.apiman.gateway.engine.auth.RequiredAuthType;
 import io.apiman.gateway.engine.beans.Api;
@@ -84,7 +85,7 @@ public class ConnectorFactory implements IConnectorFactory {
 
     // In the future we can switch to different back-end implementations here!
     @Override
-    public IApiConnector createConnector(ApiRequest req, Api api, RequiredAuthType authType, boolean hasDataPolicy) {
+    public IApiConnector createConnector(ApiRequest req, Api api, RequiredAuthType authType, boolean hasDataPolicy, IConnectorConfig connectorConfig) {
         return (request, resultHandler) -> {
             // Apply options from config as our base case
             ApimanHttpConnectorOptions httpOptions = new ApimanHttpConnectorOptions(config)
@@ -97,7 +98,7 @@ public class ConnectorFactory implements IConnectorFactory {
             setAttributesFromApiEndpointProperties(api, httpOptions);
             // Get from cache
             HttpClient client = clientFromCache(httpOptions);
-            return new HttpConnector(vertx, client, request, api, httpOptions, resultHandler).connect();
+            return new HttpConnector(vertx, client, request, api, httpOptions, connectorConfig, resultHandler).connect();
          };
     }
 
@@ -136,5 +137,10 @@ public class ConnectorFactory implements IConnectorFactory {
         } catch (NumberFormatException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public IConnectorConfig createConnectorConfig(ApiRequest request, Api api) {
+        return new VertxConnectorConfig();
     }
 }

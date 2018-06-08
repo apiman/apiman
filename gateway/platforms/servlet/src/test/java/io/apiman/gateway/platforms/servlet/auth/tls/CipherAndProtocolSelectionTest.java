@@ -25,6 +25,7 @@ import io.apiman.gateway.engine.auth.RequiredAuthType;
 import io.apiman.gateway.engine.beans.Api;
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.exceptions.ConnectorException;
+import io.apiman.gateway.platforms.servlet.connectors.ConnectorConfigImpl;
 import io.apiman.gateway.platforms.servlet.connectors.HttpConnectorFactory;
 
 import java.io.IOException;
@@ -166,7 +167,7 @@ public class CipherAndProtocolSelectionTest {
         server.start();
 
         HttpConnectorFactory factory = new HttpConnectorFactory(config);
-        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.DEFAULT, false);
+        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.DEFAULT, false, new ConnectorConfigImpl());
         IApiConnection connection = connector.connect(request,
                 new IAsyncResultHandler<IApiConnectionResponse>() {
 
@@ -204,7 +205,7 @@ public class CipherAndProtocolSelectionTest {
 
 
         HttpConnectorFactory factory = new HttpConnectorFactory(config);
-        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.DEFAULT, false);
+        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.DEFAULT, false, new ConnectorConfigImpl());
         IApiConnection connection = connector.connect(request,
                 new IAsyncResultHandler<IApiConnectionResponse>() {
 
@@ -238,7 +239,7 @@ public class CipherAndProtocolSelectionTest {
 
 
         HttpConnectorFactory factory = new HttpConnectorFactory(config);
-        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.DEFAULT, false);
+        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.DEFAULT, false, new ConnectorConfigImpl());
         IApiConnection connection = connector.connect(request,
                 new IAsyncResultHandler<IApiConnectionResponse>() {
 
@@ -272,7 +273,7 @@ public class CipherAndProtocolSelectionTest {
 
 
         HttpConnectorFactory factory = new HttpConnectorFactory(config);
-        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.DEFAULT, false);
+        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.DEFAULT, false, new ConnectorConfigImpl());
         IApiConnection connection = connector.connect(request,
                 new IAsyncResultHandler<IApiConnectionResponse>() {
 
@@ -306,7 +307,7 @@ public class CipherAndProtocolSelectionTest {
         server.start();
 
         HttpConnectorFactory factory = new HttpConnectorFactory(config);
-        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.DEFAULT, false);
+        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.DEFAULT, false, new ConnectorConfigImpl());
         IApiConnection connection = connector.connect(request,
                 new IAsyncResultHandler<IApiConnectionResponse>() {
 
@@ -341,7 +342,7 @@ public class CipherAndProtocolSelectionTest {
         server.start();
 
         HttpConnectorFactory factory = new HttpConnectorFactory(config);
-        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.DEFAULT, false);
+        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.DEFAULT, false, new ConnectorConfigImpl());
         IApiConnection connection = connector.connect(request,
                 new IAsyncResultHandler<IApiConnectionResponse>() {
 
@@ -377,7 +378,7 @@ public class CipherAndProtocolSelectionTest {
         final CountDownLatch latch = new CountDownLatch(1);
 
         HttpConnectorFactory factory = new HttpConnectorFactory(config);
-        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.DEFAULT, false);
+        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.DEFAULT, false, new ConnectorConfigImpl());
         IApiConnection connection = connector.connect(request,
                 new IAsyncResultHandler<IApiConnectionResponse>() {
 

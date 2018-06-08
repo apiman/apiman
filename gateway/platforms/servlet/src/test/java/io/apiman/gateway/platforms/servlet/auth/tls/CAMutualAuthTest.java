@@ -25,6 +25,7 @@ import io.apiman.gateway.engine.auth.RequiredAuthType;
 import io.apiman.gateway.engine.beans.Api;
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.exceptions.ConnectorException;
+import io.apiman.gateway.platforms.servlet.connectors.ConnectorConfigImpl;
 import io.apiman.gateway.platforms.servlet.connectors.HttpConnectorFactory;
 
 import java.io.IOException;
@@ -157,7 +158,7 @@ public class CAMutualAuthTest {
         config.put(TLSOptions.TLS_ALLOWSELFSIGNED, "false");
 
        HttpConnectorFactory factory = new HttpConnectorFactory(config);
-       IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.MTLS, false);
+       IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.MTLS, false, new ConnectorConfigImpl());
        IApiConnection connection = connector.connect(request,
                new IAsyncResultHandler<IApiConnectionResponse>() {
 
@@ -191,7 +192,7 @@ public class CAMutualAuthTest {
         config.put(TLSOptions.TLS_ALLOWSELFSIGNED, "false");
 
         HttpConnectorFactory factory = new HttpConnectorFactory(config);
-        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.MTLS, false);
+        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.MTLS, false, new ConnectorConfigImpl());
         IApiConnection connection = connector.connect(request,
                 new IAsyncResultHandler<IApiConnectionResponse>() {
 

@@ -27,6 +27,7 @@ import io.apiman.gateway.engine.auth.RequiredAuthType;
 import io.apiman.gateway.engine.beans.Api;
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.exceptions.ConnectorException;
+import io.apiman.gateway.platforms.servlet.connectors.ConnectorConfigImpl;
 import io.apiman.gateway.platforms.servlet.connectors.HttpConnectorFactory;
 import io.apiman.test.common.mock.EchoServlet;
 
@@ -171,7 +172,7 @@ public class BasicAuthTest {
         api.setEndpoint("http://localhost:8008/echo");
 
         HttpConnectorFactory factory = new HttpConnectorFactory(globalConfig);
-        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.BASIC, false);
+        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.BASIC, false, new ConnectorConfigImpl());
         IApiConnection connection = connector.connect(request,
                 new IAsyncResultHandler<IApiConnectionResponse>() {
                     @Override
@@ -199,7 +200,7 @@ public class BasicAuthTest {
         api.setEndpoint("https://localhost:8009/echo");
 
         HttpConnectorFactory factory = new HttpConnectorFactory(globalConfig);
-        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.BASIC, false);
+        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.BASIC, false, new ConnectorConfigImpl());
         IApiConnection connection = connector.connect(request,
                 new IAsyncResultHandler<IApiConnectionResponse>() {
                     @Override
@@ -227,7 +228,7 @@ public class BasicAuthTest {
         api.setEndpoint("http://localhost:8008/echo");
 
         HttpConnectorFactory factory = new HttpConnectorFactory(globalConfig);
-        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.BASIC, false);
+        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.BASIC, false, new ConnectorConfigImpl());
         IApiConnection connection = connector.connect(request,
                 new IAsyncResultHandler<IApiConnectionResponse>() {
                     @Override
@@ -255,7 +256,7 @@ public class BasicAuthTest {
         api.setEndpoint("http://localhost:8008/echo");
 
         HttpConnectorFactory factory = new HttpConnectorFactory(globalConfig);
-        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.BASIC, false);
+        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.BASIC, false, new ConnectorConfigImpl());
         IApiConnection connection = connector.connect(request,
                 new IAsyncResultHandler<IApiConnectionResponse>() {
                     @Override
@@ -283,7 +284,7 @@ public class BasicAuthTest {
         api.setEndpoint("http://localhost:8008/echo");
 
         HttpConnectorFactory factory = new HttpConnectorFactory(globalConfig);
-        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.BASIC, false);
+        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.BASIC, false, new ConnectorConfigImpl());
         IApiConnection connection = connector.connect(request,
                 new IAsyncResultHandler<IApiConnectionResponse>() {
                     @Override
