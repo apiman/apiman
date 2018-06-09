@@ -21,6 +21,11 @@ import io.apiman.gateway.engine.impl.AbstractConnectorConfig;
 import java.util.Set;
 import java.util.TreeSet;
 
+/**
+ * Test connector config
+ *
+ * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
+ */
 @SuppressWarnings("nls")
 public class PolicyTesterConnectorConfig extends AbstractConnectorConfig {
     static final Set<String> REQUEST = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);

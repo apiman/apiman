@@ -53,14 +53,18 @@ public interface IConnectorConfig {
     void permitResponseHeader(String headerName);
 
     /**
-     * Unmodifiable request headers.
+     * <em>Unmodifiable</em> request headers.
+     *
+     * Use permit and suppress methods to mutate.
      *
      * @return the suppressed request headers
      */
     Set<String> getSuppressedRequestHeaders();
 
     /**
-     * Unmodifiable response headers.
+     * <em>Unmodifiable</em> response headers.
+     *
+     * Use permit and suppress methods to mutate.
      *
      * @return the suppressed response headers
      */
