@@ -43,16 +43,16 @@ public class SoapPayloadIOTest {
      */
     @Test
     public void testUnmarshall_Simple() throws Exception {
-        String xml = "<?xml version=\"1.0\"?>\r\n" + 
-                "<soap:Envelope xmlns:soap=\"http://www.w3.org/2003/05/soap-envelope\">\r\n" + 
-                "  <soap:Header>\r\n" + 
-                "     <ns1:CustomHeader xmlns:ns1=\"urn:ns1\">CVALUE</ns1:CustomHeader>\r\n" + 
-                "  </soap:Header>\r\n" + 
-                "  <soap:Body>\r\n" + 
-                "    <m:GetStockPrice xmlns:m=\"http://www.example.org/stock/Surya\">\r\n" + 
-                "      <m:StockName>IBM</m:StockName>\r\n" + 
-                "    </m:GetStockPrice>\r\n" + 
-                "  </soap:Body>\r\n" + 
+        String xml = "<?xml version=\"1.0\"?>\r\n" +
+                "<soap:Envelope xmlns:soap=\"http://www.w3.org/2003/05/soap-envelope\">\r\n" +
+                "  <soap:Header>\r\n" +
+                "     <ns1:CustomHeader xmlns:ns1=\"urn:ns1\">CVALUE</ns1:CustomHeader>\r\n" +
+                "  </soap:Header>\r\n" +
+                "  <soap:Body>\r\n" +
+                "    <m:GetStockPrice xmlns:m=\"http://www.example.org/stock/Surya\">\r\n" +
+                "      <m:StockName>IBM</m:StockName>\r\n" +
+                "    </m:GetStockPrice>\r\n" +
+                "  </soap:Body>\r\n" +
                 "</soap:Envelope>";
         byte [] xmlBytes = xml.getBytes();
         SoapPayloadIO io = new SoapPayloadIO();
@@ -61,11 +61,11 @@ public class SoapPayloadIOTest {
             Assert.assertNotNull(envelope);
             Assert.assertEquals("Envelope", envelope.getLocalName());
             Assert.assertEquals("http://www.w3.org/2003/05/soap-envelope", envelope.getNamespaceURI());
-            
+
             SOAPHeader header = envelope.getHeader();
             Assert.assertNotNull(header);
-            
-            Iterator allHeaderElements = header.examineAllHeaderElements();
+
+            Iterator<?> allHeaderElements = header.examineAllHeaderElements();
             Assert.assertTrue(allHeaderElements.hasNext());
             SOAPHeaderElement cheader = (SOAPHeaderElement) allHeaderElements.next();
             Assert.assertNotNull(cheader);
@@ -81,19 +81,19 @@ public class SoapPayloadIOTest {
         MessageFactory msgFactory = MessageFactory.newInstance();
         SOAPMessage message = msgFactory.createMessage();
         SOAPEnvelope envelope = message.getSOAPPart().getEnvelope();
-        
+
         SOAPHeader header = envelope.getHeader();
         SOAPHeaderElement cheader = header.addHeaderElement(new QName("urn:ns1", "CustomHeader"));
         cheader.setTextContent("CVALUE");
-        
+
         SoapPayloadIO io = new SoapPayloadIO();
         byte[] data = io.marshall(envelope);
         String actual = new String(data);
-        
+
         String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Header><CustomHeader xmlns=\"urn:ns1\">CVALUE</CustomHeader></SOAP-ENV:Header><SOAP-ENV:Body/></SOAP-ENV:Envelope>";
         Assert.assertEquals(expected, actual);
     }
-    
-    
+
+
 
 }

@@ -31,23 +31,23 @@ import org.junit.Test;
  *
  * @author eric.wittmann@redhat.com
  */
-@SuppressWarnings("nls")
+@SuppressWarnings({"nls", "rawtypes"})
 public class JsonPayloadIOTest {
 
     @Test
     public void testUnmarshall_Simple() throws Exception {
-        String json = "{\r\n" + 
-                "  \"hello\" : \"world\",\r\n" + 
-                "  \"foo\" : \"bar\"\r\n" + 
+        String json = "{\r\n" +
+                "  \"hello\" : \"world\",\r\n" +
+                "  \"foo\" : \"bar\"\r\n" +
                 "}";
-        
+
         JsonPayloadIO io = new JsonPayloadIO();
         Map data = io.unmarshall(new ReaderInputStream(new StringReader(json)));
         Assert.assertNotNull(data);
         Assert.assertEquals("world", data.get("hello"));
         Assert.assertEquals("bar", data.get("foo"));
         Assert.assertNull(data.get("other"));
-        
+
         data = io.unmarshall(json.getBytes("UTF-8"));
         Assert.assertNotNull(data);
         Assert.assertEquals("world", data.get("hello"));
@@ -58,53 +58,53 @@ public class JsonPayloadIOTest {
 
     @Test
     public void testUnmarshall_Complex() throws Exception {
-        String json = "{\r\n" + 
-                "    \"hello\": \"world\",\r\n" + 
-                "    \"foo\": \"bar\",\r\n" + 
-                "    \"someBool\": true,\r\n" + 
-                "    \"someLong\": 123847281437,\r\n" + 
-                "    \"object\": {\r\n" + 
-                "        \"prop1\": \"value-1\",\r\n" + 
-                "        \"prop2\": \"value-2\"\r\n" + 
-                "    },\r\n" + 
-                "    \"intArray\": [\r\n" + 
-                "        1,\r\n" + 
-                "        2,\r\n" + 
-                "        3,\r\n" + 
-                "        4,\r\n" + 
-                "        5\r\n" + 
-                "    ],\r\n" + 
-                "    \"strArray\": [\r\n" + 
-                "        \"one\",\r\n" + 
-                "        \"two\",\r\n" + 
-                "        \"three\"\r\n" + 
-                "    ],\r\n" + 
-                "    \"objArray\": [\r\n" + 
-                "        {\r\n" + 
-                "            \"f1\": \"fv1\",\r\n" + 
-                "            \"f2\": \"fv2\"\r\n" + 
-                "        },\r\n" + 
-                "        {\r\n" + 
-                "            \"f3\": \"fv3\",\r\n" + 
-                "            \"f4\": \"fv4\"\r\n" + 
-                "        },\r\n" + 
-                "        {\r\n" + 
-                "            \"f5\": \"fv5\",\r\n" + 
-                "            \"f6\": \"fv6\"\r\n" + 
-                "        }\r\n" + 
-                "    ],\r\n" + 
-                "    \"complexObject\": {\r\n" + 
-                "        \"child1\": {\r\n" + 
-                "            \"p1\": \"v1\",\r\n" + 
-                "            \"p2\": \"v2\"\r\n" + 
-                "        },\r\n" + 
-                "        \"child2\": {\r\n" + 
-                "            \"p3\": \"v3\",\r\n" + 
-                "            \"p4\": \"v4\"\r\n" + 
-                "        }\r\n" + 
-                "    }\r\n" + 
+        String json = "{\r\n" +
+                "    \"hello\": \"world\",\r\n" +
+                "    \"foo\": \"bar\",\r\n" +
+                "    \"someBool\": true,\r\n" +
+                "    \"someLong\": 123847281437,\r\n" +
+                "    \"object\": {\r\n" +
+                "        \"prop1\": \"value-1\",\r\n" +
+                "        \"prop2\": \"value-2\"\r\n" +
+                "    },\r\n" +
+                "    \"intArray\": [\r\n" +
+                "        1,\r\n" +
+                "        2,\r\n" +
+                "        3,\r\n" +
+                "        4,\r\n" +
+                "        5\r\n" +
+                "    ],\r\n" +
+                "    \"strArray\": [\r\n" +
+                "        \"one\",\r\n" +
+                "        \"two\",\r\n" +
+                "        \"three\"\r\n" +
+                "    ],\r\n" +
+                "    \"objArray\": [\r\n" +
+                "        {\r\n" +
+                "            \"f1\": \"fv1\",\r\n" +
+                "            \"f2\": \"fv2\"\r\n" +
+                "        },\r\n" +
+                "        {\r\n" +
+                "            \"f3\": \"fv3\",\r\n" +
+                "            \"f4\": \"fv4\"\r\n" +
+                "        },\r\n" +
+                "        {\r\n" +
+                "            \"f5\": \"fv5\",\r\n" +
+                "            \"f6\": \"fv6\"\r\n" +
+                "        }\r\n" +
+                "    ],\r\n" +
+                "    \"complexObject\": {\r\n" +
+                "        \"child1\": {\r\n" +
+                "            \"p1\": \"v1\",\r\n" +
+                "            \"p2\": \"v2\"\r\n" +
+                "        },\r\n" +
+                "        \"child2\": {\r\n" +
+                "            \"p3\": \"v3\",\r\n" +
+                "            \"p4\": \"v4\"\r\n" +
+                "        }\r\n" +
+                "    }\r\n" +
                 "}";
-        
+
         JsonPayloadIO io = new JsonPayloadIO();
         Map data = io.unmarshall(new ReaderInputStream(new StringReader(json)));
         Assert.assertNotNull(data);
@@ -131,19 +131,20 @@ public class JsonPayloadIOTest {
 
     @Test
     public void testMarshall_Simple() throws Exception {
-        Map data = new LinkedHashMap();
+        Map<String, Comparable> data = new LinkedHashMap<>();
         data.put("hello", "world");
         data.put("foo", "bar");
         data.put("bool", true);
-        
+
         JsonPayloadIO io = new JsonPayloadIO();
         byte[] bytes = io.marshall(data);
         String actual = new String(bytes);
-        
+
         String expected = "{\"hello\":\"world\",\"foo\":\"bar\",\"bool\":true}";
         Assert.assertEquals(expected, actual);
     }
 
+    @SuppressWarnings("unchecked")
     private List toList(Object ... items) {
         List rval = new ArrayList();
         for (Object item : items) {

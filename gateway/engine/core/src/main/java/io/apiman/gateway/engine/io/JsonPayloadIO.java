@@ -27,16 +27,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  *
  * @author eric.wittmann@redhat.com
  */
+@SuppressWarnings("rawtypes")
 public class JsonPayloadIO implements IPayloadIO<Map> {
-    
+
     private static final ObjectMapper mapper = new ObjectMapper();
-    
+
     /**
      * Constructor.
      */
     public JsonPayloadIO() {
     }
-    
+
     /**
      * @see io.apiman.gateway.engine.io.IPayloadIO#unmarshall(java.io.InputStream)
      */
@@ -44,7 +45,7 @@ public class JsonPayloadIO implements IPayloadIO<Map> {
     public Map unmarshall(InputStream input) throws Exception {
         return mapper.readValue(input, Map.class);
     }
-    
+
     /**
      * @see io.apiman.gateway.engine.io.IPayloadIO#unmarshall(byte[])
      */
@@ -54,7 +55,7 @@ public class JsonPayloadIO implements IPayloadIO<Map> {
             return unmarshall(stream);
         }
     }
-    
+
     /**
      * @see io.apiman.gateway.engine.io.IPayloadIO#marshall(java.lang.Object)
      */

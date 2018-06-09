@@ -33,45 +33,45 @@ import org.junit.Test;
  */
 @SuppressWarnings({ "nls" })
 public class AesDataEncrypterTest {
-    
+
     private static final DataEncryptionContext encryptionCtx = new DataEncryptionContext();
-    
+
     @Test
     public void dataEncrypterWithKey() {
-        Map<String, String> config = new HashMap();
+        Map<String, String> config = new HashMap<>();
         config.put("secretKey", "a2a0aa80-84Zd2a6");
         IDataEncrypter dataEncrypter = new AesDataEncrypter(config);
-        
+
         String result = dataEncrypter.encrypt("Hello, world.", encryptionCtx);
         assertNotNull(result);
         assertEquals("$CRYPT::XtwdsXC3Tv6vlQXQQPrxdg==", result);
-        
+
         result = dataEncrypter.decrypt(result, encryptionCtx);
         assertEquals("Hello, world.", result);
     }
-    
+
     @Test
     public void dataEncrypterWithDifferentKey() {
-        Map<String, String> config = new HashMap();
+        Map<String, String> config = new HashMap<>();
         config.put("secretKey", "H2a9a780-m4Zd2a0");
         IDataEncrypter dataEncrypter = new AesDataEncrypter(config);
-        
+
         String result = dataEncrypter.encrypt("Hello, world.", encryptionCtx);
         assertNotNull(result);
-        
+
         assertEquals("$CRYPT::dLklbimUARc6EfsrxpSG2Q==", result);
-        
+
         result = dataEncrypter.decrypt(result, encryptionCtx);
         assertEquals("Hello, world.", result);
     }
-    
-    
+
+
     @Test(expected = RuntimeException.class)
     public void dataEncrypterWithoutKey() {
-        Map<String, String> config = new HashMap();
+        Map<String, String> config = new HashMap<>();
         IDataEncrypter dataEncrypter = new AesDataEncrypter(config);
-        
+
         dataEncrypter.encrypt("Hello, world.", encryptionCtx);
     }
-    
+
 }
