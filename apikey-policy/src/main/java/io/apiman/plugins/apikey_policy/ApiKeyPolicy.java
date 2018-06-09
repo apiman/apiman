@@ -50,6 +50,8 @@ public class ApiKeyPolicy extends AbstractMappedPolicy<ApiKeyConfigBean> {
         if (request.getApiKey() != null) {
             String header = config.getRequestHeader();
             request.getHeaders().put(header, request.getApiKey());
+            // Ensure that connector does not strip the header out (e.g. X-Api-Key)
+            context.getConnectorConfiguration().permitRequestHeader(header);
         }
         super.doApply(request, context, config, chain);
     }
