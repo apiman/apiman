@@ -18,6 +18,11 @@ package io.apiman.gateway.platforms.vertx3.api.auth;
 
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.AuthHandler;
+import io.vertx.ext.auth.User;
+
+import io.vertx.core.Handler;
+import io.vertx.core.AsyncResult;
+import io.vertx.core.json.JsonObject;
 
 import java.util.Set;
 
@@ -42,8 +47,15 @@ public class NoneAuth implements AuthHandler {
         return this;
     }
 
+    public void parseCredentials(RoutingContext context, Handler<AsyncResult<JsonObject>> handler){
+        // do nothing
+    }
+
+    public void authorize(User user, Handler<AsyncResult<Void>> handler){
+        // do nothing
+    }
+
     public static AuthHandler create() {
         return new NoneAuth();
     }
-
 }

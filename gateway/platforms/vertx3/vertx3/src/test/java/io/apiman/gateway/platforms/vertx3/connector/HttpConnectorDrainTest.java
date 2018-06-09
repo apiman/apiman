@@ -104,7 +104,7 @@ public class HttpConnectorDrainTest {
 
     @Test
     public void shouldTriggerDrainHandler(TestContext context) throws Exception {
-        Async asyncDrain = context.async(2);
+        Async  asyncDrain = context.strictAsync(2);
         Async asyncServer = context.async();
         Async waitForServer = context.async();
         Async receivedResponse = context.async();
@@ -146,7 +146,9 @@ public class HttpConnectorDrainTest {
         // Should be fired when write queue reduces to acceptable size.
         httpConnector.drainHandler(drain -> {
             System.err.println("Drain handler has been called! Yay.");
-            asyncDrain.countDown();
+            do {
+                asyncDrain.countDown();
+            } while ((asyncDrain.count() != 0) );
         });
 
         httpConnector.bodyHandler(ignored -> {});
