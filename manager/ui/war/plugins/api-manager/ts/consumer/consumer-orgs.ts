@@ -19,6 +19,8 @@ module Apiman {
                         var body:any = {};
                         body.filters = [];
                         body.filters.push( {"name": "name", "value": "*" + params.q + "*", "operator": "like"});
+                        body.page = 1;
+                        body.pageSize = 0x7fffffff; // Java Interger.MAX_VALUE
                         var searchStr = angular.toJson(body);
                         ApimanSvcs.save({ entityType: 'search', secondaryType: 'organizations' }, searchStr, function(result) { 
                             resolve(result.beans);

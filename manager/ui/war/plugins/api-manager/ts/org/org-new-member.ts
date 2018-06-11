@@ -44,6 +44,7 @@ module Apiman {
                     return;
                 }
 
+                let pageSize = 0x7fffffff; // Java Interger.MAX_VALUE
                 var queryBean = {
                     filters: [{
                         name: 'username',
@@ -56,9 +57,9 @@ module Apiman {
                     },
                     paging: {
                         page: 1,
-                        pageSize: 50
+                        pageSize: pageSize
                     }
-                }
+                };
 
                 $log.debug('Query: {0}', queryBean);
 
