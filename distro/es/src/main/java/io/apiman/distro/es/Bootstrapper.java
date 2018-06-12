@@ -73,14 +73,16 @@ public class Bootstrapper implements ServletContextListener {
         String clusterName = "apiman";
 
         try {
-
-            URL url = resolveEsDistro(sce);
+            URL esDistroUrl = resolveEsDistro(sce);
+            File tmpDir = new File(getTempDir());
 
             Builder builder = ApimanEmbeddedElastic.builder()
                 .withPort(config.getHttpPortRange())
-                .withDownloadUrl(url)
+                .withDownloadUrl(esDistroUrl)
+                .withDownloadDirectory(tmpDir)
+                .withInstallationDirectory(tmpDir)
+                .withSetting("path.data", esHome)
                 .withCleanInstallationDirectoryOnStop(false)
-                .withInstallationDirectory(esHome)
                 .withSetting(PopularProperties.TRANSPORT_TCP_PORT, config.getTransportPortRange())
                 .withSetting(PopularProperties.CLUSTER_NAME, clusterName)
                 .withStartTimeout(1, TimeUnit.MINUTES);
@@ -97,6 +99,13 @@ public class Bootstrapper implements ServletContextListener {
         System.out.println("-----------------------------");
         System.out.println("apiman-es started!");
         System.out.println("-----------------------------");
+    }
+
+    private static String getTempDir() {
+        if (System.getProperties().contains("jboss.server.temp.dir")) {
+            return System.getProperty("jboss.server.temp.dir");
+        }
+        return System.getProperty("java.io.tmpdir");
     }
 
     /**
