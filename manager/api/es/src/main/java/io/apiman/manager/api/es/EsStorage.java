@@ -196,9 +196,11 @@ public class EsStorage implements IStorage, IStorageQuery {
             }
             // TODO Do we need a loop to wait for all nodes to join the cluster?
             Action<JestResult> action = new IndicesExists.Builder(getIndexName()).build();
-            JestResult result = esClient.execute(action);
-            if (! result.isSucceeded()) {
-                createIndex(getIndexName());
+            synchronized(EsStorage.class) {
+                JestResult result = esClient.execute(action);
+                if (!result.isSucceeded()) {
+                    createIndex(getIndexName());
+                }
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
