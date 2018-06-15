@@ -28,6 +28,9 @@ import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+
 /**
  * Base class for client factories.  Provides caching of clients.
  *
@@ -78,6 +81,7 @@ public abstract class AbstractClientFactory {
      * @param indexName
      * @throws Exception
      */
+    @SuppressWarnings("nls")
     protected void createIndex(JestClient client, String indexName, String settingsName) throws Exception {
         URL settings = AbstractClientFactory.class.getResource(settingsName);
         String source = IOUtils.toString(settings);
@@ -87,10 +91,31 @@ public abstract class AbstractClientFactory {
             // runtime Gateway itself.  They both create a registry and thus they both try to initialize
             // the ES index if it doesn't exist.  A race condition could result in both WARs trying to
             // create the index.  So a result of "IndexAlreadyExistsException" should be ignored.
-            if (!response.getErrorMessage().startsWith("IndexAlreadyExistsException")) { //$NON-NLS-1$
-                throw new Exception("Failed to create index: '" + indexName + "' Reason: " + response.getErrorMessage()); //$NON-NLS-1$ //$NON-NLS-2$
+            if (!indexAlreadyExistsException(response)) {
+                throw new Exception("Failed to create index: '" + indexName + "' Reason: " + response.getErrorMessage());
             }
         }
+    }
+
+    @SuppressWarnings("nls")
+    private boolean indexAlreadyExistsException(JestResult response) {
+        // ES 1.x
+        if (response.getErrorMessage().startsWith("IndexAlreadyExistsException")) {
+            return true;
+        }
+
+        // ES 5.x
+        // {"root_cause":[{"type":"index_already_exists_exception","reason": "..."]}}
+        JsonArray causes = response.getJsonObject().getAsJsonArray("root_cause");
+        for (JsonElement elem : causes) {
+            if (elem.isJsonObject()) {
+                JsonElement type = elem.getAsJsonObject().get("type");
+                if (type != null && type.getAsString().equals("index_already_exists_exception")) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
 }
