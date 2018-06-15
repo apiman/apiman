@@ -24,7 +24,6 @@ import io.apiman.gateway.engine.policies.AbstractMappedPolicy;
 import io.apiman.gateway.engine.policies.PolicyFailureCodes;
 import io.apiman.gateway.engine.policies.config.MultipleMatchType;
 import io.apiman.gateway.engine.policies.config.UnmatchedRequestType;
-import io.apiman.gateway.engine.policies.i18n.Messages;
 import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
 
@@ -77,20 +76,18 @@ public class SoapAuthorizationPolicy extends AbstractMappedPolicy<SoapAuthorizat
         String action = request.getHeaders().get(HEADER_SOAP_ACTION);
 
         // Check if action are defined then fail with configuration error.
-        if (action == null || StringUtils.isBlank(action)) { //"SOAPAction header is not defined."
-        	String msg = Messages.i18n.format("SoapAuthorizationPolicy.SOAPActionHeaderNotDefined"); //$NON-NLS-1$
+        if (action == null || StringUtils.isBlank(action)) { // "SOAPAction header is not defined."
+        	String msg = Messages.getString("SoapAuthorizationPolicy.SOAPActionHeaderNotDefined"); //$NON-NLS-1$
 
         	PolicyFailure failure = context.getComponent(IPolicyFailureFactoryComponent.class).createFailure(
                     PolicyFailureType.Other, SOAP_ACTION_NOTDEFINED, msg );
-
         	chain.doFailure(failure);
-
         	return;
         }
 
         // If no roles are set in the context - then fail with a configuration error
         if (userRoles == null) {
-            String msg = Messages.i18n.format("SoapAuthorizationPolicy.MissingRoles"); //$NON-NLS-1$ TODO where are these defined?!
+            String msg = Messages.getString("SoapAuthorizationPolicy.MissingRoles"); //$NON-NLS-1$
             PolicyFailure failure = context.getComponent(IPolicyFailureFactoryComponent.class).createFailure(
                     PolicyFailureType.Other, PolicyFailureCodes.CONFIGURATION_ERROR, msg);
             chain.doFailure(failure);
@@ -100,7 +97,7 @@ public class SoapAuthorizationPolicy extends AbstractMappedPolicy<SoapAuthorizat
         if (isAuthorized(config, action, userRoles)) {
             chain.doApply(request);
         } else {
-            String msg = Messages.i18n.format("SoapAuthorizationPolicy.Unauthorized"); //$NON-NLS-1$
+            String msg = Messages.getString("SoapAuthorizationPolicy.Unauthorized"); //$NON-NLS-1$
             PolicyFailure failure = context.getComponent(IPolicyFailureFactoryComponent.class).createFailure(
                     PolicyFailureType.Authorization, PolicyFailureCodes.USER_NOT_AUTHORIZED, msg);
             chain.doFailure(failure);
