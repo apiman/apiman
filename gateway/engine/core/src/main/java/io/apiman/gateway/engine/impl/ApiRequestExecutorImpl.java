@@ -235,7 +235,12 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
         requestMetric.setApiId(request.getApiId());
         requestMetric.setApiVersion(request.getApiVersion());
 
+        // Set request metric
         context.setAttribute(PolicyContextKeys.REQUEST_METRIC, requestMetric);
+
+        // Set connector config early (allows mutation of certain connector properties)
+        IConnectorConfig connectorConfig = connectorFactory.createConnectorConfig(request, api);
+        context.setConnectorConfiguration(connectorConfig);
 
         // Create the handler that will be called once the policies are asynchronously
         // loaded (can happen this way due to the plugin framework).
@@ -245,8 +250,6 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
             requestChain = createRequestChain((ApiRequest req) -> {
                 IConnectorInterceptor connectorInterceptor = context.getConnectorInterceptor();
                 IApiConnector connector;
-                IConnectorConfig connectorConfig = connectorFactory.createConnectorConfig(request, api);
-                context.setConnectorConfiguration(connectorConfig);
 
                 if (connectorInterceptor == null) {
                     connector = connectorFactory.createConnector(req,
