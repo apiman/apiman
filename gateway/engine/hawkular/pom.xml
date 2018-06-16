@@ -4,7 +4,7 @@
   <parent>
     <groupId>io.apiman</groupId>
     <artifactId>apiman-gateway-engine</artifactId>
-    <version>1.4.1.Final</version>
+    <version>1.4.2-SNAPSHOT</version>
   </parent>
   <artifactId>apiman-gateway-engine-hawkular</artifactId>
   <name>apiman-gateway-engine-hawkular</name>
