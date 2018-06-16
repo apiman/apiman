@@ -4,7 +4,7 @@
   <parent>
     <groupId>io.apiman.plugins</groupId>
     <artifactId>apiman-plugins</artifactId>
-    <version>1.4.1-SNAPSHOT</version>
+    <version>1.4.1.Final</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>apiman-plugins-unique-header-policy</artifactId>
