@@ -86,4 +86,43 @@ public class CachingPolicyTest extends ApimanPolicyTest {
         Assert.assertEquals(counterValue4, counterValue5);
         Assert.assertEquals("application/json", response.header("Content-Type"));
     }
+
+    /**
+     * Verify that the query string is used as part of the cache key - expect
+     * that requests with different query strings are treated as different, from
+     * a caching perspective.
+     */
+    @Test
+    @Configuration("{" +
+            "  \"ttl\" : 2," +
+            "  \"includeQueryInKey\" : true" +
+            "}")
+    public void testCachingUsingQueryString() throws Throwable {
+        final String originalUri = "/some/cached-resource?foo=bar";
+
+        PolicyTestResponse response = send(PolicyTestRequest.build(PolicyTestRequestType.GET, originalUri));
+        EchoResponse echo = response.entity(EchoResponse.class);
+        Assert.assertNotNull(echo);
+        Long counterValue = echo.getCounter();
+        Assert.assertNotNull(counterValue);
+        Assert.assertEquals("application/json", response.header("Content-Type"));
+
+        // Request with a different query string - expect an uncached response
+        response = send(PolicyTestRequest.build(PolicyTestRequestType.GET, "/some/cached-resource?foo=different"));
+        echo = response.entity(EchoResponse.class);
+        Assert.assertNotNull(echo);
+        Long counterValue2 = echo.getCounter();
+        Assert.assertNotNull(counterValue2);
+        Assert.assertNotEquals(counterValue, counterValue2);
+        Assert.assertEquals("application/json", response.header("Content-Type"));
+
+        // Request the original URI (including query string) - expect a cached response
+        response = send(PolicyTestRequest.build(PolicyTestRequestType.GET, originalUri));
+        echo = response.entity(EchoResponse.class);
+        Assert.assertNotNull(echo);
+        Long counterValue3 = echo.getCounter();
+        Assert.assertNotNull(counterValue3);
+        Assert.assertEquals(counterValue, counterValue3);
+        Assert.assertEquals("application/json", response.header("Content-Type"));
+    }
 }
