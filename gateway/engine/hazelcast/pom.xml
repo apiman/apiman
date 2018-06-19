@@ -4,7 +4,7 @@
   <parent>
     <groupId>io.apiman</groupId>
     <artifactId>apiman-gateway-engine</artifactId>
-    <version>1.4.2-SNAPSHOT</version>
+    <version>1.4.2.Final</version>
   </parent>
   <artifactId>apiman-gateway-engine-hazelcast</artifactId>
   <packaging>bundle</packaging>
