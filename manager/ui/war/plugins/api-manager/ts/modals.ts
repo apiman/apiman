@@ -127,7 +127,7 @@ module ApimanModals {
                             'operator': 'like'
                         });
                         body.page = 1;
-                        body.pageSize = 0x7fffffff; // Java Interger.MAX_VALUE
+                        body.pageSize = 10000; // ES index.max_result_window
 
                         var searchStr = angular.toJson(body);
 

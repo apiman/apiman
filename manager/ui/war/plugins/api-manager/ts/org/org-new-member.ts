@@ -44,7 +44,7 @@ module Apiman {
                     return;
                 }
 
-                let pageSize = 0x7fffffff; // Java Interger.MAX_VALUE
+                let pageSize = 10000; // ES index.max_result_window
                 var queryBean = {
                     filters: [{
                         name: 'username',
