@@ -16,7 +16,11 @@
 package io.apiman.gateway.platforms.vertx3.common.config;
 
 import io.apiman.common.logging.IDelegateFactory;
+import io.apiman.common.plugin.Plugin;
+import io.apiman.common.plugin.PluginClassLoader;
+import io.apiman.common.plugin.PluginCoordinates;
 import io.apiman.common.util.ApimanStrLookup;
+import io.apiman.common.util.ReflectionUtils;
 import io.apiman.common.util.SimpleStringUtils;
 import io.apiman.common.util.crypt.IDataEncrypter;
 import io.apiman.gateway.engine.EngineConfigTuple;
@@ -31,6 +35,7 @@ import io.apiman.gateway.engine.IPluginRegistry;
 import io.apiman.gateway.engine.IPolicyErrorWriter;
 import io.apiman.gateway.engine.IPolicyFailureWriter;
 import io.apiman.gateway.engine.IRegistry;
+import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.impl.DefaultDataEncrypter;
 import io.apiman.gateway.engine.impl.DefaultPolicyErrorWriter;
 import io.apiman.gateway.engine.impl.DefaultPolicyFailureWriter;
@@ -51,6 +56,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -109,12 +116,13 @@ public class VertxEngineConfig implements IEngineConfig {
     @Override
     public Class<? extends IRegistry> getRegistryClass(IPluginRegistry pluginRegistry) {
         return loadConfigClass(getClassname(config, GATEWAY_REGISTRY_PREFIX),
-                IRegistry.class, null);
+                IRegistry.class, pluginRegistry, null);
     }
 
     @Override
     public Class<? extends IDataEncrypter> getDataEncrypterClass(IPluginRegistry pluginRegistry) {
-        return loadConfigClass(getClassname(config, GATEWAY_ENCRYPTER_PREFIX), IDataEncrypter.class, DefaultDataEncrypter.class);
+        return loadConfigClass(getClassname(config, GATEWAY_ENCRYPTER_PREFIX),
+                IDataEncrypter.class, pluginRegistry, DefaultDataEncrypter.class);
     }
 
     @Override
@@ -130,7 +138,7 @@ public class VertxEngineConfig implements IEngineConfig {
     @Override
     public Class<? extends IPluginRegistry> getPluginRegistryClass() {
         return loadConfigClass(getClassname(config, GATEWAY_PLUGIN_REGISTRY_PREFIX),
-                IPluginRegistry.class, VertxPluginRegistry.class);
+                IPluginRegistry.class, null, VertxPluginRegistry.class);
     }
 
     @Override
@@ -141,7 +149,7 @@ public class VertxEngineConfig implements IEngineConfig {
     @Override
     public Class<? extends IConnectorFactory> getConnectorFactoryClass(IPluginRegistry pluginRegistry) {
         return loadConfigClass(getClassname(config, GATEWAY_CONNECTOR_FACTORY_PREFIX),
-                IConnectorFactory.class, ConnectorFactory.class);
+                IConnectorFactory.class, pluginRegistry, ConnectorFactory.class);
     }
 
     @Override
@@ -152,7 +160,7 @@ public class VertxEngineConfig implements IEngineConfig {
     @Override
     public Class<? extends IPolicyFactory> getPolicyFactoryClass(IPluginRegistry pluginRegistry) {
         return loadConfigClass(getClassname(config, GATEWAY_POLICY_FACTORY_PREFIX),
-                IPolicyFactory.class, PolicyFactoryImpl.class);
+                IPolicyFactory.class, pluginRegistry, PolicyFactoryImpl.class);
     }
 
     @Override
@@ -164,7 +172,7 @@ public class VertxEngineConfig implements IEngineConfig {
     @Override
     public Class<? extends IApiRequestPathParser> getApiRequestPathParserClass(IPluginRegistry pluginRegistry) {
         return loadConfigClass(getClassname(config, GATEWAY_REQUEST_PARSER_PREFIX),
-                IApiRequestPathParser.class, DefaultRequestPathParser.class);
+                IApiRequestPathParser.class, pluginRegistry, DefaultRequestPathParser.class);
     }
 
     @Override
@@ -175,7 +183,7 @@ public class VertxEngineConfig implements IEngineConfig {
     @Override
     public Class<? extends IMetrics> getMetricsClass(IPluginRegistry pluginRegistry) {
         return loadConfigClass(getClassname(config, GATEWAY_METRICS_PREFIX),
-                IMetrics.class, null);
+                IMetrics.class, pluginRegistry, null);
     }
 
     @Override
@@ -186,7 +194,7 @@ public class VertxEngineConfig implements IEngineConfig {
     @Override
     public Class<? extends IDelegateFactory> getLoggerFactoryClass(IPluginRegistry pluginRegistry) {
         return loadConfigClass(getClassname(config, GatewayConfigProperties.LOGGER_FACTORY_CLASS),
-                IDelegateFactory.class, VertxLoggerDelegate.class);
+                IDelegateFactory.class, pluginRegistry, VertxLoggerDelegate.class);
     }
 
     @Override
@@ -197,7 +205,7 @@ public class VertxEngineConfig implements IEngineConfig {
     @Override
     public Class<? extends IPolicyErrorWriter> getPolicyErrorWriterClass(IPluginRegistry pluginRegistry) {
         return loadConfigClass(getClassname(config, GatewayConfigProperties.ERROR_WRITER_CLASS),
-                IPolicyErrorWriter.class, DefaultPolicyErrorWriter.class);
+                IPolicyErrorWriter.class, pluginRegistry, DefaultPolicyErrorWriter.class);
     }
 
     @Override
@@ -208,7 +216,7 @@ public class VertxEngineConfig implements IEngineConfig {
     @Override
     public Class<? extends IPolicyFailureWriter> getPolicyFailureWriterClass(IPluginRegistry pluginRegistry) {
         return loadConfigClass(getClassname(config, GatewayConfigProperties.FAILURE_WRITER_CLASS),
-                IPolicyFailureWriter.class, DefaultPolicyFailureWriter.class);
+                IPolicyFailureWriter.class, pluginRegistry, DefaultPolicyFailureWriter.class);
     }
 
     @Override
@@ -222,7 +230,7 @@ public class VertxEngineConfig implements IEngineConfig {
                 getJsonObject(componentType.getSimpleName()).
                 getString(GATEWAY_CLASS);
 
-        return loadConfigClass(className, componentType, null);
+        return loadConfigClass(className, componentType, pluginRegistry, null);
     }
 
     @Override
@@ -375,27 +383,44 @@ public class VertxEngineConfig implements IEngineConfig {
      * @return a loaded class
      */
     @SuppressWarnings("unchecked")
-    protected <T> Class<? extends T> loadConfigClass(String className, Class<T> type, Class<? extends T> defaultClass) {
-        if (className == null) {
-            if (defaultClass != null) {
-                return defaultClass;
-            }
-            throw new RuntimeException("No " + type.getSimpleName() + " class configured.");  //$NON-NLS-2$
-        }
-        try {
-            Class<T> c = (Class<T>) Thread.currentThread().getContextClassLoader().loadClass(className);
-            return c;
-        } catch (ClassNotFoundException e) {
-            // Not found via Class.forName() - try other mechanisms.
-        }
-        try {
-            Class<T> c = (Class<T>) Class.forName(className);
-            return c;
-        } catch (ClassNotFoundException e) {
-            // Not found via Class.forName() - try other mechanisms.
+    protected <T> Class<? extends T> loadConfigClass(String className, Class<T> type, IPluginRegistry pluginRegistry, Class<? extends T> defaultClass) {
+        String componentSpec = className;
+        if (componentSpec == null) {
+            return defaultClass;
         }
 
-        throw new IllegalStateException(Messages.getString("EngineConfig.FailedToLoadClass") + className);
+        try {
+            if (componentSpec.startsWith("class:")) { //$NON-NLS-1$
+                Class<?> c = ReflectionUtils.loadClass(componentSpec.substring("class:".length())); //$NON-NLS-1$
+                return (Class<T>) c;
+            } else if (componentSpec.startsWith("plugin:")) { //$NON-NLS-1$
+                PluginCoordinates coordinates = PluginCoordinates.fromPolicySpec(componentSpec);
+                if (coordinates == null) {
+                    throw new IllegalArgumentException("Invalid plugin component spec: " + componentSpec); //$NON-NLS-1$
+                }
+                int ssidx = componentSpec.indexOf('/');
+                if (ssidx == -1) {
+                    throw new IllegalArgumentException("Invalid plugin component spec: " + componentSpec); //$NON-NLS-1$
+                }
+                String classname = componentSpec.substring(ssidx + 1);
+                Future<IAsyncResult<Plugin>> pluginF = pluginRegistry.loadPlugin(coordinates, null);
+                IAsyncResult<Plugin> pluginR = pluginF.get();
+                if (pluginR.isError()) {
+                    throw new RuntimeException(pluginR.getError());
+                }
+                Plugin plugin = pluginR.getResult();
+                PluginClassLoader classLoader = plugin.getLoader();
+                Class<?> class1 = classLoader.loadClass(classname);
+                return (Class<T>) class1;
+            } else {
+                Class<?> c = ReflectionUtils.loadClass(componentSpec);
+                return (Class<T>) c;
+            }
+        } catch (ClassNotFoundException | InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+            throw new IllegalStateException(Messages.getString("EngineConfig.FailedToLoadClass") + className);
+        }
+
     }
 
     protected String stringConfigWithDefault(String name, String defaultValue) {

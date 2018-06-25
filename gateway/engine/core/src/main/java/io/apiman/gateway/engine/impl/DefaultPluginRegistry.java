@@ -222,7 +222,7 @@ public class DefaultPluginRegistry implements IPluginRegistry {
         	// If it's a snapshot, delete it here. (first time loading this plugin from the plugin file registry).  This
         	// means that snapshot plugins will be redownloaded each time the server is restarted.
             if (isSnapshot) {
-                try { FileUtils.deleteDirectory(pluginDir); } catch (IOException e) { }
+                try { FileUtils.deleteDirectory(pluginDir); } catch (IOException | IllegalArgumentException e) { }
             } else {
                 handled = true;
                 try {
