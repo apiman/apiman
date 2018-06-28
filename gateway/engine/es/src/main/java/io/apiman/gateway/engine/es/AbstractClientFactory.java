@@ -96,17 +96,65 @@ public abstract class AbstractClientFactory {
             }
         }
     }
+//
+//    public static void main(String[] args) {
+//        String in = "{\"root_caxuse\":[{\"type\":\"index_already_exists_exception\",\"reason\":\"index [apiman_gateway/C9dgFNPBQEWWrVJUvPGwvA] already exists\",\"index_uuid\":\"C9dgFNPBQEWWrVJUvPGwvA\",\"index\":\"apiman_gateway\"}],\"type\":\"index_already_exists_exception\",\"reason\":\"index [apiman_gateway/C9dgFNPBQEWWrVJUvPGwvA] already exists\",\"index_uuid\":\"C9dgFNPBQEWWrVJUvPGwvA\",\"index\":\"apiman_gateway\"}\n";
+//        JsonElement parsed = new JsonParser().parse(in);
+//
+//        JsonObject root = parsed.getAsJsonObject();
+//
+//        if (root == null ||
+//                !root.has("root_cause") ||
+//                !root.get("root_cause").isJsonArray()) {
+//
+//            System.err.println("no root cause");
+//
+//            return;
+//        }
+//
+//        // ES 5.x
+//        // {"root_cause":[{"type":"index_already_exists_exception","reason": "..."]}}
+//        JsonArray causes = root.getAsJsonArray("root_cause");
+//
+//        for (JsonElement elem : causes) {
+//            if (elem.isJsonObject()) {
+//                JsonElement type = elem.getAsJsonObject().get("type");
+//                if (type != null && type.getAsString().equals("index_already_exists_exception")) {
+//                    System.err.println("index already exists");
+//                }
+//            }
+//        }
+//
+//    }
+
 
     @SuppressWarnings("nls")
-    private boolean indexAlreadyExistsException(JestResult response) {
+    private  boolean indexAlreadyExistsException(JestResult response) {
+        System.out.println("Json Object");
+        System.out.println(response.getJsonObject());
+
+
+        System.out.println("Json String");
+        System.out.println(response.getJsonObject());
+
+        System.out.println("Message");
+        System.out.println(response.getErrorMessage());
+
         // ES 1.x
         if (response.getErrorMessage().startsWith("IndexAlreadyExistsException")) {
             return true;
         }
 
+        if (response.getJsonObject() == null ||
+                !response.getJsonObject().has("root_cause") ||
+                !response.getJsonObject().get("root_cause").isJsonArray()) {
+            return false;
+        }
+
         // ES 5.x
         // {"root_cause":[{"type":"index_already_exists_exception","reason": "..."]}}
         JsonArray causes = response.getJsonObject().getAsJsonArray("root_cause");
+
         for (JsonElement elem : causes) {
             if (elem.isJsonObject()) {
                 JsonElement type = elem.getAsJsonObject().get("type");
