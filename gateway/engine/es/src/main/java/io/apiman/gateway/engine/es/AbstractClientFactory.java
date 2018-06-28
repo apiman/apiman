@@ -30,6 +30,7 @@ import org.apache.commons.io.IOUtils;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 /**
  * Base class for client factories.  Provides caching of clients.
@@ -97,6 +98,8 @@ public abstract class AbstractClientFactory {
         }
     }
 
+
+
     @SuppressWarnings("nls")
     private boolean indexAlreadyExistsException(JestResult response) {
         // ES 1.x
@@ -105,8 +108,19 @@ public abstract class AbstractClientFactory {
         }
 
         // ES 5.x
-        // {"root_cause":[{"type":"index_already_exists_exception","reason": "..."]}}
-        JsonArray causes = response.getJsonObject().getAsJsonArray("root_cause");
+        // {"error": {"root_cause":[{"type":"index_already_exists_exception","reason": "..."}]}}
+        if (response.getJsonObject() == null || !response.getJsonObject().has("error")) {
+            return false;
+        }
+
+        // Error must be a JSON object.
+        JsonObject error = response.getJsonObject().getAsJsonObject("error");
+        if (!(error.has("root_cause") && error.get("root_cause").isJsonArray())) {
+            return false;
+        }
+
+        JsonArray causes = error.getAsJsonArray("root_cause");
+
         for (JsonElement elem : causes) {
             if (elem.isJsonObject()) {
                 JsonElement type = elem.getAsJsonObject().get("type");
