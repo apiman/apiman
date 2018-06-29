@@ -101,7 +101,16 @@ public abstract class AbstractClientFactory {
 
 
     @SuppressWarnings("nls")
-    private boolean indexAlreadyExistsException(JestResult response) {
+    private  boolean indexAlreadyExistsException(JestResult response) {
+        System.out.println("Json Object");
+        System.out.println(response.getJsonObject());
+
+        System.out.println("Json String");
+        System.out.println(response.getJsonObject());
+
+        System.out.println("Message");
+        System.out.println(response.getErrorMessage());
+
         // ES 1.x
         if (response.getErrorMessage().startsWith("IndexAlreadyExistsException")) {
             return true;
