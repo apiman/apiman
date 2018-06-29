@@ -30,6 +30,7 @@ import org.apache.commons.io.IOUtils;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 /**
  * Base class for client factories.  Provides caching of clients.
@@ -96,43 +97,13 @@ public abstract class AbstractClientFactory {
             }
         }
     }
-//
-//    public static void main(String[] args) {
-//        String in = "{\"root_caxuse\":[{\"type\":\"index_already_exists_exception\",\"reason\":\"index [apiman_gateway/C9dgFNPBQEWWrVJUvPGwvA] already exists\",\"index_uuid\":\"C9dgFNPBQEWWrVJUvPGwvA\",\"index\":\"apiman_gateway\"}],\"type\":\"index_already_exists_exception\",\"reason\":\"index [apiman_gateway/C9dgFNPBQEWWrVJUvPGwvA] already exists\",\"index_uuid\":\"C9dgFNPBQEWWrVJUvPGwvA\",\"index\":\"apiman_gateway\"}\n";
-//        JsonElement parsed = new JsonParser().parse(in);
-//
-//        JsonObject root = parsed.getAsJsonObject();
-//
-//        if (root == null ||
-//                !root.has("root_cause") ||
-//                !root.get("root_cause").isJsonArray()) {
-//
-//            System.err.println("no root cause");
-//
-//            return;
-//        }
-//
-//        // ES 5.x
-//        // {"root_cause":[{"type":"index_already_exists_exception","reason": "..."]}}
-//        JsonArray causes = root.getAsJsonArray("root_cause");
-//
-//        for (JsonElement elem : causes) {
-//            if (elem.isJsonObject()) {
-//                JsonElement type = elem.getAsJsonObject().get("type");
-//                if (type != null && type.getAsString().equals("index_already_exists_exception")) {
-//                    System.err.println("index already exists");
-//                }
-//            }
-//        }
-//
-//    }
+
 
 
     @SuppressWarnings("nls")
     private  boolean indexAlreadyExistsException(JestResult response) {
         System.out.println("Json Object");
         System.out.println(response.getJsonObject());
-
 
         System.out.println("Json String");
         System.out.println(response.getJsonObject());
@@ -145,15 +116,19 @@ public abstract class AbstractClientFactory {
             return true;
         }
 
-        if (response.getJsonObject() == null ||
-                !response.getJsonObject().has("root_cause") ||
-                !response.getJsonObject().get("root_cause").isJsonArray()) {
+        // ES 5.x
+        // {"error": {"root_cause":[{"type":"index_already_exists_exception","reason": "..."}]}}
+        if (response.getJsonObject() == null || !response.getJsonObject().has("error")) {
             return false;
         }
 
-        // ES 5.x
-        // {"root_cause":[{"type":"index_already_exists_exception","reason": "..."]}}
-        JsonArray causes = response.getJsonObject().getAsJsonArray("root_cause");
+        // Error must be a JSON object.
+        JsonObject error = response.getJsonObject().getAsJsonObject("error");
+        if (!(error.has("root_cause") && error.get("root_cause").isJsonArray())) {
+            return false;
+        }
+
+        JsonArray causes = error.getAsJsonArray("root_cause");
 
         for (JsonElement elem : causes) {
             if (elem.isJsonObject()) {
