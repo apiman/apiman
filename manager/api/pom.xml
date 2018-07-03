@@ -3,7 +3,7 @@
   <parent>
     <groupId>io.apiman</groupId>
     <artifactId>apiman-manager</artifactId>
-    <version>1.4.3-SNAPSHOT</version>
+    <version>1.4.3.Final</version>
   </parent>
   <artifactId>apiman-manager-api</artifactId>
   <packaging>pom</packaging>
