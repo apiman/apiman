@@ -24,7 +24,7 @@ import io.apiman.gateway.engine.beans.PolicyFailure;
  * @author eric.wittmann@redhat.com
  * @param <T> Api object type
  */
-public interface IPolicyChain<T> {
+public interface IPolicyChain<T> extends IPolicyFailureChain {
 
     /**
      * Called by a policy when it has successfully completed applying itself.  This

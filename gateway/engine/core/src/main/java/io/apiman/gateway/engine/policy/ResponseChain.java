@@ -16,6 +16,7 @@
 package io.apiman.gateway.engine.policy;
 
 import io.apiman.gateway.engine.beans.ApiResponse;
+import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.io.IReadWriteStream;
 
 import java.util.Iterator;
@@ -62,15 +63,10 @@ public class ResponseChain extends Chain<ApiResponse> {
      */
     @Override
     protected void applyPolicy(PolicyWithConfiguration policy, IPolicyContext context) {
-        ClassLoader oldCtxLoader = Thread.currentThread().getContextClassLoader();
-        try {
-            Thread.currentThread().setContextClassLoader(policy.getPolicy().getClass().getClassLoader());
+        executeInPolicyContextLoader(policy.getPolicy().getClass().getClassLoader(), () -> {
             policy.getPolicy().apply(getHead(), context, policy.getConfiguration(), this);
-        } finally {
-            Thread.currentThread().setContextClassLoader(oldCtxLoader);
-        }
+        });
     }
-
     /**
      * An iterator over a list of policies - iterates through the policies from
      * back to front (in reverse), which is the proper order when applying the
@@ -112,5 +108,10 @@ public class ResponseChain extends Chain<ApiResponse> {
         public boolean hasNext() {
             return index >= 0;
         }
-    };
+    }
+
+    @Override
+    public void doFailure(PolicyFailure failure)  {
+        doApplyFailure(failure);
+    }
 }

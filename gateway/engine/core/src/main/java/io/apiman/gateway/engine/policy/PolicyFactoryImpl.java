@@ -40,7 +40,7 @@ public class PolicyFactoryImpl implements IPolicyFactory {
 
     /**
      * Constructor.
-     * @param config
+     * @param config the configuration
      */
     public PolicyFactoryImpl(Map<String, String> config) {
     }

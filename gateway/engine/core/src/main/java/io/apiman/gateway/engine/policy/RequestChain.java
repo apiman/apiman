@@ -16,6 +16,7 @@
 package io.apiman.gateway.engine.policy;
 
 import io.apiman.gateway.engine.beans.ApiRequest;
+import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.io.IReadWriteStream;
 
 import java.util.Iterator;
@@ -62,13 +63,9 @@ public class RequestChain extends Chain<ApiRequest> {
      */
     @Override
     protected void applyPolicy(PolicyWithConfiguration policy, IPolicyContext context) {
-        ClassLoader oldCtxLoader = Thread.currentThread().getContextClassLoader();
-        try {
-            Thread.currentThread().setContextClassLoader(policy.getPolicy().getClass().getClassLoader());
+        executeInPolicyContextLoader(policy.getPolicy().getClass().getClassLoader(), () -> {
             policy.getPolicy().apply(getHead(), context, policy.getConfiguration(), this);
-        } finally {
-            Thread.currentThread().setContextClassLoader(oldCtxLoader);
-        }
+        });
     }
 
     /**
@@ -112,6 +109,15 @@ public class RequestChain extends Chain<ApiRequest> {
         public boolean hasNext() {
             return index < policies.size();
         }
-    };
+    }
+
+    /**
+     * For a request-side error, just kick out immediately; we want the
+     * response chain to deal with this.
+     */
+    @Override
+    public void doFailure(PolicyFailure failure) {
+        getPolicyFailureHandler().handle(failure);
+    }
 
 }

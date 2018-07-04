@@ -15,14 +15,17 @@
  */
 package io.apiman.gateway.engine.policies;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.ApiResponse;
+import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.beans.exceptions.ConfigurationParseException;
 import io.apiman.gateway.engine.policy.IPolicy;
 import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
+import io.apiman.gateway.engine.policy.IPolicyFailureChain;
+
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * A base class for policy impls that use jackson to parse configuration info.
@@ -49,7 +52,7 @@ public abstract class AbstractMappedPolicy<C> implements IPolicy {
     @Override
     public C parseConfiguration(String jsonConfiguration) throws ConfigurationParseException {
         try {
-            return mapper.reader(getConfigurationClass()).readValue(jsonConfiguration);
+            return mapper.readerFor(getConfigurationClass()).readValue(jsonConfiguration);
         } catch (Exception e) {
             throw new ConfigurationParseException(e);
         }
@@ -97,6 +100,21 @@ public abstract class AbstractMappedPolicy<C> implements IPolicy {
      */
     protected void doApply(ApiResponse response, IPolicyContext context, C config, IPolicyChain<ApiResponse> chain) {
         chain.doApply(response);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public void processFailure(PolicyFailure failure, IPolicyContext context, Object config, IPolicyFailureChain chain) {
+        doProcessFailure(failure, context, (C) config, chain);
+    }
+
+    /**
+     * Override if you wish to modify a failure.
+     *
+     * @see IPolicy#processFailure(PolicyFailure, IPolicyContext, Object)
+     */
+    protected void doProcessFailure(PolicyFailure failure, IPolicyContext context, C config, IPolicyFailureChain chain) {
+        chain.doFailure(failure);
     }
 
 }

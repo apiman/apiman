@@ -25,6 +25,7 @@ import io.apiman.gateway.engine.policy.IPolicyContext;
  * Base class for data policies that want to use jackson to map their config.
  *
  * @author eric.wittmann@redhat.com
+ * @param <C> Policy configuration type
  */
 public abstract class AbstractMappedDataPolicy<C> extends AbstractMappedPolicy<C> implements IDataPolicy {
 

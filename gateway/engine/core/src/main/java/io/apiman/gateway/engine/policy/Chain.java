@@ -15,6 +15,7 @@
  */
 package io.apiman.gateway.engine.policy;
 
+import io.apiman.gateway.engine.Procedure;
 import io.apiman.gateway.engine.async.IAsyncHandler;
 import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.io.AbstractStream;
@@ -50,13 +51,14 @@ public abstract class Chain<H> extends AbstractStream<H> implements IAbortable, 
     private final IPolicyContext context;
 
     private IReadWriteStream<H> headPolicyHandler;
-    private IAsyncHandler<PolicyFailure> policyFailureHandler;
     private IAsyncHandler<Throwable> policyErrorHandler;
+    private IAsyncHandler<PolicyFailure> policyFailureHandler;
 
     private Iterator<PolicyWithConfiguration> policyIterator;
 
     private H apiObject;
     private boolean firstElem = true;
+    private PolicyFailure failure;
 
     /**
      * Constructor.
@@ -154,6 +156,31 @@ public abstract class Chain<H> extends AbstractStream<H> implements IAbortable, 
         }
     }
 
+    protected void doApplyFailure(PolicyFailure failure) {
+        try {
+            this.failure = failure;
+
+            if(firstElem) {
+                chainPolicyHandlers();
+                firstElem = false;
+            }
+
+            if (policyIterator.hasNext()) {
+                applyFailure(policyIterator.next(), getContext());
+            } else {
+                policyFailureHandler.handle(failure);
+            }
+        } catch (Throwable error) {
+            throwError(error);
+        }
+    }
+
+    private void applyFailure(PolicyWithConfiguration policy, IPolicyContext context) {
+        executeInPolicyContextLoader(policy.getPolicy().getClass().getClassLoader(), () -> {
+            policy.getPolicy().processFailure(failure, context, policy.getConfiguration(), this);
+        });
+    }
+
     /**
      * @see io.apiman.gateway.engine.policy.IPolicyChain#doSkip(java.lang.Object)
      */
@@ -212,6 +239,15 @@ public abstract class Chain<H> extends AbstractStream<H> implements IAbortable, 
     }
 
     /**
+     * Get policy failure handler
+     *
+     * @return the policy failure handler
+     */
+    protected IAsyncHandler<PolicyFailure> getPolicyFailureHandler() {
+        return policyFailureHandler;
+    }
+
+    /**
      * Sets the policy failure handler.
      * @param failureHandler the failure handler
      */
@@ -225,10 +261,7 @@ public abstract class Chain<H> extends AbstractStream<H> implements IAbortable, 
      * @param failure the policy failure
      */
     @Override
-    public void doFailure(PolicyFailure failure) {
-        abort(null);
-        policyFailureHandler.handle(failure);
-    }
+    public abstract void doFailure(PolicyFailure failure);
 
     /**
      * Sets the policy error handler.
@@ -258,6 +291,17 @@ public abstract class Chain<H> extends AbstractStream<H> implements IAbortable, 
 //            policy.abort();
 //        }
     }
+
+    protected void executeInPolicyContextLoader(ClassLoader classloader, Procedure procedure) {
+        ClassLoader oldCtxLoader = Thread.currentThread().getContextClassLoader();
+        try {
+            Thread.currentThread().setContextClassLoader(classloader);
+            procedure.execute();
+        } finally {
+            Thread.currentThread().setContextClassLoader(oldCtxLoader);
+        }
+    }
+
 
     /**
      * Gets the API handler for the policy.
