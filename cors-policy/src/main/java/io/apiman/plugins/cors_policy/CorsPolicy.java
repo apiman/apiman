@@ -18,6 +18,7 @@ package io.apiman.plugins.cors_policy;
 import io.apiman.gateway.engine.IApiConnector;
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.ApiResponse;
+import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.beans.util.CaseInsensitiveStringMultiMap;
 import io.apiman.gateway.engine.beans.util.HeaderMap;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
@@ -25,6 +26,7 @@ import io.apiman.gateway.engine.policies.AbstractMappedPolicy;
 import io.apiman.gateway.engine.policy.IConnectorInterceptor;
 import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
+import io.apiman.gateway.engine.policy.IPolicyFailureChain;
 
 /**
  * A policy implementing CORS (Cross-origin resource sharing): a method of defining access to resources
@@ -103,6 +105,23 @@ public class CorsPolicy extends AbstractMappedPolicy<CorsConfigBean> {
         }
 
         chain.doApply(response);
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#doProcessFailure(io.apiman.gateway.engine.beans.PolicyFailure, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyFailureChain)
+     */
+    @Override
+    protected void doProcessFailure(PolicyFailure failure, IPolicyContext context, CorsConfigBean config,
+            IPolicyFailureChain chain) {
+
+        CaseInsensitiveStringMultiMap corsHeaders = getResponseHeaders(context);
+
+        if(corsHeaders != EMPTY_MAP) {
+            failure.getHeaders().putAll(corsHeaders.toMap());
+        }
+
+        chain.doFailure(failure);
     }
 
     private void setResponseHeaders(IPolicyContext context, CaseInsensitiveStringMultiMap response) {
