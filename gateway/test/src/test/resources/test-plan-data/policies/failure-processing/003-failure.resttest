@@ -1,0 +1,14 @@
+GET /Policy_FailureProcessingTest/echo/1.0.0/path/to/app/resource admin/admin
+X-API-Key: 12345
+
+----
+429
+Content-Type: application/json
+X-Policy-Failure-Type: Other
+X-Policy-Failure-Code: 10005
+Test-Policy-Process-Failure: true
+
+{
+    "type" : "Other",
+    "failureCode" : 10005
+}

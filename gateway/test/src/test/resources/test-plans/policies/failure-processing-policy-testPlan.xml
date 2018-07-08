@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testPlan xmlns="urn:io.apiman.test:2014:02:testPlan">
+
+  <testGroup name="Configure the Gateway" endpoint="api">
+    <test name="Publish Api">test-plan-data/policies/failure-processing/001-publish-api.resttest</test>
+    <test name="Register Client">test-plan-data/policies/failure-processing/002-register-client.resttest</test>
+  </testGroup>
+
+  <testGroup name="Trigger policy failure. Expect processing of failures.">
+    <test name="Hit rate limit, then TestPolicy processes failure.">test-plan-data/policies/failure-processing/003-failure.resttest</test>
+  </testGroup>
+
+</testPlan>

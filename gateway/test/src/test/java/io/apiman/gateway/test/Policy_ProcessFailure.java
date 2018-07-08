@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 JBoss Inc
+ * Copyright 2018 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,13 +24,13 @@ import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
 /**
- * Make sure plugins work.
+ * Process failure tests.
  *
- * @author eric.wittmann@redhat.com
+ * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
  */
 @RunWith(GatewayRestTester.class)
-@GatewayRestTestPlan("test-plans/plugins/test-policy-testPlan.xml")
-public class PluginTestPolicyTest {
+@GatewayRestTestPlan("test-plans/policies/failure-processing-policy-testPlan.xml")
+public class Policy_ProcessFailure {
 
     @BeforeClass
     public static void before() {
