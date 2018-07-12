@@ -15,13 +15,6 @@
  */
 package io.apiman.gateway.platforms.vertx3.engine;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.StandardOpenOption;
-import java.util.Map;
-
 import io.apiman.common.plugin.PluginUtils;
 import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
@@ -34,6 +27,13 @@ import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.HttpClientRequest;
 import io.vertx.core.http.HttpClientResponse;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
+import java.util.Map;
+
 /**
  * A vertx implementation of the API Gateway's plugin registry. This version simply extends the default
  * implementation but provides its own (actually asynchronous) downloading
@@ -45,18 +45,7 @@ public class VertxPluginRegistry extends DefaultPluginRegistry {
     @SuppressWarnings("nls")
     private static File getTempPluginsDir() {
         try {
-            File tempDir = File.createTempFile("_apiman", "plugins").getParentFile();
-            if (!tempDir.exists()) {
-                tempDir.mkdirs();
-            }
-            if (!tempDir.isDirectory()) {
-                throw new IOException("Invalid temporary directory: " + tempDir);
-            }
-            File tempPluginsDir = new File(tempDir, "api-gateway-plugins");
-            if (!tempPluginsDir.exists()) {
-                tempPluginsDir.mkdirs();
-            }
-            return tempPluginsDir;
+            return Files.createTempDirectory("apiman-gateway-plugins-tmp").toFile();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
