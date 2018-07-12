@@ -86,17 +86,14 @@ public class VertxPluginRegistry extends DefaultPluginRegistry {
             });
 
             // Body Handler
-            response.handler((Handler<Buffer>) buffer -> {
+            response.bodyHandler((Handler<Buffer>) buffer -> {
                 try {
                     Files.write(pluginFile.toPath(), buffer.getBytes(), StandardOpenOption.APPEND,
                             StandardOpenOption.CREATE, StandardOpenOption.WRITE);
+                    handler.handle(AsyncResultImpl.create(pluginFile));
                 } catch (IOException e) {
                     handler.handle(AsyncResultImpl.create(e, File.class));
                 }
-            });
-
-            response.endHandler((Handler<Void>) event -> {
-                handler.handle(AsyncResultImpl.create(pluginFile));
             });
         });
 
