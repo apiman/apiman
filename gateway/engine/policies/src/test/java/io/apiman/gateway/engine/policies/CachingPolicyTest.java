@@ -23,8 +23,9 @@ import io.apiman.test.policies.PolicyTestRequestType;
 import io.apiman.test.policies.PolicyTestResponse;
 import io.apiman.test.policies.TestingPolicy;
 
-import org.junit.Assert;
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 /**
  * Unit test.
@@ -44,47 +45,47 @@ public class CachingPolicyTest extends ApimanPolicyTest {
 
         PolicyTestResponse response = send(request);
         EchoResponse echo = response.entity(EchoResponse.class);
-        Assert.assertNotNull(echo);
+        assertNotNull(echo);
         Long counterValue = echo.getCounter();
-        Assert.assertNotNull(counterValue);
-        Assert.assertEquals("application/json", response.header("Content-Type"));
+        assertNotNull(counterValue);
+        assertEquals("application/json", response.header("Content-Type"));
 
         // Now send the request again - we should get the *same* counter value!
         response = send(request);
         echo = response.entity(EchoResponse.class);
-        Assert.assertNotNull(echo);
+        assertNotNull(echo);
         Long counterValue2 = echo.getCounter();
-        Assert.assertNotNull(counterValue2);
-        Assert.assertEquals(counterValue, counterValue2);
-        Assert.assertEquals("application/json", response.header("Content-Type"));
+        assertNotNull(counterValue2);
+        assertEquals(counterValue, counterValue2);
+        assertEquals("application/json", response.header("Content-Type"));
 
         // One more time, just to be sure
         response = send(request);
         echo = response.entity(EchoResponse.class);
-        Assert.assertNotNull(echo);
+        assertNotNull(echo);
         Long counterValue3 = echo.getCounter();
-        Assert.assertNotNull(counterValue3);
-        Assert.assertEquals(counterValue, counterValue3);
-        Assert.assertEquals("application/json", response.header("Content-Type"));
+        assertNotNull(counterValue3);
+        assertEquals(counterValue, counterValue3);
+        assertEquals("application/json", response.header("Content-Type"));
 
         // Now wait for 3s and make sure the cache entry expired
         Thread.sleep(3000);
         response = send(request);
         echo = response.entity(EchoResponse.class);
-        Assert.assertNotNull(echo);
+        assertNotNull(echo);
         Long counterValue4 = echo.getCounter();
-        Assert.assertNotNull(counterValue4);
-        Assert.assertNotEquals(counterValue, counterValue4);
-        Assert.assertEquals("application/json", response.header("Content-Type"));
+        assertNotNull(counterValue4);
+        assertNotEquals(counterValue, counterValue4);
+        assertEquals("application/json", response.header("Content-Type"));
 
         // And again - should be re-cached
         response = send(request);
         echo = response.entity(EchoResponse.class);
-        Assert.assertNotNull(echo);
+        assertNotNull(echo);
         Long counterValue5 = echo.getCounter();
-        Assert.assertNotNull(counterValue5);
-        Assert.assertEquals(counterValue4, counterValue5);
-        Assert.assertEquals("application/json", response.header("Content-Type"));
+        assertNotNull(counterValue5);
+        assertEquals(counterValue4, counterValue5);
+        assertEquals("application/json", response.header("Content-Type"));
     }
 
     /**
@@ -102,27 +103,30 @@ public class CachingPolicyTest extends ApimanPolicyTest {
 
         PolicyTestResponse response = send(PolicyTestRequest.build(PolicyTestRequestType.GET, originalUri));
         EchoResponse echo = response.entity(EchoResponse.class);
-        Assert.assertNotNull(echo);
+        assertNotNull(echo);
         Long counterValue = echo.getCounter();
-        Assert.assertNotNull(counterValue);
-        Assert.assertEquals("application/json", response.header("Content-Type"));
+        assertNotNull(counterValue);
+        assertEquals("application/json", response.header("Content-Type"));
+        assertEquals(200, response.code());
 
         // Request with a different query string - expect an uncached response
         response = send(PolicyTestRequest.build(PolicyTestRequestType.GET, "/some/cached-resource?foo=different"));
         echo = response.entity(EchoResponse.class);
-        Assert.assertNotNull(echo);
+        assertNotNull(echo);
         Long counterValue2 = echo.getCounter();
-        Assert.assertNotNull(counterValue2);
-        Assert.assertNotEquals(counterValue, counterValue2);
-        Assert.assertEquals("application/json", response.header("Content-Type"));
+        assertNotNull(counterValue2);
+        assertNotEquals(counterValue, counterValue2);
+        assertEquals("application/json", response.header("Content-Type"));
+        assertEquals(200, response.code());
 
         // Request the original URI (including query string) - expect a cached response
         response = send(PolicyTestRequest.build(PolicyTestRequestType.GET, originalUri));
         echo = response.entity(EchoResponse.class);
-        Assert.assertNotNull(echo);
+        assertNotNull(echo);
         Long counterValue3 = echo.getCounter();
-        Assert.assertNotNull(counterValue3);
-        Assert.assertEquals(counterValue, counterValue3);
-        Assert.assertEquals("application/json", response.header("Content-Type"));
+        assertNotNull(counterValue3);
+        assertEquals(counterValue, counterValue3);
+        assertEquals("application/json", response.header("Content-Type"));
+        assertEquals(200, response.code());
     }
 }

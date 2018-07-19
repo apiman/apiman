@@ -92,6 +92,8 @@ public class CachingPolicy extends AbstractMappedDataPolicy<CachingConfig> imple
                                     context.setConnectorInterceptor(new CacheConnectorInterceptor(cacheEntry));
                                     context.setAttribute(SHOULD_CACHE_ATTR, Boolean.FALSE);
                                     context.setAttribute(CACHED_RESPONSE, cacheEntry.getHead());
+                                } else {
+                                    context.setAttribute(SHOULD_CACHE_ATTR, Boolean.TRUE);
                                 }
                                 chain.doApply(request);
                             }
@@ -131,7 +133,7 @@ public class CachingPolicy extends AbstractMappedDataPolicy<CachingConfig> imple
 
         // Possibly cache the response for future posterity.
         // Check the response code against list in config (empty/null list means cache all).
-        final boolean shouldCache = (context.getAttribute(SHOULD_CACHE_ATTR, Boolean.TRUE) &&
+        final boolean shouldCache = (context.getAttribute(SHOULD_CACHE_ATTR, Boolean.FALSE) &&
                 ofNullable(policyConfiguration.getStatusCodes())
                     .map(statusCodes -> statusCodes.isEmpty() || statusCodes.contains(String.valueOf(response.getCode())))
                     .orElse(true));

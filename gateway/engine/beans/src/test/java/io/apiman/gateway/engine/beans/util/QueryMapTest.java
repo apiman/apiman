@@ -16,33 +16,35 @@
 
 package io.apiman.gateway.engine.beans.util;
 
-import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 @SuppressWarnings("nls")
 public class QueryMapTest {
-
     @Test
-    @Ignore
-    public void simpleQuery() {
+    public void emptyQuery() {
         QueryMap qm = new QueryMap();
-        qm.add("q", "search").add("Q", "search again").add("x", "otherthing");
-        Assert.assertEquals("q=search&Q=search+again&x=otherthing", qm.toQueryString());
+        assertEquals("", qm.toQueryString());
     }
 
     @Test
-    @Ignore
+    public void simpleQuery() {
+        QueryMap qm = new QueryMap();
+        qm.add("q", "search").add("Q", "search again").add("x", "otherthing");
+        assertEquals("q=search&Q=search+again&x=otherthing", qm.toQueryString());
+    }
+
+    @Test
     public void complexQuery() {
         QueryMap qm = new QueryMap();
         qm.add("the query param", "the meaning of life: 42, according to Douglas Adams' Hitchiker's Guide to the Galaxy")
           .add("Q", "A & B & C & D * E @ F $ G % G ^ I & J ( K");
 
-        Assert.assertEquals("the+query+param=the+meaning+of+life%3A+42%2C+according+to+Douglas+Adams%27+Hitchiker%27s+Guide+to+the+Galaxy&"
+        assertEquals("the+query+param=the+meaning+of+life%3A+42%2C+according+to+Douglas+Adams%27+Hitchiker%27s+Guide+to+the+Galaxy&"
                 + "Q=A+%26+B+%26+C+%26+D+*+E+%40+F+%24+G+%25+G+%5E+I+%26+J+%28+K", qm.toQueryString());
     }
-
 }
