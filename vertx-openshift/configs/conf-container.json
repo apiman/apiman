@@ -3,7 +3,7 @@
     "apiman" : {
       "es": {
         "protocol": "${APIMAN_ES_PROTOCOL:-http}",
-        "host": "${APIMAN_ES_HOST:-localhost}",
+        "host": "${APIMAN_ES_HOST:-apiman_elastic}",
         "port": "${APIMAN_ES_PORT:-9200}",
         "username": null,
         "password": null,
@@ -13,14 +13,20 @@
   },
 
   "registry": {
-    "class": "io.apiman.gateway.engine.vertx.polling.URILoadingRegistry",
+    "class": "io.apiman.gateway.engine.es.PollCachingESRegistry",
     "config": {
-      // Path to your apiman JSON config; refer to apiman's documentation for format description.
-      // Supports: file, HTTP & HTTPS.
-      "configUri": "${APIMAN_REGISTRY_URI}",
-      // For HTTP/HTTPS auth is supported: BASIC, OAUTH2, KEYCLOAKOAUTH2
-      // For more detail refer to the apiman documentation.
-      "auth": "NONE"
+      "client": {
+        "type": "jest",
+        "protocol": "${apiman.es.protocol}",
+        "host": "${apiman.es.host}",
+        "port": "${apiman.es.port}",
+        "initialize": true,
+        "username": "${apiman.es.username}",
+        "password": "${apiman.es.password}",
+        "timeout": "${apiman.es.timeout}"//,
+        //"cache-polling-interval": 15
+        //"index": ""
+      }
     }
   },
 
@@ -53,7 +59,7 @@
       "tls": {
         // Enable devMode for HTTPS connections (gateway trusts any certificate).
         // This should *NOT* be used in production mode. *Use with great care.*
-        "devMode": "false",
+        "devMode": "${APIMAN_DEV_MODE:-false}",
 
         // Whether self-signed certificates should be automatically trusted. *Use with great care.*
         "allowSelfSigned": "${APIMAN_SSL_BACKEND_SELF_SIGNED:-false}"
@@ -207,26 +213,26 @@
   //  },
 
   // Host-name to bind to for this machine.
-  "hostname": "localhost",
+  // "hostname": "localhost",
 
   // Verticle configuration
   // Port - The port a given verticle listens on (where relevant)
   // Count - Number of given verticle type launched, or "auto" for automatic.
   "verticles": {
     "http": {
-      "port": "${APIMAN_VERTICLE_HTTP_PORT:-8080}",
+      "port": 8080,
       "count": "auto"
     },
     // Configure the following SSL section to enable SSL/TLS.
     "https": {
-      "port": "${APIMAN_VERTICLE_HTTPS_PORT:-8443}",
+      "port": 8443,
       "count": 0
     },
     // The Gateway API; this will be the port to set in the UI.
     // e.g. http://localhost:8081 or https://gateway.machine:8081
     // Configure the following SSL section to enable SSL/TLS.
     "api": {
-      "port": "${APIMAN_VERTICLE_API_PORT:-8081}",
+      "port": 8081,
       "count": 1
     }
   },
@@ -235,8 +241,8 @@
   "auth": {
     "type": "BASIC",
     "config": {
-      "username": "${APIMAN_AUTH_USERNAME}",
-      "password": "${APIMAN_AUTH_PASSWORD}"
+      "username": "${APIMAN_AUTH_USERNAME:-admin}",
+      "password": "${APIMAN_AUTH_PASSWORD:-admin}"
     }
   },
 

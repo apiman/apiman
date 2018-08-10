@@ -2,13 +2,12 @@ FROM jboss/base-jdk:8
 LABEL maintainter="jcechace@redhat.com>" \
       description="Vert.X implementation of Apiman Gateway" \
       version="1.0" \
-      apiman.verson="1.3.1.Final" \
       apiman.component="gateway" \
       apiman.platform="verx"
 
 
 ENV JBOSS_HOME="/opt/jboss"
-ENV APIMAN_VERSION="1.3.1.Final"
+ENV APIMAN_VERSION="1.5.1.Final"
 ENV APIMAN_HOME="${JBOSS_HOME}/apiman"
 ENV APIMAN_CONFIG="${APIMAN_HOME}/configs/conf-container.json"
 ENV APIMAN_REGISTRY_URI="file:///${APIMAN_HOME}/configs/registry.json"
@@ -35,7 +34,7 @@ VOLUME ${APIMAN_HOME}/configs/
 EXPOSE 8080
 EXPOSE 8081
 
-ENTRYPOINT ${APIMAN_HOME}/apiman-gateway.sh -conf "${APIMAN_CONFIG}"
+CMD ${APIMAN_HOME}/apiman-gateway.sh -conf "${APIMAN_CONFIG}"
 
 
 

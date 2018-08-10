@@ -1,0 +1,175 @@
+kind: Template
+apiVersion: v1
+metadata:
+  name: "apiman-gateway"
+  annotations:
+    description: "Apiman Vert.X API gateway"
+    iconClass: "icon-load-balancer"
+    tags: "api,gateway,apiman"
+objects:
+- kind: Secret
+  apiVersion: v1
+  stringData:
+    APIMAN_AUTH_USERNAME: "${APIMAN_AUTH_USERNAME}"
+    APIMAN_AUTH_PASSWORD: "${APIMAN_AUTH_PASSWORD}"
+  metadata:
+    name: "${APIMAN_NAME}-auth-secret"
+    labels:
+      apiman: "${APIMAN_NAME}"
+      component: "gateway"
+  type: Opaque
+
+- kind: Secret
+  apiVersion: v1
+  stringData:
+    APIMAN_ES_USERNAME: "${APIMAN_ES_USERNAME}"
+    APIMAN_ES_PASSWORD: "${APIMAN_ES_PASSWORD}"
+  metadata:
+    name: "${APIMAN_NAME}-es-auth-secret"
+    labels:
+      apiman: "${APIMAN_NAME}"
+      component: "gateway"
+  type: Opaque
+
+- kind: DeploymentConfig
+  apiVersion: v1
+  metadata:
+    name: "${APIMAN_NAME}"
+    labels:
+      apiman: "${APIMAN_NAME}"
+      component: "gateway"
+  spec:
+    replicas: 1
+    selector:
+      deploymentconfig: "${APIMAN_NAME}"
+    strategy:
+      type: Rolling
+    template:
+      metadata:
+        labels:
+          deploymentconfig: "${APIMAN_NAME}"
+      spec:
+        containers:
+        - name: "${APIMAN_NAME}"
+          image: "jcechace/apiman-vertx-openshift"
+          imagePullPolicy: Always
+          ports:
+          - name: proxy
+            containerPort: 8080
+            protocol: TCP
+          - name: api
+            containerPort: 8081
+            protocol: TCP
+          env:
+          - name: APIMAN_AUTH_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: "${APIMAN_NAME}-auth-secret"
+                key: "APIMAN_AUTH_USERNAME"
+          - name: APIMAN_AUTH_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: "${APIMAN_NAME}-auth-secret"
+                key: "APIMAN_AUTH_PASSWORD"
+          - name: APIMAN_ES_PROTOCOL
+            value: "${APIMAN_ES_PROTOCOL}"
+          - name: APIMAN_ES_HOST
+            value: "${APIMAN_ES_HOST}"
+          - name: APIMAN_ES_PORT
+            value: "${APIMAN_ES_HOST}"
+          - name: APIMAN_ES_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: "${APIMAN_NAME}-es-auth-secret"
+                key: "APIMAN_ES_USERNAME"
+          - name: APIMAN_ES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: "${APIMAN_NAME}-es-auth-secret"
+                key: "APIMAN_ES_PASSWORD"
+          - name: APIMAN_DEV_MODE
+            value: "${APIMAN_DEV_MODE}"
+    triggers:
+      - type: ConfigChange
+
+- kind: Service
+  apiVersion: v1
+  metadata:
+    name: "${APIMAN_NAME}"
+    labels:
+      apiman: "${APIMAN_NAME}"
+      component: "gateway"
+  spec:
+    ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    - name: api
+      port: 8081
+      protocol: TCP
+      targetPort: 8081
+    selector:
+      deploymentconfig: "${APIMAN_NAME}"
+
+- kind: Route
+  apiVersion: v1
+  metadata:
+    name: apiman-gateway-http
+    labels:
+      apiman: "${APIMAN_NAME}"
+  spec:
+    to:
+      kind: Service
+      name: ${APIMAN_NAME}
+    port:
+      targetPort: http
+    tls:
+      termination: edge
+      insecureEdgeTerminationPolicy: Allow
+
+- kind: Route
+  apiVersion: v1
+  metadata:
+    name: apiman-gateway-api
+    labels:
+      apiman: "${APIMAN_NAME}"
+  spec:
+    to:
+      kind: Service
+      name: ${APIMAN_NAME}
+    port:
+      targetPort: api
+    tls:
+      termination: edge
+      insecureEdgeTerminationPolicy: Allow
+
+parameters:
+- name: APIMAN_NAME
+  description: "Name of the Apiman API Gateway"
+  value: apiman
+- name: APIMAN_ES_PROTOCOL
+  description: "Protocol used to connect to ElasticSearch cluester"
+  value: "http"
+- name: APIMAN_ES_HOST
+  decritpion: "ElasticSearch host"
+  required: true
+- name: APIMAN_ES_PORT
+  value: "9200"
+  description: "Port used to connect to ElasticSearch cluster"
+- name: APIMAN_ES_USERNAME
+  value: ""
+  description: "Username used to connect to ElasticSearch cluester"
+- name: APIMAN_ES_PASSWORD
+  value: ""
+  description: "Password used to connect to ElasticSearch cluester"
+- name: APIMAN_DEV_MODE
+  description: "Debug mode"
+  value: "true"
+- name: APIMAN_AUTH_USERNAME
+  description: "Username used to access gateway API"
+  value: "apiman"
+- name: APIMAN_AUTH_PASSWORD
+  description: "Password used to access gateway API"
+  generate: "expression"
+  from: "[a-zA-Z0-9]{20}"

@@ -1,0 +1,18 @@
+version: '3'
+services:
+    apiman_gateway:
+        container_name: apiman_gateway
+        image: jcechace/apiman-vertx-openshift
+        ports:
+            - "8082:8082"
+            - "8081:8081"
+        links:
+            - apiman_elastic
+    apiman_elastic:
+        container_name: apiman_elastic
+        image: docker.elastic.co/elasticsearch/elasticsearch:5.6.12
+        ports:
+            - "9200:9200"
+            - "9300:9300"
+        environment:
+            - discovery.type=single-node

@@ -1,6 +1,6 @@
 {
     "apis": [{
-        "publicAPI": false,
+        "publicAPI": true,
         "organizationId": "example",
         "apiId": "echo",
         "version": "1.0",
