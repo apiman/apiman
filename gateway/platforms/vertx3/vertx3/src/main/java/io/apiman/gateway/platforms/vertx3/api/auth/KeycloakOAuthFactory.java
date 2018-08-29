@@ -20,9 +20,11 @@ import io.apiman.common.util.Basic;
 import io.apiman.gateway.platforms.vertx3.common.config.VertxEngineConfig;
 import io.apiman.gateway.platforms.vertx3.verticles.ApiVerticle;
 import io.vertx.core.Vertx;
+import io.vertx.core.http.HttpClientOptions;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
+import io.vertx.core.net.JksOptions;
 import io.vertx.ext.auth.oauth2.AccessToken;
 import io.vertx.ext.auth.oauth2.OAuth2Auth;
 import io.vertx.ext.auth.oauth2.OAuth2FlowType;
@@ -38,6 +40,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.EnumUtils;
 
 /**
@@ -92,7 +95,9 @@ public class KeycloakOAuthFactory {
                         .put("username", username)
                         .put("password", password);
 
-                OAuth2Auth oauth2 = KeycloakAuth.create(vertx, flowType, authConfig);
+                HttpClientOptions sslOptions = getHttpClientOptionsForKeycloak(authConfig);
+
+                OAuth2Auth oauth2 = KeycloakAuth.create(vertx, flowType, authConfig, sslOptions);
                 oauth2.getToken(params, tokenResult -> {
                     if (tokenResult.succeeded()) {
                         log.debug("OAuth2 Keycloak exchange succeeded.");
@@ -143,8 +148,42 @@ public class KeycloakOAuthFactory {
         };
     }
 
+    private static HttpClientOptions getHttpClientOptionsForKeycloak(JsonObject config) {
+        HttpClientOptions options = new HttpClientOptions();
+
+        if (config.containsKey("ssl-required")) {
+            if (!config.getString("ssl-required").toLowerCase().equals("none")) {
+                options.setSsl(true);
+            }
+        }
+
+        if (config.containsKey("allow-any-hostname")) {
+            Object value = config.getValue("allow-any-hostname");
+            if (value.equals(true) || value.equals("true")) {
+                options.setVerifyHost(false);
+            }
+        }
+
+        if (config.containsKey("disable-trust-manager")) {
+            Object value = config.getValue("disable-trust-manager");
+            if (value.equals(true) || value.equals("true")) {
+                options.setTrustAll(true);
+            }
+        }
+
+        if (config.containsKey("truststore") && config.containsKey("truststore-password")) {
+            options.setTrustStoreOptions(new JksOptions().setPath(config.getString("truststore")).setPassword(
+                    config.getString("truststore-password")));
+        }
+
+        if (config.containsKey("client-keystore") && config.containsKey("client-keystore-password")) {
+            options.setTrustStoreOptions(new JksOptions().setPath(config.getString("client-keystore")).setPassword(
+                    config.getString("client-keystore-password")));
+        }
+        return options;
+    }
+
     private static OAuth2FlowType toEnum(String flowType) {
         return EnumUtils.getEnum(OAuth2FlowType.class, flowType.toUpperCase());
     }
-
 }
