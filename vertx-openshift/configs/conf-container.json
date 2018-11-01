@@ -5,8 +5,8 @@
         "protocol": "${APIMAN_ES_PROTOCOL:-http}",
         "host": "${APIMAN_ES_HOST:-apiman_elastic}",
         "port": "${APIMAN_ES_PORT:-9200}",
-        "username": null,
-        "password": null,
+        "username": "${APIMAN_ES_USERNAME}",
+        "password": "${APIMAN_ES_PASSWORD}",
         "timeout": "${APIMAN_ES_TIMEOUT:-10000}"
       }
     }
