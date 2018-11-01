@@ -14,7 +14,7 @@ while true; do
     esac
 done
 
-echo "Bulding docker image with tag '${IMAGE_LOCAL}'."
+echo "Building docker image with tag '${IMAGE_LOCAL}'."
 docker build -t ${IMAGE_LOCAL} $( dirname "${BASH_SOURCE[0]}" )
 
 
