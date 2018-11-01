@@ -76,7 +76,7 @@ objects:
           - name: APIMAN_ES_HOST
             value: "${APIMAN_ES_HOST}"
           - name: APIMAN_ES_PORT
-            value: "${APIMAN_ES_HOST}"
+            value: "${APIMAN_ES_PORT}"
           - name: APIMAN_ES_USERNAME
             valueFrom:
               secretKeyRef:
@@ -148,27 +148,35 @@ parameters:
 - name: APIMAN_NAME
   description: "Name of the Apiman API Gateway"
   value: apiman
+
 - name: APIMAN_ES_PROTOCOL
   description: "Protocol used to connect to ElasticSearch cluester"
   value: "http"
+
 - name: APIMAN_ES_HOST
   decritpion: "ElasticSearch host"
-  required: true
+  value: "apiman-elastic"
+
 - name: APIMAN_ES_PORT
-  value: "9200"
   description: "Port used to connect to ElasticSearch cluster"
+  value: "9200"
+
 - name: APIMAN_ES_USERNAME
-  value: ""
   description: "Username used to connect to ElasticSearch cluester"
-- name: APIMAN_ES_PASSWORD
   value: ""
+
+- name: APIMAN_ES_PASSWORD
   description: "Password used to connect to ElasticSearch cluester"
+  value: ""
+
 - name: APIMAN_DEV_MODE
   description: "Debug mode"
   value: "true"
+
 - name: APIMAN_AUTH_USERNAME
   description: "Username used to access gateway API"
   value: "apiman"
+
 - name: APIMAN_AUTH_PASSWORD
   description: "Password used to access gateway API"
   generate: "expression"
