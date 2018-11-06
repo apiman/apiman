@@ -16,12 +16,8 @@
 
 package io.apiman.gateway.engine.es;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingDeque;
-
+import io.apiman.common.logging.DefaultDelegateFactory;
+import io.apiman.common.logging.IApimanLogger;
 import io.apiman.gateway.engine.IComponentRegistry;
 import io.apiman.gateway.engine.IMetrics;
 import io.apiman.gateway.engine.metrics.RequestMetric;
@@ -29,6 +25,12 @@ import io.searchbox.core.Bulk;
 import io.searchbox.core.Bulk.Builder;
 import io.searchbox.core.BulkResult;
 import io.searchbox.core.Index;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Map;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingDeque;
 
 /**
  * An elasticsearch implementation of the {@link IMetrics} interface.
@@ -43,6 +45,8 @@ public class ESMetrics extends AbstractESComponent implements IMetrics {
     protected IComponentRegistry componentRegistry;
     private final BlockingQueue<RequestMetric> queue;
     private final int batchSize;
+
+    private IApimanLogger logger = new DefaultDelegateFactory().createLogger(PollCachingESRegistry.class);
 
     /**
      * Constructor.
@@ -125,12 +129,10 @@ public class ESMetrics extends AbstractESComponent implements IMetrics {
             
             BulkResult result = getClient().execute(builder.build());
             if (!result.isSucceeded()) {
-                System.err.println("Failed to add metric(s) to ES: " + result.getErrorMessage()); //$NON-NLS-1$
+                logger.warn("Failed to add metric(s) to ES"); //$NON-NLS-1$
             }
         } catch (Exception e) {
-            // TODO better logging of this unlikely error
-            System.err.println("Error adding metric to ES:"); //$NON-NLS-1$
-            e.printStackTrace();
+            logger.warn("Error adding metric to ES"); //$NON-NLS-1$
             return;
         }
     }

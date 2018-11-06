@@ -15,18 +15,20 @@
  */
 package io.apiman.gateway.engine.es;
 
-import java.io.IOException;
-import java.util.Map;
-
+import io.apiman.common.logging.DefaultDelegateFactory;
+import io.apiman.common.logging.IApimanLogger;
 import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
-import io.apiman.gateway.engine.beans.Client;
 import io.apiman.gateway.engine.beans.Api;
+import io.apiman.gateway.engine.beans.Client;
 import io.apiman.gateway.engine.es.beans.DataVersionBean;
 import io.searchbox.client.JestResult;
 import io.searchbox.client.JestResultHandler;
 import io.searchbox.core.Get;
 import io.searchbox.core.Index;
+
+import java.io.IOException;
+import java.util.Map;
 
 /**
  * Extends the {@link ESRegistry} to provide multi-node caching.  This caching solution
@@ -48,6 +50,8 @@ public class PollCachingESRegistry extends CachingESRegistry {
 
     private boolean polling = false;
     private String dataVersion = null;
+
+    private IApimanLogger logger = new DefaultDelegateFactory().createLogger(PollCachingESRegistry.class);
 
     /**
      * Constructor.
@@ -211,8 +215,8 @@ public class PollCachingESRegistry extends CachingESRegistry {
                 }
             }
         } catch (IOException e) {
-            // TODO need to use the gateway logger to log this!
-            e.printStackTrace();
+            logger.warn("Elasticsearch is not available, using cache");
+            invalidate = false;
         }
         if (invalidate) {
             invalidateCache();
