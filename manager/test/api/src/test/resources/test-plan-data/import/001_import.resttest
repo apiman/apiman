@@ -367,7 +367,7 @@ Content-Type: application/json
 }
 ----
 200
-Content-Type: text/plain;charset=UTF-8
+Content-Type: text/plain;charset=utf-8
 
 INFO: ----------------------------
 INFO: Starting apiman data import.

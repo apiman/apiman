@@ -48,6 +48,7 @@ import org.apache.commons.dbcp.BasicDataSource;
 import org.eclipse.jetty.security.ConstraintSecurityHandler;
 import org.eclipse.jetty.security.HashLoginService;
 import org.eclipse.jetty.security.SecurityHandler;
+import org.eclipse.jetty.security.UserStore;
 import org.eclipse.jetty.security.authentication.BasicAuthenticator;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
@@ -321,13 +322,17 @@ public class ManagerApiTestServer {
      */
     private SecurityHandler createSecurityHandler() {
         HashLoginService l = new HashLoginService();
+        UserStore userStore = new UserStore();
+        l.setUserStore(userStore);
+
         for (String [] userInfo : TestUsers.USERS) {
             String user = userInfo[0];
             String pwd = userInfo[1];
             String[] roles = new String[] { "apiuser" };
-            if (user.startsWith("admin"))
+            if (user.startsWith("admin")) {
                 roles = new String[] { "apiuser", "apiadmin"};
-            l.putUser(user, Credential.getCredential(pwd), roles);
+            }
+            userStore.addUser(user, Credential.getCredential(pwd), roles);
         }
         l.setName("apimanrealm");
 

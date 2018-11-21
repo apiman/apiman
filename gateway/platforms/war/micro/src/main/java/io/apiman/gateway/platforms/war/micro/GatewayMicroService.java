@@ -51,6 +51,7 @@ import javax.servlet.DispatcherType;
 import org.eclipse.jetty.security.ConstraintSecurityHandler;
 import org.eclipse.jetty.security.HashLoginService;
 import org.eclipse.jetty.security.SecurityHandler;
+import org.eclipse.jetty.security.UserStore;
 import org.eclipse.jetty.security.authentication.BasicAuthenticator;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
@@ -356,8 +357,10 @@ public class GatewayMicroService {
      */
     protected SecurityHandler createSecurityHandler() throws Exception {
         HashLoginService l = new HashLoginService();
+        UserStore userStore = new UserStore();
+        l.setUserStore(userStore);
         for (User user : Users.getUsers()) {
-            l.putUser(user.getId(), Credential.getCredential(user.getPassword()), user.getRolesAsArray());
+            userStore.addUser(user.getId(), Credential.getCredential(user.getPassword()), user.getRolesAsArray());
         }
         l.setName("apimanrealm");
 

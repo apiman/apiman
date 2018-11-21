@@ -23,7 +23,6 @@ import io.apiman.common.servlet.RootResourceFilter;
 import io.apiman.manager.api.micro.util.ApimanResource;
 import io.apiman.manager.api.security.impl.DefaultSecurityContextFilter;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.EnumSet;
 
@@ -32,6 +31,7 @@ import javax.servlet.DispatcherType;
 import org.eclipse.jetty.security.ConstraintSecurityHandler;
 import org.eclipse.jetty.security.HashLoginService;
 import org.eclipse.jetty.security.SecurityHandler;
+import org.eclipse.jetty.security.UserStore;
 import org.eclipse.jetty.security.authentication.BasicAuthenticator;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerCollection;
@@ -138,7 +138,7 @@ public class ManagerApiMicroService {
              * @see org.eclipse.jetty.server.handler.ResourceHandler#getResource(java.lang.String)
              */
             @Override
-            public Resource getResource(String path) throws MalformedURLException {
+            public Resource getResource(String path) {
                 Resource resource = null;
 
                 if (path == null || path.equals("/") || path.equals("/index.html")) {
@@ -187,7 +187,7 @@ public class ManagerApiMicroService {
 
     /**
      * @param apiManServer
-     * @throws Exception 
+     * @throws Exception
      */
     protected void addSecurityHandler(ServletContextHandler apiManServer) throws Exception {
         apiManServer.setSecurityHandler(createSecurityHandler());
@@ -212,12 +212,15 @@ public class ManagerApiMicroService {
 
     /**
      * Creates a basic auth security handler.
-     * @throws Exception 
+     * @throws Exception
      */
     protected SecurityHandler createSecurityHandler() throws Exception {
         HashLoginService l = new HashLoginService();
+        // UserStore is now separate store entity and must be added to HashLoginService
+        UserStore userStore = new UserStore();
+        l.setUserStore(userStore);
         for (User user : Users.getUsers()) {
-            l.putUser(user.getId(), Credential.getCredential(user.getPassword()), user.getRolesAsArray());
+            userStore.addUser(user.getId(), Credential.getCredential(user.getPassword()), user.getRolesAsArray());
         }
         l.setName("apimanrealm");
 
