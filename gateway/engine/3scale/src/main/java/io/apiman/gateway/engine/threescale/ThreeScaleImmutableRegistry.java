@@ -97,7 +97,7 @@ import java.util.stream.Collectors;
  */
 @SuppressWarnings("nls")
 public class ThreeScaleImmutableRegistry extends InMemoryRegistry implements AsyncInitialize {
-    private static volatile OneShotURILoader instance;
+    private static volatile OneShotURILoader INSTANCE;
     private Vertx vertx;
     private Map<String, String> options;
 
@@ -118,29 +118,29 @@ public class ThreeScaleImmutableRegistry extends InMemoryRegistry implements Asy
 
     @Override
     public void initialize(IAsyncResultHandler<Void> resultHandler) {
-        getURILoader(vertx, options).subscribe(this, resultHandler::handle);
+        getURILoader(vertx, options).subscribe(this, resultHandler);
     }
 
     private OneShotURILoader getURILoader(Vertx vertx, Map<String, String> options) {
-        if (instance == null) {
+        if (INSTANCE == null) {
             synchronized(ThreeScaleImmutableRegistry.class) {
-                if (instance == null) {
-                    instance = new OneShotURILoader(vertx, options);
+                if (INSTANCE == null) {
+                    INSTANCE = new OneShotURILoader(vertx, options);
                 }
             }
         }
-        return instance;
+        return INSTANCE;
     }
 
     // For testing.
     public static void reloadData(IAsyncHandler<Void> doneHandler) {
-        instance.reload(doneHandler);
+        INSTANCE.reload(doneHandler);
     }
 
     // For testing.
     public static void reset() {
         synchronized(ThreeScaleImmutableRegistry.class) {
-            instance = null;
+            INSTANCE = null;
         }
     }
 
@@ -390,7 +390,7 @@ public class ThreeScaleImmutableRegistry extends InMemoryRegistry implements Asy
         }
 
         private void loadDataIntoRegistries() {
-            ThreeScaleImmutableRegistry reg = null;
+            ThreeScaleImmutableRegistry reg;
             while ((reg = awaiting.poll()) != null) {
                 log.debug("Loading data into registry {0}: ", reg);
                 for (Api api : apis) {
@@ -417,7 +417,7 @@ public class ThreeScaleImmutableRegistry extends InMemoryRegistry implements Asy
 
         private void failAll(Throwable cause) {
             AsyncResultImpl<Void> failure = AsyncResultImpl.create(cause);
-            failureHandlers.stream().forEach(failureHandler -> {
+            failureHandlers.forEach(failureHandler -> {
                 vertx.runOnContext(run -> failureHandler.handle(failure));
             });
         }

@@ -53,7 +53,7 @@ public class AccessTokenResourceFetcher {
         this.vertx = vertx;
         this.options = options;
         this.apiUri = uri;
-        this.isHttps = uri.getScheme().equals("https") ? true : false;
+        this.isHttps = uri.getScheme().equals("https");
         this.accessToken = requireOpt("accessToken", "accessToken is required in configuration");
     }
 
