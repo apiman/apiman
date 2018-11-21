@@ -628,7 +628,7 @@
       </dependency>
       <dependency>
         <groupId>org.eclipse.jetty</groupId>
-        <artifactId>jetty-jsp</artifactId>
+        <artifactId>apache-jsp</artifactId>
         <version>${version.org.eclipse.jetty}</version>
       </dependency>
       <dependency>
