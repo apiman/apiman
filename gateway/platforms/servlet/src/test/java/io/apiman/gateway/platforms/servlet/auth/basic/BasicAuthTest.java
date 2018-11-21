@@ -43,6 +43,7 @@ import javax.servlet.DispatcherType;
 import org.eclipse.jetty.security.ConstraintSecurityHandler;
 import org.eclipse.jetty.security.HashLoginService;
 import org.eclipse.jetty.security.SecurityHandler;
+import org.eclipse.jetty.security.UserStore;
 import org.eclipse.jetty.security.authentication.BasicAuthenticator;
 import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.HttpConnectionFactory;
@@ -124,12 +125,15 @@ public class BasicAuthTest {
      * Creates a basic auth security handler.
      */
     private static SecurityHandler createSecurityHandler() {
-        HashLoginService l = new HashLoginService();
+        UserStore userStore = new UserStore();
         String user = "user";
         String pwd = "user123!";
         String[] roles = new String[] { "user" };
-        l.putUser(user, Credential.getCredential(pwd), roles);
+        userStore.addUser(user, Credential.getCredential(pwd), roles);
+
+        HashLoginService l = new HashLoginService();
         l.setName("apimanrealm");
+        l.setUserStore(userStore);
 
         ConstraintSecurityHandler csh = new ConstraintSecurityHandler();
         csh.setAuthenticator(new BasicAuthenticator());
