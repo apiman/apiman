@@ -22,6 +22,8 @@
     <module>osgi</module>
     <module>policies</module>
     <module>prometheus</module>
+    <module>redis</module>
+    <module>storage-common</module>
     <module>vertx-eb-inmemory</module>
     <module>vertx-polling</module>
     <module>vertx-shareddata</module>

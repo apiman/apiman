@@ -15,13 +15,11 @@
  */
 package io.apiman.gateway.engine.hazelcast;
 
-import com.hazelcast.config.Config;
-import io.apiman.gateway.engine.async.AsyncResultImpl;
-import io.apiman.gateway.engine.async.IAsyncResultHandler;
-import io.apiman.gateway.engine.components.IRateLimiterComponent;
-import io.apiman.gateway.engine.components.rate.RateLimitResponse;
-import io.apiman.gateway.engine.rates.RateBucketPeriod;
-import io.apiman.gateway.engine.rates.RateLimiterBucket;
+import io.apiman.gateway.engine.IRequiresInitialization;
+import io.apiman.gateway.engine.hazelcast.common.HazelcastBackingStoreProvider;
+import io.apiman.gateway.engine.storage.component.AbstractRateLimiterComponent;
+
+import java.util.Map;
 
 /**
  * Rate limiter component backed by a Hazelcast Map. This allows rate limiting
@@ -29,55 +27,21 @@ import io.apiman.gateway.engine.rates.RateLimiterBucket;
  *
  * @author Pete Cornish
  */
-public class HazelcastRateLimiterComponent extends AbstractHazelcastComponent implements IRateLimiterComponent {
-    private static final String STORE_NAME = "rate-limiter"; //$NON-NLS-1$
-
-    private final Object mutex = new Object();
+public class HazelcastRateLimiterComponent extends AbstractRateLimiterComponent implements IRequiresInitialization {
+    private final Map<String, String> componentConfig;
 
     /**
      * Constructor.
      */
-    public HazelcastRateLimiterComponent() {
-        super(STORE_NAME);
+    public HazelcastRateLimiterComponent(Map<String, String> componentConfig) {
+        super(new HazelcastBackingStoreProvider());
+        this.componentConfig = componentConfig;
     }
 
-    /**
-     * Constructor.
-     *
-     * @param config the config
-     */
-    public HazelcastRateLimiterComponent(Config config) {
-        super(STORE_NAME, config);
-    }
-
-    /**
-     * @see io.apiman.gateway.engine.components.IRateLimiterComponent#accept(java.lang.String, io.apiman.gateway.engine.rates.RateBucketPeriod, long, long, io.apiman.gateway.engine.async.IAsyncResultHandler)
-     */
     @Override
-    public void accept(final String bucketId, final RateBucketPeriod period, final long limit,
-                       final long increment, final IAsyncResultHandler<RateLimitResponse> handler) {
-        RateLimiterBucket bucket;
-        synchronized (mutex) {
-            bucket = (RateLimiterBucket) getSharedState().get(bucketId);
-            if (bucket == null) {
-                bucket = new RateLimiterBucket();
-                getSharedState().put(bucketId, bucket);
-            }
-            bucket.resetIfNecessary(period);
-
-            RateLimitResponse response = new RateLimitResponse();
-            if (bucket.getCount() > limit) {
-                response.setAccepted(false);
-            } else {
-                response.setAccepted(bucket.getCount() < limit);
-                bucket.setCount(bucket.getCount() + increment);
-                bucket.setLast(System.currentTimeMillis());
-            }
-            int reset = (int) (bucket.getResetMillis(period) / 1000L);
-            response.setReset(reset);
-            response.setRemaining(limit - bucket.getCount());
-            handler.handle(AsyncResultImpl.create(response));
-            getSharedState().put(bucketId, bucket);
+    public void initialize() {
+        if (Boolean.valueOf(componentConfig.get(HazelcastBackingStoreProvider.CONFIG_EAGER_INIT))) {
+            getStore();
         }
     }
 }

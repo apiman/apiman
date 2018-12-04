@@ -6,9 +6,9 @@
     <artifactId>apiman-gateway-engine</artifactId>
     <version>1.5.2-SNAPSHOT</version>
   </parent>
-  <artifactId>apiman-gateway-engine-hazelcast</artifactId>
+  <artifactId>apiman-gateway-engine-redis</artifactId>
   <packaging>bundle</packaging>
-  <name>apiman-gateway-engine-hazelcast</name>
+  <name>apiman-gateway-engine-redis</name>
 
   <dependencies>
     <!-- Project Dependencies -->
@@ -31,28 +31,39 @@
 
     <!-- Third Party Dependencies -->
     <dependency>
-      <groupId>com.hazelcast</groupId>
-      <artifactId>hazelcast</artifactId>
-      <!--
-        Important: Hazelcast should be added to the container's classpath (e.g. 'lib'),
-        not packaged within the engine deployable (e.g. WAR), otherwise odd classloading
-        issues can occur.
-       -->
-      <scope>provided</scope>
+      <groupId>org.redisson</groupId>
+      <artifactId>redisson</artifactId>
     </dependency>
     <dependency>
       <groupId>commons-codec</groupId>
       <artifactId>commons-codec</artifactId>
     </dependency>
     <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
     </dependency>
 
     <!-- Test only -->
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>testcontainers</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
