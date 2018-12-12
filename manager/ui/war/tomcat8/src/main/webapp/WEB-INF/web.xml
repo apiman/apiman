@@ -88,10 +88,25 @@
       <web-resource-name>apimanui-3</web-resource-name>
       <url-pattern>/rest/*</url-pattern>
     </web-resource-collection>
+    <web-resource-collection>
+      <web-resource-name>apimanui-4</web-resource-name>
+      <url-pattern>/api-manager/*</url-pattern>
+    </web-resource-collection>
     <auth-constraint>
       <role-name>apiuser</role-name>
     </auth-constraint>
   </security-constraint>
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>apimanui-css</web-resource-name>
+      <url-pattern>/api-manager/dist/deps.css</url-pattern>
+    </web-resource-collection>
+    <web-resource-collection>
+      <web-resource-name>apimanui-css</web-resource-name>
+      <url-pattern>/api-manager/login/resources/css/login.css</url-pattern>
+    </web-resource-collection>
+  </security-constraint>
+
   <login-config>
     <auth-method>FORM</auth-method>
     <form-login-config>
