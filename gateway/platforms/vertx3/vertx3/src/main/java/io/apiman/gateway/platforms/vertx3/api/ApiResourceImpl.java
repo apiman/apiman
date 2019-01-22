@@ -16,7 +16,6 @@
 
 package io.apiman.gateway.platforms.vertx3.api;
 
-import io.apiman.common.util.SimpleStringUtils;
 import io.apiman.gateway.api.rest.contract.IApiResource;
 import io.apiman.gateway.api.rest.contract.exceptions.NotAuthorizedException;
 import io.apiman.gateway.engine.IEngine;
@@ -27,6 +26,7 @@ import io.apiman.gateway.engine.beans.ApiEndpoint;
 import io.apiman.gateway.engine.beans.exceptions.PublishingException;
 import io.apiman.gateway.engine.beans.exceptions.RegistrationException;
 import io.apiman.gateway.platforms.vertx3.common.config.VertxEngineConfig;
+import org.apache.commons.lang3.StringUtils;
 
 import java.net.URI;
 
@@ -95,15 +95,33 @@ public class ApiResourceImpl extends AbstractResource implements IApiResource {
            }
         }
 
-        String endpoint = scheme + "://" + host;
-        if (port != 443 && port != 80)
-            endpoint += ":" + port + "/";
-        endpoint += path;
-        endpoint += SimpleStringUtils.join("/", organizationId, apiId, version);
-
+        String endpoint = buildEndpoint(organizationId, apiId, version, scheme, host, port, path);
         ApiEndpoint endpointObj = new ApiEndpoint();
         endpointObj.setEndpoint(endpoint);
         return endpointObj;
+    }
+
+    private String buildEndpoint(String organizationId, String apiId, String version, String scheme, String host, int port, String path) {
+        StringBuilder endpoint = new StringBuilder();
+        endpoint.append(scheme);
+        endpoint.append("://");
+        endpoint.append(host);
+
+        if (port != 443 && port != 80) {
+            endpoint.append(":");
+            endpoint.append(port);
+        }
+
+        if (path.isEmpty()) {
+            endpoint.append("/");
+        } else {
+            endpoint.append(path);
+            if (!StringUtils.endsWith(path, "/"))
+                endpoint.append("/");
+        }
+
+        endpoint.append(String.join("/", organizationId, apiId, version));
+        return endpoint.toString();
     }
 
     @Override
