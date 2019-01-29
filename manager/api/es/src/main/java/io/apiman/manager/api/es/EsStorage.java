@@ -843,6 +843,7 @@ public class EsStorage implements IStorage, IStorageQuery {
                     .addIndex(getIndexName())
                     .addType("auditEntry")
                     .addType("planVersion")
+                    .addType("planPolicies")
                     .build();
 
             JestResult response = esClient.execute(deleteByQuery);
