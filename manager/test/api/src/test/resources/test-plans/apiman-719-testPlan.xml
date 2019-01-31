@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testPlan xmlns="urn:io.apiman.test:2014:02:testPlan">
+
+  <testGroup name="Issue #719 Reproducer">
+    <test name="Create Org">test-plan-data/apiman-719/001_create-org.resttest</test>
+    <test name="Create Plan+Version">test-plan-data/apiman-719/002_create-plan.resttest</test>
+    <test name="Wait 1" delay="1000" />
+    <test name="Delete Plan">test-plan-data/apiman-719/003_delete-plan.resttest</test>
+    <test name="Wait 2" delay="1000" />
+    <test name="Create Plan+Version (Again)">test-plan-data/apiman-719/002_create-plan.resttest</test>
+  </testGroup>
+
+</testPlan>
