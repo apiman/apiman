@@ -15,26 +15,36 @@
  */
 package io.apiman.gateway.engine.hazelcast;
 
+import io.apiman.gateway.engine.DependsOnComponents;
 import io.apiman.gateway.engine.IRequiresInitialization;
+import io.apiman.gateway.engine.components.IBufferFactoryComponent;
 import io.apiman.gateway.engine.hazelcast.common.HazelcastBackingStoreProvider;
-import io.apiman.gateway.engine.storage.component.AbstractSharedStateComponent;
+import io.apiman.gateway.engine.hazelcast.common.HazelcastInstanceManager;
+import io.apiman.gateway.engine.storage.component.AbstractCacheStoreComponent;
 
 import java.util.Map;
 
 /**
- * Shared state component backed by a Hazelcast Map. This allows the shared state
- * to be easily clusterable.
+ * A Hazelcast implementation of a cache store.
  *
  * @author Pete Cornish
  */
-public class HazelcastSharedStateComponent extends AbstractSharedStateComponent implements IRequiresInitialization {
+@DependsOnComponents({IBufferFactoryComponent.class})
+public class HazelcastCacheStoreComponent extends AbstractCacheStoreComponent implements IRequiresInitialization {
     private final Map<String, String> componentConfig;
 
     /**
      * Constructor.
      */
-    public HazelcastSharedStateComponent(Map<String, String> componentConfig) {
-        super(new HazelcastBackingStoreProvider());
+    public HazelcastCacheStoreComponent(Map<String, String> componentConfig) {
+        this(HazelcastInstanceManager.DEFAULT_MANAGER, componentConfig);
+    }
+
+    /**
+     * Constructor.
+     */
+    public HazelcastCacheStoreComponent(HazelcastInstanceManager instanceManager, Map<String, String> componentConfig) {
+        super(new HazelcastBackingStoreProvider(instanceManager));
         this.componentConfig = componentConfig;
     }
 

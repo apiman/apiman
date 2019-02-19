@@ -19,6 +19,7 @@ import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.components.ISharedStateComponent;
 import io.apiman.gateway.engine.es.beans.PrimitiveBean;
+import io.apiman.gateway.engine.storage.util.BackingStoreUtil;
 import io.searchbox.client.JestResult;
 import io.searchbox.core.Delete;
 import io.searchbox.core.Get;
@@ -30,8 +31,7 @@ import javax.xml.namespace.QName;
 
 import org.apache.commons.codec.binary.Base64;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import static io.apiman.gateway.engine.storage.util.BackingStoreUtil.JSON_MAPPER;
 
 /**
  * An elasticsearch implementation of the shared state component.
@@ -39,12 +39,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @author eric.wittmann@redhat.com
  */
 public class ESSharedStateComponent extends AbstractESComponent implements ISharedStateComponent {
-
-    private static final ObjectMapper mapper = new ObjectMapper();
-    static {
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-    }
-
     /**
      * Constructor.
      * @param config the configuration
@@ -103,9 +97,9 @@ public class ESSharedStateComponent extends AbstractESComponent implements IShar
                 PrimitiveBean pb = new PrimitiveBean();
                 pb.setValue(String.valueOf(value));
                 pb.setType(value.getClass().getName());
-                source = mapper.writeValueAsString(pb);
+                source = JSON_MAPPER.writeValueAsString(pb);
             } else {
-                source = mapper.writeValueAsString(value);
+                source = JSON_MAPPER.writeValueAsString(value);
             }
         } catch (Exception e) {
             handler.handle(AsyncResultImpl.<Void>create(e));
@@ -157,25 +151,7 @@ public class ESSharedStateComponent extends AbstractESComponent implements IShar
         PrimitiveBean pb = result.getSourceAsObject(PrimitiveBean.class);
         String value = pb.getValue();
         Class<?> c = Class.forName(pb.getType());
-        if (c == String.class) {
-            return value;
-        } else if (c == Long.class) {
-            return Long.parseLong(value);
-        } else if (c == Integer.class) {
-            return Integer.parseInt(value);
-        } else if (c == Double.class) {
-            return Double.parseDouble(value);
-        } else if (c == Boolean.class) {
-            return Boolean.parseBoolean(value);
-        } else if (c == Byte.class) {
-            return Byte.parseByte(value);
-        } else if (c == Short.class) {
-            return Short.parseShort(value);
-        } else if (c == Float.class) {
-            return Float.parseFloat(value);
-        } else {
-            throw new Exception("Unsupported primitive: " + c); //$NON-NLS-1$
-        }
+        return BackingStoreUtil.readPrimitive(c, value);
     }
 
     /**

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Pete Cornish
+ * Copyright 2018 Pete Cornish
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,54 +13,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apiman.gateway.engine.hazelcast;
+package io.apiman.gateway.engine.storage.component;
 
-import com.hazelcast.config.Config;
-import com.hazelcast.core.Hazelcast;
-import com.hazelcast.core.HazelcastInstance;
-
-import java.util.Map;
+import io.apiman.gateway.engine.storage.store.IBackingStore;
+import io.apiman.gateway.engine.storage.store.IBackingStoreProvider;
 
 /**
- * Common base class for components backed by a Hazelcast Map.
+ * Common base class for components backed by a store.
  *
  * @author Pete Cornish
  */
-abstract class AbstractHazelcastComponent {
+abstract public class AbstractStorageComponent {
+    private final IBackingStoreProvider storeProvider;
     private final String storeName;
-    private final HazelcastInstance hazelcastInstance;
 
     /**
      * Constructor.
      */
-    public AbstractHazelcastComponent(String storeName) {
-        this(storeName, new Config());
-    }
+    public AbstractStorageComponent(IBackingStoreProvider storeProvider,
+                                    String storeName) {
 
-    /**
-     * Constructor.
-     *
-     * @param config the config
-     */
-    public AbstractHazelcastComponent(String storeName, Config config) {
+        this.storeProvider = storeProvider;
         this.storeName = storeName;
-        hazelcastInstance = Hazelcast.newHazelcastInstance(config);
     }
 
     /**
-     * Returns an instance of the shared state.
+     * Returns an instance of the store.
      *
-     * @param <T> the value type
-     * @return the shared state
+     * @return the Map
      */
-    protected <T> Map<String, T> getSharedState() {
-        return hazelcastInstance.getMap(storeName);
+    public IBackingStore getStore() {
+        return storeProvider.get(storeName);
     }
 
     /**
      * Builds a key derived from the namespace.
      *
-     * @param namespace the namespace
+     * @param namespace    the namespace
      * @param propertyName the property name
      * @return the namespaced key
      */

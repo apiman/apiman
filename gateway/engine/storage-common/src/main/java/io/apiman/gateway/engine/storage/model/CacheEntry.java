@@ -13,16 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apiman.gateway.engine.es;
+package io.apiman.gateway.engine.storage.model;
 
+
+import java.io.Serializable;
 
 /**
- * This is what gets stored in the ES cache.
- *
- * @author eric.wittmann@redhat.com
+ * A cache entry whose head and data are represented as strings.
  */
-public class ESCacheEntry {
-
+public class CacheEntry implements Serializable {
     private String head;
     private String data;
     private long expiresOn;
@@ -30,7 +29,7 @@ public class ESCacheEntry {
     /**
      * Constructor.
      */
-    public ESCacheEntry() {
+    public CacheEntry() {
     }
 
     /**
@@ -74,5 +73,4 @@ public class ESCacheEntry {
     public void setHead(String head) {
         this.head = head;
     }
-
 }

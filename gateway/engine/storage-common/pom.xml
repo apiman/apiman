@@ -6,47 +6,31 @@
     <artifactId>apiman-gateway-engine</artifactId>
     <version>1.5.2-SNAPSHOT</version>
   </parent>
-  <artifactId>apiman-gateway-engine-ispn</artifactId>
+  <artifactId>apiman-gateway-engine-storage-common</artifactId>
   <packaging>bundle</packaging>
-  <name>apiman-gateway-engine-ispn</name>
+  <name>apiman-gateway-engine-storage-common</name>
 
   <dependencies>
     <!-- Project Dependencies -->
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>apiman-common-util</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>apiman-gateway-engine-beans</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
       <artifactId>apiman-gateway-engine-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>apiman-gateway-engine-storage-common</artifactId>
     </dependency>
 
     <!-- Third Party Dependencies -->
-    <dependency>
-      <groupId>org.infinispan</groupId>
-      <artifactId>infinispan-core</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.infinispan</groupId>
-      <artifactId>infinispan-commons</artifactId>
-      <scope>provided</scope>
-    </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-lang3</artifactId>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
 

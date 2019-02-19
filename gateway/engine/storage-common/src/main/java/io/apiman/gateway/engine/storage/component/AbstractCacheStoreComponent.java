@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 JBoss Inc
+ * Copyright 2018 Pete Cornish
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apiman.gateway.engine.es;
+package io.apiman.gateway.engine.storage.component;
 
-import io.apiman.gateway.engine.DependsOnComponents;
 import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncHandler;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
@@ -25,32 +24,31 @@ import io.apiman.gateway.engine.io.IApimanBuffer;
 import io.apiman.gateway.engine.io.ISignalReadStream;
 import io.apiman.gateway.engine.io.ISignalWriteStream;
 import io.apiman.gateway.engine.storage.model.CacheEntry;
-import io.searchbox.client.JestResult;
-import io.searchbox.core.Get;
-import io.searchbox.core.Index;
+import io.apiman.gateway.engine.storage.store.IBackingStoreProvider;
+import org.apache.commons.codec.binary.Base64;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.Map;
-
-import org.apache.commons.codec.binary.Base64;
 
 import static io.apiman.gateway.engine.storage.util.BackingStoreUtil.JSON_MAPPER;
 
 /**
- * An elasticsearch implementation of a cache store.
+ * Cache component backed by a store.
  *
- * @author eric.wittmann@redhat.com
+ * @author Pete Cornish
  */
-@DependsOnComponents({ IBufferFactoryComponent.class })
-public class ESCacheStoreComponent extends AbstractESComponent implements ICacheStoreComponent {
+public abstract class AbstractCacheStoreComponent extends AbstractStorageComponent implements ICacheStoreComponent {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractCacheStoreComponent.class);
+    private static final String STORE_NAME = "cache"; //$NON-NLS-1$
+
     private IBufferFactoryComponent bufferFactory;
 
     /**
      * Constructor.
-     * @param config the configuration
      */
-    public ESCacheStoreComponent(Map<String, String> config) {
-        super(config);
+    public AbstractCacheStoreComponent(IBackingStoreProvider storeProvider) {
+        super(storeProvider, STORE_NAME);
     }
 
     /**
@@ -61,24 +59,23 @@ public class ESCacheStoreComponent extends AbstractESComponent implements ICache
     }
 
     /**
-     * @see io.apiman.gateway.engine.components.ICacheStoreComponent#put(java.lang.String, java.lang.Object, long)
+     * @see ICacheStoreComponent#put(String, Object, long)
      */
     @Override
     public <T> void put(String cacheKey, T jsonObject, long timeToLive) throws IOException {
-        CacheEntry entry = new CacheEntry();
+        final CacheEntry entry = new CacheEntry();
         entry.setData(null);
         entry.setExpiresOn(System.currentTimeMillis() + (timeToLive * 1000));
-        entry.setHead(JSON_MAPPER.writeValueAsString(entry));
-        Index index = new Index.Builder(entry).refresh(false).index(getIndexName())
-                .type("cacheEntry").id(cacheKey).build(); //$NON-NLS-1$
+        entry.setHead(JSON_MAPPER.writeValueAsString(jsonObject));
         try {
-            getClient().execute(index);
+            getStore().put(cacheKey, entry);
         } catch (Throwable e) {
+            LOGGER.error("Error writing cache entry with key: {}", cacheKey, e);
         }
     }
 
     /**
-     * @see io.apiman.gateway.engine.components.ICacheStoreComponent#putBinary(java.lang.String, java.lang.Object, long)
+     * @see ICacheStoreComponent#putBinary(String, Object, long)
      */
     @Override
     public <T> ISignalWriteStream putBinary(final String cacheKey, final T jsonObject, final long timeToLive)
@@ -86,32 +83,36 @@ public class ESCacheStoreComponent extends AbstractESComponent implements ICache
         final CacheEntry entry = new CacheEntry();
         entry.setExpiresOn(System.currentTimeMillis() + (timeToLive * 1000));
         entry.setHead(JSON_MAPPER.writeValueAsString(jsonObject));
+
         final IApimanBuffer data = bufferFactory.createBuffer();
         return new ISignalWriteStream() {
             boolean finished = false;
             boolean aborted = false;
+
             @Override
             public void abort(Throwable t) {
                 finished = true;
                 aborted = false;
             }
+
             @Override
             public boolean isFinished() {
                 return finished;
             }
+
             @Override
             public void write(IApimanBuffer chunk) {
                 data.append(chunk);
             }
+
             @Override
             public void end() {
                 if (!aborted) {
                     entry.setData(Base64.encodeBase64String(data.getBytes()));
-                    Index index = new Index.Builder(entry).refresh(false).index(getIndexName())
-                            .type("cacheEntry").id(cacheKey).build(); //$NON-NLS-1$
                     try {
-                        getClient().execute(index);
+                        getStore().put(cacheKey, entry);
                     } catch (Throwable e) {
+                        LOGGER.error("Error writing binary cache entry with key: {}", cacheKey, e);
                     }
                 }
                 finished = true;
@@ -120,20 +121,18 @@ public class ESCacheStoreComponent extends AbstractESComponent implements ICache
     }
 
     /**
-     * @see io.apiman.gateway.engine.components.ICacheStoreComponent#get(java.lang.String, java.lang.Class, io.apiman.gateway.engine.async.IAsyncResultHandler)
+     * @see ICacheStoreComponent#get(String, Class, IAsyncResultHandler)
      */
     @Override
     public <T> void get(String cacheKey, final Class<T> type, final IAsyncResultHandler<T> handler) {
-        Get get = new Get.Builder(getIndexName(), cacheKey).type("cacheEntry").build(); //$NON-NLS-1$
         try {
-            JestResult result = getClient().execute(get);
-            if (result.isSucceeded()) {
-                CacheEntry cacheEntry = result.getSourceAsObject(CacheEntry.class);
+            final CacheEntry cacheEntry = getStore().get(cacheKey, CacheEntry.class);
+            if (null != cacheEntry) {
                 try {
-                    T rval = (T) JSON_MAPPER.reader(type).readValue(cacheEntry.getHead());
-                    handler.handle(AsyncResultImpl.create(rval));
-                } catch (IOException e) {
-                    // TODO log this error.
+                    @SuppressWarnings("unchecked") final T head = JSON_MAPPER.readValue(cacheEntry.getHead(), type);
+                    handler.handle(AsyncResultImpl.create(head));
+                } catch (Exception e) {
+                    LOGGER.error("Error reading cache entry with key: {}", cacheKey, e);
                     handler.handle(AsyncResultImpl.create((T) null));
                 }
             } else {
@@ -145,34 +144,32 @@ public class ESCacheStoreComponent extends AbstractESComponent implements ICache
     }
 
     /**
-     * @see io.apiman.gateway.engine.components.ICacheStoreComponent#getBinary(java.lang.String, java.lang.Class, io.apiman.gateway.engine.async.IAsyncResultHandler)
+     * @see ICacheStoreComponent#getBinary(String, Class, IAsyncResultHandler)
      */
     @Override
     public <T> void getBinary(final String cacheKey, final Class<T> type,
-            final IAsyncResultHandler<ISignalReadStream<T>> handler) {
+                              final IAsyncResultHandler<ISignalReadStream<T>> handler) {
         try {
-            Get get = new Get.Builder(getIndexName(), cacheKey).type("cacheEntry").build(); //$NON-NLS-1$
-            JestResult result = getClient().execute(get);
-            // Did the GET succeed?  If not, return null.
-            // TODO log the error
-            if (!result.isSucceeded()) {
+            final CacheEntry cacheEntry = getStore().get(cacheKey, CacheEntry.class);
+
+            // Did the fetch succeed? If not, return null.
+            if (null == cacheEntry) {
                 handler.handle(AsyncResultImpl.create((ISignalReadStream<T>) null));
                 return;
             }
 
             // Is the cache entry expired?  If so return null.
-            CacheEntry cacheEntry = result.getSourceAsObject(CacheEntry.class);
-            if (System.currentTimeMillis() > cacheEntry.getExpiresOn() ) {
+            if (System.currentTimeMillis() > cacheEntry.getExpiresOn()) {
                 // Cache item has expired.  Return null instead of the cached data.
                 handler.handle(AsyncResultImpl.create((ISignalReadStream<T>) null));
                 return;
             }
 
             try {
-                final T head = (T) JSON_MAPPER.reader(type).readValue(cacheEntry.getHead());
-                String b64Data = cacheEntry.getData();
+                @SuppressWarnings("unchecked") final T head = (T) JSON_MAPPER.readValue(cacheEntry.getHead(), type);
+                final String b64Data = cacheEntry.getData();
                 final IApimanBuffer data = bufferFactory.createBuffer(Base64.decodeBase64(b64Data));
-                ISignalReadStream<T> rval = new ISignalReadStream<T>() {
+                final ISignalReadStream<T> rval = new ISignalReadStream<T>() {
                     IAsyncHandler<IApimanBuffer> bodyHandler;
                     IAsyncHandler<Void> endHandler;
                     boolean finished = false;
@@ -182,23 +179,28 @@ public class ESCacheStoreComponent extends AbstractESComponent implements ICache
                     public void bodyHandler(IAsyncHandler<IApimanBuffer> bodyHandler) {
                         this.bodyHandler = bodyHandler;
                     }
+
                     @Override
                     public void endHandler(IAsyncHandler<Void> endHandler) {
                         this.endHandler = endHandler;
                     }
+
                     @Override
                     public T getHead() {
                         return head;
                     }
+
                     @Override
                     public boolean isFinished() {
                         return finished;
                     }
+
                     @Override
                     public void abort(Throwable t) {
                         finished = true;
                         aborted = true;
                     }
+
                     @Override
                     public void transmit() {
                         if (!aborted) {
@@ -210,20 +212,11 @@ public class ESCacheStoreComponent extends AbstractESComponent implements ICache
                 };
                 handler.handle(AsyncResultImpl.create(rval));
             } catch (Throwable e) {
-                // TODO log this error
+                LOGGER.error("Error reading binary cache entry with key: {}", cacheKey, e);
                 handler.handle(AsyncResultImpl.create((ISignalReadStream<T>) null));
             }
         } catch (Throwable e) {
             handler.handle(AsyncResultImpl.create((ISignalReadStream<T>) null));
         }
     }
-
-    /**
-     * @see io.apiman.gateway.engine.es.AbstractESComponent#getDefaultIndexName()
-     */
-    @Override
-    protected String getDefaultIndexName() {
-        return ESConstants.CACHE_INDEX_NAME;
-    }
-
 }
