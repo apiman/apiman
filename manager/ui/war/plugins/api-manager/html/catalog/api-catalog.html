@@ -59,14 +59,14 @@
                          style="width: 250px; margin: 0 10px; box-shadow: none; font-size: small; border-color: #bababa; display: inline-table;"
                          apiman-i18n-key="choose-a-tag"
                          title="Choose a tag">
-                <ui-select-match apiman-i18n-key="filter-by-tags" placeholder="Filter by tags...">{{$item}}</ui-select-match>
-                <ui-select-choices repeat="tag in tags | filter:$select.search | orderBy: tag"
-                                   style="margin: 0 -1px auto -1px; width: 101%;">
+                <span apiman-i18n-key="filter-by-tags"></span>
+                <ui-select-match placeholder="Filter by tags...">{{$item}}</ui-select-match>
+                <ui-select-choices repeat="tag in tags | filter:$select.search | orderBy: tag">
                   {{tag}}
                 </ui-select-choices>
               </ui-select>
-              <button ng-show="selected.tags.length > 0" class="btn btn-default btn-xs"
-                      style="box-shadow: none; height: 28px; margin: -1px 10px 0 -14px; border-left: none;"
+              <button ng-show="selected.tags.length > 0" class="btn btn-default"
+                      style="box-shadow: none; height: 29px; margin: -2px 10px 0 -14px; border-left: none;"
                       ng-click="clear()"><i class="fa fa-fw fa-close"></i></button>
 
               <!-- Filter: API Type -->
