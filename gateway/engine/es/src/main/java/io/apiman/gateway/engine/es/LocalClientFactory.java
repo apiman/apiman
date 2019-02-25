@@ -15,6 +15,8 @@
  */
 package io.apiman.gateway.engine.es;
 
+import io.apiman.common.es.util.AbstractClientFactory;
+import io.apiman.common.es.util.IEsClientFactory;
 import io.searchbox.client.JestClient;
 
 import java.lang.reflect.Field;
@@ -25,8 +27,8 @@ import java.util.Map;
  *
  * @author eric.wittmann@redhat.com
  */
-public class LocalClientFactory extends AbstractClientFactory implements IESClientFactory {
-    
+public class LocalClientFactory extends AbstractClientFactory implements IEsClientFactory {
+
     /**
      * Constructor.
      */

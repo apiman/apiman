@@ -16,11 +16,11 @@
 package io.apiman.manager.test.server;
 
 import io.apiman.common.es.util.ApimanEmbeddedElastic;
+import io.apiman.common.es.util.DefaultEsClientFactory;
 import io.apiman.common.servlet.ApimanCorsFilter;
 import io.apiman.common.servlet.AuthenticationFilter;
 import io.apiman.common.servlet.DisableCachingFilter;
 import io.apiman.common.servlet.RootResourceFilter;
-import io.apiman.gateway.engine.es.DefaultESClientFactory;
 import io.apiman.manager.api.security.impl.DefaultSecurityContextFilter;
 import io.apiman.manager.api.war.TransactionWatchdogFilter;
 import io.apiman.manager.test.util.ManagerTestUtils;
@@ -127,7 +127,7 @@ public class ManagerApiTestServer {
             //System.out.println("FLUSH AND DELETE>>>>>>");
             client.execute(new DeleteIndex.Builder(ES_DEFAULT_INDEX).build());
             client.execute(new Flush.Builder().build());
-            DefaultESClientFactory.clearClientCache();
+            DefaultEsClientFactory.clearClientCache();
         }
     }
 
@@ -216,7 +216,7 @@ public class ManagerApiTestServer {
         config.put("client.port", String.valueOf(ES_DEFAULT_PORT));
         config.put("client.timeout", String.valueOf(JEST_TIMEOUT));
         config.put("client.initialize", "true");
-        return new DefaultESClientFactory().createClient(config, ES_DEFAULT_INDEX);
+        return new DefaultEsClientFactory().createClient(config, ES_DEFAULT_INDEX);
     }
 
     /**

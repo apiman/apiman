@@ -15,6 +15,8 @@
  */
 package io.apiman.manager.api.micro;
 
+import io.apiman.common.es.util.IEsClientFactory;
+import io.apiman.common.es.util.DefaultEsClientFactory;
 import io.apiman.common.logging.IApimanDelegateLogger;
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.common.plugin.Plugin;
@@ -40,10 +42,8 @@ import io.apiman.manager.api.core.logging.ApimanLogger;
 import io.apiman.manager.api.core.logging.JsonLoggerImpl;
 import io.apiman.manager.api.core.logging.StandardLoggerImpl;
 import io.apiman.manager.api.core.noop.NoOpMetricsAccessor;
-import io.apiman.manager.api.es.DefaultEsClientFactory;
 import io.apiman.manager.api.es.ESMetricsAccessor;
 import io.apiman.manager.api.es.EsStorage;
-import io.apiman.manager.api.es.IEsClientFactory;
 import io.apiman.manager.api.jpa.JpaStorage;
 import io.apiman.manager.api.jpa.JpaStorageInitializer;
 import io.apiman.manager.api.security.ISecurityContext;
@@ -219,7 +219,7 @@ public class ManagerApiMicroServiceCdiFactory {
                     factoryClass = DefaultEsClientFactory.class.getName();
                 }
                 sStorageESClientFactory = createCustomComponent(IEsClientFactory.class, factoryClass,
-                        config.getStorageESClientFactoryConfig(), pluginRegistry);
+                        null, pluginRegistry);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -236,7 +236,7 @@ public class ManagerApiMicroServiceCdiFactory {
                     factoryClass = DefaultEsClientFactory.class.getName();
                 }
                 sMetricsESClientFactory = createCustomComponent(IEsClientFactory.class, factoryClass,
-                        config.getMetricsESClientFactoryConfig(), pluginRegistry);
+                        null, pluginRegistry);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -247,7 +247,7 @@ public class ManagerApiMicroServiceCdiFactory {
     @Produces @ApplicationScoped @Named("storage")
     public static JestClient provideStorageESClient(ManagerApiMicroServiceConfig config, @Named("storage-factory") IEsClientFactory clientFactory) {
         if ("es".equals(config.getStorageType())) { //$NON-NLS-1$
-            return clientFactory.createClient();
+            return clientFactory.createClient(config.getStorageESClientFactoryConfig(), null);
         } else {
             return null;
         }
@@ -256,7 +256,7 @@ public class ManagerApiMicroServiceCdiFactory {
     @Produces @ApplicationScoped @Named("metrics")
     public static JestClient provideMetricsESClient(ManagerApiMicroServiceConfig config, @Named("metrics-factory") IEsClientFactory clientFactory) {
         if ("es".equals(config.getMetricsType())) { //$NON-NLS-1$
-            return clientFactory.createClient();
+            return clientFactory.createClient(config.getStorageESClientFactoryConfig(), null);
         } else {
             return null;
         }

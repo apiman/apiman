@@ -16,12 +16,12 @@
 package io.apiman.gateway.test.junit.servlet;
 
 import io.apiman.common.es.util.ApimanEmbeddedElastic;
+import io.apiman.common.es.util.DefaultEsClientFactory;
 import io.apiman.common.util.ddl.DdlParser;
 import io.apiman.gateway.engine.GatewayConfigProperties;
 import io.apiman.gateway.engine.components.IBufferFactoryComponent;
 import io.apiman.gateway.engine.components.IHttpClientComponent;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
-import io.apiman.gateway.engine.es.DefaultESClientFactory;
 import io.apiman.gateway.engine.impl.ByteBufferFactoryComponent;
 import io.apiman.gateway.engine.impl.DefaultPluginRegistry;
 import io.apiman.gateway.engine.policy.PolicyFactoryImpl;
@@ -381,7 +381,7 @@ public class ServletGatewayTestServer implements IGatewayTestServer {
     private void postStop() throws Exception {
         if (client != null) {
             client.execute(new DeleteIndex.Builder("apiman_gateway").build());
-            DefaultESClientFactory.clearClientCache();
+            DefaultEsClientFactory.clearClientCache();
         }
         if (node != null) {
             System.out.println("======== STOPPING ES ========");

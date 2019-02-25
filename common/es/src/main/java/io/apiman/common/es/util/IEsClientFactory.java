@@ -14,22 +14,23 @@
  * limitations under the License.
  */
 
-package io.apiman.gateway.engine.es;
+package io.apiman.common.es.util;
 
 import io.searchbox.client.JestClient;
 
 import java.util.Map;
 
 /**
+ * A factory used to create elasticsearch clients.
  * @author eric.wittmann@gmail.com
  */
-public interface IESClientFactory {
+public interface IEsClientFactory {
 
     /**
      * Creates an ES client.
      * @param config
      * @param defaultIndexName
      */
-    public JestClient createClient(Map<String, String> config, String defaultIndexName);
+    JestClient createClient(Map<String, String> config, String defaultIndexName);
 
 }

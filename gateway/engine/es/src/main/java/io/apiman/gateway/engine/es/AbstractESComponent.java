@@ -15,6 +15,8 @@
  */
 package io.apiman.gateway.engine.es;
 
+import io.apiman.common.es.util.DefaultEsClientFactory;
+import io.apiman.common.es.util.IEsClientFactory;
 import io.searchbox.client.JestClient;
 
 import java.util.Map;
@@ -57,25 +59,25 @@ public abstract class AbstractESComponent {
      * @return a new ES client
      */
     protected JestClient createClient() {
-        IESClientFactory factory = createEsClientFactory();
+        IEsClientFactory factory = createEsClientFactory();
         return factory.createClient(config, getDefaultIndexName());
     }
 
     /**
      * @return the client factory to use to create the ES client
      */
-    protected IESClientFactory createEsClientFactory() {
+    protected IEsClientFactory createEsClientFactory() {
         String factoryClass = config.get("client.type"); //$NON-NLS-1$
         if ("jest".equals(factoryClass)) { //$NON-NLS-1$
-            factoryClass = DefaultESClientFactory.class.getName();
+            factoryClass = DefaultEsClientFactory.class.getName();
         } else if ("local".equals(factoryClass)) { //$NON-NLS-1$
             factoryClass = LocalClientFactory.class.getName();
         } else if (factoryClass == null) {
             throw new RuntimeException("Invalid elasticsearch client type: " + factoryClass); //$NON-NLS-1$
         }
-        
+
         try {
-            return (IESClientFactory) Class.forName(factoryClass).newInstance();
+            return (IEsClientFactory) Class.forName(factoryClass).newInstance();
         } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
             throw new RuntimeException("Error creating elasticsearch client type: " + factoryClass, e); //$NON-NLS-1$
         }
@@ -85,7 +87,7 @@ public abstract class AbstractESComponent {
      * Gets the default index name for this component.
      */
     protected abstract String getDefaultIndexName();
-    
+
     /**
      * Gets the index name to use when reading/writing to ES.
      */
