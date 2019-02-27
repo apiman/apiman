@@ -242,7 +242,10 @@ public class DefaultPluginRegistry implements IPluginRegistry {
                 if (artifactFile.isFile()) {
                     handled = true;
                     try {
-                        FileUtils.copyFile(artifactFile, pluginFile);
+                        File tmpFile = File.createTempFile("plugin", ".tmp", pluginDir);
+                        tmpFile.deleteOnExit();
+                        FileUtils.copyFile(artifactFile, tmpFile);
+                        tmpFile.renameTo(pluginFile);
                         handler.handle(AsyncResultImpl.create(readPluginFile(coordinates, pluginFile)));
                     } catch (Exception error) {
                         handler.handle(AsyncResultImpl.<Plugin>create(error));
