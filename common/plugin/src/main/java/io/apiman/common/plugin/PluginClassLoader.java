@@ -119,13 +119,17 @@ public class PluginClassLoader extends ClassLoader {
         String depFileName = new File(zipEntry.getName()).getName();
         File depFile = new File(dependencyWorkDir, depFileName);
         if (!depFile.isFile()) {
+            File tmpFile = File.createTempFile("lib", ".tmp", dependencyWorkDir);
+            tmpFile.deleteOnExit();
+
             InputStream input = null;
             OutputStream output = null;
             try {
                 input = this.pluginArtifactZip.getInputStream(zipEntry);
-                output = new FileOutputStream(depFile);
+                output = new FileOutputStream(tmpFile);
                 IOUtils.copy(input, output);
                 output.flush();
+                tmpFile.renameTo(depFile);
             } catch (IOException e) {
                 throw e;
             } finally {
@@ -151,13 +155,16 @@ public class PluginClassLoader extends ClassLoader {
         File resourceFile = new File(resourceWorkDir, zipEntry.getName());
         if (!resourceFile.isFile()) {
             resourceFile.getParentFile().mkdirs();
+            File tmpFile = File.createTempFile("res", ".tmp", resourceWorkDir);
+            tmpFile.deleteOnExit();
             InputStream input = null;
             OutputStream output = null;
             try {
                 input = this.pluginArtifactZip.getInputStream(zipEntry);
-                output = new FileOutputStream(resourceFile);
+                output = new FileOutputStream(tmpFile);
                 IOUtils.copy(input, output);
                 output.flush();
+                tmpFile.renameTo(resourceFile);
             } catch (IOException e) {
                 throw e;
             } finally {
