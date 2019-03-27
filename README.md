@@ -67,11 +67,11 @@ You're welcome.
 
 apiman is open source, and we welcome anybody who wants to participate and contribute!
 
-If you want to fix a bug or make any changes, please log an issue in the [apiman JIRA](http://issues.jboss.org/browse/APIMAN) describing the bug
-or new feature. Then we highly recommend making the changes on a topic branch named with the JIRA issue number. For example, this command creates
-a branch for the APIMAN-1234 issue:
+If you want to fix a bug or make any changes, please log an issue in [GitHub Issues](https://github.com/apiman/apiman/issues) describing the bug
+or new feature. Then we highly recommend making the changes on a topic branch named with the GitHub issue number. For example, this command creates
+a branch for the #317 issue:
 
-	$ git checkout -b apiman-1234
+	$ git checkout -b apiman-317
 
 After you're happy with your changes and a full build (with unit tests) runs successfully, commit your
 changes on your topic branch. Then it's time to check for and pull any recent changes that were made in
@@ -79,18 +79,18 @@ the official repository:
 
 	$ git checkout master               # switches to the 'master' branch
 	$ git pull upstream master          # fetches all 'upstream' changes and merges 'upstream/master' onto your 'master' branch
-	$ git checkout apiman-1234           # switches to your topic branch
+	$ git checkout apiman-317           # switches to your topic branch
 	$ git rebase master                 # reapplies your changes on top of the latest in master
 	                                      (i.e., the latest from master will be the new base for your changes)
 
 If the pull grabbed a lot of changes, you should rerun your build to make sure your changes are still good.
-You can then either [create patches](http://progit.org/book/ch5-2.html) (one file per commit, saved in `~/apiman-1234`) with
+You can then either [create patches](http://progit.org/book/ch5-2.html) (one file per commit, saved in `~/apiman-317`) with
 
-	$ git format-patch -M -o ~/apiman-1234 origin/master
+	$ git format-patch -M -o ~/apiman-317 origin/master
 
 and upload them to the JIRA issue, or you can push your topic branch and its changes into your public fork repository
 
-	$ git push origin apiman-1234         # pushes your topic branch into your public fork of apiman
+	$ git push origin apiman-317        # pushes your topic branch into your public fork of apiman
 
 and [generate a pull-request](http://help.github.com/pull-requests/) for your changes.
 
