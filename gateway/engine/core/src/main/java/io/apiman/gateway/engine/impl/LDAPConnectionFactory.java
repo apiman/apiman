@@ -73,9 +73,15 @@ public class LDAPConnectionFactory {
     private static LDAPConnection getConnection(Map<LdapConfigBean, LDAPConnectionPool> map,
             SSLSocketFactory socketFactory, LdapConfigBean config) throws LDAPException {
         if (!map.containsKey(config)) {
-            LDAPConnection template = new LDAPConnection(config.getHost(), config.getPort());
-            if (socketFactory != null)
-                template.setSocketFactory(socketFactory);
+            LDAPConnection template;
+            if (socketFactory != null){
+                //LDAPS (with SSL)
+                template = new LDAPConnection(socketFactory);
+                template.connect(config.getHost(), config.getPort());
+            }else{
+                //LDAP
+                template= new LDAPConnection(config.getHost(), config.getPort());
+            }
             map.put(config, new LDAPConnectionPool(template, MAX_CONNECTIONS_PER_POOL));
         }
         return map.get(config).getConnection();
