@@ -98,7 +98,7 @@ public class BasicAuthLDAPSTest extends AbstractLdapTestUnit {
         if (!targetDir.isDirectory()) {
             throw new Exception("Couldn't find maven target directory: " + targetDir);
         }
-        File partitionDir = new File(targetDir, "_ldap-partition");
+        File partitionDir = new File(targetDir, "_ldaps-partition");
         if (partitionDir.exists()) {
             FileUtils.deleteDirectory(partitionDir);
         }
@@ -120,7 +120,8 @@ public class BasicAuthLDAPSTest extends AbstractLdapTestUnit {
             ServerEntry entry = service.newEntry(dn);
             entry.add("objectClass", "top", "domain", "extensibleObject");
             entry.add("dc", "apiman");
-            entry.add("cn", "o=apiman");
+            entry.add("cn", "apiman");
+            entry.add("o", "apiman");
             service.getAdminSession().add(entry);
         }
 
