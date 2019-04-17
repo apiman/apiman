@@ -14,6 +14,7 @@
  */
 package io.apiman.gateway.engine.policies;
 
+import com.sun.javafx.binding.StringFormatter;
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.beans.PolicyFailureType;
@@ -144,13 +145,16 @@ public class BasicAuthLDAPSTest extends AbstractLdapTestUnit {
         X509Certificate cert = TlsKeyGenerator.getCertificate( entry );
 
         //Add generated certificate to the keystore
-        KeyStore goodKeyStore = KeyStore.getInstance( KeyStore.getDefaultType() );
+        KeyStore goodKeyStore = KeyStore.getInstance( "JKS" );
         goodKeyStore.load( null, null );
         goodKeyStore.setCertificateEntry( "apacheds", cert );
         goodKeyStore.setKeyEntry( "apacheds", keyPair.getPrivate(),
                 LDAP_KEYSTORE_PASSWD.toCharArray(),
                 new Certificate[]{ cert } );
-        goodKeyStore.store( new FileOutputStream( goodKeyStoreFile ), LDAP_KEYSTORE_PASSWD.toCharArray() );
+        goodKeyStore.store( new FileOutputStream( goodKeyStoreFile ), LDAP_KEYSTORE_PASSWD.toCharArray());
+
+        if ( !goodKeyStoreFile.exists() ) throw new Exception(String.format("Keystore [%s] doesn't exist.",
+                                            goodKeyStoreFile.getAbsolutePath()));
 
         //Load generated Keystore in ldaps server
         ldapServer.setKeystoreFile(goodKeyStoreFile.getAbsolutePath());
@@ -159,8 +163,11 @@ public class BasicAuthLDAPSTest extends AbstractLdapTestUnit {
 
         //Load Keystore as Apiman current TrustStore
         System.setProperty("javax.net.ssl.trustStore", goodKeyStoreFile.getAbsolutePath());
+        System.setProperty("javax.net.ssl.trustStoreType", "JKS");
         System.setProperty("javax.net.ssl.trustStorePassword", LDAP_KEYSTORE_PASSWD);
 
+        System.out.println(String.format("javax.net.ssl.trustStore : %s",System.getProperty("javax.net.ssl.trustStore")));
+        System.out.println(String.format("javax.net.ssl.trustStoreType : %s",System.getProperty("javax.net.ssl.trustStoreType")));
     }
 
     /**
