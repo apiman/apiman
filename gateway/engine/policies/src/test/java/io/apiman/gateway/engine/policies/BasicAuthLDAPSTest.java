@@ -22,6 +22,7 @@ import io.apiman.gateway.engine.components.ILdapComponent;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.impl.DefaultLdapComponent;
 import io.apiman.gateway.engine.policies.config.BasicAuthenticationConfig;
+import io.apiman.gateway.engine.policies.util.DefaultLdapComponentReloaded;
 import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
 import org.apache.commons.codec.binary.Base64;
@@ -165,9 +166,6 @@ public class BasicAuthLDAPSTest extends AbstractLdapTestUnit {
         System.setProperty("javax.net.ssl.trustStore", goodKeyStoreFile.getAbsolutePath());
         System.setProperty("javax.net.ssl.trustStoreType", "JKS");
         System.setProperty("javax.net.ssl.trustStorePassword", LDAP_KEYSTORE_PASSWD);
-
-        System.out.println(String.format("javax.net.ssl.trustStore : %s",System.getProperty("javax.net.ssl.trustStore")));
-        System.out.println(String.format("javax.net.ssl.trustStoreType : %s",System.getProperty("javax.net.ssl.trustStoreType")));
     }
 
     /**
@@ -292,7 +290,8 @@ public class BasicAuthLDAPSTest extends AbstractLdapTestUnit {
         });
 
         // The LDAP stuff we're testing!
-        Mockito.when(context.getComponent(ILdapComponent.class)).thenReturn(new DefaultLdapComponent());
+        //DefaultLdapComponentReloaded inherited class is used to load in sslcontext the new truststore defined in setUp()
+        Mockito.when(context.getComponent(ILdapComponent.class)).thenReturn(new DefaultLdapComponentReloaded());
 
         IPolicyChain<ApiRequest> chain = Mockito.mock(IPolicyChain.class);
 
