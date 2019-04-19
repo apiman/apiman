@@ -19,7 +19,7 @@ public class DefaultLdapComponentReloaded extends DefaultLdapComponent {
 
     public DefaultLdapComponentReloaded() throws GeneralSecurityException {
 
-        //Force reloading static SSLSocketFactory to accept truststore changes.
+        // Force reloading static SSLSocketFactory to accept truststore changes.
         TrustManagerFactory tmFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
         tmFactory.init((KeyStore) null);
 

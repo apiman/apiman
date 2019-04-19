@@ -14,13 +14,11 @@
  */
 package io.apiman.gateway.engine.policies;
 
-import com.sun.javafx.binding.StringFormatter;
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.beans.PolicyFailureType;
 import io.apiman.gateway.engine.components.ILdapComponent;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
-import io.apiman.gateway.engine.impl.DefaultLdapComponent;
 import io.apiman.gateway.engine.policies.config.BasicAuthenticationConfig;
 import io.apiman.gateway.engine.policies.util.DefaultLdapComponentReloaded;
 import io.apiman.gateway.engine.policy.IPolicyChain;
@@ -75,18 +73,18 @@ import java.util.Set;
                 @CreateTransport(protocol = "LDAPS", port = 10636)
         },
         saslHost = "localhost",
-        saslMechanisms =
-                {
-                        @SaslMechanism(name = SupportedSaslMechanisms.PLAIN, implClass = PlainMechanismHandler.class),
-                },
-        extendedOpHandlers =
-                { StartTlsHandler.class }
+        saslMechanisms = {
+                @SaslMechanism(name = SupportedSaslMechanisms.PLAIN, implClass = PlainMechanismHandler.class),
+        },
+        extendedOpHandlers = {
+                StartTlsHandler.class
+        }
 )
 public class BasicAuthLDAPSTest extends AbstractLdapTestUnit {
 
     private static final String LDAP_SERVER = "localhost";
     private static final String LDAP_KEYSTORE =  "ldaps_server.jks";
-    private static final String LDAP_KEYSTORE_PASSWD ="mustBeSecret";
+    private static final String LDAP_KEYSTORE_PASSWD = "mustBeSecret";
 
     private static JdbmPartition partition;
 
@@ -133,36 +131,36 @@ public class BasicAuthLDAPSTest extends AbstractLdapTestUnit {
             throw e;
         }
 
-        //Init (delete if exist) key store for ldaps server
+        // Init (delete if exist) key store for ldaps server
         File goodKeyStoreFile = new File(targetDir, LDAP_KEYSTORE);
-        if ( goodKeyStoreFile.exists() ){goodKeyStoreFile.delete();}
+        if (goodKeyStoreFile.exists()) goodKeyStoreFile.delete();
 
-        //Get LDAP Root entry
+        // Get LDAP Root entry
         ServerEntry entry = service.getAdminSession().lookup(partition.getSuffixDn());
 
-        //Add private KeyPair and a self-signed certificate corresponding to the entry
-        TlsKeyGenerator.addKeyPair( entry );
-        KeyPair keyPair = TlsKeyGenerator.getKeyPair( entry );
-        X509Certificate cert = TlsKeyGenerator.getCertificate( entry );
+        // Add private KeyPair and a self-signed certificate corresponding to the entry
+        TlsKeyGenerator.addKeyPair(entry);
+        KeyPair keyPair = TlsKeyGenerator.getKeyPair(entry);
+        X509Certificate cert = TlsKeyGenerator.getCertificate(entry);
 
-        //Add generated certificate to the keystore
-        KeyStore goodKeyStore = KeyStore.getInstance( "JKS" );
-        goodKeyStore.load( null, null );
-        goodKeyStore.setCertificateEntry( "apacheds", cert );
-        goodKeyStore.setKeyEntry( "apacheds", keyPair.getPrivate(),
-                LDAP_KEYSTORE_PASSWD.toCharArray(),
-                new Certificate[]{ cert } );
-        goodKeyStore.store( new FileOutputStream( goodKeyStoreFile ), LDAP_KEYSTORE_PASSWD.toCharArray());
+        // Add generated certificate to the keystore
+        KeyStore goodKeyStore = KeyStore.getInstance("JKS");
+        goodKeyStore.load(null,null);
+        goodKeyStore.setCertificateEntry("apacheds", cert);
+        goodKeyStore.setKeyEntry("apacheds", keyPair.getPrivate(),
+                                LDAP_KEYSTORE_PASSWD.toCharArray(),
+                                new Certificate[]{ cert });
+        goodKeyStore.store(new FileOutputStream(goodKeyStoreFile), LDAP_KEYSTORE_PASSWD.toCharArray());
 
-        if ( !goodKeyStoreFile.exists() ) throw new Exception(String.format("Keystore [%s] doesn't exist.",
-                                            goodKeyStoreFile.getAbsolutePath()));
+        if (!goodKeyStoreFile.exists()) throw new Exception(String.format("Keystore [%s] doesn't exist.",
+                                                            goodKeyStoreFile.getAbsolutePath()));
 
-        //Load generated Keystore in ldaps server
+        // Load generated Keystore in ldaps server
         ldapServer.setKeystoreFile(goodKeyStoreFile.getAbsolutePath());
         ldapServer.setCertificatePassword(LDAP_KEYSTORE_PASSWD);
         ldapServer.reloadSslContext();
 
-        //Load Keystore as Apiman current TrustStore
+        // Load Keystore as Apiman current TrustStore
         System.setProperty("javax.net.ssl.trustStore", goodKeyStoreFile.getAbsolutePath());
         System.setProperty("javax.net.ssl.trustStoreType", "JKS");
         System.setProperty("javax.net.ssl.trustStorePassword", LDAP_KEYSTORE_PASSWD);
@@ -290,7 +288,7 @@ public class BasicAuthLDAPSTest extends AbstractLdapTestUnit {
         });
 
         // The LDAP stuff we're testing!
-        //DefaultLdapComponentReloaded inherited class is used to load in sslcontext the new truststore defined in setUp()
+        // DefaultLdapComponentReloaded inherited class is used to load in sslcontext the new truststore defined in setUp()
         Mockito.when(context.getComponent(ILdapComponent.class)).thenReturn(new DefaultLdapComponentReloaded());
 
         IPolicyChain<ApiRequest> chain = Mockito.mock(IPolicyChain.class);
