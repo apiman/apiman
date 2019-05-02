@@ -121,21 +121,8 @@ public class PluginClassLoader extends ClassLoader {
         if (!depFile.isFile()) {
             File tmpFile = File.createTempFile("lib", ".tmp", dependencyWorkDir);
             tmpFile.deleteOnExit();
-
-            InputStream input = null;
-            OutputStream output = null;
-            try {
-                input = this.pluginArtifactZip.getInputStream(zipEntry);
-                output = new FileOutputStream(tmpFile);
-                IOUtils.copy(input, output);
-                output.flush();
-                tmpFile.renameTo(depFile);
-            } catch (IOException e) {
-                throw e;
-            } finally {
-                IOUtils.closeQuietly(input);
-                IOUtils.closeQuietly(output);
-            }
+            copyZipEntryToTmpFile(zipEntry, tmpFile);
+            tmpFile.renameTo(depFile);
         }
         return new ZipFile(depFile);
     }
@@ -157,22 +144,30 @@ public class PluginClassLoader extends ClassLoader {
             resourceFile.getParentFile().mkdirs();
             File tmpFile = File.createTempFile("res", ".tmp", resourceWorkDir);
             tmpFile.deleteOnExit();
-            InputStream input = null;
-            OutputStream output = null;
-            try {
-                input = this.pluginArtifactZip.getInputStream(zipEntry);
-                output = new FileOutputStream(tmpFile);
-                IOUtils.copy(input, output);
-                output.flush();
-                tmpFile.renameTo(resourceFile);
-            } catch (IOException e) {
-                throw e;
-            } finally {
-                IOUtils.closeQuietly(input);
-                IOUtils.closeQuietly(output);
-            }
+            copyZipEntryToTmpFile(zipEntry, tmpFile);
+            tmpFile.renameTo(resourceFile);
         }
         return resourceFile.toURI().toURL();
+    }
+
+    /**
+     * Copies zipEntry to tmpFile.
+     * @param zipEntry
+     * @param tmpFile
+     * @throws IOException
+     */
+    private void copyZipEntryToTmpFile(ZipEntry zipEntry, File tmpFile) throws IOException {
+        InputStream input = null;
+        OutputStream output = null;
+        try {
+            input = this.pluginArtifactZip.getInputStream(zipEntry);
+            output = new FileOutputStream(tmpFile);
+            IOUtils.copy(input, output);
+            output.close();
+        } finally {
+            IOUtils.closeQuietly(input);
+            IOUtils.closeQuietly(output);
+        }
     }
 
     /**
@@ -235,7 +230,7 @@ public class PluginClassLoader extends ClassLoader {
                 }
             }
         }
-        
+
         ZipEntry entry;
         File file;
         for (ZipFile zipFile : this.dependencyZips) {
@@ -251,7 +246,7 @@ public class PluginClassLoader extends ClassLoader {
                 }
             }
         }
-        
+
         return super.findResource(name);
     }
 
@@ -291,7 +286,7 @@ public class PluginClassLoader extends ClassLoader {
                 }
             }
         }
-        
+
         // Return the discovered resources as an Enumeration
         final Iterator<URL> iterator = resources.iterator();
         return new Enumeration<URL>() {
