@@ -22,6 +22,9 @@ public class ApimanLog4j2LogDelegate implements LogDelegate {
     }
 
     @Override
+    public boolean isWarnEnabled() { return logger.isWarnEnabled(); }
+
+    @Override
     public boolean isInfoEnabled() {
       return logger.isInfoEnabled();
     }

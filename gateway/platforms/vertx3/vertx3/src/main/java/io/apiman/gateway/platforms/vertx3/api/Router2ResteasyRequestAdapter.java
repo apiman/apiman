@@ -20,19 +20,13 @@ import io.vertx.codegen.annotations.Nullable;
 import io.vertx.core.Handler;
 import io.vertx.core.MultiMap;
 import io.vertx.core.buffer.Buffer;
-import io.vertx.core.http.HttpConnection;
-import io.vertx.core.http.HttpFrame;
-import io.vertx.core.http.HttpMethod;
-import io.vertx.core.http.HttpServerFileUpload;
-import io.vertx.core.http.HttpServerRequest;
-import io.vertx.core.http.HttpServerResponse;
-import io.vertx.core.http.HttpVersion;
-import io.vertx.core.http.ServerWebSocket;
+import io.vertx.core.http.*;
 import io.vertx.core.net.NetSocket;
 import io.vertx.core.net.SocketAddress;
 import io.vertx.ext.web.RoutingContext;
 
 import javax.net.ssl.SSLPeerUnverifiedException;
+import javax.net.ssl.SSLSession;
 import javax.security.cert.X509Certificate;
 
 /**
@@ -84,6 +78,11 @@ public class Router2ResteasyRequestAdapter implements HttpServerRequest {
     public HttpServerRequest resume() {
         request.resume();
         return this;
+    }
+
+    @Override
+    public HttpServerRequest fetch(long l) {
+        return null;
     }
 
     @Override
@@ -143,6 +142,11 @@ public class Router2ResteasyRequestAdapter implements HttpServerRequest {
     }
 
     @Override
+    public SSLSession sslSession() {
+        return null;
+    }
+
+    @Override
     public boolean isSSL() {
         return request.isSSL();
     }
@@ -160,6 +164,11 @@ public class Router2ResteasyRequestAdapter implements HttpServerRequest {
     @Override
     public @Nullable String host() {
         return request.host();
+    }
+
+    @Override
+    public long bytesRead() {
+        return 0;
     }
 
     @Override
@@ -220,6 +229,11 @@ public class Router2ResteasyRequestAdapter implements HttpServerRequest {
     @Override
     public HttpConnection connection() {
         return request.connection();
+    }
+
+    @Override
+    public HttpServerRequest streamPriorityHandler(Handler<StreamPriority> handler) {
+        return null;
     }
 
     @Override

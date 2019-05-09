@@ -28,7 +28,6 @@ import io.vertx.core.MultiMap;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpServer;
 import io.vertx.core.http.HttpServerOptions;
-import io.vertx.core.http.HttpServerOptionsConverter;
 import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.core.json.JsonObject;
@@ -138,8 +137,7 @@ public class EchoServerVertx extends AbstractVerticle {
     }
 
     private HttpServerOptions getHttpServerOptions(String name) {
-        HttpServerOptions options = new HttpServerOptions();
-        HttpServerOptionsConverter.fromJson(config().getJsonObject(name, new JsonObject()), options);
+        HttpServerOptions options = new HttpServerOptions(config().getJsonObject(name, new JsonObject()));
         if (JdkSSLEngineOptions.isAlpnAvailable()) {
             options.setUseAlpn(true);
         }
