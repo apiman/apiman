@@ -99,7 +99,7 @@
       "templates" : [
         {
           "language" : null,
-          "template" : "API responses will be cached for @{ttl} seconds."
+          "template" : "API responses will be cached for @{ttl} seconds. @if{includeQueryInKey == true}The query string will be included for the cache key.@end{}@if{includeQueryInKey == false}The query string will be ignored for the cache key.@end{}"
         }
       ]
     },

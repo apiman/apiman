@@ -27,6 +27,7 @@ public class CachingConfig {
 
     private long ttl; // in seconds
     private List<String> statusCodes = new ArrayList<>();
+    private boolean includeQueryInKey = false;
 
     /**
      * Constructor.
@@ -60,5 +61,21 @@ public class CachingConfig {
      */
     public void setStatusCodes(List<String> statusCodes) {
         this.statusCodes = statusCodes;
+    }
+
+    /**
+     * Whether to include query parameters in the cache key.
+     * @return {@code true} if query parameters should be included, otherwise, {@code false}
+     */
+    public boolean isIncludeQueryInKey() {
+        return includeQueryInKey;
+    }
+
+    /**
+     * Whether to include query parameters in the cache key.
+     * @param includeQueryInKey whether to include query parameters
+     */
+    public void setIncludeQueryInKey(boolean includeQueryInKey) {
+        this.includeQueryInKey = includeQueryInKey;
     }
 }

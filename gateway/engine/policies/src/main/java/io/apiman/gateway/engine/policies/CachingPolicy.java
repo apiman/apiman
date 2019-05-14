@@ -57,7 +57,7 @@ public class CachingPolicy extends AbstractMappedDataPolicy<CachingConfig> imple
     }
 
     /**
-     * @see io.apiman.gateway.engine.policy.AbstractPolicy#getConfigurationClass()
+     * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#getConfigurationClass()
      */
     @Override
     protected Class<CachingConfig> getConfigurationClass() {
@@ -77,7 +77,7 @@ public class CachingPolicy extends AbstractMappedDataPolicy<CachingConfig> imple
         if (config.getTtl() > 0) {
             // Check to see if there is a cache entry for this request.  If so, we need to
             // short-circuit the connector factory by providing a connector interceptor
-            String cacheId = buildCacheID(request);
+            String cacheId = buildCacheID(request, config);
             context.setAttribute(CACHE_ID_ATTR, cacheId);
             ICacheStoreComponent cache = context.getComponent(ICacheStoreComponent.class);
             cache.getBinary(cacheId, ApiResponse.class,
@@ -92,6 +92,8 @@ public class CachingPolicy extends AbstractMappedDataPolicy<CachingConfig> imple
                                     context.setConnectorInterceptor(new CacheConnectorInterceptor(cacheEntry));
                                     context.setAttribute(SHOULD_CACHE_ATTR, Boolean.FALSE);
                                     context.setAttribute(CACHED_RESPONSE, cacheEntry.getHead());
+                                } else {
+                                    context.setAttribute(SHOULD_CACHE_ATTR, Boolean.TRUE);
                                 }
                                 chain.doApply(request);
                             }
@@ -131,7 +133,7 @@ public class CachingPolicy extends AbstractMappedDataPolicy<CachingConfig> imple
 
         // Possibly cache the response for future posterity.
         // Check the response code against list in config (empty/null list means cache all).
-        final boolean shouldCache = (context.getAttribute(SHOULD_CACHE_ATTR, Boolean.TRUE) &&
+        final boolean shouldCache = (context.getAttribute(SHOULD_CACHE_ATTR, Boolean.FALSE) &&
                 ofNullable(policyConfiguration.getStatusCodes())
                     .map(statusCodes -> statusCodes.isEmpty() || statusCodes.contains(String.valueOf(response.getCode())))
                     .orElse(true));
@@ -174,17 +176,27 @@ public class CachingPolicy extends AbstractMappedDataPolicy<CachingConfig> imple
      * verb and the destination. In the case where there's no API key the ID
      * will contain ApiOrgId + ApiId + ApiVersion
      */
-    private static String buildCacheID(ApiRequest request) {
-        StringBuilder req = new StringBuilder();
+    private static String buildCacheID(ApiRequest request, CachingConfig config) {
+        StringBuilder cacheId = new StringBuilder();
         if (request.getContract() != null) {
-            req.append(request.getApiKey());
+            cacheId.append(request.getApiKey());
         } else {
-            req.append(request.getApiOrgId()).append(KEY_SEPARATOR).append(request.getApiId())
+            cacheId.append(request.getApiOrgId()).append(KEY_SEPARATOR).append(request.getApiId())
                     .append(KEY_SEPARATOR).append(request.getApiVersion());
         }
-        req.append(KEY_SEPARATOR).append(request.getType()).append(KEY_SEPARATOR)
+        cacheId.append(KEY_SEPARATOR).append(request.getType()).append(KEY_SEPARATOR)
                 .append(request.getDestination());
-        return req.toString();
+
+        // According to RFC7234 (https://tools.ietf.org/html/rfc7234#section-2),
+        // 'The primary cache key consists of the request method and target URI.'
+        // For historical reasons, this is not the behaviour of this policy, which instead
+        // uses only the path part of the URI, not the query string.
+        // The behaviour mentioned in the RFC can be enabled using a configuration option.
+        if (config.isIncludeQueryInKey() && !request.getQueryParams().isEmpty()) {
+            cacheId.append("?").append(request.getQueryParams().toQueryString());
+        }
+
+        return cacheId.toString();
     }
 
 }
