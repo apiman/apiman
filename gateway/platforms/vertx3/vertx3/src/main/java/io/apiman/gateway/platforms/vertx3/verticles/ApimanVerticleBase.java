@@ -20,6 +20,7 @@ import io.apiman.gateway.platforms.vertx3.common.config.VertxEngineConfig;
 import io.apiman.gateway.platforms.vertx3.common.verticles.VerticleType;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
+import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 
@@ -62,5 +63,23 @@ public abstract class ApimanVerticleBase extends AbstractVerticle {
 
     protected Logger getLogger() {
         return log;
+    }
+
+    /**
+     * Adds allowed TLS versions to the verticle configuration if special TLS versions are configured
+     * @param httpsServerOptions
+     */
+    public void addAllowedSslTlsProtocols(HttpServerOptions httpsServerOptions) {
+        String[] allowedProtocols = apimanConfig.getSslTlsAllowedProtocols();
+
+        if (!allowedProtocols[0].isEmpty()) {
+            // remove unsecure protocols
+            httpsServerOptions.removeEnabledSecureTransportProtocol("TLSv1");
+            httpsServerOptions.removeEnabledSecureTransportProtocol("TLSv1.1");
+
+            for (String protocol : allowedProtocols) {
+                httpsServerOptions.addEnabledSecureTransportProtocol(protocol);
+            }
+        }
     }
 }

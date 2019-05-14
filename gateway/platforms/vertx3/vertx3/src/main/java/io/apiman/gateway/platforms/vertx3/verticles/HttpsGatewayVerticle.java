@@ -53,6 +53,7 @@ public class HttpsGatewayVerticle extends ApimanVerticleWithEngine {
                         .setPath(apimanConfig.getTrustStore())
                         .setPassword(apimanConfig.getTrustStorePassword())
                     );
+        addAllowedSslTlsProtocols(httpsServerOptions);
 
         if (JdkSSLEngineOptions.isAlpnAvailable()) {
             httpsServerOptions.setUseAlpn(true);
