@@ -267,12 +267,18 @@
       "realm-public-key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxyG61ohrfJQKNmDA/ePZtqZVpPXjwn3k3T+iWiTvMsxW2+WlnqIEmL5qZ09DMhBH9r50WZRO2gVoCb657Er9x0vfD6GNf/47XU2y33TX8axhP+hSwkv/VViaDlu4jQrfgPWz/FXMjWIZxg1xQS+nOBF2ScCRYWNQ/ZnUNnvrq8dGC2/AlyeYcgDUOdwlJuvgkGlF0QoVPQiRPurR3RwlG+BjL8JB3hbaAZhdJqwqApmGQbcpgLj2tODnlrZnEAp5cPPU/lgqCE1OOp78BAEiE91ZLPl/+D8qDHk+Maz0Io3bkeRZMXPpvtbL3qN+3GlF8Yz264HDSsTNrH+nd19tFQIDAQAB",
       "auth-server-url": "http://localhost:8080/auth",
       "ssl-required": "none",
+      "disable-trust-manager": false,
+      "allow-any-hostname" : false,
       "resource": "apiman-gateway-api",
       // A limitation in the current OAuth2 implementation means a credentials section is required
       // even if your client is not set to "confidential". Leave this dummy section if you're using non-confidential.
       "credentials": {
         "secret": "217b725d-7790-47a7-a3fc-5cf31f92a8db"
-      }
+      },
+      "truststore": "/usr/src/apiman/apiman-distro-vertx/apiman.jks",
+      "truststore-password": "secret"
+      // "client-keystore": "/usr/src/apiman/apiman-distro-vertx/apiman.jks",
+      // "client-keystore-password": "secret"
       // End paste here
     }
   },
