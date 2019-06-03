@@ -99,6 +99,7 @@ public class VertxEngineConfig implements IEngineConfig {
     private static final String SSL = "ssl";
     private static final String SSL_TRUSTSTORE = "truststore";
     private static final String SSL_KEYSTORE = "keystore";
+    private static final String SSL_TLS_ALLOWED_PROTOCOLS = "allowedProtocols";
     private static final String SSL_PATH = "path";
     private static final String VARIABLES = "variables";
 
@@ -300,6 +301,10 @@ public class VertxEngineConfig implements IEngineConfig {
 
     public String getTrustStorePassword() {
         return config.getJsonObject(SSL, new JsonObject()).getJsonObject(SSL_TRUSTSTORE, new JsonObject()).getString(API_PASSWORD);
+    }
+
+    public String[] getSslTlsAllowedProtocols() {
+        return config.getJsonObject(SSL, new JsonObject()).getString(SSL_TLS_ALLOWED_PROTOCOLS).split(",");
     }
 
     public JsonObject getAuth() {

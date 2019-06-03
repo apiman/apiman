@@ -244,17 +244,20 @@
     }
   },
 
-  // SSL configuration to the gateway's *front end* (i.e. client <-> gateway).
-  //  "ssl": {
-  //    "keystore": {
-  //      "path": "/the/keystore/path/here.jks",
-  //      "password": "password-here"
-  //    },
-  //    "truststore": {
-  //      "path": "/the/truststore/path/here.jks",
-  //      "password": "password-here"
-  //    }
-  //  },
+//   SSL configuration to the gateway's *front end* (i.e. client <-> gateway).
+//    "ssl": {
+//      "keystore": {
+//        "path": "/the/keystore/path/here.jks",
+//        "password": "password-here"
+//      },
+//      "truststore": {
+//        "path": "/the/truststore/path/here.jks",
+//        "password": "password-here"
+//      }
+//    },
+//    Allowed TLS/SSL protocols for Client <-> Gateway (Server)
+//    "allowedProtocols": "TLSv1.1, TLSv1.2"
+//    },
 
   // Gateway API Authentication. See documentation for further possibilities..
   "auth": {

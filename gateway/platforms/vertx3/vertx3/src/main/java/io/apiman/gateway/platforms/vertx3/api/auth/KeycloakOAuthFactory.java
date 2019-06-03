@@ -19,12 +19,15 @@ package io.apiman.gateway.platforms.vertx3.api.auth;
 import io.apiman.common.util.Basic;
 import io.apiman.gateway.platforms.vertx3.common.config.VertxEngineConfig;
 import io.apiman.gateway.platforms.vertx3.verticles.ApiVerticle;
+import io.vertx.core.AsyncResult;
+import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpClientOptions;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.core.net.JksOptions;
+import io.vertx.ext.auth.User;
 import io.vertx.ext.auth.oauth2.AccessToken;
 import io.vertx.ext.auth.oauth2.OAuth2Auth;
 import io.vertx.ext.auth.oauth2.OAuth2FlowType;
@@ -40,7 +43,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
-import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.EnumUtils;
 
 /**
@@ -98,10 +100,10 @@ public class KeycloakOAuthFactory {
                 HttpClientOptions sslOptions = getHttpClientOptionsForKeycloak(authConfig);
 
                 OAuth2Auth oauth2 = KeycloakAuth.create(vertx, flowType, authConfig, sslOptions);
-                oauth2.getToken(params, tokenResult -> {
+                oauth2.authenticate(params, tokenResult -> {
                     if (tokenResult.succeeded()) {
                         log.debug("OAuth2 Keycloak exchange succeeded.");
-                        AccessToken token = tokenResult.result();
+                        AccessToken token = (AccessToken) tokenResult.result();
                         token.isAuthorised(role, res -> {
                             if (res.result()) {
                                 context.next();
@@ -145,6 +147,12 @@ public class KeycloakOAuthFactory {
             public AuthHandler addAuthorities(Set<String> authorities) {
                 return this;
             }
+
+            @Override
+            public void parseCredentials(RoutingContext routingContext, Handler<AsyncResult<JsonObject>> handler) {}
+
+            @Override
+            public void authorize(User user, Handler<AsyncResult<Void>> handler) {}
         };
     }
 
@@ -186,4 +194,5 @@ public class KeycloakOAuthFactory {
     private static OAuth2FlowType toEnum(String flowType) {
         return EnumUtils.getEnum(OAuth2FlowType.class, flowType.toUpperCase());
     }
+
 }
