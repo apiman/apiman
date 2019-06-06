@@ -145,7 +145,7 @@ module Apiman {
                     hasSwagger = true;
                 } catch (e) {}
 
-                if ($scope.version.definitionType == 'SwaggerJSON' && hasSwagger) {
+                if (($scope.version.definitionType == 'SwaggerJSON' || $scope.version.definitionType == 'SwaggerYAML') && hasSwagger) {
                     var url = ApiDefinitionSvcs.getApiDefinitionUrl($scope.params.org, $scope.params.api, $scope.params.version);
                     Logger.debug("!!!!! Using definition URL: {0}", url);
 

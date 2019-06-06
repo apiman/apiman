@@ -257,7 +257,7 @@ module Apiman {
                     if ($scope.api.routeDefinitionUrl != null) definitionUrl = $scope.api.routeDefinitionUrl;
                     var definitionType = $scope.api.definitionType;
 
-                    if (definitionType == 'SwaggerJSON' && hasSwagger) {
+                    if ((definitionType == 'SwaggerJSON' || definitionType == 'SwaggerYAML') && hasSwagger) {
                         var authHeader = Configuration.getAuthorizationHeader();
 
                         $scope.definitionStatus = 'loading';
