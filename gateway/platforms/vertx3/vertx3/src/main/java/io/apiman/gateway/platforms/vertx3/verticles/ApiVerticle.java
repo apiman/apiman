@@ -106,6 +106,7 @@ public class ApiVerticle extends ApimanVerticleWithEngine {
                         .setPath(apimanConfig.getTrustStore())
                         .setPassword(apimanConfig.getTrustStorePassword())
                     );
+            addAllowedSslTlsProtocols(httpOptions);
         } else {
             log.warn("API is running in plaintext mode. Enable SSL in config for production deployments.");
         }
