@@ -89,7 +89,7 @@
                 "entityVersion" : { "type" : "string", "index" : "not_analyzed" },
                 "who" : { "type" : "string", "index" : "not_analyzed" },
                 "what" : { "type" : "string", "index" : "not_analyzed" },
-                "data" : { "type" : "string", "index" : "not_analyzed" }
+                "data" : { "type" : "text" }
             }
         },
         "plan" : {

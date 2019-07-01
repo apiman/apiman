@@ -84,6 +84,7 @@ import io.apiman.manager.api.es.util.XContentBuilder;
 import io.searchbox.action.Action;
 import io.searchbox.client.JestClient;
 import io.searchbox.client.JestResult;
+import io.searchbox.client.JestResultHandler;
 import io.searchbox.cluster.Health;
 import io.searchbox.core.Delete;
 import io.searchbox.core.DeleteByQuery;
@@ -96,7 +97,10 @@ import io.searchbox.core.SearchScroll;
 import io.searchbox.core.SearchScroll.Builder;
 import io.searchbox.core.search.sort.Sort;
 import io.searchbox.indices.CreateIndex;
+import io.searchbox.indices.DeleteIndex;
 import io.searchbox.indices.IndicesExists;
+import io.searchbox.indices.mapping.GetMapping;
+import io.searchbox.indices.reindex.Reindex;
 import io.searchbox.params.Parameters;
 
 import java.io.ByteArrayInputStream;
@@ -104,13 +108,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -200,11 +198,136 @@ public class EsStorage implements IStorage, IStorageQuery {
                 JestResult result = esClient.execute(action);
                 if (!result.isSucceeded()) {
                     createIndex(getIndexName());
+                } else {
+                    if (isMigrationNeeded()){
+                        migrateIndexMapping();
+                    }
                 }
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * This method will check if a migration of the index is needed
+     * @return true or false
+     * @throws IOException
+     */
+    private boolean isMigrationNeeded() throws IOException {
+        // Check if migration is needed for too large swagger files - "keyword" to "text"
+        // See https://github.com/apiman/apiman/issues/736
+        JestResult result = esClient.execute(new GetMapping.Builder().addIndex(getIndexName()).build());
+        if (result.isSucceeded()) {
+            boolean migrationNeeded = result.getJsonObject()
+                    .getAsJsonObject(getIndexName())
+                    .getAsJsonObject("mappings")
+                    .getAsJsonObject("auditEntry")
+                    .getAsJsonObject("properties")
+                    .getAsJsonObject("data")
+                    .getAsJsonPrimitive("type")
+                    .getAsString()
+                    .equals("keyword");
+            if (migrationNeeded) {
+                logger.info("Migration of Elasticsearch index is needed.");
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * This method will migrate the indices and reindex them back to the original to change field mappings.
+     * We need this for https://github.com/apiman/apiman/issues/736
+     * @throws Exception
+     */
+    private void migrateIndexMapping() throws Exception {
+        logger.info("Migration of Elasticsearch index has started. This could take a moment.");
+        // create tmp index for reindex with new mapping
+        String tmpIndexName = getIndexName() + "_tmp";
+        createIndex(tmpIndexName);
+
+        // set source and dest index
+        HashMap<String, Object> source = new HashMap<>();
+        HashMap<String, Object> dest = new HashMap<>();
+        source.put("index", getIndexName());
+        dest.put("index", tmpIndexName);
+
+
+        // reindex old index to tmp index
+        Action<JestResult> reindexToTmp = new Reindex.Builder(source, dest).waitForActiveShards(1).waitForCompletion(true).refresh(true).build();
+        esClient.executeAsync(reindexToTmp, new JestResultHandler<JestResult>() {
+            @Override
+            public void completed(JestResult jestResult) {
+                logger.info("Reindex to " + tmpIndexName);
+                logger.info("Result: " + jestResult.getJsonString());
+
+                // delete old index
+                Action<JestResult> deleteIndex = new DeleteIndex.Builder(getIndexName()).build();
+                esClient.executeAsync(deleteIndex, new JestResultHandler<JestResult>() {
+                    @Override
+                    public void completed(JestResult jestResult) {
+                        logger.info("Deleted: " + getIndexName());
+                        logger.info("Result: " + jestResult.getJsonString());
+
+                        // create a new index with old name and new mapping
+                        try {
+                            createIndex(getIndexName());
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+
+                        // redindex tmp index back to "old" index
+                        source.put("index", tmpIndexName);
+                        dest.put("index", getIndexName());
+
+                        Action<JestResult> reindexTmpToNew = new Reindex.Builder(source, dest).waitForActiveShards(1).waitForCompletion(true).refresh(true).build();
+                        esClient.executeAsync(reindexTmpToNew, new JestResultHandler<JestResult>() {
+                            @Override
+                            public void completed(JestResult jestResult) {
+                                logger.info("Reindex to " + getIndexName());
+                                logger.info("Result: " + jestResult.getJsonString());
+
+                                // delete tmp index
+                                Action<JestResult> deleteTmpIndex = new DeleteIndex.Builder(tmpIndexName).build();
+                                esClient.executeAsync(deleteTmpIndex, new JestResultHandler<JestResult>() {
+                                    @Override
+                                    public void completed(JestResult jestResult) {
+                                        logger.info("Deleted: " + tmpIndexName);
+                                        logger.info("Result: " + jestResult.getJsonString());
+                                        logger.info("Migration succeeded");
+                                    }
+
+                                    @Override
+                                    public void failed(Exception e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                });
+                            }
+
+                            @Override
+                            public void failed(Exception e) {
+                                throw new RuntimeException(e);
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void failed(Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+            }
+
+            @Override
+            public void failed(Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+
     }
 
     /**
@@ -217,6 +340,8 @@ public class EsStorage implements IStorage, IStorageQuery {
         JestResult response = esClient.execute(new CreateIndex.Builder(indexName).settings(source).build());
         if (!response.isSucceeded()) {
             throw new StorageException("Failed to create index " + indexName + ": " + response.getErrorMessage()); //$NON-NLS-1$ //$NON-NLS-2$
+        } else {
+            logger.info("Created index:" + indexName);
         }
     }
 
