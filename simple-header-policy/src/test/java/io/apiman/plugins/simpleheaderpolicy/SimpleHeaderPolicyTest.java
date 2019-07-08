@@ -251,6 +251,23 @@ public class SimpleHeaderPolicyTest {
     }
 
     @Test
+    public void shouldGetValueFromRequestButNoHeader() {
+        AddHeaderBean header = spy(new AddHeaderBean());
+
+        header.setHeaderName("the-target-header");
+        header.setHeaderValue("the-header-to-read-from");
+        header.setOverwrite(true);
+        header.setApplyTo(ApplyTo.REQUEST);
+        header.setValueType(ValueType.HEADER);
+        config.getAddHeaders().add(header);
+
+        policy.apply(request, mContext, config, mRequestChain);
+
+        assertNull(request.getHeaders().get("the-target-header"));
+        assertEquals(0, request.getHeaders().size());
+    }
+
+    @Test
     public void shouldStripHeaderWithKey() {
         request.getHeaders().put("vanish", "begone");
 
