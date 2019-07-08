@@ -28,6 +28,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import io.apiman.gateway.engine.beans.ApiRequest;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -266,7 +267,7 @@ public class AddHeaderBean {
 
     public static enum ValueType {
 
-        STRING("String"), ENV("Env"), SYS("System Properties");
+        STRING("String"), ENV("Env"), SYS("System Properties"), HEADER("Header");
         private final String value;
         private static Map<String, AddHeaderBean.ValueType> constants = new HashMap<>();
 
@@ -298,7 +299,7 @@ public class AddHeaderBean {
 
     }
 
-    public String getResolvedHeaderValue() {
+    public String getResolvedHeaderValue(ApiRequest request) {
         String rVal = null;
 
         switch (getValueType()) {
@@ -310,6 +311,13 @@ public class AddHeaderBean {
             break;
         case STRING:
             rVal = headerValue;
+            break;
+        case HEADER:
+            if(request == null) {
+                throw new IllegalArgumentException("Invalid access when reading header value.");
+            }
+            rVal = request.getHeaders().get(headerValue);
+            break;
         }
 
         return (rVal == null) ? "" : rVal;
