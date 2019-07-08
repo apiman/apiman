@@ -1,7 +1,7 @@
 /// <reference path="apimanPlugin.ts"/>
 /// <reference path="rpc.ts"/>
 module Apiman {
-	 
+
     export var isRegexpValid = function(v) {
         var valid = true;
 
@@ -89,7 +89,7 @@ module Apiman {
                     $scope.editor = null;
                 }
             };
-            
+
             var loadSchema = function() {
                 $scope.schemaState = 'loading';
 
@@ -121,7 +121,7 @@ module Apiman {
             $scope.$on('$destroy', function() {
                 destroyEditor();
             });
-            
+
             // On first load of this controller, load the schema.
             loadSchema();
         }]);
@@ -192,7 +192,7 @@ module Apiman {
 
             $scope.$watch('config', validate, true);
         }]);
-    
+
     export var KB = 1024;
     export var MB = 1024 * 1024;
     export var GB = 1024 * 1024 * 1024;
@@ -201,7 +201,7 @@ module Apiman {
         ['$scope', 'Logger', 'EntityStatusSvc',
         ($scope, Logger, EntityStatusSvc) => {
             $scope.limitDenomination = 'B';
-            
+
             if ($scope.config && $scope.config.limit) {
                 var limit = Number($scope.config.limit);
 
@@ -288,9 +288,9 @@ module Apiman {
                 var valid = true;
                 $scope.setValid(valid);
             };
-            
+
             $scope.$watch('config', validate, true);
-            
+
             if (!$scope.config.ipList) {
                 $scope.config.ipList = [];
             }
@@ -298,7 +298,7 @@ module Apiman {
             if (!$scope.config.responseCode) {
                 $scope.config.responseCode = '500';
             }
-            
+
             $scope.add = function(ip) {
                 $scope.remove(ip);
                 $scope.config.ipList.push(ip);
@@ -306,7 +306,7 @@ module Apiman {
                 $scope.ipAddress = undefined;
                 $('#ip-address').focus();
             };
-            
+
             $scope.remove = function(ips) {
                 angular.forEach(ips, function(ip) {
                     var idx = -1;
@@ -324,7 +324,7 @@ module Apiman {
 
                 $scope.selectedIP = undefined;
             };
-            
+
             $scope.clear = function() {
                 $scope.config.ipList = [];
                 $scope.selectedIP = undefined;
@@ -342,7 +342,7 @@ module Apiman {
             };
 			$scope.currentItemInvalid=function(){ return !$scope.pathPattern || !$scope.verb || !isRegexpValid($scope.path); };
             $scope.$watch('config', validate, true);
-            
+
             $scope.add = function(path, verb) {
                 if (!$scope.config.rules) {
                     $scope.config.rules = [];
@@ -352,12 +352,12 @@ module Apiman {
                     'pathPattern' : path
                 };
                 $scope.config.rules.push(rule);
-                
+
                 $scope.pathPattern = undefined;
                 $scope.resetVerbsSelector();
                 $('#path').focus();
             };
-            
+
             $scope.remove = function(selectedRule) {
  				var idx = -1;
                 angular.forEach($scope.config.rules, function (item, index) {
@@ -370,7 +370,7 @@ module Apiman {
                 }
                 $scope.selectedPath = undefined;
             };
-            
+
             $scope.clear = function() {
                 $scope.config.rules = [];
                 $scope.selectedPath = undefined;
@@ -392,11 +392,11 @@ module Apiman {
                 if (!config.realm) {
                     valid = false;
                 }
-                
+
                 if (!config.staticIdentity && !config.ldapIdentity && !config.jdbcIdentity) {
                     valid = false;
                 }
-                
+
                 if (config.staticIdentity) {
                     if (!config.staticIdentity.identities) {
                         valid = false;
@@ -471,7 +471,7 @@ module Apiman {
 
                 $scope.setValid(valid);
             };
-            
+
             if ($scope.config && $scope.config.jdbcIdentity && !$scope.config.jdbcIdentity.type) {
                 $scope.config.jdbcIdentity.type = 'datasource';
             }
@@ -483,7 +483,7 @@ module Apiman {
             $scope.$watch('repeatPassword', function() {
                 validate($scope.config);
             });
-            
+
             if ($scope.config) {
                 if ($scope.config.staticIdentity) {
                     $scope.identitySourceType = 'static';
@@ -497,7 +497,7 @@ module Apiman {
                     $scope.jdbcPasswordVerify = $scope.config.jdbcIdentity.password;
                 }
             }
-            
+
             $scope.$watch('identitySourceType', function(newValue) {
                 if (newValue) {
                     if (newValue == 'static' && !$scope.config.staticIdentity) {
@@ -537,7 +537,7 @@ module Apiman {
 
                 $('#username').focus();
             };
-            
+
             $scope.remove = function(selectedIdentities) {
                 angular.forEach(selectedIdentities, function(identity) {
                     var idx = -1;
@@ -555,7 +555,7 @@ module Apiman {
 
                 $scope.selectedIdentity = undefined;
             };
-            
+
             $scope.clear = function() {
                 $scope.config.staticIdentity.identities = [];
                 $scope.selectedIdentity = undefined;
@@ -577,16 +577,16 @@ module Apiman {
                 if (!config.multiMatch) {
                     config.multiMatch = 'all';
                 }
-                
+
                 $scope.setValid(valid);
             };
 
             $scope.$watch('config', validate, true);
-            
+
             $scope.currentItemInvalid = function() {
                 return !$scope.path || !$scope.verb || !$scope.role || !isRegexpValid($scope.path);
             };
-            
+
             $scope.add = function(path, verb, role) {
                 if (!$scope.config.rules) {
                     $scope.config.rules = [];
@@ -605,7 +605,7 @@ module Apiman {
 
                 $('#path').focus();
             };
-            
+
             $scope.remove = function(selectedRule) {
                 var idx = -1;
 
@@ -619,7 +619,7 @@ module Apiman {
                     $scope.config.rules.splice(idx, 1);
                 }
             };
-            
+
             $scope.clear = function() {
                 $scope.config.rules = [];
             };
@@ -679,6 +679,51 @@ module Apiman {
             $scope.isEntityDisabled = EntityStatusSvc.isEntityDisabled;
         }]);
 
+    _module.controller('Apiman.CachingResourcesFormController',
+        ['$scope', 'EntityStatusSvc',
+            ($scope, EntityStatusSvc) => {
+                let validate = function(config) {
+                    let valid = false;
+
+                    if (config.ttl) {
+                        config.ttl = Number(config.ttl);
+
+                        // Check that TTL & Policy Definition ID are set
+                        valid = ((config.ttl && config.ttl > 0) && ($scope.selectedDef && $scope.selectedDef.id != null));
+                        valid = valid && config.cachingResourcesSettingsEntries.length > 0;
+                    }
+
+                    $scope.setValid(valid);
+                };
+                $scope.currentItemInvalid=function(){ return !$scope.pathPattern || !$scope.httpMethod || !$scope.statusCodeCaching || !isRegexpValid($scope.path); };
+                $scope.$watch('config', validate, true);
+                if (!$scope.config.statusCodes) {
+                    $scope.config.statusCodes = [];
+                }
+
+                $scope.add = function (statusCode, pathPattern, httpMethod) {
+                    if(!$scope.config.cachingResourcesSettingsEntries) {
+                        $scope.config.cachingResourcesSettingsEntries = [];
+                    }
+                    let cachingResourcesSetting = {
+                        "statusCode": statusCode,
+                        "pathPattern": pathPattern,
+                        "httpMethod": httpMethod
+                    }
+                    $scope.config.cachingResourcesSettingsEntries.push(cachingResourcesSetting);
+
+                    $scope.pathPattern = undefined;
+                    $scope.httpMethod = undefined;
+                    $scope.statusCodeCaching = undefined;
+                };
+
+                $scope.remove = function (cachingResourceSetting) {
+                    $scope.config.cachingResourcesSettingsEntries.remove(cachingResourceSetting);
+                };
+
+                $scope.isEntityDisabled = EntityStatusSvc.isEntityDisabled;
+            }]);
+
     _module.controller('Apiman.URLRewritingFormController',
         ['$scope', 'Logger', 'EntityStatusSvc',
         ($scope, Logger, EntityStatusSvc) => {
@@ -712,9 +757,9 @@ module Apiman {
 
             $scope.$watch('config', validate, true);
         }]);
-        
-        
-        
+
+
+
       _module.controller('Apiman.TimeRestrictedAccessFormController',
         ['$window','$scope', 'Logger', 'EntityStatusSvc',
         ($window, $scope, Logger, EntityStatusSvc) => {
@@ -727,7 +772,7 @@ module Apiman {
             $scope.weekdays=["Mon", "Tue", "Wed", "Thu", "Fri", "Sat","Sun"];
 			$scope.currentItemInvalid=function(){
 			   return !$scope.pathPattern || !$scope.timeStart ||
-			       !$scope.timeEnd || !$scope.dayStart ||  
+			       !$scope.timeEnd || !$scope.dayStart ||
                    !$scope.dayEnd || !isRegexpValid($scope.path);
 			};
             $scope.$watch('config', validate, true);

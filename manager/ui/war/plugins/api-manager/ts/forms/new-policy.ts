@@ -1,6 +1,6 @@
 /// <reference path="../apimanPlugin.ts"/>
 module Apiman {
-    
+
     export var ConfigForms = {
         BASICAuthenticationPolicy: 'basic-auth.include',
         IgnoredResourcesPolicy: 'ignored-resources.include',
@@ -12,6 +12,7 @@ module Apiman {
         AuthorizationPolicy: 'authorization.include',
         URLRewritingPolicy: 'url-rewriting.include',
         CachingPolicy: 'caching.include',
+        CachingResourcesPolicy: 'caching-resources.include',
         TimeRestrictedAccessPolicy: 'time-restricted-access.include'
     };
 
@@ -19,7 +20,7 @@ module Apiman {
         ['$q', '$location', '$scope', 'OrgSvcs', 'ApimanSvcs', 'PageLifecycle', 'Logger', '$routeParams',
         ($q, $location, $scope, OrgSvcs, ApimanSvcs, PageLifecycle, Logger, $routeParams) => {
             var params = $routeParams;
-            
+
             var pageData = {
                 policyDefs: $q(function(resolve, reject) {
                     ApimanSvcs.query({ entityType: 'policyDefs' }, function(policyDefs) {
@@ -63,7 +64,7 @@ module Apiman {
                     loadTemplate(newValue);
                 }
             };
-            
+
             $scope.$watch('selectedDef', function(newValue) {
                 if (!newValue) {
                     $scope.include = undefined;
@@ -80,7 +81,7 @@ module Apiman {
                     }
                 }
             });
-            
+
             $scope.setValid = function(valid) {
                 $scope.isValid = valid;
             };
@@ -92,7 +93,7 @@ module Apiman {
             $scope.getConfig = function() {
                 return $scope.config;
             };
-            
+
             $scope.addPolicy = function() {
                 $scope.createButton.state = 'in-progress';
                 var newPolicy = {
@@ -104,7 +105,7 @@ module Apiman {
                     PageLifecycle.redirectTo('/orgs/{0}/{1}/{2}/{3}/policies', params.org, params.type, params.id, params.ver);
                 }, PageLifecycle.handleError);
             };
-            
+
             PageLifecycle.loadPage('NewPolicy', undefined, pageData, $scope, function() {
                 PageLifecycle.setPageTitle('new-policy');
             });

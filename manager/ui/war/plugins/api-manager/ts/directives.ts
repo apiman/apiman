@@ -132,7 +132,7 @@ module Apiman {
 
 
     _module.directive('apimanStatus',
-        ['Logger', 'EntityStatusSvc', 
+        ['Logger', 'EntityStatusSvc',
         function(Logger, EntityStatusSvc) {
             return {
                 restrict: 'A',
@@ -166,7 +166,7 @@ module Apiman {
             };
         }]);
 
-    _module.factory('EntityStatusSvc', 
+    _module.factory('EntityStatusSvc',
         ['$rootScope', 'Logger',
         function($rootScope, Logger) {
             var entity = null;
@@ -247,7 +247,7 @@ module Apiman {
     export var sb_counter = 0;
 
     _module.directive('apimanSearchBox',
-        ['Logger', 'TranslationSvc', 
+        ['Logger', 'TranslationSvc',
         function(Logger, TranslationSvc) {
             return {
                 restrict: 'E',
@@ -335,7 +335,7 @@ module Apiman {
         }]);
 
     _module.directive('apimanAuditEntry',
-        ['Logger', '$rootScope', 
+        ['Logger', '$rootScope',
         function(Logger, $rootScope) {
             return {
                 restrict: 'E',
@@ -413,7 +413,7 @@ module Apiman {
         }]);
 
     _module.directive('apimanPolicyList',
-        ['Logger', 
+        ['Logger',
         function(Logger) {
             return {
                 restrict: 'E',
@@ -446,7 +446,7 @@ module Apiman {
     ]);
 
     _module.directive('apimanEditableDescription',
-        ['Logger', 
+        ['Logger',
         function(Logger) {
             return {
                 restrict: 'E',
@@ -466,7 +466,7 @@ module Apiman {
                     //$scope.leftPosition = 0;
                     //$scope.height = 60;
                     //$scope.height = 'auto';
-                    
+
                     /*
                     // If description is updated, call updateFunction.
                     $scope.$watch(function() {
@@ -480,8 +480,8 @@ module Apiman {
                              $scope.callback(new_value || '');
                          }
                     });*/
-                    
-                    
+
+
                     $scope.saveDescription = function() {
                         $scope.callback($scope.descr);
                     };
@@ -603,7 +603,7 @@ module Apiman {
             }
         }
     });
-    
+
    _module.directive('httpVerbsSelect',
         ['Logger', function(Logger) {
             return {
@@ -616,6 +616,22 @@ module Apiman {
                  		scope.verb = '*';
                  	}
                  	scope.resetVerbsSelector();
+                }
+            };
+        }]);
+
+    _module.directive('httpMethodCachingSelect',
+        ['Logger', function(Logger) {
+            return {
+                templateUrl: 'plugins/api-manager/html/directives/requestMethodCachingResourcesOptions.html',
+                replace: true,
+                restrict: 'E',
+                link: function(scope, elem, attrs) {
+                    // init model
+                    scope.resetVerbsSelector = function(){
+                        scope.verb = '*';
+                    }
+                    scope.resetVerbsSelector();
                 }
             };
         }]);
