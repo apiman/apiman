@@ -151,44 +151,120 @@ public class SimpleHeaderPolicyTest {
         assertEquals("Ridcully", request.getHeaders().get("X-Clacks-Overhead"));
         assertEquals(1, request.getHeaders().size());
     }
-    
+
 
     @Test
-    public void shouldGetValueFromEnvironment() {   
+    public void shouldGetValueFromEnvironment() {
         AddHeaderBean header = spy(new AddHeaderBean());
-        
+
         header.setHeaderName("the-meaning-of-life");
         header.setHeaderValue("KEY_TO_THE_ENVIRONMENT");
         header.setOverwrite(false);
         header.setApplyTo(ApplyTo.REQUEST);
         header.setValueType(ValueType.ENV);
         config.getAddHeaders().add(header);
-        
-        given(header.getResolvedHeaderValue()).willReturn("42");
+
+        request.getHeaders().put("the-meaning-of-life","42");
 
         policy.apply(request, mContext, config, mRequestChain);
 
         assertEquals("42", request.getHeaders().get("the-meaning-of-life"));
         assertEquals(1, request.getHeaders().size());
     }
-    
+
     @Test
     public void shouldGetValueFromSystemProperties() {
         System.setProperty("PROPERTIES_KEY", "42");
 
         AddHeaderBean header = spy(new AddHeaderBean());
-        
+
         header.setHeaderName("the-meaning-of-life");
         header.setHeaderValue("PROPERTIES_KEY");
         header.setOverwrite(false);
         header.setApplyTo(ApplyTo.REQUEST);
         header.setValueType(ValueType.SYS);
         config.getAddHeaders().add(header);
-        
+
         policy.apply(request, mContext, config, mRequestChain);
 
         assertEquals("42", request.getHeaders().get("the-meaning-of-life"));
         assertEquals(1, request.getHeaders().size());
+    }
+
+    @Test
+    public void shouldGetValueFromRequestOverwriteFalseHeaderExists() {
+        request.getHeaders().put("the-header-to-read-from","value-to-copy");
+        request.getHeaders().put("the-target-header","old-value-not-overwritten");
+
+        AddHeaderBean header = spy(new AddHeaderBean());
+
+        header.setHeaderName("the-target-header");
+        header.setHeaderValue("the-header-to-read-from");
+        header.setOverwrite(false);
+        header.setApplyTo(ApplyTo.REQUEST);
+        header.setValueType(ValueType.HEADER);
+        config.getAddHeaders().add(header);
+
+        policy.apply(request, mContext, config, mRequestChain);
+
+        assertEquals("old-value-not-overwritten", request.getHeaders().get("the-target-header"));
+        assertEquals(2, request.getHeaders().size());
+    }
+
+    @Test
+    public void shouldGetValueFromRequestOverwriteTrue() {
+        request.getHeaders().put("the-header-to-read-from","value-to-copy");
+        request.getHeaders().put("the-target-header","old-value-to-be-overwritten");
+
+        AddHeaderBean header = spy(new AddHeaderBean());
+
+        header.setHeaderName("the-target-header");
+        header.setHeaderValue("the-header-to-read-from");
+        header.setOverwrite(true);
+        header.setApplyTo(ApplyTo.REQUEST);
+        header.setValueType(ValueType.HEADER);
+        config.getAddHeaders().add(header);
+
+        policy.apply(request, mContext, config, mRequestChain);
+
+        assertEquals("value-to-copy", request.getHeaders().get("the-target-header"));
+        assertEquals(2, request.getHeaders().size());
+    }
+
+    @Test
+    public void shouldGetValueFromRequestOverwriteTrueHeaderExists() {
+        request.getHeaders().put("the-header-to-read-from","value-to-copy");
+
+        AddHeaderBean header = spy(new AddHeaderBean());
+
+        header.setHeaderName("the-target-header");
+        header.setHeaderValue("the-header-to-read-from");
+        header.setOverwrite(true);
+        header.setApplyTo(ApplyTo.REQUEST);
+        header.setValueType(ValueType.HEADER);
+        config.getAddHeaders().add(header);
+
+        policy.apply(request, mContext, config, mRequestChain);
+
+        assertEquals("value-to-copy", request.getHeaders().get("the-target-header"));
+        assertEquals(2, request.getHeaders().size());
+    }
+
+    @Test
+    public void shouldGetValueFromRequestButNoHeader() {
+        AddHeaderBean header = spy(new AddHeaderBean());
+
+        header.setHeaderName("the-target-header");
+        header.setHeaderValue("the-header-to-read-from");
+        header.setOverwrite(true);
+        header.setApplyTo(ApplyTo.REQUEST);
+        header.setValueType(ValueType.HEADER);
+        config.getAddHeaders().add(header);
+
+        policy.apply(request, mContext, config, mRequestChain);
+
+        assertNull(request.getHeaders().get("the-target-header"));
+        assertEquals(0, request.getHeaders().size());
     }
 
     @Test

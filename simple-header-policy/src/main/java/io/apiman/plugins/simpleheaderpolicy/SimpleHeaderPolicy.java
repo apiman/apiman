@@ -42,7 +42,7 @@ public class SimpleHeaderPolicy extends AbstractMappedPolicy<SimpleHeaderPolicyD
     @Override
     protected void doApply(ApiRequest request, IPolicyContext context, SimpleHeaderPolicyDefBean config,
             IPolicyChain<ApiRequest> chain) {
-        setHeaders(request.getHeaders(), config, ApplyTo.REQUEST);
+        setHeadersRequest(request, config, ApplyTo.REQUEST);
         stripHeaders(request.getHeaders(), config, ApplyTo.REQUEST);
         chain.doApply(request);
     }
@@ -59,7 +59,18 @@ public class SimpleHeaderPolicy extends AbstractMappedPolicy<SimpleHeaderPolicyD
         for (AddHeaderBean header : config.getAddHeaders()) {
             if ((header.getApplyTo() == applyTo || header.getApplyTo() == ApplyTo.BOTH)) {
                 if (header.getOverwrite() || !headers.containsKey(header.getHeaderName())) {
-                    headers.put(header.getHeaderName(), header.getResolvedHeaderValue());
+                    headers.put(header.getHeaderName(), header.getResolvedHeaderValue(null));
+                }
+            }
+        }
+    }
+
+    private void setHeadersRequest(ApiRequest request, SimpleHeaderPolicyDefBean config, ApplyTo applyTo) {
+        HeaderMap headers = request.getHeaders();
+        for (AddHeaderBean header : config.getAddHeaders()) {
+            if ((header.getApplyTo() == applyTo || header.getApplyTo() == ApplyTo.BOTH)) {
+                if (header.getOverwrite() || !headers.containsKey(header.getHeaderName())) {
+                    headers.put(header.getHeaderName(), header.getResolvedHeaderValue(request));
                 }
             }
         }
