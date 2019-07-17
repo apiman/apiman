@@ -17,11 +17,11 @@
 package io.apiman.test.common.json;
 
 import java.io.InputStream;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.skyscreamer.jsonassert.JSONCompareResult;
@@ -63,6 +63,12 @@ public class JsonCompare {
         protected void compareJSONArrayOfJsonObjects(String key, JSONArray expected, JSONArray actual, JSONCompareResult result) throws JSONException {
             if (key.toLowerCase().endsWith("id")) {
                 return;
+            }
+
+            if (key.equals("PolicyDefinitions")){
+                // With this we will achieve that the order of the actual an expected json is always the same
+                expected = sortJsonArrayAlphabetically(expected, "policyImpl");
+                actual = sortJsonArrayAlphabetically(actual,"policyImpl");
             }
 
             super.recursivelyCompareJSONArray(key, expected, actual, result);
@@ -113,6 +119,35 @@ public class JsonCompare {
             }
             super.compareValues(prefix, expectedValue, actualValue, result);
         }
+    }
+
+    /**
+     * This will sort a json array in alphabetical order.
+     * @param jsonArray
+     * @return sorted jsonArray
+     * @throws JSONException
+     */
+    private JSONArray sortJsonArrayAlphabetically(JSONArray jsonArray, String key) throws JSONException {
+
+        List<JSONObject> jsonValues = new ArrayList<>();
+        for (int i = 0; i < jsonArray.length(); i++) {
+            jsonValues.add(jsonArray.getJSONObject(i));
+        }
+
+        Collections.sort(jsonValues, (o1, o2) -> {
+            String valA;
+            String valB;
+            try {
+                valA = (String) o1.get(key);
+                valB = (String) o2.get(key);
+            }
+            catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+            return valA.compareTo(valB);
+        });
+
+        return new JSONArray(jsonValues);
     }
 
 
