@@ -42,7 +42,9 @@ import io.apiman.gateway.engine.policy.IPolicyContext;
  * Policy that enables caching for back-end APIs responses.
  *
  * @author rubenrm1@gmail.com
+ * @deprecated use {@link CachingResourcesPolicy} instead.
  */
+@Deprecated
 public class CachingPolicy extends AbstractMappedDataPolicy<CachingConfig> implements IDataPolicy {
 
     private static final String KEY_SEPARATOR = ":"; //$NON-NLS-1$
@@ -53,12 +55,14 @@ public class CachingPolicy extends AbstractMappedDataPolicy<CachingConfig> imple
     /**
      * Constructor.
      */
+    @Deprecated
     public CachingPolicy() {
     }
 
     /**
      * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#getConfigurationClass()
      */
+    @Deprecated
     @Override
     protected Class<CachingConfig> getConfigurationClass() {
         return CachingConfig.class;
@@ -71,6 +75,7 @@ public class CachingPolicy extends AbstractMappedDataPolicy<CachingConfig> imple
      *
      * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#doApply(io.apiman.gateway.engine.beans.ApiRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
      */
+    @Deprecated
     @Override
     protected void doApply(final ApiRequest request, final IPolicyContext context, final CachingConfig config,
             final IPolicyChain<ApiRequest> chain) {
@@ -108,6 +113,7 @@ public class CachingPolicy extends AbstractMappedDataPolicy<CachingConfig> imple
     /**
      * @see AbstractMappedPolicy#doApply(ApiResponse, IPolicyContext, Object, IPolicyChain)
      */
+    @Deprecated
     @Override
     protected void doApply(ApiResponse response, IPolicyContext context, CachingConfig config,
             IPolicyChain<ApiResponse> chain) {
@@ -117,6 +123,7 @@ public class CachingPolicy extends AbstractMappedDataPolicy<CachingConfig> imple
     /**
      * @see io.apiman.gateway.engine.policies.AbstractMappedDataPolicy#requestDataHandler(io.apiman.gateway.engine.beans.ApiRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object)
      */
+    @Deprecated
     @Override
     protected IReadWriteStream<ApiRequest> requestDataHandler(ApiRequest request,
             IPolicyContext context, CachingConfig policyConfiguration) {
@@ -127,6 +134,7 @@ public class CachingPolicy extends AbstractMappedDataPolicy<CachingConfig> imple
     /**
      * @see io.apiman.gateway.engine.policies.AbstractMappedDataPolicy#responseDataHandler(io.apiman.gateway.engine.beans.ApiResponse, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object)
      */
+    @Deprecated
     @Override
     protected IReadWriteStream<ApiResponse> responseDataHandler(final ApiResponse response,
             IPolicyContext context, CachingConfig policyConfiguration) {
@@ -176,6 +184,7 @@ public class CachingPolicy extends AbstractMappedDataPolicy<CachingConfig> imple
      * verb and the destination. In the case where there's no API key the ID
      * will contain ApiOrgId + ApiId + ApiVersion
      */
+    @Deprecated
     private static String buildCacheID(ApiRequest request, CachingConfig config) {
         StringBuilder cacheId = new StringBuilder();
         if (request.getContract() != null) {

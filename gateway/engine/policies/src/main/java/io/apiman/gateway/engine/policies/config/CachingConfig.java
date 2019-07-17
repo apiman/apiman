@@ -22,7 +22,9 @@ import java.util.List;
  * Configuration object for the Caching policy.
  *
  * @author rubenrm1@gmail.com
+ * @deprecated use {@link CachingResourcesConfig} instead.
  */
+@Deprecated
 public class CachingConfig {
 
     private long ttl; // in seconds
@@ -32,12 +34,14 @@ public class CachingConfig {
     /**
      * Constructor.
      */
+    @Deprecated
     public CachingConfig() {
     }
 
     /**
      * @return the ttl
      */
+    @Deprecated
     public long getTtl() {
         return ttl;
     }
@@ -45,6 +49,7 @@ public class CachingConfig {
     /**
      * @param ttl the ttl to set
      */
+    @Deprecated
     public void setTtl(long ttl) {
         this.ttl = ttl;
     }
@@ -52,6 +57,7 @@ public class CachingConfig {
     /**
      * @return the status codes
      */
+    @Deprecated
     public List<String> getStatusCodes() {
         return statusCodes;
     }
@@ -59,6 +65,7 @@ public class CachingConfig {
     /**
      * @param statusCodes the statusCodes to set
      */
+    @Deprecated
     public void setStatusCodes(List<String> statusCodes) {
         this.statusCodes = statusCodes;
     }
@@ -67,6 +74,7 @@ public class CachingConfig {
      * Whether to include query parameters in the cache key.
      * @return {@code true} if query parameters should be included, otherwise, {@code false}
      */
+    @Deprecated
     public boolean isIncludeQueryInKey() {
         return includeQueryInKey;
     }
@@ -75,6 +83,7 @@ public class CachingConfig {
      * Whether to include query parameters in the cache key.
      * @param includeQueryInKey whether to include query parameters
      */
+    @Deprecated
     public void setIncludeQueryInKey(boolean includeQueryInKey) {
         this.includeQueryInKey = includeQueryInKey;
     }
