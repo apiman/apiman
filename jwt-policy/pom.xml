@@ -30,6 +30,15 @@
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/commons-validator/commons-validator -->
+    <dependency>
+      <groupId>commons-validator</groupId>
+      <artifactId>commons-validator</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.auth0</groupId>
+      <artifactId>jwks-rsa</artifactId>
+    </dependency>
     <!-- apiman -->
     <dependency>
       <groupId>io.apiman</groupId>
@@ -60,6 +69,12 @@
     <dependency>
       <groupId>io.apiman</groupId>
       <artifactId>apiman-test-policies</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!-- mockserver -->
+    <dependency>
+      <groupId>org.mock-server</groupId>
+      <artifactId>mockserver-netty</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>

@@ -28,10 +28,15 @@
             "default": false
         },
         "signingKeyString": {
-            "title": "Signing Key",
-            "description": "To validate JWT. Must be Base-64 encoded.",
+            "title": "Signing Key or URL to a JWK(S)",
+            "description": "To validate JWT. Must be Base-64 encoded or you specify a URL to a JWK(S)",
             "type": "string",
             "format": "textarea"
+        },
+        "kid": {
+            "title": "Key ID (kid) of JWK(S)",
+            "description": "If you provided a JWK(S) URL above you can specify here the kid of the JWK(S)",
+            "type": "string"
         },
         "allowedClockSkew": {
             "title": "Maximum Clock Skew",
