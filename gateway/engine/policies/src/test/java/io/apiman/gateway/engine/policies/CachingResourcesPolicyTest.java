@@ -17,6 +17,7 @@ package io.apiman.gateway.engine.policies;
 
 import io.apiman.test.common.mock.EchoResponse;
 import io.apiman.test.policies.*;
+import io.apiman.gateway.engine.beans.Api;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -211,6 +212,21 @@ public class CachingResourcesPolicyTest extends ApimanPolicyTest {
         requestCache2.headers().put("X-Echo-ErrorCode", "300");
         requestCache2.headers().put("X-Echo-ErrorMessage", "Should cached.");
         assertRequestIsCached(requestCache2);
+    }
+
+    @Test
+    @Configuration("{" +
+            "  \"ttl\" : 5," +
+            "  \"cachingResourcesSettingsEntries\" : [{\"statusCode\": \"*\", \"pathPattern\": \".*\", \"httpMethod\": \"*\"}]" +
+            "}")
+    public void testPostRequestCaching() throws Throwable {
+        PolicyTestRequest requestCache = PolicyTestRequest.build(PolicyTestRequestType.POST, "/testPostCache");
+        requestCache.body("Test");
+        Long counterValue = doRequest(requestCache);
+
+        requestCache.body("NotCached");
+        Long shouldNotCachedcounterValue = doRequest(requestCache);
+        assertNotEquals(counterValue, shouldNotCachedcounterValue);
     }
 
     /**

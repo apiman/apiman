@@ -21,7 +21,12 @@ module Apiman {
         ($q, $location, $scope, OrgSvcs, ApimanSvcs, PageLifecycle, Logger, $routeParams) => {
             var params = $routeParams;
 
+            var etype = params.type;
+
             var pageData = {
+                version: $q(function(resolve, reject) {
+                    OrgSvcs.get({ organizationId: params.org, entityType: etype, entityId: params.id, versionsOrActivity: 'versions', version: params.ver }, resolve, reject);
+                }),
                 policyDefs: $q(function(resolve, reject) {
                     ApimanSvcs.query({ entityType: 'policyDefs' }, function(policyDefs) {
                         $scope.selectedDefId = null;
