@@ -1,3 +1,6 @@
+<div class="alert alert-warning">
+  This Policy is deprecated. Please use the <b>Caching Resources Policy</b> in future.
+</div>
 <div class="form policy-config caching" data-field="form" ng-controller="Apiman.CachingFormController" style="margin-top: 10px">
   <div>
     <span apiman-i18n-key="caching.config-sentence-preamble">Cache API responses for</span>

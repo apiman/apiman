@@ -1,23 +1,8 @@
-/*
- * Copyright 2014 JBoss Inc
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package io.apiman.gateway.engine.policies;
 
-import static java.util.Optional.ofNullable;
-
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
@@ -32,7 +17,8 @@ import io.apiman.gateway.engine.io.IReadWriteStream;
 import io.apiman.gateway.engine.io.ISignalReadStream;
 import io.apiman.gateway.engine.io.ISignalWriteStream;
 import io.apiman.gateway.engine.policies.caching.CacheConnectorInterceptor;
-import io.apiman.gateway.engine.policies.config.CachingConfig;
+import io.apiman.gateway.engine.policies.config.CachingResourcesConfig;
+import io.apiman.gateway.engine.policies.config.CachingResourcesSettingsEntry;
 import io.apiman.gateway.engine.policy.IConnectorInterceptor;
 import io.apiman.gateway.engine.policy.IDataPolicy;
 import io.apiman.gateway.engine.policy.IPolicyChain;
@@ -41,31 +27,29 @@ import io.apiman.gateway.engine.policy.IPolicyContext;
 /**
  * Policy that enables caching for back-end APIs responses.
  *
- * @author rubenrm1@gmail.com
- * @deprecated use {@link CachingResourcesPolicy} instead.
+ * @author benjaminkihm@scheer-group.com
  */
-@Deprecated
-public class CachingPolicy extends AbstractMappedDataPolicy<CachingConfig> implements IDataPolicy {
+public class CachingResourcesPolicy extends AbstractMappedDataPolicy<CachingResourcesConfig> implements IDataPolicy {
 
     private static final String KEY_SEPARATOR = ":"; //$NON-NLS-1$
-    private static final String SHOULD_CACHE_ATTR = CachingPolicy.class.getName() + ".should-cache"; //$NON-NLS-1$
-    private static final String CACHE_ID_ATTR = CachingPolicy.class.getName() + ".cache-id"; //$NON-NLS-1$
-    private static final String CACHED_RESPONSE = CachingPolicy.class.getName() + ".cached-response"; //$NON-NLS-1$
+    private static final String SHOULD_CACHE_ATTR = CachingResourcesPolicy.class.getName() + ".should-cache"; //$NON-NLS-1$
+    private static final String CACHE_ID_ATTR = CachingResourcesPolicy.class.getName() + ".cache-id"; //$NON-NLS-1$
+    private static final String CACHED_RESPONSE = CachingResourcesPolicy.class.getName() + ".cached-response"; //$NON-NLS-1$
+
+    private static final String CACHE_POSSIBLE_MATCHING_ENTRIES = CachingResourcesPolicy.class.getName() + ".possible-matching-entries";
 
     /**
      * Constructor.
      */
-    @Deprecated
-    public CachingPolicy() {
+    public CachingResourcesPolicy() {
     }
 
     /**
      * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#getConfigurationClass()
      */
-    @Deprecated
     @Override
-    protected Class<CachingConfig> getConfigurationClass() {
-        return CachingConfig.class;
+    protected Class<CachingResourcesConfig> getConfigurationClass() {
+        return CachingResourcesConfig.class;
     }
 
     /**
@@ -75,14 +59,25 @@ public class CachingPolicy extends AbstractMappedDataPolicy<CachingConfig> imple
      *
      * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#doApply(io.apiman.gateway.engine.beans.ApiRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
      */
-    @Deprecated
     @Override
-    protected void doApply(final ApiRequest request, final IPolicyContext context, final CachingConfig config,
-            final IPolicyChain<ApiRequest> chain) {
-        if (config.getTtl() > 0) {
-            // Check to see if there is a cache entry for this request.  If so, we need to
-            // short-circuit the connector factory by providing a connector interceptor
-            String cacheId = buildCacheID(request, config);
+    protected void doApply(final ApiRequest request, final IPolicyContext context, final CachingResourcesConfig config,
+                           final IPolicyChain<ApiRequest> chain) {
+
+        List<CachingResourcesSettingsEntry> possibleMatchingEntries = new ArrayList<CachingResourcesSettingsEntry>();
+        if(config.getTtl() > 0) {
+            for(CachingResourcesSettingsEntry entry : config.getCachingResourcesSettingsEntries()) {
+                //check if caching policy allows wildcards for http method or path pattern or check if the corresponding policy entry matches the request http method or path pattern.
+                if (matchesHttpMethod(entry.getHttpMethod(), request.getType()) && matchesPolicyEntryVsActualValue(entry.getPathPattern(), request.getDestination())) {
+                    possibleMatchingEntries.add(entry);
+                }
+            }
+            context.setAttribute(CACHE_POSSIBLE_MATCHING_ENTRIES, possibleMatchingEntries);
+        }
+
+        if (possibleMatchingEntries.size() > 0) {
+            // Check to see if there is a cache entry for this request.
+            // If so, we deliver the cached result by CacheConnectorInterceptor
+            String cacheId = buildCacheID(request);
             context.setAttribute(CACHE_ID_ATTR, cacheId);
             ICacheStoreComponent cache = context.getComponent(ICacheStoreComponent.class);
             cache.getBinary(cacheId, ApiResponse.class,
@@ -111,22 +106,44 @@ public class CachingPolicy extends AbstractMappedDataPolicy<CachingConfig> imple
     }
 
     /**
+     * Verify policy entry against request value and ensure that only cachable http methods are cached.
+     * @param policyEntry
+     * @param requestValue
+     * @return
+     */
+    private boolean matchesHttpMethod(String policyEntry, String requestValue) {
+        if(policyEntry.equals(CachingResourcesSettingsEntry.MATCH_ALL)) {
+            //check cachable http methods (see  https://developer.mozilla.org/en-US/docs/Glossary/cacheable)
+            return requestValue.equalsIgnoreCase("GET") || requestValue.equalsIgnoreCase("POST") || requestValue.equalsIgnoreCase("HEAD");
+        }
+        return requestValue.equalsIgnoreCase(policyEntry);
+    }
+
+    /**
+     * Verify policy entry against request value with wildcard check
+     * @param policyEntry
+     * @param requestvalue
+     * @return
+     */
+    private boolean matchesPolicyEntryVsActualValue(String policyEntry, String requestvalue) {
+        return policyEntry.equals(CachingResourcesSettingsEntry.MATCH_ALL) || requestvalue.matches(policyEntry);
+    }
+
+    /**
      * @see AbstractMappedPolicy#doApply(ApiResponse, IPolicyContext, Object, IPolicyChain)
      */
-    @Deprecated
     @Override
-    protected void doApply(ApiResponse response, IPolicyContext context, CachingConfig config,
-            IPolicyChain<ApiResponse> chain) {
+    protected void doApply(ApiResponse response, IPolicyContext context, CachingResourcesConfig config,
+                           IPolicyChain<ApiResponse> chain) {
         chain.doApply(response);
     }
 
     /**
      * @see io.apiman.gateway.engine.policies.AbstractMappedDataPolicy#requestDataHandler(io.apiman.gateway.engine.beans.ApiRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object)
      */
-    @Deprecated
     @Override
     protected IReadWriteStream<ApiRequest> requestDataHandler(ApiRequest request,
-            IPolicyContext context, CachingConfig policyConfiguration) {
+                                                              IPolicyContext context, CachingResourcesConfig policyConfiguration) {
         // No need to handle the request stream (e.g. POST body)
         return null;
     }
@@ -134,17 +151,17 @@ public class CachingPolicy extends AbstractMappedDataPolicy<CachingConfig> imple
     /**
      * @see io.apiman.gateway.engine.policies.AbstractMappedDataPolicy#responseDataHandler(io.apiman.gateway.engine.beans.ApiResponse, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object)
      */
-    @Deprecated
     @Override
     protected IReadWriteStream<ApiResponse> responseDataHandler(final ApiResponse response,
-            IPolicyContext context, CachingConfig policyConfiguration) {
+                                                                IPolicyContext context, CachingResourcesConfig policyConfiguration) {
 
+        List<CachingResourcesSettingsEntry> possibleMatchingCachingEntries = context.getAttribute(CACHE_POSSIBLE_MATCHING_ENTRIES, new ArrayList<CachingResourcesSettingsEntry>());
+        boolean isAMatch = false;
+        for (CachingResourcesSettingsEntry entry : possibleMatchingCachingEntries) {
+            isAMatch = isAMatch || matchesPolicyEntryVsActualValue(entry.getStatusCode(), String.valueOf(response.getCode()));
+        }
         // Possibly cache the response for future posterity.
-        // Check the response code against list in config (empty/null list means cache all).
-        final boolean shouldCache = (context.getAttribute(SHOULD_CACHE_ATTR, Boolean.FALSE) &&
-                ofNullable(policyConfiguration.getStatusCodes())
-                    .map(statusCodes -> statusCodes.isEmpty() || statusCodes.contains(String.valueOf(response.getCode())))
-                    .orElse(true));
+        final boolean shouldCache = context.getAttribute(SHOULD_CACHE_ATTR, Boolean.FALSE) && isAMatch;
 
         if (shouldCache) {
             try {
@@ -171,12 +188,10 @@ public class CachingPolicy extends AbstractMappedDataPolicy<CachingConfig> imple
                     }
                 };
             } catch (ComponentNotFoundException | IOException e) {
-                // TODO log error
-                return null;
+                throw new RuntimeException(e);
             }
-        } else {
-            return null;
         }
+        return null;
     }
 
     /**
@@ -184,8 +199,7 @@ public class CachingPolicy extends AbstractMappedDataPolicy<CachingConfig> imple
      * verb and the destination. In the case where there's no API key the ID
      * will contain ApiOrgId + ApiId + ApiVersion
      */
-    @Deprecated
-    private static String buildCacheID(ApiRequest request, CachingConfig config) {
+    private static String buildCacheID(ApiRequest request) {
         StringBuilder cacheId = new StringBuilder();
         if (request.getContract() != null) {
             cacheId.append(request.getApiKey());
@@ -198,10 +212,7 @@ public class CachingPolicy extends AbstractMappedDataPolicy<CachingConfig> imple
 
         // According to RFC7234 (https://tools.ietf.org/html/rfc7234#section-2),
         // 'The primary cache key consists of the request method and target URI.'
-        // For historical reasons, this is not the behaviour of this policy, which instead
-        // uses only the path part of the URI, not the query string.
-        // The behaviour mentioned in the RFC can be enabled using a configuration option.
-        if (config.isIncludeQueryInKey() && !request.getQueryParams().isEmpty()) {
+        if (!request.getQueryParams().isEmpty()) {
             cacheId.append("?").append(request.getQueryParams().toQueryString());
         }
 

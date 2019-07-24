@@ -1,0 +1,81 @@
+<div class="form policy-config caching" data-field="form" ng-controller="Apiman.CachingResourcesFormController" style="margin-top: 10px">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title" apiman-i18n-key="cached-resources-global-settings">Global Caching Settings</h3>
+    </div>
+    <div class="panel-body container-fluid">
+      <span apiman-i18n-key="caching-resources.config-sentence-preamble">Cache API responses for</span>
+      <input id="ttl" ng-model="config.ttl" class="apiman-form-control form-control inline-apiman-form-control form-control" style="width: 150px" type="text" apiman-i18n-key="caching.enter-num-seconds" placeholder="Enter time-to-live" ng-disabled="isEntityDisabled()">
+      <span apiman-i18n-key="caching-resources.seconds">seconds.</span>
+    </div>
+  </div>
+  <div style="margin-bottom:10px;" apiman-i18n-key="caching-resources-message">Manage the list of caching rules for which resource caching is applied</div>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title" apiman-i18n-key="add-cached-resources-rule">Caching Resources Rule</h3>
+    </div>
+    <div class="panel-body container-fluid">
+      <div class="row">
+        <div class="col-md-5">
+          <label for="path" apiman-i18n-key="cached-path-pattern">Path Pattern</label>
+        </div>
+        <div class="col-md-2">
+          <label apiman-i18n-key="cached-http-method">HTTP Method</label>
+        </div>
+        <div class="col-md-3">
+          <label apiman-i18n-key="cached-status-code">Status Code</label>
+        </div>
+        <div class="col-md-2"></div>
+      </div>
+      <div class="row">
+        <div class="col-md-5">
+          <input id="path" style="width:100%" name="path" ng-model="pathPattern" class="form-control" type="text" apiman-i18n-key="caching-resources.enter-path" placeholder="(/path/to/.*) use java regular expression syntax" ng-disabled="isEntityDisabled()"></input>
+        </div>
+        <div class="col-md-2">
+          <http-method-caching-select></http-method-caching-select>
+        </div>
+        <div class="col-md-3">
+          <input id="status-code-caching" ng-model="statusCodeCaching" ng-pattern="/^\d{3}|\*$/" data-field="statusCode" class="form-control" type="text" apiman-i18n-key="caching-resources.enter-status-code" placeholder="Enter a status code or * wildcard" ng-disabled="isEntityDisabled()">
+        </div>
+        <div class="col-md-2">
+          <button id="add-rule" ng-disabled="currentItemInvalid()" ng-click="add(statusCodeCaching, pathPattern, httpMethod)" apiman-i18n-key="add" class="btn btn-default" style="min-width: 75px" ng-disabled="isEntityDisabled()">Add</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <dl>
+      <dt apiman-i18n-key="configured-cached-resources-rules">Cached Resources</dt>
+    </dl>
+  </div>
+
+  <table class="table table-striped table-bordered">
+    <thead>
+    <tr>
+      <th width="30%" apiman-i18n-key="caching-path">Path Pattern</th>
+      <th width="30%" apiman-i18n-key="caching-method">HTTP Method</th>
+      <th with="30%" apiman-i18n-key="caching-statuscode">Status Code</th>
+      <th width="1%"></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="item in config.cachingResourcesSettingsEntries | orderBy: 'pathPattern'">
+      <td>{{ item.pathPattern }}</td>
+      <td>{{ item.httpMethod }}</td>
+      <td>{{ item.statusCode}}</td>
+      <td>
+        <button ng-click="remove(item)" class="btn btn-default" ng-disabled="isEntityDisabled()"><i class="fa fa-times fa-fw"></i></button>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="4" ng-show="!config.cachingResourcesSettingsEntries.length">
+        <div class="apiman-no-content">
+          <p class="apiman-no-entities-description" apiman-i18n-key="caching-resources.no-rules-table">No Cached Resources yet.</p>
+        </div>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+</div>
