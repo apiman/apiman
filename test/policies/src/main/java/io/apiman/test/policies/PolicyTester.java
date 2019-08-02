@@ -162,6 +162,7 @@ public class PolicyTester extends BlockJUnit4ClassRunner {
             api.setVersion(String.valueOf(version));
             api.setPublicAPI(true);
             api.setApiPolicies(Collections.singletonList(policy));
+            api.setParsePayload(true);
 
             getEngine().getRegistry().publishApi(api, new IAsyncResultHandler<Void>() {
                 @Override

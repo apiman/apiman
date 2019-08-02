@@ -690,7 +690,7 @@ module Apiman {
 
                         // Check that TTL & Policy Definition ID are set
                         valid = ((config.ttl && config.ttl > 0) && ($scope.selectedDef && $scope.selectedDef.id != null));
-                        valid = valid && config.cachingResourcesSettingsEntries.length > 0;
+                        valid = valid && config.cachingResourcesSettingsEntries && config.cachingResourcesSettingsEntries.length > 0;
                     }
 
                     $scope.setValid(valid);
@@ -722,6 +722,15 @@ module Apiman {
                 };
 
                 $scope.isEntityDisabled = EntityStatusSvc.isEntityDisabled;
+
+                $scope.isPostRequestCached = function () {
+                    if ($scope.config.cachingResourcesSettingsEntries != null) {
+                        return $scope.config.cachingResourcesSettingsEntries.some((e) => {
+                            return e.httpMethod === "POST" || e.httpMethod === "*";
+                        });
+                    }
+                    return false;
+                }
             }]);
 
     _module.controller('Apiman.URLRewritingFormController',

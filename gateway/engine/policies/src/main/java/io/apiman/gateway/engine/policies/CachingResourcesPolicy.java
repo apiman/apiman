@@ -9,6 +9,7 @@ import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.engine.beans.exceptions.ComponentNotFoundException;
+import io.apiman.gateway.engine.beans.util.HeaderMap;
 import io.apiman.gateway.engine.components.ICacheStoreComponent;
 import io.apiman.gateway.engine.impl.CachedResponse;
 import io.apiman.gateway.engine.io.AbstractStream;
@@ -19,10 +20,9 @@ import io.apiman.gateway.engine.io.ISignalWriteStream;
 import io.apiman.gateway.engine.policies.caching.CacheConnectorInterceptor;
 import io.apiman.gateway.engine.policies.config.CachingResourcesConfig;
 import io.apiman.gateway.engine.policies.config.CachingResourcesSettingsEntry;
-import io.apiman.gateway.engine.policy.IConnectorInterceptor;
-import io.apiman.gateway.engine.policy.IDataPolicy;
-import io.apiman.gateway.engine.policy.IPolicyChain;
-import io.apiman.gateway.engine.policy.IPolicyContext;
+import io.apiman.gateway.engine.io.IPayloadIO;
+import io.apiman.gateway.engine.policy.*;
+import org.apache.commons.codec.digest.DigestUtils;
 
 /**
  * Policy that enables caching for back-end APIs responses.
@@ -77,7 +77,7 @@ public class CachingResourcesPolicy extends AbstractMappedDataPolicy<CachingReso
         if (possibleMatchingEntries.size() > 0) {
             // Check to see if there is a cache entry for this request.
             // If so, we deliver the cached result by CacheConnectorInterceptor
-            String cacheId = buildCacheID(request);
+            String cacheId = buildCacheID(request, context);
             context.setAttribute(CACHE_ID_ATTR, cacheId);
             ICacheStoreComponent cache = context.getComponent(ICacheStoreComponent.class);
             cache.getBinary(cacheId, ApiResponse.class,
@@ -89,6 +89,7 @@ public class CachingResourcesPolicy extends AbstractMappedDataPolicy<CachingReso
                             } else {
                                 ISignalReadStream<ApiResponse> cacheEntry = result.getResult();
                                 if (cacheEntry != null) {
+                                    markCacheEntryAsCached(cacheEntry, config);
                                     context.setConnectorInterceptor(new CacheConnectorInterceptor(cacheEntry));
                                     context.setAttribute(SHOULD_CACHE_ATTR, Boolean.FALSE);
                                     context.setAttribute(CACHED_RESPONSE, cacheEntry.getHead());
@@ -102,6 +103,18 @@ public class CachingResourcesPolicy extends AbstractMappedDataPolicy<CachingReso
         } else {
             context.setAttribute(SHOULD_CACHE_ATTR, Boolean.FALSE);
             chain.doApply(request);
+        }
+    }
+
+    /**
+     * Set or overwrite Cache-Control header with ttl as max-age to mark the response as cached
+     * @param cacheEntry
+     * @param config
+     */
+    private void markCacheEntryAsCached(ISignalReadStream<ApiResponse> cacheEntry, final CachingResourcesConfig config) {
+        if(cacheEntry.getHead() != null && cacheEntry.getHead() instanceof ApiResponse && cacheEntry.getHead().getHeaders() != null) {
+            HeaderMap responseHeaders = cacheEntry.getHead().getHeaders();
+            responseHeaders.put("Cache-Control", "max-age=" + String.valueOf(config.getTtl()));
         }
     }
 
@@ -199,7 +212,7 @@ public class CachingResourcesPolicy extends AbstractMappedDataPolicy<CachingReso
      * verb and the destination. In the case where there's no API key the ID
      * will contain ApiOrgId + ApiId + ApiVersion
      */
-    private static String buildCacheID(ApiRequest request) {
+    private static String buildCacheID(ApiRequest request, IPolicyContext context) {
         StringBuilder cacheId = new StringBuilder();
         if (request.getContract() != null) {
             cacheId.append(request.getApiKey());
@@ -214,6 +227,18 @@ public class CachingResourcesPolicy extends AbstractMappedDataPolicy<CachingReso
         // 'The primary cache key consists of the request method and target URI.'
         if (!request.getQueryParams().isEmpty()) {
             cacheId.append("?").append(request.getQueryParams().toQueryString());
+        }
+
+        //use hashed payload to ensure right caching of request with different bodies.
+        IPayloadIO requestPayloadIO = context.getAttribute(PolicyContextKeys.REQUEST_PAYLOAD_IO, null);
+        Object requestPayload = context.getAttribute(PolicyContextKeys.REQUEST_PAYLOAD, null);
+        if (requestPayloadIO != null && requestPayload != null) {
+            try {
+                byte[] payloadBytes = requestPayloadIO.marshall(requestPayload);
+                cacheId.append('_').append(DigestUtils.sha256Hex(payloadBytes));
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         }
 
         return cacheId.toString();

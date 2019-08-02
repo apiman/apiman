@@ -8,7 +8,7 @@
 
   <body>
   <div>
-    
+
     <div ng-include="headerInclude"></div>
     <div ng-controller="Apiman.ApiImplController"
          class="page container"
@@ -95,7 +95,7 @@
                 <span class="pficon pficon-info"></span>
               </a>
             </div>
-            
+
             <div class="" style="margin-top:10px;"
                  ng-show="updatedApi.parsePayload">
               <div class="alert alert-info">
@@ -103,7 +103,7 @@
                  <span apiman-i18n-key="api-impl.parse-payload-info">Note that enabling this option may result in additional performance overhead.  However, this feature is sometimes required for certain policies to work (in particular many SOAP policies).</span>
               </div>
             </div>
-            
+
             <div class="" style="margin-top:10px;">
               <span class="clearfix"
                     apiman-i18n-key="api-security-label">API Security:</span>
@@ -198,7 +198,7 @@
                 </table>
               </div>
             </div>
-            
+
             <div id="gateway-info"
                  ng-show="gateways.length > 1">
               <hr />
@@ -222,7 +222,7 @@
                 </select>
               </div>
             </div>
-            
+
             <div id="no-gateways-info"
                  ng-show="gateways.length == 0">
               <hr />
@@ -235,7 +235,7 @@
                   apiman administrator - at least one API Gateway must be configured!
               </div>
             </div>
-            
+
             <div id="new-gateway-info"
                  ng-show="autoGateway">
               <hr />
@@ -248,7 +248,7 @@
                   to make it stick.
               </div>
             </div>
-            
+
             <div apiman-permission="apiEdit"
                  ng-show="!isEntityDisabled()"
                  class="actions"
