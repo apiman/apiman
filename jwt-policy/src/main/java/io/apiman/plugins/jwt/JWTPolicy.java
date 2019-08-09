@@ -16,6 +16,7 @@
 
 package io.apiman.plugins.jwt;
 
+import com.auth0.jwk.*;
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.policies.AbstractMappedPolicy;
 import io.apiman.gateway.engine.policy.IPolicyChain;
@@ -31,7 +32,10 @@ import io.jsonwebtoken.PrematureJwtException;
 import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.lang.Objects;
+import org.apache.commons.validator.routines.UrlValidator;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Map;
 import java.util.Optional;
 
@@ -46,6 +50,9 @@ public class JWTPolicy extends AbstractMappedPolicy<JWTPolicyBean> {
     private static final String ACCESS_TOKEN_QUERY_KEY = "access_token"; //$NON-NLS-1$
     private static final String BEARER = "bearer "; //$NON-NLS-1$
     private static final PolicyFailureFactory FAILURE_FACTORY = PolicyFailureFactory.getInstance();
+    private static final String[] schemes = {"http","https"};
+    private static final UrlValidator urlValidator = new UrlValidator(schemes);
+    private JwkProvider provider = null;
 
     @Override
     protected Class<JWTPolicyBean> getConfigurationClass() {
@@ -54,11 +61,12 @@ public class JWTPolicy extends AbstractMappedPolicy<JWTPolicyBean> {
 
     @Override
     protected void doApply(ApiRequest request, IPolicyContext context, JWTPolicyBean config, IPolicyChain<ApiRequest> chain) {
+
         String jwt = Optional.ofNullable(request.getHeaders().get(AUTHORIZATION_KEY))
                 // If seems to be bearer token
                 .filter(e -> e.toLowerCase().startsWith(BEARER))
                 // Get out token value
-                .map(e -> e.substring(BEARER.length(), e.length()))
+                .map(e -> e.substring(BEARER.length()))
                 // Otherwise attempt to get from the access_token query param
                 .orElse(request.getQueryParams().get(ACCESS_TOKEN_QUERY_KEY));
 
@@ -76,7 +84,7 @@ public class JWTPolicy extends AbstractMappedPolicy<JWTPolicyBean> {
 
         if (jwt != null) {
             try {
-                Map<String, Object> claims = validateJwt(jwt, request, config);
+                Map<String, Object> claims = validateJwt(jwt, config);
                 forwardHeaders(request, config, jwt, claims);
                 stripAuthTokens(request, config);
                 chain.doApply(request);
@@ -87,6 +95,10 @@ public class JWTPolicy extends AbstractMappedPolicy<JWTPolicyBean> {
             } catch (MalformedJwtException e) {
                 chain.doFailure(FAILURE_FACTORY.jwtMalformed(context, e));
             } catch (SignatureException e) {
+                if (urlValidator.isValid(config.getSigningKeyString())){
+                    // This will clear the cache of the jwk(s) provider
+                    provider = getNewJwksProvider(config.getSigningKeyString());
+                }
                 chain.doFailure(FAILURE_FACTORY.signatureException(context, e));
             } catch (InvalidClaimException e) {
                 chain.doFailure(FAILURE_FACTORY.invalidClaim(context, e));
@@ -100,8 +112,26 @@ public class JWTPolicy extends AbstractMappedPolicy<JWTPolicyBean> {
         }
     }
 
-    private Map<String, Object> validateJwt(String token, ApiRequest request, JWTPolicyBean config)
+    private Map<String, Object> validateJwt(String token, JWTPolicyBean config)
             throws ExpiredJwtException, PrematureJwtException, MalformedJwtException, SignatureException, InvalidClaimException {
+
+        // check if we have to use jwk(s)
+        if (urlValidator.isValid(config.getSigningKeyString())){
+            if (provider == null){
+                provider = getNewJwksProvider(config.getSigningKeyString());
+            }
+
+            Jwk jwk;
+            try {
+                jwk = provider.get(config.getKid());
+                if (config.getSigningKey() == null || !(config.getSigningKey().equals(jwk.getPublicKey()))) {
+                    config.setSigningKey(jwk.getPublicKey());
+                }
+            } catch (JwkException e) {
+               throw new SignatureException("JWK was not found with kid: " + config.getKid(), e);
+            }
+        }
+
         JwtParser parser = Jwts.parser()
                 .setSigningKey(config.getSigningKey())
                 .setAllowedClockSkewSeconds(config.getAllowedClockSkew());
@@ -128,5 +158,15 @@ public class JWTPolicy extends AbstractMappedPolicy<JWTPolicyBean> {
                 request.getHeaders().put(entry.getHeader(), Objects.nullSafeToString(claimValue));
             }
         }
+    }
+
+    private GuavaCachedJwkProvider getNewJwksProvider(String url){
+        JwkProvider http = null;
+        try {
+            http = new UrlJwkProvider(new URL(url));
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        return new GuavaCachedJwkProvider(http);
     }
 }

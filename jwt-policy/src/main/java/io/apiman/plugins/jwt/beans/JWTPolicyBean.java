@@ -23,14 +23,9 @@ import java.util.Map;
 
 import javax.annotation.Generated;
 
+import com.fasterxml.jackson.annotation.*;
+import org.apache.commons.validator.routines.UrlValidator;
 import org.keycloak.common.util.PemUtils;
-
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 /**
  * JWT Authentication Policy Configuration
@@ -39,7 +34,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Generated("org.jsonschema2pojo")
-@JsonPropertyOrder({ "requireJWT", "requireSigned", "requireTransportSecurity", "stripTokens", "signingKeyString", "allowedClockSkew",
+@JsonPropertyOrder({ "requireJWT", "requireSigned", "requireTransportSecurity", "stripTokens", "signingKeyString", "kid", "allowedClockSkew",
         "requiredClaims", "forwardAuthInfo" })
 public class JWTPolicyBean {
 
@@ -83,6 +78,15 @@ public class JWTPolicyBean {
     @JsonProperty("signingKeyString")
     private String signingKeyString;
     private Key signingKey;
+    /**
+     * Key ID (kid) of JWK(S)
+     * <p>
+     * If you provided a JWK(S) URL above you can specify here the kid of the JWK(S)
+     *
+     */
+    @JsonProperty("kid")
+    @JsonPropertyDescription("If you provided a JWK(S) URL above you can specify here the kid of the JWK(S)")
+    private String kid;
     /**
      * Maximum Clock Skew
      * <p>
@@ -248,11 +252,10 @@ public class JWTPolicyBean {
     }
 
     /**
-     * Signing Key
+     * Signing Key or URL to a JWK(S)
      * <p>
-     * To validate JWT. Must be Base-64 encoded.
+     * To validate JWT. Must be Base-64 encoded or you specify a URL to a JWK(S)
      *
-     * @return The signingKeyString
      */
     @JsonProperty("signingKeyString")
     public String getSigningKeyString() {
@@ -271,13 +274,44 @@ public class JWTPolicyBean {
     @JsonProperty("signingKeyString")
     public void setSigningKeyString(String signingKeyString) throws Exception {
         if (signingKey == null) {
-            signingKey = PemUtils.decodePublicKey(signingKeyString);
+            String[] schemes = {"http","https"};
+            UrlValidator urlValidator = new UrlValidator(schemes);
+            // If it is a jwk(s) url we don't set the signingKey
+            if (!urlValidator.isValid(signingKeyString)){
+                signingKey = PemUtils.decodePublicKey(signingKeyString);
+            }
         }
         this.signingKeyString = signingKeyString;
     }
 
     public JWTPolicyBean withSigningKeyString(String signingKeyString) {
         this.signingKeyString = signingKeyString;
+        return this;
+    }
+
+    /**
+     * Key ID (kid) of JWK(S)
+     * <p>
+     * If you provided a JWK(S) URL above you can specify here the kid of the JWK(S)
+     *
+     */
+    @JsonProperty("kid")
+    public String getKid() { return kid; }
+
+    /**
+     * Key ID (kid) of JWK(S)
+     * <p>
+     * If you provided a JWK(S) URL above you can specify here the kid of the JWK(S)
+     *
+     */
+    @JsonProperty("kid")
+    public void setKid(String kid){
+        this.kid = kid.equalsIgnoreCase("null") || kid.isEmpty() ? null : kid;
+    }
+
+    @JsonProperty("kid")
+    public JWTPolicyBean withKid (String kid){
+        this.kid = kid;
         return this;
     }
 
@@ -410,7 +444,9 @@ public class JWTPolicyBean {
         return this;
     }
 
-    public Key getSigningKey() {
-        return signingKey;
+    public Key getSigningKey() { return signingKey; }
+
+    public void setSigningKey(Key signingKey){
+        this.signingKey = signingKey;
     }
 }
