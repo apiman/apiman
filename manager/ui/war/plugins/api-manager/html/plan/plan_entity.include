@@ -19,8 +19,7 @@
 
 
                 <!-- Dropdown Cog -->
-                <ul class="plan-menu pull-right"
-                    style="list-style-type: none; padding-left: 10px; padding-top: 6px;">
+                <ul class="plan-menu pull-right" style="list-style-type: none; padding-left: 10px; padding-top: 6px;" ng-hide="canNotDelete()">
                   <li class="dropdown">
                     <a href="#"
                        style="text-decoration: none;"
