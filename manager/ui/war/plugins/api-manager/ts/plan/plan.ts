@@ -96,7 +96,11 @@ module Apiman {
             // ----- Delete --------------------->>>>
 
             // Add check for ability to delete, show/hide Delete option
-            $scope.canDelete = function() {};
+            $scope.canNotDelete = function () {
+               return ($scope.version && $scope.version.status === 'Locked') || ($scope.versions && $scope.versions.some(function (planItem) {
+                   return planItem.status === 'Locked';
+               }));
+            };
 
             // Call delete, open modal
             $scope.callDelete = function(size) {
