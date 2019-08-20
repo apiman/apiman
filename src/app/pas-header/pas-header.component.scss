@@ -1,0 +1,24 @@
+
+$navbar-bg-color: #c8c9cc;
+$navbar-color: #6a747f;
+
+:host {
+  background: $navbar-bg-color;
+  display: flex;
+
+  padding: 19px;
+  color: $navbar-color;
+}
+
+nav {
+  width: 100%;
+}
+
+.logo {
+  height: 20px;
+  width: 170px;
+}
+
+.rightMenu {
+  float:right;
+}
