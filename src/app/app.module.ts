@@ -8,18 +8,23 @@ import { AppComponent } from './app.component';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatIconModule } from '@angular/material/icon';
+import { ApiListComponent } from './api-list/api-list.component';
+
+import { MatTableModule } from '@angular/material/table';
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    PasHeaderComponent
+    PasHeaderComponent,
+    ApiListComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    MatIconModule
+    MatIconModule,
+    MatTableModule
   ],
   providers: [],
   bootstrap: [AppComponent]
