@@ -113,19 +113,17 @@ public class ESRateLimiterComponent extends AbstractESComponent implements IRate
     	Index index = builder.setParameter(Parameters.OP_TYPE, "index") //$NON-NLS-1$
     			             .type("rateBucket").id(id).build(); //$NON-NLS-1$          
         try {
-            getClient().execute(index);
-            handler.handle(AsyncResultImpl.create(rlr));
+            JestResult result = getClient().execute(index);
+
+            // if we got an HTTP 409 conflict status code we try all again
+            if (!result.isSucceeded() && result.getResponseCode() == 409){
+                accept(bucketId, period, limit, increment, handler);
+            } else {
+                handler.handle(AsyncResultImpl.create(rlr));
+            }
+
         } catch (Throwable e) {
-            // FIXME need to fix this now that we've switched to jest!
-//            if (ESUtils.rootCause(e) instanceof VersionConflictEngineException) {
-//                // If we got a version conflict, then it means some other request
-//                // managed to update the ES document since we retrieved it.  Therefore
-//                // everything we've done is out of date, so we should do it all
-//                // over again.
-//                accept(bucketId, period, limit, increment, handler);
-//            } else {
-                handler.handle(AsyncResultImpl.<RateLimitResponse>create(e));
-//            }
+            handler.handle(AsyncResultImpl.<RateLimitResponse>create(e));
         }
     }
 
