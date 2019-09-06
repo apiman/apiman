@@ -68,7 +68,7 @@ public abstract class AbstractCacheStoreComponent extends AbstractStorageCompone
         entry.setExpiresOn(System.currentTimeMillis() + (timeToLive * 1000));
         entry.setHead(JSON_MAPPER.writeValueAsString(jsonObject));
         try {
-            getStore().put(cacheKey, entry);
+            getStore().put(cacheKey, entry, timeToLive);
         } catch (Throwable e) {
             LOGGER.error("Error writing cache entry with key: {}", cacheKey, e);
         }
@@ -110,7 +110,7 @@ public abstract class AbstractCacheStoreComponent extends AbstractStorageCompone
                 if (!aborted) {
                     entry.setData(Base64.encodeBase64String(data.getBytes()));
                     try {
-                        getStore().put(cacheKey, entry);
+                        getStore().put(cacheKey, entry, timeToLive);
                     } catch (Throwable e) {
                         LOGGER.error("Error writing binary cache entry with key: {}", cacheKey, e);
                     }
