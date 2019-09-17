@@ -69,6 +69,8 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
+            "host": "pc0854.scheer.systems",
+            "port": 4200,
             "browserTarget": "apiman-dev-portal:build"
           },
           "configurations": {
