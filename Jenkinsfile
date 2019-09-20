@@ -33,6 +33,32 @@ pipeline {
         runCmd "npm run build"
         }
       }
+    stage('Build container image') {
+        steps {
+          sh 'docker build -t apimgmt-dev-portal .'
+          dir('release') {
+            sh 'docker save --output apimgmt-dev-portal-docker-image.tar apimgmt-dev-portal'
+          }
+        }
+    }
+
+    stage('Archive container image') {
+      steps {
+        archiveArtifacts artifacts: 'release/*.tar'
+
+        dir('release') {
+          deleteDir()
+        }
+      }
+    }
+
+    stage('Remove container image') {
+        steps {
+          sh 'docker image rm -f apimgmt-dev-portal'
+        }
+      }
+
+
     stage('Tear down') {
       steps {
         runCmd "npm config rm registry"
