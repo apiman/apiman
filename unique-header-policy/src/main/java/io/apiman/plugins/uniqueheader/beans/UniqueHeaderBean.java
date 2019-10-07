@@ -14,13 +14,19 @@ import java.io.Serializable;
  * @author Pete Cornish {@literal <outofcoffee@gmail.com>}
  */
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
-@JsonPropertyOrder({"headerName"})
+@JsonPropertyOrder({"headerName", "overwriteHeaderValue"})
 public class UniqueHeaderBean implements Serializable {
     /**
      * The name of the HTTP Header to set.
      */
     @JsonProperty("headerName")
     private String headerName;
+
+    /**
+     * Overwrite the value provided in header
+     */
+    @JsonProperty("overwriteHeaderValue")
+    private boolean overwriteHeaderValue = false;
 
     @Override
     public int hashCode() {
@@ -49,5 +55,13 @@ public class UniqueHeaderBean implements Serializable {
 
     public void setHeaderName(String headerName) {
         this.headerName = headerName;
+    }
+
+    public boolean isOverwriteHeaderValue() {
+        return overwriteHeaderValue;
+    }
+
+    public void setOverwriteHeaderValue(boolean overwriteHeaderValue) {
+        this.overwriteHeaderValue = overwriteHeaderValue;
     }
 }

@@ -7,6 +7,10 @@
     "headerName": {
       "type": "string",
       "title": "HTTP Header Name"
+    },
+    "overwriteHeaderValue": {
+      "type": "boolean",
+      "title": "Overwrite HTTP Header value"
     }
   }
 }
