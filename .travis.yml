@@ -6,7 +6,7 @@ before_install:
   - echo "Settings XML" && cat ~/.m2/settings.xml
 
 jdk:
-  - oraclejdk8
+  - openjdk8
 
 notifications:
   irc:
