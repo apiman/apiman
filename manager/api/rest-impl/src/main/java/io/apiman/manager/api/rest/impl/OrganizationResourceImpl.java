@@ -1702,6 +1702,8 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             }
         }
 
+        newVersion.setDefinitionUrl(bean.getDefinitionUrl());
+
         storage.createApiVersion(newVersion);
         storage.createAuditEntry(AuditUtils.apiVersionCreated(newVersion, securityContext));
 
@@ -2106,7 +2108,20 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         }
         try {
             storeApiDefinition(organizationId, apiId, version, bean.getDefinitionType(), data);
+
+            // update the definition url silently in storage if it's a new one
+            storage.beginTx();
+            ApiVersionBean apiVersion = getApiVersionFromStorage(organizationId, apiId, version);
+            if (apiVersion.getDefinitionUrl() == null || !apiVersion.getDefinitionUrl().equals(bean.getDefinitionUrl())) {
+                apiVersion.setDefinitionUrl(bean.getDefinitionUrl());
+                storage.updateApiVersion(apiVersion);
+            }
+            storage.commitTx();
+
             log.debug(String.format("Updated API definition for %s from URL %s", apiId, bean.getDefinitionUrl())); //$NON-NLS-1$
+        } catch (StorageException e) {
+            storage.rollbackTx();
+            throw new SystemErrorException(e);
         } finally {
             IOUtils.closeQuietly(data);
         }
