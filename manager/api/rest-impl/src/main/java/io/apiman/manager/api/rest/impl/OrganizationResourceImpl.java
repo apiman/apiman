@@ -399,7 +399,8 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             Iterator<ApiVersionBean> apiVersions = storage.getAllApiVersions(organizationId, apiId);
             Iterable<ApiVersionBean> iterable = () -> apiVersions;
 
-            List<ApiVersionBean> registeredElems = StreamSupport.stream(iterable.spliterator(), false)
+            List<ApiVersionBean> apiVersionBeans = StreamSupport.stream(iterable.spliterator(), false).collect(toList());
+            List<ApiVersionBean> registeredElems = apiVersionBeans.stream()
                     .filter(clientVersion -> clientVersion.getStatus() == ApiStatus.Published)
                     .limit(5)
                     .collect(toList());
@@ -407,6 +408,13 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             if (!registeredElems.isEmpty()) {
                 throw ExceptionFactory.entityStillActiveExceptionApiVersions(registeredElems);
             }
+
+            for (ApiVersionBean apiVersion : apiVersionBeans) {
+                // add apiBean to apiVerionBean, otherwise deleteApiDefinition fails for EsStorage
+                apiVersion.setApi(api);
+                storage.deleteApiDefinition(apiVersion);
+            }
+
             storage.deleteApi(api);
             storage.commitTx();
             log.debug("Deleted API: " + api.getName()); //$NON-NLS-1$
