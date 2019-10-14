@@ -1,0 +1,11 @@
+POST /actions admin/admin
+Content-Type: application/json
+
+{
+  "type" : "publishAPI",
+  "organizationId" : "Organization1",
+  "entityId" : "APILiveSwaggerBasePath",
+  "entityVersion" : "1.0"
+}
+----
+204

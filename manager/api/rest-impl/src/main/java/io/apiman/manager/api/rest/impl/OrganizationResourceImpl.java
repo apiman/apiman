@@ -16,96 +16,37 @@
 
 package io.apiman.manager.api.rest.impl;
 
-import static java.util.stream.Collectors.toList;
-
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.common.util.crypt.DataEncryptionContext;
 import io.apiman.common.util.crypt.DataEncryptionContext.EntityType;
 import io.apiman.common.util.crypt.IDataEncrypter;
 import io.apiman.gateway.engine.beans.ApiEndpoint;
 import io.apiman.manager.api.beans.BeanUtils;
-import io.apiman.manager.api.beans.apis.ApiBean;
-import io.apiman.manager.api.beans.apis.ApiDefinitionType;
-import io.apiman.manager.api.beans.apis.ApiGatewayBean;
-import io.apiman.manager.api.beans.apis.ApiPlanBean;
-import io.apiman.manager.api.beans.apis.ApiStatus;
-import io.apiman.manager.api.beans.apis.ApiVersionBean;
-import io.apiman.manager.api.beans.apis.ApiVersionStatusBean;
-import io.apiman.manager.api.beans.apis.NewApiBean;
-import io.apiman.manager.api.beans.apis.NewApiDefinitionBean;
-import io.apiman.manager.api.beans.apis.NewApiVersionBean;
-import io.apiman.manager.api.beans.apis.UpdateApiBean;
-import io.apiman.manager.api.beans.apis.UpdateApiVersionBean;
+import io.apiman.manager.api.beans.apis.*;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
 import io.apiman.manager.api.beans.audit.data.EntityUpdatedData;
 import io.apiman.manager.api.beans.audit.data.MembershipData;
-import io.apiman.manager.api.beans.clients.ApiKeyBean;
-import io.apiman.manager.api.beans.clients.ClientBean;
-import io.apiman.manager.api.beans.clients.ClientStatus;
-import io.apiman.manager.api.beans.clients.ClientVersionBean;
-import io.apiman.manager.api.beans.clients.NewClientBean;
-import io.apiman.manager.api.beans.clients.NewClientVersionBean;
-import io.apiman.manager.api.beans.clients.UpdateClientBean;
+import io.apiman.manager.api.beans.clients.*;
 import io.apiman.manager.api.beans.contracts.ContractBean;
 import io.apiman.manager.api.beans.contracts.NewContractBean;
 import io.apiman.manager.api.beans.download.DownloadBean;
 import io.apiman.manager.api.beans.download.DownloadType;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
-import io.apiman.manager.api.beans.idm.GrantRolesBean;
-import io.apiman.manager.api.beans.idm.PermissionType;
-import io.apiman.manager.api.beans.idm.RoleBean;
-import io.apiman.manager.api.beans.idm.RoleMembershipBean;
-import io.apiman.manager.api.beans.idm.UserBean;
+import io.apiman.manager.api.beans.idm.*;
 import io.apiman.manager.api.beans.members.MemberBean;
 import io.apiman.manager.api.beans.members.MemberRoleBean;
-import io.apiman.manager.api.beans.metrics.ClientUsagePerApiBean;
-import io.apiman.manager.api.beans.metrics.HistogramIntervalType;
-import io.apiman.manager.api.beans.metrics.ResponseStatsHistogramBean;
-import io.apiman.manager.api.beans.metrics.ResponseStatsPerClientBean;
-import io.apiman.manager.api.beans.metrics.ResponseStatsPerPlanBean;
-import io.apiman.manager.api.beans.metrics.ResponseStatsSummaryBean;
-import io.apiman.manager.api.beans.metrics.UsageHistogramBean;
-import io.apiman.manager.api.beans.metrics.UsagePerClientBean;
-import io.apiman.manager.api.beans.metrics.UsagePerPlanBean;
+import io.apiman.manager.api.beans.metrics.*;
 import io.apiman.manager.api.beans.orgs.NewOrganizationBean;
 import io.apiman.manager.api.beans.orgs.OrganizationBean;
 import io.apiman.manager.api.beans.orgs.UpdateOrganizationBean;
-import io.apiman.manager.api.beans.plans.NewPlanBean;
-import io.apiman.manager.api.beans.plans.NewPlanVersionBean;
-import io.apiman.manager.api.beans.plans.PlanBean;
-import io.apiman.manager.api.beans.plans.PlanStatus;
-import io.apiman.manager.api.beans.plans.PlanVersionBean;
-import io.apiman.manager.api.beans.plans.UpdatePlanBean;
-import io.apiman.manager.api.beans.policies.NewPolicyBean;
-import io.apiman.manager.api.beans.policies.PolicyBean;
-import io.apiman.manager.api.beans.policies.PolicyChainBean;
-import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
-import io.apiman.manager.api.beans.policies.PolicyType;
-import io.apiman.manager.api.beans.policies.UpdatePolicyBean;
+import io.apiman.manager.api.beans.plans.*;
+import io.apiman.manager.api.beans.policies.*;
 import io.apiman.manager.api.beans.search.PagingBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaFilterOperator;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
-import io.apiman.manager.api.beans.summary.ApiEntryBean;
-import io.apiman.manager.api.beans.summary.ApiPlanSummaryBean;
-import io.apiman.manager.api.beans.summary.ApiRegistryBean;
-import io.apiman.manager.api.beans.summary.ApiSummaryBean;
-import io.apiman.manager.api.beans.summary.ApiVersionEndpointSummaryBean;
-import io.apiman.manager.api.beans.summary.ApiVersionSummaryBean;
-import io.apiman.manager.api.beans.summary.ClientSummaryBean;
-import io.apiman.manager.api.beans.summary.ClientVersionSummaryBean;
-import io.apiman.manager.api.beans.summary.ContractSummaryBean;
-import io.apiman.manager.api.beans.summary.GatewaySummaryBean;
-import io.apiman.manager.api.beans.summary.PlanSummaryBean;
-import io.apiman.manager.api.beans.summary.PlanVersionSummaryBean;
-import io.apiman.manager.api.beans.summary.PolicySummaryBean;
-import io.apiman.manager.api.core.IApiKeyGenerator;
-import io.apiman.manager.api.core.IApiValidator;
-import io.apiman.manager.api.core.IClientValidator;
-import io.apiman.manager.api.core.IDownloadManager;
-import io.apiman.manager.api.core.IMetricsAccessor;
-import io.apiman.manager.api.core.IStorage;
-import io.apiman.manager.api.core.IStorageQuery;
+import io.apiman.manager.api.beans.summary.*;
+import io.apiman.manager.api.core.*;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.core.logging.ApimanLogger;
 import io.apiman.manager.api.core.util.PolicyTemplateUtil;
@@ -115,60 +56,18 @@ import io.apiman.manager.api.gateway.IGatewayLinkFactory;
 import io.apiman.manager.api.rest.contract.IOrganizationResource;
 import io.apiman.manager.api.rest.contract.IRoleResource;
 import io.apiman.manager.api.rest.contract.IUserResource;
-import io.apiman.manager.api.rest.contract.exceptions.AbstractRestException;
-import io.apiman.manager.api.rest.contract.exceptions.ApiAlreadyExistsException;
-import io.apiman.manager.api.rest.contract.exceptions.ApiDefinitionNotFoundException;
-import io.apiman.manager.api.rest.contract.exceptions.ApiNotFoundException;
-import io.apiman.manager.api.rest.contract.exceptions.ApiVersionAlreadyExistsException;
-import io.apiman.manager.api.rest.contract.exceptions.ApiVersionNotFoundException;
-import io.apiman.manager.api.rest.contract.exceptions.ClientAlreadyExistsException;
-import io.apiman.manager.api.rest.contract.exceptions.ClientNotFoundException;
-import io.apiman.manager.api.rest.contract.exceptions.ClientVersionAlreadyExistsException;
-import io.apiman.manager.api.rest.contract.exceptions.ClientVersionNotFoundException;
-import io.apiman.manager.api.rest.contract.exceptions.ContractAlreadyExistsException;
-import io.apiman.manager.api.rest.contract.exceptions.ContractNotFoundException;
-import io.apiman.manager.api.rest.contract.exceptions.EntityStillActiveException;
-import io.apiman.manager.api.rest.contract.exceptions.GatewayNotFoundException;
-import io.apiman.manager.api.rest.contract.exceptions.InvalidApiStatusException;
-import io.apiman.manager.api.rest.contract.exceptions.InvalidClientStatusException;
-import io.apiman.manager.api.rest.contract.exceptions.InvalidMetricCriteriaException;
-import io.apiman.manager.api.rest.contract.exceptions.InvalidNameException;
-import io.apiman.manager.api.rest.contract.exceptions.InvalidParameterException;
-import io.apiman.manager.api.rest.contract.exceptions.InvalidPlanStatusException;
-import io.apiman.manager.api.rest.contract.exceptions.InvalidVersionException;
-import io.apiman.manager.api.rest.contract.exceptions.NotAuthorizedException;
-import io.apiman.manager.api.rest.contract.exceptions.OrganizationAlreadyExistsException;
-import io.apiman.manager.api.rest.contract.exceptions.OrganizationNotFoundException;
-import io.apiman.manager.api.rest.contract.exceptions.PlanAlreadyExistsException;
-import io.apiman.manager.api.rest.contract.exceptions.PlanNotFoundException;
-import io.apiman.manager.api.rest.contract.exceptions.PlanVersionAlreadyExistsException;
-import io.apiman.manager.api.rest.contract.exceptions.PlanVersionNotFoundException;
-import io.apiman.manager.api.rest.contract.exceptions.PolicyDefinitionNotFoundException;
-import io.apiman.manager.api.rest.contract.exceptions.PolicyNotFoundException;
-import io.apiman.manager.api.rest.contract.exceptions.RoleNotFoundException;
-import io.apiman.manager.api.rest.contract.exceptions.SystemErrorException;
-import io.apiman.manager.api.rest.contract.exceptions.UserNotFoundException;
+import io.apiman.manager.api.rest.contract.exceptions.*;
 import io.apiman.manager.api.rest.impl.audit.AuditUtils;
 import io.apiman.manager.api.rest.impl.i18n.Messages;
 import io.apiman.manager.api.rest.impl.util.ExceptionFactory;
 import io.apiman.manager.api.rest.impl.util.FieldValidator;
+import io.apiman.manager.api.rest.impl.util.SwaggerWsdlHelper;
 import io.apiman.manager.api.security.ISecurityContext;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.stream.StreamSupport;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.format.ISODateTimeFormat;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -178,12 +77,18 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.security.cert.X509Certificate;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.stream.StreamSupport;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.format.ISODateTimeFormat;
+import static java.util.stream.Collectors.toList;
 
 /**
  * Implementation of the Organization API.
@@ -345,7 +250,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
      * @see io.apiman.manager.api.rest.contract.IOrganizationResource#deleteClient(java.lang.String, java.lang.String)
      */
     @Override
-    public void deleteClient(@PathParam("organizationId") String organizationId, @PathParam("clientId") String clientId) 
+    public void deleteClient(@PathParam("organizationId") String organizationId, @PathParam("clientId") String clientId)
             throws OrganizationNotFoundException, NotAuthorizedException, EntityStillActiveException {
         try {
             if (!securityContext.hasPermission(PermissionType.clientAdmin, organizationId))
@@ -1824,10 +1729,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         boolean hasPermission = securityContext.hasPermission(PermissionType.apiView, organizationId);
         try {
             storage.beginTx();
-            ApiVersionBean apiVersion = storage.getApiVersion(organizationId, apiId, version);
-            if (apiVersion == null) {
-                throw ExceptionFactory.apiVersionNotFoundException(apiId, version);
-            }
+            ApiVersionBean apiVersion = getApiVersionFromStorage(organizationId, apiId, version);
             storage.commitTx();
             if (!hasPermission) {
                 apiVersion.setGateways(null);
@@ -1841,6 +1743,14 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             storage.rollbackTx();
             throw new SystemErrorException(e);
         }
+    }
+
+    private ApiVersionBean getApiVersionFromStorage(String organizationId, String apiId, String version) throws StorageException {
+        ApiVersionBean apiVersion = storage.getApiVersion(organizationId, apiId, version);
+        if (apiVersion == null) {
+            throw ExceptionFactory.apiVersionNotFoundException(apiId, version);
+        }
+        return apiVersion;
     }
 
     /**
@@ -1865,10 +1775,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throws ApiVersionNotFoundException, NotAuthorizedException {
         try {
             storage.beginTx();
-            ApiVersionBean apiVersion = storage.getApiVersion(organizationId, apiId, version);
-            if (apiVersion == null) {
-                throw ExceptionFactory.apiVersionNotFoundException(apiId, version);
-            }
+            ApiVersionBean apiVersion = getApiVersionFromStorage(organizationId, apiId, version);
             if (apiVersion.getDefinitionType() == ApiDefinitionType.None || apiVersion.getDefinitionType() == null) {
                 throw ExceptionFactory.apiDefinitionNotFoundException(apiId, version);
             }
@@ -1876,7 +1783,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             if (definition == null) {
                 throw ExceptionFactory.apiDefinitionNotFoundException(apiId, version);
             }
+
+            definition = updateDefinitionWithManagedEndpoint(organizationId, apiId, version, apiVersion, definition);
             ResponseBuilder builder = Response.ok().entity(definition);
+
             if (apiVersion.getDefinitionType() == ApiDefinitionType.SwaggerJSON) {
                 builder.type(MediaType.APPLICATION_JSON);
             } else if (apiVersion.getDefinitionType() == ApiDefinitionType.SwaggerYAML) {
@@ -1899,35 +1809,64 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
+     * Replaces the location with the location of the managed endpoint if it is a wsdl definition.
+     * Replaces the host and base path with the information of the managed endpoint if it is a swagger 2+ definition.
+     * Updates the definition in storage if needed.
+     * @param organizationId the organizationId
+     * @param apiId the apiId
+     * @param version the version
+     * @param definition the definition as stream
+     * @param apiVersion the apiVersion
+     * @return a ByteArrayInputStream with the updated definition
+     * @throws IOException
+     * @throws StorageException
+     */
+    protected InputStream updateDefinitionWithManagedEndpoint(String organizationId, String apiId, String version, ApiVersionBean apiVersion, InputStream definition) throws IOException, StorageException {
+        // If it is not a published API we will not try to update the API definition. We will return definition from storage
+        if (apiVersion.getStatus() != ApiStatus.Published) {
+            return definition;
+        }
+
+        URL managedEndpoint = null;
+        try {
+            managedEndpoint = new URL(getApiVersionEndpointInfoFromStorage(apiVersion, organizationId, apiId, version).getManagedEndpoint());
+        } catch (Exception e) {
+            // If the gateway is not available we return the definition from storage
+            return definition;
+        }
+
+        String definitionString = null;
+        String updatedDefinitionString = null;
+        if (apiVersion.getDefinitionType() == ApiDefinitionType.SwaggerJSON) {
+            definitionString = SwaggerWsdlHelper.readSwaggerStreamToString(definition);
+            updatedDefinitionString = SwaggerWsdlHelper.updateSwaggerDefinitionWithEndpoint(managedEndpoint, definitionString, apiVersion, storage);
+        } else if (apiVersion.getDefinitionType() == ApiDefinitionType.SwaggerYAML) {
+            definitionString = SwaggerWsdlHelper.convertYamlToJson(SwaggerWsdlHelper.readSwaggerStreamToString(definition));
+            updatedDefinitionString = SwaggerWsdlHelper.updateSwaggerDefinitionWithEndpoint(managedEndpoint, definitionString, apiVersion, storage);
+        } else if (apiVersion.getDefinitionType() == ApiDefinitionType.WSDL) {
+            updatedDefinitionString = SwaggerWsdlHelper.updateLocationEndpointInWsdl(definition, managedEndpoint, apiVersion, storage);
+        } else {
+            return definition;
+        }
+
+        return new ByteArrayInputStream(updatedDefinitionString.getBytes(StandardCharsets.UTF_8));
+    }
+
+    /**
      * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getApiVersionEndpointInfo(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
     public ApiVersionEndpointSummaryBean getApiVersionEndpointInfo(String organizationId,
             String apiId, String version) throws ApiVersionNotFoundException,
-            InvalidApiStatusException, GatewayNotFoundException {
+            InvalidApiStatusException {
         try {
             storage.beginTx();
-            ApiVersionBean apiVersion = storage.getApiVersion(organizationId, apiId, version);
-            if (apiVersion == null) {
-                throw ExceptionFactory.apiVersionNotFoundException(apiId, version);
-            }
+            ApiVersionBean apiVersion = getApiVersionFromStorage(organizationId, apiId, version);
             if (apiVersion.getStatus() != ApiStatus.Published) {
                 throw new InvalidApiStatusException(Messages.i18n.format("ApiNotPublished")); //$NON-NLS-1$
             }
-            Set<ApiGatewayBean> gateways = apiVersion.getGateways();
-            if (gateways.isEmpty()) {
-                throw new SystemErrorException("No Gateways for published API!"); //$NON-NLS-1$
-            }
-            GatewayBean gateway = storage.getGateway(gateways.iterator().next().getGatewayId());
-            if (gateway == null) {
-                throw new GatewayNotFoundException();
-            }
-            IGatewayLink link = gatewayLinkFactory.create(gateway);
-            ApiEndpoint endpoint = link.getApiEndpoint(organizationId, apiId, version);
-            ApiVersionEndpointSummaryBean rval = new ApiVersionEndpointSummaryBean();
-            rval.setManagedEndpoint(endpoint.getEndpoint());
+            ApiVersionEndpointSummaryBean rval = getApiVersionEndpointInfoFromStorage(apiVersion, organizationId, apiId, version);
             storage.commitTx();
-            log.debug(String.format("Got endpoint summary: %s", gateway)); //$NON-NLS-1$
             return rval;
         } catch (AbstractRestException e) {
             storage.rollbackTx();
@@ -1936,6 +1875,25 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             storage.rollbackTx();
             throw new SystemErrorException(e);
         }
+    }
+
+    private ApiVersionEndpointSummaryBean getApiVersionEndpointInfoFromStorage(ApiVersionBean apiVersion, String organizationId,
+            String apiId, String version) throws GatewayNotFoundException, GatewayAuthenticationException, StorageException {
+        Set<ApiGatewayBean> gateways = apiVersion.getGateways();
+        if (gateways.isEmpty()) {
+            throw new SystemErrorException("No Gateways for published API!"); //$NON-NLS-1$
+        }
+        GatewayBean gateway = storage.getGateway(gateways.iterator().next().getGatewayId());
+        if (gateway == null) {
+            throw new GatewayNotFoundException();
+        } else {
+            log.debug(String.format("Got endpoint summary: %s", gateway)); //$NON-NLS-1$
+        }
+        IGatewayLink link = gatewayLinkFactory.create(gateway);
+        ApiEndpoint endpoint = link.getApiEndpoint(organizationId, apiId, version);
+        ApiVersionEndpointSummaryBean rval = new ApiVersionEndpointSummaryBean();
+        rval.setManagedEndpoint(endpoint.getEndpoint());
+        return rval;
     }
 
     /**
@@ -1975,6 +1933,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw ExceptionFactory.notAuthorizedException();
 
         ApiVersionBean avb = getApiVersion(organizationId, apiId, version);
+
         if (avb.isPublicAPI()) {
             if (avb.getStatus() == ApiStatus.Retired) {
                 throw ExceptionFactory.invalidApiStatusException();
@@ -2159,10 +2118,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw ExceptionFactory.notAuthorizedException();
         try {
             storage.beginTx();
-            ApiVersionBean apiVersion = storage.getApiVersion(organizationId, apiId, version);
-            if (apiVersion == null) {
-                throw ExceptionFactory.apiVersionNotFoundException(apiId, version);
-            }
+            ApiVersionBean apiVersion = getApiVersionFromStorage(organizationId, apiId, version);
             if (apiVersion.getDefinitionType() != definitionType) {
                 apiVersion.setDefinitionType(definitionType);
                 storage.updateApiVersion(apiVersion);
@@ -2229,6 +2185,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
 
         // Make sure the API exists
         ApiVersionBean avb = getApiVersion(organizationId, apiId, version);
+
         if (avb.isPublicAPI()) {
             if (avb.getStatus() == ApiStatus.Retired) {
                 throw ExceptionFactory.invalidApiStatusException();
@@ -2331,6 +2288,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
 
         // Make sure the API exists and is in the right status.
         ApiVersionBean avb = getApiVersion(organizationId, apiId, version);
+
         if (avb.isPublicAPI()) {
             if (avb.getStatus() == ApiStatus.Retired) {
                 throw ExceptionFactory.invalidApiStatusException();
@@ -2375,10 +2333,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw ExceptionFactory.notAuthorizedException();
         try {
             storage.beginTx();
-            ApiVersionBean apiVersion = storage.getApiVersion(organizationId, apiId, version);
-            if (apiVersion == null) {
-                throw ExceptionFactory.apiVersionNotFoundException(apiId, version);
-            }
+            ApiVersionBean apiVersion = getApiVersionFromStorage(organizationId, apiId, version);
             apiVersion.setDefinitionType(ApiDefinitionType.None);
             apiVersion.setModifiedBy(securityContext.getCurrentUser());
             apiVersion.setModifiedOn(new Date());
@@ -3493,9 +3448,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         if (endpointProperties != null) {
             for (Entry<String, String> entry : endpointProperties.entrySet()) {
                 DataEncryptionContext ctx = new DataEncryptionContext(
-                        versionBean.getApi().getOrganization().getId(), 
+                        versionBean.getApi().getOrganization().getId(),
                         versionBean.getApi().getId(),
-                        versionBean.getVersion(), 
+                        versionBean.getVersion(),
                         EntityType.Api);
                 entry.setValue(encrypter.decrypt(entry.getValue(), ctx));
             }
@@ -3510,9 +3465,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         if (endpointProperties != null) {
             for (Entry<String, String> entry : endpointProperties.entrySet()) {
                 DataEncryptionContext ctx = new DataEncryptionContext(
-                        versionBean.getApi().getOrganization().getId(), 
+                        versionBean.getApi().getOrganization().getId(),
                         versionBean.getApi().getId(),
-                        versionBean.getVersion(), 
+                        versionBean.getVersion(),
                         EntityType.Api);
                 entry.setValue(encrypter.encrypt(entry.getValue(), ctx));
             }

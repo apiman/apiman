@@ -12,11 +12,12 @@ module Apiman {
             $scope.version = params.version;
             $scope.showMetrics = Configuration.ui.metrics;
             $scope.textAreaHeight = '100';
-            
+
             $scope.typeOptions = [
                 { "label" : "No API Definition",     "value" : "None" },
                 { "label" : "Swagger (JSON)",        "value" : "SwaggerJSON" },
-                { "label" : "Swagger (YAML)",        "value" : "SwaggerYAML" }
+                { "label" : "Swagger (YAML)",        "value" : "SwaggerYAML" },
+                { "label" : "WSDL",                  "value" : "WSDL" }
             ];
 
             var selectType = function(newType) {
@@ -50,19 +51,21 @@ module Apiman {
                         $scope.saveButton.state = 'error';
                     });
             };
-            
+
 
             $scope.$on('afterdrop', function(event, data) {
-                var newValue = data.value;
+                let newValue = data.value;
 
                 if (newValue) {
                     if (newValue.lastIndexOf('{', 0) === 0) {
                         $scope.$apply(function() {
                             selectType('SwaggerJSON');
                         });
-                    }
-
-                    if (newValue.lastIndexOf('swagger:', 0) === 0) {
+                    } else if (newValue.lastIndexOf('<', 0) === 0) {
+                        $scope.$apply(function() {
+                            selectType('WSDL');
+                        });
+                    } else {
                         $scope.$apply(function() {
                             selectType('SwaggerYAML');
                         });
@@ -83,11 +86,14 @@ module Apiman {
                     });
             };
 
+            let loadDefinitionUrl = function () {
+                $scope.apiDefinitionUrl = ApiDefinitionSvcs.getApiDefinitionUrl(params.org, params.api, params.version)
+            };
 
             var checkDirty = function() {
                 if ($scope.version) {
                     var dirty = false;
-                    
+
                     Logger.debug("Model def type: {1}   UI Def type: {0}", $scope.definitionType, $scope.selectedDefinitionType.value);
 
                     if ($scope.apiDefinition != $scope.updatedApiDefinition) {
@@ -122,6 +128,23 @@ module Apiman {
                 $rootScope.isDirty = false;
             };
 
+            $scope.downloadDefinition = function () {
+                let element = document.createElement('a');
+                element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent($scope.apiDefinition));
+                let fileName = $scope.api.id + '-' + $scope.version.version + '-' + $scope.definitionType;
+                let fileExtension = '.json';
+                if ($scope.definitionType == 'SwaggerYAML') {
+                    fileExtension = '.yaml';
+                } else if ($scope.definitionType == 'WSDL') {
+                    fileExtension = '.xml';
+                }
+                element.setAttribute('download', fileName + fileExtension);
+                element.style.display = 'none';
+                document.body.appendChild(element);
+                element.click();
+                document.body.removeChild(element);
+            };
+
             PageLifecycle.loadPage('ApiDef', 'apiView', pageData, $scope, function() {
                 $scope.definitionType = $scope.version.definitionType;
 
@@ -131,6 +154,7 @@ module Apiman {
 
                 if ($scope.version.definitionType && $scope.version.definitionType != 'None' && $scope.version.definitionType != 'External') {
                     loadDefinition();
+                    loadDefinitionUrl();
                 } else {
                     Logger.debug("Skipped loading api definition - None defined.");
                 }

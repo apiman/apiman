@@ -163,18 +163,20 @@ module ApimanRPC {
                         transformResponse: function(value) { return value; }
                     }).success(handler).error(errorHandler);
                 },
-                updateApiDefinition: function(orgId, apiId, version, definition, definitionType, handler, errorHandler) {
-                    var ct = 'application/json';
+                updateApiDefinition: function (orgId, apiId, version, definition, definitionType, handler, errorHandler) {
+                    let ct = 'application/json';
                     if (definitionType == 'SwaggerYAML') {
                         ct = 'application/x-yaml';
+                    } else if (definitionType == 'WSDL') {
+                        ct = 'application/wsdl+xml';
                     }
-                    var endpoint = formatEndpoint(
+                    let endpoint = formatEndpoint(
                         Configuration.api.endpoint + '/organizations/:organizationId/apis/:apiId/versions/:version/definition',
-                        { organizationId: orgId, apiId: apiId, version: version });
+                        {organizationId: orgId, apiId: apiId, version: version});
                     $http({
-                        method: 'PUT', 
+                        method: 'PUT',
                         url: endpoint,
-                        headers: { 'Content-Type' : ct },
+                        headers: {'Content-Type': ct},
                         data: definition
                     }).success(handler).error(errorHandler);
                 }

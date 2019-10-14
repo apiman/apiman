@@ -8,7 +8,7 @@
 
   <body>
   <div>
-    
+
     <div ng-include="headerInclude"></div>
     <div ng-controller="Apiman.ApiDefController"
          class="page container"
@@ -39,6 +39,16 @@
                 area below.
               </p>
             </div>
+            <div class="apiman-divider-20" ng-show="definitionType">
+              <div class="alert alert-warning">
+                <span class="pficon pficon-info"></span>
+                <p apiman-i18n-key="api-def.replaceInfo">If the API is published, the endpoint in the definition
+                  will be automatically replaced by the endpoint of the gateway.</p>
+                <p apiman-i18n-key="api-def.downloadInfo">You can retrieve the definition with the following link&#58;&#32;
+                  <a href="{{ apiDefinitionUrl }}">{{ apiDefinitionUrl }}</a>
+                </p>
+              </div>
+            </div>
             <form ng-submit="saveApi()">
             <div>
               <span class="clearfix"
@@ -46,6 +56,11 @@
                     apiman-i18n-key="api-definition-label">API Definition:</span>
               <select apiman-i18n-key="api-def.choose-type" title="Choose a type..." apiman-select-picker="" ng-model="selectedDefinitionType" class="selectpicker" ng-disabled="isEntityDisabled()" ng-options="type.label for type in typeOptions track by type.value">
               </select>
+              <div class="pull-right">
+                <button type="button" class="btn btn-default" ng-click="downloadDefinition()"
+                        ng-disabled="isDirty || !apiDefinition" apiman-i18n-key="download">Download
+                </button>
+              </div>
               <textarea style="margin-top:10px; width: 100%;"
                         apiman-i18n-key="enter-api-definition"
                         id="api-definition"
