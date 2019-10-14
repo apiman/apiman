@@ -87,7 +87,7 @@ module Apiman {
             };
 
             let loadDefinitionUrl = function () {
-                $scope.apiDefinitionUrl = ApiDefinitionSvcs.getApiDefinitionUrl(params.org, params.api, params.version)
+                $scope.apimanDefinitionUrl = ApiDefinitionSvcs.getApimanDefinitionUrl(params.org, params.api, params.version)
             };
 
             var checkDirty = function() {
@@ -125,6 +125,7 @@ module Apiman {
             $scope.reset = function() {
                 selectType($scope.definitionType);
                 $scope.updatedApiDefinition = $scope.apiDefinition;
+                $scope.updatedApiDefinitionUrl = $scope.version.definitionUrl;
                 $rootScope.isDirty = false;
             };
 
@@ -145,8 +146,28 @@ module Apiman {
                 document.body.removeChild(element);
             };
 
+            $scope.updateDefinitionFromUrl = function () {
+                let definitionUrl = $scope.updatedApiDefinitionUrl;
+                let definitionType = $scope.selectedDefinitionType.value;
+                ApiDefinitionSvcs.updateApiDefinitionFromUrl(params.org, params.api, params.version, definitionUrl, definitionType,
+                    function() {
+                        Logger.debug("Updated the api definition!");
+                        loadDefinition();
+                        $rootScope.isDirty = false;
+                        $scope.saveButton.state = 'complete';
+                        EntityStatusSvc.getEntity().modifiedOn = Date.now();
+                        EntityStatusSvc.getEntity().modifiedBy = CurrentUser.getCurrentUser();
+                    },
+                    function(error) {
+                        Logger.error("Error updating definition: {0}", error);
+                        $scope.saveButton.state = 'error';
+                    })
+
+            };
+
             PageLifecycle.loadPage('ApiDef', 'apiView', pageData, $scope, function() {
                 $scope.definitionType = $scope.version.definitionType;
+                $scope.updatedApiDefinitionUrl = $scope.version.definitionUrl;
 
                 if (!$scope.definitionType) {
                     $scope.definitionType = 'None';

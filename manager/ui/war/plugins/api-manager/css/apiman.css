@@ -1964,3 +1964,11 @@ html, body {height: 100%;}
 #api-catalog-filters .input-search {
   width: 250px;
 }
+
+.top-spacer {
+  margin-top: 10px;
+}
+
+.bottom-spacer {
+  margin-bottom: 10px;
+}
