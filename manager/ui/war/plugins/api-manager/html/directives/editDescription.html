@@ -1,5 +1,6 @@
 <div style="position: relative;" class="description">
     <div editable-textarea="descr"
+         onbeforesave="beforeSaveDescription($data)"
          onaftersave="saveDescription()"
          e-ng-focus="focusOnDescription($event)"
          e-ng-change="changeOnDescription()"
@@ -8,7 +9,6 @@
          ng-mouseout="descriptionMouseOut($event)"
          id="descriptionWrapper">
             {{ descr || "&lt;" + defaultValue + "&gt;" }}
-        <!-- ng-style="{ left: leftPosition, top: topPosition, height: height }" -->
             <a href="#"
                ng-show="showPencil"
                class="apiman-inline-edit-overlay-edit"

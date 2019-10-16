@@ -10,6 +10,7 @@
     </dependencies>
     <exclude-subsystems>
       <subsystem name="webservices" />
+      <subsystem name="jaxrs" />
     </exclude-subsystems>
   </deployment>
 </jboss-deployment-structure>

@@ -4,13 +4,13 @@ module Apiman {
 
     export var EditRoleController = _module.controller("Apiman.EditRoleController",
         [
-            '$q', 
-            '$scope', 
+            '$q',
+            '$scope',
             '$location',
             '$uibModal',
-            'ApimanSvcs', 
-            'PageLifecycle', 
-            'Logger',  
+            'ApimanSvcs',
+            'PageLifecycle',
+            'Logger',
             '$routeParams',
         ($q, $scope, $location, $uibModal, ApimanSvcs, PageLifecycle, Logger, $routeParams) => {
             var params = $routeParams;
@@ -18,12 +18,11 @@ module Apiman {
                                       'planView','planEdit','planAdmin',
                                       'apiView', 'apiEdit', 'apiAdmin',
                                       'clientView', 'clientEdit', 'clientAdmin'];
-            $scope.isValid = true;
             $scope.rolePermissions = {};
             angular.forEach(allPermissions, function(value) {
                 $scope.rolePermissions[value] = false;
             });
-            
+
             var validate = function() {
                 var atLeastOne = false;
                 angular.forEach($scope.rolePermissions, function(value,key) {
@@ -33,11 +32,12 @@ module Apiman {
                 });
                 return atLeastOne;
             };
-            
+
             $scope.$watch('rolePermissions', function(newValue) {
-                $scope.isValid = validate();
+                $scope.editRole.$valid = $scope.editRole.$valid && validate();
+                $scope.editRole.$invalid = !$scope.editRole.$valid
             }, true);
-            
+
             var pageData = {
                 role: $q(function(resolve, reject) {
                     ApimanSvcs.get({ entityType: 'roles', secondaryType: params.role }, function(role) {
@@ -48,7 +48,7 @@ module Apiman {
                     }, reject);
                 })
             };
-            
+
             $scope.updateRole  = function() {
                 $scope.updateButton.state = 'in-progress';
                 var permissions = [];
@@ -66,7 +66,7 @@ module Apiman {
                      PageLifecycle.redirectTo('/admin/roles');
                 }, PageLifecycle.handleError);
             };
-            
+
             $scope.deleteRole  = function(size) {
                 $scope.deleteButton.state = 'in-progress';
 
@@ -98,11 +98,10 @@ module Apiman {
                         PageLifecycle.redirectTo('/admin/roles');
                     }, PageLifecycle.handleError);
                 }, function () {
-                    //console.log('Modal dismissed at: ' + new Date());
                     $scope.deleteButton.state = 'complete';
                 });
             };
-            
+
             PageLifecycle.loadPage('EditRole', 'admin', pageData, $scope, function() {
                 PageLifecycle.setPageTitle('edit-role');
                 $('#apiman-description').focus();

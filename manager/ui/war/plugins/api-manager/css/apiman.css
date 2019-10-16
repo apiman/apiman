@@ -334,7 +334,7 @@ textarea.apiman-form-data {
 }
 
 #form-page .inline-apiman-form-control {
-  display: inline; 
+  display: inline;
   margin: 0px 5px;
   width: auto;
 }
@@ -1253,13 +1253,13 @@ div.admin-page .admin-content .apiman-summaryrow .emphasis {
   -webkit-margin-before: -4px;
 }
 
-div.editable-click { 
+div.editable-click {
   color: black;
   border-bottom: hidden;
   border: 1px solid white;
 }
 
-div.editable-click:hover { 
+div.editable-click:hover {
   border: 1px solid rgb(200, 200, 200);
   border-radius: 3px 0px 0px 3px;
   padding: 5px;
@@ -1303,6 +1303,7 @@ div.editable-click:hover {
 }
 
 .apiman-inline-edit {
+  white-space: unset !important;
   margin-right: 25px;
 }
 .apiman-inline-edit .btn {
@@ -1560,7 +1561,7 @@ table tr.apiman_deleting {
 }
 
 .apiman-wizard-page {
-  
+
 }
 .apiman-wizard-page h1 {
   margin-top: 0px;
