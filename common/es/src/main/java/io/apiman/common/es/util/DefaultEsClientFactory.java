@@ -74,6 +74,7 @@ public class DefaultEsClientFactory extends AbstractClientFactory implements IEs
         String username = config.get("client.username"); //$NON-NLS-1$
         String password = config.get("client.password"); //$NON-NLS-1$
         Integer timeout = NumberUtils.toInt(config.get("client.timeout"), 10000); //$NON-NLS-1$
+	Integer maxConnectionIdleTime = NumberUtils.toInt(config.get("client.maxConnectionIdleTime"), 1000); //$NON-NLS-1$
 
         if (StringUtils.isBlank(protocol)) {
             protocol = "http"; //$NON-NLS-1$
@@ -96,6 +97,7 @@ public class DefaultEsClientFactory extends AbstractClientFactory implements IEs
                 Builder httpClientConfig = new HttpClientConfig.Builder(connectionUrl)
                         .connTimeout(timeout)
                         .readTimeout(timeout)
+			.maxConnectionIdleTime(maxConnectionIdleTime)
                         .maxTotalConnection(75)
                         .defaultMaxTotalConnectionPerRoute(75)
                         .multiThreaded(true);
