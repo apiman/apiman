@@ -17,6 +17,7 @@
 package io.apiman.gateway.api.rest.impl;
 
 import io.apiman.gateway.api.rest.contract.ISystemResource;
+import io.apiman.gateway.engine.beans.GatewayEndpoint;
 import io.apiman.gateway.engine.beans.SystemStatus;
 
 /**
@@ -46,4 +47,11 @@ public class SystemResourceImpl extends AbstractResourceImpl implements ISystemR
         return status;
     }
 
+    /**
+     * @see io.apiman.gateway.api.rest.contract.ISystemResource#getEndpoint()
+     */
+    @Override
+    public GatewayEndpoint getEndpoint() {
+        return getPlatform().getEndpoint();
+    }
 }

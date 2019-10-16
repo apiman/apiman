@@ -19,6 +19,7 @@ package io.apiman.manager.api.rest.contract;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
 import io.apiman.manager.api.beans.gateways.NewGatewayBean;
 import io.apiman.manager.api.beans.gateways.UpdateGatewayBean;
+import io.apiman.manager.api.beans.summary.GatewayEndpointSummaryBean;
 import io.apiman.manager.api.beans.summary.GatewaySummaryBean;
 import io.apiman.manager.api.beans.summary.GatewayTestResultBean;
 import io.apiman.manager.api.rest.contract.exceptions.GatewayAlreadyExistsException;
@@ -40,24 +41,24 @@ import javax.ws.rs.core.MediaType;
 
 /**
  * The Gateway API.
- * 
+ *
  * @author eric.wittmann@redhat.com
  */
 @Path("gateways")
 @Api
 public interface IGatewayResource {
-    
+
     /**
-     * This endpoint is used to test the Gateway's settings prior to either creating 
+     * This endpoint is used to test the Gateway's settings prior to either creating
      * or updating it.  The information will be used to attempt to create a link between
-     * the API Manager and the Gateway, by simply trying to ping the Gateway's "status" 
+     * the API Manager and the Gateway, by simply trying to ping the Gateway's "status"
      * endpoint.
      * @summary Test a Gateway
      * @servicetag admin
      * @param bean Details of the Gateway for testing.
      * @statuscode 200 If the test is performed (regardless of the outcome of the test).
      * @return The result of testing the Gateway settings.
-     * @throws NotAuthorizedException when attempt to do something user is not authorized to do 
+     * @throws NotAuthorizedException when attempt to do something user is not authorized to do
      */
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
@@ -89,7 +90,7 @@ public interface IGatewayResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public GatewayBean create(NewGatewayBean bean) throws GatewayAlreadyExistsException, NotAuthorizedException;
-    
+
     /**
      * Call this endpoint to get the details of a single configured Gateway.
      * @summary Get a Gateway by ID
@@ -136,5 +137,18 @@ public interface IGatewayResource {
     @Path("{gatewayId}")
     public void delete(@PathParam("gatewayId") String gatewayId)
             throws GatewayNotFoundException, NotAuthorizedException;
+
+    /**
+     * This endpoint delivers the gateway endpoint for the corresponding gateway id
+     * @param gatewayId gateway id
+     * @return The corresponding gateway endpoint
+     * @throws GatewayNotFoundException when gateway is not found
+     * @throws NotAuthorizedException when attempt to do something user is not authorized to do
+     */
+    @GET
+    @Path("{gatewayId}/endpoint")
+    @Produces(MediaType.APPLICATION_JSON)
+    public GatewayEndpointSummaryBean getGatewayEndpoint(@PathParam("gatewayId") String gatewayId) throws GatewayNotFoundException,
+    NotAuthorizedException;
 
 }

@@ -21,6 +21,7 @@ import io.apiman.common.util.crypt.CurrentDataEncrypter;
 import io.apiman.common.util.crypt.DataEncryptionContext;
 import io.apiman.gateway.engine.beans.Api;
 import io.apiman.gateway.engine.beans.ApiEndpoint;
+import io.apiman.gateway.engine.beans.GatewayEndpoint;
 import io.apiman.gateway.engine.beans.Client;
 import io.apiman.gateway.engine.beans.SystemStatus;
 import io.apiman.gateway.engine.beans.exceptions.PublishingException;
@@ -145,6 +146,13 @@ public class RestGatewayLink implements IGatewayLink {
     @Override
     public SystemStatus getStatus() throws GatewayAuthenticationException {
         return getClient().getStatus();
+    }
+
+    /**
+     * @see io.apiman.manager.api.gateway.IGatewayLink#getGatewayEndpoint()
+     */
+    public GatewayEndpoint getGatewayEndpoint() throws GatewayAuthenticationException {
+        return getClient().getGatewayEndpoint();
     }
 
     /**

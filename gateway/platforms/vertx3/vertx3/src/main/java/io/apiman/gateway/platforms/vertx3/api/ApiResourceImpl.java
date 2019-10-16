@@ -26,9 +26,7 @@ import io.apiman.gateway.engine.beans.ApiEndpoint;
 import io.apiman.gateway.engine.beans.exceptions.PublishingException;
 import io.apiman.gateway.engine.beans.exceptions.RegistrationException;
 import io.apiman.gateway.platforms.vertx3.common.config.VertxEngineConfig;
-import org.apache.commons.lang3.StringUtils;
-
-import java.net.URI;
+import io.apiman.gateway.platforms.vertx3.helpers.EndpointHelper;
 
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.core.Response;
@@ -73,55 +71,11 @@ public class ApiResourceImpl extends AbstractResource implements IApiResource {
     @SuppressWarnings("nls")
     public ApiEndpoint getApiEndpoint(String organizationId, String apiId, String version)
             throws NotAuthorizedException {
-        String scheme = apimanConfig.preferSecure() ? "https" : "http";
-        int port = apimanConfig.getPort(scheme);
-        String host = "localhost"; // TODO host from request context
-        String path = "";
-        // If endpoint was manually specified
-        if (apimanConfig.getPublicEndpoint() != null) {
-           URI publicEndpoint = URI.create(apimanConfig.getPublicEndpoint());
-
-           if (publicEndpoint.getPort() != -1) {
-               port = publicEndpoint.getPort();
-           }
-           if (publicEndpoint.getScheme() != null && !publicEndpoint.getScheme().isEmpty()) {
-               scheme = publicEndpoint.getScheme();
-           }
-           if (publicEndpoint.getPath() != null && !publicEndpoint.getPath().isEmpty()) {
-               path = publicEndpoint.getPath();
-           }
-           if (publicEndpoint.getHost() != null && !publicEndpoint.getHost().isEmpty()) {
-               host = publicEndpoint.getHost();
-           }
-        }
-
-        String endpoint = buildEndpoint(organizationId, apiId, version, scheme, host, port, path);
+        EndpointHelper endpointHelper = new EndpointHelper(apimanConfig);
+        String endpoint = endpointHelper.getApiEndpoint(organizationId, apiId, version);
         ApiEndpoint endpointObj = new ApiEndpoint();
         endpointObj.setEndpoint(endpoint);
         return endpointObj;
-    }
-
-    private String buildEndpoint(String organizationId, String apiId, String version, String scheme, String host, int port, String path) {
-        StringBuilder endpoint = new StringBuilder();
-        endpoint.append(scheme);
-        endpoint.append("://");
-        endpoint.append(host);
-
-        if (port != 443 && port != 80) {
-            endpoint.append(":");
-            endpoint.append(port);
-        }
-
-        if (path.isEmpty()) {
-            endpoint.append("/");
-        } else {
-            endpoint.append(path);
-            if (!StringUtils.endsWith(path, "/"))
-                endpoint.append("/");
-        }
-
-        endpoint.append(String.join("/", organizationId, apiId, version));
-        return endpoint.toString();
     }
 
     @Override
@@ -165,5 +119,4 @@ public class ApiResourceImpl extends AbstractResource implements IApiResource {
             }
         });
     }
-
 }

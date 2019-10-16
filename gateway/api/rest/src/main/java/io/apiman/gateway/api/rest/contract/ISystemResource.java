@@ -16,6 +16,7 @@
 
 package io.apiman.gateway.api.rest.contract;
 
+import io.apiman.gateway.engine.beans.GatewayEndpoint;
 import io.apiman.gateway.engine.beans.SystemStatus;
 import io.swagger.annotations.Api;
 
@@ -37,4 +38,10 @@ public interface ISystemResource {
     @Path("status")
     @Produces(MediaType.APPLICATION_JSON)
     public SystemStatus getStatus();
+
+    @GET
+    @Path("endpoint")
+    @Produces(MediaType.APPLICATION_JSON)
+    public GatewayEndpoint getEndpoint();
+
 }

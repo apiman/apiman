@@ -16,6 +16,7 @@
 package io.apiman.gateway.api.rest.impl;
 
 import io.apiman.gateway.engine.beans.ApiEndpoint;
+import io.apiman.gateway.engine.beans.GatewayEndpoint;
 
 /**
  * An interface used by the REST layer when getting information that must
@@ -37,5 +38,11 @@ public interface IPlatform {
      * @return the API endpoint
      */
     public ApiEndpoint getApiEndpoint(String organizationId, String apiId, String version);
+
+    /**
+     * Gets the gateway endpoint.
+     * @return the gateway endpoint
+     */
+    public GatewayEndpoint getEndpoint();
 
 }

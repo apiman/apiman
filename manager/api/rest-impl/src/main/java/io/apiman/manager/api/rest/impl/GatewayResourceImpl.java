@@ -20,6 +20,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.apiman.common.util.crypt.DataEncryptionContext;
 import io.apiman.common.util.crypt.IDataEncrypter;
+import io.apiman.gateway.engine.beans.GatewayEndpoint;
 import io.apiman.gateway.engine.beans.SystemStatus;
 import io.apiman.manager.api.beans.BeanUtils;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
@@ -27,6 +28,7 @@ import io.apiman.manager.api.beans.gateways.GatewayType;
 import io.apiman.manager.api.beans.gateways.NewGatewayBean;
 import io.apiman.manager.api.beans.gateways.RestGatewayConfigBean;
 import io.apiman.manager.api.beans.gateways.UpdateGatewayBean;
+import io.apiman.manager.api.beans.summary.GatewayEndpointSummaryBean;
 import io.apiman.manager.api.beans.summary.GatewaySummaryBean;
 import io.apiman.manager.api.beans.summary.GatewayTestResultBean;
 import io.apiman.manager.api.core.IStorage;
@@ -180,6 +182,34 @@ public class GatewayResourceImpl implements IGatewayResource {
 
             log.debug(String.format("Successfully fetched gateway %s: %s", bean.getName(), bean)); //$NON-NLS-1$
             return bean;
+        } catch (AbstractRestException e) {
+            storage.rollbackTx();
+            throw e;
+        } catch (Exception e) {
+            storage.rollbackTx();
+            throw new SystemErrorException(e);
+        }
+    }
+
+    /**
+     * @see io.apiman.manager.api.rest.contract.IGatewayResource#getGatewayEndpoint(java.lang.String)
+     */
+    public GatewayEndpointSummaryBean getGatewayEndpoint(String gatewayId)  throws GatewayNotFoundException,
+            NotAuthorizedException {
+        try {
+            storage.beginTx();
+            GatewayBean gateway = storage.getGateway(gatewayId);
+            if (gateway == null) {
+                throw ExceptionFactory.gatewayNotFoundException(gatewayId);
+            } else {
+                log.debug(String.format("Got endpoint summary: %s", gateway)); //$NON-NLS-1$
+            }
+            IGatewayLink link = gatewayLinkFactory.create(gateway);
+            GatewayEndpoint endpoint = link.getGatewayEndpoint();
+            GatewayEndpointSummaryBean rval = new GatewayEndpointSummaryBean();
+            rval.setEndpoint(endpoint.getEndpoint());
+            storage.commitTx();
+            return rval;
         } catch (AbstractRestException e) {
             storage.rollbackTx();
             throw e;
