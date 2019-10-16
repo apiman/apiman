@@ -44,7 +44,7 @@ stages:
     if: "branch = master AND type != pull_request"
 
 jdk:
-  - oraclejdk8
+  - openjdk8
 
 notifications:
   irc:
