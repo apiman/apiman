@@ -1605,7 +1605,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                         Response response = getApiDefinition(organizationId, apiId, bean.getCloneVersion());
                         definition = (InputStream) response.getEntity();
                         storeApiDefinition(organizationId, apiId, newVersion.getVersion(),
-                                cloneSource.getDefinitionType(), definition);
+                                cloneSource.getDefinitionType(), definition, cloneSource.getDefinitionUrl());
                     } catch (ApiDefinitionNotFoundException svnfe) {
                         // This is ok - it just means the API doesn't have one, so do nothing.
                     } catch (Exception sdnfe) {
@@ -2084,7 +2084,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             } else {
                 throw new SystemErrorException(Messages.i18n.format("InvalidApiDefinitionContentType", contentType)); //$NON-NLS-1$
             }
-            storeApiDefinition(organizationId, apiId, version, newDefinitionType, data);
+            storeApiDefinition(organizationId, apiId, version, newDefinitionType, data, null);
             log.debug(String.format("Updated API definition for %s", apiId)); //$NON-NLS-1$
         } finally {
             IOUtils.closeQuietly(data);
@@ -2099,36 +2099,24 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             NewApiDefinitionBean bean) throws ApiVersionNotFoundException, NotAuthorizedException,
                     InvalidApiStatusException {
         InputStream data;
+        String definitionUrl;
         try {
-            String definitionURL = bean.getDefinitionUrl();
-            URL url = new URL(definitionURL);
+            definitionUrl = bean.getDefinitionUrl();
+            URL url = new URL(definitionUrl);
             data = url.openStream();
         } catch (IOException e) {
             throw new SystemErrorException(e);
         }
         try {
-            storeApiDefinition(organizationId, apiId, version, bean.getDefinitionType(), data);
-
-            // update the definition url silently in storage if it's a new one
-            storage.beginTx();
-            ApiVersionBean apiVersion = getApiVersionFromStorage(organizationId, apiId, version);
-            if (apiVersion.getDefinitionUrl() == null || !apiVersion.getDefinitionUrl().equals(bean.getDefinitionUrl())) {
-                apiVersion.setDefinitionUrl(bean.getDefinitionUrl());
-                storage.updateApiVersion(apiVersion);
-            }
-            storage.commitTx();
-
+            storeApiDefinition(organizationId, apiId, version, bean.getDefinitionType(), data, definitionUrl);
             log.debug(String.format("Updated API definition for %s from URL %s", apiId, bean.getDefinitionUrl())); //$NON-NLS-1$
-        } catch (StorageException e) {
-            storage.rollbackTx();
-            throw new SystemErrorException(e);
         } finally {
             IOUtils.closeQuietly(data);
         }
     }
 
     protected void storeApiDefinition(String organizationId, String apiId, String version,
-            ApiDefinitionType definitionType, InputStream data) {
+            ApiDefinitionType definitionType, InputStream data, String definitionUrl) {
         if (!securityContext.hasPermission(PermissionType.apiEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
         try {
@@ -2136,6 +2124,11 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             ApiVersionBean apiVersion = getApiVersionFromStorage(organizationId, apiId, version);
             if (apiVersion.getDefinitionType() != definitionType) {
                 apiVersion.setDefinitionType(definitionType);
+                storage.updateApiVersion(apiVersion);
+            }
+            // update the definition url silently in storage if it's a new one
+            if ((definitionUrl != null && (apiVersion.getDefinitionUrl() == null || !apiVersion.getDefinitionUrl().equals(definitionUrl)))) {
+                apiVersion.setDefinitionUrl(definitionUrl);
                 storage.updateApiVersion(apiVersion);
             }
             storage.createAuditEntry(AuditUtils.apiDefinitionUpdated(apiVersion, securityContext));
