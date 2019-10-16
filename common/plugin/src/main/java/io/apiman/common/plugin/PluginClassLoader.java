@@ -129,6 +129,7 @@ public class PluginClassLoader extends ClassLoader {
                 output = new FileOutputStream(tmpFile);
                 IOUtils.copy(input, output);
                 output.flush();
+                IOUtils.closeQuietly(output);
                 tmpFile.renameTo(depFile);
             } catch (IOException e) {
                 throw e;
@@ -164,6 +165,7 @@ public class PluginClassLoader extends ClassLoader {
                 output = new FileOutputStream(tmpFile);
                 IOUtils.copy(input, output);
                 output.flush();
+                IOUtils.closeQuietly(output);
                 tmpFile.renameTo(resourceFile);
             } catch (IOException e) {
                 throw e;
