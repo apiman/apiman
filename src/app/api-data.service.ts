@@ -125,9 +125,24 @@ export interface Organization {
   createdBy: string;
 }
 
+export interface GatewayDetails {
+  name: string;
+  id: string;
+  type: 'REST';
+  description: string;
+}
+
+export interface GatewayEndpoint {
+  endpoint: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
+
+/**
+ * A service which executes the REST calls to Apiman UI REST Interface
+ */
 export class ApiDataService {
 
   constructor(private http: HttpClient) { }
@@ -178,6 +193,16 @@ export class ApiDataService {
   public getContracts(organizationId, clientId, clientVersion) {
     const url = this.gatewayEndpoint + '/organizations/' + organizationId + '/clients/' + clientId + '/versions/' + clientVersion + '/contracts';
     return this.http.get(url) as Observable<Array<ContractDetails>>;
+  }
+
+  public getGateways() {
+    const url = this.gatewayEndpoint + '/gateways';
+    return this.http.get(url) as Observable<Array<GatewayDetails>>;
+  }
+
+  public getGatewayEndpoint(gatewayId) {
+    const url = this.gatewayEndpoint + '/gateways/' + gatewayId + '/endpoint';
+    return this.http.get(url) as Observable<GatewayEndpoint>;
   }
 
 }
