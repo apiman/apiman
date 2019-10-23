@@ -383,6 +383,7 @@
             <column name="version" type="VARCHAR(255)"/>
             <column name="api_id" type="VARCHAR(255)"/>
             <column name="api_org_id" type="VARCHAR(255)"/>
+            <column name="definition_url" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
     <changeSet author="apiman (generated)" id="1436469846462-19">

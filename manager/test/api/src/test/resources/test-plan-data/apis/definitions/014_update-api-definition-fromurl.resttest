@@ -1,0 +1,9 @@
+POST /organizations/Organization1/apis/APILiveSwaggerBasePath/versions/1.0/definition admin/admin
+Content-Type: application/json
+
+{
+  "definitionUrl" : "${apiman.test.api-definition-url}",
+  "definitionType" : "SwaggerJSON"
+}
+----
+204

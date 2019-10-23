@@ -2,13 +2,12 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0"></meta>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
   </head>
 
   <body>
   <div>
-    
+
     <div ng-include="headerInclude"></div>
     <div ng-controller="Apiman.ApiDefController"
          class="page container"
@@ -39,45 +38,94 @@
                 area below.
               </p>
             </div>
-            <form ng-submit="saveApi()">
-            <div>
-              <span class="clearfix"
-                    style="margin-top:10px; margin-bottom: 10px"
-                    apiman-i18n-key="api-definition-label">API Definition:</span>
-              <select apiman-i18n-key="api-def.choose-type" title="Choose a type..." apiman-select-picker="" ng-model="selectedDefinitionType" class="selectpicker" ng-disabled="isEntityDisabled()" ng-options="type.label for type in typeOptions track by type.value">
-              </select>
-              <textarea style="margin-top:10px; width: 100%;"
-                        apiman-i18n-key="enter-api-definition"
-                        id="api-definition"
-                        placeholder="Copy/paste or drag and drop your API Definition in here!"
-                        apiman-drop-text
-                        ng-model="updatedApiDefinition"
-                        ng-init="focus=false;blur=false;"
-                        ng-class="{ myFocus: focus, myBlur: blur }"
-                        ng-focus="focus=true;blur=false;"
-                        ng-blur="blur=true;focus=false;"
-                        data-field="data"
-                        class="apiman-form-control form-control apiman-form-data"
-                        ng-disabled="isEntityDisabled()"></textarea>
+            <div class="apiman-divider-20" ng-show="definitionType">
+              <div class="alert alert-warning">
+                <span class="pficon pficon-info"></span>
+                <p apiman-i18n-key="api-def.replaceInfo">If the API is published, the endpoint in the definition
+                  will be automatically replaced by the endpoint of the gateway.</p>
+                <p apiman-i18n-key="api-def.downloadInfo">You can retrieve the definition with the following link&#58;&#32;</p>
+                <p><a href="{{ apimanDefinitionUrl }}">{{ apimanDefinitionUrl }}</a></p>
+              </div>
             </div>
-            <div apiman-permission="apiEdit"
-                 ng-show="!isEntityDisabled()"
-                 class="actions definition"
-                 style="margin-top: 20px">
-              <button ng-disabled="!isDirty"
-                      apiman-action-btn=""
-                      type="submit"
-                      class="btn btn-primary"
-                      data-field="saveButton"
-                      apiman-i18n-key="save"
-                      placeholder="Saving..."
-                      data-icon="fa-cog" >Save</button>
-              <button ng-disabled="!isDirty"
-                      ng-click="reset()"
-                      class="btn btn-default"
-                      data-field="cancelButton"
-                      apiman-i18n-key="cancel">Cancel</button>
-            </div>
+            <form>
+              <div>
+                <span class="clearfix top-spacer bottom-spacer"
+                      apiman-i18n-key="api-definition-label">API Definition:</span>
+                <select apiman-i18n-key="api-def.choose-type"
+                        title="Choose a type..."
+                        apiman-select-picker=""
+                        ng-model="selectedDefinitionType"
+                        class="selectpicker"
+                        ng-disabled="isEntityDisabled()"
+                        ng-options="type.label for type in typeOptions track by type.value">
+                </select>
+
+                <div class="top-spacer">
+                  <span class="clearfix top-spacer bottom-spacer"
+                        apiman-i18n-key="api-definition-url-label">API Definition URL:
+                  </span>
+                  <div class="input-group" style="width: 100%">
+                    <input ng-model="updatedApiDefinitionUrl"
+                           name="definitionUrl"
+                           class="apiman-form-control form-control"
+                           type="text"
+                    >
+                    <span class="input-group-btn">
+                      <div apiman-permission="apiEdit"
+                           ng-show="!isEntityDisabled()"
+                           class="actions definition"
+                      >
+                        <button type="button" class="btn btn-default"
+                                ng-click="updateDefinitionFromUrl()"
+                                style="margin-left: 5px"
+                                ng-disabled="updatedApiDefinitionUrl == null"
+                                apiman-i18n-key="load-definition">Load Definition
+                        </button>
+                      </div>
+                    </span>
+                  </div>
+                </div>
+
+                <textarea style="width: 100%;"
+                          apiman-i18n-key="enter-api-definition"
+                          id="api-definition"
+                          placeholder="Copy/paste or drag and drop your API Definition in here!"
+                          apiman-drop-text
+                          ng-model="updatedApiDefinition"
+                          ng-init="focus=false;blur=false;"
+                          ng-class="{ myFocus: focus, myBlur: blur }"
+                          ng-focus="focus=true;blur=false;"
+                          ng-blur="blur=true;focus=false;"
+                          data-field="data"
+                          class="apiman-form-control form-control apiman-form-data top-spacer"
+                          ng-disabled="isEntityDisabled()">
+                </textarea>
+              </div>
+
+              <div apiman-permission="apiEdit"
+                   ng-show="!isEntityDisabled()"
+                   class="actions definition"
+                   style="margin-top: 20px"
+              >
+                <button type="button" class="btn btn-default" ng-mousedown="downloadDefinition()"
+                        ng-disabled="isDirty || !apiDefinition" apiman-i18n-key="download">Download
+                </button>
+                <button ng-disabled="!isDirty  || updatedApiDefinition.length == 0"
+                        ng-mousedown="saveApi()"
+                        apiman-action-btn=""
+                        class="btn btn-primary"
+                        data-field="saveButton"
+                        apiman-i18n-key="save"
+                        placeholder="Saving..."
+                        data-icon="fa-cog" >Save
+                </button>
+                <button ng-disabled="!isDirty"
+                        ng-mousedown="reset()"
+                        class="btn btn-default"
+                        data-field="cancelButton"
+                        apiman-i18n-key="cancel">Cancel
+                </button>
+              </div>
             </form>
           </div>
         </div>

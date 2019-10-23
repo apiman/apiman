@@ -1,0 +1,28 @@
+POST /organizations/Organization1/apis/APILiveSwaggerBasePath/versions admin/admin
+Content-Type: application/json
+
+{
+  "version" : "1.0",
+  "endpoint" : "http://localhost:8080/endpoint",
+  "endpointType" : "rest",
+  "endpointContentType" : "json",
+  "publicAPI" : true
+}
+----
+200
+Content-Type: application/json
+
+{
+  "api" : {
+    "organization" : {
+      "id" : "Organization1"
+    },
+    "id" : "APILiveSwaggerBasePath",
+    "name" : "APILiveSwaggerBasePath",
+    "description" : "This is the description of API 1.",
+    "createdBy":"admin"
+  },
+  "status" : "Ready",
+  "version" : "1.0",
+  "createdBy" : "admin"
+}

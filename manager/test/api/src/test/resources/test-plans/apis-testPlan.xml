@@ -106,6 +106,15 @@
     <test name="Get API Definition (WSDL)">test-plan-data/apis/definitions/009_get-api-definition-wsdl.resttest</test>
     <test name="Update API Definition (From URL)">test-plan-data/apis/definitions/010_update-api-definition-fromurl.resttest</test>
     <test name="Get Version 2.0 (def) (Swagger)">test-plan-data/apis/definitions/011_get-version-2.0-swagger.resttest</test>
+    <test name="Create Public API">test-plan-data/apis/definitions/012_create-api1.resttest</test>
+    <test name="Create API Version 1.0">test-plan-data/apis/definitions/013_create-version-1.0.resttest</test>
+    <test name="Update API Definition (From URL)">test-plan-data/apis/definitions/014_update-api-definition-fromurl.resttest</test>
+    <test name="Publish Public API">test-plan-data/apis/definitions/015_publish-api-1.resttest</test>
+    <test name="Get API Defintion - changed to gateway basePath and host">test-plan-data/apis/definitions/016_get-version-2.0-swagger-definition.resttest</test>
+    <test name="Add API Definition (WSDL)">test-plan-data/apis/definitions/017_add-api-definition-wsdl.resttest</test>
+    <test name="Publish Public API">test-plan-data/apis/definitions/015_publish-api-1.resttest</test>
+    <test name="Get API Defintion - changed to gateway basePath and host (WSDL)">test-plan-data/apis/definitions/018_get-api-definition-wsdl.resttest</test>
+    <test name="Get API Version - check definition url">test-plan-data/apis/definitions/019_get-version-1.0.resttest</test>
   </testGroup>
 
   <!-- Cloning -->

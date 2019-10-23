@@ -110,6 +110,8 @@ public class ApiVersionBean implements Serializable, Cloneable {
     private ApiDefinitionBean apiDefinition;
     @Column(name = "parse_payload", updatable=true, nullable=true)
     private boolean parsePayload;
+    @Column(name = "definition_url", updatable=true, nullable=true)
+    private String definitionUrl;
 
     /**
      * Constructor.
@@ -388,6 +390,20 @@ public class ApiVersionBean implements Serializable, Cloneable {
      */
     public void setParsePayload(boolean parsePayload) {
         this.parsePayload = parsePayload;
+    }
+
+    /**
+     * @return the definition url
+     */
+    public String getDefinitionUrl() {
+        return definitionUrl;
+    }
+
+    /**
+     * @param definitionUrl the definition url to set
+     */
+    public void setDefinitionUrl(String definitionUrl) {
+        this.definitionUrl = definitionUrl;
     }
 
     /**
