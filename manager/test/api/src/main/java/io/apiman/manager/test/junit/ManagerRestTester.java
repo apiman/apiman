@@ -373,7 +373,6 @@ public class ManagerRestTester extends ParentRunner<TestInfo> {
         TestUtil.setProperty("apiman.test.gateway.endpoint", "http://localhost:" + getTestServerPort() + "/mock-gateway");
         TestUtil.setProperty("apiman.test.gateway.username", "admin");
         TestUtil.setProperty("apiman.test.gateway.password", "admin");
-        TestUtil.setProperty("apiman.test.gateway.password.encrypted", "$CRYPT::j8rdW76Z5gUI0I+9c8/GrA==");
         TestUtil.setProperty("apiman.manager.require-auto-granted-org", "false");
 
         RestTestSystemProperties annotation = getTestClass().getJavaClass().getAnnotation(RestTestSystemProperties.class);

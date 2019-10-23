@@ -90,7 +90,6 @@ public class GatewayResourceImpl implements IGatewayResource {
             testGateway.setName(bean.getName());
             testGateway.setType(bean.getType());
             testGateway.setConfiguration(bean.getConfiguration());
-            decryptPasswords(testGateway);
             IGatewayLink gatewayLink = gatewayLinkFactory.create(testGateway);
             SystemStatus status = gatewayLink.getStatus();
             String detail = mapper.writer().writeValueAsString(status);
@@ -155,7 +154,7 @@ public class GatewayResourceImpl implements IGatewayResource {
             storage.rollbackTx();
             throw new SystemErrorException(e);
         }
-        // decryptPasswords(gateway);
+        decryptPasswords(gateway);
 
         log.debug(String.format("Successfully created new gateway %s: %s", gateway.getName(), gateway)); //$NON-NLS-1$
         return gateway;
@@ -175,7 +174,7 @@ public class GatewayResourceImpl implements IGatewayResource {
             if (!securityContext.isAdmin()) {
                 bean.setConfiguration(null);
             } else {
-                // decryptPasswords(bean);
+                decryptPasswords(bean);
             }
             storage.commitTx();
 
@@ -265,10 +264,8 @@ public class GatewayResourceImpl implements IGatewayResource {
         try {
             if (bean.getType() == GatewayType.REST) {
                 RestGatewayConfigBean configBean = mapper.readValue(bean.getConfiguration(), RestGatewayConfigBean.class);
-                if (!configBean.getPassword().startsWith("$CRYPT:")) {
-                	configBean.setPassword(encrypter.encrypt(configBean.getPassword(), new DataEncryptionContext()));
-                	bean.setConfiguration(mapper.writeValueAsString(configBean));
-                }
+                configBean.setPassword(encrypter.encrypt(configBean.getPassword(), new DataEncryptionContext()));
+                bean.setConfiguration(mapper.writeValueAsString(configBean));
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -285,10 +282,8 @@ public class GatewayResourceImpl implements IGatewayResource {
         try {
             if (bean.getType() == GatewayType.REST) {
                 RestGatewayConfigBean configBean = mapper.readValue(bean.getConfiguration(), RestGatewayConfigBean.class);
-                if (configBean.getPassword().startsWith("$CRYPT:")) {
-                	configBean.setPassword(encrypter.decrypt(configBean.getPassword(), new DataEncryptionContext()));
-                	bean.setConfiguration(mapper.writeValueAsString(configBean));
-                }
+                configBean.setPassword(encrypter.decrypt(configBean.getPassword(), new DataEncryptionContext()));
+                bean.setConfiguration(mapper.writeValueAsString(configBean));
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
