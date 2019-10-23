@@ -7,13 +7,25 @@ module Apiman {
         ($location, $q, $rootScope, $routeParams, $scope, $uibModal, ApimanSvcs, PageLifecycle) => {
             $scope.isValid = false;
             var params = $routeParams;
-
+            
             var validate = function() {
                 $scope.testResult = 'none';
                 // First validation
-                var valid = $scope.editGateway.$valid;
+                var valid = true;
+                if (!$scope.configuration.endpoint) {
+                    valid = false;
+                }
+                if (!$scope.configuration.username) {
+                    valid = false;
+                }
+                if (!$scope.configuration.password) {
+                    valid = false;
+                }
+                if ($scope.configuration.password != $scope.passwordConfirm) {
+                    valid = false;
+                }
                 $scope.isValid = valid;
-
+                
                 // Now dirty
                 var dirty = false;
                 if ($scope.gateway.description != $scope.originalGateway.description) {
@@ -30,7 +42,7 @@ module Apiman {
                 }
                 $rootScope.isDirty = dirty;
             };
-
+            
             var Gateway = function() {
                 return {
                     description: $scope.gateway.description,
@@ -52,7 +64,7 @@ module Apiman {
                     }, reject);
                 })
             };
-
+            
             var testGateway  = function() {
                 $scope.testButton.state = 'in-progress';
                 var gateway = Gateway();
@@ -84,7 +96,7 @@ module Apiman {
                 $rootScope.isDirty = false;
                 $location.path( $rootScope.pluginName + '/admin/gateways');
             };
-
+            
             $scope.updateGateway  = function() {
                 $scope.updateButton.state = 'in-progress';
                 var gateway = Gateway();
@@ -93,7 +105,7 @@ module Apiman {
                     PageLifecycle.redirectTo('/admin/gateways');
                 }, PageLifecycle.handleError);
             };
-
+            
             $scope.deleteGateway  = function(size) {
                 $scope.deleteButton.state = 'in-progress';
 
@@ -125,6 +137,7 @@ module Apiman {
                         PageLifecycle.redirectTo('/admin/gateways');
                     }, PageLifecycle.handleError);
                 }, function () {
+                    //console.log('Modal dismissed at: ' + new Date());
                     $scope.deleteButton.state = 'complete';
                 });
             };
@@ -138,5 +151,6 @@ module Apiman {
                 $scope.$watch('passwordConfirm', validate);
                 $('#apiman-gateway-description').focus();
             });
-    }]);
+    }])
+
 }

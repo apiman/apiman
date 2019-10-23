@@ -8,7 +8,7 @@
 
   <body>
   <div>
-
+    
     <div ng-include="headerInclude"></div>
     <div ng-controller="Apiman.ApiDefController"
          class="page container"
@@ -33,7 +33,7 @@
             <div class="apiman-label-faded">
               <p apiman-i18n-key="api-def-explanation">
                 Here you can (optionally) provide definition information about your API.  This
-                information should take the form of a Swagger API definition file.  Adding a
+                information should take the form of a Swagger API definition file.  Adding a 
                 definition file will allow consumers to better understand how to use your API.
                 Simply copy/paste (or drag and drop!) your Swagger API definition into the text
                 area below.
@@ -58,7 +58,7 @@
                         ng-blur="blur=true;focus=false;"
                         data-field="data"
                         class="apiman-form-control form-control apiman-form-data"
-                        ng-disabled="isEntityDisabled() || selectedDefinitionType.value === 'None'"></textarea>
+                        ng-disabled="isEntityDisabled()"></textarea>
             </div>
             <div apiman-permission="apiEdit"
                  ng-show="!isEntityDisabled()"

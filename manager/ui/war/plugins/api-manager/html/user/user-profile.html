@@ -6,7 +6,7 @@
   </head>
 
   <body>
-
+    
     <div ng-include="headerInclude"></div>
     <div ng-controller="Apiman.UserProfileController" class="page container" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
       <div class="row">
@@ -18,22 +18,20 @@
       <div class="row apiman-settings">
         <div class="col-md-6">
           <div class="settings-detail">
-            <form name="userForm" role="form">
+            <form role="form">
               <div class="form-group">
                 <label apiman-i18n-key="profile.username" for="usernameInput">Username</label>
                 <input ng-model="user.username" type="text" class="apiman-form-control form-control" id="apiman-username" disabled="disabled">
               </div>
               <div class="form-group">
                 <label apiman-i18n-key="profile.full-name" for="nameInput">Full Name</label>
-                <input name="fullName" ng-model="updatedUser.fullName" type="text" class="apiman-form-control form-control" id="apiman-name" apiman-i18n-key="profile.enter-full-name" placeholder="Enter your full name..." required text-validation>
-                <span ng-show="userForm.fullName.$touched && userForm.fullName.$invalid" apiman-i18n-key="name-error">Input is invalid!</span>
+                <input ng-model="updatedUser.fullName" type="text" class="apiman-form-control form-control" id="apiman-name" apiman-i18n-key="profile.enter-full-name" placeholder="Enter your full name...">
               </div>
               <div class="form-group">
                 <label apiman-i18n-key="profile.email" for="emailInput">Email</label>
-                <input name="email" ng-model="updatedUser.email" type="email" class="apiman-form-control form-control" id="apiman-email" apiman-i18n-key="profile.enter-email" placeholder="Email address..." required>
-                <span ng-show="userForm.email.$touched && userForm.email.$invalid" apiman-i18n-key="email-error">Invalid email address entered.</span>
+                <input ng-model="updatedUser.email" type="email" class="apiman-form-control form-control" id="apiman-email" apiman-i18n-key="profile.enter-email" placeholder="Email address...">
               </div>
-              <button id="update-profile" ng-disabled="!userForm.$dirty || userForm.$invalid" apiman-action-btn="" class="btn btn-primary" data-field="updateButton" apiman-i18n-key="update-profile" placeholder="Updating..." data-icon="fa-cog" ng-click="save()">Update Profile</button>
+              <button id="update-profile" ng-disabled="!isDirty || !isValid" apiman-action-btn="" class="btn btn-primary" data-field="updateButton" apiman-i18n-key="update-profile" placeholder="Updating..." data-icon="fa-cog" ng-click="save()">Update Profile</button>
               <a id="cancel"
                  class="btn btn-default btn-cancel cancel"
                  ng-click="cancel();"

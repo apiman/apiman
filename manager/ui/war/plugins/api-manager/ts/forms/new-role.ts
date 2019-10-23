@@ -7,9 +7,12 @@ module Apiman {
             $scope.role = {};
             $scope.rolePermissions = {};
             $scope.isValid = false;
-
+            
             var validate = function() {
-                var valid = $scope.newRole.$valid;
+                var valid = true;
+                if (!$scope.role.name) {
+                    valid = false;
+                }
                 var atLeastOne = false;
                 angular.forEach($scope.rolePermissions, function(value,key) {
                     if (value == true) {
@@ -19,14 +22,16 @@ module Apiman {
                 if (!atLeastOne) {
                     valid = false;
                 }
-                $scope.newRole.$valid = valid;
-                $scope.newRole.$invalid = !valid;
+                $scope.isValid = valid;
             };
-
+            
+            $scope.$watch('role', function(newValue) {
+                validate();
+            }, true);
             $scope.$watch('rolePermissions', function(newValue) {
                 validate();
             }, true);
-
+            
             $scope.addRole = function() {
                 $scope.createButton.state = 'in-progress';
                 var permissions = [];
@@ -44,7 +49,7 @@ module Apiman {
                      PageLifecycle.redirectTo('/admin/roles');
                 }, PageLifecycle.handleError);
             }
-
+            
             PageLifecycle.loadPage('NewRole', 'admin', undefined, $scope, function() {
                 PageLifecycle.setPageTitle('new-role');
                 $('#apiman-entityname').focus();

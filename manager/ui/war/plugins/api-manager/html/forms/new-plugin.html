@@ -6,9 +6,9 @@
   </head>
 
   <body>
-
-    <div ng-include="headerInclude"></div>
-    <form name="newPlugin" ng-controller="Apiman.NewPluginController" id="form-page" class="container apiman-entity-new page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
+    
+    <div ng-include="headerInclude"></div>   
+    <div ng-controller="Apiman.NewPluginController" id="form-page" class="container apiman-entity-new page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
     <div id="form-page" class="" data-field="page">
       <div class="row">
         <h2 class="title" apiman-i18n-key="new-plugin">Add Plugin</h2>
@@ -28,8 +28,7 @@
         <dl>
           <dt apiman-i18n-key="group-id">Group Id</dt>
           <dd>
-            <input name="groupId" ng-model="plugin.groupId" id="apiman-group-id" data-field="groupId" type="text" class="apiman-form-control form-control entityname" apiman-i18n-key="enter-gav-groupid" placeholder="Enter groupId..." required path-validation></input>
-            <span ng-show="newPlugin.groupId.$touched && newPlugin.groupId.$invalid" apiman-i18n-key="name-error">The value is invalid!</span>
+            <input ng-model="plugin.groupId" id="apiman-group-id" data-field="groupId" type="text" class="apiman-form-control form-control entityname" apiman-i18n-key="enter-gav-groupid" placeholder="Enter groupId..."></input>
           </dd>
         </dl>
       </div>
@@ -37,8 +36,7 @@
         <dl>
           <dt apiman-i18n-key="artifact-id">Artifact Id</dt>
           <dd>
-            <input name="artifactId" id="artifact-id" ng-model="plugin.artifactId" type="text" class="apiman-form-control form-control entityname" apiman-i18n-key="enter-gav-artifactid" placeholder="Enter artifactId..." required path-validation></input>
-            <span ng-show="newPlugin.artifactId.$touched && newPlugin.artifactId.$invalid" apiman-i18n-key="name-error">The value is invalid!</span>
+            <input id="artifact-id" ng-model="plugin.artifactId" type="text" class="apiman-form-control form-control entityname" apiman-i18n-key="enter-gav-artifactid" placeholder="Enter artifactId..."></input>
           </dd>
         </dl>
       </div>
@@ -46,8 +44,7 @@
         <dl>
           <dt apiman-i18n-key="version">Version</dt>
           <dd>
-            <input name="version" id="version" ng-model="plugin.version" type="text" class="apiman-form-control form-control entityname" apiman-i18n-key="enter-gav-version" placeholder="Enter version (e.g. 1.0)..." style="width: 175px" required path-validation></input>
-            <span ng-show="newPlugin.version.$touched && newPlugin.version.$invalid" apiman-i18n-key="name-error">The value is invalid!</span>
+            <input id="version" ng-model="plugin.version" type="text" class="apiman-form-control form-control entityname" apiman-i18n-key="enter-gav-version" placeholder="Enter version (e.g. 1.0)..." style="width: 175px"></input>
           </dd>
         </dl>
       </div>
@@ -55,8 +52,7 @@
         <dl>
           <dt apiman-i18n-key="classifier.optional">Classifier (optional)</dt>
           <dd>
-            <input name="classifier" id="classifier" ng-model="plugin.classifier" type="text" class="apiman-form-control form-control entityname" apiman-i18n-key="enter-gav-classifier" placeholder="Enter classifier..." path-validation></input>
-            <span ng-show="newPlugin.classifier.$touched && newPlugin.classifier.$invalid" apiman-i18n-key="name-error">The value is invalid!</span>
+            <input id="classifier" ng-model="plugin.classifier" type="text" class="apiman-form-control form-control entityname" apiman-i18n-key="enter-gav-classifier" placeholder="Enter classifier..."></input>
           </dd>
         </dl>
       </div>
@@ -64,8 +60,7 @@
         <dl>
           <dt apiman-i18n-key="type.optional">Type (optional)</dt>
           <dd>
-            <input name="type" id="type" ng-model="plugin.type" type="text" class="apiman-form-control form-control entityname" apiman-i18n-key="enter-gav-type" placeholder="Enter type (e.g. jar)..." style="width: 175px" name-validation></input>
-            <span ng-show="newPlugin.type.$touched && newPlugin.type.$invalid" apiman-i18n-key="name-error">The value is invalid!</span>
+            <input id="type" ng-model="plugin.type" type="text" class="apiman-form-control form-control entityname" apiman-i18n-key="enter-gav-type" placeholder="Enter type (e.g. jar)..." style="width: 175px"></input>
           </dd>
         </dl>
       </div>
@@ -75,9 +70,9 @@
       </div>
       <!-- Create Button -->
       <div class="row">
-        <button id="add-plugin" ng-disabled="newPlugin.$invalid" apiman-action-btn="" class="btn btn-primary" data-field="addButton" apiman-i18n-key="add-plugin" placeholder="Adding..." data-icon="fa-cog" ng-click="addPlugin()">Add Plugin</button>
+        <button id="add-plugin" ng-disabled="!isValid" apiman-action-btn="" class="btn btn-primary" data-field="addButton" apiman-i18n-key="add-plugin" placeholder="Adding..." data-icon="fa-cog" ng-click="addPlugin()">Add Plugin</button>
         <a id="cancel" href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" apiman-i18n-key="cancel">Cancel</a>
       </div>
-    </form> <!-- /container -->
+    </div> <!-- /container -->
   </body>
 </html>

@@ -32,29 +32,27 @@
       </div>
       <div class="row">
         <div class="col-md-5">
-          <input id="path" style="width:100%" name="path" ng-model="path" class="form-control" type="text" apiman-i18n-key="authorization.enter-path" placeholder="(/path/to/.*)" ng-disabled="isEntityDisabled()" required path-validation></input>
-          <span ng-show="policyForm.path.$touched && policyForm.path.$invalid" apiman-i18n-key="path-error">The value is invalid!</span>
+          <input id="path" style="width:100%" name="path" ng-model="path" class="form-control" type="text" apiman-i18n-key="authorization.enter-path" placeholder="(/path/to/.*)" ng-disabled="isEntityDisabled()"></input>
         </div>
         <div class="col-md-2">
           <http-verbs-select></http-verbs-select>
         </div>
         <div class="col-md-3">
-          <input id="role" style="width:100%" name="role" ng-model="role" class="form-control" type="text" apiman-i18n-key="authorization.required-role" placeholder="(required role)" ng-disabled="isEntityDisabled()" required name-validation></input>
-          <span ng-show="policyForm.role.$touched && policyForm.role.$invalid" apiman-i18n-key="name-error">The value is invalid!</span>
+          <input id="role" style="width:100%" name="role" ng-model="role" class="form-control" type="text" apiman-i18n-key="authorization.required-role" placeholder="(required role)" ng-disabled="isEntityDisabled()"></input>
         </div>
         <div class="col-md-2">
-          <button id="add-rule" ng-disabled="currentItemInvalid()" ng-click="add(path, verb, role)" apiman-i18n-key="add" class="btn btn-default" style="min-width: 75px" ng-disabled="!policyForm.$dirty || policyForm.$invalid || isEntityDisabled()">Add</button>
+          <button id="add-rule" ng-disabled="currentItemInvalid()" ng-click="add(path, verb, role)" apiman-i18n-key="add" class="btn btn-default" style="min-width: 75px" ng-disabled="isEntityDisabled()">Add</button>
         </div>
       </div>
     </div>
   </div>
-
+  
   <div>
     <dl>
       <dt apiman-i18n-key="configured-authorization-rules">Configured Authorization Rules</dt>
     </dl>
   </div>
-
+  
   <table class="table table-striped table-bordered">
     <thead>
       <tr>
@@ -82,7 +80,7 @@
       </tr>
     </tbody>
   </table>
-
+  
   <div>
     <dl>
       <dt apiman-i18n-key="multiple-match-action">Multiple Match Action</dt>
@@ -95,7 +93,7 @@
         <span ng-show="config.multiMatch == 'all'" apiman-i18n-key="auth.multi-match-post-all">matching authorization rules pass.</span>
         <span ng-show="config.multiMatch == 'any'" apiman-i18n-key="auth.multi-match-post-any">matching authorization rule passes.</span>
       </dd>
-
+      
       <dt apiman-i18n-key="unmatched-request-action">Unmatched Request Action</dt>
       <dd>
         <span apiman-i18n-key="auth.if-request-unmatched-pre">I want the request to</span>

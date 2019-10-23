@@ -11,7 +11,6 @@ var path = require('path');
 var pkg = require('./package.json');
 var s = require('underscore.string');
 var source = require('vinyl-source-stream');
-var propertiesToJSON = require('properties-to-json');
 
 
 // ---------------------- Gulp Plugins ---->>
@@ -54,15 +53,15 @@ var SwaggerUIPath = './node_modules/swagger-ui-browserify/node_modules/swagger-u
 
 // Default Task
 // Builds, watches for changes, and spins up the server
-gulp.task('default', function () {
-    return runSequence('messages', 'build', 'watch', 'connect');
+gulp.task('default', function() {
+    return runSequence('build', 'watch', 'connect');
 });
 
 
 
 // Browserify Task
 // Bundles node_modules required() in ./entry.js to be used on the client (/lib/scripts.js)
-gulp.task('browserify', function () {
+gulp.task('browserify', function() {
     return browserify('./entry.js')
         .bundle()
         .pipe(source('deps.js')) // gives streaming vinyl file object
@@ -72,7 +71,7 @@ gulp.task('browserify', function () {
 
 
 // Build Task
-gulp.task('build', function () {
+gulp.task('build', function() {
     return runSequence(['browserify', 'css', 'fonts', 'images'], 'path-adjust', 'clean-defs', 'tsc', 'template', 'concat', 'clean');
 });
 
@@ -80,23 +79,23 @@ gulp.task('build', function () {
 // Clean Task
 // Cleans the compiled.js and templates.js files
 // created in the 'tsc' and 'templates' tasks, respectively
-gulp.task('clean', function () {
-    return gulp.src(['templates.js', 'compiled.js', 'deps.css'], { read: false })
+gulp.task('clean', function() {
+    return gulp.src(['templates.js', 'compiled.js', 'deps.css'], {read: false})
         .pipe(clean());
 });
 
 
 // Clean-Defs Task
 // Cleans, or removes, definition file
-gulp.task('clean-defs', function () {
-    return gulp.src('defs.d.ts', { read: false })
+gulp.task('clean-defs', function() {
+    return gulp.src('defs.d.ts', {read: false})
         .pipe(clean());
 });
 
 
 // Concat Task
 // Concatenates two files (compiled.js and templates.js) into ./dist/apiman-manager.js
-gulp.task('concat', function () {
+gulp.task('concat', function() {
     return gulp.src(['compiled.js', 'templates.js'])
         .pipe(concat(config.js))
         .pipe(gulp.dest(config.dest));
@@ -104,7 +103,7 @@ gulp.task('concat', function () {
 
 
 // Connect Task
-gulp.task('connect', function () {
+gulp.task('connect', function() {
     connect.server({
         root: '.',
         livereload: false,
@@ -116,7 +115,7 @@ gulp.task('connect', function () {
 
 // CSS Task
 // Concatenates CSS files into one (/lib/styles.css)
-gulp.task('css', function () {
+gulp.task('css', function() {
     return gulp.src(
         [
             'node_modules/patternfly/components/bootstrap-select/dist/css/bootstrap-select.css',
@@ -130,7 +129,7 @@ gulp.task('css', function () {
             'node_modules/select2/select2.css',
             SwaggerUIPath + '/dist/css/screen.css',
             SwaggerUIPath + '/dist/css/typography.css'
-        ], { base: 'node_modules/' })
+        ], {base: 'node_modules/'})
         .pipe(concatCss('deps.css'))
         .pipe(gulp.dest('.'));
 });
@@ -138,7 +137,7 @@ gulp.task('css', function () {
 
 // Fonts Task
 // Copies all fonts to /lib/fonts
-gulp.task('fonts', function () {
+gulp.task('fonts', function() {
     return gulp.src(
         [
             './node_modules/patternfly/components/bootstrap/dist/fonts/*.{eot,svg,ttf,woff,woff2}',
@@ -152,7 +151,7 @@ gulp.task('fonts', function () {
 
 // Images Task
 // Copies all images to /lib/images
-gulp.task('images', function () {
+gulp.task('images', function() {
     return gulp.src(
         [
             './node_modules/patternfly/dist/img/*.{png,jpg,gif}',
@@ -164,7 +163,7 @@ gulp.task('images', function () {
 
 // Path-Adjust Task
 // Adjusts all paths within files, if necessary
-gulp.task('path-adjust', function () {
+gulp.task('path-adjust', function() {
     // All CSS
     return gulp.src(['deps.css'])
         .pipe(replace('patternfly/components/bootstrap/dist/fonts/', './fonts/'))
@@ -176,33 +175,17 @@ gulp.task('path-adjust', function () {
         .pipe(gulp.dest(config.dest));
 });
 
-gulp.task('messages', () => {
-    return new Promise((resolve, reject) => {
-        try {
-            const messagesFile = path.join(__dirname, 'src/main/resources/io/apiman/manager/ui/server/i18n/template_messages.properties');
-            data = fs.readFileSync(messagesFile, { encoding: 'utf-8' })
-            if (data) {
-                const translationsFile = path.join(__dirname, 'apiman/translations.js');
-                const jsonMessages = `var APIMAN_TRANSLATION_DATA = ${JSON.stringify(propertiesToJSON(data), undefined, 2)};`;
-                fs.writeFileSync(translationsFile, jsonMessages, { encoding: 'utf-8' })
-            }
 
-            resolve()
-        } catch (err) {
-            reject(err)
-        }
-    })
-})
 
 // Reload Task
-gulp.task('reload', function () {
+gulp.task('reload', function() {
     gulp.src('.').pipe(connect.reload());
 });
 
 
 // Template Task
 // Creates the templates.js file in the project root (/manager/ui/war)
-gulp.task('template', function () {
+gulp.task('template', function() {
     return gulp.src(config.templates)
         .pipe(angularTemplatecache({
             filename: 'templates.js',
@@ -217,7 +200,7 @@ gulp.task('template', function () {
 // TSC Task
 // Compiles TS into JS
 // Creates the compiled.js file in the project root (/manager/ui/war)
-gulp.task('tsc', function () {
+gulp.task('tsc', function() {
     var cwd = process.cwd();
 
     // Grab all TypeScript files (controllers, services, directives, etc.)
@@ -242,30 +225,31 @@ gulp.task('tsc', function () {
             .pipe(gulp.dest('.')),
         tsResult.dts
             .pipe(gulp.dest('d.ts'))
-    ).pipe(map(function (buf, filename) {
-        if (!s.endsWith(filename, 'd.ts')) {
-            return buf;
-        }
+    ).pipe(map(function(buf, filename) {
+            if (!s.endsWith(filename, 'd.ts')) {
+                return buf;
+            }
 
-        var relative = path.relative(cwd, filename);
-        fs.appendFileSync('defs.d.ts', '/// <reference path="' + relative + '"/>\n');
-        return buf;
-    }));
+            var relative = path.relative(cwd, filename);
+            fs.appendFileSync('defs.d.ts', '/// <reference path="' + relative + '"/>\n');
+            return buf;
+        }));
 });
 
 
 // Watch Task
 // Builds, then watches for changes
-gulp.task('watch', function () {
+gulp.task('watch', function() {
     watch([
         'entry.js',
         config.ts,
         config.templates,
         config.templateIncludes,
         'plugins/api-manager/css/apiman.css',
-        'src/main/resources/io/apiman/manager/ui/server/i18n/template_messages.properties'
-    ], function () {
-        return runSequence(['browserify', 'css', 'fonts', 'images', 'messages'], 'path-adjust', 'clean-defs', 'tsc', 'template', 'concat', 'clean');
+        'apiman/translations.js'
+    ], function() {
+        return runSequence(['browserify', 'css', 'fonts', 'images'], 'path-adjust', 'clean-defs', 'tsc', 'template', 'concat', 'clean');
     });
 });
 
+    

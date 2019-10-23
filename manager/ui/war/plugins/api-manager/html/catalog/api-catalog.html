@@ -7,9 +7,9 @@
 
   <body>
   <div>
-
-    <div ng-include="headerInclude"></div>
-    <form name="catalog" ng-controller="Apiman.ApiCatalogController" class="page container" ng-cloak="" ng-show="pageState == 'loaded'">
+    
+    <div ng-include="headerInclude"></div>   
+    <div ng-controller="Apiman.ApiCatalogController" class="page container" ng-cloak="" ng-show="pageState == 'loaded'">
       <div class="row">
         <div class="col-md-12">
           <ol class="breadcrumb">
@@ -19,7 +19,7 @@
         </div>
       </div>
       <div class="row">
-
+        
         <!-- Catalog Content -->
         <div class="col-md-12">
           <div class="container-fluid">
@@ -124,10 +124,10 @@
                     </ul>
                   </div>
                   <div><hr /></div>
-                  <div class="actions">
+                  <div class="actions"> 
                      <span class="apiman-action-divider" apiman-i18n-skip="">&nbsp;</span>
                      <a href="#" ng-click="importApi(api)"><i class="fa fa-cart-arrow-down"></i><span style="margin-left: 5px" apiman-i18n-key="import">Import</span></a>
-                     <span ng-show="api.definitionType == 'SwaggerJSON' || api.definitionType == 'External'"
+                     <span ng-show="api.definitionType == 'SwaggerJSON' || api.definitionType == 'External'" 
                            class="apiman-action-divider" apiman-i18n-skip="">|</span>
                      <a ng-show="api.definitionType == 'SwaggerJSON'" href="{{ pluginName }}/catalog/api-catalog/{{ api.name | urlEncode }}/def" target="{{api.definitionType == 'External' ? '_blank' : ''}}"><i class="fa fa-sitemap"></i><span style="margin-left: 5px" apiman-i18n-key="definition">Definition</span></a>
                      <a ng-show="api.definitionType == 'External'" href="{{ api.definitionUrl }}" target="_blank"><i class="fa fa-external-link"></i><span style="margin-left: 5px" apiman-i18n-key="definition">Definition</span></a>
@@ -145,7 +145,7 @@
           </div>
         </div>
       </div>
-
+      
       <script type="text/ng-template" id="importApiModal.html">
         <div class="modal-header">
             <h3 class="modal-title">
@@ -163,14 +163,13 @@
             <dt apiman-i18n-key="organization">Organization</dt>
             <dd>
               <div class="btn-group">
-                <button name="org" type="button" id="selector-org" class="btn btn-default dropdown-toggle" data-toggle="dropdown" required>
+                <button type="button" id="selector-org" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                   <span id="selector-org-value">{{selectedOrg.name}}</span> &nbsp;&nbsp;<span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu">
                    <li ng-repeat="org in orgs"><a href="#" ng-click="setOrg( org )">{{ org.name }}</a></li>
                 </ul>
               </div>
-              <span ng-show="catalog.org.$invalid" apiman-i18n-key="required-error">The value is required!</span>
             </dd>
           </dl>
           <dl class="slash">
@@ -182,8 +181,7 @@
           <dl class="name">
             <dt apiman-i18n-key="api-name">API Name</dt>
             <dd>
-              <input name="name" ng-model="api.name" type="text" class="apiman-form-control form-control entityname" id="apiman-entityname" apiman-i18n-key="enter-api-name" placeholder="Enter API name..." required name-validation />
-              <span ng-show="catalog.name.$touched && catalog.name.$invalid" apiman-i18n-key="name-error">The value is invalid!</span>
+              <input ng-model="api.name" type="text" class="apiman-form-control form-control entityname" id="apiman-entityname" apiman-i18n-key="enter-api-name" placeholder="Enter API name..."></input>
             </dd>
           </dl>
         </div>
@@ -192,8 +190,7 @@
           <dl>
             <dt apiman-i18n-key="initial-version">Initial Version</dt>
             <dd>
-              <input name="initialVersion" ng-model="api.initialVersion" type="text" class="apiman-form-control form-control version" id="apiman-version" value="1.0" required version-validation />
-              <span ng-show="catalog.initialVersion.$touched && catalog.initialVersion.$invalid" apiman-i18n-key="version-error">The value is invalid!</span>
+              <input ng-model="api.initialVersion" type="text" class="apiman-form-control form-control version" id="apiman-version" value="1.0"></input>
             </dd>
           </dl>
         </div>
@@ -202,8 +199,7 @@
           <dl style="width: 100%">
             <dt apiman-i18n-key="description">Description</dt>
             <dd>
-              <textarea style="width: 90%" ng-model="api.description" class="apiman-form-control form-control description" id="apiman-description" apiman-i18n-key="enter-api-description" placeholder="Enter API description (optional)..." text-validation></textarea>
-              <span ng-show="catalog.description.$touched && catalog.description.$invalid" apiman-i18n-key="text-error">The value is invalid!</span>
+              <textarea style="width: 90%" ng-model="api.description" class="apiman-form-control form-control description" id="apiman-description" apiman-i18n-key="enter-api-description" placeholder="Enter API description (optional)..."></textarea>
             </dd>
           </dl>
         </div>
@@ -221,11 +217,11 @@
             </div>
         </div>
         <div class="modal-footer">
-            <button class="btn btn-primary" ng-disabled="!catalog.$dirty || catalog.$invalid" data-field="importButton" type="button" apiman-action-btn="" ng-click="import()" apiman-i18n-key="import" placeholder="Importing..." data-icon="fa-cog">Import</button>
+            <button class="btn btn-primary" ng-disabled="!api.name || !api.initialVersion || !selectedOrg" data-field="importButton" type="button" apiman-action-btn="" ng-click="import()" apiman-i18n-key="import" placeholder="Importing..." data-icon="fa-cog">Import</button>
             <button class="btn btn-default btn-cancel" type="button" ng-click="cancel()">Cancel</button>
         </div>
       </script>
-
+      
     </div>
   </div>
   </body>

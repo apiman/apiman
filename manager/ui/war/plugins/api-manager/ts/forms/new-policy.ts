@@ -21,6 +21,8 @@ module Apiman {
         ($q, $location, $scope, OrgSvcs, ApimanSvcs, PageLifecycle, Logger, $routeParams) => {
             var params = $routeParams;
 
+            var etype = params.type;
+
             var pageData = {
                 version: $q(function(resolve, reject) {
                     OrgSvcs.get({ organizationId: params.org, entityType: etype, entityId: params.id, versionsOrActivity: 'versions', version: params.ver }, resolve, reject);
@@ -86,7 +88,7 @@ module Apiman {
             });
 
             $scope.setValid = function(valid) {
-                $scope.isValid = valid && ($scope.policyForm === undefined || $scope.policyForm.$valid);
+                $scope.isValid = valid;
             };
 
             $scope.setConfig = function(config) {
