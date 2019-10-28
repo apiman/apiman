@@ -8,7 +8,7 @@
   <fileSets>
     <fileSet>
       <directory>target/apimanui</directory>
-      <outputDirectory>/apimanui</outputDirectory>
+      <outputDirectory>./apimanui</outputDirectory>
       <filtered>false</filtered>
       <directoryMode>0755</directoryMode>
       <fileMode>0755</fileMode>
