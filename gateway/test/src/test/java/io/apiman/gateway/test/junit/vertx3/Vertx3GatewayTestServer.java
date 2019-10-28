@@ -15,6 +15,7 @@
  */
 package io.apiman.gateway.test.junit.vertx3;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import io.apiman.common.util.ReflectionUtils;
 import io.apiman.gateway.platforms.vertx3.common.config.VertxEngineConfig;
 import io.apiman.gateway.platforms.vertx3.verticles.InitVerticle;
@@ -25,13 +26,8 @@ import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
 import io.vertx.core.json.JsonObject;
 
-import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.nio.file.Files;
 import java.util.concurrent.CountDownLatch;
-
-import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * A Vert.x 3 version of the gateway test server
@@ -46,7 +42,6 @@ public class Vertx3GatewayTestServer implements IGatewayTestServer {
     protected static final int ECHO_PORT = 7654;
 
     private EchoServer echoServer = new EchoServer(ECHO_PORT);
-    private String conf;
     private CountDownLatch startLatch;
     private CountDownLatch stopLatch;
     private Resetter resetter;
@@ -60,16 +55,7 @@ public class Vertx3GatewayTestServer implements IGatewayTestServer {
 
     @Override
     public void configure(JsonNode config) {
-        ClassLoader classLoader = getClass().getClassLoader();
-        String fPath = config.get("config").asText();
-        File file = new File(classLoader.getResource(fPath).getFile());
-
-        try {
-            conf = new String(Files.readAllBytes(file.toPath()));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        vertxConf = new JsonObject(conf);
+        vertxConf = new Vertx3GatewayHelper().loadJsonObjectFromResources(config, "config");
         resetter = getResetter(config.get("resetter").asText());
     }
 
