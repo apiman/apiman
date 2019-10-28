@@ -14,20 +14,28 @@ nav {
   width: 100%;
 }
 
-#header-icon {
-  padding-right: 5px;
-}
-
 .logo {
   height: 20px;
   width: 170px;
 }
 
 .rightMenu {
-  float:right;
+  float: right;
+  width: 210px;
 }
 
-#app-header{
-  float:right;
+#header-icon {
+  float: left;
+  padding-right: 5px;
+}
+
+#app-header {
+  float: left;
   margin-top: 3px;
+}
+
+#logout {
+  float: right;
+  cursor: pointer;
+  color: darkred;
 }
