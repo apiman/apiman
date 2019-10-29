@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Observable} from 'rxjs';
+import { environment } from '../environments/environment';
 
 export interface ApiSearchData {
   beans: Array<ApiDetails>;
@@ -147,7 +148,7 @@ export class ApiDataService {
 
   constructor(private http: HttpClient) { }
 
-  private gatewayEndpoint = 'https://pc0854.scheer.systems:8443/apiman';
+  private gatewayEndpoint = environment.apimanUiEndpoint;
 
   public getAllApis(): Observable<ApiSearchData> {
     const url = this.gatewayEndpoint + '/search/apis/';
