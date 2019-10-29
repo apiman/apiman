@@ -93,7 +93,7 @@
     <version.commons-lang>2.6</version.commons-lang>
     <version.commons-validator>1.6</version.commons-validator>
     <version.com.google.guava>21.0</version.com.google.guava>
-    <version.com.fasterxml.jackson>2.9.5</version.com.fasterxml.jackson>
+    <version.com.fasterxml.jackson>2.10.0</version.com.fasterxml.jackson>
     <version.org.keycloak>2.0.0.Final</version.org.keycloak>
     <version.org.bouncycastle>1.52</version.org.bouncycastle>
     <version.org.json>20140107</version.org.json>
