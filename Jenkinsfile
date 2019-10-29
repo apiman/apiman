@@ -35,9 +35,9 @@ pipeline {
       }
     stage('Build container image') {
         steps {
-          sh 'docker build -t apimgmt-dev-portal .'
+          sh 'docker build -t api-mgmt/devportal .'
           dir('release') {
-            sh 'docker save --output apimgmt-dev-portal-docker-image.tar apimgmt-dev-portal'
+            sh 'docker save --output apimgmt-dev-portal-docker-image.tar api-mgmt/devportal'
           }
         }
     }
@@ -54,7 +54,7 @@ pipeline {
 
     stage('Remove container image') {
         steps {
-          sh 'docker image rm -f apimgmt-dev-portal'
+          sh 'docker image rm -f api-mgmt/devportal'
         }
       }
 
