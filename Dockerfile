@@ -8,7 +8,7 @@ RUN npm install
 #copy the rest of the project into the image
 COPY . .
 
-RUN npm run build
+RUN npm run build-production
 
 # Stage 2
 FROM nginx:1.13.12-alpine

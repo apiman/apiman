@@ -5,6 +5,7 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "build-production": "ng build --prod",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
@@ -24,6 +25,7 @@
     "hammerjs": "^2.0.8",
     "keycloak-angular": "^7.0.1",
     "keycloak-js": "^5.0.0",
+    "ngx-logger": "^4.0.7",
     "rxjs": "^6.4.0",
     "tslib": "^1.10.0",
     "zone.js": "~0.9.1"
