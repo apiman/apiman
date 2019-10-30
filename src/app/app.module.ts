@@ -15,6 +15,7 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { KeycloakService, KeycloakAngularModule } from 'keycloak-angular';
 import { initializer } from './app-init';
+import {environment} from '../environments/environment';
 
 
 @NgModule({
@@ -38,6 +39,14 @@ import { initializer } from './app-init';
       useFactory: initializer,
       multi: true,
       deps: [KeycloakService]
+    },
+    {
+      provide: 'APIMAN_UI_REST_URL',
+      useValue: environment.apimanUiRestUrl
+    },
+    {
+      provide: 'KEYCLOAK_AUTH_URL',
+      useValue: environment.keycloakAuthUrl
     }
   ],
   bootstrap: [AppComponent]

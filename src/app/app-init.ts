@@ -1,10 +1,11 @@
-import { environment } from '../environments/environment';
 import { KeycloakService } from 'keycloak-angular';
+import {Inject} from '@angular/core';
+import {environment} from '../environments/environment';
 
 export function initializer(keycloak: KeycloakService): () => Promise<any> {
   return (): Promise<any> => keycloak.init({
     config: {
-      url: environment.keycloakAuthEndpoint,
+      url: environment.keycloakAuthUrl,
       realm: 'Apiman',
       clientId: 'apimandevportal'
     },

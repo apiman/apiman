@@ -4,8 +4,8 @@
 
 export const environment = {
   production: false,
-  apimanUiEndpoint: 'https://pc0854.scheer.systems:8443/apiman',
-  keycloakAuthEndpoint: 'https://pc0854.scheer.systems:8445/auth'
+  apimanUiRestUrl: 'https://[apimanUiRestEndpoint]:[port]/apiman',
+  keycloakAuthUrl: 'https://[keycloakEndpoint]:[port]/auth'
 };
 
 /*

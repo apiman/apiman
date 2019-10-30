@@ -1,7 +1,6 @@
-import { Injectable } from '@angular/core';
+import {Inject, Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Observable} from 'rxjs';
-import { environment } from '../environments/environment';
 
 export interface ApiSearchData {
   beans: Array<ApiDetails>;
@@ -145,64 +144,61 @@ export interface GatewayEndpoint {
  * A service which executes the REST calls to Apiman UI REST Interface
  */
 export class ApiDataService {
-
-  constructor(private http: HttpClient) { }
-
-  private gatewayEndpoint = environment.apimanUiEndpoint;
+  constructor(private http: HttpClient, @Inject('APIMAN_UI_REST_URL') private apimanUiRestUrl: string) { }
 
   public getAllApis(): Observable<ApiSearchData> {
-    const url = this.gatewayEndpoint + '/search/apis/';
+    const url = this.apimanUiRestUrl + '/search/apis/';
     const body = { filters: [{name: 'name', value: '***', operator: 'like'}], page: 1, pageSize: 10000};
     return this.http.post(url, body) as Observable<ApiSearchData>;
   }
 
   public getApiEndpoint(organizationId, apiId, apiVersion) {
-    const url = this.gatewayEndpoint + '/organizations/' + organizationId + '/apis/' + apiId + '/versions/' + apiVersion + '/endpoint/';
+    const url = this.apimanUiRestUrl + '/organizations/' + organizationId + '/apis/' + apiId + '/versions/' + apiVersion + '/endpoint/';
     return this.http.get(url) as Observable<ApiEndpointDetails>;
   }
 
   public getApiKey(organizationId, clientId, clientVersion) {
-    const url = this.gatewayEndpoint + '/organizations/' + organizationId + '/clients/' + clientId + '/versions/' + clientVersion + '/apikey/';
+    const url = this.apimanUiRestUrl + '/organizations/' + organizationId + '/clients/' + clientId + '/versions/' + clientVersion + '/apikey/';
     return this.http.get(url) as Observable<ApiKeyDetails>;
   }
 
   public getUserClients() {
-    const url = this.gatewayEndpoint + '/currentuser/clients/';
+    const url = this.apimanUiRestUrl + '/currentuser/clients/';
     return this.http.get(url) as Observable<Array<ClientDetails>>;
   }
 
   public getUserApis() {
-    const url = this.gatewayEndpoint + '/currentuser/apis/';
+    const url = this.apimanUiRestUrl + '/currentuser/apis/';
     return this.http.get(url) as Observable<Array<ApiDetails>>;
   }
 
   public getApiVersions(organizationId, apiId) {
-    const url = this.gatewayEndpoint + '/organizations/' + organizationId + '/apis/' + apiId + '/versions/';
+    const url = this.apimanUiRestUrl + '/organizations/' + organizationId + '/apis/' + apiId + '/versions/';
     return this.http.get(url) as Observable<Array<ApiVersionsDetails>>;
   }
 
   public getApiVersionDetails(organizationId, apiId, apiVersion) {
-    const url = this.gatewayEndpoint  + '/organizations/' + organizationId + '/apis/' + apiId + '/versions/' + apiVersion;
+    const url = this.apimanUiRestUrl  + '/organizations/' + organizationId + '/apis/' + apiId + '/versions/' + apiVersion;
     return this.http.get(url) as Observable<ApiVersionDetails>;
   }
 
   public getClientVersions(organizationId, clientId) {
-    const url = this.gatewayEndpoint + '/organizations/' + organizationId + '/clients/' + clientId + '/versions/';
+    const url = this.apimanUiRestUrl + '/organizations/' + organizationId + '/clients/' + clientId + '/versions/';
     return this.http.get(url) as Observable<Array<ClientVersionDetails>>;
   }
 
   public getContracts(organizationId, clientId, clientVersion) {
-    const url = this.gatewayEndpoint + '/organizations/' + organizationId + '/clients/' + clientId + '/versions/' + clientVersion + '/contracts';
+    const url = this.apimanUiRestUrl + '/organizations/' + organizationId + '/clients/' + clientId + '/versions/' + clientVersion + '/contracts';
     return this.http.get(url) as Observable<Array<ContractDetails>>;
   }
 
   public getGateways() {
-    const url = this.gatewayEndpoint + '/gateways';
+    const url = this.apimanUiRestUrl + '/gateways';
     return this.http.get(url) as Observable<Array<GatewayDetails>>;
   }
 
   public getGatewayEndpoint(gatewayId) {
-    const url = this.gatewayEndpoint + '/gateways/' + gatewayId + '/endpoint';
+    const url = this.apimanUiRestUrl + '/gateways/' + gatewayId + '/endpoint';
     return this.http.get(url) as Observable<GatewayEndpoint>;
   }
 
