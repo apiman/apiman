@@ -69,10 +69,6 @@ export class ApiListComponent implements OnInit {
    * ngOnInit is executed if the component is initialized
    */
   ngOnInit() {
-    this.getGatewayDataObservable.subscribe( gwData => {
-      const test = gwData;
-    });
-
     //subscribe for the private api data to fill the view
     this.getPrivateApiData.subscribe(data => {
       this.apiData = this.apiData.concat(data);
