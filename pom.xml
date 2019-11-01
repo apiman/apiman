@@ -142,7 +142,7 @@
     <version.org.apache.httpcomponents.httpclient>4.5.3</version.org.apache.httpcomponents.httpclient>
     <version.org.apache.httpcomponents.httpcore>4.4.1</version.org.apache.httpcomponents.httpcore>
     <version.org.apache.httpcomponents.httpasyncclient>4.1</version.org.apache.httpcomponents.httpasyncclient>
-    <version.org.apache.logging.log4j>2.8.2</version.org.apache.logging.log4j>
+    <version.org.apache.logging.log4j>2.12.0</version.org.apache.logging.log4j>
     <version.org.eclipse.jetty>9.4.14.v20181114</version.org.eclipse.jetty>
     <version.org.glassfish.javax.el>3.0.0</version.org.glassfish.javax.el>
     <version.org.elasticsearch>5.6.9</version.org.elasticsearch>
@@ -1235,6 +1235,17 @@
               <groupId>de.is24.maven.enforcer.rules</groupId>
               <artifactId>illegal-transitive-dependency-check</artifactId>
               <version>1.7.4</version>
+	      <exclusions>
+                <exclusion>
+                  <groupId>org.ow2.asm</groupId>
+                  <artifactId>asm-analysis</artifactId>
+                </exclusion>
+              </exclusions>
+            </dependency>
+            <dependency>
+              <groupId>org.ow2.asm</groupId>
+              <artifactId>asm-analysis</artifactId>
+              <version>6.1.1</version>
             </dependency>
           </dependencies>
           <executions>
