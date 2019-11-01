@@ -1235,7 +1235,7 @@
               <groupId>de.is24.maven.enforcer.rules</groupId>
               <artifactId>illegal-transitive-dependency-check</artifactId>
               <version>1.7.4</version>
-	      <exclusions>
+	      	  <exclusions>
                 <exclusion>
                   <groupId>org.ow2.asm</groupId>
                   <artifactId>asm-analysis</artifactId>
