@@ -202,6 +202,7 @@ public class GatewayRestTester extends ParentRunner<TestInfo> {
         log("-------------------------------------------------------------------------------");
         log("");
 
+        System.setProperty("apiman-gateway-test.gateway-endpoint", gatewayServer.getGatewayEndpoint());
         System.setProperty("apiman-gateway-test.endpoints.echo", gatewayServer.getEchoTestEndpoint());
 
         try {
@@ -254,7 +255,7 @@ public class GatewayRestTester extends ParentRunner<TestInfo> {
                     if (endpoint == null) {
                         endpoint = gatewayServer.getGatewayEndpoint();
                     }
-    
+
                     testInfo.plan.runner.runTest(restTest, endpoint);
                     gatewayServer.next(endpoint);
                 }

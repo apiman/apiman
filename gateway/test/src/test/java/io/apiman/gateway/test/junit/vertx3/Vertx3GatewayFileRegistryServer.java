@@ -39,8 +39,8 @@ import java.util.concurrent.TimeUnit;
 @SuppressWarnings("nls")
 public class Vertx3GatewayFileRegistryServer implements IGatewayTestServer {
 
-    protected static final int API_PORT = 9009;
-    protected static final int GW_PORT = 8082;
+    protected static int API_PORT;
+    protected static int GW_PORT;
     protected static final int ECHO_PORT = 7654;
 
     private EchoServer echoServer = new EchoServer(ECHO_PORT);
@@ -54,6 +54,7 @@ public class Vertx3GatewayFileRegistryServer implements IGatewayTestServer {
     private CountDownLatch rewriteCdl = new CountDownLatch(1);
     private CountDownLatch resetLatch = new CountDownLatch(1);
     private CountDownLatch a2fInitLatch = new CountDownLatch(1);
+    private Vertx3GatewayHelper helper;
 
     /**
      * Constructor.
@@ -63,9 +64,12 @@ public class Vertx3GatewayFileRegistryServer implements IGatewayTestServer {
 
     @Override
     public void configure(JsonNode nodeConfig) {
-        Vertx3GatewayHelper helper = new Vertx3GatewayHelper();
+        helper = new Vertx3GatewayHelper();
         vertxConf = helper.loadJsonObjectFromResources(nodeConfig, "config");
         apiToFilePushEmulatorConfig = helper.loadJsonObjectFromResources(nodeConfig, "configPushEmulator");
+
+        API_PORT = helper.getApiPortDynamically(apiToFilePushEmulatorConfig);
+        GW_PORT = helper.getGatewayPortDynamically(apiToFilePushEmulatorConfig);
 
         apiToFileVx = Vertx.vertx(new VertxOptions()
                 .setBlockedThreadCheckInterval(99999));

@@ -7,8 +7,7 @@
     <test name="Publish Api 2.0">test-plan-data/api/apis/003-publish-api-2.0.resttest</test>
     <test name="Publish Api 3.0">test-plan-data/api/apis/004-publish-api-3.0.resttest</test>
     <test name="Retire Api 3.0">test-plan-data/api/apis/005-retire-api-3.0.resttest</test>
-<!-- This test is commented out because vert.x and servlet impls return different values. -->
-<!--     <test name="Get Api Endpoint">test-plan-data/api/apis/006-get-endpoint.resttest</test> -->
+    <test name="Get Api Endpoint">test-plan-data/api/apis/006-get-endpoint.resttest</test>
     <test name="Republish Api 3.0">test-plan-data/api/apis/007-republish-api-3.0.resttest</test>
     <test name="Retire Api 3.0 (again)">test-plan-data/api/apis/005-retire-api-3.0.resttest</test>
   </testGroup>
@@ -21,12 +20,12 @@
     <test name="Unregister Client" delay="2000">test-plan-data/api/clients/005-unregister-client.resttest</test>
     <test name="Reregister Client">test-plan-data/api/clients/006-reregister-client.resttest</test>
   </testGroup>
-  
+
   <testGroup name="List entities">
     <test name="Wait for elasticsearch" delay="2000" />
     <!-- Orgs  -->
     <test name="List Orgs">test-plan-data/api/list/000-list-orgs.resttest</test>
-    <!-- APIs  -->    
+    <!-- APIs  -->
     <test name="List APIs">test-plan-data/api/list/001-list-apis.resttest</test>
     <test name="List API Versions">test-plan-data/api/list/002-list-api-versions.resttest</test>
     <!-- Clients  -->
