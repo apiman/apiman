@@ -4,7 +4,7 @@
   <parent>
     <groupId>io.apiman</groupId>
     <artifactId>apiman-manager-api</artifactId>
-    <version>1.5.3-SNAPSHOT</version>
+    <version>1.5.3.Final</version>
   </parent>
   <artifactId>apiman-manager-api-config</artifactId>
   <packaging>bundle</packaging>
