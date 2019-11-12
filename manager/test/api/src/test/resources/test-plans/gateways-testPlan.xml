@@ -14,6 +14,9 @@
     <test name="Get Gateway 1 (Updated)">test-plan-data/gateways/009_get-1.resttest</test>
 
     <test name="Test Gateway">test-plan-data/gateways/010_test_gateway_success.resttest</test>
+
+    <test name="Create Gateway Endpoint Test">test-plan-data/gateways/011_create-gateway-to-test-get-endpoint.resttest</test>
+    <test name="Get gateway endpoint">test-plan-data/gateways/012-list-gateways.resttest</test>
   </testGroup>
 
 </testPlan>

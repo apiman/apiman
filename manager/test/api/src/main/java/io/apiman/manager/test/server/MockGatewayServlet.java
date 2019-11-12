@@ -66,7 +66,7 @@ public class MockGatewayServlet extends HttpServlet {
             IOException {
         builder.append("GET:").append(req.getRequestURI()).append("\n"); //$NON-NLS-1$ //$NON-NLS-2$
         payloads.add(null);
-        if (req.getRequestURI().endsWith("/system/status")) { //$NON-NLS-1$
+        if (req.getRequestURI().contains("/system/status")) { //$NON-NLS-1$
             resp.setStatus(200);
             resp.setContentType("application/json"); //$NON-NLS-1$
             PrintWriter printWriter = new PrintWriter(resp.getOutputStream());
@@ -78,6 +78,13 @@ public class MockGatewayServlet extends HttpServlet {
             resp.setContentType("application/json"); //$NON-NLS-1$
             PrintWriter printWriter = new PrintWriter(resp.getOutputStream());
             printWriter.println("{ \"endpoint\" : \"http://example.org/endpoint\" }"); //$NON-NLS-1$
+            printWriter.flush();
+            printWriter.close();
+        } else if (req.getRequestURI().contains("system/endpoint")) { //$NON-NLS-1$
+            resp.setStatus(200);
+            resp.setContentType("application/json"); //$NON-NLS-1$
+            PrintWriter printWriter = new PrintWriter(resp.getOutputStream());
+            printWriter.println("{ \"endpoint\" : \"" + System.getProperty("apiman.test.gateway.endpoint") + "\" }"); //$NON-NLS-1$
             printWriter.flush();
             printWriter.close();
         } else {
