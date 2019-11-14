@@ -79,7 +79,7 @@ CREATE TABLE [api_defs] ([id] [bigint] NOT NULL, [data] [varbinary](MAX) NULL, [
 GO
 
 -- Changeset C:/Users/Pete/projects/apiman/distro/ddl/src/main/liquibase/current/010-apiman-manager-api.db.tables.changelog.xml::1436469846462-18::apiman (generated)
-CREATE TABLE [api_versions] ([id] [bigint] NOT NULL, [created_by] [varchar](255) NOT NULL, [created_on] [datetime] NOT NULL, [definition_type] [varchar](255) NULL, [endpoint] [varchar](255) NULL, [endpoint_type] [varchar](255) NULL, [endpoint_ct] [varchar](255) NULL, [modified_by] [varchar](255) NOT NULL, [modified_on] [datetime] NOT NULL, [public_api] [bit] NOT NULL, [parse_payload] [bit] NULL, [published_on] [datetime] NULL, [retired_on] [datetime] NULL, [status] [varchar](255) NOT NULL, [version] [varchar](255) NULL, [api_id] [varchar](255) NULL, [api_org_id] [varchar](255) NULL)
+CREATE TABLE [api_versions] ([id] [bigint] NOT NULL, [created_by] [varchar](255) NOT NULL, [created_on] [datetime] NOT NULL, [definition_type] [varchar](255) NULL, [endpoint] [varchar](255) NULL, [endpoint_type] [varchar](255) NULL, [endpoint_ct] [varchar](255) NULL, [modified_by] [varchar](255) NOT NULL, [modified_on] [datetime] NOT NULL, [public_api] [bit] NOT NULL, [parse_payload] [bit] NULL, [published_on] [datetime] NULL, [retired_on] [datetime] NULL, [status] [varchar](255) NOT NULL, [version] [varchar](255) NULL, [api_id] [varchar](255) NULL, [api_org_id] [varchar](255) NULL, [definition_url] [varchar](2048))
 GO
 
 -- Changeset C:/Users/Pete/projects/apiman/distro/ddl/src/main/liquibase/current/010-apiman-manager-api.db.tables.changelog.xml::1436469846462-19::apiman (generated)
