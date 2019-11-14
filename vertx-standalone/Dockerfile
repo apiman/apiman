@@ -10,7 +10,7 @@ RUN useradd -m -d /home/apiman apiman && \
 	chown -R apiman:apiman /home/apiman /opt/apiman
 
 USER apiman
-RUN curl -s http://downloads.jboss.org/apiman/${PLATFORM_VERSION}/apiman-distro-vertx-${PLATFORM_VERSION}.zip -o /tmp/apiman-distro-vertx-${PLATFORM_VERSION}.zip && \
+RUN curl -s https://downloads.jboss.org/apiman/${PLATFORM_VERSION}/apiman-distro-vertx-${PLATFORM_VERSION}.zip -o /tmp/apiman-distro-vertx-${PLATFORM_VERSION}.zip && \
 	unzip /tmp/apiman-distro-vertx-${PLATFORM_VERSION}.zip -d /tmp && \
 	mv /tmp/apiman-distro-vertx-${PLATFORM_VERSION}/* /opt/apiman/
 

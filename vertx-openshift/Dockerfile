@@ -13,7 +13,7 @@ ENV APIMAN_CONFIG="${APIMAN_HOME}/configs/conf-container.json"
 ENV APIMAN_REGISTRY_URI="file:///${APIMAN_HOME}/configs/registry.json"
 
 RUN cd ${JBOSS_HOME} \
-    && curl -L http://downloads.jboss.org/apiman/${APIMAN_VERSION}/apiman-distro-vertx-${APIMAN_VERSION}.zip |  bsdtar -xvf- \
+    && curl -L https://downloads.jboss.org/apiman/${APIMAN_VERSION}/apiman-distro-vertx-${APIMAN_VERSION}.zip |  bsdtar -xvf- \
     && mv ${JBOSS_HOME}/apiman-distro-vertx-${APIMAN_VERSION} ${APIMAN_HOME} \
     && cd ${APIMAN_HOME} \
     && rm -rf configs \

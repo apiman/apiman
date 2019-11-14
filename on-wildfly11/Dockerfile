@@ -6,7 +6,7 @@ MAINTAINER Marc Savy <marc.savy@redhat.com>
 ENV APIMAN_VERSION 1.5.3.Final
 
 RUN cd $HOME/wildfly \
- && curl http://downloads.jboss.org/apiman/$APIMAN_VERSION/apiman-distro-wildfly11-$APIMAN_VERSION-overlay.zip | bsdtar -xvf-
+ && curl https://downloads.jboss.org/apiman/$APIMAN_VERSION/apiman-distro-wildfly11-$APIMAN_VERSION-overlay.zip | bsdtar -xvf-
 
 USER root
 
