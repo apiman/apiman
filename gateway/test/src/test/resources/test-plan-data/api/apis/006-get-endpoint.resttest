@@ -4,5 +4,5 @@ GET /apis/GatewayApiTest/echo/2.0/endpoint admin/admin
 Content-Type: application/json
 
 {
-  "endpoint":"${apiman-gateway-test.gateway-endpoint}/GatewayApiTest/echo/2.0"
+  "endpoint":"${apiman.test.gateway.gateway.endpoint}/GatewayApiTest/echo/2.0"
 }

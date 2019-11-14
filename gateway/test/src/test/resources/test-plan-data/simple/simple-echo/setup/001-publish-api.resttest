@@ -6,7 +6,7 @@ Content-Type: application/json
   "apiId" : "echo",
   "version" : "1.0.0",
   "endpointType" : "REST",
-  "endpoint" : "${apiman-gateway-test.endpoints.echo}/"
+  "endpoint" : "${apiman.test.gateway.endpoints.echo}/"
 }
 ----
 204

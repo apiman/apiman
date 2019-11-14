@@ -7,7 +7,7 @@ Content-Type: application/json
   "version" : "1.0",
   "publicAPI" : false,
   "endpointType" : "REST",
-  "endpoint" : "${apiman-gateway-test.endpoints.echo}/"
+  "endpoint" : "${apiman.test.gateway.endpoints.echo}/"
 }
 ----
 204

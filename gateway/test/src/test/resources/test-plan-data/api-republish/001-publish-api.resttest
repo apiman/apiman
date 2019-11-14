@@ -8,7 +8,7 @@ Content-Type: application/json
   "publicAPI" : true,
   "endpointType" : "rest",
   "endpointContentType" : "json",
-  "endpoint" : "${apiman-gateway-test.endpoints.echo}/public-echo"
+  "endpoint" : "${apiman.test.gateway.endpoints.echo}/public-echo"
 }
 ----
 204
