@@ -15,8 +15,19 @@
  */
 package io.apiman.manager.api.micro;
 
-import io.apiman.common.es.util.IEsClientFactory;
+import java.lang.reflect.Constructor;
+import java.util.Map;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.New;
+import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.spi.InjectionPoint;
+import javax.inject.Named;
+
+import org.apache.commons.lang3.StringUtils;
+
 import io.apiman.common.es.util.DefaultEsClientFactory;
+import io.apiman.common.es.util.IEsClientFactory;
 import io.apiman.common.logging.IApimanDelegateLogger;
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.common.plugin.Plugin;
@@ -49,17 +60,6 @@ import io.apiman.manager.api.jpa.JpaStorageInitializer;
 import io.apiman.manager.api.security.ISecurityContext;
 import io.apiman.manager.api.security.impl.DefaultSecurityContext;
 import io.searchbox.client.JestClient;
-
-import java.lang.reflect.Constructor;
-import java.util.Map;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.New;
-import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.inject.Named;
-
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * Attempt to create producer methods for CDI beans.
@@ -256,7 +256,7 @@ public class ManagerApiMicroServiceCdiFactory {
     @Produces @ApplicationScoped @Named("metrics")
     public static JestClient provideMetricsESClient(ManagerApiMicroServiceConfig config, @Named("metrics-factory") IEsClientFactory clientFactory) {
         if ("es".equals(config.getMetricsType())) { //$NON-NLS-1$
-            return clientFactory.createClient(config.getStorageESClientFactoryConfig(), null);
+            return clientFactory.createClient(config.getMetricsESClientFactoryConfig(), null);
         } else {
             return null;
         }

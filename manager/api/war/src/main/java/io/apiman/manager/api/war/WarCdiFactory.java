@@ -270,7 +270,7 @@ public class WarCdiFactory {
     @Produces @ApplicationScoped @Named("metrics")
     public static JestClient provideMetricsESClient(WarApiManagerConfig config, @Named("metrics-factory") IEsClientFactory clientFactory) {
         if ("es".equals(config.getMetricsType())) { //$NON-NLS-1$
-            return clientFactory.createClient(config.getStorageESClientFactoryConfig(), null);
+            return clientFactory.createClient(config.getMetricsESClientFactoryConfig(), null);
         } else {
             return null;
         }
