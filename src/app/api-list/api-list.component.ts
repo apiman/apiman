@@ -1,28 +1,31 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, SimpleChanges, OnChanges} from '@angular/core';
 import {forkJoin, Observable, from, pipe} from 'rxjs';
 import {map, mergeMap, toArray, mergeAll} from 'rxjs/operators';
-import {ApiDataService} from '../api-data.service';
+import {ApiDataService, ApiVersion, Client, Contract} from '../api-data.service';
 import {element} from 'protractor';
+import {emit} from 'cluster';
 
-export interface ApiListView {
+export interface ApiListElement {
   id: string;
   name: string;
   version: string;
   endpoint: string;
-  ispublic: boolean;
+  organizationName: string;
 }
 
 @Component({
-  selector: 'app-api-list',
+  selector: 'api-list',
   templateUrl: './api-list.component.html',
   styleUrls: ['./api-list.component.scss']
 })
 
-export class ApiListComponent implements OnInit {
+export class ApiListComponent implements OnChanges {
 
-  apiData: Array<ApiListView> = [];
+  columnHeaders: string[] = ['ispublic', 'name', 'version', 'endpoint'];
 
-  displayedColumns: string[] = ['ispublic', 'name', 'version', 'endpoint'];
+  apiData: Array<ApiListElement> = [];
+
+  @Input('developerId') developerId;
 
   /**
    * An observer to get all gateway details (gateway endpoint) from api data service
@@ -35,42 +38,32 @@ export class ApiListComponent implements OnInit {
     .pipe(toArray());
 
   /**
-   * An observer to access all data of private apis
+   * An observer to get all developer data from api data service
    */
-  getPrivateApiData: Observable<ApiListView> = this.getGatewayDataObservable.pipe(mergeMap(gateways =>
-    this.apiDataService.getUserClients()
-      .pipe(mergeAll())
-      .pipe(mergeMap(userClient =>
-        this.apiDataService.getClientVersions(userClient.organizationId, userClient.id)
-          .pipe(mergeAll())
-          .pipe(mergeMap(clientVersion =>
-            this.apiDataService.getContracts(userClient.organizationId, userClient.id, clientVersion.version)
-              .pipe(mergeAll())
-              .pipe(mergeMap(contract =>
-                //fork data to receive api key and api details
-                forkJoin(
-                  this.apiDataService.getApiKey(contract.clientOrganizationId, contract.clientId, contract.clientVersion)
-                  //extract the api key
-                    .pipe(map(source => source.apiKey)),
-                  this.apiDataService.getApiVersionDetails(contract.clientOrganizationId, contract.apiId, contract.apiVersion)
-                  //determine the first possible gateway endpoint and wether the api is public
-                    .pipe(map(source => ({gatewayId: source.gateways[0].gatewayId, isPublic: source.publicAPI})))
-                  //use the contract, gateway and forked api data to construct the view data
-                ).pipe(map((forkedApiData) => (this.buildViewData(contract, gateways, forkedApiData[0], forkedApiData[1]))))
-              ))
-          ))
-      ))
-  ));
+  getDeveloperData: (developer: string) => Observable<ApiListElement> = (developer: string) => forkJoin(this.apiDataService.getDeveloperClients(developer),
+    this.apiDataService.getDeveloperContracts(developer),
+    this.apiDataService.getDeveloperApis(developer),
+    this.getGatewayDataObservable)
+    .pipe(mergeMap(forkedData => {
+      const [clients, contracts, apiVersions, gateways] = forkedData;
+      return from(contracts)
+        .pipe(map(contract => {
+          const apiVersion = apiVersions.find(version => version.api.id === contract.apiId);
+          const clientVersion = clients.find(version => version.id === contract.clientId);
+          const gateway = gateways.find(g => g.id === apiVersion.gateways[0].gatewayId);
+          return this.buildViewData(contract, gateway, clientVersion, apiVersion);
+        }));
+    }))
 
   constructor(private apiDataService: ApiDataService) {
   }
 
   /**
-   * ngOnInit is executed if the component is initialized
+   * ngOnChanges is executed if the changes are applied to component
    */
-  ngOnInit() {
+  ngOnChanges(changes: SimpleChanges): void {
     //subscribe for the private api data to fill the view
-    this.getPrivateApiData.subscribe(data => {
+    this.getDeveloperData(this.developerId).subscribe(data => {
       this.apiData = this.apiData.concat(data);
     });
   }
@@ -81,13 +74,13 @@ export class ApiListComponent implements OnInit {
    * @param gateways: the gateways which contains the gateway endpoints
    * @param apiVersionDetails: the api version data containing the apikey and gateway id
    */
-  private buildViewData(contract, gateways, apiKey, apiVersionDetails) {
+  private buildViewData(contract: Contract, gateway, clientVersion: Client, apiVersionDetails: ApiVersion): ApiListElement {
     return {
       id: contract.apiId,
       name: contract.apiName,
       version: contract.apiVersion,
-      endpoint: this.buildApiEndpoint(gateways.find(g => g.id === apiVersionDetails.gatewayId).endpoint, contract.clientOrganizationId, contract.apiId, contract.apiVersion, apiKey),
-      ispublic: apiVersionDetails.isPublic
+      endpoint: this.buildApiEndpoint(gateway.endpoint, contract.apiOrganizationId, contract.apiId, contract.apiVersion, clientVersion.apiKey),
+      organizationName: contract.apiOrganizationId
     };
   }
 
@@ -99,7 +92,7 @@ export class ApiListComponent implements OnInit {
    * @param apiVersion: version of api
    * @param apiKey: apikey of api
    */
-  buildApiEndpoint(gatewayEndpoint: string, organizationId: string, apiId: string, apiVersion: string, apiKey: string) {
+  buildApiEndpoint(gatewayEndpoint: string, organizationId: string, apiId: string, apiVersion: string, apiKey: string): string {
     return gatewayEndpoint + [organizationId, apiId, apiVersion].join('/') + '?apiKey=' + apiKey;
   }
 

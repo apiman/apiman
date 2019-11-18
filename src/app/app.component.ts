@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { KeycloakService } from 'keycloak-angular';
 
 @Component({
   selector: 'app-root',
@@ -6,5 +7,14 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'API-Mgmt Developer Portal';
+
+  public developers: Array<string> = [];
+
+  constructor(private keycloak: KeycloakService) {
+  // get keycloak client roles of devportal
+    const resourceAccess = this.keycloak.getKeycloakInstance().tokenParsed.resource_access['apiman-devportal'];
+    if (resourceAccess && resourceAccess.roles) {
+      this.developers = resourceAccess.roles;
+    }
+  }
 }

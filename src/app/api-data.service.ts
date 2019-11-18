@@ -1,130 +1,114 @@
 import {Inject, Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {Observable} from 'rxjs';
+import {from, Observable} from 'rxjs';
+import {mergeMap} from 'rxjs/operators';
 
-export interface ApiSearchData {
-  beans: Array<ApiDetails>;
-  totalSize: number;
-}
-
-export interface ApiDetails {
-  name: string;
-  id: string;
-  description: string;
-  createdOn: string;
-  organizationName: string;
-  organizationId: string;
-}
-
-export interface ApiEndpointDetails {
-  managedEndpoint: string;
-}
-
-export interface ApiKeyDetails {
-  apiKey: string;
-}
-
-export interface ClientDetails {
-  name: string;
-  id: string;
-  description: string;
-  organizationName: string;
-  organizationId: string;
-  numContracts: number;
-}
-
-export interface ApiVersionsDetails {
-  name: string;
-  id: string;
-  description: string;
-  version: string;
-  status: 'Created' | 'Ready' | 'Published' | 'Retired';
-  organizationName: string;
-  organizationId: string;
-  publicAPI: boolean;
-}
-
-export interface ClientVersionDetails {
-  name: string;
-  id: string;
-  description: string;
-  version: string;
-  status: 'Created' | 'Ready' | 'Registered' | 'Retired';
-  apiKey: string;
-  organizationName: string;
-  organizationId: string;
-}
-
-export interface ContractDetails {
-  createdOn: string;
-  clientVersion: string;
-  apiVersion: string;
-  planVersion: string;
-  clientOrganizationId: string;
-  clientOrganizationName: string;
-  apiOrganizationId: string;
-  apiOrganizationName: string;
-  apiDescription: string;
-  clientId: string;
-  planName: string;
-  contractId: number;
-  apiName: string;
-  clientName: string;
-  planId: string;
-  apiId: string;
-}
-
-export interface ApiVersionDetails {
+/**
+ * Api Version
+ */
+export interface ApiVersion {
   id: number;
-  version: string;
-  status: 'Created' | 'Ready' | 'Published' | 'Retired';
-  modifiedOn: string;
-  createdOn: string;
-  modifiedBy: string;
-  createdBy: string;
-  retiredOn: string;
-  publishedOn: string;
   api: Api;
-  definitionType: 'None' | 'SwaggerJSON' | 'SwaggerYAML' | 'WSDL' | 'WADL' | 'RAML' | 'External';
+  status: 'Created' | 'Ready' | 'Published' | 'Retired';
+  endpoint: string;
+  endpointType: 'rest' | 'soap';
   endpointContentType: 'json' | 'xml';
   endpointProperties: object;
-  endpointType: 'rest' | 'soap';
-  plans: Array<Plan>;
-  endpoint: string;
-  publicAPI: boolean;
-  parsePayload: boolean;
   gateways: Array<Gateway>;
+  publicAPI: boolean;
+  plans: Array<Plan>;
+  version: string;
+  createdBy: string;
+  createdOn: number;
+  modifiedBy: string;
+  modifiedOn: number;
+  publishedOn: number;
+  retiredOn: string;
+  definitionType: 'None' | 'SwaggerJSON' | 'SwaggerYAML' | 'WSDL' | 'WADL' | 'RAML' | 'External';
+  parsePayload: boolean;
+  definitionUrl: string;
 }
 
+/**
+ * Plan
+ */
 export interface Plan {
   version: string;
   planId: string;
 }
 
+/**
+ * Gateway
+ */
 export interface Gateway {
   gatewayId: string;
 }
 
+/**
+ * Api definition
+ */
 export interface Api {
-  name: string;
-  id: string;
-  description: string;
   organization: Organization;
-  createdOn: string;
+  id: string;
+  name: string;
+  description: string;
   createdBy: string;
+  createdOn: number;
   numPublished: number;
 }
 
+/**
+ * Organization
+ */
 export interface Organization {
-  name: string;
   id: string;
+  name: string;
   description: string;
-  modifiedOn: string;
-  createdOn: string;
-  modifiedBy: string;
   createdBy: string;
+  createdOn: number;
+  modifiedBy: string;
+  modifiedOn: number;
 }
 
+/**
+ * Client
+ */
+export interface Client {
+  organizationId: string;
+  organizationName: string;
+  id: string;
+  name: string;
+  description: string;
+  status: 'Created' | 'Ready' | 'Registered' | 'Retired';
+  version: string;
+  apiKey: string;
+}
+
+/**
+ * Contract
+ */
+export interface Contract {
+  contractId: number;
+  clientOrganizationId: string;
+  clientOrganizationName: string;
+  clientId: string;
+  clientName: string;
+  clientVersion: string;
+  apiOrganizationId: string;
+  apiOrganizationName: string;
+  apiId: string;
+  apiName: string;
+  apiVersion: string;
+  apiDescription: string;
+  planName: string;
+  planId: string;
+  planVersion: string;
+  createdOn: string;
+}
+
+/**
+ * Gateway Details
+ */
 export interface GatewayDetails {
   name: string;
   id: string;
@@ -132,6 +116,9 @@ export interface GatewayDetails {
   description: string;
 }
 
+/**
+ * Gateway Endpoint
+ */
 export interface GatewayEndpoint {
   endpoint: string;
 }
@@ -144,59 +131,53 @@ export interface GatewayEndpoint {
  * A service which executes the REST calls to Apiman UI REST Interface
  */
 export class ApiDataService {
+
+  /**
+   * Contructor
+   * @param http The http client
+   * @param apimanUiRestUrl The apiman UI REST url
+   */
   constructor(private http: HttpClient, @Inject('APIMAN_UI_REST_URL') private apimanUiRestUrl: string) { }
 
-  public getAllApis(): Observable<ApiSearchData> {
-    const url = this.apimanUiRestUrl + '/search/apis/';
-    const body = { filters: [{name: 'name', value: '***', operator: 'like'}], page: 1, pageSize: 10000};
-    return this.http.post(url, body) as Observable<ApiSearchData>;
+  /**
+   * Get developer clients by developer id
+   * @param developerId The developer Id
+   */
+  public getDeveloperClients(developerId: string) {
+    const url = this.apimanUiRestUrl + '/developers/' + developerId + '/clients';
+    return this.http.get(url) as Observable<Array<Client>>;
   }
 
-  public getApiEndpoint(organizationId, apiId, apiVersion) {
-    const url = this.apimanUiRestUrl + '/organizations/' + organizationId + '/apis/' + apiId + '/versions/' + apiVersion + '/endpoint/';
-    return this.http.get(url) as Observable<ApiEndpointDetails>;
+  /**
+   * Get developer contracts by developer id
+   * @param developerId The developer Id
+   */
+  public getDeveloperContracts(developerId: string) {
+    const url = this.apimanUiRestUrl + '/developers/' + developerId + '/contracts';
+    return this.http.get(url) as Observable<Array<Contract>>;
   }
 
-  public getApiKey(organizationId, clientId, clientVersion) {
-    const url = this.apimanUiRestUrl + '/organizations/' + organizationId + '/clients/' + clientId + '/versions/' + clientVersion + '/apikey/';
-    return this.http.get(url) as Observable<ApiKeyDetails>;
+  /**
+   * Get developer apis by developer id
+   * @param developerId The developer Id
+   */
+  public getDeveloperApis(developerId: string) {
+    const url = this.apimanUiRestUrl + '/developers/' + developerId + '/apis';
+    return this.http.get(url) as Observable<Array<ApiVersion>>;
   }
 
-  public getUserClients() {
-    const url = this.apimanUiRestUrl + '/currentuser/clients/';
-    return this.http.get(url) as Observable<Array<ClientDetails>>;
-  }
-
-  public getUserApis() {
-    const url = this.apimanUiRestUrl + '/currentuser/apis/';
-    return this.http.get(url) as Observable<Array<ApiDetails>>;
-  }
-
-  public getApiVersions(organizationId, apiId) {
-    const url = this.apimanUiRestUrl + '/organizations/' + organizationId + '/apis/' + apiId + '/versions/';
-    return this.http.get(url) as Observable<Array<ApiVersionsDetails>>;
-  }
-
-  public getApiVersionDetails(organizationId, apiId, apiVersion) {
-    const url = this.apimanUiRestUrl  + '/organizations/' + organizationId + '/apis/' + apiId + '/versions/' + apiVersion;
-    return this.http.get(url) as Observable<ApiVersionDetails>;
-  }
-
-  public getClientVersions(organizationId, clientId) {
-    const url = this.apimanUiRestUrl + '/organizations/' + organizationId + '/clients/' + clientId + '/versions/';
-    return this.http.get(url) as Observable<Array<ClientVersionDetails>>;
-  }
-
-  public getContracts(organizationId, clientId, clientVersion) {
-    const url = this.apimanUiRestUrl + '/organizations/' + organizationId + '/clients/' + clientId + '/versions/' + clientVersion + '/contracts';
-    return this.http.get(url) as Observable<Array<ContractDetails>>;
-  }
-
+  /**
+   * Get available api gateways
+   */
   public getGateways() {
     const url = this.apimanUiRestUrl + '/gateways';
     return this.http.get(url) as Observable<Array<GatewayDetails>>;
   }
 
+  /**
+   * Get gateway endpoint by gateway id
+   * @param gatewayId The gateway id
+   */
   public getGatewayEndpoint(gatewayId) {
     const url = this.apimanUiRestUrl + '/gateways/' + gatewayId + '/endpoint';
     return this.http.get(url) as Observable<GatewayEndpoint>;
