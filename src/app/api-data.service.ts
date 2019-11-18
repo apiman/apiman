@@ -106,6 +106,31 @@ export interface Contract {
   createdOn: string;
 }
 
+export interface ClientMapping {
+  clientId: string;
+  organizationId: string;
+}
+
+export interface Developer {
+  id: string;
+  name: string;
+  clients: Array<ClientMapping>;
+}
+
+export interface ClientBean {
+  name: string;
+  id: string;
+  description: string;
+  createdOn: string;
+  organizationName: string;
+  organizationId: string;
+}
+
+export interface ClientSearchResult {
+  beans: Array<ClientBean>;
+  totalSize: number;
+}
+
 /**
  * Gateway Details
  */
@@ -181,6 +206,53 @@ export class ApiDataService {
   public getGatewayEndpoint(gatewayId) {
     const url = this.apimanUiRestUrl + '/gateways/' + gatewayId + '/endpoint';
     return this.http.get(url) as Observable<GatewayEndpoint>;
+  }
+
+  /**
+   * Get all available developers
+   */
+  public getAllDevelopers() {
+    const url = this.apimanUiRestUrl + '/developers';
+    return this.http.get(url) as Observable<Array<Developer>>;
+  }
+
+  /**
+   * Create new developer
+   * @param developer the developer to create
+   */
+  public createNewDeveloper(developer: Developer) {
+    const url = this.apimanUiRestUrl + '/developers';
+    return this.http.post(url, developer);
+  }
+
+  /**
+   * Update a developer
+   * @param developer the developer to update
+   */
+  public updateDeveloper(developer: Developer) {
+    const url = this.apimanUiRestUrl + '/developers';
+    return this.http.put(url, developer);
+  }
+
+  /**
+   * Get all available clients
+   */
+  public getAllClients() {
+    const url = this.apimanUiRestUrl + '/search/clients';
+    const searchQuery = {
+      filters: [{
+        name: 'name',
+        value: '*',
+        operator: 'like'
+      }],
+
+      paging: {
+        page: '1',
+        pageSize: '10000'
+      }
+    };
+    return (this.http.post(url, searchQuery) as Observable<ClientSearchResult>)
+      .pipe(mergeMap( searchResult => searchResult.beans));
   }
 
 }

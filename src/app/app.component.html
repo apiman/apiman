@@ -1,13 +1,4 @@
 
 <app-pas-header></app-pas-header>
 
-<div *ngFor="let developerId of developers">
-  <h2 *ngIf="developers.length > 1">{{developerId}}</h2>
-  <api-list [developerId]="developerId"></api-list>
-</div>
-
-<div id="noData" *ngIf="developers.length === 0">
-  <p>No developers defined for this user.</p>
-</div>
-
 <router-outlet></router-outlet>

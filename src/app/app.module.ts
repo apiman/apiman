@@ -16,13 +16,17 @@ import { HttpClientModule } from '@angular/common/http';
 import { KeycloakService, KeycloakAngularModule } from 'keycloak-angular';
 import { initializer } from './app-init';
 import {environment} from '../environments/environment';
+import { AdminComponent } from './admin/admin.component';
+import { DeveloperComponent } from './developer/developer.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     PasHeaderComponent,
-    ApiListComponent
+    ApiListComponent,
+    AdminComponent,
+    DeveloperComponent
   ],
   imports: [
     BrowserModule,
