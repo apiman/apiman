@@ -3,7 +3,7 @@
 
   <groupId>io.apiman</groupId>
   <artifactId>apiman-docker</artifactId>
-  <version>1.5.3.Final</version>
+  <version>1.5.4.Final</version>
   <packaging>pom</packaging>
 
   <name>Docker assets for apiman</name>
