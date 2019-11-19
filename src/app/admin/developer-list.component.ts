@@ -23,4 +23,7 @@ export class DeveloperListComponent implements OnInit {
     });
   }
 
+  deleteDeveloper(developer: Developer) {
+    this.apiDataService.deleteDeveloper(developer).subscribe(response => this.developers.splice(this.developers.indexOf(developer), 1));
+  }
 }

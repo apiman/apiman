@@ -1,3 +1,8 @@
 <mat-nav-list>
-  <mat-list-item *ngFor="let developer of developers"> {{ developer.name }}</mat-list-item>
+  <mat-list-item *ngFor="let developer of developers"> {{ developer.name }}
+    <span *ngIf="developer.clients.length > 0">(</span>
+    <div class="developer-list-client-list" *ngFor="let client of developer.clients"> {{client.organizationId}}/{{client.clientId}}</div>
+    <span *ngIf="developer.clients.length > 0">)</span>
+    <mat-icon class="deleteIcon" (click)="deleteDeveloper(developer)">delete</mat-icon>
+  </mat-list-item>
 </mat-nav-list>

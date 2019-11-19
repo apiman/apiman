@@ -1,2 +1,6 @@
-<p>admin works!</p>
-<app-developer-list></app-developer-list>
+<h2>Developer list</h2>
+<app-developer-list #developerList></app-developer-list>
+
+<h2>Create a new developer</h2>
+
+<app-create-developer [developerList]="developerList"></app-create-developer>

@@ -1,0 +1,27 @@
+<div class="client-container">
+  <h2>Available Clients</h2>
+
+  <div
+    cdkDropList
+    #availableClientList="cdkDropList"
+    [cdkDropListData]="availableClients"
+    [cdkDropListConnectedTo]="[assignedClientList]"
+    class="client-list"
+    (cdkDropListDropped)="drop($event)">
+    <div class="example-box" *ngFor="let item of availableClients" cdkDrag>{{item.organizationName}}/{{item.name}}</div>
+  </div>
+</div>
+
+<div class="client-container">
+  <h2>Assigned Clients</h2>
+
+  <div
+    cdkDropList
+    #assignedClientList="cdkDropList"
+    [cdkDropListData]="assignedClients"
+    [cdkDropListConnectedTo]="[availableClientList]"
+    class="client-list"
+    (cdkDropListDropped)="drop($event)">
+    <div class="example-box" *ngFor="let item of assignedClients" cdkDrag>{{item.organizationName}}/{{item.name}}</div>
+  </div>
+</div>

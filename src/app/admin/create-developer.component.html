@@ -1,0 +1,10 @@
+<label>
+  Developer Name:
+  <input type="text" [formControl]="name">
+</label>
+
+<app-client-mapping #clientmapping></app-client-mapping>
+
+<p>
+  <button mat-button (click)="insertDeveloper()">Save</button>
+</p>

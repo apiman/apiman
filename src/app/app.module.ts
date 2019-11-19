@@ -7,8 +7,9 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatIconModule } from '@angular/material/';
+import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
+import { ReactiveFormsModule } from '@angular/forms';
 
 import { ApiListComponent } from './api-list/api-list.component';
 import { MatTableModule } from '@angular/material/table';
@@ -20,6 +21,10 @@ import {environment} from '../environments/environment';
 import { AdminComponent } from './admin/admin.component';
 import { DeveloperComponent } from './developer/developer.component';
 import { DeveloperListComponent } from './admin/developer-list.component';
+import { CreateDeveloperComponent } from './admin/create-developer.component';
+import { ClientMappingComponent } from './admin/client-mapping.component';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import { MatButtonModule } from '@angular/material';
 
 
 @NgModule({
@@ -29,7 +34,9 @@ import { DeveloperListComponent } from './admin/developer-list.component';
     ApiListComponent,
     AdminComponent,
     DeveloperComponent,
-    DeveloperListComponent
+    DeveloperListComponent,
+    CreateDeveloperComponent,
+    ClientMappingComponent
   ],
   imports: [
     BrowserModule,
@@ -39,7 +46,10 @@ import { DeveloperListComponent } from './admin/developer-list.component';
     MatTableModule,
     HttpClientModule,
     KeycloakAngularModule,
-    MatListModule
+    MatListModule,
+    ReactiveFormsModule,
+    DragDropModule,
+    MatButtonModule
   ],
   providers: [
     {

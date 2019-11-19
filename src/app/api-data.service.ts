@@ -222,7 +222,7 @@ export class ApiDataService {
    */
   public createNewDeveloper(developer: Developer) {
     const url = this.apimanUiRestUrl + '/developers';
-    return this.http.post(url, developer);
+    return this.http.post(url, developer) as Observable<Developer>;
   }
 
   /**
@@ -232,6 +232,15 @@ export class ApiDataService {
   public updateDeveloper(developer: Developer) {
     const url = this.apimanUiRestUrl + '/developers';
     return this.http.put(url, developer);
+  }
+
+  /**
+   * Delete a developer
+   * @param developer the developer to update
+   */
+  public deleteDeveloper(developer: Developer) {
+    const url = this.apimanUiRestUrl + '/developers/' + developer.id;
+    return this.http.delete(url);
   }
 
   /**
