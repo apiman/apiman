@@ -7,17 +7,19 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatIconModule } from '@angular/material/icon';
+import { MatIconModule } from '@angular/material/';
+import { MatListModule } from '@angular/material/list';
+
 import { ApiListComponent } from './api-list/api-list.component';
-
 import { MatTableModule } from '@angular/material/table';
-import { HttpClientModule } from '@angular/common/http';
 
+import { HttpClientModule } from '@angular/common/http';
 import { KeycloakService, KeycloakAngularModule } from 'keycloak-angular';
 import { initializer } from './app-init';
 import {environment} from '../environments/environment';
 import { AdminComponent } from './admin/admin.component';
 import { DeveloperComponent } from './developer/developer.component';
+import { DeveloperListComponent } from './admin/developer-list.component';
 
 
 @NgModule({
@@ -26,7 +28,8 @@ import { DeveloperComponent } from './developer/developer.component';
     PasHeaderComponent,
     ApiListComponent,
     AdminComponent,
-    DeveloperComponent
+    DeveloperComponent,
+    DeveloperListComponent
   ],
   imports: [
     BrowserModule,
@@ -35,7 +38,8 @@ import { DeveloperComponent } from './developer/developer.component';
     MatIconModule,
     MatTableModule,
     HttpClientModule,
-    KeycloakAngularModule
+    KeycloakAngularModule,
+    MatListModule
   ],
   providers: [
     {
