@@ -36,9 +36,6 @@ See more detail at: https://logging.apache.org/log4j/2.x/manual/async.html
     <!-- Root/Global file logging config -->
     <AsyncRoot level="info" includeLocation="false">
       <AppenderRef ref="RandomAccessFile"/>
-    </AsyncRoot>
-    <!-- Root/Global console logging config -->
-    <AsyncRoot level="info">
       <AppenderRef ref="Console-Appender"/>
     </AsyncRoot>
   </Loggers>
