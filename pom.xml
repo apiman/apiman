@@ -94,7 +94,6 @@
     <version.compiler.plugin>3.2</version.compiler.plugin>
     <version.dependency.plugin>2.10</version.dependency.plugin>
     <version.deploy.plugin>2.8.2</version.deploy.plugin>
-    <version.enforcer.plugin>1.4</version.enforcer.plugin>
     <version.install.plugin>2.5.2</version.install.plugin>
     <version.jar.plugin>2.5</version.jar.plugin>
     <version.javadoc.plugin>2.10.1</version.javadoc.plugin>
@@ -1225,44 +1224,7 @@
 
   <build>
     <pluginManagement>
-      <plugins><!--
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-enforcer-plugin</artifactId>
-          <version>${version.enforcer.plugin}</version>
-          <dependencies>
-            <dependency>
-              <groupId>de.is24.maven.enforcer.rules</groupId>
-              <artifactId>illegal-transitive-dependency-check</artifactId>
-              <version>1.7.4</version>
-            </dependency>
-          </dependencies>
-          <executions>
-            <execution>
-              <id>enforcer-transitives-check</id>
-              <goals>
-                <goal>enforce</goal>
-              </goals>
-              <phase>process-classes</phase>
-              <configuration>
-                <fail>true</fail>
-                <rules>
-                  <illegalTransitiveDependencyCheck implementation="de.is24.maven.enforcer.rules.IllegalTransitiveDependencyCheck">
-                    <reportOnly>false</reportOnly>
-                    <regexIgnoredClasses>
-                      <regexIgnoredClass>javax\..+</regexIgnoredClass>
-                      <regexIgnoredClass>org.w3c.dom\..+</regexIgnoredClass>
-                      <regexIgnoredClass>io.netty.buffer.ByteBuf</regexIgnoredClass>
-                      <regexIgnoredClass>org.json\..+</regexIgnoredClass>
-                    </regexIgnoredClasses>
-                    <useClassesFromLastBuild>true</useClassesFromLastBuild>
-                  </illegalTransitiveDependencyCheck>
-                </rules>
-              </configuration>
-            </execution>
-          </executions>
-        </plugin>
-        -->
+      <plugins>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-antrun-plugin</artifactId>
@@ -1451,11 +1413,6 @@
             <forceLongFormat>false</forceLongFormat>
           </gitDescribe>
         </configuration>
-      </plugin>
-      <!-- Enforcer-related stuff -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-enforcer-plugin</artifactId>
       </plugin>
       <!-- Include the maven-compiler-plugin settings here so that Eclipse/m2e will properly import the projects. -->
       <plugin>
