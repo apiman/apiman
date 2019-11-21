@@ -8,6 +8,8 @@ import { KeycloakService } from 'keycloak-angular';
 })
 export class PasHeaderComponent implements OnInit {
 
+  public user: string = this.keycloak.getKeycloakInstance().profile.username;
+
   constructor(private keycloak: KeycloakService) { }
 
   ngOnInit() {

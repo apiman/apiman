@@ -2,9 +2,13 @@
   <img class="logo" src="assets/ScheerPASLogo.svg">
 
   <div class="rightMenu">
+    <div class="floatRight">
     <mat-icon id="header-icon">desktop_windows</mat-icon>
     <div id="app-header">API Developer Portal</div>
+    <mat-icon id="user-icon">person</mat-icon>
+    <div id="app-user">{{user}}</div>
     <div><mat-icon id="logout" (click)="logout()">power_settings_new</mat-icon></div>
+    </div>
   </div>
 </nav>
 

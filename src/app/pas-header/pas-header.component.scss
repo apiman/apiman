@@ -20,22 +20,39 @@ nav {
 }
 
 .rightMenu {
+  display: flex;
   float: right;
-  width: 210px;
+  text-align: right;
+}
+
+.floatRight {
+  width: 100%;
+  display: flex;
+  float: right;
+  justify-content: right;
+}
+
+mat-icon {
+  margin-left: 15px;
+  margin-right: 2px;
 }
 
 #header-icon {
-  float: left;
   padding-right: 5px;
 }
 
 #app-header {
-  float: left;
   margin-top: 3px;
 }
 
+#app-user {
+  margin-top: 3px;
+}
+
+#user-icon {
+}
+
 #logout {
-  float: right;
   cursor: pointer;
   color: darkred;
 }
