@@ -21,10 +21,11 @@ import {environment} from '../environments/environment';
 import { AdminComponent } from './admin/admin.component';
 import { DeveloperComponent } from './developer/developer.component';
 import { DeveloperListComponent } from './admin/developer-list.component';
-import { CreateDeveloperComponent } from './admin/create-developer.component';
-import { ClientMappingComponent } from './admin/client-mapping.component';
+import { CreateDeveloperComponent } from './admin/create-developer/create-developer.component';
+import { ClientMappingComponent } from './admin/create-developer/client-mapping.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatButtonModule } from '@angular/material';
+import { MatInputModule } from '@angular/material';
 
 
 @NgModule({
@@ -49,7 +50,8 @@ import { MatButtonModule } from '@angular/material';
     MatListModule,
     ReactiveFormsModule,
     DragDropModule,
-    MatButtonModule
+    MatButtonModule,
+    MatInputModule
   ],
   providers: [
     {

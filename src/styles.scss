@@ -3,9 +3,86 @@
 @import url("https://fonts.googleapis.com/icon?family=Material+Icons");
 @import url("https://fonts.googleapis.com/css?family=Roboto&display=swap");
 
+:root {
+  --e2e-bg-color:                     #06618e; /*Mittelblau*/
+  --e2e-dropdown-hover-color:         #e8e8e8;
+
+  --e2e-button-bg:                    #2996cc;
+  --e2e-button-border-color:          #2996cc;
+  /*hover is also used as dark blue border for dropdown entries*/
+  --e2e-button-hover-color:           #06628e;
+
+  --e2e-button-active-color:          #043953;
+  --e2e-button-active-border:         #033249;
+
+  --e2e-grey-button:                  #bbb6b9; /*Rosengrau*/
+  --e2e-grey-button-border:           #6a7480; /*Schiefergrau*/
+
+  --navbar-bg-color:                  #c8c9cc;
+  --navbar-color:                     #6a747f;
+  --navbar-color-active:              #2996cc;
+
+  --alert-color:                      #d03237; /*rgba(208, 50, 55, 1)*/
+  --alert-color-hover:                #ac1e1c;
+}
+
 body {
-  background: #F0F0F0;
+  background: white;
   font-family: Roboto, sans-serif;
   margin: 0;
   padding: 0;
+}
+
+h1, h2, h3 {
+  color: #06618E;
+}
+
+h1 {
+  font-weight: 300;
+}
+
+h4 {
+  color: black;
+}
+
+button {
+  color: #fff;
+  background-color: #2996cc;
+  display: inline-block;
+  margin-bottom: 0;
+  font-weight: 600;
+  text-align: center;
+  vertical-align: middle;
+  cursor: pointer;
+  background-image: none;
+  border: 1px solid transparent;
+  white-space: nowrap;
+  padding: 6px 12px;
+  font-size: 14px;
+  line-height: 1.42857143;
+  border-radius: 0;
+
+  margin-left: 10px;
+}
+
+button:focus, button:hover {
+  color: #fff;
+  text-decoration: none;
+  background-color: #06628e;
+  border-color: transparent;
+}
+
+button[disabled], button[disabled], button[disabled]:hover{
+  background-color: #ffffff;
+  cursor: not-allowed;
+  opacity: 0.65;
+  filter: alpha(opacity=65);
+  box-shadow: none;
+}
+
+button[disabled], button[disabled], button[disabled]:hover{
+  /*!important is needed here, because the framework that is used by apiman uses it also*/
+  background-color: #ffffff;
+  border-color: var(--e2e-button-border-color);
+  color: var(--e2e-button-bg);
 }

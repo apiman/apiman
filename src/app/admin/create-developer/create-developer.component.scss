@@ -1,0 +1,16 @@
+.input-form-field {
+  width: 150px;
+}
+
+.wrapper {
+  min-width: 150px;
+  max-width: 1200px;
+  width: 100%;
+}
+
+::ng-deep .mat-form-field.mat-focused .mat-form-field-label {
+  color: black!important;
+}
+::ng-deep .mat-form-field.mat-focused .mat-form-field-ripple {
+  background-color: black!important;
+}

@@ -1,6 +1,6 @@
 import {Component, OnInit, Output} from '@angular/core';
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
-import {ApiDataService, ClientBean} from '../api-data.service';
+import {ApiDataService, ClientBean} from '../../api-data.service';
 import {mergeAll} from 'rxjs/operators';
 
 @Component({

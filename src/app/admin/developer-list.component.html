@@ -5,4 +5,5 @@
     <span *ngIf="developer.clients.length > 0">)</span>
     <mat-icon class="deleteIcon" (click)="deleteDeveloper(developer)">delete</mat-icon>
   </mat-list-item>
+  <mat-list-item *ngIf="developers.length === 0">No developers there, click button above to create one.</mat-list-item>
 </mat-nav-list>

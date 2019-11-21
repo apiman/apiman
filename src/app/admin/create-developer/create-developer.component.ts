@@ -1,10 +1,11 @@
 import {Component, Input, OnInit, ViewChild} from '@angular/core';
 import {FormControl} from '@angular/forms';
-import {ApiDataService, Developer} from '../api-data.service';
-import {DeveloperImpl} from '../../developerImpl';
-import {DeveloperListComponent} from './developer-list.component';
+import {ApiDataService, Developer} from '../../api-data.service';
+import {DeveloperImpl} from '../../../developerImpl';
+import {DeveloperListComponent} from '../developer-list.component';
 import {ClientMappingComponent} from './client-mapping.component';
-import {ClientMappingImpl} from '../../client-mapping-impl';
+import {ClientMappingImpl} from '../../../client-mapping-impl';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-create-developer',
@@ -13,13 +14,11 @@ import {ClientMappingImpl} from '../../client-mapping-impl';
 })
 export class CreateDeveloperComponent {
 
-  @Input('developerList') developerList: DeveloperListComponent;
-
   name = new FormControl('');
 
   @ViewChild('clientmapping', {static: false}) clientMapping: ClientMappingComponent;
 
-  constructor(private apiDataService: ApiDataService) { }
+  constructor(private apiDataService: ApiDataService, private router: Router) { }
 
   insertDeveloper() {
     const developerToCreate = new DeveloperImpl();
@@ -30,9 +29,9 @@ export class CreateDeveloperComponent {
     });
     this.apiDataService.createNewDeveloper(developerToCreate)
       .subscribe(createdDeveloper => {
-        this.developerList.developers.push(createdDeveloper);
         this.name.reset();
         this.clientMapping.reset();
+        this.router.navigate(['/admin']);
       });
   }
 }

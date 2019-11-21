@@ -1,5 +1,8 @@
 button {
-  color: #fff;
-  background-color: #2996cc;
-  border-color: #2996cc;
+  display: flex;
+  align-items: center;
+}
+
+.button-text {
+  padding-top: 3px;
 }
