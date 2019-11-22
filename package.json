@@ -23,6 +23,7 @@
     "@angular/platform-browser-dynamic": "~8.2.0",
     "@angular/router": "~8.2.0",
     "hammerjs": "^2.0.8",
+    "keycloak-admin": "^1.13.0",
     "keycloak-angular": "^7.0.1",
     "keycloak-js": "^5.0.0",
     "ngx-logger": "^4.0.7",

@@ -1,7 +1,17 @@
 import {Inject, Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {from, Observable} from 'rxjs';
-import {mergeMap} from 'rxjs/operators';
+import {forkJoin, from, iif, merge, Observable, of} from 'rxjs';
+import {combineLatest, concatAll, defaultIfEmpty, filter, find, map, mergeAll, mergeMap, share, single, switchMap} from 'rxjs/operators';
+import { KeycloakService } from 'keycloak-angular';
+import KcAdminClient from 'keycloak-admin';
+import {emit} from 'cluster';
+import has = Reflect.has;
+import {RoleMappingPayload} from 'keycloak-admin/lib/defs/roleRepresentation';
+import {RequiredActionAlias} from 'keycloak-admin/lib/defs/requiredActionProviderRepresentation';
+import UserConsentRepresentation from 'keycloak-admin/lib/defs/userConsentRepresentation';
+import CredentialRepresentation from 'keycloak-admin/lib/defs/credentialRepresentation';
+import FederatedIdentityRepresentation from 'keycloak-admin/lib/defs/federatedIdentityRepresentation';
+import UserRepresentation from 'keycloak-admin/lib/defs/userRepresentation';
 
 /**
  * Api Version
@@ -148,6 +158,14 @@ export interface GatewayEndpoint {
   endpoint: string;
 }
 
+export interface KeycloakUser {
+  username: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  password: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -157,12 +175,31 @@ export interface GatewayEndpoint {
  */
 export class ApiDataService {
 
+  private kcAdminClient: KcAdminClient;
+  private getDevPortalClientUUID: Observable<string>;
+
   /**
    * Contructor
    * @param http The http client
    * @param apimanUiRestUrl The apiman UI REST url
    */
-  constructor(private http: HttpClient, @Inject('APIMAN_UI_REST_URL') private apimanUiRestUrl: string) { }
+  constructor(private http: HttpClient, private keycloak: KeycloakService, @Inject('APIMAN_UI_REST_URL') private apimanUiRestUrl: string, @Inject('KEYCLOAK_AUTH_URL') private apimanKeycloakRestUrl: string) {
+    this.kcAdminClient = new KcAdminClient({
+      baseUrl: this.apimanKeycloakRestUrl,
+      realmName: 'Apiman'
+    });
+    this.kcAdminClient.setAccessToken(keycloak.getKeycloakInstance().token);
+    this.getDevPortalClientUUID = from(this.kcAdminClient.clients.find())
+      .pipe(mergeAll())
+      .pipe(single(client => client.clientId === 'apiman-devportal'), map(client => client.id))
+      .pipe(share());
+
+
+    // const getAllDeveloperKeyCloakClientRoles = this.getDevPortalClientId.pipe(mergeMap(clientId =>
+    //   this.kcAdminClient.clients.listRoles({
+    //     id: clientId
+    //   })));
+  }
 
   /**
    * Get developer clients by developer id
@@ -216,13 +253,88 @@ export class ApiDataService {
     return this.http.get(url) as Observable<Array<Developer>>;
   }
 
+  private searchKeycloakUser = (keycloakUsername) => this.kcAdminClient.users.find({username: keycloakUsername});
+
+  public isPasswordRequired(username) {
+    return this.searchKeycloakUser(username).then(users => {
+      return users.findIndex((user => user.username === username)) === -1;
+    }).catch(error => {
+      console.error(error);
+      return Promise.resolve(true);
+    });
+  }
+
   /**
    * Create new developer
    * @param developer the developer to create
    */
-  public createNewDeveloper(developer: Developer) {
+  public createNewDeveloper(developer: Developer, keycloakUser: KeycloakUser) {
     const url = this.apimanUiRestUrl + '/developers';
-    return this.http.post(url, developer) as Observable<Developer>;
+
+    //1. insert developer
+    //response has developer object with developer id
+    const insertDeveloperToApiman = (this.http.post(url, developer) as Observable<Developer>)
+      .pipe(map(developerInserted => developerInserted.id))
+      .toPromise();
+
+    // const searchKeycloakUser = (keycloakUsername) => this.kcAdminClient.users.find({username: keycloakUsername});
+
+    const addUserToKeycloak = (userToInsert) => this.kcAdminClient.users.create({
+      firstName: userToInsert.firstName,
+      lastName: userToInsert.lastName,
+      email: userToInsert.email,
+      username: userToInsert.username,
+      enabled: true,
+      attributes: {generatedFromDevPortal: ['true']}
+    });
+
+    const setPasswordForUser = (userId, password) => password && password.length !== 0 ? this.kcAdminClient.users.resetPassword({
+      id: userId,
+      credential: {
+        temporary: true,
+        type: 'password',
+        value: password,
+      },
+    }) : Promise.reject('no password set');
+
+    const createKeycloakRoleRequest = (developerId) => this.getDevPortalClientUUID.pipe(map(clientUUID => this.kcAdminClient.clients.createRole({
+      id: clientUUID,
+      name: developerId
+    }))).toPromise();
+
+    const getRoleUUID = (clientUUID, roleName) => this.kcAdminClient.clients.findRole({
+      id: clientUUID,
+      roleName
+    }).then(roleObject => roleObject.id);
+
+    const addClientRoleMappingToUser = (userKeycloakUUID, clientUUID, roleUUID, roleName) => this.kcAdminClient.users.addClientRoleMappings({
+      id: userKeycloakUUID,
+      clientUniqueId: clientUUID,
+      roles: [{
+        id: roleUUID,
+        name: roleName
+      }]
+    });
+
+    return from(insertDeveloperToApiman.then(apimanDeveloperId =>
+      this.searchKeycloakUser(keycloakUser.username).then(foundUsers => {
+        let chain: Promise<string> = null;
+        if (foundUsers.length === 0) {
+          chain = addUserToKeycloak(keycloakUser)
+            .then(insertedUser => setPasswordForUser(insertedUser.id, keycloakUser.password)
+              .catch(reason => reason === 'no password set')
+              .then(() => Promise.resolve(insertedUser.id)));
+        } else {
+          chain = Promise.resolve(foundUsers[0].id);
+        }
+        return chain.then((insertedKeycloakUserId) => createKeycloakRoleRequest(apimanDeveloperId)
+          .then((roleObject) => this.getDevPortalClientUUID.toPromise().then(clientUUID =>
+              getRoleUUID(clientUUID, apimanDeveloperId)
+                .then(roleUUID => addClientRoleMappingToUser(insertedKeycloakUserId, clientUUID, roleUUID, apimanDeveloperId))
+            )
+          ));
+      })
+    ));
   }
 
   /**
@@ -234,13 +346,38 @@ export class ApiDataService {
     return this.http.put(url, developer);
   }
 
+  private isUserGeneratedFromDevPortal(user: UserRepresentation) {
+    return user.attributes && user.attributes.generatedFromDevPortal && user.attributes.generatedFromDevPortal.length > 0 && user.attributes.generatedFromDevPortal[0] === 'true';
+  }
+
   /**
    * Delete a developer
    * @param developer the developer to update
    */
   public deleteDeveloper(developer: Developer) {
     const url = this.apimanUiRestUrl + '/developers/' + developer.id;
-    return this.http.delete(url);
+    const deleteDeveloperFromApiman = this.http.delete(url);
+
+    const deleteKeycloakClientRole = from(this.getDevPortalClientUUID.pipe(mergeMap(clientId => this.kcAdminClient.clients.delRole({
+      id: clientId,
+      roleName: developer.id
+    }))));
+
+    const deleteKeycloakUser = from(this.kcAdminClient.users.find({
+      username: developer.name
+    }).then(users => {
+      if (users.length > 0) {
+        const userToDelete = users[0];
+        //delete user only if he was generated from dev portal
+        if (this.isUserGeneratedFromDevPortal(userToDelete)) {
+          return this.kcAdminClient.users.del({
+            id: userToDelete.id
+          });
+        }
+      }
+      return Promise.resolve();
+    }));
+    return forkJoin(deleteDeveloperFromApiman, deleteKeycloakClientRole, deleteKeycloakUser);
   }
 
   /**

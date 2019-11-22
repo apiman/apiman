@@ -1,11 +1,28 @@
 <h1>Create Developer</h1>
 <div class="wrapper">
-  <mat-form-field class="input-form-field">
-    <input matInput placeholder="Developer Name" [formControl]="name">
-  </mat-form-field><br/>
+  <form [formGroup]="userFormGroup">
+    <mat-form-field class="input-form-field">
+      <input matInput placeholder="Username" formControlName="username" (input)="checkPasswordRequired($event.target.value)" required>
+    </mat-form-field>
+    <mat-form-field class="input-form-field">
+      <input matInput placeholder="First name" formControlName="firstname">
+    </mat-form-field>
+    <mat-form-field class="input-form-field">
+      <input matInput placeholder="Last name" formControlName="lastname">
+    </mat-form-field>
+    <mat-form-field class="input-form-field">
+      <input matInput placeholder="Email" formControlName="email">
+    </mat-form-field>
+    <mat-form-field class="input-form-field">
+      <!-- use attr.disabled here because of formGroup: https://angular.io/guide/template-syntax -->
+      <input id="passwordField" matInput placeholder="Password" type="password" formControlName="password" [required]="isPasswordRequiredForInsert" [attr.disabled]="!isPasswordRequiredForInsert ? 'disabled' : null">
+    </mat-form-field>
+  </form>
+
+  <br/>
   <app-client-mapping #clientmapping></app-client-mapping>
   <p>
-    <button [disabled]="name.value.toString().length === 0 || clientMapping.assignedClients.length === 0" (click)="insertDeveloper()">Save</button>
+    <button [disabled]="!userFormGroup.valid || clientMapping.assignedClients.length === 0" (click)="insertDeveloper()">Save</button>
     <button routerLink="/admin">Cancel</button>
   </p>
 </div>
