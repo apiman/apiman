@@ -212,9 +212,6 @@ public class DefaultPluginRegistry implements IPluginRegistry {
 
         String pluginRelativePath = PluginUtils.getPluginRelativePath(coordinates);
         File pluginDir = new File(pluginsDir, pluginRelativePath);
-        if (!pluginDir.exists()) {
-            pluginDir.mkdirs();
-        }
         File pluginFile = new File(pluginDir, "plugin." + coordinates.getType()); //$NON-NLS-1$
 
         // Next try to load it from the plugin file registry
@@ -231,6 +228,10 @@ public class DefaultPluginRegistry implements IPluginRegistry {
                     handler.handle(AsyncResultImpl.<Plugin>create(error));
                 }
             }
+        }
+
+        if (!pluginDir.exists()) {
+            pluginDir.mkdirs();
         }
 
         // Next try to load it from the user's .m2 directory (copy it into the plugin file
