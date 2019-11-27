@@ -18,8 +18,11 @@ export class DeveloperListComponent implements OnInit {
   }
 
   public load() {
-    this.apiDataService.getAllDevelopers().pipe(mergeAll()).subscribe((developers) => {
-      this.developers.push(developers);
+    console.log('start loading developers');
+    this.developers = [];
+    this.apiDataService.getAllDevelopers().subscribe((developers) => {
+      console.log('Developer', developers);
+      this.developers = developers;
     });
   }
 

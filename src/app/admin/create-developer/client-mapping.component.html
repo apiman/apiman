@@ -7,8 +7,8 @@
     [cdkDropListConnectedTo]="[assignedClientList]"
     class="client-list"
     (cdkDropListDropped)="drop($event)">
-    <div class="client-box" *ngFor="let item of availableClients" cdkDrag>{{item.organizationName}}/{{item.name}}</div>
-    <div class="client-box" id="emptyClientInformation"  *ngIf="availableClients.length === 0">No clients there, use API-Mgmt to create some.</div>
+    <div class="client-box" *ngFor="let item of availableClients" cdkDrag>{{item.organizationId}}/{{item.clientId}}</div>
+    <div class="client-box" id="emptyClientInformation"  *ngIf="availableClients && availableClients.length === 0">No clients there, use API-Mgmt to create some.</div>
   </div>
 </div>
 
@@ -21,7 +21,7 @@
     [cdkDropListConnectedTo]="[availableClientList]"
     class="client-list"
     (cdkDropListDropped)="drop($event)">
-    <div class="client-box" *ngFor="let item of assignedClients" cdkDrag>{{item.organizationName}}/{{item.name}}</div>
-    <div id="dragClientInformation" class="client-box" *ngIf="assignedClients.length === 0"><span>Drag&Drop available clients here</span></div>
+    <div class="client-box" *ngFor="let item of assignedClients" cdkDrag>{{item.organizationId}}/{{item.clientId}}</div>
+    <div id="dragClientInformation" class="client-box" *ngIf="assignedClients && assignedClients.length === 0"><span>Drag&Drop available clients here</span></div>
   </div>
 </div>

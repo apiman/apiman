@@ -24,8 +24,8 @@ import { DeveloperListComponent } from './admin/developer-list.component';
 import { CreateDeveloperComponent } from './admin/create-developer/create-developer.component';
 import { ClientMappingComponent } from './admin/create-developer/client-mapping.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
-import { MatButtonModule } from '@angular/material';
-import { MatInputModule } from '@angular/material';
+import { MatButtonModule, MatInputModule } from '@angular/material';
+import { EditDeveloperComponent } from './admin/edit-developer/edit-developer.component';
 
 
 @NgModule({
@@ -37,7 +37,8 @@ import { MatInputModule } from '@angular/material';
     DeveloperComponent,
     DeveloperListComponent,
     CreateDeveloperComponent,
-    ClientMappingComponent
+    ClientMappingComponent,
+    EditDeveloperComponent
   ],
   imports: [
     BrowserModule,

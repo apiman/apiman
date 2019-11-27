@@ -202,6 +202,15 @@ export class ApiDataService {
   }
 
   /**
+   * Get developer by developer id
+   * @param developerId The developer id
+   */
+  public getDeveloper(developerId: string) {
+    const url = this.apimanUiRestUrl + '/developers/' + developerId;
+    return this.http.get(url) as Observable<Developer>;
+  }
+
+  /**
    * Get developer clients by developer id
    * @param developerId The developer Id
    */
@@ -342,8 +351,11 @@ export class ApiDataService {
    * @param developer the developer to update
    */
   public updateDeveloper(developer: Developer) {
-    const url = this.apimanUiRestUrl + '/developers';
-    return this.http.put(url, developer);
+    const url = this.apimanUiRestUrl + '/developers/' + developer.id;
+    return this.http.put(url, {
+      name: developer.name,
+      clients: developer.clients
+    });
   }
 
   private isUserGeneratedFromDevPortal(user: UserRepresentation) {

@@ -12,14 +12,14 @@ export function initializer(keycloak: KeycloakService): () => Promise<any> {
     initOptions: {
       onLoad: 'login-required',
       checkLoginIframe: false,
-      token: localStorage.getItem('apiman_keycloak_token'),
-      refreshToken: localStorage.getItem('apiman_keycloak_refresh_token')
+      token: sessionStorage.getItem('apiman_keycloak_token'),
+      refreshToken: sessionStorage.getItem('apiman_keycloak_refresh_token')
     },
     enableBearerInterceptor: true,
     bearerExcludedUrls: ['/assets', '/clients/public']
   }).then(success => {
     const keycloakInstance = keycloak.getKeycloakInstance();
-    localStorage.setItem('apiman_keycloak_token', keycloakInstance.token);
-    localStorage.setItem('apiman_keycloak_refresh_token', keycloakInstance.refreshToken);
+    sessionStorage.setItem('apiman_keycloak_token', keycloakInstance.token);
+    sessionStorage.setItem('apiman_keycloak_refresh_token', keycloakInstance.refreshToken);
   });
 }

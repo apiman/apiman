@@ -37,7 +37,7 @@ export class CreateDeveloperComponent {
     developerToCreate.name = this.userFormGroup.get('username').value;
     developerToCreate.clients = [];
     this.clientMapping.assignedClients.forEach(client => {
-      developerToCreate.clients.push(new ClientMappingImpl(client.id, client.organizationName));
+      developerToCreate.clients.push(new ClientMappingImpl(client.clientId, client.organizationId));
     });
 
     const keycloakUserToCreate = new KeycloakUserImpl();

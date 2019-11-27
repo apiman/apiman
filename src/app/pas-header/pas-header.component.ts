@@ -16,8 +16,8 @@ export class PasHeaderComponent implements OnInit {
   }
 
   public logout() {
-    localStorage.setItem('apiman_keycloak_token', '');
-    localStorage.setItem('apiman_keycloak_refresh_token', '');
+    sessionStorage.setItem('apiman_keycloak_token', '');
+    sessionStorage.setItem('apiman_keycloak_refresh_token', '');
     this.keycloak.getKeycloakInstance().logout();
   }
 

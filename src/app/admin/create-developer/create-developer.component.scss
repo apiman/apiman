@@ -9,6 +9,10 @@
   width: 100%;
 }
 
+#userForm {
+  min-height: 130px;
+}
+
 ::ng-deep .mat-form-field.mat-focused .mat-form-field-label {
   color: black!important;
 }
