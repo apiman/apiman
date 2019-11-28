@@ -2,22 +2,23 @@
 <div class="wrapper">
   <form id="userForm" [formGroup]="userFormGroup">
     <mat-form-field class="input-form-field">
-      <input matInput placeholder="Username" formControlName="username" (input)="checkPasswordRequired($event.target.value)" required>
+      <input matInput placeholder="Username" formControlName="username" (input)="usernameKeyUp.next($event.target.value)" required>
     </mat-form-field>
-    <span [hidden]="isPasswordRequiredForInsert">(You create a Developer for an existing API-Mgmt user.)</span>
+    <span [hidden]="this.checkDeveloperNotExists(this.userFormGroup.get('username').value)">(Developer already exists.)</span>
+    <span [hidden]="!this.checkDeveloperNotExists(this.userFormGroup.get('username').value) || isPasswordRequiredForInsert">(You create a Developer for an existing API-Mgmt user.)</span>
     <span [hidden]="!isPasswordRequiredForInsert">
       <mat-form-field class="input-form-field">
         <!-- use attr.disabled here because of formGroup: https://angular.io/guide/template-syntax -->
         <input id="passwordField" matInput placeholder="Password" type="password" formControlName="password" [required]="isPasswordRequiredForInsert" [attr.disabled]="!isPasswordRequiredForInsert ? 'disabled' : null">
       </mat-form-field>
       <mat-form-field class="input-form-field">
-        <input matInput placeholder="First name" formControlName="firstname">
+        <input matInput placeholder="First name" formControlName="firstname" [required]="isPasswordRequiredForInsert" [attr.disabled]="!isPasswordRequiredForInsert ? 'disabled' : null">
       </mat-form-field>
       <mat-form-field class="input-form-field">
-        <input matInput placeholder="Last name" formControlName="lastname">
+        <input matInput placeholder="Last name" formControlName="lastname" [required]="isPasswordRequiredForInsert" [attr.disabled]="!isPasswordRequiredForInsert ? 'disabled' : null">
       </mat-form-field>
       <mat-form-field class="input-form-field">
-        <input matInput placeholder="Email" formControlName="email">
+        <input matInput placeholder="Email" formControlName="email" [required]="isPasswordRequiredForInsert" [attr.disabled]="!isPasswordRequiredForInsert ? 'disabled' : null">
       </mat-form-field>
     </span>
   </form>
@@ -25,7 +26,7 @@
   <br/>
   <app-client-mapping #clientmapping></app-client-mapping>
   <p>
-    <button [disabled]="!userFormGroup.valid || clientMapping.assignedClients.length === 0" (click)="insertDeveloper()">Save</button>
+    <button [disabled]="!this.checkDeveloperNotExists(this.userFormGroup.get('username').value) || !userFormGroup.valid || clientMapping.assignedClients.length === 0" (click)="insertDeveloper()">Save</button>
     <button routerLink="/admin">Cancel</button>
   </p>
 </div>

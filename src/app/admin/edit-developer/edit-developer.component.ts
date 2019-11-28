@@ -1,8 +1,9 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
-import {ApiDataService, Developer} from '../../api-data.service';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Developer } from '../../api-data.service';
 import { ClientMappingComponent } from '../create-developer/client-mapping.component';
-import {timeInterval} from 'rxjs/operators';
+import { AdminService } from '../admin.service';
+import { DeveloperDataCacheService } from '../developer-data-cache.service';
 
 @Component({
   selector: 'app-edit-developer',
@@ -11,17 +12,17 @@ import {timeInterval} from 'rxjs/operators';
 })
 export class EditDeveloperComponent implements OnInit {
 
-  private developerId;
+  public developerId;
   private developer: Developer;
   public assignedClients;
 
   @ViewChild('clientmapping', {static: false}) clientMapping: ClientMappingComponent;
 
-  constructor(private apiDataService: ApiDataService, private route: ActivatedRoute, private router: Router) { }
+  constructor(private adminService: AdminService, private route: ActivatedRoute, private router: Router, private developerDataCache: DeveloperDataCacheService) { }
 
   ngOnInit() {
     this.developerId = this.route.snapshot.paramMap.get('developerId');
-    this.apiDataService.getDeveloper(this.developerId).subscribe(developer => {
+    this.adminService.getDeveloper(this.developerId).subscribe(developer => {
       this.developer = developer;
       this.assignedClients = developer.clients;
       this.clientMapping.loadClients();
@@ -30,9 +31,9 @@ export class EditDeveloperComponent implements OnInit {
 
   updateDeveloper() {
     if (this.developer && this.clientMapping.assignedClients.length > 0) {
-      return this.apiDataService.updateDeveloper(this.developer).subscribe(() => {
-        console.log('Update Developer done');
-        setTimeout(() => this.router.navigate(['/admin']), 500);
+      return this.adminService.updateDeveloper(this.developer).subscribe(() => {
+        this.developerDataCache.developers.splice(this.developerDataCache.developers.findIndex((d) => d.id === this.developer.id), 1, this.developer);
+        this.router.navigate(['/admin']);
       });
     }
   }

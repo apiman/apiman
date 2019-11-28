@@ -1,12 +1,15 @@
-import {Component, Input, OnInit, ViewChild} from '@angular/core';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {ApiDataService, Developer} from '../../api-data.service';
-import {DeveloperImpl} from '../../../developerImpl';
-import {DeveloperListComponent} from '../developer-list.component';
-import {ClientMappingComponent} from './client-mapping.component';
-import {ClientMappingImpl} from '../../../client-mapping-impl';
-import {Router} from '@angular/router';
-import {KeycloakUserImpl} from '../keycloak-user-impl';
+import { Component, Input, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { DeveloperImpl } from '../../../developerImpl';
+import { DeveloperListComponent } from '../developer-list.component';
+import { ClientMappingComponent } from './client-mapping.component';
+import { ClientMappingImpl } from '../../../client-mapping-impl';
+import { Router } from '@angular/router';
+import { KeycloakUserImpl } from '../keycloak-user-impl';
+import { AdminService } from '../admin.service';
+import { DeveloperDataCacheService } from '../developer-data-cache.service';
+import { Subject } from 'rxjs';
+import { debounceTime, map, mergeMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-create-developer',
@@ -17,7 +20,7 @@ export class CreateDeveloperComponent {
 
   public isPasswordRequiredForInsert = true;
 
-  //pattern allows only strings with characters a-z A-Z and 0-9
+  // pattern allows only strings with characters a-z A-Z and 0-9
   private nonSpecialCharacterPattern = Validators.pattern('[a-zA-Z0-9]+');
 
   public userFormGroup = new FormGroup({
@@ -30,7 +33,23 @@ export class CreateDeveloperComponent {
 
   @ViewChild('clientmapping', {static: false}) clientMapping: ClientMappingComponent;
 
-  constructor(private apiDataService: ApiDataService, private router: Router) { }
+  public usernameKeyUp = new Subject<KeyboardEvent>();
+  private userNameInputSubscription;
+
+  constructor(private adminService: AdminService, private router: Router, private developerDataCache: DeveloperDataCacheService) {  }
+
+  ngOnInit(): void {
+    this.userNameInputSubscription = this.usernameKeyUp
+      .pipe(
+        debounceTime(300),
+        mergeMap(username => this.adminService.isPasswordRequired(username)
+          .pipe(map(isRequired => this.isPasswordRequiredForInsert = isRequired))
+        )).subscribe();
+  }
+
+  ngOnDestroy(): void {
+    this.userNameInputSubscription.unsubscribe();
+  }
 
   insertDeveloper() {
     const developerToCreate = new DeveloperImpl();
@@ -47,15 +66,18 @@ export class CreateDeveloperComponent {
     keycloakUserToCreate.lastName = this.userFormGroup.get('lastname').value;
     keycloakUserToCreate.password = this.userFormGroup.get('password').value;
 
-    this.apiDataService.createNewDeveloper(developerToCreate, keycloakUserToCreate)
+    this.adminService.createNewDeveloper(developerToCreate, keycloakUserToCreate)
       .subscribe(createdDeveloper => {
         this.userFormGroup.reset();
         this.clientMapping.reset();
+        this.developerDataCache.developers.push(createdDeveloper);
         this.router.navigate(['/admin']);
       });
   }
 
-  checkPasswordRequired(username) {
-    return this.apiDataService.isPasswordRequired(username).then(isRequired => this.isPasswordRequiredForInsert = isRequired);
+  checkDeveloperNotExists(userName: string) {
+    return this.developerDataCache.developers
+      && this.developerDataCache.developers.find((d) => d.name.toLowerCase() === userName.toLowerCase()) === undefined;
   }
+
 }

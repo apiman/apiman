@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import {ApiDataService, ClientMapping, Developer} from '../api-data.service';
-import {mergeAll, mergeMap} from 'rxjs/operators';
+import { AdminService } from './admin.service';
+import { Developer } from '../api-data.service';
+import { DeveloperDataCacheService } from './developer-data-cache.service';
 
 @Component({
   selector: 'app-developer-list',
@@ -11,22 +12,26 @@ export class DeveloperListComponent implements OnInit {
 
   developers: Array<Developer> = [];
 
-  constructor(private apiDataService: ApiDataService) { }
+  constructor(private adminService: AdminService, private developerDataCache: DeveloperDataCacheService) { }
 
   ngOnInit() {
     this.load();
   }
 
   public load() {
-    console.log('start loading developers');
-    this.developers = [];
-    this.apiDataService.getAllDevelopers().subscribe((developers) => {
-      console.log('Developer', developers);
-      this.developers = developers;
-    });
+    // set data from cache
+    this.developers = this.developerDataCache.developers;
+    if (!this.developers) {
+      this.adminService.getAllDevelopers().subscribe((developers) => {
+        // set data to cache
+        this.developerDataCache.developers = developers;
+        // set data from cache
+        this.developers = this.developerDataCache.developers;
+      });
+    }
   }
 
   deleteDeveloper(developer: Developer) {
-    this.apiDataService.deleteDeveloper(developer).subscribe(response => this.developers.splice(this.developers.indexOf(developer), 1));
+    this.adminService.deleteDeveloper(developer).subscribe(response => this.developers.splice(this.developers.indexOf(developer), 1));
   }
 }

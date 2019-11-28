@@ -1,7 +1,8 @@
-import {Component, OnInit, Input, Output} from '@angular/core';
-import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
-import {ApiDataService, ClientBean, ClientMapping} from '../../api-data.service';
-import {map, mergeAll, mergeMap} from 'rxjs/operators';
+import { Component, OnInit, Input, Output } from '@angular/core';
+import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
+import { ApiDataService, ClientBean, ClientMapping } from '../../api-data.service';
+import { map } from 'rxjs/operators';
+import { AdminService } from '../admin.service';
 
 @Component({
   selector: 'app-client-mapping',
@@ -10,7 +11,7 @@ import {map, mergeAll, mergeMap} from 'rxjs/operators';
 })
 export class ClientMappingComponent implements OnInit {
 
-  constructor(private apiDataService: ApiDataService) { }
+  constructor(private adminService: AdminService) { }
 
   availableClients: Array<ClientMapping> = [];
 
@@ -22,7 +23,7 @@ export class ClientMappingComponent implements OnInit {
 
   loadClients() {
     const loadedAvailableClients = [];
-    this.apiDataService.getAllClients().pipe(map(client => {
+    this.adminService.getAllClients().pipe(map(client => {
       if (this.assignedClients && !this.assignedClients.find((c => c.organizationId === client.organizationId && c.clientId === client.id))) {
         loadedAvailableClients.push({
           clientId: client.id,

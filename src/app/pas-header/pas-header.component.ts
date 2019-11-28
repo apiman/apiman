@@ -6,14 +6,11 @@ import { KeycloakService } from 'keycloak-angular';
   templateUrl: './pas-header.component.html',
   styleUrls: ['./pas-header.component.scss']
 })
-export class PasHeaderComponent implements OnInit {
+export class PasHeaderComponent {
 
   public user: string = this.keycloak.getKeycloakInstance().profile.username;
 
   constructor(private keycloak: KeycloakService) { }
-
-  ngOnInit() {
-  }
 
   public logout() {
     sessionStorage.setItem('apiman_keycloak_token', '');
