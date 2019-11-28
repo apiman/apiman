@@ -6,11 +6,27 @@
   vertical-align: top;
 }
 
+.container-header {
+  padding: 8px;
+  color: #ffffff;
+  font-weight: 300;
+  font-size: 17pt;
+  border-bottom: 1px solid var(--e2e-bg-color);
+  background-color: var(--e2e-bg-color);
+  border-bottom: 3px solid #06618e;
+  display: flex;
+  justify-items: baseline;
+}
+
+.container-header mat-icon {
+  margin-top: 1px;
+  margin-right: 7px;
+}
+
 .client-list {
   border: solid 1px #ccc;
   min-height: 60px;
   background-color: #f5faff;
-  border-radius: 4px;
   overflow: hidden;
   display: block;
 }
