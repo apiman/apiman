@@ -11,6 +11,11 @@
     "overwriteHeaderValue": {
       "type": "boolean",
       "title": "Overwrite HTTP Header value"
+    },
+    "responseHeader": {
+      "type": "boolean",
+      "title": "Whether to also set the header in the outgoing response.",
+      "default": false
     }
   }
 }
