@@ -28,11 +28,15 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.scss",
-              "./node_modules/angular2-toaster/src/toaster.scss"
+              "src/styles/styles.scss",
+              "./node_modules/angular2-toaster/src/toaster.scss",
+              "./node_modules/swagger-ui-dist/swagger-ui.css",
+              "src/styles/swagger-custom-styles.css"
             ],
             "scripts": [
-              "./node_modules/hammerjs/hammer.min.js"
+              "./node_modules/hammerjs/hammer.min.js",
+              "./node_modules/swagger-ui-dist/swagger-ui-bundle.js",
+              "./node_modules/swagger-ui-dist/swagger-ui-standalone-preset.js"
             ]
           },
           "configurations": {
@@ -98,8 +102,10 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.scss",
-              "./node_modules/angular2-toaster/src/toaster.scss"
+              "src/styles/styles.scss",
+              "./node_modules/angular2-toaster/src/toaster.scss",
+              "./node_modules/swagger-ui-dist/swagger-ui.css",
+              "src/styles/swagger-custom-styles.css"
             ],
             "scripts": []
           }

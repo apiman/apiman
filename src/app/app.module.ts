@@ -28,6 +28,7 @@ import {MatButtonModule, MatInputModule, MatOptionModule, MatAutocompleteModule,
 import {EditDeveloperComponent} from './components/admin/edit-developer/edit-developer.component';
 import {NotAuthorizedComponent} from './components/not-authorized/not-authorized.component';
 import {ToasterModule} from 'angular2-toaster';
+import {SwaggerComponent} from './components/swagger/swagger.component';
 
 
 @NgModule({
@@ -41,6 +42,7 @@ import {ToasterModule} from 'angular2-toaster';
     CreateDeveloperComponent,
     ClientMappingComponent,
     EditDeveloperComponent,
+    SwaggerComponent,
     NotAuthorizedComponent
   ],
   imports: [

@@ -13,6 +13,7 @@ export interface ApiListElement {
   version: string;
   endpoint: string;
   organizationName: string;
+  swaggerURL: string;
 }
 
 @Component({
@@ -23,7 +24,7 @@ export interface ApiListElement {
 
 export class ApiListComponent implements OnChanges {
 
-  columnHeaders: string[] = ['ispublic', 'name', 'version', 'endpoint'];
+  columnHeaders: string[] = ['organization', 'name', 'version', 'endpoint', 'options'];
 
   apiData: Array<ApiListElement> = [];
 
@@ -98,7 +99,8 @@ export class ApiListComponent implements OnChanges {
       name: contract.apiName,
       version: contract.apiVersion,
       endpoint: this.buildApiEndpoint(gateway.endpoint, contract.apiOrganizationId, contract.apiId, contract.apiVersion, clientVersion.apiKey),
-      organizationName: contract.apiOrganizationId
+      organizationName: contract.apiOrganizationId,
+      swaggerURL: '/swagger/developer/' + this.developerId + '/organizations/' + contract.apiOrganizationId + '/apis/' + contract.apiId + '/versions/' + contract.apiVersion + '/apiKey/' + clientVersion.apiKey
     };
   }
 

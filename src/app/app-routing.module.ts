@@ -7,9 +7,15 @@ import {EditDeveloperComponent} from './components/admin/edit-developer/edit-dev
 import {DevportalGuard} from './auth/devportal.guard';
 import {AdminGuard} from './auth/admin.guard';
 import {NotAuthorizedComponent} from './components/not-authorized/not-authorized.component';
+import {SwaggerComponent} from './components/swagger/swagger.component';
 
 const routes: Routes = [
   {path: '', component: DeveloperComponent, canActivate: [DevportalGuard]},
+  {
+    path: 'swagger/developer/:developerId/organizations/:orgId/apis/:apiId/versions/:version/apiKey/:apiKey',
+    component: SwaggerComponent,
+    canActivate: [DevportalGuard]
+  },
   {
     path: 'admin',
     component: AdminComponent,

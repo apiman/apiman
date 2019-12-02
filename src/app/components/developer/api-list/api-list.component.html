@@ -7,13 +7,18 @@
     <th mat-header-cell *matHeaderCellDef>API Version</th>
     <td mat-cell *matCellDef="let element"> {{element.version}} </td>
   </ng-container>
-  <ng-container matColumnDef="ispublic">
+  <ng-container matColumnDef="organization">
     <th mat-header-cell *matHeaderCellDef>API Organization</th>
     <td mat-cell *matCellDef="let element"> {{element.organizationName}} </td>
   </ng-container>
   <ng-container matColumnDef="endpoint">
     <th mat-header-cell *matHeaderCellDef>Endpoint</th>
     <td mat-cell *matCellDef="let element"> {{element.endpoint}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="options">
+    <th mat-header-cell *matHeaderCellDef>Options</th>
+    <td mat-cell *matCellDef="let element"> <a [routerLink]="element.swaggerURL">Swagger</a> </td>
   </ng-container>
 
   <tr mat-header-row *matHeaderRowDef="columnHeaders"></tr>

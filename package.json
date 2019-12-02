@@ -29,6 +29,7 @@
     "keycloak-js": "^5.0.0",
     "ngx-logger": "^4.0.7",
     "rxjs": "^6.4.0",
+    "swagger-ui-dist": "^3.24.3",
     "tslib": "^1.10.0",
     "zone.js": "~0.9.1"
   },
