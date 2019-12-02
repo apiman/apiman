@@ -1,6 +1,7 @@
 package io.apiman.plugins.uniqueheader;
 
 import io.apiman.gateway.engine.beans.ApiRequest;
+import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.engine.beans.exceptions.ConfigurationParseException;
 import io.apiman.gateway.engine.beans.util.HeaderMap;
 import io.apiman.gateway.engine.policies.AbstractMappedPolicy;
@@ -12,6 +13,9 @@ import org.apache.commons.lang.StringUtils;
 
 import java.util.UUID;
 
+import static java.lang.Boolean.TRUE;
+import static java.util.Objects.nonNull;
+
 /**
  * A policy that sets a unique value in a named header.
  *
@@ -19,6 +23,7 @@ import java.util.UUID;
  */
 public class UniqueHeaderPolicy extends AbstractMappedPolicy<UniqueHeaderBean> {
     private static final Messages MESSAGES = new Messages("io.apiman.plugins.uniqueheader", "UniqueHeaderPolicy");
+    private static final String UNIQUE_HEADER_KEY = "unique.header.value";
 
     /**
      * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#getConfigurationClass()
@@ -50,8 +55,21 @@ public class UniqueHeaderPolicy extends AbstractMappedPolicy<UniqueHeaderBean> {
     protected void doApply(ApiRequest request, IPolicyContext context, UniqueHeaderBean config,
                            IPolicyChain<ApiRequest> chain) {
 
-        request.setHeaders(handleHeader(request.getHeaders(), config));
+        handleHeader(request.getHeaders(), context, config);
         chain.doApply(request);
+    }
+
+    @Override
+    protected void doApply(ApiResponse response, IPolicyContext context, UniqueHeaderBean config,
+                           IPolicyChain<ApiResponse> chain) {
+
+        if (TRUE.equals(config.getResponseHeader())) {
+            final String uniqueValue = context.getAttribute(UNIQUE_HEADER_KEY, null);
+            if (nonNull(uniqueValue)) {
+                response.getHeaders().put(config.getHeaderName(), uniqueValue);
+            }
+        }
+        super.doApply(response, context, config, chain);
     }
 
     /**
@@ -60,44 +78,23 @@ public class UniqueHeaderPolicy extends AbstractMappedPolicy<UniqueHeaderBean> {
      * value is true
      * @param headers provided in the request
      * @param config the policy's configuration information
-     * @return the header map containing the new header
      */
-    protected HeaderMap handleHeader(HeaderMap headers, UniqueHeaderBean config) {
-        if(!config.isOverwriteHeaderValue()){
-            if(!isHeaderPresent(headers, config)){
-                return putHeader(headers, config);
-            }
-            return headers;
+    private void handleHeader(HeaderMap headers, IPolicyContext context, UniqueHeaderBean config) {
+        String headerValue = null;
+        if (!config.isOverwriteHeaderValue()) {
+            headerValue = headers.get(config.getHeaderName());
         }
-
-        return putHeader(headers, config);
-    }
-
-    /**
-     * Check if the expected header was provided
-     * @param headers provided in the request
-     * @param config the policy's configuration information
-     * @return true if the header is present
-     */
-    protected boolean isHeaderPresent(HeaderMap headers, UniqueHeaderBean config) {
-        return headers.containsKey(config.getHeaderName());
-    }
-
-    /**
-     * Adds a new header into the request.getHeaders()
-     * @param headerMap the request headers
-     * @param config the policy's configuration information
-     * @return the header map containing the new added header
-     */
-    protected HeaderMap putHeader(HeaderMap headerMap, UniqueHeaderBean config) {
-        headerMap.put(config.getHeaderName(), generateUniqueString());
-        return headerMap;
+        if (StringUtils.isBlank(headerValue)) {
+            headerValue = generateUniqueString();
+        }
+        headers.put(config.getHeaderName(), headerValue);
+        context.setAttribute(UNIQUE_HEADER_KEY, headerValue);
     }
 
     /**
      * @return a unique String to set in the header
      */
-    protected String generateUniqueString() {
+    private String generateUniqueString() {
         return UUID.randomUUID().toString();
     }
 }

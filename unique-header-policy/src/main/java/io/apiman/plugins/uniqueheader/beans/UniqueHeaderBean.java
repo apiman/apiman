@@ -14,7 +14,7 @@ import java.io.Serializable;
  * @author Pete Cornish {@literal <outofcoffee@gmail.com>}
  */
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
-@JsonPropertyOrder({"headerName", "overwriteHeaderValue"})
+@JsonPropertyOrder({"headerName", "overwriteHeaderValue", "responseHeader"})
 public class UniqueHeaderBean implements Serializable {
     /**
      * The name of the HTTP Header to set.
@@ -28,10 +28,18 @@ public class UniqueHeaderBean implements Serializable {
     @JsonProperty("overwriteHeaderValue")
     private boolean overwriteHeaderValue = false;
 
+    /**
+     * Whether to also set the header in the outgoing response.
+     */
+    @JsonProperty("responseHeader")
+    private Boolean responseHeader = false;
+
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
                 .append(headerName)
+                .append(overwriteHeaderValue)
+                .append(responseHeader)
                 .toHashCode();
     }
 
@@ -46,6 +54,8 @@ public class UniqueHeaderBean implements Serializable {
         final UniqueHeaderBean rhs = ((UniqueHeaderBean) other);
         return new EqualsBuilder()
                 .append(headerName, rhs.headerName)
+                .append(overwriteHeaderValue, rhs.overwriteHeaderValue)
+                .append(responseHeader, rhs.responseHeader)
                 .isEquals();
     }
 
@@ -63,5 +73,13 @@ public class UniqueHeaderBean implements Serializable {
 
     public void setOverwriteHeaderValue(boolean overwriteHeaderValue) {
         this.overwriteHeaderValue = overwriteHeaderValue;
+    }
+
+    public Boolean getResponseHeader() {
+        return responseHeader;
+    }
+
+    public void setResponseHeader(Boolean responseHeader) {
+        this.responseHeader = responseHeader;
     }
 }

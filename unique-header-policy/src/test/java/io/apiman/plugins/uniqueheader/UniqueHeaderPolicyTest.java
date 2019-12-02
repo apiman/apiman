@@ -21,7 +21,7 @@ import static org.junit.Assert.*;
 @SuppressWarnings("nls")
 @TestingPolicy(UniqueHeaderPolicy.class)
 public class UniqueHeaderPolicyTest extends ApimanPolicyTest {
-    private static final String X_CORRELATION_ID = "X-CorrelationID";
+    private static final String HEADER_NAME = "X-CorrelationID";
 
     private static ObjectMapper jsonMapper;
 
@@ -36,8 +36,6 @@ public class UniqueHeaderPolicyTest extends ApimanPolicyTest {
     /**
      * Expects that a unique value is set with the HTTP Header name 'X-CorrelationID'.
      * Missing overwriteHeaderValue property should keep the provided header value
-     *
-     * @throws Throwable
      */
     @SuppressWarnings("unchecked")
     @Test
@@ -46,7 +44,7 @@ public class UniqueHeaderPolicyTest extends ApimanPolicyTest {
     public void testUniqueValueSet() throws Throwable {
         final String correlationId = UUID.randomUUID().toString();
         final PolicyTestRequest request = PolicyTestRequest.build(PolicyTestRequestType.GET, "/example")
-                                                            .header(X_CORRELATION_ID, correlationId);
+                                                            .header(HEADER_NAME, correlationId);
         final PolicyTestResponse response = send(request);
 
         assertEquals(HttpURLConnection.HTTP_OK, response.code());
@@ -57,8 +55,8 @@ public class UniqueHeaderPolicyTest extends ApimanPolicyTest {
         final Map<String, Object> headers = (Map<String, Object>) responseAsMap.get("headers");
         assertNotNull(headers);
         assertEquals(1, headers.size());
-        assertNotNull(headers.get(X_CORRELATION_ID));
-        assertEquals(correlationId, headers.get(X_CORRELATION_ID));
+        assertNotNull(headers.get(HEADER_NAME));
+        assertEquals(correlationId, headers.get(HEADER_NAME));
     }
 
     /**
@@ -74,7 +72,7 @@ public class UniqueHeaderPolicyTest extends ApimanPolicyTest {
     public void testOverwriteExistentHeaderValue() throws Throwable {
         final String correlationId = UUID.randomUUID().toString();
         final PolicyTestRequest request = PolicyTestRequest.build(PolicyTestRequestType.GET, "/example")
-                                                            .header(X_CORRELATION_ID, correlationId);
+                                                            .header(HEADER_NAME, correlationId);
         final PolicyTestResponse response = send(request);
 
         assertEquals(HttpURLConnection.HTTP_OK, response.code());
@@ -85,8 +83,8 @@ public class UniqueHeaderPolicyTest extends ApimanPolicyTest {
         final Map<String, Object> headers = (Map<String, Object>) responseAsMap.get("headers");
         assertNotNull(headers);
         assertEquals(1, headers.size());
-        assertNotNull(headers.get(X_CORRELATION_ID));
-        assertNotEquals(correlationId, headers.get(X_CORRELATION_ID));
+        assertNotNull(headers.get(HEADER_NAME));
+        assertNotEquals(correlationId, headers.get(HEADER_NAME));
     }
 
     /**
@@ -102,7 +100,7 @@ public class UniqueHeaderPolicyTest extends ApimanPolicyTest {
     public void testNotOverwriteExistentHeaderValue() throws Throwable {
         final String correlationId = UUID.randomUUID().toString();
         final PolicyTestRequest request = PolicyTestRequest.build(PolicyTestRequestType.GET, "/example")
-                                                            .header(X_CORRELATION_ID, correlationId);
+                                                            .header(HEADER_NAME, correlationId);
         final PolicyTestResponse response = send(request);
 
         assertEquals(HttpURLConnection.HTTP_OK, response.code());
@@ -113,14 +111,30 @@ public class UniqueHeaderPolicyTest extends ApimanPolicyTest {
         final Map<String, Object> headers = (Map<String, Object>) responseAsMap.get("headers");
         assertNotNull(headers);
         assertEquals(1, headers.size());
-        assertNotNull(headers.get(X_CORRELATION_ID));
-        assertEquals(correlationId, headers.get(X_CORRELATION_ID));
+        assertNotNull(headers.get(HEADER_NAME));
+        assertEquals(correlationId, headers.get(HEADER_NAME));
+    }
+
+    /**
+     * Expects that a unique value is set in the response with the HTTP Header name 'X-CorrelationID'.
+     */
+    @Test
+    @Configuration(classpathConfigFile = "response-header-config.json")
+    @BackEndApi(EchoBackEndApi.class)
+    public void testResponseHeaderSet() throws Throwable {
+        final PolicyTestRequest request = PolicyTestRequest.build(PolicyTestRequestType.GET, "/example");
+        final PolicyTestResponse response = send(request);
+
+        assertEquals(HttpURLConnection.HTTP_OK, response.code());
+        assertNotNull(response.body());
+
+        final Map<String, String> headers = response.headers().toMap();
+        assertNotNull(headers);
+        assertNotNull(headers.get(HEADER_NAME));
     }
 
     /**
      * Expects that a {@link ConfigurationParseException} is thrown if the header name configuration item is not set.
-     *
-     * @throws Throwable
      */
     @Test(expected = ConfigurationParseException.class)
     @Configuration(classpathConfigFile = "empty-config.json")
