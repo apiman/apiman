@@ -1,8 +1,17 @@
+#!/usr/bin/env groovy
+
+@Library('jenkins-jira-integration@dev') _
+
 pipeline {
-  agent any
+
+  agent {
+    node {
+      label 'cscabbia'
+    }
+  }
 
   tools {
-    nodejs "Node.js 10.16.2"
+    nodejs "10"
   }
 
   options {
@@ -11,66 +20,130 @@ pipeline {
   }
 
   environment {
-    UNIX = isUnix()
+    // Snippet taken from https://gist.github.com/DarrenN/8c6a5b969481725a4413
+    PACKAGE_VERSION = sh(script: 'cat package.json | grep version | head -1 | awk -F= "{ print $2 }" | sed \'s/[version:,\",]//g\' | tr -d \'[[:space:]]\'', returnStdout: true)
+    // Snippet taken from https://issues.jenkins-ci.org/browse/JENKINS-44449
+    GIT_COMMIT_SHORT = sh(script: "printf \$(git rev-parse --short=7 ${GIT_COMMIT})", returnStdout: true)
   }
 
   stages {
     stage('Start up') {
       steps {
-        runCmd "npm config set registry https://gitlab.scheer-group.com:8080/repository/npm_group"
+        sh "npm config set registry https://gitlab.scheer-group.com:8080/repository/npm_group"
       }
     }
 
-    stage('Build PAS Nightly') {
+    stage('Clean') {
+      steps {
+        sh 'git clean -xdf'
+      }
+    }
+
+    stage('Build devportal') {
+      steps {
+        sh "npm install"
+        sh "npm run build"
+      }
+    }
+
+    stage('Build docker image') {
+      steps {
+        sh """
+          docker build -t api-mgmt/devportal:${PACKAGE_VERSION} .
+          docker image save api-mgmt/devportal:${PACKAGE_VERSION} -o api-mgmt-devportal-${PACKAGE_VERSION}-overlay.tar
+        """
+      }
+    }
+
+    stage('Archive builds') {
       when {
         not {
-          branch 'release/*'
+          branch '**/e2e_release'
         }
       }
-
       steps {
-        runCmd "npm install"
-        runCmd "npm run build"
-        }
+        sh "rename.ul overlay ${GIT_COMMIT_SHORT} *.tar"
+        archiveArtifacts artifacts: '*.tar'
       }
-    stage('Build container image') {
-        steps {
-          sh 'docker build -t api-mgmt/devportal .'
-          dir('release') {
-            sh 'docker save --output apimgmt-dev-portal-docker-image.tar api-mgmt/devportal'
-          }
-        }
     }
 
-    stage('Archive container image') {
+    stage('Archive release builds') {
+      when {
+        anyOf {
+          branch '**/e2e_release'
+        }
+      }
       steps {
-        archiveArtifacts artifacts: 'release/*.tar'
+        sh 'rename.ul -- "-overlay" "" *.tar'
+        archiveArtifacts artifacts: '*.tar'
+      }
+    }
 
-        dir('release') {
-          deleteDir()
+    stage('Publish nightly builds to NAS1/Nexus') {
+      when {
+        anyOf {
+          branch '**/e2e_master'
+        }
+      }
+      steps {
+        cifsPublisher alwaysPublishFromMaster: false, continueOnError: false, failOnError: false,
+          paramPublish: null, masterNodeName: '',
+          publishers: [[configName: 'NAS1', transfers:
+              [
+                [sourceFiles    : '*.tar',
+                 removePrefix   : '',
+                 remoteDirectory: "api-mgmt/nightlyBuilds/${PACKAGE_VERSION}-${GIT_COMMIT_SHORT}"]
+              ]
+           ]]
+
+        withDockerRegistry([credentialsId: 'nexus', url: "https://gitlab.scheer-group.com:8080"]) {
+          sh './ci/publish-images.sh ${PACKAGE_VERSION}'
+        }
+      }
+    }
+
+    stage('Publish release builds to NAS1/Nexus') {
+      when {
+        anyOf {
+          branch '**/e2e_release'
+        }
+      }
+      steps {
+        cifsPublisher alwaysPublishFromMaster: false, continueOnError: false, failOnError: false,
+          paramPublish: null, masterNodeName: '',
+          publishers: [[configName: 'NAS1', transfers:
+              [
+                [sourceFiles    : '*.tar',
+                 removePrefix   : '',
+                 remoteDirectory: "api-mgmt/${PACKAGE_VERSION}"]
+              ]
+           ]]
+
+        withDockerRegistry([credentialsId: 'nexus', url: "https://gitlab.scheer-group.com:8080"]) {
+          sh './ci/publish-images.sh ${PACKAGE_VERSION} release'
         }
       }
     }
 
     stage('Remove container image') {
-        steps {
-          sh 'docker image rm -f api-mgmt/devportal'
-        }
+      steps {
+        sh "docker image rm -f api-mgmt/devportal:${PACKAGE_VERSION}"
       }
-
+    }
 
     stage('Tear down') {
       steps {
-        runCmd "npm config rm registry"
-
-        dir('dist') {
-          deleteDir()
-        }
+        sh "npm config rm registry"
       }
     }
   }
 
   post {
+    always {
+      script {
+        jenkinsJiraIntegration(['JiraSiteName': 'Jira'])
+      }
+    }
     unstable {
       emailext to: 'benjamin.kihm@scheer-group.com',
       recipientProviders: [[$class: 'CulpritsRecipientProvider']],
@@ -91,13 +164,5 @@ pipeline {
       subject: '${DEFAULT_SUBJECT}',
       body: '${DEFAULT_CONTENT}'
     }
-  }
-}
-
-void runCmd(cmd) {
-  if (env.UNIX == 'true') {
-    sh cmd
-  } else {
-    bat cmd
   }
 }
