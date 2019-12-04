@@ -26,6 +26,8 @@ import { ClientMappingComponent } from './admin/create-developer/client-mapping.
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatButtonModule, MatInputModule } from '@angular/material';
 import { EditDeveloperComponent } from './admin/edit-developer/edit-developer.component';
+import { NotAuthorizedComponent } from './not-authorized/not-authorized.component';
+import { ToasterModule } from 'angular2-toaster';
 
 
 @NgModule({
@@ -38,7 +40,8 @@ import { EditDeveloperComponent } from './admin/edit-developer/edit-developer.co
     DeveloperListComponent,
     CreateDeveloperComponent,
     ClientMappingComponent,
-    EditDeveloperComponent
+    EditDeveloperComponent,
+    NotAuthorizedComponent
   ],
   imports: [
     BrowserModule,
@@ -52,7 +55,8 @@ import { EditDeveloperComponent } from './admin/edit-developer/edit-developer.co
     ReactiveFormsModule,
     DragDropModule,
     MatButtonModule,
-    MatInputModule
+    MatInputModule,
+    ToasterModule.forRoot(),
   ],
   providers: [
     {

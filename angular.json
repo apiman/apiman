@@ -28,7 +28,8 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.scss"
+              "src/styles.scss",
+              "./node_modules/angular2-toaster/src/toaster.scss"
             ],
             "scripts": [
               "./node_modules/hammerjs/hammer.min.js"
@@ -97,7 +98,8 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.scss"
+              "src/styles.scss",
+              "./node_modules/angular2-toaster/src/toaster.scss"
             ],
             "scripts": []
           }
