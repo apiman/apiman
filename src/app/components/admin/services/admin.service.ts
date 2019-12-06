@@ -58,7 +58,7 @@ export class AdminService {
         return forkJoin(this.keycloak.findExistingOrCreateUser(keycloakUserToInsert)
           .pipe(mergeMap((insertedKeycloakUser) =>
             // 3. add devPortal role and add client role to keycloak user
-            forkJoin(this.keycloak.addDevPortalRoleToUser(insertedKeycloakUser),
+            forkJoin(this.keycloak.addDevPortalGroupToUser(insertedKeycloakUser),
               this.keycloak.addClientRoleToUser(insertedKeycloakUser, developerInserted.id))
           )))
           .pipe(map(() => developerInserted));

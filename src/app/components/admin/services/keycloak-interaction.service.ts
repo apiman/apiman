@@ -45,6 +45,14 @@ export class KeycloakInteractionService {
   }
 
   /**
+   * Get API-Mgmt-Devportal-Users Group
+   */
+  private getDevPortalUserGroup() {
+    return from(this.kcAdminClient.groups.find({search: 'API-Mgmt-Devportal-Users'}))
+      .pipe(map(groups => groups.length > 0 ? groups[0] : undefined));
+  }
+
+  /**
    * Searchs a user from keycloak
    * @param username the keycloak username
    */
@@ -158,7 +166,13 @@ export class KeycloakInteractionService {
       })));
   }
 
-  removeRoleMapping(userUUID, roleUUID, roleName) {
+  /**
+   * Remove Role Mapping from user
+   * @param userUUID user UUID
+   * @param roleUUID role UUID
+   * @param roleName role name
+   */
+  private removeRoleMapping(userUUID, roleUUID, roleName) {
     return from(this.kcAdminClient.users.delRealmRoleMappings({
       id: userUUID,
       roles: [{
@@ -169,12 +183,47 @@ export class KeycloakInteractionService {
   }
 
   /**
+   * Remove Group Mapping from user
+   * @param userUUID user UUID
+   * @param groupUUID group UUID
+   */
+  private removeGroupMapping(userUUID, groupUUID) {
+    return from(this.kcAdminClient.users.delFromGroup({
+      id: userUUID,
+      groupId: groupUUID
+    }));
+  }
+
+  /**
    * Remove devportal role from user
    * @param user the user
    */
   public removeDevPortalRoleFromUser(user) {
     return this.getDevPortalUserRole()
       .pipe(mergeMap(devPortalUserRole => this.removeRoleMapping(user.id, devPortalUserRole.id, devPortalUserRole.name)));
+  }
+
+  /**
+   * Add User to API-Mgmt-Devportal-Users group
+   * @param user the user
+   */
+  public addDevPortalGroupToUser(user) {
+    return this.getDevPortalUserGroup().pipe(mergeMap(devPortalUserGroup => this.kcAdminClient.users.addToGroup({
+      id: user.id,
+      groupId: devPortalUserGroup.id
+    })));
+  }
+
+  /**
+   * Remove User from API-Mgmt-Devportal-Users group
+   * @param user the user
+   */
+  public removeDevPortalGroupFromUser(user) {
+    return this.getDevPortalUserGroup()
+      .pipe(mergeMap(devPortalUserGroup => this.removeGroupMapping(user.id, devPortalUserGroup.id)))
+      // removeGroupMapping returns GroupRepresentation which is not needed
+      // and should be skipped because of typing errors of method this.deleteUser:
+      .pipe(map((groups) => {}));
   }
 
   /**
@@ -243,10 +292,9 @@ export class KeycloakInteractionService {
           return this.deleteUserById(userToDelete.id);
         } else {
           // remove only devportaluser role from user if he was not generated from dev portal
-          return this.removeDevPortalRoleFromUser(userToDelete);
+          return this.removeDevPortalGroupFromUser(userToDelete);
         }
       }
     }));
   }
-
 }
