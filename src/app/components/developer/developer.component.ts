@@ -13,7 +13,7 @@ export class DeveloperComponent {
 
   constructor(private keycloak: KeycloakService) {
     // get keycloak client roles of devportal
-    const resourceAccess = this.keycloak.getKeycloakInstance().tokenParsed.resource_access['apiman-devportal'];
+    const resourceAccess = this.keycloak.getKeycloakInstance().tokenParsed.resource_access['devportal'];
     if (resourceAccess && resourceAccess.roles) {
       this.developers = resourceAccess.roles;
     }

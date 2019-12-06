@@ -7,7 +7,7 @@ export function initializer(keycloak: KeycloakService): () => Promise<any> {
     config: {
       url: environment.keycloakAuthUrl,
       realm: 'Apiman',
-      clientId: 'apiman-devportal'
+      clientId: 'devportal'
     },
     initOptions: {
       onLoad: 'login-required',

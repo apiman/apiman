@@ -26,12 +26,12 @@ export class KeycloakInteractionService {
   }
 
   /**
-   * Get UUID of apiman-devportal client
+   * Get UUID of devportal client
    */
   private getDevPortalClientUUID() {
     return from(this.kcAdminClient.clients.find())
       .pipe(mergeAll())
-      .pipe(single(client => client.clientId === 'apiman-devportal'), map(client => client.id))
+      .pipe(single(client => client.clientId === 'devportal'), map(client => client.id))
       .pipe(share()); // fire only once and cache the result for other subscribers
   }
 
