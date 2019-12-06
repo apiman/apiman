@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { AdminService } from './admin.service';
-import { Developer } from '../api-data.service';
-import { DeveloperDataCacheService } from './developer-data-cache.service';
+import { AdminService } from './services/admin.service';
+import { Developer } from '../../services/api-data.service';
+import { DeveloperDataCacheService } from './services/developer-data-cache.service';
 
 @Component({
   selector: 'app-developer-list',

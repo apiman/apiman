@@ -1,4 +1,4 @@
-import {ClientMapping} from './app/api-data.service';
+import {ClientMapping} from '../services/api-data.service';
 
 export class ClientMappingImpl implements ClientMapping{
   clientId: string;

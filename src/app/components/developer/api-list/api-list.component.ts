@@ -1,7 +1,7 @@
 import { Component, Input, SimpleChanges, OnChanges} from '@angular/core';
 import {forkJoin, Observable, from, pipe} from 'rxjs';
 import {map, mergeMap, toArray, mergeAll} from 'rxjs/operators';
-import {ApiDataService, ApiVersion, Client, Contract} from '../api-data.service';
+import {ApiDataService, ApiVersion, Client, Contract} from '../../../services/api-data.service';
 import {element} from 'protractor';
 import {emit} from 'cluster';
 
@@ -14,7 +14,7 @@ export interface ApiListElement {
 }
 
 @Component({
-  selector: 'api-list',
+  selector: 'app-api-list',
   templateUrl: './api-list.component.html',
   styleUrls: ['./api-list.component.scss']
 })

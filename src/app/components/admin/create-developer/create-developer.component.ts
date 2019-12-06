@@ -1,13 +1,13 @@
 import { Component, Input, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { DeveloperImpl } from '../../../developerImpl';
+import { DeveloperImpl } from '../../../type-definitions/developerImpl';
 import { DeveloperListComponent } from '../developer-list.component';
 import { ClientMappingComponent } from './client-mapping.component';
-import { ClientMappingImpl } from '../../../client-mapping-impl';
+import { ClientMappingImpl } from '../../../type-definitions/client-mapping-impl';
 import { Router } from '@angular/router';
-import { KeycloakUserImpl } from '../keycloak-user-impl';
-import { AdminService } from '../admin.service';
-import { DeveloperDataCacheService } from '../developer-data-cache.service';
+import { KeycloakUserImpl } from '../edit-developer/keycloak-user-impl';
+import { AdminService } from '../services/admin.service';
+import { DeveloperDataCacheService } from '../services/developer-data-cache.service';
 import { Subject } from 'rxjs';
 import { debounceTime, map, mergeMap } from 'rxjs/operators';
 

@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@angular/core';
 import { forkJoin, Observable } from 'rxjs';
 import { map, mergeMap } from 'rxjs/operators';
 import UserRepresentation from 'keycloak-admin/lib/defs/userRepresentation';
-import { ClientSearchResult, Developer, KeycloakUser } from '../api-data.service';
+import { ClientSearchResult, Developer, KeycloakUser } from '../../../services/api-data.service';
 import { HttpClient } from '@angular/common/http';
 import { KeycloakInteractionService } from './keycloak-interaction.service';
 

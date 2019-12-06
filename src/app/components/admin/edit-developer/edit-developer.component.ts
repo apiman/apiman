@@ -1,9 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Developer } from '../../api-data.service';
+import { Developer } from '../../../services/api-data.service';
 import { ClientMappingComponent } from '../create-developer/client-mapping.component';
-import { AdminService } from '../admin.service';
-import { DeveloperDataCacheService } from '../developer-data-cache.service';
+import { AdminService } from '../services/admin.service';
+import { DeveloperDataCacheService } from '../services/developer-data-cache.service';
 
 @Component({
   selector: 'app-edit-developer',

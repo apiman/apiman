@@ -1,4 +1,4 @@
-import {KeycloakUser} from '../api-data.service';
+import {KeycloakUser} from '../../../services/api-data.service';
 
 export class KeycloakUserImpl implements KeycloakUser {
   email: string;

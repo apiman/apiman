@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { AdminComponent } from './admin/admin.component';
-import { DeveloperComponent } from './developer/developer.component';
-import { CreateDeveloperComponent } from './admin/create-developer/create-developer.component';
-import { EditDeveloperComponent } from './admin/edit-developer/edit-developer.component';
+import { AdminComponent } from './components/admin/admin.component';
+import { DeveloperComponent } from './components/developer/developer.component';
+import { CreateDeveloperComponent } from './components/admin/create-developer/create-developer.component';
+import { EditDeveloperComponent } from './components/admin/edit-developer/edit-developer.component';
 import { DevportalGuard } from './auth/devportal.guard';
 import { AdminGuard } from './auth/admin.guard';
-import {NotAuthorizedComponent} from './not-authorized/not-authorized.component';
+import {NotAuthorizedComponent} from './components/not-authorized/not-authorized.component';
 
 const routes: Routes = [
   { path: '', component: DeveloperComponent, canActivate: [DevportalGuard] },

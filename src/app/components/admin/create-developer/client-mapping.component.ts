@@ -1,8 +1,8 @@
 import { Component, OnInit, Input, Output } from '@angular/core';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
-import { ApiDataService, ClientBean, ClientMapping } from '../../api-data.service';
+import { ApiDataService, ClientBean, ClientMapping } from '../../../services/api-data.service';
 import { map } from 'rxjs/operators';
-import { AdminService } from '../admin.service';
+import { AdminService } from '../services/admin.service';
 
 @Component({
   selector: 'app-client-mapping',
