@@ -8,8 +8,10 @@ import { Router } from '@angular/router';
 import { KeycloakUserImpl } from '../edit-developer/keycloak-user-impl';
 import { AdminService } from '../services/admin.service';
 import { DeveloperDataCacheService } from '../services/developer-data-cache.service';
-import { Subject } from 'rxjs';
-import { debounceTime, map, mergeMap } from 'rxjs/operators';
+import {Observable, Subject} from 'rxjs';
+import {debounceTime, map, mergeMap, startWith} from 'rxjs/operators';
+import {Toast, ToasterService} from 'angular2-toaster';
+import UserRepresentation from 'keycloak-admin/lib/defs/userRepresentation';
 
 @Component({
   selector: 'app-create-developer',
@@ -17,8 +19,6 @@ import { debounceTime, map, mergeMap } from 'rxjs/operators';
   styleUrls: ['./create-developer.component.scss']
 })
 export class CreateDeveloperComponent {
-
-  public isPasswordRequiredForInsert = true;
 
   // pattern allows only strings with characters a-z A-Z and 0-9
   private nonSpecialCharacterPattern = Validators.pattern('[a-zA-Z0-9]+');
@@ -36,19 +36,28 @@ export class CreateDeveloperComponent {
   public usernameKeyUp = new Subject<KeyboardEvent>();
   private userNameInputSubscription;
 
-  constructor(private adminService: AdminService, private router: Router, private developerDataCache: DeveloperDataCacheService) {  }
+  public keycloakUsers: Array<UserRepresentation>;
+  public filteredKeycloakUsers: Array<UserRepresentation>;
+
+  constructor(private adminService: AdminService, private router: Router, private developerDataCache: DeveloperDataCacheService, private toasterService: ToasterService) {  }
 
   ngOnInit(): void {
+    this.adminService.getKeycloakUsers().subscribe(keycloakUsers => {
+      this.keycloakUsers = keycloakUsers;
+      this.filteredKeycloakUsers = keycloakUsers.filter((user => this.checkDeveloperNotExists(user.username)));
+    });
+
     this.userNameInputSubscription = this.usernameKeyUp
-      .pipe(
-        debounceTime(300),
-        mergeMap(username => this.adminService.isPasswordRequired(username)
-          .pipe(map(isRequired => this.isPasswordRequiredForInsert = isRequired))
-        )).subscribe();
+      .pipe(debounceTime(300), map(username => this.filterKeycloakUser(username)))
+      .subscribe();
   }
 
   ngOnDestroy(): void {
     this.userNameInputSubscription.unsubscribe();
+  }
+
+  private filterKeycloakUser(value) {
+    this.filteredKeycloakUsers = this.keycloakUsers.filter((u) => this.checkDeveloperNotExists(u.username) && u.username.toLowerCase().includes(value.toLowerCase()));
   }
 
   insertDeveloper() {
@@ -71,13 +80,37 @@ export class CreateDeveloperComponent {
         this.userFormGroup.reset();
         this.clientMapping.reset();
         this.developerDataCache.developers.push(createdDeveloper);
+        console.log('pushed developer to cache', createdDeveloper);
         this.router.navigate(['/admin']);
+      }, error => {
+        this.adminService.rollbackDeveloperCreation(developerToCreate, keycloakUserToCreate)
+          .subscribe(rollbackResponse => console.log('Rollback executed', rollbackResponse));
+        this.developerDataCache.developers.splice(this.developerDataCache.developers
+          .findIndex(developer => developer.name.toLowerCase() === developerToCreate.name.toLowerCase()), 1);
+
+        console.error('Error creating developer', error);
+        const errorToast: Toast = {
+          type: 'error',
+          body: error.message ? error.message : error.error.message,
+          timeout: 30000,
+          showCloseButton: true
+        };
+        this.toasterService.pop(errorToast);
       });
   }
 
-  checkDeveloperNotExists(userName: string) {
+  checkDeveloperNotExists(username: string) {
     return this.developerDataCache.developers
-      && this.developerDataCache.developers.find((d) => d.name.toLowerCase() === userName.toLowerCase()) === undefined;
+      && this.developerDataCache.developers.find((d) => d.name.toLowerCase() === username.toLowerCase()) === undefined;
+  }
+
+  checkKeycloakUserNotExists(username) {
+    return this.keycloakUsers
+      && this.keycloakUsers.find((u) => u.username.toLowerCase() === username.toLowerCase()) === undefined;
+  }
+
+  isPasswordRequiredForInsert(username) {
+    return this.checkKeycloakUserNotExists(username);
   }
 
 }

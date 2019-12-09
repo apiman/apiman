@@ -53,10 +53,17 @@ export class KeycloakInteractionService {
   }
 
   /**
+   * Get all keycloak users
+   */
+  public getAllUsers() {
+    return from(this.kcAdminClient.users.find());
+  }
+
+  /**
    * Searchs a user from keycloak
    * @param username the keycloak username
    */
-  public searchUser(username) {
+  public findUser(username) {
     return from(this.kcAdminClient.users.find({username}));
   }
 
@@ -245,7 +252,7 @@ export class KeycloakInteractionService {
    * @param user the user
    */
   public findExistingOrCreateUser(user): Observable<UserRepresentation> {
-    return this.searchUser(user.username).pipe(mergeMap(foundUsers => {
+    return this.findUser(user.username).pipe(mergeMap(foundUsers => {
       let observer = null;
       if (foundUsers.length === 0) {
         observer = this.createUser(user).pipe(mergeMap((insertedUser => {
@@ -255,16 +262,6 @@ export class KeycloakInteractionService {
         observer = of(foundUsers[0]);
       }
       return observer;
-    }));
-  }
-
-  /**
-   * Find user by user name
-   * @param username The username
-   */
-  public findUser(username) {
-    return from(this.kcAdminClient.users.find({
-      username
     }));
   }
 

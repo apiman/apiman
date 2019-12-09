@@ -14,6 +14,7 @@ export class DeveloperDataCacheService {
       this.adminService.getAllDevelopers().subscribe((developers) => {
         // set data to cache
         this.developers = developers;
+        console.log('set developer list cache', developers);
       });
     }
   }

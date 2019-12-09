@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@angular/core';
 import { forkJoin, Observable } from 'rxjs';
-import { map, mergeMap } from 'rxjs/operators';
+import {map, mergeMap, share} from 'rxjs/operators';
 import UserRepresentation from 'keycloak-admin/lib/defs/userRepresentation';
 import { ClientSearchResult, Developer, KeycloakUser } from '../../../services/api-data.service';
 import { HttpClient } from '@angular/common/http';
@@ -30,6 +30,14 @@ export class AdminService {
   }
 
   /**
+   * Get developer by name
+   * @param name the developer name
+   */
+  private getDeveloperByName(name: string) {
+    return this.getAllDevelopers().pipe(map(developers => developers.find(d => d.name.toLowerCase() === name.toLowerCase())));
+  }
+
+  /**
    * Get developer by developer id
    * @param developerId The developer id
    */
@@ -38,9 +46,20 @@ export class AdminService {
     return this.http.get(url) as Observable<Developer>;
   }
 
+  /**
+   * Check if password is required (check if user exists already in keycloak)
+   * @param username The username
+   */
   public isPasswordRequired(username) {
-    return this.keycloak.searchUser(username)
+    return this.keycloak.findUser(username)
       .pipe(map(users => users.findIndex((user => user.username === username)) === -1));
+  }
+
+  /**
+   * Get all keycloak users
+   */
+  public getKeycloakUsers() {
+    return this.keycloak.getAllUsers();
   }
 
   /**
@@ -66,6 +85,18 @@ export class AdminService {
     return insertRequests;
   }
 
+  public rollbackDeveloperCreation(developerToRollback: Developer, keycloakUserToRollback: KeycloakUser) {
+    const getDeveloperByName = this.getDeveloperByName(developerToRollback.name).pipe(share());
+
+    const deleteDeveloperFromApiman =  getDeveloperByName
+      .pipe(mergeMap(developerToDelete => this.deleteDeveloperFromApiman(developerToDelete)));
+    const deleteKeycloakClientRole = getDeveloperByName
+      .pipe(mergeMap(developerToDelete => this.keycloak.deleteClientRole(developerToDelete.id)));
+    const deleteKeycloakUser = this.keycloak.deleteUser(keycloakUserToRollback.username);
+
+    return forkJoin(deleteDeveloperFromApiman, deleteKeycloakClientRole, deleteKeycloakUser);
+  }
+
   /**
    * Update a developer
    * @param developer the developer to update
@@ -79,14 +110,21 @@ export class AdminService {
   }
 
   /**
+   * Delete developer from apiman
+   * @param developer the developer
+   */
+  private deleteDeveloperFromApiman(developer: Developer) {
+    const url = this.apimanUiRestUrl + '/developers/' + developer.id;
+    return this.http.delete(url);
+  }
+
+  /**
    * Delete a developer
    * @param developer the developer to update
    */
   public deleteDeveloper(developer: Developer) {
-    const url = this.apimanUiRestUrl + '/developers/' + developer.id;
-    const deleteDeveloperFromApiman = this.http.delete(url);
     return forkJoin(
-      deleteDeveloperFromApiman,
+      this.deleteDeveloperFromApiman(developer),
       this.keycloak.deleteClientRole(developer.id),
       this.keycloak.deleteUser(developer.name)
     );
