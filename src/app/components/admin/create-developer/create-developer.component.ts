@@ -12,6 +12,7 @@ import {Observable, Subject} from 'rxjs';
 import {debounceTime, map, mergeMap, startWith} from 'rxjs/operators';
 import {Toast, ToasterService} from 'angular2-toaster';
 import UserRepresentation from 'keycloak-admin/lib/defs/userRepresentation';
+import {SpinnerService} from '../../../services/spinner.service';
 
 @Component({
   selector: 'app-create-developer',
@@ -39,13 +40,19 @@ export class CreateDeveloperComponent {
   public keycloakUsers: Array<UserRepresentation>;
   public filteredKeycloakUsers: Array<UserRepresentation>;
 
-  constructor(private adminService: AdminService, private router: Router, private developerDataCache: DeveloperDataCacheService, private toasterService: ToasterService) {
+  constructor(private adminService: AdminService,
+              private router: Router,
+              private developerDataCache: DeveloperDataCacheService,
+              private toasterService: ToasterService,
+              private loadingSpinnerService: SpinnerService) {
   }
 
   ngOnInit(): void {
+    this.loadingSpinnerService.startWaiting();
     this.adminService.getKeycloakUsers().subscribe(keycloakUsers => {
       this.keycloakUsers = keycloakUsers;
       this.filteredKeycloakUsers = keycloakUsers.filter((user => this.checkDeveloperNotExists(user.username)));
+      this.loadingSpinnerService.stopWaiting();
     });
 
     this.userNameInputSubscription = this.usernameKeyUp
@@ -58,10 +65,13 @@ export class CreateDeveloperComponent {
   }
 
   private filterKeycloakUser(value) {
-    this.filteredKeycloakUsers = this.keycloakUsers.filter((u) => this.checkDeveloperNotExists(u.username) && u.username.toLowerCase().includes(value.toLowerCase()));
+    this.filteredKeycloakUsers = this.keycloakUsers
+      .filter((u) => this.checkDeveloperNotExists(u.username) && u.username.toLowerCase().includes(value.toLowerCase()));
   }
 
   insertDeveloper() {
+    this.loadingSpinnerService.startWaiting();
+
     const developerToCreate = new DeveloperImpl();
     developerToCreate.name = this.userFormGroup.get('username').value;
     developerToCreate.clients = [];
@@ -82,21 +92,35 @@ export class CreateDeveloperComponent {
         this.clientMapping.reset();
         this.developerDataCache.developers.push(createdDeveloper);
         console.log('pushed developer to cache', createdDeveloper);
+        this.loadingSpinnerService.stopWaiting();
         this.router.navigate(['/admin']);
       }, error => {
-        this.adminService.rollbackDeveloperCreation(developerToCreate, keycloakUserToCreate)
-          .subscribe(rollbackResponse => console.log('Rollback executed', rollbackResponse));
-        this.developerDataCache.developers.splice(this.developerDataCache.developers
-          .findIndex(developer => developer.name.toLowerCase() === developerToCreate.name.toLowerCase()), 1);
+        this.loadingSpinnerService.stopWaiting();
 
-        console.error('Error creating developer', error);
+        const errorMessage = 'Error creating developer';
+        console.error(errorMessage, error);
         const errorToast: Toast = {
           type: 'error',
+          title: errorMessage,
           body: error.message ? error.message : error.error.message,
-          timeout: 30000,
+          timeout: 0,
           showCloseButton: true
         };
         this.toasterService.pop(errorToast);
+
+        this.developerDataCache.developers.splice(this.developerDataCache.developers
+          .findIndex(developer => developer.name.toLowerCase() === developerToCreate.name.toLowerCase()), 1);
+        this.adminService.rollbackDeveloperCreation(developerToCreate, keycloakUserToCreate)
+          .subscribe(rollbackResponse => {
+            const rollbackMessage = 'Rollback executed';
+            this.toasterService.pop({
+              type: 'info',
+              body: rollbackMessage,
+              timeout: 30000,
+              showCloseButton: true
+            });
+            console.log(rollbackMessage, rollbackResponse);
+          });
       });
   }
 

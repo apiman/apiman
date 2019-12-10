@@ -14,6 +14,9 @@ export class PasHeaderComponent {
   constructor(private keycloak: KeycloakService, private router: Router, private route: ActivatedRoute) {
   }
 
+  /**
+   * Logout a user and clear the session tokens
+   */
   public logout() {
     const firstChild = this.route;
     sessionStorage.setItem('apiman_keycloak_token', '');

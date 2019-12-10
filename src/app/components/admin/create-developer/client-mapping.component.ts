@@ -3,6 +3,8 @@ import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag
 import {ApiDataService, ClientBean, ClientMapping} from '../../../services/api-data.service';
 import {map} from 'rxjs/operators';
 import {AdminService} from '../services/admin.service';
+import {Toast, ToasterService} from 'angular2-toaster';
+import {SpinnerService} from '../../../services/spinner.service';
 
 @Component({
   selector: 'app-client-mapping',
@@ -11,7 +13,9 @@ import {AdminService} from '../services/admin.service';
 })
 export class ClientMappingComponent implements OnInit {
 
-  constructor(private adminService: AdminService) {
+  constructor(private adminService: AdminService,
+              private toasterService: ToasterService,
+              private loadingSpinnerService: SpinnerService) {
   }
 
   availableClients: Array<ClientMapping> = [];
@@ -23,6 +27,7 @@ export class ClientMappingComponent implements OnInit {
   }
 
   loadClients() {
+    this.loadingSpinnerService.startWaiting();
     const loadedAvailableClients = [];
     this.adminService.getAllClients().pipe(map(client => {
       if (this.assignedClients && !this.assignedClients.find((c => c.organizationId === client.organizationId && c.clientId === client.id))) {
@@ -31,7 +36,22 @@ export class ClientMappingComponent implements OnInit {
           organizationId: client.organizationId
         });
       }
-    })).subscribe(ready => this.availableClients = loadedAvailableClients);
+    })).subscribe(ready => {
+      this.availableClients = loadedAvailableClients;
+      this.loadingSpinnerService.stopWaiting();
+    }, error => {
+      const errorMessage = 'Error loading clients';
+      console.error(errorMessage, error);
+      const errorToast: Toast = {
+        type: 'error',
+        title: errorMessage,
+        body: error.message ? error.message : error.error.message,
+        timeout: 0,
+        showCloseButton: true
+      };
+      this.toasterService.pop(errorToast);
+      this.loadingSpinnerService.stopWaiting();
+    });
   }
 
   reset() {

@@ -4,6 +4,8 @@ import {map, mergeMap, toArray, mergeAll} from 'rxjs/operators';
 import {ApiDataService, ApiVersion, Client, Contract} from '../../../services/api-data.service';
 import {element} from 'protractor';
 import {emit} from 'cluster';
+import {SpinnerService} from '../../../services/spinner.service';
+import {Toast, ToasterService} from 'angular2-toaster';
 
 export interface ApiListElement {
   id: string;
@@ -26,6 +28,11 @@ export class ApiListComponent implements OnChanges {
   apiData: Array<ApiListElement> = [];
 
   @Input('developerId') developerId;
+
+  constructor(private apiDataService: ApiDataService,
+              private toasterService: ToasterService,
+              private loadingSpinnerService: SpinnerService) {
+  }
 
   /**
    * An observer to get all gateway details (gateway endpoint) from api data service
@@ -55,16 +62,27 @@ export class ApiListComponent implements OnChanges {
         }));
     }));
 
-  constructor(private apiDataService: ApiDataService) {
-  }
-
   /**
    * ngOnChanges is executed if the changes are applied to component
    */
   ngOnChanges(changes: SimpleChanges): void {
+    this.loadingSpinnerService.startWaiting();
     //subscribe for the private api data to fill the view
     this.getDeveloperData(this.developerId).subscribe(data => {
       this.apiData = this.apiData.concat(data);
+      this.loadingSpinnerService.stopWaiting();
+    }, error => {
+      const errorMessage = 'Error loading api list';
+      console.error(errorMessage, error);
+      const errorToast: Toast = {
+        type: 'error',
+        title: errorMessage,
+        body: error.message ? error.message : error.error.message,
+        timeout: 0,
+        showCloseButton: true
+      };
+      this.toasterService.pop(errorToast);
+      this.loadingSpinnerService.stopWaiting();
     });
   }
 
