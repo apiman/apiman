@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
-import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
-import { KeycloakAuthGuard, KeycloakService } from 'keycloak-angular';
+import {Injectable} from '@angular/core';
+import {CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router} from '@angular/router';
+import {KeycloakAuthGuard, KeycloakService} from 'keycloak-angular';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +14,7 @@ export class DevportalGuard extends KeycloakAuthGuard implements CanActivate {
     const keycloakInstance = this.keycloakAngular.getKeycloakInstance();
     const isAuthorized = keycloakInstance.tokenParsed.realm_access.roles.find((role) => role === 'devportaluser') !== undefined;
     if (!isAuthorized) {
-      this.router.navigate(['/not-authorized'], { skipLocationChange: true });
+      this.router.navigate(['/not-authorized'], {skipLocationChange: true});
     }
     return Promise.resolve(isAuthorized);
   }

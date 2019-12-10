@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree} from '@angular/router';
-import { Observable } from 'rxjs';
+import {Observable} from 'rxjs';
 import {KeycloakAuthGuard, KeycloakService} from 'keycloak-angular';
 
 @Injectable({
@@ -16,7 +16,7 @@ export class AdminGuard extends KeycloakAuthGuard implements CanActivate {
     const keycloakInstance = this.keycloakAngular.getKeycloakInstance();
     const isAuthorized = keycloakInstance.tokenParsed.realm_access.roles.find((role) => role === 'apiadmin') !== undefined;
     if (!isAuthorized) {
-      this.router.navigate(['/not-authorized'], { skipLocationChange: true });
+      this.router.navigate(['/not-authorized'], {skipLocationChange: true});
     }
     return Promise.resolve(isAuthorized);
   }

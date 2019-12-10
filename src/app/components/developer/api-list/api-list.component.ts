@@ -1,4 +1,4 @@
-import { Component, Input, SimpleChanges, OnChanges} from '@angular/core';
+import {Component, Input, SimpleChanges, OnChanges} from '@angular/core';
 import {forkJoin, Observable, from, pipe} from 'rxjs';
 import {map, mergeMap, toArray, mergeAll} from 'rxjs/operators';
 import {ApiDataService, ApiVersion, Client, Contract} from '../../../services/api-data.service';
@@ -53,7 +53,7 @@ export class ApiListComponent implements OnChanges {
           const gateway = gateways.find(g => g.id === apiVersion.gateways[0].gatewayId);
           return this.buildViewData(contract, gateway, clientVersion, apiVersion);
         }));
-    }))
+    }));
 
   constructor(private apiDataService: ApiDataService) {
   }

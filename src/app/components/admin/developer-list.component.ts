@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { AdminService } from './services/admin.service';
-import { Developer } from '../../services/api-data.service';
-import { DeveloperDataCacheService } from './services/developer-data-cache.service';
+import {Component, OnInit} from '@angular/core';
+import {AdminService} from './services/admin.service';
+import {Developer} from '../../services/api-data.service';
+import {DeveloperDataCacheService} from './services/developer-data-cache.service';
 
 @Component({
   selector: 'app-developer-list',
@@ -12,7 +12,8 @@ export class DeveloperListComponent implements OnInit {
 
   developers: Array<Developer> = [];
 
-  constructor(private adminService: AdminService, private developerDataCache: DeveloperDataCacheService) { }
+  constructor(private adminService: AdminService, private developerDataCache: DeveloperDataCacheService) {
+  }
 
   ngOnInit() {
     this.load();

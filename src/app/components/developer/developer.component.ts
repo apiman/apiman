@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { KeycloakService } from 'keycloak-angular';
+import {Component, OnInit} from '@angular/core';
+import {KeycloakService} from 'keycloak-angular';
 
 @Component({
   selector: 'app-developer',

@@ -1,4 +1,4 @@
-import { KeycloakService } from 'keycloak-angular';
+import {KeycloakService} from 'keycloak-angular';
 import {Inject} from '@angular/core';
 import {environment} from '../environments/environment';
 

@@ -1,8 +1,8 @@
-import { Component, OnInit, Input, Output } from '@angular/core';
-import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
-import { ApiDataService, ClientBean, ClientMapping } from '../../../services/api-data.service';
-import { map } from 'rxjs/operators';
-import { AdminService } from '../services/admin.service';
+import {Component, OnInit, Input, Output} from '@angular/core';
+import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
+import {ApiDataService, ClientBean, ClientMapping} from '../../../services/api-data.service';
+import {map} from 'rxjs/operators';
+import {AdminService} from '../services/admin.service';
 
 @Component({
   selector: 'app-client-mapping',
@@ -11,7 +11,8 @@ import { AdminService } from '../services/admin.service';
 })
 export class ClientMappingComponent implements OnInit {
 
-  constructor(private adminService: AdminService) { }
+  constructor(private adminService: AdminService) {
+  }
 
   availableClients: Array<ClientMapping> = [];
 

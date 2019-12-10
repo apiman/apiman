@@ -1,9 +1,9 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Developer } from '../../../services/api-data.service';
-import { ClientMappingComponent } from '../create-developer/client-mapping.component';
-import { AdminService } from '../services/admin.service';
-import { DeveloperDataCacheService } from '../services/developer-data-cache.service';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
+import {Developer} from '../../../services/api-data.service';
+import {ClientMappingComponent} from '../create-developer/client-mapping.component';
+import {AdminService} from '../services/admin.service';
+import {DeveloperDataCacheService} from '../services/developer-data-cache.service';
 
 @Component({
   selector: 'app-edit-developer',
@@ -18,7 +18,8 @@ export class EditDeveloperComponent implements OnInit {
 
   @ViewChild('clientmapping', {static: false}) clientMapping: ClientMappingComponent;
 
-  constructor(private adminService: AdminService, private route: ActivatedRoute, private router: Router, private developerDataCache: DeveloperDataCacheService) { }
+  constructor(private adminService: AdminService, private route: ActivatedRoute, private router: Router, private developerDataCache: DeveloperDataCacheService) {
+  }
 
   ngOnInit() {
     this.developerId = this.route.snapshot.paramMap.get('developerId');

@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { KeycloakService } from 'keycloak-angular';
+import {Component, OnInit} from '@angular/core';
+import {KeycloakService} from 'keycloak-angular';
 import {ActivatedRoute, Router} from '@angular/router';
 
 @Component({
@@ -11,7 +11,8 @@ export class PasHeaderComponent {
 
   public user: string = this.keycloak.getKeycloakInstance().profile.username;
 
-  constructor(private keycloak: KeycloakService, private router: Router, private route: ActivatedRoute) { }
+  constructor(private keycloak: KeycloakService, private router: Router, private route: ActivatedRoute) {
+  }
 
   public logout() {
     const firstChild = this.route;

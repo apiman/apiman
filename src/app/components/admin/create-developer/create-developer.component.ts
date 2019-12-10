@@ -1,13 +1,13 @@
-import { Component, Input, OnInit, ViewChild, OnDestroy } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { DeveloperImpl } from '../../../type-definitions/developerImpl';
-import { DeveloperListComponent } from '../developer-list.component';
-import { ClientMappingComponent } from './client-mapping.component';
-import { ClientMappingImpl } from '../../../type-definitions/client-mapping-impl';
-import { Router } from '@angular/router';
-import { KeycloakUserImpl } from '../edit-developer/keycloak-user-impl';
-import { AdminService } from '../services/admin.service';
-import { DeveloperDataCacheService } from '../services/developer-data-cache.service';
+import {Component, Input, OnInit, ViewChild, OnDestroy} from '@angular/core';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {DeveloperImpl} from '../../../type-definitions/developerImpl';
+import {DeveloperListComponent} from '../developer-list.component';
+import {ClientMappingComponent} from './client-mapping.component';
+import {ClientMappingImpl} from '../../../type-definitions/client-mapping-impl';
+import {Router} from '@angular/router';
+import {KeycloakUserImpl} from '../edit-developer/keycloak-user-impl';
+import {AdminService} from '../services/admin.service';
+import {DeveloperDataCacheService} from '../services/developer-data-cache.service';
 import {Observable, Subject} from 'rxjs';
 import {debounceTime, map, mergeMap, startWith} from 'rxjs/operators';
 import {Toast, ToasterService} from 'angular2-toaster';
@@ -26,9 +26,9 @@ export class CreateDeveloperComponent {
   public userFormGroup = new FormGroup({
     email: new FormControl('', [Validators.email]),
     firstname: new FormControl('', [this.nonSpecialCharacterPattern]),
-    lastname:  new FormControl('', [this.nonSpecialCharacterPattern]),
-    password:  new FormControl(''),
-    username:  new FormControl('', [this.nonSpecialCharacterPattern])
+    lastname: new FormControl('', [this.nonSpecialCharacterPattern]),
+    password: new FormControl(''),
+    username: new FormControl('', [this.nonSpecialCharacterPattern])
   });
 
   @ViewChild('clientmapping', {static: false}) clientMapping: ClientMappingComponent;
@@ -39,7 +39,8 @@ export class CreateDeveloperComponent {
   public keycloakUsers: Array<UserRepresentation>;
   public filteredKeycloakUsers: Array<UserRepresentation>;
 
-  constructor(private adminService: AdminService, private router: Router, private developerDataCache: DeveloperDataCacheService, private toasterService: ToasterService) {  }
+  constructor(private adminService: AdminService, private router: Router, private developerDataCache: DeveloperDataCacheService, private toasterService: ToasterService) {
+  }
 
   ngOnInit(): void {
     this.adminService.getKeycloakUsers().subscribe(keycloakUsers => {

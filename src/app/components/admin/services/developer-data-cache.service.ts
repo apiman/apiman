@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
-import { Developer } from '../../../services/api-data.service';
-import { AdminService } from './admin.service';
+import {Injectable} from '@angular/core';
+import {Developer} from '../../../services/api-data.service';
+import {AdminService} from './admin.service';
 
 @Injectable({
   providedIn: 'root'

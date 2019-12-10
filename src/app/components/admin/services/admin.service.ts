@@ -1,10 +1,10 @@
-import { Inject, Injectable } from '@angular/core';
-import { forkJoin, Observable } from 'rxjs';
+import {Inject, Injectable} from '@angular/core';
+import {forkJoin, Observable} from 'rxjs';
 import {map, mergeMap, share} from 'rxjs/operators';
 import UserRepresentation from 'keycloak-admin/lib/defs/userRepresentation';
-import { ClientSearchResult, Developer, KeycloakUser } from '../../../services/api-data.service';
-import { HttpClient } from '@angular/common/http';
-import { KeycloakInteractionService } from './keycloak-interaction.service';
+import {ClientSearchResult, Developer, KeycloakUser} from '../../../services/api-data.service';
+import {HttpClient} from '@angular/common/http';
+import {KeycloakInteractionService} from './keycloak-interaction.service';
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +19,8 @@ export class AdminService {
    */
   constructor(private http: HttpClient,
               private keycloak: KeycloakInteractionService, @Inject('APIMAN_UI_REST_URL')
-              private apimanUiRestUrl: string) {}
+              private apimanUiRestUrl: string) {
+  }
 
   /**
    * Get all available developers
@@ -88,7 +89,7 @@ export class AdminService {
   public rollbackDeveloperCreation(developerToRollback: Developer, keycloakUserToRollback: KeycloakUser) {
     const getDeveloperByName = this.getDeveloperByName(developerToRollback.name).pipe(share());
 
-    const deleteDeveloperFromApiman =  getDeveloperByName
+    const deleteDeveloperFromApiman = getDeveloperByName
       .pipe(mergeMap(developerToDelete => this.deleteDeveloperFromApiman(developerToDelete)));
     const deleteKeycloakClientRole = getDeveloperByName
       .pipe(mergeMap(developerToDelete => this.keycloak.deleteClientRole(developerToDelete.id)));
@@ -148,6 +149,6 @@ export class AdminService {
       }
     };
     return (this.http.post(url, searchQuery) as Observable<ClientSearchResult>)
-      .pipe(mergeMap( searchResult => searchResult.beans));
+      .pipe(mergeMap(searchResult => searchResult.beans));
   }
 }

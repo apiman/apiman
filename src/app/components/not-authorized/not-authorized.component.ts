@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { Toast, ToasterContainerComponent, ToasterService } from 'angular2-toaster';
+import {Component, OnInit} from '@angular/core';
+import {Toast, ToasterContainerComponent, ToasterService} from 'angular2-toaster';
 
 @Component({
   selector: 'app-not-authorized',
@@ -8,7 +8,8 @@ import { Toast, ToasterContainerComponent, ToasterService } from 'angular2-toast
 })
 export class NotAuthorizedComponent implements OnInit {
 
-  constructor(private toasterService: ToasterService) { }
+  constructor(private toasterService: ToasterService) {
+  }
 
   ngOnInit() {
     const toast: Toast = {
