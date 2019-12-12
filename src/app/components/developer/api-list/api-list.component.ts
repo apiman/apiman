@@ -6,6 +6,7 @@ import {element} from 'protractor';
 import {emit} from 'cluster';
 import {SpinnerService} from '../../../services/spinner.service';
 import {Toast, ToasterService} from 'angular2-toaster';
+import {Router} from '@angular/router';
 
 export interface ApiListElement {
   id: string;
@@ -14,6 +15,7 @@ export interface ApiListElement {
   endpoint: string;
   organizationName: string;
   apikey: string;
+  swaggerDefinitionType: string;
   swaggerURL: string;
 }
 
@@ -31,7 +33,8 @@ export class ApiListComponent implements OnChanges {
 
   @Input('developerId') developerId;
 
-  constructor(private apiDataService: ApiDataService,
+  constructor(private router: Router,
+              private apiDataService: ApiDataService,
               private toasterService: ToasterService,
               private loadingSpinnerService: SpinnerService) {
   }
@@ -102,7 +105,8 @@ export class ApiListComponent implements OnChanges {
       endpoint: this.buildApiEndpoint(gateway.endpoint, contract.apiOrganizationId, contract.apiId, contract.apiVersion, clientVersion.apiKey),
       organizationName: contract.apiOrganizationId,
       apikey: clientVersion.apiKey,
-      swaggerURL: '/swagger/developer/' + this.developerId + '/organizations/' + contract.apiOrganizationId + '/apis/' + contract.apiId + '/versions/' + contract.apiVersion + '/apiKey/' + clientVersion.apiKey
+      swaggerDefinitionType: apiVersionDetails.definitionType,
+      swaggerURL: '/swagger/developer/' + this.developerId + '/organizations/' + contract.apiOrganizationId + '/apis/' + contract.apiId + '/versions/' + contract.apiVersion
     };
   }
 
@@ -125,6 +129,16 @@ export class ApiListComponent implements OnChanges {
     el.select();
     document.execCommand('copy');
     document.body.removeChild(el);
+  }
+
+  openSwaggerView(entry: ApiListElement) {
+    this.router.navigate([entry.swaggerURL], {
+      state: {
+        data: {
+          apikey: entry.apikey
+        }
+      }
+    });
   }
 
 }

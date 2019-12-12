@@ -12,7 +12,7 @@ import {SwaggerComponent} from './components/swagger/swagger.component';
 const routes: Routes = [
   {path: '', component: DeveloperComponent, canActivate: [DevportalGuard]},
   {
-    path: 'swagger/developer/:developerId/organizations/:orgId/apis/:apiId/versions/:version/apiKey/:apiKey',
+    path: 'swagger/developer/:developerId/organizations/:orgId/apis/:apiId/versions/:version',
     component: SwaggerComponent,
     canActivate: [DevportalGuard]
   },

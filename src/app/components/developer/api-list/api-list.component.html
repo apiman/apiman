@@ -13,7 +13,7 @@
   </ng-container>
   <ng-container matColumnDef="endpoint">
     <th mat-header-cell *matHeaderCellDef>Endpoint</th>
-    <td mat-cell *matCellDef="let element"><span class="cell-wrapper"><mat-icon class="copyButton" (click)="this.copyEndpointToClipboard(element)" matTooltip="Copy to clipboard">file_copy</mat-icon> <div class="cell-content">{{element.endpoint}}</div></span></td>
+    <td mat-cell *matCellDef="let element"><span class="cell-wrapper"><mat-icon class="button" (click)="this.copyEndpointToClipboard(element)" matTooltip="Copy to clipboard">file_copy</mat-icon> <div class="cell-content">{{element.endpoint}}</div></span></td>
   </ng-container>
   <ng-container matColumnDef="apikey">
     <th mat-header-cell *matHeaderCellDef>API Key</th>
@@ -21,7 +21,7 @@
   </ng-container>
   <ng-container matColumnDef="options">
     <th mat-header-cell *matHeaderCellDef>Options</th>
-    <td mat-cell *matCellDef="let element"> <a [routerLink]="element.swaggerURL">Swagger</a> </td>
+    <td mat-cell *matCellDef="let element"> <mat-icon class="button" *ngIf="element.swaggerDefinitionType != null" (click)="this.openSwaggerView(element)" matTooltip="Test the API">play_arrow</mat-icon> </td>
   </ng-container>
 
   <tr mat-header-row *matHeaderRowDef="columnHeaders"></tr>

@@ -18,7 +18,14 @@ export class SwaggerComponent implements OnInit {
     const apiId = this.route.snapshot.paramMap.get('apiId');
     const version = this.route.snapshot.paramMap.get('version');
 
-    const apiKey = this.route.snapshot.paramMap.get('apiKey');
+    let apiKey = history.state.data ? history.state.data.apikey : null;
+
+    if (apiKey) {
+      // save key for reloading page
+      sessionStorage.setItem('lastSwaggerApiKey', apiKey);
+    } else {
+      apiKey = sessionStorage.getItem('lastSwaggerApiKey');
+    }
 
     const swaggerURL = this.apimanUiRestUrl + '/developers/' + developerId + '/organizations/' + organizationId + '/apis/' + apiId + '/versions/' + version + '/definition';
 
