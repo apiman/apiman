@@ -1,3 +1,16 @@
 table {
   width: 100%;
 }
+
+.cell-wrapper {
+  display: flex;
+}
+
+.cell-content {
+  padding-top: 4px;
+}
+
+.copyButton {
+  cursor: pointer;
+  margin-right: 5px;
+}

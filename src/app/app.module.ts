@@ -24,7 +24,14 @@ import {DeveloperListComponent} from './components/admin/developer-list.componen
 import {CreateDeveloperComponent} from './components/admin/create-developer/create-developer.component';
 import {ClientMappingComponent} from './components/admin/create-developer/client-mapping.component';
 import {DragDropModule} from '@angular/cdk/drag-drop';
-import {MatButtonModule, MatInputModule, MatOptionModule, MatAutocompleteModule, MatProgressSpinnerModule} from '@angular/material';
+import {
+  MatButtonModule,
+  MatInputModule,
+  MatOptionModule,
+  MatAutocompleteModule,
+  MatProgressSpinnerModule,
+  MatTooltipModule
+} from '@angular/material';
 import {EditDeveloperComponent} from './components/admin/edit-developer/edit-developer.component';
 import {NotAuthorizedComponent} from './components/not-authorized/not-authorized.component';
 import {ToasterModule} from 'angular2-toaster';
@@ -62,6 +69,7 @@ import {SwaggerComponent} from './components/swagger/swagger.component';
     MatOptionModule,
     MatAutocompleteModule,
     MatProgressSpinnerModule,
+    MatTooltipModule,
   ],
   providers: [
     {

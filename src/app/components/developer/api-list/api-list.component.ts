@@ -13,6 +13,7 @@ export interface ApiListElement {
   version: string;
   endpoint: string;
   organizationName: string;
+  apikey: string;
   swaggerURL: string;
 }
 
@@ -24,7 +25,7 @@ export interface ApiListElement {
 
 export class ApiListComponent implements OnChanges {
 
-  columnHeaders: string[] = ['organization', 'name', 'version', 'endpoint', 'options'];
+  columnHeaders: string[] = ['organization', 'name', 'version', 'endpoint', 'apikey', 'options'];
 
   apiData: Array<ApiListElement> = [];
 
@@ -100,6 +101,7 @@ export class ApiListComponent implements OnChanges {
       version: contract.apiVersion,
       endpoint: this.buildApiEndpoint(gateway.endpoint, contract.apiOrganizationId, contract.apiId, contract.apiVersion, clientVersion.apiKey),
       organizationName: contract.apiOrganizationId,
+      apikey: clientVersion.apiKey,
       swaggerURL: '/swagger/developer/' + this.developerId + '/organizations/' + contract.apiOrganizationId + '/apis/' + contract.apiId + '/versions/' + contract.apiVersion + '/apiKey/' + clientVersion.apiKey
     };
   }
@@ -113,7 +115,16 @@ export class ApiListComponent implements OnChanges {
    * @param apiKey: apikey of api
    */
   buildApiEndpoint(gatewayEndpoint: string, organizationId: string, apiId: string, apiVersion: string, apiKey: string): string {
-    return gatewayEndpoint + [organizationId, apiId, apiVersion].join('/') + '?apiKey=' + apiKey;
+    return gatewayEndpoint + [organizationId, apiId, apiVersion].join('/');
+  }
+
+  copyEndpointToClipboard(entry: ApiListElement) {
+    const el = document.createElement('textarea');
+    document.body.appendChild(el);
+    el.value = entry.endpoint + '?apiKey=' + entry.apikey;
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
   }
 
 }
