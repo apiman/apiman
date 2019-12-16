@@ -10,10 +10,10 @@ import {Router} from '@angular/router';
 
 export interface ApiListElement {
   id: string;
-  name: string;
+  api: string;
   version: string;
+  clientVersion: string;
   endpoint: string;
-  organizationName: string;
   apikey: string;
   swaggerDefinitionType: string;
   swaggerURL: string;
@@ -27,7 +27,7 @@ export interface ApiListElement {
 
 export class ApiListComponent implements OnChanges {
 
-  columnHeaders: string[] = ['organization', 'name', 'version', 'endpoint', 'apikey', 'options'];
+  columnHeaders: string[] = ['api', 'version', 'clientVersion', 'endpoint', 'apikey', 'options'];
 
   apiData: Array<ApiListElement> = [];
 
@@ -100,10 +100,10 @@ export class ApiListComponent implements OnChanges {
   private buildViewData(contract: Contract, gateway, clientVersion: Client, apiVersionDetails: ApiVersion): ApiListElement {
     return {
       id: contract.apiId,
-      name: contract.apiName,
+      api: [contract.apiOrganizationName, contract.clientName, contract.apiName].join(' / '),
       version: contract.apiVersion,
+      clientVersion: contract.clientVersion,
       endpoint: this.buildApiEndpoint(gateway.endpoint, contract.apiOrganizationId, contract.apiId, contract.apiVersion, clientVersion.apiKey),
-      organizationName: contract.apiOrganizationId,
       apikey: clientVersion.apiKey,
       swaggerDefinitionType: apiVersionDetails.definitionType,
       swaggerURL: '/swagger/developer/' + this.developerId + '/organizations/' + contract.apiOrganizationId + '/apis/' + contract.apiId + '/versions/' + contract.apiVersion
