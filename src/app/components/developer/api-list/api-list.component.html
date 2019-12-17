@@ -1,14 +1,14 @@
-<table mat-table [dataSource]="apiData" multiTemplateDataRows>
+<table matSort matSortStart="desc" (matSortChange)="sortData($event)" mat-table [dataSource]="sortedApiData" multiTemplateDataRows>
   <ng-container matColumnDef="api">
-    <th mat-header-cell *matHeaderCellDef>API</th>
+    <th mat-header-cell mat-sort-header="api" *matHeaderCellDef>API</th>
     <td mat-cell *matCellDef="let element"> {{element.api}} </td>
   </ng-container>
   <ng-container matColumnDef="version">
-    <th mat-header-cell *matHeaderCellDef>API Version</th>
+    <th mat-header-cell mat-sort-header="version" *matHeaderCellDef>API Version</th>
     <td mat-cell *matCellDef="let element"> {{element.version}} </td>
   </ng-container>
   <ng-container matColumnDef="clientVersion">
-    <th mat-header-cell *matHeaderCellDef>Client Version</th>
+    <th mat-header-cell mat-sort-header="clientVersion" *matHeaderCellDef>Client Version</th>
     <td mat-cell *matCellDef="let element"> {{element.clientVersion}} </td>
   </ng-container>
   <ng-container matColumnDef="apikey">

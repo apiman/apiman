@@ -44,3 +44,9 @@ tr.api-detail-row {
 .expanded-header {
   padding-bottom: 10px;
 }
+
+:host ::ng-deep .mat-sort-header-button:hover,
+:host ::ng-deep .mat-sort-header-button:focus {
+  background-color: inherit;
+  color: inherit;
+}

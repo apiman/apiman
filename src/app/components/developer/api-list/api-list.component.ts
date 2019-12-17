@@ -8,6 +8,7 @@ import {SpinnerService} from '../../../services/spinner.service';
 import {Toast, ToasterService} from 'angular2-toaster';
 import {Router} from '@angular/router';
 import {animate, state, style, transition, trigger} from '@angular/animations';
+import {Sort} from '@angular/material';
 
 export interface ApiListElement {
   id: string;
@@ -39,6 +40,7 @@ export class ApiListComponent implements OnChanges {
   expandedElement: ApiListElement | null;
 
   apiData: Array<ApiListElement> = [];
+  sortedApiData: Array<ApiListElement>;
 
   @Input('developerId') developerId;
 
@@ -46,6 +48,7 @@ export class ApiListComponent implements OnChanges {
               private apiDataService: ApiDataService,
               private toasterService: ToasterService,
               private loadingSpinnerService: SpinnerService) {
+    this.sortedApiData = this.apiData;
   }
 
   /**
@@ -83,7 +86,8 @@ export class ApiListComponent implements OnChanges {
     this.loadingSpinnerService.startWaiting();
     //subscribe for the private api data to fill the view
     this.getDeveloperData(this.developerId).subscribe(data => {
-      this.apiData = this.apiData.concat(data);
+      this.apiData = this.apiData.concat(data).sort(((a, b) => this.compare(a.api, b.api, true)));
+      this.sortedApiData = this.apiData;
       this.loadingSpinnerService.stopWaiting();
     }, error => {
       const errorMessage = 'Error loading api list';
@@ -131,6 +135,10 @@ export class ApiListComponent implements OnChanges {
     return gatewayEndpoint + [organizationId, apiId, apiVersion].join('/');
   }
 
+  /**
+   * Copies endpoint to clipboard
+   * @param entry the table entry
+   */
   copyEndpointToClipboard(entry: ApiListElement) {
     const el = document.createElement('textarea');
     document.body.appendChild(el);
@@ -140,6 +148,10 @@ export class ApiListComponent implements OnChanges {
     document.body.removeChild(el);
   }
 
+  /**
+   * Navigate to swagger view
+   * @param entry the table entry
+   */
   openSwaggerView(entry: ApiListElement) {
     this.router.navigate([entry.swaggerURL], {
       state: {
@@ -148,6 +160,38 @@ export class ApiListComponent implements OnChanges {
         }
       }
     });
+  }
+
+  /**
+   * Sorting data
+   * @param sort sort event
+   */
+  sortData(sort: Sort) {
+    const dataToSort = this.apiData.slice();
+    if (!sort.active || sort.direction === '') {
+      this.sortedApiData = dataToSort;
+      return;
+    }
+
+    this.sortedApiData = dataToSort.sort((a, b) => {
+      const isAsc = sort.direction === 'asc';
+      switch (sort.active) {
+        case 'api': return this.compare(a.api, b.api, isAsc);
+        case 'version': return this.compare(a.version, b.version, isAsc);
+        case 'clientVersion': return this.compare(a.clientVersion, b.clientVersion, isAsc);
+        default: return 0;
+      }
+    });
+  }
+
+  /**
+   * Compares two values
+   * @param a value
+   * @param b value
+   * @param isAsc is ascending sort
+   */
+  private compare(a: number | string, b: number | string, isAsc: boolean) {
+    return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
   }
 
 }

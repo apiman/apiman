@@ -30,7 +30,7 @@ import {
   MatOptionModule,
   MatAutocompleteModule,
   MatProgressSpinnerModule,
-  MatTooltipModule
+  MatTooltipModule, MatSortModule
 } from '@angular/material';
 import {EditDeveloperComponent} from './components/admin/edit-developer/edit-developer.component';
 import {NotAuthorizedComponent} from './components/not-authorized/not-authorized.component';
@@ -70,6 +70,7 @@ import {SwaggerComponent} from './components/swagger/swagger.component';
     MatAutocompleteModule,
     MatProgressSpinnerModule,
     MatTooltipModule,
+    MatSortModule,
   ],
   providers: [
     {
