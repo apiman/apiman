@@ -13,3 +13,34 @@ table {
 .button {
   cursor: pointer;
 }
+
+tr.api-detail-row {
+  height: 0;
+}
+
+.example-element-row td {
+  border-top-width: 0;
+  border-bottom-width: 0;
+}
+
+.api-detail {
+  overflow: hidden;
+  display: flex;
+}
+
+.expand-content {
+  padding: 24px;
+}
+
+.expandedTd {
+  border-top-width: 0;
+  border-bottom-width: 0;
+}
+
+.displayed {
+  border-bottom-width: 1px;
+}
+
+.expanded-header {
+  padding-bottom: 10px;
+}

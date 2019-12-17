@@ -7,6 +7,7 @@ import {emit} from 'cluster';
 import {SpinnerService} from '../../../services/spinner.service';
 import {Toast, ToasterService} from 'angular2-toaster';
 import {Router} from '@angular/router';
+import {animate, state, style, transition, trigger} from '@angular/animations';
 
 export interface ApiListElement {
   id: string;
@@ -22,12 +23,20 @@ export interface ApiListElement {
 @Component({
   selector: 'app-api-list',
   templateUrl: './api-list.component.html',
-  styleUrls: ['./api-list.component.scss']
+  styleUrls: ['./api-list.component.scss'],
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed', style({height: '0px', minHeight: '0'})),
+      state('expanded', style({height: '*'})),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+  ]
 })
 
 export class ApiListComponent implements OnChanges {
 
-  columnHeaders: string[] = ['api', 'version', 'clientVersion', 'endpoint', 'apikey', 'options'];
+  columnHeaders: string[] = ['api', 'version', 'clientVersion', 'apikey', 'tryApi', 'endpoint'];
+  expandedElement: ApiListElement | null;
 
   apiData: Array<ApiListElement> = [];
 
