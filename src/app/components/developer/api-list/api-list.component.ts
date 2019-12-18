@@ -12,8 +12,11 @@ import {Sort} from '@angular/material';
 
 export interface ApiListElement {
   id: string;
-  api: string;
-  version: string;
+  apiName: string;
+  apiOrganization: string;
+  apiVersion: string;
+  clientOrganization: string;
+  clientName: string;
   clientVersion: string;
   endpoint: string;
   apikey: string;
@@ -36,7 +39,7 @@ export interface ApiListElement {
 
 export class ApiListComponent implements OnChanges {
 
-  columnHeaders: string[] = ['api', 'version', 'clientVersion', 'apikey', 'tryApi', 'endpoint'];
+  columnHeaders: string[] = ['api', 'apiVersion', 'tryApi', 'options'];
   expandedElement: ApiListElement | null;
 
   apiData: Array<ApiListElement> = [];
@@ -84,9 +87,9 @@ export class ApiListComponent implements OnChanges {
    */
   ngOnChanges(changes: SimpleChanges): void {
     this.loadingSpinnerService.startWaiting();
-    //subscribe for the private api data to fill the view
+    // subscribe for the private api data to fill the view
     this.getDeveloperData(this.developerId).subscribe(data => {
-      this.apiData = this.apiData.concat(data).sort(((a, b) => this.compare(a.api, b.api, true)));
+      this.apiData = this.apiData.concat(data).sort(((a, b) => this.compare(a.apiOrganization + a.apiName, b.apiOrganization + b.apiName, true)));
       this.sortedApiData = this.apiData;
       this.loadingSpinnerService.stopWaiting();
     }, error => {
@@ -113,8 +116,11 @@ export class ApiListComponent implements OnChanges {
   private buildViewData(contract: Contract, gateway, clientVersion: Client, apiVersionDetails: ApiVersion): ApiListElement {
     return {
       id: contract.apiId,
-      api: [contract.apiOrganizationName, contract.clientName, contract.apiName].join(' / '),
-      version: contract.apiVersion,
+      apiName: contract.apiName,
+      apiOrganization: contract.apiOrganizationName,
+      apiVersion: contract.apiVersion,
+      clientOrganization: contract.clientOrganizationName,
+      clientName: contract.clientName,
       clientVersion: contract.clientVersion,
       endpoint: this.buildApiEndpoint(gateway.endpoint, contract.apiOrganizationId, contract.apiId, contract.apiVersion, clientVersion.apiKey),
       apikey: clientVersion.apiKey,
@@ -176,8 +182,8 @@ export class ApiListComponent implements OnChanges {
     this.sortedApiData = dataToSort.sort((a, b) => {
       const isAsc = sort.direction === 'asc';
       switch (sort.active) {
-        case 'api': return this.compare(a.api, b.api, isAsc);
-        case 'version': return this.compare(a.version, b.version, isAsc);
+        case 'api': return this.compare(a.apiOrganization + a.apiName, b.apiOrganization + b.apiName, isAsc);
+        case 'version': return this.compare(a.apiVersion, b.apiVersion, isAsc);
         case 'clientVersion': return this.compare(a.clientVersion, b.clientVersion, isAsc);
         default: return 0;
       }
