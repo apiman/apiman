@@ -30,7 +30,7 @@ import {
   MatOptionModule,
   MatAutocompleteModule,
   MatProgressSpinnerModule,
-  MatTooltipModule, MatSortModule
+  MatTooltipModule, MatSortModule, _MatMenuDirectivesModule, MatMenuModule
 } from '@angular/material';
 import {EditDeveloperComponent} from './components/admin/edit-developer/edit-developer.component';
 import {NotAuthorizedComponent} from './components/not-authorized/not-authorized.component';
@@ -71,6 +71,8 @@ import {SwaggerComponent} from './components/swagger/swagger.component';
     MatProgressSpinnerModule,
     MatTooltipModule,
     MatSortModule,
+    _MatMenuDirectivesModule,
+    MatMenuModule,
   ],
   providers: [
     {

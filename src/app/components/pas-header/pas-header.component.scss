@@ -26,10 +26,8 @@ nav {
 }
 
 .floatRight {
-  width: 100%;
   display: flex;
   float: right;
-  justify-content: right;
 }
 
 mat-icon {
@@ -43,16 +41,23 @@ mat-icon {
 
 #app-header {
   margin-top: 3px;
+  text-align: left;
 }
 
 #app-user {
   margin-top: 3px;
 }
 
-#user-icon {
+.dropDownWrapper {
+  display: flex;
+  float: right;
+  position: relative;
 }
 
-#logout {
+.clickable {
   cursor: pointer;
-  color: darkred;
+}
+
+#dropDown {
+  margin-left: 0;
 }
