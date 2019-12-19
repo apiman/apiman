@@ -36,6 +36,7 @@ import {EditDeveloperComponent} from './components/admin/edit-developer/edit-dev
 import {NotAuthorizedComponent} from './components/not-authorized/not-authorized.component';
 import {ToasterModule} from 'angular2-toaster';
 import {SwaggerComponent} from './components/swagger/swagger.component';
+import { MenuComponent } from './components/menu/menu.component';
 
 
 @NgModule({
@@ -50,7 +51,8 @@ import {SwaggerComponent} from './components/swagger/swagger.component';
     ClientMappingComponent,
     EditDeveloperComponent,
     SwaggerComponent,
-    NotAuthorizedComponent
+    NotAuthorizedComponent,
+    MenuComponent
   ],
   imports: [
     BrowserModule,

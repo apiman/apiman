@@ -1,0 +1,25 @@
+.wrapper {
+  color: white;
+  font-size: 14px;
+}
+
+.menu-entry {
+  padding: 17px 0px 17px 25px;
+  line-height: 25px;
+  cursor: pointer;
+}
+
+.menu-entry:hover {
+  font-weight: bold;
+}
+
+.menu-entry:focus {
+  outline: none;
+}
+
+.menu-icon {
+  font-size: 22px;
+  color: white;
+  float: left;
+  margin-right: 10px;
+}

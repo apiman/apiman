@@ -58,6 +58,10 @@ mat-icon {
   cursor: pointer;
 }
 
+.clickable:focus {
+  outline: none;
+}
+
 #dropDown {
   margin-left: 0;
 }

@@ -4,19 +4,19 @@
 @import url("https://fonts.googleapis.com/css?family=Roboto&display=swap");
 
 :root {
-  --e2e-bg-color:                     #06618e; /*Mittelblau*/
-  --e2e-dropdown-hover-color:         #e8e8e8;
+  --scheer-bg-color:                     #06618e; /*Mittelblau*/
+  --scheer-dropdown-hover-color:         #e8e8e8;
 
-  --e2e-button-bg:                    #2996cc;
-  --e2e-button-border-color:          #2996cc;
+  --scheer-button-bg:                    #2996cc;
+  --scheer-button-border-color:          #2996cc;
   /*hover is also used as dark blue border for dropdown entries*/
-  --e2e-button-hover-color:           #06628e;
+  --scheer-button-hover-color:           #06628e;
 
-  --e2e-button-active-color:          #043953;
-  --e2e-button-active-border:         #033249;
+  --scheer-button-active-color:          #043953;
+  --scheer-button-active-border:         #033249;
 
-  --e2e-grey-button:                  #bbb6b9; /*Rosengrau*/
-  --e2e-grey-button-border:           #6a7480; /*Schiefergrau*/
+  --scheer-grey-button:                  #bbb6b9; /*Rosengrau*/
+  --scheer-grey-button-border:           #6a7480; /*Schiefergrau*/
 
   --navbar-bg-color:                  #c8c9cc;
   --navbar-color:                     #6a747f;
@@ -84,6 +84,6 @@ button[disabled], button[disabled], button[disabled]:hover{
 button[disabled], button[disabled], button[disabled]:hover{
   /*!important is needed here, because the framework that is used by apiman uses it also*/
   background-color: #ffffff;
-  border-color: var(--e2e-button-border-color);
-  color: var(--e2e-button-bg);
+  border-color: var(--scheer-button-border-color);
+  color: var(--scheer-button-bg);
 }
