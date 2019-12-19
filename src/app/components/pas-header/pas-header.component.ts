@@ -11,16 +11,14 @@ export class PasHeaderComponent {
 
   public user: string = this.keycloak.getKeycloakInstance().profile.username;
 
-  constructor(private keycloak: KeycloakService, private router: Router, private route: ActivatedRoute) {
+  constructor(private keycloak: KeycloakService) {
   }
 
   /**
    * Logout a user and clear the session tokens
    */
   public logout() {
-    const firstChild = this.route;
-    sessionStorage.setItem('apiman_keycloak_token', '');
-    sessionStorage.setItem('apiman_keycloak_refresh_token', '');
+    sessionStorage.clear();
     this.keycloak.getKeycloakInstance().logout({
       redirectUri: location.href
     });
