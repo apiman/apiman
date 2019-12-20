@@ -92,9 +92,9 @@ public final class SwaggerWsdlHelper {
         JsonNode swaggerJsonNode = jsonMapper.readTree(swaggerDefinition);
         ObjectNode swaggerObjectNode = (ObjectNode) swaggerJsonNode;
 
-        // find string in json
-        String host = swaggerJsonNode.findValue(HOST) != null ? swaggerJsonNode.findValue(HOST).textValue() : "";
-        String path = swaggerJsonNode.findValue(BASE_PATH) != null ? swaggerJsonNode.findValue(BASE_PATH).textValue() : "";
+        // get basePath and host from json
+        String host = swaggerJsonNode.path(HOST).asText("");
+        String path = swaggerJsonNode.path(BASE_PATH).asText("");
 
         // calculate basePath and host from managed endpoint
         String endpointHost = managedEndpoint.getHost();
