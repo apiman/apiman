@@ -10,6 +10,7 @@
         <mat-icon id="dropDown">keyboard_arrow_down</mat-icon>
       </div>
       <mat-menu #menu="matMenu">
+        <div mat-menu-item class="clickable" routerLink="/about">About</div>
         <div mat-menu-item class="clickable" (click)="logout()">Logout</div>
       </mat-menu>
     </div>

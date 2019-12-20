@@ -8,6 +8,7 @@ import {DevportalGuard} from './auth/devportal.guard';
 import {AdminGuard} from './auth/admin.guard';
 import {NotAuthorizedComponent} from './components/not-authorized/not-authorized.component';
 import {SwaggerComponent} from './components/swagger/swagger.component';
+import {AboutComponent} from './about/about.component';
 
 const routes: Routes = [
   {path: '', component: DeveloperComponent, canActivate: [DevportalGuard]},
@@ -16,6 +17,7 @@ const routes: Routes = [
     component: SwaggerComponent,
     canActivate: [DevportalGuard]
   },
+  {path: 'about', component: AboutComponent},
   {
     path: 'admin',
     component: AdminComponent,

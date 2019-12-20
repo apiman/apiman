@@ -37,6 +37,7 @@ import {NotAuthorizedComponent} from './components/not-authorized/not-authorized
 import {ToasterModule} from 'angular2-toaster';
 import {SwaggerComponent} from './components/swagger/swagger.component';
 import { MenuComponent } from './components/menu/menu.component';
+import { AboutComponent } from './about/about.component';
 
 
 @NgModule({
@@ -52,7 +53,8 @@ import { MenuComponent } from './components/menu/menu.component';
     EditDeveloperComponent,
     SwaggerComponent,
     NotAuthorizedComponent,
-    MenuComponent
+    MenuComponent,
+    AboutComponent
   ],
   imports: [
     BrowserModule,
