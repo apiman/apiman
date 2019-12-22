@@ -1,5 +1,5 @@
 import {Component, Input, SimpleChanges, OnChanges} from '@angular/core';
-import {forkJoin, Observable, from, pipe} from 'rxjs';
+import {forkJoin, Observable, from, pipe, ObservedValueOf} from 'rxjs';
 import {map, mergeMap, toArray, mergeAll} from 'rxjs/operators';
 import {ApiDataService, ApiVersion, Client, Contract} from '../../../services/api-data.service';
 import {element} from 'protractor';
@@ -73,6 +73,7 @@ export class ApiListComponent implements OnChanges {
     this.getGatewayDataObservable)
     .pipe(mergeMap(forkedData => {
       const [clients, contracts, apiVersions, gateways] = forkedData;
+      this.checkReceivedData(clients, contracts, apiVersions, gateways);
       return from(contracts)
         .pipe(map(contract => {
           const apiVersion = apiVersions.find(version => version.api.id === contract.apiId);
@@ -200,4 +201,57 @@ export class ApiListComponent implements OnChanges {
     return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
   }
 
+  /**
+   * Check the received data and provide user feedback
+   * @param clients the loaded clients
+   * @param contracts the loaded contracts
+   * @param apiVersions the loaded api versions
+   * @param gateways the loaded gateways
+   */
+  private checkReceivedData(clients: Array<Client>,
+                            contracts: Array<Contract>,
+                            apiVersions: Array<ApiVersion>,
+                            gateways: ObservedValueOf<Observable<{ endpoint: string; id: any }>>[]) {
+    let hasError = false;
+    if (clients.length === 0) {
+      hasError = true;
+      this.loadingSpinnerService.stopWaiting();
+      this.toasterService.pop({
+        type: 'info',
+        title: 'No clients available',
+        body: 'Check client mapping',
+        timeout: 0,
+        showCloseButton: true
+      });
+    }
+    if (!hasError && contracts.length === 0) {
+      hasError = true;
+      this.loadingSpinnerService.stopWaiting();
+      this.toasterService.pop({
+        type: 'info',
+        title: 'No contracts available',
+        timeout: 0,
+        showCloseButton: true
+      });
+    }
+    if (!hasError && apiVersions.length === 0) {
+      hasError = true;
+      this.loadingSpinnerService.stopWaiting();
+      this.toasterService.pop({
+        type: 'info',
+        title: 'No api versions available',
+        timeout: 0,
+        showCloseButton: true
+      });
+    }
+    if (gateways.length === 0) {
+      this.loadingSpinnerService.stopWaiting();
+      this.toasterService.pop({
+        type: 'info',
+        title: 'No gateway data available',
+        timeout: 0,
+        showCloseButton: true
+      });
+    }
+  }
 }

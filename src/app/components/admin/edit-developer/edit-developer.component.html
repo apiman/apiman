@@ -1,7 +1,7 @@
-<h1>Edit Developer {{developerId}}</h1>
+<h1>Edit Client Mapping (Developer {{developerId}})</h1>
 
 <div class="wrapper">
   <app-client-mapping #clientmapping [assignedClients]="assignedClients"></app-client-mapping>
-  <button [disabled]="clientMapping && clientMapping.assignedClients && clientMapping.assignedClients.length === 0" (click)="updateDeveloper()">Save</button>
+  <button (click)="updateDeveloper()">Save</button>
   <button routerLink="/admin">Cancel</button>
 </div>

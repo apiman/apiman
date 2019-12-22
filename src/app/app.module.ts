@@ -30,7 +30,7 @@ import {
   MatOptionModule,
   MatAutocompleteModule,
   MatProgressSpinnerModule,
-  MatTooltipModule, MatSortModule, _MatMenuDirectivesModule, MatMenuModule
+  MatTooltipModule, MatSortModule, _MatMenuDirectivesModule, MatMenuModule, MatStepperModule
 } from '@angular/material';
 import {EditDeveloperComponent} from './components/admin/edit-developer/edit-developer.component';
 import {NotAuthorizedComponent} from './components/not-authorized/not-authorized.component';
@@ -77,6 +77,7 @@ import { AboutComponent } from './about/about.component';
     MatSortModule,
     _MatMenuDirectivesModule,
     MatMenuModule,
+    MatStepperModule,
   ],
   providers: [
     {

@@ -59,7 +59,7 @@ export class EditDeveloperComponent implements OnInit {
    */
   updateDeveloper() {
     this.loadingSpinnerService.startWaiting();
-    if (this.developer && this.clientMapping.assignedClients.length > 0) {
+    if (this.developer) {
       return this.adminService.updateDeveloper(this.developer).subscribe(() => {
         //delete developer from cache
         this.developerDataCache.developers
@@ -79,6 +79,14 @@ export class EditDeveloperComponent implements OnInit {
         };
         this.toasterService.pop(errorToast);
         this.loadingSpinnerService.stopWaiting();
+      });
+    } else {
+      this.loadingSpinnerService.stopWaiting();
+      this.toasterService.pop({
+        type: 'error',
+        title: 'Developer is not defined',
+        timeout: 0,
+        showCloseButton: true
       });
     }
   }
