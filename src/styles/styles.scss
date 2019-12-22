@@ -5,25 +5,23 @@
 
 :root {
   --scheer-bg-color:                     #06618e; /*Mittelblau*/
-  --scheer-dropdown-hover-color:         #e8e8e8;
 
   --scheer-button-bg:                    #2996cc;
   --scheer-button-border-color:          #2996cc;
-  /*hover is also used as dark blue border for dropdown entries*/
+
   --scheer-button-hover-color:           #06628e;
+  --scheer-button-focus-color:           #06628e;
 
-  --scheer-button-active-color:          #043953;
-  --scheer-button-active-border:         #033249;
-
-  --scheer-grey-button:                  #bbb6b9; /*Rosengrau*/
-  --scheer-grey-button-border:           #6a7480; /*Schiefergrau*/
-
-  --navbar-bg-color:                  #c8c9cc;
-  --navbar-color:                     #6a747f;
-  --navbar-color-active:              #2996cc;
-
-  --alert-color:                      #d03237; /*rgba(208, 50, 55, 1)*/
   --alert-color-hover:                #ac1e1c;
+
+  --scheer-grey-color-fill: #bab6b9;
+  --scheer-lightorange: #ffa500;
+
+  --branding-message-error: #CF303A;
+  --branding-message-warn: var(--scheer-lightorange);
+  --branding-message-success: #0F9D58;
+  --branding-message-info: var(--scheer-grey-color-fill);
+
 }
 
 body {
@@ -48,7 +46,7 @@ h4 {
 
 button {
   color: #fff;
-  background-color: #2996cc;
+  background-color: var(--scheer-button-bg);
   display: inline-block;
   margin-bottom: 0;
   font-weight: 600;
@@ -66,10 +64,21 @@ button {
   margin-left: 10px;
 }
 
-button:focus, button:hover {
+button:first-child {
+  margin-left: 0px;
+}
+
+button:focus {
   color: #fff;
   text-decoration: none;
-  background-color: #06628e;
+  background-color: var(--scheer-button-focus-color);
+  border-color: transparent;
+}
+
+button:hover {
+  color: #fff;
+  text-decoration: none;
+  background-color: var(--scheer-button-hover-color);
   border-color: transparent;
 }
 
@@ -81,8 +90,7 @@ button[disabled], button[disabled], button[disabled]:hover{
   box-shadow: none;
 }
 
-button[disabled], button[disabled], button[disabled]:hover{
-  /*!important is needed here, because the framework that is used by apiman uses it also*/
+button[disabled], button[disabled], button[disabled]:hover {
   background-color: #ffffff;
   border-color: var(--scheer-button-border-color);
   color: var(--scheer-button-bg);

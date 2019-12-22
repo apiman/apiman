@@ -10,8 +10,11 @@ declare const SwaggerUIBundle: any;
 })
 export class SwaggerComponent implements OnInit {
 
-  constructor(@Inject('APIMAN_UI_REST_URL') private apimanUiRestUrl: string, private route: ActivatedRoute) { }
+  constructor(@Inject('API_MGMT_UI_REST_URL') private apiMgmtUiRestUrl: string, private route: ActivatedRoute) { }
 
+  /**
+   * Load the swagger definition and display it with the swagger ui bundle library on component initialization
+   */
   ngOnInit() {
     const developerId = this.route.snapshot.paramMap.get('developerId');
     const organizationId = this.route.snapshot.paramMap.get('orgId');
@@ -27,7 +30,11 @@ export class SwaggerComponent implements OnInit {
       apiKey = sessionStorage.getItem('lastSwaggerApiKey');
     }
 
-    const swaggerURL = this.apimanUiRestUrl + '/developers/' + developerId + '/organizations/' + organizationId + '/apis/' + apiId + '/versions/' + version + '/definition';
+    const swaggerURL = this.apiMgmtUiRestUrl
+      + '/developers/' + developerId
+      + '/organizations/' + organizationId
+      + '/apis/' + apiId + '/versions/'
+      + version + '/definition';
 
     const swaggerUI = SwaggerUIBundle({
       dom_id: '#swagger-editor',
@@ -48,7 +55,7 @@ export class SwaggerComponent implements OnInit {
       requestInterceptor: (request) => {
         if (request.url === swaggerURL) {
           // set bearer token for authentication to get swagger file
-          request.headers.Authorization = 'Bearer ' + sessionStorage.getItem('apiman_keycloak_token');
+          request.headers.Authorization = 'Bearer ' + sessionStorage.getItem('api_mgmt_keycloak_token');
         } else {
           // set api key to authorize all api requests also for option requests
           request.url += '?apiKey=' + apiKey;

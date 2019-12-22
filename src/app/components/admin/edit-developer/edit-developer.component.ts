@@ -42,14 +42,7 @@ export class EditDeveloperComponent implements OnInit {
     }, error => {
       const errorMessage = 'Error loading developer';
       console.error(errorMessage, error);
-      const errorToast: Toast = {
-        type: 'error',
-        title: errorMessage,
-        body: error.message ? error.message : error.error.message,
-        timeout: 0,
-        showCloseButton: true
-      };
-      this.toasterService.pop(errorToast);
+      this.toasterService.pop('error', errorMessage, error.message);
       this.loadingSpinnerService.stopWaiting();
     });
   }
@@ -61,7 +54,7 @@ export class EditDeveloperComponent implements OnInit {
     this.loadingSpinnerService.startWaiting();
     if (this.developer) {
       return this.adminService.updateDeveloper(this.developer).subscribe(() => {
-        //delete developer from cache
+        // delete developer from cache
         this.developerDataCache.developers
           .splice(this.developerDataCache.developers
             .findIndex((d) => d.id === this.developer.id), 1, this.developer);
@@ -70,24 +63,12 @@ export class EditDeveloperComponent implements OnInit {
       }, error => {
         const errorMessage = 'Error saving developer';
         console.error(errorMessage, error);
-        const errorToast: Toast = {
-          type: 'error',
-          title: errorMessage,
-          body: error.message ? error.message : error.error.message,
-          timeout: 0,
-          showCloseButton: true
-        };
-        this.toasterService.pop(errorToast);
+        this.toasterService.pop('error', errorMessage, error.message);
         this.loadingSpinnerService.stopWaiting();
       });
     } else {
       this.loadingSpinnerService.stopWaiting();
-      this.toasterService.pop({
-        type: 'error',
-        title: 'Developer is not defined',
-        timeout: 0,
-        showCloseButton: true
-      });
+      this.toasterService.pop('error', 'Developer is not defined');
     }
   }
 

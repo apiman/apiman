@@ -5,31 +5,52 @@
       <form id="userForm" [formGroup]="userFormGroup">
         <ng-template matStepLabel>Create User</ng-template>
         <mat-form-field class="input-form-field">
-          <input matInput placeholder="Username" formControlName="username" [matAutocomplete]="auto" (input)="usernameKeyUp.next($event.target.value)" required>
+          <input matInput placeholder="Username" formControlName="username" [matAutocomplete]="auto"
+                 (input)="usernameKeyUp.next($event.target.value)" required>
         </mat-form-field>
         <mat-autocomplete #auto="matAutocomplete">
           <mat-option *ngFor="let user of filteredKeycloakUsers" [value]="user.username">{{user.username}}</mat-option>
         </mat-autocomplete>
-        <span [hidden]="this.checkDeveloperNotExists(this.userFormGroup.get('username').value)">(Developer already exists.)</span>
-        <span [hidden]="!this.checkDeveloperNotExists(this.userFormGroup.get('username').value) || this.isPasswordRequiredForInsert(this.userFormGroup.get('username').value)">(You create a Developer for an existing API-Mgmt user.)</span>
         <span [hidden]="!this.isPasswordRequiredForInsert(this.userFormGroup.get('username').value)">
-      <mat-form-field class="input-form-field">
-        <!-- use attr.disabled here because of formGroup: https://angular.io/guide/template-syntax -->
-        <input id="passwordField" matInput placeholder="Password" type="password" formControlName="password" [required]="this.isPasswordRequiredForInsert(this.userFormGroup.get('username').value)" [attr.disabled]="!this.isPasswordRequiredForInsert(this.userFormGroup.get('username').value) ? 'disabled' : null">
-      </mat-form-field>
-      <mat-form-field class="input-form-field">
-        <input matInput placeholder="First name" formControlName="firstname" [required]="this.isPasswordRequiredForInsert(this.userFormGroup.get('username').value)" [attr.disabled]="!this.isPasswordRequiredForInsert(this.userFormGroup.get('username').value) ? 'disabled' : null">
-      </mat-form-field>
-      <mat-form-field class="input-form-field">
-        <input matInput placeholder="Last name" formControlName="lastname" [required]="this.isPasswordRequiredForInsert(this.userFormGroup.get('username').value)" [attr.disabled]="!this.isPasswordRequiredForInsert(this.userFormGroup.get('username').value) ? 'disabled' : null">
-      </mat-form-field>
-      <mat-form-field class="input-form-field">
-        <input matInput placeholder="Email" formControlName="email" [required]="this.isPasswordRequiredForInsert(this.userFormGroup.get('username').value)" [attr.disabled]="!this.isPasswordRequiredForInsert(this.userFormGroup.get('username').value) ? 'disabled' : null">
-      </mat-form-field>
-    </span>
+          <mat-form-field class="input-form-field">
+            <!-- use attr.disabled here because of formGroup: https://angular.io/guide/template-syntax -->
+            <input id="passwordField" matInput placeholder="Password" type="password" formControlName="password"
+                   [required]="this.isPasswordRequiredForInsert(this.userFormGroup.get('username').value)"
+                   [attr.disabled]="!this.isPasswordRequiredForInsert(this.userFormGroup.get('username').value) ? 'disabled' : null">
+          </mat-form-field>
+          <mat-form-field class="input-form-field">
+            <input matInput placeholder="First name" formControlName="firstname"
+                   [required]="this.isPasswordRequiredForInsert(this.userFormGroup.get('username').value)"
+                   [attr.disabled]="!this.isPasswordRequiredForInsert(this.userFormGroup.get('username').value) ? 'disabled' : null">
+          </mat-form-field>
+          <mat-form-field class="input-form-field">
+            <input matInput placeholder="Last name" formControlName="lastname"
+                   [required]="this.isPasswordRequiredForInsert(this.userFormGroup.get('username').value)"
+                   [attr.disabled]="!this.isPasswordRequiredForInsert(this.userFormGroup.get('username').value) ? 'disabled' : null">
+          </mat-form-field>
+          <mat-form-field class="input-form-field">
+            <input matInput placeholder="Email" formControlName="email"
+                   [required]="this.isPasswordRequiredForInsert(this.userFormGroup.get('username').value)"
+                   [attr.disabled]="!this.isPasswordRequiredForInsert(this.userFormGroup.get('username').value) ? 'disabled' : null">
+          </mat-form-field>
+        </span>
+        <mat-card class="warning" *ngIf="!this.checkDeveloperNotExists(this.userFormGroup.get('username').value)">
+          <mat-icon>warning</mat-icon>
+          <div class="box-content">Developer already exists.</div>
+        </mat-card>
+        <mat-card
+          class="info"
+          *ngIf="this.checkDeveloperNotExists(this.userFormGroup.get('username').value)
+          && !this.isPasswordRequiredForInsert(this.userFormGroup.get('username').value)">
+          <mat-icon>info</mat-icon>
+          <div class="box-content">You create a Developer for an existing API Management user.</div>
+        </mat-card>
       </form>
       <div>
-        <button matStepperNext>Next</button>
+        <button matStepperNext
+                [disabled]="!this.checkDeveloperNotExists(this.userFormGroup.get('username').value) || !userFormGroup.valid">
+          Next
+        </button>
         <button routerLink="/admin">Cancel</button>
       </div>
     </mat-step>
@@ -37,11 +58,13 @@
       <ng-template matStepLabel>Create Client Mapping</ng-template>
       <app-client-mapping #clientmapping></app-client-mapping>
       <p>
-        <button [disabled]="!this.checkDeveloperNotExists(this.userFormGroup.get('username').value) || !userFormGroup.valid" (click)="insertDeveloper()">Save</button>
+        <button
+          [disabled]="!this.checkDeveloperNotExists(this.userFormGroup.get('username').value) || !userFormGroup.valid"
+          (click)="insertDeveloper()">Save
+        </button>
         <button matStepperPrevious>Back</button>
         <button routerLink="/admin">Cancel</button>
       </p>
     </mat-step>
   </mat-horizontal-stepper>
-
 </div>

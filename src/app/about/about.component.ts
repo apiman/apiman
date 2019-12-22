@@ -12,6 +12,9 @@ export class AboutComponent implements OnInit {
 
   constructor() { }
 
+  /**
+   * Set version during initialization
+   */
   ngOnInit() {
     this.devportalVersion = version;
   }

@@ -1,7 +1,10 @@
-<table matSort matSortStart="desc" (matSortChange)="sortData($event)" mat-table [dataSource]="sortedApiData" multiTemplateDataRows>
+<div *ngIf="sortedApiData.length === 0">
+  <p>No APIs available.</p>
+</div>
+<table *ngIf="sortedApiData.length > 0" matSort matSortStart="desc" (matSortChange)="sortData($event)" mat-table [dataSource]="sortedApiData" multiTemplateDataRows>
   <ng-container matColumnDef="api">
     <th mat-header-cell mat-sort-header="api" *matHeaderCellDef>API</th>
-    <td mat-cell *matCellDef="let element" (click)="expandedElement = expandedElement=== element ? null : element" class="clickable"> {{element.apiOrganization}} / <b>{{element.apiName}}</b> </td>
+    <td mat-cell *matCellDef="let element" (click)="expandedElement = expandedElement === element ? null : element" class="clickable"> {{element.apiOrganization}} / <b>{{element.apiName}}</b> </td>
   </ng-container>
   <ng-container matColumnDef="apiVersion">
     <th mat-header-cell mat-sort-header="version" *matHeaderCellDef>API Version</th>
@@ -9,7 +12,7 @@
   </ng-container>
   <ng-container matColumnDef="tryApi">
     <th mat-header-cell *matHeaderCellDef>Try API</th>
-    <td mat-cell *matCellDef="let element"> <mat-icon class="button" *ngIf="element.swaggerDefinitionType != null" (click)="this.openSwaggerView(element)" matTooltip="Try the API">play_arrow</mat-icon> </td>
+    <td mat-cell *matCellDef="let element"> <mat-icon class="button" *ngIf="element.swaggerDefinitionType !== null || element.swaggerDefinitionType !== 'None'" (click)="this.openSwaggerView(element)" matTooltip="Try the API">play_arrow</mat-icon> </td>
   </ng-container>
   <ng-container matColumnDef="options">
     <th mat-header-cell *matHeaderCellDef>Options</th>
@@ -20,9 +23,9 @@
 
   <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
   <ng-container matColumnDef="expandedDetail">
-    <td mat-cell *matCellDef="let element" [attr.colspan]="columnHeaders.length" class="expandedTd" [ngClass]="element == expandedElement ? 'displayed': 'hidden'">
+    <td mat-cell *matCellDef="let element" [attr.colspan]="columnHeaders.length" class="expandedTd" [ngClass]="element === expandedElement ? 'displayed': 'hidden'">
       <div class="api-detail"
-           [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+           [@detailExpand]="element === expandedElement ? 'expanded' : 'collapsed'">
         <div class="expand-content">
           <div class="expanded-header">API Endpoint</div>
           <div>{{element.endpoint}}</div>

@@ -1,6 +1,5 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {KeycloakService} from 'keycloak-angular';
-import {ActivatedRoute, Router} from '@angular/router';
 
 @Component({
   selector: 'app-pas-header',

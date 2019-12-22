@@ -20,6 +20,9 @@ export class DeveloperListComponent implements OnInit {
               private loadingSpinnerService: SpinnerService) {
   }
 
+  /**
+   * load data on initialization
+   */
   ngOnInit() {
     this.load();
   }
@@ -32,25 +35,17 @@ export class DeveloperListComponent implements OnInit {
     // set data from cache
     this.developers = this.developerDataCache.developers;
     if (!this.developers) {
-      this.adminService.getAllDevelopers().subscribe((developers) => {
-        // set data to cache
-        this.developerDataCache.developers = developers;
-        // set data from cache
-        this.developers = this.developerDataCache.developers;
-        this.loadingSpinnerService.stopWaiting();
-      }, (error => {
-        const errorMessage = 'Error loading developer list';
-        console.error(errorMessage, error);
-        const errorToast: Toast = {
-          type: 'error',
-          title: errorMessage,
-          body: error.message ? error.message : error.error.message,
-          timeout: 0,
-          showCloseButton: true
-        };
-        this.toasterService.pop(errorToast);
-        this.loadingSpinnerService.stopWaiting();
-      }));
+      this.developerDataCache.load()
+        .subscribe(() => {
+          // set data from cache
+          this.developers = this.developerDataCache.developers;
+          this.loadingSpinnerService.stopWaiting();
+        }, (httpErrorResponse) => {
+              const errorMessage = 'Error loading developer list';
+              console.error(errorMessage, httpErrorResponse);
+              this.toasterService.pop('error', errorMessage, httpErrorResponse.message);
+              this.loadingSpinnerService.stopWaiting();
+            });
     } else {
       this.loadingSpinnerService.stopWaiting();
     }
@@ -69,14 +64,7 @@ export class DeveloperListComponent implements OnInit {
       }, error => {
         const errorMessage = 'Error deleting developer';
         console.error(errorMessage, error);
-        const errorToast: Toast = {
-          type: 'error',
-          title: errorMessage,
-          body: error.message ? error.message : error.error.message,
-          timeout: 0,
-          showCloseButton: true
-        };
-        this.toasterService.pop(errorToast);
+        this.toasterService.pop('error', errorMessage, error.message);
         this.loadingSpinnerService.stopWaiting();
       });
   }

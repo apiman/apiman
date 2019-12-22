@@ -13,7 +13,7 @@ RUN npm run build-production
 # Stage 2
 FROM nginx:1.13.12-alpine
 
-COPY --from=node /usr/src/app/dist/apiman-dev-portal /usr/share/nginx/html
+COPY --from=node /usr/src/app/dist/api-mgmt-dev-portal /usr/share/nginx/html
 
 #copy nginx configuration
 COPY docker/nginx.conf /etc/nginx/conf.d/default.conf

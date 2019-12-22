@@ -1,9 +1,7 @@
-import {Component, Input, SimpleChanges, OnChanges} from '@angular/core';
-import {forkJoin, Observable, from, pipe, ObservedValueOf} from 'rxjs';
-import {map, mergeMap, toArray, mergeAll} from 'rxjs/operators';
+import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
+import {forkJoin, from, Observable, ObservedValueOf} from 'rxjs';
+import {map, mergeAll, mergeMap, toArray} from 'rxjs/operators';
 import {ApiDataService, ApiVersion, Client, Contract} from '../../../services/api-data.service';
-import {element} from 'protractor';
-import {emit} from 'cluster';
 import {SpinnerService} from '../../../services/spinner.service';
 import {Toast, ToasterService} from 'angular2-toaster';
 import {Router} from '@angular/router';
@@ -96,14 +94,7 @@ export class ApiListComponent implements OnChanges {
     }, error => {
       const errorMessage = 'Error loading api list';
       console.error(errorMessage, error);
-      const errorToast: Toast = {
-        type: 'error',
-        title: errorMessage,
-        body: error.message ? error.message : error.error.message,
-        timeout: 0,
-        showCloseButton: true
-      };
-      this.toasterService.pop(errorToast);
+      this.toasterService.pop('error', errorMessage, error.message);
       this.loadingSpinnerService.stopWaiting();
     });
   }
@@ -216,42 +207,21 @@ export class ApiListComponent implements OnChanges {
     if (clients.length === 0) {
       hasError = true;
       this.loadingSpinnerService.stopWaiting();
-      this.toasterService.pop({
-        type: 'info',
-        title: 'No clients available',
-        body: 'Check client mapping',
-        timeout: 0,
-        showCloseButton: true
-      });
+      this.toasterService.pop('warning', 'No clients available', 'Let the admin check the client mapping');
     }
     if (!hasError && contracts.length === 0) {
       hasError = true;
       this.loadingSpinnerService.stopWaiting();
-      this.toasterService.pop({
-        type: 'info',
-        title: 'No contracts available',
-        timeout: 0,
-        showCloseButton: true
-      });
+      this.toasterService.pop('warning', 'No contracts available');
     }
     if (!hasError && apiVersions.length === 0) {
       hasError = true;
       this.loadingSpinnerService.stopWaiting();
-      this.toasterService.pop({
-        type: 'info',
-        title: 'No api versions available',
-        timeout: 0,
-        showCloseButton: true
-      });
+      this.toasterService.pop('info', 'No api versions available');
     }
     if (gateways.length === 0) {
       this.loadingSpinnerService.stopWaiting();
-      this.toasterService.pop({
-        type: 'info',
-        title: 'No gateway data available',
-        timeout: 0,
-        showCloseButton: true
-      });
+      this.toasterService.pop('warning', 'No gateway data available');
     }
   }
 }

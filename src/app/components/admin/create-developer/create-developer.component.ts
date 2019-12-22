@@ -1,15 +1,14 @@
-import {Component, Input, OnInit, ViewChild, OnDestroy} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {DeveloperImpl} from '../../../type-definitions/developerImpl';
-import {DeveloperListComponent} from '../developer-list.component';
 import {ClientMappingComponent} from './client-mapping.component';
 import {ClientMappingImpl} from '../../../type-definitions/client-mapping-impl';
 import {Router} from '@angular/router';
 import {KeycloakUserImpl} from '../edit-developer/keycloak-user-impl';
 import {AdminService} from '../services/admin.service';
 import {DeveloperDataCacheService} from '../services/developer-data-cache.service';
-import {Observable, Subject} from 'rxjs';
-import {debounceTime, map, mergeMap, startWith} from 'rxjs/operators';
+import {forkJoin, Subject} from 'rxjs';
+import {debounceTime, map, mergeMap} from 'rxjs/operators';
 import {Toast, ToasterService} from 'angular2-toaster';
 import UserRepresentation from 'keycloak-admin/lib/defs/userRepresentation';
 import {SpinnerService} from '../../../services/spinner.service';
@@ -19,7 +18,7 @@ import {SpinnerService} from '../../../services/spinner.service';
   templateUrl: './create-developer.component.html',
   styleUrls: ['./create-developer.component.scss']
 })
-export class CreateDeveloperComponent {
+export class CreateDeveloperComponent implements OnInit, OnDestroy {
 
   // pattern allows only strings with characters a-z A-Z and 0-9
   private nonSpecialCharacterPattern = Validators.pattern('[a-zA-Z0-9]+');
@@ -34,7 +33,7 @@ export class CreateDeveloperComponent {
 
   @ViewChild('clientmapping', {static: false}) clientMapping: ClientMappingComponent;
 
-  public usernameKeyUp = new Subject<KeyboardEvent>();
+  public usernameKeyUp = new Subject<string>();
   private userNameInputSubscription;
 
   public keycloakUsers: Array<UserRepresentation>;
@@ -47,28 +46,51 @@ export class CreateDeveloperComponent {
               private loadingSpinnerService: SpinnerService) {
   }
 
+  /**
+   * On init life circle
+   */
   ngOnInit(): void {
-    this.loadingSpinnerService.startWaiting();
-    this.adminService.getKeycloakUsers().subscribe(keycloakUsers => {
+    const getKeycloakUserTask = this.adminService.getKeycloakUsers().pipe(map(keycloakUsers => {
       this.keycloakUsers = keycloakUsers;
       this.filteredKeycloakUsers = keycloakUsers.filter((user => this.checkDeveloperNotExists(user.username)));
-      this.loadingSpinnerService.stopWaiting();
-    });
+    }));
+    const userNameInputTask = this.userNameInputSubscription = this.usernameKeyUp
+      .pipe(debounceTime(300), map(username => this.filterKeycloakUser(username)));
 
-    this.userNameInputSubscription = this.usernameKeyUp
-      .pipe(debounceTime(300), map(username => this.filterKeycloakUser(username)))
-      .subscribe();
+    const tasks = [];
+    if (!this.developerDataCache.developers) {
+      tasks.push(this.developerDataCache.load());
+    }
+    tasks.push(getKeycloakUserTask);
+    tasks.push(userNameInputTask);
+
+    this.loadingSpinnerService.startWaiting();
+    forkJoin(tasks).subscribe(() =>
+        this.loadingSpinnerService.stopWaiting(),
+      error => {
+        this.toasterService.pop('error', 'Error initializing page');
+      });
   }
 
+  /**
+   * On destroy life circle
+   */
   ngOnDestroy(): void {
     this.userNameInputSubscription.unsubscribe();
   }
 
-  private filterKeycloakUser(value) {
+  /**
+   * Filter the user auto complete list
+   * @param usernameInput the inputed username
+   */
+  private filterKeycloakUser(usernameInput: string) {
     this.filteredKeycloakUsers = this.keycloakUsers
-      .filter((u) => this.checkDeveloperNotExists(u.username) && u.username.toLowerCase().includes(value.toLowerCase()));
+      .filter((u) => this.checkDeveloperNotExists(u.username) && u.username.toLowerCase().includes(usernameInput.toLowerCase()));
   }
 
+  /**
+   * Insert a developer
+   */
   insertDeveloper() {
     this.loadingSpinnerService.startWaiting();
 
@@ -99,14 +121,7 @@ export class CreateDeveloperComponent {
 
         const errorMessage = 'Error creating developer';
         console.error(errorMessage, error);
-        const errorToast: Toast = {
-          type: 'error',
-          title: errorMessage,
-          body: error.message ? error.message : error.error.message,
-          timeout: 0,
-          showCloseButton: true
-        };
-        this.toasterService.pop(errorToast);
+        this.toasterService.pop('error', errorMessage, error.message);
 
         this.developerDataCache.developers.splice(this.developerDataCache.developers
           .findIndex(developer => developer.name.toLowerCase() === developerToCreate.name.toLowerCase()), 1);
@@ -116,26 +131,30 @@ export class CreateDeveloperComponent {
             this.toasterService.pop({
               type: 'info',
               body: rollbackMessage,
-              timeout: 30000,
-              showCloseButton: true
+              timeout: 30000
             });
             console.log(rollbackMessage, rollbackResponse);
           });
       });
   }
 
+  /**
+   * Check if the developer does not exists
+   * @param username the developer username
+   */
   checkDeveloperNotExists(username: string) {
     return this.developerDataCache.developers
       && this.developerDataCache.developers.find((d) => d.name.toLowerCase() === username.toLowerCase()) === undefined;
   }
 
-  checkKeycloakUserNotExists(username) {
+  /**
+   * Check if the a password is required for an insert
+   * @param username the keycloak username
+   */
+  isPasswordRequiredForInsert(username: string) {
+    // check if the keycloak user does not exists
     return this.keycloakUsers
       && this.keycloakUsers.find((u) => u.username.toLowerCase() === username.toLowerCase()) === undefined;
-  }
-
-  isPasswordRequiredForInsert(username) {
-    return this.checkKeycloakUserNotExists(username);
   }
 
 }

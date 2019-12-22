@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "apiman-dev-portal": {
+    "api-mgmt-dev-portal": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/apiman-dev-portal",
+            "outputPath": "dist/api-mgmt-dev-portal",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -76,18 +76,18 @@
           "options": {
             "host": "pc0854.scheer.systems",
             "port": 4200,
-            "browserTarget": "apiman-dev-portal:build"
+            "browserTarget": "api-mgmt-dev-portal:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "apiman-dev-portal:build:production"
+              "browserTarget": "api-mgmt-dev-portal:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "apiman-dev-portal:build"
+            "browserTarget": "api-mgmt-dev-portal:build"
           }
         },
         "test": {
@@ -127,15 +127,15 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "apiman-dev-portal:serve"
+            "devServerTarget": "api-mgmt-dev-portal:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "apiman-dev-portal:serve:production"
+              "devServerTarget": "api-mgmt-dev-portal:serve:production"
             }
           }
         }
       }
     }},
-  "defaultProject": "apiman-dev-portal"
+  "defaultProject": "api-mgmt-dev-portal"
 }

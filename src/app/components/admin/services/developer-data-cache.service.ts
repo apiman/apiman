@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Developer} from '../../../services/api-data.service';
 import {AdminService} from './admin.service';
+import {map} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -11,11 +12,16 @@ export class DeveloperDataCacheService {
 
   constructor(private adminService: AdminService) {
     if (!this.developers) {
-      this.adminService.getAllDevelopers().subscribe((developers) => {
+      this.load();
+    }
+  }
+
+  public load() {
+    return this.adminService.getAllDevelopers()
+      .pipe(map(developers => {
         // set data to cache
         this.developers = developers;
         console.log('set developer list cache', developers);
-      });
-    }
+      }));
   }
 }

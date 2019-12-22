@@ -1,7 +1,6 @@
 import {Inject, Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {forkJoin, from, iif, merge, Observable, of} from 'rxjs';
-import has = Reflect.has;
+import {HttpClient} from '@angular/common/http';
+import {Observable} from 'rxjs';
 
 /**
  * Api Version
@@ -106,17 +105,26 @@ export interface Contract {
   createdOn: string;
 }
 
+/**
+ * Client Mapping for developer
+ */
 export interface ClientMapping {
   clientId: string;
   organizationId: string;
 }
 
+/**
+ * Developer
+ */
 export interface Developer {
   id: string;
   name: string;
   clients: Array<ClientMapping>;
 }
 
+/**
+ * Client Bean
+ */
 export interface ClientBean {
   name: string;
   id: string;
@@ -126,6 +134,9 @@ export interface ClientBean {
   organizationId: string;
 }
 
+/**
+ * Client Search Result
+ */
 export interface ClientSearchResult {
   beans: Array<ClientBean>;
   totalSize: number;
@@ -148,6 +159,9 @@ export interface GatewayEndpoint {
   endpoint: string;
 }
 
+/**
+ * Keycloak User
+ */
 export interface KeycloakUser {
   username: string;
   email: string;
@@ -161,16 +175,16 @@ export interface KeycloakUser {
 })
 
 /**
- * A service which executes the REST calls to Apiman UI REST Interface
+ * A service which executes the REST calls to Api Mgmt UI REST Interface
  */
 export class ApiDataService {
 
   /**
-   * Contructor
+   * Constructor
    * @param http The http client
-   * @param apimanUiRestUrl The apiman UI REST url
+   * @param apiMgmtUiRestUrl The Api Mgmt UI REST url
    */
-  constructor(private http: HttpClient, @Inject('APIMAN_UI_REST_URL') private apimanUiRestUrl: string) {
+  constructor(private http: HttpClient, @Inject('API_MGMT_UI_REST_URL') private apiMgmtUiRestUrl: string) {
   }
 
   /**
@@ -178,7 +192,7 @@ export class ApiDataService {
    * @param developerId The developer Id
    */
   public getDeveloperClients(developerId: string) {
-    const url = this.apimanUiRestUrl + '/developers/' + developerId + '/clients';
+    const url = this.apiMgmtUiRestUrl + '/developers/' + developerId + '/clients';
     return this.http.get(url) as Observable<Array<Client>>;
   }
 
@@ -187,7 +201,7 @@ export class ApiDataService {
    * @param developerId The developer Id
    */
   public getDeveloperContracts(developerId: string) {
-    const url = this.apimanUiRestUrl + '/developers/' + developerId + '/contracts';
+    const url = this.apiMgmtUiRestUrl + '/developers/' + developerId + '/contracts';
     return this.http.get(url) as Observable<Array<Contract>>;
   }
 
@@ -196,7 +210,7 @@ export class ApiDataService {
    * @param developerId The developer Id
    */
   public getDeveloperApis(developerId: string) {
-    const url = this.apimanUiRestUrl + '/developers/' + developerId + '/apis';
+    const url = this.apiMgmtUiRestUrl + '/developers/' + developerId + '/apis';
     return this.http.get(url) as Observable<Array<ApiVersion>>;
   }
 
@@ -204,7 +218,7 @@ export class ApiDataService {
    * Get available api gateways
    */
   public getGateways() {
-    const url = this.apimanUiRestUrl + '/gateways';
+    const url = this.apiMgmtUiRestUrl + '/gateways';
     return this.http.get(url) as Observable<Array<GatewayDetails>>;
   }
 
@@ -212,8 +226,8 @@ export class ApiDataService {
    * Get gateway endpoint by gateway id
    * @param gatewayId The gateway id
    */
-  public getGatewayEndpoint(gatewayId) {
-    const url = this.apimanUiRestUrl + '/gateways/' + gatewayId + '/endpoint';
+  public getGatewayEndpoint(gatewayId: string) {
+    const url = this.apiMgmtUiRestUrl + '/gateways/' + gatewayId + '/endpoint';
     return this.http.get(url) as Observable<GatewayEndpoint>;
   }
 }

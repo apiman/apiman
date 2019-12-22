@@ -8,7 +8,7 @@
     class="client-list"
     (cdkDropListDropped)="drop($event)">
     <div class="client-box" *ngFor="let item of availableClients" cdkDrag>{{item.organizationId}}/{{item.clientId}}</div>
-    <div class="client-box" id="emptyClientInformation"  *ngIf="availableClients && availableClients.length === 0">No clients there, use API-Mgmt to create some.</div>
+    <div class="client-box" id="emptyClientInformation"  *ngIf="availableClients && availableClients.length === 0">No clients there, use API Management to create some.</div>
   </div>
 </div>
 

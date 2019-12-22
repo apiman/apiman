@@ -4,6 +4,7 @@ import KcAdminClient from 'keycloak-admin';
 import { from, Observable, of } from 'rxjs';
 import { map, mergeAll, mergeMap, share, single } from 'rxjs/operators';
 import UserRepresentation from 'keycloak-admin/lib/defs/userRepresentation';
+import {KeycloakUser} from '../../../services/api-data.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,15 +13,21 @@ export class KeycloakInteractionService {
 
   private kcAdminClient: KcAdminClient;
 
+  private keycloakGroupUsers = 'API-Mgmt-Devportal-Users';
+  private keycloakDevPortalClientId = 'devportal';
+  private keycloakDevPortalUserRole = 'devportaluser';
+
   /**
    * Constructor of Keycloak Interaction Service
    * @param keycloak the keycloak service
-   * @param apimanKeycloakRestUrl the apiman keycloak rest url
+   * @param keycloakRestUrl the keycloak rest url
    */
-  constructor(private keycloak: KeycloakService, @Inject('KEYCLOAK_AUTH_URL') private apimanKeycloakRestUrl: string) {
+  constructor(private keycloak: KeycloakService,
+              @Inject('KEYCLOAK_AUTH_URL') private keycloakRestUrl: string,
+              @Inject('API_MGTM_REALM') private apiMgmtRealm: string) {
     this.kcAdminClient = new KcAdminClient({
-      baseUrl: this.apimanKeycloakRestUrl,
-      realmName: 'Apiman'
+      baseUrl: this.keycloakRestUrl,
+      realmName: this.apiMgmtRealm
     });
     this.kcAdminClient.setAccessToken(keycloak.getKeycloakInstance().token);
   }
@@ -31,7 +38,7 @@ export class KeycloakInteractionService {
   private getDevPortalClientUUID() {
     return from(this.kcAdminClient.clients.find())
       .pipe(mergeAll())
-      .pipe(single(client => client.clientId === 'devportal'), map(client => client.id))
+      .pipe(single(client => client.clientId === this.keycloakDevPortalClientId), map(client => client.id))
       .pipe(share()); // fire only once and cache the result for other subscribers
   }
 
@@ -40,7 +47,7 @@ export class KeycloakInteractionService {
    */
   private getDevPortalUserRole() {
     return from(this.kcAdminClient.roles.findOneByName({
-      name: 'devportaluser'
+      name: this.keycloakDevPortalUserRole
     }));
   }
 
@@ -48,7 +55,7 @@ export class KeycloakInteractionService {
    * Get API-Mgmt-Devportal-Users Group
    */
   private getDevPortalUserGroup() {
-    return from(this.kcAdminClient.groups.find({search: 'API-Mgmt-Devportal-Users'}))
+    return from(this.kcAdminClient.groups.find({search: this.keycloakGroupUsers}))
       .pipe(map(groups => groups.length > 0 ? groups[0] : undefined));
   }
 
@@ -63,7 +70,7 @@ export class KeycloakInteractionService {
    * Searchs a user from keycloak
    * @param username the keycloak username
    */
-  public findUser(username) {
+  public findUser(username: string) {
     return from(this.kcAdminClient.users.find({username}));
   }
 
@@ -71,7 +78,7 @@ export class KeycloakInteractionService {
    * Create user
    * @param userToCreate the user to create
    */
-  private createUser(userToCreate) {
+  private createUser(userToCreate: KeycloakUser) {
     return from(this.kcAdminClient.users.create({
       firstName: userToCreate.firstName,
       lastName: userToCreate.lastName,
@@ -86,7 +93,7 @@ export class KeycloakInteractionService {
    * Delete user by id
    * @param userId the user id
    */
-  private deleteUserById(userId) {
+  private deleteUserById(userId: string) {
     return from(this.kcAdminClient.users.del({
       id: userId
     }));
@@ -97,7 +104,7 @@ export class KeycloakInteractionService {
    * @param userId the user id
    * @param password the user password
    */
-  public setUserPassword(userId, password) {
+  public setUserPassword(userId: string, password: string) {
     return from(this.kcAdminClient.users.resetPassword({
         id: userId,
         credential: {
@@ -112,7 +119,7 @@ export class KeycloakInteractionService {
    * Create client role
    * @param clientRoleName the client role name
    */
-  public createClientRole(clientRoleName) {
+  public createClientRole(clientRoleName: string) {
     return this.getDevPortalClientUUID()
       .pipe(map(clientUUID => this.kcAdminClient.clients.createRole({
         id: clientUUID,
@@ -124,7 +131,7 @@ export class KeycloakInteractionService {
    * Delete client role
    * @param clientRoleName the client role name
    */
-  public deleteClientRole(clientRoleName) {
+  public deleteClientRole(clientRoleName: string) {
     return this.getDevPortalClientUUID()
       .pipe(mergeMap(clientId => this.kcAdminClient.clients.delRole({id: clientId, roleName: clientRoleName})));
   }
@@ -134,7 +141,7 @@ export class KeycloakInteractionService {
    * @param clientUUID the client UUID
    * @param clientRoleName the client role name
    */
-  public getClientRoleUUID(clientUUID, clientRoleName) {
+  public getClientRoleUUID(clientUUID: string, clientRoleName: string) {
     return from(this.kcAdminClient.clients.findRole({
       id: clientUUID,
       roleName: clientRoleName
@@ -148,7 +155,7 @@ export class KeycloakInteractionService {
    * @param roleUUID role UUID
    * @param roleName role name
    */
-  public addClientRoleMappingToUser(userUUID, clientUUID, roleUUID, roleName) {
+  public addClientRoleMappingToUser(userUUID: string, clientUUID: string, roleUUID: string, roleName: string) {
     return from(this.kcAdminClient.users.addClientRoleMappings({
       id: userUUID,
       clientUniqueId: clientUUID,
@@ -160,26 +167,12 @@ export class KeycloakInteractionService {
   }
 
   /**
-   * Add devportal role from user
-   * @param user the user
-   */
-  public addDevPortalRoleToUser(user) {
-    return this.getDevPortalUserRole().pipe(mergeMap(devPortalUserRole => this.kcAdminClient.users.addRealmRoleMappings({
-        id: user.id,
-        roles: [{
-          id: devPortalUserRole.id,
-          name: devPortalUserRole.name
-        }]
-      })));
-  }
-
-  /**
    * Remove Role Mapping from user
    * @param userUUID user UUID
    * @param roleUUID role UUID
    * @param roleName role name
    */
-  private removeRoleMapping(userUUID, roleUUID, roleName) {
+  private removeRoleMapping(userUUID: string, roleUUID: string, roleName: string) {
     return from(this.kcAdminClient.users.delRealmRoleMappings({
       id: userUUID,
       roles: [{
@@ -194,7 +187,7 @@ export class KeycloakInteractionService {
    * @param userUUID user UUID
    * @param groupUUID group UUID
    */
-  private removeGroupMapping(userUUID, groupUUID) {
+  private removeGroupMapping(userUUID: string, groupUUID: string) {
     return from(this.kcAdminClient.users.delFromGroup({
       id: userUUID,
       groupId: groupUUID
@@ -202,32 +195,23 @@ export class KeycloakInteractionService {
   }
 
   /**
-   * Remove devportal role from user
-   * @param user the user
-   */
-  public removeDevPortalRoleFromUser(user) {
-    return this.getDevPortalUserRole()
-      .pipe(mergeMap(devPortalUserRole => this.removeRoleMapping(user.id, devPortalUserRole.id, devPortalUserRole.name)));
-  }
-
-  /**
    * Add User to API-Mgmt-Devportal-Users group
-   * @param user the user
+   * @param userId the user id
    */
-  public addDevPortalGroupToUser(user) {
+  public addDevPortalGroupToUser(userId: string) {
     return this.getDevPortalUserGroup().pipe(mergeMap(devPortalUserGroup => this.kcAdminClient.users.addToGroup({
-      id: user.id,
+      id: userId,
       groupId: devPortalUserGroup.id
     })));
   }
 
   /**
    * Remove User from API-Mgmt-Devportal-Users group
-   * @param user the user
+   * @param userId the user id
    */
-  public removeDevPortalGroupFromUser(user) {
+  public removeDevPortalGroupFromUser(userId: string) {
     return this.getDevPortalUserGroup()
-      .pipe(mergeMap(devPortalUserGroup => this.removeGroupMapping(user.id, devPortalUserGroup.id)))
+      .pipe(mergeMap(devPortalUserGroup => this.removeGroupMapping(userId, devPortalUserGroup.id)))
       // removeGroupMapping returns GroupRepresentation which is not needed
       // and should be skipped because of typing errors of method this.deleteUser:
       .pipe(map((groups) => {}));
@@ -235,15 +219,15 @@ export class KeycloakInteractionService {
 
   /**
    * Add client role to user
-   * @param user the user
+   * @param userId the user id
    * @param clientRoleName the client role name
    */
-  public addClientRoleToUser(user, clientRoleName) {
+  public addClientRoleToUser(userId: string, clientRoleName: string) {
     return this.createClientRole(clientRoleName)
       .pipe(mergeMap((roleObject) => this.getDevPortalClientUUID()))
       .pipe(mergeMap(clientUUID =>
         this.getClientRoleUUID(clientUUID, clientRoleName)
-        .pipe(mergeMap(clientRoleUUID => this.addClientRoleMappingToUser(user.id, clientUUID, clientRoleUUID, clientRoleName))))
+        .pipe(mergeMap(clientRoleUUID => this.addClientRoleMappingToUser(userId, clientUUID, clientRoleUUID, clientRoleName))))
       );
   }
 
@@ -251,7 +235,7 @@ export class KeycloakInteractionService {
    * Find existing or create new user
    * @param user the user
    */
-  public findExistingOrCreateUser(user): Observable<UserRepresentation> {
+  public findExistingOrCreateUser(user: KeycloakUser): Observable<UserRepresentation> {
     return this.findUser(user.username).pipe(mergeMap(foundUsers => {
       let observer = null;
       if (foundUsers.length === 0) {
@@ -280,7 +264,7 @@ export class KeycloakInteractionService {
    * Delete dev portal user if generated from dev portal if not remove only devportaluser role from user
    * @param username Username of Developer
    */
-  public deleteUser(username): Observable<void> {
+  public deleteUser(username: string): Observable<void> {
     return this.findUser(username).pipe(mergeMap(users => {
       if (users.length > 0) {
         const userToDelete = users[0];
@@ -289,7 +273,7 @@ export class KeycloakInteractionService {
           return this.deleteUserById(userToDelete.id);
         } else {
           // remove only devportaluser role from user if he was not generated from dev portal
-          return this.removeDevPortalGroupFromUser(userToDelete);
+          return this.removeDevPortalGroupFromUser(userToDelete.id);
         }
       }
     }));

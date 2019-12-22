@@ -11,14 +11,11 @@ export class NotAuthorizedComponent implements OnInit {
   constructor(private toasterService: ToasterService) {
   }
 
+  /**
+   * Display toast message for unauthorized users
+   */
   ngOnInit() {
-    const toast: Toast = {
-      type: 'warning',
-      body: 'You are not authorized to see this page.',
-      timeout: 0,
-      showCloseButton: true
-    };
-    this.toasterService.pop(toast);
+    this.toasterService.pop('warning', 'You are not authorized to see this page.');
   }
 
 }

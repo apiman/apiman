@@ -1,6 +1,6 @@
-import {Component, OnInit, Input, Output} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
-import {ApiDataService, ClientBean, ClientMapping} from '../../../services/api-data.service';
+import {ClientMapping} from '../../../services/api-data.service';
 import {map} from 'rxjs/operators';
 import {AdminService} from '../services/admin.service';
 import {Toast, ToasterService} from 'angular2-toaster';
@@ -22,15 +22,22 @@ export class ClientMappingComponent implements OnInit {
 
   @Input('assignedClients') assignedClients: Array<ClientMapping> = [];
 
+  /**
+   * Load clients on initialization
+   */
   ngOnInit() {
     this.loadClients();
   }
 
+  /**
+   * Load available clients
+   */
   loadClients() {
     this.loadingSpinnerService.startWaiting();
     const loadedAvailableClients = [];
     this.adminService.getAllClients().pipe(map(client => {
-      if (this.assignedClients && !this.assignedClients.find((c => c.organizationId === client.organizationId && c.clientId === client.id))) {
+      if (this.assignedClients
+        && !this.assignedClients.find((c => c.organizationId === client.organizationId && c.clientId === client.id))) {
         loadedAvailableClients.push({
           clientId: client.id,
           organizationId: client.organizationId
@@ -42,23 +49,23 @@ export class ClientMappingComponent implements OnInit {
     }, error => {
       const errorMessage = 'Error loading clients';
       console.error(errorMessage, error);
-      const errorToast: Toast = {
-        type: 'error',
-        title: errorMessage,
-        body: error.message ? error.message : error.error.message,
-        timeout: 0,
-        showCloseButton: true
-      };
-      this.toasterService.pop(errorToast);
+      this.toasterService.pop('error', errorMessage, error.message);
       this.loadingSpinnerService.stopWaiting();
     });
   }
 
+  /**
+   * Reset the client list including assigned clients
+   */
   reset() {
     this.loadClients();
     this.assignedClients = [];
   }
 
+  /**
+   * Drop event for adding a client
+   * @param event The Drag&Drop event
+   */
   drop(event: CdkDragDrop<ClientMapping[]>) {
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);

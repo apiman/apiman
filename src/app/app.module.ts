@@ -30,14 +30,19 @@ import {
   MatOptionModule,
   MatAutocompleteModule,
   MatProgressSpinnerModule,
-  MatTooltipModule, MatSortModule, _MatMenuDirectivesModule, MatMenuModule, MatStepperModule
+  MatTooltipModule,
+  MatSortModule,
+  _MatMenuDirectivesModule,
+  MatMenuModule,
+  MatStepperModule,
+  MatCardModule
 } from '@angular/material';
 import {EditDeveloperComponent} from './components/admin/edit-developer/edit-developer.component';
 import {NotAuthorizedComponent} from './components/not-authorized/not-authorized.component';
 import {ToasterModule} from 'angular2-toaster';
 import {SwaggerComponent} from './components/swagger/swagger.component';
-import { MenuComponent } from './components/menu/menu.component';
-import { AboutComponent } from './about/about.component';
+import {MenuComponent} from './components/menu/menu.component';
+import {AboutComponent} from './about/about.component';
 
 
 @NgModule({
@@ -78,6 +83,7 @@ import { AboutComponent } from './about/about.component';
     _MatMenuDirectivesModule,
     MatMenuModule,
     MatStepperModule,
+    MatCardModule,
   ],
   providers: [
     {
@@ -87,12 +93,16 @@ import { AboutComponent } from './about/about.component';
       deps: [KeycloakService]
     },
     {
-      provide: 'APIMAN_UI_REST_URL',
-      useValue: environment.apimanUiRestUrl
+      provide: 'API_MGMT_UI_REST_URL',
+      useValue: environment.apiMgmtUiRestUrl
     },
     {
       provide: 'KEYCLOAK_AUTH_URL',
       useValue: environment.keycloakAuthUrl
+    },
+    {
+      provide: 'API_MGTM_REALM',
+      useValue: environment.apiMgmtRealm
     }
   ],
   bootstrap: [AppComponent]

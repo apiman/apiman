@@ -1,5 +1,6 @@
 export const environment = {
   production: true,
-  apimanUiRestUrl: '${APIMAN_UI_REST_URL}',
+  apiMgmtRealm: 'Apiman',
+  apiMgmtUiRestUrl: '${API_MGMT_UI_REST_URL}',
   keycloakAuthUrl: '${KEYCLOAK_AUTH_URL}'
 };

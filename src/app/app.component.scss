@@ -30,6 +30,13 @@
   margin-top: 70px;
 }
 
+:host ::ng-deep #toast-container > div
+{
+  border-radius: 0;
+  box-shadow: 0 0 3px #999999;
+  cursor: default;
+}
+
 #spinner {
   position: absolute;
   top: 0;

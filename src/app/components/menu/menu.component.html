@@ -1,4 +1,10 @@
 <div class="wrapper">
-  <div routerLink="/" class="menu-entry" ><mat-icon class="menu-icon">extension</mat-icon><div class="menu-entry-text">APIs</div></div>
-  <div *ngIf="keycloakUser.isAdmin()" routerLink="/admin" class="menu-entry"><mat-icon class="menu-icon">gavel</mat-icon><div class="menu-entry-text">Administration</div></div>
+  <div routerLink="/" class="menu-entry">
+    <mat-icon class="menu-icon">extension</mat-icon>
+    <div class="menu-entry-text">APIs</div>
+  </div>
+  <div *ngIf="keycloakUser.isAdmin()" routerLink="/admin" class="menu-entry">
+    <mat-icon class="menu-icon">gavel</mat-icon>
+    <div class="menu-entry-text">Administration</div>
+  </div>
 </div>

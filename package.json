@@ -1,5 +1,5 @@
 {
-  "name": "apiman-dev-portal",
+  "name": "api-mgmt-dev-portal",
   "version": "7.6.0",
   "scripts": {
     "ng": "ng",

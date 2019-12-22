@@ -3,7 +3,7 @@
 <app-menu></app-menu>
 </div>
 <div class="router-outlet-wrapper">
-  <toaster-container [style]=""></toaster-container>
+  <toaster-container [toasterconfig]="toasterConfig"></toaster-container>
   <router-outlet></router-outlet>
 </div>
 <div id="spinner" [hidden]="!this.loadingSpinnerService.isWaiting()">

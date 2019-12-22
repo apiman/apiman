@@ -12,21 +12,25 @@ import {AboutComponent} from './about/about.component';
 
 const routes: Routes = [
   {path: '', component: DeveloperComponent, canActivate: [DevportalGuard]},
+  {path: 'about', component: AboutComponent},
+  {
+    path: 'admin',
+    canActivate: [AdminGuard],
+    children: [
+      {
+        path: '',
+        component: AdminComponent
+      },
+      {path: 'create/developer', component: CreateDeveloperComponent},
+      {path: 'edit/developer/:developerId', component: EditDeveloperComponent}
+    ]
+  },
+  {path: 'not-authorized', component: NotAuthorizedComponent},
   {
     path: 'swagger/developer/:developerId/organizations/:orgId/apis/:apiId/versions/:version',
     component: SwaggerComponent,
     canActivate: [DevportalGuard]
   },
-  {path: 'about', component: AboutComponent},
-  {
-    path: 'admin',
-    component: AdminComponent,
-    canActivate: [AdminGuard],
-    children: []
-  },
-  {path: 'admin/create/developer', component: CreateDeveloperComponent, canActivate: [AdminGuard]},
-  {path: 'admin/edit/developer/:developerId', component: EditDeveloperComponent, canActivate: [AdminGuard]},
-  {path: 'not-authorized', component: NotAuthorizedComponent}
 ];
 
 @NgModule({
