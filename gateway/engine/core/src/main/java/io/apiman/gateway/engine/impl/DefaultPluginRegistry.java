@@ -36,6 +36,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -104,11 +105,7 @@ public class DefaultPluginRegistry implements IPluginRegistry {
     private static final File createTempPluginsDir() {
         // TODO log a warning here
         try {
-            @SuppressWarnings("nls")
-            File tempDir = File.createTempFile("_apiman", "plugins");
-            tempDir.delete();
-            tempDir.mkdir();
-            return tempDir;
+            return Files.createTempDirectory("apiman-gateway-plugins-tmp").toFile();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

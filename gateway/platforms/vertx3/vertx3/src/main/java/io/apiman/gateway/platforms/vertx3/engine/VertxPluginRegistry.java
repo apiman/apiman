@@ -15,7 +15,6 @@
  */
 package io.apiman.gateway.platforms.vertx3.engine;
 
-import io.apiman.common.plugin.PluginUtils;
 import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.impl.DefaultPluginRegistry;
@@ -24,8 +23,11 @@ import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpClient;
+import io.vertx.core.http.HttpClientOptions;
 import io.vertx.core.http.HttpClientRequest;
 import io.vertx.core.http.HttpClientResponse;
+import io.vertx.core.net.ProxyOptions;
+import io.vertx.core.net.ProxyType;
 
 import java.io.File;
 import java.io.IOException;
@@ -42,16 +44,9 @@ import java.util.Map;
  */
 public class VertxPluginRegistry extends DefaultPluginRegistry {
 
-    @SuppressWarnings("nls")
-    private static File getTempPluginsDir() {
-        try {
-            return Files.createTempDirectory("apiman-gateway-plugins-tmp").toFile();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private HttpClient client;
+    private Vertx vertx;
+    private ProxyOptions sslProxy;
+    private ProxyOptions proxy;
 
 
     /**
@@ -62,8 +57,34 @@ public class VertxPluginRegistry extends DefaultPluginRegistry {
      * @param config the plugin config
      */
     public VertxPluginRegistry(Vertx vertx, VertxEngineConfig vxEngineConfig, Map<String, String> config) {
-        super(getTempPluginsDir(), PluginUtils.getDefaultMavenRepositories());
-        this.client = vertx.createHttpClient();
+
+        super(config);
+
+        this.vertx=vertx;
+
+        //Get HTTPS Proxy settings (useful for local dev tests and corporate CI)
+        String sslProxyHost = System.getProperty("https.proxyHost", "none");
+        Integer sslProxyPort = Integer.valueOf(System.getProperty("https.proxyPort", "443"));
+
+        //Set HTTPS proxy if defined
+        if(!"none".equalsIgnoreCase(sslProxyHost)){
+            sslProxy = new ProxyOptions();
+            sslProxy.setHost(sslProxyHost);
+            sslProxy.setPort(sslProxyPort);
+            sslProxy.setType(ProxyType.HTTP);
+        }
+
+        //Get HTTP Proxy settings (useful for local dev tests and corporate CI)
+        String proxyHost = System.getProperty("http.proxyHost", "none");
+        Integer proxyPort = Integer.valueOf(System.getProperty("http.proxyPort", "80"));
+
+        //Set HTTPS proxy if defined
+        if(!"none".equalsIgnoreCase(proxyHost)){
+            proxy = new ProxyOptions();
+            proxy.setHost(proxyHost);
+            proxy.setPort(proxyPort);
+            proxy.setType(ProxyType.HTTP);
+        }
     }
 
     /**
@@ -72,30 +93,73 @@ public class VertxPluginRegistry extends DefaultPluginRegistry {
      */
     @Override
     protected void downloadArtifactTo(final URL artifactUrl, final File pluginFile,
-            final IAsyncResultHandler<File> handler) {
+                                      final IAsyncResultHandler<File> handler) {
+
+        HttpClient client;
+        HttpClientOptions clientOpts=new HttpClientOptions();
+
         int port = artifactUrl.getPort();
-        if (port == -1) {
-            port = 80;
+
+        //Configure http client options following artifact url
+        if (artifactUrl.getProtocol().equals("https")) {
+            //Enable SSL
+            clientOpts.setSsl(true);
+
+            //If port is not defined, set to https default port 443
+            if (port == -1) port = 443;
+
+            //If artifact host is localhost
+            if(artifactUrl.getHost().equals("localhost") ||artifactUrl.getHost().equals("127.0.0.1")){
+                //Reset proxy options (otherwise Vert.X try to use proxy for local connection)
+                clientOpts.setProxyOptions(null);
+            }else{
+                //Set SSL proxy options (if exists)
+                if(sslProxy!=null) clientOpts.setProxyOptions(sslProxy);
+            }
+
+        }else{
+            //Disable SSL
+            clientOpts.setSsl(false);
+
+            //If port is not defined, set to http default port 80
+            if (port == -1) port = 80;
+
+            //If artifact host is localhost
+            if(artifactUrl.getHost().equals("localhost") ||artifactUrl.getHost().equals("127.0.0.1")){
+                //Reset proxy options (otherwise Vert.X try to use proxy for local connection)
+                clientOpts.setProxyOptions(null);
+            }else{
+                //Set proxy options (if exists)
+                if(proxy!=null) clientOpts.setProxyOptions(proxy);
+            }
         }
+
+        //Create HTTP client with options
+        client = vertx.createHttpClient(clientOpts);
 
         final HttpClientRequest request = client.get(port, artifactUrl.getHost(), artifactUrl.getPath(),
                 (Handler<HttpClientResponse>) response -> {
 
-            response.exceptionHandler((Handler<Throwable>) error -> {
-                handler.handle(AsyncResultImpl.create(error, File.class));
-            });
+                    response.exceptionHandler((Handler<Throwable>) error -> {
+                        handler.handle(AsyncResultImpl.create(error, File.class));
+                    });
 
-            // Body Handler
-            response.bodyHandler((Handler<Buffer>) buffer -> {
-                try {
-                    Files.write(pluginFile.toPath(), buffer.getBytes(), StandardOpenOption.APPEND,
-                            StandardOpenOption.CREATE, StandardOpenOption.WRITE);
-                    handler.handle(AsyncResultImpl.create(pluginFile));
-                } catch (IOException e) {
-                    handler.handle(AsyncResultImpl.create(e, File.class));
-                }
-            });
-        });
+                    // Body Handler
+                    response.bodyHandler((Handler<Buffer>) buffer -> {
+                        try {
+                            // If status code is bad, do not handle the buffer.
+                            if(response.statusCode() != 200 ){
+                                handler.handle(AsyncResultImpl.create(null));
+                                return;
+                            }
+                            Files.write(pluginFile.toPath(), buffer.getBytes(), StandardOpenOption.APPEND,
+                                    StandardOpenOption.CREATE, StandardOpenOption.WRITE);
+                            handler.handle(AsyncResultImpl.create(pluginFile));
+                        } catch (IOException e) {
+                            handler.handle(AsyncResultImpl.create(e, File.class));
+                        }
+                    });
+                });
 
         request.exceptionHandler((Handler<Throwable>) error -> {
             handler.handle(AsyncResultImpl.create(error, File.class));
