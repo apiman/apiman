@@ -315,9 +315,11 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             }
 
             for (ApiVersionBean apiVersion : apiVersionBeans) {
-                // add apiBean to apiVerionBean, otherwise deleteApiDefinition fails for EsStorage
+                // add apiBean to apiVersionBean, otherwise deleteApiDefinition fails for EsStorage
                 apiVersion.setApi(api);
-                storage.deleteApiDefinition(apiVersion);
+                if (apiVersionHasApiDefinition(apiVersion)) {
+                    storage.deleteApiDefinition(apiVersion);
+                }
             }
 
             storage.deleteApi(api);
@@ -330,6 +332,16 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             storage.rollbackTx();
             throw new SystemErrorException(e);
         }
+    }
+
+    /**
+     * Checks if the api version has an api definition
+     *
+     * @param apiVersion the apiVersion
+     * @return true if the version has a definition, else false
+     */
+    private boolean apiVersionHasApiDefinition(ApiVersionBean apiVersion) {
+        return apiVersion.getDefinitionType() != null && apiVersion.getDefinitionType() != ApiDefinitionType.None;
     }
 
     /**
@@ -1669,6 +1681,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         newVersion.setEndpoint(bean.getEndpoint());
         newVersion.setEndpointType(bean.getEndpointType());
         newVersion.setEndpointContentType(bean.getEndpointContentType());
+        newVersion.setDefinitionUrl(bean.getDefinitionUrl());
         if (bean.getPublicAPI() != null) {
             newVersion.setPublicAPI(bean.getPublicAPI());
         }
@@ -1680,6 +1693,8 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         }
         if (bean.getDefinitionType() != null) {
             newVersion.setDefinitionType(bean.getDefinitionType());
+        } else {
+            newVersion.setDefinitionType(ApiDefinitionType.None);
         }
 
         if (gateway != null && newVersion.getGateways() == null) {
@@ -1709,8 +1724,6 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                 }
             }
         }
-
-        newVersion.setDefinitionUrl(bean.getDefinitionUrl());
 
         storage.createApiVersion(newVersion);
         storage.createAuditEntry(AuditUtils.apiVersionCreated(newVersion, securityContext));
