@@ -1,0 +1,24 @@
+POST /organizations/Organization1/apis/UnpubAPI1/versions admin/admin
+Content-Type: application/json
+
+{
+  "version" : "1.0"
+}
+----
+200
+Content-Type: application/json
+
+{
+  "api" : {
+    "organization" : {
+      "id" : "Organization1"
+    },
+    "name" : "Unpub API 1",
+    "description" : "Unpublished API 1.",
+    "createdBy":"admin"
+  },
+  "status" : "Created",
+  "version" : "1.0",
+  "definitionType": "None",
+  "createdBy" : "admin"
+}

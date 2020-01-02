@@ -82,9 +82,10 @@
   <testGroup name="Delete APIs">
     <test name="Create Unpublished API">test-plan-data/apis/delete_unpublished/000_create-unpublished-api1.resttest</test>
     <test name="Get Unpublished API">test-plan-data/apis/delete_unpublished/001_get-unpublished-api1.resttest</test>
-    <test name="Delete Unpublished API">test-plan-data/apis/delete_unpublished/002_delete-unpublished-api1.resttest</test>
+    <test name="Create API Version 1.0">test-plan-data/apis/delete_unpublished/002_create-version-1.0.resttest</test>
+    <test name="Delete Unpublished API">test-plan-data/apis/delete_unpublished/003_delete-unpublished-api1.resttest</test>
     <test name="Wait" delay="500" />
-    <test name="Get Unpublished API (404)">test-plan-data/apis/delete_unpublished/003_get-unpublished-api1-404.resttest</test>
+    <test name="Get Unpublished API (404)">test-plan-data/apis/delete_unpublished/004_get-unpublished-api1-404.resttest</test>
   </testGroup>
 
   <!-- Auditing -->
@@ -144,7 +145,7 @@
     <test name="Wait" delay="1000" />
     <test name="Delete API 1">test-plan-data/apis/publish/006_delete-api-1.resttest</test>
     <test name="Wait" delay="1000" />
-    <test name="Delete API 1 (404)">test-plan-data/apis/delete_unpublished/003_get-unpublished-api1-404.resttest</test>
+    <test name="Delete API 1 (404)">test-plan-data/apis/delete_unpublished/004_get-unpublished-api1-404.resttest</test>
   </testGroup>
 
 </testPlan>
