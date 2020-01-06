@@ -20,10 +20,10 @@ public class TestVerticle extends AbstractVerticle {
 
         vertx = Vertx.vertx();
 
-        engine = new VertxConfigDrivenEngineFactory(vertx,engineConfig).createEngine();
+        engine = new VertxConfigDrivenEngineFactory(vertx, engineConfig).createEngine();
     }
 
-    public IPluginRegistry createPluginRegistry(){
+    public IPluginRegistry createPluginRegistry() {
         return engine.getPluginRegistry();
     }
 }

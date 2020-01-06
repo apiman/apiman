@@ -52,6 +52,7 @@ public class VertxPluginRegistryTest {
 
     /**
      * Build and start a fake local Maven Repository server based on Jetty
+     *
      * @throws Exception
      */
     @BeforeClass
@@ -71,11 +72,11 @@ public class VertxPluginRegistryTest {
         PluginCoordinates coordinates = PluginCoordinates.fromPolicySpec(testPluginCoordinates);
 
         //Build Test Plugin path in local Maven Repository folder
-        File PluginFile = new File(repoFolder,PluginUtils.getMavenPath(coordinates));
+        File PluginFile = new File(repoFolder, PluginUtils.getMavenPath(coordinates));
         PluginFile.getParentFile().mkdirs();
 
         //Copy Test Plugin war into repository
-        FileUtils.copyFile(sourcePlugin,PluginFile);
+        FileUtils.copyFile(sourcePlugin, PluginFile);
 
         //Create local Maven Repository Web Server
         mavenServer = new Server();
@@ -101,33 +102,34 @@ public class VertxPluginRegistryTest {
 
         // Determine Base URI for Server
         String host = connector.getHost();
-        if (host == null || host =="0.0.0.0") host = "127.0.0.1";
+        if (host == null || host == "0.0.0.0") host = "127.0.0.1";
         int port = connector.getLocalPort();
-        mavenServerUri = new URI(String.format("http://%s:%d/",host,port));
+        mavenServerUri = new URI(String.format("http://%s:%d/", host, port));
     }
 
     /**
      * Test with custom configuration (pluginRepositories and pluginsDir) to download a real plugin from Maven Central
+     *
      * @param context
      * @throws java.io.IOException
      */
     @Test
-    public void getRealPluginFromCustomRegistry(TestContext context) throws java.io.IOException{
+    public void getRealPluginFromCustomRegistry(TestContext context) throws java.io.IOException {
 
         Async waitForPlugin = context.async();
 
         //Preparing JSON config Object
         List<String> pluginRepositories = Arrays.asList("https://repo1.maven.org/maven2/");
-        String pluginsDir ="/tmp/plugins-test1";
-        JsonObject jsonObject = new JsonObject(getJsonConfig(pluginRepositories,pluginsDir));
+        String pluginsDir = "/tmp/plugins-test1";
+        JsonObject jsonObject = new JsonObject(getJsonConfig(pluginRepositories, pluginsDir));
 
         //Delete temp folder
         File TempDir = new File(pluginsDir);
         if (TempDir.exists()) FileUtils.deleteDirectory(TempDir);
 
         //Referenced values to test
-        Map<String, String> expected = new LinkedHashMap<String, String>(){{
-            put("pluginRepositories", String.join(", ",pluginRepositories));
+        Map<String, String> expected = new LinkedHashMap<String, String>() {{
+            put("pluginRepositories", String.join(", ", pluginRepositories));
             put("pluginsDir", pluginsDir);
         }};
 
@@ -156,11 +158,11 @@ public class VertxPluginRegistryTest {
                 Plugin plugin = result.getResult();
 
                 //Assert that's the right plugin
-                context.assertEquals(plugin.getCoordinates(),coordinates);
+                context.assertEquals(plugin.getCoordinates(), coordinates);
 
                 //Assert plugin is in the right dir
                 Path pluginPath = Paths.get(pluginsDir + "/io.apiman.plugins/apiman-plugins-simple-header-policy/1.5.1.Final/apiman-plugins-simple-header-policy.war");
-                context.assertTrue(Files.exists(pluginPath ));
+                context.assertTrue(Files.exists(pluginPath));
 
                 waitForPlugin.complete();
 
@@ -174,26 +176,27 @@ public class VertxPluginRegistryTest {
 
     /**
      * Test with custom configuration (pluginRepositories and pluginsDir) to download a fake plugin from a fake Maven repo
+     *
      * @param context
      * @throws java.io.IOException
      */
     @Test
-    public void getFakePluginFromCustomRegistry(TestContext context)throws java.io.IOException{
+    public void getFakePluginFromCustomRegistry(TestContext context) throws java.io.IOException {
 
         Async waitForPlugin = context.async();
 
         //Preparing JSON config Object
         List<String> pluginRepositories = Arrays.asList(mavenServerUri.toString());
-        String pluginsDir ="/tmp/plugins-test2";
-        JsonObject jsonObject = new JsonObject(getJsonConfig(pluginRepositories,pluginsDir));
+        String pluginsDir = "/tmp/plugins-test2";
+        JsonObject jsonObject = new JsonObject(getJsonConfig(pluginRepositories, pluginsDir));
 
         //Delete temp folder
         File TempDir = new File(pluginsDir);
         if (TempDir.exists()) FileUtils.deleteDirectory(TempDir);
 
         //Referenced values to test
-        Map<String, String> expected = new LinkedHashMap<String, String>(){{
-            put("pluginRepositories", String.join(", ",pluginRepositories));
+        Map<String, String> expected = new LinkedHashMap<String, String>() {{
+            put("pluginRepositories", String.join(", ", pluginRepositories));
             put("pluginsDir", pluginsDir);
         }};
 
@@ -223,11 +226,11 @@ public class VertxPluginRegistryTest {
                 Plugin plugin = result.getResult();
 
                 //Assert that's the right plugin
-                context.assertEquals(plugin.getCoordinates(),coordinates);
+                context.assertEquals(plugin.getCoordinates(), coordinates);
 
                 //Assert plugin is in the right dir
                 Path pluginPath = Paths.get(pluginsDir + "/io.apiman.test/testPlugin/1.0.0.Final/testPlugin.war");
-                context.assertTrue(Files.exists(pluginPath ));
+                context.assertTrue(Files.exists(pluginPath));
 
                 waitForPlugin.complete();
 
@@ -240,19 +243,21 @@ public class VertxPluginRegistryTest {
     }
 
     @Test
-    public void getRealPluginFromDefaultRegistry(TestContext context) throws java.io.IOException{
+    public void getRealPluginFromDefaultRegistry(TestContext context) throws java.io.IOException {
 
         Async waitForPlugin1 = context.async();
 
         //Preparing JSON config Object
         List<String> pluginRepositories = null;
         String pluginsDir = null;
-        JsonObject jsonObject = new JsonObject(getJsonConfig(pluginRepositories,pluginsDir));
+        JsonObject jsonObject = new JsonObject(getJsonConfig(pluginRepositories, pluginsDir));
 
         File TempParentDir = Files.createTempDirectory("apiman-gateway-plugins-tmp").getParent().toFile();
         //Delete all old temp dirs
-        File[] TempDirs = TempParentDir.listFiles((dir,name)-> name.contains("apiman-gateway-plugins-tmp"));
-        for (File td:TempDirs){FileUtils.deleteDirectory(td);}
+        File[] TempDirs = TempParentDir.listFiles((dir, name) -> name.contains("apiman-gateway-plugins-tmp"));
+        for (File td : TempDirs) {
+            FileUtils.deleteDirectory(td);
+        }
 
         //Loading VertX configuration
         VertxEngineConfig config = new VertxEngineConfig(jsonObject);
@@ -264,7 +269,7 @@ public class VertxPluginRegistryTest {
         IPluginRegistry pluginRegistry = v.createPluginRegistry();
 
         //Find generated Plugin Temp Dir
-        TempDirs = TempParentDir.listFiles((dir,name)-> name.contains("apiman-gateway-plugins-tmp"));
+        TempDirs = TempParentDir.listFiles((dir, name) -> name.contains("apiman-gateway-plugins-tmp"));
         Arrays.sort(TempDirs, Comparator.comparingLong(File::lastModified).reversed());
         File Tempdir = TempDirs[0];
 
@@ -279,11 +284,11 @@ public class VertxPluginRegistryTest {
                 Plugin plugin = result.getResult();
 
                 //Assert that's the right plugin
-                context.assertEquals(plugin.getCoordinates(),coordinates);
+                context.assertEquals(plugin.getCoordinates(), coordinates);
 
                 //Assert plugin is in the right dir
                 Path pluginPath = Paths.get(Tempdir + "/io.apiman.plugins/apiman-plugins-simple-header-policy/1.5.1.Final/apiman-plugins-simple-header-policy.war");
-                context.assertTrue(Files.exists(pluginPath ));
+                context.assertTrue(Files.exists(pluginPath));
 
                 waitForPlugin1.complete();
 
@@ -294,7 +299,7 @@ public class VertxPluginRegistryTest {
 
         waitForPlugin1.awaitSuccess();
 
-        Async waitForPlugin2= context.async();
+        Async waitForPlugin2 = context.async();
 
         //Define simple header policy plugin coordinates
         PluginCoordinates testcoordinates = PluginCoordinates.fromPolicySpec(testPluginCoordinates);
@@ -309,14 +314,14 @@ public class VertxPluginRegistryTest {
         waitForPlugin2.awaitSuccess();
     }
 
-
     /**
      * Get Vert.X JSON Configuration file, with customized pluginRepositories and pluginsDir
+     *
      * @param pluginRepositories
      * @param pluginsDir
      * @return
      */
-    private String getJsonConfig(List<String> pluginRepositories, String pluginsDir){
+    private String getJsonConfig(List<String> pluginRepositories, String pluginsDir) {
 
         //Minimal configuration to create a fake engine. Include "plugin-registry" to test.
         String jsonStr = "{\n" +
@@ -337,11 +342,11 @@ public class VertxPluginRegistryTest {
                 "      \"config\":{\n" +
                 (pluginRepositories != null && pluginRepositories.size() > 0 ?
                         "         \"pluginRepositories\":\n" +
-                                "            "+ new JsonArray(pluginRepositories).encode() + "\n" : "")+
-                ((pluginRepositories != null && pluginRepositories.size() > 0)&& StringUtils.isNotEmpty(pluginsDir) ?
+                                "            " + new JsonArray(pluginRepositories).encode() + "\n" : "") +
+                ((pluginRepositories != null && pluginRepositories.size() > 0) && StringUtils.isNotEmpty(pluginsDir) ?
                         "         ,\n" : "") +
                 (StringUtils.isNotEmpty(pluginsDir) ?
-                        "         \"pluginsDir\":\""+ pluginsDir +"\"\n" :"") +
+                        "         \"pluginsDir\":\"" + pluginsDir + "\"\n" : "") +
                 "      }\n" +
                 "   },\n" +
                 "   \"metrics\":{\n" +
@@ -364,15 +369,13 @@ public class VertxPluginRegistryTest {
         return jsonStr;
     }
 
-    /**
-     * Stop the fake local Maven Repository server
-     */
     @AfterClass
-    public static void StopLocalMavenRepo(){
-        try{
+    public static void StopLocalMavenRepo() {
+        try {
             if (mavenServer != null) mavenServer.stop();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
 }
