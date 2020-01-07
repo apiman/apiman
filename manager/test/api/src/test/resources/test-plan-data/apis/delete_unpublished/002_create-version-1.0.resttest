@@ -1,4 +1,4 @@
-POST /organizations/TestOrganization1/clients/Client1/versions admin/admin
+POST /organizations/Organization1/apis/UnpubAPI1/versions admin/admin
 Content-Type: application/json
 
 {
@@ -9,16 +9,16 @@ Content-Type: application/json
 Content-Type: application/json
 
 {
-  "client" : {
+  "api" : {
     "organization" : {
-      "id" : "TestOrganization1"
+      "id" : "Organization1"
     },
-    "id" : "Client1",
-    "name" : "Client 1",
-    "description" : "This is the description of Client 1.",
+    "name" : "Unpub API 1",
+    "description" : "Unpublished API 1.",
     "createdBy":"admin"
   },
   "status" : "Created",
   "version" : "1.0",
+  "definitionType": "None",
   "createdBy" : "admin"
 }
