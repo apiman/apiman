@@ -993,6 +993,8 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     @Override
     public ContractBean getContract(String organizationId, String clientId, String version,
             Long contractId) throws ClientNotFoundException, ContractNotFoundException, NotAuthorizedException {
+        if (!securityContext.hasPermission(PermissionType.clientView, organizationId))
+            throw ExceptionFactory.notAuthorizedException();
         try {
             storage.beginTx();
             ContractBean contract = storage.getContract(contractId);
