@@ -13,7 +13,8 @@ export class KeycloakUserService {
    */
   public isAdmin(): boolean {
     const keycloakInstance = this.keycloakAngular.getKeycloakInstance();
-    return keycloakInstance.tokenParsed.realm_access.roles.find((role) => role === 'apiadmin') !== undefined;
+    return keycloakInstance.tokenParsed.realm_access
+      && keycloakInstance.tokenParsed.realm_access.roles.find((role) => role === 'apiadmin') !== undefined;
   }
 
   /**
@@ -21,6 +22,7 @@ export class KeycloakUserService {
    */
   public isUser(): boolean {
     const keycloakInstance = this.keycloakAngular.getKeycloakInstance();
-    return keycloakInstance.tokenParsed.realm_access.roles.find((role) => role === 'devportaluser') !== undefined;
+    return keycloakInstance.tokenParsed.realm_access
+      && keycloakInstance.tokenParsed.realm_access.roles.find((role) => role === 'devportaluser') !== undefined;
   }
 }
