@@ -58,7 +58,7 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Export-Package>io.apiman.manager.api.security*</Export-Package>
+            <Export-Package>io.apiman.manager.api.security.*</Export-Package>
             <Import-Package>!javax.enterprise.context,!javax.inject,*</Import-Package>
           </instructions>
         </configuration>
