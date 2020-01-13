@@ -11,7 +11,7 @@ COPY . .
 RUN npm run build-production
 
 # Stage 2
-FROM nginx:1.13.12-alpine
+FROM nginx:1.17.7-alpine
 
 COPY --from=node /usr/src/app/dist/api-mgmt-dev-portal /usr/share/nginx/html
 
