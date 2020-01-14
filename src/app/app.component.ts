@@ -1,6 +1,8 @@
-import {Component, ViewEncapsulation} from '@angular/core';
+import {Component} from '@angular/core';
 import {SpinnerService} from './services/spinner.service';
-import {ToasterConfig} from 'angular2-toaster';
+import {ToasterConfig, ToasterService} from 'angular2-toaster';
+import {NavigationEnd, Router} from '@angular/router';
+import {filter} from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -9,7 +11,16 @@ import {ToasterConfig} from 'angular2-toaster';
 })
 export class AppComponent {
 
-  constructor(public loadingSpinnerService: SpinnerService) {
+  /**
+   * Clear Toast messages on navigation end event
+   * @param loadingSpinnerService the loading spinner service
+   * @param router the router
+   * @param toasterService the toaster service
+   */
+  constructor(public loadingSpinnerService: SpinnerService, private router: Router, private toasterService: ToasterService) {
+    this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe(() => this.toasterService.clear());
   }
 
   /**
