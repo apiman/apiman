@@ -36,7 +36,8 @@ export class ClientMappingComponent implements OnInit {
     this.loadingSpinnerService.startWaiting();
     const loadedAvailableClients = [];
     this.adminService.getAllClients().pipe(map(client => {
-      if (this.assignedClients
+      if (client !== null
+        && this.assignedClients
         && !this.assignedClients.find((c => c.organizationId === client.organizationId && c.clientId === client.id))) {
         loadedAvailableClients.push({
           clientId: client.id,

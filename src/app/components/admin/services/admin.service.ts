@@ -1,5 +1,5 @@
 import {Inject, Injectable} from '@angular/core';
-import {forkJoin, Observable} from 'rxjs';
+import {forkJoin, Observable, of} from 'rxjs';
 import {map, mergeMap, share} from 'rxjs/operators';
 import UserRepresentation from 'keycloak-admin/lib/defs/userRepresentation';
 import {ClientSearchResult, Developer, KeycloakUser} from '../../../services/api-data.service';
@@ -145,6 +145,6 @@ export class AdminService {
       }
     };
     return (this.http.post(url, searchQuery) as Observable<ClientSearchResult>)
-      .pipe(mergeMap(searchResult => searchResult.beans));
+      .pipe(mergeMap(searchResult => searchResult.beans.length > 0 ? searchResult.beans : of(null)));
   }
 }
