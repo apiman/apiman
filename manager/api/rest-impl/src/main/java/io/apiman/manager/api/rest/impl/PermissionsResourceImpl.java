@@ -19,7 +19,7 @@ package io.apiman.manager.api.rest.impl;
 import io.apiman.manager.api.beans.idm.UserPermissionsBean;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.StorageException;
-import io.apiman.manager.api.rest.contract.IPermissionsResource;
+import io.apiman.manager.api.rest.IPermissionsResource;
 import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
 import io.apiman.manager.api.rest.exceptions.SystemErrorException;
 import io.apiman.manager.api.rest.exceptions.UserNotFoundException;
@@ -49,7 +49,7 @@ public class PermissionsResourceImpl implements IPermissionsResource {
     }
     
     /**
-     * @see io.apiman.manager.api.rest.contract.IPermissionsResource#getPermissionsForUser(java.lang.String)
+     * @see IPermissionsResource#getPermissionsForUser(java.lang.String)
      */
     @Override
     public UserPermissionsBean getPermissionsForUser(String userId) throws UserNotFoundException, NotAuthorizedException {
@@ -67,7 +67,7 @@ public class PermissionsResourceImpl implements IPermissionsResource {
     }
     
     /**
-     * @see io.apiman.manager.api.rest.contract.IPermissionsResource#getPermissionsForCurrentUser()
+     * @see IPermissionsResource#getPermissionsForCurrentUser()
      */
     @Override
     public UserPermissionsBean getPermissionsForCurrentUser() throws UserNotFoundException {

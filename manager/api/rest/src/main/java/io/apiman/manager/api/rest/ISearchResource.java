@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.apiman.manager.api.rest.contract;
+package io.apiman.manager.api.rest;
 
 import io.apiman.manager.api.beans.search.SearchCriteriaBean;
 import io.apiman.manager.api.beans.search.SearchResultsBean;

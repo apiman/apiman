@@ -30,7 +30,7 @@ import io.apiman.manager.api.core.IApiCatalog;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.StorageException;
-import io.apiman.manager.api.rest.contract.ISearchResource;
+import io.apiman.manager.api.rest.ISearchResource;
 import io.apiman.manager.api.rest.exceptions.InvalidSearchCriteriaException;
 import io.apiman.manager.api.rest.exceptions.OrganizationNotFoundException;
 import io.apiman.manager.api.rest.exceptions.SystemErrorException;
@@ -62,7 +62,7 @@ public class SearchResourceImpl implements ISearchResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.ISearchResource#searchOrgs(io.apiman.manager.api.beans.search.SearchCriteriaBean)
+     * @see io.apiman.manager.api.rest.ISearchResource#searchOrgs(io.apiman.manager.api.beans.search.SearchCriteriaBean)
      */
     @Override
     public SearchResultsBean<OrganizationSummaryBean> searchOrgs(SearchCriteriaBean criteria)
@@ -76,7 +76,7 @@ public class SearchResourceImpl implements ISearchResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.ISearchResource#searchClients(io.apiman.manager.api.beans.search.SearchCriteriaBean)
+     * @see io.apiman.manager.api.rest.ISearchResource#searchClients(io.apiman.manager.api.beans.search.SearchCriteriaBean)
      */
     @Override
     public SearchResultsBean<ClientSummaryBean> searchClients(SearchCriteriaBean criteria)
@@ -91,7 +91,7 @@ public class SearchResourceImpl implements ISearchResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.ISearchResource#searchApis(io.apiman.manager.api.beans.search.SearchCriteriaBean)
+     * @see io.apiman.manager.api.rest.ISearchResource#searchApis(io.apiman.manager.api.beans.search.SearchCriteriaBean)
      */
     @Override
     public SearchResultsBean<ApiSummaryBean> searchApis(SearchCriteriaBean criteria)
@@ -106,7 +106,7 @@ public class SearchResourceImpl implements ISearchResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.ISearchResource#searchApiCatalog(io.apiman.manager.api.beans.search.SearchCriteriaBean)
+     * @see io.apiman.manager.api.rest.ISearchResource#searchApiCatalog(io.apiman.manager.api.beans.search.SearchCriteriaBean)
      */
     @Override
     public SearchResultsBean<AvailableApiBean> searchApiCatalog(SearchCriteriaBean criteria)
@@ -161,7 +161,7 @@ public class SearchResourceImpl implements ISearchResource {
     }
     
     /**
-     * @see io.apiman.manager.api.rest.contract.ISearchResource#getApiNamespaces()
+     * @see io.apiman.manager.api.rest.ISearchResource#getApiNamespaces()
      */
     @Override
     public List<ApiNamespaceBean> getApiNamespaces() {

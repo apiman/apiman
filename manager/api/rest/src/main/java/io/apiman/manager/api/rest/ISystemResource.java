@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.apiman.manager.api.rest.contract;
+package io.apiman.manager.api.rest;
 
 import io.apiman.manager.api.beans.system.SystemStatusBean;
 import io.swagger.annotations.Api;

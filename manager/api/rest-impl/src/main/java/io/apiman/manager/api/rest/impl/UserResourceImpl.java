@@ -31,7 +31,7 @@ import io.apiman.manager.api.beans.summary.ApiSummaryBean;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.StorageException;
-import io.apiman.manager.api.rest.contract.IUserResource;
+import io.apiman.manager.api.rest.IUserResource;
 import io.apiman.manager.api.rest.exceptions.InvalidSearchCriteriaException;
 import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
 import io.apiman.manager.api.rest.exceptions.SystemErrorException;
@@ -69,7 +69,7 @@ public class UserResourceImpl implements IUserResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IUserResource#get(java.lang.String)
+     * @see IUserResource#get(java.lang.String)
      */
     @Override
     public UserBean get(String userId) throws UserNotFoundException {
@@ -88,7 +88,7 @@ public class UserResourceImpl implements IUserResource {
     }
     
     /**
-     * @see io.apiman.manager.api.rest.contract.IUserResource#update(java.lang.String, io.apiman.manager.api.beans.idm.UpdateUserBean)
+     * @see IUserResource#update(java.lang.String, io.apiman.manager.api.beans.idm.UpdateUserBean)
      */
     @Override
     public void update(String userId, UpdateUserBean user) throws UserNotFoundException, NotAuthorizedException {
@@ -115,7 +115,7 @@ public class UserResourceImpl implements IUserResource {
     }
     
     /**
-     * @see io.apiman.manager.api.rest.contract.IUserResource#search(io.apiman.manager.api.beans.search.SearchCriteriaBean)
+     * @see IUserResource#search(io.apiman.manager.api.beans.search.SearchCriteriaBean)
      */
     @Override
     public SearchResultsBean<UserBean> search(SearchCriteriaBean criteria)
@@ -128,7 +128,7 @@ public class UserResourceImpl implements IUserResource {
     }
     
     /**
-     * @see io.apiman.manager.api.rest.contract.IUserResource#getOrganizations(java.lang.String)
+     * @see IUserResource#getOrganizations(java.lang.String)
      */
     @Override
     public List<OrganizationSummaryBean> getOrganizations(String userId) {
@@ -145,7 +145,7 @@ public class UserResourceImpl implements IUserResource {
     }
     
     /**
-     * @see io.apiman.manager.api.rest.contract.IUserResource#getClients(java.lang.String)
+     * @see IUserResource#getClients(java.lang.String)
      */
     @Override
     public List<ClientSummaryBean> getClients(String userId) {
@@ -164,7 +164,7 @@ public class UserResourceImpl implements IUserResource {
     }
     
     /**
-     * @see io.apiman.manager.api.rest.contract.IUserResource#getApis(java.lang.String)
+     * @see IUserResource#getApis(java.lang.String)
      */
     @Override
     public List<ApiSummaryBean> getApis(String userId) {
@@ -184,7 +184,7 @@ public class UserResourceImpl implements IUserResource {
     }
     
     /**
-     * @see io.apiman.manager.api.rest.contract.IUserResource#getActivity(java.lang.String, int, int)
+     * @see IUserResource#getActivity(java.lang.String, int, int)
      */
     @Override
     public SearchResultsBean<AuditEntryBean> getActivity(String userId, int page, int pageSize) {

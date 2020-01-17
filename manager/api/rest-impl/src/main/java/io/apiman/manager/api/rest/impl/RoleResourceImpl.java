@@ -25,7 +25,7 @@ import io.apiman.manager.api.beans.search.SearchResultsBean;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.StorageException;
-import io.apiman.manager.api.rest.contract.IRoleResource;
+import io.apiman.manager.api.rest.IRoleResource;
 import io.apiman.manager.api.rest.exceptions.InvalidSearchCriteriaException;
 import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
 import io.apiman.manager.api.rest.exceptions.RoleAlreadyExistsException;
@@ -63,7 +63,7 @@ public class RoleResourceImpl implements IRoleResource {
     }
     
     /**
-     * @see io.apiman.manager.api.rest.contract.IRoleResource#create(io.apiman.manager.api.beans.idm.NewRoleBean)
+     * @see IRoleResource#create(io.apiman.manager.api.beans.idm.NewRoleBean)
      */
     @Override
     public RoleBean create(NewRoleBean bean) throws RoleAlreadyExistsException, NotAuthorizedException {
@@ -93,7 +93,7 @@ public class RoleResourceImpl implements IRoleResource {
     }
     
     /**
-     * @see io.apiman.manager.api.rest.contract.IRoleResource#get(java.lang.String)
+     * @see IRoleResource#get(java.lang.String)
      */
     @Override
     public RoleBean get(String roleId) throws RoleNotFoundException, NotAuthorizedException {
@@ -112,7 +112,7 @@ public class RoleResourceImpl implements IRoleResource {
     }
     
     /**
-     * @see io.apiman.manager.api.rest.contract.IRoleResource#update(java.lang.String, io.apiman.manager.api.beans.idm.UpdateRoleBean)
+     * @see IRoleResource#update(java.lang.String, io.apiman.manager.api.beans.idm.UpdateRoleBean)
      */
     @Override
     public void update(String roleId, UpdateRoleBean bean) throws RoleNotFoundException, NotAuthorizedException {
@@ -146,7 +146,7 @@ public class RoleResourceImpl implements IRoleResource {
     }
     
     /**
-     * @see io.apiman.manager.api.rest.contract.IRoleResource#delete(java.lang.String)
+     * @see IRoleResource#delete(java.lang.String)
      */
     @Override
     public void delete(String roleId) throws RoleNotFoundException, NotAuthorizedException {
@@ -164,7 +164,7 @@ public class RoleResourceImpl implements IRoleResource {
     }
     
     /**
-     * @see io.apiman.manager.api.rest.contract.IRoleResource#list()
+     * @see IRoleResource#list()
      */
     @Override
     public List<RoleBean> list() throws NotAuthorizedException {
@@ -178,7 +178,7 @@ public class RoleResourceImpl implements IRoleResource {
     }
     
     /**
-     * @see io.apiman.manager.api.rest.contract.IRoleResource#search(io.apiman.manager.api.beans.search.SearchCriteriaBean)
+     * @see IRoleResource#search(io.apiman.manager.api.beans.search.SearchCriteriaBean)
      */
     @Override
     public SearchResultsBean<RoleBean> search(SearchCriteriaBean criteria)

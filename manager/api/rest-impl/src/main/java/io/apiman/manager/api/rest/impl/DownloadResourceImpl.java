@@ -19,9 +19,9 @@ package io.apiman.manager.api.rest.impl;
 import io.apiman.manager.api.beans.download.DownloadBean;
 import io.apiman.manager.api.core.IDownloadManager;
 import io.apiman.manager.api.core.exceptions.StorageException;
-import io.apiman.manager.api.rest.contract.IDownloadResource;
-import io.apiman.manager.api.rest.contract.IOrganizationResource;
-import io.apiman.manager.api.rest.contract.ISystemResource;
+import io.apiman.manager.api.rest.IDownloadResource;
+import io.apiman.manager.api.rest.IOrganizationResource;
+import io.apiman.manager.api.rest.ISystemResource;
 import io.apiman.manager.api.rest.exceptions.DownloadNotFoundException;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -56,7 +56,7 @@ public class DownloadResourceImpl implements IDownloadResource {
     }
     
     /**
-     * @see io.apiman.manager.api.rest.contract.IDownloadResource#download(java.lang.String)
+     * @see IDownloadResource#download(java.lang.String)
      */
     @Override
     public Response download(String downloadId) throws DownloadNotFoundException {

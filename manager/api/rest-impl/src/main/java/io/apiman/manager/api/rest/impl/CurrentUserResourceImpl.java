@@ -30,7 +30,7 @@ import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.core.logging.ApimanLogger;
 import io.apiman.common.logging.IApimanLogger;
-import io.apiman.manager.api.rest.contract.ICurrentUserResource;
+import io.apiman.manager.api.rest.ICurrentUserResource;
 import io.apiman.manager.api.rest.exceptions.SystemErrorException;
 import io.apiman.manager.api.security.ISecurityContext;
 
@@ -69,7 +69,7 @@ public class CurrentUserResourceImpl implements ICurrentUserResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.ICurrentUserResource#getInfo()
+     * @see ICurrentUserResource#getInfo()
      */
     @Override
     public CurrentUserBean getInfo() {
@@ -125,7 +125,7 @@ public class CurrentUserResourceImpl implements ICurrentUserResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.ICurrentUserResource#updateInfo(io.apiman.manager.api.beans.idm.UpdateUserBean)
+     * @see ICurrentUserResource#updateInfo(io.apiman.manager.api.beans.idm.UpdateUserBean)
      */
     @Override
     public void updateInfo(UpdateUserBean info) {
@@ -151,7 +151,7 @@ public class CurrentUserResourceImpl implements ICurrentUserResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.ICurrentUserResource#getClientOrganizations()
+     * @see ICurrentUserResource#getClientOrganizations()
      */
     @Override
     public List<OrganizationSummaryBean> getClientOrganizations() {
@@ -164,7 +164,7 @@ public class CurrentUserResourceImpl implements ICurrentUserResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.ICurrentUserResource#getPlanOrganizations()
+     * @see ICurrentUserResource#getPlanOrganizations()
      */
     @Override
     public List<OrganizationSummaryBean> getPlanOrganizations() {
@@ -177,7 +177,7 @@ public class CurrentUserResourceImpl implements ICurrentUserResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.ICurrentUserResource#getApiOrganizations()
+     * @see ICurrentUserResource#getApiOrganizations()
      */
     @Override
     public List<OrganizationSummaryBean> getApiOrganizations() {
@@ -190,7 +190,7 @@ public class CurrentUserResourceImpl implements ICurrentUserResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.ICurrentUserResource#getClients()
+     * @see ICurrentUserResource#getClients()
      */
     @Override
     public List<ClientSummaryBean> getClients() {
@@ -203,7 +203,7 @@ public class CurrentUserResourceImpl implements ICurrentUserResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.ICurrentUserResource#getApis()
+     * @see ICurrentUserResource#getApis()
      */
     @Override
     public List<ApiSummaryBean> getApis() {

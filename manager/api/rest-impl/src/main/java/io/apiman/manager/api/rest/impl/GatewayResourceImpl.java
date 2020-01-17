@@ -39,7 +39,7 @@ import io.apiman.common.logging.IApimanLogger;
 import io.apiman.manager.api.gateway.GatewayAuthenticationException;
 import io.apiman.manager.api.gateway.IGatewayLink;
 import io.apiman.manager.api.gateway.IGatewayLinkFactory;
-import io.apiman.manager.api.rest.contract.IGatewayResource;
+import io.apiman.manager.api.rest.IGatewayResource;
 import io.apiman.manager.api.rest.exceptions.AbstractRestException;
 import io.apiman.manager.api.rest.exceptions.GatewayAlreadyExistsException;
 import io.apiman.manager.api.rest.exceptions.GatewayNotFoundException;
@@ -79,7 +79,7 @@ public class GatewayResourceImpl implements IGatewayResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IGatewayResource#test(io.apiman.manager.api.beans.gateways.NewGatewayBean)
+     * @see IGatewayResource#test(io.apiman.manager.api.beans.gateways.NewGatewayBean)
      */
     @Override
     public GatewayTestResultBean test(NewGatewayBean gatewayToTest) throws NotAuthorizedException {
@@ -109,7 +109,7 @@ public class GatewayResourceImpl implements IGatewayResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IGatewayResource#list()
+     * @see IGatewayResource#list()
      */
     @Override
     public List<GatewaySummaryBean> list() throws NotAuthorizedException {
@@ -121,7 +121,7 @@ public class GatewayResourceImpl implements IGatewayResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IGatewayResource#create(io.apiman.manager.api.beans.gateways.NewGatewayBean)
+     * @see IGatewayResource#create(io.apiman.manager.api.beans.gateways.NewGatewayBean)
      */
     @Override
     public GatewayBean create(NewGatewayBean gatewayToInsert) throws GatewayAlreadyExistsException {
@@ -163,7 +163,7 @@ public class GatewayResourceImpl implements IGatewayResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IGatewayResource#get(java.lang.String)
+     * @see IGatewayResource#get(java.lang.String)
      */
     @Override
     public GatewayBean get(String gatewayId) throws GatewayNotFoundException, NotAuthorizedException {
@@ -192,7 +192,7 @@ public class GatewayResourceImpl implements IGatewayResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IGatewayResource#getGatewayEndpoint(java.lang.String)
+     * @see IGatewayResource#getGatewayEndpoint(java.lang.String)
      */
     public GatewayEndpointSummaryBean getGatewayEndpoint(String gatewayId)  throws GatewayNotFoundException,
             NotAuthorizedException {
@@ -220,7 +220,7 @@ public class GatewayResourceImpl implements IGatewayResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IGatewayResource#update(java.lang.String, io.apiman.manager.api.beans.gateways.UpdateGatewayBean)
+     * @see IGatewayResource#update(java.lang.String, io.apiman.manager.api.beans.gateways.UpdateGatewayBean)
      */
     @Override
     public void update(String gatewayId, UpdateGatewayBean gatewayToUpdate) throws GatewayNotFoundException,
@@ -258,7 +258,7 @@ public class GatewayResourceImpl implements IGatewayResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IGatewayResource#delete(java.lang.String)
+     * @see IGatewayResource#delete(java.lang.String)
      */
     @Override
     public void delete(String gatewayId) throws GatewayNotFoundException,

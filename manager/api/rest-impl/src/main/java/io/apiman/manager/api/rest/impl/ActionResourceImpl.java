@@ -45,8 +45,8 @@ import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.core.logging.ApimanLogger;
 import io.apiman.manager.api.gateway.IGatewayLink;
 import io.apiman.manager.api.gateway.IGatewayLinkFactory;
-import io.apiman.manager.api.rest.contract.IActionResource;
-import io.apiman.manager.api.rest.contract.IOrganizationResource;
+import io.apiman.manager.api.rest.IActionResource;
+import io.apiman.manager.api.rest.IOrganizationResource;
 import io.apiman.manager.api.rest.exceptions.*;
 import io.apiman.manager.api.rest.impl.audit.AuditUtils;
 import io.apiman.manager.api.rest.exceptions.i18n.Messages;
@@ -84,7 +84,7 @@ public class ActionResourceImpl implements IActionResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IActionResource#performAction(io.apiman.manager.api.beans.actions.ActionBean)
+     * @see IActionResource#performAction(io.apiman.manager.api.beans.actions.ActionBean)
      */
     @Override
     public void performAction(ActionBean action) throws ActionException {

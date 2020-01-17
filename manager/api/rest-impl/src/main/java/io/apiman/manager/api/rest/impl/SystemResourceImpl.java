@@ -33,7 +33,7 @@ import io.apiman.manager.api.exportimport.manager.StorageImportDispatcher;
 import io.apiman.manager.api.exportimport.read.IImportReader;
 import io.apiman.manager.api.exportimport.write.IExportWriter;
 import io.apiman.manager.api.migrator.DataMigrator;
-import io.apiman.manager.api.rest.contract.ISystemResource;
+import io.apiman.manager.api.rest.ISystemResource;
 import io.apiman.manager.api.rest.exceptions.SystemErrorException;
 import io.apiman.manager.api.rest.exceptions.util.ExceptionFactory;
 import io.apiman.manager.api.security.ISecurityContext;
@@ -95,7 +95,7 @@ public class SystemResourceImpl implements ISystemResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.ISystemResource#getStatus()
+     * @see ISystemResource#getStatus()
      */
     @Override
     public SystemStatusBean getStatus() {
@@ -113,7 +113,7 @@ public class SystemResourceImpl implements ISystemResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.ISystemResource#exportData(java.lang.String)
+     * @see ISystemResource#exportData(java.lang.String)
      */
     @Override
     public Response exportData(String download) {
@@ -132,7 +132,7 @@ public class SystemResourceImpl implements ISystemResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.ISystemResource#exportData()
+     * @see ISystemResource#exportData()
      */
     @Override
     public Response exportData() {
@@ -152,7 +152,7 @@ public class SystemResourceImpl implements ISystemResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.ISystemResource#importData()
+     * @see ISystemResource#importData()
      */
     @Override
     public Response importData() {

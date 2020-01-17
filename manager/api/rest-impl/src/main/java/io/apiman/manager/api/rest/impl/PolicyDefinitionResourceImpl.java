@@ -24,7 +24,7 @@ import io.apiman.manager.api.beans.summary.PolicyFormType;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.StorageException;
-import io.apiman.manager.api.rest.contract.IPolicyDefinitionResource;
+import io.apiman.manager.api.rest.IPolicyDefinitionResource;
 import io.apiman.manager.api.rest.exceptions.AbstractRestException;
 import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
 import io.apiman.manager.api.rest.exceptions.PolicyDefinitionAlreadyExistsException;
@@ -58,7 +58,7 @@ public class PolicyDefinitionResourceImpl implements IPolicyDefinitionResource {
     }
     
     /**
-     * @see io.apiman.manager.api.rest.contract.IPolicyDefinitionResource#list()
+     * @see IPolicyDefinitionResource#list()
      */
     @Override
     public List<PolicyDefinitionSummaryBean> list() throws NotAuthorizedException {
@@ -70,7 +70,7 @@ public class PolicyDefinitionResourceImpl implements IPolicyDefinitionResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IPolicyDefinitionResource#create(io.apiman.manager.api.beans.policies.PolicyDefinitionBean)
+     * @see IPolicyDefinitionResource#create(io.apiman.manager.api.beans.policies.PolicyDefinitionBean)
      */
     @Override
     public PolicyDefinitionBean create(PolicyDefinitionBean bean) throws PolicyDefinitionAlreadyExistsException {
@@ -104,7 +104,7 @@ public class PolicyDefinitionResourceImpl implements IPolicyDefinitionResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IPolicyDefinitionResource#get(java.lang.String)
+     * @see IPolicyDefinitionResource#get(java.lang.String)
      */
     @Override
     public PolicyDefinitionBean get(String policyDefinitionId) throws PolicyDefinitionNotFoundException, NotAuthorizedException {
@@ -126,7 +126,7 @@ public class PolicyDefinitionResourceImpl implements IPolicyDefinitionResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IPolicyDefinitionResource#update(java.lang.String, io.apiman.manager.api.beans.policies.UpdatePolicyDefinitionBean)
+     * @see IPolicyDefinitionResource#update(java.lang.String, io.apiman.manager.api.beans.policies.UpdatePolicyDefinitionBean)
      */
     @Override
     public void update(String policyDefinitionId, UpdatePolicyDefinitionBean bean)
@@ -160,7 +160,7 @@ public class PolicyDefinitionResourceImpl implements IPolicyDefinitionResource {
     }
     
     /**
-     * @see io.apiman.manager.api.rest.contract.IPolicyDefinitionResource#delete(java.lang.String)
+     * @see IPolicyDefinitionResource#delete(java.lang.String)
      */
     @Override
     public void delete(String policyDefinitionId) throws PolicyDefinitionNotFoundException,

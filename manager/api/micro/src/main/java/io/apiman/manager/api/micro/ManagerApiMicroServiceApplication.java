@@ -42,7 +42,7 @@ public class ManagerApiMicroServiceApplication extends ApiManagerApplication {
         BeanConfig beanConfig = new BeanConfig();
         beanConfig.setVersion(new Version().getVersionString());
         beanConfig.setBasePath("/apiman"); //$NON-NLS-1$
-        beanConfig.setResourcePackage("io.apiman.manager.api.rest.contract"); //$NON-NLS-1$
+        beanConfig.setResourcePackage("io.apiman.manager.api.rest"); //$NON-NLS-1$
         //TODO set more info in the beanConfig (title,description, host, port, etc)
         beanConfig.setScan(true);
 

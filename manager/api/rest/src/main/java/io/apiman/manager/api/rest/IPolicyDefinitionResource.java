@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.apiman.manager.api.rest.contract;
+package io.apiman.manager.api.rest;
 
 import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
 import io.apiman.manager.api.beans.policies.UpdatePolicyDefinitionBean;
