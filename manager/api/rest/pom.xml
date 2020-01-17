@@ -40,20 +40,6 @@
   </dependencies>
 
   <build>
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-      </resource>
-      <!-- Include some of the source for this project so that it can be used by GWT projects. -->
-      <resource>
-        <directory>src/main/java</directory>
-        <includes>
-          <include>**/contract/**</include>
-          <include>**/exceptions/**</include>
-          <include>**/*.gwt.xml</include>
-        </includes>
-      </resource>
-    </resources>
     <plugins>
       <plugin>
         <groupId>org.apache.felix</groupId>
