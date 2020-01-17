@@ -18,7 +18,9 @@ package io.apiman.gateway.platforms.vertx3.api;
 import io.apiman.gateway.api.rest.contract.ISystemResource;
 import io.apiman.gateway.engine.IEngine;
 import io.apiman.gateway.engine.beans.SystemStatus;
+import io.apiman.gateway.engine.beans.GatewayEndpoint;
 import io.apiman.gateway.platforms.vertx3.common.config.VertxEngineConfig;
+import io.apiman.gateway.platforms.vertx3.helpers.EndpointHelper;
 
 /**
  * System Resource route builder
@@ -28,8 +30,10 @@ import io.apiman.gateway.platforms.vertx3.common.config.VertxEngineConfig;
 public class SystemResourceImpl implements ISystemResource {
 
     private IEngine engine;
+    private VertxEngineConfig apimanConfig;
 
     public SystemResourceImpl(VertxEngineConfig apimanConfig, IEngine engine) {
+        this.apimanConfig = apimanConfig;
         this.engine = engine;
     }
 
@@ -39,5 +43,14 @@ public class SystemResourceImpl implements ISystemResource {
         status.setUp(true);
         status.setVersion(engine.getVersion());
         return status;
+    }
+
+    @Override
+    public GatewayEndpoint getEndpoint() {
+        EndpointHelper endpointHelper = new EndpointHelper(apimanConfig);
+        String endpoint = endpointHelper.getGatewayEndpoint();
+        GatewayEndpoint endpointObj = new GatewayEndpoint();
+        endpointObj.setEndpoint(endpoint);
+        return endpointObj;
     }
 }

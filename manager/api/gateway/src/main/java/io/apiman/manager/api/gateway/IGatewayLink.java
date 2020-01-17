@@ -16,10 +16,7 @@
 package io.apiman.manager.api.gateway;
 
 import io.apiman.gateway.api.rest.contract.exceptions.NotAuthorizedException;
-import io.apiman.gateway.engine.beans.Api;
-import io.apiman.gateway.engine.beans.ApiEndpoint;
-import io.apiman.gateway.engine.beans.Client;
-import io.apiman.gateway.engine.beans.SystemStatus;
+import io.apiman.gateway.engine.beans.*;
 import io.apiman.gateway.engine.beans.exceptions.PublishingException;
 import io.apiman.gateway.engine.beans.exceptions.RegistrationException;
 
@@ -72,6 +69,13 @@ public interface IGatewayLink {
      * @throws GatewayAuthenticationException when unable to authenticate with gateway
      */
     public void unregisterClient(Client client) throws RegistrationException, GatewayAuthenticationException;
+
+    /**
+     * Gets the gateway endpoint from the gateway
+     * @return the gateway endpoint
+     * @throws GatewayAuthenticationException when unable to authenticate with gateway
+     */
+    public GatewayEndpoint getGatewayEndpoint() throws GatewayAuthenticationException;
 
     /**
      * Gets the api endpoint from the gateway.

@@ -18,6 +18,7 @@ package io.apiman.manager.api.gateway.rest;
 import io.apiman.gateway.api.rest.contract.exceptions.GatewayApiErrorBean;
 import io.apiman.gateway.engine.beans.Api;
 import io.apiman.gateway.engine.beans.ApiEndpoint;
+import io.apiman.gateway.engine.beans.GatewayEndpoint;
 import io.apiman.gateway.engine.beans.Client;
 import io.apiman.gateway.engine.beans.SystemStatus;
 import io.apiman.gateway.engine.beans.exceptions.PublishingException;
@@ -53,6 +54,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class GatewayClient /*implements ISystemResource, IApiResource, IClientResource*/ {
 
     private static final String SYSTEM_STATUS = "/system/status"; //$NON-NLS-1$
+    private static final String SYSTEM_ENDPOINT = "/system/endpoint"; //$NON-NLS-1$
     private static final String APIs = "/apis"; //$NON-NLS-1$
     private static final String CLIENTS = "/clients"; //$NON-NLS-1$
 
@@ -92,6 +94,34 @@ public class GatewayClient /*implements ISystemResource, IApiResource, IClientRe
             }
             is = response.getEntity().getContent();
             return mapper.reader(SystemStatus.class).readValue(is);
+        } catch (GatewayAuthenticationException | RuntimeException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            IOUtils.closeQuietly(is);
+        }
+    }
+
+    /**
+     * @see io.apiman.gateway.api.rest.contract.ISystemResource#getEndpoint()
+     */
+    public GatewayEndpoint getGatewayEndpoint() throws GatewayAuthenticationException {
+        InputStream is = null;
+        try {
+            @SuppressWarnings("nls")
+            URI uri = new URI(this.endpoint + SYSTEM_ENDPOINT);
+            HttpGet get = new HttpGet(uri);
+            HttpResponse response = httpClient.execute(get);
+            int actualStatusCode = response.getStatusLine().getStatusCode();
+            if (actualStatusCode == 401 || actualStatusCode == 403) {
+                throw new GatewayAuthenticationException();
+            }
+            if (actualStatusCode != 200) {
+                throw new RuntimeException("Failed to get the API endpoint: " + actualStatusCode); //$NON-NLS-1$
+            }
+            is = response.getEntity().getContent();
+            return mapper.reader(GatewayEndpoint.class).readValue(is);
         } catch (GatewayAuthenticationException | RuntimeException e) {
             throw e;
         } catch (Exception e) {

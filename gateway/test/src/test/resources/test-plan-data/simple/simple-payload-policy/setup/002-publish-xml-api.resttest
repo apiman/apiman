@@ -5,12 +5,12 @@ Content-Type: application/json
   "organizationId" : "SimplePayloadPolicyTest",
   "apiId" : "echo-xml",
   "version" : "1.0.0",
-  "endpoint" : "${apiman-gateway-test.endpoints.echo}/",
+  "endpoint" : "${apiman.test.gateway.endpoints.echo}/",
   "endpointType" : "rest",
   "endpointContentType" : "xml",
   "parsePayload" : true,
   "publicAPI" : true,
-  "apiPolicies" : [ 
+  "apiPolicies" : [
         {
           "policyImpl" : "class:io.apiman.gateway.test.policies.SimpleXmlPayloadPolicy",
           "policyJsonConfig" : ""

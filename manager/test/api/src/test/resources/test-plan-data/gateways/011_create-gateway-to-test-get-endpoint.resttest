@@ -1,0 +1,20 @@
+POST /gateways admin/admin
+Content-Type: application/json
+
+{
+  "name" : "Gateway Endpoint",
+  "description" : "This is the get endpoint test gateway.",
+  "type" : "REST",
+  "configuration" : "{\"endpoint\":\"${apiman.test.gateway.endpoint}\",\"username\":\"admin\",\"password\":\"password\"}"
+}
+----
+200
+Content-Type: application/json
+
+{
+  "id" : "GatewayEndpoint",
+  "name" : "Gateway Endpoint",
+  "description" : "This is the get endpoint test gateway.",
+  "type" : "REST",
+  "configuration" : "{\"endpoint\":\"${apiman.test.gateway.endpoint}\",\"username\":\"admin\",\"password\":\"password\"}"
+}

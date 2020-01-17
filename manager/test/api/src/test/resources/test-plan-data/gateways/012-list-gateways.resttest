@@ -1,0 +1,8 @@
+GET /gateways/GatewayEndpoint/endpoint admin/admin
+----
+200
+Content-Type: application/json
+
+{
+    "endpoint": "${apiman.test.gateway.endpoint}"
+}

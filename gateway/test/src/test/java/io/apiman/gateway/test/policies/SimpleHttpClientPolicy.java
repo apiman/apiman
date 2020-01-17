@@ -33,7 +33,7 @@ import io.apiman.gateway.engine.policy.IPolicyContext;
  * @author eric.wittmann@redhat.com
  */
 public class SimpleHttpClientPolicy implements IPolicy {
-    
+
     /**
      * Constructor.
      */
@@ -47,7 +47,7 @@ public class SimpleHttpClientPolicy implements IPolicy {
     public Object parseConfiguration(String jsonConfiguration) {
         return new Object();
     }
-    
+
     /**
      * @see io.apiman.gateway.engine.policy.IPolicy#apply(io.apiman.gateway.engine.beans.ApiRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
      */
@@ -55,7 +55,7 @@ public class SimpleHttpClientPolicy implements IPolicy {
     public void apply(final ApiRequest request, final IPolicyContext context, final Object config,
             final IPolicyChain<ApiRequest> chain) {
         final IHttpClientComponent httpClientComponent = context.getComponent(IHttpClientComponent.class);
-        String endpoint = System.getProperty("apiman-gateway-test.endpoints.echo"); //$NON-NLS-1$
+        String endpoint = System.getProperty("apiman.test.gateway.endpoints.echo"); //$NON-NLS-1$
         IHttpClientRequest clientRequest = httpClientComponent.request(endpoint, HttpMethod.GET, new IAsyncResultHandler<IHttpClientResponse>() {
             @Override
             public void handle(IAsyncResult<IHttpClientResponse> result) {

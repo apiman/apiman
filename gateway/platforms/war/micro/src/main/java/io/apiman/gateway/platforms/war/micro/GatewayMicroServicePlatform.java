@@ -17,6 +17,7 @@ package io.apiman.gateway.platforms.war.micro;
 
 import io.apiman.gateway.api.rest.impl.IPlatform;
 import io.apiman.gateway.engine.beans.ApiEndpoint;
+import io.apiman.gateway.engine.beans.GatewayEndpoint;
 import io.apiman.gateway.platforms.war.WarGateway;
 import io.apiman.gateway.platforms.war.filters.HttpRequestThreadLocalFilter;
 
@@ -28,7 +29,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author eric.wittmann@redhat.com
  */
 public class GatewayMicroServicePlatform implements IPlatform {
-    
+
     public static final String APIMAN_GATEWAY_ENDPOINT = "apiman.micro.gateway.public-endpoint"; //$NON-NLS-1$
 
     /**
@@ -42,6 +43,33 @@ public class GatewayMicroServicePlatform implements IPlatform {
      */
     @Override
     public ApiEndpoint getApiEndpoint(String organizationId, String apiId, String version) {
+        StringBuilder builder = getGatewayEndpoint();
+        builder.append(organizationId);
+        builder.append("/"); //$NON-NLS-1$
+        builder.append(apiId);
+        builder.append("/"); //$NON-NLS-1$
+        builder.append(version);
+
+        ApiEndpoint rval = new ApiEndpoint();
+        rval.setEndpoint(builder.toString());
+        return rval;
+    }
+
+    /**
+     * @see io.apiman.gateway.api.rest.impl.IPlatform#getEndpoint()
+     */
+    @Override
+    public GatewayEndpoint getEndpoint() {
+        GatewayEndpoint gatewayEndpoint = new GatewayEndpoint();
+        gatewayEndpoint.setEndpoint(getGatewayEndpoint().toString());
+        return gatewayEndpoint;
+    }
+
+    /**
+     * Determine gateway endpoint
+     * @return gateway endpoint as StringBuilder
+     */
+    private StringBuilder getGatewayEndpoint() {
         String endpoint = WarGateway.config.getConfigProperty(APIMAN_GATEWAY_ENDPOINT, null);
         StringBuilder builder = new StringBuilder();
         if (endpoint == null) {
@@ -63,15 +91,7 @@ public class GatewayMicroServicePlatform implements IPlatform {
                 builder.append("/"); //$NON-NLS-1$
             }
         }
-        builder.append(organizationId);
-        builder.append("/"); //$NON-NLS-1$
-        builder.append(apiId);
-        builder.append("/"); //$NON-NLS-1$
-        builder.append(version);
-        
-        ApiEndpoint rval = new ApiEndpoint();
-        rval.setEndpoint(builder.toString());
-        return rval;
+        return builder;
     }
 
 }

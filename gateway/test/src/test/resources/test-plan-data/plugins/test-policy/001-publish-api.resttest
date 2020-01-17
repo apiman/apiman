@@ -7,7 +7,7 @@ Content-Type: application/json
   "version" : "1.0",
   "publicAPI" : true,
   "endpointType" : "REST",
-  "endpoint" : "${apiman-gateway-test.endpoints.echo}/",
+  "endpoint" : "${apiman.test.gateway.endpoints.echo}/",
   "apiPolicies" : [
     {
       "policyImpl" : "plugin:io.apiman:apiman-plugins-test-policy:1.2.3-SNAPSHOT:war/io.apiman.plugins.test_policy.TestPolicy",

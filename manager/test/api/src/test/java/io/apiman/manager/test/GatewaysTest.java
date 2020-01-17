@@ -15,6 +15,7 @@
  */
 package io.apiman.manager.test;
 
+import io.apiman.manager.test.junit.ManagerRestTestGatewayLog;
 import io.apiman.manager.test.junit.ManagerRestTestPlan;
 import io.apiman.manager.test.junit.ManagerRestTester;
 
@@ -27,6 +28,9 @@ import org.junit.runner.RunWith;
  */
 @RunWith(ManagerRestTester.class)
 @ManagerRestTestPlan("test-plans/gateways-testPlan.xml")
+@ManagerRestTestGatewayLog(
+   "GET:/mock-gateway/system/status\n" +
+   "GET:/mock-gateway/system/endpoint\n"
+)
 public class GatewaysTest {
-
 }

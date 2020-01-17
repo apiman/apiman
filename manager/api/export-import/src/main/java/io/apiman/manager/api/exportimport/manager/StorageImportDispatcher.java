@@ -422,13 +422,13 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
      */
     @Override
     public void clientContract(ContractBean contract) {
-        ClientVersionBean avb = new ClientVersionBean();
-        avb.setClient(new ClientBean());
-        avb.getClient().setOrganization(new OrganizationBean());
-        avb.getClient().setId(currentClient.getId());
-        avb.getClient().getOrganization().setId(currentOrg.getId());
-        avb.setVersion(currentClientVersion.getVersion());
-        contract.setClient(avb);
+        ClientVersionBean clientVersion = new ClientVersionBean();
+        clientVersion.setClient(new ClientBean());
+        clientVersion.getClient().setOrganization(new OrganizationBean());
+        clientVersion.getClient().setId(currentClient.getId());
+        clientVersion.getClient().getOrganization().setId(currentOrg.getId());
+        clientVersion.setVersion(currentClientVersion.getVersion());
+        contract.setClient(clientVersion);
         contracts.add(contract);
     }
 

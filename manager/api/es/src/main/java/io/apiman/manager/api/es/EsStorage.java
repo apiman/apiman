@@ -1123,10 +1123,10 @@ public class EsStorage implements IStorage, IStorageQuery {
         String apiVersion = (String) source.get("apiVersion");
         String planId = (String) source.get("planId");
         String planVersion = (String) source.get("planVersion");
-        ClientVersionBean avb = getClientVersion(clientOrgId, clientId, clientVersion);
+        ClientVersionBean cvb = getClientVersion(clientOrgId, clientId, clientVersion);
         ApiVersionBean svb = getApiVersion(apiOrgId, apiId, apiVersion);
         PlanVersionBean pvb = getPlanVersion(apiOrgId, planId, planVersion);
-        contract.setClient(avb);
+        contract.setClient(cvb);
         contract.setPlan(pvb);
         contract.setApi(svb);
         return contract;
