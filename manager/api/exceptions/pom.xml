@@ -21,6 +21,18 @@
       <groupId>io.apiman</groupId>
       <artifactId>apiman-common-plugin</artifactId>
     </dependency>
+
+    <!-- Third Party Dependencies -->
+    <dependency>
+      <groupId>javax.enterprise</groupId>
+      <artifactId>cdi-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.spec.javax.ws.rs</groupId>
+      <artifactId>jboss-jaxrs-api_2.0_spec</artifactId>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
 
   <build>

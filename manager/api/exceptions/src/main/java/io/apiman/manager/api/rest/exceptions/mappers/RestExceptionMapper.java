@@ -14,16 +14,14 @@
  * limitations under the License.
  */
 
-package io.apiman.manager.api.rest.impl.mappers;
+package io.apiman.manager.api.rest.exceptions.mappers;
 
 import io.apiman.manager.api.beans.exceptions.ErrorBean;
 import io.apiman.manager.api.rest.exceptions.AbstractRestException;
-import io.apiman.manager.api.security.ISecurityContext;
 
 import java.io.PrintWriter;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
@@ -40,9 +38,6 @@ import org.apache.commons.io.output.StringBuilderWriter;
 @Provider
 @ApplicationScoped
 public class RestExceptionMapper implements ExceptionMapper<AbstractRestException> {
-
-    @Inject
-    ISecurityContext securityContext;
 
     /**
      * Constructor.

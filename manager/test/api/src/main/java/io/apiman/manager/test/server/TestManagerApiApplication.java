@@ -15,20 +15,8 @@
  */
 package io.apiman.manager.test.server;
 
-import io.apiman.manager.api.rest.impl.ActionResourceImpl;
-import io.apiman.manager.api.rest.impl.ApiManagerApplication;
-import io.apiman.manager.api.rest.impl.CurrentUserResourceImpl;
-import io.apiman.manager.api.rest.impl.DownloadResourceImpl;
-import io.apiman.manager.api.rest.impl.GatewayResourceImpl;
-import io.apiman.manager.api.rest.impl.OrganizationResourceImpl;
-import io.apiman.manager.api.rest.impl.PermissionsResourceImpl;
-import io.apiman.manager.api.rest.impl.PluginResourceImpl;
-import io.apiman.manager.api.rest.impl.PolicyDefinitionResourceImpl;
-import io.apiman.manager.api.rest.impl.RoleResourceImpl;
-import io.apiman.manager.api.rest.impl.SearchResourceImpl;
-import io.apiman.manager.api.rest.impl.SystemResourceImpl;
-import io.apiman.manager.api.rest.impl.UserResourceImpl;
-import io.apiman.manager.api.rest.impl.mappers.RestExceptionMapper;
+import io.apiman.manager.api.rest.impl.*;
+import io.apiman.manager.api.rest.exceptions.mappers.RestExceptionMapper;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -59,7 +47,6 @@ public class TestManagerApiApplication extends ApiManagerApplication {
         classes.add(PluginResourceImpl.class);
         classes.add(ActionResourceImpl.class);
         classes.add(DownloadResourceImpl.class);
-
         classes.add(RestExceptionMapper.class);
     }
 
