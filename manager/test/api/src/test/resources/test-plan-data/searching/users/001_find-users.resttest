@@ -25,10 +25,11 @@ Content-Type: application/json
 
 {
   "beans" : [
-    {"username":"user1","fullName":"User 1","email":"user1@example.org"},
-    {"username":"user2","fullName":"User 2","email":"user2@example.org"},
-    {"username":"user3","fullName":"User 3","email":"user3@example.org"},
-    {"username":"user4","fullName":"User 4","email":"user4@example.org"},
-    {"username":"user5","fullName":"User 5","email":"user5@example.org"}  ],
+    {"username":"user1","fullName":"User 1"},
+    {"username":"user2","fullName":"User 2"},
+    {"username":"user3","fullName":"User 3"},
+    {"username":"user4","fullName":"User 4"},
+    {"username":"user5","fullName":"User 5"}
+  ],
   "totalSize" : 5
 }

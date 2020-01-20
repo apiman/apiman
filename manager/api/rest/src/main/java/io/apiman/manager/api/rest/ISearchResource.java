@@ -16,9 +16,9 @@
 
 package io.apiman.manager.api.rest;
 
-import io.apiman.manager.api.beans.idm.UserBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaBean;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
+import io.apiman.manager.api.beans.search.searchResults.UserSearchResult;
 import io.apiman.manager.api.beans.summary.*;
 import io.apiman.manager.api.rest.exceptions.InvalidSearchCriteriaException;
 import io.apiman.manager.api.rest.exceptions.OrganizationNotFoundException;
@@ -135,6 +135,6 @@ public interface ISearchResource {
     @Path("users")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    SearchResultsBean<UserBean> searchUsers(SearchCriteriaBean criteria) throws InvalidSearchCriteriaException;
+    SearchResultsBean<UserSearchResult> searchUsers(SearchCriteriaBean criteria) throws InvalidSearchCriteriaException;
 
 }

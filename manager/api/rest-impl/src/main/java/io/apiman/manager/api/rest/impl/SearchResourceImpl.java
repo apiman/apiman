@@ -18,6 +18,7 @@ package io.apiman.manager.api.rest.impl;
 
 import io.apiman.manager.api.beans.idm.UserBean;
 import io.apiman.manager.api.beans.search.*;
+import io.apiman.manager.api.beans.search.searchResults.UserSearchResult;
 import io.apiman.manager.api.beans.summary.*;
 import io.apiman.manager.api.core.IApiCatalog;
 import io.apiman.manager.api.core.IStorage;
@@ -32,6 +33,7 @@ import io.apiman.manager.api.security.ISecurityContext;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -156,9 +158,18 @@ public class SearchResourceImpl implements ISearchResource {
      * @see io.apiman.manager.api.rest.ISearchResource#searchUsers(io.apiman.manager.api.beans.search.SearchCriteriaBean)
      */
     @Override
-    public SearchResultsBean<UserBean> searchUsers(SearchCriteriaBean criteria) throws InvalidSearchCriteriaException {
+    public SearchResultsBean<UserSearchResult> searchUsers(SearchCriteriaBean criteria) throws InvalidSearchCriteriaException {
+        List<UserSearchResult> users = new ArrayList<>();
         try {
-            return query.findUsers(criteria);
+            // Maybe this should be a new query in the future?
+            List<UserBean> userBeans = query.findUsers(criteria).getBeans();
+            for (UserBean user : userBeans) {
+                users.add(new UserSearchResult(user.getUsername(), user.getFullName()));
+            }
+            SearchResultsBean<UserSearchResult> searchResultsBean = new SearchResultsBean<>();
+            searchResultsBean.setBeans(users);
+            searchResultsBean.setTotalSize(users.size());
+            return  searchResultsBean;
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }
