@@ -16,16 +16,9 @@
 
 package io.apiman.manager.api.rest.impl;
 
-import io.apiman.manager.api.beans.search.PagingBean;
-import io.apiman.manager.api.beans.search.SearchCriteriaBean;
-import io.apiman.manager.api.beans.search.SearchCriteriaFilterBean;
-import io.apiman.manager.api.beans.search.SearchCriteriaFilterOperator;
-import io.apiman.manager.api.beans.search.SearchResultsBean;
-import io.apiman.manager.api.beans.summary.ApiNamespaceBean;
-import io.apiman.manager.api.beans.summary.ApiSummaryBean;
-import io.apiman.manager.api.beans.summary.AvailableApiBean;
-import io.apiman.manager.api.beans.summary.ClientSummaryBean;
-import io.apiman.manager.api.beans.summary.OrganizationSummaryBean;
+import io.apiman.manager.api.beans.idm.UserBean;
+import io.apiman.manager.api.beans.search.*;
+import io.apiman.manager.api.beans.summary.*;
 import io.apiman.manager.api.core.IApiCatalog;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
@@ -37,10 +30,9 @@ import io.apiman.manager.api.rest.exceptions.SystemErrorException;
 import io.apiman.manager.api.rest.impl.util.SearchCriteriaUtil;
 import io.apiman.manager.api.security.ISecurityContext;
 
-import java.util.List;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.util.List;
 
 /**
  * Implementation of the Search API.
@@ -158,6 +150,18 @@ public class SearchResourceImpl implements ISearchResource {
 
         rval.setTotalSize(totalSize);
         return rval;
+    }
+
+    /**
+     * @see io.apiman.manager.api.rest.ISearchResource#searchUsers(io.apiman.manager.api.beans.search.SearchCriteriaBean)
+     */
+    @Override
+    public SearchResultsBean<UserBean> searchUsers(SearchCriteriaBean criteria) throws InvalidSearchCriteriaException {
+        try {
+            return query.findUsers(criteria);
+        } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        }
     }
     
     /**

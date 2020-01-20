@@ -1,4 +1,4 @@
-POST /users/search admin/admin
+POST /search/users admin/admin
 Content-Type: application/json
 
 {

@@ -19,27 +19,17 @@ package io.apiman.manager.api.rest;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
 import io.apiman.manager.api.beans.idm.UpdateUserBean;
 import io.apiman.manager.api.beans.idm.UserBean;
-import io.apiman.manager.api.beans.search.SearchCriteriaBean;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
 import io.apiman.manager.api.beans.summary.ApiSummaryBean;
 import io.apiman.manager.api.beans.summary.ClientSummaryBean;
 import io.apiman.manager.api.beans.summary.OrganizationSummaryBean;
-import io.apiman.manager.api.rest.exceptions.InvalidSearchCriteriaException;
 import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
 import io.apiman.manager.api.rest.exceptions.UserNotFoundException;
 import io.swagger.annotations.Api;
 
-import java.util.List;
-
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 /**
  * The User API.
@@ -78,22 +68,6 @@ public interface IUserResource {
     @Path("{userId}")
     @Consumes(MediaType.APPLICATION_JSON)
     public void update(@PathParam("userId") String userId, UpdateUserBean user) throws UserNotFoundException, NotAuthorizedException;
-
-    /**
-     * Use this endpoint to search for users.  The search criteria is
-     * provided in the body of the request, including filters, order-by, and paging
-     * information.
-     * @summary Search for Users
-     * @param criteria The search criteria.
-     * @statuscode 200 If the search is successful.
-     * @return The search results (a page of organizations).
-     * @throws InvalidSearchCriteriaException when provided criteria are invalid
-     */
-    @POST
-    @Path("search")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public SearchResultsBean<UserBean> search(SearchCriteriaBean criteria) throws InvalidSearchCriteriaException;
 
     /**
      * This endpoint returns the list of organizations that the user is a member of.  The

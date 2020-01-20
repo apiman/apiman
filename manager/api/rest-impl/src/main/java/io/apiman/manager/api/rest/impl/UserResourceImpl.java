@@ -23,28 +23,25 @@ import io.apiman.manager.api.beans.idm.RoleMembershipBean;
 import io.apiman.manager.api.beans.idm.UpdateUserBean;
 import io.apiman.manager.api.beans.idm.UserBean;
 import io.apiman.manager.api.beans.search.PagingBean;
-import io.apiman.manager.api.beans.search.SearchCriteriaBean;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
+import io.apiman.manager.api.beans.summary.ApiSummaryBean;
 import io.apiman.manager.api.beans.summary.ClientSummaryBean;
 import io.apiman.manager.api.beans.summary.OrganizationSummaryBean;
-import io.apiman.manager.api.beans.summary.ApiSummaryBean;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.rest.IUserResource;
-import io.apiman.manager.api.rest.exceptions.InvalidSearchCriteriaException;
 import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
 import io.apiman.manager.api.rest.exceptions.SystemErrorException;
 import io.apiman.manager.api.rest.exceptions.UserNotFoundException;
 import io.apiman.manager.api.rest.exceptions.util.ExceptionFactory;
 import io.apiman.manager.api.security.ISecurityContext;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 
 /**
  * Implementation of the User API.
@@ -110,19 +107,6 @@ public class UserResourceImpl implements IUserResource {
             storage.commitTx();
         } catch (StorageException e) {
             storage.rollbackTx();
-            throw new SystemErrorException(e);
-        }
-    }
-    
-    /**
-     * @see IUserResource#search(io.apiman.manager.api.beans.search.SearchCriteriaBean)
-     */
-    @Override
-    public SearchResultsBean<UserBean> search(SearchCriteriaBean criteria)
-            throws InvalidSearchCriteriaException {
-        try {
-            return query.findUsers(criteria);
-        } catch (StorageException e) {
             throw new SystemErrorException(e);
         }
     }

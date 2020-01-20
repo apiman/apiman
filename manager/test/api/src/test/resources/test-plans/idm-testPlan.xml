@@ -3,8 +3,7 @@
 
   <!-- How about some user testing? -->
   <testGroup name="User Testing">
-    <test name="Find Users by Name">test-plan-data/idm/users/001_find-users.resttest</test>
-    <test name="Get User 1">test-plan-data/idm/users/002_get-user1.resttest</test>
+    <test name="Get User 1">test-plan-data/idm/users/001_get-user1.resttest</test>
   </testGroup>
 
   <!-- Create a bunch of Roles -->

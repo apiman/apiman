@@ -16,25 +16,17 @@
 
 package io.apiman.manager.api.rest;
 
+import io.apiman.manager.api.beans.idm.UserBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaBean;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
-import io.apiman.manager.api.beans.summary.ApiNamespaceBean;
-import io.apiman.manager.api.beans.summary.ApiSummaryBean;
-import io.apiman.manager.api.beans.summary.AvailableApiBean;
-import io.apiman.manager.api.beans.summary.ClientSummaryBean;
-import io.apiman.manager.api.beans.summary.OrganizationSummaryBean;
+import io.apiman.manager.api.beans.summary.*;
 import io.apiman.manager.api.rest.exceptions.InvalidSearchCriteriaException;
 import io.apiman.manager.api.rest.exceptions.OrganizationNotFoundException;
 import io.swagger.annotations.Api;
 
-import java.util.List;
-
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 /**
  * The Search API.
@@ -127,5 +119,22 @@ public interface ISearchResource {
     @Path("apiCatalog/namespaces")
     @Produces(MediaType.APPLICATION_JSON)
     public List<ApiNamespaceBean> getApiNamespaces();
+
+    /**
+     * Use this endpoint to search for users.  The search criteria is
+     * provided in the body of the request, including filters, order-by, and paging
+     * information.
+     *
+     * @param criteria The search criteria.
+     * @return The search results (a page of users).
+     * @throws InvalidSearchCriteriaException when provided criteria are invalid
+     * @summary Search for Users
+     * @statuscode 200 If the search is successful.
+     */
+    @POST
+    @Path("users")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    SearchResultsBean<UserBean> searchUsers(SearchCriteriaBean criteria) throws InvalidSearchCriteriaException;
 
 }
