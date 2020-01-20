@@ -74,8 +74,12 @@ export class ApiListComponent implements OnChanges {
       this.checkReceivedData(clients, contracts, apiVersions, gateways);
       return from(contracts)
         .pipe(map(contract => {
-          const apiVersion = apiVersions.find(version => version.api.id === contract.apiId);
-          const clientVersion = clients.find(version => version.id === contract.clientId);
+          const apiVersion = apiVersions.find(version => version.api.id === contract.apiId
+            && version.version === contract.apiVersion
+            && version.api.organization.id === contract.apiOrganizationId);
+          const clientVersion = clients.find(version => version.id === contract.clientId
+            && version.version === contract.clientVersion
+            && version.organizationId === contract.clientOrganizationId);
           const gateway = gateways.find(g => g.id === apiVersion.gateways[0].gatewayId);
           return this.buildViewData(contract, gateway, clientVersion, apiVersion);
         }));

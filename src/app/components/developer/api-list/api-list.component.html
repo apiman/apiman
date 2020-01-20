@@ -12,7 +12,7 @@
   </ng-container>
   <ng-container matColumnDef="tryApi">
     <th mat-header-cell *matHeaderCellDef>Try API</th>
-    <td mat-cell *matCellDef="let element"> <mat-icon class="button" *ngIf="element.swaggerDefinitionType !== null || element.swaggerDefinitionType !== 'None'" (click)="this.openSwaggerView(element)" matTooltip="Try the API">play_arrow</mat-icon> </td>
+    <td mat-cell *matCellDef="let element"> <mat-icon class="button" *ngIf="element.swaggerDefinitionType !== null && element.swaggerDefinitionType !== 'None'" (click)="this.openSwaggerView(element)" matTooltip="Try the API">play_arrow</mat-icon> </td>
   </ng-container>
   <ng-container matColumnDef="options">
     <th mat-header-cell *matHeaderCellDef>Options</th>
