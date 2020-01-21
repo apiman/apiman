@@ -26,12 +26,11 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * An http filter that supports the {@link DefaultSecurityContext} imlementation.
+ * An http filter that supports the {@link DefaultSecurityContext} implementation.
  *
  * @author eric.wittmann@redhat.com
  */
 public class DefaultSecurityContextFilter implements Filter {
-    
     /**
      * Constructor.
      */
