@@ -129,7 +129,7 @@ public class VertxPluginRegistryTest {
 
         //Referenced values to test
         Map<String, String> expected = new LinkedHashMap<String, String>() {{
-            put("pluginRepositories", String.join(", ", pluginRepositories));
+            put("pluginRepositories", String.join(",", pluginRepositories));
             put("pluginsDir", pluginsDir);
         }};
 
@@ -196,7 +196,76 @@ public class VertxPluginRegistryTest {
 
         //Referenced values to test
         Map<String, String> expected = new LinkedHashMap<String, String>() {{
-            put("pluginRepositories", String.join(", ", pluginRepositories));
+            put("pluginRepositories", String.join(",", pluginRepositories));
+            put("pluginsDir", pluginsDir);
+        }};
+
+        //Loading VertX configuration
+        VertxEngineConfig config = new VertxEngineConfig(jsonObject);
+        Map<String, String> pluginRegistryConfig = config.getPluginRegistryConfig();
+
+        //Assert that JSON config object contains the rights parameters
+        Assert.assertThat(pluginRegistryConfig, is(expected));
+
+
+        //Create a fake engine for test plugins loading
+        TestVerticle v = new TestVerticle(config);
+
+        //Get pluginRegistry from engine
+        IPluginRegistry pluginRegistry = v.createPluginRegistry();
+
+        //Define simple header policy plugin coordinates
+        PluginCoordinates coordinates = PluginCoordinates.fromPolicySpec(testPluginCoordinates);
+
+        //Download the plugin
+        pluginRegistry.loadPlugin(coordinates, result -> {
+
+            if (result.isSuccess()) {
+
+                //Get downloaded plugin
+                Plugin plugin = result.getResult();
+
+                //Assert that's the right plugin
+                context.assertEquals(plugin.getCoordinates(), coordinates);
+
+                //Assert plugin is in the right dir
+                Path pluginPath = Paths.get(pluginsDir + "/io.apiman.test/testPlugin/1.0.0.Final/testPlugin.war");
+                context.assertTrue(Files.exists(pluginPath));
+
+                waitForPlugin.complete();
+
+            } else {
+                context.fail(result.getError());
+            }
+        });
+
+        waitForPlugin.awaitSuccess();
+    }
+
+    /**
+     * Test with custom configuration (pluginRepositories and pluginsDir) to download a fake plugin from a fake Maven repo
+     * Despite a unreachable repository in the pluginRepositories array.
+     *
+     * @param context
+     * @throws java.io.IOException
+     */
+    @Test
+    public void getFakePluginUnreachableRegistry(TestContext context) throws java.io.IOException {
+
+        Async waitForPlugin = context.async();
+
+        //Preparing JSON config Object with 2 custom repo : a real and a fake
+        List<String> pluginRepositories = Arrays.asList("https://unreachable.maven.org/maven2/", mavenServerUri.toString());
+        String pluginsDir = "/tmp/plugins-test3";
+        JsonObject jsonObject = new JsonObject(getJsonConfig(pluginRepositories, pluginsDir));
+
+        //Delete temp folder
+        File TempDir = new File(pluginsDir);
+        if (TempDir.exists()) FileUtils.deleteDirectory(TempDir);
+
+        //Referenced values to test
+        Map<String, String> expected = new LinkedHashMap<String, String>() {{
+            put("pluginRepositories", String.join(",", pluginRepositories));
             put("pluginsDir", pluginsDir);
         }};
 
