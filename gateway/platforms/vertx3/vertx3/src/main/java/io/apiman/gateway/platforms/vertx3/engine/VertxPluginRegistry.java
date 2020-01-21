@@ -37,6 +37,7 @@ import java.net.URL;
 import java.net.UnknownHostException;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -50,7 +51,9 @@ public class VertxPluginRegistry extends DefaultPluginRegistry {
 
     private Vertx vertx;
     private ProxyOptions sslProxy;
+    private String sslNoProxy;
     private ProxyOptions proxy;
+    private String noProxy;
 
 
     /**
@@ -69,6 +72,7 @@ public class VertxPluginRegistry extends DefaultPluginRegistry {
         //Get HTTPS Proxy settings (useful for local dev tests and corporate CI)
         String sslProxyHost = System.getProperty("https.proxyHost", "none");
         Integer sslProxyPort = Integer.valueOf(System.getProperty("https.proxyPort", "443"));
+        sslNoProxy = System.getProperty("https.nonProxyHosts", "none");
 
         //Set HTTPS proxy if defined
         if (!"none".equalsIgnoreCase(sslProxyHost)) {
@@ -81,6 +85,7 @@ public class VertxPluginRegistry extends DefaultPluginRegistry {
         //Get HTTP Proxy settings (useful for local dev tests and corporate CI)
         String proxyHost = System.getProperty("http.proxyHost", "none");
         Integer proxyPort = Integer.valueOf(System.getProperty("http.proxyPort", "80"));
+        noProxy = System.getProperty("http.nonProxyHosts", "none");
 
         //Set HTTPS proxy if defined
         if (!"none".equalsIgnoreCase(proxyHost)) {
@@ -155,17 +160,24 @@ public class VertxPluginRegistry extends DefaultPluginRegistry {
 
     private HttpClientOptions configureHttpClientOptions(final URL artifactUrl) {
         HttpClientOptions clientOpts = new HttpClientOptions();
-        InetAddress[] localAddresses;
+        ArrayList<InetAddress> noProxyAddresses = new ArrayList<>();
 
         //List all local ip addresses
         try {
-            localAddresses = InetAddress.getAllByName(InetAddress.getLocalHost().getHostName());
+            noProxyAddresses.addAll(Arrays.asList(InetAddress.getAllByName(InetAddress.getLocalHost().getHostName())));
         } catch (UnknownHostException e) {
             //Non blocking error while trying to get all local network addresses. Proxy will be always applied if exist.
             e.printStackTrace();
-            localAddresses = new InetAddress[0];
         }
 
+        //Add no proxy hosts from proxy settings
+        try {
+            if (!"none".equalsIgnoreCase(sslNoProxy)) noProxyAddresses.add(InetAddress.getByName(sslNoProxy));
+            if (!"none".equalsIgnoreCase(noProxy)) noProxyAddresses.add(InetAddress.getByName(noProxy));
+        } catch (UnknownHostException e) {
+            //Non blocking error while trying to get no proxy addresses. Proxy will be always applied if configured.
+            e.printStackTrace();
+        }
 
         //Configure http client options following artifact url
         if (artifactUrl.getProtocol().equals("https")) {
@@ -177,7 +189,7 @@ public class VertxPluginRegistry extends DefaultPluginRegistry {
             try {
                 artifactHost = InetAddress.getByName(artifactUrl.getHost());
 
-                if (artifactHost.isLoopbackAddress() || Arrays.asList(localAddresses).contains(artifactHost)) {
+                if (artifactHost.isLoopbackAddress() || noProxyAddresses.contains(artifactHost)) {
                     //Reset proxy options (otherwise Vert.X try to use proxy for local connection)
                     clientOpts.setProxyOptions(null);
                 } else {
@@ -200,7 +212,7 @@ public class VertxPluginRegistry extends DefaultPluginRegistry {
             try {
                 artifactHost = InetAddress.getByName(artifactUrl.getHost());
 
-                if (artifactHost.isLoopbackAddress() || Arrays.asList(localAddresses).contains(artifactHost)) {
+                if (artifactHost.isLoopbackAddress() || noProxyAddresses.contains(artifactHost)) {
                     //Reset proxy options (otherwise Vert.X try to use proxy for local connection)
                     clientOpts.setProxyOptions(null);
                 } else {
