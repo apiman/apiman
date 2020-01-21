@@ -13,6 +13,7 @@ export interface ApiListElement {
   apiName: string;
   apiOrganization: string;
   apiVersion: string;
+  status: string;
   clientOrganization: string;
   clientName: string;
   clientVersion: string;
@@ -42,6 +43,12 @@ export class ApiListComponent implements OnChanges {
 
   apiData: Array<ApiListElement> = [];
   sortedApiData: Array<ApiListElement>;
+
+  status = class ApiStatus {
+    static retired = 'Retired';
+    static active = 'Active';
+    static inactive = 'Inactive';
+  };
 
   @Input('developerId') developerId;
 
@@ -118,6 +125,7 @@ export class ApiListComponent implements OnChanges {
       clientOrganization: contract.clientOrganizationName,
       clientName: contract.clientName,
       clientVersion: contract.clientVersion,
+      status: this.computeStatus(clientVersion.status, apiVersionDetails.status),
       endpoint: this.buildApiEndpoint(gateway.endpoint, contract.apiOrganizationId, contract.apiId, contract.apiVersion, clientVersion.apiKey),
       apikey: clientVersion.apiKey,
       swaggerDefinitionType: apiVersionDetails.definitionType,
@@ -158,7 +166,8 @@ export class ApiListComponent implements OnChanges {
     this.router.navigate([entry.swaggerURL], {
       state: {
         data: {
-          apikey: entry.apikey
+          apikey: entry.apikey,
+          apiStatus: entry.status
         }
       }
     });
@@ -184,6 +193,37 @@ export class ApiListComponent implements OnChanges {
         default: return 0;
       }
     });
+  }
+
+  /**
+   * Compute combined status from API and Client Status
+   */
+  private computeStatus(clientStatus, apiStatus): string {
+    const registered = 'Registered';
+    const published = 'Published';
+    const retired = 'Retired';
+
+    if (clientStatus === retired || apiStatus === retired) {
+      return this.status.retired;
+    }
+    if (clientStatus === registered && apiStatus === published) {
+      return this.status.active;
+    }
+    return this.status.inactive;
+  }
+
+  /**
+   * Compute tooltip status text
+   * @param status the computed status
+   */
+  public computeStatusText(apiStatus) {
+    if (apiStatus === this.status.active) {
+      return 'API is active';
+    }
+    if (apiStatus === this.status.inactive) {
+      return 'API coming soon';
+    }
+    return 'API is retired';
   }
 
   /**

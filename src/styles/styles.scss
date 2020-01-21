@@ -12,16 +12,21 @@
   --scheer-button-hover-color:           #06628e;
   --scheer-button-focus-color:           #06628e;
 
-  --alert-color-hover:                #ac1e1c;
+  --alert-color-hover:                   #ac1e1c;
 
-  --scheer-grey-color-fill: #bab6b9;
-  --scheer-lightorange: #ffa500;
+  --scheer-grey-color-fill:              #bab6b9;
+  --scheer-color-green:                  #0F9D58;
+  --scheer-lightorange:                  #ffa500;
+  --scheer-color-red:                    #CF303A;
 
-  --branding-message-error: #CF303A;
-  --branding-message-warn: var(--scheer-lightorange);
-  --branding-message-success: #0F9D58;
-  --branding-message-info: var(--scheer-grey-color-fill);
+  --branding-message-error:              var(--scheer-color-red);
+  --branding-message-warn:               var(--scheer-lightorange);
+  --branding-message-success:            var(--scheer-color-green);
+  --branding-message-info:               var(--scheer-grey-color-fill);
 
+  --branding-status-active:              var(--scheer-color-green);
+  --branding-status-inactive:            var(--scheer-lightorange);
+  --branding-status-retired:             var(--scheer-grey-color-fill);
 }
 
 body {

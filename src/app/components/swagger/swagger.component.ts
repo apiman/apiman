@@ -22,6 +22,7 @@ export class SwaggerComponent implements OnInit {
     const version = this.route.snapshot.paramMap.get('version');
 
     let apiKey = history.state.data ? history.state.data.apikey : null;
+    const apiStatus = history.state.data ? history.state.data.apiStatus : null;
 
     if (apiKey) {
       // save key for reloading page
@@ -36,12 +37,28 @@ export class SwaggerComponent implements OnInit {
       + '/apis/' + apiId + '/versions/'
       + version + '/definition';
 
+    const CheckAllowTryItOutPlugin = () => {
+      return {
+        statePlugins: {
+          spec: {
+            wrapSelectors: {
+              // Enable TryOut Button only for active APIs
+              allowTryItOutFor: () => () => apiStatus === 'Active'
+            }
+          }
+        }
+      };
+    };
+
     const swaggerUI = SwaggerUIBundle({
       dom_id: '#swagger-editor',
       layout: 'BaseLayout',
       presets: [
         SwaggerUIBundle.presets.apis,
         SwaggerUIBundle.SwaggerUIStandalonePreset
+      ],
+      plugins: [
+        CheckAllowTryItOutPlugin
       ],
       url: swaggerURL,
       docExpansion: 'none',

@@ -57,3 +57,20 @@ tr.api-detail-row {
   background-color: inherit;
   color: inherit;
 }
+
+.status {
+  font-size: 12px;
+  padding-top: 9px;
+}
+
+.Retired {
+  color: var(--branding-status-retired);
+}
+
+.Inactive {
+  color: var(--branding-status-inactive);
+}
+
+.Active {
+  color: var(--branding-status-active);
+}
