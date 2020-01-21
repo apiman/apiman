@@ -23,7 +23,10 @@
 
   "plugin-registry": {
     "class": "io.apiman.gateway.platforms.vertx3.engine.VertxPluginRegistry",
-    "config": {}
+    "config": {
+      //"pluginRepositories":["https://url.to.maven.repo"],
+      //"pluginsDir": "/path/to/your/plugin_dir"
+    }
   },
 
   "connector-factory": {

@@ -16,6 +16,7 @@
 
 package io.apiman.gateway.platforms.vertx3.i18n;
 
+import java.text.MessageFormat;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
@@ -32,6 +33,24 @@ public class Messages {
             return RESOURCE_BUNDLE.getString(key);
         } catch (MissingResourceException e) {
             return '!' + key + '!';
+        }
+    }
+
+
+    /**
+     * Look up a message in the i18n resource message bundle by key, then format the
+     * message with the given params and return the result.
+     *
+     * @param key    the key
+     * @param params the parameters
+     * @return formatted string
+     */
+    public static String format(String key, Object... params) {
+        if (RESOURCE_BUNDLE.containsKey(key)) {
+            String msg = RESOURCE_BUNDLE.getString(key);
+            return MessageFormat.format(msg, params);
+        } else {
+            return MessageFormat.format("!!{0}!!", key);
         }
     }
 }

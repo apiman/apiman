@@ -36,6 +36,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -55,7 +56,7 @@ import org.apache.commons.io.IOUtils;
  * implementation shouldn't really be used except for testing and perhaps getting
  * started with embedding the policy engine.  The reasons to not use this
  * implementation include:
- *
+ * <p>
  * 1) not truly asynchronous (not good if embedding in a true async platform)
  * 2) stores downloaded plugins in java.io.tmp
  * 3) does not remember where it put plugins, so will re-download them often
@@ -77,6 +78,7 @@ public class DefaultPluginRegistry implements IPluginRegistry {
 
     /**
      * Constructor.
+     *
      * @param configMap the configuration map
      */
     public DefaultPluginRegistry(Map<String, String> configMap) {
@@ -85,6 +87,7 @@ public class DefaultPluginRegistry implements IPluginRegistry {
 
     /**
      * Constructor.
+     *
      * @param pluginsDir the plugins directory
      */
     public DefaultPluginRegistry(File pluginsDir) {
@@ -93,7 +96,8 @@ public class DefaultPluginRegistry implements IPluginRegistry {
 
     /**
      * Constructor.
-     * @param pluginsDir the plugins directory
+     *
+     * @param pluginsDir         the plugins directory
      * @param pluginRepositories the plugin repositories
      */
     public DefaultPluginRegistry(File pluginsDir, Set<URI> pluginRepositories) {
@@ -104,11 +108,7 @@ public class DefaultPluginRegistry implements IPluginRegistry {
     private static final File createTempPluginsDir() {
         // TODO log a warning here
         try {
-            @SuppressWarnings("nls")
-            File tempDir = File.createTempFile("_apiman", "plugins");
-            tempDir.delete();
-            tempDir.mkdir();
-            return tempDir;
+            return Files.createTempDirectory("apiman-gateway-plugins-tmp").toFile();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -128,6 +128,7 @@ public class DefaultPluginRegistry implements IPluginRegistry {
             return createTempPluginsDir();
         }
     }
+
     private static Set<URI> getConfiguredPluginRepositories(Map<String, String> configMap) {
         Set<URI> rval = new HashSet<>();
         rval.addAll(PluginUtils.getDefaultMavenRepositories());
@@ -171,7 +172,10 @@ public class DefaultPluginRegistry implements IPluginRegistry {
                     // same time, resulting in two or more threads downloading the plugin.
                     // This is OK as long as we make sure we only ever use one.
                     if (pluginCache.containsKey(coordinates)) {
-                        try { result.getResult().getLoader().close(); } catch (IOException e) {}
+                        try {
+                            result.getResult().getLoader().close();
+                        } catch (IOException e) {
+                        }
                         result = AsyncResultImpl.create(pluginCache.get(coordinates));
                     } else {
                         pluginCache.put(coordinates, result.getResult());
@@ -216,10 +220,13 @@ public class DefaultPluginRegistry implements IPluginRegistry {
 
         // Next try to load it from the plugin file registry
         if (!handled && pluginFile.isFile()) {
-        	// If it's a snapshot, delete it here. (first time loading this plugin from the plugin file registry).  This
-        	// means that snapshot plugins will be redownloaded each time the server is restarted.
+            // If it's a snapshot, delete it here. (first time loading this plugin from the plugin file registry).  This
+            // means that snapshot plugins will be redownloaded each time the server is restarted.
             if (isSnapshot) {
-                try { FileUtils.deleteDirectory(pluginDir); } catch (IOException | IllegalArgumentException e) { }
+                try {
+                    FileUtils.deleteDirectory(pluginDir);
+                } catch (IOException | IllegalArgumentException e) {
+                }
             } else {
                 handled = true;
                 try {
@@ -345,9 +352,11 @@ public class DefaultPluginRegistry implements IPluginRegistry {
         final IAsyncResultHandler<File> handler2 = new IAsyncResultHandler<File>() {
             @Override
             public void handle(IAsyncResult<File> result) {
-                if (result.isSuccess() && result.getResult() == null && iterator.hasNext()) {
+                // If result is bad : No success or result empty And other repo exist
+                if (!result.isSuccess() || result.getResult() == null && iterator.hasNext()) {
                     downloadFromMavenRepo(coordinates, iterator.next(), this);
                 } else {
+                    //If result is Good or all repo tried
                     handler.handle(result);
                 }
             }
