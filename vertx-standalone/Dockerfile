@@ -3,7 +3,7 @@ FROM apiman/cli:${CLI_VERSION} AS cli
 
 FROM openjdk:8
 
-ARG PLATFORM_VERSION="1.5.4.Final"
+ARG PLATFORM_VERSION="1.5.5.Final"
 
 RUN useradd -m -d /home/apiman apiman && \
 	mkdir -p /opt/apiman/apis /opt/apiman/declarations /opt/apiman/lib && \

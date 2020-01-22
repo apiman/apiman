@@ -7,7 +7,7 @@ LABEL maintainter="jcechace@redhat.com>" \
 
 
 ENV JBOSS_HOME="/opt/jboss"
-ENV APIMAN_VERSION="1.5.4.Final"
+ENV APIMAN_VERSION="1.5.5.Final"
 ENV APIMAN_HOME="${JBOSS_HOME}/apiman"
 ENV APIMAN_CONFIG="${APIMAN_HOME}/configs/conf-container.json"
 ENV APIMAN_REGISTRY_URI="file:///${APIMAN_HOME}/configs/registry.json"
