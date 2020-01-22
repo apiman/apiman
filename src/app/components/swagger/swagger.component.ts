@@ -21,8 +21,15 @@ export class SwaggerComponent implements OnInit {
     const apiId = this.route.snapshot.paramMap.get('apiId');
     const version = this.route.snapshot.paramMap.get('version');
 
+    let apiStatus = history.state.data ? history.state.data.apiStatus : null;
     let apiKey = history.state.data ? history.state.data.apikey : null;
-    const apiStatus = history.state.data ? history.state.data.apiStatus : null;
+
+    if (apiStatus) {
+      // save status for reloading page
+      sessionStorage.setItem('lastApiStatus', apiStatus);
+    } else {
+      apiStatus = sessionStorage.getItem('lastApiStatus');
+    }
 
     if (apiKey) {
       // save key for reloading page
@@ -50,7 +57,11 @@ export class SwaggerComponent implements OnInit {
       };
     };
 
-    const swaggerUI = SwaggerUIBundle({
+    const DisableAuthorizePlugin = () => ({ wrapComponents: { authorizeBtn: () => () => null } });
+
+    let apiKeySecuritySettingName = 'X-API-Key';
+
+    const swaggerOptions = {
       dom_id: '#swagger-editor',
       layout: 'BaseLayout',
       presets: [
@@ -63,12 +74,6 @@ export class SwaggerComponent implements OnInit {
       url: swaggerURL,
       docExpansion: 'none',
       operationsSorter: 'alpha',
-      onComplete: () => {
-        // set api key in swagger view to make it look like authorized for calls
-        // this option is not enough to send OPTION requests to gateway protected apis
-        // sending this api key as header in option requests are blocked by the browser
-        swaggerUI.preauthorizeApiKey('X-API-Key', apiKey);
-      },
       requestInterceptor: (request) => {
         if (request.url === swaggerURL) {
           // set bearer token for authentication to get swagger file
@@ -78,8 +83,35 @@ export class SwaggerComponent implements OnInit {
           request.url += '?apiKey=' + apiKey;
         }
         return request;
+      },
+      responseInterceptor: (response) => {
+        if (response.url === swaggerURL) {
+          // determine apiKeySecuritySettingName by request of getting swagger definition
+          if (response.body && response.body.securityDefinitions) {
+            const securityDefinitions = Object.values(response.body.securityDefinitions);
+            // @ts-ignore
+            const apiKeySecuritySetting = securityDefinitions.find((securitySetting) => securitySetting.type === 'apiKey');
+            if (apiKeySecuritySetting) {
+              // @ts-ignore
+              // overwrite the default api key name
+              apiKeySecuritySettingName = apiKeySecuritySetting.name;
+            }
+          }
+        }
+      },
+      onComplete: () => {
+        // set api key in swagger view to make it look like authorized for calls
+        // this option is not enough to send OPTION requests to gateway protected apis
+        // sending this api key as header in option requests are blocked by the browser
+        swaggerUI.preauthorizeApiKey(apiKeySecuritySettingName, apiKey);
       }
-    });
+    };
+    if (apiStatus === 'Inactive') {
+      // @ts-ignore
+      swaggerOptions.plugins.push(DisableAuthorizePlugin);
+    }
+
+    const swaggerUI = SwaggerUIBundle(swaggerOptions);
   }
 
 }

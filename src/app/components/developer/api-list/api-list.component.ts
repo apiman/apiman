@@ -39,7 +39,7 @@ export interface ApiListElement {
 export class ApiListComponent implements OnChanges {
 
   columnHeaders: string[] = ['api', 'apiVersion', 'tryApi', 'options'];
-  expandedElement: ApiListElement | null;
+  expandedElements: Array<ApiListElement> = [];
 
   apiData: Array<ApiListElement> = [];
   sortedApiData: Array<ApiListElement>;
@@ -149,13 +149,15 @@ export class ApiListComponent implements OnChanges {
    * Copies endpoint to clipboard
    * @param entry the table entry
    */
-  copyEndpointToClipboard(entry: ApiListElement) {
+  copyEndpointToClipboard(event, entry: ApiListElement) {
     const el = document.createElement('textarea');
     document.body.appendChild(el);
     el.value = entry.endpoint + '?apiKey=' + entry.apikey;
     el.select();
     document.execCommand('copy');
     document.body.removeChild(el);
+
+    event.stopPropagation();
   }
 
   /**
@@ -197,6 +199,8 @@ export class ApiListComponent implements OnChanges {
 
   /**
    * Compute combined status from API and Client Status
+   * @param clientStatus the client status
+   * @param apiStatus the api status
    */
   private computeStatus(clientStatus, apiStatus): string {
     const registered = 'Registered';
@@ -205,25 +209,26 @@ export class ApiListComponent implements OnChanges {
 
     if (clientStatus === retired || apiStatus === retired) {
       return this.status.retired;
-    }
-    if (clientStatus === registered && apiStatus === published) {
+    } else if (clientStatus === registered && apiStatus === published) {
       return this.status.active;
+    } else {
+      return this.status.inactive;
     }
-    return this.status.inactive;
   }
 
   /**
    * Compute tooltip status text
-   * @param status the computed status
+   * @param apiStatus the computed status text
    */
   public computeStatusText(apiStatus) {
-    if (apiStatus === this.status.active) {
-      return 'API is active';
+    switch (apiStatus) {
+      case this.status.active:
+        return 'API is active';
+      case this.status.inactive:
+        return 'API is coming soon';
+      default:
+        return 'API is retired';
     }
-    if (apiStatus === this.status.inactive) {
-      return 'API coming soon';
-    }
-    return 'API is retired';
   }
 
   /**
@@ -267,5 +272,29 @@ export class ApiListComponent implements OnChanges {
       this.loadingSpinnerService.stopWaiting();
       this.toasterService.pop('warning', 'No gateway data available');
     }
+  }
+
+  /**
+   * Is list element expanded
+   * @param apiListElement the api list element
+   */
+  public isExpanded(apiListElement: ApiListElement) {
+    return this.expandedElements.find((e) => e === apiListElement) !== undefined;
+  }
+
+  /**
+   * Collapse list element
+   * @param apiListElement the api list element
+   */
+  public collapse(apiListElement: ApiListElement) {
+    this.expandedElements.splice(this.expandedElements.findIndex((e) => e === apiListElement), 1);
+  }
+
+  /**
+   * Expand list element
+   * @param apiListElement the api list element
+   */
+  public expand(apiListElement: ApiListElement) {
+    this.expandedElements.push(apiListElement);
   }
 }

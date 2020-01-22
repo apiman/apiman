@@ -11,6 +11,10 @@ p {
   padding-top: 4px;
 }
 
+.button {
+  z-index: 1;
+}
+
 .button, .clickable {
   cursor: pointer;
 }
@@ -58,9 +62,13 @@ tr.api-detail-row {
   color: inherit;
 }
 
+.apiName {
+  padding-left: 10px;
+}
+
 .status {
   font-size: 12px;
-  padding-top: 9px;
+  display: contents;
 }
 
 .Retired {

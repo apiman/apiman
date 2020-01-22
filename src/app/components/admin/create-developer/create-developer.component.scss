@@ -13,40 +13,18 @@
   min-height: 130px;
 }
 
+// stepper styling
 ::ng-deep .mat-step-icon {
   background-color: var(--scheer-grey-color-fill) !important;
 }
-
+// stepper styling
 ::ng-deep .mat-step-icon-selected, ::ng-deep .mat-step-icon-state-edit {
   background-color: var(--scheer-bg-color) !important;
 }
-
+// stepper styling
 ::ng-deep .mat-form-field.mat-focused .mat-form-field-label {
   color: black!important;
-}
+}// stepper styling
 ::ng-deep .mat-form-field.mat-focused .mat-form-field-ripple {
   background-color: black!important;
-}
-
-mat-card {
-  display: flex;
-  color: white;
-  border-radius: 0;
-  padding: .75rem 1.25rem;
-  margin-bottom: 1rem;
-  border: 1px solid transparent;
-  opacity: 0.75;
-}
-
-.warning {
-  background-color: var(--branding-message-warn);
-}
-
-.info {
-  background-color: var(--branding-message-info);
-}
-
-.box-content {
-  padding-left: 5px;
-  padding-top: 3px;
 }
