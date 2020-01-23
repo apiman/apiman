@@ -38,6 +38,10 @@
           <mat-icon>warning</mat-icon>
           <div class="box-content">Developer already exists.</div>
         </mat-card>
+        <mat-card class="warning" *ngIf="this.checkEmailAlreadyUsed(this.userFormGroup.get('email').value)">
+          <mat-icon>warning</mat-icon>
+          <div class="box-content">Email already used.</div>
+        </mat-card>
         <mat-card
           class="info"
           *ngIf="this.checkDeveloperNotExists(this.userFormGroup.get('username').value)
@@ -48,7 +52,7 @@
       </form>
       <div>
         <button matStepperNext
-                [disabled]="!this.checkDeveloperNotExists(this.userFormGroup.get('username').value) || !userFormGroup.valid">
+                [disabled]="!this.checkDeveloperNotExists(this.userFormGroup.get('username').value) || this.checkEmailAlreadyUsed(this.userFormGroup.get('email').value) || !userFormGroup.valid">
           Next
         </button>
         <button routerLink="/admin">Cancel</button>

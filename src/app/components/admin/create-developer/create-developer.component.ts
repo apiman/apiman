@@ -123,8 +123,11 @@ export class CreateDeveloperComponent implements OnInit, OnDestroy {
         console.error(errorMessage, error);
         this.toasterService.pop('error', errorMessage, error.message);
 
-        this.developerDataCache.developers.splice(this.developerDataCache.developers
-          .findIndex(developer => developer.name.toLowerCase() === developerToCreate.name.toLowerCase()), 1);
+        const developerIndexToDelete = this.developerDataCache.developers
+          .findIndex(developer => developer.name.toLowerCase() === developerToCreate.name.toLowerCase());
+        if (developerIndexToDelete !== -1) {
+          this.developerDataCache.developers.splice(developerIndexToDelete, 1);
+        }
         this.adminService.rollbackDeveloperCreation(developerToCreate, keycloakUserToCreate)
           .subscribe(rollbackResponse => {
             const rollbackMessage = 'Rollback executed';
@@ -148,6 +151,16 @@ export class CreateDeveloperComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Check if email adress is used
+   * @param email the email address
+   */
+  checkEmailAlreadyUsed(email: string) {
+    // check if the keycloak user does not exists
+    return this.keycloakUsers
+      && this.keycloakUsers.find((u) => u.email && u.email.toLowerCase() === email.toLowerCase()) !== undefined;
+  }
+
+  /**
    * Check if the a password is required for an insert
    * @param username the keycloak username
    */
@@ -156,5 +169,4 @@ export class CreateDeveloperComponent implements OnInit, OnDestroy {
     return this.keycloakUsers
       && this.keycloakUsers.find((u) => u.username.toLowerCase() === username.toLowerCase()) === undefined;
   }
-
 }
