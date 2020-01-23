@@ -74,10 +74,10 @@ public class DownloadResourceImpl implements IDownloadResource {
         switch (download.getType()) {
             case apiRegistryJson:
                 info = parseApiRegistryPath(path);
-                return orgs.getApiRegistryJSON(info.organizationId, info.clientId, info.version, info.hasPermission);
+                return orgs.getApiRegistryJSONInternal(info.organizationId, info.clientId, info.version);
             case apiRegistryXml:
                 info = parseApiRegistryPath(path);
-                return orgs.getApiRegistryXML(info.organizationId, info.clientId, info.version, info.hasPermission);
+                return orgs.getApiRegistryXMLInternal(info.organizationId, info.clientId, info.version);
             case exportJson:
                 return system.exportData();
             default:
@@ -94,7 +94,6 @@ public class DownloadResourceImpl implements IDownloadResource {
         info.organizationId = split[0];
         info.clientId = split[1];
         info.version = split[2];
-        info.hasPermission = "+".equals(split[3]); //$NON-NLS-1$
         return info;
     }
 
@@ -116,6 +115,5 @@ public class DownloadResourceImpl implements IDownloadResource {
         public String organizationId;
         public String clientId;
         public String version;
-        public boolean hasPermission;
     }
 }
