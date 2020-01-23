@@ -149,12 +149,11 @@ public interface IOrganizationResource {
      * @statuscode 404 If the Organization does not exist.
      * @return The Organization.
      * @throws OrganizationNotFoundException when trying to get, update, or delete an organization that does not exist
-     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
     @Path("{organizationId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public OrganizationBean get(@PathParam("organizationId") String organizationId) throws OrganizationNotFoundException, NotAuthorizedException;
+    public OrganizationBean get(@PathParam("organizationId") String organizationId) throws OrganizationNotFoundException;
 
     /**
      * Updates meta-information about a single Organization.
@@ -325,6 +324,23 @@ public interface IOrganizationResource {
             ClientVersionAlreadyExistsException;
 
     /**
+     * Use this endpoint to list all of the versions of an Client.
+     * @summary List Client Versions
+     * @param organizationId The Organization ID.
+     * @param clientId The Client ID.
+     * @statuscode 200 If the list of Client versions is successfully returned.
+     * @return A list of Clients.
+     * @throws ClientNotFoundException when trying to get, update, or delete a client that does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
+     */
+    @GET
+    @Path("{organizationId}/clients/{clientId}/versions")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<ClientVersionSummaryBean> listClientVersions(@PathParam("organizationId") String organizationId,
+                                                             @PathParam("clientId") String clientId) throws ClientNotFoundException, NotAuthorizedException;
+
+
+    /**
      * Use this endpoint to update the API Key for the given client.  You can either
      * provide your own custom (must be unique) API Key, or you can send an empty request
      * and apiman will generate a new API key for you.  Note that if the client is already
@@ -373,23 +389,6 @@ public interface IOrganizationResource {
     public ApiKeyBean getClientApiKey(@PathParam("organizationId") String organizationId,
             @PathParam("clientId") String clientId, @PathParam("version") String version)
             throws ClientNotFoundException, NotAuthorizedException, InvalidVersionException;
-
-
-    /**
-     * Use this endpoint to list all of the versions of an Client.
-     * @summary List Client Versions
-     * @param organizationId The Organization ID.
-     * @param clientId The Client ID.
-     * @statuscode 200 If the list of Client versions is successfully returned.
-     * @return A list of Clients.
-     * @throws ClientNotFoundException when trying to get, update, or delete a client that does not exist
-     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
-     */
-    @GET
-    @Path("{organizationId}/clients/{clientId}/versions")
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<ClientVersionSummaryBean> listClientVersions(@PathParam("organizationId") String organizationId,
-            @PathParam("clientId") String clientId) throws ClientNotFoundException, NotAuthorizedException;
 
     /**
      * Use this endpoint to get detailed information about a single version of
@@ -555,7 +554,7 @@ public interface IOrganizationResource {
      * @statuscode 200 If the API Registry information is successfully returned.
      * @statuscode 404 If the Client does not exist.
      * @return API Registry information or temporary download information.
-     * @throws ClientNotFoundException when trying to get, update, or delete a client that does not exist
+     * @throws ClientVersionNotFoundException when trying to get, update, or delete a client that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
@@ -565,8 +564,7 @@ public interface IOrganizationResource {
             @PathParam("clientId") String clientId, @PathParam("version") String version,
             @QueryParam("download") String download)
                     throws ClientNotFoundException, NotAuthorizedException;
-    public Response getApiRegistryJSON(String organizationId, String clientId, String version,
-            boolean hasPermission) throws ClientNotFoundException, NotAuthorizedException;
+    public Response getApiRegistryJSONInternal(String organizationId, String clientId, String version) throws ClientVersionNotFoundException;
 
     /**
      * Use this endpoint to get registry style information about all APIs that this
@@ -590,7 +588,7 @@ public interface IOrganizationResource {
      * @statuscode 200 If the API Registry information is successfully returned.
      * @statuscode 404 If the Client does not exist.
      * @return API Registry information.
-     * @throws ClientNotFoundException when trying to get, update, or delete a client that does not exist
+     * @throws ClientVersionNotFoundException when trying to get, update, or delete a client that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
@@ -600,8 +598,7 @@ public interface IOrganizationResource {
             @PathParam("clientId") String clientId, @PathParam("version") String version,
             @QueryParam("download") String download)
                     throws ClientNotFoundException, NotAuthorizedException;
-    public Response getApiRegistryXML(String organizationId, String clientId, String version,
-            boolean hasPermission) throws ClientNotFoundException, NotAuthorizedException;
+    public Response getApiRegistryXMLInternal(String organizationId, String clientId, String version) throws ClientVersionNotFoundException;
 
     /**
      * Use this endpoint to break all contracts between this client and its APIs.
@@ -813,6 +810,21 @@ public interface IOrganizationResource {
             InvalidNameException;
 
     /**
+     * Use this endpoint to get a list of all APIs in the Organization.
+     * @summary List APIs
+     * @param organizationId The Organization ID.
+     * @statuscode 200 If the list of APIs is successfully returned.
+     * @statuscode 404 If the Organization does not exist.
+     * @return A list of APIs.
+     * @throws OrganizationNotFoundException when trying to get, update, or delete an organization that does not exist
+     */
+    @GET
+    @Path("{organizationId}/apis")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<ApiSummaryBean> listApis(@PathParam("organizationId") String organizationId)
+            throws OrganizationNotFoundException;
+
+    /**
      * Use this endpoint to retrieve information about a single API by ID.  Note
      * that this only returns information about the API, not about any particular
      * *version* of the API.
@@ -830,24 +842,8 @@ public interface IOrganizationResource {
     @Path("{organizationId}/apis/{apiId}")
     @Produces(MediaType.APPLICATION_JSON)
     public ApiBean getApi(@PathParam("organizationId") String organizationId,
-            @PathParam("apiId") String apiId) throws ApiNotFoundException,
+                          @PathParam("apiId") String apiId) throws ApiNotFoundException,
             NotAuthorizedException;
-
-    /**
-     * Use this endpoint to get a list of all APIs in the Organization.
-     * @summary List APIs
-     * @param organizationId The Organization ID.
-     * @statuscode 200 If the list of APIs is successfully returned.
-     * @statuscode 404 If the Organization does not exist.
-     * @return A list of APIs.
-     * @throws OrganizationNotFoundException when trying to get, update, or delete an organization that does not exist
-     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
-     */
-    @GET
-    @Path("{organizationId}/apis")
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<ApiSummaryBean> listApi(@PathParam("organizationId") String organizationId)
-            throws OrganizationNotFoundException, NotAuthorizedException;
 
     /**
      * Use this endpoint to update information about an API.
@@ -937,6 +933,7 @@ public interface IOrganizationResource {
 
     /**
      * Use this endpoint to list all of the versions of an API.
+     * If the user has not "apiView" permissions, sensitive data won't be returned.
      * @summary List API Versions
      * @param organizationId The Organization ID.
      * @param apiId The API ID.
@@ -949,11 +946,11 @@ public interface IOrganizationResource {
     @Path("{organizationId}/apis/{apiId}/versions")
     @Produces(MediaType.APPLICATION_JSON)
     public List<ApiVersionSummaryBean> listApiVersions(@PathParam("organizationId") String organizationId,
-            @PathParam("apiId") String apiId) throws ApiNotFoundException, NotAuthorizedException;
+            @PathParam("apiId") String apiId) throws ApiNotFoundException;
 
     /**
      * Use this endpoint to get detailed information about a single version of
-     * an API.
+     * an API. If the user has not "apiView" permissions, sensitive data won't be returned.
      * @summary Get API Version
      * @param organizationId The Organization ID.
      * @param apiId The API ID.
@@ -962,14 +959,13 @@ public interface IOrganizationResource {
      * @statuscode 404 If the API version does not exist.
      * @return A API version.
      * @throws ApiVersionNotFoundException when trying to get, update, or delete an API version that does not exist
-     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
     @Path("{organizationId}/apis/{apiId}/versions/{version}")
     @Produces(MediaType.APPLICATION_JSON)
     public ApiVersionBean getApiVersion(@PathParam("organizationId") String organizationId,
             @PathParam("apiId") String apiId, @PathParam("version") String version)
-            throws ApiVersionNotFoundException, NotAuthorizedException;
+            throws ApiVersionNotFoundException;
 
     /**
      * Use this endpoint to get detailed status information for a single version of an
@@ -1013,7 +1009,7 @@ public interface IOrganizationResource {
     @Produces({ MediaType.APPLICATION_JSON, "application/wsdl+xml", "application/x-yaml" })
     public Response getApiDefinition(@PathParam("organizationId") String organizationId,
             @PathParam("apiId") String apiId, @PathParam("version") String version)
-            throws ApiVersionNotFoundException, NotAuthorizedException;
+            throws ApiVersionNotFoundException;
 
     /**
      * Use this endpoint to get information about the Managed API's gateway
@@ -1170,7 +1166,7 @@ public interface IOrganizationResource {
     @Produces(MediaType.APPLICATION_JSON)
     public List<ApiPlanSummaryBean> getApiVersionPlans(@PathParam("organizationId") String organizationId,
             @PathParam("apiId") String apiId, @PathParam("version") String version)
-            throws ApiVersionNotFoundException, NotAuthorizedException;
+            throws ApiVersionNotFoundException;
 
     /**
      * Use this endpoint to add a new Policy to the API version.
@@ -1348,15 +1344,13 @@ public interface IOrganizationResource {
      * @statuscode 404 If the API does not exist.
      * @return A Policy Chain.
      * @throws ApiVersionNotFoundException when trying to get, update, or delete an API version that does not exist
-     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
     @Path("{organizationId}/apis/{apiId}/versions/{version}/plans/{planId}/policyChain")
     @Produces(MediaType.APPLICATION_JSON)
     public PolicyChainBean getApiPolicyChain(@PathParam("organizationId") String organizationId,
             @PathParam("apiId") String apiId, @PathParam("version") String version,
-            @PathParam("planId") String planId) throws ApiVersionNotFoundException,
-            NotAuthorizedException;
+            @PathParam("planId") String planId) throws ApiVersionNotFoundException;
 
     /**
      * Use this endpoint to get a list of all Contracts created with this API.  This
@@ -1598,6 +1592,27 @@ public interface IOrganizationResource {
             NotAuthorizedException;
 
     /**
+     * Use this endpoint to list all of the Policies configured for the Plan.
+     * @summary List All Plan Policies
+     * @param organizationId The Organization ID.
+     * @param planId The Plan ID.
+     * @param version The Plan version.
+     * @statuscode 200 If the list of Policies is successfully returned.
+     * @statuscode 404 If the Plan does not exist.
+     * @return A List of Policies.
+     * @throws OrganizationNotFoundException when trying to get, update, or delete an organization that does not exist
+     * @throws PlanVersionNotFoundException when trying to get, update, or delete a plan version that does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
+     */
+    @GET
+    @Path("{organizationId}/plans/{planId}/versions/{version}/policies")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<PolicySummaryBean> listPlanPolicies(@PathParam("organizationId") String organizationId,
+                                                    @PathParam("planId") String planId, @PathParam("version") String version)
+            throws OrganizationNotFoundException, PlanVersionNotFoundException,
+            NotAuthorizedException;
+
+    /**
      * Use this endpoint to get information about a single Policy in the Plan version.
      * @summary Get Plan Policy
      * @param organizationId The Organization ID.
@@ -1686,27 +1701,6 @@ public interface IOrganizationResource {
     public void deletePlan(@PathParam("organizationId") String organizationId,
                           @PathParam("planId") String planId)
             throws PlanNotFoundException, NotAuthorizedException, InvalidPlanStatusException;
-
-    /**
-     * Use this endpoint to list all of the Policies configured for the Plan.
-     * @summary List All Plan Policies
-     * @param organizationId The Organization ID.
-     * @param planId The Plan ID.
-     * @param version The Plan version.
-     * @statuscode 200 If the list of Policies is successfully returned.
-     * @statuscode 404 If the Plan does not exist.
-     * @return A List of Policies.
-     * @throws OrganizationNotFoundException when trying to get, update, or delete an organization that does not exist
-     * @throws PlanVersionNotFoundException when trying to get, update, or delete a plan version that does not exist
-     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
-     */
-    @GET
-    @Path("{organizationId}/plans/{planId}/versions/{version}/policies")
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<PolicySummaryBean> listPlanPolicies(@PathParam("organizationId") String organizationId,
-            @PathParam("planId") String planId, @PathParam("version") String version)
-            throws OrganizationNotFoundException, PlanVersionNotFoundException,
-            NotAuthorizedException;
 
     /**
      * Use this endpoint to change the order of Policies for a Plan.  When a
