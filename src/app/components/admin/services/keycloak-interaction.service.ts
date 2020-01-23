@@ -5,6 +5,7 @@ import { from, Observable, of } from 'rxjs';
 import { map, mergeAll, mergeMap, share, single } from 'rxjs/operators';
 import UserRepresentation from 'keycloak-admin/lib/defs/userRepresentation';
 import {KeycloakUser} from '../../../services/api-data.service';
+import {TokenService} from '../../../services/token.service';
 
 @Injectable({
   providedIn: 'root'
@@ -23,13 +24,23 @@ export class KeycloakInteractionService {
    * @param keycloakRestUrl the keycloak rest url
    */
   constructor(private keycloak: KeycloakService,
+              private tokenService: TokenService,
               @Inject('KEYCLOAK_AUTH_URL') private keycloakRestUrl: string,
               @Inject('API_MGTM_REALM') private apiMgmtRealm: string) {
     this.kcAdminClient = new KcAdminClient({
       baseUrl: this.keycloakRestUrl,
       realmName: this.apiMgmtRealm
     });
-    this.kcAdminClient.setAccessToken(keycloak.getKeycloakInstance().token);
+    // set initial token
+    const token = keycloak.getKeycloakInstance().token;
+    this.kcAdminClient.setAccessToken(token);
+    console.log('set token to admin library');
+
+    this.tokenService.getTokens()
+      .subscribe(tokens => {
+        this.kcAdminClient.setAccessToken(tokens.token);
+        console.log('set token to admin library');
+      });
   }
 
   /**

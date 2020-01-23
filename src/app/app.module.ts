@@ -43,6 +43,7 @@ import {ToasterModule} from 'angular2-toaster';
 import {SwaggerComponent} from './components/swagger/swagger.component';
 import {MenuComponent} from './components/menu/menu.component';
 import {AboutComponent} from './about/about.component';
+import {TokenService} from './services/token.service';
 
 
 @NgModule({
@@ -90,7 +91,7 @@ import {AboutComponent} from './about/about.component';
       provide: APP_INITIALIZER,
       useFactory: initializer,
       multi: true,
-      deps: [KeycloakService]
+      deps: [KeycloakService, TokenService]
     },
     {
       provide: 'API_MGMT_UI_REST_URL',

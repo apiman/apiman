@@ -1,11 +1,19 @@
 import {KeycloakService} from 'keycloak-angular';
 import {environment} from '../environments/environment';
+import {TokenService} from './services/token.service';
 
 /**
  * Initialize the keycloak session
  * @param keycloak the keycloak service
  */
-export function initializer(keycloak: KeycloakService): () => Promise<any> {
+export function initializer(keycloak: KeycloakService, tokenService: TokenService): () => Promise<any> {
+  // Store tokens in session storage for page reload
+  tokenService.getTokens().subscribe((tokens) => {
+    console.log('set token to session storage');
+    sessionStorage.setItem('api_mgmt_keycloak_token', tokens.token);
+    sessionStorage.setItem('api_mgmt_keycloak_refresh_token', tokens.refreshToken);
+  });
+
   return (): Promise<any> => keycloak.init({
     config: {
       url: environment.keycloakAuthUrl,
@@ -22,25 +30,13 @@ export function initializer(keycloak: KeycloakService): () => Promise<any> {
     bearerExcludedUrls: ['/assets', '/clients/public']
   }).then(success => {
     const keycloakInstance = keycloak.getKeycloakInstance();
-    storeTokensInSessionStorage(keycloakInstance.token, keycloakInstance.refreshToken);
+    tokenService.setTokens(keycloakInstance.token, keycloakInstance.refreshToken);
+
     // refresh token via interval
     setInterval(() => {
-        keycloak.updateToken().then(() => console.log('token refreshed')).catch(() => console.error('error refreshing token'));
-        // set fresh token to session storage
-        storeTokensInSessionStorage(keycloakInstance.token, keycloakInstance.refreshToken);
+        keycloak.updateToken().then(() => console.log('token refreshed finished')).catch(() => console.error('error refreshing token'));
+        tokenService.setTokens(keycloakInstance.token, keycloakInstance.refreshToken);
       },
       Math.min((keycloakInstance.tokenParsed.exp - 60) * 1000, 4 * 60 * 1000)); // refresh token minimum every 4 minutes
   });
 }
-
-/**
- * Store tokens in session storage
- * @param token the token
- * @param refreshToken the refresh token
- */
-function storeTokensInSessionStorage(token, refreshToken) {
-  sessionStorage.setItem('api_mgmt_keycloak_token', token);
-  sessionStorage.setItem('api_mgmt_keycloak_refresh_token', refreshToken);
-}
-
-

@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {KeycloakService} from 'keycloak-angular';
+import {TokenService} from '../../services/token.service';
 
 @Component({
   selector: 'app-developer',
@@ -15,14 +16,13 @@ export class DeveloperComponent {
    * load the keycloak roles from keycloak service
    * @param keycloak the keycloak service
    */
-  constructor(private keycloak: KeycloakService) {
+  constructor(private keycloak: KeycloakService, private tokenService: TokenService) {
     // to enforce that the token is updated we use Number.MAX_SAFE_INTEGER here as min validity (ensure the roles are up to date)
     this.keycloak.updateToken(Number.MAX_SAFE_INTEGER).then(() => {
       console.log('token refreshed');
       const keycloakInstance = keycloak.getKeycloakInstance();
-      // store token in session storage for page reload
-      sessionStorage.setItem('api_mgmt_keycloak_token', keycloakInstance.token);
-      sessionStorage.setItem('api_mgmt_keycloak_refresh_token', keycloakInstance.refreshToken);
+      // set token to token service
+      tokenService.setTokens(keycloakInstance.token, keycloakInstance.refreshToken);
       // get keycloak client roles of devportal
       // set ts-ignore here because our own property 'devportal' is not part of the type definition of the keycloak library
       // @ts-ignore
