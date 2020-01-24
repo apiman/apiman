@@ -14,13 +14,13 @@
 
   <organization>
     <name>JBoss, a division of Red Hat</name>
-    <url>http://www.jboss.org</url>
+    <url>https://www.jboss.org</url>
   </organization>
 
   <licenses>
     <license>
       <name>Apache License Version 2.0</name>
-      <url>http://repository.jboss.org/licenses/apache-2.0.txt</url>
+      <url>https://repository.jboss.org/licenses/apache-2.0.txt</url>
       <distribution>repo</distribution>
     </license>
   </licenses>
@@ -107,7 +107,7 @@
     <repository>
       <id>central</id>
       <name>Central Repository</name>
-      <url>http://repo.maven.apache.org/maven2</url>
+      <url>https://repo.maven.apache.org/maven2</url>
       <releases>
         <enabled>true</enabled>
       </releases>
@@ -128,7 +128,7 @@
     <repository>
       <id>jboss-public-repository-group</id>
       <name>JBoss Public Repository Group</name>
-      <url>http://repository.jboss.org/nexus/content/groups/public</url>
+      <url>https://repository.jboss.org/nexus/content/groups/public</url>
       <layout>default</layout>
       <releases>
         <enabled>true</enabled>
