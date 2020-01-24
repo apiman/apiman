@@ -34,6 +34,7 @@ import io.apiman.manager.api.exportimport.read.IImportReader;
 import io.apiman.manager.api.exportimport.write.IExportWriter;
 import io.apiman.manager.api.migrator.DataMigrator;
 import io.apiman.manager.api.rest.ISystemResource;
+import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
 import io.apiman.manager.api.rest.exceptions.SystemErrorException;
 import io.apiman.manager.api.rest.exceptions.util.ExceptionFactory;
 import io.apiman.manager.api.security.ISecurityContext;
@@ -116,7 +117,9 @@ public class SystemResourceImpl implements ISystemResource {
      * @see ISystemResource#exportData(java.lang.String)
      */
     @Override
-    public Response exportData(String download) {
+    public Response exportData(String download) throws NotAuthorizedException {
+        securityContext.checkAdminPermissions();
+
         if (BooleanUtils.toBoolean(download)) {
             try {
                 DownloadBean dbean = downloadManager.createDownload(DownloadType.exportJson, "/system/export"); //$NON-NLS-1$
@@ -125,8 +128,6 @@ public class SystemResourceImpl implements ISystemResource {
                 throw new SystemErrorException(e);
             }
         } else {
-            if (!securityContext.isAdmin())
-                throw ExceptionFactory.notAuthorizedException();
             return exportData();
         }
     }
@@ -155,9 +156,8 @@ public class SystemResourceImpl implements ISystemResource {
      * @see ISystemResource#importData()
      */
     @Override
-    public Response importData() {
-        if (!securityContext.isAdmin())
-            throw ExceptionFactory.notAuthorizedException();
+    public Response importData() throws NotAuthorizedException {
+        securityContext.checkAdminPermissions();
 
         // First, stream the import data to a temporary file.  We do this so
         // that we can stream the import logging statements back to the HTTP

@@ -67,8 +67,7 @@ public class RoleResourceImpl implements IRoleResource {
      */
     @Override
     public RoleBean create(NewRoleBean bean) throws RoleAlreadyExistsException, NotAuthorizedException {
-        if (!securityContext.isAdmin())
-            throw ExceptionFactory.notAuthorizedException();
+        securityContext.checkAdminPermissions();
 
         RoleBean role = new RoleBean();
         role.setAutoGrant(bean.getAutoGrant());
@@ -91,7 +90,7 @@ public class RoleResourceImpl implements IRoleResource {
             throw new SystemErrorException(e);
         }
     }
-    
+    // TODO Check
     /**
      * @see IRoleResource#get(java.lang.String)
      */
@@ -99,10 +98,7 @@ public class RoleResourceImpl implements IRoleResource {
     public RoleBean get(String roleId) throws RoleNotFoundException, NotAuthorizedException {
         try {
             getStorage().beginTx();
-            RoleBean role = getStorage().getRole(roleId);
-            if (role == null) {
-                throw ExceptionFactory.roleNotFoundException(roleId);
-            }
+            RoleBean role = getRoleFromStorage(roleId);
             return role;
         } catch (StorageException e) {
             throw new SystemErrorException(e);
@@ -116,14 +112,11 @@ public class RoleResourceImpl implements IRoleResource {
      */
     @Override
     public void update(String roleId, UpdateRoleBean bean) throws RoleNotFoundException, NotAuthorizedException {
-        if (!securityContext.isAdmin())
-            throw ExceptionFactory.notAuthorizedException();
+        securityContext.checkAdminPermissions();
+
         try {
             getStorage().beginTx();
-            RoleBean role = getStorage().getRole(roleId);
-            if (role == null) {
-                throw ExceptionFactory.roleNotFoundException(roleId);
-            }
+            RoleBean role = getRoleFromStorage(roleId);
             if (bean.getDescription() != null) {
                 role.setDescription(bean.getDescription());
             }
@@ -144,14 +137,22 @@ public class RoleResourceImpl implements IRoleResource {
             throw new SystemErrorException(e);
         }
     }
-    
+
+    private RoleBean getRoleFromStorage(String roleId) throws StorageException, RoleNotFoundException {
+        RoleBean role = getStorage().getRole(roleId);
+        if (role == null) {
+            throw ExceptionFactory.roleNotFoundException(roleId);
+        }
+        return role;
+    }
+
     /**
      * @see IRoleResource#delete(java.lang.String)
      */
     @Override
     public void delete(String roleId) throws RoleNotFoundException, NotAuthorizedException {
-        if (!securityContext.isAdmin())
-            throw ExceptionFactory.notAuthorizedException();
+        securityContext.checkAdminPermissions();
+
         RoleBean bean = get(roleId);
         try {
             getStorage().beginTx();
@@ -162,7 +163,7 @@ public class RoleResourceImpl implements IRoleResource {
             throw new SystemErrorException(e);
         }
     }
-    
+    // TODO Check
     /**
      * @see IRoleResource#list()
      */
@@ -176,7 +177,7 @@ public class RoleResourceImpl implements IRoleResource {
             throw new SystemErrorException(e);
         }
     }
-    
+    // TODO Check
     /**
      * @see IRoleResource#search(io.apiman.manager.api.beans.search.SearchCriteriaBean)
      */

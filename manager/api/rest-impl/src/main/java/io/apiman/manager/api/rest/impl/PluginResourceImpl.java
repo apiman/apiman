@@ -101,6 +101,8 @@ public class PluginResourceImpl implements IPluginResource {
      */
     @Override
     public List<PluginSummaryBean> list() throws NotAuthorizedException {
+        securityContext.checkAdminPermissions();
+
         try {
             return query.listPlugins();
         } catch (StorageException e) {
@@ -112,9 +114,8 @@ public class PluginResourceImpl implements IPluginResource {
      * @see IPluginResource#create(io.apiman.manager.api.beans.plugins.NewPluginBean)
      */
     @Override
-    public PluginBean create(NewPluginBean bean) throws PluginAlreadyExistsException, PluginNotFoundException {
-        if (!securityContext.isAdmin())
-            throw ExceptionFactory.notAuthorizedException();
+    public PluginBean create(NewPluginBean bean) throws PluginAlreadyExistsException, PluginNotFoundException, NotAuthorizedException {
+        securityContext.checkAdminPermissions();
 
         PluginCoordinates coordinates = new PluginCoordinates(bean.getGroupId(), bean.getArtifactId(), bean.getVersion(),
                 bean.getClassifier(), bean.getType());
@@ -242,8 +243,8 @@ public class PluginResourceImpl implements IPluginResource {
      */
     @Override
     public PluginBean get(Long pluginId) throws PluginNotFoundException, NotAuthorizedException {
-        if (!securityContext.isAdmin())
-            throw ExceptionFactory.notAuthorizedException();
+        securityContext.checkAdminPermissions();
+
         try {
             storage.beginTx();
             PluginBean bean = storage.getPlugin(pluginId);
@@ -267,8 +268,7 @@ public class PluginResourceImpl implements IPluginResource {
     @Override
     public void delete(Long pluginId) throws PluginNotFoundException,
             NotAuthorizedException {
-        if (!securityContext.isAdmin())
-            throw ExceptionFactory.notAuthorizedException();
+        securityContext.checkAdminPermissions();
 
         try {
             List<PolicyDefinitionSummaryBean> policyDefs = query.listPluginPolicyDefs(pluginId);
@@ -306,7 +306,9 @@ public class PluginResourceImpl implements IPluginResource {
      * @see IPluginResource#getPolicyDefs(java.lang.Long)
      */
     @Override
-    public List<PolicyDefinitionSummaryBean> getPolicyDefs(Long pluginId) throws PluginNotFoundException {
+    public List<PolicyDefinitionSummaryBean> getPolicyDefs(Long pluginId) throws PluginNotFoundException, NotAuthorizedException {
+        securityContext.checkAdminPermissions();
+
         get(pluginId);
         try {
             return query.listPluginPolicyDefs(pluginId);
@@ -321,6 +323,8 @@ public class PluginResourceImpl implements IPluginResource {
     @Override
     public String getPolicyForm(Long pluginId, String policyDefId) throws PluginNotFoundException,
             PluginResourceNotFoundException, PolicyDefinitionNotFoundException {
+        // No permission check is needed
+
         PluginBean pbean;
         PolicyDefinitionBean pdBean;
         try {
@@ -383,8 +387,7 @@ public class PluginResourceImpl implements IPluginResource {
      */
     @Override
     public List<PluginSummaryBean> getAvailablePlugins() throws NotAuthorizedException {
-        if (!securityContext.isAdmin())
-            throw ExceptionFactory.notAuthorizedException();
+        securityContext.checkAdminPermissions();
 
         List<PluginSummaryBean> rval = new ArrayList<>();
         Set<URI> registries = config.getPluginRegistries();

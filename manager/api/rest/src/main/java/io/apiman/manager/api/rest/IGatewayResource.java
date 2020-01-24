@@ -70,11 +70,10 @@ public interface IGatewayResource {
      * @summary List All Gateways
      * @statuscode 200 If the gateways are successfully returned.
      * @return A list of configured Gateways.
-     * @throws NotAuthorizedException when attempt to do something user is not authorized to do
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<GatewaySummaryBean> list() throws NotAuthorizedException;
+    public List<GatewaySummaryBean> list();
 
     /**
      * This endpoint is called to create a new Gateway.
@@ -94,6 +93,7 @@ public interface IGatewayResource {
     /**
      * Call this endpoint to get the details of a single configured Gateway.
      * @summary Get a Gateway by ID
+     * @servicetag admin
      * @param gatewayId The ID of the Gateway to get.
      * @statuscode If the Gateway is returned successfully.
      * @return The Gateway identified by {gatewayId}
@@ -143,12 +143,9 @@ public interface IGatewayResource {
      * @param gatewayId gateway id
      * @return The corresponding gateway endpoint
      * @throws GatewayNotFoundException when gateway is not found
-     * @throws NotAuthorizedException when attempt to do something user is not authorized to do
      */
     @GET
     @Path("{gatewayId}/endpoint")
     @Produces(MediaType.APPLICATION_JSON)
-    public GatewayEndpointSummaryBean getGatewayEndpoint(@PathParam("gatewayId") String gatewayId) throws GatewayNotFoundException,
-    NotAuthorizedException;
-
+    public GatewayEndpointSummaryBean getGatewayEndpoint(@PathParam("gatewayId") String gatewayId) throws GatewayNotFoundException;
 }

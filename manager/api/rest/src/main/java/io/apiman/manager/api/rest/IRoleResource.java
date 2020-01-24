@@ -70,6 +70,7 @@ public interface IRoleResource {
     /**
      * This endpoint lists all of the roles currently defined in apiman.
      * @summary List all Roles
+     * @servicetag admin
      * @statuscode 200 If the role list is returned successfully.
      * @return A list of roles.
      * @throws NotAuthorizedException when not authorized to invoke this method
@@ -82,11 +83,11 @@ public interface IRoleResource {
      * Use this endpoint to retrieve information about a single Role by its
      * ID.
      * @summary Get a Role by ID
+     * @servicetag admin
      * @param roleId The role ID.
      * @statuscode 200 If the role is returned successfully.
      * @return A role.
      * @throws RoleNotFoundException when a request is sent for a role that does not exist
-     * @throws NotAuthorizedException when not authorized to invoke this method
      */
     @GET
     @Path("{roleId}")

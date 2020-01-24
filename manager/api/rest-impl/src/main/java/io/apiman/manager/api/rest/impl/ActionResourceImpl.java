@@ -87,7 +87,7 @@ public class ActionResourceImpl implements IActionResource {
      * @see IActionResource#performAction(io.apiman.manager.api.beans.actions.ActionBean)
      */
     @Override
-    public void performAction(ActionBean action) throws ActionException {
+    public void performAction(ActionBean action) throws ActionException, NotAuthorizedException {
         switch (action.getType()) {
             case publishAPI:
                 publishApi(action);
@@ -113,9 +113,8 @@ public class ActionResourceImpl implements IActionResource {
      * Publishes an API to the gateway.
      * @param action
      */
-    private void publishApi(ActionBean action) throws ActionException {
-        if (!securityContext.hasPermission(PermissionType.apiAdmin, action.getOrganizationId()))
-            throw ExceptionFactory.notAuthorizedException();
+    private void publishApi(ActionBean action) throws ActionException, NotAuthorizedException {
+        securityContext.checkPermissions(PermissionType.apiAdmin, action.getOrganizationId());
 
         ApiVersionBean versionBean;
         try {
@@ -245,9 +244,8 @@ public class ActionResourceImpl implements IActionResource {
      * Retires an API that is currently published to the Gateway.
      * @param action
      */
-    private void retireApi(ActionBean action) throws ActionException {
-        if (!securityContext.hasPermission(PermissionType.apiAdmin, action.getOrganizationId()))
-            throw ExceptionFactory.notAuthorizedException();
+    private void retireApi(ActionBean action) throws ActionException, NotAuthorizedException {
+        securityContext.checkPermissions(PermissionType.apiAdmin, action.getOrganizationId());
 
         ApiVersionBean versionBean;
         try {
@@ -312,9 +310,8 @@ public class ActionResourceImpl implements IActionResource {
      * Registers an client (along with all of its contracts) to the gateway.
      * @param action
      */
-    private void registerClient(ActionBean action) throws ActionException {
-        if (!securityContext.hasPermission(PermissionType.clientAdmin, action.getOrganizationId()))
-            throw ExceptionFactory.notAuthorizedException();
+    private void registerClient(ActionBean action) throws ActionException, NotAuthorizedException {
+       securityContext.checkPermissions(PermissionType.clientAdmin, action.getOrganizationId());
 
         ClientVersionBean versionBean;
         List<ContractSummaryBean> contractBeans;
@@ -492,9 +489,8 @@ public class ActionResourceImpl implements IActionResource {
      * De-registers an client that is currently registered with the gateway.
      * @param action
      */
-    private void unregisterClient(ActionBean action) throws ActionException {
-        if (!securityContext.hasPermission(PermissionType.clientAdmin, action.getOrganizationId()))
-            throw ExceptionFactory.notAuthorizedException();
+    private void unregisterClient(ActionBean action) throws ActionException, NotAuthorizedException {
+        securityContext.checkPermissions(PermissionType.clientAdmin, action.getOrganizationId());
 
         ClientVersionBean versionBean;
         List<ContractSummaryBean> contractBeans;
@@ -570,9 +566,8 @@ public class ActionResourceImpl implements IActionResource {
      * Locks the plan.
      * @param action
      */
-    private void lockPlan(ActionBean action) throws ActionException {
-        if (!securityContext.hasPermission(PermissionType.planAdmin, action.getOrganizationId()))
-            throw ExceptionFactory.notAuthorizedException();
+    private void lockPlan(ActionBean action) throws ActionException, NotAuthorizedException {
+        securityContext.checkPermissions(PermissionType.planAdmin, action.getOrganizationId());
 
         PlanVersionBean versionBean;
         try {

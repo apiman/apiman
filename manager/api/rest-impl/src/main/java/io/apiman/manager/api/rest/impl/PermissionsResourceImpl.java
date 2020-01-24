@@ -53,8 +53,7 @@ public class PermissionsResourceImpl implements IPermissionsResource {
      */
     @Override
     public UserPermissionsBean getPermissionsForUser(String userId) throws UserNotFoundException, NotAuthorizedException {
-        if (!securityContext.isAdmin())
-            throw ExceptionFactory.notAuthorizedException();
+        securityContext.checkAdminPermissions();
 
         try {
             UserPermissionsBean bean = new UserPermissionsBean();

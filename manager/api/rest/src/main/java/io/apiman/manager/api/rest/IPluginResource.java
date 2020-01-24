@@ -51,6 +51,7 @@ public interface IPluginResource {
      * This endpoint returns a list of all plugins that have been added to the
      * system.
      * @summary List All Plugins
+     * @servicetag admin
      * @statuscode 200 If the list of plugins is successfully returned.
      * @return A list of plugins.
      * @throws NotAuthorizedException when not authorized to invoke this method
@@ -113,17 +114,19 @@ public interface IPluginResource {
     /**
      * Use this endpoint to get a list of all policy definitions contributed by the plugin.
      * @summary Get Plugin Policy Definitions
+     * @servicetag admin
      * @param pluginId the plugin id The plugin ID.
      * @statuscode 200 If the list of policy definitions is returned successfully.
      * @statuscode 404 If the plugin does not exist.
      * @return A list of policy definitions.
      * @throws PluginNotFoundException when specified plugin not found
+     * @throws NotAuthorizedException when not authorized to invoke this method
      */
     @GET
     @Path("{pluginId}/policyDefs")
     @Produces(MediaType.APPLICATION_JSON)
     public List<PolicyDefinitionSummaryBean> getPolicyDefs(@PathParam("pluginId") Long pluginId)
-            throws PluginNotFoundException;
+            throws PluginNotFoundException, NotAuthorizedException;
     
     /**
      * Use this endpoint to retrieve the form associated with a particular policy
@@ -160,6 +163,7 @@ public interface IPluginResource {
      * installed.
      * 
      * @summary List Available Plugins
+     * @servicetag admin
      * @statuscode 200 If the plugins are returned successfully.
      * @statuscode 403 If the user is not an admin.
      * @return A list of available plugins.

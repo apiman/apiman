@@ -83,8 +83,8 @@ public class GatewayResourceImpl implements IGatewayResource {
      */
     @Override
     public GatewayTestResultBean test(NewGatewayBean gatewayToTest) throws NotAuthorizedException {
-        if (!securityContext.isAdmin())
-            throw ExceptionFactory.notAuthorizedException();
+        securityContext.checkAdminPermissions();
+
         GatewayTestResultBean rval = new GatewayTestResultBean();
 
         try {
@@ -112,7 +112,7 @@ public class GatewayResourceImpl implements IGatewayResource {
      * @see IGatewayResource#list()
      */
     @Override
-    public List<GatewaySummaryBean> list() throws NotAuthorizedException {
+    public List<GatewaySummaryBean> list() {
         try {
             return query.listGateways();
         } catch (StorageException e) {
@@ -125,8 +125,7 @@ public class GatewayResourceImpl implements IGatewayResource {
      */
     @Override
     public GatewayBean create(NewGatewayBean gatewayToInsert) throws GatewayAlreadyExistsException {
-        if (!securityContext.isAdmin())
-            throw ExceptionFactory.notAuthorizedException();
+        securityContext.checkAdminPermissions();
 
         Date now = new Date();
 
@@ -167,19 +166,17 @@ public class GatewayResourceImpl implements IGatewayResource {
      */
     @Override
     public GatewayBean get(String gatewayId) throws GatewayNotFoundException, NotAuthorizedException {
+        securityContext.checkAdminPermissions();
+
         try {
             storage.beginTx();
             GatewayBean gateway = storage.getGateway(gatewayId);
             if (gateway == null) {
                 throw ExceptionFactory.gatewayNotFoundException(gatewayId);
             }
-            if (!securityContext.isAdmin()) {
-                gateway.setConfiguration(null);
-            } else {
-                decryptPasswords(gateway);
-            }
-            storage.commitTx();
+            decryptPasswords(gateway);
 
+            storage.commitTx();
             log.debug(String.format("Successfully fetched gateway %s: %s", gateway.getName(), gateway)); //$NON-NLS-1$
             return gateway;
         } catch (AbstractRestException e) {
@@ -194,8 +191,8 @@ public class GatewayResourceImpl implements IGatewayResource {
     /**
      * @see IGatewayResource#getGatewayEndpoint(java.lang.String)
      */
-    public GatewayEndpointSummaryBean getGatewayEndpoint(String gatewayId)  throws GatewayNotFoundException,
-            NotAuthorizedException {
+    public GatewayEndpointSummaryBean getGatewayEndpoint(String gatewayId)  throws GatewayNotFoundException {
+        // No permission check is needed
         try {
             storage.beginTx();
             GatewayBean gateway = storage.getGateway(gatewayId);
@@ -225,8 +222,8 @@ public class GatewayResourceImpl implements IGatewayResource {
     @Override
     public void update(String gatewayId, UpdateGatewayBean gatewayToUpdate) throws GatewayNotFoundException,
             NotAuthorizedException {
-        if (!securityContext.isAdmin())
-            throw ExceptionFactory.notAuthorizedException();
+        securityContext.checkAdminPermissions();
+
         try {
             storage.beginTx();
             Date now = new Date();
@@ -263,8 +260,8 @@ public class GatewayResourceImpl implements IGatewayResource {
     @Override
     public void delete(String gatewayId) throws GatewayNotFoundException,
             NotAuthorizedException {
-        if (!securityContext.isAdmin())
-            throw ExceptionFactory.notAuthorizedException();
+        securityContext.checkAdminPermissions();
+
         try {
             storage.beginTx();
             GatewayBean gateway = storage.getGateway(gatewayId);

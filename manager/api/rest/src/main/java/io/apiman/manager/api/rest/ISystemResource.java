@@ -19,12 +19,7 @@ package io.apiman.manager.api.rest;
 import io.apiman.manager.api.beans.system.SystemStatusBean;
 import io.swagger.annotations.Api;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -57,13 +52,15 @@ public interface ISystemResource {
      * of the apiman API Manager.  This is useful for upgrades, migrations between
      * environments, and backups.
      * @summary Export Data
+     * @servicetag admin
      * @statuscode 200 On successful export
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      * @return A full export of all API Manager data
      */
     @GET
     @Path("export")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response exportData(@QueryParam("download") String download);
+    public Response exportData(@QueryParam("download") String download) throws NotAuthorizedException;
     // "Internal" method - called by the download resource.
     public Response exportData();
     
@@ -71,6 +68,6 @@ public interface ISystemResource {
     @Path("import")
     @Produces(MediaType.TEXT_PLAIN)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response importData();
+    public Response importData() throws NotAuthorizedException;
     
 }

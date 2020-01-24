@@ -51,11 +51,10 @@ public interface IPolicyDefinitionResource {
      * @summary List Policy Definitions
      * @statuscode 200 If the policy definition list is successfully returned.
      * @return A list of policy definitions.
-     * @throws NotAuthorizedException when not authorized to invoke this method
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<PolicyDefinitionSummaryBean> list() throws NotAuthorizedException;
+    public List<PolicyDefinitionSummaryBean> list();
 
     /**
      * Use this endpoint to add a policy definition to apiman.  The policy definition
@@ -86,7 +85,7 @@ public interface IPolicyDefinitionResource {
     @GET
     @Path("{policyDefinitionId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public PolicyDefinitionBean get(@PathParam("policyDefinitionId") String policyDefinitionId) throws PolicyDefinitionNotFoundException, NotAuthorizedException;
+    public PolicyDefinitionBean get(@PathParam("policyDefinitionId") String policyDefinitionId) throws PolicyDefinitionNotFoundException;
 
     /**
      * Update the meta information about a policy definition.

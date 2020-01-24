@@ -18,6 +18,7 @@ package io.apiman.manager.api.rest;
 
 import io.apiman.manager.api.beans.actions.ActionBean;
 import io.apiman.manager.api.rest.exceptions.ActionException;
+import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
 import io.swagger.annotations.Api;
 
 import javax.ws.rs.Consumes;
@@ -46,6 +47,6 @@ public interface IActionResource {
      */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public void performAction(ActionBean action) throws ActionException;
+    public void performAction(ActionBean action) throws ActionException, NotAuthorizedException;
 
 }

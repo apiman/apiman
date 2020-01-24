@@ -56,12 +56,13 @@ public class PolicyDefinitionResourceImpl implements IPolicyDefinitionResource {
      */
     public PolicyDefinitionResourceImpl() {
     }
-    
+
     /**
      * @see IPolicyDefinitionResource#list()
      */
     @Override
-    public List<PolicyDefinitionSummaryBean> list() throws NotAuthorizedException {
+    public List<PolicyDefinitionSummaryBean> list() {
+        // No permission check is needed
         try {
             return query.listPolicyDefinitions();
         } catch (StorageException e) {
@@ -73,9 +74,9 @@ public class PolicyDefinitionResourceImpl implements IPolicyDefinitionResource {
      * @see IPolicyDefinitionResource#create(io.apiman.manager.api.beans.policies.PolicyDefinitionBean)
      */
     @Override
-    public PolicyDefinitionBean create(PolicyDefinitionBean bean) throws PolicyDefinitionAlreadyExistsException {
-        if (!securityContext.isAdmin())
-            throw ExceptionFactory.notAuthorizedException();
+    public PolicyDefinitionBean create(PolicyDefinitionBean bean) throws PolicyDefinitionAlreadyExistsException, NotAuthorizedException {
+        securityContext.checkAdminPermissions();
+
         // Auto-generate an ID if one isn't provided.
         if (bean.getId() == null || bean.getId().trim().isEmpty()) {
             bean.setId(BeanUtils.idFromName(bean.getName()));
@@ -107,7 +108,8 @@ public class PolicyDefinitionResourceImpl implements IPolicyDefinitionResource {
      * @see IPolicyDefinitionResource#get(java.lang.String)
      */
     @Override
-    public PolicyDefinitionBean get(String policyDefinitionId) throws PolicyDefinitionNotFoundException, NotAuthorizedException {
+    public PolicyDefinitionBean get(String policyDefinitionId) throws PolicyDefinitionNotFoundException {
+        // No permission check is needed
         try {
             storage.beginTx();
             PolicyDefinitionBean bean = storage.getPolicyDefinition(policyDefinitionId);
@@ -131,8 +133,8 @@ public class PolicyDefinitionResourceImpl implements IPolicyDefinitionResource {
     @Override
     public void update(String policyDefinitionId, UpdatePolicyDefinitionBean bean)
             throws PolicyDefinitionNotFoundException, NotAuthorizedException {
-        if (!securityContext.isAdmin())
-            throw ExceptionFactory.notAuthorizedException();
+        securityContext.checkAdminPermissions();
+
         try {
             storage.beginTx();
             PolicyDefinitionBean pdb = storage.getPolicyDefinition(policyDefinitionId);
@@ -165,8 +167,8 @@ public class PolicyDefinitionResourceImpl implements IPolicyDefinitionResource {
     @Override
     public void delete(String policyDefinitionId) throws PolicyDefinitionNotFoundException,
             NotAuthorizedException {
-        if (!securityContext.isAdmin())
-            throw ExceptionFactory.notAuthorizedException();
+       securityContext.checkAdminPermissions();
+
         try {
             storage.beginTx();
             PolicyDefinitionBean pdb = storage.getPolicyDefinition(policyDefinitionId);
