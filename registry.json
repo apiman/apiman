@@ -8,6 +8,13 @@
     "url" : "https://repo1.maven.org/maven2/"
   },
   "plugins" : [
+     {
+      "groupId" : "io.apiman.plugins",
+      "artifactId" : "apiman-plugins-apikey-policy",
+      "version" : "1.5.6-SNAPSHOT",
+      "name" : "API Key Policy Plugin",
+      "description" : "This plugin provides a policy that can help pass the API Key through to the back-end service."
+    },
     {
       "groupId" : "io.apiman.plugins",
       "artifactId" : "apiman-plugins-cors-policy",
