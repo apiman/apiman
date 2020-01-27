@@ -5,7 +5,7 @@
   <ng-container matColumnDef="api">
     <th mat-header-cell mat-sort-header="api" *matHeaderCellDef>API</th>
     <td mat-cell *matCellDef="let element">
-      <mat-icon class="status" [ngClass]="element.status" matTooltip="{{this.computeStatusText(element.status)}}">brightness_1</mat-icon>
+      <span matTooltip="{{this.computeStatusText(element.status)}}"><mat-icon class="status" [ngClass]="element.status">brightness_1</mat-icon></span>
       <span class="apiName">{{element.apiOrganization}} / <b>{{element.apiName}}</b></span>
     </td>
   </ng-container>

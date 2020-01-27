@@ -34,20 +34,20 @@
                    [attr.disabled]="!this.isPasswordRequiredForInsert(this.userFormGroup.get('username').value) ? 'disabled' : null">
           </mat-form-field>
         </span>
-        <mat-card class="warning" *ngIf="!this.checkDeveloperNotExists(this.userFormGroup.get('username').value)">
+        <mat-card class="scheer-box-warning" *ngIf="!this.checkDeveloperNotExists(this.userFormGroup.get('username').value)">
           <mat-icon>warning</mat-icon>
-          <div class="box-content">Developer already exists.</div>
+          <div class="scheer-box-content">Developer already exists.</div>
         </mat-card>
-        <mat-card class="warning" *ngIf="this.checkEmailAlreadyUsed(this.userFormGroup.get('email').value)">
+        <mat-card class="scheer-box-warning" *ngIf="this.checkEmailAlreadyUsed(this.userFormGroup.get('email').value)">
           <mat-icon>warning</mat-icon>
-          <div class="box-content">Email already used.</div>
+          <div class="scheer-box-content">Email already used.</div>
         </mat-card>
         <mat-card
-          class="info"
+          class="scheer-box-info"
           *ngIf="this.checkDeveloperNotExists(this.userFormGroup.get('username').value)
           && !this.isPasswordRequiredForInsert(this.userFormGroup.get('username').value)">
           <mat-icon>info</mat-icon>
-          <div class="box-content">You create a Developer for an existing API Management user.</div>
+          <div class="scheer-box-content">You create a Developer for an existing API Management user.</div>
         </mat-card>
       </form>
       <div>

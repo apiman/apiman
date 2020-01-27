@@ -19,7 +19,7 @@ export class PasHeaderComponent {
   public logout() {
     sessionStorage.clear();
     this.keycloak.getKeycloakInstance().logout({
-      redirectUri: location.href
+      redirectUri: location.origin
     });
   }
 
