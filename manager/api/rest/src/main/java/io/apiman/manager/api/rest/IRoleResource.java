@@ -73,11 +73,10 @@ public interface IRoleResource {
      * @servicetag admin
      * @statuscode 200 If the role list is returned successfully.
      * @return A list of roles.
-     * @throws NotAuthorizedException when not authorized to invoke this method
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<RoleBean> list() throws NotAuthorizedException;
+    public List<RoleBean> list();
 
     /**
      * Use this endpoint to retrieve information about a single Role by its
@@ -92,7 +91,7 @@ public interface IRoleResource {
     @GET
     @Path("{roleId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public RoleBean get(@PathParam("roleId") String roleId) throws RoleNotFoundException, NotAuthorizedException;
+    public RoleBean get(@PathParam("roleId") String roleId) throws RoleNotFoundException;
 
     /**
      * Use this endpoint to update the information about an existing role.  The 
@@ -123,23 +122,4 @@ public interface IRoleResource {
     @DELETE
     @Path("{roleId}")
     public void delete(@PathParam("roleId") String roleId) throws RoleNotFoundException, NotAuthorizedException;
-
-    /**
-     * This endpoint provides a way to search for roles.  The search criteria is
-     * provided in the body of the request, including filters, order-by, and paging
-     * information.
-     * @summary Search for Roles
-     * @param criteria The search criteria.
-     * @statuscode 200 If the search completes successfully.
-     * @return The search results (a page of roles).
-     * @throws InvalidSearchCriteriaException when provided criteria are invalid
-     * @throws NotAuthorizedException when not authorized to invoke this method
-     */
-    @POST
-    @Path("search")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public SearchResultsBean<RoleBean> search(SearchCriteriaBean criteria)
-            throws InvalidSearchCriteriaException, NotAuthorizedException;
-
 }

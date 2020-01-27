@@ -16,11 +16,13 @@
 
 package io.apiman.manager.api.rest;
 
+import io.apiman.manager.api.beans.idm.RoleBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaBean;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
 import io.apiman.manager.api.beans.search.searchResults.UserSearchResult;
 import io.apiman.manager.api.beans.summary.*;
 import io.apiman.manager.api.rest.exceptions.InvalidSearchCriteriaException;
+import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
 import io.apiman.manager.api.rest.exceptions.OrganizationNotFoundException;
 import io.swagger.annotations.Api;
 
@@ -59,18 +61,20 @@ public interface ISearchResource {
      * provided in the body of the request, including filters, order-by, and paging
      * information.
      * @summary Search for Clients
+     * @servicetag admin
      * @param criteria The search criteria.
      * @statuscode 200 If the search is successful.
      * @return The search results (a page of clients).
      * @throws OrganizationNotFoundException when provided organization is not found
      * @throws InvalidSearchCriteriaException when provided criteria are invalid
+     * @throws NotAuthorizedException when not authorized to invoke this method
      */
     @POST
     @Path("clients")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public SearchResultsBean<ClientSummaryBean> searchClients(SearchCriteriaBean criteria)
-            throws OrganizationNotFoundException, InvalidSearchCriteriaException;
+            throws OrganizationNotFoundException, InvalidSearchCriteriaException, NotAuthorizedException;
 
     /**
      * Use this endpoint to search for APIs.  The search criteria is
@@ -136,5 +140,22 @@ public interface ISearchResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     SearchResultsBean<UserSearchResult> searchUsers(SearchCriteriaBean criteria) throws InvalidSearchCriteriaException;
+
+    /**
+     * This endpoint provides a way to search for roles.  The search criteria is
+     * provided in the body of the request, including filters, order-by, and paging
+     * information.@
+     * @summary Search for Roles
+     * @param criteria The search criteria.
+     * @statuscode 200 If the search completes successfully.
+     * @return The search results (a page of roles).
+     * @throws InvalidSearchCriteriaException when provided criteria are invalid
+     */
+    @POST
+    @Path("roles")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public SearchResultsBean<RoleBean> searchRoles(SearchCriteriaBean criteria)
+            throws InvalidSearchCriteriaException;
 
 }

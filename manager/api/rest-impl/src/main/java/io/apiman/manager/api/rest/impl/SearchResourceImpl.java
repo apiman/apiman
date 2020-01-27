@@ -16,6 +16,7 @@
 
 package io.apiman.manager.api.rest.impl;
 
+import io.apiman.manager.api.beans.idm.RoleBean;
 import io.apiman.manager.api.beans.idm.UserBean;
 import io.apiman.manager.api.beans.search.*;
 import io.apiman.manager.api.beans.search.searchResults.UserSearchResult;
@@ -26,8 +27,10 @@ import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.rest.ISearchResource;
 import io.apiman.manager.api.rest.exceptions.InvalidSearchCriteriaException;
+import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
 import io.apiman.manager.api.rest.exceptions.OrganizationNotFoundException;
 import io.apiman.manager.api.rest.exceptions.SystemErrorException;
+import io.apiman.manager.api.rest.impl.util.RestHelper;
 import io.apiman.manager.api.rest.impl.util.SearchCriteriaUtil;
 import io.apiman.manager.api.security.ISecurityContext;
 
@@ -74,8 +77,9 @@ public class SearchResourceImpl implements ISearchResource {
      */
     @Override
     public SearchResultsBean<ClientSummaryBean> searchClients(SearchCriteriaBean criteria)
-            throws OrganizationNotFoundException, InvalidSearchCriteriaException {
-        // TODO only return clients that the user is permitted to see?
+            throws OrganizationNotFoundException, InvalidSearchCriteriaException, NotAuthorizedException {
+        securityContext.checkAdminPermissions();
+
         SearchCriteriaUtil.validateSearchCriteria(criteria);
         try {
             return query.findClients(criteria);
@@ -92,7 +96,16 @@ public class SearchResourceImpl implements ISearchResource {
             throws OrganizationNotFoundException, InvalidSearchCriteriaException {
         SearchCriteriaUtil.validateSearchCriteria(criteria);
         try {
-            return query.findApis(criteria);
+            // Hide sensitive data and set only needed data for the UI
+            if (securityContext.isAdmin()){
+                return query.findApis(criteria);
+            } else {
+                List<ApiSummaryBean> apis = RestHelper.hideSensitiveDataFromApiSummaryBeanList(query.findApis(criteria).getBeans());
+                SearchResultsBean<ApiSummaryBean> result = new SearchResultsBean<>();
+                result.setBeans(apis);
+                result.setTotalSize(apis.size());
+                return result;
+            }
         } catch (StorageException e) {
             storage.rollbackTx();
             throw new SystemErrorException(e);
@@ -174,6 +187,29 @@ public class SearchResourceImpl implements ISearchResource {
             throw new SystemErrorException(e);
         }
     }
+
+    /**
+     * @see ISearchResource#searchRoles(SearchCriteriaBean)
+     */
+    @Override
+    public SearchResultsBean<RoleBean> searchRoles(SearchCriteriaBean criteria)
+            throws InvalidSearchCriteriaException {
+        // No permission check needed
+        try {
+            // Hide sensitive data and set only needed data for the UI
+            SearchCriteriaUtil.validateSearchCriteria(criteria);
+            List<RoleBean> roles = new ArrayList<>();
+            for (RoleBean bean : getQuery().findRoles(criteria).getBeans()) {
+                roles.add(RestHelper.hideSensitiveDataFromRoleBean(securityContext, bean));
+            }
+            SearchResultsBean<RoleBean> result = new SearchResultsBean<>();
+            result.setBeans(roles);
+            result.setTotalSize(roles.size());
+            return result;
+        } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        }
+    }
     
     /**
      * @see io.apiman.manager.api.rest.ISearchResource#getApiNamespaces()
@@ -195,5 +231,19 @@ public class SearchResourceImpl implements ISearchResource {
      */
     public void setStorage(IStorage storage) {
         this.storage = storage;
+    }
+
+    /**
+     * @return the query
+     */
+    public IStorageQuery getQuery() {
+        return query;
+    }
+
+    /**
+     * @param query the query to set
+     */
+    public void setQuery(IStorageQuery query) {
+        this.query = query;
     }
 }

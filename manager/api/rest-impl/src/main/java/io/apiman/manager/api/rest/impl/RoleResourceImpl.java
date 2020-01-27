@@ -21,20 +21,19 @@ import io.apiman.manager.api.beans.idm.NewRoleBean;
 import io.apiman.manager.api.beans.idm.RoleBean;
 import io.apiman.manager.api.beans.idm.UpdateRoleBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaBean;
-import io.apiman.manager.api.beans.search.SearchResultsBean;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.rest.IRoleResource;
-import io.apiman.manager.api.rest.exceptions.InvalidSearchCriteriaException;
 import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
 import io.apiman.manager.api.rest.exceptions.RoleAlreadyExistsException;
 import io.apiman.manager.api.rest.exceptions.RoleNotFoundException;
 import io.apiman.manager.api.rest.exceptions.SystemErrorException;
 import io.apiman.manager.api.rest.exceptions.util.ExceptionFactory;
-import io.apiman.manager.api.rest.impl.util.SearchCriteriaUtil;
+import io.apiman.manager.api.rest.impl.util.RestHelper;
 import io.apiman.manager.api.security.ISecurityContext;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -90,16 +89,18 @@ public class RoleResourceImpl implements IRoleResource {
             throw new SystemErrorException(e);
         }
     }
-    // TODO Check
+
     /**
      * @see IRoleResource#get(java.lang.String)
      */
     @Override
-    public RoleBean get(String roleId) throws RoleNotFoundException, NotAuthorizedException {
+    public RoleBean get(String roleId) throws RoleNotFoundException {
+        // No permission check needed
         try {
             getStorage().beginTx();
             RoleBean role = getRoleFromStorage(roleId);
-            return role;
+            // Hide sensitive data and set only needed data for the UI
+            return RestHelper.hideSensitiveDataFromRoleBean(securityContext, role);
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         } finally {
@@ -163,30 +164,27 @@ public class RoleResourceImpl implements IRoleResource {
             throw new SystemErrorException(e);
         }
     }
-    // TODO Check
+
     /**
      * @see IRoleResource#list()
      */
     @Override
-    public List<RoleBean> list() throws NotAuthorizedException {
+    public List<RoleBean> list() {
+        // No permission check needed
         try {
             SearchCriteriaBean criteria = new SearchCriteriaBean();
             criteria.setOrder("name", true); //$NON-NLS-1$
-            return getQuery().findRoles(criteria).getBeans();
-        } catch (StorageException e) {
-            throw new SystemErrorException(e);
-        }
-    }
-    // TODO Check
-    /**
-     * @see IRoleResource#search(io.apiman.manager.api.beans.search.SearchCriteriaBean)
-     */
-    @Override
-    public SearchResultsBean<RoleBean> search(SearchCriteriaBean criteria)
-            throws InvalidSearchCriteriaException, NotAuthorizedException {
-        try {
-            SearchCriteriaUtil.validateSearchCriteria(criteria);
-            return getQuery().findRoles(criteria);
+
+            // Hide sensitive data and set only needed data for the UI
+            if (securityContext.isAdmin()) {
+                return getQuery().findRoles(criteria).getBeans();
+            } else {
+                List<RoleBean> roles = new ArrayList<>();
+                for (RoleBean role : getQuery().findRoles(criteria).getBeans()) {
+                    roles.add(RestHelper.hideSensitiveDataFromRoleBean(securityContext, role));
+                }
+                return roles;
+            }
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }

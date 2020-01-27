@@ -1,4 +1,4 @@
-POST /roles/search admin/admin
+POST /search/roles admin/admin
 Content-Type: application/json
 
 {
