@@ -7,6 +7,7 @@ pipeline {
   agent {
     node {
       label 'cscabbia'
+      customWorkspace "workspace/Api-Mgmt-Dev-Portal-Pipeline"
     }
   }
 
