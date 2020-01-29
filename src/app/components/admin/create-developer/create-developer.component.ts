@@ -20,15 +20,15 @@ import {SpinnerService} from '../../../services/spinner.service';
 })
 export class CreateDeveloperComponent implements OnInit, OnDestroy {
 
-  // pattern allows only strings with characters a-z A-Z and 0-9
-  private nonSpecialCharacterPattern = Validators.pattern('[a-zA-Z0-9]+');
+  // pattern allows only strings without slashes and square brackets (taken from keycloak)
+  private usernamePattern = Validators.pattern('^[^\\<\\>\\\\\\/]*$');
 
   public userFormGroup = new FormGroup({
     email: new FormControl('', [Validators.email]),
-    firstname: new FormControl('', [this.nonSpecialCharacterPattern]),
-    lastname: new FormControl('', [this.nonSpecialCharacterPattern]),
+    firstname: new FormControl(''),
+    lastname: new FormControl(''),
     password: new FormControl(''),
-    username: new FormControl('', [this.nonSpecialCharacterPattern])
+    username: new FormControl('', [this.usernamePattern])
   });
 
   @ViewChild('clientmapping', {static: false}) clientMapping: ClientMappingComponent;
