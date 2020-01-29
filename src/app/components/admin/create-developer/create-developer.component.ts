@@ -128,16 +128,6 @@ export class CreateDeveloperComponent implements OnInit, OnDestroy {
         if (developerIndexToDelete !== -1) {
           this.developerDataCache.developers.splice(developerIndexToDelete, 1);
         }
-        this.adminService.rollbackDeveloperCreation(developerToCreate, keycloakUserToCreate)
-          .subscribe(rollbackResponse => {
-            const rollbackMessage = 'Rollback executed';
-            this.toasterService.pop({
-              type: 'info',
-              body: rollbackMessage,
-              timeout: 30000
-            });
-            console.log(rollbackMessage, rollbackResponse);
-          });
       });
   }
 

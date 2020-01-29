@@ -1,6 +1,6 @@
 import {Inject, Injectable} from '@angular/core';
-import {forkJoin, Observable, of} from 'rxjs';
-import {map, mergeMap, share} from 'rxjs/operators';
+import {forkJoin, Observable, of, Subject} from 'rxjs';
+import {catchError, map, mergeMap, share} from 'rxjs/operators';
 import UserRepresentation from 'keycloak-admin/lib/defs/userRepresentation';
 import {ClientSearchResult, Developer, KeycloakUser} from '../../../services/api-data.service';
 import {HttpClient} from '@angular/common/http';
@@ -59,39 +59,38 @@ export class AdminService {
    * @param developer the developer to create
    */
   public createNewDeveloper(developer: Developer, keycloakUserToInsert: KeycloakUser) {
-    const url = this.apiMgmtUiRestUrl + '/developers';
-
-    // 1. insert developer to API-Mgmt
+    // observer to insert keycloak user
+    const insertToKeycloak = this.keycloak.findExistingOrCreateUser(keycloakUserToInsert);
+    // observer insert developer to API-Mgmt
     // response has developer object with developer id
-    const insertRequests = (this.http.post(url, developer) as Observable<Developer>)
-      .pipe(mergeMap(developerInserted => {
-        // 2. insert user into keycloak
-        return forkJoin(this.keycloak.findExistingOrCreateUser(keycloakUserToInsert)
-          .pipe(mergeMap((insertedKeycloakUser) =>
-            // 3. add devPortal role and add client role to keycloak user
-            forkJoin(this.keycloak.addDevPortalGroupToUser(insertedKeycloakUser.id),
-              this.keycloak.addClientRoleToUser(insertedKeycloakUser.id, developerInserted.id))
-          )))
-          .pipe(map(() => developerInserted));
+    const url = this.apiMgmtUiRestUrl + '/developers';
+    const insertToApiMgmt = this.http.post(url, developer) as Observable<Developer>;
+    // observer to add keycloak user to developer portal group
+    const addDevPortalGroupToUser = (insertedKeycloakUser) => this.keycloak.addDevPortalGroupToUser(insertedKeycloakUser.id);
+    // observer to add client role to user
+    const addClientRoleToUser = (insertedKeycloakUser, insertedDeveloper) => {
+      const clientRoleDescription = 'role for user: ' + insertedDeveloper.name;
+      return this.keycloak.addClientRoleToUser(insertedKeycloakUser.id, insertedDeveloper.id, clientRoleDescription);
+    };
+
+    // 1. insert user into keycloak
+    return insertToKeycloak.pipe(mergeMap(insertedKeycloakUser => {
+      // 2. insert developer to API-Mgmt
+      return insertToApiMgmt.pipe(mergeMap(insertedDeveloper => {
+        // 3. add devPortal group and add client role to keycloak user
+        return forkJoin(addDevPortalGroupToUser(insertedKeycloakUser), addClientRoleToUser(insertedKeycloakUser, insertedDeveloper))
+          .pipe(map(() => insertedDeveloper),
+            catchError((err, caught) => {
+              // rollback developer if keycloak settings cannot be done
+              this.deleteDeveloperFromApiMgmt(insertedDeveloper.id).subscribe();
+              throw err;
+            }));
+      }), catchError((err, caught) => {
+        // rollback keycloak user if developer cannot created at API-Mgmt
+        this.keycloak.deleteUser(keycloakUserToInsert.username).subscribe();
+        throw err;
       }));
-    return insertRequests;
-  }
-
-  /**
-   * Do a rollback of already inserted data if some error state appears
-   * @param developerToRollback the developer of API-Mgmt to rollback
-   * @param keycloakUserToRollback the keycloak user to rollback
-   */
-  public rollbackDeveloperCreation(developerToRollback: Developer, keycloakUserToRollback: KeycloakUser) {
-    const getDeveloperByName = this.getDeveloperByName(developerToRollback.name).pipe(share());
-
-    const deleteDeveloperFromApiMgmt = getDeveloperByName
-      .pipe(mergeMap(developerToDelete => this.deleteDeveloperFromApiMgmt(developerToDelete.id)));
-    const deleteKeycloakClientRole = getDeveloperByName
-      .pipe(mergeMap(developerToDelete => this.keycloak.deleteClientRole(developerToDelete.id)));
-    const deleteKeycloakUser = this.keycloak.deleteUser(keycloakUserToRollback.username);
-
-    return forkJoin(deleteDeveloperFromApiMgmt, deleteKeycloakClientRole, deleteKeycloakUser);
+    }));
   }
 
   /**

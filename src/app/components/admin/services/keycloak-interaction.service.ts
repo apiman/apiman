@@ -130,11 +130,12 @@ export class KeycloakInteractionService {
    * Create client role
    * @param clientRoleName the client role name
    */
-  public createClientRole(clientRoleName: string) {
+  public createClientRole(clientRoleName: string, clientRoleDescription: string) {
     return this.getDevPortalClientUUID()
       .pipe(map(clientUUID => this.kcAdminClient.clients.createRole({
         id: clientUUID,
-        name: clientRoleName
+        name: clientRoleName,
+        description: clientRoleDescription
       })));
   }
 
@@ -233,8 +234,8 @@ export class KeycloakInteractionService {
    * @param userId the user id
    * @param clientRoleName the client role name
    */
-  public addClientRoleToUser(userId: string, clientRoleName: string) {
-    return this.createClientRole(clientRoleName)
+  public addClientRoleToUser(userId: string, clientRoleName: string, clientRoleDescription: string) {
+    return this.createClientRole(clientRoleName, clientRoleDescription)
       .pipe(mergeMap((roleObject) => this.getDevPortalClientUUID()))
       .pipe(mergeMap(clientUUID =>
         this.getClientRoleUUID(clientUUID, clientRoleName)
