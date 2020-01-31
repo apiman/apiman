@@ -15,6 +15,10 @@ FROM nginx:1.17.7-alpine
 
 COPY --from=node /usr/src/app/dist/api-mgmt-dev-portal /usr/share/nginx/html
 
+#copy ssl keys
+COPY docker/tls.crt /etc/ssl/certs/tls.crt
+COPY docker/tls.key /etc/ssl/private/tls.key
+
 #copy nginx configuration
 COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
 #copy start script
