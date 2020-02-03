@@ -1,6 +1,6 @@
 {
   "name": "api-mgmt-dev-portal",
-  "version": "7.6.0",
+  "version": "7.7.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
