@@ -80,7 +80,21 @@ pipeline {
       }
     }
 
-    stage('Publish nightly builds to NAS1/Nexus') {
+
+    stage('Publish nightly builds to Nexus') {
+        when {
+            anyOf {
+                branch '**/publish-nightly'
+            }
+        }
+        steps {
+          withDockerRegistry([credentialsId: 'nexus', url: "https://gitlab.scheer-group.com:8080"]) {
+            sh './ci/publish-images.sh ${PACKAGE_VERSION} nighty'
+          }
+        }
+    }
+
+    stage('Publish master nightly builds to NAS1/Nexus') {
       when {
         anyOf {
           branch '**/e2e_master'
@@ -98,7 +112,7 @@ pipeline {
            ]]
 
         withDockerRegistry([credentialsId: 'nexus', url: "https://gitlab.scheer-group.com:8080"]) {
-          sh './ci/publish-images.sh ${PACKAGE_VERSION}'
+          sh './ci/publish-images.sh ${PACKAGE_VERSION} latest'
         }
       }
     }
