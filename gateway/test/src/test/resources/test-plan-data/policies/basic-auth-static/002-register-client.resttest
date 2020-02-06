@@ -14,7 +14,7 @@ Content-Type: application/json
       "policies" : [
         {
           "policyImpl" : "class:io.apiman.gateway.engine.policies.BasicAuthenticationPolicy",
-          "policyJsonConfig" : "{ \"realm\" : \"Test\", \"forwardIdentityHttpHeader\" : \"X-Authenticated-Identity\", \"staticIdentity\" : { \"identities\" : [ { \"username\" : \"bwayne\", \"password\" : \"bwayne\" } ] }  }"
+          "policyJsonConfig" : "{ \"realm\" : \"Test\", \"forwardIdentityHttpHeader\" : \"X-Authenticated-Identity\", \"staticIdentity\" : { \"identities\" : [ { \"username\" : \"bwayne\", \"password\" : \"bwayne\" } ] }, \"forwardBasicAuthDownstream\" : true  }"
         }
       ]
     }

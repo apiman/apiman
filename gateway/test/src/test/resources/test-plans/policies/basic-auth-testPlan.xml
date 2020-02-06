@@ -9,6 +9,7 @@
     <test name="Failure (no creds)">test-plan-data/policies/basic-auth-static/005-failure.resttest</test>
     <test name="Register Client 2 (require-basic)" endpoint="api">test-plan-data/policies/basic-auth-static/006-register-client-2.resttest</test>
     <test name="Success (no creds)">test-plan-data/policies/basic-auth-static/007-success.resttest</test>
+    <test name="Forward Basic Auth header">test-plan-data/policies/basic-auth-static/008-forward-basic-auth-downstream.resttest</test>
   </testGroup>
 
 </testPlan>

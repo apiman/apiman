@@ -53,6 +53,45 @@ public class BasicAuthenticationConfigTest {
         Assert.assertEquals("X-Authenticated-Identity", parsedConfig.getForwardIdentityHttpHeader());
         Assert.assertEquals(Boolean.TRUE, parsedConfig.isRequireTransportSecurity());
         Assert.assertEquals(Boolean.TRUE, parsedConfig.getRequireBasicAuth());
+        Assert.assertNull(parsedConfig.isForwardBasicAuthDownstream());
+
+        //Basic properties with forwardBasicAuthDownstream true
+        config =
+                "{\r\n" +
+                        "    \"realm\" : \"TestRealm\",\r\n" +
+                        "    \"forwardIdentityHttpHeader\" : \"X-Authenticated-Identity\",\r\n" +
+                        "    \"requireTransportSecurity\" : true,\r\n" +
+                        "    \"requireBasicAuth\" : true,\r\n" +
+                        "    \"forwardBasicAuthDownstream\" : true\r\n" +
+                        "}";
+        parsed = policy.parseConfiguration(config);
+        Assert.assertNotNull(parsed);
+        Assert.assertEquals(BasicAuthenticationConfig.class, parsed.getClass());
+        parsedConfig = (BasicAuthenticationConfig) parsed;
+        Assert.assertEquals("TestRealm", parsedConfig.getRealm());
+        Assert.assertEquals("X-Authenticated-Identity", parsedConfig.getForwardIdentityHttpHeader());
+        Assert.assertEquals(Boolean.TRUE, parsedConfig.isRequireTransportSecurity());
+        Assert.assertEquals(Boolean.TRUE, parsedConfig.getRequireBasicAuth());
+        Assert.assertEquals(Boolean.TRUE, parsedConfig.isForwardBasicAuthDownstream());
+
+        //Basic properties with forwardBasicAuthDownstream false
+        config =
+                "{\r\n" +
+                        "    \"realm\" : \"TestRealm\",\r\n" +
+                        "    \"forwardIdentityHttpHeader\" : \"X-Authenticated-Identity\",\r\n" +
+                        "    \"requireTransportSecurity\" : true,\r\n" +
+                        "    \"requireBasicAuth\" : true,\r\n" +
+                        "    \"forwardBasicAuthDownstream\" : false\r\n" +
+                        "}";
+        parsed = policy.parseConfiguration(config);
+        Assert.assertNotNull(parsed);
+        Assert.assertEquals(BasicAuthenticationConfig.class, parsed.getClass());
+        parsedConfig = (BasicAuthenticationConfig) parsed;
+        Assert.assertEquals("TestRealm", parsedConfig.getRealm());
+        Assert.assertEquals("X-Authenticated-Identity", parsedConfig.getForwardIdentityHttpHeader());
+        Assert.assertEquals(Boolean.TRUE, parsedConfig.isRequireTransportSecurity());
+        Assert.assertEquals(Boolean.TRUE, parsedConfig.getRequireBasicAuth());
+        Assert.assertEquals(Boolean.FALSE, parsedConfig.isForwardBasicAuthDownstream());
 
         // Static identities
         config =
