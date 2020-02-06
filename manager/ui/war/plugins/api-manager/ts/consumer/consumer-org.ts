@@ -25,7 +25,12 @@ module Apiman {
                     OrgSvcs.get({ organizationId: $routeParams.org, entityType: '' }, resolve, reject);
                 }),
                 members: $q(function(resolve, reject) {
-                    OrgSvcs.query({ organizationId: $routeParams.org, entityType: 'members' }, resolve, reject);
+                    // If we are not a member we don't send this request because it would throw an exception
+                    if (CurrentUser.isMember($routeParams.org)){
+                        OrgSvcs.query({ organizationId: $routeParams.org, entityType: 'members' }, resolve, reject);
+                    } else {
+                        resolve();
+                    }
                 }),
                 apis: $q(function(resolve, reject) {
                     OrgSvcs.query({ organizationId: $routeParams.org, entityType: 'apis' }, resolve, reject);

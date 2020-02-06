@@ -36,20 +36,17 @@
           <div class="item" style="width: 100%; margin-bottom: 20px;" data-field="organizationCard">
             <div class="title"><i class="fa fa-shield icon"></i><span data-field="title">{{ org.name }}</span></div>
             <div class="description" data-field="description">{{ org.description }}</div>
-            <div class="actions" style="display:none">
-              <button class="btn btn-default" style="display:none" data-field="requestMembership" apiman-i18n-key="request-membership">Request Membership</button>
-            </div>
-            <a ng-show="org.isMember" class="ismember" title="You are already a member of this Organization." href="{{ pluginName }}/orgs/{{ org.id }}" data-field="isMemberLink" apiman-i18n-key="is-member"></a>
+            <a ng-show="org.isMember" class="ismember" title="You are already a member of this organization." href="{{ pluginName }}/orgs/{{ org.id }}" data-field="isMemberLink" apiman-i18n-key="is-member"></a>
           </div>
           
-          <div class="consumer-section">
+          <div class="consumer-section" ng-show="org.isMember">
             <h3 apiman-i18n-key="current-members" class="consumer-header">Current Members</h3>
             <div class="apiman-members" data-field="members">
               <div class="container-fluid apiman-summaryrow" ng-repeat="member in members">
                 <div class="row">
                   <span class="title">
                     <i class="fa fa-fw fa-user icon"></i>
-                    <a href="{{ pluginName }}/users/{{ member.userId }}/orgs">{{ member.userName }}</a>
+                    <span>{{ member.userName }}</span>
                     <span class="secondary">({{ member.userId }})</span>
                   </span>
                 </div>
