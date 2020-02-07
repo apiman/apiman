@@ -12,7 +12,7 @@ export class DeveloperDataCacheService {
 
   constructor(private adminService: AdminService) {
     if (!this.developers) {
-      this.load();
+      this.load().subscribe();
     }
   }
 
