@@ -96,5 +96,15 @@ module ApimanFilters {
         };
     }]);
 
+    export var startFrom = _module.filter('startFrom', function() {
+        return function(data, index:number) {
+            if (data != null)
+            {
+                return data.slice(index);
+            }
+            return null;
+        }
+    });
+
 }
 

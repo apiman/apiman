@@ -8,6 +8,9 @@ module Apiman {
             if (params.q) {
                 $scope.orgName = params.q;
             }
+
+            $scope.pageSize = 10;    //default page size
+            $scope.currentPage = 1; //initial page index
             
             $scope.searchOrg = function(value) {
                 $location.search('q', value);
@@ -19,6 +22,8 @@ module Apiman {
                         var body:any = {};
                         body.filters = [];
                         body.filters.push( {"name": "name", "value": "*" + params.q + "*", "operator": "like"});
+                        body.page = 1;          //default on backend for some functions
+                        body.pageSize = 500;    //default on backend for some functions
                         var searchStr = angular.toJson(body);
                         ApimanSvcs.save({ entityType: 'search', secondaryType: 'organizations' }, searchStr, function(result) { 
                             resolve(result.beans);
