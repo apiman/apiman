@@ -409,6 +409,7 @@ div.page {
 }
 
 .browse-items {
+  padding: 0px;;
 }
 .browse-items .count {
   margin-bottom: 15px;
@@ -416,7 +417,7 @@ div.page {
 .browse-items .item {
   position: relative;
   padding: 10px;
-  width: 330px;
+  width: 20%;
   border: 1px solid rgb(218, 218, 218);
   float: left;
   margin-right: 15px;
