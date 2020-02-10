@@ -1,0 +1,13 @@
+GET /users/user2/permissions user2/user2
+----
+200
+Content-Type: application/json
+X-RestTest-ArrayOrdering: any
+
+{
+  "userId" : "user2",
+  "permissions" : []
+}
+
+
+

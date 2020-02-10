@@ -17,11 +17,7 @@
 package io.apiman.manager.api.rest.impl;
 
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
-import io.apiman.manager.api.beans.idm.PermissionBean;
-import io.apiman.manager.api.beans.idm.PermissionType;
-import io.apiman.manager.api.beans.idm.RoleMembershipBean;
-import io.apiman.manager.api.beans.idm.UpdateUserBean;
-import io.apiman.manager.api.beans.idm.UserBean;
+import io.apiman.manager.api.beans.idm.*;
 import io.apiman.manager.api.beans.search.PagingBean;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
 import io.apiman.manager.api.beans.summary.ApiSummaryBean;
@@ -185,6 +181,26 @@ public class UserResourceImpl implements IUserResource {
             paging.setPageSize(pageSize);
             rval = query.auditUser(userId, paging);
             return rval;
+        } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        }
+    }
+
+    /**
+     * @see IUserResource#getPermissionsForUser(java.lang.String)
+     */
+    @Override
+    public UserPermissionsBean getPermissionsForUser(String userId) throws UserNotFoundException, NotAuthorizedException {
+        String currentUser = securityContext.getCurrentUser();
+        if (!currentUser.equals(userId) && !securityContext.isAdmin()) {
+            throw ExceptionFactory.notAuthorizedException();
+        }
+
+        try {
+            UserPermissionsBean bean = new UserPermissionsBean();
+            bean.setUserId(userId);
+            bean.setPermissions(query.getPermissions(userId));
+            return bean;
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }

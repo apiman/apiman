@@ -32,6 +32,8 @@
     <test name="Grant Role 3">test-plan-data/idm/memberships/004_grant-role3.resttest</test>
     <test name="Get Permissions">test-plan-data/idm/memberships/005_get-permissions.resttest</test>
     <test name="Grant Role 2 (duplicate)">test-plan-data/idm/memberships/006_grant-role2-dup.resttest</test>
+    <test name="Get Permissions (user2) (No permissions))">test-plan-data/idm/memberships/007_get-permissions-user2.resttest</test>
+    <test name="Get Permissions (user2) (Not Authorized)">test-plan-data/idm/memberships/007_get-permissions-user2-not-allowed.resttest</test>
   </testGroup>
 
   <!-- Now test security -->

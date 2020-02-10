@@ -40,7 +40,6 @@ public class TestManagerApiApplication extends ApiManagerApplication {
         classes.add(RoleResourceImpl.class);
         classes.add(UserResourceImpl.class);
         classes.add(CurrentUserResourceImpl.class);
-        classes.add(PermissionsResourceImpl.class);
         classes.add(OrganizationResourceImpl.class);
         classes.add(PolicyDefinitionResourceImpl.class);
         classes.add(GatewayResourceImpl.class);

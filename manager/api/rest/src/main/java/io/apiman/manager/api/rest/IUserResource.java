@@ -19,6 +19,7 @@ package io.apiman.manager.api.rest;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
 import io.apiman.manager.api.beans.idm.UpdateUserBean;
 import io.apiman.manager.api.beans.idm.UserBean;
+import io.apiman.manager.api.beans.idm.UserPermissionsBean;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
 import io.apiman.manager.api.beans.summary.ApiSummaryBean;
 import io.apiman.manager.api.beans.summary.ClientSummaryBean;
@@ -123,5 +124,21 @@ public interface IUserResource {
     @Produces(MediaType.APPLICATION_JSON)
     public SearchResultsBean<AuditEntryBean> getActivity(@PathParam("userId") String userId,
             @QueryParam("page") int page, @QueryParam("count") int pageSize);
+
+    /**
+     * This endpoint returns all of the permissions assigned to a specific user.
+     * @summary Get User's Permissions
+     * @servicetag admin
+     * @param userId The user's ID.
+     * @statuscode 200 If the permissions are successfully retrieved.
+     * @return All of the user's permissions.
+     * @throws UserNotFoundException when a request is sent for a user who does not exist
+     * @throws NotAuthorizedException when the user is not authorized to perform this action
+     */
+    @GET
+    @Path("{userId}/permissions")
+    @Produces(MediaType.APPLICATION_JSON)
+    public UserPermissionsBean getPermissionsForUser(@PathParam("userId") String userId)
+            throws UserNotFoundException, NotAuthorizedException;
 
 }
