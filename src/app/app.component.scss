@@ -49,8 +49,8 @@
 
 mat-spinner {
   position: fixed;
-  top: 45%;
-  left: 45%;
+  top: calc(50% - 25px);
+  left: calc(50% - 25px);
 }
 
 :host ::ng-deep .mat-progress-spinner circle, .mat-spinner circle {
