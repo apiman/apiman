@@ -1,7 +1,6 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Developer} from '../../../services/api-data.service';
-import {ClientMappingComponent} from '../create-developer/client-mapping.component';
 import {AdminService} from '../services/admin.service';
 import {DeveloperDataCacheService} from '../services/developer-data-cache.service';
 import {Toast, ToasterService} from 'angular2-toaster';
@@ -17,8 +16,6 @@ export class EditDeveloperComponent implements OnInit {
   public developerId;
   private developer: Developer;
   public assignedClients;
-
-  @ViewChild('clientmapping', {static: false}) clientMapping: ClientMappingComponent;
 
   constructor(private adminService: AdminService,
               private route: ActivatedRoute,
@@ -38,7 +35,6 @@ export class EditDeveloperComponent implements OnInit {
       this.developer = developer;
       this.assignedClients = developer.clients;
       this.loadingSpinnerService.stopWaiting();
-      this.clientMapping.loadClients();
     }, error => {
       const errorMessage = 'Error loading developer';
       console.error(errorMessage, error);

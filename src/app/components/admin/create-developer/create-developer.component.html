@@ -60,7 +60,7 @@
     </mat-step>
     <mat-step>
       <ng-template matStepLabel>Create Client Mapping</ng-template>
-      <app-client-mapping #clientmapping></app-client-mapping>
+      <app-client-mapping #clientmapping [assignedClients]="[]"></app-client-mapping>
       <p>
         <button
           [disabled]="!this.checkDeveloperNotExists(this.userFormGroup.get('username').value) || !userFormGroup.valid"

@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
 import {ClientMapping} from '../../../services/api-data.service';
 import {map} from 'rxjs/operators';
@@ -11,7 +11,7 @@ import {SpinnerService} from '../../../services/spinner.service';
   templateUrl: './client-mapping.component.html',
   styleUrls: ['./client-mapping.component.scss']
 })
-export class ClientMappingComponent implements OnInit {
+export class ClientMappingComponent implements OnChanges {
 
   constructor(private adminService: AdminService,
               private toasterService: ToasterService,
@@ -21,13 +21,6 @@ export class ClientMappingComponent implements OnInit {
   availableClients: Array<ClientMapping> = [];
 
   @Input('assignedClients') assignedClients: Array<ClientMapping> = [];
-
-  /**
-   * Load clients on initialization
-   */
-  ngOnInit() {
-    this.loadClients();
-  }
 
   /**
    * Load available clients
@@ -59,8 +52,8 @@ export class ClientMappingComponent implements OnInit {
    * Reset the client list including assigned clients
    */
   reset() {
-    this.loadClients();
     this.assignedClients = [];
+    this.loadClients();
   }
 
   /**
@@ -75,6 +68,15 @@ export class ClientMappingComponent implements OnInit {
         event.container.data,
         event.previousIndex,
         event.currentIndex);
+    }
+  }
+
+  /**
+   * Load clients on change
+   */
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.assignedClients && changes.assignedClients.currentValue) {
+      this.loadClients();
     }
   }
 
