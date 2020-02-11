@@ -14,7 +14,7 @@ import {SpinnerService} from '../../../services/spinner.service';
 export class EditDeveloperComponent implements OnInit {
 
   public developerId;
-  private developer: Developer;
+  public developer: Developer;
   public assignedClients;
 
   constructor(private adminService: AdminService,
