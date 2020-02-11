@@ -72,10 +72,10 @@ export class ApiListComponent implements OnChanges {
   /**
    * An observer to get all developer data from api data service
    */
-  getDeveloperData: (developer: string) => Observable<ApiListElement> = (developer: string) => forkJoin(this.apiDataService.getDeveloperClients(developer),
+  getDeveloperData: (developer: string) => Observable<ApiListElement> = (developer: string) => forkJoin([this.apiDataService.getDeveloperClients(developer),
     this.apiDataService.getDeveloperContracts(developer),
     this.apiDataService.getDeveloperApis(developer),
-    this.getGatewayDataObservable)
+    this.getGatewayDataObservable])
     .pipe(mergeMap(forkedData => {
       const [clients, contracts, apiVersions, gateways] = forkedData;
       this.checkReceivedData(clients, contracts, apiVersions, gateways);

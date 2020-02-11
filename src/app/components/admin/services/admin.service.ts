@@ -78,7 +78,7 @@ export class AdminService {
       // 2. insert developer to API-Mgmt
       return insertToApiMgmt.pipe(mergeMap(insertedDeveloper => {
         // 3. add devPortal group and add client role to keycloak user
-        return forkJoin(addDevPortalGroupToUser(insertedKeycloakUser), addClientRoleToUser(insertedKeycloakUser, insertedDeveloper))
+        return forkJoin([addDevPortalGroupToUser(insertedKeycloakUser), addClientRoleToUser(insertedKeycloakUser, insertedDeveloper)])
           .pipe(map(() => insertedDeveloper),
             catchError((err, caught) => {
               // rollback developer if keycloak settings cannot be done
@@ -119,11 +119,11 @@ export class AdminService {
    * @param developer the developer to update
    */
   public deleteDeveloper(developer: Developer) {
-    return forkJoin(
+    return forkJoin([
       this.deleteDeveloperFromApiMgmt(developer.id),
       this.keycloak.deleteClientRole(developer.id),
       this.keycloak.deleteUser(developer.name)
-    );
+    ]);
   }
 
   /**
