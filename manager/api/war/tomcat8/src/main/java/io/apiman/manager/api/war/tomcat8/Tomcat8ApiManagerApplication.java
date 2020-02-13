@@ -50,7 +50,6 @@ public class Tomcat8ApiManagerApplication extends ApiManagerApplication {
         classes.add(SearchResourceImpl.class);
         classes.add(RoleResourceImpl.class);
         classes.add(UserResourceImpl.class);
-        classes.add(CurrentUserResourceImpl.class);
         classes.add(OrganizationResourceImpl.class);
         classes.add(PolicyDefinitionResourceImpl.class);
         classes.add(GatewayResourceImpl.class);

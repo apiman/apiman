@@ -17,6 +17,7 @@
 package io.apiman.manager.api.rest;
 
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
+import io.apiman.manager.api.beans.idm.CurrentUserBean;
 import io.apiman.manager.api.beans.idm.UpdateUserBean;
 import io.apiman.manager.api.beans.idm.UserBean;
 import io.apiman.manager.api.beans.idm.UserPermissionsBean;
@@ -55,6 +56,17 @@ public interface IUserResource {
     public UserBean get(@PathParam("userId") String userId) throws UserNotFoundException;
 
     /**
+     * Use this endpoint to get information about the currently authenticated user.
+     * @summary Get Current User Information
+     * @statuscode 200 If the information is correctly returned.
+     * @return Information about the authenticated user.
+     */
+    @GET
+    @Path("currentuser/info")
+    @Produces(MediaType.APPLICATION_JSON)
+    public CurrentUserBean getInfo();
+
+    /**
      * Use this endpoint to update the information about a user.  This will fail
      * unless the authenticated user is an admin or identical to the user being
      * updated.
@@ -63,7 +75,7 @@ public interface IUserResource {
      * @param user Updated user information.
      * @statuscode 204 If the user information is successfully updated.
      * @throws UserNotFoundException when specified user not found
-     * @throws NotAuthorizedException when not authorized to invoke this method
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @PUT
     @Path("{userId}")
@@ -77,35 +89,98 @@ public interface IUserResource {
      * @param userId The user ID.
      * @statuscode 200 If the organization list is successfully returned.
      * @return List of organizations.
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
     @Path("{userId}/organizations")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<OrganizationSummaryBean> getOrganizations(@PathParam("userId") String userId);
+    public List<OrganizationSummaryBean> getOrganizations(@PathParam("userId") String userId) throws NotAuthorizedException;
 
     /**
-     * This endpoint returns all clients that the user has permission to edit.
+     * This endpoint returns all clients that the user has permission to view.
      * @summary List User Clients
      * @param userId The user ID.
      * @statuscode 200 If the client list is successfully returned.
      * @return List of clients.
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
-    @Path("{userId}/clients")
+    @Path("{userId}/viewable-clients")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<ClientSummaryBean> getClients(@PathParam("userId") String userId);
+    public List<ClientSummaryBean> getClients(@PathParam("userId") String userId) throws NotAuthorizedException;
 
     /**
-     * This endpoint returns all APIs that the user has permission to edit.
+     * This endpoint returns all clients that the user has permission to edit.
+     * This endpoint is used in the UI for creating a contract - only show the clients the user has permissions to edit
+     * @summary List User Clients
+     * @param userId The user ID.
+     * @statuscode 200 If the client list is successfully returned.
+     * @return List of clients.
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
+     */
+    @GET
+    @Path("{userId}/editable-clients")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<ClientSummaryBean> getEditableClients(@PathParam("userId") String userId) throws NotAuthorizedException;
+
+    /**
+     * This endpoint returns a list of all the organizations for which the current user
+     * has permission to edit clients.  For example, when creating a new Client,
+     * the user interface must ask the user to choose within which Organization to create
+     * it.  This endpoint lists the valid choices for the current user.
+     * @summary Get Organizations (app-edit)
+     * @statuscode 200 If the organizations are successfully returned.
+     * @return A list of organizations.
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
+     */
+    @GET
+    @Path("{userId}/clientorgs")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<OrganizationSummaryBean> getClientOrganizations(@PathParam("userId") String userId) throws NotAuthorizedException;
+
+    /**
+     * This endpoint returns all APIs that the user has permission to view.
      * @summary List User APIs
      * @param userId The user ID.
      * @statuscode 200 If the API list is successfully returned.
      * @return List of APIs.
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
     @Path("{userId}/apis")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<ApiSummaryBean> getApis(@PathParam("userId") String userId);
+    public List<ApiSummaryBean> getApis(@PathParam("userId") String userId) throws NotAuthorizedException;
+
+    /**
+     * This endpoint returns a list of all the organizations for which the
+     * current user has permission to edit APIs. For example, when creating a
+     * new API, the user interface must ask the user to choose within which
+     * Organization to create it. This endpoint lists the valid choices for the
+     * current user.
+     * @summary Get Organizations (api-edit)
+     * @statuscode 200 If the organizations are successfully returned.
+     * @return A list of organizations.
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
+     */
+    @GET
+    @Path("{userId}/apiorgs")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<OrganizationSummaryBean> getApiOrganizations(@PathParam("userId") String userId) throws NotAuthorizedException;
+
+    /**
+     * This endpoint returns a list of all the organizations for which the current user
+     * has permission to edit plans.  For example, when creating a new Plan,
+     * the user interface must ask the user to choose within which Organization to create
+     * it.  This endpoint lists the valid choices for the current user.
+     * @summary Get Organizations (plan-edit)
+     * @statuscode 200 If the organizations are successfully returned.
+     * @return A list of organizations.
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
+     */
+    @GET
+    @Path("{userId}/planorgs")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<OrganizationSummaryBean> getPlanOrganizations(@PathParam("userId") String userId) throws NotAuthorizedException;
 
     /**
      * Use this endpoint to get information about the user's audit history.  This
@@ -118,12 +193,13 @@ public interface IUserResource {
      * @param pageSize The number of results per page to return.
      * @statuscode 200 If the activity is successfully returned.
      * @return List of audit entries.
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
     @Path("{userId}/activity")
     @Produces(MediaType.APPLICATION_JSON)
     public SearchResultsBean<AuditEntryBean> getActivity(@PathParam("userId") String userId,
-            @QueryParam("page") int page, @QueryParam("count") int pageSize);
+            @QueryParam("page") int page, @QueryParam("count") int pageSize) throws NotAuthorizedException;
 
     /**
      * This endpoint returns all of the permissions assigned to a specific user.
@@ -133,7 +209,7 @@ public interface IUserResource {
      * @statuscode 200 If the permissions are successfully retrieved.
      * @return All of the user's permissions.
      * @throws UserNotFoundException when a request is sent for a user who does not exist
-     * @throws NotAuthorizedException when the user is not authorized to perform this action
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
     @Path("{userId}/permissions")

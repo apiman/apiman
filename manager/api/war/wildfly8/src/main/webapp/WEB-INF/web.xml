@@ -91,15 +91,6 @@
     </web-resource-collection>
     <web-resource-collection>
       <web-resource-name>apiman</web-resource-name>
-      <url-pattern>/currentuser/*</url-pattern>
-      <http-method>GET</http-method>
-      <http-method>POST</http-method>
-      <http-method>PUT</http-method>
-      <http-method>DELETE</http-method>
-      <http-method>HEAD</http-method>
-    </web-resource-collection>
-    <web-resource-collection>
-      <web-resource-name>apiman</web-resource-name>
       <url-pattern>/gateways/*</url-pattern>
       <http-method>GET</http-method>
       <http-method>POST</http-method>

@@ -12,6 +12,7 @@
     <test name="Create Role 2">test-plan-data/idm/create/002_create-role2.resttest</test>
     <test name="Create Role 3">test-plan-data/idm/create/003_create-role3.resttest</test>
     <test name="Create Role 4">test-plan-data/idm/create/004_create-role4.resttest</test>
+    <test name="Create Role 5">test-plan-data/idm/create/005_create-role5.resttest</test>
   </testGroup>
 
   <!-- Now do some basic role management -->
@@ -42,6 +43,16 @@
     <test name="Create 'Organization Owner' Role">test-plan-data/idm/security/002_create-org-owner-role.resttest</test>
     <test name="Make User 1 Owner of Org 1">test-plan-data/idm/security/003_grant-ownership.resttest</test>
     <test name="Get Org 1 (Now Authorized)">test-plan-data/idm/security/004_get-org1.resttest</test>
+  </testGroup>
+
+  <!-- Now test organization summary listings -->
+  <testGroup name="My Organizations">
+    <test name="Grant Access to Org1 (user1)">test-plan-data/idm/orgs/001_grant-org1.resttest</test>
+    <test name="My Orgs (user1)">test-plan-data/idm/orgs/002_my-orgs-user1.resttest</test>
+    <test name="My Orgs (user2)">test-plan-data/idm/orgs/003_my-orgs-user2.resttest</test>
+    <test name="Grant Access to Org2 (user1)">test-plan-data/idm/orgs/004_grant-org2.resttest</test>
+    <test name="My Orgs (user1) Repeat">test-plan-data/idm/orgs/005_my-orgs-user1.resttest</test>
+    <test name="Someone Else's Orgs (user1)">test-plan-data/idm/orgs/006_other-orgs-user1.resttest</test>
   </testGroup>
   
 </testPlan>

@@ -94,4 +94,11 @@ public interface ISecurityContext {
      */
     void checkAdminPermissions() throws NotAuthorizedException;
 
+    /**
+     * Throws an exception if the user has no admin permissions
+     * or the user called not is own user resource
+     * @throws NotAuthorizedException if the user is not authorized
+     */
+    void checkIfUserIsCurrentUser(String userId) throws NotAuthorizedException;
+
 }
