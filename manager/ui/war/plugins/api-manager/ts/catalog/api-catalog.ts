@@ -4,8 +4,11 @@ module Apiman {
 
     import CurrentUserSvcs = ApimanRPC.CurrentUserSvcs;
     export var ApiCatalogController = _module.controller("Apiman.ApiCatalogController",
-        [ '$q', 'Logger', '$scope', '$filter', '$timeout', 'ApiCatalogSvcs', 'PageLifecycle', '$uibModal', 'CurrentUserSvcs', '$location',
-          ($q, Logger, $scope, $filter, $timeout, ApiCatalogSvcs, PageLifecycle, $uibModal, CurrentUserSvcs, $location) => {
+        [ '$q', 'Logger', '$scope', '$rootScope', '$filter', '$timeout', 'ApiCatalogSvcs', 'PageLifecycle', '$uibModal', 'CurrentUser', 'UserSvcs', '$location',
+          ($q, Logger, $scope, $rootScope, $filter, $timeout, ApiCatalogSvcs, PageLifecycle, $uibModal, CurrentUser, UserSvcs, $location) => {
+
+                // set a "rest" as default value for the dropdown
+                $scope.epType = "rest";
 
                 var body:any = {};
                 body.filters = [];
@@ -98,7 +101,6 @@ module Apiman {
                         }
                     });
                 };
-                
                 $scope.tagLabel = function(tag) {
                     var idx = tag.indexOf("=");
                     if (idx == -1) {
@@ -107,7 +109,6 @@ module Apiman {
                         return tag.slice(idx + 1);
                     }
                 };
-                
                 $scope.tagTitle = function(tag) {
                     return "Filter by tag: " + tag;
                 };
@@ -135,30 +136,36 @@ module Apiman {
                         }, reject);
                     }),
                     orgs: $q(function (resolve, reject) {
-                        CurrentUserSvcs.query({what: 'apiorgs'}, resolve, reject);
+                        return CurrentUser.getCurrentUser().then(function (currentUser) {
+                            return UserSvcs.query({ user: currentUser.username, entityType: 'apiorgs' }, resolve, reject);
+                        })
                     })
                 };
 
+
+                let apiAdjustments = function (api) {
+                  api.iconIsUrl = false;
+                  if (!api.icon) {
+                      api.icon = 'puzzle-piece';
+                  }
+                  if (api.icon.indexOf('http') == 0) {
+                      api.iconIsUrl = true;
+                  }
+                  api.ticon = 'fa-file-text-o';
+                  if (api.endpointType == 'soap' || api.endpointType == 'ui') {
+                      api.ticon = 'fa-file-code-o';
+                  }
+                  if (api.routeDefinitionUrl != null) {
+                      api.definitionUrl = api.routeDefinitionUrl;
+                  }
+                };
+
+
                 PageLifecycle.loadPage('ApiCatalog', undefined, pageData, $scope, function () {
                     angular.forEach($scope.apis, function (api) {
-                        api.iconIsUrl = false;
-                        if (!api.icon) {
-                            api.icon = 'puzzle-piece';
-                        }
-                        if (api.icon.indexOf('http') == 0) {
-                            api.iconIsUrl = true;
-                        }
-                        api.ticon = 'fa-file-text-o';
-                        if (api.endpointType == 'soap') {
-                            api.ticon = 'fa-file-code-o';
-                        }
-                        if (api.routeDefinitionUrl != null) {
-                            api.definitionUrl = api.routeDefinitionUrl;
-                        }
+                        apiAdjustments(api)
                     });
-
                     $scope.tags = _.uniq(_.flatten(_.map($scope.apis, 'tags')));
-
                     PageLifecycle.setPageTitle('api-catalog');
                 });
             }
@@ -169,7 +176,6 @@ module Apiman {
           ($q, $rootScope, Logger, $scope, OrgSvcs, PageLifecycle, $uibModalInstance, api, orgs) => {
 
                 var recentOrg = $rootScope.mruOrg;
-                
                 $scope.api = api;
                 $scope.orgs = orgs;
 
@@ -214,7 +220,6 @@ module Apiman {
     export var ApiCatalogDefController = _module.controller("Apiman.ApiCatalogDefController",
         [ '$q', '$scope', 'ApiCatalogSvcs', 'PageLifecycle', '$routeParams', '$window', 'Logger', 'ApiDefinitionSvcs', 'Configuration',
           ($q, $scope, ApiCatalogSvcs, PageLifecycle, $routeParams, $window, Logger, ApiDefinitionSvcs, Configuration) => {
-          
                 $scope.params = $routeParams;
                 $scope.chains = {};
 

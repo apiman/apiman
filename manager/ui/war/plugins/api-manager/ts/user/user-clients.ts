@@ -31,7 +31,7 @@ module Apiman {
                     }, reject);
                 }),
                 clients: $q(function(resolve, reject) {
-                    UserSvcs.query({ user: $routeParams.user, entityType: 'clients' }, function(userClients) {
+                    UserSvcs.query({ user: $routeParams.user, entityType: 'viewable-clients' }, function(userClients) {
                         $scope.filteredClients = userClients;
                         resolve(userClients);
                     }, reject);

@@ -95,6 +95,12 @@ module ApimanPageLifecycle {
             $rootScope.headerInclude = 'plugins/api-manager/html/headers/' + header + '.include';
             console.log('Using header: ' + $rootScope.headerInclude);
 
+            let redirectWrongPermission = function () {
+                Logger.info('Detected a 404 error.');
+                $location.url(Apiman.pluginName + '/errors/404').replace();
+                return;
+            };
+
             var processCurrentUser = function(currentUser) {
                 $rootScope.currentUser = currentUser;
                 var permissions = {};
@@ -110,6 +116,7 @@ module ApimanPageLifecycle {
                 Logger.info('Updating permissions now {0}', permissions);
                 $rootScope.permissions = permissions;
                 $rootScope.memberships = memberships;
+                $rootScope.isAdmin = currentUser.admin;
             };
             var handleError = function(error) {
                 $rootScope.pageState = 'error';
@@ -175,40 +182,29 @@ module ApimanPageLifecycle {
                     $rootScope.pageState = 'loading';
                     $rootScope.isDirty = false;
 
-                    // Every page gets the current user.
-                    var allData = undefined;
-                    var commonData = {
-                        currentUser: $q(function(resolve, reject) {
-                            if ($rootScope.currentUser) {
-                                Logger.log("|{0}| >> Using cached current user from $rootScope.", pageName);
-                                resolve($rootScope.currentUser);
-                            } else {
-                                CurrentUserSvcs.get({ what: 'info' }, function(currentUser) {
-                                    processCurrentUser(currentUser);
-                                    resolve(currentUser);
-                                }, reject);
-                            }
-                        })
-                    };
-                    
-                    // If some additional page data is requested, merge it into the common data
-                    if (pageData) {
-                        allData = angular.extend({}, commonData, pageData);
-                    } else {
-                        allData = commonData;
-                    }
+                    var currentUser = $q(function(resolve, reject) {
+                        if ($rootScope.currentUser) {
+                            Logger.log("|{0}| >> Using cached current user from $rootScope.", pageName);
+                            resolve($rootScope.currentUser);
+                        } else {
+                            return CurrentUserSvcs.get({ what: 'info' }, function(currentUser) {
+                                processCurrentUser(currentUser);
+                                resolve(currentUser);
+                            }, reject);
+                        }
+                    });
 
                     // Now resolve the data as a promise (wait for all data packets to be fetched)
-                    var promise = $q.all(allData);
-                    promise.then(function(data) {
+                    return currentUser.then(function (){
+                        return $q.all(pageData);
+                    }).then(function(data) {
                         // Make sure the user has permission to view this page.
                         if ( (requiredPermission && requiredPermission == 'orgView' && !CurrentUser.isMember($scope.organizationId)) ||
                              ( requiredPermission && requiredPermission != 'orgView' && !CurrentUser.hasPermission($scope.organizationId, requiredPermission)) )
                         {
-                            Logger.info('Detected a 404 error.');
-                            $location.url(Apiman.pluginName + '/errors/404').replace();
-                            return;
+                            redirectWrongPermission();
                         }
+
                         // Now process all the data packets and bind them to the $scope.
                         var count = 0;
                         angular.forEach(data, function(value, key) {
@@ -218,7 +214,7 @@ module ApimanPageLifecycle {
                         }, $scope);
                         
                         $timeout(function() {
-                            $rootScope.pageState = 'loaded'; 
+                            $rootScope.pageState = 'loaded';
                             Logger.log("|{0}| >> Page successfully loaded: {1} data packets loaded", pageName, count);
                             if (handler) {
                                 $timeout(function() {

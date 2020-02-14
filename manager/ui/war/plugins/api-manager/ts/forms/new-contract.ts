@@ -2,8 +2,8 @@
 module Apiman {
 
     export var NewContractController = _module.controller('Apiman.NewContractController',
-        ['$location', '$q', '$rootScope', '$scope', '$uibModal', 'CurrentUserSvcs', 'Logger', 'OrgSvcs', 'PageLifecycle',
-        ($location, $q, $rootScope, $scope, $uibModal, CurrentUserSvcs, Logger, OrgSvcs, PageLifecycle) => {
+        ['$location', '$q', '$rootScope', '$scope', '$uibModal', 'UserSvcs', 'CurrentUser', 'Logger', 'OrgSvcs', 'PageLifecycle',
+        ($location, $q, $rootScope, $scope, $uibModal, UserSvcs, CurrentUser, Logger, OrgSvcs, PageLifecycle) => {
                 var params = $location.search();
                 var apiId = params.api;
                 var apiOrgId = params.apiorg;
@@ -38,25 +38,27 @@ module Apiman {
 
                 var pageData = {
                     clients: $q(function (resolve, reject) {
-                        CurrentUserSvcs.query({what: 'clients'}, function (clients) {
-                            Logger.info('clients: {0}', clients);
-                            if ($rootScope.mruClient) {
-                                for (var i = 0; i < clients.length; i++) {
-                                    var client = clients[i];
-                                    if (client.organizationId == $rootScope.mruClient.client.organization.id && client.id == $rootScope.mruClient.client.id) {
-                                        $scope.selectedClient = client;
+                        return CurrentUser.getCurrentUser().then(function (currentUser) {
+                            UserSvcs.query({user: currentUser.username, entityType: 'editable-clients'}, function (clients) {
+                                Logger.info('clients: {0}', clients);
+                                if ($rootScope.mruClient) {
+                                    for (var i = 0; i < clients.length; i++) {
+                                        var client = clients[i];
+                                        if (client.organizationId == $rootScope.mruClient.client.organization.id && client.id == $rootScope.mruClient.client.id) {
+                                            $scope.selectedClient = client;
+                                        }
                                     }
+                                } else if (clients) {
+                                    $scope.selectedClient = clients[0];
+                                } else {
+                                    $scope.selectedClient = undefined;
                                 }
-                            } else if (clients) {
-                                $scope.selectedClient = clients[0];
-                            } else {
-                                $scope.selectedClient = undefined;
-                            }
 
-                            $scope.changedClient($scope.selectedClient);
+                                $scope.changedClient($scope.selectedClient);
 
-                            resolve(clients);
-                        }, reject);
+                                resolve(clients);
+                            }, reject);
+                        });
                     }),
                     selectedApi: $q(function (resolve, reject) {
                         if (apiId && apiOrgId && apiVer) {
