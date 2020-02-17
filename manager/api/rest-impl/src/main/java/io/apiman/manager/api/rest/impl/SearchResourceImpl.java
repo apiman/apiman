@@ -16,6 +16,7 @@
 
 package io.apiman.manager.api.rest.impl;
 
+import io.apiman.manager.api.beans.idm.PermissionType;
 import io.apiman.manager.api.beans.idm.RoleBean;
 import io.apiman.manager.api.beans.idm.UserBean;
 import io.apiman.manager.api.beans.search.*;
@@ -145,7 +146,28 @@ public class SearchResourceImpl implements ISearchResource {
             }
         }
 
-        List<AvailableApiBean> apis = apiCatalog.search(keyword, namespace);
+        List<AvailableApiBean> catalogEntries = apiCatalog.search(keyword, namespace);
+        List<AvailableApiBean> apis = new ArrayList<>();
+
+        // Hide sensitive data like endpoint if the user has no permission to create an new API
+        if (securityContext.getPermittedOrganizations(PermissionType.apiEdit).isEmpty() && !securityContext.isAdmin()){
+            for (AvailableApiBean api : catalogEntries) {
+                AvailableApiBean entry = new AvailableApiBean();
+                entry.setId(api.getId());
+                entry.setIcon(api.getIcon());
+                entry.setRouteEndpoint(api.getRouteEndpoint());
+                entry.setEndpointType(api.getEndpointType());
+                entry.setName(api.getName());
+                entry.setDescription(api.getDescription());
+                entry.setDefinitionType(api.getDefinitionType());
+                entry.setNamespace(api.getNamespace());
+                entry.setTags(api.getTags());
+                entry.setInternal(api.isInternal());
+                apis.add(entry);
+            }
+        } else {
+            apis.addAll(catalogEntries);
+        }
 
         PagingBean paging = criteria.getPaging();
         if (paging == null) {
