@@ -1,0 +1,6 @@
+GET /users/currentuser/info user2/user2
+----
+200
+Content-Type: application/json
+
+{"username":"user2","fullName":"User 2 (Updated by admin)","email":"updated2@example.org","admin":false,"permissions":[]}

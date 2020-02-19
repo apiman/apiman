@@ -1,0 +1,4 @@
+DELETE /organizations/TestOrganization1/roles/TestRole5/user1 admin/admin
+
+----
+204

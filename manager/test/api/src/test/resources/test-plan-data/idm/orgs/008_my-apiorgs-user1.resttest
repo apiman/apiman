@@ -1,0 +1,8 @@
+GET /users/user1/apiorgs user1/user1
+----
+200
+Content-Type: application/json
+
+[
+    {"id":"TestOrganization2","name":"Test Organization 2","description":null,"numClients":0,"numApis":0,"numMembers":0}
+]

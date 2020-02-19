@@ -1,9 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testPlan xmlns="urn:io.apiman.test:2014:02:testPlan">
 
+  <!--  Auditing is tested in: test-plans/all-testPlan.xml-->
+
   <!-- How about some user testing? -->
   <testGroup name="User Testing">
     <test name="Get User 1">test-plan-data/idm/users/001_get-user1.resttest</test>
+    <test name="Get User 2">test-plan-data/idm/users/002_get-user2.resttest</test>
+    <test name="Get User 2 (Not Authorized)">test-plan-data/idm/users/003_get-user2-not-allowed.resttest</test>
+    <test name="Update User 2">test-plan-data/idm/users/004_update-user2.resttest</test>
+    <test name="Update User 2 (Not Authorized)">test-plan-data/idm/users/005_update-user2-not-allowed.resttest</test>
+    <test name="Update User 2 (as admin)">test-plan-data/idm/users/006_update-user2-as-admin.resttest</test>
+    <test name="Get Info Currentuser">test-plan-data/idm/users/007_get-currentUserInfo.resttest</test>
   </testGroup>
 
   <!-- Create a bunch of Roles -->
@@ -48,11 +56,34 @@
   <!-- Now test organization summary listings -->
   <testGroup name="My Organizations">
     <test name="Grant Access to Org1 (user1)">test-plan-data/idm/orgs/001_grant-org1.resttest</test>
-    <test name="My Orgs (user1)">test-plan-data/idm/orgs/002_my-orgs-user1.resttest</test>
-    <test name="My Orgs (user2)">test-plan-data/idm/orgs/003_my-orgs-user2.resttest</test>
+    <test name="My Clientorgs (user1)">test-plan-data/idm/orgs/002_my-clientorgs-user1.resttest</test>
+    <test name="My Clientorgs (user2)">test-plan-data/idm/orgs/003_my-clientorgs-user2.resttest</test>
     <test name="Grant Access to Org2 (user1)">test-plan-data/idm/orgs/004_grant-org2.resttest</test>
-    <test name="My Orgs (user1) Repeat">test-plan-data/idm/orgs/005_my-orgs-user1.resttest</test>
-    <test name="Someone Else's Orgs (user1)">test-plan-data/idm/orgs/006_other-orgs-user1.resttest</test>
+    <test name="My Clientorgs (user1) Repeat">test-plan-data/idm/orgs/005_my-clientorgs-user1.resttest</test>
+    <test name="Someone Else's Clientorgs (user1)">test-plan-data/idm/orgs/006_other-clientorgs-user1.resttest</test>
+    <test name="My Planorgs (user1)">test-plan-data/idm/orgs/007_my-planorgs-user1.resttest</test>
+    <test name="My Apiorgs (user1)">test-plan-data/idm/orgs/008_my-apiorgs-user1.resttest</test>
+    <test name="My Clientorgs (user1) (Not Authorized)">test-plan-data/idm/orgs/009_my-clientorgs-user1-not-allowed.resttest</test>
+    <test name="My Planorgs (user1) (Not Authorized)">test-plan-data/idm/orgs/010_my-planorgs-user1-not-allowed.resttest</test>
+    <test name="My Apiorgs (user1) (Not Authorized)">test-plan-data/idm/orgs/011_my-apiorgs-user1-not-allowed.resttest</test>
+  </testGroup>
+
+  <!--  Now test the users APIs-->
+  <testGroup name="APIs">
+    <test name="Create API 1">test-plan-data/idm/apis/001_create-api1.resttest</test>
+    <test name="Get User1s APIs">test-plan-data/idm/apis/002_getApis-user1.resttest</test>
+    <test name="Get User1s APIs (Not Authorized)">test-plan-data/idm/apis/003_getApis-user1-not-allowed.resttest</test>
+  </testGroup>
+
+  <!--  Now test the users clients-->
+  <testGroup name="Clients">
+    <test name="Create Client 1">test-plan-data/idm/clients/001_create-client1.resttest</test>
+    <test name="Get editable Clients">test-plan-data/idm/clients/002_getEditableClients-user1.resttest</test>
+    <test name="Remove client edit permissions">test-plan-data/idm/clients/003_grant-org1.resttest</test>
+    <test name="Get editable Clients again">test-plan-data/idm/clients/004_getEditableClientsAgain-user1.resttest</test>
+    <test name="Get viewable Clients">test-plan-data/idm/clients/005_getViewableClients-user1.resttest</test>
+    <test name="Get editable Clients again (Not Authorized)">test-plan-data/idm/clients/006_getEditableClientsAgain-user1-not-allowed.resttest</test>
+    <test name="Get viewable Clients (Not Authorized)">test-plan-data/idm/clients/007_getViewableClients-user1-not-allowed.resttest</test>
   </testGroup>
   
 </testPlan>

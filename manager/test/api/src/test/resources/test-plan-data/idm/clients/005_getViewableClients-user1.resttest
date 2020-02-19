@@ -1,0 +1,6 @@
+GET /users/user1/viewable-clients user1/user1
+----
+200
+Content-Type: application/json
+
+[{"organizationId":"TestOrganization1","organizationName":"Test Organization 1","id":"Client1","name":"Client 1","description":"This is the description of Client 1.","numContracts":0}]
