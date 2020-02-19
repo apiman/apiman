@@ -42,7 +42,7 @@ import javax.ws.rs.core.MediaType;
  * @author eric.wittmann@redhat.com
  */
 @Path("policyDefs")
-@Api
+@Api(tags = "Policy Definitions")
 public interface IPolicyDefinitionResource {
 
     /**

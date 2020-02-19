@@ -43,7 +43,7 @@ public class ManagerApiMicroServiceApplication extends ApiManagerApplication {
         beanConfig.setVersion(new Version().getVersionString());
         beanConfig.setBasePath("/apiman"); //$NON-NLS-1$
         beanConfig.setResourcePackage("io.apiman.manager.api.rest"); //$NON-NLS-1$
-        //TODO set more info in the beanConfig (title,description, host, port, etc)
+        beanConfig.setDescription("The API Manager REST API is used by the API Manager UI to get stuff done. You can use it to automate any API Management task you wish. For example, create new Organizations, Plans, Clients, and APIs.");
         beanConfig.setScan(true);
 
         classes.add(SystemResourceImpl.class);

@@ -33,7 +33,7 @@ import javax.ws.rs.core.MediaType;
  * @author eric.wittmann@redhat.com
  */
 @Path("actions")
-@Api
+@Api(tags = "Actions")
 public interface IActionResource {
 
     /**

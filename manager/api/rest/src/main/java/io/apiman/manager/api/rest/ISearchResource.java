@@ -36,7 +36,7 @@ import java.util.List;
  * @author eric.wittmann@redhat.com
  */
 @Path("search")
-@Api
+@Api(tags = "Search")
 public interface ISearchResource {
 
     /**

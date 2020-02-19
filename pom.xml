@@ -164,7 +164,7 @@
     <version.org.slf4j>1.7.21</version.org.slf4j>
     <version.org.testcontainers>1.10.2</version.org.testcontainers>
     <version.io.netty>4.1.8.Final</version.io.netty>
-    <version.io.swagger>1.5.13</version.io.swagger>
+    <version.io.swagger>1.6.0</version.io.swagger>
     <version.xmlunit>1.6</version.xmlunit>
     <version.io.vertx>3.7.0</version.io.vertx>
     <version.net.openhft>0.6</version.net.openhft>

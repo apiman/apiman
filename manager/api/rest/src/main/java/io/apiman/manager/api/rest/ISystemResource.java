@@ -29,7 +29,7 @@ import javax.ws.rs.core.Response;
  * @author eric.wittmann@redhat.com
  */
 @Path("system")
-@Api
+@Api(tags = "System")
 public interface ISystemResource {
 
     /**

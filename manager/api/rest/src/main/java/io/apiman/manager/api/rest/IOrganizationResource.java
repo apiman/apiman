@@ -90,7 +90,7 @@ import javax.ws.rs.core.Response;
  * @author eric.wittmann@redhat.com
  */
 @Path("organizations")
-@Api
+@Api(tags = "Organizations")
 public interface IOrganizationResource {
 
     /**

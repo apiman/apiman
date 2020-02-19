@@ -47,7 +47,7 @@ import javax.ws.rs.core.MediaType;
  * @author eric.wittmann@redhat.com
  */
 @Path("roles")
-@Api
+@Api(tags = "Roles")
 public interface IRoleResource {
 
     /**

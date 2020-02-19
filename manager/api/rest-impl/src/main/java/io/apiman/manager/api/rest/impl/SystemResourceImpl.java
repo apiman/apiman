@@ -103,7 +103,7 @@ public class SystemResourceImpl implements ISystemResource {
         SystemStatusBean rval = new SystemStatusBean();
         rval.setId("apiman-manager-api"); //$NON-NLS-1$
         rval.setName("API Manager REST API"); //$NON-NLS-1$
-        rval.setDescription("The API Manager REST API is used by the API Manager UI to get stuff done.  You can use it to automate any API Management task you wish.  For example, create new Organizations, Plans, Clients, and APIs."); //$NON-NLS-1$
+        rval.setDescription("The API Manager REST API is used by the API Manager UI to get stuff done. You can use it to automate any API Management task you wish. For example, create new Organizations, Plans, Clients, and APIs."); //$NON-NLS-1$
         rval.setMoreInfo("http://www.apiman.io/latest/api-manager-restdocs.html"); //$NON-NLS-1$
         rval.setUp(getStorage() != null);
         if (getVersion() != null) {

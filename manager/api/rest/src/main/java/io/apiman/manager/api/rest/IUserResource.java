@@ -39,7 +39,7 @@ import java.util.List;
  * @author eric.wittmann@redhat.com
  */
 @Path("users")
-@Api
+@Api(tags = "Users")
 public interface IUserResource {
 
     /**

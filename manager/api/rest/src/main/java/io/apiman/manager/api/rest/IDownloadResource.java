@@ -32,7 +32,7 @@ import javax.ws.rs.core.Response;
  * @author eric.wittmann@redhat.com
  */
 @Path("downloads")
-@Api
+@Api(tags = "Downloads")
 public interface IDownloadResource {
 
     /**

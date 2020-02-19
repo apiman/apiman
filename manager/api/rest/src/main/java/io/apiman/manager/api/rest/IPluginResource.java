@@ -44,7 +44,7 @@ import javax.ws.rs.core.MediaType;
  * @author eric.wittmann@redhat.com
  */
 @Path("plugins")
-@Api
+@Api(tags = "Plugins")
 public interface IPluginResource {
 
     /**

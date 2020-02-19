@@ -21,7 +21,6 @@ import java.net.URL;
 import java.util.Date;
 import java.util.Properties;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.apache.commons.io.IOUtils;
@@ -42,32 +41,29 @@ public class Version {
      */
     public Version() {
     }
-    
-    @PostConstruct
-    public void postConstruct() {
-        load();
-    }
 
     /**
      * Loads the version info from version.properties.
      */
     private void load() {
-        URL url = Version.class.getResource("version.properties"); //$NON-NLS-1$
-        if (url == null) {
-            this.versionString = "Unknown"; //$NON-NLS-1$
-            this.versionDate = new Date().toString();
-        } else {
-            InputStream is = null;
-            Properties props = new Properties();
-            try {
-                is = url.openStream();
-                props.load(is);
-                this.versionString = props.getProperty("version", "Unknown"); //$NON-NLS-1$ //$NON-NLS-2$
-                this.versionDate = props.getProperty("date", new Date().toString()); //$NON-NLS-1$
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            } finally {
-                IOUtils.closeQuietly(is);
+        if (versionString == null || versionDate == null) {
+            URL url = Version.class.getResource("version.properties"); //$NON-NLS-1$
+            if (url == null) {
+                this.versionString = "Unknown"; //$NON-NLS-1$
+                this.versionDate = new Date().toString();
+            } else {
+                InputStream is = null;
+                Properties props = new Properties();
+                try {
+                    is = url.openStream();
+                    props.load(is);
+                    this.versionString = props.getProperty("version", "Unknown"); //$NON-NLS-1$ //$NON-NLS-2$
+                    this.versionDate = props.getProperty("date", new Date().toString()); //$NON-NLS-1$
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                } finally {
+                    IOUtils.closeQuietly(is);
+                }
             }
         }
     }
@@ -76,6 +72,7 @@ public class Version {
      * @return the versionString
      */
     public String getVersionString() {
+        load();
         return versionString;
     }
 
@@ -83,6 +80,7 @@ public class Version {
      * @return the versionDate
      */
     public String getVersionDate() {
+        load();
         return versionDate;
     }
 
