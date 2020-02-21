@@ -41,6 +41,7 @@ module ApimanPageLifecycle {
         "page.title.new-role": "apiman - New Role",
         "page.title.new-api": "apiman - New API",
         "page.title.new-api-version": "apiman - New API Version",
+        "page.title.manager-rest-def": "apiman - REST API",
         "page.title.org-activity": "apiman - {0} (Change Log)",
         "page.title.org-clients": "apiman - {0} (Client Apps)",
         "page.title.org-manage-members": "apiman - {0} (Manage Members)",

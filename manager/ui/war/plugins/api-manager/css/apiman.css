@@ -1,7 +1,12 @@
 
+html {
+ overflow: hidden;
+}
+
 body {
   line-height: normal;
   font-size: 13px;
+  overflow: auto;
 }
 
 textarea#api-definition.apiman-form-data {
@@ -1960,6 +1965,11 @@ html, body {height: 100%;}
 
 .bottom-spacer {
   margin-bottom: 10px;
+}
+
+.layout-pf.layout-pf-fixed body {
+  margin-top: 60px;
+  padding-top: unset;
 }
 
 .left-spacer {
