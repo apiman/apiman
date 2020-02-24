@@ -14,37 +14,40 @@
  * limitations under the License.
  */
 
-package io.apiman.gateway.api.rest.contract.exceptions;
+package io.apiman.gateway.api.rest.exceptions;
 
-import io.apiman.gateway.engine.beans.exceptions.IStatusCode;
+import io.apiman.gateway.engine.beans.exceptions.AbstractEngineException;
+
 
 /**
- * Thrown when the user attempts to do or see something that they
- * are not authorized (do not have permission) to.
+ * Base class for all APIMan errors coming out of the runtime REST layer.
  *
  * @author eric.wittmann@redhat.com
  */
-public class NotAuthorizedException extends AbstractRestException implements IStatusCode {
+public abstract class AbstractRestException extends AbstractEngineException {
+    
+    private static final long serialVersionUID = -5141061454310276468L;
 
-    private static final long serialVersionUID = 4663705773331595639L;
-    private int statusCode = 403;
-
+    /**
+     * Constructor.
+     */
+    public AbstractRestException() {
+    }
+    
     /**
      * Constructor.
      * @param message the exception message
      */
-    public NotAuthorizedException(String message) {
+    public AbstractRestException(String message) {
         super(message);
     }
-
-    @Override
-    public void setStatusCode(int code) {
-        this.statusCode = code;
-    }
-
-    @Override
-    public int getStatusCode() {
-        return statusCode;
+    
+    /**
+     * Constructor.
+     * @param cause the exception cause
+     */
+    public AbstractRestException(Throwable cause) {
+        super(cause);
     }
 
 }

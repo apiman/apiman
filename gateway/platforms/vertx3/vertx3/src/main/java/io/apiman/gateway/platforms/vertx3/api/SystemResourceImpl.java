@@ -15,7 +15,7 @@
  */
 package io.apiman.gateway.platforms.vertx3.api;
 
-import io.apiman.gateway.api.rest.contract.ISystemResource;
+import io.apiman.gateway.api.rest.ISystemResource;
 import io.apiman.gateway.engine.IEngine;
 import io.apiman.gateway.engine.beans.SystemStatus;
 import io.apiman.gateway.engine.beans.GatewayEndpoint;

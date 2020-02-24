@@ -15,7 +15,7 @@
  */
 package io.apiman.manager.api.gateway;
 
-import io.apiman.gateway.api.rest.contract.exceptions.NotAuthorizedException;
+import io.apiman.gateway.api.rest.exceptions.NotAuthorizedException;
 import io.apiman.gateway.engine.beans.*;
 import io.apiman.gateway.engine.beans.exceptions.PublishingException;
 import io.apiman.gateway.engine.beans.exceptions.RegistrationException;

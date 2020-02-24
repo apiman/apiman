@@ -16,8 +16,8 @@
 
 package io.apiman.gateway.platforms.vertx3.api;
 
-import io.apiman.gateway.api.rest.contract.IOrgResource;
-import io.apiman.gateway.api.rest.contract.exceptions.NotAuthorizedException;
+import io.apiman.gateway.api.rest.IOrgResource;
+import io.apiman.gateway.api.rest.exceptions.NotAuthorizedException;
 import io.apiman.gateway.engine.IEngine;
 import io.apiman.gateway.engine.IRegistry;
 import io.apiman.gateway.platforms.vertx3.common.config.VertxEngineConfig;

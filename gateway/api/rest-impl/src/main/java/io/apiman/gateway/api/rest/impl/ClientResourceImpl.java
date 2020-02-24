@@ -16,8 +16,8 @@
 
 package io.apiman.gateway.api.rest.impl;
 
-import io.apiman.gateway.api.rest.contract.IClientResource;
-import io.apiman.gateway.api.rest.contract.exceptions.NotAuthorizedException;
+import io.apiman.gateway.api.rest.IClientResource;
+import io.apiman.gateway.api.rest.exceptions.NotAuthorizedException;
 import io.apiman.gateway.engine.beans.Client;
 import io.apiman.gateway.engine.beans.exceptions.RegistrationException;
 
@@ -44,7 +44,7 @@ public class ClientResourceImpl extends AbstractResourceImpl implements IClientR
     }
 
     /**
-     * @see io.apiman.gateway.api.rest.contract.IClientResource#register(io.apiman.gateway.engine.beans.Client)
+     * @see IClientResource#register(io.apiman.gateway.engine.beans.Client)
      */
     @Override
     public void register(Client client) throws RegistrationException, NotAuthorizedException {
@@ -60,7 +60,7 @@ public class ClientResourceImpl extends AbstractResourceImpl implements IClientR
     }
 
     /**
-     * @see io.apiman.gateway.api.rest.contract.IClientResource#unregister(java.lang.String, java.lang.String, java.lang.String)
+     * @see IClientResource#unregister(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
     public void unregister(String organizationId, String applicationId, String version)

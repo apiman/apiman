@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package io.apiman.gateway.api.rest.contract;
+package io.apiman.gateway.api.rest;
 
-import io.apiman.gateway.api.rest.contract.exceptions.NotAuthorizedException;
+import io.apiman.gateway.api.rest.exceptions.NotAuthorizedException;
 import io.apiman.gateway.engine.beans.Client;
 import io.apiman.gateway.engine.beans.exceptions.RegistrationException;
 import io.swagger.annotations.Api;

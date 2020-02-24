@@ -14,34 +14,34 @@
  * limitations under the License.
  */
 
-package io.apiman.gateway.api.rest.contract;
+package io.apiman.gateway.api.rest;
 
-import io.apiman.gateway.api.rest.contract.exceptions.NotAuthorizedException;
+import io.apiman.gateway.engine.beans.GatewayEndpoint;
+import io.apiman.gateway.engine.beans.SystemStatus;
+import io.swagger.annotations.Api;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.container.AsyncResponse;
-import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.MediaType;
 
 /**
- * Org API
+ * The System API.
+ *
+ * @author eric.wittmann@redhat.com
  */
-@Path("/")
-@io.swagger.annotations.Api
-public interface IOrgResource {
+@Path("system")
+@Api
+public interface ISystemResource {
 
-    // Organisation
-    /**
-     * Paginated list of Org names.
-     *
-     * @param response List\<String\> of Org names.
-     *
-     * @throws NotAuthorizedException when unauthorized
-     */
     @GET
+    @Path("status")
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("organizations")
-    public void listOrgs(@Suspended final AsyncResponse response) throws NotAuthorizedException;
+    public SystemStatus getStatus();
+
+    @GET
+    @Path("endpoint")
+    @Produces(MediaType.APPLICATION_JSON)
+    public GatewayEndpoint getEndpoint();
+
 }
