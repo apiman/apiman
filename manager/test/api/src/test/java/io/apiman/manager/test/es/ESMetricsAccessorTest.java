@@ -47,6 +47,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.IOUtils;
 import org.joda.time.DateTime;
@@ -85,6 +86,7 @@ public class ESMetricsAccessorTest {
             .withElasticVersion(ApimanEmbeddedElastic.getEsBuildVersion())
             .withDownloadDirectory(esDownloadCache)
             .withSetting(PopularProperties.CLUSTER_NAME, "apiman")
+            .withStartTimeout(1, TimeUnit.MINUTES)
             .withCleanInstallationDirectoryOnStop(true)
             .build()
             .start();
