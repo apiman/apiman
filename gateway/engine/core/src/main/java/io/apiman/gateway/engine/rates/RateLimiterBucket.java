@@ -67,7 +67,7 @@ public class RateLimiterBucket implements Serializable {
      * Gets the period boundary for the period bounding the last
      * request.
      * @param period
-    ZZZZ*/
+     */
     private long getLastPeriodBoundary(RateBucketPeriod period) {
         return getPeriodBoundary(getLast(), period);
     }
