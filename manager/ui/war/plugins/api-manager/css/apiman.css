@@ -1303,6 +1303,7 @@ div.editable-click:hover {
 }
 
 .apiman-inline-edit {
+  white-space: unset !important;
   margin-right: 25px;
 }
 .apiman-inline-edit .btn {

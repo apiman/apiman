@@ -3,7 +3,8 @@
     <dl>
       <dt apiman-i18n-key="auth-realm">Authentication Realm</dt>
       <dd>
-        <input id="realm" ng-model="config.realm" class="apiman-form-control form-control" style="" type="text" apiman-i18n-key="basic-auth.enter-realm" placeholder="Realm..." ng-disabled="isEntityDisabled()"></input>
+        <input name="realm" id="realm" ng-model="config.realm" class="apiman-form-control form-control" style="" type="text" apiman-i18n-key="basic-auth.enter-realm" placeholder="Realm..." ng-disabled="isEntityDisabled()"  required name-validation /></input>
+        <span ng-show="policyForm.realm.$touched && policyForm.realm.$invalid" apiman-i18n-key="name-error">The value is not valid!</span>
       </dd>
       <dt apiman-i18n-key="require-transport-security">Require Transport Security</dt>
       <dd>
@@ -19,8 +20,8 @@
       </dd>
       <dt apiman-i18n-key="forward-authenticated-user">Forward Authenticated Username as HTTP Header</dt>
       <dd>
-        <input id="forward-identity" ng-model="config.forwardIdentityHttpHeader" class="apiman-form-control form-control" style="" type="text" apiman-i18n-key="base-auth.enter-auth-user-header" placeholder="HTTP header or leave blank to disable..." ng-disabled="isEntityDisabled()"></input>
-      </dd>
+        <input name="forwardIdentity" id="forward-identity" ng-model="config.forwardIdentityHttpHeader" class="apiman-form-control form-control" style="" type="text" apiman-i18n-key="base-auth.enter-auth-user-header" placeholder="HTTP header or leave blank to disable..." ng-disabled="isEntityDisabled()"></input>
+        <span ng-show="policyForm.forwardIdentity.$touched && policyForm.forwardIdentity.$invalid" apiman-i18n-key="name-error">The value is not valid!</span>
       <dt apiman-i18n-key="require-basic-auth">Require Basic Authentication</dt>
       <dd>
         <p class="apiman-label-faded">
@@ -64,7 +65,8 @@
       </div>
     </div>
     <div style="width: 100%; float: left; margin-bottom: 10px; margin-top: 5px">
-      <input id="static-username" ng-model="username" class="form-control" style="width: 85px; float: left; margin-right: 5px" type="text" apiman-i18n-key="basic-auth.enter-username" placeholder="Username..." ng-disabled="isEntityDisabled()"></input>
+      <input name="staticUsername" id="static-username" ng-model="username" class="form-control" style="width: 85px; float: left; margin-right: 5px" type="text" apiman-i18n-key="basic-auth.enter-username" placeholder="Username..." ng-disabled="isEntityDisabled()" name-validation></input>
+      <span ng-show="policyForm.staticUsername.$touched && policyForm.staticUsername.$invalid" apiman-i18n-key="name-error">The value is not valid!</span>
       <div style="width: 8px; float: left; line-height: 28px" apiman-i18n-skip>:</div>
       <input id="static-password" ng-model="password" class="form-control" style="width: 102px; float: left; margin-right: 5px" type="password" apiman-i18n-key="basic-auth.enter-password" placeholder="Password..." ng-disabled="isEntityDisabled()"></input>
       <button id="static-add" ng-disabled="!username || !password || isEntityDisabled()" ng-click="add(username, password)" apiman-i18n-key="add" class="btn btn-default" style="min-width: 75px">Add</button>
@@ -96,7 +98,8 @@
         </dd>
         <dt ng-show="config.jdbcIdentity.type == 'url'" apiman-i18n-key="jdbc-username">JDBC Username</dt>
         <dd ng-show="config.jdbcIdentity.type == 'url'">
-          <input id="jdbc-username" ng-model="config.jdbcIdentity.username" class="apiman-form-control form-control" type="text" apiman-i18n-key="basic-auth.jdbc.enter-username" placeholder="Enter JDBC Username" ng-disabled="isEntityDisabled()"></input>
+          <input name="jdbcUsername" id="jdbc-username" ng-model="config.jdbcIdentity.username" class="apiman-form-control form-control" type="text" apiman-i18n-key="basic-auth.jdbc.enter-username" placeholder="Enter JDBC Username" ng-disabled="isEntityDisabled()" name-validation></input>
+          <span ng-show="policyForm.forwardIdentity.$touched && policyForm.forwardIdentity.$invalid" apiman-i18n-key="name-error">The value is not valid!</span>
         </dd>
         <dt ng-show="config.jdbcIdentity.type == 'url'" apiman-i18n-key="jdbc-password">JDBC Password</dt>
         <dd ng-show="config.jdbcIdentity.type == 'url'">

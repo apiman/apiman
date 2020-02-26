@@ -18,7 +18,6 @@ module Apiman {
                                       'planView','planEdit','planAdmin',
                                       'apiView', 'apiEdit', 'apiAdmin',
                                       'clientView', 'clientEdit', 'clientAdmin'];
-            $scope.isValid = true;
             $scope.rolePermissions = {};
             angular.forEach(allPermissions, function(value) {
                 $scope.rolePermissions[value] = false;
@@ -35,7 +34,8 @@ module Apiman {
             };
             
             $scope.$watch('rolePermissions', function(newValue) {
-                $scope.isValid = validate();
+                $scope.editRole.$valid = $scope.editRole.$valid && validate();
+                $scope.editRole.$invalid = !$scope.editRole.$valid;
             }, true);
             
             var pageData = {
@@ -98,7 +98,6 @@ module Apiman {
                         PageLifecycle.redirectTo('/admin/roles');
                     }, PageLifecycle.handleError);
                 }, function () {
-                    //console.log('Modal dismissed at: ' + new Date());
                     $scope.deleteButton.state = 'complete';
                 });
             };

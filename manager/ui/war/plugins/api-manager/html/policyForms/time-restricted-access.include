@@ -1,95 +1,96 @@
-<div class="form policy-config time-restricted-access" data-field="form" ng-controller="Apiman.TimeRestrictedAccessFormController">
-  <div style="margin-bottom:10px;" apiman-i18n-key="time-restricted-access-message">
-  	Manage the list of API routes that can be accessed at specific time and date.
-  </div>
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <h3 class="panel-title" apiman-i18n-key="time-restricted-access-rule">Add new restriction</h3>
-    </div>
-    <div class="panel-body container-fluid">
-      <div class="row">
-        <div class="col-md-8">
-          <label for="path" apiman-i18n-key="time-restricted-access-uri">Allow all requests matching URI</label>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-8">
-          	<input id="path" style="width:100%" name="path" ng-model="pathPattern" class="form-control" 
-          		type="text" apiman-i18n-key="time-restricted-access.enter-path" placeholder="(/path/to/.*)" ng-disabled="isEntityDisabled()"></input>
-        </div>
-      </div>
-      <div class="row" style="margin-top:10px;">
-      	<div class="col-md-3">
-      		<label apiman-i18n-key="hour-start">From time in the day</label>
-          <uib-timepicker ng-model="timeStart" ng-change="timeChanged()" hour-step="1" minute-step="10" show-meridian="false">
-          </uib-timepicker>
-        </div>
-        <div class="col-md-3">
-           <label apiman-i18n-key="hour-end">To time in the day</label>
-          <uib-timepicker ng-model="timeEnd" ng-change="timeChanged()" hour-step="1" minute-step="10" show-meridian="false">
-          </uib-timepicker>
-        </div>
-         <div class="col-md-3">
-          <label apiman-i18n-key="day-start">From day of the week</label>
-          <div style="margin-top:20px;">
-            <select apiman-select-picker ng-model="dayStart" class="selectpicker" data-width="110" 
-                data-live-search="false" ng-disabled="isEntityDisabled()">
-                <option ng-repeat="dayname in weekdays">{{dayname}}</option>  
-            </select>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <label apiman-i18n-key="day-end">To day of the week</label>
-          <div style="margin-top:20px;">
-            <select apiman-select-picker ng-model="dayEnd" class="selectpicker" data-width="110" 
-                data-live-search="false" ng-disabled="isEntityDisabled()">
-                <option ng-repeat="dayname in weekdays">{{dayname}}</option>  
-            </select>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-10"></div>
-        <div class="col-md-2">
-          <button id="add-rule" ng-disabled="currentItemInvalid()" ng-click="add()" apiman-i18n-key="add" class="btn btn-default" style="min-width: 75px" ng-disabled="isEntityDisabled()">Add</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div>
-    <dl>
-      <dt apiman-i18n-key="configured-time-restricted-access-rules">Time restrictions</dt>
-    </dl>
-  </div>
-  <table class="table table-striped table-bordered">
-    <thead>
-      <tr>
-        <th width="50%" apiman-i18n-key="path">Path</th>
-        <th width="50%" apiman-i18n-key="accessible-utc">Accessible (UTC)</th>
-        <th width="1%"></th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr ng-repeat="item in config.rules | orderBy: 'pathPattern'">
-        <td>{{ item.pathPattern }}</td>
-        <td> {{formatToTime(item.timeStart)}}-{{formatToTime(item.timeEnd)}}
-              from {{getDayForIndex(item.dayStart)}} to {{getDayForIndex(item.dayEnd)}}  
-          </td>
-        <td>
-          <button ng-click="remove(item)" class="btn btn-default" ng-disabled="isEntityDisabled()">
-            <i class="fa fa-times fa-fw"></i>
-          </button>
-        </td>
-      </tr>
-      <tr>
-        <td colspan="4" ng-show="!config.rules.length">
-          <div class="apiman-no-content">
-            <p class="apiman-no-entities-description" apiman-i18n-key="time-access.no-rules-table">No restrictions added.</p>
-          </div>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-  
-</div>
+<div class="form policy-config time-restricted-access" data-field="form" ng-controller="Apiman.TimeRestrictedAccessFormController">
+  <div style="margin-bottom:10px;" apiman-i18n-key="time-restricted-access-message">
+  	Manage the list of API routes that can be accessed at specific time and date.
+  </div>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title" apiman-i18n-key="time-restricted-access-rule">Add new restriction</h3>
+    </div>
+    <div class="panel-body container-fluid">
+      <div class="row">
+        <div class="col-md-8">
+          <label for="path" apiman-i18n-key="time-restricted-access-uri">Allow all requests matching URI</label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-8">
+          	<input id="path" style="width:100%" name="path" ng-model="pathPattern" class="form-control"
+          		type="text" apiman-i18n-key="time-restricted-access.enter-path" placeholder="(/path/to/.*)" ng-disabled="isEntityDisabled()" required path-validation></input>
+            <span ng-show="policyForm.path.$touched && policyForm.path.$invalid" apiman-i18n-key="path-error">The value is invalid!</span>
+        </div>
+      </div>
+      <div class="row" style="margin-top:10px;">
+      	<div class="col-md-3">
+      		<label apiman-i18n-key="hour-start">From time in the day</label>
+          <uib-timepicker ng-model="timeStart" ng-change="timeChanged()" hour-step="1" minute-step="10" show-meridian="false">
+          </uib-timepicker>
+        </div>
+        <div class="col-md-3">
+           <label apiman-i18n-key="hour-end">To time in the day</label>
+          <uib-timepicker ng-model="timeEnd" ng-change="timeChanged()" hour-step="1" minute-step="10" show-meridian="false">
+          </uib-timepicker>
+        </div>
+         <div class="col-md-3">
+          <label apiman-i18n-key="day-start">From day of the week</label>
+          <div style="margin-top:20px;">
+            <select apiman-select-picker ng-model="dayStart" class="selectpicker" data-width="110"
+                data-live-search="false" ng-disabled="isEntityDisabled()">
+                <option ng-repeat="dayname in weekdays">{{dayname}}</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <label apiman-i18n-key="day-end">To day of the week</label>
+          <div style="margin-top:20px;">
+            <select apiman-select-picker ng-model="dayEnd" class="selectpicker" data-width="110"
+                data-live-search="false" ng-disabled="isEntityDisabled()">
+                <option ng-repeat="dayname in weekdays">{{dayname}}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-10"></div>
+        <div class="col-md-2">
+          <button id="add-rule" ng-disabled="currentItemInvalid() || policyForm.$invalid" ng-click="add()" apiman-i18n-key="add" class="btn btn-default" style="min-width: 75px" ng-disabled="isEntityDisabled()">Add</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <dl>
+      <dt apiman-i18n-key="configured-time-restricted-access-rules">Time restrictions</dt>
+    </dl>
+  </div>
+  <table class="table table-striped table-bordered">
+    <thead>
+      <tr>
+        <th width="50%" apiman-i18n-key="path">Path</th>
+        <th width="50%" apiman-i18n-key="accessible-utc">Accessible (UTC)</th>
+        <th width="1%"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="item in config.rules | orderBy: 'pathPattern'">
+        <td>{{ item.pathPattern }}</td>
+        <td> {{formatToTime(item.timeStart)}}-{{formatToTime(item.timeEnd)}}
+              from {{getDayForIndex(item.dayStart)}} to {{getDayForIndex(item.dayEnd)}}
+          </td>
+        <td>
+          <button ng-click="remove(item)" class="btn btn-default" ng-disabled="isEntityDisabled()">
+            <i class="fa fa-times fa-fw"></i>
+          </button>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="4" ng-show="!config.rules.length">
+          <div class="apiman-no-content">
+            <p class="apiman-no-entities-description" apiman-i18n-key="time-access.no-rules-table">No restrictions added.</p>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+</div>

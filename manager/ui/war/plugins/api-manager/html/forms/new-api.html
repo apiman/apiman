@@ -1,90 +1,93 @@
-    <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
-    
-  </head>
-
-  <body>
-    
-    <div ng-include="headerInclude"></div>
-    <div ng-controller="Apiman.NewApiController" class="container apiman-entity-new page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
-      <div class="row">
-        <h2 class="title" apiman-i18n-key="new-api">New API</h2>
-      </div>
-      <!-- Helpful hint -->
-      <div class="row">
-        <p apiman-i18n-key="new-api-help-text" class="col-md-6 apiman-label-faded">Create a new API within the specified Organization, allowing Client Apps to begin consuming it.</p>
-      </div>
-      <!-- HR -->
-      <div class="row hr-row">
-        <hr/>
-      </div>
-      <!-- Choose org and api name -->
-      <div ng-show="organizations.length > 0">
-        <div class="row">
-          <dl class="org">
-            <dt apiman-i18n-key="organization">Organization</dt>
-            <dd>
-              <div class="btn-group" data-field="orgSelector">
-                <button type="button" id="selector-org" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                  <span data-field="selectorLabel" id="selector-org-value">{{selectedOrg.name}}</span> &nbsp;&nbsp;<span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu" data-field="organizations">
-                   <li ng-repeat="org in organizations"><a href="#" ng-click="setOrg( org )">{{ org.name }}</a></li>
-                </ul>
-              </div>
-            </dd>
-          </dl>
-          <dl class="slash">
-            <dt apiman-i18n-skip>&nbsp;</dt>
-            <dd>
-              <span class="divider" apiman-i18n-skip>/</span>
-            </dd>
-          </dl>
-          <dl class="name">
-            <dt apiman-i18n-key="api-name">API Name</dt>
-            <dd>
-              <input ng-model="api.name" data-field="name" type="text" class="apiman-form-control form-control entityname" id="apiman-entityname" apiman-i18n-key="enter-api-name" placeholder="Enter API name..."></input>
-            </dd>
-          </dl>
-        </div>
-        <!-- Initial API Version -->
-        <div class="row">
-          <dl>
-            <dt apiman-i18n-key="initial-version">Initial Version</dt>
-            <dd>
-              <input ng-model="api.initialVersion" data-field="version" type="text" class="apiman-form-control form-control version" id="apiman-version" value="1.0"></input>
-            </dd>
-          </dl>
-        </div>
-        <!-- Description of api -->
-        <div class="row">
-          <dl>
-            <dt apiman-i18n-key="description">Description</dt>
-            <dd>
-              <textarea ng-model="api.description" class="apiman-form-control form-control description" id="apiman-description" apiman-i18n-key="enter-api-description" placeholder="Enter API description (optional)..."></textarea>
-            </dd>
-          </dl>
-        </div>
-      </div>
-      <div ng-hide="organizations.length > 0" class="apiman-no-content container-fluid">
-        <div class="row">
-          <div class="col-md-12">
-            <p class="apiman-no-entities-description" apiman-i18n-key="missing-create-api-permission">You don't have permission to create an API in any of your Organizations (or you aren't in any orgs)!  Please become a member of an existing Organization or create a new one before trying to create an API.</p>
-          </div>
-        </div>
-      </div>
-      <!-- HR -->
-      <div class="row hr-row">
-        <hr/>
-      </div>
-      <!-- Create Button -->
-      <div class="row">
-        <button id="create-api" ng-disabled="!api.name || !api.initialVersion || !selectedOrg" apiman-action-btn="" class="btn btn-primary" data-field="createButton" apiman-i18n-key="create-api" placeholder="Creating..." data-icon="fa-cog" ng-click="saveNewApi()">Create API</button>
-        <a id="cancel" href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" apiman-i18n-key="cancel">Cancel</a>
-      </div>
-    </div> <!-- /container -->
-  </body>
-</html>
+    <!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+
+  </head>
+
+  <body>
+
+    <div ng-include="headerInclude"></div>
+    <form name="newApi" ng-controller="Apiman.NewApiController" class="container apiman-entity-new page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
+      <div class="row">
+        <h2 class="title" apiman-i18n-key="new-api">New API</h2>
+      </div>
+      <!-- Helpful hint -->
+      <div class="row">
+        <p apiman-i18n-key="new-api-help-text" class="col-md-6 apiman-label-faded">Create a new API within the specified Organization, allowing Client Apps to begin consuming it.</p>
+      </div>
+      <!-- HR -->
+      <div class="row hr-row">
+        <hr/>
+      </div>
+      <!-- Choose org and api name -->
+      <div ng-show="organizations.length > 0">
+        <div class="row">
+          <dl class="org">
+            <dt apiman-i18n-key="organization">Organization</dt>
+            <dd>
+              <div class="btn-group" data-field="orgSelector">
+                <button type="button" id="selector-org" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                  <span data-field="selectorLabel" id="selector-org-value">{{selectedOrg.name}}</span> &nbsp;&nbsp;<span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" data-field="organizations">
+                   <li ng-repeat="org in organizations"><a href="#" ng-click="setOrg( org )">{{ org.name }}</a></li>
+                </ul>
+              </div>
+            </dd>
+          </dl>
+          <dl class="slash">
+            <dt apiman-i18n-skip>&nbsp;</dt>
+            <dd>
+              <span class="divider" apiman-i18n-skip>/</span>
+            </dd>
+          </dl>
+          <dl class="name">
+            <dt apiman-i18n-key="api-name">API Name</dt>
+            <dd>
+              <input name="name" ng-model="api.name" data-field="name" type="text" class="apiman-form-control form-control entityname" id="apiman-entityname" apiman-i18n-key="enter-api-name" placeholder="Enter API name..." required name-validation></input>
+              <span ng-show="newApi.name.$touched && newApi.name.$invalid" apiman-i18n-key="name-error">The value is invalid!</span>
+            </dd>
+          </dl>
+        </div>
+        <!-- Initial API Version -->
+        <div class="row">
+          <dl>
+            <dt apiman-i18n-key="initial-version">Initial Version</dt>
+            <dd>
+              <input name="version" ng-model="api.initialVersion" data-field="version" type="text" class="apiman-form-control form-control version" id="apiman-version" value="1.0" required version-validation></input>
+              <span ng-show="newApi.version.$touched && newApi.version.$invalid" apiman-i18n-key="version-error">The value is invalid!</span>
+            </dd>
+          </dl>
+        </div>
+        <!-- Description of api -->
+        <div class="row">
+          <dl>
+            <dt apiman-i18n-key="description">Description</dt>
+            <dd>
+              <textarea name="description" ng-model="api.description" class="apiman-form-control form-control description" id="apiman-description" apiman-i18n-key="enter-api-description" placeholder="Enter API description (optional)..." text-validation></textarea>
+              <span ng-show="newApi.description.$touched && newApi.description.$invalid" apiman-i18n-key="text-error">The value is invalid!</span>
+            </dd>
+          </dl>
+        </div>
+      </div>
+      <div ng-hide="organizations.length > 0" class="apiman-no-content container-fluid">
+        <div class="row">
+          <div class="col-md-12">
+            <p class="apiman-no-entities-description" apiman-i18n-key="missing-create-api-permission">You don't have permission to create an API in any of your Organizations (or you aren't in any orgs)!  Please become a member of an existing Organization or create a new one before trying to create an API.</p>
+          </div>
+        </div>
+      </div>
+      <!-- HR -->
+      <div class="row hr-row">
+        <hr/>
+      </div>
+      <!-- Create Button -->
+      <div class="row">
+        <button id="create-api" ng-disabled="!newApi.$dirty || newApi.$invalid" apiman-action-btn="" class="btn btn-primary" data-field="createButton" apiman-i18n-key="create-api" placeholder="Creating..." data-icon="fa-cog" ng-click="saveNewApi()">Create API</button>
+        <a id="cancel" href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" apiman-i18n-key="cancel">Cancel</a>
+      </div>
+    </div> <!-- /container -->
+  </body>
+</html>

@@ -1,19 +1,19 @@
-<div style="position: relative;" class="description">
-    <div editable-textarea="descr"
-         onaftersave="saveDescription()"
-         e-ng-focus="focusOnDescription($event)"
-         e-ng-change="changeOnDescription()"
-         e-class="autoExpand"
-         ng-mouseover="descriptionMouseOver($event)"
-         ng-mouseout="descriptionMouseOut($event)"
-         id="descriptionWrapper">
-            {{ descr || "&lt;" + defaultValue + "&gt;" }}
-        <!-- ng-style="{ left: leftPosition, top: topPosition, height: height }" -->
-            <a href="#"
-               ng-show="showPencil"
-               class="apiman-inline-edit-overlay-edit"
-               style="position: absolute; right: 0; top: 0;">
-                <i class="fa fa-pencil fa-fw"></i>
-            </a>
-    </div>
-</div>
+<div style="position: relative;" class="description">
+    <div editable-textarea="descr"
+         onbeforesave="beforeSaveDescription($data)"
+         onaftersave="saveDescription()"
+         e-ng-focus="focusOnDescription($event)"
+         e-ng-change="changeOnDescription()"
+         e-class="autoExpand"
+         ng-mouseover="descriptionMouseOver($event)"
+         ng-mouseout="descriptionMouseOut($event)"
+         id="descriptionWrapper">
+            {{ descr || "&lt;" + defaultValue + "&gt;" }}
+            <a href="#"
+               ng-show="showPencil"
+               class="apiman-inline-edit-overlay-edit"
+               style="position: absolute; right: 0; top: 0;">
+                <i class="fa fa-pencil fa-fw"></i>
+            </a>
+    </div>
+</div>
