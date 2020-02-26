@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  apiMgmtRealm: 'Apiman',
+  apiMgmtRealm: '[keycloakRealm]',
   apiMgmtUiRestUrl: 'https://[apimanUiRestEndpoint]:[port]/apiman',
   keycloakAuthUrl: 'https://[keycloakEndpoint]:[port]/auth'
 };
