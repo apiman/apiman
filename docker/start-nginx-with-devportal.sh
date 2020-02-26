@@ -5,7 +5,7 @@
 
 for mainFileName in /usr/share/nginx/html/main*.js
 do
-  envsubst "\$API_MGMT_UI_REST_URL \$KEYCLOAK_AUTH_URL"  < "$mainFileName" > main.tmp
+  envsubst "\$KEYCLOAK_REALM \$API_MGMT_UI_REST_URL \$KEYCLOAK_AUTH_URL"  < "$mainFileName" > main.tmp
   mv main.tmp "${mainFileName}"
 done
 nginx -g 'daemon off;'
