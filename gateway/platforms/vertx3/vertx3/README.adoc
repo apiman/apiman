@@ -91,7 +91,7 @@ For example `${MAGIC_NUMBER:-8090}` will result in `8090` being set if `MAGIC_NU
 ```json
 {
   "registry": {
-    "class": "io.apiman.gateway.engine.es.PollCachingESRegistry", // <1>
+    "class": "io.apiman.gateway.engine.es.PollCachingEsRegistry", // <1>
     "config": {
       "client": {
         "client": "jest",

@@ -15,6 +15,8 @@
  */
 package io.apiman.gateway.engine.es;
 
+import io.apiman.common.es.util.AbstractEsComponent;
+import io.apiman.common.es.util.EsConstants;
 import io.apiman.gateway.engine.DependsOnComponents;
 import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncHandler;
@@ -25,14 +27,17 @@ import io.apiman.gateway.engine.io.IApimanBuffer;
 import io.apiman.gateway.engine.io.ISignalReadStream;
 import io.apiman.gateway.engine.io.ISignalWriteStream;
 import io.apiman.gateway.engine.storage.model.CacheEntry;
-import io.searchbox.client.JestResult;
-import io.searchbox.core.Get;
-import io.searchbox.core.Index;
+import org.apache.commons.codec.binary.Base64;
+import org.elasticsearch.action.get.GetRequest;
+import org.elasticsearch.action.get.GetResponse;
+import org.elasticsearch.action.index.IndexRequest;
+import org.elasticsearch.client.RequestOptions;
+import org.elasticsearch.common.xcontent.XContentType;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
-
-import org.apache.commons.codec.binary.Base64;
 
 import static io.apiman.gateway.engine.storage.util.BackingStoreUtil.JSON_MAPPER;
 
@@ -42,14 +47,14 @@ import static io.apiman.gateway.engine.storage.util.BackingStoreUtil.JSON_MAPPER
  * @author eric.wittmann@redhat.com
  */
 @DependsOnComponents({ IBufferFactoryComponent.class })
-public class ESCacheStoreComponent extends AbstractESComponent implements ICacheStoreComponent {
+public class EsCacheStoreComponent extends AbstractEsComponent implements ICacheStoreComponent {
     private IBufferFactoryComponent bufferFactory;
 
     /**
      * Constructor.
      * @param config the configuration
      */
-    public ESCacheStoreComponent(Map<String, String> config) {
+    public EsCacheStoreComponent(Map<String, String> config) {
         super(config);
     }
 
@@ -69,10 +74,10 @@ public class ESCacheStoreComponent extends AbstractESComponent implements ICache
         entry.setData(null);
         entry.setExpiresOn(System.currentTimeMillis() + (timeToLive * 1000));
         entry.setHead(JSON_MAPPER.writeValueAsString(entry));
-        Index index = new Index.Builder(entry).refresh(false).index(getIndexName())
-                .type("cacheEntry").id(cacheKey).build(); //$NON-NLS-1$
+
+        IndexRequest indexRequest = new IndexRequest(getFullIndexName()).source(JSON_MAPPER.writeValueAsBytes(entry), XContentType.JSON).id(cacheKey);
         try {
-            getClient().execute(index);
+            getClient().index(indexRequest, RequestOptions.DEFAULT);
         } catch (Throwable e) {
         }
     }
@@ -107,10 +112,9 @@ public class ESCacheStoreComponent extends AbstractESComponent implements ICache
             public void end() {
                 if (!aborted) {
                     entry.setData(Base64.encodeBase64String(data.getBytes()));
-                    Index index = new Index.Builder(entry).refresh(false).index(getIndexName())
-                            .type("cacheEntry").id(cacheKey).build(); //$NON-NLS-1$
                     try {
-                        getClient().execute(index);
+                        IndexRequest indexRequest = new IndexRequest(getFullIndexName()).source(JSON_MAPPER.writeValueAsBytes(entry), XContentType.JSON).id(cacheKey);
+                        getClient().index(indexRequest, RequestOptions.DEFAULT);
                     } catch (Throwable e) {
                     }
                 }
@@ -124,11 +128,11 @@ public class ESCacheStoreComponent extends AbstractESComponent implements ICache
      */
     @Override
     public <T> void get(String cacheKey, final Class<T> type, final IAsyncResultHandler<T> handler) {
-        Get get = new Get.Builder(getIndexName(), cacheKey).type("cacheEntry").build(); //$NON-NLS-1$
         try {
-            JestResult result = getClient().execute(get);
-            if (result.isSucceeded()) {
-                CacheEntry cacheEntry = result.getSourceAsObject(CacheEntry.class);
+            GetResponse response = getClient().get(new GetRequest(getFullIndexName()).id(cacheKey), RequestOptions.DEFAULT);
+            if (response.isExists()) {
+                String sourceAsString = response.getSourceAsString();
+                CacheEntry cacheEntry = JSON_MAPPER.readValue(sourceAsString, CacheEntry.class);
                 try {
                     T rval = (T) JSON_MAPPER.reader(type).readValue(cacheEntry.getHead());
                     handler.handle(AsyncResultImpl.create(rval));
@@ -151,17 +155,18 @@ public class ESCacheStoreComponent extends AbstractESComponent implements ICache
     public <T> void getBinary(final String cacheKey, final Class<T> type,
             final IAsyncResultHandler<ISignalReadStream<T>> handler) {
         try {
-            Get get = new Get.Builder(getIndexName(), cacheKey).type("cacheEntry").build(); //$NON-NLS-1$
-            JestResult result = getClient().execute(get);
+            GetResponse response = getClient().get(new GetRequest(getFullIndexName()).id(cacheKey), RequestOptions.DEFAULT);
+
             // Did the GET succeed?  If not, return null.
             // TODO log the error
-            if (!result.isSucceeded()) {
+            if (!response.isExists()) {
                 handler.handle(AsyncResultImpl.create((ISignalReadStream<T>) null));
                 return;
             }
 
             // Is the cache entry expired?  If so return null.
-            CacheEntry cacheEntry = result.getSourceAsObject(CacheEntry.class);
+            String sourceAsString = response.getSourceAsString();
+            CacheEntry cacheEntry = JSON_MAPPER.readValue(sourceAsString, CacheEntry.class);
             if (System.currentTimeMillis() > cacheEntry.getExpiresOn() ) {
                 // Cache item has expired.  Return null instead of the cached data.
                 handler.handle(AsyncResultImpl.create((ISignalReadStream<T>) null));
@@ -219,11 +224,29 @@ public class ESCacheStoreComponent extends AbstractESComponent implements ICache
     }
 
     /**
-     * @see io.apiman.gateway.engine.es.AbstractESComponent#getDefaultIndexName()
+     * @see AbstractEsComponent#getDefaultIndexPrefix()
      */
     @Override
-    protected String getDefaultIndexName() {
-        return ESConstants.CACHE_INDEX_NAME;
+    protected String getDefaultIndexPrefix() {
+        return EsConstants.CACHE_INDEX_NAME;
+    }
+
+    /**
+     * @see AbstractEsComponent#getDefaultIndices()
+     * @return default indices
+     */
+    @Override
+    protected List<String> getDefaultIndices() {
+        String[] indices = {EsConstants.INDEX_CACHE_CACHE_ENTRY};
+        return Arrays.asList(indices);
+    }
+
+    /**
+     * get index full name for cache entry
+     * @return full index name
+     */
+    private String getFullIndexName() {
+        return (getIndexPrefix() + EsConstants.INDEX_CACHE_CACHE_ENTRY).toLowerCase();
     }
 
 }

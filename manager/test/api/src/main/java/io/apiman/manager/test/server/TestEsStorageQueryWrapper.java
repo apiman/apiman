@@ -15,6 +15,7 @@
  */
 package io.apiman.manager.test.server;
 
+import io.apiman.common.es.util.EsConstants;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
 import io.apiman.manager.api.beans.idm.PermissionBean;
 import io.apiman.manager.api.beans.idm.RoleBean;
@@ -40,8 +41,9 @@ import io.apiman.manager.api.beans.summary.PolicyDefinitionSummaryBean;
 import io.apiman.manager.api.beans.summary.PolicySummaryBean;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.StorageException;
-import io.searchbox.client.JestClient;
-import io.searchbox.indices.Refresh;
+import org.elasticsearch.action.admin.indices.refresh.RefreshRequest;
+import org.elasticsearch.client.RequestOptions;
+import org.elasticsearch.client.RestHighLevelClient;
 
 import java.util.List;
 import java.util.Set;
@@ -52,7 +54,7 @@ import java.util.Set;
 @SuppressWarnings("javadoc")
 public class TestEsStorageQueryWrapper implements IStorageQuery {
 
-    private JestClient esClient;
+    private RestHighLevelClient esClient;
     private IStorageQuery delegate;
 
     /**
@@ -60,7 +62,7 @@ public class TestEsStorageQueryWrapper implements IStorageQuery {
      * @param esClient
      * @param delegate
      */
-    public TestEsStorageQueryWrapper(JestClient esClient, IStorageQuery delegate) {
+    public TestEsStorageQueryWrapper(RestHighLevelClient esClient, IStorageQuery delegate) {
         this.esClient = esClient;
         this.delegate = delegate;
     }
@@ -375,7 +377,10 @@ public class TestEsStorageQueryWrapper implements IStorageQuery {
      */
     private void refresh() {
         try {
-        	esClient.execute(new Refresh.Builder().addIndex("apiman_manager").build()); //$NON-NLS-1$
+            for(String postfix: EsConstants.MANAGER_INDEX_POSTFIXES) {
+                String fullIndexName = (EsConstants.MANAGER_INDEX_NAME + "_" + postfix).toLowerCase();
+                esClient.indices().refresh(new RefreshRequest(fullIndexName), RequestOptions.DEFAULT); //$NON-NLS-1$
+            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

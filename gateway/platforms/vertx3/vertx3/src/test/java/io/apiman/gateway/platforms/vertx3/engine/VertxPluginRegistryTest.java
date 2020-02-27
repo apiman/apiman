@@ -395,7 +395,7 @@ public class VertxPluginRegistryTest {
         //Minimal configuration to create a fake engine. Include "plugin-registry" to test.
         String jsonStr = "{\n" +
                 "   \"registry\":{\n" +
-                "      \"class\":\"io.apiman.gateway.engine.es.ESRegistry\",\n" +
+                "      \"class\":\"io.apiman.gateway.engine.es.EsRegistry\",\n" +
                 "      \"config\":{\n" +
                 "         \"client\":{\n" +
                 "            \"type\":\"${test.foo.es.type}\",\n" +
@@ -419,10 +419,10 @@ public class VertxPluginRegistryTest {
                 "      }\n" +
                 "   },\n" +
                 "   \"metrics\":{\n" +
-                "      \"class\":\"io.apiman.gateway.engine.es.ESMetrics\",\n" +
+                "      \"class\":\"io.apiman.gateway.engine.es.EsMetrics\",\n" +
                 "      \"config\":{\n" +
                 "         \"client\":{\n" +
-                "            \"type\":\"jest\",\n" +
+                "            \"type\":\"es\",\n" +
                 "            \"protocol\":\"${apiman.es.protocol}\",\n" +
                 "            \"host\":\"${apiman.es.host}\",\n" +
                 "            \"port\":\"${apiman.es.port}\",\n" +

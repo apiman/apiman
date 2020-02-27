@@ -23,9 +23,9 @@ import java.util.Arrays;
  * @author eric.wittmann@redhat.com
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
  */
-public class ESUtils {
+public class EsUtils {
 
-    private ESUtils() {
+    private EsUtils() {
     }
 
     /**
@@ -55,7 +55,7 @@ public class ESUtils {
     public static String queryWithEscapedArgs(String query, String... args) {
         Object[] sanitisedArgs = Arrays.stream(args)
             .parallel()
-            .map(ESUtils::escape)
+            .map(EsUtils::escape)
             .toArray();
         return replaceQMark(query, sanitisedArgs);
     }

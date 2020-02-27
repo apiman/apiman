@@ -15,8 +15,9 @@
  */
 package io.apiman.gateway.test.junit.servlet;
 
-import io.apiman.common.es.util.ApimanEmbeddedElastic;
+import com.fasterxml.jackson.databind.JsonNode;
 import io.apiman.common.es.util.DefaultEsClientFactory;
+import io.apiman.common.es.util.EsConstants;
 import io.apiman.common.util.ddl.DdlParser;
 import io.apiman.gateway.engine.GatewayConfigProperties;
 import io.apiman.gateway.engine.components.IBufferFactoryComponent;
@@ -33,11 +34,18 @@ import io.apiman.gateway.test.server.TestMetrics;
 import io.apiman.test.common.echo.EchoServer;
 import io.apiman.test.common.resttest.IGatewayTestServer;
 import io.apiman.test.common.util.TestUtil;
-import io.searchbox.client.JestClient;
-import io.searchbox.client.JestClientFactory;
-import io.searchbox.client.config.HttpClientConfig;
-import io.searchbox.indices.DeleteIndex;
+import org.apache.commons.dbcp.BasicDataSource;
+import org.apache.http.HttpHost;
+import org.elasticsearch.client.RestClient;
+import org.elasticsearch.client.RestClientBuilder;
+import org.elasticsearch.client.RestHighLevelClient;
+import org.infinispan.Cache;
+import org.infinispan.manager.CacheContainer;
+import org.infinispan.manager.DefaultCacheManager;
+import org.testcontainers.elasticsearch.ElasticsearchContainer;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -46,25 +54,8 @@ import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Properties;
-import java.util.concurrent.TimeUnit;
-
-import javax.naming.Context;
-import javax.naming.InitialContext;
-
-import org.apache.commons.dbcp.BasicDataSource;
-import org.infinispan.Cache;
-import org.infinispan.manager.CacheContainer;
-import org.infinispan.manager.DefaultCacheManager;
-
-import com.fasterxml.jackson.databind.JsonNode;
-
-import pl.allegro.tech.embeddedelasticsearch.PopularProperties;
 
 /**
  * A servlet version of the gateway test server.
@@ -90,10 +81,10 @@ public class ServletGatewayTestServer implements IGatewayTestServer {
      * Elasticsearch related.
      */
     private static final String ES_CLUSTER_NAME = "_apimantest";
-    private static final int JEST_TIMEOUT = 6000;
-    public static JestClient ES_CLIENT = null;
-    private JestClient client = null;
-    private ApimanEmbeddedElastic node;
+    private static final int ES_CLIENT_TIMEOUT = -1;
+    public static RestHighLevelClient ES_CLIENT = null;
+
+    private static ElasticsearchContainer node;
 
     /*
      * Database related.
@@ -265,35 +256,24 @@ public class ServletGatewayTestServer implements IGatewayTestServer {
      */
     private void preStart() throws IOException {
         if (withES) {
-            try {
-                File esDownloadCache = new File(System.getenv("HOME") + "/.cache/apiman/elasticsearch");
-                esDownloadCache.getParentFile().mkdirs();
-
-                node = ApimanEmbeddedElastic.builder()
-                            .withPort(19250)
-                            .withElasticVersion(ApimanEmbeddedElastic.getEsBuildVersion())
-                            .withDownloadDirectory(esDownloadCache)
-                            .withSetting(PopularProperties.CLUSTER_NAME, "apiman")
-                            .withCleanInstallationDirectoryOnStop(true)
-                            .withStartTimeout(1, TimeUnit.MINUTES)
-                            .build()
-                            .start();
-
-                System.out.println("================ STARTED ES ================ ");
-            } catch (IOException | InterruptedException e) {
-                throw new RuntimeException(e);
+            if (node == null) {
+                node = new ElasticsearchContainer("docker.elastic.co/elasticsearch/elasticsearch-oss:" + EsConstants.getEsVersion());
+            }
+            if (!node.isRunning()) {
+                // We have to start the test container here manually but it is stopped automatically from the test container library
+                // For performance reasons we do not stop the elasticsearch container between test runs
+                node.start();
             }
 
-            // Copy from manager?
-            String connectionUrl = "http://localhost:19250";
-            JestClientFactory factory = new JestClientFactory();
-            factory.setHttpClientConfig(new HttpClientConfig.Builder(connectionUrl)
-                    .multiThreaded(true)
-                    .connTimeout(JEST_TIMEOUT)
-                    .readTimeout(JEST_TIMEOUT)
-                    .build());
-            client = factory.getObject();
-            ES_CLIENT = client;
+            System.out.println("================ STARTED ES ================ ");
+
+            RestClientBuilder clientBuilder = RestClient.builder(
+                    new HttpHost(node.getContainerIpAddress(), node.getFirstMappedPort(), "http")
+            );
+            clientBuilder.setRequestConfigCallback(builder -> builder.setConnectTimeout(ES_CLIENT_TIMEOUT)
+                    .setSocketTimeout(ES_CLIENT_TIMEOUT));
+
+            ES_CLIENT = new RestHighLevelClient(clientBuilder);
         }
 
         if (withDB) {
@@ -303,7 +283,11 @@ public class ServletGatewayTestServer implements IGatewayTestServer {
                 TestUtil.ensureCtx(ctx, "java:/comp/env");
                 TestUtil.ensureCtx(ctx, "java:/comp/env/jdbc");
                 ds = createInMemoryDatasource();
-                ctx.bind(DB_JNDI_LOC, ds);
+                try {
+                    ctx.bind(DB_JNDI_LOC, ds);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 System.out.println("DataSource created and bound to JNDI: " + DB_JNDI_LOC);
             } catch (Exception e) {
                 throw new RuntimeException(e);
@@ -356,7 +340,11 @@ public class ServletGatewayTestServer implements IGatewayTestServer {
             List<String> statements = ddlParser.parse(is);
             for (String sql : statements){
                 PreparedStatement statement = connection.prepareStatement(sql);
-                statement.execute();
+                try {
+                    statement.execute();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -379,13 +367,9 @@ public class ServletGatewayTestServer implements IGatewayTestServer {
      * Called after stopping the gateway.
      */
     private void postStop() throws Exception {
-        if (client != null) {
-            client.execute(new DeleteIndex.Builder("apiman_gateway").build());
+        if (ES_CLIENT != null) {
+            DefaultEsClientFactory.deleteIndices(ES_CLIENT);
             DefaultEsClientFactory.clearClientCache();
-        }
-        if (node != null) {
-            System.out.println("======== STOPPING ES ========");
-            node.stop();
         }
         if (ds != null) {
             try (Connection connection = ds.getConnection()) {

@@ -19,33 +19,34 @@ package io.apiman.manager.api.core.metrics;
 import io.apiman.manager.api.beans.metrics.HistogramBean;
 import io.apiman.manager.api.beans.metrics.HistogramDataPoint;
 import io.apiman.manager.api.beans.metrics.HistogramIntervalType;
-import io.apiman.manager.api.core.IMetricsAccessor;
-
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.format.ISODateTimeFormat;
 
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
- * Optional base class for metrics implementations.
+ * Helper class for metrics implementations.
  * @author eric.wittmann@gmail.com
  */
-public abstract class AbstractMetricsAccessor implements IMetricsAccessor {
-    
+public abstract class MetricsAccessorHelper {
+
+    private MetricsAccessorHelper() {
+    }
+
     /**
      * Based on the given interval, create a "floor" value relative to the
      * given date.  This basically means zero'ing out certain fields (different
      * fields based on the interval type) and returning the modified date.
-     * @param date
-     * @param interval
+     * @param date the date
+     * @param interval the interval
      */
-    protected static DateTime floor(DateTime date, HistogramIntervalType interval) {
+    public static DateTime floor(DateTime date, HistogramIntervalType interval) {
         DateTime rval = date.withMillisOfSecond(0);
-        
+
         switch (interval) {
         case day:
             rval = rval.withHourOfDay(0).withMinuteOfHour(0).withSecondOfMinute(0);
@@ -63,45 +64,31 @@ public abstract class AbstractMetricsAccessor implements IMetricsAccessor {
             rval = rval.withDayOfWeek(DateTimeConstants.MONDAY).withHourOfDay(0).withMinuteOfHour(0).withSecondOfMinute(0);
             break;
         }
-        
+
         return rval;
     }
 
     /**
-     * @param date
+     * @param date the date to format
      */
-    protected static String formatDate(DateTime date) {
+    public static String formatDate(DateTime date) {
         return ISODateTimeFormat.dateTimeNoMillis().print(date);
     }
 
     /**
-     * @param date
+     * @param date the date to format
      */
-    protected static String formatDateWithMillis(DateTime date) {
-        return ISODateTimeFormat.dateTime().print(date);
-    }
-
-    /**
-     * @param date
-     */
-    protected static String formatDate(Calendar date) {
-        return DateFormatUtils.formatUTC(date.getTimeInMillis(), "yyyy-MM-dd'T'HH:mm:ss'Z'"); //$NON-NLS-1$
-    }
-
-    /**
-     * @param date
-     */
-    protected static String formatDateWithMillis(Calendar date) {
+    public static String formatDateWithMillis(Calendar date) {
         return DateFormatUtils.formatUTC(date.getTimeInMillis(), "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"); //$NON-NLS-1$
     }
 
     /**
      * Shortcut for the label (string) based histogram index.
-     * @param rval
-     * @param from
-     * @param to
-     * @param interval
-     * @param dataType
+     * @param rval the histogram bean
+     * @param from the start date
+     * @param to the end date
+     * @param interval the histogram interval
+     * @param dataType the data type class
      */
     public static <T extends HistogramDataPoint> Map<String, T> generateHistogramSkeleton(HistogramBean<T> rval, DateTime from, DateTime to,
             HistogramIntervalType interval, Class<T> dataType) {
@@ -111,10 +98,10 @@ public abstract class AbstractMetricsAccessor implements IMetricsAccessor {
     /**
      * Generate the histogram buckets based on the time frame requested and the interval.  This will
      * add an entry for each 'slot' or 'bucket' in the histogram, setting the count to 0.
-     * @param rval
-     * @param from
-     * @param to
-     * @param interval
+     * @param rval the histogram bean
+     * @param from start date
+     * @param to end date
+     * @param interval the interval
      */
     public static <T extends HistogramDataPoint, K> Map<K, T> generateHistogramSkeleton(HistogramBean<T> rval, DateTime from, DateTime to,
             HistogramIntervalType interval, Class<T> dataType, Class<K> keyType) {

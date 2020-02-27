@@ -15,6 +15,7 @@
  */
 package io.apiman.manager.test.server;
 
+import io.apiman.common.es.util.EsConstants;
 import io.apiman.manager.api.beans.apis.ApiBean;
 import io.apiman.manager.api.beans.apis.ApiStatus;
 import io.apiman.manager.api.beans.apis.ApiVersionBean;
@@ -38,8 +39,10 @@ import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
 import io.apiman.manager.api.beans.policies.PolicyType;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.exceptions.StorageException;
-import io.searchbox.client.JestClient;
-import io.searchbox.indices.Refresh;
+
+import org.elasticsearch.action.admin.indices.refresh.RefreshRequest;
+import org.elasticsearch.client.RequestOptions;
+import org.elasticsearch.client.RestHighLevelClient;
 
 import java.io.InputStream;
 import java.util.Iterator;
@@ -54,7 +57,7 @@ import java.util.List;
 @SuppressWarnings("javadoc")
 public class TestEsStorageWrapper implements IStorage {
 
-    private JestClient esClient;
+    private RestHighLevelClient esClient;
     private IStorage delegate;
 
     /**
@@ -62,7 +65,7 @@ public class TestEsStorageWrapper implements IStorage {
      * @param esClient
      * @param delegate
      */
-    public TestEsStorageWrapper(JestClient esClient, IStorage delegate) {
+    public TestEsStorageWrapper(RestHighLevelClient esClient, IStorage delegate) {
         this.esClient = esClient;
         this.delegate = delegate;
     }
@@ -507,7 +510,7 @@ public class TestEsStorageWrapper implements IStorage {
      */
     @Override
     public PluginBean getPlugin(String groupId, String artifactId) throws StorageException {
-        refresh();
+        refresh(EsConstants.INDEX_MANAGER_POSTFIX_PLUGIN);
         return this.delegate.getPlugin(groupId, artifactId);
     }
 
@@ -646,7 +649,7 @@ public class TestEsStorageWrapper implements IStorage {
      */
     @Override
     public void deleteMemberships(String userId, String organizationId) throws StorageException {
-        refresh();
+        refresh(EsConstants.INDEX_MANAGER_POSTFIX_ROLE_MEMBERSHIP);
         this.delegate.deleteMemberships(userId, organizationId);
     }
 
@@ -825,9 +828,9 @@ public class TestEsStorageWrapper implements IStorage {
      * Force a refresh in elasticsearch so that the result of any indexing operations
      * up to this point will be visible to searches.
      */
-    private void refresh() {
+    private void refresh(String indexPostfix) {
         try {
-            esClient.execute(new Refresh.Builder().addIndex("apiman_manager").build()); //$NON-NLS-1$
+            esClient.indices().refresh(new RefreshRequest("apiman_manager_" + indexPostfix), RequestOptions.DEFAULT); //$NON-NLS-1$
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

@@ -32,7 +32,7 @@ import org.apache.commons.dbutils.ResultSetHandler;
 /**
  * Extends the {@link JdbcRegistry} to provide multi-node caching.  This caching solution
  * will work in a cluster, although it is a rather naive implementation.  The approach
- * taken is that whenever the data in the DB is modified, a "last modified" record is 
+ * taken is that whenever the data in the DB is modified, a "last modified" record is
  * inserted/updated.  The registry utilizes a thread to periodically poll the DB to
  * check if this data has been changed.  If the data *has* been changed, then the cache
  * is invalidated.
@@ -55,7 +55,7 @@ public class PollCachingJdbcRegistry extends CachingJdbcRegistry {
      */
     public PollCachingJdbcRegistry(Map<String, String> config) {
         super(config);
-        
+
         String intervalVal = config.get("cache-polling-interval"); //$NON-NLS-1$
         String startupVal = config.get("cache-polling-startup-delay"); //$NON-NLS-1$
 
@@ -75,7 +75,7 @@ public class PollCachingJdbcRegistry extends CachingJdbcRegistry {
     }
 
     /**
-     * @see io.apiman.gateway.engine.CachingJdbcRegistry.CachingESRegistry#publishApi(io.apiman.gateway.engine.beans.Api, io.apiman.gateway.engine.async.IAsyncResultHandler)
+     * @see io.apiman.gateway.engine.CachingJdbcRegistry.CachingEsRegistry#publishApi(io.apiman.gateway.engine.beans.Api, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
     @Override
     public void publishApi(Api api, final IAsyncResultHandler<Void> handler) {
@@ -91,7 +91,7 @@ public class PollCachingJdbcRegistry extends CachingJdbcRegistry {
     }
 
     /**
-     * @see io.apiman.gateway.engine.CachingJdbcRegistry.CachingESRegistry#retireApi(io.apiman.gateway.engine.beans.Api, io.apiman.gateway.engine.async.IAsyncResultHandler)
+     * @see io.apiman.gateway.engine.CachingJdbcRegistry.CachingEsRegistry#retireApi(io.apiman.gateway.engine.beans.Api, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
     @Override
     public void retireApi(Api api, final IAsyncResultHandler<Void> handler) {
@@ -107,7 +107,7 @@ public class PollCachingJdbcRegistry extends CachingJdbcRegistry {
     }
 
     /**
-     * @see io.apiman.gateway.engine.CachingJdbcRegistry.CachingESRegistry#registerClient(io.apiman.gateway.engine.beans.Client, io.apiman.gateway.engine.async.IAsyncResultHandler)
+     * @see io.apiman.gateway.engine.CachingJdbcRegistry.CachingEsRegistry#registerClient(io.apiman.gateway.engine.beans.Client, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
     @Override
     public void registerClient(Client client, final IAsyncResultHandler<Void> handler) {
@@ -126,7 +126,7 @@ public class PollCachingJdbcRegistry extends CachingJdbcRegistry {
     }
 
     /**
-     * @see io.apiman.gateway.engine.CachingJdbcRegistry.CachingESRegistry#unregisterClient(io.apiman.gateway.engine.beans.Client, io.apiman.gateway.engine.async.IAsyncResultHandler)
+     * @see io.apiman.gateway.engine.CachingJdbcRegistry.CachingEsRegistry#unregisterClient(io.apiman.gateway.engine.beans.Client, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
     @Override
     public void unregisterClient(Client client, final IAsyncResultHandler<Void> handler) {
@@ -226,5 +226,5 @@ public class PollCachingJdbcRegistry extends CachingJdbcRegistry {
             return rs.getLong(1);
         };
     }
-    
+
 }

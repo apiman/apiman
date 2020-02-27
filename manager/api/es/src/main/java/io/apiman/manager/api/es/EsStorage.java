@@ -15,15 +15,14 @@
  */
 package io.apiman.manager.api.es;
 
+import io.apiman.common.es.util.EsConstants;
+import io.apiman.common.es.util.EsIndexMapping;
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.common.util.Holder;
 import io.apiman.common.util.crypt.DataEncryptionContext;
 import io.apiman.common.util.crypt.IDataEncrypter;
-import io.apiman.manager.api.beans.apis.ApiBean;
-import io.apiman.manager.api.beans.apis.ApiGatewayBean;
-import io.apiman.manager.api.beans.apis.ApiPlanBean;
-import io.apiman.manager.api.beans.apis.ApiStatus;
-import io.apiman.manager.api.beans.apis.ApiVersionBean;
+import io.apiman.common.es.util.AbstractEsComponent;
+import io.apiman.manager.api.beans.apis.*;
 import io.apiman.manager.api.beans.audit.AuditEntityType;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
 import io.apiman.manager.api.beans.clients.ClientBean;
@@ -32,11 +31,7 @@ import io.apiman.manager.api.beans.clients.ClientVersionBean;
 import io.apiman.manager.api.beans.contracts.ContractBean;
 import io.apiman.manager.api.beans.download.DownloadBean;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
-import io.apiman.manager.api.beans.idm.PermissionBean;
-import io.apiman.manager.api.beans.idm.PermissionType;
-import io.apiman.manager.api.beans.idm.RoleBean;
-import io.apiman.manager.api.beans.idm.RoleMembershipBean;
-import io.apiman.manager.api.beans.idm.UserBean;
+import io.apiman.manager.api.beans.idm.*;
 import io.apiman.manager.api.beans.orgs.OrganizationBean;
 import io.apiman.manager.api.beans.plans.PlanBean;
 import io.apiman.manager.api.beans.plans.PlanStatus;
@@ -45,27 +40,8 @@ import io.apiman.manager.api.beans.plugins.PluginBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
 import io.apiman.manager.api.beans.policies.PolicyType;
-import io.apiman.manager.api.beans.search.OrderByBean;
-import io.apiman.manager.api.beans.search.PagingBean;
-import io.apiman.manager.api.beans.search.SearchCriteriaBean;
-import io.apiman.manager.api.beans.search.SearchCriteriaFilterBean;
-import io.apiman.manager.api.beans.search.SearchCriteriaFilterOperator;
-import io.apiman.manager.api.beans.search.SearchResultsBean;
-import io.apiman.manager.api.beans.summary.ApiEntryBean;
-import io.apiman.manager.api.beans.summary.ApiPlanSummaryBean;
-import io.apiman.manager.api.beans.summary.ApiRegistryBean;
-import io.apiman.manager.api.beans.summary.ApiSummaryBean;
-import io.apiman.manager.api.beans.summary.ApiVersionSummaryBean;
-import io.apiman.manager.api.beans.summary.ClientSummaryBean;
-import io.apiman.manager.api.beans.summary.ClientVersionSummaryBean;
-import io.apiman.manager.api.beans.summary.ContractSummaryBean;
-import io.apiman.manager.api.beans.summary.GatewaySummaryBean;
-import io.apiman.manager.api.beans.summary.OrganizationSummaryBean;
-import io.apiman.manager.api.beans.summary.PlanSummaryBean;
-import io.apiman.manager.api.beans.summary.PlanVersionSummaryBean;
-import io.apiman.manager.api.beans.summary.PluginSummaryBean;
-import io.apiman.manager.api.beans.summary.PolicyDefinitionSummaryBean;
-import io.apiman.manager.api.beans.summary.PolicySummaryBean;
+import io.apiman.manager.api.beans.search.*;
+import io.apiman.manager.api.beans.summary.*;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.StorageException;
@@ -73,58 +49,51 @@ import io.apiman.manager.api.core.logging.ApimanLogger;
 import io.apiman.manager.api.core.util.PolicyTemplateUtil;
 import io.apiman.manager.api.es.beans.ApiDefinitionBean;
 import io.apiman.manager.api.es.beans.PoliciesBean;
-import io.apiman.manager.api.es.util.FilterBuilder;
-import io.apiman.manager.api.es.util.FilterBuilders;
-import io.apiman.manager.api.es.util.QueryBuilder;
-import io.apiman.manager.api.es.util.QueryBuilders;
-import io.apiman.manager.api.es.util.SearchSourceBuilder;
-import io.apiman.manager.api.es.util.SortOrder;
-import io.apiman.manager.api.es.util.TermsQueryBuilder;
-import io.apiman.manager.api.es.util.XContentBuilder;
-import io.searchbox.action.Action;
-import io.searchbox.client.JestClient;
-import io.searchbox.client.JestResult;
-import io.searchbox.client.JestResultHandler;
-import io.searchbox.cluster.Health;
-import io.searchbox.core.Delete;
-import io.searchbox.core.DeleteByQuery;
-import io.searchbox.core.Get;
-import io.searchbox.core.Index;
-import io.searchbox.core.Search;
-import io.searchbox.core.SearchResult;
-import io.searchbox.core.SearchResult.Hit;
-import io.searchbox.core.SearchScroll;
-import io.searchbox.core.SearchScroll.Builder;
-import io.searchbox.core.search.sort.Sort;
-import io.searchbox.indices.CreateIndex;
-import io.searchbox.indices.DeleteIndex;
-import io.searchbox.indices.IndicesExists;
-import io.searchbox.indices.mapping.GetMapping;
-import io.searchbox.indices.reindex.Reindex;
-import io.searchbox.params.Parameters;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.*;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.IOUtils;
+import org.elasticsearch.action.admin.cluster.health.ClusterHealthRequest;
+import org.elasticsearch.action.delete.DeleteRequest;
+import org.elasticsearch.action.delete.DeleteResponse;
+import org.elasticsearch.action.get.GetRequest;
+import org.elasticsearch.action.get.GetResponse;
+import org.elasticsearch.action.index.IndexRequest;
+import org.elasticsearch.action.index.IndexResponse;
+import org.elasticsearch.action.search.SearchRequest;
+import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.action.search.SearchScrollRequest;
+import org.elasticsearch.action.support.WriteRequest;
+import org.elasticsearch.client.RequestOptions;
+import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.client.indices.CreateIndexRequest;
+import org.elasticsearch.client.indices.CreateIndexResponse;
+import org.elasticsearch.client.indices.GetIndexRequest;
+import org.elasticsearch.common.Strings;
+import org.elasticsearch.common.unit.TimeValue;
+import org.elasticsearch.common.xcontent.XContentBuilder;
+import org.elasticsearch.common.xcontent.XContentType;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.TermsQueryBuilder;
+import org.elasticsearch.index.reindex.BulkByScrollResponse;
+import org.elasticsearch.index.reindex.DeleteByQueryRequest;
+import org.elasticsearch.rest.RestStatus;
+import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.elasticsearch.search.sort.FieldSortBuilder;
+import org.elasticsearch.search.sort.SortOrder;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
-import javax.inject.Named;
-
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.io.IOUtils;
-
-import com.google.gson.Gson;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
+import java.util.concurrent.*;
 
 /**
  * An implementation of the API Manager persistence layer that uses git to store
@@ -133,30 +102,40 @@ import com.google.gson.Gson;
  * @author eric.wittmann@redhat.com
  */
 @ApplicationScoped @Alternative
-public class EsStorage implements IStorage, IStorageQuery {
+public class EsStorage extends AbstractEsComponent implements IStorage, IStorageQuery {
 
-    private static final String DEFAULT_INDEX_NAME = "apiman_manager"; //$NON-NLS-1$
+    private static final String DEFAULT_INDEX_NAME = EsConstants.MANAGER_INDEX_NAME;
+    private String indexPrefix = DEFAULT_INDEX_NAME;
 
     private static int guidCounter = 100;
 
     @Inject @ApimanLogger(EsStorage.class)
     private IApimanLogger logger;
 
-    @Inject @Named("storage")
-    JestClient esClient;
     @Inject IDataEncrypter encrypter;
+
     @PostConstruct
     public void postConstruct() {
         // Kick the encrypter, causing it to be loaded/resolved in CDI
         encrypter.encrypt("", new DataEncryptionContext()); //$NON-NLS-1$
     }
 
-    private String indexName = DEFAULT_INDEX_NAME;
-
     /**
      * Constructor.
+     * @param config map of configuration options
      */
-    public EsStorage() {
+    public EsStorage(Map<String, String> config) {
+        super(config);
+    }
+
+    /**
+     * Constructor only for the Test-Framework.
+     * This constructor sets the elasticsearch client from outside.
+     * WARNING: It is not recommended to use it except within the Test-Framework.
+     * @param client elasticsearch client
+     */
+    public EsStorage(RestHighLevelClient client) {
+        super(client);
     }
 
     /**
@@ -173,11 +152,12 @@ public class EsStorage implements IStorage, IStorageQuery {
             ScheduledFuture<?> sched = schedulerService.scheduleAtFixedRate(() -> {
                 logger.info("Polling for Elasticsearch...");
                 try {
-                    esClient.execute(new Health.Builder().build());
+                    //Do Health request
+                    ClusterHealthRequest healthRequest = new ClusterHealthRequest();
+                    getClient().cluster().health(healthRequest, RequestOptions.DEFAULT);
                     cdl.countDown();
                 } catch (IOException e) {
                     logger.info("Unable to reach Elasticsearch. Will continue polling.");
-                    //System.out.println("Result of polling", e);
                     exception.setValue(e);
                 }
             },
@@ -192,156 +172,48 @@ public class EsStorage implements IStorage, IStorageQuery {
             if (exception.getValue() != null && cdl.getCount() > 0) {
                 throw exception.getValue();
             }
-            // TODO Do we need a loop to wait for all nodes to join the cluster?
-            Action<JestResult> action = new IndicesExists.Builder(getIndexName()).build();
-            synchronized(EsStorage.class) {
-                JestResult result = esClient.execute(action);
-                if (!result.isSucceeded()) {
-                    createIndex(getIndexName());
-                } else {
-                    if (isMigrationNeeded()){
-                        migrateIndexMapping();
-                    }
-                }
-            }
+            // initialize indices if there are not there
+            this.initializeIndices();
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
     /**
-     * This method will check if a migration of the index is needed
-     * @return true or false
-     * @throws IOException
+     * Initialize indices if there are not there
+     * @throws Exception the exception which could thrown from client request
      */
-    private boolean isMigrationNeeded() throws IOException {
-        // Check if migration is needed for too large swagger files - "keyword" to "text"
-        // See https://github.com/apiman/apiman/issues/736
-        JestResult result = esClient.execute(new GetMapping.Builder().addIndex(getIndexName()).build());
-        if (result.isSucceeded()) {
-            boolean migrationNeeded = result.getJsonObject()
-                    .getAsJsonObject(getIndexName())
-                    .getAsJsonObject("mappings")
-                    .getAsJsonObject("auditEntry")
-                    .getAsJsonObject("properties")
-                    .getAsJsonObject("data")
-                    .getAsJsonPrimitive("type")
-                    .getAsString()
-                    .equals("keyword");
-            if (migrationNeeded) {
-                logger.info("Migration of Elasticsearch index is needed.");
-                return true;
-            } else {
-                return false;
+    private void initializeIndices() throws Exception {
+        synchronized(EsStorage.class) {
+            for(String postfix: EsConstants.MANAGER_INDEX_POSTFIXES) {
+                String fullIndexName = getFullIndexName(postfix);
+                GetIndexRequest indexExistsRequest = new GetIndexRequest(fullIndexName);
+                boolean indexExists = getClient().indices().exists(indexExistsRequest, RequestOptions.DEFAULT);
+                if (!indexExists) {
+                    this.createIndex(DEFAULT_INDEX_NAME, postfix.toLowerCase());
+                }
             }
-        } else {
-            return false;
         }
     }
 
     /**
-     * This method will migrate the indices and reindex them back to the original to change field mappings.
-     * We need this for https://github.com/apiman/apiman/issues/736
-     * @throws Exception
+     * @param indexPrefix the index prefix
+     * @param indexPostfix the index postfix
+     * @throws Exception the exception which could thrown from client request
      */
-    private void migrateIndexMapping() throws Exception {
-        logger.info("Migration of Elasticsearch index has started. This could take a moment.");
-        // create tmp index for reindex with new mapping
-        String tmpIndexName = getIndexName() + "_tmp";
-        createIndex(tmpIndexName);
+    private void createIndex(String indexPrefix, String indexPostfix) throws Exception {
+        String indexName = getFullIndexName(indexPostfix);
+        CreateIndexRequest request = new CreateIndexRequest(indexName);
+        //add field properties to index
+        final Map<String, Object> documentMapping = EsIndexMapping.getDocumentMapping(indexPrefix, indexPostfix);
+        request.mapping(documentMapping);
 
-        // set source and dest index
-        HashMap<String, Object> source = new HashMap<>();
-        HashMap<String, Object> dest = new HashMap<>();
-        source.put("index", getIndexName());
-        dest.put("index", tmpIndexName);
-
-
-        // reindex old index to tmp index
-        Action<JestResult> reindexToTmp = new Reindex.Builder(source, dest).waitForActiveShards(1).waitForCompletion(true).refresh(true).build();
-        esClient.executeAsync(reindexToTmp, new JestResultHandler<JestResult>() {
-            @Override
-            public void completed(JestResult jestResult) {
-                logger.info("Reindex to " + tmpIndexName);
-                logger.info("Result: " + jestResult.getJsonString());
-
-                // delete old index
-                Action<JestResult> deleteIndex = new DeleteIndex.Builder(getIndexName()).build();
-                esClient.executeAsync(deleteIndex, new JestResultHandler<JestResult>() {
-                    @Override
-                    public void completed(JestResult jestResult) {
-                        logger.info("Deleted: " + getIndexName());
-                        logger.info("Result: " + jestResult.getJsonString());
-
-                        // create a new index with old name and new mapping
-                        try {
-                            createIndex(getIndexName());
-                        } catch (Exception e) {
-                            throw new RuntimeException(e);
-                        }
-
-                        // redindex tmp index back to "old" index
-                        source.put("index", tmpIndexName);
-                        dest.put("index", getIndexName());
-
-                        Action<JestResult> reindexTmpToNew = new Reindex.Builder(source, dest).waitForActiveShards(1).waitForCompletion(true).refresh(true).build();
-                        esClient.executeAsync(reindexTmpToNew, new JestResultHandler<JestResult>() {
-                            @Override
-                            public void completed(JestResult jestResult) {
-                                logger.info("Reindex to " + getIndexName());
-                                logger.info("Result: " + jestResult.getJsonString());
-
-                                // delete tmp index
-                                Action<JestResult> deleteTmpIndex = new DeleteIndex.Builder(tmpIndexName).build();
-                                esClient.executeAsync(deleteTmpIndex, new JestResultHandler<JestResult>() {
-                                    @Override
-                                    public void completed(JestResult jestResult) {
-                                        logger.info("Deleted: " + tmpIndexName);
-                                        logger.info("Result: " + jestResult.getJsonString());
-                                        logger.info("Migration succeeded");
-                                    }
-
-                                    @Override
-                                    public void failed(Exception e) {
-                                        throw new RuntimeException(e);
-                                    }
-                                });
-                            }
-
-                            @Override
-                            public void failed(Exception e) {
-                                throw new RuntimeException(e);
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void failed(Exception e) {
-                        throw new RuntimeException(e);
-                    }
-                });
-            }
-
-            @Override
-            public void failed(Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
-
-    }
-
-    /**
-     * @param indexName
-     * @throws Exception
-     */
-    private void createIndex(String indexName) throws Exception {
-        URL settings = getClass().getResource("index-settings.json"); //$NON-NLS-1$
-        String source = IOUtils.toString(settings);
-        JestResult response = esClient.execute(new CreateIndex.Builder(indexName).settings(source).build());
-        if (!response.isSucceeded()) {
-            throw new StorageException("Failed to create index " + indexName + ": " + response.getErrorMessage()); //$NON-NLS-1$ //$NON-NLS-2$
+        CreateIndexResponse response = getClient().indices().create(request, RequestOptions.DEFAULT);
+        if (!response.isAcknowledged()) {
+            throw new StorageException("Failed to create index " + indexName + ": " + "response was not acknowledged"); //$NON-NLS-1$ //$NON-NLS-2$
         } else {
-            logger.info("Created index:" + indexName);
+            logger.info("Created index: " + indexName);
         }
     }
 
@@ -374,7 +246,7 @@ public class EsStorage implements IStorage, IStorageQuery {
      */
     @Override
     public void createOrganization(OrganizationBean organization) throws StorageException {
-        indexEntity("organization", organization.getId(), EsMarshalling.marshall(organization), true); //$NON-NLS-1$
+        indexEntity(EsConstants.INDEX_MANAGER_POSTFIX_ORGANIZATION, organization.getId(), EsMarshalling.marshall(organization), true);
     }
 
     /**
@@ -382,7 +254,7 @@ public class EsStorage implements IStorage, IStorageQuery {
      */
     @Override
     public void createClient(ClientBean client) throws StorageException {
-        indexEntity("client", id(client.getOrganization().getId(), client.getId()), EsMarshalling.marshall(client)); //$NON-NLS-1$
+        indexEntity(EsConstants.INDEX_MANAGER_POSTFIX_CLIENT, id(client.getOrganization().getId(), client.getId()), EsMarshalling.marshall(client));
     }
 
     /**
@@ -392,10 +264,10 @@ public class EsStorage implements IStorage, IStorageQuery {
     public void createClientVersion(ClientVersionBean version) throws StorageException {
         ClientBean client = version.getClient();
         String id = id(client.getOrganization().getId(), client.getId(), version.getVersion());
-        indexEntity("clientVersion", id, EsMarshalling.marshall(version)); //$NON-NLS-1$
+        indexEntity(EsConstants.INDEX_MANAGER_POSTFIX_CLIENT_VERSION, id, EsMarshalling.marshall(version));
         PoliciesBean policies = PoliciesBean.from(PolicyType.Client, client.getOrganization().getId(),
                 client.getId(), version.getVersion());
-        indexEntity("clientPolicies", id, EsMarshalling.marshall(policies)); //$NON-NLS-1$
+        indexEntity(EsConstants.INDEX_MANAGER_POSTFIX_CLIENT_POLICIES, id, EsMarshalling.marshall(policies));
     }
 
     /**
@@ -414,7 +286,7 @@ public class EsStorage implements IStorage, IStorageQuery {
                 }
         }
         contract.setId(generateGuid());
-        indexEntity("contract", String.valueOf(contract.getId()), EsMarshalling.marshall(contract), true); //$NON-NLS-1$
+        indexEntity(EsConstants.INDEX_MANAGER_POSTFIX_CONTRACT, String.valueOf(contract.getId()), EsMarshalling.marshall(contract), true);
     }
 
     /**
@@ -422,7 +294,7 @@ public class EsStorage implements IStorage, IStorageQuery {
      */
     @Override
     public void createApi(ApiBean api) throws StorageException {
-        indexEntity("api", id(api.getOrganization().getId(), api.getId()), EsMarshalling.marshall(api)); //$NON-NLS-1$
+        indexEntity(EsConstants.INDEX_MANAGER_POSTFIX_API, id(api.getOrganization().getId(), api.getId()), EsMarshalling.marshall(api));
     }
 
     /**
@@ -432,10 +304,10 @@ public class EsStorage implements IStorage, IStorageQuery {
     public void createApiVersion(ApiVersionBean version) throws StorageException {
         ApiBean api = version.getApi();
         String id = id(api.getOrganization().getId(), api.getId(), version.getVersion());
-        indexEntity("apiVersion", id, EsMarshalling.marshall(version)); //$NON-NLS-1$
+        indexEntity(EsConstants.INDEX_MANAGER_POSTFIX_API_VERSION, id, EsMarshalling.marshall(version));
         PoliciesBean policies = PoliciesBean.from(PolicyType.Api, api.getOrganization().getId(),
                 api.getId(), version.getVersion());
-        indexEntity("apiPolicies", id, EsMarshalling.marshall(policies)); //$NON-NLS-1$
+        indexEntity(EsConstants.INDEX_MANAGER_POSTFIX_API_POLICIES, id, EsMarshalling.marshall(policies));
     }
 
     /**
@@ -443,7 +315,7 @@ public class EsStorage implements IStorage, IStorageQuery {
      */
     @Override
     public void createPlan(PlanBean plan) throws StorageException {
-        indexEntity("plan", id(plan.getOrganization().getId(), plan.getId()), EsMarshalling.marshall(plan)); //$NON-NLS-1$
+        indexEntity(EsConstants.INDEX_MANAGER_POSTFIX_PLAN, id(plan.getOrganization().getId(), plan.getId()), EsMarshalling.marshall(plan));
     }
 
     /**
@@ -453,10 +325,10 @@ public class EsStorage implements IStorage, IStorageQuery {
     public void createPlanVersion(PlanVersionBean version) throws StorageException {
         PlanBean plan = version.getPlan();
         String id = id(plan.getOrganization().getId(), plan.getId(), version.getVersion());
-        indexEntity("planVersion", id, EsMarshalling.marshall(version)); //$NON-NLS-1$
+        indexEntity(EsConstants.INDEX_MANAGER_POSTFIX_PLAN_VERSION, id, EsMarshalling.marshall(version));
         PoliciesBean policies = PoliciesBean.from(PolicyType.Plan, plan.getOrganization().getId(),
                 plan.getId(), version.getVersion());
-        indexEntity("planPolicies", id, EsMarshalling.marshall(policies)); //$NON-NLS-1$
+        indexEntity(EsConstants.INDEX_MANAGER_POSTFIX_PLAN_POLICIES, id, EsMarshalling.marshall(policies));
     }
 
     /**
@@ -528,7 +400,7 @@ public class EsStorage implements IStorage, IStorageQuery {
      */
     @Override
     public void createGateway(GatewayBean gateway) throws StorageException {
-        indexEntity("gateway", gateway.getId(), EsMarshalling.marshall(gateway)); //$NON-NLS-1$
+        indexEntity(EsConstants.INDEX_MANAGER_POSTFIX_GATEWAY, gateway.getId(), EsMarshalling.marshall(gateway));
     }
 
     /**
@@ -537,7 +409,7 @@ public class EsStorage implements IStorage, IStorageQuery {
     @Override
     public void createPlugin(PluginBean plugin) throws StorageException {
         plugin.setId(generateGuid());
-        indexEntity("plugin", String.valueOf(plugin.getId()), EsMarshalling.marshall(plugin), true); //$NON-NLS-1$
+        indexEntity(EsConstants.INDEX_MANAGER_POSTFIX_PLUGIN, String.valueOf(plugin.getId()), EsMarshalling.marshall(plugin), true);
     }
 
     /**
@@ -545,7 +417,7 @@ public class EsStorage implements IStorage, IStorageQuery {
      */
     @Override
     public void createDownload(DownloadBean download) throws StorageException {
-        indexEntity("download", download.getId(), EsMarshalling.marshall(download)); //$NON-NLS-1$
+        indexEntity(EsConstants.INDEX_MANAGER_POSTFIX_DOWNLOAD, download.getId(), EsMarshalling.marshall(download));
     }
 
     /**
@@ -553,7 +425,7 @@ public class EsStorage implements IStorage, IStorageQuery {
      */
     @Override
     public void createPolicyDefinition(PolicyDefinitionBean policyDef) throws StorageException {
-        indexEntity("policyDef", policyDef.getId(), EsMarshalling.marshall(policyDef)); //$NON-NLS-1$
+        indexEntity(EsConstants.INDEX_MANAGER_POSTFIX_POLICY_DEF, policyDef.getId(), EsMarshalling.marshall(policyDef));
     }
 
     /**
@@ -561,7 +433,7 @@ public class EsStorage implements IStorage, IStorageQuery {
      */
     @Override
     public void createRole(RoleBean role) throws StorageException {
-        indexEntity("role", role.getId(), EsMarshalling.marshall(role)); //$NON-NLS-1$
+        indexEntity(EsConstants.INDEX_MANAGER_POSTFIX_ROLE, role.getId(), EsMarshalling.marshall(role));
     }
 
     /**
@@ -573,7 +445,7 @@ public class EsStorage implements IStorage, IStorageQuery {
             return;
         }
         entry.setId(generateGuid());
-        indexEntity("auditEntry", String.valueOf(entry.getId()), EsMarshalling.marshall(entry)); //$NON-NLS-1$
+        indexEntity(EsConstants.INDEX_MANAGER_POSTFIX_AUDIT_ENTRY, String.valueOf(entry.getId()), EsMarshalling.marshall(entry));
     }
 
     /**
@@ -581,7 +453,7 @@ public class EsStorage implements IStorage, IStorageQuery {
      */
     @Override
     public void updateOrganization(OrganizationBean organization) throws StorageException {
-        updateEntity("organization", organization.getId(), EsMarshalling.marshall(organization)); //$NON-NLS-1$
+        updateEntity(EsConstants.INDEX_MANAGER_POSTFIX_ORGANIZATION, organization.getId(), EsMarshalling.marshall(organization));
     }
 
     /**
@@ -589,7 +461,7 @@ public class EsStorage implements IStorage, IStorageQuery {
      */
     @Override
     public void updateClient(ClientBean client) throws StorageException {
-        updateEntity("client", id(client.getOrganization().getId(), client.getId()), EsMarshalling.marshall(client)); //$NON-NLS-1$
+        updateEntity(EsConstants.INDEX_MANAGER_POSTFIX_CLIENT, id(client.getOrganization().getId(), client.getId()), EsMarshalling.marshall(client));
     }
 
     /**
@@ -598,7 +470,7 @@ public class EsStorage implements IStorage, IStorageQuery {
     @Override
     public void updateClientVersion(ClientVersionBean version) throws StorageException {
         ClientBean client = version.getClient();
-        updateEntity("clientVersion", id(client.getOrganization().getId(), client.getId(), version.getVersion()),  //$NON-NLS-1$
+        updateEntity(EsConstants.INDEX_MANAGER_POSTFIX_CLIENT_VERSION, id(client.getOrganization().getId(), client.getId(), version.getVersion()),
                 EsMarshalling.marshall(version));
     }
 
@@ -607,7 +479,7 @@ public class EsStorage implements IStorage, IStorageQuery {
      */
     @Override
     public void updateApi(ApiBean api) throws StorageException {
-        updateEntity("api", id(api.getOrganization().getId(), api.getId()), EsMarshalling.marshall(api)); //$NON-NLS-1$
+        updateEntity(EsConstants.INDEX_MANAGER_POSTFIX_API, id(api.getOrganization().getId(), api.getId()), EsMarshalling.marshall(api));
     }
 
     /**
@@ -616,7 +488,7 @@ public class EsStorage implements IStorage, IStorageQuery {
     @Override
     public void updateApiVersion(ApiVersionBean version) throws StorageException {
         ApiBean api = version.getApi();
-        updateEntity("apiVersion", id(api.getOrganization().getId(), api.getId(), version.getVersion()),  //$NON-NLS-1$
+        updateEntity(EsConstants.INDEX_MANAGER_POSTFIX_API_VERSION, id(api.getOrganization().getId(), api.getId(), version.getVersion()),
                 EsMarshalling.marshall(version));
     }
 
@@ -636,9 +508,9 @@ public class EsStorage implements IStorage, IStorageQuery {
             ApiDefinitionBean definition = new ApiDefinitionBean();
             definition.setData(data);
             if (apiDefinition == null) {
-                indexEntity("apiDefinition", id, EsMarshalling.marshall(definition)); //$NON-NLS-1$
+                indexEntity(EsConstants.INDEX_MANAGER_POSTFIX_API_DEFINITION, id, EsMarshalling.marshall(definition));
             } else {
-                updateEntity("apiDefinition", id, EsMarshalling.marshall(definition)); //$NON-NLS-1$
+                updateEntity(EsConstants.INDEX_MANAGER_POSTFIX_API_DEFINITION, id, EsMarshalling.marshall(definition));
             }
         } catch (IOException e) {
             throw new StorageException(e);
@@ -652,7 +524,7 @@ public class EsStorage implements IStorage, IStorageQuery {
      */
     @Override
     public void updatePlan(PlanBean plan) throws StorageException {
-        updateEntity("plan", id(plan.getOrganization().getId(), plan.getId()), EsMarshalling.marshall(plan)); //$NON-NLS-1$
+        updateEntity(EsConstants.INDEX_MANAGER_POSTFIX_PLAN, id(plan.getOrganization().getId(), plan.getId()), EsMarshalling.marshall(plan));
     }
 
     /**
@@ -661,7 +533,7 @@ public class EsStorage implements IStorage, IStorageQuery {
     @Override
     public void updatePlanVersion(PlanVersionBean version) throws StorageException {
         PlanBean plan = version.getPlan();
-        updateEntity("planVersion", id(plan.getOrganization().getId(), plan.getId(), version.getVersion()),  //$NON-NLS-1$
+        updateEntity(EsConstants.INDEX_MANAGER_POSTFIX_PLAN_VERSION, id(plan.getOrganization().getId(), plan.getId(), version.getVersion()),
                 EsMarshalling.marshall(version));
     }
 
@@ -702,7 +574,7 @@ public class EsStorage implements IStorage, IStorageQuery {
      */
     @Override
     public void updateGateway(GatewayBean gateway) throws StorageException {
-        updateEntity("gateway", gateway.getId(), EsMarshalling.marshall(gateway)); //$NON-NLS-1$
+        updateEntity(EsConstants.INDEX_MANAGER_POSTFIX_GATEWAY, gateway.getId(), EsMarshalling.marshall(gateway));
     }
 
     /**
@@ -710,7 +582,7 @@ public class EsStorage implements IStorage, IStorageQuery {
      */
     @Override
     public void updatePolicyDefinition(PolicyDefinitionBean policyDef) throws StorageException {
-        updateEntity("policyDef", policyDef.getId(), EsMarshalling.marshall(policyDef)); //$NON-NLS-1$
+        updateEntity(EsConstants.INDEX_MANAGER_POSTFIX_POLICY_DEF, policyDef.getId(), EsMarshalling.marshall(policyDef));
     }
 
     /**
@@ -718,7 +590,7 @@ public class EsStorage implements IStorage, IStorageQuery {
      */
     @Override
     public void updatePlugin(PluginBean pluginBean) throws StorageException {
-        updateEntity("plugin", String.valueOf(pluginBean.getId()), EsMarshalling.marshall(pluginBean)); //$NON-NLS-1$
+        updateEntity(EsConstants.INDEX_MANAGER_POSTFIX_PLUGIN, String.valueOf(pluginBean.getId()), EsMarshalling.marshall(pluginBean));
     }
 
     /**
@@ -726,7 +598,7 @@ public class EsStorage implements IStorage, IStorageQuery {
      */
     @Override
     public void updateRole(RoleBean role) throws StorageException {
-        updateEntity("role", role.getId(), EsMarshalling.marshall(role)); //$NON-NLS-1$
+        updateEntity(EsConstants.INDEX_MANAGER_POSTFIX_ROLE, role.getId(), EsMarshalling.marshall(role));
     }
 
     /**
@@ -738,36 +610,34 @@ public class EsStorage implements IStorage, IStorageQuery {
         try {
             String orgId = organization.getId().replace('"', '_');
 
-            QueryBuilder qb =
-                FilterBuilders.boolFilter(
-                    FilterBuilders.shouldFilter(
-                        FilterBuilders.termFilter("organizationId", orgId),
-                        FilterBuilders.termFilter("clientOrganizationId", orgId),
-                        FilterBuilders.termFilter("apiOrganizationId", orgId)
-                    )
-                );
+            BoolQueryBuilder qb = QueryBuilders.boolQuery();
+            List<QueryBuilder> shouldFilter = qb.should();
+            shouldFilter.add(QueryBuilders.termQuery("organizationId", orgId));
+            shouldFilter.add(QueryBuilders.termQuery("clientOrganizationId", orgId));
+            shouldFilter.add(QueryBuilders.termQuery("apiOrganizationId", orgId));
 
             SearchSourceBuilder query = new SearchSourceBuilder().query(qb);
-            DeleteByQuery deleteByQuery = new DeleteByQuery.Builder(query.string()).addIndex(getIndexName())
-                    .addType("api")
-                    .addType("apiPolicies")
-                    .addType("apiVersion")
-                    .addType("auditEntry")
-                    .addType("client")
-                    .addType("clientPolicies")
-                    .addType("clientVersion")
-                    .addType("contract")
-                    .addType("plan")
-                    .addType("planPolicies")
-                    .addType("planVersion")
-                    .addType("roleMembership")
-                    .build();
 
-            JestResult response = esClient.execute(deleteByQuery);
-            if (!response.isSucceeded()) {
-                throw new StorageException(response.getErrorMessage());
+            String[] indexNames = {
+                    EsConstants.INDEX_MANAGER_POSTFIX_API,
+                    EsConstants.INDEX_MANAGER_POSTFIX_API_POLICIES,
+                    EsConstants.INDEX_MANAGER_POSTFIX_API_VERSION,
+                    EsConstants.INDEX_MANAGER_POSTFIX_AUDIT_ENTRY,
+                    EsConstants.INDEX_MANAGER_POSTFIX_CLIENT,
+                    EsConstants.INDEX_MANAGER_POSTFIX_CLIENT_POLICIES,
+                    EsConstants.INDEX_MANAGER_POSTFIX_CLIENT_VERSION,
+                    EsConstants.INDEX_MANAGER_POSTFIX_CONTRACT,
+                    EsConstants.INDEX_MANAGER_POSTFIX_PLAN,
+                    EsConstants.INDEX_MANAGER_POSTFIX_PLAN_POLICIES,
+                    EsConstants.INDEX_MANAGER_POSTFIX_PLAN_VERSION,
+                    EsConstants.INDEX_MANAGER_POSTFIX_ROLE_MEMBERSHIP};
+
+            BulkByScrollResponse response = getDeleteByQueryResponse(qb, indexNames);
+
+            if (response.getStatus().getSuccessfullyProcessed() != response.getStatus().getTotal()) {
+                throw new StorageException("Could not delete all plan entries by query");
             }
-            deleteEntity("organization", orgId); //$NON-NLS-1$
+            deleteEntity(EsConstants.INDEX_MANAGER_POSTFIX_ORGANIZATION, orgId);
         } catch (Exception e) {
             throw new StorageException(e);
         }
@@ -782,54 +652,46 @@ public class EsStorage implements IStorage, IStorageQuery {
         String clientId = client.getId().replace('"', '_');
         String orgId = client.getOrganization().getId().replace('"', '_');
 
-        QueryBuilder qb =
-            QueryBuilders.query(
-                FilterBuilders.boolFilter(
-                    FilterBuilders.filter(
-                        FilterBuilders.boolFilter(
-                            FilterBuilders.shouldFilter(
-                                FilterBuilders.termFilter("clientOrganizationId", orgId),
-                                FilterBuilders.termFilter("organizationId", orgId)
-                            )
-                        ),
-                        FilterBuilders.boolFilter(
-                            FilterBuilders.shouldFilter(
-                                FilterBuilders.boolFilter(
-                                    FilterBuilders.filter(
-                                        FilterBuilders.termFilter("entityId", clientId),
-                                        FilterBuilders.termFilter("entityType", AuditEntityType.Client.name())
-                                    )
-                                ),
-                                FilterBuilders.boolFilter(
-                                    FilterBuilders.filter(
-                                        FilterBuilders.termFilter("entityId", clientId),
-                                        FilterBuilders.termFilter("type", AuditEntityType.Client.name())
-                                    )
-                                ),
-                                FilterBuilders.termFilter("clientId", clientId)
-                            )
-                        )
-                    )
-                )
-            );
+            BoolQueryBuilder qb = QueryBuilders.boolQuery();
+            List<QueryBuilder> filter = qb.filter();
+
+            // part 1.1
+            BoolQueryBuilder subBoolQuery1 = QueryBuilders.boolQuery();
+            List<QueryBuilder> subShouldQuery1 = subBoolQuery1.should();
+            subShouldQuery1.add(QueryBuilders.termQuery("clientOrganizationId", orgId));
+            subShouldQuery1.add(QueryBuilders.termQuery("organizationId", orgId));
+            filter.add(subBoolQuery1);
+
+        BoolQueryBuilder subBoolQuery2 = QueryBuilders.boolQuery();
+        List<QueryBuilder> shouldQuery2 = qb.should();
+
+        // part 2.1
+        BoolQueryBuilder part1 = QueryBuilders.boolQuery();
+        List<QueryBuilder> part1filter = part1.filter();
+        part1filter.add(QueryBuilders.termQuery("entityId", clientId));
+        part1filter.add(QueryBuilders.termQuery("entityType", AuditEntityType.Client.name()));
+        // part 2.2
+        BoolQueryBuilder part2 = QueryBuilders.boolQuery();
+        List<QueryBuilder> part2filter = part2.filter();
+        part2filter.add(QueryBuilders.termQuery("entityId", clientId));
+        part2filter.add(QueryBuilders.termQuery("type", AuditEntityType.Client.name()));
+        // part 2.3
+        shouldQuery2.add(QueryBuilders.termQuery("clientId", clientId));
+
+        filter.add(subBoolQuery2);
 
         try {
-            DeleteByQuery deleteByQuery = new DeleteByQuery.Builder(qb.string()).addIndex(getIndexName())
-                    .addType("auditEntry")
-                    .addType("client")
-                    .addType("clientVersion")
-                    .addType("clientPolicies")
-                    .addType("contract")
-                    .build();
 
-            JestResult response = esClient.execute(deleteByQuery);
-            if (!response.isSucceeded()) {
-                throw new StorageException(response.getErrorMessage());
+            String[] indexNames = {EsConstants.INDEX_MANAGER_POSTFIX_AUDIT_ENTRY, EsConstants.INDEX_MANAGER_POSTFIX_CLIENT_VERSION, EsConstants.INDEX_MANAGER_POSTFIX_CLIENT_POLICIES, EsConstants.INDEX_MANAGER_POSTFIX_CONTRACT};
+            BulkByScrollResponse response = getDeleteByQueryResponse(qb, indexNames);
+
+            if (response.getStatus().getSuccessfullyProcessed() != response.getStatus().getTotal()) {
+                throw new StorageException("Could not delete all client entries by query");
             }
         } catch (Exception e) {
             throw new StorageException(e);
         }
-        deleteEntity("client", id(orgId, clientId)); //$NON-NLS-1$
+        deleteEntity(EsConstants.INDEX_MANAGER_POSTFIX_CLIENT, id(orgId, clientId));
     }
 
     /**
@@ -838,7 +700,7 @@ public class EsStorage implements IStorage, IStorageQuery {
     @Override
     public void deleteClientVersion(ClientVersionBean version) throws StorageException {
         ClientBean client = version.getClient();
-        deleteEntity("clientVersion", id(client.getOrganization().getId(), client.getId(), version.getVersion())); //$NON-NLS-1$
+        deleteEntity(EsConstants.INDEX_MANAGER_POSTFIX_CLIENT_VERSION, id(client.getOrganization().getId(), client.getId(), version.getVersion()));
     }
 
     /**
@@ -846,7 +708,7 @@ public class EsStorage implements IStorage, IStorageQuery {
      */
     @Override
     public void deleteContract(ContractBean contract) throws StorageException {
-        deleteEntity("contract", String.valueOf(contract.getId())); //$NON-NLS-1$
+        deleteEntity(EsConstants.INDEX_MANAGER_POSTFIX_CONTRACT, String.valueOf(contract.getId()));
     }
 
     /**
@@ -858,54 +720,45 @@ public class EsStorage implements IStorage, IStorageQuery {
         String apiId = api.getId().replace('"', '_');
         String orgId = api.getOrganization().getId().replace('"', '_');
 
-        QueryBuilder qb =
-                QueryBuilders.query(
-                    FilterBuilders.boolFilter(
-                        FilterBuilders.filter(
-                            FilterBuilders.boolFilter(
-                                FilterBuilders.shouldFilter(
-                                    FilterBuilders.termFilter("apiOrganizationId", orgId),
-                                    FilterBuilders.termFilter("organizationId", orgId)
-                                )
-                            ),
-                            FilterBuilders.boolFilter(
-                                FilterBuilders.shouldFilter(
-                                    FilterBuilders.boolFilter(
-                                        FilterBuilders.filter(
-                                            FilterBuilders.termFilter("entityId", apiId),
-                                            FilterBuilders.termFilter("entityType", AuditEntityType.Api.name())
-                                        )
-                                    ),
-                                    FilterBuilders.boolFilter(
-                                        FilterBuilders.filter(
-                                            FilterBuilders.termFilter("entityId", apiId),
-                                            FilterBuilders.termFilter("type", AuditEntityType.Api.name())
-                                        )
-                                    ),
-                                    FilterBuilders.termFilter("apiId", apiId)
-                                )
-                            )
-                        )
-                    )
-                );
+        BoolQueryBuilder qb = QueryBuilders.boolQuery();
+        List<QueryBuilder> filter = qb.filter();
+
+        BoolQueryBuilder shouldMatchApiOrgAndOrgId = QueryBuilders.boolQuery();
+        shouldMatchApiOrgAndOrgId.should().add(QueryBuilders.termQuery("apiOrganizationId", orgId));
+        shouldMatchApiOrgAndOrgId.should().add(QueryBuilders.termQuery("organizationId", orgId));
+
+        BoolQueryBuilder shouldMatchTypesAndEntityIds = QueryBuilders.boolQuery();
+        List<QueryBuilder> shouldMatchCombination = shouldMatchTypesAndEntityIds.should();
+
+        BoolQueryBuilder shouldMatchEntityIdAndEntityType = QueryBuilders.boolQuery();
+        shouldMatchEntityIdAndEntityType.filter().add(QueryBuilders.termQuery("entityId", apiId));
+        shouldMatchEntityIdAndEntityType.filter().add(QueryBuilders.termQuery("entityType", AuditEntityType.Api.name()));
+        shouldMatchCombination.add(shouldMatchEntityIdAndEntityType);
+
+        BoolQueryBuilder shouldMatchEntityIdAndType = QueryBuilders.boolQuery();
+        shouldMatchEntityIdAndType.filter().add(QueryBuilders.termQuery("entityId", apiId));
+        shouldMatchEntityIdAndType.filter().add(QueryBuilders.termQuery("type", AuditEntityType.Api.name()));
+        shouldMatchCombination.add(shouldMatchEntityIdAndType);
+
+        // part 213
+        shouldMatchCombination.add(QueryBuilders.termQuery("apiId", apiId));
+
+        filter.add(shouldMatchApiOrgAndOrgId);
+        filter.add(shouldMatchTypesAndEntityIds);
+
 
         try {
-            DeleteByQuery deleteByQuery = new DeleteByQuery.Builder(qb.string()).addIndex(getIndexName())
-                    .addType("auditEntry")
-                    .addType("api")
-                    .addType("apiVersion")
-                    .addType("apiPolicies")
-                    .addType("contract")
-                    .build();
 
-            JestResult response = esClient.execute(deleteByQuery);
-            if (!response.isSucceeded()) {
-                throw new StorageException(response.getErrorMessage());
+            String[] indexNames = {EsConstants.INDEX_MANAGER_POSTFIX_AUDIT_ENTRY, EsConstants.INDEX_MANAGER_POSTFIX_API_VERSION, EsConstants.INDEX_MANAGER_POSTFIX_API_POLICIES, EsConstants.INDEX_MANAGER_POSTFIX_CONTRACT};
+            BulkByScrollResponse response = getDeleteByQueryResponse(qb, indexNames);
+
+            if (response.getStatus().getSuccessfullyProcessed() != response.getStatus().getTotal()) {
+                throw new StorageException("Could not delete all api entries by query");
             }
         } catch (Exception e) {
             throw new StorageException(e);
         }
-        deleteEntity("api", id(orgId, apiId)); //$NON-NLS-1$
+        deleteEntity(EsConstants.INDEX_MANAGER_POSTFIX_API, id(orgId, apiId));
     }
 
     /**
@@ -916,8 +769,8 @@ public class EsStorage implements IStorage, IStorageQuery {
         deleteApiDefinition(version);
         ApiBean api = version.getApi();
         String id = id(api.getOrganization().getId(), api.getId(), version.getVersion());
-        deleteEntity("apiVersion", id); //$NON-NLS-1$
-        deleteEntity("apiPolicies", id); //$NON-NLS-1$
+        deleteEntity(EsConstants.INDEX_MANAGER_POSTFIX_API_VERSION, id);
+        deleteEntity(EsConstants.INDEX_MANAGER_POSTFIX_API_POLICIES, id);
     }
 
     /**
@@ -926,7 +779,7 @@ public class EsStorage implements IStorage, IStorageQuery {
     @Override
     public void deleteApiDefinition(ApiVersionBean version) throws StorageException {
         String id = id(version.getApi().getOrganization().getId(), version.getApi().getId(), version.getVersion()) + ":def"; //$NON-NLS-1$
-        deleteEntity("apiDefinition", id); //$NON-NLS-1$
+        deleteEntity(EsConstants.INDEX_MANAGER_POSTFIX_API_DEFINITION, id);
     }
 
     /**
@@ -938,47 +791,49 @@ public class EsStorage implements IStorage, IStorageQuery {
         String planId = plan.getId().replace('"', '_');
         String orgId = plan.getOrganization().getId().replace('"', '_');
 
-        QueryBuilder qb =
-            FilterBuilders.boolFilter(
-                FilterBuilders.shouldFilter(
-                    FilterBuilders.boolFilter(
-                        FilterBuilders.filter(
-                           FilterBuilders.termFilter("entityId", planId),
-                           FilterBuilders.termFilter("entityType", AuditEntityType.Plan.name()),
-                           FilterBuilders.termFilter("organizationId", orgId)
-                        )
-                    ),
-                    FilterBuilders.boolFilter(
-                        FilterBuilders.filter(
-                           FilterBuilders.termFilter("planId", planId),
-                           FilterBuilders.termFilter("organizationId", orgId)
-                        )
-                    ),
-                    FilterBuilders.boolFilter(
-                        FilterBuilders.filter(
-                           FilterBuilders.termFilter("entityId", planId),
-                           FilterBuilders.termFilter("type", AuditEntityType.Plan.name())
-                        )
-                    )
-                )
-            );
+        BoolQueryBuilder qb = QueryBuilders.boolQuery();
+        List<QueryBuilder> shouldFilters = qb.should();
+
+        BoolQueryBuilder subBoolQuery1 = QueryBuilders.boolQuery();
+        List<QueryBuilder> subBoolQuery1Filter = subBoolQuery1.filter();
+        subBoolQuery1Filter.add(QueryBuilders.termQuery("entityId", planId));
+        subBoolQuery1Filter.add(QueryBuilders.termQuery("entityType", AuditEntityType.Plan.name()));
+        subBoolQuery1Filter.add(QueryBuilders.termQuery("organizationId", orgId));
+        shouldFilters.add(subBoolQuery1);
+
+        BoolQueryBuilder subBoolQuery2 = QueryBuilders.boolQuery();
+        List<QueryBuilder> subBoolQuery2Filter = subBoolQuery1.filter();
+        subBoolQuery2Filter.add(QueryBuilders.termQuery("planId", planId));
+        subBoolQuery2Filter.add(QueryBuilders.termQuery("organizationId", orgId));
+        shouldFilters.add(subBoolQuery2);
+
+        BoolQueryBuilder subBoolQuery3 = QueryBuilders.boolQuery();
+        List<QueryBuilder> subBoolQuery3Filter = subBoolQuery1.filter();
+        subBoolQuery3Filter.add(QueryBuilders.termQuery("entityId", planId));
+        subBoolQuery3Filter.add(QueryBuilders.termQuery("type", AuditEntityType.Plan.name()));
+        shouldFilters.add(subBoolQuery3);
 
         try {
-            DeleteByQuery deleteByQuery = new DeleteByQuery.Builder("{\"query\":"+qb.string()+"}") // TODO
-                    .addIndex(getIndexName())
-                    .addType("auditEntry")
-                    .addType("planVersion")
-                    .addType("planPolicies")
-                    .build();
+            String[] indexNames = {EsConstants.INDEX_MANAGER_POSTFIX_AUDIT_ENTRY, EsConstants.INDEX_MANAGER_POSTFIX_PLAN_VERSION, EsConstants.INDEX_MANAGER_POSTFIX_PLAN_POLICIES};
+            BulkByScrollResponse response = getDeleteByQueryResponse(qb, indexNames);
 
-            JestResult response = esClient.execute(deleteByQuery);
-            if (!response.isSucceeded()) {
-                throw new StorageException(response.getErrorMessage());
+            if (response.getStatus().getSuccessfullyProcessed() != response.getStatus().getTotal()) {
+                throw new StorageException("Could not delete all plan entries by query");
             }
         } catch (Exception e) {
             throw new StorageException(e);
         }
-        deleteEntity("plan", id(plan.getOrganization().getId(), plan.getId())); //$NON-NLS-1$
+        deleteEntity(EsConstants.INDEX_MANAGER_POSTFIX_PLAN, id(plan.getOrganization().getId(), plan.getId()));
+    }
+
+    private BulkByScrollResponse getDeleteByQueryResponse(BoolQueryBuilder query, String[] indexNames) throws IOException {
+        for (int i = 0; i < indexNames.length; i++) {
+            indexNames[i] = getFullIndexName(indexNames[i]);
+        }
+
+        DeleteByQueryRequest deleteByQueryRequest = new DeleteByQueryRequest(indexNames);
+        deleteByQueryRequest.setQuery(query);
+        return getClient().deleteByQuery(deleteByQueryRequest, RequestOptions.DEFAULT);
     }
 
     public @interface Foo {
@@ -992,7 +847,7 @@ public class EsStorage implements IStorage, IStorageQuery {
     @Override
     public void deletePlanVersion(PlanVersionBean version) throws StorageException {
         PlanBean plan = version.getPlan();
-        deleteEntity("planVersion", id(plan.getOrganization().getId(), plan.getId(), version.getVersion())); //$NON-NLS-1$
+        deleteEntity(EsConstants.INDEX_MANAGER_POSTFIX_PLAN_VERSION, id(plan.getOrganization().getId(), plan.getId(), version.getVersion()));
     }
 
     /**
@@ -1031,7 +886,7 @@ public class EsStorage implements IStorage, IStorageQuery {
      */
     @Override
     public void deleteGateway(GatewayBean gateway) throws StorageException {
-        deleteEntity("gateway", gateway.getId()); //$NON-NLS-1$
+        deleteEntity(EsConstants.INDEX_MANAGER_POSTFIX_GATEWAY, gateway.getId());
     }
 
     /**
@@ -1039,7 +894,7 @@ public class EsStorage implements IStorage, IStorageQuery {
      */
     @Override
     public void deletePlugin(PluginBean plugin) throws StorageException {
-        deleteEntity("plugin", String.valueOf(plugin.getId())); //$NON-NLS-1$
+        deleteEntity(EsConstants.INDEX_MANAGER_POSTFIX_PLUGIN, String.valueOf(plugin.getId()));
     }
 
     /**
@@ -1047,7 +902,7 @@ public class EsStorage implements IStorage, IStorageQuery {
      */
     @Override
     public void deleteDownload(DownloadBean download) throws StorageException {
-        deleteEntity("download", download.getId()); //$NON-NLS-1$
+        deleteEntity(EsConstants.INDEX_MANAGER_POSTFIX_DOWNLOAD, download.getId());
     }
 
     /**
@@ -1055,7 +910,7 @@ public class EsStorage implements IStorage, IStorageQuery {
      */
     @Override
     public void deletePolicyDefinition(PolicyDefinitionBean policyDef) throws StorageException {
-        deleteEntity("policyDef", policyDef.getId()); //$NON-NLS-1$
+        deleteEntity(EsConstants.INDEX_MANAGER_POSTFIX_POLICY_DEF, policyDef.getId());
     }
 
     /* (non-Javadoc)
@@ -1063,7 +918,7 @@ public class EsStorage implements IStorage, IStorageQuery {
      */
     @Override
     public void deleteRole(RoleBean role) throws StorageException {
-        deleteEntity("role", role.getId()); //$NON-NLS-1$
+        deleteEntity(EsConstants.INDEX_MANAGER_POSTFIX_ROLE, role.getId());
     }
 
     /**
@@ -1071,7 +926,7 @@ public class EsStorage implements IStorage, IStorageQuery {
      */
     @Override
     public OrganizationBean getOrganization(String id) throws StorageException {
-        Map<String, Object> source = getEntity("organization", id); //$NON-NLS-1$
+        Map<String, Object> source = getEntity(EsConstants.INDEX_MANAGER_POSTFIX_ORGANIZATION, id);
         return EsMarshalling.unmarshallOrganization(source);
     }
 
@@ -1080,7 +935,7 @@ public class EsStorage implements IStorage, IStorageQuery {
      */
     @Override
     public ClientBean getClient(String organizationId, String id) throws StorageException {
-        Map<String, Object> source = getEntity("client", id(organizationId, id)); //$NON-NLS-1$
+        Map<String, Object> source = getEntity(EsConstants.INDEX_MANAGER_POSTFIX_CLIENT, id(organizationId, id));
         if (source == null) {
             return null;
         }
@@ -1095,7 +950,7 @@ public class EsStorage implements IStorage, IStorageQuery {
     @Override
     public ClientVersionBean getClientVersion(String organizationId, String clientId,
             String version) throws StorageException {
-        Map<String, Object> source = getEntity("clientVersion", id(organizationId, clientId, version)); //$NON-NLS-1$
+        Map<String, Object> source = getEntity(EsConstants.INDEX_MANAGER_POSTFIX_CLIENT_VERSION, id(organizationId, clientId, version));
         if (source == null) {
             return null;
         }
@@ -1110,7 +965,7 @@ public class EsStorage implements IStorage, IStorageQuery {
     @SuppressWarnings("nls")
     @Override
     public ContractBean getContract(Long id) throws StorageException {
-        Map<String, Object> source = getEntity("contract", String.valueOf(id)); //$NON-NLS-1$
+        Map<String, Object> source = getEntity(EsConstants.INDEX_MANAGER_POSTFIX_CONTRACT, String.valueOf(id));
         ContractBean contract = EsMarshalling.unmarshallContract(source);
         if (contract == null) {
             return null;
@@ -1137,7 +992,7 @@ public class EsStorage implements IStorage, IStorageQuery {
      */
     @Override
     public ApiBean getApi(String organizationId, String id) throws StorageException {
-        Map<String, Object> source = getEntity("api", id(organizationId, id)); //$NON-NLS-1$
+        Map<String, Object> source = getEntity(EsConstants.INDEX_MANAGER_POSTFIX_API, id(organizationId, id));
         if (source == null) {
             return null;
         }
@@ -1152,7 +1007,7 @@ public class EsStorage implements IStorage, IStorageQuery {
     @Override
     public ApiVersionBean getApiVersion(String organizationId, String apiId, String version)
             throws StorageException {
-        Map<String, Object> source = getEntity("apiVersion", id(organizationId, apiId, version)); //$NON-NLS-1$
+        Map<String, Object> source = getEntity(EsConstants.INDEX_MANAGER_POSTFIX_API_VERSION, id(organizationId, apiId, version));
         if (source == null) {
             return null;
         }
@@ -1167,7 +1022,7 @@ public class EsStorage implements IStorage, IStorageQuery {
     @Override
     public InputStream getApiDefinition(ApiVersionBean version) throws StorageException {
         String id = id(version.getApi().getOrganization().getId(), version.getApi().getId(), version.getVersion()) + ":def"; //$NON-NLS-1$
-        Map<String, Object> source = getEntity("apiDefinition", id); //$NON-NLS-1$
+        Map<String, Object> source = getEntity(EsConstants.INDEX_MANAGER_POSTFIX_API_DEFINITION, id);
         if (source == null) {
             return null;
         }
@@ -1182,7 +1037,7 @@ public class EsStorage implements IStorage, IStorageQuery {
      */
     @Override
     public PlanBean getPlan(String organizationId, String id) throws StorageException {
-        Map<String, Object> source = getEntity("plan", id(organizationId, id)); //$NON-NLS-1$
+        Map<String, Object> source = getEntity(EsConstants.INDEX_MANAGER_POSTFIX_PLAN, id(organizationId, id));
         if (source == null) {
             return null;
         }
@@ -1197,7 +1052,7 @@ public class EsStorage implements IStorage, IStorageQuery {
     @Override
     public PlanVersionBean getPlanVersion(String organizationId, String planId, String version)
             throws StorageException {
-        Map<String, Object> source = getEntity("planVersion", id(organizationId, planId, version)); //$NON-NLS-1$
+        Map<String, Object> source = getEntity(EsConstants.INDEX_MANAGER_POSTFIX_PLAN_VERSION, id(organizationId, planId, version));
         if (source == null) {
             return null;
         }
@@ -1238,7 +1093,7 @@ public class EsStorage implements IStorage, IStorageQuery {
      */
     @Override
     public GatewayBean getGateway(String id) throws StorageException {
-        Map<String, Object> source = getEntity("gateway", id); //$NON-NLS-1$
+        Map<String, Object> source = getEntity(EsConstants.INDEX_MANAGER_POSTFIX_GATEWAY, id);
         return EsMarshalling.unmarshallGateway(source);
     }
 
@@ -1247,7 +1102,7 @@ public class EsStorage implements IStorage, IStorageQuery {
      */
     @Override
     public DownloadBean getDownload(String id) throws StorageException {
-        Map<String, Object> source = getEntity("download", id); //$NON-NLS-1$
+        Map<String, Object> source = getEntity(EsConstants.INDEX_MANAGER_POSTFIX_DOWNLOAD, id);
         return EsMarshalling.unmarshallDownload(source);
     }
 
@@ -1256,7 +1111,7 @@ public class EsStorage implements IStorage, IStorageQuery {
      */
     @Override
     public PluginBean getPlugin(long id) throws StorageException {
-        Map<String, Object> source = getEntity("plugin", String.valueOf(id)); //$NON-NLS-1$
+        Map<String, Object> source = getEntity(EsConstants.INDEX_MANAGER_POSTFIX_PLUGIN, String.valueOf(id));
         return EsMarshalling.unmarshallPlugin(source);
     }
 
@@ -1267,18 +1122,16 @@ public class EsStorage implements IStorage, IStorageQuery {
     public PluginBean getPlugin(String groupId, String artifactId) throws StorageException {
         try {
             @SuppressWarnings("nls")
-            QueryBuilder qb =
-                FilterBuilders.boolFilter(
-                        FilterBuilders.filter(
-                            FilterBuilders.termFilter("groupId", groupId),
-                            FilterBuilders.termFilter("artifactId", artifactId)
-                        )
-                );
+            BoolQueryBuilder qb = QueryBuilders.boolQuery();
+            List<QueryBuilder> filter = qb.filter();
+            filter.add(QueryBuilders.termQuery("groupId", groupId));
+            filter.add(QueryBuilders.termQuery("artifactId", artifactId));
+
             SearchSourceBuilder builder = new SearchSourceBuilder().query(qb).size(50);
-            List<Hit<Map<String,Object>,Void>> hits = listEntities("plugin", builder); //$NON-NLS-1$
+            List<SearchHit> hits = listEntities(EsConstants.INDEX_MANAGER_POSTFIX_PLUGIN, builder);
             if (hits.size() == 1) {
-                Hit<Map<String,Object>,Void> hit = hits.iterator().next();
-                return EsMarshalling.unmarshallPlugin(hit.source);
+                Map<String,Object> hit = hits.iterator().next().getSourceAsMap();
+                return EsMarshalling.unmarshallPlugin(hit);
             }
             return null;
         } catch (Exception e) {
@@ -1291,7 +1144,7 @@ public class EsStorage implements IStorage, IStorageQuery {
      */
     @Override
     public PolicyDefinitionBean getPolicyDefinition(String id) throws StorageException {
-        Map<String, Object> source = getEntity("policyDef", id); //$NON-NLS-1$
+        Map<String, Object> source = getEntity(EsConstants.INDEX_MANAGER_POSTFIX_POLICY_DEF, id);
         return EsMarshalling.unmarshallPolicyDefinition(source);
 
     }
@@ -1301,7 +1154,7 @@ public class EsStorage implements IStorage, IStorageQuery {
      */
     @Override
     public RoleBean getRole(String id) throws StorageException {
-        Map<String, Object> source = getEntity("role", id); //$NON-NLS-1$
+        Map<String, Object> source = getEntity(EsConstants.INDEX_MANAGER_POSTFIX_ROLE, id);
         return EsMarshalling.unmarshallRole(source);
     }
 
@@ -1313,16 +1166,16 @@ public class EsStorage implements IStorage, IStorageQuery {
     public List<PluginSummaryBean> listPlugins() throws StorageException {
         String[] fields = {"id", "artifactId", "groupId", "version", "classifier", "type", "name",
             "description", "createdBy", "createdOn"};
-        QueryBuilder query = FilterBuilders.notExistOrFalse("deleted");
+        QueryBuilder query =  QueryBuilders.boolQuery().filter(QueryBuilders.termQuery("deleted", false));
         SearchSourceBuilder builder = new SearchSourceBuilder()
                 .fetchSource(fields, null)
                 .query(query)
-                .sort("name.raw", SortOrder.ASC)
+                .sort(new FieldSortBuilder("name").order(SortOrder.ASC))
                 .size(200);
-        List<Hit<Map<String,Object>,Void>> hits = listEntities("plugin", builder);
+        List<SearchHit> hits = listEntities(EsConstants.INDEX_MANAGER_POSTFIX_PLUGIN, builder);
         List<PluginSummaryBean> rval = new ArrayList<>(hits.size());
-        for (Hit<Map<String,Object>,Void> hit : hits) {
-            PluginSummaryBean bean = EsMarshalling.unmarshallPluginSummary(hit.source);
+        for (SearchHit hit : hits) {
+            PluginSummaryBean bean = EsMarshalling.unmarshallPluginSummary(hit.getSourceAsMap());
             rval.add(bean);
         }
         return rval;
@@ -1334,12 +1187,13 @@ public class EsStorage implements IStorage, IStorageQuery {
     @Override
     public List<GatewaySummaryBean> listGateways() throws StorageException {
         @SuppressWarnings("nls")
-        String[] fields = {"id", "name", "description","type"};
-        SearchSourceBuilder builder = new SearchSourceBuilder().fetchSource(fields, null).sort("name.raw", SortOrder.ASC).size(100); //$NON-NLS-1$
-        List<Hit<Map<String,Object>,Void>> hits = listEntities("gateway", builder); //$NON-NLS-1$
+        String[] fields = {"id", "name", "description", "type"};
+        SearchSourceBuilder builder = new SearchSourceBuilder().fetchSource(fields, null)
+                .sort(new FieldSortBuilder("name").order(SortOrder.ASC)).size(100); //$NON-NLS-1$
+        List<SearchHit> hits = listEntities(EsConstants.INDEX_MANAGER_POSTFIX_GATEWAY, builder);
         List<GatewaySummaryBean> rval = new ArrayList<>(hits.size());
-        for (Hit<Map<String,Object>,Void> hit : hits) {
-            GatewaySummaryBean bean = EsMarshalling.unmarshallGatewaySummary(hit.source);
+        for (SearchHit hit : hits) {
+            GatewaySummaryBean bean = EsMarshalling.unmarshallGatewaySummary(hit.getSourceAsMap());
             rval.add(bean);
         }
         return rval;
@@ -1351,7 +1205,7 @@ public class EsStorage implements IStorage, IStorageQuery {
     @Override
     public SearchResultsBean<OrganizationSummaryBean> findOrganizations(SearchCriteriaBean criteria)
             throws StorageException {
-        return find(criteria, "organization", new IUnmarshaller<OrganizationSummaryBean>() { //$NON-NLS-1$
+        return find(criteria, EsConstants.INDEX_MANAGER_POSTFIX_ORGANIZATION, new IUnmarshaller<OrganizationSummaryBean>() {
             @Override
             public OrganizationSummaryBean unmarshal(Map<String, Object> source) {
                 return EsMarshalling.unmarshallOrganizationSummary(source);
@@ -1365,7 +1219,7 @@ public class EsStorage implements IStorage, IStorageQuery {
     @Override
     public SearchResultsBean<ClientSummaryBean> findClients(SearchCriteriaBean criteria)
             throws StorageException {
-        return find(criteria, "client", new IUnmarshaller<ClientSummaryBean>() { //$NON-NLS-1$
+        return find(criteria, EsConstants.INDEX_MANAGER_POSTFIX_CLIENT, new IUnmarshaller<ClientSummaryBean>() {
             @Override
             public ClientSummaryBean unmarshal(Map<String, Object> source) {
                 return EsMarshalling.unmarshallClientSummary(source);
@@ -1379,7 +1233,7 @@ public class EsStorage implements IStorage, IStorageQuery {
     @Override
     public SearchResultsBean<ApiSummaryBean> findApis(SearchCriteriaBean criteria)
             throws StorageException {
-        return find(criteria, "api", new IUnmarshaller<ApiSummaryBean>() { //$NON-NLS-1$
+        return find(criteria, EsConstants.INDEX_MANAGER_POSTFIX_API, new IUnmarshaller<ApiSummaryBean>() {
             @Override
             public ApiSummaryBean unmarshal(Map<String, Object> source) {
                 return EsMarshalling.unmarshallApiSummary(source);
@@ -1393,8 +1247,8 @@ public class EsStorage implements IStorage, IStorageQuery {
     @Override
     public SearchResultsBean<PlanSummaryBean> findPlans(String organizationId, SearchCriteriaBean criteria)
             throws StorageException {
-        criteria.addFilter("organizationId", organizationId, SearchCriteriaFilterOperator.eq); //$NON-NLS-1$
-        return find(criteria, "plan", new IUnmarshaller<PlanSummaryBean>() { //$NON-NLS-1$
+        criteria.addFilter("organizationId", organizationId, SearchCriteriaFilterOperator.eq);
+        return find(criteria, EsConstants.INDEX_MANAGER_POSTFIX_PLAN, new IUnmarshaller<PlanSummaryBean>() {
             @Override
             public PlanSummaryBean unmarshal(Map<String, Object> source) {
                 return EsMarshalling.unmarshallPlanSummary(source);
@@ -1441,7 +1295,7 @@ public class EsStorage implements IStorage, IStorageQuery {
             }
         }
 
-        return find(criteria, "auditEntry", new IUnmarshaller<AuditEntryBean>() { //$NON-NLS-1$
+        return find(criteria, EsConstants.INDEX_MANAGER_POSTFIX_AUDIT_ENTRY, new IUnmarshaller<AuditEntryBean>() {
             @Override
             public AuditEntryBean unmarshal(Map<String, Object> source) {
                 return EsMarshalling.unmarshallAuditEntry(source);
@@ -1467,7 +1321,7 @@ public class EsStorage implements IStorage, IStorageQuery {
             criteria.addFilter("who", userId, SearchCriteriaFilterOperator.eq); //$NON-NLS-1$
         }
 
-        return find(criteria, "auditEntry", new IUnmarshaller<AuditEntryBean>() { //$NON-NLS-1$
+        return find(criteria, EsConstants.INDEX_MANAGER_POSTFIX_AUDIT_ENTRY, new IUnmarshaller<AuditEntryBean>() {
             @Override
             public AuditEntryBean unmarshal(Map<String, Object> source) {
                 return EsMarshalling.unmarshallAuditEntry(source);
@@ -1484,17 +1338,21 @@ public class EsStorage implements IStorage, IStorageQuery {
         if (organizationIds == null || organizationIds.isEmpty()) {
             return orgs;
         }
-        @SuppressWarnings("nls")
-        QueryBuilder query =  FilterBuilders.termsFilter("id", organizationIds.toArray(new String[organizationIds.size()]));
+        BoolQueryBuilder query = QueryBuilders.boolQuery();
+        List<QueryBuilder> filter = query.should();
+        for (String orgId : organizationIds.toArray(new String[organizationIds.size()])) {
+            filter.add(QueryBuilders.termQuery("id", orgId));
+        }
+
         @SuppressWarnings("nls")
         SearchSourceBuilder builder = new SearchSourceBuilder()
-                .sort("name.raw", SortOrder.ASC)
+                .sort(new FieldSortBuilder("name").order(SortOrder.ASC))
                 .query(query)
                 .size(500);
-        List<Hit<Map<String,Object>,Void>> hits = listEntities("organization", builder); //$NON-NLS-1$
+        List<SearchHit> hits = listEntities(EsConstants.INDEX_MANAGER_POSTFIX_ORGANIZATION, builder);
         List<OrganizationSummaryBean> rval = new ArrayList<>(hits.size());
-        for (Hit<Map<String,Object>,Void> hit : hits) {
-            OrganizationSummaryBean bean = EsMarshalling.unmarshallOrganizationSummary(hit.source);
+        for (SearchHit hit : hits) {
+            OrganizationSummaryBean bean = EsMarshalling.unmarshallOrganizationSummary(hit.getSourceAsMap());
             rval.add(bean);
         }
         return rval;
@@ -1507,15 +1365,15 @@ public class EsStorage implements IStorage, IStorageQuery {
     public List<ClientSummaryBean> getClientsInOrgs(Set<String> organizationIds) throws StorageException {
         @SuppressWarnings("nls")
         SearchSourceBuilder builder = new SearchSourceBuilder()
-                .sort("organizationName.raw", SortOrder.ASC)
-                .sort("name.raw", SortOrder.ASC)
+                .sort("organizationName", SortOrder.ASC)
+                .sort("name", SortOrder.ASC)
                 .size(500);
         TermsQueryBuilder query = QueryBuilders.termsQuery("organizationId", organizationIds.toArray(new String[organizationIds.size()])); //$NON-NLS-1$
         builder.query(query);
-        List<Hit<Map<String,Object>,Void>> hits = listEntities("client", builder); //$NON-NLS-1$
+        List<SearchHit> hits = listEntities(EsConstants.INDEX_MANAGER_POSTFIX_CLIENT, builder);
         List<ClientSummaryBean> rval = new ArrayList<>(hits.size());
-        for (Hit<Map<String,Object>,Void> hit : hits) {
-            ClientSummaryBean bean = EsMarshalling.unmarshallClientSummary(hit.source);
+        for (SearchHit hit : hits) {
+            ClientSummaryBean bean = EsMarshalling.unmarshallClientSummary(hit.getSourceAsMap());
             rval.add(bean);
         }
         return rval;
@@ -1538,22 +1396,20 @@ public class EsStorage implements IStorage, IStorageQuery {
     public List<ClientVersionSummaryBean> getClientVersions(String organizationId,
             String clientId) throws StorageException {
         @SuppressWarnings("nls")
-        QueryBuilder query =
-            FilterBuilders.boolFilter(
-                FilterBuilders.filter(
-                    FilterBuilders.termFilter("organizationId", organizationId),
-                    FilterBuilders.termFilter("clientId", clientId)
-                )
-            );
+        BoolQueryBuilder query = QueryBuilders.boolQuery();
+        List<QueryBuilder> filter = query.filter();
+        filter.add(QueryBuilders.termQuery("organizationId", organizationId));
+        filter.add(QueryBuilders.termQuery("clientId", clientId));
         @SuppressWarnings("nls")
+
         SearchSourceBuilder builder = new SearchSourceBuilder()
-                .sort("createdOn", SortOrder.DESC)
+                .sort(new FieldSortBuilder("createdOn").order(SortOrder.DESC))
                 .query(query)
                 .size(500);
-        List<Hit<Map<String,Object>,Void>> hits = listEntities("clientVersion", builder); //$NON-NLS-1$
+        List<SearchHit> hits = listEntities(EsConstants.INDEX_MANAGER_POSTFIX_CLIENT_VERSION, builder);
         List<ClientVersionSummaryBean> rval = new ArrayList<>(hits.size());
-        for (Hit<Map<String,Object>,Void> hit : hits) {
-            ClientVersionSummaryBean bean = EsMarshalling.unmarshallClientVersionSummary(hit.source);
+        for (SearchHit hit : hits) {
+            ClientVersionSummaryBean bean = EsMarshalling.unmarshallClientVersionSummary(hit.getSourceAsMap());
             rval.add(bean);
         }
         return rval;
@@ -1566,21 +1422,21 @@ public class EsStorage implements IStorage, IStorageQuery {
     public List<ContractSummaryBean> getClientContracts(String organizationId, String clientId,
             String version) throws StorageException {
         @SuppressWarnings("nls")
-        QueryBuilder query =
-            FilterBuilders.boolFilter(
-                FilterBuilders.filter(
-                    FilterBuilders.termFilter("clientOrganizationId", organizationId),
-                    FilterBuilders.termFilter("clientId", clientId),
-                    FilterBuilders.termFilter("clientVersion", version)
-                )
-            );
+        BoolQueryBuilder query = QueryBuilders.boolQuery();
+        List<QueryBuilder> filter = query.filter();
+        filter.add(QueryBuilders.termQuery("clientOrganizationId", organizationId));
+        filter.add(QueryBuilders.termQuery("clientId", clientId));
+        filter.add(QueryBuilders.termQuery("clientVersion", version));
         @SuppressWarnings("nls")
-        SearchSourceBuilder builder = new SearchSourceBuilder().sort("apiOrganizationId", SortOrder.ASC)
-                .sort("apiId", SortOrder.ASC).query(query).size(500);
-        List<Hit<Map<String,Object>,Void>> hits = listEntities("contract", builder); //$NON-NLS-1$
+
+        SearchSourceBuilder builder = new SearchSourceBuilder().query(query)
+                .sort(new FieldSortBuilder("apiOrganizationId").order(SortOrder.ASC))
+                .sort(new FieldSortBuilder("apiId").order(SortOrder.ASC))
+                .size(500);
+        List<SearchHit> hits = listEntities(EsConstants.INDEX_MANAGER_POSTFIX_CONTRACT, builder);
         List<ContractSummaryBean> rval = new ArrayList<>(hits.size());
-        for (Hit<Map<String,Object>,Void> hit : hits) {
-            ContractSummaryBean bean = EsMarshalling.unmarshallContractSummary(hit.source);
+        for (SearchHit hit : hits) {
+            ContractSummaryBean bean = EsMarshalling.unmarshallContractSummary(hit.getSourceAsMap());
             rval.add(bean);
         }
         return rval;
@@ -1593,21 +1449,20 @@ public class EsStorage implements IStorage, IStorageQuery {
     public ApiRegistryBean getApiRegistry(String organizationId, String clientId, String version)
             throws StorageException {
         @SuppressWarnings("nls")
-        QueryBuilder query =
-          FilterBuilders.boolFilter(
-              FilterBuilders.filter(
-                  FilterBuilders.termFilter("clientOrganizationId", organizationId),
-                  FilterBuilders.termFilter("clientId", clientId),
-                  FilterBuilders.termFilter("clientVersion", version)
-              )
-          );
+        BoolQueryBuilder query = QueryBuilders.boolQuery();
+        List<QueryBuilder> filter = query.filter();
+        filter.add(QueryBuilders.termQuery("clientOrganizationId", organizationId));
+        filter.add(QueryBuilders.termQuery("clientId", clientId));
+        filter.add(QueryBuilders.termQuery("clientVersion", version));
         @SuppressWarnings("nls")
-        SearchSourceBuilder builder = new SearchSourceBuilder().sort("id", SortOrder.ASC).query(query)
+
+        SearchSourceBuilder builder = new SearchSourceBuilder().query(query)
+                .sort(new FieldSortBuilder("id").order(SortOrder.ASC))
                 .size(500);
-        List<Hit<Map<String,Object>,Void>> hits = listEntities("contract", builder); //$NON-NLS-1$
+        List<SearchHit> hits = listEntities(EsConstants.INDEX_MANAGER_POSTFIX_CONTRACT, builder);
         ApiRegistryBean registry = new ApiRegistryBean();
-        for (Hit<Map<String,Object>,Void> hit : hits) {
-            ApiEntryBean bean = EsMarshalling.unmarshallApiEntry(hit.source);
+        for (SearchHit hit : hits) {
+            ApiEntryBean bean = EsMarshalling.unmarshallApiEntry(hit.getSourceAsMap());
             ApiVersionBean svb = getApiVersion(bean.getApiOrgId(), bean.getApiId(), bean.getApiVersion());
             Set<ApiGatewayBean> gateways = svb.getGateways();
             if (gateways != null && !gateways.isEmpty()) {
@@ -1626,16 +1481,16 @@ public class EsStorage implements IStorage, IStorageQuery {
     public List<ApiSummaryBean> getApisInOrgs(Set<String> organizationIds) throws StorageException {
         @SuppressWarnings("nls")
         SearchSourceBuilder builder = new SearchSourceBuilder()
-                .sort("organizationName.raw", SortOrder.ASC)
-                .sort("name.raw", SortOrder.ASC)
+                .sort(new FieldSortBuilder("organizationName").order(SortOrder.ASC))
+                .sort(new FieldSortBuilder("name").order(SortOrder.ASC))
                 .size(500);
         TermsQueryBuilder query = QueryBuilders.termsQuery("organizationId", organizationIds.toArray(new String[organizationIds.size()])); //$NON-NLS-1$
         builder.query(query);
 
-        List<Hit<Map<String,Object>,Void>> hits = listEntities("api", builder); //$NON-NLS-1$
+        List<SearchHit> hits = listEntities(EsConstants.INDEX_MANAGER_POSTFIX_API, builder);
         List<ApiSummaryBean> rval = new ArrayList<>(hits.size());
-        for (Hit<Map<String,Object>,Void> hit : hits) {
-            ApiSummaryBean bean = EsMarshalling.unmarshallApiSummary(hit.source);
+        for (SearchHit hit : hits) {
+            ApiSummaryBean bean = EsMarshalling.unmarshallApiSummary(hit.getSourceAsMap());
             rval.add(bean);
         }
         return rval;
@@ -1658,23 +1513,20 @@ public class EsStorage implements IStorage, IStorageQuery {
     @SuppressWarnings("nls")
     public List<ApiVersionSummaryBean> getApiVersions(String organizationId, String apiId)
             throws StorageException {
-        QueryBuilder query =
-            FilterBuilders.boolFilter(
-                FilterBuilders.filter(
-                    FilterBuilders.termFilter("organizationId", organizationId),
-                    FilterBuilders.termFilter("apiId", apiId)
-            )
-        );
+        BoolQueryBuilder query = QueryBuilders.boolQuery();
+        List<QueryBuilder> filter = query.filter();
+        filter.add(QueryBuilders.termQuery("organizationId", organizationId));
+        filter.add(QueryBuilders.termQuery("apiId", apiId));
 
         SearchSourceBuilder builder = new SearchSourceBuilder()
-                .sort("createdOn", SortOrder.DESC)
+                .sort(new FieldSortBuilder("createdOn").order(SortOrder.ASC))
                 .query(query)
                 .size(500);
 
-        List<Hit<Map<String,Object>,Void>> hits = listEntities("apiVersion", builder);
+        List<SearchHit> hits = listEntities(EsConstants.INDEX_MANAGER_POSTFIX_API_VERSION, builder);
         List<ApiVersionSummaryBean> rval = new ArrayList<>(hits.size());
-        for (Hit<Map<String,Object>,Void> hit : hits) {
-            ApiVersionSummaryBean bean = EsMarshalling.unmarshallApiVersionSummary(hit.source);
+        for (SearchHit hit : hits) {
+            ApiVersionSummaryBean bean = EsMarshalling.unmarshallApiVersionSummary(hit.getSourceAsMap());
             rval.add(bean);
         }
         return rval;
@@ -1712,15 +1564,15 @@ public class EsStorage implements IStorage, IStorageQuery {
     public List<PlanSummaryBean> getPlansInOrgs(Set<String> organizationIds) throws StorageException {
         @SuppressWarnings("nls")
         SearchSourceBuilder builder = new SearchSourceBuilder()
-                .sort("organizationName.raw", SortOrder.ASC)
-                .sort("name.raw", SortOrder.ASC)
+                .sort(new FieldSortBuilder("organizationName").order(SortOrder.ASC))
+                .sort(new FieldSortBuilder("name").order(SortOrder.ASC))
                 .size(500);
         TermsQueryBuilder query = QueryBuilders.termsQuery("organizationId", organizationIds.toArray(new String[organizationIds.size()])); //$NON-NLS-1$
         builder.query(query);
-        List<Hit<Map<String,Object>,Void>> hits = listEntities("plan", builder); //$NON-NLS-1$
+        List<SearchHit> hits = listEntities(EsConstants.INDEX_MANAGER_POSTFIX_PLAN, builder);
         List<PlanSummaryBean> rval = new ArrayList<>(hits.size());
-        for (Hit<Map<String,Object>,Void> hit : hits) {
-            PlanSummaryBean bean = EsMarshalling.unmarshallPlanSummary(hit.source);
+        for (SearchHit hit : hits) {
+            PlanSummaryBean bean = EsMarshalling.unmarshallPlanSummary(hit.getSourceAsMap());
             rval.add(bean);
         }
         return rval;
@@ -1743,22 +1595,20 @@ public class EsStorage implements IStorage, IStorageQuery {
     public List<PlanVersionSummaryBean> getPlanVersions(String organizationId, String planId)
             throws StorageException {
         @SuppressWarnings("nls")
-        QueryBuilder query =
-            FilterBuilders.boolFilter(
-                FilterBuilders.filter(
-                    FilterBuilders.termFilter("organizationId", organizationId),
-                    FilterBuilders.termFilter("planId", planId)
-                )
-            );
+        BoolQueryBuilder query = QueryBuilders.boolQuery();
+        List<QueryBuilder> filter = query.filter();
+        filter.add(QueryBuilders.termQuery("organizationId", organizationId));
+        filter.add(QueryBuilders.termQuery("planId", planId));
         @SuppressWarnings("nls")
+
         SearchSourceBuilder builder = new SearchSourceBuilder()
-                .sort("createdOn", SortOrder.DESC)
+                .sort(new FieldSortBuilder("createdOn").order(SortOrder.DESC)) //$NON-NLS-1$
                 .query(query)
                 .size(500);
-        List<Hit<Map<String,Object>,Void>> hits = listEntities("planVersion", builder); //$NON-NLS-1$
+        List<SearchHit> hits = listEntities(EsConstants.INDEX_MANAGER_POSTFIX_PLAN_VERSION, builder); //$NON-NLS-1$
         List<PlanVersionSummaryBean> rval = new ArrayList<>(hits.size());
-        for (Hit<Map<String,Object>,Void> hit : hits) {
-            PlanVersionSummaryBean bean = EsMarshalling.unmarshallPlanVersionSummary(hit.source);
+        for (SearchHit hit : hits) {
+            PlanVersionSummaryBean bean = EsMarshalling.unmarshallPlanVersionSummary(hit.getSourceAsMap());
             rval.add(bean);
         }
         return rval;
@@ -1811,16 +1661,17 @@ public class EsStorage implements IStorage, IStorageQuery {
     public List<PolicyDefinitionSummaryBean> listPolicyDefinitions() throws StorageException {
         String[] fields = {"id", "policyImpl", "name", "description", "icon", "pluginId", "formType"};
 
-        QueryBuilder query = FilterBuilders.notExistOrFalse("deleted");
+        QueryBuilder query =  QueryBuilders.boolQuery().filter(QueryBuilders.termQuery("deleted", false));
 
         SearchSourceBuilder builder = new SearchSourceBuilder()
                 .fetchSource(fields, null)
                 .query(query)
-                .sort("name.raw", SortOrder.ASC).size(100); //$NON-NLS-1$
-        List<Hit<Map<String,Object>,Void>> hits = listEntities("policyDef", builder); //$NON-NLS-1$
+                .sort(new FieldSortBuilder("name").order(SortOrder.ASC)) //$NON-NLS-1$
+                .size(100);
+        List<SearchHit> hits = listEntities(EsConstants.INDEX_MANAGER_POSTFIX_POLICY_DEF, builder); //$NON-NLS-1$
         List<PolicyDefinitionSummaryBean> rval = new ArrayList<>(hits.size());
-        for (Hit<Map<String,Object>,Void> hit : hits) {
-            PolicyDefinitionSummaryBean bean = EsMarshalling.unmarshallPolicyDefinitionSummary(hit.source);
+        for (SearchHit hit : hits) {
+            PolicyDefinitionSummaryBean bean = EsMarshalling.unmarshallPolicyDefinitionSummary(hit.getSourceAsMap());
             rval.add(bean);
         }
         return rval;
@@ -1833,21 +1684,21 @@ public class EsStorage implements IStorage, IStorageQuery {
     @SuppressWarnings("nls")
     public List<ContractSummaryBean> getContracts(String organizationId, String apiId,
             String version, int page, int pageSize) throws StorageException {
-        QueryBuilder query =
-            FilterBuilders.boolFilter(
-                    FilterBuilders.filter(
-                            FilterBuilders.termFilter("apiOrganizationId", organizationId),
-                            FilterBuilders.termFilter("apiId", apiId),
-                            FilterBuilders.termFilter("apiVersion", version)
-                    )
-            );
 
-        SearchSourceBuilder builder = new SearchSourceBuilder().sort("clientOrganizationId", SortOrder.ASC)
-                .sort("clientId", SortOrder.ASC).query(query).size(500);
-        List<Hit<Map<String,Object>,Void>> hits = listEntities("contract", builder); //$NON-NLS-1$
+        BoolQueryBuilder query = QueryBuilders.boolQuery();
+        List<QueryBuilder> filter = query.filter();
+        filter.add(QueryBuilders.termQuery("apiOrganizationId", organizationId));
+        filter.add(QueryBuilders.termQuery("apiId", apiId));
+        filter.add(QueryBuilders.termQuery("apiVersion", version));
+
+        SearchSourceBuilder builder = new SearchSourceBuilder().query(query)
+                .sort(new FieldSortBuilder("clientOrganizationId").order(SortOrder.ASC))
+                .sort(new FieldSortBuilder("clientId").order(SortOrder.ASC))
+                .size(500);
+        List<SearchHit> hits = listEntities(EsConstants.INDEX_MANAGER_POSTFIX_CONTRACT, builder); //$NON-NLS-1$
         List<ContractSummaryBean> rval = new ArrayList<>(hits.size());
-        for (Hit<Map<String,Object>,Void> hit : hits) {
-            ContractSummaryBean bean = EsMarshalling.unmarshallContractSummary(hit.source);
+        for (SearchHit hit : hits) {
+            ContractSummaryBean bean = EsMarshalling.unmarshallContractSummary(hit.getSourceAsMap());
             rval.add(bean);
         }
         return rval;
@@ -1869,17 +1720,18 @@ public class EsStorage implements IStorage, IStorageQuery {
     @Override
     public List<PolicyDefinitionSummaryBean> listPluginPolicyDefs(Long pluginId) throws StorageException {
         @SuppressWarnings("nls")
-        QueryBuilder qb = FilterBuilders.termFilter("pluginId", pluginId);
+        QueryBuilder qb = QueryBuilders.termQuery("pluginId", pluginId);
         @SuppressWarnings("nls")
         String[] fields = {"id", "policyImpl", "name", "description", "icon", "pluginId", "formType"};
         SearchSourceBuilder builder = new SearchSourceBuilder()
                 .fetchSource(fields, null)
                 .query(qb)
-                .sort("name.raw", SortOrder.ASC).size(100); //$NON-NLS-1$
-        List<Hit<Map<String,Object>,Void>> hits = listEntities("policyDef", builder); //$NON-NLS-1$
+                .sort(new FieldSortBuilder("name").order(SortOrder.ASC))
+                .size(100); //$NON-NLS-1$
+        List<SearchHit> hits = listEntities(EsConstants.INDEX_MANAGER_POSTFIX_POLICY_DEF, builder); //$NON-NLS-1$
         List<PolicyDefinitionSummaryBean> rval = new ArrayList<>(hits.size());
-        for (Hit<Map<String,Object>,Void> hit : hits) {
-            PolicyDefinitionSummaryBean bean = EsMarshalling.unmarshallPolicyDefinitionSummary(hit.source);
+        for (SearchHit hit : hits) {
+            PolicyDefinitionSummaryBean bean = EsMarshalling.unmarshallPolicyDefinitionSummary(hit.getSourceAsMap());
             rval.add(bean);
         }
         return rval;
@@ -1890,7 +1742,7 @@ public class EsStorage implements IStorage, IStorageQuery {
      */
     @Override
     public void createUser(UserBean user) throws StorageException {
-        indexEntity("user", user.getUsername(), EsMarshalling.marshall(user)); //$NON-NLS-1$
+        indexEntity(EsConstants.INDEX_MANAGER_POSTFIX_USER, user.getUsername(), EsMarshalling.marshall(user)); //$NON-NLS-1$
     }
 
     /**
@@ -1898,7 +1750,7 @@ public class EsStorage implements IStorage, IStorageQuery {
      */
     @Override
     public UserBean getUser(String userId) throws StorageException {
-        Map<String, Object> source = getEntity("user", userId); //$NON-NLS-1$
+        Map<String, Object> source = getEntity(EsConstants.INDEX_MANAGER_POSTFIX_USER, userId); //$NON-NLS-1$
         return EsMarshalling.unmarshallUser(source);
     }
 
@@ -1907,7 +1759,7 @@ public class EsStorage implements IStorage, IStorageQuery {
      */
     @Override
     public void updateUser(UserBean user) throws StorageException {
-        updateEntity("user", user.getUsername(), EsMarshalling.marshall(user)); //$NON-NLS-1$
+        updateEntity(EsConstants.INDEX_MANAGER_POSTFIX_USER, user.getUsername(), EsMarshalling.marshall(user)); //$NON-NLS-1$
     }
 
     /**
@@ -1915,7 +1767,7 @@ public class EsStorage implements IStorage, IStorageQuery {
      */
     @Override
     public SearchResultsBean<UserBean> findUsers(SearchCriteriaBean criteria) throws StorageException {
-        return find(criteria, "user",  new IUnmarshaller<UserBean>() { //$NON-NLS-1$
+        return find(criteria, EsConstants.INDEX_MANAGER_POSTFIX_USER,  new IUnmarshaller<UserBean>() { //$NON-NLS-1$
             @Override
             public UserBean unmarshal(Map<String, Object> source) {
                 return EsMarshalling.unmarshallUser(source);
@@ -1928,7 +1780,7 @@ public class EsStorage implements IStorage, IStorageQuery {
      */
     @Override
     public SearchResultsBean<RoleBean> findRoles(SearchCriteriaBean criteria) throws StorageException {
-        return find(criteria, "role", new IUnmarshaller<RoleBean>() { //$NON-NLS-1$
+        return find(criteria, EsConstants.INDEX_MANAGER_POSTFIX_ROLE, new IUnmarshaller<RoleBean>() { //$NON-NLS-1$
             @Override
             public RoleBean unmarshal(Map<String, Object> source) {
                 return EsMarshalling.unmarshallRole(source);
@@ -1943,7 +1795,7 @@ public class EsStorage implements IStorage, IStorageQuery {
     public void createMembership(RoleMembershipBean membership) throws StorageException {
         membership.setId(generateGuid());
         String id = id(membership.getOrganizationId(), membership.getUserId(), membership.getRoleId());
-        indexEntity("roleMembership", id, EsMarshalling.marshall(membership), true); //$NON-NLS-1$
+        indexEntity(EsConstants.INDEX_MANAGER_POSTFIX_ROLE_MEMBERSHIP, id, EsMarshalling.marshall(membership), true); //$NON-NLS-1$
     }
 
     /**
@@ -1952,7 +1804,7 @@ public class EsStorage implements IStorage, IStorageQuery {
     @Override
     public RoleMembershipBean getMembership(String userId, String roleId, String organizationId) throws StorageException {
         String id = id(organizationId, userId, roleId);
-        Map<String, Object> source = getEntity("roleMembership", id); //$NON-NLS-1$
+        Map<String, Object> source = getEntity(EsConstants.INDEX_MANAGER_POSTFIX_ROLE_MEMBERSHIP, id); //$NON-NLS-1$
         if (source == null) {
             return null;
         } else {
@@ -1966,7 +1818,7 @@ public class EsStorage implements IStorage, IStorageQuery {
     @Override
     public void deleteMembership(String userId, String roleId, String organizationId) throws StorageException {
         String id = id(organizationId, userId, roleId);
-        deleteEntity("roleMembership", id); //$NON-NLS-1$
+        deleteEntity(EsConstants.INDEX_MANAGER_POSTFIX_ROLE_MEMBERSHIP, id); //$NON-NLS-1$
     }
 
     /**
@@ -1975,30 +1827,23 @@ public class EsStorage implements IStorage, IStorageQuery {
     @Override
     @SuppressWarnings("nls")
     public void deleteMemberships(String userId, String organizationId) throws StorageException {
-        QueryBuilder query =
-            FilterBuilders.boolFilter(
-                    FilterBuilders.filter(
-                            FilterBuilders.termFilter("organizationId", organizationId),
-                            FilterBuilders.termFilter("userId", userId)
-                    )
-            );
+        BoolQueryBuilder query = QueryBuilders.boolQuery();
+        List<QueryBuilder> filter = query.filter();
+        filter.add(QueryBuilders.termQuery("organizationId", organizationId));
+        filter.add(QueryBuilders.termQuery("userId", userId));
+
         try {
-            String string = query.string();
-            // Workaround for bug in FilteredQueryBuilder which does not (yet) wrap
-            // the JSON in a query element
-            if (string.indexOf("query") < 0 || string.indexOf("query") > 7) {
-                string = "{ \"query\" : " + string + "}";
-            }
-            DeleteByQuery deleteByQuery = new DeleteByQuery.Builder(string).addIndex(getIndexName())
-                    .addType("roleMembership").build();
-            JestResult response = esClient.execute(deleteByQuery);
-            if (!response.isSucceeded()) {
-                throw new StorageException(response.getErrorMessage());
+            String[] indexNames = {EsConstants.INDEX_MANAGER_POSTFIX_ROLE_MEMBERSHIP};
+            BulkByScrollResponse response = getDeleteByQueryResponse(query, indexNames);
+
+            if (response.getStatus().getSuccessfullyProcessed() != response.getStatus().getTotal()) {
+                throw new StorageException("Could not delete all org membership entries by query");
             }
         } catch (Exception e) {
             throw new StorageException(e);
         }
     }
+
 
     /**
      * @see io.apiman.manager.api.core.IStorageQuery#getUserMemberships(java.lang.String)
@@ -2007,12 +1852,13 @@ public class EsStorage implements IStorage, IStorageQuery {
     public Set<RoleMembershipBean> getUserMemberships(String userId) throws StorageException {
         try {
             @SuppressWarnings("nls")
-            QueryBuilder qb = FilterBuilders.termFilter("userId", userId);
+            QueryBuilder qb = QueryBuilders.termQuery("userId", userId);
+
             SearchSourceBuilder builder = new SearchSourceBuilder().query(qb).size(500);
-            List<Hit<Map<String,Object>,Void>> hits = listEntities("roleMembership", builder); //$NON-NLS-1$
+            List<SearchHit> hits = listEntities(EsConstants.INDEX_MANAGER_POSTFIX_ROLE_MEMBERSHIP, builder); //$NON-NLS-1$
             Set<RoleMembershipBean> rval = new HashSet<>();
-            for (Hit<Map<String,Object>,Void> hit : hits) {
-                RoleMembershipBean roleMembership = EsMarshalling.unmarshallRoleMembership(hit.source);
+            for (SearchHit hit : hits) {
+                RoleMembershipBean roleMembership = EsMarshalling.unmarshallRoleMembership(hit.getSourceAsMap());
                 rval.add(roleMembership);
             }
             return rval;
@@ -2029,18 +1875,16 @@ public class EsStorage implements IStorage, IStorageQuery {
             throws StorageException {
         try {
             @SuppressWarnings("nls")
-            QueryBuilder qb =
-                FilterBuilders.boolFilter(
-                        FilterBuilders.filter(
-                                FilterBuilders.termFilter("userId", userId),
-                                FilterBuilders.termFilter("organizationId", organizationId)
-                            )
-                );
+            BoolQueryBuilder qb = QueryBuilders.boolQuery();
+            List<QueryBuilder> filter = qb.filter();
+            filter.add(QueryBuilders.termQuery("userId", userId));
+            filter.add(QueryBuilders.termQuery("organizationId", organizationId));
+            @SuppressWarnings("nls")
             SearchSourceBuilder builder = new SearchSourceBuilder().query(qb).size(500);
-            List<Hit<Map<String,Object>,Void>> hits = listEntities("roleMembership", builder); //$NON-NLS-1$
+            List<SearchHit> hits = listEntities(EsConstants.INDEX_MANAGER_POSTFIX_ROLE_MEMBERSHIP, builder); //$NON-NLS-1$
             Set<RoleMembershipBean> rval = new HashSet<>();
-            for (Hit<Map<String,Object>,Void> hit : hits) {
-                RoleMembershipBean roleMembership = EsMarshalling.unmarshallRoleMembership(hit.source);
+            for (SearchHit hit : hits) {
+                RoleMembershipBean roleMembership = EsMarshalling.unmarshallRoleMembership(hit.getSourceAsMap());
                 rval.add(roleMembership);
             }
             return rval;
@@ -2056,12 +1900,12 @@ public class EsStorage implements IStorage, IStorageQuery {
     public Set<RoleMembershipBean> getOrgMemberships(String organizationId) throws StorageException {
         try {
             @SuppressWarnings("nls")
-            QueryBuilder qb = FilterBuilders.termFilter("organizationId", organizationId);
+            QueryBuilder qb = QueryBuilders.termQuery("organizationId", organizationId);
             SearchSourceBuilder builder = new SearchSourceBuilder().query(qb).size(500);
-            List<Hit<Map<String,Object>,Void>> hits = listEntities("roleMembership", builder); //$NON-NLS-1$
+            List<SearchHit> hits = listEntities(EsConstants.INDEX_MANAGER_POSTFIX_ROLE_MEMBERSHIP, builder); //$NON-NLS-1$
             Set<RoleMembershipBean> rval = new HashSet<>();
-            for (Hit<Map<String,Object>,Void> hit : hits) {
-                RoleMembershipBean roleMembership = EsMarshalling.unmarshallRoleMembership(hit.source);
+            for (SearchHit hit : hits) {
+                RoleMembershipBean roleMembership = EsMarshalling.unmarshallRoleMembership(hit.getSourceAsMap());
                 rval.add(roleMembership);
             }
             return rval;
@@ -2077,13 +1921,13 @@ public class EsStorage implements IStorage, IStorageQuery {
     public Set<PermissionBean> getPermissions(String userId) throws StorageException {
         try {
             @SuppressWarnings("nls")
-            QueryBuilder qb = FilterBuilders.termFilter("userId", userId);
+            QueryBuilder qb = QueryBuilders.termQuery("userId", userId);
             SearchSourceBuilder builder = new SearchSourceBuilder().query(qb).size(500);
-            List<Hit<Map<String,Object>,Void>> hits = listEntities("roleMembership", builder); //$NON-NLS-1$
+            List<SearchHit> hits = listEntities(EsConstants.INDEX_MANAGER_POSTFIX_ROLE_MEMBERSHIP, builder); //$NON-NLS-1$
             Set<PermissionBean> rval = new HashSet<>(hits.size());
             if (!hits.isEmpty()) {
-                for (Hit<Map<String,Object>,Void> hit : hits) {
-                    Map<String, Object> source = hit.source;
+                for (SearchHit hit : hits) {
+                    Map<String, Object> source = hit.getSourceAsMap();
                     String roleId = String.valueOf(source.get("roleId")); //$NON-NLS-1$
                     String qualifier = String.valueOf(source.get("organizationId")); //$NON-NLS-1$
                     RoleBean role = getRole(roleId);
@@ -2116,27 +1960,38 @@ public class EsStorage implements IStorage, IStorageQuery {
 
     /**
      * Indexes an entity.
-     * @param type
-     * @param id
-     * @param sourceEntity
+     * @param type the entity type
+     * @param id the entity id
+     * @param sourceEntity the source entity
      * @param refresh true if the operation should wait for a refresh before it returns
-     * @throws StorageException
+     * @throws StorageException thows a Storage Exception if something goes wrong during storing the data
      */
     @SuppressWarnings("nls")
     private void indexEntity(String type, String id, XContentBuilder sourceEntity, boolean refresh)
             throws StorageException {
         try {
-            String json = sourceEntity.string();
-            JestResult response = esClient.execute(new Index.Builder(json).refresh(refresh).index(getIndexName())
-                    .setParameter(Parameters.OP_TYPE, "create").type(type).id(id).build());
-            if (!response.isSucceeded()) {
-                throw new StorageException("Failed to index document " + id + " of type " + type + ": " + response.getErrorMessage());
+            String json = Strings.toString(sourceEntity);
+            String fullIndexName = getFullIndexName(type);
+
+            IndexRequest indexRequest = new IndexRequest(fullIndexName).id(id).source(json, XContentType.JSON);
+            if (refresh) {
+                // WAIT_UNTIL same as "wait_for" => Leave this request open until a refresh has made the contents of this request visible to search
+                indexRequest.setRefreshPolicy(WriteRequest.RefreshPolicy.WAIT_UNTIL);
+            }
+            IndexResponse indexResponse = getClient().index(indexRequest, RequestOptions.DEFAULT);
+
+            if (!indexResponse.status().equals(RestStatus.CREATED) && !indexResponse.status().equals(RestStatus.OK)) {
+                throw new StorageException("Failed to index document " + id + " of type " + type + " - " + "status: " + indexResponse.status());
             }
         } catch (StorageException e) {
             throw e;
         } catch (Exception e) {
             throw new StorageException(e);
         }
+    }
+
+    private String getFullIndexName(String indexPostFix) {
+        return (getIndexPrefix() + "_" + indexPostFix).toLowerCase();
     }
 
     /**
@@ -2147,11 +2002,14 @@ public class EsStorage implements IStorage, IStorageQuery {
      */
     private Map<String, Object> getEntity(String type, String id) throws StorageException {
         try {
-            JestResult response = esClient.execute(new Get.Builder(getIndexName(), id).type(type).build());
-            if (!response.isSucceeded()) {
+            GetRequest getRequest = new GetRequest(getFullIndexName(type), id);
+            GetResponse response = getClient().get(getRequest, RequestOptions.DEFAULT);
+
+            if (!response.isExists()) {
                 return null;
             }
-            return response.getSourceAsObject(Map.class);
+            return response.getSourceAsMap();
+
         } catch (Exception e) {
             throw new StorageException(e);
         }
@@ -2162,16 +2020,14 @@ public class EsStorage implements IStorage, IStorageQuery {
      * @param type
      * @param searchSourceBuilder
      * @throws StorageException
+     * @return
      */
-    private List<Hit<Map<String, Object>, Void>> listEntities(String type,
-            SearchSourceBuilder searchSourceBuilder) throws StorageException {
+    private List<SearchHit> listEntities(String type,
+                                     SearchSourceBuilder searchSourceBuilder) throws StorageException {
         try {
-            String query = searchSourceBuilder.string();
-            Search search = new Search.Builder(query).addIndex(getIndexName()).addType(type).build();
-            SearchResult response = esClient.execute(search);
-            @SuppressWarnings({ "rawtypes", "unchecked" })
-            List<Hit<Map<String, Object>, Void>> thehits = (List) response.getHits(Map.class);
-            return thehits;
+            String fullIndexName = getFullIndexName(type);
+            SearchResponse response = getClient().search(new SearchRequest(fullIndexName).source(searchSourceBuilder), RequestOptions.DEFAULT);
+            return Arrays.asList(response.getHits().getHits());
         } catch (Exception e) {
             throw new StorageException(e);
         }
@@ -2185,9 +2041,9 @@ public class EsStorage implements IStorage, IStorageQuery {
      */
     private void deleteEntity(String type, String id) throws StorageException {
         try {
-            JestResult response = esClient.execute(new Delete.Builder(id).index(getIndexName()).type(type).build());
-            if (!response.isSucceeded()) {
-                throw new StorageException("Document could not be deleted because it did not exist:" + response.getErrorMessage()); //$NON-NLS-1$
+            DeleteResponse response = getClient().delete(new DeleteRequest(getFullIndexName(type), id), RequestOptions.DEFAULT);
+            if (!response.status().equals(RestStatus.OK)) {
+                throw new StorageException("Document could not be deleted because it did not exist - expected Status Code " + RestStatus.OK + " given: " + response.status()); //$NON-NLS-1$
             }
         } catch (StorageException e) {
             throw e;
@@ -2205,9 +2061,10 @@ public class EsStorage implements IStorage, IStorageQuery {
      */
     private void updateEntity(String type, String id, XContentBuilder source) throws StorageException {
         try {
-            String doc = source.string();
-            /* JestResult response = */esClient.execute(new Index.Builder(doc)
-                    .setParameter(Parameters.OP_TYPE, "index").index(getIndexName()).type(type).id(id).build()); //$NON-NLS-1$
+            String doc = Strings.toString(source);
+            String fullIndexName = getFullIndexName(type);
+            IndexRequest indexRequest = new IndexRequest(fullIndexName).id(id).source(doc, XContentType.JSON);
+            getClient().index(indexRequest, RequestOptions.DEFAULT);
         } catch (Exception e) {
             throw new StorageException(e);
         }
@@ -2242,9 +2099,6 @@ public class EsStorage implements IStorage, IStorageQuery {
             OrderByBean orderBy = criteria.getOrderBy();
             if (orderBy != null) {
                 String name = orderBy.getName();
-                if (name.equals("name") || name.equals("fullName")) { //$NON-NLS-1$ //$NON-NLS-2$
-                    name += ".raw"; //$NON-NLS-1$
-                }
                 if (orderBy.isAscending()) {
                     builder.sort(name, SortOrder.ASC);
                 } else {
@@ -2258,40 +2112,38 @@ public class EsStorage implements IStorage, IStorageQuery {
             QueryBuilder q = null;
 
             if (filters != null && !filters.isEmpty()) {
-                FilterBuilder andFilter = FilterBuilders.filter();
+                BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
+                List<QueryBuilder> andFilter = boolQuery.filter();
                 int filterCount = 0;
                 for (SearchCriteriaFilterBean filter : filters) {
                     String propertyName = filter.getName();
                     if (filter.getOperator() == SearchCriteriaFilterOperator.eq) {
-                        andFilter.add(FilterBuilders.termFilter(propertyName, filter.getValue()));
+                        andFilter.add(QueryBuilders.termQuery(propertyName, filter.getValue()));
                         filterCount++;
                     } else if (filter.getOperator() == SearchCriteriaFilterOperator.like) {
                         q = QueryBuilders.wildcardQuery(propertyName, filter.getValue().toLowerCase().replace('%', '*'));
                     } else if (filter.getOperator() == SearchCriteriaFilterOperator.bool_eq) {
-                        andFilter.add(FilterBuilders.termFilter(propertyName, "true".equals(filter.getValue()))); //$NON-NLS-1$
+                        andFilter.add(QueryBuilders.termQuery(propertyName, "true".equals(filter.getValue()))); //$NON-NLS-1$
                         filterCount++;
                     }
                     // TODO implement the other filter operators here!
                 }
 
                 if (filterCount > 0) {
-                    q = FilterBuilders.boolFilter(andFilter);
+                    q = boolQuery;
                 }
             }
+
             builder.query(q);
 
-            String query = builder.string();
-            Search search = new Search.Builder(query)
-                    .addIndex(getIndexName())
-                    .addType(type)
-                    .build();
-            SearchResult response = esClient.execute(search);
-            @SuppressWarnings({ "unchecked", "rawtypes" })
-            List<Hit<Map<String, Object>, Void>> thehits = (List) response.getHits(Map.class);
+            String fullIndexName = getFullIndexName(type);
+            SearchResponse response = getClient().search(new SearchRequest(fullIndexName).source(builder), RequestOptions.DEFAULT);
 
-            rval.setTotalSize((int)(long)response.getTotal());
-            for (Hit<Map<String,Object>,Void> hit : thehits) {
-                Map<String, Object> sourceAsMap = hit.source;
+            SearchHits thehits = response.getHits();
+            rval.setTotalSize((int) thehits.getTotalHits().value);
+
+            for (SearchHit hit : thehits.getHits()) {
+                Map<String, Object> sourceAsMap = hit.getSourceAsMap();
                 T bean = unmarshaller.unmarshal(sourceAsMap);
                 rval.getBeans().add(bean);
             }
@@ -2322,11 +2174,11 @@ public class EsStorage implements IStorage, IStorageQuery {
      * @param type
      */
     private static String getPoliciesDocType(PolicyType type) {
-        String docType = "planPolicies"; //$NON-NLS-1$
+        String docType = EsConstants.INDEX_MANAGER_POSTFIX_PLAN_POLICIES; //$NON-NLS-1$
         if (type == PolicyType.Api) {
-            docType = "apiPolicies"; //$NON-NLS-1$
+            docType = EsConstants.INDEX_MANAGER_POSTFIX_API_POLICIES; //$NON-NLS-1$
         } else if (type == PolicyType.Client) {
-            docType = "clientPolicies"; //$NON-NLS-1$
+            docType = EsConstants.INDEX_MANAGER_POSTFIX_CLIENT_POLICIES; //$NON-NLS-1$
         }
         return docType;
     }
@@ -2352,7 +2204,7 @@ public class EsStorage implements IStorage, IStorageQuery {
 
     @Override
     public Iterator<OrganizationBean> getAllOrganizations() throws StorageException {
-        return getAll("organization", new IUnmarshaller<OrganizationBean>() { //$NON-NLS-1$
+        return getAll(EsConstants.INDEX_MANAGER_POSTFIX_ORGANIZATION, new IUnmarshaller<OrganizationBean>() { //$NON-NLS-1$
             @Override
             public OrganizationBean unmarshal(Map<String, Object> source) {
                 return EsMarshalling.unmarshallOrganization(source);
@@ -2365,7 +2217,7 @@ public class EsStorage implements IStorage, IStorageQuery {
      */
     @Override
     public Iterator<PlanBean> getAllPlans(String organizationId) throws StorageException {
-        return getAll("plan", new IUnmarshaller<PlanBean>() { //$NON-NLS-1$
+        return getAll(EsConstants.INDEX_MANAGER_POSTFIX_PLAN, new IUnmarshaller<PlanBean>() { //$NON-NLS-1$
             @Override
             public PlanBean unmarshal(Map<String, Object> source) {
                 return EsMarshalling.unmarshallPlan(source);
@@ -2378,7 +2230,7 @@ public class EsStorage implements IStorage, IStorageQuery {
      */
     @Override
     public Iterator<ClientBean> getAllClients(String organizationId) throws StorageException {
-        return getAll("client", new IUnmarshaller<ClientBean>() { //$NON-NLS-1$
+        return getAll(EsConstants.INDEX_MANAGER_POSTFIX_CLIENT, new IUnmarshaller<ClientBean>() { //$NON-NLS-1$
             @Override
             public ClientBean unmarshal(Map<String, Object> source) {
                 return EsMarshalling.unmarshallClient(source);
@@ -2391,7 +2243,7 @@ public class EsStorage implements IStorage, IStorageQuery {
      */
     @Override
     public Iterator<ApiBean> getAllApis(String organizationId) throws StorageException {
-        return getAll("api", new IUnmarshaller<ApiBean>() { //$NON-NLS-1$
+        return getAll(EsConstants.INDEX_MANAGER_POSTFIX_API, new IUnmarshaller<ApiBean>() { //$NON-NLS-1$
             @Override
             public ApiBean unmarshal(Map<String, Object> source) {
                 return EsMarshalling.unmarshallApi(source);
@@ -2406,28 +2258,16 @@ public class EsStorage implements IStorage, IStorageQuery {
     @Override
     public Iterator<PlanVersionBean> getAllPlanVersions(String organizationId, String planId)
             throws StorageException {
-
-        QueryBuilder qb =
-            QueryBuilders.query(
-                FilterBuilders.boolFilter(
-                    FilterBuilders.filter(
-                            FilterBuilders.termFilter("organizationId", organizationId),
-                            FilterBuilders.termFilter("planId", planId)
-                    )
-                )
-            );
-
-        try {
-            return getAll("planVersion", new IUnmarshaller<PlanVersionBean>() { //$NON-NLS-1$
-                @Override
-                public PlanVersionBean unmarshal(Map<String, Object> source) {
-                    return EsMarshalling.unmarshallPlanVersion(source);
-                }
-            }, qb.string());
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        BoolQueryBuilder qb = QueryBuilders.boolQuery();
+        List<QueryBuilder> filter = qb.filter();
+        filter.add(QueryBuilders.termQuery("organizationId", organizationId));
+        filter.add(QueryBuilders.termQuery("planId", planId));
+        return getAll(EsConstants.INDEX_MANAGER_POSTFIX_PLAN_VERSION, new IUnmarshaller<PlanVersionBean>() { //$NON-NLS-1$
+            @Override
+            public PlanVersionBean unmarshal(Map<String, Object> source) {
+                return EsMarshalling.unmarshallPlanVersion(source);
+            }
+        }, qb);
     }
 
     /**
@@ -2437,27 +2277,17 @@ public class EsStorage implements IStorage, IStorageQuery {
     @Override
     public Iterator<ApiVersionBean> getAllApiVersions(String organizationId, String apiId)
             throws StorageException {
+        BoolQueryBuilder qb = QueryBuilders.boolQuery();
+        List<QueryBuilder> filter = qb.filter();
+        filter.add(QueryBuilders.termQuery("organizationId", organizationId));
+        filter.add(QueryBuilders.termQuery("apiId", apiId));
 
-        QueryBuilder qb =
-            QueryBuilders.query(
-                FilterBuilders.boolFilter(
-                    FilterBuilders.filter(
-                            FilterBuilders.termFilter("organizationId", organizationId),
-                            FilterBuilders.termFilter("apiId", apiId)
-                    )
-                )
-        );
-
-        try {
-            return getAll("apiVersion", new IUnmarshaller<ApiVersionBean>() { //$NON-NLS-1$
-                @Override
-                public ApiVersionBean unmarshal(Map<String, Object> source) {
-                    return EsMarshalling.unmarshallApiVersion(source);
-                }
-            }, qb.string());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return getAll(EsConstants.INDEX_MANAGER_POSTFIX_API_VERSION, new IUnmarshaller<ApiVersionBean>() { //$NON-NLS-1$
+            @Override
+            public ApiVersionBean unmarshal(Map<String, Object> source) {
+                return EsMarshalling.unmarshallApiVersion(source);
+            }
+        }, qb);
     }
 
     /**
@@ -2467,26 +2297,17 @@ public class EsStorage implements IStorage, IStorageQuery {
     @Override
     public Iterator<ClientVersionBean> getAllClientVersions(String organizationId,
             String clientId) throws StorageException {
-        QueryBuilder qb =
-            QueryBuilders.query(
-               FilterBuilders.boolFilter(
-                   FilterBuilders.filter(
-                       FilterBuilders.termFilter("organizationId", organizationId),
-                       FilterBuilders.termFilter("clientId", clientId)
-                   )
-               )
-            );
+        BoolQueryBuilder qb = QueryBuilders.boolQuery();
+        List<QueryBuilder> filter = qb.filter();
+        filter.add(QueryBuilders.termQuery("organizationId", organizationId));
+        filter.add(QueryBuilders.termQuery("clientId", clientId));
 
-        try {
-            return getAll("clientVersion", new IUnmarshaller<ClientVersionBean>() { //$NON-NLS-1$
-                @Override
-                public ClientVersionBean unmarshal(Map<String, Object> source) {
-                    return EsMarshalling.unmarshallClientVersion(source);
-                }
-            }, qb.string());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return getAll(EsConstants.INDEX_MANAGER_POSTFIX_CLIENT_VERSION, new IUnmarshaller<ClientVersionBean>() { //$NON-NLS-1$
+            @Override
+            public ClientVersionBean unmarshal(Map<String, Object> source) {
+                return EsMarshalling.unmarshallClientVersion(source);
+            }
+        }, qb);
     }
 
     /**
@@ -2496,51 +2317,41 @@ public class EsStorage implements IStorage, IStorageQuery {
     @Override
     public Iterator<ContractBean> getAllContracts(String organizationId, String clientId, String version) throws StorageException {
 
-        try {
-            QueryBuilder qb =
-                FilterBuilders.boolFilter(
-                    FilterBuilders.filter(
-                            FilterBuilders.termFilter("clientOrganizationId", organizationId),
-                            FilterBuilders.termFilter("clientId", clientId),
-                            FilterBuilders.termFilter("clientVersion", version)
-                    )
-                );
+        BoolQueryBuilder qb = QueryBuilders.boolQuery();
+        List<QueryBuilder> filter = qb.filter();
+        filter.add(QueryBuilders.termQuery("clientOrganizationId", organizationId));
+        filter.add(QueryBuilders.termQuery("clientId", clientId));
+        filter.add(QueryBuilders.termQuery("clientVersion", version));
 
-            String query = new SearchSourceBuilder().query(qb).string();
+        return getAll(EsConstants.INDEX_MANAGER_POSTFIX_CONTRACT, new IUnmarshaller<ContractBean>() { //$NON-NLS-1$
+            @Override
+            public ContractBean unmarshal(Map<String, Object> source) {
+                ContractBean contract = EsMarshalling.unmarshallContract(source);
+                String apiOrgId = (String) source.get("apiOrganizationId");
+                String apiId = (String) source.get("apiId");
+                String apiVersion = (String) source.get("apiVersion");
+                String planId = (String) source.get("planId");
+                String planVersion = (String) source.get("planVersion");
 
-            return getAll("contract", new IUnmarshaller<ContractBean>() { //$NON-NLS-1$
-                @Override
-                public ContractBean unmarshal(Map<String, Object> source) {
-                    ContractBean contract = EsMarshalling.unmarshallContract(source);
-                    String apiOrgId = (String) source.get("apiOrganizationId");
-                    String apiId = (String) source.get("apiId");
-                    String apiVersion = (String) source.get("apiVersion");
-                    String planId = (String) source.get("planId");
-                    String planVersion = (String) source.get("planVersion");
+                ApiVersionBean svb = new ApiVersionBean();
+                svb.setVersion(apiVersion);
+                svb.setApi(new ApiBean());
+                svb.getApi().setOrganization(new OrganizationBean());
+                svb.getApi().setId(apiId);
+                svb.getApi().getOrganization().setId(apiOrgId);
 
-                    ApiVersionBean svb = new ApiVersionBean();
-                    svb.setVersion(apiVersion);
-                    svb.setApi(new ApiBean());
-                    svb.getApi().setOrganization(new OrganizationBean());
-                    svb.getApi().setId(apiId);
-                    svb.getApi().getOrganization().setId(apiOrgId);
+                PlanVersionBean pvb = new PlanVersionBean();
+                pvb.setVersion(planVersion);
+                pvb.setPlan(new PlanBean());
+                pvb.getPlan().setOrganization(new OrganizationBean());
+                pvb.getPlan().setId(planId);
+                pvb.getPlan().getOrganization().setId(apiOrgId);
 
-                    PlanVersionBean pvb = new PlanVersionBean();
-                    pvb.setVersion(planVersion);
-                    pvb.setPlan(new PlanBean());
-                    pvb.getPlan().setOrganization(new OrganizationBean());
-                    pvb.getPlan().setId(planId);
-                    pvb.getPlan().getOrganization().setId(apiOrgId);
-
-                    contract.setPlan(pvb);
-                    contract.setApi(svb);
-                    return contract;
-                }
-            }, query);
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+                contract.setPlan(pvb);
+                contract.setApi(svb);
+                return contract;
+            }
+        }, qb);
     }
 
     /**
@@ -2573,7 +2384,7 @@ public class EsStorage implements IStorage, IStorageQuery {
 
     @Override
     public Iterator<GatewayBean> getAllGateways() throws StorageException {
-        return getAll("gateway", new IUnmarshaller<GatewayBean>() { //$NON-NLS-1$
+        return getAll(EsConstants.INDEX_MANAGER_POSTFIX_GATEWAY, new IUnmarshaller<GatewayBean>() { //$NON-NLS-1$
             @Override
             public GatewayBean unmarshal(Map<String, Object> source) {
                 return EsMarshalling.unmarshallGateway(source);
@@ -2583,7 +2394,7 @@ public class EsStorage implements IStorage, IStorageQuery {
 
     @Override
     public Iterator<UserBean> getAllUsers() throws StorageException {
-        return getAll("user", new IUnmarshaller<UserBean>() { //$NON-NLS-1$
+        return getAll(EsConstants.INDEX_MANAGER_POSTFIX_USER, new IUnmarshaller<UserBean>() { //$NON-NLS-1$
             @Override
             public UserBean unmarshal(Map<String, Object> source) {
                 return EsMarshalling.unmarshallUser(source);
@@ -2593,7 +2404,7 @@ public class EsStorage implements IStorage, IStorageQuery {
 
     @Override
     public Iterator<RoleBean> getAllRoles() throws StorageException {
-        return getAll("role", new IUnmarshaller<RoleBean>() { //$NON-NLS-1$
+        return getAll(EsConstants.INDEX_MANAGER_POSTFIX_ROLE, new IUnmarshaller<RoleBean>() { //$NON-NLS-1$
             @Override
             public RoleBean unmarshal(Map<String, Object> source) {
                 return EsMarshalling.unmarshallRole(source);
@@ -2603,42 +2414,42 @@ public class EsStorage implements IStorage, IStorageQuery {
 
     @Override
     public Iterator<ContractBean> getAllContracts(OrganizationBean organizationBean, int lim) throws StorageException {
-        return getAll("contract", EsMarshalling::unmarshallContract, matchOrgQuery(organizationBean.getId())); //$NON-NLS-1$
+        return getAll(EsConstants.INDEX_MANAGER_POSTFIX_CONTRACT, EsMarshalling::unmarshallContract, matchOrgQuery(organizationBean.getId())); //$NON-NLS-1$
     }
 
     @Override
     public Iterator<ClientVersionBean> getAllClientVersions(OrganizationBean organizationBean, int lim) throws StorageException {
-        return getAll("clientVersion", EsMarshalling::unmarshallClientVersion, matchOrgQuery(organizationBean.getId())); //$NON-NLS-1$
+        return getAll(EsConstants.INDEX_MANAGER_POSTFIX_CLIENT_VERSION, EsMarshalling::unmarshallClientVersion, matchOrgQuery(organizationBean.getId())); //$NON-NLS-1$
     }
 
     @Override
     public Iterator<ClientVersionBean> getAllClientVersions(OrganizationBean organizationBean, ClientStatus status, int lim) throws StorageException {
-        return getAll("clientVersion", EsMarshalling::unmarshallClientVersion, matchOrgAndStatusQuery(organizationBean.getId(), status.name())); //$NON-NLS-1$
+        return getAll(EsConstants.INDEX_MANAGER_POSTFIX_CLIENT_VERSION, EsMarshalling::unmarshallClientVersion, matchOrgAndStatusQuery(organizationBean.getId(), status.name())); //$NON-NLS-1$
     }
 
     @Override
     public Iterator<ApiVersionBean> getAllApiVersions(OrganizationBean organizationBean, int lim) throws StorageException {
-        return getAll("apiVersion", EsMarshalling::unmarshallApiVersion, matchOrgQuery(organizationBean.getId())); //$NON-NLS-1$
+        return getAll(EsConstants.INDEX_MANAGER_POSTFIX_API_VERSION, EsMarshalling::unmarshallApiVersion, matchOrgQuery(organizationBean.getId())); //$NON-NLS-1$
     }
 
     @Override
     public Iterator<ApiVersionBean> getAllApiVersions(OrganizationBean organizationBean, ApiStatus status, int lim) throws StorageException {
-        return getAll("apiVersion", EsMarshalling::unmarshallApiVersion, matchOrgAndStatusQuery(organizationBean.getId(), status.name())); //$NON-NLS-1$
+        return getAll(EsConstants.INDEX_MANAGER_POSTFIX_API_VERSION, EsMarshalling::unmarshallApiVersion, matchOrgAndStatusQuery(organizationBean.getId(), status.name())); //$NON-NLS-1$
     }
 
     @Override
     public Iterator<PlanVersionBean> getAllPlanVersions(OrganizationBean organizationBean, int lim) throws StorageException {
-        return getAll("planVersion", EsMarshalling::unmarshallPlanVersion, matchOrgQuery(organizationBean.getId())); //$NON-NLS-1$
+        return getAll(EsConstants.INDEX_MANAGER_POSTFIX_PLAN_VERSION, EsMarshalling::unmarshallPlanVersion, matchOrgQuery(organizationBean.getId())); //$NON-NLS-1$
     }
 
     @Override
     public Iterator<PlanVersionBean> getAllPlanVersions(OrganizationBean organizationBean, PlanStatus status, int lim) throws StorageException {
-        return getAll("planVersion", EsMarshalling::unmarshallPlanVersion, matchOrgAndStatusQuery(organizationBean.getId(), status.name())); //$NON-NLS-1$
+        return getAll(EsConstants.INDEX_MANAGER_POSTFIX_PLAN_VERSION, EsMarshalling::unmarshallPlanVersion, matchOrgAndStatusQuery(organizationBean.getId(), status.name())); //$NON-NLS-1$
     }
 
     @Override
     public Iterator<RoleMembershipBean> getAllMemberships(String organizationId) throws StorageException {
-        return getAll("roleMembership", new IUnmarshaller<RoleMembershipBean>() { //$NON-NLS-1$
+        return getAll(EsConstants.INDEX_MANAGER_POSTFIX_ROLE_MEMBERSHIP, new IUnmarshaller<RoleMembershipBean>() { //$NON-NLS-1$
             @Override
             public RoleMembershipBean unmarshal(Map<String, Object> source) {
                 return EsMarshalling.unmarshallRoleMembership(source);
@@ -2649,17 +2460,17 @@ public class EsStorage implements IStorage, IStorageQuery {
     @Override
     @SuppressWarnings("nls")
     public Iterator<AuditEntryBean> getAllAuditEntries(String organizationId) throws StorageException {
-        return getAll("auditEntry", new IUnmarshaller<AuditEntryBean>() {
+        return getAll(EsConstants.INDEX_MANAGER_POSTFIX_AUDIT_ENTRY, new IUnmarshaller<AuditEntryBean>() {
             @Override
             public AuditEntryBean unmarshal(Map<String, Object> source) {
                 return EsMarshalling.unmarshallAuditEntry(source);
             }
-        }, matchOrgQuery(organizationId), new Sort("id"));
+        }, matchOrgQuery(organizationId), "id");
     }
 
     @Override
     public Iterator<PluginBean> getAllPlugins() throws StorageException {
-        return getAll("plugin", new IUnmarshaller<PluginBean>() { //$NON-NLS-1$
+        return getAll(EsConstants.INDEX_MANAGER_POSTFIX_PLUGIN, new IUnmarshaller<PluginBean>() { //$NON-NLS-1$
             @Override
             public PluginBean unmarshal(Map<String, Object> source) {
                 return EsMarshalling.unmarshallPlugin(source);
@@ -2672,7 +2483,7 @@ public class EsStorage implements IStorage, IStorageQuery {
      */
     @Override
     public Iterator<PolicyDefinitionBean> getAllPolicyDefinitions() throws StorageException {
-        return getAll("policyDef", new IUnmarshaller<PolicyDefinitionBean>() { //$NON-NLS-1$
+        return getAll(EsConstants.INDEX_MANAGER_POSTFIX_POLICY_DEF, new IUnmarshaller<PolicyDefinitionBean>() { //$NON-NLS-1$
             @Override
             public PolicyDefinitionBean unmarshal(Map<String, Object> source) {
                 return EsMarshalling.unmarshallPolicyDefinition(source);
@@ -2687,7 +2498,7 @@ public class EsStorage implements IStorage, IStorageQuery {
      * @throws StorageException
      */
     private <T> Iterator<T> getAll(String entityType, IUnmarshaller<T> unmarshaller) throws StorageException {
-        String query = matchAllQuery();
+        QueryBuilder query = matchAllQuery();
         return getAll(entityType, unmarshaller, query);
     }
 
@@ -2698,7 +2509,7 @@ public class EsStorage implements IStorage, IStorageQuery {
      * @param query
      * @throws StorageException
      */
-    private <T> Iterator<T> getAll(String entityType, IUnmarshaller<T> unmarshaller, String query) throws StorageException {
+    private <T> Iterator<T> getAll(String entityType, IUnmarshaller<T> unmarshaller, QueryBuilder query) throws StorageException {
         return new EntityIterator<>(entityType, unmarshaller, query);
     }
 
@@ -2711,7 +2522,7 @@ public class EsStorage implements IStorage, IStorageQuery {
      * @return
      * @throws StorageException
      */
-    private <T> Iterator<T> getAll(String entityType, IUnmarshaller<T> unmarshaller, String query, Sort sort) throws StorageException {
+    private <T> Iterator<T> getAll(String entityType, IUnmarshaller<T> unmarshaller, QueryBuilder query, String sort) throws StorageException {
         return new EntityIterator<>(entityType, unmarshaller, query, sort);
     }
 
@@ -2735,12 +2546,12 @@ public class EsStorage implements IStorage, IStorageQuery {
     @SuppressWarnings("nls")
     private class EntityIterator<T> implements Iterator<T> {
 
-        private final String query;
-        private final Sort sort;
+        private final QueryBuilder query;
+        private final String sort;
         private final String entityType;
         private final IUnmarshaller<T> unmarshaller;
         private String scrollId = null;
-        private List<Hit<Map<String, Object>, Void>> hits;
+        private List<SearchHit> hits;
         private int nextHitIdx;
 
         /**
@@ -2750,16 +2561,16 @@ public class EsStorage implements IStorage, IStorageQuery {
          * @param query the query
          * @throws StorageException when storage fails
          */
-        public EntityIterator(String entityType, IUnmarshaller<T> unmarshaller, String query) throws StorageException {
+        public EntityIterator(String entityType, IUnmarshaller<T> unmarshaller, QueryBuilder query) throws StorageException {
             this.entityType = entityType;
             this.unmarshaller = unmarshaller;
             this.query = query;
-            this.sort = new Sort("_doc");
+            this.sort = "_doc";
             initScroll();
             this.nextHitIdx = 0;
         }
 
-        public EntityIterator(String entityType, IUnmarshaller<T> unmarshaller, String query, Sort sort) throws StorageException {
+        public EntityIterator(String entityType, IUnmarshaller<T> unmarshaller, QueryBuilder query, String sort) throws StorageException {
             this.entityType = entityType;
             this.unmarshaller = unmarshaller;
             this.query = query;
@@ -2789,8 +2600,8 @@ public class EsStorage implements IStorage, IStorageQuery {
          */
         @Override
         public T next() {
-            Hit<Map<String, Object>, Void> hit = hits.get(nextHitIdx++);
-            return unmarshaller.unmarshal(hit.source);
+            SearchHit hit = hits.get(nextHitIdx++);
+            return unmarshaller.unmarshal(hit.getSourceAsMap());
         }
 
         /**
@@ -2803,18 +2614,23 @@ public class EsStorage implements IStorage, IStorageQuery {
 
         private void initScroll() throws StorageException {
             try {
-                Search search = new Search.Builder(query)
-                        .addIndex(getIndexName())
-                        .addType(entityType)
-                        .setParameter(Parameters.SCROLL, "1m")
-                        .addSort(sort)
-                        .build();
-                SearchResult response = esClient.execute(search);
-                if (!response.isSucceeded()) {
-                    throw new StorageException("Scrolled query failed " + response.getErrorMessage());
+                SearchSourceBuilder builder = new SearchSourceBuilder();
+                builder.query(query);
+                builder.sort(sort);
+
+                String fullIndexName = getFullIndexName(entityType);
+                SearchRequest searchRequest = new SearchRequest(fullIndexName);
+                searchRequest.source(builder);
+                searchRequest.scroll(TimeValue.timeValueMinutes(1L));
+
+                SearchResponse response = getClient().search(searchRequest, RequestOptions.DEFAULT);
+
+                if (!response.status().equals(RestStatus.OK)) {
+                    throw new StorageException("Scrolled query failed - status expected " + RestStatus.OK + " but was " + response.status());
                 }
-                scrollId = response.getJsonObject().get("_scroll_id").getAsString();
-                this.hits = (List) response.getHits(Map.class);
+                this.scrollId = response.getScrollId();
+                this.hits = Arrays.asList (response.getHits().getHits());
+
             } catch (IOException e) {
                 throw new StorageException(e);
             }
@@ -2823,19 +2639,16 @@ public class EsStorage implements IStorage, IStorageQuery {
         @SuppressWarnings({ "unchecked", "rawtypes" })
         private void fetch() throws StorageException {
             try {
-                Builder builder = new SearchScroll.Builder(scrollId, "1m");
-                SearchScroll scroll = new SearchScroll(builder) {
-                    @Override
-                    public JestResult createNewElasticSearchResult(String responseBody, int statusCode,
-                            String reasonPhrase, Gson gson) {
-                        return createNewElasticSearchResult(new SearchResult(gson), responseBody, statusCode, reasonPhrase, gson);
-                    }
-                };
-                SearchResult response = (SearchResult) esClient.execute(scroll);
-                if (!response.isSucceeded()) {
-                    throw new StorageException("Scrolled fetch failed " + response.getErrorMessage());
+                SearchScrollRequest scrollRequest = new SearchScrollRequest(this.scrollId);
+                scrollRequest.scroll(TimeValue.timeValueMinutes(1L));
+
+                SearchResponse response = getClient().scroll(scrollRequest, RequestOptions.DEFAULT);
+
+                if (!response.status().equals(RestStatus.OK)) {
+                    throw new StorageException("Scrolled fetch failed - status expected " + RestStatus.OK + " but was " + response.status());
                 }
-                this.hits = (List) response.getHits(Map.class);
+
+                this.hits = Arrays.asList(response.getHits().getHits());
             } catch (IOException e) {
                 throw new StorageException(e);
             }
@@ -2844,56 +2657,58 @@ public class EsStorage implements IStorage, IStorageQuery {
     }
 
     @SuppressWarnings("nls")
-    private String matchOrgAndStatusQuery(String organizationId, String status) {
-        return  "{" +
-                "    \"query\": {" +
-                "        \"bool\": {" +
-                "            \"filter\": [" +
-                "                { \"term\": { \"organizationId\": \"" + organizationId + "\" } }, " +
-                "                { \"term\": { \"status\": \"" + status + "\" } }" +
-                "            ]" +
-                "        }" +
-                "    }" +
-                "}";
+    private QueryBuilder matchOrgAndStatusQuery(String organizationId, String status) {
+        BoolQueryBuilder queryBuilder = QueryBuilders.boolQuery();
+        List<QueryBuilder> filter = queryBuilder.filter();
+        filter.add(QueryBuilders.termQuery("organizationId", organizationId));
+        filter.add(QueryBuilders.termQuery("status", status));
+        return queryBuilder;
     }
 
     /**
      * @return an ES query to match all documents
      */
     @SuppressWarnings("nls")
-    private String matchAllQuery() {
-        return "{" +
-                "  \"query\": {" +
-                "    \"match_all\": {}" +
-                "  }" +
-                "}";
+    private QueryBuilder matchAllQuery() {
+        return QueryBuilders.matchAllQuery();
     }
 
     @SuppressWarnings("nls")
-    private String matchOrgQuery(String organizationId) {
-        return "{" +
-                "  \"query\": {" +
-                "    \"bool\": { " +
-                "      \"filter\": {" +
-                "        \"term\": { \"organizationId\": \"" + organizationId + "\" }" +
-                "      }" +
-                "    }" +
-                "  }" +
-                "}";
+    private QueryBuilder matchOrgQuery(String organizationId) {
+        BoolQueryBuilder queryBuilder = QueryBuilders.boolQuery();
+        queryBuilder.filter().add(QueryBuilders.termQuery("organizationId", organizationId));
+        return queryBuilder;
+    }
+
+    /**
+     * @see AbstractEsComponent#getDefaultIndexPrefix()
+     */
+    @Override
+    protected String getDefaultIndexPrefix() {
+        return EsConstants.MANAGER_INDEX_NAME;
+    }
+
+    /**
+     * @see AbstractEsComponent#getDefaultIndices()
+     * @return default indices
+     */
+    @Override
+    protected List<String> getDefaultIndices() {
+        return Arrays.asList(EsConstants.MANAGER_INDEX_POSTFIXES);
     }
 
     /**
      * @return the indexName
      */
-    public String getIndexName() {
-        return indexName;
+    public String getIndexPrefix() {
+        return indexPrefix;
     }
 
     /**
-     * @param indexName the indexName to set
+     * @param indexPrefix the indexName to set
      */
-    public void setIndexName(String indexName) {
-        this.indexName = indexName;
+    public void setIndexPrefix(String indexPrefix) {
+        this.indexPrefix = indexPrefix;
     }
 
 }

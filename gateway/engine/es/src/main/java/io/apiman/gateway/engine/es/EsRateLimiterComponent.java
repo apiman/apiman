@@ -15,33 +15,42 @@
  */
 package io.apiman.gateway.engine.es;
 
+import io.apiman.common.es.util.AbstractEsComponent;
+import io.apiman.common.es.util.EsConstants;
 import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.components.IRateLimiterComponent;
 import io.apiman.gateway.engine.components.rate.RateLimitResponse;
 import io.apiman.gateway.engine.rates.RateBucketPeriod;
 import io.apiman.gateway.engine.rates.RateLimiterBucket;
-import io.searchbox.client.JestResult;
-import io.searchbox.core.Get;
-import io.searchbox.core.Index;
-import io.searchbox.params.Parameters;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.codec.binary.Base64;
+import org.elasticsearch.action.get.GetRequest;
+import org.elasticsearch.action.get.GetResponse;
+import org.elasticsearch.action.index.IndexRequest;
+import org.elasticsearch.action.index.IndexResponse;
+import org.elasticsearch.client.RequestOptions;
+import org.elasticsearch.common.xcontent.XContentType;
+import org.elasticsearch.rest.RestStatus;
+
+import static io.apiman.gateway.engine.storage.util.BackingStoreUtil.JSON_MAPPER;
 
 /**
  * An elasticsearch implementation of the rate limiter component.
  *
  * @author eric.wittmann@redhat.com
  */
-public class ESRateLimiterComponent extends AbstractESComponent implements IRateLimiterComponent {
+public class EsRateLimiterComponent extends AbstractEsComponent implements IRateLimiterComponent {
 
     /**
      * Constructor.
      * @param config the configuration
      */
-    public ESRateLimiterComponent(Map<String, String> config) {
+    public EsRateLimiterComponent(Map<String, String> config) {
         super(config);
     }
 
@@ -54,14 +63,14 @@ public class ESRateLimiterComponent extends AbstractESComponent implements IRate
         final String id = id(bucketId);
 
         try {
-            Get get = new Get.Builder(getIndexName(), id).type("rateBucket").build(); //$NON-NLS-1$
-            JestResult result = getClient().execute(get);
+            GetResponse response = getClient().get(new GetRequest(getFullIndexName()).id(id), RequestOptions.DEFAULT);
             RateLimiterBucket bucket;
             long version;
-            if (result.isSucceeded()) {
+            if (response.isExists()) {
                 // use the existing bucket
-                version = result.getJsonObject().get("_version").getAsLong(); //$NON-NLS-1$
-                bucket = result.getSourceAsObject(RateLimiterBucket.class);
+                version = response.getVersion();
+                String sourceAsString = response.getSourceAsString();
+                bucket = JSON_MAPPER.readValue(sourceAsString, RateLimiterBucket.class);
             } else {
                 // make a new bucket
                 version = 0;
@@ -106,17 +115,11 @@ public class ESRateLimiterComponent extends AbstractESComponent implements IRate
             final RateBucketPeriod period, final long limit, final long increment,
             final IAsyncResultHandler<RateLimitResponse> handler) {
 
-    	Index.Builder builder = new Index.Builder(bucket).refresh(false).index(getIndexName());
-    	if (version>0) {
-    		builder.setParameter(Parameters.VERSION, String.valueOf(version));
-        }
-    	Index index = builder.setParameter(Parameters.OP_TYPE, "index") //$NON-NLS-1$
-    			             .type("rateBucket").id(id).build(); //$NON-NLS-1$          
         try {
-            JestResult result = getClient().execute(index);
-
+            IndexRequest indexRequest = new IndexRequest(getFullIndexName()).source(JSON_MAPPER.writeValueAsBytes(bucket), XContentType.JSON).id(id);
+            IndexResponse response = getClient().index(indexRequest, RequestOptions.DEFAULT);
             // if we got an HTTP 409 conflict status code we try all again
-            if (!result.isSucceeded() && result.getResponseCode() == 409){
+            if(!response.status().equals(RestStatus.CREATED) && !response.status().equals(RestStatus.OK) && response.status().equals(RestStatus.CONFLICT)) {
                 accept(bucketId, period, limit, increment, handler);
             } else {
                 handler.handle(AsyncResultImpl.create(rlr));
@@ -136,11 +139,28 @@ public class ESRateLimiterComponent extends AbstractESComponent implements IRate
     }
 
     /**
-     * @see io.apiman.gateway.engine.es.AbstractESComponent#getDefaultIndexName()
+     * @see AbstractEsComponent#getDefaultIndexPrefix()
      */
     @Override
-    protected String getDefaultIndexName() {
-        return ESConstants.GATEWAY_INDEX_NAME;
+    protected String getDefaultIndexPrefix() {
+        return EsConstants.GATEWAY_INDEX_NAME;
+    }
+
+    /**
+     * @see AbstractEsComponent#getDefaultIndices()
+     * @return default indices
+     */
+    @Override
+    protected List<String> getDefaultIndices() {
+        String[] indices = {EsConstants.INDEX_RATE_BUCKET};
+        return Arrays.asList(indices);
+    }
+    /**
+     * get index full name for rate bucket
+     * @return full index name
+     */
+    private String getFullIndexName() {
+        return getIndexPrefix() + EsConstants.INDEX_RATE_BUCKET;
     }
 
 }

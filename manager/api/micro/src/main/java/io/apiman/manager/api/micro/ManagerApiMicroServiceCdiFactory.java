@@ -16,6 +16,8 @@
 package io.apiman.manager.api.micro;
 
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -24,6 +26,7 @@ import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Named;
 
+import io.apiman.common.es.util.EsConstants;
 import org.apache.commons.lang3.StringUtils;
 
 import io.apiman.common.es.util.DefaultEsClientFactory;
@@ -53,13 +56,13 @@ import io.apiman.manager.api.core.logging.ApimanLogger;
 import io.apiman.manager.api.core.logging.JsonLoggerImpl;
 import io.apiman.manager.api.core.logging.StandardLoggerImpl;
 import io.apiman.manager.api.core.noop.NoOpMetricsAccessor;
-import io.apiman.manager.api.es.ESMetricsAccessor;
+import io.apiman.manager.api.es.EsMetricsAccessor;
 import io.apiman.manager.api.es.EsStorage;
 import io.apiman.manager.api.jpa.JpaStorage;
 import io.apiman.manager.api.jpa.JpaStorageInitializer;
 import io.apiman.manager.api.security.ISecurityContext;
 import io.apiman.manager.api.security.impl.DefaultSecurityContext;
-import io.searchbox.client.JestClient;
+import org.elasticsearch.client.RestHighLevelClient;
 
 /**
  * Attempt to create producer methods for CDI beans.
@@ -108,13 +111,12 @@ public class ManagerApiMicroServiceCdiFactory {
 
     @Produces
     @ApplicationScoped
-    public static IStorage provideStorage(ManagerApiMicroServiceConfig config, @New JpaStorage jpaStorage,
-            @New EsStorage esStorage, IPluginRegistry pluginRegistry) {
+    public static IStorage provideStorage(ManagerApiMicroServiceConfig config, @New JpaStorage jpaStorage, IPluginRegistry pluginRegistry) {
         IStorage storage;
         if ("jpa".equals(config.getStorageType())) { //$NON-NLS-1$
             storage = initJpaStorage(config, jpaStorage);
         } else if ("es".equals(config.getStorageType())) { //$NON-NLS-1$
-            storage = initES(config, esStorage);
+            storage = initES(config, new EsStorage(config.getStorageESClientFactoryConfig()));
         } else {
             try {
                 storage = createCustomComponent(IStorage.class, config.getStorageType(),
@@ -134,11 +136,11 @@ public class ManagerApiMicroServiceCdiFactory {
 
     @Produces @ApplicationScoped
     public static IStorageQuery provideStorageQuery(ManagerApiMicroServiceConfig config, @New JpaStorage jpaStorage,
-            @New EsStorage esStorage, IPluginRegistry pluginRegistry) {
+                                                    IPluginRegistry pluginRegistry) {
         if ("jpa".equals(config.getStorageQueryType())) { //$NON-NLS-1$
             return initJpaStorage(config, jpaStorage);
         } else if ("es".equals(config.getStorageQueryType())) { //$NON-NLS-1$
-            return initES(config, esStorage);
+            return new EsStorage(config.getStorageESClientFactoryConfig());
         } else {
             try {
                 return createCustomComponent(IStorageQuery.class, config.getStorageQueryType(),
@@ -151,10 +153,10 @@ public class ManagerApiMicroServiceCdiFactory {
 
     @Produces @ApplicationScoped
     public static IMetricsAccessor provideMetricsAccessor(ManagerApiMicroServiceConfig config,
-            @New NoOpMetricsAccessor noopMetrics, @New ESMetricsAccessor esMetrics, IPluginRegistry pluginRegistry) {
+                                                          @New NoOpMetricsAccessor noopMetrics, IPluginRegistry pluginRegistry) {
         IMetricsAccessor metrics;
         if ("es".equals(config.getMetricsType())) { //$NON-NLS-1$
-            metrics = esMetrics;
+            metrics = new EsMetricsAccessor(config.getMetricsESClientFactoryConfig());
         } else {
             try {
                 metrics = createCustomComponent(IMetricsAccessor.class, config.getMetricsType(),
@@ -227,41 +229,6 @@ public class ManagerApiMicroServiceCdiFactory {
         return sStorageESClientFactory;
     }
 
-    @Produces @ApplicationScoped @Named("metrics-factory")
-    public static IEsClientFactory provideMetricsESClientFactory(ManagerApiMicroServiceConfig config, IPluginRegistry pluginRegistry) {
-        if ("es".equals(config.getMetricsType()) && sMetricsESClientFactory == null) { //$NON-NLS-1$
-            try {
-                String factoryClass = config.getMetricsESClientFactory();
-                if (factoryClass == null) {
-                    factoryClass = DefaultEsClientFactory.class.getName();
-                }
-                sMetricsESClientFactory = createCustomComponent(IEsClientFactory.class, factoryClass,
-                        null, pluginRegistry);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
-        return sMetricsESClientFactory;
-    }
-
-    @Produces @ApplicationScoped @Named("storage")
-    public static JestClient provideStorageESClient(ManagerApiMicroServiceConfig config, @Named("storage-factory") IEsClientFactory clientFactory) {
-        if ("es".equals(config.getStorageType())) { //$NON-NLS-1$
-            return clientFactory.createClient(config.getStorageESClientFactoryConfig(), null);
-        } else {
-            return null;
-        }
-    }
-
-    @Produces @ApplicationScoped @Named("metrics")
-    public static JestClient provideMetricsESClient(ManagerApiMicroServiceConfig config, @Named("metrics-factory") IEsClientFactory clientFactory) {
-        if ("es".equals(config.getMetricsType())) { //$NON-NLS-1$
-            return clientFactory.createClient(config.getMetricsESClientFactoryConfig(), null);
-        } else {
-            return null;
-        }
-    }
-
     /**
      * Initializes the ES storage (if required).
      * @param config
@@ -270,7 +237,7 @@ public class ManagerApiMicroServiceCdiFactory {
     private static EsStorage initES(ManagerApiMicroServiceConfig config, EsStorage esStorage) {
         if (sESStorage == null) {
             sESStorage = esStorage;
-            sESStorage.setIndexName(config.getStorageESIndexName());
+            sESStorage.setIndexPrefix(config.getStorageESIndexName());
             if (config.isInitializeStorageES()) {
                 sESStorage.initialize();
             }

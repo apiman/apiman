@@ -25,6 +25,10 @@
       <artifactId>apiman-common-logging-core</artifactId>
     </dependency>
     <dependency>
+      <groupId>io.apiman</groupId>
+      <artifactId>apiman-gateway-engine-es</artifactId>
+    </dependency>
+    <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-manager-api-beans</artifactId>
     </dependency>
@@ -58,20 +62,8 @@
       <artifactId>commons-lang3</artifactId>
     </dependency>
     <dependency>
-      <groupId>io.searchbox</groupId>
-      <artifactId>jest</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.searchbox</groupId>
-      <artifactId>jest-common</artifactId>
-    </dependency>
-    <dependency>
       <groupId>joda-time</groupId>
       <artifactId>joda-time</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.google.code.gson</groupId>
-      <artifactId>gson</artifactId>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>

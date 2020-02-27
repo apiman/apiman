@@ -16,6 +16,7 @@
 package io.apiman.manager.api.core.config;
 
 import io.apiman.common.config.ConfigFactory;
+import io.apiman.common.es.util.EsConstants;
 import io.apiman.common.logging.IApimanLogger;
 
 import java.net.URI;
@@ -58,12 +59,6 @@ public abstract class ApiManagerConfig {
     public static final String APIMAN_MANAGER_STORAGE_TYPE = "apiman-manager.storage.type"; //$NON-NLS-1$
     public static final String APIMAN_MANAGER_STORAGE_JPA_INITIALIZE = "apiman-manager.storage.jpa.initialize"; //$NON-NLS-1$
     public static final String APIMAN_MANAGER_STORAGE_ES_CLIENT_FACTORY = "apiman-manager.storage.es.client-factory"; //$NON-NLS-1$
-//    public static final String APIMAN_MANAGER_STORAGE_ES_HOST = "apiman-manager.storage.es.host"; //$NON-NLS-1$
-//    public static final String APIMAN_MANAGER_STORAGE_ES_PORT = "apiman-manager.storage.es.port"; //$NON-NLS-1$
-//    public static final String APIMAN_MANAGER_STORAGE_ES_CLUSTER_NAME = "apiman-manager.storage.es.cluster-name"; //$NON-NLS-1$
-//    public static final String APIMAN_MANAGER_STORAGE_ES_USERNAME = "apiman-manager.storage.es.username"; //$NON-NLS-1$
-//    public static final String APIMAN_MANAGER_STORAGE_ES_PASSWORD = "apiman-manager.storage.es.password"; //$NON-NLS-1$
-//    public static final String APIMAN_MANAGER_STORAGE_ES_TIMEOUT = "apiman-manager.storage.es.timeout"; //$NON-NLS-1$
     public static final String APIMAN_MANAGER_STORAGE_ES_INITIALIZE = "apiman-manager.storage.es.initialize"; //$NON-NLS-1$
     public static final String APIMAN_MANAGER_STORAGE_ES_INDEX_NAME = "apiman-manager.storage.es.index"; //$NON-NLS-1$
 
@@ -76,22 +71,11 @@ public abstract class ApiManagerConfig {
      * ------------------------------------------------------- */
     public static final String APIMAN_MANAGER_METRICS_TYPE = "apiman-manager.metrics.type"; //$NON-NLS-1$
     public static final String APIMAN_MANAGER_METRICS_ES_CLIENT_FACTORY = "apiman-manager.metrics.es.client-factory"; //$NON-NLS-1$
-//    public static final String APIMAN_MANAGER_METRICS_ES_PROTOCOL = "apiman-manager.metrics.es.protocol"; //$NON-NLS-1$
-//    public static final String APIMAN_MANAGER_METRICS_ES_HOST = "apiman-manager.metrics.es.host"; //$NON-NLS-1$
-//    public static final String APIMAN_MANAGER_METRICS_ES_PORT = "apiman-manager.metrics.es.port"; //$NON-NLS-1$
-//    public static final String APIMAN_MANAGER_METRICS_ES_CLUSTER_NAME = "apiman-manager.metrics.es.cluster-name"; //$NON-NLS-1$
-//    public static final String APIMAN_MANAGER_METRICS_ES_USERNAME = "apiman-manager.metrics.es.username"; //$NON-NLS-1$
-//    public static final String APIMAN_MANAGER_METRICS_ES_PASSWORD = "apiman-manager.metrics.es.password"; //$NON-NLS-1$
-//    public static final String APIMAN_MANAGER_METRICS_ES_TIMEOUT = "apiman-manager.metrics.es.timeout"; //$NON-NLS-1$
 
     public static final String APIMAN_MANAGER_SECURITY_CONTEXT_TYPE = "apiman-manager.security-context.type"; //$NON-NLS-1$
 
     public static final String APIMAN_PLUGIN_REPOSITORIES = "apiman.plugins.repositories"; //$NON-NLS-1$
     public static final String APIMAN_PLUGIN_REGISTRIES = "apiman-manager.plugins.registries"; //$NON-NLS-1$
-
-    public static final String DEFAULT_ES_CLUSTER_NAME = "apiman"; //$NON-NLS-1$
-    public static final String DEFAULT_ES_INDEX_NAME = "apiman_manager"; //$NON-NLS-1$
-    public static final int DEFAULT_JEST_TIMEOUT = 6000;
 
     private final Configuration config;
 
@@ -208,7 +192,7 @@ public abstract class ApiManagerConfig {
     public String getStorageQueryType() {
         return config.getString(APIMAN_MANAGER_STORAGE_QUERY_TYPE, getStorageType());
     }
-    
+
     /**
      * @return true if the elasticsearch index should be initialized if not found
      */
@@ -229,7 +213,7 @@ public abstract class ApiManagerConfig {
     public String getStorageESClientFactory() {
         return config.getString(APIMAN_MANAGER_STORAGE_ES_CLIENT_FACTORY);
     }
-    
+
     /**
      * @return a map of config properties for the es client factory
      */
@@ -241,7 +225,7 @@ public abstract class ApiManagerConfig {
      * @return the storage es index name
      */
     public String getStorageESIndexName() {
-        return config.getString(APIMAN_MANAGER_STORAGE_ES_INDEX_NAME, DEFAULT_ES_INDEX_NAME);
+        return config.getString(APIMAN_MANAGER_STORAGE_ES_INDEX_NAME, EsConstants.MANAGER_INDEX_NAME);
     }
 
     /**
@@ -271,7 +255,7 @@ public abstract class ApiManagerConfig {
     public String getMetricsESClientFactory() {
         return config.getString(APIMAN_MANAGER_METRICS_ES_CLIENT_FACTORY);
     }
-    
+
     /**
      * @return a map of config properties for the es client factory
      */

@@ -136,16 +136,6 @@
       <artifactId>resteasy-jackson-provider</artifactId>
     </dependency>
 
-    <!-- Elasticsearch -->
-    <dependency>
-      <groupId>io.searchbox</groupId>
-      <artifactId>jest</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.searchbox</groupId>
-      <artifactId>jest-common</artifactId>
-    </dependency>
-
     <!-- Infinispan -->
     <dependency>
       <groupId>org.infinispan</groupId>
@@ -191,5 +181,9 @@
       <groupId>org.jboss.logging</groupId>
       <artifactId>jboss-logging</artifactId>
     </dependency>
-  </dependencies>   
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>elasticsearch</artifactId>
+    </dependency>
+  </dependencies>
 </project>

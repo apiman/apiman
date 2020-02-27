@@ -15,21 +15,27 @@
  */
 package io.apiman.gateway.engine.es;
 
+import io.apiman.common.es.util.AbstractEsComponent;
+import io.apiman.common.es.util.EsConstants;
 import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.components.ISharedStateComponent;
 import io.apiman.gateway.engine.es.beans.PrimitiveBean;
 import io.apiman.gateway.engine.storage.util.BackingStoreUtil;
-import io.searchbox.client.JestResult;
-import io.searchbox.core.Delete;
-import io.searchbox.core.Get;
-import io.searchbox.core.Index;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.namespace.QName;
 
 import org.apache.commons.codec.binary.Base64;
+import org.elasticsearch.action.delete.DeleteRequest;
+import org.elasticsearch.action.get.GetRequest;
+import org.elasticsearch.action.get.GetResponse;
+import org.elasticsearch.action.index.IndexRequest;
+import org.elasticsearch.client.RequestOptions;
+import org.elasticsearch.common.xcontent.XContentType;
 
 import static io.apiman.gateway.engine.storage.util.BackingStoreUtil.JSON_MAPPER;
 
@@ -38,12 +44,13 @@ import static io.apiman.gateway.engine.storage.util.BackingStoreUtil.JSON_MAPPER
  *
  * @author eric.wittmann@redhat.com
  */
-public class ESSharedStateComponent extends AbstractESComponent implements ISharedStateComponent {
+public class EsSharedStateComponent extends AbstractEsComponent implements ISharedStateComponent {
+
     /**
      * Constructor.
      * @param config the configuration
      */
-    public ESSharedStateComponent(Map<String, String> config) {
+    public EsSharedStateComponent(Map<String, String> config) {
         super(config);
     }
 
@@ -60,15 +67,15 @@ public class ESSharedStateComponent extends AbstractESComponent implements IShar
         String id = getPropertyId(namespace, propertyName);
 
         try {
-            Get get = new Get.Builder(getIndexName(), id).type("sharedStateProperty").build(); //$NON-NLS-1$
-            JestResult result = getClient().execute(get);
-            if (result.isSucceeded()) {
+            GetResponse response = getClient().get(new GetRequest(getFullIndexName()).id(id), RequestOptions.DEFAULT);
+            if (response.isExists()) {
                 try {
                     T value;
                     if (defaultValue.getClass().isPrimitive() || defaultValue instanceof String) {
-                        value = (T) readPrimitive(result);
+                        value = (T) readPrimitive(response);
                     } else {
-                        value = (T) result.getSourceAsObject(defaultValue.getClass());
+                        String sourceAsString = response.getSourceAsString();
+                        value = (T) JSON_MAPPER.readValue(sourceAsString, defaultValue.getClass());
                     }
                     handler.handle(AsyncResultImpl.create(value));
                 } catch (Exception e) {
@@ -108,10 +115,10 @@ public class ESSharedStateComponent extends AbstractESComponent implements IShar
 
         String id = getPropertyId(namespace, propertyName);
         String json = source;
-        Index index = new Index.Builder(json).refresh(false).index(getIndexName())
-                .type("sharedStateProperty").id(id).build(); //$NON-NLS-1$
+        IndexRequest indexRequest = new IndexRequest(getFullIndexName()).source(json, XContentType.JSON).id(id);
+
         try {
-            getClient().execute(index);
+            getClient().index(indexRequest, RequestOptions.DEFAULT);
             handler.handle(AsyncResultImpl.create((Void) null));
         } catch (Throwable e) {
             handler.handle(AsyncResultImpl.<Void>create(e));
@@ -124,10 +131,9 @@ public class ESSharedStateComponent extends AbstractESComponent implements IShar
     @Override
     public <T> void clearProperty(final String namespace, final String propertyName, final IAsyncResultHandler<Void> handler) {
         String id = getPropertyId(namespace, propertyName);
-
-        Delete delete = new Delete.Builder(id).index(getIndexName()).type("sharedStateProperty").build(); //$NON-NLS-1$
+        DeleteRequest deleteRequest = new DeleteRequest(getFullIndexName(), id);
         try {
-            getClient().execute(delete);
+            getClient().delete(deleteRequest, RequestOptions.DEFAULT);
             handler.handle(AsyncResultImpl.create((Void) null));
         } catch (Throwable e) {
             handler.handle(AsyncResultImpl.<Void>create(e));
@@ -145,21 +151,40 @@ public class ESSharedStateComponent extends AbstractESComponent implements IShar
 
     /**
      * Reads a stored primitive.
-     * @param result
+     * @param response
      */
-    protected Object readPrimitive(JestResult result) throws Exception {
-        PrimitiveBean pb = result.getSourceAsObject(PrimitiveBean.class);
+    protected Object readPrimitive(GetResponse response) throws Exception {
+        String sourceAsString = response.getSourceAsString();
+        PrimitiveBean pb = JSON_MAPPER.readValue(sourceAsString,PrimitiveBean.class);
         String value = pb.getValue();
         Class<?> c = Class.forName(pb.getType());
         return BackingStoreUtil.readPrimitive(c, value);
     }
 
     /**
-     * @see io.apiman.gateway.engine.es.AbstractESComponent#getDefaultIndexName()
+     * @see AbstractEsComponent#getDefaultIndexPrefix()
      */
     @Override
-    protected String getDefaultIndexName() {
-        return ESConstants.GATEWAY_INDEX_NAME;
+    protected String getDefaultIndexPrefix() {
+        return EsConstants.GATEWAY_INDEX_NAME;
+    }
+
+    /**
+     * @see AbstractEsComponent#getDefaultIndices()
+     * @return default indices
+     */
+    @Override
+    protected List<String> getDefaultIndices() {
+        String[] indices = {EsConstants.INDEX_SHARED_STATE_PROPERTY};
+        return Arrays.asList(indices);
+    }
+
+    /**
+     * get index full name for shared state property
+     * @return full index name
+     */
+    private String getFullIndexName() {
+        return (getIndexPrefix() + EsConstants.INDEX_SHARED_STATE_PROPERTY).toLowerCase();
     }
 
 }

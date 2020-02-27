@@ -15,22 +15,19 @@
  */
 package io.apiman.common.es.util;
 
-import io.searchbox.action.Action;
-import io.searchbox.client.JestClient;
-import io.searchbox.client.JestResult;
-import io.searchbox.cluster.Health;
-import io.searchbox.indices.CreateIndex;
-import io.searchbox.indices.IndicesExists;
+import io.apiman.common.logging.DefaultDelegateFactory;
+import io.apiman.common.logging.IApimanLogger;
+import org.elasticsearch.action.admin.cluster.health.ClusterHealthRequest;
+import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
+import org.elasticsearch.action.support.master.AcknowledgedResponse;
+import org.elasticsearch.client.RequestOptions;
+import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.client.indices.CreateIndexRequest;
+import org.elasticsearch.client.indices.CreateIndexResponse;
+import org.elasticsearch.client.indices.GetIndexRequest;
 
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.commons.io.IOUtils;
-
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * Base class for client factories.  Provides caching of clients.
@@ -39,7 +36,11 @@ import com.google.gson.JsonObject;
  */
 public abstract class AbstractClientFactory {
 
-    protected static Map<String, JestClient> clients = new HashMap<>();
+    private static IApimanLogger logger = new DefaultDelegateFactory().createLogger(AbstractClientFactory.class);
+
+    protected static Map<String, RestHighLevelClient> clients = new HashMap<>();
+
+    protected static Set<String> createdIndices = new HashSet<String>();
 
     /**
      * Clears all the clients from the cache.  Useful for unit testing.
@@ -56,20 +57,34 @@ public abstract class AbstractClientFactory {
 
     /**
      * Called to initialize the storage.
-     * @param client the jest client
-     * @param indexName the name of the ES index to initialize
-     * @param defaultIndexName the default ES index - used to determine which -settings.json file to use
+     * @param client the es client
+     * @param indexPrefix the index prefix of the ES index to initialize
+     * @param defaultIndices the default indices for the component
      */
-    protected void initializeClient(JestClient client, String indexName, String defaultIndexName) {
+    protected void initializeIndices(RestHighLevelClient client, String indexPrefix, List<String> defaultIndices) {
         try {
-            client.execute(new Health.Builder().build());
-            Action<JestResult> action = new IndicesExists.Builder(indexName).build();
+            //Do Health request
+            ClusterHealthRequest healthRequest = new ClusterHealthRequest();
+            try {
+                client.cluster().health(healthRequest, RequestOptions.DEFAULT);
+            } catch (IOException e) {
+                logger.error("Health check failed - cannot connect to elasticsearch", e);
+            }
+
             // There was occasions where a race occurred here when multiple threads try to
             // create the index simultaneously. This caused a non-fatal, but annoying, exception.
-            synchronized(AbstractClientFactory.class) {
-                JestResult result = client.execute(action);
-                if (!result.isSucceeded()) {
-                    createIndex(client, indexName, defaultIndexName + "-settings.json"); //$NON-NLS-1$
+            synchronized (AbstractClientFactory.class) {
+                // check if indices exist - if not create them
+                for (String indexPostfix: defaultIndices) {
+                    String fullIndexName = EsIndexMapping.getFullIndexName(indexPrefix, indexPostfix);
+                    if (!createdIndices.contains(fullIndexName)) {
+                        GetIndexRequest indexExistsRequest = new GetIndexRequest(fullIndexName);
+                        boolean indexExists = client.indices().exists(indexExistsRequest, RequestOptions.DEFAULT);
+                        if (!indexExists) {
+                            this.createIndex(client, indexPrefix, indexPostfix); //$NON-NLS-1$
+                            createdIndices.add(fullIndexName);
+                        }
+                    }
                 }
             }
         } catch (Exception e) {
@@ -78,58 +93,70 @@ public abstract class AbstractClientFactory {
     }
 
     /**
-     * Creates an index.
-     * @param indexName
+     * Delete all indices used by manager ui
+     * @param client the elasticsearch client
      * @throws Exception
      */
-    @SuppressWarnings("nls")
-    protected void createIndex(JestClient client, String indexName, String settingsName) throws Exception {
-        URL settings = AbstractClientFactory.class.getResource(settingsName);
-        String source = IOUtils.toString(settings);
-        JestResult response = client.execute(new CreateIndex.Builder(indexName).settings(source).build());
-        if (!response.isSucceeded()) {
-            // When running in e.g. Wildfly, the Gateway exists as two separate WARs - the API and the
-            // runtime Gateway itself.  They both create a registry and thus they both try to initialize
-            // the ES index if it doesn't exist.  A race condition could result in both WARs trying to
-            // create the index.  So a result of "IndexAlreadyExistsException" should be ignored.
-            if (!indexAlreadyExistsException(response)) {
-                throw new Exception("Failed to create index: '" + indexName + "' Reason: " + response.getErrorMessage());
+    public static void deleteIndices(RestHighLevelClient client) throws IOException {
+        final Iterator<String> iterator = createdIndices.iterator();
+        while (iterator.hasNext()) {
+            String fullIndexName = iterator.next();
+            GetIndexRequest indexExistsRequest = new GetIndexRequest(fullIndexName);
+            boolean indexExists = client.indices().exists(indexExistsRequest, RequestOptions.DEFAULT);
+            if (indexExists) {
+                boolean success = deleteIndex(client, fullIndexName);
+                if (success) {
+                    iterator.remove();
+                }
             }
         }
     }
 
-
-
-    @SuppressWarnings("nls")
-    private boolean indexAlreadyExistsException(JestResult response) {
-        // ES 1.x
-        if (response.getErrorMessage().startsWith("IndexAlreadyExistsException")) {
+    /**
+     * Delete index with given name
+     * @param client the elasticsearch client
+     * @param indexName the index name
+     * @throws Exception
+     */
+    private static boolean deleteIndex(RestHighLevelClient client, String indexName) throws IOException {
+        DeleteIndexRequest request = new DeleteIndexRequest(indexName);
+        AcknowledgedResponse response = client.indices().delete(request, RequestOptions.DEFAULT);
+        if (!response.isAcknowledged()) {
+            logger.error("Failed to delete index " + indexName + ": " + "response was not acknowledged", new Exception()); //$NON-NLS-1$ //$NON-NLS-2$
+            return false;
+        } else {
+            logger.info("Index deleted: " + indexName); //$NON-NLS-1$
             return true;
         }
+    }
 
-        // ES 5.x
-        // {"error": {"root_cause":[{"type":"index_already_exists_exception","reason": "..."}]}}
-        if (response.getJsonObject() == null || !response.getJsonObject().has("error")) {
-            return false;
+    /**
+     * Creates an index.
+     * @param client the elasticsearch client
+     * @param indexPrefix the index prefix
+     * @param indexPostfix the index postfix
+     * @throws Exception
+     */
+    @SuppressWarnings("nls")
+    protected void createIndex(RestHighLevelClient client, String indexPrefix, String indexPostfix) throws Exception {
+        String indexToCreate = EsIndexMapping.getFullIndexName(indexPrefix, indexPostfix);
+        CreateIndexRequest createIndexRequest = new CreateIndexRequest(indexToCreate);
+        //add field properties to index
+        final Map<String, Object> documentMapping = EsIndexMapping.getDocumentMapping(indexPrefix, indexPostfix);
+        createIndexRequest.mapping(documentMapping);
+        CreateIndexResponse createIndexResponse = client.indices().create(createIndexRequest, RequestOptions.DEFAULT);
+
+        // When running in e.g. Wildfly, the Gateway exists as two separate WARs - the API and the
+        // runtime Gateway itself.  They both create a registry and thus they both try to initialize
+        // the ES index if it doesn't exist.  A race condition could result in both WARs trying to
+        // create the index.  So a result of "IndexAlreadyExistsException" should be ignored.
+        if (!createIndexResponse.isAcknowledged()) {
+            logger.error("Failed to create index: '" + indexToCreate + "' Reason: request was not acknowledged.", new Exception());
+        } else if (!createIndexResponse.isShardsAcknowledged()) {
+            logger.error("Failed to create index: '" + indexToCreate + "' Reason: request was not acknowledged by shards.", new Exception());
+        } else {
+            logger.info("Index created: " + indexToCreate);
         }
-
-        // Error must be a JSON object.
-        JsonObject error = response.getJsonObject().getAsJsonObject("error");
-        if (!(error.has("root_cause") && error.get("root_cause").isJsonArray())) {
-            return false;
-        }
-
-        JsonArray causes = error.getAsJsonArray("root_cause");
-
-        for (JsonElement elem : causes) {
-            if (elem.isJsonObject()) {
-                JsonElement type = elem.getAsJsonObject().get("type");
-                if (type != null && type.getAsString().equals("index_already_exists_exception")) {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 
 }

@@ -15,6 +15,8 @@
  */
 package io.apiman.manager.test.junit;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.apiman.manager.api.core.util.PolicyTemplateUtil;
 import io.apiman.manager.test.junit.ManagerRestTester.TestInfo;
 import io.apiman.manager.test.server.ManagerApiTestServer;
@@ -26,18 +28,6 @@ import io.apiman.test.common.plan.TestType;
 import io.apiman.test.common.resttest.RestTest;
 import io.apiman.test.common.util.TestPlanRunner;
 import io.apiman.test.common.util.TestUtil;
-
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Method;
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
-
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 import org.junit.runner.Description;
@@ -48,8 +38,10 @@ import org.junit.runners.model.Statement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.File;
+import java.lang.reflect.Method;
+import java.text.MessageFormat;
+import java.util.*;
 
 /**
  * A junit test runner that fires up apiman and makes it ready for
@@ -216,7 +208,6 @@ public class ManagerRestTester extends ParentRunner<TestInfo> {
             pubTest.expectedPayloads = annotation2.value();
             children.add(pubTest);
         }
-
         return children;
     }
 
@@ -264,11 +255,7 @@ public class ManagerRestTester extends ParentRunner<TestInfo> {
         log("Starting Test [{0} / {1}]", testInfo.plan.name, testInfo.name);
         log("-----------------------------------------------------------");
 
-        try {
-            testServer.flush();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        testServer.flush();
 
         Description description = describeChild(testInfo);
         if (testInfo instanceof GatewayAssertionTestInfo) {

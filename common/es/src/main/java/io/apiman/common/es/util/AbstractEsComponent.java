@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apiman.gateway.engine.es;
+package io.apiman.common.es.util;
 
-import io.apiman.common.es.util.DefaultEsClientFactory;
-import io.apiman.common.es.util.IEsClientFactory;
-import io.searchbox.client.JestClient;
+import org.elasticsearch.client.RestHighLevelClient;
 
+import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -26,29 +26,34 @@ import java.util.Map;
  *
  * @author eric.wittmann@redhat.com
  */
-public abstract class AbstractESComponent {
+public abstract class AbstractEsComponent {
 
     private final Map<String, String> config;
-    private JestClient esClient;
-    private String indexName;
+    private RestHighLevelClient esClient;
+    private String indexPrefix;
 
     /**
      * Constructor.
      * @param config the config
      */
-    public AbstractESComponent(Map<String, String> config) {
+    public AbstractEsComponent(Map<String, String> config) {
         this.config = config;
-        String indexName = config.get("client.index"); //$NON-NLS-1$
-        if (indexName == null) {
-            indexName = getDefaultIndexName();
+        String indexPrefix = config.get("client.indexPrefix"); //$NON-NLS-1$
+        if (indexPrefix == null) {
+            indexPrefix = getDefaultIndexPrefix();
         }
-        this.indexName = indexName;
+        this.indexPrefix = indexPrefix;
+    }
+
+    public AbstractEsComponent(RestHighLevelClient esClient) {
+        this.config = null;
+        this.esClient = esClient;
     }
 
     /**
      * @return the esClient
      */
-    public synchronized JestClient getClient() {
+    public synchronized RestHighLevelClient getClient() {
         if (esClient == null) {
             esClient = createClient();
         }
@@ -58,9 +63,9 @@ public abstract class AbstractESComponent {
     /**
      * @return a new ES client
      */
-    protected JestClient createClient() {
+    protected RestHighLevelClient createClient() {
         IEsClientFactory factory = createEsClientFactory();
-        return factory.createClient(config, getDefaultIndexName());
+        return factory.createClient(config, getDefaultIndexPrefix(), getDefaultIndices());
     }
 
     /**
@@ -68,7 +73,7 @@ public abstract class AbstractESComponent {
      */
     protected IEsClientFactory createEsClientFactory() {
         String factoryClass = config.get("client.type"); //$NON-NLS-1$
-        if ("jest".equals(factoryClass)) { //$NON-NLS-1$
+        if ("es".equals(factoryClass)) { //$NON-NLS-1$
             factoryClass = DefaultEsClientFactory.class.getName();
         } else if ("local".equals(factoryClass)) { //$NON-NLS-1$
             factoryClass = LocalClientFactory.class.getName();
@@ -84,15 +89,32 @@ public abstract class AbstractESComponent {
     }
 
     /**
-     * Gets the default index name for this component.
+     * Delete all created es indices
+     * @param client
+     * @throws IOException
      */
-    protected abstract String getDefaultIndexName();
+    protected void deleteIndices(RestHighLevelClient client) throws IOException {
+        String factoryClass = config.get("client.type"); //$NON-NLS-1$
+        if ("es".equals(factoryClass)) { //$NON-NLS-1$
+            DefaultEsClientFactory.deleteIndices(client);
+        }
+    }
+
+    /**
+     * Gets the default index prefix for this component.
+     */
+    protected abstract String getDefaultIndexPrefix();
+
+    /**
+     * Get the default indecies for this component.
+     */
+    protected abstract List<String> getDefaultIndices();
 
     /**
      * Gets the index name to use when reading/writing to ES.
      */
-    protected String getIndexName() {
-        return indexName;
+    protected String getIndexPrefix() {
+        return indexPrefix + "_";
     }
 
 }

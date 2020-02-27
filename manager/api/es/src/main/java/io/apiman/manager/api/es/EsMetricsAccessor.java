@@ -15,41 +15,33 @@
  */
 package io.apiman.manager.api.es;
 
+import io.apiman.common.es.util.EsConstants;
 import io.apiman.common.logging.IApimanLogger;
-import io.apiman.manager.api.beans.metrics.ClientUsagePerApiBean;
-import io.apiman.manager.api.beans.metrics.HistogramIntervalType;
-import io.apiman.manager.api.beans.metrics.ResponseStatsDataPoint;
-import io.apiman.manager.api.beans.metrics.ResponseStatsHistogramBean;
-import io.apiman.manager.api.beans.metrics.ResponseStatsPerClientBean;
-import io.apiman.manager.api.beans.metrics.ResponseStatsPerPlanBean;
-import io.apiman.manager.api.beans.metrics.ResponseStatsSummaryBean;
-import io.apiman.manager.api.beans.metrics.UsageDataPoint;
-import io.apiman.manager.api.beans.metrics.UsageHistogramBean;
-import io.apiman.manager.api.beans.metrics.UsagePerClientBean;
-import io.apiman.manager.api.beans.metrics.UsagePerPlanBean;
+import io.apiman.common.es.util.AbstractEsComponent;
+import io.apiman.manager.api.beans.metrics.*;
 import io.apiman.manager.api.core.IMetricsAccessor;
 import io.apiman.manager.api.core.logging.ApimanLogger;
-import io.apiman.manager.api.core.metrics.AbstractMetricsAccessor;
-import io.searchbox.client.JestClient;
-import io.searchbox.core.Search;
-import io.searchbox.core.SearchResult;
-import io.searchbox.core.search.aggregation.DateHistogramAggregation;
-import io.searchbox.core.search.aggregation.DateHistogramAggregation.DateHistogram;
-import io.searchbox.core.search.aggregation.FilterAggregation;
-import io.searchbox.core.search.aggregation.MetricAggregation;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import io.apiman.manager.api.core.metrics.MetricsAccessorHelper;
+import org.elasticsearch.action.search.SearchRequest;
+import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.client.RequestOptions;
+import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.script.ScriptType;
+import org.elasticsearch.script.mustache.SearchTemplateRequest;
+import org.elasticsearch.search.aggregations.Aggregations;
+import org.elasticsearch.search.aggregations.bucket.filter.ParsedFilter;
+import org.elasticsearch.search.aggregations.bucket.histogram.ParsedDateHistogram;
+import org.elasticsearch.search.aggregations.bucket.terms.ParsedStringTerms;
+import org.joda.time.DateTime;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
-import javax.inject.Named;
-
-import org.apache.commons.lang3.text.StrSubstitutor;
-import org.joda.time.DateTime;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * An elasticsearch implementation of the {@link IMetricsAccessor} interface.  This
@@ -59,20 +51,29 @@ import org.joda.time.DateTime;
  * @author eric.wittmann@redhat.com
  */
 @ApplicationScoped @Alternative
-public class ESMetricsAccessor extends AbstractMetricsAccessor implements IMetricsAccessor {
+public class EsMetricsAccessor extends AbstractEsComponent implements IMetricsAccessor {
 
     private static final String INDEX_NAME = "apiman_metrics"; //$NON-NLS-1$
 
-    @Inject @ApimanLogger(ESMetricsAccessor.class)
+    @Inject @ApimanLogger(EsMetricsAccessor.class)
     IApimanLogger log;
-
-    @Inject @Named("metrics")
-    private JestClient esClient;
 
     /**
      * Constructor.
+     * @param config map of configuration options
      */
-    public ESMetricsAccessor() {
+    public EsMetricsAccessor(Map<String, String> config) {
+        super(config);
+    }
+
+    /**
+     * Constructor only for the Test-Framework.
+     * This constructor sets the elasticsearch client from outside.
+     * WARNING: It is not recommended to use it except within the Test-Framework.
+     * @param client elasticsearch client
+     */
+    public EsMetricsAccessor(RestHighLevelClient client) {
+        super(client);
     }
 
     /**
@@ -83,7 +84,7 @@ public class ESMetricsAccessor extends AbstractMetricsAccessor implements IMetri
     public UsageHistogramBean getUsage(String organizationId, String apiId, String version,
             HistogramIntervalType interval, DateTime from, DateTime to) {
         UsageHistogramBean rval = new UsageHistogramBean();
-        Map<String, UsageDataPoint> index = generateHistogramSkeleton(rval, from, to, interval, UsageDataPoint.class);
+        Map<String, UsageDataPoint> index = MetricsAccessorHelper.generateHistogramSkeleton(rval, from, to, interval, UsageDataPoint.class);
 
         try {
             String query =
@@ -92,22 +93,22 @@ public class ESMetricsAccessor extends AbstractMetricsAccessor implements IMetri
                     "        \"bool\": {" +
                     "            \"filter\": [{" +
                     "                    \"term\": {" +
-                    "                        \"apiOrgId\": \"${apiOrgId}\"" +
+                    "                        \"apiOrgId\": \"{{apiOrgId}}\"" +
                     "                    }" +
                     "                }, {" +
                     "                    \"term\": {" +
-                    "                        \"apiId\": \"${apiId}\"" +
+                    "                        \"apiId\": \"{{apiId}}\"" +
                     "                    }" +
                     "                }, {" +
                     "                    \"term\": {" +
-                    "                        \"apiVersion\": \"${apiVersion}\"" +
+                    "                        \"apiVersion\": \"{{apiVersion}}\"" +
                     "                    }" +
                     "                }," +
                     "                {" +
                     "                    \"range\": {" +
                     "                        \"requestStart\": {" +
-                    "                            \"gte\": \"${from}\"," +
-                    "                            \"lte\": \"${to}\"" +
+                    "                            \"gte\": \"{{from}}\"," +
+                    "                            \"lte\": \"{{to}}\"" +
                     "                        }" +
                     "                    }" +
                     "                }" +
@@ -119,35 +120,34 @@ public class ESMetricsAccessor extends AbstractMetricsAccessor implements IMetri
                     "        \"histogram\": {" +
                     "            \"date_histogram\": {" +
                     "                \"field\": \"requestStart\"," +
-                    "                \"interval\": \"${interval}\"" +
+                    "                \"calendar_interval\": \"{{interval}}\"" +
                     "            }" +
                     "        }" +
                     "    }" +
                     "}";
 
-            Map<String, String> params = new HashMap<>();
-            params.put("from", formatDate(from));
-            params.put("to", formatDate(to));
+            Map<String, Object> params = new HashMap<>();
+            params.put("from", MetricsAccessorHelper.formatDate(from));
+            params.put("to", MetricsAccessorHelper.formatDate(to));
             params.put("apiOrgId", organizationId.replace('"', '_'));
             params.put("apiId", apiId.replace('"', '_'));
             params.put("apiVersion", version.replace('"', '_'));
             params.put("interval", interval.name());
-            StrSubstitutor ss = new StrSubstitutor(params);
-            query = ss.replace(query);
 
-            Search search = new Search.Builder(query).addIndex(INDEX_NAME).addType("request").build();
-            SearchResult response = getEsClient().execute(search);
-            MetricAggregation aggregations = response.getAggregations();
-            DateHistogramAggregation aggregation = aggregations.getDateHistogramAggregation("histogram");
+            SearchResponse response = this.doSearchTemplateRequest(query, params);
+
+            ParsedDateHistogram aggregation = (ParsedDateHistogram) response.getAggregations().asMap().get("histogram");
             if (aggregation != null) {
-                List<DateHistogram> buckets = aggregation.getBuckets();
-                for (DateHistogram entry : buckets) {
-                    String keyAsString = entry.getTimeAsString();
+                List<ParsedDateHistogram.ParsedBucket> buckets = (List<ParsedDateHistogram.ParsedBucket>) aggregation.getBuckets();
+
+                for (ParsedDateHistogram.ParsedBucket entry : buckets) {
+                    String keyAsString = entry.getKeyAsString();
                     if (index.containsKey(keyAsString)) {
-                        index.get(keyAsString).setCount(entry.getCount());
+                        index.get(keyAsString).setCount(entry.getDocCount());
                     }
                 }
             }
+
         } catch (IOException e) {
             log.error(e);
         }
@@ -171,21 +171,21 @@ public class ESMetricsAccessor extends AbstractMetricsAccessor implements IMetri
                     "        \"bool\": {" +
                     "            \"filter\": [{" +
                     "                \"term\": {" +
-                    "                    \"apiOrgId\": \"${apiOrgId}\"" +
+                    "                    \"apiOrgId\": \"{{apiOrgId}}\"" +
                     "                }" +
                     "            }, {" +
                     "                \"term\": {" +
-                    "                    \"apiId\": \"${apiId}\"" +
+                    "                    \"apiId\": \"{{apiId}}\"" +
                     "                }" +
                     "            }, {" +
                     "                \"term\": {" +
-                    "                    \"apiVersion\": \"${apiVersion}\"" +
+                    "                    \"apiVersion\": \"{{apiVersion}}\"" +
                     "                }" +
                     "            }, {" +
                     "                \"range\": {" +
                     "                    \"requestStart\": {" +
-                    "                        \"gte\": \"${from}\"," +
-                    "                        \"lte\": \"${to}\"" +
+                    "                        \"gte\": \"{{from}}\"," +
+                    "                        \"lte\": \"{{to}}\"" +
                     "                    }" +
                     "                }" +
                     "            }]" +
@@ -201,30 +201,25 @@ public class ESMetricsAccessor extends AbstractMetricsAccessor implements IMetri
                     "    }" +
                     "}";
 
-            Map<String, String> params = new HashMap<>();
-            params.put("from", formatDate(from));
-            params.put("to", formatDate(to));
+            Map<String, Object> params = new HashMap<>();
+            params.put("from", MetricsAccessorHelper.formatDate(from));
+            params.put("to", MetricsAccessorHelper.formatDate(to));
             params.put("apiOrgId", organizationId.replace('"', '_'));
             params.put("apiId", apiId.replace('"', '_'));
             params.put("apiVersion", version.replace('"', '_'));
-            StrSubstitutor ss = new StrSubstitutor(params);
-            query = ss.replace(query);
 
-            Search search = new Search.Builder(query).addIndex(INDEX_NAME).addType("request").build();
-            SearchResult response = getEsClient().execute(search);
-            MetricAggregation aggregations = response.getAggregations();
-            ApimanTermsAggregation aggregation = aggregations.getAggregation("usage_by_client", ApimanTermsAggregation.class); //$NON-NLS-1$
-            if (aggregation != null) {
-                List<ApimanTermsAggregation.Entry> buckets = aggregation.getBuckets();
-                int counter = 0;
-                for (ApimanTermsAggregation.Entry entry : buckets) {
-                    rval.getData().put(entry.getKey(), entry.getCount());
-                    counter++;
-                    if (counter > 5) {
-                        break;
-                    }
+            SearchResponse response = this.doSearchTemplateRequest(query, params);
+
+            List<ParsedStringTerms.ParsedBucket> buckets = (List<ParsedStringTerms.ParsedBucket>) ((ParsedStringTerms) response.getAggregations().get("usage_by_client")).getBuckets();
+            int counter = 0;
+            for (ParsedStringTerms.ParsedBucket entry : buckets) {
+                rval.getData().put(entry.getKeyAsString(), entry.getDocCount());
+                counter++;
+                if (counter > 5) {
+                    break;
                 }
             }
+
         } catch (IOException e) {
             log.error(e);
         }
@@ -248,22 +243,22 @@ public class ESMetricsAccessor extends AbstractMetricsAccessor implements IMetri
                     "        \"bool\": {" +
                     "            \"filter\": [{" +
                     "                    \"term\": {" +
-                    "                        \"apiOrgId\": \"${apiOrgId}\"" +
+                    "                        \"apiOrgId\": \"{{apiOrgId}}\"" +
                     "                    }" +
                     "                }, {" +
                     "                    \"term\": {" +
-                    "                        \"apiId\": \"${apiId}\"" +
+                    "                        \"apiId\": \"{{apiId}}\"" +
                     "                    }" +
                     "                }, {" +
                     "                    \"term\": {" +
-                    "                        \"apiVersion\": \"${apiVersion}\"" +
+                    "                        \"apiVersion\": \"{{apiVersion}}\"" +
                     "                    }" +
                     "                }," +
                     "                {" +
                     "                    \"range\": {" +
                     "                        \"requestStart\": {" +
-                    "                            \"gte\": \"${from}\"," +
-                    "                            \"lte\": \"${to}\"" +
+                    "                            \"gte\": \"{{from}}\"," +
+                    "                            \"lte\": \"{{to}}\"" +
                     "                        }" +
                     "                    }" +
                     "                }" +
@@ -280,29 +275,27 @@ public class ESMetricsAccessor extends AbstractMetricsAccessor implements IMetri
                     "    }" +
                     "}";
 
-            Map<String, String> params = new HashMap<>();
-            params.put("from", formatDate(from));
-            params.put("to", formatDate(to));
+            Map<String, Object> params = new HashMap<>();
+            params.put("from", MetricsAccessorHelper.formatDate(from));
+            params.put("to", MetricsAccessorHelper.formatDate(to));
             params.put("apiOrgId", organizationId.replace('"', '_'));
             params.put("apiId", apiId.replace('"', '_'));
             params.put("apiVersion", version.replace('"', '_'));
-            StrSubstitutor ss = new StrSubstitutor(params);
-            query = ss.replace(query);
 
-            Search search = new Search.Builder(query).addIndex(INDEX_NAME).addType("request").build();
-            SearchResult response = getEsClient().execute(search);
-            MetricAggregation aggregations = response.getAggregations();
-            ApimanTermsAggregation aggregation = aggregations.getAggregation("usage_by_plan", ApimanTermsAggregation.class); //$NON-NLS-1$
+            SearchResponse response = this.doSearchTemplateRequest(query, params);
+
+            Aggregations aggregations = response.getAggregations();
+
+            ParsedStringTerms aggregation = aggregations.get("usage_by_plan"); //$NON-NLS-1$
             if (aggregation != null) {
-                List<ApimanTermsAggregation.Entry> buckets = aggregation.getBuckets();
-                for (ApimanTermsAggregation.Entry entry : buckets) {
-                    rval.getData().put(entry.getKey(), entry.getCount());
+                List<ParsedStringTerms.ParsedBucket> buckets = (List<ParsedStringTerms.ParsedBucket>) aggregation.getBuckets();
+                for (ParsedStringTerms.ParsedBucket entry : buckets) {
+                    rval.getData().put(entry.getKeyAsString(), entry.getDocCount());
                 }
             }
         } catch (IOException e) {
             log.error(e);
         }
-
         return rval;
     }
 
@@ -314,7 +307,7 @@ public class ESMetricsAccessor extends AbstractMetricsAccessor implements IMetri
     public ResponseStatsHistogramBean getResponseStats(String organizationId, String apiId,
             String version, HistogramIntervalType interval, DateTime from, DateTime to) {
         ResponseStatsHistogramBean rval = new ResponseStatsHistogramBean();
-        Map<String, ResponseStatsDataPoint> index = generateHistogramSkeleton(rval, from, to, interval, ResponseStatsDataPoint.class);
+        Map<String, ResponseStatsDataPoint> index = MetricsAccessorHelper.generateHistogramSkeleton(rval, from, to, interval, ResponseStatsDataPoint.class);
 
         try {
             String query =
@@ -323,21 +316,21 @@ public class ESMetricsAccessor extends AbstractMetricsAccessor implements IMetri
                     "        \"bool\": {" +
                     "            \"filter\": [{" +
                     "                \"term\": {" +
-                    "                    \"apiOrgId\": \"${apiOrgId}\"" +
+                    "                    \"apiOrgId\": \"{{apiOrgId}}\"" +
                     "                }" +
                     "            }, {" +
                     "                \"term\": {" +
-                    "                    \"apiId\": \"${apiId}\"" +
+                    "                    \"apiId\": \"{{apiId}}\"" +
                     "                }" +
                     "            }, {" +
                     "                \"term\": {" +
-                    "                    \"apiVersion\": \"${apiVersion}\"" +
+                    "                    \"apiVersion\": \"{{apiVersion}}\"" +
                     "                }" +
                     "            }, {" +
                     "                \"range\": {" +
                     "                    \"requestStart\": {" +
-                    "                        \"gte\": \"${from}\"," +
-                    "                        \"lte\": \"${to}\"" +
+                    "                        \"gte\": \"{{from}}\"," +
+                    "                        \"lte\": \"{{to}}\"" +
                     "                    }" +
                     "                }" +
                     "            }]" +
@@ -348,7 +341,7 @@ public class ESMetricsAccessor extends AbstractMetricsAccessor implements IMetri
                     "        \"histogram\": {" +
                     "            \"date_histogram\": {" +
                     "                \"field\": \"requestStart\"," +
-                    "                \"interval\": \"${interval}\"" +
+                    "                \"calendar_interval\": \"{{interval}}\"" +
                     "            }," +
                     "            \"aggs\": {" +
                     "                \"total_failures\": {" +
@@ -370,31 +363,29 @@ public class ESMetricsAccessor extends AbstractMetricsAccessor implements IMetri
                     "    }" +
                     "}";
 
-            Map<String, String> params = new HashMap<>();
-            params.put("from", formatDate(from));
-            params.put("to", formatDate(to));
+            Map<String, Object> params = new HashMap<>();
+            params.put("from", MetricsAccessorHelper.formatDate(from));
+            params.put("to", MetricsAccessorHelper.formatDate(to));
             params.put("apiOrgId", organizationId.replace('"', '_'));
             params.put("apiId", apiId.replace('"', '_'));
             params.put("apiVersion", version.replace('"', '_'));
             params.put("interval", interval.name());
-            StrSubstitutor ss = new StrSubstitutor(params);
-            query = ss.replace(query);
 
-            Search search = new Search.Builder(query).addIndex(INDEX_NAME).addType("request").build();
-            SearchResult response = getEsClient().execute(search);
-            MetricAggregation aggregations = response.getAggregations();
-            DateHistogramAggregation aggregation = aggregations.getDateHistogramAggregation("histogram");
+            SearchResponse searchResponse = this.doSearchTemplateRequest(query, params);
+
+            ParsedDateHistogram aggregation = (ParsedDateHistogram) searchResponse.getAggregations().asMap().get("histogram");
             if (aggregation != null) {
-                List<DateHistogram> buckets = aggregation.getBuckets();
-                for (DateHistogram entry : buckets) {
-                    String keyAsString = entry.getTimeAsString();
+                List<ParsedDateHistogram.ParsedBucket> buckets = (List<ParsedDateHistogram.ParsedBucket>) aggregation.getBuckets();
+
+                for (ParsedDateHistogram.ParsedBucket entry : buckets) {
+                    String keyAsString = entry.getKeyAsString();
                     if (index.containsKey(keyAsString)) {
-                        FilterAggregation totalFailuresAgg = entry.getFilterAggregation("total_failures");
-                        FilterAggregation totalErrorsAgg = entry.getFilterAggregation("total_errors");
-                        long failures = totalFailuresAgg.getCount();
-                        long errors = totalErrorsAgg.getCount();
+                        ParsedFilter totalFailuresAgg = entry.getAggregations().get("total_failures");
+                        ParsedFilter totalErrorsAgg = entry.getAggregations().get("total_errors");
+                        long failures = totalFailuresAgg.getDocCount();
+                        long errors = totalErrorsAgg.getDocCount();
                         ResponseStatsDataPoint point = index.get(keyAsString);
-                        point.setTotal(entry.getCount());
+                        point.setTotal(entry.getDocCount());
                         point.setFailures(failures);
                         point.setErrors(errors);
                     }
@@ -403,7 +394,6 @@ public class ESMetricsAccessor extends AbstractMetricsAccessor implements IMetri
         } catch (IOException e) {
             log.error(e);
         }
-
         return rval;
     }
 
@@ -423,21 +413,21 @@ public class ESMetricsAccessor extends AbstractMetricsAccessor implements IMetri
                     "        \"bool\": {" +
                     "            \"filter\": [{" +
                     "                \"term\": {" +
-                    "                    \"apiOrgId\": \"${apiOrgId}\"" +
+                    "                    \"apiOrgId\": \"{{apiOrgId}}\"" +
                     "                }" +
                     "            }, {" +
                     "                \"term\": {" +
-                    "                    \"apiId\": \"${apiId}\"" +
+                    "                    \"apiId\": \"{{apiId}}\"" +
                     "                }" +
                     "            }, {" +
                     "                \"term\": {" +
-                    "                    \"apiVersion\": \"${apiVersion}\"" +
+                    "                    \"apiVersion\": \"{{apiVersion}}\"" +
                     "                }" +
                     "            }, {" +
                     "                \"range\": {" +
                     "                    \"requestStart\": {" +
-                    "                        \"gte\": \"${from}\"," +
-                    "                        \"lte\": \"${to}\"" +
+                    "                        \"gte\": \"{{from}}\"," +
+                    "                        \"lte\": \"{{to}}\"" +
                     "                    }" +
                     "                }" +
                     "            }]" +
@@ -462,25 +452,23 @@ public class ESMetricsAccessor extends AbstractMetricsAccessor implements IMetri
                     "    }" +
                     "}";
 
-            Map<String, String> params = new HashMap<>();
-            params.put("from", formatDate(from));
-            params.put("to", formatDate(to));
+            Map<String, Object> params = new HashMap<>();
+            params.put("from", MetricsAccessorHelper.formatDate(from));
+            params.put("to", MetricsAccessorHelper.formatDate(to));
             params.put("apiOrgId", organizationId.replace('"', '_'));
             params.put("apiId", apiId.replace('"', '_'));
             params.put("apiVersion", version.replace('"', '_'));
-            StrSubstitutor ss = new StrSubstitutor(params);
-            query = ss.replace(query);
 
-            Search search = new Search.Builder(query).addIndex(INDEX_NAME).addType("request").build();
-            SearchResult response = getEsClient().execute(search);
+            SearchResponse searchResponse = this.doSearchTemplateRequest(query, params);
+            Aggregations aggregations = searchResponse.getAggregations();
 
-            rval.setTotal(response.getTotal());
-            rval.setFailures(response.getAggregations().getFilterAggregation("total_failures").getCount());
-            rval.setErrors(response.getAggregations().getFilterAggregation("total_errors").getCount());
+            rval.setTotal(searchResponse.getHits().getTotalHits().value);
+            rval.setFailures(((ParsedFilter) aggregations.get("total_failures")).getDocCount());
+            rval.setErrors(((ParsedFilter) aggregations.get("total_errors")).getDocCount());
+
         } catch (IOException e) {
             log.error(e);
         }
-
         return rval;
     }
 
@@ -500,21 +488,21 @@ public class ESMetricsAccessor extends AbstractMetricsAccessor implements IMetri
                     "        \"bool\": {" +
                     "            \"filter\": [{" +
                     "                    \"term\": {" +
-                    "                        \"apiOrgId\": \"${apiOrgId}\"" +
+                    "                        \"apiOrgId\": \"{{apiOrgId}}\"" +
                     "                    }" +
                     "                }, {" +
                     "                    \"term\": {" +
-                    "                        \"apiId\": \"${apiId}\"" +
+                    "                        \"apiId\": \"{{apiId}}\"" +
                     "                    }" +
                     "                }, {" +
                     "                    \"term\": {" +
-                    "                        \"apiVersion\": \"${apiVersion}\"" +
+                    "                        \"apiVersion\": \"{{apiVersion}}\"" +
                     "                    }" +
                     "                }, {" +
                     "                    \"range\": {" +
                     "                        \"requestStart\": {" +
-                    "                            \"gte\": \"${from}\"," +
-                    "                            \"lte\": \"${to}\"" +
+                    "                            \"gte\": \"{{from}}\"," +
+                    "                            \"lte\": \"{{to}}\"" +
                     "                        }" +
                     "                    }" +
                     "                }" +
@@ -547,35 +535,27 @@ public class ESMetricsAccessor extends AbstractMetricsAccessor implements IMetri
                     "    \"size\": 0" +
                     "}";
 
-            Map<String, String> params = new HashMap<>();
-            params.put("from", formatDate(from));
-            params.put("to", formatDate(to));
+            Map<String, Object> params = new HashMap<>();
+            params.put("from", MetricsAccessorHelper.formatDate(from));
+            params.put("to", MetricsAccessorHelper.formatDate(to));
             params.put("apiOrgId", organizationId.replace('"', '_'));
             params.put("apiId", apiId.replace('"', '_'));
             params.put("apiVersion", version.replace('"', '_'));
-            StrSubstitutor ss = new StrSubstitutor(params);
-            query = ss.replace(query);
 
-            Search search = new Search.Builder(query).addIndex(INDEX_NAME).addType("request").build();
-            SearchResult response = getEsClient().execute(search);
-            MetricAggregation aggregations = response.getAggregations();
-            ApimanTermsAggregation aggregation = aggregations.getAggregation("by_client", ApimanTermsAggregation.class); //$NON-NLS-1$
-            if (aggregation != null) {
-                List<ApimanTermsAggregation.Entry> buckets = aggregation.getBuckets();
-                int counter = 0;
-                for (ApimanTermsAggregation.Entry entry : buckets) {
-                    rval.addDataPoint(entry.getKey(), entry.getCount(), entry.getFilterAggregation("total_failures").getCount(),
-                            entry.getFilterAggregation("total_errors").getCount());
-                    counter++;
-                    if (counter > 10) {
-                        break;
-                    }
+            SearchResponse response = this.doSearchTemplateRequest(query, params);
+            List<ParsedStringTerms.ParsedBucket> buckets = (List<ParsedStringTerms.ParsedBucket>) ((ParsedStringTerms) response.getAggregations().get("by_client")).getBuckets();
+
+            int counter = 0;
+            for (ParsedStringTerms.ParsedBucket entry : buckets) {
+                rval.addDataPoint(entry.getKeyAsString(), entry.getDocCount(), ((ParsedFilter) entry.getAggregations().get("total_failures")).getDocCount(), ((ParsedFilter) entry.getAggregations().get("total_errors")).getDocCount());
+                counter++;
+                if (counter > 10) {
+                    break;
                 }
             }
         } catch (IOException e) {
             log.error(e);
         }
-
         return rval;
     }
 
@@ -595,21 +575,21 @@ public class ESMetricsAccessor extends AbstractMetricsAccessor implements IMetri
                     "        \"bool\": {" +
                     "            \"filter\": [{" +
                     "                \"term\": {" +
-                    "                    \"apiOrgId\": \"${apiOrgId}\"" +
+                    "                    \"apiOrgId\": \"{{apiOrgId}}\"" +
                     "                }" +
                     "            }, {" +
                     "                \"term\": {" +
-                    "                    \"apiId\": \"${apiId}\"" +
+                    "                    \"apiId\": \"{{apiId}}\"" +
                     "                }" +
                     "            }, {" +
                     "                \"term\": {" +
-                    "                    \"apiVersion\": \"${apiVersion}\"" +
+                    "                    \"apiVersion\": \"{{apiVersion}}\"" +
                     "                }" +
                     "            }, {" +
                     "                \"range\": {" +
                     "                    \"requestStart\": {" +
-                    "                        \"gte\": \"${from}\"," +
-                    "                        \"lte\": \"${to}\"" +
+                    "                        \"gte\": \"{{from}}\"," +
+                    "                        \"lte\": \"{{to}}\"" +
                     "                    }" +
                     "                }" +
                     "            }]" +
@@ -641,25 +621,23 @@ public class ESMetricsAccessor extends AbstractMetricsAccessor implements IMetri
                     "    }" +
                     "}";
 
-            Map<String, String> params = new HashMap<>();
-            params.put("from", formatDate(from));
-            params.put("to", formatDate(to));
+            Map<String, Object> params = new HashMap<>();
+            params.put("from", MetricsAccessorHelper.formatDate(from));
+            params.put("to", MetricsAccessorHelper.formatDate(to));
             params.put("apiOrgId", organizationId.replace('"', '_'));
             params.put("apiId", apiId.replace('"', '_'));
             params.put("apiVersion", version.replace('"', '_'));
-            StrSubstitutor ss = new StrSubstitutor(params);
-            query = ss.replace(query);
 
-            Search search = new Search.Builder(query).addIndex(INDEX_NAME).addType("request").build();
-            SearchResult response = getEsClient().execute(search);
-            MetricAggregation aggregations = response.getAggregations();
-            ApimanTermsAggregation aggregation = aggregations.getAggregation("by_plan", ApimanTermsAggregation.class); //$NON-NLS-1$
+            SearchResponse response = this.doSearchTemplateRequest(query, params);
+
+            Aggregations aggregations = response.getAggregations();
+            ParsedStringTerms aggregation = aggregations.get("by_plan"); //$NON-NLS-1$
             if (aggregation != null) {
-                List<ApimanTermsAggregation.Entry> buckets = aggregation.getBuckets();
+                List<ParsedStringTerms.ParsedBucket> buckets = (List<ParsedStringTerms.ParsedBucket>)  aggregation.getBuckets();
                 int counter = 0;
-                for (ApimanTermsAggregation.Entry entry : buckets) {
-                    rval.addDataPoint(entry.getKey(), entry.getCount(), entry.getFilterAggregation("total_failures").getCount(),
-                            entry.getFilterAggregation("total_errors").getCount());
+                for (ParsedStringTerms.ParsedBucket entry : buckets) {
+                    rval.addDataPoint(entry.getKeyAsString(), entry.getDocCount(), ((ParsedFilter)entry.getAggregations().get("total_failures")).getDocCount(),
+                            ((ParsedFilter)entry.getAggregations().get("total_errors")).getDocCount());
                     counter++;
                     if (counter > 10) {
                         break;
@@ -669,7 +647,6 @@ public class ESMetricsAccessor extends AbstractMetricsAccessor implements IMetri
         } catch (IOException e) {
             log.error(e);
         }
-
         return rval;
     }
 
@@ -689,24 +666,24 @@ public class ESMetricsAccessor extends AbstractMetricsAccessor implements IMetri
                     "        \"bool\": {" +
                     "            \"filter\": [{" +
                     "                    \"term\": {" +
-                    "                        \"clientOrgId\": \"${clientOrgId}\"" +
+                    "                        \"clientOrgId\": \"{{clientOrgId}}\"" +
                     "                    }" +
                     "                }," +
                     "                {" +
                     "                    \"term\": {" +
-                    "                        \"clientId\": \"${clientId}\"" +
+                    "                        \"clientId\": \"{{clientId}}\"" +
                     "                    }" +
                     "                }," +
                     "                {" +
                     "                    \"term\": {" +
-                    "                        \"clientVersion\": \"${clientVersion}\"" +
+                    "                        \"clientVersion\": \"{{clientVersion}}\"" +
                     "                    }" +
                     "                }," +
                     "                {" +
                     "                    \"range\": {" +
                     "                        \"requestStart\": {" +
-                    "                            \"gte\": \"${from}\"," +
-                    "                            \"lte\": \"${to}\"" +
+                    "                            \"gte\": \"{{from}}\"," +
+                    "                            \"lte\": \"{{to}}\"" +
                     "                        }" +
                     "                    }" +
                     "                }" +
@@ -723,45 +700,59 @@ public class ESMetricsAccessor extends AbstractMetricsAccessor implements IMetri
                     "    }" +
                     "}";
 
-            Map<String, String> params = new HashMap<>();
-            params.put("from", formatDate(from));
-            params.put("to", formatDate(to));
+            Map<String, Object> params = new HashMap<>();
+            params.put("from", MetricsAccessorHelper.formatDate(from));
+            params.put("to", MetricsAccessorHelper.formatDate(to));
             params.put("clientOrgId", organizationId.replace('"', '_'));
             params.put("clientId", clientId.replace('"', '_'));
             params.put("clientVersion", version.replace('"', '_'));
-            StrSubstitutor ss = new StrSubstitutor(params);
-            query = ss.replace(query);
 
-            Search search = new Search.Builder(query).addIndex(INDEX_NAME).addType("request").build();
-            SearchResult response = getEsClient().execute(search);
-            MetricAggregation aggregations = response.getAggregations();
-            ApimanTermsAggregation aggregation = aggregations.getAggregation("usage_by_api", ApimanTermsAggregation.class); //$NON-NLS-1$
-            if (aggregation != null) {
-                List<ApimanTermsAggregation.Entry> buckets = aggregation.getBuckets();
-                for (ApimanTermsAggregation.Entry entry : buckets) {
-                    rval.getData().put(entry.getKey(), entry.getCount());
+            SearchResponse response = this.doSearchTemplateRequest(query, params);
+
+            ParsedStringTerms aggregation = response.getAggregations().get("usage_by_api");
+            if(aggregation != null) {
+                List<ParsedStringTerms.ParsedBucket> buckets = (List<ParsedStringTerms.ParsedBucket>) aggregation.getBuckets();
+                for (ParsedStringTerms.ParsedBucket entry : buckets) {
+                    rval.getData().put(entry.getKeyAsString(), entry.getDocCount());
                 }
             }
         } catch (IOException e) {
             log.error(e);
         }
-
         return rval;
-
     }
 
     /**
-     * @return the esClient
+     * Does a request against elasticsearch
+     * @param query the query template to execute
+     * @param params the params for the query template
+     * @return SearchResponse of elasticsearch
+     * @throws IOException
      */
-    public JestClient getEsClient() {
-        return esClient;
+    private SearchResponse doSearchTemplateRequest(String query, Map<String, Object> params) throws IOException {
+        SearchTemplateRequest searchTemplateRequest = new SearchTemplateRequest();
+        searchTemplateRequest.setRequest(new SearchRequest(INDEX_NAME));
+        searchTemplateRequest.setScriptType(ScriptType.INLINE);
+        searchTemplateRequest.setScript(query);
+        searchTemplateRequest.setScriptParams(params);
+        return getClient().searchTemplate(searchTemplateRequest, RequestOptions.DEFAULT).getResponse();
     }
 
     /**
-     * @param esClient the esClient to set
+     * @see AbstractEsComponent#getDefaultIndexPrefix()
      */
-    public void setEsClient(JestClient esClient) {
-        this.esClient = esClient;
+    @Override
+    protected String getDefaultIndexPrefix() {
+        return EsConstants.METRICS_INDEX_NAME;
     }
 
+    /**
+     * @see AbstractEsComponent#getDefaultIndices()
+     * @return default indices
+     */
+    @Override
+    protected List<String> getDefaultIndices() {
+        String[] indices = {""};
+        return Arrays.asList(indices);
+    }
 }

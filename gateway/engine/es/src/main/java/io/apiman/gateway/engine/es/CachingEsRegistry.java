@@ -31,14 +31,14 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Extends the {@link ESRegistry} to provide single-node caching.  This caching solution
+ * Extends the {@link EsRegistry} to provide single-node caching.  This caching solution
  * will not work in a cluster.  If looking for cluster support, either go with the core
- * {@link ESRegistry} or use {@link PollCachingESRegistry}.
+ * {@link EsRegistry} or use {@link PollCachingEsRegistry}.
  *
  *
  * @author eric.wittmann@redhat.com
  */
-public abstract class CachingESRegistry extends ESRegistry {
+public abstract class CachingEsRegistry extends EsRegistry {
 
     private Map<String, Api> apiCache = new ConcurrentHashMap<>();
     private Map<String, Client> clientCache = new ConcurrentHashMap<>();
@@ -47,7 +47,7 @@ public abstract class CachingESRegistry extends ESRegistry {
     /**
      * Constructor.
      */
-    public CachingESRegistry(Map<String, String> config) {
+    public CachingEsRegistry(Map<String, String> config) {
         super(config);
     }
 
@@ -63,7 +63,7 @@ public abstract class CachingESRegistry extends ESRegistry {
     }
 
     /**
-     * @see io.apiman.gateway.engine.jdbc.ESRegistry#getContract(java.lang.String, java.lang.String, java.lang.String, java.lang.String, io.apiman.gateway.engine.async.IAsyncResultHandler)
+     * @see io.apiman.gateway.engine.jdbc.EsRegistry#getContract(java.lang.String, java.lang.String, java.lang.String, java.lang.String, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
     @Override
     public void getContract(String apiOrganizationId, String apiId, String apiVersion, String apiKey,
@@ -77,12 +77,12 @@ public abstract class CachingESRegistry extends ESRegistry {
                 api = getApi(apiOrganizationId, apiId, apiVersion);
             }
             if (client == null) {
-                Exception error = new ClientNotFoundException(Messages.i18n.format("ESRegistry.NoClientForAPIKey", apiKey)); //$NON-NLS-1$
+                Exception error = new ClientNotFoundException(Messages.i18n.format("EsRegistry.NoClientForAPIKey", apiKey)); //$NON-NLS-1$
                 handler.handle(AsyncResultImpl.create(error, ApiContract.class));
                 return;
             }
             if (api == null) {
-                throw new ApiRetiredException(Messages.i18n.format("ESRegistry.ApiWasRetired", //$NON-NLS-1$
+                throw new ApiRetiredException(Messages.i18n.format("EsRegistry.ApiWasRetired", //$NON-NLS-1$
                         apiId, apiOrganizationId));
             }
 
@@ -95,7 +95,7 @@ public abstract class CachingESRegistry extends ESRegistry {
             }
 
             if (matchedContract == null) {
-                throw new NoContractFoundException(Messages.i18n.format("ESRegistry.NoContractFound", //$NON-NLS-1$
+                throw new NoContractFoundException(Messages.i18n.format("EsRegistry.NoContractFound", //$NON-NLS-1$
                         client.getClientId(), api.getApiId()));
             }
 
@@ -107,7 +107,7 @@ public abstract class CachingESRegistry extends ESRegistry {
     }
 
     /**
-     * @see io.apiman.gateway.engine.es.ESRegistry#getApi(java.lang.String, java.lang.String, java.lang.String, io.apiman.gateway.engine.async.IAsyncResultHandler)
+     * @see EsRegistry#getApi(java.lang.String, java.lang.String, java.lang.String, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
     @Override
     public void getApi(final String organizationId, final String apiId, final String apiVersion,

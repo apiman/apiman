@@ -15,23 +15,27 @@
  */
 package io.apiman.gateway.engine.es;
 
+import io.apiman.common.es.util.AbstractEsComponent;
+import io.apiman.common.es.util.EsConstants;
 import io.apiman.common.logging.DefaultDelegateFactory;
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.Api;
 import io.apiman.gateway.engine.beans.Client;
-import io.apiman.gateway.engine.es.beans.DataVersionBean;
-import io.searchbox.client.JestResult;
-import io.searchbox.client.JestResultHandler;
-import io.searchbox.core.Get;
-import io.searchbox.core.Index;
+import org.elasticsearch.action.ActionListener;
+import org.elasticsearch.action.get.GetRequest;
+import org.elasticsearch.action.get.GetResponse;
+import org.elasticsearch.action.index.IndexRequest;
+import org.elasticsearch.client.RequestOptions;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 /**
- * Extends the {@link ESRegistry} to provide multi-node caching.  This caching solution
+ * Extends the {@link EsRegistry} to provide multi-node caching.  This caching solution
  * will work in a cluster, although it is a rather naive implementation.  The approach
  * taken is that whenever the ES index is modified, a "last modified" record is set in
  * elasticsearch.  The registry utilizes a thread to periodically poll the ES store to
@@ -40,7 +44,7 @@ import java.util.Map;
  *
  * @author eric.wittmann@redhat.com
  */
-public class PollCachingESRegistry extends CachingESRegistry {
+public class PollCachingEsRegistry extends CachingEsRegistry {
 
     private static final int DEFAULT_POLLING_INTERVAL = 10;
     private static final int DEFAULT_STARTUP_DELAY = 30;
@@ -51,15 +55,15 @@ public class PollCachingESRegistry extends CachingESRegistry {
     private boolean polling = false;
     private String dataVersion = null;
 
-    private IApimanLogger logger = new DefaultDelegateFactory().createLogger(PollCachingESRegistry.class);
+    private IApimanLogger logger = new DefaultDelegateFactory().createLogger(PollCachingEsRegistry.class);
 
     /**
      * Constructor.
      * @param config
      */
-    public PollCachingESRegistry(Map<String, String> config) {
+    public PollCachingEsRegistry(Map<String, String> config) {
         super(config);
-        
+
         String intervalVal = config.get("cache-polling-interval"); //$NON-NLS-1$
         String startupVal = config.get("cache-polling-startup-delay"); //$NON-NLS-1$
 
@@ -79,7 +83,7 @@ public class PollCachingESRegistry extends CachingESRegistry {
     }
 
     /**
-     * @see io.apiman.gateway.engine.es.CachingESRegistry#publishApi(io.apiman.gateway.engine.beans.Api, io.apiman.gateway.engine.async.IAsyncResultHandler)
+     * @see CachingEsRegistry#publishApi(io.apiman.gateway.engine.beans.Api, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
     @Override
     public void publishApi(Api api, final IAsyncResultHandler<Void> handler) {
@@ -95,7 +99,7 @@ public class PollCachingESRegistry extends CachingESRegistry {
     }
 
     /**
-     * @see io.apiman.gateway.engine.es.CachingESRegistry#retireApi(io.apiman.gateway.engine.beans.Api, io.apiman.gateway.engine.async.IAsyncResultHandler)
+     * @see CachingEsRegistry#retireApi(io.apiman.gateway.engine.beans.Api, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
     @Override
     public void retireApi(Api api, final IAsyncResultHandler<Void> handler) {
@@ -111,7 +115,7 @@ public class PollCachingESRegistry extends CachingESRegistry {
     }
 
     /**
-     * @see io.apiman.gateway.engine.es.CachingESRegistry#registerClient(io.apiman.gateway.engine.beans.Client, io.apiman.gateway.engine.async.IAsyncResultHandler)
+     * @see CachingEsRegistry#registerClient(io.apiman.gateway.engine.beans.Client, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
     @Override
     public void registerClient(Client client, final IAsyncResultHandler<Void> handler) {
@@ -130,7 +134,7 @@ public class PollCachingESRegistry extends CachingESRegistry {
     }
 
     /**
-     * @see io.apiman.gateway.engine.es.CachingESRegistry#unregisterClient(io.apiman.gateway.engine.beans.Client, io.apiman.gateway.engine.async.IAsyncResultHandler)
+     * @see CachingEsRegistry#unregisterClient(io.apiman.gateway.engine.beans.Client, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
     @Override
     public void unregisterClient(Client client, final IAsyncResultHandler<Void> handler) {
@@ -151,21 +155,22 @@ public class PollCachingESRegistry extends CachingESRegistry {
      * number is what we use to determine whether our cache is stale.
      */
     protected void updateDataVersion() {
-        DataVersionBean dv = new DataVersionBean();
-        dv.setUpdatedOn(System.currentTimeMillis());
-        Index index = new Index.Builder(dv).refresh(false)
-                .index(getDefaultIndexName())
-                .type("dataVersion").id("instance").build(); //$NON-NLS-1$ //$NON-NLS-2$
-        getClient().executeAsync(index, new JestResultHandler<JestResult>() {
+        ActionListener listener = new ActionListener() {
             @Override
-            public void completed(JestResult result) {
+            public void onResponse(Object o) {
                 dataVersion = null;
             }
+
             @Override
-            public void failed(Exception e) {
+            public void onFailure(Exception e) {
                 dataVersion = null;
             }
-        });
+        };
+
+        IndexRequest request = new IndexRequest(getIndexPrefix() + EsConstants.INDEX_DATA_VERSION);
+        request.id("instance"); //$NON-NLS-1$
+        request.source("updatedOn", System.currentTimeMillis()); //$NON-NLS-1$
+        getClient().indexAsync(request, RequestOptions.DEFAULT, listener);
     }
 
     /**
@@ -180,15 +185,20 @@ public class PollCachingESRegistry extends CachingESRegistry {
                 try { Thread.sleep(startupDelayMillis); } catch (InterruptedException e1) { e1.printStackTrace(); }
 
                 while (polling) {
-                    try { Thread.sleep(pollIntervalMillis); } catch (Exception e) { e.printStackTrace(); }
-                    checkCacheVersion();
+                    try {
+                        Thread.sleep(pollIntervalMillis);
+                        checkCacheVersion();
+                    } catch (Exception e) {
+                        logger.warn(e.getMessage());
+                    }
+
                 }
             }
-        }, "ESRegistryCacheInvalidator"); //$NON-NLS-1$
+        }, "EsRegistryCacheInvalidator"); //$NON-NLS-1$
         thread.setDaemon(true);
         thread.start();
     }
-    
+
     /**
      * Stop polling.
      */
@@ -200,27 +210,38 @@ public class PollCachingESRegistry extends CachingESRegistry {
      * Checks the ES store to see if the 'dataVersion' entry has been updated with a newer
      * version #.  If it has, then we need to invalidate our cache.
      */
-    protected void checkCacheVersion() {
+    protected void checkCacheVersion() throws IOException {
         // Be very aggressive in invalidating the cache.
         boolean invalidate = true;
-        try {
-            Get get = new Get.Builder(getDefaultIndexName(), "instance").type("dataVersion").build(); //$NON-NLS-1$ //$NON-NLS-2$
-            JestResult result = getClient().execute(get);
-            if (result.isSucceeded()) {
-                String latestDV = result.getJsonObject().get("_version").getAsString(); //$NON-NLS-1$
-                if (latestDV != null && dataVersion != null && latestDV.equals(dataVersion)) {
-                    invalidate = false;
-                } else {
-                    dataVersion = latestDV;
-                }
+        GetResponse result = getClient().get(new GetRequest(getIndexPrefix() + EsConstants.INDEX_DATA_VERSION, "instance"), RequestOptions.DEFAULT);
+        if (result.isExists()) {
+            String latestDV = Long.toString(result.getVersion()) ; //$NON-NLS-1$
+            if (latestDV != null && dataVersion != null && latestDV.equals(dataVersion)) {
+                invalidate = false;
+            } else {
+                dataVersion = latestDV;
             }
-        } catch (IOException e) {
-            logger.warn("Elasticsearch is not available, using cache");
-            invalidate = false;
         }
         if (invalidate) {
             invalidateCache();
         }
     }
 
+    /**
+     * @see AbstractEsComponent#getDefaultIndexPrefix()
+     */
+    @Override
+    protected String getDefaultIndexPrefix() {
+        return EsConstants.GATEWAY_INDEX_NAME;
+    }
+
+    /**
+     * @see AbstractEsComponent#getDefaultIndices()
+     * @return default indices
+     */
+    @Override
+    protected List<String> getDefaultIndices() {
+        String[] indices = {EsConstants.INDEX_DATA_VERSION};
+        return Arrays.asList(indices);
+    }
 }

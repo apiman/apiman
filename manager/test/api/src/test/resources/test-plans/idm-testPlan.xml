@@ -30,7 +30,8 @@
     <test name="Verify Role Update">test-plan-data/idm/manage/003_verify-update.resttest</test>
     <test name="Delete a Role">test-plan-data/idm/manage/004_delete-role.resttest</test>
     <test name="Verify Delete">test-plan-data/idm/manage/005_verify-delete.resttest</test>
-    <test name="Get All Roles">test-plan-data/idm/manage/006_get-all-roles.resttest</test>
+    <test name="Search All Roles">test-plan-data/idm/manage/006_search-all-roles.resttest</test>
+    <test name="Get All Roles">test-plan-data/idm/manage/007_get-all-roles.resttest</test>
   </testGroup>
   
   <!-- Now grant some memberships -->

@@ -16,8 +16,9 @@
 
 package io.apiman.common.es.util;
 
-import io.searchbox.client.JestClient;
+import org.elasticsearch.client.RestHighLevelClient;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -28,9 +29,10 @@ public interface IEsClientFactory {
 
     /**
      * Creates an ES client.
-     * @param config
-     * @param defaultIndexName
+     * @param config the configuration
+     * @param defaultIndexPrefix the default index prefix
+     * @param defaultIndices the needed indices for the component
      */
-    JestClient createClient(Map<String, String> config, String defaultIndexName);
+    RestHighLevelClient createClient(Map<String, String> config, String defaultIndexPrefix, List<String> defaultIndices);
 
 }

@@ -16,15 +16,16 @@
 package io.apiman.gateway.test.junit.vertx3;
 
 import io.apiman.common.es.util.DefaultEsClientFactory;
-import io.apiman.gateway.engine.es.AbstractESComponent;
-import io.apiman.gateway.engine.es.ESConstants;
+import io.apiman.common.es.util.EsConstants;
+import io.apiman.common.es.util.AbstractEsComponent;
 import io.apiman.gateway.platforms.vertx3.common.config.VertxEngineConfig;
-import io.searchbox.client.JestResult;
-import io.searchbox.client.JestResultHandler;
-import io.searchbox.core.Delete;
-import io.searchbox.indices.Flush;
+import org.elasticsearch.action.admin.indices.flush.FlushRequest;
+import org.elasticsearch.client.RequestOptions;
+import org.elasticsearch.client.RestHighLevelClient;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -33,7 +34,7 @@ import java.util.concurrent.CountDownLatch;
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 @SuppressWarnings("nls")
-public class EsResetter extends AbstractESComponent implements Resetter {
+public class EsResetter extends AbstractEsComponent implements Resetter {
 
     public EsResetter(VertxEngineConfig vertxConf) {
         super(vertxConf.getRegistryConfig());
@@ -50,26 +51,10 @@ public class EsResetter extends AbstractESComponent implements Resetter {
             // and subtly horrible things will happen, and you'll waste a whole day debugging it! :-)
             DefaultEsClientFactory.clearClientCache();
 
-            getClient().executeAsync(new Delete.Builder(getDefaultIndexName()).build(),
-                    new JestResultHandler<JestResult>() {
+            final RestHighLevelClient client = getClient();
+            deleteIndices(client, latch);
 
-                @Override
-                public void completed(JestResult result) {
-                    latch.countDown();
-                    System.out.println("=== Deleted index: " + result.getJsonString());
-                }
-
-                @Override
-                public void failed(Exception ex) {
-                    latch.countDown();
-                    System.err.println("=== Failed to delete index: " + ex.getMessage());
-                    throw new RuntimeException(ex);
-                }
-            });
-
-            Flush flush = new Flush.Builder().build();
-            getClient().execute(flush);
-            Thread.sleep(100);
+            client.indices().flush(new FlushRequest(), RequestOptions.DEFAULT);
 
             latch.await();
         } catch (IOException | InterruptedException e) {
@@ -77,8 +62,28 @@ public class EsResetter extends AbstractESComponent implements Resetter {
         }
     }
 
+    /**
+     * Delete all created es indices
+     * @param client
+     * @param latch
+     * @throws IOException
+     */
+    private void deleteIndices(RestHighLevelClient client, CountDownLatch latch) throws IOException {
+        deleteIndices(client);
+        latch.countDown();
+    }
+
     @Override
-    protected String getDefaultIndexName() {
-        return ESConstants.GATEWAY_INDEX_NAME;
+    protected String getDefaultIndexPrefix() {
+        return EsConstants.GATEWAY_INDEX_NAME;
+    }
+
+    /**
+     * @see AbstractEsComponent#getDefaultIndices()
+     * @return default indices
+     */
+    @Override
+    protected List<String> getDefaultIndices() {
+        return Arrays.asList(EsConstants.GATEWAY_INDEX_POSTFIXES);
     }
 }

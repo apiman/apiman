@@ -4,14 +4,14 @@
     "test": {
       "foo": {
         "es": {
-          "type": "jest"
+          "type": "es"
         }
       }
     }
   },
 
   "registry": {
-    "class": "io.apiman.gateway.engine.es.ESRegistry",
+    "class": "io.apiman.gateway.engine.es.EsRegistry",
     "config": {
       "client": {
         "type": "${test.foo.es.type}",
@@ -83,10 +83,10 @@
       },
 
       "ISharedStateComponent": {
-        "class": "io.apiman.gateway.engine.es.ESSharedStateComponent",
+        "class": "io.apiman.gateway.engine.es.EsSharedStateComponent",
         "config": {
           "client": {
-            "type": "jest",
+            "type": "es",
             "cluster-name": "elasticsearch",
             "host": "localhost",
             "port": 19250,
@@ -96,10 +96,10 @@
       },
 
       "IRateLimiterComponent": {
-        "class": "io.apiman.gateway.engine.es.ESRateLimiterComponent",
+        "class": "io.apiman.gateway.engine.es.EsRateLimiterComponent",
         "config": {
           "client": {
-            "type": "jest",
+            "type": "es",
             "cluster-name": "elasticsearch",
             "host": "localhost",
             "port": 19250,

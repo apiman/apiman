@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apiman.gateway.engine.es;
+package io.apiman.common.es.util;
 
-import io.apiman.common.es.util.AbstractClientFactory;
-import io.apiman.common.es.util.IEsClientFactory;
-import io.searchbox.client.JestClient;
+import org.elasticsearch.client.RestHighLevelClient;
 
 import java.lang.reflect.Field;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -41,13 +40,13 @@ public class LocalClientFactory extends AbstractClientFactory implements IEsClie
      * @param defaultIndexName the default index to use if not specified in the config
      * @return the ES client
      */
-    public JestClient createClient(Map<String, String> config, String defaultIndexName) {
-        JestClient client;
-        String indexName = config.get("client.index"); //$NON-NLS-1$
+    public RestHighLevelClient createClient(Map<String, String> config, String defaultIndexName, List<String> defaultIndices) {
+        RestHighLevelClient client;
+        String indexName = config.get("client.indexPrefix"); //$NON-NLS-1$
         if (indexName == null) {
             indexName = defaultIndexName;
         }
-        client = createLocalClient(config, indexName, defaultIndexName);
+        client = createLocalClient(config, indexName, defaultIndices);
         return client;
     }
 
@@ -55,13 +54,12 @@ public class LocalClientFactory extends AbstractClientFactory implements IEsClie
      * Creates a local client from a configuration map.
      * @param config the config from apiman.properties
      * @param indexName the name of the ES index
-     * @param defaultIndexName the default ES index name
      * @return the ES client
      */
-    public JestClient createLocalClient(Map<String, String> config, String indexName, String defaultIndexName) {
+    public RestHighLevelClient createLocalClient(Map<String, String> config, String indexName, List<String> defaultIndices) {
         String clientLocClassName = config.get("client.class"); //$NON-NLS-1$
         String clientLocFieldName = config.get("client.field"); //$NON-NLS-1$
-        return createLocalClient(clientLocClassName, clientLocFieldName, indexName, defaultIndexName);
+        return createLocalClient(clientLocClassName, clientLocFieldName, indexName, defaultIndices);
     }
 
     /**
@@ -70,21 +68,22 @@ public class LocalClientFactory extends AbstractClientFactory implements IEsClie
      * @param className the class name
      * @param fieldName the field name
      * @param indexName the name of the ES index
-     * @param defaultIndexName the name of the default ES index
      * @return the ES client
      */
-    public JestClient createLocalClient(String className, String fieldName, String indexName, String defaultIndexName) {
+    public RestHighLevelClient createLocalClient(String className, String fieldName, String indexName, List<String> defaultIndices) {
         String clientKey = "local:" + className + '/' + fieldName; //$NON-NLS-1$
         synchronized (clients) {
             if (clients.containsKey(clientKey)) {
-                return clients.get(clientKey);
+                final RestHighLevelClient client = clients.get(clientKey);
+                initializeIndices(client, indexName, defaultIndices);
+                return client;
             } else {
                 try {
                     Class<?> clientLocClass = Class.forName(className);
                     Field field = clientLocClass.getField(fieldName);
-                    JestClient client = (JestClient) field.get(null);
+                    RestHighLevelClient client = (RestHighLevelClient) field.get(null);
                     clients.put(clientKey, client);
-                    initializeClient(client, indexName, defaultIndexName);
+                    initializeIndices(client, indexName, defaultIndices);
                     return client;
                 } catch (ClassNotFoundException | NoSuchFieldException | SecurityException
                         | IllegalArgumentException | IllegalAccessException e) {
@@ -93,5 +92,4 @@ public class LocalClientFactory extends AbstractClientFactory implements IEsClie
             }
         }
     }
-
 }

@@ -1,0 +1,54 @@
+GET /roles admin/admin
+----
+200
+Content-Type: application/json
+X-RestTest-ArrayOrdering: any
+
+[
+   {
+      "id":"TestRole2",
+      "name":"Test Role 2",
+      "description":"This is the description of Test Role 2.",
+      "createdBy":"admin",
+      "autoGrant":true,
+      "permissions":[
+         "clientView",
+         "clientAdmin"
+      ]
+   },
+   {
+      "id":"TestRole3",
+      "name":"Test Role 3",
+      "description":null,
+      "createdBy":"admin",
+      "autoGrant":null,
+      "permissions":[
+         "planView",
+         "planEdit",
+         "planAdmin"
+      ]
+   },
+   {
+      "id":"TestRole4",
+      "name":"Test Role 4",
+      "description":null,
+      "createdBy":"admin",
+      "autoGrant":null,
+      "permissions":[
+         "clientView",
+         "apiEdit",
+         "clientAdmin"
+      ]
+   },
+   {
+      "id":"TestRole5",
+      "name":"Test Role 5",
+      "description":"This is the description of Test Role 5.",
+      "createdBy":"admin",
+      "autoGrant":false,
+      "permissions":[
+         "apiView",
+         "clientEdit"
+      ]
+   }
+]

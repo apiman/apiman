@@ -63,8 +63,8 @@ import io.apiman.manager.api.beans.summary.PolicyFormType;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.es.beans.ApiDefinitionBean;
 import io.apiman.manager.api.es.beans.PoliciesBean;
-import io.apiman.manager.api.es.util.XContentBuilder;
-import io.apiman.manager.api.es.util.XContentFactory;
+import org.elasticsearch.common.xcontent.XContentBuilder;
+import org.elasticsearch.common.xcontent.XContentFactory;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;

@@ -16,50 +16,32 @@
 
 package io.apiman.manager.test.es;
 
-import io.apiman.common.es.util.ApimanEmbeddedElastic;
+import io.apiman.common.es.util.AbstractClientFactory;
 import io.apiman.common.es.util.DefaultEsClientFactory;
-import io.apiman.manager.api.beans.metrics.ClientUsagePerApiBean;
-import io.apiman.manager.api.beans.metrics.HistogramIntervalType;
-import io.apiman.manager.api.beans.metrics.ResponseStatsDataPoint;
-import io.apiman.manager.api.beans.metrics.ResponseStatsHistogramBean;
-import io.apiman.manager.api.beans.metrics.ResponseStatsPerClientBean;
-import io.apiman.manager.api.beans.metrics.ResponseStatsPerPlanBean;
-import io.apiman.manager.api.beans.metrics.ResponseStatsSummaryBean;
-import io.apiman.manager.api.beans.metrics.UsageDataPoint;
-import io.apiman.manager.api.beans.metrics.UsageHistogramBean;
-import io.apiman.manager.api.beans.metrics.UsagePerClientBean;
-import io.apiman.manager.api.beans.metrics.UsagePerPlanBean;
-import io.apiman.manager.api.core.metrics.AbstractMetricsAccessor;
-import io.apiman.manager.api.es.ESMetricsAccessor;
-import io.searchbox.client.JestClient;
-import io.searchbox.indices.DeleteIndex;
-import io.searchbox.indices.Flush;
-import io.searchbox.indices.Refresh;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.text.ParseException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
-import org.apache.commons.io.IOUtils;
+import io.apiman.common.es.util.EsConstants;
+import io.apiman.manager.api.beans.metrics.*;
+import io.apiman.manager.api.core.metrics.MetricsAccessorHelper;
+import io.apiman.manager.api.es.EsMetricsAccessor;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.InputStreamEntity;
+import org.elasticsearch.action.admin.indices.flush.FlushRequest;
+import org.elasticsearch.action.admin.indices.refresh.RefreshRequest;
+import org.elasticsearch.client.Request;
+import org.elasticsearch.client.RequestOptions;
+import org.elasticsearch.client.RestClient;
+import org.elasticsearch.client.RestHighLevelClient;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.ISODateTimeFormat;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
+import org.testcontainers.elasticsearch.ElasticsearchContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
-import pl.allegro.tech.embeddedelasticsearch.PopularProperties;
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.ParseException;
+import java.util.*;
 
 /**
  * Tests the elasticsearch metrics accessor.
@@ -67,70 +49,56 @@ import pl.allegro.tech.embeddedelasticsearch.PopularProperties;
  * @author eric.wittmann@redhat.com
  */
 @SuppressWarnings("nls")
-public class ESMetricsAccessorTest {
+@Testcontainers
+public class EsMetricsAccessorTest {
 
-    private static ApimanEmbeddedElastic node;
-    private static JestClient client;
+    public static final String APIMAN_METRICS_INDEX_NAME = "apiman_metrics";
+    @Container
+    private static ElasticsearchContainer node = new ElasticsearchContainer("docker.elastic.co/elasticsearch/elasticsearch-oss:" + EsConstants.getEsVersion());
+
+    private static RestHighLevelClient client;
     private static Locale locale;
 
     @BeforeClass
     public static void setup() throws Exception {
-        File esDownloadCache = new File(System.getenv("HOME") + "/.cache/apiman/elasticsearch");
-        esDownloadCache.getParentFile().mkdirs();
-
         locale = Locale.getDefault();
         Locale.setDefault(Locale.US);
 
-        node = ApimanEmbeddedElastic.builder()
-            .withPort(19250)
-            .withElasticVersion(ApimanEmbeddedElastic.getEsBuildVersion())
-            .withDownloadDirectory(esDownloadCache)
-            .withSetting(PopularProperties.CLUSTER_NAME, "apiman")
-            .withStartTimeout(1, TimeUnit.MINUTES)
-            .withCleanInstallationDirectoryOnStop(true)
-            .build()
-            .start();
+        node.start();
 
         // Delete, refresh and create new client
-        client = createJestClient();
-        client.execute(new DeleteIndex.Builder("apiman_metrics").build());
-        client.execute(new Flush.Builder().force().build());
+        client = createEsClient();
+        AbstractClientFactory.deleteIndices(client);
+
+        client.indices().flush(new FlushRequest().force(true), RequestOptions.DEFAULT);
         DefaultEsClientFactory.clearClientCache();
         // Because of the delete above, the metrics fields need reinitialising with the index
-        // mappings otherwise everything will screw up. See apiman_metrics-settings.json
-        client = createJestClient();
+        client = createEsClient();
 
         // Load test
-        loadTestData();
+        loadTestData(client);
 
-        client.execute(new Flush.Builder().force().build());
+        client.indices().flush(new FlushRequest(APIMAN_METRICS_INDEX_NAME).force(true), RequestOptions.DEFAULT);
         DefaultEsClientFactory.clearClientCache();
     }
 
-    private static JestClient createJestClient() {
+    private static RestHighLevelClient createEsClient() {
         Map<String, String> config = new HashMap<>();
         config.put("client.protocol", "http");
-        config.put("client.host", "localhost");
-        config.put("client.port", "19250");
+        config.put("client.host", node.getContainerIpAddress());
+        config.put("client.port", node.getFirstMappedPort().toString());
         config.put("client.initialize", "true");
-        return new DefaultEsClientFactory().createClient(config, "apiman_metrics");
+        return new DefaultEsClientFactory().createClient(config, APIMAN_METRICS_INDEX_NAME, getDefaultIndices());
     }
 
-    private static void loadTestData() throws Exception {
-        String url = "http://localhost:19250/_bulk";
-        HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
-        conn.setRequestMethod("POST");
-        conn.setDoInput(true);
-        conn.setDoOutput(true);
-        OutputStream os = conn.getOutputStream();
-        InputStream is = ESMetricsAccessorTest.class.getResourceAsStream("bulk-metrics-data.txt");
-        IOUtils.copy(is, os);
-        IOUtils.closeQuietly(is);
-        IOUtils.closeQuietly(os);
-        if (conn.getResponseCode() > 299) {
-            IOUtils.copy(conn.getInputStream(), System.err);
-            throw new IOException("Bulk load of data failed with: " + conn.getResponseMessage());
-        }
+    private static void loadTestData(RestHighLevelClient client) throws Exception {
+        RestClient restClient = client.getLowLevelClient();
+        Request bulkRequest = new Request("POST", "/_bulk");
+        InputStream is = EsMetricsAccessorTest.class.getResourceAsStream("bulk-metrics-data.txt");
+        InputStreamEntity isEntity = new InputStreamEntity(is, ContentType.APPLICATION_JSON);
+
+        bulkRequest.setEntity(isEntity);
+        restClient.performRequest(bulkRequest);
     }
 
     @AfterClass
@@ -142,16 +110,15 @@ public class ESMetricsAccessorTest {
 
     @Before
     public void before() throws IOException {
-        client.execute(new Refresh.Builder().addIndex("apiman_metrics").build());
+        client.indices().refresh(new RefreshRequest(APIMAN_METRICS_INDEX_NAME), RequestOptions.DEFAULT);
     }
 
     /**
-     * Test method for {@link io.apiman.manager.api.es.ESMetricsAccessor#getUsage(java.lang.String, java.lang.String, java.lang.String, io.apiman.manager.api.beans.metrics.HistogramIntervalType, java.util.Date, java.util.Date)}.
+     * Test method for {@link EsMetricsAccessor#getUsage(java.lang.String, java.lang.String, java.lang.String, io.apiman.manager.api.beans.metrics.HistogramIntervalType, java.util.Date, java.util.Date)}.
      */
     @Test
     public void testGetUsage() throws Exception {
-        ESMetricsAccessor metrics = new ESMetricsAccessor();
-        metrics.setEsClient(client);
+        EsMetricsAccessor metrics = new EsMetricsAccessor(client);
 
         UsageHistogramBean usage = metrics.getUsage("JBossOverlord", "s-ramp-api", "1.0", HistogramIntervalType.day,
                 parseDate("2015-01-01"), new DateTime().withZone(DateTimeZone.UTC));
@@ -183,12 +150,11 @@ public class ESMetricsAccessorTest {
     }
 
     /**
-     * Test method for {@link io.apiman.manager.api.es.ESMetricsAccessor#getUsagePerClient(java.lang.String, java.lang.String, java.lang.String, java.util.Date, java.util.Date)}.
+     * Test method for {@link EsMetricsAccessor#getUsagePerClient(java.lang.String, java.lang.String, java.lang.String, java.util.Date, java.util.Date)}.
      */
     @Test
     public void testGetUsagePerClient() throws Exception {
-        ESMetricsAccessor metrics = new ESMetricsAccessor();
-        metrics.setEsClient(client);
+        EsMetricsAccessor metrics = new EsMetricsAccessor(client);
 
         // data exists - all data for JBossOverlord/s-ramp-api:1.0
         UsagePerClientBean usagePerClient = metrics.getUsagePerClient("JBossOverlord", "s-ramp-api", "1.0",
@@ -233,12 +199,11 @@ public class ESMetricsAccessorTest {
     }
 
     /**
-     * Test method for {@link io.apiman.manager.api.es.ESMetricsAccessor#getUsagePerPlan(java.lang.String, java.lang.String, java.lang.String, java.util.Date, java.util.Date)}.
+     * Test method for {@link EsMetricsAccessor#getUsagePerPlan(java.lang.String, java.lang.String, java.lang.String, java.util.Date, java.util.Date)}.
      */
     @Test
     public void testGetUsagePerPlan() throws Exception {
-        ESMetricsAccessor metrics = new ESMetricsAccessor();
-        metrics.setEsClient(client);
+        EsMetricsAccessor metrics = new EsMetricsAccessor(client);
 
         // data exists - all data for JBossOverlord/s-ramp-api:1.0
         UsagePerPlanBean usagePerPlan = metrics.getUsagePerPlan("JBossOverlord", "s-ramp-api", "1.0",
@@ -283,14 +248,14 @@ public class ESMetricsAccessorTest {
     }
 
     /**
-     * Test method for {@link io.apiman.manager.api.es.ESMetricsAccessor#generateHistogramSkeleton(io.apiman.manager.api.beans.metrics.UsageHistogramBean, java.util.Date, java.util.Date, io.apiman.manager.api.beans.metrics.HistogramIntervalType)}.
+     * Test method for {@link EsMetricsAccessor#generateHistogramSkeleton(io.apiman.manager.api.beans.metrics.UsageHistogramBean, java.util.Date, java.util.Date, io.apiman.manager.api.beans.metrics.HistogramIntervalType)}.
      */
     @Test
     public void testGenerateHistogramSkeleton() throws Exception {
         DateTime from = parseDate("2015-01-01T00:00:00Z");
         DateTime to = parseDate("2015-01-10T00:00:00Z");
         UsageHistogramBean histogram = new UsageHistogramBean();
-        Map<String, UsageDataPoint> index = AbstractMetricsAccessor.generateHistogramSkeleton(histogram, from, to,
+        Map<String, UsageDataPoint> index = MetricsAccessorHelper.generateHistogramSkeleton(histogram, from, to,
                 HistogramIntervalType.day, UsageDataPoint.class);
         Assert.assertEquals(9, index.size());
         Assert.assertEquals(9, histogram.getData().size());
@@ -302,7 +267,7 @@ public class ESMetricsAccessorTest {
         from = parseDate("2015-01-01T00:00:00Z");
         to = parseDate("2015-01-03T00:00:00Z");
         histogram = new UsageHistogramBean();
-        index = AbstractMetricsAccessor.generateHistogramSkeleton(histogram, from, to, HistogramIntervalType.hour,
+        index = MetricsAccessorHelper.generateHistogramSkeleton(histogram, from, to, HistogramIntervalType.hour,
                 UsageDataPoint.class);
         Assert.assertEquals(48, index.size());
         Assert.assertEquals(48, histogram.getData().size());
@@ -315,7 +280,7 @@ public class ESMetricsAccessorTest {
         from = parseDate("2015-01-01");
         to = parseDate("2015-01-03");
         histogram = new UsageHistogramBean();
-        index = AbstractMetricsAccessor.generateHistogramSkeleton(histogram, from, to, HistogramIntervalType.hour,
+        index = MetricsAccessorHelper.generateHistogramSkeleton(histogram, from, to, HistogramIntervalType.hour,
                 UsageDataPoint.class);
         Assert.assertEquals(48, index.size());
         Assert.assertEquals(48, histogram.getData().size());
@@ -328,7 +293,7 @@ public class ESMetricsAccessorTest {
         from = parseDate("2015-01-01T00:00:00Z");
         to = parseDate("2015-01-02T00:00:00Z");
         histogram = new UsageHistogramBean();
-        index = AbstractMetricsAccessor.generateHistogramSkeleton(histogram, from, to,
+        index = MetricsAccessorHelper.generateHistogramSkeleton(histogram, from, to,
                 HistogramIntervalType.minute, UsageDataPoint.class);
         Assert.assertEquals(1440, index.size());
         Assert.assertEquals(1440, histogram.getData().size());
@@ -340,7 +305,7 @@ public class ESMetricsAccessorTest {
         from = parseDate("2015-01-01");
         to = parseDate("2015-12-31");
         histogram = new UsageHistogramBean();
-        index = AbstractMetricsAccessor.generateHistogramSkeleton(histogram, from, to, HistogramIntervalType.month,
+        index = MetricsAccessorHelper.generateHistogramSkeleton(histogram, from, to, HistogramIntervalType.month,
                 UsageDataPoint.class);
         Assert.assertEquals(12, index.size());
         Assert.assertEquals(12, histogram.getData().size());
@@ -352,7 +317,7 @@ public class ESMetricsAccessorTest {
         from = parseDate("2015-01-01");
         to = parseDate("2015-12-30");
         histogram = new UsageHistogramBean();
-        index = AbstractMetricsAccessor.generateHistogramSkeleton(histogram, from, to, HistogramIntervalType.week,
+        index = MetricsAccessorHelper.generateHistogramSkeleton(histogram, from, to, HistogramIntervalType.week,
                 UsageDataPoint.class);
 
         Assert.assertEquals(53, index.size());
@@ -363,12 +328,11 @@ public class ESMetricsAccessorTest {
     }
 
     /**
-     * Test method for {@link io.apiman.manager.api.es.ESMetricsAccessor#getResponseStats(String, String, String, HistogramIntervalType, DateTime, DateTime)
+     * Test method for {@link EsMetricsAccessor#getResponseStats(String, String, String, HistogramIntervalType, DateTime, DateTime)
      */
     @Test
     public void testGetResponseStats() throws Exception {
-        ESMetricsAccessor metrics = new ESMetricsAccessor();
-        metrics.setEsClient(client);
+        EsMetricsAccessor metrics = new EsMetricsAccessor(client);
 
         // s-ramp-api data
         ResponseStatsHistogramBean stats = metrics.getResponseStats("JBossOverlord", "s-ramp-api", "1.0", HistogramIntervalType.day,
@@ -394,12 +358,11 @@ public class ESMetricsAccessorTest {
     }
 
     /**
-     * Test method for {@link io.apiman.manager.api.es.ESMetricsAccessor#getResponseStatsSummary(String, String, String, DateTime, DateTime)
+     * Test method for {@link EsMetricsAccessor#getResponseStatsSummary(String, String, String, DateTime, DateTime)
      */
     @Test
     public void testGetResponseStatsSummary() throws Exception {
-        ESMetricsAccessor metrics = new ESMetricsAccessor();
-        metrics.setEsClient(client);
+        EsMetricsAccessor metrics = new EsMetricsAccessor(client);
 
         // s-ramp-api data
         ResponseStatsSummaryBean stats = metrics.getResponseStatsSummary("JBossOverlord", "s-ramp-api", "1.0",
@@ -418,12 +381,11 @@ public class ESMetricsAccessorTest {
     }
 
     /**
-     * Test method for {@link io.apiman.manager.api.es.ESMetricsAccessor#getResponseStatsPerClient(String, String, String, DateTime, DateTime)
+     * Test method for {@link EsMetricsAccessor#getResponseStatsPerClient(String, String, String, DateTime, DateTime)
      */
     @Test
     public void testGetResponseStatsPerClient() throws Exception {
-        ESMetricsAccessor metrics = new ESMetricsAccessor();
-        metrics.setEsClient(client);
+        EsMetricsAccessor metrics = new EsMetricsAccessor(client);
 
         // s-ramp-api data
         ResponseStatsPerClientBean stats = metrics.getResponseStatsPerClient("JBossOverlord", "s-ramp-api", "1.0",
@@ -459,12 +421,11 @@ public class ESMetricsAccessorTest {
     }
 
     /**
-     * Test method for {@link io.apiman.manager.api.es.ESMetricsAccessor#getResponseStatsPerPlan(String, String, String, DateTime, DateTime)
+     * Test method for {@link EsMetricsAccessor#getResponseStatsPerPlan(String, String, String, DateTime, DateTime)
      */
     @Test
     public void testGetResponseStatsPerPlan() throws Exception {
-        ESMetricsAccessor metrics = new ESMetricsAccessor();
-        metrics.setEsClient(client);
+        EsMetricsAccessor metrics = new EsMetricsAccessor(client);
 
         // s-ramp-api data
         ResponseStatsPerPlanBean stats = metrics.getResponseStatsPerPlan("JBossOverlord", "s-ramp-api", "1.0",
@@ -500,12 +461,11 @@ public class ESMetricsAccessorTest {
     }
 
     /**
-     * Test method for {@link io.apiman.manager.api.es.ESMetricsAccessor#getClientUsagePerApi(String, String, String, DateTime, DateTime)
+     * Test method for {@link EsMetricsAccessor#getClientUsagePerApi(String, String, String, DateTime, DateTime)
      */
     @Test
     public void testGetClientUsagePerApi() throws Exception {
-        ESMetricsAccessor metrics = new ESMetricsAccessor();
-        metrics.setEsClient(client);
+        EsMetricsAccessor metrics = new EsMetricsAccessor(client);
 
         // data exists - all data for JBossOverlord/s-ramp-api:1.0
         ClientUsagePerApiBean usagePerApi = metrics.getClientUsagePerApi("JBossOverlord", "dtgov", "1.0",
@@ -532,6 +492,17 @@ public class ESMetricsAccessorTest {
             return ISODateTimeFormat.date().withZone(DateTimeZone.UTC).parseDateTime(date);
         }
         return ISODateTimeFormat.dateTimeNoMillis().withZone(DateTimeZone.UTC).parseDateTime(date);
+    }
+
+    /**
+     * Get default indices for metrics
+     * @return default indeces for metrics
+     */
+    private static List<String> getDefaultIndices() {
+        // for metrics we create only one index which matches the index prefix
+        // So we use an empty string as postfix for index creation
+        String[] indices = {""};
+        return Arrays.asList(indices);
     }
 
 }

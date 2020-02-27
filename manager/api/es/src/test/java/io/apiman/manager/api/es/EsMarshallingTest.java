@@ -38,7 +38,6 @@ import io.apiman.manager.api.beans.policies.PolicyType;
 import io.apiman.manager.api.beans.summary.PolicyFormType;
 import io.apiman.manager.api.es.beans.ApiDefinitionBean;
 import io.apiman.manager.api.es.beans.PoliciesBean;
-import io.apiman.manager.api.es.util.XContentBuilder;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -52,6 +51,8 @@ import java.util.Set;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.BeanUtilsBean;
 import org.apache.commons.lang3.StringUtils;
+import org.elasticsearch.common.Strings;
+import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -71,9 +72,9 @@ public class EsMarshallingTest {
         bean.setOrganizationId("ORG_ID");
         bean.setEntityVersion("VERSION");
         bean.setType(PolicyType.Api);
-        
+
         XContentBuilder builder = EsMarshalling.marshall(bean);
-        Assert.assertEquals("{\"organizationId\":\"ORG_ID\",\"entityId\":\"ENTITY_ID\",\"entityVersion\":\"VERSION\",\"type\":\"Api\"}", builder.string());
+        Assert.assertEquals("{\"organizationId\":\"ORG_ID\",\"entityId\":\"ENTITY_ID\",\"entityVersion\":\"VERSION\",\"type\":\"Api\"}", Strings.toString(builder));
 
         PolicyBean policy = new PolicyBean();
         policy.setCreatedBy("CREATED_BY");
@@ -104,10 +105,10 @@ public class EsMarshallingTest {
         template.setLanguage("EN_US");
         policy.getDefinition().getTemplates().add(template );
         bean.getPolicies().add(policy);
-        
+
         builder = EsMarshalling.marshall(bean);
         Assert.assertEquals("{\"organizationId\":\"ORG_ID\",\"entityId\":\"ENTITY_ID\",\"entityVersion\":\"VERSION\",\"type\":\"Api\",\"policies\":["
-                + "{\"id\":17,\"name\":\"NAME\",\"configuration\":\"CONFIGURATION\",\"createdBy\":\"CREATED_BY\",\"createdOn\":1,\"modifiedBy\":\"MODIFIED_BY\",\"modifiedOn\":2,\"definitionId\":\"POLICY_DEF_ID\",\"orderIndex\":9}]}", builder.string());
+                + "{\"id\":17,\"name\":\"NAME\",\"configuration\":\"CONFIGURATION\",\"createdBy\":\"CREATED_BY\",\"createdOn\":1,\"modifiedBy\":\"MODIFIED_BY\",\"modifiedOn\":2,\"definitionId\":\"POLICY_DEF_ID\",\"orderIndex\":9}]}", Strings.toString(builder));
     }
 
     /**
@@ -117,7 +118,7 @@ public class EsMarshallingTest {
     public void testMarshallGatewayBean() throws Exception {
         GatewayBean bean = createBean(GatewayBean.class);
         XContentBuilder builder = EsMarshalling.marshall(bean);
-        Assert.assertEquals("{\"id\":\"ID\",\"name\":\"NAME\",\"description\":\"DESCRIPTION\",\"type\":\"REST\",\"configuration\":\"CONFIGURATION\",\"createdBy\":\"CREATEDBY\",\"createdOn\":1,\"modifiedBy\":\"MODIFIEDBY\",\"modifiedOn\":1}", builder.string());
+        Assert.assertEquals("{\"id\":\"ID\",\"name\":\"NAME\",\"description\":\"DESCRIPTION\",\"type\":\"REST\",\"configuration\":\"CONFIGURATION\",\"createdBy\":\"CREATEDBY\",\"createdOn\":1,\"modifiedBy\":\"MODIFIEDBY\",\"modifiedOn\":1}", Strings.toString(builder));
     }
 
     /**
@@ -128,7 +129,7 @@ public class EsMarshallingTest {
         ApiDefinitionBean bean = new ApiDefinitionBean();
         bean.setData("DATA");
         XContentBuilder builder = EsMarshalling.marshall(bean);
-        Assert.assertEquals("{\"data\":\"DATA\"}", builder.string());
+        Assert.assertEquals("{\"data\":\"DATA\"}", Strings.toString(builder));
     }
 
     /**
@@ -138,7 +139,7 @@ public class EsMarshallingTest {
     public void testMarshallContractBean() throws Exception {
         ContractBean bean = createBean(ContractBean.class);
         XContentBuilder builder = EsMarshalling.marshall(bean);
-        Assert.assertEquals("{\"id\":17,\"clientOrganizationId\":\"ID\",\"clientOrganizationName\":\"NAME\",\"clientId\":\"ID\",\"clientName\":\"NAME\",\"clientVersion\":\"VERSION\",\"apiOrganizationId\":\"ID\",\"apiOrganizationName\":\"NAME\",\"apiId\":\"ID\",\"apiName\":\"NAME\",\"apiVersion\":\"VERSION\",\"apiDescription\":\"DESCRIPTION\",\"planName\":\"NAME\",\"planId\":\"ID\",\"planVersion\":\"VERSION\",\"createdOn\":1,\"createdBy\":\"CREATEDBY\"}", builder.string());
+        Assert.assertEquals("{\"id\":17,\"clientOrganizationId\":\"ID\",\"clientOrganizationName\":\"NAME\",\"clientId\":\"ID\",\"clientName\":\"NAME\",\"clientVersion\":\"VERSION\",\"apiOrganizationId\":\"ID\",\"apiOrganizationName\":\"NAME\",\"apiId\":\"ID\",\"apiName\":\"NAME\",\"apiVersion\":\"VERSION\",\"apiDescription\":\"DESCRIPTION\",\"planName\":\"NAME\",\"planId\":\"ID\",\"planVersion\":\"VERSION\",\"createdOn\":1,\"createdBy\":\"CREATEDBY\"}", Strings.toString(builder));
     }
 
     /**
@@ -148,7 +149,7 @@ public class EsMarshallingTest {
     public void testMarshallPlanBean() throws Exception {
         PlanBean bean = createBean(PlanBean.class);
         XContentBuilder builder = EsMarshalling.marshall(bean);
-        Assert.assertEquals("{\"organizationId\":\"ID\",\"organizationName\":\"NAME\",\"id\":\"ID\",\"name\":\"NAME\",\"description\":\"DESCRIPTION\",\"createdBy\":\"CREATEDBY\",\"createdOn\":1}", builder.string());
+        Assert.assertEquals("{\"organizationId\":\"ID\",\"organizationName\":\"NAME\",\"id\":\"ID\",\"name\":\"NAME\",\"description\":\"DESCRIPTION\",\"createdBy\":\"CREATEDBY\",\"createdOn\":1}", Strings.toString(builder));
     }
 
     /**
@@ -158,7 +159,7 @@ public class EsMarshallingTest {
     public void testMarshallPlanVersionBean() throws Exception {
         PlanVersionBean bean = createBean(PlanVersionBean.class);
         XContentBuilder builder = EsMarshalling.marshall(bean);
-        Assert.assertEquals("{\"organizationId\":\"ID\",\"organizationName\":\"NAME\",\"planId\":\"ID\",\"planName\":\"NAME\",\"planDescription\":\"DESCRIPTION\",\"version\":\"VERSION\",\"status\":\"Created\",\"createdBy\":\"CREATEDBY\",\"createdOn\":1,\"modifiedBy\":\"MODIFIEDBY\",\"modifiedOn\":1,\"lockedOn\":1}", builder.string());
+        Assert.assertEquals("{\"organizationId\":\"ID\",\"organizationName\":\"NAME\",\"planId\":\"ID\",\"planName\":\"NAME\",\"planDescription\":\"DESCRIPTION\",\"version\":\"VERSION\",\"status\":\"Created\",\"createdBy\":\"CREATEDBY\",\"createdOn\":1,\"modifiedBy\":\"MODIFIEDBY\",\"modifiedOn\":1,\"lockedOn\":1}", Strings.toString(builder));
     }
 
     /**
@@ -168,7 +169,7 @@ public class EsMarshallingTest {
     public void testMarshallApiBean() throws Exception {
         ApiBean bean = createBean(ApiBean.class);
         XContentBuilder builder = EsMarshalling.marshall(bean);
-        Assert.assertEquals("{\"organizationId\":\"ID\",\"organizationName\":\"NAME\",\"id\":\"ID\",\"name\":\"NAME\",\"description\":\"DESCRIPTION\",\"createdBy\":\"CREATEDBY\",\"createdOn\":1,\"numPublished\":11}", builder.string());
+        Assert.assertEquals("{\"organizationId\":\"ID\",\"organizationName\":\"NAME\",\"id\":\"ID\",\"name\":\"NAME\",\"description\":\"DESCRIPTION\",\"createdBy\":\"CREATEDBY\",\"createdOn\":1,\"numPublished\":11}", Strings.toString(builder));
     }
 
     /**
@@ -178,7 +179,7 @@ public class EsMarshallingTest {
     public void testMarshallApiVersionBean() throws Exception {
         ApiVersionBean bean = createBean(ApiVersionBean.class);
         XContentBuilder builder = EsMarshalling.marshall(bean);
-        Assert.assertEquals("{\"organizationId\":\"ID\",\"organizationName\":\"NAME\",\"apiId\":\"ID\",\"apiName\":\"NAME\",\"apiDescription\":\"DESCRIPTION\",\"version\":\"VERSION\",\"status\":\"Created\",\"createdBy\":\"CREATEDBY\",\"createdOn\":1,\"modifiedBy\":\"MODIFIEDBY\",\"modifiedOn\":1,\"publishedOn\":1,\"retiredOn\":1,\"publicAPI\":true,\"endpoint\":\"ENDPOINT\",\"endpointType\":\"rest\",\"endpointContentType\":\"json\",\"parsePayload\":true,\"disableKeysStrip\":true,\"definitionType\":\"None\",\"definitionUrl\":\"DEFINITIONURL\",\"gateways\":[{\"gatewayId\":\"GATEWAYID\"}],\"plans\":[{\"planId\":\"PLANID\",\"version\":\"VERSION\"}],\"endpointProperties\":{\"KEY-1\":\"VALUE-1\",\"KEY-2\":\"VALUE-2\"}}", builder.string());
+        Assert.assertEquals("{\"organizationId\":\"ID\",\"organizationName\":\"NAME\",\"apiId\":\"ID\",\"apiName\":\"NAME\",\"apiDescription\":\"DESCRIPTION\",\"version\":\"VERSION\",\"status\":\"Created\",\"createdBy\":\"CREATEDBY\",\"createdOn\":1,\"modifiedBy\":\"MODIFIEDBY\",\"modifiedOn\":1,\"publishedOn\":1,\"retiredOn\":1,\"publicAPI\":true,\"endpoint\":\"ENDPOINT\",\"endpointType\":\"rest\",\"endpointContentType\":\"json\",\"parsePayload\":true,\"disableKeysStrip\":true,\"definitionType\":\"None\",\"definitionUrl\":\"DEFINITIONURL\",\"gateways\":[{\"gatewayId\":\"GATEWAYID\"}],\"plans\":[{\"planId\":\"PLANID\",\"version\":\"VERSION\"}],\"endpointProperties\":{\"KEY-1\":\"VALUE-1\",\"KEY-2\":\"VALUE-2\"}}", Strings.toString(builder));
     }
 
     /**
@@ -188,7 +189,7 @@ public class EsMarshallingTest {
     public void testMarshallClientBean() throws Exception {
         ClientBean bean = createBean(ClientBean.class);
         XContentBuilder builder = EsMarshalling.marshall(bean);
-        Assert.assertEquals("{\"organizationId\":\"ID\",\"organizationName\":\"NAME\",\"id\":\"ID\",\"name\":\"NAME\",\"description\":\"DESCRIPTION\",\"createdBy\":\"CREATEDBY\",\"createdOn\":1}", builder.string());
+        Assert.assertEquals("{\"organizationId\":\"ID\",\"organizationName\":\"NAME\",\"id\":\"ID\",\"name\":\"NAME\",\"description\":\"DESCRIPTION\",\"createdBy\":\"CREATEDBY\",\"createdOn\":1}", Strings.toString(builder));
     }
 
     /**
@@ -198,7 +199,7 @@ public class EsMarshallingTest {
     public void testMarshallClientVersionBean() throws Exception {
         ClientVersionBean bean = createBean(ClientVersionBean.class);
         XContentBuilder builder = EsMarshalling.marshall(bean);
-        Assert.assertEquals("{\"organizationId\":\"ID\",\"organizationName\":\"NAME\",\"clientId\":\"ID\",\"clientName\":\"NAME\",\"clientDescription\":\"DESCRIPTION\",\"version\":\"VERSION\",\"apikey\":\"APIKEY\",\"status\":\"Created\",\"createdBy\":\"CREATEDBY\",\"createdOn\":1,\"modifiedBy\":\"MODIFIEDBY\",\"modifiedOn\":1,\"publishedOn\":1,\"retiredOn\":1}", builder.string());
+        Assert.assertEquals("{\"organizationId\":\"ID\",\"organizationName\":\"NAME\",\"clientId\":\"ID\",\"clientName\":\"NAME\",\"clientDescription\":\"DESCRIPTION\",\"version\":\"VERSION\",\"apikey\":\"APIKEY\",\"status\":\"Created\",\"createdBy\":\"CREATEDBY\",\"createdOn\":1,\"modifiedBy\":\"MODIFIEDBY\",\"modifiedOn\":1,\"publishedOn\":1,\"retiredOn\":1}", Strings.toString(builder));
     }
 
     /**
@@ -208,7 +209,7 @@ public class EsMarshallingTest {
     public void testMarshallAuditEntryBean() throws Exception {
         AuditEntryBean bean = createBean(AuditEntryBean.class);
         XContentBuilder builder = EsMarshalling.marshall(bean);
-        Assert.assertEquals("{\"id\":17,\"organizationId\":\"ORGANIZATIONID\",\"entityId\":\"ENTITYID\",\"entityType\":\"Organization\",\"entityVersion\":\"ENTITYVERSION\",\"data\":\"DATA\",\"who\":\"WHO\",\"what\":\"Create\",\"createdOn\":1}", builder.string());
+        Assert.assertEquals("{\"id\":17,\"organizationId\":\"ORGANIZATIONID\",\"entityId\":\"ENTITYID\",\"entityType\":\"Organization\",\"entityVersion\":\"ENTITYVERSION\",\"data\":\"DATA\",\"who\":\"WHO\",\"what\":\"Create\",\"createdOn\":1}", Strings.toString(builder));
     }
 
     /**
@@ -218,7 +219,7 @@ public class EsMarshallingTest {
     public void testMarshallOrganizationBean() throws Exception {
         OrganizationBean bean = createBean(OrganizationBean.class);
         XContentBuilder builder = EsMarshalling.marshall(bean);
-        Assert.assertEquals("{\"id\":\"ID\",\"name\":\"NAME\",\"description\":\"DESCRIPTION\",\"createdBy\":\"CREATEDBY\",\"createdOn\":1,\"modifiedBy\":\"MODIFIEDBY\",\"modifiedOn\":1}", builder.string());
+        Assert.assertEquals("{\"id\":\"ID\",\"name\":\"NAME\",\"description\":\"DESCRIPTION\",\"createdBy\":\"CREATEDBY\",\"createdOn\":1,\"modifiedBy\":\"MODIFIEDBY\",\"modifiedOn\":1}", Strings.toString(builder));
     }
 
     /**
@@ -228,7 +229,7 @@ public class EsMarshallingTest {
     public void testMarshallRoleMembershipBean() throws Exception {
         RoleMembershipBean bean = createBean(RoleMembershipBean.class);
         XContentBuilder builder = EsMarshalling.marshall(bean);
-        Assert.assertEquals("{\"id\":17,\"organizationId\":\"ORGANIZATIONID\",\"roleId\":\"ROLEID\",\"userId\":\"USERID\",\"createdOn\":1}", builder.string());
+        Assert.assertEquals("{\"id\":17,\"organizationId\":\"ORGANIZATIONID\",\"roleId\":\"ROLEID\",\"userId\":\"USERID\",\"createdOn\":1}", Strings.toString(builder));
     }
 
     /**
@@ -238,7 +239,7 @@ public class EsMarshallingTest {
     public void testMarshallUserBean() throws Exception {
         UserBean bean = createBean(UserBean.class);
         XContentBuilder builder = EsMarshalling.marshall(bean);
-        Assert.assertEquals("{\"username\":\"USERNAME\",\"email\":\"EMAIL\",\"fullName\":\"FULLNAME\",\"joinedOn\":1}", builder.string());
+        Assert.assertEquals("{\"username\":\"USERNAME\",\"email\":\"EMAIL\",\"fullName\":\"FULLNAME\",\"joinedOn\":1}", Strings.toString(builder));
     }
 
     /**
@@ -248,7 +249,7 @@ public class EsMarshallingTest {
     public void testMarshallRoleBean() throws Exception {
         RoleBean bean = createBean(RoleBean.class);
         XContentBuilder builder = EsMarshalling.marshall(bean);
-        Assert.assertEquals("{\"id\":\"ID\",\"name\":\"NAME\",\"description\":\"DESCRIPTION\",\"createdBy\":\"CREATEDBY\",\"createdOn\":1,\"autoGrant\":true,\"permissions\":[\"orgView\",\"orgEdit\"]}", builder.string());
+        Assert.assertEquals("{\"id\":\"ID\",\"name\":\"NAME\",\"description\":\"DESCRIPTION\",\"createdBy\":\"CREATEDBY\",\"createdOn\":1,\"autoGrant\":true,\"permissions\":[\"orgView\",\"orgEdit\"]}", Strings.toString(builder));
     }
 
     /**
@@ -258,7 +259,7 @@ public class EsMarshallingTest {
     public void testMarshallPolicyDefinitionBean() throws Exception {
         PolicyDefinitionBean bean = createBean(PolicyDefinitionBean.class);
         XContentBuilder builder = EsMarshalling.marshall(bean);
-        Assert.assertEquals("{\"id\":\"ID\",\"name\":\"NAME\",\"description\":\"DESCRIPTION\",\"form\":\"FORM\",\"formType\":\"Default\",\"icon\":\"ICON\",\"pluginId\":17,\"policyImpl\":\"POLICYIMPL\",\"deleted\":false,\"templates\":[{\"language\":\"LANGUAGE\",\"template\":\"TEMPLATE\"},{\"language\":\"LANGUAGE\",\"template\":\"TEMPLATE\"}]}", builder.string());
+        Assert.assertEquals("{\"id\":\"ID\",\"name\":\"NAME\",\"description\":\"DESCRIPTION\",\"form\":\"FORM\",\"formType\":\"Default\",\"icon\":\"ICON\",\"pluginId\":17,\"policyImpl\":\"POLICYIMPL\",\"deleted\":false,\"templates\":[{\"language\":\"LANGUAGE\",\"template\":\"TEMPLATE\"},{\"language\":\"LANGUAGE\",\"template\":\"TEMPLATE\"}]}", Strings.toString(builder));
     }
 
     /**
@@ -268,7 +269,7 @@ public class EsMarshallingTest {
     public void testMarshallPluginBean() throws Exception {
         PluginBean bean = createBean(PluginBean.class);
         XContentBuilder builder = EsMarshalling.marshall(bean);
-        Assert.assertEquals("{\"id\":17,\"name\":\"NAME\",\"description\":\"DESCRIPTION\",\"createdBy\":\"CREATEDBY\",\"createdOn\":1,\"groupId\":\"GROUPID\",\"artifactId\":\"ARTIFACTID\",\"version\":\"VERSION\",\"classifier\":\"CLASSIFIER\",\"type\":\"TYPE\",\"deleted\":false}", builder.string());
+        Assert.assertEquals("{\"id\":17,\"name\":\"NAME\",\"description\":\"DESCRIPTION\",\"createdBy\":\"CREATEDBY\",\"createdOn\":1,\"groupId\":\"GROUPID\",\"artifactId\":\"ARTIFACTID\",\"version\":\"VERSION\",\"classifier\":\"CLASSIFIER\",\"type\":\"TYPE\",\"deleted\":false}", Strings.toString(builder));
     }
 
     /**
@@ -278,9 +279,9 @@ public class EsMarshallingTest {
     public void testMarshallDownloadBean() throws Exception {
         DownloadBean bean = createBean(DownloadBean.class);
         XContentBuilder builder = EsMarshalling.marshall(bean);
-        Assert.assertEquals("{\"id\":\"ID\",\"type\":\"exportJson\",\"path\":\"PATH\",\"expires\":1}", builder.string());
+        Assert.assertEquals("{\"id\":\"ID\",\"type\":\"exportJson\",\"path\":\"PATH\",\"expires\":1}", Strings.toString(builder));
     }
-    
+
     /**
      * Fabricates a new instance of the given bean type.  Uses reflection to figure
      * out all the fields and assign generated values for each.
