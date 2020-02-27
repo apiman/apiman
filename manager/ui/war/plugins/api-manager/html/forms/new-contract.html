@@ -1,160 +1,160 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
-</head>
-
-<body>
-
-<div ng-include="headerInclude"></div>
-<div ng-controller="Apiman.NewContractController" id="form-page" class="container apiman-new-contract apiman-entity-new page" data-field="page">
-    <div class="row">
-        <h2 class="title" apiman-i18n-key="new-contract">New Contract</h2>
-    </div>
-    <!-- Helpful hint -->
-    <div class="row">
-        <p class="col-md-6 apiman-label-faded" apiman-i18n-key="new-contract-help-text" class="apiman-label-faded">Creating a Contract allows you to connect a Client App to an API via a particular Plan offered by the API. You would want to do this so that your Client App can invoke the API successfully. Note that this is not necessary if the API is public.</p>
-    </div>
-    <!-- HR -->
-    <div class="row hr-row">
-        <hr/>
-    </div>
-
-    <div id="new-contract-form" class="new-contract-form row">
-        <div class="col-md-6">
-            <div class="client" ng-class="{ selected : selectedClientVersion }">
-                <div class="title"><i class="fa fa-gears fa-fw"></i> <span apiman-i18n-key="from-client">From Client App</span></div>
-                <div class="body">
-                    <p apiman-i18n-key="new-contract.client-description">
-                        The Client App that will be used as the source of the new API Contract.  Choose one 
-                        of your available Client Apps below, and then choose a Client App version.
-                    </p>
-                    <div class="center-content" ng-show="clients.length > 0">
-                        <ui-select ng-model="selectedClient"
-                                   on-select="changedClient($item)"
-                                   search-enabled="true">
-                            <ui-select-match placeholder="Select a Client Application" apiman-i18n-key="select-client">
-                                <span ng-bind="$select.selected.organizationName + ' / ' + $select.selected.name"></span>
-                            </ui-select-match>
-                            <ui-select-choices repeat="client in (clients | filter: $select.search) track by client.id">
-                                <span ng-bind="client.organizationName + ' / ' + client.name"></span>
-                            </ui-select-choices>
-                        </ui-select>
-                <span class="slash" apiman-i18n-skip="">&nbsp;</span>
-                        <ui-select ng-model="selectedClientVersion"
-                                   search-enabled="true">
-                            <ui-select-match placeholder="Select a Version" apiman-i18n-key="select-client-version">
-                                <span ng-bind="$select.selected"></span>
-                            </ui-select-match>
-                            <ui-select-choices repeat="version in (clientVersions | filter: $select.search) track by version">
-                                <span ng-bind="version"></span>
-                            </ui-select-choices>
-                        </ui-select>
-                    </div>
-
-                    <div class="alert alert-warning" ng-show="clients.length > 0 && selectedClient && clientVersions.length == 0" style="margin-top: 10px">
-                        <span class="pficon pficon-info"></span>
-                 <span apiman-i18n-key="new-contract.no-client-versions">
-                   There are no versions of the selected Client App that can be registered.  For example, if a
-                   Client App is Retired you will not be able to create a Contract for it.
-                 </span>
-                    </div>
-                    <div class="alert alert-warning" ng-show="clients.length == 0">
-                        <span class="pficon pficon-info"></span>
-                 <span apiman-i18n-key="new-contract.no-clients-found">
-                   We couldn't find any Client Apps for you - you must manage at least one
-                   Client App in order to create a Contract.
-                 </span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="clearfix"></div>
-
-        <div class="col-md-6">
-            <div class="arrow to-plan-arrow" apiman-i18n-skip>&nbsp;</div>
-        </div>
-
-        <div class="clearfix"></div>
-
-        <div class="col-md-6">
-            <div class="plan" ng-class="{ selected : selectedPlan }">
-                <div class="title"><i class="fa fa-bar-chart-o fa-fw"></i> <span apiman-i18n-key="using-plan">Using Plan</span></div>
-                <div class="body">
-                    <p ng-show="!plans" apiman-i18n-key="new-contract.choose-valid-api-msg">
-                      Please choose a valid API below before selecting the Plan you wish to use for
-                      this Contract (either you have not selected an API or the API has no 
-                      available plans).
-                    </p>
-                    <p apiman-i18n-key="new-contract.plan-description" ng-show="plans" apiman-i18n-key="new-contract.choose-plan-msg">
-                        Use the drop-down below to choose one of the Plans made available by the selected API.
-                    </p>
-                    <div class="center-content" ng-show="plans">
-                        <ui-select ng-model="selectedPlan"
-                                   on-select="changedPlan($item)">
-                            <ui-select-match placeholder="Select a Plan"
-                                             apiman-i18n-key="select-plan">
-                                <span ng-bind="$select.selected.planName"></span>
-                            </ui-select-match>
-                            <ui-select-choices repeat="plan in (plans | filter: $select.search) track by plan.planName">
-                                <span ng-bind="plan.planName"></span>
-                            </ui-select-choices>
-                        </ui-select>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="clearfix"></div>
-
-        <div class="col-md-6">
-            <div class="arrow to-api-arrow" apiman-i18n-skip>&nbsp;</div>
-        </div>
-
-        <div class="clearfix"></div>
-
-        <div class="col-md-6">
-            <div class="api" ng-class="{ selected : selectedApi }">
-                <div class="title"><i class="fa fa-puzzle-piece fa-fw"></i> <span apiman-i18n-key="to-api">To API</span></div>
-                <div class="body">
-                    <p apiman-i18n-key="new-contract.api-description">
-                      Use this section to choose what API the Client App will be consuming (aka the
-                      "target" of this API Contract).
-                    </p>
-                    <div class="center-content">
-                        <button ng-click="selectApi()" class="btn btn-default btn-api" ng-show="selectedApi">
-                            <span>{{ selectedApi.organizationName }}</span>
-                            <span apiman-i18n-skip> / </span>
-                            <span class="emphasis">{{ selectedApi.name }}</span>
-                            <span apiman-i18n-skip>&#8680;</span>
-                            <span>{{ selectedApi.version }}</span>
-                        </button>
-                        <button id="api" ng-click="selectApi()" class="btn btn-default btn-api btn-primary" ng-show="!selectedApi">
-                            <span apiman-i18n-key="select-api">Select an API</span>
-                        </button>
-                        <div class="clearfix"/>
-                    </div>
-                    <div style="text-align: center;">
-                        <span style="font-size: 10px;" ng-show="selectedApi" apiman-i18n-key="new-contract.click-to-change">(click to change)</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div> <!-- /new-contract-form -->
-
-    <div class="row hr-row">
-        <hr/>
-    </div>
-
-    <div class="row">
-        <button id="create-contract" ng-click="createContract()" apiman-action-btn="" ng-disabled="isDisabled()" class="btn btn-primary" data-field="createButton" apiman-i18n-key="create-contract" placeholder="Creating..." data-icon="fa-cog">Create Contract</button>
-        <a id="cancel" href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" apiman-i18n-key="cancel">Cancel</a>
-    </div>
-
-    <div ng-include="'plugins/api-manager/html/modals/selectApiModal.html'"></div>
-
-</div> <!-- /container -->
-</body>
-</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+</head>
+
+<body>
+
+<div ng-include="headerInclude"></div>
+<div ng-controller="Apiman.NewContractController" id="form-page" class="container apiman-new-contract apiman-entity-new page" data-field="page">
+    <div class="row">
+        <h2 class="title" apiman-i18n-key="new-contract">New Contract</h2>
+    </div>
+    <!-- Helpful hint -->
+    <div class="row">
+        <p class="col-md-6 apiman-label-faded" apiman-i18n-key="new-contract-help-text" class="apiman-label-faded">Creating a Contract allows you to connect a Client App to an API via a particular Plan offered by the API. You would want to do this so that your Client App can invoke the API successfully. Note that this is not necessary if the API is public.</p>
+    </div>
+    <!-- HR -->
+    <div class="row hr-row">
+        <hr/>
+    </div>
+
+    <div id="new-contract-form" class="new-contract-form row">
+        <div class="col-md-6">
+            <div class="client" ng-class="{ selected : selectedClientVersion }">
+                <div class="title"><i class="fa fa-gears fa-fw"></i> <span apiman-i18n-key="from-client">From Client App</span></div>
+                <div class="body">
+                    <p apiman-i18n-key="new-contract.client-description">
+                        The Client App that will be used as the source of the new API Contract.  Choose one 
+                        of your available Client Apps below, and then choose a Client App version.
+                    </p>
+                    <div class="center-content" ng-show="clients.length > 0">
+                        <ui-select ng-model="selectedClient"
+                                   on-select="changedClient($item)"
+                                   search-enabled="true">
+                            <ui-select-match placeholder="Select a Client Application" apiman-i18n-key="select-client">
+                                <span ng-bind="$select.selected.organizationName + ' / ' + $select.selected.name"></span>
+                            </ui-select-match>
+                            <ui-select-choices repeat="client in (clients | filter: $select.search) track by client.id">
+                                <span ng-bind="client.organizationName + ' / ' + client.name"></span>
+                            </ui-select-choices>
+                        </ui-select>
+                <span class="slash" apiman-i18n-skip="">&nbsp;</span>
+                        <ui-select ng-model="selectedClientVersion"
+                                   search-enabled="true">
+                            <ui-select-match placeholder="Select a Version" apiman-i18n-key="select-client-version">
+                                <span ng-bind="$select.selected"></span>
+                            </ui-select-match>
+                            <ui-select-choices repeat="version in (clientVersions | filter: $select.search) track by version">
+                                <span ng-bind="version"></span>
+                            </ui-select-choices>
+                        </ui-select>
+                    </div>
+
+                    <div class="alert alert-warning" ng-show="clients.length > 0 && selectedClient && clientVersions.length == 0" style="margin-top: 10px">
+                        <span class="pficon pficon-info"></span>
+                 <span apiman-i18n-key="new-contract.no-client-versions">
+                   There are no versions of the selected Client App that can be registered.  For example, if a
+                   Client App is Retired you will not be able to create a Contract for it.
+                 </span>
+                    </div>
+                    <div class="alert alert-warning" ng-show="clients.length == 0">
+                        <span class="pficon pficon-info"></span>
+                 <span apiman-i18n-key="new-contract.no-clients-found">
+                   We couldn't find any Client Apps for you - you must manage at least one
+                   Client App in order to create a Contract.
+                 </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="clearfix"></div>
+
+        <div class="col-md-6">
+            <div class="arrow to-plan-arrow" apiman-i18n-skip>&nbsp;</div>
+        </div>
+
+        <div class="clearfix"></div>
+
+        <div class="col-md-6">
+            <div class="plan" ng-class="{ selected : selectedPlan }">
+                <div class="title"><i class="fa fa-bar-chart-o fa-fw"></i> <span apiman-i18n-key="using-plan">Using Plan</span></div>
+                <div class="body">
+                    <p ng-show="!plans" apiman-i18n-key="new-contract.choose-valid-api-msg">
+                      Please choose a valid API below before selecting the Plan you wish to use for
+                      this Contract (either you have not selected an API or the API has no 
+                      available plans).
+                    </p>
+                    <p apiman-i18n-key="new-contract.plan-description" ng-show="plans" apiman-i18n-key="new-contract.choose-plan-msg">
+                        Use the drop-down below to choose one of the Plans made available by the selected API.
+                    </p>
+                    <div class="center-content" ng-show="plans">
+                        <ui-select ng-model="selectedPlan"
+                                   on-select="changedPlan($item)">
+                            <ui-select-match placeholder="Select a Plan"
+                                             apiman-i18n-key="select-plan">
+                                <span ng-bind="$select.selected.planName"></span>
+                            </ui-select-match>
+                            <ui-select-choices repeat="plan in (plans | filter: $select.search) track by plan.planName">
+                                <span ng-bind="plan.planName"></span>
+                            </ui-select-choices>
+                        </ui-select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="clearfix"></div>
+
+        <div class="col-md-6">
+            <div class="arrow to-api-arrow" apiman-i18n-skip>&nbsp;</div>
+        </div>
+
+        <div class="clearfix"></div>
+
+        <div class="col-md-6">
+            <div class="api" ng-class="{ selected : selectedApi }">
+                <div class="title"><i class="fa fa-puzzle-piece fa-fw"></i> <span apiman-i18n-key="to-api">To API</span></div>
+                <div class="body">
+                    <p apiman-i18n-key="new-contract.api-description">
+                      Use this section to choose what API the Client App will be consuming (aka the
+                      "target" of this API Contract).
+                    </p>
+                    <div class="center-content">
+                        <button ng-click="selectApi()" class="btn btn-default btn-api" ng-show="selectedApi">
+                            <span>{{ selectedApi.organizationName }}</span>
+                            <span apiman-i18n-skip> / </span>
+                            <span class="emphasis">{{ selectedApi.name }}</span>
+                            <span apiman-i18n-skip>&#8680;</span>
+                            <span>{{ selectedApi.version }}</span>
+                        </button>
+                        <button id="api" ng-click="selectApi()" class="btn btn-default btn-api btn-primary" ng-show="!selectedApi">
+                            <span apiman-i18n-key="select-api">Select an API</span>
+                        </button>
+                        <div class="clearfix"/>
+                    </div>
+                    <div style="text-align: center;">
+                        <span style="font-size: 10px;" ng-show="selectedApi" apiman-i18n-key="new-contract.click-to-change">(click to change)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> <!-- /new-contract-form -->
+
+    <div class="row hr-row">
+        <hr/>
+    </div>
+
+    <div class="row">
+        <button id="create-contract" ng-click="createContract()" apiman-action-btn="" ng-disabled="isDisabled()" class="btn btn-primary" data-field="createButton" apiman-i18n-key="create-contract" placeholder="Creating..." data-icon="fa-cog">Create Contract</button>
+        <a id="cancel" href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" apiman-i18n-key="cancel">Cancel</a>
+    </div>
+
+    <div ng-include="'plugins/api-manager/html/modals/selectApiModal.html'"></div>
+
+</div> <!-- /container -->
+</body>
+</html>

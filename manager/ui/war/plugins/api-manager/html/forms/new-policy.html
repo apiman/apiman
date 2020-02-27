@@ -1,65 +1,65 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
-  </head>
-
-  <body>
-  <div>
-
-    <div ng-include="headerInclude"></div>
-    <form name="policyForm" ng-controller="Apiman.NewPolicyController" id="form-page" class="container apiman-new-policy apiman-entity-new page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
-      <div class="row">
-        <h2 class="title" data-field="heading" apiman-i18n-key="add-policy">Add Policy</h2>
-      </div>
-      <!-- Helpful hint -->
-      <div class="row">
-        <p class="col-md-6 apiman-label-faded" apiman-i18n-key="new-policy-help-text" class="apiman-label-faded">Adding a policy will allow its specific functionality to be applied to the API invocation as part of the overall Policy Chain.</p>
-      </div>
-      <!-- HR -->
-      <div class="row hr-row">
-        <hr/>
-      </div>
-      <!-- Policy Type -->
-      <div class="row policy-type-row">
-        <dl style="width: 100%;">
-          <dt apiman-i18n-key="policy-type">Policy Type</dt>
-          <dd>
-            <ui-select ng-model="selectedDefId"
-                       ng-disabled="isEntityDisabled()"
-                       on-select="changeSelectedDefId($item)"
-                       style="width: 250px">
-              <ui-select-match apiman-i18n-key="new-policy.choose-policy-type" placeholder="Choose a policy type...">
-                <i class='fa fa-inline fa-fw fa-{{ $select.selected.icon }}'></i> <span ng-bind="$select.selected.name"></span>
-              </ui-select-match>
-              <ui-select-choices repeat="def in (policyDefs | filter: $select.search | orderBy: 'name.toLowerCase()')">
-                <i class='fa fa-inline fa-fw fa-{{ def.icon }}'></i> <span ng-bind="def.name"></span>
-              </ui-select-choices>
-            </ui-select>
-          </dd>
-        </dl>
-      </div>
-
-      <!-- Policy Type-specific config -->
-      <div class="row" ng-show="include">
-        <h3 data-field="policyHeading">{{ selectedDef.name }} <span apiman-i18n-key="configuration">Configuration</span></h3>
-        <div class="apiman-box col-md-9 container">
-          <div ng-include="include"></div>
-        </div>
-      </div>
-
-      <!-- HR -->
-      <div class="row hr-row">
-        <hr/>
-      </div>
-
-      <!-- Create Button -->
-      <div class="row">
-        <button id="add-policy" ng-disabled="!policyForm.$dirty || policyForm.$invalid" apiman-action-btn="" class="btn btn-primary" data-field="createButton" apiman-i18n-key="create-policy" placeholder="Adding..." data-icon="fa-cog" ng-click="addPolicy()">Add Policy</button>
-        <a id="cancel" href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" apiman-i18n-key="cancel">Cancel</a>
-      </div>
-    </form> <!-- /container -->
-    </div>
-  </body>
-</html>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+  </head>
+
+  <body>
+  <div>
+
+    <div ng-include="headerInclude"></div>
+    <form name="policyForm" ng-controller="Apiman.NewPolicyController" id="form-page" class="container apiman-new-policy apiman-entity-new page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
+      <div class="row">
+        <h2 class="title" data-field="heading" apiman-i18n-key="add-policy">Add Policy</h2>
+      </div>
+      <!-- Helpful hint -->
+      <div class="row">
+        <p class="col-md-6 apiman-label-faded" apiman-i18n-key="new-policy-help-text" class="apiman-label-faded">Adding a policy will allow its specific functionality to be applied to the API invocation as part of the overall Policy Chain.</p>
+      </div>
+      <!-- HR -->
+      <div class="row hr-row">
+        <hr/>
+      </div>
+      <!-- Policy Type -->
+      <div class="row policy-type-row">
+        <dl style="width: 100%;">
+          <dt apiman-i18n-key="policy-type">Policy Type</dt>
+          <dd>
+            <ui-select ng-model="selectedDefId"
+                       ng-disabled="isEntityDisabled()"
+                       on-select="changeSelectedDefId($item)"
+                       style="width: 250px">
+              <ui-select-match apiman-i18n-key="new-policy.choose-policy-type" placeholder="Choose a policy type...">
+                <i class='fa fa-inline fa-fw fa-{{ $select.selected.icon }}'></i> <span ng-bind="$select.selected.name"></span>
+              </ui-select-match>
+              <ui-select-choices repeat="def in (policyDefs | filter: $select.search | orderBy: 'name.toLowerCase()')">
+                <i class='fa fa-inline fa-fw fa-{{ def.icon }}'></i> <span ng-bind="def.name"></span>
+              </ui-select-choices>
+            </ui-select>
+          </dd>
+        </dl>
+      </div>
+
+      <!-- Policy Type-specific config -->
+      <div class="row" ng-show="include">
+        <h3 data-field="policyHeading">{{ selectedDef.name }} <span apiman-i18n-key="configuration">Configuration</span></h3>
+        <div class="apiman-box col-md-9 container">
+          <div ng-include="include"></div>
+        </div>
+      </div>
+
+      <!-- HR -->
+      <div class="row hr-row">
+        <hr/>
+      </div>
+
+      <!-- Create Button -->
+      <div class="row">
+        <button id="add-policy" ng-disabled="!policyForm.$dirty || policyForm.$invalid" apiman-action-btn="" class="btn btn-primary" data-field="createButton" apiman-i18n-key="create-policy" placeholder="Adding..." data-icon="fa-cog" ng-click="addPolicy()">Add Policy</button>
+        <a id="cancel" href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" apiman-i18n-key="cancel">Cancel</a>
+      </div>
+    </form> <!-- /container -->
+    </div>
+  </body>
+</html>
