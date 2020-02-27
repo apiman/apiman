@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  </meta>
-</head>
-
-<body>
+  <head>
+    <meta charset="utf-8"></meta>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+  </head>
+  
+  <body>
   <div>
 
     <div ng-include="headerInclude"></div>
@@ -18,11 +16,11 @@
         </div>
         <!-- Helpful hint -->
         <div class="row">
-          <p apiman-i18n-key="new-org-help-text" class="col-md-6 apiman-label-faded">Create a new Organization within
-            which to manage your APIs and Client Apps.</p>
+          <p apiman-i18n-key="new-org-help-text" class="col-md-6 apiman-label-faded">Create a new Organization within which to manage your APIs and Client Apps.</p>
         </div>
         <!-- HR -->
         <div class="row hr-row">
+
           <hr />
         </div>
         <!-- Choose org and client name -->
@@ -40,7 +38,9 @@
         <!-- Description of client -->
         <div class="row">
           <dl>
+
             <dt apiman-i18n-key="description">Description</dt>
+
             <dd>
               <input name="orgDescription" ng-model="org.description" data-field="description" type="text"
                 class="apiman-form-control form-control description" id="apiman-description"
@@ -53,17 +53,15 @@
         <div class="row hr-row">
           <hr />
         </div>
+
         <!-- Add Button -->
         <div class="row">
-          <button ng-disabled="newOrg.$invalid" apiman-action-btn="" class="btn btn-primary" data-field="createButton"
-            apiman-i18n-key="create-organization" placeholder="Creating..." data-icon="fa-cog"
-            type="submit">Create Organization</button>
+          <button ng-disabled="newOrg.$invalid" apiman-action-btn="" class="btn btn-primary" data-field="createButton" apiman-i18n-key="create-organization" placeholder="Creating..." data-icon="fa-cog" type="submit">Create Organization</button>
           <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton"
             apiman-i18n-key="cancel">Cancel</a>
         </div>
       </div> <!-- /container -->
     </form>
   </div>
-</body>
-
+  </body>
 </html>

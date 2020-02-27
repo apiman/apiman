@@ -1,82 +1,82 @@
-<div id="transfer-quota-form" class="form policy-config quota" ng-controller="Apiman.TransferQuotaFormController" style="margin-top: 10px">
-  <style>
-    #transfer-quota-form table {
-      margin-left: 5px;
-      margin-right: 5px;
-    }
-    #transfer-quota-form table, #transfer-quota-form table tr, #transfer-quota-form table tr td {
-      display: inline-table;
-    }
-  </style>
-  <div class="form-inline">
-	    <span apiman-i18n-key="transfer-quota.config-sentence-preamble">I want to set a transfer (data) quota of </span>
-        <input name="limitAmount" id="num-bytes" ng-model="limitAmount" type="number" class="form-control" style="width: 85px; height: 28px; margin-top: -2px; margin-left: 5px; margin-right: -8px" ng-disabled="isEntityDisabled()" required></input>
-        <select id="denomination" ng-model="limitDenomination" apiman-select-picker="" class="selectpicker inline-line apiman-inline-form-dropdown" data-style="btn-default apiman-inline-form-dropdown" style="width: auto; margin-left: 0px" ng-disabled="isEntityDisabled()">
-          <option apiman-i18n-key="transfer-quota.bytes" value="B">B</option>
-          <option apiman-i18n-key="transfer-quota.kilobytes" value="KB">KB</option>
-          <option apiman-i18n-key="transfer-quota.megabytes" value="MB">MB</option>
-          <option apiman-i18n-key="transfer-quota.gigabytes" value="GB">GB</option>
-        </select>
-
-	    <span apiman-i18n-key="transfer-quota.of">of</span>
-	    <select id="direction" ng-model="config.direction" apiman-select-picker="" class="selectpicker inline-line apiman-inline-form-dropdown" data-style="btn-default apiman-inline-form-dropdown" style="width: auto;" ng-disabled="isEntityDisabled()">
-	      <option value="" data-content="<span class='apiman-label-faded'>transfer direction</span>" apiman-i18n-key="transfer-direction">transfer direction</option>
-	      <option apiman-i18n-key="upload" value="upload">upload</option>
-	      <option apiman-i18n-key="download_lowercase" value="download">download</option>
-	      <option apiman-i18n-key="upload-plus-download" value="both">upload+download</option>
-	    </select>
-
-	    <span apiman-i18n-key="transfer-quota.per">data per</span>
-	    <select id="granularity" ng-model="config.granularity" apiman-select-picker="" class="selectpicker inline-line apiman-inline-form-dropdown" data-style="btn-default apiman-inline-form-dropdown" style="width: 100px" ng-disabled="isEntityDisabled()">
-	      <option value="" data-content="<span class='apiman-label-faded'>Granularity</span>" apiman-i18n-key="granularity">Granularity</option>
-	      <option value="Client" apiman-i18n-key="rate-limiting.client-client">Client App</option>
-	      <option value="User" apiman-i18n-key="rate-limiting.user">User</option>
-	      <option value="Api" apiman-i18n-key="rate-limiting.api">API</option>
-	    </select>
-
-	    <span apiman-i18n-key="per">per</span>
-	    <select id="period" ng-model="config.period" apiman-select-picker="" class="selectpicker inline-line apiman-inline-form-dropdown" data-style="btn-default apiman-inline-form-dropdown" style="width: 100px" ng-disabled="isEntityDisabled()">
-	      <option value="" data-content="<span class='apiman-label-faded'>Period</span>" apiman-i18n-key="rate-limiting.period">Period</option>
-	      <option value="Second" apiman-i18n-key="rate-limiting.second">Second</option>
-	      <option value="Minute" apiman-i18n-key="rate-limiting.minute">Minute</option>
-	      <option value="Hour" apiman-i18n-key="rate-limiting.hour">Hour</option>
-	      <option value="Day" apiman-i18n-key="rate-limiting.day">Day</option>
-	      <option value="Month" apiman-i18n-key="rate-limiting.month">Month</option>
-	      <option value="Year" apiman-i18n-key="rate-limiting.year">Year</option>
-	    </select>
-      <div ng-show="policyForm.limitAmount.$touched && policyForm.limitAmount.$invalid" apiman-i18n-key="required-error">The value is not valid!</div>
-  </div>
-  <div style="margin-top: 8px;" id="userRow" ng-show="config.granularity == 'User'">
-    <span apiman-i18n-key="reate-limiting.get-user-id-from">Get the user's id from:</span>
-    <input name="userHeader" id="user-header" ng-model="config.userHeader" class="apiman-form-control form-control inline-apiman-form-control form-control" style="width: 250px" type="text" apiman-i18n-key="transfer-quota.enter-user-header" placeholder="Enter header (e.g. X-Identity)..." ng-disabled="isEntityDisabled()" name-validation></input>
-    <span ng-show="policyForm.userHeader.$touched && policyForm.userHeader.$invalid" apiman-i18n-key="name-error">The value is not valid!</span>
-  </div>
-  <hr/>
-  <div>
-    <p apiman-i18n-key="transfer-quota.headers-help">
-      Configure the transfer quota related response headers below - these headers will
-      convey useful information to clients such as imposed limits and when the quota
-      period will be reset.  You may override the default header names by supplying
-      your own in the fields below (or leave them blank to accept the defaults).
-    </p>
-  </div>
-  <div>
-    <dl>
-      <dt apiman-i18n-key="transfer-quota.limit-header">Limit Response Header</dt>
-      <dd>
-        <input name="limitHeader" id="limit-header" ng-model="config.headerLimit" class="apiman-form-control form-control" style="" type="text" apiman-i18n-key="transfer-quota.enter-limit-header" placeholder="X-TransferQuota-Limit" ng-disabled="isEntityDisabled()" name-validation></input>
-        <span ng-show="policyForm.limitHeader.$touched && policyForm.limitHeader.$invalid" apiman-i18n-key="name-error">The value is not valid!</span>
-      </dd>
-      <dt apiman-i18n-key="transfer-quota.remaining-header">Remaining Response Header</dt>
-      <dd>
-        <input name="remainingHeader" id="remaining-header" ng-model="config.headerRemaining" class="apiman-form-control form-control" style="" type="text" apiman-i18n-key="transfer-quota.enter-remaining-header" placeholder="X-TransferQuota-Remaining" ng-disabled="isEntityDisabled()" name-validation></input>
-        <span ng-show="policyForm.remainingHeader.$touched && policyForm.remainingHeader.$invalid" apiman-i18n-key="name-error">The value is not valid!</span>
-      </dd>
-      <dt apiman-i18n-key="transfer-quota.reset-header">Reset Response Header</dt>
-      <dd>
-        <input name="resetHeader" id="reset-header" ng-model="config.headerReset" class="apiman-form-control form-control" style="" type="text" apiman-i18n-key="transfer-quota.enter-reset-header" placeholder="X-TransferQuota-Reset" ng-disabled="isEntityDisabled()" name-validation></input>
-        <span ng-show="policyForm.resetHeader.$touched && policyForm.resetHeader.$invalid" apiman-i18n-key="name-error">The value is not valid!</span>
-      </dd>
-    </dl>
-  </div>
-</div>
+<div id="transfer-quota-form" class="form policy-config quota" ng-controller="Apiman.TransferQuotaFormController" style="margin-top: 10px">
+  <style>
+    #transfer-quota-form table {
+      margin-left: 5px;
+      margin-right: 5px;
+    }
+    #transfer-quota-form table, #transfer-quota-form table tr, #transfer-quota-form table tr td {
+      display: inline-table;
+    }
+  </style>
+  <div class="form-inline">
+	    <span apiman-i18n-key="transfer-quota.config-sentence-preamble">I want to set a transfer (data) quota of </span>
+        <input name="limitAmount" id="num-bytes" ng-model="limitAmount" type="number" class="form-control" style="width: 85px; height: 28px; margin-top: -2px; margin-left: 5px; margin-right: -8px" ng-disabled="isEntityDisabled()" required></input>
+        <select id="denomination" ng-model="limitDenomination" apiman-select-picker="" class="selectpicker inline-line apiman-inline-form-dropdown" data-style="btn-default apiman-inline-form-dropdown" style="width: auto; margin-left: 0px" ng-disabled="isEntityDisabled()">
+          <option apiman-i18n-key="transfer-quota.bytes" value="B">B</option>
+          <option apiman-i18n-key="transfer-quota.kilobytes" value="KB">KB</option>
+          <option apiman-i18n-key="transfer-quota.megabytes" value="MB">MB</option>
+          <option apiman-i18n-key="transfer-quota.gigabytes" value="GB">GB</option>
+        </select>
+
+	    <span apiman-i18n-key="transfer-quota.of">of</span>
+	    <select id="direction" ng-model="config.direction" apiman-select-picker="" class="selectpicker inline-line apiman-inline-form-dropdown" data-style="btn-default apiman-inline-form-dropdown" style="width: auto;" ng-disabled="isEntityDisabled()">
+	      <option value="" data-content="<span class='apiman-label-faded'>transfer direction</span>" apiman-i18n-key="transfer-direction">transfer direction</option>
+	      <option apiman-i18n-key="upload" value="upload">upload</option>
+	      <option apiman-i18n-key="download_lowercase" value="download">download</option>
+	      <option apiman-i18n-key="upload-plus-download" value="both">upload+download</option>
+	    </select>
+
+	    <span apiman-i18n-key="transfer-quota.per">data per</span>
+	    <select id="granularity" ng-model="config.granularity" apiman-select-picker="" class="selectpicker inline-line apiman-inline-form-dropdown" data-style="btn-default apiman-inline-form-dropdown" style="width: 100px" ng-disabled="isEntityDisabled()">
+	      <option value="" data-content="<span class='apiman-label-faded'>Granularity</span>" apiman-i18n-key="granularity">Granularity</option>
+	      <option value="Client" apiman-i18n-key="rate-limiting.client-client">Client App</option>
+	      <option value="User" apiman-i18n-key="rate-limiting.user">User</option>
+	      <option value="Api" apiman-i18n-key="rate-limiting.api">API</option>
+	    </select>
+
+	    <span apiman-i18n-key="per">per</span>
+	    <select id="period" ng-model="config.period" apiman-select-picker="" class="selectpicker inline-line apiman-inline-form-dropdown" data-style="btn-default apiman-inline-form-dropdown" style="width: 100px" ng-disabled="isEntityDisabled()">
+	      <option value="" data-content="<span class='apiman-label-faded'>Period</span>" apiman-i18n-key="rate-limiting.period">Period</option>
+	      <option value="Second" apiman-i18n-key="rate-limiting.second">Second</option>
+	      <option value="Minute" apiman-i18n-key="rate-limiting.minute">Minute</option>
+	      <option value="Hour" apiman-i18n-key="rate-limiting.hour">Hour</option>
+	      <option value="Day" apiman-i18n-key="rate-limiting.day">Day</option>
+	      <option value="Month" apiman-i18n-key="rate-limiting.month">Month</option>
+	      <option value="Year" apiman-i18n-key="rate-limiting.year">Year</option>
+	    </select>
+      <div ng-show="policyForm.limitAmount.$touched && policyForm.limitAmount.$invalid" apiman-i18n-key="required-error">The value is not valid!</div>
+  </div>
+  <div style="margin-top: 8px;" id="userRow" ng-show="config.granularity == 'User'">
+    <span apiman-i18n-key="reate-limiting.get-user-id-from">Get the user's id from:</span>
+    <input name="userHeader" id="user-header" ng-model="config.userHeader" class="apiman-form-control form-control inline-apiman-form-control form-control" style="width: 250px" type="text" apiman-i18n-key="transfer-quota.enter-user-header" placeholder="Enter header (e.g. X-Identity)..." ng-disabled="isEntityDisabled()" name-validation></input>
+    <span ng-show="policyForm.userHeader.$touched && policyForm.userHeader.$invalid" apiman-i18n-key="name-error">The value is not valid!</span>
+  </div>
+  <hr/>
+  <div>
+    <p apiman-i18n-key="transfer-quota.headers-help">
+      Configure the transfer quota related response headers below - these headers will
+      convey useful information to clients such as imposed limits and when the quota
+      period will be reset.  You may override the default header names by supplying
+      your own in the fields below (or leave them blank to accept the defaults).
+    </p>
+  </div>
+  <div>
+    <dl>
+      <dt apiman-i18n-key="transfer-quota.limit-header">Limit Response Header</dt>
+      <dd>
+        <input name="limitHeader" id="limit-header" ng-model="config.headerLimit" class="apiman-form-control form-control" style="" type="text" apiman-i18n-key="transfer-quota.enter-limit-header" placeholder="X-TransferQuota-Limit" ng-disabled="isEntityDisabled()" name-validation></input>
+        <span ng-show="policyForm.limitHeader.$touched && policyForm.limitHeader.$invalid" apiman-i18n-key="name-error">The value is not valid!</span>
+      </dd>
+      <dt apiman-i18n-key="transfer-quota.remaining-header">Remaining Response Header</dt>
+      <dd>
+        <input name="remainingHeader" id="remaining-header" ng-model="config.headerRemaining" class="apiman-form-control form-control" style="" type="text" apiman-i18n-key="transfer-quota.enter-remaining-header" placeholder="X-TransferQuota-Remaining" ng-disabled="isEntityDisabled()" name-validation></input>
+        <span ng-show="policyForm.remainingHeader.$touched && policyForm.remainingHeader.$invalid" apiman-i18n-key="name-error">The value is not valid!</span>
+      </dd>
+      <dt apiman-i18n-key="transfer-quota.reset-header">Reset Response Header</dt>
+      <dd>
+        <input name="resetHeader" id="reset-header" ng-model="config.headerReset" class="apiman-form-control form-control" style="" type="text" apiman-i18n-key="transfer-quota.enter-reset-header" placeholder="X-TransferQuota-Reset" ng-disabled="isEntityDisabled()" name-validation></input>
+        <span ng-show="policyForm.resetHeader.$touched && policyForm.resetHeader.$invalid" apiman-i18n-key="name-error">The value is not valid!</span>
+      </dd>
+    </dl>
+  </div>
+</div>
