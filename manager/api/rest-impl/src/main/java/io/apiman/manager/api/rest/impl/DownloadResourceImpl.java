@@ -22,7 +22,7 @@ import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.rest.contract.IDownloadResource;
 import io.apiman.manager.api.rest.contract.IOrganizationResource;
 import io.apiman.manager.api.rest.contract.ISystemResource;
-import io.apiman.manager.api.rest.contract.exceptions.DownloadNotFoundException;
+import io.apiman.manager.api.rest.exceptions.DownloadNotFoundException;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;

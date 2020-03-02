@@ -24,9 +24,9 @@ import io.apiman.manager.api.beans.search.SearchResultsBean;
 import io.apiman.manager.api.beans.summary.ApiSummaryBean;
 import io.apiman.manager.api.beans.summary.ClientSummaryBean;
 import io.apiman.manager.api.beans.summary.OrganizationSummaryBean;
-import io.apiman.manager.api.rest.contract.exceptions.InvalidSearchCriteriaException;
-import io.apiman.manager.api.rest.contract.exceptions.NotAuthorizedException;
-import io.apiman.manager.api.rest.contract.exceptions.UserNotFoundException;
+import io.apiman.manager.api.rest.exceptions.InvalidSearchCriteriaException;
+import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
+import io.apiman.manager.api.rest.exceptions.UserNotFoundException;
 import io.swagger.annotations.Api;
 
 import java.util.List;

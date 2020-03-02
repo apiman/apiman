@@ -17,7 +17,7 @@
 package io.apiman.manager.api.rest.impl.mappers;
 
 import io.apiman.manager.api.beans.exceptions.ErrorBean;
-import io.apiman.manager.api.rest.contract.exceptions.AbstractRestException;
+import io.apiman.manager.api.rest.exceptions.AbstractRestException;
 import io.apiman.manager.api.security.ISecurityContext;
 
 import java.io.PrintWriter;

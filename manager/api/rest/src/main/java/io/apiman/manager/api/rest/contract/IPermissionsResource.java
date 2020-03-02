@@ -17,8 +17,8 @@
 package io.apiman.manager.api.rest.contract;
 
 import io.apiman.manager.api.beans.idm.UserPermissionsBean;
-import io.apiman.manager.api.rest.contract.exceptions.NotAuthorizedException;
-import io.apiman.manager.api.rest.contract.exceptions.UserNotFoundException;
+import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
+import io.apiman.manager.api.rest.exceptions.UserNotFoundException;
 import io.swagger.annotations.Api;
 
 import javax.ws.rs.GET;

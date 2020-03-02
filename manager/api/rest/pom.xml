@@ -16,6 +16,10 @@
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-manager-api-beans</artifactId>
     </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-manager-api-rest-exceptions</artifactId>
+    </dependency>
 
     <!-- Third Party Dependencies -->
     <dependency>

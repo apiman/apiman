@@ -17,7 +17,7 @@
 package io.apiman.manager.api.rest.contract;
 
 import io.apiman.manager.api.beans.actions.ActionBean;
-import io.apiman.manager.api.rest.contract.exceptions.ActionException;
+import io.apiman.manager.api.rest.exceptions.ActionException;
 import io.swagger.annotations.Api;
 
 import javax.ws.rs.Consumes;

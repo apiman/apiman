@@ -67,7 +67,7 @@ import io.apiman.manager.api.beans.summary.ContractSummaryBean;
 import io.apiman.manager.api.beans.summary.PlanSummaryBean;
 import io.apiman.manager.api.beans.summary.PlanVersionSummaryBean;
 import io.apiman.manager.api.beans.summary.PolicySummaryBean;
-import io.apiman.manager.api.rest.contract.exceptions.*;
+import io.apiman.manager.api.rest.exceptions.*;
 import io.swagger.annotations.Api;
 
 import java.util.List;

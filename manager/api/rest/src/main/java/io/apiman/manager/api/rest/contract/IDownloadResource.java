@@ -16,7 +16,7 @@
 
 package io.apiman.manager.api.rest.contract;
 
-import io.apiman.manager.api.rest.contract.exceptions.DownloadNotFoundException;
+import io.apiman.manager.api.rest.exceptions.DownloadNotFoundException;
 import io.swagger.annotations.Api;
 
 import javax.ws.rs.GET;

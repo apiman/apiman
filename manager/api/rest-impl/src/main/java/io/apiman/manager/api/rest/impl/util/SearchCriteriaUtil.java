@@ -18,8 +18,8 @@ package io.apiman.manager.api.rest.impl.util;
 import io.apiman.manager.api.beans.search.SearchCriteriaBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaFilterBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaFilterOperator;
-import io.apiman.manager.api.rest.contract.exceptions.InvalidSearchCriteriaException;
-import io.apiman.manager.api.rest.impl.i18n.Messages;
+import io.apiman.manager.api.rest.exceptions.InvalidSearchCriteriaException;
+import io.apiman.manager.api.rest.exceptions.i18n.Messages;
 
 import java.util.HashSet;
 import java.util.Set;

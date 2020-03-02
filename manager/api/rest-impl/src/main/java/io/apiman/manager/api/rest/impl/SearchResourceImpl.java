@@ -31,9 +31,9 @@ import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.rest.contract.ISearchResource;
-import io.apiman.manager.api.rest.contract.exceptions.InvalidSearchCriteriaException;
-import io.apiman.manager.api.rest.contract.exceptions.OrganizationNotFoundException;
-import io.apiman.manager.api.rest.contract.exceptions.SystemErrorException;
+import io.apiman.manager.api.rest.exceptions.InvalidSearchCriteriaException;
+import io.apiman.manager.api.rest.exceptions.OrganizationNotFoundException;
+import io.apiman.manager.api.rest.exceptions.SystemErrorException;
 import io.apiman.manager.api.rest.impl.util.SearchCriteriaUtil;
 import io.apiman.manager.api.security.ISecurityContext;
 

@@ -307,6 +307,11 @@
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
+        <artifactId>apiman-manager-api-rest-exceptions</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
         <artifactId>apiman-manager-api-security</artifactId>
         <version>${project.version}</version>
       </dependency>

@@ -23,8 +23,8 @@ import io.apiman.manager.api.beans.summary.ApiSummaryBean;
 import io.apiman.manager.api.beans.summary.AvailableApiBean;
 import io.apiman.manager.api.beans.summary.ClientSummaryBean;
 import io.apiman.manager.api.beans.summary.OrganizationSummaryBean;
-import io.apiman.manager.api.rest.contract.exceptions.InvalidSearchCriteriaException;
-import io.apiman.manager.api.rest.contract.exceptions.OrganizationNotFoundException;
+import io.apiman.manager.api.rest.exceptions.InvalidSearchCriteriaException;
+import io.apiman.manager.api.rest.exceptions.OrganizationNotFoundException;
 import io.swagger.annotations.Api;
 
 import java.util.List;

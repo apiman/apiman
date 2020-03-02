@@ -19,9 +19,9 @@ package io.apiman.manager.api.rest.contract;
 import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
 import io.apiman.manager.api.beans.policies.UpdatePolicyDefinitionBean;
 import io.apiman.manager.api.beans.summary.PolicyDefinitionSummaryBean;
-import io.apiman.manager.api.rest.contract.exceptions.NotAuthorizedException;
-import io.apiman.manager.api.rest.contract.exceptions.PolicyDefinitionAlreadyExistsException;
-import io.apiman.manager.api.rest.contract.exceptions.PolicyDefinitionNotFoundException;
+import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
+import io.apiman.manager.api.rest.exceptions.PolicyDefinitionAlreadyExistsException;
+import io.apiman.manager.api.rest.exceptions.PolicyDefinitionNotFoundException;
 import io.swagger.annotations.Api;
 
 import java.util.List;

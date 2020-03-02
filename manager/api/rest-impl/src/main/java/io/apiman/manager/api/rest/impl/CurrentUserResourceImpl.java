@@ -31,7 +31,7 @@ import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.core.logging.ApimanLogger;
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.manager.api.rest.contract.ICurrentUserResource;
-import io.apiman.manager.api.rest.contract.exceptions.SystemErrorException;
+import io.apiman.manager.api.rest.exceptions.SystemErrorException;
 import io.apiman.manager.api.security.ISecurityContext;
 
 import java.util.Date;

@@ -34,8 +34,8 @@ import io.apiman.manager.api.exportimport.read.IImportReader;
 import io.apiman.manager.api.exportimport.write.IExportWriter;
 import io.apiman.manager.api.migrator.DataMigrator;
 import io.apiman.manager.api.rest.contract.ISystemResource;
-import io.apiman.manager.api.rest.contract.exceptions.SystemErrorException;
-import io.apiman.manager.api.rest.impl.util.ExceptionFactory;
+import io.apiman.manager.api.rest.exceptions.SystemErrorException;
+import io.apiman.manager.api.rest.exceptions.util.ExceptionFactory;
 import io.apiman.manager.api.security.ISecurityContext;
 
 import java.io.File;

@@ -21,10 +21,10 @@ import io.apiman.manager.api.beans.idm.RoleBean;
 import io.apiman.manager.api.beans.idm.UpdateRoleBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaBean;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
-import io.apiman.manager.api.rest.contract.exceptions.InvalidSearchCriteriaException;
-import io.apiman.manager.api.rest.contract.exceptions.NotAuthorizedException;
-import io.apiman.manager.api.rest.contract.exceptions.RoleAlreadyExistsException;
-import io.apiman.manager.api.rest.contract.exceptions.RoleNotFoundException;
+import io.apiman.manager.api.rest.exceptions.InvalidSearchCriteriaException;
+import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
+import io.apiman.manager.api.rest.exceptions.RoleAlreadyExistsException;
+import io.apiman.manager.api.rest.exceptions.RoleNotFoundException;
 import io.swagger.annotations.Api;
 
 import java.util.List;

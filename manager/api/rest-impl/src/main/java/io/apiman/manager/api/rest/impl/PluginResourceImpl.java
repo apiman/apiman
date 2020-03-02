@@ -58,15 +58,15 @@ import io.apiman.manager.api.core.exceptions.InvalidPluginException;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.core.logging.ApimanLogger;
 import io.apiman.manager.api.rest.contract.IPluginResource;
-import io.apiman.manager.api.rest.contract.exceptions.AbstractRestException;
-import io.apiman.manager.api.rest.contract.exceptions.NotAuthorizedException;
-import io.apiman.manager.api.rest.contract.exceptions.PluginAlreadyExistsException;
-import io.apiman.manager.api.rest.contract.exceptions.PluginNotFoundException;
-import io.apiman.manager.api.rest.contract.exceptions.PluginResourceNotFoundException;
-import io.apiman.manager.api.rest.contract.exceptions.PolicyDefinitionNotFoundException;
-import io.apiman.manager.api.rest.contract.exceptions.SystemErrorException;
-import io.apiman.manager.api.rest.impl.i18n.Messages;
-import io.apiman.manager.api.rest.impl.util.ExceptionFactory;
+import io.apiman.manager.api.rest.exceptions.AbstractRestException;
+import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
+import io.apiman.manager.api.rest.exceptions.PluginAlreadyExistsException;
+import io.apiman.manager.api.rest.exceptions.PluginNotFoundException;
+import io.apiman.manager.api.rest.exceptions.PluginResourceNotFoundException;
+import io.apiman.manager.api.rest.exceptions.PolicyDefinitionNotFoundException;
+import io.apiman.manager.api.rest.exceptions.SystemErrorException;
+import io.apiman.manager.api.rest.exceptions.i18n.Messages;
+import io.apiman.manager.api.rest.exceptions.util.ExceptionFactory;
 import io.apiman.manager.api.security.ISecurityContext;
 
 /**

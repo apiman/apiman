@@ -20,11 +20,11 @@ import io.apiman.manager.api.beans.plugins.NewPluginBean;
 import io.apiman.manager.api.beans.plugins.PluginBean;
 import io.apiman.manager.api.beans.summary.PluginSummaryBean;
 import io.apiman.manager.api.beans.summary.PolicyDefinitionSummaryBean;
-import io.apiman.manager.api.rest.contract.exceptions.NotAuthorizedException;
-import io.apiman.manager.api.rest.contract.exceptions.PluginAlreadyExistsException;
-import io.apiman.manager.api.rest.contract.exceptions.PluginNotFoundException;
-import io.apiman.manager.api.rest.contract.exceptions.PluginResourceNotFoundException;
-import io.apiman.manager.api.rest.contract.exceptions.PolicyDefinitionNotFoundException;
+import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
+import io.apiman.manager.api.rest.exceptions.PluginAlreadyExistsException;
+import io.apiman.manager.api.rest.exceptions.PluginNotFoundException;
+import io.apiman.manager.api.rest.exceptions.PluginResourceNotFoundException;
+import io.apiman.manager.api.rest.exceptions.PolicyDefinitionNotFoundException;
 import io.swagger.annotations.Api;
 
 import java.util.List;
