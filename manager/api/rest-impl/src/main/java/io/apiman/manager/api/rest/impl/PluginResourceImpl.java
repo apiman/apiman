@@ -57,16 +57,16 @@ import io.apiman.manager.api.core.config.ApiManagerConfig;
 import io.apiman.manager.api.core.exceptions.InvalidPluginException;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.core.logging.ApimanLogger;
-import io.apiman.manager.api.rest.contract.IPluginResource;
-import io.apiman.manager.api.rest.contract.exceptions.AbstractRestException;
-import io.apiman.manager.api.rest.contract.exceptions.NotAuthorizedException;
-import io.apiman.manager.api.rest.contract.exceptions.PluginAlreadyExistsException;
-import io.apiman.manager.api.rest.contract.exceptions.PluginNotFoundException;
-import io.apiman.manager.api.rest.contract.exceptions.PluginResourceNotFoundException;
-import io.apiman.manager.api.rest.contract.exceptions.PolicyDefinitionNotFoundException;
-import io.apiman.manager.api.rest.contract.exceptions.SystemErrorException;
-import io.apiman.manager.api.rest.impl.i18n.Messages;
-import io.apiman.manager.api.rest.impl.util.ExceptionFactory;
+import io.apiman.manager.api.rest.IPluginResource;
+import io.apiman.manager.api.rest.exceptions.AbstractRestException;
+import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
+import io.apiman.manager.api.rest.exceptions.PluginAlreadyExistsException;
+import io.apiman.manager.api.rest.exceptions.PluginNotFoundException;
+import io.apiman.manager.api.rest.exceptions.PluginResourceNotFoundException;
+import io.apiman.manager.api.rest.exceptions.PolicyDefinitionNotFoundException;
+import io.apiman.manager.api.rest.exceptions.SystemErrorException;
+import io.apiman.manager.api.rest.exceptions.i18n.Messages;
+import io.apiman.manager.api.rest.exceptions.util.ExceptionFactory;
 import io.apiman.manager.api.security.ISecurityContext;
 
 /**
@@ -97,10 +97,12 @@ public class PluginResourceImpl implements IPluginResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IPluginResource#list()
+     * @see IPluginResource#list()
      */
     @Override
     public List<PluginSummaryBean> list() throws NotAuthorizedException {
+        securityContext.checkAdminPermissions();
+
         try {
             return query.listPlugins();
         } catch (StorageException e) {
@@ -109,12 +111,11 @@ public class PluginResourceImpl implements IPluginResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IPluginResource#create(io.apiman.manager.api.beans.plugins.NewPluginBean)
+     * @see IPluginResource#create(io.apiman.manager.api.beans.plugins.NewPluginBean)
      */
     @Override
-    public PluginBean create(NewPluginBean bean) throws PluginAlreadyExistsException, PluginNotFoundException {
-        if (!securityContext.isAdmin())
-            throw ExceptionFactory.notAuthorizedException();
+    public PluginBean create(NewPluginBean bean) throws PluginAlreadyExistsException, PluginNotFoundException, NotAuthorizedException {
+        securityContext.checkAdminPermissions();
 
         PluginCoordinates coordinates = new PluginCoordinates(bean.getGroupId(), bean.getArtifactId(), bean.getVersion(),
                 bean.getClassifier(), bean.getType());
@@ -238,12 +239,12 @@ public class PluginResourceImpl implements IPluginResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IPluginResource#get(java.lang.Long)
+     * @see IPluginResource#get(java.lang.Long)
      */
     @Override
     public PluginBean get(Long pluginId) throws PluginNotFoundException, NotAuthorizedException {
-        if (!securityContext.isAdmin())
-            throw ExceptionFactory.notAuthorizedException();
+        securityContext.checkAdminPermissions();
+
         try {
             storage.beginTx();
             PluginBean bean = storage.getPlugin(pluginId);
@@ -262,13 +263,12 @@ public class PluginResourceImpl implements IPluginResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IPluginResource#delete(java.lang.Long)
+     * @see IPluginResource#delete(java.lang.Long)
      */
     @Override
     public void delete(Long pluginId) throws PluginNotFoundException,
             NotAuthorizedException {
-        if (!securityContext.isAdmin())
-            throw ExceptionFactory.notAuthorizedException();
+        securityContext.checkAdminPermissions();
 
         try {
             List<PolicyDefinitionSummaryBean> policyDefs = query.listPluginPolicyDefs(pluginId);
@@ -303,10 +303,12 @@ public class PluginResourceImpl implements IPluginResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IPluginResource#getPolicyDefs(java.lang.Long)
+     * @see IPluginResource#getPolicyDefs(java.lang.Long)
      */
     @Override
-    public List<PolicyDefinitionSummaryBean> getPolicyDefs(Long pluginId) throws PluginNotFoundException {
+    public List<PolicyDefinitionSummaryBean> getPolicyDefs(Long pluginId) throws PluginNotFoundException, NotAuthorizedException {
+        securityContext.checkAdminPermissions();
+
         get(pluginId);
         try {
             return query.listPluginPolicyDefs(pluginId);
@@ -316,11 +318,13 @@ public class PluginResourceImpl implements IPluginResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IPluginResource#getPolicyForm(java.lang.Long, java.lang.String)
+     * @see IPluginResource#getPolicyForm(java.lang.Long, java.lang.String)
      */
     @Override
     public String getPolicyForm(Long pluginId, String policyDefId) throws PluginNotFoundException,
             PluginResourceNotFoundException, PolicyDefinitionNotFoundException {
+        // No permission check is needed
+
         PluginBean pbean;
         PolicyDefinitionBean pdBean;
         try {
@@ -379,12 +383,11 @@ public class PluginResourceImpl implements IPluginResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IPluginResource#getAvailablePlugins()
+     * @see IPluginResource#getAvailablePlugins()
      */
     @Override
     public List<PluginSummaryBean> getAvailablePlugins() throws NotAuthorizedException {
-        if (!securityContext.isAdmin())
-            throw ExceptionFactory.notAuthorizedException();
+        securityContext.checkAdminPermissions();
 
         List<PluginSummaryBean> rval = new ArrayList<>();
         Set<URI> registries = config.getPluginRegistries();

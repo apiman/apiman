@@ -1,0 +1,6 @@
+GET /users/user2 admin/admin
+----
+200
+Content-Type: application/json
+
+{"username":"user2","fullName":"User 2","email":"user2@example.org","admin":false}

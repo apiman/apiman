@@ -1,7 +1,7 @@
 var APIMAN_CONFIG_DATA = {
   "apiman" : {
-    "version" : "1.2.0-SNAPSHOT",
-    "builtOn" : "2015-01-01",
+    "version" : "1.5.6-SNAPSHOT",
+    "builtOn" : "2020-01-22",
     "logoutUrl" : "logout"
   },
   "user" : {

@@ -16,8 +16,8 @@
 
 package io.apiman.gateway.platforms.vertx3.api;
 
-import io.apiman.gateway.api.rest.contract.exceptions.GatewayApiErrorBean;
-import io.apiman.gateway.api.rest.contract.exceptions.NotAuthorizedException;
+import io.apiman.gateway.api.rest.exceptions.GatewayApiErrorBean;
+import io.apiman.gateway.api.rest.exceptions.NotAuthorizedException;
 import io.apiman.gateway.engine.beans.exceptions.AbstractEngineException;
 import io.apiman.gateway.engine.beans.exceptions.IStatusCode;
 

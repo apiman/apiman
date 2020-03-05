@@ -27,6 +27,7 @@
     <module>security</module>
     <module>war</module>
     <module>war/wildfly8</module>
+    <module>exceptions</module>
   </modules>
 
   <profiles>

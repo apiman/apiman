@@ -18,16 +18,17 @@ package io.apiman.manager.api.security.impl;
 import io.apiman.manager.api.beans.idm.PermissionType;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.StorageException;
+import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
+import io.apiman.manager.api.rest.exceptions.util.ExceptionFactory;
 import io.apiman.manager.api.security.ISecurityContext;
 import io.apiman.manager.api.security.i18n.Messages;
-
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.inject.Inject;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Base class for security context implementations.
@@ -36,10 +37,9 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractSecurityContext implements ISecurityContext {
 
-    private static Logger logger = LoggerFactory.getLogger(AbstractSecurityContext.class);
-
+    protected static final ThreadLocal<HttpServletRequest> servletRequest = new ThreadLocal<>();
     private static final ThreadLocal<IndexedPermissions> permissions = new ThreadLocal<>();
-
+    private static Logger logger = LoggerFactory.getLogger(AbstractSecurityContext.class);
     @Inject
     private IStorageQuery query;
 
@@ -50,14 +50,64 @@ public abstract class AbstractSecurityContext implements ISecurityContext {
     }
 
     /**
+     * Called to clear the current thread local permissions bean.
+     */
+    protected static void clearPermissions() {
+        permissions.remove();
+    }
+
+    /**
+     * @see io.apiman.manager.api.security.ISecurityContext#isAdmin()
+     */
+    @Override
+    public boolean isAdmin() {
+        // TODO warning - hard coded role value here
+        return servletRequest.get().isUserInRole("apiadmin"); //$NON-NLS-1$
+    }
+
+    /**
+     * @see io.apiman.manager.api.security.ISecurityContext#getRequestHeader(java.lang.String)
+     */
+    @Override
+    public String getRequestHeader(String headerName) {
+        return servletRequest.get().getHeader(headerName);
+    }
+
+    /**
+     * @see io.apiman.manager.api.security.ISecurityContext#getCurrentUser()
+     */
+    @Override
+    public String getCurrentUser() {
+        return servletRequest.get().getRemoteUser();
+    }
+
+    /**
+     * @see io.apiman.manager.api.security.ISecurityContext#getEmail()
+     */
+    @Override
+    public String getEmail() {
+        return null;
+    }
+
+    /**
+     * @see io.apiman.manager.api.security.ISecurityContext#getFullName()
+     */
+    @Override
+    public String getFullName() {
+        return null;
+    }
+
+    /**
      * @see io.apiman.manager.api.security.ISecurityContext#hasPermission(io.apiman.manager.api.beans.idm.PermissionType, java.lang.String)
      */
     @Override
     public boolean hasPermission(PermissionType permission, String organizationId) {
         // Admins can do everything.
-        if (isAdmin())
+        if (isAdmin()) {
             return true;
-        return getPermissions().hasQualifiedPermission(permission, organizationId);
+        } else {
+            return getPermissions().hasQualifiedPermission(permission, organizationId);
+        }
     }
 
     /**
@@ -105,13 +155,6 @@ public abstract class AbstractSecurityContext implements ISecurityContext {
     }
 
     /**
-     * Called to clear the current thread local permissions bean.
-     */
-    protected static void clearPermissions() {
-        permissions.remove();
-    }
-
-    /**
      * @return the query
      */
     public IStorageQuery getQuery() {
@@ -125,4 +168,33 @@ public abstract class AbstractSecurityContext implements ISecurityContext {
         this.query = query;
     }
 
+    /**
+     * @see ISecurityContext#checkPermissions(PermissionType, String)
+     */
+    @Override
+    public void checkPermissions(PermissionType permission, String organizationId) throws NotAuthorizedException {
+        if(!hasPermission(permission, organizationId)){
+            throw ExceptionFactory.notAuthorizedException();
+        }
+    }
+
+    /**
+     * @see ISecurityContext#checkAdminPermissions()
+     */
+    @Override
+    public void checkAdminPermissions() throws NotAuthorizedException {
+        if(!isAdmin()) {
+             throw ExceptionFactory.notAuthorizedException();
+        }
+    }
+
+    /**
+     * @see ISecurityContext#checkIfUserIsCurrentUser(String)
+     */
+    @Override
+    public void checkIfUserIsCurrentUser(String userId) throws NotAuthorizedException {
+        if (!isAdmin() && !getCurrentUser().equals(userId)) {
+            throw ExceptionFactory.notAuthorizedException();
+        }
+    }
 }

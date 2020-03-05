@@ -1,0 +1,13 @@
+PUT /users/user2 user1/user1
+Content-Type: application/json
+
+{
+	"fullName": "User 2 (Updated)",
+	"email": "updated2@example.org"
+}
+
+----
+403
+Content-Type: application/json
+
+{"type":"NotAuthorizedException","errorCode":-1,"message":"Access denied.","moreInfoUrl":null}

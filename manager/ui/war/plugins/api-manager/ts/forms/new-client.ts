@@ -2,20 +2,22 @@
 module Apiman {
 
     export var NewClientController = _module.controller("Apiman.NewClientController",
-        ['$q', '$location', '$scope', 'CurrentUserSvcs', 'OrgSvcs', 'PageLifecycle', '$rootScope',
-        ($q, $location, $scope, CurrentUserSvcs, OrgSvcs, PageLifecycle, $rootScope) => {
+        ['$q', '$location', '$scope', 'CurrentUser', 'UserSvcs', 'OrgSvcs', 'PageLifecycle', '$rootScope',
+        ($q, $location, $scope, CurrentUser, UserSvcs, OrgSvcs, PageLifecycle, $rootScope) => {
             var recentOrg = $rootScope.mruOrg;
 
             var pageData = {
                 organizations: $q(function(resolve, reject) {
-                    CurrentUserSvcs.query({ what: 'clientorgs' }, function(orgs) {
-                        if (recentOrg) {
-                            $scope.selectedOrg = recentOrg;
-                        } else if (orgs.length > 0) {
-                            $scope.selectedOrg = orgs[0];
-                        }
-                        resolve(orgs);
-                    }, reject);
+                    return CurrentUser.getCurrentUser().then(function (currentUser) {
+                        return UserSvcs.query({ user: currentUser.username, entityType: 'clientorgs' }, function(orgs) {
+                            if (recentOrg) {
+                                $scope.selectedOrg = recentOrg;
+                            } else if (orgs.length > 0) {
+                                $scope.selectedOrg = orgs[0];
+                            }
+                            resolve(orgs);
+                        }, reject);
+                    });
                 }),
             };
 

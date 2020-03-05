@@ -8,8 +8,13 @@ module ApimanCurrentUser {
         ($q, $rootScope, CurrentUserSvcs, Logger) => {
             return {
                 getCurrentUser: function() {
-                    return $rootScope.currentUser;
+                    return $q(function (resolve, reject) {
+                        return CurrentUserSvcs.get({what: 'info'}, function (currentUser) {
+                            resolve(currentUser);
+                        }, reject);
+                    });
                 },
+
                 getCurrentUserOrgs: function() {
                     var orgs = {};
                     var perms = $rootScope.currentUser.permissions;

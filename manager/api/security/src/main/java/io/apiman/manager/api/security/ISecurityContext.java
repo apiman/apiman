@@ -16,6 +16,7 @@
 package io.apiman.manager.api.security;
 
 import io.apiman.manager.api.beans.idm.PermissionType;
+import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
 
 import java.util.Set;
 
@@ -77,5 +78,27 @@ public interface ISecurityContext {
      * @return the request header
      */
     public String getRequestHeader(String headerName);
+
+    /**
+     * Checks if the current user has permission to perform a particular
+     * action for the provided organization.
+     * @param permission the permission type
+     * @param organizationId the org id
+     * @throws NotAuthorizedException if the user is not authorized
+     */
+    void checkPermissions(PermissionType permission, String organizationId) throws NotAuthorizedException;
+
+    /**
+     * Throws an exception if the user has no admin permissions
+     * @throws NotAuthorizedException if the user is not authorized
+     */
+    void checkAdminPermissions() throws NotAuthorizedException;
+
+    /**
+     * Throws an exception if the user has no admin permissions
+     * or the user called not is own user resource
+     * @throws NotAuthorizedException if the user is not authorized
+     */
+    void checkIfUserIsCurrentUser(String userId) throws NotAuthorizedException;
 
 }

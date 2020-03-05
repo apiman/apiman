@@ -266,6 +266,9 @@ module Apiman {
                 .when(prefix + '/errors/500', {
                     templateUrl: path + 'errors/500.html'
                 })
+                .when(prefix + '/def', {
+                    templateUrl: path + 'rest-documentation.html'
+                })
                 .otherwise({redirectTo: prefix + '/'});
 
             $locationProvider.html5Mode(true);

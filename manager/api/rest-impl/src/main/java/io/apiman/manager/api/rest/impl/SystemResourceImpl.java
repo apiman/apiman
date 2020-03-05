@@ -33,9 +33,10 @@ import io.apiman.manager.api.exportimport.manager.StorageImportDispatcher;
 import io.apiman.manager.api.exportimport.read.IImportReader;
 import io.apiman.manager.api.exportimport.write.IExportWriter;
 import io.apiman.manager.api.migrator.DataMigrator;
-import io.apiman.manager.api.rest.contract.ISystemResource;
-import io.apiman.manager.api.rest.contract.exceptions.SystemErrorException;
-import io.apiman.manager.api.rest.impl.util.ExceptionFactory;
+import io.apiman.manager.api.rest.ISystemResource;
+import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
+import io.apiman.manager.api.rest.exceptions.SystemErrorException;
+import io.apiman.manager.api.rest.exceptions.util.ExceptionFactory;
 import io.apiman.manager.api.security.ISecurityContext;
 
 import java.io.File;
@@ -95,14 +96,14 @@ public class SystemResourceImpl implements ISystemResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.ISystemResource#getStatus()
+     * @see ISystemResource#getStatus()
      */
     @Override
     public SystemStatusBean getStatus() {
         SystemStatusBean rval = new SystemStatusBean();
         rval.setId("apiman-manager-api"); //$NON-NLS-1$
         rval.setName("API Manager REST API"); //$NON-NLS-1$
-        rval.setDescription("The API Manager REST API is used by the API Manager UI to get stuff done.  You can use it to automate any apiman task you wish.  For example, create new Organizations, Plans, Clients, and APIs."); //$NON-NLS-1$
+        rval.setDescription("The API Manager REST API is used by the API Manager UI to get stuff done. You can use it to automate any API Management task you wish. For example, create new Organizations, Plans, Clients, and APIs."); //$NON-NLS-1$
         rval.setMoreInfo("http://www.apiman.io/latest/api-manager-restdocs.html"); //$NON-NLS-1$
         rval.setUp(getStorage() != null);
         if (getVersion() != null) {
@@ -113,10 +114,12 @@ public class SystemResourceImpl implements ISystemResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.ISystemResource#exportData(java.lang.String)
+     * @see ISystemResource#exportData(java.lang.String)
      */
     @Override
-    public Response exportData(String download) {
+    public Response exportData(String download) throws NotAuthorizedException {
+        securityContext.checkAdminPermissions();
+
         if (BooleanUtils.toBoolean(download)) {
             try {
                 DownloadBean dbean = downloadManager.createDownload(DownloadType.exportJson, "/system/export"); //$NON-NLS-1$
@@ -125,14 +128,12 @@ public class SystemResourceImpl implements ISystemResource {
                 throw new SystemErrorException(e);
             }
         } else {
-            if (!securityContext.isAdmin())
-                throw ExceptionFactory.notAuthorizedException();
             return exportData();
         }
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.ISystemResource#exportData()
+     * @see ISystemResource#exportData()
      */
     @Override
     public Response exportData() {
@@ -152,12 +153,11 @@ public class SystemResourceImpl implements ISystemResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.ISystemResource#importData()
+     * @see ISystemResource#importData()
      */
     @Override
-    public Response importData() {
-        if (!securityContext.isAdmin())
-            throw ExceptionFactory.notAuthorizedException();
+    public Response importData() throws NotAuthorizedException {
+        securityContext.checkAdminPermissions();
 
         // First, stream the import data to a temporary file.  We do this so
         // that we can stream the import logging statements back to the HTTP

@@ -1,232 +1,232 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
-  </head>
-
-  <body>
-  <div>
-
-    <div ng-include="headerInclude"></div>
-    <form name="catalog" ng-controller="Apiman.ApiCatalogController" class="page container" ng-cloak="" ng-show="pageState == 'loaded'">
-      <div class="row">
-        <div class="col-md-12">
-          <ol class="breadcrumb">
-            <li><a id="bc-home" href="{{ pluginName }}/"><i class="fa fa-home fa-fw"></i><span apiman-i18n-key="home">Home</span></a></li>
-            <li class="active"><i class="fa fa-book fa-fw"></i><span apiman-i18n-key="api-catalog">API Catalog</span></li>
-          </ol>
-        </div>
-      </div>
-      <div class="row">
-
-        <!-- Catalog Content -->
-        <div class="col-md-12">
-          <div class="container-fluid">
-            <div class="row">
-              <h2 class="title" apiman-i18n-key="catalog">API Catalog</h2>
-            </div>
-            <!-- Helpful hint -->
-            <div class="row">
-              <p class="col-md-10 apiman-label-faded" apiman-i18n-key="catalog-help-text" class="apiman-label-faded">List of APIs available to be imported.  These APIs were retrieved from the configured API Catalog.</p>
-            </div>
-            <!-- HR -->
-            <div class="row">
-              <hr/>
-            </div>
-
-            <!-- Filter and Actions -->
-            <div class="row"
-                 id="api-catalog-filters">
-              <!-- Filter: Search -->
-              <span>
-                <apiman-search-box id="apis-filter"
-                                   apiman-i18n-key="filter-catalog-apis"
-                                   function="filterApis"
-                                   style="height: 28px;"
-                                   placeholder="Filter by API name..." />
-              </span>
-
-              <!-- Filter: Tags -->
-              <ui-select multiple
-              			 id="apiman-tags-filter"
-                         tagging
-                         tagging-label="(press enter)"
-                         ng-model="selected.tags"
-                         theme="bootstrap"
-                         sortable="true"
-                         class="selectpicker api-catalog-filters"
-                         style="width: 250px; margin: 0 10px; box-shadow: none; font-size: small; border-color: #bababa; display: inline-table;"
-                         apiman-i18n-key="choose-a-tag"
-                         title="Choose a tag">
-                <span apiman-i18n-key="filter-by-tags"></span>
-                <ui-select-match placeholder="Filter by tags...">{{$item}}</ui-select-match>
-                <ui-select-choices repeat="tag in tags | filter:$select.search | orderBy: tag">
-                  {{tag}}
-                </ui-select-choices>
-              </ui-select>
-              <button ng-show="selected.tags.length > 0" class="btn btn-default"
-                      style="box-shadow: none; height: 29px; margin: -2px 10px 0 -14px; border-left: none;"
-                      ng-click="clear()"><i class="fa fa-fw fa-close"></i></button>
-
-              <!-- Filter: API Type -->
-              <select ng-model="epType"
-                      apiman-select-picker=""
-                      class="selectpicker api-type"
-                      data-style="btn-default">
-                <option value="" apiman-i18n-key="show-all-api-types">Show All API Types</option>
-                <option value="rest" apiman-i18n-key="show-only-rest">Show REST only</option>
-                <option value="soap" apiman-i18n-key="show-only-soap">Show SOAP only</option>
-              </select>
-
-              <!-- Filter: Internal APIs -->
-              <span ng-show="hasInternalApis"
-                    style="margin-left: 8px; height: 28px;">
-                <input id="hide-internal" type="checkbox" ng-model="hideInternal"></input>
-                <label for="hide-internal"
-                       apiman-i18n-key="hide-internal-apis"
-                       style="padding-left: 3px">Hide internal APIs</label>
-              </span>
-
-              <!-- Filter: Namespace -->
-              <span ng-show="namespaces.length > 0">
-                <select
-                      class="selectpicker api-namespaces"
-                      id="namespace"
-                      apiman-select-picker=""
-                      ng-model="namespace"
-                      ng-change="selectNamespace( namespace )"
-                      title=""
-                      data-live-search="true"
-                      apiman-i18n-skip
-                      data-ng-options="ns.name for ns in namespaces | orderBy: ns.name">
-                </select>
-              </span>
-
-            </div>
-
-
-            <!-- Table of APIs -->
-            <div class="row apiman-card-table">
-              <div class="container-fluid cards">
-                <div ng-repeat="api in filteredApis=(apis | filter: criteria | filter: {endpointType: epType} | selectedTags: selected.tags  | filter:hideInternal:isInternal | orderBy: 'name':reverse)" class="card">
-                  <a ng-show="api.description" uib-tooltip="{{ api.description }}" tooltip-trigger="mouseenter" tooltip-placement="top" href="#" class="info"><i class="fa fa-info-circle"></i></a>
-                  <a ng-show="api.endpointType" uib-tooltip="Endpoint&nbsp;Type:&nbsp;{{ api.endpointType }}" tooltip-trigger="mouseenter" tooltip-placement="top" href="{{ api.definitionUrl }}" class="endpointType" target="_blank"><i class="fa {{ api.ticon }}"></i></a>
-                  <div class="icon">
-                    <i ng-show="!api.iconIsUrl" class="fa fa-{{ api.icon }}"></i>
-                    <img ng-show="api.iconIsUrl" src="{{ api.icon }}"></img>
-                  </div>
-                  <div class="name"><a href="{{ apiEndpoint(api) }}"><span>{{ api.name}}</span></a></div>
-                  <div class="tags" ng-show="api.tags">
-                    <i class="fa fa-fw fa-tags"></i>
-                    <ul>
-                      <li ng-repeat="tag in api.tags | orderBy:tag"><a class="tagLink" title="{{tagTitle(tag)}}" ng-click="addTag(tag)">{{ tagLabel(tag) }}</a></li>
-                    </ul>
-                  </div>
-                  <div><hr /></div>
-                  <div class="actions">
-                     <span class="apiman-action-divider" apiman-i18n-skip="">&nbsp;</span>
-                     <a href="#" ng-click="importApi(api)"><i class="fa fa-cart-arrow-down"></i><span style="margin-left: 5px" apiman-i18n-key="import">Import</span></a>
-                     <span ng-show="api.definitionType == 'SwaggerJSON' || api.definitionType == 'External'"
-                           class="apiman-action-divider" apiman-i18n-skip="">|</span>
-                     <a ng-show="api.definitionType == 'SwaggerJSON'" href="{{ pluginName }}/catalog/api-catalog/{{ api.name | urlEncode }}/def" target="{{api.definitionType == 'External' ? '_blank' : ''}}"><i class="fa fa-sitemap"></i><span style="margin-left: 5px" apiman-i18n-key="definition">Definition</span></a>
-                     <a ng-show="api.definitionType == 'External'" href="{{ api.definitionUrl }}" target="_blank"><i class="fa fa-external-link"></i><span style="margin-left: 5px" apiman-i18n-key="definition">Definition</span></a>
-                  </div>
-                </div>
-              </div>
-              <div class="alert alert-info" ng-show="filteredApis.length == 0">
-                <span class="pficon pficon-info"></span>
-                <strong apiman-i18n-key="no-apis-warning.summary">No APIs found.</strong>
-                <p apiman-i18n-key="no-apis-warning.detail">
-                  No APIs matching the above filter criteria were found in the API catalog.  Perhaps try changing your filter(s)?
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <script type="text/ng-template" id="importApiModal.html">
-        <div class="modal-header">
-            <h3 class="modal-title">
-              <span apiman-i18n-key="import-api">Import API</span>
-            </h3>
-        </div>
-        <div class="modal-body">
-            <div class="apiman-entity-new">
-
-
-      <!-- Choose org and api name -->
-      <div ng-show="orgs.length > 0">
-        <div class="row">
-          <dl class="org">
-            <dt apiman-i18n-key="organization">Organization</dt>
-            <dd>
-              <div class="btn-group">
-                <button name="org" type="button" id="selector-org" class="btn btn-default dropdown-toggle" data-toggle="dropdown" required>
-                  <span id="selector-org-value">{{selectedOrg.name}}</span> &nbsp;&nbsp;<span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu">
-                   <li ng-repeat="org in orgs"><a href="#" ng-click="setOrg( org )">{{ org.name }}</a></li>
-                </ul>
-              </div>
-              <span ng-show="catalog.org.$invalid" apiman-i18n-key="required-error">The value is required!</span>
-            </dd>
-          </dl>
-          <dl class="slash">
-            <dt apiman-i18n-skip>&nbsp;</dt>
-            <dd>
-              <span class="divider" apiman-i18n-skip>/</span>
-            </dd>
-          </dl>
-          <dl class="name">
-            <dt apiman-i18n-key="api-name">API Name</dt>
-            <dd>
-              <input name="name" ng-model="api.name" type="text" class="apiman-form-control form-control entityname" id="apiman-entityname" apiman-i18n-key="enter-api-name" placeholder="Enter API name..." required name-validation />
-              <span ng-show="catalog.name.$touched && catalog.name.$invalid" apiman-i18n-key="name-error">The value is invalid!</span>
-            </dd>
-          </dl>
-        </div>
-        <!-- Initial API Version -->
-        <div class="row">
-          <dl>
-            <dt apiman-i18n-key="initial-version">Initial Version</dt>
-            <dd>
-              <input name="initialVersion" ng-model="api.initialVersion" type="text" class="apiman-form-control form-control version" id="apiman-version" value="1.0" required version-validation />
-              <span ng-show="catalog.initialVersion.$touched && catalog.initialVersion.$invalid" apiman-i18n-key="version-error">The value is invalid!</span>
-            </dd>
-          </dl>
-        </div>
-        <!-- Description of api -->
-        <div class="row">
-          <dl style="width: 100%">
-            <dt apiman-i18n-key="description">Description</dt>
-            <dd>
-              <textarea style="width: 90%" ng-model="api.description" class="apiman-form-control form-control description" id="apiman-description" apiman-i18n-key="enter-api-description" placeholder="Enter API description (optional)..." text-validation></textarea>
-              <span ng-show="catalog.description.$touched && catalog.description.$invalid" apiman-i18n-key="text-error">The value is invalid!</span>
-            </dd>
-          </dl>
-        </div>
-      </div>
-      <div ng-hide="orgs.length > 0" class="apiman-no-content container-fluid">
-        <div class="row">
-          <div class="col-md-12">
-            <p class="apiman-no-entities-description" apiman-i18n-key="missing-create-api-permission">You don't have permission to create an API in any of your Organizations (or you aren't in any organizations)!  Please become a member of an existing Organization or create a new one before trying to create an API.</p>
-          </div>
-        </div>
-      </div>
-
-
-
-            </div>
-        </div>
-        <div class="modal-footer">
-            <button class="btn btn-primary" ng-disabled="!catalog.$dirty || catalog.$invalid" data-field="importButton" type="button" apiman-action-btn="" ng-click="import()" apiman-i18n-key="import" placeholder="Importing..." data-icon="fa-cog">Import</button>
-            <button class="btn btn-default btn-cancel" type="button" ng-click="cancel()">Cancel</button>
-        </div>
-      </script>
-
-    </div>
-  </div>
-  </body>
-</html>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+  </head>
+
+  <body>
+  <div>
+
+    <div ng-include="headerInclude"></div>
+    <form name="catalog" ng-controller="Apiman.ApiCatalogController" class="page container" ng-cloak="" ng-show="pageState == 'loaded'">
+      <div class="row">
+        <div class="col-md-12">
+          <ol class="breadcrumb">
+            <li><a id="bc-home" href="{{ pluginName }}/"><i class="fa fa-home fa-fw"></i><span apiman-i18n-key="home">Home</span></a></li>
+            <li class="active"><i class="fa fa-book fa-fw"></i><span apiman-i18n-key="api-catalog">API Catalog</span></li>
+          </ol>
+        </div>
+      </div>
+      <div class="row">
+
+        <!-- Catalog Content -->
+        <div class="col-md-12">
+          <div class="container-fluid">
+            <div class="row">
+              <h2 class="title" apiman-i18n-key="catalog">API Catalog</h2>
+            </div>
+            <!-- Helpful hint -->
+            <div class="row">
+              <p class="col-md-10 apiman-label-faded" apiman-i18n-key="catalog-help-text" class="apiman-label-faded">List of APIs available to be imported.  These APIs were retrieved from the configured API Catalog.</p>
+            </div>
+            <!-- HR -->
+            <div class="row">
+              <hr/>
+            </div>
+
+            <!-- Filter and Actions -->
+            <div class="row"
+                 id="api-catalog-filters">
+              <!-- Filter: Search -->
+              <span>
+                <apiman-search-box id="apis-filter"
+                                   apiman-i18n-key="filter-catalog-apis"
+                                   function="filterApis"
+                                   style="height: 28px;"
+                                   placeholder="Filter by API name..." />
+              </span>
+
+              <!-- Filter: Tags -->
+              <ui-select multiple
+              			 id="apiman-tags-filter"
+                         tagging
+                         tagging-label="(press enter)"
+                         ng-model="selected.tags"
+                         theme="bootstrap"
+                         sortable="true"
+                         class="selectpicker api-catalog-filters"
+                         style="width: 250px; margin: 0 10px; box-shadow: none; font-size: small; border-color: #bababa; display: inline-table;"
+                         apiman-i18n-key="choose-a-tag"
+                         title="Choose a tag">
+                <span apiman-i18n-key="filter-by-tags"></span>
+                <ui-select-match placeholder="Filter by tags...">{{$item}}</ui-select-match>
+                <ui-select-choices repeat="tag in tags | filter:$select.search | orderBy: tag">
+                  {{tag}}
+                </ui-select-choices>
+              </ui-select>
+              <button ng-show="selected.tags.length > 0" class="btn btn-default"
+                      style="box-shadow: none; height: 29px; margin: -2px 10px 0 -14px; border-left: none;"
+                      ng-click="clear()"><i class="fa fa-fw fa-close"></i></button>
+
+              <!-- Filter: API Type -->
+              <select ng-model="epType"
+                      apiman-select-picker=""
+                      class="selectpicker api-type"
+                      data-style="btn-default">
+                <option value="" apiman-i18n-key="show-all-api-types">Show All API Types</option>
+                <option value="rest" apiman-i18n-key="show-only-rest">Show REST only</option>
+                <option value="soap" apiman-i18n-key="show-only-soap">Show SOAP only</option>
+              </select>
+
+              <!-- Filter: Internal APIs -->
+              <span ng-show="hasInternalApis"
+                    style="margin-left: 8px; height: 28px;">
+                <input id="hide-internal" type="checkbox" ng-model="hideInternal"></input>
+                <label for="hide-internal"
+                       apiman-i18n-key="hide-internal-apis"
+                       style="padding-left: 3px">Hide internal APIs</label>
+              </span>
+
+              <!-- Filter: Namespace -->
+              <span ng-show="namespaces.length > 0">
+                <select
+                      class="selectpicker api-namespaces"
+                      id="namespace"
+                      apiman-select-picker=""
+                      ng-model="namespace"
+                      ng-change="selectNamespace( namespace )"
+                      title=""
+                      data-live-search="true"
+                      apiman-i18n-skip
+                      data-ng-options="ns.name for ns in namespaces | orderBy: ns.name">
+                </select>
+              </span>
+
+            </div>
+
+
+            <!-- Table of APIs -->
+            <div class="row apiman-card-table">
+              <div class="container-fluid cards">
+                <div ng-repeat="api in filteredApis=(apis | filter: criteria | filter: {endpointType: epType} | selectedTags: selected.tags  | filter:hideInternal:isInternal | orderBy: 'name':reverse)" class="card">
+                  <a ng-show="api.description" uib-tooltip="{{ api.description }}" tooltip-trigger="mouseenter" tooltip-placement="top" href="#" class="info"><i class="fa fa-info-circle"></i></a>
+                  <a ng-show="api.endpointType" uib-tooltip="Endpoint&nbsp;Type:&nbsp;{{ api.endpointType }}" tooltip-trigger="mouseenter" tooltip-placement="top" href="{{ api.definitionUrl }}" class="endpointType" target="_blank"><i class="fa {{ api.ticon }}"></i></a>
+                  <div class="icon">
+                    <i ng-show="!api.iconIsUrl" class="fa fa-{{ api.icon }}"></i>
+                    <img ng-show="api.iconIsUrl" src="{{ api.icon }}"></img>
+                  </div>
+                  <div class="name"><a href="{{ apiEndpoint(api) }}"><span>{{ api.name}}</span></a></div>
+                  <div class="tags" ng-show="api.tags">
+                    <i class="fa fa-fw fa-tags"></i>
+                    <ul>
+                      <li ng-repeat="tag in api.tags | orderBy:tag"><a class="tagLink" title="{{tagTitle(tag)}}" ng-click="addTag(tag)">{{ tagLabel(tag) }}</a></li>
+                    </ul>
+                  </div>
+                  <div><hr /></div>
+                  <div class="actions">
+                     <span class="apiman-action-divider" apiman-i18n-skip="">&nbsp;</span>
+                     <a href="#" ng-click="importApi(api)"><i class="fa fa-cart-arrow-down"></i><span style="margin-left: 5px" apiman-i18n-key="import">Import</span></a>
+                     <span ng-show="api.definitionType == 'SwaggerJSON' || api.definitionType == 'SwaggerYAML' || api.definitionType == 'External'"
+                           class="apiman-action-divider" apiman-i18n-skip="">|</span>
+                     <a ng-show="api.definitionType == 'SwaggerJSON'" href="{{ pluginName }}/catalog/api-catalog/{{ api.name | urlEncode }}/def" target="{{api.definitionType == 'External' ? '_blank' : ''}}"><i class="fa fa-sitemap"></i><span style="margin-left: 5px" apiman-i18n-key="definition">Definition</span></a>
+                     <a ng-show="api.definitionType == 'External'" href="{{ api.definitionUrl }}" target="_blank"><i class="fa fa-external-link"></i><span style="margin-left: 5px" apiman-i18n-key="definition">Definition</span></a>
+                  </div>
+                </div>
+              </div>
+              <div class="alert alert-info" ng-show="filteredApis.length == 0">
+                <span class="pficon pficon-info"></span>
+                <strong apiman-i18n-key="no-apis-warning.summary">No APIs found.</strong>
+                <p apiman-i18n-key="no-apis-warning.detail">
+                  No APIs matching the above filter criteria were found in the API catalog.  Perhaps try changing your filter(s)?
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <script type="text/ng-template" id="importApiModal.html">
+        <div class="modal-header">
+            <h3 class="modal-title">
+              <span apiman-i18n-key="import-api">Import API</span>
+            </h3>
+        </div>
+        <div class="modal-body">
+            <div class="apiman-entity-new">
+
+
+      <!-- Choose org and api name -->
+      <div ng-show="orgs.length > 0">
+        <div class="row">
+          <dl class="org">
+            <dt apiman-i18n-key="organization">Organization</dt>
+            <dd>
+              <div class="btn-group">
+                <button name="org" type="button" id="selector-org" class="btn btn-default dropdown-toggle" data-toggle="dropdown" required>
+                  <span id="selector-org-value">{{selectedOrg.name}}</span> &nbsp;&nbsp;<span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                   <li ng-repeat="org in orgs"><a href="#" ng-click="setOrg( org )">{{ org.name }}</a></li>
+                </ul>
+              </div>
+              <span ng-show="catalog.org.$invalid" apiman-i18n-key="required-error">The value is required!</span>
+            </dd>
+          </dl>
+          <dl class="slash">
+            <dt apiman-i18n-skip>&nbsp;</dt>
+            <dd>
+              <span class="divider" apiman-i18n-skip>/</span>
+            </dd>
+          </dl>
+          <dl class="name">
+            <dt apiman-i18n-key="api-name">API Name</dt>
+            <dd>
+              <input name="name" ng-model="api.name" type="text" class="apiman-form-control form-control entityname" id="apiman-entityname" apiman-i18n-key="enter-api-name" placeholder="Enter API name..." required name-validation />
+              <span ng-show="catalog.name.$touched && catalog.name.$invalid" apiman-i18n-key="name-error">The value is invalid!</span>
+            </dd>
+          </dl>
+        </div>
+        <!-- Initial API Version -->
+        <div class="row">
+          <dl>
+            <dt apiman-i18n-key="initial-version">Initial Version</dt>
+            <dd>
+              <input name="initialVersion" ng-model="api.initialVersion" type="text" class="apiman-form-control form-control version" id="apiman-version" value="1.0" required version-validation />
+              <span ng-show="catalog.initialVersion.$touched && catalog.initialVersion.$invalid" apiman-i18n-key="version-error">The value is invalid!</span>
+            </dd>
+          </dl>
+        </div>
+        <!-- Description of api -->
+        <div class="row">
+          <dl style="width: 100%">
+            <dt apiman-i18n-key="description">Description</dt>
+            <dd>
+              <textarea style="width: 90%" ng-model="api.description" class="apiman-form-control form-control description" id="apiman-description" apiman-i18n-key="enter-api-description" placeholder="Enter API description (optional)..." text-validation></textarea>
+              <span ng-show="catalog.description.$touched && catalog.description.$invalid" apiman-i18n-key="text-error">The value is invalid!</span>
+            </dd>
+          </dl>
+        </div>
+      </div>
+      <div ng-hide="orgs.length > 0" class="apiman-no-content container-fluid">
+        <div class="row">
+          <div class="col-md-12">
+            <p class="apiman-no-entities-description" apiman-i18n-key="missing-create-api-permission">You don't have permission to create an API in any of your Organizations (or you aren't in any organizations)!  Please become a member of an existing Organization or create a new one before trying to create an API.</p>
+          </div>
+        </div>
+      </div>
+
+
+
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" ng-disabled="!catalog.$dirty || catalog.$invalid" data-field="importButton" type="button" apiman-action-btn="" ng-click="import()" apiman-i18n-key="import" placeholder="Importing..." data-icon="fa-cog">Import</button>
+            <button class="btn btn-default btn-cancel" type="button" ng-click="cancel()">Cancel</button>
+        </div>
+      </script>
+
+    </div>
+  </div>
+  </body>
+</html>

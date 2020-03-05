@@ -26,7 +26,7 @@
           <p class="description" apiman-i18n-key="find-org-description">Use this page to find Organizations you may wish to join.</p>
         </div>
         <div class="col-md-6">
-          <form ng-submit="searchOrg(orgName)">
+          <form ng-submit="searchOrg(orgName, currentPage, pageSize)">
             <input id="apiman-search" ng-model="orgName" type="text" class="apiman-form-control form-control input-search" apiman-i18n-key="searchfor-orgs" placeholder="Enter a word or phrase to search by..."></input>
             <button id="search-btn" type="submit" class="btn btn-default btn-search" apiman-i18n-key="search" data-field="searchButton"">Search</input>
           </form>
@@ -48,14 +48,24 @@
               <div class="col-md-3"></div>
             </div>
           </div>
-
           <div ng-show="orgs.length > 0">
-	        <div class="count">
-	          Found {{ orgs.length }} matching organizations.
-	        </div>
+            <div class="row">
+	        <div class="count col-md-8">
+	          Found {{resultCount}} matching organizations.
+          </div>
+          <div class="col-md-3 left-spacer-30" ng-show="resultCount > 10">
+            <span apiman-i18n-key="select-page-size">Select page size </span>
+            <select ng-model="pageSize" ng-init="pageSize = '10'" ng-change="searchOrg(orgName, currentPage, pageSize)">
+              <option value="10" ng-selected="true">10</option>
+              <option value="25">25</option>
+              <option value="50">50</option>
+            </select>
+          </div>
+
+        </div>
 	        <div class="item" ng-repeat="org in orgs">
 	          <div class="title"><i class="fa fa-shield icon"></i><a href="{{ pluginName }}/browse/orgs/{{ org.id }}">{{ org.name }}</a></div>
-	          <div class="description" title="{{ org.description }}">{{ org.description }}</div>
+	          <div class="description" title="{{ org.description }}">{{ org.description | limitTo: 60 }}<span ng-show="org.description.length > 60">...</span></div>
 <!-- 	          <div class="actions"> -->
 <!-- 	            <button class="btn btn-default">Request Membership</button> -->
 <!-- 	          </div> -->
@@ -64,7 +74,13 @@
           </div>
         </div>
       </div>
-      
+
+      <div class="row">
+          <div class="col-md-6" ng-show="orgs.length > 0 && resultCount > pageSize">
+            <uib-pagination ng-init="currentPage = 1" total-items="resultCount" boundary-link-numbers="true" ng-model="currentPage"
+              items-per-page="pageSize" ng-change="searchOrg(orgName, currentPage, pageSize)" direction-links="true" max-size="5" rotate="true" force-ellipses="true" />
+          </div>
+      </div>  
     </div> <!-- /container -->
   </div>
   </body>

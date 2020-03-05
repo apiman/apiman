@@ -44,8 +44,6 @@ module Apiman {
                         $scope.apiDefinition = $scope.updatedApiDefinition;
                         $rootScope.isDirty = false;
                         $scope.saveButton.state = 'complete';
-                        EntityStatusSvc.getEntity().modifiedOn = Date.now();
-                        EntityStatusSvc.getEntity().modifiedBy = CurrentUser.getCurrentUser();
                     },
                     function(error) {
                         Logger.error("Error updating definition: {0}", error);
@@ -162,8 +160,6 @@ module Apiman {
                         loadDefinition();
                         $rootScope.isDirty = false;
                         $scope.saveButton.state = 'complete';
-                        EntityStatusSvc.getEntity().modifiedOn = Date.now();
-                        EntityStatusSvc.getEntity().modifiedBy = CurrentUser.getCurrentUser();
                     },
                     function(error) {
                         Logger.error("Error updating definition: {0}", error);

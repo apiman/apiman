@@ -1,0 +1,6 @@
+GET /users/user1/planorgs user2/user2
+----
+403
+Content-Type: application/json
+
+{"type":"NotAuthorizedException","errorCode":-1,"message":"Access denied.","moreInfoUrl":null}

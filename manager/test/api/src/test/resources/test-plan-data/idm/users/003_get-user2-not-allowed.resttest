@@ -1,0 +1,6 @@
+GET /users/user2 user1/user1
+----
+403
+Content-Type: application/json
+
+{"type":"NotAuthorizedException","errorCode":-1,"message":"Access denied.","moreInfoUrl":null}

@@ -38,5 +38,9 @@
     <test name="Invalid Filter Operator">test-plan-data/searching/validation/006_query-invalid-filter-operator.resttest</test>
   </testGroup>
 
+  <!-- How about some user testing? -->
+  <testGroup name="User Testing">
+    <test name="Find Users by Name">test-plan-data/searching/users/001_find-users.resttest</test>
+  </testGroup>
 
 </testPlan>

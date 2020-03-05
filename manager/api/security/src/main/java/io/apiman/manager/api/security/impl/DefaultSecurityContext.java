@@ -27,53 +27,10 @@ import javax.servlet.http.HttpServletRequest;
 @ApplicationScoped @Alternative
 public class DefaultSecurityContext extends AbstractSecurityContext {
 
-    public static final ThreadLocal<HttpServletRequest> servletRequest = new ThreadLocal<>();
-
     /**
      * Constructor.
      */
     public DefaultSecurityContext() {
-    }
-
-    /**
-     * @see io.apiman.manager.api.security.ISecurityContext#getRequestHeader(java.lang.String)
-     */
-    @Override
-    public String getRequestHeader(String headerName) {
-        return servletRequest.get().getHeader(headerName);
-    }
-
-    /**
-     * @see io.apiman.manager.api.security.ISecurityContext#getCurrentUser()
-     */
-    @Override
-    public String getCurrentUser() {
-        return servletRequest.get().getRemoteUser();
-    }
-
-    /**
-     * @see io.apiman.manager.api.security.ISecurityContext#getEmail()
-     */
-    @Override
-    public String getEmail() {
-        return null;
-    }
-
-    /**
-     * @see io.apiman.manager.api.security.ISecurityContext#getFullName()
-     */
-    @Override
-    public String getFullName() {
-        return null;
-    }
-
-    /**
-     * @see io.apiman.manager.api.security.ISecurityContext#isAdmin()
-     */
-    @Override
-    public boolean isAdmin() {
-        // TODO warning - hard coded role value here
-        return servletRequest.get().isUserInRole("apiadmin"); //$NON-NLS-1$
     }
 
     /**

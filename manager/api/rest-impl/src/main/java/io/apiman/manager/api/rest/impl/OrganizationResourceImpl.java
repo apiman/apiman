@@ -53,14 +53,15 @@ import io.apiman.manager.api.core.util.PolicyTemplateUtil;
 import io.apiman.manager.api.gateway.GatewayAuthenticationException;
 import io.apiman.manager.api.gateway.IGatewayLink;
 import io.apiman.manager.api.gateway.IGatewayLinkFactory;
-import io.apiman.manager.api.rest.contract.IOrganizationResource;
-import io.apiman.manager.api.rest.contract.IRoleResource;
-import io.apiman.manager.api.rest.contract.IUserResource;
-import io.apiman.manager.api.rest.contract.exceptions.*;
+import io.apiman.manager.api.rest.IOrganizationResource;
+import io.apiman.manager.api.rest.IRoleResource;
+import io.apiman.manager.api.rest.IUserResource;
+import io.apiman.manager.api.rest.exceptions.*;
 import io.apiman.manager.api.rest.impl.audit.AuditUtils;
-import io.apiman.manager.api.rest.impl.i18n.Messages;
-import io.apiman.manager.api.rest.impl.util.ExceptionFactory;
+import io.apiman.manager.api.rest.exceptions.i18n.Messages;
+import io.apiman.manager.api.rest.exceptions.util.ExceptionFactory;
 import io.apiman.manager.api.rest.impl.util.FieldValidator;
+import io.apiman.manager.api.rest.impl.util.RestHelper;
 import io.apiman.manager.api.rest.impl.util.SwaggerWsdlHelper;
 import io.apiman.manager.api.security.ISecurityContext;
 import org.apache.commons.io.IOUtils;
@@ -132,10 +133,12 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#create(io.apiman.manager.api.beans.orgs.NewOrganizationBean)
+     * @see IOrganizationResource#create(io.apiman.manager.api.beans.orgs.NewOrganizationBean)
      */
     @Override
     public OrganizationBean create(NewOrganizationBean bean) throws OrganizationAlreadyExistsException, InvalidNameException {
+        securityContext.checkAdminPermissions();
+
         FieldValidator.validateName(bean.getName());
 
         List<RoleBean> autoGrantedRoles;
@@ -193,20 +196,16 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#delete(java.lang.String)
+     * @see IOrganizationResource#delete(java.lang.String)
      */
     @Override
     public void delete(@PathParam("organizationId") String organizationId)
             throws OrganizationNotFoundException, NotAuthorizedException, EntityStillActiveException {
-        try {
-            if (!securityContext.hasPermission(PermissionType.orgAdmin, organizationId))
-                throw ExceptionFactory.notAuthorizedException();
+        securityContext.checkPermissions(PermissionType.orgAdmin, organizationId);
 
+        try {
             storage.beginTx();
-            OrganizationBean organizationBean = storage.getOrganization(organizationId);
-            if (organizationBean == null) {
-                throw ExceptionFactory.organizationNotFoundException(organizationId);
-            }
+            OrganizationBean organizationBean = getOrganizationFromStorage(organizationId);
 
             // Any active app versions?
             Iterator<ClientVersionBean> clientAppsVers = storage.getAllClientVersions(organizationBean, ClientStatus.Registered, 5);
@@ -247,20 +246,16 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#deleteClient(java.lang.String, java.lang.String)
+     * @see IOrganizationResource#deleteClient(java.lang.String, java.lang.String)
      */
     @Override
     public void deleteClient(@PathParam("organizationId") String organizationId, @PathParam("clientId") String clientId)
             throws OrganizationNotFoundException, NotAuthorizedException, EntityStillActiveException {
-        try {
-            if (!securityContext.hasPermission(PermissionType.clientAdmin, organizationId))
-                throw ExceptionFactory.notAuthorizedException();
+        securityContext.checkPermissions(PermissionType.clientAdmin, organizationId);
 
+        try {
             storage.beginTx();
-            ClientBean client = storage.getClient(organizationId, clientId);
-            if (client == null) {
-                throw ExceptionFactory.clientNotFoundException(clientId);
-            }
+            ClientBean client = getClientFromStorage(organizationId, clientId);
             Iterator<ClientVersionBean> clientVersions = storage.getAllClientVersions(organizationId, clientId);
             Iterable<ClientVersionBean> iterable = () -> clientVersions;
 
@@ -285,21 +280,25 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         }
     }
 
+    private ClientBean getClientFromStorage(String organizationId, String clientId) throws StorageException {
+        ClientBean client = storage.getClient(organizationId, clientId);
+        if (client == null) {
+            throw ExceptionFactory.clientNotFoundException(clientId);
+        }
+        return client;
+    }
+
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#deleteApi(java.lang.String, java.lang.String)
+     * @see IOrganizationResource#deleteApi(java.lang.String, java.lang.String)
      */
     @Override
     public void deleteApi(@PathParam("organizationId") String organizationId, @PathParam("apiId") String apiId)
             throws OrganizationNotFoundException, NotAuthorizedException, EntityStillActiveException {
-        try {
-            if (!securityContext.hasPermission(PermissionType.apiAdmin, organizationId))
-                throw ExceptionFactory.notAuthorizedException();
+        securityContext.checkPermissions(PermissionType.apiAdmin, organizationId);
 
+        try {
             storage.beginTx();
-            ApiBean api = storage.getApi(organizationId, apiId);
-            if (api == null) {
-                throw ExceptionFactory.apiNotFoundException(apiId);
-            }
+            ApiBean api = getApiFromStorage(organizationId, apiId);
 
             Iterator<ApiVersionBean> apiVersions = storage.getAllApiVersions(organizationId, apiId);
             Iterable<ApiVersionBean> iterable = () -> apiVersions;
@@ -345,19 +344,24 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#get(java.lang.String)
+     * @see IOrganizationResource#get(java.lang.String)
      */
     @Override
-    public OrganizationBean get(String organizationId) throws OrganizationNotFoundException, NotAuthorizedException {
+    public OrganizationBean get(String organizationId) throws OrganizationNotFoundException {
+        // No permission check is needed, because this would break All Organizations UI
+
         try {
             storage.beginTx();
-            OrganizationBean organizationBean = storage.getOrganization(organizationId);
-            if (organizationBean == null) {
-                throw ExceptionFactory.organizationNotFoundException(organizationId);
-            }
+            OrganizationBean organizationBean = getOrganizationFromStorage(organizationId);
             storage.commitTx();
             log.debug(String.format("Got organization %s: %s", organizationBean.getName(), organizationBean)); //$NON-NLS-1$
-            return organizationBean;
+
+            // Hide sensitive data and set only needed data for the UI
+            if (securityContext.hasPermission(PermissionType.orgView, organizationId)){
+                return organizationBean;
+            } else {
+                return RestHelper.hideSensitiveDataFromOrganizationBean(organizationBean);
+            }
         } catch (AbstractRestException e) {
             storage.rollbackTx();
             throw e;
@@ -368,19 +372,31 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#update(java.lang.String, io.apiman.manager.api.beans.orgs.UpdateOrganizationBean)
+     * Get the organization from storage.
+     * Will throw an exception if no organization is found
+     * @param organizationId the organizationId
+     * @return the organization
+     * @throws OrganizationNotFoundException if no organizations is found
+     */
+    private OrganizationBean getOrganizationFromStorage(String organizationId) throws OrganizationNotFoundException, StorageException {
+        OrganizationBean organizationBean = storage.getOrganization(organizationId);
+        if (organizationBean == null) {
+            throw ExceptionFactory.organizationNotFoundException(organizationId);
+        }
+        return organizationBean;
+    }
+
+    /**
+     * @see IOrganizationResource#update(java.lang.String, io.apiman.manager.api.beans.orgs.UpdateOrganizationBean)
      */
     @Override
     public void update(String organizationId, UpdateOrganizationBean bean)
             throws OrganizationNotFoundException, NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.orgEdit, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
+        securityContext.checkPermissions(PermissionType.orgEdit, organizationId);
+
         try {
             storage.beginTx();
-            OrganizationBean orgForUpdate = storage.getOrganization(organizationId);
-            if (orgForUpdate == null) {
-                throw ExceptionFactory.organizationNotFoundException(organizationId);
-            }
+            OrganizationBean orgForUpdate = getOrganizationFromStorage(organizationId);
 
             EntityUpdatedData auditData = new EntityUpdatedData();
             if (AuditUtils.valueChanged(orgForUpdate.getDescription(), bean.getDescription())) {
@@ -401,13 +417,16 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#activity(java.lang.String, int, int)
+     * @see IOrganizationResource#activity(java.lang.String, int, int)
      */
     @Override
     public SearchResultsBean<AuditEntryBean> activity(String organizationId, int page, int pageSize)
             throws OrganizationNotFoundException, NotAuthorizedException {
-        if (!securityContext.isMemberOf(organizationId))
+        // Only members are allowed to see this
+        if (!securityContext.isMemberOf(organizationId)) {
             throw ExceptionFactory.notAuthorizedException();
+        }
+
         if (page <= 1) {
             page = 1;
         }
@@ -430,14 +449,14 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#createClient(java.lang.String, io.apiman.manager.api.beans.clients.NewClientBean)
+     * @see IOrganizationResource#createClient(java.lang.String, io.apiman.manager.api.beans.clients.NewClientBean)
      */
     @Override
     public ClientBean createClient(String organizationId, NewClientBean bean)
             throws OrganizationNotFoundException, ClientAlreadyExistsException, NotAuthorizedException,
             InvalidNameException {
-        if (!securityContext.hasPermission(PermissionType.clientEdit, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
+        securityContext.checkPermissions(PermissionType.clientEdit, organizationId);
+
         FieldValidator.validateName(bean.getName());
 
         ClientBean newClient = new ClientBean();
@@ -449,14 +468,11 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         try {
             // Store/persist the new client
             storage.beginTx();
-            OrganizationBean org = storage.getOrganization(organizationId);
-            if (org == null) {
-                throw ExceptionFactory.organizationNotFoundException(organizationId);
-            }
+            OrganizationBean org = getOrganizationFromStorage(organizationId);
             newClient.setOrganization(org);
 
             if (storage.getClient(org.getId(), newClient.getId()) != null) {
-                throw ExceptionFactory.organizationAlreadyExistsException(bean.getName());
+                throw ExceptionFactory.clientAlreadyExistsException(bean.getName());
             }
 
             storage.createClient(newClient);
@@ -482,17 +498,16 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getClient(java.lang.String, java.lang.String)
+     * @see IOrganizationResource#getClient(java.lang.String, java.lang.String)
      */
     @Override
     public ClientBean getClient(String organizationId, String clientId)
             throws ClientNotFoundException, NotAuthorizedException {
+        securityContext.checkPermissions(PermissionType.clientView, organizationId);
+
         try {
             storage.beginTx();
-            ClientBean clientBean = storage.getClient(organizationId, clientId);
-            if (clientBean == null) {
-                throw ExceptionFactory.clientNotFoundException(clientId);
-            }
+            ClientBean clientBean = getClientFromStorage(organizationId, clientId);
             storage.commitTx();
             log.debug(String.format("Got client %s: %s", clientBean.getName(), clientBean)); //$NON-NLS-1$
             return clientBean;
@@ -506,13 +521,13 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getClientActivity(java.lang.String, java.lang.String, int, int)
+     * @see IOrganizationResource#getClientActivity(java.lang.String, java.lang.String, int, int)
      */
     @Override
     public SearchResultsBean<AuditEntryBean> getClientActivity(String organizationId, String clientId,
             int page, int pageSize) throws ClientNotFoundException, NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.clientView, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
+        securityContext.checkPermissions(PermissionType.clientView, organizationId);
+
         if (page <= 1) {
             page = 1;
         }
@@ -535,12 +550,12 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#listClients(java.lang.String)
+     * @see IOrganizationResource#listClients(java.lang.String)
      */
     @Override
     public List<ClientSummaryBean> listClients(String organizationId) throws OrganizationNotFoundException,
             NotAuthorizedException {
-        get(organizationId);
+        securityContext.checkPermissions(PermissionType.orgView, organizationId);
 
         try {
             return query.getClientsInOrg(organizationId);
@@ -550,19 +565,16 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#updateClient(java.lang.String, java.lang.String, io.apiman.manager.api.beans.clients.UpdateClientBean)
+     * @see IOrganizationResource#updateClient(java.lang.String, java.lang.String, io.apiman.manager.api.beans.clients.UpdateClientBean)
      */
     @Override
     public void updateClient(String organizationId, String clientId, UpdateClientBean bean)
             throws ClientNotFoundException, NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.clientEdit, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
+        securityContext.checkPermissions(PermissionType.clientEdit, organizationId);
+
         try {
             storage.beginTx();
-            ClientBean clientForUpdate = storage.getClient(organizationId, clientId);
-            if (clientForUpdate == null) {
-                throw ExceptionFactory.clientNotFoundException(clientId);
-            }
+            ClientBean clientForUpdate = getClientFromStorage(organizationId, clientId);
             EntityUpdatedData auditData = new EntityUpdatedData();
             if (AuditUtils.valueChanged(clientForUpdate.getDescription(), bean.getDescription())) {
                 auditData.addChange("description", clientForUpdate.getDescription(), bean.getDescription()); //$NON-NLS-1$
@@ -582,24 +594,20 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#createClientVersion(java.lang.String, java.lang.String, io.apiman.manager.api.beans.clients.NewClientVersionBean)
+     * @see IOrganizationResource#createClientVersion(java.lang.String, java.lang.String, io.apiman.manager.api.beans.clients.NewClientVersionBean)
      */
     @Override
     public ClientVersionBean createClientVersion(String organizationId, String clientId,
             NewClientVersionBean bean) throws ClientNotFoundException, NotAuthorizedException,
             InvalidVersionException, ClientVersionAlreadyExistsException {
-        if (!securityContext.hasPermission(PermissionType.clientEdit, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
+        securityContext.checkPermissions(PermissionType.clientEdit, organizationId);
+
         FieldValidator.validateVersion(bean.getVersion());
 
         ClientVersionBean newVersion;
         try {
             storage.beginTx();
-            ClientBean client = storage.getClient(organizationId, clientId);
-            if (client == null) {
-                throw ExceptionFactory.clientNotFoundException(clientId);
-            }
-
+            ClientBean client = getClientFromStorage(organizationId, clientId);
             if (storage.getClientVersion(organizationId, clientId, bean.getVersion()) != null) {
                 throw ExceptionFactory.clientVersionAlreadyExistsException(clientId, bean.getVersion());
             }
@@ -642,37 +650,30 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getClientApiKey(java.lang.String, java.lang.String, java.lang.String)
+     * @see IOrganizationResource#getClientApiKey(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
     public ApiKeyBean getClientApiKey(String organizationId, String clientId, String version)
             throws ClientNotFoundException, NotAuthorizedException, InvalidVersionException {
-        if (!securityContext.hasPermission(PermissionType.clientView, organizationId) ) {
-            throw ExceptionFactory.notAuthorizedException();
-        }
-        ClientVersionBean client = getClientVersionInternal(organizationId, clientId, version, true);
+        securityContext.checkPermissions(PermissionType.clientView, organizationId);
+
+        ClientVersionBean client = getClientVersionInternal(organizationId, clientId, version);
         ApiKeyBean apiKeyBean = new ApiKeyBean();
         apiKeyBean.setApiKey(client.getApikey());
         return apiKeyBean;
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#updateClientApiKey(java.lang.String, java.lang.String, java.lang.String, io.apiman.manager.api.beans.clients.ApiKeyBean)
+     * @see IOrganizationResource#updateClientApiKey(java.lang.String, java.lang.String, java.lang.String, io.apiman.manager.api.beans.clients.ApiKeyBean)
      */
     @Override
     public ApiKeyBean updateClientApiKey(String organizationId, String clientId, String version, ApiKeyBean bean)
             throws ClientNotFoundException, NotAuthorizedException, InvalidVersionException,
             InvalidClientStatusException {
-        if (!securityContext.hasPermission(PermissionType.clientEdit, organizationId) ) {
-            throw ExceptionFactory.notAuthorizedException();
-        }
+        securityContext.checkPermissions(PermissionType.clientEdit, organizationId);
 
         try {
-            storage.beginTx();
-            ClientVersionBean clientVersion = storage.getClientVersion(organizationId, clientId, version);
-            if (clientVersion == null) {
-                throw ExceptionFactory.clientVersionNotFoundException(clientId, version);
-            }
+            ClientVersionBean clientVersion = getClientVersionInternal(organizationId, clientId, version);
 
             if (clientVersion.getStatus() == ClientStatus.Registered) {
                 throw ExceptionFactory.invalidClientStatusException();
@@ -686,9 +687,11 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             clientVersion.setApikey(newApiKey);
             clientVersion.setModifiedBy(securityContext.getCurrentUser());
             clientVersion.setModifiedOn(new Date());
-            storage.updateClientVersion(clientVersion);
 
+            storage.beginTx();
+            storage.updateClientVersion(clientVersion);
             storage.commitTx();
+
             log.debug(String.format("Updated an API Key for client %s version %s", clientVersion.getClient().getName(), clientVersion)); //$NON-NLS-1$
             ApiKeyBean rval = new ApiKeyBean();
             rval.setApiKey(newApiKey);
@@ -735,35 +738,28 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getClientVersion(java.lang.String, java.lang.String, java.lang.String)
+     * @see IOrganizationResource#getClientVersion(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
     public ClientVersionBean getClientVersion(String organizationId, String clientId, String version)
             throws ClientVersionNotFoundException, NotAuthorizedException {
-        boolean hasPermission = securityContext.hasPermission(PermissionType.clientView, organizationId);
-        return getClientVersionInternal(organizationId, clientId, version, hasPermission);
+        securityContext.checkPermissions(PermissionType.clientView, organizationId);
+        return getClientVersionInternal(organizationId, clientId, version);
     }
 
     /**
-     * Does the same thing as getClientVersion() but accepts the 'hasPermission' param,
+     * Gets the client version internally
      * which lets callers dictate whether the user has clientView permission for the org.
-     * @param organizationId
-     * @param clientId
-     * @param version
-     * @param hasPermission
+     * @param organizationId the organizationId
+     * @param clientId the clientId
+     * @param version the version
+     * @return the client version
+     * @throws ClientVersionNotFoundException if client not found
      */
-    protected ClientVersionBean getClientVersionInternal(String organizationId, String clientId, String version,
-            boolean hasPermission) {
+    protected ClientVersionBean getClientVersionInternal(String organizationId, String clientId, String version) throws ClientVersionNotFoundException {
         try {
             storage.beginTx();
-            ClientVersionBean clientVersion = storage.getClientVersion(organizationId, clientId, version);
-            if (clientVersion == null) {
-                throw ExceptionFactory.clientVersionNotFoundException(clientId, version);
-            }
-            // Hide some data if the user doesn't have the clientView permission
-            if (!hasPermission) {
-                clientVersion.setApikey(null);
-            }
+            ClientVersionBean clientVersion = getClientVersionFromStorage(organizationId, clientId, version);
             storage.commitTx();
             log.debug(String.format("Got new client version %s: %s", clientVersion.getClient().getName(), clientVersion)); //$NON-NLS-1$
             return clientVersion;
@@ -776,15 +772,23 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         }
     }
 
+    private ClientVersionBean getClientVersionFromStorage(String organizationId, String clientId, String version) throws StorageException, ClientVersionNotFoundException {
+        ClientVersionBean clientVersion = storage.getClientVersion(organizationId, clientId, version);
+        if (clientVersion == null) {
+            throw ExceptionFactory.clientVersionNotFoundException(clientId, version);
+        }
+        return clientVersion;
+    }
+
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getClientVersionActivity(java.lang.String, java.lang.String, java.lang.String, int, int)
+     * @see IOrganizationResource#getClientVersionActivity(java.lang.String, java.lang.String, java.lang.String, int, int)
      */
     @Override
     public SearchResultsBean<AuditEntryBean> getClientVersionActivity(String organizationId,
             String clientId, String version, int page, int pageSize)
             throws ClientVersionNotFoundException, NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.clientView, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
+        securityContext.checkPermissions(PermissionType.clientView, organizationId);
+
         if (page <= 1) {
             page = 1;
         }
@@ -807,14 +811,13 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getClientUsagePerApi(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+     * @see IOrganizationResource#getClientUsagePerApi(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
     public ClientUsagePerApiBean getClientUsagePerApi(String organizationId, String clientId,
             String version, String fromDate, String toDate) throws NotAuthorizedException,
             InvalidMetricCriteriaException {
-        if (!securityContext.hasPermission(PermissionType.clientView, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
+        securityContext.checkPermissions(PermissionType.clientView, organizationId);
 
         if (fromDate == null) {
             throw ExceptionFactory.invalidMetricCriteriaException(Messages.i18n.format("MissingOrInvalidParam", "fromDate")); //$NON-NLS-1$ //$NON-NLS-2$
@@ -832,22 +835,17 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#listClientVersions(java.lang.String, java.lang.String)
+     * @see IOrganizationResource#listClientVersions(java.lang.String, java.lang.String)
      */
     @Override
     public List<ClientVersionSummaryBean> listClientVersions(String organizationId, String clientId)
             throws ClientNotFoundException, NotAuthorizedException {
+        securityContext.checkPermissions(PermissionType.clientView, organizationId);
         // Try to get the client first - will throw a ClientNotFoundException if not found.
         getClient(organizationId, clientId);
 
         try {
             List<ClientVersionSummaryBean> clientVersions = query.getClientVersions(organizationId, clientId);
-            boolean hasPermission = securityContext.hasPermission(PermissionType.clientView, organizationId);
-            if (!hasPermission) {
-                for (ClientVersionSummaryBean clientVersionSummaryBean : clientVersions) {
-                    clientVersionSummaryBean.setApiKey(null);
-                }
-            }
             return clientVersions;
         } catch (StorageException e) {
             throw new SystemErrorException(e);
@@ -855,15 +853,14 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#createContract(java.lang.String, java.lang.String, java.lang.String, io.apiman.manager.api.beans.contracts.NewContractBean)
+     * @see IOrganizationResource#createContract(java.lang.String, java.lang.String, java.lang.String, io.apiman.manager.api.beans.contracts.NewContractBean)
      */
     @Override
     public ContractBean createContract(String organizationId, String clientId, String version,
             NewContractBean bean) throws OrganizationNotFoundException, ClientNotFoundException,
             ApiNotFoundException, PlanNotFoundException, ContractAlreadyExistsException,
             NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.clientEdit, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
+        securityContext.checkPermissions(PermissionType.clientEdit, organizationId);
 
         try {
             storage.beginTx();
@@ -902,10 +899,8 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             String version, NewContractBean bean) throws StorageException, Exception {
         ContractBean contract;
         ClientVersionBean cvb;
-        cvb = storage.getClientVersion(organizationId, clientId, version);
-        if (cvb == null) {
-            throw ExceptionFactory.clientVersionNotFoundException(clientId, version);
-        }
+        cvb = getClientVersionFromStorage(organizationId, clientId, version);
+
         if (cvb.getStatus() == ClientStatus.Retired) {
             throw ExceptionFactory.invalidClientStatusException();
         }
@@ -928,10 +923,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         if (planVersion == null) {
             throw ExceptionFactory.planNotFoundException(bean.getPlanId());
         }
-        PlanVersionBean pvb = storage.getPlanVersion(bean.getApiOrgId(), bean.getPlanId(), planVersion);
-        if (pvb == null) {
-            throw ExceptionFactory.planNotFoundException(bean.getPlanId());
-        }
+        PlanVersionBean pvb = getPlanVersionFromStorage(bean.getApiOrgId(), bean.getPlanId(), planVersion);
         if (pvb.getStatus() != PlanStatus.Locked) {
             throw ExceptionFactory.invalidPlanStatusException();
         }
@@ -988,13 +980,13 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getContract(java.lang.String, java.lang.String, java.lang.String, java.lang.Long)
+     * @see IOrganizationResource#getContract(java.lang.String, java.lang.String, java.lang.String, java.lang.Long)
      */
     @Override
     public ContractBean getContract(String organizationId, String clientId, String version,
             Long contractId) throws ClientNotFoundException, ContractNotFoundException, NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.clientView, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
+        securityContext.checkPermissions(PermissionType.clientView, organizationId);
+
         try {
             storage.beginTx();
             ContractBean contract = storage.getContract(contractId);
@@ -1015,13 +1007,13 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#deleteAllContracts(java.lang.String, java.lang.String, java.lang.String)
+     * @see IOrganizationResource#deleteAllContracts(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
     public void deleteAllContracts(String organizationId, String clientId, String version)
             throws ClientNotFoundException, NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.clientEdit, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
+        securityContext.checkPermissions(PermissionType.clientEdit, organizationId);
+
         List<ContractSummaryBean> contracts = getClientVersionContracts(organizationId, clientId, version);
         for (ContractSummaryBean contract : contracts) {
             deleteContract(organizationId, clientId, version, contract.getContractId());
@@ -1029,14 +1021,14 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#deleteContract(java.lang.String, java.lang.String, java.lang.String, java.lang.Long)
+     * @see IOrganizationResource#deleteContract(java.lang.String, java.lang.String, java.lang.String, java.lang.Long)
      */
     @Override
     public void deleteContract(String organizationId, String clientId, String version, Long contractId)
             throws ClientNotFoundException, ContractNotFoundException, NotAuthorizedException,
             InvalidClientStatusException {
-        if (!securityContext.hasPermission(PermissionType.clientEdit, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
+        securityContext.checkPermissions(PermissionType.clientEdit, organizationId);
+
         try {
             storage.beginTx();
             ContractBean contract = storage.getContract(contractId);
@@ -1060,7 +1052,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             storage.createAuditEntry(AuditUtils.contractBrokenToApi(contract, securityContext));
 
             // Update the version with new meta-data (e.g. modified-by)
-            ClientVersionBean clientV = storage.getClientVersion(organizationId, clientId, version);
+            ClientVersionBean clientV = getClientVersionFromStorage(organizationId, clientId, version);
             clientV.setModifiedBy(securityContext.getCurrentUser());
             clientV.setModifiedOn(new Date());
             storage.updateClientVersion(clientV);
@@ -1077,13 +1069,15 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getClientVersionContracts(java.lang.String, java.lang.String, java.lang.String)
+     * @see IOrganizationResource#getClientVersionContracts(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
     public List<ContractSummaryBean> getClientVersionContracts(String organizationId, String clientId, String version)
             throws ClientNotFoundException, NotAuthorizedException {
+
+        securityContext.checkPermissions(PermissionType.clientView, organizationId);
         // Try to get the client first - will throw a ClientNotFoundException if not found.
-        getClientVersion(organizationId, clientId, version);
+        getClientVersionInternal(organizationId, clientId, version);
 
         try {
             List<ContractSummaryBean> contracts = query.getClientContracts(organizationId, clientId, version);
@@ -1097,64 +1091,66 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getApiRegistryJSON(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+     * @see IOrganizationResource#getApiRegistryJSON(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
     public Response getApiRegistryJSON(String organizationId, String clientId, String version,
-            String download) throws ClientNotFoundException, NotAuthorizedException {
-        boolean hasPermission = securityContext.hasPermission(PermissionType.clientView, organizationId);
+            String download) throws ClientVersionNotFoundException, NotAuthorizedException {
+        securityContext.checkPermissions(PermissionType.clientView, organizationId);
+
         if ("true".equals(download)) { //$NON-NLS-1$
             try {
-                String path = String.format("%s/%s/%s/%s", organizationId, clientId, version, (hasPermission ? '+' : '-' )); //$NON-NLS-1$
+                String path = String.format("%s/%s/%s", organizationId, clientId, version); //$NON-NLS-1$
                 DownloadBean dbean = downloadManager.createDownload(DownloadType.apiRegistryJson, path);
                 return Response.ok(dbean, MediaType.APPLICATION_JSON).build();
             } catch (StorageException e) {
                 throw new SystemErrorException(e);
             }
         } else {
-            return getApiRegistryJSON(organizationId, clientId, version, hasPermission);
+            return getApiRegistryJSONInternal(organizationId, clientId, version);
         }
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getApiRegistryJSON(java.lang.String, java.lang.String, java.lang.String, boolean)
+     * @see IOrganizationResource#getApiRegistryJSONInternal(String, String, String)
      */
     @Override
-    public Response getApiRegistryJSON(String organizationId, String clientId, String version,
-            boolean hasPermission) throws ClientNotFoundException, NotAuthorizedException {
-        ApiRegistryBean apiRegistry = getApiRegistry(organizationId, clientId, version, hasPermission);
+    public Response getApiRegistryJSONInternal(String organizationId, String clientId, String version) throws ClientVersionNotFoundException {
+        // We don't need a permission check here because the permission was already checked while creating the download id
+        ApiRegistryBean apiRegistry = getApiRegistry(organizationId, clientId, version);
         return Response.ok(apiRegistry, MediaType.APPLICATION_JSON)
                 .header("Content-Disposition", "attachment; filename=api-registry.json") //$NON-NLS-1$ //$NON-NLS-2$
                 .build();
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getApiRegistryXML(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+     * @see IOrganizationResource#getApiRegistryXML(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
     public Response getApiRegistryXML(String organizationId, String clientId, String version,
-            String download) throws ClientNotFoundException, NotAuthorizedException {
-        boolean hasPermission = securityContext.hasPermission(PermissionType.clientView, organizationId);
+            String download) throws ClientVersionNotFoundException, NotAuthorizedException {
+        securityContext.checkPermissions(PermissionType.clientView, organizationId);
+
         if ("true".equals(download)) { //$NON-NLS-1$
             try {
-                String path = String.format("%s/%s/%s/%s", organizationId, clientId, version, (hasPermission ? '+' : '-' )); //$NON-NLS-1$
+                String path = String.format("%s/%s/%s", organizationId, clientId, version); //$NON-NLS-1$
                 DownloadBean dbean = downloadManager.createDownload(DownloadType.apiRegistryXml, path);
                 return Response.ok(dbean, MediaType.APPLICATION_JSON).build();
             } catch (StorageException e) {
                 throw new SystemErrorException(e);
             }
         } else {
-            return getApiRegistryXML(organizationId, clientId, version, hasPermission);
+            return getApiRegistryXMLInternal(organizationId, clientId, version);
         }
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getApiRegistryXML(java.lang.String, java.lang.String, java.lang.String, boolean)
+     * @see IOrganizationResource#getApiRegistryXMLInternal(String, String, String)
      */
     @Override
-    public Response getApiRegistryXML(String organizationId, String clientId, String version,
-            boolean hasPermission) throws ClientNotFoundException, NotAuthorizedException {
-        ApiRegistryBean apiRegistry = getApiRegistry(organizationId, clientId, version, hasPermission);
+    public Response getApiRegistryXMLInternal(String organizationId, String clientId, String version) throws ClientVersionNotFoundException {
+        // We don't need a permission check here because the permission was already checked while creating the download id
+        ApiRegistryBean apiRegistry = getApiRegistry(organizationId, clientId, version);
         return Response.ok(apiRegistry, MediaType.APPLICATION_XML)
                 .header("Content-Disposition", "attachment; filename=api-registry.xml") //$NON-NLS-1$ //$NON-NLS-2$
                 .build();
@@ -1165,25 +1161,18 @@ public class OrganizationResourceImpl implements IOrganizationResource {
      * @param organizationId
      * @param clientId
      * @param version
-     * @param hasPermission
-     * @throws ClientNotFoundException
-     * @throws NotAuthorizedException
+     * @throws ClientVersionNotFoundException
      */
-    protected ApiRegistryBean getApiRegistry(String organizationId, String clientId, String version,
-            boolean hasPermission) throws ClientNotFoundException, NotAuthorizedException {
-        // Try to get the client first - will throw a ClientNotFoundException if not found.
-        ClientVersionBean clientVersion = getClientVersionInternal(organizationId, clientId, version, hasPermission);
+    private ApiRegistryBean getApiRegistry(String organizationId, String clientId, String version) throws ClientVersionNotFoundException {
+        // Try to get the client first - will throw a ClientVersionNotFoundException if not found.
+        ClientVersionBean clientVersion = getClientVersionInternal(organizationId, clientId, version);
 
         Map<String, IGatewayLink> gatewayLinks = new HashMap<>();
         Map<String, GatewayBean> gateways = new HashMap<>();
         boolean txStarted = false;
         try {
             ApiRegistryBean apiRegistry = query.getApiRegistry(organizationId, clientId, version);
-
-            // Hide some stuff if the user doesn't have the clientView permission
-            if (hasPermission) {
-                apiRegistry.setApiKey(clientVersion.getApikey());
-            }
+            apiRegistry.setApiKey(clientVersion.getApikey());
 
             List<ApiEntryBean> apis = apiRegistry.getApis();
 
@@ -1223,17 +1212,16 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#createClientPolicy(java.lang.String, java.lang.String, java.lang.String, io.apiman.manager.api.beans.policies.NewPolicyBean)
+     * @see IOrganizationResource#createClientPolicy(java.lang.String, java.lang.String, java.lang.String, io.apiman.manager.api.beans.policies.NewPolicyBean)
      */
     @Override
     public PolicyBean createClientPolicy(String organizationId, String clientId, String version,
             NewPolicyBean bean) throws OrganizationNotFoundException, ClientVersionNotFoundException,
             NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.clientEdit, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
+        securityContext.checkPermissions(PermissionType.clientEdit, organizationId);
 
         // Make sure the Client exists
-        ClientVersionBean cvb = getClientVersion(organizationId, clientId, version);
+        ClientVersionBean cvb = getClientVersionInternal(organizationId, clientId, version);
 
         PolicyBean policy = doCreatePolicy(organizationId, clientId, version, bean, PolicyType.Client);
 
@@ -1251,37 +1239,32 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getClientPolicy(java.lang.String, java.lang.String, java.lang.String, long)
+     * @see IOrganizationResource#getClientPolicy(java.lang.String, java.lang.String, java.lang.String, long)
      */
     @Override
     public PolicyBean getClientPolicy(String organizationId, String clientId, String version, long policyId)
             throws OrganizationNotFoundException, ClientVersionNotFoundException,
             PolicyNotFoundException, NotAuthorizedException {
-        boolean hasPermission = securityContext.hasPermission(PermissionType.clientView, organizationId);
+        securityContext.checkPermissions(PermissionType.clientView, organizationId);
+
         // Make sure the client version exists
-        getClientVersion(organizationId, clientId, version);
+        getClientVersionInternal(organizationId, clientId, version);
 
         PolicyBean policy = doGetPolicy(PolicyType.Client, organizationId, clientId, version, policyId);
-
-        if (!hasPermission) {
-            policy.setConfiguration(null);
-        }
-
         return policy;
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#updateClientPolicy(java.lang.String, java.lang.String, java.lang.String, long, io.apiman.manager.api.beans.policies.UpdatePolicyBean)
+     * @see IOrganizationResource#updateClientPolicy(java.lang.String, java.lang.String, java.lang.String, long, io.apiman.manager.api.beans.policies.UpdatePolicyBean)
      */
     @Override
     public void updateClientPolicy(String organizationId, String clientId, String version,
             long policyId, UpdatePolicyBean bean) throws OrganizationNotFoundException,
             ClientVersionNotFoundException, PolicyNotFoundException, NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.clientEdit, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
+        securityContext.checkPermissions(PermissionType.clientEdit, organizationId);
 
         // Make sure the client version exists.
-        ClientVersionBean cvb = getClientVersion(organizationId, clientId, version);
+        ClientVersionBean cvb = getClientVersionInternal(organizationId, clientId, version);
 
         try {
             storage.beginTx();
@@ -1313,17 +1296,16 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#deleteClientPolicy(java.lang.String, java.lang.String, java.lang.String, long)
+     * @see IOrganizationResource#deleteClientPolicy(java.lang.String, java.lang.String, java.lang.String, long)
      */
     @Override
     public void deleteClientPolicy(String organizationId, String clientId, String version, long policyId)
             throws OrganizationNotFoundException, ClientVersionNotFoundException,
             PolicyNotFoundException, NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.clientEdit, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
+        securityContext.checkPermissions(PermissionType.clientEdit, organizationId);
 
         // Make sure the client version exists;
-        ClientVersionBean cvb = getClientVersion(organizationId, clientId, version);
+        ClientVersionBean cvb = getClientVersionInternal(organizationId, clientId, version);
 
         try {
             storage.beginTx();
@@ -1349,13 +1331,14 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#listClientPolicies(java.lang.String, java.lang.String, java.lang.String)
+     * @see IOrganizationResource#listClientPolicies(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
     public List<PolicySummaryBean> listClientPolicies(String organizationId, String clientId, String version)
             throws OrganizationNotFoundException, ClientVersionNotFoundException, NotAuthorizedException {
-        // Try to get the client first - will throw an exception if not found.
-        getClientVersion(organizationId, clientId, version);
+        securityContext.checkPermissions(PermissionType.clientView, organizationId);
+        // Try to get the client version first - will throw an exception if not found.
+        getClientVersionInternal(organizationId, clientId, version);
 
         try {
             return query.getPolicies(organizationId, clientId, version, PolicyType.Client);
@@ -1365,17 +1348,16 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#reorderClientPolicies(java.lang.String, java.lang.String, java.lang.String, io.apiman.manager.api.beans.policies.PolicyChainBean)
+     * @see IOrganizationResource#reorderClientPolicies(java.lang.String, java.lang.String, java.lang.String, io.apiman.manager.api.beans.policies.PolicyChainBean)
      */
     @Override
     public void reorderClientPolicies(String organizationId, String clientId, String version,
             PolicyChainBean policyChain) throws OrganizationNotFoundException,
             ClientVersionNotFoundException, NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.clientEdit, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
+        securityContext.checkPermissions(PermissionType.clientEdit, organizationId);
 
         // Make sure the client version exists.
-        ClientVersionBean cvb = getClientVersion(organizationId, clientId, version);
+        ClientVersionBean cvb = getClientVersionInternal(organizationId, clientId, version);
 
         try {
             storage.beginTx();
@@ -1401,14 +1383,14 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#createApi(java.lang.String, io.apiman.manager.api.beans.apis.NewApiBean)
+     * @see IOrganizationResource#createApi(java.lang.String, io.apiman.manager.api.beans.apis.NewApiBean)
      */
     @Override
     public ApiBean createApi(String organizationId, NewApiBean bean)
             throws OrganizationNotFoundException, ApiAlreadyExistsException, NotAuthorizedException,
             InvalidNameException {
-        if (!securityContext.hasPermission(PermissionType.apiEdit, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
+        securityContext.checkPermissions(PermissionType.apiEdit, organizationId);
+
         FieldValidator.validateName(bean.getName());
 
         ApiBean newApi = new ApiBean();
@@ -1421,10 +1403,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             GatewaySummaryBean gateway = getSingularGateway();
 
             storage.beginTx();
-            OrganizationBean orgBean = storage.getOrganization(organizationId);
-            if (orgBean == null) {
-                throw ExceptionFactory.organizationNotFoundException(organizationId);
-            }
+            OrganizationBean orgBean = getOrganizationFromStorage(organizationId);
             if (storage.getApi(orgBean.getId(), newApi.getId()) != null) {
                 throw ExceptionFactory.apiAlreadyExistsException(bean.getName());
             }
@@ -1459,17 +1438,26 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getApi(java.lang.String, java.lang.String)
+     * @see IOrganizationResource#getApi(java.lang.String, java.lang.String)
      */
     @Override
     public ApiBean getApi(String organizationId, String apiId)
             throws ApiNotFoundException, NotAuthorizedException {
+        securityContext.checkPermissions(PermissionType.apiView, organizationId);
+        return getApiInternal(organizationId, apiId);
+    }
+
+    /**
+     * Gets the API internal.
+     * This method can be also used to check if the API exists
+     * @param organizationId
+     * @param apiId
+     * @return
+     */
+    private ApiBean getApiInternal(String organizationId, String apiId) throws ApiNotFoundException {
         try {
             storage.beginTx();
-            ApiBean bean = storage.getApi(organizationId, apiId);
-            if (bean == null) {
-                throw ExceptionFactory.apiNotFoundException(apiId);
-            }
+            ApiBean bean = getApiFromStorage(organizationId, apiId);
             storage.commitTx();
             return bean;
         } catch (AbstractRestException e) {
@@ -1482,13 +1470,28 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getApiActivity(java.lang.String, java.lang.String, int, int)
+     * Gets the API from storage
+     * @param organizationId the organizationId
+     * @param apiId the apiId
+     * @return the api
+     * @throws StorageException if the API is not found
+     */
+    private ApiBean getApiFromStorage(String organizationId, String apiId) throws StorageException, ApiNotFoundException {
+        ApiBean apiBean = storage.getApi(organizationId, apiId);
+        if (apiBean == null) {
+            throw ExceptionFactory.apiNotFoundException(apiId);
+        }
+        return apiBean;
+    }
+
+    /**
+     * @see IOrganizationResource#getApiActivity(java.lang.String, java.lang.String, int, int)
      */
     @Override
     public SearchResultsBean<AuditEntryBean> getApiActivity(String organizationId, String apiId,
             int page, int pageSize) throws ApiNotFoundException, NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.apiView, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
+        securityContext.checkPermissions(PermissionType.apiView, organizationId);
+
         if (page <= 1) {
             page = 1;
         }
@@ -1508,35 +1511,38 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#listApi(java.lang.String)
+     * @see IOrganizationResource#listApis(java.lang.String)
      */
     @Override
-    public List<ApiSummaryBean> listApi(String organizationId) throws OrganizationNotFoundException,
-            NotAuthorizedException {
+    public List<ApiSummaryBean> listApis(String organizationId) throws OrganizationNotFoundException {
+        // No permission check is needed, because this would break All Organizations UI
+
         // make sure the org exists
         get(organizationId);
 
         try {
-            return query.getApisInOrg(organizationId);
+            // Hide sensitive data and set only needed data for the UI
+            if (securityContext.hasPermission(PermissionType.orgView, organizationId)){
+                return query.getApisInOrg(organizationId);
+            } else {
+                return RestHelper.hideSensitiveDataFromApiSummaryBeanList(query.getApisInOrg(organizationId));
+            }
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#updateApi(java.lang.String, java.lang.String, io.apiman.manager.api.beans.apis.UpdateApiBean)
+     * @see IOrganizationResource#updateApi(java.lang.String, java.lang.String, io.apiman.manager.api.beans.apis.UpdateApiBean)
      */
     @Override
     public void updateApi(String organizationId, String apiId, UpdateApiBean bean)
             throws ApiNotFoundException, NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.apiEdit, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
+        securityContext.checkPermissions(PermissionType.apiEdit, organizationId);
+
         try {
             storage.beginTx();
-            ApiBean apiForUpdate = storage.getApi(organizationId, apiId);
-            if (apiForUpdate == null) {
-                throw ExceptionFactory.apiNotFoundException(apiId);
-            }
+            ApiBean apiForUpdate = getApiFromStorage(organizationId, apiId);
             EntityUpdatedData auditData = new EntityUpdatedData();
             if (AuditUtils.valueChanged(apiForUpdate.getDescription(), bean.getDescription())) {
                 auditData.addChange("description", apiForUpdate.getDescription(), bean.getDescription()); //$NON-NLS-1$
@@ -1555,14 +1561,14 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#createApiVersion(java.lang.String, java.lang.String, io.apiman.manager.api.beans.apis.NewApiVersionBean)
+     * @see IOrganizationResource#createApiVersion(java.lang.String, java.lang.String, io.apiman.manager.api.beans.apis.NewApiVersionBean)
      */
     @Override
     public ApiVersionBean createApiVersion(String organizationId, String apiId,
             NewApiVersionBean bean) throws ApiNotFoundException, NotAuthorizedException,
             InvalidVersionException, ApiVersionAlreadyExistsException {
-        if (!securityContext.hasPermission(PermissionType.apiEdit, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
+        securityContext.checkPermissions(PermissionType.apiEdit, organizationId);
+
         FieldValidator.validateVersion(bean.getVersion());
 
         ApiVersionBean newVersion;
@@ -1570,10 +1576,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             GatewaySummaryBean gateway = getSingularGateway();
 
             storage.beginTx();
-            ApiBean api = storage.getApi(organizationId, apiId);
-            if (api == null) {
-                throw ExceptionFactory.apiNotFoundException(apiId);
-            }
+            ApiBean api = getApiFromStorage(organizationId, apiId);
 
             if (storage.getApiVersion(organizationId, apiId, bean.getVersion()) != null) {
                 throw ExceptionFactory.apiVersionAlreadyExistsException(apiId, bean.getVersion());
@@ -1746,21 +1749,23 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getApiVersion(java.lang.String, java.lang.String, java.lang.String)
+     * @see IOrganizationResource#getApiVersion(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
     public ApiVersionBean getApiVersion(String organizationId, String apiId, String version)
-            throws ApiVersionNotFoundException, NotAuthorizedException {
-        boolean hasPermission = securityContext.hasPermission(PermissionType.apiView, organizationId);
+            throws ApiVersionNotFoundException {
+        // No permission check is needed, because this would break All APIs UI
         try {
             storage.beginTx();
             ApiVersionBean apiVersion = getApiVersionFromStorage(organizationId, apiId, version);
             storage.commitTx();
-            if (!hasPermission) {
-                apiVersion.setGateways(null);
+
+            if (securityContext.hasPermission(PermissionType.apiView, organizationId)) {
+                decryptEndpointProperties(apiVersion);
+                return apiVersion;
+            } else {
+                return RestHelper.hideSensitiveDataFromApiVersionBean(apiVersion);
             }
-            decryptEndpointProperties(apiVersion);
-            return apiVersion;
         } catch (AbstractRestException e) {
             storage.rollbackTx();
             throw e;
@@ -1779,13 +1784,12 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getApiVersionStatus(java.lang.String, java.lang.String, java.lang.String)
+     * @see IOrganizationResource#getApiVersionStatus(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
     public ApiVersionStatusBean getApiVersionStatus(String organizationId, String apiId,
             String version) throws ApiVersionNotFoundException, NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.apiView, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
+        securityContext.checkPermissions(PermissionType.apiView, organizationId);
 
         ApiVersionBean versionBean = getApiVersion(organizationId, apiId, version);
         List<PolicySummaryBean> policies = listApiPolicies(organizationId, apiId, version);
@@ -1793,11 +1797,14 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getApiDefinition(java.lang.String, java.lang.String, java.lang.String)
+     * @see IOrganizationResource#getApiDefinition(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
     public Response getApiDefinition(String organizationId, String apiId, String version)
-            throws ApiVersionNotFoundException, NotAuthorizedException {
+            throws ApiVersionNotFoundException {
+        // No permission check is needed, because this would break All APIs UI
+        // Allow the user to view a definition
+
         try {
             storage.beginTx();
             ApiVersionBean apiVersion = getApiVersionFromStorage(organizationId, apiId, version);
@@ -1878,12 +1885,13 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getApiVersionEndpointInfo(java.lang.String, java.lang.String, java.lang.String)
+     * @see IOrganizationResource#getApiVersionEndpointInfo(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
     public ApiVersionEndpointSummaryBean getApiVersionEndpointInfo(String organizationId,
             String apiId, String version) throws ApiVersionNotFoundException,
             InvalidApiStatusException {
+        // No permission check is needed, because this would break All APIs UI
         try {
             storage.beginTx();
             ApiVersionBean apiVersion = getApiVersionFromStorage(organizationId, apiId, version);
@@ -1922,14 +1930,14 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getApiVersionActivity(java.lang.String, java.lang.String, java.lang.String, int, int)
+     * @see IOrganizationResource#getApiVersionActivity(java.lang.String, java.lang.String, java.lang.String, int, int)
      */
     @Override
     public SearchResultsBean<AuditEntryBean> getApiVersionActivity(String organizationId,
             String apiId, String version, int page, int pageSize) throws ApiVersionNotFoundException,
             NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.apiView, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
+        securityContext.checkPermissions(PermissionType.apiView, organizationId);
+
         if (page <= 1) {
             page = 1;
         }
@@ -1949,13 +1957,12 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#updateApiVersion(java.lang.String, java.lang.String, java.lang.String, io.apiman.manager.api.beans.apis.UpdateApiVersionBean)
+     * @see IOrganizationResource#updateApiVersion(java.lang.String, java.lang.String, java.lang.String, io.apiman.manager.api.beans.apis.UpdateApiVersionBean)
      */
     @Override
     public ApiVersionBean updateApiVersion(String organizationId, String apiId, String version,
             UpdateApiVersionBean bean) throws ApiVersionNotFoundException, NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.apiEdit, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
+        securityContext.checkPermissions(PermissionType.apiEdit, organizationId);
 
         ApiVersionBean avb = getApiVersion(organizationId, apiId, version);
 
@@ -2084,11 +2091,13 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#updateApiDefinition(java.lang.String, java.lang.String, java.lang.String)
+     * @see IOrganizationResource#updateApiDefinition(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
     public void updateApiDefinition(String organizationId, String apiId, String version)
             throws ApiVersionNotFoundException, NotAuthorizedException, InvalidApiStatusException {
+        securityContext.checkPermissions(PermissionType.apiEdit, organizationId);
+
         String contentType = request.getContentType();
         InputStream data;
         try {
@@ -2115,12 +2124,14 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#updateApiDefinitionFromURL(java.lang.String, java.lang.String, java.lang.String, io.apiman.manager.api.beans.apis.NewApiDefinitionBean)
+     * @see IOrganizationResource#updateApiDefinitionFromURL(java.lang.String, java.lang.String, java.lang.String, io.apiman.manager.api.beans.apis.NewApiDefinitionBean)
      */
     @Override
     public void updateApiDefinitionFromURL(String organizationId, String apiId, String version,
             NewApiDefinitionBean bean) throws ApiVersionNotFoundException, NotAuthorizedException,
                     InvalidApiStatusException {
+        securityContext.checkPermissions(PermissionType.apiEdit, organizationId);
+
         InputStream data;
         String definitionUrl;
         try {
@@ -2138,10 +2149,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         }
     }
 
-    protected void storeApiDefinition(String organizationId, String apiId, String version,
+    private void storeApiDefinition(String organizationId, String apiId, String version,
             ApiDefinitionType definitionType, InputStream data, String definitionUrl) {
-        if (!securityContext.hasPermission(PermissionType.apiEdit, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
+
         try {
             storage.beginTx();
             ApiVersionBean apiVersion = getApiVersionFromStorage(organizationId, apiId, version);
@@ -2173,13 +2183,14 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#listApiVersions(java.lang.String, java.lang.String)
+     * @see IOrganizationResource#listApiVersions(java.lang.String, java.lang.String)
      */
     @Override
     public List<ApiVersionSummaryBean> listApiVersions(String organizationId, String apiId)
-            throws ApiNotFoundException, NotAuthorizedException {
+            throws ApiNotFoundException {
+        // No permission check is needed, because this would break All APIs UI
         // Try to get the API first - will throw a ApiNotFoundException if not found.
-        getApi(organizationId, apiId);
+        getApiInternal(organizationId, apiId);
 
         try {
             return query.getApiVersions(organizationId, apiId);
@@ -2189,11 +2200,12 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getApiVersionPlans(java.lang.String, java.lang.String, java.lang.String)
+     * @see IOrganizationResource#getApiVersionPlans(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
     public List<ApiPlanSummaryBean> getApiVersionPlans(String organizationId, String apiId,
             String version) throws ApiVersionNotFoundException, NotAuthorizedException {
+        // No permission check is needed, because this would break All APIs UI
         // Ensure the version exists first.
         getApiVersion(organizationId, apiId, version);
 
@@ -2205,14 +2217,13 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#createApiPolicy(java.lang.String, java.lang.String, java.lang.String, io.apiman.manager.api.beans.policies.NewPolicyBean)
+     * @see IOrganizationResource#createApiPolicy(java.lang.String, java.lang.String, java.lang.String, io.apiman.manager.api.beans.policies.NewPolicyBean)
      */
     @Override
     public PolicyBean createApiPolicy(String organizationId, String apiId, String version,
             NewPolicyBean bean) throws OrganizationNotFoundException, ApiVersionNotFoundException,
             NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.apiEdit, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
+        securityContext.checkPermissions(PermissionType.apiEdit, organizationId);
 
         // Make sure the API exists
         ApiVersionBean avb = getApiVersion(organizationId, apiId, version);
@@ -2244,35 +2255,31 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getApiPolicy(java.lang.String, java.lang.String, java.lang.String, long)
+     * @see IOrganizationResource#getApiPolicy(java.lang.String, java.lang.String, java.lang.String, long)
      */
     @Override
     public PolicyBean getApiPolicy(String organizationId, String apiId, String version, long policyId)
             throws OrganizationNotFoundException, ApiVersionNotFoundException,
             PolicyNotFoundException, NotAuthorizedException {
+        securityContext.checkPermissions(PermissionType.apiView, organizationId);
 
         // Make sure the API exists
         getApiVersion(organizationId, apiId, version);
 
         PolicyBean policy = doGetPolicy(PolicyType.Api, organizationId, apiId, version, policyId);
 
-        if (!securityContext.hasPermission(PermissionType.apiView, organizationId)) {
-            policy.setConfiguration(null);
-        }
-
         return policy;
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#updateApiPolicy(java.lang.String,
+     * @see IOrganizationResource#updateApiPolicy(java.lang.String,
      *      java.lang.String, java.lang.String, long, io.apiman.manager.api.beans.policies.UpdatePolicyBean)
      */
     @Override
     public void updateApiPolicy(String organizationId, String apiId, String version,
             long policyId, UpdatePolicyBean bean) throws OrganizationNotFoundException,
             ApiVersionNotFoundException, PolicyNotFoundException, NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.apiEdit, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
+        securityContext.checkPermissions(PermissionType.apiEdit, organizationId);
 
         // Make sure the API exists
         ApiVersionBean avb = getApiVersion(organizationId, apiId, version);
@@ -2308,14 +2315,13 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#deleteApiPolicy(java.lang.String, java.lang.String, java.lang.String, long)
+     * @see IOrganizationResource#deleteApiPolicy(java.lang.String, java.lang.String, java.lang.String, long)
      */
     @Override
     public void deleteApiPolicy(String organizationId, String apiId, String version, long policyId)
             throws OrganizationNotFoundException, ApiVersionNotFoundException,
             PolicyNotFoundException, NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.apiEdit, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
+        securityContext.checkPermissions(PermissionType.apiEdit, organizationId);
 
         // Make sure the API exists and is in the right status.
         ApiVersionBean avb = getApiVersion(organizationId, apiId, version);
@@ -2355,13 +2361,13 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#deleteApiDefinition(java.lang.String, java.lang.String, java.lang.String)
+     * @see IOrganizationResource#deleteApiDefinition(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
     public void deleteApiDefinition(String organizationId, String apiId, String version)
             throws OrganizationNotFoundException, ApiVersionNotFoundException, NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.apiEdit, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
+        securityContext.checkPermissions(PermissionType.apiEdit, organizationId);
+
         try {
             storage.beginTx();
             ApiVersionBean apiVersion = getApiVersionFromStorage(organizationId, apiId, version);
@@ -2383,11 +2389,13 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#listApiPolicies(java.lang.String, java.lang.String, java.lang.String)
+     * @see IOrganizationResource#listApiPolicies(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
     public List<PolicySummaryBean> listApiPolicies(String organizationId, String apiId, String version)
             throws OrganizationNotFoundException, ApiVersionNotFoundException, NotAuthorizedException {
+        securityContext.checkPermissions(PermissionType.apiView, organizationId);
+
         // Try to get the API first - will throw an exception if not found.
         getApiVersion(organizationId, apiId, version);
 
@@ -2399,14 +2407,13 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#reorderApiPolicies(java.lang.String, java.lang.String, java.lang.String, io.apiman.manager.api.beans.policies.PolicyChainBean)
+     * @see IOrganizationResource#reorderApiPolicies(java.lang.String, java.lang.String, java.lang.String, io.apiman.manager.api.beans.policies.PolicyChainBean)
      */
     @Override
     public void reorderApiPolicies(String organizationId, String apiId, String version,
             PolicyChainBean policyChain) throws OrganizationNotFoundException,
             ApiVersionNotFoundException, NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.apiEdit, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
+        securityContext.checkPermissions(PermissionType.apiEdit, organizationId);
 
         // Make sure the API exists
         ApiVersionBean avb = getApiVersion(organizationId, apiId, version);
@@ -2435,11 +2442,13 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getApiPolicyChain(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+     * @see IOrganizationResource#getApiPolicyChain(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
     public PolicyChainBean getApiPolicyChain(String organizationId, String apiId, String version,
-            String planId) throws ApiVersionNotFoundException, PlanNotFoundException, NotAuthorizedException {
+            String planId) throws ApiVersionNotFoundException, PlanNotFoundException {
+        // No permission check is needed, because this would break All APIs UI
+
         // Try to get the API first - will throw an exception if not found.
         ApiVersionBean avb = getApiVersion(organizationId, apiId, version);
 
@@ -2457,8 +2466,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             if (planVersion == null) {
                 throw ExceptionFactory.planNotFoundException(planId);
             }
-            List<PolicySummaryBean> apiPolicies = query.getPolicies(organizationId, apiId, version, PolicyType.Api);
-            List<PolicySummaryBean> planPolicies = query.getPolicies(organizationId, planId, planVersion, PolicyType.Plan);
+            // Hide sensitive data and set only needed data for the UI
+            List<PolicySummaryBean> apiPolicies = RestHelper.hideSensitiveDataFromPolicySummaryBeanList(securityContext, query.getPolicies(organizationId, apiId, version, PolicyType.Api));
+            List<PolicySummaryBean> planPolicies = RestHelper.hideSensitiveDataFromPolicySummaryBeanList(securityContext, query.getPolicies(organizationId, planId, planVersion, PolicyType.Plan));
 
             PolicyChainBean chain = new PolicyChainBean();
             chain.getPolicies().addAll(planPolicies);
@@ -2470,12 +2480,14 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getApiVersionContracts(java.lang.String, java.lang.String, java.lang.String, int, int)
+     * @see IOrganizationResource#getApiVersionContracts(java.lang.String, java.lang.String, java.lang.String, int, int)
      */
     @Override
     public List<ContractSummaryBean> getApiVersionContracts(String organizationId,
             String apiId, String version, int page, int pageSize) throws ApiVersionNotFoundException,
             NotAuthorizedException {
+        securityContext.checkPermissions(PermissionType.apiView, organizationId);
+
         if (page <= 1) {
             page = 1;
         }
@@ -2496,13 +2508,12 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getUsage(java.lang.String, java.lang.String, java.lang.String, io.apiman.manager.api.beans.metrics.HistogramIntervalType, java.lang.String, java.lang.String)
+     * @see IOrganizationResource#getUsage(java.lang.String, java.lang.String, java.lang.String, io.apiman.manager.api.beans.metrics.HistogramIntervalType, java.lang.String, java.lang.String)
      */
     @Override
     public UsageHistogramBean getUsage(String organizationId, String apiId, String version,
             HistogramIntervalType interval, String fromDate, String toDate) throws NotAuthorizedException, InvalidMetricCriteriaException {
-        if (!securityContext.hasPermission(PermissionType.apiView, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
+        securityContext.checkPermissions(PermissionType.apiView, organizationId);
 
         if (fromDate == null) {
             throw ExceptionFactory.invalidMetricCriteriaException(Messages.i18n.format("MissingOrInvalidParam", "fromDate")); //$NON-NLS-1$ //$NON-NLS-2$
@@ -2524,13 +2535,12 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getUsagePerClient(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+     * @see IOrganizationResource#getUsagePerClient(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
     public UsagePerClientBean getUsagePerClient(String organizationId, String apiId, String version,
             String fromDate, String toDate) throws NotAuthorizedException, InvalidMetricCriteriaException {
-        if (!securityContext.hasPermission(PermissionType.apiView, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
+        securityContext.checkPermissions(PermissionType.apiView, organizationId);
 
         if (fromDate == null) {
             throw ExceptionFactory.invalidMetricCriteriaException(Messages.i18n.format("MissingOrInvalidParam", "fromDate")); //$NON-NLS-1$ //$NON-NLS-2$
@@ -2547,13 +2557,12 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getUsagePerPlan(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+     * @see IOrganizationResource#getUsagePerPlan(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
     public UsagePerPlanBean getUsagePerPlan(String organizationId, String apiId, String version,
             String fromDate, String toDate) throws NotAuthorizedException, InvalidMetricCriteriaException {
-        if (!securityContext.hasPermission(PermissionType.apiView, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
+        securityContext.checkPermissions(PermissionType.apiView, organizationId);
 
         if (fromDate == null) {
             throw ExceptionFactory.invalidMetricCriteriaException(Messages.i18n.format("MissingOrInvalidParam", "fromDate")); //$NON-NLS-1$ //$NON-NLS-2$
@@ -2570,14 +2579,13 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getResponseStats(java.lang.String, java.lang.String, java.lang.String, io.apiman.manager.api.beans.metrics.HistogramIntervalType, java.lang.String, java.lang.String)
+     * @see IOrganizationResource#getResponseStats(java.lang.String, java.lang.String, java.lang.String, io.apiman.manager.api.beans.metrics.HistogramIntervalType, java.lang.String, java.lang.String)
      */
     @Override
     public ResponseStatsHistogramBean getResponseStats(String organizationId, String apiId,
             String version, HistogramIntervalType interval, String fromDate, String toDate)
             throws NotAuthorizedException, InvalidMetricCriteriaException {
-        if (!securityContext.hasPermission(PermissionType.apiView, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
+        securityContext.checkPermissions(PermissionType.apiView, organizationId);
 
         if (fromDate == null) {
             throw ExceptionFactory.invalidMetricCriteriaException(Messages.i18n.format("MissingOrInvalidParam", "fromDate")); //$NON-NLS-1$ //$NON-NLS-2$
@@ -2598,14 +2606,13 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getResponseStatsSummary(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+     * @see IOrganizationResource#getResponseStatsSummary(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
     public ResponseStatsSummaryBean getResponseStatsSummary(String organizationId, String apiId,
             String version, String fromDate, String toDate) throws NotAuthorizedException,
             InvalidMetricCriteriaException {
-        if (!securityContext.hasPermission(PermissionType.apiView, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
+        securityContext.checkPermissions(PermissionType.apiView, organizationId);
 
         if (fromDate == null) {
             throw ExceptionFactory.invalidMetricCriteriaException(Messages.i18n.format("MissingOrInvalidParam", "fromDate")); //$NON-NLS-1$ //$NON-NLS-2$
@@ -2622,14 +2629,13 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getResponseStatsPerClient(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+     * @see IOrganizationResource#getResponseStatsPerClient(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
     public ResponseStatsPerClientBean getResponseStatsPerClient(String organizationId, String apiId,
             String version, String fromDate, String toDate) throws NotAuthorizedException,
             InvalidMetricCriteriaException {
-        if (!securityContext.hasPermission(PermissionType.apiView, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
+        securityContext.checkPermissions(PermissionType.apiView, organizationId);
 
         if (fromDate == null) {
             throw ExceptionFactory.invalidMetricCriteriaException(Messages.i18n.format("MissingOrInvalidParam", "fromDate")); //$NON-NLS-1$ //$NON-NLS-2$
@@ -2646,14 +2652,13 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getResponseStatsPerPlan(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+     * @see IOrganizationResource#getResponseStatsPerPlan(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
     public ResponseStatsPerPlanBean getResponseStatsPerPlan(String organizationId, String apiId,
             String version, String fromDate, String toDate) throws NotAuthorizedException,
             InvalidMetricCriteriaException {
-        if (!securityContext.hasPermission(PermissionType.apiView, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
+        securityContext.checkPermissions(PermissionType.apiView, organizationId);
 
         if (fromDate == null) {
             throw ExceptionFactory.invalidMetricCriteriaException(Messages.i18n.format("MissingOrInvalidParam", "fromDate")); //$NON-NLS-1$ //$NON-NLS-2$
@@ -2670,14 +2675,14 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#createPlan(java.lang.String,
+     * @see IOrganizationResource#createPlan(java.lang.String,
      *      io.apiman.manager.api.beans.plans.NewPlanBean)
      */
     @Override
     public PlanBean createPlan(String organizationId, NewPlanBean bean) throws OrganizationNotFoundException,
             PlanAlreadyExistsException, NotAuthorizedException, InvalidNameException {
-        if (!securityContext.hasPermission(PermissionType.planEdit, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
+        securityContext.checkPermissions(PermissionType.planEdit, organizationId);
+
         FieldValidator.validateName(bean.getName());
 
         PlanBean newPlan = new PlanBean();
@@ -2689,10 +2694,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         try {
             // Store/persist the new plan
             storage.beginTx();
-            OrganizationBean orgBean = storage.getOrganization(organizationId);
-            if (orgBean == null) {
-                throw ExceptionFactory.organizationNotFoundException(organizationId);
-            }
+            OrganizationBean orgBean = getOrganizationFromStorage(organizationId);
             if (storage.getPlan(orgBean.getId(), newPlan.getId()) != null) {
                 throw ExceptionFactory.planAlreadyExistsException(newPlan.getName());
             }
@@ -2719,11 +2721,13 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getPlan(java.lang.String, java.lang.String)
+     * @see IOrganizationResource#getPlan(java.lang.String, java.lang.String)
      */
     @Override
     public PlanBean getPlan(String organizationId, String planId)
             throws PlanNotFoundException, NotAuthorizedException {
+        securityContext.checkPermissions(PermissionType.planView, organizationId);
+
         try {
             storage.beginTx();
             PlanBean bean = storage.getPlan(organizationId, planId);
@@ -2743,13 +2747,13 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getPlanActivity(java.lang.String, java.lang.String, int, int)
+     * @see IOrganizationResource#getPlanActivity(java.lang.String, java.lang.String, int, int)
      */
     @Override
     public SearchResultsBean<AuditEntryBean> getPlanActivity(String organizationId, String planId, int page, int pageSize)
             throws PlanNotFoundException, NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.planView, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
+        securityContext.checkPermissions(PermissionType.planView, organizationId);
+
         if (page <= 1) {
             page = 1;
         }
@@ -2769,11 +2773,13 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#listPlans(java.lang.String)
+     * @see IOrganizationResource#listPlans(java.lang.String)
      */
     @Override
     public List<PlanSummaryBean> listPlans(String organizationId) throws OrganizationNotFoundException,
             NotAuthorizedException {
+        securityContext.checkPermissions(PermissionType.orgView, organizationId);
+
         get(organizationId);
 
         try {
@@ -2784,14 +2790,14 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#updatePlan(java.lang.String,
+     * @see IOrganizationResource#updatePlan(java.lang.String,
      * java.lang.String, io.apiman.manager.api.beans.plans.UpdatePlanBean)
      */
     @Override
     public void updatePlan(String organizationId, String planId, UpdatePlanBean bean)
             throws PlanNotFoundException, NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.planEdit, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
+        securityContext.checkPermissions(PermissionType.planEdit, organizationId);
+
         EntityUpdatedData auditData = new EntityUpdatedData();
         try {
             storage.beginTx();
@@ -2817,15 +2823,15 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#createPlanVersion(java.lang.String,
+     * @see IOrganizationResource#createPlanVersion(java.lang.String,
      *      java.lang.String, io.apiman.manager.api.beans.plans.NewPlanVersionBean)
      */
     @Override
     public PlanVersionBean createPlanVersion(String organizationId, String planId, NewPlanVersionBean bean)
             throws PlanNotFoundException, NotAuthorizedException, InvalidVersionException,
             PlanVersionAlreadyExistsException {
-        if (!securityContext.hasPermission(PermissionType.planEdit, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
+        securityContext.checkPermissions(PermissionType.planEdit, organizationId);
+
         FieldValidator.validateVersion(bean.getVersion());
 
         PlanVersionBean newVersion;
@@ -2875,7 +2881,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
      * @param plan
      * @throws StorageException
      */
-    protected PlanVersionBean createPlanVersionInternal(NewPlanVersionBean bean, PlanBean plan)
+    private PlanVersionBean createPlanVersionInternal(NewPlanVersionBean bean, PlanBean plan)
             throws StorageException {
         if (!BeanUtils.isValidVersion(bean.getVersion())) {
             throw new StorageException("Invalid/illegal plan version: " + bean.getVersion()); //$NON-NLS-1$
@@ -2895,17 +2901,20 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getPlanVersion(java.lang.String, java.lang.String, java.lang.String)
+     * @see IOrganizationResource#getPlanVersion(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
     public PlanVersionBean getPlanVersion(String organizationId, String planId, String version)
             throws PlanVersionNotFoundException, NotAuthorizedException {
+        securityContext.checkPermissions(PermissionType.planView, organizationId);
+
+        return getPlanVersionInternal(organizationId, planId, version);
+    }
+
+    private PlanVersionBean getPlanVersionInternal(String organizationId, String planId, String version) throws PlanVersionNotFoundException {
         try {
             storage.beginTx();
-            PlanVersionBean planVersion = storage.getPlanVersion(organizationId, planId, version);
-            if (planVersion == null) {
-                throw ExceptionFactory.planVersionNotFoundException(planId, version);
-            }
+            PlanVersionBean planVersion = getPlanVersionFromStorage(organizationId, planId, version);
             storage.commitTx();
             log.debug(String.format("Got plan %s version: %s", planId, planVersion)); //$NON-NLS-1$
             return planVersion;
@@ -2918,15 +2927,23 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         }
     }
 
+    private PlanVersionBean getPlanVersionFromStorage(String organizationId, String planId, String version) throws PlanVersionNotFoundException, StorageException {
+        PlanVersionBean planVersion = storage.getPlanVersion(organizationId, planId, version);
+        if (planVersion == null) {
+            throw ExceptionFactory.planVersionNotFoundException(planId, version);
+        }
+        return planVersion;
+    }
+
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getPlanVersionActivity(java.lang.String, java.lang.String, java.lang.String, int, int)
+     * @see IOrganizationResource#getPlanVersionActivity(java.lang.String, java.lang.String, java.lang.String, int, int)
      */
     @Override
     public SearchResultsBean<AuditEntryBean> getPlanVersionActivity(String organizationId, String planId,
             String version, int page, int pageSize) throws PlanVersionNotFoundException,
             NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.planView, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
+        securityContext.checkPermissions(PermissionType.planView, organizationId);
+
         if (page <= 1) {
             page = 1;
         }
@@ -2946,11 +2963,13 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#listPlanVersions(java.lang.String, java.lang.String)
+     * @see IOrganizationResource#listPlanVersions(java.lang.String, java.lang.String)
      */
     @Override
     public List<PlanVersionSummaryBean> listPlanVersions(String organizationId, String planId)
             throws PlanNotFoundException, NotAuthorizedException {
+        securityContext.checkPermissions(PermissionType.planView, organizationId);
+
         // Try to get the plan first - will throw a PlanNotFoundException if not found.
         getPlan(organizationId, planId);
 
@@ -2962,18 +2981,17 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#createPlanPolicy(java.lang.String,
+     * @see IOrganizationResource#createPlanPolicy(java.lang.String,
      *      java.lang.String, java.lang.String, io.apiman.manager.api.beans.policies.NewPolicyBean)
      */
     @Override
     public PolicyBean createPlanPolicy(String organizationId, String planId, String version,
             NewPolicyBean bean) throws OrganizationNotFoundException, PlanVersionNotFoundException,
             NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.planEdit, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
+        securityContext.checkPermissions(PermissionType.planEdit, organizationId);
 
         // Make sure the plan version exists and is in the right state
-        PlanVersionBean pvb = getPlanVersion(organizationId, planId, version);
+        PlanVersionBean pvb = getPlanVersionInternal(organizationId, planId, version);
         if (pvb.getStatus() == PlanStatus.Locked) {
             throw ExceptionFactory.invalidPlanStatusException();
         }
@@ -2995,40 +3013,35 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getPlanPolicy(java.lang.String, java.lang.String, java.lang.String, long)
+     * @see IOrganizationResource#getPlanPolicy(java.lang.String, java.lang.String, java.lang.String, long)
      */
     @Override
     public PolicyBean getPlanPolicy(String organizationId, String planId, String version, long policyId)
             throws OrganizationNotFoundException, PlanVersionNotFoundException,
             PolicyNotFoundException, NotAuthorizedException {
-        boolean hasPermission = securityContext.hasPermission(PermissionType.planView, organizationId);
+        securityContext.checkPermissions(PermissionType.planView, organizationId);
 
         // Make sure the plan version exists
-        getPlanVersion(organizationId, planId, version);
+        getPlanVersionInternal(organizationId, planId, version);
 
         PolicyBean policy = doGetPolicy(PolicyType.Plan, organizationId, planId, version, policyId);
-
-        if (!hasPermission) {
-            policy.setConfiguration(null);
-        }
 
         log.debug(String.format("Got plan policy %s", policy)); //$NON-NLS-1$
         return policy;
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#updatePlanPolicy(java.lang.String,
+     * @see IOrganizationResource#updatePlanPolicy(java.lang.String,
      *      java.lang.String, java.lang.String, long, io.apiman.manager.api.beans.policies.UpdatePolicyBean)
      */
     @Override
     public void updatePlanPolicy(String organizationId, String planId, String version,
             long policyId, UpdatePolicyBean bean) throws OrganizationNotFoundException,
             PlanVersionNotFoundException, PolicyNotFoundException, NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.planEdit, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
+        securityContext.checkPermissions(PermissionType.planEdit, organizationId);
 
         // Make sure the plan version exists
-        PlanVersionBean pvb = getPlanVersion(organizationId, planId, version);
+        PlanVersionBean pvb = getPlanVersionInternal(organizationId, planId, version);
 
         try {
             storage.beginTx();
@@ -3061,17 +3074,16 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#deletePlanPolicy(java.lang.String, java.lang.String, java.lang.String, long)
+     * @see IOrganizationResource#deletePlanPolicy(java.lang.String, java.lang.String, java.lang.String, long)
      */
     @Override
     public void deletePlanPolicy(String organizationId, String planId, String version, long policyId)
             throws OrganizationNotFoundException, PlanVersionNotFoundException,
             PolicyNotFoundException, NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.planEdit, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
+        securityContext.checkPermissions(PermissionType.planEdit, organizationId);
 
         // Make sure the plan version exists
-        PlanVersionBean pvb = getPlanVersion(organizationId, planId, version);
+        PlanVersionBean pvb = getPlanVersionInternal(organizationId, planId, version);
         if (pvb.getStatus() == PlanStatus.Locked) {
             throw ExceptionFactory.invalidPlanStatusException();
         }
@@ -3103,8 +3115,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     @Override
     public void deletePlan(@PathParam("organizationId") String organizationId, @PathParam("planId") String planId)
             throws ApiNotFoundException, NotAuthorizedException, InvalidPlanStatusException {
-        if (!securityContext.hasPermission(PermissionType.planAdmin, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
+        securityContext.checkPermissions(PermissionType.planAdmin, organizationId);
 
         List<PlanVersionSummaryBean> lockedPlans = listPlanVersions(organizationId, planId).stream()
                 .filter(summary -> summary.getStatus() == PlanStatus.Locked).collect(toList());
@@ -3127,13 +3138,15 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#listPlanPolicies(java.lang.String, java.lang.String, java.lang.String)
+     * @see IOrganizationResource#listPlanPolicies(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
     public List<PolicySummaryBean> listPlanPolicies(String organizationId, String planId, String version)
             throws OrganizationNotFoundException, PlanVersionNotFoundException, NotAuthorizedException {
+        securityContext.checkPermissions(PermissionType.planView, organizationId);
+
         // Try to get the plan first - will throw an exception if not found.
-        getPlanVersion(organizationId, planId, version);
+        getPlanVersionInternal(organizationId, planId, version);
 
         try {
             return query.getPolicies(organizationId, planId, version, PolicyType.Plan);
@@ -3143,17 +3156,16 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#reorderPlanPolicies(java.lang.String, java.lang.String, java.lang.String, io.apiman.manager.api.beans.policies.PolicyChainBean)
+     * @see IOrganizationResource#reorderPlanPolicies(java.lang.String, java.lang.String, java.lang.String, io.apiman.manager.api.beans.policies.PolicyChainBean)
      */
     @Override
     public void reorderPlanPolicies(String organizationId, String planId, String version,
             PolicyChainBean policyChain) throws OrganizationNotFoundException,
             PlanVersionNotFoundException, NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.planEdit, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
+        securityContext.checkPermissions(PermissionType.planEdit, organizationId);
 
         // Make sure the plan version exists
-        PlanVersionBean pvb = getPlanVersion(organizationId, planId, version);
+        PlanVersionBean pvb = getPlanVersionInternal(organizationId, planId, version);
 
         try {
             storage.beginTx();
@@ -3188,9 +3200,8 @@ public class OrganizationResourceImpl implements IOrganizationResource {
      * @param entityVersion
      * @param bean
      * @return the stored policy bean (with updated information)
-     * @throws NotAuthorizedException
      */
-    protected PolicyBean doCreatePolicy(String organizationId, String entityId, String entityVersion,
+    private PolicyBean doCreatePolicy(String organizationId, String entityId, String entityVersion,
             NewPolicyBean bean, PolicyType type) throws PolicyDefinitionNotFoundException {
         if (bean.getDefinitionId() == null) {
             throw ExceptionFactory.policyDefNotFoundException("null"); //$NON-NLS-1$
@@ -3269,13 +3280,13 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#grant(java.lang.String, io.apiman.manager.api.beans.idm.GrantRolesBean)
+     * @see IOrganizationResource#grant(java.lang.String, io.apiman.manager.api.beans.idm.GrantRolesBean)
      */
     @Override
     public void grant(String organizationId, GrantRolesBean bean) throws OrganizationNotFoundException,
             RoleNotFoundException, UserNotFoundException, NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.orgAdmin, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
+        securityContext.checkPermissions(PermissionType.orgAdmin, organizationId);
+
         // Verify that the references are valid.
         get(organizationId);
         users.get(bean.getUserId());
@@ -3308,14 +3319,14 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#revoke(java.lang.String, java.lang.String, java.lang.String)
+     * @see IOrganizationResource#revoke(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
     public void revoke(String organizationId, String roleId, String userId)
             throws OrganizationNotFoundException, RoleNotFoundException, UserNotFoundException,
             NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.orgAdmin, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
+        securityContext.checkPermissions(PermissionType.orgAdmin, organizationId);
+
         get(organizationId);
         users.get(userId);
         roles.get(roleId);
@@ -3340,13 +3351,13 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#revokeAll(java.lang.String, java.lang.String)
+     * @see IOrganizationResource#revokeAll(java.lang.String, java.lang.String)
      */
     @Override
     public void revokeAll(String organizationId, String userId) throws OrganizationNotFoundException,
             RoleNotFoundException, UserNotFoundException, NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.orgAdmin, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
+        securityContext.checkPermissions(PermissionType.orgAdmin, organizationId);
+
         get(organizationId);
         users.get(userId);
 
@@ -3368,11 +3379,16 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#listMembers(java.lang.String)
+     * @see IOrganizationResource#listMembers(java.lang.String)
      */
     @Override
     public List<MemberBean> listMembers(String organizationId) throws OrganizationNotFoundException,
             NotAuthorizedException {
+        // Only members are allowed to see other members
+        if (!securityContext.isMemberOf(organizationId)) {
+            throw ExceptionFactory.notAuthorizedException();
+        }
+
         get(organizationId);
 
         try {
@@ -3426,7 +3442,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
      * @return a policy bean
      * @throws PolicyNotFoundException
      */
-    protected PolicyBean doGetPolicy(PolicyType type, String organizationId, String entityId,
+    private PolicyBean doGetPolicy(PolicyType type, String organizationId, String entityId,
             String entityVersion, long policyId) throws PolicyNotFoundException {
         try {
             storage.beginTx();

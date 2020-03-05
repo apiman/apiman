@@ -70,8 +70,6 @@ module Apiman {
                         policyId: policy.id
                     }, function(reply) {
                         removePolicy(policy);
-                        EntityStatusSvc.getEntity().modifiedOn = Date.now();
-                        EntityStatusSvc.getEntity().modifiedBy = CurrentUser.getCurrentUser();
                     }, PageLifecycle.handleError);
                 }, function () {
                     //console.log('Modal dismissed at: ' + new Date());
@@ -88,8 +86,6 @@ module Apiman {
                     policyChainBean,
                     function() {
                         Logger.debug("Reordering POSTed successfully");
-                        EntityStatusSvc.getEntity().modifiedOn = Date.now();
-                        EntityStatusSvc.getEntity().modifiedBy = CurrentUser.getCurrentUser();
                     }, function() {
                         Logger.debug("Reordering POST failed.")
                     });

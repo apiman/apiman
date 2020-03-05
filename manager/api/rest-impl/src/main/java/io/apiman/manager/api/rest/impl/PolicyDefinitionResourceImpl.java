@@ -24,14 +24,14 @@ import io.apiman.manager.api.beans.summary.PolicyFormType;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.StorageException;
-import io.apiman.manager.api.rest.contract.IPolicyDefinitionResource;
-import io.apiman.manager.api.rest.contract.exceptions.AbstractRestException;
-import io.apiman.manager.api.rest.contract.exceptions.NotAuthorizedException;
-import io.apiman.manager.api.rest.contract.exceptions.PolicyDefinitionAlreadyExistsException;
-import io.apiman.manager.api.rest.contract.exceptions.PolicyDefinitionNotFoundException;
-import io.apiman.manager.api.rest.contract.exceptions.SystemErrorException;
-import io.apiman.manager.api.rest.impl.i18n.Messages;
-import io.apiman.manager.api.rest.impl.util.ExceptionFactory;
+import io.apiman.manager.api.rest.IPolicyDefinitionResource;
+import io.apiman.manager.api.rest.exceptions.AbstractRestException;
+import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
+import io.apiman.manager.api.rest.exceptions.PolicyDefinitionAlreadyExistsException;
+import io.apiman.manager.api.rest.exceptions.PolicyDefinitionNotFoundException;
+import io.apiman.manager.api.rest.exceptions.SystemErrorException;
+import io.apiman.manager.api.rest.exceptions.i18n.Messages;
+import io.apiman.manager.api.rest.exceptions.util.ExceptionFactory;
 import io.apiman.manager.api.security.ISecurityContext;
 
 import java.util.List;
@@ -56,12 +56,13 @@ public class PolicyDefinitionResourceImpl implements IPolicyDefinitionResource {
      */
     public PolicyDefinitionResourceImpl() {
     }
-    
+
     /**
-     * @see io.apiman.manager.api.rest.contract.IPolicyDefinitionResource#list()
+     * @see IPolicyDefinitionResource#list()
      */
     @Override
-    public List<PolicyDefinitionSummaryBean> list() throws NotAuthorizedException {
+    public List<PolicyDefinitionSummaryBean> list() {
+        // No permission check is needed
         try {
             return query.listPolicyDefinitions();
         } catch (StorageException e) {
@@ -70,12 +71,12 @@ public class PolicyDefinitionResourceImpl implements IPolicyDefinitionResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IPolicyDefinitionResource#create(io.apiman.manager.api.beans.policies.PolicyDefinitionBean)
+     * @see IPolicyDefinitionResource#create(io.apiman.manager.api.beans.policies.PolicyDefinitionBean)
      */
     @Override
-    public PolicyDefinitionBean create(PolicyDefinitionBean bean) throws PolicyDefinitionAlreadyExistsException {
-        if (!securityContext.isAdmin())
-            throw ExceptionFactory.notAuthorizedException();
+    public PolicyDefinitionBean create(PolicyDefinitionBean bean) throws PolicyDefinitionAlreadyExistsException, NotAuthorizedException {
+        securityContext.checkAdminPermissions();
+
         // Auto-generate an ID if one isn't provided.
         if (bean.getId() == null || bean.getId().trim().isEmpty()) {
             bean.setId(BeanUtils.idFromName(bean.getName()));
@@ -104,10 +105,11 @@ public class PolicyDefinitionResourceImpl implements IPolicyDefinitionResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IPolicyDefinitionResource#get(java.lang.String)
+     * @see IPolicyDefinitionResource#get(java.lang.String)
      */
     @Override
-    public PolicyDefinitionBean get(String policyDefinitionId) throws PolicyDefinitionNotFoundException, NotAuthorizedException {
+    public PolicyDefinitionBean get(String policyDefinitionId) throws PolicyDefinitionNotFoundException {
+        // No permission check is needed
         try {
             storage.beginTx();
             PolicyDefinitionBean bean = storage.getPolicyDefinition(policyDefinitionId);
@@ -126,13 +128,13 @@ public class PolicyDefinitionResourceImpl implements IPolicyDefinitionResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IPolicyDefinitionResource#update(java.lang.String, io.apiman.manager.api.beans.policies.UpdatePolicyDefinitionBean)
+     * @see IPolicyDefinitionResource#update(java.lang.String, io.apiman.manager.api.beans.policies.UpdatePolicyDefinitionBean)
      */
     @Override
     public void update(String policyDefinitionId, UpdatePolicyDefinitionBean bean)
             throws PolicyDefinitionNotFoundException, NotAuthorizedException {
-        if (!securityContext.isAdmin())
-            throw ExceptionFactory.notAuthorizedException();
+        securityContext.checkAdminPermissions();
+
         try {
             storage.beginTx();
             PolicyDefinitionBean pdb = storage.getPolicyDefinition(policyDefinitionId);
@@ -160,13 +162,13 @@ public class PolicyDefinitionResourceImpl implements IPolicyDefinitionResource {
     }
     
     /**
-     * @see io.apiman.manager.api.rest.contract.IPolicyDefinitionResource#delete(java.lang.String)
+     * @see IPolicyDefinitionResource#delete(java.lang.String)
      */
     @Override
     public void delete(String policyDefinitionId) throws PolicyDefinitionNotFoundException,
             NotAuthorizedException {
-        if (!securityContext.isAdmin())
-            throw ExceptionFactory.notAuthorizedException();
+       securityContext.checkAdminPermissions();
+
         try {
             storage.beginTx();
             PolicyDefinitionBean pdb = storage.getPolicyDefinition(policyDefinitionId);

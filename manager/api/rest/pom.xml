@@ -16,6 +16,10 @@
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-manager-api-beans</artifactId>
     </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-manager-api-rest-exceptions</artifactId>
+    </dependency>
 
     <!-- Third Party Dependencies -->
     <dependency>
@@ -40,25 +44,16 @@
   </dependencies>
 
   <build>
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-      </resource>
-      <!-- Include some of the source for this project so that it can be used by GWT projects. -->
-      <resource>
-        <directory>src/main/java</directory>
-        <includes>
-          <include>**/contract/**</include>
-          <include>**/exceptions/**</include>
-          <include>**/*.gwt.xml</include>
-        </includes>
-      </resource>
-    </resources>
     <plugins>
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
         <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Export-Package>io.apiman.manager.api.rest.*</Export-Package>
+          </instructions>
+        </configuration>
       </plugin>
     </plugins>
   </build>

@@ -7,5 +7,5 @@ X-RestTest-BindTo-download-id: id
 
 {
   "type" : "apiRegistryXml",
-  "path" : "Organization1/Client1/1.0/+"
+  "path" : "Organization1/Client1/1.0"
 }

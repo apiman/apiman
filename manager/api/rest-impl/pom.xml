@@ -34,6 +34,10 @@
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-manager-api-rest-exceptions</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
       <artifactId>apiman-manager-api-core</artifactId>
     </dependency>
     <dependency>
@@ -60,6 +64,7 @@
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-common-plugin</artifactId>
     </dependency>
+
     <!-- Third Party Dependencies -->
     <dependency>
       <groupId>commons-io</groupId>
@@ -119,7 +124,7 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Export-Package>io.apiman.manager.api.rest.impl*</Export-Package>
+            <Export-Package>io.apiman.manager.api.rest.impl.*</Export-Package>
             <Import-Package>!org.jboss.errai.common.client.api.annotations,!javax.enterprise.context,!javax.enterprise.inject,!javax.inject,*</Import-Package>
           </instructions>
         </configuration>

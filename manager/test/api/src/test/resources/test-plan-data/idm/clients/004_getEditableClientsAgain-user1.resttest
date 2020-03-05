@@ -1,0 +1,6 @@
+GET /users/user1/editable-clients user1/user1
+----
+200
+Content-Type: application/json
+
+[]

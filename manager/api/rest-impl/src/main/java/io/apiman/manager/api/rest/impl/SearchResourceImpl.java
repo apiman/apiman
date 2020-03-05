@@ -16,31 +16,29 @@
 
 package io.apiman.manager.api.rest.impl;
 
-import io.apiman.manager.api.beans.search.PagingBean;
-import io.apiman.manager.api.beans.search.SearchCriteriaBean;
-import io.apiman.manager.api.beans.search.SearchCriteriaFilterBean;
-import io.apiman.manager.api.beans.search.SearchCriteriaFilterOperator;
-import io.apiman.manager.api.beans.search.SearchResultsBean;
-import io.apiman.manager.api.beans.summary.ApiNamespaceBean;
-import io.apiman.manager.api.beans.summary.ApiSummaryBean;
-import io.apiman.manager.api.beans.summary.AvailableApiBean;
-import io.apiman.manager.api.beans.summary.ClientSummaryBean;
-import io.apiman.manager.api.beans.summary.OrganizationSummaryBean;
+import io.apiman.manager.api.beans.idm.PermissionType;
+import io.apiman.manager.api.beans.idm.RoleBean;
+import io.apiman.manager.api.beans.idm.UserBean;
+import io.apiman.manager.api.beans.search.*;
+import io.apiman.manager.api.beans.search.searchResults.UserSearchResult;
+import io.apiman.manager.api.beans.summary.*;
 import io.apiman.manager.api.core.IApiCatalog;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.StorageException;
-import io.apiman.manager.api.rest.contract.ISearchResource;
-import io.apiman.manager.api.rest.contract.exceptions.InvalidSearchCriteriaException;
-import io.apiman.manager.api.rest.contract.exceptions.OrganizationNotFoundException;
-import io.apiman.manager.api.rest.contract.exceptions.SystemErrorException;
+import io.apiman.manager.api.rest.ISearchResource;
+import io.apiman.manager.api.rest.exceptions.InvalidSearchCriteriaException;
+import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
+import io.apiman.manager.api.rest.exceptions.OrganizationNotFoundException;
+import io.apiman.manager.api.rest.exceptions.SystemErrorException;
+import io.apiman.manager.api.rest.impl.util.RestHelper;
 import io.apiman.manager.api.rest.impl.util.SearchCriteriaUtil;
 import io.apiman.manager.api.security.ISecurityContext;
 
-import java.util.List;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Implementation of the Search API.
@@ -62,7 +60,7 @@ public class SearchResourceImpl implements ISearchResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.ISearchResource#searchOrgs(io.apiman.manager.api.beans.search.SearchCriteriaBean)
+     * @see io.apiman.manager.api.rest.ISearchResource#searchOrgs(io.apiman.manager.api.beans.search.SearchCriteriaBean)
      */
     @Override
     public SearchResultsBean<OrganizationSummaryBean> searchOrgs(SearchCriteriaBean criteria)
@@ -76,12 +74,13 @@ public class SearchResourceImpl implements ISearchResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.ISearchResource#searchClients(io.apiman.manager.api.beans.search.SearchCriteriaBean)
+     * @see io.apiman.manager.api.rest.ISearchResource#searchClients(io.apiman.manager.api.beans.search.SearchCriteriaBean)
      */
     @Override
     public SearchResultsBean<ClientSummaryBean> searchClients(SearchCriteriaBean criteria)
-            throws OrganizationNotFoundException, InvalidSearchCriteriaException {
-        // TODO only return clients that the user is permitted to see?
+            throws OrganizationNotFoundException, InvalidSearchCriteriaException, NotAuthorizedException {
+        securityContext.checkAdminPermissions();
+
         SearchCriteriaUtil.validateSearchCriteria(criteria);
         try {
             return query.findClients(criteria);
@@ -91,14 +90,23 @@ public class SearchResourceImpl implements ISearchResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.ISearchResource#searchApis(io.apiman.manager.api.beans.search.SearchCriteriaBean)
+     * @see io.apiman.manager.api.rest.ISearchResource#searchApis(io.apiman.manager.api.beans.search.SearchCriteriaBean)
      */
     @Override
     public SearchResultsBean<ApiSummaryBean> searchApis(SearchCriteriaBean criteria)
             throws OrganizationNotFoundException, InvalidSearchCriteriaException {
         SearchCriteriaUtil.validateSearchCriteria(criteria);
         try {
-            return query.findApis(criteria);
+            // Hide sensitive data and set only needed data for the UI
+            if (securityContext.isAdmin()){
+                return query.findApis(criteria);
+            } else {
+                List<ApiSummaryBean> apis = RestHelper.hideSensitiveDataFromApiSummaryBeanList(query.findApis(criteria).getBeans());
+                SearchResultsBean<ApiSummaryBean> result = new SearchResultsBean<>();
+                result.setBeans(apis);
+                result.setTotalSize(apis.size());
+                return result;
+            }
         } catch (StorageException e) {
             storage.rollbackTx();
             throw new SystemErrorException(e);
@@ -106,7 +114,7 @@ public class SearchResourceImpl implements ISearchResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.ISearchResource#searchApiCatalog(io.apiman.manager.api.beans.search.SearchCriteriaBean)
+     * @see io.apiman.manager.api.rest.ISearchResource#searchApiCatalog(io.apiman.manager.api.beans.search.SearchCriteriaBean)
      */
     @Override
     public SearchResultsBean<AvailableApiBean> searchApiCatalog(SearchCriteriaBean criteria)
@@ -138,7 +146,28 @@ public class SearchResourceImpl implements ISearchResource {
             }
         }
 
-        List<AvailableApiBean> apis = apiCatalog.search(keyword, namespace);
+        List<AvailableApiBean> catalogEntries = apiCatalog.search(keyword, namespace);
+        List<AvailableApiBean> apis = new ArrayList<>();
+
+        // Hide sensitive data like endpoint if the user has no permission to create an new API
+        if (securityContext.getPermittedOrganizations(PermissionType.apiEdit).isEmpty() && !securityContext.isAdmin()){
+            for (AvailableApiBean api : catalogEntries) {
+                AvailableApiBean entry = new AvailableApiBean();
+                entry.setId(api.getId());
+                entry.setIcon(api.getIcon());
+                entry.setRouteEndpoint(api.getRouteEndpoint());
+                entry.setEndpointType(api.getEndpointType());
+                entry.setName(api.getName());
+                entry.setDescription(api.getDescription());
+                entry.setDefinitionType(api.getDefinitionType());
+                entry.setNamespace(api.getNamespace());
+                entry.setTags(api.getTags());
+                entry.setInternal(api.isInternal());
+                apis.add(entry);
+            }
+        } else {
+            apis.addAll(catalogEntries);
+        }
 
         PagingBean paging = criteria.getPaging();
         if (paging == null) {
@@ -159,9 +188,53 @@ public class SearchResourceImpl implements ISearchResource {
         rval.setTotalSize(totalSize);
         return rval;
     }
+
+    /**
+     * @see io.apiman.manager.api.rest.ISearchResource#searchUsers(io.apiman.manager.api.beans.search.SearchCriteriaBean)
+     */
+    @Override
+    public SearchResultsBean<UserSearchResult> searchUsers(SearchCriteriaBean criteria) throws InvalidSearchCriteriaException {
+        List<UserSearchResult> users = new ArrayList<>();
+        try {
+            // Maybe this should be a new query in the future?
+            List<UserBean> userBeans = query.findUsers(criteria).getBeans();
+            for (UserBean user : userBeans) {
+                users.add(new UserSearchResult(user.getUsername(), user.getFullName()));
+            }
+            SearchResultsBean<UserSearchResult> searchResultsBean = new SearchResultsBean<>();
+            searchResultsBean.setBeans(users);
+            searchResultsBean.setTotalSize(users.size());
+            return  searchResultsBean;
+        } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        }
+    }
+
+    /**
+     * @see ISearchResource#searchRoles(SearchCriteriaBean)
+     */
+    @Override
+    public SearchResultsBean<RoleBean> searchRoles(SearchCriteriaBean criteria)
+            throws InvalidSearchCriteriaException {
+        // No permission check needed
+        try {
+            // Hide sensitive data and set only needed data for the UI
+            SearchCriteriaUtil.validateSearchCriteria(criteria);
+            List<RoleBean> roles = new ArrayList<>();
+            for (RoleBean bean : getQuery().findRoles(criteria).getBeans()) {
+                roles.add(RestHelper.hideSensitiveDataFromRoleBean(securityContext, bean));
+            }
+            SearchResultsBean<RoleBean> result = new SearchResultsBean<>();
+            result.setBeans(roles);
+            result.setTotalSize(roles.size());
+            return result;
+        } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        }
+    }
     
     /**
-     * @see io.apiman.manager.api.rest.contract.ISearchResource#getApiNamespaces()
+     * @see io.apiman.manager.api.rest.ISearchResource#getApiNamespaces()
      */
     @Override
     public List<ApiNamespaceBean> getApiNamespaces() {
@@ -180,5 +253,19 @@ public class SearchResourceImpl implements ISearchResource {
      */
     public void setStorage(IStorage storage) {
         this.storage = storage;
+    }
+
+    /**
+     * @return the query
+     */
+    public IStorageQuery getQuery() {
+        return query;
+    }
+
+    /**
+     * @param query the query to set
+     */
+    public void setQuery(IStorageQuery query) {
+        this.query = query;
     }
 }

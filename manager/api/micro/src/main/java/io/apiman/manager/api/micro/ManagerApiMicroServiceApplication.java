@@ -16,20 +16,8 @@
 package io.apiman.manager.api.micro;
 
 import io.apiman.manager.api.config.Version;
-import io.apiman.manager.api.rest.impl.ActionResourceImpl;
-import io.apiman.manager.api.rest.impl.ApiManagerApplication;
-import io.apiman.manager.api.rest.impl.CurrentUserResourceImpl;
-import io.apiman.manager.api.rest.impl.DownloadResourceImpl;
-import io.apiman.manager.api.rest.impl.GatewayResourceImpl;
-import io.apiman.manager.api.rest.impl.OrganizationResourceImpl;
-import io.apiman.manager.api.rest.impl.PermissionsResourceImpl;
-import io.apiman.manager.api.rest.impl.PluginResourceImpl;
-import io.apiman.manager.api.rest.impl.PolicyDefinitionResourceImpl;
-import io.apiman.manager.api.rest.impl.RoleResourceImpl;
-import io.apiman.manager.api.rest.impl.SearchResourceImpl;
-import io.apiman.manager.api.rest.impl.SystemResourceImpl;
-import io.apiman.manager.api.rest.impl.UserResourceImpl;
-import io.apiman.manager.api.rest.impl.mappers.RestExceptionMapper;
+import io.apiman.manager.api.rest.impl.*;
+import io.apiman.manager.api.rest.exceptions.mappers.RestExceptionMapper;
 import io.swagger.jaxrs.config.BeanConfig;
 
 import java.util.HashSet;
@@ -54,16 +42,14 @@ public class ManagerApiMicroServiceApplication extends ApiManagerApplication {
         BeanConfig beanConfig = new BeanConfig();
         beanConfig.setVersion(new Version().getVersionString());
         beanConfig.setBasePath("/apiman"); //$NON-NLS-1$
-        beanConfig.setResourcePackage("io.apiman.manager.api.rest.contract"); //$NON-NLS-1$
-        //TODO set more info in the beanConfig (title,description, host, port, etc)
+        beanConfig.setResourcePackage("io.apiman.manager.api.rest"); //$NON-NLS-1$
+        beanConfig.setDescription("The API Manager REST API is used by the API Manager UI to get stuff done. You can use it to automate any API Management task you wish. For example, create new Organizations, Plans, Clients, and APIs.");
         beanConfig.setScan(true);
 
         classes.add(SystemResourceImpl.class);
         classes.add(SearchResourceImpl.class);
         classes.add(RoleResourceImpl.class);
         classes.add(UserResourceImpl.class);
-        classes.add(CurrentUserResourceImpl.class);
-        classes.add(PermissionsResourceImpl.class);
         classes.add(OrganizationResourceImpl.class);
         classes.add(PolicyDefinitionResourceImpl.class);
         classes.add(GatewayResourceImpl.class);

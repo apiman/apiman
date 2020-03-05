@@ -15,7 +15,10 @@
  */
 package io.apiman.manager.api.gateway.rest;
 
-import io.apiman.gateway.api.rest.contract.exceptions.GatewayApiErrorBean;
+import io.apiman.gateway.api.rest.IApiResource;
+import io.apiman.gateway.api.rest.IClientResource;
+import io.apiman.gateway.api.rest.ISystemResource;
+import io.apiman.gateway.api.rest.exceptions.GatewayApiErrorBean;
 import io.apiman.gateway.engine.beans.Api;
 import io.apiman.gateway.engine.beans.ApiEndpoint;
 import io.apiman.gateway.engine.beans.GatewayEndpoint;
@@ -78,7 +81,7 @@ public class GatewayClient /*implements ISystemResource, IApiResource, IClientRe
     }
 
     /**
-     * @see io.apiman.gateway.api.rest.contract.ISystemResource#getStatus()
+     * @see ISystemResource#getStatus()
      */
     public SystemStatus getStatus() throws GatewayAuthenticationException {
         InputStream is = null;
@@ -104,7 +107,7 @@ public class GatewayClient /*implements ISystemResource, IApiResource, IClientRe
     }
 
     /**
-     * @see io.apiman.gateway.api.rest.contract.ISystemResource#getEndpoint()
+     * @see ISystemResource#getEndpoint()
      */
     public GatewayEndpoint getGatewayEndpoint() throws GatewayAuthenticationException {
         InputStream is = null;
@@ -132,7 +135,7 @@ public class GatewayClient /*implements ISystemResource, IApiResource, IClientRe
     }
 
     /**
-     * @see io.apiman.gateway.api.rest.contract.IApiResource#getApiEndpoint(java.lang.String, java.lang.String, java.lang.String)
+     * @see IApiResource#getApiEndpoint(java.lang.String, java.lang.String, java.lang.String)
      */
     public ApiEndpoint getApiEndpoint(String organizationId, String apiId, String version)
             throws GatewayAuthenticationException {
@@ -161,7 +164,7 @@ public class GatewayClient /*implements ISystemResource, IApiResource, IClientRe
     }
 
     /**
-     * @see io.apiman.gateway.api.rest.contract.IClientResource#register(io.apiman.gateway.engine.beans.Client)
+     * @see IClientResource#register(io.apiman.gateway.engine.beans.Client)
      */
     public void register(Client client) throws RegistrationException, GatewayAuthenticationException {
         try {
@@ -193,7 +196,7 @@ public class GatewayClient /*implements ISystemResource, IApiResource, IClientRe
     }
 
     /**
-     * @see io.apiman.gateway.api.rest.contract.IClientResource#unregister(java.lang.String, java.lang.String, java.lang.String)
+     * @see IClientResource#unregister(java.lang.String, java.lang.String, java.lang.String)
      */
     public void unregister(String organizationId, String clientId, String version)
             throws RegistrationException, GatewayAuthenticationException {
@@ -224,7 +227,7 @@ public class GatewayClient /*implements ISystemResource, IApiResource, IClientRe
     }
 
     /**
-     * @see io.apiman.gateway.api.rest.contract.IApiResource#publish(io.apiman.gateway.engine.beans.Api)
+     * @see IApiResource#publish(io.apiman.gateway.engine.beans.Api)
      */
     public void publish(Api api) throws PublishingException, GatewayAuthenticationException {
         try {
@@ -257,7 +260,7 @@ public class GatewayClient /*implements ISystemResource, IApiResource, IClientRe
     }
 
     /**
-     * @see io.apiman.gateway.api.rest.contract.IApiResource#retire(java.lang.String, java.lang.String, java.lang.String)
+     * @see IApiResource#retire(java.lang.String, java.lang.String, java.lang.String)
      */
     public void retire(String organizationId, String apiId, String version) throws RegistrationException, GatewayAuthenticationException {
         try {
