@@ -409,14 +409,16 @@ div.page {
 }
 
 .browse-items {
+  padding: 0px;
 }
+
 .browse-items .count {
   margin-bottom: 15px;
 }
 .browse-items .item {
   position: relative;
   padding: 10px;
-  width: 330px;
+  width: 20%;
   border: 1px solid rgb(218, 218, 218);
   float: left;
   margin-right: 15px;
@@ -1971,4 +1973,16 @@ html, body {height: 100%;}
 
 .bottom-spacer {
   margin-bottom: 10px;
+}
+
+.left-spacer {
+  margin-left: 10px;
+}
+
+.left-spacer-20 {
+  margin-left: 20px;
+}
+
+.left-spacer-30 {
+  margin-left: 30px;
 }
