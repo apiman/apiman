@@ -1,0 +1,10 @@
+PUT /users/user2 user2/user2
+Content-Type: application/json
+
+{
+	"fullName": "User 2 (Updated)",
+	"email": "updated2@example.org"
+}
+
+----
+204

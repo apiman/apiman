@@ -1,0 +1,21 @@
+POST /roles admin/admin
+Content-Type: application/json
+
+{
+  "name" : "Test Role 5",
+  "autoGrant" : false,
+  "description" : "This is the description of Test Role 5.",
+  "permissions" : [ "clientEdit", "apiView" ]
+}
+----
+200
+Content-Type: application/json
+X-RestTest-ArrayOrdering: any
+
+{
+  "id" : "TestRole5",
+  "name" : "Test Role 5",
+  "autoGrant" : false,
+  "description" : "This is the description of Test Role 5.",
+  "permissions" : [ "clientEdit", "apiView" ]
+}

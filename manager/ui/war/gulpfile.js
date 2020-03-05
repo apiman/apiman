@@ -44,7 +44,7 @@ var config = {
     })
 };
 
-var SwaggerUIPath = './node_modules/swagger-ui-browserify/node_modules/swagger-ui';
+var SwaggerUIPath = './node_modules/swagger-ui-dist';
 
 
 
@@ -118,17 +118,16 @@ gulp.task('connect', function() {
 gulp.task('css', function() {
     return gulp.src(
         [
-            'node_modules/patternfly/components/bootstrap-select/dist/css/bootstrap-select.css',
+            'node_modules/bootstrap-select/dist/css/bootstrap-select.css',
             'node_modules/patternfly/dist/css/patternfly.css',
             'node_modules/patternfly/dist/css/patternfly-additions.css',
             'node_modules/ng-sortable/dist/ng-sortable.css',
-            'node_modules/patternfly/components/cs/c3.css',
+            'node_modules/c3/c3.css',
             'node_modules/angular-xeditable-npm/dist/css/xeditable.css',
             'node_modules/angular-ui-bootstrap/ui-bootstrap-csp.css',
             'node_modules/ui-select/dist/select.css',
             'node_modules/select2/select2.css',
-            SwaggerUIPath + '/dist/css/screen.css',
-            SwaggerUIPath + '/dist/css/typography.css'
+            SwaggerUIPath + '/swagger-ui.css'
         ], {base: 'node_modules/'})
         .pipe(concatCss('deps.css'))
         .pipe(gulp.dest('.'));
@@ -140,10 +139,9 @@ gulp.task('css', function() {
 gulp.task('fonts', function() {
     return gulp.src(
         [
-            './node_modules/patternfly/components/bootstrap/dist/fonts/*.{eot,svg,ttf,woff,woff2}',
-            './node_modules/patternfly/components/font-awesome/fonts/*.{eot,svg,ttf,woff,woff2}',
-            './node_modules/patternfly/dist/fonts/*.{eot,svg,ttf,woff,woff2}',
-            SwaggerUIPath + '/dist/fonts/*.{eot,svg,ttf,woff,woff2}'
+            './node_modules/bootstrap/dist/fonts*.{eot,svg,ttf,woff,woff2}',
+            './node_modules/font-awesome/fonts/*.{eot,svg,ttf,woff,woff2}',
+            './node_modules/patternfly/dist/fonts/*.{eot,svg,ttf,woff,woff2}'
         ])
         .pipe(gulp.dest(config.dest + '/fonts'));
 });
@@ -154,8 +152,7 @@ gulp.task('fonts', function() {
 gulp.task('images', function() {
     return gulp.src(
         [
-            './node_modules/patternfly/dist/img/*.{png,jpg,gif}',
-            SwaggerUIPath + '/dist/images/*.{png,jpg,gif}'
+            './node_modules/patternfly/dist/img/*.{png,jpg,gif}'
         ])
         .pipe(gulp.dest(config.dest + '/images'));
 });
@@ -166,12 +163,11 @@ gulp.task('images', function() {
 gulp.task('path-adjust', function() {
     // All CSS
     return gulp.src(['deps.css'])
-        .pipe(replace('patternfly/components/bootstrap/dist/fonts/', './fonts/'))
-        .pipe(replace('patternfly/components/font-awesome/fonts/', './fonts/'))
+        .pipe(replace('bootstrap/dist/fonts/', './fonts/'))
+        .pipe(replace('font-awesome/fonts/', './fonts/'))
         .pipe(replace('patternfly/dist/fonts/', './fonts/'))
         .pipe(replace('patternfly/dist/img/', './images/'))
-        .pipe(replace('swagger-ui-browserify/node_modules/swagger-ui/dist/images/', './images/'))
-        .pipe(replace('swagger-ui-browserify/node_modules/swagger-ui/dist/fonts/', './fonts/'))
+
         .pipe(gulp.dest(config.dest));
 });
 

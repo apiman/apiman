@@ -62,7 +62,7 @@ module Apiman {
 
                 $log.debug('Query: {0}', queryBean);
 
-                ApimanSvcs.save({ entityType: 'users', secondaryType: 'search' }, queryBean, function(reply) {
+                ApimanSvcs.save({ entityType: 'search', secondaryType: 'users' }, queryBean, function(reply) {
                     $scope.searchButton.state = 'complete';
                     $log.debug('Reply: {0}', reply);
                     $scope.queriedUsers = reply.beans;

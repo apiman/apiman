@@ -16,8 +16,8 @@
 
 package io.apiman.gateway.api.rest.impl;
 
-import io.apiman.gateway.api.rest.contract.IApiResource;
-import io.apiman.gateway.api.rest.contract.exceptions.NotAuthorizedException;
+import io.apiman.gateway.api.rest.IApiResource;
+import io.apiman.gateway.api.rest.exceptions.NotAuthorizedException;
 import io.apiman.gateway.engine.beans.Api;
 import io.apiman.gateway.engine.beans.ApiEndpoint;
 import io.apiman.gateway.engine.beans.exceptions.PublishingException;
@@ -45,7 +45,7 @@ public class ApiResourceImpl extends AbstractResourceImpl implements IApiResourc
     }
 
     /**
-     * @see io.apiman.gateway.api.rest.contract.IApiResource#publish(io.apiman.gateway.engine.beans.Api)
+     * @see IApiResource#publish(io.apiman.gateway.engine.beans.Api)
      */
     @Override
     public void publish(Api api) throws PublishingException, NotAuthorizedException {
@@ -57,7 +57,7 @@ public class ApiResourceImpl extends AbstractResourceImpl implements IApiResourc
     }
 
     /**
-     * @see io.apiman.gateway.api.rest.contract.IApiResource#retire(java.lang.String, java.lang.String, java.lang.String)
+     * @see IApiResource#retire(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
     public void retire(String organizationId, String apiId, String version) throws RegistrationException,
@@ -74,7 +74,7 @@ public class ApiResourceImpl extends AbstractResourceImpl implements IApiResourc
     }
 
     /**
-     * @see io.apiman.gateway.api.rest.contract.IApiResource#getApiEndpoint(java.lang.String, java.lang.String, java.lang.String)
+     * @see IApiResource#getApiEndpoint(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
     public ApiEndpoint getApiEndpoint(String organizationId, String apiId, String version)

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+</head>
+
+<body>
+<div>
+
+    <div ng-include="headerInclude"></div>
+    <div ng-controller="Apiman.ManagerRestApiDefController" class="page" ng-cloak="" ng-show="pageState == 'loaded'">
+
+        <div class="container-pf-nav-pf-vertical container-fluid container">
+            <div class="row">
+                <div class="col-md-12">
+                    <ol class="breadcrumb" data-field="breadcrumb">
+                        <li><a id="bc-home" href="{{ pluginName }}/"><i class="fa fa-home fa-fw"></i><span apiman-i18n-key="home">Home</span></a></li>
+                        <li class="active"><i class="fa fa-sitemap fa-fw"></i><span apiman-i18n-key="definition">Definition</span></li>
+                    </ol>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <h1 class="consumer-top-header">
+                        <span apiman-i18n-key="api-definition">API Definition</span>
+                        <a class="pull-right" id="download" href="{{ definitionUrl }}/" download="API-Manager-REST-API.yaml"><i class="fa fa-download fa-fw"></i><span apiman-i18n-key="download">Download</span></a>
+                    </h1>
+                    <hr />
+                </div>
+            </div>
+
+            <div class="row" ng-show="hasError">
+                <div class="col-md-12">
+                    <div class="alert alert-danger" style="margin-top: 15px">
+                        <span class="pficon pficon-info"></span>
+                        <span apiman-i18n-key="consumer-api-def.error-loading-definition">An error occured while loading the API definition file.  Please try again later.</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row" ng-hide="hasDefinition">
+                <div class="col-md-12">
+                    <div class="alert alert-warning" style="margin-top: 15px">
+                        <span class="pficon pficon-info"></span>
+                        <span apiman-i18n-key="consumer-api-def.no-api-definition">This API does not have an API definition file.  Contact the API provider and ask them to supply a valid API definition!</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row" ng-show="definitionStatus == 'loading'">
+                <div class="col-md-12">
+                    <div style="margin-top: 15px; padding: 20px" class="alert alert-info">
+                        <div style="float:left; margin-right: 6px" class="spinner spinner-sm"></div>
+                        <span apiman-i18n-key="loading-api-def">Loading API Definition, please wait...</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="apiman-swagger" class="row swagger-section" ng-show="hasDefinition">
+                <div class="col-md-12">
+                    <div id="swagger-ui-container"/>
+                </div>
+            </div>
+        </div>
+    </div> <!-- /container-pf-nav-pf-vertical container-fluid -->
+</div>
+</body>
+</html>

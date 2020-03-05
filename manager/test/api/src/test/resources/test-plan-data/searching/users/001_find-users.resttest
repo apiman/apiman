@@ -1,0 +1,35 @@
+POST /search/users admin/admin
+Content-Type: application/json
+
+{
+  "orderBy" : {
+    "name" : "fullName",
+    "ascending" : true
+  },
+  "paging" : {
+    "page" : 1,
+    "pageSize" : 20
+  },
+  "filters" : [
+    {
+      "name" : "fullName",
+      "value" : "*user*",
+      "operator" : "like"
+    }
+  ]
+}
+
+----
+200
+Content-Type: application/json
+
+{
+  "beans" : [
+    {"username":"user1","fullName":"User 1"},
+    {"username":"user2","fullName":"User 2"},
+    {"username":"user3","fullName":"User 3"},
+    {"username":"user4","fullName":"User 4"},
+    {"username":"user5","fullName":"User 5"}
+  ],
+  "totalSize" : 5
+}

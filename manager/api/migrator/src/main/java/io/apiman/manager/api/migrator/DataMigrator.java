@@ -120,7 +120,6 @@ public class DataMigrator implements IReaderHandler {
         DataMigrator migrator = new DataMigrator();
         migrator.setLogger(new SystemOutLogger());
         Version version = new Version();
-        version.postConstruct();
         migrator.setVersion(version);
         migrator.migrate(from, to);
     }

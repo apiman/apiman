@@ -3,8 +3,8 @@
 module Apiman {
     
     export var UserProfileController = _module.controller("Apiman.UserProfileController",
-        ['$q', '$rootScope', '$scope', '$location', 'CurrentUserSvcs', 'PageLifecycle',
-        ($q, $rootScope, $scope, $location, CurrentUserSvcs, PageLifecycle) => {
+        ['$q', '$rootScope', '$scope', '$location', 'UserSvcs','CurrentUserSvcs', 'CurrentUser', 'PageLifecycle',
+        ($q, $rootScope, $scope, $location, UserSvcs, CurrentUserSvcs, CurrentUser, PageLifecycle) => {
             var pageData = {
                 user: $q(function(resolve, reject) {
                     CurrentUserSvcs.get({ what: 'info' }, resolve, reject);
@@ -53,13 +53,15 @@ module Apiman {
             
             $scope.save = function() {
                 $scope.updateButton.state = 'in-progress';
-                CurrentUserSvcs.update({ what: 'info' }, $scope.updatedUser, function() {
-                    $scope.updateButton.state = 'complete';
-                    $scope.user.fullName = $scope.updatedUser.fullName;
-                    $scope.user.email = $scope.updatedUser.email;
-                    $scope.isValid = true;
-                    $rootScope.isDirty = false;
-                }, PageLifecycle.handleError);
+                CurrentUser.getCurrentUser().then(function (currentUser) {
+                    UserSvcs.update({ user: currentUser.username }, $scope.updatedUser, function() {
+                        $scope.updateButton.state = 'complete';
+                        $scope.user.fullName = $scope.updatedUser.fullName;
+                        $scope.user.email = $scope.updatedUser.email;
+                        $scope.isValid = true;
+                        $rootScope.isDirty = false;
+                    }, PageLifecycle.handleError);
+                });
             };
             
             PageLifecycle.loadPage('UserProfile', undefined, pageData, $scope, function() {

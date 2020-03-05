@@ -45,29 +45,17 @@ import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.core.logging.ApimanLogger;
 import io.apiman.manager.api.gateway.IGatewayLink;
 import io.apiman.manager.api.gateway.IGatewayLinkFactory;
-import io.apiman.manager.api.rest.contract.IActionResource;
-import io.apiman.manager.api.rest.contract.IOrganizationResource;
-import io.apiman.manager.api.rest.contract.exceptions.ActionException;
-import io.apiman.manager.api.rest.contract.exceptions.ApiVersionNotFoundException;
-import io.apiman.manager.api.rest.contract.exceptions.ClientVersionNotFoundException;
-import io.apiman.manager.api.rest.contract.exceptions.GatewayNotFoundException;
-import io.apiman.manager.api.rest.contract.exceptions.PlanVersionNotFoundException;
+import io.apiman.manager.api.rest.IActionResource;
+import io.apiman.manager.api.rest.IOrganizationResource;
+import io.apiman.manager.api.rest.exceptions.*;
 import io.apiman.manager.api.rest.impl.audit.AuditUtils;
-import io.apiman.manager.api.rest.impl.i18n.Messages;
-import io.apiman.manager.api.rest.impl.util.ExceptionFactory;
+import io.apiman.manager.api.rest.exceptions.i18n.Messages;
+import io.apiman.manager.api.rest.exceptions.util.ExceptionFactory;
 import io.apiman.manager.api.security.ISecurityContext;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.util.*;
 
 /**
  * Implementation of the Action API.
@@ -96,10 +84,10 @@ public class ActionResourceImpl implements IActionResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IActionResource#performAction(io.apiman.manager.api.beans.actions.ActionBean)
+     * @see IActionResource#performAction(io.apiman.manager.api.beans.actions.ActionBean)
      */
     @Override
-    public void performAction(ActionBean action) throws ActionException {
+    public void performAction(ActionBean action) throws ActionException, NotAuthorizedException {
         switch (action.getType()) {
             case publishAPI:
                 publishApi(action);
@@ -125,9 +113,8 @@ public class ActionResourceImpl implements IActionResource {
      * Publishes an API to the gateway.
      * @param action
      */
-    private void publishApi(ActionBean action) throws ActionException {
-        if (!securityContext.hasPermission(PermissionType.apiAdmin, action.getOrganizationId()))
-            throw ExceptionFactory.notAuthorizedException();
+    private void publishApi(ActionBean action) throws ActionException, NotAuthorizedException {
+        securityContext.checkPermissions(PermissionType.apiAdmin, action.getOrganizationId());
 
         ApiVersionBean versionBean;
         try {
@@ -257,9 +244,8 @@ public class ActionResourceImpl implements IActionResource {
      * Retires an API that is currently published to the Gateway.
      * @param action
      */
-    private void retireApi(ActionBean action) throws ActionException {
-        if (!securityContext.hasPermission(PermissionType.apiAdmin, action.getOrganizationId()))
-            throw ExceptionFactory.notAuthorizedException();
+    private void retireApi(ActionBean action) throws ActionException, NotAuthorizedException {
+        securityContext.checkPermissions(PermissionType.apiAdmin, action.getOrganizationId());
 
         ApiVersionBean versionBean;
         try {
@@ -324,9 +310,8 @@ public class ActionResourceImpl implements IActionResource {
      * Registers an client (along with all of its contracts) to the gateway.
      * @param action
      */
-    private void registerClient(ActionBean action) throws ActionException {
-        if (!securityContext.hasPermission(PermissionType.clientAdmin, action.getOrganizationId()))
-            throw ExceptionFactory.notAuthorizedException();
+    private void registerClient(ActionBean action) throws ActionException, NotAuthorizedException {
+       securityContext.checkPermissions(PermissionType.clientAdmin, action.getOrganizationId());
 
         ClientVersionBean versionBean;
         List<ContractSummaryBean> contractBeans;
@@ -504,9 +489,8 @@ public class ActionResourceImpl implements IActionResource {
      * De-registers an client that is currently registered with the gateway.
      * @param action
      */
-    private void unregisterClient(ActionBean action) throws ActionException {
-        if (!securityContext.hasPermission(PermissionType.clientAdmin, action.getOrganizationId()))
-            throw ExceptionFactory.notAuthorizedException();
+    private void unregisterClient(ActionBean action) throws ActionException, NotAuthorizedException {
+        securityContext.checkPermissions(PermissionType.clientAdmin, action.getOrganizationId());
 
         ClientVersionBean versionBean;
         List<ContractSummaryBean> contractBeans;
@@ -582,9 +566,8 @@ public class ActionResourceImpl implements IActionResource {
      * Locks the plan.
      * @param action
      */
-    private void lockPlan(ActionBean action) throws ActionException {
-        if (!securityContext.hasPermission(PermissionType.planAdmin, action.getOrganizationId()))
-            throw ExceptionFactory.notAuthorizedException();
+    private void lockPlan(ActionBean action) throws ActionException, NotAuthorizedException {
+        securityContext.checkPermissions(PermissionType.planAdmin, action.getOrganizationId());
 
         PlanVersionBean versionBean;
         try {

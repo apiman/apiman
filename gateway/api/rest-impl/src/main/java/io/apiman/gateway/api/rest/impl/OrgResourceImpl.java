@@ -16,8 +16,8 @@
 
 package io.apiman.gateway.api.rest.impl;
 
-import io.apiman.gateway.api.rest.contract.IOrgResource;
-import io.apiman.gateway.api.rest.contract.exceptions.NotAuthorizedException;
+import io.apiman.gateway.api.rest.IOrgResource;
+import io.apiman.gateway.api.rest.exceptions.NotAuthorizedException;
 
 import javax.ws.rs.container.AsyncResponse;
 

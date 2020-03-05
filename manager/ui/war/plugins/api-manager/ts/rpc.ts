@@ -42,7 +42,11 @@ module ApimanRPC {
         function($resource, Configuration) {
             var endpoint = Configuration.api.endpoint + '/users/:user/:entityType';
             return $resource(endpoint,
-                { user: '@user', entityType: '@entityType' });
+                {user: '@user', entityType: '@entityType'}, {
+                    update: {
+                        method: 'PUT' // this method issues a PUT request
+                    }
+                });
         }]);
 
     export var OrganizationSvcs = _module.factory('OrgSvcs', ['$resource', 'Configuration',
@@ -69,12 +73,9 @@ module ApimanRPC {
 
     export var CurrentUserSvcs = _module.factory('CurrentUserSvcs', ['$resource', 'Configuration',
         function($resource, Configuration) {
-            var endpoint = Configuration.api.endpoint + '/currentuser/:what';
+            var endpoint = Configuration.api.endpoint + '/users/currentuser/:what';
             return $resource(endpoint,
-                { entityType: '@what' }, {
-                update: {
-                  method: 'PUT' // this method issues a PUT request
-                }});
+                {entityType: '@what'});
         }]);
 
     export var ActionSvcs = _module.factory('ActionSvcs', ['$resource', 'Configuration',

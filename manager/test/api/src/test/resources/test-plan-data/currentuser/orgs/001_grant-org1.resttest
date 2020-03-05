@@ -1,9 +1,0 @@
-POST /organizations/TestOrganization1/roles admin/admin
-Content-Type: application/json
-
-{
-  "userId" : "user1",
-  "roleIds" : [ "ClientRoles" ]
-}
-----
-204

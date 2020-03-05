@@ -4,8 +4,11 @@ module Apiman {
 
     import CurrentUserSvcs = ApimanRPC.CurrentUserSvcs;
     export var ApiCatalogController = _module.controller("Apiman.ApiCatalogController",
-        [ '$q', 'Logger', '$scope', '$filter', '$timeout', 'ApiCatalogSvcs', 'PageLifecycle', '$uibModal', 'CurrentUserSvcs', '$location',
-          ($q, Logger, $scope, $filter, $timeout, ApiCatalogSvcs, PageLifecycle, $uibModal, CurrentUserSvcs, $location) => {
+        [ '$q', 'Logger', '$scope', '$rootScope', '$filter', '$timeout', 'ApiCatalogSvcs', 'PageLifecycle', '$uibModal', 'CurrentUser', 'UserSvcs', '$location',
+          ($q, Logger, $scope, $rootScope, $filter, $timeout, ApiCatalogSvcs, PageLifecycle, $uibModal, CurrentUser, UserSvcs, $location) => {
+
+                // set a "rest" as default value for the dropdown
+                $scope.epType = "rest";
 
                 var body:any = {};
                 body.filters = [];
@@ -98,7 +101,6 @@ module Apiman {
                         }
                     });
                 };
-                
                 $scope.tagLabel = function(tag) {
                     var idx = tag.indexOf("=");
                     if (idx == -1) {
@@ -107,7 +109,6 @@ module Apiman {
                         return tag.slice(idx + 1);
                     }
                 };
-                
                 $scope.tagTitle = function(tag) {
                     return "Filter by tag: " + tag;
                 };
@@ -135,30 +136,36 @@ module Apiman {
                         }, reject);
                     }),
                     orgs: $q(function (resolve, reject) {
-                        CurrentUserSvcs.query({what: 'apiorgs'}, resolve, reject);
+                        return CurrentUser.getCurrentUser().then(function (currentUser) {
+                            return UserSvcs.query({ user: currentUser.username, entityType: 'apiorgs' }, resolve, reject);
+                        })
                     })
                 };
 
+
+                let apiAdjustments = function (api) {
+                  api.iconIsUrl = false;
+                  if (!api.icon) {
+                      api.icon = 'puzzle-piece';
+                  }
+                  if (api.icon.indexOf('http') == 0) {
+                      api.iconIsUrl = true;
+                  }
+                  api.ticon = 'fa-file-text-o';
+                  if (api.endpointType == 'soap' || api.endpointType == 'ui') {
+                      api.ticon = 'fa-file-code-o';
+                  }
+                  if (api.routeDefinitionUrl != null) {
+                      api.definitionUrl = api.routeDefinitionUrl;
+                  }
+                };
+
+
                 PageLifecycle.loadPage('ApiCatalog', undefined, pageData, $scope, function () {
                     angular.forEach($scope.apis, function (api) {
-                        api.iconIsUrl = false;
-                        if (!api.icon) {
-                            api.icon = 'puzzle-piece';
-                        }
-                        if (api.icon.indexOf('http') == 0) {
-                            api.iconIsUrl = true;
-                        }
-                        api.ticon = 'fa-file-text-o';
-                        if (api.endpointType == 'soap') {
-                            api.ticon = 'fa-file-code-o';
-                        }
-                        if (api.routeDefinitionUrl != null) {
-                            api.definitionUrl = api.routeDefinitionUrl;
-                        }
+                        apiAdjustments(api)
                     });
-
                     $scope.tags = _.uniq(_.flatten(_.map($scope.apis, 'tags')));
-
                     PageLifecycle.setPageTitle('api-catalog');
                 });
             }
@@ -169,7 +176,6 @@ module Apiman {
           ($q, $rootScope, Logger, $scope, OrgSvcs, PageLifecycle, $uibModalInstance, api, orgs) => {
 
                 var recentOrg = $rootScope.mruOrg;
-                
                 $scope.api = api;
                 $scope.orgs = orgs;
 
@@ -214,7 +220,6 @@ module Apiman {
     export var ApiCatalogDefController = _module.controller("Apiman.ApiCatalogDefController",
         [ '$q', '$scope', 'ApiCatalogSvcs', 'PageLifecycle', '$routeParams', '$window', 'Logger', 'ApiDefinitionSvcs', 'Configuration',
           ($q, $scope, ApiCatalogSvcs, PageLifecycle, $routeParams, $window, Logger, ApiDefinitionSvcs, Configuration) => {
-          
                 $scope.params = $routeParams;
                 $scope.chains = {};
 
@@ -239,70 +244,77 @@ module Apiman {
                     })
                 };
 
+                const DisableTryItOutPlugin = function() {
+                  return {
+                      statePlugins: {
+                          spec: {
+                              wrapSelectors: {
+                                  allowTryItOutFor: () => () => false
+                              }
+                          }
+                      }
+                  }
+                };
+
+                // SwaggerUI Plugins
+                const DisableAuthorizePlugin = function() {
+                  return {
+                      wrapComponents: {
+                          authorizeBtn: () => () => null
+                      }
+                  }
+                };
+
                 PageLifecycle.loadPage('ApiCatalogDef', undefined, pageData, $scope, function () {
 
                     $scope.hasError = false;
 
                     PageLifecycle.setPageTitle('api-catalog-def', [$scope.params.name]);
 
-                    var hasSwagger = false;
-
-                    try {
-                        var swagger = SwaggerUi;
-                        hasSwagger = true;
-                    } catch (e) {
-                    }
-
                     var definitionUrl = $scope.api.definitionUrl;
                     if ($scope.api.routeDefinitionUrl != null) definitionUrl = $scope.api.routeDefinitionUrl;
                     var definitionType = $scope.api.definitionType;
 
-                    if ((definitionType == 'SwaggerJSON' || definitionType == 'SwaggerYAML') && hasSwagger) {
-                        var authHeader = Configuration.getAuthorizationHeader();
+                    if ((definitionType == 'SwaggerJSON' || definitionType == 'SwaggerYAML') && SwaggerUIBundle) {
 
                         $scope.definitionStatus = 'loading';
-                        var swaggerOptions = {
+                        let ui;
+                        let swaggerOptions = <any>{
                             url: definitionUrl,
-                            dom_id: "swagger-ui-container",
-                            validatorUrl: null,
-                            sorter: "alpha",
+                            dom_id: "#swagger-ui-container",
+                            validatorUrl: "https://online.swagger.io/validator",
+                            presets: [
+                                SwaggerUIBundle.presets.apis
+                            ],
+                            layout: "BaseLayout",
+                            sorter : "alpha",
 
-                            onComplete: function () {
-                                $('#swagger-ui-container a').each(function (idx, elem) {
-                                    var href = $(elem).attr('href');
-                                    if (href[0] == '#') {
-                                        $(elem).removeAttr('href');
-                                    }
-                                });
-                                $('#swagger-ui-container div.sandbox_header').each(function (idx, elem) {
-                                    $(elem).remove();
-                                });
-                                $('#swagger-ui-container li.operation div.auth').each(function (idx, elem) {
-                                    $(elem).remove();
-                                });
-                                $('#swagger-ui-container li.operation div.access').each(function (idx, elem) {
-                                    $(elem).remove();
-                                });
-                                $scope.$apply(function (error) {
+                            onComplete: function() {
+                                $scope.$apply(function() {
                                     $scope.definitionStatus = 'complete';
                                 });
                             },
-                            onFailure: function () {
-                                $scope.$apply(function (error) {
-                                    $scope.definitionStatus = 'error';
-                                    $scope.hasError = true;
-                                    $scope.error = error;
-                                });
+                            // do error handling in the responseInterceptor
+                            responseInterceptor: function (response) {
+                                if (response.status == 500 && response.ok === false) {
+                                    $scope.$apply(function() {
+                                        $scope.definitionStatus = 'error';
+                                        $scope.hasError = true;
+                                    });
+                                }
+                                return response;
                             }
                         };
 
-                        $window.swaggerUi = new SwaggerUi(swaggerOptions);
-                        $window.swaggerUi.load();
+                        swaggerOptions.plugins = [];
+                        swaggerOptions.plugins.push(DisableTryItOutPlugin, DisableAuthorizePlugin);
 
+                        ui = SwaggerUIBundle(swaggerOptions);
                         $scope.hasDefinition = true;
                     } else {
                         $scope.hasDefinition = false;
                     }
+
                 });
             }
         ]);

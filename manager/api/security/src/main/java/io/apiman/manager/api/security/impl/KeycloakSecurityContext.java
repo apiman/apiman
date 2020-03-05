@@ -34,19 +34,11 @@ public class KeycloakSecurityContext extends AbstractSecurityContext {
     }
 
     /**
-     * @see io.apiman.manager.api.security.ISecurityContext#getRequestHeader(java.lang.String)
-     */
-    @Override
-    public String getRequestHeader(String headerName) {
-        return DefaultSecurityContext.servletRequest.get().getHeader(headerName);
-    }
-
-    /**
      * @see io.apiman.manager.api.security.ISecurityContext#getCurrentUser()
      */
     @Override
     public String getCurrentUser() {
-        return DefaultSecurityContext.servletRequest.get().getRemoteUser();
+        return servletRequest.get().getRemoteUser();
     }
 
     /**
@@ -54,7 +46,7 @@ public class KeycloakSecurityContext extends AbstractSecurityContext {
      */
     @Override
     public String getFullName() {
-        HttpServletRequest request = DefaultSecurityContext.servletRequest.get();
+        HttpServletRequest request = servletRequest.get();
         org.keycloak.KeycloakSecurityContext session = (org.keycloak.KeycloakSecurityContext) request.getAttribute(org.keycloak.KeycloakSecurityContext.class.getName());
         if (session != null) {
             return session.getToken().getName();
@@ -68,7 +60,7 @@ public class KeycloakSecurityContext extends AbstractSecurityContext {
      */
     @Override
     public String getEmail() {
-        HttpServletRequest request = DefaultSecurityContext.servletRequest.get();
+        HttpServletRequest request = servletRequest.get();
         org.keycloak.KeycloakSecurityContext session = (org.keycloak.KeycloakSecurityContext) request.getAttribute(org.keycloak.KeycloakSecurityContext.class.getName());
         if (session != null) {
             return session.getToken().getEmail();
@@ -76,14 +68,4 @@ public class KeycloakSecurityContext extends AbstractSecurityContext {
             return null;
         }
     }
-
-    /**
-     * @see io.apiman.manager.api.security.ISecurityContext#isAdmin()
-     */
-    @Override
-    public boolean isAdmin() {
-        // TODO warning - hard coded role value here
-        return DefaultSecurityContext.servletRequest.get().isUserInRole("apiadmin"); //$NON-NLS-1$
-    }
-
 }

@@ -15,8 +15,9 @@
  */
 package io.apiman.manager.api.rest.impl.util;
 
-import io.apiman.manager.api.rest.contract.exceptions.InvalidNameException;
-import io.apiman.manager.api.rest.impl.i18n.Messages;
+import io.apiman.manager.api.rest.exceptions.InvalidNameException;
+import io.apiman.manager.api.rest.exceptions.i18n.Messages;
+import io.apiman.manager.api.rest.exceptions.util.ExceptionFactory;
 
 import org.apache.commons.lang3.StringUtils;
 

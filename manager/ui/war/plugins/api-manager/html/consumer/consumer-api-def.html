@@ -3,15 +3,15 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
-    
+
   </head>
 
   <body>
   <div>
-    
-    <div ng-include="headerInclude"></div>   
+
+    <div ng-include="headerInclude"></div>
     <div ng-controller="Apiman.ConsumerApiDefController" class="page" ng-cloak="" ng-show="pageState == 'loaded'">
-    
+
       <div class="container">
         <div class="row">
           <div class="col-md-12">
@@ -30,16 +30,7 @@
             <hr />
           </div>
         </div>
-        
-        <div class="row" ng-show="hasError">
-          <div class="col-md-12">
-            <div class="alert alert-danger" style="margin-top: 15px">
-               <span class="pficon pficon-info"></span>
-               <span apiman-i18n-key="consumer-api-def.error-loading-definition">An error occured while loading the API definition file.  Please try again later.</span>
-            </div>
-          </div>
-        </div>
-        
+
         <div class="row" ng-hide="hasDefinition">
           <div class="col-md-12">
             <div class="alert alert-warning" style="margin-top: 15px">
@@ -48,23 +39,23 @@
             </div>
           </div>
         </div>
-        
-        <div class="row" ng-show="definitionStatus == 'loading'">
-          <div class="col-md-12">
-            <div style="margin-top: 15px; padding: 20px" class="alert alert-info">
-              <div style="float:left; margin-right: 6px" class="spinner spinner-sm"></div>
-              <span apiman-i18n-key="loading-api-def">Loading API Definition, please wait...</span>
+
+        <div class="row" ng-show="definitionStatus == 'loading' && !hasError">
+            <div class="col-md-12">
+                <div style="margin-top: 15px; padding: 20px" class="alert alert-info">
+                    <div style="float:left; margin-right: 6px" class="spinner spinner-sm"></div>
+                    <span apiman-i18n-key="loading-api-def">Loading API Definition, please wait...</span>
+                </div>
             </div>
-          </div>
         </div>
-        
+
         <div id="apiman-swagger" class="row swagger-section" ng-show="hasDefinition">
-          <div class="col-md-12">
-            <div id="swagger-ui-container" class="swagger-ui-wrap" />
-          </div>
+            <div class="col-md-12">
+                <div id="swagger-ui-container"></div>
+            </div>
         </div>
-      </div>
-    </div> <!-- /container -->
+    </div> <!-- /container-pf-nav-pf-vertical container-fluid -->
+    </div>
   </div>
-  </body>
+</body>
 </html>
