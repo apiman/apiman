@@ -102,7 +102,7 @@
 
   <login-config>
     <auth-method>BASIC</auth-method>
-    <realm-name>${env.REALM:apiman}</realm-name>
+    <realm-name>apiman</realm-name>
   </login-config>
   <security-role>
     <role-name>apiuser</role-name>

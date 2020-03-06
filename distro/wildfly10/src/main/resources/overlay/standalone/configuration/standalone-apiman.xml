@@ -168,7 +168,7 @@
             <deployment-scanner path="deployments" relative-to="jboss.server.base.dir" scan-interval="5000" runtime-failure-causes-rollback="${jboss.deployment.scanner.rollback.on.failure:false}"/>
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:ee:4.0">
-            <spec-descriptor-property-replacement>true</spec-descriptor-property-replacement>
+            <spec-descriptor-property-replacement>false</spec-descriptor-property-replacement>
             <concurrent>
                 <context-services>
                     <context-service name="default" jndi-name="java:jboss/ee/concurrency/context/default" use-transaction-setup-provider="true"/>
@@ -515,34 +515,35 @@
             </spi>
         </subsystem> <!-- foo -->
         <subsystem xmlns="urn:jboss:domain:keycloak:1.1">
+          <realm name="apiman">
+            <realm-public-key>MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxyG61ohrfJQKNmDA/ePZtqZVpPXjwn3k3T+iWiTvMsxW2+WlnqIEmL5qZ09DMhBH9r50WZRO2gVoCb657Er9x0vfD6GNf/47XU2y33TX8axhP+hSwkv/VViaDlu4jQrfgPWz/FXMjWIZxg1xQS+nOBF2ScCRYWNQ/ZnUNnvrq8dGC2/AlyeYcgDUOdwlJuvgkGlF0QoVPQiRPurR3RwlG+BjL8JB3hbaAZhdJqwqApmGQbcpgLj2tODnlrZnEAp5cPPU/lgqCE1OOp78BAEiE91ZLPl/+D8qDHk+Maz0Io3bkeRZMXPpvtbL3qN+3GlF8Yz264HDSsTNrH+nd19tFQIDAQAB</realm-public-key>
+            <auth-server-url>/auth</auth-server-url>
+            <ssl-required>none</ssl-required>
+            <enable-cors>false</enable-cors>
+            <principal-attribute>preferred_username</principal-attribute>
+          </realm>
           <secure-deployment name="apiman.war">
-            <realm>${env.REALM:apiman}</realm>
-            <auth-server-url>${env.SSO_URL:/auth}</auth-server-url>
+            <realm>apiman</realm>
             <resource>apiman</resource>
             <credential name="secret">5af5458f-0a96-4251-8f92-08ebcc3a8aa2</credential>
             <disable-trust-manager>true</disable-trust-manager>
             <bearer-only>true</bearer-only>
             <enable-basic-auth>true</enable-basic-auth>
-            <principal-attribute>preferred_username</principal-attribute>
           </secure-deployment>
           <secure-deployment name="apimanui.war">
-            <realm>${env.REALM:apiman}</realm>
-            <auth-server-url>${env.SSO_URL:/auth}</auth-server-url>
+            <realm>apiman</realm>
             <resource>apimanui</resource>
             <credential name="secret">722557fd-a725-4cc0-9dff-7d09c0c47038</credential>
             <disable-trust-manager>true</disable-trust-manager>
             <public-client>true</public-client>
-            <principal-attribute>preferred_username</principal-attribute>
           </secure-deployment>
           <secure-deployment name="apiman-gateway-api.war">
-            <realm>${env.REALM:apiman}</realm>
-            <auth-server-url>${env.SSO_URL:/auth}</auth-server-url>
+            <realm>apiman</realm>
             <resource>apiman-gateway-api</resource>
             <credential name="secret">217b725d-7790-47a7-a3fc-5cf31f92a8db</credential>
             <disable-trust-manager>true</disable-trust-manager>
             <bearer-only>true</bearer-only>
             <enable-basic-auth>true</enable-basic-auth>
-            <principal-attribute>preferred_username</principal-attribute>
           </secure-deployment>
         </subsystem>
     </profile>
