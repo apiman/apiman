@@ -26,7 +26,7 @@
           <p class="description" apiman-i18n-key="find-api-description">Use this page to find APIs you wish to consume.  Use the various search options to find APIs, then review them and eventually create Contracts to them.</p>
         </div>
         <div class="col-md-6">
-          <form ng-submit="searchSvcs(apiName)">
+          <form ng-submit="searchSvcs(apiName, currentPage, pageSize)">
             <input id="apiman-search" ng-model="apiName" type="text" class="apiman-form-control form-control input-search" apiman-i18n-key="searchfor-apis" placeholder="Search by API name or keyword..."></input>
             <button id="search-btn" type="submit" class="btn btn-default btn-search" apiman-i18n-key="search" data-field="searchButton">Search</input>
           </form>
@@ -49,24 +49,39 @@
             </div>
           </div>
 
+          <div class="row">
           <div ng-show="apis.length > 0">
-            <div class="count">
-              Found {{ apis.length}} matching APIs.
+            <div class="count col-md-8">
+              Found {{resultCount}} matching APIs.
             </div>
+          </div>
 
-            <div class="item card" ng-repeat="api in apis">
+          <div class="col-md-3 left-spacer-30" ng-show="resultCount > 10">
+            <span apiman-i18n-key="select-page-size">Select page size </span>
+            <select ng-model="pageSize" ng-init="pageSize = '10'" ng-change="searchSvcs(apiName, currentPage, pageSize)">
+              <option value="10" ng-selected="true">10</option>
+              <option value="25">25</option>
+              <option value="50">50</option>
+            </select>
+          </div>
+        </div>
+
+            <div class="item" ng-repeat="api in apis">
               <div class="title">
                 <i class="fa fa-puzzle-piece icon"></i><a href="{{ pluginName }}/browse/orgs/{{api.organizationId}}">{{ api.organizationName }}</a>
                 <span apiman-i18n-skip> / </span>
                 <b><a href="{{ pluginName }}/browse/orgs/{{api.organizationId}}/{{api.id}}">{{ api.name }}</a></b>
               </div>
-              <div class="description" title="{{ api.description }}">{{ api.description }}</div>
+              <div class="description" title="{{ api.description }}">{{ api.description | limitTo: 60 }}<span ng-show="api.description.length > 60">...</span></div>
             </div>
-          </div>
-
         </div>
       </div>
-
+      <div class="row">
+        <div class="col-md-6" ng-show="apis.length > 0 && resultCount > pageSize">
+          <uib-pagination ng-init="currentPage = 1" total-items="resultCount" boundary-link-numbers="true" ng-model="currentPage"
+            items-per-page="pageSize" ng-change="searchSvcs(apiName, currentPage, pageSize)" direction-links="true" max-size="5" rotate="true" force-ellipses="true" />
+        </div>
+    </div>  
     </div> <!-- /container -->
   </div>
   </body>
