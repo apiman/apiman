@@ -59,6 +59,7 @@ module Apiman {
                                                                                        org) {
 
         $scope.confirmOrgName = '';
+        $scope.org = org;
 
         // Used for enabling/disabling the submit button
         $scope.okayToDelete = false;
