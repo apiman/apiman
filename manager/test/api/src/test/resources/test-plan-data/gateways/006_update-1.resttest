@@ -3,7 +3,7 @@ Content-Type: application/json
 
 {
   "description" : "This is the first gateway. (updated)",
-  "configuration" : "{\"endpoint\":\"http://localhost:8080/gateway-config/api\",\"username\":\"admin99\",\"password\":\"zoomba19\"}"
+  "configuration" : "{\"endpoint\":\"http://localhost:8080/gateway-config/api\",\"username\":\"${apiman.test.gateway.username}\",\"password\":\"${apiman.test.gateway.password}\"}"
 }
 ----
 204
