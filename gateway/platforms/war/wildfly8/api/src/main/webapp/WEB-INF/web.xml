@@ -56,7 +56,7 @@
   </security-constraint>
   <login-config>
     <auth-method>BASIC</auth-method>
-    <realm-name>${env.REALM:apiman}</realm-name>
+    <realm-name>${env.APIMAN_AUTH_REALM:apiman}</realm-name>
   </login-config>
   <security-role>
     <role-name>apipublisher</role-name>

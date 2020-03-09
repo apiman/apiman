@@ -624,8 +624,8 @@
         <!-- Apiman's Keycloak client adapter configuration. -->
         <subsystem xmlns="urn:jboss:domain:keycloak:1.1">
           <secure-deployment name="apiman.war">
-            <realm>${env.REALM:apiman}</realm>
-            <auth-server-url>${env.SSO_URL:/auth}</auth-server-url>
+            <realm>${env.APIMAN_AUTH_REALM:apiman}</realm>
+            <auth-server-url>${env.APIMAN_AUTH_URL:/auth}</auth-server-url>
             <resource>apiman</resource>
             <credential name="secret">5af5458f-0a96-4251-8f92-08ebcc3a8aa2</credential>
             <disable-trust-manager>true</disable-trust-manager>
@@ -634,8 +634,8 @@
             <principal-attribute>preferred_username</principal-attribute>
           </secure-deployment>
           <secure-deployment name="apimanui.war">
-            <realm>${env.REALM:apiman}</realm>
-            <auth-server-url>${env.SSO_URL:/auth}</auth-server-url>
+            <realm>${env.APIMAN_AUTH_REALM:apiman}</realm>
+            <auth-server-url>${env.APIMAN_AUTH_URL:/auth}</auth-server-url>
             <resource>apimanui</resource>
             <credential name="secret">722557fd-a725-4cc0-9dff-7d09c0c47038</credential>
             <disable-trust-manager>true</disable-trust-manager>
@@ -643,8 +643,8 @@
             <principal-attribute>preferred_username</principal-attribute>
           </secure-deployment>
           <secure-deployment name="apiman-gateway-api.war">
-            <realm>${env.REALM:apiman}</realm>
-            <auth-server-url>${env.SSO_URL:/auth}</auth-server-url>
+            <realm>${env.APIMAN_AUTH_REALM:apiman}</realm>
+            <auth-server-url>${env.APIMAN_AUTH_URL:/auth}</auth-server-url>
             <resource>apiman-gateway-api</resource>
             <credential name="secret">217b725d-7790-47a7-a3fc-5cf31f92a8db</credential>
             <disable-trust-manager>true</disable-trust-manager>
