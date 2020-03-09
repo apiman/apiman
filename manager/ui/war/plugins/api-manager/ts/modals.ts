@@ -59,7 +59,8 @@ module ApimanModals {
         function ($location, $rootScope, $scope, $uibModalInstance, OrgSvcs, Configuration, PageLifecycle, client, params) {
         
         $scope.confirmClientName = '';
-        
+        $scope.client = client;
+
         // Used for enabling/disabling the submit button
         $scope.okayToDelete = false;
         
