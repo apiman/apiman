@@ -138,10 +138,8 @@ module Apiman {
                                                                                          plan) {
 
         $scope.confirmPlanName = '';
-
-        console.log('organizationId: ' + organizationId);
-        console.log('plan: ' + JSON.stringify(plan));
-
+        $scope.plan = plan;
+        
         // Used for enabling/disabling the submit button
         $scope.okayToDelete = false;
 

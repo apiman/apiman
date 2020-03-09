@@ -240,14 +240,13 @@
                   <tasks>
                     <antversion property="antversion" />
                     <echo>Ant Version: ${antversion}</echo>
-
                     <property name="appserver.id" value="tomcat8" />
                     <property name="apiman.tomcat.download.url"
-                      value="http://apache.cs.utah.edu/tomcat/tomcat-8/v8.0.33/bin/apache-tomcat-8.0.33.zip" />
+                      value="http://apache.cs.utah.edu/tomcat/tomcat-8/v8.5.51/bin/apache-tomcat-8.5.51.zip" />
                     <property name="apiman.tempdir" value="${project.build.directory}/_tmp" />
                     <property name="apiman.install.dir" value="${project.build.directory}" />
-                    <property name="apiman.appserver.dir" location="${apiman.install.dir}/apache-tomcat-8.0.33" />
-                    <property name="apiman.appserver.zip" location="${basedir}/apache-tomcat-8.0.33.zip" />
+                    <property name="apiman.appserver.dir" location="${apiman.install.dir}/apache-tomcat-8.5.51" />
+                    <property name="apiman.appserver.zip" location="${basedir}/apache-tomcat-8.5.51.zip" />
                     <property name="apiman.apiman-distro-tomcat8.zip" value="${maven.dependency.io.apiman.apiman-distro-tomcat8.overlay.zip.path}" />
                     <property name="apiman.apiman-tools-services.war" value="${maven.dependency.io.apiman.apiman-tools-services.war.path}" />
                     <property name="apiman.tomcat.home" location="${apiman.appserver.dir}" />
@@ -270,7 +269,7 @@
                     <unzip src="${apiman.appserver.zip}" dest="${apiman.install.dir}" overwrite="false" />
 
                     <!-- Overlay APIMan on top of Tomcat 8 -->
-                    <unzip src="${apiman.apiman-distro-tomcat8.zip}" dest="${apiman.install.dir}/apache-tomcat-8.0.33" overwrite="true" />
+                    <unzip src="${apiman.apiman-distro-tomcat8.zip}" dest="${apiman.install.dir}/apache-tomcat-8.5.51" overwrite="true" />
 
                     <!-- Make sure to chmod 755 the shell scripts -->
                     <chmod perm="a+x" dir="${apiman.appserver.dir}/bin">
@@ -291,6 +290,5 @@
         </plugins>
       </build>
     </profile>
-
   </profiles>
 </project>
