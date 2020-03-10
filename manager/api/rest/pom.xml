@@ -51,7 +51,7 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Export-Package>io.apiman.manager.api.rest.*</Export-Package>
+            <Export-Package>!io.apiman.manager.api.rest.exceptions.*,io.apiman.manager.api.rest.*</Export-Package>
           </instructions>
         </configuration>
       </plugin>
