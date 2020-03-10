@@ -18,11 +18,11 @@ before_install:
   - echo 'MAVEN_OPTS="-XX:+TieredCompilation -XX:TieredStopAtLevel=1 -Xmx2048m"' > ~/.mavenrc
 
 env:
-  - ACTION='-Dapiman-test.type=es -Dapiman.gateway-test.config=servlet-es'
-  - ACTION='-Dapiman.gateway-test.config=vertx3-mem'
-  - ACTION='-Dapiman.gateway-test.config=vertx3-es'
-  - ACTION='-Dapiman.gateway-test.config=vertx3-file'
-  - ACTION='-Dapiman.gateway-test.config=amg-1'
+  - ACTION="-Dapiman-test.type=es -Dapiman.gateway-test.config=servlet-es"
+  - ACTION="-Dapiman.gateway-test.config=vertx3-mem"
+  - ACTION="-Dapiman.gateway-test.config=vertx3-es"
+  - ACTION="-Dapiman.gateway-test.config=vertx3-file"
+  - ACTION="-Dapiman.gateway-test.config=amg-1"
 
 jobs:
   include:
