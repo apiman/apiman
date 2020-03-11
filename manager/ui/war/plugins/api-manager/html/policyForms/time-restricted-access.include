@@ -51,7 +51,7 @@
       <div class="row">
         <div class="col-md-10"></div>
         <div class="col-md-2">
-          <button id="add-rule" ng-disabled="currentItemInvalid()" ng-click="add()" apiman-i18n-key="add" class="btn btn-default" style="min-width: 75px" ng-disabled="isEntityDisabled()">Add</button>
+          <button id="add-rule" ng-disabled="currentItemInvalid() || policyForm.$invalid" ng-click="add()" apiman-i18n-key="add" class="btn btn-default" style="min-width: 75px" ng-disabled="isEntityDisabled()">Add</button>
         </div>
       </div>
     </div>
