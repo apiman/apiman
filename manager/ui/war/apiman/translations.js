@@ -1,2 +1,0 @@
-var APIMAN_TRANSLATION_DATA = {
-};

@@ -6,9 +6,9 @@
   </head>
 
   <body>
-    
-    <div ng-include="headerInclude"></div>   
-    <div ng-controller="Apiman.NewGatewayController" id="form-page" class="container apiman-entity-new page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
+
+    <div ng-include="headerInclude"></div>
+    <form name="gatewayForm" ng-controller="Apiman.NewGatewayController" id="form-page" class="container apiman-entity-new page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
       <fieldset>
       <div class="row">
         <h2 class="title" apiman-i18n-key="new-gateway">New Gateway</h2>
@@ -26,7 +26,8 @@
         <dl>
           <dt apiman-i18n-key="gateway-name">Gateway Name</dt>
           <dd>
-            <input id="apiman-gateway-name" ng-model="gateway.name" name="name" type="text" class="apiman-form-control form-control name entityname" apiman-i18n-key="enter-gateway-name" placeholder="Enter gateway name..."></input>
+            <input id="apiman-gateway-name" ng-model="gateway.name" name="name" type="text" class="apiman-form-control form-control name entityname" apiman-i18n-key="enter-gateway-name" placeholder="Enter gateway name..." required name-validation></input>
+            <span ng-show="gatewayForm.name.$touched && gatewayForm.name.$invalid" apiman-i18n-key="name-error">The value is not valid!</span>
           </dd>
         </dl>
       </div>
@@ -35,7 +36,8 @@
         <dl>
           <dt apiman-i18n-key="description">Description</dt>
           <dd>
-            <textarea ng-model="gateway.description" data-field="description" type="text" class="apiman-form-control form-control description" id="apiman-description" apiman-i18n-key="enter-gateway-description" placeholder="Enter gateway description (optional)..."></textarea>
+            <textarea name="description" ng-model="gateway.description" data-field="description" type="text" class="apiman-form-control form-control description" id="apiman-description" apiman-i18n-key="enter-gateway-description" placeholder="Enter gateway description (optional)..."></textarea>
+            <span ng-show="gatewayForm.description.$touched && gatewayForm.description.$invalid" apiman-i18n-key="text-error">The value is not valid!</span>
           </dd>
         </dl>
       </div>
@@ -44,7 +46,8 @@
         <dl>
           <dt apiman-i18n-key="config-endpoint">Configuration Endpoint</dt>
           <dd>
-            <input ng-model="configuration.endpoint" type="url" name="configEndpoint" type="text" class="apiman-form-control form-control description" id="config-endpoint" apiman-i18n-key="enter-gateway-config-endpoint" placeholder="Enter configuration endpoint..."></input>
+            <input ng-model="configuration.endpoint" type="url" name="configEndpoint" type="text" class="apiman-form-control form-control description" id="config-endpoint" apiman-i18n-key="enter-gateway-config-endpoint" placeholder="Enter configuration endpoint..." check-gateway-endpoint required></input>
+            <span ng-show="gatewayForm.configEndpoint.$touched && gatewayForm.configEndpoint.$invalid" apiman-i18n-key="endpoint-error">The value is not valid!</span>
           </dd>
         </dl>
       </div>
@@ -59,34 +62,43 @@
                   <span apiman-i18n-key="username">Username:</span>
                 </td>
                 <td>
-                  <input id="endpoint-username" ng-model="configuration.username" name="username" type="text" class="apiman-form-control form-control name entityname" apiman-i18n-key="enter-gateway-username" placeholder="Username..."></input>
+                  <input id="endpoint-username" ng-model="configuration.username" name="username" type="text" class="apiman-form-control form-control name entityname" apiman-i18n-key="enter-gateway-username" placeholder="Username..." required check-gateway-username></input>
                 </td>
-              </tr>
+                <td>
+                    <span ng-show="gatewayForm.username.$touched && gatewayForm.username.$invalid" apiman-i18n-key="username-error">The value is invalid!</span>
+                  </td>
+                </tr>
               <tr>
                 <td class="td-label">
                   <span apiman-i18n-key="password">Password:</span>
                 </td>
                 <td>
-                  <input id="endpoint-password" ng-model="configuration.password" data-field="password" type="password" class="apiman-form-control form-control name entityname" apiman-i18n-key="enter-gateway-password" placeholder="Password..."></input>
+                  <input name="password" id="endpoint-password" ng-model="configuration.password" data-field="password" type="password" class="apiman-form-control form-control name entityname" apiman-i18n-key="enter-gateway-password" placeholder="Password..." required check-gateway-password></input>
                 </td>
-              </tr>
+                <td>
+                    <span ng-show="gatewayForm.password.$touched && gatewayForm.password.$invalid" apiman-i18n-key="password-error">The password and confirmation values are required and must match.</span>
+                  </td>
+                </tr>
               <tr>
                 <td></td>
                 <td>
-                  <input id="endpoint-password-confirm" ng-model="passwordConfirm" data-field="passwordConfirm" type="password" class="apiman-form-control form-control name entityname" apiman-i18n-key="enter-gateway-password-confirm" placeholder="Confirm Password..."></input>
+                  <input name="passwordConfirm" id="endpoint-password-confirm" ng-model="passwordConfirm" data-field="passwordConfirm" type="password" class="apiman-form-control form-control name entityname" apiman-i18n-key="enter-gateway-password-confirm" placeholder="Confirm Password..." required check-gateway-password></input>
                 </td>
-              </tr>
+                <td>
+                    <span ng-show="gatewayForm.passwordConfirm.$touched && gatewayForm.passwordConfirm.$invalid" apiman-i18n-key="password-error">The password and confirmation values are required and must match.</span>
+                  </td>
+                </tr>
             </table>
           </dd>
         </dl>
       </div>
       <div class="row">
-        <button id="test-gateway" ng-disabled="!isValid" apiman-action-btn="" data-field="testButton" ng-click="testGateway()" class="btn btn-default" name="testButton" apiman-i18n-key="test-gateway" placeholder="Testing..." data-icon="fa-cog">Test Gateway</button>
+        <button id="test-gateway" ng-disabled="!gatewayForm.$dirty || gatewayForm.$invalid" apiman-action-btn="" data-field="testButton" ng-click="testGateway()" class="btn btn-default" name="testButton" apiman-i18n-key="test-gateway" placeholder="Testing..." data-icon="fa-cog">Test Gateway</button>
       </div>
       <div class="row" ng-show="testResult == 'success'">
         <div class="alert alert-success description" style="margin-top: 10px">
           <span class="pficon pficon-ok"></span>
-          <strong apiman-i18n-key="gateway-config-valid.title">Gateway Configuration Valid</strong> 
+          <strong apiman-i18n-key="gateway-config-valid.title">Gateway Configuration Valid</strong>
           <div apiman-i18n-key="gateway-config-valid.msg">Your Gateway configuration is correct.  Great job!</div>
         </div>
       </div>
@@ -109,10 +121,10 @@
       </div>
       <!-- Create Button -->
       <div class="row">
-        <button id="create-gateway" ng-disabled="!isValid" apiman-action-btn="" class="btn btn-primary" data-field="createButton" name="createButton" apiman-i18n-key="create-gateway" placeholder="Creating..." data-icon="fa-cog" ng-click="createGateway()">Create Gateway</button>
+        <button id="create-gateway" ng-disabled="!gatewayForm.$dirty || gatewayForm.$invalid" apiman-action-btn="" class="btn btn-primary" data-field="createButton" name="createButton" apiman-i18n-key="create-gateway" placeholder="Creating..." data-icon="fa-cog" ng-click="createGateway()">Create Gateway</button>
         <a id="cancel" href="javascript:window.history.back()" class="btn btn-default btn-cancel" apiman-i18n-key="cancel">Cancel</a>
       </div>
       </fieldset>
-    </div> <!-- /container -->
+    </form> <!-- /container -->
   </body>
 </html>

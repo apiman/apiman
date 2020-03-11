@@ -56,7 +56,7 @@
                         apiman-select-picker=""
                         ng-model="selectedDefinitionType"
                         class="selectpicker"
-                        ng-disabled="isEntityDisabled()"
+                        ng-disabled="isEntityDisabled() || selectedDefinitionType.value === 'None'"
                         ng-options="type.label for type in typeOptions track by type.value">
                 </select>
 

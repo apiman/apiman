@@ -446,41 +446,31 @@ module Apiman {
     ]);
 
     _module.directive('apimanEditableDescription',
-        ['Logger',
-        function(Logger) {
+        ['TranslationSvc', 'Logger',
+        function(TranslationSvc, Logger) {
             return {
                 restrict: 'E',
                 scope: {
                     descr: '=description',
                     callback: '='
                 },
-                controller: ['$scope', ($scope) => {
-                }],
                 link: function($scope, $elem, $attrs) {
                     $scope.defaultValue = $attrs.defaultValue;
 
                     var elem = null;
-                    var previousRows = 1;
 
-                    //$scope.topPosition = 0;
-                    //$scope.leftPosition = 0;
-                    //$scope.height = 60;
-                    //$scope.height = 'auto';
+                    $scope.beforeSaveDescription = function (value?: string) {
+                        if (value && value.length !== 0) {
+                            Logger.debug('$scope.descr is {0}', $scope.descr)
+                            var TEXT_VALIDATION = /^[0-9A-z_\- .,]+$/;
 
-                    /*
-                    // If description is updated, call updateFunction.
-                    $scope.$watch(function() {
-                        return $scope.descr;
-                    },
-                    function(new_value, old_value) {
-                        if (old_value !== new_value && typeof new_value !== 'undefined') {
-                            console.log('old_value' + old_value);
-                            console.log('new_value: ' + new_value);
-                            console.log('callback()');
-                             $scope.callback(new_value || '');
-                         }
-                    });*/
+                            if (!TEXT_VALIDATION.test(value)) {
+                                return TranslationSvc.translate('text-error', 'The value is not valid!');
+                            }
+                     }
 
+                        return true;
+                    };
 
                     $scope.saveDescription = function() {
                         $scope.callback($scope.descr);
@@ -499,26 +489,11 @@ module Apiman {
                         $(elem).height(elem.scrollHeight);
                     };
 
-                    $scope.descriptionMouseOver = function(event) {
+                    $scope.descriptionMouseOver = function () {
                         $scope.showPencil = true;
-                        var elem = event.target;
-                        var position = elem.getBoundingClientRect();
-
-                        // Calculate position of pen
-                        // console.log("elem.top " + position.top);
-                        // console.log("elem.bottom " + position.bottom);
-                        // console.log("elem.left " + position.left);
-                        // console.log("elem.right " + position.right);
-
-                        /*
-                        if (position.right != 0) {
-                            $scope.leftPosition = (position.right - position.left) - 15;
-                            $scope.height = (position.bottom - position.top);
-                        }
-                        */
                     };
 
-                    $scope.descriptionMouseOut = function(event) {
+                    $scope.descriptionMouseOut = function () {
                         $scope.showPencil = false;
                     };
 
@@ -636,4 +611,407 @@ module Apiman {
             };
         }]);
 
+    _module.directive('nameValidation', function () {
+        return {
+            require: 'ngModel',
+            link: function (scope, element, attributes, ngModel: any) {
+                ngModel.$parsers.push(function (value?: string) {
+                    if (value && value.length !== 0) {
+                        var NAME_VALIDATION = /^[0-9A-z_\-]+$/;
+
+                        if (NAME_VALIDATION.test(value)) {
+                            ngModel.$setValidity('name', true)
+                        } else {
+                            ngModel.$setValidity('name', false)
+                        }
+                    } else {
+                        ngModel.$setValidity('name', true)
+                    }
+
+                    return value;
+                });
+            }
+        };
+    });
+
+    _module.directive('pathValidation', function () {
+        return {
+            require: 'ngModel',
+            link: function (scope, element, attributes, ngModel: any) {
+                ngModel.$parsers.push(function (value?: string) {
+                    if (value && value.length !== 0) {
+                        var PATH_VALIDATION = /^[0-9A-z_\-.*/]+$/;
+
+                        if (PATH_VALIDATION.test(value)) {
+                            ngModel.$setValidity('path', true)
+                        } else {
+                            ngModel.$setValidity('path', false)
+                        }
+                    } else {
+                        ngModel.$setValidity('path', true)
+                    }
+
+                    return value;
+                });
+            }
+        };
+    });
+
+    _module.directive('versionValidation', function () {
+        return {
+            require: 'ngModel',
+            link: function (scope, element, attributes, ngModel: any) {
+                ngModel.$parsers.push(function (value?: string) {
+                    if (value && value.length !== 0) {
+                        var VERSION_VALIDATION = /^[1-9][0-9]*(.[0-9]+)+$/;
+
+                        if (VERSION_VALIDATION.test(value)) {
+                            ngModel.$setValidity('version', true)
+                        } else {
+                            ngModel.$setValidity('version', false)
+                        }
+                    } else {
+                        ngModel.$setValidity('version', true)
+                    }
+
+                    return value;
+                });
+            }
+        };
+    });
+
+    _module.directive('textValidation', function () {
+        return {
+            require: 'ngModel',
+            link: function (scope, element, attributes, ngModel: any) {
+                ngModel.$parsers.push(function (value?: string) {
+                    scope.gatewayForm && console.debug(`${scope.gatewayForm.description.$invalid}`)
+                    if (value && value.length !== 0) {
+                        var TEXT_VALIDATION = /^[0-9A-z_\- .,]+$/;
+
+                        if (TEXT_VALIDATION.test(value)) {
+                            ngModel.$setValidity('text', true)
+                        } else {
+                            ngModel.$setValidity('text', false)
+                        }
+                    } else {
+                        ngModel.$setValidity('text', true)
+                    }
+
+                    return value;
+                });
+            }
+        };
+    });
+
+    _module.directive('regexpValidation', function () {
+        return {
+            require: 'ngModel',
+            link: function (scope, element, attributes, ngModel: any) {
+                ngModel.$parsers.push(function (value?: string) {
+                    if (value && value.length !== 0) {
+                        try {
+                            var regexp = new RegExp(value)
+                            ngModel.$setValidity('text', true)
+                        } catch(error) {
+                            ngModel.$setValidity('text', false)
+                        }
+                    } else {
+                        ngModel.$setValidity('text', true)
+                    }
+
+                    return value;
+                });
+            }
+        };
+    });
+
+    _module.directive('jsonValidation', function () {
+        return {
+            require: 'ngModel',
+            link: function (scope, element, attributes, ngModel: any) {
+                ngModel.$parsers.push(function (value?: string) {
+                    if (value && value.length !== 0) {
+                        try {
+                            var json = JSON.parse(value)
+                            ngModel.$setValidity('json', true)
+                        } catch(error) {
+                            ngModel.$setValidity('json', false)
+                        }
+                    } else {
+                        ngModel.$setValidity('json', true)
+                    }
+
+                    return value;
+                });
+            }
+        };
+    });
+
+    _module.directive('checkGatewayPassword', function () {
+        return {
+            require: 'ngModel',
+            link: function (scope, element, attributes, ngModel: any) {
+                ngModel.$parsers.push(function (value?: string) {
+                    if (scope.gatewayForm.password.$viewValue !== scope.gatewayForm.passwordConfirm.$viewValue) {
+                        scope.gatewayForm.password.$setValidity('password', false)
+                        scope.gatewayForm.passwordConfirm.$setValidity('password', false)
+                    } else {
+                        scope.gatewayForm.password.$setValidity('password', true)
+                        scope.gatewayForm.passwordConfirm.$setValidity('password', true)
+                    }
+
+                    return value;
+                });
+            }
+        };
+    });
+
+    _module.directive('checkGatewayEndpoint', function () {
+        return {
+            require: 'ngModel',
+            link: function (scope, element, attributes, ngModel: any) {
+                ngModel.$parsers.push(function (value?: string) {
+                    if (value && value.length !== 0) {
+                        var GATEWAY_VALIDATION = /^\$\{apiman\.gateway-endpoint:https?:\/\/[A-z0-9_\-\.]+(:[0-9]+)?\/apiman-gateway-api\}$|^https?:\/\/[A-z0-9_\-\.]+(:[0-9]+)?\/apiman-gateway-api$/
+
+                        if (GATEWAY_VALIDATION.test(value)) {
+                            ngModel.$setValidity('gw', true)
+                        } else {
+                            ngModel.$setValidity('gw', false)
+                        }
+                    } else {
+                        ngModel.$setValidity('gw', true)
+                    }
+
+                    return value;
+                });
+            }
+        };
+    });
+
+    _module.directive('checkGatewayUsername', function () {
+        return {
+            require: 'ngModel',
+            link: function (scope, element, attributes, ngModel: any) {
+                ngModel.$parsers.push(function (value?: string) {
+                    if (value && value.length !== 0) {
+                        var USERNAME_VALIDATION = /^\$\{apiman\.gateway-endpoint\.username:[a-z_]([a-z0-9_-]{0,31}|[a-z0-9_-]{0,30}\$)\}$|^[a-z_]([a-z0-9_-]{0,31}|[a-z0-9_-]{0,30}\$)$/
+
+                        if (USERNAME_VALIDATION.test(value)) {
+                            ngModel.$setValidity('username', true)
+                        } else {
+                            ngModel.$setValidity('username', false)
+                        }
+                    } else {
+                        ngModel.$setValidity('username', true)
+                    }
+
+                    return value;
+                });
+            }
+        };
+    });
+
+    _module.directive('nameValidation', function () {
+        return {
+            require: 'ngModel',
+            link: function (scope, element, attributes, ngModel: any) {
+                ngModel.$parsers.push(function (value?: string) {
+                    if (value && value.length !== 0) {
+                        var NAME_VALIDATION = /^[0-9A-z_\-]+$/;
+
+                        if (NAME_VALIDATION.test(value)) {
+                            ngModel.$setValidity('name', true)
+                        } else {
+                            ngModel.$setValidity('name', false)
+                        }
+                    } else {
+                        ngModel.$setValidity('name', true)
+                    }
+
+                    return value;
+                });
+            }
+        };
+    });
+
+    _module.directive('pathValidation', function () {
+        return {
+            require: 'ngModel',
+            link: function (scope, element, attributes, ngModel: any) {
+                ngModel.$parsers.push(function (value?: string) {
+                    if (value && value.length !== 0) {
+                        var PATH_VALIDATION = /^[0-9A-z_\-.*/]+$/;
+
+                        if (PATH_VALIDATION.test(value)) {
+                            ngModel.$setValidity('path', true)
+                        } else {
+                            ngModel.$setValidity('path', false)
+                        }
+                    } else {
+                        ngModel.$setValidity('path', true)
+                    }
+
+                    return value;
+                });
+            }
+        };
+    });
+
+    _module.directive('versionValidation', function () {
+        return {
+            require: 'ngModel',
+            link: function (scope, element, attributes, ngModel: any) {
+                ngModel.$parsers.push(function (value?: string) {
+                    if (value && value.length !== 0) {
+                        var VERSION_VALIDATION = /^[1-9][0-9]*(.[0-9]+)+$/;
+
+                        if (VERSION_VALIDATION.test(value)) {
+                            ngModel.$setValidity('version', true)
+                        } else {
+                            ngModel.$setValidity('version', false)
+                        }
+                    } else {
+                        ngModel.$setValidity('version', true)
+                    }
+
+                    return value;
+                });
+            }
+        };
+    });
+
+    _module.directive('textValidation', function () {
+        return {
+            require: 'ngModel',
+            link: function (scope, element, attributes, ngModel: any) {
+                ngModel.$parsers.push(function (value?: string) {
+                    scope.gatewayForm && console.debug(`${scope.gatewayForm.description.$invalid}`)
+                    if (value && value.length !== 0) {
+                        var TEXT_VALIDATION = /^[0-9A-z_\- .,]+$/;
+
+                        if (TEXT_VALIDATION.test(value)) {
+                            ngModel.$setValidity('text', true)
+                        } else {
+                            ngModel.$setValidity('text', false)
+                        }
+                    } else {
+                        ngModel.$setValidity('text', true)
+                    }
+
+                    return value;
+                });
+            }
+        };
+    });
+
+    _module.directive('regexpValidation', function () {
+        return {
+            require: 'ngModel',
+            link: function (scope, element, attributes, ngModel: any) {
+                ngModel.$parsers.push(function (value?: string) {
+                    if (value && value.length !== 0) {
+                        try {
+                            var regexp = new RegExp(value)
+                            ngModel.$setValidity('text', true)
+                        } catch(error) {
+                            ngModel.$setValidity('text', false)
+                        }
+                    } else {
+                        ngModel.$setValidity('text', true)
+                    }
+
+                    return value;
+                });
+            }
+        };
+    });
+
+    _module.directive('jsonValidation', function () {
+        return {
+            require: 'ngModel',
+            link: function (scope, element, attributes, ngModel: any) {
+                ngModel.$parsers.push(function (value?: string) {
+                    if (value && value.length !== 0) {
+                        try {
+                            var json = JSON.parse(value)
+                            ngModel.$setValidity('json', true)
+                        } catch(error) {
+                            ngModel.$setValidity('json', false)
+                        }
+                    } else {
+                        ngModel.$setValidity('json', true)
+                    }
+
+                    return value;
+                });
+            }
+        };
+    });
+
+    _module.directive('checkGatewayPassword', function () {
+        return {
+            require: 'ngModel',
+            link: function (scope, element, attributes, ngModel: any) {
+                ngModel.$parsers.push(function (value?: string) {
+                    if (scope.gatewayForm.password.$viewValue !== scope.gatewayForm.passwordConfirm.$viewValue) {
+                        scope.gatewayForm.password.$setValidity('password', false)
+                        scope.gatewayForm.passwordConfirm.$setValidity('password', false)
+                    } else {
+                        scope.gatewayForm.password.$setValidity('password', true)
+                        scope.gatewayForm.passwordConfirm.$setValidity('password', true)
+                    }
+
+                    return value;
+                });
+            }
+        };
+    });
+
+    _module.directive('checkGatewayEndpoint', function () {
+        return {
+            require: 'ngModel',
+            link: function (scope, element, attributes, ngModel: any) {
+                ngModel.$parsers.push(function (value?: string) {
+                    if (value && value.length !== 0) {
+                        var GATEWAY_VALIDATION = /^\$\{apiman\.gateway-endpoint:https?:\/\/[A-z0-9_\-\.]+(:[0-9]+)?\/apiman-gateway-api\}$|^https?:\/\/[A-z0-9_\-\.]+(:[0-9]+)?\/apiman-gateway-api$/
+
+                        if (GATEWAY_VALIDATION.test(value)) {
+                            ngModel.$setValidity('gw', true)
+                        } else {
+                            ngModel.$setValidity('gw', false)
+                        }
+                    } else {
+                        ngModel.$setValidity('gw', true)
+                    }
+
+                    return value;
+                });
+            }
+        };
+    });
+
+    _module.directive('checkGatewayUsername', function () {
+        return {
+            require: 'ngModel',
+            link: function (scope, element, attributes, ngModel: any) {
+                ngModel.$parsers.push(function (value?: string) {
+                    if (value && value.length !== 0) {
+                        var USERNAME_VALIDATION = /^\$\{apiman\.gateway-endpoint\.username:[a-z_]([a-z0-9_-]{0,31}|[a-z0-9_-]{0,30}\$)\}$|^[a-z_]([a-z0-9_-]{0,31}|[a-z0-9_-]{0,30}\$)$/
+
+                        if (USERNAME_VALIDATION.test(value)) {
+                            ngModel.$setValidity('username', true)
+                        } else {
+                            ngModel.$setValidity('username', false)
+                        }
+                    } else {
+                        ngModel.$setValidity('username', true)
+                    }
+
+                    return value;
+                });
+            }
+        };
+    });
 }

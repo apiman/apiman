@@ -12,19 +12,7 @@ module Apiman {
             
             var validate = function() {
                 $scope.testResult = 'none';
-                var valid = true;
-                if (!$scope.gateway.name) {
-                    valid = false;
-                }
-                if (!$scope.configuration.endpoint) {
-                    valid = false;
-                }
-                if (!$scope.configuration.username) {
-                    valid = false;
-                }
-                if (!$scope.configuration.password) {
-                    valid = false;
-                }
+                var valid = $scope.gateway;
                 if ($scope.configuration.password != $scope.passwordConfirm) {
                     valid = false;
                 }

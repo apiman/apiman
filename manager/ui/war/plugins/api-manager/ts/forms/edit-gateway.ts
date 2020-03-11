@@ -10,21 +10,7 @@ module Apiman {
             
             var validate = function() {
                 $scope.testResult = 'none';
-                // First validation
-                var valid = true;
-                if (!$scope.configuration.endpoint) {
-                    valid = false;
-                }
-                if (!$scope.configuration.username) {
-                    valid = false;
-                }
-                if (!$scope.configuration.password) {
-                    valid = false;
-                }
-                if ($scope.configuration.password != $scope.passwordConfirm) {
-                    valid = false;
-                }
-                $scope.isValid = valid;
+                $scope.isValid = $scope.editGateway.$valid;
                 
                 // Now dirty
                 var dirty = false;
@@ -151,6 +137,6 @@ module Apiman {
                 $scope.$watch('passwordConfirm', validate);
                 $('#apiman-gateway-description').focus();
             });
-    }])
+    }]);
 
 }
