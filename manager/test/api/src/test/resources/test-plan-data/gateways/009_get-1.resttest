@@ -8,5 +8,5 @@ Content-Type: application/json
   "name" : "Gateway One",
   "description" : "This is the first gateway. (updated)",
   "type" : "REST",
-  "configuration" : "{\"endpoint\":\"http://localhost:8080/gateway-config/api\",\"username\":\"admin99\",\"password\":\"zoomba19\"}"
+  "configuration" : "{\"endpoint\":\"http://localhost:8080/gateway-config/api\",\"username\":\"${apiman.test.gateway.username}\",\"password\":\"${apiman.test.gateway.password.encrypted}\"}"
 }
