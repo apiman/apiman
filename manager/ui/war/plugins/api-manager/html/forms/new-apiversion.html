@@ -6,9 +6,9 @@
   </head>
 
   <body>
-    
+
     <div ng-include="headerInclude"></div>
-    <div ng-controller="Apiman.NewApiVersionController" class="container apiman-entity-new page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
+    <form name="newApiVersion" ng-controller="Apiman.NewApiVersionController" class="container apiman-entity-new page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
       <div class="row">
         <h2 class="title" apiman-i18n-key="new-api-version">New API Version</h2>
       </div>
@@ -25,7 +25,8 @@
         <dl>
           <dt apiman-i18n-key="version">Version</dt>
           <dd>
-            <input ng-model="apiversion.version" data-field="version" type="text" class="apiman-form-control form-control version" id="apiman-version" apiman-i18n-key="enter-api-version" placeholder="Enter version..."></input>
+            <input name="version" ng-model="apiversion.version" data-field="version" type="text" class="apiman-form-control form-control version" id="apiman-version" apiman-i18n-key="enter-api-version" placeholder="Enter version..."></input>
+            <span ng-show="newApiVersion.version.$touched && newApiVersion.version.$invalid" apiman-i18n-key="version-error">The value is invalid!</span>
           </dd>
         </dl>
       </div>
@@ -43,7 +44,7 @@
       </div>
       <!-- Create Button -->
       <div class="row">
-        <button id="create-version" ng-disabled="!apiversion.version" apiman-action-btn="" class="btn btn-primary" data-field="createButton" apiman-i18n-key="create-version" placeholder="Creating..." data-icon="fa-cog" ng-click="saveNewApiVersion()">Create Version</button>
+        <button id="create-version" ng-disabled="!newApiVersion.$dirty || $newApiVersion.$invalid" apiman-action-btn="" class="btn btn-primary" data-field="createButton" apiman-i18n-key="create-version" placeholder="Creating..." data-icon="fa-cog" ng-click="saveNewApiVersion()">Create Version</button>
         <a id="cancel" href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" apiman-i18n-key="cancel">Cancel</a>
       </div>
     </div> <!-- /container -->

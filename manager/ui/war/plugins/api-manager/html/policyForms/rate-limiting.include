@@ -1,9 +1,9 @@
 <div class="form policy-config rates" data-field="form" ng-controller="Apiman.RateLimitingFormController" style="margin-top: 10px">
   <div>
     <span apiman-i18n-key="config-sentence-preamble">I want to limit request rates to</span>
-    <input id="num-requests" ng-model="config.limit" class="form-control inline-apiman-form-control form-control" style="width: 100px" type="text" apiman-i18n-key="rate-limiting.enter-num-requests" placeholder="# of requests" ng-disabled="isEntityDisabled()"></input>
+    <input name="numRequests" id="num-requests" ng-model="config.limit" class="form-control inline-apiman-form-control form-control" style="width: 100px" type="number" apiman-i18n-key="rate-limiting.enter-num-requests" placeholder="# of requests" ng-disabled="isEntityDisabled()" required></input>
     <span apiman-i18n-key="requests-per">requests per</span>
-    <select id="granularity" ng-model="config.granularity" apiman-select-picker="" data-field="granularity" class="selectpicker inline-line apiman-inline-form-dropdown" data-style="btn-default apiman-inline-form-dropdown" style="width: 100px" ng-disabled="isEntityDisabled()">
+    <select name="granularity" id="granularity" ng-model="config.granularity" apiman-select-picker="" data-field="granularity" class="selectpicker inline-line apiman-inline-form-dropdown" data-style="btn-default apiman-inline-form-dropdown" style="width: 100px" ng-disabled="isEntityDisabled()" required>
       <option value="" data-content="<span class='apiman-label-faded'>Granularity</span>" apiman-i18n-key="granularity">Granularity</option>
       <option value="Client" apiman-i18n-key="rate-limiting.client-client">Client App</option>
       <option value="User" apiman-i18n-key="rate-limiting.user">User</option>
@@ -11,7 +11,7 @@
       <option value="Ip" apiman-i18n-key="rate-limiting.ip">IP Address</option>
     </select>
     <span apiman-i18n-key="per">per</span>
-    <select id="period" ng-model="config.period" apiman-select-picker="" data-field="period" class="selectpicker inline-line apiman-inline-form-dropdown" data-style="btn-default apiman-inline-form-dropdown" style="width: 100px" ng-disabled="isEntityDisabled()">
+    <select name="period" id="period" ng-model="config.period" apiman-select-picker="" data-field="period" class="selectpicker inline-line apiman-inline-form-dropdown" data-style="btn-default apiman-inline-form-dropdown" style="width: 100px" ng-disabled="isEntityDisabled()" required>
       <option value="" data-content="<span class='apiman-label-faded'>Period</span>" apiman-i18n-key="rate-limiting.period">Period</option>
       <option value="Second" apiman-i18n-key="rate-limiting.second">Second</option>
       <option value="Minute" apiman-i18n-key="rate-limiting.minute">Minute</option>
@@ -20,17 +20,19 @@
       <option value="Month" apiman-i18n-key="rate-limiting.month">Month</option>
       <option value="Year" apiman-i18n-key="rate-limiting.year">Year</option>
     </select>
+    <div ng-show="(policyForm.numRequests.$touched && policyForm.numRequests.$invalid) || (policyForm.granularity.$touched && policyForm.granularity.$invalid) || (policyForm.period.$touched && policyForm.period.$invalid) " apiman-i18n-key="required-error">The value is not valid!</div>
   </div>
   <div style="margin-top: 8px;" id="userRow" ng-show="config.granularity == 'User'">
     <span apiman-i18n-key="reate-limiting.get-user-id-from">Get the user's id from:</span>
-    <input id="user-header" ng-model="config.userHeader" data-field="userHeader" class="apiman-form-control form-control inline-apiman-form-control form-control" style="width: 250px" type="text" apiman-i18n-key="rate-limiting.enter-user-header" placeholder="Enter header (e.g. X-Identity)..." ng-disabled="isEntityDisabled()"></input>
+    <input name="userHeader" id="user-header" ng-model="config.userHeader" data-field="userHeader" class="apiman-form-control form-control inline-apiman-form-control form-control" style="width: 250px" type="text" apiman-i18n-key="rate-limiting.enter-user-header" placeholder="Enter header (e.g. X-Identity)..." ng-disabled="isEntityDisabled()" name-validation></input>
+    <span ng-show="policyForm.userHeader.$touched && policyForm.userHeader.$invalid" apiman-i18n-key="name-error">The value is not valid!</span>
   </div>
   <hr/>
   <div>
     <p apiman-i18n-key="rate-limiting.rate-limit-headers-help">
-      Configure the rate limiting related response headers below - these headers will 
+      Configure the rate limiting related response headers below - these headers will
       convey useful information to clients such as imposed limits and when the rate
-      period will be reset.  You may override the default header names by supplying 
+      period will be reset.  You may override the default header names by supplying
       your own in the fields below (or leave them blank to accept the defaults).
     </p>
   </div>
@@ -38,15 +40,18 @@
     <dl>
       <dt apiman-i18n-key="rate-limiting.limit-header">Limit Response Header</dt>
       <dd>
-        <input id="limit-header" ng-model="config.headerLimit" data-field="limitHeader" class="apiman-form-control form-control" style="" type="text" apiman-i18n-key="rate-limiting.enter-limit-header" placeholder="X-RateLimit-Limit" ng-disabled="isEntityDisabled()"></input>
+        <input name="limitHeader" id="limit-header" ng-model="config.headerLimit" data-field="limitHeader" class="apiman-form-control form-control" style="" type="text" apiman-i18n-key="rate-limiting.enter-limit-header" placeholder="X-RateLimit-Limit" ng-disabled="isEntityDisabled()" name-validation></input>
+        <span ng-show="policyForm.limitHeader.$touched && policyForm.limitHeader.$invalid" apiman-i18n-key="name-error">The value is not valid!</span>
       </dd>
       <dt apiman-i18n-key="rate-limiting.remaining-header">Remaining Response Header</dt>
       <dd>
-        <input id="remaining-header" ng-model="config.headerRemaining" data-field="remainingHeader" class="apiman-form-control form-control" style="" type="text" apiman-i18n-key="rate-limiting.enter-remaining-header" placeholder="X-RateLimit-Remaining" ng-disabled="isEntityDisabled()"></input>
+        <input name="remainingHeader" id="remaining-header" ng-model="config.headerRemaining" data-field="remainingHeader" class="apiman-form-control form-control" style="" type="text" apiman-i18n-key="rate-limiting.enter-remaining-header" placeholder="X-RateLimit-Remaining" ng-disabled="isEntityDisabled()" name-validation></input>
+        <span ng-show="policyForm.remainingHeader.$touched && policyForm.remainingHeader.$invalid" apiman-i18n-key="name-error">The value is not valid!</span>
       </dd>
       <dt apiman-i18n-key="rate-limiting.reset-header">Reset Response Header</dt>
       <dd>
-        <input id="reset-header" ng-model="config.headerReset" data-field="resetHeader" class="apiman-form-control form-control" style="" type="text" apiman-i18n-key="rate-limiting.enter-reset-header" placeholder="X-RateLimit-Reset" ng-disabled="isEntityDisabled()"></input>
+        <input name="resetHeader" id="reset-header" ng-model="config.headerReset" data-field="resetHeader" class="apiman-form-control form-control" style="" type="text" apiman-i18n-key="rate-limiting.enter-reset-header" placeholder="X-RateLimit-Reset" ng-disabled="isEntityDisabled()" name-validation></input>
+        <span ng-show="policyForm.resetHeader.$touched && policyForm.resetHeader.$invalid" apiman-i18n-key="name-error">The value is not valid!</span>
       </dd>
     </dl>
   </div>

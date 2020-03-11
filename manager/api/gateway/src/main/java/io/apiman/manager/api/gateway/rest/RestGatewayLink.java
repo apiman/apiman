@@ -15,7 +15,6 @@
  */
 package io.apiman.manager.api.gateway.rest;
 
-import io.apiman.common.util.AesEncrypter;
 import io.apiman.common.util.ApimanStrLookup;
 import io.apiman.common.util.crypt.CurrentDataEncrypter;
 import io.apiman.common.util.crypt.DataEncryptionContext;
@@ -102,7 +101,9 @@ public class RestGatewayLink implements IGatewayLink {
             cfg = CurrentDataEncrypter.instance.decrypt(cfg, new DataEncryptionContext());
             cfg = PROPERTY_SUBSTITUTOR.replace(cfg);
             setConfig((RestGatewayConfigBean) mapper.reader(RestGatewayConfigBean.class).readValue(cfg));
-            getConfig().setPassword(AesEncrypter.decrypt(getConfig().getPassword()));
+            getConfig().setPassword(
+                PROPERTY_SUBSTITUTOR.replace(
+                  CurrentDataEncrypter.instance.decrypt(getConfig().getPassword(), new DataEncryptionContext())));
             httpClient = HttpClientBuilder.create()
                     .setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE)
                     .setSSLSocketFactory(sslConnectionFactory)
