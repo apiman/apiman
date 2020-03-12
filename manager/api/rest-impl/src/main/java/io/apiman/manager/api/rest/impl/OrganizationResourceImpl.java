@@ -47,6 +47,7 @@ import io.apiman.manager.api.beans.search.SearchCriteriaFilterOperator;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
 import io.apiman.manager.api.beans.summary.*;
 import io.apiman.manager.api.core.*;
+import io.apiman.manager.api.core.config.ApiManagerConfig;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.core.logging.ApimanLogger;
 import io.apiman.manager.api.core.util.PolicyTemplateUtil;
@@ -84,7 +85,6 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.security.cert.X509Certificate;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.stream.StreamSupport;
@@ -104,6 +104,8 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     private static final long ONE_DAY_MILLIS = 1 * 24 * 60 * 60 * 1000L;
     private static final long ONE_WEEK_MILLIS = 7 * 24 * 60 * 60 * 1000L;
     private static final long ONE_MONTH_MILLIS = 30 * 24 * 60 * 60 * 1000L;
+
+    @Inject ApiManagerConfig config;
 
     @Inject IStorage storage;
     @Inject IStorageQuery query;
@@ -137,7 +139,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
      */
     @Override
     public OrganizationBean create(NewOrganizationBean bean) throws OrganizationAlreadyExistsException, InvalidNameException {
-        securityContext.checkAdminPermissions();
+        if (config.isAdminOnlyOrgCreationEnabled()) {
+            securityContext.checkAdminPermissions();
+        }
 
         FieldValidator.validateName(bean.getName());
 
