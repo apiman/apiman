@@ -3,14 +3,14 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
-    
+
   </head>
 
   <body>
   <div>
-    
+
     <div ng-include="headerInclude"></div>
-    <div ng-controller="Apiman.NewClientController" id="form-page" class="container apiman-entity-new page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
+    <form name="newClient" ng-controller="Apiman.NewClientController" id="form-page" class="container apiman-entity-new page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
       <div class="row">
         <h2 class="title" apiman-i18n-key="new-client-client">New Client App</h2>
       </div>
@@ -29,12 +29,13 @@
             <dt apiman-i18n-key="organization">Organization</dt>
             <dd>
               <div class="btn-group" data-field="orgSelector">
-                <button type="button" id="selector-org" class="btn btn-default dropdown-toggle" data-toggle="dropdown" data-field="button">
+                <button name="org" type="button" id="selector-org" class="btn btn-default dropdown-toggle" data-toggle="dropdown" data-field="button" required>
                   <span id="selector-org-value">{{selectedOrg.name}}</span> &nbsp;&nbsp;<span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu" data-field="organizations">
                    <li ng-repeat="org in organizations"><a href="#" ng-click="setOrg( org )">{{ org.name }}</a></li>
                 </ul>
+                <span ng-show="newClient.org.$touched && newClient.org.$invalid" apiman-i18n-key="required-error">The value is required!</span>
               </div>
             </dd>
           </dl>
@@ -47,7 +48,8 @@
           <dl class="name">
             <dt apiman-i18n-key="client-client-name">Client App Name</dt>
             <dd>
-              <input ng-model="client.name" data-field="name" type="text" class="apiman-form-control form-control entityname" id="apiman-entityname" apiman-i18n-key="enter-client-name" placeholder="Enter client app name..."></input>
+              <input name="name" ng-model="client.name" data-field="name" type="text" class="apiman-form-control form-control entityname" id="apiman-entityname" apiman-i18n-key="enter-client-name" placeholder="Enter client app name..." name-validation required></input>
+              <span ng-show="newClient.name.$touched && newClient.name.$invalid" apiman-i18n-key="name-error">The value is invalid!</span>
             </dd>
           </dl>
         </div>
@@ -56,7 +58,8 @@
           <dl>
             <dt apiman-i18n-key="initial-version">Initial Version</dt>
             <dd>
-              <input ng-model="client.initialVersion" data-field="version" type="text" class="apiman-form-control form-control version" id="apiman-version"></input>
+              <input name="version" ng-model="client.initialVersion" data-field="version" type="text" class="apiman-form-control form-control version" id="apiman-version" version-validation required></input>
+              <span ng-show="newClient.version.$touched && newClient.version.$invalid" apiman-i18n-key="version-error">The value is invalid!</span>
             </dd>
           </dl>
         </div>
@@ -65,7 +68,8 @@
           <dl>
             <dt apiman-i18n-key="description">Description</dt>
             <dd>
-              <textarea ng-model="client.description" class="apiman-form-control form-control description" id="apiman-description" apiman-i18n-key="enter-client-description" placeholder="Enter client app description (optional)..."></textarea>
+              <textarea name="description" ng-model="client.description" class="apiman-form-control form-control description" id="apiman-description" apiman-i18n-key="enter-client-description" placeholder="Enter client app description (optional)..." text-validation></textarea>
+              <span ng-show="newClient.description.$touched && newClient.description.$invalid" apiman-i18n-key="text-error">The value is invalid!</span>
             </dd>
           </dl>
         </div>
@@ -83,10 +87,10 @@
       </div>
       <!-- Create Button -->
       <div class="row">
-        <button id="create-client" ng-disabled="!client.name || !client.initialVersion || !selectedOrg" apiman-action-btn="" class="btn btn-primary" data-field="createButton" apiman-i18n-key="create-client-client" placeholder="Creating..." data-icon="fa-cog" ng-click="saveNewClient()">Create Client App</button>
+        <button id="create-client" ng-disabled="!newClient.$dirty || newClient.$invalid" apiman-action-btn="" class="btn btn-primary" data-field="createButton" apiman-i18n-key="create-client-client" placeholder="Creating..." data-icon="fa-cog" ng-click="saveNewClient()">Create Client App</button>
         <a id="cancel" href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" apiman-i18n-key="cancel">Cancel</a>
       </div>
-    </div> <!-- /container -->
+    </form> <!-- /container -->
   </div>
   </body>
 </html>

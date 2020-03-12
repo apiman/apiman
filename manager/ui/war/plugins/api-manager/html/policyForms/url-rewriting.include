@@ -10,9 +10,11 @@
       <dt apiman-i18n-key="urlrewriting.how-to-rewrite">How to Rewrite URLs</dt>
       <dd>
         <div apiman-i18n-key="urlrewriting.find-all-1">Find all URLs matching regular expression</div>
-        <input id="fromRegexp" ng-model="config.fromRegex" class="apiman-form-control form-control" type="text" apiman-i18n-key="urlrewriting.enter-from-rgexp" placeholder="Example: https?:\/\/host\.org\/api-endpoint" ng-disabled="isEntityDisabled()"></input>
+        <input id="fromRegexp" ng-model="config.fromRegex" class="apiman-form-control form-control" type="text" apiman-i18n-key="urlrewriting.enter-from-rgexp" placeholder="Example: https?:\/\/host\.org\/api-endpoint" ng-disabled="isEntityDisabled()" regexp-validation></input>
+        <span ng-show="policyForm.fromRegexp.$touched && policyForm.fromRegexp.$invalid" apiman-i18n-key="regexp-error">The value is not valid!</span>
         <div apiman-i18n-key="urlrewriting.find-all-2">with this replacement</div>
-        <input id="toReplacement" ng-model="config.toReplacement" class="apiman-form-control form-control" type="text" apiman-i18n-key="urlrewriting.enter-to-replacement" placeholder="Example: https:\/\/apiman\.org\/orgId/apiId/version" ng-disabled="isEntityDisabled()"></input>
+        <input name="toReplacement" id="toReplacement" ng-model="config.toReplacement" class="apiman-form-control form-control" type="text" apiman-i18n-key="urlrewriting.enter-to-replacement" placeholder="Example: https:\/\/apiman\.org\/orgId/apiId/version" ng-disabled="isEntityDisabled()" regexp-validation></input>
+        <span ng-show="policyForm.toReplacement.$touched && policyForm.toReplacement.$invalid" apiman-i18n-key="regexp-error">The value is not valid!</span>
       </dd>
       <dt style="margin-top: 25px" apiman-i18n-key="urlrewriting.where-to-find">Where to Find Them</dt>
       <dd>
