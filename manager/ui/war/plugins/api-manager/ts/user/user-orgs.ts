@@ -7,7 +7,8 @@ module Apiman {
         ($q, $scope, $location, UserSvcs, PageLifecycle, $routeParams, Configuration) => {
             $scope.tab = 'organizations';
 
-            $scope.noCreateOrg = Configuration.ui.platform == 'f8' || Configuration.ui.platform == 'ose';
+            $scope.noCreateOrg = Configuration.ui.platform == 'f8' || Configuration.ui.platform == 'ose' || 
+                (Configuration.ui.adminOnlyOrgCreation == true && !$scope.isAdmin);
 
             $scope.filterOrgs = function(value) {
                 if (!value) {

@@ -27,6 +27,7 @@ public class UiConfigurationBean {
     private Boolean metrics;
     private String platform = "community"; //$NON-NLS-1$
     private String backToConsole;
+    private Boolean adminOnlyOrgCreation;
 
     /**
      * Constructor.
@@ -88,6 +89,14 @@ public class UiConfigurationBean {
      */
     public void setBackToUrl(String backToUrl) {
         this.backToConsole = backToUrl;
+    }
+
+    public Boolean getAdminOnlyOrgCreation() {
+        return adminOnlyOrgCreation;
+    }
+
+    public void setAdminOnlyOrgCreation(Boolean adminOnlyOrgCreation) {
+        this.adminOnlyOrgCreation = adminOnlyOrgCreation;
     }
 
 }
