@@ -30,6 +30,11 @@ public interface IUIConfig {
     public boolean isMetricsEnabled();
 
     /**
+     * Returns true if the "admin only" option is enabled for org creation.
+     */
+    public boolean isAdminOnlyOrgCreationEnabled();
+
+    /**
      * Gets the management layer's API endpoint.
      * @return the management api endpoint
      */
