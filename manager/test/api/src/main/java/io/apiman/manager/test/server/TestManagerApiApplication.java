@@ -21,8 +21,10 @@ import io.apiman.manager.api.rest.exceptions.mappers.RestExceptionMapper;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.ws.rs.core.Application;
+
 /**
- * Useful if jax-rs is not supported by the runtime platform.
+ * JAX-RS {@link Application} used for testing.
  *
  * @author eric.wittmann@redhat.com
  */
