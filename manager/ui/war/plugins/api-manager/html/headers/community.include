@@ -29,7 +29,7 @@
                     </li>
                     <li class="divider"></li>
                     <li>
-                      <a id="navbar-rest" href="{{ pluginName }}/def" target="_self" apiman-i18n-key="logout">REST API</a>
+                      <a id="navbar-rest" href="{{ pluginName }}/def" target="_self" apiman-i18n-key="rest-api-docs">REST API</a>
                     </li>
                     <li class="divider"></li>
                     <li>
