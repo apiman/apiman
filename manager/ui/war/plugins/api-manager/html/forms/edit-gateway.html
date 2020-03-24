@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
   </head>
 
   <body>
@@ -27,7 +27,7 @@
         <dl>
           <dt apiman-i18n-key="gateway-name">Gateway Name</dt>
           <dd>
-            <input id="apiman-gateway-name" ng-model="gateway.name" data-field="name" type="text" class="apiman-form-control form-control name entityname" apiman-i18n-key="enter-gateway-name" disabled="disabled"></input>
+            <input id="apiman-gateway-name" ng-model="gateway.name" data-field="name" type="text" class="apiman-form-control form-control name entityname" apiman-i18n-key="enter-gateway-name" disabled="disabled">
           </dd>
         </dl>
       </div>
@@ -46,7 +46,7 @@
         <dl>
           <dt apiman-i18n-key="config-endpoint">Configuration Endpoint</dt>
           <dd>
-            <input name="configEndpoint" ng-model="configuration.endpoint" data-field="configEndpoint" type="text" class="apiman-form-control form-control description" id="config-endpoint" apiman-i18n-key="enter-gateway-config-endpoint" placeholder="Enter configuration endpoint..." required check-gateway-endpoint></input>
+            <input name="configEndpoint" ng-model="configuration.endpoint" data-field="configEndpoint" type="text" class="apiman-form-control form-control description" id="config-endpoint" apiman-i18n-key="enter-gateway-config-endpoint" placeholder="Enter configuration endpoint..." required check-gateway-endpoint>
             <span ng-show="gatewayForm.configEndpoint.$touched && gatewayForm.configEndpoint.$invalid" apiman-i18n-key="endpoint-error">The value is invalid!</span>
           </dd>
         </dl>
@@ -62,7 +62,7 @@
                   <span apiman-i18n-key="username">Username:</span>
                 </td>
                 <td>
-                  <input id="endpoint-username" ng-model="configuration.username" name="username" type="text" class="apiman-form-control form-control name entityname" apiman-i18n-key="gateway-auth-username" placeholder="Username..." required check-gateway-username></input>
+                  <input id="endpoint-username" ng-model="configuration.username" name="username" type="text" class="apiman-form-control form-control name entityname" apiman-i18n-key="gateway-auth-username" placeholder="Username..." required check-gateway-username>
                 </td>
                 <td>
                   <span ng-show="gatewayForm.username.$touched && gatewayForm.username.$invalid" apiman-i18n-key="username-error">The value is invalid!</span>
@@ -73,7 +73,7 @@
                   <span apiman-i18n-key="password">Password:</span>
                 </td>
                 <td>
-                  <input id="endpoint-password" ng-model="configuration.password" name="password" type="password" class="apiman-form-control form-control name entityname" apiman-i18n-key="gateway-auth-password" placeholder="Password..." required check-gateway-password></input>
+                  <input id="endpoint-password" ng-model="configuration.password" name="password" type="password" class="apiman-form-control form-control name entityname" apiman-i18n-key="gateway-auth-password" placeholder="Password..." required check-gateway-password>
                 </td>
                 <td>
                   <span ng-show="gatewayForm.password.$touched && gatewayForm.password.$invalid" apiman-i18n-key="password-error">The password and confirmation values are required and must match.</span>
@@ -82,7 +82,7 @@
               <tr>
                 <td></td>
                 <td>
-                  <input id="endpoint-password-confirm" ng-model="passwordConfirm" name="passwordConfirm" type="password" class="apiman-form-control form-control name entityname" apiman-i18n-key="gateway-auth-confirm-pass" placeholder="Confirm Password..." required check-gateway-password></input>
+                  <input id="endpoint-password-confirm" ng-model="passwordConfirm" name="passwordConfirm" type="password" class="apiman-form-control form-control name entityname" apiman-i18n-key="gateway-auth-confirm-pass" placeholder="Confirm Password..." required check-gateway-password>
                 </td>
                 <td>
                   <span ng-show="gatewayForm.passwordConfirm.$touched && gatewayForm.passwordConfirm.$invalid" apiman-i18n-key="password-error">The password and confirmation values are required and must match.</span>

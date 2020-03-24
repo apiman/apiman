@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
   </head>
 
   <body>
@@ -132,7 +132,7 @@
               <div ng-show="importFrom == 'api-catalog'">
                 <div class="apiman-wizard-search-box">
                   <form ng-submit="searchApiCatalog(searchText)">
-                    <input ng-disabled="searchDisabled" apiman-i18n-key="search-api-name" ng-model="searchText" type="text" class="apiman-form-control form-control input-search" placeholder="Search by API name..."></input>
+                    <input ng-disabled="searchDisabled" apiman-i18n-key="search-api-name" ng-model="searchText" type="text" class="apiman-form-control form-control input-search" placeholder="Search by API name...">
                     <button type="submit" apiman-action-btn="" class="btn btn-default btn-search" data-field="searchButton" apiman-i18n-key="search" data-icon="fa-cog" placeholder="Searching">Search</button>
                   </form>
                 </div>
@@ -200,7 +200,7 @@
                 <span class="apiman-label-faded" apiman-i18n-key="import-apis.public-api-help">Select this option if you wish the imported APIs to be accessible directly, without using API Contracts.  Typically (but not always) this option is used instead of selecting Plan(s).</span>
               </div>
               <div style="padding: 8px; margin-bottom: 10px">
-                <input ng-model="importInfo.isPublic" type="checkbox" id="public-apis"></input>
+                <input ng-model="importInfo.isPublic" type="checkbox" id="public-apis">
                 <label for="public-apis" apiman-i18n-key="import-apis.make-apis-public" style="padding-left: 3px">Make imported API(s) public</label>
               </div>
               <h3 apiman-i18n-key="available-plans">Available Plans</h3>
@@ -217,7 +217,7 @@
               <div class="apiman-plan-selector apiman-divider-40">
                 <div class="container-fluid apiman-summaryrow" ng-repeat="plan in plans">
                   <div class="row">
-                    <input ng-model="plan.checked" data-field="checkbox" type="checkbox"></input>
+                    <input ng-model="plan.checked" data-field="checkbox" type="checkbox">
                     <span class="title">{{ plan.name }}</span>
                     <select apiman-select-picker="" ng-model="plan.selectedVersion" ng-options="version for version in plan.lockedVersions" class="selectpicker pull-right">
                     </select>
