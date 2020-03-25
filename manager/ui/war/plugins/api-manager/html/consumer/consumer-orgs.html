@@ -1,87 +1,112 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
-  </head>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+</head>
 
-  <body>
-  <div>
-    
-    <div ng-include="headerInclude"></div>   
-    <div ng-controller="Apiman.ConsumerOrgsController" class="page container" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
-      <div class="row">
-        <div class="col-md-12">
-          <ol class="breadcrumb" data-field="breadcrumb">
-            <li><a id="bc-home" href="{{ pluginName }}/"><i class="fa fa-home fa-fw"></i><span apiman-i18n-key="home">Home</span></a></li>
-            <li class="active"><i class="fa fa-search fa-fw"></i><span apiman-i18n-key="organizations">Organizations</span></li>
-          </ol>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-12">
-          <h1 class="consumer-top-header" apiman-i18n-key="find-org">Find an Organization</h1>
-        </div>
-        <div class="col-md-6 no-phone">
-          <p class="description" apiman-i18n-key="find-org-description">Use this page to find Organizations you may wish to join.</p>
-        </div>
-        <div class="col-md-6">
-          <form ng-submit="searchOrg(orgName, currentPage, pageSize)">
-            <input id="apiman-search" ng-model="orgName" type="text" class="apiman-form-control form-control input-search" apiman-i18n-key="searchfor-orgs" placeholder="Enter a word or phrase to search by..."></input>
-            <button id="search-btn" type="submit" class="btn btn-default btn-search" apiman-i18n-key="search" data-field="searchButton"">Search</input>
-          </form>
-        </div>
-        <div class="col-md-12">
-          <hr />
-        </div>
-      </div>
-      
-      <!-- Search results -->
-      <div class="row browse-items">
-        <div class="col-md-12" data-field="orgs">
-
-          <div class="apiman-no-content container-fluid" ng-hide="orgs.length > 0">
-            <div class="row">
-              <div class="col-md-9">
-                <p apiman-i18n-key="consumer-no-orgs-found" class="apiman-no-entities-description">No organizations found. Either no organizations matched the query or you haven't queried yet!</p>
-              </div>
-              <div class="col-md-3"></div>
+<body>
+<div>
+    <div ng-include="headerInclude"></div>
+    <div class="page container" data-field="page" ng-cloak="" ng-controller="Apiman.ConsumerOrgsController"
+         ng-show="pageState == 'loaded'">
+        <div class="row">
+            <div class="col-md-12">
+                <ol class="breadcrumb" data-field="breadcrumb">
+                    <li>
+                        <a href="{{ pluginName }}/" id="bc-home">
+                            <i class="fa fa-home fa-fw"></i>
+                            <span apiman-i18n-key="home">Home</span>
+                        </a>
+                    </li>
+                    <li class="active">
+                        <i class="fa fa-search fa-fw"></i>
+                        <span apiman-i18n-key="organizations">Organizations</span>
+                    </li>
+                </ol>
             </div>
-          </div>
-          <div ng-show="orgs.length > 0">
-            <div class="row">
-	        <div class="count col-md-8">
-	          Found {{resultCount}} matching organizations.
-          </div>
-          <div class="col-md-3 left-spacer-30" ng-show="resultCount > 10">
-            <span apiman-i18n-key="select-page-size">Select page size </span>
-            <select ng-model="pageSize" ng-init="pageSize = '10'" ng-change="searchOrg(orgName, currentPage, pageSize)">
-              <option value="10" ng-selected="true">10</option>
-              <option value="25">25</option>
-              <option value="50">50</option>
-            </select>
-          </div>
-
         </div>
-	        <div class="item" ng-repeat="org in orgs">
-	          <div class="title"><i class="fa fa-shield icon"></i><a href="{{ pluginName }}/browse/orgs/{{ org.id }}">{{ org.name }}</a></div>
-	          <div class="description" title="{{ org.description }}">{{ org.description | limitTo: 60 }}<span ng-show="org.description.length > 60">...</span></div>
-<!-- 	          <div class="actions"> -->
-<!-- 	            <button class="btn btn-default">Request Membership</button> -->
-<!-- 	          </div> -->
-	          <a apiman-i18n-key="is-member-badge" ng-show="org.isMember" href="{{ pluginName }}/orgs/{{ org.id }}" class="ismember" title="You are already a member of this Organization."></a>
-	        </div>
-          </div>
+        <div class="row">
+            <div class="col-md-12">
+                <h1 apiman-i18n-key="find-org" class="consumer-top-header">Find an Organization</h1>
+            </div>
+            <div class="col-md-6 no-phone">
+                <p apiman-i18n-key="find-org-description" class="description">Use this page to find Organizations you
+                    may wish to join.</p>
+            </div>
+            <div class="col-md-6">
+                <form ng-submit="searchOrg(orgName, currentPage, pageSize)">
+                    <input apiman-i18n-key="searchfor-orgs" class="apiman-form-control form-control input-search"
+                           id="apiman-search"
+                           ng-model="orgName" placeholder="Enter a word or phrase to search by..."
+                           type="text">
+                    <button apiman-i18n-key="search" class="btn btn-default btn-search" data-field="searchButton"
+                            id="search-btn"
+                            type="submit">Search
+                    </button>
+                </form>
+            </div>
+            <div class="col-md-12">
+                <hr/>
+            </div>
         </div>
-      </div>
 
-      <div class="row">
-          <div class="col-md-6" ng-show="orgs.length > 0 && resultCount > pageSize">
-            <uib-pagination ng-init="currentPage = 1" total-items="resultCount" boundary-link-numbers="true" ng-model="currentPage"
-              items-per-page="pageSize" ng-change="searchOrg(orgName, currentPage, pageSize)" direction-links="true" max-size="5" rotate="true" force-ellipses="true" />
-          </div>
-      </div>  
+        <!-- Search results -->
+        <div class="row browse-items">
+            <div class="col-md-12" data-field="orgs">
+
+                <div class="apiman-no-content container-fluid" ng-hide="orgs.length > 0">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <p apiman-i18n-key="consumer-no-orgs-found" class="apiman-no-entities-description">No
+                                organizations found. Either no organizations matched the query or you haven't queried
+                                yet!</p>
+                        </div>
+                    </div>
+                </div>
+                <div ng-show="orgs.length > 0">
+                    <div class="row">
+                        <div class="count col-md-8">
+                            Found {{resultCount}} matching organizations.
+                        </div>
+                        <div class="col-md-3 left-spacer-30" ng-show="resultCount > 10">
+                            <span apiman-i18n-key="select-page-size">Select page size </span>
+                            <select ng-change="searchOrg(orgName, currentPage, pageSize)" ng-init="pageSize = '10'"
+                                    ng-model="pageSize">
+                                <option ng-selected="true" value="10">10</option>
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                            </select>
+                        </div>
+
+                    </div>
+                    <div class="item" ng-repeat="org in orgs">
+                        <div class="title">
+                            <i class="fa fa-shield icon"></i>
+                            <a href="{{ pluginName }}/browse/orgs/{{ org.id }}">{{ org.name }}</a>
+                        </div>
+                        <div class="description" title="{{ org.description }}">{{ org.description | limitTo: 60 }}
+                            <span ng-show="org.description.length > 60">...</span>
+                        </div>
+                        <a apiman-i18n-key="is-member-badge" class="ismember"
+                           href="{{ pluginName }}/orgs/{{ org.id }}" ng-show="org.isMember"
+                           title="You are already a member of this Organization.">
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6" ng-show="orgs.length > 0 && resultCount > pageSize">
+                <uib-pagination boundary-link-numbers="true" direction-links="true" force-ellipses="true"
+                                items-per-page="pageSize"
+                                max-size="5" ng-change="searchOrg(orgName, currentPage, pageSize)"
+                                ng-init="currentPage = 1" ng-model="currentPage" rotate="true"
+                                total-items="resultCount"/>
+            </div>
+        </div>
     </div> <!-- /container -->
-  </div>
-  </body>
+</div>
+</body>
 </html>
