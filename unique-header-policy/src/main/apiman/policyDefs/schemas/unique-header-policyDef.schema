@@ -6,7 +6,8 @@
   "properties": {
     "headerName": {
       "type": "string",
-      "title": "HTTP Header Name"
+      "title": "HTTP Header Name",
+      "pattern": "^[^()<>@,;:\\\\<>\\/\\[\\]?={}\\s\\t]+$"
     },
     "overwriteHeaderValue": {
       "type": "boolean",

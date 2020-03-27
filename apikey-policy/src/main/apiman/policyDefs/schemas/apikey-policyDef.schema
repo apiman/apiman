@@ -8,6 +8,7 @@
       "description" : "The name of the HTTP request header that the API Key will be copied to (and sent to the back-end service).",
       "default" : "X-API-Key",
       "type" : "string",
+      "pattern": "^[^()<>@,;:\\\\<>\\/\\[\\]?={}\\s\\t]+$",
       "minLength" : 1,
       "maxLength" : 128
     }
