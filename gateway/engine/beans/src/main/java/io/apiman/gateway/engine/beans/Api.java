@@ -198,12 +198,12 @@ public class Api implements Serializable {
     /**
      * @return the disableKeysStrip
      */
-    public boolean isKeysStrippingEnabled() { return disableKeysStrip; }
+    public boolean isKeysStrippingDisabled() { return disableKeysStrip; }
 
     /**
      * @param disableKeysStrip the disableKeysStrip to set
      */
-    public void setKeysStrippingEnabled(boolean disableKeysStrip) { this.disableKeysStrip = disableKeysStrip; }
+    public void setKeysStrippingDisabled(boolean disableKeysStrip) { this.disableKeysStrip = disableKeysStrip; }
 
     /**
      * @return the maxPayloadBufferSize
