@@ -1698,6 +1698,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         if (bean.getParsePayload() != null) {
             newVersion.setParsePayload(bean.getParsePayload());
         }
+        if (bean.getDisableKeysStrip() != null) {
+            newVersion.setDisableKeysStrip(bean.getDisableKeysStrip());
+        }
         if (bean.getPlans() != null) {
             newVersion.setPlans(bean.getPlans());
         }
