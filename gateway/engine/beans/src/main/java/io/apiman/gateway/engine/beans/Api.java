@@ -43,6 +43,7 @@ public class Api implements Serializable {
     private String endpointContentType;
     private Map<String, String> endpointProperties = new HashMap<>();
     private boolean parsePayload;
+    private boolean disableKeysStrip;
     @JsonIgnore
     private transient long maxPayloadBufferSize;
     private List<Policy> apiPolicies = new ArrayList<>();
@@ -192,6 +193,17 @@ public class Api implements Serializable {
     public void setParsePayload(boolean parsePayload) {
         this.parsePayload = parsePayload;
     }
+
+
+    /**
+     * @return the disableKeysStrip
+     */
+    public boolean getDisableKeysStrip() { return disableKeysStrip; }
+
+    /**
+     * @param disableKeysStrip the disableKeysStrip to set
+     */
+    public void setDisableKeysStrip(boolean disableKeysStrip) { this.disableKeysStrip = disableKeysStrip; }
 
     /**
      * @return the maxPayloadBufferSize

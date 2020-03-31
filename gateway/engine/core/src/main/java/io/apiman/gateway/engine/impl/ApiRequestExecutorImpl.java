@@ -223,8 +223,23 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
      */
     @Override
     public void execute() {
-        // Strip apikey
-        stripApiKey();
+
+        //load the api data based on request
+        registry.getApi(request.getApiOrgId(), request.getApiId(), request.getApiVersion(),
+                (IAsyncResult<Api> apiResult) -> {
+                    if (apiResult.isSuccess()) {
+                        api = apiResult.getResult();
+                    } else if (apiResult.isError()) {
+                        resultHandler.handle(AsyncResultImpl.create(apiResult.getError(), IEngineResult.class));
+                    }
+                });
+
+        //check if api disable key are enabled
+        if (!api.getDisableKeysStrip()) {
+
+            // Strip apikey
+            stripApiKey();
+        }
 
         // Fill out some of the basic metrics structure.
         requestMetric.setRequestStart(new Date());
@@ -327,14 +342,9 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
             }
         };
 
-
         // If no API Key provided - the api must be public.  If an API Key *is* provided
         // then we lookup the Contract and use that.
-        if (request.getApiKey() == null) {
-            registry.getApi(request.getApiOrgId(), request.getApiId(), request.getApiVersion(),
-                    (IAsyncResult<Api> apiResult) -> {
-                        if (apiResult.isSuccess()) {
-                            api = apiResult.getResult();
+        if (request.getApiKey() == null || api.getDisableKeysStrip()) {
 
                             if (api == null) {
                                 ApiNotFoundException error = new ApiNotFoundException(Messages.i18n.format("EngineImpl.ApiNotFound")); //$NON-NLS-1$
@@ -360,10 +370,6 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
                                     loadPolicies(policiesLoadedHandler);
                                 }
                             }
-                        } else if (apiResult.isError()) {
-                            resultHandler.handle(AsyncResultImpl.create(apiResult.getError(), IEngineResult.class));
-                        }
-                    });
         } else {
             String apiOrgId = request.getApiOrgId();
             String apiId = request.getApiId();

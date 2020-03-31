@@ -1424,6 +1424,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                 newApiVersion.setPlans(bean.getPlans());
                 newApiVersion.setPublicAPI(bean.getPublicAPI());
                 newApiVersion.setParsePayload(bean.getParsePayload());
+                newApiVersion.setDisableKeysStrip(bean.getDisableKeysStrip());
                 newApiVersion.setVersion(bean.getInitialVersion());
                 newApiVersion.setDefinitionUrl(bean.getDefinitionUrl());
                 newApiVersion.setDefinitionType(bean.getDefinitionType());
