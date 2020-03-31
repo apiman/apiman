@@ -235,7 +235,7 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
                 });
 
         //check if api disable key are enabled
-        if (!api.getDisableKeysStrip()) {
+        if (!api.isKeysStrippingEnabled()) {
 
             // Strip apikey
             stripApiKey();
@@ -344,7 +344,7 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
 
         // If no API Key provided - the api must be public.  If an API Key *is* provided
         // then we lookup the Contract and use that.
-        if (request.getApiKey() == null || api.getDisableKeysStrip()) {
+        if (request.getApiKey() == null || api.isKeysStrippingEnabled()) {
 
                             if (api == null) {
                                 ApiNotFoundException error = new ApiNotFoundException(Messages.i18n.format("EngineImpl.ApiNotFound")); //$NON-NLS-1$
