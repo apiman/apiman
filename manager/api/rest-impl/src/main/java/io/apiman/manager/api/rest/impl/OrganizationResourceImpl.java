@@ -2034,6 +2034,11 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             avb.setParsePayload(bean.getParsePayload());
         }
 
+        if (AuditUtils.valueChanged(avb.getDisableKeysStrip(), bean.getDisableKeysStrip())) {
+            data.addChange("disableKeysStrip", String.valueOf(avb.getDisableKeysStrip()), String.valueOf(bean.getDisableKeysStrip())); //$NON-NLS-1$
+            avb.setDisableKeysStrip(bean.getDisableKeysStrip());
+        }
+
         try {
             if (avb.getGateways() == null || avb.getGateways().isEmpty()) {
                 GatewaySummaryBean gateway = getSingularGateway();
