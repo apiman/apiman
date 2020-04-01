@@ -41,6 +41,7 @@ public class UpdateApiVersionBean implements Serializable {
     private Set<ApiGatewayBean> gateways;
     private Boolean parsePayload;
     private Boolean publicAPI;
+    private Boolean disableKeysStrip;
     private Set<ApiPlanBean> plans;
 
     /**
@@ -161,6 +162,16 @@ public class UpdateApiVersionBean implements Serializable {
         this.parsePayload = parsePayload;
     }
 
+    /**
+     * @return the disableKeysStrip
+     */
+    public Boolean getDisableKeysStrip() { return disableKeysStrip; }
+
+    /**
+     * @param disableKeysStrip the disableKeysStrip to set
+     */
+    public void setDisableKeysStrip(Boolean disableKeysStrip) { this.disableKeysStrip = disableKeysStrip; }
+
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
@@ -187,5 +198,4 @@ public class UpdateApiVersionBean implements Serializable {
         builder.append("]");
         return builder.toString();
     }
-
 }

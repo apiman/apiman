@@ -1424,6 +1424,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                 newApiVersion.setPlans(bean.getPlans());
                 newApiVersion.setPublicAPI(bean.getPublicAPI());
                 newApiVersion.setParsePayload(bean.getParsePayload());
+                newApiVersion.setDisableKeysStrip(bean.getDisableKeysStrip());
                 newApiVersion.setVersion(bean.getInitialVersion());
                 newApiVersion.setDefinitionUrl(bean.getDefinitionUrl());
                 newApiVersion.setDefinitionType(bean.getDefinitionType());
@@ -1696,6 +1697,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         }
         if (bean.getParsePayload() != null) {
             newVersion.setParsePayload(bean.getParsePayload());
+        }
+        if (bean.getDisableKeysStrip() != null) {
+            newVersion.setDisableKeysStrip(bean.getDisableKeysStrip());
         }
         if (bean.getPlans() != null) {
             newVersion.setPlans(bean.getPlans());
@@ -2032,6 +2036,11 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         if (AuditUtils.valueChanged(avb.isParsePayload(), bean.getParsePayload())) {
             data.addChange("parsePayload", String.valueOf(avb.isParsePayload()), String.valueOf(bean.getParsePayload())); //$NON-NLS-1$
             avb.setParsePayload(bean.getParsePayload());
+        }
+
+        if (AuditUtils.valueChanged(avb.getDisableKeysStrip(), bean.getDisableKeysStrip())) {
+            data.addChange("disableKeysStrip", String.valueOf(avb.getDisableKeysStrip()), String.valueOf(bean.getDisableKeysStrip())); //$NON-NLS-1$
+            avb.setDisableKeysStrip(bean.getDisableKeysStrip());
         }
 
         try {
