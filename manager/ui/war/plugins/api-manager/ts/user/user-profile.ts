@@ -11,13 +11,43 @@ module Apiman {
                 })
             };
 
+            $rootScope.isDirty = false;
+            $scope.isValid = true;
             $scope.updatedUser = {
                 fullName: undefined,
                 email: undefined
             };
             
+            $scope.$watch('updatedUser', function(newValue) {
+                var dirty = false;
+                var valid = true;
+
+                if (!newValue.fullName) {
+                    valid = false;
+                }
+
+                if (!newValue.email) {
+                    valid = false;
+                }
+
+                if ($scope.user
+                    && $scope.user.fullName
+                    && newValue.fullName != $scope.user.fullName) {
+                    dirty = true;
+                }
+
+                if ($scope.user
+                    && $scope.user.email
+                    && newValue.email != $scope.user.email) {
+                    dirty = true;
+                }
+                
+                $rootScope.isDirty = dirty;
+                $scope.isValid = valid;
+            }, true);
 
             $scope.cancel = function() {
+                $rootScope.isDirty = false;
                 $location.path($rootScope.pluginName);
             };
             
@@ -28,7 +58,8 @@ module Apiman {
                         $scope.updateButton.state = 'complete';
                         $scope.user.fullName = $scope.updatedUser.fullName;
                         $scope.user.email = $scope.updatedUser.email;
-                        $scope.userForm.$setPristine();
+                        $scope.isValid = true;
+                        $rootScope.isDirty = false;
                     }, PageLifecycle.handleError);
                 });
             };

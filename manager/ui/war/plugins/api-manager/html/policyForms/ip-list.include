@@ -3,8 +3,7 @@
     <dl style="margin-bottom: 0px">
       <dt apiman-i18n-key="ip-http-header">IP Address HTTP Header</dt>
       <dd>
-        <input name="httpHeader" id="http-header" ng-model="config.httpHeader" data-field="httpHeader" class="apiman-form-control form-control" style="" type="text" apiman-i18n-key="iplist.enter-http-header" placeholder="HTTP header (optional)..." ng-disabled="isEntityDisabled()" name-validation></input>
-        <span ng-show="policyForm.httpHeader.$touched && policyForm.httpHeader.$invalid" apiman-i18n-key="regexp-error">The value is not valid!</span>
+        <input id="http-header" ng-model="config.httpHeader" data-field="httpHeader" class="apiman-form-control form-control" style="" type="text" apiman-i18n-key="iplist.enter-http-header" placeholder="HTTP header (optional)..." ng-disabled="isEntityDisabled()"></input>
       </dd>
       <dt apiman-i18n-key="failure-code">Failure Response</dt>
       <dd>
