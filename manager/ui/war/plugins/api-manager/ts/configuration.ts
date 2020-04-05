@@ -55,6 +55,9 @@ module ApimanConfiguration {
             if (cdata.ui.platform == undefined || cdata.ui.platform == null) {
                 cdata.ui.platform = "community";
             }
+            if (cdata.ui.adminOnlyOrgCreation == undefined || cdata.ui.adminOnlyOrgCreation == null) {
+                cdata.ui.adminOnlyOrgCreation = false;
+            }
 
             return cdata;
         }]);

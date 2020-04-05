@@ -35,6 +35,7 @@ public class UIConfig implements IUIConfig {
 
     public static final String APIMAN_MANAGER_UI_ENABLE_METRICS = "apiman-manager-ui.metrics.enable"; //$NON-NLS-1$
     public static final String APIMAN_MANAGER_UI_PLATFORM = "apiman-manager-ui.platform"; //$NON-NLS-1$
+    public static final String APIMAN_MANAGER_UI_ORG_CREATE_ADMIN_ONLY = "apiman-manager-ui.org-create-admin-only"; //$NON-NLS-1$
 
     public static final String APIMAN_MANAGER_UI_LOGOUT_URL = "apiman-manager-ui.logout-url"; //$NON-NLS-1$
 
@@ -64,7 +65,15 @@ public class UIConfig implements IUIConfig {
     public String getPlatform() {
         return config.getString(UIConfig.APIMAN_MANAGER_UI_PLATFORM);
     }
-    
+
+    /**
+     * @see io.apiman.manager.ui.server.IUIConfig#isAdminOnlyOrgCreationEnabled()
+     */
+    @Override
+    public boolean isAdminOnlyOrgCreationEnabled() {
+        return config.getBoolean(UIConfig.APIMAN_MANAGER_UI_ORG_CREATE_ADMIN_ONLY, false);
+    }
+
     /**
      * @see io.apiman.manager.ui.server.IUIConfig#getManagementApiEndpoint()
      */

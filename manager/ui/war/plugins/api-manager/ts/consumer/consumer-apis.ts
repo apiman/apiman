@@ -16,26 +16,26 @@ module Apiman {
                     'ps': pageSize
                 });
             };
-            
+
             var pageData = {
                 apis: $q(function(resolve, reject) {
                     if (params.q && params.cp && params.ps) {
                         var body:any = {};
                         body.filters = [];
 
-                        body.page = params.cp
-                        body.pageSize = params.ps
+                        body.page = params.cp;
+                        body.pageSize = params.ps;
 
                         body.filters.push( {"name": "name", "value": "*" + params.q + "*", "operator": "like"});
                         var searchStr = angular.toJson(body);
                         
-                        ApimanSvcs.save({ entityType: 'search', secondaryType: 'apis' }, searchStr, function(reply) {
+                        ApimanSvcs.save({ entityType: 'search', secondaryType: 'apis' }, searchStr, function(result) {
                             
-                            $scope.resultCount = reply.totalSize;
+                            $scope.resultCount = result.totalSize;
                             $scope.currentPage = params.cp;
-                            $scope.pageSize = params.ps
+                            $scope.pageSize = params.ps;
 
-                            resolve(reply.beans);
+                            resolve(result.beans);
                         }, reject);
                     } else {
                         resolve([]);
@@ -43,10 +43,17 @@ module Apiman {
                 })
             };
 
+            function loadFirstPage() {
+                if ($scope.apis.length == 0) {
+                    $scope.searchSvcs('*', 1, 10);
+                }
+            }
+
             PageLifecycle.loadPage('ConsumerApis', undefined, pageData, $scope, function() {
                 PageLifecycle.setPageTitle('consumer-apis');
+                loadFirstPage();
                 $scope.$applyAsync(function() {
-                    $('#apiman-search').focus();
+                    $('#apiman-search').val('').focus();
                 });
             });
         }]);

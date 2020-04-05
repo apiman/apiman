@@ -38,7 +38,7 @@ var config = {
     dest: './dist/',
     js: pkg.name + '.js',
     tsProject: typescript.createProject({
-        target: 'ES5',
+        target: 'ES6',
         module: 'commonjs',
         declarationFiles: true,
         noExternalResolve: false
