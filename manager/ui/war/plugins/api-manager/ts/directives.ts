@@ -687,7 +687,7 @@ module Apiman {
                 ngModel.$parsers.push(function (value?: string) {
                     scope.gatewayForm && console.debug(`${scope.gatewayForm.description.$invalid}`)
                     if (value && value.length !== 0) {
-                        var TEXT_VALIDATION = /^[0-9A-z_\- .,]+$/;
+                        var TEXT_VALIDATION = /^([0-9A-z_\- .,]|\s)+$/;
 
                         if (TEXT_VALIDATION.test(value)) {
                             ngModel.$setValidity('text', true)
@@ -773,7 +773,7 @@ module Apiman {
             link: function (scope, element, attributes, ngModel: any) {
                 ngModel.$parsers.push(function (value?: string) {
                     if (value && value.length !== 0) {
-                        var GATEWAY_VALIDATION = /^\$\{apiman\.gateway-endpoint:https?:\/\/[A-z0-9_\-\.]+(:[0-9]+)?\/apiman-gateway-api\}$|^https?:\/\/[A-z0-9_\-\.]+(:[0-9]+)?\/apiman-gateway-api$/
+                        var GATEWAY_VALIDATION = /^\$\{apiman\.gateway-endpoint:https?:\/\/[A-z0-9_\-\.]+(:[0-9]+)?(\/apiman-gateway-api)?\}$|^https?:\/\/[A-z0-9_\-\.]+(:[0-9]+)?(\/apiman-gateway-api)?$/
 
                         if (GATEWAY_VALIDATION.test(value)) {
                             ngModel.$setValidity('gw', true)

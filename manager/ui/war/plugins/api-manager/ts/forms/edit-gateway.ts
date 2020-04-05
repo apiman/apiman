@@ -10,23 +10,11 @@ module Apiman {
             
             var validate = function() {
                 $scope.testResult = 'none';
-                $scope.isValid = $scope.editGateway.$valid;
-                
-                // Now dirty
-                var dirty = false;
-                if ($scope.gateway.description != $scope.originalGateway.description) {
-                    dirty = true;
+                var valid = $scope.gateway;
+                if ($scope.configuration.password != $scope.passwordConfirm) {
+                    valid = false;
                 }
-                if ($scope.configuration.endpoint != $scope.originalConfig.endpoint) {
-                    dirty = true;
-                }
-                if ($scope.configuration.username != $scope.originalConfig.username) {
-                    dirty = true;
-                }
-                if ($scope.configuration.password != $scope.originalConfig.password) {
-                    dirty = true;
-                }
-                $rootScope.isDirty = dirty;
+                $scope.isValid = valid;
             };
             
             var Gateway = function() {
