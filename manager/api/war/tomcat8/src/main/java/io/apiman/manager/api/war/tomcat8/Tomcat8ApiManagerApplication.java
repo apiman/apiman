@@ -15,63 +15,15 @@
  */
 package io.apiman.manager.api.war.tomcat8;
 
-import io.apiman.manager.api.config.Version;
-import io.apiman.manager.api.rest.impl.*;
-import io.apiman.manager.api.rest.exceptions.mappers.RestExceptionMapper;
-import io.swagger.jaxrs.config.BeanConfig;
+import javax.ws.rs.core.Application;
 
-import java.util.HashSet;
-import java.util.Set;
+import io.apiman.manager.api.rest.impl.ApiManagerApplication;
 
 /**
- * Useful if jax-rs is not supported by the runtime platform.
+ * JAX-RS {@link Application} used when running in Tomcat.
  *
  * @author eric.wittmann@redhat.com
  */
 public class Tomcat8ApiManagerApplication extends ApiManagerApplication {
 
-    private Set<Object> singletons = new HashSet<>();
-    private Set<Class<?>> classes = new HashSet<>();
-
-    /**
-     * Constructor.
-     */
-    public Tomcat8ApiManagerApplication() {
-
-        //add swagger 2.0 config
-        BeanConfig beanConfig = new BeanConfig();
-        beanConfig.setVersion(new Version().getVersionString());
-        beanConfig.setBasePath("/apiman"); //$NON-NLS-1$
-        beanConfig.setResourcePackage("io.apiman.manager.api.rest"); //$NON-NLS-1$
-        beanConfig.setTitle("API Manager REST API");
-        beanConfig.setDescription("The API Manager REST API is used by the API Manager UI to get stuff done. You can use it to automate any API Management task you wish. For example, create new Organizations, Plans, Clients, and APIs.");
-        beanConfig.setScan(true);
-        
-        classes.add(SystemResourceImpl.class);
-        classes.add(SearchResourceImpl.class);
-        classes.add(RoleResourceImpl.class);
-        classes.add(UserResourceImpl.class);
-        classes.add(OrganizationResourceImpl.class);
-        classes.add(PolicyDefinitionResourceImpl.class);
-        classes.add(GatewayResourceImpl.class);
-        classes.add(PluginResourceImpl.class);
-        classes.add(ActionResourceImpl.class);
-        classes.add(DownloadResourceImpl.class);
-        
-        //add swagger 2.0 resource
-        classes.add(io.swagger.jaxrs.listing.ApiListingResource.class);
-        classes.add(io.swagger.jaxrs.listing.SwaggerSerializers.class);
-        
-        classes.add(RestExceptionMapper.class);
-    }
-
-    @Override
-    public Set<Class<?>> getClasses() {
-        return classes;
-    }
-
-    @Override
-    public Set<Object> getSingletons() {
-        return singletons;
-    }
 }

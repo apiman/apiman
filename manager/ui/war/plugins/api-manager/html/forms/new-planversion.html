@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
   </head>
 
   <body>
@@ -25,7 +25,7 @@
         <dl>
           <dt apiman-i18n-key="version">Version</dt>
           <dd>
-            <input name="version" ng-model="planversion.version" type="text" class="apiman-form-control form-control version" id="apiman-version" apiman-i18n-key="enter-plan-version" placeholder="Enter version..." required version-validation></input>
+            <input name="version" ng-model="planversion.version" type="text" class="apiman-form-control form-control version" id="apiman-version" apiman-i18n-key="enter-plan-version" placeholder="Enter version..." required version-validation>
             <span ng-show="newPlanVersion.version.$touched && newPlanVersion.version.$invalid" apiman-i18n-key="version-error">The value is invalid!</span>
           </dd>
         </dl>
@@ -35,7 +35,7 @@
           <dd>
             <table>
               <tr>
-                <td><input ng-model="planversion.clone" type="checkbox" id="cloneCB" data-field="cloneCB"></input></td>
+                <td><input ng-model="planversion.clone" type="checkbox" id="cloneCB" data-field="cloneCB"></td>
                 <td><label style="margin-left: 4px; padding-top: 2px" for="cloneCB" apiman-i18n-key="make-clone">Make a clone of the previously selected version (copy all policies and settings)</label></td>
               </tr>
             </table>

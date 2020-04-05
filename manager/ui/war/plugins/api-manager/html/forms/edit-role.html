@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
   </head>
 
   <body>
@@ -24,7 +24,7 @@
         <dl>
           <dt apiman-i18n-key="role">Role</dt>
           <dd>
-            <input id="apiman-role-name" ng-model="role.name" type="text" class="apiman-form-control form-control name entityname" disabled></input>
+            <input id="apiman-role-name" ng-model="role.name" type="text" class="apiman-form-control form-control name entityname" disabled>
           </dd>
         </dl>
       </div>
@@ -45,7 +45,7 @@
           <dd>
              <div class="checkbox">
                <label>
-                 <input id="auto-grant" ng-model="role.autoGrant" data-field="autoGrant" type="checkbox"></input>
+                 <input id="auto-grant" ng-model="role.autoGrant" data-field="autoGrant" type="checkbox">
                  <span apiman-i18n-key="grant-role-automatically">Grant this role automatically when creating a new Organization</span>
                </label>
              </div>
@@ -62,68 +62,68 @@
                 <div class="col-md-3">
                   <div class="checkbox">
                     <label>
-                      <input id="org-view" ng-model="rolePermissions['orgView']" data-field="orgView" type="checkbox"></input> <span apiman-i18n-key="permission.orgView">Organization View</span>
+                      <input id="org-view" ng-model="rolePermissions['orgView']" data-field="orgView" type="checkbox"> <span apiman-i18n-key="permission.orgView">Organization View</span>
                     </label>
                   </div>
                   <div class="checkbox">
                     <label>
-                      <input id="org-edit" ng-model="rolePermissions['orgEdit']" data-field="orgEdit" type="checkbox"></input> <span apiman-i18n-key="permission.orgEdit">Organization Edit</span>
+                      <input id="org-edit" ng-model="rolePermissions['orgEdit']" data-field="orgEdit" type="checkbox"> <span apiman-i18n-key="permission.orgEdit">Organization Edit</span>
                     </label>
                   </div>
                   <div class="checkbox">
                     <label>
-                      <input id="org-admin" ng-model="rolePermissions['orgAdmin']" data-field="orgAdmin" type="checkbox"></input> <span apiman-i18n-key="permission.orgAdmin">Organization Admin</span>
-                    </label>
-                  </div>
-                </div>
-                <div class="col-md-2">
-                  <div class="checkbox">
-                    <label>
-                      <input id="plan-view" ng-model="rolePermissions['planView']" data-field="planView" type="checkbox"></input> <span apiman-i18n-key="permission.planView">Plan View</span>
-                    </label>
-                  </div>
-                  <div class="checkbox">
-                    <label>
-                      <input id="plan-edit" ng-model="rolePermissions['planEdit']" data-field="planEdit" type="checkbox"></input> <span apiman-i18n-key="permission.planEdit">Plan Edit</span>
-                    </label>
-                  </div>
-                  <div class="checkbox">
-                    <label>
-                      <input id="plan-admin" ng-model="rolePermissions['planAdmin']" data-field="planAdmin" type="checkbox"></input> <span apiman-i18n-key="permission.planAdmin">Plan Admin</span>
+                      <input id="org-admin" ng-model="rolePermissions['orgAdmin']" data-field="orgAdmin" type="checkbox"> <span apiman-i18n-key="permission.orgAdmin">Organization Admin</span>
                     </label>
                   </div>
                 </div>
                 <div class="col-md-2">
                   <div class="checkbox">
                     <label>
-                      <input id="api-view" ng-model="rolePermissions['apiView']" data-field="apiView" type="checkbox"></input> <span apiman-i18n-key="permission.apiView">API View</span>
+                      <input id="plan-view" ng-model="rolePermissions['planView']" data-field="planView" type="checkbox"> <span apiman-i18n-key="permission.planView">Plan View</span>
                     </label>
                   </div>
                   <div class="checkbox">
                     <label>
-                      <input id="api-edit" ng-model="rolePermissions['apiEdit']" data-field="apiEdit" type="checkbox"></input> <span apiman-i18n-key="permission.apiEdit">API Edit</span>
+                      <input id="plan-edit" ng-model="rolePermissions['planEdit']" data-field="planEdit" type="checkbox"> <span apiman-i18n-key="permission.planEdit">Plan Edit</span>
                     </label>
                   </div>
                   <div class="checkbox">
                     <label>
-                      <input id="api-admin" ng-model="rolePermissions['apiAdmin']" data-field="apiAdmin" type="checkbox"></input> <span apiman-i18n-key="permission.apiAdmin">API Admin</span>
+                      <input id="plan-admin" ng-model="rolePermissions['planAdmin']" data-field="planAdmin" type="checkbox"> <span apiman-i18n-key="permission.planAdmin">Plan Admin</span>
                     </label>
                   </div>
                 </div>
                 <div class="col-md-2">
                   <div class="checkbox">
                     <label>
-                      <input id="client-view" ng-model="rolePermissions['clientView']" data-field="clientView" type="checkbox"></input> <span apiman-i18n-key="permission.clientView">Client App View</span>
+                      <input id="api-view" ng-model="rolePermissions['apiView']" data-field="apiView" type="checkbox"> <span apiman-i18n-key="permission.apiView">API View</span>
                     </label>
                   </div>
                   <div class="checkbox">
                     <label>
-                      <input id="client-edit" ng-model="rolePermissions['clientEdit']" data-field="clientEdit" type="checkbox"></input> <span apiman-i18n-key="permission.clientEdit">Client App Edit</span>
+                      <input id="api-edit" ng-model="rolePermissions['apiEdit']" data-field="apiEdit" type="checkbox"> <span apiman-i18n-key="permission.apiEdit">API Edit</span>
                     </label>
                   </div>
                   <div class="checkbox">
                     <label>
-                      <input id="client-admin" ng-model="rolePermissions['clientAdmin']" data-field="clientAdmin" type="checkbox"></input> <span apiman-i18n-key="permission.clientAdmin">Client App Admin</span>
+                      <input id="api-admin" ng-model="rolePermissions['apiAdmin']" data-field="apiAdmin" type="checkbox"> <span apiman-i18n-key="permission.apiAdmin">API Admin</span>
+                    </label>
+                  </div>
+                </div>
+                <div class="col-md-2">
+                  <div class="checkbox">
+                    <label>
+                      <input id="client-view" ng-model="rolePermissions['clientView']" data-field="clientView" type="checkbox"> <span apiman-i18n-key="permission.clientView">Client App View</span>
+                    </label>
+                  </div>
+                  <div class="checkbox">
+                    <label>
+                      <input id="client-edit" ng-model="rolePermissions['clientEdit']" data-field="clientEdit" type="checkbox"> <span apiman-i18n-key="permission.clientEdit">Client App Edit</span>
+                    </label>
+                  </div>
+                  <div class="checkbox">
+                    <label>
+                      <input id="client-admin" ng-model="rolePermissions['clientAdmin']" data-field="clientAdmin" type="checkbox"> <span apiman-i18n-key="permission.clientAdmin">Client App Admin</span>
                     </label>
                   </div>
                 </div>

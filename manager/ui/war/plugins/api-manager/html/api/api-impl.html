@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport"
-          content="width=device-width, initial-scale=1.0"></meta>
+          content="width=device-width, initial-scale=1.0">
   </head>
 
   <body>
@@ -87,7 +87,7 @@
               <input ng-model="updatedApi.parsePayload"
                      type="checkbox"
                      id="parse-payload"
-                     ng-disabled="isEntityDisabled()"></input>
+                     ng-disabled="isEntityDisabled()">
               <label for="parse-payload"
                      apiman-i18n-key="parse-payload-msg"
                      style="padding-left: 3px">Enable stateful request payload inspection</label>
@@ -102,6 +102,19 @@
                  <span class="pficon pficon-info"></span>
                  <span apiman-i18n-key="api-impl.parse-payload-info">Note that enabling this option may result in additional performance overhead.  However, this feature is sometimes required for certain policies to work (in particular many SOAP policies).</span>
               </div>
+            </div>
+
+            <div style="margin-top: 10px">
+              <input ng-model="updatedApi.disableKeysStrip"
+                     type="checkbox"
+                     id="disable-keys-strip"
+                     ng-disabled="isEntityDisabled()">
+              <label for="disable-keys-strip"
+                     apiman-i18n-key="disable-keys-strip-msg"
+                     style="padding-left: 3px">Disable request keys stripping</label>
+              <a apiman-i18n-key="disable-keys-strip-tooltip" type="button" href="javascript:void(0)" class="" data-toggle="popover" title="Stateful Payload Inspection" data-close="true" data-content="If this feature is enabled, the Gateway will not strip the X-API-KEY and apikey query param from the request. This allows the gateway to send the keys to the backend endpoint.">
+                <span class="pficon pficon-info"></span>
+              </a>
             </div>
 
             <div class="" style="margin-top:10px;">
@@ -146,7 +159,7 @@
                              class="apiman-form-control form-control"
                              width="100%"
                              type="text"
-                             ng-disabled="isEntityDisabled()"></input>
+                             ng-disabled="isEntityDisabled()">
                     </td>
                   </tr>
                   <tr>
@@ -162,7 +175,7 @@
                                class="apiman-form-control form-control"
                                width="100%"
                                type="password"
-                               ng-disabled="isEntityDisabled()"></input>
+                               ng-disabled="isEntityDisabled()">
                     </td>
                   </tr>
                   <tr>
@@ -178,7 +191,7 @@
                                class="apiman-form-control form-control"
                                width="100%"
                                type="password"
-                               ng-disabled="isEntityDisabled()"></input>
+                               ng-disabled="isEntityDisabled()">
                     </td>
                   </tr>
                   <tr>
@@ -189,7 +202,7 @@
                       <input ng-model="apiSecurity.basic.requireSSL"
                              type="checkbox"
                              id="require-ssl"
-                             ng-disabled="isEntityDisabled()"></input>
+                             ng-disabled="isEntityDisabled()">
                       <label for="require-ssl"
                              apiman-i18n-key="endpoint-security.require-ssl"
                              style="padding-left: 3px">Require transport security (SSL)</label>

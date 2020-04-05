@@ -148,6 +148,11 @@ module Apiman {
                         dirty = true;
                     }
 
+                    if (newValue.disableKeysStrip != $scope.version.disableKeysStrip)
+                    {
+                        dirty = true;
+                    }
+
                     if (newValue.gateways && newValue.gateways.length > 0) {
                         dirty = true;
                     }
@@ -233,6 +238,7 @@ module Apiman {
                 $scope.updatedApi.endpointContentType = $scope.version.endpointContentType;
                 $scope.updatedApi.endpointProperties = angular.copy($scope.version.endpointProperties);
                 $scope.updatedApi.parsePayload = $scope.version.parsePayload;
+                $scope.updatedApi.disableKeysStrip = $scope.version.disableKeysStrip;
 
 
                 // Gateway Handling

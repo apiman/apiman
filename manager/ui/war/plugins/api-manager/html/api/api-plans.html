@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport"
-          content="width=device-width, initial-scale=1.0"></meta>
+          content="width=device-width, initial-scale=1.0">
   </head>
 
   <body>
@@ -38,7 +38,7 @@
               <input ng-model="updatedApi.publicAPI"
                      type="checkbox"
                      id="public-api"
-                     ng-disabled="isEntityDisabled()"></input>
+                     ng-disabled="isEntityDisabled()">
               <label for="public-api"
                      apiman-i18n-key="make-api-public"
                      style="padding-left: 3px">Make this API public</label>
@@ -65,7 +65,7 @@
                     <input ng-model="plan.checked"
                            data-field="checkbox"
                            type="checkbox"
-                           ng-disabled="isEntityDisabled()"></input>
+                           ng-disabled="isEntityDisabled()">
                   <span class="title">
                     <a href="{{ pluginName }}/orgs/{{ plan.organizationId }}/plans/{{ plan.id }}" data-field="name" title="{{ plan.description }}">{{ plan.name }}</a>
                   </span>

@@ -328,6 +328,7 @@ public class EsMarshalling {
                     .field("endpointType", bean.getEndpointType())
                     .field("endpointContentType", bean.getEndpointContentType())
                     .field("parsePayload", bean.isParsePayload())
+                    .field("disableKeysStrip", bean.getDisableKeysStrip())
                     .field("definitionType", bean.getDefinitionType())
                     .field("definitionUrl", bean.getDefinitionUrl());
             Set<ApiGatewayBean> gateways = bean.getGateways();
@@ -964,6 +965,7 @@ public class EsMarshalling {
         bean.setPublicAPI(asBoolean(source.get("publicAPI")));
         bean.setDefinitionType(asEnum(source.get("definitionType"), ApiDefinitionType.class));
         bean.setParsePayload(asBool(source.get("parsePayload")));
+        bean.setDisableKeysStrip(asBool(source.get("disableKeysStrip")));
         bean.setDefinitionUrl(asString(source.get("definitionUrl")));
         bean.setGateways(new HashSet<>());
         List<Map<String, Object>> gateways = (List<Map<String, Object>>) source.get("gateways");

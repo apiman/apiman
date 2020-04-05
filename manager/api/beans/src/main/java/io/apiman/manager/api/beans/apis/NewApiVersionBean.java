@@ -40,6 +40,7 @@ public class NewApiVersionBean implements Serializable {
     private EndpointContentType endpointContentType;
     private Boolean publicAPI;
     private Boolean parsePayload;
+    private Boolean disableKeysStrip;
     private Set<ApiPlanBean> plans;
     private String definitionUrl;
     private ApiDefinitionType definitionType;
@@ -203,5 +204,15 @@ public class NewApiVersionBean implements Serializable {
     public void setParsePayload(Boolean parsePayload) {
         this.parsePayload = parsePayload;
     }
+
+    /**
+     * @return the disableKeysStrip
+     */
+    public Boolean getDisableKeysStrip() { return disableKeysStrip; }
+
+    /**
+     * @param disableKeysStrip the disableKeysStrip to set
+     */
+    public void setDisableKeysStrip(Boolean disableKeysStrip) { this.disableKeysStrip = disableKeysStrip; }
 
 }

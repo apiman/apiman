@@ -153,6 +153,7 @@ public class ActionResourceImpl implements IActionResource {
         gatewayApi.setVersion(versionBean.getVersion());
         gatewayApi.setPublicAPI(versionBean.isPublicAPI());
         gatewayApi.setParsePayload(versionBean.isParsePayload());
+        gatewayApi.setKeysStrippingDisabled(versionBean.getDisableKeysStrip());
         boolean hasTx = false;
         try {
             if (versionBean.isPublicAPI()) {

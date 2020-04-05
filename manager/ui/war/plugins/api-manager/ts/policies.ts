@@ -140,6 +140,10 @@ module Apiman {
                     valid = false;
                 }
 
+                if (!Number.isSafeInteger(config.limit)){
+                    config.limit = Number.MAX_SAFE_INTEGER;
+                }
+
                 if (!config.granularity) {
                     valid = false;
                 }

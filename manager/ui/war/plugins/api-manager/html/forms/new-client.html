@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   </head>
 
@@ -48,7 +48,7 @@
           <dl class="name">
             <dt apiman-i18n-key="client-client-name">Client App Name</dt>
             <dd>
-              <input name="name" ng-model="client.name" data-field="name" type="text" class="apiman-form-control form-control entityname" id="apiman-entityname" apiman-i18n-key="enter-client-name" placeholder="Enter client app name..." name-validation required></input>
+              <input name="name" ng-model="client.name" data-field="name" type="text" class="apiman-form-control form-control entityname" id="apiman-entityname" apiman-i18n-key="enter-client-name" placeholder="Enter client app name..." name-validation required>
               <span ng-show="newClient.name.$touched && newClient.name.$invalid" apiman-i18n-key="name-error">The value is invalid!</span>
             </dd>
           </dl>
@@ -58,7 +58,7 @@
           <dl>
             <dt apiman-i18n-key="initial-version">Initial Version</dt>
             <dd>
-              <input name="version" ng-model="client.initialVersion" data-field="version" type="text" class="apiman-form-control form-control version" id="apiman-version" version-validation required></input>
+              <input name="version" ng-model="client.initialVersion" data-field="version" type="text" class="apiman-form-control form-control version" id="apiman-version" version-validation required>
               <span ng-show="newClient.version.$touched && newClient.version.$invalid" apiman-i18n-key="version-error">The value is invalid!</span>
             </dd>
           </dl>

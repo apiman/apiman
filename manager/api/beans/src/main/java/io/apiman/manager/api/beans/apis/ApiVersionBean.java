@@ -110,6 +110,8 @@ public class ApiVersionBean implements Serializable, Cloneable {
     private ApiDefinitionBean apiDefinition;
     @Column(name = "parse_payload", updatable=true, nullable=true)
     private boolean parsePayload;
+    @Column(name = "strip_keys", updatable=true, nullable=true)
+    private boolean disableKeysStrip;
     @Column(name = "definition_url", updatable=true, nullable=true)
     private String definitionUrl;
 
@@ -391,6 +393,17 @@ public class ApiVersionBean implements Serializable, Cloneable {
     public void setParsePayload(boolean parsePayload) {
         this.parsePayload = parsePayload;
     }
+
+    /**
+     * @return the disableKeysStrip
+     */
+    public boolean getDisableKeysStrip() { return disableKeysStrip; }
+
+    /**
+     * @param disableKeysStrip the disableKeysStrip to set
+     */
+    public void setDisableKeysStrip(boolean disableKeysStrip) { this.disableKeysStrip = disableKeysStrip; }
+
 
     /**
      * @return the definition url

@@ -43,6 +43,8 @@ public abstract class ApiManagerConfig {
 
     public static final String APIMAN_MANAGER_NEW_USER_BOOTSTRAPPER_TYPE = "apiman-manager.user-bootstrapper.type"; //$NON-NLS-1$
 
+    public static final String APIMAN_MANAGER_FEATURES_ORG_CREATE_ADMIN_ONLY = "apiman-manager.config.features.org-create-admin-only"; //$NON-NLS-1$
+
     /*
      * Database/hibernate properties
      */
@@ -155,6 +157,10 @@ public abstract class ApiManagerConfig {
             }
         }
         return rval;
+    }
+
+    public boolean isAdminOnlyOrgCreationEnabled() {
+        return config.getBoolean(APIMAN_MANAGER_FEATURES_ORG_CREATE_ADMIN_ONLY, false);
     }
 
     public String getSecurityContextType() {
