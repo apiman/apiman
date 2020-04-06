@@ -6,12 +6,14 @@
     "requestHeader": {
       "title" : "Request Header",
       "type" : "string",
+      "pattern": "^[^()<>@,;:\\\\<>\\/\\[\\]?={}\\s\\t]+$",
       "minLength" : 1,
       "maxLength" : 64
     },
     "responseHeader": {
       "title" : "Response Header",
       "type" : "string",
+      "pattern": "^[^()<>@,;:\\\\<>\\/\\[\\]?={}\\s\\t]+$",
       "minLength" : 1,
       "maxLength" : 64
     }
