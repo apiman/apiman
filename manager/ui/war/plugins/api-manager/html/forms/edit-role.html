@@ -6,8 +6,8 @@
   </head>
 
   <body>
-    <div ng-include="headerInclude"></div>
-    <form name="editRole" ng-controller="Apiman.EditRoleController" id="form-page" class="container apiman-edit-role apiman-entity-new page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
+    <div ng-include="headerInclude"></div>   
+    <div ng-controller="Apiman.EditRoleController" id="form-page" class="container apiman-edit-role apiman-entity-new page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
       <div class="row">
         <h2 class="title"><span apiman-i18n-key="edit-role">Edit Role</span></h2>
       </div>
@@ -24,7 +24,7 @@
         <dl>
           <dt apiman-i18n-key="role">Role</dt>
           <dd>
-            <input id="apiman-role-name" ng-model="role.name" type="text" class="apiman-form-control form-control name entityname" disabled>
+            <input id="apiman-role-name" ng-model="role.name" type="text" class="apiman-form-control form-control name entityname" disabled="disabled"></input>
           </dd>
         </dl>
       </div>
@@ -33,8 +33,7 @@
         <dl>
           <dt apiman-i18n-key="description">Description</dt>
           <dd>
-            <textarea name="description" ng-model="role.description" class="apiman-form-control form-control description" id="apiman-description" apiman-i18n-key="enter-role-description" placeholder="Enter role description (optional)..." text-validation></textarea>
-            <span ng-show="editRole.description.$touched && editRole.description.$invalid" apiman-i18n-key="text-error">The value is invalid!</span>
+            <textarea ng-model="role.description" class="apiman-form-control form-control description" id="apiman-description" apiman-i18n-key="enter-role-description" placeholder="Enter role description (optional)..."></textarea>
           </dd>
         </dl>
       </div>
@@ -45,7 +44,7 @@
           <dd>
              <div class="checkbox">
                <label>
-                 <input id="auto-grant" ng-model="role.autoGrant" data-field="autoGrant" type="checkbox">
+                 <input id="auto-grant" ng-model="role.autoGrant" data-field="autoGrant" type="checkbox"></input> 
                  <span apiman-i18n-key="grant-role-automatically">Grant this role automatically when creating a new Organization</span>
                </label>
              </div>
@@ -138,13 +137,13 @@
       </div>
       <!-- Create Button -->
       <div class="row">
-        <button id="update-role" ng-disabled="!editRole.$dirty || editRole.$invalid" apiman-action-btn="" class="btn btn-primary" data-field="updateButton" apiman-i18n-key="update-role" placeholder="Updating..." data-icon="fa-cog" ng-click="updateRole()">Update Role</button>
+        <button id="update-role" ng-disabled="!isValid" apiman-action-btn="" class="btn btn-primary" data-field="updateButton" apiman-i18n-key="update-role" placeholder="Updating..." data-icon="fa-cog" ng-click="updateRole()">Update Role</button>
         <a id="cancel" href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" apiman-i18n-key="cancel">Cancel</a>
         <button id="delete-role" apiman-action-btn="" class="btn btn-danger" style="margin-left: 100px;" data-field="deleteButton" apiman-i18n-key="delete-role" placeholder="Deleting..." data-icon="fa-cog" ng-click="deleteRole()">Delete Role</button>
       </div>
 
       <div ng-include="'plugins/api-manager/html/modals/confirmModal.html'"></div>
 
-    </form> <!-- /container -->
+    </div> <!-- /container -->
   </body>
 </html>

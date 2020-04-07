@@ -9,7 +9,10 @@ module Apiman {
             $scope.isValid = false;
             
             var validate = function() {
-                var valid = $scope.newRole.$valid;
+                var valid = true;
+                if (!$scope.role.name) {
+                    valid = false;
+                }
                 var atLeastOne = false;
                 angular.forEach($scope.rolePermissions, function(value,key) {
                     if (value == true) {
@@ -19,10 +22,12 @@ module Apiman {
                 if (!atLeastOne) {
                     valid = false;
                 }
-                $scope.newRole.$valid = valid;
-                $scope.newRole.$invalid = !valid;
+                $scope.isValid = valid;
             };
             
+            $scope.$watch('role', function(newValue) {
+                validate();
+            }, true);
             $scope.$watch('rolePermissions', function(newValue) {
                 validate();
             }, true);

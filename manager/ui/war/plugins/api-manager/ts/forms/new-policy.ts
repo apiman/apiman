@@ -88,7 +88,7 @@ module Apiman {
             });
 
             $scope.setValid = function(valid) {
-                $scope.isValid = valid && ($scope.policyForm === undefined || $scope.policyForm.$valid);
+                $scope.isValid = valid;
             };
 
             $scope.setConfig = function(config) {

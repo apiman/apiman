@@ -11,7 +11,6 @@ var path = require('path');
 var pkg = require('./package.json');
 var s = require('underscore.string');
 var source = require('vinyl-source-stream');
-var propertiesToJSON = require('properties-to-json');
 
 
 // ---------------------- Gulp Plugins ---->>
@@ -55,7 +54,7 @@ var SwaggerUIPath = './node_modules/swagger-ui-dist';
 // Default Task
 // Builds, watches for changes, and spins up the server
 gulp.task('default', function() {
-    return runSequence('messages', 'build', 'watch', 'connect');
+    return runSequence('build', 'watch', 'connect');
 });
 
 
@@ -73,7 +72,7 @@ gulp.task('browserify', function() {
 
 // Build Task
 gulp.task('build', function() {
-    return runSequence(['messages', 'browserify', 'css', 'fonts', 'images'], 'path-adjust', 'clean-defs', 'tsc', 'template', 'concat', 'clean');
+    return runSequence(['browserify', 'css', 'fonts', 'images'], 'path-adjust', 'clean-defs', 'tsc', 'template', 'concat', 'clean');
 });
 
 
@@ -173,25 +172,6 @@ gulp.task('path-adjust', function() {
 });
 
 
-gulp.task('messages', () => {
-    return new Promise((resolve, reject) => {
-        try {
-            const messagesFile = path.join(__dirname, 'src/main/resources/io/apiman/manager/ui/server/i18n/template_messages.properties');
-            data = fs.readFileSync(messagesFile, { encoding: 'utf-8' })
-            if (data) {
-                const translationsFile = path.join(__dirname, 'apiman/translations.js');
-                const jsonMessages = `var APIMAN_TRANSLATION_DATA = ${JSON.stringify(propertiesToJSON(data), undefined, 2)};`;
-                fs.writeFileSync(translationsFile, jsonMessages, { encoding: 'utf-8' })
-            }
-
-            resolve()
-        } catch (err) {
-            reject(err)
-        }
-    })
-})
-
-
 
 // Reload Task
 gulp.task('reload', function() {
@@ -262,9 +242,9 @@ gulp.task('watch', function() {
         config.templates,
         config.templateIncludes,
         'plugins/api-manager/css/apiman.css',
-        'src/main/resources/io/apiman/manager/ui/server/i18n/template_messages.properties'
+        'apiman/translations.js'
     ], function() {
-        return runSequence(['browserify', 'css', 'fonts', 'images', 'messages'], 'path-adjust', 'clean-defs', 'tsc', 'template', 'concat', 'clean');
+        return runSequence(['browserify', 'css', 'fonts', 'images'], 'path-adjust', 'clean-defs', 'tsc', 'template', 'concat', 'clean');
     });
 });
 

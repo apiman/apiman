@@ -14,4 +14,3 @@ gwt-unitCache
 npm-debug.log
 .metadata/*
 *.log
-manager/ui/war/apiman/translations.js

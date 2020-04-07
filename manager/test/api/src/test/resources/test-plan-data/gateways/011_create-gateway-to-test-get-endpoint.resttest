@@ -5,7 +5,7 @@ Content-Type: application/json
   "name" : "Gateway Endpoint",
   "description" : "This is the get endpoint test gateway.",
   "type" : "REST",
-  "configuration" : "{\"endpoint\":\"${apiman.test.gateway.endpoint}\",\"username\":\"${apiman.test.gateway.username}\",\"password\":\"${apiman.test.gateway.password}\"}"
+  "configuration" : "{\"endpoint\":\"${apiman.test.gateway.endpoint}\",\"username\":\"admin\",\"password\":\"password\"}"
 }
 ----
 200
@@ -16,5 +16,5 @@ Content-Type: application/json
   "name" : "Gateway Endpoint",
   "description" : "This is the get endpoint test gateway.",
   "type" : "REST",
-  "configuration" : "{\"endpoint\":\"${apiman.test.gateway.endpoint}\",\"username\":\"${apiman.test.gateway.username}\",\"password\":\"${apiman.test.gateway.password.encrypted}\"}"
+  "configuration" : "{\"endpoint\":\"${apiman.test.gateway.endpoint}\",\"username\":\"admin\",\"password\":\"password\"}"
 }

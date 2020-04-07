@@ -3,9 +3,8 @@
 module Apiman {
 
  export var ApiDefController = _module.controller('Apiman.ApiDefController',
-        ['$q', '$rootScope', '$scope', '$location', 'PageLifecycle', 'ApiEntityLoader', 'TranslationSvc', 'Logger', '$routeParams', 'ApiDefinitionSvcs', 'Configuration', 'EntityStatusSvc', 'CurrentUser',
-        ($q, $rootScope, $scope, $location, PageLifecycle, ApiEntityLoader, TranslationSvc, Logger, $routeParams, ApiDefinitionSvcs, Configuration, EntityStatusSvc, CurrentUser) => {
-
+        ['$q', '$rootScope', '$scope', '$location', 'PageLifecycle', 'ApiEntityLoader', 'OrgSvcs', 'Logger', '$routeParams', 'ApiDefinitionSvcs', 'Configuration', 'EntityStatusSvc', 'CurrentUser',
+        ($q, $rootScope, $scope, $location, PageLifecycle, ApiEntityLoader, OrgSvcs, Logger, $routeParams, ApiDefinitionSvcs, Configuration, EntityStatusSvc, CurrentUser) => {
             var params = $routeParams;
 
             $scope.organizationId = params.org;
@@ -15,15 +14,15 @@ module Apiman {
             $scope.textAreaHeight = '100';
 
             $scope.typeOptions = [
-                { "label" : TranslationSvc.translate('no-definition', "No API Definition"), "value" : "None" },
-                { "label" : TranslationSvc.translate('json-definition', "Swagger (JSON)"), "value" : "SwaggerJSON" },
-                { "label" : TranslationSvc.translate('yaml-definition', "Swagger (YAML)"), "value" : "SwaggerYAML" },
-                { "label" : TranslationSvc.translate('wsdl-definition', "Web Service Definition Language (WSDL)"), "value" : "WSDL" }
+                { "label" : "No API Definition",     "value" : "None" },
+                { "label" : "Swagger (JSON)",        "value" : "SwaggerJSON" },
+                { "label" : "Swagger (YAML)",        "value" : "SwaggerYAML" },
+                { "label" : "WSDL",                  "value" : "WSDL" }
             ];
 
             var selectType = function(newType) {
                 angular.forEach($scope.typeOptions, function(option) {
-                    if (option.value === newType) {
+                    if (option.value == newType) {
                         $scope.selectedDefinitionType = option;
                     }
                 });
@@ -119,13 +118,7 @@ module Apiman {
                 checkDirty();
             });
 
-            $scope.$watch('selectedDefinitionType', function(newValue, oldValue) {
-                if (newValue.value !== oldValue.value && newValue.value === 'None') {
-                    $scope.updatedApiDefinition = '';
-                }
-
-                checkDirty();
-            }, true);
+            $scope.$watch('selectedDefinitionType', checkDirty, true);
 
             $scope.reset = function() {
                 selectType($scope.definitionType);

@@ -92,7 +92,6 @@ public class GatewayResourceImpl implements IGatewayResource {
             testGateway.setName(gatewayToTest.getName());
             testGateway.setType(gatewayToTest.getType());
             testGateway.setConfiguration(gatewayToTest.getConfiguration());
-            decryptPasswords(testGateway);
             IGatewayLink gatewayLink = gatewayLinkFactory.create(testGateway);
             SystemStatus status = gatewayLink.getStatus();
             String detail = mapper.writer().writeValueAsString(status);
@@ -156,6 +155,7 @@ public class GatewayResourceImpl implements IGatewayResource {
             storage.rollbackTx();
             throw new SystemErrorException(e);
         }
+        decryptPasswords(gateway);
 
         log.debug(String.format("Successfully created new gateway %s: %s", gateway.getName(), gateway)); //$NON-NLS-1$
         return gateway;
@@ -174,6 +174,7 @@ public class GatewayResourceImpl implements IGatewayResource {
             if (gateway == null) {
                 throw ExceptionFactory.gatewayNotFoundException(gatewayId);
             }
+            decryptPasswords(gateway);
 
             storage.commitTx();
             log.debug(String.format("Successfully fetched gateway %s: %s", gateway.getName(), gateway)); //$NON-NLS-1$
