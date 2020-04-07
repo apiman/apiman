@@ -150,13 +150,9 @@ public final class SwaggerWsdlHelper {
      */
     public static String updateLocationEndpointInWsdl(InputStream wsdlStream, URL managedEndpoint, ApiVersionBean apiVersion, IStorage storage) throws StorageException {
         Document document = readWsdlInputStream(wsdlStream);
-
         Boolean updateStorage = false;
-
         for(int i = 0; i < SOAP_ADDRESS.length;i++) {
-
             NodeList nodeList = document.getDocumentElement().getElementsByTagName(SOAP_ADDRESS[i]);
-
             if (nodeList != null) {
                 for (int j = 0; j < nodeList.getLength(); j++) {
                     Node node = nodeList.item(j);
@@ -169,12 +165,10 @@ public final class SwaggerWsdlHelper {
                 }
             }
         }
-
         String wsdl = xmlDocumentToString(document);
-
-        if (updateStorage)
+        if (updateStorage) {
             storage.updateApiDefinition(apiVersion, new ByteArrayInputStream(wsdl.getBytes(StandardCharsets.UTF_8)));
-
+        }
         return wsdl;
     }
 
