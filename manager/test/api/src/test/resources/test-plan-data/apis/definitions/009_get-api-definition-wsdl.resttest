@@ -1,7 +1,7 @@
 GET /organizations/Organization1/apis/API1/versions/2.0/definition admin/admin
 ----
 200
-Content-Type: application/wsdl+xml
+Content-Type: text/xml;charset=utf-8
 
 <definitions name="EndorsementSearch"
   targetNamespace="http://namespaces.snowboard-info.com"

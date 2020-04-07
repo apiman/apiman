@@ -21,7 +21,6 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -42,8 +41,10 @@ public final class SwaggerWsdlHelper {
     private static final String HOST = "host";
     private static final String LOCATION = "location";
     private static final String SOAP_ADDRESS = "address";
-    private static final String SOAP11_NAMESPACE = "http://schemas.xmlsoap.org/soap/envelope/";
-    private static final String SOAP12_NAMESPACE = "http://www.w3.org/2003/05/soap-envelope";
+    private static final String[] SOAP_NAMESPACES = {
+        "http://schemas.xmlsoap.org/wsdl/soap/",
+        "http://schemas.xmlsoap.org/wsdl/soap12/"
+    };
     private static final String SWAGGER = "swagger";
 
     /**
@@ -167,18 +168,13 @@ public final class SwaggerWsdlHelper {
         
         // Collection of all SOAP binding addresses
         List<Element> allSoapAddresses = new LinkedList<Element>();
-        // Grab all the SOAP 1.1 bindings
-        NodeList soap11Addresses = document.getDocumentElement().getElementsByTagNameNS(SOAP11_NAMESPACE, SOAP_ADDRESS);
-        if (soap11Addresses != null && soap11Addresses.getLength() > 0) {
-            for (int j = 0; j < soap11Addresses.getLength(); j++) {
-                allSoapAddresses.add((Element) soap11Addresses.item(j));
-            }
-        }
-        // Grab all the SOAP 1.2 bindings
-        NodeList soap12Addresses = document.getDocumentElement().getElementsByTagNameNS(SOAP12_NAMESPACE, SOAP_ADDRESS);
-        if (soap12Addresses != null && soap12Addresses.getLength() > 0) {
-            for (int j = 0; j < soap12Addresses.getLength(); j++) {
-                allSoapAddresses.add((Element) soap12Addresses.item(j));
+        
+        for (String soapNamespace : SOAP_NAMESPACES) {
+            NodeList soapAddresses = document.getDocumentElement().getElementsByTagNameNS(soapNamespace, SOAP_ADDRESS);
+            if (soapAddresses != null && soapAddresses.getLength() > 0) {
+                for (int j = 0; j < soapAddresses.getLength(); j++) {
+                    allSoapAddresses.add((Element) soapAddresses.item(j));
+                }
             }
         }
 
@@ -208,6 +204,7 @@ public final class SwaggerWsdlHelper {
      */
     private static Document readWsdlInputStream(InputStream wsdlStream) {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setNamespaceAware(true);
         DocumentBuilder documentBuilder = null;
         Document document = null;
         try {
