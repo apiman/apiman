@@ -1836,7 +1836,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             } else if (apiVersion.getDefinitionType() == ApiDefinitionType.SwaggerYAML) {
                 builder.type("application/x-yaml"); //$NON-NLS-1$
             } else if (apiVersion.getDefinitionType() == ApiDefinitionType.WSDL) {
-                builder.type("application/wsdl+xml"); //$NON-NLS-1$
+                builder.type("text/xml"); //$NON-NLS-1$
             } else {
                 IOUtils.closeQuietly(definition);
                 throw new Exception("API definition type not supported: " + apiVersion.getDefinitionType()); //$NON-NLS-1$
