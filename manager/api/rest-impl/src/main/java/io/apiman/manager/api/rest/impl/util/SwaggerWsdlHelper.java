@@ -30,7 +30,7 @@ public final class SwaggerWsdlHelper {
     private static final String BASE_PATH = "basePath";
     private static final String HOST = "host";
     private static final String LOCATION = "location";
-    private static final String SOAP_ADDRESS = "soap:address";
+    private static final String SOAP_ADDRESS[] = {"soap:address","soap12:address"};
     private static final String SWAGGER = "swagger";
 
     /**
@@ -150,23 +150,25 @@ public final class SwaggerWsdlHelper {
      */
     public static String updateLocationEndpointInWsdl(InputStream wsdlStream, URL managedEndpoint, ApiVersionBean apiVersion, IStorage storage) throws StorageException {
         Document document = readWsdlInputStream(wsdlStream);
-        NodeList nodeList = document.getDocumentElement().getElementsByTagName(SOAP_ADDRESS);
-
         Boolean updateStorage = false;
-        for (int i = 0; i < nodeList.getLength(); i++) {
-            Node node = nodeList.item(i);
-            String location = node.getAttributes().getNamedItem(LOCATION).getNodeValue();
-            String endpoint = managedEndpoint.toString();
-            if (!location.equals(endpoint)) {
-                node.getAttributes().getNamedItem(LOCATION).setNodeValue(managedEndpoint.toString());
-                updateStorage = true;
+        for(int i = 0; i < SOAP_ADDRESS.length;i++) {
+            NodeList nodeList = document.getDocumentElement().getElementsByTagName(SOAP_ADDRESS[i]);
+            if (nodeList != null) {
+                for (int j = 0; j < nodeList.getLength(); j++) {
+                    Node node = nodeList.item(j);
+                    String location = node.getAttributes().getNamedItem(LOCATION).getNodeValue();
+                    String endpoint = managedEndpoint.toString();
+                    if (!location.equals(endpoint)) {
+                        node.getAttributes().getNamedItem(LOCATION).setNodeValue(managedEndpoint.toString());
+                        updateStorage = true;
+                    }
+                }
             }
         }
-
         String wsdl = xmlDocumentToString(document);
-        if (updateStorage)
+        if (updateStorage) {
             storage.updateApiDefinition(apiVersion, new ByteArrayInputStream(wsdl.getBytes(StandardCharsets.UTF_8)));
-
+        }
         return wsdl;
     }
 

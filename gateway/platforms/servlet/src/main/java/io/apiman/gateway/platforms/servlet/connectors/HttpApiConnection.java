@@ -16,6 +16,8 @@
 package io.apiman.gateway.platforms.servlet.connectors;
 
 import io.apiman.common.config.options.BasicAuthOptions;
+import io.apiman.common.logging.DefaultDelegateFactory;
+import io.apiman.common.logging.IApimanLogger;
 import io.apiman.common.util.ApimanPathUtils;
 import io.apiman.gateway.engine.IApiConnection;
 import io.apiman.gateway.engine.IApiConnectionResponse;
@@ -28,6 +30,8 @@ import io.apiman.gateway.engine.beans.Api;
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.engine.beans.exceptions.ConnectorException;
+import io.apiman.gateway.engine.handler.ErrorHandler;
+import io.apiman.gateway.engine.impl.DefaultPolicyErrorWriter;
 import io.apiman.gateway.engine.io.ByteBuffer;
 import io.apiman.gateway.engine.io.IApimanBuffer;
 import io.apiman.gateway.platforms.servlet.GatewayThreadContext;
@@ -83,6 +87,8 @@ public class HttpApiConnection implements IApiConnection, IApiConnectionResponse
     private boolean isError = false;
 
     private IConnectorConfig connectorConfig;
+
+    private IApimanLogger logger = new DefaultDelegateFactory().createLogger(DefaultPolicyErrorWriter.class);
 
     /**
      * Constructor.
@@ -398,19 +404,8 @@ public class HttpApiConnection implements IApiConnection, IApiConnectionResponse
     }
 
     private void handleConnectionError(Exception error) {
-        ConnectorException ce = null;
-        if (error instanceof UnknownHostException || error instanceof ConnectException || error instanceof NoRouteToHostException) {
-            ce = new ConnectorException("Unable to connect to backend: " + error.getMessage(), error); //$NON-NLS-1$
-            ce.setStatusCode(502); // BAD GATEWAY
-        } else if (error instanceof SocketTimeoutException || error instanceof InterruptedIOException) {
-            ce = new ConnectorException("Connection to backend terminated: " + error.getMessage(), error); //$NON-NLS-1$
-            ce.setStatusCode(504); // GATEWAY TIMEOUT
-        }
-        if (ce != null) {
-            throw ce;
-        } else {
-            throw new ConnectorException(error);
-        }
+        ConnectorException ce = ErrorHandler.handleConnectionError(error);
+        logger.error(error.getMessage(), error);
+        throw ce;
     }
-
 }

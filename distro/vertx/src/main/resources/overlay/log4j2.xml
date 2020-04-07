@@ -24,7 +24,7 @@ See more detail at: https://logging.apache.org/log4j/2.x/manual/async.html
   </Appenders>
   <Loggers>
     <!-- apiman package only logging -->
-    <AsyncLogger level="info" name="io.apiman" additivity="false">
+    <AsyncLogger level="${sys:apiman.gateway-logLevel:-info}" name="io.apiman" additivity="false">
       <AppenderRef ref="RandomAccessFile"/>
       <AppenderRef ref="Console-Appender"/>
     </AsyncLogger>
@@ -34,7 +34,7 @@ See more detail at: https://logging.apache.org/log4j/2.x/manual/async.html
       <AppenderRef ref="Console-Appender"/>
     </AsyncLogger> -->
     <!-- Root/Global file logging config -->
-    <AsyncRoot level="info" includeLocation="false">
+    <AsyncRoot level="${sys:apiman.gateway-logLevel:-info}" includeLocation="false">
       <AppenderRef ref="RandomAccessFile"/>
       <AppenderRef ref="Console-Appender"/>
     </AsyncRoot>

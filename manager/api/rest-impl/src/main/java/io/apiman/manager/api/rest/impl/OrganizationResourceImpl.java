@@ -58,9 +58,9 @@ import io.apiman.manager.api.rest.IOrganizationResource;
 import io.apiman.manager.api.rest.IRoleResource;
 import io.apiman.manager.api.rest.IUserResource;
 import io.apiman.manager.api.rest.exceptions.*;
-import io.apiman.manager.api.rest.impl.audit.AuditUtils;
 import io.apiman.manager.api.rest.exceptions.i18n.Messages;
 import io.apiman.manager.api.rest.exceptions.util.ExceptionFactory;
+import io.apiman.manager.api.rest.impl.audit.AuditUtils;
 import io.apiman.manager.api.rest.impl.util.FieldValidator;
 import io.apiman.manager.api.rest.impl.util.RestHelper;
 import io.apiman.manager.api.rest.impl.util.SwaggerWsdlHelper;
@@ -343,8 +343,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
      * @param apiVersion the apiVersion
      * @return true if the version has a definition, else false
      */
-    private boolean apiVersionHasApiDefinition(ApiVersionBean apiVersion) {
-        return apiVersion.getDefinitionType() != null && apiVersion.getDefinitionType() != ApiDefinitionType.None;
+    private boolean apiVersionHasApiDefinition(ApiVersionBean apiVersion) throws StorageException {
+        // additional check if the document really exists in the storage
+        return apiVersion.getDefinitionType() != null && apiVersion.getDefinitionType() != ApiDefinitionType.None && storage.getApiDefinition(apiVersion) != null;
     }
 
     /**
@@ -1739,7 +1740,6 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         }
 
         storage.createApiVersion(newVersion);
-        storage.createAuditEntry(AuditUtils.apiVersionCreated(newVersion, securityContext));
 
         if (bean.getDefinitionUrl() != null) {
             InputStream definition = null;
@@ -1748,11 +1748,15 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                 storage.updateApiDefinition(newVersion, definition);
             } catch (Exception e) {
                 log.error("Unable to store API definition from: " + bean.getDefinitionUrl(), e); //$NON-NLS-1$
+                // Set definition type silently to None
+                newVersion.setDefinitionType(ApiDefinitionType.None);
+                storage.updateApiVersion(newVersion);
             } finally {
                 IOUtils.closeQuietly(definition);
             }
         }
 
+        storage.createAuditEntry(AuditUtils.apiVersionCreated(newVersion, securityContext));
         return newVersion;
     }
 
@@ -1832,7 +1836,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             } else if (apiVersion.getDefinitionType() == ApiDefinitionType.SwaggerYAML) {
                 builder.type("application/x-yaml"); //$NON-NLS-1$
             } else if (apiVersion.getDefinitionType() == ApiDefinitionType.WSDL) {
-                builder.type("application/wsdl+xml"); //$NON-NLS-1$
+                builder.type("text/xml"); //$NON-NLS-1$
             } else {
                 IOUtils.closeQuietly(definition);
                 throw new Exception("API definition type not supported: " + apiVersion.getDefinitionType()); //$NON-NLS-1$

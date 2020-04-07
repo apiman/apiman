@@ -15,6 +15,8 @@
  */
 package io.apiman.gateway.engine.impl;
 
+import io.apiman.common.logging.DefaultDelegateFactory;
+import io.apiman.common.logging.IApimanLogger;
 import io.apiman.gateway.engine.IApiClientResponse;
 import io.apiman.gateway.engine.IPolicyErrorWriter;
 import io.apiman.gateway.engine.beans.ApiRequest;
@@ -35,6 +37,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @author eric.wittmann@redhat.com
  */
 public class DefaultPolicyErrorWriter implements IPolicyErrorWriter {
+
+    private IApimanLogger logger = new DefaultDelegateFactory().createLogger(DefaultPolicyErrorWriter.class);
 
     private static final ObjectMapper mapper = new ObjectMapper();
     private static JAXBContext jaxbContext;
@@ -63,7 +67,7 @@ public class DefaultPolicyErrorWriter implements IPolicyErrorWriter {
             isXml = true;
         }
         String message = createErrorMessage(request, error);
-        // TODO get and/or print ultimate cause?
+        logger.error(message, error);
         response.setHeader("X-Gateway-Error", message);
 
         int statusCode = 500;
@@ -82,7 +86,7 @@ public class DefaultPolicyErrorWriter implements IPolicyErrorWriter {
                 jaxbMarshaller.marshal(eer, sw);
                 response.write(sw.getBuffer());
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error(e);
             }
         } else {
             response.setHeader("Content-Type", "application/json");
@@ -91,7 +95,7 @@ public class DefaultPolicyErrorWriter implements IPolicyErrorWriter {
                 mapper.writer().writeValue(sw, eer);
                 response.write(sw.getBuffer());
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error(e);
             }
         }
     }

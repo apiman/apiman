@@ -30,6 +30,7 @@ import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.engine.beans.exceptions.ConnectorException;
 import io.apiman.gateway.engine.beans.util.QueryMap;
+import io.apiman.gateway.engine.handler.ErrorHandler;
 import io.apiman.gateway.engine.io.IApimanBuffer;
 import io.apiman.gateway.engine.io.ISignalReadStream;
 import io.apiman.gateway.engine.io.ISignalWriteStream;
@@ -316,12 +317,8 @@ class HttpConnector implements IApiConnectionResponse, IApiConnection {
     private class ExceptionHandler implements Handler<Throwable> {
         @Override
         public void handle(Throwable error) {
-            ConnectorException ce = new ConnectorException(error.getMessage(), error);
-            if (error instanceof UnknownHostException || error instanceof ConnectException || error instanceof NoRouteToHostException) {
-                ce.setStatusCode(502); // BAD GATEWAY
-            } else if (error instanceof java.util.concurrent.TimeoutException) {
-                ce.setStatusCode(504); // GATEWAY TIMEOUT
-            }
+            ConnectorException ce = ErrorHandler.handleConnectionError(error);
+            logger.error(error.getMessage(), error);
 
             resultHandler.handle(AsyncResultImpl
                     .<IApiConnectionResponse> create(ce));
