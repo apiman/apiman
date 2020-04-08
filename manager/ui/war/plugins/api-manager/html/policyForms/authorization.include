@@ -41,7 +41,7 @@
           <input id="role" style="width:100%" name="role" ng-model="role" class="form-control" type="text" apiman-i18n-key="authorization.required-role" placeholder="(required role)" ng-disabled="isEntityDisabled()"></input>
         </div>
         <div class="col-md-2">
-          <button id="add-rule" ng-disabled="currentItemInvalid()" ng-click="add(path, verb, role)" apiman-i18n-key="add" class="btn btn-default" style="min-width: 75px" ng-disabled=""!policyForm.$dirty || policyForm.$invalid || isEntityDisabled()"">Add</button>
+          <button id="add-rule" ng-disabled="currentItemInvalid()" ng-click="add(path, verb, role)" apiman-i18n-key="add" class="btn btn-default" style="min-width: 75px" ng-disabled="isEntityDisabled()">Add</button>
         </div>
       </div>
     </div>
