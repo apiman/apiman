@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8"></meta>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
-  </head>
-  
-  <body>
+
+<head>
+  <meta charset="utf-8">
+  </meta>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  </meta>
+</head>
+
+<body>
   <div>
 
     <div ng-include="headerInclude"></div>
@@ -28,9 +31,7 @@
           <dl class="name">
             <dt apiman-i18n-key="organization-name">Organization Name</dt>
             <dd>
-              <input name="orgName" ng-model="org.name" data-field="name" type="text"
-                class="apiman-form-control form-control entityname" id="apiman-entityname"
-                apiman-i18n-key="enter-org-name" placeholder="Enter organization name..." name-validation required></input>
+              <input name="orgName" ng-model="org.name" data-field="name" type="text" class="apiman-form-control form-control entityname" id="apiman-entityname" apiman-i18n-key="enter-org-name" placeholder="Enter organization name..." name-validation required></input>
               <span ng-show="newOrg.orgName.$touched && newOrg.orgName.$invalid" apiman-i18n-key="name-error">The value is not valid!</span>
             </dd>
           </dl>
@@ -42,11 +43,9 @@
             <dt apiman-i18n-key="description">Description</dt>
 
             <dd>
-              <input name="orgDescription" ng-model="org.description" data-field="description" type="text"
-                class="apiman-form-control form-control description" id="apiman-description"
-                apiman-i18n-key="enter-org-description" placeholder="Enter description (optional)..." text-validation></input>
-                <span ng-show="newOrg.orgDescription.$touched && newOrg.orgDescription.$invalid" apiman-i18n-key="text-error">The value is not valid!</span>
-              </dd>
+              <input name="orgDescription" ng-model="org.description" data-field="description" type="text" class="apiman-form-control form-control description" id="apiman-description" apiman-i18n-key="enter-org-description" placeholder="Enter description (optional)..." text-validation></input>
+              <span ng-show="newOrg.orgDescription.$touched && newOrg.orgDescription.$invalid" apiman-i18n-key="text-error">The value is not valid!</span>
+            </dd>
           </dl>
         </div>
         <!-- HR -->
@@ -57,11 +56,11 @@
         <!-- Add Button -->
         <div class="row">
           <button ng-disabled="newOrg.$invalid" apiman-action-btn="" class="btn btn-primary" data-field="createButton" apiman-i18n-key="create-organization" placeholder="Creating..." data-icon="fa-cog" type="submit">Create Organization</button>
-          <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton"
-            apiman-i18n-key="cancel">Cancel</a>
+          <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" apiman-i18n-key="cancel">Cancel</a>
         </div>
       </div> <!-- /container -->
     </form>
   </div>
-  </body>
+</body>
+
 </html>
