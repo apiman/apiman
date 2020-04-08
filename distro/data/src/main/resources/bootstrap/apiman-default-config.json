@@ -75,6 +75,18 @@
     "formType" : "Default",
     "deleted" : false
   }, {
+      "id" : "CachingResourcesPolicy",
+      "name" : "Caching Resources Policy",
+      "description" : "Allows caching of API responses in the Gateway to reduce overall traffic to the back-end API.",
+      "policyImpl" : "class:io.apiman.gateway.engine.policies.CachingResourcesPolicy",
+      "icon" : "hdd-o",
+      "templates" : [
+        {
+          "language" : null,
+          "template" : "API responses will be cached for @{ttl} seconds."
+        }
+      ]
+  }, {
     "id" : "IPBlacklistPolicy",
     "policyImpl" : "class:io.apiman.gateway.engine.policies.IPBlacklistPolicy",
     "name" : "IP Blacklist Policy",
