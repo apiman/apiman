@@ -1,41 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
+
   <head>
     <meta charset="utf-8">
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
   </head>
 
   <body>
 
     <div ng-include="headerInclude"></div>
-    <form name="policyForm" ng-controller="Apiman.EditPolicyController"
-         id="form-page"
-         class="container apiman-edit-policy apiman-entity-new page"
-         data-field="page"
-         ng-cloak=""
-         ng-show="pageState == 'loaded'">
+    <form name="policyForm" ng-controller="Apiman.EditPolicyController" id="form-page" class="container apiman-edit-policy apiman-entity-new page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
       <div class="row">
-        <h2 class="title"
-            data-field="heading"
-            apiman-i18n-key="edit-policy">Edit Policy</h2>
+        <h2 class="title" data-field="heading" apiman-i18n-key="edit-policy">Edit Policy</h2>
       </div>
       <!-- Helpful hint -->
       <div class="row">
-        <p class="col-md-6 apiman-label-faded"
-           apiman-i18n-key="edit-policy-help-text"
-           class="apiman-label-faded">
+        <p class="col-md-6 apiman-label-faded" apiman-i18n-key="edit-policy-help-text" class="apiman-label-faded">
           Update this policy's configuration settings using the form below.
         </p>
       </div>
       <!-- HR -->
       <div class="row hr-row">
-        <hr/>
+        <hr />
       </div>
 
       <!-- Policy Type-specific config -->
-      <div class="row"
-           ng-show="include">
+      <div class="row" ng-show="include">
         <h3 data-field="policyHeading">{{ policy.definition.name }} Configuration</h3>
         <div class="apiman-box col-md-9 container">
           <div ng-include="include"></div>
@@ -44,27 +34,14 @@
 
       <!-- HR -->
       <div class="row hr-row">
-        <hr/>
+        <hr />
       </div>
       <!-- Update Button -->
       <div class="row">
-        <button id="update-policy"
-                ng-show="hasPermission && !isEntityDisabled()"
-                apiman-action-btn=""
-                ng-click="updatePolicy()"
-                ng-disabled="!isValid"
-                class="btn btn-primary"
-                data-field="updateButton"
-                apiman-i18n-key="update-policy"
-                placeholder="Updating..."
-                data-icon="fa-cog">Update Policy</button>
-        <a id="cancel"
-           data-field="cancelButton"
-           href="javascript:window.history.back()"
-           class="btn btn-default btn-cancel"
-           data-field="cancelButton"
-           apiman-i18n-key="cancel">Cancel</a>
+        <button id="update-policy" ng-show="hasPermission && !isEntityDisabled()" apiman-action-btn="" ng-click="updatePolicy()" ng-disabled="!isValid" class="btn btn-primary" data-field="updateButton" apiman-i18n-key="update-policy" placeholder="Updating..." data-icon="fa-cog">Update Policy</button>
+        <a id="cancel" data-field="cancelButton" href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" apiman-i18n-key="cancel">Cancel</a>
       </div>
-    </div> <!-- /container -->
+    </form> <!-- /container -->
   </body>
+
 </html>
