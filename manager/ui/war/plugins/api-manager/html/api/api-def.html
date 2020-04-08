@@ -1,19 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  </head>
 
-  <body>
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+</head>
+
+<body>
   <div>
 
     <div ng-include="headerInclude"></div>
-    <div ng-controller="Apiman.ApiDefController"
-         class="page container"
-         data-field="page"
-         ng-cloak=""
-         ng-show="pageState == 'loaded'">
+    <div ng-controller="Apiman.ApiDefController" class="page container" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
       <div ng-include="'plugins/api-manager/html/api/api_bc.include'"></div>
       <!-- Entity Summary Row -->
       <div ng-include="'plugins/api-manager/html/api/api_entity.include'"></div>
@@ -27,12 +24,11 @@
         <!-- Content -->
         <div class="col-md-10 apiman-entity-content">
           <div class="col-md-10">
-            <div class="title"
-                 apiman-i18n-key="api-def">API Definition</div>
+            <div class="title" apiman-i18n-key="api-def">API Definition</div>
             <div class="apiman-label-faded">
               <p apiman-i18n-key="api-def-explanation">
-                Here you can (optionally) provide definition information about your API.  This
-                information should take the form of a Swagger API definition file.  Adding a 
+                Here you can (optionally) provide definition information about your API. This
+                information should take the form of a Swagger API definition file. Adding a
                 definition file will allow consumers to better understand how to use your API.
                 Simply copy/paste (or drag and drop!) your Swagger API definition into the text
                 area below.
@@ -49,81 +45,34 @@
             </div>
             <form>
               <div>
-                <span class="clearfix top-spacer bottom-spacer"
-                      apiman-i18n-key="api-definition-label">API Definition:</span>
-                <select apiman-i18n-key="api-def.choose-type"
-                        title="Choose a type..."
-                        apiman-select-picker=""
-                        ng-model="selectedDefinitionType"
-                        class="selectpicker"
-                        ng-disabled="isEntityDisabled() || selectedDefinitionType.value === 'None'"
-                        ng-options="type.label for type in typeOptions track by type.value">
+                <span class="clearfix top-spacer bottom-spacer" apiman-i18n-key="api-definition-label">API Definition:</span>
+                <select apiman-i18n-key="api-def.choose-type" title="Choose a type..." apiman-select-picker="" ng-model="selectedDefinitionType" class="selectpicker" ng-disabled="isEntityDisabled()" ng-options="type.label for type in typeOptions track by type.value">
                 </select>
 
                 <div class="top-spacer">
-                  <span class="clearfix top-spacer bottom-spacer"
-                        apiman-i18n-key="api-definition-url-label">API Definition URL:
+                  <span class="clearfix top-spacer bottom-spacer" apiman-i18n-key="api-definition-url-label">API Definition URL:
                   </span>
                   <div class="input-group" style="width: 100%">
-                    <input ng-model="updatedApiDefinitionUrl"
-                           name="definitionUrl"
-                           class="apiman-form-control form-control"
-                           type="text"
-                    >
+                    <input ng-model="updatedApiDefinitionUrl" name="definitionUrl" class="apiman-form-control form-control" type="text">
                     <span class="input-group-btn">
-                      <div apiman-permission="apiEdit"
-                           ng-show="!isEntityDisabled()"
-                           class="actions definition"
-                      >
-                        <button type="button" class="btn btn-default"
-                                ng-click="updateDefinitionFromUrl()"
-                                style="margin-left: 5px"
-                                ng-disabled="updatedApiDefinitionUrl == null"
-                                apiman-i18n-key="load-definition">Load Definition
+                      <div apiman-permission="apiEdit" ng-show="!isEntityDisabled()" class="actions definition">
+                        <button type="button" class="btn btn-default" ng-click="updateDefinitionFromUrl()" style="margin-left: 5px" ng-disabled="updatedApiDefinitionUrl == null" apiman-i18n-key="load-definition">Load Definition
                         </button>
                       </div>
                     </span>
                   </div>
                 </div>
 
-                <textarea style="width: 100%;"
-                          apiman-i18n-key="enter-api-definition"
-                          id="api-definition"
-                          placeholder="Copy/paste or drag and drop your API Definition in here!"
-                          apiman-drop-text
-                          ng-model="updatedApiDefinition"
-                          ng-init="focus=false;blur=false;"
-                          ng-class="{ myFocus: focus, myBlur: blur }"
-                          ng-focus="focus=true;blur=false;"
-                          ng-blur="blur=true;focus=false;"
-                          data-field="data"
-                          class="apiman-form-control form-control apiman-form-data top-spacer"
-                          ng-disabled="isEntityDisabled()">
+                <textarea style="width: 100%;" apiman-i18n-key="enter-api-definition" id="api-definition" placeholder="Copy/paste or drag and drop your API Definition in here!" apiman-drop-text ng-model="updatedApiDefinition" ng-init="focus=false;blur=false;" ng-class="{ myFocus: focus, myBlur: blur }" ng-focus="focus=true;blur=false;" ng-blur="blur=true;focus=false;" data-field="data" class="apiman-form-control form-control apiman-form-data top-spacer" ng-disabled="isEntityDisabled()">
                 </textarea>
               </div>
 
-              <div apiman-permission="apiEdit"
-                   ng-show="!isEntityDisabled()"
-                   class="actions definition"
-                   style="margin-top: 20px"
-              >
-                <button type="button" class="btn btn-default" ng-mousedown="downloadDefinition()"
-                        ng-disabled="isDirty || !apiDefinition" apiman-i18n-key="download">Download
+              <div apiman-permission="apiEdit" ng-show="!isEntityDisabled()" class="actions definition" style="margin-top: 20px">
+                <button type="button" class="btn btn-default" ng-mousedown="downloadDefinition()" ng-disabled="isDirty || !apiDefinition" apiman-i18n-key="download">Download
                 </button>
-                <button ng-disabled="!isDirty  || updatedApiDefinition.length == 0"
-                        ng-mousedown="saveApi()"
-                        apiman-action-btn=""
-                        class="btn btn-primary"
-                        data-field="saveButton"
-                        apiman-i18n-key="save"
-                        placeholder="Saving..."
-                        data-icon="fa-cog" >Save
+                <button ng-disabled="!isDirty  || updatedApiDefinition.length == 0" ng-mousedown="saveApi()" apiman-action-btn="" class="btn btn-primary" data-field="saveButton" apiman-i18n-key="save" placeholder="Saving..." data-icon="fa-cog">Save
                 </button>
-                <button ng-disabled="!isDirty"
-                        ng-mousedown="reset()"
-                        class="btn btn-default"
-                        data-field="cancelButton"
-                        apiman-i18n-key="cancel">Cancel
+                <button ng-disabled="!isDirty" ng-mousedown="reset()" class="btn btn-default" data-field="cancelButton" apiman-i18n-key="cancel">Cancel
                 </button>
               </div>
             </form>
@@ -133,5 +82,6 @@
       </div>
     </div> <!-- /container -->
   </div>
-  </body>
+</body>
+
 </html>
