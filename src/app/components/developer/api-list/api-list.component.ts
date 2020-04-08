@@ -6,7 +6,7 @@ import {SpinnerService} from '../../../services/spinner.service';
 import {Toast, ToasterService} from 'angular2-toaster';
 import {Router} from '@angular/router';
 import {animate, state, style, transition, trigger} from '@angular/animations';
-import {Sort} from '@angular/material';
+import { Sort } from '@angular/material/sort';
 
 export interface ApiListElement {
   id: string;

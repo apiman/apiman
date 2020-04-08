@@ -34,7 +34,6 @@
               "src/styles/swagger-custom-styles.css"
             ],
             "scripts": [
-              "./node_modules/hammerjs/hammer.min.js",
               "./node_modules/swagger-ui-dist/swagger-ui-bundle.js",
               "./node_modules/swagger-ui-dist/swagger-ui-standalone-preset.js"
             ]

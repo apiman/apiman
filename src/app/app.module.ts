@@ -24,19 +24,16 @@ import {DeveloperListComponent} from './components/admin/developer-list.componen
 import {CreateDeveloperComponent} from './components/admin/create-developer/create-developer.component';
 import {ClientMappingComponent} from './components/admin/create-developer/client-mapping.component';
 import {DragDropModule} from '@angular/cdk/drag-drop';
-import {
-  MatButtonModule,
-  MatInputModule,
-  MatOptionModule,
-  MatAutocompleteModule,
-  MatProgressSpinnerModule,
-  MatTooltipModule,
-  MatSortModule,
-  _MatMenuDirectivesModule,
-  MatMenuModule,
-  MatStepperModule,
-  MatCardModule
-} from '@angular/material';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatOptionModule } from '@angular/material/core';
+import { MatInputModule } from '@angular/material/input';
+import { _MatMenuDirectivesModule, MatMenuModule } from '@angular/material/menu';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSortModule } from '@angular/material/sort';
+import { MatStepperModule } from '@angular/material/stepper';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import {EditDeveloperComponent} from './components/admin/edit-developer/edit-developer.component';
 import {NotAuthorizedComponent} from './components/not-authorized/not-authorized.component';
 import {ToasterModule} from 'angular2-toaster';
