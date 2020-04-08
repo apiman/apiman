@@ -1,18 +1,15 @@
 package io.apiman.manager.api.rest.impl.util;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
-import io.apiman.manager.api.beans.apis.ApiDefinitionType;
-import io.apiman.manager.api.beans.apis.ApiVersionBean;
-import io.apiman.manager.api.core.IStorage;
-import io.apiman.manager.api.core.exceptions.StorageException;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -21,16 +18,33 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.io.*;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
+
+import io.apiman.manager.api.beans.apis.ApiDefinitionType;
+import io.apiman.manager.api.beans.apis.ApiVersionBean;
+import io.apiman.manager.api.core.IStorage;
+import io.apiman.manager.api.core.exceptions.StorageException;
 
 public final class SwaggerWsdlHelper {
 
     private static final String BASE_PATH = "basePath";
     private static final String HOST = "host";
     private static final String LOCATION = "location";
-    private static final String SOAP_ADDRESS[] = {"soap:address","soap12:address"};
+    private static final String SOAP_ADDRESS = "address";
+    private static final String[] SOAP_NAMESPACES = {
+        "http://schemas.xmlsoap.org/wsdl/soap/",
+        "http://schemas.xmlsoap.org/wsdl/soap12/"
+    };
     private static final String SWAGGER = "swagger";
 
     /**
@@ -151,20 +165,30 @@ public final class SwaggerWsdlHelper {
     public static String updateLocationEndpointInWsdl(InputStream wsdlStream, URL managedEndpoint, ApiVersionBean apiVersion, IStorage storage) throws StorageException {
         Document document = readWsdlInputStream(wsdlStream);
         Boolean updateStorage = false;
-        for(int i = 0; i < SOAP_ADDRESS.length;i++) {
-            NodeList nodeList = document.getDocumentElement().getElementsByTagName(SOAP_ADDRESS[i]);
-            if (nodeList != null) {
-                for (int j = 0; j < nodeList.getLength(); j++) {
-                    Node node = nodeList.item(j);
-                    String location = node.getAttributes().getNamedItem(LOCATION).getNodeValue();
-                    String endpoint = managedEndpoint.toString();
-                    if (!location.equals(endpoint)) {
-                        node.getAttributes().getNamedItem(LOCATION).setNodeValue(managedEndpoint.toString());
-                        updateStorage = true;
-                    }
+        
+        // Collection of all SOAP binding addresses
+        List<Element> allSoapAddresses = new LinkedList<Element>();
+        
+        for (String soapNamespace : SOAP_NAMESPACES) {
+            NodeList soapAddresses = document.getDocumentElement().getElementsByTagNameNS(soapNamespace, SOAP_ADDRESS);
+            if (soapAddresses != null && soapAddresses.getLength() > 0) {
+                for (int j = 0; j < soapAddresses.getLength(); j++) {
+                    allSoapAddresses.add((Element) soapAddresses.item(j));
                 }
             }
         }
+
+        // Go through the addresses we've found (if any) and update the 'location' attribute if needed.
+        String endpoint = managedEndpoint.toString();
+        for (Element addressElem : allSoapAddresses) {
+            String location = addressElem.getAttribute(LOCATION);
+            if (!location.equals(endpoint)) {
+                addressElem.setAttribute(LOCATION, endpoint);
+                updateStorage = true;
+            }
+        }
+        
+        // Convert document back to string and update in storage.
         String wsdl = xmlDocumentToString(document);
         if (updateStorage) {
             storage.updateApiDefinition(apiVersion, new ByteArrayInputStream(wsdl.getBytes(StandardCharsets.UTF_8)));
@@ -180,6 +204,7 @@ public final class SwaggerWsdlHelper {
      */
     private static Document readWsdlInputStream(InputStream wsdlStream) {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setNamespaceAware(true);
         DocumentBuilder documentBuilder = null;
         Document document = null;
         try {
