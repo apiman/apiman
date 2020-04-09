@@ -290,6 +290,9 @@ module Apiman {
         ($scope, Logger, EntityStatusSvc) => {
             var validate = function(config) {
                 var valid = true;
+                if (!$scope.config.ipList || $scope.config.ipList.length === 0) {
+                    valid = false;
+                }
                 $scope.setValid(valid);
             };
 

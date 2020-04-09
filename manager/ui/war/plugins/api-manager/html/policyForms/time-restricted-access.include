@@ -14,9 +14,8 @@
       </div>
       <div class="row">
         <div class="col-md-8">
-          	<input id="path" style="width:100%" name="path" ng-model="pathPattern" class="form-control"
-          		type="text" apiman-i18n-key="time-restricted-access.enter-path" placeholder="(/path/to/.*)" ng-disabled="isEntityDisabled()" path-validation></input>
-            <span ng-show="policyForm.path.$touched && policyForm.path.$invalid" apiman-i18n-key="path-error">The value is invalid!</span>
+          	<input id="path" style="width:100%" name="path" ng-model="pathPattern" class="form-control" 
+          		type="text" apiman-i18n-key="time-restricted-access.enter-path" placeholder="(/path/to/.*)" ng-disabled="isEntityDisabled()"></input>
         </div>
       </div>
       <div class="row" style="margin-top:10px;">
@@ -33,18 +32,18 @@
          <div class="col-md-3">
           <label apiman-i18n-key="day-start">From day of the week</label>
           <div style="margin-top:20px;">
-            <select apiman-select-picker ng-model="dayStart" class="selectpicker" data-width="110"
+            <select apiman-select-picker ng-model="dayStart" class="selectpicker" data-width="110" 
                 data-live-search="false" ng-disabled="isEntityDisabled()">
-                <option ng-repeat="dayname in weekdays">{{dayname}}</option>
+                <option ng-repeat="dayname in weekdays">{{dayname}}</option>  
             </select>
           </div>
         </div>
         <div class="col-md-3">
           <label apiman-i18n-key="day-end">To day of the week</label>
           <div style="margin-top:20px;">
-            <select apiman-select-picker ng-model="dayEnd" class="selectpicker" data-width="110"
+            <select apiman-select-picker ng-model="dayEnd" class="selectpicker" data-width="110" 
                 data-live-search="false" ng-disabled="isEntityDisabled()">
-                <option ng-repeat="dayname in weekdays">{{dayname}}</option>
+                <option ng-repeat="dayname in weekdays">{{dayname}}</option>  
             </select>
           </div>
         </div>
@@ -75,7 +74,7 @@
       <tr ng-repeat="item in config.rules | orderBy: 'pathPattern'">
         <td>{{ item.pathPattern }}</td>
         <td> {{formatToTime(item.timeStart)}}-{{formatToTime(item.timeEnd)}}
-              from {{getDayForIndex(item.dayStart)}} to {{getDayForIndex(item.dayEnd)}}
+              from {{getDayForIndex(item.dayStart)}} to {{getDayForIndex(item.dayEnd)}}  
           </td>
         <td>
           <button ng-click="remove(item)" class="btn btn-default" ng-disabled="isEntityDisabled()">
@@ -92,5 +91,5 @@
       </tr>
     </tbody>
   </table>
-
+  
 </div>
