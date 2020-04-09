@@ -17,404 +17,152 @@
       "configuration": "{\"endpoint\":\"${apiman.gateway-endpoint:https://localhost:8443/apiman-gateway-api}\",\"username\":\"${apiman.gateway-endpoint.username:apimanager}\",\"password\":\"${apiman.gateway-endpoint.password:apiman123!}\"}"
     }
   ],
-  "Plugins": [
-    {
-      "id": 1525251146014100,
-      "groupId": "io.apiman.plugins",
-      "artifactId": "apiman-plugins-apikey-policy",
-      "version": "7.0.0",
-      "name": "API Key Policy Plugin",
-      "description": "This plugin provides a policy that can help pass the API Key through to the back-end service.",
-      "createdBy": "admin",
-      "createdOn": "2018-05-09T12:00:00Z",
-      "deleted": false
-    },
-    {
-      "id": 1525082739277104,
-      "groupId": "io.apiman.plugins",
-      "artifactId": "apiman-plugins-jsonp-policy",
-      "version": "7.0.0",
-      "name": "JSONP Policy Plugin",
-      "description": "A plugin that contributes a policy that turns a standard RESTful endpoint into a JSONP compatible endpoint.",
-      "createdBy": "admin",
-      "createdOn": "2018-05-09T12:00:00Z",
-      "deleted": false
-    },
-    {
-      "id": 1525077673624100,
-      "groupId": "io.apiman.plugins",
-      "artifactId": "apiman-plugins-http-security-policy",
-      "version": "7.0.0",
-      "name": "HTTP Security Policy Plugin",
-      "description": "Security-related HTTP headers can be set which can help mitigate a range of common security vulnerabilities.",
-      "createdBy": "admin",
-      "createdOn": "2018-05-09T12:00:00Z",
-      "deleted": false
-    },
-    {
-      "id": 1525077804362102,
-      "groupId": "io.apiman.plugins",
-      "artifactId": "apiman-plugins-keycloak-oauth-policy",
-      "version": "7.0.0",
-      "name": "Keycloak OAuth Policy Plugin",
-      "description": "This plugin offers an OAuth2 policy which leverages the Keycloak authentication platform as the identity and access provider.",
-      "createdBy": "admin",
-      "createdOn": "2018-05-09T12:00:00Z",
-      "deleted": false
-    },
-    {
-      "id": 1525082764110106,
-      "groupId": "io.apiman.plugins",
-      "artifactId": "apiman-plugins-simple-header-policy",
-      "version": "7.0.0",
-      "name": "HTTP Header Policy Plugin",
-      "description": "Offers a simple policy that allows request headers to be added or stripped from the HTTP request (outgoing) or HTTP response (incoming).",
-      "createdBy": "admin",
-      "createdOn": "2018-05-09T12:00:00Z",
-      "deleted": false
-    },
-    {
-      "id": 1525083003711108,
-      "groupId": "io.apiman.plugins",
-      "artifactId": "apiman-plugins-jwt-policy",
-      "version": "7.0.0",
-      "name": "JWT Policy",
-      "description": "Validating JWTs.",
-      "createdBy": "admin",
-      "createdOn": "2018-05-09T12:00:00Z",
-      "deleted": false
-    },
-    {
-      "id": 1525250623765100,
-      "groupId": "io.apiman.plugins",
-      "artifactId": "apiman-plugins-soap-authorization-policy",
-      "version": "7.0.0",
-      "name": "SOAP Authorization Policy Plugin",
-      "description": "An implementation of our out-of-the-box Authorization Policy Plugin, with the difference that this one accepts a single SOAPAction field in the request header.",
-      "createdBy": "admin",
-      "createdOn": "2018-05-09T12:00:00Z",
-      "deleted": false
-    },
-    {
-      "id": 1535105685860100,
-      "groupId": "io.apiman.plugins",
-      "artifactId": "apiman-plugins-cors-policy",
-      "version": "7.0.0",
-      "name": "CORS Policy Plugin",
-      "description": "This plugin implements CORS (Cross-origin resource sharing): A method of controlling access to resources outside of an originating domain.",
-      "createdBy": "admin",
-      "createdOn": "2018-08-24T10:14:45Z",
-      "deleted": false
-    }
-  ],
-  "Roles": [
-    {
-      "id": "Viewer",
-      "name": "Viewer",
-      "description": "A user with this role can only view things within an organization.",
-      "createdBy": "admin",
-      "createdOn": "2018-05-09T12:00:00Z",
-      "autoGrant": false,
-      "permissions": [
-        "planView",
-        "clientView",
-        "apiView",
-        "orgView"
+  "Plugins" : [ ],
+  "Roles" : [ {
+    "id" : "APIDeveloper",
+    "name" : "API Developer",
+    "description" : "Users responsible for creating and managing APIs should be granted this role within an Organization.",
+    "createdBy" : "admin",
+    "createdOn" : "2016-05-16T12:34:14Z",
+    "permissions" : [ "planAdmin", "apiAdmin", "planEdit", "planView", "apiEdit", "apiView" ]
+  }, {
+    "id" : "ClientAppDeveloper",
+    "name" : "Client App Developer",
+    "description" : "Users responsible for creating and managing client apps should be granted this role within an Organization.",
+    "createdBy" : "admin",
+    "createdOn" : "2016-05-16T12:34:14Z",
+    "permissions" : [ "clientAdmin", "clientView", "clientEdit" ]
+  }, {
+    "id" : "OrganizationOwner",
+    "name" : "Organization Owner",
+    "description" : "Automatically granted to the user who creates an Organization.  Grants all privileges.",
+    "createdBy" : "admin",
+    "createdOn" : "2016-05-16T12:34:14Z",
+    "autoGrant" : true,
+    "permissions" : [ "orgEdit", "planAdmin", "orgView", "apiAdmin", "orgAdmin", "planEdit", "planView", "clientAdmin", "clientView", "clientEdit", "apiEdit", "apiView" ]
+  } ],
+  "PolicyDefinitions" : [ {
+    "id" : "AuthorizationPolicy",
+    "policyImpl" : "class:io.apiman.gateway.engine.policies.AuthorizationPolicy",
+    "name" : "Authorization Policy",
+    "description" : "Enables fine grained authorization to API resources based on authenticated user roles.",
+    "icon" : "users",
+    "templates" : [ {
+      "template" : "Appropriate authorization roles are required.  There are ${rules.size()} authorization rules defined."
+    } ],
+    "formType" : "Default",
+    "deleted" : false
+  }, {
+    "id" : "BASICAuthenticationPolicy",
+    "policyImpl" : "class:io.apiman.gateway.engine.policies.BasicAuthenticationPolicy",
+    "name" : "BASIC Authentication Policy",
+    "description" : "Enables HTTP BASIC Authentication on an API.  Some configuration required.",
+    "icon" : "lock",
+    "templates" : [ {
+      "template" : "Access to the API is protected by BASIC Authentication through the '${realm}' authentication realm.  @if{forwardIdentityHttpHeader != null}Successfully authenticated requests will forward the authenticated identity to the back end API via the '${forwardIdentityHttpHeader}' custom HTTP header.@end{}"
+    } ],
+    "formType" : "Default",
+    "deleted" : false
+  }, {
+      "id" : "CachingResourcesPolicy",
+      "name" : "Caching Resources Policy",
+      "description" : "Allows caching of API responses in the Gateway to reduce overall traffic to the back-end API.",
+      "policyImpl" : "class:io.apiman.gateway.engine.policies.CachingResourcesPolicy",
+      "icon" : "hdd-o",
+      "templates" : [
+        {
+          "language" : null,
+          "template" : "API responses will be cached for @{ttl} seconds."
+        }
       ]
-    },
-    {
-      "id": "Editor",
-      "name": "Editor",
-      "description": "A user with this role has the permission to edit.",
-      "createdBy": "admin",
-      "createdOn": "2018-05-09T12:00:00Z",
-      "autoGrant": true,
-      "permissions": [
-        "orgEdit",
-        "planEdit",
-        "planAdmin",
-        "planView",
-        "clientView",
-        "clientAdmin",
-        "apiEdit",
-        "apiView",
-        "apiAdmin",
-        "orgView",
-        "clientEdit"
-      ]
-    },
-    {
-      "id": "Organization-User-Manager",
-      "name": "Organization-User-Manager",
-      "description": "A user with this role can manage members of this organization.",
-      "createdBy": "admin",
-      "createdOn": "2018-05-09T12:00:00Z",
-      "autoGrant": true,
-      "permissions": [
-        "orgEdit",
-        "orgAdmin",
-        "orgView"
-      ]
-    }
-  ],
-  "PolicyDefinitions": [
-    {
-      "id": "keycloak-oauth-policy",
-      "policyImpl": "plugin:io.apiman.plugins:apiman-plugins-keycloak-oauth-policy:7.0.0:war/io.apiman.plugins.keycloak_oauth_policy.KeycloakOauthPolicy",
-      "name": "Keycloak OAuth Policy",
-      "description": "A Keycloak specific OAuth policy to regulate access to APIs. Configuration required.",
-      "icon": "lock",
-      "templates": [
-        {
-          "template": "Keycloak OAuth2 is @if{requireOauth} required @else{} enabled @end{} and @if{requireTransportSecurity} requires @else{} does not require @end{} transport security."
-        }
-      ],
-      "pluginId": 1525077804362102,
-      "formType": "JsonSchema",
-      "form": "schemas/keycloak-oauth-policyDef.schema",
-      "deleted": false
-    },
-    {
-      "id": "RateLimitingPolicy",
-      "policyImpl": "class:io.apiman.gateway.engine.policies.RateLimitingPolicy",
-      "name": "Rate Limiting Policy",
-      "description": "Enforces rate configurable request rate limits on an API.  This ensures that consumers can't overload an API with too many requests.",
-      "icon": "sliders",
-      "templates": [
-        {
-          "template": "Consumers are limited to ${limit} requests per ${granularity} per ${period}."
-        }
-      ],
-      "formType": "Default",
-      "deleted": false
-    },
-    {
-      "id": "TimeRestrictedAccessPolicy",
-      "policyImpl": "class:io.apiman.gateway.engine.policies.TimeRestrictedAccessPolicy",
-      "name": "Time Restricted Access Policy",
-      "description": "Requests matching the specified regular expression and made within the specified time period will be ignored.",
-      "icon": "clock-o",
-      "templates": [
-        {
-          "template": "Requests matching the regular expression and made outside the specified time period will receive a 423 error code."
-        }
-      ],
-      "formType": "Default",
-      "deleted": false
-    },
-    {
-      "id": "IPWhitelistPolicy",
-      "policyImpl": "class:io.apiman.gateway.engine.policies.IPWhitelistPolicy",
-      "name": "IP Whitelist Policy",
-      "description": "Only requests that originate from a specified set of valid IP addresses will be allowed through.",
-      "icon": "filter",
-      "templates": [
-        {
-          "template": "Only requests that originate from the set of ${ipList.size()} configured IP address(es) will be allowed to invoke the managed API."
-        }
-      ],
-      "formType": "Default",
-      "deleted": false
-    },
-    {
-      "id": "TransferQuotaPolicy",
-      "policyImpl": "class:io.apiman.gateway.engine.policies.TransferQuotaPolicy",
-      "name": "Transfer Quota Policy",
-      "description": "Provides a way to limit the total number of bytes that can be transferred from (or to) an API.",
-      "icon": "download",
-      "templates": [
-        {
-          "template": "Consumers are limited to transferring ${limit} bytes per ${granularity} per ${period}."
-        }
-      ],
-      "formType": "Default",
-      "deleted": false
-    },
-    {
-      "id": "apikey-policy",
-      "policyImpl": "plugin:io.apiman.plugins:apiman-plugins-apikey-policy:7.0.0:war/io.apiman.plugins.apikey_policy.ApiKeyPolicy",
-      "name": "API Key Policy",
-      "description": "A policy used to pass the apiman API Key through to the back-end service.",
-      "icon": "mail-forward",
-      "templates": [],
-      "pluginId": 1525251146014100,
-      "formType": "JsonSchema",
-      "form": "schemas/apikey-policyDef.schema",
-      "deleted": false
-    },
-    {
-      "id": "IPBlacklistPolicy",
-      "policyImpl": "class:io.apiman.gateway.engine.policies.IPBlacklistPolicy",
-      "name": "IP Blacklist Policy",
-      "description": "Requests that originate from a specified set of valid IP addresses will be denied access.",
-      "icon": "thumbs-down",
-      "templates": [
-        {
-          "template": "Requests that originate from the set of ${ipList.size()} configured IP address(es) will be denied access to the managed API."
-        }
-      ],
-      "formType": "Default",
-      "deleted": false
-    },
-    {
-      "id": "URLRewritingPolicy",
-      "policyImpl": "class:io.apiman.gateway.engine.policies.URLRewritingPolicy",
-      "name": "URL Rewriting Policy",
-      "description": "Responses from the back-end API will be modified by fixing up any incorrect URLs found with modified ones.  This is useful because apiman works through an API Gateway.",
-      "icon": "pencil-square",
-      "templates": [
-        {
-          "template": "Requests and/or responses will be modified by finding all text matching regular expression '${fromRegex}' with '${toReplacement}'."
-        }
-      ],
-      "formType": "Default",
-      "deleted": false
-    },
-    {
-      "id": "simple-header-policy",
-      "policyImpl": "plugin:io.apiman.plugins:apiman-plugins-simple-header-policy:7.0.0:war/io.apiman.plugins.simpleheaderpolicy.SimpleHeaderPolicy",
-      "name": "Simple Header Policy",
-      "description": "Allows the granular addition and removal of headers.",
-      "icon": "header",
-      "templates": [
-        {
-          "template": "@{addHeaders.size()} addition rules and @{stripHeaders.size()} deletion rules are active."
-        }
-      ],
-      "pluginId": 1525082764110106,
-      "formType": "JsonSchema",
-      "form": "schemas/simple-header-policyDef.schema",
-      "deleted": false
-    },
-    {
-      "id": "jwt-policy",
-      "policyImpl": "plugin:io.apiman.plugins:apiman-plugins-jwt-policy:7.0.0:war/io.apiman.plugins.jwt.JWTPolicy",
-      "name": "JWT Policy",
-      "description": "Generic JWT authentication policy.",
-      "icon": "lock",
-      "templates": [
-        {
-          "template": "JWT authentication is @if{requireJWT} required @else{} enabled @end{}."
-        }
-      ],
-      "pluginId": 1525083003711108,
-      "formType": "JsonSchema",
-      "form": "schemas/jwt-policyDef.schema",
-      "deleted": false
-    },
-    {
-      "id": "soap-authorization-policy",
-      "policyImpl": "plugin:io.apiman.plugins:apiman-plugins-soap-authorization-policy:7.0.0:war/io.apiman.plugins.soap_authorization_policy.SoapAuthorizationPolicy",
-      "name": "SOAP Authorization Policy",
-      "description": "Enables fine grained authorization to API resources based on authenticated user roles. Allows a single SOAPAction in the header.",
-      "icon": "code",
-      "templates": [
-        {
-          "template": "Appropriate authorization roles are required.  There are @{rules.size()} authorization rules defined."
-        }
-      ],
-      "pluginId": 1525250623765100,
-      "formType": "JsonSchema",
-      "form": "schemas/soap-authorization-policyDef.schema",
-      "deleted": false
-    },
-    {
-      "id": "AuthorizationPolicy",
-      "policyImpl": "class:io.apiman.gateway.engine.policies.AuthorizationPolicy",
-      "name": "Authorization Policy",
-      "description": "Enables fine grained authorization to API resources based on authenticated user roles.",
-      "icon": "users",
-      "templates": [
-        {
-          "template": "Appropriate authorization roles are required.  There are ${rules.size()} authorization rules defined."
-        }
-      ],
-      "formType": "Default",
-      "deleted": false
-    },
-    {
-      "id": "BASICAuthenticationPolicy",
-      "policyImpl": "class:io.apiman.gateway.engine.policies.BasicAuthenticationPolicy",
-      "name": "BASIC Authentication Policy",
-      "description": "Enables HTTP BASIC Authentication on an API.  Some configuration required.",
-      "icon": "lock",
-      "templates": [
-        {
-          "template": "Access to the API is protected by BASIC Authentication through the '${realm}' authentication realm.  @if{forwardIdentityHttpHeader != null}Successfully authenticated requests will forward the authenticated identity to the back end API via the '${forwardIdentityHttpHeader}' custom HTTP header.@end{}"
-        }
-      ],
-      "formType": "Default",
-      "deleted": false
-    },
-    {
-      "id": "http-security-policy",
-      "policyImpl": "plugin:io.apiman.plugins:apiman-plugins-http-security-policy:7.0.0:war/io.apiman.plugins.httpsecuritypolicy.HttpSecurityPolicy",
-      "name": "HTTP Security Policy",
-      "description": "Security-related HTTP headers can be set, such as HSTS, CSP and XSS protection.",
-      "icon": "bullhorn",
-      "templates": [
-        {
-          "template": "HTTP security headers have been set."
-        }
-      ],
-      "pluginId": 1525077673624100,
-      "formType": "JsonSchema",
-      "form": "schemas/http-security-policyDef.schema",
-      "deleted": false
-    },
-    {
-      "id": "jsonp-policy",
-      "policyImpl": "plugin:io.apiman.plugins:apiman-plugins-jsonp-policy:7.0.0:war/io.apiman.plugins.jsonp_policy.JsonpPolicy",
-      "name": "JSONP Policy",
-      "description": "Turns an endpoint into a JSONP compatible endpoint.",
-      "icon": "bars",
-      "templates": [],
-      "pluginId": 1525082739277104,
-      "formType": "JsonSchema",
-      "form": "schemas/jsonp-policyDef.schema",
-      "deleted": false
-    },
-    {
-      "id": "IgnoredResourcesPolicy",
-      "policyImpl": "class:io.apiman.gateway.engine.policies.IgnoredResourcesPolicy",
-      "name": "Ignored Resources Policy",
-      "description": "Requests satisfying the provided regular expression will be ignored.",
-      "icon": "eye-slash",
-      "templates": [
-        {
-          "template": "Requests matching any of the ${rules.size()} regular expressions provided will receive a 404 error code."
-        }
-      ],
-      "formType": "Default",
-      "deleted": false
-    },
-    {
-      "id": "cors-policy",
-      "policyImpl": "plugin:io.apiman.plugins:apiman-plugins-cors-policy:1.5.0.Final:war/io.apiman.plugins.cors_policy.CorsPolicy",
-      "name": "CORS Policy",
-      "description": "CORS regulates access resource requests from outside of an originating domain. Configuration required.",
-      "icon": "gavel",
-      "templates": [
-        {
-          "template": "Cross-origin requests from @if{allowOrigin.contains(\"*\")} any @else{} @{allowOrigin.size()} @end{} origin(s) will be permitted upon satisfying method, header and credential constraints. @if{errorOnCorsFailure} Denied requests will be terminated. @end{} Preflight requests will be cached for @{maxAge} delta seconds."
-        }
-      ],
-      "pluginId": 1535105685860100,
-      "formType": "JsonSchema",
-      "form": "schemas/cors-policyDef.schema",
-      "deleted": false
-    }, {
-      "id" : "IgnoredResourcesPolicy",
-      "policyImpl" : "class:io.apiman.gateway.engine.policies.IgnoredResourcesPolicy",
-      "name" : "Ignored Resources Policy",
-      "description" : "Requests satisfying the provided regular expression will be ignored.",
-      "icon" : "eye-slash",
-      "templates" : [ {
-        "template" : "Requests matching any of the ${rules.size()} regular expressions provided will receive a 404 error code."
-      } ],
-      "formType" : "Default",
-      "deleted" : false
-    }
-  ],
-  "Orgs": []
+  }, {
+    "id" : "IPBlacklistPolicy",
+    "policyImpl" : "class:io.apiman.gateway.engine.policies.IPBlacklistPolicy",
+    "name" : "IP Blacklist Policy",
+    "description" : "Requests that originate from a specified set of valid IP addresses will be denied access.",
+    "icon" : "thumbs-down",
+    "templates" : [ {
+      "template" : "Requests that originate from the set of ${ipList.size()} configured IP address(es) will be denied access to the managed API."
+    } ],
+    "formType" : "Default",
+    "deleted" : false
+  }, {
+    "id" : "IPWhitelistPolicy",
+    "policyImpl" : "class:io.apiman.gateway.engine.policies.IPWhitelistPolicy",
+    "name" : "IP Whitelist Policy",
+    "description" : "Only requests that originate from a specified set of valid IP addresses will be allowed through.",
+    "icon" : "filter",
+    "templates" : [ {
+      "template" : "Only requests that originate from the set of ${ipList.size()} configured IP address(es) will be allowed to invoke the managed API."
+    } ],
+    "formType" : "Default",
+    "deleted" : false
+  }, {
+    "id" : "IgnoredResourcesPolicy",
+    "policyImpl" : "class:io.apiman.gateway.engine.policies.IgnoredResourcesPolicy",
+    "name" : "Ignored Resources Policy",
+    "description" : "Requests satisfying the provided regular expression will be ignored.",
+    "icon" : "eye-slash",
+    "templates" : [ {
+      "template" : "Requests matching any of the ${rules.size()} regular expressions provided will receive a 404 error code."
+    } ],
+    "formType" : "Default",
+    "deleted" : false
+  }, {
+    "id" : "QuotaPolicy",
+    "policyImpl" : "class:io.apiman.gateway.engine.policies.QuotaPolicy",
+    "name" : "Quota Policy",
+    "description" : "Provides a way to limit the total number of requests that can be sent to an API.",
+    "icon" : "exchange",
+    "templates" : [ {
+      "template" : "Consumers cannot exceed their quota of ${limit} requests per ${granularity} per ${period}."
+    } ],
+    "formType" : "Default",
+    "deleted" : false
+  }, {
+    "id" : "RateLimitingPolicy",
+    "policyImpl" : "class:io.apiman.gateway.engine.policies.RateLimitingPolicy",
+    "name" : "Rate Limiting Policy",
+    "description" : "Enforces rate configurable request rate limits on an API.  This ensures that consumers can't overload an API with too many requests.",
+    "icon" : "sliders",
+    "templates" : [ {
+      "template" : "Consumers are limited to ${limit} requests per ${granularity} per ${period}."
+    } ],
+    "formType" : "Default",
+    "deleted" : false
+  }, {
+    "id" : "TimeRestrictedAccessPolicy",
+    "policyImpl" : "class:io.apiman.gateway.engine.policies.TimeRestrictedAccessPolicy",
+    "name" : "Time Restricted Access Policy",
+    "description" : "Requests matching the specified regular expression and made within the specified time period will be ignored.",
+    "icon" : "clock-o",
+    "templates" : [ {
+      "template" : "Requests matching the regular expression and made outside the specified time period will receive a 423 error code."
+    } ],
+    "formType" : "Default",
+    "deleted" : false
+  }, {
+    "id" : "TransferQuotaPolicy",
+    "policyImpl" : "class:io.apiman.gateway.engine.policies.TransferQuotaPolicy",
+    "name" : "Transfer Quota Policy",
+    "description" : "Provides a way to limit the total number of bytes that can be transferred from (or to) an API.",
+    "icon" : "download",
+    "templates" : [ {
+      "template" : "Consumers are limited to transferring ${limit} bytes per ${granularity} per ${period}."
+    } ],
+    "formType" : "Default",
+    "deleted" : false
+  }, {
+    "id" : "URLRewritingPolicy",
+    "policyImpl" : "class:io.apiman.gateway.engine.policies.URLRewritingPolicy",
+    "name" : "URL Rewriting Policy",
+    "description" : "Responses from the back-end API will be modified by fixing up any incorrect URLs found with modified ones.  This is useful because apiman works through an API Gateway.",
+    "icon" : "pencil-square",
+    "templates" : [ {
+      "template" : "Requests and/or responses will be modified by finding all text matching regular expression '${fromRegex}' with '${toReplacement}'."
+    } ],
+    "formType" : "Default",
+    "deleted" : false
+  } ],
+  "Orgs" : [ ]
 }
