@@ -1,0 +1,18 @@
+{
+  "apis": [
+    {
+      "publicAPI": true,
+      "organizationId": "org",
+      "apiId": "apiB",
+      "version": "1.0",
+      "endpoint": "http://example.com",
+      "endpointType": "REST",
+      "endpointContentType": null,
+      "endpointProperties": {},
+      "parsePayload": false,
+      "apiPolicies": [],
+      "maxPayloadBufferSize": 0
+    }
+  ],
+  "clients": []
+}
