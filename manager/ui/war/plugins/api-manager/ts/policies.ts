@@ -140,7 +140,7 @@ module Apiman {
                     valid = false;
                 }
 
-                if (!Number.isSafeInteger(config.limit)){
+                if (valid && !Number.isSafeInteger(config.limit)){
                     config.limit = Number.MAX_SAFE_INTEGER;
                 }
 
