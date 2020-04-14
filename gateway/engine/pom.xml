@@ -14,6 +14,7 @@
     <module>beans</module>
     <module>core</module>
     <module>es</module>
+    <module>filesystem</module>
     <module>hawkular</module>
     <module>hazelcast</module>
     <module>influxdb</module>
