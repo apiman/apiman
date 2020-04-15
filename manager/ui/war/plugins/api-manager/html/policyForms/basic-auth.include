@@ -3,7 +3,7 @@
     <dl>
       <dt apiman-i18n-key="auth-realm">Authentication Realm</dt>
       <dd>
-        <input id="realm" ng-model="config.realm" class="apiman-form-control form-control" style="" type="text" apiman-i18n-key="basic-auth.enter-realm" placeholder="Realm..." ng-disabled="isEntityDisabled()"></input>
+        <input id="realm" ng-model="config.realm" class="apiman-form-control form-control" style="" type="text" apiman-i18n-key="basic-auth.enter-realm" placeholder="Realm..." ng-disabled="isEntityDisabled()">
       </dd>
       <dt apiman-i18n-key="require-transport-security">Require Transport Security</dt>
       <dd>
@@ -14,12 +14,12 @@
           (https).  The API Gateway must accept inbound SSL connections for this to work.
           </span>
         </p>
-        <input id="requireTS" type="checkbox" ng-model="config.requireTransportSecurity" ng-disabled="isEntityDisabled()"></input>
+        <input id="requireTS" type="checkbox" ng-model="config.requireTransportSecurity" ng-disabled="isEntityDisabled()">
         <label for="requireTS" apiman-i18n-key="basic-auth.transport-security-required" title="When enabled, requests must be received on a secure channel (e.g. SSL) otherwise they will fail.">Transport security required</label>
       </dd>
       <dt apiman-i18n-key="forward-authenticated-user">Forward Authenticated Username as HTTP Header</dt>
       <dd>
-        <input id="forward-identity" ng-model="config.forwardIdentityHttpHeader" class="apiman-form-control form-control" style="" type="text" apiman-i18n-key="base-auth.enter-auth-user-header" placeholder="HTTP header or leave blank to disable..." ng-disabled="isEntityDisabled()"></input>
+        <input id="forward-identity" ng-model="config.forwardIdentityHttpHeader" class="apiman-form-control form-control" style="" type="text" apiman-i18n-key="base-auth.enter-auth-user-header" placeholder="HTTP header or leave blank to disable..." ng-disabled="isEntityDisabled()">
       </dd>
       <dt apiman-i18n-key="require-basic-auth">Require Basic Authentication</dt>
       <dd>
@@ -30,7 +30,7 @@
           might disable this option if you want to support both BASIC auth and OAuth policies (for example).
           </span>
         </p>
-        <input id="requireBasic" type="checkbox" ng-model="config.requireBasicAuth" ng-disabled="isEntityDisabled()"></input>
+        <input id="requireBasic" type="checkbox" ng-model="config.requireBasicAuth" ng-disabled="isEntityDisabled()">
         <label for="requireBasic" apiman-i18n-key="basic-auth.basic-auth-required" title="When enabled, requests *must* provide BASIC auth credentials, otherwise the request will fail.">Basic Auth required</label>
       </dd>
       <hr />
@@ -64,9 +64,9 @@
       </div>
     </div>
     <div style="width: 100%; float: left; margin-bottom: 10px; margin-top: 5px">
-      <input id="static-username" ng-model="username" class="form-control" style="width: 85px; float: left; margin-right: 5px" type="text" apiman-i18n-key="basic-auth.enter-username" placeholder="Username..." ng-disabled="isEntityDisabled()"></input>
+      <input id="static-username" ng-model="username" class="form-control" style="width: 85px; float: left; margin-right: 5px" type="text" apiman-i18n-key="basic-auth.enter-username" placeholder="Username..." ng-disabled="isEntityDisabled()">
       <div style="width: 8px; float: left; line-height: 28px" apiman-i18n-skip>:</div>
-      <input id="static-password" ng-model="password" class="form-control" style="width: 102px; float: left; margin-right: 5px" type="password" apiman-i18n-key="basic-auth.enter-password" placeholder="Password..." ng-disabled="isEntityDisabled()"></input>
+      <input id="static-password" ng-model="password" class="form-control" style="width: 102px; float: left; margin-right: 5px" type="password" apiman-i18n-key="basic-auth.enter-password" placeholder="Password..." ng-disabled="isEntityDisabled()">
       <button id="static-add" ng-disabled="!username || !password || isEntityDisabled()" ng-click="add(username, password)" apiman-i18n-key="add" class="btn btn-default" style="min-width: 75px">Add</button>
     </div>
   </div>
@@ -86,25 +86,25 @@
         <!-- DataSource Input Fields -->
         <dt ng-show="config.jdbcIdentity.type == 'datasource' || !config.jdbcIdentity.type" apiman-i18n-key="jdbc-datasource">JDBC Datasource (JNDI Location)</dt>
         <dd ng-show="config.jdbcIdentity.type == 'datasource' || !config.jdbcIdentity.type">
-          <input id="jdbc-datasource" ng-model="config.jdbcIdentity.datasourcePath" class="apiman-form-control form-control" type="text" apiman-i18n-key="basic-auth.ds.enter-jndi-loc" placeholder="JNDI Datasource location (example: jdbc/ExampleDS)" ng-disabled="isEntityDisabled()"></input>
+          <input id="jdbc-datasource" ng-model="config.jdbcIdentity.datasourcePath" class="apiman-form-control form-control" type="text" apiman-i18n-key="basic-auth.ds.enter-jndi-loc" placeholder="JNDI Datasource location (example: jdbc/ExampleDS)" ng-disabled="isEntityDisabled()">
         </dd>
 
         <!-- JDBC URL Fields -->
         <dt ng-show="config.jdbcIdentity.type == 'url'" apiman-i18n-key="jdbc-url">JDBC URL</dt>
         <dd ng-show="config.jdbcIdentity.type == 'url'">
-          <input id="jdbc-url" ng-model="config.jdbcIdentity.jdbcUrl" class="apiman-form-control form-control" type="text" apiman-i18n-key="basic-auth.jdbc.enter-url" placeholder="JDBC URL (example: jdbc:h2:mem:UserDB)" ng-disabled="isEntityDisabled()"></input>
+          <input id="jdbc-url" ng-model="config.jdbcIdentity.jdbcUrl" class="apiman-form-control form-control" type="text" apiman-i18n-key="basic-auth.jdbc.enter-url" placeholder="JDBC URL (example: jdbc:h2:mem:UserDB)" ng-disabled="isEntityDisabled()">
         </dd>
         <dt ng-show="config.jdbcIdentity.type == 'url'" apiman-i18n-key="jdbc-username">JDBC Username</dt>
         <dd ng-show="config.jdbcIdentity.type == 'url'">
-          <input id="jdbc-username" ng-model="config.jdbcIdentity.username" class="apiman-form-control form-control" type="text" apiman-i18n-key="basic-auth.jdbc.enter-username" placeholder="Enter JDBC Username" ng-disabled="isEntityDisabled()"></input>
+          <input id="jdbc-username" ng-model="config.jdbcIdentity.username" class="apiman-form-control form-control" type="text" apiman-i18n-key="basic-auth.jdbc.enter-username" placeholder="Enter JDBC Username" ng-disabled="isEntityDisabled()">
         </dd>
         <dt ng-show="config.jdbcIdentity.type == 'url'" apiman-i18n-key="jdbc-password">JDBC Password</dt>
         <dd ng-show="config.jdbcIdentity.type == 'url'">
-          <input id="jdbc-password" ng-model="config.jdbcIdentity.password" class="apiman-form-control form-control" type="password" apiman-i18n-key="basic-auth.jdbc.enter-password" placeholder="Enter JDBC Password" ng-disabled="isEntityDisabled()"></input>
+          <input id="jdbc-password" ng-model="config.jdbcIdentity.password" class="apiman-form-control form-control" type="password" apiman-i18n-key="basic-auth.jdbc.enter-password" placeholder="Enter JDBC Password" ng-disabled="isEntityDisabled()">
         </dd>
         <dt ng-show="config.jdbcIdentity.type == 'url'" apiman-i18n-key="jdbc-password-verify">JDBC Password (verify)</dt>
         <dd ng-show="config.jdbcIdentity.type == 'url'">
-          <input id="jdbc-password-verify" ng-model="jdbcPasswordVerify" class="apiman-form-control form-control" type="password" apiman-i18n-key="basic-auth.jdbc.enter-password-verify" placeholder="Verify JDBC Password" ng-disabled="isEntityDisabled()"></input>
+          <input id="jdbc-password-verify" ng-model="jdbcPasswordVerify" class="apiman-form-control form-control" type="password" apiman-i18n-key="basic-auth.jdbc.enter-password-verify" placeholder="Verify JDBC Password" ng-disabled="isEntityDisabled()">
         </dd>
         
         <!-- Common Fields -->
@@ -124,7 +124,7 @@
           </select>
         </dd>
         <dd>
-          <input id="jdbc-extract-roles" type="checkbox" ng-model="config.jdbcIdentity.extractRoles" style="margin-top: 15px" ng-disabled="isEntityDisabled()"></input>
+          <input id="jdbc-extract-roles" type="checkbox" ng-model="config.jdbcIdentity.extractRoles" style="margin-top: 15px" ng-disabled="isEntityDisabled()">
           <label for="jdbc-extract-roles" apiman-i18n-key="basic-auth.extract-jdbc-roles" title="When enabled, roles can also be extracted from the database for use in the Authorization Policy (sold separately).">Also extract user roles from the DB</label>
         </dd>
         <dt ng-show="config.jdbcIdentity.extractRoles == true" apiman-i18n-key="roles-sql-query">Roles SQL Query</dt>
@@ -141,11 +141,11 @@
       <dl>
         <dt apiman-i18n-key="ldap-server-url">LDAP Server URL</dt>
         <dd>
-          <input id="ldap-url" ng-model="config.ldapIdentity.url" class="apiman-form-control form-control" type="text" apiman-i18n-key="basic-auth.ldap.enter-url" placeholder="LDAP Url (example: ldap://example.org)" ng-disabled="isEntityDisabled()"></input>
+          <input id="ldap-url" ng-model="config.ldapIdentity.url" class="apiman-form-control form-control" type="text" apiman-i18n-key="basic-auth.ldap.enter-url" placeholder="LDAP Url (example: ldap://example.org)" ng-disabled="isEntityDisabled()">
         </dd>
         <dt apiman-i18n-key="ldap-bind-dn">LDAP Bind DN</dt>
         <dd>
-          <input id="ldap-bind-dn" ng-model="config.ldapIdentity.dnPattern" class="apiman-form-control form-control" type="text" apiman-i18n-key="basic-auth.ldap.enter-binddn" placeholder="LDAP Bind DN (example: cn=${username},dc=example,dc=org)" ng-disabled="isEntityDisabled()"></input>
+          <input id="ldap-bind-dn" ng-model="config.ldapIdentity.dnPattern" class="apiman-form-control form-control" type="text" apiman-i18n-key="basic-auth.ldap.enter-binddn" placeholder="LDAP Bind DN (example: cn=${username},dc=example,dc=org)" ng-disabled="isEntityDisabled()">
         </dd>
         <dt apiman-i18n-key="bind-as">Bind to LDAP As...</dt>
         <dd>
@@ -157,33 +157,33 @@
         <div ng-show="config.ldapIdentity.bindAs == 'ServiceAccount'" style="margin-top: 15px">
 	        <dt apiman-i18n-key="service-account-username">Service Account Username</dt>
 	        <dd>
-	          <input id="ldap-sa-username" ng-model="config.ldapIdentity.credentials.username" class="apiman-form-control form-control" type="text" apiman-i18n-key="basic-auth.ldap.credentials.username" placeholder="Enter a username..." ng-disabled="isEntityDisabled()"></input>
+	          <input id="ldap-sa-username" ng-model="config.ldapIdentity.credentials.username" class="apiman-form-control form-control" type="text" apiman-i18n-key="basic-auth.ldap.credentials.username" placeholder="Enter a username..." ng-disabled="isEntityDisabled()">
 	        </dd>
 	        <dt apiman-i18n-key="service-account-password">Service Account Password</dt>
 	        <dd>
-	          <input id="ldap-sa-pass" ng-model="config.ldapIdentity.credentials.password" class="apiman-form-control form-control" type="password" apiman-i18n-key="basic-auth.ldap.credentials.password" placeholder="Enter a password..." ng-disabled="isEntityDisabled()"></input>
-              <input id="ldap-sa-pass-confirm" style="margin-top: 3px" ng-model="repeatPassword" class="apiman-form-control form-control" type="password" apiman-i18n-key="basic-auth.ldap.credentials.repeat-password" placeholder="Repeat password" ng-disabled="isEntityDisabled()"></input>
+	          <input id="ldap-sa-pass" ng-model="config.ldapIdentity.credentials.password" class="apiman-form-control form-control" type="password" apiman-i18n-key="basic-auth.ldap.credentials.password" placeholder="Enter a password..." ng-disabled="isEntityDisabled()">
+              <input id="ldap-sa-pass-confirm" style="margin-top: 3px" ng-model="repeatPassword" class="apiman-form-control form-control" type="password" apiman-i18n-key="basic-auth.ldap.credentials.repeat-password" placeholder="Repeat password" ng-disabled="isEntityDisabled()">
 	        </dd>
             <dt apiman-i18n-key="user-search-base-dn">User Search Base DN</dt>
             <dd>
-              <input id="ldap-us-base-dn" ng-model="config.ldapIdentity.userSearch.baseDn" class="apiman-form-control form-control" type="text" apiman-i18n-key="basic-auth.ldap.userSearch.baseDn" placeholder="Enter a Base DN..." ng-disabled="isEntityDisabled()"></input>
+              <input id="ldap-us-base-dn" ng-model="config.ldapIdentity.userSearch.baseDn" class="apiman-form-control form-control" type="text" apiman-i18n-key="basic-auth.ldap.userSearch.baseDn" placeholder="Enter a Base DN..." ng-disabled="isEntityDisabled()">
             </dd>
             <dt apiman-i18n-key="user-search-expression">User Search Expression</dt>
             <dd>
-              <input id="ldap-us-expr" ng-model="config.ldapIdentity.userSearch.expression" class="apiman-form-control form-control" type="text" apiman-i18n-key="basic-auth.ldap.userSearch.expression" placeholder="Enter an expression..." ng-disabled="isEntityDisabled()"></input>
+              <input id="ldap-us-expr" ng-model="config.ldapIdentity.userSearch.expression" class="apiman-form-control form-control" type="text" apiman-i18n-key="basic-auth.ldap.userSearch.expression" placeholder="Enter an expression..." ng-disabled="isEntityDisabled()">
             </dd>
         </div>
         <dd>
-          <input id="ldap-extract-roles" type="checkbox" ng-model="config.ldapIdentity.extractRoles" style="margin-top: 15px" ng-disabled="isEntityDisabled()"></input>
+          <input id="ldap-extract-roles" type="checkbox" ng-model="config.ldapIdentity.extractRoles" style="margin-top: 15px" ng-disabled="isEntityDisabled()">
           <label for="ldap-extract-roles" apiman-i18n-key="basic-auth.extract-ldap-roles" title="When enabled, roles can also be extracted from the directory for use in the Authorization Policy (sold separately).">Also extract user roles from the directory</label>
         </dd>
         <dt ng-show="config.ldapIdentity.extractRoles == true" apiman-i18n-key="ldap-membership-attr">Group Membership Attribute</dt>
         <dd ng-show="config.ldapIdentity.extractRoles == true">
-          <input id="ldap-group-attr" ng-model="config.ldapIdentity.membershipAttribute" class="apiman-form-control form-control" type="text" apiman-i18n-key="basic-auth.ldap.enter-membership-attr" placeholder="memberOf" ng-disabled="isEntityDisabled()"></input>
+          <input id="ldap-group-attr" ng-model="config.ldapIdentity.membershipAttribute" class="apiman-form-control form-control" type="text" apiman-i18n-key="basic-auth.ldap.enter-membership-attr" placeholder="memberOf" ng-disabled="isEntityDisabled()">
         </dd>
         <dt ng-show="config.ldapIdentity.extractRoles == true" apiman-i18n-key="ldap-rolename-attr">Role Name Attribute</dt>
         <dd ng-show="config.ldapIdentity.extractRoles == true">
-          <input id="ldap-role-name-attr" ng-model="config.ldapIdentity.rolenameAttribute" class="apiman-form-control form-control" type="text" apiman-i18n-key="basic-auth.ldap.enter-rolename-attr" placeholder="objectGUID" ng-disabled="isEntityDisabled()"></input>
+          <input id="ldap-role-name-attr" ng-model="config.ldapIdentity.rolenameAttribute" class="apiman-form-control form-control" type="text" apiman-i18n-key="basic-auth.ldap.enter-rolename-attr" placeholder="objectGUID" ng-disabled="isEntityDisabled()">
         </dd>
       </dl>
     </div>

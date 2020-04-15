@@ -11,7 +11,7 @@
   <div>
     <form class="form-inline">
 	    <span apiman-i18n-key="transfer-quota.config-sentence-preamble">I want to set a transfer (data) quota of </span>
-        <input id="num-bytes" ng-model="limitAmount" type="text" class="form-control" style="width: 85px; height: 28px; margin-top: -2px; margin-left: 5px; margin-right: -8px" ng-disabled="isEntityDisabled()"></input>
+        <input id="num-bytes" ng-model="limitAmount" type="text" class="form-control" style="width: 85px; height: 28px; margin-top: -2px; margin-left: 5px; margin-right: -8px" ng-disabled="isEntityDisabled()">
         <select id="denomination" ng-model="limitDenomination" apiman-select-picker="" class="selectpicker inline-line apiman-inline-form-dropdown" data-style="btn-default apiman-inline-form-dropdown" style="width: auto; margin-left: 0px" ng-disabled="isEntityDisabled()">
           <option apiman-i18n-key="transfer-quota.bytes" value="B">B</option>
           <option apiman-i18n-key="transfer-quota.kilobytes" value="KB">KB</option>
@@ -49,7 +49,7 @@
   </div>
   <div style="margin-top: 8px;" id="userRow" ng-show="config.granularity == 'User'">
     <span apiman-i18n-key="reate-limiting.get-user-id-from">Get the user's id from:</span>
-    <input id="user-header" ng-model="config.userHeader" class="apiman-form-control form-control inline-apiman-form-control form-control" style="width: 250px" type="text" apiman-i18n-key="transfer-quota.enter-user-header" placeholder="Enter header (e.g. X-Identity)..." ng-disabled="isEntityDisabled()"></input>
+    <input id="user-header" ng-model="config.userHeader" class="apiman-form-control form-control inline-apiman-form-control form-control" style="width: 250px" type="text" apiman-i18n-key="transfer-quota.enter-user-header" placeholder="Enter header (e.g. X-Identity)..." ng-disabled="isEntityDisabled()">
   </div>
   <hr/>
   <div>
@@ -64,15 +64,15 @@
     <dl>
       <dt apiman-i18n-key="transfer-quota.limit-header">Limit Response Header</dt>
       <dd>
-        <input id="limit-header" ng-model="config.headerLimit" class="apiman-form-control form-control" style="" type="text" apiman-i18n-key="transfer-quota.enter-limit-header" placeholder="X-TransferQuota-Limit" ng-disabled="isEntityDisabled()"></input>
+        <input id="limit-header" ng-model="config.headerLimit" class="apiman-form-control form-control" style="" type="text" apiman-i18n-key="transfer-quota.enter-limit-header" placeholder="X-TransferQuota-Limit" ng-disabled="isEntityDisabled()">
       </dd>
       <dt apiman-i18n-key="transfer-quota.remaining-header">Remaining Response Header</dt>
       <dd>
-        <input id="remaining-header" ng-model="config.headerRemaining" class="apiman-form-control form-control" style="" type="text" apiman-i18n-key="transfer-quota.enter-remaining-header" placeholder="X-TransferQuota-Remaining" ng-disabled="isEntityDisabled()"></input>
+        <input id="remaining-header" ng-model="config.headerRemaining" class="apiman-form-control form-control" style="" type="text" apiman-i18n-key="transfer-quota.enter-remaining-header" placeholder="X-TransferQuota-Remaining" ng-disabled="isEntityDisabled()">
       </dd>
       <dt apiman-i18n-key="transfer-quota.reset-header">Reset Response Header</dt>
       <dd>
-        <input id="reset-header" ng-model="config.headerReset" class="apiman-form-control form-control" style="" type="text" apiman-i18n-key="transfer-quota.enter-reset-header" placeholder="X-TransferQuota-Reset" ng-disabled="isEntityDisabled()"></input>
+        <input id="reset-header" ng-model="config.headerReset" class="apiman-form-control form-control" style="" type="text" apiman-i18n-key="transfer-quota.enter-reset-header" placeholder="X-TransferQuota-Reset" ng-disabled="isEntityDisabled()">
       </dd>
     </dl>
   </div>

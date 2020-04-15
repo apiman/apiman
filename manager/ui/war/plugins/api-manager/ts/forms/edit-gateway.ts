@@ -105,7 +105,6 @@ module Apiman {
                         PageLifecycle.redirectTo('/admin/gateways');
                     }, PageLifecycle.handleError);
                 }, function () {
-                    //console.log('Modal dismissed at: ' + new Date());
                     $scope.deleteButton.state = 'complete';
                 });
             };

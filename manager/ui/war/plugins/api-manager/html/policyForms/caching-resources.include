@@ -34,7 +34,7 @@
       </div>
       <div class="row">
         <div class="col-md-5">
-          <input id="path" style="width:100%" name="path" ng-model="pathPattern" class="form-control" type="text" apiman-i18n-key="caching-resources.enter-path" placeholder="(/path/to/.*) use java regular expression syntax" ng-disabled="isEntityDisabled()"></input>
+          <input id="path" style="width:100%" name="path" ng-model="pathPattern" class="form-control" type="text" apiman-i18n-key="caching-resources.enter-path" placeholder="(/path/to/.*) use java regular expression syntax" ng-disabled="isEntityDisabled()">
         </div>
         <div class="col-md-2">
           <http-method-caching-select></http-method-caching-select>

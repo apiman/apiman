@@ -380,7 +380,7 @@ module Apiman {
 
     _module.controller('Apiman.BasicAuthFormController',
         ['$scope', 'EntityStatusSvc',
-        ($scope,  EntityStatusSvc) => {
+        ($scope, EntityStatusSvc) => {
             var validate = function(config) {
                 if (!config) {
                     return;

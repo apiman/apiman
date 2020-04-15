@@ -32,13 +32,13 @@
       </div>
       <div class="row">
         <div class="col-md-5">
-          <input id="path" style="width:100%" name="path" ng-model="path" class="form-control" type="text" apiman-i18n-key="authorization.enter-path" placeholder="(/path/to/.*)" ng-disabled="isEntityDisabled()"></input>
+          <input id="path" style="width:100%" name="path" ng-model="path" class="form-control" type="text" apiman-i18n-key="authorization.enter-path" placeholder="(/path/to/.*)" ng-disabled="isEntityDisabled()">
         </div>
         <div class="col-md-2">
           <http-verbs-select></http-verbs-select>
         </div>
         <div class="col-md-3">
-          <input id="role" style="width:100%" name="role" ng-model="role" class="form-control" type="text" apiman-i18n-key="authorization.required-role" placeholder="(required role)" ng-disabled="isEntityDisabled()"></input>
+          <input id="role" style="width:100%" name="role" ng-model="role" class="form-control" type="text" apiman-i18n-key="authorization.required-role" placeholder="(required role)" ng-disabled="isEntityDisabled()">
         </div>
         <div class="col-md-2">
           <button id="add-rule" ng-disabled="currentItemInvalid()" ng-click="add(path, verb, role)" apiman-i18n-key="add" class="btn btn-default" style="min-width: 75px" ng-disabled="isEntityDisabled()">Add</button>

@@ -4,7 +4,7 @@
 <div class="form policy-config caching" data-field="form" ng-controller="Apiman.CachingFormController" style="margin-top: 10px">
   <div>
     <span apiman-i18n-key="caching.config-sentence-preamble">Cache API responses for</span>
-    <input id="ttl" ng-model="config.ttl" class="apiman-form-control form-control inline-apiman-form-control form-control" style="width: 150px" type="text" apiman-i18n-key="caching.enter-num-seconds" placeholder="Enter time-to-live" ng-disabled="isEntityDisabled()"></input>
+    <input id="ttl" ng-model="config.ttl" class="apiman-form-control form-control inline-apiman-form-control form-control" style="width: 150px" type="text" apiman-i18n-key="caching.enter-num-seconds" placeholder="Enter time-to-live" ng-disabled="isEntityDisabled()">
     <span apiman-i18n-key="caching.seconds">seconds.</span>
   </div>
   <div style="margin-bottom: 5px; margin-top: 10px" apiman-i18n-key="caching.status-code-list-message">Only cache responses with specific status codes. An empty list means cache everything.</div>
@@ -17,6 +17,6 @@
       <button id="remove" ng-click="remove(selectedStatusCode)" ng-disabled="!selectedStatusCode || isEntityDisabled()" data-field="remove" apiman-i18n-key="remove" class="btn btn-default" style="min-width: 75px; margin-top: 5px;">Remove</button>
     </div>
   </div>
-  <input id="status-code" ng-model="statusCode" ng-pattern="/^\d{3}$/" data-field="statusCode" class="form-control" style="width: 140px; float: left; margin-right: 5px" type="text" apiman-i18n-key="caching.enter-status-code" placeholder="Enter a status code..." ng-disabled="isEntityDisabled()"></input>
+  <input id="status-code" ng-model="statusCode" ng-pattern="/^\d{3}$/" data-field="statusCode" class="form-control" style="width: 140px; float: left; margin-right: 5px" type="text" apiman-i18n-key="caching.enter-status-code" placeholder="Enter a status code..." ng-disabled="isEntityDisabled()">
   <button id="add" ng-disabled="!statusCode || isEntityDisabled()" ng-click="add(statusCode)" data-field="add" apiman-i18n-key="add" class="btn btn-default" style="min-width: 75px">Add</button>
 </div>

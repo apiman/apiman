@@ -15,7 +15,7 @@
       <div class="row">
         <div class="col-md-8">
           	<input id="path" style="width:100%" name="path" ng-model="pathPattern" class="form-control" 
-          		type="text" apiman-i18n-key="time-restricted-access.enter-path" placeholder="(/path/to/.*)" ng-disabled="isEntityDisabled()"></input>
+          		type="text" apiman-i18n-key="time-restricted-access.enter-path" placeholder="(/path/to/.*)" ng-disabled="isEntityDisabled()">
         </div>
       </div>
       <div class="row" style="margin-top:10px;">

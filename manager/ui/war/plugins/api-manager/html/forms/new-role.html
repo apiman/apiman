@@ -25,7 +25,7 @@
         <dl>
           <dt apiman-i18n-key="role-name">Role Name</dt>
           <dd>
-            <input name="name" id="apiman-entityname" ng-model="role.name" type="text" class="apiman-form-control form-control name entityname" apiman-i18n-key="enter-role-name" placeholder="Enter role name..." required name-validation></input>
+            <input name="name" id="apiman-entityname" ng-model="role.name" type="text" class="apiman-form-control form-control name entityname" apiman-i18n-key="enter-role-name" placeholder="Enter role name..." required name-validation>
             <span ng-show="newRole.name.$touched && newRole.name.$invalid" apiman-i18n-key="name-error">The value is invalid!</span>
           </dd>
         </dl>
@@ -35,7 +35,7 @@
         <dl>
           <dt apiman-i18n-key="description">Description</dt>
           <dd>
-            <input name="description" data-field="description" ng-model="role.description" type="text" class="apiman-form-control form-control description" id="apiman-description" apiman-i18n-key="enter-role-description" placeholder="Enter role description (optional)..." text-validation></input>
+            <input name="description" data-field="description" ng-model="role.description" type="text" class="apiman-form-control form-control description" id="apiman-description" apiman-i18n-key="enter-role-description" placeholder="Enter role description (optional)..." text-validation>
             <span ng-show="newRole.description.$touched && newRole.description.$invalid" apiman-i18n-key="text-error">The value is invalid!</span>
           </dd>
         </dl>
@@ -47,7 +47,7 @@
           <dd>
              <div class="checkbox">
                <label>
-                 <input id="auto-grant" ng-model="role.autoGrant" data-field="autoGrant" type="checkbox"></input>
+                 <input id="auto-grant" ng-model="role.autoGrant" data-field="autoGrant" type="checkbox">
                  <span apiman-i18n-key="grant-role-automatically">Grant this role automatically when creating a new Organization</span>
                </label>
              </div>
