@@ -19,8 +19,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import io.apiman.gateway.engine.storage.store.IBackingStore;
 import io.apiman.gateway.engine.storage.util.BackingStoreUtil;
 import org.redisson.api.RMap;
+import org.redisson.api.RMapCache;
 import org.redisson.api.RedissonClient;
 
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -47,8 +49,8 @@ public class RedisBackingStore implements IBackingStore {
      * @param func the function to apply using the {@link RMap}
      * @return the result
      */
-    private <T> T onMap(Function<RMap<String, String>, T> func) {
-        final RMap<String, String> map = client.getMap(prefix);
+    private <T> T onMap(Function<RMapCache<String, String>, T> func) {
+        final RMapCache<String, String> map = client.getMapCache(prefix);
         return func.apply(map);
     }
 
@@ -57,13 +59,13 @@ public class RedisBackingStore implements IBackingStore {
      *
      * @param consumer the consumer of the {@link RMap}
      */
-    private void withMap(Consumer<RMap<String, String>> consumer) {
-        final RMap<String, String> map = client.getMap(prefix);
+    private void withMap(Consumer<RMapCache<String, String>> consumer) {
+        final RMapCache<String, String> map = client.getMapCache(prefix);
         consumer.accept(map);
     }
 
     @Override
-    public void put(String key, Object value) {
+    public void put(String key, Object value, long ttl) {
         withMap(map -> {
             try {
                 final String raw;
@@ -74,7 +76,7 @@ public class RedisBackingStore implements IBackingStore {
                 } else {
                     raw = JSON_MAPPER.writeValueAsString(value);
                 }
-                map.put(key, raw);
+                map.put(key, raw, ttl, TimeUnit.SECONDS);
 
             } catch (JsonProcessingException e) {
                 throw new RuntimeException(String.format("Error setting value for key '%s'", key), e);

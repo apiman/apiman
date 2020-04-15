@@ -18,6 +18,8 @@ package io.apiman.gateway.engine.ispn;
 import io.apiman.gateway.engine.storage.store.IBackingStore;
 import org.infinispan.Cache;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * Store provider for components backed by an Infinispan cache.
  */
@@ -31,6 +33,11 @@ public class InfinispanBackingStore implements IBackingStore {
     @Override
     public void put(String key, Object value) {
         cache.put(key, value);
+    }
+
+    @Override
+    public void put(String key, Object value, long ttl) {
+        cache.put(key, value, ttl, TimeUnit.SECONDS);
     }
 
     @SuppressWarnings("unchecked")

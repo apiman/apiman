@@ -19,6 +19,8 @@ import java.util.Map;
 
 /**
  * A backing store that uses a {@link Map}.
+ *
+ * Note: this implementation never evicts entries from its map, meaning that it will grow infinitely.
  */
 public class MapBackingStore implements IBackingStore {
     private final Map<String, Object> map;
@@ -28,7 +30,7 @@ public class MapBackingStore implements IBackingStore {
     }
 
     @Override
-    public void put(String key, Object value) {
+    public void put(String key, Object value, long ttl) {
         map.put(key, value);
     }
 

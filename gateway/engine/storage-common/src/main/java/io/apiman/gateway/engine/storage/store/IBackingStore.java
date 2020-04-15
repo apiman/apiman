@@ -25,7 +25,18 @@ public interface IBackingStore {
      * @param key   the item's key
      * @param value the item's value
      */
-    void put(String key, Object value);
+    default void put(String key, Object value) {
+        put(key, value, Integer.MAX_VALUE);
+    }
+
+    /**
+     * Insert an item into the store, with a given TTL.
+     *
+     * @param key   the item's key
+     * @param value the item's value
+     * @param ttl   the TTL in seconds
+     */
+    void put(String key, Object value, long ttl);
 
     /**
      * Fetch an item from the store.
