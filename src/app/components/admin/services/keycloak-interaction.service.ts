@@ -16,7 +16,7 @@ export class KeycloakInteractionService {
 
   private keycloakGroupUsers = 'API-Mgmt-Devportal-Users';
   private keycloakDevPortalClientId = 'devportal';
-  private keycloakDevPortalUserRole = 'devportaluser';
+  private keycloakDevPortalUserRole = 'devportaluser'; // TODO REMOVE
 
   /**
    * Constructor of Keycloak Interaction Service
@@ -53,6 +53,7 @@ export class KeycloakInteractionService {
       .pipe(share()); // fire only once and cache the result for other subscribers
   }
 
+  // TODO REMOVE
   /**
    * Get the devportaluser user role
    */
@@ -72,9 +73,10 @@ export class KeycloakInteractionService {
 
   /**
    * Get all keycloak users
+   * Max value: https://www.keycloak.org/docs-api/9.0/rest-api/index.html#_users_resource
    */
   public getAllUsers() {
-    return from(this.kcAdminClient.users.find());
+    return from(this.kcAdminClient.users.find({max: (Math.pow(2, 31) - 1)}));
   }
 
   /**
@@ -95,11 +97,11 @@ export class KeycloakInteractionService {
       lastName: userToCreate.lastName,
       email: userToCreate.email,
       username: userToCreate.username,
-      enabled: true,
-      attributes: {generatedFromDevPortal: ['true']}
+      enabled: true
     }));
   }
 
+  // TODO REMOVE
   /**
    * Delete user by id
    * @param userId the user id
@@ -110,6 +112,7 @@ export class KeycloakInteractionService {
     }));
   }
 
+  // TODO REMOVE
   /**
    * Set user password
    * @param userId the user id
@@ -126,6 +129,7 @@ export class KeycloakInteractionService {
       }));
   }
 
+  // TODO REMOVE
   /**
    * Create client role
    * @param clientRoleName the client role name
@@ -178,6 +182,7 @@ export class KeycloakInteractionService {
     }));
   }
 
+  // TODO REMOVE
   /**
    * Remove Role Mapping from user
    * @param userUUID user UUID
@@ -217,6 +222,7 @@ export class KeycloakInteractionService {
     })));
   }
 
+  // TODO REMOVE
   /**
    * Remove User from API-Mgmt-Devportal-Users group
    * @param userId the user id
@@ -243,51 +249,54 @@ export class KeycloakInteractionService {
       );
   }
 
+  // TODO REMOVE
   /**
    * Find existing or create new user
    * @param user the user
    */
-  public findExistingOrCreateUser(user: KeycloakUser): Observable<UserRepresentation> {
-    return this.findUser(user.username).pipe(mergeMap(foundUsers => {
-      let observer = null;
-      if (foundUsers.length === 0) {
-        observer = this.createUser(user).pipe(mergeMap((insertedUser => {
-          return this.setUserPassword(insertedUser.id, user.password).pipe(mergeMap(() => of(insertedUser)));
-        })));
-      } else {
-        observer = of(foundUsers[0]);
-      }
-      return observer;
-    }));
-  }
+  // public findExistingOrCreateUser(user: KeycloakUser): Observable<UserRepresentation> {
+  //   return this.findUser(user.username).pipe(mergeMap(foundUsers => {
+  //     let observer = null;
+  //     if (foundUsers.length === 0) {
+  //       observer = this.createUser(user).pipe(mergeMap((insertedUser => {
+  //         return this.setUserPassword(insertedUser.id, user.password).pipe(mergeMap(() => of(insertedUser)));
+  //       })));
+  //     } else {
+  //       observer = of(foundUsers[0]);
+  //     }
+  //     return observer;
+  //   }));
+  // }
 
+  // TODO REMOVE
   /**
    * Determines if the user was generated from devportal admin
    * @param user Keycloak user
    */
-  private isUserGeneratedFromDevPortal(user: UserRepresentation): boolean {
-    return user.attributes
-      && user.attributes.generatedFromDevPortal
-      && user.attributes.generatedFromDevPortal.length > 0
-      && user.attributes.generatedFromDevPortal[0] === 'true';
-  }
+  // private isUserGeneratedFromDevPortal(user: UserRepresentation): boolean {
+  //   return user.attributes
+  //     && user.attributes.generatedFromDevPortal
+  //     && user.attributes.generatedFromDevPortal.length > 0
+  //     && user.attributes.generatedFromDevPortal[0] === 'true';
+  // }
 
+  // TODO REMOVE
   /**
    * Delete dev portal user if generated from dev portal if not remove only devportaluser role from user
    * @param username Username of Developer
    */
-  public deleteUser(username: string): Observable<void> {
-    return this.findUser(username).pipe(mergeMap(users => {
-      if (users.length > 0) {
-        const userToDelete = users[0];
-        // delete user only if he was generated from dev portal
-        if (this.isUserGeneratedFromDevPortal(userToDelete)) {
-          return this.deleteUserById(userToDelete.id);
-        } else {
-          // remove only devportaluser role from user if he was not generated from dev portal
-          return this.removeDevPortalGroupFromUser(userToDelete.id);
-        }
-      }
-    }));
-  }
+  // public deleteUser(username: string): Observable<void> {
+  //   return this.findUser(username).pipe(mergeMap(users => {
+  //     if (users.length > 0) {
+  //       const userToDelete = users[0];
+  //       // delete user only if he was generated from dev portal
+  //       if (this.isUserGeneratedFromDevPortal(userToDelete)) {
+  //         return this.deleteUserById(userToDelete.id);
+  //       } else {
+  //         // remove only devportaluser role from user if he was not generated from dev portal
+  //         return this.removeDevPortalGroupFromUser(userToDelete.id);
+  //       }
+  //     }
+  //   }));
+  // }
 }

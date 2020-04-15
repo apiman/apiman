@@ -1,9 +1,12 @@
 .client-container {
-  width: 250px;
+  width: calc(50% - 10px);
   max-width: 100%;
-  margin: 0 25px 25px 0;
   display: inline-block;
   vertical-align: top;
+}
+
+.client-container:first-of-type {
+  margin-right: 20px;
 }
 
 .container-header {

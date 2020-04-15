@@ -1,15 +1,14 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {FormControl, FormGroup} from '@angular/forms';
 import {DeveloperImpl} from '../../../type-definitions/developerImpl';
 import {ClientMappingComponent} from './client-mapping.component';
 import {ClientMappingImpl} from '../../../type-definitions/client-mapping-impl';
 import {Router} from '@angular/router';
-import {KeycloakUserImpl} from '../edit-developer/keycloak-user-impl';
 import {AdminService} from '../services/admin.service';
 import {DeveloperDataCacheService} from '../services/developer-data-cache.service';
 import {forkJoin, Subject} from 'rxjs';
-import {debounceTime, map, mergeMap} from 'rxjs/operators';
-import {Toast, ToasterService} from 'angular2-toaster';
+import {debounceTime, map} from 'rxjs/operators';
+import {ToasterService} from 'angular2-toaster';
 import UserRepresentation from 'keycloak-admin/lib/defs/userRepresentation';
 import {SpinnerService} from '../../../services/spinner.service';
 
@@ -20,24 +19,16 @@ import {SpinnerService} from '../../../services/spinner.service';
 })
 export class CreateDeveloperComponent implements OnInit, OnDestroy {
 
-  // pattern allows only strings without slashes and square brackets (taken from keycloak)
-  private usernamePattern = Validators.pattern('^[^\\<\\>\\\\\\/]*$');
-
   public userFormGroup = new FormGroup({
-    email: new FormControl('', [Validators.email]),
-    firstname: new FormControl(''),
-    lastname: new FormControl(''),
-    password: new FormControl(''),
-    username: new FormControl('', [this.usernamePattern])
+    username: new FormControl('')
   });
 
   @ViewChild('clientmapping', {static: false}) clientMapping: ClientMappingComponent;
 
   public usernameKeyUp = new Subject<string>();
-  private userNameInputSubscription;
-
   public keycloakUsers: Array<UserRepresentation>;
   public filteredKeycloakUsers: Array<UserRepresentation>;
+  private userNameInputSubscription;
 
   constructor(private adminService: AdminService,
               private router: Router,
@@ -80,40 +71,27 @@ export class CreateDeveloperComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Filter the user auto complete list
-   * @param usernameInput the inputed username
-   */
-  private filterKeycloakUser(usernameInput: string) {
-    this.filteredKeycloakUsers = this.keycloakUsers
-      .filter((u) => this.checkDeveloperNotExists(u.username) && u.username.toLowerCase().includes(usernameInput.toLowerCase()));
-  }
-
-  /**
    * Insert a developer
    */
   insertDeveloper() {
     this.loadingSpinnerService.startWaiting();
 
+    const keycloakUser: UserRepresentation = this.filteredKeycloakUsers
+      .find(user => user.username === this.userFormGroup.get('username').value);
+
     const developerToCreate = new DeveloperImpl();
-    developerToCreate.name = this.userFormGroup.get('username').value;
+    developerToCreate.id = keycloakUser.username;
     developerToCreate.clients = [];
     this.clientMapping.assignedClients.forEach(client => {
       developerToCreate.clients.push(new ClientMappingImpl(client.clientId, client.organizationId));
     });
 
-    const keycloakUserToCreate = new KeycloakUserImpl();
-    keycloakUserToCreate.username = this.userFormGroup.get('username').value;
-    keycloakUserToCreate.email = this.userFormGroup.get('email').value;
-    keycloakUserToCreate.firstName = this.userFormGroup.get('firstname').value;
-    keycloakUserToCreate.lastName = this.userFormGroup.get('lastname').value;
-    keycloakUserToCreate.password = this.userFormGroup.get('password').value;
-
-    this.adminService.createNewDeveloper(developerToCreate, keycloakUserToCreate)
+    this.adminService.createNewDeveloper(developerToCreate, keycloakUser.id)
       .subscribe(createdDeveloper => {
         this.userFormGroup.reset();
         this.clientMapping.reset();
         this.developerDataCache.developers.push(createdDeveloper);
-        console.log('pushed developer to cache', createdDeveloper);
+        console.log('Pushed developer to cache', createdDeveloper);
         this.loadingSpinnerService.stopWaiting();
         this.router.navigate(['/admin']);
       }, error => {
@@ -141,22 +119,11 @@ export class CreateDeveloperComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Check if email adress is used
-   * @param email the email address
+   * Filter the user auto complete list
+   * @param usernameInput the entered username
    */
-  checkEmailAlreadyUsed(email: string) {
-    // check if the keycloak user does not exists
-    return this.keycloakUsers
-      && this.keycloakUsers.find((u) => u.email && u.email.toLowerCase() === email.toLowerCase()) !== undefined;
-  }
-
-  /**
-   * Check if the a password is required for an insert
-   * @param username the keycloak username
-   */
-  isPasswordRequiredForInsert(username: string) {
-    // check if the keycloak user does not exists
-    return this.keycloakUsers
-      && this.keycloakUsers.find((u) => u.username.toLowerCase() === username.toLowerCase()) === undefined;
+  private filterKeycloakUser(usernameInput: string) {
+    this.filteredKeycloakUsers = this.keycloakUsers
+      .filter((u) => this.checkDeveloperNotExists(u.username) && u.username.toLowerCase().includes(usernameInput.toLowerCase()));
   }
 }

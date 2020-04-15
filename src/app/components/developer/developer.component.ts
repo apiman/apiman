@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {KeycloakService} from 'keycloak-angular';
 import {TokenService} from '../../services/token.service';
 
@@ -9,8 +9,6 @@ import {TokenService} from '../../services/token.service';
 })
 
 export class DeveloperComponent {
-
-  public developers: Array<string> = [];
 
   /**
    * load the keycloak roles from keycloak service

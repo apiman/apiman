@@ -1,74 +1,30 @@
 <h1>Create Developer</h1>
 <div class="wrapper">
-  <mat-horizontal-stepper linear #stepper>
-    <mat-step [stepControl]="userFormGroup">
-      <form id="userForm" [formGroup]="userFormGroup">
-        <ng-template matStepLabel>Create User</ng-template>
-        <mat-form-field class="input-form-field">
-          <input matInput placeholder="Username" formControlName="username" [matAutocomplete]="auto"
-                 (input)="usernameKeyUp.next($event.target.value)" required>
-        </mat-form-field>
-        <mat-autocomplete #auto="matAutocomplete">
-          <mat-option *ngFor="let user of filteredKeycloakUsers" [value]="user.username">{{user.username}}</mat-option>
-        </mat-autocomplete>
-        <span [hidden]="!this.isPasswordRequiredForInsert(this.userFormGroup.get('username').value)">
-          <mat-form-field class="input-form-field">
-            <!-- use attr.disabled here because of formGroup: https://angular.io/guide/template-syntax -->
-            <input id="passwordField" matInput placeholder="Password" type="password" formControlName="password"
-                   [required]="this.isPasswordRequiredForInsert(this.userFormGroup.get('username').value)"
-                   [attr.disabled]="!this.isPasswordRequiredForInsert(this.userFormGroup.get('username').value) ? 'disabled' : null">
-          </mat-form-field>
-          <mat-form-field class="input-form-field">
-            <input matInput placeholder="First name" formControlName="firstname"
-                   [required]="this.isPasswordRequiredForInsert(this.userFormGroup.get('username').value)"
-                   [attr.disabled]="!this.isPasswordRequiredForInsert(this.userFormGroup.get('username').value) ? 'disabled' : null">
-          </mat-form-field>
-          <mat-form-field class="input-form-field">
-            <input matInput placeholder="Last name" formControlName="lastname"
-                   [required]="this.isPasswordRequiredForInsert(this.userFormGroup.get('username').value)"
-                   [attr.disabled]="!this.isPasswordRequiredForInsert(this.userFormGroup.get('username').value) ? 'disabled' : null">
-          </mat-form-field>
-          <mat-form-field class="input-form-field">
-            <input matInput placeholder="Email" formControlName="email"
-                   [required]="this.isPasswordRequiredForInsert(this.userFormGroup.get('username').value)"
-                   [attr.disabled]="!this.isPasswordRequiredForInsert(this.userFormGroup.get('username').value) ? 'disabled' : null">
-          </mat-form-field>
-        </span>
-        <mat-card class="scheer-box-warning" *ngIf="!this.checkDeveloperNotExists(this.userFormGroup.get('username').value)">
-          <mat-icon>warning</mat-icon>
-          <div class="scheer-box-content">Developer already exists.</div>
-        </mat-card>
-        <mat-card class="scheer-box-warning" *ngIf="this.checkEmailAlreadyUsed(this.userFormGroup.get('email').value)">
-          <mat-icon>warning</mat-icon>
-          <div class="scheer-box-content">Email already used.</div>
-        </mat-card>
-        <mat-card
-          class="scheer-box-info"
-          *ngIf="this.checkDeveloperNotExists(this.userFormGroup.get('username').value)
-          && !this.isPasswordRequiredForInsert(this.userFormGroup.get('username').value)">
-          <mat-icon>info</mat-icon>
-          <div class="scheer-box-content">You create a Developer for an existing API Management user.</div>
-        </mat-card>
-      </form>
-      <div>
-        <button matStepperNext
-                [disabled]="!this.checkDeveloperNotExists(this.userFormGroup.get('username').value) || this.checkEmailAlreadyUsed(this.userFormGroup.get('email').value) || !userFormGroup.valid">
-          Next
-        </button>
-        <button routerLink="/admin">Cancel</button>
-      </div>
-    </mat-step>
-    <mat-step>
-      <ng-template matStepLabel>Create Client Mapping</ng-template>
-      <app-client-mapping #clientmapping [assignedClients]="[]"></app-client-mapping>
-      <p>
-        <button
-          [disabled]="!this.checkDeveloperNotExists(this.userFormGroup.get('username').value) || !userFormGroup.valid"
-          (click)="insertDeveloper()">Save
-        </button>
-        <button matStepperPrevious>Back</button>
-        <button routerLink="/admin">Cancel</button>
-      </p>
-    </mat-step>
-  </mat-horizontal-stepper>
+
+  <form id="userForm" [formGroup]="userFormGroup">
+    <h3>Select User</h3>
+    <mat-form-field class="input-form-field">
+      <input matInput placeholder="Select or search for an existing user" formControlName="username" [matAutocomplete]="auto"
+             (input)="usernameKeyUp.next($event.target.value)" required>
+    </mat-form-field>
+    <mat-autocomplete #auto="matAutocomplete">
+      <mat-option *ngFor="let user of filteredKeycloakUsers" [value]="user.username">{{user.username}} ({{user.email}})</mat-option>
+    </mat-autocomplete>
+  </form>
+
+  <h3>Create Client-Mapping</h3>
+  <app-client-mapping #clientmapping [assignedClients]="[]"></app-client-mapping>
+  <p>
+    <button
+      [disabled]="!this.checkDeveloperNotExists(this.userFormGroup.get('username').value) || !userFormGroup.valid"
+      (click)="insertDeveloper()">Save
+    </button>
+    <button routerLink="/admin">Cancel</button>
+  </p>
+
+  <mat-card class="scheer-box-warning" *ngIf="!this.checkDeveloperNotExists(this.userFormGroup.get('username').value)">
+    <mat-icon>warning</mat-icon>
+    <div class="scheer-box-content">Developer already exists.</div>
+  </mat-card>
+
 </div>
