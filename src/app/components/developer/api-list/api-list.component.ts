@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {forkJoin, from, Observable, ObservedValueOf} from 'rxjs';
 import {map, mergeAll, mergeMap, toArray} from 'rxjs/operators';
 import {ApiDataService, ApiVersion, Client, Contract} from '../../../services/api-data.service';
@@ -6,7 +6,8 @@ import {SpinnerService} from '../../../services/spinner.service';
 import {Toast, ToasterService} from 'angular2-toaster';
 import {Router} from '@angular/router';
 import {animate, state, style, transition, trigger} from '@angular/animations';
-import { Sort } from '@angular/material/sort';
+import {Sort} from '@angular/material/sort';
+import {KeycloakService} from 'keycloak-angular';
 
 export interface ApiListElement {
   id: string;
@@ -36,7 +37,7 @@ export interface ApiListElement {
   ]
 })
 
-export class ApiListComponent implements OnChanges {
+export class ApiListComponent implements OnInit {
 
   columnHeaders: string[] = ['api', 'apiVersion', 'tryApi', 'options'];
   expandedElements: Array<ApiListElement> = [];
@@ -44,18 +45,21 @@ export class ApiListComponent implements OnChanges {
   apiData: Array<ApiListElement> = [];
   sortedApiData: Array<ApiListElement>;
 
+  developerId: string = this.keycloak.getKeycloakInstance().profile.username;
+
   status = class ApiStatus {
     static retired = 'Retired';
     static active = 'Active';
     static inactive = 'Inactive';
   };
 
-  @Input('developerId') developerId;
+  // @Input('developerId') developerId;
 
   constructor(private router: Router,
               private apiDataService: ApiDataService,
               private toasterService: ToasterService,
-              private loadingSpinnerService: SpinnerService) {
+              private loadingSpinnerService: SpinnerService,
+              private keycloak: KeycloakService) {
     this.sortedApiData = this.apiData;
   }
 
@@ -90,12 +94,12 @@ export class ApiListComponent implements OnChanges {
           const gateway = gateways.find(g => g.id === apiVersion.gateways[0].gatewayId);
           return this.buildViewData(contract, gateway, clientVersion, apiVersion);
         }));
-    }));
+    }))
 
   /**
-   * ngOnChanges is executed if the changes are applied to component
+   * We only need this to get called once because we don't have more than one developer
    */
-  ngOnChanges(changes: SimpleChanges): void {
+  ngOnInit() {
     this.loadingSpinnerService.startWaiting();
     // subscribe for the private api data to fill the view
     this.getDeveloperData(this.developerId).subscribe(data => {
@@ -103,9 +107,12 @@ export class ApiListComponent implements OnChanges {
       this.sortedApiData = this.apiData;
       this.loadingSpinnerService.stopWaiting();
     }, error => {
-      const errorMessage = 'Error loading api list';
-      console.error(errorMessage, error);
-      this.toasterService.pop('error', errorMessage, error.message);
+      // 404 is fine, we don't have any APIs to load
+      if (error.status !== 404) {
+        const errorMessage = 'Error loading api list';
+        console.error(errorMessage, error);
+        this.toasterService.pop('error', errorMessage, error.message);
+      }
       this.loadingSpinnerService.stopWaiting();
     });
   }

@@ -1,8 +1,4 @@
-<div *ngFor="let developerId of developers">
-  <h2 *ngIf="developers.length > 1">{{developerId}}</h2>
-  <app-api-list [developerId]="developerId"></app-api-list>
-</div>
-
-<div id="noData" *ngIf="developers.length === 0">
-  <p>No data available.</p>
+<div>
+  <h2>Your APIs</h2>
+  <app-api-list></app-api-list>
 </div>
