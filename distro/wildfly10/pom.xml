@@ -16,7 +16,7 @@
     <docker.base-image>jboss/wildfly:10.1.0.Final</docker.base-image>
     <docker.target-image-name>apiman/on-wildfly10:master</docker.target-image-name>
     <docker.target-image-name.alias>wildfly10-master</docker.target-image-name.alias>
-    <version.org.keycloak>2.5.5.Final</version.org.keycloak>
+    <version.org.keycloak>9.0.3</version.org.keycloak>
   </properties>
 
   <dependencies>
