@@ -462,7 +462,7 @@ module Apiman {
                     $scope.beforeSaveDescription = function (value?: string) {
                         if (value && value.length !== 0) {
                             Logger.debug('$scope.descr is {0}', $scope.descr)
-                            var TEXT_VALIDATION = /^[0-9A-z_\- .,]+$/;
+                            var TEXT_VALIDATION = /^[ -~]+$/;
 
                             if (!TEXT_VALIDATION.test(value)) {
                                 return TranslationSvc.translate('text-error', 'The value is not valid!');
@@ -687,7 +687,7 @@ module Apiman {
                 ngModel.$parsers.push(function (value?: string) {
                     scope.gatewayForm && console.debug(`${scope.gatewayForm.description.$invalid}`)
                     if (value && value.length !== 0) {
-                        var TEXT_VALIDATION = /^[0-9A-z_\- .,]+$/;
+                        var TEXT_VALIDATION = /^[ -~]+$/;
 
                         if (TEXT_VALIDATION.test(value)) {
                             ngModel.$setValidity('text', true)

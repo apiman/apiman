@@ -9,7 +9,7 @@
 <body>
 
   <div ng-include="headerInclude"></div>
-  <form name="policyForm" ng-controller="Apiman.EditPolicyController" id="form-page" class="container apiman-edit-policy apiman-entity-new page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
+  <div ng-controller="Apiman.EditPolicyController" id="form-page" class="container apiman-edit-policy apiman-entity-new page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
     <div class="row">
       <h2 class="title" data-field="heading" apiman-i18n-key="edit-policy">Edit Policy</h2>
     </div>
@@ -41,7 +41,7 @@
       <button id="update-policy" ng-show="hasPermission && !isEntityDisabled()" apiman-action-btn="" ng-click="updatePolicy()" ng-disabled="!isValid" class="btn btn-primary" data-field="updateButton" apiman-i18n-key="update-policy" placeholder="Updating..." data-icon="fa-cog">Update Policy</button>
       <a id="cancel" data-field="cancelButton" href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" apiman-i18n-key="cancel">Cancel</a>
     </div>
-  </form> <!-- /container -->
+  </div> <!-- /container -->
 </body>
 
 </html>

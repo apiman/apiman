@@ -15,8 +15,8 @@ module Apiman {
     };
 
     _module.controller('Apiman.DefaultPolicyConfigFormController',
-        ['$scope', 'Logger', 'EntityStatusSvc',
-        ($scope, Logger, EntityStatusSvc) => {
+        ['$scope', 'EntityStatusSvc',
+        ($scope, EntityStatusSvc) => {
             var validateRaw = function(config) {
                 var valid = true;
                 try {
@@ -127,8 +127,8 @@ module Apiman {
         }]);
 
     _module.controller('Apiman.RateLimitingFormController',
-        ['$scope', 'Logger', 'EntityStatusSvc',
-        ($scope, Logger, EntityStatusSvc) => {
+        ['$scope', 'EntityStatusSvc',
+        ($scope, EntityStatusSvc) => {
             var validate = function(config) {
                 var valid = true;
 
@@ -165,8 +165,8 @@ module Apiman {
         }]);
 
     _module.controller('Apiman.QuotaFormController',
-        ['$scope', 'Logger', 'EntityStatusSvc',
-        ($scope, Logger, EntityStatusSvc) => {
+        ['$scope', 'EntityStatusSvc',
+        ($scope, EntityStatusSvc) => {
             var validate = function(config) {
                 var valid = true;
                 if (config.limit) {
@@ -202,8 +202,8 @@ module Apiman {
     export var GB = 1024 * 1024 * 1024;
 
     _module.controller('Apiman.TransferQuotaFormController',
-        ['$scope', 'Logger', 'EntityStatusSvc',
-        ($scope, Logger, EntityStatusSvc) => {
+        ['$scope', 'EntityStatusSvc',
+        ($scope, EntityStatusSvc) => {
             $scope.limitDenomination = 'B';
 
             if ($scope.config && $scope.config.limit) {
@@ -286,17 +286,9 @@ module Apiman {
         }]);
 
     _module.controller('Apiman.IPListFormController',
-        ['$scope', 'Logger', 'EntityStatusSvc',
-        ($scope, Logger, EntityStatusSvc) => {
-            var validate = function(config) {
-                var valid = true;
-                if (!$scope.config.ipList || $scope.config.ipList.length === 0) {
-                    valid = false;
-                }
-                $scope.setValid(valid);
-            };
-
-            $scope.$watch('config', validate, true);
+        ['$scope', 'EntityStatusSvc',
+        ($scope, EntityStatusSvc) => {
+            $scope.$watch('config', () => $scope.setValid(true), true);
 
             if (!$scope.config.ipList) {
                 $scope.config.ipList = [];
@@ -341,8 +333,8 @@ module Apiman {
         }]);
 
     _module.controller('Apiman.IgnoredResourcesFormController',
-        ['$scope', 'Logger', 'EntityStatusSvc',
-        ($scope, Logger, EntityStatusSvc) => {
+        ['$scope', 'EntityStatusSvc',
+        ($scope, EntityStatusSvc) => {
             var validate = function(config) {
               	var valid = config.rules && config.rules.length > 0;
                 $scope.setValid(valid);
@@ -387,8 +379,8 @@ module Apiman {
         }]);
 
     _module.controller('Apiman.BasicAuthFormController',
-        ['$scope', 'Logger', 'EntityStatusSvc',
-        ($scope, Logger, EntityStatusSvc) => {
+        ['$scope', 'EntityStatusSvc',
+        ($scope,  EntityStatusSvc) => {
             var validate = function(config) {
                 if (!config) {
                     return;
@@ -572,8 +564,8 @@ module Apiman {
         }]);
 
     _module.controller('Apiman.AuthorizationFormController',
-        ['$scope', 'Logger', 'EntityStatusSvc',
-        ($scope, Logger, EntityStatusSvc) => {
+        ['$scope', 'EntityStatusSvc',
+        ($scope, EntityStatusSvc) => {
             var validate = function(config) {
                 var valid = config.rules && config.rules.length > 0;
 
@@ -635,8 +627,8 @@ module Apiman {
         }]);
 
     _module.controller('Apiman.CachingFormController',
-        ['$scope', 'Logger', 'EntityStatusSvc',
-        ($scope, Logger, EntityStatusSvc) => {
+        ['$scope', 'EntityStatusSvc',
+        ($scope, EntityStatusSvc) => {
             var validate = function(config) {
                 var valid = false;
 
@@ -741,8 +733,8 @@ module Apiman {
             }]);
 
     _module.controller('Apiman.URLRewritingFormController',
-        ['$scope', 'Logger', 'EntityStatusSvc',
-        ($scope, Logger, EntityStatusSvc) => {
+        ['$scope', 'EntityStatusSvc',
+        ($scope, EntityStatusSvc) => {
             var validate = function(config) {
                 var valid = true;
 
@@ -777,8 +769,8 @@ module Apiman {
 
 
       _module.controller('Apiman.TimeRestrictedAccessFormController',
-        ['$window','$scope', 'Logger', 'EntityStatusSvc',
-        ($window, $scope, Logger, EntityStatusSvc) => {
+        ['$window','$scope', 'EntityStatusSvc',
+        ($window, $scope, EntityStatusSvc) => {
             var moment=$window.moment;
             var isoTimeFormat="HH:mm:ss";
             var validate = function(config) {

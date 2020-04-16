@@ -5,28 +5,10 @@ module Apiman {
     export var EditGatewayController = _module.controller("Apiman.EditGatewayController",
         ['$location', '$q', '$rootScope', '$routeParams', '$scope', '$uibModal', 'ApimanSvcs', 'PageLifecycle',
         ($location, $q, $rootScope, $routeParams, $scope, $uibModal, ApimanSvcs, PageLifecycle) => {
-            $scope.isValid = false;
             var params = $routeParams;
             
             var validate = function() {
                 $scope.testResult = 'none';
-                $scope.isValid = $scope.editGateway.$valid;
-                
-                // Now dirty
-                var dirty = false;
-                if ($scope.gateway.description != $scope.originalGateway.description) {
-                    dirty = true;
-                }
-                if ($scope.configuration.endpoint != $scope.originalConfig.endpoint) {
-                    dirty = true;
-                }
-                if ($scope.configuration.username != $scope.originalConfig.username) {
-                    dirty = true;
-                }
-                if ($scope.configuration.password != $scope.originalConfig.password) {
-                    dirty = true;
-                }
-                $rootScope.isDirty = dirty;
             };
             
             var Gateway = function() {

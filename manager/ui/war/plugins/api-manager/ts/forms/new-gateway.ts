@@ -2,9 +2,8 @@
 module Apiman {
 
     export var NewGatewayController = _module.controller("Apiman.NewGatewayController",
-        ['$q', '$location', '$scope', 'ApimanSvcs', 'PageLifecycle', 'CurrentUser', 'Logger',
-        ($q, $location, $scope, ApimanSvcs, PageLifecycle, CurrentUser, Logger) => {
-            $scope.isValid = false;
+        ['$scope', 'ApimanSvcs', 'PageLifecycle', 'Logger',
+        ($scope, ApimanSvcs, PageLifecycle, Logger) => {
             $scope.gateway = {};
             $scope.configuration = {
                 endpoint: 'http://localhost:8080/apiman-gateway-api/'
@@ -12,11 +11,6 @@ module Apiman {
             
             var validate = function() {
                 $scope.testResult = 'none';
-                var valid = $scope.gateway;
-                if ($scope.configuration.password != $scope.passwordConfirm) {
-                    valid = false;
-                }
-                $scope.isValid = valid;
             };
             
             $scope.$watch('gateway', validate, true);

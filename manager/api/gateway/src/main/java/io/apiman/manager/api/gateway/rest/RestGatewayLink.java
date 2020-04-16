@@ -100,10 +100,10 @@ public class RestGatewayLink implements IGatewayLink {
             String cfg = gateway.getConfiguration();
             cfg = CurrentDataEncrypter.instance.decrypt(cfg, new DataEncryptionContext());
             cfg = PROPERTY_SUBSTITUTOR.replace(cfg);
-            setConfig((RestGatewayConfigBean) mapper.reader(RestGatewayConfigBean.class).readValue(cfg));
-            getConfig().setPassword(
+            this.config = (RestGatewayConfigBean) mapper.reader(RestGatewayConfigBean.class).readValue(cfg);
+            this.config.setPassword(
                 PROPERTY_SUBSTITUTOR.replace(
-                  CurrentDataEncrypter.instance.decrypt(getConfig().getPassword(), new DataEncryptionContext())));
+                  CurrentDataEncrypter.instance.decrypt(this.config.getPassword(), new DataEncryptionContext())));
             httpClient = HttpClientBuilder.create()
                     .setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE)
                     .setSSLSocketFactory(sslConnectionFactory)
@@ -215,8 +215,8 @@ public class RestGatewayLink implements IGatewayLink {
      */
     protected void configureBasicAuth(HttpRequest request) {
         try {
-            String username = getConfig().getUsername();
-            String password = getConfig().getPassword();
+            String username = this.config.getUsername();
+            String password = this.config.getPassword();
             String up = username + ":" + password; //$NON-NLS-1$
             String base64 = new String(Base64.encodeBase64(up.getBytes("UTF-8"))); //$NON-NLS-1$
             String authHeader = "Basic " + base64; //$NON-NLS-1$
@@ -240,7 +240,7 @@ public class RestGatewayLink implements IGatewayLink {
      * @return a newly created rest gateway client
      */
     private GatewayClient createClient() {
-        String gatewayEndpoint = getConfig().getEndpoint();
+        String gatewayEndpoint = this.config.getEndpoint();
         return new GatewayClient(gatewayEndpoint, httpClient);
     }
 
