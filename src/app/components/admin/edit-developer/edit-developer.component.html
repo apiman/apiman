@@ -1,7 +1,10 @@
-<h1 *ngIf="developer">Edit Client Mapping for {{developer.name}}</h1>
+<h1 *ngIf="developer">Edit Developer&#58; {{developer.name}}</h1>
 
 <div class="wrapper">
+  <h3>Update Client-Mapping</h3>
   <app-client-mapping #clientmapping [assignedClients]="assignedClients"></app-client-mapping>
-  <button (click)="updateDeveloper()">Save</button>
-  <button routerLink="/admin">Cancel</button>
+  <p>
+    <button (click)="updateDeveloper()">Update</button>
+    <button routerLink="/admin">Cancel</button>
+  </p>
 </div>
