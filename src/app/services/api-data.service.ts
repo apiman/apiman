@@ -159,17 +159,6 @@ export interface GatewayEndpoint {
   endpoint: string;
 }
 
-/**
- * Keycloak User
- */
-export interface KeycloakUser {
-  username: string;
-  email: string;
-  firstName: string;
-  lastName: string;
-  password: string;
-}
-
 @Injectable({
   providedIn: 'root'
 })

@@ -53,8 +53,6 @@ export class ApiListComponent implements OnInit {
     static inactive = 'Inactive';
   };
 
-  // @Input('developerId') developerId;
-
   constructor(private router: Router,
               private apiDataService: ApiDataService,
               private toasterService: ToasterService,
