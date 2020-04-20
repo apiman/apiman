@@ -36,7 +36,7 @@ public class UrlWhitelistPolicyTest extends ApimanPolicyTest {
 
     /**
      * Makes a request with the given {@code method} to the specified {@code resource}, expecting an
-     * HTTP 401 Unauthorized response.
+     * HTTP 403 response.
      *
      * @param method   the HTTP method
      * @param resource the resource to request

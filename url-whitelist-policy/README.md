@@ -6,7 +6,7 @@ The policy allows the user to control which incoming requests are permitted to b
 
 ## How it works
 
-On receiving a request, the policy normalises the incoming URL, then applies the configured rules using a regular expression against the normalised URL. If both URL and HTTP method are permitted, the request is passed to the back-end API unmodified. If not, an HTTP 401 Unauthorized response is returned and the call to the back-end service is not made.
+On receiving a request, the policy normalises the incoming URL, then applies the configured rules using a regular expression against the normalised URL. If both URL and HTTP method are permitted, the request is passed to the back-end API unmodified. If not, an HTTP 403 response is returned and the call to the back-end service is not made.
 
 ## Author
 
