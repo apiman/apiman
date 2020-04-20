@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import {forkJoin, from, Observable, ObservedValueOf} from 'rxjs';
 import {map, mergeAll, mergeMap, toArray} from 'rxjs/operators';
 import {ApiDataService, ApiVersion, Client, Contract} from '../../../services/api-data.service';
@@ -20,7 +20,8 @@ export interface ApiListElement {
   clientVersion: string;
   endpoint: string;
   apikey: string;
-  swaggerDefinitionType: string;
+  definitionType: string;
+  apimanDefinitionUrl: string;
   swaggerURL: string;
 }
 
@@ -57,7 +58,8 @@ export class ApiListComponent implements OnInit {
               private apiDataService: ApiDataService,
               private toasterService: ToasterService,
               private loadingSpinnerService: SpinnerService,
-              private keycloak: KeycloakService) {
+              private keycloak: KeycloakService,
+              @Inject('API_MGMT_UI_REST_URL') private apiMgmtUiRestUrl: string) {
     this.sortedApiData = this.apiData;
   }
 
@@ -133,7 +135,8 @@ export class ApiListComponent implements OnInit {
       status: this.computeStatus(clientVersion.status, apiVersionDetails.status),
       endpoint: this.buildApiEndpoint(gateway.endpoint, contract.apiOrganizationId, contract.apiId, contract.apiVersion, clientVersion.apiKey),
       apikey: clientVersion.apiKey,
-      swaggerDefinitionType: apiVersionDetails.definitionType,
+      definitionType: apiVersionDetails.definitionType,
+      apimanDefinitionUrl: this.apiMgmtUiRestUrl + '/developers/' + this.developerId + '/organizations/' + contract.apiOrganizationId + '/apis/' + contract.apiId + '/versions/' + contract.apiVersion + '/definition',
       swaggerURL: '/swagger/developer/' + this.developerId + '/organizations/' + contract.apiOrganizationId + '/apis/' + contract.apiId + '/versions/' + contract.apiVersion
     };
   }
@@ -178,6 +181,52 @@ export class ApiListComponent implements OnInit {
         }
       }
     });
+  }
+
+  /**
+   * This method will download the definition file of an API
+   * @param event the click event to stop expanding of the table
+   * @param entry the table entry
+   */
+  downloadDefinitionFile(event, entry: ApiListElement) {
+    event.stopPropagation();
+    this.apiDataService.getApiDefinition(entry.apimanDefinitionUrl).subscribe(data => {
+      this.downloadFile(data, entry.apiName, entry.apiVersion, entry.definitionType);
+    });
+  }
+
+  /**
+   * This method will create and name the definition file and creates the download
+   * The name pattern is: apiName-apiVersion.fileEnding e.g. Petstore-1.0.json
+   * @param data the definition as blob
+   * @param apiName the name of the API
+   * @param apiVersion the version of the API
+   * @param definitionType the definition type of the API (SwaggerJSON, SwaggerYAML, WSDL)
+   */
+  downloadFile(data: Blob, apiName: string, apiVersion: string, definitionType: string) {
+    let type = 'text/json';
+    let fileEnding = '.json';
+    switch (definitionType) {
+      case 'SwaggerJSON':
+        type = 'text/json';
+        fileEnding = '.json';
+        break;
+      case 'SwaggerYAML':
+        type = 'text/yaml';
+        fileEnding = '.yaml';
+        break;
+      case 'WSDL':
+        type = 'text/xml';
+        fileEnding = '.wsdl';
+        break;
+    }
+
+    const downloadLink = document.createElement('a');
+    const blob = new Blob([data], {type});
+    downloadLink.href = window.URL.createObjectURL(blob);
+    downloadLink.setAttribute('download', apiName + '-' + apiVersion + fileEnding);
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
   }
 
   /**

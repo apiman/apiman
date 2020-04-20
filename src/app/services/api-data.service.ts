@@ -219,4 +219,12 @@ export class ApiDataService {
     const url = this.apiMgmtUiRestUrl + '/gateways/' + gatewayId + '/endpoint';
     return this.http.get(url) as Observable<GatewayEndpoint>;
   }
+
+  /**
+   * Get the API Definition as blob
+   * @param url the URL to the apiman definition
+   */
+  public getApiDefinition(url: string) {
+    return this.http.get(url, {responseType: 'blob'});
+  }
 }
