@@ -281,6 +281,7 @@
     <module>apikey-policy</module>
     <module>circuit-breaker-policy</module>
     <module>cors-policy</module>
+    <module>header-allow-deny-policy</module>
     <module>http-security-policy</module>
     <module>jsonp-policy</module>
     <module>keycloak-oauth-policy</module>
