@@ -24,6 +24,13 @@
     },
     {
       "groupId" : "io.apiman.plugins",
+      "artifactId" : "apiman-plugins-header-allow-deny-policy",
+      "version" : "1.5.6-SNAPSHOT",
+      "name" : "Header Allow/Deny Policy Plugin",
+      "description" : "Provides a policy that permits or denies requests matching certain HTTP headers."
+    },
+    {
+      "groupId" : "io.apiman.plugins",
       "artifactId" : "apiman-plugins-http-security-policy",
       "version" : "1.5.6-SNAPSHOT",
       "name" : "HTTP Security Policy Plugin",
