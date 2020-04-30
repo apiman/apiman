@@ -43,7 +43,7 @@
     "gulp-replace": "0.5.4",
     "gulp-typescript": "2.9.1",
     "gulp-watch": "4.3.5",
-    "jquery": "3.3.1",
+    "jquery": "3.5.0",
     "js-logger": "1.2.0",
     "json-editor": "0.7.23",
     "lodash": "^4.17.15",
