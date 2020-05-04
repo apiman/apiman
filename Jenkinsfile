@@ -89,7 +89,7 @@ pipeline {
         }
         steps {
           withDockerRegistry([credentialsId: 'nexus', url: "https://gitlab.scheer-group.com:8080"]) {
-            sh './ci/publish-images.sh ${PACKAGE_VERSION} nighty'
+            sh './ci/publish-images.sh ${PACKAGE_VERSION} nightly'
           }
         }
     }
