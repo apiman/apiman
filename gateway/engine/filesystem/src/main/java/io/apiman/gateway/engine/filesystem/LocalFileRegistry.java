@@ -71,6 +71,8 @@ public class LocalFileRegistry extends InMemoryRegistry {
                         } catch (Exception e) {
                             throw new RuntimeException("Error reading registry from file: " + registryFile, e);
                         }
+                    } else {
+                        System.err.println("Local registry file does not exists under path " + registryFile.getAbsolutePath());
                     }
                     map = registryMap;
                 }
