@@ -115,6 +115,7 @@ export class CreateDeveloperComponent implements OnInit, OnDestroy {
    */
   checkDeveloperNotExists(username: string) {
     return this.developerDataCache.developers
+      && username !== undefined
       && this.developerDataCache.developers.find((d) => d.name.toLowerCase() === username.toLowerCase()) === undefined;
   }
 
