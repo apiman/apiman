@@ -4,6 +4,7 @@ import io.apiman.gateway.engine.beans.Api;
 import org.junit.Test;
 
 import java.io.File;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.util.Collections;
 import java.util.HashMap;
@@ -62,7 +63,12 @@ public class LocalFileRegistryTest {
     @Test
     public void readExistingRegistry() {
         final Map<String, String> config = new HashMap<String, String>() {{
-            put(CONFIG_REGISTRY_PATH, LocalFileRegistryTest.class.getResource("/populated-registry.json").getPath());
+            try {
+                put(CONFIG_REGISTRY_PATH, LocalFileRegistryTest.class.getResource("/populated-registry.json").toURI().getPath());
+            } catch (URISyntaxException e) {
+                System.err.println("Cannot access populated-registry.json resource");
+                e.printStackTrace();
+            }
         }};
 
         final LocalFileRegistry registry = new LocalFileRegistry(config);
