@@ -18,6 +18,10 @@ describe('CreateDeveloperComponent', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
+  // TODO add with right initialization
+  // it('should create', () => {
+  //   expect(component).toBeTruthy();
+  // });
 
   it('should create', () => {
     expect(component).toBeTruthy();

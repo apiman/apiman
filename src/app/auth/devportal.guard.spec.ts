@@ -8,8 +8,4 @@ describe('DevportalGuard', () => {
       providers: [DevportalGuard]
     });
   });
-
-  it('should ...', inject([DevportalGuard], (guard: DevportalGuard) => {
-    expect(guard).toBeTruthy();
-  }));
 });
