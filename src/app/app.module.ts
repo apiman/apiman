@@ -32,7 +32,6 @@ import { MatInputModule } from '@angular/material/input';
 import { _MatMenuDirectivesModule, MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSortModule } from '@angular/material/sort';
-import { MatStepperModule } from '@angular/material/stepper';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import {EditDeveloperComponent} from './components/admin/edit-developer/edit-developer.component';
 import {NotAuthorizedComponent} from './components/not-authorized/not-authorized.component';
@@ -80,7 +79,6 @@ import {TokenService} from './services/token.service';
     MatSortModule,
     _MatMenuDirectivesModule,
     MatMenuModule,
-    MatStepperModule,
     MatCardModule,
   ],
   providers: [

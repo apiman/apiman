@@ -10,19 +10,3 @@
 #userForm {
  //No styling at the moment
 }
-
-// stepper styling
-::ng-deep .mat-step-icon {
-  background-color: var(--scheer-grey-color-fill) !important;
-}
-// stepper styling
-::ng-deep .mat-step-icon-selected, ::ng-deep .mat-step-icon-state-edit {
-  background-color: var(--scheer-bg-color) !important;
-}
-// stepper styling
-::ng-deep .mat-form-field.mat-focused .mat-form-field-label {
-  color: black!important;
-}// stepper styling
-::ng-deep .mat-form-field.mat-focused .mat-form-field-ripple {
-  background-color: black!important;
-}
