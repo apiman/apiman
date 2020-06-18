@@ -48,6 +48,36 @@ pipeline {
       }
     }
 
+    stage('Prepare base docker image') {
+      steps {
+        sh """
+          docker build -t devportal-base:latest -f ./docker/images/base/Dockerfile .
+          docker build -t devportal-tests:latest -f ./docker/images/test/Dockerfile .
+        """
+      }
+    }
+
+    stage('Tests') {
+      agent {
+        docker {
+          image 'devportal-tests:latest'
+          label 'docker'
+          args '-u root:root'
+        }
+      }
+      steps {
+        sh "cd '/usr/src/app/' && npm run test"
+        /* copy test result into workspace destination */
+        sh "cp -r /usr/src/app/junit/* ./junit"
+      }
+      post {
+        always {
+          /* collect the test results */
+          junit "junit/api-mgmt-dev-portal/*.xml*"
+        }
+      }
+    }
+
     stage('Build docker image') {
       steps {
         sh """
@@ -143,7 +173,11 @@ pipeline {
 
     stage('Remove container image') {
       steps {
-        sh "docker image rm -f api-mgmt/devportal:${PACKAGE_VERSION}"
+        sh """
+          docker image rm -f api-mgmt/devportal:${PACKAGE_VERSION} || true
+          docker image rm devportal-tests:latest || true
+          docker image rm devportal-base:latest || true
+          """
       }
     }
 

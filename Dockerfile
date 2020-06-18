@@ -1,19 +1,11 @@
-FROM node:12.18.0-alpine as node
-
-WORKDIR /usr/src/app
-
-COPY package*.json ./
-
-RUN npm install
-#copy the rest of the project into the image
-COPY . .
+FROM devportal-base:latest as base
 
 RUN npm run build-production
 
 # Stage 2
 FROM nginx:1.17.10-alpine
 
-COPY --from=node /usr/src/app/dist/api-mgmt-dev-portal /usr/share/nginx/html
+COPY --from=base /usr/src/app/dist/api-mgmt-dev-portal /usr/share/nginx/html
 
 #copy ssl keys
 COPY docker/tls.crt /etc/ssl/certs/tls.crt
