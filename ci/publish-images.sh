@@ -9,4 +9,5 @@ if [[ $2 = "release" ]]; then
 else
     docker tag api-mgmt/devportal:$1 gitlab.scheer-group.com:8080/api-mgmt/devportal:$2
     docker push gitlab.scheer-group.com:8080/api-mgmt/devportal:$2
+    docker image rm -f gitlab.scheer-group.com:8080/api-mgmt/devportal:$2
 fi
