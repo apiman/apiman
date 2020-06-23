@@ -20,28 +20,30 @@ describe('CreateDeveloperComponent', () => {
   let component: CreateDeveloperComponent;
   let fixture: ComponentFixture<CreateDeveloperComponent>;
 
+  const keycloakUsers =     [{
+    id: 'cf79aa9e-6443-4d1b-99cb-a743d335b2b7',
+    username: 'admin',
+    enabled: false,
+    totp: false,
+    emailVerified: false,
+    firstName: 'apiman',
+    lastName: 'admin',
+    email: 'admin@example.org',
+    disableableCredentialTypes: [],
+    requiredActions: [],
+    notBefore: 1547455742,
+    access: {
+      manageGroupMembership: true,
+      view: true,
+      mapRoles: true,
+      impersonate: false,
+      manage: true
+    }
+  }];
+
   const adminService = jasmine.createSpyObj('adminService', ['getKeycloakUsers', 'getAllClients']);
   adminService.getKeycloakUsers.and.returnValue(from(
-    [{
-      id: 'cf79aa9e-6443-4d1b-99cb-a743d335b2b7',
-      username: 'admin',
-      enabled: false,
-      totp: false,
-      emailVerified: false,
-      firstName: 'apiman',
-      lastName: 'admin',
-      email: 'admin@example.org',
-      disableableCredentialTypes: [],
-      requiredActions: [],
-      notBefore: 1547455742,
-      access: {
-        manageGroupMembership: true,
-        view: true,
-        mapRoles: true,
-        impersonate: false,
-        manage: true
-      }
-    }]
+    keycloakUsers
   ));
   adminService.getAllClients.and.returnValue(from(
     [
@@ -79,7 +81,6 @@ describe('CreateDeveloperComponent', () => {
   const toasterService = jasmine.createSpyObj('toasterService', ['pop']);
   const loadingSpinnerService = jasmine.createSpyObj('loadingSpinnerService', ['startWaiting', 'stopWaiting']);
 
-
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ CreateDeveloperComponent, ClientMappingComponent ],
@@ -106,7 +107,7 @@ describe('CreateDeveloperComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(CreateDeveloperComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
+    component.ngOnInit();
   });
   it('should create', () => {
     expect(component).toBeTruthy();
@@ -115,8 +116,17 @@ describe('CreateDeveloperComponent', () => {
   it('checkDeveloperNotExists', () => {
     expect(developerDataCache.developers).not.toBe(null);
     expect(developerDataCache.developers).not.toBe(undefined);
-    expect(component.checkDeveloperNotExists(undefined)).toBeFalsy();
+    // expects true for undefined input to hide the notification in the UI
+    expect(component.checkDeveloperNotExists(undefined)).toBeTruthy();
     expect(component.checkDeveloperNotExists('Alice')).toBeFalsy();
     expect(component.checkDeveloperNotExists('Bob')).toBeTruthy();
+  });
+
+  it('checkUserExistsInKeycloak', () => {
+    component.keycloakUsers = keycloakUsers;
+    expect(component.checkUserExistsInKeycloak(undefined)).toBeFalsy();
+    expect(component.checkUserExistsInKeycloak(null)).toBeFalsy();
+    expect(component.checkUserExistsInKeycloak('alice')).toBeFalsy();
+    expect(component.checkUserExistsInKeycloak('admin')).toBeTruthy();
   });
 });

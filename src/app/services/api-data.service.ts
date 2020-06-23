@@ -118,7 +118,6 @@ export interface ClientMapping {
  */
 export interface Developer {
   id: string;
-  name: string;
   clients: Array<ClientMapping>;
 }
 

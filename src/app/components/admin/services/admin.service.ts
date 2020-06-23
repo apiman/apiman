@@ -79,7 +79,6 @@ export class AdminService {
   public updateDeveloper(developer: Developer) {
     const url = this.apiMgmtUiRestUrl + '/developers/' + developer.id;
     return this.http.put(url, {
-      name: developer.name,
       clients: developer.clients
     });
   }

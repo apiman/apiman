@@ -16,7 +16,7 @@
   <app-client-mapping #clientmapping [assignedClients]="[]"></app-client-mapping>
   <p>
     <button
-      [disabled]="!this.checkDeveloperNotExists(this.userFormGroup.get('username').value) || !userFormGroup.valid"
+      [disabled]="!this.checkDeveloperNotExists(this.userFormGroup.get('username').value) || !this.checkUserExistsInKeycloak(this.userFormGroup.get('username').value) || !userFormGroup.valid"
       (click)="insertDeveloper()">Save
     </button>
     <button routerLink="/admin">Cancel</button>

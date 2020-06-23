@@ -102,7 +102,7 @@ export class CreateDeveloperComponent implements OnInit, OnDestroy {
         this.toasterService.pop('error', errorMessage, error.message);
 
         const developerIndexToDelete = this.developerDataCache.developers
-          .findIndex(developer => developer.name.toLowerCase() === developerToCreate.name.toLowerCase());
+          .findIndex(developer => developer.id.toLowerCase() === developerToCreate.id.toLowerCase());
         if (developerIndexToDelete !== -1) {
           this.developerDataCache.developers.splice(developerIndexToDelete, 1);
         }
@@ -114,9 +114,20 @@ export class CreateDeveloperComponent implements OnInit, OnDestroy {
    * @param username the developer username
    */
   checkDeveloperNotExists(username: string) {
-    return this.developerDataCache.developers
-      && username !== undefined
-      && this.developerDataCache.developers.find((d) => d.name.toLowerCase() === username.toLowerCase()) === undefined;
+    if (username && username.length !== 0) {
+      return this.developerDataCache.developers
+        && this.developerDataCache.developers.find((d) => d.id.toLowerCase() === username.toLowerCase()) === undefined;
+    } else {
+      return true;
+    }
+  }
+
+  /**
+   * Check if the user exists in keycloak
+   * @param username the developer username
+   */
+  checkUserExistsInKeycloak(username: string) {
+    return this.keycloakUsers.find((u) => u.username.toLowerCase() === username) !== undefined;
   }
 
   /**
