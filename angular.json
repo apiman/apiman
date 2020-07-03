@@ -102,6 +102,7 @@
             ],
             "styles": [
               "src/styles/styles.scss",
+              "node_modules/typeface-roboto/index.css",
               "./node_modules/angular2-toaster/src/toaster.scss",
               "./node_modules/swagger-ui-dist/swagger-ui.css",
               "src/styles/swagger-custom-styles.css"

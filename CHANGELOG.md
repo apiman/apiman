@@ -11,6 +11,7 @@
 
 ### Minor
 
+- GW-395: Install offline resources
 - Add CHANGELOG.md
 - Change settings for local development
 - GW-255: List public apis
