@@ -14,6 +14,13 @@ Run `ng generate component component-name` to generate a new component. You can 
 
 Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
 
+### Build docker image locally
+
+To build the docker image locally you have to run the following two Intellij run configurations:
+
+1. Build devportal-base:latest
+2. Build api-mgmt/devportal:latest
+
 ## Running unit tests
 
 Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
