@@ -62,3 +62,4 @@
     </ul>
   </div>
 </nav>
+      <div ng-include="'plugins/api-manager/html/sidebar/sidebar.include'"></div>

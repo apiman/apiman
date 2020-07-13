@@ -1,0 +1,71 @@
+<div class="sidebar" ng-controller="Apiman.SidebarController">
+
+<div class="sidebar-category">Menu</div>
+
+ <a href="{{ pluginName }}">
+    <i class="icon-text fa fa-lg fa-tachometer"></i>
+    <span class="icon-text" apiman-i18n-key="dashboard">
+        Dashboard
+    </span>
+</a>
+  
+  <a href="{{ pluginName }}/browse/orgs">
+    <i class="icon-text fa fa-lg fa-shield"></i>
+    <span class="icon-text" apiman-i18n-key="organizations">
+        Organizations
+    </span>
+</a>
+
+ <a href="{{ pluginName }}/users/{{ currentUser.username }}/clients">
+    <i class="icon-text fa fa-lg fa-gears"></i>
+    <span class="icon-text" apiman-i18n-key="clients">
+        Clients
+    </span>
+ </a>
+
+ <a href="{{ pluginName }}/users/{{ currentUser.username }}/apis">
+    <i class="icon-text fa fa-lg fa-puzzle-piece"></i>
+    <span class="icon-text" apiman-i18n-key="apis">
+        APIs
+    </span>
+ </a>
+
+ <div id="sys-admin-area" ng-show="isAdmin">
+    <div class="sidebar-category" apiman-i18n-key="system-administration">Administration</div>
+
+        <a id="admin-roles" href="{{ pluginName }}/admin/roles" data-field="manageRoles">
+         <i class="icon-text fa fa-lg fa-lock"></i>
+            <span class="icon-text" apiman-i18n-key="actions.manage-roles">
+                Roles/Permissions
+            </span>
+        </a>
+
+        
+        <a id="admin-policyDefs" href="{{ pluginName }}/admin/policyDefs" data-field="managePolicyDefs">
+         <i class="icon-text fa fa-lg fa-server"></i>
+            <span class="icon-text" apiman-i18n-key="actions.manage-policyDefs">
+                Policy Definitions
+            </span>
+        </a>
+        
+        <a id="admin-gateways" href="{{ pluginName }}/admin/gateways" data-field="manageGateways">
+         <i class="icon-text fa fa-lg fa-location-arrow"></i>
+            <span class="icon-text" apiman-i18n-key="actions.manage-gateways">
+                Gateways
+            </span>
+        </a>
+        <a id="admin-plugins" href="{{ pluginName }}/admin/plugins" data-field="managePlugins">
+         <i class="icon-text fa fa-lg fa-plug"></i>
+            <span class="icon-text" apiman-i18n-key="actions.manage-plugins" >
+                Plugins
+            </span>
+        </a>
+        <a id="admin-export" href="{{ pluginName }}/admin/export">
+        <i class="icon-text fa fa-lg fa-exchange"></i>
+            <span class="icon-text" apiman-i18n-key="export-import-data">
+                Import/Export
+            </span>
+        </a>
+        </a>
+        </div>
+</div>
