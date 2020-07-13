@@ -1,12 +1,11 @@
 
 html {
- overflow: hidden;
+ overflow: overlay;
 }
 
 body {
   line-height: normal;
   font-size: 13px;
-  overflow: auto;
 }
 
 textarea#api-definition.apiman-form-data {
@@ -197,7 +196,11 @@ textarea.apiman-form-data {
 }
 #apiman-progress-indicator {
   border-bottom: 2px solid rgb(25, 157, 222);
+  position: fixed;
+  top: 0px;
+  width: 100%;
 }
+
 #apiman-progress-indicator.loading {
   animation-duration: 1.5s;
   animation-name: progressPulse;
@@ -211,6 +214,11 @@ textarea.apiman-form-data {
 #apiman-header {
   background-color: rgb(36, 52, 70);
   border-bottom: 1px solid black;
+  position:fixed;
+  top:2px;
+  z-index: 1;
+  width: 100%;
+  height: 50px;
 }
 #apiman-header .main-header {
   padding-top: 5px;
@@ -361,8 +369,7 @@ textarea.apiman-form-data {
 }
 
 div.page {
-  margin-top: 20px;
-  margin-bottom: 20px;
+  margin-top: 51px;
   margin-left: 210px;
 }
 
@@ -1997,13 +2004,11 @@ html, body {height: 100%;}
   height: 100%;
   width: 200px;
   position: fixed;
-  z-index: 1; 
-  left: 0;
+  top:51px;
   padding: 5px;
   background-color: rgb(14, 19, 24);
-  transition: 0.5s;
-  overflow-x: hidden;
   white-space: nowrap;
+  z-index: 1; 
 }
 
 .sidebar a {
