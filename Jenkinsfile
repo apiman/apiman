@@ -194,22 +194,28 @@ pipeline {
         jenkinsJiraIntegration(['JiraSiteName': 'Jira'])
       }
     }
+    aborted {
+      emailext to: 'benjamin.kihm@scheer-group.com, florian.volk@scheer-group.com',
+        recipientProviders: [[$class: 'CulpritsRecipientProvider']],
+        subject: '${DEFAULT_SUBJECT}',
+        body: '${DEFAULT_CONTENT}'
+    }
     unstable {
-      emailext to: 'benjamin.kihm@scheer-group.com',
+      emailext to: 'benjamin.kihm@scheer-group.com, florian.volk@scheer-group.com',
       recipientProviders: [[$class: 'CulpritsRecipientProvider']],
       subject: '${DEFAULT_SUBJECT}',
       body: '${DEFAULT_CONTENT}'
     }
 
     failure {
-      emailext to: 'benjamin.kihm@scheer-group.com',
+      emailext to: 'benjamin.kihm@scheer-group.com, florian.volk@scheer-group.com',
       recipientProviders: [[$class: 'CulpritsRecipientProvider']],
       subject: '${DEFAULT_SUBJECT}',
       body: '${DEFAULT_CONTENT}'
     }
 
     fixed {
-      emailext to: 'benjamin.kihm@scheer-group.com',
+      emailext to: 'benjamin.kihm@scheer-group.com, florian.volk@scheer-group.com',
       recipientProviders: [[$class: 'CulpritsRecipientProvider']],
       subject: '${DEFAULT_SUBJECT}',
       body: '${DEFAULT_CONTENT}'
