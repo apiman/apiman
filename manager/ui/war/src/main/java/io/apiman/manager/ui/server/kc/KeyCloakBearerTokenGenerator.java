@@ -49,7 +49,7 @@ public class KeyCloakBearerTokenGenerator implements ITokenGenerator {
         if (session != null) {
             bean.setToken(session.getTokenString());
             int nowInSeconds = getCurrentTime();
-            int expiresInSeconds = session.getToken().getExpiration();
+            long expiresInSeconds = session.getToken().getExp();
 
             if (expiresInSeconds <= nowInSeconds) {
                 bean.setRefreshPeriod(1);

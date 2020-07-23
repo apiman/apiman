@@ -27,7 +27,7 @@ public class BearerTokenCredentialsBean implements Serializable {
     private static final long serialVersionUID = -876646690486553629L;
     
     private String token;
-    private int refreshPeriod; // in seconds
+    private long refreshPeriod; // in seconds
 
     /**
      * Constructor.
@@ -52,14 +52,14 @@ public class BearerTokenCredentialsBean implements Serializable {
     /**
      * @return the refreshPeriod
      */
-    public int getRefreshPeriod() {
+    public long getRefreshPeriod() {
         return refreshPeriod;
     }
 
     /**
      * @param refreshPeriod the refreshPeriod to set
      */
-    public void setRefreshPeriod(int refreshPeriod) {
+    public void setRefreshPeriod(long refreshPeriod) {
         this.refreshPeriod = refreshPeriod;
     }
     
