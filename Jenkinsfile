@@ -24,8 +24,6 @@ pipeline {
   environment {
     // Snippet taken from https://gist.github.com/DarrenN/8c6a5b969481725a4413
     PACKAGE_VERSION = sh(script: 'cat package.json | grep version | head -1 | awk -F= "{ print $2 }" | sed \'s/[version:,\",]//g\' | tr -d \'[[:space:]]\'', returnStdout: true)
-    // Snippet taken from https://issues.jenkins-ci.org/browse/JENKINS-44449
-    GIT_COMMIT_SHORT = sh(script: "printf \$(git rev-parse --short=7 ${GIT_COMMIT})", returnStdout: true)
   }
 
   stages {
@@ -79,38 +77,16 @@ pipeline {
     }
 
     stage('Build docker image') {
-      steps {
-        sh """
-          docker build -t api-mgmt/devportal:${PACKAGE_VERSION} .
-          docker image save api-mgmt/devportal:${PACKAGE_VERSION} -o api-mgmt-devportal-${PACKAGE_VERSION}-overlay.tar
-        """
-      }
-    }
-
-    stage('Archive builds') {
-      when {
-        not {
-          branch '**/e2e_release'
-        }
-      }
-      steps {
-        sh "rename.ul overlay ${GIT_COMMIT_SHORT} *.tar"
-        archiveArtifacts artifacts: '*.tar'
-      }
-    }
-
-    stage('Archive release builds') {
       when {
         anyOf {
+          branch '**/e2e_master'
           branch '**/e2e_release'
         }
       }
       steps {
-        sh 'rename.ul -- "-overlay" "" *.tar'
-        archiveArtifacts artifacts: '*.tar'
+        sh "docker build -t api-mgmt/devportal:${PACKAGE_VERSION} ."
       }
     }
-
 
     stage('Publish nightly builds to Nexus') {
         when {
@@ -125,46 +101,26 @@ pipeline {
         }
     }
 
-    stage('Publish master nightly builds to NAS1/Nexus') {
+    stage('Publish master nightly builds to Nexus') {
       when {
         anyOf {
           branch '**/e2e_master'
         }
       }
       steps {
-        cifsPublisher alwaysPublishFromMaster: false, continueOnError: false, failOnError: false,
-          paramPublish: null, masterNodeName: '',
-          publishers: [[configName: 'NAS1', transfers:
-              [
-                [sourceFiles    : '*.tar',
-                 removePrefix   : '',
-                 remoteDirectory: "api-mgmt/nightlyBuilds/${PACKAGE_VERSION}-${GIT_COMMIT_SHORT}"]
-              ]
-           ]]
-
         withDockerRegistry([credentialsId: 'nexus', url: "https://gitlab.scheer-group.com:8080"]) {
           sh './ci/publish-images.sh ${PACKAGE_VERSION} latest'
         }
       }
     }
 
-    stage('Publish release builds to NAS1/Nexus') {
+    stage('Publish release builds to Nexus') {
       when {
         anyOf {
           branch '**/e2e_release'
         }
       }
       steps {
-        cifsPublisher alwaysPublishFromMaster: false, continueOnError: false, failOnError: false,
-          paramPublish: null, masterNodeName: '',
-          publishers: [[configName: 'NAS1', transfers:
-              [
-                [sourceFiles    : '*.tar',
-                 removePrefix   : '',
-                 remoteDirectory: "api-mgmt/${PACKAGE_VERSION}"]
-              ]
-           ]]
-
         withDockerRegistry([credentialsId: 'nexus', url: "https://gitlab.scheer-group.com:8080"]) {
           sh './ci/publish-images.sh ${PACKAGE_VERSION} release'
         }
