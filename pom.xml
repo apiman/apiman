@@ -4,7 +4,7 @@
 
   <groupId>io.apiman.plugins</groupId>
   <artifactId>apiman-plugins</artifactId>
-  <version>1.5.7.Final</version>
+  <version>1.5.8-SNAPSHOT</version>
   <name>apiman-plugins</name>
   <packaging>pom</packaging>
 
