@@ -6,7 +6,7 @@
   <parent>
     <artifactId>apiman-manager-api</artifactId>
     <groupId>io.apiman</groupId>
-    <version>1.5.6-SNAPSHOT</version>
+    <version>1.5.6.Final</version>
   </parent>
   <artifactId>apiman-manager-api-rest-exceptions</artifactId>
   <packaging>bundle</packaging>
