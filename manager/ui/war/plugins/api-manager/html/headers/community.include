@@ -1,6 +1,6 @@
       <div id="apiman-progress-indicator" ng-class="pageState"></div>
       <div id="apiman-header">
-        <div class="main-header container" ng-controller="Apiman.NavbarController">
+        <div class="main-header" ng-controller="Apiman.NavbarController">
           <div class="row">
             <div class="col-md-12">
               <a href="{{ pluginName }}/">
@@ -42,3 +42,5 @@
           </div>
         </div>
       </div>
+      <div ng-include="'plugins/api-manager/html/sidebar/sidebar.include'"></div>
+      
