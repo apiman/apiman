@@ -32,10 +32,15 @@ The general idea is to keep your 'master' branch in-sync with the 'upstream/mast
 ### Requirements
 - Maven 3.x
 - Java 8+
+- Docker (for running tests with [testcontainers](https://www.testcontainers.org/supported_docker_environment/))
 
 The following command compiles all the code, installs the JARs into your local Maven repository, and runs all of the unit tests:
 
 	$ mvn clean install
+	
+You can skip the test if you do not have docker installed:
+
+	$ mvn clean install	-DskipTests
 
 ## Quickstart (i.e. How To Run It)
 
