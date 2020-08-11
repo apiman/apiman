@@ -16,6 +16,7 @@
 
 package io.apiman.manager.api.rest.exceptions.mappers;
 
+import io.apiman.common.config.ConfigFactory;
 import io.apiman.manager.api.beans.exceptions.ErrorBean;
 import io.apiman.manager.api.rest.exceptions.AbstractRestException;
 
@@ -28,6 +29,7 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
+import org.apache.commons.configuration.Configuration;
 import org.apache.commons.io.output.StringBuilderWriter;
 
 /**
@@ -38,6 +40,12 @@ import org.apache.commons.io.output.StringBuilderWriter;
 @Provider
 @ApplicationScoped
 public class RestExceptionMapper implements ExceptionMapper<AbstractRestException> {
+
+    private static final String ENABLE_STACKTRACE = "apiman-manager.config.features.rest-response-should-contain-stacktraces";
+    private static Configuration config;
+    static {
+        config = ConfigFactory.createConfig();
+    }
 
     /**
      * Constructor.
@@ -68,13 +76,20 @@ public class RestExceptionMapper implements ExceptionMapper<AbstractRestExceptio
      * @param data
      */
     private String getStackTrace(AbstractRestException data) {
-        StringBuilderWriter writer = new StringBuilderWriter();
-        try {
-            data.printStackTrace(new PrintWriter(writer));
-            return writer.getBuilder().toString();
-        } finally {
-            writer.close();
+        if (isStackTraceEnabled()) {
+            StringBuilderWriter writer = new StringBuilderWriter();
+            try {
+                data.printStackTrace(new PrintWriter(writer));
+                return writer.getBuilder().toString();
+            } finally {
+                writer.close();
+            }
+        } else {
+            return null;
         }
     }
 
+    private boolean isStackTraceEnabled() {
+        return config.getBoolean(ENABLE_STACKTRACE, false);
+    }
 }
