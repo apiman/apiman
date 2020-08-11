@@ -11,7 +11,16 @@
   <name>apiman-common-plugin</name>
 
   <dependencies>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-common-config</artifactId>
+      <version>${project.version}</version>
+    </dependency>
     <!-- Third Party libraries -->
+    <dependency>
+    <groupId>commons-configuration</groupId>
+    <artifactId>commons-configuration</artifactId>
+    </dependency>
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
