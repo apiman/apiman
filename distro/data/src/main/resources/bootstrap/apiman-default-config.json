@@ -1,6 +1,6 @@
 {
   "Metadata": {
-    "exportedOn": "2018-05-09T12:00:00Z",
+    "exportedOn": "2020-08-12T12:00:00Z",
     "apimanVersion": "${version}"
   },
   "Users": [],
@@ -24,14 +24,14 @@
     "description" : "Users responsible for creating and managing APIs should be granted this role within an Organization.",
     "createdBy" : "admin",
     "createdOn" : "2016-05-16T12:34:14Z",
-    "permissions" : [ "planAdmin", "apiAdmin", "planEdit", "planView", "apiEdit", "apiView" ]
+    "permissions" : [ "planAdmin", "apiAdmin", "planEdit", "planView", "apiEdit", "apiView", "orgView" ]
   }, {
     "id" : "ClientAppDeveloper",
     "name" : "Client App Developer",
     "description" : "Users responsible for creating and managing client apps should be granted this role within an Organization.",
     "createdBy" : "admin",
     "createdOn" : "2016-05-16T12:34:14Z",
-    "permissions" : [ "clientAdmin", "clientView", "clientEdit" ]
+    "permissions" : [ "clientAdmin", "clientView", "clientEdit", "orgView" ]
   }, {
     "id" : "OrganizationOwner",
     "name" : "Organization Owner",
