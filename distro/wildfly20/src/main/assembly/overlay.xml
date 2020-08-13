@@ -62,20 +62,6 @@
       <directoryMode>0755</directoryMode>
       <fileMode>0755</fileMode>
     </dependencySet>
-    <!-- apiman-es -->
-    <dependencySet>
-      <outputDirectory>standalone/deployments</outputDirectory>
-      <includes>
-        <include>*:apiman-distro-es:war</include>
-      </includes>
-      <outputFileNameMapping>apiman-es.war</outputFileNameMapping>
-      <useProjectArtifact>false</useProjectArtifact>
-      <useProjectAttachments>false</useProjectAttachments>
-      <useTransitiveDependencies>false</useTransitiveDependencies>
-      <useTransitiveFiltering>false</useTransitiveFiltering>
-      <directoryMode>0755</directoryMode>
-      <fileMode>0755</fileMode>
-    </dependencySet>
     <!-- Sample data -->
     <dependencySet>
       <outputDirectory>apiman</outputDirectory>

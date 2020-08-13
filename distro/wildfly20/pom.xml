@@ -7,15 +7,15 @@
     <version>1.5.8-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
-  <artifactId>apiman-distro-wildfly11</artifactId>
+  <artifactId>apiman-distro-wildfly20</artifactId>
   <packaging>pom</packaging>
-  <name>apiman-distro-wildfly11</name>
+  <name>apiman-distro-wildfly20</name>
 
   <properties>
-    <docker.wildfly.version>wildfly11</docker.wildfly.version>
-    <docker.base-image>jboss/wildfly:11.0.0.Final</docker.base-image>
-    <docker.target-image-name>apiman/on-wildfly11:master</docker.target-image-name>
-    <docker.target-image-name.alias>wildfly11-master</docker.target-image-name.alias>
+    <docker.wildfly.version>wildfly20</docker.wildfly.version>
+    <docker.base-image>jboss/wildfly:20.0.1.Final</docker.base-image>
+    <docker.target-image-name>apiman/on-wildfly20:master</docker.target-image-name>
+    <docker.target-image-name.alias>wildfly20-master</docker.target-image-name.alias>
   </properties>
 
   <dependencies>
@@ -49,11 +49,6 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-distro-data</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>apiman-distro-es</artifactId>
-      <type>war</type>
     </dependency>
 
     <!-- KeyCloak -->
