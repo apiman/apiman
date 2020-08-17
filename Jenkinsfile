@@ -46,10 +46,9 @@ pipeline {
       }
     }
 
-    stage('Prepare base docker image') {
+    stage('Prepare docker test image') {
       steps {
         sh """
-          docker build -t devportal-base:latest -f ./docker/images/base/Dockerfile .
           docker build -t devportal-tests:latest -f ./docker/images/test/Dockerfile .
         """
       }
@@ -60,13 +59,11 @@ pipeline {
         docker {
           image 'devportal-tests:latest'
           label 'docker'
-          args '-u root:root'
+          customWorkspace "workspace/Api-Mgmt-Dev-Portal-Pipeline"
         }
       }
       steps {
-        sh "cd '/usr/src/app/' && npm run test"
-        /* copy test result into workspace destination */
-        sh "cp -r /usr/src/app/junit/* ./junit"
+        sh "npm run test"
       }
       post {
         always {
@@ -132,7 +129,6 @@ pipeline {
         sh """
           docker image rm -f api-mgmt/devportal:${PACKAGE_VERSION} || true
           docker image rm devportal-tests:latest || true
-          docker image rm devportal-base:latest || true
           """
       }
     }
@@ -158,23 +154,23 @@ pipeline {
     }
     unstable {
       emailext to: 'benjamin.kihm@scheer-group.com, florian.volk@scheer-group.com',
-      recipientProviders: [[$class: 'CulpritsRecipientProvider']],
-      subject: '${DEFAULT_SUBJECT}',
-      body: '${DEFAULT_CONTENT}'
+        recipientProviders: [[$class: 'CulpritsRecipientProvider']],
+        subject: '${DEFAULT_SUBJECT}',
+        body: '${DEFAULT_CONTENT}'
     }
 
     failure {
       emailext to: 'benjamin.kihm@scheer-group.com, florian.volk@scheer-group.com',
-      recipientProviders: [[$class: 'CulpritsRecipientProvider']],
-      subject: '${DEFAULT_SUBJECT}',
-      body: '${DEFAULT_CONTENT}'
+        recipientProviders: [[$class: 'CulpritsRecipientProvider']],
+        subject: '${DEFAULT_SUBJECT}',
+        body: '${DEFAULT_CONTENT}'
     }
 
     fixed {
       emailext to: 'benjamin.kihm@scheer-group.com, florian.volk@scheer-group.com',
-      recipientProviders: [[$class: 'CulpritsRecipientProvider']],
-      subject: '${DEFAULT_SUBJECT}',
-      body: '${DEFAULT_CONTENT}'
+        recipientProviders: [[$class: 'CulpritsRecipientProvider']],
+        subject: '${DEFAULT_SUBJECT}',
+        body: '${DEFAULT_CONTENT}'
     }
   }
 }
