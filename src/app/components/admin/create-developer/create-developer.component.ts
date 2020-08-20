@@ -86,7 +86,7 @@ export class CreateDeveloperComponent implements OnInit, OnDestroy {
       developerToCreate.clients.push(new ClientMappingImpl(client.clientId, client.organizationId));
     });
 
-    this.adminService.createNewDeveloper(developerToCreate, keycloakUser.id)
+    this.adminService.createNewDeveloper(developerToCreate)
       .subscribe(createdDeveloper => {
         this.userFormGroup.reset();
         this.clientMapping.reset();
@@ -114,9 +114,8 @@ export class CreateDeveloperComponent implements OnInit, OnDestroy {
    * @param username the developer username
    */
   checkDeveloperNotExists(username: string) {
-    if (username && username.length !== 0) {
-      return this.developerDataCache.developers
-        && this.developerDataCache.developers.find((d) => d.id.toLowerCase() === username.toLowerCase()) === undefined;
+    if (this.developerDataCache.developers && username && username.length !== 0) {
+        return this.developerDataCache.developers.find((d) => d.id.toLowerCase() === username.toLowerCase()) === undefined;
     } else {
       return true;
     }
@@ -127,7 +126,11 @@ export class CreateDeveloperComponent implements OnInit, OnDestroy {
    * @param username the developer username
    */
   checkUserExistsInKeycloak(username: string) {
-    return this.keycloakUsers.find((u) => u.username.toLowerCase() === username) !== undefined;
+    if (this.keycloakUsers && username && username.length !== 0) {
+      return this.keycloakUsers.find((u) => u.username.toLowerCase() === username) !== undefined;
+    } else {
+      return false;
+    }
   }
 
   /**
@@ -135,7 +138,9 @@ export class CreateDeveloperComponent implements OnInit, OnDestroy {
    * @param usernameInput the entered username
    */
   private filterKeycloakUser(usernameInput: string) {
-    this.filteredKeycloakUsers = this.keycloakUsers
-      .filter((u) => this.checkDeveloperNotExists(u.username) && u.username.toLowerCase().includes(usernameInput.toLowerCase()));
+    if (usernameInput && usernameInput.length !== 0) {
+      this.filteredKeycloakUsers = this.keycloakUsers
+        .filter((u) => this.checkDeveloperNotExists(u.username) && u.username.toLowerCase().includes(usernameInput.toLowerCase()));
+    }
   }
 }

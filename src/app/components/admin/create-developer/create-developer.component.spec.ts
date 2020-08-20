@@ -76,7 +76,6 @@ describe('CreateDeveloperComponent', () => {
 
   const router = jasmine.createSpy('router');
   const developerDataCache = jasmine.createSpyObj('developerDataCache', ['load', 'developers']);
-  developerDataCache.developers = [{id: 'alice', name: 'Alice', clients: [{clientId: 'Support-Customer', organizationId: 'Production'}]}];
 
   const toasterService = jasmine.createSpyObj('toasterService', ['pop']);
   const loadingSpinnerService = jasmine.createSpyObj('loadingSpinnerService', ['startWaiting', 'stopWaiting']);
@@ -113,13 +112,25 @@ describe('CreateDeveloperComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('checkDeveloperNotExistsListIsUndefined', () => {
+    developerDataCache.developers = undefined;
+    expect(component.checkDeveloperNotExists('admin')).toBeTruthy();
+  });
+
   it('checkDeveloperNotExists', () => {
+    developerDataCache.developers = [{id: 'alice', name: 'Alice', clients: [{clientId: 'Support-Customer', organizationId: 'Production'}]}];
+
     expect(developerDataCache.developers).not.toBe(null);
     expect(developerDataCache.developers).not.toBe(undefined);
     // expects true for undefined input to hide the notification in the UI
     expect(component.checkDeveloperNotExists(undefined)).toBeTruthy();
     expect(component.checkDeveloperNotExists('Alice')).toBeFalsy();
     expect(component.checkDeveloperNotExists('Bob')).toBeTruthy();
+  });
+
+  it('checkUserExistsInKeycloakListIsUndefined', () => {
+    component.keycloakUsers = undefined;
+    expect(component.checkUserExistsInKeycloak('admin')).toBeFalsy();
   });
 
   it('checkUserExistsInKeycloak', () => {

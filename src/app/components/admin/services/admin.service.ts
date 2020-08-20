@@ -48,28 +48,12 @@ export class AdminService {
   /**
    * Create new developer
    * @param developer the developer to create
-   * @param keycloakUserId the id of the keycloak user
    */
-  public createNewDeveloper(developer: Developer, keycloakUserId: string) {
+  public createNewDeveloper(developer: Developer): Observable<Developer> {
     // observer insert developer to API-Mgmt
     // response has developer object
     const url = this.apiMgmtUiRestUrl + '/developers';
-    const insertToApiMgmt = this.http.post(url, developer) as Observable<Developer>;
-    // observer to add keycloak user to developer portal group
-    const addDevPortalGroupToUser = this.keycloak.addDevPortalGroupToUser(keycloakUserId);
-
-    // 1. insert developer to API-Mgmt
-    return insertToApiMgmt.pipe(mergeMap(insertedDeveloper => {
-      // 2. add devPortal group and add client role to keycloak user
-      return addDevPortalGroupToUser
-        .pipe(map(() => insertedDeveloper));
-    }), catchError((err, caught) => {
-      // rollback keycloak user if developer cannot created at API-Mgmt
-      // we just remove the group mapping
-      // TODO REMOVE THIS COMFORT FEATURE IN FUTURE
-      this.keycloak.removeDevPortalGroupFromUser(keycloakUserId).subscribe();
-      throw err;
-    }));
+    return this.http.post(url, developer) as Observable<Developer>;
   }
 
   /**
