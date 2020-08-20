@@ -1,0 +1,58 @@
+# Changelog api-mgmt-developer-portal
+
+
+# Unreleased changes
+
+## e2e_master branch
+
+### Major
+
+- none
+
+### Minor
+
+- Add CHANGELOG.md
+- Change settings for local development
+- GW-255: List public apis
+- GW-416: Remove methods for SSO
+- GW-391: Remove old configuration that is not used anymore for Scheer PAS
+- Change recipients in Jenkinsfile
+- Update: keycloak-angular 7.2.0 -> 7.3.1 keycloak-js 9.0.3 -> 10.0.2
+- GW-386: Delete all docker images after pushing to nexus
+- GW-384: Add Intellij run configurations
+- GW-384: Run angular tests on Jenkins
+- Add Devportal Lock to Jenkinsfile
+- GW-378: Remove name property from Developer
+- GW-385: Change base path and startup script
+- Remove unused stepper
+- GW-383: Fix logout in one-docker setup
+- BPAAS-6301: Make devportal one-docker ready
+- Update Node version from 12.16.2 to 12.18.0
+- Update @types/node to 12.12.47
+- Update @angular/cli 9.1.0 to 9.1.8
+- Update @angular/material and @angular/cdk from 9.2.0 to 9.2.4
+- Update @angular/core from 9.1.1 to 9.1.11
+- GW-378 Add test for CreateDeveloperComponent
+- GW-306: Preparation for tests
+- GW-378 Add check for undefined username
+- GW-352: Allow download of definition files
+- Adjust "anyComponentStyle" settings See: https://github.com/angular/angular/issues/35272
+- Add intellij config
+- GW-335: Refactor edit of developers
+- GW-335: Refactor admin service and keycloak interaction
+- GW-335: Refactor creation of developers
+- GW-335: Load API list depending on keycloak username
+- Update rxjs
+- Follow update guide - Step 2 (https://update.angular.io/#8.0:9.0)
+- Follow update guide (https://update.angular.io/#8.0:9.0)
+
+### Patch
+
+- GW-406: First commit delivers no test result files
+- Fix typo
+
+# Released
+
+## vSERVICE_VERSION - PAS 20.1
+
+*Changelog wasn't used until this version*
