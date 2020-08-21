@@ -11,26 +11,10 @@
   <name>apiman-tools-server-all</name>
 
   <dependencies>
-    <!-- The WildFly 20 version of APIMan -->
+    <!-- The WildFly version of APIMan -->
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>apiman-distro-wildfly20</artifactId>
-      <type>zip</type>
-      <classifier>overlay</classifier>
-    </dependency>
-
-    <!-- The Tomcat 8 version of APIMan -->
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>apiman-distro-tomcat8</artifactId>
-      <type>zip</type>
-      <classifier>overlay</classifier>
-    </dependency>
-
-    <!-- The EAP 7.0 version of APIMan -->
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>apiman-distro-eap7</artifactId>
+      <artifactId>apiman-distro-wildfly</artifactId>
       <type>zip</type>
       <classifier>overlay</classifier>
     </dependency>
@@ -70,9 +54,9 @@
   </build>
 
   <profiles>
-    <!-- Install on WildFly 20 -->
+    <!-- Install on WildFly -->
     <profile>
-      <id>install-all-wildfly20</id>
+      <id>install-all-wildfly</id>
       <build>
         <plugins>
           <plugin>
@@ -88,21 +72,21 @@
             </dependencies>
             <executions>
               <execution>
-                <id>run-wildfly20</id>
+                <id>run-wildfly</id>
                 <phase>install</phase>
                 <configuration>
                   <tasks>
                     <antversion property="antversion" />
                     <echo>Ant Version: ${antversion}</echo>
 
-                    <property name="appserver.id" value="wildfly20" />
+                    <property name="appserver.id" value="wildfly" />
                     <property name="apiman.wildfly.download.url"
                       value="https://download.jboss.org/wildfly/20.0.1.Final/wildfly-20.0.1.Final.zip" />
                     <property name="apiman.tempdir" value="${project.build.directory}/_tmp" />
                     <property name="apiman.install.dir" value="${project.build.directory}" />
                     <property name="apiman.appserver.dir" location="${apiman.install.dir}/wildfly-20.0.1.Final" />
                     <property name="apiman.appserver.zip" location="${basedir}/wildfly-20.0.1.Final.zip" />
-                    <property name="apiman.apiman-distro-wildfly20.zip" value="${maven.dependency.io.apiman.apiman-distro-wildfly20.overlay.zip.path}" />
+                    <property name="apiman.apiman-distro-wildfly.zip" value="${maven.dependency.io.apiman.apiman-distro-wildfly.overlay.zip.path}" />
                     <property name="apiman.apiman-tools-services.war" value="${maven.dependency.io.apiman.apiman-tools-services.war.path}" />
                     <property name="apiman.wildfly.home" location="${apiman.appserver.dir}" />
                     <property name="apiman.wildfly.webapps" location="${apiman.appserver.dir}/standalone/deployments" />
@@ -110,7 +94,7 @@
 
                     <echo></echo>
                     <echo>********************************************************************</echo>
-                    <echo>APIMan Dist: ${apiman.apiman-distro-wildfly20.zip}</echo>
+                    <echo>APIMan Dist: ${apiman.apiman-distro-wildfly.zip}</echo>
                     <echo>Dev Services: ${apiman.apiman-tools-services.war}</echo>
                     <echo>-------</echo>
                     <echo>WildFly Home: ${apiman.wildfly.home}</echo>
@@ -119,12 +103,12 @@
 
                     <mkdir dir="${apiman.tempdir}" />
 
-                    <!-- Download and unpack WildFly 20 -->
+                    <!-- Download and unpack WildFly  -->
                     <get src="${apiman.wildfly.download.url}" dest="${apiman.appserver.zip}" usetimestamp="true" skipexisting="true" />
                     <unzip src="${apiman.appserver.zip}" dest="${apiman.install.dir}" overwrite="false" />
 
-                    <!-- Overlay APIMan on top of WildFly 20 -->
-                    <unzip src="${apiman.apiman-distro-wildfly20.zip}" dest="${apiman.install.dir}/wildfly-20.0.1.Final" overwrite="true" />
+                    <!-- Overlay APIMan on top of WildFly  -->
+                    <unzip src="${apiman.apiman-distro-wildfly.zip}" dest="${apiman.install.dir}/wildfly-20.0.1.Final" overwrite="true" />
 
                     <!-- Make sure to chmod 755 the shell scripts -->
                     <chmod perm="a+x" dir="${apiman.appserver.dir}/bin">
@@ -139,157 +123,9 @@
                     <copy file="${apiman.resources.dir}/wildfly/deployments/postgresql-9.3-1102.jdbc41.jar"
                       todir="${apiman.wildfly.webapps}" overwrite="true" />
                     <copy
-                      file="../../distro/wildfly20/src/main/resources/overlay/standalone/configuration/standalone-apiman.xml"
+                      file="../../distro/wildfly/src/main/resources/overlay/standalone/configuration/standalone-apiman.xml"
                       tofile="${apiman.wildfly.home}/standalone/configuration/standalone.xml" overwrite="true" />
                     <copy file="${apiman.apiman-tools-services.war}" tofile="${apiman.wildfly.webapps}/services.war"
-                      overwrite="true" />
-                  </tasks>
-                </configuration>
-                <goals>
-                  <goal>run</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <!-- Install on EAP 7.0 -->
-    <profile>
-      <id>install-all-eap7</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-antrun-plugin</artifactId>
-            <version>1.7</version>
-            <dependencies>
-              <dependency>
-                <groupId>org.apache.ant</groupId>
-                <artifactId>ant</artifactId>
-                <version>1.8.2</version>
-              </dependency>
-            </dependencies>
-            <executions>
-              <execution>
-                <id>run-eap7</id>
-                <phase>install</phase>
-                <configuration>
-                  <tasks>
-                    <antversion property="antversion" />
-                    <echo>Ant Version: ${antversion}</echo>
-
-                    <property name="apiman.tempdir" value="${project.build.directory}/_tmp" />
-                    <property name="apiman.install.dir" value="${project.build.directory}" />
-                    <property name="apiman.appserver.dir" location="${apiman.install.dir}/jboss-eap-7.0" />
-                    <property name="apiman.appserver.zip" location="${basedir}/jboss-eap-7.0.0.Beta.zip" />
-                    <property name="apiman.apiman-distro-eap7.zip" value="${maven.dependency.io.apiman.apiman-distro-eap7.overlay.zip.path}" />
-                    <property name="apiman.apiman-tools-services.war" value="${maven.dependency.io.apiman.apiman-tools-services.war.path}" />
-                    <property name="apiman.eap.home" location="${apiman.appserver.dir}" />
-                    <property name="apiman.eap.webapps" location="${apiman.appserver.dir}/standalone/deployments" />
-                    <property name="apiman.resources.dir" location="${basedir}/src/main/resources" />
-
-                    <echo></echo>
-                    <echo>********************************************************************</echo>
-                    <echo>APIMan Dist: ${apiman.apiman-distro-eap7.zip}</echo>
-                    <echo>Dev Services: ${apiman.apiman-tools-services.war}</echo>
-                    <echo>-------</echo>
-                    <echo>WildFly Home: ${apiman.eap.home}</echo>
-                    <echo>********************************************************************</echo>
-                    <echo></echo>
-
-                    <mkdir dir="${apiman.tempdir}" />
-
-                    <!-- Unpack EAP 7.0 -->
-                    <unzip src="${apiman.appserver.zip}" dest="${apiman.install.dir}" overwrite="false" />
-
-                    <!-- Overlay apiman on top of EAP 7.0 -->
-                    <unzip src="${apiman.apiman-distro-eap7.zip}" dest="${apiman.appserver.dir}" overwrite="true" />
-
-                    <!-- Make sure to chmod 755 the shell scripts -->
-                    <chmod perm="a+x" dir="${apiman.appserver.dir}/bin">
-                      <include name="*.sh" />
-                    </chmod>
-
-                    <!-- Deploy additional stuff -->
-                    <copy
-                      file="../../distro/eap7/src/main/resources/overlay/standalone/configuration/standalone-apiman.xml"
-                      tofile="${apiman.eap.home}/standalone/configuration/standalone.xml" overwrite="true" />
-                    <copy file="${apiman.apiman-tools-services.war}" tofile="${apiman.eap.webapps}/services.war"
-                      overwrite="true" />
-                  </tasks>
-                </configuration>
-                <goals>
-                  <goal>run</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <!-- Install on Tomcat 8 -->
-    <profile>
-      <id>install-all-tomcat8</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-antrun-plugin</artifactId>
-            <version>1.7</version>
-            <dependencies>
-              <dependency>
-                <groupId>org.apache.ant</groupId>
-                <artifactId>ant</artifactId>
-                <version>1.8.2</version>
-              </dependency>
-            </dependencies>
-            <executions>
-              <execution>
-                <id>run-tomcat8</id>
-                <phase>install</phase>
-                <configuration>
-                  <tasks>
-                    <antversion property="antversion" />
-                    <echo>Ant Version: ${antversion}</echo>
-                    <property name="appserver.id" value="tomcat8" />
-                    <property name="apiman.tomcat.download.url"
-                      value="https://apache.cs.utah.edu/tomcat/tomcat-8/v8.5.53/bin/apache-tomcat-8.5.53.zip" />
-                    <property name="apiman.tempdir" value="${project.build.directory}/_tmp" />
-                    <property name="apiman.install.dir" value="${project.build.directory}" />
-                    <property name="apiman.appserver.dir" location="${apiman.install.dir}/apache-tomcat-8.5.53" />
-                    <property name="apiman.appserver.zip" location="${basedir}/apache-tomcat-8.5.53.zip" />
-                    <property name="apiman.apiman-distro-tomcat8.zip" value="${maven.dependency.io.apiman.apiman-distro-tomcat8.overlay.zip.path}" />
-                    <property name="apiman.apiman-tools-services.war" value="${maven.dependency.io.apiman.apiman-tools-services.war.path}" />
-                    <property name="apiman.tomcat.home" location="${apiman.appserver.dir}" />
-                    <property name="apiman.tomcat.webapps" location="${apiman.appserver.dir}/webapps" />
-                    <property name="apiman.resources.dir" location="${basedir}/src/main/resources" />
-
-                    <echo></echo>
-                    <echo>********************************************************************</echo>
-                    <echo>APIMan Dist: ${apiman.apiman-distro-tomcat8.zip}</echo>
-                    <echo>Dev Services: ${apiman.apiman-tools-services.war}</echo>
-                    <echo>-------</echo>
-                    <echo>Tomcat Home: ${apiman.tomcat.home}</echo>
-                    <echo>********************************************************************</echo>
-                    <echo></echo>
-
-                    <mkdir dir="${apiman.tempdir}" />
-
-                    <!-- Download and unpack Tomcat 8 -->
-                    <get src="${apiman.tomcat.download.url}" dest="${apiman.appserver.zip}" usetimestamp="true" skipexisting="true" />
-                    <unzip src="${apiman.appserver.zip}" dest="${apiman.install.dir}" overwrite="false" />
-
-                    <!-- Overlay APIMan on top of Tomcat 8 -->
-                    <unzip src="${apiman.apiman-distro-tomcat8.zip}" dest="${apiman.install.dir}/apache-tomcat-8.5.53" overwrite="true" />
-
-                    <!-- Make sure to chmod 755 the shell scripts -->
-                    <chmod perm="a+x" dir="${apiman.appserver.dir}/bin">
-                      <include name="*.sh" />
-                    </chmod>
-
-                    <!-- Deploy additional stuff -->
-                    <copy file="${apiman.apiman-tools-services.war}" tofile="${apiman.tomcat.webapps}/services.war"
                       overwrite="true" />
                   </tasks>
                 </configuration>
