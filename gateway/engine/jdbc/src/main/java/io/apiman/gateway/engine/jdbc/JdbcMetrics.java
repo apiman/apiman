@@ -36,8 +36,8 @@ import org.apache.commons.dbutils.QueryRunner;
  * Must be configured with the JNDI location of the datasource to use.
  * Example:
  * 
- *     apiman-gateway.registry=io.apiman.gateway.engine.jdbc.JdbcRegistry
- *     apiman-gateway.registry.datasource.jndi-location=java:jboss/datasources/apiman-gateway
+ *     apiman-gateway.metrics=io.apiman.gateway.engine.jdbc.JdbcRegistry
+ *     apiman-gateway.metrics.datasource.jndi-location=java:jboss/datasources/apiman-gateway
  * 
  * @author ewittman
  */
