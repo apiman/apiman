@@ -7,15 +7,15 @@
     <version>1.5.8-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
-  <artifactId>apiman-distro-wildfly20</artifactId>
+  <artifactId>apiman-distro-wildfly</artifactId>
   <packaging>pom</packaging>
-  <name>apiman-distro-wildfly20</name>
+  <name>apiman-distro-wildfly</name>
 
   <properties>
-    <docker.wildfly.version>wildfly20</docker.wildfly.version>
+    <docker.wildfly.version>wildfly</docker.wildfly.version>
     <docker.base-image>jboss/wildfly:20.0.1.Final</docker.base-image>
-    <docker.target-image-name>apiman/on-wildfly20:master</docker.target-image-name>
-    <docker.target-image-name.alias>wildfly20-master</docker.target-image-name.alias>
+    <docker.target-image-name>apiman/on-wildfly:master</docker.target-image-name>
+    <docker.target-image-name.alias>wildfly-master</docker.target-image-name.alias>
   </properties>
 
   <dependencies>

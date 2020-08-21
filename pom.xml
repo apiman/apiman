@@ -618,7 +618,7 @@
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-distro-wildfly20</artifactId>
+        <artifactId>apiman-distro-wildfly</artifactId>
         <version>${project.version}</version>
         <type>zip</type>
         <classifier>overlay</classifier>
