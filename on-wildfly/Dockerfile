@@ -1,12 +1,12 @@
-# Use WildFly 11 image as the base
-FROM jboss/wildfly:11.0.0.Final
+# Use WildFly image as the base
+FROM jboss/wildfly:20.0.1.Final
 
 MAINTAINER Marc Savy <marc.savy@redhat.com>
 
-ENV APIMAN_VERSION 1.5.7.Final
+ENV APIMAN_VERSION 2.0.0.Final
 
 RUN cd $HOME/wildfly \
- && curl https://downloads.jboss.org/apiman/$APIMAN_VERSION/apiman-distro-wildfly11-$APIMAN_VERSION-overlay.zip | bsdtar -xvf-
+ && curl https://downloads.jboss.org/apiman/$APIMAN_VERSION/apiman-distro-wildfly-$APIMAN_VERSION-overlay.zip | bsdtar -xvf-
 
 USER root
 
@@ -17,4 +17,3 @@ USER jboss
 
 # Set the default command to run on boot
 ENTRYPOINT ["/opt/jboss/wildfly/bin/standalone.sh", "-b", "0.0.0.0", "-bmanagement", "0.0.0.0", "-c", "standalone-apiman.xml"]
-
