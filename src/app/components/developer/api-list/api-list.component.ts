@@ -1,13 +1,14 @@
 import {Component, Inject, OnInit} from '@angular/core';
-import {forkJoin, from, Observable, ObservedValueOf} from 'rxjs';
-import {map, mergeAll, mergeMap, toArray} from 'rxjs/operators';
+import {forkJoin, from, Observable, Subject} from 'rxjs';
+import {concatMap, map, mergeAll, mergeMap, switchMap, toArray} from 'rxjs/operators';
 import {ApiDataService, ApiVersion, Client, Contract} from '../../../services/api-data.service';
 import {SpinnerService} from '../../../services/spinner.service';
-import {Toast, ToasterService} from 'angular2-toaster';
+import {ToasterService} from 'angular2-toaster';
 import {Router} from '@angular/router';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import {Sort} from '@angular/material/sort';
 import {KeycloakService} from 'keycloak-angular';
+import {formatDate} from '@angular/common';
 
 export interface ApiListElement {
   id: string;
@@ -23,6 +24,21 @@ export interface ApiListElement {
   definitionType: string;
   apimanDefinitionUrl: string;
   swaggerURL: string;
+  publicAPI: boolean;
+  createdOn: number;
+  modifiedOn: number;
+  publishedOn: number;
+  retiredOn: number;
+}
+
+class GatewayEndpoint {
+  id: string;
+  endpoint: string;
+
+  constructor(id: string, endpoint: string) {
+    this.id = id;
+    this.endpoint = endpoint;
+  }
 }
 
 @Component({
@@ -40,18 +56,22 @@ export interface ApiListElement {
 
 export class ApiListComponent implements OnInit {
 
-  columnHeaders: string[] = ['api', 'apiVersion', 'tryApi', 'options'];
+  columnHeaders: string[] = ['api', 'publicAPI', 'apiVersion', 'tryApi', 'options'];
   expandedElements: Array<ApiListElement> = [];
 
   apiData: Array<ApiListElement> = [];
-  sortedApiData: Array<ApiListElement>;
 
   developerId: string = this.keycloak.getKeycloakInstance().profile.username;
 
-  status = class ApiStatus {
-    static retired = 'Retired';
-    static active = 'Active';
-    static inactive = 'Inactive';
+  viewStatus = class ViewStatus {
+    static readonly RETIRED = 'Retired';
+    static readonly ACTIVE = 'Active';
+    static readonly INACTIVE = 'Inactive';
+  };
+  backendStatus = class BackendStatus {
+    static readonly STATUS_REGISTERED = 'Registered';
+    static readonly STATUS_PUBLISHED = 'Published';
+    static readonly STATUS_RETIRED = 'Retired';
   };
 
   constructor(private router: Router,
@@ -60,57 +80,72 @@ export class ApiListComponent implements OnInit {
               private loadingSpinnerService: SpinnerService,
               private keycloak: KeycloakService,
               @Inject('API_MGMT_UI_REST_URL') private apiMgmtUiRestUrl: string) {
-    this.sortedApiData = this.apiData;
   }
 
   /**
    * An observer to get all gateway details (gateway endpoint) from api data service
    */
-  getGatewayDataObservable = this.apiDataService.getGateways()
+  getGatewayDataObservable: Observable<GatewayEndpoint[]> = this.apiDataService.getGateways()
     .pipe(mergeAll())
     .pipe(mergeMap(gateway => this.apiDataService.getGatewayEndpoint(gateway.id)
-      .pipe(map(gatewayEndpoint => ({id: gateway.id, endpoint: gatewayEndpoint.endpoint})))
+      .pipe(map(gatewayEndpoint => new GatewayEndpoint(gateway.id, gatewayEndpoint.endpoint)))
     ))
     .pipe(toArray());
 
   /**
-   * An observer to get all developer data from api data service
+   * An observer to get all public apis
    */
-  getDeveloperData: (developer: string) => Observable<ApiListElement> = (developer: string) => forkJoin([this.apiDataService.getDeveloperClients(developer),
-    this.apiDataService.getDeveloperContracts(developer),
-    this.apiDataService.getDeveloperApis(developer),
-    this.getGatewayDataObservable])
-    .pipe(mergeMap(forkedData => {
-      const [clients, contracts, apiVersions, gateways] = forkedData;
-      this.checkReceivedData(clients, contracts, apiVersions, gateways);
-      return from(contracts)
-        .pipe(map(contract => {
-          const apiVersion = apiVersions.find(version => version.api.id === contract.apiId
-            && version.version === contract.apiVersion
-            && version.api.organization.id === contract.apiOrganizationId);
-          const clientVersion = clients.find(version => version.id === contract.clientId
-            && version.version === contract.clientVersion
-            && version.organizationId === contract.clientOrganizationId);
-          const gateway = gateways.find(g => g.id === apiVersion.gateways[0].gatewayId);
-          return this.buildViewData(contract, gateway, clientVersion, apiVersion);
-        }));
-    }))
+  getPublicApis = this.apiDataService.getPublicApis();
 
   /**
    * We only need this to get called once because we don't have more than one developer
    */
   ngOnInit() {
     this.loadingSpinnerService.startWaiting();
-    // subscribe for the private api data to fill the view
-    this.getDeveloperData(this.developerId).subscribe(data => {
-      this.apiData = this.apiData.concat(data).sort(((a, b) => this.compare(a.apiOrganization + a.apiName, b.apiOrganization + b.apiName, true)));
-      this.sortedApiData = this.apiData;
+    const gatewaySubject = new Subject<Array<GatewayEndpoint>>();
+    const ApiElementSubject = new Subject<ApiListElement>();
+    const errorSubject = new Subject();
+
+    // load the gateway data
+    this.getGatewayDataObservable
+      .pipe(map(gateways => gatewaySubject.next(gateways)))
+      .subscribe(() => this.loadingSpinnerService.stopWaiting(), error => errorSubject.next(error));
+
+    // load the public apis
+    gatewaySubject.pipe(switchMap(gateways => {
+        this.loadingSpinnerService.startWaiting();
+        return this.getPublicApis.pipe( map (publicApis =>
+          this.buildPublicApiViewData(gateways, publicApis)
+        )).pipe(concatMap(x => x))
+          .pipe(map(x => ApiElementSubject.next(x)));
+      }
+    )).subscribe(() => this.loadingSpinnerService.stopWaiting(), error => errorSubject.next(error));
+
+    // load private apis
+    gatewaySubject.pipe(switchMap(gateways => {
+      this.loadingSpinnerService.startWaiting();
+      return this.getPrivateApis(gateways, this.developerId);
+    }))
+      .pipe(map(x => ApiElementSubject.next(x)))
+      .subscribe(() => this.loadingSpinnerService.stopWaiting(), error => errorSubject.next(error));
+
+    // set the received api data to the view
+    ApiElementSubject.subscribe(apiDataElement => {
+      this.loadingSpinnerService.startWaiting();
+      this.apiData = this.apiData.concat(apiDataElement);
+      this.apiData.sort(((a, b) =>
+        this.compare(a.apiOrganization + a.apiName + a.publicAPI, b.apiOrganization + b.apiName + b.publicAPI, true)));
       this.loadingSpinnerService.stopWaiting();
-    }, error => {
+    });
+
+    // handle the errors
+    errorSubject.subscribe(error => {
       // 404 is fine, we don't have any APIs to load
-      if (error.status !== 404) {
+      // @ts-ignore
+      if (error.status && error.status !== 404) {
         const errorMessage = 'Error loading api list';
         console.error(errorMessage, error);
+        // @ts-ignore
         this.toasterService.pop('error', errorMessage, error.message);
       }
       this.loadingSpinnerService.stopWaiting();
@@ -118,12 +153,36 @@ export class ApiListComponent implements OnInit {
   }
 
   /**
+   * An observer to get all private apis
+   */
+  getPrivateApis: (gateways: Array<GatewayEndpoint>, developer: string) => Observable<ApiListElement> =
+    (gateways: Array<GatewayEndpoint>, developer: string) =>
+      forkJoin([this.apiDataService.getDeveloperClients(developer),
+        this.apiDataService.getDeveloperContracts(developer),
+        this.apiDataService.getDeveloperApis(developer)]
+      ).pipe(mergeMap(forkedData => {
+          const [clients, contracts, apiVersions] = forkedData;
+          return from(contracts)
+            .pipe(map(contract => {
+              const apiVersion = apiVersions.find(version => version.api.id === contract.apiId
+                && version.version === contract.apiVersion
+                && version.api.organization.id === contract.apiOrganizationId);
+              const clientVersion = clients.find(version => version.id === contract.clientId
+                && version.version === contract.clientVersion
+                && version.organizationId === contract.clientOrganizationId);
+              const gateway = gateways.find(g => g.id === apiVersion.gateways[0].gatewayId);
+              return this.buildPrivateApiViewData(contract, gateway, clientVersion, apiVersion);
+        }));
+    }))
+
+  /**
    * Builds the data view object
    * @param contract: the contract between client and api
-   * @param gateways: the gateways which contains the gateway endpoints
+   * @param gateway: the gateway object which contains the gateway endpoint
+   * @param clientVersion: the client version
    * @param apiVersionDetails: the api version data containing the apikey and gateway id
    */
-  private buildViewData(contract: Contract, gateway, clientVersion: Client, apiVersionDetails: ApiVersion): ApiListElement {
+  private buildPrivateApiViewData(contract: Contract, gateway: GatewayEndpoint, clientVersion: Client, apiVersionDetails: ApiVersion): ApiListElement {
     return {
       id: contract.apiId,
       apiName: contract.apiName,
@@ -132,13 +191,98 @@ export class ApiListComponent implements OnInit {
       clientOrganization: contract.clientOrganizationName,
       clientName: contract.clientName,
       clientVersion: contract.clientVersion,
-      status: this.computeStatus(clientVersion.status, apiVersionDetails.status),
-      endpoint: this.buildApiEndpoint(gateway.endpoint, contract.apiOrganizationId, contract.apiId, contract.apiVersion, clientVersion.apiKey),
+      status: this.computePrivateApiStatus(clientVersion.status, apiVersionDetails.status),
+      endpoint: this.buildApiEndpoint(gateway.endpoint, contract.apiOrganizationId, contract.apiId, contract.apiVersion),
       apikey: clientVersion.apiKey,
       definitionType: apiVersionDetails.definitionType,
-      apimanDefinitionUrl: this.apiMgmtUiRestUrl + '/developers/' + this.developerId + '/organizations/' + contract.apiOrganizationId + '/apis/' + contract.apiId + '/versions/' + contract.apiVersion + '/definition',
-      swaggerURL: '/swagger/developer/' + this.developerId + '/organizations/' + contract.apiOrganizationId + '/apis/' + contract.apiId + '/versions/' + contract.apiVersion
+      apimanDefinitionUrl: this.getPrivateApiDefinitionUrl(contract),
+      swaggerURL: this.getPrivateApiSwaggerURL(contract),
+      publicAPI: false,
+      createdOn: apiVersionDetails.createdOn,
+      modifiedOn: apiVersionDetails.modifiedOn,
+      publishedOn: apiVersionDetails.publishedOn,
+      retiredOn: apiVersionDetails.retiredOn
     };
+  }
+
+  /**
+   * Builds the private API Definition URL
+   * @param contract the API contract
+   */
+  private getPrivateApiDefinitionUrl(contract: Contract) {
+    return this.apiMgmtUiRestUrl
+      + '/developers/' + this.developerId
+      + '/organizations/' + contract.apiOrganizationId
+      + '/apis/' + contract.apiId
+      + '/versions/' + contract.apiVersion
+      + '/definition';
+  }
+
+  /**
+   * Builds the private API Swagger URL
+   * @param contract the API contract
+   */
+  private getPrivateApiSwaggerURL(contract: Contract) {
+    return '/swagger/developer/' + this.developerId
+      + '/organizations/' + contract.apiOrganizationId
+      + '/apis/' + contract.apiId
+      + '/versions/' + contract.apiVersion;
+  }
+
+  /**
+   * Converts the public api data to api list element
+   * @param gateways: the gateways
+   * @param publicApis the public apis
+   */
+  buildPublicApiViewData(gateways: Array<GatewayEndpoint> , publicApis: Array<ApiVersion>): Array<ApiListElement> {
+    const result: Array<ApiListElement> = [];
+    for (const api of publicApis) {
+      const gateway = gateways.find(g => g.id === api.gateways[0].gatewayId);
+      result.push({
+        id: api.api.id,
+        apiName: api.api.name,
+        apiOrganization: api.api.organization.name,
+        apiVersion: api.version,
+        clientOrganization: null,
+        clientName: null,
+        clientVersion: null,
+        status: this.computePublicApiStatus(api.status),
+        endpoint: this.buildApiEndpoint(gateway.endpoint, api.api.organization.id, api.api.id, api.version),
+        apikey: null,
+        definitionType: api.definitionType,
+        apimanDefinitionUrl: this.getPublicApiDefinitionUrl(api),
+        swaggerURL: this.getPublicApiSwaggerUrl(api),
+        publicAPI: true,
+        createdOn: api.createdOn,
+        modifiedOn: api.modifiedOn,
+        publishedOn: api.publishedOn,
+        retiredOn: api.retiredOn
+      });
+    }
+    return result;
+  }
+
+  /**
+   * Builds the API Definition URL
+   * @param api the API
+   */
+  private getPublicApiDefinitionUrl(api: ApiVersion) {
+    return this.apiMgmtUiRestUrl
+      + '/developers/organizations/' + api.api.organization.id
+      + '/apis/' + api.api.id
+      + '/versions/' + api.version
+      + '/definition';
+  }
+
+  /**
+   * Builds the API Swagger URL
+   * @param api the API
+   */
+  private getPublicApiSwaggerUrl(api: ApiVersion) {
+    return '/swagger/developer/' + this.developerId
+      + '/organizations/' + api.api.organization.id
+      + '/apis/' + api.api.id
+      + '/versions/' + api.version;
   }
 
   /**
@@ -147,9 +291,8 @@ export class ApiListComponent implements OnInit {
    * @param organizationId: organization of api
    * @param apiId: id of api
    * @param apiVersion: version of api
-   * @param apiKey: apikey of api
    */
-  buildApiEndpoint(gatewayEndpoint: string, organizationId: string, apiId: string, apiVersion: string, apiKey: string): string {
+  buildApiEndpoint(gatewayEndpoint: string, organizationId: string, apiId: string, apiVersion: string): string {
     return gatewayEndpoint + [organizationId, apiId, apiVersion].join('/');
   }
 
@@ -160,7 +303,10 @@ export class ApiListComponent implements OnInit {
   copyEndpointToClipboard(event, entry: ApiListElement) {
     const el = document.createElement('textarea');
     document.body.appendChild(el);
-    el.value = entry.endpoint + '?apiKey=' + entry.apikey;
+    el.value = entry.endpoint;
+    if (!entry.publicAPI) {
+      el.value += '?apiKey=' + entry.apikey;
+    }
     el.select();
     document.execCommand('copy');
     document.body.removeChild(el);
@@ -177,7 +323,8 @@ export class ApiListComponent implements OnInit {
       state: {
         data: {
           apikey: entry.apikey,
-          apiStatus: entry.status
+          apiStatus: entry.status,
+          publicAPI: entry.publicAPI
         }
       }
     });
@@ -236,19 +383,20 @@ export class ApiListComponent implements OnInit {
   sortData(sort: Sort) {
     const dataToSort = this.apiData.slice();
     if (!sort.active || sort.direction === '') {
-      this.sortedApiData = dataToSort;
+      this.apiData = dataToSort;
       return;
     }
-
-    this.sortedApiData = dataToSort.sort((a, b) => {
-      const isAsc = sort.direction === 'asc';
-      switch (sort.active) {
-        case 'api': return this.compare(a.apiOrganization + a.apiName, b.apiOrganization + b.apiName, isAsc);
-        case 'version': return this.compare(a.apiVersion, b.apiVersion, isAsc);
-        case 'clientVersion': return this.compare(a.clientVersion, b.clientVersion, isAsc);
-        default: return 0;
-      }
-    });
+    dataToSort.sort((a, b) => {
+        const isAsc = sort.direction === 'asc';
+        switch (sort.active) {
+          case 'api': return this.compare(a.apiOrganization + a.apiName, b.apiOrganization + b.apiName, isAsc);
+          case 'version': return this.compare(a.apiVersion, b.apiVersion, isAsc);
+          case 'clientVersion': return this.compare(a.clientVersion, b.clientVersion, isAsc);
+          case 'publicAPI': return this.compare(a.publicAPI, b.publicAPI, isAsc);
+          default: return 0;
+        }
+      });
+    this.apiData = dataToSort;
   }
 
   /**
@@ -256,17 +404,27 @@ export class ApiListComponent implements OnInit {
    * @param clientStatus the client status
    * @param apiStatus the api status
    */
-  private computeStatus(clientStatus, apiStatus): string {
-    const registered = 'Registered';
-    const published = 'Published';
-    const retired = 'Retired';
-
-    if (clientStatus === retired || apiStatus === retired) {
-      return this.status.retired;
-    } else if (clientStatus === registered && apiStatus === published) {
-      return this.status.active;
+  private computePrivateApiStatus(clientStatus, apiStatus): string {
+    if (clientStatus === this.backendStatus.STATUS_RETIRED || apiStatus === this.backendStatus.STATUS_RETIRED) {
+      return this.viewStatus.RETIRED;
+    } else if (clientStatus === this.backendStatus.STATUS_REGISTERED && apiStatus === this.backendStatus.STATUS_PUBLISHED) {
+      return this.viewStatus.ACTIVE;
     } else {
-      return this.status.inactive;
+      return this.viewStatus.INACTIVE;
+    }
+  }
+
+  /**
+   * Compute status from API Status
+   * @param apiStatus the api status
+   */
+  private computePublicApiStatus(apiStatus): string {
+    if (apiStatus === this.backendStatus.STATUS_RETIRED) {
+      return this.viewStatus.RETIRED;
+    } else if (apiStatus === this.backendStatus.STATUS_PUBLISHED) {
+      return this.viewStatus.ACTIVE;
+    } else {
+      return this.viewStatus.INACTIVE;
     }
   }
 
@@ -274,14 +432,14 @@ export class ApiListComponent implements OnInit {
    * Compute tooltip status text
    * @param apiStatus the computed status text
    */
-  public computeStatusText(apiStatus) {
-    switch (apiStatus) {
-      case this.status.active:
-        return 'API is active';
-      case this.status.inactive:
-        return 'API is coming soon';
+  public computeStatusText(apiElement: ApiListElement) {
+    switch (apiElement.status) {
+      case this.viewStatus.ACTIVE:
+        return 'API is active since ' + formatDate(apiElement.publishedOn, 'short', 'en-US');
+      case this.viewStatus.INACTIVE:
+        return 'API is coming soon, created on ' + formatDate(apiElement.createdOn, 'short', 'en-US');
       default:
-        return 'API is retired';
+        return 'API is retired since ' + formatDate(apiElement.retiredOn, 'short', 'en-US');
     }
   }
 
@@ -291,41 +449,8 @@ export class ApiListComponent implements OnInit {
    * @param b value
    * @param isAsc is ascending sort
    */
-  private compare(a: number | string, b: number | string, isAsc: boolean) {
+  private compare(a: boolean | number | string, b: boolean | number | string, isAsc: boolean) {
     return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
-  }
-
-  /**
-   * Check the received data and provide user feedback
-   * @param clients the loaded clients
-   * @param contracts the loaded contracts
-   * @param apiVersions the loaded api versions
-   * @param gateways the loaded gateways
-   */
-  private checkReceivedData(clients: Array<Client>,
-                            contracts: Array<Contract>,
-                            apiVersions: Array<ApiVersion>,
-                            gateways: ObservedValueOf<Observable<{ endpoint: string; id: any }>>[]) {
-    let hasError = false;
-    if (clients.length === 0) {
-      hasError = true;
-      this.loadingSpinnerService.stopWaiting();
-      this.toasterService.pop('warning', 'No clients available', 'Let the admin check the client mapping');
-    }
-    if (!hasError && contracts.length === 0) {
-      hasError = true;
-      this.loadingSpinnerService.stopWaiting();
-      this.toasterService.pop('warning', 'No contracts available');
-    }
-    if (!hasError && apiVersions.length === 0) {
-      hasError = true;
-      this.loadingSpinnerService.stopWaiting();
-      this.toasterService.pop('info', 'No api versions available');
-    }
-    if (gateways.length === 0) {
-      this.loadingSpinnerService.stopWaiting();
-      this.toasterService.pop('warning', 'No gateway data available');
-    }
   }
 
   /**
@@ -350,5 +475,21 @@ export class ApiListComponent implements OnInit {
    */
   public expand(apiListElement: ApiListElement) {
     this.expandedElements.push(apiListElement);
+  }
+
+  getApiIsPublicIcon(publicAPI: boolean): string {
+    if (publicAPI) {
+      return 'public';
+    } else {
+      return 'public_off';
+    }
+  }
+
+  computeApiIsPublicText(publicAPI: boolean): string {
+    if (publicAPI) {
+      return 'API is public';
+    } else {
+      return 'API is private';
+    }
   }
 }

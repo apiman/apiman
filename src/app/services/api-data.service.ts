@@ -22,7 +22,7 @@ export interface ApiVersion {
   modifiedBy: string;
   modifiedOn: number;
   publishedOn: number;
-  retiredOn: string;
+  retiredOn: number;
   definitionType: 'None' | 'SwaggerJSON' | 'SwaggerYAML' | 'WSDL' | 'WADL' | 'RAML' | 'External';
   parsePayload: boolean;
   definitionUrl: string;
@@ -173,6 +173,14 @@ export class ApiDataService {
    * @param apiMgmtUiRestUrl The Api Mgmt UI REST url
    */
   constructor(private http: HttpClient, @Inject('API_MGMT_UI_REST_URL') private apiMgmtUiRestUrl: string) {
+  }
+
+  /**
+   * Get all public apis
+   */
+  public getPublicApis() {
+    const url = this.apiMgmtUiRestUrl + 'developers/apis';
+    return this.http.get(url) as Observable<Array<ApiVersion>>;
   }
 
   /**

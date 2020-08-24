@@ -1,13 +1,17 @@
-<div *ngIf="sortedApiData.length === 0">
+<div *ngIf="apiData.length === 0" xmlns="http://www.w3.org/1999/html">
   <p>No APIs available.</p>
 </div>
-<table *ngIf="sortedApiData.length > 0" matSort matSortStart="desc" (matSortChange)="sortData($event)" mat-table [dataSource]="sortedApiData" multiTemplateDataRows>
+<table *ngIf="apiData.length > 0" matSort matSortStart="desc" (matSortChange)="sortData($event)" mat-table [dataSource]="apiData" multiTemplateDataRows>
   <ng-container matColumnDef="api">
     <th mat-header-cell mat-sort-header="api" *matHeaderCellDef>API</th>
     <td mat-cell *matCellDef="let element">
-      <span matTooltip="{{this.computeStatusText(element.status)}}"><mat-icon class="status" [ngClass]="element.status">brightness_1</mat-icon></span>
+      <mat-icon matTooltip="{{this.computeStatusText(element)}}" class="status" [ngClass]="element.status">brightness_1</mat-icon>
       <span class="apiName">{{element.apiOrganization}} / <b>{{element.apiName}}</b></span>
     </td>
+  </ng-container>
+  <ng-container matColumnDef="publicAPI">
+    <th mat-header-cell mat-sort-header="publicAPI" *matHeaderCellDef>Access</th>
+    <td mat-cell *matCellDef="let element"><mat-icon matTooltip="{{this.computeApiIsPublicText(element.publicAPI)}}" >{{getApiIsPublicIcon(element.publicAPI)}}</mat-icon> </td>
   </ng-container>
   <ng-container matColumnDef="apiVersion">
     <th mat-header-cell mat-sort-header="version" *matHeaderCellDef>API Version</th>
@@ -16,8 +20,8 @@
   <ng-container matColumnDef="tryApi">
     <th mat-header-cell *matHeaderCellDef>Try API</th>
     <td mat-cell *matCellDef="let element">
-      <mat-icon class="button" *ngIf="element.status === status.active && element.definitionType !== null && element.definitionType !== 'None'" (click)="this.openSwaggerView(element)" matTooltip="Try the API">play_arrow</mat-icon>
-      <mat-icon class="button" *ngIf="element.status === status.inactive && element.definitionType !== null && element.definitionType !== 'None'" (click)="this.openSwaggerView(element)" matTooltip="View the API">remove_red_eye</mat-icon>
+      <mat-icon class="button" *ngIf="element.status === viewStatus.ACTIVE && element.definitionType !== null && element.definitionType !== 'None'" (click)="this.openSwaggerView(element)" matTooltip="Try the API">play_arrow</mat-icon>
+      <mat-icon class="button" *ngIf="element.status === viewStatus.INACTIVE && element.definitionType !== null && element.definitionType !== 'None'" (click)="this.openSwaggerView(element)" matTooltip="View the API">remove_red_eye</mat-icon>
     </td>
   </ng-container>
   <ng-container matColumnDef="options">
@@ -37,15 +41,15 @@
           <div class="expanded-header">API Endpoint</div>
           <div>{{element.endpoint}}</div>
         </div>
-        <div class="expand-content">
+        <div  *ngIf="!element.publicAPI" class="expand-content">
           <div class="expanded-header">API Key</div>
           <div>{{element.apikey}}</div>
         </div>
-        <div class="expand-content">
+        <div *ngIf="!element.publicAPI" class="expand-content">
           <div class="expanded-header">Client</div>
           <div>{{element.clientOrganization}} / {{element.clientName}}</div>
         </div>
-        <div class="expand-content">
+        <div *ngIf="!element.publicAPI" class="expand-content">
           <div class="expanded-header">Client Version</div>
           <div>{{element.clientVersion}}</div>
         </div>

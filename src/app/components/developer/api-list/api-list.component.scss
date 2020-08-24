@@ -19,6 +19,10 @@ p {
   cursor: pointer;
 }
 
+table {
+  min-width: 75%;
+}
+
 tr.api-detail-row {
   height: 0;
 }

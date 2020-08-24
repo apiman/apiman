@@ -21,28 +21,31 @@ export class SwaggerComponent implements OnInit {
     const apiId = this.route.snapshot.paramMap.get('apiId');
     const version = this.route.snapshot.paramMap.get('version');
 
+    const isPublicApi = history.state.data ? history.state.data.publicAPI : false;
     let apiStatus = history.state.data ? history.state.data.apiStatus : null;
     let apiKey = history.state.data ? history.state.data.apikey : null;
 
-    if (apiStatus) {
-      // save status for reloading page
-      sessionStorage.setItem('lastApiStatus', apiStatus);
-    } else {
-      apiStatus = sessionStorage.getItem('lastApiStatus');
+    if (!isPublicApi) {
+      if (apiStatus) {
+        // save status for reloading page
+        sessionStorage.setItem('lastApiStatus', apiStatus);
+      } else {
+        apiStatus = sessionStorage.getItem('lastApiStatus');
+      }
+
+      if (apiKey) {
+        // save key for reloading page
+        sessionStorage.setItem('lastSwaggerApiKey', apiKey);
+      } else {
+        apiKey = sessionStorage.getItem('lastSwaggerApiKey');
+      }
     }
 
-    if (apiKey) {
-      // save key for reloading page
-      sessionStorage.setItem('lastSwaggerApiKey', apiKey);
-    } else {
-      apiKey = sessionStorage.getItem('lastSwaggerApiKey');
+    let swaggerURL = this.apiMgmtUiRestUrl + '/developers';
+    if (!isPublicApi) {
+      swaggerURL += '/' + developerId;
     }
-
-    const swaggerURL = this.apiMgmtUiRestUrl
-      + '/developers/' + developerId
-      + '/organizations/' + organizationId
-      + '/apis/' + apiId + '/versions/'
-      + version + '/definition';
+    swaggerURL += '/organizations/' + organizationId + '/apis/' + apiId + '/versions/' + version + '/definition';
 
     const CheckAllowTryItOutPlugin = () => {
       return {
@@ -78,7 +81,7 @@ export class SwaggerComponent implements OnInit {
         if (request.url === swaggerURL) {
           // set bearer token for authentication to get swagger file
           request.headers.Authorization = 'Bearer ' + sessionStorage.getItem('api_mgmt_keycloak_token');
-        } else {
+        } else if (!isPublicApi) {
           // set api key to authorize all api requests also for option requests
           request.url += '?apiKey=' + apiKey;
         }
