@@ -23,19 +23,12 @@ import io.apiman.manager.api.beans.apis.EndpointType;
 import io.apiman.manager.api.beans.idm.UserBean;
 import io.apiman.manager.api.beans.summary.ApiNamespaceBean;
 import io.apiman.manager.api.beans.summary.AvailableApiBean;
-import io.apiman.manager.api.core.IApiCatalog;
-import io.apiman.manager.api.core.IApiKeyGenerator;
-import io.apiman.manager.api.core.IMetricsAccessor;
-import io.apiman.manager.api.core.INewUserBootstrapper;
-import io.apiman.manager.api.core.IPluginRegistry;
-import io.apiman.manager.api.core.IStorage;
-import io.apiman.manager.api.core.IStorageQuery;
-import io.apiman.manager.api.core.UuidApiKeyGenerator;
+import io.apiman.manager.api.core.*;
 import io.apiman.manager.api.core.crypt.DefaultDataEncrypter;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.core.logging.ApimanLogger;
 import io.apiman.manager.api.core.logging.StandardLoggerImpl;
-import io.apiman.manager.api.es.ESMetricsAccessor;
+import io.apiman.manager.api.es.EsMetricsAccessor;
 import io.apiman.manager.api.es.EsStorage;
 import io.apiman.manager.api.jpa.IJpaProperties;
 import io.apiman.manager.api.jpa.JpaStorage;
@@ -43,21 +36,13 @@ import io.apiman.manager.api.security.ISecurityContext;
 import io.apiman.manager.api.security.impl.DefaultSecurityContext;
 import io.apiman.manager.test.util.ManagerTestUtils;
 import io.apiman.manager.test.util.ManagerTestUtils.TestType;
-import io.searchbox.client.JestClient;
-import io.searchbox.client.JestClientFactory;
-import io.searchbox.client.config.HttpClientConfig;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.New;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Named;
+import java.util.*;
 
 /**
  * Attempt to create producer methods for CDI beans.
@@ -115,12 +100,12 @@ public class TestCdiFactory {
     }
 
     @Produces @ApplicationScoped
-    public static IStorage provideStorage(@New JpaStorage jpaStorage, @New EsStorage esStorage) {
+    public static IStorage provideStorage(@New JpaStorage jpaStorage) {
         TestType testType = ManagerTestUtils.getTestType();
         if (testType == TestType.jpa) {
             return jpaStorage;
         } else if (testType == TestType.es) {
-            esStorage.initialize();
+            EsStorage esStorage = new EsStorage(ManagerApiTestServer.ES_CLIENT);
             return new TestEsStorageWrapper(ManagerApiTestServer.ES_CLIENT, esStorage);
         } else {
             throw new RuntimeException("Unexpected test type: " + testType);
@@ -128,12 +113,12 @@ public class TestCdiFactory {
     }
 
     @Produces @ApplicationScoped
-    public static IStorageQuery provideStorageQuery(@New JpaStorage jpaStorage, @New EsStorage esStorage) {
+    public static IStorageQuery provideStorageQuery(@New JpaStorage jpaStorage) {
         TestType testType = ManagerTestUtils.getTestType();
         if (testType == TestType.jpa) {
             return jpaStorage;
         } else if (testType == TestType.es) {
-            esStorage.initialize();
+            EsStorage esStorage = new EsStorage(ManagerApiTestServer.ES_CLIENT);
             return new TestEsStorageQueryWrapper(ManagerApiTestServer.ES_CLIENT, esStorage);
         } else {
             throw new RuntimeException("Unexpected test type: " + testType);
@@ -182,13 +167,13 @@ public class TestCdiFactory {
             @Override
             public List<ApiNamespaceBean> getNamespaces(String currentUser) {
                 List<ApiNamespaceBean> rval = new ArrayList<>();
-                
+
                 ApiNamespaceBean bean = new ApiNamespaceBean();
                 bean.setCurrent(true);
                 bean.setName("current");
                 bean.setOwnedByUser(true);
                 rval.add(bean);
-                
+
                 bean = new ApiNamespaceBean();
                 bean.setCurrent(false);
                 bean.setName("ns1");
@@ -212,42 +197,13 @@ public class TestCdiFactory {
         };
     }
 
-    @Produces @ApplicationScoped @Named("storage")
-    public static JestClient provideStorageJestClient() {
-        TestType testType = ManagerTestUtils.getTestType();
-        if (testType == TestType.jpa) {
-            return null;
-        } else if (testType == TestType.es) {
-            return ManagerApiTestServer.ES_CLIENT;
-        } else {
-            throw new RuntimeException("Unexpected test type: " + testType);
-        }
-    }
-
-    @Produces @ApplicationScoped @Named("metrics")
-    public static JestClient provideMetricsJestClient() {
-        boolean enableESMetrics = "true".equals(System.getProperty("apiman-test.es-metrics", "false"));
-        if (enableESMetrics) {
-            String host = System.getProperty("apiman-test.es-metrics.host", "localhost");
-            String port = System.getProperty("apiman-test.es-metrics.port", "9200");
-
-            String connectionUrl = "http://" + host + ":" + port + "";
-            JestClientFactory factory = new JestClientFactory();
-            factory.setHttpClientConfig(new HttpClientConfig.Builder(connectionUrl).multiThreaded(true).
-                    connTimeout(JEST_TIMEOUT).readTimeout(JEST_TIMEOUT).build());
-            return factory.getObject();
-        } else {
-            return null;
-        }
-    }
-
     @Produces @ApplicationScoped
-    public static IMetricsAccessor provideMetricsAccessor(@New TestMetricsAccessor testMetrics, @New ESMetricsAccessor esMetrics) {
-        boolean enableESMetrics = "true".equals(System.getProperty("apiman-test.es-metrics", "false"));
-        if (enableESMetrics) {
-            return esMetrics;
+    public static IMetricsAccessor provideMetricsAccessor() {
+        boolean enableEsMetrics = "true".equals(System.getProperty("apiman-test.es-metrics", "false"));
+        if (enableEsMetrics) {
+            return new EsMetricsAccessor(ManagerApiTestServer.ES_CLIENT);
         } else {
-            return testMetrics;
+            return new TestMetricsAccessor();
         }
     }
 }

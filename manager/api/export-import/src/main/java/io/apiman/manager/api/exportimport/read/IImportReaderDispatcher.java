@@ -32,7 +32,8 @@ import io.apiman.manager.api.beans.plans.PlanVersionBean;
 import io.apiman.manager.api.beans.plugins.PluginBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
-import io.apiman.manager.api.exportimport.beans.MetadataBean;
+import io.apiman.manager.api.beans.system.MetadataBean;
+import io.apiman.manager.api.exportimport.exceptions.ImportNotNeededException;
 
 /**
  * Used to listen to the reading of an apiman import file.  The import
@@ -44,7 +45,7 @@ import io.apiman.manager.api.exportimport.beans.MetadataBean;
  */
 public interface IImportReaderDispatcher {
     // Metadata
-    void metadata(MetadataBean metadata);
+    void metadata(MetadataBean metadata) throws ImportNotNeededException;
 
     // Users
     void user(UserBean user);
@@ -86,6 +87,6 @@ public interface IImportReaderDispatcher {
     // Called when the import is complete
     void close();
 
-    // Called to cancel the import
+    // Called to perform a rollback of the storage
     void cancel();
 }

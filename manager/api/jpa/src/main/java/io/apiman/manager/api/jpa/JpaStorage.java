@@ -65,6 +65,7 @@ import io.apiman.manager.api.beans.summary.PluginSummaryBean;
 import io.apiman.manager.api.beans.summary.PolicyDefinitionSummaryBean;
 import io.apiman.manager.api.beans.summary.PolicyFormType;
 import io.apiman.manager.api.beans.summary.PolicySummaryBean;
+import io.apiman.manager.api.beans.system.MetadataBean;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.StorageException;
@@ -200,6 +201,14 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     @Override
     public void createDownload(DownloadBean download) throws StorageException {
         super.create(download);
+    }
+
+    /**
+     * @see io.apiman.manager.api.core.IStorage#createMetadata(MetadataBean)
+     */
+    @Override
+    public void createMetadata(MetadataBean metadata) throws StorageException {
+        super.create(metadata);
     }
 
     /**
@@ -596,6 +605,14 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     @Override
     public DownloadBean getDownload(String id) throws StorageException {
         return super.get(id, DownloadBean.class);
+    }
+
+    /**
+     * @see io.apiman.manager.api.core.IStorage#getMetadata(Long)
+     */
+    @Override
+    public MetadataBean getMetadata(Long id) throws StorageException {
+        return super.get(id, MetadataBean.class);
     }
 
     /**

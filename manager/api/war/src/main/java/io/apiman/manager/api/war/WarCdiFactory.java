@@ -26,14 +26,7 @@ import io.apiman.common.util.ReflectionUtils;
 import io.apiman.common.util.crypt.CurrentDataEncrypter;
 import io.apiman.common.util.crypt.IDataEncrypter;
 import io.apiman.manager.api.beans.idm.UserBean;
-import io.apiman.manager.api.core.IApiCatalog;
-import io.apiman.manager.api.core.IApiKeyGenerator;
-import io.apiman.manager.api.core.IMetricsAccessor;
-import io.apiman.manager.api.core.INewUserBootstrapper;
-import io.apiman.manager.api.core.IPluginRegistry;
-import io.apiman.manager.api.core.IStorage;
-import io.apiman.manager.api.core.IStorageQuery;
-import io.apiman.manager.api.core.UuidApiKeyGenerator;
+import io.apiman.manager.api.core.*;
 import io.apiman.manager.api.core.config.ApiManagerConfig;
 import io.apiman.manager.api.core.crypt.DefaultDataEncrypter;
 import io.apiman.manager.api.core.exceptions.StorageException;
@@ -42,25 +35,22 @@ import io.apiman.manager.api.core.logging.ApimanLogger;
 import io.apiman.manager.api.core.logging.JsonLoggerImpl;
 import io.apiman.manager.api.core.logging.StandardLoggerImpl;
 import io.apiman.manager.api.core.noop.NoOpMetricsAccessor;
-import io.apiman.manager.api.es.ESMetricsAccessor;
+import io.apiman.manager.api.es.EsMetricsAccessor;
 import io.apiman.manager.api.es.EsStorage;
 import io.apiman.manager.api.jpa.JpaStorage;
 import io.apiman.manager.api.jpa.JpaStorageInitializer;
 import io.apiman.manager.api.security.ISecurityContext;
 import io.apiman.manager.api.security.impl.DefaultSecurityContext;
 import io.apiman.manager.api.security.impl.KeycloakSecurityContext;
-import io.searchbox.client.JestClient;
-
-import java.lang.reflect.Constructor;
-import java.util.Map;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.New;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Named;
-
-import org.apache.commons.lang3.StringUtils;
+import java.lang.reflect.Constructor;
+import java.util.Map;
 
 /**
  * Attempt to create producer methods for CDI beans.
@@ -70,8 +60,8 @@ import org.apache.commons.lang3.StringUtils;
 @ApplicationScoped
 public class WarCdiFactory {
 
-    private static IEsClientFactory sStorageESClientFactory;
-    private static IEsClientFactory sMetricsESClientFactory;
+    private static IEsClientFactory sStorageEsClientFactory;
+    private static IEsClientFactory sMetricsEsClientFactory;
     private static JpaStorage sJpaStorage;
     private static EsStorage sESStorage;
 
@@ -120,13 +110,12 @@ public class WarCdiFactory {
     }
 
     @Produces @ApplicationScoped
-    public static IStorage provideStorage(WarApiManagerConfig config, @New JpaStorage jpaStorage,
-            @New EsStorage esStorage, IPluginRegistry pluginRegistry) {
+    public static IStorage provideStorage(WarApiManagerConfig config, @New JpaStorage jpaStorage, IPluginRegistry pluginRegistry) {
         IStorage storage;
         if ("jpa".equals(config.getStorageType())) { //$NON-NLS-1$
             storage = initJpaStorage(config, jpaStorage);
         } else if ("es".equals(config.getStorageType())) { //$NON-NLS-1$
-            storage = initEsStorage(config, esStorage);
+            storage = new EsStorage(config.getStorageESClientFactoryConfig());
         } else {
             try {
                 storage = createCustomComponent(IStorage.class, config.getStorageType(),
@@ -139,12 +128,11 @@ public class WarCdiFactory {
     }
 
     @Produces @ApplicationScoped
-    public static IStorageQuery provideStorageQuery(WarApiManagerConfig config, @New JpaStorage jpaStorage,
-            @New EsStorage esStorage, IStorage storage, IPluginRegistry pluginRegistry) {
+    public static IStorageQuery provideStorageQuery(WarApiManagerConfig config, @New JpaStorage jpaStorage, IStorage storage, IPluginRegistry pluginRegistry) {
         if ("jpa".equals(config.getStorageType())) { //$NON-NLS-1$
             return initJpaStorage(config, jpaStorage);
         } else if ("es".equals(config.getStorageType())) { //$NON-NLS-1$
-            return initEsStorage(config, esStorage);
+            return new EsStorage(config.getStorageESClientFactoryConfig());
         } else if (storage != null && storage instanceof IStorageQuery) {
             return (IStorageQuery) storage;
         } else {
@@ -159,12 +147,12 @@ public class WarCdiFactory {
 
     @Produces @ApplicationScoped
     public static IMetricsAccessor provideMetricsAccessor(WarApiManagerConfig config,
-            @New NoOpMetricsAccessor noopMetrics, @New ESMetricsAccessor esMetrics, IPluginRegistry pluginRegistry) {
+                                                          @New NoOpMetricsAccessor noopMetrics, IPluginRegistry pluginRegistry) {
         IMetricsAccessor metrics;
         if ("es".equals(config.getMetricsType())) { //$NON-NLS-1$
-            metrics = esMetrics;
-        } else if (config.getMetricsType().equals(ESMetricsAccessor.class.getName())) {
-            metrics = esMetrics;
+            metrics = new EsMetricsAccessor(config.getStorageESClientFactoryConfig());
+        } else if (config.getMetricsType().equals(EsMetricsAccessor.class.getName())) {
+            metrics = new EsMetricsAccessor(config.getStorageESClientFactoryConfig());
         } else if ("noop".equals(config.getMetricsType())) { //$NON-NLS-1$
             metrics = noopMetrics;
         } else if (config.getMetricsType().equals(NoOpMetricsAccessor.class.getName())) {
@@ -226,70 +214,19 @@ public class WarCdiFactory {
 
     @Produces @ApplicationScoped @Named("storage-factory")
     public static IEsClientFactory provideStorageESClientFactory(WarApiManagerConfig config, IPluginRegistry pluginRegistry) {
-        if ("es".equals(config.getStorageType()) && sStorageESClientFactory == null) { //$NON-NLS-1$
+        if ("es".equals(config.getStorageType()) && sStorageEsClientFactory == null) { //$NON-NLS-1$
             try {
                 String factoryClass = config.getStorageESClientFactory();
                 if (factoryClass == null) {
                     factoryClass = DefaultEsClientFactory.class.getName();
                 }
-                sStorageESClientFactory = createCustomComponent(IEsClientFactory.class, factoryClass,
+                sStorageEsClientFactory = createCustomComponent(IEsClientFactory.class, factoryClass,
                         null, pluginRegistry);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }
-        return sStorageESClientFactory;
-    }
-
-    @Produces @ApplicationScoped @Named("metrics-factory")
-    public static IEsClientFactory provideMetricsESClientFactory(WarApiManagerConfig config, IPluginRegistry pluginRegistry) {
-        if ("es".equals(config.getMetricsType()) && sMetricsESClientFactory == null) { //$NON-NLS-1$
-            try {
-                String factoryClass = config.getMetricsESClientFactory();
-                if (factoryClass == null) {
-                    factoryClass = DefaultEsClientFactory.class.getName();
-                }
-                sMetricsESClientFactory = createCustomComponent(IEsClientFactory.class, factoryClass,
-                        null, pluginRegistry);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
-        return sMetricsESClientFactory;
-    }
-
-    @Produces @ApplicationScoped @Named("storage")
-    public static JestClient provideStorageESClient(WarApiManagerConfig config, @Named("storage-factory") IEsClientFactory clientFactory) {
-        if ("es".equals(config.getStorageType())) { //$NON-NLS-1$
-            return clientFactory.createClient(config.getMetricsESClientFactoryConfig(), null);
-        } else {
-            return null;
-        }
-    }
-
-    @Produces @ApplicationScoped @Named("metrics")
-    public static JestClient provideMetricsESClient(WarApiManagerConfig config, @Named("metrics-factory") IEsClientFactory clientFactory) {
-        if ("es".equals(config.getMetricsType())) { //$NON-NLS-1$
-            return clientFactory.createClient(config.getMetricsESClientFactoryConfig(), null);
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * Initializes the ES storage (if required).
-     * @param config
-     * @param esStorage
-     */
-    private static EsStorage initEsStorage(WarApiManagerConfig config, EsStorage esStorage) {
-        if (sESStorage == null) {
-            sESStorage = esStorage;
-            sESStorage.setIndexName(config.getStorageESIndexName());
-            if (config.isInitializeStorageES()) {
-                sESStorage.initialize();
-            }
-        }
-        return sESStorage;
+        return sStorageEsClientFactory;
     }
 
     /**

@@ -31,7 +31,7 @@ import io.apiman.manager.api.beans.metrics.UsageHistogramBean;
 import io.apiman.manager.api.beans.metrics.UsagePerClientBean;
 import io.apiman.manager.api.beans.metrics.UsagePerPlanBean;
 import io.apiman.manager.api.core.IMetricsAccessor;
-import io.apiman.manager.api.core.metrics.AbstractMetricsAccessor;
+import io.apiman.manager.api.core.metrics.MetricsAccessorHelper;
 
 import java.util.Calendar;
 import java.util.HashMap;
@@ -48,7 +48,7 @@ import org.joda.time.DateTime;
  *
  * @author eric.wittmann@redhat.com
  */
-public class HawkularMetricsAccessor extends AbstractMetricsAccessor implements IMetricsAccessor {
+public class HawkularMetricsAccessor implements IMetricsAccessor {
 
     private HawkularMetricsClient client;
 
@@ -74,14 +74,14 @@ public class HawkularMetricsAccessor extends AbstractMetricsAccessor implements 
             HistogramIntervalType interval, DateTime from, DateTime to) {
         String tenantId = organizationId;
         String totalCounterId = "apis." + apiId + "." + version + ".Requests.Total"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        
+
         BucketSizeType bucketSize = bucketSizeFromInterval(interval);
-        List<BucketDataPointBean> data = client.getCounterData(tenantId, totalCounterId, floor(from, interval).toDate(), to.toDate(), bucketSize);
+        List<BucketDataPointBean> data = client.getCounterData(tenantId, totalCounterId, MetricsAccessorHelper.floor(from, interval).toDate(), to.toDate(), bucketSize);
         UsageHistogramBean rval = new UsageHistogramBean();
         for (BucketDataPointBean bucket : data) {
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(bucket.getStart());
-            String label = formatDateWithMillis(calendar);
+            String label = MetricsAccessorHelper.formatDateWithMillis(calendar);
             UsageDataPoint dataPoint = new UsageDataPoint(label, bucket.getSamples());
             rval.getData().add(dataPoint);
         }
@@ -98,7 +98,7 @@ public class HawkularMetricsAccessor extends AbstractMetricsAccessor implements 
         String totalCounterId = "apis." + apiId + "." + version + ".Requests.Total"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
         Map<String, BucketDataPointBean> data = client.getCounterData(tenantId, totalCounterId, from.toDate(),
-                to.toDate(), HawkularMetricsClient.tags("clientId", "*")); //$NON-NLS-1$ //$NON-NLS-2$        
+                to.toDate(), HawkularMetricsClient.tags("clientId", "*")); //$NON-NLS-1$ //$NON-NLS-2$
 
         TopNSortedMap<String, Long> topFive = new TopNSortedMap<>(5);
         for (Entry<String, BucketDataPointBean> entry : data.entrySet()) {
@@ -120,7 +120,7 @@ public class HawkularMetricsAccessor extends AbstractMetricsAccessor implements 
         String totalCounterId = "apis." + apiId + "." + version + ".Requests.Total"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
         Map<String, BucketDataPointBean> data = client.getCounterData(tenantId, totalCounterId, from.toDate(),
-                to.toDate(), HawkularMetricsClient.tags("planId", "*")); //$NON-NLS-1$ //$NON-NLS-2$        
+                to.toDate(), HawkularMetricsClient.tags("planId", "*")); //$NON-NLS-1$ //$NON-NLS-2$
 
         TopNSortedMap<String, Long> topFive = new TopNSortedMap<>(5);
         for (Entry<String, BucketDataPointBean> entry : data.entrySet()) {
@@ -142,13 +142,13 @@ public class HawkularMetricsAccessor extends AbstractMetricsAccessor implements 
         String totalCounterId = "apis." + apiId + "." + version + ".Requests.Total"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         String failureCounterId = "apis." + apiId + "." + version + ".Requests.Failed"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         String errorCounterId = "apis." + apiId + "." + version + ".Requests.Errored"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        
+
         BucketSizeType bucketSize = bucketSizeFromInterval(interval);
-        DateTime fromFloor = floor(from, interval);
+        DateTime fromFloor = MetricsAccessorHelper.floor(from, interval);
         List<BucketDataPointBean> data = client.getCounterData(tenantId, totalCounterId, fromFloor.toDate(), to.toDate(), bucketSize);
         List<BucketDataPointBean> failureData = client.getCounterData(tenantId, failureCounterId, fromFloor.toDate(), to.toDate(), bucketSize);
         List<BucketDataPointBean> errorData = client.getCounterData(tenantId, errorCounterId, fromFloor.toDate(), to.toDate(), bucketSize);
-        
+
         ResponseStatsHistogramBean rval = new ResponseStatsHistogramBean();
         for (int idx = 0; idx < data.size(); idx++) {
             BucketDataPointBean totalDataPoint = data.get(idx);
@@ -156,7 +156,7 @@ public class HawkularMetricsAccessor extends AbstractMetricsAccessor implements 
             BucketDataPointBean errorDataPoint = errorData.get(idx);
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(totalDataPoint.getStart());
-            String label = formatDateWithMillis(calendar);
+            String label = MetricsAccessorHelper.formatDateWithMillis(calendar);
             ResponseStatsDataPoint dataPoint = new ResponseStatsDataPoint(label, totalDataPoint.getSamples(),
                     failureDataPoint.getSamples(), errorDataPoint.getSamples());
             rval.getData().add(dataPoint);
@@ -174,11 +174,11 @@ public class HawkularMetricsAccessor extends AbstractMetricsAccessor implements 
         String totalCounterId = "apis." + apiId + "." + version + ".Requests.Total"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         String failureCounterId = "apis." + apiId + "." + version + ".Requests.Failed"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         String errorCounterId = "apis." + apiId + "." + version + ".Requests.Errored"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        
+
         List<BucketDataPointBean> data = client.getCounterData(tenantId, totalCounterId, from.toDate(), to.toDate(), 1);
         List<BucketDataPointBean> failureData = client.getCounterData(tenantId, failureCounterId, from.toDate(), to.toDate(), 1);
         List<BucketDataPointBean> errorData = client.getCounterData(tenantId, errorCounterId, from.toDate(), to.toDate(), 1);
-        
+
         ResponseStatsSummaryBean rval = new ResponseStatsSummaryBean();
         if (data.size() > 0) {
             BucketDataPointBean totalDataPoint = data.get(0);
@@ -203,11 +203,11 @@ public class HawkularMetricsAccessor extends AbstractMetricsAccessor implements 
         String errorCounterId = "apis." + apiId + "." + version + ".Requests.Errored"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
         Map<String, BucketDataPointBean> totalData = client.getCounterData(tenantId, totalCounterId, from.toDate(),
-                to.toDate(), HawkularMetricsClient.tags("clientId", "*")); //$NON-NLS-1$ //$NON-NLS-2$        
+                to.toDate(), HawkularMetricsClient.tags("clientId", "*")); //$NON-NLS-1$ //$NON-NLS-2$
         Map<String, BucketDataPointBean> failureData = client.getCounterData(tenantId, failureCounterId, from.toDate(),
-                to.toDate(), HawkularMetricsClient.tags("clientId", "*")); //$NON-NLS-1$ //$NON-NLS-2$        
+                to.toDate(), HawkularMetricsClient.tags("clientId", "*")); //$NON-NLS-1$ //$NON-NLS-2$
         Map<String, BucketDataPointBean> errorData = client.getCounterData(tenantId, errorCounterId, from.toDate(),
-                to.toDate(), HawkularMetricsClient.tags("clientId", "*")); //$NON-NLS-1$ //$NON-NLS-2$        
+                to.toDate(), HawkularMetricsClient.tags("clientId", "*")); //$NON-NLS-1$ //$NON-NLS-2$
 
         TopNSortedMap<String, ResponseStatsDataPoint> topTen = new TopNSortedMap<>(10);
         for (Entry<String, BucketDataPointBean> entry : totalData.entrySet()) {
@@ -223,15 +223,15 @@ public class HawkularMetricsAccessor extends AbstractMetricsAccessor implements 
             if (dp != null) {
                 dp.setFailures(entry.getValue().getSamples());
             }
-        }        
+        }
         for (Entry<String, BucketDataPointBean> entry : errorData.entrySet()) {
             String key = entry.getKey().substring("clientId".length()); //$NON-NLS-1$
             ResponseStatsDataPoint dp = topTen.get(key);
             if (dp != null) {
                 dp.setErrors(entry.getValue().getSamples());
             }
-        }        
-        
+        }
+
         ResponseStatsPerClientBean rval = new ResponseStatsPerClientBean();
         rval.setData(topTen.toMap());
         return rval;
@@ -249,11 +249,11 @@ public class HawkularMetricsAccessor extends AbstractMetricsAccessor implements 
         String errorCounterId = "apis." + apiId + "." + version + ".Requests.Errored"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
         Map<String, BucketDataPointBean> totalData = client.getCounterData(tenantId, totalCounterId, from.toDate(),
-                to.toDate(), HawkularMetricsClient.tags("planId", "*")); //$NON-NLS-1$ //$NON-NLS-2$        
+                to.toDate(), HawkularMetricsClient.tags("planId", "*")); //$NON-NLS-1$ //$NON-NLS-2$
         Map<String, BucketDataPointBean> failureData = client.getCounterData(tenantId, failureCounterId, from.toDate(),
-                to.toDate(), HawkularMetricsClient.tags("planId", "*")); //$NON-NLS-1$ //$NON-NLS-2$        
+                to.toDate(), HawkularMetricsClient.tags("planId", "*")); //$NON-NLS-1$ //$NON-NLS-2$
         Map<String, BucketDataPointBean> errorData = client.getCounterData(tenantId, errorCounterId, from.toDate(),
-                to.toDate(), HawkularMetricsClient.tags("planId", "*")); //$NON-NLS-1$ //$NON-NLS-2$        
+                to.toDate(), HawkularMetricsClient.tags("planId", "*")); //$NON-NLS-1$ //$NON-NLS-2$
 
         TopNSortedMap<String, ResponseStatsDataPoint> topTen = new TopNSortedMap<>(10);
         for (Entry<String, BucketDataPointBean> entry : totalData.entrySet()) {
@@ -269,7 +269,7 @@ public class HawkularMetricsAccessor extends AbstractMetricsAccessor implements 
             if (dp != null) {
                 dp.setFailures(entry.getValue().getSamples());
             }
-        }        
+        }
         for (Entry<String, BucketDataPointBean> entry : errorData.entrySet()) {
             String key = entry.getKey().substring("planId".length()); //$NON-NLS-1$
             ResponseStatsDataPoint dp = topTen.get(key);
@@ -277,7 +277,7 @@ public class HawkularMetricsAccessor extends AbstractMetricsAccessor implements 
                 dp.setErrors(entry.getValue().getSamples());
             }
         }
-        
+
         ResponseStatsPerPlanBean rval = new ResponseStatsPerPlanBean();
         rval.setData(topTen.toMap());
         return rval;
@@ -293,7 +293,7 @@ public class HawkularMetricsAccessor extends AbstractMetricsAccessor implements 
         String totalCounterId = "clients." + clientId + "." + version + ".Requests.Total"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
         Map<String, BucketDataPointBean> data = client.getCounterData(tenantId, totalCounterId, from.toDate(),
-                to.toDate(), HawkularMetricsClient.tags("clientId", "*")); //$NON-NLS-1$ //$NON-NLS-2$        
+                to.toDate(), HawkularMetricsClient.tags("clientId", "*")); //$NON-NLS-1$ //$NON-NLS-2$
 
         TopNSortedMap<String, Long> topTen = new TopNSortedMap<>(10);
         for (Entry<String, BucketDataPointBean> entry : data.entrySet()) {

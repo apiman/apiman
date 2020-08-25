@@ -21,7 +21,7 @@ package io.apiman.manager.api.beans.metrics;
  * @author eric.wittmann@redhat.com
  */
 public enum HistogramIntervalType {
-
+    // TODO elasticsearch 7.6 supports also quarter and year
     month, week, day, hour, minute
 
 }

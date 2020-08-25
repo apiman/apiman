@@ -102,10 +102,10 @@
 
   // Elasticsearch Metrics Settings
   "metrics": {
-    "class": "io.apiman.gateway.engine.es.ESMetrics",
+    "class": "io.apiman.gateway.engine.es.EsMetrics",
     "config": {
       "client": {
-        "type": "jest",
+        "type": "es",
         "protocol": "${apiman.es.protocol}",
         "host": "${apiman.es.host}",
         "port": "${apiman.es.port}",
@@ -120,10 +120,10 @@
   "components": {
     // Shared State Component Settings
     "ISharedStateComponent": {
-      "class": "io.apiman.gateway.engine.es.ESSharedStateComponent",
+      "class": "io.apiman.gateway.engine.es.EsSharedStateComponent",
       "config": {
         "client": {
-          "type": "jest",
+          "type": "es",
           "protocol": "${apiman.es.protocol}",
           "host": "${apiman.es.host}",
           "port": "${apiman.es.port}",
@@ -137,10 +137,10 @@
 
     // Rate Limiter Component Settings
     "IRateLimiterComponent": {
-      "class": "io.apiman.gateway.engine.es.ESRateLimiterComponent",
+      "class": "io.apiman.gateway.engine.es.EsRateLimiterComponent",
       "config": {
         "client": {
-          "type": "jest",
+          "type": "es",
           "protocol": "${apiman.es.protocol}",
           "host": "${apiman.es.host}",
           "port": "${apiman.es.port}",
@@ -154,10 +154,10 @@
 
     // Cache Store Component Settings
     "ICacheStoreComponent": {
-      "class": "io.apiman.gateway.engine.es.ESCacheStoreComponent",
+      "class": "io.apiman.gateway.engine.es.EsCacheStoreComponent",
       "config": {
         "client": {
-          "type": "jest",
+          "type": "es",
           "protocol": "${apiman.es.protocol}",
           "host": "${apiman.es.host}",
           "port": "${apiman.es.port}",

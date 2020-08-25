@@ -42,24 +42,18 @@ import io.apiman.manager.api.beans.plugins.PluginBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
 import io.apiman.manager.api.beans.policies.PolicyType;
+import io.apiman.manager.api.beans.system.MetadataBean;
+import io.apiman.manager.api.config.Version;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.core.logging.ApimanLogger;
-import io.apiman.manager.api.exportimport.beans.MetadataBean;
+import io.apiman.manager.api.exportimport.exceptions.ImportNotNeededException;
 import io.apiman.manager.api.exportimport.i18n.Messages;
 import io.apiman.manager.api.exportimport.read.IImportReaderDispatcher;
 import io.apiman.manager.api.gateway.IGatewayLink;
 import io.apiman.manager.api.gateway.IGatewayLinkFactory;
 
-import java.util.AbstractMap;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -76,6 +70,8 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
     private IStorage storage;
     @Inject @ApimanLogger(StorageImportDispatcher.class)
     private IApimanLogger logger;
+    @Inject
+    private Version version;
     @Inject
     private IGatewayLinkFactory gatewayLinks;
 
@@ -95,9 +91,10 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
 
     private Map<String, IGatewayLink> gatewayLinkCache = new HashMap<>();
 
+    private MetadataBean currentMetadata = new MetadataBean();
+
     /**
      * Constructor.
-     * @param storage
      */
     public StorageImportDispatcher() {
     }
@@ -115,6 +112,8 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
     public void start() {
         logger.info("----------------------------"); //$NON-NLS-1$
         logger.info(Messages.i18n.format("StorageImportDispatcher.StartingImport")); //$NON-NLS-1$
+        currentMetadata.setImportedOn(new Date());
+        currentMetadata.setApimanVersionAtImport(version.getVersionString());
 
         policyDefIndex.clear();
         currentOrg = null;
@@ -135,11 +134,26 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
     }
 
     /**
-     * @see io.apiman.manager.api.exportimport.read.IImportReaderDispatcher#metadata(io.apiman.manager.api.exportimport.beans.MetadataBean)
+     * @see io.apiman.manager.api.exportimport.read.IImportReaderDispatcher#metadata(MetadataBean)
      */
     @Override
-    public void metadata(MetadataBean metadata) {
-        // Nothing to do here at the moment.
+    public void metadata(MetadataBean metadata) throws ImportNotNeededException {
+        try {
+            currentMetadata.setId(metadata.getExportedOn() != null ? metadata.getExportedOn().getTime() : null);
+            currentMetadata.setExportedOn(metadata.getExportedOn());
+            currentMetadata.setApimanVersion(metadata.getApimanVersion());
+
+            if (metadata.getId() != null || metadata.getExportedOn() != null) {
+                // Try to determine ID (We use the exportedOn timestamp as ID)
+                Long id = metadata.getId() != null ? metadata.getId() : metadata.getExportedOn().getTime();
+                MetadataBean metadataBean = storage.getMetadata(id);
+                if (metadataBean != null) {
+                    throw new ImportNotNeededException("Import not needed.");
+                }
+            }
+        } catch (StorageException e) {
+            error(e);
+        }
     }
 
     /**
@@ -186,13 +200,28 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
         try {
             logger.info(Messages.i18n.format("StorageImportDispatcher.ImportingPlugin") + plugin.getGroupId() + '/' + plugin.getArtifactId() + '/' + plugin.getVersion()); //$NON-NLS-1$
             mapPluginIds(plugin);
-            plugin.setId(null);
-            storage.createPlugin(plugin);
+            // Check if the plugin exists,
+            // if there is more then one plugin of same type (different IDs) a new one will be generated
+            PluginBean pluginBean = storage.getPlugin(plugin.getGroupId(), plugin.getArtifactId());
+            if (pluginBean != null) {
+                // Set the id explicit because the update method will not check if the id really exists
+                // The update method will create a new plugin if the element not exists!
+                plugin.setId(pluginBean.getId());
+                storage.updatePlugin(plugin);
+            } else {
+                plugin.setId(null);
+                storage.createPlugin(plugin);
+            }
         } catch (StorageException e) {
             error(e);
         }
     }
 
+    /**
+     * Maps the plugin coordinates to the plugin id
+     * After importing a new plugin it will get a new id that must be later matched to the policy definition
+     * @param plugin the plugin to process
+     */
     private void mapPluginIds(PluginBean plugin) {
         pluginBeanIdMap.put(plugin.getId(), new AbstractMap.SimpleEntry<>(plugin.getGroupId(), plugin.getArtifactId()));
     }
@@ -239,7 +268,7 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
 
     /**
      * Update the pluginID in the policyDefinition to the new generated pluginID
-     * @param policyDef
+     * @param policyDef the policy definition to be updated
      * @return updated PolicyDefinitionBean policyDef
      */
     private PolicyDefinitionBean updatePluginIdInPolicyDefinition(PolicyDefinitionBean policyDef) {
@@ -461,12 +490,31 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
                 try { gwLink.close(); } catch (Exception e) { }
             }
 
+            saveMetadata(true);
+
             storage.commitTx();
             logger.info("-----------------------------------"); //$NON-NLS-1$
             logger.info(Messages.i18n.format("StorageImportDispatcher.ImportingImportComplete")); //$NON-NLS-1$
             logger.info("-----------------------------------"); //$NON-NLS-1$
         } catch (StorageException e) {
             error(e);
+        }
+    }
+
+    /**
+     * Write metadata into storage
+     * @param success true if successful
+     */
+    private void saveMetadata(Boolean success) {
+        currentMetadata.setSuccess(success);
+        if (currentMetadata.getId() == null) {
+            // If there was no exportedOn date in the metadata, we will use the importedOn date
+            currentMetadata.setId(currentMetadata.getImportedOn().getTime());
+        }
+        try {
+            storage.createMetadata(currentMetadata);
+        } catch (StorageException e) {
+            logger.error("Failed to save metadata: ",e);
         }
     }
 
@@ -735,7 +783,8 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
      * @param error
      */
     private void error(StorageException error) {
-        logger.error(error);
+        saveMetadata(false);
+        logger.error("Failed while importing data: ", error);
         throw new RuntimeException(error);
     }
 

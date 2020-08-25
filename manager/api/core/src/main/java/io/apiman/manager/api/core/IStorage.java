@@ -36,9 +36,11 @@ import io.apiman.manager.api.beans.plugins.PluginBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
 import io.apiman.manager.api.beans.policies.PolicyType;
+import io.apiman.manager.api.beans.system.MetadataBean;
 import io.apiman.manager.api.core.exceptions.StorageException;
 
 import java.io.InputStream;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -139,6 +141,8 @@ public interface IStorage {
 
     public void reorderPolicies(PolicyType type, String organizationId, String entityId,
             String entityVersion, List<Long> newOrder) throws StorageException;
+    public void createMetadata(MetadataBean metadata) throws StorageException;
+    public MetadataBean getMetadata(Long id) throws StorageException;
 
     /*
      * Here are some IDM related storage methods.

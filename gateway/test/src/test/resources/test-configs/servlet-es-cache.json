@@ -5,6 +5,6 @@
       "servlet-es.properties"
     ],
     "config-properties" : {
-        "apiman-gateway.registry" : "io.apiman.gateway.engine.es.CachingESRegistry"
+        "apiman-gateway.registry" : "io.apiman.gateway.engine.es.CachingEsRegistry"
     }
 }

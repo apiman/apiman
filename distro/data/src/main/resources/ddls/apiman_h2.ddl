@@ -79,6 +79,9 @@ CREATE TABLE users (username VARCHAR(255) NOT NULL, email VARCHAR(255), full_nam
 -- Changeset c:/Users/ewittman/git/apiman/apiman/distro/ddl/src/main/liquibase/current/010-apiman-manager-api.db.tables.changelog.xml::1436469846462-23::apiman (generated)
 CREATE TABLE downloads (id VARCHAR(255) NOT NULL, type VARCHAR(255), path VARCHAR(255), expires TIMESTAMP);
 
+-- Changeset c:/Users/ewittman/git/apiman/apiman/distro/ddl/src/main/liquibase/current/010-apiman-manager-api.db.tables.changelog.xml::1436469846462-24::apiman (generated)
+CREATE TABLE metadata (id BIGINT NOT NULL, exported_on TIMESTAMP, imported_on TIMESTAMP, apiman_version VARCHAR(255), apiman_version_at_import VARCHAR(255), success BOOLEAN);
+
 -- Changeset c:/Users/ewittman/git/apiman/apiman/distro/ddl/src/main/liquibase/current/100-apiman-manager-api.db.constraints.changelog.xml::1436469846462-23::apiman (generated)
 ALTER TABLE endpoint_properties ADD PRIMARY KEY (api_version_id, name);
 

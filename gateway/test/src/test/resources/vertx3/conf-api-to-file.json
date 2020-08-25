@@ -53,10 +53,10 @@
         },
 
         "ISharedStateComponent": {
-            "class": "io.apiman.gateway.engine.es.ESSharedStateComponent",
+            "class": "io.apiman.gateway.engine.es.EsSharedStateComponent",
             "config": {
                 "client": {
-                    "type": "jest",
+                    "type": "es",
                     "cluster-name": "elasticsearch",
                     "host": "127.0.0.1",
                     "port": "9200",
@@ -66,10 +66,10 @@
         },
 
         "IRateLimiterComponent": {
-            "class": "io.apiman.gateway.engine.es.ESRateLimiterComponent",
+            "class": "io.apiman.gateway.engine.es.EsRateLimiterComponent",
             "config": {
                 "client": {
-                    "type": "jest",
+                    "type": "es",
                     "cluster-name": "elasticsearch",
                     "host": "127.0.0.1",
                     "port": "9200",

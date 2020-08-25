@@ -344,7 +344,7 @@ public class GatewayClient /*implements ISystemResource, IApiResource, IClientRe
             List<StackTraceElement> elements = new ArrayList<>();
             String line;
             // Example lines:
-            // \tat io.apiman.gateway.engine.es.ESRegistry$1.completed(ESRegistry.java:79)
+            // \tat io.apiman.gateway.engine.es.EsRegistry$1.completed(EsRegistry.java:79)
             // \tat org.apache.http.impl.nio.client.InternalIODispatch.onInputReady(InternalIODispatch.java:81)\r\n
             while ( (line = reader.readLine()) != null) {
                 if (line.startsWith("\tat ")) { //$NON-NLS-1$

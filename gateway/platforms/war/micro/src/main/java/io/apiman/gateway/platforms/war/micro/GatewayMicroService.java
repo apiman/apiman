@@ -28,11 +28,8 @@ import io.apiman.gateway.engine.components.ILdapComponent;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.components.IRateLimiterComponent;
 import io.apiman.gateway.engine.components.ISharedStateComponent;
-import io.apiman.gateway.engine.es.ESCacheStoreComponent;
-import io.apiman.gateway.engine.es.ESMetrics;
-import io.apiman.gateway.engine.es.ESRateLimiterComponent;
-import io.apiman.gateway.engine.es.ESSharedStateComponent;
-import io.apiman.gateway.engine.es.PollCachingESRegistry;
+import io.apiman.gateway.engine.es.*;
+import io.apiman.gateway.engine.es.EsSharedStateComponent;
 import io.apiman.gateway.engine.impl.ByteBufferFactoryComponent;
 import io.apiman.gateway.engine.impl.DefaultJdbcComponent;
 import io.apiman.gateway.engine.impl.DefaultLdapComponent;
@@ -142,8 +139,8 @@ public class GatewayMicroService {
     protected void registerRateLimiterComponent() {
         String componentPropName = GatewayConfigProperties.COMPONENT_PREFIX + IRateLimiterComponent.class.getSimpleName();
         setConfigProperty(componentPropName,
-                ESRateLimiterComponent.class.getName());
-        setConfigProperty(componentPropName + ".client.type", "jest");
+                EsRateLimiterComponent.class.getName());
+        setConfigProperty(componentPropName + ".client.type", "es");
         setConfigProperty(componentPropName + ".client.protocol", "${apiman.es.protocol}");
         setConfigProperty(componentPropName + ".client.host", "${apiman.es.host}");
         setConfigProperty(componentPropName + ".client.port", "${apiman.es.port}");
@@ -157,8 +154,8 @@ public class GatewayMicroService {
     protected void registerSharedStateComponent() {
         String componentPropName = GatewayConfigProperties.COMPONENT_PREFIX + ISharedStateComponent.class.getSimpleName();
         setConfigProperty(componentPropName,
-                ESSharedStateComponent.class.getName());
-        setConfigProperty(componentPropName + ".client.type", "jest");
+                EsSharedStateComponent.class.getName());
+        setConfigProperty(componentPropName + ".client.type", "es");
         setConfigProperty(componentPropName + ".client.protocol", "${apiman.es.protocol}");
         setConfigProperty(componentPropName + ".client.host", "${apiman.es.host}");
         setConfigProperty(componentPropName + ".client.port", "${apiman.es.port}");
@@ -172,12 +169,12 @@ public class GatewayMicroService {
     protected void registerCacheStoreComponent() {
         String componentPropName = GatewayConfigProperties.COMPONENT_PREFIX + ICacheStoreComponent.class.getSimpleName();
         setConfigProperty(componentPropName,
-                ESCacheStoreComponent.class.getName());
-        setConfigProperty(componentPropName + ".client.type", "jest");
+                EsCacheStoreComponent.class.getName());
+        setConfigProperty(componentPropName + ".client.type", "es");
         setConfigProperty(componentPropName + ".client.protocol", "${apiman.es.protocol}");
         setConfigProperty(componentPropName + ".client.host", "${apiman.es.host}");
         setConfigProperty(componentPropName + ".client.port", "${apiman.es.port}");
-        setConfigProperty(componentPropName + ".client.index", "apiman_cache");
+        setConfigProperty(componentPropName + ".client.indexPrefix", "apiman_cache");
         setConfigProperty(componentPropName + ".client.username", "${apiman.es.username}");
         setConfigProperty(componentPropName + ".client.password", "${apiman.es.password}");
     }
@@ -227,8 +224,8 @@ public class GatewayMicroService {
      * The registry.
      */
     protected void configureRegistry() {
-        setConfigProperty(GatewayConfigProperties.REGISTRY_CLASS, PollCachingESRegistry.class.getName());
-        setConfigProperty(GatewayConfigProperties.REGISTRY_CLASS + ".client.type", "jest");
+        setConfigProperty(GatewayConfigProperties.REGISTRY_CLASS, PollCachingEsRegistry.class.getName());
+        setConfigProperty(GatewayConfigProperties.REGISTRY_CLASS + ".client.type", "es");
         setConfigProperty(GatewayConfigProperties.REGISTRY_CLASS + ".client.protocol", "${apiman.es.protocol}");
         setConfigProperty(GatewayConfigProperties.REGISTRY_CLASS + ".client.host", "${apiman.es.host}");
         setConfigProperty(GatewayConfigProperties.REGISTRY_CLASS + ".client.port", "${apiman.es.port}");
@@ -240,14 +237,14 @@ public class GatewayMicroService {
      * Configure the metrics system.
      */
     protected void configureMetrics() {
-        setConfigProperty(GatewayConfigProperties.METRICS_CLASS, ESMetrics.class.getName());
-        setConfigProperty(GatewayConfigProperties.METRICS_CLASS + ".client.type", "jest");
+        setConfigProperty(GatewayConfigProperties.METRICS_CLASS, EsMetrics.class.getName());
+        setConfigProperty(GatewayConfigProperties.METRICS_CLASS + ".client.type", "es");
         setConfigProperty(GatewayConfigProperties.METRICS_CLASS + ".client.protocol", "${apiman.es.protocol}");
         setConfigProperty(GatewayConfigProperties.METRICS_CLASS + ".client.host", "${apiman.es.host}");
         setConfigProperty(GatewayConfigProperties.METRICS_CLASS + ".client.port", "${apiman.es.port}");
         setConfigProperty(GatewayConfigProperties.METRICS_CLASS + ".client.username", "${apiman.es.username}");
         setConfigProperty(GatewayConfigProperties.METRICS_CLASS + ".client.password", "${apiman.es.password}");
-        setConfigProperty(GatewayConfigProperties.METRICS_CLASS + ".client.index", "apiman_metrics");
+        setConfigProperty(GatewayConfigProperties.METRICS_CLASS + ".client.indexPrefix", "apiman_metrics");
     }
 
     /**

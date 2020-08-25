@@ -4,7 +4,7 @@
   <parent>
     <groupId>io.apiman</groupId>
     <artifactId>apiman-manager-api</artifactId>
-    <version>1.5.8-SNAPSHOT</version>
+    <version>2.0.0-SNAPSHOT</version>
   </parent>
   <artifactId>apiman-manager-api-core</artifactId>
   <packaging>bundle</packaging>
@@ -80,6 +80,14 @@
       <artifactId>hibernate-jpa-2.1-api</artifactId>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>io.apiman</groupId>
+      <artifactId>apiman-common-es</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.apiman</groupId>
+      <artifactId>apiman-gateway-engine-es</artifactId>
+    </dependency>
   </dependencies>
 
   <build>
@@ -91,6 +99,7 @@
         <configuration>
           <instructions>
             <Import-Package>!javax.inject,*</Import-Package>
+            <Export-Package>io.apiman.manager.api.core, io.apiman.manager.api.core.exceptions.*, io.apiman.manager.api.core.metrics.*</Export-Package>
           </instructions>
         </configuration>
       </plugin>

@@ -5,7 +5,7 @@
       "servlet-es.properties"
     ],
     "config-properties" : {
-        "apiman-gateway.registry" : "io.apiman.gateway.engine.es.PollCachingESRegistry",
+        "apiman-gateway.registry" : "io.apiman.gateway.engine.es.PollCachingEsRegistry",
         "apiman-gateway.registry.cache-polling-interval" : "2"
     }
 }

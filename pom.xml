@@ -4,7 +4,7 @@
 
   <groupId>io.apiman</groupId>
   <artifactId>apiman</artifactId>
-  <version>1.5.8-SNAPSHOT</version>
+  <version>2.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>apiman</name>
 
@@ -85,7 +85,7 @@
 
     <!-- Plugin Versions -->
     <version.antrun.plugin>1.7</version.antrun.plugin>
-    <version.assembly.plugin>3.0.0</version.assembly.plugin>
+    <version.assembly.plugin>3.2.0</version.assembly.plugin>
     <version.buildhelper.plugin>1.9.1</version.buildhelper.plugin>
     <version.buildnumber.plugin>1.3</version.buildnumber.plugin>
     <version.bundle.plugin>2.5.3</version.bundle.plugin>
@@ -99,14 +99,14 @@
     <version.javadoc.plugin>2.10.1</version.javadoc.plugin>
     <version.maven-gpg-plugin.plugin>1.5</version.maven-gpg-plugin.plugin>
     <version.nexus-staging-maven-plugin.plugin>1.6.3</version.nexus-staging-maven-plugin.plugin>
-    <version.resources.plugin>2.7</version.resources.plugin>
+    <version.resources.plugin>3.1.0</version.resources.plugin>
     <version.source.plugin>2.4</version.source.plugin>
     <version.surefire.plugin>2.17</version.surefire.plugin>
     <version.surefire-report.plugin>2.17</version.surefire-report.plugin>
     <version.failsafe.plugin>2.14</version.failsafe.plugin>
     <version.war.plugin>2.5</version.war.plugin>
     <version.exec.plugin>1.3.2</version.exec.plugin>
-    <version.docker.plugin>0.23.0</version.docker.plugin>
+    <version.docker.plugin>0.26.0</version.docker.plugin>
     <version.frontend-maven.plugin>1.6</version.frontend-maven.plugin>
     <version.git-commit-id.plugin>2.2.1</version.git-commit-id.plugin>
 
@@ -128,23 +128,22 @@
     <version.commons-logging>1.2</version.commons-logging>
     <version.commons-pool>1.6</version.commons-pool>
     <version.com.zaxxer>2.4.0</version.com.zaxxer>
-    <version.com.google.code.gson>2.3.1</version.com.google.code.gson>
     <version.com.google.guava>21.0</version.com.google.guava>
-    <version.io.searchbox.jest>5.3.3</version.io.searchbox.jest>
     <version.io.prometheus>0.0.13</version.io.prometheus>
     <version.javax.enterprise>1.2</version.javax.enterprise>
     <version.joda-time>2.7</version.joda-time>
-    <version.junit>4.11</version.junit>
+    <version.junit>4.12</version.junit>
+    <version.org.junit.jupiter>5.4.2</version.org.junit.jupiter>
     <version.org.apache.commons.commons-lang3>3.3.2</version.org.apache.commons.commons-lang3>
     <version.org.apache.directory.server>1.5.7</version.org.apache.directory.server>
     <version.org.apache.directory.shared-ldap>0.9.19</version.org.apache.directory.shared-ldap>
-    <version.org.apache.httpcomponents.httpclient>4.5.3</version.org.apache.httpcomponents.httpclient>
-    <version.org.apache.httpcomponents.httpcore>4.4.1</version.org.apache.httpcomponents.httpcore>
-    <version.org.apache.httpcomponents.httpasyncclient>4.1</version.org.apache.httpcomponents.httpasyncclient>
+    <version.org.apache.httpcomponents.httpclient>4.5.6</version.org.apache.httpcomponents.httpclient>
+    <version.org.apache.httpcomponents.httpcore>4.4.10</version.org.apache.httpcomponents.httpcore>
+    <version.org.apache.httpcomponents.httpasyncclient>4.1.4</version.org.apache.httpcomponents.httpasyncclient>
     <version.org.apache.logging.log4j>2.12.0</version.org.apache.logging.log4j>
     <version.org.eclipse.jetty>9.4.14.v20181114</version.org.eclipse.jetty>
     <version.org.glassfish.javax.el>3.0.0</version.org.glassfish.javax.el>
-    <version.org.elasticsearch>5.6.9</version.org.elasticsearch>
+    <version.org.elasticsearch>7.6.2</version.org.elasticsearch>
     <version.org.hamcrest>1.3</version.org.hamcrest>
     <version.org.hibernate.javax.persistence.hibernate-jpa-2.1-api>1.0.0.Final</version.org.hibernate.javax.persistence.hibernate-jpa-2.1-api>
     <version.org.hibernate>5.0.9.Final</version.org.hibernate>
@@ -162,7 +161,7 @@
     <version.org.osgi>4.2.0</version.org.osgi>
     <version.org.picketbox>4.9.6.Final</version.org.picketbox>
     <version.org.slf4j>1.7.21</version.org.slf4j>
-    <version.org.testcontainers>1.10.2</version.org.testcontainers>
+    <version.org.testcontainers>1.14.1</version.org.testcontainers>
     <version.io.netty>4.1.8.Final</version.io.netty>
     <version.io.swagger>1.6.0</version.io.swagger>
     <version.xmlunit>1.6</version.xmlunit>
@@ -714,9 +713,50 @@
         <version>${version.org.elasticsearch}</version>
       </dependency>
       <dependency>
+        <groupId>org.elasticsearch.client</groupId>
+        <artifactId>elasticsearch-rest-high-level-client</artifactId>
+        <version>${version.org.elasticsearch}</version>
+      </dependency>
+      <dependency>
         <groupId>pl.allegro.tech</groupId>
         <artifactId>embedded-elasticsearch</artifactId>
         <version>${version.pl.allegro.tech.embedded-elastic}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-api</artifactId>
+        <version>${version.org.junit.jupiter}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-params</artifactId>
+        <version>${version.org.junit.jupiter}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-engine</artifactId>
+        <version>${version.org.junit.jupiter}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.testcontainers</groupId>
+        <artifactId>testcontainers</artifactId>
+        <version>${version.org.testcontainers}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.testcontainers</groupId>
+        <artifactId>junit-jupiter</artifactId>
+        <version>${version.org.testcontainers}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.testcontainers</groupId>
+        <artifactId>elasticsearch</artifactId>
+        <version>${version.org.testcontainers}</version>
+        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>io.prometheus</groupId>
@@ -727,16 +767,6 @@
         <groupId>io.prometheus</groupId>
         <artifactId>simpleclient</artifactId>
         <version>${version.io.prometheus}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.searchbox</groupId>
-        <artifactId>jest</artifactId>
-        <version>${version.io.searchbox.jest}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.searchbox</groupId>
-        <artifactId>jest-common</artifactId>
-        <version>${version.io.searchbox.jest}</version>
       </dependency>
       <dependency>
         <groupId>org.picketbox</groupId>
@@ -998,11 +1028,6 @@
         <version>${version.org.jboss.resteasy}</version>
       </dependency>
       <dependency>
-        <groupId>com.google.code.gson</groupId>
-        <artifactId>gson</artifactId>
-        <version>${version.com.google.code.gson}</version>
-      </dependency>
-      <dependency>
         <groupId>com.google.guava</groupId>
         <artifactId>guava</artifactId>
         <version>${version.com.google.guava}</version>
@@ -1207,11 +1232,6 @@
         <groupId>org.mockito</groupId>
         <artifactId>mockito-all</artifactId>
         <version>${version.org.mockito}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.testcontainers</groupId>
-        <artifactId>testcontainers</artifactId>
-        <version>${version.org.testcontainers}</version>
       </dependency>
       <dependency>
         <groupId>org.hamcrest</groupId>

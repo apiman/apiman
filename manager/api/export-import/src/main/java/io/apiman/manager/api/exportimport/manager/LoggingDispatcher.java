@@ -32,14 +32,14 @@ import io.apiman.manager.api.beans.plans.PlanVersionBean;
 import io.apiman.manager.api.beans.plugins.PluginBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
-import io.apiman.manager.api.exportimport.beans.MetadataBean;
+import io.apiman.manager.api.beans.system.MetadataBean;
 import io.apiman.manager.api.exportimport.read.IImportReaderDispatcher;
 
 @SuppressWarnings("nls")
 public class LoggingDispatcher implements IImportReaderDispatcher {
 
     /**
-     * @see io.apiman.manager.api.exportimport.read.IImportReaderDispatcher#metadata(io.apiman.manager.api.exportimport.beans.MetadataBean)
+     * @see io.apiman.manager.api.exportimport.read.IImportReaderDispatcher#metadata(MetadataBean)
      */
     @Override
     public void metadata(MetadataBean metadata) {

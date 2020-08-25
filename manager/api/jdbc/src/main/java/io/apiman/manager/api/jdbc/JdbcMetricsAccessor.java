@@ -28,7 +28,7 @@ import io.apiman.manager.api.beans.metrics.UsageHistogramBean;
 import io.apiman.manager.api.beans.metrics.UsagePerClientBean;
 import io.apiman.manager.api.beans.metrics.UsagePerPlanBean;
 import io.apiman.manager.api.core.IMetricsAccessor;
-import io.apiman.manager.api.core.metrics.AbstractMetricsAccessor;
+import io.apiman.manager.api.core.metrics.MetricsAccessorHelper;
 import io.apiman.manager.api.jdbc.handlers.ClientUsagePerApiHandler;
 import io.apiman.manager.api.jdbc.handlers.ResponseStatsHistogramHandler;
 import io.apiman.manager.api.jdbc.handlers.ResponseStatsPerClientHandler;
@@ -51,11 +51,11 @@ import org.joda.time.DateTime;
 /**
  * An implementation of a {@link IMetricsAccessor} that uses JDBC to query a relational
  * database for the appropriate information.
- * 
+ *
  * @author eric.wittmann@gmail.com
  */
-public class JdbcMetricsAccessor extends AbstractMetricsAccessor implements IMetricsAccessor {
-    
+public class JdbcMetricsAccessor implements IMetricsAccessor {
+
     protected DataSource ds;
 
     /**
@@ -77,8 +77,8 @@ public class JdbcMetricsAccessor extends AbstractMetricsAccessor implements IMet
     public UsageHistogramBean getUsage(String organizationId, String apiId, String version,
             HistogramIntervalType interval, DateTime from, DateTime to) {
         UsageHistogramBean rval = new UsageHistogramBean();
-        Map<Long, UsageDataPoint> index = generateHistogramSkeleton(rval, from, to, interval, UsageDataPoint.class, Long.class);
-        
+        Map<Long, UsageDataPoint> index = MetricsAccessorHelper.generateHistogramSkeleton(rval, from, to, interval, UsageDataPoint.class, Long.class);
+
         try {
             QueryRunner run = new QueryRunner(ds);
             String gbColumn = groupByColumn(interval);
@@ -88,7 +88,7 @@ public class JdbcMetricsAccessor extends AbstractMetricsAccessor implements IMet
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
+
         return rval;
     }
 
@@ -133,8 +133,8 @@ public class JdbcMetricsAccessor extends AbstractMetricsAccessor implements IMet
     public ResponseStatsHistogramBean getResponseStats(String organizationId, String apiId, String version,
             HistogramIntervalType interval, DateTime from, DateTime to) {
         ResponseStatsHistogramBean rval = new ResponseStatsHistogramBean();
-        Map<Long, ResponseStatsDataPoint> index = generateHistogramSkeleton(rval, from, to, interval, ResponseStatsDataPoint.class, Long.class);
-        
+        Map<Long, ResponseStatsDataPoint> index = MetricsAccessorHelper.generateHistogramSkeleton(rval, from, to, interval, ResponseStatsDataPoint.class, Long.class);
+
         try {
             QueryRunner run = new QueryRunner(ds);
             String gbColumn = groupByColumn(interval);
@@ -144,7 +144,7 @@ public class JdbcMetricsAccessor extends AbstractMetricsAccessor implements IMet
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
+
         return rval;
     }
 
@@ -242,5 +242,5 @@ public class JdbcMetricsAccessor extends AbstractMetricsAccessor implements IMet
     private static String groupByColumn(HistogramIntervalType interval) {
         return interval.name();
     }
-        
+
 }

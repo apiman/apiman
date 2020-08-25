@@ -451,4 +451,16 @@
             <column name="expires" type="TIMESTAMP"/>
         </createTable>
     </changeSet>
+    <changeSet author="apiman (generated)" id="1436469846462-24">
+        <createTable tableName="metadata">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="exported_on" type="TIMESTAMP"/>
+            <column name="imported_on" type="TIMESTAMP"/>
+            <column name="apiman_version" type="VARCHAR(255)"/>
+            <column name="apiman_version_at_import" type="VARCHAR(255)"/>
+            <column name="success" type="BOOLEAN"/>
+        </createTable>
+    </changeSet>
 </databaseChangeLog>
