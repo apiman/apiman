@@ -73,8 +73,8 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "host": "localhost",
-            "port": 4200,
+            "host": "0.0.0.0",
+            "port": 80,
             "browserTarget": "api-mgmt-dev-portal:build"
           },
           "configurations": {

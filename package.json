@@ -3,7 +3,7 @@
   "version": "7.7.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve --disable-host-check",
     "build": "ng build",
     "build-production": "ng build --prod",
     "test": "ng test --reporters junit --watch=false",
