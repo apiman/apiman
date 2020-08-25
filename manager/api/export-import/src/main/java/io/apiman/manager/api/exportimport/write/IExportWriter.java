@@ -31,7 +31,7 @@ import io.apiman.manager.api.beans.plans.PlanVersionBean;
 import io.apiman.manager.api.beans.plugins.PluginBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
-import io.apiman.manager.api.exportimport.beans.MetadataBean;
+import io.apiman.manager.api.beans.system.MetadataBean;
 
 /**
  *

@@ -73,7 +73,8 @@ public class EsConstants {
     public static final String INDEX_MANAGER_POSTFIX_CLIENT_VERSION = "clientversion";
     public static final String INDEX_MANAGER_POSTFIX_CLIENT_POLICIES = "clientpolicies";
     public static final String INDEX_MANAGER_POSTFIX_CONTRACT = "contract";
-    public static final String INDEX_MANAGER_POSTFIX_DEVELOPER = "developer";
+    public static final String INDEX_MANAGER_POSTFIX_METADATA = "metadata";
+
 
     public static final String[] MANAGER_INDEX_POSTFIXES = {
             INDEX_MANAGER_POSTFIX_GATEWAY,
@@ -96,7 +97,7 @@ public class EsConstants {
             INDEX_MANAGER_POSTFIX_CLIENT_VERSION,
             INDEX_MANAGER_POSTFIX_CLIENT_POLICIES,
             INDEX_MANAGER_POSTFIX_CONTRACT,
-            INDEX_MANAGER_POSTFIX_DEVELOPER
+            INDEX_MANAGER_POSTFIX_METADATA
     };
 
     // es fields  (field names could be camelcase)
@@ -133,6 +134,9 @@ public class EsConstants {
     public static final String ES_FIELD_PUBLISHED_ON = "publishedOn";
     public static final String ES_FIELD_RETIRED_ON = "retiredOn";
     public static final String ES_FIELD_LOCKED_ON = "lockedOn";
+    public static final String ES_FIELD_EXPORTED_ON = "exportedOn";
+    public static final String ES_FIELD_IMPORTED_ON = "importedOn";
+
 
     // caches the es version read from the property file
     private static String esVersion;

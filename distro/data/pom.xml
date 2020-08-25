@@ -7,4 +7,22 @@
   </parent>
   <artifactId>apiman-distro-data</artifactId>
   <name>apiman-distro-data</name>
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>false</filtering>
+      </resource>
+      <resource>
+        <directory>src/main/resources/bootstrap</directory>
+        <targetPath>${basedir}/target/classes/bootstrap</targetPath>
+        <filtering>true</filtering>
+        <includes>
+          <include>default-gateway.json</include>
+          <include>default-policies.json</include>
+          <include>default-roles.json</include>
+        </includes>
+      </resource>
+    </resources>
+  </build>
 </project>

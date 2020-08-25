@@ -42,6 +42,7 @@ import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
 import io.apiman.manager.api.beans.policies.PolicyType;
 import io.apiman.manager.api.beans.search.*;
 import io.apiman.manager.api.beans.summary.*;
+import io.apiman.manager.api.beans.system.MetadataBean;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.StorageException;
@@ -382,6 +383,23 @@ public class EsStorage extends AbstractEsComponent implements IStorage, IStorage
         }
         policiesBean.setPolicies(reordered);
         updateEntity(docType, pid, EsMarshalling.marshall(policiesBean));
+    }
+
+    /**
+     * @see io.apiman.manager.api.core.IStorage#createMetadata(MetadataBean)
+     */
+    @Override
+    public void createMetadata(MetadataBean metadata) throws StorageException {
+        indexEntity(EsConstants.INDEX_MANAGER_POSTFIX_METADATA, String.valueOf(metadata.getId()), EsMarshalling.marshall(metadata));
+    }
+
+    /**
+     * @see io.apiman.manager.api.core.IStorage#getMetadata(Long)
+     */
+    @Override
+    public MetadataBean getMetadata(Long id) throws StorageException {
+        Map<String, Object> source = getEntity(EsConstants.INDEX_MANAGER_POSTFIX_METADATA, String.valueOf(id));
+        return EsMarshalling.unmarshallMetadata(source);
     }
 
     /**

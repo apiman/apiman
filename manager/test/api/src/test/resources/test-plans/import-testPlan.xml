@@ -3,6 +3,7 @@
 
   <testGroup name="Importing">
     <test name="Import Data">test-plan-data/import/001_import.resttest</test>
+    <test name="Import Again (Shouldn't import the same data again)">test-plan-data/import/002_import-again.resttest</test>
   </testGroup>
 
 </testPlan>

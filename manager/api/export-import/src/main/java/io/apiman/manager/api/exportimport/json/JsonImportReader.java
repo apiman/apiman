@@ -35,7 +35,8 @@ import io.apiman.common.logging.IApimanLogger;
 import io.apiman.manager.api.exportimport.EntityHandler;
 import io.apiman.manager.api.exportimport.GlobalElementsEnum;
 import io.apiman.manager.api.exportimport.OrgElementsEnum;
-import io.apiman.manager.api.exportimport.beans.MetadataBean;
+import io.apiman.manager.api.beans.system.MetadataBean;
+import io.apiman.manager.api.exportimport.exceptions.ImportNotNeededException;
 import io.apiman.manager.api.exportimport.read.IImportReader;
 import io.apiman.manager.api.exportimport.read.IImportReaderDispatcher;
 
@@ -127,6 +128,9 @@ public class JsonImportReader extends AbstractJsonReader implements IImportReade
             }
 
             dispatcher.close();
+        } catch (ImportNotNeededException t) {
+            logger.info(t.getMessage());
+            dispatcher.cancel();
         } catch (Throwable t) {
             logger.error(t);
             dispatcher.cancel();

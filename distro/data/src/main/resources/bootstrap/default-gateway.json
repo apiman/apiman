@@ -1,0 +1,19 @@
+{
+  "Metadata": {
+    "exportedOn": "2020-08-11T12:00:00Z",
+    "apimanVersion": "${version}"
+  },
+  "Gateways": [
+    {
+      "id": "TheGateway",
+      "name": "The Gateway",
+      "description": "This is the default gateway.",
+      "createdBy": "admin",
+      "createdOn": "2018-05-09T12:00:00Z",
+      "modifiedBy": "admin",
+      "modifiedOn": "2018-05-09T12:00:00Z",
+      "type": "REST",
+      "configuration": "{\"endpoint\":\"${apiman.gateway-endpoint:https://localhost:8443/apiman-gateway-api}\",\"username\":\"${apiman.gateway-endpoint.username:apimanager}\",\"password\":\"${apiman.gateway-endpoint.password:apiman123!}\"}"
+    }
+  ]
+}

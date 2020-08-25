@@ -38,7 +38,7 @@ import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.core.logging.ApimanLogger;
 import io.apiman.common.logging.IApimanLogger;
-import io.apiman.manager.api.exportimport.beans.MetadataBean;
+import io.apiman.manager.api.beans.system.MetadataBean;
 import io.apiman.manager.api.exportimport.i18n.Messages;
 import io.apiman.manager.api.exportimport.write.IExportWriter;
 
@@ -286,7 +286,9 @@ public class StorageExporter {
         logger.info(Messages.i18n.format("StorageExporter.ExportingMetaData")); //$NON-NLS-1$
         MetadataBean metadata = new MetadataBean();
         metadata.setApimanVersion(version.getVersionString());
-        metadata.setExportedOn(new Date());
+        Date exportedOnDate = new Date();
+        metadata.setExportedOn(exportedOnDate);
+        metadata.setId(exportedOnDate.getTime());
         writer.writeMetadata(metadata);
     }
 

@@ -15,6 +15,7 @@
  */
 package io.apiman.manager.api.war;
 
+import io.apiman.common.config.ConfigFactory;
 import io.apiman.manager.api.core.logging.ApimanLogger;
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.manager.api.exportimport.json.JsonImportReader;
@@ -32,6 +33,7 @@ import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 
+import org.apache.commons.configuration.Configuration;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
@@ -50,14 +52,18 @@ public class WarApiManagerBootstrapperServlet extends HttpServlet {
     @Inject
     private StorageImportDispatcher importer;
 
+    private static Configuration config;
+    static {
+        config = ConfigFactory.createConfig();
+    }
+
     /**
      * @see javax.servlet.GenericServlet#init()
      */
     @Override
     public void init() throws ServletException {
-        Thread t = new Thread(new Runnable() {
-            @Override
-            public void run() {
+        Thread t = new Thread(() -> {
+            if (isImportEnabled()){
                 File dataDir = getDataDir();
                 if (dataDir != null && dataDir.isDirectory()) {
                     logger.info("Checking for bootstrap files in " + dataDir); //$NON-NLS-1$
@@ -67,7 +73,7 @@ public class WarApiManagerBootstrapperServlet extends HttpServlet {
                         File alreadyProcessed = new File(file.getAbsolutePath() + ".imported"); //$NON-NLS-1$
                         if (!alreadyProcessed.isFile()) {
                             doImport(file);
-                            try { FileUtils.touch(alreadyProcessed); } catch (IOException e) { }
+                            // Do not create the *.imported file anymore, because it is not docker save
                         } else {
                             logger.debug("Skipping (already processed) file: " + file); //$NON-NLS-1$
                         }
@@ -113,7 +119,7 @@ public class WarApiManagerBootstrapperServlet extends HttpServlet {
         File rval = null;
 
         // First check to see if a data directory has been explicitly configured via system property
-        String dataDir = System.getProperty("apiman.bootstrap.data_dir"); //$NON-NLS-1$
+        String dataDir = config.getString("apiman.bootstrap.data_dir"); //$NON-NLS-1$
         if (dataDir != null) {
             rval = new File(dataDir);
         }
@@ -136,5 +142,9 @@ public class WarApiManagerBootstrapperServlet extends HttpServlet {
 
         // If all else fails, just let it return null
         return rval;
+    }
+
+    private boolean isImportEnabled(){
+        return !Boolean.getBoolean("apiman.bootstrap.disabled");
     }
 }

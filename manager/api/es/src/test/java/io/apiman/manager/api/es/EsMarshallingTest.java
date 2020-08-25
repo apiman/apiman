@@ -36,6 +36,7 @@ import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
 import io.apiman.manager.api.beans.policies.PolicyDefinitionTemplateBean;
 import io.apiman.manager.api.beans.policies.PolicyType;
 import io.apiman.manager.api.beans.summary.PolicyFormType;
+import io.apiman.manager.api.beans.system.MetadataBean;
 import io.apiman.manager.api.es.beans.ApiDefinitionBean;
 import io.apiman.manager.api.es.beans.PoliciesBean;
 
@@ -281,6 +282,17 @@ public class EsMarshallingTest {
         XContentBuilder builder = EsMarshalling.marshall(bean);
         Assert.assertEquals("{\"id\":\"ID\",\"type\":\"exportJson\",\"path\":\"PATH\",\"expires\":1}", Strings.toString(builder));
     }
+
+    /**
+     * Test method for {@link io.apiman.manager.api.es.EsMarshalling#marshall(io.apiman.manager.api.beans.system.MetadataBean)}
+     */
+    @Test
+    public void testMarshallMetadataBean() throws Exception {
+        MetadataBean bean = createBean(MetadataBean.class);
+        XContentBuilder builder = EsMarshalling.marshall(bean);
+        Assert.assertEquals("{\"id\":17,\"exportedOn\":1,\"apimanVersion\":\"APIMANVERSION\",\"importedOn\":1,\"apimanVersionAtImport\":\"APIMANVERSIONATIMPORT\",\"success\":true}", Strings.toString(builder));
+    }
+
 
     /**
      * Fabricates a new instance of the given bean type.  Uses reflection to figure

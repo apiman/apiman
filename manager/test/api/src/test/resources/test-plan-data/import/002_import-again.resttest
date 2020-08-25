@@ -1,0 +1,374 @@
+POST /system/import admin/admin
+Content-Type: application/json
+
+{
+  "Metadata": {
+    "exportedOn": 1445973221630,
+    "apimanVersion": "1.2.3-SNAPSHOT"
+  },
+  "Users": [
+    {
+      "username": "importeduser",
+      "fullName": "Imported User",
+      "email": "iuser@example.org",
+      "admin": false
+    }
+  ],
+  "Gateways": [
+    {
+      "id": "TheGateway",
+      "name": "The Gateway",
+      "description": "This is the gateway.",
+      "createdBy": "admin",
+      "createdOn": 1445973205874,
+      "modifiedBy": "admin",
+      "modifiedOn": 1445973205874,
+      "type": "REST",
+      "configuration": "{\"endpoint\":\"http://localhost:7070/mock-gateway\",\"username\":\"admin\",\"password\":\"$CRYPT::j8rdW76Z5gUI0I+9c8/GrA==\"}"
+    }
+  ],
+  "Plugins": [],
+  "Roles": [],
+  "PolicyDefinitions": [],
+  "Orgs": [
+    {
+      "OrganizationBean": {
+        "id": "Organization1",
+        "name": "Organization 1",
+        "createdBy": "admin",
+        "createdOn": 1445973206713,
+        "modifiedBy": "admin",
+        "modifiedOn": 1445973206713
+      },
+      "Memberships": [],
+      "Plans": [
+        {
+          "PlanBean": {
+            "id": "Plan1",
+            "name": "Plan 1",
+            "description": "This is the description of Plan 1.",
+            "createdBy": "admin",
+            "createdOn": 1445973206766
+          },
+          "Versions": [
+            {
+              "PlanVersionBean": {
+                "id": 3,
+                "status": "Locked",
+                "version": "1.0",
+                "createdBy": "admin",
+                "createdOn": 1445973206851,
+                "modifiedBy": "admin",
+                "modifiedOn": 1445973206851,
+                "lockedOn": 1445973206889
+              },
+              "Policies": []
+            }
+          ]
+        }
+      ],
+      "Apis": [
+        {
+          "ApiBean": {
+            "id": "API1",
+            "name": "API 1",
+            "description": "This is the description of API 1.",
+            "createdBy": "admin",
+            "createdOn": 1445973206991
+          },
+          "Versions": [
+            {
+              "ApiVersionBean": {
+                "id": 10,
+                "status": "Published",
+                "endpoint": "http://localhost:8080/ping",
+                "endpointType": "rest",
+                "endpointProperties": {},
+                "gateways": [
+                  {
+                    "gatewayId": "TheGateway"
+                  }
+                ],
+                "publicAPI": false,
+                "plans": [
+                  {
+                    "planId": "Plan1",
+                    "version": "1.0"
+                  }
+                ],
+                "version": "1.0",
+                "createdBy": "admin",
+                "createdOn": 1445973207076,
+                "modifiedBy": "admin",
+                "modifiedOn": 1445973207183,
+                "publishedOn": 1445973207588
+              },
+              "Policies": []
+            }
+          ]
+        }
+      ],
+      "Clients": [
+        {
+          "ClientBean": {
+            "id": "Client1",
+            "name": "Client 1",
+            "description": "This is the description of Client 1.",
+            "createdBy": "admin",
+            "createdOn": 1445973206926
+          },
+          "Versions": [
+            {
+              "ClientVersionBean": {
+                "id": 7,
+                "status": "Registered",
+                "version": "1.0",
+                "createdBy": "admin",
+                "createdOn": 1445973206959,
+                "modifiedBy": "admin",
+                "modifiedOn": 1445973207627,
+                "publishedOn": 1445973207765,
+                "apikey": "6ec478ca-8ccd-48d0-973e-479f42c68a6c"
+              },
+              "Policies": [],
+              "Contracts": [
+                {
+                  "id": 14,
+                  "client": {
+                    "id": 7,
+                    "client": {
+                      "organization": {
+                        "id": "Organization1",
+                        "name": "Organization 1",
+                        "createdBy": "admin",
+                        "createdOn": 1445973206713,
+                        "modifiedBy": "admin",
+                        "modifiedOn": 1445973206713
+                      },
+                      "id": "Client1",
+                      "name": "Client 1",
+                      "description": "This is the description of Client 1.",
+                      "createdBy": "admin",
+                      "createdOn": 1445973206926
+                    },
+                    "status": "Registered",
+                    "version": "1.0",
+                    "createdBy": "admin",
+                    "createdOn": 1445973206959,
+                    "modifiedBy": "admin",
+                    "modifiedOn": 1445973207627,
+                    "publishedOn": 1445973207765
+                  },
+                  "api": {
+                    "id": 10,
+                    "api": {
+                      "organization": {
+                        "id": "Organization1",
+                        "name": "Organization 1",
+                        "createdBy": "admin",
+                        "createdOn": 1445973206713,
+                        "modifiedBy": "admin",
+                        "modifiedOn": 1445973206713
+                      },
+                      "id": "API1",
+                      "name": "API 1",
+                      "description": "This is the description of API 1.",
+                      "createdBy": "admin",
+                      "createdOn": 1445973206991
+                    },
+                    "status": "Published",
+                    "endpoint": "http://localhost:8080/ping",
+                    "endpointType": "rest",
+                    "endpointProperties": {},
+                    "gateways": [
+                      {
+                        "gatewayId": "TheGateway"
+                      }
+                    ],
+                    "publicAPI": false,
+                    "plans": [
+                      {
+                        "planId": "Plan1",
+                        "version": "1.0"
+                      }
+                    ],
+                    "version": "1.0",
+                    "createdBy": "admin",
+                    "createdOn": 1445973207076,
+                    "modifiedBy": "admin",
+                    "modifiedOn": 1445973207183,
+                    "publishedOn": 1445973207588
+                  },
+                  "plan": {
+                    "id": 3,
+                    "plan": {
+                      "organization": {
+                        "id": "Organization1",
+                        "name": "Organization 1",
+                        "createdBy": "admin",
+                        "createdOn": 1445973206713,
+                        "modifiedBy": "admin",
+                        "modifiedOn": 1445973206713
+                      },
+                      "id": "Plan1",
+                      "name": "Plan 1",
+                      "description": "This is the description of Plan 1.",
+                      "createdBy": "admin",
+                      "createdOn": 1445973206766
+                    },
+                    "status": "Locked",
+                    "version": "1.0",
+                    "createdBy": "admin",
+                    "createdOn": 1445973206851,
+                    "modifiedBy": "admin",
+                    "modifiedOn": 1445973206851,
+                    "lockedOn": 1445973206889
+                  },
+                  "createdBy": "admin",
+                  "createdOn": 1445973207620
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "Audits": [
+        {
+          "id": 1,
+          "who": "admin",
+          "organizationId": "Organization1",
+          "entityType": "Organization",
+          "createdOn": 1445973206717,
+          "what": "Create"
+        },
+        {
+          "id": 2,
+          "who": "admin",
+          "organizationId": "Organization1",
+          "entityType": "Plan",
+          "entityId": "Plan1",
+          "createdOn": 1445973206799,
+          "what": "Create"
+        },
+        {
+          "id": 4,
+          "who": "admin",
+          "organizationId": "Organization1",
+          "entityType": "Plan",
+          "entityId": "Plan1",
+          "entityVersion": "1.0",
+          "createdOn": 1445973206853,
+          "what": "Create"
+        },
+        {
+          "id": 5,
+          "who": "admin",
+          "organizationId": "Organization1",
+          "entityType": "Plan",
+          "entityId": "Plan1",
+          "entityVersion": "1.0",
+          "createdOn": 1445973206904,
+          "what": "Lock"
+        },
+        {
+          "id": 6,
+          "who": "admin",
+          "organizationId": "Organization1",
+          "entityType": "Client",
+          "entityId": "Client1",
+          "createdOn": 1445973206930,
+          "what": "Create"
+        },
+        {
+          "id": 8,
+          "who": "admin",
+          "organizationId": "Organization1",
+          "entityType": "Client",
+          "entityId": "Client1",
+          "entityVersion": "1.0",
+          "createdOn": 1445973206961,
+          "what": "Create"
+        },
+        {
+          "id": 9,
+          "who": "admin",
+          "organizationId": "Organization1",
+          "entityType": "Api",
+          "entityId": "API1",
+          "createdOn": 1445973207033,
+          "what": "Create"
+        },
+        {
+          "id": 11,
+          "who": "admin",
+          "organizationId": "Organization1",
+          "entityType": "Api",
+          "entityId": "API1",
+          "entityVersion": "1.0",
+          "createdOn": 1445973207101,
+          "what": "Create"
+        },
+        {
+          "id": 12,
+          "who": "admin",
+          "organizationId": "Organization1",
+          "entityType": "Api",
+          "entityId": "API1",
+          "entityVersion": "1.0",
+          "createdOn": 1445973207198,
+          "what": "Update",
+          "data": "{\"changes\":[{\"name\":\"plans\",\"before\":\"\",\"after\":\"Plan1:1.0\"},{\"name\":\"endpoint\",\"before\":null,\"after\":\"http://localhost:8080/ping\"},{\"name\":\"endpointType\",\"before\":null,\"after\":\"rest\"}]}"
+        },
+        {
+          "id": 13,
+          "who": "admin",
+          "organizationId": "Organization1",
+          "entityType": "Api",
+          "entityId": "API1",
+          "entityVersion": "1.0",
+          "createdOn": 1445973207594,
+          "what": "Publish"
+        },
+        {
+          "id": 15,
+          "who": "admin",
+          "organizationId": "Organization1",
+          "entityType": "Client",
+          "entityId": "Client1",
+          "entityVersion": "1.0",
+          "createdOn": 1445973207623,
+          "what": "CreateContract",
+          "data": "{\"clientOrgId\":\"Organization1\",\"clientId\":\"Client1\",\"clientVersion\":\"1.0\",\"apiOrgId\":\"Organization1\",\"apiId\":\"API1\",\"apiVersion\":\"1.0\",\"planId\":\"Plan1\",\"planVersion\":\"1.0\"}"
+        },
+        {
+          "id": 16,
+          "who": "admin",
+          "organizationId": "Organization1",
+          "entityType": "Api",
+          "entityId": "API1",
+          "entityVersion": "1.0",
+          "createdOn": 1445973207628,
+          "what": "CreateContract",
+          "data": "{\"clientOrgId\":\"Organization1\",\"clientId\":\"Client1\",\"clientVersion\":\"1.0\",\"apiOrgId\":\"Organization1\",\"apiId\":\"API1\",\"apiVersion\":\"1.0\",\"planId\":\"Plan1\",\"planVersion\":\"1.0\"}"
+        },
+        {
+          "id": 17,
+          "who": "admin",
+          "organizationId": "Organization1",
+          "entityType": "Client",
+          "entityId": "Client1",
+          "entityVersion": "1.0",
+          "createdOn": 1445973207770,
+          "what": "Register"
+        }
+      ]
+    }
+  ]
+}
+----
+200
+Content-Type: text/plain;charset=utf-8
+
+INFO: ----------------------------
+INFO: Starting apiman data import.
+INFO: Import not needed.

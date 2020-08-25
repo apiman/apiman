@@ -166,6 +166,9 @@ public class EsIndexMapping {
                 case EsConstants.INDEX_MANAGER_POSTFIX_DEVELOPER:
                     addKeywordTypeToIndexField(EsConstants.ES_FIELD_ID, indexFieldProperties);
                     break;
+                case EsConstants.INDEX_MANAGER_POSTFIX_METADATA:
+                    addDateTypeToIndexField(EsConstants.ES_FIELD_EXPORTED_ON, indexFieldProperties);
+                    addDateTypeToIndexField(EsConstants.ES_FIELD_IMPORTED_ON, indexFieldProperties);
                 default:
                     break;
             }

@@ -37,6 +37,7 @@ import io.apiman.manager.api.beans.plugins.PluginBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
 import io.apiman.manager.api.beans.policies.PolicyType;
+import io.apiman.manager.api.beans.system.MetadataBean;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.exceptions.StorageException;
 
@@ -45,6 +46,7 @@ import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 
 import java.io.InputStream;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -521,6 +523,21 @@ public class TestEsStorageWrapper implements IStorage {
     public void reorderPolicies(PolicyType type, String organizationId, String entityId,
             String entityVersion, List<Long> newOrder) throws StorageException {
         this.delegate.reorderPolicies(type, organizationId, entityId, entityVersion, newOrder);
+    }
+    /**
+     * @see io.apiman.manager.api.core.IStorage#createMetadata(MetadataBean) 
+     */
+    @Override
+    public void createMetadata(MetadataBean metadata) throws StorageException {
+        this.delegate.createMetadata(metadata);
+    }
+
+    /**
+     * @see io.apiman.manager.api.core.IStorage#getMetadata(Long)
+     */
+    @Override
+    public MetadataBean getMetadata(Long id) throws StorageException {
+        return this.delegate.getMetadata(id);
     }
 
     /**
