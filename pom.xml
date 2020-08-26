@@ -42,8 +42,7 @@
       <email>eric.wittmann@redhat.com</email>
       <organization>Red Hat</organization>
       <roles>
-        <role>Tech Lead</role>
-        <role>Developer</role>
+        <role>Maintainer</role>
       </roles>
       <timezone>-5</timezone>
     </developer>
@@ -57,16 +56,6 @@
         <role>Developer</role>
       </roles>
       <timezone>0</timezone>
-    </developer>
-    <developer>
-      <name>Rachel Yordan</name>
-      <id>ryordan</id>
-      <email>ryordan@redhat.com</email>
-      <organization>Red Hat</organization>
-      <roles>
-        <role>Developer</role>
-      </roles>
-      <timezone>-5</timezone>
     </developer>
   </developers>
 
