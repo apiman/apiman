@@ -47,8 +47,8 @@ You can skip the test if you do not have docker installed:
 The project can be built and deployed on a variety of runtime platforms, but if you want to see it in
 action as quickly as possible try this:
 
-    $ mvn clean install -Pinstall-all-wildfly10
-    $ cd tools/server-all/target/wildfly-10.1.0.Final/
+    $ mvn clean install -Pinstall-all-wildfly
+    $ cd tools/server-all/target/wildfly-dev-server
     $ ./bin/standalone.sh
 
 The above maven command will do the following:

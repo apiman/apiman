@@ -19,7 +19,7 @@ Here are some steps to take once you've completed the pre-requisites above.
 * Perform a full Apiman build (with WF10 server):
 
 ```
-mvn clean install -Pinstall-all-wildfly10
+mvn clean install -Pinstall-all-wildfly
 ```
 
 * Run the included `init-devenv.sh` script from `apiman/tools/devenv`:
@@ -29,7 +29,7 @@ mvn clean install -Pinstall-all-wildfly10
     ./init-devenv.sh
 ```
 
-NOTE: This will result in a `wildfly-10.1.0.Final` directory in `apiman/tools/devenv`
+NOTE: This will result in a `wildfly-dev-server` directory in `apiman/tools/devenv`
 
 * In Eclipse, open the **Servers** view
 * From the **Servers** view click the link to create a new server
