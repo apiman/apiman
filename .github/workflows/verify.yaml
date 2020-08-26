@@ -1,0 +1,43 @@
+name: Verify Build Workflow
+on:
+  push:
+    paths-ignore:
+      - '.github/**'
+      - '.gitignore'
+      - 'LICENSE'
+      - 'README*'
+      - 'CODE_OF_CONDUCT*'
+    branches: [master]
+  pull_request:
+    paths-ignore:
+      - '.github/**'
+      - '.gitignore'
+      - 'LICENSE'
+      - 'README*'
+      - 'CODE_OF_CONDUCT*'
+    branches: [master]
+
+jobs:
+  build-verify:
+    name: Verify Build
+    runs-on: ubuntu-latest
+    if: github.repository_owner == 'Apiman'
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Build Project
+        run: mvn clean install -Dinvoker.skip -Dmaven.javadoc.skip=true -Dmvn.skip.test=true -DskipTests=true -T1C -B
+      - name: Run Tests (Servlet ES)
+        run: mvn test install -Dinvoker.skip -Dmaven.javadoc.skip=true -B -Dapiman-test.type=es -Dapiman.gateway-test.config=servlet-es
+      - name: Run Tests (Vert.x 3 Mem)
+        run: mvn test install -Dinvoker.skip -Dmaven.javadoc.skip=true -B -Dapiman.gateway-test.config=vertx3-mem
+      - name: Run Tests (Vert.x 3 ES)
+        run: mvn test install -Dinvoker.skip -Dmaven.javadoc.skip=true -B -Dapiman.gateway-test.config=vertx3-es
+      - name: Run Tests (Vert.x 3 File)
+        run: mvn test install -Dinvoker.skip -Dmaven.javadoc.skip=true -B -Dapiman.gateway-test.config=vertx3-file
+      - name: Run Tests (AMG 1)
+        run: mvn test install -Dinvoker.skip -Dmaven.javadoc.skip=true -B -Dapiman.gateway-test.config=amg-1
