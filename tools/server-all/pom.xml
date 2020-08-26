@@ -79,13 +79,14 @@
                     <antversion property="antversion" />
                     <echo>Ant Version: ${antversion}</echo>
 
+                    <property name="wildfly.version" value="20.0.1.Final"/>
+
                     <property name="appserver.id" value="wildfly" />
-                    <property name="apiman.wildfly.download.url"
-                      value="https://download.jboss.org/wildfly/20.0.1.Final/wildfly-20.0.1.Final.zip" />
+                    <property name="apiman.wildfly.download.url" value="https://download.jboss.org/wildfly/${wildfly.version}/wildfly-${wildfly.version}.zip" />
                     <property name="apiman.tempdir" value="${project.build.directory}/_tmp" />
                     <property name="apiman.install.dir" value="${project.build.directory}" />
-                    <property name="apiman.appserver.dir" location="${apiman.install.dir}/wildfly-20.0.1.Final" />
-                    <property name="apiman.appserver.zip" location="${basedir}/wildfly-20.0.1.Final.zip" />
+                    <property name="apiman.appserver.dir" location="${apiman.install.dir}/wildfly-dev-server" />
+                    <property name="apiman.appserver.zip" location="${basedir}/wildfly-${wildfly.version}.zip" />
                     <property name="apiman.apiman-distro-wildfly.zip" value="${maven.dependency.io.apiman.apiman-distro-wildfly.overlay.zip.path}" />
                     <property name="apiman.apiman-tools-services.war" value="${maven.dependency.io.apiman.apiman-tools-services.war.path}" />
                     <property name="apiman.wildfly.home" location="${apiman.appserver.dir}" />
@@ -107,8 +108,10 @@
                     <get src="${apiman.wildfly.download.url}" dest="${apiman.appserver.zip}" usetimestamp="true" skipexisting="true" />
                     <unzip src="${apiman.appserver.zip}" dest="${apiman.install.dir}" overwrite="false" />
 
+                    <move file="${apiman.install.dir}/wildfly-${wildfly.version}" tofile="${apiman.appserver.dir}"/>
+
                     <!-- Overlay APIMan on top of WildFly  -->
-                    <unzip src="${apiman.apiman-distro-wildfly.zip}" dest="${apiman.install.dir}/wildfly-20.0.1.Final" overwrite="true" />
+                    <unzip src="${apiman.apiman-distro-wildfly.zip}" dest="${apiman.appserver.dir}" overwrite="true" />
 
                     <!-- Make sure to chmod 755 the shell scripts -->
                     <chmod perm="a+x" dir="${apiman.appserver.dir}/bin">
