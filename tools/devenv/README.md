@@ -16,7 +16,7 @@ This section describes what you need to do before getting started.
 
 Here are some steps to take once you've completed the pre-requisites above.
 
-* Perform a full Apiman build (with WF10 server):
+* Perform a full Apiman build (with Wildfly server):
 
 ```
 mvn clean install -Pinstall-all-wildfly
@@ -33,7 +33,7 @@ NOTE: This will result in a `wildfly-dev-server` directory in `apiman/tools/deve
 
 * In Eclipse, open the **Servers** view
 * From the **Servers** view click the link to create a new server
-* Choose **JBoss Community/Wildfly 10.x** from the resulting dialog then click **Next**
+* Choose **JBoss Community/Wildfly X.x** from the resulting dialog then click **Next**
 
 ![New Server Page 1](_images/newserver-1.png)
 
@@ -41,7 +41,7 @@ NOTE: This will result in a `wildfly-dev-server` directory in `apiman/tools/deve
 
 ![New Server Page 2](_images/newserver-2.png)
 
-* Select the recently created **wildfly-10.1.0.Final** directory as the **Home Directory** and click **Next**
+* Select the recently created **wildfly-dev-server** directory as the **Home Directory** and click **Next**
 
 ![New Server Page 3](_images/newserver-3.png)
 
@@ -51,7 +51,7 @@ NOTE: This will result in a `wildfly-dev-server` directory in `apiman/tools/deve
 
 * Click **Finish**
 
-At this point you will have a WildFly 10 server configured in your "Servers" view.  You can right-click on that
+At this point you will have a WildFly server configured in your "Servers" view.  You can right-click on that
 server and choose **Debug**.  This will start up the server in debug mode and allow you to hit any breakpoints
 set in your code.
 
