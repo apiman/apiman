@@ -51,19 +51,8 @@
     <developer>
       <name>Marc Savy</name>
       <id>msavy</id>
-      <email>msavy@redhat.com</email>
-      <organization>Red Hat</organization>
       <roles>
         <role>Tech Lead</role>
-        <role>Developer</role>
-      </roles>
-    </developer>
-    <developer>
-      <name>Rachel Yordan</name>
-      <id>kahboom</id>
-      <email>ryordan@redhat.com</email>
-      <organization>Red Hat</organization>
-      <roles>
         <role>Developer</role>
       </roles>
     </developer>
