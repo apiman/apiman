@@ -30,6 +30,6 @@ jobs:
         with:
           java-version: 1.8
       - name: Build Project
-        run: mvn clean install -Dinvoker.skip -Dmaven.javadoc.skip=true -Dmvn.skip.test=true -DskipTests=true -T1C -B
+        run: mvn clean install -Dinvoker.skip -Dmaven.javadoc.skip=true -Dmvn.skip.test=true -DskipTests=true
       - name: Run Tests
-        run: mvn test install -Dinvoker.skip -Dmaven.javadoc.skip=true -B
+        run: mvn test install -Dinvoker.skip -Dmaven.javadoc.skip=true
