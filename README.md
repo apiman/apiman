@@ -1,4 +1,4 @@
-[![Apiman Project](https://img.shields.io/travis/apiman/apiman/master.svg?label=Apiman&maxAge=600)](https://travis-ci.org/apiman/apiman) [![Apiman Plugins](https://img.shields.io/travis/apiman/apiman-plugins/master.svg?label=Apiman%20Plugins&maxAge=600)](https://travis-ci.org/apiman/apiman-plugins)
+![Verify Build Workflow](https://github.com/Apiman/apiman/workflows/Verify%20Build%20Workflow/badge.svg)
 
 # The apiman project (Open Source API Management)
 
