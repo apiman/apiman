@@ -1,0 +1,35 @@
+name: Verify Build Workflow
+on:
+  push:
+    paths-ignore:
+      - '.github/**'
+      - '.gitignore'
+      - 'LICENSE'
+      - 'README*'
+      - 'CODE_OF_CONDUCT*'
+    branches: [master]
+  pull_request:
+    paths-ignore:
+      - '.github/**'
+      - '.gitignore'
+      - 'LICENSE'
+      - 'README*'
+      - 'CODE_OF_CONDUCT*'
+    branches: [master]
+
+jobs:
+  build-verify:
+    name: Verify Build
+    runs-on: ubuntu-latest
+    if: github.repository_owner == 'Apiman'
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Build Project
+        run: mvn clean install -Dinvoker.skip -Dmaven.javadoc.skip=true -Dmvn.skip.test=true -DskipTests=true -T1C -B
+      - name: Run Tests
+        run: mvn test install -Dinvoker.skip -Dmaven.javadoc.skip=true -B
