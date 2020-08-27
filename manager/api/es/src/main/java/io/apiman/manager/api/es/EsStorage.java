@@ -17,9 +17,6 @@ package io.apiman.manager.api.es;
 
 import io.apiman.common.es.util.AbstractEsComponent;
 import io.apiman.common.es.util.EsConstants;
-import io.apiman.common.es.util.EsIndexMapping;
-import io.apiman.common.logging.IApimanLogger;
-import io.apiman.common.util.Holder;
 import io.apiman.common.util.crypt.DataEncryptionContext;
 import io.apiman.common.util.crypt.IDataEncrypter;
 import io.apiman.manager.api.beans.apis.*;
@@ -46,13 +43,12 @@ import io.apiman.manager.api.beans.system.MetadataBean;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.StorageException;
-import io.apiman.manager.api.core.logging.ApimanLogger;
 import io.apiman.manager.api.core.util.PolicyTemplateUtil;
 import io.apiman.manager.api.es.beans.ApiDefinitionBean;
 import io.apiman.manager.api.es.beans.PoliciesBean;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
-import org.elasticsearch.action.admin.cluster.health.ClusterHealthRequest;
+import org.elasticsearch.action.admin.indices.refresh.RefreshRequest;
 import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.get.GetRequest;
@@ -64,10 +60,6 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchScrollRequest;
 import org.elasticsearch.action.support.WriteRequest;
 import org.elasticsearch.client.RequestOptions;
-import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.client.indices.CreateIndexRequest;
-import org.elasticsearch.client.indices.CreateIndexResponse;
-import org.elasticsearch.client.indices.GetIndexRequest;
 import org.elasticsearch.common.Strings;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.common.xcontent.XContentBuilder;
@@ -94,7 +86,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
-import java.util.concurrent.*;
 
 /**
  * An implementation of the API Manager persistence layer that uses git to store
@@ -109,9 +100,6 @@ public class EsStorage extends AbstractEsComponent implements IStorage, IStorage
     private String indexPrefix = DEFAULT_INDEX_NAME;
 
     private static int guidCounter = 100;
-
-    @Inject @ApimanLogger(EsStorage.class)
-    private IApimanLogger logger;
 
     @Inject IDataEncrypter encrypter;
 
@@ -130,92 +118,12 @@ public class EsStorage extends AbstractEsComponent implements IStorage, IStorage
     }
 
     /**
-     * Constructor only for the Test-Framework.
-     * This constructor sets the elasticsearch client from outside.
-     * WARNING: It is not recommended to use it except within the Test-Framework.
-     * @param client elasticsearch client
-     */
-    public EsStorage(RestHighLevelClient client) {
-        super(client);
-    }
-
-    /**
      * Called to initialize the storage.
      */
     @Override
     @SuppressWarnings("nls")
     public void initialize() {
-        try {
-            ScheduledExecutorService schedulerService = Executors.newSingleThreadScheduledExecutor();
-            CountDownLatch cdl = new CountDownLatch(1);
-            Holder<Exception> exception = new Holder<>();
-
-            ScheduledFuture<?> sched = schedulerService.scheduleAtFixedRate(() -> {
-                logger.info("Polling for Elasticsearch...");
-                try {
-                    //Do Health request
-                    ClusterHealthRequest healthRequest = new ClusterHealthRequest();
-                    getClient().cluster().health(healthRequest, RequestOptions.DEFAULT);
-                    cdl.countDown();
-                } catch (IOException e) {
-                    logger.info("Unable to reach Elasticsearch. Will continue polling.");
-                    exception.setValue(e);
-                }
-            },
-            0, // Start immediately
-            1, // Poll every 1 seconds
-            TimeUnit.SECONDS);
-
-            cdl.await(30, TimeUnit.SECONDS); // Max wait 30 seconds
-            sched.cancel(true);
-
-            // CDL > 0 means we never successfully hit the health endpoint.
-            if (exception.getValue() != null && cdl.getCount() > 0) {
-                throw exception.getValue();
-            }
-            // initialize indices if there are not there
-            this.initializeIndices();
-
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     * Initialize indices if there are not there
-     * @throws Exception the exception which could thrown from client request
-     */
-    private void initializeIndices() throws Exception {
-        synchronized(EsStorage.class) {
-            for(String postfix: EsConstants.MANAGER_INDEX_POSTFIXES) {
-                String fullIndexName = getFullIndexName(postfix);
-                GetIndexRequest indexExistsRequest = new GetIndexRequest(fullIndexName);
-                boolean indexExists = getClient().indices().exists(indexExistsRequest, RequestOptions.DEFAULT);
-                if (!indexExists) {
-                    this.createIndex(DEFAULT_INDEX_NAME, postfix.toLowerCase());
-                }
-            }
-        }
-    }
-
-    /**
-     * @param indexPrefix the index prefix
-     * @param indexPostfix the index postfix
-     * @throws Exception the exception which could thrown from client request
-     */
-    private void createIndex(String indexPrefix, String indexPostfix) throws Exception {
-        String indexName = getFullIndexName(indexPostfix);
-        CreateIndexRequest request = new CreateIndexRequest(indexName);
-        //add field properties to index
-        final Map<String, Object> documentMapping = EsIndexMapping.getDocumentMapping(indexPrefix, indexPostfix);
-        request.mapping(documentMapping);
-
-        CreateIndexResponse response = getClient().indices().create(request, RequestOptions.DEFAULT);
-        if (!response.isAcknowledged()) {
-            throw new StorageException("Failed to create index " + indexName + ": " + "response was not acknowledged"); //$NON-NLS-1$ //$NON-NLS-2$
-        } else {
-            logger.info("Created index: " + indexName);
-        }
+        //noop for elasticsearch
     }
 
     /**
@@ -2300,6 +2208,14 @@ public class EsStorage extends AbstractEsComponent implements IStorage, IStorage
                 return EsMarshalling.unmarshallApiVersion(source);
             }
         }, qb);
+    }
+
+    /**
+     * Refreshes an index
+     * @param indexPostfix the index postfix name
+     */
+    public void refresh(String indexPostfix) throws IOException {
+        getClient().indices().refresh(new RefreshRequest(getFullIndexName(indexPostfix)), RequestOptions.DEFAULT); //$NON-NLS-1$
     }
 
     /**

@@ -42,6 +42,10 @@ For example:
     "host": "127.0.0.1",
     "port": "9200",
     "initialize": true,
+    "polling": {
+        "time": 60,
+        "period": 3
+    }
     "apiman": ["great", "fantastic", "excellent"]
   }
 }
@@ -55,6 +59,8 @@ client.cluster-name=elasticsearch
 client.host=127.0.0.1
 client.port=9200
 client.initialize=true
+client.polling.time=60
+client.es.polling.period=3
 client.apiman=great,fantastic,excellent
 ```
 

@@ -40,7 +40,6 @@ import io.apiman.manager.api.beans.system.MetadataBean;
 import io.apiman.manager.api.core.exceptions.StorageException;
 
 import java.io.InputStream;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 

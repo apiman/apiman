@@ -14,7 +14,11 @@
             "port": 9200,
             "username": null,
             "password": null,
-            "timeout": 10000
+            "timeout": 10000,
+            "polling": {
+              "time": 60,
+              "period": 3
+            }
           }
         }
     },
@@ -139,7 +143,11 @@
           "initialize": true,
           "username": "${apiman.es.username}",
           "password": "${apiman.es.password}",
-          "timeout": "${apiman.es.timeout}"
+          "timeout": "${apiman.es.timeout}",
+          "polling": {
+            "time": "${apiman.es.polling.time}",
+            "period": "${apiman.es.polling.period}"
+          }
         }
       }
     },
@@ -157,7 +165,11 @@
             "initialize": true,
             "username": "${apiman.es.username}",
             "password": "${apiman.es.password}",
-            "timeout": "${apiman.es.timeout}"
+            "timeout": "${apiman.es.timeout}",
+            "polling": {
+              "time": "${apiman.es.polling.time}",
+              "period": "${apiman.es.polling.period}"
+            }
           }
         }
       },
@@ -174,7 +186,11 @@
             "initialize": true,
             "username": "${apiman.es.username}",
             "password": "${apiman.es.password}",
-            "timeout": "${apiman.es.timeout}"
+            "timeout": "${apiman.es.timeout}",
+            "polling": {
+              "time": "${apiman.es.polling.time}",
+              "period": "${apiman.es.polling.period}"
+            }
           }
         }
       },
@@ -191,7 +207,11 @@
             "initialize": true,
             "username": "${apiman.es.username}",
             "password": "${apiman.es.password}",
-            "timeout": "${apiman.es.timeout}"
+            "timeout": "${apiman.es.timeout}",
+            "polling": {
+              "time": "${apiman.es.polling.time}",
+              "period": "${apiman.es.polling.period}"
+            }
           }
         }
       },

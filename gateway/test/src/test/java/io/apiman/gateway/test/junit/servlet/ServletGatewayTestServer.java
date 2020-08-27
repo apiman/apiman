@@ -80,7 +80,6 @@ public class ServletGatewayTestServer implements IGatewayTestServer {
     /*
      * Elasticsearch related.
      */
-    private static final String ES_CLUSTER_NAME = "_apimantest";
     private static final int ES_CLIENT_TIMEOUT = -1;
     public static RestHighLevelClient ES_CLIENT = null;
 

@@ -66,7 +66,6 @@ import java.util.*;
 @SuppressWarnings({"nls", "javadoc"})
 public class ManagerApiTestServer {
 
-    private static final String ES_CLUSTER_NAME = "_apimantest";
     public static RestHighLevelClient ES_CLIENT = null;
 
     /*
@@ -181,13 +180,19 @@ public class ManagerApiTestServer {
     }
 
     private static RestHighLevelClient createEsClient() {
+        Map<String, String> config = getTestClientConfig();
+        return new DefaultEsClientFactory().createClient(config, ES_DEFAULT_INDEX, getDefaultIndices());
+    }
+
+    public static Map<String, String> getTestClientConfig() {
         Map<String, String> config = new HashMap<>();
+        config.put("client.type", "es");
         config.put("client.protocol", "http");
         config.put("client.host", node.getContainerIpAddress());
         config.put("client.port", node.getFirstMappedPort().toString());
         config.put("client.timeout", String.valueOf(ES_CLIENT_TIMEOUT));
         config.put("client.initialize", "true");
-        return new DefaultEsClientFactory().createClient(config, ES_DEFAULT_INDEX, getDefaultIndices());
+        return config;
     }
 
     /**
