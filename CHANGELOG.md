@@ -48,6 +48,7 @@
 
 ### Patch
 
+- GW-339: Beautify "Add Developer" button
 - GW-406: First commit delivers no test result files
 - Fix typo
 
