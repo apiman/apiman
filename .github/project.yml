@@ -1,4 +1,4 @@
 name: apiman
 release-version: 2.0.0.Final
 snapshot-version: 2.0.1-SNAPSHOT
-attempts: 0
+attempts: 1
