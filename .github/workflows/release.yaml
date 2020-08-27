@@ -1,0 +1,258 @@
+name: Release Workflow
+on:
+  pull_request:
+    branches: [master]
+    types: [closed]
+    paths:
+      - '.github/project.yaml'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true && github.repository_owner == 'Apiman'
+    steps:
+      - name: Retrieve Project Metadata
+        uses: radcortez/project-metadata-action@master
+        id: metadata
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          metadata-file-path: '.github/project.yaml'
+      - name: Set up Node.js v10
+        uses: actions/setup-node@v1
+        with:
+          node-version: 10
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Set up Gren
+        run: npm install github-release-notes -g
+      - name: Set up NPM CLI Login
+        run: npm install -g npm-cli-login
+      - name: Import GPG Key
+        uses: crazy-max/ghaction-import-gpg@v1
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+          PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+      - name: Check Setup
+        run: |
+          pwd
+          mvn -version
+      - name: Set up settings.xml
+        run: |
+          echo "<settings><servers><server><id>${{ secrets.OSSRH_ID }}</id><username>${{ secrets.OSSRH_USERNAME }}</username><password>${{ secrets.OSSRH_TOKEN }}</password></server></servers><profiles><profile><id>${{ secrets.OSSRH_ID }}</id><activation><activeByDefault>true</activeByDefault></activation><properties><gpg.executable>gpg</gpg.executable><gpg.passphrase>${{ secrets.GPG_PASSPHRASE}}</gpg.passphrase></properties></profile></profiles></settings>" > /home/runner/.m2/settings.xml
+          cat /home/runner/.m2/settings.xml
+
+      # Checkout all repositories we're going to use for the release
+      - name: Apiman Code Checkout
+        run: |
+          mkdir apiman
+          cd apiman
+          git init
+          git config --global user.name "apiman-ci"
+          git config --global user.email "ci.apiman@gmail.com"
+          git remote add origin "https://apiman-ci:${{ secrets.ACCESS_TOKEN }}@github.com/$GITHUB_REPOSITORY.git"
+          git fetch
+          git checkout master
+          git branch --set-upstream-to=origin/master
+          git pull
+      - name: Apiman Website Code Checkout
+        run: |
+          mkdir website
+          cd website
+          git init
+          git remote add origin "https://apiman-ci:${{ secrets.ACCESS_TOKEN }}@github.com/Apiman/apiman.github.io.git"
+          git fetch
+          git checkout master
+          git branch --set-upstream-to=origin/master
+          git pull
+      - name: Apiman Plugins Code Checkout
+        run: |
+          mkdir plugins
+          cd plugins
+          git init
+          git remote add origin "https://apiman-ci:${{ secrets.ACCESS_TOKEN }}@github.com/Apiman/apiman-plugins.git"
+          git fetch
+          git checkout master
+          git branch --set-upstream-to=origin/master
+          git pull
+      - name: Apiman Docker Code Checkout
+        run: |
+          mkdir docker
+          cd docker
+          git init
+          git remote add origin "https://apiman-ci:${{ secrets.ACCESS_TOKEN }}@github.com/Apiman/apiman-docker.git"
+          git fetch
+          git checkout master
+          git branch --set-upstream-to=origin/master
+          git pull
+      - name: Apiman Deployer Code Checkout
+        run: |
+          mkdir deployer
+          cd deployer
+          git init
+          git remote add origin "https://apiman-ci:${{ secrets.ACCESS_TOKEN }}@github.com/Apiman/apiman-deployer.git"
+          git fetch
+          git checkout master
+          git branch --set-upstream-to=origin/master
+          git pull
+
+      # Update all project versions to the version # being released
+      - name: Update Apiman Release Version ${{steps.metadata.outputs.release-version}} in pom.xml
+        run: cd apiman && mvn versions:set -DnewVersion=${{steps.metadata.outputs.release-version}} -DgenerateBackupPoms=false -DprocessAllModules=true
+      - name: Update Apiman Version in Plugins Project
+        run: cd plugins && sed -i  "s/<version.apiman>.*<\/version.apiman>/<version.apiman>${{steps.metadata.outputs.release-version}}<\/version.apiman>/g" pom.xml
+      - name: Update Apiman Plugins Release Version ${{steps.metadata.outputs.release-version}} in pom.xml
+        run: cd plugins && mvn versions:set -DnewVersion=${{steps.metadata.outputs.release-version}} -DgenerateBackupPoms=false -DprocessAllModules=true
+
+      # Validate all builds
+      - name: Validating Apiman maven build
+        run: cd apiman && mvn clean install
+      - name: Validating Apiman Plugins maven build
+        run: cd plugins && mvn clean install
+
+      # Commit changes back to GitHub
+      - name: Commit Changes for Apiman Release Version ${{steps.metadata.outputs.release-version}}
+        run: |
+          cd apiman
+          git add .
+          git commit -m "Automated commit for Release Version: ${{steps.metadata.outputs.release-version}}"
+          git push
+      - name: Commit Changes for Apiman Plugins Release Version ${{steps.metadata.outputs.release-version}}
+        run: |
+          cd plugins
+          git add .
+          git commit -m "Automated commit for Release Version: ${{steps.metadata.outputs.release-version}}"
+          git push
+      - name: Update Apiman Deployer
+        run: |
+          cd deployer
+          sed -i  "s/APIMAN_VERSION=.*$/APIMAN_VERSION=${{steps.metadata.outputs.release-version}}/g" deployer.sh
+          git add .
+          git commit -m "Automated commit for Release Version: ${{steps.metadata.outputs.release-version}}"
+          git push
+          git tag -a -m "Tagging release $RELEASE_VERSION" ${{steps.metadata.outputs.release-version}}
+          git push origin ${{steps.metadata.outputs.release-version}}
+          sed -i  "s/APIMAN_VERSION=.*$/APIMAN_VERSION=${{steps.metadata.outputs.snapshot-version}}/g" deployer.sh
+          git add .
+          git commit -m "Update to next development version: ${{steps.metadata.outputs.snapshot-version}}"
+          git push
+
+      # Create GitHub "release" with attached assets
+      - name: Signing and Archiving the Quickstart ZIP
+        run: |
+          cd apiman
+          mkdir -p releases
+          cp distro/wildfly/target/apiman-distro-wildfly-${{steps.metadata.outputs.release-version}}-overlay.zip releases/.
+          cp distro/vertx/target/apiman-distro-vertx-${{steps.metadata.outputs.release-version}}.zip releases/.
+          echo "${{ secrets.GPG_PASSPHRASE }}" | gpg --batch --passphrase-fd 0 --armor --detach-sign releases/apiman-distro-wildfly-${{steps.metadata.outputs.release-version}}-overlay.zip
+          echo "${{ secrets.GPG_PASSPHRASE }}" | gpg --batch --passphrase-fd 0 --armor --detach-sign releases/apiman-distro-vertx-${{steps.metadata.outputs.release-version}}.zip
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+        with:
+          tag_name: ${{steps.metadata.outputs.release-version}} 
+          release_name: ${{steps.metadata.outputs.release-version}}
+      - name: Upload WildFly Overlay Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing its ID to get its outputs object, which include a `upload_url` 
+          asset_path: /home/runner/work/apiman/releases/apiman-distro-wildfly-${{steps.metadata.outputs.release-version}}-overlay.zip
+          asset_name: apiman-distro-wildfly-${{steps.metadata.outputs.release-version}}-overlay.zip
+          asset_content_type: application/zip
+      - name: Upload WildFly Overlay Asset (asc)
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url` 
+          asset_path: /home/runner/work/apiman/releases/apiman-distro-wildfly-${{steps.metadata.outputs.release-version}}-overlay.zip.asc
+          asset_name: apiman-distro-wildfly-${{steps.metadata.outputs.release-version}}-overlay.zip.asc
+          asset_content_type: application/octet-stream
+      - name: Upload Vert.x Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing its ID to get its outputs object, which include a `upload_url` 
+          asset_path: /home/runner/work/apiman/releases/apiman-distro-vertx-${{steps.metadata.outputs.release-version}}.zip
+          asset_name: apiman-distro-vertx-${{steps.metadata.outputs.release-version}}.zip
+          asset_content_type: application/zip
+      - name: Upload Vert.x Asset (asc)
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url` 
+          asset_path: /home/runner/work/apiman/releases/apiman-distro-vertx-${{steps.metadata.outputs.release-version}}.zip.asc
+          asset_name: apiman-distro-vertx-${{steps.metadata.outputs.release-version}}.zip.asc
+          asset_content_type: application/octet-stream
+      - name: Generate Release Notes
+        run: cd apiman && gren release --token=${{ secrets.GITHUB_TOKEN }} --override
+
+      # Deploy to Maven Central
+      - name: Deploy Apiman to Maven Central
+        run: |
+          cd apiman
+          mvn deploy --batch-mode -DskipTests -T2C -Prelease --settings /home/runner/.m2/settings.xml
+      - name: Deploy Apiman Plugins to Maven Central
+        run: |
+          cd plugins
+          mvn deploy --batch-mode -DskipTests -T2C -Prelease --settings /home/runner/.m2/settings.xml
+
+      # Build and push new Docker images
+      - name: Login to DockerHub Registry
+        run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+      - name: Building Docker Images
+        run: |
+          cd docker
+          docker build --env "APIMAN_VERSION=${{steps.metadata.outputs.release-version}}" -t="apiman/on-wildfly" -t="apiman/on-wildfly:latest-release" -t="apiman/on-wildfly:${{steps.metadata.outputs.release-version}}" --rm on-wildfly/
+          docker build --env "APIMAN_VERSION=${{steps.metadata.outputs.release-version}}" -t="apiman/vertx-openshift" -t="apiman/vertx-openshift:latest-release" -t="apiman/vertx-openshift:${{steps.metadata.outputs.release-version}}" --rm vertx-openshift/
+          docker build --env "APIMAN_VERSION=${{steps.metadata.outputs.release-version}}" -t="apiman/vertx-standalone" -t="apiman/vertx-standalone:latest-release" -t="apiman/vertx-standalone:${{steps.metadata.outputs.release-version}}" --rm vertx-standalone/
+      - name: Push The Tagged Docker Images
+        run: |
+          cd docker
+          docker push apiman/on-wildfly:latest
+          docker push apiman/vertx-openshift:latest
+          docker push apiman/vertx-standalone:latest
+          docker push apiman/on-wildfly:latest-release
+          docker push apiman/vertx-openshift:latest-release
+          docker push apiman/vertx-standalone:latest-release
+          docker push apiman/on-wildfly:latest-release
+          docker push apiman/vertx-openshift:latest-release
+          docker push apiman/vertx-standalone:latest-release
+          docker push apiman/on-wildfly:${{steps.metadata.outputs.release-version}}
+          docker push apiman/vertx-openshift:${{steps.metadata.outputs.release-version}}
+          docker push apiman/vertx-standalone:${{steps.metadata.outputs.release-version}}
+
+      # Update project pom.xml files to next snapshot version and push to GH
+      - name: Update Apiman Next Snapshot Version ${{steps.metadata.outputs.snapshot-version}} in pom.xml
+        run: cd apiman && mvn versions:set -DnewVersion=${{steps.metadata.outputs.snapshot-version}} -DgenerateBackupPoms=false -DprocessAllModules=true
+      - name: Update Apiman Plugins Next Snapshot Version ${{steps.metadata.outputs.snapshot-version}} in pom.xml
+        run: cd plugins && mvn versions:set -DnewVersion=${{steps.metadata.outputs.snapshot-version}} -DgenerateBackupPoms=false -DprocessAllModules=true
+      - name: Commit Changes for Apiman Next Snapshot Version ${{steps.metadata.outputs.snapshot-version}}
+        run: |
+          cd apiman
+          git add .
+          git commit -m "Automated commit for Next Snapshot Version: ${{steps.metadata.outputs.snapshot-version}}"
+          git push
+      - name: Commit Changes for Apiman Plugins Next Snapshot Version ${{steps.metadata.outputs.snapshot-version}}
+        run: |
+          cd plugins
+          git add .
+          git commit -m "Automated commit for Next Snapshot Version: ${{steps.metadata.outputs.snapshot-version}}"
+          git push
+
+      # Update project website with new version
+      - name: Update Web Site
+        run: |
+          cd website
+          export PREV_VERSION=`cat version`
+          find ./latest -name '*.html' -exec sed -i 's/$PREV_VERSION/${{steps.metadata.outputs.release-version}}/g' {} \;
+          git add .
+          git commit -m "Automated website update for Apiman release: ${{steps.metadata.outputs.release-version}}"
+          git push
