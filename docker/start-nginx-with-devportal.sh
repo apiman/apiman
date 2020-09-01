@@ -13,8 +13,8 @@ done
 if [ -n "$SYSTEM_PREFIX" ]
 then
   # If a prefix is set we will replace the base path in index.html before starting the application
-  # Replace base tag with base tag containing system prefix src e.g. "/pas/devportal/"
-  sed -i "s/<base.*>/<base src=\"$SYSTEM_PREFIX\/devportal\/\">/g" "/usr/share/nginx/html/index.html"
+  # Replace existing base tag with base tag containing system prefix src e.g. "/pas/devportal/"
+  sed -i "s/<base.*>/<base href=\"\/$SYSTEM_PREFIX\/devportal\/\">/g" "/usr/share/nginx/html/index.html"
 fi
 # start nginx
 nginx -g 'daemon off;'
