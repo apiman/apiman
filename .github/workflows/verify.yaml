@@ -36,7 +36,10 @@ jobs:
       - name: Run Tests (Vert.x 3 Mem)
         run: mvn test install -Dinvoker.skip -Dmaven.javadoc.skip=true -B -Dapiman.gateway-test.config=vertx3-mem
       - name: Run Tests (Vert.x 3 ES)
-        run: mvn test install -Dinvoker.skip -Dmaven.javadoc.skip=true -B -Dapiman.gateway-test.config=vertx3-es
+        run: |
+          docker run -d -p 19250:9200 -p 9300:9300 -e "discovery.type=single-node" --name=elasticsearch-7 docker.elastic.co/elasticsearch/elasticsearch-oss:7.6.2
+          mvn test install -Dinvoker.skip -Dmaven.javadoc.skip=true -B -Dapiman.gateway-test.config=vertx3-es
+          docker stop elasticsearch-7 && docker rm elasticsearch-7
       - name: Run Tests (Vert.x 3 File)
         run: mvn test install -Dinvoker.skip -Dmaven.javadoc.skip=true -B -Dapiman.gateway-test.config=vertx3-file
       - name: Run Tests (AMG 1)

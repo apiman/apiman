@@ -3,7 +3,6 @@
 
   <testGroup name="Importing Old Date">
     <test name="Import Data">test-plan-data/migrate/001_import-1.2.2.Final.resttest</test>
-<!--     <test name="Wait" delay="2000" /> -->
   </testGroup>
 
   <testGroup name="Exporting">
