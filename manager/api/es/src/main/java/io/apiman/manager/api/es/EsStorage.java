@@ -15,13 +15,10 @@
  */
 package io.apiman.manager.api.es;
 
+import io.apiman.common.es.util.AbstractEsComponent;
 import io.apiman.common.es.util.EsConstants;
-import io.apiman.common.es.util.EsIndexMapping;
-import io.apiman.common.logging.IApimanLogger;
-import io.apiman.common.util.Holder;
 import io.apiman.common.util.crypt.DataEncryptionContext;
 import io.apiman.common.util.crypt.IDataEncrypter;
-import io.apiman.common.es.util.AbstractEsComponent;
 import io.apiman.manager.api.beans.apis.*;
 import io.apiman.manager.api.beans.audit.AuditEntityType;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
@@ -46,13 +43,12 @@ import io.apiman.manager.api.beans.system.MetadataBean;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.StorageException;
-import io.apiman.manager.api.core.logging.ApimanLogger;
 import io.apiman.manager.api.core.util.PolicyTemplateUtil;
 import io.apiman.manager.api.es.beans.ApiDefinitionBean;
 import io.apiman.manager.api.es.beans.PoliciesBean;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
-import org.elasticsearch.action.admin.cluster.health.ClusterHealthRequest;
+import org.elasticsearch.action.admin.indices.refresh.RefreshRequest;
 import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.get.GetRequest;
@@ -64,10 +60,6 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchScrollRequest;
 import org.elasticsearch.action.support.WriteRequest;
 import org.elasticsearch.client.RequestOptions;
-import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.client.indices.CreateIndexRequest;
-import org.elasticsearch.client.indices.CreateIndexResponse;
-import org.elasticsearch.client.indices.GetIndexRequest;
 import org.elasticsearch.common.Strings;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.common.xcontent.XContentBuilder;
@@ -94,7 +86,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
-import java.util.concurrent.*;
 
 /**
  * An implementation of the API Manager persistence layer that uses git to store
@@ -109,9 +100,6 @@ public class EsStorage extends AbstractEsComponent implements IStorage, IStorage
     private String indexPrefix = DEFAULT_INDEX_NAME;
 
     private static int guidCounter = 100;
-
-    @Inject @ApimanLogger(EsStorage.class)
-    private IApimanLogger logger;
 
     @Inject IDataEncrypter encrypter;
 
@@ -130,92 +118,12 @@ public class EsStorage extends AbstractEsComponent implements IStorage, IStorage
     }
 
     /**
-     * Constructor only for the Test-Framework.
-     * This constructor sets the elasticsearch client from outside.
-     * WARNING: It is not recommended to use it except within the Test-Framework.
-     * @param client elasticsearch client
-     */
-    public EsStorage(RestHighLevelClient client) {
-        super(client);
-    }
-
-    /**
      * Called to initialize the storage.
      */
     @Override
     @SuppressWarnings("nls")
     public void initialize() {
-        try {
-            ScheduledExecutorService schedulerService = Executors.newSingleThreadScheduledExecutor();
-            CountDownLatch cdl = new CountDownLatch(1);
-            Holder<Exception> exception = new Holder<>();
-
-            ScheduledFuture<?> sched = schedulerService.scheduleAtFixedRate(() -> {
-                logger.info("Polling for Elasticsearch...");
-                try {
-                    //Do Health request
-                    ClusterHealthRequest healthRequest = new ClusterHealthRequest();
-                    getClient().cluster().health(healthRequest, RequestOptions.DEFAULT);
-                    cdl.countDown();
-                } catch (IOException e) {
-                    logger.info("Unable to reach Elasticsearch. Will continue polling.");
-                    exception.setValue(e);
-                }
-            },
-            0, // Start immediately
-            1, // Poll every 1 seconds
-            TimeUnit.SECONDS);
-
-            cdl.await(30, TimeUnit.SECONDS); // Max wait 30 seconds
-            sched.cancel(true);
-
-            // CDL > 0 means we never successfully hit the health endpoint.
-            if (exception.getValue() != null && cdl.getCount() > 0) {
-                throw exception.getValue();
-            }
-            // initialize indices if there are not there
-            this.initializeIndices();
-
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     * Initialize indices if there are not there
-     * @throws Exception the exception which could thrown from client request
-     */
-    private void initializeIndices() throws Exception {
-        synchronized(EsStorage.class) {
-            for(String postfix: EsConstants.MANAGER_INDEX_POSTFIXES) {
-                String fullIndexName = getFullIndexName(postfix);
-                GetIndexRequest indexExistsRequest = new GetIndexRequest(fullIndexName);
-                boolean indexExists = getClient().indices().exists(indexExistsRequest, RequestOptions.DEFAULT);
-                if (!indexExists) {
-                    this.createIndex(DEFAULT_INDEX_NAME, postfix.toLowerCase());
-                }
-            }
-        }
-    }
-
-    /**
-     * @param indexPrefix the index prefix
-     * @param indexPostfix the index postfix
-     * @throws Exception the exception which could thrown from client request
-     */
-    private void createIndex(String indexPrefix, String indexPostfix) throws Exception {
-        String indexName = getFullIndexName(indexPostfix);
-        CreateIndexRequest request = new CreateIndexRequest(indexName);
-        //add field properties to index
-        final Map<String, Object> documentMapping = EsIndexMapping.getDocumentMapping(indexPrefix, indexPostfix);
-        request.mapping(documentMapping);
-
-        CreateIndexResponse response = getClient().indices().create(request, RequestOptions.DEFAULT);
-        if (!response.isAcknowledged()) {
-            throw new StorageException("Failed to create index " + indexName + ": " + "response was not acknowledged"); //$NON-NLS-1$ //$NON-NLS-2$
-        } else {
-            logger.info("Created index: " + indexName);
-        }
+        //noop for elasticsearch
     }
 
     /**
@@ -247,7 +155,7 @@ public class EsStorage extends AbstractEsComponent implements IStorage, IStorage
      */
     @Override
     public void createOrganization(OrganizationBean organization) throws StorageException {
-        indexEntity(EsConstants.INDEX_MANAGER_POSTFIX_ORGANIZATION, organization.getId(), EsMarshalling.marshall(organization), true);
+        indexEntity(EsConstants.INDEX_MANAGER_POSTFIX_ORGANIZATION, organization.getId(), EsMarshalling.marshall(organization));
     }
 
     /**
@@ -287,7 +195,7 @@ public class EsStorage extends AbstractEsComponent implements IStorage, IStorage
                 }
         }
         contract.setId(generateGuid());
-        indexEntity(EsConstants.INDEX_MANAGER_POSTFIX_CONTRACT, String.valueOf(contract.getId()), EsMarshalling.marshall(contract), true);
+        indexEntity(EsConstants.INDEX_MANAGER_POSTFIX_CONTRACT, String.valueOf(contract.getId()), EsMarshalling.marshall(contract));
     }
 
     /**
@@ -427,7 +335,7 @@ public class EsStorage extends AbstractEsComponent implements IStorage, IStorage
     @Override
     public void createPlugin(PluginBean plugin) throws StorageException {
         plugin.setId(generateGuid());
-        indexEntity(EsConstants.INDEX_MANAGER_POSTFIX_PLUGIN, String.valueOf(plugin.getId()), EsMarshalling.marshall(plugin), true);
+        indexEntity(EsConstants.INDEX_MANAGER_POSTFIX_PLUGIN, String.valueOf(plugin.getId()), EsMarshalling.marshall(plugin));
     }
 
     /**
@@ -634,8 +542,6 @@ public class EsStorage extends AbstractEsComponent implements IStorage, IStorage
             shouldFilter.add(QueryBuilders.termQuery("clientOrganizationId", orgId));
             shouldFilter.add(QueryBuilders.termQuery("apiOrganizationId", orgId));
 
-            SearchSourceBuilder query = new SearchSourceBuilder().query(qb);
-
             String[] indexNames = {
                     EsConstants.INDEX_MANAGER_POSTFIX_API,
                     EsConstants.INDEX_MANAGER_POSTFIX_API_POLICIES,
@@ -648,7 +554,8 @@ public class EsStorage extends AbstractEsComponent implements IStorage, IStorage
                     EsConstants.INDEX_MANAGER_POSTFIX_PLAN,
                     EsConstants.INDEX_MANAGER_POSTFIX_PLAN_POLICIES,
                     EsConstants.INDEX_MANAGER_POSTFIX_PLAN_VERSION,
-                    EsConstants.INDEX_MANAGER_POSTFIX_ROLE_MEMBERSHIP};
+                    EsConstants.INDEX_MANAGER_POSTFIX_ROLE_MEMBERSHIP
+            };
 
             BulkByScrollResponse response = getDeleteByQueryResponse(qb, indexNames);
 
@@ -851,6 +758,8 @@ public class EsStorage extends AbstractEsComponent implements IStorage, IStorage
 
         DeleteByQueryRequest deleteByQueryRequest = new DeleteByQueryRequest(indexNames);
         deleteByQueryRequest.setQuery(query);
+        deleteByQueryRequest.setRefresh(true);
+
         return getClient().deleteByQuery(deleteByQueryRequest, RequestOptions.DEFAULT);
     }
 
@@ -1813,7 +1722,7 @@ public class EsStorage extends AbstractEsComponent implements IStorage, IStorage
     public void createMembership(RoleMembershipBean membership) throws StorageException {
         membership.setId(generateGuid());
         String id = id(membership.getOrganizationId(), membership.getUserId(), membership.getRoleId());
-        indexEntity(EsConstants.INDEX_MANAGER_POSTFIX_ROLE_MEMBERSHIP, id, EsMarshalling.marshall(membership), true); //$NON-NLS-1$
+        indexEntity(EsConstants.INDEX_MANAGER_POSTFIX_ROLE_MEMBERSHIP, id, EsMarshalling.marshall(membership));
     }
 
     /**
@@ -1822,7 +1731,7 @@ public class EsStorage extends AbstractEsComponent implements IStorage, IStorage
     @Override
     public RoleMembershipBean getMembership(String userId, String roleId, String organizationId) throws StorageException {
         String id = id(organizationId, userId, roleId);
-        Map<String, Object> source = getEntity(EsConstants.INDEX_MANAGER_POSTFIX_ROLE_MEMBERSHIP, id); //$NON-NLS-1$
+        Map<String, Object> source = getEntity(EsConstants.INDEX_MANAGER_POSTFIX_ROLE_MEMBERSHIP, id);
         if (source == null) {
             return null;
         } else {
@@ -1967,35 +1876,22 @@ public class EsStorage extends AbstractEsComponent implements IStorage, IStorage
 
     /**
      * Indexes an entity.
-     * @param type
-     * @param id
-     * @param sourceEntity
-     * @throws StorageException
-     */
-    private void indexEntity(String type, String id, XContentBuilder sourceEntity) throws StorageException {
-        indexEntity(type, id, sourceEntity, false);
-    }
-
-    /**
-     * Indexes an entity.
      * @param type the entity type
      * @param id the entity id
      * @param sourceEntity the source entity
-     * @param refresh true if the operation should wait for a refresh before it returns
      * @throws StorageException thows a Storage Exception if something goes wrong during storing the data
      */
     @SuppressWarnings("nls")
-    private void indexEntity(String type, String id, XContentBuilder sourceEntity, boolean refresh)
+    private void indexEntity(String type, String id, XContentBuilder sourceEntity)
             throws StorageException {
         try {
             String json = Strings.toString(sourceEntity);
             String fullIndexName = getFullIndexName(type);
 
             IndexRequest indexRequest = new IndexRequest(fullIndexName).id(id).source(json, XContentType.JSON);
-            if (refresh) {
-                // WAIT_UNTIL same as "wait_for" => Leave this request open until a refresh has made the contents of this request visible to search
-                indexRequest.setRefreshPolicy(WriteRequest.RefreshPolicy.WAIT_UNTIL);
-            }
+            // WAIT_UNTIL same as "wait_for" => Leave this request open until a refresh has made the contents of this request visible to search
+            indexRequest.setRefreshPolicy(WriteRequest.RefreshPolicy.WAIT_UNTIL);
+
             IndexResponse indexResponse = getClient().index(indexRequest, RequestOptions.DEFAULT);
 
             if (!indexResponse.status().equals(RestStatus.CREATED) && !indexResponse.status().equals(RestStatus.OK)) {
@@ -2059,7 +1955,11 @@ public class EsStorage extends AbstractEsComponent implements IStorage, IStorage
      */
     private void deleteEntity(String type, String id) throws StorageException {
         try {
-            DeleteResponse response = getClient().delete(new DeleteRequest(getFullIndexName(type), id), RequestOptions.DEFAULT);
+            final DeleteRequest deleteRequest = new DeleteRequest(getFullIndexName(type), id);
+            // WAIT_UNTIL same as "wait_for" => Leave this request open until a refresh has made the contents of this request visible to search
+            deleteRequest.setRefreshPolicy(WriteRequest.RefreshPolicy.WAIT_UNTIL);
+
+            DeleteResponse response = getClient().delete(deleteRequest, RequestOptions.DEFAULT);
             if (!response.status().equals(RestStatus.OK)) {
                 throw new StorageException("Document could not be deleted because it did not exist - expected Status Code " + RestStatus.OK + " given: " + response.status()); //$NON-NLS-1$
             }
@@ -2082,6 +1982,8 @@ public class EsStorage extends AbstractEsComponent implements IStorage, IStorage
             String doc = Strings.toString(source);
             String fullIndexName = getFullIndexName(type);
             IndexRequest indexRequest = new IndexRequest(fullIndexName).id(id).source(doc, XContentType.JSON);
+            // WAIT_UNTIL same as "wait_for" => Leave this request open until a refresh has made the contents of this request visible to search
+            indexRequest.setRefreshPolicy(WriteRequest.RefreshPolicy.WAIT_UNTIL);
             getClient().index(indexRequest, RequestOptions.DEFAULT);
         } catch (Exception e) {
             throw new StorageException(e);
@@ -2306,6 +2208,14 @@ public class EsStorage extends AbstractEsComponent implements IStorage, IStorage
                 return EsMarshalling.unmarshallApiVersion(source);
             }
         }, qb);
+    }
+
+    /**
+     * Refreshes an index
+     * @param indexPostfix the index postfix name
+     */
+    public void refresh(String indexPostfix) throws IOException {
+        getClient().indices().refresh(new RefreshRequest(getFullIndexName(indexPostfix)), RequestOptions.DEFAULT); //$NON-NLS-1$
     }
 
     /**

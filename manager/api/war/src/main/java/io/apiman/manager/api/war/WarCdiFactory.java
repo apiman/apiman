@@ -61,9 +61,7 @@ import java.util.Map;
 public class WarCdiFactory {
 
     private static IEsClientFactory sStorageEsClientFactory;
-    private static IEsClientFactory sMetricsEsClientFactory;
     private static JpaStorage sJpaStorage;
-    private static EsStorage sESStorage;
 
     @Produces @ApimanLogger
     public static IApimanLogger provideLogger(WarApiManagerConfig config, InjectionPoint injectionPoint) {

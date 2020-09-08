@@ -36,7 +36,6 @@
   </testGroup>
 
   <testGroup name="Test Deletion Failure Conditions">
-    <test name="Wait" delay="1000" />
     <test name="Delete Organization (Children still active)">test-plan-data/organizations/deleteFailure/001_delete-org-failure-org1.resttest</test>
     <test name="Delete API (ApiVersions still active)">test-plan-data/organizations/deleteFailure/002_delete-api-failure-org1.resttest</test>
     <test name="Delete Client (ClientVersions still active)">test-plan-data/organizations/deleteFailure/003_delete-client-failure-org1.resttest</test>

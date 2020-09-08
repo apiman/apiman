@@ -41,6 +41,7 @@ import io.apiman.manager.api.beans.system.MetadataBean;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.exceptions.StorageException;
 
+import io.apiman.manager.api.es.EsStorage;
 import org.elasticsearch.action.admin.indices.refresh.RefreshRequest;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
@@ -59,16 +60,13 @@ import java.util.List;
 @SuppressWarnings("javadoc")
 public class TestEsStorageWrapper implements IStorage {
 
-    private RestHighLevelClient esClient;
-    private IStorage delegate;
+    private EsStorage delegate;
 
     /**
      * Constructor.
-     * @param esClient
      * @param delegate
      */
-    public TestEsStorageWrapper(RestHighLevelClient esClient, IStorage delegate) {
-        this.esClient = esClient;
+    public TestEsStorageWrapper(EsStorage delegate) {
         this.delegate = delegate;
     }
 
@@ -525,7 +523,7 @@ public class TestEsStorageWrapper implements IStorage {
         this.delegate.reorderPolicies(type, organizationId, entityId, entityVersion, newOrder);
     }
     /**
-     * @see io.apiman.manager.api.core.IStorage#createMetadata(MetadataBean) 
+     * @see io.apiman.manager.api.core.IStorage#createMetadata(MetadataBean)
      */
     @Override
     public void createMetadata(MetadataBean metadata) throws StorageException {
@@ -845,9 +843,9 @@ public class TestEsStorageWrapper implements IStorage {
      * Force a refresh in elasticsearch so that the result of any indexing operations
      * up to this point will be visible to searches.
      */
-    private void refresh(String indexPostfix) {
+    public void refresh(String indexPostfix) {
         try {
-            esClient.indices().refresh(new RefreshRequest("apiman_manager_" + indexPostfix), RequestOptions.DEFAULT); //$NON-NLS-1$
+            delegate.refresh(indexPostfix);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

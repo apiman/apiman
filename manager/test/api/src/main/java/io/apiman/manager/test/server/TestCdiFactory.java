@@ -105,8 +105,8 @@ public class TestCdiFactory {
         if (testType == TestType.jpa) {
             return jpaStorage;
         } else if (testType == TestType.es) {
-            EsStorage esStorage = new EsStorage(ManagerApiTestServer.ES_CLIENT);
-            return new TestEsStorageWrapper(ManagerApiTestServer.ES_CLIENT, esStorage);
+            EsStorage esStorage = new EsStorage(ManagerApiTestServer.getTestClientConfig());
+            return new TestEsStorageWrapper(esStorage);
         } else {
             throw new RuntimeException("Unexpected test type: " + testType);
         }
@@ -118,8 +118,8 @@ public class TestCdiFactory {
         if (testType == TestType.jpa) {
             return jpaStorage;
         } else if (testType == TestType.es) {
-            EsStorage esStorage = new EsStorage(ManagerApiTestServer.ES_CLIENT);
-            return new TestEsStorageQueryWrapper(ManagerApiTestServer.ES_CLIENT, esStorage);
+            EsStorage esStorage = new EsStorage(ManagerApiTestServer.getTestClientConfig());
+            return new TestEsStorageQueryWrapper(esStorage);
         } else {
             throw new RuntimeException("Unexpected test type: " + testType);
         }

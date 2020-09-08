@@ -37,6 +37,7 @@ import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.action.support.WriteRequest;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.query.MatchQueryBuilder;
@@ -82,7 +83,12 @@ public class EsRegistry extends AbstractEsComponent implements IRegistry {
     public void publishApi(final Api api, final IAsyncResultHandler<Void> handler) {
         try {
             String id = getApiId(api);
-            IndexResponse response = getClient().index(new IndexRequest(getIndexPrefix() + EsConstants.INDEX_APIS).id(id).source(JSON_MAPPER.writeValueAsBytes(api), XContentType.JSON), RequestOptions.DEFAULT);
+            IndexRequest indexRequest = new IndexRequest(getIndexPrefix() + EsConstants.INDEX_APIS)
+                    .id(id)
+                    .source(JSON_MAPPER.writeValueAsBytes(api), XContentType.JSON)
+                    .setRefreshPolicy(WriteRequest.RefreshPolicy.WAIT_UNTIL);
+
+            IndexResponse response = getClient().index(indexRequest, RequestOptions.DEFAULT);
 
             if (response.status().equals(RestStatus.CREATED) || response.status().equals(RestStatus.OK)) {
                 handler.handle(AsyncResultImpl.create((Void) null));
@@ -104,7 +110,12 @@ public class EsRegistry extends AbstractEsComponent implements IRegistry {
         final String id = getApiId(api);
 
         try {
-            DeleteResponse response = getClient().delete(new DeleteRequest(getIndexPrefix()+ EsConstants.INDEX_APIS).id(id), RequestOptions.DEFAULT);
+            DeleteRequest deleteRequest = new DeleteRequest(getIndexPrefix() + EsConstants.INDEX_APIS)
+                    .id(id)
+                    .setRefreshPolicy(WriteRequest.RefreshPolicy.WAIT_UNTIL);
+
+            DeleteResponse response = getClient().delete(deleteRequest, RequestOptions.DEFAULT);
+
             if (response.status().equals(RestStatus.OK)) {
                 handler.handle(AsyncResultImpl.create((Void) null));
             } else {
@@ -125,7 +136,12 @@ public class EsRegistry extends AbstractEsComponent implements IRegistry {
             validateClient(client);
 
             String id = getClientId(client);
-            IndexResponse response = getClient().index(new IndexRequest(getIndexPrefix() + EsConstants.INDEX_CLIENTS).source(JSON_MAPPER.writeValueAsBytes(client), XContentType.JSON).id(id), RequestOptions.DEFAULT);
+            IndexRequest indexRequest = new IndexRequest(getIndexPrefix() + EsConstants.INDEX_CLIENTS)
+                    .source(JSON_MAPPER.writeValueAsBytes(client), XContentType.JSON)
+                    .id(id)
+                    .setRefreshPolicy(WriteRequest.RefreshPolicy.WAIT_UNTIL);
+
+            IndexResponse response = getClient().index(indexRequest, RequestOptions.DEFAULT);
 
             if(!response.status().equals(RestStatus.CREATED) && !response.status().equals(RestStatus.OK)) {
                 throw new IOException("Response status was " + response.status() + " instead of " + RestStatus.CREATED + " or " + RestStatus.OK);
@@ -165,7 +181,9 @@ public class EsRegistry extends AbstractEsComponent implements IRegistry {
         final String id = getApiId(contract);
 
         try {
-            GetResponse response = getClient().get(new GetRequest(getIndexPrefix() + EsConstants.INDEX_APIS).id(id), RequestOptions.DEFAULT);
+            GetRequest getRequest = new GetRequest(getIndexPrefix() + EsConstants.INDEX_APIS).id(id);
+            GetResponse response = getClient().get(getRequest, RequestOptions.DEFAULT);
+
             if (!response.isExists()) {
                 String apiId = contract.getApiId();
                 String orgId = contract.getApiOrgId();
@@ -185,7 +203,11 @@ public class EsRegistry extends AbstractEsComponent implements IRegistry {
             final Client lclient = lookupClient(client.getOrganizationId(), client.getClientId(), client.getVersion());
             final String id = getClientId(lclient);
 
-            DeleteResponse response = getClient().delete(new DeleteRequest(getIndexPrefix() + EsConstants.INDEX_CLIENTS).id(id), RequestOptions.DEFAULT);
+            DeleteRequest deleteRequest = new DeleteRequest(getIndexPrefix() + EsConstants.INDEX_CLIENTS)
+                    .id(id)
+                    .setRefreshPolicy(WriteRequest.RefreshPolicy.WAIT_UNTIL);
+
+            DeleteResponse response = getClient().delete(deleteRequest, RequestOptions.DEFAULT);
             if (response.status().equals(RestStatus.OK)) {
                 handler.handle(AsyncResultImpl.create((Void) null));
             } else {
@@ -292,7 +314,8 @@ public class EsRegistry extends AbstractEsComponent implements IRegistry {
      * @throws IOException
      */
     protected Api getApi(String id) throws IOException {
-        GetResponse result = getClient().get(new GetRequest(getIndexPrefix() + EsConstants.INDEX_APIS, id), RequestOptions.DEFAULT);
+        GetRequest getRequest = new GetRequest(getIndexPrefix() + EsConstants.INDEX_APIS, id);
+        GetResponse result = getClient().get(getRequest, RequestOptions.DEFAULT);
         if (result.isExists()) {
             Api api = JSON_MAPPER.readValue(result.getSourceAsString(), Api.class);
             return api;
@@ -321,7 +344,9 @@ public class EsRegistry extends AbstractEsComponent implements IRegistry {
      * @throws IOException
      */
     protected Client getClient(String id) throws IOException {
-        GetResponse result = getClient().get(new GetRequest(getIndexPrefix() + EsConstants.INDEX_CLIENTS, id), RequestOptions.DEFAULT);
+        GetRequest getRequest = new GetRequest(getIndexPrefix() + EsConstants.INDEX_CLIENTS, id);
+        GetResponse result = getClient().get(getRequest, RequestOptions.DEFAULT);
+
         if (result.isExists()) {
             Client client = JSON_MAPPER.readValue(result.getSourceAsString(), Client.class);
             return client;
@@ -414,8 +439,9 @@ public class EsRegistry extends AbstractEsComponent implements IRegistry {
             TermsAggregationBuilder aggregation = AggregationBuilders.terms("apis").field("apiId");
 
             // keep searching in specific api mgmt indices to avoid search in foreign indices beside specific api-mgmt ones
-            SearchResponse searchResponse = getClient().search(new SearchRequest(getIndexPrefix() + EsConstants.INDEX_APIS)
-                    .source(searchSourceBuilder.query(query).aggregation(aggregation)), RequestOptions.DEFAULT);
+            SearchRequest searchRequest = new SearchRequest(getIndexPrefix() + EsConstants.INDEX_APIS)
+                    .source(searchSourceBuilder.query(query).aggregation(aggregation));
+            SearchResponse searchResponse = getClient().search(searchRequest, RequestOptions.DEFAULT);
 
             List terms = ((ParsedTerms) searchResponse.getAggregations().asMap().get("apis")).getBuckets();
             // Grab only the name of each aggregation (we don't care about count
@@ -439,8 +465,10 @@ public class EsRegistry extends AbstractEsComponent implements IRegistry {
             TermsAggregationBuilder aggregation = AggregationBuilders.terms("all_orgs").field("organizationId");
 
             // keep searching in specific api mgmt indices to avoid search in foreign indices beside specific api-mgmt ones
-            SearchResponse searchResponse = getClient().search(new SearchRequest(getIndexPrefix() + EsConstants.INDEX_APIS, getIndexPrefix() + EsConstants.INDEX_CLIENTS)
-                    .source(searchSourceBuilder.aggregation(aggregation)), RequestOptions.DEFAULT);
+            String[] indices = {getIndexPrefix() + EsConstants.INDEX_APIS, getIndexPrefix() + EsConstants.INDEX_CLIENTS};
+            SearchRequest searchRequest = new SearchRequest(indices)
+                    .source(searchSourceBuilder.aggregation(aggregation));
+            SearchResponse searchResponse = getClient().search(searchRequest, RequestOptions.DEFAULT);
 
             List terms = ((ParsedTerms) searchResponse.getAggregations().asMap().get("all_orgs")).getBuckets();
             // Grab only the name of each aggregation (we don't care about count

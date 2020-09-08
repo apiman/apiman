@@ -17,12 +17,11 @@
     <test name="Register Invalid Client">test-plan-data/api/clients/002-register-client-invalid.resttest</test>
     <test name="Register Client (retired)">test-plan-data/api/clients/003-register-client-retired.resttest</test>
     <test name="Register Duplicate Client">test-plan-data/api/clients/004-register-client-duplicate.resttest</test>
-    <test name="Unregister Client" delay="2000">test-plan-data/api/clients/005-unregister-client.resttest</test>
+    <test name="Unregister Client">test-plan-data/api/clients/005-unregister-client.resttest</test>
     <test name="Reregister Client">test-plan-data/api/clients/006-reregister-client.resttest</test>
   </testGroup>
 
   <testGroup name="List entities">
-    <test name="Wait for elasticsearch" delay="2000" />
     <!-- Orgs  -->
     <test name="List Orgs">test-plan-data/api/list/000-list-orgs.resttest</test>
     <!-- APIs  -->

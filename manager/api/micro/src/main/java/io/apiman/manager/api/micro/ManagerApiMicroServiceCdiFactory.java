@@ -73,9 +73,7 @@ import org.elasticsearch.client.RestHighLevelClient;
 public class ManagerApiMicroServiceCdiFactory {
 
     private static IEsClientFactory sStorageESClientFactory;
-    private static IEsClientFactory sMetricsESClientFactory;
     private static JpaStorage sJpaStorage;
-    private static EsStorage sESStorage;
 
     @Produces @ApimanLogger
     public static IApimanLogger provideLogger(ManagerApiMicroServiceConfig config, InjectionPoint injectionPoint) {
@@ -116,7 +114,7 @@ public class ManagerApiMicroServiceCdiFactory {
         if ("jpa".equals(config.getStorageType())) { //$NON-NLS-1$
             storage = initJpaStorage(config, jpaStorage);
         } else if ("es".equals(config.getStorageType())) { //$NON-NLS-1$
-            storage = initES(config, new EsStorage(config.getStorageESClientFactoryConfig()));
+            storage = new EsStorage(config.getStorageESClientFactoryConfig());
         } else {
             try {
                 storage = createCustomComponent(IStorage.class, config.getStorageType(),
@@ -227,22 +225,6 @@ public class ManagerApiMicroServiceCdiFactory {
             }
         }
         return sStorageESClientFactory;
-    }
-
-    /**
-     * Initializes the ES storage (if required).
-     * @param config
-     * @param esStorage
-     */
-    private static EsStorage initES(ManagerApiMicroServiceConfig config, EsStorage esStorage) {
-        if (sESStorage == null) {
-            sESStorage = esStorage;
-            sESStorage.setIndexPrefix(config.getStorageESIndexName());
-            if (config.isInitializeStorageES()) {
-                sESStorage.initialize();
-            }
-        }
-        return sESStorage;
     }
 
     /**

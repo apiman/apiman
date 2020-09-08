@@ -18,7 +18,11 @@
         "cluster-name": "elasticsearch",
         "host": "localhost",
         "port": 19250,
-        "initialize": true
+        "initialize": true,
+        "polling": {
+          "time": 60,
+          "period": 3
+        }
       }
     }
   },
@@ -90,7 +94,11 @@
             "cluster-name": "elasticsearch",
             "host": "localhost",
             "port": 19250,
-            "initialize": true
+            "initialize": true,
+            "polling": {
+              "time": 60,
+              "period": 3
+            }
           }
         }
       },
@@ -103,7 +111,11 @@
             "cluster-name": "elasticsearch",
             "host": "localhost",
             "port": 19250,
-            "initialize": true
+            "initialize": true,
+            "polling": {
+              "time": 60,
+              "period": 3
+            }
           }
         }
       },

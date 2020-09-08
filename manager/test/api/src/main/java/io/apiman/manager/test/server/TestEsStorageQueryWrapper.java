@@ -41,6 +41,7 @@ import io.apiman.manager.api.beans.summary.PolicyDefinitionSummaryBean;
 import io.apiman.manager.api.beans.summary.PolicySummaryBean;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.StorageException;
+import io.apiman.manager.api.es.EsStorage;
 import org.elasticsearch.action.admin.indices.refresh.RefreshRequest;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
@@ -54,16 +55,13 @@ import java.util.Set;
 @SuppressWarnings("javadoc")
 public class TestEsStorageQueryWrapper implements IStorageQuery {
 
-    private RestHighLevelClient esClient;
-    private IStorageQuery delegate;
+    private EsStorage delegate;
 
     /**
      * Constructor.
-     * @param esClient
      * @param delegate
      */
-    public TestEsStorageQueryWrapper(RestHighLevelClient esClient, IStorageQuery delegate) {
-        this.esClient = esClient;
+    public TestEsStorageQueryWrapper(EsStorage delegate) {
         this.delegate = delegate;
     }
 
@@ -378,8 +376,7 @@ public class TestEsStorageQueryWrapper implements IStorageQuery {
     private void refresh() {
         try {
             for(String postfix: EsConstants.MANAGER_INDEX_POSTFIXES) {
-                String fullIndexName = (EsConstants.MANAGER_INDEX_NAME + "_" + postfix).toLowerCase();
-                esClient.indices().refresh(new RefreshRequest(fullIndexName), RequestOptions.DEFAULT); //$NON-NLS-1$
+                this.delegate.refresh(postfix.toLowerCase());
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
