@@ -9,8 +9,7 @@
         "password": null,
         "timeout": 10000,
         "polling": {
-          "time": 60,
-          "period": 3
+          "time": 60
         }
       }
     }
@@ -115,8 +114,7 @@
         "port": "${apiman.es.port}",
         "initialize": true,
         "polling": {
-          "time": "${apiman.es.polling.time}",
-          "period": "${apiman.es.polling.period}"
+          "time": "${apiman.es.polling.time}"
         },
         "username": "${apiman.es.username}",
         "password": "${apiman.es.password}",
@@ -137,8 +135,7 @@
           "port": "${apiman.es.port}",
           "initialize": true,
           "polling": {
-            "time": "${apiman.es.polling.time}",
-            "period": "${apiman.es.polling.period}"
+            "time": "${apiman.es.polling.time}"
           },
           "username": "${apiman.es.username}",
           "password": "${apiman.es.password}",
@@ -158,8 +155,7 @@
           "port": "${apiman.es.port}",
           "initialize": true,
           "polling": {
-            "time": "${apiman.es.polling.time}",
-            "period": "${apiman.es.polling.period}"
+            "time": "${apiman.es.polling.time}"
           },
           "username": "${apiman.es.username}",
           "password": "${apiman.es.password}",
@@ -179,8 +175,7 @@
           "port": "${apiman.es.port}",
           "initialize": true,
           "polling": {
-            "time": "${apiman.es.polling.time}",
-            "period": "${apiman.es.polling.period}"
+            "time": "${apiman.es.polling.time}"
           },
           "username": "${apiman.es.username}",
           "password": "${apiman.es.password}",

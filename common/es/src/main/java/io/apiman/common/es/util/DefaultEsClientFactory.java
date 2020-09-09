@@ -34,10 +34,12 @@ import org.apache.http.nio.conn.SchemeIOSessionStrategy;
 import org.apache.http.nio.conn.ssl.SSLIOSessionStrategy;
 import org.apache.http.ssl.SSLContextBuilder;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthRequest;
+import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestClientBuilder;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.common.unit.TimeValue;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
@@ -97,8 +99,7 @@ public class DefaultEsClientFactory extends AbstractClientFactory implements IEs
         String password = config.get("client.password"); //$NON-NLS-1$
         Integer timeout = NumberUtils.toInt(config.get("client.timeout"), 10000); //$NON-NLS-1$
 
-        long pollingTime = NumberUtils.toLong(config.get("client.polling.time"), 60); //$NON-NLS-1$
-        long pollingPeriod = NumberUtils.toLong(config.get("client.polling.period"), 3); //$NON-NLS-1$
+        long pollingTime = NumberUtils.toLong(config.get("client.polling.time"), 600); //$NON-NLS-1$
 
         if (StringUtils.isBlank(protocol)) {
             protocol = "http"; //$NON-NLS-1$
@@ -112,7 +113,7 @@ public class DefaultEsClientFactory extends AbstractClientFactory implements IEs
             throw new RuntimeException("Missing client.host configuration for EsRegistry."); //$NON-NLS-1$
         }
 
-        logger.info(String.format("Create elasticsearch client for %s:%d over %s", host, port, protocol));
+        logger.info(String.format("Demand elasticsearch client for %s:%d over %s for index prefix %s", host, port, protocol, indexNamePrefix));
 
         synchronized (clients) {
             String clientKey = StringUtils.isNotBlank(indexNamePrefix) ? "es:" + host + ':' + port + '/' + indexNamePrefix : null;
@@ -121,6 +122,7 @@ public class DefaultEsClientFactory extends AbstractClientFactory implements IEs
 
             if (clientKey != null && clients.containsKey(clientKey)) {
                 client = clients.get(clientKey);
+                logger.info("Use cached elasticsearch client with client key " + clientKey);
             } else {
                 CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
                 if(username != null && password != null) {
@@ -146,10 +148,11 @@ public class DefaultEsClientFactory extends AbstractClientFactory implements IEs
                 client = new RestHighLevelClient(clientBuilder);
 
                 try {
-                    this.waitForElasticsearch(client, pollingTime, pollingPeriod);
+                    this.waitForElasticsearch(client, pollingTime);
                     // put client to list if polling is successful
                     if(clientKey != null) {
                         clients.put(clientKey, client);
+                        logger.info(String.format("Created elasticsearch client for %s:%d over %s for index prefix %s", host, port, protocol, indexNamePrefix));
                     }
                 } catch (Exception e) {
                     logger.error(e);
@@ -164,7 +167,7 @@ public class DefaultEsClientFactory extends AbstractClientFactory implements IEs
         }
     }
 
-    private void waitForElasticsearch(RestHighLevelClient client, long pollingTime, long pollingPeriod) throws Exception {
+    private void waitForElasticsearch(RestHighLevelClient client, long pollingTime) throws Exception {
         final Date startTime = new Date();
         AtomicBoolean pollingSuccess = new AtomicBoolean(false);
 
@@ -177,24 +180,29 @@ public class DefaultEsClientFactory extends AbstractClientFactory implements IEs
                     try {
                         //Do Health request
                         ClusterHealthRequest healthRequest = new ClusterHealthRequest();
-                        client.cluster().health(healthRequest, RequestOptions.DEFAULT);
 
-                        // set polling status as successful
-                        pollingSuccess.set(true);
-                        // measure time if health request is successful
-                        final Date endTime = new Date();
-                        long pollingTimeMeasure = endTime.getTime() - startTime.getTime();
-                        logger.info("Took "+ pollingTimeMeasure + " milliseconds for polling Elasticsearch");
+                        healthRequest.timeout(new TimeValue(5, TimeUnit.SECONDS));
+                        final ClusterHealthResponse healthResponse = client.cluster().health(healthRequest, RequestOptions.DEFAULT);
 
-                        // wake up the waiting thread
-                        cdl.countDown();
+                        if (!healthResponse.isTimedOut()) {
+                            // set polling status as successful
+                            pollingSuccess.set(true);
+                            // measure time if health request is successful
+                            final Date endTime = new Date();
+                            long pollingTimeMeasure = endTime.getTime() - startTime.getTime();
+                            logger.info("Took "+ pollingTimeMeasure + " milliseconds for polling Elasticsearch");
+
+                            // wake up the waiting thread
+                            cdl.countDown();
+                        }
+
                     } catch (IOException e) {
                         logger.info("Unable to reach Elasticsearch. Will continue polling.");
                         exception.setValue(e);
                     }
                 },
                 0, // Start immediately
-                pollingPeriod, // Poll every pollingPeriod seconds
+                10, // Poll every pollingPeriod seconds
                 TimeUnit.SECONDS);
 
         cdl.await(pollingTime, TimeUnit.SECONDS); // Max wait for polling time
