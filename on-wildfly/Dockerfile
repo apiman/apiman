@@ -3,10 +3,10 @@ FROM jboss/wildfly:20.0.1.Final
 
 MAINTAINER Marc Savy <marc.savy@redhat.com>
 
-ENV APIMAN_VERSION 2.0.0.Final
+ARG APIMAN_VERSION
 
 RUN cd $HOME/wildfly \
- && curl https://github.com/Apiman/apiman/releases/download/$APIMAN_VERSION/apiman-distro-wildfly-$APIMAN_VERSION-overlay.zip | bsdtar -xvf-
+ && curl -L https://github.com/Apiman/apiman/releases/download/$APIMAN_VERSION/apiman-distro-wildfly-$APIMAN_VERSION-overlay.zip | bsdtar -xvf-
 
 USER root
 
