@@ -1570,6 +1570,7 @@
     <module>manager</module>
     <module>gateway</module>
     <module>test</module>
+    <module>deployment</module>
   </modules>
 
   <profiles>
