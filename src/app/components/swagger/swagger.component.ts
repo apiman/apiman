@@ -82,8 +82,10 @@ export class SwaggerComponent implements OnInit {
           // set bearer token for authentication to get swagger file
           request.headers.Authorization = 'Bearer ' + sessionStorage.getItem('api_mgmt_keycloak_token');
         } else if (!isPublicApi) {
+          const url = new URL(request.url);
           // set api key to authorize all api requests also for option requests
-          request.url += '?apiKey=' + apiKey;
+          url.searchParams.append('apiKey', apiKey);
+          request.url = url.toString();
         }
         return request;
       },
