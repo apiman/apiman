@@ -263,7 +263,7 @@ jobs:
         run: |
           cd website
           export PREV_VERSION=`cat version`
-          find ./latest -name '*.html' -exec sed -i 's/$PREV_VERSION/${{steps.metadata.outputs.release-version}}/g' {} \;
+          find ./latest/ -name '*.html' -exec sed -i "s/$PREV_VERSION/${{steps.metadata.outputs.release-version}}/g" {} \;
           echo "${{steps.metadata.outputs.release-version}}" > version
           git add .
           git commit -m "Automated website update for Apiman release: ${{steps.metadata.outputs.release-version}}"
