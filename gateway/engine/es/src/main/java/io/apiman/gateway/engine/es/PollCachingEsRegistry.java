@@ -30,7 +30,7 @@ import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.client.RequestOptions;
 
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -189,7 +189,7 @@ public class PollCachingEsRegistry extends CachingEsRegistry {
                         Thread.sleep(pollIntervalMillis);
                         checkCacheVersion();
                     } catch (Exception e) {
-                        logger.warn(e.getMessage());
+                        logger.error(e.getMessage(), e);
                     }
 
                 }
@@ -228,20 +228,14 @@ public class PollCachingEsRegistry extends CachingEsRegistry {
     }
 
     /**
-     * @see AbstractEsComponent#getDefaultIndexPrefix()
-     */
-    @Override
-    protected String getDefaultIndexPrefix() {
-        return EsConstants.GATEWAY_INDEX_NAME;
-    }
-
-    /**
      * @see AbstractEsComponent#getDefaultIndices()
      * @return default indices
      */
     @Override
     protected List<String> getDefaultIndices() {
-        String[] indices = {EsConstants.INDEX_DATA_VERSION};
-        return Arrays.asList(indices);
+        List<String> indices = new ArrayList<String>();
+        indices.addAll(super.getDefaultIndices());
+        indices.add(EsConstants.INDEX_DATA_VERSION);
+        return indices;
     }
 }
