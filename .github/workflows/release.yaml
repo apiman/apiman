@@ -221,9 +221,9 @@ jobs:
       - name: Building Docker Images
         run: |
           cd docker
-          docker build --env "APIMAN_VERSION=${{steps.metadata.outputs.release-version}}" -t="apiman/on-wildfly" -t="apiman/on-wildfly:latest-release" -t="apiman/on-wildfly:${{steps.metadata.outputs.release-version}}" --rm on-wildfly/
-          docker build --env "APIMAN_VERSION=${{steps.metadata.outputs.release-version}}" -t="apiman/vertx-openshift" -t="apiman/vertx-openshift:latest-release" -t="apiman/vertx-openshift:${{steps.metadata.outputs.release-version}}" --rm vertx-openshift/
-          docker build --env "APIMAN_VERSION=${{steps.metadata.outputs.release-version}}" -t="apiman/vertx-standalone" -t="apiman/vertx-standalone:latest-release" -t="apiman/vertx-standalone:${{steps.metadata.outputs.release-version}}" --rm vertx-standalone/
+          docker build --build-arg "APIMAN_VERSION=${{steps.metadata.outputs.release-version}}" -t="apiman/on-wildfly" -t="apiman/on-wildfly:latest-release" -t="apiman/on-wildfly:${{steps.metadata.outputs.release-version}}" --rm on-wildfly/
+          docker build --build-arg "APIMAN_VERSION=${{steps.metadata.outputs.release-version}}" -t="apiman/vertx-openshift" -t="apiman/vertx-openshift:latest-release" -t="apiman/vertx-openshift:${{steps.metadata.outputs.release-version}}" --rm vertx-openshift/
+          docker build --build-arg "APIMAN_VERSION=${{steps.metadata.outputs.release-version}}" -t="apiman/vertx-standalone" -t="apiman/vertx-standalone:latest-release" -t="apiman/vertx-standalone:${{steps.metadata.outputs.release-version}}" --rm vertx-standalone/
       - name: Push The Tagged Docker Images
         run: |
           cd docker
