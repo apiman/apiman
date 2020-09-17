@@ -205,11 +205,18 @@ jobs:
       - name: Generate Release Notes
         run: cd apiman && gren release --token=${{ secrets.GITHUB_TOKEN }} --override
 
-      # Deploy to Maven Central
+      # Deploy Apiman to Maven Central
       - name: Deploy Apiman to Maven Central
         run: |
           cd apiman
           mvn deploy --batch-mode -DskipTests -T2C -Prelease --settings /home/runner/.m2/settings.xml
+      # Tag and release Apiman Plugins
+      - name: Tag and Release Apiman Plugins
+        run: |
+          cd plugins
+          git tag -a -m "Tagging release ${{steps.metadata.outputs.release-version}}" ${{steps.metadata.outputs.release-version}}
+          git push origin ${{steps.metadata.outputs.release-version}}
+      # Deploy Apiman Plugins to Maven Central
       - name: Deploy Apiman Plugins to Maven Central
         run: |
           cd plugins
