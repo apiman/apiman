@@ -22,6 +22,7 @@ pipeline {
   }
 
   environment {
+    NPM_TOKEN = credentials('NPM_TOKEN')
     // Snippet taken from https://gist.github.com/DarrenN/8c6a5b969481725a4413
     PACKAGE_VERSION = sh(script: 'cat package.json | grep version | head -1 | awk -F= "{ print $2 }" | sed \'s/[version:,\",]//g\' | tr -d \'[[:space:]]\'', returnStdout: true)
   }
@@ -41,6 +42,7 @@ pipeline {
 
     stage('Build devportal') {
       steps {
+        sh "echo \"//gitlab.scheer-group.com:8080/repository/:_authToken=${NPM_TOKEN}\" > .npmrc"
         sh "npm install"
         sh "npm run build"
       }
@@ -58,8 +60,7 @@ pipeline {
       agent {
         docker {
           image 'devportal-tests:latest'
-          label 'docker'
-          customWorkspace "workspace/Api-Mgmt-Dev-Portal-Pipeline"
+          reuseNode true
         }
       }
       steps {
