@@ -11,6 +11,7 @@
 
 ### Minor
 
+- GW-396: Do npm audit to improve security
 - GW-395: Install offline resources
 - Add CHANGELOG.md
 - Change settings for local development
