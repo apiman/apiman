@@ -29,7 +29,7 @@
     "keycloak-angular": "^7.3.1",
     "keycloak-js": "^10.0.2",
     "ngx-logger": "^4.0.7",
-    "rxjs": "^6.5.5",
+    "rxjs": "^6.6.3",
     "swagger-ui-dist": "^3.24.3",
     "tslib": "^2.0.0",
     "typeface-roboto": "0.0.75",
