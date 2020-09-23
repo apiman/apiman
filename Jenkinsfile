@@ -11,10 +11,6 @@ pipeline {
     }
   }
 
-  tools {
-    nodejs "12"
-  }
-
   options {
     buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '1'))
     disableConcurrentBuilds()
@@ -34,13 +30,6 @@ pipeline {
       }
     }
 
-    stage('Build devportal') {
-      steps {
-        sh "npm install"
-        sh "npm run build"
-      }
-    }
-
     stage('Prepare docker test image') {
       steps {
         sh """
@@ -53,10 +42,11 @@ pipeline {
       agent {
         docker {
           image 'devportal-tests:latest'
-          reuseNode true
         }
       }
       steps {
+        sh "npm install --cache /tmp"
+        sh "npm run build"
         sh "npm run test"
       }
       post {
