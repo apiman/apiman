@@ -8,7 +8,8 @@
     "build-production": "ng build --prod",
     "test": "ng test --reporters junit --watch=false",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "postinstall": "ngcc"
   },
   "private": true,
   "dependencies": {
