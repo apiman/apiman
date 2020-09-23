@@ -42,6 +42,7 @@ pipeline {
       agent {
         docker {
           image 'devportal-tests:latest'
+          reuseNode true
         }
       }
       steps {
