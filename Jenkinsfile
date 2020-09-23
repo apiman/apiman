@@ -12,7 +12,7 @@ pipeline {
   }
 
   tools {
-    nodejs "10"
+    nodejs "12"
   }
 
   options {
@@ -22,17 +22,11 @@ pipeline {
   }
 
   environment {
-    NPM_TOKEN = credentials('NPM_TOKEN')
     // Snippet taken from https://gist.github.com/DarrenN/8c6a5b969481725a4413
     PACKAGE_VERSION = sh(script: 'cat package.json | grep version | head -1 | awk -F= "{ print $2 }" | sed \'s/[version:,\",]//g\' | tr -d \'[[:space:]]\'', returnStdout: true)
   }
 
   stages {
-    stage('Start up') {
-      steps {
-        sh "npm config set registry https://gitlab.scheer-group.com:8080/repository/npm_group"
-      }
-    }
 
     stage('Clean') {
       steps {
@@ -42,7 +36,6 @@ pipeline {
 
     stage('Build devportal') {
       steps {
-        sh "echo \"//gitlab.scheer-group.com:8080/repository/:_authToken=${NPM_TOKEN}\" > .npmrc"
         sh "npm install"
         sh "npm run build"
       }
