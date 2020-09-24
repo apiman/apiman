@@ -11,6 +11,7 @@
 
 ### Minor
 
+- GW-431: Scrolling for Create Client Mapping
 - NGINX Update from 1.17.10 to 1.19.2
 - Angular Upgrade 9 to 10 (run ng update to update rxjs)
 - GW-396: Do npm audit to improve security

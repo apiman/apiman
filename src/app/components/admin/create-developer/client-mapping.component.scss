@@ -32,6 +32,8 @@
   background-color: #f5faff;
   overflow: hidden;
   display: block;
+  max-height: calc(100vh - 450px);
+  overflow-y: auto;
 }
 
 .client-box {
