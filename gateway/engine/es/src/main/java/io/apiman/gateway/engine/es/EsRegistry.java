@@ -269,8 +269,8 @@ public class EsRegistry extends AbstractEsComponent implements IRegistry {
             SearchResponse searchResponse = response.getResponse();
             SearchHits hits = searchResponse.getHits();
 
-            if(hits.getTotalHits().value < 0) {
-                throw new IOException("No result hits found");
+            if (hits.getTotalHits().value == 0) {
+                throw new IOException();
             }
             String sourceAsString = response.getResponse().getHits().getAt(0).getSourceAsString();
             client = JSON_MAPPER.readValue(sourceAsString, Client.class);
