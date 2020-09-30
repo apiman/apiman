@@ -1,10 +1,12 @@
 # Api Management - Developer Portal
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.2.1.
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli).
 
 ## Development server
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+* Edit `src/environments/environment.ts` if needed
+* Run `vagrant --local-services=api-management-devportal up`
+* Run `ng serve` for a dev server. Navigate to `http://localhost:80/`. The app will automatically reload if you change any of the source files.
 
 ## Code scaffolding
 
@@ -16,10 +18,9 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
 
 ### Build docker image locally
 
-To build the docker image locally you have to run the following two Intellij run configurations:
+To build the docker image locally you have to run the following command or use Intellij run configurations:
 
-1. Build devportal-base:latest
-2. Build api-mgmt/devportal:latest
+`docker build -t gitlab.scheer-group.com:8080/api-mgmt/devportal:latest .`
 
 ## Running unit tests
 
