@@ -17,7 +17,6 @@ package io.apiman.manager.test;
 
 import io.apiman.manager.test.junit.ManagerRestTestPlan;
 import io.apiman.manager.test.junit.ManagerRestTester;
-
 import org.junit.runner.RunWith;
 
 /**
@@ -26,6 +25,12 @@ import org.junit.runner.RunWith;
  * @author eric.wittmann@redhat.com
  */
 @RunWith(ManagerRestTester.class)
-@ManagerRestTestPlan("test-plans/export-testPlan.xml")
 public class ExportTest {
+
+    @ManagerRestTestPlan("test-plans/export-testPlan.xml")
+    public void exportTestPlan(){}
+
+    // Order=1 to add a second test case
+    @ManagerRestTestPlan(value = "test-plans/exportDeveloper-testPlan.xml", order = 1)
+    public void exportDeveloperTestPlan(){}
 }

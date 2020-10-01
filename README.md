@@ -115,3 +115,15 @@ tools/src/eclipse/apiman-eclipse-formatter.xml
 
 You should be able to import that guy straight into Eclipse by going to
 *Window->Preferences :: Java/Code Style/Formatter*
+
+## Developer Portal
+
+Apiman also comes with an developer portal. There you can allow Developers to access your APIs. Developers can view and test your APIs to develope their own Apps.\
+Check it out here: [Apiman Developer-Portal](https://github.com/apiman/apiman-developer-portal)
+
+## Looking for support?
+
+ > [Scheer PAS](https://www.scheer-pas.com/en/) is the platform for flexible end-to-end support of individual processes. It stands for digitization and automation, regardless of how many people, systems or companies need to be integrated.
+
+[Scheer PAS API Management](https://www.scheer-pas.com/en/api-management/) is based on Apiman and offers you also enterprise support.\
+You may visit [Scheer PAS documentation](https://doc.scheer-pas.com/display/HOME) for further details.

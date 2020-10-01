@@ -1,0 +1,15 @@
+GET /developers/${developer2-id} admin/admin
+----
+200
+Content-Type: application/json
+
+{
+    "id": "${developer-id}",
+	"clients": [{
+		"clientId": "ClientC",
+		"organizationId": "Test"
+	}, {
+		"clientId": "ClientD",
+		"organizationId": "Test"
+	}]
+}

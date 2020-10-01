@@ -16,9 +16,9 @@
 
 package io.apiman.manager.api.migrator;
 
-import java.io.IOException;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import java.io.IOException;
 
 /**
  * @author eric.wittmann@gmail.com
@@ -38,5 +38,7 @@ public interface IDataMigratorWriter extends AutoCloseable {
     public void writePolicyDefinition(ObjectNode node) throws IOException;
     
     public void writeOrg(ObjectNode node) throws IOException;
+
+    void writeDeveloper(ObjectNode node) throws IOException;
 
 }

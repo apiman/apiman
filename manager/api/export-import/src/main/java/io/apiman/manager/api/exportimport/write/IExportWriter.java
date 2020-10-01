@@ -21,6 +21,7 @@ import io.apiman.manager.api.beans.audit.AuditEntryBean;
 import io.apiman.manager.api.beans.clients.ClientBean;
 import io.apiman.manager.api.beans.clients.ClientVersionBean;
 import io.apiman.manager.api.beans.contracts.ContractBean;
+import io.apiman.manager.api.beans.developers.DeveloperBean;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
 import io.apiman.manager.api.beans.idm.RoleBean;
 import io.apiman.manager.api.beans.idm.RoleMembershipBean;
@@ -65,6 +66,11 @@ public interface IExportWriter {
     IExportWriter startPolicyDefs();
     IExportWriter writePolicyDef(PolicyDefinitionBean policyDef);
     IExportWriter endPolicyDefs();
+
+    // Developers
+    IExportWriter startDevelopers();
+    IExportWriter writeDeveloper(DeveloperBean bean);
+    IExportWriter endDevelopers();
 
     // -----------------------------------
     // Orgs, apps, plans, APIs, etc...

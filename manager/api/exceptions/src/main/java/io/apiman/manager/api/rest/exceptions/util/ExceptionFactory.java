@@ -377,6 +377,23 @@ public final class ExceptionFactory {
     }
 
     /**
+     * Creates an exception from a developer id.
+     * @param developerId the developer id
+     * @return the exception
+     */
+    public static final DeveloperNotFoundException developerNotFoundException(String developerId) {
+        return new DeveloperNotFoundException(Messages.i18n.format("DeveloperNotExist", developerId)); //$NON-NLS-1$
+    }
+
+    /**
+     * Creates an exception if the developer already exists.
+     * @return the exception
+     */
+    public static final DeveloperAlreadyExistsException developerAlreadyExistsException(String developerId) {
+        return new DeveloperAlreadyExistsException(Messages.i18n.format("DeveloperAlreadyExists", developerId)); //$NON-NLS-1$
+    }
+
+    /**
      * Creates an exception.
      * @param message the message
      * @return the exception

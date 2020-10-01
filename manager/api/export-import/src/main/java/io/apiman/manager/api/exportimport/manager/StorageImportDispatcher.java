@@ -31,6 +31,7 @@ import io.apiman.manager.api.beans.clients.ClientBean;
 import io.apiman.manager.api.beans.clients.ClientStatus;
 import io.apiman.manager.api.beans.clients.ClientVersionBean;
 import io.apiman.manager.api.beans.contracts.ContractBean;
+import io.apiman.manager.api.beans.developers.DeveloperBean;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
 import io.apiman.manager.api.beans.idm.RoleBean;
 import io.apiman.manager.api.beans.idm.RoleMembershipBean;
@@ -53,10 +54,9 @@ import io.apiman.manager.api.exportimport.read.IImportReaderDispatcher;
 import io.apiman.manager.api.gateway.IGatewayLink;
 import io.apiman.manager.api.gateway.IGatewayLinkFactory;
 
-import java.util.*;
-
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import java.util.*;
 
 /**
  * Used to store imported entities into the {@link IStorage}.
@@ -470,6 +470,24 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
             logger.info(Messages.i18n.format("StorageImportDispatcher.ImportingAuditEntry") + entry.getId()); //$NON-NLS-1$
             entry.setId(null);
             storage.createAuditEntry(entry);
+        } catch (StorageException e) {
+            error(e);
+        }
+    }
+
+    /**
+     * @see io.apiman.manager.api.exportimport.read.IImportReaderDispatcher#developer(DeveloperBean)
+     */
+    @Override
+    public void developer(DeveloperBean developer) {
+        try {
+            logger.info(Messages.i18n.format("StorageImportDispatcher.ImportingDeveloper") + developer.getId());
+            DeveloperBean developerBean = storage.getDeveloper(developer.getId());
+            if (developerBean == null) {
+                storage.createDeveloper(developer);
+            } else {
+                storage.updateDeveloper(developer);
+            }
         } catch (StorageException e) {
             error(e);
         }

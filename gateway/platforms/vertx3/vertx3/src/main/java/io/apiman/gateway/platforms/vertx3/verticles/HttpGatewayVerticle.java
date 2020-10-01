@@ -52,7 +52,7 @@ public class HttpGatewayVerticle extends ApimanVerticleWithEngine {
     }
 
     private void requestHandler(HttpServerRequest req) {
-        new HttpPolicyAdapter(req, policyFailureWriter, policyErrorWriter, engine, false).execute();
+        new HttpPolicyAdapter(req, policyFailureWriter, policyErrorWriter, engine, false, allowedCorsOrigins).execute();
     }
 
     @Override

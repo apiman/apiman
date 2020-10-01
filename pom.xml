@@ -1332,7 +1332,7 @@
           <version>${version.exec.plugin}</version>
         </plugin>
         <plugin>
-          <groupId>org.jolokia</groupId>
+          <groupId>io.fabric8</groupId>
           <artifactId>docker-maven-plugin</artifactId>
           <version>${version.docker.plugin}</version>
         </plugin>

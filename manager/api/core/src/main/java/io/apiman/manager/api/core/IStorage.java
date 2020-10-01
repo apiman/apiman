@@ -23,6 +23,7 @@ import io.apiman.manager.api.beans.clients.ClientBean;
 import io.apiman.manager.api.beans.clients.ClientStatus;
 import io.apiman.manager.api.beans.clients.ClientVersionBean;
 import io.apiman.manager.api.beans.contracts.ContractBean;
+import io.apiman.manager.api.beans.developers.DeveloperBean;
 import io.apiman.manager.api.beans.download.DownloadBean;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
 import io.apiman.manager.api.beans.idm.RoleBean;
@@ -77,6 +78,7 @@ public interface IStorage {
     public void createPolicyDefinition(PolicyDefinitionBean policyDef) throws StorageException;
     public void createAuditEntry(AuditEntryBean entry) throws StorageException;
     public void createDownload(DownloadBean download) throws StorageException;
+    public void createDeveloper(DeveloperBean developerBean) throws StorageException;
 
     /*
      * Various update methods.  These are called by the REST layer to update stuff.
@@ -94,6 +96,7 @@ public interface IStorage {
     public void updateGateway(GatewayBean gateway) throws StorageException;
     public void updatePolicyDefinition(PolicyDefinitionBean policyDef) throws StorageException;
     public void updatePlugin(PluginBean pluginBean) throws StorageException;
+    public void updateDeveloper(DeveloperBean developer) throws StorageException;
 
     /*
      * Various delete methods.  These are called by the REST layer to delete stuff.
@@ -113,6 +116,7 @@ public interface IStorage {
     public void deletePlugin(PluginBean plugin) throws StorageException;
     public void deletePolicyDefinition(PolicyDefinitionBean policyDef) throws StorageException;
     public void deleteDownload(DownloadBean download) throws StorageException;
+    public void deleteDeveloper(DeveloperBean developer) throws StorageException;
 
     /*
      * Various get methods.  These are called by the REST layer to get stuff.
@@ -133,6 +137,7 @@ public interface IStorage {
     public PluginBean getPlugin(String groupId, String artifactId) throws StorageException;
     public PolicyDefinitionBean getPolicyDefinition(String id) throws StorageException;
     public DownloadBean getDownload(String id) throws StorageException;
+    public DeveloperBean getDeveloper(String id) throws StorageException;
 
     /*
      * Anything that doesn't fall into the above categories!
@@ -179,6 +184,7 @@ public interface IStorage {
     public Iterator<PolicyBean> getAllPolicies(String organizationId, String entityId, String version, PolicyType type) throws StorageException;
     public Iterator<UserBean> getAllUsers() throws StorageException;
     public Iterator<RoleBean> getAllRoles() throws StorageException;
+    public Iterator<DeveloperBean> getDevelopers() throws StorageException;
 
     /**
      * Additional methods to verify state before delete.
@@ -191,4 +197,10 @@ public interface IStorage {
     public Iterator<ApiVersionBean> getAllApiVersions(OrganizationBean organizationBean, ApiStatus status, int lim) throws StorageException;
     public Iterator<PlanVersionBean> getAllPlanVersions(OrganizationBean organizationBean, int lim) throws StorageException;
     public Iterator<PlanVersionBean> getAllPlanVersions(OrganizationBean organizationBean, PlanStatus status, int lim) throws StorageException;
+
+    /**
+     * Additional methods for developer resource
+     */
+    public Iterator<ApiVersionBean> getAllPublicApiVersions() throws StorageException;
+
 }

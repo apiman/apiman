@@ -29,10 +29,11 @@
                     "value" : "admin123!"
                 }
             ],
-            "realmRoles" : [ "apiuser", "apiadmin" ],
+            "realmRoles" : [ "apiuser", "apiadmin", "devportaluser" ],
             "applicationRoles" : {
                 "realm-management" : [ "realm-admin" ]
-            }
+            },
+            "groups" : [ "/API-Mgmt-Administrators" ]
         },
         {
             "username" : "apimanager",
@@ -64,9 +65,40 @@
             {
                 "name" : "apipublisher",
                 "description" : "Required to publish to the API Gateway."
+            },
+            {
+                "name" : "devportaluser",
+                "description" : "Required to access the Developer Portal"
             }
         ]
     },
+    "groups" : [ {
+        "id" : "f0b863a6-5fed-4ced-b733-b14ed04e35dc",
+        "name" : "API-Mgmt-Administrators",
+        "path" : "/API-Mgmt-Administrators",
+        "attributes" : { },
+        "realmRoles" : [ "kibanauser", "apiadmin", "apiuser", "devportaluser" ],
+        "clientRoles" : {
+            "realm-management" : [ "view-realm", "manage-users", "manage-clients" ]
+        },
+        "subGroups" : [ ]
+    }, {
+        "id" : "59b1a8aa-ae56-4987-b7ca-59dea3fa5e09",
+        "name" : "API-Mgmt-Devportal-Users",
+        "path" : "/API-Mgmt-Devportal-Users",
+        "attributes" : { },
+        "realmRoles" : [ "devportaluser" ],
+        "clientRoles" : { },
+        "subGroups" : [ ]
+    }, {
+        "id" : "4fd8347e-2cde-4bbf-8cd0-305ff330d09b",
+        "name" : "API-Mgmt-Users",
+        "path" : "/API-Mgmt-Users",
+        "attributes" : { },
+        "realmRoles" : [ "apiuser" ],
+        "clientRoles" : { },
+        "subGroups" : [ ]
+    } ],
     "defaultRoles" : [
         "apiuser"
     ],
@@ -76,16 +108,17 @@
             "enabled" : true,
             "baseUrl" : "/apimanui",
             "redirectUris" : [
-                "/apimanui/*"
+                "https://localhost:8443/apimanui/*"
             ],
-            "secret" : "password"
+            "secret" : "password",
+            "webOrigins" : [ "*" ]
         },
         {
             "name" : "apiman",
             "enabled" : true,
             "baseUrl" : "/apiman",
             "redirectUris" : [
-                "/apiman/*"
+                "https://localhost:8443/apiman/*"
             ],
             "secret" : "password",
             "webOrigins" : [ "*" ]
@@ -95,10 +128,20 @@
             "enabled" : true,
             "baseUrl" : "/apiman-gateway-api",
             "redirectUris" : [
-                "/apiman-gateway-api/*"
+                "https://localhost:8443/apiman-gateway-api/*"
             ],
             "secret" : "password",
             "directGrantsOnly" : true,
+            "webOrigins" : [ "*" ]
+        },
+        {
+            "name" : "devportal",
+            "enabled" : true,
+            "baseUrl" : "/",
+            "publicClient" : true,
+            "redirectUris" : [
+                "https://localhost:8444/*"
+            ],
             "webOrigins" : [ "*" ]
         }
     ]

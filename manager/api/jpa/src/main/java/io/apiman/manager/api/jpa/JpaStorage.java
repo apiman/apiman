@@ -17,26 +17,18 @@ package io.apiman.manager.api.jpa;
 
 import io.apiman.common.util.crypt.DataEncryptionContext;
 import io.apiman.common.util.crypt.IDataEncrypter;
-import io.apiman.manager.api.beans.apis.ApiBean;
-import io.apiman.manager.api.beans.apis.ApiDefinitionBean;
-import io.apiman.manager.api.beans.apis.ApiGatewayBean;
-import io.apiman.manager.api.beans.apis.ApiPlanBean;
-import io.apiman.manager.api.beans.apis.ApiStatus;
-import io.apiman.manager.api.beans.apis.ApiVersionBean;
+import io.apiman.manager.api.beans.apis.*;
 import io.apiman.manager.api.beans.audit.AuditEntityType;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
 import io.apiman.manager.api.beans.clients.ClientBean;
 import io.apiman.manager.api.beans.clients.ClientStatus;
 import io.apiman.manager.api.beans.clients.ClientVersionBean;
 import io.apiman.manager.api.beans.contracts.ContractBean;
+import io.apiman.manager.api.beans.developers.DeveloperBean;
 import io.apiman.manager.api.beans.download.DownloadBean;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
 import io.apiman.manager.api.beans.gateways.GatewayType;
-import io.apiman.manager.api.beans.idm.PermissionBean;
-import io.apiman.manager.api.beans.idm.PermissionType;
-import io.apiman.manager.api.beans.idm.RoleBean;
-import io.apiman.manager.api.beans.idm.RoleMembershipBean;
-import io.apiman.manager.api.beans.idm.UserBean;
+import io.apiman.manager.api.beans.idm.*;
 import io.apiman.manager.api.beans.orgs.OrganizationBean;
 import io.apiman.manager.api.beans.plans.PlanBean;
 import io.apiman.manager.api.beans.plans.PlanStatus;
@@ -49,38 +41,17 @@ import io.apiman.manager.api.beans.search.PagingBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaFilterOperator;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
-import io.apiman.manager.api.beans.summary.ApiEntryBean;
-import io.apiman.manager.api.beans.summary.ApiPlanSummaryBean;
-import io.apiman.manager.api.beans.summary.ApiRegistryBean;
-import io.apiman.manager.api.beans.summary.ApiSummaryBean;
-import io.apiman.manager.api.beans.summary.ApiVersionSummaryBean;
-import io.apiman.manager.api.beans.summary.ClientSummaryBean;
-import io.apiman.manager.api.beans.summary.ClientVersionSummaryBean;
-import io.apiman.manager.api.beans.summary.ContractSummaryBean;
-import io.apiman.manager.api.beans.summary.GatewaySummaryBean;
-import io.apiman.manager.api.beans.summary.OrganizationSummaryBean;
-import io.apiman.manager.api.beans.summary.PlanSummaryBean;
-import io.apiman.manager.api.beans.summary.PlanVersionSummaryBean;
-import io.apiman.manager.api.beans.summary.PluginSummaryBean;
-import io.apiman.manager.api.beans.summary.PolicyDefinitionSummaryBean;
-import io.apiman.manager.api.beans.summary.PolicyFormType;
-import io.apiman.manager.api.beans.summary.PolicySummaryBean;
+import io.apiman.manager.api.beans.summary.*;
 import io.apiman.manager.api.beans.system.MetadataBean;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.core.util.PolicyTemplateUtil;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -93,12 +64,11 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
 
 /**
  * A JPA implementation of the storage interface.
@@ -201,6 +171,14 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     @Override
     public void createDownload(DownloadBean download) throws StorageException {
         super.create(download);
+    }
+
+    /**
+     * @see io.apiman.manager.api.core.IStorage#createDeveloper(DeveloperBean)
+     */
+    @Override
+    public void createDeveloper(DeveloperBean developerBean) {
+        // TODO: Implement
     }
 
     /**
@@ -345,6 +323,14 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     @Override
     public void updatePlugin(PluginBean pluginBean) throws StorageException {
         super.update(pluginBean);
+    }
+
+    /**
+     * @see io.apiman.manager.api.core.IStorage#updateDeveloper(DeveloperBean)
+     */
+    @Override
+    public void updateDeveloper(DeveloperBean developer) throws StorageException {
+        // TODO: Implement
     }
 
     /**
@@ -514,6 +500,14 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     }
 
     /**
+     * @see io.apiman.manager.api.core.IStorage#deleteDeveloper(DeveloperBean)
+     */
+    @Override
+    public void deleteDeveloper(DeveloperBean developer) throws StorageException {
+        // TODO: Implement
+    }
+
+    /**
      * @see io.apiman.manager.api.core.IStorage#deletePlugin(io.apiman.manager.api.beans.plugins.PluginBean)
      */
     @Override
@@ -605,6 +599,15 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     @Override
     public DownloadBean getDownload(String id) throws StorageException {
         return super.get(id, DownloadBean.class);
+    }
+
+    /**
+     * @see io.apiman.manager.api.core.IStorage#getDeveloper(String)
+     */
+    @Override
+    public DeveloperBean getDeveloper(String id) throws StorageException {
+        // TODO: Implement
+        return null;
     }
 
     /**
@@ -2277,6 +2280,15 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         return super.getAll(RoleBean.class, query);
     }
 
+    /**
+     * @see IStorage#getDevelopers()
+     */
+    @Override
+    public Iterator<DeveloperBean> getDevelopers() throws StorageException {
+        // TODO: Implement
+        return null;
+    }
+
     @Override
     public Iterator<ContractBean> getAllContracts(OrganizationBean organizationBean, int lim) throws StorageException {
         String jpql =
@@ -2380,6 +2392,15 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             query.setMaxResults(lim);
         }
         return super.getAll(PlanVersionBean.class, query);
+    }
+
+    /**
+     * @see IStorage#getAllPublicApiVersions()
+     */
+    @Override
+    public Iterator<ApiVersionBean> getAllPublicApiVersions() throws StorageException {
+        // TODO: Implement
+        return null;
     }
 
     private void deleteAllPolicies(OrganizationBean organizationBean) throws StorageException {
