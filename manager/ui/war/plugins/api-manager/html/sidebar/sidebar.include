@@ -9,7 +9,7 @@
     </span>
 </a>
   
-  <a href="{{ pluginName }}/browse/orgs">
+  <a href="{{ pluginName }}/users/{{ currentUser.username }}/orgs">
     <i class="icon-text fa fa-lg fa-shield"></i>
     <span class="icon-text" apiman-i18n-key="organizations">
         Organizations
