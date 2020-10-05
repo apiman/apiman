@@ -1,0 +1,104 @@
+/*!
+ * Copyright 2020 Scheer PAS Schweiz AG
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+p {
+  text-align: center;
+  vertical-align: bottom;
+}
+
+.cell-wrapper {
+  display: flex;
+}
+
+.cell-content {
+  padding-top: 4px;
+}
+
+.button {
+  z-index: 1;
+}
+
+.button, .clickable {
+  cursor: pointer;
+}
+
+table {
+  min-width: 75%;
+}
+
+tr.api-detail-row {
+  height: 0;
+}
+
+.example-element-row td {
+  border-top-width: 0;
+  border-bottom-width: 0;
+}
+
+.api-detail {
+  overflow: hidden;
+  display: flex;
+}
+
+.expand-content {
+  padding: 24px;
+}
+
+.expandedTd {
+  border-top-width: 0;
+  border-bottom-width: 0;
+}
+
+.displayed {
+  border-bottom-width: 1px;
+}
+
+.expanded-header {
+  color: rgba(0, 0, 0, 0.54);
+  font-size: 12px;
+  padding-bottom: 10px;
+}
+
+:host ::ng-deep .mat-sort-header-button {
+  margin-left: 0px;
+}
+
+:host ::ng-deep .mat-sort-header-button:hover,
+:host ::ng-deep .mat-sort-header-button:focus {
+  background-color: inherit;
+  color: inherit;
+}
+
+.apiName {
+  padding-left: 10px;
+}
+
+.status {
+  font-size: 12px;
+  display: inline;
+}
+
+.Retired {
+  color: var(--branding-status-retired);
+}
+
+.Inactive {
+  color: var(--branding-status-inactive);
+}
+
+.Active {
+  color: var(--branding-status-active);
+}

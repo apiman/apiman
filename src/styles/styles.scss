@@ -1,0 +1,147 @@
+/*!
+ * Copyright 2020 Scheer PAS Schweiz AG
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/* You can add global styles to this file, and also import other style files */
+@import '../../node_modules/@angular/material/prebuilt-themes/indigo-pink.css';
+@import './material-icons.scss';
+
+:root {
+  --branding-bg-color: whitesmoke;
+
+  --branding-header-bg-color: #243446;
+  --branding-header-color: white;
+
+  --branding-menu-color: black;
+
+  --branding-button-bg: var(--branding-header-bg-color);
+  --branding-button-border-color: var(--branding-header-bg-color);
+
+  --branding-container-header-color: var(--branding-header-bg-color);
+
+  --branding-button-hover-color: #06628e;
+  --branding-button-focus-color: #06628e;
+
+  --alert-color-hover: #ac1e1c;
+
+  --branding-grey-color-fill: #bab6b9;
+  --branding-color-green: #0F9D58;
+  --branding-lightorange: #ffa500;
+  --branding-color-red: #CF303A;
+
+  --branding-message-error: var(--branding-color-red);
+  --branding-message-warn: var(--branding-lightorange);
+  --branding-message-success: var(--branding-color-green);
+  --branding-message-info: var(--branding-grey-color-fill);
+
+  --branding-status-active: var(--branding-color-green);
+  --branding-status-inactive: var(--branding-lightorange);
+  --branding-status-retired: var(--branding-grey-color-fill);
+}
+
+body {
+  background: white;
+  font-family: Roboto, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+h1, h2, h3 {
+  color: #06618E;
+}
+
+h1 {
+  font-size: 20pt;
+  font-weight: 300;
+}
+
+h4 {
+  color: black;
+}
+
+button {
+  color: #fff;
+  background-color: var(--branding-button-bg);
+  display: inline-block;
+  margin-bottom: 0;
+  font-weight: 600;
+  text-align: center;
+  vertical-align: middle;
+  cursor: pointer;
+  background-image: none;
+  border: 1px solid transparent;
+  white-space: nowrap;
+  padding: 6px 12px;
+  font-size: 14px;
+  line-height: 1.42857143;
+  border-radius: 0;
+
+  margin-left: 10px;
+}
+
+button:first-child {
+  margin-left: 0px;
+}
+
+button:focus {
+  color: #fff;
+  text-decoration: none;
+  background-color: var(--branding-button-focus-color);
+  border-color: transparent;
+}
+
+button:hover {
+  color: #fff;
+  text-decoration: none;
+  background-color: var(--branding-button-hover-color);
+  border-color: transparent;
+}
+
+button[disabled], button[disabled], button[disabled]:hover{
+  background-color: #ffffff;
+  cursor: not-allowed;
+  opacity: 0.65;
+  filter: alpha(opacity=65);
+  box-shadow: none;
+}
+
+button[disabled], button[disabled], button[disabled]:hover {
+  background-color: #ffffff;
+  border-color: var(--branding-button-border-color);
+  color: var(--branding-button-bg);
+}
+
+mat-card {
+  display: flex !important;
+  color: white !important;
+  border-radius: 0 !important;
+  padding: .75rem 1.25rem;
+  margin-bottom: 1rem;
+  border: 1px solid transparent;
+  opacity: 0.75 !important;
+}
+
+.box-warning {
+  background-color: var(--branding-message-warn);
+}
+
+.box-info {
+  background-color: var(--branding-message-info);
+}
+
+.box-content {
+  padding-left: 5px;
+  padding-top: 3px;
+}

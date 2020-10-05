@@ -1,0 +1,73 @@
+/*!
+ * Copyright 2020 Scheer PAS Schweiz AG
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+@import '../../node_modules/angular2-toaster/src/toaster';
+
+.router-outlet-wrapper {
+  padding-left: 235px;
+  padding-top: 70px;
+  padding-right: 40px;
+}
+
+#app-header {
+  left: 0;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 1;
+}
+
+#menu-spacer {
+  background: var(--branding-bg-color) url('../assets/sidebar-bg.png') repeat-x;
+  bottom: 0;
+  left: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  position: fixed;
+  top: 60px;
+  width: 200px;
+}
+
+:host ::ng-deep #toast-container {
+  margin-top: 70px;
+}
+
+:host ::ng-deep #toast-container > div
+{
+  border-radius: 0;
+  box-shadow: 0 0 3px #999999;
+  cursor: default;
+}
+
+#spinner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  background-color: rgba(0,0,0,0.2); /*dim the background*/
+}
+
+mat-spinner {
+  position: fixed;
+  top: calc(50% - 25px);
+  left: calc(50% - 25px);
+}
+
+:host ::ng-deep .mat-progress-spinner circle, .mat-spinner circle {
+  stroke: var(--alert-color-hover);
+}
