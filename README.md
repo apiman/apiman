@@ -118,7 +118,7 @@ You should be able to import that guy straight into Eclipse by going to
 
 ## Developer Portal
 
-Apiman also comes with an developer portal. There you can allow Developers to access your APIs. Developers can view and test your APIs to develope their own Apps.\
+Apiman also comes with a developer portal. There you can allow developers to access your APIs. Developers can view and test your APIs to develop their own apps.\
 Check it out here: [Apiman Developer-Portal](https://github.com/apiman/apiman-developer-portal)
 
 ## Looking for support?
