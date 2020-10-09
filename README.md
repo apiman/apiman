@@ -1,6 +1,6 @@
 # Apiman - Developer Portal
 A developer portal for Apiman!
-Allow Developers to access your APIs. Developers can view and test your APIs to develope their own Apps.
+Allow Developers to access your APIs. Developers can view and test your APIs to develop their own Apps.
 
 The api overview page:
 ![The api overview page](readme-resources/devportal_001.png)
