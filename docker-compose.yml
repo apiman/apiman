@@ -1,0 +1,16 @@
+version: "3.7"
+
+services:
+  api-management-devportal:
+    image: "apiman-devportal:latest"
+    container_name: "apiman-devportal"
+    expose:
+#      - "80" #enable this for http
+      - "443" #https
+    ports:
+      - 8444:443 #https
+#      - 8445:80 #enable this for http
+    environment:
+      - API_MGMT_UI_REST_URL=https://localhost:8443/apiman
+      - KEYCLOAK_AUTH_URL=https://localhost:8443/auth
+      - KEYCLOAK_REALM=apiman
