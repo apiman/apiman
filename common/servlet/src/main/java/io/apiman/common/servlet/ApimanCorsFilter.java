@@ -56,7 +56,7 @@ public class ApimanCorsFilter implements Filter {
         HttpServletResponse httpResp = (HttpServletResponse) response;
 
         // Get system property here
-        String[] allowOriginsA = System.getProperty("apiman.filters.cors.allow_origin", "*").split(",");
+        String[] allowOriginsA = System.getProperty("apiman-manager-ui.allowed-cors-origins", "*").split(",");
         String allowOrigins = String.join(" ", allowOriginsA);
 
         if (isPreflightRequest(httpReq)) {
