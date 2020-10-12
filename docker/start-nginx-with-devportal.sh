@@ -16,5 +16,8 @@ then
   # Replace existing base tag with base tag containing system prefix src e.g. "/pas/devportal/"
   sed -i "s/<base.*>/<base href=\"\/$SYSTEM_PREFIX\/devportal\/\">/g" "/usr/share/nginx/html/index.html"
 fi
+
+echo "Starting devportal"
+
 # start nginx
 nginx -g 'daemon off;'
